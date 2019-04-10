@@ -277,17 +277,25 @@ class NetworkPortInstantiation extends CommonDBChild {
 
          $virtual_header = $row->getHeaderByName('Instantiation', 'VirtualPorts');
 
-         $query = "(SELECT `networkports_id`
-                    FROM `glpi_networkportaliases`
-                    WHERE `networkports_id_alias`='".$netport->getID()."')
-                   UNION
-                   (SELECT `networkports_id`
-                    FROM `glpi_networkportaggregates`
-                    WHERE `networkports_id_list` LIKE '%\"".$netport->getID()."\"%')";
+         $iterator = $DB->request([
+            'FROM' => new \QueryUnion(
+               [
+                  [
+                     'SELECT' => 'networkports_id',
+                     'FROM'   => 'glpi_networkportaliases',
+                     'WHERE'  => ['networkports_id_alias' => $netport->getID()]
+                  ], [
+                     'SELECT' => 'networkports_id',
+                     'FROM'   => 'glpi_networkportaggregates',
+                     'WHERE'  => ['networkports_id_list' => ['LIKE', '%"'.$netport->getID().'"%']]
+                  ]
+               ],
+               false,
+               'networkports'
+            )
+         ]);
 
-         $iterator = $DB->request($query);
-
-         if ($iterator->numrows() > 0) {
+         if (count($iterator)) {
             $new_father = $row->addCell($virtual_header, __('this port'), $father);
          } else {
             $new_father = $row->addCell($virtual_header, '', $father);
@@ -356,9 +364,9 @@ class NetworkPortInstantiation extends CommonDBChild {
          if ($count == 0) {
             $mac = '%'.$mac.'%';
          }
-         $relation = "LIKE '$mac'";
+         $relation = ['LIKE', $mac];
       } else {
-         $relation = "= '$mac'";
+         $relation = $mac;
       }
 
       $macItemWithItems = [];
@@ -366,16 +374,19 @@ class NetworkPortInstantiation extends CommonDBChild {
       foreach (['NetworkPort'] as $netporttype) {
          $netport = new $netporttype();
 
-         $query = "SELECT `id`
-                   FROM `".$netport->getTable()."`
-                   WHERE `mac` $relation ";
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $netport->getTable(),
+            'WHERE'  => ['mac' => $relation]
+         ]);
 
-         foreach ($DB->request($query) as $element) {
+         while ($element = $iterator->next()) {
             if ($netport->getFromDB($element['id'])) {
-
                if ($netport instanceof CommonDBChild) {
-                  $macItemWithItems[] = array_merge(array_reverse($netport->recursivelyGetItems()),
-                                                    [clone $netport]);
+                  $macItemWithItems[] = array_merge(
+                     array_reverse($netport->recursivelyGetItems()),
+                     [clone $netport]
+                  );
                } else {
                   $macItemWithItems[] = [clone $netport];
                }
@@ -463,27 +474,41 @@ class NetworkPortInstantiation extends CommonDBChild {
              && !$options['several']) {
 
             // Query each link to network cards
-            $query = "SELECT link.`id` AS link_id,
-                             device.`designation` AS name";
+            $criteria = [
+               'SELECT'    => [
+                  'link.id AS link_id',
+                  'device.designation AS name'
+               ],
+               'FROM'      => 'glpi_devicenetworkcards AS device',
+               'INNER JOIN' => [
+                  'glpi_items_devicenetworkcards AS link'   => [
+                     'ON' => [
+                        'link'   => 'devicenetworkcards_id',
+                        'device' => 'id'
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'link.items_id'   => $lastItem->getID(),
+                  'link.itemtype'   => $lastItem->getType()
+               ]
+            ];
 
             // $deviceFields contains the list of fields to update
             $deviceFields = [];
             foreach ($this->getNetworkCardInterestingFields() as $SQL_field => $form_field) {
                $deviceFields[] = $form_field;
-               $query         .= ", $SQL_field AS $form_field";
+               $criteria['SELECT'][] = "$SQL_field AS $form_field";
             }
-            $query .= " FROM `glpi_devicenetworkcards` AS device,
-                             `glpi_items_devicenetworkcards` AS link
-                        WHERE link.`items_id` = '".$lastItem->getID()."'
-                              AND link.`itemtype` = '".$lastItem->getType()."'
-                              AND device.`id` = link.`devicenetworkcards_id`";
+
+            $iterator = $DB->request($criteria);
 
             // Add the javascript to update each field
             echo "\n<script type=\"text/javascript\">
    var deviceAttributs = [];\n";
 
             $deviceNames = [0 => ""]; // First option : no network card
-            foreach ($DB->request($query) as $availableDevice) {
+            while ($availableDevice = $iterator->next()) {
                $linkID               = $availableDevice['link_id'];
                $deviceNames[$linkID] = $availableDevice['name'];
                if (isset($availableDevice['mac'])) {
@@ -497,7 +522,6 @@ class NetworkPortInstantiation extends CommonDBChild {
                   // No gettext here
                   $deviceInformations[] = "$field: '".$availableDevice[$field]."'";
                }
-               //addslashes_deep($deviceInformations);
                // Fill the javascript array
                echo "  deviceAttributs[$linkID] = {".implode(', ', $deviceInformations)."};\n";
             }
@@ -663,21 +687,27 @@ class NetworkPortInstantiation extends CommonDBChild {
       $macAddresses = [];
       foreach ($netport_types as $netport_type) {
          $instantiationTable = getTableForItemType($netport_type);
-         $query = "SELECT port.`id`, port.`name`, port.`mac`
-                   FROM `glpi_networkports` AS port
-                   WHERE `items_id` = '".$lastItem->getID()."'
-                         AND `itemtype` = '".$lastItem->getType()."'
-                         AND `instantiation_type` = '$netport_type'
-                   ORDER BY `logical_number`, `name`";
+         $iterator = $DB->request([
+            'SELECT' => [
+               'port.id',
+               'port.name',
+               'port.mac'
+            ],
+            'FROM'   => 'glpi_networkports AS port',
+            'WHERE'  => [
+               'items_id'           => $lastItem->getID(),
+               'itemtype'           => $lastItem->getType(),
+               'instantiation_type' => $netport_type
+            ],
+            'ORDER'  => ['logical_number', 'name']
+         ]);
 
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result) > 0) {
+         if (count($iterator)) {
             $array_element_name = call_user_func([$netport_type, 'getTypeName'],
-                                                 $DB->numrows($result));
+                                                 count($iterator));
             $possible_ports[$array_element_name] = [];
 
-            while ($portEntry = $DB->fetch_assoc($result)) {
+            while ($portEntry = $iterator->next()) {
                $macAddresses[$portEntry['id']] = $portEntry['mac'];
                if (!empty($portEntry['mac'])) {
                   $portEntry['name'] = sprintf(__('%1$s - %2$s'), $portEntry['name'],

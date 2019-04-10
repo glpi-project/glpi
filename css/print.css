@@ -37,7 +37,7 @@
 /* ################--------------- Default style  ---------------#################### */
 
 body {
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Arial, Tahoma, 'Sans serif', sans-serif;
    font-size: 12px;
    margin: 0;
    padding: 0;
@@ -71,7 +71,7 @@ img {
 }
 
 small {
-   font-family: verdana;
+   font-family: Verdana, sans-serif;
    font-size: 10px;
 }
 
@@ -287,10 +287,6 @@ table {
    border:0;
 }
 
-th { }
-
-td { }
-
 .tab_glpi {
    margin: 0 auto;
 }
@@ -318,7 +314,6 @@ td { }
 
 
 .tab_cadre_navigation {
-   margin: 0 auto;
    padding: 4px;
    margin: 1px;
    border: 1px solid #aaaaaa;
@@ -457,13 +452,13 @@ li.auto_comp {
 }
 
 .actor_title, .actor-bloc {
-    display: table-cell;
-    float: none;
-    vertical-align: top;
+   display: table-cell;
+   float: none;
+   vertical-align: top;
 }
 .actor-bloc {
-    width: 29%;
-    float: left;
+   width: 29%;
+   float: left;
 }
 
 
@@ -644,12 +639,11 @@ ul#onglet {
 ul#onglet li {
    float: left;
    height: 21px;
-   background-color: #eeeeee;
    margin: 2px 2px 0 1px;
    border: 1px solid #CC9900;
    border-bottom: 1px solid #fff;
    -moz-border-radius: 4px;
-   background:  url("../pics/fond_onglet.png") repeat-x;
+   background:  url("../pics/fond_onglet.png") repeat-x #eeeeee;
 }
 
 ul#onglet li.actif {
@@ -660,7 +654,6 @@ ul#onglet li.actif {
 ul#onglet li.invisible {
    border-bottom: 1px solid #fff;
    border: 1px solid #fff;
-   background-color: #ffffff;
    width: 15px;
    background:  transparent;
 }
@@ -712,7 +705,7 @@ ul#onglet span.fake {
    -moz-border-radius: 5px;
 }
 
- #onglet_plugins dl {
+#onglet_plugins dl {
    margin: 0;
    padding: 0;
    list-style-type: none;
@@ -936,7 +929,7 @@ ul#onglet span.fake {
 }
 
 .sous_logo {
-   font-family: arial;
+   font-family: Arial, sans-serif;
    font-size: 9px;
    color: #eeeeee;
    text-decoration: none;
@@ -960,7 +953,6 @@ ul#onglet span.fake {
    color :#757575;
    font-family: Verdana,Arial,Helvetica,sans-serif;
    font-weight: bold;
-   margin-top:10px;
    margin:auto;
 }
 
@@ -1025,7 +1017,7 @@ div#c_recherche form {
 div#c_recherche form div#champRecherche input {
    border: 1px solid #000;
    height: 14px;
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Arial, Tahoma, 'Sans serif', sans-serif;
    font-size: 11px;
 }
 
@@ -1038,7 +1030,7 @@ div#c_recherche form div#boutonRecherche {
 }
 
 div#c_recherche form div#boutonRecherche input {
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Arial, Tahoma, 'Sans serif', sans-serif;
    font-size: 0.7em;
    width: 15px;
    height: 15px;
@@ -1340,7 +1332,7 @@ div#show_all_menu {
    text-align: center;
    margin: 0;
    padding: 1px .5em;
-   font-family: helvetica,arial,sans-serif;
+   font-family: Helvetica,Arial,sans-serif;
    font-size: 10px;
    font-weight: bold;
    background-color: #fff;
@@ -1367,7 +1359,7 @@ div#show_all_menu {
    text-align: center;
    margin: 0;
    padding: 1px .5em;
-   font-family: helvetica,arial,sans-serif;
+   font-family: Helvetica,Arial,sans-serif;
    font-size: 10px;
    font-weight: bold;
    background-color: #fff;

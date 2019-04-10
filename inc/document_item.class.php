@@ -218,11 +218,9 @@ class Document_Item extends CommonDBRelation{
          $doc->getFromDB($this->fields['documents_id']);
          if (!empty($doc->fields['tag'])) {
             $ticket->getFromDB($this->fields['items_id']);
-            $input['content'] = Toolbox::addslashes_deep(
-               Toolbox::cleanTagOrImage(
-                  $ticket->fields['content'],
-                  [$doc->fields['tag']]
-               )
+            $input['content'] = Toolbox::cleanTagOrImage(
+               $ticket->fields['content'],
+               [$doc->fields['tag']]
             );
          }
 
@@ -232,13 +230,15 @@ class Document_Item extends CommonDBRelation{
    }
 
 
+   //TODO: remove with old UI
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       $nbdoc = $nbitem = 0;
       switch ($item->getType()) {
          case 'Document' :
             $ong = [];
-            if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem()) {
+            if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem() && !$IS_TWIG) {
                $nbdoc  = self::countForMainItem($item, ['NOT' => ['itemtype' => 'Document']]);
                $nbitem = self::countForMainItem($item, ['itemtype' => 'Document']);
             }
@@ -255,7 +255,7 @@ class Document_Item extends CommonDBRelation{
                 || ($item->getType() == 'Reminder')
                 || ($item->getType() == 'KnowbaseItem')) {
 
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                   $nbitem = self::countForItem($item);
                }
                return self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
@@ -265,6 +265,17 @@ class Document_Item extends CommonDBRelation{
       return '';
    }
 
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      if ($item->getType() == Document::getType()) {
+         switch ($tab) {
+            case self::getType() . '__1':
+               return self::countForMainItem($item, ['NOT' => ['itemtype' => 'Document']]);
+            case self::getType() . '__2':
+               return self::countForMainItem($item, ['itemtype' => 'Document']);
+         }
+      }
+      return self::countForItem($item);
+   }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -456,8 +467,9 @@ class Document_Item extends CommonDBRelation{
                echo "<td ".
                      (isset($data['is_deleted']) && $data['is_deleted']?"class='tab_bg_2_2'":"").
                      ">".$name."</td>";
-               echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
-                                                                     $data['entity']);
+               echo "<td class='center'>".
+                  (isset($data['entity']) ? Dropdown::getDropdownName("glpi_entities",
+                     $data['entity']) : "-");
                echo "</td>";
                echo "<td class='center'>".
                         (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
@@ -574,8 +586,10 @@ class Document_Item extends CommonDBRelation{
 
       // find documents already associated to the item
       $doc_item   = new self();
-      $used_found = $doc_item->find("`items_id` = '".$item->getID()."'
-                                    AND `itemtype` = '".$item->getType()."'");
+      $used_found = $doc_item->find([
+         'items_id'  => $item->getID(),
+         'itemtype'  => $item->getType()
+      ]);
       $used       = array_keys($used_found);
       $used       = array_combine($used, $used);
 
@@ -728,67 +742,75 @@ class Document_Item extends CommonDBRelation{
          $linkparam = "&amp;tickets_id=".$item->fields['id'];
       }
 
-      $query = "SELECT `glpi_documents_items`.`id` AS assocID,
-                       `glpi_documents_items`.`date_mod` AS assocdate,
-                       `glpi_entities`.`id` AS entityID,
-                       `glpi_entities`.`completename` AS entity,
-                       `glpi_documentcategories`.`completename` AS headings,
-                       `glpi_documents`.*
-                FROM `glpi_documents_items`
-                LEFT JOIN `glpi_documents`
-                          ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
-                LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
-                LEFT JOIN `glpi_documentcategories`
-                        ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
-                WHERE `glpi_documents_items`.`items_id` = '".$item->getID()."'
-                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
+      $criteria = [
+         'SELECT'    => [
+            'glpi_documents_items.id AS assocID',
+            'glpi_documents_items.date_mod AS assocdate',
+            'glpi_entities.id AS entityID',
+            'glpi_entities.completename AS entity',
+            'glpi_documentcategories.completename AS headings',
+            'glpi_documents.*'
+         ],
+         'FROM'      => 'glpi_documents_items',
+         'LEFT JOIN' => [
+            'glpi_documents'  => [
+               'ON' => [
+                  'glpi_documents_items'  => 'documents_id',
+                  'glpi_documents'        => 'id'
+               ]
+            ],
+            'glpi_entities'   => [
+               'ON' => [
+                  'glpi_documents'  => 'entities_id',
+                  'glpi_entities'   => 'id'
+               ]
+            ],
+            'glpi_documentcategories'  => [
+               'ON' => [
+                  'glpi_documentcategories'  => 'id',
+                  'glpi_documents'           => 'documentcategories_id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_documents_items.items_id'  => $item->getID(),
+            'glpi_documents_items.itemtype'  => $item->getType()
+         ],
+         'ORDERBY'   => [
+            "$sort $order"
+         ]
+      ];
 
       if (Session::getLoginUserID()) {
-         $query .= getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
+         $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria('glpi_documents', '', '', true);
       } else {
          // Anonymous access from FAQ
-         $query .= " AND `glpi_documents`.`entities_id`= '0' ";
+         $criteria['WHERE']['glpi_documents.entities_id'] = 0;
       }
 
       // Document : search links in both order using union
+      $doc_criteria = [];
       if ($item->getType() == 'Document') {
-         $query .= "UNION
-                    SELECT `glpi_documents_items`.`id` AS assocID,
-                           `glpi_documents_items`.`date_mod` AS assocdate,
-                           `glpi_entities`.`id` AS entityID,
-                           `glpi_entities`.`completename` AS entity,
-                           `glpi_documentcategories`.`completename` AS headings,
-                           `glpi_documents`.*
-                    FROM `glpi_documents_items`
-                    LEFT JOIN `glpi_documents`
-                        ON (`glpi_documents_items`.`items_id`=`glpi_documents`.`id`)
-                    LEFT JOIN `glpi_entities`
-                        ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
-                    LEFT JOIN `glpi_documentcategories`
-                        ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
-                    WHERE `glpi_documents_items`.`documents_id` = '".$item->getID()."'
-                          AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
-
-         if (Session::getLoginUserID()) {
-            $query .= getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
-         } else {
-            // Anonymous access from FAQ
-            $query .= " AND `glpi_documents`.`entities_id`='0' ";
-         }
+         $owhere = $criteria['WHERE'];
+         $o2where =  $owhere + ['glpi_documents_items.documents_id' => $item->getID()];
+         unset($o2where['glpi_documents_items.items_id']);
+         $criteria['WHERE'] = [
+            'OR' => [
+               $owhere,
+               $o2where
+            ]
+         ];
       }
-      $query .= " ORDER BY $sort $order";
 
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $iterator = $DB->request($criteria);
+      $number = count($iterator);
       $i      = 0;
 
       $documents = [];
       $used      = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $documents[$data['assocID']] = $data;
-            $used[$data['id']]           = $data['id'];
-         }
+      while ($data = $iterator->next()) {
+         $documents[$data['assocID']] = $data;
+         $used[$data['id']]           = $data['id'];
       }
 
       echo "<div class='spaced'>";
@@ -954,7 +976,7 @@ class Document_Item extends CommonDBRelation{
    protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = []) {
       $commonwhere = ['OR'  => [
          static::getTable() . '.' . static::$items_id_1  => $items_id,
-         'AND' => [
+         [
             static::getTable() . '.itemtype'                => static::$itemtype_1,
             static::getTable() . '.' . static::$items_id_2  => $items_id
          ]
@@ -1018,7 +1040,7 @@ class Document_Item extends CommonDBRelation{
    public static function getDistinctTypesParams($items_id, $extra_where = []) {
       $commonwhere = ['OR'  => [
          static::getTable() . '.' . static::$items_id_1  => $items_id,
-         'AND' => [
+         [
             static::getTable() . '.itemtype'                => static::$itemtype_1,
             static::getTable() . '.' . static::$items_id_2  => $items_id
          ]
@@ -1027,7 +1049,7 @@ class Document_Item extends CommonDBRelation{
       $params = parent::getDistinctTypesParams($items_id, $extra_where);
       $params['WHERE'] = $commonwhere;
       if (count($extra_where)) {
-         $params['WHERE'] += ['AND' => $extra_where];
+         $params['WHERE'][] = $extra_where;
       }
 
       return $params;

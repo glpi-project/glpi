@@ -1,0 +1,985 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% extends "glpi.twig" %}
+
+{% block html_class %} layout_{{ glpi_layout }}{% endblock %}
+
+{% block head %}
+   {% set css_paths = css_paths|default([])|merge([
+      lib_path ~ '/jquery-ui-dist/jquery-ui.css',
+      lib_path ~ '/select2/css/select2.css',
+      lib_path ~ '/select2-theme-bootstrap4/select2-bootstrap.css',
+      lib_path ~ '/qtip2/jquery.qtip.css',
+      lib_path ~ '/leaflet/leaflet.css',
+      lib_path ~ '/leaflet.markercluster/MarkerCluster.css',
+      lib_path ~ '/leaflet.markercluster/MarkerCluster.Default.css',
+      lib_path ~ '/leaflet.awesome-markers/leaflet.awesome-markers.css',
+      'lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.css',
+      lib_path ~ '/leaflet-fullscreen/leaflet.fullscreen.css',
+      ]) %}
+   {% for css_path in css_paths %}
+      {% set media = 'screen' %}
+      {% if css_path is iterable %}
+         {% set media = css_path.media %}
+         {% set css_path = css_path.path %}
+      {% endif %}
+      <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ css_path }}" type="text/css" media="{{ media }}" />
+   {% endfor %}
+   {{ parent() }}
+{% endblock %}
+
+{% block header %}
+<header class="app-header navbar navbar-expand flex-column flex-md-row bd-navbar">
+      <a href="{{ base_path() }}" class="navbar-brand">
+         <!-- logo for regular state and mobile devices -->
+         <img class="navbar-brand-full" src="{{ CFG_GLPI.root_doc }}/pics/logos/logo-GLPI-100-black.png" alt="GLPI {{ __('Home') }}"/>
+      </a>
+      <a href="#" class="sidebar-toggler" data-toggle="sidebar-lg-show">
+         <span class="navbar-toggler-icon"></span>
+      </a>
+      {{ block('topmenu') }}
+</header>
+{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+   <ol class="breadcrumb">
+      {#// Display item
+      $mainurl = ($full === true) ? 'central' : 'helpdesk.public';#}
+      <li class='breadcrumb-item'>
+         <a href="{{ base_path() }}{#.$CFG_GLPI["root_doc"]."/front/$mainurl.php#}" title="{{__s('Home') }}">{{ __('Home')}}</a>
+      </li>
+
+   {% set menu_itemtype = false %}
+   {% set menu_item = false %}
+   {% if item is defined and item != false %}
+      {% for menu in glpi_menus if menu.content[item.getType()|lower()] is defined %}
+         {% set menu_itemtype = item.getType()|lower() %}
+         {% if menu.content[menu_itemtype] is defined %}
+            {% set sector = menu.title %}
+            {% if menu.default is defined %}
+               {% set url = menu.default %}
+            {% else %}
+               {% set url = base_path() %}
+            {% endif %}
+      <li class='breadcrumb-item'>
+         <a href="{{ url }}" title="{{ menu.title }}">
+            {{ menu.title }}
+         </a>
+      </li>
+
+            {% if menu.content[menu_itemtype] is defined %}
+               {% set menu_item = menu.content[menu_itemtype] %}
+{#
+            // Title
+            $with_option = false;
+
+            if (!empty($option)
+               && isset($menu[$sector]['content'][$item]['options'][$option]['title'])
+               && isset($menu[$sector]['content'][$item]['options'][$option]['page'])) {
+
+               $with_option = true;
+            }
+#}
+               {% if menu_item.page is defined  %}
+      <li class='breadcrumb-item'>
+         <a href="{{ menu_item.page }}"{#($with_option?"":"class='here'")."#}
+            title="{{ menu_item.title }}">
+            {{ menu_item.title }}
+         </a>
+      </li>
+               {% endif %}
+{#
+            if ($with_option) {
+               echo "<li class='breadcrumb-item'>".
+                  "<a href='".$CFG_GLPI["root_doc"].
+                        $menu[$sector]['content'][$item]['options'][$option]['page'].
+                        "' class='here' title=\"".
+                        $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
+               echo self::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],
+                                    17);
+               echo "</a></li>";
+            }
+            $links = [];
+            // Item with Option case
+            if (!empty($option)
+               && isset($menu[$sector]['content'][$item]['options'][$option]['links'])
+               && is_array($menu[$sector]['content'][$item]['options'][$option]['links'])) {
+               $links = $menu[$sector]['content'][$item]['options'][$option]['links'];
+
+            } else if (isset($menu[$sector]['content'][$item]['links'])
+                     && is_array($menu[$sector]['content'][$item]['links'])) {
+               // Without option case : only item links
+
+               $links = $menu[$sector]['content'][$item]['links'];
+            }#}
+
+               {% if menu_item.links is defined %}
+            <li class="breadcrumb-menu">
+               <div class="btn-group">
+                  {# Add item #}
+                  {% set menu_links = menu_item.links %}
+                  {% if menu_links.add is defined %}
+                     {% set menu_btn = {
+                        'url': path_for('add-asset', {'itemtype': menu_itemtype}),
+                        'text': __('Add'),
+                     } %}
+                  {% else %}
+                     {% set menu_btn = {
+                        'url': '#',
+                        'text': __('Add is disabled'),
+                        'class': 'disabled'
+                     } %}
+                  {% endif %}
+                     <a href="{{ menu_btn.url }}" class="btn btn-outline-secondary btn-xs {% if menu_btn.class is defined %} {{ menu_btn.class}}{% endif %}" title="{{ menu_btn.text }}">
+                        <i class="fa fa-plus"></i>
+                        {{ menu_btn.text }}
+                     </a>
+
+                  {# Search Item #}
+                  {% if menu_links.search is defined %}
+                     {% set menu_btn = {
+                        'url': path_for('list', {'itemtype': menu_itemtype}),
+                        'text': __('Search'),
+                     } %}
+                  {% else %}
+                     {% set menu_btn = {
+                        'url': '#',
+                        'text': __('Search is disabled'),
+                        'class': 'disabled'
+                     } %}
+                  {% endif %}
+                     <a href="{{ menu_btn.url }}" class="btn btn-default btn-xs {% if menu_btn.class is defined %} {{ menu_btn.class}}{% endif %}" title="{{ menu_btn.text }}">
+                        <i class="fa fa-search"></i>
+                        {{ menu_btn.text }}
+                     </a>
+                  </div>
+
+            </li>
+               {% endif %}
+            {% endif %}
+         {% endif %}
+      {% endfor %}
+   {% endif %}
+   </ol>
+      {#if ($full === true) {
+         if (isset($menu[$sector]['content'][$item])) {
+            // Title
+            $with_option = false;
+
+            if (!empty($option)
+               && isset($menu[$sector]['content'][$item]['options'][$option]['title'])
+               && isset($menu[$sector]['content'][$item]['options'][$option]['page'])) {
+
+               $with_option = true;
+            }
+
+            if (isset($menu[$sector]['content'][$item]['page'])) {
+               echo "<li class='breadcrumb-item'>".
+                  "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
+                        ($with_option?"":"class='here'")." title=\"".
+                        $menu[$sector]['content'][$item]['title']."\" >".
+                        $menu[$sector]['content'][$item]['title']."</a>".
+                  "</li>";
+            }
+
+            if ($with_option) {
+               echo "<li class='breadcrumb-item'>".
+                  "<a href='".$CFG_GLPI["root_doc"].
+                        $menu[$sector]['content'][$item]['options'][$option]['page'].
+                        "' class='here' title=\"".
+                        $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
+               echo self::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],
+                                    17);
+               echo "</a></li>";
+            }
+
+            $links = [];
+            // Item with Option case
+            if (!empty($option)
+               && isset($menu[$sector]['content'][$item]['options'][$option]['links'])
+               && is_array($menu[$sector]['content'][$item]['options'][$option]['links'])) {
+               $links = $menu[$sector]['content'][$item]['options'][$option]['links'];
+
+            } else if (isset($menu[$sector]['content'][$item]['links'])
+                     && is_array($menu[$sector]['content'][$item]['links'])) {
+               // Without option case : only item links
+
+               $links = $menu[$sector]['content'][$item]['links'];
+            }
+
+            // Add item
+            echo "<li class='icons_block'>";
+            echo "<span>";
+            if (isset($links['add'])) {
+               echo "<a href='{$CFG_GLPI['root_doc']}{$links['add']}' class='pointer'
+                                 title='" . __s('Add') ."'><i class='fa fa-plus'></i>
+                                 <span class='sr-only'>" . __('Add') . "</span></a>";
+            } else {
+               echo "<a href='#' class='pointer disabled' title='".__s('Add is disabled')."'>".
+                  "<i class='fa fa-plus'></i>".
+                  "<span class='sr-only'>" . __('Add is disabled') . "</span></a>";
+            }
+            echo "</span>";
+
+            // Search Item
+            echo "<span>";
+            if (isset($links['search'])) {
+               echo "<a href='{$CFG_GLPI['root_doc']}{$links['search']}' class='pointer'
+                                 title='" . __s('Search') ."'><i class='fa fa-search'></i>
+                                 <span class='sr-only'>" . __s('Search') . "</span></a>";
+            } else {
+               echo "<a href='#' class='pointer disabled' title='" . __s('Search is disabled')."'>".
+                  "<i class='fa fa-search'></i>".
+                  "<span class='sr-only'>" . __('Search is disabled') . "</span></a>";
+            }
+            echo "</span>";
+            // Links
+            if (count($links) > 0) {
+               foreach ($links as $key => $val) {
+
+                  switch ($key) {
+                     case "add" :
+                     case "search" :
+                        break;
+
+                     case "template" :
+                        echo "<span>";
+                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
+                                       ['alt' => __('Manage templates...'),
+                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo "</span>";
+                        break;
+
+                     case "showall" :
+                        echo "<span>";
+                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_showall.png",
+                                       ['alt' => __('Show all'),
+                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo "</span>";
+                        break;
+
+                     case "summary" :
+                        echo "<span>";
+                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_show.png",
+                                       ['alt' => __('Summary'),
+                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo "</span>";
+                        break;
+
+                     case "config" :
+                        echo "<span>";
+                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_config.png",
+                                       ['alt' => __('Setup'),
+                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo "</span>";
+                        break;
+
+                     default :
+                        echo "<span>".Html::link($key, $CFG_GLPI["root_doc"].$val)."</span>";
+                        break;
+                  }
+               }
+            }
+            echo "</li>";
+
+         } else {
+            echo "<li>&nbsp;</li>";
+         }
+      } else {
+         if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
+            $opt                              = [];
+            $opt['reset']                     = 'reset';
+            $opt['criteria'][0]['field']      = 55; // validation status
+            $opt['criteria'][0]['searchtype'] = 'equals';
+            $opt['criteria'][0]['value']      = TicketValidation::WAITING;
+            $opt['criteria'][0]['link']       = 'AND';
+
+            $opt['criteria'][1]['field']      = 59; // validation aprobator
+            $opt['criteria'][1]['searchtype'] = 'equals';
+            $opt['criteria'][1]['value']      = Session::getLoginUserID();
+            $opt['criteria'][1]['link']       = 'AND';
+
+            $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".
+                           Toolbox::append_params($opt, '&amp;');
+            $pic_validate = "<a href='$url_validate'>".
+                           "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
+                              __s('Ticket waiting for your approval')."\" src='".
+                              $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'></a>";
+            echo "<li class='icons_block'>$pic_validate</li>\n";
+         }
+
+         if (Session::haveRight('ticket', CREATE)
+            && strpos($_SERVER['PHP_SELF'], "ticket")) {
+            echo "<li class='icons_block'><a class='pointer' href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'title=\"".__s('Add')."\">";
+            echo "<i class='fa fa-plus'></i><span class='sr-only'>".__s('Add')."</span></a></li>";
+         }
+      }
+
+      // Add common items
+#}
+      {#
+         Profile selector
+         check user id : header used for display messages when session logout
+      #}
+</nav>
+{% endblock %}
+
+{% block javascripts %}
+   {{ parent() }}
+   {% set js_paths = js_paths|default([])|merge([
+         lib_path ~ '/jquery-ui-dist/jquery-ui.js',
+         lib_path ~ '/select2/js/select2.full.js',
+         lib_path ~ '/qtip2/jquery.qtip.js',
+         lib_path ~ '/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js',
+         lib_path ~ '/jquery.autogrow-textarea/jquery.autogrow-textarea.js',
+         lib_path ~ '/jquery-mousewheel/jquery.mousewheel.js',
+         'lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js',
+         lib_path ~ '/leaflet/leaflet.js',
+         lib_path ~ '/spin.js/spin.js',
+         lib_path ~ '/leaflet-spin/leaflet.spin.js',
+         lib_path ~ '/leaflet.markercluster/leaflet.markercluster-src.js',
+         lib_path ~ '/leaflet.awesome-markers/leaflet.awesome-markers.js',
+         'lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.js',
+         lib_path ~ '/leaflet-fullscreen/Leaflet.fullscreen.js',
+         'js/common.js',
+      ]) %}
+   {% for js_path in js_paths %}
+      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_path }}"></script>
+   {% endfor %}
+   <script type="text/javascript">
+      {#
+      if (!isset($params['value'])) {
+         $value = 0;
+      } else {
+         $value = $params['value'];
+      }
+      if (!isset($params['value'])) {
+         $valuename = Dropdown::EMPTY_VALUE;
+      } else {
+         $valuename = $params['valuename'];
+      }
+      $on_change = '';
+      if (isset($params["on_change"])) {
+         $on_change = $params["on_change"];
+         unset($params["on_change"]);
+      }
+      $width = '80%';
+      if (isset($params["width"])) {
+         $width = $params["width"];
+         unset($params["width"]);
+      }
+      unset($params['value']);
+      unset($params['valuename']);
+
+      $options = [
+         'id'        => $field_id,
+         'selected'  => $value
+      ];
+      if (!empty($params['specific_tags'])) {
+         foreach ($params['specific_tags'] as $tag => $val) {
+            if (is_array($val)) {
+               $val = implode(' ', $val);
+            }
+            $options[$tag] = $val;
+         }
+      }
+
+      $values = [$value => $valuename];
+      $output = self::select($name, $values, $options);
+      #}
+
+      var _select2_common = {
+         width: function() {
+            var _this = $(this);
+            if (_this.data('width')) {
+               return _this.data('width');
+            } else {
+               return 'auto';
+            }
+         },
+         minimumInputLength: 0,
+         quietMillis: 100,
+         dropdownAutoWidth: true,
+         templateResult: templateResult,
+         theme: 'bootstrap',
+         containerCssClass: ':all:',
+         minimumResultsForSearch: {{ CFG_GLPI.ajax_limit_count }},
+      };
+
+      var _select2_ajax = Object.assign({
+         ajax: {
+            url: function () {
+               return $(this).data('ajax_url');
+            },
+            dataType: 'json',
+            type: 'POST',
+            data: function (params) {
+               query = params;
+               return {
+      {#
+      foreach ($params as $key => $val) {
+         // Specific boolean case
+         if (is_bool($val)) {
+            $js .= "$key: ".($val?1:0).",\n";
+         } else {
+            $js .= "$key: ".json_encode($val).",\n";
+         }
+      }
+      #}
+                  itemtype: $(this).data('itemtype'),
+                  display_emptychoice: 1,
+                  emptylabel: '-----',
+                  searchText: params.term,
+                  page_limit: {{ CFG_GLPI.dropdown_max }}, // page size
+                  page: params.page || 1, // page number
+                  {#
+condition	08eeb2573550fa16b1bea6fa21840f2089e954f0
+entity_restrict	0
+permit_select_parent	0
+#}
+               };
+            },
+            processResults: function (data, params) {
+               params.page = params.page || 1;
+               var more = (data.count >= {{ CFG_GLPI.dropdown_max }});
+
+               return {
+                  results: data.results,
+                  pagination: {
+                        more: more
+                  }
+               };
+            }
+         }
+      }, _select2_common);
+
+      var _bindSimpleSelect = function(elt) {
+          $(elt).select2(
+            Object.assign({
+               formatSelection: function(object, container) {
+                  text = object.text;
+                  if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
+                     text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
+                  }
+                  return text;
+               }
+            }, _select2_common)
+         ).on("change", function (e) {
+             var _this = $(this);
+             if (_this.data('change_func')) {
+                 return window[_this.data('change_func')](_this, e);
+             }
+         });
+      }
+
+      var _bindAjaxSelect = function(elt) {
+         $(elt).select2(
+            _select2_ajax
+         ).on("change", function (e) {
+             var _this = $(this);
+             if (_this.data('change_func')) {
+                 return window[_this.data('change_func')](_this, e);
+             }
+         });
+      }
+
+      var _bindLabelSelect = function(parent) {
+         if (typeof parent == undefined) {
+            parent = '';
+         }
+
+         $(parent + 'label').on(
+            'click', function(){
+               var _this = $(this);
+               if (_next = _this.next('.forSelect2')) {
+                  _next.select2('open');
+               }
+            }
+         );
+      }
+
+      $(function() {
+         _bindSimpleSelect('.forSelect2:not([data-ajax_url])');
+         _bindAjaxSelect('.forSelect2[data-ajax_url]');
+         _bindLabelSelect();
+
+         $('#global_entity_select').on('click', function() {
+            createModalWindow(
+               CFG_GLPI.root_doc + '/ajax/entitytree.php', {
+                  'title': '{{ __('Select the desired entity') }}',
+                  'extraparams': '{{ {'target': base_path()}|json_encode(constant('JSON_FORCE_OBJECT')) }}',
+                  'open': true
+               }
+            );
+         });
+      });
+
+      var _initBookmarkPanel = function() {
+         createSlidePanel({
+            'name':     'showSavedSearches',
+            'position': 'right',
+            'title':    '{{ __('Saved searches') }}',
+            'url':      '{{ path_for('show-saved-searches') }}',
+            'icon':     'fas fa-wrench',
+            'icon_url': '{{path_for('list', {'itemtype': 'SavedSearch'}) }}',
+            'icon_txt': '{{ __('Manage saved searches') }}',
+            'callback': '_bookmarksLoaded'
+         });
+
+      };
+
+      /** Cannot be moved to a .js file because of translations :/ */
+      var createSlidePanel = function(params) {
+         var _params = Object.assign({
+            'name':     undefined,
+            'position': undefined,
+            'icon':     true,
+            'icon_url': undefined,
+         }, params);
+
+         var _div = $('<div id="' + _params.name + '" class="slidepanel on' + _params.position  + '">');
+         var _header = $('<div class="header">');
+         var _tools = $('<div class="btn-group pull-right">');
+         var _button = $('<button type="button" class="btn btn-box-tool" title="{{ __s('Close') }}"><i class="fa fa-times"></i><span class="sr-only">{{ __('Close') }}</span></button>');
+         _tools.append(_button);
+
+         if (_params.icon) {
+            var _img = $('<i class="' + _params.icon + '" title="' + _params.icon_txt + '"/><span class="sr-only">' + _params.icon_txt + '</span>');
+            if (_params.icon_url) {
+               var _a = $('<a class="btn" href="' + _params.icon_url  + '"></a>');
+               _a.append(_img);
+               _tools.append(_a);
+            } else {
+               _tools.append(_img);
+            }
+         }
+         _header.append(_tools);
+
+         if (_params.title != '') {
+            _header.append('<h3>' + _params.title + '</h3>');
+         }
+
+         _div.append(_header);
+         _div.append($('<div class="contents"></div>'));
+
+         _div.hide().appendTo('body');
+
+         _button.on('click', function() {
+            $('#' + _params.name).hide(
+               'slow',
+               function () {
+                  $(this).find('.contents').empty();
+               }
+            );
+         });
+         $('#' + _params.name + 'Link').on('click', function() {
+            $('#' + _params.name).show(
+               'slow',
+               function() {
+                  $.ajax({
+                     url: _params.url,
+                     beforeSend: function() {
+                        var _loader = $('<div id="loadingslide"><div class="loadingindicator">{{ __('Loading...') }}</div></div>');
+                        $('#' + _params.name + ' .contents').html(_loader);
+                     },
+                     complete: function() {
+                        $('#loadingslide').remove();
+                     },
+                     success: function(res) {
+                        $('#' + _params.name + ' .contents').html(res);
+                        if (_params.callback != '') {
+                            _params.callback;
+                        }
+                     }
+                  });
+               }
+            );
+         });
+      }
+   </script>
+   {{ debugpanel()|raw }}
+{% endblock %}
+
+{% block searchform %}
+    {% if CFG_GLPI.allow_search_global %}
+{#
+      if ($full === true) {
+         /// Search engine
+#}
+<form class="sidebar-form" role="search" method="get" action="{{ CFG_GLPI.root_doc }}/front/search.php">
+   {% include "elements/hidden.twig" with {'element': {'name': '_csrf'}} %}
+   <div class="input-group">
+      <input type="text" class="form-control" id="search-input" placeholder="{{ __('Search') }}" name="globalsearch">
+      <span class="input-group-btn">
+         <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+            <i class="fa fa-search"></i>
+            <span class="sr-only">{{ __('Search') }}</span>
+         </button>
+      </span>
+   </div>
+</form>
+    {% endif %}
+{% endblock %}
+
+{# Prefs / Logout link #}
+{% block topmenu %}
+   <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+      <li class="nav-item" id="language_link">
+   {% if not constant('GLPI_DEMO_MODE') %}
+         <a class="nav-link" href="{{ CFG_GLPI.root_doc }}/front/preference.php?forcetab=User$1" title="{{ glpi_lang_name }}">
+            {{  glpi_lang_name }}
+         </a>
+   {% else %}
+         <span>{{ glpi_lang_name }}</span>
+   {% endif %}
+      </li>
+
+      <li class="nav-item" id='help_link'>
+         <a class="nav-link" href='{{ CFG_GLPI.central_doc_url|default('http://glpi-project.org/help-central') }}' target='_blank' title="{{ __('Help') }}">
+            <i class="fa fa-question"></i>
+            <span class='sr-only'>{{ __('Help') }}</span>
+         </a>
+      </li>
+
+      <li class="nav-item" id='bookmark_link'>
+         <a class="nav-link" href='#' id='showSavedSearchesLink' title="{{ __('Load a bookmark') }}">
+            <i class="fa fa-star"></i>
+            <span class='sr-only'>{{ __('Saved searches') }}</span>
+         </a>
+      </li>
+
+   {% if call_static('Config', 'canUpdate') %}
+      <li class="nav-item{% if glpi_debug %} active{% endif %}" id='debug_mode'>
+      {% set dbgbtn_class = 'debugoff' %}
+      {% set dbgbtn_title = __('Debug mode disabled') %}
+      {% if glpi_debug %}
+         {% set dbgbtn_class = 'debugon' %}
+         {% set dbgbtn_title = __('Debug mode enabled') %}
+      {% endif %}
+         <a class="nav-link" href="?switch=switch-debug" title="{{ dbgbtn_title }}">
+            <i class="fa fa-bug {{ dbgbtn_class }}"></i>
+            <span class='sr-only'>{{ __('Change mode') }}</span>
+         </a>
+      </li>
+   {% endif %}
+
+      <li class="nav-item" id='preferences_link'>
+         <a class="nav-link" href='{#{ path_for('/user/preferences') }#}' title="{{ __('My settings') }}">
+            <i class="fa fa-cog"></i>
+            <span class='sr-only'>{{ __('My settings') }}</span>
+
+            {# check user id : header used for display messages when session logout #}
+            {% if call_static('Session', 'getLoginUserID') and user_name is defined %}
+            <span id='myname'>{{ user_name }}</span>
+            {% endif %}
+         </a>
+      </li>
+
+      {% if is_logged and glpi_profile_selecter is defined %}
+         {{ glpi_profile_selecter|raw }}
+      {% endif %}
+
+      <li class="nav-item" id='deconnexion'>
+         <a class="nav-link" href='{{ path_for('logout') }}' title="{{ __s('Logout') }}">
+         {#if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
+            //FIXME: Manage in logout route?
+            echo "?noAUTO=1";
+         }}#}
+            <i class="fa fa-sign-out-alt"></i>
+            <span class='sr-only'>{{ __('Logout') }}</span>
+         </a>
+      </li>
+{#<li class="dropdown messages-menu">
+              <!-- Menu toggle button -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-envelope-o"></i>
+                <span class="label label-success">4</span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="header">You have 4 messages</li>
+                <li>
+                  <!-- inner menu: contains the messages -->
+                  <ul class="menu">
+                    <li><!-- start message -->
+                      <a href="#">
+                        <div class="pull-left">
+                          <!-- User Image -->
+                          <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                        </div>
+                        <!-- Message title and timestamp -->
+                        <h4>
+                          Support Team
+                          <small><i class="fa fa-clock-o"></i> 5 mins</small>
+                        </h4>
+                        <!-- The message -->
+                        <p>Why not buy a new awesome theme?</p>
+                      </a>
+                    </li>
+                    <!-- end message -->
+                  </ul>
+                  <!-- /.menu -->
+                </li>
+                <li class="footer"><a href="#">See All Messages</a></li>
+              </ul>
+            </li>
+            <!-- /.messages-menu -->
+
+            <!-- Notifications Menu -->
+            <li class="dropdown notifications-menu">
+              <!-- Menu toggle button -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-bell-o"></i>
+                <span class="label label-warning">10</span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="header">You have 10 notifications</li>
+                <li>
+                  <!-- Inner Menu: contains the notifications -->
+                  <ul class="menu">
+                    <li><!-- start notification -->
+                      <a href="#">
+                        <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                      </a>
+                    </li>
+                    <!-- end notification -->
+                  </ul>
+                </li>
+                <li class="footer"><a href="#">View all</a></li>
+              </ul>
+            </li>
+            <!-- Tasks Menu -->
+            <li class="dropdown tasks-menu">
+              <!-- Menu Toggle Button -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-flag-o"></i>
+                <span class="label label-danger">9</span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="header">You have 9 tasks</li>
+                <li>
+                  <!-- Inner menu: contains the tasks -->
+                  <ul class="menu">
+                    <li><!-- Task item -->
+                      <a href="#">
+                        <!-- Task title and progress text -->
+                        <h3>
+                          Design some buttons
+                          <small class="pull-right">20%</small>
+                        </h3>
+                        <!-- The progress bar -->
+                        <div class="progress xs">
+                          <!-- Change the css width attribute to simulate progress -->
+                          <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                            <span class="sr-only">20% Complete</span>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <!-- end task item -->
+                  </ul>
+                </li>
+                <li class="footer">
+                  <a href="#">View all tasks</a>
+                </li>
+              </ul>
+            </li>
+            <!-- User Account Menu -->
+            <li class="dropdown user user-menu">
+              <!-- Menu Toggle Button -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <!-- The user image in the navbar-->
+                <img src="../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                <span class="hidden-xs">Alexander Pierce</span>
+              </a>
+              <ul class="dropdown-menu">
+                <!-- The user image in the menu -->
+                <li class="user-header">
+                  <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+
+                  <p>
+                    Alexander Pierce - Web Developer
+                    <small>Member since Nov. 2012</small>
+                  </p>
+                </li>
+                <!-- Menu Body -->
+                <li class="user-body">
+                  <div class="row">
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Followers</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Sales</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Friends</a>
+                    </div>
+                  </div>
+                  <!-- /.row -->
+                </li>
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                  </div>
+                </li>
+              </ul>
+            </li>#}
+   </ul>
+{#
+   {% spaceless %}
+   <div id='c_preference' >
+      <ul>
+         <li id='deconnexion'>
+            <a href='{{ path_for('logout') }}' title="{{ __s('Logout') }}" class="fa fa-sign-out">
+      {if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
+         //FIXME: Manage in logout route?
+         echo "?noAUTO=1";
+      }}}
+               <span class='sr-only'>{{ __('Logout') }}</span>
+            </a>
+         </li>
+         <li id='preferences_link'>
+            <a href='{{ path_for('/user/preferences') }}' title="{{ __s('My settings') }}" class='fa fa-cog'>
+               <span class='sr-only'>{{ __('My settings') }}</span>
+
+               { check user id : header used for display messages when session logout }
+               {% if call_static('Session', 'getLoginUserID') and user_name is defined %}
+               <span id='myname'>{{ user_name }}</span>
+               {% endif %}
+            </a>
+         </li>
+
+      {% if call_static('Config', 'canUpdate') %}
+         <li id='debug_mode'>
+         {% set dbgbtn_class = 'debugoff' %}
+         {% set dbgbtn_title = __('Debug mode disabled') %}
+         {% if glpi_debug %}
+            {% set dbgbtn_class = 'debugon' %}
+            {% set dbgbtn_title = __('Debug mode enabled') %}
+         {% endif %}
+            <a href="?switch=switch-debug" class="fa fa-bug {{ dbgbtn_class }}"
+                title="{{ dbgbtn_title }}">
+               <span class='sr-only'>{{ __('Change mode') }}</span>
+            </a>
+         </li>
+      {% endif %}
+
+         <li id='bookmark_link'>
+            <a href='#' id='showSavedSearchesLink' class='fa fa-star' title="{{ __s('Load a bookmark') }}">
+               <span class='sr-only'>{{ __('Saved searches') }}</span>
+            </a>
+         </li>
+
+         <li id='help_link'>
+            <a href='{% if CFG_GLPI.central_doc_url is empty %}http://glpi-project.org/help-central{% else %}{{ CFG_GLPI.central_doc_url}}{% endif %}' target='_blank' title="{{ __s('Help') }}" class='fa fa-question'>
+               <span class='sr-only'>{{ __('Help') }}</span>
+            </a>
+         </li>
+
+         <li id="language_link">
+      {% if not constant('GLPI_DEMO_MODE') %}
+            <a href="{{ CFG_GLPI.root_doc }}/front/preference.php?forcetab=User$1" title="{{ glpi_lang_name }}">
+               {{  glpi_lang_name }}
+            </a>
+      {% else %}
+            <span>{{ glpi_lang_name }}</span>
+      {% endif %}
+         </li>
+      </ul>
+   </div>
+   {% endspaceless %}
+#}
+{% endblock %}
+
+{% macro menu_links(entry) %}
+    {% set url = '#' %}
+    {#% if entry.page is defined %}{% set url =  entry.page %}{% endif %#}
+    {% if entry.content is defined %}
+        {% set first = entry.content|first %}
+        {% if first.itemtype is defined %}{% set url = path_for('list', {'itemtype': first.itemtype|lower}) %}{% endif %}
+    {% endif %}
+
+    {% set is_active = false %}
+
+    {% if entry.content is defined and entry.content|length %}
+        {% for child in entry.content %}
+            {% if child.itemtype is defined and child.itemtype == current_itemtype %}
+                {% set is_active = true %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <li class="nav-item {% if entry.content is defined and entry.content|length %}nav-dropdown{% endif %} {% if is_active %}active open{% endif %}">
+        <a class="nav-link {% if entry.content is defined and entry.content|length %}nav-dropdown-toggle{% endif %}" href="{{ url }}">
+            {{ entry.title }}
+        </a>
+    {% if entry.content is defined %}
+        <ul class="nav-dropdown-items">
+        {% for child in entry.content %}
+            <li class="nav-item {% if child.itemtype is defined and child.itemtype == current_itemtype %}active open{% endif %}">
+                <a class="nav-link" href="{{ child.page }}">{{ child.title|default(__('Missing menu label')) }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </li>
+{% endmacro %}
+
+{% block menu %}
+<div class="sidebar">
+    <nav class="sidebar-nav">
+      {{ block('searchform') }}
+
+      <ul class="nav">
+   {% import _self as glpi_page %}
+   {% for menu in glpi_menus %}
+      {{ glpi_page.menu_links(menu) }}
+   {% endfor %}
+      </ul>
+   </section>
+</div>
+{% endblock %}
+
+{% block footer %}
+   {% if glpi_debug == true %}
+      <div>{{ exectime() }}</div>
+   {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container content">
+   {{ parent() }}
+</div>
+{% endblock %}

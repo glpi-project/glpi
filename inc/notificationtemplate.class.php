@@ -75,6 +75,7 @@ class NotificationTemplate extends CommonDBTM {
       $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('NotificationTemplateTranslation', $ong, $options);
+      $this->addStandardTab('Notification_NotificationTemplate', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -185,10 +186,12 @@ class NotificationTemplate extends CommonDBTM {
    static function dropdownTemplates($name, $itemtype, $value = 0) {
       global $DB;
 
-      self::dropdown(['name'       => $name,
-                            'value'     => $value,
-                            'comment'   => 1,
-                            'condition' => "`itemtype`='$itemtype'"]);
+      self::dropdown([
+         'name'       => $name,
+         'value'     => $value,
+         'comment'   => 1,
+         'condition' => ['itemtype' => $itemtype]
+      ]);
    }
 
 
@@ -495,15 +498,16 @@ class NotificationTemplate extends CommonDBTM {
    function getByLanguage($language) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_notificationtemplatetranslations`
-                WHERE `notificationtemplates_id` = '".$this->getField('id')."'
-                      AND `language` IN ('$language','')
-                ORDER BY `language` DESC
-                LIMIT 1";
-
-      $iterator = $DB->request($query);
-      if ($iterator->numrows()) {
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_notificationtemplatetranslations',
+         'WHERE'  => [
+            'notificationtemplates_id' => $this->getField('id'),
+            'language'                 => [$language, '']
+         ],
+         'ORDER'  => 'language DESC',
+         'LIMIT'  => 1
+      ]);
+      if (count($iterator)) {
          return $iterator->next();
       }
 
@@ -547,6 +551,21 @@ class NotificationTemplate extends CommonDBTM {
       }
 
       return $mailing_options;
+   }
+
+
+   function cleanDBonPurge() {
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Notification_NotificationTemplate::class,
+            NotificationTemplateTranslation::class,
+         ]
+      );
+
+      // QueuedNotification does not extends CommonDBConnexity
+      $queued = new QueuedNotification();
+      $queued->deleteByCriteria(['notificationtemplates_id' => $this->fields['id']]);
    }
 
 }

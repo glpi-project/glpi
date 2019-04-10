@@ -54,7 +54,7 @@ function getForeignKeyFieldForTable($table) {
  *
  * @param $field string field name
  *
- * @return string field name used for a foreign key to the parameter table
+ * @return boolean
 **/
 function isForeignKeyField($field) {
    $dbu = new DbUtils();
@@ -131,7 +131,7 @@ function getTableForItemType($itemtype) {
  *
  * @param $itemtype   string   itemtype
  *
- * @return itemtype object or false if class does not exists
+ * @return CommonDBTM|boolean itemtype object or false if class does not exists
 **/
 function getItemForItemtype($itemtype) {
    $dbu = new DbUtils();
@@ -248,7 +248,7 @@ function getAllDatasFromTable($table, $condition = [], $usecache = false, $order
  *
  * @return string : name of the element
  *
- * @see getTreeValueCompleteName
+ * @see getTreeValueCompleteName()
 **/
 function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true) {
    $dbu = new DbUtils();
@@ -267,7 +267,7 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
  *
  * @return string : completename of the element
  *
- * @see getTreeLeafValueName
+ * @see getTreeLeafValueName()
 **/
 function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
    $dbu = new DbUtils();
@@ -353,10 +353,10 @@ function getTreeForItem($table, $IDf) {
 /**
  * Construct a tree from a list structure
  *
- * @param $list   array    the list
- * @param $root   integer  root of the tree
+ * @param array   $list the list
+ * @param integer $root root of the tree
  *
- * @return list of items in the tree
+ * @return array list of items in the tree
 **/
 function contructTreeFromList($list, $root) {
    $dbu = new DbUtils();
@@ -367,10 +367,10 @@ function contructTreeFromList($list, $root) {
 /**
  * Construct a list from a tree structure
  *
- * @param $tree   array    the tree
- * @param $parent integer  root of the tree (default =0)
+ * @param array   $tree   the tree
+ * @param integer $parent root of the tree (default =0)
  *
- * @return list of items in the tree
+ * @return array list of items in the tree
 **/
 function contructListFromTree($tree, $parent = 0) {
    $dbu = new DbUtils();
@@ -398,43 +398,11 @@ function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
  *
  * @param $table : dropdown tree table to compute
  *
- * @return nothing
+ * @return void
 **/
 function regenerateTreeCompleteName($table) {
    $dbu = new DbUtils();
    return $dbu->regenerateTreeCompleteName($table);
-}
-
-
-/**
- * Get the ID of the next Item
- *
- * @param $table           table to search next item
- * @param $ID              current ID
- * @param $condition       condition to add to the search (default ='')
- * @param $nextprev_item   field used to sort (default ='name')
- *
- * @return the next ID, -1 if not exist
-**/
-function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
-   $dbu = new DbUtils();
-   return $dbu->getNextItem($table, $ID, $condition, $nextprev_item);
-}
-
-
-/**
- * Get the ID of the previous Item
- *
- * @param $table           table to search next item
- * @param $ID              current ID
- * @param $condition       condition to add to the search (default ='')
- * @param $nextprev_item   field used to sort (default ='name')
- *
- * @return the previous ID, -1 if not exist
-**/
-function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {
-   $dbu = new DbUtils();
-   return $dbu->getPreviousItem($table, $ID, $condition, $nextprev_item);
 }
 
 
@@ -489,14 +457,14 @@ function isIndex($table, $field) {
 /**
  * Create a new name using a autoname field defined in a template
  *
- * @param $objectName      autoname template
- * @param $field           field to autoname
- * @param $isTemplate      true if create an object from a template
- * @param $itemtype        item type
- * @param $entities_id     limit generation to an entity (default -1)
+ * @param string  $objectName  autoname template
+ * @param string  $field       field to autoname
+ * @param boolean $isTemplate  true if create an object from a template
+ * @param string  $itemtype    item type
+ * @param integer $entities_id limit generation to an entity (default -1)
  *
- * @return new auto string
-**/
+ * @return string new auto string
+ */
 function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1) {
    $dbu = new DbUtils();
    return $dbu->autoName($objectName, $field, $isTemplate, $itemtype, $entities_id);
@@ -506,7 +474,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
 /**
  * Close active DB connections
  *
- *@return nothing
+ * @return void
 **/
 function closeDBConnections() {
    $dbu = new DbUtils();
@@ -523,11 +491,10 @@ function closeDBConnections() {
  *
  * @return sql
 **/
-function getDateRequest($field, $begin, $end) {
+function getDateCriteria($field, $begin, $end) {
    $dbu = new DbUtils();
-   return $dbu->getDateRequest($field, $begin, $end);
+   return $dbu->getDateCriteria($field, $begin, $end);
 }
-
 
 /**
  * Export an array to be stored in a simple field in the database
@@ -545,10 +512,10 @@ function exportArrayToDB($TAB) {
 /**
  * Import an array encoded in a simple field in the database
  *
- * @param $DATA data readed in DB to import
+ * @param string $DATA data readed in DB to import
  *
  * @return array containing datas
-**/
+ */
 function importArrayFromDB($DATA) {
    $dbu = new DbUtils();
    return $dbu->importArrayFromDB($DATA);
@@ -569,10 +536,11 @@ function get_hour_from_sql($time) {
 
 
 /**
- * Get the $RELATION array. It's defined all relations between tables in the DB.
+ * Get the $RELATION array. It defines all relations between tables in the DB;
+ * plugins may add their own stuff
  *
- * @return the $RELATION array
-**/
+ * @return array the $RELATION array
+ */
 function getDbRelations() {
    $dbu = new DbUtils();
    return $dbu->getDbRelations();
@@ -582,20 +550,20 @@ function getDbRelations() {
 /**
  * Get SQL request to restrict to current entities of the user
  *
- * @param $separator          separator in the begin of the request (default AND)
- * @param $table              table where apply the limit (if needed, multiple tables queries)
- *                            (default '')
- * @param $field              field where apply the limit (id != entities_id) (default '')
- * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
- *                            single item or array (default '')
- * @param $is_recursive       need to use recursive process to find item
- *                            (field need to be named recursive) (false by default)
- * @param $complete_request   need to use a complete request and not a simple one
- *                            when have acces to all entities (used for reminders)
- *                            (false by default)
+ * @param string  $separator        separator in the begin of the request (default AND)
+ * @param string  $table            table where apply the limit (if needed, multiple tables queries)
+ *                                  (default '')
+ * @param string  $field            field where apply the limit (id != entities_id) (default '')
+ * @param mixed   $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
+ *                                  single item or array (default '')
+ * @param boolean $is_recursive     need to use recursive process to find item
+ *                                  (field need to be named recursive) (false by default)
+ * @param boolean $complete_request need to use a complete request and not a simple one
+ *                                  when have acces to all entities (used for reminders)
+ *                                  (false by default)
  *
- * @return String : the WHERE clause to restrict
-**/
+ * @return string the WHERE clause to restrict
+ */
 function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "", $value = '',
                                     $is_recursive = false, $complete_request = false) {
    $dbu = new DbUtils();
@@ -609,24 +577,25 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
    );
 }
 
+
 /**
  * Get criteria to restrict to current entities of the user
  *
  * @since 9.2
  *
- * @param $table              table where apply the limit (if needed, multiple tables queries)
- *                            (default '')
- * @param $field              field where apply the limit (id != entities_id) (default '')
- * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
- *                            single item or array (default '')
- * @param $is_recursive       need to use recursive process to find item
- *                            (field need to be named recursive) (false by default, set to auto to automatic detection)
- * @param $complete_request   need to use a complete request and not a simple one
- *                            when have acces to all entities (used for reminders)
- *                            (false by default)
+ * @param string $table             table where apply the limit (if needed, multiple tables queries)
+ *                                  (default '')
+ * @param string $field             field where apply the limit (id != entities_id) (default '')
+ * @param mixed $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
+ *                                  single item or array (default '')
+ * @param boolean $is_recursive     need to use recursive process to find item
+ *                                  (field need to be named recursive) (false by default, set to auto to automatic detection)
+ * @param boolean $complete_request need to use a complete request and not a simple one
+ *                                  when have acces to all entities (used for reminders)
+ *                                  (false by default)
  *
  * @return array of criteria
- **/
+ */
 function getEntitiesRestrictCriteria($table = '', $field = '', $value = '',
                                      $is_recursive = false, $complete_request = false) {
    $dbu = new DbUtils();

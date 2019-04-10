@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+// Be sure to use global objects if this file is included outside normal process
+global $CFG_GLPI, $CONTAINER, $GLPI;
+
 include_once (GLPI_ROOT."/inc/based_config.php");
 include_once (GLPI_ROOT."/inc/define.php");
 include_once (GLPI_ROOT."/inc/dbconnection.class.php");
@@ -41,19 +44,20 @@ include_once (GLPI_ROOT."/inc/dbconnection.class.php");
 Session::setPath();
 Session::start();
 
-//init cache
-$GLPI_CACHE = false;
-
 Config::detectRootDoc();
 
-if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-   Session::loadLanguage();
+$conf_exists = Toolbox::checkDbConfig();
+
+if (!$conf_exists) {
+   // Load kernel and expose container in global var
+   $CONTAINER = (new Glpi\Kernel())->getContainer();
+
    // no translation
    if (!isCommandLine()) {
       Html::nullHeader("DB Error", $CFG_GLPI["root_doc"]);
       echo "<div class='center'>";
       echo "<p>Error: GLPI seems to not be configured properly.</p>";
-      echo "<p>config_db.php file is missing.</p>";
+      echo "<p>db.yaml file is missing.</p>";
       echo "<p>Please restart the install process.</p>";
       echo "<p><a class='red' href='".$CFG_GLPI['root_doc']."/install/install.php'>Click here to proceed</a></p>";
       echo "</div>";
@@ -61,13 +65,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    } else {
       echo "Error: GLPI seems to not be configured properly.\n";
-      echo "config_db.php file is missing.\n";
+      echo "db.yaml file is missing.\n";
       echo "Please connect to GLPI web interface to complete the install process.\n";
    }
    die(1);
 
 } else {
-   include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
    // Default Use mode
    if (!isset($_SESSION['glpi_use_mode'])) {
@@ -87,77 +90,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    //Options from DB, do not touch this part.
 
-   $config_object  = new Config();
-   $current_config = [];
-
-   if (!isset($_GET['donotcheckversion'])  // use normal config table on restore process
-       && (isset($TRY_OLD_CONFIG_FIRST) // index case
-           || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST']))) { // backup case
-
-      if (isset($_SESSION['TRY_OLD_CONFIG_FIRST'])) {
-         unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
-      }
-
-      // First try old config table : for update process management from < 0.80 to >= 0.80
-      $config_object->forceTable('glpi_config');
-
-      if ($DB->tableExists('glpi_config') && $config_object->getFromDB(1)) {
-         $current_config = $config_object->fields;
-      } else {
-         $config_object->forceTable('glpi_configs');
-         if ($config_object->getFromDB(1)) {
-            if (isset($config_object->fields['context'])) {
-               $current_config = Config::getConfigurationValues('core');
-            } else {
-               $current_config = $config_object->fields;
-            }
-            $config_ok = true;
-         }
-      }
-
-   } else { // Normal load process : use normal config table. If problem try old one
-      if ($config_object->getFromDB(1)) {
-         if (isset($config_object->fields['context'])) {
-            $current_config = Config::getConfigurationValues('core');
-         } else {
-            $current_config = $config_object->fields;
-         }
-      } else {
-         // Manage glpi_config table before 0.80
-         $config_object->forceTable('glpi_config');
-         if ($config_object->getFromDB(1)) {
-            $current_config = $config_object->fields;
-         }
-      }
-   }
-
-   if (count($current_config) > 0) {
-      $CFG_GLPI = array_merge($CFG_GLPI, $current_config);
-
-      if (isset($CFG_GLPI['priority_matrix'])) {
-         $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix'],
-                                                          true);
-      }
-      if (isset($CFG_GLPI['lock_item_list'])) {
-          $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
-      }
-      if (isset($CFG_GLPI['lock_lockprofile_id'])
-          && $CFG_GLPI["lock_use_lock_item"]
-          && ($CFG_GLPI["lock_lockprofile_id"] > 0)
-          && !isset($CFG_GLPI['lock_lockprofile']) ) {
-
-            $prof = new Profile();
-            $prof->getFromDB($CFG_GLPI["lock_lockprofile_id"]);
-            $prof->cleanProfile();
-            $CFG_GLPI['lock_lockprofile'] = $prof->fields;
-      }
-
-      // Path for icon of document type (web mode only)
-      if (isset($CFG_GLPI["root_doc"])) {
-         $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
-      }
-
-   } else {
+   if (!Config::loadLegacyConfiguration()) {
       echo "Error accessing config table";
       exit();
    }
@@ -174,23 +107,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    Toolbox::setDebugMode();
 
-   //deprecated configuration options
-   //@deprecated 9.4
-   if ($_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
-      $_SESSION['glpiticket_timeline'] = 1;
-      $_SESSION['glpiticket_timeline_keep_replaced_tabs'] = 0;
-   } else {
-      unset($_SESSION['glpiticket_timeline']);
-      unset($_SESSION['glpiticket_timeline_keep_replaced_tabs']);
-      unset($CFG_GLPI['use_rich_text']);
-      unset($CFG_GLPI['ticket_timeline']);
-      unset($CFG_GLPI['ticket_timeline_keep_replaced_tabs']);
-   }
-
-   if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"]!=$_SESSION["glpiroot"]) {
-      Html::redirect($_SESSION["glpiroot"]);
-   }
-
    // Override cfg_features by session value
    foreach ($CFG_GLPI['user_pref_field'] as $field) {
       if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
@@ -198,14 +114,20 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
    }
 
+   // Load kernel and expose container in global var
+   $CONTAINER = (new Glpi\Kernel())->getContainer();
+
    // Check maintenance mode
-   if (isset($CFG_GLPI["maintenance_mode"]) && $CFG_GLPI["maintenance_mode"]) {
+   // TODO: maintenance may be a middleware, to not block command line
+   if (isset($CFG_GLPI["maintenance_mode"])
+       && $CFG_GLPI["maintenance_mode"]
+       && !isset($dont_check_maintenance_mode)) {
       if (isset($_GET['skipMaintenance']) && $_GET['skipMaintenance']) {
          $_SESSION["glpiskipMaintenance"] = 1;
       }
 
       if (!isset($_SESSION["glpiskipMaintenance"]) || !$_SESSION["glpiskipMaintenance"]) {
-         Session::loadLanguage();
+         Session::loadLanguage('', false);
          if (isCommandLine()) {
             echo __('Service is down for maintenance. It will be back shortly.');
             echo "\n";
@@ -227,10 +149,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
    }
    // Check version
+   // TODO: middleware?
    if ((!isset($CFG_GLPI['dbversion']) || (trim($CFG_GLPI["dbversion"]) != GLPI_SCHEMA_VERSION))
        && !isset($_GET["donotcheckversion"])) {
 
-      Session::loadLanguage();
+      Session::loadLanguage('', false);
 
       if (isCommandLine()) {
          echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.');
@@ -267,7 +190,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                         $newer = true;
                      }
                   }
-               } else if (strlen($CFG_GLPI['dbversion']) > 40) {
+               } else if (isset($CFG_GLPI['dbversion']) && strlen($CFG_GLPI['dbversion']) > 40) {
                   //got a dev version in database, but current stable
                   if (Toolbox::startsWith($CFG_GLPI['dbversion'], GLPI_SCHEMA_VERSION)) {
                      $older = true;
@@ -305,6 +228,4 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
       exit();
    }
-
-   $GLPI_CACHE = Config::getCache('cache_db');
 }

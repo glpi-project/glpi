@@ -56,17 +56,15 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate
           && ($item->getType() == 'Computer')
           && Computer::canView()) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = countElementsInTable('glpi_computervirtualmachines',
+         if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
+            $nb = countElementsInTable(self::getTable(),
                                       ['computers_id' => $item->getID(), 'is_deleted' => 0 ]);
          }
          return self::createTabEntry(self::getTypeName(), $nb);
@@ -75,11 +73,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    *
-    * @since 0.85
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -89,11 +82,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForVirtualMachine($item);
@@ -120,7 +108,6 @@ class ComputerVirtualMachine extends CommonDBChild {
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
          return false;
@@ -245,17 +232,15 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @param $comp   Computer object that represents the virtual machine
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForVirtualMachine(Computer $comp) {
-      global $DB;
 
       $ID = $comp->fields['id'];
 
       if (!$comp->getFromDB($ID) || !$comp->can($ID, READ)) {
-         return false;
+         return;
       }
-      $canedit = $comp->canEdit($ID);
 
       echo "<div class='center'>";
 
@@ -319,10 +304,9 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @param $comp Computer object
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForComputer(Computer $comp) {
-      global $DB;
 
       $ID = $comp->fields['id'];
 
@@ -435,7 +419,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @since 9.3.1
     *
-    * @param $uuid the uuid given
+    * @param string $uuid the uuid given
     *
     * @return array the restrict SQL clause which contains uuid, uuid with first block flipped,
     * uuid with 3 first block flipped
@@ -480,7 +464,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @param fields array of virtualmachine fields
     *
-    * @return the ID of the computer that have this uuid or false otherwise
+    * @return integer|boolean ID of the computer that have this uuid or false otherwise
    **/
    static function findVirtualMachine($fields = []) {
       global $DB;
@@ -500,12 +484,168 @@ class ComputerVirtualMachine extends CommonDBChild {
       ]);
 
       //Virtual machine found, return ID
-      if (count($iterator)) {
+      if (count($iterator) == 1) {
          $result = $iterator->next();
          return $result['id'];
+      } else if (count($iterator) > 1) {
+         Toolbox::logWarning(
+            sprintf(
+               'findVirtualMachine expects to get one result, %1$s found!',
+               count($iterator)
+            )
+         );
       }
 
       return false;
+   }
+
+   public static function rawSearchOptionsToAdd($itemtype) {
+      $tab = [];
+
+      $name = _n('Virtual machine', 'Virtual machines', Session::getPluralNumber());
+      $tab[] = [
+         'id'                 => 'virtualmachine',
+         'name'               => $name
+      ];
+
+      $tab[] = [
+         'id'                 => '160',
+         'table'              => self::getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '161',
+         'table'              => 'glpi_virtualmachinestates',
+         'field'              => 'name',
+         'name'               => __('State'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '162',
+         'table'              => 'glpi_virtualmachinesystems',
+         'field'              => 'name',
+         'name'               => __('Virtualization model'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '163',
+         'table'              => 'glpi_virtualmachinetypes',
+         'field'              => 'name',
+         'name'               => __('Virtualization system'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '164',
+         'table'              => self::getTable(),
+         'field'              => 'vcpu',
+         'name'               => __('processor number'),
+         'datatype'           => 'number',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '165',
+         'table'              => self::getTable(),
+         'field'              => 'ram',
+         'name'               => __('Memory'),
+         'datatype'           => 'string',
+         'unit'               => 'Mio',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '166',
+         'table'              => self::getTable(),
+         'field'              => 'uuid',
+         'name'               => __('UUID'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      return $tab;
+   }
+
+   public function maybeRecursive() {
+      return false;
+   }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = parent::getFormFields() + [
+         'vcpu'   => [
+            'label'     => __('Number of CPU'),
+            'htmltype'  => 'number'
+         ],
+         'ram'     => [
+            'label'     => sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio')),
+            'htmltype'  => 'number'
+         ]
+      ];
+      return $fields;
    }
 
 }

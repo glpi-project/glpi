@@ -1,0 +1,112 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% extends "elements/input.twig" %}
+
+{% set element = element|merge({'type': 'select'}) %}
+{% macro html_options(options, selected, selected_txt) %}
+   {% for key, values in options %}
+      {% if values is iterable %}
+         <optgroup label="{{ key }}">
+            {% import _self as glpi_select %}
+            {{ glpi_select.html_options(values, selected) }}
+         </optgroup>
+      {% else %}
+         <option value="{{ key }}"{% if selected is same as(key) %} selected="selected"{% endif %}>{{ values }}</option>
+      {% endif %}
+   {% endfor %}
+   {% if not options|length and selected_txt != '' %}
+      <option value="{{ selected }}">{{ selected_txt }}</option>
+   {% endif %}
+{% endmacro %}
+
+{% block showonly %}
+   {% if element.value_txt is defined %}
+      {{ element.value_txt }}
+   {% else %}
+      N/A
+   {% endif %}
+{% endblock %}
+
+{% block element %}
+   <div class="controls">
+   <div class="input-group">
+    <select
+        {% set default_input_class = 'forSelect2' %}
+        {% set fallback_input_class = '' %}
+        {% block element_attributes %}{{ parent() }}{% endblock %}
+
+        {% if element.itemtype is defined %} data-itemtype="{{ element.itemtype }}"
+        {% if element.noajax is not defined or element.noajax == false %} data-ajax_url="{{ element.ajax_url|default(path_for('dropdown-getvalue', {'itemtype': element.itemtype})) }}"{% endif %}{% endif %}
+        {% if element.change_func is defined %} data-change_func="{{ element.change_func }}"{% endif %}
+      >
+         {% if element.empty_value is defined and element.empty_value == true %}<option value="{{ element.empty_value_value|default(0) }}">{{ element.empty_text|default(constant('\Dropdown::EMPTY_VALUE')) }}</option>{% endif %}
+         {% import _self as glpi_select %}
+         {{ glpi_select.html_options(element.values, element.value|default(''), element.value_txt|default('')) }}
+    </select>
+   <span class="input-group-append">
+   {% if element.listicon is not defined or element.listicon == true %}
+      {% if element.value is defined and element.value > 0 %}
+         {#% set action = {FIXME: check user ACLs within element.itemtype ? 'edit' : 'show' %#}
+         {% set action = 'edit' %}
+         {% set elt_path = path_for('update-asset', {'action': action, 'itemtype': element.itemtype, 'id': element.value}) %}
+      {% elseif element.itemtype is defined %}
+         {% set elt_path = path_for('list', {'itemtype': element.itemtype}) %}
+      {% else %}
+         {% set elt_path = '#' %}
+      {% endif %}
+      <a
+         class="btn btn-outline-secondary" href="{{ elt_path }}"
+         title="{{ __s("Show %1$s")|format(element.itemtype_name) }}" data-toggle="tooltip"
+      >
+         <span class='fa fa-info pointer'></span>
+         <span class="sr-only">{{ __s("Show %1$s")|format(element.itemtype_name) }}</span>
+      </a>
+   {% endif %}
+   {% if element.addicon is not defined or element.addicon == true %}
+      <a
+         class="btn btn-outline-secondary"
+         href="{{ path_for('add-asset', {'itemtype': element.itemtype}) }}"
+         title="{{ __s('Add') }}" data-toggle="tooltip"
+      >
+         <i class="fa fa-plus-circle pointer" {#onClick=\"".Html::jsGetElementbyID('add_dropdown'.$params['name'].$params['rand']).".dialog('open');\"#}></i>
+         <span class="sr-only">{{ __('Add') }}</span>
+      </a>
+{#
+      $output .= Ajax::createIframeModalWindow('add_dropdown'.$params['name'].$params['rand'],
+                                                        $item->getFormURL(),
+                                                        ['display' => false]);
+      #}
+   {% endif %}
+   {% block extra_addons %}{% endblock %}
+   </span>
+   </div>
+   </div>
+{% endblock %}

@@ -117,7 +117,7 @@ class Document extends CommonDBTM {
 
       // Have right to add document OR ticket followup
       return (Session::haveRight('document', CREATE)
-              || Session::haveRight('followup', TicketFollowup::ADDMYTICKET));
+              || Session::haveRight('followup', ITILFollowup::ADDMYTICKET));
    }
 
 
@@ -150,8 +150,11 @@ class Document extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $di = new Document_Item();
-      $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Document_Item::class,
+         ]
+      );
 
       // UNLINK DU FICHIER
       if (!empty($this->fields["filepath"])) {
@@ -191,8 +194,10 @@ class Document extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $CFG_GLPI, $DB;
 
-      // security (don't accept filename from $_POST)
-      unset($input['filename']);
+      // security (don't accept filename from $_REQUEST)
+      if (array_key_exists('filename', $_REQUEST)) {
+         unset($input['filename']);
+      }
 
       if ($uid = Session::getLoginUserID()) {
          $input["users_id"] = Session::getLoginUserID();
@@ -212,19 +217,22 @@ class Document extends CommonDBTM {
             $name = $item->getNameID();
          }
          //TRANS: %1$s is Document, %2$s is item type, %3$s is item name
-         $input["name"] = addslashes(Html::resume_text(sprintf(__('%1$s: %2$s'),
-                                                               __('Document'),
-                                                       sprintf(__('%1$s - %2$s'), $typename, $name)),
-                                                       200));
+         $input["name"] = Html::resume_text(
+            sprintf(__('%1$s: %2$s'), __('Document'), sprintf(__('%1$s - %2$s'), $typename, $name)),
+            200
+         );
          $create_from_item = true;
       }
 
       $upload_ok = false;
       if (isset($input["_filename"]) && !(empty($input["_filename"]) == 1)) {
-         $upload_ok = $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+         $upload_ok = $this->moveDocument($input, array_shift($input["_filename"]));
       } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
          // Move doc from upload dir
          $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
+      } else if (isset($input['filepath']) && file_exists(GLPI_DOC_DIR.'/'.$input['filepath'])) {
+         // Document is created using an existing document file
+         $upload_ok = true;
       }
 
       // Tag
@@ -317,12 +325,14 @@ class Document extends CommonDBTM {
    **/
    function prepareInputForUpdate($input) {
 
-      // security (don't accept filename from $_POST)
-      unset($input['filename']);
+      // security (don't accept filename from $_REQUEST)
+      if (array_key_exists('filename', $_REQUEST)) {
+         unset($input['filename']);
+      }
 
       if (isset($input['current_filepath'])) {
          if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
-            $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+            $this->moveDocument($input, array_shift($input["_filename"]));
          } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
             // Move doc from upload dir
             $this->moveUploadedDocument($input, $input["upload_file"]);
@@ -507,21 +517,24 @@ class Document extends CommonDBTM {
       $splitter = explode("/", $this->fields['filepath']);
 
       if (count($splitter)) {
-         $query = "SELECT *
-                   FROM `glpi_documenttypes`
-                   WHERE `ext` LIKE '".$splitter[0]."'
-                         AND `icon` <> ''";
+         $iterator = $DB->request([
+            'SELECT' => 'icon',
+            'FROM'   => 'glpi_documenttypes',
+            'WHERE'  => [
+               'ext'    => ['LIKE', $splitter[0]],
+               'icon'   => ['<>', '']
+            ]
+         ]);
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) > 0) {
-               $icon = $DB->result($result, 0, 'icon');
-               if (!file_exists(GLPI_ROOT."/pics/icones/$icon")) {
-                  $icon = "defaut-dist.png";
-               }
-               $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
-                               $initfileout."\" title=\"".$initfileout."\" src='".
-                               $CFG_GLPI["typedoc_icon_dir"]."/$icon'>";
+         if (count($iterator) > 0) {
+            $result = $iterator->next();
+            $icon = $result['icon'];
+            if (!file_exists(GLPI_ROOT."/pics/icones/$icon")) {
+               $icon = "defaut-dist.png";
             }
+            $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
+                              $initfileout."\" title=\"".$initfileout."\" src='".
+                              $CFG_GLPI["typedoc_icon_dir"]."/$icon'>";
          }
       }
       $out .= "$open<span class='b'>$fileout</span>$close";
@@ -580,8 +593,18 @@ class Document extends CommonDBTM {
          return true;
       }
 
+      if (isset($options["changes_id"])
+          && $this->canViewFileFromItilObject('Change', $options["changes_id"])) {
+         return true;
+      }
+
+      if (isset($options["problems_id"])
+          && $this->canViewFileFromItilObject('Problem', $options["problems_id"])) {
+         return true;
+      }
+
       if (isset($options["tickets_id"])
-          && $this->canViewFileFromTicket($options["tickets_id"])) {
+          && $this->canViewFileFromItilObject('Ticket', $options["tickets_id"])) {
          return true;
       }
 
@@ -591,7 +614,7 @@ class Document extends CommonDBTM {
    /**
     * Check if file of current instance can be viewed from a Reminder.
     *
-    * @global DBmysql $DB
+    * @global \Glpi\Database\AbstractDatabase $DB
     * @return boolean
     *
     * @TODO Use DBmysqlIterator instead of raw SQL
@@ -604,37 +627,56 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT *
-                FROM `glpi_documents_items`
-                LEFT JOIN `glpi_reminders`
-                     ON (`glpi_reminders`.`id` = `glpi_documents_items`.`items_id`
-                         AND `glpi_documents_items`.`itemtype` = 'Reminder')
-                ".Reminder::addVisibilityJoins()."
-                WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                      AND ".Reminder::addVisibilityRestrict();
-      $result = $DB->query($query);
+      $criteria = array_merge_recursive(
+         [
+            'COUNT'     => 'cpt',
+            'FROM'      => 'glpi_documents_items',
+            'LEFT JOIN' => [
+               'glpi_reminders'  => [
+                  'ON' => [
+                     'glpi_documents_items'  => 'items_id',
+                     'glpi_reminders'        => 'id', [
+                        'AND' => [
+                           'glpi_documents_items.itemtype'  => 'Reminder'
+                        ]
+                     ]
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'glpi_documents_items.documents_id' => $this->fields['id']
+            ]
+         ],
+         Reminder::getVisibilityCriteria()
+      );
 
-      if ($DB->numrows($result) > 0) {
+      $result = $DB->request($criteria)->next();
+      if ($result['cpt'] > 0) {
          return true;
       }
 
       // Inlined images do not have entries in glpi_documents_items table.
       // Check in Reminder content
-      $query = "SELECT *
-                FROM `glpi_reminders`
-                ".Reminder::addVisibilityJoins()."
-                WHERE `glpi_reminders`.`text` REGEXP '". $this->getSelfUrlRegexPattern() . "'
-                      AND ".Reminder::addVisibilityRestrict();
-      $result = $DB->query($query);
+      $criteria = array_merge_recursive(
+         [
+            'COUNT'     => 'cpt',
+            'FROM'      => 'glpi_reminders',
+            'WHERE'     => [
+               'text' => ['REGEXP', $this->getSelfUrlRegexPattern()]
+            ]
+         ],
+         Reminder::getVisibilityCriteria()
+      );
 
-      return $DB->numrows($result) > 0;
+      $result = $DB->request($criteria)->next();
+      return $result['cpt'] > 0;
    }
 
    /**
     * Check if file of current instance can be viewed from a KnowbaseItem.
     *
     * @global array $CFG_GLPI
-    * @global DBmysql $DB
+    * @global \Glpi\Database\AbstractDatabase $DB
     * @return boolean
     */
    private function canViewFileFromKnowbaseItem() {
@@ -715,13 +757,14 @@ class Document extends CommonDBTM {
    }
 
    /**
-    * Check if file of current instance can be viewed from a KnowbaseItem.
+    * Check if file of current instance can be viewed from a CommonITILObject.
     *
-    * @global DBmysql $DB
-    * @param integer $tickets_id
+    * @global \Glpi\Database\AbstractDatabase $DB
+    * @param string  $itemtype
+    * @param integer $items_id
     * @return boolean
     */
-   private function canViewFileFromTicket($tickets_id) {
+   private function canViewFileFromItilObject($itemtype, $items_id) {
 
       global $DB;
 
@@ -729,9 +772,10 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      $ticket = new Ticket();
+      /* @var CommonITILObject $itil */
+      $itil = new $itemtype();
 
-      if (!$ticket->can($tickets_id, READ)) {
+      if (!$itil->can($items_id, READ)) {
          return false;
       }
 
@@ -739,8 +783,8 @@ class Document extends CommonDBTM {
          'FROM'  => Document_Item::getTable(),
          'COUNT' => 'cpt',
          'WHERE' => [
-            'items_id'     => $tickets_id,
-            'itemtype'     => Ticket::class,
+            'items_id'     => $items_id,
+            'itemtype'     => $itemtype,
             'documents_id' => $this->fields['id']
          ]
       ])->next();
@@ -751,37 +795,43 @@ class Document extends CommonDBTM {
 
       // Check ticket and child items (followups, tasks, solutions) contents
       $regexPattern = $this->getSelfUrlRegexPattern();
+
+      $itil_table = $itil->getTable();
+      $itil_key   = $itil->getForeignKeyField();
+      $task_table = getTableForItemType($itil->getType() . 'Task');
+
       $result = $DB->request([
-         'FROM'      => 'glpi_tickets',
+         'FROM'      => $itil_table,
          'COUNT'     => 'cpt',
          'LEFT JOIN' => [
-            'glpi_ticketfollowups' => [
+            'glpi_itilfollowups' => [
                'FKEY' => [
-                  'glpi_tickets'         => 'id',
-                  'glpi_ticketfollowups' => 'tickets_id'
+                  $itil_table          => 'id',
+                  'glpi_itilfollowups' => 'items_id',
+                  ['AND' => ['glpi_itilfollowups.itemtype' => $itemtype]]
                ]
             ],
-            'glpi_tickettasks'     => [
+            $task_table          => [
                'FKEY' => [
-                  'glpi_tickets'     => 'id',
-                  'glpi_tickettasks' => 'tickets_id'
+                  $itil_table => 'id',
+                  $task_table => $itil_key
                ]
             ],
-            'glpi_itilsolutions'   => [
+            'glpi_itilsolutions' => [
                'FKEY' => [
-                  'glpi_tickets'       => 'id',
+                  $itil_table          => 'id',
                   'glpi_itilsolutions' => 'items_id',
-                  ['AND' => ['glpi_itilsolutions.itemtype' => 'Ticket']]
+                  ['AND' => ['glpi_itilsolutions.itemtype' => $itemtype]]
                ]
             ],
          ],
          'WHERE'     => [
-            'glpi_tickets.id' => $tickets_id,
+            $itil_table . '.id' => $items_id,
             'OR' => [
-               'glpi_tickets.content'         => ['REGEXP', $regexPattern],
-               'glpi_ticketfollowups.content' => ['REGEXP', $regexPattern],
-               'glpi_tickettasks.content'     => ['REGEXP', $regexPattern],
-               'glpi_itilsolutions.content'   => ['REGEXP', $regexPattern]
+               $itil_table . '.content'     => ['REGEXP', $regexPattern],
+               'glpi_itilfollowups.content' => ['REGEXP', $regexPattern],
+               $task_table . '.content'     => ['REGEXP', $regexPattern],
+               'glpi_itilsolutions.content' => ['REGEXP', $regexPattern]
             ]
          ]
       ])->next();
@@ -796,7 +846,7 @@ class Document extends CommonDBTM {
     * @return string
     */
    private function getSelfUrlRegexPattern() {
-      return 'document\\\.send\\\.php\\\?docid=' . $this->fields['id'] . '[^\\\d]+';
+      return 'document\.send\.php\?docid=' . $this->fields['id'] . '[^0-9]+';
    }
 
    static function rawSearchOptionsToAdd($itemtype = null) {
@@ -1008,7 +1058,7 @@ class Document extends CommonDBTM {
          $prefix = array_shift($input['_prefix_filename']);
       }
 
-      $fullpath = GLPI_TMP_DIR."/".$filename;
+      $fullpath = GLPI_UPLOAD_DIR."/".$filename;
       $filename = str_replace($prefix, '', $filename);
 
       if (!is_dir(GLPI_UPLOAD_DIR)) {
@@ -1072,7 +1122,7 @@ class Document extends CommonDBTM {
       }
 
       // For display
-      $input['filename'] = addslashes($filename);
+      $input['filename'] = $filename;
       // Storage path
       $input['filepath'] = $new_path;
       // Checksum
@@ -1159,7 +1209,7 @@ class Document extends CommonDBTM {
       }
 
       // For display
-      $input['filename'] = addslashes($filename);
+      $input['filename'] = $filename;
       // Storage path
       $input['filepath'] = $new_path;
       // Checksum
@@ -1232,7 +1282,7 @@ class Document extends CommonDBTM {
       if (self::renameForce($FILEDESC['tmp_name'], GLPI_DOC_DIR."/".$path)) {
          Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
          // For display
-         $input['filename'] = addslashes($FILEDESC['name']);
+         $input['filename'] = $FILEDESC['name'];
          // Storage path
          $input['filepath'] = $path;
          // Checksum
@@ -1396,23 +1446,30 @@ class Document extends CommonDBTM {
          }
       }
 
-      $where = " WHERE `glpi_documents`.`is_deleted` = 0 ".
-                       getEntitiesRestrictRequest("AND", "glpi_documents", '', $p['entity'], true);
+      $subwhere = [
+         'glpi_documents.is_deleted'   => 0,
+      ] + getEntitiesRestrictCriteria('glpi_documents', '', $p['entity'], true);
 
       if (count($p['used'])) {
-         $where .= " AND `id` NOT IN (0, ".implode(",", $p['used']).")";
+         $subwhere['NOT'] = ['id' => array_merge([0], $p['used'])];
       }
 
-      $query = "SELECT *
-                FROM `glpi_documentcategories`
-                WHERE `id` IN (SELECT DISTINCT `documentcategories_id`
-                               FROM `glpi_documents`
-                             $where)
-                ORDER BY `name`";
-      $result = $DB->query($query);
+      $criteria = [
+         'FROM'   => 'glpi_documentcategories',
+         'WHERE'  => [
+            'id' => new QuerySubQuery([
+               'SELECT'          => 'documentcategories_id',
+               'DISTINCT'        => true,
+               'FROM'            => 'glpi_documents',
+               'WHERE'           => $subwhere
+            ])
+         ],
+         'ORDER'  => 'name'
+      ];
+      $iterator = $DB->request($criteria);
 
       $values = [];
-      while ($data = $DB->fetch_assoc($result)) {
+      while ($data = $iterator->next()) {
          $values[$data['id']] = $data['name'];
       }
       $rand = mt_rand();
@@ -1492,8 +1549,20 @@ class Document extends CommonDBTM {
     * @return boolean
     */
    public static function isImage($file) {
-      $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-      return (in_array($ext, ['jpg', 'jpeg', 'png', 'bmp', 'gif']));
+      if (!file_exists($file)) {
+         return false;
+      }
+      if (extension_loaded('exif')) {
+         $etype = exif_imagetype($file);
+         return in_array($etype, [IMAGETYPE_JPEG, IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_BMP]);
+      } else {
+         Toolbox::logWarning('For security reasons, you should consider using exif PHP extension to properly check images.');
+         $fileinfo = finfo_open(FILEINFO_MIME_TYPE);
+         return in_array(
+            finfo_file($fileinfo, $file),
+            ['image/jpeg', 'image/png','image/gif', 'image/bmp']
+         );
+      }
    }
 
    /**

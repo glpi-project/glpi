@@ -11,14 +11,15 @@
         "docs": "https://github.com/glpi-project/doc"
     },
     "require": {
-        "php": ">=5.6.0",
-        "ext-mysqli": "*",
+        "php": ">=7.0.8",
+        "ext-pdo_mysql": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-gd": "*",
         "ext-zlib": "*",
         "ext-curl": "*",
+        "ext-intl": "*",
         "iamcal/lib_autolink": "~1.7",
         "phpmailer/phpmailer": "~6.0",
         "sabre/vobject": "~4.1",
@@ -29,21 +30,37 @@
         "zendframework/zend-serializer": "^2.8",
         "michelf/php-markdown": "^1.6",
         "true/punycode": "^2.1",
-        "paragonie/random_compat": "^2.0",
         "monolog/monolog": "^1.23",
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
-        "zendframework/zend-console": "^2.7"
+        "elvanto/litemoji": "^1.4",
+        "symfony/console": "^3.4",
+        "leafo/scssphp": "^0.7.7",
+        "symfony/dependency-injection": "^3.4",
+        "symfony/yaml": "^3.4",
+        "symfony/config": "^3.4",
+        "symfony/event-dispatcher": "^3.4",
+        "slim/slim": "^3.9",
+        "slim/twig-view": "^2.5",
+        "doctrine/annotations": "^1.4",
+        "twig/extensions": "^1.5",
+        "kanellov/slim-twig-flash": "^0.2.0",
+        "fossar/htmlawed": "1.2.4.1",
+        "symfony/property-access": "^3.4",
+        "twig/twig": "^2.7",
+        "glpi-project/runtracy": "dev-master"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
         "glpi-project/coding-standard": "^0.7.1",
         "consolidation/robo": "^1.0",
-        "natxet/CssMin": "^3.0",
+        "natxet/cssmin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
         "atoum/atoum": "^3.3",
         "atoum/telemetry-extension": "^1.0",
-        "sensiolabs/security-checker": "^4.1",
-        "fzaninotto/Faker": "^1.7"
+        "sensiolabs/security-checker": "^5.0",
+        "fzaninotto/faker": "^1.7",
+        "jakub-onderka/php-parallel-lint": "^1.0",
+        "mikey179/vfsstream": "^1.6"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",
@@ -52,7 +69,12 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "5.6.0"
+            "php": "7.0.8"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Glpi\\": "src/Glpi/"
         }
     },
     "scripts": {
@@ -61,8 +83,10 @@
         "testunits": "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units",
         "testweb":   "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web",
         "testldap":  "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP",
+        "testimap":  "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap",
         "csp": "vendor/bin/phpcs --parallel=500 -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./",
         "cs":  "vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./",
+        "lint":  "vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
         "post-update-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
     }

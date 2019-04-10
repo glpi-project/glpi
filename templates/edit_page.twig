@@ -1,0 +1,119 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% set parent_tpl = 'glpi_page' %}
+{% if contents is defined %}
+   {% set parent_tpl = 'legacy' %}
+{% endif %}
+{% extends parent_tpl ~ ".twig" %}
+
+{% block title %}{{ __('Edit %1$s')|format(page_title) }}{% endblock %}
+{% block content %}
+<div class="content">
+   {% if contents is defined %}
+      {{ contents|raw }}
+   {% else %}
+   <div class="row">
+      <ul class="nav nav-pills flex-column glpi-tabs" role="tablist" aria-orientation="vertical">
+        {% for tab, entry in item.getTabs() %}
+            {% if entry is not iterable %}
+                {% set label = entry %}
+            {% else %}
+                {% set label = entry.label %}
+            {% endif %}
+         <li class="nav-item">
+            <a href="{{ path_for('update-asset', {'action': 'edit', 'itemtype': item.getType(), 'id': item.fields.id, 'tab': tab}) }}"
+                class="nav-link{% if current_tab == tab %} active{% endif %}"
+                data-toggle="tab"
+                data-target="#{{ tab }}">
+               {{ label }}
+            {% if entry.count is defined %}
+               <span class="pull-right-container">
+                  <span class="badge badge-{% if entry.count == 0 %}light{% else %}info{% endif %} float-right">{{ entry.count }}</span>
+               </span>
+            {% endif %}
+            </a>
+         </li>
+        {% endfor %}
+      </ul>
+      <div class="tab-content">
+        {% for tab, entry in item.getTabs() %}
+         <div id="{{ tab }}" class="tab-pane{% if current_tab == tab %} active{% endif %}"{% if current_tab == tab %} data-loaded="true"{% endif %}>
+            {% if tab == item.getType() ~ '__main' %}
+                {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
+            {% endif %}
+         </div>
+        {% endfor %}
+      </div>
+   </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+   $(function() {
+      $('.nav a[data-toggle="tab"]').on('click', function (e) {
+         e.preventDefault();
+
+         var _this = $(this);
+         var _tabid = _this.attr('data-target');
+         var _target = $(_tabid);
+         var _loaded = _target.data('loaded');
+
+         var _url = '{{ path_for('ajax-tab', {'itemtype': item.getType(), 'id': item.fields.id, 'tab': 'PLACEBO'}) }}'
+            .replace(/PLACEBO/, _tabid.replace(/^#/, ''));
+         if (!_loaded) {
+            _target.load(_url, function(){
+               _target.data('loaded', true);
+
+               _bindSimpleSelect(_tabid + ' .forSelect2:not([data-ajax_url])');
+               _bindAjaxSelect(_tabid + ' .forSelect2[data-ajax_url]');
+               _bindLabelSelect(_tabid);
+
+               _this.tab('show');
+
+                $.ajax({
+                    url: '{{ path_for('messages') }}',
+                    method: "GET",
+                    success: function (message) {
+                        $('body').append(message);
+                        _initFlashMessage();
+                    }
+                });
+            });
+         } else {
+            _this.tab('show');
+         }
+      });
+   });
+</script>
+{% endblock %}

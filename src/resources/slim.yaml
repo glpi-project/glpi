@@ -1,0 +1,134 @@
+#
+# ---------------------------------------------------------------------
+# GLPI - Gestionnaire Libre de Parc Informatique
+# Copyright (C) 2015-2019 Teclib' and contributors.
+#
+# http://glpi-project.org
+#
+# based on GLPI - Gestionnaire Libre de Parc Informatique
+# Copyright (C) 2003-2014 by the INDEPNET Development Team.
+#
+# ---------------------------------------------------------------------
+#
+# LICENSE
+#
+# This file is part of GLPI.
+#
+# GLPI is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# GLPI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+# ---------------------------------------------------------------------
+#
+
+# @see \Slim\Container for description of required services.
+# @see Slim\Container::$defaultSettings for defaults parameters values
+
+parameters:
+    slim.httpVersion: '1.1'
+    slim.responseChunkSize: 4096
+    slim.outputBuffering: 'append'
+    slim.determineRouteBeforeAppMiddleware: true
+    slim.displayErrorDetails: true
+    slim.addContentLengthHeader: false
+    slim.routerCacheFile: false
+
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in services.
+        autoconfigure: true # Automatically registers services based on their signature (event subscribers).
+        public: true        # Make all services public to make them accessible using "$container->get()".
+
+    Slim\App:
+        class: 'Slim\App'
+        arguments:
+            - '@service_container'
+        calls:
+            - method: 'add'
+              arguments: ['@RunTracy\Middlewares\TracyMiddleware']
+            - method: 'add'
+              arguments: ['@Glpi\Application\Middleware\TemplatesGlobals']
+            - method: 'add'
+              arguments: ['@Glpi\Application\Middleware\Reload']
+            - method: 'add'
+              arguments: ['@Glpi\Application\Middleware\RequireJs']
+            - method: 'add'
+              arguments: ['@Glpi\Application\Middleware\Authentication']
+
+    settings:
+        class: 'ArrayObject'
+        arguments:
+            - httpVersion: '%slim.httpVersion%'
+              responseChunkSize: '%slim.responseChunkSize%'
+              outputBuffering: '%slim.outputBuffering%'
+              determineRouteBeforeAppMiddleware: '%slim.determineRouteBeforeAppMiddleware%'
+              displayErrorDetails: '%slim.displayErrorDetails%'
+              addContentLengthHeader: '%slim.addContentLengthHeader%'
+              routerCacheFile: '%slim.routerCacheFile%'
+              # Tracy settings are taken from here.
+              # Every panel listed here will be available in debug bar.
+              tracy:
+                  configs:
+                      ConsoleNoLogin: 0
+                      ProfilerPanel:
+                          show:
+                              memoryUsageChart: 1
+                              shortProfiles: true
+                              timeLines: true
+                  showPhpInfoPanel: ~
+                  showSlimRouterPanel: ~
+                  showSlimEnvironmentPanel: ~
+                  showSlimRequestPanel: ~
+                  showSlimResponsePanel: ~
+                  showSlimContainer: ~
+                  showTwigPanel: ~
+                  showProfilerPanel: ~
+                  showVendorVersionsPanel: ~
+                  showIncludedFiles: ~
+
+    environment:
+        class: 'Slim\Http\Environment'
+        synthetic: true # "environment" service is synthetic as it depends on $_SERVER variable
+
+    request:
+        class: 'Slim\Http\Request'
+        factory: 'Slim\Http\Request::createFromEnvironment'
+        arguments: ['@environment']
+
+    response:
+        class: 'Slim\Http\Response'
+
+    Glpi\Application\Router:
+        class: 'Glpi\Application\Router'
+    router:
+        alias: 'Glpi\Application\Router'
+
+    foundHandler:
+        class: 'Slim\Handlers\Strategies\RequestResponse'
+
+    errorHandler:
+        class: 'Slim\Handlers\Error'
+        arguments:
+            - '%slim.displayErrorDetails%'
+
+    notFoundHandler:
+        class: 'Slim\Handlers\NotFound'
+
+    notAllowedHandler:
+        class: 'Slim\Handlers\NotAllowed'
+
+    callableResolver:
+        class: 'Slim\CallableResolver'
+
+    RunTracy\Middlewares\TracyMiddleware:
+        class: 'RunTracy\Middlewares\TracyMiddleware'
+        arguments:
+            - '@Slim\App'

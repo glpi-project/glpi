@@ -41,6 +41,8 @@ class PurgeLogs extends CommonDBTM {
    }
 
    static function cronPurgeLogs($task) {
+      $cron_status = 0;
+
       $logs_before = self::getLogsCount();
       if ($logs_before) {
          self::purgeSoftware();
@@ -55,10 +57,11 @@ class PurgeLogs extends CommonDBTM {
          $logs_after = self::getLogsCount();
          Log::history(0, __CLASS__, [0, $logs_before, $logs_after], '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
          $task->addVolume($logs_before - $logs_after);
+         $cron_status = 1;
       } else {
          $task->addVolume(0);
       }
-      return true;
+      return $cron_status;
    }
 
    static function cronInfo($name) {
@@ -331,7 +334,7 @@ class PurgeLogs extends CommonDBTM {
       if ($month) {
          $DB->delete(
             'glpi_logs', [
-               'itemtype' => ['LIKE' => 'Plugin%']
+               'itemtype' => ['LIKE', 'Plugin%']
             ] + $month
          );
       }

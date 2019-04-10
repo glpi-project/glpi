@@ -1,0 +1,108 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+body {
+   font-size: 0.875rem; /* 0.875rem = 14px */
+   background-color: #e4e5e6;
+
+   footer.app-footer {
+      .copyright {
+         margin: 0 auto 0 0;
+      }
+   }
+
+   // adjust font size for form elements
+   .form-control,
+   .select2-container--bootstrap .select2-selection,
+   .input-group .btn {
+      font-size: .875rem;
+   }
+
+   .breadcrumb {
+      background-color: #FFF;
+   }
+
+   .glpi-tabs {
+      border-right: 1px solid #c8ced3;
+
+      .nav-item {
+         margin-right: -1px;
+
+         .nav-link {
+            border-radius: 0;
+            color: #23282c;
+            border: 1px solid transparent;
+
+            &.active {
+               background-color: #FFF;
+               border-color: #c8ced3 #fff #c8ced3 #c8ced3;
+               border-top-left-radius: .25rem;
+               border-bottom-left-radius: .25rem;
+            }
+
+            .badge {
+               margin-top: 4px;
+               margin-left: 20px;
+            }
+         }
+      }
+   }
+
+   .content {
+      .tab-content {
+         margin-top: 0;
+         flex: 1;
+         border-left: 0;
+         padding-left: 5px;
+
+         > .tab-pane {
+            padding-top: 0;
+         }
+
+         header {
+            .form-group {
+               margin-bottom: 0;
+            }
+         }
+      }
+   }
+
+   .glpi_form {
+      .nav-tabs {
+         margin-top: 5px;
+      }
+
+      .tab-content {
+         border: 0;
+         padding-top: 15px;
+      }
+   }
+}

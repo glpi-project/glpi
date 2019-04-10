@@ -52,37 +52,58 @@ abstract class CommonDBChild extends CommonDBConnexity {
    static public $log_history_lock   = Log::HISTORY_LOCK_SUBITEM;
    static public $log_history_unlock = Log::HISTORY_UNLOCK_SUBITEM;
 
-   /**
-    * @since 0.84
-    *
-    * @param $itemtype
-    * @param $items_id
-    *
-    * @return string
-   **/
-   static function getSQLRequestToSearchForItem($itemtype, $items_id) {
 
-      $fields     = ['`'.static::getIndexName().'`'];
+   /**
+    * Get request cirteria to search for an item
+    *
+    * @since 9.4
+    *
+    * @param string  $itemtype Item type
+    * @param integer $items_id Item ID
+    *
+    * @return array|null
+   **/
+   static function getSQLCriteriaToSearchForItem($itemtype, $items_id) {
+      $criteria = [
+         'SELECT' => [
+            static::getIndexName(),
+            static::$items_id . ' AS items_id'
+         ],
+         'FROM'   => static::getTable(),
+         'WHERE'  => [
+            static::$items_id  => $items_id
+         ]
+      ];
 
       // Check item 1 type
-      $condition_id = "`".static::$items_id."` = '$items_id'";
-      $fields[]     = "`".static::$items_id."` as items_id";
+      $request = false;
       if (preg_match('/^itemtype/', static::$itemtype)) {
-         $fields[]  = "`".static::$itemtype."` AS itemtype";
-         $condition = "($condition_id AND `".static::$itemtype."` = '$itemtype')";
+         $criteria['SELECT'][] = static::$itemtype . ' AS itemtype';
+         $criteria['WHERE'][static::$itemtype] = $itemtype;
+         $request = true;
       } else {
-         $fields[] = "'".static::$itemtype."' AS itemtype";
+         $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype . "' AS itemtype");
          if (($itemtype ==  static::$itemtype)
              || is_subclass_of($itemtype, static::$itemtype)) {
-            $condition = $condition_id;
+            $request = true;
          }
       }
-      if (isset($condition)) {
-         return "SELECT ".implode(', ', $fields)."
-                 FROM `".static::getTable()."`
-                 WHERE $condition";
+      if ($request === true) {
+         return $criteria;
       }
-      return '';
+      return null;
+   }
+
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      global $DB;
+
+      $criteria = self::getSQLCriteriaToSearchForItem($item->getType(), $item->fields['id']);
+      if ($criteria !== null) {
+         $criteria['COUNT'] = 'cpt';
+         $result = $DB->request($criteria)->next();
+         return (int)$result['cpt'];
+      }
+      return null;
    }
 
 
@@ -213,7 +234,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @param $getFromDB   (true by default)
     * @param $getEmpty    (true by default)
     *
-    * @return object of the concerned item or false on error
+    * @return CommonDBTM|boolean object of the concerned item or false on error
    **/
    function getItem($getFromDB = true, $getEmpty = true) {
 
@@ -517,7 +538,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          if (($prevItem !== false)
              && $prevItem->dohistory) {
             $changes[0] = '0';
-            $changes[1] = addslashes($this->getHistoryNameForItem($prevItem, 'update item previous'));
+            $changes[1] = $this->getHistoryNameForItem($prevItem, 'update item previous');
             $changes[2] = '';
             Log::history($prevItem->getID(), $prevItem->getType(), $changes, $this->getType(),
                          static::$log_history_delete);
@@ -527,7 +548,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
              && $newItem->dohistory) {
             $changes[0] = '0';
             $changes[1] = '';
-            $changes[2] = addslashes($this->getHistoryNameForItem($newItem, 'update item next'));
+            $changes[2] = $this->getHistoryNameForItem($newItem, 'update item next');
             Log::history($newItem->getID(), $newItem->getType(), $changes, $this->getType(),
                          static::$log_history_add);
          }
@@ -556,9 +577,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
          if (static::$log_history_delete == Log::HISTORY_LOG_SIMPLE_MESSAGE) {
             $changes[1] = '';
-            $changes[2] = addslashes($this->getHistoryNameForItem($item, 'delete'));
+            $changes[2] = $this->getHistoryNameForItem($item, 'delete');
          } else {
-            $changes[1] = addslashes($this->getHistoryNameForItem($item, 'delete'));
+            $changes[1] = $this->getHistoryNameForItem($item, 'delete');
             $changes[2] = '';
          }
          Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
@@ -589,7 +610,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
              && $item->dohistory) {
             $changes = [
                '0',
-               addslashes($this->getHistoryNameForItem($item, 'lock')),
+               $this->getHistoryNameForItem($item, 'lock'),
                '',
             ];
             Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
@@ -622,7 +643,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
             $changes = [
                '0',
                '',
-               addslashes($this->getHistoryNameForItem($item, 'unlock')),
+               $this->getHistoryNameForItem($item, 'unlock'),
             ];
             Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                          static::$log_history_unlock);
@@ -849,5 +870,50 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       return $this->update($input);
+   }
+
+   /**
+    * Add default where for search
+    *
+    * @since 10.0.0
+    *
+    * @param CommonDBTM $item Item instance
+    * @param boolean    $self Condition is to add on current object itself
+    *
+    * @return array
+    */
+   public static function addSubDefaultWhere(CommonDBTM $item, $self = false) {
+      global $DB;
+
+      $item_type  = $item->getType();
+      $where_id   = static::$items_id;
+
+      $current_table = static::getTable();
+      $condition = $current_table . '.' . $where_id . '=' . $item->fields['id'];
+
+      if ($DB->fieldExists(static::getTable(), 'itemtype') && $self === false) {
+         $condition .= ' AND ' . $DB->quoteName($current_table . '.itemtype')  . ' = ' . $DB->quote($item_type);
+      }
+
+      return $condition;
+   }
+
+   /**
+    * Get hidden fields building form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormHiddenFields($add = false) {
+      $fields = array_merge(
+         parent::getFormHiddenFields($add), [
+            'itemtype',
+            'items_id'
+         ]
+      );
+      return $fields;
    }
 }

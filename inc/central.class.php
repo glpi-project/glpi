@@ -174,17 +174,18 @@ class Central extends CommonGLPI {
                                "install/install.php");
          }
 
-         $myisam_tables = $DB->getMyIsamTables();
-         if (count($myisam_tables)) {
-            $warnings[] = sprintf(
-               __('%1$s tables not migrated to InnoDB engine.'),
-               count($myisam_tables)
-            );
+         if ($DB->areTimezonesAvailable()) {
+            $not_tstamp = $DB->notTzMigrated();
+            if ($not_tstamp > 0) {
+                $warnings[] = sprintf(
+                    __('%1$s columns are not compatible with timezones usage.'),
+                    $not_tstamp
+                );
+            }
          }
       }
 
-      if ($DB->isSlave()
-          && !$DB->first_connection) {
+      if ($DB->isSlave()) {
          $warnings[] = __('SQL replica: read only');
       }
 
@@ -211,7 +212,8 @@ class Central extends CommonGLPI {
 
          Ticket::showCentralList(0, "survey", false);
 
-         Ticket::showCentralList(0, "rejected", false);
+         Ticket::showCentralList(0, "validation.rejected", false);
+         Ticket::showCentralList(0, "solution.rejected", false);
          Ticket::showCentralList(0, "requestbyself", false);
          Ticket::showCentralList(0, "observed", false);
 

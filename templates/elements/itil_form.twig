@@ -1,0 +1,70 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% extends "elements/form.twig" %}
+
+{% block form_content %}
+   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+   {% for fieldset, part in glpi_form.parts %}
+      {% if part.elements|length %}
+         {% if fieldset == 'main' %}
+            {% set part_form = glpi_form|merge({
+               'columns': 1
+            }) %}
+         {% else %}
+            {% set part_form = glpi_form %}
+         {% endif %}
+   <fieldset class="panel panel-default">
+      <div class="panel-heading" role="tab">
+         <h4 class="panel-title">
+            <a role="button" data-toggle="collapse{#% if not part.show %}d{% endif %#}" href="#{{ fieldset }}">{{ part.title }}</a>
+         </h4>
+      </div>
+      <div id="{{ fieldset }}" class="panel-collapse collapse{% if part.show %} in{% endif %}">
+         <div class="panel-body">
+      {% if fieldset == 'actors' %}
+         {% include "elements/itil_actors.twig" with {'glpi_form': part_form} %}
+      {% else %}
+         {% for element in part.elements %}
+            {% set tpl = element.type|default('input') %}
+            {#% set tpl = 'input' %}
+            {% if element.type == 'password' %}
+               {% set tpl = 'password' %}
+            {% endif %#}
+            {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': part_form} %}
+         {% endfor %}
+      {% endif %}
+         </div>
+      </div>
+   </fieldset>
+      {% endif %}
+   {% endfor %}
+   </div>
+{% endblock %}

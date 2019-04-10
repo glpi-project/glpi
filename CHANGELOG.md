@@ -3,21 +3,169 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.4] unreleased
+## [10.0.0] unreleased
+
+### Changed
+
+- Update process is now limited to GLPI 0.80 and above. See upgrade documentation for details.
+- /!\ Database queries now rely on PDO; and global sanitize has been dropped.
+- /!\ `DB` methods which uses to return a mysqli_statement now return a PDOStatement.
+- /!\ `DB` methods signatures significally changed due to usage of PDO.
+
+### Removed
+
+- Drop support of PHP 5.6.
+- Deprecated `scripts/ldap_mass_sync.php` has been removed in favor of `glpi:ldap:synchronize_users` command available using `bin/console`
+
+### API changes
+
+#### Changes
+- Added `DB::truncate()` to replace raw SQL queries
+- `DB::fieldExists()` does not check table existence anymore.
+
+#### Deprecated
+
+- Deprecate raw SQL queries in `DBmysql::request()`
+- Deprecate `getCommonSelect()` and `getCommonLeftJoin()` in `Change`, `Problem` and `Ticket` classes
+- Deprecate `DB::query()` and `DB::queryOrDie()` to disallow executing raw queries (iterator querying must be used)
+- Deprecate raw SQL condition in `Migration::addField()`
+- Deprecate 'SELECT DISTINCT' and 'DISTINCT FIELDS' criteria in `DBmysqlIterator::buildQuery()`
+- `scripts/migrations/racks_plugin.php` has been replaced by `glpi:migration:racks_plugin_to_core` command available using `bin/console`
+
+#### Removed
+
+- All methods that were marked as deprecated in 9.3.x
+- Drop `Plugin::hasBeenInit()`.
+
+## [9.5] unreleased
 
 ### Added
+
+- encrypted file systems support
+
+### Changed
+
+- `scripts/migrations/racks_plugin.php` has been replaced by `glpi:migration:racks_plugin_to_core` command available using `bin/console`
+
+### API changes
+
+#### Deprecated
+
+- `DBMysql::fetch_array()`
+- `DBMysql::fetch_row()`
+- `DBMysql::fetch_assoc()`
+- `DBMysql::fetch_object()`
+- `DBMysql::data_seek()`
+- `DBMysql::insert_id()`
+- `DBMysql::num_fields()`
+- `DBMysql::field_name()`
+- `DBMysql::list_fields()`
+- `DBMysql::affected_rows()`
+- `DBMysql::free_result()`
+- `DBMysql::isMySQLStrictMode()`
+
+## [9.4.2] unreleased
+
+### API changes
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `CommonDBTM::getTablesOf()`
+- `CommonDBTM::getForeignKeyFieldsOf()`
+
+## [9.4.1] 2019-03-15
+
+### API changes
+
+#### Added
+
+- new display hook `timeline_actions` to add new buttons to timeline forms
+- Ability to copy document links while merging tickets
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `Plugin::hasBeenInit()`
+- Deprecate 'SELECT DISTINCT' and 'DISTINCT FIELDS' criteria in `DBmysqlIterator::buildQuery()`
+
+#### Removed
+
+- Drop `CommonITILObject::showSolutions()`.
+
+## [9.4.0] 2019-02-11
+
+### Added
+
 - Ability to link project with problems and tickets.
+- Ability to specify creation and modification dates during CommonDBTM object add method
+- Add followups to Changes and Problems.
+- Add timeline to Changes and Problems.
+- CLI console to centralize CLI commands.
+- Search on devices from Printers and Network equipments.
+- Ability to merge and split tickets.
+- Search on devices from Printers and Network equipments.
+- Ability to specify creation and modification dates during CommonDBTM object add method.
 
 ### Changed
 - `license_id` field in `glpi_items_operatingsystems` table has been renamed to `licenseid`
+- `olas_tto_id` field in `glpi_tickets` table has been renamed to `olas_id_tto`
+- `olas_ttr_id` field in `glpi_tickets` table has been renamed to `olas_id_ttr`
+- `ttr_olalevels_id` field in `glpi_tickets` table has been renamed to `olalevels_id_ttr`
+- `slas_tto_id` field in `glpi_tickets` table has been renamed to `slas_id_tto`
+- `slas_ttr_id` field in `glpi_tickets` table has been renamed to `slas_id_ttr`
+- `ttr_slalevels_id` field in `glpi_tickets` table has been renamed to `slalevels_id_ttr`
+- `scripts/add_creation_date.php` has been replaced by `glpi:migration:build_missing_timestamps` command available using `bin/console`
+- `scripts/checkdb.php` has been replaced by `glpi:database:check` command available using `bin/console`
+- `scripts/cliinstall.php` has been replaced by `glpi:database:install` command available using `bin/console`
+- `scripts/cliupdate.php` has been replaced by `glpi:database:update` command available using `bin/console`
+- `scripts/ldap_mass_sync.php` has been replaced by `glpi:ldap:synchronize_users` command available using `bin/console`
+- `scripts/innodb_migration.php` has been replaced by `glpi:migration:myisam_to_innodb` command available using `bin/console`
+- `scripts/unlock_tasks.php` has been replaced by `glpi:task:unlock` command available using `bin/console`
 
 ### API changes
+
+#### Changes
+- Plugins are now loaded in ajax files.
+- `TicketFollowup` has been replaced by `ITILFollowup`
+- `$num` parameter has been removed from several `Search` class methods:
+   - `addSelect()`,
+   - `addOrderBy()`,
+   - `addHaving()`,
+   - `giveItem()`
+- `NotificationTarget::getMode()` visibility is now `public`.
+- Added `add_recipient_to_target` hook, triggered when a recipient is added to a notification.
 
 #### Deprecated
 
 - Remove `$CFG_GLPI['use_rich_text']` parameter. Will now be `true` per default.
 - Remove `$CFG_GLPI['ticket_timeline']` parameter. Will now be `true` per default.
 - Remove `$CFG_GLPI['ticket_timeline_keep_replaced_tabs']` parameter. Will now be `false` per default.
+- Usage of `TicketFollowup` class has been deprecated.
+- Usage of string `$condition` parameter in `CommonDBTM::find()` has been deprecated.
+- Usage of string `$condition` parameter in `Dropdown::addNewCondition()` has been deprecated.
+- Usage of string in `$option['condition']` parameter in `Dropdown::show()` has been deprecated.
+
+The following methods have been deprecated:
+
+- `KnowbaseItemCategory::showFirstLevel()`
+- `Ticket::getTicketActors()`
+- `Ticket::processMassiveActionsForOneItemtype()`
+- `Ticket::showFormMassiveAction()`
+- `Ticket::showMassiveActionsSubForm()`
+- `NotificationTarget::getProfileJoinSql()`
+- `NotificationTarget::getDistinctUserSql()`
+- `NotificationTargetCommonITILObject::getProfileJoinSql()`
+- `RuleCollection::getRuleListQuery()`
+- `getNextItem()`
+- `getPreviousItem()`
+- `CommonDBChild::getSQLRequestToSearchForItem()`
+- `CommonDBConnexity::getSQLRequestToSearchForItem()`
+- `CommonDBRelation::getSQLRequestToSearchForItem()`
+- `Project::addVisibility()`
+- `Project::addVisibilityJoins()`
 
 #### Removed
 
@@ -32,6 +180,7 @@ The present file will list all changes made to the project; according to the
 - Drop support of string `$condition` parameter in `countElementsInTableForMyEntities` (`DbUtils::countElementsInTableForMyEntities()`)
 - Drop support of string `$condition` parameter in `countElementsInTableForEntity` (`DbUtils::countElementsInTableForEntity()`)
 - Drop support of string `$condition` parameter in `getAllDatasFromTable` (`DbUtils::getAllDataFromTable()`)
+- Drop ITIL Tasks, Followups and Solutions `showSummary()` and massive actions related methods that are replaced with timeline
 
 - Drop class alias `Event` for `Glpi\Event`
 - Drop `Zend\Loader\SplAutoloader` interface
@@ -113,9 +262,50 @@ The present file will list all changes made to the project; according to the
   - `CommonDBTM::NOTHING_TO_DO`
   - `CommonDBTM::SUCCESS`
   - `CommonDBTM::TYPE_MISMATCH`
+- Drop all methods that have been deprecated in GLPI 9.3.2
+ - `ITILSolution::removeForItem()`
+ - `Session::isViewAllEntities()`
 
+## [9.3.3] 2018-11-27
 
-## [9.3.1] unreleased
+### Changed
+
+- Fix some cache issues
+- Fix reservation tab of an item
+- Fix actors notifications massive action
+- Improve racks plugins migration script
+
+### API changes
+
+No API changes.
+
+## [9.3.2] 2018-10-26
+
+### API changes
+
+#### Changed
+
+- `Rule::executePluginsActions()` signature has changed
+- Javascript function `formatResult()` has been renamed to `templateResult()`
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `CommonITILTask::displayTabContentForItem()`
+- `CommonITILTask::showFormMassiveAction()`
+- `CommonITILTask::showSummary()`
+- `ITILSolution::displayTabContentForItem()`
+- `ITILSolution::removeForItem()`
+- `ITILSolution::showSummary()`
+- `Session::isViewAllEntities()`
+- `TicketFollowup::processMassiveActionsForOneItemtype()`
+- `TicketFollowup::showFormMassiveAction()`
+- `TicketFollowup::showMassiveActionsSubForm()`
+- `TicketFollowup::showSummary()`
+- `Plugin::removeFromSession()`
+
+## [9.3.1] 2018-09-12
 
 ### Added
 - List receivers folders to choose imported/refused folders

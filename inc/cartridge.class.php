@@ -235,7 +235,7 @@ class Cartridge extends CommonDBChild {
             'id' => $input['id']
          ]
       );
-      if ($result && ($DB->affected_rows() > 0)) {
+      if ($result && ($result->rowCount() > 0)) {
          return true;
       }
       return false;
@@ -281,7 +281,7 @@ class Cartridge extends CommonDBChild {
                'date_use'  => null
             ]
          );
-         if ($result && ($DB->affected_rows() > 0)) {
+         if ($result && ($result->rowCount() > 0)) {
             $changes = [
                '0',
                '',
@@ -326,7 +326,7 @@ class Cartridge extends CommonDBChild {
          );
 
          if ($result
-             && ($DB->affected_rows() > 0)) {
+             && ($result->rowCount() > 0)) {
             $changes = [
                '0',
                '',

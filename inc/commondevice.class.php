@@ -34,7 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-
 /**
  * CommonDevice Class
  * for Device*class
@@ -98,11 +97,18 @@ abstract class CommonDevice extends CommonDropdown {
     *  @since 0.85
    **/
    static function getMenuContent() {
+      global $router;
 
       $menu = [];
       if (self::canView()) {
+         $page = '/front/devices.php';
+         if ($router != null) {
+            $page = $router->pathFor('devices');
+         }
+
          $menu['title'] = static::getTypeName(Session::getPluralNumber());
-         $menu['page']  = '/front/devices.php';
+         $menu['itemtype']  = self::getType();
+         $menu['page']  = $page;
 
          $dps = Dropdown::getDeviceItemTypes();
 
@@ -162,7 +168,7 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @since 0.85
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUnrecurs() {
       global $DB;
@@ -182,13 +188,23 @@ abstract class CommonDevice extends CommonDropdown {
       $linktype  = static::getItem_DeviceType();
       $linktable = getTableForItemType($linktype);
 
-      $sql = "SELECT `itemtype`,
-                     GROUP_CONCAT(DISTINCT `items_id`) AS ids
-              FROM `$linktable`
-              WHERE `$linktable`.`".$this->getForeignKeyField()."` = '$ID'
-              GROUP BY `itemtype`";
+      $result = $DB->request(
+         [
+            'SELECT'    => [
+               'itemtype',
+               new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
+            ],
+            'FROM'      => $linktable,
+            'WHERE'     => [
+               $this->getForeignKeyField() => $ID,
+            ],
+            'GROUPBY'   => [
+               'itemtype',
+            ]
+         ]
+      );
 
-      foreach ($DB->request($sql) as $data) {
+      foreach ($result as $data) {
          if (!empty($data["itemtype"])) {
             $itemtable = getTableForItemType($data["itemtype"]);
             if ($item = getItemForItemtype($data["itemtype"])) {
@@ -307,7 +323,7 @@ abstract class CommonDevice extends CommonDropdown {
     *                            (default NULL)
     * @param $options   array    parameter such as restriction
     *
-    * @return nothing (elements added to $base)
+    * @return HTMLTableHeader
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,
@@ -351,8 +367,6 @@ abstract class CommonDevice extends CommonDropdown {
    **/
    function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                     HTMLTableCell $father = null, array $options = []) {
-
-      global $CFG_GLPI;
 
       $this_type = $this->getType();
 
@@ -400,7 +414,7 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @param $input array of datas
     *
-    * @return interger ID of existing or new Device
+    * @return integer ID of existing or new Device
    **/
    function import(array $input) {
       global $DB;
@@ -551,5 +565,16 @@ abstract class CommonDevice extends CommonDropdown {
       $link = "$dir/front/device.php?itemtype=$itemtype";
 
       return $link;
+   }
+
+   /**
+    * Get main tabs configuration
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getMainTabs() {
+      return [static::getItem_DeviceType()];
    }
 }

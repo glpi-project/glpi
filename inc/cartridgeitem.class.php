@@ -80,11 +80,12 @@ class CartridgeItem extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $class = new Cartridge();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $class = new CartridgeItem_PrinterModel();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Cartridge::class,
+            CartridgeItem_PrinterModel::class,
+         ]
+      );
 
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
@@ -130,15 +131,12 @@ class CartridgeItem extends CommonDBTM {
    static function getCount($id) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_cartridges`
-                WHERE `cartridgeitems_id` = '".$id."'";
-
-      if ($result = $DB->query($query)) {
-         $number = $DB->numrows($result);
-         return $number;
-      }
-      return false;
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_cartridges',
+         'WHERE'  => ['cartridgeitems_id' => $id]
+      ])->next();
+      return $result['cpt'];
    }
 
 
@@ -161,7 +159,7 @@ class CartridgeItem extends CommonDBTM {
          ];
          $result = $DB->insert('glpi_cartridgeitems_printermodels', $params);
 
-         if ($result && ($DB->affected_rows() > 0)) {
+         if ($result && ($result->rowCount() > 0)) {
             return true;
          }
       }
@@ -220,10 +218,12 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id_tech',
-                            'value'     => $this->fields['groups_id_tech'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`']);
+      Group::dropdown([
+         'name'      => 'groups_id_tech',
+         'value'     => $this->fields['groups_id_tech'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_assign' => 1]
+      ]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -377,7 +377,7 @@ class CartridgeItem extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the hardware'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -458,26 +458,45 @@ class CartridgeItem extends CommonDBTM {
 
          foreach (Entity::getEntitiesToNotify('cartridges_alert_repeat') as $entity => $repeat) {
             // if you change this query, please don't forget to also change in showDebug()
-            $query_alert = "SELECT `glpi_cartridgeitems`.`id` AS cartID,
-                                   `glpi_cartridgeitems`.`entities_id` AS entity,
-                                   `glpi_cartridgeitems`.`ref` AS ref,
-                                   `glpi_cartridgeitems`.`name` AS name,
-                                   `glpi_cartridgeitems`.`alarm_threshold` AS threshold,
-                                   `glpi_alerts`.`id` AS alertID,
-                                   `glpi_alerts`.`date`
-                            FROM `glpi_cartridgeitems`
-                            LEFT JOIN `glpi_alerts`
-                                 ON (`glpi_cartridgeitems`.`id` = `glpi_alerts`.`items_id`
-                                     AND `glpi_alerts`.`itemtype` = 'CartridgeItem')
-                            WHERE `glpi_cartridgeitems`.`is_deleted` = 0
-                                  AND `glpi_cartridgeitems`.`alarm_threshold` >= '0'
-                                  AND `glpi_cartridgeitems`.`entities_id` = '".$entity."'
-                                  AND (`glpi_alerts`.`date` IS NULL
-                                       OR (`glpi_alerts`.`date`+$repeat) < CURRENT_TIMESTAMP());";
+            $result = $DB->request(
+               [
+                  'SELECT'    => [
+                     'glpi_cartridgeitems.id AS cartID',
+                     'glpi_cartridgeitems.entities_id AS entity',
+                     'glpi_cartridgeitems.ref AS ref',
+                     'glpi_cartridgeitems.name AS name',
+                     'glpi_cartridgeitems.alarm_threshold AS threshold',
+                     'glpi_alerts.id AS alertID',
+                     'glpi_alerts.date',
+                  ],
+                  'FROM'      => self::getTable(),
+                  'LEFT JOIN' => [
+                     'glpi_alerts' => [
+                        'FKEY' => [
+                           'glpi_alerts'         => 'items_id',
+                           'glpi_cartridgeitems' => 'id',
+                           [
+                              'AND' => ['glpi_alerts.itemtype' => 'CartridgeItem'],
+                           ],
+                        ]
+                     ]
+                  ],
+                  'WHERE'     => [
+                     'glpi_cartridgeitems.is_deleted'      => 0,
+                     'glpi_cartridgeitems.alarm_threshold' => ['>=', 0],
+                     'glpi_cartridgeitems.entities_id'     => $entity,
+                     'OR'                                  => [
+                        ['glpi_alerts.date' => null],
+                        ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                     ],
+                  ],
+               ]
+            );
+
             $message = "";
             $items   = [];
 
-            foreach ($DB->request($query_alert) as $cartridge) {
+            foreach ($result as $cartridge) {
                if (($unused=Cartridge::getUnusedNumber($cartridge["cartID"]))<=$cartridge["threshold"]) {
                   //TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
                   $message .= sprintf(__('Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s - Remaining %3$d'),
@@ -549,39 +568,57 @@ class CartridgeItem extends CommonDBTM {
    static function dropdownForPrinter(Printer $printer) {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS cpt,
-                       `glpi_locations`.`completename` AS location,
-                       `glpi_cartridgeitems`.`ref` AS ref,
-                       `glpi_cartridgeitems`.`name` AS name,
-                       `glpi_cartridgeitems`.`id` AS tID
-                FROM `glpi_cartridgeitems`
-                INNER JOIN `glpi_cartridgeitems_printermodels`
-                     ON (`glpi_cartridgeitems`.`id`
-                         = `glpi_cartridgeitems_printermodels`.`cartridgeitems_id`)
-                INNER JOIN `glpi_cartridges`
-                     ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
-                         AND `glpi_cartridges`.`date_use` IS NULL)
-                LEFT JOIN `glpi_locations`
-                     ON (`glpi_locations`.`id` = `glpi_cartridgeitems`.`locations_id`)
-                WHERE `glpi_cartridgeitems_printermodels`.`printermodels_id`
-                           = '".$printer->fields["printermodels_id"]."'
-                      ".getEntitiesRestrictRequest('AND', 'glpi_cartridgeitems', '',
-                                                   $printer->fields["entities_id"], true)."
-                GROUP BY tID
-                ORDER BY `name`, `ref`";
-      $datas = [];
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            while ($data= $DB->fetch_assoc($result)) {
-               $text = sprintf(__('%1$s - %2$s'), $data["name"], $data["ref"]);
-               $text = sprintf(__('%1$s (%2$s)'), $text, $data["cpt"]);
-               $text = sprintf(__('%1$s - %2$s'), $text, $data["location"]);
-               $datas[$data["tID"]] = $text;
-            }
-         }
+      $iterator = $DB->request([
+         'SELECT'       => [
+            'COUNT'  => '* AS cpt',
+            'glpi_locations.completename AS location',
+            'glpi_cartridgeitems.ref AS ref',
+            'glpi_cartridgeitems.name AS name',
+            'glpi_cartridgeitems.id AS tID'
+         ],
+         'FROM'         => self::getTable(),
+         'INNER JOIN'   => [
+            'glpi_cartridgeitems_printermodels' => [
+               'ON' => [
+                  'glpi_cartridgeitems_printermodels' => 'cartridgeitems_id',
+                  'glpi_cartridgeitems'               => 'id'
+               ]
+            ],
+            'glpi_cartridges'                   => [
+               'ON' => [
+                  'glpi_cartridgeitems'   => 'id',
+                  'glpi_cartridges'       => 'cartridgeitems_id', [
+                     'AND' => [
+                        'glpi_cartridges.date_use' => null
+                     ]
+                  ]
+               ]
+            ]
+         ],
+         'LEFT JOIN'    => [
+            'glpi_locations'                    => [
+               'ON' => [
+                  'glpi_cartridgeitems'   => 'locations_id',
+                  'glpi_locations'        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_cartridgeitems_printermodels.printermodels_id'  => $printer->fields['printermodels_id']
+         ] + getEntitiesRestrictCriteria('glpi_cartridgeitems', '', $printer->fields['entities_id'], true),
+         'GROUPBY'      => 'tID',
+         'ORDERBY'      => ['name', 'ref']
+      ]);
+
+      $results = [];
+      while ($data = $iterator->next()) {
+         $text = sprintf(__('%1$s - %2$s'), $data["name"], $data["ref"]);
+         $text = sprintf(__('%1$s (%2$s)'), $text, $data["cpt"]);
+         $text = sprintf(__('%1$s - %2$s'), $text, $data["location"]);
+         $results[$data["tID"]] = $text;
       }
-      if (count($datas)) {
-         return Dropdown::showFromArray('cartridgeitems_id', $datas);
+      if (count($results)) {
+         return Dropdown::showFromArray('cartridgeitems_id', $results);
       }
       return false;
    }

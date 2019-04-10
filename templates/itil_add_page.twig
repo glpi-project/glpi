@@ -1,0 +1,68 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% extends "add_page.twig" %}
+
+{% block content %}
+<div class="container content">
+   {% include "elements/itil_form.twig" with {'glpi_form': glpi_form} %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+   {{ parent() }}
+   <script type="text/javascript">
+      var onDdActorChange = function (elt, event) {
+         var _value = elt.val();
+         var _infos = elt.parent().next('div.user_infos');
+
+         if (_value != 0) {
+            $.ajax({
+               url: '{{ path_for('user_itilobjects_active', {'itemtype': item.getType(), 'id': 'PLACEBO'}) }}'.replace(/PLACEBO/, _value),
+               beforeSend: function() {
+                  var _loader = $('<i id="actorloader" class="fa fa-spinner fa-pulse fa-fw"></i>');
+                  _infos.prepend(_loader);
+               },
+               complete: function() {
+                  $('#actorloader').remove();
+               },
+               success: function(res) {
+                  var _a = _infos.find('a');
+                  _a.attr('href', res.search_url);
+                  _a.find('.label').html(res.count);
+                  _infos.show();
+               }
+            });
+         } else {
+            _infos.hide();
+         }
+      };
+   </script>
+{% endblock %}

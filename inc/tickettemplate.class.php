@@ -180,14 +180,14 @@ class TicketTemplate extends CommonDropdown {
                                                                          => 'requesttypes_id',
                      $ticket->getSearchOptionIDByField('field', 'completename',
                                                        'glpi_locations') => 'locations_id',
-                     $ticket->getSearchOptionIDByField('field', 'slas_tto_id',
-                                                       'glpi_slas')      => 'slas_tto_id',
-                     $ticket->getSearchOptionIDByField('field', 'slas_ttr_id',
-                                                       'glpi_slas')      => 'slas_ttr_id',
-                     $ticket->getSearchOptionIDByField('field', 'olas_tto_id',
-                                                       'glpi_olas')      => 'olas_tto_id',
-                     $ticket->getSearchOptionIDByField('field', 'olas_ttr_id',
-                                                       'glpi_olas')      => 'olas_ttr_id',
+                     $ticket->getSearchOptionIDByField('field', 'slas_id_tto',
+                                                       'glpi_slas')      => 'slas_id_tto',
+                     $ticket->getSearchOptionIDByField('field', 'slas_id_ttr',
+                                                       'glpi_slas')      => 'slas_id_ttr',
+                     $ticket->getSearchOptionIDByField('field', 'olas_id_tto',
+                                                       'glpi_olas')      => 'olas_id_tto',
+                     $ticket->getSearchOptionIDByField('field', 'olas_id_ttr',
+                                                       'glpi_olas')      => 'olas_id_ttr',
                      $ticket->getSearchOptionIDByField('field', 'time_to_resolve',
                                                        'glpi_tickets')   => 'time_to_resolve',
                      $ticket->getSearchOptionIDByField('field', 'time_to_own',
@@ -622,7 +622,6 @@ class TicketTemplate extends CommonDropdown {
                      // Change entity
                      $input2['entities_id']  = $_SESSION['glpiactive_entity'];
                      $input2['is_recursive'] = 1;
-                     $input2 = Toolbox::addslashes_deep($input2);
 
                      if (!$item->import($input2)) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);

@@ -1,0 +1,5 @@
+driver: 'mysql'
+host: 'localhost'
+user: 'root'
+pass: ''
+dbname: 'glpitest080'

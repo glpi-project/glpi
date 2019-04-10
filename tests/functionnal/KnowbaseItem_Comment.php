@@ -159,7 +159,7 @@ class KnowbaseItem_Comment extends DbTestCase {
       preg_match_all("/li class='comment subcomment'/", $html, $results);
       $this->array($results[0])->hasSize(3);
 
-      preg_match_all("/span class='edit_item'/", $html, $results);
+      preg_match_all("/span class='fa fa-pencil-square-o edit_item'/", $html, $results);
       $this->array($results[0])->hasSize(4);
 
       preg_match_all("/span class='add_answer'/", $html, $results);
@@ -181,7 +181,7 @@ class KnowbaseItem_Comment extends DbTestCase {
       preg_match_all("/li class='comment subcomment'/", $html, $results);
       $this->array($results[0])->hasSize(3);
 
-      preg_match_all("/span class='edit_item'/", $html, $results);
+      preg_match_all("/span class='fa fa-pencil-square-o edit_item'/", $html, $results);
       $this->array($results[0])->hasSize(1);
 
       preg_match_all("/span class='add_answer'/", $html, $results);

@@ -119,12 +119,17 @@ class NotificationTargetProjectTask extends NotificationTarget {
    function addTeamUsers() {
       global $DB;
 
-      $query = "SELECT `items_id`
-                FROM `glpi_projecttaskteams`
-                WHERE `glpi_projecttaskteams`.`itemtype` = 'User'
-                      AND `glpi_projecttaskteams`.`projecttasks_id` = '".$this->obj->fields["id"]."'";
+      $iterator = $DB->request([
+         'SELECT' => 'items_id',
+         'FROM'   => 'glpi_projecttaskteams',
+         'WHERE'  => [
+            'itemtype'        => 'User',
+            'projecttasks_id' => $this->obj->fields['id']
+         ]
+      ]);
+
       $user = new User;
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if ($user->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(['language' => $user->getField('language'),
                                             'users_id' => $user->getField('id')]);
@@ -143,11 +148,16 @@ class NotificationTargetProjectTask extends NotificationTarget {
    function addTeamGroups($manager) {
       global $DB;
 
-      $query = "SELECT `items_id`
-                FROM `glpi_projecttaskteams`
-                WHERE `glpi_projecttaskteams`.`itemtype` = 'Group'
-                      AND `glpi_projecttaskteams`.`projecttasks_id` = '".$this->obj->fields["id"]."'";
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'SELECT' => 'items_id',
+         'FROM'   => 'glpi_projecttaskteams',
+         'WHERE'  => [
+            'itemtype'        => 'Group',
+            'projecttasks_id' => $this->obj->fields['id']
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          $this->addForGroup($manager, $data['items_id']);
       }
    }
@@ -161,12 +171,17 @@ class NotificationTargetProjectTask extends NotificationTarget {
    function addTeamContacts() {
       global $DB, $CFG_GLPI;
 
-      $query = "SELECT `items_id`
-                FROM `glpi_projecttaskteams`
-                WHERE `glpi_projecttaskteams`.`itemtype` = 'Contact'
-                      AND `glpi_projecttaskteams`.`projecttasks_id` = '".$this->obj->fields["id"]."'";
+      $iterator = $DB->request([
+         'SELECT' => 'items_id',
+         'FROM'   => 'glpi_projecttaskteams',
+         'WHERE'  => [
+            'itemtype'        => 'Contact',
+            'projecttasks_id' => $this->obj->fields['id']
+         ]
+      ]);
+
       $contact = new Contact();
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if ($contact->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(["email"    => $contact->fields["email"],
                                             "name"     => $contact->getName(),
@@ -185,12 +200,17 @@ class NotificationTargetProjectTask extends NotificationTarget {
    function addTeamSuppliers() {
       global $DB, $CFG_GLPI;
 
-      $query = "SELECT `items_id`
-                FROM `glpi_projecttaskteams`
-                WHERE `glpi_projecttaskteams`.`itemtype` = 'Supplier'
-                      AND `glpi_projecttaskteams`.`projecttasks_id` = '".$this->obj->fields["id"]."'";
+      $iterator = $DB->request([
+         'SELECT' => 'items_id',
+         'FROM'   => 'glpi_projecttaskteams',
+         'WHERE'  => [
+            'itemtype'        => 'Supplier',
+            'projecttasks_id' => $this->obj->fields['id']
+         ]
+      ]);
+
       $supplier = new Supplier();
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if ($supplier->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(["email"    => $supplier->fields["email"],
                                             "name"     => $supplier->getName(),
@@ -389,38 +409,46 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $this->data['##projecttask.numberoftickets##'] = count($this->data['tickets']);
 
       // Document
-      $query = "SELECT `glpi_documents`.*
-                FROM `glpi_documents`
-                LEFT JOIN `glpi_documents_items`
-                  ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
-                WHERE `glpi_documents_items`.`itemtype` =  'ProjectTask'
-                      AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+      $iterator = $DB->request([
+         'SELECT'    => 'glpi_documents.*',
+         'FROM'      => 'glpi_documents',
+         'LEFT JOIN' => [
+            'glpi_documents_items'  => [
+               'ON' => [
+                  'glpi_documents_items'  => 'documents_id',
+                  'glpi_documents'        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_documents_items.itemtype'  => 'ProjectTask',
+            'glpi_documents_items.items_id'  => $item->fields['id']
+         ]
+      ]);
 
       $this->data["documents"] = [];
-      if ($result = $DB->query($query)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $tmp                      = [];
-            $tmp['##document.id##']   = $data['id'];
-            $tmp['##document.name##'] = $data['name'];
-            $tmp['##document.weblink##']
-                                      = $data['link'];
+      while ($data = $iterator->next()) {
+         $tmp                      = [];
+         $tmp['##document.id##']   = $data['id'];
+         $tmp['##document.name##'] = $data['name'];
+         $tmp['##document.weblink##']
+                                    = $data['link'];
 
-            $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         "document_".$data['id']);
-            $downloadurl              = "/front/document.send.php?docid=".$data['id'];
+         $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
+                                                      "document_".$data['id']);
+         $downloadurl              = "/front/document.send.php?docid=".$data['id'];
 
-            $tmp['##document.downloadurl##']
-                                      = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         $downloadurl);
-            $tmp['##document.heading##']
-                                      = Dropdown::getDropdownName('glpi_documentcategories',
-                                                                  $data['documentcategories_id']);
+         $tmp['##document.downloadurl##']
+                                    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                      $downloadurl);
+         $tmp['##document.heading##']
+                                    = Dropdown::getDropdownName('glpi_documentcategories',
+                                                               $data['documentcategories_id']);
 
-            $tmp['##document.filename##']
-                                      = $data['filename'];
+         $tmp['##document.filename##']
+                                    = $data['filename'];
 
-            $this->data['documents'][]     = $tmp;
-         }
+         $this->data['documents'][]     = $tmp;
       }
 
       $this->data["##projecttask.urldocument##"]

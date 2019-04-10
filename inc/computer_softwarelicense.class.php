@@ -103,18 +103,18 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       $input = $ma->getInput();
       switch ($ma->getAction()) {
          case 'move_license' :
             if (isset($input['options'])) {
                if (isset($input['options']['move'])) {
-                  SoftwareLicense::dropdown(['condition'
-                                                    => "`glpi_softwarelicenses`.`softwares_id`
-                                                         = '".$input['options']['move']['softwares_id']."'",
-                                                  'used'
-                                                    => $input['options']['move']['used']]);
+                  SoftwareLicense::dropdown([
+                     'condition' => [
+                        'glpi_softwarelicenses.softwares_id' => $input['options']['move']['softwares_id']
+                     ],
+                     'used'      => $input['options']['move']['used']
+                  ]);
                   echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                   return true;
                }
@@ -127,7 +127,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
-      global $DB;
 
       switch ($ma->getAction()) {
          case 'move_license' :
@@ -285,7 +284,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @return void
    **/
    static function showForLicenseByEntity(SoftwareLicense $license) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $softwarelicense_id = $license->getField('id');
 
@@ -335,7 +334,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @return void
    **/
    static function showForLicense(SoftwareLicense $license) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $searchID = $license->getField('id');
 
@@ -371,10 +370,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       echo "<div class='center'>";
 
-      //If the number of linked assets have reached the number defined in the license,
-      //do not allow to add more assets
+      //If the number of linked assets have reached the number defined in the license
+      //and over-quota is not allowed, do not allow to add more assets
       if ($canedit
-         && ($license->getField('number') == -1 || $number < $license->getField('number'))) {
+         && ($license->getField('number') == -1 || $number < $license->getField('number')
+         || $license->getField('allow_overquota'))) {
          echo "<form method='post' action='".Computer_SoftwareLicense::getFormURL()."'>";
          echo "<input type='hidden' name='softwarelicenses_id' value='$searchID'>";
 
@@ -610,7 +610,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @return void
    **/
    function upgrade($licID, $softwarelicenses_id) {
-      global $DB;
 
       if ($this->getFromDB($licID)) {
          $computers_id = $this->fields['computers_id'];

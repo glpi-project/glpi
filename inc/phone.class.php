@@ -133,19 +133,15 @@ class Phone extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $ci = new Computer_Item();
-      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ci = new Change_Item();
-      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Computer_Item::class,
+            Item_Problem::class,
+            Change_Item::class,
+            Item_Project::class,
+         ]
+      );
 
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
@@ -182,9 +178,11 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(['value'     => $this->fields["states_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_phone`='1'"]);
+      State::dropdown([
+         'value'     => $this->fields["states_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_visible_phone' => 1]
+      ]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -214,10 +212,12 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id_tech',
-                            'value'     => $this->fields['groups_id_tech'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`']);
+      Group::dropdown([
+         'name'      => 'groups_id_tech',
+         'value'     => $this->fields['groups_id_tech'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_assign' => 1]
+      ]);
       echo "</td>";
       echo "<td>".__('Model')."</td>";
       echo "<td>";
@@ -270,9 +270,11 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
-      Group::dropdown(['value'     => $this->fields["groups_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_itemgroup`']);
+      Group::dropdown([
+         'value'     => $this->fields["groups_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_itemgroup' => 1]
+      ]);
       echo "</td>";
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan'>
@@ -335,12 +337,16 @@ class Phone extends CommonDBTM {
    function getLinkedItems() {
       global $DB;
 
-      $query = "SELECT 'Computer', `computers_id`
-                FROM `glpi_computers_items`
-                WHERE `itemtype` = '".$this->getType()."'
-                      AND `items_id` = '" . $this->fields['id']."'";
+      $iterator = $DB->request([
+         'SELECT' => 'computers_id',
+         'FROM'   => 'glpi_computers_items',
+         'WHERE'  => [
+            'itemtype'  => $this->getType(),
+            'items_id'  => $this->fields['id']
+         ]
+      ]);
       $tab = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $tab['Computer'][$data['computers_id']] = $data['computers_id'];
       }
       return $tab;
@@ -417,7 +423,7 @@ class Phone extends CommonDBTM {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_phone`'
+         'condition'          => ['is_visible_phone' => 1]
       ];
 
       $tab[] = [
@@ -474,7 +480,7 @@ class Phone extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'name'               => __('Group'),
-         'condition'          => '`is_itemgroup`',
+         'condition'          => ['is_itemgroup' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -556,7 +562,7 @@ class Phone extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the hardware'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 

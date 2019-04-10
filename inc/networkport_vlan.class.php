@@ -99,22 +99,30 @@ class NetworkPort_Vlan extends CommonDBRelation {
       $canedit = $port->canEdit($ID);
       $rand    = mt_rand();
 
-      $query = "SELECT `glpi_networkports_vlans`.id as assocID,
-                       `glpi_networkports_vlans`.tagged ,
-                       `glpi_vlans`.*
-                FROM `glpi_networkports_vlans`
-                LEFT JOIN `glpi_vlans`
-                        ON (`glpi_networkports_vlans`.`vlans_id` = `glpi_vlans`.`id`)
-                WHERE `networkports_id` = '$ID'";
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_networkports_vlans.id as assocID',
+            'glpi_networkports_vlans.tagged',
+            'glpi_vlans.*'
+         ],
+         'FROM'      => 'glpi_networkports_vlans',
+         'LEFT JOIN' => [
+            'glpi_vlans'   => [
+               'ON' => [
+                  'glpi_networkports_vlans'  => 'vlans_id',
+                  'glpi_vlans'               => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => ['networkports_id' => $ID]
+      ]);
+      $number = count($iterator);
 
-      $result = $DB->query($query);
       $vlans  = [];
       $used   = [];
-      if ($number = $DB->numrows($result)) {
-         while ($line = $DB->fetch_assoc($result)) {
-            $used[$line["id"]]       = $line["id"];
-            $vlans[$line["assocID"]] = $line;
-         }
+      while ($line = $iterator->next()) {
+         $used[$line["id"]]       = $line["id"];
+         $vlans[$line["assocID"]] = $line;
       }
 
       if ($canedit) {
@@ -206,10 +214,13 @@ class NetworkPort_Vlan extends CommonDBRelation {
       global $DB;
 
       $vlans = [];
-      $query = "SELECT `vlans_id`
-                FROM `glpi_networkports_vlans`
-                WHERE `networkports_id` = '$portID'";
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'SELECT' => 'vlans_id',
+         'FROM'   => 'glpi_networkports_vlans',
+         'WHERE'  => ['networkports_id' => $portID]
+      ]);
+
+      while ($data = $iterator->next()) {
          $vlans[$data['vlans_id']] = $data['vlans_id'];
       }
 
@@ -218,12 +229,13 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
             case 'NetworkPort' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                   $nb = countElementsInTable($this->getTable(),
                                              ["networkports_id" => $item->getID()]);
                }

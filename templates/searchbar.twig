@@ -1,0 +1,514 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+
+{% macro displayCriteria(params) %}
+    {% set notag = true %}
+    {% set criteria = call_static(
+        'Search',
+        'findCriteriaInSession',
+        [
+            (params.from_meta is defined and params.from_meta) ? params.parent_itemtype : params.itemtype,
+            params.num,
+            params.p.parents_num|default([])
+        ]
+    )|default(call_static('Search', 'getDefaultCriteria')) %}
+    {% set prefix = params.p.prefix_crit|default('') %}
+
+    {% if criteria.meta is defined and criteria.meta  and (params.from_meta is defined or (params.from_meta is defined and not params.from_meta)) %}
+        displayMetaCriteria()
+    {% elseif criteria.criteria is defined and criteria.criteria is iterable %}
+        displayCriteriaGroup()
+    {% else %}
+        {#% set options = call_static('Search', 'getCleanedOptions', [params.itemtype]) %#}
+        {% set values = call_static('Search', 'getTplCleanedOptions', [params.itemtype]) %}
+        {% set rowid = 'searchrow' ~ params.itemtype ~ random() %}
+    <div class="row normalcriteria{% if params.num == 0 %} headerRow{% endif %}" id="{{ rowid }}">
+        {% if params.from_meta is not defined or not params.from_meta %}
+        <div class="col-md-1">
+            <i class="far fa-minus-square remove-search-criteria" alt="-" title="{{ __s('Delete a rule') }}" data-rowid="{{ rowid }}"></i>
+        </div>
+        {% endif %}
+
+        {% set element = {
+            'type': 'select',
+            'name': 'criteria' ~ prefix ~ '[' ~ params.num ~ '][link]',
+            'value': ((params.from_meta is not defined or not params.meta) and criteria.link is defined) ? criteria.link : '',
+            'values': call_static('Search', 'getLogicalOperators', [(params.num == 0)]),
+            'width': '80px',
+            'listicon': false,
+            'addicon': false
+        } %}
+        <div class="col-md-1">
+            {% include "elements/select.twig" with {'element': element} %}
+        </div>
+
+        {# display select box to define search item #}
+        {% if CFG_GLPI.allow_search_view == 2 and params.from_meta is not defined %}
+            {% set values = {'view': __('Items seen')}|merge(values) %}
+        {% endif %}
+
+        {% if CFG_GLPI.allow_search_view == 1 and params.from_meta is not defined %}
+            {% set values = values|merge({'view': __('Items seen')}) %}
+        {% endif %}
+
+        {% if CFG_GLPI.allow_search_all and params.from_meta is not defined %}
+            {% set values = values|merge({'all': __('All')}) %}
+        {% endif %}
+
+        {% set element = {
+            'type': 'select',
+            'name': 'criteria' ~ prefix ~ '[' ~ params.num ~ '][field]',
+            'value': criteria.field|default(''),
+            'values': values,
+            'listicon': false,
+            'addicon': false,
+            'width': '170px'
+        } %}
+        <div class="col-md-3">
+            {% include "elements/select.twig" with {'element': element} %}
+        </div>
+
+{#
+      $field_id = Html::cleanId("dropdown_criteria{$prefix}[$num][field]$rand");
+      #}
+    {# Force Computer itemtype for AllAssets to permit to show specific items #}
+    {% set used_itemtype = (params.itemtype == 'AllAssets') ? 'Computer' : params.itemtype %}
+    {% import _self as sbar %}
+    {{ sbar.displaySearchoption({
+        'itemtype': used_itemtype,
+        'field': 'toto',
+        'searchtype': criteria.searchtype|default(''),
+        'value': criteria.value|default(''),
+        'num': params.num,
+        'p': params.p,
+        'prefix': prefix
+    }) }}
+      {#
+      Ajax::updateItemOnSelectEvent(
+         $field_id,
+         $spanid,
+         $CFG_GLPI["root_doc"]."/ajax/search.php",
+         [
+            'action'     => 'display_searchoption',
+            'field'      => '__VALUE__',
+         ] + $params
+      );
+#}
+    {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro displaySearchoption(params) %}
+    {% set notag = true %}
+    {% set actions = call_static('Search', 'getActionsFor', [params.itemtype, params.field]) %}
+    {% set fieldname = (params.meta is defined and params.meta) ? 'metacriteria' : 'criteria' %}
+    {% if params.meta is not defined %}
+        {% set params = params|merge({'meta': 0}) %}
+    {% endif %}
+    {% set searchopt = [] %}
+    {% set cleanedactions = [] %}
+
+    {% if actions|length %}
+        {# is it a valid action for type ? #}
+        {% if params.searchtype is not defined or params.searchtype == '' %}
+            {% set params = params|merge({'searchtype': actions|keys|first}) %}
+        {% endif %}
+        {% for key, action in actions %}
+            {% if key == 'searchopt' %}
+                {% set searchopt = searchopt|merge([action])  %}
+            {% else %}
+                {% set cleanedactions = cleanedactions|merge([action])  %}
+            {% endif %}
+        {% endfor %}
+        {% set element = {
+            'type': 'select',
+            'name': fieldname ~ params.prefix ~ '[' ~ params.num ~ '][searchtype]',
+            'value': params.searchtype,
+            'values': cleanedactions,
+            'listicon': false,
+            'addicon': false
+        } %}
+        <div class="col-md-3">
+            {% include "elements/select.twig" with {'element': element} %}
+        </div>
+        {% set fieldsearch_id = element.name  %}
+    {% endif %}
+
+    {% set dropdownname = 'spansearchtype' ~ fieldname ~ params.itemtype ~ params.prefix ~ params.num %}
+    <div class="col-md-3" id="{{ dropdownname }}">
+        {% import _self as sbar %}
+        {{ sbar.displaySearchoptionValue({
+            'value': params.value,
+            'searchopt': searchopt,
+            'searchtype': params.searchtype,
+            'num': params.num,
+            'itemtype': params.itemtype,
+            'from_meta': (params.from_meta is defined ? params.from_meta : false),
+            'field': params.field,
+            'p': params.p,
+            'fieldname': fieldname,
+            'prefix': params.prefix
+        }) }}
+    </div>
+{#
+      Ajax::updateItemOnSelectEvent(
+         $fieldsearch_id,
+         $dropdownname,
+         $CFG_GLPI["root_doc"]."/ajax/search.php",
+         [
+            'action'     => 'display_searchoption_value',
+            'searchtype' => '__VALUE__',
+         ] + $params
+      );
+#}
+{% endmacro %}
+
+{% macro displaySearchoptionValue(params) %}
+    {% set notag = true %}
+    {% set searchopt = params.searchopt|default([]) %}
+    {% set options = {
+        'value': params.value,
+        'width': '100%',
+        'permit_select_parent': true
+    } %}
+    {% set item = getitem(params.itemtype) %}
+    {% set inputname = params.fieldname ~ params.prefix ~ '[' ~ params.num ~ '][value]' %}
+
+    {% if searchopt.field is defined and params.searchtype in [
+        'equals',
+        'notequals',
+        'morethan',
+        'lessthan',
+        'under',
+        'notunder'
+    ] %}
+        {% set fullname = params.searchopt.table ~ '.' ~ params.searchopt.field %}
+
+        {# Specific cases #}
+        {% if fullname == 'glpi_groups.completename' %}
+            {# Add mygroups choice to searchopt #}
+            {% set searchopt = searchopt|merge({'toadd': {'mygroups': __('My groups')}}) %}
+        {% elseif fullname in [
+            'glpi_changes.status',
+            'glpi_changes.impact',
+            'glpi_changes.urgency',
+            'glpi_problems.status',
+            'glpi_problems.impact',
+            'glpi_problems.urgency',
+            'glpi_tickets.status',
+            'glpi_tickets.impact',
+            'glpi_tickets.urgency'
+        ] %}
+            {% set options = options|merge({'showtype': 'search'}) %}
+        {% elseif fullname in [
+            'glpi_changes.priority',
+            'glpi_problems.priority',
+            'glpi_tickets.priority'
+        ] %}
+            {% set options = options|merge({
+                'showtype': 'search',
+                'withmajor': true
+            }) %}
+        {% elseif fullname in [
+            'glpi_tickets.global_validation',
+            'glpi_ticketvalidations.status'
+        ] %}
+            {% set options = options|merge({'all': true}) %}
+        {% elseif fullname == 'glpi_users.name' %}
+            {% set options = options|merge({
+                'right': searchopt.right|default('all'),
+                'inactive_deleted': 1
+            }) %}
+        {% endif %}
+
+        {# Standard datatype usage #}
+        {% if searchopt.datatype is defined and searchopt.datatype in [
+            'date',
+            'date_delay',
+            'datetime'
+        ] %}
+            {% set options = options|merge({'relative_dates': true}) %}
+        {%endif %}
+
+        {% set out = item.getValueToSelect(searchopt, inputname, param.value, options) %}
+        {% if out|length > 0 %}
+            {% set display = true %}
+            {{ out }}
+        {% endif %}
+
+        {# TDB
+               //Could display be handled by a plugin ?
+               if (!$display
+                   && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))) {
+                  $function = 'plugin_'.$plug['plugin'].'_searchOptionsValues';
+                  if (function_exists($function)) {
+                     $display = $function([
+                        'name'           => $inputname,
+                        'searchtype'     => $request['searchtype'],
+                        'searchoption'   => $searchopt,
+                        'value'          => $request['value']
+                     ]);
+                  }
+               }
+        #}
+    {% endif %}
+
+    {# Default case : text field #}
+    {% if display is not defined %}
+        {% set element = {
+            'type': 'text',
+            'name': inputname,
+            'value': params.value,
+            'size': 13,
+        } %}
+        {% include "elements/input.twig" with {'element': element} %}
+    {% endif %}
+{% endmacro %}
+
+{% if search_data.itemtype == 'AllAssets' %}
+    {% set target = call_static('Toolbox', 'getItemTypeSearchURL', [search_data.itemtype]) %}
+{% else %}
+    {% set target = call_static(search_data.itemtype, 'getSearchURL')|default(call_static('Toolbox', 'getItemTypeSearchURL', [search_data.itemtype])) %}
+{% endif %}
+{% set params = {
+    'sort': '',
+    'is_deleted': 0,
+    'as_map': 0,
+    'criteria': [],
+    'metacriteria': [],
+    'target': target,
+    'showreset': true,
+    'showbookmark': true,
+    'showfolding': true,
+    'mainform': true,
+    'prefix_crit': '',
+    'addhidden': [],
+    'actionname': 'search',
+    'actionvalue': _sx('button', 'Search')
+}|merge(params) %}
+
+<header id="search_criteria">
+    <div class="card-body">
+        {% if search_data.itemtype != 'AllAssets' %}
+            {% set item = getitem(search_data.itemtype) %}
+            {% if item.maybeDeleted() %}
+                {% set element = {
+                    'type': 'hidden',
+                    'name': 'is_deleted',
+                    'value': params.is_deleted
+                } %}
+                {% include "elements/hidden.twig" with {'element': element} %}
+            {% endif %}
+        {% endif %}
+        {% set element = {
+            'type': 'hidden',
+            'name': 'as_map',
+            'value': params.as_map
+        } %}
+        {% include "elements/hidden.twig" with {'element': element} %}
+
+        <div class="legacy">
+            {{ search_form|raw }}
+        </div>
+    {# Search form must be reworked
+    {% import _self as sbar %}
+    {% for num in params.criteria|keys %}
+        {{ sbar.displayCriteria({'itemtype': search_data.itemtype, 'num': num, 'p': params}) }}
+    {% endfor %#}
+
+{#
+      echo "<ul id='$searchcriteriatableid'>";
+
+      // Display normal search parameters
+      $i = 0;
+      foreach (array_keys($p['criteria']) as $i) {
+         self::displayCriteria([
+            'itemtype' => $itemtype,
+            'num'      => $i,
+            'p'        => $p
+         ]);
+      }
+
+      $rand_criteria = mt_rand();
+      echo "<li id='more-criteria$rand_criteria'
+            class='normalcriteria headerRow'
+            style='display: none;'>...</li>";
+
+      echo "</ul>";
+      echo "<div class='search_actions'>";
+      $linked = self::getMetaItemtypeAvailable($itemtype);
+      echo "<span id='addsearchcriteria$rand_criteria' class='secondary'>
+               <i class='fas fa-plus-square'></i>
+               ".__s('rule')."
+            </span>";
+      if (count($linked)) {
+         echo "<span id='addmetasearchcriteria$rand_criteria' class='secondary'>
+                  <i class='far fa-plus-square'></i>
+                  ".__s('global rule')."
+               </span>";
+      }
+      echo "<span id='addcriteriagroup$rand_criteria' class='secondary'>
+               <i class='fas fa-plus-circle'></i>
+               ".__s('group')."
+            </span>";
+      $json_p = json_encode($p);
+
+      if ($p['mainform']) {
+         // Display submit button
+         echo "<input type='submit' name='".$p['actionname']."' value=\"".$p['actionvalue']."\" class='submit' >";
+         if ($p['showbookmark'] || $p['showreset']) {
+            if ($p['showbookmark']) {
+               //TODO: change that!
+               Ajax::createIframeModalWindow('loadbookmark',
+                                       SavedSearch::getSearchURL() . "?action=load&type=" . SavedSearch::SEARCH,
+                                       ['title'         => __('Load a saved search')]);
+               SavedSearch::showSaveButton(SavedSearch::SEARCH, $itemtype);
+            }
+
+            if ($p['showreset']) {
+               echo "<a class='fa fa-undo reset-search' href='"
+                  .$p['target']
+                  .(strpos($p['target'], '?') ? '&amp;' : '?')
+                  ."reset=reset' title=\"".__s('Blank')."\"
+                  ><span class='sr-only'>" . __s('Blank')  ."</span></a>";
+            }
+
+            if ($p['showfolding']) {
+               echo "<a class='fa fa-angle-double-up fa-fw fold-search'
+                        href='#'
+                        title=\"".__("Fold search")."\"></a>";
+            }
+         }
+      }
+      echo "</div>"; //.search_actions
+      $JS = <<<JAVASCRIPT
+         $('#addsearchcriteria$rand_criteria').on('click', function(event) {
+            event.preventDefault();
+            $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
+               'action': 'display_criteria',
+               'itemtype': '$itemtype',
+               'num': $nbsearchcountvar,
+               'p': $json_p
+            })
+            .done(function(data) {
+               $(data).insertBefore('#more-criteria$rand_criteria');
+               $nbsearchcountvar++;
+            });
+         });
+
+         $('#addmetasearchcriteria$rand_criteria').on('click', function(event) {
+            event.preventDefault();
+            $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
+               'action': 'display_meta_criteria',
+               'itemtype': '$itemtype',
+               'meta': true,
+               'num': $nbsearchcountvar,
+               'p': $json_p
+            })
+            .done(function(data) {
+               $(data).insertBefore('#more-criteria$rand_criteria');
+               $nbsearchcountvar++;
+            });
+         });
+
+         $('#addcriteriagroup$rand_criteria').on('click', function(event) {
+            event.preventDefault();
+            $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
+               'action': 'display_criteria_group',
+               'itemtype': '$itemtype',
+               'meta': true,
+               'num': $nbsearchcountvar,
+               'p': $json_p
+            })
+            .done(function(data) {
+               $(data).insertBefore('#more-criteria$rand_criteria');
+               $nbsearchcountvar++;
+            });
+         });
+JAVASCRIPT;
+
+      if ($p['mainform']) {
+         $JS .= <<<JAVASCRIPT
+         $('.fold-search').on('click', function(event) {
+            event.preventDefault();
+            $(this)
+               .toggleClass('fa-angle-double-up')
+               .toggleClass('fa-angle-double-down');
+            $('#searchcriteria ul li:not(:first-child)').toggle();
+         });
+
+         $(document).on("click", ".remove-search-criteria", function() {
+            var rowID = $(this).data('rowid');
+            $('#' + rowID).remove();
+            $('#searchcriteria ul li:first-child').addClass('headerRow').show();
+         });
+JAVASCRIPT;
+      }
+      echo Html::scriptBlock($JS);
+
+      if (count($p['addhidden'])) {
+         foreach ($p['addhidden'] as $key => $val) {
+            echo Html::hidden($key, ['value' => $val]);
+         }
+      }
+
+      if ($p['mainform']) {
+         // For dropdown
+         echo Html::hidden('itemtype', ['value' => $itemtype]);
+         // Reset to start when submit new search
+         echo Html::hidden('start', ['value'    => 0]);
+      }
+
+      echo "</div>";
+      if ($p['mainform']) {
+         Html::closeForm();
+      }
+#}
+    </div>
+    <!-- /.box-body -->
+    {# Search form must be reworked
+   {<div class="card-footer">
+        <div class="btn-group" role="group">
+        <a href="#" onclick="savesearch.dialog('open'); return false;" class="btn btn-default bookmark_record save" title="{{ __('Save current search') }}">
+            <i class="fa fa-star"></i>
+            <span class="sr-only">{{ __('Save current search') }}</span>
+        </a>
+        <a class="btn btn-default reset-search" href="{{ path_for('list', {'itemtype': search_data.itemtype }) }}?reset=reset" title="{{ __('Reset to defaults') }}">
+            <i class="fa fa-undo"></i>
+            <span class="sr-only">{{ __('Blank') }}</span>
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa fa-search"></i>
+            {{ __('Search') }}
+        </button>
+        </div>
+    </div>#}
+</header>

@@ -84,7 +84,7 @@ class Telemetry extends CommonGLPI {
             'avg_users'             => self::getAverage('User'),
             'avg_groups'            => self::getAverage('Group'),
             'ldap_enabled'          => AuthLDAP::useAuthLdap(),
-            'mailcollector_enabled' => (MailCollector::getNumberOfActiveMailCollectors() > 0),
+            'mailcollector_enabled' => (MailCollector::countActiveCollectors() > 0),
             'notifications_modes'   => []
          ]
       ];
@@ -118,9 +118,11 @@ class Telemetry extends CommonGLPI {
 
       $dbinfos = $DB->getInfo();
 
-      $size_res = $DB->query("SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) dbsize
-         FROM information_schema.tables WHERE table_schema='" . $DB->dbdefault ."'");
-      $size_res = $DB->fetch_assoc($size_res);
+      $size_res = $DB->request([
+         'SELECT' => new \QueryExpression("ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) AS dbsize"),
+         'FROM'   => 'information_schema.tables',
+         'WHERE'  => ['table_schema' => $DB->dbdefault]
+      ])->next();
 
       $db = [
          'engine'    => $dbinfos['Server Software'],
@@ -285,7 +287,7 @@ class Telemetry extends CommonGLPI {
 
       if ($content && property_exists($content, 'message')) {
          //all is OK!
-         return true;
+         return 1;
       } else {
          $message = 'Something went wrong sending telemetry informations';
          if ($errstr != '') {

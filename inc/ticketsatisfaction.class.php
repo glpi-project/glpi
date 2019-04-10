@@ -36,6 +36,8 @@ if (!defined('GLPI_ROOT')) {
 
 class TicketSatisfaction extends CommonDBTM {
 
+   static $rightname = 'ticket';
+
    public $dohistory         = true;
    public $history_blacklist = ['date_answered'];
 
@@ -284,4 +286,13 @@ class TicketSatisfaction extends CommonDBTM {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
+   static function getFormURLWithID($id = 0, $full = true) {
+
+      $satisfaction = new self();
+      if (!$satisfaction->getFromDB($id)) {
+         return '';
+      }
+
+      return Ticket::getFormURLWithID($satisfaction->fields['tickets_id']) . '&forcetab=Ticket$3';
+   }
 }

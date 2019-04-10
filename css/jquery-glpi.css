@@ -28,6 +28,26 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+   border: 1px solid #FFF;
+   background-color: #e6e6e6;
+   color: #555555;
+}
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+   border: 1px solid #FFF;
+   background-color: #ffffff;
+   color: #212121;
+}
+.ui-state-active a,
+.ui-state-active a:link,
+.ui-state-active a:visited {
+   color: #212121;
+}
+
 .ui-dialog { z-index: 1000 !important ;}
 .ui-widget-overlay.glpi_modal { z-index: 2000 !important ;}
 .glpi_modal { z-index: 5000 !important ;}
@@ -130,9 +150,6 @@ html .ui-autocomplete {
    border-width: 1px;
    border-style: solid;
    padding: .2em;
-}
-
-.ui-widget-content .error {
    border-color: red;
 }
 
@@ -192,10 +209,10 @@ html .ui-autocomplete {
    min-width: 72px;
    position: relative;
    text-overflow: clip;
+   text-overflow: ellipsis;
    background-color: #FFF;
    white-space: nowrap;
    overflow: hidden;
-   text-overflow: ellipsis;
    padding-left: 1em;
    max-width: 270px;
 }
@@ -207,7 +224,6 @@ html .ui-autocomplete {
    background-color: inherit;
    padding-left: 1em;
    margin-left: .5em;
-   background-color: inherit;
    line-height: 26px;
    margin-top: -2px;
    padding-right: .1em;
@@ -243,36 +259,36 @@ html .ui-autocomplete {
 
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
 {
-  font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-  font-size: 11px;
+   font-family: 'Bitstream Vera Sans', Arial, Tahoma, 'Sans serif', sans-serif;
+   font-size: 11px;
 }
 .select2-results li {
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Arial, Tahoma, 'Sans serif', sans-serif;
    font-size: 11px;
 }
 .select2-search input {
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Arial, Tahoma, 'Sans serif', sans-serif;
    font-size: 11px;
 }
 
 .select2-container .select2-choice {
-    height: 22px;
-    padding: 0 0 0 8px;
-    font-weight: normal;
-    margin-top: 0px;
-    vertical-align: top;
+   height: 22px;
+   padding: 0 0 0 8px;
+   font-weight: normal;
+   margin-top: 0px;
+   vertical-align: top;
 }
 .select2-container .select2-choice span {
-    margin-top: -2px;
-    /* to have cut on left : not working reverse display for simple items*/
-    /*direction: rtl;*/
+   margin-top: -2px;
+   /* to have cut on left : not working reverse display for simple items*/
+   /*direction: rtl;*/
 }
 
 .select2-container .select2-choice div b {
-    margin-top: -2px;
+   margin-top: -2px;
 }
 #show_validator_field .select2-container{
-  width: 60%;
+   width: 60%;
 }
 .select2-results ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
 .select2-results ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
@@ -307,7 +323,7 @@ input.submit {
 }
 
 .fn-gantt .ganttMilestone {
-    background-color: #000000;
+   background-color: #000000;
 }
 
 /** select2 disabled **/

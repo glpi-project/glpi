@@ -137,7 +137,11 @@ class Itil_Project extends CommonDBRelation {
          $itemTable = $itemtype::getTable();
 
          $iterator = $DB->request([
-            'SELECT DISTINCT' => ["{$selfTable}.id AS linkID", "{$itemTable}.*"],
+            'SELECT'          => [
+               "$selfTable.id AS linkID",
+               "$itemTable.*"
+            ],
+            'DISTINCT'        => true,
             'FROM'            => $selfTable,
             'LEFT JOIN'       => [
                $itemTable => [
@@ -278,7 +282,11 @@ class Itil_Project extends CommonDBRelation {
       $projectTable = Project::getTable();
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => ["{$selfTable}.id AS linkID", "{$projectTable}.*"],
+         'SELECT'          => [
+            "$selfTable.id AS linkID",
+            "$projectTable.*"
+         ],
+         'DISTINCT'        => true,
          'FROM'            => $selfTable,
          'LEFT JOIN'       => [
             $projectTable => [
@@ -399,7 +407,6 @@ class Itil_Project extends CommonDBRelation {
       foreach ($itil_items as $data) {
          unset($data['id']);
          $data['projects_id'] = $newid;
-         $data                = Toolbox::addslashes_deep($data);
 
          $itil_project = new Itil_Project();
          $itil_project->add($data);

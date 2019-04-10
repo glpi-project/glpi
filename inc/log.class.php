@@ -78,11 +78,13 @@ class Log extends CommonDBTM {
    }
 
 
+   //TODO: remove with old UI
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
             $nb = countElementsInTable('glpi_logs',
                                        ['itemtype' => $item->getType(),
                                         'items_id' => $item->getID()]);
@@ -121,8 +123,6 @@ class Log extends CommonDBTM {
          return false;
       }
       $result = 0;
-      // type for which getValueToDisplay() could be used (fully tested)
-      $oktype = ['Entity'];
 
       foreach ($oldvalues as $key => $oldval) {
          $changes = [];
@@ -140,35 +140,32 @@ class Log extends CommonDBTM {
                    && ($val2['rightname'] == $item->fields['name'])) {
 
                   $id_search_option = $key2;
-                  $changes          =  [$id_search_option, addslashes($oldval), $values[$key]];
+                  $changes          =  [$id_search_option, $oldval, $values[$key]];
                }
 
-            } else if (($val2['linkfield'] == $key)
-                || (($key == $val2['field'])
-                    && ($val2['table'] == $item->getTable()))) {
+            } else if (($val2['linkfield'] == $key && $real_type === $item->getType())
+                       || ($key == $val2['field'] && $val2['table'] == $item->getTable())) {
                // Linkfield or standard field not massive action enable
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                if ($val2['table'] == $item->getTable()) {
-                  $changes = [$id_search_option, addslashes($oldval), $values[$key]];
+                  $changes = [$id_search_option, $oldval, $values[$key]];
                } else {
                   // other cases; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {
                      $changes = [$id_search_option,
-                                      addslashes(sprintf(__('%1$s (%2$s)'),
-                                                         Dropdown::getDropdownName($val2["table"],
-                                                                                   $oldval),
-                                                         $oldval)),
-                                      addslashes(sprintf(__('%1$s (%2$s)'),
-                                                         Dropdown::getDropdownName($val2["table"],
-                                                                                   $values[$key]),
-                                                         $values[$key]))];
+                                 sprintf(__('%1$s (%2$s)'),
+                                         Dropdown::getDropdownName($val2["table"],
+                                                                   $oldval),
+                                         $oldval),
+                                 sprintf(__('%1$s (%2$s)'),
+                                         Dropdown::getDropdownName($val2["table"],
+                                                                   $values[$key]),
+                                         $values[$key])];
                   }
                }
                break;
             }
-            //
-
          }
          if (count($changes)) {
             $result = self::history($real_id, $real_type, $changes);
@@ -213,8 +210,8 @@ class Log extends CommonDBTM {
          $username = "";
       }
 
-      $old_value = $DB->escape(Toolbox::substr(stripslashes($old_value), 0, 180));
-      $new_value = $DB->escape(Toolbox::substr(stripslashes($new_value), 0, 180));
+      $old_value = Toolbox::substr($old_value, 0, 180);
+      $new_value = Toolbox::substr($new_value, 0, 180);
 
       // Security to be sure that values do not pass over the max length
       if (Toolbox::strlen($old_value) > 255) {
@@ -229,7 +226,7 @@ class Log extends CommonDBTM {
          'itemtype'          => $itemtype,
          'itemtype_link'     => $itemtype_link,
          'linked_action'     => $linked_action,
-         'user_name'         => addslashes($username),
+         'user_name'         => $username,
          'date_mod'          => $date_mod,
          'id_search_option'  => $id_search_option,
          'old_value'         => $old_value,
@@ -237,8 +234,8 @@ class Log extends CommonDBTM {
       ];
       $result = $DB->insert(self::getTable(), $params);
 
-      if ($result && $DB->affected_rows($result) > 0) {
-         return $_SESSION['glpi_maxhistory'] = $DB->insert_id();
+      if ($result && $result->rowCount() > 0) {
+         return $_SESSION['glpi_maxhistory'] = $DB->insertId();
       }
       return false;
    }
@@ -772,7 +769,8 @@ class Log extends CommonDBTM {
       $items_id = $item->getField('id');
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'user_name',
+         'SELECT'          => 'user_name',
+         'DISTINCT'        => true,
          'FROM'            => self::getTable(),
          'WHERE'  => [
                'items_id'  => $items_id,
@@ -980,7 +978,8 @@ class Log extends CommonDBTM {
       $items_id = $item->getField('id');
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'linked_action',
+         'SELECT'          => 'linked_action',
+         'DISTINCT'        => true,
          'FROM'            => self::getTable(),
          'WHERE'  => [
                'items_id'  => $items_id,
@@ -1165,7 +1164,7 @@ class Log extends CommonDBTM {
       if (isset($filters['affected_fields']) && !empty($filters['affected_fields'])) {
          $affected_field_crit = [];
          foreach ($filters['affected_fields'] as $index => $affected_field) {
-            $affected_field_crit[$index] = ['AND' => []];
+            $affected_field_crit[$index] = [];
             foreach (explode(";", $affected_field) as $var) {
                if (1 === preg_match('/^(?P<key>.+):(?P<operator>.*):(?P<values>.+)$/', $var, $matches)) {
                   $key = $matches['key'];
@@ -1179,9 +1178,9 @@ class Log extends CommonDBTM {
                   }
 
                   if (!empty($operator)) {
-                     $affected_field_crit[$index]['AND'][$operator][$key] = $values;
+                     $affected_field_crit[$index][$operator][$key] = $values;
                   } else {
-                     $affected_field_crit[$index]['AND'][$key] = $values;
+                     $affected_field_crit[$index][$key] = $values;
                   }
                }
             }
@@ -1238,4 +1237,14 @@ class Log extends CommonDBTM {
       return $values;
    }
 
+   /**
+    * Get display type for sub item
+    *
+    * @since 10.0.0
+    *
+    * @return integer
+    */
+   public function getSubItemDisplay() {
+      return self::SUBITEM_SHOW_SPEC;
+   }
 }

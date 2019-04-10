@@ -1,0 +1,170 @@
+#
+# ---------------------------------------------------------------------
+# GLPI - Gestionnaire Libre de Parc Informatique
+# Copyright (C) 2015-2019 Teclib' and contributors.
+#
+# http://glpi-project.org
+#
+# based on GLPI - Gestionnaire Libre de Parc Informatique
+# Copyright (C) 2003-2014 by the INDEPNET Development Team.
+#
+# ---------------------------------------------------------------------
+#
+# LICENSE
+#
+# This file is part of GLPI.
+#
+# GLPI is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# GLPI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+# ---------------------------------------------------------------------
+#
+imports:
+    - { resource: slim.yaml }
+
+parameters:
+    cache_directory: !php/const GLPI_CACHE_DIR
+    config_directory: !php/const GLPI_CONFIG_DIR
+
+    # "cache_uniq_id" is only mandatory on systems running multiple instances of glpi
+    # with cache adapter that shares a common space (apcu for example).
+    # It will be generated on installation.
+    cache_uniq_id: ''
+    cache_disable_integrity_checks: false
+    application_cache:
+        adapter: auto
+        options:
+            namespace: app
+    translation_cache:
+        adapter: filesystem
+        options:
+            namespace: trans
+
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in services.
+        autoconfigure: true # Automatically registers services based on their signature (event subscribers).
+        public: true        # Make all services public to make them accessible using "$container->get()".
+
+    # makes classes in src/Glpi/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    Glpi\:
+        resource: '%kernel.project_dir%/src/Glpi/*'
+        exclude: '%kernel.project_dir%/src/Glpi/{Annotation,Cache,DependencyInjection,Event,Kernel.php}'
+
+#### Glpi services below
+
+    Glpi\Application\LocalConfigurationManager:
+        $configDir: '%config_directory%'
+
+    Glpi\Application\View\TwigView:
+        arguments:
+            - '%kernel.project_dir%/templates'
+            - cache: '%cache_directory%/twig'
+              strict_variables: true
+              auto_reload: true
+              #should be false here and activated on debug mode
+              debug: true
+        calls:
+            - method: 'addExtension'
+              arguments: ['@Glpi\Application\View\TwigExtension\GlpiDebug']
+            - method: 'addExtension'
+              arguments: ['@Glpi\Application\View\TwigExtension\Locales']
+            - method: 'addExtension'
+              arguments: ['@Glpi\Application\View\TwigExtension\Reflection']
+            - method: 'addExtension'
+              arguments: ['@Glpi\Application\View\TwigExtension\RouterExtension']
+            - method: 'addExtension'
+              arguments: ['@Knlv\Slim\Views\TwigMessages']
+            - method: 'addExtension'
+              arguments: ['@Twig_Extension_Debug']
+            - method: 'addExtension'
+              arguments: ['@Twig_Extensions_Extension_I18n']
+            - method: 'addExtension'
+              arguments: ['@Twig_Extension_Profiler']
+
+    Glpi\Cache\CacheStorageFactory:
+        $cacheDir: '%cache_directory%'
+        $cacheUniqId: '%cache_uniq_id%'
+    Glpi\Cache\SimpleCacheFactory:
+        $cacheDir: '%cache_directory%'
+        $disableIntegrityChecks: '%cache_disable_integrity_checks%'
+    application_cache:
+        class: 'Glpi\Cache\SimpleCache'
+        factory: 'Glpi\Cache\SimpleCacheFactory:factory'
+        arguments: ['%application_cache%']
+    translation_cache:
+        class: 'Glpi\Cache\SimpleCache'
+        factory: 'Glpi\Cache\SimpleCacheFactory:factory'
+        arguments: ['%translation_cache%']
+
+    # Glpi\ConfigParams service is synthetic as it requires loading of data inside DB
+    Glpi\ConfigParams:
+        synthetic: true
+
+#### Legacy services below
+
+    # database service is synthetic as it may sometime be unavailable (before install process)
+    # and therefore will be added during container compilation process
+    database:
+        synthetic: true
+
+    # Following services are manually declared as they cannot be included using an include/exclude rule
+    Plugin:
+        class: 'Plugin'
+
+#### Vendor services below
+
+    Doctrine\Common\Annotations\Reader:
+        class: 'Doctrine\Common\Annotations\AnnotationReader'
+        arguments:
+            - ~
+            - '@Doctrine\Common\Annotations\AnnotationRegistry' # useless but forces calls on AnnotationRegistry service
+
+    Doctrine\Common\Annotations\AnnotationRegistry:
+        class: 'Doctrine\Common\Annotations\AnnotationRegistry'
+        calls:
+            - method: 'registerAutoloadNamespace'
+              arguments:
+                  - 'Glpi'
+                  - '%kernel.project_dir%/src/'
+
+    Knlv\Slim\Views\TwigMessages:
+        class: 'Knlv\Slim\Views\TwigMessages'
+        arguments:
+            - '@Slim\Flash\Messages'
+
+    Slim\Flash\Messages:
+        class: 'Slim\Flash\Messages'
+
+    Symfony\Component\PropertyAccess\PropertyAccessor:
+        class: 'Symfony\Component\PropertyAccess\PropertyAccessor'
+
+    Symfony\Component\Yaml\Yaml:
+        class: 'Symfony\Component\Yaml\Yaml'
+
+    Twig_Extension_Debug:
+        class: '\Twig\Extension\DebugExtension'
+
+    Twig_Extensions_Extension_I18n:
+        class: 'Twig_Extensions_Extension_I18n'
+
+    Twig_Extension_Profiler:
+        class: '\Twig\Extension\ProfilerExtension'
+        arguments:
+            - '@Twig_Profiler_Profile'
+
+    Twig_Profiler_Profile:
+        class: '\Twig\Profiler\Profile'
+    # 'twig_profile' alias used by RunTracy
+    twig_profile:
+        alias: 'Twig_Profiler_Profile'

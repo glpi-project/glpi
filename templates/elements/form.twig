@@ -1,0 +1,259 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% set glpi_form = {
+   'boxed': true,
+   'form_class': ''
+}|merge(glpi_form) %}
+{% set canEdit = item is defined and item.canEdit(item.fields.id) or item is not defined %}
+
+{% macro fieldset(fieldset, glpi_form, name, show) %}
+   <fieldset  class="tab-pane{% if show == true %} active{% endif %}" id="{{ name }}" role="tabpanel">
+      <div class="row">
+      {% for element in fieldset.elements %}
+         {% set tpl = element.type|default('input') %}
+         {% include "elements/" ~ tpl ~".twig" with {
+            'element':  element,
+            'glpi_form': glpi_form
+         } %}
+      {% endfor %}
+      </div>
+   </fieldset>
+{% endmacro %}
+
+<form class="glpi_form{% if glpi_form.boxed %} form-horizontal{% endif %} {{ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
+{% block form_header %}
+   {% set multi_entities = item is defined and call_static('Session', 'isMultiEntitiesMode') and item.isEntityAssign() %}
+   {% set header = glpi_form.header|default(glpi_form.header_title is defined or multi_entities) %}
+   {% if header %}
+   <header class="card-header with-border row">
+      {% if glpi_form.header_title is defined %}
+         {{ glpi_form.header_title }}
+      {% else %}
+         {% if withtemplate is defined and withtemplate == 2 and item.isNewID() %}
+            {% include "elements/hidden.twig" with {'element': {'name': 'template_name', 'value': item.fields['template_name']}} %}
+            {{ __('Created from the template %s')|format(item.fields['template_name']) }}
+         {% elseif withtemplate is defined and withtemplate == 1 %}
+            {% include "elements/hidden.twig" with {'element': {'name': 'is_template', 'value': 1}} %}
+            {% include "elements/input.twig" with {'element': {'type': 'text', 'name': 'template_name', 'label': __('Template name'), 'required': true}, 'notag': true} %}
+               {#Html::autocompletionTextField(
+                  $this,
+                  'template_name',
+                  [
+                     'size'      => 25,
+                     'required'  => true,
+                     'rand'      => $rand
+                  ]
+               );#}
+         {% endif %}
+      {% endif %}
+
+      {% if item is defined and call_static('Session', 'isMultiEntitiesMode') and item.isEntityAssign() %}
+         {% if item.fields.entities_id is defined %}
+            {# FIXME: is this if required? isEntityAssign would be enough #}
+            {% include "elements/link.twig" with {
+               'element': {
+                  'type': 'link',
+                  'value': {
+                     'itemtype': 'Entity',
+                     'items_id': item.fields.entities_id
+                  }
+               }
+            } %}
+         {% endif %}
+
+         {% if item.maybeRecursive() %}
+            {# if ($params['canedit']) { #}
+               {% if item is instanceof('CommonDBChild') %}
+                  {# CommonDBChild : entity data is get or copy from parent #}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Dropdown', 'getYesNo', [item.isRecursive()]) }}
+                  {% if item.fields.is_recursive is defined %}
+                     {% include "elements/hidden.twig" with {
+                        'element': {
+                           'name': 'is_recursive',
+                           'value': item.fields.is_recursive
+                        }
+                     } %}
+                  {% endif %}
+                  {% set comment = __("Can't change this attribute. It's inherited from its parent.") %}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Html', 'showToolTip', [comment]) }}
+               {% elseif not item.can(item.id, 'recursive') %}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Dropdown', 'getYesNo', [item.fields.is_recursive]) }}
+                  {% set comment = __('You are not allowed to change the visibility flag for child entities.') %}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Html', 'showToolTip', [comment]) }}
+               {% elseif not item.canUnrecurs() %}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Dropdown', 'getYesNo', [item.fields.is_recursive]) }}
+                  {% set comment = __('Flag change forbidden. Linked items found.') %}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Html', 'showToolTip', [comment]) }}
+               {% else %}
+                  {% set comment = __('Change visibility in child entities') %}
+                  {% include "elements/yesno.twig" with {'element': {'name': 'is_recursive', 'elements': {'value': item.fields.is_recursive}, 'label': {'label': __('Child entities'), 'title': comment}}} %}
+               {% endif %}
+            {#% else %}
+                {{ call_static('Dropdown', 'getYesNo', [item.fields.is_recursive]) }}
+            {% endif %#}
+         {% endif %}
+      {% endif %}
+
+   </header>
+   {% elseif multi_entities %}
+         {% include "elements/hidden.twig" with {
+            'element': {
+               'name': 'is_recursive',
+               'value': 0
+            }
+         } %}
+   {% endif %}
+
+   {% block form_content %}
+      {# Handle main elements #}
+      {% import _self as _form %}
+      {% set title = '' %}
+      {% if item is defined %}
+          {% set title = item.getTypeName(1) %}
+      {% endif %}
+
+      {% if glpi_form.elements|length and glpi_form.parts is defined and glpi_form.parts|length %}
+      <ul  class="nav nav-tabs" role="tablist">
+         {% if glpi_form.elements|length %}
+         <li class="nav-item" title="{{ __('Main form') }}" data-toggle="tooltip">
+            <a class="nav-link active show" data-toggle="tab" href="#main">{{ title }}</a>
+         </li>
+         {% endif %}
+      {# Handle other fieldsets #}
+         {% if glpi_form.parts is defined %}
+            {% for name, fieldset in glpi_form.parts %}
+               {% set lititle = fieldset.title %}
+               {% if fieldset.subtitle is defined %}
+                  {% set lititle = lititle ~ ' (' ~ fieldset.subtitle ~ ')' %}
+               {% endif %}
+         <li class="nav-item" title="{{ lititle }}" data-toggle="tooltip">
+            <a class="nav-link" data-toggle="tab" href="#{{ name }}">{{ fieldset.title }}</a>
+         </li>
+            {% endfor %}
+         {% endif %}
+      </ul>
+      {% endif %}
+      <div class="tab-content">
+      {{ _form.fieldset(
+         {
+            'title': title,
+            'elements': glpi_form.elements,
+         },
+         glpi_form,
+         'main',
+         true
+      ) }}
+
+      {# Handle other fieldsets #}
+      {% if glpi_form.parts is defined %}
+         {% for name, fieldset in glpi_form.parts %}
+            {{ _form.fieldset(
+               fieldset,
+               glpi_form,
+               name,
+               false
+            ) }}
+         {% endfor %}
+      {% endif %}
+      </div>
+   {% endblock %}
+
+   {% if glpi_form.extra_header is defined  %}{{ glpi_form.extra_header|raw  }}{% endif %}
+   {% if glpi_form.extra_footer is defined  %}{{ glpi_form.extra_footer|raw  }}{% endif %}
+   {% if glpi_form.footer is not defined or glpi_form.footer == true %}
+   {% endif %}
+{% endblock %}
+   {% include "elements/hidden.twig" with {'element': {'name': '_glpi_csrf_token', 'value': call_static('Session', 'getNewCSRFToken')}} %}
+{% set has_dates = item is defined and item.fields.date_creation is defined or item.fields.date_mod is defined %}
+{% if has_dates or glpi_form.submit is not defined or glpi_form.submit != false or glpi_form.footer_elements is defined %}
+   <div class="{% if glpi_form.boxed %}card-footer{% endif %}">
+   {% if (glpi_form.submit is not defined or glpi_form.submit != false) and canEdit %}
+      {% include "elements/submit.twig" with {
+         'form_class': 'center',
+         'notag': true,
+         'element': {
+            'name': 'submit',
+            'value': glpi_form.submit_label|default(__('Post')),
+            'width': glpi_form.columns|default(null)
+         }
+      } %}
+   {% endif %}
+   {% if item is defined and (item.maybeDeleted() and item.canPurge() or item.canDelete()) %}
+      {% if item.isDeleted() and item.canPurge() %}
+         {% include "elements/purge.twig" with {
+            'form_class': 'center',
+            'notag': true,
+            'element': {
+               'name': 'delete',
+               'value': __('Put in trashbin'),
+               'width': glpi_form.columns|default(null)
+            }
+         } %}
+      {% elseif item.canDelete() %}
+         {% include "elements/delete.twig" with {
+            'form_class': 'center',
+            'notag': true,
+            'element': {
+               'name': 'delete',
+               'value': __('Put in trashbin'),
+               'width': glpi_form.columns|default(null)
+            }
+         } %}
+      {% endif %}
+   {% endif %}
+   {% if glpi_form.footer_elements is defined %}
+      {% for element in glpi_form.footer_elements %}
+         {% set tpl = element.type|default('input') %}
+         {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': glpi_form, notag: true} %}
+      {% endfor %}
+   {% endif %}
+   {% if has_dates %}
+      <div class="float-right dates">
+      {% if item.fields.date_creation is defined %}
+         {{ __('Created on %1$s')|format(item.fields.date_creation|date(__('Y-m-d H:i:s')))}}
+      {% endif %}
+      {% if item.fields.date_mod is defined %}
+         {% if item.fields.date_creation is defined %}<br/>{% endif %}
+         {{ __('Edited on %1$s')|format(item.fields.date_mod|date(__('Y-m-d H:i:s')))}}
+      {% endif %}
+
+      </div>
+      <div class="clearfix"></div>
+   {% endif %}
+   </div>
+{% endif %}
+</form>

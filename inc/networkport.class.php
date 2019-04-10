@@ -148,8 +148,8 @@ class NetworkPort extends CommonDBChild {
     *
     * @param $new_instantiation_type the name of the new instaniation type
     *
-    * @return false on error, true if the previous instantiation is not available (ie.: invalid
-    *         instantiation type) or the object of the previous instantiation.
+    * @return boolean false on error, true if the previous instantiation is not available
+    *                 (ie.: invalid instantiation type) or the object of the previous instantiation.
    **/
    function switchInstantiationType($new_instantiation_type) {
 
@@ -405,14 +405,13 @@ class NetworkPort extends CommonDBChild {
          unset($instantiation);
       }
 
-      $nn = new NetworkPort_NetworkPort();
-      $nn->cleanDBonItemDelete ($this->getType(), $this->getID());
-
-      $nv = new NetworkPort_Vlan();
-      $nv->cleanDBonItemDelete ($this->getType(), $this->getID());
-
-      $names = new NetworkName();
-      $names->cleanDBonItemDelete ($this->getType(), $this->getID());
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            NetworkName::class,
+            NetworkPort_NetworkPort::class,
+            NetworkPort_Vlan::class,
+         ]
+      );
    }
 
 
@@ -683,111 +682,114 @@ class NetworkPort extends CommonDBChild {
             switch ($portType) {
                case 'NetworkPortAlias' :
                   $search_table   = 'glpi_networkportaliases';
-                  $search_request = "`networkports_id_alias`='$items_id'";
+                  $search_request = ['networkports_id_alias' => $items_id];
                   break;
 
                case 'NetworkPortAggregate' :
                   $search_table   = 'glpi_networkportaggregates';
-                  $search_request = "`networkports_id_list` like '%\"$items_id\"%'";
+                  $search_request = ['networkports_id_list' => ['LIKE', "%$items_id%"]];
                   break;
             }
-            $query = "SELECT `networkports_id` AS id
-                      FROM  `$search_table`
-                      WHERE $search_request";
-
+            $criteria = [
+               'SELECT' => 'networkports_id AS id',
+               'FROM'   => $search_table,
+               'WHERE'  => $search_request
+            ];
          } else {
-            $query = "SELECT `id`
-                      FROM `glpi_networkports`
-                      WHERE `items_id` = '$items_id'
-                            AND `itemtype` = '$itemtype'
-                            AND `instantiation_type` = '$portType'
-                            AND `is_deleted` = 0
-                      ORDER BY `name`,
-                               `logical_number`";
+            $criteria = [
+               'SELECT' => 'id',
+               'FROM'   => 'glpi_networkports',
+               'WHERE'  => [
+                  'items_id'           => $items_id,
+                  'itemtype'           => $itemtype,
+                  'instantiation_type' => $portType,
+                  'is_deleted'         => 0
+               ],
+               'ORDER'  => ['name', 'logical_number']
+            ];
          }
 
-         if ($result = $DB->query($query)) {
-            echo "<div class='spaced'>";
+         echo "<div class='spaced'>";
 
-            $number_port = $DB->numrows($result);
+         $iterator = $DB->request($criteria);
+         $number_port = count($iterator);
 
-            if ($number_port != 0) {
-               $is_active_network_port = true;
+         if ($number_port != 0) {
+            $is_active_network_port = true;
 
-               $save_canedit = $canedit;
+            $save_canedit = $canedit;
 
-               if (!empty($portType)) {
-                  $name = sprintf(__('%1$s (%2$s)'), self::getTypeName($number_port),
-                                  call_user_func([$portType, 'getTypeName']));
-                  $name = sprintf(__('%1$s: %2$s'), $name, $number_port);
-               } else {
-                  $name    = __('Network ports waiting for manual migration');
-                  $canedit = false;
-               }
-
-               while ($devid = $DB->fetch_row($result)) {
-                  $t_row = $t_group->createRow();
-
-                  $netport->getFromDB(current($devid));
-
-                  // No massive action for migration ports
-                  if (($withtemplate != 2)
-                      && $canedit
-                      && !empty($portType)) {
-                     $ce_checkbox =  $t_row->addCell($c_checkbox,
-                                                     Html::getMassiveActionCheckBox(__CLASS__, $netport->fields["id"]));
-                  } else {
-                     $ce_checkbox = null;
-                  }
-                  $content = "<span class='b'>";
-                  // Display link based on default rights
-                  if ($save_canedit
-                      && ($withtemplate != 2)) {
-
-                     if (!empty($portType)) {
-                        $content .= "<a href=\"" . NetworkPort::getFormURLWithID($netport->fields["id"]) ."\">";
-                     } else {
-                        $content .= "<a href=\"" . NetworkportMigration::getFormURLWithID($netport->fields["id"]) ."\">";
-                     }
-                  }
-                  $content .= $netport->fields["logical_number"];
-
-                  if ($canedit
-                      && ($withtemplate != 2)) {
-                     $content .= "</a>";
-                  }
-                  $content .= "</span>";
-                  $content .= Html::showToolTip($netport->fields['comment'],
-                                                ['display' => false]);
-
-                  $t_row->addCell($c_number, $content);
-
-                  $value = $netport->fields["name"];
-                  $t_row->addCell($c_name, $value, null, $netport);
-
-                  if ($table_options['display_isDynamic']) {
-                     $t_row->addCell($c_dynamic,
-                                     Dropdown::getYesNo($netport->fields['is_dynamic']));
-                  }
-
-                  $instant_cell = null;
-                  if ($display_options['characteristics']) {
-                     $instantiation = $netport->getInstantiation();
-                     if ($instantiation !== false) {
-                        $instantiation->getInstantiationHTMLTable($netport, $t_row, null,
-                                                                  $table_options);
-                        unset($instantiation);
-                     }
-                  } else if ($display_options['internet']) {
-                     NetworkName::getHTMLTableCellsForItem($t_row, $netport, null, $table_options);
-                  }
-
-               }
-
-               $canedit = $save_canedit;
+            if (!empty($portType)) {
+               $name = sprintf(__('%1$s (%2$s)'), self::getTypeName($number_port),
+                                 call_user_func([$portType, 'getTypeName']));
+               $name = sprintf(__('%1$s: %2$s'), $name, $number_port);
+            } else {
+               $name    = __('Network ports waiting for manual migration');
+               $canedit = false;
             }
-            echo "</div>";
+
+            while ($devid = $iterator->next()) {
+               $t_row = $t_group->createRow();
+
+               $netport->getFromDB(current($devid));
+
+               // No massive action for migration ports
+               if (($withtemplate != 2)
+                     && $canedit
+                     && !empty($portType)) {
+                  $ce_checkbox =  $t_row->addCell($c_checkbox,
+                                                   Html::getMassiveActionCheckBox(__CLASS__, $netport->fields["id"]));
+               } else {
+                  $ce_checkbox = null;
+               }
+               $content = "<span class='b'>";
+               // Display link based on default rights
+               if ($save_canedit
+                     && ($withtemplate != 2)) {
+
+                  if (!empty($portType)) {
+                     $content .= "<a href=\"" . NetworkPort::getFormURLWithID($netport->fields["id"]) ."\">";
+                  } else {
+                     $content .= "<a href=\"" . NetworkportMigration::getFormURLWithID($netport->fields["id"]) ."\">";
+                  }
+               }
+               $content .= $netport->fields["logical_number"];
+
+               if ($canedit
+                     && ($withtemplate != 2)) {
+                  $content .= "</a>";
+               }
+               $content .= "</span>";
+               $content .= Html::showToolTip($netport->fields['comment'],
+                                             ['display' => false]);
+
+               $t_row->addCell($c_number, $content);
+
+               $value = $netport->fields["name"];
+               $t_row->addCell($c_name, $value, null, $netport);
+
+               if ($table_options['display_isDynamic']) {
+                  $t_row->addCell($c_dynamic,
+                                    Dropdown::getYesNo($netport->fields['is_dynamic']));
+               }
+
+               $instant_cell = null;
+               if ($display_options['characteristics']) {
+                  $instantiation = $netport->getInstantiation();
+                  if ($instantiation !== false) {
+                     $instantiation->getInstantiationHTMLTable($netport, $t_row, null,
+                                                               $table_options);
+                     unset($instantiation);
+                  }
+               } else if ($display_options['internet']) {
+                  NetworkName::getHTMLTableCellsForItem($t_row, $netport, null, $table_options);
+               }
+
+            }
+
+            $canedit = $save_canedit;
          }
+         echo "</div>";
       }
       if ($is_active_network_port
           && $showmassiveactions) {
@@ -1137,13 +1139,13 @@ class NetworkPort extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $IS_TWIG;
 
       // Can exists on template
       $nb = 0;
       if (NetworkEquipment::canView()) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                $nb = self::countForItem($item);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

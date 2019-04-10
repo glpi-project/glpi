@@ -103,7 +103,7 @@ class Printer  extends CommonDBTM {
     *
     * Overloaded from CommonDBTM
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUnrecurs() {
       global $DB, $CFG_GLPI;
@@ -143,7 +143,7 @@ class Printer  extends CommonDBTM {
          $res = $DB->query($sql);
 
          if ($res) {
-            while ($data = $DB->fetch_assoc($res)) {
+            while ($data = $DB->fetchAssoc($res)) {
                $itemtable = getTableForItemType($data["itemtype"]);
                if ($item = getItemForItemtype($data["itemtype"])) {
                   // For each itemtype which are entity dependant
@@ -230,9 +230,6 @@ class Printer  extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $ci = new Computer_Item();
-      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
       $DB->update(
          'glpi_cartridges', [
             'printers_id' => 'NULL'
@@ -241,14 +238,15 @@ class Printer  extends CommonDBTM {
          ]
       );
 
-      $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ci = new Change_Item();
-      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Certificate_Item::class,
+            Change_Item::class,
+            Computer_Item::class,
+            Item_Problem::class,
+            Item_Project::class,
+         ]
+      );
 
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
@@ -285,9 +283,11 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".__('Status')."</td>\n";
       echo "<td>";
-      State::dropdown(['value'     => $this->fields["states_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_printer`"]);
+      State::dropdown([
+         'value'     => $this->fields["states_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_visible_printer' => 1]
+      ]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -317,10 +317,12 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id_tech',
-                            'value'     => $this->fields['groups_id_tech'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`']);
+      Group::dropdown([
+         'name'      => 'groups_id_tech',
+         'value'     => $this->fields['groups_id_tech'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_assign' => 1]
+      ]);
       echo "</td>";
       echo "<td>".__('Model')."</td>\n";
       echo "<td>";
@@ -376,9 +378,11 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>\n";
       echo "<td>";
-      Group::dropdown(['value'     => $this->fields["groups_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_itemgroup`']);
+      Group::dropdown([
+         'value'     => $this->fields["groups_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_itemgroup' => 1]
+      ]);
       echo "</td>\n";
       echo "<td>".__('Network')."</td>\n";
       echo "<td>";
@@ -549,7 +553,7 @@ class Printer  extends CommonDBTM {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_printer`'
+         'condition'          => ['is_visible_printer' => 1]
       ];
 
       $tab[] = [
@@ -598,7 +602,7 @@ class Printer  extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'name'               => __('Group'),
-         'condition'          => '`is_itemgroup`',
+         'condition'          => ['is_itemgroup' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -776,7 +780,7 @@ class Printer  extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the hardware'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -811,6 +815,8 @@ class Printer  extends CommonDBTM {
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
+      $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
+
       return $tab;
    }
 
@@ -818,8 +824,8 @@ class Printer  extends CommonDBTM {
    /**
     * Add a printer. If already exist in trashbin restore it
     *
-    * @param $name          the printer's name (need to be addslashes)
-    * @param $manufacturer  the software's manufacturer (need to be addslashes)
+    * @param $name          the printer's name
+    * @param $manufacturer  the software's manufacturer
     * @param $entity        the entity in which the software must be added
     * @param $comment       comment (default '')
    **/
@@ -861,8 +867,8 @@ class Printer  extends CommonDBTM {
    /**
     * Create a new printer
     *
-    * @param $name         the printer's name (need to be addslashes)
-    * @param $manufacturer the printer's manufacturer (need to be addslashes)
+    * @param $name         the printer's name
+    * @param $manufacturer the printer's manufacturer
     * @param $entity       the entity in which the printer must be added
     * @param $comment      (default '')
     *

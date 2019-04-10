@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
+   exit();
+}
+
 /**
  * @since 0.85
  */
@@ -51,7 +56,7 @@ foreach (['PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
       }
       if ($line[0] != '\t') {
          $id   = strtolower(substr($line, 0, 4));
-         $name = addslashes(trim(substr($line, 4)));
+         $name = trim(substr($line, 4));
          if ($registeredid->getFromDBByCrit([
             'itemtype'     => 'Manufacturer',
             'name'         => $id,
@@ -74,7 +79,7 @@ foreach (['PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
       // if (($line[0] == "\t") && ($line[1] != '\t'))  {
       //    $line = trim($line);
       //    $id   = strtolower(substr($line, 0, 4));
-      //    $name = addslashes(trim(substr($line, 4)));
+      //    $name = trim(substr($line, 4));
       //    continue;
       // }
    }

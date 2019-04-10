@@ -321,7 +321,7 @@ class Fieldblacklist extends CommonDropdown {
 
       if ($target = getItemForItemtype($itemtype)) {
          $criteria = [];
-         foreach ($DB->list_fields($target->getTable()) as $field) {
+         foreach ($DB->listFields($target->getTable()) as $field) {
             $searchOption = $target->getSearchOptionByField('field', $field['Field']);
 
             // MoYo : do not know why  this part ?
@@ -381,14 +381,16 @@ class Fieldblacklist extends CommonDropdown {
    static function isFieldBlacklisted($itemtype, $entities_id, $field, $value) {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `glpi_fieldblacklists`
-                WHERE `itemtype` = '$itemtype'
-                      AND `field` = '$field'
-                      AND `value` = '$value'".
-                      getEntitiesRestrictRequest(" AND", "glpi_fieldblacklists", "entities_id",
-                                                 $entities_id, true);
-      return ($DB->result($DB->query($query), 0, 'cpt') ?true :false);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_fieldblacklists',
+         'WHERE'  => [
+            'itemtype'  => $itemtype,
+            'field'     => $field,
+            'value'     => $value
+         ] + getEntitiesRestrictCriteria('glpi_fieldblacklists', 'entities_id', $entities_id, true)
+      ])->next();
+      return $result['cpt'] > 0;
    }
 
 }

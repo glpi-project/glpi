@@ -1,7 +1,11 @@
 /config/config_db*
+/config/db.yaml
 /config/config_path.php
 /config/local_define.php
+/config/parameters.yaml
 /tests/config_db*
+/tests/db.yaml
+/tests/parameters.yaml
 /plugins/
 /files/
 /.buildpath
@@ -16,14 +20,17 @@
 /vendor/
 phpunit.xml
 /tests/code-coverage/
+/tests/files/
 /config/based_config.php
 /config/config.php
 /config/define.php
 /nbproject
 .composer.hash
-/css/**/*.min.css
+/**/*.min.css
+/css/compiled/
 !/css/tiny_mce/**/*.min.css
-/js/*.min.js
-# ignore incomplete locale, fallback to ru.js
-# see https://github.com/glpi-project/glpi/issues/3788
-/lib/tiny_mce/langs/ru_RU.js
+/**/*.min.js
+/node_modules/
+.package.hash
+/public/build/
+/public/lib/

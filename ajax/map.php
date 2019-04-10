@@ -47,22 +47,23 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
    $itemtype = $_POST['itemtype'];
    $params   = $_POST['params'];
 
-   $data = Search::prepareDatasForSearch($itemtype, $params);
-   Search::constructSQL($data);
-   Search::constructData($data);
+   $search = new Search(new $itemtype(), $params);
+   $data = $search->prepareDataForSearch($itemtype, $params);
+   $search->constructSQL($data);
+   $search->constructData($data);
 
    if ($itemtype == 'Location') {
-      $lat_field = array_search(21, $data['toview']);
-      $lng_field = array_search(20, $data['toview']);
-      $name_field = array_search(1, $data['toview']);
+      $lat_field = $itemtype . '_21';
+      $lng_field = $itemtype . '_20';
+      $name_field = $itemtype . '_1';
    } else {
-      $lat_field = array_search(998, $data['toview']);
-      $lng_field = array_search(999, $data['toview']);
-      $name_field = array_search(3, $data['toview']);
+      $lat_field = $itemtype . '_998';
+      $lng_field = $itemtype . '_999';
+      $name_field = $itemtype . '_3';
    }
    if ($itemtype == 'Ticket') {
       //duplicate search options... again!
-      $name_field = array_search(83, $data['toview']);
+      $name_field = $itemtype . '_83';
    }
 
    $rows = $data['data']['rows'];

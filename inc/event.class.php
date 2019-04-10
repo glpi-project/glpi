@@ -77,7 +77,7 @@ class Event extends CommonDBTM {
          $full_message = "[".$this->fields['service']."] ".
                          $message_type.
                          $this->fields['level'].": ".
-                         Toolbox::stripslashes_deep($this->fields['message'])."\n";
+                         $this->fields['message']."\n";
 
          Toolbox::logInFile("event", $full_message);
       }
@@ -100,11 +100,11 @@ class Event extends CommonDBTM {
       global $DB;
 
       $input = ['items_id' => intval($items_id),
-                     'type'     => $DB->escape($type),
+                     'type'     => $type,
                      'date'     => $_SESSION["glpi_currenttime"],
-                     'service'  => $DB->escape($service),
+                     'service'  => $service,
                      'level'    => intval($level),
-                     'message'  => $DB->escape($event)];
+                     'message'  => $event];
       $tmp = new self();
       return $tmp->add($input);
    }
@@ -122,13 +122,12 @@ class Event extends CommonDBTM {
 
       $secs = $day * DAY_TIMESTAMP;
 
-      //TODO: migrate to DB::delete()
-      $query_exp = "DELETE
-                    FROM `glpi_events`
-                    WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-      $DB->query($query_exp);
-
-      return $DB->affected_rows();
+      $result = $DB->delete(
+         'glpi_events', [
+            new \QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
+         ]
+      );
+      return $result->rowCount();
    }
 
 
@@ -240,16 +239,15 @@ class Event extends CommonDBTM {
       }
 
       // Query Database
-      $query = "SELECT *
-                FROM `glpi_events`
-                WHERE `message` LIKE '".$usersearch."%'
-                ORDER BY `date` DESC
-                LIMIT 0,".intval($_SESSION['glpilist_limit']);
-      // Get results
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_events',
+         'WHERE'  => ['message' => ['LIKE', $usersearch . '%']],
+         'ORDER'  => 'date DESC',
+         'LIMIT'  => (int)$_SESSION['glpilist_limit']
+      ]);
 
       // Number of results
-      $number = $DB->numrows($result);
+      $number = count($iterator);;
 
       // No Events in database
       if ($number < 1) {
@@ -274,13 +272,13 @@ class Event extends CommonDBTM {
       echo "<th width='8%'>".__('Service')."</th>";
       echo "<th width='60%'>".__('Message')."</th></tr>";
 
-      while ($i < $number) {
-         $ID       = $DB->result($result, $i, "id");
-         $items_id = $DB->result($result, $i, "items_id");
-         $type     = $DB->result($result, $i, "type");
-         $date     = $DB->result($result, $i, "date");
-         $service  = $DB->result($result, $i, "service");
-         $message  = $DB->result($result, $i, "message");
+      while ($data = $iterator->next()) {
+         $ID       = $data['id'];
+         $items_id = $data['items_id'];
+         $type     = $data['type'];
+         $date     = $data['date'];
+         $service  = $data['service'];
+         $message  = $data['message'];
 
          $itemtype = "&nbsp;";
          if (isset($logItemtype[$type])) {

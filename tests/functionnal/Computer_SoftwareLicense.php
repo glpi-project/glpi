@@ -142,8 +142,10 @@ class Computer_SoftwareLicense extends DbTestCase {
 
       $lic_computer = new \Computer_SoftwareLicense();
       $computer     = getItemByTypeName('Computer', '_test_pc01');
-      $result = $lic_computer->find("`computers_id`='".$computer->fields['id']."'
-                                      AND `softwarelicenses_id`='".$old_lic->fields['id']."'");
+      $result = $lic_computer->find([
+         'computers_id'          => $computer->fields['id'],
+         'softwarelicenses_id'   => $old_lic->fields['id']
+      ]);
       $this->boolean($lic_computer->getFromDB(array_keys($result)[0]))->isTrue();
 
       $lic_computer->upgrade($lic_computer->getID(), $new_lic->fields['id']);

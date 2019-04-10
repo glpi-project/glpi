@@ -212,4 +212,42 @@ class DeviceMemory extends CommonDevice {
                    'frequence'            => 'delta:10'];
    }
 
+   public static function rawSearchOptionsToAdd($class, $main_joinparams) {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => '110',
+         'table'              => 'glpi_devicememories',
+         'field'              => 'designation',
+         'name'               => __('Memory type'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicememories',
+               'joinparams'         => $main_joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '111',
+         'table'              => 'glpi_items_devicememories',
+         'field'              => 'size',
+         'unit'               => 'auto',
+         'name'               => __('Memory'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'number',
+         'width'              => 100,
+         'massiveaction'      => false,
+         'joinparams'         => $main_joinparams,
+         'computation'        => '(SUM(TABLE.`size`) / COUNT(TABLE.`id`))
+                                    * COUNT(DISTINCT TABLE.`id`)'
+      ];
+
+      return $tab;
+   }
 }

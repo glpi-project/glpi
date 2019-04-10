@@ -52,16 +52,14 @@ class ComputerAntivirus extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       // can exists for template
       if (($item->getType() == 'Computer')
           && Computer::canView()) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
             $nb = countElementsInTable('glpi_computerantiviruses',
                                       ["computers_id" => $item->getID(), 'is_deleted' => 0 ]);
          }
@@ -71,11 +69,6 @@ class ComputerAntivirus extends CommonDBChild {
    }
 
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForComputer($item, $withtemplate);
@@ -83,9 +76,6 @@ class ComputerAntivirus extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -102,14 +92,19 @@ class ComputerAntivirus extends CommonDBChild {
     * @param $oldid
     * @param $newid
    **/
-   static function cloneComputer ($oldid, $newid) {
+   static function cloneComputer($oldid, $newid) {
       global $DB;
 
-      foreach ($DB->request('glpi_computerantiviruses', ['computers_id' => $oldid]) as $data) {
+      $result = $DB->request(
+         [
+            'FROM'  => ComputerAntivirus::getTable(),
+            'WHERE' => ['computers_id' => $oldid],
+         ]
+      );
+      foreach ($result as $data) {
          $antirivus            = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;
-         $data                 = Toolbox::addslashes_deep($data);
          $antirivus->add($data);
       }
    }
@@ -128,7 +123,7 @@ class ComputerAntivirus extends CommonDBChild {
          'id'                 => '167',
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Name'),
+         'name'               => __('Name'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -141,7 +136,7 @@ class ComputerAntivirus extends CommonDBChild {
          'id'                 => '168',
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'antivirus_version',
-         'name'               => $name . ' - ' . __('Version'),
+         'name'               => __('Version'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'text',
@@ -155,7 +150,7 @@ class ComputerAntivirus extends CommonDBChild {
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'is_active',
          'linkfield'          => '',
-         'name'               => $name . ' - ' . __('Active'),
+         'name'               => __('Active'),
          'datatype'           => 'bool',
          'joinparams'         => [
             'jointype'           => 'child'
@@ -170,7 +165,7 @@ class ComputerAntivirus extends CommonDBChild {
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'is_uptodate',
          'linkfield'          => '',
-         'name'               => $name . ' - ' . __('Is up to date'),
+         'name'               => __('Is up to date'),
          'datatype'           => 'bool',
          'joinparams'         => [
             'jointype'           => 'child'
@@ -184,7 +179,7 @@ class ComputerAntivirus extends CommonDBChild {
          'id'                 => '171',
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'signature_version',
-         'name'               => $name . ' - ' . __('Signature database version'),
+         'name'               => __('Signature database version'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'text',
@@ -197,7 +192,7 @@ class ComputerAntivirus extends CommonDBChild {
          'id'                 => '172',
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'date_expiration',
-         'name'               => $name . ' - ' . __('Expiration date'),
+         'name'               => __('Expiration date'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'date',
@@ -212,13 +207,12 @@ class ComputerAntivirus extends CommonDBChild {
    /**
     * Display form for antivirus
     *
-    * @param $ID                id of the antivirus
-    * @param $options array
+    * @param integer $ID      id of the antivirus
+    * @param array   $options
     *
-    * @return bool TRUE if form is ok
+    * @return boolean TRUE if form is ok
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       if (!Session::haveRight("computer", READ)) {
          return false;
@@ -307,7 +301,7 @@ class ComputerAntivirus extends CommonDBChild {
     * @param $comp                  Computer object
     * @param $withtemplate boolean  Template or basic item (default 0)
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB;
@@ -316,7 +310,7 @@ class ComputerAntivirus extends CommonDBChild {
 
       if (!$comp->getFromDB($ID)
           || !$comp->can($ID, READ)) {
-         return false;
+         return;
       }
       $canedit = $comp->canEdit($ID);
 
@@ -331,67 +325,74 @@ class ComputerAntivirus extends CommonDBChild {
 
       echo "<div class='spaced center'>";
 
-      if ($result = $DB->request('glpi_computerantiviruses', ['computers_id' => $ID,
-                                                                   'is_deleted'   => 0])) {
-         echo "<table class='tab_cadre_fixehov'>";
-         $colspan = 7;
-         if (Plugin::haveImport()) {
-            $colspan++;
-         }
-         echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName($result->numrows()).
-              "</th></tr>";
+      $result = $DB->request(
+         [
+            'FROM'  => ComputerAntivirus::getTable(),
+            'WHERE' => [
+               'computers_id' => $ID,
+               'is_deleted'   => 0,
+            ],
+         ]
+      );
 
-         if ($result->numrows() != 0) {
-
-            $header = "<tr><th>".__('Name')."</th>";
-            if (Plugin::haveImport()) {
-               $header .= "<th>".__('Automatic inventory')."</th>";
-            }
-            $header .= "<th>".__('Manufacturer')."</th>";
-            $header .= "<th>".__('Antivirus version')."</th>";
-            $header .= "<th>".__('Signature database version')."</th>";
-            $header .= "<th>".__('Active')."</th>";
-            $header .= "<th>".__('Up to date')."</th>";
-            $header .= "<th>".__('Expiration date')."</th>";
-            $header .= "</tr>";
-            echo $header;
-
-            Session::initNavigateListItems(__CLASS__,
-                              //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
-                                           sprintf(__('%1$s = %2$s'),
-                                                   Computer::getTypeName(1), $comp->getName()));
-
-            $antivirus = new self();
-            foreach ($result as $data) {
-               $antivirus->getFromDB($data['id']);
-               echo "<tr class='tab_bg_2'>";
-               echo "<td>".$antivirus->getLink()."</td>";
-               if (Plugin::haveImport()) {
-                  echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
-               }
-               echo "<td>";
-               if ($data['manufacturers_id']) {
-                  echo Dropdown::getDropdownName('glpi_manufacturers',
-                                                 $data['manufacturers_id'])."</td>";
-               } else {
-                  echo "</td>";
-               }
-               echo "<td>".$data['antivirus_version']."</td>";
-               echo "<td>".$data['signature_version']."</td>";
-               echo "<td>".Dropdown::getYesNo($data['is_active'])."</td>";
-               echo "<td>".Dropdown::getYesNo($data['is_uptodate'])."</td>";
-               echo "<td>".Html::convDate($data['date_expiration'])."</td>";
-               echo "</tr>";
-               Session::addToNavigateListItems(__CLASS__, $data['id']);
-            }
-            echo $header;
-         } else {
-            echo "<tr class='tab_bg_2'><th colspan='$colspan'>".__('No item found')."</th></tr>";
-         }
-
-         echo "</table>";
+      echo "<table class='tab_cadre_fixehov'>";
+      $colspan = 7;
+      if (Plugin::haveImport()) {
+         $colspan++;
       }
+      echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName($result->numrows()).
+           "</th></tr>";
+
+      if ($result->numrows() != 0) {
+
+         $header = "<tr><th>".__('Name')."</th>";
+         if (Plugin::haveImport()) {
+            $header .= "<th>".__('Automatic inventory')."</th>";
+         }
+         $header .= "<th>".__('Manufacturer')."</th>";
+         $header .= "<th>".__('Antivirus version')."</th>";
+         $header .= "<th>".__('Signature database version')."</th>";
+         $header .= "<th>".__('Active')."</th>";
+         $header .= "<th>".__('Up to date')."</th>";
+         $header .= "<th>".__('Expiration date')."</th>";
+         $header .= "</tr>";
+         echo $header;
+
+         Session::initNavigateListItems(__CLASS__,
+                           //TRANS : %1$s is the itemtype name,
+                           //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                Computer::getTypeName(1), $comp->getName()));
+
+         $antivirus = new self();
+         foreach ($result as $data) {
+            $antivirus->getFromDB($data['id']);
+            echo "<tr class='tab_bg_2'>";
+            echo "<td>".$antivirus->getLink()."</td>";
+            if (Plugin::haveImport()) {
+               echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
+            }
+            echo "<td>";
+            if ($data['manufacturers_id']) {
+               echo Dropdown::getDropdownName('glpi_manufacturers',
+                                              $data['manufacturers_id'])."</td>";
+            } else {
+               echo "</td>";
+            }
+            echo "<td>".$data['antivirus_version']."</td>";
+            echo "<td>".$data['signature_version']."</td>";
+            echo "<td>".Dropdown::getYesNo($data['is_active'])."</td>";
+            echo "<td>".Dropdown::getYesNo($data['is_uptodate'])."</td>";
+            echo "<td>".Html::convDate($data['date_expiration'])."</td>";
+            echo "</tr>";
+            Session::addToNavigateListItems(__CLASS__, $data['id']);
+         }
+         echo $header;
+      } else {
+         echo "<tr class='tab_bg_2'><th colspan='$colspan'>".__('No item found')."</th></tr>";
+      }
+
+      echo "</table>";
       echo "</div>";
    }
 

@@ -5,21 +5,22 @@ env:
   - DB=mysql
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - ./tests/LDAP/ldap_run.sh
   - composer self-update
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
   - composer install --optimize-autoloader
-  #install 0.72.3 database
-  - if [[ "$UPDATE" == "true" ]]; then php scripts/cliupdate.php --config-dir=../tests --dev |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1); fi
-  - if [[ "$UPDATE" == "true" ]]; then php scripts/innodb_migration.php --config-dir=../tests; fi
+  - cp tests/travis.parameters.yaml tests/parameters.yaml
+  - nvm install stable # update node
+  - npm update -g npm # update npm
+  - npm ci
+  - npm run-script build-dev
+  - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
   - mysql -u root -e 'create database glpitest;'
-  - php scripts/cliinstall.php --db=glpitest --user=root --tests
-  - php scripts/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
-  - ./tests/test_fail_update.sh; git checkout install/update_92_93.php;
-  # LDAP stuff
+  - bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-user=root
   - ./tests/LDAP/ldap_fixtures.sh > /dev/null
-  - if [[ "$UPDATE" == "true" ]]; then ./vendor/bin/robo --load-from tools minify; fi
+
 script:
   - mysql -u root -e 'select version();'
   - composer testldap
@@ -27,12 +28,6 @@ script:
 #note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
   include:
-    - php: 5.6
-      addons:
-        apt:
-          packages:
-            - ldap-utils
-            - slapd
     - php: 7.0
       addons:
         mariadb: 10.2
@@ -40,7 +35,6 @@ matrix:
           packages:
             - ldap-utils
             - slapd
-
     - php: 7.1
       addons:
         mariadb: 10.1
@@ -48,8 +42,13 @@ matrix:
           packages:
             - ldap-utils
             - slapd
-
     - php: 7.2
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+    - php: 7.3
       addons:
         apt:
           packages:

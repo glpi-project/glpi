@@ -220,7 +220,7 @@ class RuleDictionnarySoftwareCollection extends DbTestCase {
                 '_system_category' => 'web'
                ];
       $result = $collection->processAllRules($input);
-      $expected = ['_no_rule_matches' => '1', '_rule_process' => ''];
+      $expected = ['_no_rule_matches' => true, '_rule_process' => false];
       $this->array($result)->isIdenticalTo($expected);
 
    }

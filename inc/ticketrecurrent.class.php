@@ -424,14 +424,19 @@ class TicketRecurrent extends CommonDropdown {
 
       $tot = 0;
 
-      $query = "SELECT *
-                FROM `glpi_ticketrecurrents`
-                WHERE `glpi_ticketrecurrents`.`next_creation_date` < NOW()
-                      AND `glpi_ticketrecurrents`.`is_active` = 1
-                      AND (`glpi_ticketrecurrents`.`end_date` IS NULL
-                           OR `glpi_ticketrecurrents`.`end_date` > NOW())";
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_ticketrecurrents',
+         'WHERE'  => [
+            'next_creation_date' => ['<', new \QueryExpression('NOW()')],
+            'is_active'          => 1,
+            'OR'                 => [
+               ['end_date' => null],
+               ['end_date' => ['>', new \QueryExpression('NOW()')]]
+            ]
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if (self::createTicket($data)) {
             $tot++;
          } else {
@@ -442,7 +447,7 @@ class TicketRecurrent extends CommonDropdown {
       }
 
       $task->setVolume($tot);
-      return ($tot > 0);
+      return ($tot > 0 ? 1 : 0);
    }
 
 
@@ -494,7 +499,7 @@ class TicketRecurrent extends CommonDropdown {
          $input['_auto_import'] = true;
 
          $ticket = new Ticket();
-         $input  = Toolbox::addslashes_deep($input);
+         $input  = $input;
          if ($tid = $ticket->add($input)) {
             $msg = sprintf(__('Ticket %d successfully created'), $tid);
             $result = true;
@@ -506,7 +511,7 @@ class TicketRecurrent extends CommonDropdown {
       }
       $changes[0] = 0;
       $changes[1] = '';
-      $changes[2] = addslashes($msg);
+      $changes[2] = $msg;
       Log::history($data['id'], __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
 
       // Compute next creation date

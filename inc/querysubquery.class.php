@@ -37,60 +37,45 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  Sub query class
 **/
-class QuerySubQuery {
+class QuerySubQuery extends AbstractQuery {
    private $dbiterator;
-   private $allowed_operators = ['IN', 'NOT IN'];
-   private $operator = 'IN';
 
    /**
     * Create a sub query
     *
-    * @param array $crit Arry of query criteria. Any valid DBmysqliterator parameters are valid.
+    * @param array  $crit      Array of query criteria. Any valid DBmysqliterator parameters are valid.
+    * @param string $alias     Alias for the whole subquery
     */
-   public function __construct(array $crit, $operator = null) {
+   public function __construct(array $crit, $alias = null) {
       global $DB;
 
+      parent::__construct($alias);
       if (empty($crit)) {
          throw new \RuntimeException('Cannot build an empty subquery');
       }
 
       $this->dbiterator = new DBmysqliterator($DB);
-      if ($operator !== null) {
-         $this->setOperator($operator);
-      }
       $this->dbiterator->buildQuery($crit);
    }
 
    /**
-    * Set query operator
     *
-    * @param string $operator Query operator
+    * Get SQL query
     *
-    * @return QuerySubQuery
+    * @return string
     */
-   public function setOperator($operator) {
-      if (!$this->dbiterator->isOperator($operator) &&!in_array($operator, $this->allowed_operators, true)) {
-         throw new \RuntimeException("Unknown query operator $operator");
+   public function getQuery() {
+      global $DB;
+
+      $sql = "(" . $this->dbiterator->getSql() . ")";
+
+      if ($this->alias !== null) {
+         $sql .= ' AS ' . $DB->quoteName($this->alias);
       }
-      $this->operator = $operator;
-      return $this;
+      return $sql;
    }
 
-   /**
-    * Get operator
-    *
-    * @return string
-    */
-   public function getOperator() {
-      return $this->operator;
-   }
-
-   /**
-    * Query sub query
-    *
-    * @return string
-    */
-   public function getSubQuery() {
-      return $this->dbiterator->getSql();
+   public function getParameters() {
+      return $this->dbiterator->getParameters();
    }
 }

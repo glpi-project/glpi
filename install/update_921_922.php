@@ -40,11 +40,9 @@
  * @return bool for success (will die for most error)
 **/
 function update921to922() {
-   global $DB, $migration, $CFG_GLPI;
+   global $DB, $migration;
 
-   $current_config   = Config::getConfigurationValues('core');
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+   $updateresult = true;
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.2.2'));
@@ -54,13 +52,21 @@ function update921to922() {
       'smtp_retry_time' => 5,
    ]);
 
+   $set = [];
    $migration->addPostQuery(
-      "DELETE FROM `glpi_configs` WHERE `context` = 'core'
-      AND `name` = 'default_graphtype'"
+      $DB->buildDelete("glpi_configs", $set, [
+         'context'   => "core",
+         'name'      => "default_graphtype"
+      ]),
+      $set
    );
 
+   $set = [];
    $migration->addPostQuery(
-      "DELETE FROM `glpi_crontasks` WHERE `name` = 'optimize'"
+      $DB->buildDelete("glpi_crontasks", $set,
+         ['name' => "optimize"]
+      ),
+      $set
    );
 
    // ************ Keep it at the end **************

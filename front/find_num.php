@@ -46,7 +46,7 @@ echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
     <title>GLPI</title>
 
 <?php
-echo Html::css($CFG_GLPI["root_doc"].'/css/styles.css');
+echo Html::scss('glpi-legacy');
 echo Html::script($CFG_GLPI["root_doc"].'/script.js');
 ?>
 

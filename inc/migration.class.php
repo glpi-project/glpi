@@ -43,6 +43,7 @@ class Migration {
 
    private   $change    = [];
    private   $fulltexts = [];
+   private   $uniques   = [];
    protected $version;
    private   $deb;
    private   $lastMessage;
@@ -340,7 +341,7 @@ class Migration {
     * @param string $type    Field type, @see Migration::fieldFormat()
     * @param array  $options Options:
     *                         - update    : if not empty = value of $field (must be protected)
-    *                         - condition : if needed
+    *                         - condition : array of where conditions, if needed
     *                         - value     : default_value new field's default value, if a specific default value needs to be used
     *                         - nodefault : do not define default value (default false)
     *                         - comment   : comment to be added during field creation
@@ -352,8 +353,8 @@ class Migration {
    function addField($table, $field, $type, $options = []) {
       global $DB;
 
-      $params['update']    = '';
-      $params['condition'] = '';
+      $params['update']    = [];
+      $params['condition'] = [true];
       $params['value']     = null;
       $params['nodefault'] = false;
       $params['comment']   = '';
@@ -365,6 +366,11 @@ class Migration {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
          }
+      }
+
+      if (!is_array($params['condition'])) {
+         Toolbox::deprecated('Use arrays to pass conditions');
+         $params['condition'] = [new \QueryExpression($params['condition'])];
       }
 
       $format = $this->fieldFormat($type, $params['value'], $params['nodefault']);
@@ -390,10 +396,11 @@ class Migration {
 
             if (!empty($params['update'])) {
                $this->migrationOneTable($table);
-               $query = "UPDATE `$table`
-                        SET `$field` = ".$params['update']." ".
-                        $params['condition']."";
-               $DB->queryOrDie($query, $this->version." set $field in $table");
+               $DB->updateOrDie(
+                  $table, [
+                     $field   => $params['update']
+                  ], $params['condition']
+               );
             }
             return true;
          }
@@ -481,7 +488,7 @@ class Migration {
       global $DB;
 
       if ($DB->tableExists($table)) {
-         $DB->query("DROP TABLE `$table`");
+         $DB->rawQuery("DROP TABLE `$table`");
       }
    }
 
@@ -523,6 +530,8 @@ class Migration {
 
          if ($type == 'FULLTEXT') {
             $this->fulltexts[$table][] = "ADD $type `$indexname` ($fields)";
+         } else if ($type == 'UNIQUE') {
+            $this->uniques[$table][] = "ADD $type `$indexname` ($fields)";
          } else {
             $this->change[$table][] = "ADD $type `$indexname` ($fields)";
          }
@@ -559,7 +568,7 @@ class Migration {
 
       if (!$DB->tableExists("$newtable") && $DB->tableExists("$oldtable")) {
          $query = "RENAME TABLE `$oldtable` TO `$newtable`";
-         $DB->queryOrDie($query, $this->version." rename $oldtable");
+         $DB->rawQueryOrDie($query, $this->version." rename $oldtable");
       } else {
          if (Toolbox::startsWith($oldtable, 'glpi_plugin_')
             || Toolbox::startsWith($newtable, 'glpi_plugin_')
@@ -597,16 +606,16 @@ class Migration {
 
          // Try to do a flush tables if RELOAD privileges available
          // $query = "FLUSH TABLES `$oldtable`, `$newtable`";
-         // $DB->query($query);
+         // $DB->rawQuery($query);
 
-         $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
-         $DB->queryOrDie($query, $this->version." create $newtable");
+         $query = "CREATE TABLE " . $DB->quoteName($newtable) . " LIKE " . $DB->quoteName($oldtable);
+         $DB->rawQueryOrDie($query, $this->version." create $newtable");
 
          //nedds DB::insert to support subqeries to get migrated
-         $query = "INSERT INTO `$newtable`
+         $query = "INSERT INTO " . $DB->quoteName($newtable) . "
                           (SELECT *
-                           FROM `$oldtable`)";
-         $DB->queryOrDie($query, $this->version." copy from $oldtable to $newtable");
+                           FROM " . $DB->quoteName($oldtable) . ")";
+         $DB->rawQueryOrDie($query, $this->version." copy from $oldtable to $newtable");
       }
    }
 
@@ -636,7 +645,7 @@ class Migration {
 
          $DB->insertOrDie($table, $values, $this->version." insert in $table");
 
-         return $DB->insert_id();
+         return $DB->insertId();
       }
    }
 
@@ -652,21 +661,28 @@ class Migration {
       global $DB;
 
       if (isset($this->change[$table])) {
-         $query = "ALTER TABLE `$table` ".implode($this->change[$table], " ,\n")." ";
+         $query = "ALTER TABLE " . $DB->quoteName($table) . " ".implode($this->change[$table], " ,\n")." ";
          $this->displayMessage( sprintf(__('Change of the database layout - %s'), $table));
-         $DB->queryOrDie($query, $this->version." multiple alter in $table");
+         $DB->rawQueryOrDie($query, $this->version." multiple alter in $table");
          unset($this->change[$table]);
       }
 
       if (isset($this->fulltexts[$table])) {
-         $this->displayMessage( sprintf(__('Adding fulltext index - %s'), $table));
+         $this->displayMessage( sprintf(__('Adding fulltext indices - %s'), $table));
          foreach ($this->fulltexts[$table] as $idx) {
-            $query = "ALTER TABLE `$table` ".$idx;
-            $DB->queryOrDie($query, $this->version." $idx");
+            $query = "ALTER TABLE " . $DB->quoteName($table) . " ".$idx;
+            $DB->rawQueryOrDie($query, $this->version." $idx");
          }
          unset($this->fulltexts[$table]);
       }
-
+      if (isset($this->uniques[$table])) {
+         $this->displayMessage( sprintf(__('Adding unicity indices - %s'), $table));
+         foreach ($this->uniques[$table] as $idx) {
+            $query = "ALTER TABLE `$table` ".$idx;
+            $DB->queryOrDie($query, $this->version." $idx");
+         }
+         unset($this->uniques[$table]);
+      }
    }
 
 
@@ -679,27 +695,25 @@ class Migration {
       global $DB;
 
       foreach ($this->queries[self::PRE_QUERY] as $query) {
-         $DB->queryOrDie($query['query'], $query['message']);
+         $DB->rawQueryOrDie($query['query'], $query['message'], $query['params']);
       }
       $this->queries[self::PRE_QUERY] = [];
 
       $tables = array_merge(
          array_keys($this->change),
-         array_keys($this->fulltexts)
+         array_keys($this->fulltexts),
+         array_keys($this->uniques)
       );
       foreach ($tables as $table) {
          $this->migrationOneTable($table);
       }
 
       foreach ($this->queries[self::POST_QUERY] as $query) {
-         $DB->queryOrDie($query['query'], $query['message']);
+         $DB->rawQueryOrDie($query['query'], $query['message'], $query['params']);
       }
       $this->queries[self::POST_QUERY] = [];
 
       $this->storeConfig();
-
-      // as some tables may have be renamed, unset session matching between tables and classes
-      unset($_SESSION['glpi_table_of']);
 
       // end of global message
       $this->displayMessage(__('Task completed.'));
@@ -721,22 +735,23 @@ class Migration {
       global $DB;
 
       // Avoid duplicate - Need to be improved using a rule uuid of other
-      if (countElementsInTable('glpi_rules', ['name' => $DB->escape($rule['name'])])) {
+      if (countElementsInTable('glpi_rules', ['name' => $rule['name']])) {
          return 0;
       }
       $rule['comment']     = sprintf(__('Automatically generated by GLPI %s'), $this->version);
       $rule['description'] = '';
 
       // Compute ranking
-      $sql = "SELECT MAX(`ranking`) AS rank
-              FROM `glpi_rules`
-              WHERE `sub_type` = '".$rule['sub_type']."'";
-      $result = $DB->query($sql);
+      $iterator = $DB->request([
+         'SELECT' => ['MAX' => 'ranking AS rank'],
+         'FROM'   => 'glpi_rules',
+         'WHERE'  => ['sub_type' => $rule['sub_type']]
+      ]);
 
       $ranking = 1;
-      if ($DB->numrows($result) > 0) {
-         $datas = $DB->fetch_assoc($result);
-         $ranking = $datas["rank"] + 1;
+      if (count($iterator)) {
+         $data = $iterator->next();
+         $ranking = $data["rank"] + 1;
       }
 
       // The rule itself
@@ -745,7 +760,7 @@ class Migration {
          $values[$field] = $value;
       }
       $DB->insertOrDie('glpi_rules', $values);
-      $rid = $DB->insert_id();
+      $rid = $DB->insertId();
 
       // The rule criteria
       foreach ($criteria as $criterion) {
@@ -785,38 +800,44 @@ class Migration {
       if (count($toadd)) {
          foreach ($toadd as $type => $tab) {
             $iterator = $DB->request([
-               'SELECT DISTINCT' => ['users_id'],
+               'SELECT'          => 'users_id',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_displaypreferences',
                'WHERE'           => ['itemtype' => $type]
             ]);
 
             if (count($iterator) > 0) {
                while ($data = $iterator->next()) {
-                  $query = "SELECT MAX(`rank`)
-                              FROM `glpi_displaypreferences`
-                              WHERE `users_id` = '".$data['users_id']."'
-                                    AND `itemtype` = '$type'";
-                  $result = $DB->query($query);
-                  $rank   = $DB->result($result, 0, 0);
-                  $rank++;
+                  $result = $DB->request([
+                     'SELECT' => ['MAX' => 'rank as maxrank'],
+                     'FROM'   => 'glpi_displaypreferences',
+                     'WHERE'  => [
+                        'users_id'  => $data['users_id'],
+                        'itemtype'  => $type
+                     ]
+                  ])->next();
+
+                  $rank = $result['maxrank'];
+                  ++$rank;
 
                   foreach ($tab as $newval) {
-                     $query = "SELECT *
-                                 FROM `glpi_displaypreferences`
-                                 WHERE `users_id` = '".$data['users_id']."'
-                                       AND `num` = '$newval'
-                                       AND `itemtype` = '$type'";
-                     if ($result2 = $DB->query($query)) {
-                        if ($DB->numrows($result2) == 0) {
-                              $DB->insert(
-                                 'glpi_displaypreferences', [
-                                    'itemtype'  => $type,
-                                    'num'       => $newval,
-                                    'rank'      => $rank++,
-                                    'users_id'  => $data['users_id']
-                                 ]
-                              );
-                        }
+                     $check_iterator = $DB->request([
+                        'FROM'   => 'glpi_displaypreferences',
+                        'WHERE'  => [
+                           'users_id'  => $data['users_id'],
+                           'num'       => $newval,
+                           'itemtype'  => $type
+                        ]
+                     ]);
+                     if (count($check_iterator) == 0) {
+                           $DB->insert(
+                              'glpi_displaypreferences', [
+                                 'itemtype'  => $type,
+                                 'num'       => $newval,
+                                 'rank'      => $rank++,
+                                 'users_id'  => $data['users_id']
+                              ]
+                           );
                      }
                   }
                }
@@ -857,14 +878,18 @@ class Migration {
     *
     * @param string $type    Either self::PRE_QUERY or self::POST_QUERY
     * @param string $query   Query to execute
+    * @param array  $params  Query parameters
     * @param string $message Mesage to display on error, defaults to null
     *
     * @return Migration
+    *
+    * @since 10.0.0 Added $params parameter
     */
-   private function addQuery($type, $query, $message = null) {
+   private function addQuery($type, $query, $params, $message = null) {
       $this->queries[$type][] =  [
          'query'     => $query,
-         'message'   => $message
+         'message'   => $message,
+         'params'    => $params
       ];
       return $this;
    }
@@ -873,24 +898,30 @@ class Migration {
     * Add a pre migration SQL query
     *
     * @param string $query   Query to execute
+    * @param array  $params  Query parameters
     * @param string $message Mesage to display on error, defaults to null
     *
     * @return Migration
+    *
+    * @since 10.0.0 Added $params parameter
     */
-   public function addPreQuery($query, $message = null) {
-      return $this->addQuery(self::PRE_QUERY, $query, $message);
+   public function addPreQuery($query, $params = [], $message = null) {
+      return $this->addQuery(self::PRE_QUERY, $query, $params, $message);
    }
 
    /**
     * Add a post migration SQL query
     *
     * @param string $query   Query to execute
+    * @param array  $params  Query parameters
     * @param string $message Mesage to display on error, defaults to null
     *
     * @return Migration
+    *
+    * @since 10.0.0 Added $params parameter
     */
-   public function addPostQuery($query, $message = null) {
-      return $this->addQuery(self::POST_QUERY, $query, $message);
+   public function addPostQuery($query, $params = [], $message = null) {
+      return $this->addQuery(self::POST_QUERY, $query, $params, $message);
    }
 
    /**
@@ -979,52 +1010,88 @@ class Migration {
    }
 
    /**
-    * Add new right
-    * Give full rights to profiles having config right
+    * Add new right to profiles that match rights requirements
+    *    Default is to give rights to profiles with READ and UPDATE rights on config
     *
     * @param string  $name   Right name
     * @param integer $rights Right to set (defaults to ALLSTANDARDRIGHT)
+    * @param array   $requiredrights Array of right name => value
+    *                   A profile must have these rights in order to get the new right.
+    *                   This array can be empty to add the right to every profile.
+    *                   Default is ['config' => READ | UPDATE].
     *
     * @return void
     */
-   public function addRight($name, $rights = ALLSTANDARDRIGHT) {
+   public function addRight($name, $rights = ALLSTANDARDRIGHT, $requiredrights = ['config' => READ | UPDATE]) {
       global $DB;
 
-      $count = countElementsInTable(
-         'glpi_profilerights',
-         ['name' => $name]
-      );
-      if ($count == 0) {
-         //new right for certificate
-         //give full rights to profiles having config right
-         foreach ($DB->request("glpi_profilerights", ['name' => 'config']) as $profrights) {
-            if ($profrights['rights'] && (READ + UPDATE)) {
-               $rightValue = $rights;
-            } else {
-               $rightValue = 0;
-            }
-            $DB->insertOrDie(
-               'glpi_profilerights', [
-                  'id'           => null,
-                  'profiles_id'  => $profrights['profiles_id'],
-                  'name'         => $name,
-                  'rights'       => $rightValue
+      // Get all profiles where new rights has not been added yet
+      $prof_iterator = $DB->request(
+         [
+            'SELECT'    => 'glpi_profiles.id',
+            'FROM'      => 'glpi_profiles',
+            'LEFT JOIN' => [
+               'glpi_profilerights' => [
+                  'ON' => [
+                     'glpi_profilerights' => 'profiles_id',
+                     'glpi_profiles'      => 'id',
+                     [
+                        'AND' => ['glpi_profilerights.name' => $name]
+                     ]
+                  ]
                ],
-               sprintf(
-                  '%1$s add right for %2$s',
-                  $this->version,
-                  $name
-               )
-            );
+            ],
+            'WHERE'     => [
+               'glpi_profilerights.id' => null,
+            ]
+         ]
+      );
+
+      if ($prof_iterator->count() === 0) {
+         return;
+      }
+
+      $where = [];
+      foreach ($requiredrights as $reqright => $reqvalue) {
+         $where['OR'][] = [
+            'name'   => $reqright,
+            new QueryExpression("{$DB->quoteName('rights')} & $reqvalue = $reqvalue")
+         ];
+      }
+
+      while ($profile = $prof_iterator->next()) {
+         if (empty($requiredrights)) {
+            $reqmet = true;
+         } else {
+            $iterator = $DB->request([
+               'SELECT' => [
+                  'name',
+                  'rights'
+               ],
+               'FROM'   => 'glpi_profilerights',
+               'WHERE'  => $where + ['profiles_id' => $profile['id']]
+            ]);
+
+            $reqmet = (count($iterator) == count($requiredrights));
          }
 
-         $this->displayWarning(
-            sprintf(
-               'New rights has been added for %1$s, you should review ACLs after update',
-               $name
-            ),
-            true
+         $DB->insertOrDie(
+            'glpi_profilerights', [
+               'id'           => null,
+               'profiles_id'  => $profile['id'],
+               'name'         => $name,
+               'rights'       => $reqmet ? $rights : 0
+            ],
+            sprintf('%1$s add right for %2$s', $this->version, $name)
          );
       }
+
+      $this->displayWarning(
+         sprintf(
+            'New rights has been added for %1$s, you should review ACLs after update',
+            $name
+         ),
+         true
+      );
    }
 }

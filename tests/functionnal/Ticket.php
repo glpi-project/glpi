@@ -234,7 +234,7 @@ class Ticket extends DbTestCase {
 
       // 6 - check creation of the tasks
       $tickettask = new \TicketTask;
-      $found_tasks = $tickettask->find("`tickets_id` = $tickets_id", "id ASC");
+      $found_tasks = $tickettask->find(['tickets_id' => $tickets_id], "id ASC");
 
       // 6.1 -> check first task
       $taskA = array_shift($found_tasks);
@@ -282,6 +282,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isFalse();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
 
       $this->login();
       $this->setEntity('Root entity', true);
@@ -307,6 +308,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       $ticket = getItemByTypeName('Ticket', '_ticket01');
       $this->boolean((boolean)$ticket->canAdminActors())->isTrue(); //=> get 2
@@ -330,6 +332,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
    }
 
    public function testPostOnlyAcls() {
@@ -358,6 +361,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'));
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
 
       $this->integer(
          (int)$ticket->add([
@@ -389,13 +393,15 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -423,6 +429,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
    }
 
    public function testTechAcls() {
@@ -451,6 +458,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       $this->integer(
          (int)$ticket->add([
@@ -482,13 +490,15 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -516,6 +526,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       //drop update ticket right from tech profile
       global $DB;
@@ -560,6 +571,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       $this->integer(
          (int)$ticket->add([
@@ -589,6 +601,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
    }
 
    public function testNotOwnerAcls() {
@@ -628,6 +641,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       //drop update ticket right from tech profile
       global $DB;
@@ -672,6 +686,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       // post only tests
       $this->boolean((boolean)$auth->login('post-only', 'postonly', true))->isTrue();
@@ -697,6 +712,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isFalse();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
    }
 
    /**
@@ -929,10 +945,11 @@ class Ticket extends DbTestCase {
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -1076,10 +1093,11 @@ class Ticket extends DbTestCase {
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -1347,10 +1365,11 @@ class Ticket extends DbTestCase {
       )->isGreaterThan(0);
 
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => $ticket::getType(),
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -1375,11 +1394,12 @@ class Ticket extends DbTestCase {
          $this->login($users_name, $user['pass']);
          $uid = getItemByTypeName('User', $users_name, true);
 
-         // TicketFollowup
-         $fup = new \TicketFollowup();
+         // ITILFollowup
+         $fup = new \ITILFollowup();
          $this->integer(
             (int)$fup->add([
-               'tickets_id'   => $tickets_id,
+               'itemtype'  => 'Ticket',
+               'items_id'   => $tickets_id,
                'users_id'     => $uid,
                'content'      => 'A simple followup'
             ])
@@ -1518,7 +1538,7 @@ class Ticket extends DbTestCase {
 
       foreach ($timeline_items as $item) {
          switch ($item['type']) {
-            case 'TicketFollowup':
+            case 'ITILFollowup':
             case 'TicketTask':
             case 'TicketValidation':
             case 'Document_Item':
@@ -1562,7 +1582,7 @@ class Ticket extends DbTestCase {
             ],
             'expected'  => [
                'name' => 'This is a content with a carriage return',
-               'content' => 'This is a content\nwith a carriage return'
+               'content' => "This is a content\nwith a carriage return"
             ]
          ], [
             'input'     => [
@@ -1571,7 +1591,7 @@ class Ticket extends DbTestCase {
             ],
             'expected'  => [
                'name' => 'This is a content with a carriage return',
-               'content' => 'This is a content\nwith a carriage return'
+               'content' => "This is a content\r\nwith a carriage return"
             ]
          ], [
             'input'     => [
@@ -1580,7 +1600,7 @@ class Ticket extends DbTestCase {
             ],
             'expected'  => [
                'name' => 'This is a content with a carriage return',
-               'content' => '<p>This is a content\nwith a carriage return</p>',
+               'content' => "<p>This is a content\r\nwith a carriage return</p>",
             ]
          ], [
             'input'     => [
@@ -1589,7 +1609,7 @@ class Ticket extends DbTestCase {
             ],
             'expected'  => [
                'name' => 'This is a content with a carriage return',
-               'content' => '&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;'
+               'content' => "&lt;p&gt;This is a content\r\nwith a carriage return&lt;/p&gt;"
             ]
          ], [
             'input'     => [
@@ -1597,19 +1617,10 @@ class Ticket extends DbTestCase {
                'content'   => 'Test for buggy &#039; character'
             ],
             'expected'  => [
-               'name'      => 'Test for buggy \\\' character',
-               'content'   => 'Test for buggy \\\' character',
+               'name'      => 'Test for buggy \' character',
+               'content'   => 'Test for buggy &#039; character',
             ]
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => 'Test for buggy &#39; character'
-            ],
-            'expected'  => [
-               'name'      => 'Test for buggy \\\' character',
-               'content'   => 'Test for buggy \\\' character',
-            ]
-         ]
+         ],
       ];
    }
 
@@ -1622,7 +1633,7 @@ class Ticket extends DbTestCase {
       $this
          ->if($this->newTestedInstance)
          ->then
-            ->array($this->testedInstance->prepareInputForAdd(\Toolbox::addslashes_deep($input)))
+            ->array($this->testedInstance->prepareInputForAdd($input))
                ->string['name']->isIdenticalTo($expected['name'])
                ->string['content']->isIdenticalTo($expected['content']);
    }
@@ -1759,42 +1770,42 @@ class Ticket extends DbTestCase {
       return [
          [
             'input'  => [
-               'urgency'   => 2,
-               'impact'    => 2
+               'urgency'   => '2',
+               'impact'    => '2'
             ],
             '2',
             '2',
-            '2'
+            2
          ], [
             'input'  => [
-               'urgency'   => 5
+               'urgency'   => '5'
             ],
             '5',
             '3',
-            '4'
+            4
          ], [
             'input'  => [
-               'impact'   => 5
+               'impact'   => '5'
             ],
             '3',
             '5',
-            '4'
+            4
          ], [
             'input'  => [
-               'urgency'   => 5,
-               'impact'    => 5
+               'urgency'   => '5',
+               'impact'    => '5'
             ],
             '5',
             '5',
-            '5'
+            5
          ], [
             'input'  => [
-               'urgency'   => 5,
-               'impact'    => 1
+               'urgency'   => '5',
+               'impact'    => '1'
             ],
             '5',
             '1',
-            '2'
+            2
          ]
       ];
    }
@@ -1810,7 +1821,7 @@ class Ticket extends DbTestCase {
       $this->array($result)
          ->string['urgency']->isIdenticalTo($urgency)
          ->string['impact']->isIdenticalTo($impact)
-         ->string['priority']->isIdenticalTo($priority);
+         ->integer['priority']->isIdenticalTo($priority);
    }
 
    public function testGetDefaultValues() {
@@ -1854,13 +1865,13 @@ class Ticket extends DbTestCase {
 
       $this->string($input['time_to_resolve'])->isEqualTo('NULL');
       $this->string($input['time_to_own'])->isEqualTo('NULL');
-      $this->integer((int) $input['slas_tto_id'])->isEqualTo(0);
-      $this->integer((int) $input['slas_ttr_id'])->isEqualTo(0);
+      $this->integer((int) $input['slas_id_tto'])->isEqualTo(0);
+      $this->integer((int) $input['slas_id_ttr'])->isEqualTo(0);
 
       $this->string($input['internal_time_to_resolve'])->isEqualTo('NULL');
       $this->string($input['internal_time_to_own'])->isEqualTo('NULL');
-      $this->integer((int) $input['olas_tto_id'])->isEqualTo(0);
-      $this->integer((int) $input['olas_ttr_id'])->isEqualTo(0);
+      $this->integer((int) $input['olas_id_tto'])->isEqualTo(0);
+      $this->integer((int) $input['olas_id_ttr'])->isEqualTo(0);
 
       $this->integer((int) $input['_add_validation'])->isEqualTo(0);
 
@@ -1944,7 +1955,7 @@ class Ticket extends DbTestCase {
                'password' => 'tech',
                'rights'   => [
                   'task' => \READ,
-                  'followup' => \READ + \TicketFollowup::ADDALLTICKET,
+                  'followup' => \READ + \ITILFollowup::ADDALLTICKET,
                ],
             ],
             'expected' => true, // has not enough rights so cannot take into account
@@ -1958,7 +1969,7 @@ class Ticket extends DbTestCase {
                'password' => 'tech',
                'rights'   => [
                   'task' => \READ,
-                  'followup' => \READ + \TicketFollowup::ADDMYTICKET,
+                  'followup' => \READ + \ITILFollowup::ADDMYTICKET,
                ],
             ],
             'expected' => true, // has not enough rights so cannot take into account
@@ -1972,21 +1983,10 @@ class Ticket extends DbTestCase {
                'password' => 'tech',
                'rights'   => [
                   'task' => \READ,
-                  'followup' => \READ + \TicketFollowup::ADDGROUPTICKET,
+                  'followup' => \READ + \ITILFollowup::ADDGROUPTICKET,
                ],
             ],
             'expected' => true, // has not enough rights so cannot take into account
-         ],
-         [
-            'input'    => [
-               '_users_id_requester'        => ['3'], // "post-only"
-               'takeintoaccount_delay_stat' => '10',
-            ],
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
-            ],
-            'expected' => false, // ticket is already taken into account
          ],
          /* Cannot test that requester user can take ticket into account if also assigned
           * because assigning a user makes the ticket automatically taken into account.
@@ -2005,7 +2005,6 @@ class Ticket extends DbTestCase {
          */
       ];
    }
-
    /**
     * Tests ability to take a ticket into account.
     *
@@ -2017,7 +2016,6 @@ class Ticket extends DbTestCase {
     * @dataProvider canTakeIntoAccountProvider
     */
    public function testCanTakeIntoAccount(array $input, array $user, $expected) {
-
       // Create a ticket
       $this->login();
       $_SESSION['glpiset_default_tech'] = false;
@@ -2028,27 +2026,111 @@ class Ticket extends DbTestCase {
             'content' => 'A ticket to check canTakeIntoAccount() results',
          ] + $input)
       )->isGreaterThan(0);
-
       // Reload ticket to get all default fields values
       $this->boolean($ticket->getFromDB($ticketId))->isTrue();
-
       // Check if "takeintoaccount_delay_stat" is not automatically defined
       $expectedStat = array_key_exists('takeintoaccount_delay_stat', $input)
          ? $input['takeintoaccount_delay_stat']
          : 0;
       $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo($expectedStat);
-
       // Login with tested user
       $this->login($user['login'], $user['password']);
-
       // Apply specific rights if defined
       if (array_key_exists('rights', $user)) {
          foreach ($user['rights'] as $rightname => $rightvalue) {
             $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
          }
       }
-
       // Verify result
       $this->boolean($ticket->canTakeIntoAccount())->isEqualTo($expected);
+   }
+
+   /**
+    * Tests taken into account state.
+    */
+   public function testIsAlreadyTakenIntoAccount() {
+
+      // Create a ticket
+      $this->login();
+      $_SESSION['glpiset_default_tech'] = false;
+      $ticket = new \Ticket();
+      $ticket_id = $ticket->add(
+         [
+            'name'    => '',
+            'content' => 'A ticket to check isAlreadyTakenIntoAccount() results',
+         ]
+      );
+      $this->integer((int)$ticket_id)->isGreaterThan(0);
+
+      // Reload ticket to get all default fields values
+      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+
+      // Empty ticket is not taken into account
+      $this->boolean($ticket->isAlreadyTakenIntoAccount())->isFalse();
+
+      // Take into account
+      $this->login('tech', 'tech');
+      $ticket_user = new \Ticket_User();
+      $ticket_user_id = $ticket_user->add(
+         [
+            'tickets_id'       => $ticket_id,
+            'users_id'         => \Session::getLoginUserID(),
+            'use_notification' => 1,
+            'type'             => \CommonITILActor::ASSIGN
+         ]
+      );
+      $this->integer((int)$ticket_user_id)->isGreaterThan(0);
+
+      // Assign to tech made ticket taken into account
+      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+      $this->boolean($ticket->isAlreadyTakenIntoAccount())->isTrue();
+   }
+
+   public function testCronCloseTicket() {
+      global $DB;
+      // set default calendar and autoclose delay in root entity
+      $entity = new \Entity;
+      $this->boolean($entity->update([
+         'id'              => 0,
+         'calendars_id'    => 1,
+         'autoclose_delay' => 5,
+      ]))->isTrue();
+
+      // create some solved tickets at various solvedate
+      $ticket = new \Ticket;
+      $tickets_id_1 = $ticket->add([
+         'name'        => "test autoclose 1",
+         'content'     => "test autoclose 1",
+         'entities_id' => 0,
+         'status'      => \CommonITILObject::SOLVED,
+      ]);
+      $this->integer((int)$tickets_id_1)->isGreaterThan(0);
+      $DB->update('glpi_tickets', [
+         'solvedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
+      ], [
+         'id' => $tickets_id_1,
+      ]);
+      $tickets_id_2 = $ticket->add([
+         'name'        => "test autoclose 1",
+         'content'     => "test autoclose 1",
+         'entities_id' => 0,
+         'status'      => \CommonITILObject::SOLVED,
+      ]);
+      $DB->update('glpi_tickets', [
+         'solvedate' => date('Y-m-d 10:00:00', time()),
+      ], [
+         'id' => $tickets_id_2,
+      ]);
+      $this->integer((int)$tickets_id_2)->isGreaterThan(0);
+
+      // launch Cron for closing tickets
+      $mode = - \CronTask::MODE_EXTERNAL; // force
+      \CronTask::launch($mode, 5, 'closeticket');
+
+      // check ticket status
+      $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
+      $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
+      $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
+      $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::SOLVED);
    }
 }

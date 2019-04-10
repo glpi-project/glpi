@@ -107,8 +107,36 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
    Html::redirect($problem->getFormURLWithID($_POST['problems_id']));
+} else if (isset($_REQUEST['delete_document'])) {
+   $doc = new Document();
+   $doc->getFromDB(intval($_REQUEST['documents_id']));
+   if ($doc->can($doc->getID(), UPDATE)) {
+      $document_item = new Document_Item;
+      $found_document_items = $document_item->find([
+         'itemtype'     => 'Problem',
+         'items_id'     => (int)$_REQUEST['problems_id'],
+         'documents_id' => $doc->getID()
+      ]);
+      foreach ($found_document_items  as $item) {
+         $document_item->delete($item, true);
+      }
+   }
+   Html::back();
 } else {
    Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
-   $problem->display($_GET);
+   $problem->display($_REQUEST);
+
+   if (isset($_GET['id']) && ($_GET['id'] > 0) && isset($_GET['_sol_to_kb'])) {
+      Ajax::createIframeModalWindow(
+         'savetokb',
+         KnowbaseItem::getFormURL() . '?_in_modal=1&item_itemtype=Problem&item_items_id=' . $_GET['id'],
+         [
+            'title'         => __('Save solution to the knowledge base'),
+            'reloadonclose' => false,
+         ]
+      );
+      echo Html::scriptBlock('$(function() {' . Html::jsGetElementbyID('savetokb') . '.dialog("open"); });');
+   }
+
    Html::footer();
 }

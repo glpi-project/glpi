@@ -37,9 +37,6 @@ use \DbTestCase;
 /* Test for inc/entity.class.php */
 
 class Entity extends DbTestCase {
-   protected $cached_methods = [
-      'testChangeEntityParentCached'
-   ];
 
    public function testSonsAncestors() {
       $ent0 = getItemByTypeName('Entity', '_test_root_entity');
@@ -121,8 +118,8 @@ class Entity extends DbTestCase {
       $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
       $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $ackey = $this->nscache . ':glpi_entities_ancestors_cache_';
-      $sckey = $this->nscache . ':glpi_entities_sons_cache_';
+      $ackey = $this->getCacheNamespace() . ':glpi_entities_ancestors_cache_';
+      $sckey = $this->getCacheNamespace() . ':glpi_entities_sons_cache_';
 
       $entity = new \Entity();
       $new_id = (int)$entity->add([

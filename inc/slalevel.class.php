@@ -55,13 +55,11 @@ class SlaLevel extends LevelAgreementLevel {
    function cleanDBonPurge() {
       global $DB;
 
-      parent::cleanDBOnPurge();
+      parent::cleanDBonPurge();
 
-      $DB->delete(
-         'glpi_slalevels_tickets', [
-            $this->rules_id_field   => $this->fields['id']
-         ]
-      );
+      // SlaLevel_Ticket does not extends CommonDBConnexity
+      $slt = new SlaLevel_Ticket();
+      $slt->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
    }
 
 

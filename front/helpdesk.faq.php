@@ -42,9 +42,10 @@ if (isset($_GET["redirect"])) {
 //******************
 
 Session::checkFaqAccess();
+Html::requireJs('jstree');
 
 if (Session::getLoginUserID()) {
-   Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+   Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF']);
 } else {
    $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
    // Anonymous FAQ

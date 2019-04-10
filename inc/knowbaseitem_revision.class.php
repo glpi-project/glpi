@@ -178,7 +178,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
          if ($item->getType() == KnowbaseItem::getType()) {
             $form = KnowbaseItem::getFormURLWithID($revision['knowbaseitems_id']);
          } else {
-            $form = KnowbaseItemTranslation::getFormURL($revision['knowbaseitems_id']);
+            $form = KnowbaseItemTranslation::getFormURLWithID($revision['knowbaseitems_id']);
          }
 
          echo "<td><a href='#' data-rev='" . $revision['revision']  . "'
@@ -188,8 +188,8 @@ class KnowbaseItem_Revision extends CommonDBTM {
          echo "</tr>";
       }
 
-      echo Html::script("lib/jqueryplugins/prettytextdiff/diff_match_patch.js");
-      echo Html::script("lib/jqueryplugins/prettytextdiff/jquery.pretty-text-diff.min.js");
+      echo Html::script("public/lib/diff-match-patch/index.js");
+      echo Html::script("public/lib/jquery-prettytextdiff/jquery.pretty-text-diff.js");
       echo "<script type='text/javascript'>
             $(function() {
                $('.restore').on('click', function(e) {
@@ -297,10 +297,8 @@ class KnowbaseItem_Revision extends CommonDBTM {
    public function createNew(KnowbaseItem $item) {
       $this->getEmpty();
       $this->fields['knowbaseitems_id'] = $item->fields['id'];
-      $this->fields['name'] = Toolbox::addslashes_deep($item->fields['name']);
-      $this->fields['answer'] = Toolbox::clean_cross_side_scripting_deep(
-         Toolbox::addslashes_deep($item->fields['answer'])
-      );
+      $this->fields['name'] = $item->fields['name'];
+      $this->fields['answer'] = Toolbox::clean_cross_side_scripting_deep($item->fields['answer']);
       $this->fields['date_creation'] = $item->fields['date_mod'];
       $this->fields['revision'] = $this->getNewRevision();
       $this->fields['users_id'] = $item->fields['users_id'];
@@ -334,20 +332,21 @@ class KnowbaseItem_Revision extends CommonDBTM {
    private function getNewRevision() {
       global $DB;
 
-      $rev = null;
-      $last_rev = $DB->query(
-         "SELECT MAX(revision)+1 AS new_revision FROM glpi_knowbaseitems_revisions
-            WHERE knowbaseitems_id='" . $this->fields['knowbaseitems_id'] .
-           "' AND language='" . $this->fields['language'] . "'"
-       );
+      $result = $DB->request([
+         'SELECT' => ['MAX' => 'revision AS revision'],
+         'FROM'   => 'glpi_knowbaseitems_revisions',
+         'WHERE'  => [
+            'knowbaseitems_id'   => $this->fields['knowbaseitems_id'],
+            'language'           => $this->fields['language']
+         ]
+      ])->next();
 
-      if ($last_rev) {
-         $rev = $DB->result($last_rev, 0, 0);
-      }
-
+      $rev = $result['revision'];
       if ($rev === null) {
          //no revisions yet
          $rev = 1;
+      } else {
+         ++$rev;
       }
 
       return $rev;

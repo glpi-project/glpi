@@ -73,9 +73,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @since 0.84
-   **/
    function prepareInputForUpdate($input) {
 
       if (!isset($input['is_template_computer'])
@@ -94,13 +91,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       switch ($ma->getAction()) {
          case 'add' :
@@ -128,14 +119,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
-      global $DB;
 
       switch ($ma->getAction()) {
          case 'move_version' :
@@ -217,11 +202,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Get number of installed licenses of a version
     *
-    * @param $softwareversions_id   version ID
-    * @param $entity                to search for computer in (default '' = all active entities)
-    *                               (default '')
+    * @param integer          $softwareversions_id version ID
+    * @param string|integer[] $entity              to search for computer in ('' = all active entities)
     *
-    * @return number of installations
+    * @return integer number of installations
    **/
    static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
@@ -281,9 +265,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             'glpi_computers.is_deleted'                  => 0,
             'glpi_computers.is_template'                 => 0,
             'glpi_computers_softwareversions.is_deleted' => 0
-         ] + getEntitiesRestrictCriteria('glpi_computers')
+         ] + getEntitiesRestrictCriteria('glpi_computers', '', '', true)
       ];
-      $results = $DB->request($request);
       $result = $DB->request($request)->next();
       return $result['cpt'];
    }
@@ -294,7 +277,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $software Software object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForSoftware(Software $software) {
       self::showInstallations($software->getField('id'), 'softwares_id');
@@ -306,7 +289,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $version SoftwareVersion object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForVersion(SoftwareVersion $version) {
       self::showInstallations($version->getField('id'), 'id');
@@ -316,16 +299,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Show installations of a software
     *
-    * @param $searchID  value of the ID to search
-    * @param $crit      to search : softwares_id (software) or id (version)
+    * @param integer $searchID  value of the ID to search
+    * @param string  $crit      to search : softwares_id (software) or id (version)
     *
-    * @return nothing
+    * @return void
    **/
    private static function showInstallations($searchID, $crit) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!Software::canView() || !$searchID) {
-         return false;
+         return;
       }
 
       $canedit         = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
@@ -463,7 +446,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             'glpi_computers.is_template'                 => 0,
             'glpi_computers_softwareversions.is_deleted' => 0
 
-         ] + getEntitiesRestrictCriteria('glpi_computers'),
+         ] + getEntitiesRestrictCriteria('glpi_computers', '', '', true),
          'ORDER'        => "$sort $order",
          'LIMIT'        => $_SESSION['glpilist_limit'],
          'START'        => $start
@@ -627,15 +610,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $version SoftwareVersion object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForVersionByEntity(SoftwareVersion $version) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $softwareversions_id = $version->getField('id');
 
       if (!Software::canView() || !$softwareversions_id) {
-         return false;
+         return;
       }
 
       echo "<div class='center'>";
@@ -675,16 +658,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Show software installed on a computer
     *
-    * @param $comp            Computer object
-    * @param $withtemplate    template case of the view process (default 0)
+    * @param Computer $comp         Computer object
+    * @param boolean  $withtemplate template case of the view process
     *
-    * @return nothing
+    * @return void
    **/
    static function showForComputer(Computer $comp, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!Software::canView()) {
-         return false;
+         return;
       }
 
       $computers_id = $comp->getField('id');
@@ -695,10 +678,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
 
       $where        = [];
-      $where_str    = '';
       if ($crit > -1) {
          $where['glpi_softwares.softwarecategories_id'] = (int) $crit;
-         $where_str = "AND `glpi_softwares`.`softwarecategories_id` = " . (int)$crit;
       }
 
       $select = [
@@ -743,11 +724,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          'WHERE'     => [
             self::getTable() . '.computers_id'  => $computers_id,
             self::getTable() . '.is_deleted'     => 0,
-         ] + $where,
+         ] + $where + getEntitiesRestrictCriteria('glpi_softwares', '', '', true),
          'ORDER'     => ['softname', 'version']
       ]);
 
-      $i      = 0;
       if ((empty($withtemplate) || ($withtemplate != 2))
           && $canedit) {
          echo "<form method='post' action='".Computer_SoftwareVersion::getFormURL()."'>";
@@ -765,8 +745,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          Html::closeForm();
       }
       echo "<div class='spaced'>";
-
-      $cat = -1;
 
       Session::initNavigateListItems('Software',
                            //TRANS : %1$s is the itemtype name,
@@ -883,92 +861,64 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
       echo "<div class='spaced'>";
       // Affected licenses NOT installed
-      /*
-       * Won't work: multiple tables in FROM seems to breaks joins...
-       * And iterator does not support OR in joins...
-       */
-      /*
       $lic_where = [];
       if (count($installed)) {
          $lic_where['NOT'] = ['glpi_softwarelicenses.id' => $installed];
       }
 
-      $lic_iterator = $DB->request([
-         'SELECT'       => [
-            'glpi_softwarelicenses.*',
-            'glpi_computers_softwarelicenses.id AS linkID',
-            'glpi_softwares.name AS softname',
-            'glpi_softwareversions.name AS version',
-            'glpi_states.name AS state'
-         ],
-         'FROM'         => ['glpi_softwarelicenses', 'glpi_softwareversions'],
-         'INNER JOIN'   => [
-            'glpi_softwares'  => [
-               'FKEY'   => [
-                  'glpi_softwarelicenses' => 'softwares_id',
-                  'glpi_softwares'        => 'id'
-               ]
-            ]
-         ],
-         'LEFT JOIN'    => [
-            'glpi_computers_softwarelicenses'   => [
-               'FKEY'   => [
-                  'glpi_computers_softwarelicenses'   => 'softwarelicenses_id',
-                  'glpi_softwarelicenses'             => 'id'
+      $lic_iterator = $DB->request(
+         [
+            'SELECT'       => [
+               'glpi_softwarelicenses.*',
+               'glpi_computers_softwarelicenses.id AS linkID',
+               'glpi_softwares.name AS softname',
+               'glpi_softwareversions.name AS version',
+               'glpi_states.name AS state'
+            ],
+            'FROM'         => SoftwareLicense::getTable(),
+            'INNER JOIN'   => [
+               'glpi_softwares'  => [
+                  'FKEY'   => [
+                     'glpi_softwarelicenses' => 'softwares_id',
+                     'glpi_softwares'        => 'id'
+                  ]
                ]
             ],
-            'glpi_states'  => [
-               'FKEY'   => [
-                  'glpi_softwareversions' => 'states_id',
-                  'glpi_states'           => 'id'
+            'LEFT JOIN'    => [
+               'glpi_computers_softwarelicenses'   => [
+                  'FKEY'   => [
+                     'glpi_computers_softwarelicenses'   => 'softwarelicenses_id',
+                     'glpi_softwarelicenses'             => 'id'
+                  ]
+               ],
+               'glpi_softwareversions'   => [
+                  'FKEY'   => [
+                     'glpi_softwareversions' => 'id',
+                     'glpi_softwarelicenses' => 'softwareversions_id_use',
+                     [
+                        'AND' => [
+                           'glpi_softwarelicenses.softwareversions_id_use' => 0,
+                           'glpi_softwarelicenses.softwareversions_id_buy' => new \QueryExpression($DB->quoteName('glpi_softwareversions.id')),
+                        ]
+                     ]
+                  ]
+               ],
+               'glpi_states'  => [
+                  'FKEY'   => [
+                     'glpi_softwareversions' => 'states_id',
+                     'glpi_states'           => 'id'
+                  ]
                ]
-            ]
-         ],
-         'WHERE'     => [
-            'glpi_computers_softwarelicenses.computers_id'  => $computers_id,
-            'glpi_computers_softwarelicenses.is_deleted'    => 0,
-            'OR'                                            => [
-               'glpi_softwarelicenses.softwareversions_id_use' => new \QueryExpression(DBmysql::quoteName('glpi_softwareversions.id')),
-               'AND' => [
-                  'glpi_softwarelicenses.softwareversions_id_use' => 0,
-                  'glpi_softwarelicenses.softwareversions_id_buy' => new \QueryExpression(DBmysql::quoteName('glpi_softwareversions.id'))
-               ]
-            ]
-         ] + $lic_where,
-         'ORDER'     => ['softname', 'version']
-      ]);*/
+            ],
+            'WHERE'     => [
+               'glpi_computers_softwarelicenses.computers_id'  => $computers_id,
+               'glpi_computers_softwarelicenses.is_deleted'    => 0,
+            ] + $lic_where,
+            'ORDER'     => ['softname', 'version']
+         ]
+      );
 
-      //needs DB::request() to support OR in joins to get migrated
-      $query = "SELECT `glpi_softwarelicenses`.*,
-                       `glpi_computers_softwarelicenses`.`id` AS linkID,
-                       `glpi_softwares`.`name` AS softname,
-                       `glpi_softwareversions`.`name` AS version,
-                       `glpi_states`.`name` AS state
-                FROM `glpi_softwarelicenses`
-                LEFT JOIN `glpi_computers_softwarelicenses`
-                      ON (`glpi_computers_softwarelicenses`.softwarelicenses_id
-                              = `glpi_softwarelicenses`.`id`)
-                INNER JOIN `glpi_softwares`
-                      ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
-                LEFT JOIN `glpi_softwareversions`
-                      ON (`glpi_softwarelicenses`.`softwareversions_id_use`
-                              = `glpi_softwareversions`.`id`
-                           OR (`glpi_softwarelicenses`.`softwareversions_id_use` = 0
-                               AND `glpi_softwarelicenses`.`softwareversions_id_buy`
-                                       = `glpi_softwareversions`.`id`))
-                LEFT JOIN `glpi_states`
-                     ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
-                WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id'
-                      AND `glpi_computers_softwarelicenses`.`is_deleted` = 0
-                      $where_str";
-
-      if (count($installed)) {
-         $query .= " AND `glpi_softwarelicenses`.`id` NOT IN (".implode(',', $installed).")";
-      }
-      $query .= " ORDER BY `softname`, `version`;";
-
-      $req = $DB->request($query);
-      if ($number = $req->numrows()) {
+      if ($number = $lic_iterator->count()) {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('massSoftwareLicense'.$rand);
@@ -1003,8 +953,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
 
-         $cat = true;
-         foreach ($req as $data) {
+         foreach ($lic_iterator as $data) {
             self::displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
             Session::addToNavigateListItems('SoftwareLicense', $data["id"]);
          }
@@ -1029,27 +978,26 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Display a installed software for a category
     *
-    * @param $data                     data used to display
-    * @param $computers_id             ID of the computer
-    * @param $withtemplate             template case of the view process
-    * @param $canedit         boolean  user can edit software ?
-    * @param $display         boolean  display and calculte if true or juste calculate
+    * @param array   $data         data used to display
+    * @param integer $computers_id ID of the computer
+    * @param boolean $withtemplate template case of the view process
+    * @param boolean $canedit      user can edit software ?
+    * @param boolean $display      display and calculte if true or juste calculate
     *
-    * @return array of found license id
+    * @return integer[] Found licenses ids
    **/
    private static function softsByCategory($data, $computers_id, $withtemplate, $canedit,
                                            $display) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
-      $ID       = $data["id"];
-      $verid    = $data["verid"];
-      $multiple = false;
+      $ID    = $data["id"];
+      $verid = $data["verid"];
 
       if ($display) {
          echo "<tr class='tab_bg_1'>";
          if ($canedit) {
             echo "<td>";
-            Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+            Html::showMassiveActionCheckBox(__CLASS__, $ID);
             echo "</td>";
          }
          echo "<td class='center b'>";
@@ -1090,7 +1038,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             'glpi_computers_softwarelicenses.computers_id'  => $computers_id,
             'OR'                                            => [
                'glpi_softwarelicenses.softwareversions_id_use' => $verid,
-               'AND'                                           => [
+               [
                   'glpi_softwarelicenses.softwareversions_id_use' => 0,
                   'glpi_softwarelicenses.softwareversions_id_buy' => $verid
                ]
@@ -1149,19 +1097,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Display a software for a License (not installed)
     *
-    * @param $data                  data used to display
-    * @param $computers_id          ID of the computer
-    * @param $withtemplate          template case of the view process
-    * @param $canedit      boolean  user can edit software ?
+    * @param array   $data         data used to display
+    * @param integer $computers_id ID of the computer
+    * @param boolean $withtemplate template case of the view process
+    * @param boolean $canedit      user can edit software ?
     *
-    * @return nothing
+    * @return void
    */
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
-      global $CFG_GLPI;
 
       $ID = $data['linkID'];
 
-      $multiple  = false;
       $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
       $link      = $link_item."?id=".$data['id'];
 
@@ -1205,11 +1151,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Update version installed on a computer
     *
-    * @param $instID                ID of the install software lienk
-    * @param $softwareversions_id   ID of the new version
-    * @param $dohistory             Do history ? (default 1)
+    * @param integer $instID              ID of the install software lienk
+    * @param integer $softwareversions_id ID of the new version
+    * @param boolean $dohistory           Do history ? (default 1)
     *
-    * @return nothing
+    * @return void
    **/
    function upgrade($instID, $softwareversions_id, $dohistory = 1) {
 
@@ -1225,8 +1171,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Duplicate all software from a computer template to its clone
     *
-    * @param $oldid ID of the computer to clone
-    * @param $newid ID of the computer cloned
+    * @param integer $oldid ID of the computer to clone
+    * @param integer $newid ID of the computer cloned
    **/
    static function cloneComputer($oldid, $newid) {
       global $DB;
@@ -1247,16 +1193,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+   //TODO: remove with old UI
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       $nb = 0;
       switch ($item->getType()) {
          case 'Software' :
             if (!$withtemplate) {
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                   $nb = self::countForSoftware($item->getID());
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
@@ -1265,7 +1210,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          case 'SoftwareVersion' :
             if (!$withtemplate) {
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                   $nb = self::countForVersion($item->getID());
                }
                return [1 => __('Summary'),
@@ -1277,7 +1222,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          case 'Computer' :
             // Installation allowed for template
             if (Software::canView()) {
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                   $nb = self::countForItem($item);
                }
                return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb);
@@ -1287,12 +1232,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       return '';
    }
 
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      switch ($item->getType()) {
+         case 'Software' :
+            return self::countForSoftware($item->getID());
+         case 'SoftwareVersion' :
+            return self::countForVersion($item->getID());
+         case 'Computer' :
+            return self::countForItem($item);
+      }
+   }
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()=='Software') {
@@ -1315,16 +1265,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       return true;
    }
 
-   /**
-    * Get linked items list for specified item
-    *
-    * @since 9.3.1
-    *
-    * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
-    *
-    * @return array
-    */
+
    protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
       $params = parent::getListForItemParams($item, $noent);
       $params['WHERE'][self::getTable() . '.is_deleted'] = 0;

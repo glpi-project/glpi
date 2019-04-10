@@ -44,6 +44,22 @@ class Item_Disk extends CommonDBChild {
    static public $items_id = 'items_id';
    public $dohistory       = true;
 
+   protected $twig_compat              = true;
+
+   // Encryption status
+   const ENCRYPTION_STATUS_NO = 0;
+   const ENCRYPTION_STATUS_YES = 1;
+   const ENCRYPTION_STATUS_PARTIALLY = 2;
+
+   public function __construct() {
+      $this->mapped_fields = [
+        'item' => [
+            'itemtype',
+            'items_id'
+        ]
+      ];
+      parent::__construct();
+   }
 
    static function getTypeName($nb = 0) {
       return _n('Volume', 'Volumes', $nb);
@@ -56,15 +72,14 @@ class Item_Disk extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+   //TODO: remove with old UI
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       // can exists for template
       if ($item::canView()) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
             $nb = countElementsInTable(
                self::getTable(), [
                   'items_id'     => $item->getID(),
@@ -130,7 +145,6 @@ class Item_Disk extends CommonDBChild {
          $cd                  = new self();
          unset($data['id']);
          $data['items_id']    = $newid;
-         $data                = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }
    }
@@ -225,6 +239,24 @@ class Item_Disk extends CommonDBChild {
       Html::autocompletionTextField($this, "freesize");
       echo "&nbsp;".__('Mio')."</td></tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Encryption')."</td>";
+      echo "<td>";
+      echo self::getEncryptionStatusDropdown($this->fields['encryption_status']);
+      echo "</td><td>".__('Encryption tool')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "encryption_tool");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Encryption algorithm')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "encryption_algorithm");
+      echo "</td><td>".__('Encryption type')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "encryption_type");
+      echo "</td></tr>";
+
       $itemtype = $this->fields['itemtype'];
       $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
       $this->showFormButtons($options);
@@ -257,7 +289,7 @@ class Item_Disk extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='".Item_Disk::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
+               "<a class='vsubmit' href='".self::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add a volume');
          echo "</a></div>\n";
@@ -286,7 +318,7 @@ class Item_Disk extends CommonDBChild {
       ]);
 
       echo "<table class='tab_cadre_fixehov'>";
-      $colspan = 7;
+      $colspan = 8;
       if (Plugin::haveImport()) {
          $colspan++;
       }
@@ -305,6 +337,7 @@ class Item_Disk extends CommonDBChild {
          $header .= "<th>".__('Global size')."</th>";
          $header .= "<th>".__('Free size')."</th>";
          $header .= "<th>".__('Free percentage')."</th>";
+         $header .= "<th>".__('Encryption')."</th>";
          $header .= "</tr>";
          echo $header;
 
@@ -335,8 +368,31 @@ class Item_Disk extends CommonDBChild {
             if ($data['totalsize'] > 0) {
                $percent = round(100*$data['freesize']/$data['totalsize']);
             }
-            Html::displayProgressBar('100', $percent, ['simple'       => true,
-                                                            'forcepadding' => false]);
+            $rand = mt_rand();
+            Html::progressBar("percent$rand", [
+               'create'  => true,
+               'percent' => $percent,
+               'message' => "$percent %",
+            ]);
+            echo "</td>";
+            echo "<td class=\"center\">";
+
+            if ($data['encryption_status'] != self::ENCRYPTION_STATUS_NO) {
+               $encryptionTooltip = "<strong>" . __('Partial encryption') . "</strong> : " .
+                  Dropdown::getYesNo($data['encryption_status'] == self::ENCRYPTION_STATUS_PARTIALLY) .
+                  "<br/>" .
+                  "<strong>" . __('Encryption tool') . "</strong> : " . $data['encryption_tool'] .
+                  "</br>" .
+                  "<strong>" . __('Encryption algorithm') . "</strong> : " .
+                  $data['encryption_algorithm'] . "</br>" .
+                  "<strong>" . __('Encryption type') . "</strong> : " . $data['encryption_type'] .
+                  "</br>";
+
+               Html::showTooltip($encryptionTooltip, [
+                  'awesome-class' => "fas fa-lock"
+               ]);
+            }
+
             echo "</td>";
             echo "</tr>";
             Session::addToNavigateListItems(__CLASS__, $data['id']);
@@ -350,4 +406,443 @@ class Item_Disk extends CommonDBChild {
       echo "</div>";
    }
 
+   public function rawSearchOptions() {
+      $tabs = parent::rawSearchOptions();
+
+      $tabs[] = [
+         'id'     => 2,
+         'table'  => $this->getTable(),
+         'field'  => 'device',
+         'name'   => __('Partition')
+      ];
+
+      $tabs[] = [
+         'id'     => 3,
+         'table'  => $this->getTable(),
+         'field'  => 'mountpoint',
+         'name'   => __('Mount point')
+      ];
+
+      $tabs[] = [
+         'id'              => 4,
+         'table'           => FileSystem::getTable(),
+         'field'           => 'name',
+         'name'            => __('File system'),
+         'datatype'        => 'dropdown',
+         'massiveaction'   => false,
+         'joinparams'      => [
+            'table'  => 'glpi_filesystems',
+         ]
+      ];
+
+      $tabs[] =  [
+         'id'        => 5,
+         'table'     => self::getTable(),
+         'field'     => 'totalsize',
+         'name'      => __('Global size'),
+         'datatype'  => 'number',
+         'unit'      => 'auto'
+      ];
+
+      $tabs[] = [
+         'id'        => 6,
+         'table'     => self::getTable(),
+         'field'     => 'freesize',
+         'name'      => __('Free size'),
+         'datatype'  => 'number',
+         'unit'      => 'auto'
+      ];
+
+      $tabs[] = [
+         'id'                 => 7,
+         'table'              => self::getTable(),
+         'name'               => __('Free percentage'),
+         'datatype'           => 'progressbar',
+         'field'              => 'freepercent',
+         'width'              => 2,
+         'computation'        => 'ROUND(100*TABLE.freesize/TABLE.totalsize)',
+         'computationgroupby' => true,
+         'unit'               => '%',
+      ];
+
+      $tabs[] = [
+         'id'                 => '8',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_status',
+         'name'               => __('Encryption status'),
+         'searchtype'         => 'equals',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'searchequalsonfield' => true,
+         'datatype'           => 'specific',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      return $tabs;
+   }
+
+   public static function rawSearchOptionsToAdd($itemtype) {
+      $tab = [];
+
+      $name = _n('Volume', 'Volumes', Session::getPluralNumber());
+      $tab[] = [
+          'id'                 => 'disk',
+          'name'               => $name
+      ];
+
+      $tab[] = [
+         'id'                 => '156',
+         'table'              => self::getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '150',
+         'table'              => self::getTable(),
+         'field'              => 'totalsize',
+         'unit'               => 'auto',
+         'name'               => __('Global size'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'number',
+         'width'              => 1000,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '151',
+         'table'              => self::getTable(),
+         'field'              => 'freesize',
+         'unit'               => 'auto',
+         'name'               => __('Free size'),
+         'forcegroupby'       => true,
+         'datatype'           => 'number',
+         'width'              => 1000,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '152',
+         'table'              => self::getTable(),
+         'field'              => 'freepercent',
+         'name'               => __('Free percentage'),
+         'forcegroupby'       => true,
+         'datatype'           => 'progressbar',
+         'width'              => 2,
+         'computation'        => 'ROUND(100*TABLE.freesize/TABLE.totalsize)',
+         'computationgroupby' => true,
+         'unit'               => '%',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '153',
+         'table'              => self::getTable(),
+         'field'              => 'mountpoint',
+         'name'               => __('Mount point'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '154',
+         'table'              => self::getTable(),
+         'field'              => 'device',
+         'name'               => __('Partition'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '155',
+         'table'              => 'glpi_filesystems',
+         'field'              => 'name',
+         'name'               => __('File system'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '174',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_status',
+         'name'               => __('Encryption status'),
+         'searchtype'         => 'equals',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'searchequalsonfield' => true,
+         'datatype'           => 'specific',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '175',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_tool',
+         'name'               => __('Encryption tool'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '176',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_algorithm',
+         'name'               => __('Encryption algorithm'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '177',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_type',
+         'name'               => __('Encryption type'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      return $tab;
+   }
+
+   /**
+    * Get all the possible value for the "encryption_status" field
+    *
+    * @return array The list of possible values
+    */
+   static function getAllEncryptionStatus() {
+      return [
+         self::ENCRYPTION_STATUS_YES         => __('Encrypted'),
+         self::ENCRYPTION_STATUS_PARTIALLY   => __('Partially encrypted'),
+         self::ENCRYPTION_STATUS_NO          => __('Not encrypted')
+      ];
+   }
+
+   /**
+    * Get the correct label for each encryption status
+    *
+    * @return string The appropriate label
+    */
+   static function getEncryptionStatus($status) {
+      $all = self::getAllEncryptionStatus();
+      if (!isset($all[$status])) {
+         Toolbox::logWarning(
+            sprintf(
+               'Encryption status %1$s does not exixts!'
+            )
+         );
+         return NOT_AVAILABLE;
+      }
+      return $all[$status];
+   }
+
+   /**
+    * Print the encryption status dropdown
+    *
+    * @param integer $value   Current value (defaut self::ENCRYPTION_STATUS_NO)
+    * @param array   $options Array of possible options:
+    *    - name : name of the dropdown (default encryption_status)
+    *
+    * @return string the string to display
+    */
+   static function getEncryptionStatusDropdown($value = self::ENCRYPTION_STATUS_NO, $options = []) {
+      $name = 'encryption_status';
+      if (isset($options['name'])) {
+         $name = $options['name'];
+      }
+      $values = self::getAllEncryptionStatus();
+
+      return Dropdown::showFromArray(
+         $name,
+         $values, [
+            'value'   => $value,
+            'display' => false
+         ]
+      );
+   }
+
+   /**
+    * List specifics value for selection
+    *
+    * @param string       $field   Name of the field
+    * @param string       $name    Name of the select (if empty use linkfield) (default '')
+    * @param string|array $values  Value(s) to select (default '')
+    * @param array        $options Array of options
+    *
+    * @return string the string to display
+    */
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'encryption_status' :
+            return self::getEncryptionStatusDropdown($values[$field], [
+               'name'  => $name,
+            ]);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+    /**
+     * Display a specific field value
+     *
+     * @param string       $field   Name of the field
+     * @param string|array $values  Value(s) to display
+     * @param array        $options Array of options
+     *
+     * @return string the string to display
+    **/
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+
+      switch ($field) {
+         case 'encryption_status':
+            if ($values[$field] != self::ENCRYPTION_STATUS_NO) {
+               return Html::showTooltip(self::getEncryptionInfos($values['id']), [
+                  'awesome-class'   => "fas fa-lock",
+                  'display'         => false
+               ]);
+            } else {
+               return "<i class='fas fa-lock-open' title='" .  self::getEncryptionStatus($values[$field]) . "'></i>";
+            }
+      }
+
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   /**
+    * Get encryption informations for an itemtype
+    *
+    * @param integer $id Item id
+    *
+    * @return string
+    */
+   public static function getEncryptionInfos($id) :string {
+      $item = new self();
+      $item->getFromDB($id);
+
+      $infos = "<strong>" . __('Partial encryption') . "</strong> " .
+                  Dropdown::getYesNo($item->fields['encryption_status'] == self::ENCRYPTION_STATUS_PARTIALLY) .
+                  "<br/>" .
+                  "<strong>" . __('Encryption tool') . "</strong> " . $item->fields['encryption_tool'] .
+                  "</br>" .
+                  "<strong>" . __('Encryption algorithm') . "</strong> " .
+                  $item->fields['encryption_algorithm'] . "</br>" .
+                  "<strong>" . __('Encryption type') . "</strong> " . $item->fields['encryption_type'];
+
+      return $infos;
+   }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = [
+         'name'     => [
+            'label'  => __('Name')
+         ],
+         'item' => [
+            'label'  => __('Item'),
+            'type'   => 'link'
+         ],
+         'device'   => [
+            'label'  => __('Partition')
+         ],
+         'mountpoint'     => [
+            'label'  => __('Mount point')
+         ],
+         'filesystems_id' => [
+            'label'  => __('File system')
+         ],
+         'totalsize'   => [
+            'label'     => __('Global size'),
+            'htmltype'  => 'number'
+         ],
+         'freesize'   => [
+            'label'     => __('Free size'),
+            'htmltype'  => 'number'
+         ],
+         'encryption_status' => [
+             'label'    => __('Encryption status'),
+             'type'     => 'select',
+             'values'   => $this->getAllEncryptionStatus(),
+             'listicon' => false,
+             'addicon'  => false
+         ],
+         'encryption_tool' => [
+             'label'  => __('Encryption tool')
+         ],
+         'encryption_algorithm' => [
+            'label' => __('Encryption algorithm')
+         ],
+         'encryption_type' => [
+            'label' => __('Encryption type')
+         ]
+      ] + parent::getFormFields();
+      return $fields;
+   }
 }

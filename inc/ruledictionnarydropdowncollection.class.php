@@ -77,7 +77,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
          $send              = [];
          $send["tablename"] = $this->item_table;
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             if (!($i % $step)) {
                if (isCommandLine()) {
                   //TRANS: %1$s is a row, %2$s is total rows
@@ -89,8 +89,8 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
             //Replay Type dictionnary
             $ID = Dropdown::importExternal(getItemTypeForTable($this->item_table),
-                                           addslashes($data["name"]), -1, [],
-                                           addslashes($data["comment"]));
+                                           $data["name"], -1, [],
+                                           $data["comment"]);
             if ($data['id'] != $ID) {
                $tomove[$data['id']] = $ID;
                $type                = GetItemTypeForTable($this->item_table);
@@ -145,32 +145,47 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
       $model_field = getForeignKeyFieldForTable($this->item_table);
 
       // Need to give manufacturer from item table
-      $Sql = "SELECT DISTINCT `glpi_manufacturers`.`id` AS idmanu,
-                     `glpi_manufacturers`.`name` AS manufacturer,
-                     `".$this->item_table."`.`id`,
-                     `".$this->item_table."`.`name` AS name,
-                     `".$this->item_table."`.`comment`
-              FROM `".$this->item_table."`,
-                   `$model_table`
-              LEFT JOIN `glpi_manufacturers`
-                  ON (`$model_table`.`manufacturers_id` = `glpi_manufacturers`.`id`)
-              WHERE `$model_table`.`$model_field` = `".$this->item_table."`.`id`";
+      $criteria =[
+         'SELECT'          => [
+            'glpi_manufacturers.id AS idmanu',
+            'glpi_manufacturers.name AS manufacturer',
+            $this->item_table . '.id',
+            $this->item_table . '.name AS name',
+            $this->item_table . '.comment'
+         ],
+         'DISTINCT'        => true,
+         'FROM'            => $this->item_table,
+         'INNER JOIN'      => [
+            $model_table         => [
+               'ON' => [
+                  $this->item_table => 'id',
+                  $model_table      => $model_field
+               ]
+            ]
+         ],
+         'LEFT JOIN'       => [
+            'glpi_manufacturers' => [
+               'ON' => [
+                  'glpi_manufacturers' => 'id',
+                  $model_table         => 'manufacturers_id'
+               ]
+            ]
+         ]
+      ];
 
       if ($offset) {
-         $Sql .= " LIMIT ".intval($offset).",999999999";
+         $criteria['START'] = (int)$offset;
       }
-      $result  = $DB->query($Sql);
 
-      $nb      = $DB->numrows($result)+$offset;
+      $nb      = count($iterator) + $offset;
       $i       = $offset;
 
-      if ($result
-          && ($nb > $offset)) {
+      if ($nb > $offset) {
          // Step to refresh progressbar
          $step    = (($nb > 20) ? floor($nb/20) : 1);
          $tocheck = [];
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             if (!($i % $step)) {
 
                if (isCommandLine()) {
@@ -182,13 +197,13 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
             // Model case
             if (isset($data["manufacturer"])) {
-               $data["manufacturer"] = Manufacturer::processName(addslashes($data["manufacturer"]));
+               $data["manufacturer"] = Manufacturer::processName($data["manufacturer"]);
             }
 
             //Replay Type dictionnary
             $ID = Dropdown::importExternal(getItemTypeForTable($this->item_table),
-                                           addslashes($data["name"]), -1, $data,
-                                           addslashes($data["comment"]));
+                                           $data["name"], -1, $data,
+                                           $data["comment"]);
 
             if ($data['id'] != $ID) {
                $tocheck[$data["id"]][] = $ID;
@@ -221,15 +236,17 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
          }
 
          foreach ($tocheck AS $ID => $tab) {
-            $sql              = "SELECT COUNT(*)
-                                 FROM `$model_table`
-                                 WHERE `$model_field` = '$ID'";
-            $result           = $DB->query($sql);
+            $result = $DB->request([
+               'COUNT'  => 'cpt',
+               'FROM'   => $model_table,
+               'WHERE'  => [$model_field => $ID]
+            ])->next();
+
             $deletecartmodel  = false;
 
             // No item left : delete old item
             if ($result
-                && ($DB->result($result, 0, 0) == 0)) {
+                && ($result['cpt'] == 0)) {
                $DB->delete(
                   $this->item_table, [
                      'id'  => $ID
@@ -240,31 +257,30 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
             // Manage cartridge assoc Update items
             if ($this->getRuleClassName()=='RuleDictionnaryPrinterModel') {
-               $sql = "SELECT *
-                       FROM `glpi_cartridgeitems_printermodels`
-                       WHERE `printermodels_id` = '$ID'";
+               $iterator2 = $DB->request([
+                  'FROM'   => 'glpi_cartridgeitems_printermodels',
+                  'WHERE'  => ['printermodels_id' => $ID]
+               ]);
 
-               if ($result = $DB->query($sql)) {
-                  if ($DB->numrows($result)) {
-                     // Get compatible cartridge type
-                     $carttype = [];
-                     while ($data = $DB->fetch_assoc($result)) {
-                        $carttype[] = $data['cartridgeitems_id'];
-                     }
-                     // Delete cartrodges_assoc
-                     if ($deletecartmodel) {
-                        $DB->delete(
-                           'glpi_cartridgeitems_printermodels', [
-                              'printermodels_id'   => $ID
-                           ]
-                        );
-                     }
-                     // Add new assoc
-                     $ct = new CartridgeItem();
-                     foreach ($carttype as $cartID) {
-                        foreach ($tab as $model) {
-                           $ct->addCompatibleType($cartID, $model);
-                        }
+               if (count($iterator2)) {
+                  // Get compatible cartridge type
+                  $carttype = [];
+                  while ($data = $iterator2->next()) {
+                     $carttype[] = $data['cartridgeitems_id'];
+                  }
+                  // Delete cartrodges_assoc
+                  if ($deletecartmodel) {
+                     $DB->delete(
+                        'glpi_cartridgeitems_printermodels', [
+                           'printermodels_id'   => $ID
+                        ]
+                     );
+                  }
+                  // Add new assoc
+                  $ct = new CartridgeItem();
+                  foreach ($carttype as $cartID) {
+                     foreach ($tab as $model) {
+                        $ct->addCompatibleType($cartID, $model);
                      }
                   }
                }

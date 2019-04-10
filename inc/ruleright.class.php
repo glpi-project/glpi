@@ -94,17 +94,7 @@ class RuleRight extends Rule {
    }
 
 
-   /**
-    * Execute the actions as defined in the rule
-    *
-    * @see Rule::executeActions()
-    *
-    * @param $output the result of the actions
-    * @param $params the parameters
-    *
-    * @return the fields modified
-   **/
-   function executeActions($output, $params) {
+   function executeActions($output, $params, array $input = []) {
       global $CFG_GLPI;
 
       $entity       = '';
@@ -144,10 +134,15 @@ class RuleRight extends Rule {
                         $output["is_active"] = $action->fields["value"];
                         break;
 
+                     case 'timezone':
+                        $output['timezone'] = $action->fields['value'];
+                        break;
+
                      case "_ignore_user_import" :
                         $continue                   = false;
                         $output_src["_stop_import"] = true;
                         break;
+
                   } // switch (field)
                   break;
 
@@ -163,20 +158,20 @@ class RuleRight extends Rule {
                            if ($res != null) {
                               switch ($action->fields["field"]) {
                                  case "_affect_entity_by_dn" :
-                                    $entity_found = Entity::getEntityIDByDN(addslashes($res));
+                                    $entity_found = Entity::getEntityIDByDN($res);
                                     break;
 
                                  case "_affect_entity_by_tag" :
-                                    $entity_found = Entity::getEntityIDByTag(addslashes($res));
+                                    $entity_found = Entity::getEntityIDByTag($res);
                                     break;
 
                                  case "_affect_entity_by_domain" :
-                                    $entity_found = Entity::getEntityIDByDomain(addslashes($res));
+                                    $entity_found = Entity::getEntityIDByDomain($res);
                                     break;
 
                                  case "_affect_entity_by_completename" :
                                     $res          = Toolbox::unclean_cross_side_scripting_deep($res);
-                                    $entity_found = Entity::getEntityIDByCompletename(addslashes($res));
+                                    $entity_found = Entity::getEntityIDByCompletename($res);
                                     break;
 
                                  default:
@@ -352,23 +347,45 @@ class RuleRight extends Rule {
       $actions['_profiles_id_default']['linkfield']         = 'profiles_id';
       $actions['_profiles_id_default']['type']              = 'dropdown';
 
+      $actions['timezone']['name']                          = __('Timezone');
+      $actions['timezone']['type']                          = 'timezone';
+
       return $actions;
    }
 
+   function displayAdditionalRuleAction(array $action, $value = '') {
+      global $DB;
+
+      switch ($action['type']) {
+         case 'timezone' :
+
+            $timezones = $DB->getTimezones();
+            Dropdown::showFromArray(
+               'value',
+               $timezones, [
+                  'display_emptychoice' => true
+               ]
+            );
+            return true;
+      }
+      return false;
+   }
+
+
 
    /**
-    * Get all ldap rules criterias from the DB and add them into the RULES_CRITERIAS
+    * Get all ldap rules criteria from the DB and add them into the RULES_CRITERIAS
     *
-    * @param &$criterias
+    * @param &$criteria
    **/
-   function addSpecificCriteriasToArray(&$criterias) {
+   function addSpecificCriteriasToArray(&$criteria) {
 
-      $criterias['ldap'] = __('LDAP criteria');
-      foreach (getAllDatasFromTable('glpi_rulerightparameters', [], true) as $datas) {
-         $criterias[$datas["value"]]['name']      = $datas["name"];
-         $criterias[$datas["value"]]['field']     = $datas["value"];
-         $criterias[$datas["value"]]['linkfield'] = '';
-         $criterias[$datas["value"]]['table']     = '';
+      $criteria['ldap'] = __('LDAP criteria');
+      foreach (getAllDatasFromTable('glpi_rulerightparameters', [], true) as $data) {
+         $criteria[$data["value"]]['name']      = $data["name"];
+         $criteria[$data["value"]]['field']     = $data["value"];
+         $criteria[$data["value"]]['linkfield'] = '';
+         $criteria[$data["value"]]['table']     = '';
       }
    }
 

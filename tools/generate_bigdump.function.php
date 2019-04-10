@@ -137,10 +137,10 @@ function getNextMAC() {
  *
  * @since 0.84
  *
- * @param $itemtype        item type
- * @param $items_id        item ID
- * @param $entities_id     item entity ID
- * @param $locations_id    ID of the location trying to link with network equipment (default 0)
+ * @param string  $itemtype      item type
+ * @param integer $items_id      item ID
+ * @param integer $entities_id   item entity ID
+ * @param integer $locations_id  ID of the location trying to link with network equipment (default 0)
 **/
 function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_id = 0) {
    global $NET_LOC, $NET_PORT, $MAX, $VLAN_LOC;
@@ -161,12 +161,12 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
 
    //insert netpoint
    $netpoint   = new NetPoint();
-   $netpointID = $netpoint->add(toolbox::addslashes_deep([
+   $netpointID = $netpoint->add([
       'entities_id'  => $entities_id,
       'locations_id' => $locations_id,
       'name'         => getNextNETPOINT(),
       'comment'      => "comment 'netpoint $locations_id"
-   ]));
+   ]);
 
    if ($locations_id && !isset($VLAN_LOC[$locations_id])) {
       $vlanID                  = mt_rand(1, $MAX["vlan"]);
@@ -187,7 +187,7 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
       $newIP2      = getNextIP();
 
       // Create new port on ref item
-      $param = toolbox::addslashes_deep([
+      $param = [
          'itemtype'                 => 'NetworkEquipment',
          'items_id'                 => $NET_LOC[$locations_id],
          'entities_id'              => $entities_id,
@@ -199,7 +199,7 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
          'netpoints_id'             => $netpointID,
          'NetworkName_name'         => "NetworkEquipment$itemtype-$items_id-$entities_id",
          'NetworkName__ipaddresses' => [-100 => $newIP2['ip']],
-      ]);
+      ];
 
       $np->splitInputForElements($param);
       $refportID = $np->add($param);
@@ -219,7 +219,7 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
    //                      '".$newIP['subnet']."','comment')";
    //    $DB->query($query) or die("PB REQUETE ".$query);
 
-   $param = toolbox::addslashes_deep([
+   $param = [
       'itemtype'                 => $itemtype,
       'items_id'                 => $items_id,
       'entities_id'              => $entities_id,
@@ -231,7 +231,7 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
       'netpoints_id'             => $netpointID,
       'NetworkName_name'         => "$itemtype-$items_id-$entities_id",
       'NetworkName__ipaddresses' => [-100 => $newIP['ip']],
-   ]);
+   ];
 
    $np->splitInputForElements($param);
    $newportID = $np->add($param);
@@ -256,9 +256,9 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
 
 /**  Generate bigdump : make an item reservable
  *
- * @param $type      item type
- * @param $ID        item ID
- * @param $ID_entity item entity ID
+ * @param string  $type      item type
+ * @param integer $ID        item ID
+ * @param integer $ID_entity item entity ID
 **/
 function addReservation($type, $ID, $ID_entity) {
    global $percent, $DB, $FIRST, $LAST;
@@ -268,14 +268,14 @@ function addReservation($type, $ID, $ID_entity) {
    if (mt_rand(0, 100)<$percent['reservationitems']) {
       $ri  = new Reservationitem();
       $r   = new Reservation();
-      $tID = $ri->add(toolbox::addslashes_deep([
+      $tID = $ri->add([
          'itemtype'     => $type,
          'entities_id'  => $ID_entity,
          'is_recursive' => 0,
          'items_id'     => $ID,
          'comment'      => "comment ' $ID $type",
          'is_active'    => 1
-      ]));
+      ]);
 
       $date1 = strtotime('-2 week'); // reservations since 2 weeks
       $date2 = $date1;
@@ -285,13 +285,13 @@ function addReservation($type, $ID, $ID_entity) {
          $date1 = $date2+HOUR_TIMESTAMP*(1+mt_rand(0, 10)); // min 10 hours between each resa max
          $date2 = $date1+HOUR_TIMESTAMP*mt_rand(1, 10); // A reservation from 1 to 5 hours
          //          echo $tID.' '.date("Y-m-d H:i:s", $date1).'->'.date("Y-m-d H:i:s", $date2).'<br>';
-         $r->add(toolbox::addslashes_deep([
+         $r->add([
             'reservationitems_id' => $tID,
             'begin'               => date("Y-m-d H:i:s", $date1),
             'end'                 => date("Y-m-d H:i:s", $date2),
             'users_id'            => mt_rand($FIRST['users_normal'], $LAST['users_postonly']),
             'comment'             => "comments '$i ".Toolbox::getRandomString(15)
-         ]));
+         ]);
          $i++;
       }
    }
@@ -300,8 +300,8 @@ function addReservation($type, $ID, $ID_entity) {
 
 /** Generate bigdump : add documents to an item
  *
- * @param $type   item type
- * @param $ID     item ID
+ * @param string  $type   item type
+ * @param integer $ID     item ID
 **/
 function addDocuments($type, $ID) {
    global $DOC_PER_ITEM, $DB, $FIRST, $LAST, $DOCUMENTS;
@@ -331,10 +331,10 @@ function addDocuments($type, $ID) {
 
 /** Generate bigdump : add infocoms to an item
  *
- * @param $type            item type
- * @param $ID              item ID
- * @param $ID_entity       entity ID
- * @param $is_recursive    (default 0)
+ * @param string  $type            item type
+ * @param integer $ID              item ID
+ * @param integer $ID_entity       entity ID
+ * @param boolean $is_recursive    (default 0)
 **/
 function addInfocoms($type, $ID, $ID_entity, $is_recursive = 0) {
    global $DB, $FIRST, $LAST;
@@ -356,7 +356,7 @@ function addInfocoms($type, $ID, $ID_entity, $is_recursive = 0) {
    $inventorydate = date("Y-m-d", intval($inventorydate));
 
    $i = new Infocom();
-   $i->add(toolbox::addslashes_deep([
+   $i->add([
       'itemtype'           => $type,
       'items_id'          => $ID,
       'entities_id'       => $ID_entity,
@@ -381,14 +381,14 @@ function addInfocoms($type, $ID, $ID_entity, $is_recursive = 0) {
       'delivery_date'     => $deliverydate,
       'inventory_date'    => $inventorydate,
       'warranty_date'     => $warrantydate
-   ]));
+   ]);
 }
 
 
 /** Generate bigdump : add contracts to an item
  *
- * @param $type   item type
- * @param $ID     item ID
+ * @param string  $type   item type
+ * @param integer $ID     item ID
 **/
 function addContracts($type, $ID) {
    global $CONTRACT_PER_ITEM, $DB, $FIRST, $LAST;
@@ -413,9 +413,9 @@ function addContracts($type, $ID) {
 
 /** Generate bigdump : add tickets to an item
  *
- * @param $type      item type
- * @param $ID        item ID
- * @param $ID_entity entity ID
+ * @param string  $type      item type
+ * @param integer $ID        item ID
+ * @param integer $ID_entity entity ID
 **/
 function addTracking($type, $ID, $ID_entity) {
    global $percent, $DB, $MAX, $FIRST, $LAST, $faker;
@@ -514,7 +514,7 @@ function addTracking($type, $ID, $ID_entity) {
          $solvedatetoadd = date("Y-m-d H:i:s", intval($solvedate));
       }
       $t   = new Ticket();
-      $tID = $t->add(toolbox::addslashes_deep([
+      $tID = $t->add([
          'entities_id'                 => $ID_entity,
          'name'                        => $faker->realText(50),
          'date'                        => date("Y-m-d H:i:s", intval($opendate)),
@@ -543,7 +543,7 @@ function addTracking($type, $ID, $ID_entity) {
          '_users_id_assign'            => $users[1],
          '_groups_id_assign'           => mt_rand($FIRST["techgroups"], $LAST['techgroups']),
          '_groups_id_requester'        => mt_rand($FIRST["groups"], $LAST['groups']),
-      ]));
+      ]);
 
       $oldsoluce = null;
 
@@ -552,7 +552,7 @@ function addTracking($type, $ID, $ID_entity) {
       $fID   = 0;
       $first = true;
       $date  = 0;
-      $tf    = new TicketFollowup();
+      $tf    = new ITILFollowup();
       while (mt_rand(0, 100)<$percent['followups']) {
          if ($first) {
             $date = $opendate+$firstactiontime;
@@ -565,14 +565,14 @@ function addTracking($type, $ID, $ID_entity) {
          if ($solution !== null && $faker->boolean($chanceOfGettingTrue = 5)) {
             //a first solution, that should be refused because a followup will be added.
             $itilsoluce = new ITILSolution();
-            $oldsoluce = $itilsoluce->add(Toolbox::addslashes_deep([
+            $oldsoluce = $itilsoluce->add([
                'itemtype'           => 'Ticket',
                'items_id'           => $tID,
                'content'            => $faker->realText,
                'solutiontypes_id'   => $solutiontype,
                'users_id'           => $faker->numberBetween($FIRST['users_normal'], $LAST['users_normal']),
                'users_id_approval'  => $faker->numberBetween($FIRST['users_postonly'], $LAST['users_normal'])
-            ]));
+            ]);
 
             //set date
             $itilsoluce->update([
@@ -581,19 +581,21 @@ function addTracking($type, $ID, $ID_entity) {
             ]);
 
             //approve solution
-            $follow = new \TicketFollowup();
+            $follow = new \ITILFollowup();
             $follow->add([
-               'tickets_id'   => $tID,
-               'add_close'    => '1'
+               'itemtype'   => 'Ticket',
+               'items_id'   => $tID,
+               'add_close'  => '1'
             ]);
          }
 
-         $tf->add(toolbox::addslashes_deep(
-                  ['tickets_id'      => $tID,
+         $tf->add(
+                  ['itemtype'        => 'Ticket',
+                   'items_id'        => $tID,
                    'date'            => date("Y-m-d H:i:s", $date),
                    'users_id'        => $users[1],
                    'content'         => $faker->realText,
-                   'requesttypes_id' => mt_rand(0, 3)]));
+                   'requesttypes_id' => mt_rand(0, 3)]);
          $i++;
       }
       $tt = new TicketTask();
@@ -616,7 +618,7 @@ function addTracking($type, $ID, $ID_entity) {
                $state = 2; // done
             }
          }
-         $params = toolbox::addslashes_deep(
+         $params =
                    ['tickets_id'        => $tID,
                     'taskcategories_id' => mt_rand($FIRST['taskcategory'], $LAST['taskcategory']),
                     'date'              => date("Y-m-d H:i:s", $date),
@@ -624,7 +626,7 @@ function addTracking($type, $ID, $ID_entity) {
                     'content'           => $faker->realText,
                     'is_private'        => mt_rand(0, 1),
                     'state'             => $state,
-                    'users_id_tech'    => $users[1]]);
+                    'users_id_tech'    => $users[1]];
 
          if ($status == CommonITILObject::PLANNED && $doplan) {
             $params['plan'] = ['begin'       => date("Y-m-d H:i:s", $date3),
@@ -644,7 +646,7 @@ function addTracking($type, $ID, $ID_entity) {
                'status' => CommonITILValidation::REFUSED
             ]);
          }
-         $itilsoluce->add(Toolbox::addslashes_deep([
+         $itilsoluce->add([
             'itemtype'           => 'Ticket',
             'items_id'           => $tID,
             'content'            => $solution,
@@ -652,7 +654,7 @@ function addTracking($type, $ID, $ID_entity) {
             'users_id'           => $faker->numberBetween($FIRST['users_normal'], $LAST['users_normal']),
             'users_id_approval'  => $faker->numberBetween($FIRST['users_postonly'], $LAST['users_normal']),
             'status'             => CommonITILValidation::ACCEPTED
-         ]));
+         ]);
 
          //set date
          $itilsoluce->update([
@@ -660,17 +662,19 @@ function addTracking($type, $ID, $ID_entity) {
             'date_creation'   => date('Y-m-d H:i:s', $date + mt_rand(3600, 7776000))
          ]);
 
-         $follow = new \TicketFollowup();
+         $follow = new \ITILFollowup();
          if ($faker->boolean($chanceOfGettingTrue = 85)) {
             //approve solution
             $follow->add([
-               'tickets_id'   => $tID,
+               'itemtype'     => 'Ticket',
+               'items_id'     => $tID,
                'add_close'    => '1'
             ]);
          } else if ($faker->boolean($chanceOfGettingTrue = 35)) {
             //refuse solution and reopen ticket
             $follow->add([
-               'tickets_id'   => $tID,
+               'itemtype'     => 'Ticket',
+               'items_id'     => $tID,
                'add_reopen'   => '1',
                'content'      => $faker->realText()
             ]);
@@ -678,14 +682,14 @@ function addTracking($type, $ID, $ID_entity) {
       }
 
       $tc = new TicketCost();
-      $params = toolbox::addslashes_deep([
+      $params = [
          'tickets_id'        => $tID,
          'entities_id'       => $ID_entity,
          'begin_date'        => date("Y-m-d H:i:s", intval($opendate)),
          'name'              => "C'ost",
          'cost_time'         => $hour_cost,
          'actiontime'        => floor($actiontime/2)
-      ]);
+      ];
 
       // Insert satisfaction for stats
       if ($status == CommonITILObject::CLOSED
@@ -696,14 +700,14 @@ function addTracking($type, $ID, $ID_entity) {
             $answerdate = $closedatetoadd;
          }
          $ts = new TicketSatisfaction();
-         $ts->add(toolbox::addslashes_deep([
+         $ts->add([
             'tickets_id'   => $tID,
             'type'         => mt_rand(1, 2),
             'date_begin'   => $closedatetoadd,
             'date_answer'  => $answerdate,
             'satisfaction' => mt_rand(0, 5),
             'comment'      => $faker->realText
-         ]));
+         ]);
       }
 
    }
@@ -730,7 +734,7 @@ function addDisks($itemtype, $items_id, $ID_entity, $chance = 100) {
       for ($j=1; $j<=$nb_disk; $j++) {
          $totalsize = $faker->numberBetween(10000, 1000000);
 
-         $idisk->add(toolbox::addslashes_deep([
+         $idisk->add([
             'itemtype'        => $itemtype,
             'entities_id'     => $ID_entity,
             'items_id'        => $items_id,
@@ -740,7 +744,7 @@ function addDisks($itemtype, $items_id, $ID_entity, $chance = 100) {
             'filesystems_id'  => $faker->numberBetween(1, 10),
             'totalsize'       => $totalsize,
             'freesize'        => $faker->numberBetween(0, $totalsize)
-         ]));
+         ]);
       }
    }
 }
@@ -760,10 +764,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d' consommable $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["phone d'power"];
@@ -774,10 +778,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "power ' $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["Grand", "Moyen", "Mic'ro", "1U", "5U"];
@@ -788,10 +792,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "power ' $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["Laser", "Jet d'Encre", "Encre Solide"];
@@ -802,10 +806,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d' cartouche $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["Technicien", "Commercial", "Technico-Commercial", "President", "Secretaire",
@@ -817,10 +821,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d' contact $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["Maintenance", "Support", "Location", "Adhesion"];
@@ -831,10 +835,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d' crontact $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["Fournisseur", "Transporteur", "SSII", "Revendeur d'", "Assembleur", "SSLL",
@@ -846,10 +850,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d'entreprise $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["H.07.02", "I.07.56", "P51", "P52", "1.60", "4.06", "43-4071299", "1.0.14",
@@ -861,10 +865,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "firmware  $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["Fire'wire"];
@@ -875,10 +879,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d' disque dur $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["100 Base TX", "100 Base T4", "10 base T", "1000 Base SX", "1000 Base LX",
@@ -890,10 +894,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type carte reseau $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["Non", "Oui - generique", "Oui - specifique d'entite"];
@@ -904,10 +908,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de mise a jour '$i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["Assemble", "Latitude C600", "Latitude C700", "VAIO FX601", "VAIO FX905P",
@@ -919,10 +923,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "Modele $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment' $val"
-      ]));
+      ]);
    }
 
    $items = ["4200 DTN", "4200 DN", "4200 N", "8400 ADP", "7300 ADP", "5550 DN",
@@ -934,10 +938,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele imprimante $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["LS902UTG", "MA203DT", "P97F+SB", "G220F", "10-30-75", "PLE438S-B0S",
@@ -949,10 +953,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele moniteur $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["HP 4108GL", "HP 2524", "HP 5308", "7600", "Catalyst 4500", "Catalyst 2950",
@@ -964,10 +968,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele materiel reseau $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["DCS-2100+", "DCS-2100G", "KD-P35B", "Optical 5000", "Cordless", "ASR 600",
@@ -979,10 +983,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele peripherique $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["Alcatel Temporis 22", "Aastra 5370ip", "Alcatel-Lucent 400 DECT Handset",
@@ -994,10 +998,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele phone $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment' $val"
-      ]));
+      ]);
    }
 
    $items = ["SIC", "LMS", "LMP", "LEA", "SP2MI", "STIC", "MATH", "ENS-MECA", "POUBELLE",
@@ -1009,10 +1013,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "reseau $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["Windows XP Pro SP2", "Linux (Debian)", "Mac OS X", "Linux (Mandriva 2006)",
@@ -1025,10 +1029,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "os $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["XP Pro", "XP Home", "10.0", "10.1", "10.2", "2006", "Sarge"];
@@ -1039,10 +1043,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "osversion $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["Service Pack 1", "Service Pack 2", "Service Pack 3", "Service Pack 4"];
@@ -1053,10 +1057,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "ossp $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["DDR2"];
@@ -1067,10 +1071,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de ram $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment' $val"
-      ]));
+      ]);
    }
 
    $items = ['Desktop usage', 'Computing', "Antivirus", 'Audio/Video'];
@@ -1081,17 +1085,17 @@ function generateGlobalDropdowns() {
       } else {
          $val = "category $i";
       }
-      $newID = $dp->add(toolbox::addslashes_deep([
+      $newID = $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
 
       for ($j=0; $j<mt_rand(0, pow($MAX['softwarecategory'], 1/2)); $j++) {
-         $newID2 = $dp->add(toolbox::addslashes_deep([
+         $newID2 = $dp->add([
             'name'                  => "s-category '$j",
             'comment'               => "comment d' $val s-category $j",
             'softwarecategories_id' => $newID
-         ]));
+         ]);
       }
    }
    $MAX['rubdocs'] = getMaxItem('glpi_softwarecategories');
@@ -1099,10 +1103,10 @@ function generateGlobalDropdowns() {
    $dp = new SoftwareLicenseType();
    for ($i=0; $i<$MAX['licensetype']; $i++) {
       $val = "type ' $i";
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["SIC", "LMS", "LMP", "LEA", "SP2MI", "STIC", "MATH", "ENS-MECA", "POUBELLE",
@@ -1114,11 +1118,11 @@ function generateGlobalDropdowns() {
       } else {
          $val = "VLAN $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val",
          'tag'     => $i
-      ]));
+      ]);
    }
 
    $items = ["Server", "Laptop", "Desktop", "Virtual Machine", "Blade"];
@@ -1129,10 +1133,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type ordinateur $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["Laser A4", "Jet d'Encre", "Laser A3", "Encre Solide A4", "Encre Solide A3"];
@@ -1143,10 +1147,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d'imprimante $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["TFT 17", "TFT 19", "TFT 21", "CRT 17", "CRT 19", "CRT 21", "CRT 15"];
@@ -1157,10 +1161,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type ecran $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["Switch", "Routeur", "Hub", "Borne Wifi", "borne d'accueil"];
@@ -1171,10 +1175,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de materiel reseau '$i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["Clavier", "Souris", "Webcam", "Enceintes", "Scanner", "Clef USB", "d'autres"];
@@ -1185,10 +1189,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de peripheriques '$i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["Analogique", "IP", ];
@@ -1199,10 +1203,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de phone $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $items = ["DELL", "HP", "IIYAMA", "CANON", "EPSON", "LEXMARK", "ASUS", "MSI"];
@@ -1213,19 +1217,19 @@ function generateGlobalDropdowns() {
       } else {
          $val = "manufacturer $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment '$val"
-      ]));
+      ]);
    }
 
    $dp = new UserCategory();
    for ($i=0; $i<$MAX['user_type']; $i++) {
       $val = $faker->jobTitle;
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["President", "Agent Comptable", "Directeur d'agence"];
@@ -1236,10 +1240,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "user type '$i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'    => $val,
          'comment' => "comment $val"
-      ]));
+      ]);
    }
 
    $items = ["Documentation", "Facture", "Bon Livraison", "Bon commande", "Capture d'Ecran",
@@ -1251,15 +1255,15 @@ function generateGlobalDropdowns() {
       } else {
          $val = "category $i";
       }
-      $newID = $dp->add(toolbox::addslashes_deep(['name'    => $val,
-                                                       'comment' => "comment $val"]));
+      $newID = $dp->add(['name'    => $val,
+                         'comment' => "comment $val"]);
 
       for ($j=0; $j<mt_rand(0, pow($MAX['rubdocs'], 1/2)); $j++) {
-         $newID2 = $dp->add(toolbox::addslashes_deep([
+         $newID2 = $dp->add([
             'name'                  => "s-category '$j",
             'comment'               => "comment d' $val s-category $j",
             'documentcategories_id' => $newID
-         ]));
+         ]);
       }
    }
    $MAX['rubdocs'] = getMaxItem('glpi_documentcategories');
@@ -1267,33 +1271,33 @@ function generateGlobalDropdowns() {
    $dp = new ItilCategory();
    // GLobal ticket categories : also specific ones by entity
    for ($i=0; $i<max(1, pow($MAX['tracking_category'], 1/3)); $i++) {
-      $newID = $dp->add(toolbox::addslashes_deep([
+      $newID = $dp->add([
          'name'                        => "category '$i",
          'comment'                     => "comment ' category $i",
          'is_recursive'                => 1,
          'tickettemplates_id_incident' => 1,
          'tickettemplates_id_demand'   => 1
-      ]));
+      ]);
 
       for ($j=0; $j<mt_rand(0, pow($MAX['tracking_category'], 1/2)); $j++) {
-         $newID2 = $dp->add(toolbox::addslashes_deep([
+         $newID2 = $dp->add([
             'name'                        => "s-category '$j",
             'comment'                     => "comment 'category $i s-category $j",
             'is_recursive'                => 1,
             'tickettemplates_id_incident' => 1,
             'tickettemplates_id_demand'   => 1,
             'itilcategories_id'           => $newID
-         ]));
+         ]);
 
          for ($k=0; $k<mt_rand(0, pow($MAX['tracking_category'], 1/2)); $k++) {
-            $newID3 = $dp->add(toolbox::addslashes_deep([
+            $newID3 = $dp->add([
                'name'                        => "ss-category' $k",
                'comment'      => "comment ' category $i s-category $j ss-category $k",
                'is_recursive'                => 1,
                'tickettemplates_id_incident' => 1,
                'tickettemplates_id_demand'   => 1,
                'itilcategories_id'           => $newID2
-            ]));
+            ]);
          }
       }
    }
@@ -1315,13 +1319,13 @@ function generateGlobalDropdowns() {
       } else {
          $val = "case $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment '$val",
          'devicecasetypes_id' => mt_rand(0, $MAX["case_type"]),
          'manufacturers_id'   => mt_rand(1, $MAX['manufacturer'])
-      ]));
+      ]);
    }
 
    $items = ["Escalade 8006-2LP", "Escalade 8506-4LP", "2810SA", "1210SA", "DuoConnect",
@@ -1333,13 +1337,13 @@ function generateGlobalDropdowns() {
       } else {
          $val = "control $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment ' $val",
          'interfacetypes_id'  => mt_rand(0, $MAX["interface"]),
          'manufacturers_id'   => mt_rand(1, $MAX['manufacturer'])
-      ]));
+      ]);
    }
 
    $items = ["DUW1616", "DRW-1608P", "DW1625", "GSA-4160B", "GSA-4165B", "GSA-4167RBB",
@@ -1351,7 +1355,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "drive $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment '$val",
@@ -1359,7 +1363,7 @@ function generateGlobalDropdowns() {
          'speed'              => mt_rand(0, 60),
          'interfacetypes_id'  => mt_rand(0, $MAX["interface"]),
          'manufacturers_id'   => mt_rand(1, $MAX['manufacturer'])
-      ]));
+      ]);
    }
 
    $items = ["A9250/TD", "AX550/TD", "Extreme N5900", "V9520-X/TD", "All-In-Wonder X800 GT",
@@ -1372,14 +1376,14 @@ function generateGlobalDropdowns() {
       } else {
          $val = "gfxcard $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment ' $val",
          'interfacetypes_id'  => mt_rand(0, $MAX["interface"]),
          'manufacturers_id'   => mt_rand(1, $MAX['manufacturer']),
          'memory_default'     => 256*mt_rand(0, 8)
-      ]));
+      ]);
    }
 
    $items = ["Deskstar 7K500", "Deskstar T7K250", "Atlas 15K II", "DiamondMax Plus",
@@ -1391,7 +1395,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "hdd  $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment' $val",
@@ -1400,7 +1404,7 @@ function generateGlobalDropdowns() {
          'capacity_default'   => mt_rand(0, 300),
          'rpm'                => mt_rand(0, 15000),
          'cache'              => 51200*mt_rand(0, 10)
-      ]));
+      ]);
    }
 
    $items = ["DFE-530TX", "DFE-538TX", "PWLA8492MF", "PWLA8492MT", "USBVPN1", "GA311", "FA511",
@@ -1412,13 +1416,13 @@ function generateGlobalDropdowns() {
       } else {
          $val = "iface  $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment' $val",
          'manufacturers_id'   => mt_rand(1, $MAX['manufacturer']),
          'bandwidth'          => mt_rand(0, 1000)
-      ]));
+      ]);
    }
 
    $items = ["AW8-MAX", "NV8", "AK86-L", "P4V88", "A8N-SLI", "A8N-VM", "K8V-MX", "K8N4-E",
@@ -1432,13 +1436,13 @@ function generateGlobalDropdowns() {
       } else {
          $val = "moboard $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment' $val",
          'manufacturers_id'   => mt_rand(1, $MAX['manufacturer']),
          'chipset'            => 'chipset '.mt_rand(0, 1000)
-      ]));
+      ]);
    }
 
    $items = ["Instant TV Cardbus", "WinTV Express", "WinTV-NOVA-S-Plus", "WinTV-NOVA-T",
@@ -1450,12 +1454,12 @@ function generateGlobalDropdowns() {
       } else {
          $val = "pci $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment '$val",
          'manufacturers_id'   => mt_rand(1, $MAX['manufacturer'])
-      ]));
+      ]);
    }
 
    $items = ["DB-Killer PW335", "DB-Killer PW385", "NeoHE 380", "NeoHE 450", "Phantom 500-PEC",
@@ -1467,14 +1471,14 @@ function generateGlobalDropdowns() {
       } else {
          $val = "power $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment '$val",
          'manufacturers_id'   => mt_rand(1, $MAX['manufacturer']),
          'power'              => mt_rand(0, 500).'W',
          'is_atx'             => mt_rand(0, 1)
-      ]));
+      ]);
    }
 
    $items = ["Athlon 64 FX-57", "Athlon 64 FX-55", "Sempron 2400+", "Sempron 2600+",
@@ -1487,7 +1491,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "processor $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment' $val",
@@ -1496,7 +1500,7 @@ function generateGlobalDropdowns() {
          'frequency_default'  => 1000+200*mt_rand(0, 10),
          'nbcores_default'    => mt_rand(1, 8),
          'nbthreads_default'  => mt_rand(1, 4),
-      ]));
+      ]);
    }
 
    $items = ["CM2X256A-5400C4", "CMX1024-3200C2", "CMXP512-3200XL", "TWIN2X1024-4300C3PRO",
@@ -1509,7 +1513,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "ram $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'          => $val,
          'is_recursive'         => 1,
          'comment'              => "comment' $val",
@@ -1517,7 +1521,7 @@ function generateGlobalDropdowns() {
          'frequence'            => 100*mt_rand(0, 10),
          'size_default'         => 1024*mt_rand(0, 6),
          'devicememorytypes_id' => mt_rand(1, $MAX['ram_type'])
-      ]));
+      ]);
    }
 
    $items = ["DDTS-100", "Audigy 2 ZS Platinum", "Audigy SE", "DJ Console Mk2",
@@ -1530,13 +1534,13 @@ function generateGlobalDropdowns() {
       } else {
          $val = "sndcard $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'designation'      => $val,
          'is_recursive'     => 1,
          'comment'          => "comment '$val",
          'manufacturers_id' => mt_rand(1, $MAX['manufacturer']),
          'type'             => 'type '.mt_rand(0, 100)
-      ]));
+      ]);
    }
 
 } // Fin generation global dropdowns
@@ -1544,7 +1548,7 @@ function generateGlobalDropdowns() {
 
 /** Generate bigdump : get max ID of a table
  *
- * @param $table table name
+ * @param string $table table name
 **/
 function getMaxItem($table) {
    global $DB;
@@ -1559,7 +1563,7 @@ function getMaxItem($table) {
 
 /** Generate bigdump : generate items for an entity
  *
- * @param $ID_entity entity ID
+ * @param integer $ID_entity entity ID
 **/
 function generate_entity($ID_entity) {
    global $MAX, $DB, $percent, $FIRST, $LAST, $MAX_KBITEMS_BY_CAT, $MAX_DISK,
@@ -1580,12 +1584,12 @@ function generate_entity($ID_entity) {
       } else {
          $val = "domain $ID_entity '$i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add([
          'name'         => $val,
          'entities_id'  => $ID_entity,
          'is_recursive' => 1,
          'comment'      => "comment $val"
-      ]));
+      ]);
    }
    $LAST["domain"] = getMaxItem("glpi_domains");
 
@@ -1599,24 +1603,24 @@ function generate_entity($ID_entity) {
       } else {
          $val = "State $ID_entity '$i";
       }
-      $state_id = $dp->add(toolbox::addslashes_deep([
+      $state_id = $dp->add([
          'name'         => $val,
          'entities_id'  => $ID_entity,
          'is_recursive' => 1,
          'comment'      => "comment $val"
-      ]));
+      ]);
 
       // generate sub status
       for ($j=0; $j<$MAX['state']; $j++) {
          $val2 = "Sub $val $j";
 
-         $dp->add(toolbox::addslashes_deep([
+         $dp->add([
             'name'         => $val2,
             'entities_id'  => $ID_entity,
             'is_recursive' => 1,
             'states_id'    => $state_id,
             'comment'      => "comment $val"
-         ]));
+         ]);
       }
 
    }
@@ -1626,22 +1630,22 @@ function generate_entity($ID_entity) {
    $FIRST["groups"] = getMaxItem("glpi_groups")+1;
    $group           = new Group();
    for ($i=0; $i<$MAX['groups']; $i++) {
-      $gID = $group->add(toolbox::addslashes_deep([
+      $gID = $group->add([
          'entities_id'  => $ID_entity,
          'name'         => "group d'$i",
          'comment'      => "comment group d'$i",
          'is_assign'    => 0
-      ]));
+      ]);
 
       // Generate sub group
       for ($j=0; $j<$MAX['groups']; $j++) {
-         $group->add(toolbox::addslashes_deep([
+         $group->add([
             'entities_id'  => $ID_entity,
             'name'         => "subgroup d'$j",
             'comment'      => "comment subgroup d'$j of group $i",
             'groups_id'    => $gID,
             'is_assign'    => 0
-         ]));
+         ]);
       }
    }
 
@@ -1650,11 +1654,11 @@ function generate_entity($ID_entity) {
    $FIRST["techgroups"] = $LAST["groups"]+1;
 
    for ($i=0; $i<$MAX['groups']; $i++) {
-         $group->add(toolbox::addslashes_deep([
+         $group->add([
             'entities_id'  => $ID_entity,
             'name'         => "tech group d'$i",
             'comment'      => "comment tech group d'$i"
-         ]));
+         ]);
    }
 
    $LAST["techgroups"] = getMaxItem("glpi_groups");
@@ -1665,7 +1669,7 @@ function generate_entity($ID_entity) {
    $user                  = new User();
    $gu                    = new Group_User();
    for ($i=0; $i<$MAX['users_sadmin']; $i++) {
-      $users_id = $user->add(toolbox::addslashes_deep([
+      $users_id = $user->add([
         'name'              => $faker->unique()->userName,
         'password'          => "sadmin'$i",
         'password2'         => "sadmin'$i",
@@ -1680,7 +1684,7 @@ function generate_entity($ID_entity) {
         '_profiles_id'      => 4,
         '_entities_id'      => $ID_entity,
         '_is_recursive'     => 1
-      ]));
+      ]);
 
       $gu->add([
          'users_id'     => $users_id,
@@ -1697,7 +1701,7 @@ function generate_entity($ID_entity) {
 
    for ($i=0; $i<$MAX['users_admin']; $i++) {
 
-      $users_id = $user->add(toolbox::addslashes_deep([
+      $users_id = $user->add([
          'name'               => $faker->unique()->userName,
          'password'           => "admin'$i",
          'password2'          => "admin'$i",
@@ -1712,7 +1716,7 @@ function generate_entity($ID_entity) {
          '_profiles_id'       => 3,
          '_entities_id'       => $ID_entity,
          '_is_recursive'      => 1
-      ]));
+      ]);
 
       $gu->add([
          'users_id'     => $users_id,
@@ -1733,7 +1737,7 @@ function generate_entity($ID_entity) {
    $FIRST["users_normal"] = getMaxItem("glpi_users")+1;
 
    for ($i=0; $i<$MAX['users_normal']; $i++) {
-      $users_id = $user->add(toolbox::addslashes_deep([
+      $users_id = $user->add([
          'name'               => $faker->unique()->userName,
          'password'           => "normal'$i",
          'password2'          => "normal'$i",
@@ -1748,7 +1752,7 @@ function generate_entity($ID_entity) {
          '_profiles_id'       => 2,
          '_entities_id'       => $ID_entity,
          '_is_recursive'      => 1
-      ]));
+      ]);
 
       $gu->add([
          'users_id'     => $users_id,
@@ -1765,7 +1769,7 @@ function generate_entity($ID_entity) {
    $FIRST["users_postonly"] = getMaxItem("glpi_users")+1;
 
    for ($i=0; $i<$MAX['users_postonly']; $i++) {
-      $users_id = $user->add(toolbox::addslashes_deep([
+      $users_id = $user->add([
          'name'               => $faker->unique()->userName,
          'password'           => "postonly'$i",
          'password2'          => "postonly'$i",
@@ -1780,7 +1784,7 @@ function generate_entity($ID_entity) {
          '_profiles_id'       => 1,
          '_entities_id'       => $ID_entity,
          '_is_recursive'      => 1
-      ]));
+      ]);
 
       $gu->add([
          'users_id'     => $users_id,
@@ -1794,30 +1798,30 @@ function generate_entity($ID_entity) {
    $kbc                   = new KnowbaseItemCategory();
 
    for ($i=0; $i<max(1, pow($MAX['kbcategories'], 1/3)); $i++) {
-      $newID = $kbc->add(toolbox::addslashes_deep([
+      $newID = $kbc->add([
          'entities_id'     => $ID_entity,
          'is_recursive'    => 1,
          'name'            => "entity ' categorie $i",
          'comment'         => "comment ' categorie $i"
-      ]));
+      ]);
 
       for ($j=0; $j<mt_rand(0, pow($MAX['kbcategories'], 1/2)); $j++) {
-         $newID2 = $kbc->add(toolbox::addslashes_deep([
+         $newID2 = $kbc->add([
             'entities_id'                 => $ID_entity,
             'is_recursive'                => 1,
             'name'                        => "entity s-categorie '$j",
             'comment'                     => "comment s-categorie '$j",
             'knowbaseitemcategories_id'   => $newID
-         ]));
+         ]);
 
          for ($k=0; $k<mt_rand(0, pow($MAX['kbcategories'], 1/2)); $k++) {
-            $newID2 = $kbc->add(toolbox::addslashes_deep([
+            $newID2 = $kbc->add([
                'entities_id'               => $ID_entity,
                'is_recursive'              => 1,
                'name'                      => "entity ss-categorie' $k",
                'comment'                   => "comment ss-categorie' $k",
                'knowbaseitemcategories_id' => $newID2
-            ]));
+            ]);
          }
       }
    }
@@ -1834,17 +1838,17 @@ function generate_entity($ID_entity) {
    $loc                = new Location();
    for ($i=0; $i<pow($MAX['locations'], 1/5)&&$added<$MAX['locations']; $i++) {
       $added++;
-      $newID = $loc->add(toolbox::addslashes_deep([
+      $newID = $loc->add([
          'entities_id'     => $ID_entity,
          'is_recursive'    => 1,
          'name'            => "location' $i",
          'comment'         => "comment 'location $i",
          'building'        => "building $i"
-      ]));
+      ]);
 
       for ($j=0; $j<mt_rand(0, pow($MAX['locations'], 1/4))&&$added<$MAX['locations']; $j++) {
          $added++;
-         $newID2 = $loc->add(toolbox::addslashes_deep([
+         $newID2 = $loc->add([
             'entities_id'     => $ID_entity,
             'is_recursive'    => 1,
             'name'            => "s-location '$j",
@@ -1852,11 +1856,11 @@ function generate_entity($ID_entity) {
             'building'        => "building $i",
             'room'            => "stage '$j",
             'locations_id'    => $newID
-         ]));
+         ]);
 
          for ($k=0; $k<mt_rand(0, pow($MAX['locations'], 1/4))&&$added<$MAX['locations']; $k++) {
             $added++;
-            $newID3 = $loc->add(toolbox::addslashes_deep([
+            $newID3 = $loc->add([
                'entities_id'     => $ID_entity,
                'is_recursive'    => 1,
                'name'            => "ss-location '$k",
@@ -1864,11 +1868,11 @@ function generate_entity($ID_entity) {
                'building'        => "building $i",
                'room'            => "part' $k",
                'locations_id'    => $newID2
-            ]));
+            ]);
 
             for ($l=0; $l<mt_rand(0, pow($MAX['locations'], 1/4))&&$added<$MAX['locations']; $l++) {
                $added++;
-               $newID4 = $loc->add(toolbox::addslashes_deep([
+               $newID4 = $loc->add([
                   'entities_id'     => $ID_entity,
                   'is_recursive'    => 1,
                   'name'            => "sss-location' $l",
@@ -1876,11 +1880,11 @@ function generate_entity($ID_entity) {
                   'building'        => "building $i",
                   'room'            => "room' $l",
                   'locations_id'    => $newID3
-               ]));
+               ]);
 
                for ($m=0; $m<mt_rand(0, pow($MAX['locations'], 1/4))&&$added<$MAX['locations']; $m++) {
                   $added++;
-                  $newID5 = $loc->add(toolbox::addslashes_deep([
+                  $newID5 = $loc->add([
                      'entities_id'     => $ID_entity,
                      'is_recursive'    => 1,
                      'name'            => "ssss-location' $m",
@@ -1888,7 +1892,7 @@ function generate_entity($ID_entity) {
                      'building'        => "building $i",
                      'room'            => "room' $l-$m",
                      'locations_id'    => $newID4
-                  ]));
+                  ]);
                }
             }
          }
@@ -1907,21 +1911,21 @@ function generate_entity($ID_entity) {
    $tc                    = new TaskCategory();
    for ($i=0; $i<pow($MAX['taskcategory'], 1/5)&&$added<$MAX['taskcategory']; $i++) {
       $added++;
-      $newID = $tc->add(toolbox::addslashes_deep([
+      $newID = $tc->add([
          'entities_id'     => $ID_entity,
          'is_recursive'    => 1,
          'name'            => "ent$ID_entity taskcategory' $i",
          'comment'         => "comment ent$ID_entity taskcategory' $i"
-      ]));
+      ]);
 
       for ($j=0; $j<mt_rand(0, pow($MAX['locations'], 1/4))&&$added<$MAX['locations']; $j++) {
-         $newID2 = $tc->add(toolbox::addslashes_deep([
+         $newID2 = $tc->add([
             'entities_id'        => $ID_entity,
             'is_recursive'       => 1,
             'name'               => "ent$ID_entity taskcategory' $i",
             'comment'            => "comment ent$ID_entity taskcategory' $i",
             'taskcategories_id'  => $newID
-         ]));
+         ]);
          $added++;
       }
    }
@@ -1934,7 +1938,7 @@ function generate_entity($ID_entity) {
 
    $ic = new ItilCategory();
    // Specific ticket categories
-   $newID = $ic->add(toolbox::addslashes_deep([
+   $newID = $ic->add([
       'entities_id'     => $ID_entity,
       'is_recursive'    => 1,
       'name'            => "category for entity' $ID_entity",
@@ -1943,10 +1947,10 @@ function generate_entity($ID_entity) {
       'groups_id'       => mt_rand($FIRST['techgroups'], $LAST['techgroups']),
       'tickettemplates_id_incident' => 1,
       'tickettemplates_id_demand'   => 1
-   ]));
+   ]);
 
    for ($i=0; $i<max(1, pow($MAX['tracking_category'], 1/3)); $i++) {
-      $ic->add(toolbox::addslashes_deep([
+      $ic->add([
          'entities_id'                 => $ID_entity,
          'is_recursive'                => 1,
          'name'                        => "scategory for entity' $ID_entity",
@@ -1956,7 +1960,7 @@ function generate_entity($ID_entity) {
          'tickettemplates_id_incident' => 1,
          'tickettemplates_id_demand'   => 1,
          'itilcategories_id'           => $newID
-      ]));
+      ]);
    }
 
    regenerateTreeCompleteName("glpi_itilcategories");
@@ -1971,10 +1975,10 @@ function generate_entity($ID_entity) {
       } else {
          $val = "Solution type ' $i";
       }
-      $st->add(toolbox::addslashes_deep(['name'         => $val,
+      $st->add(['name'         => $val,
                                               'comment'      => "comment $val",
                                               'entities_id'  => $ID_entity,
-                                              'is_recursive' => 1]));
+                                              'is_recursive' => 1]);
    }
    $LAST["solutiontypes"] = getMaxItem("glpi_solutiontypes");
 
@@ -1982,14 +1986,14 @@ function generate_entity($ID_entity) {
    $nb_items                   = mt_rand(0, $MAX['solutiontemplates']);
    $st                         = new SolutionTemplate();
    for ($i=0; $i<$nb_items; $i++) {
-      $st-> add(toolbox::addslashes_deep([
+      $st-> add([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 1,
          'name'               => "solution' $i-$ID_entity",
          'content'            => "content solution' $i-$ID_entity",
          'solutiontypes_id'   => mt_rand(0, $MAX['solutiontypes']),
          'comment'            => "comment solution' $i-$ID_entity"
-      ]));
+      ]);
    }
 
    $LAST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates");
@@ -2003,13 +2007,13 @@ function generate_entity($ID_entity) {
       $nb = mt_rand(0, $MAX_KBITEMS_BY_CAT);
       for ($j=0; $j<$nb; $j++) {
          $k++;
-         $newID = $ki->add(toolbox::addslashes_deep([
+         $newID = $ki->add([
             'knowbaseitemcategories_id'   => $i,
             'name'      => "Entity' $ID_entity Question $k",
             'answer'    => "Answer' $k".Toolbox::getRandomString(50),
             'is_faq'    => mt_rand(0, 1),
             'users_id'  => mt_rand($FIRST['users_sadmin'], $LAST['users_admin'])
-         ]));
+         ]);
 
          $eki->add([
             'entities_id'       => $ID_entity,
@@ -2024,13 +2028,13 @@ function generate_entity($ID_entity) {
       $nb = mt_rand(0, $MAX_KBITEMS_BY_CAT);
       for ($j=0; $j<$nb; $j++) {
          $k++;
-         $newID = $ki->add(toolbox::addslashes_deep([
+         $newID = $ki->add([
             'knowbaseitemcategories_id'   => $i,
             'name'      => "Entity' $ID_entity Recursive Question $k",
             'answer'    => "Answer' $k".Toolbox::getRandomString(50),
             'is_faq'    => mt_rand(0, 1),
             'users_id'  => mt_rand($FIRST['users_sadmin'], $LAST['users_admin'])
-         ]));
+         ]);
 
          $eki->add([
             'entities_id'       => $ID_entity,
@@ -2051,7 +2055,7 @@ function generate_entity($ID_entity) {
          $link = "http://linktodoc/doc$i";
       }
 
-      $docID = $doc->add(toolbox::addslashes_deep([
+      $docID = $doc->add([
          'entities_id'           => $ID_entity,
          'is_recursive'          => 0,
          'name'                  => "document' $i-$ID_entity",
@@ -2059,7 +2063,7 @@ function generate_entity($ID_entity) {
          'comment'               => "commen't $i",
          'link'                  => $link,
          'notepad'               => "notes document' $i"
-      ]));
+      ]);
 
       $DOCUMENTS[$docID] = $ID_entity."-0";
    }
@@ -2071,7 +2075,7 @@ function generate_entity($ID_entity) {
          $link = "http://linktodoc/doc$i";
       }
 
-      $docID = $doc->add(toolbox::addslashes_deep([
+      $docID = $doc->add([
          'entities_id'           => $ID_entity,
          'is_recursive'          => 1,
          'name'                  => "Recursive document' $i-$ID_entity",
@@ -2079,7 +2083,7 @@ function generate_entity($ID_entity) {
          'comment'               => "comment' $i",
          'link'                  => $link,
          'notepad'               => "notes document' $i"
-      ]));
+      ]);
 
       $DOCUMENTS[$docID] = $ID_entity."-1";
    }
@@ -2093,14 +2097,14 @@ function generate_entity($ID_entity) {
       $date1 = strtotime(mt_rand(2000, $current_year)."-".mt_rand(1, 12)."-".mt_rand(1, 28));
       $date2 = $date1+MONTH_TIMESTAMP*12*mt_rand(1, 4); // + entre 1 et 4 ans
 
-      $b->add(toolbox::addslashes_deep([
+      $b->add([
          'name'         => "budget' $i-$ID_entity",
          'entities_id'  => $ID_entity,
          'is_recusive'  => 0,
          'comment'      => "comment' $i-$ID_entity",
          'begin_date'   => date("Y-m-d", intval($date1)),
          'end_date'     => date("Y-m-d", intval($date2))
-      ]));
+      ]);
    }
    $LAST["budget"] = getMaxItem("glpi_budgets");
 
@@ -2109,14 +2113,14 @@ function generate_entity($ID_entity) {
       $date1 = strtotime(mt_rand(2000, $current_year)."-".mt_rand(1, 12)."-".mt_rand(1, 28));
       $date2 = $date1+MONTH_TIMESTAMP*12*mt_rand(1, 4); // + entre 1 et 4 ans
 
-      $b->add(toolbox::addslashes_deep([
+      $b->add([
          'name'         => "Recursive budget' $i-$ID_entity",
          'entities_id'  => $ID_entity,
          'is_recusive'  => 1,
          'comment'      => "comment' $i-$ID_entity",
          'begin_date'   => date("Y-m-d", intval($date1)),
          'end_date'     => date("Y-m-d", intval($date2))
-      ]));
+      ]);
 
    }
    $LAST["document"] = getMaxItem("glpi_documents");
@@ -2134,7 +2138,7 @@ function generate_entity($ID_entity) {
       } else {
          $val = "Recursive enterprise_".$i."_ID_entity";
       }
-      $entID = $ent->add(toolbox::addslashes_deep([
+      $entID = $ent->add([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 1,
          'name'               => "Recursive' $val-$ID_entity",
@@ -2148,7 +2152,7 @@ function generate_entity($ID_entity) {
          'fax'                => $faker->phoneNumber,
          'email'              => $faker->safeEmail,
          'notepad'            => "notes enterprises' $i"
-      ]));
+      ]);
 
       addDocuments('Supplier', $entID);
    }
@@ -2161,7 +2165,7 @@ function generate_entity($ID_entity) {
          $val = "enterprise_".$i."_ID_entity";
       }
 
-      $entID = $ent->add(toolbox::addslashes_deep([
+      $entID = $ent->add([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 0,
          'name'               => "'$val-$ID_entity",
@@ -2176,7 +2180,7 @@ function generate_entity($ID_entity) {
          'email'              => $faker->safeEmail,
          'notepad'            => "notes supplier' $i",
          'comment'            => "comment supplier' $i"
-      ]));
+      ]);
 
       addDocuments('Supplier', $entID);
    }
@@ -2190,7 +2194,7 @@ function generate_entity($ID_entity) {
    // Specific
    for ($i=0; $i<$MAX['contract']; $i++) {
       $date = mt_rand(2000, $current_year)."-".mt_rand(1, 12)."-".mt_rand(1, 28);
-      $contractID = $c->add(toolbox::addslashes_deep([
+      $contractID = $c->add([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 0,
          'name'               => "contract' $i-$ID_entity",
@@ -2204,7 +2208,7 @@ function generate_entity($ID_entity) {
          'comment'            => "comment' $i",
          'accounting_number'  => "compta num' $i",
          'renewal'            => 1
-      ]));
+      ]);
 
       addDocuments('Contract', $contractID);
 
@@ -2214,19 +2218,19 @@ function generate_entity($ID_entity) {
          'suppliers_id' => mt_rand($FIRST["enterprises"], $LAST["enterprises"])
       ]);
       // Add a cost
-      $cc->add(toolbox::addslashes_deep([
+      $cc->add([
          'contracts_id' => $contractID,
          'cost'         => mt_rand(100, 10000),
          'name'         => "Initial 'cost",
          'begin_date'   => $date,
          'budgets_id'   => mt_rand($FIRST['budget'], $LAST['budget'])
-      ]));
+      ]);
    }
 
    for ($i=0; $i<$MAX['contract']/2; $i++) {
       $date = mt_rand(2000, $current_year)."-".mt_rand(1, 12)."-".mt_rand(1, 28);
 
-      $contractID = $c->add(toolbox::addslashes_deep([
+      $contractID = $c->add([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 1,
          'name'               => "Recursive contract' $i-$ID_entity",
@@ -2241,7 +2245,7 @@ function generate_entity($ID_entity) {
          'comment'            => "comment' $i",
          'accounting_number'  => "compta num' $i",
          'renewal'            => 1
-      ]));
+      ]);
 
       addDocuments('Contract', $contractID);
 
@@ -2257,7 +2261,7 @@ function generate_entity($ID_entity) {
    $c                 = new Contact();
    $cs                = new Contact_Supplier();
    for ($i=0; $i<$MAX['contacts']; $i++) {
-      $contactID = $c->add(toolbox::addslashes_deep([
+      $contactID = $c->add([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 0,
          'name'               => $faker->lastName,
@@ -2275,7 +2279,7 @@ function generate_entity($ID_entity) {
          'state'              => getState(),
          'country'            => $faker->country,
          'comment'            => "Comment' $i"
-      ]));
+      ]);
 
       // Link with enterprise
       $cs->add([
@@ -2290,7 +2294,7 @@ function generate_entity($ID_entity) {
       } else {
          $val = "Recursive contact $i";
       }
-      $contactID = $c->add(toolbox::addslashes_deep([
+      $contactID = $c->add([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 0,
          'name'               => "$val'-$ID_entity",
@@ -2307,7 +2311,7 @@ function generate_entity($ID_entity) {
          'state'              => getState(),
          'country'            => $faker->country,
          'comment'            => "Comment' $i"
-      ]));
+      ]);
 
       // Link with enterprise
       $cs->add([
@@ -2322,7 +2326,7 @@ function generate_entity($ID_entity) {
    $ci                           = new Consumableitem();
 
    for ($i=0; $i<$MAX['type_of_consumables']; $i++) {
-      $consID = $ci->add(toolbox::addslashes_deep([
+      $consID = $ci->add([
          'entities_id'             => $ID_entity,
          'is_recursive'            => mt_rand(0, 1),
          'name'                    => "consumable type' $i",
@@ -2335,7 +2339,7 @@ function generate_entity($ID_entity) {
          'comment'                 => "comment' $i",
          'notepad'                 => "notes consumableitem' $i",
          'alarm_threshold'         => mt_rand(0, 10)
-      ]));
+      ]);
 
       addDocuments('ConsumableItem', $consID);
 
@@ -2380,7 +2384,7 @@ function generate_entity($ID_entity) {
    $ct                          = new CartridgeItem();
 
    for ($i=0; $i<$MAX['type_of_cartridges']; $i++) {
-      $cartID = $ct->add(toolbox::addslashes_deep([
+      $cartID = $ct->add([
          'entities_id'       => $ID_entity,
          'is_recursive'      => mt_rand(0, 1),
          'name'              => "cartridge ' type $i",
@@ -2392,7 +2396,7 @@ function generate_entity($ID_entity) {
          'comment'           => "comment '$i",
          'notepad'           => "notes cartridgeitem '$i",
          'alarm_threshold'   => mt_rand(0, 10)
-      ]));
+      ]);
 
       addDocuments('CartridgeItem', $cartID);
 
@@ -2443,7 +2447,7 @@ function generate_entity($ID_entity) {
 
       // insert networking
 
-      $netwID = $ne->add(toolbox::addslashes_deep([
+      $netwID = $ne->add([
          'entities_id'                   => $ID_entity,
          'name'                          => "networking '$i-$ID_entity",
          'ram'                           => mt_rand(32, 256),
@@ -2469,7 +2473,7 @@ function generate_entity($ID_entity) {
          'states_id'                     => (mt_rand(0, 100)<$percent['state']
                                              ? mt_rand($FIRST['state'], $LAST['state'])
                                              : 0)
-      ]));
+      ]);
 
       addDisks('NetworkEquipment', $netwID, $ID_entity, 50);
 
@@ -2491,7 +2495,7 @@ function generate_entity($ID_entity) {
       $modelID = mt_rand(1, $MAX['model_printers']);
       $recur   = mt_rand(0, 1);
 
-      $printID = $p->add(toolbox::addslashes_deep([
+      $printID = $p->add([
          'entities_id'      => $ID_entity,
          'is_recursive'     => $recur,
          'name'             => "printer of loc '$i",
@@ -2521,7 +2525,7 @@ function generate_entity($ID_entity) {
          'states_id'        => (mt_rand(0, 100) < $percent['state']
                                  ? mt_rand($FIRST['state'], $LAST['state'])
                                  : 0)
-      ]));
+      ]);
 
       addDisks('Printer', $netwID, $ID_entity, 10);
 
@@ -2619,7 +2623,7 @@ function generate_entity($ID_entity) {
       $domainID  = mt_rand($FIRST['domain'], $LAST['domain']);
       $networkID = mt_rand(1, $MAX['network']);
 
-      $compID = $c->add(toolbox::addslashes_deep([
+      $compID = $c->add([
          'entities_id'                    => $ID_entity,
          'name'                           => $faker->word,
          'serial'                         => Toolbox::getRandomString(10),
@@ -2644,7 +2648,7 @@ function generate_entity($ID_entity) {
                                                 ? mt_rand($FIRST['state'], $LAST['state'])
                                                 : 0),
          'uuid'                           => $faker->uuid
-      ]));
+      ]);
 
       addDocuments('Computer', $compID);
       addContracts('Computer', $compID);
@@ -2653,7 +2657,7 @@ function generate_entity($ID_entity) {
 
       // Add os
       $item_os = new Item_OperatingSystem;
-      $item_os->add(toolbox::addslashes_deep([
+      $item_os->add([
          'items_id'                       => $compID,
          'itemtype'                       => 'Computer',
          'operatingsystems_id'            => mt_rand(1, $MAX['os']),
@@ -2661,7 +2665,7 @@ function generate_entity($ID_entity) {
          'operatingsystemservicepacks_id' => mt_rand(1, $MAX['os_sp']),
          'license_number'                 => "os sn $i",
          'licenseid'                      => "os id $i",
-      ]));
+      ]);
 
       // Add trackings
       addTracking('Computer', $compID, $ID_entity);
@@ -2735,7 +2739,7 @@ function generate_entity($ID_entity) {
       addNetworkEthernetPort('Computer', $compID, $ID_entity, $loc);
 
       // Ajout d'un ecran sur l'ordi
-      $monID = $mon->add(toolbox::addslashes_deep([
+      $monID = $mon->add([
          'entities_id'       => $ID_entity,
          'name'              => "monitor' $i-$ID_entity",
          'serial'            => Toolbox::getRandomString(10),
@@ -2764,7 +2768,7 @@ function generate_entity($ID_entity) {
          'states_id'         => (mt_rand(0, 100) < $percent['state']
                                  ? mt_rand($FIRST['state'], $LAST['state'])
                                  : 0)
-      ]));
+      ]);
 
       addDocuments('Monitor', $monID);
       addContracts('Monitor', $monID);
@@ -2781,7 +2785,7 @@ function generate_entity($ID_entity) {
       ]);
 
       // Ajout d'un telephhone avec l'ordi
-      $telID = $phone->add(toolbox::addslashes_deep([
+      $telID = $phone->add([
          'entities_id'           => $ID_entity,
          'name'                  => "phone' $i-$ID_entity",
          'serial'                => Toolbox::getRandomString(10),
@@ -2807,7 +2811,7 @@ function generate_entity($ID_entity) {
          'states_id'             => (mt_rand(0, 100)<$percent['state']
                                        ? mt_rand($FIRST['state'], $LAST['state'])
                                        : 0)
-      ]));
+      ]);
 
       addDocuments('Phone', $telID);
       addContracts('Phone', $telID);
@@ -2827,7 +2831,7 @@ function generate_entity($ID_entity) {
       // Ajout des periphs externes en connection directe
       while (mt_rand(0, 100)<$percent['peripherals']) {
 
-         $periphID = $periph->add(toolbox::addslashes_deep([
+         $periphID = $periph->add([
             'entities_id'       => $ID_entity,
             'name'              => "periph of comp' $i-$ID_entity",
             'serial'            => Toolbox::getRandomString(10),
@@ -2848,7 +2852,7 @@ function generate_entity($ID_entity) {
             'states_id'         => (mt_rand(0, 100) < $percent['state']
                                     ? mt_rand($FIRST['state'], $LAST['state'])
                                     : 0)
-         ]));
+         ]);
 
          addDocuments('Peripheral', $periphID);
          addContracts('Peripheral', $periphID);
@@ -2870,7 +2874,7 @@ function generate_entity($ID_entity) {
          $typeID  = mt_rand(1, $MAX['type_printers']);
          $modelID = mt_rand(1, $MAX['model_printers']);
 
-         $printID = $p->add(toolbox::addslashes_deep([
+         $printID = $p->add([
             'entities_id'       => $ID_entity,
             'name'              => "printer of comp' $i-$ID_entity",
             'serial'            => Toolbox::getRandomString(10),
@@ -2898,7 +2902,7 @@ function generate_entity($ID_entity) {
             'states_id'         => (mt_rand(0, 100)<$percent['state']
                                     ? mt_rand($FIRST['state'], $LAST['state'])
                                     : 0)
-         ]));
+         ]);
 
          addDocuments('Printer', $printID);
          addContracts('Printer', $printID);
@@ -2968,7 +2972,7 @@ function generate_entity($ID_entity) {
       $techID  = mt_rand($FIRST['users_sadmin'], $LAST['users_admin']);
       $gtechID = mt_rand($FIRST["techgroups"], $LAST["techgroups"]);
 
-      $periphID = $periph->add(toolbox::addslashes_deep([
+      $periphID = $periph->add([
          'entities_id'       => $ID_entity,
          'name'              => "periph '$i-$ID_entity",
          'serial'            => Toolbox::getRandomString(10),
@@ -2990,7 +2994,7 @@ function generate_entity($ID_entity) {
          'states_id'         => (mt_rand(0, 100)<$percent['state']
                                  ? mt_rand($FIRST['state'], $LAST['state'])
                                  : 0)
-      ]));
+      ]);
 
       addDocuments('Peripheral', $periphID);
       addContracts('Peripheral', $periphID);
@@ -3043,7 +3047,7 @@ function generate_entity($ID_entity) {
       $gtechID   = mt_rand($FIRST["techgroups"], $LAST["techgroups"]);
       $recursive = mt_rand(0, 1);
 
-      $softID = $soft->add(toolbox::addslashes_deep([
+      $softID = $soft->add([
          'entities_id'           => $ID_entity,
          'is_recursive'          => $recursive,
          'name'                  => $name,
@@ -3057,7 +3061,7 @@ function generate_entity($ID_entity) {
          'groups_id'             => mt_rand($FIRST["groups"], $LAST["groups"]),
          'is_helpdesk_visible'   => 1,
          'softwarecategories_id' => mt_rand(1, $MAX['softwarecategory'])
-      ]));
+      ]);
 
       addDocuments('Software', $softID);
       addContracts('Software', $softID);
@@ -3085,7 +3089,7 @@ function generate_entity($ID_entity) {
          }
          $os = mt_rand(1, $MAX['os']);
 
-         $versID = $softvers->add(toolbox::addslashes_deep([
+         $versID = $softvers->add([
             'entities_id'          => $ID_entity,
             'is_recursive'         => $recursive,
             'softwares_id'         => $softID,
@@ -3094,7 +3098,7 @@ function generate_entity($ID_entity) {
             'states_id'            => (mt_rand(0, 100)<$percent['state']
                                        ?mt_rand($FIRST['state'], $LAST['state']):0),
             'operatingsystems_id'  => $os
-         ]));
+         ]);
 
          $val3    = min($LAST["computers"]-$FIRST['computers'], mt_rand(1, $MAX['softwareinstall']));
          $comp_id = mt_rand($FIRST["computers"], $LAST['computers']);
@@ -3121,7 +3125,7 @@ function generate_entity($ID_entity) {
 
          $nbused = min($LAST["computers"]-$FIRST['computers'], mt_rand(1, $MAX['softwareinstall']));
 
-         $licID = $softlic->add(toolbox::addslashes_deep([
+         $licID = $softlic->add([
             'entities_id'               => $ID_entity,
             'is_recursive'              => $recursive,
             'softwares_id'              => $softID,
@@ -3133,7 +3137,7 @@ function generate_entity($ID_entity) {
             'comment'                   => "comment license '$j",
             'softwareversions_id_buy'   => $softwareversions_id_buy,
             'softwareversions_id_use'   => $softwareversions_id_use
-         ]));
+         ]);
 
          $comp_id = mt_rand($FIRST["computers"], $LAST['computers']);
 

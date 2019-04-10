@@ -77,7 +77,8 @@ switch ($action) {
 
    case "download":
       echo "<div class='center'>";
-      echo "<a href='".Toolbox::getItemTypeSearchURL($_REQUEST['itemtype'])."'>".__('Back')."</a>";
+      $itemtype = $_REQUEST['itemtype'];
+      echo "<a href='".$itemtype::getSearchURL()."'>".__('Back')."</a>";
       echo "</div>";
       Html::redirect("rule.backup.php?action=export&itemtype=".$_REQUEST['itemtype']);
       break;

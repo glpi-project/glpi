@@ -46,7 +46,7 @@ $query = "SELECT `id`, `softwarecategories_id`
 
 if ($result=$DB->query($query)) {
    if ($DB->numrows($result)>0) {
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          if (!$ONLY_UNDEFINED || $data['softwarecategories_id']==0) {
             $params = [];
 

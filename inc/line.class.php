@@ -107,7 +107,7 @@ class Line extends CommonDropdown {
       echo "<td>";
       State::dropdown(['value'     => $this->fields["states_id"],
             'entity'    => $this->fields["entities_id"],
-            'condition' => "`is_visible_line`"]);
+            'condition' => ['is_visible_line' => 1]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -195,7 +195,7 @@ class Line extends CommonDropdown {
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => '`is_visible_line`'
+            'condition'          => ['is_visible_line' => 1]
       ];
 
       $tab[] = [
@@ -212,7 +212,7 @@ class Line extends CommonDropdown {
             'table'              => 'glpi_groups',
             'field'              => 'completename',
             'name'               => __('Group'),
-            'condition'          => '`is_itemgroup`',
+            'condition'          => ['is_itemgroup' => 1],
             'datatype'           => 'dropdown'
       ];
 

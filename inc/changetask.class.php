@@ -39,9 +39,6 @@ class ChangeTask extends CommonITILTask {
    static $rightname = 'task';
 
 
-   /**
-    * @since 0.84
-   **/
    static function getTypeName($nb = 0) {
       return _n('Change task', 'Change tasks', $nb);
    }
@@ -73,7 +70,7 @@ class ChangeTask extends CommonITILTask {
 
 
    /**
-    * Is the current user have right to show the current task ?
+    * Does current user have right to show the current task?
     *
     * @return boolean
    **/
@@ -83,7 +80,7 @@ class ChangeTask extends CommonITILTask {
 
 
    /**
-    * Is the current user have right to create the current task ?
+    * Does current user have right to create the current task?
     *
     * @return boolean
    **/
@@ -94,7 +91,6 @@ class ChangeTask extends CommonITILTask {
       }
 
       $change = new Change();
-
       if ($change->getFromDB($this->fields['changes_id'])) {
          return (Session::haveRight('change', UPDATE)
                  || (Session::haveRight('change', Change::READMY)
@@ -109,7 +105,7 @@ class ChangeTask extends CommonITILTask {
 
 
    /**
-    * Is the current user have right to update the current task ?
+    * Does current user have right to update the current task?
     *
     * @return boolean
    **/
@@ -129,7 +125,7 @@ class ChangeTask extends CommonITILTask {
 
 
    /**
-    * Is the current user have right to purge the current task ?
+    * Does current user have right to purge the current task?
     *
     * @return boolean
    **/
@@ -157,7 +153,7 @@ class ChangeTask extends CommonITILTask {
    /**
     * Display a Planning Item
     *
-    * @param $val array of the item to display
+    * @param array $val Array of the item to display
     *
     * @return string Already planned information
    **/

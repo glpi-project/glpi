@@ -1,0 +1,128 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+
+{% block component %}
+   {% if notag is not defined or not notag %}
+      {% set md = 6 %}
+      {% if glpi_form.columns is defined %}{% set md = 12/glpi_form.columns %}{% endif %}
+   <div class="form-group row col-md-{{ md }}{% if element.type == 'checkbox' %} elt_checkbox{% endif %}">
+   {% endif %}
+   {% block label %}
+      {% if element.label is defined %}
+         {% set label = element.label %}
+      <label for="{{ element.id|default(element.name) }}"{%if label.title is defined or element.title is defined %} title="{%if label.title is defined %}{{ label.title }}{% else %}{{ element.title }}{% endif %}" data-toggle="tooltip"{% endif %} class="col-sm-{{ label.columns|default(4) }} col-form-label{% if label.class is defined %} {{ label.class }}{% endif %}">
+         {% if label is iterable %}
+            {{ label.label }}
+         {% else %}
+            {{ label }}
+         {% endif %}
+         {%- if element.required is defined and element.required -%}
+            <span class="required" title="{{ __s('This element is required') }}">*</span>
+         {%- endif -%}
+         {# FIXME: find a way to identify auto-fillable fields #}
+         {% if element.autofill is defined and element.autofill == true and item is defined %}
+            {{ item.getAutofillMark(element.name, {'withtemplate': withtemplate})|raw }}
+         {% endif %}
+      </label>
+      {% endif %}
+   {% endblock %}
+   {% if notag is not defined or not notag or element.label is defined %}
+   <div class="col-sm-{% if element.columns is defined %}{{ element.columns }}{% elseif element.label is defined %}8{% else %}12{% endif %}{%if element.preicons is defined or element.posticons is defined %} input-group{% endif %}">
+   {% endif %}
+   {% block pre_element %}
+      {% if element.preicons is defined %}
+         {% for preicon in element.preicons %}
+            <span class="input-group-prepend">
+               <span class="input-group-text">
+                  <i class="fa fa-{{ preicon }}"></i>
+               </span>
+            </span>
+         {% endfor %}
+      {% endif %}
+   {% endblock %}
+   {% if element.showonly is defined %}
+      {% set fallback_input_class = fallback_input_class|default('form-control-plaintext') %}
+      <div class="{{ fallback_input_class }}">
+         {% block showonly %}{% if element.type != 'hidden' and element.value is defined %}{{ element.value }}{% endif %}{% endblock %}
+      </div>
+   {% else %}
+      {% block element %}<input
+        type="{{ element.htmltype|default(element.type|default('text')) }}"
+        value="{% if element.value is defined %}{{ element.value }}{% endif %}"
+        {% block element_attributes %}{# standard attributes that may be used for button, select, ... #}
+            {% set fallback_input_class = fallback_input_class|default('form-control') %}
+            name="{{ element.name }}"
+            id="{{ element.id|default(element.name) }}"
+            class="{% if default_input_class is defined %}{{ default_input_class }} {% endif %}{%if element.class is defined %}{{ element.class }}{% else %}{{ fallback_input_class }}{% endif %}"
+            {%if element.required is defined and element.required == true %} required="required"{% endif %}
+            {%if element.readonly is defined and element.readonly == true %} readonly="readonly"{% endif %}
+            {%if element.disabled is defined and element.disabled == true %} disabled="disabled"{% endif %}
+            {%if element.autofocus is defined and element.autofocus == true %} autofocus="autofocus"{% endif %}
+            {%if element.title is defined %}
+                title="{{ element.title }}"
+                data-toggle="tooltip"
+            {% endif %}
+            {%if element.maxlength is defined %} maxlength="{{ element.maxlength }}"{% endif %}
+            {%if element.autocomplete is defined %} autocomplete="{{ element.autocomplete }}"{% endif %}
+            {%if element.size is defined %} size="{{ element.size }}"{% endif %}
+            {%if element.placeholder is defined %} placeholder="{{ element.placeholder }}"{% endif %}
+            {%if element.data is defined %}
+                {% for id, data in element.data %}
+                    data-{{ id }}="{{ data }}"
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
+        {% block extra_tags %}{% endblock %}
+        />
+      {% endblock %}
+   {% endif %}
+   {% block post_element %}
+      {% if element.posticons is defined %}
+         {% for posticon in element.posticons %}
+            <span class="input-group-append">
+               <span class="input-group-text">
+                  <i class="fa fa-{{ posticon }}"></i>
+               </span>
+            </span>
+         {% endfor %}
+      {% endif %}
+   {% endblock %}
+   {% if element.message is defined %}
+      <span class="help-block">{{ element.message }}</span>
+   {% endif %}
+   {% if notag is not defined or not notag or element.label is defined%}
+   </div>
+   {% endif %}
+   {% if element.extra_end is defined %}{{ element.extra_end|raw }}{% endif %}
+   {% if notag is not defined or not notag %}
+   </div>{# /.form-group row col-md-x #}
+   {% endif %}
+{% endblock %}

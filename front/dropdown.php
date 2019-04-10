@@ -39,8 +39,12 @@ Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "commondropdown");
 echo "<div class='center'>";
 
 $optgroup = Dropdown::getStandardDropdownItemTypes();
-Dropdown::showItemTypeMenu(_n('Dropdown', 'Dropdowns', 2), $optgroup);
-Dropdown::showItemTypeList($optgroup);
+if (count($optgroup) > 0) {
+   Dropdown::showItemTypeMenu(_n('Dropdown', 'Dropdowns', 2), $optgroup);
+   Dropdown::showItemTypeList($optgroup);
+} else {
+   Html::displayRightError();
+}
 
 echo "</div>";
 Html::footer();

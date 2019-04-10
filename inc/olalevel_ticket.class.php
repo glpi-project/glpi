@@ -103,15 +103,30 @@ class OlaLevel_Ticket extends CommonDBTM {
    function deleteForTicket($tickets_id, $olaType) {
       global $DB;
 
-      $query1 = "SELECT `glpi_olalevels_tickets`.`id`
-                 FROM `glpi_olalevels_tickets`
-                 LEFT JOIN `glpi_olalevels`
-                       ON (`glpi_olalevels_tickets`.`olalevels_id` = `glpi_olalevels`.`id`)
-                 LEFT JOIN `glpi_olas` ON (`glpi_olalevels`.`olas_id` = `glpi_olas`.`id`)
-                 WHERE `glpi_olalevels_tickets`.`tickets_id` = '$tickets_id'
-                       AND `glpi_olas`.`type` = '$olaType'";
+      $iterator = $DB->request([
+         'SELECT'    => 'glpi_olalevels_tickets.id',
+         'FROM'      => 'glpi_olalevels_tickets',
+         'LEFT JOIN' => [
+            'glpi_olalevels'  => [
+               'ON' => [
+                  'glpi_olalevels_tickets'   => 'olalevels_id',
+                  'glpi_olalevels'           => 'id'
+               ]
+            ],
+            'glpi_olas'       => [
+               'ON' => [
+                  'glpi_olalevels'  => 'olas_id',
+                  'glpi_olas'       => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_olalevels_tickets.tickets_id' => $tickets_id,
+            'glpi_olas.type'                    => $olaType
+         ]
+      ]);
 
-      foreach ($DB->request($query1) as $data) {
+      while ($data = $iterator->next()) {
          $this->delete(['id' => $data['id']]);
       }
    }
@@ -146,20 +161,38 @@ class OlaLevel_Ticket extends CommonDBTM {
 
       $tot = 0;
 
-      $query = "SELECT `glpi_olalevels_tickets`.*, `glpi_olas`.`type` as type
-                FROM `glpi_olalevels_tickets`
-                LEFT JOIN `glpi_olalevels`
-                     ON (`glpi_olalevels_tickets`.`olalevels_id` = `glpi_olalevels`.`id`)
-                LEFT JOIN `glpi_olas` ON (`glpi_olalevels`.`olas_id` = `glpi_olas`.`id`)
-                WHERE `glpi_olalevels_tickets`.`date` < NOW()";
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_olalevels_tickets.*',
+            'glpi_olas.type AS type'
+         ],
+         'FROM'      => 'glpi_olalevels_tickets',
+         'LEFT JOIN' => [
+            'glpi_olalevels'  => [
+               'ON' => [
+                  'glpi_olalevels_tickets'   => 'olalevels_id',
+                  'glpi_olalevels'           => 'id'
+               ]
+            ],
+            'glpi_olas'       => [
+               'ON' => [
+                  'glpi_olalevels'  => 'olas_id',
+                  'glpi_olas'       => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_olalevels_tickets.date' => ['<', new \QueryExpression('NOW()')]
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $tot++;
          self::doLevelForTicket($data, $data['type']);
       }
 
       $task->setVolume($tot);
-      return ($tot > 0);
+      return ($tot > 0 ? 1 : 0);
    }
 
 
@@ -232,7 +265,7 @@ class OlaLevel_Ticket extends CommonDBTM {
                      }
                      // Process rules
                      if ($doit) {
-                        $input = $olalevel->executeActions($input, []);
+                        $input = $olalevel->executeActions($input, [], $ticket->fields);
                      }
                   }
 
@@ -274,23 +307,37 @@ class OlaLevel_Ticket extends CommonDBTM {
    static function replayForTicket($tickets_id, $olaType) {
       global $DB;
 
-      $query = "SELECT `glpi_olalevels_tickets`.*
-                FROM `glpi_olalevels_tickets`
-                LEFT JOIN `glpi_olalevels`
-                      ON (`glpi_olalevels_tickets`.`olalevels_id` = `glpi_olalevels`.`id`)
-                LEFT JOIN `glpi_olas` ON (`glpi_olalevels`.`olas_id` = `glpi_olas`.`id`)
-                WHERE `glpi_olalevels_tickets`.`date` < NOW()
-                      AND `glpi_olalevels_tickets`.`tickets_id` = '$tickets_id'
-                      AND `glpi_olas`.`type` = '$olaType'";
+      $criteria = [
+         'SELECT'    => 'glpi_olalevels_tickets.*',
+         'FROM'      => 'glpi_olalevels_tickets',
+         'LEFT JOIN' => [
+            'glpi_olalevels'  => [
+               'ON' => [
+                  'glpi_olalevels_tickets'   => 'olalevels_id',
+                  'glpi_olalevels'           => 'id'
+               ]
+            ],
+            'glpi_olas'       => [
+               'ON' => [
+                  'glpi_olalevels'  => 'olas_id',
+                  'glpi_olas'       => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_olalevels_tickets.date'       => ['<', new \QueryExpression('NOW()')],
+            'glpi_olalevels_tickets.tickets_id' => $tickets_id,
+            'glpi_olas.type'                    => $olaType
+         ]
+      ];
 
       $number = 0;
       do {
-         if ($result = $DB->query($query)) {
-            $number = $DB->numrows($result);
-            if ($number == 1) {
-               $data = $DB->fetch_assoc($result);
-               self::doLevelForTicket($data, $olaType);
-            }
+         $iterator = $DB->request($criteria);
+         $number = count($iterator);
+         if ($number == 1) {
+            $data = $iterator->next();
+            self::doLevelForTicket($data, $olaType);
          }
       } while ($number == 1);
    }

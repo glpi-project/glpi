@@ -29,6 +29,12 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
+   exit();
+}
+
 define('PER_LEVEL', 8);
 define('COUNT', 1024);
 
@@ -77,11 +83,11 @@ if ($nb < 100000) {
    $nb = countElementsInTable('glpi_entities');
 }
 echo "+ Entities: $nb\n";
-if ($GLPI_CACHE) {
-   echo "+ Cache: " . get_class($GLPI_CACHE) . "\n";
-} else {
-   echo "+ Cache: disabled\n";
-}
+
+global $CONTAINER;
+$cache_storage = $CONTAINER->get('application_cache')->getStorage();
+echo "+ Cache: " . get_class($cache_storage) . "\n";
+
 echo "+ Clear sons cache\n";
 $DB->update(
    'glpi_entities',

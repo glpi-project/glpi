@@ -64,8 +64,9 @@ class Rack extends CommonDBTM {
 
    function defineTabs($options = []) {
       $ong = [];
-      $this->addDefaultFormTab($ong)
+      $this
          ->addStandardTab('Item_Rack', $ong, $options)
+         ->addDefaultFormTab($ong)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
@@ -76,6 +77,7 @@ class Rack extends CommonDBTM {
       ;
       return $ong;
    }
+
 
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
@@ -110,7 +112,7 @@ class Rack extends CommonDBTM {
       State::dropdown([
          'value'     => $this->fields["states_id"],
          'entity'    => $this->fields["entities_id"],
-         'condition' => "`is_visible_rack`",
+         'condition' => ['is_visible_rack' => 1],
          'rand'      => $rand]
       );
       echo "</td></tr>\n";
@@ -160,7 +162,7 @@ class Rack extends CommonDBTM {
          'name'      => 'groups_id_tech',
          'value'     => $this->fields['groups_id_tech'],
          'entity'    => $this->fields['entities_id'],
-         'condition' => '`is_assign`',
+         'condition' => ['is_assign' => 1],
          'rand'      => $rand
       ]);
 
@@ -385,7 +387,7 @@ class Rack extends CommonDBTM {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_rack`'
+         'condition'          => ['is_visible_rack' => 1]
       ];
 
       $tab[] = [
@@ -470,7 +472,7 @@ class Rack extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the hardware'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -488,11 +490,12 @@ class Rack extends CommonDBTM {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+       global $IS_TWIG;
 
       switch ($item->getType()) {
          case DCRoom::getType():
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                $nb = countElementsInTable(
                   self::getTable(), [
                      'dcrooms_id'   => $item->getID(),
@@ -1057,11 +1060,13 @@ JAVASCRIPT;
 
    function cleanDBonPurge() {
 
-      $item_rack = new Item_Rack();
-      $item_rack->deleteByCriteria(['racks_id' => $this->fields['id']]);
-
-      $pdu_rack = new PDU_Rack();
-      $pdu_rack->deleteByCriteria(['racks_id' => $this->fields['id']]);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Item::class,
+            Item_Rack::class,
+            PDU_Rack::class,
+         ]
+      );
    }
 
    /**

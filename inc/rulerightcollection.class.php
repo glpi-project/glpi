@@ -180,16 +180,28 @@ class RuleRightCollection extends RuleCollection {
       global $DB;
 
       $params = [];
-      $sql = "SELECT DISTINCT `value`
-              FROM `glpi_rules`,
-                   `glpi_rulecriterias`,
-                   `glpi_rulerightparameters`
-              WHERE `glpi_rules`.`sub_type` = 'RuleRight'
-                    AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
-                    AND `glpi_rulecriterias`.`criteria` = `glpi_rulerightparameters`.`value`";
-      $result = $DB->query($sql);
+      $iterator = $DB->request([
+         'SELECT'          => 'value',
+         'DISTINCT'        => true,
+         'FROM'            => 'glpi_rulerightparameters',
+         'LEFT JOIN'       => [
+            'glpi_rulecriterias' => [
+               'ON' => [
+                  'glpi_rulerightparameters' => 'value',
+                  'glpi_rulecriterias'       => 'criteria'
+               ]
+            ],
+            'glpi_rules'         => [
+               'ON' => [
+                  'glpi_rulecriterias' => 'rules_id',
+                  'glpi_rules'         => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => ['glpi_rules.sub_type' => 'RuleRight']
+      ]);
 
-      while ($param = $DB->fetch_assoc($result)) {
+      while ($param = $iterator->next()) {
          //Dn is alwsays retreived from ldap : don't need to ask for it !
          if ($param["value"] != "dn") {
             $params[] = Toolbox::strtolower($param["value"]);

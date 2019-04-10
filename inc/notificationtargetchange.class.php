@@ -54,9 +54,6 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                       'solved'            => __('Change solved'),
                       'validation'        => __('Validation request'),
                       'validation_answer' => __('Validation request answer'),
-                      'add_task'          => __('New task'),
-                      'update_task'       => __('Update of a task'),
-                      'delete_task'       => __('Deletion of a task'),
                       'closed'            => __('Closure of a change'),
                       'delete'            => __('Deleting a change')];
 
@@ -225,7 +222,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                      = Html::clean(getUserName($validation['users_id']));
 
             $tmp['##validation.status##']
-                     = TicketValidation::getStatus($validation['status']);
+                     = ChangeValidation::getStatus($validation['status']);
 
             $tmp['##validation.storestatus##']
                      = $validation['status'];

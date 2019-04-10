@@ -63,31 +63,20 @@ if ($max_time == 0) {
  * @global DB $DB
  */
 function xmlbackup() {
-<<<<<<< HEAD
    global $DB;
-
-   // Will contain the select * from $table
-   $query = [];
-   // Foreach DB tables...
-   $tables = $DB->listTables();
-   foreach ($tables as $id => $row) {
-      // Save the query...
-      $query[$id] = "SELECT * FROM `" . $row['TABLE_NAME'] . "`";
-=======
-   global $CFG_GLPI, $DB;
 
    //on parcoure la DB et on liste tous les noms des tables dans $table
    //on incremente $query[] de "select * from $table"  pour chaque occurence de $table
 
    $result = $DB->listTables();
    $i      = 0;
+   $query  = [];
    while ($line = $result->next()) {
       $table = $line['TABLE_NAME'];
 
       $query[$i] = "SELECT *
                     FROM `$table`";
       $i++;
->>>>>>> 9721834baa... Fix deprecated usages (#4510)
    }
 
    // Filename
@@ -154,19 +143,18 @@ function get_content($DB, $table, $from, $limit) {
 
    $content = "";
 
-   $result = $DB->request($table, ['START' => $from, 'LIMIT' => $limit]);
+   $iterator = $DB->request($table, ['START' => $from, 'LIMIT' => $limit]);
 
-   if ($result) {
-      $num_fields = $DB->num_fields($result);
+   if ($iterator->count()) {
 
-      while ($row = $DB->fetch_row($result)) {
+      while ($row = $iterator->next()) {
          $insert = "INSERT INTO `$table` VALUES (";
 
-         for ($j = 0; $j < $num_fields; $j++) {
-            if (is_null($row[$j])) {
+         foreach ($row as $field_val) {
+            if (is_null($field_val)) {
                $insert .= "NULL,";
-            } else if ($row[$j] != "") {
-               $insert .= "'" . addslashes($row[$j]) . "',";
+            } else if ($field_val != "") {
+               $insert .= "'" . addslashes($field_val) . "',";
             } else {
                $insert .= "'',";
             }
@@ -181,8 +169,8 @@ function get_content($DB, $table, $from, $limit) {
 
 /**  Get structure of a table
  *
- * @param $DB     DB object
- * @param $table  table name
+ * @param \Glpi\Database\AbstractDatabase $DB     DB object
+ * @param string                 $table  table name
 **/
 function get_def($DB, $table) {
 
@@ -190,9 +178,9 @@ function get_def($DB, $table) {
    $def .= "DROP TABLE IF EXISTS `$table`;\n";
 
    $query  = "SHOW CREATE TABLE `$table`";
-   $result = $DB->query($query);
-   $DB->query("SET SESSION sql_quote_show_create = 1");
-   $row = $DB->fetch_row($result);
+   $result = $DB->rawQuery($query);
+   $DB->rawQuery("SET SESSION sql_quote_show_create = 1");
+   $row = $DB->fetchRow($result);
 
    $def .= preg_replace("/AUTO_INCREMENT=\w+/i", "", $row[1]);
    $def .= ";";
@@ -202,9 +190,9 @@ function get_def($DB, $table) {
 
 /**  Restore a mysql dump
  *
- * @param $DB        DB object
- * @param $dumpFile  dump file
- * @param $duree     max delay before refresh
+ * @param \Glpi\Database\AbstractDatabase $DB        DB object
+ * @param string                 $dumpFile  dump file
+ * @param integer                $duree     max delay before refresh
 **/
 function restoreMySqlDump($DB, $dumpFile, $duree) {
    global $DB, $TPSCOUR, $offset, $cpt;
@@ -301,7 +289,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
       }
    }
 
-   if ($DB->error) {
+   if ($DB->error()) {
       echo "<hr>";
       //TRANS: %s is the SQL query which generates the error
       printf(__("SQL error starting from %s"), "[$formattedQuery]");
@@ -320,10 +308,10 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
 /**  Backup a glpi DB
  *
- * @param $DB        DB object
- * @param $dumpFile  dump file
- * @param $duree     max delay before refresh
- * @param $rowlimit  rowlimit to backup in one time
+ * @param \Glpi\Database\AbstractDatabase $DB        DB object
+ * @param string                 $dumpFile  dump file
+ * @param integer                $duree     max delay before refresh
+ * @param integer                $rowlimit  rowlimit to backup in one time
 **/
 function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    global $TPSCOUR, $offsettable, $offsetrow, $cpt;
@@ -344,7 +332,6 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    }
 
    if ($offsettable == 0 && $offsetrow == -1) {
-      $time_file = date("Y-m-d-H-i");
       $cur_time  = date("Y-m-d H:i");
       $todump    = "#GLPI Dump database on $cur_time\n";
       gzwrite ($fileHandle, $todump);
@@ -352,6 +339,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
 
    $result = $DB->listTables();
    $numtab = 0;
+   $tables = [];
    while ($t = $result->next()) {
       $tables[$numtab] = $t['TABLE_NAME'];
       $numtab++;
@@ -406,8 +394,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
 
    if ($DB->error()) {
       echo "<hr>";
-      //TRANS: %s is the SQL query which generates the error
-      printf(__("SQL error starting from %s"), "[$formattedQuery]");
+      echo __("SQL error ");
       echo "<br>".$DB->error()."<hr>";
    }
    $offsettable = -1;
@@ -420,7 +407,6 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
 
 if (isset($_GET["dump"]) && $_GET["dump"] != "") {
    $time_file = date("Y-m-d-H-i");
-   $cur_time  = date("Y-m-d H:i");
    $filename  = GLPI_DUMP_DIR . "/glpi-backup-".GLPI_VERSION."-$time_file.sql.gz";
 
    if (!isset($_GET["duree"]) && is_file($filename)) {
@@ -512,7 +498,6 @@ if (isset($_GET["xmlnow"]) && ($_GET["xmlnow"] != "")) {
 if (isset($_GET["file"]) && ($_GET["file"] != "") && is_file(GLPI_DUMP_DIR . "/" . $_GET["file"])) {
    $filepath = realpath(GLPI_DUMP_DIR . "/" . $_GET['file']);
    if (is_file($filepath) && Toolbox::startsWith($filepath, GLPI_DUMP_DIR)) {
-      $_SESSION['TRY_OLD_CONFIG_FIRST'] = true;
       init_time(); //initialise le temps
 
       //debut de fichier
@@ -562,8 +547,10 @@ if (isset($_GET["file"]) && ($_GET["file"] != "") && is_file(GLPI_DUMP_DIR . "/"
       } else {
          // Compatiblity for old version for utf8 complete conversion
          $cnf                = new Config();
-         $input['id']        = 1;
-         $input['utf8_conv'] = 1;
+         $input = [
+            'id'        => 1,
+            'utf8_conv' => 1,
+         ];
          $cnf->update($input);
       }
    }
@@ -598,7 +585,7 @@ if (Session::haveRight('backup', CREATE)) {
    echo "<br/>" . __('You should rather use a dedicated tool on your server.');
    echo "</li></ul></div>";
    echo "</td></tr><tr><td>";
-   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
+   echo "<i class='far fa-save fa-3x'></i>";
          "</td>";
    echo "<td><a class='vsubmit'
               href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),

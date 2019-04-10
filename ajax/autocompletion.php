@@ -72,13 +72,12 @@ if (isset($_GET['user_restrict']) && $_GET['user_restrict']>0) {
 }
 
 $iterator = $DB->request([
-   'SELECT DISTINCT' => $_GET['field'],
+   'SELECT'          => $_GET['field'],
+   'DISTINCT'        => true,
    'FROM'            => $table,
    'WHERE'           => [
-      $_GET['field'] => ['LIKE', $_GET['term'] . '%'],
-      'AND' => [
-         $_GET['field'] => ['<>', $_GET['term']]
-      ]
+      [$_GET['field'] => ['LIKE', $_GET['term'] . '%']],
+      [$_GET['field'] => ['<>', $_GET['term']]]
    ] + $entity,
    'ORDER'           => $_GET['field']
 ]);
@@ -87,7 +86,7 @@ $values = [];
 
 if (count($iterator)) {
    while ($data = $iterator->next()) {
-      $values[] = $data[$_GET['field']];
+      $values[] = Html::entity_decode_deep($data[$_GET['field']]);
    }
 }
 

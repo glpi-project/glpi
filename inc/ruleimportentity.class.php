@@ -55,10 +55,7 @@ class RuleImportEntity extends Rule {
       return 4;
    }
 
-   /**
-    * @see Rule::executeActions()
-   **/
-   function executeActions($output, $params) {
+   function executeActions($output, $params, array $input = []) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -79,7 +76,7 @@ class RuleImportEntity extends Rule {
                      }
                      if ($res != null) {
                         //Get the entity associated with the TAG
-                        $target_entity = Entity::getEntityIDByTag(addslashes($res));
+                        $target_entity = Entity::getEntityIDByTag($res);
                         if ($target_entity != '') {
                            $output["entities_id"] = $target_entity;
                         }
@@ -124,6 +121,9 @@ class RuleImportEntity extends Rule {
       if ($criteria['field'] == '_source') {
          $tab = [];
          foreach ($PLUGIN_HOOKS['import_item'] as $plug => $types) {
+            if (!Plugin::isPluginLoaded($plug)) {
+               continue;
+            }
             $tab[$plug] = Plugin::getInfo($plug, 'name');
          }
          Dropdown::showFromArray($name, $tab);

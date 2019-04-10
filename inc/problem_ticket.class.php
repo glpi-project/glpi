@@ -154,7 +154,7 @@ class Problem_Ticket extends CommonDBRelation{
          case 'add_task' :
             $tasktype = 'TicketTask';
             if ($ttype = getItemForItemtype($tasktype)) {
-               $ttype->showFormMassiveAction();
+               $ttype->showMassiveActionAddTaskForm();
                return true;
             }
             return false;
@@ -272,22 +272,33 @@ class Problem_Ticket extends CommonDBRelation{
 
       $rand = mt_rand();
 
-      $query = "SELECT DISTINCT `glpi_problems_tickets`.`id` AS linkID,
-                                `glpi_tickets`.*
-                FROM `glpi_problems_tickets`
-                LEFT JOIN `glpi_tickets`
-                     ON (`glpi_problems_tickets`.`tickets_id` = `glpi_tickets`.`id`)
-                WHERE `glpi_problems_tickets`.`problems_id` = '$ID'
-                ORDER BY `glpi_tickets`.`name`";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'          => [
+            'glpi_problems_tickets.id AS linkID',
+            'glpi_tickets.*'
+         ],
+         'DISTINCT'        => true,
+         'FROM'            => 'glpi_problems_tickets',
+         'LEFT JOIN'       => [
+            'glpi_tickets' => [
+               'ON' => [
+                  'glpi_problems_tickets' => 'tickets_id',
+                  'glpi_tickets'          => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            'glpi_problems_tickets.problems_id' => $ID
+         ],
+         'ORDERBY'         => 'glpi_tickets.name'
+      ]);
 
       $tickets = [];
       $used    = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $tickets[$data['id']] = $data;
-            $used[$data['id']]    = $data['id'];
-         }
+      $numrows = count($iterator);
+      while ($data = $iterator->next()) {
+         $tickets[$data['id']] = $data;
+         $used[$data['id']]    = $data['id'];
       }
 
       if ($canedit) {
@@ -300,14 +311,21 @@ class Problem_Ticket extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td class='right'>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
-         $condition = "`glpi_tickets`.`status`
-                        NOT IN ('".implode("', '", array_merge(Ticket::getSolvedStatusArray(),
-                                                               Ticket::getClosedStatusArray()))."')";
-         Ticket::dropdown(['used'        => $used,
-                                'entity'      => $problem->getEntityID(),
-                                'entity_sons' => $problem->isRecursive(),
-                                'condition'   => $condition,
-                                'displaywith' => ['id']]);
+         $condition = [
+            'NOT' => [
+               'glpi_tickets.status' => array_merge(
+                  Ticket::getSolvedStatusArray(),
+                  Ticket::getClosedStatusArray()
+               )
+            ]
+         ];
+         Ticket::dropdown([
+            'used'        => $used,
+            'entity'      => $problem->getEntityID(),
+            'entity_sons' => $problem->isRecursive(),
+            'condition'   => $condition,
+            'displaywith' => ['id']
+         ]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -386,22 +404,33 @@ class Problem_Ticket extends CommonDBRelation{
 
       $rand = mt_rand();
 
-      $query = "SELECT DISTINCT `glpi_problems_tickets`.`id` AS linkID,
-                                `glpi_problems`.*
-                FROM `glpi_problems_tickets`
-                LEFT JOIN `glpi_problems`
-                     ON (`glpi_problems_tickets`.`problems_id` = `glpi_problems`.`id`)
-                WHERE `glpi_problems_tickets`.`tickets_id` = '$ID'
-                ORDER BY `glpi_problems`.`name`";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'          => [
+            'glpi_problems_tickets.id AS linkID',
+            'glpi_problems.*'
+         ],
+         'DISTINCT'        => true,
+         'FROM'            => 'glpi_problems_tickets',
+         'LEFT JOIN'       => [
+            'glpi_problems'   => [
+               'ON' => [
+                  'glpi_problems_tickets' => 'problems_id',
+                  'glpi_problems'         => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            'glpi_problems_tickets.tickets_id'  => $ID
+         ],
+         'ORDERBY'         => 'glpi_problems.name'
+      ]);
 
       $problems = [];
       $used     = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $problems[$data['id']] = $data;
-            $used[$data['id']]     = $data['id'];
-         }
+      $numrows  = count($iterator);
+      while ($data = $iterator->next()) {
+         $problems[$data['id']] = $data;
+         $used[$data['id']]     = $data['id'];
       }
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -412,12 +441,20 @@ class Problem_Ticket extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a problem')."</th></tr>";
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
-         $condition = "`glpi_problems`.`status` NOT IN ('".implode("', '",
-                                                                  array_merge(Problem::getSolvedStatusArray(),
-                                                                              Problem::getClosedStatusArray()))."')";
-         Problem::dropdown(['used'      => $used,
-                                 'entity'    => $ticket->getEntityID(),
-                                 'condition' => $condition]);
+         $condition = [
+            'NOT' => [
+               'glpi_problems.status' => array_merge(
+                  Problem::getSolvedStatusArray(),
+                  Problem::getClosedStatusArray()
+               )
+            ]
+         ];
+
+         Problem::dropdown([
+            'used'      => $used,
+            'entity'    => $ticket->getEntityID(),
+            'condition' => $condition
+         ]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td><td>";

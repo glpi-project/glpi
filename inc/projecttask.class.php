@@ -137,13 +137,13 @@ class ProjectTask extends CommonDBChild {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $pt = new ProjectTaskTeam();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $pt = new ProjectTask_Ticket();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            ProjectTask_Ticket::class,
+            ProjectTaskTeam::class,
+         ]
+      );
 
       parent::cleanDBonPurge();
    }
@@ -164,7 +164,6 @@ class ProjectTask extends CommonDBChild {
          $cd                  = new self();
          unset($data['id']);
          $data['projects_id'] = $newid;
-         $data                = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }
    }
@@ -360,14 +359,24 @@ class ProjectTask extends CommonDBChild {
    static function getAllTicketsForProject($ID) {
       global $DB;
 
+      $iterator = $DB->request([
+         'FROM'         => 'glpi_projecttasks_tickets',
+         'INNER JOIN'   => [
+            'glpi_projecttasks'  => [
+               'ON' => [
+                  'glpi_projecttasks_tickets'   => 'projecttasks_id',
+                  'glpi_projecttasks'           => 'id'
+               ]
+            ]
+         ],
+         'FIELDS' =>  'tickets_id',
+         'WHERE'        => [
+            'glpi_projecttasks.projects_id'   => $ID
+         ]
+      ]);
+
       $tasks = [];
-      foreach ($DB->request(['glpi_projecttasks_tickets', 'glpi_projecttasks'],
-                            ["`glpi_projecttasks`.`projects_id`"
-                                          => $ID,
-                                  "`glpi_projecttasks_tickets`.`projecttasks_id`"
-                                          => "`glpi_projecttasks`.`id`",
-                                  'FIELDS' =>  "tickets_id" ])
-                        as $data) {
+      while ($data = $iterator->next()) {
          $tasks[] = $data['tickets_id'];
       }
       return $tasks;
@@ -483,12 +492,13 @@ class ProjectTask extends CommonDBChild {
       echo "</td>";
       echo "<td>".__('As child of')."</td>";
       echo "<td>";
-      $this->dropdown(['entity'    => $this->fields['entities_id'],
-                            'value'     => $projecttasks_id,
-                            'rand'      => $rand_project,
-                            'condition' => "`glpi_projecttasks`.`projects_id`='".
-                                             $this->fields['projects_id']."'",
-                            'used'      => [$this->fields['id']]]);
+      $this->dropdown([
+         'entity'    => $this->fields['entities_id'],
+         'value'     => $projecttasks_id,
+         'rand'      => $rand_project,
+         'condition' => ['glpi_projecttasks.projects_id' => $this->fields['projects_id']],
+         'used'      => [$this->fields['id']]
+      ]);
       echo "</td></tr>";
 
       $showuserlink = 0;
@@ -1074,7 +1084,7 @@ class ProjectTask extends CommonDBChild {
             $header .= "</tr>\n";
             echo $header;
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                Session::addToNavigateListItems('ProjectTask', $data['id']);
                $rand = mt_rand();
                echo "<tr class='tab_bg_2'>";
@@ -1429,79 +1439,100 @@ class ProjectTask extends CommonDBChild {
       $end       = $options['end'];
 
       // Get items to print
-      $ASSIGN = "";
+      $WHERE = [];
+      $ADDWHERE = [];
 
       if ($who_group === "mine") {
          if (!$options['genical']
              && count($_SESSION["glpigroups"])) {
-            $groups = implode("','", $_SESSION['glpigroups']);
-            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
-                       AND `glpi_projecttaskteams`.`items_id`
-                           IN (SELECT DISTINCT `groups_id`
-                               FROM `glpi_groups`
-                               WHERE `groups_id` IN ('$groups')
-                                     AND `glpi_groups`.`is_assign`)
-                                     AND ";
+            $ADDWHERE['glpi_projecttaskteams.itemtype'] = ['Group'];
+            $ADDWHERE['glpi_projecttaskteams.items_id'] = new \QuerySubQuery([
+               'SELECT'          => 'groups_id',
+               'DISTINCT'        => true,
+               'FROM'            => 'glpi_groups',
+               'WHERE'           => [
+                  'groups_id' => $_SESSION['glpigroups'],
+                  'is_assign' => 1
+               ]
+            ]);
          } else { // Only personal ones
-            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
-                       AND `glpi_projecttaskteams`.`items_id` = '$who'
-                       AND ";
+            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'User';
+            $ADDWHERE['glpi_projecttaskteams.items_id'] = $who;
          }
 
       } else {
          if ($who > 0) {
-            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
-                       AND `glpi_projecttaskteams`.`items_id` = '$who'
-                       AND ";
+            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'User';
+            $ADDWHERE['glpi_projecttaskteams.items_id'] = $who;
          }
 
          if ($who_group > 0) {
-            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
-                       AND `glpi_projecttaskteams`.`items_id`
-                           IN ('$who_group')
-                       AND ";
+            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'Group';
+            $ADDWHERE['glpi_projecttaskteams.items_id'] = $who_group;
          }
       }
-      if (empty($ASSIGN)) {
-         $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
-                       AND `glpi_projecttaskteams`.`items_id`
-                        IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
-                            FROM `glpi_profiles`
-                            LEFT JOIN `glpi_profiles_users`
-                                 ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
-                            WHERE `glpi_profiles`.`interface` = 'central' ".
-                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                             $_SESSION["glpiactive_entity"], 1).")
-                     AND ";
+
+      if (!count($ADDWHERE)) {
+         $ADDWHERE = [
+            'glpi_projecttaskteams.itemtype' => 'User',
+            'glpi_projecttaskteams.items_id' => new \QuerySubQuery([
+               'SELECT'          => 'glpi_profiles_users.users_id',
+               'DISTINCT'        => true,
+               'FROM'            => 'glpi_profiles',
+               'LEFT JOIN'       => [
+                  'glpi_profiles_users'   => [
+                     'ON' => [
+                        'glpi_profiles_users'   => 'profiles_id',
+                        'glpi_profiles'         => 'id'
+                     ]
+                  ]
+               ],
+               'WHERE'           => [
+                  'glpi_profiles.interface'  => 'central'
+               ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], 1)
+            ])
+         ];
       }
 
-      $DONE_EVENTS = '';
       if (!isset($options['display_done_events']) || !$options['display_done_events']) {
-         $DONE_EVENTS = "`glpi_projecttasks`.`percent_done` < 100
-                         AND (glpi_projectstates.is_finished = 0
-                              OR glpi_projectstates.is_finished IS NULL)
-                         AND ";
+         $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
+         $ADDWHERE[] = ['OR' => [
+            ['glpi_projecttasks.is_finished'  => 0],
+            ['glpi_projecttasks.is_finished'  => null]
+         ]];
       }
 
-      $query = "SELECT `glpi_projecttasks`.*
-                FROM `glpi_projecttaskteams`
-                INNER JOIN `glpi_projecttasks`
-                  ON (`glpi_projecttasks`.`id` = `glpi_projecttaskteams`.`projecttasks_id`)
-                LEFT JOIN `glpi_projectstates`
-                  ON (`glpi_projecttasks`.`projectstates_id` = `glpi_projectstates`.`id`)
-                WHERE $ASSIGN
-                      $DONE_EVENTS
-                      '$begin' < `glpi_projecttasks`.`plan_end_date`
-                      AND '$end' > `glpi_projecttasks`.`plan_start_date`
-                ORDER BY `glpi_projecttasks`.`plan_start_date`";
+      $WHERE[$ttask->getTable() . '.plan_end_date'] = ['>=', $begin];
+      $WHERE[$ttask->getTable() . '.plan_start_date'] = ['<=', $end];
 
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'       => $ttask->getTable() . '.*',
+         'FROM'         => 'glpi_projecttaskteams',
+         'INNER JOIN'   => [
+            $ttask->getTable() => [
+               'ON' => [
+                  'glpi_projecttaskteams' => 'projecttasks_id',
+                  $ttask->getTable()      => 'id'
+               ]
+            ]
+         ],
+         'LEFT JOIN'    => [
+            'glpi_projectstates' => [
+               'ON' => [
+                  $ttask->getTable()   => 'projectstates_id',
+                  'glpi_projectstates' => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => $WHERE,
+         'ORDERBY'      => $ttask->getTable() . '.plan_start_date'
+      ]);
 
       $interv = [];
       $task   = new self();
 
-      if ($DB->numrows($result) > 0) {
-         for ($i=0; $data=$DB->fetch_assoc($result); $i++) {
+      if (count($iterator)) {
+         while ($data = $iterator->next()) {
             if ($task->getFromDB($data["id"])) {
                $key = $data["plan_start_date"]."$$$"."ProjectTask"."$$$".$data["id"];
                $interv[$key]['color']            = $options['color'];

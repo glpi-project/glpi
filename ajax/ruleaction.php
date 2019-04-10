@@ -89,7 +89,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
                                  $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php", $paramsaction);
 
    if (isset($_POST['value'])) {
-      $paramsaction['value'] = stripslashes($_POST['value']);
+      $paramsaction['value'] = $_POST['value'];
    }
 
    Ajax::updateItem("action_type_span$randaction", $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",

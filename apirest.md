@@ -533,11 +533,6 @@ $ curl -X GET \
     "groups_id_tech": " ",
     "comment": "test222222qsdqsd",
     "date_mod": "2015-09-25 09:33:41",
-    "operatingsystems_id": "Ubuntu 15.04",
-    "operatingsystemversions_id": "15.04",
-    "operatingsystemservicepacks_id": " ",
-    "os_license_number": null,
-    "os_licenseid": null,
     "autoupdatesystems_id": " ",
     "locations_id": "00:0e:08:3b:7d:04",
     "domains_id": "",
@@ -558,12 +553,6 @@ $ curl -X GET \
     "links": [{
        "rel": "Entity",
        "href": "http://path/to/glpi/api/Entity/0"
-    }, {
-       "rel": "OperatingSystem",
-       "href": "http://path/to/glpi/api/OperatingSystem/32"
-    }, {
-       "rel": "OperatingSystemVersion",
-       "href": "http://path/to/glpi/api/OperatingSystemVersion/48"
     }, {
        "rel": "Location",
        "href": "http://path/to/glpi/api/Location/3"
@@ -642,11 +631,6 @@ $ curl -X GET \
       "groups_id_tech": "&nbsp;",
       "comment": "x86_64/00-09-15 08:03:28",
       "date_mod": "2011-12-16 17:52:55",
-      "operatingsystems_id": "Ubuntu 10.04.2 LTS",
-      "operatingsystemversions_id": "2.6.32-21-server",
-      "operatingsystemservicepacks_id": "&nbsp;",
-      "os_license_number": null,
-      "os_licenseid": null,
       "autoupdatesystems_id": "FusionInventory",
       "locations_id": "&nbsp;",
       "domains_id": "teclib.infra",
@@ -666,12 +650,6 @@ $ curl -X GET \
       "links": [{
          "rel": "Entity",
          "href": "http://path/to/glpi/api/Entity/0"
-      }, {
-         "rel": "OperatingSystem",
-         "href": "http://path/to/glpi/api/OperatingSystem/17"
-      }, {
-         "rel": "OperatingSystemVersion",
-         "href": "http://path/to/glpi/api/OperatingSystemVersion/16"
       }, {
          "rel": "AutoUpdateSystem",
          "href": "http://path/to/glpi/api/AutoUpdateSystem/1"
@@ -704,10 +682,6 @@ $ curl -X GET \
       "groups_id_tech": "&nbsp;",
       "comment": "x86_64/01-01-04 19:50:40",
       "date_mod": "2012-05-24 06:43:35",
-      "operatingsystems_id": "Ubuntu 10.04 LTS",
-      "operatingsystemversions_id": "2.6.32-21-server",
-      "operatingsystemservicepacks_id": "&nbsp;",
-      "os_license_num"
       ...
    }
 ]
@@ -901,34 +875,67 @@ $ curl -X GET \
   * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (query string)
   * *criteria*: array of criterion objects to filter search. Optional.
-      Each criterion object must provide:
-        * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
-        * *field*: id of the searchoption.
-        * *searchtype*: type of search in [contains¹, equals², notequals², lessthan, morethan, under, notunder].
-        * *value*: the value to search.
+    You can optionally precise `meta=true` to pass a searchoption of another itemtype (meta-criteria).
+    Each criterion object must provide at least:
+      * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
+
+      And you can pass a direct searchoption usage :
+
+      * *field*: id of the searchoption.
+      * *meta*: boolean, is this criterion a meta one ?
+      * *itemtype*: for meta=true criterion, precise the itemtype to use.
+      * *searchtype*: type of search in [contains¹, equals², notequals², lessthan, morethan, under, notunder].
+      * *value*: the value to search.
+
+      Or a list of sub-nodes with the key:
+
+      * *criteria*: nested criteria inside this criteria.
 
       Ex:
 
-         ```javascript
-         ...
-         "criteria":
-            [
-               {
-                  "field":      1,
-                  "searchtype": 'contains',
-                  "value":      ''
-               }, {
-                  "link":       'AND',
-                  "field":      31,
-                  "searchtype": 'equals',
-                  "value":      1
-                }
-            ]
-         ...
-         ```
+      ```json
+      ...
+      "criteria":
+         [
+            {
+               "field":      1,
+               "searchtype": 'contains',
+               "value":      ''
+            }, {
+               "link":       'AND',
+               "field":      31,
+               "searchtype": 'equals',
+               "value":      1
+            }, {
+               "link":       'AND',
+               "meta":       true,
+               "itemtype":   'User',
+               "field":      1,
+               "searchtype": 'equals',
+               "value":      1
+            }, {
+               "link":       'AND',
+               "criteria" : [
+                  {
+                     "field":      34,
+                     "searchtype": 'equals',
+                     "value":      1
+                  }, {
+                     "link":       'OR',
+                     "field":      35,
+                     "searchtype": 'equals',
+                     "value":      1
+                  }
+               ]
+            }
+         ]
+      ...
+      ```
 
   * *metacriteria* (optional): array of meta-criterion objects to filter search. Optional.
-                                 A meta search is a link with another itemtype (ex: Computer with softwares).
+                                 A meta search is a link with another itemtype (ex: Computer with softwares).  
+      **Deprecated: Now criteria support meta flag, you should use it instead direct metacriteria option.**
+
       Each meta-criterion object must provide:
         * *link*: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory.
         * *itemtype*: second itemtype to link.
@@ -938,26 +945,26 @@ $ curl -X GET \
 
       Ex:
 
-         ```javascript
-         ...
-         "metacriteria":
-            [
-               {
-                  "link":       'AND',
-                  "itemtype":   'Monitor',
-                  "field":      2,
-                  "searchtype": 'contains',
-                  "value":      ''
-               }, {
-                  "link":       'AND',
-                  "itemtype":   'Monitor',
-                  "field":      3,
-                  "searchtype": 'contains',
-                  "value":      ''
-                }
-            ]
-         ...
-         ```
+      ```json
+      ...
+      "metacriteria":
+         [
+            {
+               "link":       'AND',
+               "itemtype":   'Monitor',
+               "field":      2,
+               "searchtype": 'contains',
+               "value":      ''
+            }, {
+               "link":       'AND',
+               "itemtype":   'Monitor',
+               "field":      3,
+               "searchtype": 'contains',
+               "value":      ''
+             }
+         ]
+      ...
+      ```
 
   * *sort* (default 1): id of the searchoption to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
@@ -979,29 +986,29 @@ $ curl -X GET \
 * **Returns**:
   * 200 (OK) with all rows data with this format:
 
-   ```javascript
-      {
-          "totalcount": ":numberofresults_without_pagination",
-          "range": ":start-:end",
-          "data": {
-              ":items_id": {
-                  ":searchoptions_id": "value",
-                  ...
-              },
-              ":items_id": {
-               ...
-             }
-         },
-         "rawdata": {
-            ...
-         }
-      }
-   ```
+     ```json
+        {
+            "totalcount": ":numberofresults_without_pagination",
+            "range": ":start-:end",
+            "data": {
+                ":items_id": {
+                    ":searchoptions_id": "value",
+                    ...
+                },
+                ":items_id": {
+                 ...
+               }
+           },
+           "rawdata": {
+              ...
+           }
+        }
+     ```
 
   * 206 (PARTIAL CONTENT) with rows data (pagination doesn't permit to display all rows).
   * 401 (UNAUTHORIZED).
 
-   and theses headers:
+      and theses headers:
       * *Content-Range* offset – limit / count
       * *Accept-Range* itemtype max
 
@@ -1213,7 +1220,7 @@ Uploading a file requires use of 'multipart/data' content_type. The input data m
 
 Examples usage (CURL):
 
-```shell
+```bash
 $ curl -X POST \
 -H 'Content-Type: multipart/form-data' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
@@ -1404,7 +1411,7 @@ We provide in root .htaccess of GLPI an example to enable API URL rewriting.
 
 You need to uncomment (removing #) theses lines:
 
-```apache
+```apacheconf
 #<IfModule mod_rewrite.c>
 #   RewriteEngine On
 #   RewriteCond %{REQUEST_FILENAME} !-f

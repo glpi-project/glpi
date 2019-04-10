@@ -278,7 +278,7 @@ class DropdownTranslation extends CommonDBChild {
          $tmp['items_id']          = $input['items_id'];
          $tmp['itemtype']          = $input['itemtype'];
          $tmp['field']             = 'completename';
-         $tmp['value']             = addslashes($completename);
+         $tmp['value']             = $completename;
          $tmp['language']          = $input['language'];
          $tmp['_no_completename']  = true;
          if ($completenames_id) {
@@ -516,7 +516,7 @@ class DropdownTranslation extends CommonDBChild {
             'WHERE'  => [
                'itemtype'  => $item->getType(),
                'items_id'  => $item->getID(),
-               'language'  => ['<>', $language]
+               'language'  => $language
             ]
          ]);
          if (count($iterator) > 0) {
@@ -668,7 +668,7 @@ class DropdownTranslation extends CommonDBChild {
          'SELECT' => ['id'],
          'FROM'   => getTableForItemType($itemtype),
          'WHERE'  => [
-            $field   => Toolbox::addslashes_deep($value)
+            $field   => $value
          ]
       ]);
       if (count($iterator) > 0) {
@@ -745,10 +745,16 @@ class DropdownTranslation extends CommonDBChild {
 
       $tab = [];
       if (self::isDropdownTranslationActive()) {
-         $query   = "SELECT DISTINCT `itemtype`, `field`
-                     FROM `".self::getTable()."`
-                     WHERE `language` = '$language'";
-         foreach ($DB->request($query) as $data) {
+         $iterator = $DB->request([
+            'SELECT'          => [
+               'itemtype',
+               'field'
+            ],
+            'DISTINCT'        => true,
+            'FROM'            => self::getTable(),
+            'WHERE'           => ['language' => $language]
+         ]);
+         while ($data = $iterator->next()) {
             $tab[$data['itemtype']][$data['field']] = $data['field'];
          }
       }

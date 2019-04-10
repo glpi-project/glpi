@@ -38,7 +38,12 @@
 define('GLPI_ROOT', __DIR__);
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
-include ('./inc/autoload.function.php');
+include_once (GLPI_ROOT . "/inc/based_config.php");
+include_once(GLPI_ROOT . '/inc/db.function.php');
+
+// Load kernel and expose container in global var
+global $CONTAINER;
+$CONTAINER = (new Glpi\Kernel())->getContainer();
 
 $api = new APIXmlrpc;
 $api->call();

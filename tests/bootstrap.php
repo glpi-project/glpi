@@ -32,16 +32,25 @@
 
 error_reporting(E_ALL);
 
+define('GLPI_CACHE_DIR', __DIR__ . '/files/_cache');
 define('GLPI_CONFIG_DIR', __DIR__);
 define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
+define('GLPI_ROOT', __DIR__ . '/../');
 
-if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-   die("\nConfiguration file for tests not found\n\nrun: php scripts/cliinstall.php --tests ...\n\n");
+is_dir(GLPI_LOG_DIR) or mkdir(GLPI_LOG_DIR, 0755, true);
+is_dir(GLPI_CACHE_DIR) or mkdir(GLPI_CACHE_DIR, 0755, true);
+
+if (!file_exists(GLPI_CONFIG_DIR . '/db.yaml')) {
+   die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests ...\n\n");
 }
-global $CFG_GLPI;
+global $CFG_GLPI, $IS_TWIG;
+$IS_TWIG = false;
+
+include_once (GLPI_ROOT . "/inc/define.php");
+include __DIR__ . '/../inc/autoload.function.php';
 
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/GLPITestCase.php';
@@ -72,7 +81,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => '4.3',
+      '_version' => '4.4',
 
       // Type => array of entries
       'Entity' => [
@@ -317,7 +326,6 @@ function loadDataset() {
             'is_faq'   => 0,
             'users_id' => TU_USER,
             'date'     => '2016-11-17 12:27:48',
-            'date_mod' => '2016-11-17 12:28:06'
          ],
          [
             'name'     => '_knowbaseitem02',
@@ -325,43 +333,32 @@ function loadDataset() {
             'is_faq'   => 0,
             'users_id' => TU_USER,
             'date'     => '2016-11-17 12:27:48',
-            'date_mod' => '2016-11-17 12:28:06'
          ]
       ], 'KnowbaseItem_Item' => [
          [
             'knowbaseitems_id' => '_knowbaseitem01',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket01',
-            'date_creation'    => '2016-11-17 14:27:28',
-            'date_mod'         => '2016-11-17 14:27:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem01',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket02',
-            'date_creation'    => '2016-11-17 14:28:28',
-            'date_mod'         => '2016-11-17 14:28:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem01',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket03',
-            'date_creation'    => '2016-11-17 14:29:28',
-            'date_mod'         => '2016-11-17 14:29:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem02',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket03',
-            'date_creation'    => '2016-11-17 14:30:28',
-            'date_mod'         => '2016-11-17 14:30:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem02',
             'itemtype'         => 'Computer',
             'items_id'         => '_test_pc21',
-            'date_creation'    => '2016-11-17 14:31:28',
-            'date_mod'         => '2016-11-17 14:31:52'
          ]
       ], 'Entity_KnowbaseItem' => [
          [
@@ -489,6 +486,14 @@ function loadDataset() {
             'group_condition' => '(objectclass=groupOfNames)',
             'group_member_field' => 'member'
          ]
+      ], 'Holiday'   => [
+         [
+            'name'         => 'X-Mas',
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
+            'begin_date'   => '2018-12-29',
+            'end_date'     => '2019-01-06'
+         ]
       ]
 
    ];
@@ -506,8 +511,6 @@ function loadDataset() {
                                            'url_base_api' => GLPI_URI . '/apirest.php']);
    $CFG_GLPI['url_base']      = GLPI_URI;
    $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
-
-   is_dir(GLPI_LOG_DIR) or mkdir(GLPI_LOG_DIR, 0755, true);
 
    $conf = Config::getConfigurationValues('phpunit');
    if (isset($conf['dataset']) && $conf['dataset']==$data['_version']) {
@@ -580,13 +583,6 @@ function getItemByTypeName($type, $name, $onlyid = false) {
       return ($onlyid ? $item->getField('id') : $item);
    }
    return false;
-}
-
-// Cleanup log directory
-foreach (glob(GLPI_LOG_DIR . '/*.log') as $file) {
-   if (file_exists($file)) {
-      unlink($file);
-   }
 }
 
 loadDataset();

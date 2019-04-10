@@ -49,8 +49,6 @@ class RuleImportComputerCollection extends RuleCollection {
     * @return boolean
    **/
    function canList() {
-      global $PLUGIN_HOOKS;
-
       if (Plugin::haveImport()) {
          return static::canView();
       }

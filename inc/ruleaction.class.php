@@ -597,7 +597,7 @@ class RuleAction extends CommonDBChild {
                      $used = [];
                      if ($item = getItemForItemtype($options["sub_type"])) {
                         $rule_data = getAllDatasFromTable(
-                           self::getTable, [
+                           self::getTable(), [
                               'action_type'           => 'add_validation',
                               'field'                 => 'groups_id_validate',
                               $item->getRuleIdField() => $options[$item->getRuleIdField()]
@@ -608,11 +608,12 @@ class RuleAction extends CommonDBChild {
                         }
                      }
 
-                     $condition = "(SELECT count(`users_id`)
-                                    FROM `glpi_groups_users`
-                                    WHERE `groups_id` = `glpi_groups`.`id`)";
                      $param['name']      = 'value';
-                     $param['condition'] = $condition;
+                     $param['condition'] = [new QuerySubQuery([
+                        'SELECT' => ['COUNT' => ['users_id']],
+                        'FROM'   => 'glpi_groups_users',
+                        'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+                     ])];
                      $param['right']     = ['validate_incident', 'validate_request'];
                      $param['used']      = $used;
                      Group::dropdown($param);

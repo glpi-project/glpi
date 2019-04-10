@@ -151,17 +151,19 @@ class FQDN extends CommonDropdown {
          if ($count == 0) {
             $fqdn = '%'.$fqdn.'%';
          }
-         $relation = "LIKE '$fqdn'";
+         $relation = ['LIKE', $fqdn];
       } else {
-         $relation = "= '$fqdn'";
+         $relation = $fqdn;
       }
 
-      $query = "SELECT `id`
-                FROM `glpi_fqdns`
-                WHERE `fqdn` $relation ";
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['fqdn' => $relation]
+      ]);
 
       $fqdns_id_list = [];
-      foreach ($DB->request($query) as $line) {
+      while ($line = $iterator->next()) {
          $fqdns_id_list[] = $line['id'];
       }
 

@@ -36,11 +36,9 @@
  * @return bool for success (will die for most error)
 **/
 function update92to921() {
-   global $DB, $migration, $CFG_GLPI;
+   global $DB, $migration;
 
-   $current_config   = Config::getConfigurationValues('core');
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+   $updateresult = true;
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.2.1'));
@@ -81,16 +79,18 @@ function update92to921() {
    }
 
    // Sla rules criterias migration
-   $DB->queryOrDie("UPDATE `glpi_rulecriterias`
-                     SET `criteria` = 'slts_ttr_id'
-                     WHERE `criteria` = 'slas_id'",
-                     "SLA rulecriterias migration");
+   $DB->updateOrDie("glpi_rulecriterias",
+      ['criteria' => "slts_ttr_id"],
+      ['criteria' => "slas_id"],
+      "SLA rulecriterias migration"
+   );
 
    // Sla rules actions migration
-   $DB->queryOrDie("UPDATE `glpi_ruleactions`
-                     SET `field` = 'slts_ttr_id'
-                     WHERE `field` = 'slas_id'",
-                     "SLA ruleactions migration");
+   $DB->updateOrDie("glpi_ruleactions",
+      ['field' => "slts_ttr_id"],
+      ['field' => "slas_id"],
+      "SLA ruleactions migration"
+   );
    // end fix 9.1.x migration
 
    //fix migration parts that may not been ran from previous update
@@ -104,7 +104,7 @@ function update92to921() {
                `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevelactions");
    }
 
@@ -118,7 +118,7 @@ function update92to921() {
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`),
                KEY `condition` (`condition`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevelcriterias");
    }
 
@@ -137,7 +137,7 @@ function update92to921() {
                KEY `name` (`name`),
                KEY `is_active` (`is_active`),
                KEY `olas_id` (`olas_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevels");
    }
 
@@ -151,15 +151,24 @@ function update92to921() {
                   KEY `tickets_id` (`tickets_id`),
                   KEY `olalevels_id` (`olalevels_id`),
                   KEY `unicity` (`tickets_id`,`olalevels_id`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevels_tickets");
 
-      $query = "INSERT INTO `glpi_crontasks`
-                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
-                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                  VALUES ('OlaLevel_Ticket', 'olaticket', 604800, NULL, 0, 1, 3,
-                        0, 24, 10, NULL, NULL, NULL); ";
-      $DB->queryOrDie($query, "9.2 populate glpi_crontasks for olaticket");
+      $DB->insertOrDie("glpi_crontasks", [
+         'itemtype'        => "OlaLevel_Ticket",
+         'name'            => "olaticket",
+         'frequency'       => "604800",
+         'param'           => null,
+         'state'           => "0",
+         'mode'            => "1",
+         'allowmode'       => "3",
+         'hourmin'         => "0",
+         'hourmax'         => "24",
+         'logs_lifetime'   => "10",
+         'lastrun'         => null,
+         'lastcode'        => null,
+         'comment'         => null,
+      ], "9.2 populate glpi_crontasks for olaticket");
    }
 
    if (!$DB->tableExists('glpi_slms')) {
@@ -262,57 +271,98 @@ function update92to921() {
    }
 
    // ProfileRights changes
-   $DB->queryOrDie("UPDATE `glpi_profilerights`
-                    SET `name` = 'slm'
-                    WHERE `name` = 'sla'",
-                    "SLM profilerights migration");
+   $DB->updateOrDie("glpi_profilerights",
+      ['name' => "slm"],
+      ['name' => "sla"],
+      "SLM profilerights migration"
+   );
 
-      //Sla rules criterias migration
-   $DB->queryOrDie("UPDATE `glpi_rulecriterias`
-                    SET `criteria` = 'slas_ttr_id'
-                    WHERE `criteria` = 'slts_ttr_id'",
-                    "SLA rulecriterias migration");
+   //Sla rules criterias migration
+   $DB->updateOrDie("glpi_rulecriterias",
+      ['criteria' => "slas_ttr_id"],
+      ['criteria' => "slts_ttr_id"],
+      "SLA rulecriterias migration"
+   );
 
-   $DB->queryOrDie("UPDATE `glpi_rulecriterias`
-                    SET `criteria` = 'slas_tto_id'
-                    WHERE `criteria` = 'slts_tto_id'",
-                    "SLA rulecriterias migration");
+   $DB->updateOrDie("glpi_rulecriterias",
+      ['criteria' => "slas_tto_id"],
+      ['criteria' => "slts_tto_id"],
+      "SLA rulecriterias migration"
+   );
 
    // Sla rules actions migration
-   $DB->queryOrDie("UPDATE `glpi_ruleactions`
-                    SET `field` = 'slas_ttr_id'
-                    WHERE `field` = 'slts_ttr_id'",
-                    "SLA ruleactions migration");
+   $DB->updateOrDie("glpi_ruleactions",
+      ['field' => "slas_ttr_id"],
+      ['field' => "slts_ttr_id"],
+      "SLA ruleactions migration"
+   );
 
-   $DB->queryOrDie("UPDATE `glpi_ruleactions`
-                    SET `field` = 'slas_tto_id'
-                    WHERE `field` = 'slts_tto_id'",
-                    "SLA ruleactions migration");
+   $DB->updateOrDie("glpi_ruleactions",
+      ['field' => "slas_tto_id"],
+      ['field' => "slts_tto_id"],
+      "SLA ruleactions migration"
+   );
 
    //see https://github.com/glpi-project/glpi/issues/3037
-   $migration->addPreQuery("UPDATE `glpi_crontasks`
-                             SET `itemtype` = 'QueuedNotification'
-                             WHERE `itemtype` = 'QueuedMail'");
-   $migration->addPreQuery("UPDATE `glpi_crontasks`
-                             SET `name` = 'queuednotification'
-                             WHERE `name` = 'queuedmail'");
-   $migration->addPreQuery("UPDATE `glpi_crontasks`
-                             SET `name` = 'queuednotificationclean'
-                             WHERE `name` = 'queuedmailclean'");
-   $migration->addPreQuery("DELETE `duplicated` FROM `glpi_profilerights` AS `duplicated`
-                            INNER JOIN `glpi_profilerights` AS `original`
-                            WHERE `duplicated`.`profiles_id` = `original`.`profiles_id`
-                            AND `original`.`name` = 'queuednotification'
-                            AND `duplicated`.`name` = 'queuedmail'");
-   $migration->addPreQuery("UPDATE `glpi_profilerights`
-                             SET `name` = 'queuednotification'
-                             WHERE `name` = 'queuedmail'");
+   $set = ['itemtype' => 'QueuedNotification'];
+   $migration->addPreQuery(
+      $DB->buildUpdate("glpi_crontasks",
+         $set,
+         ['itemtype' => "QueuedMail"]
+      ),
+      $set
+   );
+
+   $set = ['name' => 'queuednotification'];
+   $migration->addPreQuery(
+      $DB->buildUpdate("glpi_crontasks",
+         $set,
+         ['name' => "queuedmail"]
+      ),
+      $set
+   );
+
+   $set = ['name' => 'queuednotificationclean'];
+   $migration->addPreQuery(
+      $DB->buildUpdate("glpi_crontasks",
+         $set,
+         ['name' => "queuedmailclean"]
+      ),
+      $set
+   );
+
+   // TODO: can be done when DB::delete() supports JOINs
+   $migration->addPreQuery(
+      "DELETE `duplicated` FROM `glpi_profilerights` AS `duplicated`
+         INNER JOIN `glpi_profilerights` AS `original`
+         WHERE `duplicated`.`profiles_id` = `original`.`profiles_id`
+         AND `original`.`name` = ?
+         AND `duplicated`.`name` = ?",
+      [
+         'queuednotification',
+         'queuedmail'
+      ]
+   );
+
+   $set = ['name' => 'queuednotification'];
+   $migration->addPreQuery(
+      $DB->buildUpdate("glpi_profilerights",
+         $set,
+         ['name' => "queuedmail"]
+      ),
+      $set
+   );
 
    //ensure do_count is set to AUTO
    //do_count update query may have been affected, but we cannot run it here
-   $migration->addPreQuery("UPDATE `glpi_savedsearches`
-                             SET `entities_id` = 0
-                             WHERE `entities_id` = -1");
+   $set = ['entities_id' => 0];
+   $migration->addPreQuery(
+      $DB->buildUpdate("glpi_savedsearches",
+         $set,
+         ['entities_id' => "-1"]
+      ),
+      $set
+   );
 
    if ($DB->fieldExists("glpi_notifications", "mode", false)) {
       $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
@@ -355,25 +405,35 @@ function update92to921() {
       'Printer'            => 'glpi_printers'
    ];
    foreach ($items as $itemtype => $table) {
+      // TODO: can be done when DB::update() supports JOINs
       $migration->addPostQuery(
          "UPDATE glpi_items_operatingsystems AS ios
-            INNER JOIN `$table` as item ON ios.items_id = item.id AND ios.itemtype = '$itemtype'
-            SET ios.entities_id = item.entities_id, ios.is_recursive = item.is_recursive
-         "
+            INNER JOIN `$table` as item ON ios.items_id = item.id AND ios.itemtype = ?
+            SET ios.entities_id = item.entities_id, ios.is_recursive = item.is_recursive",
+         [$itemtype]
       );
    }
 
    //drop "empty" glpi_items_operatingsystems
+   $set = [];
    $migration->addPostQuery(
-      "DELETE FROM `glpi_items_operatingsystems`
-         WHERE `operatingsystems_id` = 0
-         AND `operatingsystemversions_id` = 0
-         AND `operatingsystemservicepacks_id` = 0
-         AND `operatingsystemarchitectures_id` = 0
-         AND `operatingsystemkernelversions_id` = 0
-         AND `operatingsystemeditions_id` = 0
-         AND (`license_number` IS NULL OR `license_number` = '')
-         AND (`license_id` IS NULL OR `license_id` = '')"
+      $DB->buildDelete("glpi_items_operatingsystems", $set, [
+         'operatingsystems_id'               => "0",
+         'operatingsystemversions_id'        => "0",
+         'operatingsystemservicepacks_id'    => "0",
+         'operatingsystemarchitectures_id'   => "0",
+         'operatingsystemkernelversions_id'  => "0",
+         'operatingsystemeditions_id'        => "0",
+         'OR' => [
+            ['license_number' => null],
+            ['license_number' => ""]
+         ],
+         'OR' => [
+            ['license_id' => null],
+            ['license_id' => ""]
+         ]
+      ]),
+      $set
    );
 
    // ************ Keep it at the end **************

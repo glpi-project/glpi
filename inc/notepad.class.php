@@ -113,7 +113,6 @@ class Notepad extends CommonDBChild {
          $cd               = new self();
          unset($data['id']);
          $data['items_id'] = $newid;
-         $data             = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }
    }
@@ -164,19 +163,44 @@ class Notepad extends CommonDBChild {
       global $DB;
 
       $data = [];
-      $query = "SELECT `glpi_notepads`.*, `glpi_users`.`picture`
-                FROM `glpi_notepads`
-                LEFT JOIN `glpi_users` ON (`glpi_notepads`.`users_id_lastupdater` = `glpi_users`.`id`)
-                WHERE `glpi_notepads`.`itemtype` = '".$item->getType()."'
-                     AND `glpi_notepads`.`items_id` = '".$item->getID()."'
-                ORDER BY `date_mod` DESC";
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_notepads.*',
+            'glpi_users.picture'
+         ],
+         'FROM'      => self::getTable(),
+         'LEFT JOIN' => [
+            'glpi_users'   => [
+               'ON' => [
+                  self::getTable()  => 'users_id_lastupdater',
+                  'glpi_users'      => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'itemtype'  => $item->getType(),
+            'items_id'  => $item->getID()
+         ],
+         'ORDERBY'   => 'date_mod DESC'
+      ]);
 
-      foreach ($DB->request($query) as $note) {
+      while ($note = $iterator->next()) {
          $data[] = $note;
       }
       return $data;
    }
 
+   public function rawSearchOptions() {
+      $so = self::rawSearchOptionsToAdd();
+      foreach ($so as &$s) {
+         if ($s['id'] == 200) {
+               $s['name'] = __('Content');
+         } else if ($s['id'] == 'notepad') {
+            $s['id'] = 'common';
+         }
+      }
+      return $so;
+   }
 
    static public function rawSearchOptionsToAdd() {
       $tab = [];
@@ -205,7 +229,7 @@ class Notepad extends CommonDBChild {
          'id'                 => '201',
          'table'              => 'glpi_notepads',
          'field'              => 'date',
-         'name'               => $name . ' - ' . __('Creation date'),
+         'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'joinparams'         => [
             'jointype'           => 'itemtype_item'
@@ -218,7 +242,7 @@ class Notepad extends CommonDBChild {
          'id'                 => '202',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Writer'),
+         'name'               => __('Writer'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -236,7 +260,7 @@ class Notepad extends CommonDBChild {
          'id'                 => '203',
          'table'              => 'glpi_notepads',
          'field'              => 'date_mod',
-         'name'               => $name . ' - ' . __('Last update'),
+         'name'               => __('Last update'),
          'datatype'           => 'datetime',
          'joinparams'         => [
             'jointype'           => 'itemtype_item'
@@ -250,7 +274,7 @@ class Notepad extends CommonDBChild {
          'table'              => 'glpi_users',
          'field'              => 'name',
          'linkfield'          => 'users_id_lastupdater',
-         'name'               => $name . ' - ' . __('Last updater'),
+         'name'               => __('Last updater'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,

@@ -1,0 +1,102 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% extends "glpi.twig" %}
+
+{% set body_class = 'page-login' %}
+
+{% block title %}{{ __('Authentication') }}{% endblock %}
+{% block html_class %}loginpage{% endblock %}
+
+{% block head %}
+   {% for css_path in css_paths %}
+      <link rel="stylesheet" href="{{ css_path }}" type="text/css" media="screen" />
+   {% endfor %}
+   {{ parent() }}
+{% endblock %}
+
+{% block content_wrapper %}
+<main class="main">
+   <div id='firstboxlogin'>
+      <div id='logo_login'></div>
+      <div id='text-login'>
+         {# echo nl2br(Toolbox::unclean_html_cross_side_scripting_deep($CFG_GLPI['text_login'])); #}
+      </div>
+
+      <div id='boxlogin'>
+         {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
+   {% if show_lostpass %}
+         <a id="forget" href="{{ path_for('lost-password') }}">{{ __('Forgotten password?') }}</a>
+   {%endif %}
+   {% if show_faq %}
+         <a href="front/helpdesk.faq.php">[{{ __('Access to the Frequently Asked Questions') }}]
+   {% endif %}
+      </div>
+      <div class='error'>
+      <noscript>
+         <p class="error">
+            {{ __('You must activate the JavaScript function of your browser') }}
+         </p>
+      </noscript>
+   </div>
+   {#
+   //TODO: delegate redirects to routing
+   // redirect to ticket
+   if (isset($_GET["redirect"])) {
+      Toolbox::manageRedirect($_GET["redirect"]);
+      echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'"/>';
+   }#}
+{#
+
+   echo "<div class='error'>";
+
+   if (isset($_GET['error']) && isset($_GET['redirect'])) {
+      switch ($_GET['error']) {
+         case 1 : // cookie error
+            echo __('You must accept cookies to reach this application');
+            break;
+
+         case 2 : // GLPI_SESSION_DIR not writable
+            echo __('Checking write permissions for session files');
+            break;
+
+         case 3 :
+            echo __('Invalid use of session ID');
+            break;
+      }
+   }
+   echo "</div>";
+
+   echo "<div id='display-login'>";
+   Plugin::doHook('display_login');
+   echo "</div>";
+#}
+</main>
+{% endblock %}

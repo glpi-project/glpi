@@ -97,15 +97,14 @@ class Contact_Supplier extends CommonDBRelation{
    /**
     * Print the HTML array for entreprises on the current contact
     *
-    *@return Nothing (display)
-   **/
+    * @return void
+    */
    static function showForContact(Contact $contact) {
-      global $DB,$CFG_GLPI;
 
       $instID = $contact->fields['id'];
 
       if (!$contact->can($instID, READ)) {
-         return false;
+         return;
       }
 
       $canedit = $contact->can($instID, UPDATE);
@@ -222,13 +221,14 @@ class Contact_Supplier extends CommonDBRelation{
 
    /**
     * Show contacts asociated to an enterprise
+    *
+    * @return void
    **/
    static function showForSupplier(Supplier $supplier) {
-      global $DB,$CFG_GLPI;
 
       $instID = $supplier->fields['id'];
       if (!$supplier->can($instID, READ)) {
-         return false;
+         return;
       }
       $canedit = $supplier->can($instID, UPDATE);
       $rand = mt_rand();

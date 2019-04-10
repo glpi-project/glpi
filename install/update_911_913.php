@@ -36,46 +36,34 @@
  * @return bool for success (will die for most error)
 **/
 function update911to913() {
-   global $DB, $migration, $CFG_GLPI;
+   global $DB, $migration;
 
-   $current_config   = Config::getConfigurationValues('core');
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+   $updateresult = true;
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.1.3'));
    $migration->setVersion('9.1.3');
 
-   $backup_tables = false;
-   // table already exist but deleted during the migration
-   // not table created during the migration
-   $newtables     = [];
-
-   foreach ($newtables as $new_table) {
-      // rename new tables if exists ?
-      if ($DB->tableExists($new_table)) {
-         $migration->dropTable("backup_$new_table");
-         $migration->displayWarning("$new_table table already exists. ".
-                                    "A backup have been done to backup_$new_table.");
-         $backup_tables = true;
-         $query         = $migration->renameTable("$new_table", "backup_$new_table");
-      }
-   }
-   if ($backup_tables) {
-      $migration->displayWarning("You can delete backup tables if you have no need of them.",
-                                 true);
-   }
-
    //Fix duplicated search options
    if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '17']) == 0) {
-      $query = "UPDATE `glpi_displaypreferences`
-                  SET num = '17' WHERE itemtype = 'IPNetwork' AND num = '13'";
-      $DB->queryOrDie($query, "9.1.3 Fix duplicate IPNetwork Gateway search option");
+      $DB->updateOrDie("glpi_displaypreferences", [
+            "num" => 17
+         ], [
+            'itemtype'  => "IPNetwork",
+            'num'       => 13
+         ],
+         "9.1.3 Fix duplicate IPNetwork Gateway search option"
+      );
    }
    if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '18']) == 0) {
-      $query = "UPDATE `glpi_displaypreferences`
-                  SET num = '18' WHERE itemtype = 'IPNetwork' AND num = '14'";
-      $DB->queryOrDie($query, "9.1.3 Fix duplicate IPNetwork addressable network search option");
+      $DB->updateOrDie("glpi_displaypreferences", [
+            "num" => 18
+         ], [
+            'itemtype'  => "IPNetwork",
+            'num'       => 14
+         ],
+         "9.1.3 Fix duplicate IPNetwork addressable network search option"
+      );
    }
 
    $migration->addField(

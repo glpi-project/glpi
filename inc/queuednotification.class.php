@@ -536,7 +536,7 @@ class QueuedNotification extends CommonDBTM {
    static function cronQueuedNotification($task = null) {
       global $DB, $CFG_GLPI;
 
-      if (!$CFG_GLPI["notifications_mailing"]) {
+      if (!Notification_NotificationTemplate::hasActiveMode()) {
          return 0;
       }
       $cron_status = 0;
@@ -586,14 +586,12 @@ class QueuedNotification extends CommonDBTM {
       if ($task->fields['param'] > 0) {
          $secs      = $task->fields['param'] * DAY_TIMESTAMP;
          $send_time = date("U") - $secs;
-         //TODO: migrate to DB::delete()
-         $query_exp = "DELETE
-                       FROM `glpi_queuednotifications`
-                       WHERE `glpi_queuednotifications`.`is_deleted`
-                             AND UNIX_TIMESTAMP(send_time) < '".$send_time."'";
-
-         $DB->query($query_exp);
-         $vol = $DB->affected_rows();
+         $vol = $DB->delete(
+            self::getTable(), [
+               'is_deleted'   => 1,
+               new \QueryExpression('(UNIX_TIMESTAMP('.$DB->quoteName('send_time').') < '.$DB->quoteValue($send_time).')')
+            ]
+         );
       }
 
       $task->setVolume($vol);

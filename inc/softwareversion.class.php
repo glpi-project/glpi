@@ -53,10 +53,12 @@ class SoftwareVersion extends CommonDBChild {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $csv = new Computer_SoftwareVersion();
-      $csv->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Computer_SoftwareVersion::class,
+         ]
+      );
    }
 
 
@@ -135,7 +137,7 @@ class SoftwareVersion extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
       State::dropdown(['value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_softwareversion`"]);
+                            'condition' => ['is_visible_softwareversion' => 1]]);
       echo "</td></tr>\n";
 
       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
@@ -161,6 +163,14 @@ class SoftwareVersion extends CommonDBChild {
       $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Version'),
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => 'glpi_softwares',
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'string'
@@ -188,7 +198,7 @@ class SoftwareVersion extends CommonDBChild {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_softwareversion`'
+         'condition'          => ['is_visible_softwareversion' => 1]
       ];
 
       $tab[] = [
@@ -198,6 +208,42 @@ class SoftwareVersion extends CommonDBChild {
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '122',
+         'table'              => 'glpi_computers_softwareversions',
+         'field'              => 'date_install',
+         'name'               => __('Installation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '123',
+         'table'              => 'glpi_softwarecategories',
+         'field'              => 'name',
+         'name'               => __('Software category'),
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_softwares',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '124',
+         'table'              => 'glpi_softwares',
+         'field'              => 'is_valid',
+         'name'               => __('Valid license'),
+         'datatype'           => 'bool'
       ];
 
       return $tab;
@@ -231,35 +277,46 @@ class SoftwareVersion extends CommonDBChild {
          }
       }
 
-      $where = '';
-      if (count($p['used'])) {
-         $where = " AND `glpi_softwareversions`.`id` NOT IN (".implode(",", $p['used']).")";
-      }
       // Make a select box
-      $query = "SELECT DISTINCT `glpi_softwareversions`.*,
-                              `glpi_states`.`name` AS sname
-                FROM `glpi_softwareversions`
-                LEFT JOIN `glpi_states` ON (`glpi_softwareversions`.`states_id` = `glpi_states`.`id`)
-                WHERE `glpi_softwareversions`.`softwares_id` = '".$p['softwares_id']."'
-                      $where
-                ORDER BY `name`";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $criteria = [
+         'SELECT'    => [
+            'glpi_softwareversions.*',
+            'glpi_states AS name'
+         ],
+         'DISTINCT'  => true,
+         'FROM'      => 'glpi_softwareversions',
+         'LEFT JOIN' => [
+            'glpi_states'  => [
+               'ON' => [
+                  'glpi_softwareversions' => 'states_id',
+                  'glpi_states'           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_softwareversions.softwares_id'   => $p['softwares_id']
+         ],
+         'ORDERBY'   => 'name'
+      ];
+
+      if (count($p['used'])) {
+         $criteria['WHERE']['NOT'] = ['glpi_softwareversions.id' => $p['used']];
+      }
+
+      $iterator = $DB->request($criteria);
+
       $values = [];
+      while ($data = $iterator->next()) {
+         $ID     = $data['id'];
+         $output = $data['name'];
 
-      if ($number) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $ID     = $data['id'];
-            $output = $data['name'];
-
-            if (empty($output) || $_SESSION['glpiis_ids_visible']) {
-               $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
-            }
-            if (!empty($data['sname'])) {
-               $output = sprintf(__('%1$s - %2$s'), $output, $data['sname']);
-            }
-            $values[$ID] = $output;
+         if (empty($output) || $_SESSION['glpiis_ids_visible']) {
+            $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
          }
+         if (!empty($data['sname'])) {
+            $output = sprintf(__('%1$s - %2$s'), $output, $data['sname']);
+         }
+         $values[$ID] = $output;
       }
       return Dropdown::showFromArray($p['name'], $values, $p);
    }
@@ -291,12 +348,25 @@ class SoftwareVersion extends CommonDBChild {
          echo "</div>";
       }
 
-      $query = "SELECT `glpi_softwareversions`.*,
-                       `glpi_states`.`name` AS sname
-                FROM `glpi_softwareversions`
-                LEFT JOIN `glpi_states` ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
-                WHERE `softwares_id` = '$softwares_id'
-                ORDER BY `name`";
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_softwareversions.*',
+            'glpi_states.name AS sname'
+         ],
+         'FROM'      => 'glpi_softwareversions',
+         'LEFT JOIN' => [
+            'glpi_states'  => [
+               'ON' => [
+                  'glpi_softwareversions' => 'states_id',
+                  'glpi_states'           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'softwares_id' => $softwares_id
+         ],
+         'ORDERBY'   => 'name'
+      ]);
 
       Session::initNavigateListItems('SoftwareVersion',
             //TRANS : %1$s is the itemtype name,
@@ -304,42 +374,40 @@ class SoftwareVersion extends CommonDBChild {
                                      sprintf(__('%1$s = %2$s'), Software::getTypeName(1),
                                              $soft->getName()));
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            echo "<table class='tab_cadre_fixehov'><tr>";
-            echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
-            echo "<th>".__('Status')."</th>";
-            echo "<th>".__('Operating system')."</th>";
-            echo "<th>"._n('Installation', 'Installations', Session::getPluralNumber())."</th>";
-            echo "<th>".__('Comments')."</th>";
-            echo "</tr>\n";
+      if (count($iterator)) {
+         echo "<table class='tab_cadre_fixehov'><tr>";
+         echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
+         echo "<th>".__('Status')."</th>";
+         echo "<th>".__('Operating system')."</th>";
+         echo "<th>"._n('Installation', 'Installations', Session::getPluralNumber())."</th>";
+         echo "<th>".__('Comments')."</th>";
+         echo "</tr>\n";
 
-            for ($tot=$nb=0; $data=$DB->fetch_assoc($result); $tot+=$nb) {
-               Session::addToNavigateListItems('SoftwareVersion', $data['id']);
-               $nb = Computer_SoftwareVersion::countForVersion($data['id']);
+         for ($tot = $nb = 0; $data = $iterator->next(); $tot += $nb) {
+            Session::addToNavigateListItems('SoftwareVersion', $data['id']);
+            $nb = Computer_SoftwareVersion::countForVersion($data['id']);
 
-               echo "<tr class='tab_bg_2'>";
-               echo "<td><a href='".SoftwareVersion::getFormURLWithID($data['id'])."'>";
-               echo $data['name'].(empty($data['name'])?"(".$data['id'].")":"")."</a></td>";
-               echo "<td>".$data['sname']."</td>";
-               echo "<td class='right'>".Dropdown::getDropdownName('glpi_operatingsystems',
-                                                                   $data['operatingsystems_id']);
-               echo "</td>";
-               echo "<td class='numeric'>$nb</td>";
-               echo "<td>".nl2br($data['comment'])."</td></tr>\n";
-            }
-
-            echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='3'>".__('Total')."</td>";
-            echo "<td class='numeric b'>$tot</td><td></td></tr>";
-            echo "</table>\n";
-
-         } else {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>".__('No item found')."</th></tr>";
-            echo "</table>\n";
+            echo "<tr class='tab_bg_2'>";
+            echo "<td><a href='".SoftwareVersion::getFormURLWithID($data['id'])."'>";
+            echo $data['name'].(empty($data['name'])?"(".$data['id'].")":"")."</a></td>";
+            echo "<td>".$data['sname']."</td>";
+            echo "<td class='right'>".Dropdown::getDropdownName('glpi_operatingsystems',
+                                                                  $data['operatingsystems_id']);
+            echo "</td>";
+            echo "<td class='numeric'>$nb</td>";
+            echo "<td>".nl2br($data['comment'])."</td></tr>\n";
          }
 
+         echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='3'>".__('Total')."</td>";
+         echo "<td class='numeric b'>$tot</td><td></td></tr>";
+         echo "</table>\n";
+
+      } else {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".__('No item found')."</th></tr>";
+         echo "</table>\n";
       }
+
       echo "</div>";
    }
 

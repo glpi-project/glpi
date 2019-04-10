@@ -256,6 +256,9 @@ class RuleImportComputer extends Rule {
       //Add plugin global criteria
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (!Plugin::isPluginLoaded($plugin)) {
+               continue;
+            }
             if (is_array($val) && in_array($this->getType(), $val)) {
                $global_criteria = Plugin::doOneHook($plugin, "ruleImportComputer_addGlobalCriteria",
                                                     $global_criteria);
@@ -323,15 +326,15 @@ class RuleImportComputer extends Rule {
 
             case 'model' :
                // search for model, don't create it if not found
-               $options    = ['manufacturer' => addslashes($input['manufacturer'])];
-               $mid        = Dropdown::importExternal('ComputerModel', addslashes($input['model']), -1,
+               $options    = ['manufacturer' => $input['manufacturer']];
+               $mid        = Dropdown::importExternal('ComputerModel', $input['model'], -1,
                                                       $options, '', false);
                $sql_where .= " AND `glpi_computers`.`computermodels_id` = '$mid'";
                break;
 
             case 'manufacturer' :
                // search for manufacturer, don't create it if not found
-               $mid        = Dropdown::importExternal('Manufacturer', addslashes($input['manufacturer']), -1,
+               $mid        = Dropdown::importExternal('Manufacturer', $input['manufacturer'], -1,
                                                       [], '', false);
                $sql_where .= " AND `glpi_computers`.`manufacturers_id` = '$mid'";
                break;
@@ -350,6 +353,9 @@ class RuleImportComputer extends Rule {
 
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (!Plugin::isPluginLoaded($plugin)) {
+               continue;
+            }
             if (is_array($val) && in_array($this->getType(), $val)) {
                $params      = ['where_entity' => $where_entity,
                                     'input'        => $input,
@@ -371,7 +377,7 @@ class RuleImportComputer extends Rule {
       $result_glpi = $DB->query($sql_glpi);
 
       if ($DB->numrows($result_glpi) > 0) {
-         while ($data = $DB->fetch_assoc($result_glpi)) {
+         while ($data = $DB->fetchAssoc($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];
          }
          return true;
@@ -390,22 +396,12 @@ class RuleImportComputer extends Rule {
 
    }
 
-   /**
-    * Execute the actions as defined in the rule
-    *
-    * @see Rule::executeActions()
-    *
-    * @param $output the fields to manipulate
-    * @param $params parameters
-    *
-    * @return the $output array modified
-   **/
-   function executeActions($output, $params) {
+   function executeActions($output, $params, array $input = []) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             $executeaction = clone $this;
-            $ruleoutput    = $executeaction->executePluginsActions($action, $output, $params);
+            $ruleoutput    = $executeaction->executePluginsActions($action, $output, $params, $input);
             foreach ($ruleoutput as $key => $value) {
                $output[$key] = $value;
             }

@@ -434,9 +434,29 @@ class Ajax {
                   });
                }
 
-               var newIndex = ui.tab.parent().children().index(ui.tab);
-               $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
-                  { itemtype: '$type', id: '$ID', tab: newIndex });
+               var tabs = ui.tab.parent().children();
+               if (tabs.length > 1) {
+                  var newIndex = tabs.index(ui.tab);
+                  $.get(
+                     '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
+                     { itemtype: '$type', id: '$ID', tab: newIndex }
+                  );
+               }
+            },
+            load: function(event) {
+               var _url = window.location.href;
+               //get the anchor
+               var _parts = _url.split('#');
+               if (_parts.length > 1) {
+                  var _anchor = _parts[1];
+
+                  //get the top offset of the target anchor
+                  var target_offset = $('#' + _anchor).offset();
+                  var target_top = target_offset.top;
+
+                  //goto that anchor by setting the body scroll top to anchor top
+                  $('html, body').animate({scrollTop:target_top}, 2000, 'easeOutQuad');
+               }
             },
             ajaxOptions: {type: 'POST'}
          });";
@@ -457,10 +477,16 @@ class Ajax {
             function reloadTab(add) {
                forceReload$rand = true;
                var current_index = $('#tabs$rand').tabs('option','active');
+
+               // remove scroll event bind, select2 bind it on parent with scrollbars (the tab currently)
+               // as the select2 disapear with this tab reload, remove the event to prevent issues (infinite scroll to top)
+               $('#tabs$rand .ui-tabs-panel[aria-expanded=true]').unbind('scroll');
+
                // Save tab
                var currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
                $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref+'&'+add);
                $('#tabs$rand').tabs( 'load' , current_index);
+
                // Restore tab
                $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
             };";
@@ -713,6 +739,11 @@ class Ajax {
          $out .= ",{";
          $first = true;
          foreach ($parameters as $key => $val) {
+            // prevent xss attacks
+            if (!preg_match('/^[a-zA-Z_$][0-9a-zA-Z_$]*$/', $key)) {
+               continue;
+            }
+
             if ($first) {
                $first = false;
             } else {
@@ -720,6 +751,7 @@ class Ajax {
             }
 
             $out .= $key.":";
+            $regs = [];
             if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
                $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])).".val()";
 

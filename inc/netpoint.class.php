@@ -171,19 +171,19 @@ class Netpoint extends CommonDropdown {
       global $DB;
 
       if (!empty($input["name"])) {
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `name` = '".$input["name"]."'
-                         AND `locations_id` = '".(isset($input["locations_id"])
-                                                      ?$input["locations_id"]:0)."'".
-                         getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
-                                                    $input['entities_id'], $this->maybeRecursive());
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'name'         => $input['name'],
+               'locations_id' => (isset($input["locations_id"]) ? $input["locations_id"] : 0)
+            ] + getEntitiesRestrictCriteria($this->getTable(), $input['entities_id'], $this->maybeRecursive())
+         ]);
 
          // Check twin :
-         if ($result_twin = $DB->query($query)) {
-            if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin, 0, "id");
-            }
+         if (count($iterator)) {
+            $result = $iterator->next();
+            return $result['id'];
          }
       }
       return -1;
@@ -196,7 +196,7 @@ class Netpoint extends CommonDropdown {
       if ($parent) {
          $changes[0] = '0';
          $changes[1] = '';
-         $changes[2] = addslashes($this->getNameID());
+         $changes[2] = $this->getNameID();
          Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_ADD_SUBITEM);
       }
    }
@@ -207,7 +207,7 @@ class Netpoint extends CommonDropdown {
       $parent = $this->fields['locations_id'];
       if ($parent) {
          $changes[0] = '0';
-         $changes[1] = addslashes($this->getNameID());
+         $changes[1] = $this->getNameID();
          $changes[2] = '';
          Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
       }

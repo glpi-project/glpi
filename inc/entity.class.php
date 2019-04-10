@@ -106,6 +106,18 @@ class Entity extends CommonTreeDropdown {
                                                    'max_closedate', 'tickettemplates_id']];
 
 
+   /**
+    * @var \Psr\SimpleCache\CacheInterface
+    */
+   protected $cache;
+
+   public function __construct() {
+      global $CONTAINER;
+      $this->cache = $CONTAINER->get('application_cache');
+
+      parent::__construct();
+   }
+
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -121,8 +133,6 @@ class Entity extends CommonTreeDropdown {
     * @since 0.84
    **/
    function pre_deleteItem() {
-      global $GLPI_CACHE;
-
       // Security do not delete root entity
       if ($this->input['id'] == 0) {
          return false;
@@ -130,11 +140,9 @@ class Entity extends CommonTreeDropdown {
 
       //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
       $this->cleanParentsSons();
-      if (Toolbox::useCache()) {
-         $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
-         if ($GLPI_CACHE->hasItem($ckey)) {
-            $GLPI_CACHE->removeItem($ckey);
-         }
+      $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
+      if ($this->cache->has($ckey)) {
+         $this->cache->delete($ckey);
       }
       return true;
    }
@@ -249,13 +257,14 @@ class Entity extends CommonTreeDropdown {
 
       $input = parent::prepareInputForAdd($input);
 
-      $query = "SELECT MAX(`id`)+1 AS newID
-                FROM `glpi_entities`";
-      if ($result = $DB->query($query)) {
-          $input['id'] = $DB->result($result, 0, 0);
-      } else {
-         return false;
-      }
+      $result = $DB->request([
+         'SELECT' => new \QueryExpression(
+            'MAX('.$DB->quoteName('id').')+1 AS newID'
+         ),
+         'FROM'   => self::getTable()
+      ])->next();
+      $input['id'] = $result['newID'];
+
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
 
       if (!Session::isCron()) { // Filter input for connected
@@ -445,17 +454,18 @@ class Entity extends CommonTreeDropdown {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
       // most use entities_id, RuleDictionnarySoftwareCollection use new_entities_id
       Rule::cleanForItemAction($this, '%entities_id');
       Rule::cleanForItemCriteria($this);
 
-      $gki = new Entity_KnowbaseItem();
-      $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gr = new Entity_Reminder();
-      $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Entity_KnowbaseItem::class,
+            Entity_Reminder::class,
+            Entity_RSSFeed::class,
+         ]
+      );
    }
 
    function rawSearchOptions() {
@@ -1107,7 +1117,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<script type='text/javascript'>";
       echo "   $(function() {
-                  $.getScript('{$CFG_GLPI["root_doc"]}/lib/jqueryplugins/jstree/jstree.min.js').done(function(data, textStatus, jqxhr) {
+                  $.getScript('{$CFG_GLPI["root_doc"]}/public/lib/jstree/jstree.js').done(function(data, textStatus, jqxhr) {
                      $('#tree_projectcategory$rand')
                      // call `.jstree` with the options object
                      .jstree({
@@ -1167,15 +1177,6 @@ class Entity extends CommonTreeDropdown {
                         searchTree();
                      });
 
-                     // delay function who reinit timer on each call
-                     var typewatch = (function(){
-                        var timer = 0;
-                        return function(callback, ms){
-                           clearTimeout (timer);
-                           timer = setTimeout(callback, ms);
-                        };
-                     })();
-
                      // autosearch on keypress (delayed and with min length)
                      $('#entsearchtext').keyup(function () {
                         var inputsearch = $(this);
@@ -1191,7 +1192,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "</script>";
 
-      echo "<div id='tree_projectcategory$rand' ></div>";
+      echo "<div id='tree_projectcategory$rand' class='entity_tree' ></div>";
       echo "</div>";
    }
 
@@ -1259,24 +1260,28 @@ class Entity extends CommonTreeDropdown {
       }
 
       // Others entities in level order (parent first)
-      $query = "SELECT `glpi_entities`.`id` AS `entity`,
-                       `glpi_entities`.`entities_id` AS `parent`,
-                       `glpi_entities`.`$field`
-                FROM `glpi_entities`
-                ORDER BY `glpi_entities`.`level` ASC";
+      $iterator = $DB->request([
+         'SELECT' => [
+            'id AS entity',
+            'entities_id AS parent',
+            $field
+         ],
+         'FROM'   => self::getTable(),
+         'ORDER'  => 'level ASC'
+      ]);
 
-      foreach ($DB->request($query) as $entitydatas) {
-         if ((is_null($entitydatas[$field])
-              || ($entitydatas[$field] == self::CONFIG_PARENT))
-             && isset($entities[$entitydatas['parent']])) {
+      while ($entitydata = $iterator->next()) {
+         if ((is_null($entitydata[$field])
+              || ($entitydata[$field] == self::CONFIG_PARENT))
+             && isset($entities[$entitydata['parent']])) {
 
             // config inherit from parent
-            $entities[$entitydatas['entity']] = $entities[$entitydatas['parent']];
+            $entities[$entitydata['entity']] = $entities[$entitydata['parent']];
 
-         } else if ($entitydatas[$field] > 0) {
+         } else if ($entitydata[$field] > 0) {
 
             // config found in entity
-            $entities[$entitydatas['entity']] = $entitydatas[$field];
+            $entities[$entitydata['entity']] = $entitydata[$field];
          }
       }
 
@@ -1433,9 +1438,11 @@ class Entity extends CommonTreeDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('LDAP directory of an entity')."</td>";
          echo "<td>";
-         AuthLDAP::dropdown(['value'      => $entity->fields['authldaps_id'],
-                                  'emptylabel' => __('Default server'),
-                                  'condition'  => "`is_active` = 1"]);
+         AuthLDAP::dropdown([
+            'value'      => $entity->fields['authldaps_id'],
+            'emptylabel' => __('Default server'),
+            'condition'  => ['is_active' => 1]
+         ]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -2011,18 +2018,20 @@ class Entity extends CommonTreeDropdown {
     * @since 0.84 (before in entitydata.class)
     *
     * @param $field
-    * @param $value must be addslashes
+    * @param $value
    **/
    private static function getEntityIDByField($field, $value) {
       global $DB;
 
-      $sql = "SELECT `id`
-              FROM `glpi_entities`
-              WHERE `".$field."` = '".$value."'";
-      $result = $DB->query($sql);
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [$field => $value]
+      ]);
 
-      if ($DB->numrows($result) == 1) {
-         return $DB->result($result, 0, "id");
+      if (count($iterator) == 1) {
+         $result = $iterator->next();
+         return $result['id'];
       }
       return -1;
    }
@@ -2370,13 +2379,7 @@ class Entity extends CommonTreeDropdown {
 
          }
       }
-      /*
-      switch ($fieldval) {
-         case "tickettype" :
-            // Default is Incident if not set
-            return Ticket::INCIDENT_TYPE;
-      }
-      */
+
       return $default_value;
    }
 
@@ -2464,35 +2467,35 @@ class Entity extends CommonTreeDropdown {
       }
 
       if (strstr($url, "[SLA_TTO_ID]")) {
-         $url = str_replace("[SLA_TTO_ID]", $ticket->fields['slas_tto_id'], $url);
+         $url = str_replace("[SLA_TTO_ID]", $ticket->fields['slas_id_tto'], $url);
       }
 
       if (strstr($url, "[SLA_TTO_NAME]")) {
          $url = str_replace("[SLA_TTO_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slas',
-                                                                $ticket->fields['slas_tto_id'])),
+                                                                $ticket->fields['slas_id_tto'])),
                             $url);
       }
 
       if (strstr($url, "[SLA_TTR_ID]")) {
-         $url = str_replace("[SLA_TTR_ID]", $ticket->fields['slas_ttr_id'], $url);
+         $url = str_replace("[SLA_TTR_ID]", $ticket->fields['slas_id_ttr'], $url);
       }
 
       if (strstr($url, "[SLA_TTR_NAME]")) {
          $url = str_replace("[SLA_TTR_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slas',
-                                                                $ticket->fields['slas_ttr_id'])),
+                                                                $ticket->fields['slas_id_ttr'])),
                             $url);
       }
 
       if (strstr($url, "[SLALEVEL_ID]")) {
-         $url = str_replace("[SLALEVEL_ID]", $ticket->fields['ttr_slalevels_id'], $url);
+         $url = str_replace("[SLALEVEL_ID]", $ticket->fields['slalevels_id_ttr'], $url);
       }
 
       if (strstr($url, "[SLALEVEL_NAME]")) {
          $url = str_replace("[SLALEVEL_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slalevels',
-                                                                $ticket->fields['ttr_slalevels_id'])),
+                                                                $ticket->fields['slalevels_id_ttr'])),
                             $url);
       }
 

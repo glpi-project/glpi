@@ -151,25 +151,28 @@ abstract class FQDNLabel extends CommonDBChild {
          if ($count == 0) {
             $label = '%'.$label.'%';
          }
-         $relation = "LIKE '$label'";
+         $relation = ['LIKE',  $label];
       } else {
-         $relation = "= '$label'";
+         $relation = $label;
       }
 
       $IDs = [];
       foreach (['NetworkName'  => 'glpi_networknames',
                      'NetworkAlias' => 'glpi_networkaliases'] as $class => $table) {
-         $query = "SELECT `id`
-                   FROM `$table`
-                   WHERE `name` $relation ";
+         $criteria = [
+            'SELECT' => 'id',
+            'FROM'   => $table,
+            'WHERE'  => ['name' => $relation]
+         ];
 
-         if ((is_array($fqdns_id)) && (count($fqdns_id) > 0)) {
-            $query .= " AND `fqdns_id` IN ('". implode('\', \'', $fqdns_id). "')";
-         } else if ((is_int($fqdns_id)) && ($fqdns_id > 0)) {
-            $query .= " AND `fqdns_id` = '$fqdns_id'";
+         if (is_array($fqdns_id) && count($fqdns_id) > 0
+            || is_int($fqdns_id) && $fqdns_id > 0
+         ) {
+            $criteria['WHERE']['fqdns_id'] = $fqdns_id;
          }
 
-         foreach ($DB->request($query) as $element) {
+         $iterator = $DB->request($criteria);
+         while ($element = $iterator->next()) {
             $IDs[$class][] = $element['id'];
          }
       }

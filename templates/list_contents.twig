@@ -1,0 +1,573 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+
+{% set main_header = main_header|default(false) %}
+{% set form_header = form_header|default(false) %}
+{% set no_checkbox = no_checkbox|default(false) %}
+
+<div class="content">
+   <div class="card">
+{% if main_header %}
+      <div class="card-header">
+         {{ __('Search %1$s')|format(itemtype|lower)}}
+         <div class="card-header-actions">
+   {% if item is defined %}
+        {% if item.getExtraLinks() is iterable %}
+            {% for link in item.getExtraLinks() %}
+                <a href="{{ link.uri }}" title="{{ link.title }}" class="card-header-action" data-toggle="tooltip">
+                    <i class="fas fa-fw fa-{{ link.icon }}"></i><span class="sr-only">{{ link.title }}</span>
+                </a>
+            {% endfor %}
+        {% endif %}
+        {% if item.maybeLocated() %}
+            <a href="#" id="btn_as_map" class="card-header-action{% if search_data.search.as_map %} active{% endif %}" title="{{ __('Show as map') }}" data-toggle="tooltip">
+               <i class="fas fa-fw fa-globe-americas"></i>
+               <span class="sr-only">{{ __s('Show as map') }}</span>
+            </a>
+        {% endif %}
+        {% if item.maybeDeleted() %}
+            <a href="#" id="btn_is_deleted" class="card-header-action{% if search_data.search.is_deleted %} active{% endif %}" title="{{ __s('Show items in dustbin') }}" data-toggle="tooltip">
+               <i class="fas fa-fw fa-trash"></i>
+               <span class="sr-only">{{ __s('Show items in dustbin') }}</span>
+            </a>
+        {% endif %}
+   {% endif %}
+            <a href="#" id="toggle_search_criteria" class="card-header-action active" title="{{ __s('Display/hide search panel') }}" data-toggle="tooltip">
+               <i class="fas fa-fw fa-search"></i>
+               <span class="sr-only">{{ __s('Display/hide search panel') }}</span>
+            </a>
+            <a href="#" id="default_items" class="card-header-action" title="{{ __s('Select default items to show') }}" data-toggle="tooltip">
+               <i class="fas fa-fw fa-wrench"></i>
+               <span class="sr-only">{{ __s('Select default items to show') }}</span>
+            </a>
+            <div class="btn-group">
+               <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
+                  <i class="fas fa-fw fa-download"></i><span class="sr-only">{{ __('Download') }}</span>
+               </button>
+               <div class="dropdown-menu">
+                  <a class="dropdown-item" href="{#{Search::PDF_OUTPUT_LANDSCAPE}#}">{{ __('Current page in landscape PDF') }}</a>
+                  <a class="dropdown-item" href="{#{Search::PDF_OUTPUT_PORTRAIT}#}">{{ __('Current page in portrait PDF') }}</a>
+                  <a class="dropdown-item" href="{#{Search::SYLK_OUTPUT}#}">{{ __('Current page in SLK') }}</a>
+                  <a class="dropdown-item" href="{#{Search::CSV_OUTPUT}#}">{{ __('Current page in CSV') }}</a>
+                  <a class="dropdown-item" href="{#{'-'.Search::PDF_OUTPUT_LANDSCAPE}#}">{{ __('All pages in landscape PDF') }}</a>
+                  <a class="dropdown-item" href="{#{'-'.Search::PDF_OUTPUT_PORTRAIT}#}">{{ __('All pages in portrait PDF') }}</a>
+                  <a class="dropdown-item" href="{#{'-'.Search::SYLK_OUTPUT}#}">{{ __('All pages in SLK') }}</a>
+                  <a class="dropdown-item" href="{#{'-'.Search::CSV_OUTPUT}#}">{{ __('All pages in CSV') }}</a>
+               </div>
+            </div><!-- /btn-group -->
+         </div><!-- /box-tools -->
+      </div><!-- /box-header -->
+{% endif %}
+
+{% if search_data is not iterable %}
+      <div class="callout callout-danger">
+         <h4>{{ __('An error occured loading contents!') }}</h4>
+         <p>
+            {{ __('Please check GLPI logs or contact your administrator.') }}<br/>
+            {{ __('or') }} <a href="#" onclick="return reloadTab()">{{ __('try to reload') }}</a>
+         </p>
+      </div>
+{% else %}
+      <div class="card-body">
+         <form class="form-horizontal" id="search_form" action="{{ path_for('list', {'itemtype': search_data.itemtype }) }}">
+{% if form_header %}
+    {% include "searchbar.twig" %}
+{% endif %}
+{% if search_data.search.as_map is defined and search_data.search.as_map %}
+            <div class="center">
+                <p>{{ __('Search results for localized items only') }}</p>
+            </div>
+            <div id="map_container"></div>
+{#
+      if ($data['data']['totalcount'] > 0) {
+         $target = $data['search']['target'];
+         $criteria = $data['search']['criteria'];
+         array_pop($criteria);
+         array_pop($criteria);
+         $criteria[] = [
+            'link'         => 'AND',
+            'field'        => ($itemtype == 'Location') ? 1 : ($itemtype == 'Ticket') ? 83 : 3,
+            'searchtype'   => 'equals',
+            'value'        => 'CURLOCATION'
+         ];
+         $globallinkto = Toolbox::append_params(
+            [
+               'criteria'     => Toolbox::stripslashes_deep($criteria),
+               'metacriteria' => Toolbox::stripslashes_deep($data['search']['metacriteria'])
+            ],
+            '&amp;'
+         );
+         $parameters = "as_map=0&amp;sort=".$data['search']['sort']."&amp;order=".$data['search']['order'].'&amp;'.
+                        $globallinkto;
+
+         if (strpos($target, '?') == false) {
+            $fulltarget = $target."?".$parameters;
+         } else {
+            $fulltarget = $target."&".$parameters;
+         }
+         $typename = class_exists($itemtype) ? $itemtype::getTypeName($data['data']['totalcount']) :
+                        ($itemtype == 'AllAssets' ? __('assets') : $itemtype);
+
+         echo "<div class='center'><p>".__('Search results for localized items only')."</p>";
+         $js = "$(function() {
+               var map = initMap($('#page'), 'map', 'full');
+               _loadMap(map, '$itemtype');
+            });
+
+         var _loadMap = function(map_elt, itemtype) {
+            L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
+            var _micon = 'circle';
+
+            var stdMarker = L.AwesomeMarkers.icon({
+               icon: _micon,
+               markerColor: 'blue'
+            });
+
+            var aMarker = L.AwesomeMarkers.icon({
+               icon: _micon,
+               markerColor: 'cadetblue'
+            });
+
+            var bMarker = L.AwesomeMarkers.icon({
+               icon: _micon,
+               markerColor: 'purple'
+            });
+
+            var cMarker = L.AwesomeMarkers.icon({
+               icon: _micon,
+               markerColor: 'darkpurple'
+            });
+
+            var dMarker = L.AwesomeMarkers.icon({
+               icon: _micon,
+               markerColor: 'red'
+            });
+
+            var eMarker = L.AwesomeMarkers.icon({
+               icon: _micon,
+               markerColor: 'darkred'
+            });
+
+
+            //retrieve geojson data
+            map_elt.spin(true);
+            $.ajax({
+               dataType: 'json',
+               method: 'POST',
+               url: '{$CFG_GLPI['root_doc']}/ajax/map.php',
+               data: {
+                  itemtype: itemtype,
+                  params: ".json_encode($params)."
+               }
+            }).done(function(data) {
+               var _points = data.points;
+               var _markers = L.markerClusterGroup({
+                  iconCreateFunction: function(cluster) {
+                     var childCount = cluster.getChildCount();
+
+                     var markers = cluster.getAllChildMarkers();
+                     var n = 0;
+                     for (var i = 0; i < markers.length; i++) {
+                        n += markers[i].count;
+                     }
+
+                     var c = ' marker-cluster-';
+                     if (n < 10) {
+                        c += 'small';
+                     } else if (n < 100) {
+                        c += 'medium';
+                     } else {
+                        c += 'large';
+                     }
+
+                     return new L.DivIcon({ html: '<div><span>' + n + '</span></div>', className: 'marker-cluster' + c, iconSize: new L.Point(40, 40) });
+                  }
+               });
+
+               $.each(_points, function(index, point) {
+                  var _title = '<strong>' + point.title + '</strong><br/><a href=\''+'$fulltarget'.replace(/CURLOCATION/, point.loc_id)+'\'>".sprintf(__('%1$s %2$s'), 'COUNT', $typename)."'.replace(/COUNT/, point.count)+'</a>';
+                  if (point.types) {
+                     $.each(point.types, function(tindex, type) {
+                        _title += '<br/>".sprintf(__('%1$s %2$s'), 'COUNT', 'TYPE')."'.replace(/COUNT/, type.count).replace(/TYPE/, type.name);
+                     });
+                  }
+                  var _icon = stdMarker;
+                  if (point.count < 10) {
+                     _icon = stdMarker;
+                  } else if (point.count < 100) {
+                     _icon = aMarker;
+                  } else if (point.count < 1000) {
+                     _icon = bMarker;
+                  } else if (point.count < 5000) {
+                     _icon = cMarker;
+                  } else if (point.count < 10000) {
+                     _icon = dMarker;
+                  } else {
+                     _icon = eMarker;
+                  }
+                  var _marker = L.marker([point.lat, point.lng], { icon: _icon, title: point.title });
+                  _marker.count = point.count;
+                  _marker.bindPopup(_title);
+                  _markers.addLayer(_marker);
+               });
+
+               map_elt.addLayer(_markers);
+               map_elt.fitBounds(
+                  _markers.getBounds(), {
+                     padding: [50, 50],
+                     maxZoom: 12
+                  }
+               );
+            }).fail(function (response) {
+               var _data = response.responseJSON;
+               var _message = '".__s('An error occured loading data :(')."';
+               if (_data.message) {
+                  _message = _data.message;
+               }
+               var fail_info = L.control();
+               fail_info.onAdd = function (map) {
+                  this._div = L.DomUtil.create('div', 'fail_info');
+                  this._div.innerHTML = _message + '<br/><span id=\'reload_data\'><i class=\'fa fa-sync\'></i> ".__s('Reload')."</span>';
+                  return this._div;
+               };
+               fail_info.addTo(map_elt);
+               $('#reload_data').on('click', function() {
+                  $('.fail_info').remove();
+                  _loadMap(map_elt);
+               });
+            }).always(function() {
+               //hide spinner
+               map_elt.spin(false);
+            });
+         }
+
+         ";
+         echo Html::scriptBlock($js);
+         echo "</div>";
+      }
+#}
+{% else %}
+            <div class="mailbox-controls">
+               <div class="float-right">
+   {% if search_data.data.totalcount > 0 %}
+                  {{ __('%1$s-%2$s/%3$s')|format(
+                     search_data.search.start + search_data.data.begin + 1,
+                     search_data.search.start + search_data.data.end + 1,
+                     search_data.data.totalcount
+                  ) }}
+                  {#{{ __('From %1$d to %2$d of %3$d')|format() }} , $current_start, $current_end, $numrows); #}
+   {% endif %}
+                  <div class="btn-group">
+                        <a
+                           class="btn btn-outline-secondary btn-sm{% if search_data.pagination.previous_page == false or search_data.pagination.current_page == search_data.pagination.previous_page %} disabled{% endif %}"
+                           href="{% if search_data.pagination.previous_page == false or search_data.pagination.current_page == search_data.pagination.previous_page %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page}) }}{% endif %}"
+                           title="{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}"
+                        >
+                           <i class="fa fa-chevron-left"></i>
+                           <span class="sr-only">{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}</span>
+                        </a>
+                        <a
+                           class="btn btn-outline-secondary btn-sm{% if search_data.pagination.next_page == false or search_data.pagination.current_page == search_data.pagination.next_page %} disabled{% endif %}"
+                           href="{% if search_data.pagination.next_page == false or search_data.pagination.current_page == search_data.pagination.next_page %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page}) }}{% endif %}"
+                           title="{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}"
+                        >
+                           <i class="fa fa-chevron-right"></i>
+                           <span class="sr-only">{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}</span>
+                        </a>
+                  </div>
+                  <!-- /.btn-group -->
+                  <!--label for="dropdown_glpilist_limit">{{ __('Display (number of items)') }}</label-->
+                  <select name="dropdown_glpilist_limit" id="dropdown_glpilist_limit" class="forSelect2">
+                     <option value="10">10</option>
+                     <option value="20">20</option>
+                     <option value="50">50</option>
+                     <option value="100">100</option>
+                  </select>
+               </div><!-- /.pull-right -->
+            </div><!-- /mailbox-controls -->
+            <table class="table table-bordered table-hover table-striped">
+               <thead>
+                  <tr>
+   {% if no_checkbox == false %}
+                     <th class="sorting" style="width:1em;">
+                        <input type="checkbox" class="checkall"/>
+                     </th>
+   {% endif %}
+   {% for key, header in search_data.data.cols %}
+      {#
+               $linkto = '';
+               if (!$val['meta']
+                  && (!isset($val['searchopt']['nosort'])
+                     || !$val['searchopt']['nosort'])) {
+
+                  $linkto = $data['search']['target'].(strpos($data['search']['target'], '?') ? '&amp;' : '?').
+                              "itemtype=".$data['itemtype']."&amp;sort=".
+                              $val['id']."&amp;order=".
+                              (($data['search']['order'] == "ASC") ?"DESC":"ASC").
+                              "&amp;start=".$data['search']['start']."&amp;".$globallinkto;
+               }
+               // Not main itemtype add itemtype to display
+               if ($data['itemtype'] != $val['itemtype']) {
+                  if (!isset($metanames[$val['itemtype']])) {
+                     if ($metaitem = getItemForItemtype($val['itemtype'])) {
+                        $metanames[$val['itemtype']] = $metaitem->getTypeName();
+                     }
+                  }
+                  $name = sprintf(__('%1$s - %2$s'), $metanames[$val['itemtype']],
+                                 $val["name"]);
+               }
+               $headers_line .= self::showHeaderItem($data['display_type'],
+                                                      $name,
+                                                      $header_num, $linkto,
+                                                      (!$val['meta']
+                                                      && ($data['search']['sort'] == $val['id'])),
+                                                      $data['search']['order']);
+
+      #}
+      {% set name = header.name %}
+      {# prefix by group name (corresponding to optgroup in dropdown) if exists #}
+      {% if header.groupname is defined %}
+         {% if header.groupname is iterable %}
+            {% set name = header.groupname.name ~ ' - ' ~ name  %}
+         {% else %}
+            {% set name = header.groupname ~ ' - ' ~ name  %}
+         {% endif %}
+      {% endif %}
+                     <th class="sorting">
+                        {{ name }}
+                     </th>
+   {% endfor %}
+{#
+            // Display column Headers for toview items
+            $metanames = [];
+
+            // Add specific column Header
+            if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+               $headers_line .= self::showHeaderItem($data['display_type'], __('Item type'),
+                                                      $header_num);
+            }
+            // End Line for column headers
+            $headers_line        .= self::showEndLine($data['display_type']);
+
+            $headers_line_top    .= $headers_line;
+            if ($data['display_type'] == self::HTML_OUTPUT) {
+               $headers_line_bottom .= $headers_line;
+            }
+
+            $headers_line_top    .= self::showEndHeader($data['display_type']);
+            // $headers_line_bottom .= self::showEndHeader($data['display_type']);
+
+            echo $headers_line_top;
+#}
+                  </tr>
+               </thead>
+               <tbody>
+{#
+            //IMPORTANT FOR ITEMS NAVIGATION
+            // Init list of items displayed
+            if ($data['display_type'] == self::HTML_OUTPUT) {
+               Session::initNavigateListItems($data['itemtype']);
+            }
+#}
+   {% for rowkey, row in search_data.data.rows %}
+                  <tr>
+      {% if no_checkbox == false %}
+                     <td>
+                        <input type="checkbox" name="_ids[]" value="{{ row.raw.id }}"/>
+                     </td>
+      {% endif %}
+      {% for col in search_data.data.cols %}
+         {% set colkey = col.itemtype ~ '_' ~ col.id %}
+      {#
+              if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+                  if (!isset($typenames[$row["TYPE"]])) {
+                     if ($itemtmp = getItemForItemtype($row["TYPE"])) {
+                        $typenames[$row["TYPE"]] = $itemtmp->getTypeName();
+                     }
+                  }
+                  echo self::showItem($data['display_type'], $typenames[$row["TYPE"]],
+                                    $item_num, $row_num);
+               }
+      #}
+                     <td>
+         {% if not col.meta %}
+                        {{ row[colkey].displayname|replace({'#LBBR#': '<br/>'})|raw }}
+            {#echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
+                                          $item_num, $row_num,
+                                          self::displayConfigItem($data['itemtype'], $col['id'],
+                                                                  $row, $colkey));#}
+         {% else %} {# META case #}
+                        {{ row[colkey].displayname|replace({'#LBBR#': '<br/>'})|raw }}
+            {# echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
+                                       $item_num, $row_num);#}
+                  }
+         {% endif %}
+                     </td>
+      {% endfor %}
+                  </tr>
+{#
+            $typenames = [];
+            // Display Loop
+            foreach ($data['data']['rows'] as $rowkey => $row) {
+               // Column num
+               $item_num = 1;
+               $row_num++;
+               // New line
+               echo self::showNewLine($data['display_type'], ($row_num%2),
+                                    $data['search']['is_deleted']);
+
+               $current_type       = (isset($row['TYPE']) ? $row['TYPE'] : $data['itemtype']);
+               $massiveaction_type = $current_type;
+
+               if (($data['itemtype'] != 'AllAssets')
+                  && isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+                  $massiveaction_type = $data['itemtype'];
+               }
+
+               // Add item in item list
+               Session::addToNavigateListItems($current_type, $row["id"]);
+
+               if (($data['display_type'] == self::HTML_OUTPUT)
+                     && $showmassiveactions) { // HTML display - massive modif
+                  $tmpcheck = "";
+
+                  if (($data['itemtype'] == 'Entity')
+                        && !in_array($row["id"], $_SESSION["glpiactiveentities"])) {
+                     $tmpcheck = "&nbsp;";
+
+                  } else if ($data['itemtype'] == 'User'
+                           && !Session::isViewAllEntities()
+                           && !Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($row["id"], false))) {
+                     $tmpcheck = "&nbsp;";
+
+                  } else if (($data['item'] instanceof CommonDBTM)
+                              && $data['item']->maybeRecursive()
+                              && !in_array($row["entities_id"], $_SESSION["glpiactiveentities"])) {
+                     $tmpcheck = "&nbsp;";
+
+                  } else {
+                     $tmpcheck = Html::getMassiveActionCheckBox($massiveaction_type,
+                                                               $row[$massiveaction_field]);
+                  }
+                  echo self::showItem($data['display_type'], $tmpcheck, $item_num, $row_num,
+                                       "width='10'");
+               }
+
+               // Print other toview items
+               foreach ($data['data']['cols'] as $colkey => $col) {
+                  if (!$col['meta']) {
+                     echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
+                                          $item_num, $row_num,
+                                          self::displayConfigItem($data['itemtype'], $col['id'],
+                                                                  $row, $colkey));
+                  } else { // META case
+                     echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
+                                       $item_num, $row_num);
+                  }
+               }
+
+               if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+                  if (!isset($typenames[$row["TYPE"]])) {
+                     if ($itemtmp = getItemForItemtype($row["TYPE"])) {
+                        $typenames[$row["TYPE"]] = $itemtmp->getTypeName();
+                     }
+                  }
+                  echo self::showItem($data['display_type'], $typenames[$row["TYPE"]],
+                                    $item_num, $row_num);
+               }
+               // End Line
+               echo self::showEndLine($data['display_type']);
+            }
+#}
+   {% else %}
+                  <tr>
+                     <td colspan="{{ search_data.data.cols|length + 1}}">{{ __('No result found') }}</td>
+                  </tr>
+   {% endfor %}
+               </tbody>
+            </table>
+{% endif %} {# /list display #}
+         </form>
+      </div> <!-- /.box-body -->
+{% if search_data.search.as_map is not defined or not search_data.search.as_map %}
+      <div class="card-footer">
+   {% if search_data.data.totalcount > 0 %}
+         {{ __('From %1$d to %2$d of %3$d')|format(
+            search_data.search.start + search_data.data.begin + 1,
+            search_data.search.start + search_data.data.end + 1,
+            search_data.data.totalcount
+         ) }}
+   {% endif %}
+         <div class="float-right">
+            <ul class="pagination">
+               <li class="page-item{% if search_data.pagination.current_page == 1 %} disabled{% endif %}">
+                  <a class="page-link" href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': 1}) }}" title="{{ __("First page") }}">
+                     <i class="fa fa-fast-backward"></i>
+                     <span class="sr-only">{{ __("First page") }}</span>
+                  </a>
+               </li>
+               <li class="page-item{% if search_data.pagination.previous_page == false or search_data.pagination.current_page == search_data.pagination.previous_page %} disabled{% endif %}">
+                  <a class="page-link" href="{% if search_data.pagination.previous_page == false %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page})}}{% endif %}" title="{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}">
+                     <i class="fa fa-step-backward"></i>
+                     <span class="sr-only">
+                        {{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}
+                     </span>
+                  </a>
+               </li>
+    {% for page in search_data.pagination.pages %}
+               <li class="page-item{% if page.current is defined %} active{% endif %}">
+                  <a class="page-link" href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': page.value}) }}" title="{{ page.title }}">
+                     {% set page_content = page.label|default(page.value) %}
+                     {{ page_content|raw  }}
+                  </a>
+               </li>
+    {% endfor %}
+               <li class="page-item{% if search_data.pagination.next_page == false or search_data.pagination.current_page == search_data.pagination.next_page %} disabled{% endif %}">
+                  <a class="page-link" href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page })}}" title="{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}">
+                     <i class="fa fa-step-forward"></i>
+                     <span class="sr-only">
+                        {{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}
+                     </span>
+                  </a>
+               </li>
+               <li class="page-item{% if search_data.pagination.last_page == false or search_data.pagination.current_page == search_data.pagination.last_page %} disabled{% endif %}">
+                  <a class="page-link" href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.last_page }) }}" title="{{ __("Last page (%1$s)")|format(search_data.pagination.last_page) }}">
+                     <i class="fa fa-fast-forward"></i>
+                     <span class="sr-only">{{ __("Last page (%1$s)")|format(search_data.pagination.last_page) }}</span>
+                  </a>
+               </li>
+            </ul>
+         </div><!-- /.pull-right -->
+      </div><!-- /.box-footer -->
+{% endif %}{# /list display #}
+{% endif %}{# /No results or error #}
+   </div> <!-- /.box-default -->
+</div>

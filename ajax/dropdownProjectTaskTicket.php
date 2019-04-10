@@ -41,13 +41,10 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST["projects_id"])) {
+   $condition = ['glpi_projecttasks.projectstates_id' => ['<>', 3]];
 
    if ($_POST["projects_id"] > 0) {
-
-      $condition = "`glpi_projecttasks`.`projectstates_id` <> 3
-                     AND `glpi_projecttasks`.`projects_id` = ".$_POST["projects_id"];
-   } else {
-      $condition = "`glpi_projecttasks`.`projectstates_id` <> 3";
+      $condition['glpi_projecttasks.projects_id'] = $_POST['projects_id'];
    }
 
    $p = ['itemtype'     => ProjectTask::getType(),

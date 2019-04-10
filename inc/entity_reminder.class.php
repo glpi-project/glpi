@@ -59,7 +59,12 @@ class Entity_Reminder extends CommonDBRelation {
       global $DB;
 
       $ent   = [];
-      $iterator = self::getListForItem($reminder);
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'reminders_id' => $reminder->fields['id']
+         ]
+      ]);
 
       while ($data = $iterator->next()) {
          $ent[$data['entities_id']][] = $data;

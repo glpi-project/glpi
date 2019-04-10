@@ -1,0 +1,268 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+@import "glpi/layout";
+
+@import "glpi/bootstrap";
+
+@import "glpi/component/debug";
+
+@import "glpi/page/login";
+
+@import "legacy";
+
+
+
+/* TODO Clean following CSS */
+
+.flash {
+   z-index: 1051!important;
+}
+
+.sidebar {
+   background-color: rgb(34, 45, 50);
+
+   .nav-dropdown.open .nav-dropdown-items a {
+      background-color: rgb(44, 59, 65);
+      color: rgba(255, 255, 255, .8);
+
+      &:hover {
+         color: rgba(255, 255, 255, 1);
+      }
+   }
+
+   .nav-dropdown.open a, .nav-link:hover {
+      background-color: rgb(30, 40, 44);
+   }
+
+   .sidebar-form {
+      border-radius: 3px;
+      margin: .6em;
+
+      .form-control {
+         background-color: rgb(55, 72, 80);
+      }
+
+
+      .btn {
+         color: rgb(153, 153, 153);
+         background-color: rgb(55, 72, 80);
+         border-radius: 0 .25rem .25rem 0;
+      }
+   }
+}
+
+/** Language selector */
+
+#language_link form {
+   margin-top: 6px;
+}
+
+/** Dropdowns */
+
+.fa {
+   &.wentity {
+      color: #3A5693;
+   }
+   &.woentity {
+      color: #ccc;
+   }
+}
+
+/** /Dropdowns */
+
+/** Debug stuff */
+
+
+/** /debug stuff */
+
+ul.pagination {
+   margin: 0;
+}
+
+.flash {
+   min-height: 2em;
+   min-width: 15em;
+   position: fixed;
+   right: .2em;
+   bottom: .2em;
+   z-index: 10;
+}
+
+/** Alpha msg */
+
+.alpha {
+   text-align: center;
+   border-radius: 0 !important;
+   h4 {
+      margin: 0 !important;
+      span {
+         margin: 0 1em;
+      }
+   }
+}
+
+/** /Alpha msg */
+
+
+
+/** "slide panel" component */
+
+.slidepanel {
+   z-index: 1050;
+   position: absolute;
+   width: 30em;
+   max-width: 40%;
+   background: white;
+   top: 0;
+   min-height: 100vh;
+   height: calc(100% - 28px);
+   /* Without footer */
+   border: none;
+   overflow: auto;
+   a.fa {
+      font-size: 1.5em;
+      color: #ccc;
+      &:link {
+         font-size: 1.5em;
+         color: #ccc;
+      }
+   }
+}
+
+.fa {
+   &.bookmark_record, &.reset-search {
+      color: #ccc !important;
+      &:link {
+         color: #ccc !important;
+      }
+   }
+   &.bookmark_default {
+      font-size: 1.5em;
+      color: #f3b51f !important;
+      &:link {
+         font-size: 1.5em;
+         color: #f3b51f !important;
+      }
+   }
+   &.reset-search:hover, &.bookmark_record.save:hover {
+      color: #999 !important;
+   }
+}
+
+.slidepanel a .count .fa {
+   color: white;
+}
+
+.drag {
+   display: inline-block;
+   height: 18px;
+   padding-right: 1em;
+   cursor: move;
+}
+
+.slidepanel {
+   .header {
+      border-bottom: 1px solid #ccc;
+      min-height: 2.4em;
+      > h3 {
+         margin: 0;
+         padding-top: .3em;
+         text-align: center;
+      }
+      .icon {
+         margin-top: .5em;
+         margin-right: .5em;
+      }
+   }
+   .contents {
+      clear: both;
+   }
+}
+
+.layout_lefttab .slidepanel .new_form_tabs .ui-tabs-nav {
+   width: auto;
+}
+
+.slidepanel {
+   .ui-tabs {
+      width: auto;
+   }
+   &.onleft {
+      left: 0;
+      border-right: 1px solid #ccc;
+      .close {
+         float: right;
+      }
+      .icon {
+         float: left;
+      }
+   }
+   &.onright {
+      right: 0;
+      border-left: 1px solid #ccc;
+      .close {
+         float: left;
+      }
+      .icon {
+         float: right;
+      }
+   }
+   .tab_cadre_fixehov {
+      box-shadow: none;
+   }
+   .default {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+   }
+   td * {
+      vertical-align: middle;
+   }
+   .toggle {
+      font-size: 1.5em;
+      position: absolute;
+      right: .2em;
+   }
+}
+
+/** end "slide panel" component */
+
+.progress {
+   margin-bottom: .2em;
+}
+.progress-group {
+   clear: right;
+}
+
+.dates {
+   text-align: right;
+}

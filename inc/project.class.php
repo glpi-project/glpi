@@ -43,7 +43,7 @@ class Project extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory                   = true;
-   static protected $forward_entity_to = ['ProjectTask'];
+   static protected $forward_entity_to = ['ProjectCost', 'ProjectTask'];
    static $rightname                   = 'project';
    protected $usenotepad               = true;
 
@@ -189,15 +189,9 @@ class Project extends CommonDBTM {
       // No view to project by right on tasks add it
       if (!static::canView()
           && Session::haveRight('projecttask', ProjectTask::READMY)) {
-         $menu['project']['title']                    = Project::getTypeName(Session::getPluralNumber());
-         $menu['project']['page']                     = ProjectTask::getSearchURL(false);
+         $menu['project']['title'] = Project::getTypeName(Session::getPluralNumber());
+         $menu['project']['page']  = ProjectTask::getSearchURL(false);
 
-         $links = static::getAdditionalMenuLinks();
-         if (count($links)) {
-            $menu['project']['links'] = $links;
-         }
-         $menu['project']['options']['task']['title'] = __('My tasks');
-         $menu['project']['options']['task']['page']  = ProjectTask::getSearchURL(false);
          return $menu;
       }
       return false;
@@ -205,9 +199,15 @@ class Project extends CommonDBTM {
 
 
    static function getAdditionalMenuOptions() {
-
-      return ['task' => ['title' => __('My tasks'),
-                                   'page'  => ProjectTask::getSearchURL(false)]];
+      return [
+         'task' => [
+            'title' => __('My tasks'),
+            'page'  => ProjectTask::getSearchURL(false),
+            'links' => [
+               'search' => ProjectTask::getSearchURL(false),
+            ]
+         ]
+      ];
    }
 
 
@@ -223,7 +223,7 @@ class Project extends CommonDBTM {
          $pic_validate = "<img title=\"".__s('My tasks')."\" alt=\"".__('My tasks')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
 
-         $links[$pic_validate] = '/front/projecttask.php';
+         $links[$pic_validate] = ProjectTask::getSearchURL(false);
 
          $links['summary'] = Project::getFormURL(false).'?showglobalgantt=1';
       }
@@ -312,64 +312,72 @@ class Project extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $pt = new ProjectTask();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $itil_project = new Itil_Project();
-      $itil_project->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $pt = new ProjectTeam();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Item_Project::class,
+            Itil_Project::class,
+            ProjectCost::class,
+            ProjectTask::class,
+            ProjectTeam::class,
+         ]
+      );
 
       parent::cleanDBonPurge();
    }
 
-   /**
-    * Return visibility joins to add to SQL
-    *
-    * @return string joins to add
-    **/
-   static function addVisibilityJoins() {
-
-      $join = '';
-
-      if (!Session::haveRight("project", Project::READALL)) {
-         $join .= " LEFT JOIN `glpi_projectteams`
-                     ON (`glpi_projectteams`.`projects_id` = `glpi_projects`.`id`) ";
-      }
-
-      return $join;
-   }
 
    /**
-    * Return visibility to add to SQL
+    * Return visibility joins to add to DBIterator parameters
     *
-    * @return string joins to add
-    **/
-   static function addVisibility() {
+    * @since 9.4
+    *
+    * @param boolean $forceall force all joins (false by default)
+    *
+    * @return array
+    */
+   static public function getVisibilityCriteria($forceall = false) {
+      global $CFG_GLPI;
 
-      $condition = '';
-      if (!Session::haveRight("project", Project::READALL)) {
-         $teamtable = 'glpi_projectteams';
-         $condition .= "AND (`glpi_projects`.users_id = '" . Session::getLoginUserID() . "'
-                               OR (`$teamtable`.`itemtype` = 'User'
-                                   AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
-         if (count($_SESSION['glpigroups'])) {
-            $condition .= " OR (`glpi_projects`.`groups_id`
-                                       IN (" . implode(",", $_SESSION['glpigroups']) . "))";
-            $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
-                                      AND `$teamtable`.`items_id`
-                                          IN (" . implode(",", $_SESSION['glpigroups']) . "))";
-         }
-         $condition .= ") ";
+      if (Session::haveRight('project', self::READALL)) {
+         return [
+            'LEFT JOIN' => [],
+            'WHERE' => [],
+         ];
       }
 
-      return $condition;
-   }
+      $join = [];
+      $where = [];
 
+      $join['glpi_projectteams'] = [
+         'ON' => [
+            'glpi_projectteams'  => 'projects_id',
+            'glpi_projects'      => 'id'
+         ]
+      ];
+
+      $teamtable = 'glpi_projectteams';
+      $where['OR'] = [
+         'glpi_projects.users_id'   => Session::getLoginUserID(),
+         [
+            "$teamtable.itemtype"   => 'User',
+            "$teamtable.items_id"   => Session::getLoginUserID()
+         ]
+      ];
+      if (count($_SESSION['glpigroups'])) {
+         $where['OR']['glpi_projects.groups_id'] = $_SESSION['glpigroups'];
+         $where['OR'][] = [
+            "$teamtable.itemtype"   => 'Group',
+            "$teamtable.items_id"   => $_SESSION['glpigroups']
+         ];
+      }
+
+      $criteria = [
+         'LEFT JOIN' => $join,
+         'WHERE'     => $where
+      ];
+
+      return $criteria;
+   }
    /**
     * Is the current user in the team?
     *
@@ -563,7 +571,7 @@ class Project extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id',
          'name'               => __('Manager group'),
-         'condition'          => '`is_manager`',
+         'condition'          => ['is_manager' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -664,6 +672,29 @@ class Project extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '91',
+         'table'              => ProjectCost::getTable(),
+         'field'              => 'totalcost',
+         'name'               => __('Total cost'),
+         'datatype'           => 'decimal',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'specific_itemtype'  => 'ProjectCost',
+            'condition'          => 'AND NEWTABLE.`projects_id` = REFTABLE.`id`',
+            'beforejoin'         => [
+               'table'        => $this->getTable(),
+               'joinparams'   => [
+                  'jointype'  => 'child'
+               ],
+            ],
+         ],
+         'computation'        => '(SUM(TABLE.`cost`))'
+      ];
+
+      $tab[] = [
          'id'                 => 'project_team',
          'name'               => ProjectTeam::getTypeName(),
       ];
@@ -743,6 +774,30 @@ class Project extends CommonDBTM {
             ]
          ]
       ];
+
+      $itil_count_types = [
+         'Change'  => _x('quantity', 'Number of changes'),
+         'Problem' => _x('quantity', 'Number of problems'),
+         'Ticket'  => _x('quantity', 'Number of tickets'),
+      ];
+      $index = 92;
+      foreach ($itil_count_types as $itil_type => $label) {
+         $tab[] = [
+            'id'                 => $index,
+            'table'              => Itil_Project::getTable(),
+            'field'              => 'id',
+            'name'               => $label,
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+               'jointype'           => 'child',
+               'condition'          => "AND NEWTABLE.`itemtype` = '$itil_type'"
+            ]
+         ];
+         $index++;
+      }
 
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
@@ -856,10 +911,12 @@ class Project extends CommonDBTM {
          $first_col = '';
          $color     = '';
          if ($item->fields["projectstates_id"]) {
-            $query = "SELECT `color`
-                      FROM `glpi_projectstates`
-                      WHERE `id` = '".$item->fields["projectstates_id"]."'";
-            foreach ($DB->request($query) as $color) {
+            $iterator = $DB->request([
+               'SELECT' => 'color',
+               'FROM'   => 'glpi_projectstates',
+               'WHERE'  => ['id' => $item->fields['projectstates_id']]
+            ]);
+            while ($color = $iterator->next()) {
                $color = $color['color'];
             }
             $first_col = Dropdown::getDropdownName('glpi_projectstates', $item->fields["projectstates_id"]);
@@ -1000,13 +1057,14 @@ class Project extends CommonDBTM {
       $this->check($ID, READ);
       $rand = mt_rand();
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `".$this->getForeignKeyField()."` = '$ID'
-                AND `is_deleted`=0";
-      if ($result = $DB->query($query)) {
-         $numrows = $DB->numrows($result);
-      }
+      $iterator = $DB->request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [
+            $this->getForeignKeyField()   => $ID,
+            'is_deleted'                  => 0
+         ]
+      ]);
+      $numrows = count($iterator);
 
       if ($this->can($ID, UPDATE)) {
          echo "<div class='firstbloc'>";
@@ -1032,7 +1090,7 @@ class Project extends CommonDBTM {
                                                  $this->fields["name"]));
 
          $i = 0;
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             Session::addToNavigateListItems('Project', $data["id"]);
             Project::showShort($data['id'], ['row_num' => $i]);
             $i++;
@@ -1143,10 +1201,12 @@ class Project extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id',
-                            'value'     => $this->fields['groups_id'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_manager`']);
+      Group::dropdown([
+         'name'      => 'groups_id',
+         'value'     => $this->fields['groups_id'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_manager' => 1]
+      ]);
       echo "</td></tr>\n";
 
       echo "<tr><td colspan='4' class='subheader'>".__('Planning')."</td></tr>";
@@ -1467,13 +1527,15 @@ class Project extends CommonDBTM {
       } else {
          $todisplay = [];
          // Get all root projects
-         $query = "SELECT *
-                   FROM `glpi_projects`
-                   WHERE `projects_id` = 0
-                        AND `show_on_global_gantt` = 1
-                        AND `is_template` = 0
-                         ".getEntitiesRestrictRequest("AND", 'glpi_projects', "", '', true);
-         foreach ($DB->request($query) as $data) {
+         $iterator = $DB->request([
+            'FROM'   => 'glpi_projects',
+            'WHERE'  => [
+               'projects_id'           => 0,
+               'show_on_global_gantt'  => 1,
+               'is_template'           => 0
+            ] + getEntitiesRestrictCriteria('glpi_projects', '', '', true)
+         ]);
+         while ($data = $iterator->next()) {
             $todisplay += static::getDataToDisplayOnGantt($data['id'], false);
          }
          ksort($todisplay);

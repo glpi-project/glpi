@@ -64,6 +64,8 @@ class Item_Devices extends CommonDBRelation {
    // This var is defined by CommonDBRelation ...
    public $no_form_page                 = false;
 
+   public $dohistory = true;
+
    static protected $forward_entity_to  = ['Infocom'];
 
    static $undisclosedFields      = [];
@@ -74,6 +76,18 @@ class Item_Devices extends CommonDBRelation {
    **/
    static function canView() {
       return true;
+   }
+
+   function getRawName() {
+      $itemtype = static::$itemtype_2;
+      if (!empty($this->fields[static::$itemtype_1])) {
+         $item = new $this->fields[static::$itemtype_1];
+         $item->getFromDB($this->fields[static::$items_id_1]);
+         $name = sprintf(__('%1$s of item "%2$s"'), $itemtype::getTypeName(1), $item->getName());
+      } else {
+         $name = $itemtype::getTypeName(1);
+      }
+      return $name;
    }
 
    /**
@@ -163,15 +177,15 @@ class Item_Devices extends CommonDBRelation {
       ];
 
       foreach (static::getSpecificities() as $field => $attributs) {
-         switch ($field) {
-            case 'states_id':
-               $table = 'glpi_states';
-               break;
-            case 'locations_id':
-               $table = 'glpi_locations';
-               break;
-            default:
-               $table = $this->getTable();
+         if (isForeignKeyField($field)) {
+            $table = getTableNameForForeignKeyField($field);
+            $linked_itemtype = getItemTypeForTable($table);
+            $field = $linked_itemtype::getNameField();
+         } else {
+            $table = $this->getTable();
+         }
+         if (array_key_exists('field', $attributs)) {
+            $field = $attributs['field'];
          }
 
          $newtab = [
@@ -203,6 +217,48 @@ class Item_Devices extends CommonDBRelation {
       ];
 
       return $tab;
+   }
+
+   public static function rawSearchOptionsToAdd($itemtype) {
+      global $CFG_GLPI;
+
+      $options = [];
+      $device_types = $CFG_GLPI['device_types'];
+
+      $main_joinparams = [
+         'jointype'           => 'itemtype_item',
+         'specific_itemtype'  => $itemtype
+      ];
+
+      foreach ($device_types as $device_type) {
+         if (isset($CFG_GLPI['item' . strtolower($device_type) . '_types'])) {
+            $itemtypes = $CFG_GLPI['item' . strtolower($device_type) . '_types'];
+            if ($itemtypes == '*' || in_array($itemtype, $itemtypes)) {
+               if (method_exists($device_type, 'rawSearchOptionsToAdd')) {
+                  $options = array_merge(
+                     $options,
+                     $device_type::rawSearchOptionsToAdd(
+                        $itemtype,
+                        $main_joinparams
+                     )
+                  );
+               }
+            }
+         }
+      }
+
+      if (count($options)) {
+         //add title if there are options
+         $options = array_merge(
+            [[
+               'id'                => 'devices',
+               'name'              => _n('Component', 'Components', Session::getPluralNumber())
+            ]],
+            $options
+         );
+      }
+
+      return $options;
    }
 
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
@@ -365,22 +421,24 @@ class Item_Devices extends CommonDBRelation {
     * @return array of Item_Device*
    **/
    static function getItemAffinities($itemtype) {
-
-      if (!isset($_SESSION['glpi_item_device_affinities'])) {
-         $_SESSION['glpi_item_device_affinities'] = ['' => static ::getDeviceTypes()];
+      $appCache = Toolbox::getAppCache();
+      if (!$appCache->has('item_device_affinities')) {
+         $appCache->set('item_device_affinities', ['' => static::getDeviceTypes()]);
       }
+      $items_affinities = $appCache->get('item_device_affinities');
 
-      if (!isset($_SESSION['glpi_item_device_affinities'][$itemtype])) {
+      if (!isset($items_affinities[$itemtype])) {
          $afffinities = [];
-         foreach ($_SESSION['glpi_item_device_affinities'][''] as $item_id => $item_device) {
+         foreach ($items_affinities[''] as $item_id => $item_device) {
             if (in_array($itemtype, $item_device::itemAffinity()) || in_array('*', $item_device::itemAffinity())) {
                $afffinities[$item_id] = $item_device;
             }
          }
-         $_SESSION['glpi_item_device_affinities'][$itemtype] = $afffinities;
+         $items_affinities[$itemtype] = $afffinities;
+         $appCache->set('item_device_affinities', $items_affinities);
       }
 
-      return $_SESSION['glpi_item_device_affinities'][$itemtype];
+      return $items_affinities[$itemtype];
    }
 
 
@@ -435,7 +493,6 @@ class Item_Devices extends CommonDBRelation {
             $data['items_id']     = $newid;
             $data['_itemtype']    = $itemtype;
             $data['_no_history']  = true;
-            $data                 = Toolbox::addslashes_deep($data);
 
             $link->add($data);
          }
@@ -443,12 +500,14 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
+   //TODO: remove with old UI
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if ($item->canView()) {
          $nb = 0;
          if (in_array($item->getType(), self::getConcernedItems())) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                foreach (self::getItemAffinities($item->getType()) as $link_type) {
                   $nb   += countElementsInTable($link_type::getTable(),
                                                 ['items_id'   => $item->getID(),
@@ -460,7 +519,7 @@ class Item_Devices extends CommonDBRelation {
                                         $nb);
          }
          if ($item instanceof CommonDevice) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                $deviceClass     = $item->getType();
                $linkClass       = $deviceClass::getItem_DeviceType();
                $table           = $linkClass::getTable();
@@ -473,6 +532,28 @@ class Item_Devices extends CommonDBRelation {
          }
       }
       return '';
+   }
+
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      $count = 0;
+      if (static::class != 'Item_Devices' && !Toolbox::endsWith('__main', $tab)) {
+         $count = countElementsInTable(
+            self::getTable(), [
+               $item->getForeignKeyField() => $item->fields['id']
+            ]
+         );
+      } else {
+         foreach (self::getItemAffinities($item->getType()) as $link_type) {
+            $count += countElementsInTable(
+               $link_type::getTable(), [
+                  'items_id'   => $item->getID(),
+                  'itemtype'   => $item->getType(),
+                  'is_deleted' => 0
+               ]
+            );
+         }
+      }
+      return $count;
    }
 
 
@@ -720,38 +801,50 @@ class Item_Devices extends CommonDBRelation {
                                                        $previous_column);
       }
 
+      $ctable = $this->getTable();
+      $criteria = [
+         'SELECT' => "$ctable.*",
+         'FROM'   => $ctable
+      ];
       if ($is_device) {
          $fk = 'items_id';
 
          // Entity restrict
          $leftjoin = '';
          $where = "";
+         $criteria['WHERE'] = [
+            $this->getDeviceForeignKey()  => $item->getID(),
+            "$ctable.itemtype"            => $peer_type,
+            "$ctable.is_deleted"          => 0
+         ];
+         $criteria['ORDERBY'] = [
+            "$ctable.itemtype",
+            "$ctable.$fk"
+         ];
          if (!empty($peer_type)) {
-            $leftjoin = "LEFT JOIN `".getTableForItemType($peer_type)."`
-                        ON (`".$this->getTable()."`.`items_id` = `".getTableForItemType($peer_type)."`.`id`
-                            AND `".$this->getTable()."`.`itemtype` = '$peer_type')";
-            $where = getEntitiesRestrictRequest(" AND", getTableForItemType($peer_type));
+            $criteria['LEFT JOIN'] = [
+               getTableForItemType($peer_type) => [
+                  'ON' => [
+                     $ctable                          => 'items_id',
+                     getTableForItemType($peer_type)  => 'id', [
+                        'AND' => [
+                           "$ctable.itemtype"   => $peer_type
+                        ]
+                     ]
+                  ]
+               ]
+            ];
+            $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(getTableForItemType($peer_type));
          }
-
-         $query = "SELECT `".$this->getTable()."`.*
-                   FROM `".$this->getTable()."`
-                   $leftjoin
-                   WHERE `".$this->getDeviceForeignKey()."` = '".$item->getID()."'
-                         AND `".$this->getTable()."`.`itemtype` = '$peer_type'
-                         AND `".$this->getTable()."`.`is_deleted` = 0
-                         $where
-                   ORDER BY `".$this->getTable()."`.`itemtype`, `".$this->getTable()."`.`$fk`";
-
       } else {
          $fk = $this->getDeviceForeignKey();
 
-         $query = "SELECT *
-                   FROM `".$this->getTable()."`
-                   WHERE `itemtype` = '".$item->getType()."'
-                         AND `items_id` = '".$item->getID()."'
-                         AND `is_deleted` = 0
-                   ORDER BY $fk";
-
+         $criteria['WHERE'] = [
+            'itemtype'     => $item->getType(),
+            'items_id'     => $item->getID(),
+            'is_deleted'   => 0
+         ];
+         $criteria['ORDERBY'] = $fk;
       }
 
       if (!empty($peer_type)) {
@@ -760,7 +853,9 @@ class Item_Devices extends CommonDBRelation {
       } else {
          $peer = null;
       }
-      foreach ($DB->request($query) as $link) {
+
+      $iterator = $DB->request($criteria);
+      while ($link = $iterator->next()) {
 
          Session::addToNavigateListItems(static::getType(), $link["id"]);
          $this->getFromDB($link['id']);
@@ -845,14 +940,25 @@ class Item_Devices extends CommonDBRelation {
 
          $content = [];
          // The order is to be sure that specific documents appear first
-         $query = "SELECT `documents_id`
-                   FROM `glpi_documents_items`
-                   WHERE (`itemtype` = '".$this->getType()."' AND `items_id` = '".$link['id']."')
-                          OR (`itemtype` = '".$this->getDeviceType()."'
-                              AND `items_id` = '".$link[$this->getDeviceForeignKey()]."')
-                   ORDER BY `itemtype` = '".$this->getDeviceType()."'";
+         $doc_iterator = $DB->request([
+            'SELECT' => 'documents_id',
+            'FROM'   => 'glpi_documents_items',
+            'WHERE'  => [
+               'OR' => [
+                  [
+                     'itemtype'  => $this->getType(),
+                     'items_id'  => $link['id']
+                  ],
+                  [
+                     'itemtype'  => $this->getDeviceType(),
+                     'items_id'  => $link[$this->getDeviceForeignKey()]
+                  ]
+               ]
+            ],
+            'ORDER'  => 'itemtype'
+         ]);
          $document = new Document();
-         foreach ($DB->request($query) as $document_link) {
+         while ($document_link = $doc_iterator->next()) {
             if ($document->can($document_link['documents_id'], READ)) {
                $content[] = $document->getLink();
             }
@@ -1095,16 +1201,15 @@ class Item_Devices extends CommonDBRelation {
          $link = getItemForItemtype($link_type);
          if ($link) {
             if ($unaffect) {
-               $query = "SELECT `id`
-                         FROM `".$link->getTable()."`
-                         WHERE `itemtype` = '$itemtype'
-                               AND `items_id` = '$items_id'";
-               $input = ['items_id' => 0,
-                              'itemtype' => ''];
-               foreach ($DB->request($query) as $data) {
-                  $input['id'] = $data['id'];
-                  $link->update($input);
-               }
+               $DB->update(
+                  $link->getTable(), [
+                     'items_id'  => 0,
+                     'itemtype'  => ''
+                  ], [
+                     'items_id'  => $items_id,
+                     'itemtype'  => $itemtype
+                  ]
+               );
             } else {
                $link->cleanDBOnItemDelete($itemtype, $items_id);
             }
@@ -1384,5 +1489,48 @@ class Item_Devices extends CommonDBRelation {
       $link = "$dir/front/item_device.php?itemtype=$itemtype";
 
       return $link;
+   }
+
+   public static function addSubDefaultJoin(CommonDBTM $item, $itemtype = null) {
+      if ($itemtype === 'AllAssets') {
+         $joins = '';
+         foreach (static::itemAffinity() as $link_type) {
+            $joins .= static::addSubDefaultJoin($item, $link_type);
+         }
+         return $joins;
+      }
+
+      $sub_link_item = new $itemtype;
+      if ($item->getType() == static::$itemtype_1) {
+         $link_type = static::$itemtype_2;
+         $link_id = static::$items_id_2;
+      } else if ($item->getType() == static::$itemtype_2) {
+         $link_type = static::$itemtype_1;
+         $link_id = static::$items_id_1;
+      } else {
+         $link_type = (static::$itemtype_1 != 'itemtype' ? static::$itemtype_1 : static::$itemtype_2);
+         $link_id = (static::$itemtype_1 != 'itemtype' ? static::$items_id_1 : static::$items_id_2);
+      }
+
+      if (empty($link_type) || $link_type == 'itemtype') {
+         $link_type = $itemtype;
+      }
+
+      $link_table = getTableForItemtype($link_type);
+
+      $existing = [];
+      $search = new \Search($link_type, []);
+      $join = $search->addLeftJoin(
+         $link_type,
+         $link_table,
+         $existing,
+         static::getTable(),
+         $link_id,
+         0,
+         0,
+         ['jointype' => 'child']
+      );
+
+      return $join;
    }
 }

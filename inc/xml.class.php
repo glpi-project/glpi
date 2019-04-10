@@ -125,7 +125,7 @@ class XML {
             $this->ErrorString = "Error the query can't be a null string";
             return -1;
          }
-         $result = $DB->query($strqry);
+         $result = $DB->rawQuery($strqry);
 
          if ($result == false) {
             $this->IsError     = 1;
@@ -136,8 +136,8 @@ class XML {
          fputs($fp, "   <fields>\n");
          $i = 0;
          $FieldsVector = [];
-         while ($i < $DB->num_fields ($result)) {
-            $name = $DB->field_name($result, $i);
+         while ($i < $result->columnCount()) {
+            $name = $DB->fieldName($result, $i);
             fputs($fp, "      <field>".$name."</field>\n");
             $FieldsVector[] = $name;
             $i++;
@@ -146,7 +146,7 @@ class XML {
          fputs($fp, "   </fields>\n");
          // And NOW the Data ...
          fputs($fp, "   <rows>\n");
-         while ($row = $DB->fetch_row($result)) {
+         while ($row = $DB->fetchRow($result)) {
             fputs($fp, "      <row>\n");
             for ($j=0; $j<$i; $j++) {
                $FieldName  = "";   // Name of TAG
@@ -175,7 +175,7 @@ class XML {
          }
          fputs($fp, "   </rows>\n");
 
-         $DB->free_result($result);
+         $DB->freeResult($result);
       }
       fputs($fp, "</dataxml>");
       //OK free ...;)

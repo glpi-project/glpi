@@ -49,6 +49,7 @@ class KnowbaseItem_Item extends DbTestCase {
    }
 
    public function testGetItemsFromKB() {
+      $this->login();
       $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
       $items = \KnowbaseItem_Item::getItems($kb1);
       $this->array($items)->hasSize(3);

@@ -328,15 +328,12 @@ abstract class CommonITILCost extends CommonDBChild {
    function getTotalActionTimeForItem($items_id) {
       global $DB;
 
-      $query = "SELECT SUM(`actiontime`)
-                FROM `".$this->getTable()."`
-                WHERE `".static::$items_id."` = '$items_id'";
-
-      if ($result = $DB->query($query)) {
-         return $DB->result($result, 0, 0);
-      }
-
-      return 0;
+      $result = $DB->request([
+         'SELECT' => ['SUM' => 'actiontime AS sumtime'],
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [static::$items_id => $items_id]
+      ])->next();
+      return $result['sumtime'];
    }
 
 
@@ -348,16 +345,17 @@ abstract class CommonITILCost extends CommonDBChild {
    function getLastCostForItem($items_id) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `".static::$items_id."` = '$items_id'
-                ORDER BY 'end_date' DESC, `id` DESC";
-
-      if ($result = $DB->query($query)) {
-         return $DB->fetch_assoc($result);
-      }
-
-      return [];
+      $result = $DB->request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [
+            static::$items_id => $items_id
+         ],
+         'ORDER'  => [
+            'end_date DESC',
+            'id DESC'
+         ]
+      ])->next();
+      return $result;
    }
 
 
@@ -463,7 +461,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * @param $item                  CommonITILObject object or Project
     * @param $withtemplate boolean  Template or basic item (default 0)
     *
-    * @return total cost
+    * @return number total cost
    **/
    static function showForObject($item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
@@ -487,16 +485,18 @@ abstract class CommonITILCost extends CommonDBChild {
 
       echo "<div class='center'>";
 
-      $condition = "= '$ID'";
-
+      $items_ids = $ID;
       if ($forproject) {
-         $condition = " IN ('".implode("','", ProjectTask::getAllTicketsForProject($ID))."')";
+         $alltickets = ProjectTask::getAllTicketsForProject($ID);
+         $items_ids = (count($alltickets) ? $alltickets : 0);
       }
-
-      $query = "SELECT *
-                FROM `".static::getTable()."`
-                WHERE `".static::$items_id."` $condition
-                ORDER BY `begin_date`";
+      $iterator = $DB->request([
+         'FROM'   => static::getTable(),
+         'WHERE'  => [
+            static::$items_id   => $items_ids
+         ],
+         'ORDER'  => 'begin_date'
+      ]);
 
       $rand   = mt_rand();
 
@@ -525,103 +525,101 @@ abstract class CommonITILCost extends CommonDBChild {
       $total_fixed    = 0;
       $total_material = 0;
 
-      if ($result = $DB->query($query)) {
-         echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr class='noHover'>";
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr class='noHover'>";
+      if ($forproject) {
+         echo "<th colspan='10'>"._n('Ticket cost', 'Ticket costs', count($iterator))."</th>";
+      } else {
+         echo "<th colspan='7'>".self::getTypeName(count($iterator))."</th>";
+         echo "<th>".__('Item duration')."</th>";
+         echo "<th>".CommonITILObject::getActionTime($item->fields['actiontime'])."</th>";
+      }
+      echo "</tr>";
+
+      if (count($iterator)) {
+         echo "<tr>";
          if ($forproject) {
-            echo "<th colspan='10'>"._n('Ticket cost', 'Ticket costs', $DB->numrows($result))."</th>";
-         } else {
-            echo "<th colspan='7'>".self::getTypeName($DB->numrows($result))."</th>";
-            echo "<th>".__('Item duration')."</th>";
-            echo "<th>".CommonITILObject::getActionTime($item->fields['actiontime'])."</th>";
+            echo "<th>".__('Ticket')."</th>";
+            $ticket = new Ticket();
          }
+         echo "<th>".__('Name')."</th>";
+         echo "<th>".__('Begin date')."</th>";
+         echo "<th>".__('End date')."</th>";
+         echo "<th>".__('Budget')."</th>";
+         echo "<th>".__('Duration')."</th>";
+         echo "<th>".__('Time cost')."</th>";
+         echo "<th>".__('Fixed cost')."</th>";
+         echo "<th>".__('Material cost')."</th>";
+         echo "<th>".__('Total cost')."</th>";
          echo "</tr>";
 
-         if ($DB->numrows($result)) {
-            echo "<tr>";
+         Session::initNavigateListItems(static::getType(),
+                           //TRANS : %1$s is the itemtype name,
+                           //        %2$s is the name of the item (used for headings of a list)
+                                          sprintf(__('%1$s = %2$s'),
+                                                $item->getTypeName(1), $item->getName()));
+
+         while ($data = $iterator->next()) {
+            echo "<tr class='tab_bg_2' ".
+                     ($canedit
+                     ? "style='cursor:pointer' onClick=\"viewEditCost".$data[static::$items_id]."_".
+                        $data['id']."_$rand();\"": '') .">";
+            $name = (empty($data['name'])? sprintf(__('%1$s (%2$s)'),
+                                                   $data['name'], $data['id'])
+                                          : $data['name']);
+
             if ($forproject) {
-               echo "<th>".__('Ticket')."</th>";
-               $ticket = new Ticket();
+               $ticket->getFromDB($data['tickets_id']);
+               echo "<td>".$ticket->getLink()."</td>";
             }
-            echo "<th>".__('Name')."</th>";
-            echo "<th>".__('Begin date')."</th>";
-            echo "<th>".__('End date')."</th>";
-            echo "<th>".__('Budget')."</th>";
-            echo "<th>".__('Duration')."</th>";
-            echo "<th>".__('Time cost')."</th>";
-            echo "<th>".__('Fixed cost')."</th>";
-            echo "<th>".__('Material cost')."</th>";
-            echo "<th>".__('Total cost')."</th>";
+            echo "<td>";
+            printf(__('%1$s %2$s'), $name,
+                     Html::showToolTip($data['comment'], ['display' => false]));
+            if ($canedit) {
+               echo "\n<script type='text/javascript' >\n";
+               echo "function viewEditCost" .$data[static::$items_id]."_". $data["id"]. "_$rand() {\n";
+               $params = ['type'            => static::getType(),
+                              'parenttype'       => static::$itemtype,
+                              static::$items_id  => $data[static::$items_id],
+                              'id'               => $data["id"]];
+               Ajax::updateItemJsCode("viewcost".$ID."_$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+               echo "};";
+               echo "</script>\n";
+            }
+            echo "</td>";
+            echo "<td>".Html::convDate($data['begin_date'])."</td>";
+            echo "<td>".Html::convDate($data['end_date'])."</td>";
+            echo "<td>".Dropdown::getDropdownName('glpi_budgets', $data['budgets_id'])."</td>";
+            echo "<td>".CommonITILObject::getActionTime($data['actiontime'])."</td>";
+            $total_time += $data['actiontime'];
+            echo "<td class='numeric'>".Html::formatNumber($data['cost_time'])."</td>";
+            $total_costtime += ($data['actiontime']*$data['cost_time']/HOUR_TIMESTAMP);
+            echo "<td class='numeric'>".Html::formatNumber($data['cost_fixed'])."</td>";
+            $total_fixed += $data['cost_fixed'];
+            echo "<td class='numeric'>".Html::formatNumber($data['cost_material'])."</td>";
+            $total_material += $data['cost_material'];
+            $cost            = self::computeTotalCost($data['actiontime'], $data['cost_time'],
+                                                      $data['cost_fixed'], $data['cost_material']);
+            echo "<td class='numeric'>".Html::formatNumber($cost)."</td>";
+            $total += $cost;
             echo "</tr>";
-
-            Session::initNavigateListItems(static::getType(),
-                              //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
-                                           sprintf(__('%1$s = %2$s'),
-                                                   $item->getTypeName(1), $item->getName()));
-
-            while ($data = $DB->fetch_assoc($result)) {
-               echo "<tr class='tab_bg_2' ".
-                      ($canedit
-                       ? "style='cursor:pointer' onClick=\"viewEditCost".$data[static::$items_id]."_".
-                         $data['id']."_$rand();\"": '') .">";
-               $name = (empty($data['name'])? sprintf(__('%1$s (%2$s)'),
-                                                      $data['name'], $data['id'])
-                                            : $data['name']);
-
-               if ($forproject) {
-                  $ticket->getFromDB($data['tickets_id']);
-                  echo "<td>".$ticket->getLink()."</td>";
-               }
-               echo "<td>";
-               printf(__('%1$s %2$s'), $name,
-                        Html::showToolTip($data['comment'], ['display' => false]));
-               if ($canedit) {
-                  echo "\n<script type='text/javascript' >\n";
-                  echo "function viewEditCost" .$data[static::$items_id]."_". $data["id"]. "_$rand() {\n";
-                  $params = ['type'            => static::getType(),
-                                 'parenttype'       => static::$itemtype,
-                                 static::$items_id  => $data[static::$items_id],
-                                 'id'               => $data["id"]];
-                  Ajax::updateItemJsCode("viewcost".$ID."_$rand",
-                                         $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
-                  echo "};";
-                  echo "</script>\n";
-               }
-               echo "</td>";
-               echo "<td>".Html::convDate($data['begin_date'])."</td>";
-               echo "<td>".Html::convDate($data['end_date'])."</td>";
-               echo "<td>".Dropdown::getDropdownName('glpi_budgets', $data['budgets_id'])."</td>";
-               echo "<td>".CommonITILObject::getActionTime($data['actiontime'])."</td>";
-               $total_time += $data['actiontime'];
-               echo "<td class='numeric'>".Html::formatNumber($data['cost_time'])."</td>";
-               $total_costtime += ($data['actiontime']*$data['cost_time']/HOUR_TIMESTAMP);
-               echo "<td class='numeric'>".Html::formatNumber($data['cost_fixed'])."</td>";
-               $total_fixed += $data['cost_fixed'];
-               echo "<td class='numeric'>".Html::formatNumber($data['cost_material'])."</td>";
-               $total_material += $data['cost_material'];
-               $cost            = self::computeTotalCost($data['actiontime'], $data['cost_time'],
-                                                         $data['cost_fixed'], $data['cost_material']);
-               echo "<td class='numeric'>".Html::formatNumber($cost)."</td>";
-               $total += $cost;
-               echo "</tr>";
-               Session::addToNavigateListItems(static::getType(), $data['id']);
-            }
-            $colspan = 4;
-            if ($forproject) {
-               $colspan++;
-            }
-            echo "<tr class='b noHover'><td colspan='$colspan' class='right'>".__('Total').'</td>';
-            echo "<td>".CommonITILObject::getActionTime($total_time)."</td>";
-            echo "<td class='numeric'>".Html::formatNumber($total_costtime)."</td>";
-            echo "<td class='numeric'>".Html::formatNumber($total_fixed).'</td>';
-            echo "<td class='numeric'>".Html::formatNumber($total_material).'</td>';
-            echo "<td class='numeric'>".Html::formatNumber($total).'</td></tr>';
-         } else {
-            echo "<tr><th colspan='9'>".__('No item found')."</th></tr>";
+            Session::addToNavigateListItems(static::getType(), $data['id']);
          }
-         echo "</table>";
+         $colspan = 4;
+         if ($forproject) {
+            $colspan++;
+         }
+         echo "<tr class='b noHover'><td colspan='$colspan' class='right'>".__('Total').'</td>';
+         echo "<td>".CommonITILObject::getActionTime($total_time)."</td>";
+         echo "<td class='numeric'>".Html::formatNumber($total_costtime)."</td>";
+         echo "<td class='numeric'>".Html::formatNumber($total_fixed).'</td>';
+         echo "<td class='numeric'>".Html::formatNumber($total_material).'</td>';
+         echo "<td class='numeric'>".Html::formatNumber($total).'</td></tr>';
+      } else {
+         echo "<tr><th colspan='9'>".__('No item found')."</th></tr>";
       }
+      echo "</table>";
       echo "</div><br>";
       return $total;
    }
@@ -638,10 +636,17 @@ abstract class CommonITILCost extends CommonDBChild {
    static function getCostsSummary($type, $ID) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `".getTableForItemtype($type)."`
-                WHERE `".static::$items_id."` = '$ID'
-                ORDER BY `begin_date`";
+      $result = $DB->request(
+         [
+            'FROM'      => getTableForItemtype($type),
+            'WHERE'     => [
+               static::$items_id      => $ID,
+            ],
+            'ORDER'     => [
+               'begin_date'
+            ],
+         ]
+      );
 
       $tab = ['totalcost'   => 0,
                   'actiontime'   => 0,
@@ -650,7 +655,7 @@ abstract class CommonITILCost extends CommonDBChild {
                   'costmaterial' => 0
              ];
 
-      foreach ($DB->request($query) as $data) {
+      foreach ($result as $data) {
          $tab['actiontime']   += $data['actiontime'];
          $tab['costfixed']    += $data['cost_fixed'];
          $tab['costmaterial'] += $data['cost_material'];
@@ -674,7 +679,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * @param $cost_material   float    material cost
     * @param $edit            boolean  used for edit of computation ? (true by default)
     *
-    * @return total cost formatted string
+    * @return string total cost formatted string
    **/
    static function computeTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material,
                                      $edit = true) {

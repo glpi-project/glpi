@@ -152,18 +152,16 @@ class Reminder extends CommonDBVisible {
     * @since 0.83.1
    **/
    function cleanDBonPurge() {
-      global $DB;
 
-      $class = new Reminder_User();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Entity_Reminder();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Group_Reminder();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Profile_Reminder();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new PlanningRecall();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Entity_Reminder::class,
+            Group_Reminder::class,
+            PlanningRecall::class,
+            Profile_Reminder::class,
+            Reminder_User::class,
+         ]
+      );
    }
 
    public function haveVisibilityAccess() {
@@ -182,84 +180,156 @@ class Reminder extends CommonDBVisible {
     * @return string joins to add
    **/
    static function addVisibilityJoins($forceall = false) {
+      //not deprecated because used in Search
+      global $DB;
+
+      //get and clean criteria
+      $criteria = self::getVisibilityCriteria();
+      unset($criteria['WHERE']);
+      $criteria['FROM'] = self::getTable();
+
+      $it = new \DBmysqlIterator($DB);
+      $it->buildQuery($criteria);
+      $sql = $it->getSql();
+      $sql = trim(str_replace(
+         'SELECT * FROM '.$DB->quoteName(self::getTable()),
+         '',
+         $sql
+      ));
+      return $sql;
+   }
+
+   /**
+    * Return visibility SQL restriction to add
+    *
+    * @return array
+   **/
+   static function addVisibilityRestrict() {
+      //not deprecated because used in Search
+      global $DB;
+
+      //get and clean criteria
+      $criteria = self::getVisibilityCriteria();
+      unset($criteria['LEFT JOIN']);
+      $criteria['FROM'] = self::getTable();
+
+      $it = new \DBmysqlIterator($DB);
+      $it->buildQuery($criteria);
+      $sql = $it->getSql();
+      $sql = preg_replace('/.*WHERE /', '', $sql);
+
+      return ['sql' => $sql, 'params' => $it->getParameters()];
+   }
+
+   /**
+    * Return visibility joins to add to DBIterator parameters
+    *
+    * @since 9.4
+    *
+    * @param boolean $forceall force all joins (false by default)
+    *
+    * @return array
+    */
+   static public function getVisibilityCriteria($forceall = false) {
+      global $CFG_GLPI;
 
       if (!Session::haveRight(self::$rightname, READ)) {
-         return '';
+         return [
+            'WHERE' => ['glpi_reminders.users_id' => Session::getLoginUserID()],
+         ];
       }
+
+      $join = [];
+      $where = [];
+
       // Users
-      $join = " LEFT JOIN `glpi_reminders_users`
-                     ON (`glpi_reminders_users`.`reminders_id` = `glpi_reminders`.`id`) ";
+      $join['glpi_reminders_users'] = [
+         'FKEY' => [
+            'glpi_reminders_users'  => 'reminders_id',
+            'glpi_reminders'        => 'id'
+         ]
+      ];
+
+      if (Session::getLoginUserID()) {
+         $where['OR'] = [
+               'glpi_reminders.users_id'        => Session::getLoginUserID(),
+               'glpi_reminders_users.users_id'  => Session::getLoginUserID(),
+         ];
+      } else {
+         $where = [
+            0
+         ];
+      }
 
       // Groups
       if ($forceall
           || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
-         $join .= " LEFT JOIN `glpi_groups_reminders`
-                        ON (`glpi_groups_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
+         $join['glpi_groups_reminders'] = [
+            'FKEY' => [
+               'glpi_groups_reminders' => 'reminders_id',
+               'glpi_reminders'        => 'id'
+            ]
+         ];
+
+         $or = ['glpi_groups_reminders.entities_id' => ['<', 0]];
+         $restrict = getEntitiesRestrictCriteria('glpi_groups_reminders', '', '', true);
+         if (count($restrict)) {
+            $or = $or + $restrict;
+         }
+         $where['OR'][] = [
+            'glpi_groups_reminders.groups_id' => count($_SESSION["glpigroups"])
+                                                      ? $_SESSION["glpigroups"]
+                                                      : [-1],
+            'OR' => $or
+         ];
       }
 
       // Profiles
       if ($forceall
           || (isset($_SESSION["glpiactiveprofile"])
               && isset($_SESSION["glpiactiveprofile"]['id']))) {
-         $join .= " LEFT JOIN `glpi_profiles_reminders`
-                        ON (`glpi_profiles_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
+         $join['glpi_profiles_reminders'] = [
+            'FKEY' => [
+               'glpi_profiles_reminders'  => 'reminders_id',
+               'glpi_reminders'           => 'id'
+            ]
+         ];
+
+         $or = ['glpi_profiles_reminders.entities_id' => ['<', 0]];
+         $restrict = getEntitiesRestrictCriteria('glpi_profiles_reminders', '', '', true);
+         if (count($restrict)) {
+            $or = $or + $restrict;
+         }
+         $where['OR'][] = [
+            'glpi_profiles_reminders.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
+            'OR' => $or
+         ];
       }
 
       // Entities
       if ($forceall
           || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))) {
-         $join .= " LEFT JOIN `glpi_entities_reminders`
-                        ON (`glpi_entities_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
+         $join['glpi_entities_reminders'] = [
+            'FKEY' => [
+               'glpi_entities_reminders'  => 'reminders_id',
+               'glpi_reminders'           => 'id'
+            ]
+         ];
       }
-
-      return $join;
-
-   }
-
-
-   /**
-    * Return visibility SQL restriction to add
-    *
-    * @return string restrict to add
-   **/
-   static function addVisibilityRestrict() {
-
-      $restrict = "`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."' ";
-
-      if (!Session::haveRight(self::$rightname, READ)) {
-         return $restrict;
-      }
-
-      // Users
-      $restrict .= " OR `glpi_reminders_users`.`users_id` = '".Session::getLoginUserID()."' ";
-
-      // Groups
-      if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
-         $restrict .= " OR (`glpi_groups_reminders`.`groups_id`
-                                 IN ('".implode("','", $_SESSION["glpigroups"])."')
-                            AND (`glpi_groups_reminders`.`entities_id` < 0
-                                 ".getEntitiesRestrictRequest("OR", "glpi_groups_reminders", '', '',
-                                                              true).")) ";
-      }
-
-      // Profiles
-      if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
-         $restrict .= " OR (`glpi_profiles_reminders`.`profiles_id`
-                                 = '".$_SESSION["glpiactiveprofile"]['id']."'
-                            AND (`glpi_profiles_reminders`.`entities_id` < 0
-                                 ".getEntitiesRestrictRequest("OR", "glpi_profiles_reminders", '',
-                                                              '', true).")) ";
-      }
-
-      // Entities
       if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-         // Force complete SQL not summary when access to all entities
-         $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_reminders", '', '', true, true);
+         $restrict = getEntitiesRestrictCriteria('glpi_entities_reminders', '', '', true, true);
+         if (count($restrict)) {
+            $where['OR'] = $where['OR'] + $restrict;
+         }
       }
 
-      return '('.$restrict.')';
-   }
+      $criteria = [
+         'LEFT JOIN' => $join,
+         'WHERE'     => $where
+      ];
 
+      return $criteria;
+   }
 
    function post_addItem() {
       // Add document if needed
@@ -463,7 +533,7 @@ class Reminder extends CommonDBVisible {
          $nb = 0;
          switch ($item->getType()) {
             case 'Reminder' :
-               if ($item->canUpdate()) {
+               if (Session::haveRight('reminder_public', CREATE)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = $item->countVisibilities();
                   }
@@ -707,21 +777,20 @@ class Reminder extends CommonDBVisible {
             echo "<script type='text/javascript' >\n";
             echo "function showPlan$rand() {\n";
             echo Html::jsHide("plan$rand");
-               $params = ['action'   => 'add_event_classic_form',
-                               'form'     => 'remind',
-                               'users_id' => $this->fields["users_id"],
-                               'itemtype' => $this->getType(),
-                               'items_id' => $this->getID()];
+            $params = ['action'   => 'add_event_classic_form',
+                       'form'     => 'remind',
+                       'users_id' => $this->fields["users_id"],
+                       'itemtype' => $this->getType(),
+                       'items_id' => $this->getID()];
 
-               if ($ID
-                && $this->fields["is_planned"]) {
-               $params['begin'] = $this->fields["begin"];
-               $params['end']   = $this->fields["end"];
-               }
+            if ($ID && $this->fields["is_planned"]) {
+                  $params['begin'] = $this->fields["begin"];
+                  $params['end']   = $this->fields["end"];
+            }
 
-               Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
-               echo "}";
-               echo "</script>\n";
+            Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
+            echo "}";
+            echo "</script>\n";
          }
 
          if (!$ID
@@ -832,115 +901,126 @@ class Reminder extends CommonDBVisible {
       $begin      = $options['begin'];
       $end        = $options['end'];
 
-      $readpub    = $readpriv = "";
-
       if ($options['genical']) {
          $_SESSION["glpiactiveprofile"][static::$rightname] = READ;
       }
-      $joinstoadd = self::addVisibilityJoins(true);
+      $visibility_criteria = self::getVisibilityCriteria(true);
+      $nreadpub = [];
+      $nreadpriv = [];
 
       // See public reminder ?
       if (!$options['genical']
           && $who === Session::getLoginUserID()
           && self::canView()) {
-         $readpub    = self::addVisibilityRestrict();
+         $nreadpub = $visibility_criteria['WHERE'];
       }
+      unset($visibility_criteria['WHERE']);
 
       // See my private reminder ?
       if (($who_group === "mine") || ($who === Session::getLoginUserID())) {
-         $readpriv = "(`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."')";
+         $nreadpriv = ['glpi_reminders.users_id' => Session::getLoginUserID()];
       } else {
          if ($who > 0) {
-            $readpriv = "`glpi_reminders`.`users_id` = '$who'";
+            $nreadpriv = ['glpi_reminders.users_id' => $who];
          }
          if ($who_group > 0) {
-            if (!empty($readpriv)) {
-               $readpriv .= " OR ";
+            $ngrouppriv = ['glpi_reminders.groups_id' => $who];
+            if (!empty($nreadpriv)) {
+               $nreadpriv['OR'] = [$nreadpriv, $ngrouppriv];
+            } else {
+               $nreadpriv = $ngrouppriv;
             }
-            $readpriv .= " `glpi_groups_reminders`.`groups_id` = '$who_group'";
-         }
-         if (!empty($readpriv)) {
-            $readpriv = '('.$readpriv.')';
          }
       }
-      $ASSIGN = '';
-      if (!empty($readpub)
-          && !empty($readpriv)) {
-         $ASSIGN = "($readpub OR $readpriv)";
-      } else if ($readpub) {
-         $ASSIGN = $readpub;
+
+      $NASSIGN = [];
+
+      if (count($nreadpub)
+          && count($nreadpriv)) {
+         $NASSIGN = ['OR' => [$nreadpub, $nreadpriv]];
+      } else if (count($nreadpub)) {
+         $NASSIGN = $nreadpub;
       } else {
-         $ASSIGN  = $readpriv;
+         $NASSIGN = $nreadpriv;
       }
 
-      $PLANNED = '';
+      if (!count($NASSIGN)) {
+         return $interv;
+      }
+
+      $WHERE = [
+         'glpi_reminders.is_planned'   => 1,
+         'begin'                       => ['<', $end],
+         'end'                         => ['>', $begin]
+      ];
+
       if ($options['check_planned']) {
-         $PLANNED = "AND state != ".Planning::INFO;
+         $WHERE['state'] = ['!=', Planning::INFO];
       }
 
-      $DONE_EVENTS = '';
       if (!$options['display_done_events']) {
-         $DONE_EVENTS = "AND (state = ".Planning::TODO."
-                              OR (state = ".Planning::INFO."
-                                  AND `end` > NOW()))";
+         $WHERE[] = [
+            'state'  => Planning::TODO,
+            'OR'     => [
+               'state'  => Planning::INFO,
+               'end'    => ['>', new \QueryExpression('NOW()')]
+            ]
+         ];
       }
 
-      if ($ASSIGN) {
-         $query2 = "SELECT DISTINCT `glpi_reminders`.*
-                    FROM `glpi_reminders`
-                    $joinstoadd
-                    WHERE `glpi_reminders`.`is_planned` = 1
-                          AND $ASSIGN
-                          $PLANNED
-                          $DONE_EVENTS
-                          AND `begin` < '$end'
-                          AND `end` > '$begin'
-                    ORDER BY `begin`";
-         $result2 = $DB->query($query2);
+      $table = self::getTable();
+      $criteria = [
+         'SELECT'          => "$table.*",
+         'DISTINCT'        => true,
+         'FROM'            => $table,
+         'WHERE'           => $WHERE,
+         'ORDER'           => 'begin'
+      ] + $visibility_criteria;
 
-         if ($DB->numrows($result2) > 0) {
-            for ($i=0; $data=$DB->fetch_assoc($result2); $i++) {
-               if ($reminder->getFromDB($data["id"])
-                   && $reminder->canViewItem()) {
-                  $key                               = $data["begin"]."$$"."Reminder"."$$".$data["id"];
-                  $interv[$key]['color']             = $options['color'];
-                  $interv[$key]['event_type_color']  = $options['event_type_color'];
-                  $interv[$key]["itemtype"]          = 'Reminder';
-                  $interv[$key]["reminders_id"]      = $data["id"];
-                  $interv[$key]["id"]                = $data["id"];
+      $iterator = $DB->request($criteria);
 
-                  if (strcmp($begin, $data["begin"]) > 0) {
-                     $interv[$key]["begin"] = $begin;
-                  } else {
-                     $interv[$key]["begin"] = $data["begin"];
-                  }
+      if (count($iterator)) {
+         while ($data = $iterator->next()) {
+            if ($reminder->getFromDB($data["id"])
+                  && $reminder->canViewItem()) {
+               $key                               = $data["begin"]."$$"."Reminder"."$$".$data["id"];
+               $interv[$key]['color']             = $options['color'];
+               $interv[$key]['event_type_color']  = $options['event_type_color'];
+               $interv[$key]["itemtype"]          = 'Reminder';
+               $interv[$key]["reminders_id"]      = $data["id"];
+               $interv[$key]["id"]                = $data["id"];
 
-                  if (strcmp($end, $data["end"]) < 0) {
-                     $interv[$key]["end"] = $end;
-                  } else {
-                     $interv[$key]["end"] = $data["end"];
-                  }
-                  $interv[$key]["name"] = Html::clean(Html::resume_text($data["name"], $CFG_GLPI["cut"]));
-                  $interv[$key]["text"]
-                     = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
-                                         $CFG_GLPI["cut"]);
-
-                  $interv[$key]["users_id"]   = $data["users_id"];
-                  $interv[$key]["state"]      = $data["state"];
-                  $interv[$key]["state"]      = $data["state"];
-                  if (!$options['genical']) {
-                     $interv[$key]["url"] = Reminder::getFormURLWithID($data['id']);
-                  } else {
-                     $interv[$key]["url"] = $CFG_GLPI["url_base"].
-                                            Reminder::getFormURLWithID($data['id'], false);
-                  }
-                  $interv[$key]["ajaxurl"]  = $CFG_GLPI["root_doc"]."/ajax/planning.php".
-                                              "?action=edit_event_form".
-                                              "&itemtype=Reminder".
-                                              "&id=".$data['id'].
-                                              "&url=".$interv[$key]["url"];
-                  $interv[$key]["editable"] = $reminder->canUpdateItem();
+               if (strcmp($begin, $data["begin"]) > 0) {
+                  $interv[$key]["begin"] = $begin;
+               } else {
+                  $interv[$key]["begin"] = $data["begin"];
                }
+
+               if (strcmp($end, $data["end"]) < 0) {
+                  $interv[$key]["end"] = $end;
+               } else {
+                  $interv[$key]["end"] = $data["end"];
+               }
+               $interv[$key]["name"] = Html::clean(Html::resume_text($data["name"], $CFG_GLPI["cut"]));
+               $interv[$key]["text"]
+                  = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
+                                       $CFG_GLPI["cut"]);
+
+               $interv[$key]["users_id"]   = $data["users_id"];
+               $interv[$key]["state"]      = $data["state"];
+               $interv[$key]["state"]      = $data["state"];
+               if (!$options['genical']) {
+                  $interv[$key]["url"] = Reminder::getFormURLWithID($data['id']);
+               } else {
+                  $interv[$key]["url"] = $CFG_GLPI["url_base"].
+                                          Reminder::getFormURLWithID($data['id'], false);
+               }
+               $interv[$key]["ajaxurl"]  = $CFG_GLPI["root_doc"]."/ajax/planning.php".
+                                             "?action=edit_event_form".
+                                             "&itemtype=Reminder".
+                                             "&id=".$data['id'].
+                                             "&url=".$interv[$key]["url"];
+               $interv[$key]["editable"] = $reminder->canUpdateItem();
             }
          }
       }
@@ -1037,10 +1117,19 @@ class Reminder extends CommonDBVisible {
       $today    = date('Y-m-d');
       $now      = date('Y-m-d H:i:s');
 
-      $restrict_visibility = " AND (`glpi_reminders`.`begin_view_date` IS NULL
-                                    OR `glpi_reminders`.`begin_view_date` < '$now')
-                              AND (`glpi_reminders`.`end_view_date` IS NULL
-                                   OR `glpi_reminders`.`end_view_date` > '$now') ";
+      $visibility_criteria = [
+         [
+            'OR' => [
+               ['glpi_reminders.begin_view_date' => null],
+               ['glpi_reminders.begin_view_date' => ['<', $now]]
+            ]
+         ], [
+            'OR' => [
+               ['glpi_reminders.end_view_date'   => null],
+               ['glpi_reminders.end_view_date'   => ['>', $now]]
+            ]
+         ]
+      ];
 
       if ($personal) {
 
@@ -1049,13 +1138,19 @@ class Reminder extends CommonDBVisible {
             return false;
          }
 
-         $query = "SELECT `glpi_reminders`.*
-                   FROM `glpi_reminders`
-                   WHERE `glpi_reminders`.`users_id` = '$users_id'
-                         AND (`glpi_reminders`.`end` >= '$today'
-                              OR `glpi_reminders`.`is_planned` = 0)
-                         $restrict_visibility
-                   ORDER BY `glpi_reminders`.`name`";
+         $criteria = [
+            'FROM'   => 'glpi_reminders',
+            'WHERE'  => array_merge([
+               'users_id'  => $users_id,
+               [
+                  'OR'        => [
+                     'end'          => ['>=', $today],
+                     'is_planned'   => 0
+                  ]
+               ]
+            ], $visibility_criteria),
+            'ORDER'  => 'name'
+         ];
 
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".
                     _n('Personal reminder', 'Personal reminders', Session::getPluralNumber())."</a>";
@@ -1066,19 +1161,21 @@ class Reminder extends CommonDBVisible {
             return false;
          }
 
-         $restrict_user = '1';
+         $criteria = array_merge_recursive(
+            [
+               'SELECT'          => 'glpi_reminders.*',
+               'DISTINCT'        => true,
+               'FROM'            => 'glpi_reminders',
+               'WHERE'           => $visibility_criteria,
+               'ORDERBY'         => 'name'
+            ],
+            self::getVisibilityCriteria()
+         );
+
          // Only personal on central so do not keep it
          if (Session::getCurrentInterface() == 'central') {
-            $restrict_user = "`glpi_reminders`.`users_id` <> '$users_id'";
+            $criteria['WHERE']['glpi_reminders.users_id'] = ['<>', $users_id];
          }
-
-         $query = "SELECT DISTINCT `glpi_reminders`.*
-                   FROM `glpi_reminders` ".
-                   self::addVisibilityJoins()."
-                   WHERE $restrict_user
-                         $restrict_visibility
-                         AND ".self::addVisibilityRestrict()."
-                   ORDER BY `glpi_reminders`.`name`";
 
          if (Session::getCurrentInterface() != 'helpdesk') {
             $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".
@@ -1088,8 +1185,8 @@ class Reminder extends CommonDBVisible {
          }
       }
 
-      $result = $DB->query($query);
-      $nb     = $DB->numrows($result);
+      $iterator = $DB->request($criteria);
+      $nb = count($iterator);
 
       echo "<br><table class='tab_cadrehov'>";
       echo "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
@@ -1107,7 +1204,7 @@ class Reminder extends CommonDBVisible {
       if ($nb) {
          $rand = mt_rand();
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_2'><td>";
             $link = "<a id='content_reminder_".$data["id"].$rand."'
                       href='".Reminder::getFormURLWithID($data["id"])."'>".

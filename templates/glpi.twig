@@ -1,0 +1,124 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% set body_class = body_class|default('') %}
+{% set lib_path = 'public/lib' %}
+
+<!DOCTYPE html>
+<html lang="{{ glpi_lang }}" class="{% block html_class  %}{% endblock %}">
+    <head>
+         <meta charset="utf-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+         {% block head %}
+            <title>{% block title %}{{ page_title }}{% endblock %} - GLPI</title>
+         {% endblock %}
+
+         <link rel="shortcut icon" type="images/x-icon" href="{{ CFG_GLPI.root_doc }}/pics/favicon.ico" />
+
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/bootstrap/css/bootstrap.css" type="text/css" media="screen" />
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/coreui/css/coreui-standalone.css" type="text/css" media="screen" />
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/fontawesome-free/css/all.css" type="text/css" media="screen" />
+
+         <link rel="stylesheet" href="{{ path_for('asset', {'file': 'glpi'}) }}" type="text/css" media="screen" />
+
+         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic" />
+
+         {# TODO Should be moved in "javascripts" block but requires all scripts to be moved in this block too #}
+         <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/jquery/jquery.js"></script>
+    </head>
+    <body class="app sidebar-md-show aside-menu-show {{ body_class }}">
+        {% block header %}{% endblock %}
+       <div class="app-body">
+        {% block menu %}{% endblock %}
+        {% block content_wrapper %}
+        <main id="content" class="main">
+          {% block content_header %}
+          <header class="content-header">
+             {% block breadcrumb %}{% endblock %}
+          </header>
+          {% endblock %}
+          <div class="container-fluid">
+            <div class="alert alert-danger alert-dismissible alpha">
+               <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+               <h4><span>α</span> {{ __('Alpha UI version') }} <span>α</span></h4>
+            </div>
+            {% if is_legacy is defined %}
+               <div class="legacy">
+            {% endif %}
+            {% block content %}{% endblock %}
+            {% if is_legacy is defined %}
+               </div>
+            {% endif %}
+          </div>
+        </main>
+        {% endblock %}
+        </div>
+        <footer class="app-footer">
+            {% block footer %}{% endblock %}
+
+            <div class="copyright">
+               <a href="http://glpi-project.org/"
+                  title="Powered by Teclib and contributors">
+                  GLPI {{ constant('GLPI_VERSION') }} Copyright (C) 2015-{{ "now"|date("Y") }} Teclib' and contributors
+               </a>
+            </div>
+        </footer>
+
+   {% import 'flash_messages.macro.twig' as glpi %}
+   {{ glpi.flash_messages() }}
+
+   {% block javascripts %}
+      <script type="text/javascript">
+         var CFG_GLPI  = {
+            'url_base': '{{ CFG_GLPI.url_base|default('') }}',
+            'root_doc': '{{ CFG_GLPI.root_doc }}',
+         };
+      </script>
+      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/popper.js/popper.js"></script>
+      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/perfect-scrollbar/perfect-scrollbar.js"></script>
+      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/bootstrap/js/bootstrap.js"></script>
+      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/coreui/js/coreui.js"></script>
+      <script type="text/javascript">
+         $(function() {
+             _initFlashMessage();
+         });
+      </script>
+      {#% for script in glpi_scripts %}
+         <script type="text/javascript">{{ script|raw }}</script>
+      {% endfor %#}
+   {% endblock %}
+
+        {# cron call #}
+    {% if not constant('GLPI_DEMO_MODE') %}
+        <div style="background-image: url('{{ path_for('cron') }}');"></div>
+    {% endif %}
+    </body>
+</html>

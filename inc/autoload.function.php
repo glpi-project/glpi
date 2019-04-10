@@ -34,9 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-include_once (GLPI_ROOT."/inc/based_config.php");
-include_once (GLPI_ROOT."/inc/define.php");
-
 define ('NS_GLPI', 'Glpi\\');
 define ('NS_PLUG', 'GlpiPlugin\\');
 
@@ -284,13 +281,13 @@ function glpi_autoload($classname) {
       // Command line usage of GLPI : need to do a real check plugin activation
       if (isCommandLine()) {
          $plugin = new Plugin();
-         if (count($plugin->find("directory='$plugname' AND state=".Plugin::ACTIVATED)) == 0) {
+         if (count($plugin->find(['directory' => $plugname, 'state' => Plugin::ACTIVATED])) == 0) {
             // Plugin does not exists or not activated
             return false;
          }
       } else {
          // Standard use of GLPI
-         if (!isset($_SESSION['glpi_plugins']) || !in_array($plugname, $_SESSION['glpi_plugins'])) {
+         if (!Plugin::isPluginLoaded($plugname)) {
             // Plugin not activated
             return false;
          }
@@ -316,9 +313,12 @@ function glpi_autoload($classname) {
    }
 }
 
-// composer autoload
-$autoload = GLPI_ROOT . '/vendor/autoload.php';
+
+// Check if dependencies are up to date
 $needrun  = false;
+
+// composer dependencies
+$autoload = GLPI_ROOT . '/vendor/autoload.php';
 if (!file_exists($autoload)) {
    $needrun = true;
 } else if (file_exists(GLPI_ROOT . '/composer.lock')) {
@@ -330,17 +330,31 @@ if (!file_exists($autoload)) {
       $needrun = true;
    }
 }
+
+// node dependencies
+if (!file_exists(GLPI_ROOT . '/public/lib')) {
+   $needrun = true;
+} else if (file_exists(GLPI_ROOT . '/package-lock.json')) {
+   if (!file_exists(GLPI_ROOT . '/.package.hash')) {
+      /* First time */
+      $needrun = true;
+   } else if (sha1_file(GLPI_ROOT . '/package-lock.json') != file_get_contents(GLPI_ROOT . '/.package.hash')) {
+      /* update */
+      $needrun = true;
+   }
+}
+
 if ($needrun) {
-   $getComposerUrl = 'https://getcomposer.org/';
+   $deps_install_msg = 'Application dependencies are not up to date.' . PHP_EOL
+      . 'Run "bin/console dependencies install" in the glpi tree to fix this.' . PHP_EOL;
    if (isCommandLine()) {
-      echo 'Run "composer install --no-dev" in the glpi tree.' . PHP_EOL
-          . 'To install composer please refer to ' . $getComposerUrl;
+      echo $deps_install_msg;
    } else {
-      echo 'Run "composer install --no-dev" in the glpi tree.<br>'
-          . 'To install composer please refer to <a href="'.$getComposerUrl.'">'.$getComposerUrl.'</a>';
+      echo nl2br($deps_install_msg);
    }
    die(1);
 }
+
 require_once $autoload;
 
 // Use spl autoload to allow stackable autoload.

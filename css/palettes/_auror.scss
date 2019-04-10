@@ -1,0 +1,128 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+/* ===== LOGIN ===== */
+
+#firstboxlogin {
+   background-color: #1B2F62;
+}
+
+#logo_login {
+   background: url(../pics/login_logo_glpi.png) center no-repeat, #3A5693;
+}
+
+#display-login {
+   color: #FFF;
+}
+
+#text-login {
+   background-color: #3A5693;
+   color: #FFF;
+}
+
+/* ====== GENERAL ====== */
+
+a {
+   color: #3A5693;
+
+   &:link {
+      color: #3A5693;
+   }
+}
+
+.ui-widget-content a {
+   color: #3A5693;
+}
+
+.main_form tr.headerRow th {
+   color: #8CABDB;
+}
+
+/* ====== HEADER ====== */
+
+#header_top {
+   background-color: #1B2F62;
+}
+
+#c_preference a, #language_link > span {
+   color: #C7DBF5;
+}
+
+#c_recherche form #champRecherche input {
+   background-color: #131425;
+   color: #C7DBF5;
+}
+
+#c_menu {
+   background-color: #3A5693;
+}
+
+ul {
+   &#menu {
+      a {
+         &.itemP, &.itemP1 {
+            color: #FFF;
+         }
+      }
+
+      > li.active {
+         background-color: #8CABDB;
+      }
+   }
+
+   &.ssmenu li.active {
+      background-color: #8CABDB;
+   }
+
+   &#menu {
+      > li:hover {
+         background-color: #8BAADA;
+      }
+
+      ul li a {
+         &:hover {
+            background: #3A5693;
+            color: #C7DBF5;
+         }
+
+         color: #131425;
+      }
+   }
+}
+
+#c_recherche form #champRecherche button {
+   background-color: white;
+}
+
+/* ====== BUTTONS ====== */
+
+a.vsubmit, .vsubmit a {
+   color: #8f5a0a;
+}

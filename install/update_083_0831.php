@@ -36,30 +36,10 @@
  * @return bool for success (will die for most error)
 **/
 function update083to0831() {
-   global $DB, $migration;
-
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+   global $migration;
 
    $migration->displayTitle(sprintf(__('Update to %s'), '0.83.1'));
    $migration->setVersion('0.83.1');
-
-   $backup_tables = false;
-   $newtables     = [];
-
-   foreach ($newtables as $new_table) {
-      // rename new tables if exists ?
-      if ($DB->tableExists($new_table)) {
-         $migration->dropTable("backup_$new_table");
-         $migration->displayWarning("$new_table table already exists. ".
-                                    "A backup have been done to backup_$new_table.");
-         $backup_tables = true;
-         $query         = $migration->renameTable("$new_table", "backup_$new_table");
-      }
-   }
-   if ($backup_tables) {
-      $migration->displayWarning("You can delete backup tables if you have no need of them.", true);
-   }
 
    $migration->addField('glpi_configs', 'allow_search_view', 'integer', ['value' => 2]);
    $migration->addField('glpi_configs', 'allow_search_all', 'bool', ['value' => 1]);
@@ -70,7 +50,7 @@ function update083to0831() {
    $migration->addField("glpi_profiles", "knowbase_admin", "char",
                         ['after'     => "knowbase",
                               'update'    => "1",
-                              'condition' => " WHERE `config` = 'w'"]);
+                              'condition' => ['config' => 'w']]);
 
    $migration->addField("glpi_configs", "display_count_on_home", "integer", ['value' => 5]);
    $migration->addField("glpi_users", "display_count_on_home", "int(11) NULL DEFAULT NULL");
@@ -78,54 +58,8 @@ function update083to0831() {
    // ************ Keep it at the end **************
    $migration->displayMessage('Migration of glpi_displaypreferences');
 
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $query = "SELECT DISTINCT `users_id`
-                FROM `glpi_displaypreferences`
-                WHERE `itemtype` = '$type'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $query = "SELECT MAX(`rank`)
-                         FROM `glpi_displaypreferences`
-                         WHERE `users_id` = '".$data['users_id']."'
-                               AND `itemtype` = '$type'";
-               $result = $DB->query($query);
-               $rank   = $DB->result($result, 0, 0);
-               $rank++;
-
-               foreach ($tab as $newval) {
-                  $query = "SELECT *
-                            FROM `glpi_displaypreferences`
-                            WHERE `users_id` = '".$data['users_id']."'
-                                  AND `num` = '$newval'
-                                  AND `itemtype` = '$type'";
-                  if ($result2 = $DB->query($query)) {
-                     if ($DB->numrows($result2) == 0) {
-                        $query = "INSERT INTO `glpi_displaypreferences`
-                                         (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                  VALUES ('$type', '$newval', '".$rank++."',
-                                          '".$data['users_id']."')";
-                        $DB->query($query);
-                     }
-                  }
-               }
-            }
-
-         } else { // Add for default user
-            $rank = 1;
-            foreach ($tab as $newval) {
-               $query = "INSERT INTO `glpi_displaypreferences`
-                                (`itemtype` ,`num` ,`rank` ,`users_id`)
-                         VALUES ('$type', '$newval', '".$rank++."', '0')";
-               $DB->query($query);
-            }
-         }
-      }
-   }
-
    // must always be at the end
    $migration->executeMigration();
 
-   return $updateresult;
+   return true;
 }

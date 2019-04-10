@@ -406,13 +406,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    function cleanDBonPurge() {
 
-      $link = new IPNetwork_Vlan();
-      $link->cleanDBonItemDelete($this->getType(), $this->getID());
-
-      $link = new IPAddress_IPNetwork();
-      $link->cleanDBonItemDelete($this->getType(), $this->getID());
-
-      return true;
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            IPAddress_IPNetwork::class,
+            IPNetwork_Vlan::class,
+         ]
+      );
    }
 
 
@@ -506,14 +505,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          $fields = [$fields];
       }
 
-      $FIELDS     = "`".implode("`, `", $fields)."`";
-
       $startIndex = (($version == 4) ? 3 : 1);
 
       $addressDB  = ['address_0', 'address_1', 'address_2', 'address_3'];
       $netmaskDB  = ['netmask_0', 'netmask_1', 'netmask_2', 'netmask_3'];
 
-      $WHERE      = "";
+      $WHERE      = [];
       if (isset($condition["address"])
           && isset($condition["netmask"])) {
          $addressPa = new IPAddress($condition["address"]);
@@ -544,9 +541,10 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
          if ($relation == "equals") {
             for ($i = $startIndex; $i < 4; ++$i) {
-               $WHERE .= " AND (`".$addressDB[$i]."` & '".$netmaskPa[$i]."')=
-                               ('".$addressPa[$i]."' & '".$netmaskPa[$i]."')
-                           AND ('".$netmaskPa[$i]."' = `".$netmaskDB[$i]."`)";
+               $WHERE = [
+                  new \QueryExpression("(`".$addressDB[$i] . "` & '" . $netmaskPa[$i] . "') = ('".$addressPa[$i]."' & '".$netmaskPa[$i]."')"),
+                  $netmaskD[$i]  => $netmaskPa[$i]
+               ];
             }
          } else {
             for ($i = $startIndex; $i < 4; ++$i) {
@@ -556,14 +554,13 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                   $globalNetmask = "`".$netmaskDB[$i]."`";
                }
 
-               $WHERE .= " AND (`".$addressDB[$i]."` & $globalNetmask)=
-                               ('".$addressPa[$i]."' & $globalNetmask)
-                           AND ('".$netmaskPa[$i]."' & `".$netmaskDB[$i]."`)=$globalNetmask";
+               $WHERE = [
+                  new \QueryExpression("(`".$addressDB[$i]."` & $globalNetmask) = ('".$addressPa[$i]."' & $globalNetmask)"),
+                  new \QueryExpression("('".$netmaskPa[$i]."' & `".$netmaskDB[$i]."`)=$globalNetmask")
+               ];
             }
          }
       }
-
-      $WHERE = "`version`='$version' $WHERE";
 
       if ($entityID < 0) {
          $entityID = $_SESSION['glpiactive_entity'];
@@ -593,54 +590,51 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       }
 
       $entitiesID[] = $entityID;
-      if (count($entitiesID) > 1) { // At least the current entity is defined
-         $WHERE .= " AND `entities_id` IN ('".implode("', '", $entitiesID)."')";
-      } else {
-         $WHERE .= " AND `entities_id` = '".$entitiesID[0]."'";
-      }
+      $WHERE['entities_id']   = $entitiesID;
+      $WHERE['version']       = $version;
 
       if (!empty($condition["exclude IDs"])) {
          if (is_array($condition["exclude IDs"])) {
             if (count($condition["exclude IDs"]) > 1) {
-               $WHERE .= " AND `id` NOT IN ('".implode("', '", $condition["exclude IDs"])."')";
+               $WHERE['NOT'] = ['id' => $condition['exclude IDs']];
             } else {
-               $WHERE .= " AND `id` <> '".$condition["exclude IDs"][0]."'";
+               $WHERE['id'] = ['<>', $condition['exclude IDs'][0]];
             }
          } else {
-            $WHERE .= " AND `id` <> '".$condition["exclude IDs"]."'";
+            $WHERE['id'] = ['<>', $condition['exclude IDs']];
          }
       }
 
       $ORDER = [];
+      // By ordering on the netmask, we ensure that the first element is the nearest one (ie:
+      // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested
+      // element)
       for ($i = $startIndex; $i < 4; ++$i) {
-         $ORDER[] = "BIT_COUNT(`".$netmaskDB[$i]."`) $ORDER_ORIENTATION";
+         $ORDER[] = new \QueryExpression("BIT_COUNT(`".$netmaskDB[$i]."`) $ORDER_ORIENTATION");
       }
 
       if (!empty($condition["where"])) {
          $WHERE .= " AND " . $condition["where"];
       }
 
-      $query = "SELECT $FIELDS
-                FROM `glpi_ipnetworks`
-                WHERE $WHERE
-                ORDER BY ".implode(', ', $ORDER);
-      // By ordering on the netmask, we ensure that the first element is the nearest one (ie:
-      // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested
-      // element)
+      $iterator = $DB->request([
+         'SELECT' => $fields,
+         'FROM'   => self::getTable(),
+         'WHERE'  => $WHERE,
+         'ORDER'  => $ORDER
+      ]);
 
       $returnValues = [];
-      if ($result = $DB->query($query)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            if (count($fields) > 1) {
-               $returnValue = [];
-               foreach ($fields as $field) {
-                  $returnValue[$field] = $data[$field];
-               }
-            } else {
-               $returnValue = $data[$fields[0]];
+      while ($data = $iterator->next()) {
+         if (count($fields) > 1) {
+            $returnValue = [];
+            foreach ($fields as $field) {
+               $returnValue[$field] = $data[$field];
             }
-            $returnValues[] = $returnValue;
+         } else {
+            $returnValue = $data[$fields[0]];
          }
+         $returnValues[] = $returnValue;
       }
       return $returnValues;
    }
@@ -661,6 +655,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    /**
     * Get SQL WHERE statement for requesting elements that are contained inside the current network
     *
+    * @deprecated 10.0.0
+    *
     * @param $tableName          name of the table containing the element
     *                            (for instance : glpi_ipaddresses)
     * @param $binaryFieldPrefix  prefix of the binary version of IP address
@@ -670,6 +666,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @return SQL request "WHERE" element
    **/
    function getWHEREForMatchingElement($tableName, $binaryFieldPrefix, $versionField) {
+      Toolbox::deprecated('Use getCriteriaForMatchingElement');
 
       $version = $this->fields["version"];
       $start   = null;
@@ -683,6 +680,35 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $result = "`$tableName`.`version` = '$version'
                 AND (".implode(" AND ", $result).")";
+
+      return $result;
+   }
+
+   /**
+    * Get SQL WHERE criteria for requesting elements that are contained inside the current network
+    *
+    * @since 10.0.0
+    *
+    * @param string $tableName         name of the table containing the element
+    *                                  (for instance : glpi_ipaddresses)
+    * @param string $binaryFieldPrefix prefix of the binary version of IP address
+    *                                  (binary for glpi ipaddresses)
+    * @param string $versionField      the name of the field containing the version inside the database
+    *
+    * @return array
+   **/
+   function getCriteriaForMatchingElement($tableName, $binaryFieldPrefix, $versionField) {
+      $version = $this->fields["version"];
+      $start   = null;
+      $this->computeNetworkRange($start);
+
+      $result = [];
+      for ($i = ($version == 4 ? 3 : 0); $i < 4; ++$i) {
+         $result[] = new \QueryExpression(
+            "({$tableName}.{$binaryFieldPrefix}_{$i} & " . $this->fields["netmask_$i"] . ") = ({$start[$i]})"
+         );
+      }
+      $result["$tableName.version"] = $version;
 
       return $result;
    }
@@ -1024,7 +1050,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       parent::title();
 
       if (Session::haveRight('internet', UPDATE)
-          && Session::isViewAllEntities()) {
+          && Session::canViewAllEntities()) {
 
          echo "<div class='spaced' id='tabsbody'>";
          echo "<table class='tab_cadre_fixe'>";

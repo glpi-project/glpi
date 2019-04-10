@@ -82,7 +82,8 @@ class Config extends DbTestCase {
          'Config$1'  => 'General setup',
          'Config$2'  => 'Default values',
          'Config$3'  => 'Assets',
-         'Config$4'  => 'Assistance'
+         'Config$4'  => 'Assistance',
+         'Log$1'     => 'Historical'
       ];
       $this
          ->given($this->newTestedInstance)
@@ -101,10 +102,12 @@ class Config extends DbTestCase {
 
       //check extra tabs from superadmin profile
       $this->login();
+      unset($expected['Log$1']);
       $expected['Config$9'] = 'Logs purge';
       $expected['Config$5'] = 'System';
       $expected['Config$7'] = 'Performance';
       $expected['Config$8'] = 'API';
+      $expected['Log$1']    = 'Historical';
       $this
          ->given($this->newTestedInstance)
             ->then
@@ -244,6 +247,29 @@ class Config extends DbTestCase {
          ->isEmpty();
    }
 
+   public function testGetLibraries() {
+      $actual = $expected = [];
+      $deps = \Config::getLibraries(true);
+      foreach ($deps as $dep) {
+         // composer names only (skip htmlLawed)
+         if (strpos($dep['name'], '/')) {
+            $actual[] =$dep['name'];
+         }
+      }
+      sort($actual);
+      $this->array($actual)->isNotEmpty();
+      $composer = json_decode(file_get_contents(__DIR__ . '/../../composer.json'), true);
+      foreach ($composer['require'] as $dep => $ver) {
+         // composer names only (skip php, ext-*, ...)
+         if (strpos($dep, '/')) {
+            $expected[] = $dep;
+         }
+      }
+      sort($expected);
+      $this->array($expected)->isNotEmpty();
+      $this->array($actual)->isIdenticalTo($expected);
+   }
+
    public function testGetLibraryDir() {
       $this->boolean(\Config::getLibraryDir(''))->isFalse();
       $this->boolean(\Config::getLibraryDir('abcde'))->isFalse();
@@ -267,35 +293,35 @@ class Config extends DbTestCase {
       $expected= [
          'error'     => 0,
          'good'      => [
-            'mysqli' => 'mysqli extension is installed',
+            'pdo_mysql' => 'pdo_mysql extension is installed',
          ],
          'missing'   => [],
          'may'       => []
       ];
 
       //check extension from class name
-      $list = [
+      /*$list = [
          'mysqli' => [
             'required'  => true,
             'class'     => 'mysqli'
          ]
       ];
       $report = \Config::checkExtensions($list);
-      $this->array($report)->isIdenticalTo($expected);
+      $this->array($report)->isIdenticalTo($expected);*/
 
       //check extension from method name
-      $list = [
+      /*$list = [
          'mysqli' => [
             'required'  => true,
             'function'  => 'mysqli_commit'
          ]
       ];
       $report = \Config::checkExtensions($list);
-      $this->array($report)->isIdenticalTo($expected);
+      $this->array($report)->isIdenticalTo($expected);*/
 
       //check extension from its name
       $list = [
-         'mysqli' => [
+         'pdo_mysql' => [
             'required'  => true
          ]
       ];
@@ -310,7 +336,7 @@ class Config extends DbTestCase {
       $expected= [
          'error'     => 2,
          'good'      => [
-            'mysqli' => 'mysqli extension is installed',
+            'pdo_mysql' => 'pdo_mysql extension is installed',
          ],
          'missing'   => [
             'notantext' => 'notantext extension is missing'
@@ -326,7 +352,7 @@ class Config extends DbTestCase {
       $expected= [
          'error'     => 1,
          'good'      => [
-            'mysqli' => 'mysqli extension is installed',
+            'pdo_mysql' => 'pdo_mysql extension is installed',
          ],
          'missing'   => [],
          'may'       => [
@@ -403,6 +429,7 @@ class Config extends DbTestCase {
          'classic'         => 'Classic',
          'clockworkorange' => 'Clockworkorange',
          'dark'            => 'Dark',
+         'darker'          => 'Darker',
          'flood'           => 'Flood',
          'greenflat'       => 'Greenflat',
          'hipster'         => 'Hipster',
@@ -483,5 +510,104 @@ class Config extends DbTestCase {
             ->string($this->testedInstance->getLanguage('notalang'))
                ->isIdenticalTo('');
 
+   }
+
+   /**
+    * Provides list of classes that can be linked to configuration.
+    *
+    * @return array
+    */
+   protected function itemtypeLinkedToConfigurationProvider() {
+      return [
+         [
+            'key'      => 'documentcategories_id_forticket',
+            'itemtype' => 'DocumentCategory',
+         ],
+         [
+            'key'      => 'default_requesttypes_id',
+            'itemtype' => 'RequestType',
+         ],
+         [
+            'key'      => 'softwarecategories_id_ondelete',
+            'itemtype' => 'SoftwareCategory',
+         ],
+         [
+            'key'      => 'ssovariables_id',
+            'itemtype' => 'SsoVariable',
+         ],
+         [
+            'key'      => 'transfers_id_auto',
+            'itemtype' => 'Transfer',
+         ],
+      ];
+   }
+
+   /**
+    * Check that relation between items and configuration are correctly cleaned.
+    *
+    * @param string $key
+    * @param string $itemtype
+    *
+    * @dataProvider itemtypeLinkedToConfigurationProvider
+    */
+   public function testCleanRelationDataOfLinkedItems($key, $itemtype) {
+
+      // Case 1: used item is cleaned without replacement
+      $item = new $itemtype();
+      $item->fields = ['id' => 15];
+
+      \Config::setConfigurationValues('core', [$key => $item->fields['id']]);
+
+      if (is_a($itemtype, 'CommonDropdown', true)) {
+         $this->boolean($item->isUsed())->isTrue();
+      }
+      $item->cleanRelationData();
+      if (is_a($itemtype, 'CommonDropdown', true)) {
+         $this->boolean($item->isUsed())->isFalse();
+      }
+      $this->array(\Config::getConfigurationValues('core', [$key]))
+         ->hasKey($key)
+         ->variable[$key]->isEqualTo(0);
+
+      // Case 2: unused item is cleaned without effect
+      $item = new $itemtype();
+      $item->fields = ['id' => 15];
+
+      $random_id = mt_rand(20, 100);
+
+      \Config::setConfigurationValues('core', [$key => $random_id]);
+
+      if (is_a($itemtype, 'CommonDropdown', true)) {
+         $this->boolean($item->isUsed())->isFalse();
+      }
+      $item->cleanRelationData();
+      if (is_a($itemtype, 'CommonDropdown', true)) {
+         $this->boolean($item->isUsed())->isFalse();
+      }
+      $this->array(\Config::getConfigurationValues('core', [$key]))
+         ->hasKey($key)
+         ->variable[$key]->isEqualTo($random_id);
+
+      // Case 3: used item is cleaned with replacement (CommonDropdown only)
+      if (is_a($itemtype, 'CommonDropdown', true)) {
+         $replacement_item = new $itemtype();
+         $replacement_item->fields = ['id' => 12];
+
+         $item = new $itemtype();
+         $item->fields = ['id' => 15];
+         $item->input = ['_replace_by' => $replacement_item->fields['id']];
+
+         \Config::setConfigurationValues('core', [$key => $item->fields['id']]);
+
+         $this->boolean($item->isUsed())->isTrue();
+         $this->boolean($replacement_item->isUsed())->isFalse();
+         $item->cleanRelationData();
+         $this->boolean($item->isUsed())->isFalse();
+         $this->boolean($replacement_item->isUsed())->isTrue();
+         $this->array(\Config::getConfigurationValues('core', [$key]))
+            ->hasKey($key)
+            ->variable[$key]
+               ->isEqualTo($replacement_item->fields['id']);
+      }
    }
 }

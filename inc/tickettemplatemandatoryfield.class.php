@@ -111,16 +111,19 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       // Try to delete itemtype -> delete items_id
       if ($this->fields['num'] == $itemtype_id) {
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `".static::$items_id."` = '".$this->fields['tickettemplates_id']."'
-                         AND `num` = '$items_id_id'";
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               static::$items_id => $this->fields['tickettemplates_id'],
+               'num'             => $items_id_id
+            ]
+         ]);
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result)) {
-               $a = new self();
-               $a->delete(['id' => $DB->result($result, 0, 0)]);
-            }
+         if (count($iterator)) {
+            $result = $iterator->next();
+            $a = new self();
+            $a->delete(['id' => $result['id']]);
          }
       }
    }
@@ -139,17 +142,19 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    function getMandatoryFields($ID, $withtypeandcategory = true) {
       global $DB;
 
-      $sql = "SELECT *
-              FROM `".$this->getTable()."`
-              WHERE `".static::$items_id."` = '$ID'
-              ORDER BY `id`";
-      $result = $DB->query($sql);
+      $iterator = $DB->request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [
+            static::$items_id => $ID,
+         ],
+         'ORDER'  => 'ID'
+      ]);
 
       $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = [];
 
-      while ($rule = $DB->fetch_assoc($result)) {
+      while ($rule = $iterator->next()) {
          if (isset($allowed_fields[$rule['num']])) {
             $fields[$allowed_fields[$rule['num']]] = $rule['num'];
          }
@@ -201,105 +206,105 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       $rand  = mt_rand();
 
-      $query = "SELECT `glpi_tickettemplatemandatoryfields`.*
-                FROM `glpi_tickettemplatemandatoryfields`
-                WHERE (`tickettemplates_id` = '$ID')";
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['tickettemplates_id' => $ID]
+      ]);
+      $numrows = count($iterator);
 
-      if ($result = $DB->query($query)) {
-         $mandatoryfields = [];
-         $used            = [];
-         if ($numrows = $DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $mandatoryfields[$data['id']] = $data;
-               $used[$data['num']]           = $data['num'];
+      $mandatoryfields = [];
+      $used            = [];
+      if ($numrows) {
+         while ($data = $iterator->next()) {
+            $mandatoryfields[$data['id']] = $data;
+            $used[$data['num']]           = $data['num'];
+         }
+      }
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
+                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a mandatory field')."</th></tr>";
+         echo "<tr class='tab_bg_2'><td class='right'>";
+         echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
+
+         $select_fields = $fields;
+         foreach ($select_fields as $key => $val) {
+            if (in_array($key, $simplified_fields)) {
+               $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, $both_interfaces);
+            } else {
+               $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, __('Standard interface'));
             }
          }
-         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                   action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a mandatory field')."</th></tr>";
-            echo "<tr class='tab_bg_2'><td class='right'>";
-            echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
-
-            $select_fields = $fields;
-            foreach ($select_fields as $key => $val) {
-               if (in_array($key, $simplified_fields)) {
-                  $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, $both_interfaces);
-               } else {
-                  $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, __('Standard interface'));
-               }
-            }
-
-            Dropdown::showFromArray('num', $select_fields, ['used' => $used]);
-            echo "</td><td class='center'>";
-            echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
-                         "\" class='submit'>";
-            echo "</td></tr>";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
-         }
-
-         echo "<div class='spaced'>";
-         if ($canedit && $numrows) {
-            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                         'container'     => 'mass'.__CLASS__.$rand];
-            Html::showMassiveActions($massiveactionparams);
-         }
-         echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr class='noHover'><th colspan='3'>";
-         echo self::getTypeName($DB->numrows($result));
-         echo "</th></tr>";
-         if ($numrows) {
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-               $header_top    .= "<th width='10'>";
-               $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-               $header_bottom .= "<th width='10'>";
-               $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-            }
-            $header_end .= "<th>".__('Name')."</th>";
-            $header_end .= "<th>".__("Profile's interface")."</th>";
-            $header_end .= "</tr>";
-            echo $header_begin.$header_top.$header_end;
-
-            foreach ($mandatoryfields as $data) {
-               echo "<tr class='tab_bg_2'>";
-               if ($canedit) {
-                  echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
-               }
-               echo "<td>".$fields[$data['num']]."</td>";
-               echo "<td>";
-               if (in_array($data['num'], $simplified_fields)) {
-                  echo $both_interfaces;
-               } else {
-                  echo __('Standard interface');
-               }
-               echo "</td>";
-               echo "</tr>";
-            }
-            echo $header_begin.$header_bottom.$header_end;
-
-         } else {
-            echo "<tr><th colspan='2'>".__('No item found')."</th></tr>";
-         }
+         Dropdown::showFromArray('num', $select_fields, ['used' => $used]);
+         echo "</td><td class='center'>";
+         echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
+                        "\" class='submit'>";
+         echo "</td></tr>";
 
          echo "</table>";
-         if ($canedit && $numrows) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-         }
+         Html::closeForm();
          echo "</div>";
       }
+
+      echo "<div class='spaced'>";
+      if ($canedit && $numrows) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                                       'container'     => 'mass'.__CLASS__.$rand];
+         Html::showMassiveActions($massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr class='noHover'><th colspan='3'>";
+      echo self::getTypeName($numrows);
+      echo "</th></tr>";
+      if ($numrows) {
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit) {
+            $header_top    .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header_bottom .= "<th width='10'>";
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         }
+         $header_end .= "<th>".__('Name')."</th>";
+         $header_end .= "<th>".__("Profile's interface")."</th>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
+
+         foreach ($mandatoryfields as $data) {
+            echo "<tr class='tab_bg_2'>";
+            if ($canedit) {
+               echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
+            }
+            echo "<td>".$fields[$data['num']]."</td>";
+            echo "<td>";
+            if (in_array($data['num'], $simplified_fields)) {
+               echo $both_interfaces;
+            } else {
+               echo __('Standard interface');
+            }
+            echo "</td>";
+            echo "</tr>";
+         }
+         echo $header_begin.$header_bottom.$header_end;
+
+      } else {
+         echo "<tr><th colspan='2'>".__('No item found')."</th></tr>";
+      }
+
+      echo "</table>";
+      if ($canedit && $numrows) {
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
+         Html::closeForm();
+      }
+      echo "</div>";
    }
 
 }

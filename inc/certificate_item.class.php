@@ -124,10 +124,11 @@ class Certificate_Item extends CommonDBRelation {
    function getFromDBbyCertificatesAndItem($certificates_id, $items_id, $itemtype) {
 
       $certificate  = new self();
-      $certificates = $certificate->find(['certificates_id' => $certificates_id,
-                                          'itemtype'        => $itemtype,
-                                          'items_id'        => $items_id
-                                         ]);
+      $certificates = $certificate->find([
+         'certificates_id' => $certificates_id,
+         'itemtype'        => $itemtype,
+         'items_id'        => $items_id
+      ]);
       if (count($certificates) != 1) {
          return false;
       }
@@ -268,9 +269,8 @@ class Certificate_Item extends CommonDBRelation {
                      $ID = " (" . $data["id"] . ")";
                   }
 
-                  $link = Toolbox::getItemTypeFormURL($itemtype);
-                  $name = "<a href=\"" . $link . "?id=" . $data["id"] . "\">"
-                     . $data["name"] . "$ID</a>";
+                  $link = $itemtype::getFormURLWithID($data["id"]);
+                  $name = "<a href=\"" . $link . "\">" . $data["name"] . "$ID</a>";
 
                   echo "<tr class='tab_bg_1'>";
 

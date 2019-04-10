@@ -93,7 +93,7 @@ class Notification_NotificationTemplate extends DbTestCase {
          function () use ($notif) {
             \Notification_NotificationTemplate::showForNotification($notif);
          }
-      )->isIdenticalTo("<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  title=\"1\">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  title=\"Alert Tickets not closed\">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>");
+      )->isIdenticalTo("<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  data-toggle=\"tooltip\" title=\"1\">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  data-toggle=\"tooltip\" title=\"Alert Tickets not closed\">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>");
    }
 
    public function testGetName() {
@@ -183,7 +183,7 @@ class Notification_NotificationTemplate extends DbTestCase {
       $select = $n_nt->getSpecificValueToSelect('mode', 'a_name', \Notification_NotificationTemplate::MODE_AJAX);
       //FIXME: why @selected?
       $this->string($select)->matches(
-         "/<select name='a_name' id='dropdown_a_name\d+' size='1'><option value='mailing'>Email<\/option><option value='ajax' selected>Browser<\/option><\/select>/"
+         "/<select name='a_name' id='dropdown_a_name\d+' class='forSelect2' size='1'><option value='mailing'>Email<\/option><option value='ajax' selected>Browser<\/option><\/select>/"
       );
    }
 

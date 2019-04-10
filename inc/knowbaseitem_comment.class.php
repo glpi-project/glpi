@@ -84,7 +84,6 @@ class KnowbaseItem_Comment extends CommonDBTM {
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
-      $kbitem_id = null;
       $item_id = $item->getID();
       $item_type = $item::getType();
       if (isset($_GET["start"])) {
@@ -105,8 +104,9 @@ class KnowbaseItem_Comment extends CommonDBTM {
             'language'         => $item->fields['language']
          ];
       }
+
       $kbitem_id = $where['knowbaseitems_id'];
-      $kbitem = new KnowbaseItem_Item();
+      $kbitem = new KnowbaseItem();
       $kbitem->getFromDB($kbitem_id);
 
       $number = countElementsInTable(
@@ -114,9 +114,7 @@ class KnowbaseItem_Comment extends CommonDBTM {
          $where
        );
 
-      $entry = new KnowbaseItem();
-      $entry->getFromDB($kbitem->fields['knowbaseitems_id']);
-      $cancomment = $entry->canComment();
+      $cancomment = $kbitem->canComment();
       if ($cancomment) {
          echo "<div class='firstbloc'>";
 
@@ -298,12 +296,12 @@ class KnowbaseItem_Comment extends CommonDBTM {
          $html .= "</div>"; // h_user
          $html .= "</div>"; //h_info
 
-         $html .= "<div class='h_content TicketFollowup'>";
+         $html .= "<div class='h_content KnowbaseItemComment'>";
          $html .= "<div class='displayed_content'>";
 
          if ($cancomment) {
             if (Session::getLoginUserID() == $comment['users_id']) {
-               $html .= "<span class='edit_item'
+               $html .= "<span class='fa fa-pencil-square-o edit_item'
                   data-kbitem_id='{$comment['knowbaseitems_id']}'
                   data-lang='{$comment['language']}'
                   data-id='{$comment['id']}'></span>";

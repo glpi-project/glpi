@@ -300,7 +300,7 @@ abstract class APIBaseClass extends \atoum {
          ->array['available_searchtypes'];
 
       $this->array($data[1]['available_searchtypes'])
-         ->isIdenticalTo(['contains', 'equals', 'notequals']);
+         ->isIdenticalTo(['contains', 'notcontains', 'equals', 'notequals']);
    }
 
    /**
@@ -336,7 +336,7 @@ abstract class APIBaseClass extends \atoum {
          ->startWith('User');
 
       $this->array($data['rawdata'])
-         ->hasSize(8);
+         ->hasSize(11);
 
       $first_user = array_shift($data['data']);
       $second_user = array_shift($data['data']);
@@ -378,7 +378,7 @@ abstract class APIBaseClass extends \atoum {
          ->hasKey('rawdata');
 
       $this->array($data['rawdata'])
-         ->hasSize(8);
+         ->hasSize(11);
 
       $first_user = array_shift($data['data']);
       $second_user = array_shift($data['data']);
@@ -431,7 +431,7 @@ abstract class APIBaseClass extends \atoum {
          ->startWith('User');
 
       $this->array($data['rawdata'])
-         ->hasSize(8);
+         ->hasSize(11);
       $this->checkEmptyContentRange($data, $data['headers']);
    }
 
@@ -1147,9 +1147,8 @@ abstract class APIBaseClass extends \atoum {
          $this->string($value[$name])->isNotEmpty();
       }
 
-      $where = "'" . implode("', '", $sensitiveSettings) . "'";
       $config = new config();
-      $rows = $config->find("`context`='core' AND `name` IN ($where)");
+      $rows = $config->find(['context' => 'core', 'name' => $sensitiveSettings]);
       $this->array($rows)
          ->hasSize(count($sensitiveSettings));
 

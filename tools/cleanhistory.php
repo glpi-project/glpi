@@ -34,6 +34,11 @@
  *Purge history with some criteria
  */
 
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
+   exit();
+}
+
 ini_set("memory_limit", "-1");
 ini_set("max_execution_time", "0");
 
@@ -122,7 +127,7 @@ if (isset($_GET['run'])) {
       die("SQL request: $query\nSQL error : ".$DB->error()."\n");
    }
 
-   echo "  Deleted entries in history : ".$DB->affected_rows()."\n";
+   echo "  Deleted entries in history : ".$res->rowCount()."\n";
    echo "Remaining entries in history : ".countElementsInTable($table)."\n";
 
    if (isset($_GET['optimize'])) {

@@ -42,6 +42,8 @@ if (!empty($tz)) {
    date_default_timezone_set(@date_default_timezone_get());
 }
 
+include_once (GLPI_ROOT . "/inc/autoload.function.php");
+
 // If this file exists, it is load
 if (file_exists(GLPI_ROOT. '/config/local_define.php') && !defined('TU_USER')) {
    require_once GLPI_ROOT. '/config/local_define.php';
@@ -132,13 +134,6 @@ if (!defined("GLPI_SCRIPT_DIR")) {
    define("GLPI_SCRIPT_DIR", GLPI_ROOT . "/scripts");
 }
 
-// Default patch to htmLawed
-if (!defined('GLPI_HTMLAWED')) {
-   define('GLPI_HTMLAWED', GLPI_ROOT.'/lib/htmlawed/htmLawed.php');
-   // if htmLawed available in system, use (in config_path.php)
-   // define('GLPI_HTMLAWED', '/usr/share/htmlawed/htmLawed.php');
-}
-
 // Install mode for telemetry
 if (!defined('GLPI_INSTALL_MODE')) {
    if (is_dir(GLPI_ROOT . '/.git')) {
@@ -162,3 +157,5 @@ if (!defined("GLPI_JQUERY_UPLOADHANDLER")) {
    define("GLPI_JQUERY_UPLOADHANDLER",
           GLPI_ROOT.'/lib/jqueryplugins/jquery-file-upload/server/php/UploadHandler.php');
 }
+
+include_once (GLPI_ROOT . "/inc/define.php");

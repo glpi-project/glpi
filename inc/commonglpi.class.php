@@ -39,6 +39,10 @@ if (!defined('GLPI_ROOT')) {
 **/
 class CommonGLPI {
 
+   const SUBITEM_SHOW_LIST = 0;
+   const SUBITEM_SHOW_FORM = 1;
+   const SUBITEM_SHOW_SPEC = 2;
+
    /// GLPI Item type cache : set dynamically calling getType
    protected $type                 = -1;
 
@@ -56,11 +60,25 @@ class CommonGLPI {
    public $taborientation          = 'horizontal';
 
    /**
+    * @deprecated
+    * will be dropped in a future version
+    */
+   protected $twig_compat                       = false;
+
+   /**
     * Need to get item to show tab
     *
     * @var boolean
     */
    public $get_item_to_display_tab = false;
+
+   /**
+    * Flag to determine whether or not table name of item has a notepad.
+    *
+    * @var boolean
+    */
+   protected $usenotepad = false;
+
    static protected $othertabs     = [];
 
 
@@ -125,6 +143,246 @@ class CommonGLPI {
       return [];
    }
 
+   /**
+    * Get item tabs
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   public function getTabs() {
+      global $CFG_GLPI, $IS_TWIG;
+      $IS_TWIG = true;
+
+      $tabs = [];
+
+      //main tab
+      $tabs[$this->getType().'__main'] = $this->getTypeName(1);
+
+      $tabs = $tabs + $this->addMainTabs();
+
+      $guess_relations = [
+         'Item_Devices'       => 'itemdevices_types',
+         'NetworkPort'        => 'networkport_types',
+         'Infocom'            => 'infocom_types',
+         'Contract_Item'      => 'contract_types',
+         'Document_Item'      => 'document_types',
+         'KnowbaseItem_Item'  => 'kb_types',
+         'Ticket'             => 'itil_types',
+         'Item_Problem'       => 'itil_types',
+         'Change_Item'        => 'itil_types',
+         'Link'               => 'link_types',
+         'Certificate_Item'   => 'certificate_types',
+         'Lock'               => 'lock_lockable_objects',
+         'Reservation'        => 'reservation_types',
+         'Computer_Item'      => 'directconnect_types'
+      ];
+
+      foreach ($guess_relations as $class => $conf) {
+         if (in_array($this->getType(), $CFG_GLPI[$conf])) {
+            $tabs += $this->addTab($class);
+         }
+      }
+
+      $tabs = $tabs + $this->addExtraTabs();
+
+      if ($this->usenotepad === true) {
+         $tabs += $this->addTab('Notepad');
+      }
+      $tabs += $this->addTab('Log');
+
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+          && method_exists(get_class($this), 'showDebug')) {
+          $tabs['debug'] = __('Debug');
+      }
+      $tabs['all'] = __('All');
+
+      return $tabs;
+   }
+
+   /**
+    * Add main tabs for current item
+    * @see addTabs
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function addMainTabs() {
+      return $this->addTabs($this->getMainTabs());
+   }
+
+   /**
+    * Add extra tabs for current item
+    * @see addTabs
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function addExtraTabs() {
+      return $this->addTabs($this->getExtraTabs());
+   }
+
+   /**
+    * Add tabs
+    *
+    * @since 10.0.0
+    *
+    * @param array $tabs Tabs configuration to add
+    *
+    * @return array
+    */
+   protected function addTabs($tabs) {
+      $added = [];
+      foreach ($tabs as $tab) {
+         $added += $this->addTab($tab);
+      }
+      return $added;
+   }
+
+   /**
+    * Get main tabs configuration
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getMainTabs() {
+      return [];
+   }
+
+   /**
+    * Get extra tabs configuration
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getExtraTabs() {
+      return [];
+   }
+
+   /**
+    * Add a tab
+    *
+    * @since 10.0.0
+    *
+    * @param string $itemtype Item type
+    *
+    * @return array
+    */
+   protected function addTab($itemtype) {
+      $tab = [];
+
+      if (!is_integer($itemtype)
+            && ($sub_item = getItemForItemtype($itemtype))) {
+         $titles = $sub_item->getTabNameForItem($this);
+         if (!is_array($titles)) {
+            $titles = [1 => $titles];
+         }
+         $item = $this;
+
+         foreach ($titles as $key => $val) {
+            if (!empty($val)) {
+               $tabid = $itemtype . '__' . $key;
+
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  if (method_exists($sub_item, 'countForTab')) {
+                     //use countForTab specific method if present
+                     $count = $sub_item->countForTab($this, $tabid);
+                  } else if ($sub_item->getSubItemDisplay() === self::SUBITEM_SHOW_LIST) {
+                     //FIXME: similar code is used for search results in Glpi\Controller\Asset::ajaxTab
+                     //standard lists are from search results
+                     if ($sub_item instanceof \CommonDBRelation) {
+                        //$params = $request->getQueryParams() + $args;
+                        $params = [];
+
+                        if ($sub_item instanceof \Item_Devices) {
+                           $types = $sub_item->getDeviceTypes();
+                           $data = [];
+                           $count = 0;
+                           foreach ($types as $sub_type) {
+                              $sub_link_item = new $sub_type;
+                              if ($item->getType() == $sub_link_item::$itemtype_1) {
+                                 $link_type = $sub_link_item::$itemtype_2;
+                              } else if ($item->getType() == $sub_link_item::$itemtype_2) {
+                                 $link_type = $sub_link_item::$itemtype_1;
+                              } else {
+                                 $link_type = ($sub_link_item::$itemtype_1 != 'itemtype' ? $sub_link_item::$itemtype_1 : $sub_link_item::$itemtype_2);
+                              }
+
+                              $link = new $link_type;
+                              $search = new \Search($link, $params);
+                              $data[$link_type] = [
+                                 'search_data'  => $search->getData([
+                                    'item'      => $item,
+                                    'sub_item'  => $sub_link_item
+                                 ]),
+                                 'item'         => $sub_link_item
+                              ];
+                              $count += $data[$link_type]['search_data']['data']['totalcount'];
+                           }
+                        } else {
+                           if ($item->getType() == $sub_item::$itemtype_1) {
+                              $link_type = $sub_item::$itemtype_2;
+                           } else if ($item->getType() == $sub_item::$itemtype_2) {
+                              $link_type = $sub_item::$itemtype_1;
+                           } else {
+                              $link_type = ($sub_item::$itemtype_1 != 'itemtype' ? $sub_item::$itemtype_1 : $sub_item::$itemtype_2);
+                           }
+
+                           if (!empty($link_type) && $link_type != 'itemtype') {
+                              $link = new $link_type;
+                           } else {
+                              $link = $sub_item;
+                           }
+
+                           $search = new \Search($link, $params);
+                           if (isset($args['page'])) {
+                              $search->setPage((int)$args['page']);
+                           }
+                           $data = $search->getData([
+                              'item'      => $item,
+                              'sub_item'  => $sub_item
+                           ]);
+
+                           $count = $data['data']['totalcount'];
+                        }
+                     } else if ($sub_item instanceof \CommonDBChild) {
+                        $params = [];
+
+                        $search = new \Search($sub_item, $params);
+                        if (isset($args['page'])) {
+                           $search->setPage((int)$args['page']);
+                        }
+                        $data = $search->getData([
+                           'item'      => $item,
+                           'sub_item'  => $sub_item
+                        ]);
+
+                        $count = $data['data']['totalcount'];
+                     } else {
+                        throw new \RuntimeException('Bad config for ' . $sub_item->getType());
+                     }
+                  } else {
+                     $count = $sub_item->genericCountForTab($this, $tabid);
+                  }
+                  if ($count !== false) {
+                     $val = [
+                        'label'  => $val,
+                        'count'  => $count
+                     ];
+                  }
+               }
+
+               $tab[$tabid] = $val;
+            }
+         }
+      }
+
+      return $tab;
+   }
 
    /**
     * Define tabs to display
@@ -234,7 +492,6 @@ class CommonGLPI {
     * @return CommonGLPI
    **/
    function addDefaultFormTab(array &$ong) {
-      global $CFG_GLPI;
 
       if (self::isLayoutExcludedPage()
           || !self::isLayoutWithMain()
@@ -260,13 +517,12 @@ class CommonGLPI {
       $item       = new $type();
       $forbidden  = $type::getForbiddenActionsForMenu();
 
-      $debug      = false;
-
       if ($item instanceof CommonDBTM) {
          if ($type::canView()) {
             $menu['title']           = static::getMenuName();
             $menu['shortcut']        = static::getMenuShorcut();
             $menu['page']            = static::getSearchURL(false);
+            $menu['itemtype']        = static::getType();
             $menu['links']['search'] = static::getSearchURL(false);
 
             if (!in_array('add', $forbidden)
@@ -294,6 +550,7 @@ class CommonGLPI {
              || $item->canView()) {
             $menu['title']           = static::getMenuName();
             $menu['shortcut']        = static::getMenuShorcut();
+            $menu['itemtype']        = static::getType();
             $menu['page']            = static::getSearchURL(false);
             $menu['links']['search'] = static::getSearchURL(false);
          }
@@ -405,7 +662,7 @@ class CommonGLPI {
     *  @return string tab name
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      return '';
+      return self::getTypeName(Session::getPluralNumber());
    }
 
 
@@ -611,8 +868,21 @@ class CommonGLPI {
     * @return string
    **/
    static function getFormURLWithID($id = 0, $full = true) {
+      global $router;
 
       $itemtype = get_called_class();
+
+      if ($router != null) {
+         $page = $router->pathFor(
+            'update-asset', [
+               'action'    => 'edit',
+               'itemtype'  => $itemtype,
+               'id'        => $id
+            ]
+         );
+         return $page;
+      }
+
       $link     = $itemtype::getFormURL($full);
       $link    .= (strpos($link, '?') ? '&':'?').'id=' . $id;
       return $link;
@@ -666,7 +936,6 @@ class CommonGLPI {
     * @return void
    **/
    function showTabsContent($options = []) {
-      global $CFG_GLPI;
 
       // for objects not in table like central
       if (isset($this->fields['id'])) {
@@ -701,14 +970,10 @@ class CommonGLPI {
             unset($cleaned_options['content']);
          }
 
-         // prevent double sanitize, because the includes.php sanitize all data
-         $cleaned_options = Toolbox::stripslashes_deep($cleaned_options);
-
          $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options, '&amp;');
       }
       echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
       echo "<div id='tabspanel' class='center-h'></div>";
-      $current_tab = 0;
       $onglets     = $this->defineAllTabs($options);
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
@@ -775,7 +1040,7 @@ class CommonGLPI {
             $withtemplate = $options['withtemplate'];
             unset($cleanoptions['withtemplate']);
          }
-         foreach ($cleanoptions as $key => $val) {
+         foreach (array_keys($cleanoptions) as $key) {
             // Do not include id options
             if (($key[0] == '_') || ($key == 'id')) {
                unset($cleanoptions[$key]);
@@ -831,17 +1096,12 @@ class CommonGLPI {
 
          if ($first >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
-                    "\" title=\"".__s('First')."\" class='pointer'></a></td>";
-         } else {
-            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/first_off.png' alt=\"" .
-                __s('First')."\" title=\"".__s('First')."\"></td>";
+                "<i class='fa fa-angle-double-left' title=\"".__s('First')."\"></i></a></td>";
          }
 
          if ($prev >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                    "\" title=\"".__s('Previous')."\" class='pointer'></a></td>";
+                "<i class='fa fa-chevron-left' title=\"".__s('Previous')."\"></i></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 37 && e.ctrlKey) {
@@ -850,9 +1110,6 @@ class CommonGLPI {
                        }
                   });';
             echo Html::scriptBlock($js);
-         } else {
-            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/left_off.png' alt=\"" .
-                __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
 
          if (!$glpilisttitle) {
@@ -898,8 +1155,8 @@ class CommonGLPI {
 
          if ($next >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                    "\" title=\"".__s('Next')."\" class='pointer'></a></td>";
+                "<i class='fa fa-chevron-right' title=\"".__s('Next')."\"></i>
+                    </a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 39 && e.ctrlKey) {
@@ -908,18 +1165,11 @@ class CommonGLPI {
                        }
                   });';
             echo Html::scriptBlock($js);
-         } else {
-            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/right_off.png' alt=\"" .
-                __s('Next')."\" title=\"".__s('Next')."\"></td>";
          }
 
          if ($last >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>" .
-                "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
-                    "\" title=\"".__s('Last')."\" class='pointer'></a></td>";
-         } else {
-            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/last_off.png' alt=\"" .
-                __s('Last')."\" title=\"".__s('Last')."\"></td>";
+                "<i class='fa fa-angle-double-right' title=\"".__s('Last')."\"></i></a></td>";
          }
 
          // End pager
@@ -1062,13 +1312,13 @@ class CommonGLPI {
          }
          // reset
          if (isset($input['reset'])) {
-            foreach ($options as $option_group_name => $option_group) {
+            foreach ($options as $option_group) {
                foreach ($option_group as $option_name => $attributs) {
                   $display_options[$option_name] = $attributs['default'];
                }
             }
          } else {
-            foreach ($options as $option_group_name => $option_group) {
+            foreach ($options as $option_group) {
                foreach ($option_group as $option_name => $attributs) {
                   if (isset($input[$option_name]) && ($_GET[$option_name] == 'on')) {
                      $display_options[$option_name] = true;
@@ -1128,7 +1378,7 @@ class CommonGLPI {
       // Load default values if not set
       $options = static::getAvailableDisplayOptions();
       if (count($options)) {
-         foreach ($options as $option_group_name => $option_group) {
+         foreach ($options as $option_group) {
             foreach ($option_group as $option_name => $attributs) {
                if (!isset($display_options[$option_name])) {
                   $display_options[$option_name] = $attributs['default'];
@@ -1246,7 +1496,7 @@ class CommonGLPI {
     * @since 0.85
     *
     * @param integer $error  error type see define.php for ERROR_*
-    * @param istring $object string to use instead of item link (default '')
+    * @param string  $object string to use instead of item link (default '')
     *
     * @return string
    **/
@@ -1273,4 +1523,36 @@ class CommonGLPI {
       }
    }
 
+   /**
+    * Get display type for sub item
+    *
+    * @since 10.0.0
+    *
+    * @return integer
+    */
+   public function getSubItemDisplay() {
+      return self::SUBITEM_SHOW_LIST;
+   }
+
+   /**
+    * Is current object compatible with twig templating?
+    *
+    * @since 10.0.0
+    *
+    * @return boolean
+    */
+   public function isTwigCompat() {
+      return $this->twig_compat;
+   }
+
+   /**
+    * Get extra links to display in list
+    *
+    * @since 10.0.0
+    *
+    * @return false|array
+    */
+   static function getExtraLinks() {
+       return false;
+   }
 }

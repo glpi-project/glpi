@@ -293,17 +293,17 @@ class NetworkPortMigration extends CommonDBChild {
       echo "<$gateway_cell>" . $this->fields['gateway'] . "</$gateway_cell></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>". __('Network interface') ."</td><$interface_cell>\n";
-      if ($DB->tableExists('glpi_networkinterfaces')) {
-         $query = "SELECT `name`
-                   FROM `glpi_networkinterfaces`
-                   WHERE `id`='".$this->fields['networkinterfaces_id']."'";
-         $result = $DB->query($query);
-         if ($DB->numrows($result) > 0) {
-            $row = $DB->fetch_assoc($result);
-            echo $row['name'];
-         } else {
-            echo __('Unknown interface');
-         }
+      $iterator = $DB->request([
+         'SELECT' => 'name',
+         'FROM'   => 'glpi_networkinterfaces',
+         'WHERE'  => ['id' => $this->fields['networkinterfaces_id']]
+      ]);
+      $result = $DB->query($query);
+      if (count($iterator)) {
+         $row = $iterator->next();
+         echo $row['name'];
+      } else {
+         echo __('Unknown interface');
       }
       echo "</$interface_cell>";
       echo "<$interface_cell></$interface_cell>";
@@ -450,15 +450,13 @@ class NetworkPortMigration extends CommonDBChild {
          'name'               => IPAddress::getTypeName(1)
       ];
 
-      if ($DB->tableExists('glpi_networkinterfaces')) {
-         $tab[] = [
-            'id'                 => '24',
-            'table'              => 'glpi_networkinterfaces',
-            'field'              => 'name',
-            'datatype'           => 'dropdown',
-            'name'               => __('Network interface')
-         ];
-      }
+      $tab[] = [
+         'id'                 => '24',
+         'table'              => 'glpi_networkinterfaces',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'name'               => __('Network interface')
+      ];
 
       return $tab;
    }

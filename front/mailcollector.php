@@ -30,31 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
-
-Session::checkRight("config", UPDATE);
-
-Html::header(MailCollector::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "mailcollector");
-
-if (!Toolbox::canUseImapPop()) {
-   echo "<div class='center'>";
-   echo "<table class='tab_cadre_fixe'>";
-   echo "<tr><th colspan='2'>" . _n('Receiver', 'Receivers', 2)."</th></tr>";
-   echo "<tr class='tab_bg_2'>";
-   echo "<td class='center red'>" . sprintf(__('%s extension is missing'), 'IMAP');
-   echo "</td></tr>";
-   echo "<tr class='tab_bg_2'>";
-   echo "<td class='center'><strong>".GLPINetwork::getErrorMessage()."</strong>";
-   echo "</td></tr>";
-   echo "</table>";
-
-   echo "</div>";
-   Html::footer();
-   exit();
-
-} else {
-   $mailcollector = new MailCollector();
-   $mailcollector->title();
-   Search::show('MailCollector');
-   Html::footer();
-}
+//fully migrated to new UI, just redirect
+$itemtype = 'MailCollector';
+$route    = 'list';
+header("Location: ../public/index.php?uiredirect=true&route=$route&itemtype=$itemtype");

@@ -1,6 +1,6 @@
 ![GLPI Logo](https://raw.githubusercontent.com/glpi-project/glpi/master/pics/logos/logo-GLPI-250-black.png)
 
-[![CircleCI](https://img.shields.io/circleci/project/github/glpi-project/glpi/9.3/bugfixes.svg)](https://circleci.com/gh/glpi-project)
+[![CircleCI](https://img.shields.io/circleci/project/github/glpi-project/glpi/9.4/bugfixes.svg)](https://circleci.com/gh/glpi-project)
 [![Github All Releases](https://img.shields.io/github/downloads/glpi-project/glpi/total.svg)](#download)
 [![Twitter Follow](https://img.shields.io/twitter/follow/GLPI_PROJECT.svg?style=social&label=Follow)](https://twitter.com/GLPI_PROJECT)
 
@@ -45,12 +45,13 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 ## Prerequisites
 
 * A web server (Apache, Nginx, IIS, etc.)
-* MariaDB (or MySQL < 5.7)
-* PHP 5.6 or higher
+* MariaDB >= 10.0 or MySQL >= 5.6
+* PHP 7.0.8 or higher
 * Mandatory PHP extensions:
     - json
     - mbstring
-    - mysqli
+    - iconv
+    - pdo_mysql
     - session
     - gd (picture generation)
     - curl (CAS authentication)
@@ -98,25 +99,6 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
 * [Development documentation](http://glpi-developer-documentation.readthedocs.io/en/master/)
 * [Plugin directory](http://plugins.glpi-project.org)
 * [Plugin development documentation](http://glpi-developer-documentation.readthedocs.io/en/master/plugins/index.html)
-
-
-## Used JS libraries
- * [Chartist.js v0.10.1](https://github.com/gionkunz/chartist-js) MIT/WTFPL
- * [chartist-plugin-legend v0.6.0](https://github.com/CodeYellowBV/chartist-plugin-legend) ISC
- * [chartist-plugin-tooltip v0.0.17](https://github.com/tmmdata/chartist-plugin-tooltip) MIT
- * [Font-Awesome v4.7.0](https://github.com/FortAwesome/Font-Awesome) MIT
- * [fuzzy v0.1.3](https://github.com/mattyork/fuzzy) MIT
- * [gridstack.js v unknow-dev](https://github.com/gridstack/gridstack.js) MIT
- * [htmLawed v1.2.4](http://www.bioinformatics.org/phplabware/internal_utilities/htmLawed/) LGPL3/GPL2+
- * [jQuery v1.10.2](https://github.com/jquery/jquery) MIT
- * [jQuery UI v1.10.4](https://github.com/jquery/jquery-ui) MIT
- * jQuery plugins *
- * [Leaflet v1.2.0](https://github.com/Leaflet/Leaflet) BSD2S
- * [PrismJS v](https://github.com/PrismJS/prism) MIT
- * [spin.js v2.3.2](https://github.com/fgnass/spin.js) MIT
- * [TinyMCE v4.7.1](https://github.com/tinymce/tinymce) LGPL2.1
- * [Underscore.js v1.8.3](https://github.com/jashkenas/underscore) MIT
- * [Lodash v unknown](https://github.com/lodash/lodash) MIT
 
 
 ## Support

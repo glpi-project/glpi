@@ -1,0 +1,49 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% extends "elements/input.twig" %}
+
+{% set element = element|merge({name: false}) %}
+{% block element %}
+    {% set fallback_input_class = fallback_input_class|default('col-form-label') %}
+    <div class="controls">
+        <div class="input-group">
+            <div class="{% if default_input_class is defined %}{{ default_input_class }} {% endif %}{%if element.class is defined %}{{ element.class }}{% else %}{{ fallback_input_class }}{% endif %}">
+    {% if element.value is defined and element.value is iterable %}
+        {% set item = getitem(element.value.itemtype) %}
+        {% set loaded = item.getFromDB(element.value.items_id) %}
+        {{ item.getLink()|raw }}
+    {% else %}
+                {{ __('Missing data to build link') }}
+    {% endif %}
+      </div>
+   </div>
+   </div>
+{% endblock %}

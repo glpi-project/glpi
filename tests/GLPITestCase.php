@@ -35,8 +35,6 @@
 class GLPITestCase extends atoum {
    private $int;
    private $str;
-   protected $cached_methods = [];
-   protected $nscache;
 
    public function setUp() {
       // By default, no session, not connected
@@ -47,31 +45,10 @@ class GLPITestCase extends atoum {
       ];
    }
 
-   public function beforeTestMethod($method) {
-      if (in_array($method, $this->cached_methods)) {
-         $this->nscache = 'glpitestcache' . GLPI_VERSION;
-         global $GLPI_CACHE;
-         //run with cache
-         define('CACHED_TESTS', true);
-         //ZendCache does not works with PHP5 acpu...
-         $adapter = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
-         $GLPI_CACHE = \Zend\Cache\StorageFactory::factory([
-            'adapter'   => $adapter,
-            'options'   => [
-               'namespace' => $this->nscache
-            ]
-         ]);
-      }
-   }
-
    public function afterTestMethod($method) {
-      if (in_array($method, $this->cached_methods)) {
-         global $GLPI_CACHE;
-         if ($GLPI_CACHE instanceof \Zend\Cache\Storage\Adapter\AbstractAdapter) {
-            $GLPI_CACHE->flush();
-         }
-         $GLPI_CACHE = false;
-      }
+      global $CONTAINER;
+      $appCache = $CONTAINER->get('application_cache');
+      $appCache->clear();
    }
 
    /**
@@ -92,5 +69,14 @@ class GLPITestCase extends atoum {
          return $this->int = mt_rand(1000, 10000);
       }
       return $this->int++;
+   }
+
+   /**
+    * Returns cache namespace.
+    */
+   protected function getCacheNamespace(): string {
+      global $CONTAINER;
+      $cacheUniq = $CONTAINER->getParameter('cache_uniq_id');
+      return 'app' . (empty($cacheUniq) ? '' : '_' . $cacheUniq);
    }
 }

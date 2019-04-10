@@ -101,20 +101,21 @@ class Document extends DbTestCase {
 
    public function testPrepareInputForAdd() {
       $input = [
-         'filename'   => 'A name'
+         'filename'   => 'A_name.pdf'
       ];
 
       $doc = $this->newTestedInstance;
-
       $this->array($this->testedInstance->prepareInputForAdd($input))
-         ->hasSize(1)
-        ->hasKey('tag');
+         ->hasSize(3)
+         ->hasKeys(['tag', 'filename', 'name'])
+         ->variable['filename']->isEqualTo('A_name.pdf')
+         ->variable['name']->isEqualTo('A_name.pdf');
 
       $this->login();
       $uid = getItemByTypeName('User', TU_USER, true);
       $this->array($this->testedInstance->prepareInputForAdd($input))
-         ->hasSize(2)
-         ->hasKeys(['users_id', 'tag'])
+         ->hasSize(4)
+         ->hasKeys(['users_id', 'tag', 'filename', 'name'])
          ->variable['users_id']->isEqualTo($uid);
 
       $item = new \Computer();
@@ -135,8 +136,8 @@ class Document extends DbTestCase {
       $input['upload_file'] = 'filename.ext';
 
       $this->array($mdoc->prepareInputForAdd($input))
-         ->hasSize(5)
-         ->hasKeys(['users_id', 'tag', 'itemtype', 'items_id', 'name'])
+         ->hasSize(6)
+         ->hasKeys(['users_id', 'tag', 'itemtype', 'items_id', 'filename', 'name'])
          ->variable['users_id']->isEqualTo($uid)
          ->string['itemtype']->isIdenticalTo('Computer')
          ->variable['items_id']->isEqualTo($cid)
@@ -215,25 +216,20 @@ class Document extends DbTestCase {
 
    protected function isImageProvider() {
       return [
-         ['PNG', true],
-         ['png', true],
-         ['JPG', true],
-         ['jpg', true],
-         ['jpeg', true],
-         ['JPEG', true],
-         ['bmp', true],
-         ['BMP', true],
-         ['gif', true],
-         ['GIF', true],
-         ['SVG', false]
+         [__FILE__, false],
+         [__DIR__ . "/../../pics/add_dropdown.png", true],
+         [__DIR__ . "/../../pics/corners.gif", true],
+         [__DIR__ . "/../../pics/PICS-AUTHORS.txt", false],
+         [__DIR__ . "/../notanimage.jpg", false],
+         [__DIR__ . "/../notafile.jpg", false]
       ];
    }
 
    /**
     * @dataProvider isImageProvider
     */
-   public function testIsImage($ext, $expected) {
-      $this->variable(\Document::isImage('myfile.' . $ext))->isIdenticalTo($expected);
+   public function testIsImage($file, $expected) {
+      $this->boolean(\Document::isImage($file))->isIdenticalTo($expected);
    }
 
    /**
@@ -408,6 +404,15 @@ class Document extends DbTestCase {
          )
       )->isTrue();
 
+      // faq items in mulitple entity mode need to be set in root enity +recursive to be viewed
+      $entity_kbitems = new \Entity_KnowbaseItem;
+      $ent_kb_id = $entity_kbitems->add([
+         'knowbaseitems_id' => $kbItem->getID(),
+         'entities_id'      => 0,
+         'is_recursive'     => 1,
+      ]);
+      $this->integer($ent_kb_id)->isGreaterThan(0);
+
       $this->boolean($basicDocument->canViewFile())->isFalse();
       $this->boolean($inlinedDocument->canViewFile())->isFalse();
 
@@ -434,19 +439,41 @@ class Document extends DbTestCase {
             ]
          )
       )->isTrue();
+      $this->boolean(
+         $entity_kbitems->delete([
+            'id' => $ent_kb_id
+         ])
+      )->isTrue();
 
       $this->boolean($basicDocument->canViewFile())->isFalse();
       $this->boolean($inlinedDocument->canViewFile())->isFalse();
    }
 
    /**
-    * Check visibility of document attached to tickets.
+    * Data provider for self::testCanViewItilFile().
     */
-   public function testCanViewTicketFile() {
+   protected function itilTypeProvider() {
+      return [
+         [
+            'itemtype' => \Change::class,
+         ],
+         [
+            'itemtype' => \Problem::class,
+         ],
+         [
+            'itemtype' => \Ticket::class,
+         ],
+      ];
+   }
 
-      global $CFG_GLPI;
+   /**
+    * Check visibility of document attached to ITIL objects.
+    *
+    * @dataProvider itilTypeProvider
+    */
+   public function testCanViewItilFile($itemtype) {
 
-      $CFG_GLPI['use_rich_text'] = 1;
+      $this->login('glpi', 'glpi'); // Login with glpi to prevent link to post-only
 
       $basicDocument = new \Document();
       $this->integer(
@@ -466,11 +493,12 @@ class Document extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-      $this->login('glpi', 'glpi'); // Login with glpi to prevent link to post-only
-      $ticket = new \Ticket();
+      $item = new $itemtype();
+      $fkey = $item->getForeignKeyField();
+
       $this->integer(
-         (int)$ticket->add([
-            'name'     => 'New ticket',
+         (int)$item->add([
+            'name'     => 'New ' . $itemtype,
             'content'  => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
          ])
       )->isGreaterThan(0);
@@ -479,28 +507,34 @@ class Document extends DbTestCase {
       $this->integer(
          (int)$document_item->add([
             'documents_id' => $basicDocument->getID(),
-            'items_id'     => $ticket->getID(),
-            'itemtype'     => \Ticket::class,
+            'items_id'     => $item->getID(),
+            'itemtype'     => $itemtype,
          ])
       )->isGreaterThan(0);
 
-      // post-only cannot see documents if not able to view ticket (ticket content)
+      // post-only cannot see documents if not able to view ITIL (ITIL content)
       $this->login('post-only', 'postonly');
-      $this->boolean($basicDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isFalse();
-      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isFalse();
+      $_SESSION["glpiactiveprofile"][$item::$rightname] = READ; // force READ write for tested ITIL type
+      $this->boolean($basicDocument->canViewFile())->isFalse();
+      $this->boolean($inlinedDocument->canViewFile())->isFalse();
+      $this->boolean($basicDocument->canViewFile([$fkey => $item->getID()]))->isFalse();
+      $this->boolean($inlinedDocument->canViewFile([$fkey => $item->getID()]))->isFalse();
 
-      // post-only can see documents linked to its own tickets (ticket content)
-      $ticket_user = new \Ticket_User();
+      // post-only can see documents linked to its own ITIL (ITIL content)
+      $itil_user_class = $itemtype . '_User';
+      $itil_user = new $itil_user_class();
       $this->integer(
-         (int)$ticket_user->add([
-            'tickets_id' => $ticket->getID(),
-            'type'       => \CommonITILActor::OBSERVER,
-            'users_id'   => \Session::getLoginUserID(),
+         (int)$itil_user->add([
+            $fkey      => $item->getID(),
+            'type'     => \CommonITILActor::OBSERVER,
+            'users_id' => \Session::getLoginUserID(),
          ])
       )->isGreaterThan(0);
 
-      $this->boolean($basicDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isTrue();
-      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isTrue();
+      $this->boolean($basicDocument->canViewFile())->isFalse(); // False without params
+      $this->boolean($inlinedDocument->canViewFile())->isFalse(); // False without params
+      $this->boolean($basicDocument->canViewFile([$fkey => $item->getID()]))->isTrue();
+      $this->boolean($inlinedDocument->canViewFile([$fkey => $item->getID()]))->isTrue();
    }
 
    /**
@@ -509,29 +543,53 @@ class Document extends DbTestCase {
    protected function ticketChildClassProvider() {
       return [
          [
-            'class' => \ITILSolution::class,
+            'itil_itemtype'  => \Change::class,
+            'child_itemtype' => \ITILSolution::class,
          ],
          [
-            'class' => \TicketTask::class,
+            'itil_itemtype'  => \Change::class,
+            'child_itemtype' => \ChangeTask::class,
          ],
          [
-            'class' => \TicketFollowup::class,
+            'itil_itemtype'  => \Change::class,
+            'child_itemtype' => \ITILFollowup::class,
+         ],
+         [
+            'itil_itemtype'  => \Problem::class,
+            'child_itemtype' => \ITILSolution::class,
+         ],
+         [
+            'itil_itemtype'  => \Problem::class,
+            'child_itemtype' => \ProblemTask::class,
+         ],
+         [
+            'itil_itemtype'  => \Problem::class,
+            'child_itemtype' => \ITILFollowup::class,
+         ],
+         [
+            'itil_itemtype'  => \Ticket::class,
+            'child_itemtype' => \ITILSolution::class,
+         ],
+         [
+            'itil_itemtype'  => \Ticket::class,
+            'child_itemtype' => \TicketTask::class,
+         ],
+         [
+            'itil_itemtype'  => \Ticket::class,
+            'child_itemtype' => \ITILFollowup::class,
          ],
       ];
    }
 
    /**
-    * Check visibility of document inlined in tickets followup.
+    * Check visibility of document inlined in ITIL followup, tasks, solutions.
     *
     * @dataProvider ticketChildClassProvider
     */
-   public function testCanViewTicketChildFile($childClass) {
-
-      global $CFG_GLPI;
-
-      $CFG_GLPI['use_rich_text'] = 1;
+   public function testCanViewTicketChildFile($itil_itemtype, $child_itemtype) {
 
       $this->login('glpi', 'glpi'); // Login with glpi to prevent link to post-only
+
       $inlinedDocument = new \Document();
       $this->integer(
          (int)$inlinedDocument->add([
@@ -541,39 +599,44 @@ class Document extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-      $ticket = new \Ticket();
+      $itil = new $itil_itemtype();
+      $fkey = $itil->getForeignKeyField();
       $this->integer(
-         (int)$ticket->add([
-            'name'     => 'New ticket',
+         (int)$itil->add([
+            'name'     => 'New ' . $itil_itemtype,
             'content'  => 'No image in content',
          ])
       )->isGreaterThan(0);
 
-      $child = new $childClass();
+      $child = new $child_itemtype();
       $this->integer(
          (int)$child->add([
             'content'    => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
-            'tickets_id' => $ticket->getID(),
-            'items_id'   => $ticket->getID(),
-            'itemtype'   => \Ticket::class,
+            $fkey        => $itil->getID(),
+            'items_id'   => $itil->getID(),
+            'itemtype'   => $itil_itemtype,
             'users_id'   => '2', // user "glpi"
          ])
       )->isGreaterThan(0);
 
-      // post-only cannot see documents if not able to view ticket
+      // post-only cannot see documents if not able to view ITIL
       $this->login('post-only', 'postonly');
-      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isFalse();
+      $_SESSION["glpiactiveprofile"][$itil::$rightname] = READ; // force READ write for tested ITIL type
+      $this->boolean($inlinedDocument->canViewFile())->isFalse();
+      $this->boolean($inlinedDocument->canViewFile([$fkey => $itil->getID()]))->isFalse();
 
-      // post-only can see documents linked to its own tickets
-      $ticket_user = new \Ticket_User();
+      // post-only can see documents linked to its own ITIL
+      $itil_user_class = $itil_itemtype . '_User';
+      $itil_user = new $itil_user_class();
       $this->integer(
-         (int)$ticket_user->add([
-            'tickets_id' => $ticket->getID(),
+         (int)$itil_user->add([
+            $fkey => $itil->getID(),
             'type'       => \CommonITILActor::OBSERVER,
             'users_id'   => \Session::getLoginUserID(),
          ])
       )->isGreaterThan(0);
 
-      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isTrue();
+      $this->boolean($inlinedDocument->canViewFile())->isFalse(); // False without params
+      $this->boolean($inlinedDocument->canViewFile([$fkey => $itil->getID()]))->isTrue();
    }
 }

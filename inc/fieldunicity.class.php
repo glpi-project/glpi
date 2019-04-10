@@ -286,7 +286,7 @@ class FieldUnicity extends CommonDropdown {
 
          //Construct list
          $values = [];
-         foreach ($DB->list_fields(getTableForItemType($itemtype)) as $field) {
+         foreach ($DB->listFields(getTableForItemType($itemtype)) as $field) {
             $searchOption = $target->getSearchOptionByField('field', $field['Field']);
             if (!empty($searchOption)
                 && !in_array($field['Type'], $blacklisted_types)
@@ -549,32 +549,38 @@ class FieldUnicity extends CommonDropdown {
          if ($unicity->fields['is_recursive']) {
             $entities = getSonsOf('glpi_entities', $unicity->fields['entities_id']);
          }
-         $fields_string = implode(',', $fields);
 
+         $where = [];
          if ($item->maybeTemplate()) {
-            $where_template = " AND `".$item->getTable()."`.`is_template` = 0";
-         } else {
-            $where_template = "";
+            $where[$item->getTable() . '.is_template'] = 0;
          }
 
-         $where_fields_string = "";
          foreach ($where_fields as $where_field) {
             if (getTableNameForForeignKeyField($where_field)) {
-               $where_fields_string.= " AND `$where_field` IS NOT NULL AND `$where_field` <> '0'";
+               $where = $where + [
+                  'NOT'          => [$where_field => null],
+                  $where_field   => ['<>', 0]
+               ];
             } else {
-               $where_fields_string.= " AND `$where_field` IS NOT NULL AND `$where_field` <> ''";
+               $where = $where + [
+                  'NOT'          => [$where_field => null],
+                  $where_field   => ['<>', '']
+               ];
             }
          }
-         $query = "SELECT $fields_string,
-                          COUNT(*) AS cpt
-                   FROM `".$item->getTable()."`
-                   WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',', $entities).")
-                         $where_template
-                         $where_fields_string
-                   GROUP BY $fields_string
-                   ORDER BY cpt DESC";
+
+         $iterator = $DB->request([
+            'SELECT'    => $fields,
+            'COUNT'     => 'cpt',
+            'FROM'      => $item->getTable(),
+            'WHERE'     => [
+               $item->getTable() . '.entities_id'  => $entities
+            ] + $where,
+            'GROUPBY'   => $fields,
+            'ORDERBY'   => 'cpt DESC'
+         ]);
          $results = [];
-         foreach ($DB->request($query) as $data) {
+         while ($data = $iterator->next()) {
             if ($data['cpt'] > 1) {
                $results[] = $data;
 

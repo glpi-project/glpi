@@ -192,25 +192,25 @@ class Slm extends DbTestCase {
       $act_id = $ruleaction->add($act_input = [
          'rules_id'    => $ruletid,
          'action_type' => 'assign',
-         'field'       => 'slas_tto_id',
+         'field'       => 'slas_id_tto',
          'value'       => $sla1_id
       ]);
       $act_id = $ruleaction->add($act_input = [
          'rules_id'    => $ruletid,
          'action_type' => 'assign',
-         'field'       => 'slas_ttr_id',
+         'field'       => 'slas_id_ttr',
          'value'       => $sla2_id
       ]);
       $act_id = $ruleaction->add($act_input = [
          'rules_id'    => $ruletid,
          'action_type' => 'assign',
-         'field'       => 'olas_tto_id',
+         'field'       => 'olas_id_tto',
          'value'       => $ola1_id
       ]);
       $act_id = $ruleaction->add($act_input = [
          'rules_id'    => $ruletid,
          'action_type' => 'assign',
-         'field'       => 'olas_ttr_id',
+         'field'       => 'olas_id_ttr',
          'value'       => $ola2_id
       ]);
       $this->checkInput($ruleaction, $act_id, $act_input);
@@ -224,10 +224,10 @@ class Slm extends DbTestCase {
          'content' => $this->method
       ]);
       $this->checkInput($ticket, $tickets_id, $ticket_input);
-      $this->integer((int)$ticket->getField('slas_tto_id'))->isEqualTo($sla1_id);
-      $this->integer((int)$ticket->getField('slas_ttr_id'))->isEqualTo($sla2_id);
-      $this->integer((int)$ticket->getField('olas_tto_id'))->isEqualTo($ola1_id);
-      $this->integer((int)$ticket->getField('olas_ttr_id'))->isEqualTo($ola2_id);
+      $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
+      $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
+      $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
+      $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
       $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
 
       // test update ticket
@@ -242,10 +242,10 @@ class Slm extends DbTestCase {
       ]);
       $ticket_input_2['name'] = $this->method;
       $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
-      $this->integer((int)$ticket->getField('slas_tto_id'))->isEqualTo($sla1_id);
-      $this->integer((int)$ticket->getField('slas_ttr_id'))->isEqualTo($sla2_id);
-      $this->integer((int)$ticket->getField('olas_tto_id'))->isEqualTo($ola1_id);
-      $this->integer((int)$ticket->getField('olas_ttr_id'))->isEqualTo($ola2_id);
+      $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
+      $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
+      $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
+      $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
       $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
 
       // ## 3 - test purge of slm and check if we don't find any sub objects

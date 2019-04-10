@@ -205,7 +205,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
       }
 
       $obj   = new self;
-      $found = $obj->find("`knowbaseitems_id`='".$item->getID()."'", "`language` ASC");
+      $found = $obj->find(['knowbaseitems_id' => $item->getID()], "language ASC");
 
       if (count($found) > 0) {
          if ($canedit) {
@@ -330,8 +330,10 @@ class KnowbaseItemTranslation extends CommonDBChild {
       global $DB;
 
       $obj   = new self;
-      $found = $obj->find("`knowbaseitems_id` = '".$item->getID().
-                          "' AND `language` = '".$_SESSION['glpilanguage']."'");
+      $found = $obj->find([
+         'knowbaseitems_id'   => $item->getID(),
+         'language'           => $_SESSION['glpilanguage']
+      ]);
 
       if ((count($found) > 0)
           && in_array($field, ['name', 'answer'])) {
@@ -428,8 +430,8 @@ class KnowbaseItemTranslation extends CommonDBChild {
 
       if ($this->update($values)) {
          Event::log($this->getID(), "knowbaseitemtranslation", 5, "tools",
-                    //TRANS: %s is the user login, %d the revision number
-                    sprintf(__('%s reverts item translation to revision %id'), $_SESSION["glpiname"], $revision));
+                    //TRANS: %1$s is the user login, %2$s the revision number
+                    sprintf(__('%1$s reverts item translation to revision %2$s'), $_SESSION["glpiname"], $revision));
          return true;
       } else {
          return false;

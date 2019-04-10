@@ -295,17 +295,15 @@ class Html extends \GLPITestCase {
 
    public function testGetMenuInfos() {
       $menu = \Html::getMenuInfos();
-      $this->integer(count($menu))->isIdenticalTo(8);
+      $this->integer(count($menu))->isIdenticalTo(6);
 
       $expected = [
          'assets',
          'helpdesk',
          'management',
          'tools',
-         'plugins',
          'admin',
          'config',
-         'preference'
       ];
       $this->array($menu)
          ->hasSize(count($expected))
@@ -366,10 +364,6 @@ class Html extends \GLPITestCase {
       $this->string($menu['tools']['title'])->isIdenticalTo('Tools');
       $this->array($menu['tools']['types'])->isIdenticalTo($expected);
 
-      $expected = [];
-      $this->string($menu['plugins']['title'])->isIdenticalTo('Plugins');
-      $this->array($menu['plugins']['types'])->isIdenticalTo($expected);
-
       $expected = [
          'User',
          'Group',
@@ -398,10 +392,6 @@ class Html extends \GLPITestCase {
       ];
       $this->string($menu['config']['title'])->isIdenticalTo('Setup');
       $this->array($menu['config']['types'])->isIdenticalTo($expected);
-
-      $this->string($menu['preference']['title'])->isIdenticalTo('My settings');
-      $this->array($menu['preference'])->notHasKey('types');
-      $this->string($menu['preference']['default'])->isIdenticalTo('/front/preference.php');
    }
 
    public function testGetCopyrightMessage() {
@@ -421,7 +411,7 @@ class Html extends \GLPITestCase {
          'other.css',
          'other-min.css'
       ];
-      $dir = str_replace(GLPI_ROOT, '', GLPI_TMP_DIR);
+      $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
       $base_expected = '<link rel="stylesheet" type="text/css" href="'.
          $CFG_GLPI['root_doc'] . $dir .'/%url?v='. GLPI_VERSION .'" %attrs>';
       $base_attrs = 'media="all"';
@@ -530,7 +520,7 @@ class Html extends \GLPITestCase {
          'other.js',
          'other-min.js'
       ];
-      $dir = str_replace(GLPI_ROOT, '', GLPI_TMP_DIR);
+      $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
       $base_expected = '<script type="text/javascript" src="'.
          $CFG_GLPI['root_doc'] . $dir .'/%url?v='. GLPI_VERSION .'"></script>';
 
@@ -657,10 +647,8 @@ class Html extends \GLPITestCase {
             ->hasKey('helpdesk')
             ->hasKey('management')
             ->hasKey('tools')
-            ->hasKey('plugins')
             ->hasKey('admin')
-            ->hasKey('config')
-            ->hasKey('preference');
+            ->hasKey('config');
 
       foreach ($menu as $menu_entry) {
          $this->array($menu_entry)
@@ -751,7 +739,7 @@ class Html extends \GLPITestCase {
 
    public function testCleanSQLDisplay() {
       $sql = "SELECT * FROM mytable WHERE myfield < 10 ORDER BY id";
-      $expected = "SELECT * <br>FROM mytable <br>WHERE myfield &lt; 10 <br>ORDER BY id";
+      $expected = "SELECT * <br/>FROM mytable <br/>WHERE myfield &lt; 10 <br/>ORDER BY id";
       $this->string(\Html::cleanSQLDisplay($sql))->isIdenticalTo($expected);
    }
 

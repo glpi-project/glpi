@@ -36,8 +36,7 @@
  * @return bool for success (will die for most error)
 **/
 function update92to93() {
-   global $DB, $migration, $CFG_GLPI;
-   $dbutils = new DbUtils();
+   global $DB, $migration;
 
    $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
@@ -91,6 +90,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_tickets', 'solution')) {
       //migrate solution history for tickets
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Ticket' AS itemtype,
@@ -114,6 +114,7 @@ function update92to93() {
                   AND log.`id_search_option` = 24
                WHERE
                   LENGTH(ticket.`solution`) > 0
+                  OR solutiontypes_id > 0
                GROUP BY ticket.`id`
                ORDER BY ticket.`id` ASC, log.id DESC";
       $DB->queryOrDie($query, "9.3 migrate Ticket solution history");
@@ -124,6 +125,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_problems', 'solution')) {
       // Problem soution history
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Problem' AS itemtype,
@@ -148,6 +150,7 @@ function update92to93() {
                   AND log.`id_search_option` = 24
                WHERE
                   LENGTH(problem.`solution`) > 0
+                  OR solutiontypes_id > 0
                GROUP BY problem.`id`
                ORDER BY problem.`id` ASC, log.id DESC";
       $DB->queryOrDie($query, "9.3 migrate Problem solution history");
@@ -158,6 +161,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_changes', 'solution')) {
       // Change solution history
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Change' AS itemtype,
@@ -182,6 +186,7 @@ function update92to93() {
                   AND log.`id_search_option` = 24
                WHERE
                   LENGTH(changes.`solution`) > 0
+                  OR solutiontypes_id > 0
                GROUP BY changes.`id`
                ORDER BY changes.`id` ASC, log.id DESC";
       $DB->queryOrDie($query, "9.3 migrate Change solution history");
@@ -596,8 +601,10 @@ function update92to93() {
    if (!countElementsInTable('glpi_plugs')) {
       $plugs = ['C13', 'C15', 'C19'];
       foreach ($plugs as $plug) {
+         $params = ['name' => $plug];
          $migration->addPostQuery(
-            $DB->buildInsert('glpi_plugs', ['name' => $plug])
+            $DB->buildInsert('glpi_plugs', $params),
+            $params
          );
       }
    }
@@ -710,13 +717,15 @@ function update92to93() {
    }
    $migration->addKey('glpi_items_disks', 'itemtype');
    $migration->addKey('glpi_items_disks', ['itemtype', 'items_id'], 'item');
-   $migration->addPostQuery(
-      $DB->buildUpdate(
-         'glpi_items_disks',
-         ['itemtype' => 'Computer'],
-         ['itemtype' => null]
-      )
+
+   $values = ['itemtype' => 'Computer'];
+   $where = ['itemtype' => null];
+   $update = $DB->buildUpdate(
+      'glpi_items_disks',
+      $values,
+      $where
    );
+   $migration->addPostQuery($update, $values);
    /** /Migrate computerdisks to items_disks */
 
    /** Add Item_Device* display preferences */
@@ -741,16 +750,6 @@ function update92to93() {
    }
    /** /Add Item_Device* display preferences */
 
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $query = "REPLACE INTO `glpi_displaypreferences`
-                           (`itemtype` ,`num` ,`rank` ,`users_id`)
-                     VALUES ('$type', '$newval', '".$rank++."', '0')";
-         $DB->query($query);
-      }
-   }
-
    // upgrade for users multi-domains
    if (!isIndex('glpi_users', 'unicityloginauth')) {
       $migration->dropKey("glpi_users", "unicity");
@@ -762,9 +761,15 @@ function update92to93() {
       );
    }
    $migration->addField('glpi_authldaps', 'inventory_domain', 'string');
-   $migration->addPostQuery("UPDATE `glpi_users`
-                          SET `glpi_users`.`authtype` = 1
-                          WHERE `glpi_users`.`authtype` = 0");
+   $set = ['glpi_users.authtype' => 1];
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         "glpi_users",
+         $set,
+         ["glpi_users.authtype" => 0]
+      ),
+      $set
+   );
 
    //Permit same license several times on same computer
    $migration->dropKey('glpi_computers_softwarelicenses', 'unicity');
@@ -850,6 +855,8 @@ function update92to93() {
    /** /Clean item rack relation on deleted items */
 
    // ************ Keep it at the end **************
+   $migration->updateDisplayPrefs($ADDTODISPLAYPREF);
+
    $migration->executeMigration();
 
    return $updateresult;

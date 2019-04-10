@@ -215,12 +215,13 @@ class Item_Problem extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Problem' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                   $nb = self::countForMainItem($item);
                }
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
@@ -228,14 +229,14 @@ class Item_Problem extends CommonDBRelation{
             case 'User' :
             case 'Group' :
             case 'Supplier' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                   $nb = self::countForItem($item);
                }
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
             default :
                if (Session::haveRight("problem", Problem::READALL)) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                      // Direct one
                      $nb = self::countForItem($item);
                      // Linked items

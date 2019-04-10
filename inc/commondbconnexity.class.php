@@ -94,13 +94,15 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * That is used by cleanDBOnItem : the only interesting field is static::getIndexName()
     * But CommonDBRelation also use it to get more complex result
     *
+    * @since 9.4
+    *
     * @param string  $itemtype the type of the item to look for
     * @param integer $items_id the id of the item to look for
     *
-    * @return string the SQL request of '' if it is not possible
-    **/
-   static function getSQLRequestToSearchForItem($itemtype, $items_id) {
-      return '';
+    * @return array|null
+    */
+   static function getSQLCriteriaToSearchForItem($itemtype, $items_id) {
+      return null;
    }
 
 
@@ -114,12 +116,15 @@ abstract class CommonDBConnexity extends CommonDBTM {
    function cleanDBonItemDelete ($itemtype, $items_id) {
       global $DB;
 
-      $query = static::getSQLRequestToSearchForItem($itemtype, $items_id);
-      if (!empty($query)) {
-         $input = ['_no_history'     => true,
-                        '_no_notif'       => true];
+      $criteria = static::getSQLCriteriaToSearchForItem($itemtype, $items_id);
+      if ($criteria !== null) {
+         $input = [
+            '_no_history'     => true,
+            '_no_notif'       => true
+         ];
 
-         foreach ($DB->request($query) as $data) {
+         $iterator = $DB->request($criteria);
+         while ($data = $iterator->next()) {
             $input[$this->getIndexName()] = $data[$this->getIndexName()];
             $this->delete($input, 1);
          }
@@ -316,7 +321,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
       // Do not get it twice
       $connexityItem = $item;
-      if ($connexityItem == null) {
+      if (is_null($connexityItem)) {
          $connexityItem = $this->getConnexityItem($itemtype, $items_id);
 
          // Set value in $item to reuse it on future calls
@@ -359,7 +364,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    **/
    function getHistoryChangeWhenUpdateField($field) {
 
-      return ['0', addslashes($this->oldvalues[$field]), addslashes($this->fields[$field])];
+      return ['0', $this->oldvalues[$field], $this->fields[$field]];
    }
 
 

@@ -59,11 +59,14 @@ class Group_Reminder extends CommonDBRelation {
       global $DB;
 
       $groups = [];
-      $query  = "SELECT `glpi_groups_reminders`.*
-                 FROM `glpi_groups_reminders`
-                 WHERE `reminders_id` = '$reminders_id'";
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'reminders_id' => $reminders_id
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $groups[$data['groups_id']][] = $data;
       }
       return $groups;
