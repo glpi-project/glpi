@@ -1,0 +1,587 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+/* ===== LOGIN ===== */
+
+#firstboxlogin {
+   background-color: #585957;
+}
+
+#logo_login {
+   background: url(../pics/login_logo_glpi.png) center no-repeat, #161514;
+}
+
+#display-login {
+   color: #FFF;
+}
+
+#text-login {
+   background-color: #161514;
+   color: #FFF;
+}
+
+/* ====== GENERAL ====== */
+
+body,
+.loadingindicator,
+.tab_cadre_fixe th,
+.tab_cadre_fixehov th,
+.tab_cadrehov th,
+.ui-widget-header {
+   background: #242323;
+   background-color: #242323 !important;
+   color: #AAAAAA;
+   scrollbar-color: dark;
+}
+
+::-webkit-scrollbar {
+   background-color: rgb(32, 32, 32);
+   width: 5px;
+   height: 8px;
+}
+::-webkit-scrollbar-thumb {
+   background-color: rgb(83, 83, 83);
+}
+
+body a,
+body a:link,
+#c_ssmenu2 ul li a,
+body .fa,
+body .fa,
+body .far,
+body a .fa,
+body a .far,
+body a .fas,
+body #page a.fa:link,
+#c_preference a.fa {
+   color: #AAAAAA;
+}
+
+#see_debug .fa-bug {
+   color: #0c0c0b !important;
+}
+
+#c_preference a.debugon {
+   color: #f00 !important;
+}
+
+#champRecherche .fa {
+   color: #2c2b2a !important;
+}
+
+#c_ssmenu2, .tab_bg_2 {
+   background-color: #2c2b2a;
+   color: #AAAAAA;
+}
+
+body .tab_bg_2_2, body .tab_bg_1_2 {
+   color: #4e0404;
+
+   a {
+      color: #4e0404 !important;
+   }
+}
+
+.tab_bg_4 {
+   background-color: #42403f;
+}
+
+.main_form,
+.tab_cadre,
+.tab_cadre_fixe,
+.tab_cadrehov,
+.tab_cadre_fixehov {
+   background: transparent;
+   box-shadow: 0px 1px 2px 1px #5b5858;
+}
+
+.tab_bg_1 {
+   background-color: transparent;
+   color: #AAAAAA;
+}
+
+.tab_cadre_fixehov th,
+.tab_cadrehov th,
+.tab_cadrehov td,
+.tab_cadre td,
+.tab_cadre_fixehov td {
+   border-bottom: 1px solid #52504f;
+}
+
+.tab_cadre th,
+.tab_cadre_fixe th,
+.tab_cadre_fixehov th,
+.tab_cadrehov th, h2.header,
+td.subheader {
+   background: #242323;
+   color: #AAA;
+}
+
+.ui-tabs,
+.tab_cadrehov tr.rowHover,
+.tab_cadrehov td.rowHover,
+.tab_cadrehov th.headHover,
+.tab_cadre_fixehov tr.rowHover,
+.tab_cadre_fixehov td.rowHover {
+   background-color: #4d4b4a;
+   color: rgb(252, 252, 252);
+}
+
+.ui-tabs-vertical .ui-tabs-nav {
+   border: none;
+}
+
+.comments li:last-child:before {
+   background: transparent;
+}
+
+#footer,
+#searchcriteria,
+#searchcriterias .tab_cadre_fixe,
+.slidepanel,
+.sp-picker-container,
+.ui-datepicker,
+.actor-head,
+ul#menu ul.ssmenu,
+.breadcrumb_item:nth-of-type(1),
+.breadcrumb_item:nth-of-type(2),
+.layout_classic.form .stNavMain li, .layout_vsplit.form .stNavMain li,
+.ui-tabs sup.tab_nb,
+.main_form tr.headerRow th {
+   background: #3a3938 !important;
+   color: #AAAAAA;
+   border: 1px solid transparent !important;
+   box-shadow: none;
+}
+
+.ui-tabs .ui-state-active sup.tab_nb {
+   background: #222121 !important;
+}
+
+.qtip-bootstrap {
+   background: #1d1c1c !important;
+   color: #AAAAAA;
+   border: 1px solid transparent !important;
+   box-shadow: none;
+}
+
+
+.main_form tr.headerRow th {
+   background: #3a3938 !important;
+   color: #AAAAAA !important;
+   border: 1px solid transparent !important;
+   box-shadow: none;
+}
+
+.actor_title {
+   background: transparent;
+}
+
+.layout_lefttab .actor_title,
+.layout_lefttab .actor-head {
+   background: #242323 !important;
+}
+
+.layout_vsplit.form #tabspanel + div.ui-tabs:not(.horizontal),
+.ui-widget-content {
+   background: #3a3938 !important;
+   color: #AAAAAA;
+   box-shadow: none;
+}
+
+.main_form, .tab_cadre_fixe, .tab_cadrehov {
+   box-shadow: none;
+}
+
+.grey_border {
+   border: 1px dotted #515151;
+}
+
+.switch label .lever {
+   background-color: #000;
+}
+
+.switch label .lever:after {
+   background: #AAAAAA;
+}
+
+.ui-widget-header {
+   border: none;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+   background: #222121;
+   border-color: transparent;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+   background: #3a3938;
+   color: #AAAAAA;
+}
+
+.ui-tabs .ui-tabs-nav {
+   padding: 0;
+}
+
+.ui-tabs .ui-tabs-nav li {
+   margin: 0;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li {
+   margin: 0;
+   border-right-width: 0 !important;
+   width: 100%;
+}
+
+.ui-state-default a,
+.ui-state-default a:link,
+.ui-state-default a:visited {
+   color: #AAAAAA;
+}
+
+.jstree-glpi .jstree-hovered {
+   background: #4b4948;
+}
+
+#searchcriteria {
+   box-shadow: none;
+}
+#searchcriteria.sub_criteria {
+   border: 1px solid #515151;
+}
+
+.warning {
+   color: #e28b8b;
+   background-color: #2c0202;
+
+   .fa {
+      color: #e28b8b !important;
+   }
+}
+
+.breadcrumb_item:before,
+.breadcrumb_item:nth-of-type(1):after,
+.breadcrumb_item:nth-of-type(2):after {
+   border-left-color: #3a3938;
+}
+.breadcrumb_item:nth-of-type(4):after {
+   border-left-color: #2c2b2a;
+}
+
+.ui-state-active a,
+.ui-state-active a:link,
+.ui-state-active a:visited {
+   color: #AAAAAA;
+}
+
+#planning_filter h3 {
+   background: #242323;
+}
+#planning_filter ul.filters > li:nth-child(even) {
+   background: #3a3938;
+}
+
+textarea,
+select,
+body input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]),
+body input[type=search],
+body input:disabled,
+.fileupload,
+.subheader .box, .label-checkbox .box, th .label-checkbox .box,
+.sp-replacer,
+.mce-panel,
+.select2-selection.select2-selection--single,
+.select2-container--default .select2-selection--multiple,
+body .select2-container .select2-selection--multiple,
+.select2-dropdown {
+   background-color: #3a3938;
+   color: #AAAAAA;
+   border: 1px solid #515151 !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+   color: #AAAAAA;
+}
+input:required:valid {
+   border: 1px solid #515151 !important;
+}
+
+body .mce-panel {
+   background: transparent;
+}
+
+body div.mce-edit-area {
+   background: transparent;
+   border: 1px solid #555454;
+}
+
+body .mce-toolbar .mce-btn {
+   background: transparent;
+   color: #AAAAAA;
+}
+
+body .mce-btn .mce-txt,
+body .mce-toolbar .mce-btn i {
+   color: #AAAAAA;
+}
+
+body #page .mce-btn-group:not(:first-child) {
+   border-left: 1px solid #555454
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+   background-color: #4e4d4b;
+}
+
+a {
+   color: #161514;
+
+   &:link {
+      color: #161514;
+   }
+}
+
+.ui-widget-content a {
+   color: #161514;
+}
+
+.main_form tr.headerRow th {
+   color: #262626;
+}
+
+.timeline_history .h_content.ITILFollowup,
+.timeline_history .h_content.KnowbaseItemComment {
+   background-color: #686868;
+   color: rgb(209, 209, 209);
+}
+
+.timeline_history .b_right {
+   color: #FFF;
+}
+
+.timeline_history .h_content.ITILContent {
+   background-color: #506852;
+   color: #bdedba;
+}
+
+.timeline_choices li i.fa {
+   color: inherit !important;
+}
+
+.timeline_history .h_content.Solution .solimg {
+   color: rgba(66, 91, 100, 0.1) !important;
+}
+
+.racks_col h2 {
+   background: #161514;
+}
+
+.grid-rack {
+   background-color: #4e4d4b;
+   border-color: #161514;
+}
+
+.rack_side_block {
+   background-color: #4e4d4b;
+   border: none;
+
+   h3 {
+      color: #AAA;
+   }
+}
+
+.rack_side_block .sub_action {
+   color: #AAA;
+}
+
+.grid-stack-item .item_rack_icon {
+   color: #000;
+}
+
+.doaction_progress {
+   border: none;
+}
+
+.doaction_progress_text {
+   color: #000;
+}
+
+.itilstatus.planned {
+   color: #81a2f8;
+}
+
+/* ====== HEADER ====== */
+
+#header_top {
+   background-color: #161514;
+}
+
+#c_preference a, #language_link > span {
+   color: #AAAAAA;
+}
+
+#c_recherche form #champRecherche input {
+   background-color: #3F403E;
+   color: rgb(117, 115, 115);
+}
+
+/*#c_menu {
+   background-color: #AAAAAA;
+}*/
+
+ul {
+   &#menu {
+      a {
+         &.itemP, &.itemP1 {
+            color: #AAAAAA;
+         }
+      }
+
+      > li.active {
+         background-color: #161514;
+      }
+   }
+
+   &.ssmenu li.active {
+      background-color: #161514;
+   }
+
+   &#menu {
+      > li.active > a {
+         color: #AAAAAA;
+      }
+
+      ul {
+         &.ssmenu li.active > a {
+            color: #AAAAAA;
+         }
+
+         li a, li a:link {
+            &:hover {
+               background: #262626;
+               color: #AAAAAA;
+            }
+
+            color: #AAAAAA;
+         }
+      }
+
+      > li:hover {
+         background-color: #3F403E;
+      }
+   }
+}
+
+#c_recherche form #champRecherche button {
+   background-color: #AAAAAA;
+}
+
+/* ====== BUTTONS ====== */
+
+input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit, a.vsubmit, #BackToTop {
+   color: #AAAAAA;
+   background-color: #585957;
+}
+
+.vsubmit a {
+   color: rgb(117, 115, 115);
+   text-decoration: underline;
+}
+
+input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
+   background-color: #585957;
+}
+
+/* ====== Breadcrumb ====== */
+
+.breadcrumb_item:nth-of-type(3) {
+   background-color: #585957;
+
+   a {
+      color: #fff !important;
+   }
+
+   &:after {
+      border-left-color: #585957;
+   }
+}
+
+/* Primary color elements (white on blue BG) designed to be overridden from palettes */
+/* Colors are same as #c_menu */
+
+.primary-bg {
+   background: #585957;
+}
+
+.primary-bg-inverse {
+   background: white;
+}
+
+.primary-fg {
+   color: white;
+
+   &:hover {
+      color: white;
+   }
+}
+
+.primary-fg-inverse {
+   color: #AAAAAA;
+
+   &:hover {
+      color: #AAAAAA;
+   }
+}
+
+.secondary {
+   background: #191a19;
+}
+
+
+#show_all_menu {
+   dt a {
+      color: white;
+
+      &:hover {
+         background: #3F403E;
+      }
+   }
+
+   a {
+      color: #AAAAAA;
+
+      &:hover {
+         background-color: #585957;
+         color: white;
+      }
+   }
+}

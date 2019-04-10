@@ -5180,13 +5180,6 @@ JAVASCRIPT;
       $NAME = "{$itemtype}_{$ID}";
 
       switch ($table.".".$field) {
-         case "glpi_tickets.priority" :
-         case "glpi_problems.priority" :
-         case "glpi_changes.priority" :
-         case "glpi_projects.priority" :
-            $out = " style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME][0]['name']].";\" ";
-            break;
-
          case "glpi_tickets.time_to_resolve" :
          case "glpi_tickets.internal_time_to_resolve" :
          case "glpi_problems.time_to_resolve" :
@@ -5890,6 +5883,17 @@ JAVASCRIPT;
                } else {
                   return "&nbsp;";
                }
+
+            case "glpi_tickets.priority" :
+            case "glpi_problems.priority" :
+            case "glpi_changes.priority" :
+            case "glpi_projects.priority" :
+               $index = $data[$ID][0]['name'];
+               $color = $_SESSION["glpipriority_$index"];
+               $name  = CommonITILObject::getPriorityName($index);
+               return "<div class='priority_block' style='border-color: $color'>
+                        <span style='background: $color'></span>&nbsp;$name
+                       </div>";
          }
       }
 

@@ -826,17 +826,12 @@ class CommonGLPI {
 
          if ($first >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
-                    "\" title=\"".__s('First')."\" class='pointer'></a></td>";
-         } else {
-            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/first_off.png' alt=\"" .
-                __s('First')."\" title=\"".__s('First')."\"></td>";
+                "<i class='fa fa-angle-double-left' title=\"".__s('First')."\"></i></a></td>";
          }
 
          if ($prev >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                    "\" title=\"".__s('Previous')."\" class='pointer'></a></td>";
+                "<i class='fa fa-chevron-left' title=\"".__s('Previous')."\"></i></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 37 && e.ctrlKey) {
@@ -845,9 +840,6 @@ class CommonGLPI {
                        }
                   });';
             echo Html::scriptBlock($js);
-         } else {
-            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/left_off.png' alt=\"" .
-                __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
 
          if (!$glpilisttitle) {
@@ -893,8 +885,8 @@ class CommonGLPI {
 
          if ($next >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                    "\" title=\"".__s('Next')."\" class='pointer'></a></td>";
+                "<i class='fa fa-chevron-right' title=\"".__s('Next')."\"></i>
+                    </a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 39 && e.ctrlKey) {
@@ -903,18 +895,11 @@ class CommonGLPI {
                        }
                   });';
             echo Html::scriptBlock($js);
-         } else {
-            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/right_off.png' alt=\"" .
-                __s('Next')."\" title=\"".__s('Next')."\"></td>";
          }
 
          if ($last >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>" .
-                "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
-                    "\" title=\"".__s('Last')."\" class='pointer'></a></td>";
-         } else {
-            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/last_off.png' alt=\"" .
-                __s('Last')."\" title=\"".__s('Last')."\"></td>";
+                "<i class='fa fa-angle-double-right' title=\"".__s('Last')."\"></i></a></td>";
          }
 
          // End pager

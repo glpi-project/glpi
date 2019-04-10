@@ -1532,6 +1532,21 @@ td {
    margin: 0 3px;
 }
 
+.priority_block {
+   white-space: nowrap;
+   border: 1px solid transparent;
+   padding-right: 6px;
+   border-radius: 2px;
+   display: inline-block;
+
+   span {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      vertical-align: middle;
+   }
+}
+
 .reset-search {
    color: #ccc !important;
 
@@ -2925,10 +2940,10 @@ ul#menu {
    float: right;
    width: 24px;
    height: 24px;
-   margin-right: 20px;
+   margin-right: 10px;
    display: inline-block;
    margin-top: 2px;
-   background: url("../pics/menu_all.png");
+   font-size: 1.6em;
 }
 
 /* hide menu on small screen */
@@ -5909,7 +5924,10 @@ ul.indexes {
    }
 
    width: 217px;
-   background: repeating-linear-gradient(#FFF, #FFF 21px, #F0F0F0 21px, #F0F0F0 42px);
+   background: #FFF repeating-linear-gradient(transparent,
+                                                transparent 21px,
+                                              rgba(0, 0, 0, .1) 21px,
+                                              rgba(0, 0, 0, .1) 42px);
    z-index: 1;
    border: 1px solid #D4D4D4;
    float: left;

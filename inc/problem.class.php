@@ -955,11 +955,15 @@ class Problem extends CommonITILObject {
       $problem   = new self();
       $rand      = mt_rand();
       if ($problem->getFromDBwithData($ID, 0)) {
+
          $bgcolor = $_SESSION["glpipriority_".$problem->fields["priority"]];
-         // $rand    = mt_rand();
+         $name    = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
-                                                               $problem->fields["id"])."</td>";
+         echo "<td>
+            <div class='priority_block' style='border-color: $bgcolor'>
+               <span style='background: $bgcolor'></span>&nbsp;$name
+            </div>
+         </td>";
          echo "<td class='center'>";
 
          if (isset($problem->users[CommonITILActor::REQUESTER])

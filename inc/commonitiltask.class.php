@@ -1908,10 +1908,14 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
 
          $bgcolor = $_SESSION["glpipriority_".$item_link->fields["priority"]];
-         // $rand    = mt_rand();
+         $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
-                                                               $job->fields["id"])."</td>";
+         echo "<td>
+            <div class='priority_block' style='border-color: $bgcolor'>
+               <span style='background: $bgcolor'></span>&nbsp;$name
+            </div>
+         </td>";
+
          echo "<td class='center'>";
          echo $item_link->fields['name'];
          echo "</td>";
