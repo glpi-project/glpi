@@ -980,17 +980,16 @@ class Search {
                if (strlen($sub_sql)) {
                   $sql .= "$LINK ($sub_sql)";
                }
-            } else if (isset($searchopt[$criterion['field']]["usehaving"])) {
+            } else if (isset($searchopt[$criterion['field']]["usehaving"])
+                       || ($meta && "AND NOT" === $criterion['link'])) {
                if (!$is_having) {
                   // the having part will be managed in a second pass
                   continue;
                }
 
-               // Find key
-               $item_num = array_search($criterion['field'], $data['tocompute']);
                $new_having = self::addHaving($LINK, $NOT, $itemtype,
                                              $criterion['field'], $criterion['searchtype'],
-                                             $criterion['value'], $meta);
+                                             $criterion['value']);
                if ($new_having !== false) {
                   $sql .= $new_having;
                }
@@ -3035,11 +3034,10 @@ JAVASCRIPT;
     * @param integer $ID             ID of the item to search
     * @param string  $searchtype     search type ('contains' or 'equals')
     * @param string  $val            value search
-    * @param string  $meta           is it a meta item ?
     *
     * @return select string
    **/
-   static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val, $meta) {
+   static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val) {
 
       $searchopt  = &self::getOptions($itemtype);
       if (!isset($searchopt[$ID]['table'])) {
