@@ -2646,7 +2646,9 @@ a.icon_nav_move {
    }
 
    .login_input:before {
+      /* stylelint-disable */
       font-family: 'Font Awesome 5 Free';
+      /* stylelint-enable */
       left: 8px;
       position: absolute;
       top: 3px;
@@ -4140,7 +4142,9 @@ a.copyright {
 }
 
 .x-button-drop:after {
+   /* stylelint-disable */
    font-family: 'Font Awesome 5 Free';
+   /* stylelint-enable */
    font-weight: 900;
 }
 
@@ -4266,7 +4270,9 @@ a.copyright {
 
       &:before {
          color: #929292;
+         /* stylelint-disable */
          font-family: 'Font Awesome 5 Free';
+         /* stylelint-enable */
          padding-left: 2px;
       }
    }
@@ -4605,7 +4611,10 @@ input[type=checkbox].toggle_comments {
    }
 
    &:after {
+
+      /* stylelint-disable */
       font-family: 'Font Awesome 5 Free';
+      /* stylelint-enable */
       position: relative;
       left: -15px;
       top: 1px;
@@ -5484,7 +5493,10 @@ div#viewgraph {
          left: 0;
          top: 0;
          font-size: 15px;
+
+         /* stylelint-disable */
          font-family: 'Font Awesome 5 Free';
+         /* stylelint-enable */
          position: absolute;
          font-weight: 900;
       }
@@ -5700,7 +5712,10 @@ ul.indexes {
       font-size: 1em;
       color: grey;
       top: 5px;
+
+      /* stylelint-disable */
       font-family: 'Font Awesome 5 Free';
+      /* stylelint-enable */
       position: absolute;
       font-weight: 900;
    }
@@ -5901,10 +5916,7 @@ ul.indexes {
    }
 
    width: 217px;
-   background: #FFF repeating-linear-gradient(transparent,
-                                                transparent 21px,
-                                              rgba(0, 0, 0, .1) 21px,
-                                              rgba(0, 0, 0, .1) 42px);
+   background: #FFF repeating-linear-gradient(transparent, transparent 21px, rgba(0, 0, 0, .1) 21px, rgba(0, 0, 0, .1) 42px);
    z-index: 1;
    border: 1px solid #D4D4D4;
    float: left;
