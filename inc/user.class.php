@@ -707,7 +707,7 @@ class User extends CommonDBTM {
                $extension    = Toolbox::strtolower(array_pop($tmp));
                @mkdir(GLPI_PICTURE_DIR . "/$sub");
                $picture_path = GLPI_PICTURE_DIR  . "/$sub/${filename}.$extension";
-               self::dropPictureFiles($filename.".".$extension);
+               self::dropPictureFiles("$sub/${filename}.$extension");
 
                if (Document::isImage($fullpath)
                    && Document::renameForce($fullpath, $picture_path)) {
@@ -4965,7 +4965,7 @@ class User extends CommonDBTM {
       if (!empty($picture)) {
          // unlink main file
          if (file_exists(GLPI_PICTURE_DIR."/$picture")) {
-            @unlink(GLPI_DOC_DIR."/_pictures/$picture");
+            @unlink(GLPI_PICTURE_DIR."/$picture");
          }
          // unlink Thunmnail
          $tmp = explode(".", $picture);
