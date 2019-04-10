@@ -2014,7 +2014,7 @@ class Html {
 
       /// Button to toggle responsive menu
       echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open'); return false;\"
-            id='menu_all_button' class='button-icon'>";
+            id='menu_all_button'><i class='fa fa-bars'></i>";
       echo "</a>";
 
       echo "</div>";
@@ -3562,6 +3562,11 @@ class Html {
          $readonlyjs = "readonly: true";
       }
 
+      $darker_css = '';
+      if ($_SESSION['glpipalette'] === 'darker') {
+         $darker_css = $CFG_GLPI['root_doc']."/css/tiny_mce/dark_content.css";
+      }
+
       // init tinymce
       $js = "$(function() {
          // additional plugins
@@ -3578,6 +3583,7 @@ class Html {
             elements: '$name',
             relative_urls: false,
             remove_script_host: false,
+            content_css: '$darker_css',
             entity_encoding: 'raw',
             paste_data_images: $('.fileupload').length,
             menubar: false,
@@ -3752,11 +3758,9 @@ class Html {
       // Back and fast backward button
       if (!$start == 0) {
          $out .= "<th class='left'><a href='javascript:reloadTab(\"start=0$additional_params\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
-                "\" title=\"".__s('Start')."\" class='pointer'></a></th>";
+                     <i class='fa fa-step-backward' title=\"".__s('Start')."\"></i></a></th>";
          $out .= "<th class='left'><a href='javascript:reloadTab(\"start=$back$additional_params\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                "\" title=\"".__s('Previous')."\" class='pointer'></th>";
+                     <i class='fa fa-chevron-left' title=\"".__s('Previous')."\"></i></a></th>";
       }
 
       $out .= "<td width='50%' class='tab_bg_2'>";
@@ -3776,11 +3780,9 @@ class Html {
       // Forward and fast forward button
       if ($forward < $numrows) {
          $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$forward$additional_params\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                "\" title=\"".__s('Next')."\" class='pointer'></a></th>";
+                     <i class='fa fa-chevron-right' title=\"".__s('Next')."\"></i></a></th>";
          $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$end$additional_params\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
-                "\" title=\"".__s('End')."\" class='pointer'></a></th>";
+                     <i class='fa fa-step-forward' title=\"".__s('End')."\"></i></a></th>";
       }
 
       // End pager
@@ -3917,13 +3919,12 @@ class Html {
       if (!$start == 0) {
          echo "<th class='left'>";
          echo "<a href='$fulltarget&amp;start=0'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
-               "\" title=\"".__s('Start')."\" class='pointer'>";
+         echo "
+               <i class='fa fa-step-backward' title=\"".__s('Start')."\"></i>";
          echo "</a></th>";
          echo "<th class='left'>";
          echo "<a href='$fulltarget&amp;start=$back'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-               "\" title=\"".__s('Previous')."\" class='pointer'>";
+         echo "<i class='fa fa-chevron-left' title=\"".__s('Previous')."\"></i>";
          echo "</a></th>";
       }
 
@@ -3978,15 +3979,13 @@ class Html {
       // Forward and fast forward button
       if ($forward<$numrows) {
          echo "<th class='right'>";
-         echo "<a href='$fulltarget&amp;start=$forward'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-               "\" title=\"".__s('Next')."\" class='pointer'>";
+         echo "<a href='$fulltarget&amp;start=$forward'>
+               <i class='fa fa-chevron-right' title=\"".__s('Next')."\">";
          echo "</a></th>\n";
 
          echo "<th class='right'>";
          echo "<a href='$fulltarget&amp;start=$end'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
-                "\" title=\"".__s('End')."\" class='pointer'>";
+         echo "<i class='fa fa-step-forward' title=\"".__s('End')."\"></i>";
          echo "</a></th>\n";
       }
       // End pager
@@ -6528,9 +6527,10 @@ class Html {
 
                      case "template" :
                         echo "<span>";
-                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
-                                       ['alt' => __('Manage templates...'),
-                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo Html::link('<i class="pointer fa fa-layer-group"></i>',
+                                        $CFG_GLPI["root_doc"].$val, [
+                                          'title' => __('Manage templates...')
+                                        ]);
                         echo "</span>";
                         break;
 

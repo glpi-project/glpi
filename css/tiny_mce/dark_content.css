@@ -1,0 +1,6 @@
+
+/** Force the background of tinymce to be transparent because with darkmode white background is ugly */
+body {
+   background: transparent;
+   color: #AAA;
+}
