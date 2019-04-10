@@ -79,7 +79,9 @@ commands:
       - run:
           name: npm install
           command: |
-            npm install
+            # use npm ci instead of npm install to make sure that it will install exact packages
+            # described in package-lock.json, without any additionnal checks
+            npm ci
       - save_cache:
           key: npm-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
@@ -163,6 +165,10 @@ jobs:
     executor: php_7_0 # lint on lower PHP version to check compatibility with the older supported API
     steps:
       - build
+      - run:
+          name: Build CSS/JS dependencies
+          command: |
+            npm run-script build-dev
       - run:
           name: PHP Parallel Lint
           command: |
