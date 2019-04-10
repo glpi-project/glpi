@@ -124,12 +124,13 @@ class Document_Item extends DbTestCase {
 
    public function testGetDistinctTypesParams() {
       $expected = [
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_documents_items',
          'WHERE'           => [
             'OR'  => [
                'glpi_documents_items.documents_id'  => 1,
-               'AND' => [
+               [
                   'glpi_documents_items.itemtype'  => 'Document',
                   'glpi_documents_items.items_id'  => 1
                ]
@@ -141,17 +142,18 @@ class Document_Item extends DbTestCase {
 
       $extra_where = ['date_mod' => ['>', '2000-01-01']];
       $expected = [
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_documents_items',
          'WHERE'           => [
             'OR'  => [
                'glpi_documents_items.documents_id'  => 1,
-               'AND' => [
+               [
                   'glpi_documents_items.itemtype'  => 'Document',
                   'glpi_documents_items.items_id'  => 1
                ]
             ],
-            'AND' => [
+            [
                'date_mod'  => [
                   '>',
                   '2000-01-01'

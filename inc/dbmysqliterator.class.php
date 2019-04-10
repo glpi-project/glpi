@@ -137,13 +137,14 @@ class DBmysqlIterator implements Iterator, Countable {
 
          // Check field, orderby, limit, start in criterias
          $field    = "";
+         $dfield   = "";
+         $distinct = false;
          $orderby  = null;
          $limit    = 0;
          $start    = 0;
-         $distinct = '';
          $where    = '';
          $count    = '';
-         $join     = '';
+         $join     = [];
          $groupby  = '';
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
@@ -156,8 +157,14 @@ class DBmysqlIterator implements Iterator, Countable {
 
                   case 'SELECT DISTINCT' :
                   case 'DISTINCT FIELDS' :
-                     $field = $val;
-                     $distinct = "DISTINCT";
+                     $dfield = $val;
+                     unset($crit[$key]);
+                     break;
+
+                  case 'DISTINCT' :
+                     if ($val) {
+                        $distinct = true;
+                     }
                      unset($crit[$key]);
                      break;
 
@@ -167,6 +174,7 @@ class DBmysqlIterator implements Iterator, Countable {
                      break;
 
                   case 'ORDER' :
+                  case 'ORDERBY' :
                      $orderby = $val;
                      unset($crit[$key]);
                      break;
@@ -186,58 +194,83 @@ class DBmysqlIterator implements Iterator, Countable {
                      unset($crit[$key]);
                      break;
 
+                  case 'GROUP' :
                   case 'GROUPBY' :
                      $groupby = $val;
                      unset($crit[$key]);
                      break;
 
+                  case 'JOIN' :
                   case 'LEFT JOIN' :
                   case 'RIGHT JOIN' :
                   case 'INNER JOIN' :
-                     if (is_array($val)) {
-                        $jointype = null;
-                        switch ($key) {
-                           case 'JOIN':
-                           case 'LEFT JOIN':
-                              $jointype = 'LEFT';
-                              break;
-                           case 'INNER JOIN':
-                              $jointype = 'INNER';
-                              break;
-                           case 'RIGHT JOIN':
-                              $jointype = 'RIGHT';
-                              break;
-                        }
-                        foreach ($val as $jointable => $joincrit) {
-                           $join .= " $jointype JOIN " .  DBmysql::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
-                        }
-                     } else {
-                        trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
-                     }
+                     $join[$key] = $val;
                      unset($crit[$key]);
                      break;
                }
             }
          }
 
-         $this->sql = "";
-         // SELECT field list
-         if ($count) {
-            $this->sql = "SELECT COUNT(*) AS $count";
+         $this->sql = 'SELECT ';
+         $first = true;
+
+         // Backward compatibility for "SELECT DISTINCT" and "DISTINCT FIELDS"
+         if (!empty($dfield)) {
+            Toolbox::logWarning('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
+
+            // Merge $field and $dfield
+            if (empty($field)) {
+               $field = $dfield;
+            } else {
+               if (is_array($field) && is_array($dfield)) {
+                  $field = array_merge($dfield, $field);
+               } else if (is_array($field) && !is_array($dfield)) {
+                  array_unshift($field, $dfield);
+               } else if (!is_array($field) && is_array($dfield)) {
+                  $dfield[] = $field;
+                  $field = $dfield;
+               } else { // both are strings
+                  $field = [$dfield, $field];
+               }
+            }
+
+            $distinct = true;
+            unset($dfield);
          }
 
-         if (is_array($field)) {
-            foreach ($field as $t => $f) {
-               $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ');
-               $this->sql .= $this->handleFields($t, $f);
+         // SELECT field list
+         if ($count) {
+            $this->sql .= 'COUNT(';
+            if ($distinct) {
+               $this->sql .= 'DISTINCT ';
             }
-         } else if (empty($field) && !$count) {
-            $this->sql = "SELECT *";
-         } else if (!empty($field)) {
-            if ($count) {
-               $this->sql = "SELECT COUNT($distinct " . DBmysql::quoteName($field) . ") AS $count";
+            if (!empty($field) && !is_array($field)) {
+               $this->sql .= "" . DBmysql::quoteName($field);
             } else {
-               $this->sql = "SELECT $distinct " . DBmysql::quoteName($field);
+               $this->sql .= "*";
+            }
+            $this->sql .= ") AS $count";
+            $first = false;
+         }
+         if (!$count || $count && is_array($field)) {
+            if ($distinct && !$count) {
+               $this->sql .= 'DISTINCT ';
+            }
+            if (empty($field)) {
+               $this->sql .= '*';
+            }
+            if (!empty($field)) {
+               if (!is_array($field)) {
+                  $field = [$field];
+               }
+               foreach ($field as $t => $f) {
+                  if ($first) {
+                     $first = false;
+                  } else {
+                     $this->sql .= ', ';
+                  }
+                  $this->sql .= $this->handleFields($t, $f);
+               }
             }
          }
 
@@ -250,7 +283,11 @@ class DBmysqlIterator implements Iterator, Countable {
                trigger_error("Missing table name", E_USER_ERROR);
             }
          } else if ($table) {
-            $table = DBmysql::quoteName($table);
+            if ($table instanceof \AbstractQuery) {
+               $table = $table->getQuery();
+            } else {
+               $table = DBmysql::quoteName($table);
+            }
             $this->sql .= " FROM $table";
          } else {
             /*
@@ -261,7 +298,9 @@ class DBmysqlIterator implements Iterator, Countable {
          }
 
          // JOIN
-         $this->sql .= $join;
+         if (!empty($join)) {
+            $this->sql .= $this->analyzeJoins($join);
+         }
 
          // WHERE criteria list
          if (!empty($crit)) {
@@ -357,7 +396,11 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    private function handleFields($t, $f) {
       if (is_numeric($t)) {
-         return DBmysql::quoteName($f);
+         if ($f instanceof \AbstractQuery) {
+            return $f->getQuery();
+         } else {
+            return DBmysql::quoteName($f);
+         }
       } else {
          switch ($t) {
             case 'COUNT DISTINCT':
@@ -439,7 +482,7 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    function __destruct () {
       if ($this->res) {
-         $this->conn->free_result($this->res);
+         $this->conn->freeResult($this->res);
       }
    }
 
@@ -468,9 +511,11 @@ class DBmysqlIterator implements Iterator, Countable {
             // no key and direct expression
             if ($value instanceof QueryExpression) {
                $ret .= $value->getValue();
+            } else if ($value instanceof QuerySubQuery) {
+               $ret .= $value->getQuery();
             } else {
                // No Key case => recurse.
-               $ret .= "(" . $this->analyseCrit($value, $bool) . ")";
+               $ret .= "(" . $this->analyseCrit($value) . ")";
             }
 
          } else if (($name === "OR") || ($name === "AND")) {
@@ -479,7 +524,7 @@ class DBmysqlIterator implements Iterator, Countable {
 
          } else if ($name === "NOT") {
             // Uninary logicial operator
-            $ret .= " NOT (" . $this->analyseCrit($value, "AND") . ")";
+            $ret .= " NOT (" . $this->analyseCrit($value) . ")";
 
          } else if ($name === "FKEY" || $name === 'ON') {
             // Foreign Key condition
@@ -505,26 +550,98 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string
     */
    private function analyzeCriterion($value) {
-      $ret = null;
-      if (is_array($value)) {
-         if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
-            $ret = $value[0] . ' ' . DBmysql::quoteValue($value[1]);
-         } else {
-            // Array of Values
-            foreach ($value as $k => $v) {
-               $value[$k] = DBmysql::quoteValue($v);
-            }
-            $ret = 'IN (' . implode(', ', $value) . ')';
-         }
-      } else if (is_null($value) || is_string($value) && strtolower($value) === 'null') {
+      $criterion = null;
+      $crit_value;
+
+      if (is_null($value) || is_string($value) && strtolower($value) === 'null') {
          // NULL condition
-         $ret = 'IS NULL';
-      } else if ($value instanceof QuerySubQuery) {
-         $ret = $value->getOperator() . ' (' . $value->getSubQuery() . ')';
+         $criterion = 'IS NULL';
       } else {
-         $ret = "= " . DBmysql::quoteValue($value);
+         $criterion = "= %crit_value";
+         if (is_array($value)) {
+            if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
+               $criterion = "{$value[0]} %crit_value";
+               $crit_value = $this->analyzeCriterionValue($value[1]);
+            } else {
+               if (!count($value)) {
+                  throw new \RuntimeException('Empty IN are not allowed');
+               }
+               // Array of Values
+               $criterion = "IN (%crit_value)";
+               $crit_value = $this->analyzeCriterionValue($value);
+            }
+         } else {
+            if ($value instanceof \QuerySubquery) {
+               $criterion = "IN %crit_value";
+            }
+            $crit_value = $this->analyzeCriterionValue($value);
+         }
+         $criterion = str_replace('%crit_value', $crit_value, $criterion);
       }
-      return $ret;
+
+      return $criterion;
+   }
+
+   private function analyzeCriterionValue($value) {
+      $crit_value = null;
+      if (is_array($value)) {
+         foreach ($value as $k => $v) {
+            $value[$k] = DBmysql::quoteValue($v);
+         }
+         $crit_value = implode(', ', $value);
+      } else if ($value instanceof \AbstractQuery) {
+         $crit_value = $value->getQuery();
+      } else {
+         $crit_value = DBmysql::quoteValue($value);
+      }
+      return $crit_value;
+   }
+
+   /**
+    * Analyze an array of joins criteria
+    *
+    * @since 9.4.0
+    *
+    * @param array $joinarray Array of joins to analyze
+    *       [jointype => [table => criteria]]
+    *
+    * @return string
+    */
+   public function analyzeJoins(array $joinarray) {
+      $query = '';
+      foreach ($joinarray as $jointype => $jointables) {
+         if (!in_array($jointype, ['JOIN', 'LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'])) {
+            throw new \RuntimeException('BAD JOIN');
+         }
+
+         if ($jointype == 'JOIN') {
+            $jointype = 'LEFT JOIN';
+         }
+
+         if (!is_array($jointables)) {
+            trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
+            continue;
+         }
+
+         foreach ($jointables as $jointablekey => $jointablecrit) {
+            if (isset($jointablecrit['TABLE'])) {
+               //not a "simple" FKEY
+               $jointablekey = $jointablecrit['TABLE'];
+               unset($jointablecrit['TABLE']);
+            } else if (is_numeric($jointablekey) || $jointablekey == 'FKEY' || $jointablekey == 'ON') {
+               throw new \RuntimeException('BAD JOIN');
+            }
+
+            if ($jointablekey instanceof \QuerySubquery) {
+               $jointablekey = $jointablekey->getQuery();
+            } else {
+               $jointablekey = DBmysql::quoteName($jointablekey);
+            }
+
+            $query .= " $jointype $jointablekey ON (" . $this->analyseCrit($jointablecrit) . ")";
+         }
+      }
+      return $query;
    }
 
    /**
@@ -560,7 +677,7 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    public function rewind() {
       if ($this->res && $this->conn->numrows($this->res)) {
-         $this->conn->data_seek($this->res, 0);
+         $this->conn->dataSeek($this->res, 0);
       }
       $this->position = 0;
       return $this->next();
@@ -593,7 +710,7 @@ class DBmysqlIterator implements Iterator, Countable {
       if (!$this->res) {
          return false;
       }
-      $this->row = $this->conn->fetch_assoc($this->res);
+      $this->row = $this->conn->fetchAssoc($this->res);
       ++$this->position;
       return $this->row;
    }
@@ -625,15 +742,6 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    public function count() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
-   }
-
-   /**
-    * Get known query operators
-    *
-    * @return array
-    */
-   public function getOperators() {
-      return $this->operators;
    }
 
    /**

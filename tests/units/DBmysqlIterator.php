@@ -161,8 +161,11 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testFields() {
-      $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar']);
+      $it = $this->it->execute('foo', ['FIELDS' => 'bar', 'DISTINCT' => true]);
       $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar` FROM `foo`');
+
+      $it = $this->it->execute('foo', ['FIELDS' => ['bar', 'baz'], 'DISTINCT' => true]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
 
       $it = $this->it->execute('foo', ['FIELDS' => 'bar']);
       $this->string($it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`');
@@ -196,27 +199,94 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['FIELDS' => ['MAX' => 'bar AS cpt']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT MAX(`bar`) AS cpt FROM `foo`');
+
+      // Backward compability tests
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar', 'baz']]);
+            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar'], 'FIELDS' => ['baz']]);
+            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => ['baz']]);
+            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar'], 'FIELDS' => 'baz']);
+            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => 'baz']);
+            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
    }
 
 
    public function testOrder() {
+      $it = $this->it->execute('foo', ['ORDERBY' => 'bar']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`');
+
       $it = $this->it->execute('foo', ['ORDER' => 'bar']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`');
+
+      $it = $this->it->execute('foo', ['ORDERBY' => '`baz`']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `baz`');
 
       $it = $this->it->execute('foo', ['ORDER' => '`baz`']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `baz`');
 
+      $it = $this->it->execute('foo', ['ORDERBY' => 'bar ASC']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` ASC');
+
       $it = $this->it->execute('foo', ['ORDER' => 'bar ASC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` ASC');
+
+      $it = $this->it->execute('foo', ['ORDERBY' => 'bar DESC']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC');
 
       $it = $this->it->execute('foo', ['ORDER' => 'bar DESC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC');
 
+      $it = $this->it->execute('foo', ['ORDERBY' => ['`a`', 'b ASC', 'c DESC']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `a`, `b` ASC, `c` DESC');
+
       $it = $this->it->execute('foo', ['ORDER' => ['`a`', 'b ASC', 'c DESC']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `a`, `b` ASC, `c` DESC');
 
+      $it = $this->it->execute('foo', ['ORDERBY' => 'bar, baz ASC']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`, `baz` ASC');
+
       $it = $this->it->execute('foo', ['ORDER' => 'bar, baz ASC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`, `baz` ASC');
+
+      $it = $this->it->execute('foo', ['ORDERBY' => 'bar DESC, baz ASC']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC');
 
       $it = $this->it->execute('foo', ['ORDER' => 'bar DESC, baz ASC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC');
@@ -227,7 +297,7 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['COUNT' => 'cpt']);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt FROM `foo`');
 
-      $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT DISTINCT' => 'bar']);
+      $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT' => 'bar', 'DISTINCT' => true]);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
 
       $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'FIELDS' => ['name', 'version']]);
@@ -250,6 +320,16 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['FIELDS' => ['foo.bar', 'COUNT' => ['foo.baz', 'foo.qux']]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.`bar`, COUNT(`foo`.`baz`), COUNT(`foo`.`qux`) FROM `foo`');
+
+      // Backward compability tests
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT DISTINCT' => 'bar']);
+            $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
    }
 
    public function testCountDistinct() {
@@ -268,7 +348,13 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testJoins() {
+      $it = $this->it->execute('foo', ['LEFT JOIN' => []]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
+
       $it = $this->it->execute('foo', ['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+
+      $it = $this->it->execute('foo', ['LEFT JOIN' => [['TABLE' => 'bar', 'FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
       $it = $this->it->execute('foo', ['LEFT JOIN' => ['bar' => ['ON' => ['bar' => 'id', 'foo' => 'fk']]]]);
@@ -297,11 +383,25 @@ class DBmysqlIterator extends DbTestCase {
          'LEFT JOIN `baz` ON (`baz`.`id` = `foo`.`baz_id`)'
       );
 
+      $it = $this->it->execute('foo', ['INNER JOIN' => []]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
+
       $it = $this->it->execute('foo', ['INNER JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` INNER JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
+      $it = $this->it->execute('foo', ['RIGHT JOIN' => []]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
+
       $it = $this->it->execute('foo', ['RIGHT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` RIGHT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['LEFT JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->hasMessage('BAD JOIN');
 
       $this->when(
          function () {
@@ -339,6 +439,43 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo(
          'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` OR `field` > \'20\')'
       );
+
+      $it = $this->it->execute(
+         'foo', [
+            'LEFT JOIN' => [
+               'bar' => [
+                  'FKEY' => [
+                     'bar' => 'id',
+                     'foo' => 'fk', [
+                        'AND'  => ['field' => 42]
+                     ]
+                  ]
+               ]
+            ]
+         ]
+      );
+      $this->string($it->getSql())->isIdenticalTo(
+         'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
+      );
+
+      //test derived table in JOIN statement
+      $it = $this->it->execute(
+         'foo', [
+            'LEFT JOIN' => [
+               [
+                  'TABLE'  => new \QuerySubQuery(['FROM' => 'bar'], 't2'),
+                  'FKEY'   => [
+                     't2'  => 'id',
+                     'foo' => 'fk'
+                  ]
+               ]
+            ]
+         ]
+      );
+      $this->string($it->getSql())->isIdenticalTo(
+         'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) AS `t2` ON (`t2`.`id` = `foo`.`fk`)'
+      );
+
    }
 
 
@@ -388,6 +525,14 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['bar' => 1]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = \'1\'');
 
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['bar' => []]);
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->hasMessage('Empty IN are not allowed');
+
       $it = $this->it->execute('foo', ['bar' => [1, 2, 4]]);
       $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN ('1', '2', '4')");
 
@@ -428,10 +573,19 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute(['foo'], ['GROUPBY' => ['id']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
 
+      $it = $this->it->execute(['foo'], ['GROUP' => ['id']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
+
       $it = $this->it->execute(['foo'], ['GROUPBY' => 'id']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
 
+      $it = $this->it->execute(['foo'], ['GROUP' => 'id']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
+
       $it = $this->it->execute(['foo'], ['GROUPBY' => ['id', 'name']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`, `name`');
+
+      $it = $this->it->execute(['foo'], ['GROUP' => ['id', 'name']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`, `name`');
    }
 
@@ -445,6 +599,17 @@ class DBmysqlIterator extends DbTestCase {
          ->withType(E_USER_ERROR)
          ->withMessage('Missing group by field')
          ->exists();
+
+      $this->when(
+         function () {
+            $it = $this->it->execute(['foo'], ['GROUP' => []]);
+            $this->string('SELECT * FROM `foo`', $it->getSql(), 'No group by field');
+         }
+      )->error()
+         ->withType(E_USER_ERROR)
+         ->withMessage('Missing group by field')
+         ->exists();
+
    }
 
    public function testRange() {
@@ -469,12 +634,30 @@ class DBmysqlIterator extends DbTestCase {
 
       $crit = [
          'WHERE' => [
+            'OR' => [
+               [
+                  'items_id' => 15,
+                  'itemtype' => 'Computer'
+               ],
+               [
+                  'items_id' => 3,
+                  'itemtype' => 'Document'
+               ],
+            ],
+         ],
+      ];
+      $sql = "SELECT * FROM `foo` WHERE ((`items_id` = '15' AND `itemtype` = 'Computer') OR (`items_id` = '3' AND `itemtype` = 'Document'))";
+      $it = $this->it->execute(['foo'], $crit);
+      $this->string($it->getSql())->isIdenticalTo($sql);
+
+      $crit = [
+         'WHERE' => [
             'a'  => 1,
             'OR' => [
                'b'   => 2,
                'NOT' => [
                   'c'   => [2, 3],
-                  'AND' => [
+                  [
                      'd' => 4,
                      'e' => 5,
                   ],
@@ -613,37 +796,420 @@ class DBmysqlIterator extends DbTestCase {
 
    public function testSubQuery() {
       $crit = ['SELECT' => 'id', 'FROM' => 'baz', 'WHERE' => ['z' => 'f']];
-      $raw_subq = "SELECT `id` FROM `baz` WHERE `z` = 'f'";
+      $raw_subq = "(SELECT `id` FROM `baz` WHERE `z` = 'f')";
+
       $sub_query =new \QuerySubQuery($crit);
-      $this->string($sub_query->getSubQuery())->isIdenticalTo($raw_subq);
-      $this->string($sub_query->getOperator())->isIdenticalTo('IN');
+      $this->string($sub_query->getQuery())->isIdenticalTo($raw_subq);
 
       $it = $this->it->execute('foo', ['bar' => $sub_query]);
       $this->string($it->getSql())
-           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN ($raw_subq)");
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN $raw_subq");
 
-      $sub_query =new \QuerySubQuery($crit, '<>');
-      $this->string($sub_query->getSubQuery())->isIdenticalTo($raw_subq);
-      $this->string($sub_query->getOperator())->isIdenticalTo('<>');
+      $it = $this->it->execute('foo', ['bar' => ['<>', $sub_query]]);
+      $this->string($it->getSql())
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` <> $raw_subq");
+
+      $it = $this->it->execute('foo', ['NOT' => ['bar' => $sub_query]]);
+      $this->string($it->getSql())
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE NOT (`bar` IN $raw_subq)");
+
+      $sub_query =new \QuerySubQuery($crit, 'thesubquery');
+      $this->string($sub_query->getQuery())->isIdenticalTo("$raw_subq AS `thesubquery`");
 
       $it = $this->it->execute('foo', ['bar' => $sub_query]);
       $this->string($it->getSql())
-           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` <> ($raw_subq)");
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN $raw_subq AS `thesubquery`");
 
-      $sub_query =new \QuerySubQuery($crit, 'NOT IN');
-      $this->string($sub_query->getSubQuery())->isIdenticalTo($raw_subq);
-      $this->string($sub_query->getOperator())->isIdenticalTo('NOT IN');
-
-      $it = $this->it->execute('foo', ['bar' => $sub_query]);
+      $it = $this->it->execute([
+         'SELECT' => ['bar', $sub_query],
+         'FROM'   => 'foo'
+      ]);
       $this->string($it->getSql())
-           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` NOT IN ($raw_subq)");
+           ->isIdenticalTo("SELECT `bar`, $raw_subq AS `thesubquery` FROM `foo`");
+   }
 
-      $this->exception(
-         function() use($crit) {
-            $sub_query =new \QuerySubQuery($crit, 'NOONE');
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->hasMessage('Unknown query operator NOONE');
+   public function testUnionQuery() {
+      $union_crit = [
+         ['FROM' => 'table1'],
+         ['FROM' => 'table2']
+      ];
+      $union = new \QueryUnion($union_crit);
+      $union_raw_query = '((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
+      $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
+      $it = $this->it->execute(['FROM' => $union]);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+      $union = new \QueryUnion($union_crit, true);
+      $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
+      $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
+      $it = $this->it->execute(['FROM' => $union]);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+      $union = new \QueryUnion($union_crit, false, 'theunion');
+      $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
+      $it = $this->it->execute(['FROM' => $union]);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+      $union = new \QueryUnion($union_crit, false, 'theunion');
+      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
+      $crit = [
+         'SELECT'    => 'theunion.field',
+         'DISTINCT'  => true,
+         'FROM'      => $union,
+      ];
+      $it = $this->it->execute($crit);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+      $union = new \QueryUnion($union_crit, true);
+      $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
+      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
+      $crit = [
+         'SELECT'    => 'theunion.field',
+         'DISTINCT'  => true,
+         'FROM'      => $union,
+      ];
+      $it = $this->it->execute($crit);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+   }
+
+   public function testComplexUnionQuery() {
+
+      $fk = \Ticket::getForeignKeyField();
+      $users_table = \User::getTable();
+      $users_table = 'glpi_ticket_users';
+      $groups_table = 'glpi_groups_tickets';
+
+      $subquery1 = new \QuerySubQuery([
+         'SELECT'    => [
+            'usr.id AS users_id',
+            'tu.type AS type'
+         ],
+         'FROM'      => "$users_table AS tu",
+         'LEFT JOIN' => [
+            \User::getTable() . ' AS usr' => [
+               'ON' => [
+                  'tu'  => 'users_id',
+                  'usr' => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            "tu.$fk" => 42
+         ]
+      ]);
+      $subquery2 = new \QuerySubQuery([
+         'SELECT'    => [
+            'usr.id AS users_id',
+            'gt.type AS type'
+         ],
+         'FROM'      => "$groups_table AS gt",
+         'LEFT JOIN' => [
+            \Group_User::getTable() . ' AS gu'   => [
+               'ON' => [
+                  'gu'  => 'groups_id',
+                  'gt'  => 'groups_id'
+               ]
+            ],
+            \User::getTable() . ' AS usr'        => [
+               'ON' => [
+                  'gu'  => 'users_id',
+                  'usr' => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            "gt.$fk" => 42
+         ]
+      ]);
+
+      $raw_query = "SELECT DISTINCT `users_id`, `type`"
+                     . " FROM ((SELECT `usr`.`id` AS `users_id`, `tu`.`type` AS `type`"
+                     . " FROM `$users_table` AS `tu`"
+                     . " LEFT JOIN `glpi_users` AS `usr` ON (`tu`.`users_id` = `usr`.`id`)"
+                     . " WHERE `tu`.`$fk` = '42')"
+                     . " UNION ALL"
+                     . " (SELECT `usr`.`id` AS `users_id`, `gt`.`type` AS `type`"
+                     . " FROM `$groups_table` AS `gt`"
+                     . " LEFT JOIN `glpi_groups_users` AS `gu` ON (`gu`.`groups_id` = `gt`.`groups_id`)"
+                     . " LEFT JOIN `glpi_users` AS `usr` ON (`gu`.`users_id` = `usr`.`id`)"
+                     . " WHERE `gt`.`$fk` = '42')"
+                     . ") AS `allactors`";
+
+      $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
+      $it = $this->it->execute([
+         'FIELDS'          => [
+            'users_id',
+            'type'
+         ],
+         'DISTINCT'        => true,
+         'FROM'            => $union
+      ]);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+   }
+
+   public function testComplexUnionQueryAgain() {
+      global $CFG_GLPI, $DB;
+
+      //Old build way
+      $queries = [];
+
+      foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
+         $table = getTableForItemType($itemtype);
+         $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
+                                 `ADDR`.`binary_1` AS `binary_1`,
+                                 `ADDR`.`binary_2` AS `binary_2`,
+                                 `ADDR`.`binary_3` AS `binary_3`,
+                                 `ADDR`.`name` AS `ip`,
+                                 `ADDR`.`id` AS `id`,
+                                 `ADDR`.`itemtype` AS `addr_item_type`,
+                                 `ADDR`.`items_id` AS `addr_item_id`,
+                                 `glpi_entities`.`completename` AS `entity`,
+                                 `NAME`.`id` AS `name_id`,
+                                 `PORT`.`id` AS `port_id`,
+                                 `ITEM`.`id` AS `item_id`,
+                                 '$itemtype' AS `item_type`
+                        FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
+                        INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                                                            AND `ADDR`.`itemtype` = 'NetworkName'
+                                                            AND `ADDR`.`is_deleted` = '0')
+                        INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
+                                                               AND `NAME`.`itemtype` = 'NetworkPort')
+                        INNER JOIN `glpi_networkports` AS `PORT` ON (`NAME`.`items_id` = `PORT`.`id`
+                                                               AND `PORT`.`itemtype` = '$itemtype')
+                        INNER JOIN `$table` AS `ITEM` ON (`ITEM`.`id` = `PORT`.`items_id`)
+                        LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                        WHERE `LINK`.`ipnetworks_id` = '42')";
+      }
+
+      $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
+                              `ADDR`.`binary_1` AS `binary_1`,
+                              `ADDR`.`binary_2` AS `binary_2`,
+                              `ADDR`.`binary_3` AS `binary_3`,
+                              `ADDR`.`name` AS `ip`,
+                              `ADDR`.`id` AS `id`,
+                              `ADDR`.`itemtype` AS `addr_item_type`,
+                              `ADDR`.`items_id` AS `addr_item_id`,
+                              `glpi_entities`.`completename` AS `entity`,
+                              `NAME`.`id` AS `name_id`,
+                              `PORT`.`id` AS `port_id`,
+                              NULL AS `item_id`,
+                              NULL AS `item_type`
+                     FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
+                     INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                                                         AND `ADDR`.`itemtype` = 'NetworkName'
+                                                         AND `ADDR`.`is_deleted` = '0')
+                     INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
+                                                            AND `NAME`.`itemtype` = 'NetworkPort')
+                     INNER JOIN `glpi_networkports` AS `PORT`
+                        ON (`NAME`.`items_id` = `PORT`.`id`
+                              NOT `PORT`.`itemtype`
+                                 IN ('" .implode("', '", $CFG_GLPI["networkport_types"])."'))
+                     LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                     WHERE `LINK`.`ipnetworks_id` = '42')";
+
+      $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
+                              `ADDR`.`binary_1` AS `binary_1`,
+                              `ADDR`.`binary_2` AS `binary_2`,
+                              `ADDR`.`binary_3` AS `binary_3`,
+                              `ADDR`.`name` AS `ip`,
+                              `ADDR`.`id` AS `id`,
+                              `ADDR`.`itemtype` AS `addr_item_type`,
+                              `ADDR`.`items_id` AS `addr_item_id`,
+                              `glpi_entities`.`completename` AS `entity`,
+                              `NAME`.`id` AS `name_id`,
+                              NULL AS `port_id`,
+                              NULL AS `item_id`,
+                              NULL AS `item_type`
+                     FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
+                     INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                                                         AND `ADDR`.`itemtype` = 'NetworkName'
+                                                         AND `ADDR`.`is_deleted` = '0')
+                     INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
+                                                            AND `NAME`.`itemtype` != 'NetworkPort')
+                     LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                     WHERE `LINK`.`ipnetworks_id` = '42')";
+
+      $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
+                              `ADDR`.`binary_1` AS `binary_1`,
+                              `ADDR`.`binary_2` AS `binary_2`,
+                              `ADDR`.`binary_3` AS `binary_3`,
+                              `ADDR`.`name` AS `ip`,
+                              `ADDR`.`id` AS `id`,
+                              `ADDR`.`itemtype` AS `addr_item_type`,
+                              `ADDR`.`items_id` AS `addr_item_id`,
+                              `glpi_entities`.`completename` AS `entity`,
+                              NULL AS `name_id`,
+                              NULL AS `port_id`,
+                              NULL AS `item_id`,
+                              NULL AS `item_type`
+                     FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
+                     INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                                                         AND `ADDR`.`itemtype` != 'NetworkName'
+                                                         AND `ADDR`.`is_deleted` = '0')
+                     LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                     WHERE `LINK`.`ipnetworks_id` = '42')";
+
+      $union_raw_query = '(' . preg_replace('/\s+/', ' ', implode(' UNION ALL ', $queries)) . ')';
+      $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
+
+      //New build way
+      $queries = [];
+      $main_criteria = [
+         'SELECT'       => [
+            'ADDR.binary_0 AS binary_0',
+            'ADDR.binary_1 AS binary_1',
+            'ADDR.binary_2 AS binary_2',
+            'ADDR.binary_3 AS binary_3',
+            'ADDR.name AS ip',
+            'ADDR.id AS id',
+            'ADDR.itemtype AS addr_item_type',
+            'ADDR.items_id AS addr_item_id',
+            'glpi_entities.completename AS entity',
+         ],
+         'FROM'         => 'glpi_ipaddresses_ipnetworks AS LINK',
+         'INNER JOIN'   => [
+            'glpi_ipaddresses AS ADDR' => [
+               'ON' => [
+                  'ADDR'   => 'id',
+                  'LINK'   => 'ipaddresses_id', [
+                     'AND' => [
+                        'ADDR.itemtype' => 'NetworkName',
+                        'ADDR.is_deleted' => 0
+                     ]
+                  ]
+               ]
+            ]
+         ],
+         'LEFT JOIN'    => [
+            'glpi_entities'             => [
+               'ON' => [
+                  'ADDR'            => 'entities_id',
+                  'glpi_entities'   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'LINK.ipnetworks_id' => 42,
+         ]
+      ];
+
+      foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
+         $table = getTableForItemType($itemtype);
+         $criteria = $main_criteria;
+         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+            'NAME.id AS name_id',
+            'PORT.id AS port_id',
+            'ITEM.id AS item_id',
+            new \QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type'))
+         ]);
+         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
+            'glpi_networknames AS NAME'   => [
+               'ON' => [
+                  'NAME'   => 'id',
+                  'ADDR'   => 'items_id', [
+                     'AND' => [
+                        'NAME.itemtype' => 'NetworkPort'
+                     ]
+                  ]
+               ]
+            ],
+            'glpi_networkports AS PORT'   => [
+               'ON' => [
+                  'NAME'   => 'items_id',
+                  'PORT'   => 'id', [
+                     'AND' => [
+                        'PORT.itemtype' => $itemtype
+                     ]
+                  ]
+               ]
+            ],
+            "$table AS ITEM"              => [
+               'ON' => [
+                  'ITEM'   => 'id',
+                  'PORT'   => 'items_id'
+               ]
+            ]
+         ];
+         $queries[] = $criteria;
+      }
+
+      $criteria = $main_criteria;
+      $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+         'NAME.id AS name_id',
+         'PORT.id AS port_id',
+         new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+         new \QueryExpression("NULL AS " . $DB->quoteName('item_type')),
+      ]);
+      $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
+         'glpi_networknames AS NAME'   => [
+            'ON' => [
+               'NAME'   => 'id',
+               'ADDR'   => 'items_id', [
+                  'AND' => [
+                     'NAME.itemtype' => 'NetworkPort'
+                  ]
+               ]
+            ]
+         ],
+         'glpi_networkports AS PORT'   => [
+            'ON' => [
+               'NAME'   => 'items_id',
+               'PORT'   => 'id', [
+                  'NOT' => [
+                     'PORT.itemtype' => $CFG_GLPI['networkport_types']
+                  ]
+               ]
+            ]
+         ]
+      ];
+      $queries[] = $criteria;
+
+      $criteria = $main_criteria;
+      $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+         'NAME.id AS name_id',
+         new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+         new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+         new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+      ]);
+      $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
+         'glpi_networknames AS NAME'   => [
+            'ON' => [
+               'NAME'   => 'id',
+               'ADDR'   => 'items_id', [
+                  'AND' => [
+                     'NAME.itemtype' => ['!=', 'NetworkPort']
+                  ]
+               ]
+            ]
+         ]
+      ];
+      $queries[] = $criteria;
+
+      $criteria = $main_criteria;
+      $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+         new \QueryExpression("NULL AS " . $DB->quoteName('name_id')),
+         new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+         new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+         new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+      ]);
+      $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
+      $queries[] = $criteria;
+
+      $union = new \QueryUnion($queries);
+      $criteria = [
+         'FROM'   => $union,
+      ];
+
+      $it = $this->it->execute($criteria);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+   }
+
+   public function testAnalyseCrit() {
+      $crit = [new \QuerySubQuery([
+         'SELECT' => ['COUNT' => ['users_id']],
+         'FROM'   => 'glpi_groups_users',
+         'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+      ])];
+      $this->string($this->it->analyseCrit($crit))->isIdenticalTo("(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = glpi_groups.id)");
    }
 }

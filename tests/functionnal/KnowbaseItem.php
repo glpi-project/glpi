@@ -61,7 +61,6 @@ class KnowbaseItem extends DbTestCase {
             'is_faq'   => 0,
             'users_id' => $users_id,
             'date'     => '2017-10-06 12:27:48',
-            'date_mod' => '2017-10-06 12:28:06'
          ])
       )->isGreaterThan(0);
 

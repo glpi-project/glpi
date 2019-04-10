@@ -138,7 +138,7 @@ class Auth extends CommonGLPI {
       global $DB;
 
       $result = $DB->request('glpi_users',
-         ['AND'      => [$options],
+         ['WHERE'    => $options,
          'LEFT JOIN' => ['glpi_useremails' => ['FKEY' => ['glpi_users'      => 'id',
                                                           'glpi_useremails' => 'users_id']]]]);
       // Check if there is a row
@@ -276,14 +276,14 @@ class Auth extends CommonGLPI {
          $ok = password_verify($pass, $hash);
 
       } else if (strlen($hash)==32) {
-         $ok = md5($pass) == $hash;
+         $ok = md5($pass) === $hash;
 
       } else if (strlen($hash)==40) {
-         $ok = sha1($pass) == $hash;
+         $ok = sha1($pass) === $hash;
 
       } else {
          $salt = substr($hash, 0, 8);
-         $ok = ($salt.sha1($salt.$pass) == $hash);
+         $ok = ($salt.sha1($salt.$pass) === $hash);
       }
 
       return $ok;
@@ -508,9 +508,9 @@ class Auth extends CommonGLPI {
 
                   $user = new User();
                   $user->getFromDB($cookie_id);
-                  $token = $user->getAuthToken();
+                  $hash = $user->getAuthToken('cookie_token');
 
-                  if ($token !== false && Auth::checkPassword($token, $cookie_token)) {
+                  if (Auth::checkPassword($cookie_token, $hash)) {
                      $this->user->fields['name'] = $user->fields['name'];
                      return true;
                   } else {
@@ -677,16 +677,21 @@ class Auth extends CommonGLPI {
                            AuthLdap::IDENTIFIER_LOGIN => $ldap_method["login_field"],
                         ],
                      ];
-                     $user_dn
-                        = AuthLdap::searchUserDn($ds,
-                                                 ['basedn'      => $ldap_method["basedn"],
-                                                       'login_field' => $ldap_method['login_field'],
-                                                       'search_parameters'
-                                                                     => $params,
-                                                       'user_params'
-                                                         => ['method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                                  'value'  => $login_name],
-                                                         'condition'   => $ldap_method["condition"]]);
+                     try {
+                        $user_dn = AuthLdap::searchUserDn($ds, [
+                           'basedn'            => $ldap_method["basedn"],
+                           'login_field'       => $ldap_method['login_field'],
+                           'search_parameters' => $params,
+                           'condition'         => $ldap_method["condition"],
+                           'user_params'       => [
+                              'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                              'value'  => $login_name
+                           ],
+                        ]);
+                     } catch (\RuntimeException $e) {
+                        Toolbox::logError($e->getMessage());
+                        $user_dn = false;
+                     }
                      if ($user_dn) {
                         $this->user->fields['auths_id'] = $ldap_method['id'];
                         $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name,
@@ -864,7 +869,7 @@ class Auth extends CommonGLPI {
       }
 
       if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
-         $token = $this->user->getAuthToken();
+         $token = $this->user->getAuthToken('cookie_token', true);
 
          if ($token) {
             //Cookie name (Allow multiple GLPI)
@@ -872,17 +877,21 @@ class Auth extends CommonGLPI {
             //Cookie session path
             $cookie_path = ini_get('session.cookie_path');
 
-            $hash = Auth::getPasswordHash($token);
-
             $data = json_encode([
                 $this->user->fields['id'],
-                $hash,
+                $token,
             ]);
 
             //Send cookie to browser
             setcookie($cookie_name, $data, time() + $CFG_GLPI['login_remember_time'], $cookie_path);
             $_COOKIE[$cookie_name] = $data;
          }
+      }
+
+      if ($this->auth_succeded && !empty($this->user->fields['timezone']) && 'null' !== strtolower($this->user->fields['timezone'])) {
+         //set user timezone, if any
+         $_SESSION['glpi_tz'] = $this->user->fields['timezone'];
+         $DB->setTimezone($this->user->fields['timezone']);
       }
 
       return $this->auth_succeded;
@@ -1165,6 +1174,11 @@ class Auth extends CommonGLPI {
          }
       }
 
+      // using user token for api login
+      if (!empty($_REQUEST['user_token'])) {
+         return self::API;
+      }
+
       // Using CAS server
       if (!empty($CFG_GLPI["cas_host"])) {
          if ($redirect) {
@@ -1172,11 +1186,6 @@ class Auth extends CommonGLPI {
          } else {
             return self::CAS;
          }
-      }
-
-      // using user token for api login
-      if (!empty($_REQUEST['user_token'])) {
-         return self::API;
       }
 
       $cookie_name = session_name() . '_rememberme';

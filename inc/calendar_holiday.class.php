@@ -75,22 +75,33 @@ class Calendar_Holiday extends CommonDBRelation {
 
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `glpi_calendars_holidays`.`id` AS linkID,
-                                `glpi_holidays`.*
-                FROM `glpi_calendars_holidays`
-                LEFT JOIN `glpi_holidays`
-                     ON (`glpi_calendars_holidays`.`holidays_id` = `glpi_holidays`.`id`)
-                WHERE `glpi_calendars_holidays`.`calendars_id` = '$ID'
-                ORDER BY `glpi_holidays`.`name`";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT ' => [
+            'glpi_calendars_holidays.id AS linkID',
+            'glpi_holidays.*'
+         ],
+         'DISTINCT'        => true,
+         'FROM'            => 'glpi_calendars_holidays',
+         'LEFT JOIN'       => [
+            'glpi_holidays'   => [
+               'ON' => [
+                  'glpi_calendars_holidays'  => 'holidays_id',
+                  'glpi_holidays'            => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            'glpi_calendars_holidays.calendars_id' => $ID
+         ],
+         'ORDERBY'         => 'glpi_holidays.name'
+      ]);
 
+      $numrows = count($iterator);
       $holidays = [];
       $used     = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $holidays[$data['id']] = $data;
-            $used[$data['id']]     = $data['id'];
-         }
+      while ($data = $iterator->next()) {
+         $holidays[$data['id']] = $data;
+         $used[$data['id']]     = $data['id'];
       }
 
       if ($canedit) {
@@ -178,11 +189,16 @@ class Calendar_Holiday extends CommonDBRelation {
    static function cloneCalendar($oldid, $newid) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_calendars_holidays`
-                WHERE `calendars_id` = '$oldid'";
+      $result = $DB->request(
+         [
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+               'calendars_id' => $oldid,
+            ]
+         ]
+      );
 
-      foreach ($DB->request($query) as $data) {
+      foreach ($result as $data) {
          $ch                   = new self();
          unset($data['id']);
          $data['calendars_id'] = $newid;

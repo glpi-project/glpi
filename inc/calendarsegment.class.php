@@ -83,11 +83,16 @@ class CalendarSegment extends CommonDBChild {
    static function cloneCalendar($oldid, $newid) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_calendarsegments`
-                WHERE `calendars_id`='$oldid'";
+      $result = $DB->request(
+         [
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+               'calendars_id' => $oldid,
+            ]
+         ]
+      );
 
-      foreach ($DB->request($query) as $data) {
+      foreach ($result as $data) {
          $c                    = new self();
          unset($data['id']);
          $data['calendars_id'] = $newid;
@@ -163,21 +168,23 @@ class CalendarSegment extends CommonDBChild {
 
       $sum = 0;
       // Do not check hour if day before the end day of after the begin day
-      $query = "SELECT TIMEDIFF(LEAST('$end_time',`end`),
-                       GREATEST(`begin`,'$begin_time')) AS TDIFF
-                FROM `glpi_calendarsegments`
-                WHERE `calendars_id` = '$calendars_id'
-                      AND `day` = '$day'
-                      AND (`begin` < '$end_time')
-                      AND ('$begin_time' < `end`)";
+      $iterator = $DB->request([
+         'SELECT' => [
+            new \QueryExpression("TIMEDIFF(LEAST(" . $DB->quoteValue($end_time) .", " . $DB->quoteName('end') . ")"),
+            new \QueryExpression("GREATEST(" . $DB->quoteName('begin') . ", " . $DB->quoteValue($begin_time) . ")) AS " . $DB->quoteName('TDIFF'))
+         ],
+         'FROM'   => 'glpi_calendarsegments',
+         'WHERE'  => [
+            'calendars_id' => $calendars_id,
+            'day'          => $day,
+            'begin'        => ['<', $end_time],
+            'end'          => ['>', $begin_time]
+         ]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               list($hour, $minute ,$second) = explode(':', $data['TDIFF']);
-               $sum += $hour*HOUR_TIMESTAMP+$minute*MINUTE_TIMESTAMP+$second;
-            }
-         }
+      while ($data = $iterator->next()) {
+         list($hour, $minute ,$second) = explode(':', $data['TDIFF']);
+         $sum += $hour*HOUR_TIMESTAMP+$minute*MINUTE_TIMESTAMP+$second;
       }
       return $sum;
    }
@@ -197,33 +204,39 @@ class CalendarSegment extends CommonDBChild {
       global $DB;
 
       // Do not check hour if day before the end day of after the begin day
-      $query = "SELECT GREATEST(`begin`,'$begin_time') AS BEGIN,
-                       TIMEDIFF(`end`,GREATEST(`begin`,'$begin_time')) AS TDIFF
-                FROM `glpi_calendarsegments`
-                WHERE `calendars_id` = '$calendars_id'
-                     AND `day` = '$day'
-                     AND ('$begin_time' < `end`)
-                ORDER BY `begin`";
+      $iterator = $DB->request([
+         'SELECT' => [
+            new \QueryExpression(
+               "GREATEST(" . $DB->quoteName('begin') . ", " . $DB->quoteValue($begin_time)  . ") AS " . $DB->quoteName('BEGIN')
+            ),
+            new \QueryExpression(
+               "TIMEDIFF(" . $DB->quoteName('end') . ", GREATEST(" . $DB->quoteName('begin') . ", " . $DB->quoteValue($begin_time) . ")) AS " . $DB->quoteName('TDIFF')
+            )
+         ],
+         'FROM'   => 'glpi_calendarsegments',
+         'WHERE'  => [
+            'calendars_id' => $calendars_id,
+            'day'          => $day,
+            'end'          => ['>', $begin_time]
+         ],
+         'ORDER'  => 'begin'
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               list($hour, $minute, $second) = explode(':', $data['TDIFF']);
-               $tstamp = $hour*HOUR_TIMESTAMP+$minute*MINUTE_TIMESTAMP+$second;
+      while ($data = $iterator->next()) {
+         list($hour, $minute, $second) = explode(':', $data['TDIFF']);
+         $tstamp = $hour*HOUR_TIMESTAMP+$minute*MINUTE_TIMESTAMP+$second;
 
-               // Delay is completed
-               if ($delay <= $tstamp) {
-                  list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['BEGIN']);
-                  $beginstamp = $begin_hour*HOUR_TIMESTAMP+$begin_minute*MINUTE_TIMESTAMP+$begin_second;
-                  $endstamp   = $beginstamp+$delay;
-                  $units      = Toolbox::getTimestampTimeUnits($endstamp);
-                  return str_pad($units['hour'], 2, '0', STR_PAD_LEFT).':'.
-                         str_pad($units['minute'], 2, '0', STR_PAD_LEFT).':'.
-                         str_pad($units['second'], 2, '0', STR_PAD_LEFT);
-               } else {
-                  $delay -= $tstamp;
-               }
-            }
+         // Delay is completed
+         if ($delay <= $tstamp) {
+            list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['BEGIN']);
+            $beginstamp = $begin_hour*HOUR_TIMESTAMP+$begin_minute*MINUTE_TIMESTAMP+$begin_second;
+            $endstamp   = $beginstamp+$delay;
+            $units      = Toolbox::getTimestampTimeUnits($endstamp);
+            return str_pad($units['hour'], 2, '0', STR_PAD_LEFT).':'.
+                     str_pad($units['minute'], 2, '0', STR_PAD_LEFT).':'.
+                     str_pad($units['second'], 2, '0', STR_PAD_LEFT);
+         } else {
+            $delay -= $tstamp;
          }
       }
       return false;
@@ -242,17 +255,15 @@ class CalendarSegment extends CommonDBChild {
       global $DB;
 
       // Do not check hour if day before the end day of after the begin day
-      $query = "SELECT MIN(`begin`)
-                FROM `glpi_calendarsegments`
-                WHERE `calendars_id` = '$calendars_id'
-                      AND `day` = '$day'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            return $DB->result($result, 0, 0);
-         }
-      }
-      return false;
+      $result = $DB->request([
+         'SELECT' => ['MIN' => 'begin AS minb'],
+         'FROM'   => 'glpi_calendarsegments',
+         'WHERE'  => [
+            'calendars_id' => $calendars_id,
+            'day'          => $day
+         ]
+      ])->next();
+      return $result['minb'];
    }
 
 
@@ -268,17 +279,15 @@ class CalendarSegment extends CommonDBChild {
       global $DB;
 
       // Do not check hour if day before the end day of after the begin day
-      $query = "SELECT MAX(`end`)
-                FROM `glpi_calendarsegments`
-                WHERE `calendars_id` = '$calendars_id'
-                      AND `day` = '$day'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            return $DB->result($result, 0, 0);
-         }
-      }
-      return false;
+      $result = $DB->request([
+         'SELECT' => ['MAX' => 'end AS mend'],
+         'FROM'   => 'glpi_calendarsegments',
+         'WHERE'  => [
+            'calendars_id' => $calendars_id,
+            'day'          => $day
+         ]
+      ])->next();
+      return $result['mend'];
    }
 
 
@@ -295,18 +304,17 @@ class CalendarSegment extends CommonDBChild {
       global $DB;
 
       // Do not check hour if day before the end day of after the begin day
-      $query = "SELECT *
-                FROM `glpi_calendarsegments`
-                WHERE `calendars_id` = '$calendars_id'
-                      AND `day` = '$day'
-                      AND `begin` <= '$hour'
-                      AND `end` >= '$hour'";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            return true;
-         }
-      }
-      return false;
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_calendarsegments',
+         'WHERE'  => [
+            'calendars_id' => $calendars_id,
+            'day'          => $day,
+            'begin'        => ['<=', $hour],
+            'end'          => ['>=', $hour]
+         ]
+      ])->next();
+      return $result['cpt'] > 0;
    }
 
 
@@ -326,12 +334,18 @@ class CalendarSegment extends CommonDBChild {
       $canedit = $calendar->can($ID, UPDATE);
       $rand    = mt_rand();
 
-      $query = "SELECT *
-                FROM `glpi_calendarsegments`
-                WHERE `calendars_id` = '$ID'
-                ORDER BY `day`, `begin`, `end`";
-      $result = $DB->query($query);
-      $numrows = $DB->numrows($result);
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_calendarsegments',
+         'WHERE'  => [
+            'calendars_id' => $ID
+         ],
+         'ORDER'  => [
+            'day',
+            'begin',
+            'end'
+         ]
+      ]);
+      $numrows = count($iterator);
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -379,7 +393,7 @@ class CalendarSegment extends CommonDBChild {
       $daysofweek = Toolbox::getDaysOfWeekArray();
 
       if ($numrows) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_1'>";
 
             if ($canedit) {

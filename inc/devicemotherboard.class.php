@@ -138,4 +138,25 @@ class DeviceMotherboard extends CommonDevice {
                    'chipset'          => 'equal'];
    }
 
+   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => 'glpi_devicemotherboards',
+         'field'              => 'designation',
+         'name'               => __('System board'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicemotherboards',
+               'joinparams'         => $main_joinparams
+            ]
+         ]
+      ];
+
+      return $tab;
+   }
 }

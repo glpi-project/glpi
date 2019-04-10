@@ -58,36 +58,18 @@ class Supplier extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $supplierjob = new Supplier_Ticket();
-      $supplierjob->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $ps = new Problem_Supplier();
-      $ps->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $cs = new Change_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $DB->delete(
-         'glpi_projecttaskteams', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => __CLASS__
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Supplier::class,
+            Contact_Supplier::class,
+            Contract_Supplier::class,
+            Problem_Supplier::class,
+            ProjectTaskTeam::class,
+            ProjectTeam::class,
+            Supplier_Ticket::class,
          ]
       );
-
-      $DB->delete(
-         'glpi_projectteams', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => __CLASS__
-         ]
-      );
-
-      $cs  = new Contract_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $cs  = new Contact_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       // Ticket rules use suppliers_id_assign
       Rule::cleanForItemAction($this, 'suppliers_id%');
@@ -193,12 +175,23 @@ class Supplier extends CommonDBTM {
       Html::autocompletionTextField($this, "country");
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Active')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_active', $this->fields['is_active']);
+      echo "</td></tr>";
+
       $this->showFormButtons($options);
 
       return true;
 
    }
 
+   static function dropdown($options = []) {
+      $condition = ['is_active' => true];
+      $options['condition'] = (isset($options['condition']) ? $options['condition'] + $condition : $condition);
+      return Dropdown::show(get_called_class(), $options);
+   }
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
@@ -560,7 +553,7 @@ class Supplier extends CommonDBTM {
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 
             } else if ($nb) {
-               for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
+               for ($prem=true; $data=$DB->fetchAssoc($result_linked); $prem=false) {
                   $name = $data[$linktype::getNameField()];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);

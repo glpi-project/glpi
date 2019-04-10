@@ -53,10 +53,12 @@ class SoftwareVersion extends CommonDBChild {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $csv = new Computer_SoftwareVersion();
-      $csv->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Computer_SoftwareVersion::class,
+         ]
+      );
    }
 
 
@@ -135,7 +137,7 @@ class SoftwareVersion extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
       State::dropdown(['value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_softwareversion`"]);
+                            'condition' => ['is_visible_softwareversion' => 1]]);
       echo "</td></tr>\n";
 
       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
@@ -188,7 +190,7 @@ class SoftwareVersion extends CommonDBChild {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_softwareversion`'
+         'condition'          => ['is_visible_softwareversion' => 1]
       ];
 
       $tab[] = [
@@ -248,7 +250,7 @@ class SoftwareVersion extends CommonDBChild {
       $values = [];
 
       if ($number) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $ID     = $data['id'];
             $output = $data['name'];
 
@@ -314,7 +316,7 @@ class SoftwareVersion extends CommonDBChild {
             echo "<th>".__('Comments')."</th>";
             echo "</tr>\n";
 
-            for ($tot=$nb=0; $data=$DB->fetch_assoc($result); $tot+=$nb) {
+            for ($tot=$nb=0; $data=$DB->fetchAssoc($result); $tot+=$nb) {
                Session::addToNavigateListItems('SoftwareVersion', $data['id']);
                $nb = Computer_SoftwareVersion::countForVersion($data['id']);
 

@@ -170,15 +170,21 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td class='right'>";
          echo "<input type='hidden' name='projecttasks_id' value='$ID'>";
-         $condition = "`glpi_tickets`.`status`
-                        NOT IN ('".implode("', '",
-                                           array_merge(Ticket::getSolvedStatusArray(),
-                                                       Ticket::getClosedStatusArray()))."')";
-         Ticket::dropdown(['used'        => $used,
-                                'entity'      => $projecttask->getEntityID(),
-                                'entity_sons' => $projecttask->isRecursive(),
-                                'condition'   => $condition,
-                                'displaywith' => ['id']]);
+         $condition = [
+            'NOT' => [
+               'glpi_tickets.status'    => array_merge(
+                  Ticket::getSolvedStatusArray(),
+                  Ticket::getClosedStatusArray()
+               )
+            ]
+         ];
+         Ticket::dropdown([
+            'used'        => $used,
+            'entity'      => $projecttask->getEntityID(),
+            'entity_sons' => $projecttask->isRecursive(),
+            'condition'   => $condition,
+            'displaywith' => ['id']
+         ]);
 
          echo "</td><td width='20%'>";
          echo "<a href='".Toolbox::getItemTypeFormURL('Ticket')."?_projecttasks_id=$ID'>";
@@ -284,11 +290,12 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td class='right'>";
          echo Html::hidden('tickets_id', ['value' => $ID]);
-         Project::dropdown(['entity'      => $ticket->getEntityID(),
-                            'entity_sons' => $ticket->isRecursive(),
-                            'condition'   => '`glpi_projects`.`projectstates_id`
-                                                 NOT IN(' . implode($finished_states_ids, ", ") . ')',
-                            'rand'        => $rand]);
+         Project::dropdown([
+            'entity'      => $ticket->getEntityID(),
+            'entity_sons' => $ticket->isRecursive(),
+            'condition'   => ['NOT' => ['glpi_projects.projectstates_id' => $finished_states_ids]],
+            'rand'        => $rand
+         ]);
 
          $p = ['projects_id'     => '__VALUE__',
                'entity_restrict' => $ticket->getEntityID(),
@@ -315,20 +322,24 @@ class ProjectTask_Ticket extends CommonDBRelation{
                ],
             ]
          );
-         $ecluded_projects_ids = [];
-         foreach ($excluded_projects_it as $ecluded_project) {
-            $ecluded_projects_ids[] = $ecluded_project['id'];
+         $excluded_projects_ids = [];
+         foreach ($excluded_projects_it as $excluded_project) {
+            $excluded_projects_ids[] = $excluded_project['id'];
          }
          echo "<td class='right'>";
          echo "<span id='results_projects$rand'>";
-         ProjectTask::dropdown(['used'        => $used,
-                                'entity'      => $ticket->getEntityID(),
-                                'entity_sons' => $ticket->isRecursive(),
-                                'condition'   => '`glpi_projecttasks`.`projectstates_id`
-                                                     NOT IN(' . implode($finished_states_ids, ", ") . ')
-                                                  AND `glpi_projecttasks`.`projects_id`
-                                                     NOT IN(' . implode($ecluded_projects_ids, ", ") . ')',
-                                'displaywith' => ['id']]);
+         ProjectTask::dropdown([
+            'used'        => $used,
+            'entity'      => $ticket->getEntityID(),
+            'entity_sons' => $ticket->isRecursive(),
+            'condition'   => [
+               'NOT' => [
+                  'glpi_projecttasks.projectstates_id'   => $finished_states_ids,
+                  'glpi_projecttasks.projects_id'        => $excluded_projects_ids
+               ]
+            ],
+            'displaywith' => ['id']
+         ]);
          echo "</span>";
 
          echo "</td><td width='20%'>";
@@ -370,27 +381,57 @@ class ProjectTask_Ticket extends CommonDBRelation{
          } else {
             $sort = "`plan_start_date` $order, `name`";
          }
-         $query = "SELECT `glpi_projecttasks`.*,
-                          `glpi_projecttasktypes`.`name` AS tname,
-                          `glpi_projectstates`.`name` AS sname,
-                          `glpi_projectstates`.`color`,
-                          `father`.`name` AS fname,
-                          `father`.`id` AS fID,
-                          `glpi_projects`.`name` AS projectname,
-                          `glpi_projects`.`content` AS projectcontent
-                   FROM `glpi_projecttasks`
-                   LEFT JOIN `glpi_projecttasktypes`
-                      ON (`glpi_projecttasktypes`.`id` = `glpi_projecttasks`.`projecttasktypes_id`)
-                   LEFT JOIN `glpi_projectstates`
-                      ON (`glpi_projectstates`.`id` = `glpi_projecttasks`.`projectstates_id`)
-                   LEFT JOIN `glpi_projecttasks` as father
-                      ON (`father`.`id` = `glpi_projecttasks`.`projecttasks_id`)
-                   LEFT JOIN `glpi_projecttasks_tickets`
-                      ON (`glpi_projecttasks_tickets`.`projecttasks_id` = `glpi_projecttasks`.`id`)
-                   LEFT JOIN `glpi_projects`
-                      ON (`glpi_projecttasks`.`projects_id` = `glpi_projects`.`id`)
-                   WHERE `glpi_projecttasks_tickets`.`tickets_id` = '$ID'
-                   ORDER BY $sort $order";
+         $iterator = $DB->request([
+            'SELECT'    => [
+               'glpi_projecttasks.*',
+               'glpi_projecttasktypes.name AS tname',
+               'glpi_projectstates.name AS sname',
+               'glpi_projectstates.color',
+               'father.name AS fname',
+               'father.id AS fID',
+               'glpi_projects.name AS projectname',
+               'glpi_projects.content AS projectcontent'
+            ],
+            'FROM'      => 'glpi_projecttasks',
+            'LEFT JOIN' => [
+               'glpi_projecttasktypes' => [
+                  'ON' => [
+                     'glpi_projecttasktypes' => 'id',
+                     'glpi_projecttasks'     => 'projecttasktypes_id'
+                  ]
+               ],
+               'glpi_projectstates'    => [
+                  'ON' => [
+                     'glpi_projectstates' => 'id',
+                     'glpi_projecttasks'  => 'projectstates_id'
+                  ]
+               ],
+               'glpi_projecttasks AS father' => [
+                  'ON' => [
+                     'father'             => 'id',
+                     'glpi_projecttasks'  => 'projecttasks_id'
+                  ]
+               ],
+               'glpi_projecttasks_tickets'   => [
+                  'ON' => [
+                     'glpi_projecttasks_tickets'   => 'projecttasks_id',
+                     'glpi_projecttasks'           => 'id'
+                  ]
+               ],
+               'glpi_projects'               => [
+                  'ON' => [
+                     'glpi_projecttasks'  => 'projects_id',
+                     'glpi_projects'      => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'glpi_projecttasks_tickets.tickets_id' => $ID
+            ],
+            'ORDERBY'   => [
+               "$sort $order"
+            ]
+         ]);
 
          Session::initNavigateListItems('ProjectTask',
                                         //TRANS : %1$s is the itemtype name,
@@ -398,77 +439,74 @@ class ProjectTask_Ticket extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'), $ticket::getTypeName(1),
                                                 $ticket->getName()));
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result)) {
-               echo "<table class='tab_cadre_fixehov'>";
-               echo "<tr><th colspan='10'>".ProjectTask::getTypeName($numrows)."</th>";
-               echo "</tr>";
+         if (count($iterator)) {
+            echo "<table class='tab_cadre_fixehov'>";
+            echo "<tr><th colspan='10'>".ProjectTask::getTypeName($numrows)."</th>";
+            echo "</tr>";
 
-               $header = '<tr>';
-               foreach ($columns as $key => $val) {
-                  // Non order column
-                  if ($key[0] == '_') {
-                     $header .= "<th>$val</th>";
-                  } else {
-                     $header .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
-                                "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
-                                  (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
-                  }
+            $header = '<tr>';
+            foreach ($columns as $key => $val) {
+               // Non order column
+               if ($key[0] == '_') {
+                  $header .= "<th>$val</th>";
+               } else {
+                  $header .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
+                              "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
+                                 (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                }
-               $header .= "</tr>\n";
-               echo $header;
-
-               while ($data=$DB->fetch_assoc($result)) {
-                  Session::addToNavigateListItems('ProjectTask', $data['id']);
-                  $rand = mt_rand();
-                  echo "<tr class='tab_bg_2'>";
-                  echo "<td>";
-                  $link = "<a id='Project".$data["projects_id"].$rand."' href='".
-                            Project::getFormURLWithID($data['projects_id'])."'>".$data['projectname'].
-                            (empty($data['projectname'])?"(".$data['projects_id'].")":"")."</a>";
-                  echo sprintf(__('%1$s %2$s'), $link,
-                               Html::showToolTip($data['projectcontent'],
-                                                 ['display' => false,
-                                                       'applyto' => "Project".$data["projects_id"].$rand]));
-                  echo "</td>";
-                  echo "<td>";
-                  $link = "<a id='ProjectTask".$data["id"].$rand."' href='".
-                            ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
-                            (empty($data['name'])?"(".$data['id'].")":"")."</a>";
-                  echo sprintf(__('%1$s %2$s'), $link,
-                               Html::showToolTip($data['content'],
-                                                 ['display' => false,
-                                                       'applyto' => "ProjectTask".$data["id"].$rand]));
-                  echo "</td>";
-                  echo "<td>".$data['tname']."</td>";
-                  echo "<td";
-                  echo " style=\"background-color:".$data['color']."\"";
-                  echo ">".$data['sname']."</td>";
-                  echo "<td>";
-                  echo Dropdown::getValueWithUnit($data["percent_done"], "%");
-                  echo "</td>";
-                  echo "<td>".Html::convDateTime($data['plan_start_date'])."</td>";
-                  echo "<td>".Html::convDateTime($data['plan_end_date'])."</td>";
-                  echo "<td>".Html::timestampToString($data['planned_duration'], false)."</td>";
-                  echo "<td>".Html::timestampToString(ProjectTask::getTotalEffectiveDuration($data['id']),
-                                                      false)."</td>";
-                  echo "<td>";
-                  if ($data['projecttasks_id']>0) {
-                     $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
-                     echo "<a id='ProjectTask".$data["projecttasks_id"].$rand."' href='".
-                           ProjectTask::getFormURLWithID($data['projecttasks_id'])."'>".$father.
-                           (empty($father)?"(".$data['projecttasks_id'].")":"")."</a>";
-                  }
-                  echo "</td></tr>";
-               }
-               echo $header;
-               echo "</table>\n";
-
-            } else {
-               echo "<table class='tab_cadre_fixe'>";
-               echo "<tr><th>".__('No item found')."</th></tr>";
-               echo "</table>\n";
             }
+            $header .= "</tr>\n";
+            echo $header;
+
+            while ($data = $iterator->next()) {
+               Session::addToNavigateListItems('ProjectTask', $data['id']);
+               $rand = mt_rand();
+               echo "<tr class='tab_bg_2'>";
+               echo "<td>";
+               $link = "<a id='Project".$data["projects_id"].$rand."' href='".
+                           Project::getFormURLWithID($data['projects_id'])."'>".$data['projectname'].
+                           (empty($data['projectname'])?"(".$data['projects_id'].")":"")."</a>";
+               echo sprintf(__('%1$s %2$s'), $link,
+                              Html::showToolTip($data['projectcontent'],
+                                                ['display' => false,
+                                                      'applyto' => "Project".$data["projects_id"].$rand]));
+               echo "</td>";
+               echo "<td>";
+               $link = "<a id='ProjectTask".$data["id"].$rand."' href='".
+                           ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
+                           (empty($data['name'])?"(".$data['id'].")":"")."</a>";
+               echo sprintf(__('%1$s %2$s'), $link,
+                              Html::showToolTip($data['content'],
+                                                ['display' => false,
+                                                      'applyto' => "ProjectTask".$data["id"].$rand]));
+               echo "</td>";
+               echo "<td>".$data['tname']."</td>";
+               echo "<td";
+               echo " style=\"background-color:".$data['color']."\"";
+               echo ">".$data['sname']."</td>";
+               echo "<td>";
+               echo Dropdown::getValueWithUnit($data["percent_done"], "%");
+               echo "</td>";
+               echo "<td>".Html::convDateTime($data['plan_start_date'])."</td>";
+               echo "<td>".Html::convDateTime($data['plan_end_date'])."</td>";
+               echo "<td>".Html::timestampToString($data['planned_duration'], false)."</td>";
+               echo "<td>".Html::timestampToString(ProjectTask::getTotalEffectiveDuration($data['id']),
+                                                   false)."</td>";
+               echo "<td>";
+               if ($data['projecttasks_id']>0) {
+                  $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
+                  echo "<a id='ProjectTask".$data["projecttasks_id"].$rand."' href='".
+                        ProjectTask::getFormURLWithID($data['projecttasks_id'])."'>".$father.
+                        (empty($father)?"(".$data['projecttasks_id'].")":"")."</a>";
+               }
+               echo "</td></tr>";
+            }
+            echo $header;
+            echo "</table>\n";
+         } else {
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr><th>".__('No item found')."</th></tr>";
+            echo "</table>\n";
          }
          echo "</div>";
       }

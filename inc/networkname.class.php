@@ -316,11 +316,12 @@ class NetworkName extends FQDNLabel {
 
    function cleanDBonPurge() {
 
-      $alias = new NetworkAlias();
-      $alias->cleanDBonItemDelete($this->getType(), $this->GetID());
-
-      $ipAddress = new IPAddress();
-      $ipAddress->cleanDBonItemDelete($this->getType(), $this->GetID());
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            IPAddress::class,
+            NetworkAlias::class,
+         ]
+      );
    }
 
 
@@ -420,7 +421,7 @@ class NetworkName extends FQDNLabel {
 
          switch ($DB->numrows($result)) {
             case 1 :
-               $nameID = $DB->fetch_assoc($result);
+               $nameID = $DB->fetchAssoc($result);
                $name->getFromDB($nameID['id']);
                break;
 
@@ -696,8 +697,10 @@ class NetworkName extends FQDNLabel {
          echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
          echo __('Not associated');
          echo "</td><td class='left'>";
-         self::dropdown(['name'      => 'addressID',
-                              'condition' => '`items_id`=0']);
+         self::dropdown([
+            'name'      => 'addressID',
+            'condition' => ['items_id' => 0]
+         ]);
          echo "</td><td class='left'>";
          echo "<input type='submit' name='assign_address' value='"._sx('button', 'Associate').
                 "' class='submit'>";
@@ -842,7 +845,7 @@ class NetworkName extends FQDNLabel {
                             AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`
                             AND `glpi_networknames`.`is_deleted` = 0";
             $result = $DB->query($query);
-            $ligne  = $DB->fetch_assoc($result);
+            $ligne  = $DB->fetchAssoc($result);
             return $ligne['cpt'];
       }
    }

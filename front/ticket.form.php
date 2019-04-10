@@ -69,7 +69,6 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['update'])) {
    $track->check($_POST['id'], UPDATE);
-
    $track->update($_POST);
 
    if (isset($_POST['kb_linked_id'])) {
@@ -186,9 +185,11 @@ if (isset($_POST["add"])) {
    $doc->getFromDB(intval($_REQUEST['documents_id']));
    if ($doc->can($doc->getID(), UPDATE)) {
       $document_item = new Document_Item;
-      $found_document_items = $document_item->find("itemtype = 'Ticket' ".
-                                                   " AND items_id = ".intval($_REQUEST['tickets_id']).
-                                                   " AND documents_id = ".$doc->getID());
+      $found_document_items = $document_item->find([
+         'itemtype'     => 'Ticket',
+         'items_id'     => (int)$_REQUEST['tickets_id'],
+         'documents_id' => $doc->getID()
+      ]);
       foreach ($found_document_items  as $item) {
          $document_item->delete(Toolbox::addslashes_deep($item), true);
       }

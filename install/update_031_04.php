@@ -43,7 +43,7 @@ function superAdminExists() {
              FROM `glpi_users`";
    $result = $DB->query($query);
    $var1 = false;
-   while ($line = $DB->fetch_array($result)) {
+   while ($line = $DB->fetchArray($result)) {
       if ($line["type"] == "super-admin" && !empty($line["password"])) {
          $var1 = true;
       }
@@ -482,7 +482,7 @@ function update031to04() {
 
       $curend1 = -1;
       $curend2 = -1;
-      while ($line = $DB->fetch_array($result)) {
+      while ($line = $DB->fetchArray($result)) {
          if ($curend1==$line['end1'] && $curend2==$line['end2']) {
             $q2 = "DELETE
                    FROM `glpi_networking_wire`
@@ -492,7 +492,7 @@ function update031to04() {
             $curend1 = $line['end1'];
             $curend2 = $line['end2'];}
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
 
       $query = "ALTER TABLE `glpi_networking_wire`
                 ADD UNIQUE end1_1 (`end1`,`end2`)";
@@ -519,7 +519,7 @@ function update031to04() {
       $curend1 = -1;
       $curend2 = -1;
       $curtype = -1;
-      while ($line = $DB->fetch_array($result)) {
+      while ($line = $DB->fetchArray($result)) {
          if ($curend1==$line['end1'] && $curend2==$line['end2'] && $curtype==$line['type']) {
             $q2 = "DELETE
                    FROM `glpi_connect_wire`
@@ -531,7 +531,7 @@ function update031to04() {
             $curend2 = $line['end2'];
             $curtype = $line['type'];}
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
       $query = "ALTER TABLE `glpi_connect_wire`
                 ADD UNIQUE end1_1 (`end1`,`end2`,`type`) ";
       $DB->queryOrDie($query, "478");
@@ -566,7 +566,7 @@ function update031to04() {
                 SET `type` = 'super-admin'
                 WHERE `type` = 'admin'";
       $DB->queryOrDie($query, "49");
-      if ($DB->affected_rows() != 0) {
+      if ($DB->affectedRows() != 0) {
          $ret["adminchange"] = true;
       }
    }

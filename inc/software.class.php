@@ -178,34 +178,19 @@ class Software extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      // Delete all licenses
-      $query2 = "SELECT `id`
-                 FROM `glpi_softwarelicenses`
-                 WHERE `softwares_id` = '".$this->fields['id']."'";
+      // SoftwareLicense does not extends CommonDBConnexity
+      $sl = new SoftwareLicense();
+      $sl->deleteByCriteria(['softwares_id' => $this->fields['id']]);
 
-      if ($result2 = $DB->query($query2)) {
-         if ($DB->numrows($result2)) {
-            $lic = new SoftwareLicense();
-            while ($data = $DB->fetch_assoc($result2)) {
-               $lic->delete(["id" => $data["id"]]);
-            }
-         }
-      }
-
-      $version = new SoftwareVersion();
-      $version->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ci = new Change_Item();
-      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Item::class,
+            Item_Problem::class,
+            Item_Project::class,
+            SoftwareVersion::class,
+         ]
+      );
    }
 
 
@@ -285,10 +270,12 @@ class Software extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the software')."</td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id_tech',
-                            'value'     => $this->fields['groups_id_tech'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`']);
+      Group::dropdown([
+         'name'      => 'groups_id_tech',
+         'value'     => $this->fields['groups_id_tech'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_assign' => 1]
+      ]);
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".__('Comments') . "</td>";
       echo "<td class='center middle' rowspan='4'>";
@@ -305,9 +292,11 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Group') . "</td><td>";
-      Group::dropdown(['value'     => $this->fields["groups_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_itemgroup`']);
+      Group::dropdown([
+         'value'     => $this->fields["groups_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_itemgroup' => 1]
+      ]);
       echo "</td></tr>\n";
 
       // UPDATE
@@ -534,7 +523,7 @@ class Software extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the software'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -552,7 +541,7 @@ class Software extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'name'               => __('Group'),
-         'condition'          => '`is_itemgroup`',
+         'condition'          => ['is_itemgroup' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -593,19 +582,21 @@ class Software extends CommonDBTM {
          'usehaving'          => true,
          'datatype'           => 'count',
          'nometa'             => true,
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'   => 'child',
+            'beforejoin' => [
+               'table'      => 'glpi_softwareversions',
+               'joinparams' => ['jointype' => 'child'],
+               'condition'  => "AND NEWTABLE.`is_deleted_computer` = 0
+                                AND NEWTABLE.`is_deleted` = 0
+                                AND NEWTABLE.`is_template_computer` = 0"
+            ],
+         ]
       ];
 
       if (Session::getLoginUserID()) {
-         $newtab['joinparams']  = ['jointype'   => 'child',
-                                         'condition'  => "AND NEWTABLE.`is_deleted_computer` = 0
-                                                          AND NEWTABLE.`is_deleted` = 0
-                                                          AND NEWTABLE.`is_template_computer` = 0
-                                                          ".getEntitiesRestrictRequest('AND', 'NEWTABLE'),
-                                         'beforejoin' => ['table' => 'glpi_softwareversions',
-                                                               'joinparams'
-                                                                       => ['jointype'
-                                                                                 => 'child']]];
+         $newtab['joinparams']['beforejoin']['condition'] .= getEntitiesRestrictRequest(' AND', 'NEWTABLE');
       }
       $tab[] = $newtab;
 
@@ -628,7 +619,7 @@ class Software extends CommonDBTM {
          'id'                 => '5',
          'table'              => 'glpi_softwareversions',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Name'),
+         'name'               => __('Name'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'displaywith'        => ['softwares_id'],
@@ -642,7 +633,7 @@ class Software extends CommonDBTM {
          'id'                 => '31',
          'table'              => 'glpi_states',
          'field'              => 'completename',
-         'name'               => $name . ' - ' . __('Status'),
+         'name'               => __('Status'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -660,7 +651,7 @@ class Software extends CommonDBTM {
          'id'                 => '170',
          'table'              => 'glpi_softwareversions',
          'field'              => 'comment',
-         'name'               => $name . ' - ' . __('Comments'),
+         'name'               => __('Comments'),
          'forcegroupby'       => true,
          'datatype'           => 'text',
          'massiveaction'      => false,
@@ -674,7 +665,7 @@ class Software extends CommonDBTM {
          'table'              => 'glpi_operatingsystems',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => $name . ' - ' . __('Operating system'),
+         'name'               => __('Operating system'),
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
@@ -708,7 +699,7 @@ class Software extends CommonDBTM {
 
       // Make a select box
       $rand  = mt_rand();
-      $where = getEntitiesRestrictRequest('', 'glpi_softwares', 'entities_id',
+      $where = getEntitiesRestrictCriteria('glpi_softwares', 'entities_id',
                                           $entity_restrict, true);
       $rand = Dropdown::show('Software', ['condition' => $where]);
 
@@ -752,7 +743,7 @@ class Software extends CommonDBTM {
       $result = $DB->query($query);
       $values = [];
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $softwares_id          = $data["id"];
             $values[$softwares_id] = $data["name"];
          }
@@ -854,7 +845,7 @@ class Software extends CommonDBTM {
 
       if ($DB->numrows($result_search) > 0) {
          //Software already exists for this entity, get his ID
-         $data = $DB->fetch_assoc($result_search);
+         $data = $DB->fetchAssoc($result_search);
          $ID   = $data["id"];
 
          // restore software

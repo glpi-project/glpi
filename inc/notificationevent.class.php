@@ -119,20 +119,20 @@ class NotificationEvent extends CommonDBTM {
          //Process more infos (for example for tickets)
          $notificationtarget->addAdditionnalInfosForTarget();
 
-         //Get template's information
-         $template           = new NotificationTemplate();
-
-         $entity             = $notificationtarget->getEntity();
          //Foreach notification
          $notifications = Notification::getNotificationsByEventAndType(
             $event,
             $item->getType(),
-            $entity
+            $notificationtarget->getEntity()
          );
 
+         $processed = []; // targets list
          foreach ($notifications as $data) {
             $notificationtarget->clearAddressesList();
             $notificationtarget->setMode($data['mode']);
+
+            //Get template's information
+            $template = new NotificationTemplate();
             $template->getFromDB($data['notificationtemplates_id']);
             $template->resetComputedTemplates();
 
@@ -146,6 +146,10 @@ class NotificationEvent extends CommonDBTM {
             }
 
             $options['mode'] = $data['mode'];
+            if (!isset($processed[$data['mode']])) { // targets list per mode to avoid spam
+               $processed[$data['mode']] = [];
+            }
+            $options['processed'] = &$processed[$data['mode']];
             $eventclass = Notification_NotificationTemplate::getModeClass($data['mode'], 'event');
             if (class_exists($eventclass)) {
                $eventclass::raise(

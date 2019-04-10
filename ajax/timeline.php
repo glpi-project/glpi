@@ -44,12 +44,17 @@ if ($_REQUEST['action'] == 'change_task_state') {
    header("Content-Type: text/html; charset=UTF-8");
 }
 
+$objType = $_REQUEST['parenttype']::getType();
+$foreignKey = $_REQUEST['parenttype']::getForeignKeyField();
+
 switch ($_REQUEST['action']) {
    case "change_task_state":
       if (!isset($_REQUEST['tasks_id'])) {
          exit();
       }
-      $task = new TicketTask;
+
+      $taskClass = $objType."Task";
+      $task = new $taskClass;
       $task->getFromDB(intval($_REQUEST['tasks_id']));
       if (!in_array($task->fields['state'], [0, Planning::INFO])) {
          $new_state = ($task->fields['state'] == Planning::DONE)
@@ -63,7 +68,7 @@ switch ($_REQUEST['action']) {
 
          $task->update([
             'id'         => intval($_REQUEST['tasks_id']),
-            'tickets_id' => intval($_REQUEST['tickets_id']),
+            $foreignKey => intval($_REQUEST[$foreignKey]),
             'state'      => $new_state
          ]);
       }
@@ -97,6 +102,18 @@ switch ($_REQUEST['action']) {
             $solution->getFromDB($_REQUEST['id']);
          }
          $solution->showForm(null, $sol_params);
+      } else if ($_REQUEST['type'] == "ITILFollowup") {
+         $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()]);
+
+         $fup_params = [
+            'item'      => $parent
+         ];
+
+         $fup = new ITILFollowup();
+         if (isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0) {
+            $fup->getFromDB($_REQUEST['id']);
+         }
+         $fup->showForm(null, $fup_params);
       } else if (isset($_REQUEST[$parent->getForeignKeyField()])
             && isset($_REQUEST["id"])
             && $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()])) {
@@ -106,8 +123,8 @@ switch ($_REQUEST['action']) {
             ObjectLock::setReadOnlyProfile( );
          }
 
-         Ticket::showSubForm($item, $_REQUEST["id"], ['parent' => $parent,
-                                                      'tickets_id' => $_REQUEST["tickets_id"]]);
+         $parent::showSubForm($item, $_REQUEST["id"], ['parent' => $parent,
+                                                      $foreignKey => $_REQUEST[$foreignKey]]);
       } else {
          echo __('Access denied');
       }

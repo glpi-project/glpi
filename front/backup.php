@@ -63,17 +63,6 @@ if ($max_time == 0) {
  * @global DB $DB
  */
 function xmlbackup() {
-<<<<<<< HEAD
-   global $DB;
-
-   // Will contain the select * from $table
-   $query = [];
-   // Foreach DB tables...
-   $tables = $DB->listTables();
-   foreach ($tables as $id => $row) {
-      // Save the query...
-      $query[$id] = "SELECT * FROM `" . $row['TABLE_NAME'] . "`";
-=======
    global $CFG_GLPI, $DB;
 
    //on parcoure la DB et on liste tous les noms des tables dans $table
@@ -87,7 +76,6 @@ function xmlbackup() {
       $query[$i] = "SELECT *
                     FROM `$table`";
       $i++;
->>>>>>> 9721834baa... Fix deprecated usages (#4510)
    }
 
    // Filename
@@ -154,19 +142,18 @@ function get_content($DB, $table, $from, $limit) {
 
    $content = "";
 
-   $result = $DB->request($table, ['START' => $from, 'LIMIT' => $limit]);
+   $iterator = $DB->request($table, ['START' => $from, 'LIMIT' => $limit]);
 
-   if ($result) {
-      $num_fields = $DB->num_fields($result);
+   if ($iterator->count()) {
 
-      while ($row = $DB->fetch_row($result)) {
+      while ($row = $iterator->next()) {
          $insert = "INSERT INTO `$table` VALUES (";
 
-         for ($j = 0; $j < $num_fields; $j++) {
-            if (is_null($row[$j])) {
+         foreach ($row as $field_key => $field_val) {
+            if (is_null($field_val)) {
                $insert .= "NULL,";
-            } else if ($row[$j] != "") {
-               $insert .= "'" . addslashes($row[$j]) . "',";
+            } else if ($field_val != "") {
+               $insert .= "'" . addslashes($field_val) . "',";
             } else {
                $insert .= "'',";
             }
@@ -192,7 +179,7 @@ function get_def($DB, $table) {
    $query  = "SHOW CREATE TABLE `$table`";
    $result = $DB->query($query);
    $DB->query("SET SESSION sql_quote_show_create = 1");
-   $row = $DB->fetch_row($result);
+   $row = $DB->fetchRow($result);
 
    $def .= preg_replace("/AUTO_INCREMENT=\w+/i", "", $row[1]);
    $def .= ";";
@@ -598,7 +585,7 @@ if (Session::haveRight('backup', CREATE)) {
    echo "<br/>" . __('You should rather use a dedicated tool on your server.');
    echo "</li></ul></div>";
    echo "</td></tr><tr><td>";
-   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
+   echo "<i class='far fa-save fa-3x'></i>";
          "</td>";
    echo "<td><a class='vsubmit'
               href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),

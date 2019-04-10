@@ -34,60 +34,23 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
-/**
- * Obsolete function provided to detect compatibility issue
- *
- * @since 0.84
- **/
-function handleObsoleteCall($func) {
-
-   $name = NOT_AVAILABLE;
-   foreach (debug_backtrace() as $row) {
-      if (isset($row['function'])
-          && ($row['function'] == $func)
-          && isset($row['file'])
-          && preg_match(':(/|\\\\)plugins(/|\\\\)(.*)(/|\\\\):', $row['file'], $reg)) {
-         $name = $reg[3];
-         break;
-      }
-   }
-   echo "</table>";
-   Html::displayErrorAndDie(sprintf(__('The plugin %s is incompatible with this version of GLPI'),
-                                    $name).
-                            "<br><br>".__('Delete or update it otherwise GLPI will not work correctly.'));
-}
-
-
-/**
- * Obsolete function keep only for compatibility old versions
- *
- * @param $name
-**/
-function registerPluginType($name) {
-   handleObsoleteCall('registerPluginType');
-}
-
-
-/**
- * Obsolete function keep only for compatibility old versions
-**/
-function getLoginUserID() {
-   handleObsoleteCall('getLoginUserID');
-}
-
-
-/**
- * Obsolete function keep only for compatibility old versions
-**/
-function haveRight() {
-   handleObsoleteCall('haveRight');
-}
-
-
+// This has to be called before search process is called, in order to add
+// "new" plugins in DB to be able to display them.
 $plugin = new Plugin();
+$plugin->checkStates(true);
 
 Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
 
-$plugin->listPlugins();
+$catalog_btn = '<div class="center">'
+   . '<a href="http://plugins.glpi-project.org" class="vsubmit" target="_blank">'
+   . __('See the catalog of plugins')
+   . '</a>'
+   . '</div>';
+
+echo $catalog_btn;
+
+Search::show('Plugin');
+
+echo $catalog_btn;
 
 Html::footer();

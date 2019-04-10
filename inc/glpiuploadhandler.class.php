@@ -104,12 +104,26 @@ class GLPIUploadHandler extends UploadHandler {
             return __('Image requires a minimum height');
             break;
 
+         case 'accept_file_types':
+            return __('Filetype not allowed');
+            break;
+
+         case 'abort':
+            return __('File upload aborted');
+            break;
+
+         case 'image_resize':
+            return __('Failed to resize image');
+            break;
       }
 
       return false;
    }
 
    static function uploadFiles($params = []) {
+
+      global $DB;
+
       $default_params = [
          'name'           => '',
          'showfilesize'   => false,
@@ -123,18 +137,48 @@ class GLPIUploadHandler extends UploadHandler {
          $name = $rand_name . $name;
       }
 
+      $valid_type_iterator = $DB->request([
+         'FROM'   => 'glpi_documenttypes',
+         'WHERE'  => [
+            'is_uploadable'   => 1
+         ]
+      ]);
+
+      $valid_ext_patterns = [];
+      foreach ($valid_type_iterator as $valid_type) {
+         $valid_ext = $valid_type['ext'];
+         if (preg_match('/\/.+\//', $valid_ext)) {
+            // Filename matches pattern
+            // Remove surrounding '/' as it will be included in a larger pattern
+            // and protect by surrounding parenthesis to prevent conflict with other patterns
+            $valid_ext_patterns[] = '(' . substr($valid_ext, 1, -1) . ')';
+         } else {
+            // Filename ends with allowed ext
+            $valid_ext_patterns[] = '\.' . preg_quote($valid_type['ext'], '/') . '$';
+         }
+      }
+
       $upload_dir     = GLPI_TMP_DIR.'/';
-      $upload_handler = new self(['upload_dir'     => $upload_dir,
-                                  'param_name'     => $pname,
-                                  'orient_image'   => false,
-                                  'image_versions' => []],
-                                 false);
+      $upload_handler = new self(
+         [
+            'accept_file_types'         => '/(' . implode('|', $valid_ext_patterns) . ')/i',
+            'image_versions'            => [
+               'auto_orient' => false,
+            ],
+            'param_name'                => $pname,
+            'replace_dots_in_filenames' => false,
+            'upload_dir'                => $upload_dir,
+         ],
+         false
+      );
       $response       = $upload_handler->post(false);
 
       // clean compute display filesize
       if (isset($response[$pname]) && is_array($response[$pname])) {
-         foreach ($response[$pname] as $key => &$val) {
-            if (Document::isValidDoc(addslashes($val->name))) {
+         foreach ($response[$pname] as &$val) {
+            if (isset($val->error) && file_exists($upload_dir.$val->name)) {
+               unlink($upload_dir.$val->name);
+            } else {
                $val->prefix = $rand_name;
                if (isset($val->name)) {
                   $val->display = str_replace($rand_name, '', $val->name);
@@ -145,12 +189,6 @@ class GLPIUploadHandler extends UploadHandler {
                      $val->display = sprintf('%1$s %2$s', $val->display, $val->filesize);
                   }
                }
-            } else {
-               // Unlink file
-               $val->error = __('Filetype not allowed');
-               if (file_exists($upload_dir.$val->name)) {
-                  unlink($upload_dir.$val->name);
-               }
             }
             $val->id = 'doc'.$params['name'].mt_rand();
          }
@@ -158,5 +196,21 @@ class GLPIUploadHandler extends UploadHandler {
 
       // send answer
       return $upload_handler->generate_response($response, $params['print_response']);
+   }
+
+   protected function get_upload_data($id) {
+      return array_key_exists($id, $_FILES) ? $_FILES[$id] : null;
+   }
+
+   protected function get_post_param($id) {
+      return array_key_exists($id, $_POST) ? $_POST[$id] : null;
+   }
+
+   protected function get_query_param($id) {
+      return array_key_exists($id, $_GET) ? $_GET[$id] : null;
+   }
+
+   protected function get_server_var($id) {
+      return array_key_exists($id, $_SERVER) ? $_SERVER[$id] : null;
    }
 }

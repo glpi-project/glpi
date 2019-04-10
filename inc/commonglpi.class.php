@@ -234,7 +234,6 @@ class CommonGLPI {
     * @return CommonGLPI
    **/
    function addDefaultFormTab(array &$ong) {
-      global $CFG_GLPI;
 
       if (self::isLayoutExcludedPage()
           || !self::isLayoutWithMain()
@@ -259,8 +258,6 @@ class CommonGLPI {
       $type       = static::getType();
       $item       = new $type();
       $forbidden  = $type::getForbiddenActionsForMenu();
-
-      $debug      = false;
 
       if ($item instanceof CommonDBTM) {
          if ($type::canView()) {
@@ -666,7 +663,6 @@ class CommonGLPI {
     * @return void
    **/
    function showTabsContent($options = []) {
-      global $CFG_GLPI;
 
       // for objects not in table like central
       if (isset($this->fields['id'])) {
@@ -708,7 +704,6 @@ class CommonGLPI {
       }
       echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
       echo "<div id='tabspanel' class='center-h'></div>";
-      $current_tab = 0;
       $onglets     = $this->defineAllTabs($options);
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
@@ -775,7 +770,7 @@ class CommonGLPI {
             $withtemplate = $options['withtemplate'];
             unset($cleanoptions['withtemplate']);
          }
-         foreach ($cleanoptions as $key => $val) {
+         foreach (array_keys($cleanoptions) as $key) {
             // Do not include id options
             if (($key[0] == '_') || ($key == 'id')) {
                unset($cleanoptions[$key]);
@@ -831,17 +826,12 @@ class CommonGLPI {
 
          if ($first >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
-                    "\" title=\"".__s('First')."\" class='pointer'></a></td>";
-         } else {
-            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/first_off.png' alt=\"" .
-                __s('First')."\" title=\"".__s('First')."\"></td>";
+                "<i class='fa fa-angle-double-left' title=\"".__s('First')."\"></i></a></td>";
          }
 
          if ($prev >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                    "\" title=\"".__s('Previous')."\" class='pointer'></a></td>";
+                "<i class='fa fa-chevron-left' title=\"".__s('Previous')."\"></i></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 37 && e.ctrlKey) {
@@ -850,9 +840,6 @@ class CommonGLPI {
                        }
                   });';
             echo Html::scriptBlock($js);
-         } else {
-            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/left_off.png' alt=\"" .
-                __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
 
          if (!$glpilisttitle) {
@@ -898,8 +885,8 @@ class CommonGLPI {
 
          if ($next >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                    "\" title=\"".__s('Next')."\" class='pointer'></a></td>";
+                "<i class='fa fa-chevron-right' title=\"".__s('Next')."\"></i>
+                    </a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 39 && e.ctrlKey) {
@@ -908,18 +895,11 @@ class CommonGLPI {
                        }
                   });';
             echo Html::scriptBlock($js);
-         } else {
-            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/right_off.png' alt=\"" .
-                __s('Next')."\" title=\"".__s('Next')."\"></td>";
          }
 
          if ($last >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>" .
-                "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
-                    "\" title=\"".__s('Last')."\" class='pointer'></a></td>";
-         } else {
-            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/last_off.png' alt=\"" .
-                __s('Last')."\" title=\"".__s('Last')."\"></td>";
+                "<i class='fa fa-angle-double-right' title=\"".__s('Last')."\"></i></a></td>";
          }
 
          // End pager
@@ -1062,13 +1042,13 @@ class CommonGLPI {
          }
          // reset
          if (isset($input['reset'])) {
-            foreach ($options as $option_group_name => $option_group) {
+            foreach ($options as $option_group) {
                foreach ($option_group as $option_name => $attributs) {
                   $display_options[$option_name] = $attributs['default'];
                }
             }
          } else {
-            foreach ($options as $option_group_name => $option_group) {
+            foreach ($options as $option_group) {
                foreach ($option_group as $option_name => $attributs) {
                   if (isset($input[$option_name]) && ($_GET[$option_name] == 'on')) {
                      $display_options[$option_name] = true;
@@ -1128,7 +1108,7 @@ class CommonGLPI {
       // Load default values if not set
       $options = static::getAvailableDisplayOptions();
       if (count($options)) {
-         foreach ($options as $option_group_name => $option_group) {
+         foreach ($options as $option_group) {
             foreach ($option_group as $option_name => $attributs) {
                if (!isset($display_options[$option_name])) {
                   $display_options[$option_name] = $attributs['default'];
@@ -1246,7 +1226,7 @@ class CommonGLPI {
     * @since 0.85
     *
     * @param integer $error  error type see define.php for ERROR_*
-    * @param istring $object string to use instead of item link (default '')
+    * @param string  $object string to use instead of item link (default '')
     *
     * @return string
    **/

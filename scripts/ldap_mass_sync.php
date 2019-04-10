@@ -42,6 +42,8 @@ if (isset($_SERVER['argv'])) {
    }
 }
 
+echo "Usage of this script is deprecated, please use 'bin/console ldap:sync' command.\n";
+
 if ((isset($_SERVER['argv']) && in_array('help', $_SERVER['argv']))
     || isset($_GET['help'])) {
    echo "Usage: php -q -f ldap_mass_sync.php [action=<option>]  [ldapservers_id=ID]\n";
@@ -51,7 +53,7 @@ if ((isset($_SERVER['argv']) && in_array('help', $_SERVER['argv']))
    echo "2: import & synchronize users\n";
    echo "before-days: restrict user import or synchronization to the last x days\n";
    echo "after-days: restrict user import or synchronization until the last x days\n";
-   echo "ldap_filter: ldap filter to use for the search. Value must be surrounded by \"\"\n";
+   echo "ldap_filter: ldap filter to use for the search. Value must be quoted and properly escaped for your shell\n";
    exit (0);
 }
 

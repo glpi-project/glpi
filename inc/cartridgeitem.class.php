@@ -80,11 +80,12 @@ class CartridgeItem extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $class = new Cartridge();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $class = new CartridgeItem_PrinterModel();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Cartridge::class,
+            CartridgeItem_PrinterModel::class,
+         ]
+      );
 
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
@@ -161,7 +162,7 @@ class CartridgeItem extends CommonDBTM {
          ];
          $result = $DB->insert('glpi_cartridgeitems_printermodels', $params);
 
-         if ($result && ($DB->affected_rows() > 0)) {
+         if ($result && ($DB->affectedRows() > 0)) {
             return true;
          }
       }
@@ -220,10 +221,12 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id_tech',
-                            'value'     => $this->fields['groups_id_tech'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`']);
+      Group::dropdown([
+         'name'      => 'groups_id_tech',
+         'value'     => $this->fields['groups_id_tech'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_assign' => 1]
+      ]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -377,7 +380,7 @@ class CartridgeItem extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the hardware'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -458,26 +461,45 @@ class CartridgeItem extends CommonDBTM {
 
          foreach (Entity::getEntitiesToNotify('cartridges_alert_repeat') as $entity => $repeat) {
             // if you change this query, please don't forget to also change in showDebug()
-            $query_alert = "SELECT `glpi_cartridgeitems`.`id` AS cartID,
-                                   `glpi_cartridgeitems`.`entities_id` AS entity,
-                                   `glpi_cartridgeitems`.`ref` AS ref,
-                                   `glpi_cartridgeitems`.`name` AS name,
-                                   `glpi_cartridgeitems`.`alarm_threshold` AS threshold,
-                                   `glpi_alerts`.`id` AS alertID,
-                                   `glpi_alerts`.`date`
-                            FROM `glpi_cartridgeitems`
-                            LEFT JOIN `glpi_alerts`
-                                 ON (`glpi_cartridgeitems`.`id` = `glpi_alerts`.`items_id`
-                                     AND `glpi_alerts`.`itemtype` = 'CartridgeItem')
-                            WHERE `glpi_cartridgeitems`.`is_deleted` = 0
-                                  AND `glpi_cartridgeitems`.`alarm_threshold` >= '0'
-                                  AND `glpi_cartridgeitems`.`entities_id` = '".$entity."'
-                                  AND (`glpi_alerts`.`date` IS NULL
-                                       OR (`glpi_alerts`.`date`+$repeat) < CURRENT_TIMESTAMP());";
+            $result = $DB->request(
+               [
+                  'SELECT'    => [
+                     'glpi_cartridgeitems.id AS cartID',
+                     'glpi_cartridgeitems.entities_id AS entity',
+                     'glpi_cartridgeitems.ref AS ref',
+                     'glpi_cartridgeitems.name AS name',
+                     'glpi_cartridgeitems.alarm_threshold AS threshold',
+                     'glpi_alerts.id AS alertID',
+                     'glpi_alerts.date',
+                  ],
+                  'FROM'      => self::getTable(),
+                  'LEFT JOIN' => [
+                     'glpi_alerts' => [
+                        'FKEY' => [
+                           'glpi_alerts'         => 'items_id',
+                           'glpi_cartridgeitems' => 'id',
+                           [
+                              'AND' => ['glpi_alerts.itemtype' => 'CartridgeItem'],
+                           ],
+                        ]
+                     ]
+                  ],
+                  'WHERE'     => [
+                     'glpi_cartridgeitems.is_deleted'      => 0,
+                     'glpi_cartridgeitems.alarm_threshold' => ['>=', 0],
+                     'glpi_cartridgeitems.entities_id'     => $entity,
+                     'OR'                                  => [
+                        ['glpi_alerts.date' => null],
+                        ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                     ],
+                  ],
+               ]
+            );
+
             $message = "";
             $items   = [];
 
-            foreach ($DB->request($query_alert) as $cartridge) {
+            foreach ($result as $cartridge) {
                if (($unused=Cartridge::getUnusedNumber($cartridge["cartID"]))<=$cartridge["threshold"]) {
                   //TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
                   $message .= sprintf(__('Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s - Remaining %3$d'),
@@ -572,7 +594,7 @@ class CartridgeItem extends CommonDBTM {
       $datas = [];
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data= $DB->fetch_assoc($result)) {
+            while ($data= $DB->fetchAssoc($result)) {
                $text = sprintf(__('%1$s - %2$s'), $data["name"], $data["ref"]);
                $text = sprintf(__('%1$s (%2$s)'), $text, $data["cpt"]);
                $text = sprintf(__('%1$s - %2$s'), $text, $data["location"]);

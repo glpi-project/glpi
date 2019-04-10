@@ -30,6 +30,14 @@
  */
 var timeoutglobalvar;
 
+if (typeof(String.prototype.normalize) !== 'function') {
+   $.ajax({
+      type: "GET",
+      url: CFG_GLPI.root_doc + "/public/lib/unorm/unorm.js",
+      dataType: "script",
+      cache: true
+   });
+}
 
 /**
  * modifier la propriete display d'un element
@@ -207,8 +215,8 @@ function checkAsCheckboxes(reference_id, container_id) {
  * Usage: $form.find('input[type="checkbox"]').shiftSelectable();
  */
 $.fn.shiftSelectable = function() {
-   var lastChecked,
-       $boxes = this;
+   var lastChecked;
+   var $boxes = this;
 
    // prevent html selection
    document.onkeydown = function(e) {
@@ -234,11 +242,11 @@ $.fn.shiftSelectable = function() {
 
       if (evt.shiftKey) {
          evt.preventDefault();
-         var start = $boxes.index(selected_checkbox),
-             end = $boxes.index(lastChecked);
+         var start = $boxes.index(selected_checkbox);
+         var end = $boxes.index(lastChecked);
          $boxes.slice(Math.min(start, end), Math.max(start, end) + 1)
-               .prop('checked', $(lastChecked).is(':checked'))
-               .trigger('change');
+            .prop('checked', $(lastChecked).is(':checked'))
+            .trigger('change');
       }
 
       lastChecked = selected_checkbox;
@@ -259,8 +267,8 @@ function showHideDiv(id, img_name, img_src_close, img_src_open) {
 
    if (img_name !== '') {
       var _awesome = img_src_close.match(/^fa-/);
-      var _deco,
-          _img;
+      var _deco;
+      var _img;
       if (!_awesome) {
          _img = $('img[name=' + img_name + ']');
          if (_elt.is(':visible')) {
@@ -375,9 +383,9 @@ function submitGetLink(target, fields) {
       myInput.setAttribute("value", fields[name]);
       myForm.appendChild(myInput);
    }
-    document.body.appendChild(myForm);
-    myForm.submit();
-    document.body.removeChild(myForm);
+   document.body.appendChild(myForm);
+   myForm.submit();
+   document.body.removeChild(myForm);
 }
 
 
@@ -426,13 +434,13 @@ function massiveUpdateCheckbox(criterion, reference) {
    if (typeof(value) == 'undefined') {
       return false;
    }
-    $(criterion).each(function() {
+   $(criterion).each(function() {
       if (typeof(reference) == 'undefined') {
          value = !$(this).prop('checked');
       }
-        $(this).prop('checked', value);
-    });
-    return true;
+      $(this).prop('checked', value);
+   });
+   return true;
 }
 
 /**
@@ -730,24 +738,6 @@ var getSize = function (size) {
 };
 
 /**
- * Replace content in tinyMCE
- *
- * @param {Object} editor   TinyMCE editor instance
- * @param {String} search   The search
- * @param {String} replace  The replace
- */
-var replaceContent = function(editor, search, replace) {
-   if (!replace) {
-      replace = '';
-   }
-
-   var re =/\[\*\*(.*?)\*\*\]/;
-   var body = editor.getContent();
-   body = body.replace(re,replace);
-   editor.setContent(body);
-};
-
-/**
  * Convert a integer index into an excel like alpha index (A, B, ..., AA, AB, ...)
  * @since  9.3
  * @param  integer index    the numeric index
@@ -761,20 +751,6 @@ var getBijectiveIndex = function(index) {
       index /= 26;
    }
    return bij_str;
-};
-
-/**
- * Sets the cursor at the end in a tinymce editor.
- *
- * @param  {Object}  editor TinyMCE editor instance
- */
-var setCursorAtTheEnd = function(editor) {
-   var body = editor.getContent();
-   body +='<p> </p>';
-   editor.setContent(body);
-   editor.dom.add(editor.getBody(),'p');
-   editor.selection.select(editor.getBody(), true); // ed is the editor instance
-   editor.selection.collapse(false);
 };
 
 /**
@@ -853,11 +829,13 @@ var initMap = function(parent_elt, map_id, height) {
 
    //add map, set a default arbitrary location
    parent_elt.append($('<div id="'+map_id+'" style="height: ' + height + '"></div>'));
+   /* global L */
    var map = L.map(map_id, {fullscreenControl: true}).setView([43.6112422, 3.8767337], 6);
 
    //setup tiles and © messages
-   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href=\'http://osm.org/copyright\'>OpenStreetMap</a> contributors'
+   /* global L */
+   L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href=\'https://osm.org/copyright\'>OpenStreetMap</a> contributors'
    }).addTo(map);
    return map;
 };
@@ -870,7 +848,7 @@ var showMapForLocation = function(elt) {
       return;
    }
 
-   _dialog = $('<div id="location_map_dialog"/>');
+   var _dialog = $('<div id="location_map_dialog"/>');
    _dialog.appendTo('body').dialog({
       close: function() {
          $(this).dialog('destroy').remove();
@@ -899,9 +877,11 @@ var showMapForLocation = function(elt) {
          });
       } else {
          var _markers = [];
-         _marker = L.marker([data.lat, data.lng]);
+         /* global L */
+         var _marker = L.marker([data.lat, data.lng]);
          _markers.push(_marker);
 
+         /* global L */
          var _group = L.featureGroup(_markers).addTo(map_elt);
          map_elt.fitBounds(
             _group.getBounds(), {
@@ -945,30 +925,89 @@ function markMatch (text, term) {
    return _result.html();
 }
 
-var formatResult = function(result) {
-   if (!result.id) {
-      return result.text;
-   }
-
+/**
+ * Function that renders select2 results.
+ */
+var templateResult = function(result) {
    var _elt = $('<span></span>');
    _elt.attr('title', result.title);
 
-   var markup=[result.text];
-
-   var _term = query.term || '';
-   var markup = markMatch(result.text, _term);
-
-   if (result.level) {
-      var a='';
-      var i=result.level;
-      while (i>1) {
-         a = a+'&nbsp;&nbsp;&nbsp;';
-         i=i-1;
-      }
-      _elt.html(a+'&raquo;'+markup);
+   if (typeof query.term !== 'undefined' && typeof result.rendered_text !== 'undefined') {
+      _elt.html(result.rendered_text);
    } else {
-      _elt.html(markup);
+      if (!result.text) {
+         return null;
+      }
+
+      var text = result.text;
+      if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
+         // escape text, if it contains chevrons (can already be escaped prior to this point :/)
+         text = jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
+      }
+
+      if (!result.id) {
+         // If result has no id, then it is used as an optgroup and is not used for matches
+         _elt.html(text);
+         return _elt;
+      }
+
+      var _term = query.term || '';
+      var markup = markMatch(text, _term);
+
+      if (result.level) {
+         var a='';
+         var i=result.level;
+         while (i>1) {
+            a = a+'&nbsp;&nbsp;&nbsp;';
+            i=i-1;
+         }
+         _elt.html(a+'&raquo;'+markup);
+      } else {
+         _elt.html(markup);
+      }
    }
 
    return _elt;
+};
+
+// delay function who reinit timer on each call
+var typewatch = (function(){
+   var timer = 0;
+   return function(callback, ms){
+      clearTimeout (timer);
+      timer = setTimeout(callback, ms);
+   };
+})();
+
+/**
+ * Function that renders select2 selections.
+ */
+var templateSelection = function (selection) {
+   // Data generated by ajax containing 'selection_text'
+   if (selection.hasOwnProperty('selection_text')) {
+      return selection.selection_text;
+   }
+   // Data generated with optgroups
+   if (selection.element.parentElement.nodeName == 'OPTGROUP') {
+      return selection.element.parentElement.getAttribute('label') + ' - ' + selection.text;
+   }
+   // Default text
+   return selection.text;
+};
+
+/**
+ * Returns given text without is diacritical marks.
+ *
+ * @param {string} text
+ *
+ * @return {string}
+ */
+var getTextWithoutDiacriticalMarks = function (text) {
+   // Normalizing to NFD Unicode normal form decomposes combined graphemes
+   // into the combination of simple ones. The "è" becomes "e + ̀`".
+   text = text.normalize('NFD');
+
+   // The U+0300 -> U+036F range corresponds to diacritical chars.
+   // They are removed to keep only chars without their diacritical mark.
+   return text.replace(/[\u0300-\u036f]/g, '');
 };

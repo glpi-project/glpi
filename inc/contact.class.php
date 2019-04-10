@@ -55,22 +55,12 @@ class Contact extends CommonDBTM{
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $cs = new Contact_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $DB->delete(
-         'glpi_projecttaskteams', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => __CLASS__
-         ]
-      );
-
-      $DB->delete(
-         'glpi_projectteams', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => __CLASS__
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Contact_Supplier::class,
+            ProjectTaskTeam::class,
+            ProjectTeam::class,
          ]
       );
    }
@@ -95,24 +85,33 @@ class Contact extends CommonDBTM{
     *
     *@return string containing the address
    **/
-   function GetAddress() {
+   function getAddress() {
       global $DB;
 
-      $query = "SELECT `glpi_suppliers`.`name`, `glpi_suppliers`.`address`,
-                       `glpi_suppliers`.`postcode`, `glpi_suppliers`.`town`,
-                       `glpi_suppliers`.`state`, `glpi_suppliers`.`country`
-                FROM `glpi_suppliers`, `glpi_contacts_suppliers`
-                WHERE `glpi_contacts_suppliers`.`contacts_id` = '".$this->fields["id"]."'
-                      AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`";
+      $iterator = $DB->request([
+         'SELECT' => [
+            'glpi_suppliers.name',
+            'glpi_suppliers.address',
+            'glpi_suppliers.postcode',
+            'glpi_suppliers.town',
+            'glpi_suppliers.state',
+            'glpi_suppliers.country'
+         ],
+         'FROM'         => 'glpi_suppliers',
+         'INNER JOIN'   => [
+            'glpi_contacts_suppliers'  => [
+               'ON' => [
+                  'glpi_contacts_suppliers'  => 'suppliers_id',
+                  'glpi_suppliers'           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => ['contacts_id' => $this->fields['id']]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            if ($data = $DB->fetch_assoc($result)) {
-               return $data;
-            }
-         }
+      if ($data = $iterator->next()) {
+         return $data;
       }
-      return "";
    }
 
 
@@ -121,20 +120,29 @@ class Contact extends CommonDBTM{
     *
     *@return string containing the website
    **/
-   function GetWebsite() {
+   function getWebsite() {
       global $DB;
 
-      $query = "SELECT `glpi_suppliers`.`website` as website
-                FROM `glpi_suppliers`, `glpi_contacts_suppliers`
-                WHERE `glpi_contacts_suppliers`.`contacts_id` = '".$this->fields["id"]."'
-                      AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`";
+      $iterator = $DB->request([
+         'SELECT' => [
+            'glpi_suppliers.website AS website'
+         ],
+         'FROM'         => 'glpi_suppliers',
+         'INNER JOIN'   => [
+            'glpi_contacts_suppliers'  => [
+               'ON' => [
+                  'glpi_contacts_suppliers'  => 'suppliers_id',
+                  'glpi_suppliers'           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => ['contacts_id' => $this->fields['id']]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            return $DB->result($result, 0, "website");
-         }
-         return "";
+      if ($data = $iterator->next()) {
+         return $data['website'];
       }
+      return '';
    }
 
 
@@ -146,7 +154,7 @@ class Contact extends CommonDBTM{
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
+    * @return true
    **/
    function showForm($ID, $options = []) {
 
@@ -238,9 +246,6 @@ class Contact extends CommonDBTM{
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -255,11 +260,6 @@ class Contact extends CommonDBTM{
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-    *
-    * @since 0.85
-   **/
    function getRawName() {
 
       if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
@@ -373,7 +373,7 @@ class Contact extends CommonDBTM{
          'id'                 => '85',
          'table'              => $this->getTable(),
          'field'              => 'state',
-         'name'               => __('State'),
+         'name'               => _x('location', 'State'),
          'datatype'           => 'string'
       ];
 
@@ -473,12 +473,12 @@ class Contact extends CommonDBTM{
    /**
     * Generate the Vcard for the current Contact
     *
-    *@return Nothing (display)
-   **/
+    * @return void
+    */
    function generateVcard() {
 
       if (!$this->can($this->fields['id'], READ)) {
-         return false;
+         return;
       }
 
       // build the Vcard

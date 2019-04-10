@@ -256,10 +256,12 @@ class DBConnection extends CommonDBTM {
    /**
     *  Establish a connection to a mysql server (main or replicate)
     *
-    * @param $use_slave    try to connect to slave server first not to main server
-    * @param $required     connection to the specified server is required
-    *                      (if connection failed, do not try to connect to the other server)
-    * @param $display      display error message (true by default)
+    * @param boolean $use_slave try to connect to slave server first not to main server
+    * @param boolean $required  connection to the specified server is required
+    *                           (if connection failed, do not try to connect to the other server)
+    * @param boolean $display   display error message (true by default)
+    *
+    * @return boolean True if successfull, false otherwise
    **/
    static function establishDBConnection($use_slave, $required, $display = true) {
       global $DB;
@@ -378,11 +380,13 @@ class DBConnection extends CommonDBTM {
 
 
    /**
-    *  Cron process to check DB replicate state
+    * Cron process to check DB replicate state
     *
-    * @param $task to log and get param
+    * @param Crontask $task to log and get param
+    *
+    * @return integer
    **/
-   static function cronCheckDBreplicate($task) {
+   static function cronCheckDBreplicate(Crontask $task) {
       global $DB;
 
       //Lauch cron only is :
@@ -484,8 +488,10 @@ class DBConnection extends CommonDBTM {
 
       $cron           = new CronTask();
       $cron->getFromDBbyName('DBConnection', 'CheckDBreplicate');
-      $input['id']    = $cron->fields['id'];
-      $input['state'] = ($enable?1:0);
+      $input = [
+         'id'    => $cron->fields['id'],
+         'state' => ($enable ? 1 : 0)
+      ];
       $cron->update($input);
    }
 

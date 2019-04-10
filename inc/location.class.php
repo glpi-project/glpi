@@ -70,7 +70,7 @@ class Location extends CommonTreeDropdown {
             'list'   => true
          ], [
             'name'   => 'state',
-            'label'  => __('State'),
+            'label'  => _x('location', 'State'),
             'type'   => 'text',
             'list'   => true
          ], [
@@ -143,7 +143,7 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'postcode',
          'name'               => __('Postal code'),
-         'massiveaction'      => true,
+         'massiveaction'      => false,
          'datatype'           => 'string'
       ];
 
@@ -152,7 +152,7 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'town',
          'name'               => __('Town'),
-         'massiveaction'      => true,
+         'massiveaction'      => false,
          'datatype'           => 'string'
       ];
 
@@ -160,8 +160,8 @@ class Location extends CommonTreeDropdown {
          'id'                 => '104',
          'table'              => 'glpi_locations',
          'field'              => 'state',
-         'name'               => __('State'),
-         'massiveaction'      => true,
+         'name'               => _x('location', 'State'),
+         'massiveaction'      => false,
          'datatype'           => 'string'
       ];
 
@@ -170,7 +170,7 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'country',
          'name'               => __('Country'),
-         'massiveaction'      => true,
+         'massiveaction'      => false,
          'datatype'           => 'string'
       ];
 
@@ -346,29 +346,43 @@ class Location extends CommonTreeDropdown {
          return false;
       }
 
-      $first = 1;
-      $query = '';
-
       if ($crit) {
          $table = getTableForItemType($crit);
-         $query = "SELECT `$table`.`id`, '$crit' AS type
-                   FROM `$table`
-                   WHERE `$table`.`locations_id` = '$locations_id' AND is_deleted=0".
-                         getEntitiesRestrictRequest(" AND", $table, "entities_id");
+         $criteria = [
+            'SELECT' => [
+               "$table.id",
+               "$crit AS type"
+            ],
+            'FROM'   => $table,
+            'WHERE'  => [
+               "$table.locations_id"   => $locations_id,
+               'is_deleted'            => 0
+            ] + getEntitiesRestrictCriteria($table, 'entities_id')
+         ];
       } else {
+         $union = new \QueryUnion();
          foreach ($CFG_GLPI['location_types'] as $type) {
             $table = getTableForItemType($type);
-            $query .= ($first ? "SELECT " : " UNION SELECT  ")."`id`, '$type' AS type
-                      FROM `$table`
-                      WHERE `$table`.`locations_id` = '$locations_id' ".
-                            getEntitiesRestrictRequest(" AND", $table, "entities_id");
-            $first = 0;
+            $union->addQuery([
+               'SELECT' => [
+                  'id',
+                  new \QueryExpression("'$type' AS type")
+               ],
+               'FROM'   => $table,
+               'WHERE'  => [
+                  "$table.locations_id"   => $locations_id
+               ] + getEntitiesRestrictCriteria($table, 'entities_id')
+            ]);
          }
+         $criteria = ['FROM' => $union];
       }
 
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
       $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
+      $criteria['START'] = $start;
+      $criteria['LIMIT'] = $_SESSION['glpilist_limit'];
+
+      $iterator = $DB->request($criteria);
+      $number = count($iterator);;
       if ($start >= $number) {
          $start = 0;
       }
@@ -394,8 +408,7 @@ class Location extends CommonTreeDropdown {
          echo "<th>".__('Inventory number')."</th>";
          echo "</tr>";
 
-         $DB->data_seek($result, $start);
-         for ($row=0; ($data=$DB->fetch_assoc($result)) && ($row<$_SESSION['glpilist_limit']); $row++) {
+         while ($data = $iterator->next()) {
             $item = getItemForItemtype($data['type']);
             $item->getFromDB($data['id']);
             echo "<tr class='tab_bg_1'><td class='center top'>".$item->getTypeName()."</td>";

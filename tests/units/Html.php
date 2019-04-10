@@ -421,7 +421,7 @@ class Html extends \GLPITestCase {
          'other.css',
          'other-min.css'
       ];
-      $dir = str_replace(GLPI_ROOT, '', GLPI_TMP_DIR);
+      $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
       $base_expected = '<link rel="stylesheet" type="text/css" href="'.
          $CFG_GLPI['root_doc'] . $dir .'/%url?v='. GLPI_VERSION .'" %attrs>';
       $base_attrs = 'media="all"';
@@ -530,7 +530,7 @@ class Html extends \GLPITestCase {
          'other.js',
          'other-min.js'
       ];
-      $dir = str_replace(GLPI_ROOT, '', GLPI_TMP_DIR);
+      $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
       $base_expected = '<script type="text/javascript" src="'.
          $CFG_GLPI['root_doc'] . $dir .'/%url?v='. GLPI_VERSION .'"></script>';
 
@@ -751,7 +751,7 @@ class Html extends \GLPITestCase {
 
    public function testCleanSQLDisplay() {
       $sql = "SELECT * FROM mytable WHERE myfield < 10 ORDER BY id";
-      $expected = "SELECT * <br>FROM mytable <br>WHERE myfield &lt; 10 <br>ORDER BY id";
+      $expected = "SELECT * <br/>FROM mytable <br/>WHERE myfield &lt; 10 <br/>ORDER BY id";
       $this->string(\Html::cleanSQLDisplay($sql))->isIdenticalTo($expected);
    }
 

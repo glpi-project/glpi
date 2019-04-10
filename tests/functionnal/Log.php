@@ -62,6 +62,8 @@ class Log extends DbTestCase {
          ],
          $log_data
       );
+      unset($log_data['date_creation']);
+      unset($log_data['date_mod']);
 
       $log = new \Log();
       $this->integer((int)$log->add($log_data))->isGreaterThan(0);
@@ -532,9 +534,7 @@ class Log extends DbTestCase {
                [
                   'OR' => [
                      [
-                        'AND' => [
-                           'linked_action' => [35],
-                        ]
+                        'linked_action' => [35],
                      ]
                   ]
                ]
@@ -548,10 +548,8 @@ class Log extends DbTestCase {
                [
                   'OR' => [
                      [
-                        'AND' => [
-                           'NOT' => [
-                              'id_search_option' => [0],
-                           ]
+                        'NOT' => [
+                           'id_search_option' => [0],
                         ]
                      ]
                   ]
@@ -566,10 +564,8 @@ class Log extends DbTestCase {
                [
                   'OR' => [
                      [
-                        'AND' => [
-                           'linked_action' => [1, 5, 42],
-                           'itemtype_link' => ['SomeItem'],
-                        ]
+                        'linked_action' => [1, 5, 42],
+                        'itemtype_link' => ['SomeItem'],
                      ]
                   ]
                ]
@@ -583,17 +579,13 @@ class Log extends DbTestCase {
                [
                   'OR' => [
                      [
-                        'AND' => [
-                           'id_search_option' => [24],
-                        ]
+                        'id_search_option' => [24],
                      ],
                      [
-                        'AND' => [
-                           'NOT' => [
-                              'linked_action' => [35],
-                           ],
-                           'itemtype_link' => ['SomeItem'],
-                        ]
+                        'NOT' => [
+                           'linked_action' => [35],
+                        ],
+                        'itemtype_link' => ['SomeItem'],
                      ]
                   ]
                ]
@@ -685,17 +677,13 @@ class Log extends DbTestCase {
                [
                   'OR' => [
                      [
-                        'AND' => [
-                           'id_search_option' => [5],
-                        ]
+                        'id_search_option' => [5],
                      ],
                      [
-                        'AND' => [
-                           'NOT' => [
-                              'linked_action' => [1, 3, 4],
-                           ],
-                           'itemtype_link' => ['SomeItem'],
-                        ]
+                        'NOT' => [
+                           'linked_action' => [1, 3, 4],
+                        ],
+                        'itemtype_link' => ['SomeItem'],
                      ]
                   ]
                ],

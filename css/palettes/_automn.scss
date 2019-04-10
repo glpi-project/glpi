@@ -1,0 +1,224 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+/* ===== LOGIN ===== */
+
+#firstboxlogin {
+   background-color: #19BEC0;
+}
+
+#logo_login {
+   background: url(../pics/login_logo_glpi.png) center no-repeat, #113F59;
+}
+
+#display-login {
+   color: #FFF;
+}
+
+#text-login {
+   background-color: #113F59;
+   color: #FFF;
+}
+
+/* ====== GENERAL ====== */
+
+a {
+   color: #113E58;
+
+   &:link {
+      color: #113E58;
+   }
+}
+
+.ui-widget-content a {
+   color: #113E58;
+}
+
+.main_form tr.headerRow th {
+   color: #19BEC0;
+}
+
+/* ====== HEADER ====== */
+
+#header_top {
+   background-color: #8B4D34;
+}
+
+#c_preference a, #language_link > span {
+   color: #F2B265;
+}
+
+#c_recherche form #champRecherche input {
+   background-color: #58372E;
+   color: #F2B265;
+}
+
+#c_menu {
+   background-color: #C06F3D;
+}
+
+ul {
+   &#menu {
+      a {
+         &.itemP, &.itemP1 {
+            color: #F2B265;
+         }
+      }
+
+      > li.active {
+         background-color: #8B4D34;
+      }
+   }
+
+   &.ssmenu li.active {
+      background-color: #8B4D34;
+   }
+
+   &#menu {
+      > li.active > a {
+         color: #F2B265;
+      }
+
+      ul {
+         &.ssmenu li.active > a {
+            color: #F2B265;
+         }
+
+         li a {
+            &:hover {
+               background: #F29542;
+               color: #8B4D34;
+            }
+
+            color: #8B4D34;
+         }
+      }
+
+      > li:hover {
+         background-color: #F29542;
+      }
+   }
+}
+
+#c_recherche form #champRecherche button {
+   background-color: #F2B265;
+}
+
+/* ====== BUTTONS ====== */
+
+input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit, a.vsubmit, #BackToTop {
+   color: #F2B265;
+   background-color: #8B4D34;
+}
+
+.vsubmit a {
+   color: #F2B265;
+   text-decoration: underline;
+}
+
+input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
+   background-color: #8B4D34;
+}
+
+/* ====== Breadcrumb ====== */
+
+.breadcrumb_item:nth-of-type(3) {
+   background-color: #8B4D34;
+
+   a {
+      color: #F2B265 !important;
+   }
+
+   &:after {
+      border-left-color: #8B4D34;
+   }
+}
+
+/* Primary color elements (white on blue BG) designed to be overridden from palettes */
+/* Colors are same as #c_menu */
+
+.primary-bg {
+   background: #C06F3D;
+}
+
+.primary-bg-inverse {
+   background: #F2B265;
+}
+
+.primary-fg {
+   color: #F2B265;
+
+   &:hover {
+      color: #F2B265;
+   }
+}
+
+.primary-fg-inverse {
+   color: #C06F3D;
+
+   &:hover {
+      color: #C06F3D;
+   }
+}
+
+#c_preference a {
+   &.fa {
+      color: #F2B265;
+
+      &:hover {
+         color: white;
+      }
+   }
+
+   color: #F2B265;
+
+   &.debugon {
+      color: black !important;
+
+      &:hover {
+         color: black !important;
+      }
+   }
+}
+
+#show_all_menu {
+   a {
+      color: #8B4D34;
+   }
+
+   dt a:hover {
+      background: #F29542;
+   }
+
+   a:hover {
+      background-color: #C06F3D;
+      color: #F2B265;
+   }
+}

@@ -181,6 +181,15 @@ class Central extends CommonGLPI {
                count($myisam_tables)
             );
          }
+         if ($DB->areTimezonesAvailable()) {
+            $not_tstamp = $DB->notTzMigrated();
+            if ($not_tstamp > 0) {
+                $warnings[] = sprintf(
+                    __('%1$s columns are not compatible with timezones usage.'),
+                    $not_tstamp
+                );
+            }
+         }
       }
 
       if ($DB->isSlave()
@@ -211,7 +220,8 @@ class Central extends CommonGLPI {
 
          Ticket::showCentralList(0, "survey", false);
 
-         Ticket::showCentralList(0, "rejected", false);
+         Ticket::showCentralList(0, "validation.rejected", false);
+         Ticket::showCentralList(0, "solution.rejected", false);
          Ticket::showCentralList(0, "requestbyself", false);
          Ticket::showCentralList(0, "observed", false);
 

@@ -104,41 +104,61 @@ class Item_OperatingSystem extends CommonDBRelation {
          $withtemplate = 0;
       }
 
-      $query = "SELECT `glpi_items_operatingsystems`.`id` AS assocID,
-                       `glpi_operatingsystems`.`name`,
-                       `glpi_operatingsystemversions`.`name` AS version,
-                       `glpi_operatingsystemarchitectures`.`name` AS architecture,
-                       `glpi_operatingsystemservicepacks`.`name` AS servicepack
-                FROM `glpi_items_operatingsystems`
-                LEFT JOIN `glpi_operatingsystems`
-                           ON (`glpi_items_operatingsystems`.`operatingsystems_id`=`glpi_operatingsystems`.`id`)
-                LEFT JOIN `glpi_operatingsystemservicepacks`
-                           ON (`glpi_items_operatingsystems`.`operatingsystemservicepacks_id`=`glpi_operatingsystemservicepacks`.`id`)
-                LEFT JOIN `glpi_operatingsystemarchitectures`
-                        ON (`glpi_items_operatingsystems`.`operatingsystemarchitectures_id`=`glpi_operatingsystemarchitectures`.`id`)
-                LEFT JOIN `glpi_operatingsystemversions`
-                        ON (`glpi_items_operatingsystems`.`operatingsystemversions_id` = `glpi_operatingsystemversions`.`id`)
-                WHERE `glpi_items_operatingsystems`.`items_id` = '".$item->getID()."'
-                      AND `glpi_items_operatingsystems`.`itemtype` = '".$item->getType()."' ";
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_items_operatingsystems.id AS assocID',
+            'glpi_operatingsystems.name',
+            'glpi_operatingsystemversions.name AS version',
+            'glpi_operatingsystemarchitectures.name AS architecture',
+            'glpi_operatingsystemservicepacks.name AS servicepack'
+         ],
+         'FROM'      => 'glpi_items_operatingsystems',
+         'LEFT JOIN' => [
+            'glpi_operatingsystems'             => [
+               'ON' => [
+                  'glpi_items_operatingsystems' => 'operatingsystems_id',
+                  'glpi_operatingsystems'       => 'id'
+               ]
+            ],
+            'glpi_operatingsystemservicepacks'  => [
+               'ON' => [
+                  'glpi_items_operatingsystems'       => 'operatingsystemservicepacks_id',
+                  'glpi_operatingsystemservicepacks'  => 'id'
+               ]
+            ],
+            'glpi_operatingsystemarchitectures' => [
+               'ON' => [
+                  'glpi_items_operatingsystems'       => 'operatingsystemarchitectures_id',
+                  'glpi_operatingsystemarchitectures' => 'id'
+               ]
+            ],
+            'glpi_operatingsystemversions'      => [
+               'ON' => [
+                  'glpi_items_operatingsystems'    => 'operatingsystemversions_id',
+                  'glpi_operatingsystemversions'   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_items_operatingsystems.itemtype' => $item->getType(),
+            'glpi_items_operatingsystems.items_id' => $item->getID()
+         ],
+         'ORDERBY'   => "$sort $order"
+      ]);
 
-      $query .= " ORDER BY $sort $order";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $number = count($iterator);
       $i      = 0;
 
       $os = [];
       $used = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $os[$data['assocID']] = $data;
-         }
+      while ($data = $iterator->next()) {
+         $os[$data['assocID']] = $data;
       }
 
       $canedit = $item->canEdit($item->getID());
 
       //multi OS for an item is not an existing feature right now.
-      /*if ($canedit && $numrows >= 1
+      /*if ($canedit && $number >= 1
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
             "<a class='vsubmit' href='" . Toolbox::getItemTypeFormURL(self::getType()) . "?items_id=" . $item->getID() .
@@ -147,10 +167,10 @@ class Item_OperatingSystem extends CommonDBRelation {
          echo "</a></div>\n";
       }*/
 
-      if ($numrows <= 1) {
+      if ($number <= 1) {
          $id = -1;
          $instance = new self();
-         if ($numrows > 0) {
+         if ($number > 0) {
             $id = array_keys($os)[0];
          } else {
             //set itemtype and items_id
@@ -380,7 +400,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '45',
          'table'              => 'glpi_operatingsystems',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . __('Name'),
+         'name'               => __('Name'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -398,7 +418,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '46',
          'table'              => 'glpi_operatingsystemversions',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . __('Version'),
+         'name'               => __('Version'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -416,7 +436,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '41',
          'table'              => 'glpi_operatingsystemservicepacks',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . __('Service pack'),
+         'name'               => __('Service pack'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -434,7 +454,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '43',
          'table'              => 'glpi_items_operatingsystems',
          'field'              => 'license_number',
-         'name'               => __('Operating System') . ' - ' . __('Serial number'),
+         'name'               => __('Serial number'),
          'datatype'           => 'string',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -447,7 +467,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '44',
          'table'              => 'glpi_items_operatingsystems',
          'field'              => 'licenseid',
-         'name'               => __('Operating System') . ' - ' . __('Product ID'),
+         'name'               => __('Product ID'),
          'datatype'           => 'string',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -460,7 +480,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '61',
          'table'              => 'glpi_operatingsystemarchitectures',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . __('Architecture'),
+         'name'               => __('Architecture'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -478,7 +498,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '64',
          'table'              => 'glpi_operatingsystemkernels',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . _n('Kernel', 'Kernels', 1),
+         'name'               => _n('Kernel', 'Kernels', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -501,7 +521,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '48',
          'table'              => 'glpi_operatingsystemkernelversions',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . _n('Kernel version', 'Kernel versions', 1),
+         'name'               => _n('Kernel version', 'Kernel versions', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -519,7 +539,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '63',
          'table'              => 'glpi_operatingsystemeditions',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . __('Edition'),
+         'name'               => __('Edition'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [

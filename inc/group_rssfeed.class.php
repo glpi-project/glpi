@@ -59,11 +59,12 @@ class Group_RSSFeed extends CommonDBRelation {
       global $DB;
 
       $groups = [];
-      $query  = "SELECT `glpi_groups_rssfeeds`.*
-                 FROM `glpi_groups_rssfeeds`
-                 WHERE `rssfeeds_id` = '$rssfeeds_id'";
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['rssfeeds_id' => $rssfeeds_id]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $groups[$data['groups_id']][] = $data;
       }
       return $groups;

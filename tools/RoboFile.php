@@ -47,9 +47,17 @@ class RoboFile extends \Robo\Tasks
     * @return void
     */
    public function minifyCSS() {
-      $css_dir = __DIR__ . '/../css';
+      $css_dirs = [
+         __DIR__ . '/../css',
+         __DIR__ . '/../lib',
+         __DIR__ . '/../public/lib',
+      ];
 
-      if (is_dir($css_dir)) {
+      foreach ($css_dirs as $css_dir) {
+         if (!is_dir($css_dir)) {
+            continue;
+         }
+
          $it = new RegexIterator(
             new RecursiveIteratorIterator(
                new RecursiveDirectoryIterator($css_dir)
@@ -60,7 +68,7 @@ class RoboFile extends \Robo\Tasks
          foreach ($it as $css_file) {
             if (!$this->endsWith($css_file->getFilename(), 'min.css')) {
                $this->taskMinify($css_file->getRealpath())
-                  ->to(str_replace('.css', '.min.css', $css_file->getRealpath()))
+                  ->to(preg_replace('/\.css$/', '.min.css', $css_file->getRealpath()))
                   ->type('css')
                   ->run();
             }
@@ -70,14 +78,22 @@ class RoboFile extends \Robo\Tasks
    }
 
    /**
-    * Minify JavaScript files stylesheets
+    * Minify JavaScript files
     *
     * @return void
     */
    public function minifyJS() {
-      $js_dir = __DIR__ . '/../js';
+      $js_dirs = [
+         __DIR__ . '/../js',
+         __DIR__ . '/../lib',
+         __DIR__ . '/../public/lib',
+      ];
 
-      if (is_dir($js_dir)) {
+      foreach ($js_dirs as $js_dir) {
+         if (!is_dir($js_dir)) {
+            continue;
+         }
+
          $it = new RegexIterator(
             new RecursiveIteratorIterator(
                new RecursiveDirectoryIterator($js_dir)
@@ -88,7 +104,7 @@ class RoboFile extends \Robo\Tasks
          foreach ($it as $js_file) {
             if (!$this->endsWith($js_file->getFilename(), 'min.js')) {
                $this->taskMinify($js_file->getRealpath())
-                  ->to(str_replace('.js', '.min.js', $js_file->getRealpath()))
+                  ->to(preg_replace('/\.js$/', '.min.js', $js_file->getRealpath()))
                   ->type('js')
                   ->run();
             }

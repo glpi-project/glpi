@@ -101,7 +101,7 @@ function update0722to0723() {
              FROM `glpi_doc_device`";
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             if (isset($LINK_ID_TABLE[$data['device_type']])) {
                $table = $LINK_ID_TABLE[$data['device_type']];
 

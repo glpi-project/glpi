@@ -95,7 +95,6 @@ abstract class CommonDropdown extends CommonDBTM {
     *  @since 0.85
    **/
    static function getMenuContent() {
-      global $CFG_GLPI;
 
       $menu = [];
       if (get_called_class() == 'CommonDropdown') {
@@ -166,7 +165,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * Display title above search engine
     *
-    * @return nothing (HTML display if needed)
+    * @return void HTML display if needed
    **/
    function title() {
 
@@ -688,7 +687,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param &$input  array of value to import (name)
     *
-    * @return the ID of the new (or -1 if not found)
+    * @return integer the ID of the new (or -1 if not found)
    **/
    function findID(array &$input) {
       global $DB;
@@ -729,7 +728,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param $input  array of value to import (name, ...)
     *
-    * @return the ID of the new or existing dropdown (-1 on failure)
+    * @return integer|boolean the ID of the new or existing dropdown (-1 or false on failure)
    **/
    function import(array $input) {
 
@@ -759,14 +758,14 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
     *
-    * @param $value           string   Value of the new dropdown (need to be addslashes)
-    * @param $entities_id     int      entity in case of specific dropdown (default -1)
-    * @param $external_params array    (manufacturer) (need to be addslashes)
-    * @param $comment                  (default '') (need to be addslashes)
-    * @param $add                      if true, add it if not found. if false,
-    *                                  just check if exists (true by default)
+    * @param string  $value           Value of the new dropdown (need to be addslashes)
+    * @param integer $entities_id     Entity in case of specific dropdown (default -1)
+    * @param array   $external_params (manufacturer) (need to be addslashes)
+    * @param string  $comment         Comment (need to be addslashes)
+    * @param boolean $add             if true, add it if not found. if false,
+    *                                 just check if exists (true by default)
     *
-    * @return integer : dropdown id.
+    * @return integer Dropdown id
    **/
    function importExternal($value, $entities_id = -1, $external_params = [], $comment = "",
                            $add = true) {
@@ -939,8 +938,9 @@ abstract class CommonDropdown extends CommonDBTM {
 
          $rand = mt_rand();
          $kbitem = new KnowbaseItem;
-         $found_kbitem = $kbitem->find("`knowbaseitemcategories_id` = ".
-                                       $this->fields['knowbaseitemcategories_id']);
+         $found_kbitem = $kbitem->find([
+            'knowbaseitemcategories_id' => $this->fields['knowbaseitemcategories_id']
+         ]);
 
          $kbitem->getFromDB(reset($found_kbitem)['id']);
          if (count($found_kbitem)) {
@@ -969,12 +969,15 @@ abstract class CommonDropdown extends CommonDBTM {
                ");
                $ret.= "<label for='dropdown_knowbaseitems_id$rand'>".
                       KnowbaseItem::getTypeName()."</label>&nbsp;";
-               $ret.= KnowbaseItem::dropdown(['value'     => reset($found_kbitem)['id'],
-                                              'display'   => false,
-                                              'rand'      => $rand,
-                                              'condition' => "`knowbaseitemcategories_id` = ".
-                                                             $this->fields['knowbaseitemcategories_id'],
-                                              'on_change' => "getKnowbaseItemAnswer$rand()"]);
+               $ret.= KnowbaseItem::dropdown([
+                  'value'     => reset($found_kbitem)['id'],
+                  'display'   => false,
+                  'rand'      => $rand,
+                  'condition' => [
+                     'knowbaseitemcategories_id' => $this->fields['knowbaseitemcategories_id']
+                  ],
+                  'on_change' => "getKnowbaseItemAnswer$rand()"
+               ]);
                $ret.= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
                $ret.= $kbitem->showFull(['display' => false]);
                $ret.= "</div>"; // .faqadd_block_content

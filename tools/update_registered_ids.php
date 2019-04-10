@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
+   exit();
+}
+
 /**
  * @since 0.85
  */

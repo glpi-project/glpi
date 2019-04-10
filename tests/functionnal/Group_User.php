@@ -181,4 +181,30 @@ class Group_User extends \DbTestCase {
       $this->integer($this->testedInstance->countForItem($user))->isIdenticalTo(2);
       $this->integer($this->testedInstance->countForItem($group))->isIdenticalTo(1);
    }
+
+   public function testIsUserInGroup() {
+      $group = new \Group;
+      // Add a group
+      $groups_id = $group->add([
+         'name' => __METHOD__,
+         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)]
+      );
+      $this->integer((int)$groups_id)->isGreaterThan(0);
+      $this->boolean($group->getFromDB($groups_id))->isTrue();
+      $this->variable($group->getField('is_deleted'))->isEqualTo(0);
+      $this->variable($group->isDeleted())->isEqualTo(0);
+
+      $group_user = new \Group_User;
+      $group_users_id = $group_user->add([
+         'groups_id'  => $groups_id,
+         'users_id'   => getItemByTypeName('User', 'admin', true),
+         'is_dynamic' => 0
+      ]
+      );
+      $this->integer((int)$group_users_id)->isGreaterThan(0);
+      $this->boolean($group_user->getFromDB($group_users_id))->isTrue();
+      $this->boolean(\Group_User::isUserInGroup(getItemByTypeName('User', 'admin', true), $groups_id))->isTrue();
+      $this->boolean(\Group_User::isUserInGroup(getItemByTypeName('User', 'glpi', true), $groups_id))->isFalse();
+   }
+
 }

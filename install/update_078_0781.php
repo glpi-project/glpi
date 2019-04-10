@@ -53,7 +53,7 @@ function update078to0781() {
    $query = "SELECT DISTINCT `itemtype` FROM `glpi_reservationitems`";
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $itemtable=getTableForItemType($data['itemtype']);
             // ajout d'un contrôle pour voir si la table existe ( cas migration plugin non fait)
             if (!$DB->tableExists($itemtable)) {

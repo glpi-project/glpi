@@ -135,4 +135,26 @@ class DeviceSoundCard extends CommonDevice {
             }
       }
    }
+
+   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => 'glpi_devicesoundcards',
+         'field'              => 'designation',
+         'name'               => __('Soundcard'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicesoundcards',
+               'joinparams'         => $main_joinparams
+            ]
+         ]
+      ];
+
+      return $tab;
+   }
 }

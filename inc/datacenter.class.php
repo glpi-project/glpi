@@ -82,7 +82,6 @@ class Datacenter extends CommonDBTM {
    }
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
 
       $tab = [];
 
@@ -141,8 +140,6 @@ class Datacenter extends CommonDBTM {
    }
 
    static function getAdditionalMenuLinks() {
-      global $CFG_GLPI;
-
       $links = [];
       if (static::canView()) {
          $rooms = "<i class=\"fa fa-building pointer\" title=\"" . DCRoom::getTypeName(Session::getPluralNumber()) .
@@ -161,7 +158,11 @@ class Datacenter extends CommonDBTM {
          return [
             'dcroom' => [
                'title' => DCRoom::getTypeName(Session::getPluralNumber()),
-               'page'  => DCRoom::getSearchURL(false)
+               'page'  => DCRoom::getSearchURL(false),
+               'links' => [
+                  'add'    => '/front/dcroom.form.php',
+                  'search' => '/front/dcroom.php',
+               ]
             ]
          ];
       }

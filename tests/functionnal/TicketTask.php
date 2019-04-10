@@ -87,7 +87,7 @@ class TicketTask extends DbTestCase {
       $iterator = $task::getTaskList('todo', true);
       $this->boolean($iterator)->isFalse();
 
-      $_SESSION['glpigroups'] = [42, 157];
+      $_SESSION['glpigroups'] = [42, 1337];
       $iterator = $task::getTaskList('todo', true);
       //no task for those groups
       $this->integer(count($iterator))->isIdenticalTo(0);

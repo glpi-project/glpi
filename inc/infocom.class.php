@@ -695,15 +695,18 @@ class Infocom extends CommonDBChild {
          return false;
       }
 
-      $query = "SELECT COUNT(*)
-                FROM `glpi_infocoms`
-                WHERE `items_id` = '$device_id'
-                      AND `itemtype` = '$itemtype'";
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_infocoms',
+         'WHERE'  => [
+            'itemtype'  => $itemtype,
+            'items_id'  => $device_id
+         ]
+      ])->next();
 
       $add    = "add";
       $text   = __('Add');
-      $result = $DB->query($query);
-      if ($DB->result($result, 0, 0) > 0) {
+      if ($result['cpt'] > 0) {
          $add  = "";
          $text = _x('button', 'Show');
       } else if (!Infocom::canUpdate()) {
@@ -1897,13 +1900,21 @@ class Infocom extends CommonDBChild {
             $input["immo_number"] = autoName($input["immo_number"], "immo_number", 1, 'Infocom',
                                              $input['entities_id']);
          }
-         $date_fields = ['buy_date', 'delivery_date', 'inventory_date', 'order_date',
-                              'use_date', 'warranty_date'];
+         $date_fields = [
+            'buy_date',
+            'delivery_date',
+            'inventory_date',
+            'order_date',
+            'use_date',
+            'warranty_date',
+         ];
          foreach ($date_fields as $f) {
             if (empty($input[$f])) {
                unset($input[$f]);
             }
          }
+         unset($input['date_creation']);
+         unset($input['date_mod']);
          $ic2 = new self();
          $ic2->add($input);
       }
@@ -2036,7 +2047,8 @@ class Infocom extends CommonDBChild {
       global $DB;
 
       $types_iterator = $DB->request([
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_infocoms',
          'WHERE'           => [
             'NOT'          => ['itemtype' => self::getExcludedTypes()]

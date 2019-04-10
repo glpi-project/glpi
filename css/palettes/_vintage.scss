@@ -1,0 +1,231 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+/* ===== LOGIN ===== */
+
+#firstboxlogin {
+   background-color: #006573;
+}
+
+#logo_login {
+   background: url(../pics/login_logo_glpi.png) center no-repeat, #008B8D;
+}
+
+#display-login {
+   color: #FFF;
+}
+
+#text-login {
+   background-color: #008B8D;
+   color: #FFF;
+}
+
+/* ====== GENERAL ====== */
+
+a {
+   color: #006573;
+
+   &:link {
+      color: #006573;
+   }
+}
+
+.ui-widget-content a {
+   color: #006573;
+}
+
+.main_form tr.headerRow th {
+   color: #81BEAA;
+}
+
+/* ====== HEADER ====== */
+
+#header_top {
+   background-color: #064260;
+}
+
+#c_preference a, #language_link > span {
+   color: #f2ef9f;
+}
+
+#c_recherche form #champRecherche input {
+   background-color: #096390;
+   color: #fff;
+
+   &::-webkit-input-placeholder {
+      background-color: #096390;
+      color: #fff;
+   }
+}
+
+#c_menu {
+   background-color: #bf0805;
+}
+
+ul {
+   &#menu {
+      a {
+         &.itemP, &.itemP1 {
+            color: #fff;
+         }
+      }
+
+      ul li a {
+         color: #bf0805;
+      }
+
+      > li.active {
+         background-color: #064260;
+      }
+   }
+
+   &.ssmenu li.active {
+      background-color: #064260;
+   }
+
+   &#menu {
+      > li.active > a {
+         color: #FFF;
+      }
+
+      ul {
+         &.ssmenu li.active > a {
+            color: #FFF;
+         }
+
+         li a:hover {
+            background: #c90805;
+            color: #fff;
+         }
+      }
+
+      > li:hover {
+         background-color: #064260;
+         color: #fff;
+
+         > a {
+            background-color: #064260;
+            color: #fff;
+         }
+      }
+   }
+}
+
+/* ====== BUTTONS ====== */
+
+input.submit {
+   background-color: #bf0805;
+   color: #fff;
+
+   &:hover {
+      background-color: #f9201d;
+   }
+}
+
+a.vsubmit {
+   background-color: #bf0805;
+   color: #fff;
+
+   &:hover {
+      background-color: #d6665a;
+   }
+}
+
+#BackToTop {
+   background-color: #FF5131;
+   color: #fff;
+}
+
+/* ====== BREADCRUMB ====== */
+
+#c_ssmenu2 .breadcrumb_item:nth-of-type(3) {
+   background-color: #064260;
+
+   a {
+      color: #fff;
+   }
+
+   &:after {
+      border-left-color: #064260;
+   }
+}
+
+.primary {
+   /* Primary color elements (white on blue BG) designed to be overridden from palettes */
+   /* Colors are same as #c_menu */
+   background: #bf0805;
+   color: white;
+}
+
+/* Primary color elements (white on blue BG) designed to be overridden from palettes */
+/* Colors are same as #c_menu */
+
+.primary-bg {
+   background: #bf0805;
+}
+
+.primary-bg-inverse {
+   background: white;
+}
+
+.primary-fg {
+   color: white;
+
+   &:hover {
+      color: white;
+   }
+}
+
+.primary-fg-inverse {
+   color: #bf0805;
+
+   &:hover {
+      color: #bf0805;
+   }
+}
+
+#show_all_menu {
+   dt a {
+      color: white;
+
+      &:hover {
+         background: #064260;
+      }
+   }
+
+   a {
+      color: #bf0805;
+
+      &:hover {
+         background-color: #bf0805;
+         color: white;
+      }
+   }
+}

@@ -36,7 +36,7 @@ if (isset($_POST['reinit_network'])) {
 
    if (Session::haveRight('internet', UPDATE)
        // Check access to all entities
-       && Session::isViewAllEntities()) {
+       && Session::canViewAllEntities()) {
       IPNetwork::recreateTree();
       Session::addMessageAfterRedirect(__('Successfully recreated network tree'));
       Html::back();

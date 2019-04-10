@@ -32,8 +32,8 @@
 
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
-if (version_compare(PHP_VERSION, '5.6') < 0) {
-   die('PHP >= 5.6 required');
+if (version_compare(PHP_VERSION, '7.0.8') < 0) {
+   die('PHP >= 7.0.8 required');
 }
 
 
@@ -83,16 +83,22 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<meta name='viewport' content='width=device-width, initial-scale=1'/>";
 
    // Appel CSS
-   echo '<link rel="stylesheet" href="'.$CFG_GLPI["root_doc"].'/css/styles.css" type="text/css" '.
-         'media="screen" />';
-   // CSS theme link
-   echo Html::css("css/palettes/".$CFG_GLPI["palette"].".css");
+   echo Html::scss('main_styles');
    // font awesome icons
-   echo Html::css('lib/font-awesome-5.2.0/css/all.min.css');
+   echo Html::css('public/lib/fontawesome-free/css/all.css');
 
-   echo Html::script('lib/jquery/js/jquery-1.10.2.js');
-   echo Html::script('lib/jqueryplugins/select2/js/select2.full.js');
-   echo Html::css('lib/jqueryplugins/select2/css/select2.css');
+   // CFG
+   echo Html::scriptBlock("
+      var CFG_GLPI  = {
+         'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
+         'root_doc': '".$CFG_GLPI["root_doc"]."',
+      };
+   ");
+
+   echo Html::script('public/lib/jquery/jquery.js');
+   echo Html::script('public/lib/select2/js/select2.full.js');
+   echo Html::script("public/lib/fuzzy/fuzzy.js");
+   echo Html::css('public/lib/select2/css/select2.css');
    echo Html::script('js/common.js');
 
    echo "</head>";
@@ -118,7 +124,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // redirect to ticket
    if (isset($_GET["redirect"])) {
       Toolbox::manageRedirect($_GET["redirect"]);
-      echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'"/>';
+      echo '<input type="hidden" name="redirect" value="'.Html::entities_deep($_GET['redirect']).'"/>';
    }
    echo '<p class="login_input" id="login_input_name">
          <input type="text" name="'.$namfield.'" id="login_name" required="required"

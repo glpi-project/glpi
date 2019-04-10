@@ -189,7 +189,7 @@ class RuleRightCollection extends RuleCollection {
                     AND `glpi_rulecriterias`.`criteria` = `glpi_rulerightparameters`.`value`";
       $result = $DB->query($sql);
 
-      while ($param = $DB->fetch_assoc($result)) {
+      while ($param = $DB->fetchAssoc($result)) {
          //Dn is alwsays retreived from ldap : don't need to ask for it !
          if ($param["value"] != "dn") {
             $params[] = Toolbox::strtolower($param["value"]);

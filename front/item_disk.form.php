@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    $itemtype = $_POST['itemtype'];
    $item = new $itemtype();
    $item->getFromDB($disk->fields['items_id']);
-   Html::redirect(Toolbox::getItemTypeFormURL($itemtype).'?id='.$disk->fields['items_id'].
+   Html::redirect($itemtype::getFormURLWithID($disk->fields['items_id']).
                   ($item->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {

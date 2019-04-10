@@ -536,7 +536,7 @@ class QueuedNotification extends CommonDBTM {
    static function cronQueuedNotification($task = null) {
       global $DB, $CFG_GLPI;
 
-      if (!$CFG_GLPI["notifications_mailing"]) {
+      if (!Notification_NotificationTemplate::hasActiveMode()) {
          return 0;
       }
       $cron_status = 0;
@@ -593,7 +593,7 @@ class QueuedNotification extends CommonDBTM {
                              AND UNIX_TIMESTAMP(send_time) < '".$send_time."'";
 
          $DB->query($query_exp);
-         $vol = $DB->affected_rows();
+         $vol = $DB->affectedRows();
       }
 
       $task->setVolume($vol);

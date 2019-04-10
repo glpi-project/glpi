@@ -169,7 +169,7 @@ function update065to068() {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $query2 = "INSERT INTO `glpi_users_profiles`
                               (`FK_users`, `FK_profiles`)
                        VALUES ('".$data['ID']."', '".$profiles[$data['type']]."')";
@@ -203,7 +203,7 @@ function update065to068() {
       $result = $DB->query($query);
 
       if ($result) {
-         $data = $DB->fetch_assoc($result);
+         $data = $DB->fetchAssoc($result);
          if ($data["mailing_resa_all_admin"]) {
             $query2 = "INSERT INTO `glpi_mailing`
                               (`type`, `FK_item`, `item_type`)
@@ -425,13 +425,13 @@ function update065to068() {
          $result = $DB->query($query);
 
          if ($DB->numrows($result)>0) {
-            while ($line = $DB->fetch_array($result)) {
+            while ($line = $DB->fetchArray($result)) {
                $query = "UPDATE `glpi_kbitems`
                          SET `answer` = '".addslashes(rembo($line["answer"]))."'
                          WHERE `ID` = '".$line["ID"]."'";
                $DB->queryOrDie($query, "0.68 convert knowbase to xhtml");
             }
-            $DB->free_result($result);
+            $DB->freeResult($result);
          }
 
          // add new fields
@@ -678,7 +678,7 @@ function update065to068() {
             $result2 = $DB->query($query2);
 
             if ($DB->numrows($result2)>0) {
-               while ($data=$DB->fetch_assoc($result2)) {
+               while ($data=$DB->fetchAssoc($result2)) {
                   $query3 = "UPDATE `glpi_$table`
                              SET `FK_users` = '".$data["USER"]."'
                              WHERE `ID` = '".$data["ID"]."'";
@@ -697,7 +697,7 @@ function update065to068() {
             $result2 = $DB->query($query2);
 
             if ($DB->numrows($result2)>0) {
-               while ($data=$DB->fetch_assoc($result2)) {
+               while ($data=$DB->fetchAssoc($result2)) {
                   $query3 = "UPDATE `glpi_$table`
                              SET `FK_users` = '".$data["USER"]."'
                              WHERE `ID` = '".$data["ID"]."'";

@@ -188,10 +188,10 @@ function update051to06() {
       $query = "SELECT `ID`, `name`
                 FROM `glpi_users`";
       $result = $DB->query($query);
-      while ($line = $DB->fetch_array($result)) {
+      while ($line = $DB->fetchArray($result)) {
          $users[$line["name"]] = $line["ID"];
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
 
       // Update authors tracking
       $query = "UPDATE `glpi_tracking`
@@ -204,10 +204,10 @@ function update051to06() {
       $query   = "SELECT `ID`, `author`
                   FROM `glpi_tracking`";
       $result  = $DB->query($query);
-      while ($line = $DB->fetch_array($result)) {
+      while ($line = $DB->fetchArray($result)) {
          $authors[$line["ID"]] = $line["author"];
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
 
       if (count($authors)>0) {
          foreach ($authors as $ID => $val) {
@@ -231,10 +231,10 @@ function update051to06() {
       $query  = "SELECT `ID`, `assign`
                  FROM `glpi_tracking`";
       $result = $DB->query($query);
-      while ($line = $DB->fetch_array($result)) {
+      while ($line = $DB->fetchArray($result)) {
          $assign[$line["ID"]] = $line["assign"];
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
 
       if (count($assign)>0) {
          foreach ($assign as $ID => $val) {
@@ -259,10 +259,10 @@ function update051to06() {
       $query  = "SELECT `ID`, `author`
                  FROM `glpi_followups`";
       $result = $DB->query($query);
-      while ($line = $DB->fetch_array($result)) {
+      while ($line = $DB->fetchArray($result)) {
          $authors[$line["ID"]] = $line["author"];
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
 
       if (count($authors)>0) {
          foreach ($authors as $ID => $val) {
@@ -288,7 +288,7 @@ function update051to06() {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
-         while ($line = $DB->fetch_array($result)) {
+         while ($line = $DB->fetchArray($result)) {
             $query = "UPDATE `glpi_tracking`
                       SET `assign` = '".$line["computer"]."',
                           `assign_type` = '".ENTERPRISE_TYPE."',
@@ -298,7 +298,7 @@ function update051to06() {
             $DB->query($query);
          }
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
    }
 
    // Add planning feature
@@ -347,7 +347,7 @@ function update051to06() {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $query2 = "UPDATE `glpi_users`
                        SET `language` = '".$data['language']."',
                             `tracking_order` = '".$data['tracking_order']."'
@@ -355,7 +355,7 @@ function update051to06() {
             $DB->queryOrDie($query2, "0.6 move pref to users");
          }
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
 
       // Drop glpi_prefs
       $query = "DROP TABLE `glpi_prefs`";
@@ -400,24 +400,24 @@ function update051to06() {
                  FROM `glpi_dropdown_ram_type`";
       $result = $DB->query($query);
       $val    = [];
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $val[$data['name']] = $data['ID'];
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
 
       // Update glpi_device_ram
       $query  = "SELECT *
                  FROM `glpi_device_ram`";
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $query2 = "UPDATE `glpi_device_ram`
                        SET `new_type` = '".$val[$data['type']]."'
                        WHERE `ID` = '".$data['ID']."'";
             $DB->query($query2);
          }
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
 
       // ALTER glpi_device_ram
       $query = "ALTER TABLE `glpi_device_ram`
@@ -600,21 +600,21 @@ function update051to06() {
                  FROM `glpi_dropdown_model`";
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $query = "INSERT INTO `glpi_type_computers`
                              (`ID`, `name`)
                       VALUES ('".$data['ID']."', '".addslashes($data['name'])."')";
             $DB->queryOrDie($query, "0.6 insert value in glpi_type_computers");
          }
       }
-      $DB->free_result($result);
+      $DB->freeResult($result);
 
       $query = "INSERT INTO `glpi_type_computers`
                        (`name`)
                 VALUES ('Server')";
       $DB->queryOrDie($query, "0.6 insert value in glpi_type_computers");
 
-      $serverid = $DB->insert_id();
+      $serverid = $DB->insertId();
 
       // Type -> modele
       $query = "ALTER TABLE `glpi_computers`

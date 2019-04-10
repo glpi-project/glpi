@@ -54,21 +54,11 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonGLPI::getMenuName()
-    *
-    * @since 0.85
-   **/
    static function getMenuName() {
       return Consumable::getTypeName(Session::getPluralNumber());
    }
 
 
-   /**
-    * @see CommonGLPI::getAdditionalMenuLinks()
-    *
-    * @since 0.85
-   **/
    static function getAdditionalMenuLinks() {
 
       if (static::canView()) {
@@ -78,11 +68,6 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::getPostAdditionalInfosForName
-   **/
    function getPostAdditionalInfosForName() {
 
       if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
@@ -94,11 +79,15 @@ class ConsumableItem extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $class = new Consumable();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Consumable::class,
+         ]
+      );
 
-      $class = new Alert();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      // Alert does not extends CommonDBConnexity
+      $alert = new Alert();
+      $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 
@@ -128,16 +117,14 @@ class ConsumableItem extends CommonDBTM {
    /**
     * Print the consumable type form
     *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
+    * @param integer $ID    ID of the item
+    * @param array $options
+    *    - target filename : where to go when done.
+    *    - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
-    *
-    **/
+    * @return true
+    */
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -178,10 +165,12 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id_tech',
-                            'value'     => $this->fields['groups_id_tech'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`']);
+      Group::dropdown([
+         'name'      => 'groups_id_tech',
+         'value'     => $this->fields['groups_id_tech'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_assign' => 1]
+      ]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -343,7 +332,7 @@ class ConsumableItem extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the hardware'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -392,11 +381,11 @@ class ConsumableItem extends CommonDBTM {
    /**
     * Cron action on consumables : alert if a stock is behind the threshold
     *
-    * @param $task   to log, if NULL display (default NULL)
+    * @param CronTask|null $task to log, if NULL display (default NULL)
     *
-    * @return 0 : nothing to do 1 : done with success
+    * @return integer 0 : nothing to do 1 : done with success
    **/
-   static function cronConsumable($task = null) {
+   static function cronConsumable(CronTask $task = null) {
       global $DB, $CFG_GLPI;
 
       $cron_status = 1;
@@ -408,26 +397,45 @@ class ConsumableItem extends CommonDBTM {
 
          foreach (Entity::getEntitiesToNotify('consumables_alert_repeat') as $entity => $repeat) {
 
-            $query_alert = "SELECT `glpi_consumableitems`.`id` AS consID,
-                                   `glpi_consumableitems`.`entities_id` AS entity,
-                                   `glpi_consumableitems`.`ref` AS ref,
-                                   `glpi_consumableitems`.`name` AS name,
-                                   `glpi_consumableitems`.`alarm_threshold` AS threshold,
-                                   `glpi_alerts`.`id` AS alertID,
-                                   `glpi_alerts`.`date`
-                            FROM `glpi_consumableitems`
-                            LEFT JOIN `glpi_alerts`
-                                 ON (`glpi_consumableitems`.`id` = `glpi_alerts`.`items_id`
-                                     AND `glpi_alerts`.`itemtype`='ConsumableItem')
-                            WHERE `glpi_consumableitems`.`is_deleted` = 0
-                                  AND `glpi_consumableitems`.`alarm_threshold` >= 0
-                                  AND `glpi_consumableitems`.`entities_id` = '".$entity."'
-                                  AND (`glpi_alerts`.`date` IS NULL
-                                       OR (`glpi_alerts`.date+ INTERVAL $repeat second) < CURRENT_TIMESTAMP());";
+            $alerts_result = $DB->request(
+               [
+                  'SELECT'    => [
+                     'glpi_consumableitems.id AS consID',
+                     'glpi_consumableitems.entities_id AS entity',
+                     'glpi_consumableitems.ref AS ref',
+                     'glpi_consumableitems.name AS name',
+                     'glpi_consumableitems.alarm_threshold AS threshold',
+                     'glpi_alerts.id AS alertID',
+                     'glpi_alerts.date',
+                  ],
+                  'FROM'      => ConsumableItem::getTable(),
+                  'LEFT JOIN' => [
+                     'glpi_alerts' => [
+                        'FKEY' => [
+                           'glpi_alerts'         => 'items_id',
+                           'glpi_consumableitems' => 'id',
+                           [
+                              'AND' => ['glpi_alerts.itemtype' => 'ConsumableItem'],
+                           ],
+                        ]
+                     ]
+                  ],
+                  'WHERE'     => [
+                     'glpi_consumableitems.is_deleted'      => 0,
+                     'glpi_consumableitems.alarm_threshold' => ['>=', 0],
+                     'glpi_consumableitems.entities_id'     => $entity,
+                     'OR'                                  => [
+                        ['glpi_alerts.date' => null],
+                        ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                     ],
+                  ],
+               ]
+            );
+
             $message = "";
             $items   = [];
 
-            foreach ($DB->request($query_alert) as $consumable) {
+            foreach ($alerts_result as $consumable) {
                if (($unused=Consumable::getUnusedNumber($consumable["consID"]))
                               <=$consumable["threshold"]) {
                   // define message alert
@@ -515,20 +523,9 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * Have I the right to "update" the Object
-    *
-    * Default is true and check entity if the objet is entity assign
-    *
-    * May be overloaded if needed
-    *
-    * Overriden here to check entities recursively
-    *
-    * @return booleen
-   **/
    function canUpdateItem() {
 
-      if (!$this->checkEntity(true)) {
+      if (!$this->checkEntity(true)) { //check entities recursively
          return false;
       }
       return true;

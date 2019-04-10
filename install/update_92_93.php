@@ -91,6 +91,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_tickets', 'solution')) {
       //migrate solution history for tickets
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Ticket' AS itemtype,
@@ -114,6 +115,7 @@ function update92to93() {
                   AND log.`id_search_option` = 24
                WHERE
                   LENGTH(ticket.`solution`) > 0
+                  OR solutiontypes_id > 0
                GROUP BY ticket.`id`
                ORDER BY ticket.`id` ASC, log.id DESC";
       $DB->queryOrDie($query, "9.3 migrate Ticket solution history");
@@ -124,6 +126,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_problems', 'solution')) {
       // Problem soution history
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Problem' AS itemtype,
@@ -148,6 +151,7 @@ function update92to93() {
                   AND log.`id_search_option` = 24
                WHERE
                   LENGTH(problem.`solution`) > 0
+                  OR solutiontypes_id > 0
                GROUP BY problem.`id`
                ORDER BY problem.`id` ASC, log.id DESC";
       $DB->queryOrDie($query, "9.3 migrate Problem solution history");
@@ -158,6 +162,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_changes', 'solution')) {
       // Change solution history
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Change' AS itemtype,
@@ -182,6 +187,7 @@ function update92to93() {
                   AND log.`id_search_option` = 24
                WHERE
                   LENGTH(changes.`solution`) > 0
+                  OR solutiontypes_id > 0
                GROUP BY changes.`id`
                ORDER BY changes.`id` ASC, log.id DESC";
       $DB->queryOrDie($query, "9.3 migrate Change solution history");
@@ -744,10 +750,13 @@ function update92to93() {
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
       foreach ($tab as $newval) {
-         $query = "REPLACE INTO `glpi_displaypreferences`
-                           (`itemtype` ,`num` ,`rank` ,`users_id`)
-                     VALUES ('$type', '$newval', '".$rank++."', '0')";
-         $DB->query($query);
+         $DB->updateOrInsert("glpi_displaypreferences", [
+            'rank'      => $rank++
+         ], [
+            'users_id'  => "0",
+            'itemtype'  => $type,
+            'num'       => $newval,
+         ]);
       }
    }
 
@@ -762,9 +771,13 @@ function update92to93() {
       );
    }
    $migration->addField('glpi_authldaps', 'inventory_domain', 'string');
-   $migration->addPostQuery("UPDATE `glpi_users`
-                          SET `glpi_users`.`authtype` = 1
-                          WHERE `glpi_users`.`authtype` = 0");
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         "glpi_users",
+         ["glpi_users.authtype" => 1],
+         ["glpi_users.authtype" => 0]
+      )
+   );
 
    //Permit same license several times on same computer
    $migration->dropKey('glpi_computers_softwarelicenses', 'unicity');

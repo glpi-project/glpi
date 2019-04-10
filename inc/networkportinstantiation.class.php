@@ -277,17 +277,25 @@ class NetworkPortInstantiation extends CommonDBChild {
 
          $virtual_header = $row->getHeaderByName('Instantiation', 'VirtualPorts');
 
-         $query = "(SELECT `networkports_id`
-                    FROM `glpi_networkportaliases`
-                    WHERE `networkports_id_alias`='".$netport->getID()."')
-                   UNION
-                   (SELECT `networkports_id`
-                    FROM `glpi_networkportaggregates`
-                    WHERE `networkports_id_list` LIKE '%\"".$netport->getID()."\"%')";
+         $iterator = $DB->request([
+            'FROM' => new \QueryUnion(
+               [
+                  [
+                     'SELECT' => 'networkports_id',
+                     'FROM'   => 'glpi_networkportaliases',
+                     'WHERE'  => ['networkports_id_alias' => $netport->getID()]
+                  ], [
+                     'SELECT' => 'networkports_id',
+                     'FROM'   => 'glpi_networkportaggregates',
+                     'WHERE'  => ['networkports_id_list' => ['LIKE', '%"'.$netport->getID().'"%']]
+                  ]
+               ],
+               false,
+               'networkports'
+            )
+         ]);
 
-         $iterator = $DB->request($query);
-
-         if ($iterator->numrows() > 0) {
+         if (count($iterator)) {
             $new_father = $row->addCell($virtual_header, __('this port'), $father);
          } else {
             $new_father = $row->addCell($virtual_header, '', $father);
@@ -677,7 +685,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                                                  $DB->numrows($result));
             $possible_ports[$array_element_name] = [];
 
-            while ($portEntry = $DB->fetch_assoc($result)) {
+            while ($portEntry = $DB->fetchAssoc($result)) {
                $macAddresses[$portEntry['id']] = $portEntry['mac'];
                if (!empty($portEntry['mac'])) {
                   $portEntry['name'] = sprintf(__('%1$s - %2$s'), $portEntry['name'],

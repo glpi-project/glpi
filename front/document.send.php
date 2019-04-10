@@ -65,17 +65,17 @@ if (isset($_GET['docid'])) { // docid for document
       $send = false;
       if (($splitter[0] == "_dumps")
           && Session::haveRight("backup", CREATE)) {
-         $send = true;
+         $send = GLPI_DUMP_DIR . '/' . $splitter[1];
       }
 
       if ($splitter[0] == "_pictures") {
-         if (Document::isImage($_GET['file'])) {
-            $send = true;
+         if (Document::isImage(GLPI_PICTURE_DIR . '/' . $splitter[1])) {
+            $send = GLPI_PICTURE_DIR . '/' . $splitter[1];
          }
       }
 
-      if ($send && file_exists(GLPI_DOC_DIR."/".$_GET["file"])) {
-         Toolbox::sendFile(GLPI_DOC_DIR."/".$_GET["file"], $splitter[1]);
+      if ($send && file_exists($send)) {
+         Toolbox::sendFile($send, $splitter[1]);
       } else {
          Html::displayErrorAndDie(__('Unauthorized access to this file'), true);
       }

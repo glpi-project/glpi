@@ -92,6 +92,17 @@ class Enclosure extends CommonDBTM {
       );
       echo "</td>";
 
+      echo "<td><label for='dropdown_states_id$rand'>".__('Status')."</label></td>";
+      echo "<td>";
+      State::dropdown([
+         'value'     => $this->fields["states_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_visible_enclosure' => 1],
+         'rand'      => $rand
+      ]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td><label for='dropdown_power_supplies$rand'>".__('Power supplies')."</label></td>";
       echo "<td>";
       Dropdown::showNumber(
@@ -142,7 +153,7 @@ class Enclosure extends CommonDBTM {
          'name'      => 'groups_id_tech',
          'value'     => $this->fields['groups_id_tech'],
          'entity'    => $this->fields['entities_id'],
-         'condition' => '`is_assign`',
+         'condition' => ['is_assign' => 1],
          'rand'      => $rand
       ]);
       echo "</td></tr>\n";
@@ -231,7 +242,7 @@ class Enclosure extends CommonDBTM {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_computer`'
+         'condition'          => ['is_visible_computer' => 1]
       ];
 
       $tab[] = [
@@ -300,7 +311,7 @@ class Enclosure extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the hardware'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -348,8 +359,13 @@ class Enclosure extends CommonDBTM {
    }
 
    function cleanDBonPurge() {
-      $class = new Item_Enclosure();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Item::class,
+            Item_Enclosure::class,
+         ]
+      );
    }
 
 

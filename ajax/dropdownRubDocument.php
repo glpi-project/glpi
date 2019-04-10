@@ -67,12 +67,14 @@ if (isset($_POST["rubdoc"])) {
       $_POST['entity'] = $_SESSION['glpiactive_entity'];
    }
 
-   Dropdown::show('Document',
-                  ['name'      => $_POST['myname'],
-                        'used'      => $used,
-                        'width'     => '50%',
-                        'entity'    => intval($_POST['entity']),
-                        'rand'      => intval($_POST['rand']),
-                        'condition' => "glpi_documents.documentcategories_id='".intval($_POST["rubdoc"])."'"]);
-
+   Dropdown::show(
+      'Document', [
+         'name'      => $_POST['myname'],
+         'used'      => $used,
+         'width'     => '50%',
+         'entity'    => intval($_POST['entity']),
+         'rand'      => intval($_POST['rand']),
+         'condition' => ['glpi_documents.documentcategories_id' => (int)$_POST["rubdoc"]]
+      ]
+   );
 }

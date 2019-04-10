@@ -405,14 +405,13 @@ class NetworkPort extends CommonDBChild {
          unset($instantiation);
       }
 
-      $nn = new NetworkPort_NetworkPort();
-      $nn->cleanDBonItemDelete ($this->getType(), $this->getID());
-
-      $nv = new NetworkPort_Vlan();
-      $nv->cleanDBonItemDelete ($this->getType(), $this->getID());
-
-      $names = new NetworkName();
-      $names->cleanDBonItemDelete ($this->getType(), $this->getID());
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            NetworkName::class,
+            NetworkPort_NetworkPort::class,
+            NetworkPort_Vlan::class,
+         ]
+      );
    }
 
 
@@ -725,7 +724,7 @@ class NetworkPort extends CommonDBChild {
                   $canedit = false;
                }
 
-               while ($devid = $DB->fetch_row($result)) {
+               while ($devid = $DB->fetchRow($result)) {
                   $t_row = $t_group->createRow();
 
                   $netport->getFromDB(current($devid));

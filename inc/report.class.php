@@ -133,6 +133,9 @@ class Report extends CommonGLPI{
       $optgroup = [];
       if (isset($PLUGIN_HOOKS["reports"]) && is_array($PLUGIN_HOOKS["reports"])) {
          foreach ($PLUGIN_HOOKS["reports"] as $plug => $pages) {
+            if (!Plugin::isPluginLoaded($plug)) {
+               continue;
+            }
             if (is_array($pages) && count($pages)) {
                foreach ($pages as $page => $name) {
                   $names[$plug.'/'.$page] = ["name" => $name,
@@ -187,23 +190,32 @@ class Report extends CommonGLPI{
 
       foreach ($items as $itemtype) {
          $table_item = getTableForItemType($itemtype);
-         $where      = "WHERE `".$table_item."`.`is_deleted` = 0
-                              AND `".$table_item."`.`is_template` = 0 ";
+         $criteria = [
+            'COUNT'  => 'cpt',
+            'FROM'   => $table_item,
+            'WHERE'  => [
+               "$table_item.is_deleted"   => 0,
+               "$table_item.is_template"  => 0
+            ] + getEntitiesRestrictCriteria($table_item)
+         ];
 
-         $join       = "";
          if (in_array($itemtype, $linkitems)) {
-            $join =  "LEFT JOIN `glpi_computers_items`
-                        ON (`glpi_computers_items`.`itemtype` = '".$itemtype."'
-                            AND `glpi_computers_items`.`items_id` = `".$table_item."`.`id`)";
-
+            $criteria['LEFT JOIN'] = [
+               'glpi_computers_items' => [
+                  'ON' => [
+                     'glpi_computers_items'  => 'items_id',
+                     $table_item             => 'id', [
+                        'AND' => [
+                           'glpi_computers_items.itemtype' => $itemtype
+                        ]
+                     ]
+                  ]
+               ]
+            ];
          }
-         $query = "SELECT COUNT(*)
-                   FROM `".$table_item."`
-                   $join
-                   $where ".
-                         getEntitiesRestrictRequest("AND", $table_item);
-         $result = $DB->query($query);
-         $number = $DB->result($result, 0, 0);
+
+         $result = $DB->request($criteria)->next();
+         $number = (int)$result['cpt'];
 
          echo "<tr class='tab_bg_2'><td>".$itemtype::getTypeName(Session::getPluralNumber())."</td>";
          echo "<td class='numeric'>$number</td></tr>";
@@ -212,18 +224,25 @@ class Report extends CommonGLPI{
       echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".__('Operating system')."</td></tr>";
 
       // 2. Get some more number data (operating systems per computer)
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'COUNT' => '* AS count',
+            'glpi_operatingsystems.name AS name'
+         ],
+         'FROM'      => 'glpi_items_operatingsystems',
+         'LEFT JOIN' => [
+            'glpi_operatingsystems' => [
+               'ON' => [
+                  'glpi_items_operatingsystems' => 'operatingsystems_id',
+                  'glpi_operatingsystems'       => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => ['is_deleted' => 0],
+         'GROUPBY'   => 'glpi_operatingsystems.name'
+      ]);
 
-      $where = "WHERE `is_deleted` = 0 ";
-
-      $query = "SELECT COUNT(*) AS count, `glpi_operatingsystems`.`name` AS name
-                FROM `glpi_items_operatingsystems`
-                LEFT JOIN `glpi_operatingsystems`
-                   ON (`glpi_items_operatingsystems`.`operatingsystems_id` = `glpi_operatingsystems`.`id`)
-                $where
-                GROUP BY `glpi_operatingsystems`.`name`";
-      $result = $DB->query($query);
-
-      while ($data = $DB->fetch_assoc($result)) {
+      while ($data = $iterator->next()) {
          if (empty($data['name'])) {
             $data['name'] = Dropdown::EMPTY_VALUE;
          }
@@ -246,27 +265,42 @@ class Report extends CommonGLPI{
          $type_table = getTableForItemType($typeclass);
          $typefield  = getForeignKeyFieldForTable(getTableForItemType($typeclass));
 
-         $where = "WHERE `".$table_item."`.`is_deleted` = 0
-                          AND `".$table_item."`.`is_template` = 0 ";
+         $criteria = [
+            'SELECT'    => [
+               'COUNT'  => '* AS count',
+               "$type_table.name AS name"
+            ],
+            'FROM'      => $table_item,
+            'LEFT JOIN' => [
+               $type_table => [
+                  'ON' => [
+                     $table_item => $typefield,
+                     $type_table => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               "$table_item.is_deleted"   => 0,
+               "$table_item.is_template"  => 0
+            ] + getEntitiesRestrictCriteria($table_item),
+            'GROUPBY'   => "$type_table.name"
+         ];
 
-         $join = "";
          if (in_array($itemtype, $linkitems)) {
-            $join =  "LEFT JOIN `glpi_computers_items`
-                        ON (`glpi_computers_items`.`itemtype` = '".$itemtype."'
-                            AND `glpi_computers_items`.`items_id` = `".$table_item."`.`id`)";
+            $criteria['LEFT JOIN']['glpi_computers_items'] = [
+               'ON' => [
+                  'glpi_computers_items'  => 'items_id',
+                  $table_item             => 'id', [
+                     'AND' => [
+                        'glpi_computers_items.itemtype'  => $itemtype
+                     ]
+                  ]
+               ]
+            ];
          }
 
-         $query = "SELECT COUNT(*) AS count, `".$type_table."`.`name` AS name
-                   FROM `".$table_item."`
-                   LEFT JOIN `".$type_table."`
-                         ON (`".$table_item."`.`".$typefield."` = `".$type_table."`.`id`)
-                   $join
-                   $where ".
-                          getEntitiesRestrictRequest("AND", $table_item)."
-                   GROUP BY `".$type_table."`.`name`";
-         $result = $DB->query($query);
-
-         while ($data = $DB->fetch_assoc($result)) {
+         $iterator = $DB->request($criteria);
+         while ($data = $iterator->next()) {
             if (empty($data['name'])) {
                $data['name'] = Dropdown:: EMPTY_VALUE;
             }

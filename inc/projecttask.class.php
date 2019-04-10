@@ -137,13 +137,13 @@ class ProjectTask extends CommonDBChild {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $pt = new ProjectTaskTeam();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $pt = new ProjectTask_Ticket();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            ProjectTask_Ticket::class,
+            ProjectTaskTeam::class,
+         ]
+      );
 
       parent::cleanDBonPurge();
    }
@@ -360,14 +360,24 @@ class ProjectTask extends CommonDBChild {
    static function getAllTicketsForProject($ID) {
       global $DB;
 
+      $iterator = $DB->request([
+         'FROM'         => 'glpi_projecttasks_tickets',
+         'INNER JOIN'   => [
+            'glpi_projecttasks'  => [
+               'ON' => [
+                  'glpi_projecttasks_tickets'   => 'projecttasks_id',
+                  'glpi_projecttasks'           => 'id'
+               ]
+            ]
+         ],
+         'FIELDS' =>  'tickets_id',
+         'WHERE'        => [
+            'glpi_projecttasks.projects_id'   => $ID
+         ]
+      ]);
+
       $tasks = [];
-      foreach ($DB->request(['glpi_projecttasks_tickets', 'glpi_projecttasks'],
-                            ["`glpi_projecttasks`.`projects_id`"
-                                          => $ID,
-                                  "`glpi_projecttasks_tickets`.`projecttasks_id`"
-                                          => "`glpi_projecttasks`.`id`",
-                                  'FIELDS' =>  "tickets_id" ])
-                        as $data) {
+      while ($data = $iterator->next()) {
          $tasks[] = $data['tickets_id'];
       }
       return $tasks;
@@ -483,12 +493,13 @@ class ProjectTask extends CommonDBChild {
       echo "</td>";
       echo "<td>".__('As child of')."</td>";
       echo "<td>";
-      $this->dropdown(['entity'    => $this->fields['entities_id'],
-                            'value'     => $projecttasks_id,
-                            'rand'      => $rand_project,
-                            'condition' => "`glpi_projecttasks`.`projects_id`='".
-                                             $this->fields['projects_id']."'",
-                            'used'      => [$this->fields['id']]]);
+      $this->dropdown([
+         'entity'    => $this->fields['entities_id'],
+         'value'     => $projecttasks_id,
+         'rand'      => $rand_project,
+         'condition' => ['glpi_projecttasks.projects_id' => $this->fields['projects_id']],
+         'used'      => [$this->fields['id']]
+      ]);
       echo "</td></tr>";
 
       $showuserlink = 0;
@@ -1074,7 +1085,7 @@ class ProjectTask extends CommonDBChild {
             $header .= "</tr>\n";
             echo $header;
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data=$DB->fetchAssoc($result)) {
                Session::addToNavigateListItems('ProjectTask', $data['id']);
                $rand = mt_rand();
                echo "<tr class='tab_bg_2'>";
@@ -1501,7 +1512,7 @@ class ProjectTask extends CommonDBChild {
       $task   = new self();
 
       if ($DB->numrows($result) > 0) {
-         for ($i=0; $data=$DB->fetch_assoc($result); $i++) {
+         for ($i=0; $data=$DB->fetchAssoc($result); $i++) {
             if ($task->getFromDB($data["id"])) {
                $key = $data["plan_start_date"]."$$$"."ProjectTask"."$$$".$data["id"];
                $interv[$key]['color']            = $options['color'];

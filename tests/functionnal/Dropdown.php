@@ -122,13 +122,16 @@ class Dropdown extends DbTestCase {
    public function testGetDropdownName() {
       global $CFG_GLPI;
 
+      $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
+      $this->string($ret)->isIdenticalTo('&nbsp;');
+
       $cat = getItemByTypeName('TaskCategory', '_cat_1');
 
-      $subCat = getItemByTypeName( 'TaskCategory', '_subcat_1' );
+      $subCat = getItemByTypeName('TaskCategory', '_subcat_1');
 
       // basic test returns string only
       $expected = $cat->fields['name']." > ".$subCat->fields['name'];
-      $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID() );
+      $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID());
       $this->string($ret)->isIdenticalTo($expected);
 
       // test of return with comments
@@ -152,9 +155,9 @@ class Dropdown extends DbTestCase {
       $expected = ['name'    => 'FR - _cat_1 > FR - _subcat_1',
                         'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1'];
       $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false );
-      $this->array($ret)->isIdenticalTo($expected);
       // switch back to default language
       $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
+      $this->array($ret)->isIdenticalTo($expected);
 
       ////////////////////////////////
       // test for other dropdown types
@@ -253,6 +256,23 @@ class Dropdown extends DbTestCase {
       $this->array($ret)->isIdenticalTo($expected);
    }
 
+   public function testGetDropdownNetpoint() {
+      $netpoint = getItemByTypeName( 'Netpoint', '_netpoint01' );
+      $location = getItemByTypeName( 'Location', '_location01' );
+      $ret = \Dropdown::getDropdownNetpoint([], false);
+      $this->array($ret)->hasKeys(['count', 'results'])->integer['count']->isIdenticalTo(1);
+      $this->array($ret['results'])->isIdenticalTo([
+         [
+            'id'     => 0,
+            'text'   => '-----'
+         ], [
+            'id'     => $netpoint->fields['id'],
+            'text'   => $netpoint->getName() . ' (' . $location->getName() . ')',
+            'title'  =>  $netpoint->getName() . ' - ' . $location->getName() . ' - ' . $netpoint->fields['comment']
+         ]
+      ]);
+   }
+
    public function dataGetValueWithUnit() {
       return [
             [1,         'auto',        '1024 Kio'],
@@ -298,16 +318,18 @@ class Dropdown extends DbTestCase {
                      'text'      => 'Root entity',
                      'children'  => [
                         0 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                           'text'   => '_cat_1',
-                           'level'  => 1,
-                           'title'  => '_cat_1 - Comment for category _cat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'           => '_cat_1',
+                           'level'          => 1,
+                           'title'          => '_cat_1 - Comment for category _cat_1',
+                           'selection_text' => '_cat_1',
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -332,10 +354,11 @@ class Dropdown extends DbTestCase {
                            'disabled' => true
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -358,16 +381,18 @@ class Dropdown extends DbTestCase {
                      'text'      => 'Root entity',
                      'children'  => [
                         0 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                           'text'   => '_cat_1',
-                           'level'  => 1,
-                           'title'  => '_cat_1 - Comment for category _cat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'           => '_cat_1',
+                           'level'          => 1,
+                           'title'          => '_cat_1 - Comment for category _cat_1',
+                           'selection_text' => '_cat_1',
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -392,10 +417,11 @@ class Dropdown extends DbTestCase {
                            'disabled' => true
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -499,10 +525,11 @@ class Dropdown extends DbTestCase {
                            'disabled' => true
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -521,10 +548,11 @@ class Dropdown extends DbTestCase {
                      'text'      => 'Root entity',
                      'children'  => [
                         0 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_cat_1 > _subcat_1',
-                           'level'  => 0,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_cat_1 > _subcat_1',
+                           'level'          => 0,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -545,16 +573,18 @@ class Dropdown extends DbTestCase {
                      'text'      => 'Root entity',
                      'children'  => [
                         0 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                           'text'   => '_cat_1',
-                           'level'  => 0,
-                           'title'  => '_cat_1 - Comment for category _cat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'           => '_cat_1',
+                           'level'          => 0,
+                           'title'          => '_cat_1 - Comment for category _cat_1',
+                           'selection_text' => '_cat_1',
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_cat_1 > _subcat_1',
-                           'level'  => 0,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_cat_1 > _subcat_1',
+                           'level'          => 0,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -577,16 +607,18 @@ class Dropdown extends DbTestCase {
                      'text'      => 'Root entity',
                      'children'  => [
                         0 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                           'text'   => '_cat_1',
-                           'level'  => 1,
-                           'title'  => '_cat_1 - Comment for category _cat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'           => '_cat_1',
+                           'level'          => 1,
+                           'title'          => '_cat_1 - Comment for category _cat_1',
+                           'selection_text' => '_cat_1',
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -1046,5 +1078,126 @@ class Dropdown extends DbTestCase {
    public function testGetDropdownUsers($params, $expected) {
       $result = \Dropdown::getDropdownUsers($params, false);
       $this->array($result)->isIdenticalTo($expected);
+   }
+
+   /**
+    * Test getDropdownValue with paginated results on
+    * an CommonTreeDropdown
+    *
+    * @return void
+    */
+   public function testGetDropdownValuePaginate() {
+      //let's add some content in Locations
+      $location = new \Location();
+      for ($i = 0; $i <= 20; ++$i) {
+         $this->integer(
+            (int)$location->add([
+               'name'   => "Test location $i"
+            ])
+         )->isGreaterThan(0);
+      }
+
+      $post = [
+         'itemtype'              => $location::getType(),
+         'display_emptychoice'   => true,
+         'entity_restrict'       => 0,
+         'page'                  => 1,
+         'page_limit'            => 10
+      ];
+      $values = \Dropdown::getDropdownValue($post);
+      $values = (array)json_decode($values);
+
+      $this->array($values)
+         ->integer['count']->isEqualTo(10)
+         ->array['results']
+            ->hasSize(2);
+
+      $results = (array)$values['results'];
+      $this->array((array)$results[0])
+         ->isIdenticalTo([
+            'id'     => 0,
+            'text'   => '-----'
+         ]);
+
+      $list_results = (array)$results[1];
+      $this->array($list_results)
+         ->hasSize(2)
+         ->string['text']->isIdenticalTo('Root entity');
+
+      $children = (array)$list_results['children'];
+      $this->array($children)->hasSize(10);
+      $this->array((array)$children[0])
+         ->hasKeys([
+            'id',
+            'text',
+            'level',
+            'title',
+            'selection_text'
+         ]);
+
+      $post['page'] = 2;
+      $values = \Dropdown::getDropdownValue($post);
+      $values = (array)json_decode($values);
+
+      $this->array($values)
+         ->integer['count']->isEqualTo(10);
+
+      $this->array($values['results'])->hasSize(10);
+      $this->array((array)$values['results'][0])
+         ->hasKeys([
+            'id',
+            'text',
+            'level',
+            'title',
+            'selection_text'
+         ]);
+
+      //use a array condition
+      $post = [
+         'itemtype'              => $location::getType(),
+         'condition'             => ['name' => ['LIKE', "%3%"]],
+         'display_emptychoice'   => true,
+         'entity_restrict'       => 0,
+         'page'                  => 1,
+         'page_limit'            => 10
+      ];
+      $values = \Dropdown::getDropdownValue($post);
+      $values = (array)json_decode($values);
+
+      $this->array($values)
+         ->integer['count']->isEqualTo(2)
+         ->array['results']
+            ->hasSize(2);
+
+      //use a string condition
+      // Put condition in session and post its key
+      $condition_key = sha1(serialize($post['condition']));
+      $_SESSION['glpicondition'][$condition_key] = $post['condition'];
+      $post['condition'] = $condition_key;
+      $values = \Dropdown::getDropdownValue($post);
+      $values = (array)json_decode($values);
+
+      $this->array($values)
+         ->integer['count']->isEqualTo(2)
+         ->array['results']
+            ->hasSize(2);
+
+      //use a condition that does not exists in session
+      $post = [
+         'itemtype'              => $location::getType(),
+         'condition'             => '`name` LIKE "%4%"',
+         'display_emptychoice'   => true,
+         'entity_restrict'       => 0,
+         'page'                  => 1,
+         'page_limit'            => 10
+      ];
+      $values = \Dropdown::getDropdownValue($post);
+      $values = (array)json_decode($values);
+
+      $this->array($values)
+         ->integer['count']->isEqualTo(10)
+         ->array['results']
+            ->hasSize(2);
+
    }
 }

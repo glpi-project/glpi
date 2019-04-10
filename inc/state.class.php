@@ -49,7 +49,9 @@ class State extends CommonTreeDropdown {
                                       'SoftwareLicense'  => 'is_visible_softwarelicense',
                                       'Line'             => 'is_visible_line',
                                       'Certificate'      => 'is_visible_certificate',
-                                      'Rack'             => 'is_visible_rack',];
+                                      'Rack'             => 'is_visible_rack',
+                                      'Enclosure'        => 'is_visible_enclosure',
+                                      'Pdu'              => 'is_visible_pdu',];
    public $can_be_translated       = true;
 
    static $rightname               = 'state';
@@ -105,7 +107,7 @@ class State extends CommonTreeDropdown {
       $result = $DB->query($queryStateList);
 
       if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $elements[$data["id"]] = sprintf(__('Set status: %s'), $data["name"]);
          }
       }
@@ -135,7 +137,7 @@ class State extends CommonTreeDropdown {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result) > 0) {
-                     while ($data = $DB->fetch_assoc($result)) {
+                     while ($data = $DB->fetchAssoc($result)) {
                         $states[$data["states_id"]][$itemtype] = $data["cpt"];
                      }
                   }
@@ -186,7 +188,7 @@ class State extends CommonTreeDropdown {
          }
          echo "<td class='numeric b'>$tot</td></tr>";
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
 
@@ -372,6 +374,33 @@ class State extends CommonTreeDropdown {
          'datatype'           => 'bool'
       ];
 
+      $tab[] = [
+         'id'                 => '31',
+         'table'              => $this->getTable(),
+         'field'              => 'is_visible_line',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
+                                     Line::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
+         'id'                 => '32',
+         'table'              => $this->getTable(),
+         'field'              => 'is_visible_enclosure',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
+                                     Enclosure::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
+         'id'                 => '33',
+         'table'              => $this->getTable(),
+         'field'              => 'is_visible_pdu',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
+                                     PDU::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
+
       return $tab;
    }
 
@@ -387,6 +416,14 @@ class State extends CommonTreeDropdown {
       return parent::prepareInputForUpdate($input);
    }
 
+   /**
+    * Checks that this state is unique given the new field values.
+    *    Unique fields checked:
+    *       - states_id
+    *       - name
+    * @param array $input Array of field names and values
+    * @return boolean True if the new/updated record will be unique
+    */
    public function isUnique($input) {
       global $DB;
 
@@ -395,10 +432,13 @@ class State extends CommonTreeDropdown {
       $has_changed = false;
       $where = [];
       foreach ($unicity_fields as $unicity_field) {
-         if (!isset($this->fields[$unicity_field]) || $input[$unicity_field] != $this->fields[$unicity_field]) {
+         if (isset($input[$unicity_field]) &&
+               (!isset($this->fields[$unicity_field]) || $input[$unicity_field] != $this->fields[$unicity_field])) {
             $has_changed = true;
          }
-         $where[$unicity_field] = $input[$unicity_field];
+         if (isset($input[$unicity_field])) {
+            $where[$unicity_field] = $input[$unicity_field];
+         }
       }
       if (!$has_changed) {
          //state has not changed; this is OK.

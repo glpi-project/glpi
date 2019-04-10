@@ -32,7 +32,7 @@
 
 define('GLPI_ROOT', realpath('..'));
 
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
+include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
 Config::detectRootDoc();
@@ -42,6 +42,7 @@ $GLPI->initLogger();
 
 //Print a correct  Html header for application
 function header_html($etape) {
+   global $CFG_GLPI;
 
    // Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");
@@ -54,14 +55,24 @@ function header_html($etape) {
     echo "<meta http-equiv='Content-Style-Type' content='text/css'> ";
    echo "<title>Setup GLPI</title>";
 
+   // CFG
+   echo Html::scriptBlock("
+      var CFG_GLPI  = {
+         'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
+         'root_doc': '".$CFG_GLPI["root_doc"]."',
+      };
+   ");
+
     // LIBS
-   echo Html::script("lib/jquery/js/jquery-1.10.2.min.js");
-   echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.min.js');
-   echo Html::script("lib/jqueryplugins/select2/js/select2.js");
+   echo Html::script("public/lib/jquery/jquery.js");
+   echo Html::script('public/lib/jquery-ui-dist/jquery-ui.js');
+   echo Html::script("public/lib/select2/js/select2.full.js");
+   echo Html::script("public/lib/fuzzy/fuzzy.js");
+   echo Html::script("js/common.js");
 
     // CSS
-   echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css');
-   echo Html::css("lib/jqueryplugins/select2/css/select2.min.css");
+   echo Html::css('public/lib/jquery-ui-dist/jquery-ui.css');
+   echo Html::css("public/lib/select2/css/select2.css");
    echo Html::css("css/style_install.css");
    echo "</head>";
    echo "<body>";
@@ -567,7 +578,7 @@ if (isset($_POST["language"])) {
    $_SESSION["glpilanguage"] = $_POST["language"];
 }
 
-Session::loadLanguage();
+Session::loadLanguage('', false);
 
 /**
  * @since 0.84.2

@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
+   exit();
+}
+
 // This script generate and populate a complete glpi DB
 // A good way to test GLPI with a lot of data
 
@@ -37,11 +42,6 @@ define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
 include (__DIR__ . '/../inc/includes.php');
 include (__DIR__ . '/generate_bigdump.function.php');
-
-if (PHP_SAPI != 'cli') {
-   echo "This script must be run from command line";
-   exit();
-}
 
 if (in_array('--help', $_SERVER['argv'])) {
    die("usage: ".$_SERVER['argv'][0]."  [ --user=glpi ] [ --pass=glpi ]\n");

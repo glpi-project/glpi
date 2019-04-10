@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
+   exit();
+}
+
 /**
  * An utility script to convert old getSearchOptions array to new ones,
  * see https://github.com/glpi-project/glpi/issues/1396

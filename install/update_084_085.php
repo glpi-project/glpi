@@ -103,7 +103,7 @@ function update084to085() {
 
       $fields = [];
       if ($DB->numrows($result_of_configs) == 1) {
-         $configs = $DB->fetch_assoc($result_of_configs);
+         $configs = $DB->fetchAssoc($result_of_configs);
          unset($configs['id']);
          unset($configs['version']);
          // First drop fields not to have constraint on insert
@@ -492,7 +492,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 rename global_add_followups to followup");
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = ". TicketFollowup::ADDALLTICKET ."
+                 SET `rights` = ". ITILFollowup::ADDALLTICKET ."
                  WHERE `name` = 'followup'
                        AND `rights` = '1'";
       $DB->queryOrDie($query, "0.85 update followup with global_add_followups right");
@@ -503,7 +503,7 @@ function update084to085() {
                          "`name` = 'add_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketFollowup::ADDMYTICKET  ."
+                 SET `rights` = `rights` | " . ITILFollowup::ADDMYTICKET  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
          $DB->queryOrDie($query, "0.85 update followup with add_followups right");
@@ -518,7 +518,7 @@ function update084to085() {
                          "`name` = 'group_add_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketFollowup::ADDGROUPTICKET  ."
+                 SET `rights` = `rights` | " . ITILFollowup::ADDGROUPTICKET  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with group_add_followups right");
@@ -533,7 +533,7 @@ function update084to085() {
                          "`name` = 'observe_ticket' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketFollowup::SEEPUBLIC  ."
+                 SET `rights` = `rights` | " . ITILFollowup::SEEPUBLIC  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with observe_ticket right");
@@ -545,8 +545,8 @@ function update084to085() {
                          "`name` = 'show_full_ticket' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " .TicketFollowup::SEEPUBLIC ." | ".
-                                              TicketFollowup::SEEPRIVATE ."
+                 SET `rights` = `rights` | " .ITILFollowup::SEEPUBLIC ." | ".
+                                              ITILFollowup::SEEPRIVATE ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
          $DB->queryOrDie($query, "0.85 update followup with show_full_ticket right");
@@ -558,7 +558,7 @@ function update084to085() {
                          "`name` = 'update_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  ." | ". TicketFollowup::UPDATEALL  ."
+                 SET `rights` = `rights` | " . READ  ." | ". ITILFollowup::UPDATEALL  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with update_followups right");
@@ -573,7 +573,7 @@ function update084to085() {
                          "`name` = 'update_own_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  ." | ". TicketFollowup::UPDATEMY  ."
+                 SET `rights` = `rights` | " . READ  ." | ". ITILFollowup::UPDATEMY  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with update_own_followups right");
@@ -1304,7 +1304,7 @@ function update084to085() {
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Changes', 'Change', NOW())";
          $DB->queryOrDie($query, "0.85 add change notification");
-         $notid = $DB->insert_id();
+         $notid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                           (`notificationtemplates_id`, `language`, `subject`,
@@ -1406,7 +1406,7 @@ function update084to085() {
                       VALUES ('".$notif_names[$type]."', 0, 'Change', '$type', 'mail',
                               $notid, '', 1, 1, NOW())";
             $DB->queryOrDie($query, "0.85 add change $type notification");
-            $notifid = $DB->insert_id();
+            $notifid = $DB->insertId();
 
             foreach ($targets as $target) {
                $query = "INSERT INTO `glpi_notificationtargets`
@@ -1672,7 +1672,7 @@ function update084to085() {
                            '".addslashes($notif['comment'])."', '".$notif['is_recursive']."',
                            '".$notif['is_active']."', NOW());";
          $DB->queryOrDie($query, "0.85 insert replysatisfaction notification");
-         $newID  = $DB->insert_id();
+         $newID  = $DB->insertId();
          $query2 = "SELECT *
                     FROM `glpi_notificationtargets`
                     WHERE `notifications_id` = '".$notif['id']."'";
@@ -1706,7 +1706,7 @@ function update084to085() {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $a_ids = [];
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $a_ids[] = $data['id'];
             }
             $DB->query("UPDATE `glpi_slas`
@@ -1723,7 +1723,7 @@ function update084to085() {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $a_ids = [];
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $a_ids[] = $data['id'];
             }
             $DB->query("UPDATE `glpi_slas`
@@ -1739,7 +1739,7 @@ function update084to085() {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $a_ids = [];
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $a_ids[] = $data['id'];
             }
             $DB->query("UPDATE `glpi_slas`
@@ -1766,7 +1766,7 @@ function update084to085() {
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Receiver errors', 'MailCollector', NOW())";
          $DB->queryOrDie($query, "0.85 add mail collector notification");
-         $notid = $DB->insert_id();
+         $notid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                           (`notificationtemplates_id`, `language`, `subject`,
@@ -1789,7 +1789,7 @@ function update084to085() {
                    VALUES ('Receiver errors', 0, 'MailCollector', 'error', 'mail',
                              $notid, '', 1, 1, NOW())";
          $DB->queryOrDie($query, "0.85 add mail collector notification");
-         $notifid = $DB->insert_id();
+         $notifid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtargets`
                           (`id`, `notifications_id`, `type`, `items_id`)
@@ -2164,7 +2164,7 @@ function update084to085() {
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Projects', 'Project', NOW())";
          $DB->queryOrDie($query, "0.85 add project notification");
-         $notid = $DB->insert_id();
+         $notid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                           (`notificationtemplates_id`, `language`, `subject`,
@@ -2232,7 +2232,7 @@ function update084to085() {
                       VALUES ('".$notif_names[$type]."', 0, 'Project', '$type', 'mail',
                               $notid, '', 1, 1, NOW())";
             $DB->queryOrDie($query, "0.85 add project $type notification");
-            $notifid = $DB->insert_id();
+            $notifid = $DB->insertId();
 
             foreach ($targets as $target) {
                $query = "INSERT INTO `glpi_notificationtargets`
@@ -2255,7 +2255,7 @@ function update084to085() {
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Project Tasks', 'ProjectTask', NOW())";
          $DB->queryOrDie($query, "0.85 add project task notification");
-         $notid = $DB->insert_id();
+         $notid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                           (`notificationtemplates_id`, `language`, `subject`,
@@ -2320,7 +2320,7 @@ function update084to085() {
                       VALUES ('".$notif_names[$type]."', 0, 'ProjectTask', '$type', 'mail',
                               $notid, '', 1, 1, NOW())";
             $DB->queryOrDie($query, "0.85 add project task  $type notification");
-            $notifid = $DB->insert_id();
+            $notifid = $DB->insertId();
 
             foreach ($targets as $target) {
                $query = "INSERT INTO `glpi_notificationtargets`
@@ -2443,7 +2443,7 @@ function update084to085() {
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $subject = $data['subject'];
             $text    = $data['content_text'];
             $html    = $data['content_html'];
@@ -2471,7 +2471,7 @@ function update084to085() {
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $num     = 0;
             $num2    = 0;
             $options = [];
@@ -2717,7 +2717,7 @@ function update084to085() {
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $num     = 0;
             $num2    = 0;
             $options = [];

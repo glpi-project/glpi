@@ -65,7 +65,7 @@ class CronTaskLog extends CommonDBTM{
                           AND UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
 
       $DB->query($query_exp);
-      return $DB->affected_rows();
+      return $DB->affectedRows();
    }
 
 

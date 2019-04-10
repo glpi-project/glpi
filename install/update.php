@@ -34,9 +34,16 @@ if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', realpath('..'));
 }
 
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
+include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
+
+$GLPI_CACHE = Config::getCache('cache_db');
+$GLPI_CACHE->clear(); // Force cache cleaning to prevent usage of outdated cache data
+
+$translation_cache = Config::getCache('cache_trans');
+$translation_cache->clear(); // Force cache cleaning to prevent usage of outdated cache data
+
 Config::detectRootDoc();
 
 $GLPI = new GLPI();
@@ -112,7 +119,7 @@ function update_importDropdown ($table, $name) {
              (`name`)
              VALUES ('".addslashes($name)."')";
    if ($result = $DB->query($query)) {
-      return $DB->insert_id();
+      return $DB->insertId();
    }
    return 0;
 }
@@ -182,7 +189,7 @@ function display_new_locations() {
    }
    echo "</tr>";
 
-   while ($data = $DB->fetch_assoc($result)) {
+   while ($data = $DB->fetchAssoc($result)) {
       echo "<tr class=tab_bg_1>";
       for ($i=0; $i<=$MAX_LEVEL; $i++) {
 
@@ -211,7 +218,7 @@ function display_new_locations() {
       $data_old=$data;
    }
 
-   $DB->free_result($result);
+   $DB->freeResult($result);
    echo "</table>";
 }
 
@@ -224,11 +231,11 @@ function display_old_locations() {
              ORDER BY `name`";
    $result = $DB->query($query);
 
-   while ($data = $DB->fetch_assoc($result)) {
+   while ($data = $DB->fetchAssoc($result)) {
       echo "<span class='b'>".$data['name']."</span> - ";
    }
 
-   $DB->free_result($result);
+   $DB->freeResult($result);
 }
 
 
@@ -265,7 +272,7 @@ function location_create_new($split_char, $add_first) {
       $root_ID = 0;
    }
 
-   while ($data =  $DB->fetch_assoc($result)) {
+   while ($data =  $DB->fetchAssoc($result)) {
 
       if (!empty($split_char)) {
          $splitter = explode($split_char, $data['name']);
@@ -302,7 +309,7 @@ function location_create_new($split_char, $add_first) {
       $result_insert=$DB->query($query_insert);
    }
 
-   $DB->free_result($result);
+   $DB->freeResult($result);
    $query_auto_inc = "ALTER TABLE `glpi_dropdown_locations_new`
                       CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT";
    $result_auto_inc = $DB->query($query_auto_inc);
@@ -430,7 +437,7 @@ function changeVarcharToID($table1, $table2, $chps) {
          ['ID' => $line['row1']]
       );
    }
-   $DB->free_result($result);
+   $DB->freeResult($result);
 
    $query = "ALTER TABLE `$table1`
              DROP `$chps`";
@@ -445,7 +452,7 @@ function changeVarcharToID($table1, $table2, $chps) {
 
 //update database
 function doUpdateDb() {
-   global $DB, $migration, $update;
+   global $DB, $GLPI_CACHE, $migration, $update;
 
    $currents            = $update->getCurrents();
    $current_version     = $currents['version'];
@@ -462,6 +469,7 @@ function doUpdateDb() {
    }
 
    $update->doUpdates($current_version);
+   $GLPI_CACHE->clear();
 }
 
 
@@ -502,7 +510,7 @@ $HEADER_LOADED = true;
 
 Session::start();
 
-Session::loadLanguage();
+Session::loadLanguage('', false);
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
@@ -515,11 +523,11 @@ echo "<meta http-equiv='Content-Script-Type' content='text/javascript'>";
 echo "<meta http-equiv='Content-Style-Type' content='text/css'>";
 echo "<title>Setup GLPI</title>";
 //JS
-echo Html::script("../lib/jquery/js/jquery-1.10.2.min.js");
-echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
+echo Html::script("public/lib/jquery/jquery.js");
+echo Html::script('public/lib/jquery-ui-dist/jquery-ui.js');
 // CSS
 echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen' >";
-echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
+echo Html::css('public/lib/jquery-ui-dist/jquery-ui.css');
 echo "</head>";
 echo "<body>";
 echo "<div id='principal'>";

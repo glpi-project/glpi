@@ -31,7 +31,7 @@
 */
 
 // Current version of GLPI
-define('GLPI_VERSION', '9.4.0-dev');
+define('GLPI_VERSION', '9.5.0-dev');
 if (substr(GLPI_VERSION, -4) === '-dev') {
    //for dev version
    define('GLPI_PREVER', str_replace('-dev', '', GLPI_VERSION));
@@ -41,10 +41,10 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
    );
 } else {
    //for stable version
-   define("GLPI_SCHEMA_VERSION", '9.4');
+   define("GLPI_SCHEMA_VERSION", '9.5.0');
 }
-define('GLPI_MIN_PHP', '5.6.0'); // Must also be changed in top of index.php
-define('GLPI_YEAR', '2018');
+define('GLPI_MIN_PHP', '7.0.8'); // Must also be changed in top of index.php
+define('GLPI_YEAR', '2019');
 if (!defined('GLPI_DEMO_MODE')) {
    define('GLPI_DEMO_MODE', '0');
 }
@@ -199,11 +199,12 @@ $LANG             = [];
 $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'Contract',
                                                   'Infocom', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Supplier','User', 'Certicate', 'Rack', 'Enclosure', 'Pdu'];
+                                                  'SoftwareLicense', 'Supplier','User', 'Certicate', 'Rack', 'Enclosure', 'PDU'];
 
 $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-                                                  'Certificate'];
+                                                  'Certificate', 'Enclosure', 'PDU', 'Line',
+                                                   'Rack', 'SoftwareVersion'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -269,7 +270,7 @@ $CFG_GLPI["linkgroup_types"]              = ['Computer', 'Consumable', 'Monitor'
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate'];
 
-$CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'Monitor', 'NetworkEquipment',
+$CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate'];
 
@@ -347,6 +348,13 @@ $CFG_GLPI['itemdevicepci_types']          = ['*'];
 
 $CFG_GLPI['itemdevicesensor_types']       = ['Computer', 'Peripheral'];
 
+$CFG_GLPI['itemdeviceprocessor_types']    = ['Computer'];
+
+$CFG_GLPI['itemdevicesoundcard_types']    = ['Computer'];
+
+$CFG_GLPI['itemdevicegraphiccard_types']  = ['Computer'];
+
+$CFG_GLPI['itemdevicemotherboard_types']  = ['Computer'];
 
 $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'ConsumableItem',
                                              'Contract', 'Crontask', 'DBConnection',
@@ -465,7 +473,7 @@ $CFG_GLPI['javascript'] = [
    ],
    'tools'     => [
       'project'      => ['gantt'],
-      'knowbaseitem' => ['tinymce'],
+      'knowbaseitem' => ['tinymce', 'jstree'],
       'reminder'     => ['tinymce']
    ],
    'management' => [

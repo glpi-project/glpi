@@ -131,20 +131,6 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * Is the current user have right to approve solution of the current problem ?
-    *
-    * @return boolean
-   **/
-   function canApprove() {
-
-      return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
-              || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
-   }
-
-
-   /**
     * Is the current user have right to create the current problem ?
     *
     * @return boolean
@@ -155,6 +141,21 @@ class Problem extends CommonITILObject {
          return false;
       }
       return Session::haveRight(self::$rightname, CREATE);
+   }
+
+
+   /**
+    * is the current user could reopen the current problem
+    *
+    * @since 9.4.0
+    *
+    * @return boolean
+    */
+   function canReopen() {
+      return Session::haveRight('followup', CREATE)
+             && in_array($this->fields["status"], $this->getClosedStatusArray())
+             && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
+                 || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
    }
 
 
@@ -174,7 +175,13 @@ class Problem extends CommonITILObject {
          $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
-               $ong = [1 => __('Analysis')];
+               $timeline    = $item->getTimelineItems();
+               $nb_elements = count($timeline);
+
+               $ong = [
+                  5 => __("Processing problem")." <sup class='tab_nb'>$nb_elements</sup>",
+                  1 => __('Analysis')
+               ];
 
                if ($item->canUpdate()) {
                   $ong[4] = __('Statistics');
@@ -196,15 +203,15 @@ class Problem extends CommonITILObject {
                   $item->showAnalysisForm();
                   break;
 
-               case 2 :
-                  if (!isset($_GET['load_kb_sol'])) {
-                     $_GET['load_kb_sol'] = 0;
-                  }
-                  $item->showSolutions($_GET['load_kb_sol']);
-                  break;
-
                case 4 :
                   $item->showStats();
+                  break;
+               case 5 :
+                  echo "<div class='timeline_box'>";
+                  $rand = mt_rand();
+                  $item->showTimelineForm($rand);
+                  $item->showTimeline($rand);
+                  echo "</div>";
                   break;
             }
       }
@@ -213,21 +220,15 @@ class Problem extends CommonITILObject {
 
 
    function defineTabs($options = []) {
-
-      // show related tickets and changes
       $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab('ITILSolution', $ong, $options);
+      $this->defineDefaultObjectTabs($ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
-      $this->addStandardTab('ProblemTask', $ong, $options);
       $this->addStandardTab('ProblemCost', $ong, $options);
       $this->addStandardTab('Itil_Project', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
-      $this->addStandardTab(__CLASS__, $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -239,20 +240,22 @@ class Problem extends CommonITILObject {
    function cleanDBonPurge() {
       global $DB;
 
-      $DB->delete(
-         'glpi_problemtasks', [
-            'problems_id'  => $this->fields['id']
+      // CommonITILTask does not extends CommonDBConnexity
+      $pt = new ProblemTask();
+      $pt->deleteByCriteria(['problems_id' => $this->fields['id']]);
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Problem::class,
+            // Done by parent: Group_Problem::class,
+            Item_Problem::class,
+            // Done by parent: ITILSolution::class,
+            // Done by parent: Problem_Supplier::class,
+            Problem_Ticket::class,
+            // Done by parent: Problem_User::class,
+            ProblemCost::class,
          ]
       );
-
-      $pt = new Problem_Ticket();
-      $pt->cleanDBonItemDelete('Problem', $this->fields['id']);
-
-      $cp = new Change_Problem();
-      $cp->cleanDBonItemDelete('Problem', $this->fields['id']);
-
-      $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete('Problem', $this->fields['id']);
 
       parent::cleanDBonPurge();
    }
@@ -369,6 +372,16 @@ class Problem extends CommonITILObject {
          NotificationEvent::raiseEvent($type, $this);
       }
 
+      if (isset($this->input['_from_items_id'])
+          && isset($this->input['_from_itemtype'])) {
+         $item_problem = new Item_Problem();
+         $item_problem->add([
+            'items_id'      => (int)$this->input['_from_items_id'],
+            'itemtype'      => $this->input['_from_itemtype'],
+            'problems_id'   => $this->fields['id'],
+            '_disablenotif' => true
+         ]);
+      }
    }
 
    /**
@@ -489,6 +502,8 @@ class Problem extends CommonITILObject {
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
+      $tab = array_merge($tab, ITILFollowup::rawSearchOptionsToAdd());
+
       $tab = array_merge($tab, ProblemTask::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, $this->getSearchOptionsSolution());
@@ -525,7 +540,7 @@ class Problem extends CommonITILObject {
     *
     * @param $withmetaforsearch  boolean  (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -555,7 +570,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
 
@@ -571,7 +586,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
 
@@ -586,7 +601,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
       return [self::INCOMING, self::ACCEPTED];
@@ -597,7 +612,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatusArray() {
 
@@ -877,14 +892,14 @@ class Problem extends CommonITILObject {
       }
 
       if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $status[$data["status"]] = $data["COUNT"];
          }
       }
 
       $number_deleted = 0;
       if ($DB->numrows($result_deleted) > 0) {
-         while ($data = $DB->fetch_assoc($result_deleted)) {
+         while ($data = $DB->fetchAssoc($result_deleted)) {
             $number_deleted += $data["COUNT"];
          }
       }
@@ -940,11 +955,15 @@ class Problem extends CommonITILObject {
       $problem   = new self();
       $rand      = mt_rand();
       if ($problem->getFromDBwithData($ID, 0)) {
+
          $bgcolor = $_SESSION["glpipriority_".$problem->fields["priority"]];
-         // $rand    = mt_rand();
+         $name    = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
-                                                               $problem->fields["id"])."</td>";
+         echo "<td>
+            <div class='priority_block' style='border-color: $bgcolor'>
+               <span style='background: $bgcolor'></span>&nbsp;$name
+            </div>
+         </td>";
          echo "<td class='center'>";
 
          if (isset($problem->users[CommonITILActor::REQUESTER])
@@ -1057,6 +1076,7 @@ class Problem extends CommonITILObject {
                $options['priority']            = $ticket->getField('priority');
                $options['itilcategories_id']   = $ticket->getField('itilcategories_id');
                $options['time_to_resolve']     = $ticket->getField('time_to_resolve');
+               $options['entities_id']         = $ticket->getField('entities_id');
             }
          }
       }
@@ -1085,6 +1105,13 @@ class Problem extends CommonITILObject {
 
       if (isset($options['tickets_id'])) {
          echo "<input type='hidden' name='_tickets_id' value='".$options['tickets_id']."'>";
+      }
+
+      if (isset($options['_add_fromitem'])
+          && isset($options['_from_items_id'])
+          && isset($options['_from_itemtype'])) {
+         echo Html::hidden('_from_items_id', ['value' => $options['_from_items_id']]);
+         echo Html::hidden('_from_itemtype', ['value' => $options['_from_itemtype']]);
       }
 
       $date = $this->fields["date"];
@@ -1163,9 +1190,11 @@ class Problem extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th>".__('Category')."</th>";
       echo "<td >";
-      $opt = ['value'     => $this->fields["itilcategories_id"],
-                   'entity'    => $this->fields["entities_id"],
-                   'condition' => "`is_problem`='1'"];
+      $opt = [
+         'value'     => $this->fields["itilcategories_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_problem' => 1]
+      ];
       ITILCategory::dropdown($opt);
       echo "</td>";
       echo "<th>".__('Impact')."</th>";
@@ -1281,6 +1310,7 @@ class Problem extends CommonITILObject {
       $this->showFormButtons($options);
 
    }
+
 
 
    static function getCommonSelect() {
@@ -1408,6 +1438,26 @@ class Problem extends CommonITILObject {
             break;
       }
 
+      // Link to open a new problem
+      if ($item->getID()
+          && Problem::isPossibleToAssignType($item->getType())
+          && self::canCreate()
+          && !(!empty($withtemplate) && $withtemplate == 2)
+          && (!isset($item->fields['is_template']) || $item->fields['is_template'] == 0)) {
+         echo "<div class='firstbloc'>";
+         Html::showSimpleForm(
+            Problem::getFormURL(),
+            '_add_fromitem',
+            __('New problem for this item...'),
+            [
+               '_from_itemtype' => $item->getType(),
+               '_from_items_id' => $item->getID(),
+               'entities_id'    => $item->fields['entities_id']
+            ]
+         );
+         echo "</div>";
+      }
+
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_problems`
                 LEFT JOIN `glpi_items_problems`
@@ -1451,7 +1501,7 @@ class Problem extends CommonITILObject {
       if ($number > 0) {
          self::commonListHeader(Search::HTML_OUTPUT);
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             Session::addToNavigateListItems('Problem', $data["id"]);
             self::showShort($data["id"]);
          }
@@ -1493,7 +1543,7 @@ class Problem extends CommonITILObject {
          if ($number > 0) {
             self::commonListHeader(Search::HTML_OUTPUT);
 
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
                self::showShort($data["id"]);
             }
@@ -1505,24 +1555,6 @@ class Problem extends CommonITILObject {
 
       } // Subquery for linked item
 
-   }
-
-
-   /**
-    * Number of tasks of the problem
-    *
-    * @return followup count
-   **/
-   function numberOfTasks() {
-      global $DB;
-
-      // Set number of followups
-      $query = "SELECT COUNT(*)
-                FROM `glpi_problemtasks`
-                WHERE `problems_id` = '".$this->fields["id"]."'";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 0);
    }
 
 
@@ -1541,5 +1573,4 @@ class Problem extends CommonITILObject {
 
       return $values;
    }
-
 }
