@@ -9,6 +9,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
 # Sohib Hidayat <yoursohib@gmail.com>, 2018
 # Budi Wins <budiwins@gmail.com>, 2018
+# teguh herwanto <therwanto@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Budi Wins <budiwins@gmail.com>, 2018\n"
+"Last-Translator: teguh herwanto <therwanto@gmail.com>, 2019\n"
 "Language-Team: Indonesian (Indonesia) (https://www.transifex.com/glpi/teams/1637/id_ID/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,7 +28,7 @@ msgstr ""
 
 #: index.php:76
 msgid "GLPI - Authentication"
-msgstr "GLPI - Otentifikasi"
+msgstr "GLPI - Otentikasi"
 
 #: index.php:125 inc/authldap.class.php:3151 inc/authmail.class.php:231
 #: inc/config.class.php:1833 inc/dbutils.class.php:1589
@@ -508,7 +509,7 @@ msgstr "Email tindak lanjut"
 #: install/update_0681_07.php:573
 #, php-format
 msgid "%1$s: %2$s"
-msgstr ""
+msgstr "%1$s: %2$s"
 
 #: ajax/dropdownItilActors.php:109 ajax/dropdownItilActors.php:192
 #: ajax/uemailUpdate.php:118 inc/auth.class.php:1439 inc/auth.class.php:1445
@@ -1172,6 +1173,7 @@ msgstr "Memeriksa versi baru yang tersedia"
 #: front/backup.php:602
 msgid "GLPI internal backup system is a helper for very small instances."
 msgstr ""
+"Sistem cadangan internal GLPI sebagai penolong untuk setiap contoh kecil"
 
 #: front/backup.php:603
 msgid "You should rather use a dedicated tool on your server."
@@ -1453,7 +1455,7 @@ msgstr "%s menginstal kartrid"
 #: front/cartridge.form.php:83
 #, php-format
 msgid "%s updates a cartridge"
-msgstr ""
+msgstr "%s perbarui cartridge"
 
 #. TRANS: %s is the user login
 #: front/cartridgeitem_printermodel.form.php:47
@@ -1466,7 +1468,7 @@ msgstr "%s menghubungkan tipe"
 #: front/ticket.form.php:168 front/ticket.form.php:182
 #, php-format
 msgid "%s adds an actor"
-msgstr ""
+msgstr "%smenambah aktor"
 
 #: front/change.form.php:116 front/problem.form.php:119
 #: front/ticket.form.php:223
@@ -1481,7 +1483,7 @@ msgstr "Simpan solusi ke pengetahuan dasar"
 #: front/ticket_user.form.php:62
 #, php-format
 msgid "%s deletes an actor"
-msgstr ""
+msgstr "%s menghapus aktor"
 
 #: front/change_group.form.php:58 front/change_user.form.php:68
 #: front/group_problem.form.php:58 front/group_ticket.form.php:58
@@ -1611,13 +1613,13 @@ msgstr "%s menambahkan sebuah persetujuan"
 #: front/commonitilvalidation.form.php:82
 #, php-format
 msgid "%s updates an approval"
-msgstr ""
+msgstr "%smembarui persetujuan"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:91
 #, php-format
 msgid "%s purges an approval"
-msgstr ""
+msgstr "%s menghapus persetujuan"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:53
@@ -1629,86 +1631,86 @@ msgstr "%s menambah sebuah antivirus"
 #: front/computerantivirus.form.php:66
 #, php-format
 msgid "%s purges an antivirus"
-msgstr ""
+msgstr "%s menghapus anti virus"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:79
 #, php-format
 msgid "%s updates an antivirus"
-msgstr ""
+msgstr "%s menghapus anti virus"
 
 #. TRANS: %s is the user login
 #: front/computer_item.form.php:50
 #, php-format
 msgid "%s disconnects an item"
-msgstr ""
+msgstr "%s memutus suatu barang"
 
 #. TRANS: %s is the user login
 #: front/computer_item.form.php:60
 #, php-format
 msgid "%s connects an item"
-msgstr ""
+msgstr "%s menghubungkan suatu barang"
 
 #. TRANS: %s is the user login
 #: front/computer_softwarelicense.form.php:45
 #, php-format
 msgid "%s associates a computer and a license"
-msgstr ""
+msgstr "%s menghubungkan komputer dan lisensi"
 
 #. TRANS: %s is the user login
 #: front/computer_softwareversion.form.php:50
 #, php-format
 msgid "%s installs software"
-msgstr ""
+msgstr "%s memasang perangkat lunak"
 
 #: front/computer_softwareversion.form.php:55
 msgid "Please select a software!"
-msgstr ""
+msgstr "Silakan pilih perangkat lunak!"
 
 #: front/computer_softwareversion.form.php:57
 msgid "Please select a version!"
-msgstr ""
+msgstr "Silakan pilih versi!"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:54
 #, php-format
 msgid "%s adds a virtual machine"
-msgstr ""
+msgstr "%s menambahkan mesin virtual"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:67
 #, php-format
 msgid "%s purges a virtual machine"
-msgstr ""
+msgstr "%s menghapus mesin virtual"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:80
 #, php-format
 msgid "%s updates a virtual machine"
-msgstr ""
+msgstr "%s perbarui mesin virtual"
 
 #: front/config.form.php:49 front/config.form.php:56
 msgid "Cache reset successful"
-msgstr ""
+msgstr "Cache berhasil diatur ulang"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:51
 #, php-format
 msgid "%s adds consumables"
-msgstr ""
+msgstr "%s menambah bahan habis pakai"
 
 #: front/consumableitem.form.php:98 inc/consumable.class.php:78
 #: inc/consumableitem.class.php:271 inc/entity.class.php:1764
 #: inc/profile.class.php:868 inc/profile.class.php:1734
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] ""
+msgstr[0] "Bahan habis pakai"
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:51 front/contract_supplier.form.php:51
 #, php-format
 msgid "%s adds a link with a supplier"
-msgstr ""
+msgstr "%s menambah tautan dengan penyedia"
 
 #: front/contract_item.form.php:48 inc/contract.class.php:52
 #: inc/entity.class.php:1805 inc/notificationtargetcontract.class.php:167
@@ -1716,7 +1718,7 @@ msgstr ""
 #: inc/profile.class.php:1809 inc/transfer.class.php:3507
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
+msgstr[0] "Kontrak"
 
 #. TRANS: %s is a directory
 #: front/cron.php:42
@@ -1792,7 +1794,7 @@ msgstr "Tugas %s dieksekusi"
 #: install/update_0681_07.php:545
 #, php-format
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%1$s %2$s"
 
 #: front/crontask.php:48 inc/crontask.class.php:588
 #: inc/transfer.class.php:3321
@@ -1817,6 +1819,8 @@ msgid ""
 "You have more automatic actions which need to run each minute than the "
 "number allow each run. Increase this config."
 msgstr ""
+"Anda memiliki tindakan otomatis yang harus dijalankan setiap menit  melebihi"
+" jumlah yang diperbolehkan. Tingkatkan konfigurasi ini."
 
 #: front/devices.php:37 front/devices.php:41 inc/commondevice.class.php:53
 #: inc/commondevice.class.php:284 inc/computer.class.php:796
@@ -2138,7 +2142,7 @@ msgstr "Otentifikasi"
 
 #: front/helpdesk.php:85
 msgid "Helpdesk reporting form"
-msgstr ""
+msgstr "Formulir laporan helpdesk"
 
 #: front/helpdesk.php:88
 msgid "The issue must be solved"
@@ -2146,7 +2150,7 @@ msgstr ""
 
 #: front/helpdesk.php:91
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Pilih tingkat urgensi"
 
 #: front/helpdesk.php:94 inc/commonitilobject.class.php:2009
 msgctxt "urgency"
@@ -2175,7 +2179,7 @@ msgstr "Sangat Rendah"
 
 #: front/helpdesk.php:103
 msgid "Describe your issue"
-msgstr ""
+msgstr "Jelaskan isu Anda"
 
 #: front/helpdesk.php:105 inc/change.class.php:782
 #: inc/commonitilcost.class.php:100 inc/commonitilobject.class.php:2798
@@ -2228,7 +2232,7 @@ msgstr "Beranda"
 
 #: front/ipnetwork.form.php:41
 msgid "Successfully recreated network tree"
-msgstr ""
+msgstr "Pembuatan kembali pohon jaringan berhasil"
 
 #. TRANS: %s is the user login
 #: front/ipnetwork_vlan.form.php:50 front/networkport_vlan.form.php:47
@@ -2256,18 +2260,19 @@ msgstr ""
 
 #: front/itilsolution.form.php:50
 msgid "You cannot solve this item!"
-msgstr ""
+msgstr "Anda tidak dapat menyelesaikan barang ini!"
 
 #: front/itilsolution.form.php:101 front/ticket.form.php:105
 msgid ""
 "You have been redirected because you no longer have access to this ticket"
 msgstr ""
+"Anda telah dialihkan karena sudah tidak lagi memiliki akses ke tiket ini"
 
 #: front/knowbaseitem_comment.form.php:41
 #: front/knowbaseitem_comment.form.php:53
 #: front/knowbaseitem_comment.form.php:72 front/knowbaseitem_item.form.php:43
 msgid "Mandatory fields are not filled!"
-msgstr ""
+msgstr "Ruas yang wajib belum diisi!"
 
 #: front/knowbaseitem_comment.form.php:60
 #, php-format
@@ -2276,7 +2281,7 @@ msgstr ""
 
 #: front/knowbaseitem_comment.form.php:62
 msgid "Your comment has been added"
-msgstr ""
+msgstr "Komentar Anda berhasil ditambahkan"
 
 #: front/knowbaseitem_comment.form.php:81
 #, php-format
@@ -2285,7 +2290,7 @@ msgstr ""
 
 #: front/knowbaseitem_comment.form.php:83
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "Komentar Anda telah disunting"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:115 front/reminder.form.php:107
@@ -2415,7 +2420,7 @@ msgstr "(%1$d masalah otorisasi, %2$d kegagalan)"
 
 #: front/migrationcleaner.php:44
 msgid "You don't need the \"migration cleaner\" tool anymore..."
-msgstr ""
+msgstr "Anda tidak memerlukan lagi alat \"pembersih migrasi\""
 
 #: front/migrationcleaner.php:48 inc/migrationcleaner.class.php:47
 msgid "Migration cleaner"
@@ -2431,7 +2436,7 @@ msgstr "Reinit topologi jaringan"
 
 #: front/migrationcleaner.php:66
 msgid "Clean the network port migration errors"
-msgstr ""
+msgstr "Bersihkan kesalahan migrasi port jaringan"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:102 front/peripheral.form.php:102
@@ -2803,7 +2808,7 @@ msgstr ""
 
 #: front/report.infocom.conso.php:300 front/report.infocom.php:309
 msgid "Total value"
-msgstr ""
+msgstr "Nilai total"
 
 #: front/report.infocom.php:130 inc/budget.class.php:133
 #: inc/budget.class.php:260 inc/budget.class.php:341
@@ -3514,7 +3519,7 @@ msgstr ""
 #: front/stat.location.php:200 front/stat.tracking.php:210
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr ""
+msgstr "Terselesaikan %1$s (%2$s)"
 
 #: front/stat.location.php:225
 #, php-format
@@ -3837,7 +3842,7 @@ msgstr ""
 
 #: inc/api.class.php:200
 msgid "parameter(s) login, password or user_token are missing"
-msgstr ""
+msgstr "Parameter login atau token pengguna hilang"
 
 #: inc/api.class.php:220
 msgid "usage of initSession resource with credentials is disabled"
@@ -3923,7 +3928,7 @@ msgstr ""
 
 #: inc/api.class.php:2400
 msgid "session_token seems invalid"
-msgstr ""
+msgstr "Token sesi sepertinya tidak valid"
 
 #: inc/api.class.php:2417
 msgid "parameter session_token is missing or empty"
@@ -4174,7 +4179,7 @@ msgstr "Database Internal GLPI"
 
 #: inc/auth.class.php:1008 inc/config.class.php:756 inc/config.class.php:2183
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: inc/auth.class.php:1011
 msgid "Not yet authenticated"
@@ -4431,7 +4436,7 @@ msgstr ""
 #: inc/notificationmailingsetting.class.php:228 inc/user.class.php:2029
 #: inc/user.class.php:2399 inc/user.class.php:2400
 msgid "Clear"
-msgstr ""
+msgstr "Hapus"
 
 #: inc/authldap.class.php:381 inc/authldap.class.php:923
 msgid "Login field"
@@ -5250,13 +5255,13 @@ msgstr "Cartridge terpakai"
 #: inc/notificationtargetcartridgeitem.class.php:82
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] ""
+msgstr[0] "Model cartridge"
 
 #: inc/cartridge.class.php:1006 inc/cartridgeitemtype.class.php:42
 #: inc/dropdown.class.php:831
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] ""
+msgstr[0] "Tipe cartridge"
 
 #: inc/cartridge.class.php:1012
 msgid "Printed pages"
@@ -5450,7 +5455,7 @@ msgstr "Tak ditemukan"
 #: inc/tickettemplatemandatoryfield.class.php:232
 #: inc/tickettemplatemandatoryfield.class.php:284
 msgid "Standard interface"
-msgstr ""
+msgstr "Antarmuka standar"
 
 #: inc/central.class.php:65 inc/displaypreference.class.php:681
 #: inc/displaypreference.class.php:689
@@ -5560,7 +5565,7 @@ msgstr ""
 #: inc/user.class.php:3901 inc/user.class.php:3981
 msgid "Status"
 msgid_plural "Statuses"
-msgstr[0] ""
+msgstr[0] "Status"
 
 #: inc/certificate.class.php:255 inc/document.class.php:959
 msgctxt "quantity"
@@ -6060,7 +6065,7 @@ msgstr ""
 
 #: inc/commondbtm.class.php:1276 inc/item_ticket.class.php:1300
 msgid "Item successfully added"
-msgstr ""
+msgstr "Barang berhasil ditambahkan"
 
 #: inc/commondbtm.class.php:1555
 msgid "Item successfully updated"
@@ -6188,7 +6193,7 @@ msgstr ""
 #: inc/commondbtm.class.php:4100
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
-msgstr ""
+msgstr "Barang berhasil ditambahkan namun terjadi duplikasi pada %s"
 
 #: inc/commondbtm.class.php:4103
 msgid "Other item exist"
@@ -6610,7 +6615,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:1009 inc/commonitilobject.class.php:1019
 #: inc/commonitilobject.class.php:1045
 msgid "Invalid dates. Update cancelled."
-msgstr ""
+msgstr "Tanggal tidak valid. Pembaruan dibatalkan."
 
 #: inc/commonitilobject.class.php:1893
 msgctxt "priority"
@@ -6932,7 +6937,7 @@ msgstr ""
 #: inc/ticket.class.php:7418 inc/ticket.class.php:7550
 msgid "Task"
 msgid_plural "Tasks"
-msgstr[0] ""
+msgstr[0] "Tugas"
 
 #: inc/commonitiltask.class.php:278 inc/commonitiltask.class.php:407
 #: inc/reminder.class.php:536 inc/reminder.class.php:581
@@ -7000,7 +7005,7 @@ msgstr ""
 #: inc/commonitiltask.class.php:1188 inc/reminder.class.php:1005
 #, php-format
 msgid "Recall on %s"
-msgstr ""
+msgstr "Panggil kembali pada %s"
 
 #: inc/commonitiltask.class.php:1240 inc/html.class.php:572
 #: inc/html.class.php:5474 inc/planning.class.php:161
@@ -7312,7 +7317,7 @@ msgstr ""
 #: inc/item_disk.class.php:300 inc/networkname.class.php:519
 #: inc/networkport.class.php:474 inc/networkport.class.php:659
 msgid "Automatic inventory"
-msgstr ""
+msgstr "Inventori otomatis"
 
 #: inc/computerantivirus.class.php:280 inc/computerantivirus.class.php:368
 msgid "Up to date"
@@ -7347,6 +7352,8 @@ msgstr ""
 msgid ""
 "Location updated. The connected items have been moved in the same location."
 msgstr ""
+"Lokasi telah diperbarui. Barang terkait telah dipindahkan ke lokasi yang "
+"sama."
 
 #: inc/computer.class.php:479 inc/computer.class.php:740
 #: inc/dropdown.class.php:999 inc/network.class.php:42
@@ -7521,7 +7528,7 @@ msgstr[0] ""
 
 #: inc/computer.class.php:1200
 msgid "processor number"
-msgstr ""
+msgstr "Nomor prosesor"
 
 #: inc/computer_item.class.php:252 inc/computer_item.class.php:277
 #: inc/computer_item.class.php:381 inc/computer_item.class.php:534
@@ -7565,7 +7572,7 @@ msgstr[0] "Model Komputer"
 #: inc/softwarelicense.class.php:679 install/install.php:607
 msgid "License"
 msgid_plural "Licenses"
-msgstr[0] ""
+msgstr[0] "Lisensi"
 
 #: inc/computer_softwarelicense.class.php:186
 msgid "A version is required!"
@@ -8682,7 +8689,7 @@ msgstr ""
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
-msgstr[0] ""
+msgstr[0] "Hapus bila lebih lama dari %s bulan"
 
 #: inc/config.php:197 inc/config.php:205
 msgid "Service is down for maintenance. It will be back shortly."
@@ -9277,7 +9284,7 @@ msgstr[0] ""
 
 #: inc/crontask.class.php:1002
 msgid "Minimal time"
-msgstr ""
+msgstr "Waktu minimal"
 
 #: inc/crontask.class.php:1003 inc/crontask.class.php:1008
 #: inc/crontask.class.php:1013 inc/crontask.class.php:1018
@@ -9286,11 +9293,11 @@ msgstr ""
 #, php-format
 msgid "%s second"
 msgid_plural "%s seconds"
-msgstr[0] ""
+msgstr[0] "%s detik"
 
 #: inc/crontask.class.php:1007
 msgid "Maximal time"
-msgstr ""
+msgstr "Waktu maksimal"
 
 #: inc/crontask.class.php:1025
 msgid "Minimal count"
@@ -9522,7 +9529,7 @@ msgstr ""
 #: inc/dcroom.class.php:50 inc/rack.class.php:200 inc/rack.class.php:411
 msgid "Server room"
 msgid_plural "Server rooms"
-msgstr[0] ""
+msgstr[0] "Ruang server"
 
 #: inc/dcroom.class.php:124 inc/dcroom.class.php:266
 msgid "Number of columns"
@@ -10354,18 +10361,18 @@ msgstr[0] "Outlet Jaringan"
 #: inc/dropdown.class.php:1001 inc/networkport.class.php:967
 #: inc/networkportinstantiation.class.php:127 inc/vlan.class.php:49
 msgid "VLAN"
-msgstr ""
+msgstr "VLAN"
 
 #: inc/dropdown.class.php:1002 inc/line.class.php:166 inc/line.class.php:223
 #: inc/lineoperator.class.php:48 inc/profile.class.php:1533
 msgid "Line operator"
 msgid_plural "Line operators"
-msgstr[0] ""
+msgstr[0] "Operator telepon"
 
 #: inc/dropdown.class.php:1006 inc/profile.class.php:877
 #: inc/profile.class.php:1762
 msgid "Internet"
-msgstr ""
+msgstr "Internet"
 
 #: inc/dropdown.class.php:1007 inc/ipnetwork.class.php:55
 msgid "IP network"
@@ -11345,12 +11352,12 @@ msgstr ""
 
 #: inc/html.class.php:3004 inc/html.class.php:3225
 msgid "Now"
-msgstr ""
+msgstr "Sekarang"
 
 #: inc/html.class.php:3006 inc/html.class.php:3009
 #: inc/ticketfollowup.class.php:939
 msgid "Today"
-msgstr ""
+msgstr "Hari ini"
 
 #: inc/html.class.php:3013
 msgid "Specify a date"
@@ -12156,7 +12163,7 @@ msgstr ""
 #: inc/notificationtargetticket.class.php:761
 msgctxt "quantity"
 msgid "Number of changes"
-msgstr ""
+msgstr "Jumlah perubahan"
 
 #: inc/itilcategory.class.php:324 inc/ticket.class.php:3554
 #: inc/ticket.class.php:3570
@@ -12240,7 +12247,7 @@ msgstr[0] ""
 #: inc/knowbaseitem.class.php:200 inc/knowbaseitemtranslation.class.php:91
 #: inc/user.class.php:2324
 msgid "Edit"
-msgstr ""
+msgstr "Sunting"
 
 #: inc/knowbaseitem.class.php:707
 msgid "Category name"
@@ -12405,7 +12412,7 @@ msgstr ""
 #: inc/knowbaseitem_comment.class.php:381
 msgctxt "button"
 msgid "Edit"
-msgstr ""
+msgstr "Sunting"
 
 #: inc/knowbaseitem_comment.class.php:386
 msgid "Cancel"
@@ -12536,7 +12543,7 @@ msgstr ""
 #: inc/levelagreement.class.php:200
 msgid "Minute"
 msgid_plural "Minutes"
-msgstr[0] ""
+msgstr[0] "Menit"
 
 #: inc/levelagreement.class.php:222 inc/levelagreement.class.php:706
 msgid "End of working day"
@@ -12771,7 +12778,7 @@ msgstr ""
 
 #: inc/log.class.php:1006
 msgid "Update a field"
-msgstr ""
+msgstr "Perbarui ruas"
 
 #: inc/log.class.php:1053
 msgid "Lock the item"
@@ -12961,12 +12968,12 @@ msgstr ""
 
 #: inc/mailcollector.class.php:2000
 msgid "No import"
-msgstr ""
+msgstr "Tidak impor"
 
 #: inc/mailcollector.class.php:2002
 #, php-format
 msgid "%s Mio"
-msgstr ""
+msgstr "%s Mio"
 
 #: inc/massiveaction.class.php:132
 msgid "No action available"
@@ -13364,7 +13371,7 @@ msgstr "Fiber mode tunggal"
 #: inc/networkportfiberchannel.class.php:276
 #, php-format
 msgid "%d Gbit/s"
-msgstr ""
+msgstr "%d Gbit/s"
 
 #. TRANS: %f is the speed
 #: inc/networkportethernet.class.php:260
@@ -13721,7 +13728,7 @@ msgstr ""
 #: inc/notificationeventmailing.class.php:300
 #, php-format
 msgid "An email was sent to %s"
-msgstr ""
+msgstr "Surel sudah dikirim ke %s"
 
 #: inc/notificationmailing.class.php:91
 msgid "This is a test email."
@@ -13907,7 +13914,7 @@ msgstr ""
 
 #: inc/notificationsettingconfig.class.php:100
 msgid "Enable followup"
-msgstr ""
+msgstr "Membolehkan tindak lanjut"
 
 #: inc/notificationsettingconfig.class.php:161
 msgid ""
@@ -14175,7 +14182,7 @@ msgstr ""
 #: inc/notificationtargetcommonitilobject.class.php:1400
 #: inc/notificationtargetticket.class.php:942
 msgid "Status value in database"
-msgstr ""
+msgstr "Status di basis data"
 
 #: inc/notificationtargetconsumableitem.class.php:47
 msgid "Consumables alarm"
@@ -14638,13 +14645,13 @@ msgstr ""
 #: inc/ticket.class.php:3001 inc/ticket.class.php:3009
 #: inc/ticket.class.php:3023 inc/ticket.class.php:3036
 msgid "OLA"
-msgstr ""
+msgstr "OLA"
 
 #: inc/notificationtargetticket.class.php:717 inc/ticket.class.php:2819
 #: inc/ticket.class.php:3009 inc/ticket.class.php:4785
 #: inc/ticket.class.php:4787 inc/ticket.class.php:7734
 msgid "Internal time to own"
-msgstr ""
+msgstr "Waktu internal untuk dimiliki"
 
 #: inc/notificationtargetticket.class.php:720 inc/ticket.class.php:2783
 #: inc/ticket.class.php:3023 inc/ticket.class.php:4797
@@ -15402,7 +15409,7 @@ msgstr ""
 
 #: inc/problem.class.php:1000
 msgid "No problem in progress."
-msgstr ""
+msgstr "Tidak ada masalah dalam perkembangan"
 
 #. TRANS: %d is the document number
 #: inc/problem.class.php:1221
@@ -15531,13 +15538,13 @@ msgstr ""
 #: inc/profile.class.php:1002 inc/profile.class.php:2431
 msgid "Public saved search"
 msgid_plural "Public saved searches"
-msgstr[0] ""
+msgstr[0] "Pencarian publik yang tersimpan"
 
 #: inc/profile.class.php:1005 inc/profile.class.php:1884
 #: inc/report.class.php:58
 msgid "Report"
 msgid_plural "Reports"
-msgstr[0] ""
+msgstr[0] "Laporan"
 
 #: inc/profile.class.php:1011
 msgid "Administration of reservations"
@@ -15575,7 +15582,7 @@ msgstr ""
 
 #: inc/profile.class.php:1400 inc/queuednotification.class.php:48
 msgid "Notification queue"
-msgstr ""
+msgstr "Antrian notifikasi"
 
 #: inc/profile.class.php:1415 inc/profile.class.php:2053
 msgid "Rules for assigning a computer to an entity"
@@ -15884,7 +15891,7 @@ msgstr ""
 #: inc/queuednotification.class.php:80
 msgctxt "button"
 msgid "Send"
-msgstr ""
+msgstr "Kirim"
 
 #: inc/queuednotification.class.php:208 inc/queuednotification.class.php:706
 msgid "Expected send date"
@@ -16291,7 +16298,7 @@ msgstr "Jumlah item ditampilkan"
 
 #: inc/rssfeed.class.php:400 inc/rssfeed.class.php:631
 msgid "Refresh rate"
-msgstr ""
+msgstr "TIngkat penyegaran"
 
 #: inc/rssfeed.class.php:657 inc/rssfeed.class.php:712
 msgid "Error retrieving RSS feed"
@@ -16337,7 +16344,7 @@ msgstr ""
 
 #: inc/ruleaction.class.php:400 inc/ruleaction.class.php:401
 msgid "Send"
-msgstr ""
+msgstr "Kirim"
 
 #: inc/ruleaction.class.php:402
 msgid "Copy from user"
@@ -16387,6 +16394,8 @@ msgid ""
 "It is possible to affect the result of a regular expression using the string"
 " #0"
 msgstr ""
+"Memungkinkan untuk mempengaruhi hasil dari ekspresi regular menggunakan "
+"tanda #0"
 
 #: inc/rule.class.php:1070
 msgid "Add a new action"
@@ -16697,7 +16706,7 @@ msgstr ""
 #: inc/ruleimportcomputer.class.php:119 inc/ruleimportentity.class.php:170
 #: inc/ruleright.class.php:314 inc/rulesoftwarecategory.class.php:104
 msgid "To be unaware of import"
-msgstr ""
+msgstr "Tidak menyadari impor"
 
 #. TRANS: %1$s is a date, %2$s is a row, %3$s is total row, %4$s is memory
 #: inc/ruledictionnaryprintercollection.class.php:107
@@ -16813,7 +16822,7 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:100
 msgid "In-Reply-To email header"
-msgstr ""
+msgstr "Sebagai balasan untuk tajuk email"
 
 #: inc/rulemailcollector.class.php:104 inc/ruleticket.class.php:455
 msgid "X-Priority email header"
@@ -16865,7 +16874,7 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:195 inc/rulemailcollector.class.php:200
 msgid "Reject email"
-msgstr ""
+msgstr "Surel tertolak"
 
 #: inc/rulemailcollector.class.php:196
 msgid "without email response"
@@ -17133,7 +17142,7 @@ msgstr ""
 
 #: inc/savedsearch.class.php:1002
 msgid "Saved searches order cannot be saved!"
-msgstr ""
+msgstr "Urutan pencarian tersimpan tidak dapat disimpan!"
 
 #: inc/savedsearch.class.php:1016
 #, php-format
@@ -17195,12 +17204,12 @@ msgstr ""
 #: inc/search.class.php:1925 inc/search.class.php:2004
 #, php-format
 msgid "%1$s < %2$s"
-msgstr ""
+msgstr "%1$s < %2$s"
 
 #: inc/search.class.php:1929 inc/search.class.php:2009
 #, php-format
 msgid "%1$s > %2$s"
-msgstr ""
+msgstr "%1$s > %2$s"
 
 #: inc/search.class.php:2108
 msgid "AND"
@@ -17272,7 +17281,7 @@ msgstr[0] ""
 
 #: inc/software.class.php:74 inc/software.class.php:1002
 msgid "Merging"
-msgstr ""
+msgstr "Penggabungan"
 
 #: inc/software.class.php:260 inc/software.class.php:511
 msgid "Technician in charge of the software"
@@ -17880,7 +17889,7 @@ msgstr ""
 
 #: inc/ticket.class.php:7400
 msgid "Actions historical"
-msgstr ""
+msgstr "Sejarah tindakan"
 
 #: inc/ticket.class.php:7413
 msgid "Timeline filter"
@@ -17937,7 +17946,7 @@ msgstr ""
 #: inc/ticketfollowup.class.php:1004
 #, php-format
 msgid "Created by %1$s on %2$s"
-msgstr ""
+msgstr "Dibuat oleh %1$s pada %2$s"
 
 #: inc/ticketfollowup.class.php:1132
 msgid "Approval of the solution"
@@ -18085,7 +18094,7 @@ msgstr ""
 
 #: inc/ticketvalidation.class.php:100
 msgid "Create a validation request for a request"
-msgstr ""
+msgstr "Buat validasi permintaan untuk setiap permintaan"
 
 #: inc/ticketvalidation.class.php:102
 msgid "Create for incident"
@@ -18140,7 +18149,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:1002 inc/toolbox.class.php:1003
 msgid "Sessions support is available - Perfect!"
-msgstr ""
+msgstr "Dukungan akan sesi tersedia - Sempurna!"
 
 #: inc/toolbox.class.php:1008
 msgid "Make sure that sessions support has been activated in your php.ini"
@@ -18380,7 +18389,7 @@ msgstr ""
 
 #: inc/transfer.class.php:3400
 msgid "Links between printers and cartridge types and cartridges"
-msgstr ""
+msgstr "Tautan antara printer dan tipe cartridge dan cartridge"
 
 #: inc/transfer.class.php:3405
 msgid "If the cartridge types are no longer used"
@@ -18525,7 +18534,7 @@ msgstr "Sinkronisasi terakhir pada %s"
 
 #: inc/user.class.php:2144 inc/user.class.php:3004 inc/user.class.php:4502
 msgid "User DN"
-msgstr ""
+msgstr "Pengguna DN"
 
 #: inc/user.class.php:2147
 msgid "User missing in LDAP directory"
@@ -18998,7 +19007,7 @@ msgstr ""
 
 #: install/update_0905_91.php:400
 msgid "date_mod and date_creation"
-msgstr ""
+msgstr "tanggal_modifikasi dan tanggal_pembuatan"
 
 #: install/update_0905_91.php:428
 #, php-format

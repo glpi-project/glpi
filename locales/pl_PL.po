@@ -7,23 +7,23 @@
 # jacbob77 <jacbob77@tlen.pl>, 2017
 # archi23 <gsliwinski@wi.zut.edu.pl>, 2017
 # Adam Nadolski <nagano.pl+github@gmail.com>, 2017
-# Przemysław Piskozub <przemyslaw.piskozub@gmail.com>, 2017
 # Paweł Rubczewski <prubczewski@gmail.com>, 2017
 # awiamo, 2017
 # PiterEL <inactive+PiterEL@transifex.com>, 2017
-# Ryszard Jeziorski <ryszard.jeziorski@gmail.com>, 2017
 # Paweł Bańkowski <pawel.bankowski@gmail.com>, 2017
 # R Ł <whitep0wer@gmail.com>, 2017
 # Michal K <kordeliusz@gmail.com>, 2017
 # Adam Wysocki <lexuselk@elk.one.pl>, 2017
-# Radek_P, 2017
 # Marcin Bryll <wireks@gmail.com>, 2017
 # morpheus <plmorpheus@gmail.com>, 2017
 # Marek Dziarski <marekdziarski@gmail.com>, 2017
+# Radek_P, 2017
 # Marios <m.mariusz@interia.eu>, 2017
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
 # Marcin Czarnecki <velumaar@gmail.com>, 2018
+# Ryszard Jeziorski <ryszard.jeziorski@gmail.com>, 2019
+# Przemysław Piskozub <przemyslaw.piskozub@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -32,7 +32,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Marcin Czarnecki <velumaar@gmail.com>, 2018\n"
+"Last-Translator: Przemysław Piskozub <przemyslaw.piskozub@gmail.com>, 2019\n"
 "Language-Team: Polish (Poland) (https://www.transifex.com/glpi/teams/1637/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -115,7 +115,7 @@ msgstr "Dostęp do Pomocy"
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:255
 msgid "No room found or selected"
-msgstr ""
+msgstr "Nie znaleziono lub nie wybrano pokój."
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #. TRANS: %1$s is the location, %2$s is the comment
@@ -744,7 +744,7 @@ msgstr ""
 
 #: ajax/getMapPoint.php:43 ajax/map.php:44
 msgid "Required argument missing!"
-msgstr ""
+msgstr "Brak wymaganego argumentu!"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
@@ -1699,11 +1699,11 @@ msgstr "%s zainstalował oprogramowanie"
 
 #: front/computer_softwareversion.form.php:55
 msgid "Please select a software!"
-msgstr ""
+msgstr "Proszę wybierz oprogramowanie!"
 
 #: front/computer_softwareversion.form.php:57
 msgid "Please select a version!"
-msgstr ""
+msgstr "Proszę wybierz wersję!"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:54
@@ -1755,10 +1755,10 @@ msgstr "%s dodał link do dostawcy"
 #: inc/profile.class.php:1809 inc/transfer.class.php:3507
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Umowa"
+msgstr[1] "Umowy"
+msgstr[2] "Umów"
+msgstr[3] "Umowy"
 
 #. TRANS: %s is a directory
 #: front/cron.php:42
@@ -4041,7 +4041,7 @@ msgstr "Zmiana hasła powiodła się."
 
 #: inc/api.class.php:1972
 msgid "parameter app_token seems wrong"
-msgstr ""
+msgstr "Parametr app_token wydaje się nieprawidłowy"
 
 #: inc/api.class.php:1975
 msgid "missing parameter app_token"
@@ -4150,7 +4150,7 @@ msgstr "Token aplikacji"
 
 #: inc/apiclient.class.php:213
 msgid "Leave these parameters empty to disable API access restriction"
-msgstr ""
+msgstr "Pozostaw ten parametr pusty jeżeli chcesz wyłączyć API "
 
 #: inc/apiclient.class.php:241 inc/config.class.php:1333
 #: inc/config.class.php:1334 inc/config.class.php:1352
@@ -4894,7 +4894,7 @@ msgstr "Zachowaj"
 
 #: inc/authldap.class.php:3405
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Przenieś do kosza"
 
 #: inc/authldap.class.php:3406 inc/authldap.class.php:3408
 msgid "Withdraw dynamic authorizations and groups"
@@ -5717,7 +5717,7 @@ msgstr "Z powodu bezpieczeństwa, usuń proszę plik: %s"
 #: inc/central.class.php:180
 #, php-format
 msgid "%1$s tables not migrated to InnoDB engine."
-msgstr ""
+msgstr "%1$stabele nie zostały przeniesione do InnoDB engine."
 
 #: inc/central.class.php:188 inc/html.class.php:1549
 msgid "SQL replica: read only"
@@ -5999,7 +5999,7 @@ msgstr "Trwające"
 #: inc/change.class.php:481
 msgctxt "change"
 msgid "Testing"
-msgstr ""
+msgstr "Testowanie"
 
 #: inc/change.class.php:482
 msgid "Qualification"
@@ -6397,7 +6397,7 @@ msgstr "Na pewno chcesz usunąć ?"
 #: inc/transfer.class.php:3347
 msgctxt "button"
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Przenieś do kosza"
 
 #: inc/commondbtm.class.php:2635
 msgid "Template name"
@@ -6458,7 +6458,7 @@ msgstr "Inny element istnieje"
 
 #: inc/commondbtm.class.php:4141
 msgid "Item in the trashbin"
-msgstr ""
+msgstr "Pozycje w koszu"
 
 #. TRANS: %1$s is the user login, %2$s the message
 #: inc/commondbtm.class.php:4262
@@ -6629,7 +6629,7 @@ msgstr "waty"
 
 #: inc/commondcmodeldropdown.class.php:107 inc/rack.class.php:305
 msgid "Max. power (in watts)"
-msgstr ""
+msgstr "Maksymalny pobór mocy [W]"
 
 #: inc/commondcmodeldropdown.class.php:117
 #: inc/commondcmodeldropdown.class.php:208
@@ -7896,7 +7896,7 @@ msgstr[3] "Systemy wirtualizacji"
 
 #: inc/computer.class.php:1200
 msgid "processor number"
-msgstr ""
+msgstr "Ilość procesorów"
 
 #: inc/computer_item.class.php:252 inc/computer_item.class.php:277
 #: inc/computer_item.class.php:381 inc/computer_item.class.php:534
@@ -8358,6 +8358,8 @@ msgstr "Włącz logowanie parą login&hasło"
 #: inc/config.class.php:780
 msgid "Allow to login to API and get a session token with user credentials"
 msgstr ""
+"Pozwól na logowanie do API i pobranie tokena sesji przy pomocy danych "
+"logowania użytkownika"
 
 #: inc/config.class.php:786
 msgid "Enable login with external token"
@@ -8963,7 +8965,7 @@ msgstr ""
 
 #: inc/config.class.php:2697
 msgid "error log file"
-msgstr ""
+msgstr "plik dziennika błędów"
 
 #: inc/config.class.php:2865
 msgid "You are using a development version, be careful!"
@@ -8983,7 +8985,7 @@ msgstr ""
 
 #: inc/config.class.php:3033
 msgid "Change all"
-msgstr ""
+msgstr "Zmień wszystko"
 
 #: inc/config.class.php:3049
 msgid "Add/update relation between items"
@@ -8991,7 +8993,7 @@ msgstr ""
 
 #: inc/config.class.php:3053
 msgid "Delete relation between items"
-msgstr ""
+msgstr "Usuń relacje pomiędzy przedmiotami"
 
 #: inc/config.class.php:3058 inc/log.class.php:1045
 #: inc/notificationtargetfieldunicity.class.php:49
@@ -9076,11 +9078,11 @@ msgstr ""
 
 #: inc/config.class.php:3194
 msgid "Delete all"
-msgstr ""
+msgstr "Usuń wszystko"
 
 #: inc/config.class.php:3195
 msgid "Keep all"
-msgstr ""
+msgstr "Zachowaj wszystko"
 
 #: inc/config.class.php:3200
 #, php-format
@@ -10024,7 +10026,7 @@ msgstr ""
 
 #: inc/dcroom.class.php:362
 msgid "New room for this datacenter..."
-msgstr ""
+msgstr "Nowe pomieszczenie dla centrum przetwarzania danych"
 
 #: inc/dcroom.class.php:387
 msgid "No server room found"
@@ -10705,7 +10707,7 @@ msgstr "Pokaż %1$s"
 
 #: inc/dropdown.class.php:229
 msgid "Display on map"
-msgstr ""
+msgstr "Pokaż na mapie "
 
 #. TRANS: %s is the store path
 #: inc/dropdown.class.php:613
@@ -12319,11 +12321,11 @@ msgstr "Wyloguj"
 
 #: inc/html.class.php:6104
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Tryb debugowania został włączony!"
 
 #: inc/html.class.php:6105
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Tryb debugowania został wyłączony!"
 
 #: inc/html.class.php:6109
 msgid "Change mode"
@@ -12335,7 +12337,7 @@ msgstr "Zarządzaj zapisanymi wyszukiwaniami"
 
 #: inc/html.class.php:6127 inc/search.class.php:2216
 msgid "Load a saved search"
-msgstr ""
+msgstr "Załaduj zapisane wyszukiwanie"
 
 #: inc/html.class.php:6201 inc/profile.class.php:2228
 #: inc/ticket.class.php:5901
@@ -12761,11 +12763,11 @@ msgstr "System operacyjny"
 
 #: inc/item_rack.class.php:124 inc/rack.class.php:558
 msgid "View as list"
-msgstr ""
+msgstr "Wyświetl jako listę"
 
 #: inc/item_rack.class.php:125 inc/rack.class.php:559
 msgid "View graphical representation"
-msgstr ""
+msgstr "Wyświetl w formie graficznej"
 
 #: inc/item_rack.class.php:131
 msgid "Racked items"
@@ -13929,7 +13931,7 @@ msgstr ""
 
 #: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "ok"
-msgstr ""
+msgstr "ok"
 
 #: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "nok"
@@ -14491,11 +14493,11 @@ msgstr ""
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Przeglądaj konfiguracje powiadomień"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Włącz powiadomienia w przeglądarce"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
@@ -14597,7 +14599,7 @@ msgstr "Tryb"
 #: inc/notificationmailing.class.php:97
 #, php-format
 msgid "Original email address was %1$s"
-msgstr ""
+msgstr "Pierwotny adres email to %1$s"
 
 #: inc/notificationeventmailing.class.php:264
 msgid "Error in sending the email"
@@ -16984,23 +16986,23 @@ msgstr ""
 
 #: inc/rack.class.php:291
 msgid "U"
-msgstr ""
+msgstr "U"
 
 #: inc/rack.class.php:293
 msgid "Width"
-msgstr ""
+msgstr "Szerokość"
 
 #: inc/rack.class.php:298
 msgid "Height"
-msgstr ""
+msgstr "Wysokość"
 
 #: inc/rack.class.php:307
 msgid "Measured power (in watts)"
-msgstr ""
+msgstr "Moc zmierzona [W]"
 
 #: inc/rack.class.php:312
 msgid "Max. weight"
-msgstr ""
+msgstr "Maksymalna szerokość"
 
 #: inc/rack.class.php:567
 msgid "No rack found"
@@ -18252,11 +18254,11 @@ msgstr ""
 
 #: inc/search.class.php:1491 inc/search.class.php:1813
 msgid "Show as map"
-msgstr ""
+msgstr "Pokaz jako mapę"
 
 #: inc/search.class.php:1844 inc/search.class.php:1845
 msgid "Show the trashbin"
-msgstr ""
+msgstr "Pokaż kosz"
 
 #: inc/search.class.php:1918 inc/search.class.php:1920
 #: inc/search.class.php:1995 inc/search.class.php:1998
@@ -19280,7 +19282,7 @@ msgstr "Ok - sesja działa (nie ma problemów z trans_id) - Doskonale!"
 
 #: inc/toolbox.class.php:1049
 msgid "Testing DB engine version"
-msgstr ""
+msgstr "Testowanie wersji silnika bazy danych"
 
 #: inc/toolbox.class.php:1058
 msgid "Allocated memory test"
@@ -19977,7 +19979,7 @@ msgstr ""
 
 #: install/install.php:478 install/update.php:607
 msgid "Donate"
-msgstr ""
+msgstr "Wesprzyj"
 
 #: install/install.php:520
 msgid "The installation is finished"

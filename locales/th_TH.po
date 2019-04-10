@@ -8,6 +8,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
 # นัจ-ณวัสน์ เอกสิรินิธิพล <nawhath.aek@hotmail.com>, 2018
 # Triple S <thribbles@gmail.com>, 2018
+# Mathavit Matharat <t@tc.in.th>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Triple S <thribbles@gmail.com>, 2018\n"
+"Last-Translator: Mathavit Matharat <t@tc.in.th>, 2019\n"
 "Language-Team: Thai (Thailand) (https://www.transifex.com/glpi/teams/1637/th_TH/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,7 +27,7 @@ msgstr ""
 
 #: index.php:76
 msgid "GLPI - Authentication"
-msgstr "GLPI - ยืนยันตัวตน"
+msgstr "GLPI - การเข้าสู่ระบบ"
 
 #: index.php:125 inc/authldap.class.php:3151 inc/authmail.class.php:231
 #: inc/config.class.php:1833 inc/dbutils.class.php:1589
@@ -49,7 +50,7 @@ msgstr ""
 
 #: index.php:155
 msgid "Remember me"
-msgstr "จดจำ"
+msgstr "จำฉัน"
 
 #: index.php:159 ajax/dropdownMassiveActionAuthMethods.php:65
 #: ajax/dropdownMassiveActionField.php:53 inc/authldap.class.php:1271
@@ -2996,7 +2997,7 @@ msgstr "Others authentication methods"
 #: inc/profile.class.php:1933
 msgid "Notification"
 msgid_plural "Notifications"
-msgstr[0] "ประกาศ"
+msgstr[0] "แจ้งเตือน"
 
 #: front/setup.templates.php:55 inc/html.class.php:6462
 msgid "Manage templates..."
@@ -3504,12 +3505,12 @@ msgstr "แสดงกราฟิก"
 #: front/stat.location.php:175 front/stat.tracking.php:184
 #, php-format
 msgid "Opened %1$s (%2$s)"
-msgstr "เปิด  %1$s (%2$s)"
+msgstr "เปิดแล้ว %1$s (%2$s)"
 
 #: front/stat.location.php:200 front/stat.tracking.php:210
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr "แก้ไข %1$s(%2$s)"
+msgstr "แก้ไขแล้ว %1$s(%2$s)"
 
 #: front/stat.location.php:225
 #, php-format
@@ -4081,7 +4082,7 @@ msgstr ""
 #: inc/auth.class.php:115 inc/log.class.php:929 inc/log.class.php:952
 #: inc/log.class.php:1003 inc/log.class.php:1017
 msgid "Others"
-msgstr "อื่นๆ"
+msgstr "อื่น ๆ"
 
 #: inc/auth.class.php:146 inc/auth.class.php:246 inc/auth.class.php:368
 msgid "Incorrect username or password"
@@ -4115,7 +4116,7 @@ msgstr[0] ""
 
 #: inc/auth.class.php:711 inc/auth.class.php:720
 msgid "Empty login or password"
-msgstr "เข้าสู่ระบบ ที่ว่างเปล่าหรือรหัสผ่าน"
+msgstr "ชื่อผู้ใช้หรือรหัสผ่านว่างเปล่า"
 
 #. TRANS: %1$s is the login of the user and %2$s its IP address
 #: inc/auth.class.php:828
@@ -4135,7 +4136,7 @@ msgstr "การตรวจสอบบนฐานข้อมูล GLPI "
 
 #: inc/auth.class.php:919
 msgid "Authentication on a LDAP directory"
-msgstr "การตรวจสอบบน LDAP"
+msgstr "การยืนยันตัวตนบน LDAP directory"
 
 #: inc/auth.class.php:932
 msgid "Authentication on mail server"
@@ -4144,7 +4145,7 @@ msgstr "การตรวจสอบบนเมล์เซิร์ฟเว
 #: inc/auth.class.php:965 inc/authmail.class.php:87
 #: inc/ruleright.class.php:236
 msgid "Email server"
-msgstr "เมล์เซิร์ฟเวอร์"
+msgstr "เมลเซิร์ฟเวอร์"
 
 #: inc/auth.class.php:972 inc/auth.class.php:984 inc/auth.class.php:997
 #: inc/commonglpi.class.php:874 inc/tickettemplatemandatoryfield.class.php:199
@@ -4264,7 +4265,7 @@ msgstr "ลบโดเมนของการเข้าสู่ระบบ
 #: inc/authldap.class.php:932 inc/authldap.class.php:3160
 #: inc/contact.class.php:147 inc/user.class.php:2059 inc/user.class.php:2371
 msgid "Surname"
-msgstr "ชื่อ"
+msgstr "นามสกุล"
 
 #: inc/auth.class.php:1419 inc/authldap.class.php:739
 #: inc/authldap.class.php:941 inc/authldap.class.php:3161
@@ -4272,7 +4273,7 @@ msgstr "ชื่อ"
 #: inc/notificationtargetuser.class.php:109 inc/user.class.php:2064
 #: inc/user.class.php:2407 inc/user.class.php:2809
 msgid "First name"
-msgstr "นามสกุล"
+msgstr "ชื่อ"
 
 #: inc/auth.class.php:1432 inc/authldap.class.php:746 inc/user.class.php:2181
 #: inc/user.class.php:2549 inc/user.class.php:3013

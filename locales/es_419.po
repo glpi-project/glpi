@@ -14,9 +14,9 @@
 # Vladimir Támara Patiño <vtamara@pasosdeJesus.org>, 2017
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
-# Roberto Flores <robertocarlos.floresh@gmail.com>, 2018
 # Francisco Javier Sanchez <panchosaga@gmail.com>, 2018
-# Alfred Rapozo <alfred.rapozo@gmail.com>, 2018
+# Roberto Flores <robertocarlos.floresh@gmail.com>, 2018
+# Alfred Rapozo <alfred.rapozo@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -25,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Alfred Rapozo <alfred.rapozo@gmail.com>, 2018\n"
+"Last-Translator: Alfred Rapozo <alfred.rapozo@gmail.com>, 2019\n"
 "Language-Team: Spanish (Latin America) (https://www.transifex.com/glpi/teams/1637/es_419/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12285,7 +12285,7 @@ msgstr "Se requiere un artículo"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
-msgstr ""
+msgstr "Se requiere un recinto"
 
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
@@ -12440,7 +12440,7 @@ msgstr "No hay suficiente espacio disponible para colocar el elemento"
 #: inc/item_rack.class.php:1085
 #, php-format
 msgid "Item for rack \"%1$s\""
-msgstr ""
+msgstr "Artículo para rack \"%1$s\""
 
 #: inc/item_ticket.class.php:303
 #, php-format
@@ -12743,7 +12743,7 @@ msgstr "Lea las Preguntas Frecuentes"
 #: inc/knowbaseitem.class.php:1875
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr ""
+msgstr "%1$srevierte el elemento a la revisión%2$s"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:372
@@ -12906,7 +12906,7 @@ msgstr "Lista de traducciones de entrada"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr ""
+msgstr "%1$srevierte la traducción del artículo a la revisión%2$s"
 
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:723
 #: inc/profile.class.php:1530
@@ -15271,7 +15271,7 @@ msgstr "Email no encontrado. Imposible importar"
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "No tiene suficientes permisos"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"
@@ -18402,7 +18402,7 @@ msgstr "No puede agregar un seguimiento sin una descripción"
 
 #: inc/ticketfollowup.class.php:362
 msgid "Solution approved"
-msgstr "Solución aprovada"
+msgstr "Solución aprobada"
 
 #: inc/ticketfollowup.class.php:376 inc/ticketfollowup.class.php:654
 msgid "If you want to reopen the ticket, you must specify a reason"

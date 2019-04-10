@@ -4,7 +4,6 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# polar147 <andrei_simoni@hotmail.com>, 2017
 # Rodrigo de Souza <rodrigo.evildead@gmail.com>, 2017
 # Daniel Berton <danielsberton@gmail.com>, 2017
 # Danilo Oliveira <danilo.lucas94@gmail.com>, 2017
@@ -23,6 +22,8 @@
 # Guilherme Teixeira <guilmarco@gmail.com>, 2018
 # Arthur Ramos Schaefer <arthur.r.schaefer@gmail.com>, 2018
 # Danilo Santos <danilo.santos@servicedeskbrasil.com.br>, 2018
+# Andrei Bernardo Simoni <andrei_simoni@hotmail.com>, 2018
+# Carlos Filho <ccorrea@gmail.com>, 2018
 # 
 #, fuzzy
 msgid ""
@@ -31,7 +32,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Danilo Santos <danilo.santos@servicedeskbrasil.com.br>, 2018\n"
+"Last-Translator: Carlos Filho <ccorrea@gmail.com>, 2018\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4431,7 +4432,7 @@ msgstr "Active Directory"
 
 #: inc/authldap.class.php:322 inc/config.class.php:2175
 msgid "Default values"
-msgstr "Valores padrões"
+msgstr "Valores padrão"
 
 #: inc/authldap.class.php:328 inc/authldap.class.php:1048
 #: inc/authmail.class.php:137 inc/budget.class.php:218
@@ -12726,7 +12727,7 @@ msgstr "Ler o FAQ"
 #: inc/knowbaseitem.class.php:1875
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr ""
+msgstr "%1$s reverteu item para a revisão %2$s"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:372
@@ -12889,7 +12890,7 @@ msgstr "Lista de traduções"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr ""
+msgstr "%1$s reverteu a tradução do item para a revisão %2$s"
 
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:723
 #: inc/profile.class.php:1530
@@ -15251,7 +15252,7 @@ msgstr "E-mail não encontrado. Impossível realizar importação"
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "Não tem permissão suficiente"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"
@@ -18184,7 +18185,7 @@ msgstr "Descreva o incidente ou a requisição"
 
 #: inc/ticket.class.php:4026
 msgid "Inform me about the actions taken"
-msgstr "Me informe sobre as ações tomadas"
+msgstr "Informe-me sobre as ações tomadas"
 
 #: inc/ticket.class.php:4178
 msgid "Submit message"

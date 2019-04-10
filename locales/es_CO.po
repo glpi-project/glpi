@@ -12,7 +12,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # Oscar Stiven Gomez Toro <oscar.gomez@clinicadeoccidente.com>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
-# Haider Ilich López Areiza <hlopez@itsoluciones.com.co>, 2018
+# Haider Ilich López Areiza <hlopez@itsoluciones.com.co>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Haider Ilich López Areiza <hlopez@itsoluciones.com.co>, 2018\n"
+"Last-Translator: Haider Ilich López Areiza <hlopez@itsoluciones.com.co>, 2019\n"
 "Language-Team: Spanish (Colombia) (https://www.transifex.com/glpi/teams/1637/es_CO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12287,7 +12287,7 @@ msgstr "Un elemento es requerido"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
-msgstr ""
+msgstr "Es requerido un gabinete"
 
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
@@ -12442,7 +12442,7 @@ msgstr "No hay suficiente espacio disponible para colocar el elemento"
 #: inc/item_rack.class.php:1085
 #, php-format
 msgid "Item for rack \"%1$s\""
-msgstr ""
+msgstr "Elemento para gabinete \" %1$s \""
 
 #: inc/item_ticket.class.php:303
 #, php-format
@@ -12745,7 +12745,7 @@ msgstr "Leer Preguntas Frecuentes (FAQ)"
 #: inc/knowbaseitem.class.php:1875
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr ""
+msgstr "%1$s revierte el artículo a revisión %2$s "
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:372
@@ -12908,7 +12908,7 @@ msgstr "Lista de entradas de traducción"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr ""
+msgstr "%1$s revierte la traducción del artículo a la revisión %2$s "
 
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:723
 #: inc/profile.class.php:1530
@@ -15274,7 +15274,7 @@ msgstr "Correo electrónico no existe. Imposible importar"
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "No hay suficientes derechos"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"

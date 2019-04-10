@@ -6,12 +6,12 @@
 # Translators:
 # Terry Wei, 2017
 # Andy Yang <andy@itinfo.idv.tw>, 2017
-# Weiping Ma <mwp2100@gmail.com>, 2017
 # Aaron Wang <evildeepblue@gmail.com>, 2017
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
 # ShaoPin Cheng <cjt74392@ms10.hinet.net>, 2018
 # WooboyTW <transifex@wooboy.me>, 2018
+# Mwp <mwp2100@gmail.com>, 2018
 # Charlie Chiu <totolearn@gmail.com>, 2018
 # 
 #, fuzzy

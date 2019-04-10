@@ -11,15 +11,15 @@
 # Walid Nouh, 2017
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # David Durieux <david@durieux.family>, 2017
-# Xavier CAILLAUD <thetsmr@gmail.com>, 2017
-# Anael Mobilia <contrib@anael.eu>, 2017
 # Nicolas Quiniou-Briand <nicolas.quiniou-briand@ch-redon.fr>, 2018
+# Anael Mobilia <contrib@anael.eu>, 2018
 # Remi Collet <fedora@famillecollet.com>, 2018
-# Legastelois François <flegastelois@teclib.com>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
+# Legastelois François <flegastelois@teclib.com>, 2018
 # Gilles WLT <gilles.wlt@gmail.com>, 2018
+# Xavier CAILLAUD <thetsmr@gmail.com>, 2018
 # Pierre <plebel@teclib.com>, 2018
-# Tiago Graca, 2018
+# Tiago Graça, 2018
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2018
 # 
 #, fuzzy

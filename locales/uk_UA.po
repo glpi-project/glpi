@@ -5295,9 +5295,9 @@ msgstr[3] "Нові"
 msgctxt "cartridge"
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] "Використаний"
-msgstr[1] "Використані"
-msgstr[2] "Задіяні"
+msgstr[0] "Задіяний"
+msgstr[1] "Задіяних"
+msgstr[2] "Задіяних"
 msgstr[3] "Задіяні"
 
 #: inc/cartridge.class.php:377 inc/cartridge.class.php:428
@@ -13206,7 +13206,7 @@ msgstr "Читати FAQ"
 #: inc/knowbaseitem.class.php:1875
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr ""
+msgstr "%1$s повертає елемент до версії %2$s"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:372
@@ -13379,7 +13379,7 @@ msgstr "Перелік перекладів запису"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr ""
+msgstr "%1$s повертає переклад запису до версії %2$s"
 
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:723
 #: inc/profile.class.php:1530

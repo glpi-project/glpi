@@ -14,11 +14,11 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
 # cdbb401dea6e83fa2f78b700f63b58b1, 2018
-# FranciscoFJ <dev-ooo@satel-sa.com>, 2018
 # Alvaro Sáez <asaez@asaez.eu>, 2018
 # Tomás Abad <tabadgp@gmail.com>, 2018
 # Dani Gamero <gargam3@gmail.com>, 2018
 # Roberto Flores <robertocarlos.floresh@gmail.com>, 2018
+# FranciscoFJ <dev-ooo@satel-sa.com>, 2018
 # Pruebas, 2018
 # 
 #, fuzzy
@@ -12755,7 +12755,7 @@ msgstr "Leer las preguntas frecuentes"
 #: inc/knowbaseitem.class.php:1875
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr ""
+msgstr "%1$s revierte el elemento a la revisión %2$s"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:372
@@ -12918,7 +12918,7 @@ msgstr "Entrada de la lista de traducciones"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr ""
+msgstr " %1$s revierte la traducción de elementos a revisión %2$s"
 
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:723
 #: inc/profile.class.php:1530
@@ -15280,7 +15280,7 @@ msgstr "Correo no encontrado. Importación imposible"
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "No hay suficientes derechos"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"

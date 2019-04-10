@@ -6,7 +6,7 @@
 # Translators:
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
-# Kaya Zeren <kayazeren@gmail.com>, 2018
+# Kaya Zeren <kayazeren@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Kaya Zeren <kayazeren@gmail.com>, 2018\n"
+"Last-Translator: Kaya Zeren <kayazeren@gmail.com>, 2019\n"
 "Language-Team: Turkish (Turkey) (https://www.transifex.com/glpi/teams/1637/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -6431,7 +6431,7 @@ msgstr "Ağırlık"
 #: inc/commondcmodeldropdown.class.php:73
 #: inc/commondcmodeldropdown.class.php:169
 msgid "Required units"
-msgstr "Zorunlu birimler"
+msgstr "Gereken birim"
 
 #: inc/commondcmodeldropdown.class.php:81
 #: inc/commondcmodeldropdown.class.php:179 inc/rack.class.php:300
@@ -6441,7 +6441,7 @@ msgstr "Derinlik"
 #: inc/commondcmodeldropdown.class.php:89
 #: inc/commondcmodeldropdown.class.php:188
 msgid "Power connections"
-msgstr "Güç bağlantıları"
+msgstr "Güç bağlantısı"
 
 #: inc/commondcmodeldropdown.class.php:97
 #: inc/commondcmodeldropdown.class.php:198
@@ -12688,7 +12688,7 @@ msgstr "SSS okuyun"
 #: inc/knowbaseitem.class.php:1875
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr ""
+msgstr "%1$s ögeyi %2$s sürümüne döndürdü"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:372
@@ -12851,7 +12851,7 @@ msgstr "Kayıt dönüşüm listesi"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr ""
+msgstr "%1$s öge çevirisini %2$s sürümüne döndürdü"
 
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:723
 #: inc/profile.class.php:1530

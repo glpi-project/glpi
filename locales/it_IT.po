@@ -8537,7 +8537,7 @@ msgstr "3- Importanti (connessioni riuscite)"
 
 #: inc/config.class.php:1743
 msgid "4- Notices (add, delete, tracking)"
-msgstr "4- Preavvisi (inserimento, eliminazione, tracciamento)"
+msgstr "4- Avvisi (inserimento, eliminazione, tracciamento)"
 
 #: inc/config.class.php:1744
 msgid "5- Complete (all)"
@@ -9152,7 +9152,7 @@ msgstr "Durata del contratto dalla data di inizio"
 #: inc/contract.class.php:750 inc/contract.class.php:1701
 #: inc/notificationtargetcontract.class.php:47
 msgid "Notice"
-msgstr "Preavviso"
+msgstr "Avviso"
 
 #: inc/contract.class.php:251 inc/contract.class.php:495
 #: inc/contract.class.php:800
@@ -12724,7 +12724,7 @@ msgstr "Leggi le FAQ"
 #: inc/knowbaseitem.class.php:1875
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr ""
+msgstr "%1$s riporta la voce alla revisione %2$s"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:372
@@ -12887,7 +12887,7 @@ msgstr "Voce della lista traduzioni"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr ""
+msgstr "%1$s ripristina la voce di traduzione alla revisione %2$s"
 
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:723
 #: inc/profile.class.php:1530

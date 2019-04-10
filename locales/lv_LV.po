@@ -6,8 +6,9 @@
 # Translators:
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
-# Qubit Bit, 2018
 # Andrejs <andrew.k2@gmail.com>, 2018
+# Qubit Bit, 2019
+# ulcha <uldis+transifex@rom.lv>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Andrejs <andrew.k2@gmail.com>, 2018\n"
+"Last-Translator: ulcha <uldis+transifex@rom.lv>, 2019\n"
 "Language-Team: Latvian (Latvia) (https://www.transifex.com/glpi/teams/1637/lv_LV/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8812,7 +8813,7 @@ msgstr "Tīmekļa piekļuve datnes mapēm ir aizsargāta"
 
 #: inc/config.class.php:2676 inc/config.class.php:2680
 msgid "Web access to the files directory should not be allowed"
-msgstr ""
+msgstr "Mape \"files\" no web nedrīkst būt pieejama"
 
 #: inc/config.class.php:2677 inc/config.class.php:2681
 msgid "Check the .htaccess file and the web server configuration."
@@ -12765,7 +12766,7 @@ msgstr "Pēdējoreiz labots %1$s ar %2$s"
 #: inc/itilsolution.class.php:575 inc/ticket.class.php:7214
 #, php-format
 msgid "%1$s on %2$s by %3$s"
-msgstr ""
+msgstr "%1$s no %2$s līdz %3$s"
 
 #: inc/itilsolution.class.php:576 inc/itilsolution.class.php:707
 #: inc/ticket.class.php:7215
@@ -13354,7 +13355,7 @@ msgstr "Mainīt %1$s uz %2$s"
 
 #: inc/log.class.php:1006
 msgid "Update a field"
-msgstr ""
+msgstr "Lauka atjaunināšana"
 
 #: inc/log.class.php:1053
 msgid "Lock the item"
@@ -15644,7 +15645,7 @@ msgstr "Jaudas sadalitāja sāns"
 
 #: inc/pdu_rack.class.php:330
 msgid "Side"
-msgstr ""
+msgstr "Sāns"
 
 #: inc/pdu_rack.class.php:407
 msgid "Power units"
@@ -16594,7 +16595,7 @@ msgstr "Saņēmēja vārds"
 
 #: inc/queuednotification.class.php:262 inc/queuednotification.class.php:733
 msgid "Reply-to email"
-msgstr ""
+msgstr "Atbildes e-pasta adrese"
 
 #: inc/queuednotification.class.php:280 inc/queuednotification.class.php:742
 msgid "Additional headers"
@@ -16678,11 +16679,11 @@ msgstr "Nav atrastas statnes"
 
 #: inc/rack.class.php:655
 msgid "Following elements are out of room bounds"
-msgstr ""
+msgstr "Tālāk minētie elementi atrodas ārpus telpas robežām"
 
 #: inc/rack.class.php:685
 msgid "Blueprint"
-msgstr ""
+msgstr "Blueprint"
 
 #: inc/rack.class.php:693
 msgid "Grid"
@@ -16694,7 +16695,7 @@ msgstr "Ievietot statni šeit"
 
 #: inc/rack.class.php:932
 msgid "Position must be set"
-msgstr ""
+msgstr "Pozīcijai jābūt iestatītai"
 
 #: inc/rack.class.php:953
 #, php-format
@@ -16876,7 +16877,7 @@ msgstr "Rezervēt vienumu"
 
 #: inc/reservation.class.php:723
 msgid "Repetition"
-msgstr ""
+msgstr "Atkārtojums"
 
 #: inc/reservation.class.php:725
 msgctxt "periodicity"
@@ -16900,7 +16901,7 @@ msgstr "Katru mēnesi"
 
 #: inc/reservation.class.php:763
 msgid "Delete all repetition"
-msgstr ""
+msgstr "Dzēst visu atkārtojumus"
 
 #: inc/reservation.class.php:1074 inc/reservation.class.php:1076
 #: inc/reservation.class.php:1212
@@ -17528,19 +17529,19 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:104 inc/ruleticket.class.php:455
 msgid "X-Priority email header"
-msgstr ""
+msgstr "X-Priority e-pasta galvene"
 
 #: inc/rulemailcollector.class.php:108
 msgid "X-Auto-Response-Suppress email header"
-msgstr ""
+msgstr "X-Auto-Response-Suppress e-pasta galvene"
 
 #: inc/rulemailcollector.class.php:112
 msgid "Auto-Submitted email header"
-msgstr ""
+msgstr "Automātiski iesniegta e-pasta galvene"
 
 #: inc/rulemailcollector.class.php:117
 msgid "X-UCE-Status email header"
-msgstr ""
+msgstr "X-UCE-statusa e-pasta galvene"
 
 #: inc/rulemailcollector.class.php:121
 msgid "Received email header"
@@ -17800,7 +17801,7 @@ msgstr "Saskaitīt"
 
 #: inc/savedsearch.class.php:537
 msgid "Partial load of the saved search."
-msgstr ""
+msgstr "Daļējas saglabātās meklēšanas ielāde."
 
 #: inc/savedsearch.class.php:774
 msgid "Filter list"

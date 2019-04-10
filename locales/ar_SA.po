@@ -9,6 +9,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
 # Yasser Gawish <yasser.hesham@hotmail.com>, 2018
 # Roshan Roche <roshan6@gmail.com>, 2018
+# Khalid Al Matari <abuhilal1@gmail.com>, 2018
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Roshan Roche <roshan6@gmail.com>, 2018\n"
+"Last-Translator: Khalid Al Matari <abuhilal1@gmail.com>, 2018\n"
 "Language-Team: Arabic (Saudi Arabia) (https://www.transifex.com/glpi/teams/1637/ar_SA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -46,7 +47,7 @@ msgstr "كلمة المرور"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr ""
+msgstr "اللغة ( من ملف تعريف المستخدم)"
 
 #: index.php:155
 msgid "Remember me"
@@ -99,7 +100,7 @@ msgstr "الدخول إلى الأسئلة الشائعة"
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:255
 msgid "No room found or selected"
-msgstr ""
+msgstr "لم يتم العثور على غرفة أو تحديدها"
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #. TRANS: %1$s is the location, %2$s is the comment
@@ -733,15 +734,15 @@ msgstr ""
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "لا يبدو العنصر محددًا جغرافيًا أو لا يمكن العثور عليه"
 
 #: ajax/getMapPoint.php:75
 msgid "Location seems not geolocalized!"
-msgstr ""
+msgstr "الموقع يبدو غير محدد جغرافيا"
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
-msgstr ""
+msgstr "فكر في ملء خطوط الطول والعرض على هذا الموقع."
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2449
 #: inc/mailcollector.class.php:212 inc/ruleaction.class.php:88
@@ -984,11 +985,11 @@ msgstr[5] "كيانات"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "تم تمكين وضع التصحيح!"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "تم تعطيل  وضع التصحيح!"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -1031,7 +1032,7 @@ msgstr "بأسرع وقت ممكن"
 
 #: ajax/ticketsatisfaction.php:70
 msgid "Rate to trigger survey"
-msgstr ""
+msgstr "تقييم المسح المتحرك"
 
 #: ajax/ticketsatisfaction.php:76 inc/apiclient.class.php:297
 #: inc/config.class.php:439 inc/crontask.class.php:698
@@ -1189,11 +1190,11 @@ msgstr "البحث عن التحديثات"
 
 #: front/backup.php:602
 msgid "GLPI internal backup system is a helper for very small instances."
-msgstr ""
+msgstr " نظام النسخ الاحتياطي الداخلي هو مساعد لحالات صغيرة جدا."
 
 #: front/backup.php:603
 msgid "You should rather use a dedicated tool on your server."
-msgstr ""
+msgstr "يجب عليك استخدام أداة مخصصة على الخادم الخاص بك."
 
 #: front/backup.php:609 front/backup.php:614
 msgid "Backup the database?"
@@ -1493,7 +1494,7 @@ msgstr "%s يضيف ممثلًا"
 #: front/change.form.php:116 front/problem.form.php:119
 #: front/ticket.form.php:223
 msgid "Save solution to the knowledge base"
-msgstr ""
+msgstr "حفظ الحل لقاعدة المعرفة"
 
 #. TRANS: %s is the user login
 #: front/change_group.form.php:53 front/change_supplier.form.php:61
@@ -1694,11 +1695,11 @@ msgstr "%s يقوم بتثبيت برنامج"
 
 #: front/computer_softwareversion.form.php:55
 msgid "Please select a software!"
-msgstr ""
+msgstr "يرجى تحديد البرنامج!"
 
 #: front/computer_softwareversion.form.php:57
 msgid "Please select a version!"
-msgstr ""
+msgstr "يرجى تحديد نسخة!"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:54
@@ -3486,12 +3487,12 @@ msgstr "تصنيف"
 #: inc/user.class.php:3976
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "نوع"
+msgstr[1] "نوع"
+msgstr[2] "نوعان"
+msgstr[3] "أنواع"
+msgstr[4] "أنواع"
+msgstr[5] "الأنواع "
 
 #: front/stat.graph.php:162 front/stat.graph.php:170
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
@@ -3582,12 +3583,12 @@ msgstr "العنوان"
 #: inc/solutiontype.class.php:42
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "نوع الحل"
+msgstr[1] "نوع الحل"
+msgstr[2] "نوعي الحل"
+msgstr[3] "أنواع الحل"
+msgstr[4] "أنواع الحل"
+msgstr[5] "أنواع الحل"
 
 #: front/stat.graph.php:223 front/stat.tracking.php:93
 #: inc/dropdown.class.php:798 inc/notificationtargetticket.class.php:721
@@ -19329,7 +19330,7 @@ msgstr ""
 
 #: inc/ticket.class.php:4026
 msgid "Inform me about the actions taken"
-msgstr ""
+msgstr "أبلغني عن الإجراءات المتخذة"
 
 #: inc/ticket.class.php:4178
 msgid "Submit message"

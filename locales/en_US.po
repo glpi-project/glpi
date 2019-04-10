@@ -7,8 +7,8 @@
 # James Christian <jdchristian@gmail.com>, 2017
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
-# Shawn Long <webaccounts@kkg.org>, 2018
 # Curtis Conard <cconard96@gmail.com>, 2018
+# Shawn Long <webaccounts@kkg.org>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Curtis Conard <cconard96@gmail.com>, 2018\n"
+"Last-Translator: Shawn Long <webaccounts@kkg.org>, 2019\n"
 "Language-Team: English (United States) (https://www.transifex.com/glpi/teams/1637/en_US/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -46,7 +46,7 @@ msgstr "Password"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr ""
+msgstr "Language (from user profile)"
 
 #: index.php:155
 msgid "Remember me"
@@ -1174,11 +1174,11 @@ msgstr "Check if a New Version is Available"
 
 #: front/backup.php:602
 msgid "GLPI internal backup system is a helper for very small instances."
-msgstr ""
+msgstr "GLPI internal backup system is a helper for very small instances."
 
 #: front/backup.php:603
 msgid "You should rather use a dedicated tool on your server."
-msgstr ""
+msgstr "You should rather use a dedicated tool on your server."
 
 #: front/backup.php:609 front/backup.php:614
 msgid "Backup the database?"
@@ -1669,11 +1669,11 @@ msgstr "%s Installs Software"
 
 #: front/computer_softwareversion.form.php:55
 msgid "Please select a software!"
-msgstr ""
+msgstr "Please select a software!"
 
 #: front/computer_softwareversion.form.php:57
 msgid "Please select a version!"
-msgstr ""
+msgstr "Please select a version!"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:54
@@ -1723,8 +1723,8 @@ msgstr "%s Adds a Link with a Supplier"
 #: inc/profile.class.php:1809 inc/transfer.class.php:3507
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contract"
+msgstr[1] "Contract"
 
 #. TRANS: %s is a directory
 #: front/cron.php:42
@@ -2974,7 +2974,7 @@ msgstr "%s updates an alert"
 
 #: front/savedsearch.php:37 inc/html.class.php:6119 inc/html.class.php:6128
 msgid "Saved searches"
-msgstr "Saved searches"
+msgstr "Saved Searches"
 
 #: front/search.php:36 inc/entity.class.php:1106 inc/html.class.php:6163
 #: inc/html.class.php:6442 inc/html.class.php:6443 inc/location.class.php:466
@@ -4785,7 +4785,7 @@ msgstr "Preserve"
 
 #: inc/authldap.class.php:3405
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Put in Trash"
 
 #: inc/authldap.class.php:3406 inc/authldap.class.php:3408
 msgid "Withdraw dynamic authorizations and groups"
@@ -5760,8 +5760,8 @@ msgstr "Does not expire"
 #: inc/certificatetype.class.php:45 inc/dropdown.class.php:860
 msgid "Certificate type"
 msgid_plural "Certificate types"
-msgstr[0] "Certificate type"
-msgstr[1] "Certificate types"
+msgstr[0] "Certificate Type"
+msgstr[1] "Certificate Types"
 
 #: inc/change.class.php:177 inc/problem.class.php:396
 #: inc/ticket.class.php:2715
@@ -6223,7 +6223,7 @@ msgstr "Confirm the final deletion?"
 #: inc/transfer.class.php:3347
 msgctxt "button"
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Put in Trash"
 
 #: inc/commondbtm.class.php:2635
 msgid "Template name"
@@ -6283,7 +6283,7 @@ msgstr "Other item exist"
 
 #: inc/commondbtm.class.php:4141
 msgid "Item in the trashbin"
-msgstr ""
+msgstr "Item in the Trash"
 
 #. TRANS: %1$s is the user login, %2$s the message
 #: inc/commondbtm.class.php:4262
@@ -6486,7 +6486,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s items"
 
 #: inc/commondropdown.class.php:501
 msgid "Product number"
@@ -6891,11 +6891,11 @@ msgstr[1] "Solutions"
 
 #: inc/commonitilobject.class.php:3047
 msgid "Any solution status"
-msgstr ""
+msgstr "Any solution status"
 
 #: inc/commonitilobject.class.php:3062
 msgid "Last solution status"
-msgstr ""
+msgstr "Last solution status"
 
 #: inc/commonitilobject.class.php:3099
 msgid "Resolution time"
@@ -7081,11 +7081,11 @@ msgstr "Private Task"
 
 #: inc/commonitiltask.class.php:762
 msgid "Technician in charge"
-msgstr ""
+msgstr "Technician in Charge"
 
 #: inc/commonitiltask.class.php:782
 msgid "Group in charge"
-msgstr ""
+msgstr "Group in Charge"
 
 #: inc/commonitiltask.class.php:869 inc/commonitiltask.class.php:1423
 #: inc/dropdown.class.php:794 inc/tasktemplate.class.php:52
@@ -7653,7 +7653,7 @@ msgstr[1] "Virtualization Systems"
 
 #: inc/computer.class.php:1200
 msgid "processor number"
-msgstr ""
+msgstr "processor number"
 
 #: inc/computer_item.class.php:252 inc/computer_item.class.php:277
 #: inc/computer_item.class.php:381 inc/computer_item.class.php:534
@@ -7818,11 +7818,11 @@ msgstr "General Setup"
 
 #: inc/config.class.php:291 inc/notificationtarget.class.php:1157
 msgid "URL of the application"
-msgstr "URL of the application"
+msgstr "URL of the Application"
 
 #: inc/config.class.php:296
 msgid "Text in the login box (HTML tags supported)"
-msgstr ""
+msgstr "Text in the login box (HTML tags supported)"
 
 #: inc/config.class.php:302
 msgid "Allow FAQ anonymous access"
@@ -7830,7 +7830,7 @@ msgstr "Allow FAQ anonymous access"
 
 #: inc/config.class.php:304
 msgid "Simplified interface help link"
-msgstr "Simplified interface help link"
+msgstr "Simplified Interface Help Link"
 
 #: inc/config.class.php:310
 msgid "Default search results limit (page)"
@@ -7924,7 +7924,7 @@ msgstr "Default state of checkbox"
 
 #: inc/config.class.php:452
 msgid "Display source dropdown on login page"
-msgstr ""
+msgstr "Display source dropdown on login page"
 
 #: inc/config.class.php:489 inc/config.class.php:2176 inc/entity.class.php:339
 #: inc/entity.class.php:964 inc/event.class.php:154 inc/html.class.php:1346
@@ -8551,7 +8551,7 @@ msgstr "Proxy configuration for upgrade check"
 
 #: inc/config.class.php:1853
 msgid "Information about system installation and configuration"
-msgstr "Information about system installation & configuration"
+msgstr "Information about System Installation & Configuration"
 
 #: inc/config.class.php:1936
 msgid "To copy/paste in your support request"
@@ -8571,7 +8571,7 @@ msgstr "Settings"
 
 #: inc/config.class.php:2180 inc/purgelogs.class.php:40
 msgid "Logs purge"
-msgstr ""
+msgstr "Logs Purge"
 
 #: inc/config.class.php:2181 inc/event.class.php:147
 msgid "System"
@@ -8584,12 +8584,12 @@ msgstr "Performance"
 #: inc/config.class.php:2278
 #, php-format
 msgid "Database version seems correct (%s) - Perfect!"
-msgstr ""
+msgstr "Database version seems correct (%s) - Perfect!"
 
 #: inc/config.class.php:2279
 #, php-format
 msgid "Your database engine version seems too old: %s."
-msgstr ""
+msgstr "Your database engine version seems too old: %s."
 
 #: inc/config.class.php:2322 inc/config.class.php:2335
 #: inc/config.class.php:2346
@@ -8720,19 +8720,19 @@ msgstr "Please check the unstable version checkbox."
 
 #: inc/config.class.php:3031
 msgid "Logs purge configuration"
-msgstr ""
+msgstr "Logs Purge Configuration"
 
 #: inc/config.class.php:3033
 msgid "Change all"
-msgstr ""
+msgstr "Change All"
 
 #: inc/config.class.php:3049
 msgid "Add/update relation between items"
-msgstr ""
+msgstr "Add/Update relation between items"
 
 #: inc/config.class.php:3053
 msgid "Delete relation between items"
-msgstr ""
+msgstr "Delete relation between items"
 
 #: inc/config.class.php:3058 inc/log.class.php:1045
 #: inc/notificationtargetfieldunicity.class.php:49
@@ -8757,31 +8757,31 @@ msgstr "Plugins"
 
 #: inc/config.class.php:3092
 msgid "Installation/uninstallation of software on computers"
-msgstr ""
+msgstr "Installation/Uninstallation of software on computers"
 
 #: inc/config.class.php:3096
 msgid "Installation/uninstallation versions on softwares"
-msgstr ""
+msgstr "Installation/Uninstallation versions on softwares"
 
 #: inc/config.class.php:3103
 msgid "Add/Remove computers from software versions"
-msgstr ""
+msgstr "Add/Remove computers from software versions"
 
 #: inc/config.class.php:3112
 msgid "Add financial information to an item"
-msgstr ""
+msgstr "Add financial information to an item"
 
 #: inc/config.class.php:3120
 msgid "Add/remove profiles to users"
-msgstr ""
+msgstr "Add/Remove profiles to users"
 
 #: inc/config.class.php:3123
 msgid "Add/remove groups to users"
-msgstr ""
+msgstr "Add/Remove groups to users"
 
 #: inc/config.class.php:3129
 msgid "User authentication method changes"
-msgstr ""
+msgstr "User authentication method changes"
 
 #: inc/config.class.php:3132 inc/user.class.php:3030
 msgid "Deleted user in LDAP directory"
@@ -8789,46 +8789,46 @@ msgstr "Deleted User in LDAP Directory"
 
 #: inc/config.class.php:3140
 msgid "Add component"
-msgstr ""
+msgstr "Add Component"
 
 #: inc/config.class.php:3143
 msgid "Update component"
-msgstr ""
+msgstr "Update Component"
 
 #: inc/config.class.php:3148
 msgid "Disconnect a component"
-msgstr ""
+msgstr "Disconnect a Component"
 
 #: inc/config.class.php:3152
 msgid "Connect a component"
-msgstr ""
+msgstr "Connect a Component"
 
 #: inc/config.class.php:3157
 msgid "Delete component"
-msgstr ""
+msgstr "Delete Component"
 
 #: inc/config.class.php:3163
 msgid "All sections"
-msgstr ""
+msgstr "All Sections"
 
 #: inc/config.class.php:3165
 msgid "Purge all log entries"
-msgstr ""
+msgstr "Purge all log entries"
 
 #: inc/config.class.php:3194
 msgid "Delete all"
-msgstr ""
+msgstr "Delete All"
 
 #: inc/config.class.php:3195
 msgid "Keep all"
-msgstr ""
+msgstr "Keep All"
 
 #: inc/config.class.php:3200
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Delete if older than %s month"
+msgstr[1] "Delete if older than %s months"
 
 #: inc/config.php:197 inc/config.php:205
 msgid "Service is down for maintenance. It will be back shortly."
@@ -8866,6 +8866,8 @@ msgid ""
 "You are trying to update to a development version from a development "
 "version. This is not supported."
 msgstr ""
+"You are trying to update to a development version from a development "
+"version. This is not supported."
 
 #: inc/consumable.class.php:200 inc/consumable.class.php:511
 msgctxt "button"
@@ -9630,8 +9632,8 @@ msgstr[1] "%d days"
 #: inc/dcroom.class.php:258
 msgid "Data center"
 msgid_plural "Data centers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Data Center"
+msgstr[1] "Data Centers"
 
 #: inc/dbconnection.class.php:375
 msgid "Check the SQL replica"
@@ -9686,7 +9688,7 @@ msgstr "Address:"
 
 #: inc/dcbreadcrumb.class.php:99
 msgid "Data center position"
-msgstr ""
+msgstr "Data Center Position"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/dcroom.class.php:50 inc/rack.class.php:200 inc/rack.class.php:411
@@ -9749,14 +9751,14 @@ msgstr "mV"
 #: inc/devicebatterymodel.class.php:44
 msgid "Device battery model"
 msgid_plural "Device batteries models"
-msgstr[0] "Device battery model"
-msgstr[1] "Device batteries models"
+msgstr[0] "Device Battery Model"
+msgstr[1] "Device Battery Models"
 
 #: inc/devicebatterytype.class.php:41
 msgid "Battery type"
 msgid_plural "Battery types"
-msgstr[0] "Battery type"
-msgstr[1] "Battery types"
+msgstr[0] "Battery Type"
+msgstr[1] "Battery Types"
 
 #: inc/devicecase.class.php:43
 msgid "Case"
@@ -9767,8 +9769,8 @@ msgstr[1] "Cases"
 #: inc/devicecasemodel.class.php:44 inc/dropdown.class.php:891
 msgid "Device case model"
 msgid_plural "Device case models"
-msgstr[0] "Device case model"
-msgstr[1] "Device case models"
+msgstr[0] "Device Case Model"
+msgstr[1] "Device Case Models"
 
 #: inc/devicecasetype.class.php:42 inc/dropdown.class.php:853
 msgid "Case type"
@@ -9797,8 +9799,8 @@ msgstr "Interface"
 #: inc/devicecontrolmodel.class.php:44 inc/dropdown.class.php:893
 msgid "Device control model"
 msgid_plural "Device control models"
-msgstr[0] "Device control model"
-msgstr[1] "Device control models"
+msgstr[0] "Device Control Model"
+msgstr[1] "Device Control Models"
 
 #: inc/devicedrive.class.php:43
 msgid "Drive"
@@ -9819,8 +9821,8 @@ msgstr "Speed"
 #: inc/devicedrivemodel.class.php:44 inc/dropdown.class.php:895
 msgid "Device drive model"
 msgid_plural "Device drive models"
-msgstr[0] "Device drive model"
-msgstr[1] "Device drive models"
+msgstr[0] "Device Drive Model"
+msgstr[1] "Device Drive Models"
 
 #: inc/devicefirmware.class.php:42 inc/networkequipment.class.php:559
 #: inc/phone.class.php:523
@@ -9832,14 +9834,14 @@ msgstr[1] "Firmware"
 #: inc/devicefirmwaremodel.class.php:43
 msgid "Device firmware model"
 msgid_plural "Device firmware models"
-msgstr[0] "Device firmware model"
-msgstr[1] "Device firmware models"
+msgstr[0] "Device Firmware Model"
+msgstr[1] "Device Firmware Models"
 
 #: inc/devicefirmwaretype.class.php:41
 msgid "Firmware type"
 msgid_plural "Firmware types"
-msgstr[0] "Firmware type"
-msgstr[1] "Firmware types"
+msgstr[0] "Firmware Type"
+msgstr[1] "Firmware Types"
 
 #: inc/devicegeneric.class.php:43
 msgid "Generic device"
@@ -9850,14 +9852,14 @@ msgstr[1] "Generic devices"
 #: inc/devicegenericmodel.class.php:44 inc/dropdown.class.php:897
 msgid "Device generic model"
 msgid_plural "Device generic models"
-msgstr[0] "Device generic model"
-msgstr[1] "Device generic models"
+msgstr[0] "Device Generic Model"
+msgstr[1] "Device Generic Models"
 
 #: inc/devicegenerictype.class.php:41
 msgid "Generic type"
 msgid_plural "Generic types"
-msgstr[0] "Generic type"
-msgstr[1] "Generic types"
+msgstr[0] "Generic Type"
+msgstr[1] "Generic Types"
 
 #: inc/devicegraphiccard.class.php:51 inc/devicegraphiccard.class.php:157
 #: inc/devicemotherboard.class.php:51 inc/devicemotherboard.class.php:66
@@ -9871,8 +9873,8 @@ msgstr "Memory by Default"
 #: inc/devicegraphiccardmodel.class.php:44 inc/dropdown.class.php:899
 msgid "Device graphic card model"
 msgid_plural "Device graphic card models"
-msgstr[0] "Device graphic card model"
-msgstr[1] "Device graphic card models"
+msgstr[0] "Device Graphic Card Model"
+msgstr[1] "Device Graphic Card Models"
 
 #: inc/deviceharddrive.class.php:43
 msgid "Hard drive"
@@ -9897,8 +9899,8 @@ msgstr "Cache"
 #: inc/deviceharddrivemodel.class.php:44 inc/dropdown.class.php:901
 msgid "Device hard drive model"
 msgid_plural "Device hard drive models"
-msgstr[0] "Device hard drive model"
-msgstr[1] "Device hard drive models"
+msgstr[0] "Device Hard Drive Model"
+msgstr[1] "Device Hard Drive Models"
 
 #: inc/devicememory.class.php:51 inc/devicememory.class.php:74
 msgid "Size by default"
@@ -9919,14 +9921,14 @@ msgstr "MHz"
 #: inc/devicememorymodel.class.php:44 inc/dropdown.class.php:903
 msgid "Device memory model"
 msgid_plural "Device memory models"
-msgstr[0] "Device memory model"
-msgstr[1] "Device memory models"
+msgstr[0] "Device Memory Model"
+msgstr[1] "Device Memory Models"
 
 #: inc/devicemotherboardmodel.class.php:44
 msgid "System board model"
 msgid_plural "System board models"
-msgstr[0] "System board model"
-msgstr[1] "System board models"
+msgstr[0] "System Board Model"
+msgstr[1] "System Board Models"
 
 #: inc/devicenetworkcard.class.php:45
 #: inc/networkportinstantiation.class.php:454
@@ -9953,8 +9955,8 @@ msgstr[1] "Network Card Models"
 #: inc/devicepcimodel.class.php:44 inc/dropdown.class.php:909
 msgid "Other component model"
 msgid_plural "Other component models"
-msgstr[0] "Other component model"
-msgstr[1] "Other component models"
+msgstr[0] "Other Component Model"
+msgstr[1] "Other Component Models"
 
 #: inc/devicepowersupply.class.php:51 inc/devicepowersupply.class.php:69
 msgid "ATX"
@@ -9968,8 +9970,8 @@ msgstr "Power"
 #: inc/devicepowersupplymodel.class.php:44 inc/dropdown.class.php:911
 msgid "Device power supply model"
 msgid_plural "Device power supply models"
-msgstr[0] "Device power supply model"
-msgstr[1] "Device power supply models"
+msgstr[0] "Device Power Supply Model"
+msgstr[1] "Device Power Supply Models"
 
 #: inc/deviceprocessor.class.php:51 inc/deviceprocessor.class.php:78
 msgid "Frequency by default"
@@ -9988,8 +9990,8 @@ msgstr "Number of Treads"
 #: inc/deviceprocessormodel.class.php:44 inc/dropdown.class.php:913
 msgid "Device processor model"
 msgid_plural "Device processor models"
-msgstr[0] "Device processor model"
-msgstr[1] "Device processor models"
+msgstr[0] "Device Processor Model"
+msgstr[1] "Device Processor Models"
 
 #: inc/devicesensor.class.php:45
 msgid "Sensor"
@@ -10000,14 +10002,14 @@ msgstr[1] "Sensors"
 #: inc/devicesensormodel.class.php:46 inc/dropdown.class.php:917
 msgid "Device sensor model"
 msgid_plural "Device sensor models"
-msgstr[0] "Device sensor model"
-msgstr[1] "Device sensor models"
+msgstr[0] "Device Sensor Model"
+msgstr[1] "Device Sensor Models"
 
 #: inc/devicesensortype.class.php:43 inc/dropdown.class.php:843
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] "Sensor type"
-msgstr[1] "Sensor types"
+msgstr[0] "Sensor Type"
+msgstr[1] "Sensor Types"
 
 #: inc/devicesimcard.class.php:42
 msgid "Simcard"
@@ -10022,14 +10024,14 @@ msgstr "Allow VOIP"
 #: inc/devicesimcardtype.class.php:45 inc/dropdown.class.php:864
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] "Simcard type"
-msgstr[1] "Simcard types"
+msgstr[0] "Simcard Type"
+msgstr[1] "Simcard Types"
 
 #: inc/devicesoundcardmodel.class.php:44 inc/dropdown.class.php:915
 msgid "Device sound card model"
 msgid_plural "Device sound card models"
-msgstr[0] "Device sound card model"
-msgstr[1] "Device sound card models"
+msgstr[0] "Device Sound Card Model"
+msgstr[1] "Device Sound Card Models"
 
 #: inc/displaypreference.class.php:306
 msgid "No personal criteria. Create personal parameters?"
@@ -10237,7 +10239,7 @@ msgstr "Unauthorized file type"
 
 #: inc/document.class.php:1270
 msgid "Manage document types"
-msgstr "Manage document types"
+msgstr "Manage Document Types"
 
 #: inc/document.class.php:1277
 #, php-format
@@ -10428,8 +10430,8 @@ msgstr[1] "Devices Types"
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2069
 msgid "Phone type"
 msgid_plural "Phones types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Phone Type"
+msgstr[1] "Phones Types"
 
 #: inc/dropdown.class.php:829 inc/softwarelicensetype.class.php:43
 msgid "License type"
@@ -10440,8 +10442,8 @@ msgstr[1] "License Types"
 #: inc/dropdown.class.php:841
 msgid "Generic device type"
 msgid_plural "Generic device types"
-msgstr[0] "Generic device type"
-msgstr[1] "Generic device types"
+msgstr[0] "Generic Device Type"
+msgstr[1] "Generic Device Types"
 
 #: inc/dropdown.class.php:850 inc/interfacetype.class.php:44
 msgid "Interface type (Hard drive...)"
@@ -10459,8 +10461,8 @@ msgstr[1] "Phones Power Supply Types"
 #: inc/linetype.class.php:42
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] "Line type"
-msgstr[1] "Line types"
+msgstr[0] "Line Type"
+msgstr[1] "Line Types"
 
 #: inc/dropdown.class.php:875 inc/networkequipmentmodel.class.php:41
 #: inc/rule.class.php:324
@@ -10493,14 +10495,14 @@ msgstr[1] "Phone Models"
 #: inc/dropdown.class.php:905
 msgid "Device mother board model"
 msgid_plural "Device mother board models"
-msgstr[0] "Device mother board model"
-msgstr[1] "Device mother board models"
+msgstr[0] "Device Motherboard Model"
+msgstr[1] "Device Motherboard Models"
 
 #: inc/dropdown.class.php:907
 msgid "Device network card model"
 msgid_plural "Device network card models"
-msgstr[0] "Device network card model"
-msgstr[1] "Device network card models"
+msgstr[0] "Device Network Card Model"
+msgstr[1] "Device Network Card Models"
 
 #: inc/dropdown.class.php:936 inc/event.class.php:159 inc/html.class.php:1356
 #: inc/infocom.class.php:145 inc/profile.class.php:100
@@ -10841,8 +10843,8 @@ msgstr "Power Supplies"
 #: inc/enclosuremodel.class.php:41
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] "Enclosure model"
-msgstr[1] "Enclosure models"
+msgstr[0] "Enclosure Model"
+msgstr[1] "Enclosure Models"
 
 #: inc/entity.class.php:245
 msgid "You can't add an entity without name"
@@ -11318,6 +11320,14 @@ msgid ""
 "\n"
 "Or, support the GLPI development effort by <b>donating</b>."
 msgstr ""
+"Do you need help to integrate GLPI into your IT, have a bug fixed or benefit from pre-configured rules or dictionaries?\n"
+"\n"
+"We provide the %s space for you.\n"
+"GLPI-Network is a commercial product that includes a subscription for tier 3 support. This ensures the correction of bugs encountered with a commitment time.\n"
+"\n"
+"In this same space, you will be able to <b>contact an official partner</b> to help you with your GLPI integration.\n"
+"\n"
+"Support the GLPI development effort by <b>donating</b>."
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -11806,7 +11816,7 @@ msgstr "Change mode"
 
 #: inc/html.class.php:6123
 msgid "Manage saved searches"
-msgstr "Manage saved searches"
+msgstr "Manage Saved Searches"
 
 #: inc/html.class.php:6127 inc/search.class.php:2216
 msgid "Load a saved search"
@@ -12200,7 +12210,7 @@ msgstr "An item is required"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
-msgstr ""
+msgstr "An enclosure is required"
 
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
@@ -12355,7 +12365,7 @@ msgstr "Not enough space available to place item"
 #: inc/item_rack.class.php:1085
 #, php-format
 msgid "Item for rack \"%1$s\""
-msgstr ""
+msgstr "Item for rack \"%1$s\""
 
 #: inc/item_ticket.class.php:303
 #, php-format
@@ -12482,7 +12492,7 @@ msgstr "Save & Add to the Knowledge Base"
 
 #: inc/itilsolution.class.php:297
 msgid "The item is already solved, did anyone pushed a solution before you ?"
-msgstr ""
+msgstr "The item is already solved, did anyone pushed a solution before you?"
 
 #: inc/itilsolution.class.php:434
 msgid "Add a new solution"
@@ -12657,7 +12667,7 @@ msgstr "Read the FAQ"
 #: inc/knowbaseitem.class.php:1875
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr ""
+msgstr "%1$s reverts item to revision %2$s"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:372
@@ -12770,7 +12780,7 @@ msgstr "cur"
 
 #: inc/knowbaseitem_revision.class.php:174
 msgid "Unknown user"
-msgstr ""
+msgstr "Unknown User"
 
 #: inc/knowbaseitem_revision.class.php:185
 msgid "show"
@@ -12820,7 +12830,7 @@ msgstr "Entry translations list"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr ""
+msgstr "%1$s reverts item translation to revision %2$s"
 
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:723
 #: inc/profile.class.php:1530
@@ -12912,15 +12922,15 @@ msgstr "Caller name"
 
 #: inc/lineoperator.class.php:53 inc/lineoperator.class.php:70
 msgid "Mobile Country Code"
-msgstr "Mobile Country Code"
+msgstr "Cell Country Code"
 
 #: inc/lineoperator.class.php:57 inc/lineoperator.class.php:78
 msgid "Mobile Network Code"
-msgstr "Mobile Network Code"
+msgstr "Cell Network Code"
 
 #: inc/lineoperator.class.php:109
 msgid "Mobile country code and network code combination must be unique!"
-msgstr ""
+msgstr "Cell country code and network code combination must be unique!"
 
 #: inc/link.class.php:51 inc/link.class.php:582 inc/profile.class.php:1524
 #: inc/profile.class.php:1961 inc/search.class.php:5826
@@ -13052,7 +13062,7 @@ msgstr "Update"
 
 #: inc/log.class.php:350
 msgid "Show filters"
-msgstr ""
+msgstr "Show Filters"
 
 #: inc/log.class.php:374
 msgid "No historical matching your filters"
@@ -13076,7 +13086,7 @@ msgstr "Change %1$s to %2$s"
 
 #: inc/log.class.php:1006
 msgid "Update a field"
-msgstr ""
+msgstr "Update a Field"
 
 #: inc/log.class.php:1053
 msgid "Lock the item"
@@ -13088,35 +13098,35 @@ msgstr "Unlock the Item"
 
 #: inc/log.class.php:1065
 msgid "Add a component"
-msgstr ""
+msgstr "Add a Component"
 
 #: inc/log.class.php:1069
 msgid "Change a component"
-msgstr ""
+msgstr "Change a Component"
 
 #: inc/log.class.php:1073
 msgid "Delete a component"
-msgstr ""
+msgstr "Delete a Component"
 
 #: inc/log.class.php:1077
 msgid "Lock a component"
-msgstr ""
+msgstr "Lock a Component"
 
 #: inc/log.class.php:1081
 msgid "Unlock a component"
-msgstr ""
+msgstr "Unlock a Component"
 
 #: inc/log.class.php:1085
 msgid "Install a software"
-msgstr ""
+msgstr "Install a Software"
 
 #: inc/log.class.php:1089
 msgid "Uninstall a software"
-msgstr ""
+msgstr "Uninstall a Software"
 
 #: inc/log.class.php:1093
 msgid "Disconnect an item"
-msgstr ""
+msgstr "Disconnect an Item"
 
 #: inc/log.class.php:1101
 msgid "Add a link with an item"
@@ -13187,7 +13197,7 @@ msgstr "Use mail date, instead of collect one"
 #: inc/mailcollector.class.php:396
 #, php-format
 msgid "No child found for folder '%s'."
-msgstr ""
+msgstr "No child found for folder '%s'."
 
 #: inc/mailcollector.class.php:414
 msgctxt "button"
@@ -13241,7 +13251,7 @@ msgstr "Invalid configuration for %1$s folder in receiver %2$s"
 
 #: inc/mailcollector.class.php:1774
 msgid "Retrieve email (Mails receivers)"
-msgstr "Retrieve Email (eMail receivers)"
+msgstr "Retrieve Email (eMail Receivers)"
 
 #: inc/mailcollector.class.php:1775
 msgid "Number of emails to retrieve"
@@ -14016,7 +14026,7 @@ msgstr "Mode"
 #: inc/notificationmailing.class.php:97
 #, php-format
 msgid "Original email address was %1$s"
-msgstr ""
+msgstr "Original email address was %1$s"
 
 #: inc/notificationeventmailing.class.php:264
 msgid "Error in sending the email"
@@ -14926,7 +14936,7 @@ msgstr "Ticket Deleted"
 #: inc/notificationtargetticket.class.php:239
 #: inc/notificationtargetticket.class.php:886 inc/ticket.class.php:6433
 msgid "Not solved tickets"
-msgstr "Not Solved Tickets"
+msgstr "Tickets Not Solved"
 
 #: inc/notificationtargetticket.class.php:240
 msgid "Automatic reminders of SLAs"
@@ -15072,7 +15082,7 @@ msgstr "CSS"
 #: inc/notificationtemplate.class.php:252
 #: inc/notificationtemplate.class.php:316
 msgid "Automatically generated by GLPI"
-msgstr ""
+msgstr "Automatically generated by GLPI"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -15152,7 +15162,7 @@ msgstr "Subject Email Header"
 #: inc/notimportedemail.class.php:166 inc/rulemailcollector.class.php:74
 #: inc/ruleticket.class.php:451
 msgid "Mails receiver"
-msgstr "Mails Receiver"
+msgstr "Mail Receiver"
 
 #: inc/notimportedemail.class.php:174
 msgid "Message-ID email header"
@@ -15172,7 +15182,7 @@ msgstr "Email not found. Impossible import"
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "Not enough rights"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"
@@ -15277,7 +15287,7 @@ msgstr "Automatic reminders of OLA"
 
 #: inc/olalevel_ticket.class.php:45
 msgid "OLA level for Ticket"
-msgstr ""
+msgstr "OLA Level for Ticket"
 
 #: inc/olalevel_ticket.class.php:131
 msgid "Automatic actions of OLA"
@@ -15306,8 +15316,8 @@ msgstr[1] "PDUs"
 #: inc/pdumodel.class.php:41
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] "PDU model"
-msgstr[1] "PDU models"
+msgstr[0] "PDU Model"
+msgstr[1] "PDU Models"
 
 #: inc/pdu_plug.class.php:49
 msgid "PDU plug"
@@ -15383,8 +15393,8 @@ msgstr "Bottom"
 #: inc/pdutype.class.php:41
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] "PDU type"
-msgstr[1] "PDU types"
+msgstr[0] "PDU Type"
+msgstr[1] "PDU Types"
 
 #: inc/peripheral.class.php:286 inc/peripheral.class.php:481
 #: inc/phone.class.php:279 inc/phone.class.php:507
@@ -15883,8 +15893,8 @@ msgstr "Financial & Administratives Information"
 #: inc/profile.class.php:1002 inc/profile.class.php:2431
 msgid "Public saved search"
 msgid_plural "Public saved searches"
-msgstr[0] "Public saved search"
-msgstr[1] "Public saved searches"
+msgstr[0] "Public Saved Search"
+msgstr[1] "Public Saved Searches"
 
 #: inc/profile.class.php:1005 inc/profile.class.php:1884
 #: inc/report.class.php:58
@@ -15899,7 +15909,7 @@ msgstr "Administration of Reservations"
 
 #: inc/profile.class.php:1088 inc/ticketrecurrent.class.php:60
 msgid "Recurrent tickets"
-msgstr "Recurring tickets"
+msgstr "Recurring Tickets"
 
 #: inc/profile.class.php:1155 inc/reminder.class.php:657
 #: inc/savedsearch.class.php:395 inc/state.class.php:74
@@ -15929,7 +15939,7 @@ msgstr "Life Cycle of Changes"
 
 #: inc/profile.class.php:1400 inc/queuednotification.class.php:48
 msgid "Notification queue"
-msgstr "Notification queue"
+msgstr "Notification Queue"
 
 #: inc/profile.class.php:1415 inc/profile.class.php:2053
 msgid "Rules for assigning a computer to an entity"
@@ -16239,7 +16249,7 @@ msgstr "Add a project task"
 
 #: inc/purgelogs.class.php:65
 msgid "Purge history"
-msgstr ""
+msgstr "Purge History"
 
 #: inc/queuednotification.class.php:80
 msgctxt "button"
@@ -16296,7 +16306,7 @@ msgstr "Maximum emails to send at once"
 
 #: inc/queuednotification.class.php:475
 msgid "Clean notification queue"
-msgstr "Clean notification queue"
+msgstr "Clean Notification Queue"
 
 #: inc/queuednotification.class.php:476
 msgid "Days to keep sent emails"
@@ -16344,7 +16354,7 @@ msgstr "Height"
 
 #: inc/rack.class.php:307
 msgid "Measured power (in watts)"
-msgstr ""
+msgstr "Measured Power (in watts)"
 
 #: inc/rack.class.php:312
 msgid "Max. weight"
@@ -16372,7 +16382,7 @@ msgstr "Insert a rack here"
 
 #: inc/rack.class.php:932
 msgid "Position must be set"
-msgstr ""
+msgstr "Position must be set"
 
 #: inc/rack.class.php:953
 #, php-format
@@ -16382,14 +16392,14 @@ msgstr "%1$s position is not available"
 #: inc/rackmodel.class.php:43
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] "Rack model"
-msgstr[1] "Rack models"
+msgstr[0] "Rack Model"
+msgstr[1] "Rack Models"
 
 #: inc/racktype.class.php:41
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] "Rack type"
-msgstr[1] "Rack types"
+msgstr[0] "Rack Type"
+msgstr[1] "Rack Types"
 
 #: inc/registeredid.class.php:54
 msgid "PCI"
@@ -16548,7 +16558,7 @@ msgstr "Reserve an Item"
 
 #: inc/reservation.class.php:723
 msgid "Repetition"
-msgstr ""
+msgstr "Repetition"
 
 #: inc/reservation.class.php:725
 msgctxt "periodicity"
@@ -16572,7 +16582,7 @@ msgstr "Monthly"
 
 #: inc/reservation.class.php:763
 msgid "Delete all repetition"
-msgstr ""
+msgstr "Delete All Repetition"
 
 #: inc/reservation.class.php:1074 inc/reservation.class.php:1076
 #: inc/reservation.class.php:1212
@@ -17124,6 +17134,8 @@ msgid ""
 "Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
+"Warning! This operation can put merged software in the trash.<br>Sure to "
+"notify your users."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:88
 msgid "Manufacturer choice"
@@ -17345,15 +17357,15 @@ msgstr "Business rules for ticket (entity parent)"
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] "Saved search alert"
-msgstr[1] "Saved searches alerts"
+msgstr[0] "Saved Search Alert"
+msgstr[1] "Saved Searches Alerts"
 
 #: inc/savedsearch_alert.class.php:134 inc/savedsearch.class.php:61
 #: inc/savedsearch.class.php:1397
 msgid "Saved search"
 msgid_plural "Saved searches"
-msgstr[0] "Saved search"
-msgstr[1] "Saved searches"
+msgstr[0] "Saved Search"
+msgstr[1] "Saved Searches"
 
 #: inc/savedsearch_alert.class.php:148 inc/savedsearch_alert.class.php:253
 msgid "Operator"
@@ -17387,7 +17399,7 @@ msgstr "Add an alert"
 
 #: inc/savedsearch_alert.class.php:301
 msgid "Saved searches alerts"
-msgstr "Saved searches alerts"
+msgstr "Saved Searches Alerts"
 
 #: inc/savedsearch_alert.class.php:355
 msgid "less than"
@@ -17569,7 +17581,7 @@ msgstr "Show as map"
 
 #: inc/search.class.php:1844 inc/search.class.php:1845
 msgid "Show the trashbin"
-msgstr ""
+msgstr "Show the Trash"
 
 #: inc/search.class.php:1918 inc/search.class.php:1920
 #: inc/search.class.php:1995 inc/search.class.php:1998
@@ -17647,7 +17659,7 @@ msgstr "Automatic reminders of SLA"
 
 #: inc/slalevel_ticket.class.php:41
 msgid "SLA level for Ticket"
-msgstr ""
+msgstr "SLA Level for Ticket"
 
 #: inc/slalevel_ticket.class.php:127
 msgid "Automatic actions of SLA"
@@ -17656,8 +17668,8 @@ msgstr "Automatic Actions of SLA"
 #: inc/slm.class.php:57
 msgid "Service level"
 msgid_plural "Service levels"
-msgstr[0] "Service level"
-msgstr[1] "Service levels"
+msgstr[0] "Service Level"
+msgstr[1] "Service Levels"
 
 #: inc/software.class.php:74 inc/software.class.php:1002
 msgid "Merging"
@@ -17900,7 +17912,7 @@ msgstr[1] "Associated Contracts"
 
 #: inc/telemetry.class.php:40
 msgid "Telemetry"
-msgstr ""
+msgstr "Telemetry"
 
 #: inc/telemetry.class.php:261
 msgid "Send telemetry informations"
@@ -18579,7 +18591,7 @@ msgstr "Ok - the sessions works (no problem with trans_id) - Perfect!"
 
 #: inc/toolbox.class.php:1049
 msgid "Testing DB engine version"
-msgstr ""
+msgstr "Testing DB engine version"
 
 #: inc/toolbox.class.php:1058
 msgid "Allocated memory test"
@@ -19271,11 +19283,11 @@ msgstr "Collect data"
 
 #: install/install.php:469 install/update.php:602
 msgid "One last thing before starting"
-msgstr ""
+msgstr "One last thing before starting"
 
 #: install/install.php:478 install/update.php:607
 msgid "Donate"
-msgstr ""
+msgstr "Donate"
 
 #: install/install.php:520
 msgid "The installation is finished"

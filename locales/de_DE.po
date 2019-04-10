@@ -13,17 +13,17 @@
 # Ettore Atalan <atalanttore@googlemail.com>, 2017
 # Erich Iseli <eiseli@gmail.com>, 2017
 # wagneral <alexander.wagner@bib.uni-mannheim.de>, 2017
-# Patrick Te <patrick.tenberken@web.de>, 2017
-# skyboarderxp <zampatbz@gmail.com>, 2017
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
-# sbeneke <sbeneke@gmail.com>, 2018
 # Administrator System, 2018
 # Ronny Hößrich, 2018
-# Stephan <stephan.rennert@web.de>, 2018
+# skyboarderxp <zampatbz@gmail.com>, 2018
+# Patrick Te <patrick.tenberken@web.de>, 2018
+# sbeneke <sbeneke@gmail.com>, 2018
 # Stefan K <shadow_7@gmx.net>, 2018
-# thofl <thofl@hotmail.com>, 2018
 # armin0103 <kkarmintestkk@yahoo.de>, 2018
+# Thofl, 2018
+# Stephan <stephan.rennert@web.de>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -32,7 +32,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: armin0103 <kkarmintestkk@yahoo.de>, 2018\n"
+"Last-Translator: Stephan <stephan.rennert@web.de>, 2019\n"
 "Language-Team: German (Germany) (https://www.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4317,6 +4317,8 @@ msgid ""
 "The CAS lib isn't available, GLPI doesn't package it anymore for license "
 "compatibility issue."
 msgstr ""
+"Die CAS-Bibliothek ist nicht verfügbar. GLPI kann sie aus Lizenzgründen "
+"nicht mehr bereitstellen."
 
 #: inc/auth.class.php:1364
 msgid "Impossible to use CAS as external source of connection"
@@ -4588,6 +4590,8 @@ msgstr "Dereferenzieren während der Lokalisierung"
 #: inc/authldap.class.php:498
 msgid "Domain name used by inventory tool for link the user"
 msgstr ""
+"Domainname, der vom Inventarisierungs-Tool verwendet wird, um den Benutzer "
+"zu verbinden"
 
 #: inc/authldap.class.php:549
 msgid "List of LDAP directory replicates"
@@ -6535,7 +6539,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s Elemente"
 
 #: inc/commondropdown.class.php:501
 msgid "Product number"
@@ -7977,7 +7981,7 @@ msgstr "Standardwert der Checkbox"
 
 #: inc/config.class.php:452
 msgid "Display source dropdown on login page"
-msgstr ""
+msgstr "Zeige Dropdown für Quelle auf der Login-Seite"
 
 #: inc/config.class.php:489 inc/config.class.php:2176 inc/entity.class.php:339
 #: inc/entity.class.php:964 inc/event.class.php:154 inc/html.class.php:1346
@@ -11401,6 +11405,14 @@ msgid ""
 "\n"
 "Or, support the GLPI development effort by <b>donating</b>."
 msgstr ""
+"Sie benötigen Hilfe bei der Integration von GLPI in Ihre IT, haben einen Fehler behoben oder profitieren von vorkonfigurierten Regeln oder Wörterbüchern?\n"
+"\n"
+"Wir stellen den Bereich %s für Sie zur Verfügung.\n"
+"GLPI-Network ist ein kommerzielles Produkt, das ein Abonnement für den Tier-3-Support beinhaltet und die Behebung von Fehlern gewährleistet, die während der Vertragslaufzeit auftreten.\n"
+"\n"
+"In diesem Bereich können Sie sich <b>an einen offiziellen Partner wenden</b>, der Ihnen bei der GLPI-Integration hilft.\n"
+"\n"
+"Oder unterstützen Sie die GLPI-Entwicklungsarbeit durch <b>Spenden</b>."
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -12296,7 +12308,7 @@ msgstr "Ein Element ist erforderlich"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
-msgstr ""
+msgstr "Ein Gehäuse ist erforderlich"
 
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
@@ -12451,7 +12463,7 @@ msgstr "Nicht genügend Platz für die Platzierung dieses Element vorhanden"
 #: inc/item_rack.class.php:1085
 #, php-format
 msgid "Item for rack \"%1$s\""
-msgstr ""
+msgstr "Element für Rack \"%1$s\""
 
 #: inc/item_ticket.class.php:303
 #, php-format
@@ -12755,7 +12767,7 @@ msgstr "FAQ lesen"
 #: inc/knowbaseitem.class.php:1875
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr ""
+msgstr "%1$s setzt das Element in die Revision %2$s zurück"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:372
@@ -12918,7 +12930,7 @@ msgstr "Eintrag Übersetzungsliste"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr ""
+msgstr "%1$s setzt die Übersetzung des Elements in die Revision %2$s zurück"
 
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:723
 #: inc/profile.class.php:1530
@@ -13019,6 +13031,7 @@ msgstr "Mobile Network Code"
 #: inc/lineoperator.class.php:109
 msgid "Mobile country code and network code combination must be unique!"
 msgstr ""
+"Die Kombination aus mobilem Ländercode und Netzwerkcode muss eindeutig sein!"
 
 #: inc/link.class.php:51 inc/link.class.php:582 inc/profile.class.php:1524
 #: inc/profile.class.php:1961 inc/search.class.php:5826
@@ -13285,7 +13298,7 @@ msgstr "Datum der E-Mail verwenden anstelle der Abholzeit"
 #: inc/mailcollector.class.php:396
 #, php-format
 msgid "No child found for folder '%s'."
-msgstr ""
+msgstr "Kein Unterordner für Ordner '%s' gefunden."
 
 #: inc/mailcollector.class.php:414
 msgctxt "button"
@@ -15283,7 +15296,7 @@ msgstr "E-Mail nicht vorhanden. Import nicht möglich"
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "Nicht ausreichend Rechte"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"
@@ -17239,6 +17252,8 @@ msgid ""
 "Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
+"Warnung! Dieser Vorgang kann zusammengeführte Software in den Papierkorb "
+"verschieben.<br>Bitte benachrichtigen Sie Ihre Benutzer."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:88
 msgid "Manufacturer choice"

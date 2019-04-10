@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Tiago Graca, 2018
+# Tiago Graça, 2019
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Tiago Graca, 2018\n"
+"Last-Translator: Tiago Graça, 2019\n"
 "Language-Team: French (Canada) (https://www.transifex.com/glpi/teams/1637/fr_CA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -6740,8 +6740,8 @@ msgstr "Ajouter un nouveau coût"
 #: inc/profile.class.php:2298
 msgid "Ticket cost"
 msgid_plural "Ticket costs"
-msgstr[0] "Coût des tickets"
-msgstr[1] "Coûts des tickets"
+msgstr[0] "Coût du billet"
+msgstr[1] "Coûts des billets"
 
 #: inc/commonitilcost.class.php:535
 msgid "Item duration"
@@ -8648,7 +8648,7 @@ msgstr "Performance"
 #: inc/config.class.php:2278
 #, php-format
 msgid "Database version seems correct (%s) - Perfect!"
-msgstr "La version de la base de données semble exacte (%s) - Génial !"
+msgstr "La version de la base de données est conforme (%s) - Génial !"
 
 #: inc/config.class.php:2279
 #, php-format
@@ -10320,7 +10320,7 @@ msgstr "Type de fichier non autorisé"
 
 #: inc/document.class.php:1270
 msgid "Manage document types"
-msgstr "Gérer les types de document"
+msgstr "Gérer les types de fichier"
 
 #: inc/document.class.php:1277
 #, php-format
@@ -12766,7 +12766,7 @@ msgstr "Lire la FAQ"
 #: inc/knowbaseitem.class.php:1875
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr ""
+msgstr "%1$s a rétabli l'élément à la révision %2$s"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:372
@@ -12929,7 +12929,7 @@ msgstr "Liste d'entrée de traductions"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr ""
+msgstr "%1$s a rétabli la traduction de l'élément à la révision %2$s"
 
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:723
 #: inc/profile.class.php:1530
@@ -16078,7 +16078,7 @@ msgstr "Règles pour assigner une catégorie à un logiciel"
 
 #: inc/profile.class.php:1424
 msgid "Business rules for tickets (entity)"
-msgstr "Règles métier pour les tickets (entité)"
+msgstr "Règles d'affaire pour les billets (entité)"
 
 #: inc/profile.class.php:1434 inc/profile.class.php:1442
 #: inc/profile.class.php:2109
@@ -19175,7 +19175,7 @@ msgstr "Nombre de billets créés"
 
 #: inc/user.class.php:3143
 msgid "Number of assigned tickets"
-msgstr "Nombre de tickets assignés"
+msgstr "Nombre de billets assignés"
 
 #: inc/user.class.php:3696 inc/user.class.php:3698 inc/user.class.php:3703
 msgid "Import a user"

@@ -5,7 +5,7 @@
 # 
 # Translators:
 # Jens Hyllegaard <jens.hyllegaard@gmail.com>, 2017
-# Peter <peter@1420.dk>, 2017
+# Peter Gjøtterup Malmstrøm <peter@1420.dk>, 2017
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
 # 

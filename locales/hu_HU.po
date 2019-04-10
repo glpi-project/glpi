@@ -8,6 +8,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
 # Bubreg István <bubreg.istvan@gmail.com>, 2018
+# Gábor Deme <creativeitsystem@gmail.com>, 2018
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-29 11:22+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Bubreg István <bubreg.istvan@gmail.com>, 2018\n"
+"Last-Translator: Gábor Deme <creativeitsystem@gmail.com>, 2018\n"
 "Language-Team: Hungarian (Hungary) (https://www.transifex.com/glpi/teams/1637/hu_HU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -6465,19 +6466,19 @@ msgstr ""
 
 #: inc/commondcmodeldropdown.class.php:314
 msgid "1"
-msgstr ""
+msgstr "1"
 
 #: inc/commondcmodeldropdown.class.php:315
 msgid "1/2"
-msgstr ""
+msgstr "1/2"
 
 #: inc/commondcmodeldropdown.class.php:316
 msgid "1/3"
-msgstr ""
+msgstr "1/3"
 
 #: inc/commondcmodeldropdown.class.php:317
 msgid "1/4"
-msgstr ""
+msgstr "1/4"
 
 #: inc/commondevice.class.php:119
 #, php-format
@@ -16324,11 +16325,11 @@ msgstr ""
 
 #: inc/rack.class.php:293
 msgid "Width"
-msgstr ""
+msgstr "Szélesség"
 
 #: inc/rack.class.php:298
 msgid "Height"
-msgstr ""
+msgstr "Magasság"
 
 #: inc/rack.class.php:307
 msgid "Measured power (in watts)"
@@ -17439,7 +17440,7 @@ msgstr "Utolsó végrehajtás dátuma"
 
 #: inc/savedsearch.class.php:374
 msgid "New saved search"
-msgstr ""
+msgstr "Új mentett keresls"
 
 #: inc/savedsearch.class.php:383
 msgid "Do count"
@@ -17451,7 +17452,7 @@ msgstr "A mentett keresés részleges betöltése"
 
 #: inc/savedsearch.class.php:774
 msgid "Filter list"
-msgstr ""
+msgstr "Lista szűrő"
 
 #: inc/savedsearch.class.php:778
 #, php-format
@@ -17535,7 +17536,7 @@ msgstr ""
 
 #: inc/search.class.php:278
 msgid "Reload"
-msgstr ""
+msgstr "Frissít"
 
 #: inc/search.class.php:1159
 msgid ""
@@ -17545,7 +17546,7 @@ msgstr ""
 
 #: inc/search.class.php:1491 inc/search.class.php:1813
 msgid "Show as map"
-msgstr ""
+msgstr "Térkép megjelenítése"
 
 #: inc/search.class.php:1844 inc/search.class.php:1845
 msgid "Show the trashbin"
@@ -17569,11 +17570,11 @@ msgstr "%1$s > %2$s"
 
 #: inc/search.class.php:2108
 msgid "AND"
-msgstr ""
+msgstr "ÉS"
 
 #: inc/search.class.php:2109
 msgid "OR"
-msgstr ""
+msgstr "VAGY"
 
 #: inc/search.class.php:2110
 msgid "AND NOT"
@@ -18454,7 +18455,7 @@ msgstr ""
 
 #: inc/ticket_ticket.class.php:233
 msgid "Duplicated by"
-msgstr ""
+msgstr "Duplikált: "
 
 #: inc/ticketvalidation.class.php:99
 msgid "Create for request"
@@ -18891,7 +18892,7 @@ msgstr "... külső forrásból"
 
 #: inc/user.class.php:1993
 msgid "Download user VCard"
-msgstr ""
+msgstr "vCard letöltés"
 
 #: inc/user.class.php:2086 inc/user.class.php:2473 inc/user.class.php:4266
 msgid "Password confirmation"
@@ -19240,7 +19241,7 @@ msgstr ""
 
 #: install/install.php:478 install/update.php:607
 msgid "Donate"
-msgstr ""
+msgstr "Támogatás"
 
 #: install/install.php:520
 msgid "The installation is finished"
