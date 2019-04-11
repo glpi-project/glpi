@@ -355,19 +355,19 @@ class Plugin extends CommonDBTM {
           || $directory != $plugin->fields['directory']) {
          // Plugin known version differs from informations or plugin has been renamed,
          // update informations in database
-         trigger_error(
-            sprintf(
-               'Plugin "%s" version changed. It has been deactivated as its update process has to be launched.',
-               $directory
-            ),
-            E_USER_WARNING
-         );
-
          $input              = $informations;
          $input['id']        = $plugin->fields['id'];
          $input['directory'] = $directory;
          if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED])) {
             // mark it as 'updatable' unless it was not installed
+            trigger_error(
+               sprintf(
+                  'Plugin "%s" version changed. It has been deactivated as its update process has to be launched.',
+                  $directory
+               ),
+               E_USER_WARNING
+            );
+
             $input['state']     = self::NOTUPDATED;
          }
 
