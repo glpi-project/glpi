@@ -362,10 +362,11 @@ class Plugin extends DbTestCase {
    }
 
    /**
-    * Test state checking on a valid directory corresponding to a known plugin with a different version.
+    * Test state checking on a valid directory corresponding to a known and installed plugin
+    * with a different version.
     * Should results in changing plugin state to "NOTUPDATED".
     */
-   public function testCheckPluginStateForUpdatablePlugin() {
+   public function testCheckPluginStateForInstalledAndUpdatablePlugin() {
 
       $initial_data = [
          'directory' => $this->test_plugin_directory,
@@ -382,6 +383,38 @@ class Plugin extends DbTestCase {
          $setup_informations,
          [
             'state' => \Plugin::NOTUPDATED,
+         ]
+      );
+
+      $this->doTestCheckPluginState(
+         $initial_data,
+         $setup_informations,
+         $expected_data
+      );
+   }
+
+   /**
+    * Test state checking on a valid directory corresponding to a known and NOT installed plugin
+    * with a different version.
+    * Should results in keeping plugin state to "NOTINSTALLED".
+    */
+   public function testCheckPluginStateForNotInstalledAndUpdatablePlugin() {
+
+      $initial_data = [
+         'directory' => $this->test_plugin_directory,
+         'name'      => 'Test plugin',
+         'version'   => '1.0',
+         'state'     => \Plugin::NOTINSTALLED,
+      ];
+      $setup_informations = [
+         'name'    => 'Test plugin NG',
+         'version' => '2.0',
+      ];
+      $expected_data = array_merge(
+         $initial_data,
+         $setup_informations,
+         [
+            'state' => \Plugin::NOTINSTALLED,
          ]
       );
 
