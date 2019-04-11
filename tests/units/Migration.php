@@ -284,12 +284,12 @@ class Migration extends \GLPITestCase {
       )->isIdenticalTo("Task completed.");
 
       $this->array($this->queries)->isIdenticalTo([
-         0 => 'SELECT `TABLE_NAME` FROM `information_schema`.`TABLES`' .
-               ' WHERE `TABLE_SCHEMA` = ?' .
-               ' AND `TABLE_TYPE` = ? AND `TABLE_NAME` LIKE ?',
-         1 => 'SELECT `TABLE_NAME` FROM `information_schema`.`TABLES`' .
-               ' WHERE `TABLE_SCHEMA` = ?'  .
-               ' AND `TABLE_TYPE` = ? AND `TABLE_NAME` LIKE ?'
+         0 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
+               ' WHERE `table_schema` = \'' . $DB->dbdefault .
+               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'%table1%\'',
+         1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
+               ' WHERE `table_schema` = \'' . $DB->dbdefault  .
+               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'%table2%\''
              ]);
       $this->array($this->qry_params)->isIdenticalTo([
          0  => [$DB->dbdefault, 'BASE TABLE', '%table1%'],
