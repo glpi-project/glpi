@@ -48,7 +48,7 @@ class TimestampsCommand extends AbstractCommand {
       parent::configure();
 
       $this->setName('glpi:migration:timestamps');
-      $this->setDescription(__('Convert DATETIME to timestamps to use timezones.'));
+      $this->setDescription(__('Convert "datetime" fields to "timestamp" to use timezones.'));
    }
 
    protected function execute(InputInterface $input, OutputInterface $output) {
@@ -56,31 +56,31 @@ class TimestampsCommand extends AbstractCommand {
 
       // we are going to update datetime, date and time (?) types to timestamp type
       $tbl_iterator = $this->db->request([
-         'SELECT'       => ['INFORMATION_SCHEMA.COLUMNS.TABLE_NAME'],
+         'SELECT'       => ['information_schema.columns.table_name as TABLE_NAME'],
          'DISTINCT'     => true,
-         'FROM'         => 'INFORMATION_SCHEMA.COLUMNS',
+         'FROM'         => 'information_schema.columns',
          'INNER JOIN'   => [
-            'INFORMATION_SCHEMA.TABLES' => [
+            'information_schema.tables' => [
                'ON' => [
-                  'INFORMATION_SCHEMA.TABLES.TABLE_NAME',
-                  'INFORMATION_SCHEMA.COLUMNS.TABLE_NAME', [
-                     'AND' => ['INFORMATION_SCHEMA.TABLES.TABLE_TYPE' => 'BASE TABLE']
+                  'information_schema.tables.table_name',
+                  'information_schema.columns.table_name', [
+                     'AND' => ['information_schema.tables.table_type' => 'BASE TABLE']
                   ]
                ]
             ]
          ],
          'WHERE'       => [
-            'INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA' => $this->db->dbdefault,
-            'INFORMATION_SCHEMA.COLUMNS.COLUMN_TYPE'  => 'DATETIME'
+            'information_schema.columns.table_schema' => $this->db->dbdefault,
+            'information_schema.columns.data_type'    => 'datetime'
          ],
          'ORDER'       => [
-            'INFORMATION_SCHEMA.COLUMNS.TABLE_NAME'
+            'information_schema.columns.table_name'
          ]
       ]);
 
       $output->writeln(
          sprintf(
-            '<info>' . __('Found %s table(s) using requiring migration.') . '</info>',
+            '<info>' . __('Found %s table(s) requiring migration.') . '</info>',
             $tbl_iterator->count()
          )
       );
@@ -118,11 +118,18 @@ class TimestampsCommand extends AbstractCommand {
 
          // get accurate info from information_schema to perform correct alter
          $col_iterator = $this->db->request([
-            'FROM'   => 'INFORMATION_SCHEMA.COLUMNS',
+            'SELECT' => [
+               'table_name AS TABLE_NAME',
+               'column_name AS COLUMN_NAME',
+               'column_default AS COLUMN_DEFAULT',
+               'column_comment AS COLUMN_COMMENT',
+               'is_nullable AS IS_NULLABLE',
+            ],
+            'FROM'   => 'information_schema.columns',
             'WHERE'  => [
-               'TABLE_SCHEMA' => $this->db->dbdefault,
-               'TABLE_NAME'   => $table['TABLE_NAME'],
-               'COLUMN_TYPE'  => 'DATETIME'
+               'table_schema' => $this->db->dbdefault,
+               'table_name'   => $table['TABLE_NAME'],
+               'data_type'    => 'datetime'
             ]
          ]);
 
