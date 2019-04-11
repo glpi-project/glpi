@@ -57,23 +57,23 @@ class BuildMissingTimestampsCommand extends AbstractCommand {
 
       $tables_iterator = $this->db->request(
          [
-            'SELECT' => ['TABLE_NAME', 'COLUMN_NAME'],
-            'FROM'   => 'INFORMATION_SCHEMA.COLUMNS',
+            'SELECT' => ['table_name', 'column_name'],
+            'FROM'   => 'information_schema.columns',
             'WHERE'  => [
-               'TABLE_SCHEMA' => $this->db->dbdefault,
-               'TABLE_NAME'   => ['LIKE', 'glpi_%'],
-               'COLUMN_NAME'  => ['date_creation', 'date_mod'],
+               'table_schema' => $this->db->dbdefault,
+               'table_name'   => ['LIKE', 'glpi_%'],
+               'column_name'  => ['date_creation', 'date_mod'],
             ],
-            'ORDER'  => ['TABLE_NAME', 'COLUMN_NAME'],
+            'ORDER'  => ['table_name', 'column_name'],
          ]
       );
 
       $log_table = Log::getTable();
 
       foreach ($tables_iterator as $table_info) {
-         $table    = $table_info['TABLE_NAME'];
+         $table    = $table_info['table_name'];
          $itemtype = getItemTypeForTable($table);
-         $column   = $table_info['COLUMN_NAME'];
+         $column   = $table_info['column_name'];
 
          if (!is_a($itemtype, CommonDBTM::class, true)) {
             continue; // getItemTypeForTable() may not return a class name ("UNKNOWN" for example)
