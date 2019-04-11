@@ -107,6 +107,7 @@ echo "Delete various scripts and directories"
 \rm -rf ISSUE_TEMPLATE.md;
 \rm -rf PULL_REQUEST_TEMPLATE.md;
 \rm -rf .tx;
+\rm -rf .github;
 \find pics/ -type f -name "*.eps" -exec rm -rf {} \;
 
 echo "Creating tarball";
