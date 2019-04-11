@@ -1411,7 +1411,7 @@ class Rule extends CommonDBTM {
     * Process the rule
     *
     * @param &$input          the input data used to check criterias
-    * @param &$output         the initial ouput array used to be manipulate by actions
+    * @param &$output         the initial output array used to be manipulate by actions
     * @param &$params         parameters for all internal functions
     * @param &options   array options:
     *                     - only_criteria : only react on specific criteria
@@ -1449,8 +1449,8 @@ class Rule extends CommonDBTM {
     *
     * @param &options   options :
     *                     - only_criteria : only react on specific criteria
-    * @param $refoutput   the initial ouput array used to be manipulate by actions
-    * @param $newoutput   the ouput array after actions process
+    * @param $refoutput   the initial output array used to be manipulate by actions
+    * @param $newoutput   the output array after actions process
     *
     * @return the options array updated.
    **/
@@ -1819,7 +1819,7 @@ class Rule extends CommonDBTM {
                default:
                   //plugins actions
                   $executeaction = clone $this;
-                  $ouput = $executeaction->executePluginsActions($action, $output, $params, $input);
+                  $output = $executeaction->executePluginsActions($action, $output, $params, $input);
                   break;
             }
          }
