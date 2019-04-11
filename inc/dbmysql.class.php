@@ -54,6 +54,14 @@ class DBmysql {
 
    // Slave management
    public $slave              = false;
+   // DB is using ssl
+   public $dbssl              = false;
+   // ssl key path
+   public $dbsslkey           = "";
+   // ssl cert path 
+   public $dbsslcert          = "";
+   // ssl ca path
+   public $dbsslca            = "";
    /** Is it a first connection ?
     * Indicates if the first connection attempt is successful or not
     * if first attempt fail -> display a warning which indicates that glpi is in readonly
@@ -88,6 +96,15 @@ class DBmysql {
     */
    function connect($choice = null) {
       $this->connected = false;
+        $this->dbh = @new mysqli();
+        $this->dbh->init();
+        if ($this->dbssl) {
+                mysqli_ssl_set($this->dbh, $this->dbsslkey,
+                    $this->dbsslcert,
+                    $this->dbsslca,
+                    null,
+                    null);
+        }
 
       if (is_array($this->dbhost)) {
          // Round robin choice
@@ -101,17 +118,13 @@ class DBmysql {
       $hostport = explode(":", $host);
       if (count($hostport) < 2) {
          // Host
-         $this->dbh = @new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault);
-
+         $this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
       } else if (intval($hostport[1])>0) {
-         // Host:port
-         $this->dbh = @new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault, $hostport[1]);
+	      // Host:port
+	       $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
       } else {
-         // :Socket
-         $this->dbh = @new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
+	       // :Socket
+	       $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
       }
 
       if ($this->dbh->connect_error) {
