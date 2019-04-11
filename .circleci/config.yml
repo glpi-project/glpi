@@ -197,8 +197,6 @@ workflows:
           filters:
             tags:
               only: /.*/ # run also on tag creation
-            branches:
-              ignore: /.*/ # do not run on branch update
   scheduled_build:
     triggers:
       - schedule:
