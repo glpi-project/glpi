@@ -72,10 +72,6 @@ commands:
       - restore_cache:
           keys:
             - npm-cache-{{ .Environment.CIRCLE_JOB }}
-      - restore_cache:
-          keys:
-            - npm-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
-            - npm-install-{{ .Environment.CIRCLE_JOB }}
       - run:
           name: npm install
           command: |
@@ -86,10 +82,6 @@ commands:
           key: npm-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
             - /home/circleci/.npm/_cacache/
-      - save_cache:
-          key: npm-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
-          paths:
-            - ./node_modules
 
   # Run test suite command.
   run_test_suite:
