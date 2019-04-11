@@ -271,7 +271,7 @@ class DBmysqlIterator implements Iterator, Countable {
             } else {
                $this->sql .= "*";
             }
-            $this->sql .= ") AS $count";
+            $this->sql .= ") AS " . $this->conn->quoteName($count);
             $first = false;
          }
          if (!$count || $count && is_array($field)) {
@@ -497,7 +497,7 @@ class DBmysqlIterator implements Iterator, Countable {
       $names = preg_split('/ AS /i', $f);
       $expr  = "$t(".$this->handleFields(0, $names[0])."$suffix)";
       if (isset($names[1])) {
-         $expr .= " AS {$names[1]}";
+         $expr .= " AS " . $this->conn->quoteName($names[1]);
       }
 
       return $expr;
