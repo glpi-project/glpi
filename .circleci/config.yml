@@ -126,6 +126,12 @@ commands:
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report  --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
             rm tests/config_db.php
       - run:
+          name: Database tests
+          command: |
+            cp tests/circleci.config_db.php tests/config_db.php
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report  --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
+            rm tests/config_db.php
+      - run:
           name: Install DB
           command: |
             mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
