@@ -537,12 +537,12 @@ class DBmysql {
     */
    function listTables($table = 'glpi_%', array $where = []) {
       $iterator = $this->request([
-         'SELECT' => 'TABLE_NAME',
-         'FROM'   => 'information_schema.TABLES',
+         'SELECT' => 'table_name as TABLE_NAME',
+         'FROM'   => 'information_schema.tables',
          'WHERE'  => [
-            'TABLE_SCHEMA' => $this->dbdefault,
-            'TABLE_TYPE'   => 'BASE TABLE',
-            'TABLE_NAME'   => ['LIKE', $table]
+            'table_schema' => $this->dbdefault,
+            'table_type'   => 'BASE TABLE',
+            'table_name'   => ['LIKE', $table]
          ] + $where
       ]);
       return $iterator;
@@ -1510,10 +1510,10 @@ class DBmysql {
 
        $result = $DB->request([
            'COUNT'       => 'cpt',
-           'FROM'        => 'INFORMATION_SCHEMA.COLUMNS',
+           'FROM'        => 'information_schema.columns',
            'WHERE'       => [
-              'INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA'  => $DB->dbdefault,
-              'INFORMATION_SCHEMA.COLUMNS.COLUMN_TYPE'   => ['DATETIME']
+              'information_schema.columns.table_schema'  => $DB->dbdefault,
+              'information_schema.columns.column_type'   => ['datetime']
            ]
        ])->next();
        return (int)$result['cpt'];
