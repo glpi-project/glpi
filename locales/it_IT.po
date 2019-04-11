@@ -8,8 +8,8 @@
 # Andrea Garelli <garelli.andrea@gmail.com>, 2018
 # Tiziano Sartori <tiziano.sartori@gmail.com>, 2018
 # Giudy <spam@habilitas.it>, 2018
-# Pierfrancesco Passerini <p.passerini@gmail.com>, 2019
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2019
+# Pierfrancesco Passerini <p.passerini@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-10 10:08+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2019\n"
+"Last-Translator: Pierfrancesco Passerini <p.passerini@gmail.com>, 2019\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/glpi/teams/1637/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12267,7 +12267,7 @@ msgstr "Thread"
 #: inc/item_devices.class.php:86
 #, php-format
 msgid "%1$s of item \"%2$s\""
-msgstr ""
+msgstr "%1$s di \"%2$s\" elementi"
 
 #. TRANS: %s is the type of the component
 #: inc/item_devices.class.php:100
@@ -13719,12 +13719,12 @@ msgstr "Modifica del layout del database -%s"
 #: inc/migration.class.php:672
 #, php-format
 msgid "Adding fulltext indices - %s"
-msgstr ""
+msgstr "Aggiungi indice fulltext - %s"
 
 #: inc/migration.class.php:681
 #, php-format
 msgid "Adding unicity indices - %s"
-msgstr ""
+msgstr "Aggiungi indice univoco - %s"
 
 #: inc/migration.class.php:721 inc/software.class.php:1104
 #: install/update.php:86
@@ -18379,7 +18379,7 @@ msgstr "Unisci commenti"
 
 #: inc/ticket.class.php:2715
 msgid "Merge Documents"
-msgstr ""
+msgstr "Unisci i documenti"
 
 #: inc/ticket.class.php:2723
 msgid "Confirm the merge? This ticket will be deleted!"
@@ -18534,11 +18534,11 @@ msgstr "Le tue chiamate da convalidate"
 
 #: inc/ticket.class.php:5743
 msgid "Your tickets having rejected approval status"
-msgstr ""
+msgstr "La tua chiamata ha uno stato di convalida rifiutato"
 
 #: inc/ticket.class.php:5760
 msgid "Your tickets having rejected solution"
-msgstr ""
+msgstr "La tua chiamata ha una soluzione rifiutata"
 
 #: inc/ticket.class.php:5967
 msgid "Ticket followup"
@@ -19721,6 +19721,8 @@ msgstr "Aggiungi date_creation a %s"
 #: install/update_940_941.php:65 install/update_941_942.php:69
 msgid "Fix URL of images in ITIL tasks, followups ans solutions."
 msgstr ""
+"Verifica URL delle immagini delle attività ITIL, dei commenti e delle "
+"soluzioni."
 
 #: install/update.php:137
 msgid "Update successful, your database is up to date"
