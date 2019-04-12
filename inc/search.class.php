@@ -5039,6 +5039,7 @@ JAVASCRIPT;
 
                case 'Software' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, "glpi_computers_softwareversions_$to_type");
                   array_push($already_link_tables2, "glpi_softwareversions_$to_type");
                   array_push($already_link_tables2, "glpi_softwarelicenses_$to_type");
                   return " $LINK `glpi_computers_softwareversions`
