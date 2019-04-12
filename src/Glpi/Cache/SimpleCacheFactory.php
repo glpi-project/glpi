@@ -32,8 +32,6 @@
 
 namespace Glpi\Cache;
 
-use Zend\Cache\Exception\ExceptionInterface;
-
 /**
  * Glpi simple cache factory.
  *
@@ -104,7 +102,7 @@ class SimpleCacheFactory
 
         try {
             $storage = $this->storageFactory->factory($cfg);
-        } catch (ExceptionInterface $e) {
+        } catch (\Exception $e) {
             if ($isAdapterComputed && 'filesystem' !== $cfg['adapter']) {
                 // Fallback to 'filesystem' adapter if adapter was not explicitely defined in config
                 trigger_error(
