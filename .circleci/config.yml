@@ -79,15 +79,15 @@ commands:
       - run:
           name: npm install
           command: |
-            # use npm ci instead of npm install to make sure that it will install exact packages
-            # described in package-lock.json, without any additionnal checks
-            npm ci
+            mv package-lock.json package-lock.json.bak
+            npm install
+            php -r "file_put_contents('.package.hash', sha1_file('package-lock.json'));"
       - save_cache:
           key: npm-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
             - /home/circleci/.npm/_cacache/
       - save_cache:
-          key: npm-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
+          key: npm-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json.bak" }}
           paths:
             - ./node_modules
 
