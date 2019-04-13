@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-10 10:08+0200\n"
+"POT-Creation-Date: 2019-04-13 10:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -481,10 +481,10 @@ msgstr ""
 #: inc/notificationtargetticket.class.php:780
 #: inc/notificationtargetticket.class.php:781
 #: inc/notificationtargetticket.class.php:783
-#: inc/notificationtemplatetranslation.class.php:393 inc/plugin.class.php:1934
-#: inc/plugin.class.php:1988 inc/plugin.class.php:2005
-#: inc/plugin.class.php:2021 inc/plugin.class.php:2033
-#: inc/plugin.class.php:2079 inc/problem.class.php:964
+#: inc/notificationtemplatetranslation.class.php:393 inc/plugin.class.php:1936
+#: inc/plugin.class.php:1990 inc/plugin.class.php:2007
+#: inc/plugin.class.php:2023 inc/plugin.class.php:2035
+#: inc/plugin.class.php:2081 inc/problem.class.php:964
 #: inc/problem.class.php:1145 inc/profile_user.class.php:377
 #: inc/profile_user.class.php:493 inc/profile_user.class.php:1075
 #: inc/profile_user.class.php:1077 inc/projectcost.class.php:431
@@ -2681,7 +2681,7 @@ msgstr ""
 #: inc/olalevel.class.php:143 inc/olalevel.class.php:228 inc/pdu.class.php:76
 #: inc/pdu.class.php:212 inc/pdu_plug.class.php:160
 #: inc/peripheral.class.php:175 inc/peripheral.class.php:366
-#: inc/phone.class.php:171 inc/phone.class.php:384 inc/plugin.class.php:1819
+#: inc/phone.class.php:171 inc/phone.class.php:384 inc/plugin.class.php:1821
 #: inc/printer.class.php:277 inc/printer.class.php:519
 #: inc/profile.class.php:576 inc/profile.class.php:1544
 #: inc/project.class.php:508 inc/project.class.php:886
@@ -3655,7 +3655,7 @@ msgstr ""
 #: inc/notification.class.php:307 inc/notificationtemplate.class.php:145
 #: inc/notificationtemplatetranslation.class.php:278 inc/pdu.class.php:205
 #: inc/peripheral.class.php:359 inc/phone.class.php:377
-#: inc/plugin.class.php:1812 inc/printer.class.php:512
+#: inc/plugin.class.php:1814 inc/printer.class.php:512
 #: inc/profile.class.php:1537 inc/profile_user.class.php:888
 #: inc/project.class.php:501 inc/projectcost.class.php:118
 #: inc/projecttask.class.php:747 inc/queuednotification.class.php:174
@@ -5275,7 +5275,7 @@ msgstr ""
 
 #: inc/cartridge.class.php:949 inc/computer.class.php:547
 #: inc/computer_softwareversion.class.php:740
-#: inc/computer_softwareversion.class.php:927 inc/plugin.class.php:1967
+#: inc/computer_softwareversion.class.php:927 inc/plugin.class.php:1969
 #: install/install.php:152
 msgctxt "button"
 msgid "Install"
@@ -5603,7 +5603,7 @@ msgstr ""
 #: inc/notificationtargetplanningrecall.class.php:183 inc/pdu.class.php:95
 #: inc/pdu.class.php:273 inc/peripheral.class.php:183
 #: inc/peripheral.class.php:402 inc/phone.class.php:179 inc/phone.class.php:420
-#: inc/plugin.class.php:1856 inc/printer.class.php:285
+#: inc/plugin.class.php:1858 inc/printer.class.php:285
 #: inc/printer.class.php:555 inc/problem.class.php:1178
 #: inc/project.class.php:875 inc/projecttask.class.php:960
 #: inc/projecttask_ticket.class.php:361 inc/rack.class.php:108
@@ -5799,7 +5799,7 @@ msgstr ""
 msgid "Checklist"
 msgstr ""
 
-#: inc/change.class.php:539 inc/plugin.class.php:1701 inc/plugin.class.php:2140
+#: inc/change.class.php:539 inc/plugin.class.php:1703 inc/plugin.class.php:2142
 #: inc/problem.class.php:551 inc/ticket.class.php:3612
 msgctxt "status"
 msgid "New"
@@ -7510,7 +7510,7 @@ msgstr[1] ""
 #: inc/item_operatingsystem.class.php:298
 #: inc/item_operatingsystem.class.php:421
 #: inc/item_operatingsystem.class.php:593 inc/lock.class.php:571
-#: inc/plugin.class.php:1838 inc/rulecollection.class.php:2146
+#: inc/plugin.class.php:1840 inc/rulecollection.class.php:2146
 #: inc/ruledictionnaryoperatingsystemversion.class.php:56
 #: inc/ruledictionnaryoperatingsystemversion.class.php:69
 #: inc/ruledictionnarysoftware.class.php:112 inc/software.class.php:612
@@ -7649,7 +7649,7 @@ msgstr[1] ""
 #: inc/computer_softwareversion.class.php:808
 #: inc/computer_softwareversion.class.php:853
 #: inc/computer_softwareversion.class.php:951 inc/entity.class.php:1894
-#: inc/plugin.class.php:1847 inc/profile.class.php:849
+#: inc/plugin.class.php:1849 inc/profile.class.php:849
 #: inc/software.class.php:970 inc/softwarelicense.class.php:54
 #: inc/softwarelicense.class.php:690 install/install.php:617
 msgid "License"
@@ -8826,7 +8826,7 @@ msgstr ""
 msgid "Try again"
 msgstr ""
 
-#: inc/config.php:235 inc/plugin.class.php:1965 install/install.php:158
+#: inc/config.php:235 inc/plugin.class.php:1967 install/install.php:158
 msgctxt "button"
 msgid "Upgrade"
 msgstr ""
@@ -9051,7 +9051,7 @@ msgstr[1] ""
 #: inc/entity.class.php:511 inc/entity.class.php:1327
 #: inc/notificationtargetcommonitilobject.class.php:1439
 #: inc/notificationtargetcommonitilobject.class.php:1512
-#: inc/plugin.class.php:1872 inc/supplier.class.php:141
+#: inc/plugin.class.php:1874 inc/supplier.class.php:141
 #: inc/supplier.class.php:277 install/update_0681_07.php:552
 msgid "Website"
 msgstr ""
@@ -9329,7 +9329,7 @@ msgstr ""
 msgid "Scheduled"
 msgstr ""
 
-#: inc/crontask.class.php:731 inc/plugin.class.php:1362
+#: inc/crontask.class.php:731 inc/plugin.class.php:1364
 msgid "GLPI"
 msgstr ""
 
@@ -14230,7 +14230,7 @@ msgstr ""
 msgid "Way of sending emails"
 msgstr ""
 
-#: inc/notificationmailingsetting.class.php:139 inc/plugin.class.php:1362
+#: inc/notificationmailingsetting.class.php:139 inc/plugin.class.php:1364
 msgid "PHP"
 msgstr ""
 
@@ -15545,168 +15545,168 @@ msgid_plural "Plugs"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/plugin.class.php:469
+#: inc/plugin.class.php:472
 #, php-format
 msgid "Plugin %1$s has no uninstall function!"
 msgstr ""
 
-#: inc/plugin.class.php:483
+#: inc/plugin.class.php:485
 #, php-format
 msgid "Plugin %1$s has been uninstalled!"
 msgstr ""
 
-#: inc/plugin.class.php:485 inc/plugin.class.php:546 inc/plugin.class.php:641
-#: inc/plugin.class.php:679
+#: inc/plugin.class.php:487 inc/plugin.class.php:548 inc/plugin.class.php:643
+#: inc/plugin.class.php:681
 #, php-format
 msgid "Plugin %1$s not found!"
 msgstr ""
 
-#: inc/plugin.class.php:526
+#: inc/plugin.class.php:528
 #, php-format
 msgid "Plugin %1$s has been installed!"
 msgstr ""
 
-#: inc/plugin.class.php:530 inc/plugin.class.php:2063
+#: inc/plugin.class.php:532 inc/plugin.class.php:2065
 msgctxt "button"
 msgid "Enable"
 msgstr ""
 
-#: inc/plugin.class.php:531
+#: inc/plugin.class.php:533
 msgid "Do you want to %activate_link it?"
 msgstr ""
 
-#: inc/plugin.class.php:536
+#: inc/plugin.class.php:538
 #, php-format
 msgid "Plugin %1$s has been installed and must be configured!"
 msgstr ""
 
-#: inc/plugin.class.php:543
+#: inc/plugin.class.php:545
 #, php-format
 msgid "Plugin %1$s has no install function!"
 msgstr ""
 
-#: inc/plugin.class.php:574
+#: inc/plugin.class.php:576
 #, php-format
 msgid "Plugin %1$s is not CSRF compliant!"
 msgstr ""
 
-#: inc/plugin.class.php:596
+#: inc/plugin.class.php:598
 #, php-format
 msgid "Plugin %1$s has no check function!"
 msgstr ""
 
-#: inc/plugin.class.php:628
+#: inc/plugin.class.php:630
 #, php-format
 msgid "Plugin %1$s has been activated!"
 msgstr ""
 
-#: inc/plugin.class.php:670
+#: inc/plugin.class.php:672
 #, php-format
 msgid "Plugin %1$s has been deactivated!"
 msgstr ""
 
-#: inc/plugin.class.php:1365
+#: inc/plugin.class.php:1367
 #, php-format
 msgid "This plugin requires %1$s < %2$s."
 msgstr ""
 
-#: inc/plugin.class.php:1371
+#: inc/plugin.class.php:1373
 #, php-format
 msgid "This plugin requires %1$s >= %2$s."
 msgstr ""
 
-#: inc/plugin.class.php:1378
+#: inc/plugin.class.php:1380
 #, php-format
 msgid "This plugin requires %1$s >= %2$s and < %3$s."
 msgstr ""
 
-#: inc/plugin.class.php:1404
+#: inc/plugin.class.php:1406
 #, php-format
 msgid "This plugin requires PHP extension %1$s"
 msgstr ""
 
-#: inc/plugin.class.php:1410
+#: inc/plugin.class.php:1412
 #, php-format
 msgid "This plugin requires %1$s plugin"
 msgstr ""
 
-#: inc/plugin.class.php:1416
+#: inc/plugin.class.php:1418
 #, php-format
 msgid "This plugin requires PHP compiled along with \"%1$s\""
 msgstr ""
 
-#: inc/plugin.class.php:1422
+#: inc/plugin.class.php:1424
 #, php-format
 msgid "This plugin requires PHP parameter %1$s"
 msgstr ""
 
-#: inc/plugin.class.php:1428
+#: inc/plugin.class.php:1430
 #, php-format
 msgid "This plugin requires GLPI parameter %1$s"
 msgstr ""
 
-#: inc/plugin.class.php:1705 inc/plugin.class.php:2141
+#: inc/plugin.class.php:1707 inc/plugin.class.php:2143
 msgctxt "plugin"
 msgid "Enabled"
 msgstr ""
 
-#: inc/plugin.class.php:1709 inc/plugin.class.php:2142
+#: inc/plugin.class.php:1711 inc/plugin.class.php:2144
 msgctxt "plugin"
 msgid "Not installed"
 msgstr ""
 
-#: inc/plugin.class.php:1713 inc/plugin.class.php:2143
+#: inc/plugin.class.php:1715 inc/plugin.class.php:2145
 msgid "To update"
 msgstr ""
 
-#: inc/plugin.class.php:1717 inc/plugin.class.php:2144
+#: inc/plugin.class.php:1719 inc/plugin.class.php:2146
 msgctxt "plugin"
 msgid "Installed / not configured"
 msgstr ""
 
-#: inc/plugin.class.php:1721 inc/plugin.class.php:2145
+#: inc/plugin.class.php:1723 inc/plugin.class.php:2147
 msgctxt "plugin"
 msgid "Installed / not activated"
 msgstr ""
 
-#: inc/plugin.class.php:1725 inc/plugin.class.php:2146
+#: inc/plugin.class.php:1727 inc/plugin.class.php:2148
 msgid "Error / to clean"
 msgstr ""
 
-#: inc/plugin.class.php:1828
+#: inc/plugin.class.php:1830
 msgid "Directory"
 msgstr ""
 
-#: inc/plugin.class.php:1865
+#: inc/plugin.class.php:1867
 msgid "Authors"
 msgstr ""
 
-#: inc/plugin.class.php:1880
+#: inc/plugin.class.php:1882
 msgid "Actions"
 msgstr ""
 
-#: inc/plugin.class.php:1920
+#: inc/plugin.class.php:1922
 msgctxt "button"
 msgid "Disable"
 msgstr ""
 
-#: inc/plugin.class.php:1928 inc/plugin.class.php:1996
-#: inc/plugin.class.php:2028 inc/plugin.class.php:2074
+#: inc/plugin.class.php:1930 inc/plugin.class.php:1998
+#: inc/plugin.class.php:2030 inc/plugin.class.php:2076
 msgctxt "button"
 msgid "Uninstall"
 msgstr ""
 
-#: inc/plugin.class.php:1934 inc/plugin.class.php:1988
-#: inc/plugin.class.php:2005 inc/plugin.class.php:2021
-#: inc/plugin.class.php:2033 inc/plugin.class.php:2079
+#: inc/plugin.class.php:1936 inc/plugin.class.php:1990
+#: inc/plugin.class.php:2007 inc/plugin.class.php:2023
+#: inc/plugin.class.php:2035 inc/plugin.class.php:2081
 msgid "Non-existent function"
 msgstr ""
 
-#: inc/plugin.class.php:2048
+#: inc/plugin.class.php:2050
 msgid "Not CSRF compliant"
 msgstr ""
 
-#: inc/plugin.class.php:2089
+#: inc/plugin.class.php:2091
 msgctxt "button"
 msgid "Clean"
 msgstr ""
