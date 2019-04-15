@@ -4,35 +4,62 @@ executors:
   php_7_0:
     docker:
       - image: glpi/circleci-env-core:php_7.0_fpm-node
+    environment:
+      DB_DRIVER: mysql
   php_7_0_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.0_fpm-node
       - image: circleci/mariadb:10.1-ram
+    environment:
+      DB_DRIVER: mysql
   php_7_1_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.1_fpm-node
       - image: circleci/mariadb:10.2-ram
+    environment:
+      DB_DRIVER: mysql
   php_7_2_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.2_fpm-node
       - image: circleci/mariadb:10.3-ram
+    environment:
+      DB_DRIVER: mysql
   php_7_3_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
       - image: circleci/mariadb:10.3-ram
+    environment:
+      DB_DRIVER: mysql
   php_7_3_mysql_5_6:
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
       - image: circleci/mysql:5.6-ram
+    environment:
+      DB_DRIVER: mysql
   php_7_3_mysql_5_7:
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
       - image: circleci/mysql:5.7-ram
+    environment:
+      DB_DRIVER: mysql
   php_7_3_mysql_8_0:
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
       - image: circleci/mysql:8.0-ram
         command: [--default-authentication-plugin=mysql_native_password] # Fix "Authentication plugin 'caching_sha2_password' cannot be loaded"
+    environment:
+      DB_DRIVER: mysql
+  php_7_3_pgsql_10_7:
+    docker:
+      - image: glpi/circleci-env-core:php_7.3_fpm-node
+      #mariadb required since install does not work on postrges
+      - image: circleci/mariadb:10.3-ram
+      - image: circleci/postgres:10.7-ram
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: glpitest
+    environment:
+      DB_DRIVER: pgsql
   php_latest_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_latest_fpm-node
@@ -81,6 +108,8 @@ commands:
       - run:
           name: Update DB tests
           command: |
+            echo $DB_DRIVER
+            if [ "${DB_DRIVER}" != "pgsql" ]; then
             mysql -h 127.0.0.1 -u root -e 'create database glpitest080;'
             mysql -h 127.0.0.1 -u root glpitest080 < tests/glpi-0.80-empty.sql
             cp tests/circleci.db.yaml tests/db.yaml
@@ -89,13 +118,17 @@ commands:
             bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
             bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
             bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction
-            rm tests/db.yaml
+            rm tests/db.yaml;
+            fi
       - run:
           name: Database tests
           command: |
+            echo $DB_DRIVER
+            if [ "${DB_DRIVER}" != "pgsql" ]; then
             cp tests/circleci.db.yaml tests/db.yaml
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report  --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
-            rm tests/db.yaml
+            rm tests/db.yaml;
+            fi
 
   # Database install command.
   install_db:
@@ -111,6 +144,15 @@ commands:
   # Unit test suite command.
   run_unit_test_suite:
     steps:
+            echo $DB_DRIVER
+            if [ "${DB_DRIVER}" = "pgsql" ]; then
+            sudo apt-get update
+            sudo apt-get install libpq-dev
+            sudo apt-get -t buster install pgloader
+            sudo docker-php-ext-install pdo_pgsql
+            sed -e "s/mysql/pgsql/" -i tests/db.yaml
+            pgloader mysql://root@127.0.0.1/glpitest pgsql://root@localhost/glpitest;
+            fi
       - run:
           name: Unit tests
           command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
@@ -241,6 +283,14 @@ jobs:
       - build
       - run_full_test_suite
 
+  # PHP 7.3 test suite using PostgreSQL 10.7.
+  php_7_3_pgsql_10_7_test_suite:
+    executor: php_7_3_pgsql_10_7
+    steps:
+      - build
+      - run_test_suite
+
+
   # PHP latest version test suite.
   php_latest_test_suite:
     executor: php_latest_mariadb
@@ -315,6 +365,13 @@ workflows:
               only: /.*/ # run also on tag creation
             branches:
               ignore: /.*/ # do not run on branch update
+      - php_7_3_pgsql_10_7_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+
 
   # Nightly run test suite on latest PHP version.
   scheduled_build:
@@ -351,6 +408,9 @@ workflows:
           requires:
             - checkout
       - php_7_3_mysql_8_0_test_suite:
+          requires:
+            - checkout
+      - php_7_3_pgsql_10_7_test_suite:
           requires:
             - checkout
       - php_latest_test_suite:
