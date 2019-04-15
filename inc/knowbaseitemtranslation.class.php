@@ -433,13 +433,19 @@ class KnowbaseItemTranslation extends CommonDBChild {
          'answer' => $revision->fields['answer']
       ];
 
+      $old_revision = $this->fields['revision'];
+
       if ($this->update($values)) {
          Event::log($this->getID(), "knowbaseitemtranslation", 5, "tools",
-                    //TRANS: %1$s is the user login, %2$s the revision number
-                    sprintf(__('%1$s reverts item translation to revision %2$s'), $_SESSION["glpiname"], $revision));
+               //TRANS: %1$s is the user login, %2$s the revision number
+               sprintf(__('%1$s reverts item translation to revision %2$s'), $_SESSION["glpiname"], $revid),
+               ITILEvent::INFORMATION, [
+                  'login_name' => $_SESSION['glpiname'],
+                  'previous_revision' => $old_revision,
+                  'new_revision' => $revid]);
          return true;
       } else {
          return false;
       }
-   }
+   }      
 }

@@ -100,10 +100,11 @@ class Event extends CommonDBTM {
     * @param $significance int The significance of the event (0 = Information, 1 = Warning, 2 = Exception).
     *    Default is Information.
    **/
-   static function log($items_id, $type, $level, $service, $event, int $significance = \ITILEvent::INFORMATION) {
+   static function log($items_id, $type, $level, $service, $event, int $significance = \ITILEvent::INFORMATION, $extrainfo = []) {
+      global $CFG_GLPI;
 
       // Only log if the event's level is the smae or lower than the setting from configuration
-      if (!isset($input['level']) || !($input['level'] <= $CFG_GLPI["event_loglevel"])) {
+      if (!($level <= $CFG_GLPI["event_loglevel"])) {
          return false;
       }
 
@@ -114,14 +115,10 @@ class Event extends CommonDBTM {
             'items_id'  => intval($items_id),
             'service'   => $service,
             'level'     => $level
-         ]),
+         ] + $extrainfo),
          'significance' => $significance,
          'date'      => $_SESSION["glpi_currenttime"]
       ];
-
-      // Drop after verifying ITILEvent logging works
-      $tmp2 = new self();
-      $tmp2->add($input);
 
       $tmp = new \ITILEvent();
       return $tmp->add($input);

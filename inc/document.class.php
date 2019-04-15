@@ -303,8 +303,13 @@ class Document extends CommonDBTM {
                              'items_id'     => $this->input["items_id"]]);
 
          Event::log($this->fields['id'], "documents", 4, "document",
-                  //TRANS: %s is the user login
-                    sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+               //TRANS: %s is the user login
+               sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"], ITILEvent::INFORMATION, [
+                  'login_name' => $_SESSION['glpiname'],
+                  'item_type' => $this->input['itemtype'],
+                  'items_id' => $this->input['items_id'],
+                  'documents_id' => $this->getID()
+               ]));
       }
    }
 

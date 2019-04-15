@@ -2103,7 +2103,7 @@ class Ticket extends CommonITILObject {
       }
       Event::log($this->fields['id'], "ticket", 4, "tracking",
                  sprintf(__('%1$s adds the item %2$s'), $username,
-                         $this->fields['id']));
+                         $this->getID()), ITILEvent::INFORMATION, ['login_name' => $username, 'items_id' => $this->getID()]);
 
       if (isset($this->input["_followup"])
           && is_array($this->input["_followup"])
@@ -2234,7 +2234,8 @@ class Ticket extends CommonITILObject {
             'sourceof_items_id'  => $this->getID()
          ]);
          Event::log($this->getID(), "ticket", 4, "tracking",
-              sprintf(__('%s promotes a followup from ticket %s'), $_SESSION["glpiname"], $fup->fields['items_id']));
+               sprintf(__('%s promotes a followup from ticket %s'), $_SESSION["glpiname"], $fup->fields['items_id']),
+               ITILEvent::INFORMATION, ['login_name' => $_SESSION['glpiname'], 'items_id' => $fup->fields['items_id']]);
       }
 
       if (!empty($this->input['items_id'])) {
@@ -2449,8 +2450,10 @@ class Ticket extends CommonITILObject {
                }
                if ($add_done) {
                   Event::log($this->fields['id'], "ticket", 4, "tracking",
-                             sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
-                                     $this->fields['id']));
+                        sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
+                        $this->getID()), ITILEvent::INFORMATION, [
+                           'login_name' => $_SESSION['glpi_name'], 
+                           'items_id' => $this->getID()]);
                }
             }
          }

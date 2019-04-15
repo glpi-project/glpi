@@ -1405,7 +1405,11 @@ class RuleCollection extends CommonDBTM {
             $rules_id       = $item->add($params);
             if ($rules_id) {
                Event::log($rules_id, "rules", 4, "setup",
-                          sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $rules_id));
+                     sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $rules_id),
+                     ITILEvent::INFORMATION, [
+                        'login_name' => $_SESSION["glpiname"],
+                        'items_id' => $rules_id
+                     ]);
                $add_criteria_and_actions = true;
             }
          } else { //if uuid exists, then update the rule
@@ -1415,7 +1419,11 @@ class RuleCollection extends CommonDBTM {
             $rules_id          = $tmp['id'];
             if ($item->update($params)) {
                Event::log($rules_id, "rules", 4, "setup",
-                          sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
+                     sprintf(__('%s updates an item'), $_SESSION["glpiname"]),
+                     ITILEvent::INFORMATION, [
+                        'login_name' => $_SESSION["glpiname"],
+                        'items_id' => $rules_id
+                     ]);
 
                //remove all dependent criterias and action
                $ruleCriteria->deleteByCriteria(["rules_id" => $rules_id]);

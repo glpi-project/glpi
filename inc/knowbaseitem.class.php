@@ -297,7 +297,9 @@ class KnowbaseItem extends CommonDBVisible {
             $item->add($this->input["_visibility"]);
             Event::log($this->getID(), "knowbaseitem", 4, "tools",
                      //TRANS: %s is the user login
-                     sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
+                     sprintf(__('%s adds a target'), $_SESSION["glpiname"]), ITILEvent::INFORMATION, [
+                        'login_name' => $_SESSION['glpiname'],
+                        'items_id' => $this->getID()]);
          }
       }
 
@@ -1965,10 +1967,16 @@ class KnowbaseItem extends CommonDBVisible {
          'answer' => $revision->fields['answer']
       ];
 
+      $old_revision = $this->fields['revision'];
+
       if ($this->update($values)) {
          Event::log($this->getID(), "knowbaseitem", 5, "tools",
-                    //TRANS: %1$s is the user login, %2$s the revision number
-                    sprintf(__('%1$s reverts item to revision %2$s'), $_SESSION["glpiname"], $revid));
+               //TRANS: %1$s is the user login, %2$s the revision number
+               sprintf(__('%1$s reverts item to revision %2$s'), $_SESSION["glpiname"], $revid),
+               ITILEvent::INFORMATION, [
+                  'login_name' => $_SESSION['glpiname'],
+                  'previous_revision' => $old_revision,
+                  'new_revision' => $revid]);
          return true;
       } else {
          return false;
