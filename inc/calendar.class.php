@@ -357,6 +357,20 @@ class Calendar extends CommonDropdown {
 
 
    /**
+    * Determines if calendar has, at least, one working day.
+    *
+    * @since 9.4.3
+    *
+    * @return boolean
+   **/
+   public function hasAWorkingDay() {
+
+      $durations = $this->getDurationsCache();
+      return false !== $durations && array_sum($durations) > 0;
+   }
+
+
+   /**
     * Is the time passed is in a working hour
     *
     * @since 0.85
