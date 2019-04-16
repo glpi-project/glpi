@@ -84,10 +84,6 @@ commands:
   run_test_suite:
     steps:
       - run:
-          name: Build CSS/JS dependencies
-          command: |
-            npm run-script build-dev
-      - run:
           name: PHP Parallel Lint
           command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
       - run:
