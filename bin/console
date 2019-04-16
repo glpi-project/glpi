@@ -32,9 +32,11 @@
  */
 
 // Handle specific dependencies update command that cannot be made upon symfony console
-if (isset($_SERVER['argv']) && ['bin/console', 'dependencies', 'install'] === $_SERVER['argv']) {
+if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SERVER['argv'], 1, 2)) {
+   chdir(dirname(__FILE__, 2));
    passthru('composer install');
    passthru('npm install');
+   file_put_contents('.package.hash', sha1_file('package-lock.json'));
    passthru('npm run-script build-dev');
    exit();
 }
