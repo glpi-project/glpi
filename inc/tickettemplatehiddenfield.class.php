@@ -147,7 +147,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
          'WHERE'  => [
             static::$items_id => $ID,
          ],
-         'ORDER'  => 'ID'
+         'ORDER'  => 'id'
       ]);
 
       $tt             = new TicketTemplate();
