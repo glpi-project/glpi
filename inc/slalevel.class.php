@@ -329,7 +329,7 @@ class SlaLevel extends LevelAgreementLevel {
             'LIMIT'  => 1
          ]);
 
-         if ($result = $iterator->next()) {
+         if ($result = $lvl_iterator->next()) {
             return $result['id'];
          }
       }
