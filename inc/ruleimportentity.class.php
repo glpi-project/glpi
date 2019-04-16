@@ -176,6 +176,10 @@ class RuleImportEntity extends Rule {
       $actions['groups_id_tech']['type']     = 'dropdown';
       $actions['groups_id_tech']['table']    = 'glpi_groups';
 
+      $actions['groups_id_tech']['name']     = __('Technician in charge of the hardware');
+      $actions['groups_id_tech']['type']     = 'dropdown';
+      $actions['groups_id_tech']['table']    = 'glpi_users';
+
       return $actions;
    }
 
