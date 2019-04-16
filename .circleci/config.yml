@@ -55,12 +55,18 @@ commands:
           keys:
             - composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock" }}
             - composer-install-{{ .Environment.CIRCLE_JOB }}
+      - restore_cache:
+          keys:
+            - npm-cache-{{ .Environment.CIRCLE_JOB }}
       - run:
-          name: composer install
+          name: Install dependencies
           command: |
+            composer --version
+            echo "node version: $(node --version)"
+            echo "npm version: $(npm --version)"
             sed -e '/"php":/d' -i composer.json
             mv composer.lock composer.lock.bak
-            composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
+            bin/console dependencies install --ci
       - save_cache:
           key: composer-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
@@ -69,27 +75,10 @@ commands:
           key: composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock.bak" }}
           paths:
             - ./vendor
-      - restore_cache:
-          keys:
-            - npm-cache-{{ .Environment.CIRCLE_JOB }}
-      - restore_cache:
-          keys:
-            - npm-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
-            - npm-install-{{ .Environment.CIRCLE_JOB }}
-      - run:
-          name: npm install
-          command: |
-            mv package-lock.json package-lock.json.bak
-            npm install
-            php -r "file_put_contents('.package.hash', sha1_file('package-lock.json'));"
       - save_cache:
           key: npm-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
             - /home/circleci/.npm/_cacache/
-      - save_cache:
-          key: npm-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json.bak" }}
-          paths:
-            - ./node_modules
 
   # Run test suite command.
   run_test_suite:
