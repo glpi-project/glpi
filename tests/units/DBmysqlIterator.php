@@ -42,15 +42,16 @@ use Symfony\Component\Yaml\Yaml;
 class DBmysqlIterator extends DbTestCase {
 
    private $it;
+   private $db;
 
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
 
       $db_config = Yaml::parseFile(GLPI_CONFIG_DIR . '/db.yaml');
       $dbclass = '\mock\\' . \Glpi\DatabaseFactory::getDbClass($db_config['driver']);
-      $db = new $dbclass($db_config);
-      $this->calling($db)->rawQuery->doesNothing;
-      $this->it = new \DBmysqlIterator($db);
+      $this->db = new $dbclass($db_config);
+      $this->calling($this->db)->rawQuery->doesNothing;
+      $this->it = new \DBmysqlIterator($this->db);
    }
 
    public function testQuery() {
@@ -719,37 +720,33 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testRows() {
-      global $DB;
-
       $it = $this->it->execute('foo');
       $this->integer($it->numrows())->isIdenticalTo(0);
       $this->integer(count($it))->isIdenticalTo(0);
       $this->boolean($it->next())->isFalse();
 
-      $it = $DB->request('glpi_configs', ['context' => 'core', 'name' => 'version']);
+      $it = $this->db->request('glpi_configs', ['context' => 'core', 'name' => 'version']);
       $this->integer($it->numrows())->isIdenticalTo(1);
       $this->integer(count($it))->isIdenticalTo(1);
       $row = $it->next();
       $key = $it->key();
       $this->string($row['id'])->isIdenticalTo($key);
 
-      $it = $DB->request('glpi_configs', ['context' => 'core']);
+      $it = $this->db->request('glpi_configs', ['context' => 'core']);
       $this->integer($it->numrows())->isGreaterThan(100);
       $this->integer(count($it))->isGreaterThan(100);
       $this->boolean($it->numrows() == count($it))->isTrue();
    }
 
    public function testKey() {
-      global $DB;
-
       // test keys with absence of 'id' in select
       // we should use a incremented position in the first case
       // see https://github.com/glpi-project/glpi/pull/3401
       // previously, the first query returned only one result
-      $users_list = iterator_to_array($DB->request([
+      $users_list = iterator_to_array($this->db->request([
          'SELECT' => 'name',
          'FROM'   => 'glpi_users']));
-      $users_list2 = iterator_to_array($DB->request([
+      $users_list2 = iterator_to_array($this->db->request([
          'SELECT' =>  ['id', 'name'],
          'FROM'   => 'glpi_users']));
       $nb  = count($users_list);
@@ -953,7 +950,7 @@ class DBmysqlIterator extends DbTestCase {
    }
 
    public function testComplexUnionQueryAgain() {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       //Old build way
       $queries = [];
@@ -1105,7 +1102,7 @@ class DBmysqlIterator extends DbTestCase {
             'NAME.id AS name_id',
             'PORT.id AS port_id',
             'ITEM.id AS item_id',
-            new \QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type'))
+            new \QueryExpression("'$itemtype' AS " . $this->db->quoteName('item_type'))
          ]);
          $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
             'glpi_networknames AS NAME'   => [
@@ -1142,8 +1139,8 @@ class DBmysqlIterator extends DbTestCase {
       $criteria['SELECT'] = array_merge($criteria['SELECT'], [
          'NAME.id AS name_id',
          'PORT.id AS port_id',
-         new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-         new \QueryExpression("NULL AS " . $DB->quoteName('item_type')),
+         new \QueryExpression('NULL AS ' . $this->db->quoteName('item_id')),
+         new \QueryExpression("NULL AS " . $this->db->quoteName('item_type')),
       ]);
       $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
          'glpi_networknames AS NAME'   => [
@@ -1174,9 +1171,9 @@ class DBmysqlIterator extends DbTestCase {
       $criteria = $main_criteria;
       $criteria['SELECT'] = array_merge($criteria['SELECT'], [
          'NAME.id AS name_id',
-         new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
-         new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-         new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+         new \QueryExpression("NULL AS " . $this->db->quoteName('port_id')),
+         new \QueryExpression('NULL AS ' . $this->db->quoteName('item_id')),
+         new \QueryExpression("NULL AS " . $this->db->quoteName('item_type'))
       ]);
       $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
          'glpi_networknames AS NAME'   => [
@@ -1194,10 +1191,10 @@ class DBmysqlIterator extends DbTestCase {
 
       $criteria = $main_criteria;
       $criteria['SELECT'] = array_merge($criteria['SELECT'], [
-         new \QueryExpression("NULL AS " . $DB->quoteName('name_id')),
-         new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
-         new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-         new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+         new \QueryExpression("NULL AS " . $this->db->quoteName('name_id')),
+         new \QueryExpression("NULL AS " . $this->db->quoteName('port_id')),
+         new \QueryExpression('NULL AS ' . $this->db->quoteName('item_id')),
+         new \QueryExpression("NULL AS " . $this->db->quoteName('item_type'))
       ]);
       $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
       $queries[] = $criteria;
@@ -1273,12 +1270,10 @@ class DBmysqlIterator extends DbTestCase {
    }
 
    public function testAnalyseCrit() {
-      global $DB;
-
       $crit = [new \QuerySubQuery([
          'SELECT' => ['COUNT' => ['users_id']],
          'FROM'   => 'glpi_groups_users',
-         'WHERE'  => ['groups_id' => new \QueryExpression($DB->quoteName('glpi_groups.id'))]
+         'WHERE'  => ['groups_id' => new \QueryExpression($this->db->quoteName('glpi_groups.id'))]
       ])];
       $this->string($this->it->analyseCrit($crit))->isIdenticalTo("(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = `glpi_groups`.`id`)");
    }
