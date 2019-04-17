@@ -155,7 +155,7 @@ commands:
             fi
       - run:
           name: Unit tests
-          command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
+          command: if [ "${DB_DRIVER}" != "pgsql" ]; then php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units; fi
 
   # Unit test suite command.
   run_imap_test_suite:
