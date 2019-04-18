@@ -2803,10 +2803,7 @@ class Dropdown {
 
             case KnowbaseItem::getType():
                $criteria = [
-                  'SELECT'          => [
-                     "$table.*",
-                     $addselect
-                  ],
+                  'SELECT' => array_merge(["$table.*"], $addselect),
                   'DISTINCT'        => true,
                   'FROM'            => $table
                ];
