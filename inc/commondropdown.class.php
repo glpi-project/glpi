@@ -828,7 +828,7 @@ abstract class CommonDropdown extends CommonDBTM {
           &&  $this->maybeRecursive()
           && (count($_SESSION['glpiactiveentities']) > 1)
           && !in_array('merge', $forbidden_actions)) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge'] = __('Transfer and merge');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge'] = __('Merge and assign to current entity');
       }
 
       return $actions;
@@ -987,5 +987,11 @@ abstract class CommonDropdown extends CommonDBTM {
          }
       }
       return $ret;
+   }
+
+   public function getForbiddenSingleMassiveAction() {
+      $excluded = parent::getForbiddenSingleMassiveAction();
+      $excluded[] = '*:merge';
+      return $excluded;
    }
 }

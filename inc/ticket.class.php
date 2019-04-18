@@ -6838,4 +6838,24 @@ class Ticket extends CommonITILObject {
 
       return $condition;
    }
+
+   public function getForbiddenSingleMassiveAction() {
+      $excluded = parent::getForbiddenSingleMassiveAction();
+      if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+         //for closed Tickets, only keep transfer and unlock
+         $excluded[] = 'TicketValidation:submit_validation';
+         $excluded[] = 'Ticket:*';
+      }
+      return $excluded;
+   }
+
+   public function getWhitelistedActions() {
+      $whitelist = parent::getWhitelistedActions();
+
+      if (!in_array($this->fields['status'], $this->getClosedStatusArray())) {
+         $whitelist[] = 'Item_Ticket:add_item';
+      }
+
+      return $whitelist;
+   }
 }

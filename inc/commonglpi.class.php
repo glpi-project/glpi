@@ -985,7 +985,57 @@ class CommonGLPI {
          }
 
          // End pager
-         echo "</tr></table></div>";
+         echo "</tr></table>";
+
+         $ma = new MassiveAction(
+            [
+               'item'   => [
+                  $this->getType() => [
+                     $this->fields['id'] => 1
+                  ]
+               ]
+            ],
+            $_GET,
+            'initial',
+            $this->fields['id']
+         );
+
+         $maparams = ['action' => '__VALUE__'];
+         $input  = $ma->getInput();
+         foreach ($input as $key => $val) {
+            $maparams[$key] = $val;
+         }
+
+         $actions = $maparams['actions'];
+
+         if (count($actions)) {
+            if (isset($maparams['hidden']) && is_array($maparams['hidden'])) {
+               foreach ($maparams['hidden'] as $key => $val) {
+                  echo Html::hidden($key, ['value' => $val]);
+               }
+            }
+            Html::openMassiveActionsForm();
+            echo '<div class="singleaction">';
+            $actions = ['-1' => Dropdown::EMPTY_VALUE] + $actions;
+            $rand    = Dropdown::showFromArray('massiveaction', $actions);
+
+            Ajax::updateItemOnSelectEvent(
+               "dropdown_massiveaction$rand",
+               "show_massiveaction$rand",
+               $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
+               $maparams
+            );
+
+            echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
+            echo "</div>";
+         }
+         echo "</div>";
+
+         // Force 'checkbox-zero-on-empty', because some massive actions can use checkboxes
+         $CFG_GLPI['checkbox-zero-on-empty'] = true;
+         Html::closeForm();
+         //restore
+         unset($CFG_GLPI['checkbox-zero-on-empty']);
       }
    }
 

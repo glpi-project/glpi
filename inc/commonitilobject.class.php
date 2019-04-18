@@ -7666,4 +7666,14 @@ abstract class CommonITILObject extends CommonDBTM {
    public static function getTemplateFormFieldName() {
       return '_' . strtolower(static::getType()) . 'template';
    }
+
+   public function getForbiddenSingleMassiveAction() {
+      $excluded = parent::getForbiddenSingleMassiveAction();
+
+      if ($this->fields['global_validation'] != CommonITILValidation::NONE) {
+         //a validation has already been requested/done
+         $excluded[] = 'TicketValidation:submit_validation';
+      }
+      return $excluded;
+   }
 }
