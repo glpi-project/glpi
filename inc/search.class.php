@@ -679,7 +679,7 @@ class Search {
     * @since 10.0.0 Method is no longer static
    **/
    public function constructSQL(array &$data, $sub_item = false) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       if (!isset($data['itemtype'])) {
          return false;
@@ -723,7 +723,7 @@ class Search {
 
       //// 2 - FROM AND LEFT JOIN
       // Set reference table
-      $FROM = " FROM " . $DB->quoteName($itemtable);
+      $FROM = " FROM " . $this->db->quoteName($itemtable);
 
       // Init already linked tables array in order not to link a table several times
       $already_link_tables = [];
@@ -791,7 +791,7 @@ class Search {
             $LINK  = " ";
             $first = false;
          }
-         $COMMONWHERE .= $LINK. $DB->quoteName("$itemtable.is_deleted") . " = " . (int)$data['search']['is_deleted'] . " ";
+         $COMMONWHERE .= $LINK. $this->db->quoteName("$itemtable.is_deleted") . " = " . (int)$data['search']['is_deleted'] . " ";
       }
 
       // Remove template items
@@ -801,7 +801,7 @@ class Search {
             $LINK  = " ";
             $first = false;
          }
-         $COMMONWHERE .= $LINK . $DB->quoteName("$itemtable.is_template") . " = 0 ";
+         $COMMONWHERE .= $LINK . $this->db->quoteName("$itemtable.is_template") . " = 0 ";
       }
 
       // Add Restrict to current entities
@@ -1052,8 +1052,8 @@ class Search {
                   // Replace 'AllAssets' by itemtype
                   // Use quoted value to prevent replacement of AllAssets in column identifiers
                   $tmpquery = str_replace(
-                     $DB->quoteValue('AllAssets'),
-                     $DB->quoteValue($ctype),
+                     $this->db->quoteValue('AllAssets'),
+                     $this->db->quoteValue($ctype),
                      $tmpquery
                   );
                } else {// Ref table case
@@ -5069,7 +5069,7 @@ JAVASCRIPT;
             $condition = $joinparams['condition'];
             if (is_array($condition)) {
                $it = new DBmysqlIterator($this->db);
-               $condition = $it->analyseCrit($condition);
+               $condition = ' AND ' . $it->analyseCrit($condition);
                $this->addQueryParams($it->getParameters());
             }
             $from         = [
@@ -5519,7 +5519,7 @@ JAVASCRIPT;
    **/
    public function giveItem($itemtype, $ID, array $data, $meta = 0,
                             array $addobjectparams = [], $orig_itemtype = null) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       $searchopt = &self::getOptions($itemtype);
       if ($itemtype == 'AllAssets' || isset($CFG_GLPI["union_search_type"][$itemtype])
@@ -7693,7 +7693,18 @@ JAVASCRIPT;
       $complexjoin = '';
 
       if (isset($joinparams['condition'])) {
-         $complexjoin .= $joinparams['condition'];
+         if (!is_array($joinparams['condition'])) {
+            $complexjoin .= $joinparams['condition'];
+         } else {
+            global $DB;
+            $dbi = new DBMysqlIterator($DB);
+            $sql_clause = $dbi->analyseCrit($joinparams['condition']);
+            $sql_expr = $DB->mergeStatementWithParams(
+               $sql_clause,
+               $dbi->getParameters()
+            );
+            $complexjoin .= ' AND ' . $sql_expr; //TODO: and should came from conf
+         }
       }
 
       // For jointype == child
@@ -7711,7 +7722,18 @@ JAVASCRIPT;
                $complexjoin .= $tab['table'];
             }
             if (isset($tab['joinparams']) && isset($tab['joinparams']['condition'])) {
-               $complexjoin .= $tab['joinparams']['condition'];
+               if (!is_array($tab['joinparams']['condition'])) {
+                  $complexjoin .= $tab['joinparams']['condition'];
+               } else {
+                  global $DB;
+                  $dbi = new DBMysqlIterator($DB);
+                  $sql_clause = $dbi->analyseCrit($tab['joinparams']['condition']);
+                  $sql_expr = $DB->mergeStatementWithParams(
+                     $sql_clause,
+                     $dbi->getParameters()
+                  );
+                  $complexjoin .= ' AND ' . $sql_expr; //TODO: and should came from conf
+               }
             }
          }
       }

@@ -610,7 +610,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'name'               => __('Father'),
          'datatype'           => 'itemlink',
          'forcegroupby'       => true,
-         'joinparams'        => ['condition' => "AND 1=1"]
+         'joinparams'        => ['condition' => [new QueryExpression("1=1")]]
       ];
 
       $tab[] = [
@@ -709,11 +709,17 @@ class SoftwareLicense extends CommonTreeDropdown {
          return $tab;
       }
 
-      $licjoinexpire = ['jointype'  => 'child',
-                              'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
-                                                                        '', '', true).
-                                             " AND (NEWTABLE.`expire` IS NULL
-                                                   OR NEWTABLE.`expire` > NOW())"];
+      $licjoinexpire = [
+         'jointype'  => 'child',
+         'condition' => array_merge(
+            getEntitiesRestrictCriteria("NEWTABLE", '', '', true), [
+               'OR'  => [
+                  ['NEWTABLE.expire' => null],
+                  ['NEWTABLE.expire' => ['>', new QueryExpression('NOW()')]]
+               ]
+            ]
+         )
+      ];
 
       $tab[] = [
          'id'                 => 'license',

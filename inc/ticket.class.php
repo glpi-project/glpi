@@ -3199,9 +3199,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
+            'condition'          => ['NEWTABLE.type' => SLM::TTO]
          ],
-         'condition'          => "`glpi_slas`.`type` = '".SLM::TTO."'"
+         'condition'          => ['glpi_slas.type' => SLM::TTO]
       ];
 
       $tab[] = [
@@ -3213,9 +3213,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
+            'condition'          => ['NEWTABLE.type' => SLM::TTR]
          ],
-         'condition'          => "`glpi_slas`.`type` = '".SLM::TTR."'"
+         'condition'          => ['glpi_slas.type' => SLM::TTR]
       ];
 
       $tab[] = [
@@ -3250,9 +3250,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
+            'condition'          => ['NEWTABLE.type' => SLM::TTO]
          ],
-         'condition'          => "`glpi_olas`.`type` = '".SLM::TTO."'"
+         'condition'          => ['glpi_olas.type' => SLM::TTO]
       ];
 
       $tab[] = [
@@ -3264,9 +3264,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
+            'condition'          => ['NEWTABLE.type' => SLM::TTR]
          ],
-         'condition'          => "`glpi_olas`.`type` = '".SLM::TTR."'"
+         'condition'          => ['glpi_olas.type' => SLM::TTR]
       ];
 
       $tab[] = [
@@ -3416,7 +3416,7 @@ class Ticket extends CommonITILObject {
             'searchtype'         => 'equals',
             'joinparams'         => [
                'jointype'           => 'item_item',
-               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::DUPLICATE_WITH
+               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::DUPLICATE_WITH]
             ],
             'additionalfields'   => ['tickets_id_2'],
             'forcegroupby'       => true
@@ -3445,7 +3445,7 @@ class Ticket extends CommonITILObject {
             'usehaving'          => true,
             'joinparams'         => [
                'jointype'           => 'item_item',
-               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::DUPLICATE_WITH
+               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::DUPLICATE_WITH]
             ]
          ];
 
@@ -3465,7 +3465,7 @@ class Ticket extends CommonITILObject {
                   'joinparams'         => [
                      'jointype'           => 'child',
                      'linkfield'          => 'tickets_id_1',
-                     'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF,
+                     'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
                   ]
                ]
             ],
@@ -3488,7 +3488,7 @@ class Ticket extends CommonITILObject {
                   'joinparams'         => [
                      'jointype'           => 'child',
                      'linkfield'          => 'tickets_id_2',
-                     'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF,
+                     'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
                   ]
                ]
             ],
@@ -3506,7 +3506,7 @@ class Ticket extends CommonITILObject {
             'joinparams'         => [
                'linkfield'          => 'tickets_id_2',
                'jointype'           => 'child',
-               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF
+               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
             ],
             'forcegroupby'       => true
          ];
@@ -3522,7 +3522,7 @@ class Ticket extends CommonITILObject {
             'joinparams'         => [
                'linkfield'          => 'tickets_id_1',
                'jointype'           => 'child',
-               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF
+               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
             ],
             'additionalfields'   => ['tickets_id_2']
          ];
@@ -6820,18 +6820,23 @@ class Ticket extends CommonITILObject {
       // Recherche des entit??s
       $tot = 0;
       foreach (Entity::getEntitiesToNotify('notclosed_delay') as $entity => $value) {
-         $query = "SELECT `glpi_tickets`.*
-                   FROM `glpi_tickets`
-                   WHERE `glpi_tickets`.`entities_id` = '".$entity."'
-                         AND `glpi_tickets`.`is_deleted` = 0
-                         AND `glpi_tickets`.`status` IN ('".self::INCOMING."',
-                                                         '".self::ASSIGNED."',
-                                                         '".self::PLANNED."',
-                                                         '".self::WAITING."')
-                         AND `glpi_tickets`.`closedate` IS NULL
-                         AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < NOW()";
+         $iterator = $DB->request([
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+               'entities_id'  => $entity,
+               'is_deleted'   => 0,
+               'status'       => [
+                  self::INCOMING,
+                  self::ASSIGNED,
+                  self::PLANNED,
+                  self::WAITING
+               ],
+               'closedate'    => null,
+               new QueryExpression("ADDDATE(" . $DB->quoteName('date') . ", INTERVAL $value DAY) < NOW()")
+            ]
+         ]);
          $tickets = [];
-         foreach ($DB->request($query) as $tick) {
+         while ($tick = $iterator->next()) {
             $tickets[] = $tick;
          }
 
@@ -6890,27 +6895,44 @@ class Ticket extends CommonITILObject {
          $type          = Entity::getUsedConfig('inquest_config', $entity);
          $max_closedate = Entity::getUsedConfig('inquest_config', $entity, 'max_closedate');
 
-         $query = "SELECT `glpi_tickets`.`id`,
-                          `glpi_tickets`.`closedate`,
-                          `glpi_tickets`.`entities_id`
-                   FROM `glpi_tickets`
-                   LEFT JOIN `glpi_ticketsatisfactions`
-                       ON `glpi_ticketsatisfactions`.`tickets_id` = `glpi_tickets`.`id`
-                   LEFT JOIN `glpi_entities`
-                       ON `glpi_tickets`.`entities_id` = `glpi_entities`.`id`
-                   WHERE `glpi_tickets`.`entities_id` = '$entity'
-                         AND `glpi_tickets`.`is_deleted` = 0
-                         AND `glpi_tickets`.`status` = '".self::CLOSED."'
-                         AND `glpi_tickets`.`closedate` > '$max_closedate'
-                         AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
-                         AND ADDDATE(`glpi_entities`.`max_closedate`, INTERVAL $duration DAY)<=NOW()
-                         AND `glpi_ticketsatisfactions`.`id` IS NULL
-                   ORDER BY `closedate` ASC";
+         $table = self::getTable();
+         $iterator = $DB->request([
+            'SELECT'    => [
+               "$table.id",
+               "$table.closedate",
+               "$table.entities_id"
+            ],
+            'FROM'      => $table,
+            'LEFT JOIN' => [
+               'glpi_ticketsatisfactions' => [
+                  'ON' => [
+                     'glpi_ticketsatisfactions' => 'tickets_id',
+                     'glpi_tickets'             => 'id'
+                  ]
+               ],
+               'glpi_entities'            => [
+                  'ON' => [
+                     'glpi_tickets'    => 'entities_id',
+                     'glpi_entities'   => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               "$table.entities_id"          => $entity,
+               "$table.is_deleted"           => 0,
+               "$table.status"               => self::CLOSED,
+               "$table.closedate"            => ['>', $max_closedate],
+               new QueryExpression("ADDDATE(" . $DB->quoteName("$table.closedate") . ", INTERVAL $delay DAY) <= NOW()"),
+               new QueryExpression("ADDDATE(" . $DB->quoteName("$table.max_closedate") . ", INTERVAL $duration DAY) <= NOW()"),
+               "glpi_ticketsatisfactions.id" => null
+            ],
+            'ORDERBY'   => 'closedate ASC'
+         ]);
 
          $nb            = 0;
          $max_closedate = '';
 
-         foreach ($DB->request($query) as $tick) {
+         while ($tick = $iterator->next()) {
             $max_closedate = $tick['closedate'];
             if (mt_rand(1, 100) <= $rate) {
                if ($inquest->add(['tickets_id'  => $tick['id'],

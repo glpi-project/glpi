@@ -1154,6 +1154,11 @@ abstract class API extends CommonGLPI {
       //specific case for restriction
       $already_linked_table = [];
       $join = $search->addDefaultJoin($itemtype, $table, $already_linked_table);
+      $join = $DB->mergeStatementWithParams(
+         $join,
+         $search->getQueryParams()
+      );
+
       $where = $search->addDefaultWhere($itemtype);
       if ($where == '') {
          $where = "1=1 ";
