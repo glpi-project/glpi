@@ -27,6 +27,10 @@ The present file will list all changes made to the project; according to the
 
 ### API changes
 
+#### Added
+
+- `Migration::renameItemtype()` method to update of database schema/values when an itemtype class is renamed
+
 #### Changes
 
 - `DBmysqlIterator::handleOrderClause()` supports QueryExpressions
