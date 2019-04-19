@@ -951,7 +951,7 @@ class NetworkPort extends CommonDBChild {
 
       $networkNameJoin = ['jointype'          => 'itemtype_item',
                                'specific_itemtype' => 'NetworkPort',
-                               'condition'         => 'AND NEWTABLE.`is_deleted` = 0',
+                               'condition'         => ['NEWTABLE.is_deleted' => 0],
                                'beforejoin'        => ['table'      => 'glpi_networkports',
                                                             'joinparams' => $joinparams]];
       NetworkName::rawSearchOptionsToAdd($tab, $networkNameJoin, $itemtype);

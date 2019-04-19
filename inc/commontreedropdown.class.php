@@ -711,7 +711,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          'datatype'          => 'dropdown',
          'massiveaction'     => false,
          // Add virtual condition to relink table
-         'joinparams'        => ['condition' => "AND 1=1"]
+         'joinparams'        => ['condition' => [new QueryExpression("1=1")]]
       ];
 
       $tab[] = [

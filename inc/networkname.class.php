@@ -218,7 +218,7 @@ class NetworkName extends FQDNLabel {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'  => 'mainitemtype_mainitem',
-            'condition' => 'AND NEWTABLE.`is_deleted` = 0'
+            'condition' => ['NEWTABLE.is_deleted' => 0]
          ]
       ];
 

@@ -525,7 +525,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'joinparams'         => [
-            'condition'          => 'AND 1=1'
+            'condition'       => [new QueryExpression('1=1')]
          ]
       ];
 
@@ -733,7 +733,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'joinparams'         => [
             'jointype'           => 'child',
             'specific_itemtype'  => 'ProjectCost',
-            'condition'          => 'AND NEWTABLE.`projects_id` = REFTABLE.`id`',
+            'condition'          => ['NEWTABLE.projects_id' => new QueryExpression($DB->quoteName('REFTABLE.id'))],
             'beforejoin'         => [
                'table'        => $this->getTable(),
                'joinparams'   => [

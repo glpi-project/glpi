@@ -512,7 +512,7 @@ class Group extends CommonTreeDropdown {
                'table'              => 'glpi_groups_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`is_manager` = 1'
+                  'condition'          => ['NEWTABLE.is_manager' => 1]
                ]
             ]
          ]
@@ -532,7 +532,7 @@ class Group extends CommonTreeDropdown {
                'table'              => 'glpi_groups_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`is_userdelegate` = 1'
+                  'condition'          => ['NEWTABLE.is_userdelegate' => 1]
                ]
             ]
          ]
