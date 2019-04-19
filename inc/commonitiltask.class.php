@@ -636,7 +636,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'field'              => 'completename',
          'name'               => __('Group in charge of the task'),
          'datatype'           => 'dropdown',
-         'condition'          => 'is_task'
+         'condition'          => ['is_task' => 1]
       ];
 
       return $tab;
@@ -654,8 +654,12 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $task_condition = '';
       if (!Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
-         $task_condition = "AND (`NEWTABLE`.`is_private` = 0
-                                 OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
+         $task_condition = [
+            'OR' => [
+               'NEWTABLE.is_private'   => 0,
+               'NEWTABLE.users_id'     => Session::getLoginUserID()
+            ]
+         ];
       }
 
       $tab[] = [
@@ -780,7 +784,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge'),
          'datatype'           => 'itemlink',
-         'condition'          => 'is_task',
+         'condition'          => ['is_task' => 1],
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [

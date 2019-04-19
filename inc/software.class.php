@@ -586,15 +586,18 @@ class Software extends CommonDBTM {
             'beforejoin' => [
                'table'      => 'glpi_softwareversions',
                'joinparams' => ['jointype' => 'child'],
-               'condition'  => "AND NEWTABLE.`is_deleted_computer` = 0
-                                AND NEWTABLE.`is_deleted` = 0
-                                AND NEWTABLE.`is_template_computer` = 0"
+               'condition'  => ['NEWTABLE.is_deleted_computer' => 0,
+                                'NEWTABLE.is_deleted'          => 0,
+                                'NEWTABLE.is_template_computer' => 0]
             ],
          ]
       ];
 
       if (Session::getLoginUserID()) {
-         $newtab['joinparams']['beforejoin']['condition'] .= getEntitiesRestrictRequest(' AND', 'NEWTABLE');
+         $newtab['joinparams']['beforejoin']['condition'] = array_merge(
+            $newtab['joinparams']['beforejoin']['condition'],
+            getEntitiesRestrictCriteria('NEWTABLE')
+         );
       }
       $tab[] = $newtab;
 
