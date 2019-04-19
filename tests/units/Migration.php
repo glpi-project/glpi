@@ -609,4 +609,139 @@ class Migration extends \GLPITestCase {
          ]
       );
    }
+
+   /**
+    * Test Migration::renameItemtype().
+    * Case: failure as source table does not exists.
+    */
+   public function testRenameItemtypeWhenSourceTableDoesNotExists() {
+      global $DB;
+      $DB = $this->db;
+
+      $this->calling($this->db)->tableExists = false;
+
+      $migration = $this->migration;
+      $this->exception(
+         function() use ($migration) {
+            $migration->renameItemtype('SomeOldType', 'NewName');
+         }
+      )->isInstanceOf(\RuntimeException::class)
+      ->message
+      ->contains('Table "glpi_someoldtypes" does not exists.');
+   }
+
+   /**
+    * Test Migration::renameItemtype().
+    * Case: failure as destination table already exists.
+    */
+   public function testRenameItemtypeWhenDestinationTableAlreadyExists() {
+      global $DB;
+      $DB = $this->db;
+
+      $this->calling($this->db)->tableExists = true;
+
+      $this->exception(
+         function() {
+            $this->migration->renameItemtype('SomeOldType', 'NewName');
+         }
+      )->isInstanceOf(\RuntimeException::class)
+      ->message
+      ->contains('Table "glpi_someoldtypes" cannot be renamed as table "glpi_newnames" already exists.');
+   }
+
+   /**
+    * Test Migration::renameItemtype().
+    * Case: failure as foreign key field already in use somewhere.
+    */
+   public function testRenameItemtypeWhenDestinationFieldAlreadyExists() {
+      global $DB;
+      $DB = $this->db;
+
+      $this->calling($this->db)->tableExists = function ($table) {
+         return $table === 'glpi_someoldtypes';
+      };
+      $this->calling($this->db)->fieldExists = true;
+      $this->calling($this->db)->request = new \ArrayIterator([
+         [
+            'TABLE_NAME' => 'glpi_item_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'
+         ]
+      ]);
+
+      $this->exception(
+         function() {
+            $this->migration->renameItemtype('SomeOldType', 'NewName');
+         }
+      )->isInstanceOf(\RuntimeException::class)
+      ->message
+      ->contains('Field "someoldtypes_id" cannot be renamed in table "glpi_item_with_fkey" as "newnames_id" is field already exists.');
+   }
+
+   /**
+    * Test Migration::renameItemtype().
+    * Case: success.
+    */
+   public function testRenameItemtype() {
+      global $DB;
+      $DB = $this->db;
+
+      $this->calling($this->db)->tableExists = function ($table) {
+         return $table === 'glpi_someoldtypes';
+      };
+      $this->calling($this->db)->fieldExists = function ($table, $field) {
+         return preg_match('/^someoldtypes_id/', $field);
+      };
+      $this->calling($this->db)->request = function ($request) {
+         if (isset($request['WHERE']['OR'][0])
+             && $request['WHERE']['OR'][0] === ['column_name'  => 'someoldtypes_id']) {
+            // Request used for foreign key fields
+            return new \ArrayIterator([
+               ['TABLE_NAME' => 'glpi_oneitem_with_fkey',     'COLUMN_NAME' => 'someoldtypes_id'],
+               ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'],
+               ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id_tech'],
+            ]);
+         }
+         if (isset($request['WHERE']['OR'][0])
+             && $request['WHERE']['OR'][0] === ['column_name'  => 'itemtype']) {
+            // Request used for itemtype fields
+            return new \ArrayIterator([
+               ['TABLE_NAME' => 'glpi_computers', 'COLUMN_NAME' => 'itemtype'],
+               ['TABLE_NAME' => 'glpi_users',     'COLUMN_NAME' => 'itemtype'],
+               ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_source'],
+               ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_dest'],
+            ]);
+         }
+         return [];
+      };
+
+      $this->output(
+         function () {
+            $this->migration->renameItemtype('SomeOldType', 'NewName');
+            $this->migration->executeMigration();
+         }
+      )->isIdenticalTo(
+         implode(
+            '',
+            [
+               '============================ Rename "SomeOldType" itemtype to "NewName" ============================' . "\n",
+               'Rename "glpi_someoldtypes" table to "glpi_newnames"',
+               'Rename "someoldtypes_id" foreign keys to "newnames_id" in all tables',
+               'Rename "SomeOldType" itemtype to "NewName" in all tables',
+               'Change of the database layout - glpi_oneitem_with_fkey',
+               'Change of the database layout - glpi_anotheritem_with_fkey',
+               'Task completed.',
+            ]
+         )
+      );
+
+      $this->array($this->queries)->isIdenticalTo([
+         "RENAME TABLE `glpi_someoldtypes` TO `glpi_newnames`",
+         "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` INT(11) NOT NULL DEFAULT '0'   ",
+         "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` INT(11) NOT NULL DEFAULT '0'   ,\n"
+         . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` INT(11) NOT NULL DEFAULT '0'   ",
+         "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+         "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+         "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
+         "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
+      ]);
+   }
 }
