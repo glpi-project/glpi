@@ -138,6 +138,7 @@ class DBmysqlIterator implements Iterator, Countable {
          // Check field, orderby, limit, start in criterias
          $field    = "";
          $dfield    = "";
+         $distinct = false;
          $orderby  = null;
          $limit    = 0;
          $start    = 0;
@@ -151,6 +152,11 @@ class DBmysqlIterator implements Iterator, Countable {
                   case 'SELECT' :
                   case 'FIELDS' :
                      $field = $val;
+                     unset($crit[$key]);
+                     break;
+                     
+                  case 'DISTINCT' :
+                     $distinct = $val;
                      unset($crit[$key]);
                      break;
 
@@ -204,6 +210,9 @@ class DBmysqlIterator implements Iterator, Countable {
          }
 
          $this->sql = 'SELECT ';
+         if ($distinct) {
+            $this->sql .= 'DISTINCT ';
+         }
          $first = true;
 
          //check DISTINCT is not an array
