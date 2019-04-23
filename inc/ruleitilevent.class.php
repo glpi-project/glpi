@@ -82,61 +82,37 @@ class RuleITILEvent extends Rule
 
    function executeActions($output, $params, array $input = [])
    {
-      //TODO Ensure notification and tracking actions are run last
       if (count($this->actions)) {
+         $itilevent = new ITILEvent();
+         if (!$itilevent->getFromDB($output['id'])) {
+            return $output;
+         }
+         foreach ($this->actions as $action) {
+            switch ($action->fields["action_type"]) {
+               case 'assign_correlated' :
+                  // Set field of all events correlated with this one (Example: Resolve all)
+                  $itilevent->updateCorrelated([$action->fields['field'] => $action->fields['value']]);
+                  break;
+            }
+         }
+         //Ensure notification and tracking actions are run last
          foreach ($this->actions as $action) {
             switch ($action->fields["action_type"]) {
                case "send" :
                case "send_email" :
-                  //recall & recall_ola
-                  $itilevent = new ITILEvent();
-                  if ($itilevent->getFromDB($output['id'])) {
-                     NotificationEvent::raiseEvent('new', $itilevent);
-                  }
+                  NotificationEvent::raiseEvent('new', $itilevent);
                   break;
 
                case "create_ticket" :
-                  $itilevent = new ITILEvent();
-                  if ($itilevent->getFromDB($output['id'])) {
-                     $ticket = new Ticket();
-                     //TODO auto-assign. Use technician/tech group responsible for linked items?
-                     $ticket->add([
-                        'name' => $output['name'],
-                        'content' => $output['content']
-                     ]);
-                  }
+                  $itilevent->createTracking('Ticket');
                   break;
 
                case "create_change" :
-                  $itilevent = new ITILEvent();
-                  if ($itilevent->getFromDB($output['id'])) {
-                     $change = new Change();
-                     //TODO auto-assign. Use technician/tech group responsible for linked items?
-                     $change->add([
-                        'name' => $output['name'],
-                        'content' => $output['content']
-                     ]);
-                  }
+                  $itilevent->createTracking('Change');
                   break;
 
                case "create_problem" :
-                  $itilevent = new ITILEvent();
-                  if ($itilevent->getFromDB($output['id'])) {
-                     $problem = new Problem();
-                     //TODO auto-assign. Use technician/tech group responsible for linked items?
-                     $problem->add([
-                        'name' => $output['name'],
-                        'content' => $output['content']
-                     ]);
-                  }
-                  break;
-
-               case 'assign_correlated' :
-                  // Set field of all events correlated with this one (Example: Resolve all)
-                  $itilevent = new ITILEvent();
-                  if ($itilevent->getFromDB($output['id'])) {
-                     $itilevent->updateCorrelated([$action->fields['field'] => $action->fields['value']]);
-                  }
+                  $itilevent->createTracking('Problem');
                   break;
             }
          }

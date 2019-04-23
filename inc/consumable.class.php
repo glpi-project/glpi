@@ -228,7 +228,7 @@ class Consumable extends CommonDBChild {
                }
                Event::log($item->fields['consumableitems_id'], "consumables", 5, "inventory",
                           //TRANS: %s is the user login
-                          sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]), ITILEvent::INFORMATION, [
+                          sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]), [
                              'login_name' => $_SESSION['glpiname'],
                              'items_id' => $item->fields['consumableitems_id']
                           ]);

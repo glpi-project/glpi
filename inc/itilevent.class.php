@@ -97,13 +97,13 @@ class ITILEvent extends CommonDBTM
    static $rightname                = 'event';
 
 
-   static function getForbiddenActionsForMenu() {
-      return ['add'];
-   }
-
    static function getTypeName($nb = 0)
    {
       return _n('Event', 'Events', $nb);
+   }
+
+   static function getForbiddenActionsForMenu() {
+      return ['add'];
    }
 
    function prepareInputForAdd($input)
@@ -138,15 +138,33 @@ class ITILEvent extends CommonDBTM
 
    function post_addItem()
    {
+      // Associate items
+      if (isset($this->input['_items'])) {
+         $item_itilevent = new Item_ITILEvent();
+         foreach ($this->input['_items'] as $item) {
+            $item_itilevent->add([
+               'itilevents_id'   => $this->getID(),
+               'itemtype'        => $item['itemtype'],
+               'items_id'        => $item['items_id'],
+               'link'            => isset($item['link']) ? $item['link'] : Item_ITILEvent::LINK_SOURCE
+            ]);
+         }
+      }
+
+      if (!isset($this->input['correlation_uuid']) && !isset($this->fields['correlation_uuid'])) {
+         // Create a new correlation UUID in case one isn't assigned by the correlation engine
+         $this->fields['correlation_uuid'] = uniqid();
+      }
+
+      $this->update([
+         'id'                 => $this->getID(),
+         'correlation_uuid'   => $this->fields['correlation_uuid']
+      ]);
+
       // Process event business rules. Only used for correlation, notifications, and tracking
       $rules = new RuleITILEventCollection();
       $input = $rules->processAllRules($this->fields, $this->fields, ['recursive' => true], ['condition' => RuleITILEvent::ONADD]);
       $input = Toolbox::stripslashes_deep($input);
-
-      // If no correlation UUID is assigned from rules, create a new UUID
-      if (!isset($input['correlation_uuid'])) {
-         $input['correlation_uuid'] = uniqid();
-      }
 
       $this->update([
          'id' => $this->getID()
@@ -167,11 +185,11 @@ class ITILEvent extends CommonDBTM
 
    /**
     * Gets the name of a significance level from the int value
-    * 
+    *
     * @since 10.0.0
-    * 
+    *
     * @param int $significance The significance level
-    * 
+    *
     * @return string The significance level name
     */
    static function getSignificanceName($significance)
@@ -190,11 +208,11 @@ class ITILEvent extends CommonDBTM
    /**
     * Displays or gets a dropdown menu of significance levels.
     * The default functionality is to display the dropdown.
-    * 
+    *
     * @since 10.0.0
-    * 
+    *
     * @param array $options Dropdown options
-    * 
+    *
     * @return void|string
     * @see Dropdown::showFromArray()
     */
@@ -224,11 +242,11 @@ class ITILEvent extends CommonDBTM
 
    /**
     * Gets the name of an event status from the int value
-    * 
+    *
     * @since 10.0.0
-    * 
+    *
     * @param int $status The event status
-    * 
+    *
     * @return string The event status name
     */
    static function getStatusName($status) : string
@@ -254,11 +272,11 @@ class ITILEvent extends CommonDBTM
    /**
     * Displays or gets a dropdown menu of event statuses.
     * The default functionality is to display the dropdown.
-    * 
+    *
     * @since 10.0.0
-    * 
+    *
     * @param array $options Dropdown options
-    * 
+    *
     * @return void|string
     * @see Dropdown::showFromArray()
     */
@@ -292,9 +310,9 @@ class ITILEvent extends CommonDBTM
    /**
     * Get an array of statuses that indicate the alert is still active.
     *    By default, this includes New, Acknowledged, and Remediating.
-    * 
+    *
     * @since 10.0.0
-    * 
+    *
     * @return array Array of status integers
     */
    public static function getActiveStatusArray()
@@ -302,6 +320,17 @@ class ITILEvent extends CommonDBTM
       return [self::STATUS_NEW, self::STATUS_ACKNOWLEDGED, self::STATUS_REMEDIATING];
    }
 
+   /**
+    * Get event data that matches specific parameters
+    *
+    * @since 10.0.0
+    *
+    * @param type $item   An asset or tracking object that the resulting events should be linked to
+    * @param int $start   The index of the first result when paginating results
+    * @param int $limit   The maximum number of results returned
+    * @param array $where An associative array of WHERE filters for the iterator
+    * @return \DBmysqlIterator The event data iterator or false if the query failed
+    */
    public static function getEventData($item, int $start = 0, int $limit = 0, array $where = []) : DBmysqlIterator
    {
       global $DB;
@@ -360,12 +389,16 @@ class ITILEvent extends CommonDBTM
          'count-new' => [],
          'count-remediating' => [],
          'list-historical' => [
-            'timeunit' => isset($_GET['_timerange']) ? $_GET['_timerange'] : HOUR_TIMESTAMP,
+            'timerange' => isset($_GET['_timerange']) ? $_GET['_timerange'] : HOUR_TIMESTAMP,
+            'colspan' => 'var(--colcount)'],
+         'timeseries-new' => [
+            'timerange' => isset($_GET['_timerange']) ? $_GET['_timerange'] : HOUR_TIMESTAMP,
+            'timeunit' => isset($_GET['_timeunit']) ? $_GET['_timeunit'] : HOUR_TIMESTAMP,
             'colspan' => 'var(--colcount)']
       ];
       if (!$cards_only) {
          echo "<h2 class='center'>".__('Event Management Dashboard')."</h2>";
-         self::showDashboardToolbar();
+         echo self::getDashboardToolbar();
       }
       echo "<div id='siem-dashboard'>";
       foreach ($default_view as $cardname => $card_params) {
@@ -378,28 +411,38 @@ class ITILEvent extends CommonDBTM
       echo "</div>";
    }
 
-   private static function showDashboardToolbar()
+   public static function getDashboardToolbar()
    {
       global $CFG_GLPI;
 
-      echo "<form id='siem-dashboard-toolbar' class='tab_bg_3'>";
-      echo "<div class='siem-dashboard-options'>";
+      $out = "<form id='siem-dashboard-toolbar' class='tab_bg_3'>";
+      $out .= "<div class='siem-dashboard-options'>";
 
-      echo "<span><label for='_timerange'>".__('Time range')."</label>";
+      $out .= "<span><label for='_timerange'>".__('Time range')."</label>";
       $ajax_url = $CFG_GLPI['root_doc']."/ajax/siemdashboard.php";
-      Dropdown::showTimeStamp('_timerange', [
+      $out .= Dropdown::showTimeStamp('_timerange', [
          'value'     => isset($_GET['_timerange']) ? $_GET['_timerange'] : HOUR_TIMESTAMP,
-         'on_change' => "refreshDashboard(\"{$ajax_url}\");"
+         'on_change' => "refreshDashboard(\"{$ajax_url}\");",
+         'display'   => false
       ]);
-      echo "</span>";
+      $out .= "</span>";
 
-      echo "<span><a href='#' class='fa fa-wrench' title='Configure dashboard'>";
-      echo "<span class='sr-only'>" . __('Configure dashboard')  . "</span>";
-      echo "</a></span>";
+      $out .= "<span><a href='#' class='fa fa-wrench' title='Configure dashboard'>";
+      $out .= "<span class='sr-only'>" . __('Configure dashboard')  . "</span>";
+      $out .= "</a></span>";
 
-      echo "</div></form>";
+      $out .= "</div></form>";
+      return $out;
    }
 
+   /**
+    * Get the title for the specified dashboard card
+    *
+    * @since 10.0.0
+    *
+    * @param string $cardname The name of the dashboard card
+    * @return string The card title
+    */
    public static function getDashboardCardTitle(string $cardname)
    {
       switch ($cardname) {
@@ -408,13 +451,13 @@ class ITILEvent extends CommonDBTM
             $timeunits = Toolbox::getTimestampTimeUnits($timerange);
             $time_string = '';
             if ($timeunits['day'] > 0) {
-               $time_string .= " {$timeunits['day']} "._n('Day', 'Days', $timeunits['day']);
+               $time_string .= sprintf(_n('%d day', '%d days', $timeunits['day']), $timeunits['day']) . ' ';
             }
             if ($timeunits['hour'] > 0) {
-               $time_string .= " {$timeunits['hour']} "._n('Hour', 'Hours', $timeunits['hour']);
+               $time_string .= sprintf(_n('%d hour', '%d hour', $timeunits['hour']), $timeunits['hour']) . ' ';
             }
             if ($timeunits['minute'] > 0) {
-               $time_string .= " {$timeunits['minute']} "._n('Minute', 'Minutes', $timeunits['minute']);
+               $time_string .= sprintf(_n('%d minute', '%d minute', $timeunits['minute']), $timeunits['minute']);
             }
             $time_string = trim($time_string);
             return __('Total Alerts')." ({$time_string})";
@@ -438,17 +481,19 @@ class ITILEvent extends CommonDBTM
       global $DB;
 
       $p = [
-         'colspan'   => 1,
-         'rowspan'   => 1,
-         'timeunit'  => HOUR_TIMESTAMP
+         'colspan'      => 1,
+         'rowspan'      => 1,
+         'timeunit'     => HOUR_TIMESTAMP,
+         'timerange'    => HOUR_TIMESTAMP,
       ];
       $p = array_replace($p, $params);
 
-      if ($p['timeunit'] > DAY_TIMESTAMP) {
-         $p['timeunit'] = DAY_TIMESTAMP;
+      if ($p['timerange'] > DAY_TIMESTAMP) {
+         $p['timerange'] = DAY_TIMESTAMP;
       }
 
-      $global_where = [new \QueryExpression("date > DATE_ADD(now(), INTERVAL -{$p['timeunit']} SECOND)")];
+      $stat = new \Stat();
+      $global_where = [new \QueryExpression("date > DATE_ADD(now(), INTERVAL -{$p['timerange']} SECOND)")];
 
       // Get countable data and cache it (Specific counters without a timeframe)
       $iterator = $DB->request([
@@ -524,11 +569,13 @@ class ITILEvent extends CommonDBTM
          case 'list-historical':
             $out .= self::showList(false, null, false, $global_where);
             break;
+         case 'timeseries-new':
+            break;
          default:
             $out .= "<p>".__("Invalid dashboard card")."</p>";
       }
       $out .= "</div></div>";
-      echo $out;
+      return $out;
    }
 
    public static function showListForItem(CommonDBTM $item = null, $display = true, $where = []) {
@@ -558,7 +605,7 @@ class ITILEvent extends CommonDBTM
       //TODO Find a clean way to show associated items in list entry (Useful for dashboard view)
       // Should items be grouped together in the same row, or have some sort of expandable information panel
       // Alternative is to only allow a single item link per Event
-      $header = "<tr><th>".__('ID')."</th>";
+      $header = "<tr><th></th>";
       $header .= "<th>".__('Name')."</th>";
       $header .= "<th>".__('Significance')."</th>";
       $header .= "<th>".__('Date')."</th>";
@@ -633,21 +680,40 @@ class ITILEvent extends CommonDBTM
          $out .= "<tbody>";
          while ($data = $iterator->next()) {
             $style = '';
+            $icon = 'fas fa-info-circle';
+            $active = in_array($data['status'], self::getActiveStatusArray());
             if ($data['significance'] == ITILEvent::WARNING) {
-               $style = "style='background-color: {$_SESSION['glpieventwarning_color']}'";
+               if ($active) {
+                  $style = "style='background-color: {$_SESSION['glpieventwarning_color']}'";
+               }
+               $icon = 'fas fa-exclamation-triangle';
             } else if ($data['significance'] == ITILEvent::EXCEPTION) {
-               $style = "style='background-color: {$_SESSION['glpieventexception_color']}'";
+               if ($active) {
+                  $style = "style='background-color: {$_SESSION['glpieventexception_color']}'";
+               }
+               $icon = 'fas fa-exclamation-circle';
             }
-            $out .= "<tr class='tab_bg_2' $style>";
-            $out .= "<td class='center'>".$data['id']."</td>";
+            $out .= "<tr id='itilevent_{$data['id']}' class='tab_bg_2' $style onclick='toggleEventDetails(this);'>";
+            $out .= "<td class='center'><i class='{$icon} fa-lg'/></td>";
             $out .= "<td class='center'>".$data['name']."</td>";
-            //echo "<td class='center'>".substr(nl2br($data['content']), 0, 100)."</td>";
             $out .= "<td class='center'>".ITILEvent::getSignificanceName($data['significance'])."</td>";
             $out .= "<td class='center'>".Html::convDateTime($data['date'])."</td>";
             $out .= "<td class='center'>".ITILEvent::getStatusName($data['status'])."</td>";
             $out .= "<td class='center'>".ITILEventCategory::getCategoryName($data['itileventcategories_id'])."</td>";
             $out .= "<td class='center'>".$data['correlation_uuid']."</td>";
             $out .= "</tr>\n";
+
+            $out .= "<tr id='itilevent_{$data['id']}_content' class='tab_bg_2' $style hidden='hidden'>";
+            $out .= "<td colspan='{$colcount}'><p>";
+            $content = '';
+            $content_json = self::getEventProperties($data['content'], $data['logger']);
+            foreach ($content_json as $property) {
+               $safename = html_entity_decode($property['name']);
+               $safeval = html_entity_decode($property['value']);
+               $content .= "{$safename}: {$safeval}<br>";
+            }
+            $out .= $content;
+            $out .= "</p></td></tr>\n";
          }
          $out .= "</tbody>";
       }
@@ -693,7 +759,7 @@ class ITILEvent extends CommonDBTM
       //TODO Find a clean way to show associated items in list entry (Useful for dashboard view)
       // Should items be grouped together in the same row, or have some sort of expandable information panel
       // Alternative is to only allow a single item link per Event
-      $header = "<tr><th>".__('ID')."</th>";
+      $header = "<tr><th></th>";
       $header .= "<th>".__('Name')."</th>";
       $header .= "<th>".__('Significance')."</th>";
       $header .= "<th>".__('Date')."</th>";
@@ -712,15 +778,22 @@ class ITILEvent extends CommonDBTM
          $out .= "<tbody>";
          while ($data = $iterator->next()) {
             $style = '';
+            $icon = 'fas fa-info-circle';
+            $active = in_array($data['status'], self::getActiveStatusArray());
             if ($data['significance'] == ITILEvent::WARNING) {
-               $style = "style='background-color: {$_SESSION['glpieventwarning_color']}'";
+               if ($active) {
+                  $style = "style='background-color: {$_SESSION['glpieventwarning_color']}'";
+               }
+               $icon = 'fas fa-exclamation-triangle';
             } else if ($data['significance'] == ITILEvent::EXCEPTION) {
-               $style = "style='background-color: {$_SESSION['glpieventexception_color']}'";
+               if ($active) {
+                  $style = "style='background-color: {$_SESSION['glpieventexception_color']}'";
+               }
+               $icon = 'fas fa-exclamation-circle';
             }
             $out .= "<tr id='itilevent_{$data['id']}' class='tab_bg_2' $style onclick='toggleEventDetails(this);'>";
-            $out .= "<td class='center'>".$data['id']."</td>";
+            $out .= "<td class='center'><i class='{$icon} fa-lg'/></td>";
             $out .= "<td class='center'>".$data['name']."</td>";
-            //echo "<td class='center'>".substr(nl2br($data['content']), 0, 100)."</td>";
             $out .= "<td class='center'>".ITILEvent::getSignificanceName($data['significance'])."</td>";
             $out .= "<td class='center'>".Html::convDateTime($data['date'])."</td>";
             $out .= "<td class='center'>".ITILEvent::getStatusName($data['status'])."</td>";
@@ -729,14 +802,11 @@ class ITILEvent extends CommonDBTM
             $out .= "</tr>\n";
 
             $out .= "<tr id='itilevent_{$data['id']}_content' class='tab_bg_2' $style hidden='hidden'>";
-            $out .= "<td colspan='{$colcount}'>";
-            $content = '';
-            $content_json = self::getEventProperties($data['content'], $data['logger']);
-            foreach ($content_json as $property) {
-               $content .= "<p>{$property['name']}: {$property['value']}</p>";
-            }
-            $out .= $content;
-            $out .= "</td></tr>\n";
+            $out .= "<td colspan='{$colcount}'><p>";
+            $out .= self::getEventProperties($data['content'], $data['logger'], [
+               'format' => 'pretty'
+            ]);
+            $out .= "</p></td></tr>\n";
          }
          $out .= "</tbody>";
       }
@@ -752,10 +822,10 @@ class ITILEvent extends CommonDBTM
    /**
     * Convert filters values into SQL filters usable in 'WHERE' condition of request build with 'DBmysqlIterator'.
     *
+    * @since 10.0.0
+    *
     * @param array $filters  Filters values
     * @return array
-    *
-    * @since 10.0.0
     **/
    static function convertFiltersValuesToSqlCriteria(array $filters)
    {
@@ -786,11 +856,13 @@ class ITILEvent extends CommonDBTM
 
    /**
     * Gets all events with the same correlation UUID as this event
-    * 
+    *
+    * @since 10.0.0
+    *
     * @param bool $exclusive True if the results should not include this event
     * @return DBmysqlIterator
     */
-   public function getCorrelated(bool $exclusive = false)
+   public function getCorrelated(bool $exclusive = true)
    {
       global $DB;
       $query = [
@@ -808,12 +880,16 @@ class ITILEvent extends CommonDBTM
    }
 
    /**
-    * Update all events with the same correlation UUID (exclusive)
-    * 
+    * Update all events with the same correlation UUID
+    *
+    * @since 10.0.0
+    *
     * @param array $params Query parameters ([:field name => field value)
     * @param array $where  WHERE clause
+    * @param bool $exclusive True if this event should also be updated
+    * @return PDOStatement|boolean
     */
-   public function updateCorrelated(array $params, array $where = [])
+   public function updateCorrelated(array $params, array $where = [], bool $exclusive = true)
    {
       global $DB;
 
@@ -824,36 +900,51 @@ class ITILEvent extends CommonDBTM
          'correlation_uuid' => $this->fields['correlation_uuid']
       ] + $where;
 
-      $DB->update(self::getTable(), $params, $where);
+      if ($exclusive) {
+         $where[] = [
+            'NOT' => ['id' => $this->getID()]
+         ];
+      }
+
+      return $DB->update(self::getTable(), $params, $where);
    }
 
    /**
-    * 
-    * @param string $name
-    * @param string $logger
-    * @return string
+    * Gets the translated event name from the event's logger (GLPI or plugin)
+    *
+    * @since 10.0.0
+    *
+    * @param string $name   The unlocalized event name
+    * @param string $logger The plugin that created the event or null if made by GLPI
+    * @return string The localized name if possible, otherwise the unlocalized name is returned
     */
    public static function getLocalizedEventName(string $name, $logger) {
       if ($logger !== null) {
-         if (file_exists(GLPI_ROOT . "/plugins/$logger/hook.php")) {
-            include_once(GLPI_ROOT . "/plugins/$logger/hook.php");
-         }
-         if (is_callable('translateEventName')) {
-            return call_user_func('translateEventName', $name);
-         }
+         return Plugin::doOneHook($logger, 'translateEventName', $name);
       }
       return $name;
    }
 
    /**
     * Get an associative array of event properties from the content JSON field
-    * 
-    * @param boolean $translate Attempt to translate the event properties.
-    * @return array Associative array of event properties
+    *
     * @since 10.0.0
+    *
+    * @param boolean $translate Attempt to translate the event properties.
+    * @return array|string Associative array or HTML display of event properties
     */
-   public static function getEventProperties(string $content, $logger, bool $translate = true)
+   public static function getEventProperties(string $content, $logger, array $params = [])
    {
+      $p = [
+         'translate' => true,
+         'format'    => 'array'
+      ];
+      $p = array_replace($p, $params);
+
+      if (!in_array($p['format'], ['array', 'pretty', 'plain'])) {
+         $p['format'] = 'array';
+      }
+
       if ($content !== null) {
          $properties = json_decode($content, true);
       } else {
@@ -871,19 +962,127 @@ class ITILEvent extends CommonDBTM
          ];
       }
 
-      if ($translate) {
+      if ($p['translate']) {
          if ($logger !== null) {
-            if (file_exists(GLPI_ROOT . "/plugins/$logger/hook.php")) {
-               include_once(GLPI_ROOT . "/plugins/$logger/hook.php");
-            }
-            if (is_callable('translateEventProperties')) {
-               call_user_func('translateEventProperties', $props);
-            }
+            $props = Plugin::doOneHook($logger, 'translateEventProperties', $props);
          } else {
             Glpi\Event::translateEventProperties($props);
          }
       }
 
-      return $props;
+      if ($p['format'] == 'array') {
+         return $props;
+      } else {
+         $text_content = '';
+         foreach ($props as $event_property) {
+            $propname = strip_tags($event_property['name']);
+            $propvalue = strip_tags($event_property['value']);
+
+            if ($p['format'] == 'pretty') {
+               $text_content .= "<b>{$propname}</b>: {$propvalue}<br>";
+            } else {
+               $text_content .= "{$propname}: {$propvalue}<br>";
+            }
+         }
+         return $text_content;
+      }
+   }
+
+   /**
+    * Create a ticket, change, or problem from this event
+    *
+    * @since 10.0.0
+    *
+    * @param string $tracking_type  The tracking class (Ticket, Change, or Problem)
+    * @return boolean True if the tracking was created successfully
+    */
+   public function createTracking(string $tracking_type)
+   {
+      global $DB;
+
+      if (is_subclass_of($tracking_type, 'CommonITILObject')) {
+         $tracking = new $tracking_type();
+
+         $content = ITILEvent::getEventProperties($this->fields['content'], $this->fields['logger'], [
+            'format' => 'plain'
+         ]);
+
+         $tracking_id = $tracking->add([
+            'name'               => $this->fields['name'],
+            'content'            => $content,
+            '_correlation_uuid'  => $this->fields['correlation_uuid']
+         ]);
+
+         if (!$tracking_id) {
+            return false;
+         } else {
+            // Add related items if they exist
+            if ($tracking_type == 'Change') {
+               $items_tracking = 'glpi_items_changes';
+            } else if ($tracking_type == 'Problem') {
+               $items_tracking = 'glpi_items_problems';
+            } else {
+               $items_tracking = 'glpi_items_tickets';
+            }
+            $iterator = $DB->request([
+               'SELECT' => ['itemtype', 'items_id'],
+               'FROM'   => Item_ITILEvent::getTable(),
+               'WHERE'  => [
+                  'itilevents_id'   => $this->getID()
+               ]
+            ]);
+
+            $actors_responsible = ['user' => [], 'group' => []];
+            while ($data = $iterator->next()) {
+               $DB->insert($items_tracking, [
+                  'itemtype'                       => $data['itemtype'],
+                  'items_id'                       => $data['items_id'],
+                  $tracking::getForeignKeyField()  => $tracking_id
+               ]);
+               // Get responsible tech and group
+               $actors = $DB->request([
+                  'SELECT' => ['users_id_tech', 'groups_id_tech'],
+                  'FROM'   => $data['itemtype']::getTable(),
+                  'WHERE'  => ['id' => $data['items_id']]
+               ])->next();
+               if (!is_null($actors['users_id_tech'])) {
+                  $actors_responsible['user'][] = $actors['users_id_tech'];
+               }
+               if (!is_null($actors['groups_id_tech'])) {
+                  $actors_responsible['group'][] = $actors['groups_id_tech'];
+               }
+            }
+
+            // Assign responsible actors
+            // TODO Respect Entity assignment settings?
+            $tracking_user = new $tracking->userlinkclass();
+            $tracking_group = new $tracking->grouplinkclass();
+            foreach ($actors_responsible as $type => $actor_id) {
+               if ($type == 'user') {
+                  $tracking_user->add([
+                     'type'                           => CommonITILActor::ASSIGN,
+                     'users_id'                       => $actor_id[0],
+                     $tracking::getForeignKeyField()  => $tracking_id
+                  ]);
+               } else if ($type == 'group') {
+                  $tracking_group->add([
+                     'type'                           => CommonITILActor::ASSIGN,
+                     'groups_id'                      => $actor_id[0],
+                     $tracking::getForeignKeyField()  => $tracking_id
+                  ]);
+               }
+            }
+
+            $itil_itilevent = new Itil_ITILEvent();
+            $itil_itilevent->add([
+               'itemtype'        => $tracking_type,
+               'items_id'        => $tracking_id,
+               'itilevents_id'   => $this->getID()
+            ]);
+         }
+      } else {
+         Toolbox::logError(__("Tracking type must be a subclass of CommonITILObject"));
+         return false;
+      }
    }
 }

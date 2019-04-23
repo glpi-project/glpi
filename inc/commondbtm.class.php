@@ -4224,10 +4224,9 @@ class CommonDBTM extends CommonGLPI {
                         if ($p['add_event_on_duplicate']) {
                            Event::log ((!$add?$this->fields['id']:0), get_class($this), 4,
                                  'inventory', sprintf(__('%1$s trying to add an item that already exists: %2$s'),
-                                 $_SESSION["glpiname"], $message_text), ITILEvent::INFORMATION, [
+                                 $_SESSION["glpiname"], $message_text), [
                                     'login_name' => $_SESSION['glpiname'],
-                                    'message' => $message_text
-                                 ]);
+                                    'message' => $message_text]);
                         }
                      }
                      if ($fields['action_refuse']) {

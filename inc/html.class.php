@@ -1374,7 +1374,7 @@ class Html {
 
       $menu['admin']['title']        = __('Administration');
       $menu['admin']['types']        = ['User', 'Group', 'Entity', 'Rule',
-                                             'Profile', 'QueuedNotification', 'Backup', 'Glpi\\Event'];
+                                             'Profile', 'QueuedNotification', 'Backup'];
 
       $menu['config']['title']       = __('Setup');
       $menu['config']['types']       = ['CommonDropdown', 'CommonDevice', 'Notification',
@@ -5945,6 +5945,7 @@ class Html {
 
       // Some Javascript-Functions which we may need later
       echo Html::script('js/common.js');
+      echo Html::script('js/siem.js');
       self::redefineAlert();
       self::redefineConfirm();
 

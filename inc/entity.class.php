@@ -1240,7 +1240,8 @@ class Entity extends CommonTreeDropdown {
 
       Event::log($ruleid, "rules", 4, "setup",
                  //TRANS: %s is the user login
-                 sprintf(__('%s adds the item'), $_SESSION["glpiname"]));
+                 sprintf(__('%s adds the item'), $_SESSION["glpiname"]), [
+                    'login_name' => $_SESSION["glpiname"]]);
 
       Html::back();
    }

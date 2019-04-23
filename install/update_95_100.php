@@ -254,6 +254,15 @@ function update95to100() {
          }
       }
    }
+
+   // Warn about migrating old events
+   $eventiterator = $DB->request([
+      'COUNT'  => 'cpt',
+      'FROM'   => Glpi\Event::getTable()
+   ]);
+   $event_count = $eventiterator->next()['cpt'];
+   $migration->displayWarning("You must run event migration command to migrate {$event_count} events.");
+
    /** End of Event Management */
 
    // ************ Keep it at the end **************

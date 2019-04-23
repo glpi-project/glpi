@@ -760,8 +760,8 @@ class Toolbox {
 
       if (strstr($tmpfile, "../") || strstr($tmpfile, "..\\")) {
          Event::log($file, "sendFile", 1, "security",
-                    $_SESSION["glpiname"]." try to get a non standard file.",
-               ITILEvent::EXCEPTION, ['login_name' => $_SESSION["glpiname"]]);
+               "{$_SESSION["glpiname"]} try to get a non standard file.", [
+               'login_name' => $_SESSION["glpiname"]], ITILEvent::EXCEPTION);
          echo "Security attack!!!";
          die(1);
       }

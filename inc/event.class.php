@@ -100,12 +100,19 @@ class Event extends CommonDBTM {
     * @param $significance int The significance of the event (0 = Information, 1 = Warning, 2 = Exception).
     *    Default is Information.
    **/
-   static function log($items_id, $type, $level, $service, $event, int $significance = \ITILEvent::INFORMATION, $extrainfo = []) {
+   static function log($items_id, $type, $level, $service, $event, $extrainfo = [], int $significance = \ITILEvent::INFORMATION) {
       global $CFG_GLPI;
 
       // Only log if the event's level is the smae or lower than the setting from configuration
       if (!($level <= $CFG_GLPI["event_loglevel"])) {
          return false;
+      }
+
+      if (isset($extrainfo['_correlation_uuid'])) {
+         $correlation_uuid = $extrainfo['_correlation_uuid'];
+         unset($extrainfo['_correlation_uuid']);
+      } else {
+         $correlation_uuid = null;
       }
 
       $input = [
@@ -117,7 +124,8 @@ class Event extends CommonDBTM {
             'level'     => $level
          ] + $extrainfo),
          'significance' => $significance,
-         'date'      => $_SESSION["glpi_currenttime"]
+         'date'      => $_SESSION["glpi_currenttime"],
+         'correlation_uuid'   => $correlation_uuid
       ];
 
       $tmp = new \ITILEvent();
@@ -438,10 +446,6 @@ class Event extends CommonDBTM {
       static $logItemtype = [];
       static $logService  = [];
 
-      if (count($logItemtype)) {
-         return [$logItemtype, $logService];
-      }
-
       $logItemtype = ['system'      => __('System'),
                            'devices'     => _n('Component', 'Components', Session::getPluralNumber()),
                            'planning'    => __('Planning'),
@@ -464,13 +468,23 @@ class Event extends CommonDBTM {
                           'notification' => _n('Notification', 'Notifications', Session::getPluralNumber()),
                           'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber())];
 
+      $otherFields = [
+         'login_name'         => __('Login'),
+         'level'              => __('Level'),
+         'source_ip'          => __('Source IP'),
+         'items_id'           => __('Items ID'),
+         'itemtype'           => __('Item type'),
+         'previous_revision'  => __('Previous revision'),
+         'next_revision'      => __('Next revision'),
+      ];
+
       if (array_key_exists('type', $properties)) {
          $properties['type']['name'] = __('Source');
          if (isset($properties['type']['value'])) {
             if (isset($logItemtype[$properties['type']['value']])) {
                $properties['type']['value'] = $logItemtype[$properties['type']['value']];
             } else {
-               $type = getSingular($type);
+               $type = getSingular($properties['type']['value']);
                if ($item = getItemForItemtype($type)) {
                   $itemtype = $item->getTypeName(1);
                   $properties['type']['value'] = $itemtype;
@@ -484,6 +498,12 @@ class Event extends CommonDBTM {
             if (isset($logService[$properties['service']['value']])) {
                $properties['service']['value'] = $logService[$properties['service']['value']];
             }
+         }
+      }
+
+      foreach ($otherFields as $fieldname => $localname) {
+         if (array_key_exists($fieldname, $properties)) {
+            $properties[$fieldname]['name'] = $localname;
          }
       }
    }

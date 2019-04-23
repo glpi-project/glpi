@@ -93,7 +93,7 @@ class Netpoint extends CommonDropdown {
       }
       Event::log(0, "dropdown", 5, "setup",
             sprintf(__('%1$s adds several netpoints'), $_SESSION["glpiname"]),
-            ITILEvent::INFORMATION, ['login_name' => $_SESSION['glpi_name']]);
+            ['login_name' => $_SESSION['glpi_name']]);
    }
 
 

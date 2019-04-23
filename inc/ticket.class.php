@@ -989,6 +989,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
+      $this->addStandardTab('Itil_ITILEvent', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -2101,9 +2102,12 @@ class Ticket extends CommonITILObject {
       if (isset($_SESSION["glpiname"])) {
          $username = $_SESSION["glpiname"];
       }
+
       Event::log($this->fields['id'], "ticket", 4, "tracking",
-                 sprintf(__('%1$s adds the item %2$s'), $username,
-                         $this->getID()), ITILEvent::INFORMATION, ['login_name' => $username, 'items_id' => $this->getID()]);
+            sprintf(__('%1$s adds the item %2$s'), $username, $this->getID()), [
+               'login_name' => $username,
+               'items_id' => $this->getID(),
+               '_correlation_uuid' => isset($this->input['_correlation_uuid']) ? $this->input['_correlation_uuid'] : null]);
 
       if (isset($this->input["_followup"])
           && is_array($this->input["_followup"])
@@ -2235,7 +2239,7 @@ class Ticket extends CommonITILObject {
          ]);
          Event::log($this->getID(), "ticket", 4, "tracking",
                sprintf(__('%s promotes a followup from ticket %s'), $_SESSION["glpiname"], $fup->fields['items_id']),
-               ITILEvent::INFORMATION, ['login_name' => $_SESSION['glpiname'], 'items_id' => $fup->fields['items_id']]);
+               ['login_name' => $_SESSION['glpiname'], 'items_id' => $fup->fields['items_id']]);
       }
 
       if (!empty($this->input['items_id'])) {
@@ -2451,7 +2455,7 @@ class Ticket extends CommonITILObject {
                if ($add_done) {
                   Event::log($this->fields['id'], "ticket", 4, "tracking",
                         sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
-                        $this->getID()), ITILEvent::INFORMATION, [
+                        $this->getID()), [
                            'login_name' => $_SESSION['glpi_name'], 
                            'items_id' => $this->getID()]);
                }
@@ -2943,9 +2947,12 @@ class Ticket extends CommonITILObject {
 
                      $DB->commit();
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                     Event::log($input['_mergeticket'], 'ticket', 4, 'tracking',
-                        sprintf(__('%s merges ticket %s into %s'), $_SESSION['glpiname'],
-                        $id, $input['_mergeticket']));
+                     Event::log($id, "ticket", 4, "tracking",
+                        sprintf(__('%s merges ticket %s into %s'), $_SESSION["glpiname"],
+                        $id, $input['_mergeticket']), [
+                           'login_name'   => $_SESSION['glpiname'],
+                           'merge_target' => $input['_mergeticket']
+                        ]);
                   } else {
                      throw new \RuntimeException(ERROR_RIGHT, MassiveAction::ACTION_NORIGHT);
                   }

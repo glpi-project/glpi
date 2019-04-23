@@ -155,7 +155,7 @@ class RuleITILEventFilter extends Rule
 
    function getActions()
    {
-      $actions                                  = [];
+      $actions                            = [];
       $actions['accept']['name']          = __('Acceptance');
       $actions['accept']['field']         = '_accept';
       $actions['accept']['type']          = 'yesno';
