@@ -819,6 +819,7 @@ span.vsubmit, a.vsubmit {
 
 .layout_lefttab .ui-tabs, .layout_classic .ui-tabs, .layout_vsplit .ui-tabs {
    border: 0;
+   box-sizing: border-box;
 }
 
 .ui-tabs {
@@ -1599,11 +1600,118 @@ td {
    }
 }
 
-.navigationheader {
-   margin: 10px auto;
+#page .navigationheader {
+   margin: 0 auto;
+   padding: 7px 10px;
+   width: 90%;
+   border: 0 solid rgb(241, 241, 241);
+   border-bottom-width: 1px;
+   background-color: #FFF;
+   box-sizing: border-box;
+   font-size: 11px;
+   display: flex;
+
+   & > * {
+      margin: 0 5px;
+   }
+
+   i.fa, i.fas, i.far {
+      font-size: 1.33em;
+   }
 
    .big {
       font-size: 16px;
+   }
+
+   form {
+      display: inline-block;
+      margin-bottom: 0;
+   }
+
+   .center {
+      margin: 0 auto;
+   }
+
+   .dropdown-menu {
+      display: none;
+   }
+
+   .nav_title {
+      font-size: 13px;
+      font-weight: bold;
+   }
+
+   .btn-group {
+      position: relative;
+      font-size: 11px;
+
+      .btn {
+         background-color: rgb(231, 231, 231);
+         border-radius: .2rem;
+         border: 1px solid transparent;
+         padding: .1rem .5rem;
+         font-size: 11px;
+         line-height: 1.5;
+
+         &:hover {
+            background-color: #CCC;
+            cursor: pointer;
+         }
+
+         &:not(:first-child) {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+         }
+
+         &:not(:last-child) {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+         }
+      }
+
+      & > .btn-group:not(:first-child) {
+         & > .btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+         }
+      }
+
+      .dropdown-menu {
+         background-color: #fff;
+         background-clip: padding-box;
+         border: 1px solid rgba(0,0,0,.15);
+         position: absolute;
+         top: 20px;
+         right: 0;
+         white-space: nowrap;
+         z-index: 1000;
+         font-size: 11px;
+         border-radius: 2px;
+
+         a {
+            padding: 5px;
+            display: block;
+            text-align: right;
+
+            &:hover {
+               background-color: #CCC;
+            }
+         }
+      }
+   }
+}
+
+.layout_vsplit #page .navigationheader {
+   width: calc(96% + 30px);
+}
+
+.layout_classic #page .navigationheader {
+   width: 950px;
+}
+
+@media screen and (max-width: $break_sphones) {
+   #page .navigationheader {
+      display: none;
    }
 }
 

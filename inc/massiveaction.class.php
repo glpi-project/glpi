@@ -928,6 +928,14 @@ class MassiveAction {
 
             return true;
 
+         case 'add_transfer_list':
+            echo _n("Are you sure you want to add this item to transfer list?",
+                    "Are you sure you want to add these items to transfer list?",
+                    count($ma->items, COUNT_RECURSIVE) - count($ma->items));
+            echo "<br><br>";
+            echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction']);
+
+            return true;
       }
       return false;
    }
