@@ -480,7 +480,8 @@ class MassiveAction {
       if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()) {
          $actions[__CLASS__.self::CLASS_ACTION_SEPARATOR.'add_transfer_list']
-                  = _x('button', 'Add to transfer list');
+                  = "<i class='ma-icon fas fa-level-up-alt'></i>".
+                    _x('button', 'Add to transfer list');
       }
 
    }
@@ -569,11 +570,11 @@ class MassiveAction {
             }
          }
 
-         Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
-         Contract::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
-
          // Specific actions
          $actions += $item->getSpecificMassiveActions($checkitem);
+
+         Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+         Contract::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
          // Plugin Specific actions
          if (isset($PLUGIN_HOOKS['use_massive_action'])) {

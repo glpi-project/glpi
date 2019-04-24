@@ -1619,6 +1619,11 @@ td {
       font-size: 1.33em;
    }
 
+   i.ma-icon {
+      font-size: 0.875em;
+      margin-right: 5px;
+   }
+
    .big {
       font-size: 16px;
    }
@@ -1639,6 +1644,13 @@ td {
    .nav_title {
       font-size: 13px;
       font-weight: bold;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+      @media screen and (max-width: $break_tablets) {
+         max-width: 30%;
+      }
    }
 
    .btn-group {
@@ -1663,9 +1675,15 @@ td {
             border-bottom-left-radius: 0;
          }
 
-         &:not(:last-child) {
+         &:not(:last-child):not(.dropdown-toggle) {
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
+            border-right-color: #CCC;
+         }
+
+         i.ma-icon {
+            font-size: 1em;
+            color: #666;
          }
       }
 
@@ -1691,7 +1709,6 @@ td {
          a {
             padding: 5px;
             display: block;
-            text-align: right;
 
             &:hover {
                background-color: #CCC;

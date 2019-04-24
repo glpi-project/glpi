@@ -158,25 +158,25 @@ class Rule extends DbTestCase {
       $rule    = new \Rule();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:duplicate'  => 'Duplicate',
-         'Rule:export'     => 'Export'
+         'Rule:duplicate'  => '<i class=\'ma-icon far fa-clone\'></i>Duplicate',
+         'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
       ]);
 
       $_SESSION['glpiactiveprofile']['rule_dictionnary_software'] = ALLSTANDARDRIGHT;
       $rule    = new \RuleDictionnarySoftware();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:move_rule' => 'Move',
-         'Rule:duplicate' => 'Duplicate',
-         'Rule:export'    => 'Export'
+         'Rule:move_rule' => '<i class=\'ma-icon fas fa-arrows-alt-v\'></i>Move',
+         'Rule:duplicate'  => '<i class=\'ma-icon far fa-clone\'></i>Duplicate',
+         'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
       ]);
 
       $_SESSION['glpiactiveprofile']['rule_dictionnary_software'] = READ;
       $rule    = new \RuleDictionnarySoftware();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:duplicate' => 'Duplicate',
-         'Rule:export'    => 'Export'
+         'Rule:duplicate'  => '<i class=\'ma-icon far fa-clone\'></i>Duplicate',
+         'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
       ]);
    }
 

@@ -539,15 +539,19 @@ class Computer extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['Item_OperatingSystem'.MassiveAction::CLASS_ACTION_SEPARATOR.'update']    = OperatingSystem::getTypeName();
-         $actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = _x('button', 'Connect');
-         $actions['Item_SoftwareVersion'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Install');
+         $actions += [
+            'Item_OperatingSystem'.MassiveAction::CLASS_ACTION_SEPARATOR.'update'
+               => OperatingSystem::getTypeName(),
+            'Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
+               => "<i class='ma-icon fas fa-plug'></i>".
+                  _x('button', 'Connect'),
+            'Item_SoftwareVersion'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
+               => "<i class='ma-icon fas fa-laptop-medical'></i>".
+                  _x('button', 'Install')
 
-         $kb_item = new KnowbaseItem();
-         $kb_item->getEmpty();
-         if ($kb_item->canViewItem()) {
-            $actions['KnowbaseItem_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Link knowledgebase article');
-         }
+         ];
+
+         KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
       }
 
       return $actions;

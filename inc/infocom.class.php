@@ -1963,7 +1963,8 @@ class Infocom extends CommonDBChild {
 
       if (Infocom::canApplyOn($itemtype)
           && static::canCreate()) {
-         $actions[$action_name] = __('Enable the financial and administrative information');
+         $actions[$action_name] = "<i class='ma-icon far fa-money-bill-alt'></i>".
+                                  __('Enable the financial and administrative information');
       }
    }
 

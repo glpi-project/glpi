@@ -976,16 +976,24 @@ class CommonGLPI {
             $this->fields['id']
          );
          $actions = $ma->getInput()['actions'];
+         $input   = $ma->getInput();
+
+         if ($this->isEntityAssign()) {
+            $input['entity_restrict'] = $this->fields['entities_id'];
+         }
 
          if (count($actions)) {
-            $first_key = array_keys($actions)[0];
-            $first     = array_shift($actions);
-            $rand      = mt_rand();
+            $rand          = mt_rand();
+            $nb_hightlight = min(2, count($actions));
 
-            echo "<span class='btn-group'>
-               <button type='button' class='btn btn-secondary' data-action='$first_key'>
-                  $first
-               </button>";
+            echo "<span class='btn-group'>";
+            for ($i = 0; $i < $nb_hightlight; $i++) {
+               $key    = array_keys($actions)[0];
+               $action = array_shift($actions);
+               echo "<button type='button' class='btn btn-secondary' data-action='$key'>
+                        $action
+                     </button>";
+            }
             if (count($actions)) {
                echo "<span class='btn-group'>";
                echo "<button id='moreactions'
@@ -1017,7 +1025,7 @@ class CommonGLPI {
                $this->fields['id'] :
                (isset($this->fields['entities_id']) ? $this->fields['entities_id'] : ''));
             echo Html::scriptBlock( "$(function() {
-               var ma = ".json_encode($ma->getInput()).";
+               var ma = ".json_encode($input).";
 
                $(document).on('click', '#moreactions', function() {
                   $('#moreactions + .dropdown-menu').toggle();
@@ -1037,7 +1045,7 @@ class CommonGLPI {
                   }).load(
                      '".$CFG_GLPI['root_doc']. "/ajax/dropdownMassiveAction.php',
                      Object.assign(
-                        {action: current_action, entity_restrict: ".$entr."},
+                        {action: current_action},
                         ma
                      )
                   );

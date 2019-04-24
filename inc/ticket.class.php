@@ -2381,54 +2381,60 @@ class Ticket extends CommonITILObject {
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
+      $actions = [];
 
       if (Session::getCurrentInterface() == 'central') {
+         if (Ticket::canCreate() && Ticket::canDelete()) {
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge_as_followup']
+               = "<i class='ma-icon fas fa-code-branch'></i>".
+                 __('Merge as Followup');
+         }
+
+         if (Item_Ticket::canCreate()) {
+            $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item']
+               = "<i class='ma-icon fas fa-plus'></i>".
+                 _x('button', 'Add an item');
+         }
+
          if (ITILFollowup::canCreate()) {
             $actions['ITILFollowup'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_followup']
-               = __('Add a new followup');
+               = "<i class='ma-icon far fa-comment'></i>".
+                 __('Add a new followup');
          }
 
          if (TicketTask::canCreate()) {
-            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task'] = __('Add a new task');
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task']
+               = "<i class='ma-icon far fa-check-square'></i>".
+                 __('Add a new task');
          }
 
          if (TicketValidation::canCreate()) {
             $actions['TicketValidation'.MassiveAction::CLASS_ACTION_SEPARATOR.'submit_validation']
-               = __('Approval request');
-         }
-
-         if (Item_Ticket::canCreate()) {
-            $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item'] = _x('button', 'Add an item');
+               = "<i class='ma-icon fas fa-check'></i>".
+                 __('Approval request');
          }
 
          if (Item_Ticket::canDelete()) {
-            $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete_item'] = _x('button', 'Remove an item');
+            $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete_item']
+               = _x('button', 'Remove an item');
          }
 
          if (Session::haveRight(self::$rightname, UPDATE)) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
-               = __('Add an actor');
+               = "<i class='ma-icon fas fa-user'></i>".
+                 __('Add an actor');
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'update_notif']
                = __('Set notifications for all actors');
             $actions['Ticket_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-               = _x('button', 'Link tickets');
+               = "<i class='ma-icon fas fa-link'></i>".
+                 _x('button', 'Link tickets');
 
-         }
-
-         if (Session::haveRight(self::$rightname, UPDATE)) {
-            $kb_item = new KnowbaseItem();
-            $kb_item->getEmpty();
-            if ($kb_item->canViewItem()) {
-               $actions['KnowbaseItem_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Link knowledgebase article');
-            }
-         }
-
-         if (Ticket::canCreate() && Ticket::canDelete()) {
-            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge_as_followup']
-               = __('Merge as Followup');
+            KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
          }
       }
+
+      $actions += parent::getSpecificMassiveActions($checkitem);
+
       return $actions;
    }
 
