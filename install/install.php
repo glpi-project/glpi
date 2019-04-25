@@ -64,15 +64,12 @@ function header_html($etape) {
    ");
 
     // LIBS
-   echo Html::script("public/lib/jquery/jquery.js");
-   echo Html::script('public/lib/jquery-ui-dist/jquery-ui.js');
-   echo Html::script("public/lib/select2/js/select2.full.js");
-   echo Html::script("public/lib/fuzzy/fuzzy.js");
+   echo Html::script("public/lib/base.js");
+   echo Html::script("public/lib/fuzzy.js");
    echo Html::script("js/common.js");
 
     // CSS
-   echo Html::css('public/lib/jquery-ui/jquery-ui.css');
-   echo Html::css("public/lib/select2/css/select2.css");
+   echo Html::css('public/lib/base.css');
    echo Html::css("css/style_install.css");
    echo "</head>";
    echo "<body>";

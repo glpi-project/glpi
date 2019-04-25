@@ -89,8 +89,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
    echo Html::scss('css/palettes/' . $theme);
-   // font awesome icons
-   echo Html::css('public/lib/fontawesome-free/css/all.css');
+   // external libs CSS
+   echo Html::css('public/lib/base.css');
 
    // CFG
    echo Html::scriptBlock("
@@ -100,10 +100,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       };
    ");
 
-   echo Html::script('public/lib/jquery/jquery.js');
-   echo Html::script('public/lib/select2/js/select2.full.js');
-   echo Html::script("public/lib/fuzzy/fuzzy.js");
-   echo Html::css('public/lib/select2/css/select2.css');
+   echo Html::script("public/lib/base.js");
+   echo Html::script("public/lib/fuzzy.js");
    echo Html::script('js/common.js');
 
    echo "</head>";

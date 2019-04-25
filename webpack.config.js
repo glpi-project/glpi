@@ -33,6 +33,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const glob = require('glob');
 const path = require('path');
 
 const libOutputPath = 'public/lib';
@@ -42,7 +43,7 @@ const libOutputPath = 'public/lib';
  */
 var glpiConfig = {
     entry: {
-        'glpi': './js/main.js',
+        'glpi': path.resolve(__dirname, 'js/main.js'),
     },
     output: {
         filename: '[name].js',
@@ -54,76 +55,76 @@ var glpiConfig = {
  * External libraries files build configuration.
  */
 var libsConfig = {
-    entry: {
-        'jquery-ui': path.resolve(__dirname, 'node_modules/jquery-ui/themes/base/all.css'),
+    entry: function () {
+        // Create an entry per *.js file in lib/bundle directory.
+        // Entry name will be name of the file (without ext).
+        var entries = {};
+
+        let files = glob.sync(path.resolve(__dirname, 'lib/bundles') + '/*.js');
+        files.forEach(function (file) {
+            entries[path.basename(file, '.js')] = file;
+        });
+
+        return entries;
     },
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, libOutputPath),
     },
-    optimization: {
-        splitChunks: {
-            cacheGroups: {
-                // Force jQueryUI CSS to be bundled into a unique file
-                jQueryUiCss: {
-                    name: 'jquery-ui',
-                    test: /jquery-ui\/themes\/base\/all\.css$/,
-                    chunks: 'all',
-                    enforce: true
-                },
-            },
-        },
-    },
     module: {
         rules: [
             {
-                // Build jQuery UI styles
+                // Load scripts with no compilation for packages that are directly providing "dist" files
+                // including a "require/define" logic.
+                // This prevents incompatibility issues with the webpack require feature.
+                test: /\.js$/,
+                include: [
+                    path.resolve(__dirname, 'node_modules/fullcalendar'),
+                    path.resolve(__dirname, 'node_modules/gridstack'),
+                    path.resolve(__dirname, 'node_modules/jstree'),
+                    path.resolve(__dirname, 'node_modules/spectrum-colorpicker'),
+                ],
+                use: ['script-loader'],
+            },
+            {
+                // Build styles
                 test: /\.css$/,
-                include: path.resolve(__dirname, 'node_modules/jquery-ui'),
                 use: [MiniCssExtractPlugin.loader, 'css-loader'],
             },
             {
-                // Convert images to base64 strings
-                test: /\.(png|jp(e*)g|svg)$/,
-                use: ['url-loader']
+                // Copy images and fonts
+                test: /\.((gif|png|jp(e?)g)|(eot|ttf|svg|woff2?))$/,
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        name: function (filename) {
+                            // Keep only relative path
+                            var sanitizedPath = path.relative(__dirname, filename);
+
+                            // Sanitize name
+                            sanitizedPath = sanitizedPath.replace(/[^\\/\w-.]/, '');
+
+                            // Remove the first directory (lib, node_modules, ...) and empty parts
+                            // and replace directory separator by '/' (windows case)
+                            sanitizedPath = sanitizedPath.split(path.sep)
+                                .filter(function (part, index) {
+                                    return '' != part && index != 0;
+                                }).join('/');
+
+                            return sanitizedPath;
+                        },
+                    },
+                },
             },
         ],
     },
     plugins: [
         new CleanWebpackPlugin(), // Clean lib dir content
-        new MiniCssExtractPlugin({ filename: '[name]/[name].css' }), // Extract styles into CSS files
+        new MiniCssExtractPlugin({ filename: '[name].css' }), // Extract styles into CSS files
     ]
 };
 
 var libs = {
-    /*
-     * Nota:
-     * PHP file 'UploadHandler.php' is not fetch when installing with npm and is not available
-     * on packagist repository.
-     * This dependency is managed manually for the moment.
-    'blueimp-file-upload': [
-        {
-            from: '{js/jquery.fileupload.js,js/jquery.iframe-transport.js}',
-        }
-    ],
-    */
-    'chartist': [
-        {
-            context: 'dist',
-            from: '{chartist.css,chartist.js}',
-        }
-    ],
-    'chartist-plugin-legend': [
-        {
-            from: 'chartist-plugin-legend.js',
-        }
-    ],
-    'chartist-plugin-tooltips': [
-        {
-            context: 'dist',
-            from: '{chartist-plugin-tooltip.css,chartist-plugin-tooltip.js}',
-        }
-    ],
     'codemirror': [
         {
             context: 'lib',
@@ -139,48 +140,10 @@ var libs = {
             from: 'mode/css/{css.js,}',
         }
     ],
-    'diff-match-patch':[
-        {
-            from: 'index.js',
-        }
-    ],
-    '@fortawesome/fontawesome-free': [
-        {
-            from: '{css/all.css,webfonts/*}',
-        }
-    ],
     'fullcalendar': [
         {
             context: 'dist',
-            from: '{fullcalendar{,.print}.css,fullcalendar.js,locale/*.js}',
-        }
-    ],
-    'fuzzy': [
-        {
-            context: 'lib',
-            from: 'fuzzy.js',
-        }
-    ],
-    'gridstack': [
-        {
-            context: 'dist',
-            from: '{gridstack{,-extra}.css,gridstack{,.jQueryUI}.js}',
-        }
-    ],
-    'jquery': [
-        {
-            context: 'dist',
-            from: 'jquery.js',
-        }
-    ],
-    'jquery-mousewheel': [
-        {
-            from: 'jquery.mousewheel.js',
-        }
-    ],
-    'jquery-prettytextdiff': [
-        {
-            from: 'jquery.pretty-text-diff.js',
+            from: 'locale/*.js',
         }
     ],
     'jquery-ui': [
@@ -189,116 +152,27 @@ var libs = {
             from: 'i18n/*.js',
         }
     ],
-    'jquery-ui-dist': [
-        {
-            from: 'jquery-ui.js',
-        }
-    ],
     'jquery-ui-timepicker-addon': [
         {
             context: 'dist',
-            from: '{jquery-ui-timepicker-addon.css,jquery-ui-timepicker-addon.js,i18n/jquery-ui-timepicker-*.js}',
+            from: 'i18n/jquery-ui-timepicker-*.js',
             ignore: ['i18n/jquery-ui-timepicker-addon-i18n{,.min}.js'],
-        }
-    ],
-    'jquery.autogrow-textarea': [
-        {
-            from: 'jquery.autogrow-textarea.js',
-        }
-    ],
-    'jquery.rateit': [
-        {
-            context: 'scripts',
-            from: '{jquery.rateit.js,rateit.css,*.gif}',
-        }
-    ],
-    'jstree': [
-        {
-            context: 'dist',
-            from: 'jstree.js',
-        }
-    ],
-    'leaflet': [
-        {
-            context: 'dist',
-            from: '{leaflet.css,leaflet.js,images/*}',
-        }
-    ],
-    'leaflet-fullscreen': [
-        {
-            context: 'dist',
-            from: '{leaflet.fullscreen.css,Leaflet.fullscreen.js,*.png}',
-        }
-    ],
-    'leaflet-spin': [
-        {
-            from: 'leaflet.spin.js',
-        }
-    ],
-    'leaflet.awesome-markers': [
-        {
-            context: 'dist',
-            from: '{leaflet.awesome-markers.css,leaflet.awesome-markers.js,images/*}',
-        }
-    ],
-    'leaflet.markercluster': [
-        {
-            context: 'dist',
-            from: '{leaflet.markercluster-src.js,MarkerCluster{,.Default}.css}',
-        }
-    ],
-    'lodash': [
-        {
-            from: 'lodash.js',
         }
     ],
     'moment': [
         {
-            from: '{moment.js,locale/*.js}',
-        }
-    ],
-    'prismjs': [
-        {
-            from: '{components/prism-{core,apacheconf,bash,clike,json,nginx}.js,themes/prism-coy.css}',
-        }
-    ],
-    'qtip2': [
-        {
-            context: 'dist',
-            from: '{jquery.qtip.css,jquery.qtip.js}',
+            from: 'locale/*.js',
         }
     ],
     'select2': [
         {
             context: 'dist',
-            from: '{css/select2.css,js/select2.full.js,js/i18n/*.js}',
-        }
-    ],
-    'spectrum-colorpicker': [
-        {
-            from: '{spectrum.css,spectrum.js}',
-        }
-    ],
-    'spin.js': [
-        {
-            from: 'spin.js',
-        }
-    ],
-    'tinymce': [
-        {
-            from: '{tinymce.js,plugins/**/*,themes/**/*}',
-            ignore: ['*min.css', '*min.js'],
+            from: 'js/i18n/*.js',
         }
     ],
     'tinymce-i18n': [
         {
             from: 'langs/*.js',
-        }
-    ],
-    'unorm': [
-        {
-            context: 'lib',
-            from: 'unorm.js',
         }
     ],
 };

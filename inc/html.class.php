@@ -1178,24 +1178,15 @@ class Html {
       // auto desktop / mobile viewport
       echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
 
-      echo Html::css('public/lib/jquery-ui/jquery-ui.css');
+      echo Html::css('public/lib/base.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
       echo Html::css('css/jstree-glpi.css');
-      echo Html::css('public/lib/select2/css/select2.css');
-      echo Html::css('public/lib/qtip2/jquery.qtip.css');
-      echo Html::css('public/lib/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.css');
-      echo Html::css('public/lib/fontawesome-free/css/all.css');
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
          Html::requireJs('notifications_ajax');
       }
 
-      echo Html::css('public/lib/leaflet/leaflet.css', ['media' => '']);
-      echo Html::css('public/lib/leaflet.markercluster/MarkerCluster.css', ['media' => '']);
-      echo Html::css('public/lib/leaflet.markercluster/MarkerCluster.Default.css', ['media' => '']);
-      echo Html::css('public/lib/leaflet.awesome-markers/leaflet.awesome-markers.css', ['media' => '']);
-      echo Html::css('lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.css');
-      echo Html::css('public/lib/leaflet-fullscreen/leaflet.fullscreen.css');
+      echo Html::css('public/lib/leaflet.css');
       Html::requireJs('leaflet');
 
       //on demand JS
@@ -1214,31 +1205,30 @@ class Html {
          }
 
          if (in_array('fullcalendar', $jslibs)) {
-            echo Html::css('public/lib/fullcalendar/fullcalendar.css',
+            echo Html::css('public/lib/fullcalendar.css',
                            ['media' => '']);
-            echo Html::css('public/lib/fullcalendar/fullcalendar.print.css',
+            echo Html::css('public/lib/fullcalendar.print.css',
                            ['media' => 'print']);
             Html::requireJs('fullcalendar');
          }
 
          if (in_array('gantt', $jslibs)) {
-            echo Html::css('lib/jqueryplugins/jquery-gantt/css/style.css');
+            echo Html::css('public/lib/jquery-gantt.css');
             Html::requireJs('gantt');
          }
 
          if (in_array('rateit', $jslibs)) {
-            echo Html::css('public/lib/jquery.rateit/rateit.css');
+            echo Html::css('public/lib/jquery.rateit.css');
             Html::requireJs('rateit');
          }
 
          if (in_array('colorpicker', $jslibs)) {
-            echo Html::css('public/lib/spectrum-colorpicker/spectrum.css');
+            echo Html::css('public/lib/spectrum-colorpicker.css');
             Html::requireJs('colorpicker');
          }
 
          if (in_array('gridstack', $jslibs)) {
-            echo Html::css('public/lib/gridstack/gridstack.css');
-            echo Html::css('public/lib/gridstack/gridstack-extra.css');
+            echo Html::css('public/lib/gridstack.css');
             Html::requireJs('gridstack');
          }
 
@@ -1255,9 +1245,8 @@ class Html {
          }
 
          if (in_array('charts', $jslibs)) {
-            echo Html::css('public/lib/chartist/chartist.css');
+            echo Html::css('public/lib/chartist.css');
             echo Html::css('css/chartists-glpi.css');
-            echo Html::css('public/lib/chartist-plugin-tooltips/chartist-plugin-tooltip.css');
             Html::requireJs('charts');
          }
 
@@ -1268,7 +1257,7 @@ class Html {
       }
 
       if (Session::getCurrentInterface() == "helpdesk") {
-         echo Html::css('public/lib/jquery.rateit/rateit.css');
+         echo Html::css('public/lib/jquery.rateit.css');
          Html::requireJs('rateit');
       }
 
@@ -1284,7 +1273,7 @@ class Html {
       echo Html::css('css/jquery-glpi.css');
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::css('/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.css');
+         echo Html::css('public/lib/scrollable-tabs.css');
       }
 
       //  CSS link
@@ -1336,21 +1325,12 @@ class Html {
       }
 
       // AJAX library
-      echo Html::script('public/lib/jquery/jquery.js');
-      echo Html::script('public/lib/jquery-ui-dist/jquery-ui.js');
-
-      // PLugins jquery
-      //use full for compat; see https://select2.org/upgrading/migrating-from-35
-      echo Html::script('public/lib/select2/js/select2.full.js');
-      echo Html::script('public/lib/qtip2/jquery.qtip.js');
-      echo Html::script('public/lib/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js');
-      echo Html::script('public/lib/jquery.autogrow-textarea/jquery.autogrow-textarea.js');
+      echo Html::script('public/lib/base.js');
 
       // layout
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::script('public/lib/jquery-mousewheel/jquery.mousewheel.js');
-         echo Html::script('lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js');
+         echo Html::script('public/lib/scrollable-tabs.js');
       }
 
       // End of Head
@@ -3580,9 +3560,6 @@ class Html {
 
       // init tinymce
       $js = "$(function() {
-         // additional plugins
-         tinymce.PluginManager.load('stickytoolbar','".$CFG_GLPI['root_doc'].
-                                    "/lib/tiny_mce/custom_plugins/stickytoolbar/plugin.js');
          // init editor
          tinyMCE.init({
             language_url: '$language_url',
@@ -5872,10 +5849,10 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
             break;
          case 'tinymce':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce/tinymce.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce.js';
             break;
          case 'fullcalendar':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/moment/moment.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fullcalendar.js';
             if (isset($_SESSION['glpilanguage'])) {
                foreach ([2, 3] as $loc) {
                   $filename = "public/lib/moment/locale/".
@@ -5886,7 +5863,6 @@ class Html {
                   }
                }
             }
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fullcalendar/fullcalendar.js';
             if (isset($_SESSION['glpilanguage'])) {
                foreach ([2, 3] as $loc) {
                   $filename = "public/lib/fullcalendar/locale/".
@@ -5899,16 +5875,16 @@ class Html {
             }
             break;
          case 'jstree':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jstree/jstree.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jstree.js';
             break;
          case 'gantt':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery-gantt.js';
             break;
          case 'rateit':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery.rateit/jquery.rateit.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery.rateit.js';
             break;
          case 'colorpicker':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/spectrum-colorpicker/spectrum.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/spectrum-colorpicker.js';
             break;
          case 'fileupload':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js';
@@ -5916,32 +5892,21 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
             break;
          case 'charts':
-            $_SESSION['glpi_js_toload']['charts'][] = 'public/lib/chartist/chartist.js';
-            $_SESSION['glpi_js_toload']['charts'][] = 'public/lib/chartist-plugin-legend/chartist-plugin-legend.js';
-            $_SESSION['glpi_js_toload']['charts'][] = 'public/lib/chartist-plugin-tooltips/chartist-plugin-tooltip.js';
+            $_SESSION['glpi_js_toload']['charts'][] = 'public/lib/chartist.js';
             break;
          case 'notifications_ajax';
             $_SESSION['glpi_js_toload']['notifications_ajax'][] = 'js/notifications_ajax.js';
             break;
          case 'fuzzy':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fuzzy/fuzzy.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.hotkeys.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fuzzy.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/fuzzysearch.js';
             break;
          case 'gridstack':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/lodash/lodash.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack/gridstack.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack/gridstack.jQueryUI.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
             break;
          case 'leaflet':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet/leaflet.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/spin.js/spin.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet-spin/leaflet.spin.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.markercluster/leaflet.markercluster-src.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.awesome-markers/leaflet.awesome-markers.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet-fullscreen/Leaflet.fullscreen.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.js';
             break;
          case 'log_filters':
             $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
