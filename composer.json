@@ -34,7 +34,8 @@
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
         "elvanto/litemoji": "^1.4",
         "symfony/console": "^3.4",
-        "leafo/scssphp": "^0.7.7"
+        "leafo/scssphp": "^0.7.7",
+        "zendframework/zend-config": "^3.2"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",

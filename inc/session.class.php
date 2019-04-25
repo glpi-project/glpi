@@ -613,6 +613,11 @@ class Session {
 
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
+      $inifile = str_replace('.mo', '.ini', $newfile);
+      if (file_exists(GLPI_ROOT.$inifile)) {
+         $TRANSLATE->addTranslationFile('ini', GLPI_ROOT.$inifile, 'glpi', $trytoload);
+      }
+
       // Load plugin dicts
       if ($with_plugins) {
          foreach (Plugin::getPlugins() as $plug) {
