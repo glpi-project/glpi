@@ -188,8 +188,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
          echo "</tr>";
       }
 
-      echo Html::script("public/lib/diff-match-patch/index.js");
-      echo Html::script("public/lib/jquery-prettytextdiff/jquery.pretty-text-diff.js");
+      echo Html::script("public/lib/jquery-prettytextdiff.js");
       echo "<script type='text/javascript'>
             $(function() {
                $('.restore').on('click', function(e) {
