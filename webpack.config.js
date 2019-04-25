@@ -321,10 +321,24 @@ for (let packageName in libs) {
 }
 
 module.exports = (env, argv) => {
-    if (argv.mode === 'development') {
-        glpiConfig.devtool = 'source-map';
-        libsConfig.devtool = 'source-map';
+    var configs = [glpiConfig, libsConfig];
+
+    for (let config of configs) {
+        // Limit verbosity to only usefull informations
+        config.stats = {
+            all: false,
+            errors: true,
+            errorDetails: true,
+            warnings: true,
+
+            entrypoints: true,
+            timings: true,
+        };
+
+        if (argv.mode === 'development') {
+            config.devtool = 'source-map';
+        }
     }
 
-    return [glpiConfig, libsConfig];
+    return configs;
 };
