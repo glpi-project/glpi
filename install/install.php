@@ -71,7 +71,7 @@ function header_html($etape) {
    echo Html::script("js/common.js");
 
     // CSS
-   echo Html::css('public/lib/jquery-ui-dist/jquery-ui.css');
+   echo Html::css('public/lib/jquery-ui/jquery-ui.css');
    echo Html::css("public/lib/select2/css/select2.css");
    echo Html::css("css/style_install.css");
    echo "</head>";

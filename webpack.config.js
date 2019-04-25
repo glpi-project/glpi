@@ -31,21 +31,67 @@
 
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const path = require('path');
 
 const libOutputPath = 'public/lib';
 
-var config = {
+/*
+ * GLPI core files build configuration.
+ */
+var glpiConfig = {
     entry: {
-        glpi: './js/main.js'
+        'glpi': './js/main.js',
     },
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, 'public/build')
+        path: path.resolve(__dirname, 'public/build'),
+    },
+};
+
+/*
+ * External libraries files build configuration.
+ */
+var libsConfig = {
+    entry: {
+        'jquery-ui': path.resolve(__dirname, 'node_modules/jquery-ui/themes/base/all.css'),
+    },
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, libOutputPath),
+    },
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                // Force jQueryUI CSS to be bundled into a unique file
+                jQueryUiCss: {
+                    name: 'jquery-ui',
+                    test: /jquery-ui\/themes\/base\/all\.css$/,
+                    chunks: 'all',
+                    enforce: true
+                },
+            },
+        },
+    },
+    module: {
+        rules: [
+            {
+                // Build jQuery UI styles
+                test: /\.css$/,
+                include: path.resolve(__dirname, 'node_modules/jquery-ui'),
+                use: [MiniCssExtractPlugin.loader, 'css-loader'],
+            },
+            {
+                // Convert images to base64 strings
+                test: /\.(png|jp(e*)g|svg)$/,
+                use: ['url-loader']
+            },
+        ],
     },
     plugins: [
         new CleanWebpackPlugin([libOutputPath]), // Clean lib dir content
+        new MiniCssExtractPlugin({ filename: '[name]/[name].css' }), // Extract styles into CSS files
     ]
 };
 
@@ -130,7 +176,7 @@ var libs = {
     ],
     'jquery-ui-dist': [
         {
-            from: '{images/*,jquery-ui.css,jquery-ui.js}',
+            from: 'jquery-ui.js',
         }
     ],
     'jquery-ui-timepicker-addon': [
@@ -270,14 +316,15 @@ for (let packageName in libs) {
             copyParams.ignore = packageEntry.ignore;
         }
 
-        config.plugins.push(new CopyWebpackPlugin([copyParams]));
+        libsConfig.plugins.push(new CopyWebpackPlugin([copyParams]));
     }
 }
 
 module.exports = (env, argv) => {
     if (argv.mode === 'development') {
-        config.devtool = 'source-map';
+        glpiConfig.devtool = 'source-map';
+        libsConfig.devtool = 'source-map';
     }
 
-    return config;
+    return [glpiConfig, libsConfig];
 };
