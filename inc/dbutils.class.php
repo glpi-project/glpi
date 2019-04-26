@@ -457,10 +457,13 @@ final class DbUtils {
     * @param string $field name of the index
     *
     * @return boolean
+    *
+    * @deprecated 9.5.0
     */
    public function isIndex($table, $field) {
       global $DB;
 
+      Toolbox::Deprecated('Use AbstractDatabase::indexExists');
       if (!$DB->tableExists($table)) {
          trigger_error("Table $table does not exists", E_USER_WARNING);
          return false;

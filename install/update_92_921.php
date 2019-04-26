@@ -55,7 +55,7 @@ function update92to921() {
       $migration->changeField("glpi_tickets", "slas_id", "slts_ttr_id", "integer");
       $migration->migrationOneTable('glpi_tickets');
    }
-   if (isIndex('glpi_tickets', 'slas_id')) {
+   if ($DB->indexExists('glpi_tickets', 'slas_id')) {
       $migration->dropKey('glpi_tickets', 'slas_id');
    }
    if ($DB->fieldExists('glpi_tickets', 'slts_ttr_id')) {

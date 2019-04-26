@@ -135,6 +135,14 @@ class DBmysql {
    private $field_cache = [];
 
    /**
+    * Cached list of index.
+    *
+    * @var array
+    * @see self::indexExists()
+    */
+   private $index_cache = [];
+
+   /**
     * Constructor / Connect to the MySQL Database
     *
     * @param integer $choice host number (default NULL)
@@ -687,6 +695,40 @@ class DBmysql {
    }
 
    /**
+    * List indexes of a table
+    *
+    * @param string  $table    Table name condition
+    * @param boolean $usecache If use field list cache (default true)
+    *
+    * @return mixed list of indexed columns
+    *
+    * @since 9.5.0
+    */
+   public function listIndexes(string $table, bool $usecache = true) {
+      if (!$this->cache_disabled && $usecache && isset($this->index_cache[$table])) {
+         return $this->index_cache[$table];
+      }
+
+      $iterator = $this->request([
+         'SELECT' => ['index_name AS INDEX_NAME', 'column_name AS COLUMN_NAME'],
+         'FROM'   => 'information_schema.statistics',
+         'WHERE'  => [
+            'table_schema' => $this->dbdefault,
+            'table_name'   => $table
+         ]
+      ]);
+      if (count($iterator)) {
+         $this->index_cache[$table] = [];
+         while ($data = $iterator->next()) {
+            $this->index_cache[$table][$data["INDEX_NAME"]][] = $data['COLUMN_NAME'];
+         }
+         return $this->index_cache[$table];
+      }
+
+      return [];
+   }
+
+   /**
     * Get number of affected rows in previous MySQL operation
     *
     * @return int number of affected rows on success, and -1 if the last query failed.
@@ -1007,6 +1049,45 @@ class DBmysql {
       if ($fields = $this->listFields($table, $usecache)) {
          if (isset($fields[$field])) {
             return true;
+         }
+         return false;
+      }
+      return false;
+   }
+
+   /**
+    * Check if an index exists
+    *
+    * @param string       $table    Table name for the field we're looking for
+    * @param string|array $field    Field(s) name(s)
+    * @param string       $name     Index name
+    * @param boolean      $usecache Use cache; @see DBmysql::listIndexes(), defaults to true
+    *
+    * @return boolean
+    *
+    * @since 9.5.0
+    */
+   public function indexExists(string $table, $field, $name = null, bool $usecache = true): bool {
+
+      if (!$this->tableExists($table, $usecache)) {
+         trigger_error("Table $table does not exists", E_USER_WARNING);
+         return false;
+      }
+
+      if (!is_array($field)) {
+         $field = [$field];
+      }
+      if ($indexes = $this->listIndexes($table, $usecache)) {
+         foreach ($indexes as $key => $current) {
+            if (null !== $name && $key == $name) {
+               //an index with the name already exists
+               return true;
+            }
+            sort($current);
+            sort($field);
+            if (array_values($current) == $field) {
+               return true;
+            }
          }
          return false;
       }
