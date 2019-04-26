@@ -447,6 +447,8 @@ function getUserName($ID, $link = 0) {
  * @param $field  string  name of the index
  *
  * @return boolean : index exists ?
+ *
+ * @deprecated 10.0.0
 **/
 function isIndex($table, $field) {
    $dbu = new DbUtils();

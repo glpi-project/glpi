@@ -494,6 +494,43 @@ abstract class AbstractDatabase
     }
 
     /**
+     * List indexes of a table
+     *
+     * @param string  $table    Table name condition
+     * @param boolean $usecache If use field list cache (default true)
+     *
+     * @return mixed list of indexed columns
+     *
+     * @since 10.0.0
+     */
+    public function listIndexes(string $table, bool $usecache = true)
+    {
+        static $icache = [];
+        if (!$this->cache_disabled && $usecache && isset($icache[$table])) {
+            return $icache[$table];
+        }
+
+        $iterator = $this->request([
+           'SELECT' => ['index_name AS INDEX_NAME', 'column_name AS COLUMN_NAME'],
+           'FROM'   => 'information_schema.statistics',
+           'WHERE'  => [
+              'table_schema' => $this->dbdefault,
+              'table_name'   => $table
+           ]
+        ]);
+        if (count($iterator)) {
+            $icache[$table] = [];
+            while ($data = $iterator->next()) {
+                $icache[$table][$data["INDEX_NAME"]][] = $data['COLUMN_NAME'];
+            }
+            return $icache[$table];
+        }
+
+        return [];
+    }
+
+
+    /**
      * Free result memory
      *
      * @param PDOStatement $result PDO statement
@@ -717,7 +754,7 @@ abstract class AbstractDatabase
      *
      * @param string  $table    Table name for the field we're looking for
      * @param string  $field    Field name
-     * @param Boolean $usecache Use cache; @see Database::listFields(), defaults to true
+     * @param boolean $usecache Use cache; @see Database::listFields(), defaults to true
      *
      * @return boolean
      */
@@ -731,6 +768,49 @@ abstract class AbstractDatabase
         }
         return false;
     }
+
+    /**
+     * Check if an index exists
+     *
+     * @since 10.0
+     *
+     * @param string       $table    Table name for the field we're looking for
+     * @param string|array $field    Field(s) name(s)
+     * @param string       $name     Index name
+     * @param boolean      $usecache Use cache; @see Database::listIndexes(), defaults to true
+     *
+     * @return boolean
+     *
+     * @since 10.0.0
+     */
+    public function indexExists(string $table, $field, $name = null, bool $usecache = true): bool
+    {
+
+        if (!$this->tableExists($table)) {
+            trigger_error("Table $table does not exists", E_USER_WARNING);
+            return false;
+        }
+
+        if (!is_array($field)) {
+            $field = [$field];
+        }
+        if ($indexes = $this->listIndexes($table, $usecache)) {
+            foreach ($indexes as $key => $current) {
+                if (null !== $name && $key == $name) {
+                    //an index with the name already exists
+                    return true;
+                }
+                sort($current);
+                sort($field);
+                if (array_values($current) == $field) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
 
     /**
      * Disable table cache globally; usefull for migrations

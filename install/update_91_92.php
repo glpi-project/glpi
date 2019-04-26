@@ -2039,9 +2039,8 @@ Regards,',
       'registration_uuid'  => Telemetry::generateRegistrationUuid()
    ]);
 
-   if (isIndex('glpi_authldaps', 'use_tls')) {
-      $query = "ALTER TABLE `glpi_authldaps` DROP INDEX `use_tls`";
-      $DB->queryOrDie($query, "9.2 drop index use_tls for glpi_authldaps");
+   if ($DB->indexExists('glpi_authldaps', 'use_tls')) {
+      $migration->dropKey('glpi_authldaps', 'use_tls');
    }
 
    //Fix some field order from old migrations
