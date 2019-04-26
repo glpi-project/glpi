@@ -1471,7 +1471,7 @@ class Html {
                             'Printer'];
 
          foreach ($allassets as $type) {
-            if ( true || isset($menu['assets']['content'][strtolower($type)])) {
+            if (isset($menu['assets']['content'][strtolower($type)])) {
                $menu['assets']['content']['allassets']['title']            = __('Global');
                $menu['assets']['content']['allassets']['shortcut']         = '';
                $menu['assets']['content']['allassets']['page']             = '/front/allassets.php';
