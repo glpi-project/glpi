@@ -314,7 +314,6 @@ class ObjectLock extends CommonDBTM {
                      //debugger;
                       $.ajax({
                           url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
-                          async: false,
                           cache: false,
                           data: 'unlock=1&id=$id'
                           });
