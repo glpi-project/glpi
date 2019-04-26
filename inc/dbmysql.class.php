@@ -67,9 +67,6 @@ class DBmysql {
 
    private $cache_disabled = false;
 
-   // Ticket GitHub #5273, to avoid requesting DB each time.
-   static $table_exists_arr = [];
-
    /**
     * Constructor / Connect to the MySQL Database
     *
@@ -879,38 +876,16 @@ class DBmysql {
     **/
    public function tableExists($tablename) {
       // Get a list of tables contained within the database.
-
-
-      if( !isset($_SESSION['glpi_plugins']) ||
-         (isset($_SESSION['glpi_plugins']) && $_SESSION['glpi_plugins'] == [])
-         ){
-          self::$table_exists_arr = [];
-      }
-
-
-      if( isset($_POST["install"]) ||
-          !file_exists(GLPI_CONFIG_DIR . "/config_db.php") ){
-          // We are in installation mode here, so we should not
-          // rely on table_exists_arr because update scripts can rename tables or create theme !
-
-      } else {
-          if( isset(self::$table_exists_arr[$tablename]) ){
-             return self::$table_exists_arr[$tablename];
-          }
-      }
-
       $result = $this->listTables("%$tablename%");
 
       if (count($result)) {
          while ($data = $result->next()) {
             if ($data['TABLE_NAME'] === $tablename) {
-               self::$table_exists_arr[$tablename] = true;
                return true;
             }
          }
       }
 
-      self::$table_exists_arr[$tablename] = false;
       return false;
    }
 
