@@ -105,6 +105,14 @@ function update94to95() {
    $migration->addConfig(['timezone' => null]);
    /** /Timezones */
 
+   // Fix search Softwares performance
+   $migration->dropKey('glpi_softwarelicenses', 'softwares_id_expire_number');
+   $migration->addKey('glpi_softwarelicenses', [
+      'softwares_id',
+      'expire',
+      'number'
+   ], 'softwares_id_expire_number');
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
