@@ -439,6 +439,13 @@ class Search {
          $data['toview'] = array_merge($data['toview'], $forcedisplay);
       }
 
+      // Overrides columns' list by the ones coming from the saved search (DB).
+      // this parameter $params['stv'] comes from table : glpi_savedsearches, column : query.
+      // stv is a shortcut savedtoview, this is because GET method URLs have limit for length.
+      if( isset($params['stv']) && is_array($params['stv']) ){
+          $data['toview'] = array_merge(self::addDefaultToView($itemtype, $params), $params['stv']);
+      }
+
       if (count($p['criteria']) > 0) {
          // use a recursive clojure to push searchoption when using nested criteria
          $parse_criteria = function($criteria) use (&$parse_criteria, &$data) {
@@ -1470,6 +1477,14 @@ class Search {
       if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
          return false;
       }
+
+      // For PDF exports to match the same displayed list of columns.
+      $pref['stv']   = $data['toview'];
+      $savedtoview_url       =  http_build_query( $pref );
+      $savedtoview_url       =  str_replace("%5B", "[", $savedtoview_url );
+      $savedtoview_url       =  str_replace("%5D", "]", $savedtoview_url );
+      $savedtoview_url       =  str_replace("&", "&amp;", $savedtoview_url );
+
       // Contruct Pager parameters
       $globallinkto
          = Toolbox::append_params(['criteria'
@@ -1478,7 +1493,7 @@ class Search {
                                           => Toolbox::stripslashes_deep($data['search']['metacriteria'])],
                                   '&amp;');
       $parameters = "sort=".$data['search']['sort']."&amp;order=".$data['search']['order'].'&amp;'.
-                     $globallinkto;
+                     $globallinkto . '&amp;' . $savedtoview_url ;
 
       if (isset($_GET['_in_modal'])) {
          $parameters .= "&amp;_in_modal=1";
