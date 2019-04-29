@@ -1107,4 +1107,10 @@ class Software extends CommonDBTM {
    }
 
 
+   static function getDefaultSearchRequest() {
+      return [
+         'sort' => 0
+      ];
+   }
+
 }

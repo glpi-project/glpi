@@ -8098,7 +8098,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `softwarelicensetypes_id` (`softwarelicensetypes_id`),
   KEY `softwareversions_id_use` (`softwareversions_id_use`),
   KEY `date_mod` (`date_mod`),
-  KEY `softwares_id_expire` (`softwares_id`,`expire`),
+  KEY `softwares_id_expire_number` (`softwares_id`,`expire`, `number`),
   KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `users_id` (`users_id`),

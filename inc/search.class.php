@@ -358,7 +358,7 @@ class Search {
                break;
             case 'sort':
                $p[$key] = intval($val);
-               if ($p[$key] <= 0) {
+               if ($p[$key] < 0) {
                   $p[$key] = 1;
                }
                break;
