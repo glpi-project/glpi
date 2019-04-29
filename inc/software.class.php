@@ -1034,7 +1034,7 @@ class Software extends CommonDBTM {
                );
 
                $DB->update(
-                  'glpi_computers_softwareversions', [
+                  'glpi_softwarelicenses', [
                      'softwareversions_id_use' => $dest['id']
                   ], [
                      'softwareversions_id_use' => $from['id']
