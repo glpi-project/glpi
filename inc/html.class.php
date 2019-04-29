@@ -1178,7 +1178,7 @@ class Html {
       // auto desktop / mobile viewport
       echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
 
-      echo Html::css('public/lib/jquery-ui-dist/jquery-ui.css');
+      echo Html::css('public/lib/jquery-ui/jquery-ui.css');
       echo Html::css('public/lib/select2/css/select2.css');
       echo Html::css('public/lib/qtip2/jquery.qtip.css');
       echo Html::css('public/lib/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.css');
