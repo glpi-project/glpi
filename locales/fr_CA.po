@@ -12304,7 +12304,7 @@ msgstr "Threads"
 #: inc/item_devices.class.php:86
 #, php-format
 msgid "%1$s of item \"%2$s\""
-msgstr ""
+msgstr "%1$s de l'élément \"%2$s\""
 
 #. TRANS: %s is the type of the component
 #: inc/item_devices.class.php:100
@@ -13756,12 +13756,12 @@ msgstr "Changement de la structure de la base de données - %s"
 #: inc/migration.class.php:672
 #, php-format
 msgid "Adding fulltext indices - %s"
-msgstr ""
+msgstr "Ajout des index de texte intégral - %s"
 
 #: inc/migration.class.php:681
 #, php-format
 msgid "Adding unicity indices - %s"
-msgstr ""
+msgstr "Ajout des index d'unicité - %s"
 
 #: inc/migration.class.php:721 inc/software.class.php:1104
 #: install/update.php:86
@@ -18433,7 +18433,7 @@ msgstr "Fusionner les suivis"
 
 #: inc/ticket.class.php:2715
 msgid "Merge Documents"
-msgstr ""
+msgstr "Fusionner les documents"
 
 #: inc/ticket.class.php:2723
 msgid "Confirm the merge? This ticket will be deleted!"
@@ -18588,11 +18588,11 @@ msgstr "Vos billets à valider"
 
 #: inc/ticket.class.php:5743
 msgid "Your tickets having rejected approval status"
-msgstr ""
+msgstr "Vos billets ayant le statut approbation rejetée "
 
 #: inc/ticket.class.php:5760
 msgid "Your tickets having rejected solution"
-msgstr ""
+msgstr "Vos billets avec une solution rejetée"
 
 #: inc/ticket.class.php:5967
 msgid "Ticket followup"
@@ -19792,6 +19792,8 @@ msgstr "Ajout date_creation à %s"
 #: install/update_940_941.php:65 install/update_941_942.php:69
 msgid "Fix URL of images in ITIL tasks, followups ans solutions."
 msgstr ""
+"Correction des URL des images dans les tâches ITIL, les suivis et les "
+"solutions. "
 
 #: install/update.php:137
 msgid "Update successful, your database is up to date"

@@ -1178,7 +1178,7 @@ class Html {
       // auto desktop / mobile viewport
       echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
 
-      echo Html::css('public/lib/jquery-ui-dist/jquery-ui.css');
+      echo Html::css('public/lib/jquery-ui/jquery-ui.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
       echo Html::css('css/jstree-glpi.css');
       echo Html::css('public/lib/select2/css/select2.css');
@@ -1471,7 +1471,7 @@ class Html {
                             'Printer'];
 
          foreach ($allassets as $type) {
-            if (isset($menu['assets']['content'][strtolower($type)])) {
+            if ( true || isset($menu['assets']['content'][strtolower($type)])) {
                $menu['assets']['content']['allassets']['title']            = __('Global');
                $menu['assets']['content']['allassets']['shortcut']         = '';
                $menu['assets']['content']['allassets']['page']             = '/front/allassets.php';

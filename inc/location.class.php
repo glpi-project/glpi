@@ -351,7 +351,7 @@ class Location extends CommonTreeDropdown {
          $criteria = [
             'SELECT' => [
                "$table.id",
-               "$crit AS type"
+               new \QueryExpression($DB->quoteValue($crit) . ' AS ' . $DB->quoteName('type')),
             ],
             'FROM'   => $table,
             'WHERE'  => [
@@ -366,7 +366,7 @@ class Location extends CommonTreeDropdown {
             $union->addQuery([
                'SELECT' => [
                   'id',
-                  new \QueryExpression("'$type' AS type")
+                  new \QueryExpression($DB->quoteValue($type) . ' AS ' . $DB->quoteName('type')),
                ],
                'FROM'   => $table,
                'WHERE'  => [

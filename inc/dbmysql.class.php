@@ -67,6 +67,9 @@ class DBmysql {
 
    private $cache_disabled = false;
 
+   // Ticket GitHub #5273, to avoid requesting DB each time.
+   static $table_exists_arr = [];
+
    /**
     * Constructor / Connect to the MySQL Database
     *
@@ -537,12 +540,12 @@ class DBmysql {
     */
    function listTables($table = 'glpi_%', array $where = []) {
       $iterator = $this->request([
-         'SELECT' => 'TABLE_NAME',
-         'FROM'   => 'information_schema.TABLES',
+         'SELECT' => 'table_name as TABLE_NAME',
+         'FROM'   => 'information_schema.tables',
          'WHERE'  => [
-            'TABLE_SCHEMA' => $this->dbdefault,
-            'TABLE_TYPE'   => 'BASE TABLE',
-            'TABLE_NAME'   => ['LIKE', $table]
+            'table_schema' => $this->dbdefault,
+            'table_type'   => 'BASE TABLE',
+            'table_name'   => ['LIKE', $table]
          ] + $where
       ]);
       return $iterator;
@@ -876,16 +879,38 @@ class DBmysql {
     **/
    public function tableExists($tablename) {
       // Get a list of tables contained within the database.
+
+
+      if( !isset($_SESSION['glpi_plugins']) ||
+         (isset($_SESSION['glpi_plugins']) && $_SESSION['glpi_plugins'] == [])
+         ){
+          self::$table_exists_arr = [];
+      }
+
+
+      if( isset($_POST["install"]) ||
+          !file_exists(GLPI_CONFIG_DIR . "/config_db.php") ){
+          // We are in installation mode here, so we should not
+          // rely on table_exists_arr because update scripts can rename tables or create theme !
+
+      } else {
+          if( isset(self::$table_exists_arr[$tablename]) ){
+             return self::$table_exists_arr[$tablename];
+          }
+      }
+
       $result = $this->listTables("%$tablename%");
 
       if (count($result)) {
          while ($data = $result->next()) {
             if ($data['TABLE_NAME'] === $tablename) {
+               self::$table_exists_arr[$tablename] = true;
                return true;
             }
          }
       }
 
+      self::$table_exists_arr[$tablename] = false;
       return false;
    }
 
@@ -1510,10 +1535,10 @@ class DBmysql {
 
        $result = $DB->request([
            'COUNT'       => 'cpt',
-           'FROM'        => 'INFORMATION_SCHEMA.COLUMNS',
+           'FROM'        => 'information_schema.columns',
            'WHERE'       => [
-              'INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA'  => $DB->dbdefault,
-              'INFORMATION_SCHEMA.COLUMNS.COLUMN_TYPE'   => ['DATETIME']
+              'information_schema.columns.table_schema'  => $DB->dbdefault,
+              'information_schema.columns.column_type'   => ['datetime']
            ]
        ])->next();
        return (int)$result['cpt'];

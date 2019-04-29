@@ -562,8 +562,6 @@ class Software extends CommonDBTM {
          'datatype'           => 'bool'
       ];
 
-      $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
-
       $tab[] = [
          'id'                 => '80',
          'table'              => 'glpi_entities',
@@ -608,6 +606,8 @@ class Software extends CommonDBTM {
          'datatype'           => 'bool',
          'massiveaction'      => false
       ];
+
+      $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
 
       $name = _n('Version', 'Versions', Session::getPluralNumber());
       $tab[] = [
@@ -1034,7 +1034,7 @@ class Software extends CommonDBTM {
                );
 
                $DB->update(
-                  'glpi_computers_softwareversions', [
+                  'glpi_softwarelicenses', [
                      'softwareversions_id_use' => $dest['id']
                   ], [
                      'softwareversions_id_use' => $from['id']
@@ -1106,5 +1106,11 @@ class Software extends CommonDBTM {
       return $i == ($nb+1);
    }
 
+
+   static function getDefaultSearchRequest() {
+      return [
+         'sort' => 0
+      ];
+   }
 
 }
