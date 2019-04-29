@@ -562,8 +562,6 @@ class Software extends CommonDBTM {
          'datatype'           => 'bool'
       ];
 
-      $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
-
       $tab[] = [
          'id'                 => '80',
          'table'              => 'glpi_entities',
@@ -608,6 +606,8 @@ class Software extends CommonDBTM {
          'datatype'           => 'bool',
          'massiveaction'      => false
       ];
+
+      $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
 
       $name = _n('Version', 'Versions', Session::getPluralNumber());
       $tab[] = [
