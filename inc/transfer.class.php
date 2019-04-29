@@ -906,7 +906,7 @@ class Transfer extends CommonDBTM {
                   'glpi_contacts'  => [
                      'ON' => [
                         'glpi_contacts_suppliers'  => 'contacts_id',
-                        'glpi_suppliers'           => 'id'
+                        'glpi_contacts'            => 'id'
                      ]
                   ]
                ],
