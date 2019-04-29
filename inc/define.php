@@ -51,8 +51,12 @@ if (!defined('GLPI_DEMO_MODE')) {
 if (!defined('GLPI_USE_CSRF_CHECK')) {
    define('GLPI_USE_CSRF_CHECK', '1');
 }
-define("GLPI_CSRF_EXPIRES", "7200");
-define("GLPI_CSRF_MAX_TOKENS", "100");
+if (!defined('GLPI_CSRF_EXPIRES')) {
+   define("GLPI_CSRF_EXPIRES", "7200");
+}
+if (!defined('GLPI_CSRF_MAX_TOKENS')) {
+   define("GLPI_CSRF_MAX_TOKENS", "100");
+}
 
 //Define a global recipient address for email notifications
 //define('GLPI_FORCE_MAIL', 'me@localhost');

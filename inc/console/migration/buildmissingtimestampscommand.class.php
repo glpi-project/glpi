@@ -57,14 +57,17 @@ class BuildMissingTimestampsCommand extends AbstractCommand {
 
       $tables_iterator = $this->db->request(
          [
-            'SELECT' => ['TABLE_NAME', 'COLUMN_NAME'],
-            'FROM'   => 'INFORMATION_SCHEMA.COLUMNS',
-            'WHERE'  => [
-               'TABLE_SCHEMA' => $this->db->dbdefault,
-               'TABLE_NAME'   => ['LIKE', 'glpi_%'],
-               'COLUMN_NAME'  => ['date_creation', 'date_mod'],
+            'SELECT' => [
+               'table_name AS TABLE_NAME',
+               'column_name AS COLUMN_NAME',
             ],
-            'ORDER'  => ['TABLE_NAME', 'COLUMN_NAME'],
+            'FROM'   => 'information_schema.columns',
+            'WHERE'  => [
+               'table_schema' => $this->db->dbdefault,
+               'table_name'   => ['LIKE', 'glpi_%'],
+               'column_name'  => ['date_creation', 'date_mod'],
+            ],
+            'ORDER'  => ['table_name', 'column_name'],
          ]
       );
 

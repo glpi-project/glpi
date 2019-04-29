@@ -363,6 +363,20 @@ class Search extends DbTestCase {
                      ]
                   ]
                ]
+            ], [
+               'link'       => 'AND NOT',
+               'itemtype'   => 'Budget',
+               'meta'       => 1,
+               'field'      => 2,
+               'searchtype' => 'contains',
+               'value'      => 5,
+            ], [
+               'link'       => 'AND NOT',
+               'itemtype'   => 'Printer',
+               'meta'       => 1,
+               'field'      => 1,
+               'searchtype' => 'contains',
+               'value'      => 'HP',
             ]
          ]
       ];
@@ -385,6 +399,10 @@ class Search extends DbTestCase {
          ->matches('/INNER JOIN\s*`glpi_computers_softwareversions`\s*AS `glpi_computers_softwareversions_Software`/im')
          ->matches('/INNER JOIN\s*`glpi_softwareversions`\s*AS `glpi_softwareversions_Software`/im')
          ->matches('/INNER JOIN\s*`glpi_softwares`\s*ON\s*\(`glpi_softwareversions_Software`\.`softwares_id`\s*=\s*`glpi_softwares`\.`id`\)/im')
+         ->matches('/LEFT JOIN\s*`glpi_infocoms`\s*ON\s*\(`glpi_computers`\.`id`\s*=\s*`glpi_infocoms`\.`items_id`\s*AND\s*`glpi_infocoms`.`itemtype`\s*=\s*\'Computer\'\)/im')
+         ->matches('/LEFT JOIN\s*`glpi_budgets`\s*ON\s*\(`glpi_infocoms`\.`budgets_id`\s*=\s*`glpi_budgets`\.`id`\)/im')
+         ->matches('/LEFT JOIN\s*`glpi_computers_items`\s*AS `glpi_computers_items_Printer`\s*ON\s*\(`glpi_computers_items_Printer`\.`computers_id`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_computers_items_Printer`.`itemtype`\s*=\s*\'Printer\'\s*AND\s*`glpi_computers_items_Printer`.`is_deleted`\s*=\s*0\)/im')
+         ->matches('/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_computers_items_Printer`\.`items_id`\s*=\s*`glpi_printers`\.`id`\)/im')
          // match where parts
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
@@ -396,7 +414,9 @@ class Search extends DbTestCase {
          ->contains("OR (`glpi_computers`.`id`  LIKE '%test2%'")
          ->contains("AND (`glpi_locations`.`id` = '11')")
          ->contains("(`glpi_users`.`id` = '2')")
-         ->contains("OR (`glpi_users`.`id` = '3')");
+         ->contains("OR (`glpi_users`.`id` = '3')")
+         // match having
+         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
    }
 
    function testViewCriterion() {
