@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - /!\ Database queries now rely on PDO; and global sanitize has been dropped.
 - /!\ `DB` methods which uses to return a mysqli_statement now return a PDOStatement.
 - /!\ `DB` methods signatures significally changed due to usage of PDO.
+- Database create moved from static SQL file into PHP to work across multiple DBMS
 
 ### Removed
 

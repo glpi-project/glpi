@@ -1,32 +1,46 @@
 <?php
-
-/* 
- * Copyright (C) 2019 CJ Development Studios and contributors
- * Based on GLPI Copyright (C) 2015-2018 Teclib' and contributors
- * Based on GLPI Copyright (C) 2003-2014 INDEPNET Development team
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
  *
- * This program is free software: you can redistribute it and/or modify
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * GLPI is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
  */
 
-if (!defined('AXEL_ROOT')) {
-   define('AXEL_ROOT', realpath('..'));
+if (!defined('GLPI_ROOT')) {
+   define('GLPI_ROOT', realpath('..'));
 }
 
-include_once (AXEL_ROOT . "/inc/based_config.php");
-include_once (AXEL_ROOT . "/inc/db.function.php");
+include_once (GLPI_ROOT . "/inc/based_config.php");
+include_once (GLPI_ROOT . "/inc/db.function.php");
 
-
+/**
+ * Creates all GLPI tables
+ * @since 10.0.0
+ */
 function createTables() {
    $table_schema = new DBTableSchema();
 
@@ -3906,7 +3920,7 @@ function createTables() {
       ->addIndexedField('realname', 'string')
       ->addIndexedField('firstname', 'string')
       ->addIndexedField('locations_id', 'int', ['value' => '0'])
-      ->addField('language', 'char(10)', ['value' => null, 'nodefault' => false, 'comment' => 'see define.php CFG_AXEL[language] array'])
+      ->addField('language', 'char(10)', ['value' => null, 'nodefault' => false, 'comment' => 'see define.php CFG_GLPI[language] array'])
       ->addField('use_mode', 'int', ['value' => '0'])
       ->addField('list_limit', 'int')
       ->addIndexedField('is_active', 'boolean', ['value' => '1'])
@@ -4035,6 +4049,10 @@ function createTables() {
       ->createOrDie(true);
 }
 
+/**
+ * Inserts all default data such as configs into the database
+ * @since 10.0.0
+ */
 function insertDefaultData() {
    global $DB;
 

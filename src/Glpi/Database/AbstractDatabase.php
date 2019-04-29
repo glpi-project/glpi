@@ -915,6 +915,100 @@ abstract class AbstractDatabase
     }
 
     /**
+     * Builds a bulk insert statement
+     *
+     * @since 10.0.0
+     * @param \QueryExpression|string $table  Table name
+     * @param array                   $keys Array of column names
+     * @param array                   $params Array of arrays of values.
+     *                                    This will be replaced with an associative array for a PDO statement
+     * @return string
+     */
+    public function buildInsertBulk($table, array $columns, array &$params): string
+    {
+        $query = "INSERT INTO " . $this->quoteName($table) . " (";
+
+        $fields = [];
+        $keys   = [];
+        foreach ($columns as $column) {
+           $fields[] = $this->quoteName($column);
+        }
+
+        $newparams = [];
+        foreach ($params as $rowkey => $row) {
+           $row_keys = [];
+           foreach ($row as $arrkey => $value) {
+              if ($value instanceof \QueryExpression) {
+                  $row_keys[] = $value->getValue();
+               } else {
+                  $pdo_placeholder = ":{$columns[$arrkey]}_$rowkey";
+                  $row_keys[] = $pdo_placeholder;
+                  $newparams[$pdo_placeholder] = $value;
+               }
+           }
+           $keys[] = $row_keys;
+        }
+        $params = $newparams;
+        
+        $query .= implode(', ', $fields) . ") VALUES ";
+        foreach ($keys as $rowkey => $rowvalues) {
+           $query .= '('.implode(',', $rowvalues).'),';
+        }
+        $query = rtrim($query, ',');
+
+        return $query;
+    }
+
+    /**
+     * Insert a row in the database
+     *
+     * @since 10.0.0
+     * @param string $table  Table name
+     * @param array  $params Query parameters ([field name => field value)
+     * @return PDOStatement|boolean
+     */
+    public function insertBulk(string $table, array $columns, array $values)
+    {
+        $result = $this->rawQuery(
+            $this->buildInsertBulk($table, $columns, $values),
+            $values
+        );
+        return $result;
+    }
+
+    /**
+     * Insert a row in the database and die
+     * (optionnaly with a message) if it fails
+     *
+     * @since 10.0.0
+     * @param string      $table   Table name
+     * @param array       $params  Query parameters ([field name => field value)
+     * @param string|null $message Explanation of query
+     * @return PDOStatement
+     */
+    public function insertBulkOrDie(string $table, array $columns, array $values, $message = null): PDOStatement
+    {
+        $insert = $this->buildInsertBulk($table, $columns, $values);
+        $res = $this->rawQuery($insert, $values);
+        if (!$res) {
+           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+            $message = sprintf(
+                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
+                $message,
+                $insert,
+                $this->error()
+            );
+            if (isCommandLine()) {
+                 throw new \RuntimeException($message);
+            } else {
+                echo $message . "\n";
+                die(1);
+            }
+        }
+        return $res;
+    }
+
+    /**
      * Builds an update statement
      *
      * @since 9.3
@@ -1471,19 +1565,45 @@ abstract class AbstractDatabase
         return 0;
     }
 
-    //TODO Docs
+    /**
+     * 
+     * Drops the specified table if it exists.
+     * @since 10.0.0
+     * @param string $table The table to drop
+     * @return PDOStatement|boolean Query result handler
+     *
+     * @throws GlpitestSQLError
+     */
     public function drop(string $table)
     {
       return $this->rawQuery("DROP TABLE IF EXISTS $table;");
     }
 
-    //TODO Docs
-    public function dropOrDie(string $table)
+    /**
+     * 
+     * Drops the specified table if it exists. Scripts dies on error.
+     * @since 10.0.0
+     * @param string $table The table to drop
+     * @param string $message The message to display on error
+     * @return PDOStatement|boolean Query result handler
+     *
+     * @throws GlpitestSQLError
+     */
+    public function dropOrDie(string $table, string $message = '')
     {
-      return $this->rawQueryOrDie("DROP TABLE IF EXISTS $table;");
+      return $this->rawQueryOrDie("DROP TABLE IF EXISTS $table;", $message);
     }
 
-    //TODO Docs
+    /**
+     * Builds a CREATE TABLE query with the given table name, fields, and keys.
+     * @param string $table The name of the table.
+     * @param array $fields An array of field definitions.
+     *   [$field_name => ['value' => $default_value, 'no_default' => boolean, 'comment' => $comment]]
+     * @param array $keys An array of key definitions.
+     *   [$key_type => [$key_name => $constraints]].
+     * @return string
+     * @throws \RuntimeException
+     */
     public function buildCreate(string $table, array $fields = [], array $keys = [])
     {
        $query = "CREATE TABLE IF NOT EXISTS $table (";
@@ -1542,14 +1662,31 @@ abstract class AbstractDatabase
       return $query;
     }
 
-   //TODO Docs
+   /**
+    * 
+    * Creates the specified table if it doesn't already exist.
+    * @since 10.0.0
+    * @param string $table The table to create
+    * @return PDOStatement|boolean Query result handler
+    *
+    * @throws GlpitestSQLError
+    */
    public function create(string $table, array $fields = [], array $keys = [])
    {
       $query = $this->buildCreate($table, $fields, $keys);
       return $this->rawQuery($query);
    }
 
-   //TODO Docs
+   /**
+    * 
+    * Creates the specified table if it doesn't already exist. Scripts dies on error.
+    * @since 10.0.0
+    * @param string $table The table to create
+    * @param string $message The message to display on error
+    * @return PDOStatement|boolean Query result handler
+    *
+    * @throws GlpitestSQLError
+    */
    public function createOrDie(string $table, array $fields = [], array $keys = [], $message = '')
    {
       $query = $this->buildCreate($table, $fields, $keys);

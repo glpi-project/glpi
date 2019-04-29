@@ -1,31 +1,54 @@
 <?php
-
-/* 
- * Copyright (C) 2019 CJ Development Studios and contributors
- * Based on GLPI Copyright (C) 2015-2018 Teclib' and contributors
- * Based on GLPI Copyright (C) 2003-2014 INDEPNET Development team
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
  *
- * This program is free software: you can redistribute it and/or modify
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * GLPI is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
  */
 
+/**
+ * DBTableSchema class.
+ * This class provides a builder for creating database tables without creating DBMS-specific queries.
+ * @since 10.0.0
+ */
 class DBTableSchema {
    private $table    = '';
    private $fields   = [];
    private $keys     = [];
 
-   
-   public function init($table, $add_id = true)
+   /**
+    * Resets this object's schema and sets the table name.
+    * @since 10.0.0
+    * @param string $table The name of this table.
+    * @param bool $add_id  If true, it adds an auto-increment integer `id` as the primary key.
+    *    This is true by default.
+    * @return DBTableSchema This function returns the object to allow chaining functions.
+    */
+   public function init(string $table, bool $add_id = true)
    {
       $this->table = $table;
       $this->fields = [];
@@ -36,6 +59,11 @@ class DBTableSchema {
       return $this;
    }
 
+   /**
+    * Adds an auto-increment integer `id` column as the primary key.
+    * @since 10.0.0
+    * @return DBTableSchema This function returns the object to allow chaining functions.
+    */
     public function addID()
     {
         $this->fields['id'] = "int(11) NOT NULL AUTO_INCREMENT";
@@ -43,7 +71,18 @@ class DBTableSchema {
         return $this;
     }
 
-    public function addField($name, $type, $options = [])
+    /**
+     * Adds a field to the table schema with the given name, type and options.
+     * @since 10.0.0
+     * @param string $name The name of the field.
+     * @param string $type The datatype of the field.
+     * @param array $options Options related to the default value and comment.
+     *   'value' - The default value. This is null by default.
+     *   'nodefault' - If true, the 'value' option is ignored.
+     *   'comment' - The comment to add onto the field.
+     * @return DBTableSchema This function returns the object to allow chaining functions.
+     */
+    public function addField(string $name, string $type, array $options = [])
     {
          global $DB;
 
@@ -64,19 +103,44 @@ class DBTableSchema {
 
         return $this;
     }
-   
-    public function addIndexedField($name, $type, $options = []) {
+
+    /**
+     * Adds a field to the table schema with the given name, type and options and also adds an key for it.
+     * @since 10.0.0
+     * @param string $name The name of the field.
+     * @param string $type The datatype of the field.
+     * @param array $options Options related to the default value and comment.
+     *   'value' - The default value. This is null by default.
+     *   'nodefault' - If true, the 'value' option is ignored.
+     *   'comment' - The comment to add onto the field.
+     * @return DBTableSchema This function returns the object to allow chaining functions.
+     */
+    public function addIndexedField(string $name, string $type, array $options = []) {
         return $this->addField($name, $type, $options)
             ->addKey($name);
     }
 
-    public function setPrimaryKey($name)
+    /**
+     * Changes the primary key
+     * @since 10.0.0
+     * @param type $name The name of the new primary key
+     * @return DBTableSchema This function returns the object to allow chaining functions.
+     */
+    public function setPrimaryKey(string $name)
     {
         $this->keys['PRIMARY'] = $name;
         return $this;
     }
 
-    public function addKey($name, $constraints = [])
+    /**
+     * Adds a key with the given name and constraints.
+     * @since 10.0.0
+     * @param string $name The name of the key
+     * @param array $constraints An array of field constraints for the key.
+     *   If none are specified, the name of the key is used as the constraint.
+     * @return DBTableSchema This function returns the object to allow chaining functions.
+     */
+    public function addKey(string $name, array $constraints = [])
     {
         if (empty($constraints)) {
             $constraints = [$name];
@@ -85,7 +149,14 @@ class DBTableSchema {
         return $this;
     }
 
-    public function addFullTextKey($name, $constraints = [])
+    /**
+     * Adds a fulltext key with the given name and constraints.
+     * @since 10.0.0
+     * @param string $name The name of the key
+     * @param array $constraints An array of field constraints for the key.
+     * @return DBTableSchema This function returns the object to allow chaining functions.
+     */
+    public function addFullTextKey(string $name, array $constraints = [])
     {
         if (empty($constraints)) {
             $constraints = [$name];
@@ -94,7 +165,14 @@ class DBTableSchema {
         return $this;
     }
 
-    public function addUniqueKey($name, $constraints = [])
+    /**
+     * Adds a unique key with the given name and constraints.
+     * @since 10.0.0
+     * @param string $name The name of the key
+     * @param array $constraints An array of field constraints for the key.
+     * @return DBTableSchema This function returns the object to allow chaining functions.
+     */
+    public function addUniqueKey(string $name, array $constraints = [])
     {
         if (empty($constraints)) {
             $constraints = [$name];
@@ -103,7 +181,13 @@ class DBTableSchema {
         return $this;
     }
 
-    public function create($drop = false)
+    /**
+     * Creates the table with the defined schema.
+     * @since 10.0.0
+     * @param bool $drop If true, an attempt is made to drop the existing table first before re-creating it.
+     * @return void This is an endpoint function and does not return the object.
+     */
+    public function create(bool $drop = false)
     {
         global $DB;
 
@@ -113,7 +197,14 @@ class DBTableSchema {
         $DB->create($this->table, $this->fields, $this->keys);
     }
 
-    public function createOrDie($drop = false, $message = '')
+    /**
+     * Creates the table with the defined schema. On error, the script dies.
+     * @since 10.0.0
+     * @param bool $drop If true, an attempt is made to drop the existing table first before re-creating it.
+     * @param string $message The message to display if there is an error.
+     * @return void This is an endpoint function and does not return the object.
+     */
+    public function createOrDie(bool $drop = false, string $message = '')
     {
         global $DB;
 
@@ -123,25 +214,10 @@ class DBTableSchema {
         $DB->createOrDie($this->table, $this->fields, $this->keys, $message);
     }
 
-    public function addFKField($foreign_table, $default = 0, $comment = '')
-    {
-        $fk_table = preg_replace(preg_quote('glpi_'), '', $foreign_table, 1);
-        $fk .= "{$fk_table}_id";
-        return $this->addField($fk, 'int(11)', $default, false, $comment);
-    }
-
-    public function addIndexedFKField($foreign_table, $default = 0, $comment = '')
-    {
-        $fk_table = preg_replace(preg_quote('glpi_'), '', $foreign_table, 1);
-        $fk .= "{$fk_table}_id";
-        return $this->addField($fk, 'int(11)', $default, false, $comment)
-            ->addKey($fk);
-    }
-
     /**
     * Define field's format
-    *
-    * @param string  $type          can be bool, char, string, integer, date, datetime, text, longtext or autoincrement
+    * @since 10.0.0
+    * @param string  $type          can be bool, byte, char, string, integer, date, datetime, text, longtext or autoincrement
     * @param string  $default_value new field's default value,
     *                               if a specific default value needs to be used
     * @param boolean $nodefault     No default value (false by default)
@@ -251,12 +327,6 @@ class DBTableSchema {
             }
             break;
 
-         // for plugins
-         case 'primary':
-         case 'autoincrement' :
-            $format = "INT(11) NOT NULL AUTO_INCREMENT";
-            break;
-
          default :
             $format = $type;
             if (!$nodefault) {
@@ -270,4 +340,4 @@ class DBTableSchema {
       }
       return $format;
    }
-} 
+}
