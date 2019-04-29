@@ -37,7 +37,7 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
    define('GLPI_PREVER', str_replace('-dev', '', GLPI_VERSION));
    define(
       'GLPI_SCHEMA_VERSION',
-      GLPI_PREVER . '@' . sha1_file(GLPI_ROOT . '/install/mysql/glpi-empty.sql')
+      GLPI_PREVER . '@' . sha1_file(GLPI_ROOT . '/install/install_db.php')
    );
 } else {
    //for stable version
