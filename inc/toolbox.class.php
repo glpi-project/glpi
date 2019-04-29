@@ -2425,37 +2425,32 @@ class Toolbox {
 
       $DB = \Glpi\DatabaseFactory::create();
 
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-empty.sql")) {
-         echo "Errors occurred inserting default database";
-      } else {
-         // update default language
-         Config::setConfigurationValues(
-            'core',
-            [
-               'language'      => $lang,
-               'version'       => GLPI_VERSION,
-               'dbversion'     => GLPI_SCHEMA_VERSION,
-               'use_timezones' => $DB->areTimezonesAvailable()
-            ]
-         );
-         $DB->updateOrDie(
-            'glpi_users', [
-               'language' => 'NULL'
-            ], [0], "4203"
-         );
+      require('../install/install_db.php');
+      // update default language
+      Config::setConfigurationValues(
+         'core',
+         [
+            'use_timezones' => $DB->areTimezonesAvailable()
+         ]
+      );
 
-         if (defined('GLPI_SYSTEM_CRON')) {
-            // Downstream packages may provide a good system cron
-            $DB->updateOrDie(
-               'glpi_crontasks', [
-                  'mode'   => 2
-               ], [
-                  'name'      => ['!=', 'watcher'],
-                  'allowmode' => ['&', 2]
-               ],
-               '4203'
-            );
-         }
+      $DB->updateOrDie(
+         'glpi_users', [
+            'language' => 'NULL'
+         ], [0], "4203"
+      );
+
+      if (defined('GLPI_SYSTEM_CRON')) {
+         // Downstream packages may provide a good system cron
+         $DB->updateOrDie(
+            'glpi_crontasks', [
+               'mode'   => 2
+            ], [
+               'name'      => ['!=', 'watcher'],
+               'allowmode' => ['&', 2]
+            ],
+            '4203'
+         );
       }
    }
 

@@ -1470,4 +1470,89 @@ abstract class AbstractDatabase
     {
         return 0;
     }
+
+    //TODO Docs
+    public function drop(string $table)
+    {
+      return $this->rawQuery("DROP TABLE IF EXISTS $table;");
+    }
+
+    //TODO Docs
+    public function dropOrDie(string $table)
+    {
+      return $this->rawQueryOrDie("DROP TABLE IF EXISTS $table;");
+    }
+
+    //TODO Docs
+    public function buildCreate(string $table, array $fields = [], array $keys = [])
+    {
+       $query = "CREATE TABLE IF NOT EXISTS $table (";
+      if (!count($fields)) {
+         error_log('Cannot run an CREATE TABLE query without at least one column!');
+         throw new \RuntimeException('Cannot run an CREATE TABLE query without at least one column!');
+      }
+      foreach ($fields as $name => $params) {
+         $query .= "`$name` $params, ";
+      }
+
+      foreach ($keys as $keytype => $keyarray) {
+         $type = '';
+         switch ($keytype) {
+            case 'PRIMARY':
+            case 'PRIMARY KEY':
+               $type = 'PRIMARY KEY';
+               break;
+            case 'UNIQUE':
+            case 'UNIQUE KEY':
+               $type = 'UNIQUE KEY';
+               break;
+            case 'KEY':
+               $type = 'KEY';
+               break;
+            case 'FULLTEXT':
+            case 'FULLTEXT KEY':
+               $type = 'FULLTEXT KEY';
+               break;
+            default:
+               error_log("Invalid key type: $keytype!");
+               throw new \RuntimeException("Invalid key type: $keytype!");
+         }
+         if ($type == 'PRIMARY KEY' && is_array($keyarray)) {
+            error_log("There can only be a single primary key!");
+            throw new \RuntimeException("There can only be a single primary key!");
+         }
+         if ($type == 'PRIMARY KEY') {
+               $query .= " PRIMARY KEY (".$this->quoteName($keyarray)."),";
+         } else {
+            foreach ($keyarray as $keyname => $constraints) {
+               $query .= " $type " . $this->quoteName($keyname) . ' (';
+               foreach ($constraints as $constraint => $constraint_value) {
+                  if (is_numeric($constraint)) {
+                     $query .= "`$constraint_value`,";
+                  } else {
+                     $query .= "`$constraint`(" . $constraint_value . "),";
+                  }
+               }
+               $query = rtrim($query, ',') . '),';
+            }
+         }
+      }
+      $query = rtrim($query, ',') . ") ";
+      $query .= 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
+      return $query;
+    }
+
+   //TODO Docs
+   public function create(string $table, array $fields = [], array $keys = [])
+   {
+      $query = $this->buildCreate($table, $fields, $keys);
+      return $this->rawQuery($query);
+   }
+
+   //TODO Docs
+   public function createOrDie(string $table, array $fields = [], array $keys = [], $message = '')
+   {
+      $query = $this->buildCreate($table, $fields, $keys);
+      return $this->rawQueryOrDie($query, $message);
+   }
 }
