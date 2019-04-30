@@ -880,19 +880,18 @@ class DBmysql {
    public function tableExists($tablename) {
       // Get a list of tables contained within the database.
 
-      if ( !isset($_SESSION['glpi_plugins']) ||
-         (isset($_SESSION['glpi_plugins']) && $_SESSION['glpi_plugins'] == [])
-         ) {
+      if (!isset($_SESSION['glpi_plugins']) ||
+         (isset($_SESSION['glpi_plugins']) && $_SESSION['glpi_plugins'] == [])) {
           self::$table_exists_arr = [];
       }
 
-      if ( isset($_POST["install"]) ||
-          !file_exists(GLPI_CONFIG_DIR . "/config_db.php") ) {
+      if (isset($_POST["install"]) ||
+          !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
           // We are in installation mode here, so we should not
           // rely on table_exists_arr because update scripts can rename tables or create theme !
 
       } else {
-          if ( isset(self::$table_exists_arr[$tablename]) ) {
+          if (isset(self::$table_exists_arr[$tablename])) {
              return self::$table_exists_arr[$tablename];
           }
       }
