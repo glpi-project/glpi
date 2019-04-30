@@ -481,7 +481,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return void
     */
    function __destruct () {
-      if ($this->res) {
+      if ($this->res instanceof \mysqli_result) {
          $this->conn->freeResult($this->res);
       }
    }
@@ -707,7 +707,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string[]|null fetch_assoc() of first results row
     */
    public function next() {
-      if (!$this->res) {
+      if (!($this->res instanceof \mysqli_result)) {
          return false;
       }
       $this->row = $this->conn->fetchAssoc($this->res);
@@ -721,7 +721,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return boolean
     */
    public function valid() {
-      return $this->res && $this->row;
+      return $this->res instanceof \mysqli_result && $this->row;
    }
 
    /**
@@ -730,7 +730,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return integer
     */
    public function numrows() {
-      return ($this->res ? $this->conn->numrows($this->res) : 0);
+      return ($this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0);
    }
 
    /**
@@ -741,7 +741,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return integer
     */
    public function count() {
-      return ($this->res ? $this->conn->numrows($this->res) : 0);
+      return ($this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0);
    }
 
    /**

@@ -190,10 +190,10 @@ class Migration extends \GLPITestCase {
       $this->array($this->queries)->isIdenticalTo([
          0 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
                ' WHERE `table_schema` = \'' . $DB->dbdefault .
-               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'%table1%\'',
+               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table1\'',
          1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
                ' WHERE `table_schema` = \'' . $DB->dbdefault  .
-               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'%table2%\''
+               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\''
              ]);
 
       //try to backup existant tables
