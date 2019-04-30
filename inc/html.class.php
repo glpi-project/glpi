@@ -1398,7 +1398,7 @@ class Html {
     * @return array          the menu array
     */
    static function generateMenuSession($force = false) {
-      global $PLUGIN_HOOKS;
+      global $PLUGIN_HOOKS, $CFG_GLPI;
       $menu = [];
 
       if ($force
@@ -1468,10 +1468,7 @@ class Html {
             }
          }
 
-         $allassets = ['Computer', 'Monitor', 'Peripheral', 'NetworkEquipment', 'Phone',
-                            'Printer'];
-
-         foreach ($allassets as $type) {
+         foreach ($CFG_GLPI["asset_types"] as $type) {
             if (isset($menu['assets']['content'][strtolower($type)])) {
                $menu['assets']['content']['allassets']['title']            = __('Global');
                $menu['assets']['content']['allassets']['shortcut']         = '';
