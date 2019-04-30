@@ -1513,7 +1513,7 @@ class DBmysql {
            'FROM'        => 'information_schema.columns',
            'WHERE'       => [
               'information_schema.columns.table_schema'  => $DB->dbdefault,
-              'information_schema.columns.column_type'   => ['datetime']
+              'information_schema.columns.data_type'     => ['datetime']
            ]
        ])->next();
        return (int)$result['cpt'];
