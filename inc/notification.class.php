@@ -280,19 +280,38 @@ class Notification extends CommonDBTM {
    **/
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
+      global $CFG_GLPI;
+
       if (!is_array($values)) {
          $values = [$field => $values];
       }
-      $options['display'] = false;
 
       switch ($field) {
          case 'event' :
-            if (isset($values['itemtype'])
-                && !empty($values['itemtype'])) {
-               $options['value'] = $values[$field];
-               $options['name']  = $name;
-               return NotificationEvent::dropdownEvents($values['itemtype'], $options);
+            $itemtypes = (isset($values['itemtype']) && !empty($values['itemtype']))
+               ? $values['itemtype']
+               : $CFG_GLPI["notificationtemplates_types"];
+
+            $events = [];
+            foreach ($itemtypes as $itemtype) {
+               $target = NotificationTarget::getInstanceByType($itemtype);
+               if ($target) {
+                  $target_events = $target->getAllEvents();
+                  foreach ($target_events as $key => $label) {
+                     $events[$itemtype][$itemtype . Search::SHORTSEP . $key] = $label;
+                  }
+               }
             }
+
+            return Dropdown::showFromArray(
+               $name,
+               $events,
+               [
+                  'display'             => false,
+                  'display_emptychoice' => true,
+                  'value'               => $values[$field],
+               ]
+            );
             break;
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -324,7 +343,11 @@ class Notification extends CommonDBTM {
          'massiveaction'      => false,
          'datatype'           => 'specific',
          'additionalfields'   => [
-            '0'                  => 'itemtype'
+            'itemtype'
+         ],
+         'searchtype'         => [
+            'equals',
+            'notequals'
          ]
       ];
 
