@@ -883,7 +883,11 @@ class DBmysql {
          return true;
       }
 
-      $result = $this->listTables("%$tablename%");
+      // Retrieve all tables if cache is empty but enabled, in order to fill cache
+      // with all known tables
+      $retrieve_all = !$this->cache_disabled && empty($cache);
+
+      $result = $this->listTables($retrieve_all ? 'glpi_%' : $tablename);
       $found_tables = [];
       while ($data = $result->next()) {
          $found_tables[] = $data['TABLE_NAME'];
