@@ -50,7 +50,7 @@ $GLPI = new GLPI();
 $GLPI->initLogger();
 
 $DB = new DB();
-$DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
+$DB->disableTableCaching(); //prevents issues on table/fieldExists upgrading from old versions
 
 $update = new Update($DB);
 $update->initSession();

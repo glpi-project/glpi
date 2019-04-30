@@ -531,6 +531,8 @@ class Plugin extends CommonDBTM {
    **/
    function install($ID) {
 
+      global $DB;
+
       $message = '';
       $type = ERROR;
 
@@ -542,6 +544,7 @@ class Plugin extends CommonDBTM {
          }
 
          self::load($this->fields['directory'], true);
+         $DB->disableTableCaching(); //prevents issues on table/fieldExists upgrading from old versions
          $function   = 'plugin_' . $this->fields['directory'] . '_install';
          if (function_exists($function)) {
             $this->setLoaded('temp', $this->fields['directory']);  // For autoloader
