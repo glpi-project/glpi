@@ -726,22 +726,36 @@ abstract class AbstractDatabase
      * Check if a table exists
      *
      * @since 9.2
+     * @since 10.0 Added $usecache parameter.
      *
-     * @param string $tablename Table name
+     * @param string  $tablename Table name
+     * @param boolean $usecache  If use table list cache
      *
      * @return boolean
      */
-    public function tableExists(string $tablename): bool
+    public function tableExists(string $tablename, $usecache = true): bool
     {
-       // Get a list of tables contained within the database.
-        $result = $this->listTables("%$tablename%");
+        static $table_cache = [];
+        if (!$this->cache_disabled && $usecache && in_array($tablename, $table_cache)) {
+            return true;
+        }
 
-        if (count($result)) {
-            while ($data = $result->next()) {
-                if ($data['TABLE_NAME'] === $tablename) {
-                    return true;
-                }
-            }
+        // Retrieve all tables if cache is empty but enabled, in order to fill cache
+        // with all known tables
+        $retrieve_all = !$this->cache_disabled && empty($table_cache);
+
+        $result = $this->listTables($retrieve_all ? 'glpi_%' : $tablename);
+        $found_tables = [];
+        while ($data = $result->next()) {
+            $found_tables[] = $data['TABLE_NAME'];
+        }
+
+        if (!$this->cache_disabled) {
+            $table_cache = array_unique(array_merge($table_cache, $found_tables));
+        }
+
+        if (in_array($tablename, $found_tables)) {
+            return true;
         }
 
         return false;

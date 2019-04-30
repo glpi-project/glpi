@@ -292,8 +292,8 @@ class Migration extends \GLPITestCase {
                ' AND `table_type` = ? AND `table_name` LIKE ?'
              ]);
       $this->array($this->qry_params)->isIdenticalTo([
-         0  => [$DB->dbdefault, 'BASE TABLE', '%table1%'],
-         1  => [$DB->dbdefault, 'BASE TABLE', '%table2%']
+         0  => [$DB->dbdefault, 'BASE TABLE', 'table1'],
+         1  => [$DB->dbdefault, 'BASE TABLE', 'table2']
       ]);
 
       //try to backup existant tables

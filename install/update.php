@@ -47,7 +47,7 @@ $GLPI = new GLPI();
 $GLPI->initLogger();
 
 $DB = \Glpi\DatabaseFactory::create();
-$DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
+$DB->disableTableCaching(); //prevents issues on table/fieldExists upgrading from old versions
 
 $update = new Update($DB);
 $update->initSession();
