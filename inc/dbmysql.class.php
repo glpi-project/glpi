@@ -884,14 +884,13 @@ class DBmysql {
           self::$table_exists_arr = [];
       }
 
-      if (isset($_POST["install"]) || !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-          // We are in installation mode here, so we should not
+      if (!isset($_POST["install"]) &&
+           file_exists(GLPI_CONFIG_DIR . "/config_db.php") &&
+           isset(self::$table_exists_arr[$tablename])) {
+          // If we are in installation mode we should not
           // rely on table_exists_arr because update scripts can rename tables or create theme !
+          return self::$table_exists_arr[$tablename];
 
-      } else {
-         if (isset(self::$table_exists_arr[$tablename])) {
-            return self::$table_exists_arr[$tablename];
-         }
       }
 
       $result = $this->listTables("%$tablename%");
