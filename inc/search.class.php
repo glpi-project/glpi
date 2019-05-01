@@ -442,7 +442,7 @@ class Search {
       // Overrides columns' list by the ones coming from the saved search (DB).
       // this parameter $params['stv'] comes from table : glpi_savedsearches, column : query.
       // stv is a shortcut savedtoview, this is because GET method URLs have limit for length.
-      if (isset($params['stv']) && is_array($params['stv'])){
+      if (isset($params['stv']) && is_array($params['stv'])) {
           $data['toview'] = array_merge(self::addDefaultToView($itemtype, $params), $params['stv']);
       }
 
@@ -2557,8 +2557,8 @@ JAVASCRIPT;
       }
 
        // sorts the dropdown list elements so they will appear in order for user.
-      foreach ($values as $key => $val){
-         if (is_array($values[$key]) && count($values[$key]) > 1){
+      foreach ($values as $key => $val) {
+         if (is_array($values[$key]) && count($values[$key]) > 1) {
              asort($values[$key], SORT_NATURAL | SORT_FLAG_CASE);
          }
       }
