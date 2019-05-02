@@ -412,13 +412,6 @@ class Item_Ticket extends CommonDBRelation{
          }
 
          $data =  array_keys(getAllDataFromTable('glpi_items_tickets'));
-         $used = [];
-         if (!empty($data)) {
-            foreach ($data as $val) {
-               $used[$val['itemtype']] = $val['id'];
-            }
-         }
-
          self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $ticket->fields["entities_id"], ['tickets_id' => $instID, 'used' => $used, 'rand' => $rand]);
          echo "<span id='item_ticket_selection_information$rand'></span>";
          echo "</td><td class='center' width='30%'>";

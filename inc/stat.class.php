@@ -848,7 +848,6 @@ class Stat extends CommonGLPI {
             break;
 
          case "requesttypes_id" :
-         case "solutiontypes_id" :
          case "urgency" :
          case "impact" :
          case "priority" :
@@ -857,6 +856,22 @@ class Stat extends CommonGLPI {
          case "itilcategories_id" :
          case 'locations_id' :
             $WHERE["$table.$param"] = $value;
+            break;
+
+         case "solutiontypes_id" :
+            $LEFTJOIN = [
+               'glpi_itilsolutions' => [
+                  'ON' => [
+                     'glpi_itilsolutions'   => 'items_id',
+                     'glpi_tickets'               => 'id', [
+                        'AND' => [
+                           'glpi_itilsolutions.itemtype' => 'Ticket'
+                        ]
+                     ]
+                  ]
+               ]
+            ];
+            $WHERE["glpi_itilsolutions.$param"] = $value;
             break;
 
          case "device":
