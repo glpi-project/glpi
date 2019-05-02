@@ -864,6 +864,7 @@ class Stat extends CommonGLPI {
                   'ON' => [
                      'glpi_itilsolutions'   => 'items_id',
                      'glpi_tickets'               => 'id'
+                     ['AND' => ['glpi_itilsolutions.itemtype' => 'Ticket']]
                   ]
                ]
             ];
