@@ -472,8 +472,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             'glpi_ticketvalidations', [
                'WHERE'  => $restrict,
                'ORDER'  => ['submission_date DESC', 'id ASC']
-            ],
-            false
+            ]
          );
          $data['validations'] = [];
          foreach ($validations as $validation) {
