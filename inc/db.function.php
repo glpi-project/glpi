@@ -223,7 +223,7 @@ function countElementsInTableForEntity($table, $entity, $condition = [], $recurs
 
 
 /**
- * Get datas from a table in an array :
+ * Get data from a table in an array :
  * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  *
  * @param string  $table     table name
@@ -232,12 +232,31 @@ function countElementsInTableForEntity($table, $entity, $condition = [], $recurs
  * @param string  $order     result order (default '')
  *
  * @return array containing all the datas
+ *
+ * @deprecated 9.5.0
 **/
 function getAllDatasFromTable($table, $condition = [], $usecache = false, $order = '') {
-   $dbu = new DbUtils();
-   return $dbu->getAllDataFromTable($table, $condition, $usecache, $order);
+   Toolbox::deprecated('Use getAllDataFromTable()');
+   return getAllDataFromTable($table, $condition, $usecache, $order);
 }
 
+/**
+ * Get data from a table in an array :
+ * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
+ *
+ * @param string  $table    table name
+ * @param array   $criteria condition to use (default [])
+ * @param boolean $usecache Use cache (false by default)
+ * @param string  $order    result order (default '')
+ *
+ * @return array containing all the datas
+ *
+ * @since 9.5.0
+**/
+function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '') {
+   $dbu = new DbUtils();
+   return $dbu->getAllDataFromTable($table, $criteria, $usecache, $order);
+}
 /**
  * Get the Name of the element of a Dropdown Tree table
  *

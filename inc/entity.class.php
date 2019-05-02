@@ -1498,7 +1498,8 @@ class Entity extends CommonTreeDropdown {
          $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
-      foreach (getAllDatasFromTable('glpi_states') as $state) {
+      $states = getAllDataFromTable('glpi_states');
+      foreach ($states as $state) {
          $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
                      //TRANS: %s is the name of the state
             = sprintf(__('Fill when shifting to state %s'), $state['name']);
@@ -1566,7 +1567,7 @@ class Entity extends CommonTreeDropdown {
          $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
-      foreach (getAllDatasFromTable('glpi_states') as $state) {
+      foreach ($states as $state) {
          $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
                      //TRANS: %s is the name of the state
             = sprintf(__('Fill when shifting to state %s'), $state['name']);
@@ -2790,7 +2791,8 @@ class Entity extends CommonTreeDropdown {
          case 'autofill_decommission_date' :
             $tab[0]                   = __('No autofill');
             $tab[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
-            foreach (getAllDatasFromTable('glpi_states') as $state) {
+            $states = getAllDataFromTable('glpi_states');
+            foreach ($states as $state) {
                $tab[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
                            //TRANS: %s is the name of the state
                   = sprintf(__('Fill when shifting to state %s'), $state['name']);

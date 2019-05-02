@@ -870,8 +870,8 @@ class Plugin extends CommonDBTM {
          }
       }
 
-      if (in_array('glpi_infocoms', $glpitables)) {
-         $entities    = getAllDatasFromTable('glpi_entities');
+      if (in_array('glpi_infocoms', $glpitables) && count($types)) {
+         $entities    = getAllDataFromTable('glpi_entities');
          $entities[0] = "Root";
 
          foreach ($types as $num => $name) {

@@ -509,7 +509,7 @@ class Search extends DbTestCase {
 
       $displaypref = new \DisplayPreference();
       // save table glpi_displaypreferences
-      $dp = getAllDatasFromTable($displaypref->getTable());
+      $dp = getAllDataFromTable($displaypref->getTable());
       foreach ($dp as $line) {
          $displaypref->delete($line, true);
       }
@@ -583,7 +583,7 @@ class Search extends DbTestCase {
       }
       // restore displaypreference table
       /// TODO: review, this can't work.
-      foreach (getAllDatasFromTable($displaypref->getTable()) as $line) {
+      foreach (getAllDataFromTable($displaypref->getTable()) as $line) {
          $displaypref->delete($line, true);
       }
       $this->integer((int)countElementsInTable($displaypref->getTable()))->isIdenticalTo(0);

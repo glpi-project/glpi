@@ -4241,7 +4241,7 @@ class CommonDBTM extends CommonGLPI {
                            $message[$field] = $this->input[$field];
                         }
 
-                        $doubles      = getAllDatasFromTable($this->getTable(), $where);
+                        $doubles      = getAllDataFromTable($this->getTable(), $where);
                         $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                         if ($p['unicity_error_message']) {
                            if (!$fields['action_refuse']) {

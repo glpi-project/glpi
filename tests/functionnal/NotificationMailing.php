@@ -69,7 +69,7 @@ class NotificationMailing extends DbTestCase {
       ]);
       $this->boolean($res)->isTrue();
 
-      $data = getAllDatasFromTable('glpi_queuednotifications');
+      $data = getAllDataFromTable('glpi_queuednotifications');
       $this->array($data)->hasSize(1);
 
       $row = array_pop($data);

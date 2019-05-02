@@ -1391,7 +1391,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $statuses           = [self::ACCEPTED => 0,
                                   self::WAITING  => 0,
                                   self::REFUSED  => 0];
-      $validations        = getAllDatasFromTable(
+      $validations        = getAllDataFromTable(
          static::getTable(), [
             static::$items_id => $item->getID()
          ]
