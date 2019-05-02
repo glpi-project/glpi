@@ -857,7 +857,7 @@ class Stat extends CommonGLPI {
          case 'locations_id' :
             $WHERE["$table.$param"] = $value;
             break;
-            
+
          case "solutiontypes_id" :
             $LEFTJOIN = [
                'glpi_itilsolutions' => [
