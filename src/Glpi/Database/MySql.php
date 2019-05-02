@@ -411,7 +411,7 @@ class MySql extends AbstractDatabase
             'FROM'        => 'INFORMATION_SCHEMA.COLUMNS',
             'WHERE'       => [
                'INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA'  => $DB->dbdefault,
-               'INFORMATION_SCHEMA.COLUMNS.COLUMN_TYPE'   => ['DATETIME']
+               'INFORMATION_SCHEMA.COLUMNS.DATA_TYPE'     => ['DATETIME']
             ]
         ])->next();
         return (int)$result['cpt'];
