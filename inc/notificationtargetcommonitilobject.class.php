@@ -1207,7 +1207,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $followup_restrict['itemtype'] = $objettype;
 
          //Followup infos
-         $followups          = getAllDatasFromTable('glpi_itilfollowups', $followup_restrict, false, ['date_mod DESC', 'id ASC']);
+         $followups          = getAllDataFromTable(
+            'glpi_itilfollowups', [
+               'WHERE'  => $followup_restrict,
+               'ORDER'  => ['date_mod DESC', 'id ASC']
+            ]
+         );
          $data['followups'] = [];
          foreach ($followups as $followup) {
             $tmp                             = [];
@@ -1316,12 +1321,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $data["##$objettype.costtime##"]     = $costs['costtime'];
          $data["##$objettype.totalcost##"]    = $costs['totalcost'];
 
-         $costs          = getAllDatasFromTable(
-            getTableForItemType($costtype),
-            [$item->getForeignKeyField() => $item->getField('id')],
-            false,
-            ['begin_date DESC', 'id ASC']
-
+         $costs          = getAllDataFromTable(
+            getTableForItemType($costtype), [
+               'WHERE'  => [$item->getForeignKeyField() => $item->getField('id')],
+               'ORDER'  => ['begin_date DESC', 'id ASC']
+            ]
          );
          $data['costs'] = [];
          foreach ($costs as $cost) {
@@ -1354,11 +1358,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $restrict['is_private'] = 0;
          }
 
-         $tasks          = getAllDatasFromTable(
-            $taskobj->getTable(),
-            $restrict,
-            false,
-            ['date_mod DESC', 'id ASC']
+         $tasks          = getAllDataFromTable(
+            $taskobj->getTable(), [
+               'WHERE'  => $restrict,
+               'ORDER'  => ['date_mod DESC', 'id ASC']
+            ]
          );
          $data['tasks'] = [];
          foreach ($tasks as $task) {

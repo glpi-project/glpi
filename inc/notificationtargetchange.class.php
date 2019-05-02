@@ -89,7 +89,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       // Complex mode
       if (!$simple) {
          $restrict = ['changes_id' => $item->getField('id')];
-         $tickets  = getAllDatasFromTable('glpi_changes_tickets', $restrict);
+         $tickets  = getAllDataFromTable('glpi_changes_tickets', $restrict);
 
          $data['tickets'] = [];
          if (count($tickets)) {
@@ -111,7 +111,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
          $data['##change.numberoftickets##'] = count($data['tickets']);
 
-         $problems = getAllDatasFromTable('glpi_changes_problems', $restrict);
+         $problems = getAllDataFromTable('glpi_changes_problems', $restrict);
 
          $data['problems'] = [];
          if (count($problems)) {
@@ -138,7 +138,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
          $data['##change.numberofproblems##'] = count($data['problems']);
 
-         $items    = getAllDatasFromTable('glpi_changes_items', $restrict);
+         $items    = getAllDataFromTable('glpi_changes_items', $restrict);
 
          $data['items'] = [];
          if (count($items)) {
@@ -199,11 +199,11 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
             $restrict['glpi_changevalidations.id'] = $options['validation_id'];
          }
 
-         $validations = getAllDatasFromTable(
-            'glpi_changevalidations',
-            $restrict,
-            false,
-            ['submission_date DESC', 'id ASC']
+         $validations = getAllDataFromTable(
+            'glpi_changevalidations', [
+               'WHERE'  => $restrict,
+               'ORDER'  => ['submission_date DESC', 'id ASC']
+            ]
          );
          $data['validations'] = [];
          foreach ($validations as $validation) {

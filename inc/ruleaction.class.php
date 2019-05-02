@@ -574,7 +574,7 @@ class RuleAction extends CommonDBChild {
                   case "dropdown_users_validate" :
                      $used = [];
                      if ($item = getItemForItemtype($options["sub_type"])) {
-                        $rule_data = getAllDatasFromTable(
+                        $rule_data = getAllDataFromTable(
                            self::getTable(), [
                               'action_type'           => 'add_validation',
                               'field'                 => 'users_id_validate',
@@ -596,7 +596,7 @@ class RuleAction extends CommonDBChild {
                   case "dropdown_groups_validate" :
                      $used = [];
                      if ($item = getItemForItemtype($options["sub_type"])) {
-                        $rule_data = getAllDatasFromTable(
+                        $rule_data = getAllDataFromTable(
                            self::getTable(), [
                               'action_type'           => 'add_validation',
                               'field'                 => 'groups_id_validate',

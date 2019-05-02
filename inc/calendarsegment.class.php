@@ -135,7 +135,7 @@ class CalendarSegment extends CommonDBChild {
    static function getSegmentsBetween($calendars_id, $begin_day, $begin_time, $end_day, $end_time) {
 
       // Do not check hour if day before the end day of after the begin day
-      return getAllDatasFromTable(
+      return getAllDataFromTable(
          'glpi_calendarsegments', [
             'calendars_id' => $calendars_id,
             ['day'          => ['>=', $begin_day]],

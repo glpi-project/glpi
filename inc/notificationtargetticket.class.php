@@ -391,7 +391,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $data['##ticket.numberoflinkedtickets##'] = count($data['linkedtickets']);
 
          $restrict          = ['tickets_id' => $item->getField('id')];
-         $problems          = getAllDatasFromTable('glpi_problems_tickets', $restrict);
+         $problems          = getAllDataFromTable('glpi_problems_tickets', $restrict);
          $data['problems'] = [];
          if (count($problems)) {
             $problem = new Problem();
@@ -418,7 +418,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $data['##ticket.numberofproblems##'] = count($data['problems']);
 
-         $changes          = getAllDatasFromTable('glpi_changes_tickets', $restrict);
+         $changes          = getAllDataFromTable('glpi_changes_tickets', $restrict);
          $data['changes'] = [];
          if (count($changes)) {
             $change = new Change();
@@ -450,7 +450,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             'itemtype' => 'Ticket',
             'items_id' => $item->getField('id')
          ];
-         $replysolved = getAllDatasFromTable('glpi_itilfollowups', $solution_restrict, false, ['date_mod DESC', 'id ASC']);
+         $replysolved = getAllDataFromTable(
+            'glpi_itilfollowups', [
+               'WHERE'  => $solution_restrict,
+               'ORDER'  => ['date_mod DESC', 'id ASC']
+            ]
+         );
          $current = current($replysolved);
          $data['##ticket.solution.approval.description##'] = $current['content'];
          $data['##ticket.solution.approval.date##']        = Html::convDateTime($current['date']);
@@ -463,7 +468,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $restrict['glpi_ticketvalidations.id'] = $options['validation_id'];
          }
 
-         $validations = getAllDatasFromTable('glpi_ticketvalidations', $restrict, false, ['submission_date DESC', 'id ASC']);
+         $validations = getAllDataFromTable(
+            'glpi_ticketvalidations', [
+               'WHERE'  => $restrict,
+               'ORDER'  => ['submission_date DESC', 'id ASC']
+            ],
+            false
+         );
          $data['validations'] = [];
          foreach ($validations as $validation) {
             $tmp = [];

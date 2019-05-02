@@ -403,7 +403,7 @@ class DbUtils extends DbTestCase {
          ->if($this->newTestedInstance)
          ->then
             ->array($this->testedInstance->getAllDataFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->hasSize(1)
-            ->array($data = $this->testedInstance->getAllDataFromTable('glpi_configs', [], false, 'name'))->isNotEmpty();
+            ->array($data = $this->testedInstance->getAllDataFromTable('glpi_configs', ['ORDER' => 'name']))->isNotEmpty();
       $previousArrayName = "";
       foreach ($data as $key => $array) {
          $this->boolean($previousArrayName <= $previousArrayName = $array['name'])->isTrue();
@@ -412,7 +412,7 @@ class DbUtils extends DbTestCase {
       //TODO: test with cache === true
 
       //keep testing old method from db.function
-      $data = getAllDatasFromTable('glpi_configs');
+      $data = getAllDataFromTable('glpi_configs');
       $this->array($data)
          ->size->isGreaterThan(100);
       foreach ($data as $key => $array) {
@@ -420,10 +420,10 @@ class DbUtils extends DbTestCase {
             ->variable['id']->isEqualTo($key);
       }
 
-      $data = getAllDatasFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']);
+      $data = getAllDataFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']);
       $this->array($data)->hasSize(1);
 
-      $data = getAllDatasFromTable('glpi_configs', [], false, 'name');
+      $data = getAllDataFromTable('glpi_configs', ['ORDER' => 'name']);
       $this->array($data)->isNotEmpty();
       $previousArrayName = "";
       foreach ($data as $key => $array) {

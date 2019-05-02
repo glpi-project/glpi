@@ -1323,7 +1323,7 @@ function update0782to080() {
 
    //Migrate OCS computers link from static config to rules engine
    if ($DB->fieldExists('glpi_ocsservers', 'is_glpi_link_enabled', false)) {
-      $ocs_servers = getAllDatasFromTable('glpi_ocsservers');
+      $ocs_servers = getAllDataFromTable('glpi_ocsservers');
       $ranking     = 1;
       foreach ($ocs_servers as $ocs_server) {
          if ($ocs_server['is_glpi_link_enabled']) {

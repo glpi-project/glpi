@@ -1273,7 +1273,7 @@ class Stat extends CommonGLPI {
       $view_entities = Session::isMultiEntitiesMode();
 
       if ($view_entities) {
-         $entities = getAllDatasFromTable('glpi_entities');
+         $entities = getAllDataFromTable('glpi_entities');
       }
 
       $output_type = Search::HTML_OUTPUT;

@@ -60,7 +60,7 @@ class Networkport extends DbTestCase {
       $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
 
       // check data in db
-      $all_netports = getAllDatasFromTable('glpi_networkports', [], false, 'id');
+      $all_netports = getAllDataFromTable('glpi_networkports', ['ORDER' => 'id']);
       $current_networkport = end($all_netports);
       unset($current_networkport['id']);
       unset($current_networkport['date_mod']);
@@ -80,7 +80,7 @@ class Networkport extends DbTestCase {
       ];
       $this->array($current_networkport)->isIdenticalTo($expected);
 
-      $all_netportethernets = getAllDatasFromTable('glpi_networkportethernets', [], false, 'id');
+      $all_netportethernets = getAllDataFromTable('glpi_networkportethernets', ['ORDER' => 'id']);
       $networkportethernet = end($all_netportethernets);
       $this->boolean($networkportethernet)->isFalse();
 
@@ -134,7 +134,7 @@ class Networkport extends DbTestCase {
 
       // check data in db
       // 1 -> NetworkPortEthernet
-      $all_netportethernets = getAllDatasFromTable('glpi_networkportethernets', [], false, 'id');
+      $all_netportethernets = getAllDataFromTable('glpi_networkportethernets', ['ORDER' => 'id']);
       $networkportethernet = end($all_netportethernets);
       unset($networkportethernet['id']);
       unset($networkportethernet['date_mod']);
@@ -149,7 +149,7 @@ class Networkport extends DbTestCase {
       $this->array($networkportethernet)->isIdenticalTo($expected);
 
       // 2 -> NetworkName
-      $all_networknames = getAllDatasFromTable('glpi_networknames', [], false, 'id');
+      $all_networknames = getAllDataFromTable('glpi_networknames', ['ORDER' => 'id']);
       $networkname = end($all_networknames);
       $networknames_id = $networkname['id'];
       unset($networkname['id']);
@@ -168,7 +168,7 @@ class Networkport extends DbTestCase {
       $this->array($networkname)->isIdenticalTo($expected);
 
       // 3 -> IPAddress
-      $all_ipadresses = getAllDatasFromTable('glpi_ipaddresses', [], false, 'id');
+      $all_ipadresses = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
       $ipadress = end($all_ipadresses);
       unset($ipadress['id']);
       unset($ipadress['date_mod']);

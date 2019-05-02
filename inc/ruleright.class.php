@@ -381,7 +381,8 @@ class RuleRight extends Rule {
    function addSpecificCriteriasToArray(&$criteria) {
 
       $criteria['ldap'] = __('LDAP criteria');
-      foreach (getAllDatasFromTable('glpi_rulerightparameters', [], true) as $data) {
+      $all = getAllDataFromTable('glpi_rulerightparameters', [], true);
+      foreach ($all as $data) {
          $criteria[$data["value"]]['name']      = $data["name"];
          $criteria[$data["value"]]['field']     = $data["value"];
          $criteria[$data["value"]]['linkfield'] = '';

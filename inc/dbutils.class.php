@@ -399,45 +399,46 @@ final class DbUtils {
    }
 
    /**
-    * Get datas from a table in an array :
+    * Get data from a table in an array :
     * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
     *
-    * @param string  $table     Table name
-    * @param array   $condition Condition to use (default '') or array of criteria
-    * @param boolean $usecache  Use cache (false by default)
-    * @param string  $order     Result order (default '')
+    * @param string  $table    Table name
+    * @param array   $criteria Request criteria
+    * @param boolean $usecache Use cache (false by default)
+    * @param string  $order    Result order (default '')
     *
     * @return array containing all the datas
     */
-   public function getAllDataFromTable($table, $condition = [], $usecache = false, $order = '') {
+   public function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '') {
       global $DB;
 
       static $cache = [];
 
-      if (empty($condition) && empty($order) && $usecache && isset($cache[$table])) {
+      if (empty($criteria) && empty($order) && $usecache && isset($cache[$table])) {
          return $cache[$table];
       }
 
       $data = [];
 
-      if (!is_array($condition)) {
-         if (empty($condition)) {
-            $condition = [];
+      if (!is_array($criteria)) {
+         Toolbox::Deprecated('Criteria must be an array!');
+         if (empty($criteria)) {
+            $criteria = [];
          }
       }
 
       if (!empty($order)) {
-         //Toolbox::Deprecated('Order should be defined in condition!');
-         $condition['ORDER'] = $order; // Deprecated use case
+         Toolbox::Deprecated('Order should be defined in criteria!');
+         $criteria['ORDER'] = $order; // Deprecated use case
       }
 
-      $iterator = $DB->request($table, $condition);
+      $iterator = $DB->request($table, $criteria);
 
       while ($row = $iterator->next()) {
          $data[$row['id']] = $row;
       }
 
-      if (empty($condition) && empty($order) && $usecache) {
+      if (empty($criteria) && empty($order) && $usecache) {
          $cache[$table] = $data;
       }
       return $data;

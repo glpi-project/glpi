@@ -47,7 +47,7 @@ function update078to0781() {
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'Clean reservation entity link')); // Updating schema
 
-   $entities=getAllDatasFromTable('glpi_entities');
+   $entities=getAllDataFromTable('glpi_entities');
    $entities[0]="Root";
 
    $query = "SELECT DISTINCT `itemtype` FROM `glpi_reservationitems`";

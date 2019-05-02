@@ -121,10 +121,10 @@ function update080to0801() {
       $migration->addField("glpi_slalevels", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
       $migration->migrationOneTable('glpi_slalevels');
 
-      $entities    = getAllDatasFromTable('glpi_entities');
+      $entities    = getAllDataFromTable('glpi_entities');
       $entities[0] = "Root";
 
-      foreach ($entities as $entID => $val) {
+      foreach (array_keys($entities) as $entID) {
          // Non recursive ones
          $query3 = "UPDATE `glpi_slalevels`
                     SET `entities_id` = $entID, `is_recursive` = 0

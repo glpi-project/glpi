@@ -625,7 +625,7 @@ class ObjectLock extends CommonDBTM {
       $actionCode = 0; // by default
       $task->setVolume(0); // start with zero
 
-      $lockedItems = getAllDatasFromTable(
+      $lockedItems = getAllDataFromTable(
          getTableForItemType(__CLASS__), [
             'date_mod' => ['<', date("Y-m-d H:i:s", time() - ($task->fields['param'] * HOUR_TIMESTAMP))]
          ]

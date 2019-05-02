@@ -4806,7 +4806,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
          $DB->queryOrDie($query, "0.78 add entities_id and is_recursive in $table");
 
-         $entities    = getAllDatasFromTable('glpi_entities');
+         $entities    = getAllDataFromTable('glpi_entities');
          $entities[0] = "Root";
 
          $query = "SELECT DISTINCT `itemtype`
@@ -4884,7 +4884,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
          $DB->queryOrDie($query, "0.78 add entities_id in $linkitem");
 
-         $entities    = getAllDatasFromTable('glpi_entities');
+         $entities    = getAllDataFromTable('glpi_entities');
          $entities[0] = "Root";
 
          foreach ($entities as $entID => $val) {
@@ -4912,7 +4912,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
       $DB->queryOrDie($query, "0.78 add entities_id in glpi_softwareversion");
 
-      $entities    = getAllDatasFromTable('glpi_entities');
+      $entities    = getAllDataFromTable('glpi_entities');
       $entities[0] = "Root";
 
       foreach ($entities as $entID => $val) {
@@ -5448,7 +5448,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
          }
 
       } else {
-         foreach (getAllDatasFromTable('glpi_mailcollectors') as $collector) {
+         $collectors = getAllDataFromTable('glpi_mailcollectors');
+         foreach ($collectors as $collector) {
             $query = "INSERT INTO `glpi_rules`
                       VALUES (NULL, -1, 'RuleMailCollector', $ranking, '".$collector['name']."', '',
                               'AND', 1, NULL, NULL)";

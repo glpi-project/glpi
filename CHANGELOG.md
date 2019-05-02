@@ -29,6 +29,8 @@ The present file will list all changes made to the project; according to the
 - `DBMysql::affected_rows()`
 - `DBMysql::free_result()`
 - `DBMysql::isMySQLStrictMode()`
+- `getAllDatasFromTable` renamed to `getAllDataFromTable()`
+- Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 
 ## [9.4.2] unreleased
 
