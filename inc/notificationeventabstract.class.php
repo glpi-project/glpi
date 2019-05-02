@@ -70,7 +70,7 @@ abstract class NotificationEventAbstract {
          }
          $notprocessed = [];
 
-         $targets = getAllDatasFromTable(
+         $targets = getAllDataFromTable(
             'glpi_notificationtargets',
             ['notifications_id' => $data['id']]
          );

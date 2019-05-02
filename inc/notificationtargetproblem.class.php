@@ -72,7 +72,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       // Complex mode
       if (!$simple) {
          $restrict = ['problems_id' => $item->getField('id')];
-         $tickets  = getAllDatasFromTable('glpi_problems_tickets', $restrict);
+         $tickets  = getAllDataFromTable('glpi_problems_tickets', $restrict);
 
          $data['tickets'] = [];
          if (count($tickets)) {
@@ -100,7 +100,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
          $data['##problem.numberoftickets##'] = count($data['tickets']);
 
-         $changes  = getAllDatasFromTable('glpi_changes_problems', $restrict);
+         $changes  = getAllDataFromTable('glpi_changes_problems', $restrict);
 
          $data['changes'] = [];
          if (count($changes)) {
@@ -127,7 +127,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
          $data['##problem.numberofchanges##'] = count($data['changes']);
 
-         $items    = getAllDatasFromTable('glpi_items_problems', $restrict);
+         $items    = getAllDataFromTable('glpi_items_problems', $restrict);
 
          $data['items'] = [];
          if (count($items)) {

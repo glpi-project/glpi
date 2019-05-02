@@ -3789,7 +3789,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                         ? $options['entities_id']: $options['entity_restrict'])];
 
       //only for active ldap and corresponding right
-      $ldap_methods = getAllDatasFromTable('glpi_authldaps', ['is_active' => 1]);
+      $ldap_methods = getAllDataFromTable('glpi_authldaps', ['is_active' => 1]);
       if (count($ldap_methods)
             && Session::haveRight('user', User::IMPORTEXTAUTHUSERS)) {
          $params['ldap_import'] = true;

@@ -330,7 +330,7 @@ class NotificationTarget extends CommonDBChild {
             list($type,$id) = explode('_', $key);
             $values[$key]   = $this->notification_targets_labels[$type][$id];
          }
-         $targets = getAllDatasFromTable(
+         $targets = getAllDataFromTable(
             self::getTable(), [
                'notifications_id' => $notifications_id
             ]
@@ -376,7 +376,7 @@ class NotificationTarget extends CommonDBChild {
       if (!isset($input['notifications_id'])) {
          return;
       }
-      $targets = getAllDatasFromTable(
+      $targets = getAllDataFromTable(
          self::getTable(), [
             'notifications_id' => $input['notifications_id']
          ]

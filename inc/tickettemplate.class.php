@@ -661,7 +661,7 @@ class TicketTemplate extends CommonDropdown {
       $source = [];
       foreach ($to_merge as $merge) {
          $source[$merge] = $this->formatFieldsToMerge(
-            getAllDatasFromTable(
+            getAllDataFromTable(
                'glpi_tickettemplate'.$merge,
                ['tickettemplates_id' => $source_id]
             )
@@ -672,7 +672,7 @@ class TicketTemplate extends CommonDropdown {
       $target = [];
       foreach ($to_merge as $merge) {
          $target[$merge] = $this->formatFieldsToMerge(
-            getAllDatasFromTable(
+            getAllDataFromTable(
                'glpi_tickettemplate'.$merge,
                ['tickettemplates_id' => $target_id]
             )
@@ -712,13 +712,13 @@ class TicketTemplate extends CommonDropdown {
       // Source categories
       $source = [];
       foreach ($to_merge as $merge) {
-         $source[$merge] = getAllDatasFromTable('glpi_itilcategories', [$merge => $source_id]);
+         $source[$merge] = getAllDataFromTable('glpi_itilcategories', [$merge => $source_id]);
       }
 
       // Target categories
       $target = [];
       foreach ($to_merge as $merge) {
-         $target[$merge] = getAllDatasFromTable('glpi_itilcategories', [$merge => $target_id]);
+         $target[$merge] = getAllDataFromTable('glpi_itilcategories', [$merge => $target_id]);
       }
 
       // Merge
