@@ -36,9 +36,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use CliMigration;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
+use Migration;
 use Session;
 use Update;
 
@@ -106,8 +106,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       $current_db_version  = $currents['dbversion'];
 
       global $migration; // Migration scripts are using global migrations
-      $migration = new CliMigration(GLPI_SCHEMA_VERSION);
-      $migration->setOutput($output);
+      $migration = new Migration(GLPI_SCHEMA_VERSION);
+      $migration->setOutputHandler($output);
       $update->setMigration($migration);
 
       $informations = new Table($output);

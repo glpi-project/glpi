@@ -1,4 +1,7 @@
 <?php
+use Symfony\Component\Console\Output\OutputInterface;
+use Glpi\Console\Application;
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -70,12 +73,26 @@ class Migration {
    const POST_QUERY = 'post';
 
    /**
+    * Output handler to use. If not set, output will be directly echoed on a format depending on
+    * execution context (Web VS CLI).
+    *
+    * @var OutputInterface|null
+    */
+   protected $output_handler;
+
+   /**
     * @param integer $ver Version number
    **/
    function __construct($ver) {
 
       $this->deb = time();
       $this->version = $ver;
+
+      global $application;
+      if ($application instanceof Application) {
+         // $application global variable will be available if Migration is called from a CLI console command
+         $this->output_handler = $application->getOutput();
+      }
    }
 
    /**
@@ -106,14 +123,12 @@ class Migration {
    **/
    function addNewMessageArea($id) {
 
-      if ($id == $this->current_message_area_id) {
-         $this->displayMessage(__('Work in progress...'));
-      } else {
+      if (!isCommandLine() && $id != $this->current_message_area_id) {
          $this->current_message_area_id = $id;
-         echo "<div id='".$this->current_message_area_id."'>
-               <p class='center'>".__('Work in progress...')."</p></div>";
-         $this->flushLogDisplayMessage();
+         echo "<div id='".$this->current_message_area_id."'></div>";
       }
+
+      $this->displayMessage(__('Work in progress...'));
    }
 
 
@@ -145,16 +160,12 @@ class Migration {
 
       $now = time();
       $tps = Html::timestampToString($now-$this->deb);
-      echo "<script type='text/javascript'>document.getElementById('".
-             $this->current_message_area_id."').innerHTML=\"<p class='center'>".addslashes($msg).
-             " ($tps)</p>\";".
-           "</script>\n";
+
+      $this->outputMessage("{$msg} ({$tps})", null, $this->current_message_area_id);
 
       $this->flushLogDisplayMessage();
       $this->lastMessage = ['time' => time(),
                             'msg'  => $msg];
-
-      Html::glpi_flush();
    }
 
 
@@ -192,7 +203,7 @@ class Migration {
     * @return void
    **/
    function displayTitle($title) {
-      echo "<h3>".Html::entities_deep($title)."</h3>";
+      $this->outputMessage($title, 'title');
    }
 
 
@@ -205,10 +216,7 @@ class Migration {
     * @return void
    **/
    function displayWarning($msg, $red = false) {
-
-      echo ($red ? "<div class='migred'><p>" : "<p><span class='b'>") .
-            Html::entities_deep($msg) . ($red ? "</p></div>" : "</span></p>");
-
+      $this->outputMessage($msg, $red ? 'warning' : 'strong');
       $this->log($msg, true);
    }
 
@@ -1079,5 +1087,110 @@ class Migration {
          ),
          true
       );
+   }
+
+   public function setOutputHandler($output_handler) {
+
+      $this->output_handler = $output_handler;
+   }
+
+   /**
+    * Output a message.
+    *
+    * @param string $msg      Message to output.
+    * @param string $style    Style to use, value can be 'title', 'warning', 'strong' or null.
+    * @param string $area_id  Display area to use.
+    *
+    * @return void
+    */
+   protected function outputMessage($msg, $style = null, $area_id = null) {
+      if (isCommandLine()) {
+         $this->outputMessageToCli($msg, $style);
+      } else {
+         $this->outputMessageToHtml($msg, $style, $area_id);
+      }
+   }
+
+   /**
+    * Output a message in console output.
+    *
+    * @param string $msg    Message to output.
+    * @param string $style  Style to use, see self::outputMessage() for possible values.
+    *
+    * @return void
+    */
+   private function outputMessageToCli($msg, $style = null) {
+
+      $format = null;
+      $verbosity = OutputInterface::VERBOSITY_NORMAL;
+      switch ($style) {
+         case 'title':
+            $msg       = str_pad(" $msg ", 100, '=', STR_PAD_BOTH);
+            $format    = 'info';
+            $verbosity = OutputInterface::VERBOSITY_NORMAL;
+            break;
+         case 'warning':
+            $msg       = str_pad("** {$msg}", 100);
+            $format    = 'comment';
+            $verbosity = OutputInterface::VERBOSITY_VERBOSE;
+            break;
+         case 'strong':
+            $msg       = str_pad($msg, 100);
+            $format    = 'comment';
+            $verbosity = OutputInterface::VERBOSITY_VERBOSE;
+            break;
+         default:
+            $msg       = str_pad($msg, 100);
+            $format    = 'comment';
+            $verbosity = OutputInterface::VERBOSITY_VERY_VERBOSE;
+            break;
+      }
+
+      if ($this->output_handler instanceof OutputInterface) {
+         if (null !== $format) {
+            $msg = sprintf('<%1$s>%2$s</%1$s>', $format, $msg);
+         }
+         $this->output_handler->writeln($msg, $verbosity);
+      } else {
+         echo $msg . PHP_EOL;
+      }
+   }
+
+   /**
+    * Output a message in html page.
+    *
+    * @param string $msg      Message to output.
+    * @param string $style    Style to use, see self::outputMessage() for possible values.
+    * @param string $area_id  Display area to use.
+    *
+    * @return void
+    */
+   private function outputMessageToHtml($msg, $style = null, $area_id = null) {
+
+      $msg = Html::entities_deep($msg);
+
+      switch ($style) {
+         case 'title':
+            $msg = '<h3>' . $msg . '</h3>';
+            break;
+         case 'warning':
+            $msg = '<div class="migred"><p>' . $msg . '</p></div>';
+            break;
+         case 'strong':
+            $msg = '<p><span class="b">' . $msg . '</span></p>';
+            break;
+         default:
+            $msg = '<p class="center">' . $msg . '</p>';
+            break;
+      }
+
+      if (null !== $area_id) {
+         echo "<script type='text/javascript'>
+                  document.getElementById('{$area_id}').innerHTML = '{$msg}';
+               </script>\n";
+         Html::glpi_flush();
+      } else {
+         echo $msg;
+      }
    }
 }
