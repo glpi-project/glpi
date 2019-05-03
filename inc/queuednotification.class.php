@@ -151,13 +151,20 @@ class QueuedNotification extends CommonDBTM {
           && isset($input['items_id']) && ($input['items_id'] >= 0)
           && isset($input['notificationtemplates_id']) && !empty($input['notificationtemplates_id'])
           && isset($input['recipient'])) {
-         $query = "`is_deleted` = 0
-                   AND `itemtype` = '".$input['itemtype']."'
-                   AND `items_id` = '".$input['items_id']."'
-                   AND `entities_id` = '".$input['entities_id']."'
-                   AND `notificationtemplates_id` = '".$input['notificationtemplates_id']."'
-                   AND `recipient` = '".$input['recipient']."'";
-         foreach ($DB->request($this->getTable(), $query) as $data) {
+         $criteria = [
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'is_deleted'   => 0,
+               'itemtype'     => $input['itemtype'],
+               'items_id'     => $input['items_id'],
+               'entities_id'  => $input['entities_id'],
+               'notificationtemplates_id' => $input['notificationtemplates_id'],
+               'recipient'                => $input['recipient']
+
+            ]
+         ];
+         $iterator = $DB->request($criteria);
+         while ($data = $iterator->next()) {
             $this->delete(['id' => $data['id']], 1);
          }
       }
