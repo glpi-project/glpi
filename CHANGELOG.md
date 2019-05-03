@@ -32,6 +32,26 @@ The present file will list all changes made to the project; according to the
 - `getAllDatasFromTable` renamed to `getAllDataFromTable()`
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 
+#### Removed
+
+- Usage of string `$condition` parameter in `CommonDBTM::find()`
+- Usage of string `$condition` parameter in `Dropdown::addNewCondition()`
+- Usage of string in `$option['condition']` parameter in `Dropdown::show()`
+- `KnowbaseItemCategory::showFirstLevel()`
+- `Ticket::getTicketActors()`
+- `NotificationTarget::getProfileJoinSql()`
+- `NotificationTarget::getDistinctUserSql()`
+- `NotificationTargetCommonITILObject::getProfileJoinSql()`
+- `RuleCollection::getRuleListQuery()`
+- `getNextItem()`
+- `getPreviousItem()`
+- `CommonDBChild::getSQLRequestToSearchForItem()`
+- `CommonDBConnexity::getSQLRequestToSearchForItem()`
+- `CommonDBRelation::getSQLRequestToSearchForItem()`
+- `Project::addVisibility()`
+- `Project::addVisibilityJoins()`
+
+
 ## [9.4.2] unreleased
 
 ### API changes

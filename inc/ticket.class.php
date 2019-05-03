@@ -6795,20 +6795,6 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Summary of getTicketActors
-    * Get the list of actors for the current ticket
-    * will return an assoc array of users_id => array of roles.
-    * @return array[] of array[] of users and roles
-    * @since 0.90
-    * @deprecated 9.4.0
-   **/
-   function getTicketActors() {
-      Toolbox::deprecated('Use getITILActors');
-      return $this->getITILActors();
-   }
-
-
-   /**
     * @since 0.90
     *
     * @param $tickets_id

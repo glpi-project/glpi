@@ -426,42 +426,6 @@ function regenerateTreeCompleteName($table) {
 
 
 /**
- * Get the ID of the next Item
- *
- * @deprecated 9.4
- *
- * @param string  $table         table to search next item
- * @param integer $ID            current ID
- * @param string  $condition     condition to add to the search (default ='')
- * @param string  $nextprev_item field used to sort (default ='name')
- *
- * @return integer the next ID, -1 if not exist
- */
-function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
-   $dbu = new DbUtils();
-   return $dbu->getNextItem($table, $ID, $condition, $nextprev_item);
-}
-
-
-/**
- * Get the ID of the previous Item
- *
- * @deprecated 9.4
- *
- * @param string  $table         table to search next item
- * @param integer $ID            current ID
- * @param string  $condition     condition to add to the search (default ='')
- * @param string  $nextprev_item field used to sort (default ='name')
- *
- * @return integer the previous ID, -1 if not exist
- */
-function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {
-   $dbu = new DbUtils();
-   return $dbu->getPreviousItem($table, $ID, $condition, $nextprev_item);
-}
-
-
-/**
  * Format a user name
  *
  *@param $ID            integer  ID of the user.

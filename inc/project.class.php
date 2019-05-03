@@ -325,56 +325,6 @@ class Project extends CommonDBTM {
       parent::cleanDBonPurge();
    }
 
-   /**
-    * Return visibility joins to add to SQL
-    *
-    * @deprecated 9.4.0
-    *
-    * @return string joins to add
-    **/
-   static function addVisibilityJoins() {
-      global $DB;
-
-      Toolbox::deprecated('Use getVisibilityCriteria');
-
-      //get and clean criteria
-      $criteria = self::getVisibilityCriteria();
-      unset($criteria['WHERE']);
-      $criteria['FROM'] = self::getTable();
-
-      $it = new \DBmysqlIterator(null);
-      $it->buildQuery($criteria);
-      $sql = $it->getSql();
-      $sql = str_replace(
-         'SELECT * FROM '.$DB->quoteName(self::getTable()).' ',
-         '',
-         $sql
-      );
-      return $sql;
-   }
-
-   /**
-    * Return visibility to add to SQL
-    *
-    * @deprecated 9.4.0
-    *
-    * @return string joins to add
-    **/
-   static function addVisibility() {
-      Toolbox::deprecated('Use getVisibilityCriteria');
-
-      //get and clean criteria
-      $criteria = self::getVisibilityCriteria();
-      unset($criteria['LEFT JOIN']);
-      $criteria['FROM'] = self::getTable();
-
-      $it = new \DBmysqlIterator(null);
-      $it->buildQuery($criteria);
-      $sql = $it->getSql();
-      $sql = preg_replace('/.*WHERE /', '', $sql);
-
-      return $sql;
-   }
 
    /**
     * Return visibility joins to add to DBIterator parameters

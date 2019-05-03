@@ -646,27 +646,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
 
-   public function getProfileJoinSql() {
-
-      Toolbox::deprecated('Use getProfileJoinCriteria');
-
-      $query = parent::getProfileJoinSql();
-
-      if ($this->isPrivate()) {
-         $query .= " INNER JOIN `glpi_profiles`
-                     ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
-                         AND `glpi_profiles`.`interface` = 'central')
-                     INNER JOIN `glpi_profilerights`
-                     ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`
-                         AND `glpi_profilerights`.`name` = 'followup'
-                         AND `glpi_profilerights`.`rights` & ".
-                            ITILFollowup::SEEPRIVATE.") ";
-
-      }
-      return $query;
-   }
-
-
    public function getProfileJoinCriteria() {
       $criteria = parent::getProfileJoinCriteria();
 
