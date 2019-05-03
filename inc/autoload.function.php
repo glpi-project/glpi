@@ -286,19 +286,9 @@ function glpi_autoload($classname) {
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
       $item     = str_replace('\\', '/', strtolower($plug['class']));
       // Is the plugin active?
-      // Command line usage of GLPI : need to do a real check plugin activation
-      if (isCommandLine()) {
-         $plugin = new Plugin();
-         if (count($plugin->find(['directory' => $plugname, 'state' => Plugin::ACTIVATED])) == 0) {
-            // Plugin does not exists or not activated
-            return false;
-         }
-      } else {
-         // Standard use of GLPI
-         if (!Plugin::isPluginLoaded($plugname)) {
-            // Plugin not activated
-            return false;
-         }
+      if (!Plugin::isPluginLoaded($plugname)) {
+         // Plugin not activated
+         return false;
       }
    } else {
       $item = strtolower($classname);
