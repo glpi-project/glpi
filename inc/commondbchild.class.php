@@ -52,42 +52,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
    static public $log_history_lock   = Log::HISTORY_LOCK_SUBITEM;
    static public $log_history_unlock = Log::HISTORY_UNLOCK_SUBITEM;
 
-   /**
-    * @since 0.84
-    *
-    * @deprecated 9.4
-    *
-    * @param $itemtype
-    * @param $items_id
-    *
-    * @return string
-   **/
-   static function getSQLRequestToSearchForItem($itemtype, $items_id) {
-      Toolbox::deprecated('Use getSQLCriteriaToSearchForItem');
-
-      $fields     = ['`'.static::getIndexName().'`'];
-
-      // Check item 1 type
-      $condition_id = "`".static::$items_id."` = '$items_id'";
-      $fields[]     = "`".static::$items_id."` as items_id";
-      if (preg_match('/^itemtype/', static::$itemtype)) {
-         $fields[]  = "`".static::$itemtype."` AS itemtype";
-         $condition = "($condition_id AND `".static::$itemtype."` = '$itemtype')";
-      } else {
-         $fields[] = "'".static::$itemtype."' AS itemtype";
-         if (($itemtype ==  static::$itemtype)
-             || is_subclass_of($itemtype, static::$itemtype)) {
-            $condition = $condition_id;
-         }
-      }
-      if (isset($condition)) {
-         return "SELECT ".implode(', ', $fields)."
-                 FROM `".static::getTable()."`
-                 WHERE $condition";
-      }
-      return '';
-   }
-
 
    /**
     * Get request cirteria to search for an item
