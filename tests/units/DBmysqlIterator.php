@@ -199,52 +199,6 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['FIELDS' => ['MAX' => 'bar AS cpt']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT MAX(`bar`) AS cpt FROM `foo`');
-
-      // Backward compability tests
-      $this->exception(
-         function() {
-            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar', 'baz']]);
-            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
-
-      $this->exception(
-         function() {
-            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar'], 'FIELDS' => ['baz']]);
-            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
-
-      $this->exception(
-         function() {
-            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => ['baz']]);
-            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
-
-      $this->exception(
-         function() {
-            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar'], 'FIELDS' => 'baz']);
-            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
-
-      $this->exception(
-         function() {
-            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => 'baz']);
-            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
    }
 
 
@@ -320,16 +274,6 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['FIELDS' => ['foo.bar', 'COUNT' => ['foo.baz', 'foo.qux']]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.`bar`, COUNT(`foo`.`baz`), COUNT(`foo`.`qux`) FROM `foo`');
-
-      // Backward compability tests
-      $this->exception(
-         function() {
-            $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT DISTINCT' => 'bar']);
-            $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
    }
 
    public function testCountDistinct() {

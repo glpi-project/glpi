@@ -50,7 +50,10 @@ The present file will list all changes made to the project; according to the
 - `CommonDBRelation::getSQLRequestToSearchForItem()`
 - `Project::addVisibility()`
 - `Project::addVisibilityJoins()`
-
+- `Plugin::hasBeenInit()`
+- 'SELECT DISTINCT' and 'DISTINCT FIELDS' criteria in `DBmysqlIterator::buildQuery()`
+- `CommonDBTM::getTablesOf()`
+- `CommonDBTM::getForeignKeyFieldsOf()`
 
 ## [9.4.2] unreleased
 
