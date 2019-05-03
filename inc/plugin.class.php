@@ -134,20 +134,6 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * Are plugin initialized (Plugin::Init() called)
-    *
-    * @return boolean
-    *
-    * @deprecated 9.4.1
-    */
-   public static function hasBeenInit() {
-      Toolbox::deprecated();
-
-      return self::$plugins_init;
-   }
-
-
-   /**
     * Init a plugin including setup.php file
     * launching plugin_init_NAME function  after checking compatibility
     *

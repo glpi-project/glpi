@@ -175,20 +175,6 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Get known tables
-    *
-    * @return array
-    *
-    * @deprecated 9.4.2
-    */
-   public static function getTablesOf() {
-      Toolbox::deprecated();
-
-      return self::$tables_of;
-   }
-
-
-   /**
     * Return the table used to store this object
     *
     * @param string $classname Force class (to avoid late_binding on inheritance)
@@ -221,20 +207,6 @@ class CommonDBTM extends CommonGLPI {
    **/
    static function forceTable($table) {
       self::$tables_of[get_called_class()] = $table;
-   }
-
-
-   /**
-    * Get known foreign keys
-    *
-    * @return array
-    *
-    * @deprecated 9.4.2
-    */
-   public static function getForeignKeyFieldsOf() {
-      Toolbox::deprecated();
-
-      return self::$foreign_key_fields_of;
    }
 
 
@@ -461,8 +433,6 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Retrieve all items from the database
-    *
-    * @since 9.4 string condition is deprecated
     *
     * @param array        $condition condition used to search if needed (empty get all) (default '')
     * @param array|string $order     order field if needed (default '')
