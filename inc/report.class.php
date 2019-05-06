@@ -313,72 +313,144 @@ class Report extends CommonGLPI{
 
 
    /**
-    * @since 0.84
+    * Get report informations
     *
-    * @param $networkport_prefix
-    * @param $networkport_crit
-    * @param $where_crit
-    * @param $order                 (default '')
-    * @param $field                 (default '')
-    * @param $extra                 (default '')
+    * @param string $from      From table
+    * @param array  $joincrit  Join criteria
+    * @param array  $where     Where clause
+    * @param array  $select    Extra select clause
+    * @param array  $leftjoin  Extra LEFT JOIN clause
+    * @param array  $innerjoin Extra INNER JOIN clause
+    * @param array  $order     Order clause
+    * @param string $extra     ?
+    *
+    * @return void
+    *
+    * @since 10.0.0
    **/
-   static function reportForNetworkInformations($networkport_prefix, $networkport_crit,
-                                                $where_crit, $order = '', $field = '', $extra = '') {
+   static function reportForNetworkInformations(
+      $from,
+      array $joincrit,
+      array $where = [],
+      array $select = [],
+      array $leftjoin = [],
+      array $innerjoin = [],
+      array $order = [],
+      $extra = ''
+   ) {
       global $DB;
 
       // This SQL request matches the NetworkPort, then its NetworkName and IPAddreses. It also
       //      match opposite NetworkPort, then its NetworkName and IPAddresses.
       // Results are groupes by NetworkPort. Then all IPs are concatenated by comma as separator.
-      $query = "SELECT $field
-                       PORT_1.`itemtype` AS itemtype_1,
-                       PORT_1.`items_id` AS items_id_1,
-                       PORT_1.`id` AS id_1,
-                       PORT_1.`name` AS port_1,
-                       PORT_1.`mac` AS mac_1,
-                       PORT_1.`logical_number` AS logical_1,
-                       GROUP_CONCAT(ADDR_1.`name` SEPARATOR ',') AS ip_1,
-                       PORT_2.`itemtype` AS itemtype_2,
-                       PORT_2.`items_id` AS items_id_2,
-                       PORT_2.`id` AS id_2,
-                       PORT_2.`name` AS port_2,
-                       PORT_2.`mac` AS mac_2,
-                       GROUP_CONCAT(ADDR_2.`name` SEPARATOR ',') AS ip_2
-                FROM $networkport_prefix
-                INNER JOIN `glpi_networkports` AS PORT_1
-                    ON ($networkport_crit
-                        AND PORT_1.`is_deleted` = 0)
-                LEFT JOIN `glpi_networknames` AS NAME_1
-                    ON (NAME_1.`itemtype` = 'NetworkPort'
-                        AND PORT_1.`id` = NAME_1.`items_id`
-                        AND NAME_1.`is_deleted` = 0)
-                LEFT JOIN `glpi_ipaddresses` AS ADDR_1
-                    ON (ADDR_1.`itemtype` = 'NetworkName'
-                        AND NAME_1.`id` = ADDR_1.`items_id`
-                        AND ADDR_1.`is_deleted` = 0)
-                LEFT JOIN `glpi_networkports_networkports` AS LINK
-                    ON (LINK.`networkports_id_1` = PORT_1.`id`
-                        OR LINK.`networkports_id_2` = PORT_1.`id`)
-                LEFT JOIN `glpi_networkports` AS PORT_2
-                    ON (PORT_2.`id` = IF(LINK.`networkports_id_1` = PORT_1.`id`,
-                                         LINK.`networkports_id_2`,
-                                         LINK.`networkports_id_1`))
-                LEFT JOIN `glpi_networknames` AS NAME_2
-                    ON (NAME_2.`itemtype` = 'NetworkPort'
-                        AND PORT_2.`id` = NAME_2.`items_id`
-                        AND NAME_2.`is_deleted` = 0)
-                LEFT JOIN `glpi_ipaddresses` AS ADDR_2
-                    ON (ADDR_2.`itemtype` = 'NetworkName'
-                        AND NAME_2.`id` = ADDR_2.`items_id`
-                        AND ADDR_2.`is_deleted` = 0)
-                WHERE $where_crit
-                GROUP BY PORT_1.`id`";
 
-      if (!empty($order)) {
-         $query .= "ORDER BY $order";
+      if (count($joincrit) === 3) {
+         $andcrit = array_pop($joincrit);
+         $andcrit['AND']['PORT_1.is_deleted'] = 0;
+         $joincrit[] = $andcrit;
+      } else {
+         $joincrit[]['AND']['PORT_1.is_deleted'] = 0;
       }
 
-      $result = $DB->request($query);
-      if ($result->numrows() > 0) {
+      $criteria = [
+         'SELECT'       => array_merge([
+            'PORT_1.`itemtype` AS itemtype_1',
+            'PORT_1.`items_id` AS items_id_1',
+            'PORT_1.`id` AS id_1',
+            'PORT_1.`name` AS port_1',
+            'PORT_1.`mac` AS mac_1',
+            'PORT_1.`logical_number` AS logical_1',
+            new QueryExpression('GROUP_CONCAT(' . $DB->quoteName('ADDR_1.name') . ' SEPARATOR ' . $DB->quote(',') . ') AS ' . $DB->quoteName('ip_1')),
+            'PORT_2.`itemtype` AS itemtype_2',
+            'PORT_2.`items_id` AS items_id_2',
+            'PORT_2.`id` AS id_2',
+            'PORT_2.`name` AS port_2',
+            'PORT_2.`mac` AS mac_2',
+            new QueryExpression('GROUP_CONCAT(' . $DB->quoteName('ADDR_2.name') .' SEPARATOR ' . $DB->quote(',') . ') AS ' . $DB->quoteName('ip_2'))
+         ], $select),
+         'FROM'         => $from,
+         'INNER JOIN'   => $innerjoin + [
+            'glpi_networkports AS PORT_1' => [
+               'ON' => $joincrit
+            ]
+         ],
+         'LEFT JOIN'    => [
+            'glpi_networknames AS NAME_1' => [
+               'ON'  => [
+                  'PORT_1' => 'id',
+                  'NAME_1' => 'items_id', [
+                     'AND'    => [
+                        'NAME_1.itemtype'    => 'NetworkPort',
+                        'NAME_1.is_deleted'  => 0
+                     ]
+                  ]
+               ]
+            ],
+            'glpi_ipaddresses AS ADDR_1'  => [
+               'ON'  => [
+                  'NAME_1' => 'id',
+                  'ADDR_1' => 'items_id', [
+                     'AND'    => [
+                        'ADDR_1.itemtype'    => 'NetworkName',
+                        'ADDR_1.is_deleted'  => 0
+                     ]
+                  ]
+               ]
+            ],
+            'glpi_networkports_networkports AS LINK'  => [
+               'ON'  =>[
+                  'LINK'   => 'networkports_id_1',
+                  'PORT_1' => 'id', [
+                     'OR'     => [
+                        'LINK.networkports_id_2'   => $DB->quoteName('PORT_1.id')
+                     ]
+                  ]
+               ]
+            ],
+            'glpi_networkports AS PORT_2' => [
+               'ON'  => [
+                  'PORT_2' => 'id',
+                  new QueryExpression(
+                     'IF(' . $DB->quoteName('LINK.networkports_id_1') . ' = ' . $DB->quoteName('PORT_1.id') . ', ' .
+                        $DB->quoteName('LINK.networkports_id_2') . ', ' .
+                        $DB->quoteName('LINK.networkports_id_1') . ')'
+                  )
+               ]
+            ],
+            'glpi_networknames AS NAME_2' => [
+               'ON'  => [
+                  'PORT_2' => 'id',
+                  'NAME_2' => 'items_id', [
+                     'AND'    => [
+                        'NAME_2.itemtype'     => 'NetworkPort',
+                        'NAME_2.is_deleted'   => 0
+                     ]
+                  ]
+               ]
+            ],
+            'glpi_ipaddresses AS ADDR_2'  => [
+               'ON'  => [
+                  'NAME_2' => 'id',
+                  'ADDR_2' => 'items_id', [
+                     'AND'    => [
+                        'ADDR_2.itemtype'    => 'NetworkName',
+                        'ADDR_2.is_deleted'  => 0
+                     ]
+                  ]
+               ]
+            ]
+         ] + $leftjoin,
+         'WHERE'        => $where,
+         'GROUPBY'      => ['PORT_1.id']
+      ];
+
+      if (count($order)) {
+         $criteria['ORDER'] = $order;
+      }
+
+      $iterator = $DB->request($criteria);
+
+      if (count($iterator)) {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr>";
          if (!empty($extra)) {
@@ -405,7 +477,7 @@ class Report extends CommonGLPI{
          echo "<th>".__('Device name')."</th>";
          echo "</tr>\n";
 
-         foreach ($result as $line) {
+         while ($line = $iterator->next()) {
             echo "<tr class='tab_bg_1'>";
 
             // To ensure that the NetworkEquipment remain the first item, we test its type
