@@ -75,14 +75,10 @@ class Dropdown {
     *
     * @return boolean : false if error and random id if OK
     *
-    * @since 9.4.0 Usage of string in condition option is deprecated
+    * @since 9.5.0 Usage of string in condition option is removed
    **/
    static function show($itemtype, $options = []) {
       global $DB, $CFG_GLPI;
-
-      if (array_key_exists('condition', $options) && !is_array($options['condition'])) {
-         Toolbox::deprecated('Using a string in condition option is deprecated.');
-      }
 
       if ($itemtype && !($item = getItemForItemtype($itemtype))) {
          return false;
@@ -2325,12 +2321,7 @@ class Dropdown {
       }
 
       if (isset($post['condition']) && ($post['condition'] != '')) {
-         if (!is_array($post['condition']) && $post['condition'] != '') {
-            Toolbox::deprecated('Please no longer use raw SQL for conditions!');
-            $where[] = new \QueryExpression($post['condition']);
-         } else if (count($post['condition'])) {
-            $where = array_merge($where, $post['condition']);
-         }
+         $where = array_merge($where, $post['condition']);
       }
 
       $one_item = -1;

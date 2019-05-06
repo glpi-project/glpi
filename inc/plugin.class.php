@@ -132,7 +132,6 @@ class Plugin extends CommonDBTM {
       }
    }
 
-   /**
     * Init a plugin including setup.php file
     * launching plugin_init_NAME function  after checking compatibility
     *
