@@ -336,7 +336,7 @@ class MySql extends \GLPITestCase {
    public function testListIndexes() {
        $this
          ->array($this->db->listIndexes('glpi_groups_tickets'))
-         ->isIdenticalTo([
+         ->isEqualTo([
             'PRIMARY' => [
                0 => 'id',
             ],
@@ -353,7 +353,7 @@ class MySql extends \GLPITestCase {
 
        $this
           ->array($this->db->listIndexes('glpi_users'))
-         ->isIdenticalTo([
+         ->isEqualTo([
             'PRIMARY' => [
                0 => 'id'
             ],
