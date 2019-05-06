@@ -2513,16 +2513,18 @@ class Config extends CommonDBTM {
    /**
     * Check Write Access to needed directories
     *
-    * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
+    * @param boolean $fordebug      Display for debug (no html, no gettext required)
+    * @param boolean $hide_success  Hide success messages (display only warnings/errors)
     *
     * @return integer 2 : creation error 1 : delete error 0: OK
    **/
-   static function checkWriteAccessToDirs($fordebug = false) {
+   static function checkWriteAccessToDirs($fordebug = false, $hide_success = false) {
       global $CFG_GLPI;
 
       // Only write test for GLPI_LOG as SElinux prevent removing log file.
+      $msg_heading = '';
       if (!$fordebug) {
-         echo "<tr class='tab_bg_1'><td class='b left'>".
+         $msg_heading = "<tr class='tab_bg_1'><td class='b left'>".
                __('Checking write permissions for log files')."</td>";
       }
 
@@ -2537,24 +2539,26 @@ class Config extends CommonDBTM {
          //empty catch
       }
 
-      if ($can_write_logs) {
-         if ($fordebug) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK')."\">".
-                   GLPI_LOG_DIR." : OK\n";
-         } else {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                       __s('A file was created - Perfect!')."\" title=\"".
-                       __s('A file was created - Perfect!')."\"></td></tr>";
-         }
-
-      } else {
+      if (!$can_write_logs) {
          if ($fordebug) {
             echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
                   sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."\n";
          } else {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+            echo $msg_heading.
+                 "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
                  "<p class='red'>".__('The file could not be created.')."</p>".
                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
+         }
+
+      } else if (!$hide_success) {
+         if ($fordebug) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK')."\">".
+                   GLPI_LOG_DIR." : OK\n";
+         } else {
+            echo $msg_heading.
+               "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                       __s('A file was created - Perfect!')."\" title=\"".
+                       __s('A file was created - Perfect!')."\"></td></tr>";
          }
       }
 
@@ -2565,7 +2569,7 @@ class Config extends CommonDBTM {
          $error = 0;
          foreach ($dir_to_check as $dir => $message) {
             if (!$fordebug) {
-               echo "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
+               $msg_heading = "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
             }
             $tmperror = Toolbox::testWriteAccessToDirectory($dir);
 
@@ -2582,18 +2586,20 @@ class Config extends CommonDBTM {
                         sprintf(__('Check permissions to the directory: %s'), $dir).
                         " ".$errors[$tmperror]."\n";
                } else {
-                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'><p class='red'>".
+                  echo $msg_heading.
+                     "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'><p class='red'>".
                      $errors[$tmperror]."</p> ".
                      sprintf(__('Check permissions to the directory: %s'), $dir).
                      "'</td></tr>";
                }
                $error = 2;
-            } else {
+            } else if (!$hide_success) {
                if ($fordebug) {
                   echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK').
                      "\">$dir : OK\n";
                } else {
-                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                  echo $msg_heading.
+                     "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
                            __s('A file and a directory have be created and deleted - Perfect!')."\"
                            title=\"".
                            __s('A file and a directory have be created and deleted - Perfect!')."\">".
@@ -2637,7 +2643,7 @@ class Config extends CommonDBTM {
          if ($fic = fopen($uri.'/index.php?skipCheckWriteAccessToDirs=1', 'r', false, $context)) {
             fclose($fic);
             if (!$fordebug) {
-               echo "<tr class='tab_bg_1'><td class='b left'>".
+               $msg_heading = "<tr class='tab_bg_1'><td class='b left'>".
                   __('Web access to files directory is protected')."</td>";
             }
             if ($fic = fopen($uri.'/files/_log/php-errors.log', 'r', false, $context)) {
@@ -2647,18 +2653,20 @@ class Config extends CommonDBTM {
                         __('Web access to the files directory should not be allowed')."\n".
                         __('Check the .htaccess file and the web server configuration.')."\n";
                } else {
-                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                  echo $msg_heading.
+                     "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
                      "<p class='red'>".__('Web access to the files directory should not be allowed')."<br/>".
                      __('Check the .htaccess file and the web server configuration.')."</p></td></tr>";
                }
                $error = 1;
-            } else {
+            } else if (!$hide_success) {
                if ($fordebug) {
                   echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
                         __s('Web access to files directory is protected')."\">".
                         __s('Web access to files directory is protected')." : OK\n";
                } else {
-                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                  echo $msg_heading.
+                     "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
                         __s('Web access to files directory is protected')."\" title=\"".
                         __s('Web access to files directory is protected')."\"></td></tr>";
                }

@@ -197,12 +197,24 @@ class Central extends CommonGLPI {
          $warnings[] = __('SQL replica: read only');
       }
 
-      if (count($warnings)) {
+      $check_write_warnings = '';
+      if (Session::haveRight("config", UPDATE)) {
+         ob_start();
+         Config::checkWriteAccessToDirs(false, true);
+         $check_write_warnings = ob_get_clean();
+      }
+
+      if (count($warnings) || $check_write_warnings != '') {
          echo "<tr><th colspan='2'>";
          echo "<div class='warning'>";
          echo "<i class='fa fa-exclamation-triangle fa-5x'></i>";
-         echo "<ul><li>" . implode('</li><li>', $warnings) . "</li></ul>";
-         echo "<div class='sep'></div>";
+         if ($check_write_warnings) {
+            echo "<ul><li>" . implode('</li><li>', $warnings) . "</li></ul>";
+            echo "<div class='sep'></div>";
+         }
+         if ($check_write_warnings != '') {
+            echo '<table class="tab_cadre_fixe">' . $check_write_warnings . '</table>';
+         }
          echo "</div>";
          echo "</th></tr>";
       }
