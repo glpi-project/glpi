@@ -156,20 +156,18 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
 
    protected function interact(InputInterface $input, OutputInterface $output) {
 
-      $options = [
-         'db-name'     => __('Database name:'), // Required
-         'db-user'     => __('Database user:'), // Required
-         'db-password' => __('Database password:'), // Prompt if null (passed without value)
+      $questions = [
+         'db-name'     => new Question(__('Database name:'), ''), // Required
+         'db-user'     => new Question(__('Database user:'), ''), // Required
+         'db-password' => new Question(__('Database password:'), ''), // Prompt if null (passed without value)
       ];
-      foreach ($options as $name => $label) {
+      $questions['db-password']->setHidden(true); // Make password input hidden
+
+      foreach ($questions as $name => $question) {
          if (null === $input->getOption($name)) {
             /** @var QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
-            $value = $question_helper->ask(
-               $input,
-               $output,
-               new Question($label, '')
-            );
+            $value = $question_helper->ask($input, $output, $question);
             $input->setOption($name, $value);
          }
       }
