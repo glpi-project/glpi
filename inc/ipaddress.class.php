@@ -1201,7 +1201,7 @@ class IPAddress extends CommonDBChild {
             new \QueryExpression('NULL AS item_id'),
             new \QueryExpression("NULL AS item_type")
          ]);
-         $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!', 'NetworkName'];
+         $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
          $queries[] = $criteria;
 
          $union = new \QueryUnion($queries);
