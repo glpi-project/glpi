@@ -339,6 +339,7 @@ class SavedSearch_Alert extends CommonDBChild {
                   $auth->user = $user;
                   $auth->auth_succeded = true;
                   Session::init($auth);
+                  $_SESSION['glpinotification_to_myself'] = true; // Force sending of notification
                   $cli_logged = $savedsearch->fields['users_id'];
                }
 
