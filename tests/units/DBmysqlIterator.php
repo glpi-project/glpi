@@ -429,6 +429,21 @@ class DBmysqlIterator extends DbTestCase {
          'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) AS `t2` ON (`t2`.`id` = `foo`.`fk`)'
       );
 
+      $it = $this->it->execute(
+         'foo', [
+            'LEFT JOIN' => [
+               'bar' => [
+                  'ON'  => [
+                     'foo' => 'id',
+                     new \QueryExpression('IF(something, do, dont)')
+                  ]
+               ]
+            ]
+         ]
+      );
+      $this->string($it->getSql())->isIdenticalTo(
+         'SELECT * FROM `foo` LEFT JOIN `bar` ON (`foo`.`id` = IF(something, do, dont))'
+      );
    }
 
    public function testHaving() {
