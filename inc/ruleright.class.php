@@ -339,7 +339,7 @@ class RuleRight extends Rule {
       $actions['groups_id']['name']                         = __('Default group');
       $actions['groups_id']['linkfield']                    = 'groups_id';
       $actions['groups_id']['type']                         = 'dropdown';
-      $actions['groups_id']['condition']                    = "`is_usergroup`='1'";
+      $actions['groups_id']['condition']                    = ['is_usergroup' => 1];
 
       $actions['_profiles_id_default']['table']             = 'glpi_profiles';
       $actions['_profiles_id_default']['field']             = 'name';
@@ -381,7 +381,8 @@ class RuleRight extends Rule {
    function addSpecificCriteriasToArray(&$criteria) {
 
       $criteria['ldap'] = __('LDAP criteria');
-      foreach (getAllDatasFromTable('glpi_rulerightparameters', [], true) as $data) {
+      $all = getAllDataFromTable('glpi_rulerightparameters', [], true);
+      foreach ($all as $data) {
          $criteria[$data["value"]]['name']      = $data["name"];
          $criteria[$data["value"]]['field']     = $data["value"];
          $criteria[$data["value"]]['linkfield'] = '';

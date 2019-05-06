@@ -562,8 +562,6 @@ class Software extends CommonDBTM {
          'datatype'           => 'bool'
       ];
 
-      $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
-
       $tab[] = [
          'id'                 => '80',
          'table'              => 'glpi_entities',
@@ -588,15 +586,18 @@ class Software extends CommonDBTM {
             'beforejoin' => [
                'table'      => 'glpi_softwareversions',
                'joinparams' => ['jointype' => 'child'],
-               'condition'  => "AND NEWTABLE.`is_deleted_computer` = 0
-                                AND NEWTABLE.`is_deleted` = 0
-                                AND NEWTABLE.`is_template_computer` = 0"
+               'condition'  => ['NEWTABLE.is_deleted_computer' => 0,
+                                'NEWTABLE.is_deleted'          => 0,
+                                'NEWTABLE.is_template_computer' => 0]
             ],
          ]
       ];
 
       if (Session::getLoginUserID()) {
-         $newtab['joinparams']['beforejoin']['condition'] .= getEntitiesRestrictRequest(' AND', 'NEWTABLE');
+         $newtab['joinparams']['beforejoin']['condition'] = array_merge(
+            $newtab['joinparams']['beforejoin']['condition'],
+            getEntitiesRestrictCriteria('NEWTABLE')
+         );
       }
       $tab[] = $newtab;
 
@@ -608,6 +609,8 @@ class Software extends CommonDBTM {
          'datatype'           => 'bool',
          'massiveaction'      => false
       ];
+
+      $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
 
       $name = _n('Version', 'Versions', Session::getPluralNumber());
       $tab[] = [
@@ -1057,7 +1060,7 @@ class Software extends CommonDBTM {
                );
 
                $DB->update(
-                  'glpi_computers_softwareversions', [
+                  'glpi_softwarelicenses', [
                      'softwareversions_id_use' => $dest['id']
                   ], [
                      'softwareversions_id_use' => $from['id']
@@ -1128,5 +1131,11 @@ class Software extends CommonDBTM {
       return $i == ($nb+1);
    }
 
+
+   static function getDefaultSearchRequest() {
+      return [
+         'sort' => 0
+      ];
+   }
 
 }

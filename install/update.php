@@ -47,7 +47,7 @@ $GLPI = new GLPI();
 $GLPI->initLogger();
 
 $DB = \Glpi\DatabaseFactory::create();
-$DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
+$DB->disableTableCaching(); //prevents issues on table/fieldExists upgrading from old versions
 
 $update = new Update($DB);
 $update->initSession();
@@ -109,7 +109,7 @@ echo Html::script('public/lib/jquery-migrate/jquery-migrate.js');
 echo Html::script('public/lib/jquery-ui-dist/jquery-ui.js');
 // CSS
 echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen' >";
-echo Html::css('public/lib/jquery-ui-dist/jquery-ui.css');
+echo Html::css('public/lib/jquery-ui/jquery-ui.css');
 echo "</head>";
 echo "<body>";
 echo "<div id='principal'>";

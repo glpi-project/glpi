@@ -171,20 +171,6 @@ class MySql extends AbstractDatabase
         return (int)$this->dbh->lastInsertID();
     }
 
-    public function listTables(string $table = 'glpi_%', array $where = []): DBmysqlIterator
-    {
-        $iterator = $this->request([
-         'SELECT' => 'TABLE_NAME',
-         'FROM'   => 'information_schema.TABLES',
-         'WHERE'  => [
-            'TABLE_SCHEMA' => $this->dbdefault,
-            'TABLE_TYPE'   => 'BASE TABLE',
-            'TABLE_NAME'   => ['LIKE', $table]
-         ] + $where
-        ]);
-        return $iterator;
-    }
-
    /**
     * Returns tables using "MyIsam" engine.
     *
@@ -194,26 +180,6 @@ class MySql extends AbstractDatabase
     {
         $iterator = $this->listTables('glpi_%', ['engine' => 'MyIsam']);
         return $iterator;
-    }
-
-    public function listFields(string $table, bool $usecache = true)
-    {
-        static $cache = [];
-        if (!$this->cache_disabled && $usecache && isset($cache[$table])) {
-            return $cache[$table];
-        }
-        $result = $this->rawQuery("SHOW COLUMNS FROM `$table`");
-        if ($result) {
-            if ($this->numrows($result) > 0) {
-                $cache[$table] = [];
-                while ($data = $this->fetchAssoc($result)) {
-                    $cache[$table][$data["Field"]] = $data;
-                }
-                return $cache[$table];
-            }
-            return [];
-        }
-        return false;
     }
 
     /**
@@ -445,7 +411,7 @@ class MySql extends AbstractDatabase
             'FROM'        => 'INFORMATION_SCHEMA.COLUMNS',
             'WHERE'       => [
                'INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA'  => $DB->dbdefault,
-               'INFORMATION_SCHEMA.COLUMNS.COLUMN_TYPE'   => ['DATETIME']
+               'INFORMATION_SCHEMA.COLUMNS.DATA_TYPE'     => ['DATETIME']
             ]
         ])->next();
         return (int)$result['cpt'];

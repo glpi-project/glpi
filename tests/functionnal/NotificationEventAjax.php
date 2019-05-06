@@ -94,7 +94,7 @@ class NotificationEventAjax extends DbTestCase {
       )->isGreaterThan(0);
 
       //event has been raised; it is in the queue!
-      $queue = getAllDatasFromTable('glpi_queuednotifications');
+      $queue = getAllDataFromTable('glpi_queuednotifications');
 
       //no ajax notification configured per default
       $this->array($queue)->hasSize(0);
@@ -135,7 +135,7 @@ class NotificationEventAjax extends DbTestCase {
       )->isGreaterThan(0);
 
       //event has been raised; it is in the queue!
-      $queue = getAllDatasFromTable('glpi_queuednotifications');
+      $queue = getAllDataFromTable('glpi_queuednotifications');
 
       //no ajax notification configured per default
       $this->array($queue)->hasSize(1);

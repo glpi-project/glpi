@@ -751,7 +751,7 @@ function update92to93() {
    /** /Add Item_Device* display preferences */
 
    // upgrade for users multi-domains
-   if (!isIndex('glpi_users', 'unicityloginauth')) {
+   if (!$DB->indexExists('glpi_users', [], 'unicityloginauth')) {
       $migration->dropKey("glpi_users", "unicity");
       $migration->addKey(
          'glpi_users',

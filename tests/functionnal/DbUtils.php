@@ -399,7 +399,7 @@ class DbUtils extends DbTestCase {
          ->if($this->newTestedInstance)
          ->then
             ->array($this->testedInstance->getAllDataFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->hasSize(1)
-            ->array($data = $this->testedInstance->getAllDataFromTable('glpi_configs', [], false, 'name'))->isNotEmpty();
+            ->array($data = $this->testedInstance->getAllDataFromTable('glpi_configs', ['ORDER' => 'name']))->isNotEmpty();
       $previousArrayName = "";
       foreach ($data as $key => $array) {
          $this->boolean($previousArrayName <= $previousArrayName = $array['name'])->isTrue();
@@ -408,7 +408,7 @@ class DbUtils extends DbTestCase {
       //TODO: test with cache === true
 
       //keep testing old method from db.function
-      $data = getAllDatasFromTable('glpi_configs');
+      $data = getAllDataFromTable('glpi_configs');
       $this->array($data)
          ->size->isGreaterThan(100);
       foreach ($data as $key => $array) {
@@ -416,48 +416,15 @@ class DbUtils extends DbTestCase {
             ->variable['id']->isEqualTo($key);
       }
 
-      $data = getAllDatasFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']);
+      $data = getAllDataFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']);
       $this->array($data)->hasSize(1);
 
-      $data = getAllDatasFromTable('glpi_configs', [], false, 'name');
+      $data = getAllDataFromTable('glpi_configs', ['ORDER' => 'name']);
       $this->array($data)->isNotEmpty();
       $previousArrayName = "";
       foreach ($data as $key => $array) {
          $this->boolean($previousArrayName <= $previousArrayName = $array['name'])->isTrue();
       }
-   }
-
-   public function testIsIndex() {
-      $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->boolean($this->testedInstance->isIndex('glpi_configs', 'fakeField'))->isFalse()
-            ->boolean($this->testedInstance->isIndex('glpi_configs', 'name'))->isFalse()
-            ->boolean($this->testedInstance->isIndex('glpi_configs', 'value'))->isFalse()
-            ->boolean($this->testedInstance->isIndex('glpi_users', 'locations_id'))->isTrue()
-            ->boolean($this->testedInstance->isIndex('glpi_users', 'unicityloginauth'))->isTrue()
-         ->when(
-            function () {
-               $this->boolean($this->testedInstance->isIndex('fakeTable', 'id'))->isFalse();
-            }
-         )->error
-            ->withType(E_USER_WARNING)
-            ->exists();
-
-      //keep testing old method from db.function
-      $this->boolean(isIndex('glpi_configs', 'fakeField'))->isFalse();
-      $this->boolean(isIndex('glpi_configs', 'name'))->isFalse();
-      $this->boolean(isIndex('glpi_users', 'locations_id'))->isTrue();
-      $this->boolean(isIndex('glpi_users', 'unicityloginauth'))->isTrue();
-
-      $this->when(
-         function () {
-            $this->boolean(isIndex('fakeTable', 'id'))->isFalse();
-         }
-      )->error
-         ->withType(E_USER_WARNING)
-         ->exists();
-
    }
 
    public function testGetEntityRestrict() {

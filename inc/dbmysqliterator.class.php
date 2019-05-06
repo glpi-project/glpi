@@ -154,7 +154,6 @@ class DBmysqlIterator implements Iterator, Countable {
 
          // Check field, orderby, limit, start in criterias
          $field    = "";
-         $dfield   = "";
          $distinct = false;
          $orderby  = null;
          $limit    = 0;
@@ -170,12 +169,6 @@ class DBmysqlIterator implements Iterator, Countable {
                   case 'SELECT' :
                   case 'FIELDS' :
                      $field = $val;
-                     unset($crit[$key]);
-                     break;
-
-                  case 'SELECT DISTINCT' :
-                  case 'DISTINCT FIELDS' :
-                     $dfield = $val;
                      unset($crit[$key]);
                      break;
 
@@ -236,30 +229,6 @@ class DBmysqlIterator implements Iterator, Countable {
          $this->sql = 'SELECT ';
          $first = true;
 
-         // Backward compatibility for "SELECT DISTINCT" and "DISTINCT FIELDS"
-         if (!empty($dfield)) {
-            Toolbox::logWarning('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
-
-            // Merge $field and $dfield
-            if (empty($field)) {
-               $field = $dfield;
-            } else {
-               if (is_array($field) && is_array($dfield)) {
-                  $field = array_merge($dfield, $field);
-               } else if (is_array($field) && !is_array($dfield)) {
-                  array_unshift($field, $dfield);
-               } else if (!is_array($field) && is_array($dfield)) {
-                  $dfield[] = $field;
-                  $field = $dfield;
-               } else { // both are strings
-                  $field = [$dfield, $field];
-               }
-            }
-
-            $distinct = true;
-            unset($dfield);
-         }
-
          // SELECT field list
          if ($count) {
             $this->sql .= 'COUNT(';
@@ -271,7 +240,7 @@ class DBmysqlIterator implements Iterator, Countable {
             } else {
                $this->sql .= "*";
             }
-            $this->sql .= ") AS $count";
+            $this->sql .= ") AS " . $this->conn->quoteName($count);
             $first = false;
          }
          if (!$count || $count && is_array($field)) {
@@ -497,7 +466,7 @@ class DBmysqlIterator implements Iterator, Countable {
       $names = preg_split('/ AS /i', $f);
       $expr  = "$t(".$this->handleFields(0, $names[0])."$suffix)";
       if (isset($names[1])) {
-         $expr .= " AS {$names[1]}";
+         $expr .= " AS " . $this->conn->quoteName($names[1]);
       }
 
       return $expr;

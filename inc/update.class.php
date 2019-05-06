@@ -335,8 +335,9 @@ class Update extends CommonGLPI {
             update941to942();
 
          case "9.4.2":
+            include_once "{$updir}update_942_943.php";
+            update942to943();
          case "9.4.3":
-         case "9.4.4":
          case "9.4.5":
          case "9.4.6":
          case "9.4.7":
@@ -348,6 +349,15 @@ class Update extends CommonGLPI {
 
          case GLPI_PREVER:
          case "9.5.0":
+         case "9.5.1":
+         case "9.5.2":
+         case "9.5.3":
+         case "9.5.4":
+         case "9.5.5":
+         case "9.5.6":
+         case "9.5.7":
+         case "9.5.8":
+         case "9.5.9":
             include_once("{$updir}update_95_100.php");
             update95to100();
             break;

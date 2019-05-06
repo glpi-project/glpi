@@ -411,14 +411,7 @@ class Item_Ticket extends CommonDBRelation{
             self::dropdownMyDevices($dev_user_id, $ticket->fields["entities_id"], null, 0, ['tickets_id' => $instID]);
          }
 
-         $data =  array_keys(getAllDatasFromTable('glpi_items_tickets'));
-         $used = [];
-         if (!empty($data)) {
-            foreach ($data as $val) {
-               $used[$val['itemtype']] = $val['id'];
-            }
-         }
-
+         $data =  array_keys(getAllDataFromTable('glpi_items_tickets'));
          self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $ticket->fields["entities_id"], ['tickets_id' => $instID, 'used' => $used, 'rand' => $rand]);
          echo "<span id='item_ticket_selection_information$rand'></span>";
          echo "</td><td class='center' width='30%'>";
@@ -1059,11 +1052,12 @@ class Item_Ticket extends CommonDBRelation{
     * Return used items for a ticket
     *
     * @param type $tickets_id
+    *
     * @return type
     */
    static function getUsedItems($tickets_id) {
 
-      $data = getAllDatasFromTable('glpi_items_tickets', ['tickets_id' => $tickets_id]);
+      $data = getAllDataFromTable('glpi_items_tickets', ['tickets_id' => $tickets_id]);
       $used = [];
       if (!empty($data)) {
          foreach ($data as $val) {

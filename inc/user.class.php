@@ -3103,7 +3103,7 @@ class User extends CommonDBTM {
          'name'               => __('LDAP directory for authentication'),
          'massiveaction'      => false,
          'joinparams'         => [
-             'condition'          => 'AND REFTABLE.`authtype` = ' . Auth::LDAP
+             'condition'          => ['REFTABLE.authtype' => Auth::LDAP]
          ],
          'datatype'           => 'dropdown'
       ];
@@ -3116,7 +3116,7 @@ class User extends CommonDBTM {
          'name'               => __('Email server for authentication'),
          'massiveaction'      => false,
          'joinparams'         => [
-            'condition'          => 'AND REFTABLE.`authtype` = ' . Auth::MAIL
+            'condition'          => ['REFTABLE.authtype' => Auth::MAIL]
          ],
          'datatype'           => 'dropdown'
       ];
@@ -3294,7 +3294,7 @@ class User extends CommonDBTM {
                'table'              => 'glpi_tickets_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = ' . CommonITILActor::REQUESTER
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
                ]
             ]
          ]
@@ -3329,7 +3329,7 @@ class User extends CommonDBTM {
                'table'              => 'glpi_tickets_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
                ]
             ]
          ]

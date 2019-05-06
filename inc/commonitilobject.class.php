@@ -2978,7 +2978,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (!Session::isCron() // no filter for cron
           && Session::getCurrentInterface() == 'helpdesk') {
-         $newtab['condition']         = "`is_helpdeskvisible`";
+         $newtab['condition']         = ['is_helpdeskvisible' => 1];
       }
       $tab[] = $newtab;
 
@@ -3031,6 +3031,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 0.85
    **/
    function getSearchOptionsSolution() {
+      global $DB;
 
       $tab = [];
 
@@ -3098,14 +3099,18 @@ abstract class CommonITILObject extends CommonDBTM {
          'joinparams'          => [
             'jointype'  => 'itemtype_item',
             // Get only last created solution
-            'condition' => '
-               AND NEWTABLE.`id` = (
-                  SELECT `id` FROM `' . ITILSolution::getTable() . '`
-                  WHERE `' . ITILSolution::getTable() . '`.`items_id` = REFTABLE.`id`
-                     AND `' . ITILSolution::getTable() . '`.`itemtype` = \'' . static::getType() . '\'
-                  ORDER BY `' . ITILSolution::getTable() . '`.`id` DESC
-                  LIMIT 1
-               )'
+            'condition' => [
+               'NEWTABLE.id'  => ['=', new QuerySubQuery([
+                  'SELECT' => 'id',
+                  'FROM'   => ITILSolution::getTable(),
+                  'WHERE'  => [
+                     ITILSolution::getTable() . '.items_id' => new QueryExpression($DB->quoteName('REFTABLE.id')),
+                     ITILSolution::getTable() . '.itemtype' => static::getType()
+                  ],
+                  'ORDER'  => ITILSolution::getTable() . '.id DESC',
+                  'LIMIT'  => 1
+               ])]
+            ]
          ]
       ];
 
@@ -3177,7 +3182,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->userlinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
                ]
             ]
          ]
@@ -3197,13 +3202,13 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Requester group'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
-         'condition'          => 'is_requester',
+         'condition'          => ['is_requester' => 1],
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => getTableForItemType($this->grouplinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
                ]
             ]
          ]
@@ -3211,7 +3216,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (!Session::isCron() // no filter for cron
           && Session::getCurrentInterface() == 'helpdesk') {
-         $newtab['condition']       .= " AND `id` IN (".implode(",", $_SESSION['glpigroups']).")";
+         $newtab['condition']['id'] = $_SESSION['glpigroups'];
       }
       $tab[] = $newtab;
 
@@ -3250,7 +3255,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->userlinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::OBSERVER
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::OBSERVER]
                ]
             ]
          ]
@@ -3264,13 +3269,13 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Watcher group'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
-         'condition'          => 'is_requester',
+         'condition'          => ['is_requester' => 1],
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => getTableForItemType($this->grouplinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::OBSERVER
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::OBSERVER]
                ]
             ]
          ]
@@ -3295,7 +3300,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->userlinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
                ]
             ]
          ]
@@ -3314,7 +3319,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->supplierlinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
                ]
             ]
          ]
@@ -3328,13 +3333,13 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Technician group'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
-         'condition'          => 'is_assign',
+         'condition'          => ['is_assign' => 1],
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => getTableForItemType($this->grouplinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
                ]
             ]
          ]
@@ -3354,7 +3359,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+            'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
          ]
       ];
 
@@ -3367,7 +3372,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+            'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
          ]
       ];
 
@@ -3785,7 +3790,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                         ? $options['entities_id']: $options['entity_restrict'])];
 
       //only for active ldap and corresponding right
-      $ldap_methods = getAllDatasFromTable('glpi_authldaps', ['is_active' => 1]);
+      $ldap_methods = getAllDataFromTable('glpi_authldaps', ['is_active' => 1]);
       if (count($ldap_methods)
             && Session::haveRight('user', User::IMPORTEXTAUTHUSERS)) {
          $params['ldap_import'] = true;

@@ -848,7 +848,7 @@ class Profile_User extends CommonDBRelation {
          $condition['is_dynamic'] = 1;
       }
 
-      return getAllDatasFromTable('glpi_profiles_users', $condition);
+      return getAllDataFromTable('glpi_profiles_users', $condition);
    }
 
 

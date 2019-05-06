@@ -85,7 +85,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
                 'manufacturer'     => 'My Manufacturer',
                 '_system_category' => 'dev'];
 
-      $rules = getAllDatasFromTable(
+      $rules = getAllDataFromTable(
          'glpi_rules',
          ['uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425']
       );

@@ -828,7 +828,7 @@ class Budget extends CommonDropdown{
       echo "</tr>";
 
       // get all entities ordered by names
-      $allentities = getAllDatasFromTable('glpi_entities', [], true, 'completename');
+      $allentities = getAllDataFromTable('glpi_entities', ['ORDER' => 'completename'], true);
 
       foreach (array_keys($allentities) as $entity) {
          if (isset($entities_values[$entity])) {

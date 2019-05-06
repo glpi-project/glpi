@@ -675,27 +675,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
 
-   public function getProfileJoinSql() {
-
-      Toolbox::deprecated('Use getProfileJoinCriteria');
-
-      $query = parent::getProfileJoinSql();
-
-      if ($this->isPrivate()) {
-         $query .= " INNER JOIN `glpi_profiles`
-                     ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
-                         AND `glpi_profiles`.`interface` = 'central')
-                     INNER JOIN `glpi_profilerights`
-                     ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`
-                         AND `glpi_profilerights`.`name` = 'followup'
-                         AND `glpi_profilerights`.`rights` & ".
-                            ITILFollowup::SEEPRIVATE.") ";
-
-      }
-      return $query;
-   }
-
-
    public function getProfileJoinCriteria() {
       $criteria = parent::getProfileJoinCriteria();
 
@@ -1236,7 +1215,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $followup_restrict['itemtype'] = $objettype;
 
          //Followup infos
-         $followups          = getAllDatasFromTable('glpi_itilfollowups', $followup_restrict, false, ['date_mod DESC', 'id ASC']);
+         $followups          = getAllDataFromTable(
+            'glpi_itilfollowups', [
+               'WHERE'  => $followup_restrict,
+               'ORDER'  => ['date_mod DESC', 'id ASC']
+            ]
+         );
          $data['followups'] = [];
          foreach ($followups as $followup) {
             $tmp                             = [];
@@ -1345,12 +1329,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $data["##$objettype.costtime##"]     = $costs['costtime'];
          $data["##$objettype.totalcost##"]    = $costs['totalcost'];
 
-         $costs          = getAllDatasFromTable(
-            getTableForItemType($costtype),
-            [$item->getForeignKeyField() => $item->getField('id')],
-            false,
-            ['begin_date DESC', 'id ASC']
-
+         $costs          = getAllDataFromTable(
+            getTableForItemType($costtype), [
+               'WHERE'  => [$item->getForeignKeyField() => $item->getField('id')],
+               'ORDER'  => ['begin_date DESC', 'id ASC']
+            ]
          );
          $data['costs'] = [];
          foreach ($costs as $cost) {
@@ -1383,11 +1366,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $restrict['is_private'] = 0;
          }
 
-         $tasks          = getAllDatasFromTable(
-            $taskobj->getTable(),
-            $restrict,
-            false,
-            ['date_mod DESC', 'id ASC']
+         $tasks          = getAllDataFromTable(
+            $taskobj->getTable(), [
+               'WHERE'  => $restrict,
+               'ORDER'  => ['date_mod DESC', 'id ASC']
+            ]
          );
          $data['tasks'] = [];
          foreach ($tasks as $task) {

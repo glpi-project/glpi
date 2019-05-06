@@ -132,7 +132,7 @@ class Plugin extends CommonDBTM {
       }
    }
 
-   /**
+   /*
     * Init a plugin including setup.php file
     * launching plugin_init_NAME function  after checking compatibility
     *
@@ -354,19 +354,22 @@ class Plugin extends CommonDBTM {
       if ($informations['version'] != $plugin->fields['version']
           || $directory != $plugin->fields['directory']) {
          // Plugin known version differs from informations or plugin has been renamed,
-         // mark it as 'updatable'
-         trigger_error(
-            sprintf(
-               'Plugin "%s" version changed. It has been deactivated as its update process has to be launched.',
-               $directory
-            ),
-            E_USER_WARNING
-         );
-
+         // update informations in database
          $input              = $informations;
          $input['id']        = $plugin->fields['id'];
          $input['directory'] = $directory;
-         $input['state']     = self::NOTUPDATED;
+         if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED])) {
+            // mark it as 'updatable' unless it was not installed
+            trigger_error(
+               sprintf(
+                  'Plugin "%s" version changed. It has been deactivated as its update process has to be launched.',
+                  $directory
+               ),
+               E_USER_WARNING
+            );
+
+            $input['state']     = self::NOTUPDATED;
+         }
 
          $this->update($input);
 
@@ -487,7 +490,6 @@ class Plugin extends CommonDBTM {
          $this->update([
             'id'      => $ID,
             'state'   => self::NOTINSTALLED,
-            'version' => ''
          ]);
          $this->setUnloadedByName($this->fields['directory']);
 
@@ -514,6 +516,8 @@ class Plugin extends CommonDBTM {
    **/
    function install($ID) {
 
+      global $DB;
+
       $message = '';
       $type = ERROR;
 
@@ -528,6 +532,7 @@ class Plugin extends CommonDBTM {
          $function   = 'plugin_' . $this->fields['directory'] . '_install';
          if (function_exists($function)) {
             $this->setLoaded('temp', $this->fields['directory']);  // For autoloader
+            $DB->disableTableCaching(); //prevents issues on table/fieldExists upgrading from old versions
             if ($function()) {
                $type = INFO;
                $function = 'plugin_' . $this->fields['directory'] . '_check_config';
@@ -865,8 +870,8 @@ class Plugin extends CommonDBTM {
          }
       }
 
-      if (in_array('glpi_infocoms', $glpitables)) {
-         $entities    = getAllDatasFromTable('glpi_entities');
+      if (in_array('glpi_infocoms', $glpitables) && count($types)) {
+         $entities    = getAllDataFromTable('glpi_entities');
          $entities[0] = "Root";
 
          foreach ($types as $num => $name) {

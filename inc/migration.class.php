@@ -505,8 +505,9 @@ class Migration {
     * @return void
    **/
    function addKey($table, $fields, $indexname = '', $type = 'INDEX', $len = 0) {
+      global $DB;
 
-      // si pas de nom d'index, on prend celui du ou des champs
+      //when no index name provided, compute from field(s) name(s)
       if (!$indexname) {
          if (is_array($fields)) {
             $indexname = implode($fields, "_");
@@ -515,7 +516,7 @@ class Migration {
          }
       }
 
-      if (!isIndex($table, $indexname)) {
+      if (!$DB->indexExists($table, $fields, $indexname)) {
          if (is_array($fields)) {
             if ($len) {
                $fields = "`".implode($fields, "`($len), `")."`($len)";
@@ -548,8 +549,9 @@ class Migration {
     * @return void
    **/
    function dropKey($table, $indexname) {
+      global $DB;
 
-      if (isIndex($table, $indexname)) {
+      if ($DB->indexExists($table, [], $indexname)) {
          $this->change[$table][] = "DROP INDEX `$indexname`";
       }
    }
