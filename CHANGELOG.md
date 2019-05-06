@@ -5,6 +5,14 @@ The present file will list all changes made to the project; according to the
 
 ## [9.4.3] unreleased
 
+### API changes
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `Html::convertTagFromRichTextToImageTag()`
+
 ## [9.4.2] 2019-04-11
 
 ### API changes
