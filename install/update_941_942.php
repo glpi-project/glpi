@@ -119,7 +119,7 @@ function update941to942() {
             ]
          );
          foreach ($elements_to_fix as $data) {
-            $data['content'] = $fix_content_fct($data['content'], $data['items_id'], $itil_fkey);
+            $data['content'] = $DB->escape($fix_content_fct($data['content'], $data['items_id'], $itil_fkey));
             $DB->update($itil_element_table, $data, ['id' => $data['id']]);
          }
       }
@@ -135,7 +135,7 @@ function update941to942() {
          ]
       );
       foreach ($tasks_to_fix as $data) {
-         $data['content'] = $fix_content_fct($data['content'], $data[$itil_fkey], $itil_fkey);
+         $data['content'] = $DB->escape($fix_content_fct($data['content'], $data[$itil_fkey], $itil_fkey));
          $DB->update($task_table, $data, ['id' => $data['id']]);
       }
    }
