@@ -31,43 +31,24 @@
  */
 
 /**
- * Update from 9.4.1 to 9.4.2
+ * Update from 9.4.2 to 9.4.3
  *
  * @return bool for success (will die for most error)
 **/
-function update941to942() {
+function update942to943() {
    global $DB, $migration;
 
    $updateresult     = true;
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '9.4.2'));
-   $migration->setVersion('9.4.2');
-
-   /* Remove trailing slash from 'url_base' config */
-   $set = [
-      'value' => new \QueryExpression(
-         'TRIM(TRAILING ' . $DB->quoteValue('/') . ' FROM ' . $DB->quoteName('value') . ')'
-      )
-   ];
-   $migration->addPostQuery(
-      $DB->buildUpdate(
-         'glpi_configs',
-         $set,
-         [
-            'context' => 'core',
-            'name'    => 'url_base'
-         ]
-     ),
-      $set
-   );
-   /* /Remove trailing slash from 'url_base' config */
+   $migration->displayTitle(sprintf(__('Update to %s'), '9.4.3'));
+   $migration->setVersion('9.4.3');
 
    /** Fix URL of images inside ITIL objects contents */
-   // This is an exact copy of the same process used in "update940to941()" which was working
-   // on MariaDB but not on MySQL due to usage of "\d" in a REGEXP expression.
-   // It has been fixed there for people who had not yet updated to 9.4.1 but have to
-   // be put back here for people already having updated to 9.4.1.
+   // This is an exact copy of the same process used in "update940to941()" and "update941to942()"
+   // which was not working for elements having a simple quote in their content.
+   // It has been fixed there for people who had not yet updated to 9.4.1 / 9.4.2 but have to
+   // be put back here for people already having updated to 9.4.1 / 9.4.2.
    $migration->displayMessage(sprintf(__('Fix URL of images in ITIL tasks, followups ans solutions.')));
 
    // Search for contents that does not contains the itil object parameter after the docid parameter
