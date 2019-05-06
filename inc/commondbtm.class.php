@@ -184,6 +184,7 @@ class CommonDBTM extends CommonGLPI {
    function __construct () {
    }
 
+   /*
     * Return the table used to store this object
     *
     * @param string $classname Force class (to avoid late_binding on inheritance)

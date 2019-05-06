@@ -89,6 +89,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    /// Disable auto forwarding information about entities ?
    static public $disableAutoEntityForwarding   = false;
 
+   /*
     * @since 9.4
     *
     * @param string  $itemtype the type of the item to look for
