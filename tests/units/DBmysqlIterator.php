@@ -946,8 +946,8 @@ class DBmysqlIterator extends DbTestCase {
                                                             AND `NAME`.`itemtype` = 'NetworkPort')
                      INNER JOIN `glpi_networkports` AS `PORT`
                         ON (`NAME`.`items_id` = `PORT`.`id`
-                              NOT `PORT`.`itemtype`
-                                 IN ('" .implode("', '", $CFG_GLPI["networkport_types"])."'))
+                             AND NOT (`PORT`.`itemtype`
+                                      IN ('" .implode("', '", $CFG_GLPI["networkport_types"])."')))
                      LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
                      WHERE `LINK`.`ipnetworks_id` = '42')";
 
@@ -1099,8 +1099,10 @@ class DBmysqlIterator extends DbTestCase {
             'ON' => [
                'NAME'   => 'items_id',
                'PORT'   => 'id', [
-                  'NOT' => [
-                     'PORT.itemtype' => $CFG_GLPI['networkport_types']
+                  'AND' => [
+                     'NOT' => [
+                        'PORT.itemtype' => $CFG_GLPI['networkport_types']
+                     ]
                   ]
                ]
             ]

@@ -1162,8 +1162,10 @@ class IPAddress extends CommonDBChild {
                'ON' => [
                   'NAME'   => 'items_id',
                   'PORT'   => 'id', [
-                     'NOT' => [
-                        'PORT.itemtype' => $CFG_GLPI['networkport_types']
+                     'AND' => [
+                        'NOT' => [
+                           'PORT.itemtype' => $CFG_GLPI['networkport_types']
+                        ]
                      ]
                   ]
                ]
@@ -1193,13 +1195,13 @@ class IPAddress extends CommonDBChild {
          $queries[] = $criteria;
 
          $criteria = $main_criteria;
-         $criteria['SELECT'] = $criteria['SELECT'] + [
+         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
             new \QueryExpression("NULL AS name_id"),
             new \QueryExpression("NULL AS port_id"),
             new \QueryExpression('NULL AS item_id'),
             new \QueryExpression("NULL AS item_type")
-         ];
-         $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!', 'NetworkName'];
+         ]);
+         $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
          $queries[] = $criteria;
 
          $union = new \QueryUnion($queries);

@@ -535,6 +535,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $nb++;
          echo "<tr class='tab_bg_1'><td>";
          if ((($fk == 'entities_id') && in_array($data['id'], $_SESSION['glpiactiveentities']))
+             || !$entity_assign
              || (($fk != 'entities_id') && in_array($data['entities_id'], $_SESSION['glpiactiveentities']))) {
             echo "<a href='".$this->getFormURL();
             echo '?id='.$data['id']."'>".$data['name']."</a>";
