@@ -3075,6 +3075,36 @@ JAVASCRIPT;
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
+            case "datetime" :
+               if (in_array($searchtype, ['contains', 'notcontains'])) {
+                  break;
+               }
+
+               $force_day = false;
+               if (strstr($val, 'BEGIN') || strstr($val, 'LAST')) {
+                  $force_day = true;
+               }
+
+               $val = Html::computeGenericDateTimeSearch($val, $force_day);
+
+               $operator = '';
+               switch ($searchtype) {
+                  case 'equals':
+                     $operator = !$NOT ? '=' : '!=';
+                     break;
+                  case 'notequals':
+                     $operator = !$NOT ? '!=' : '=';
+                     break;
+                  case 'lessthan':
+                     $operator = !$NOT ? '<' : '>';
+                     break;
+                  case 'morethan':
+                     $operator = !$NOT ? '>' : '<';
+                     break;
+               }
+
+               return " $LINK (`$NAME` $operator '$val') ";
+               break;
             case "count" :
             case "number" :
             case "decimal" :

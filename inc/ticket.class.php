@@ -2986,7 +2986,8 @@ class Ticket extends CommonITILObject {
          'field'              => 'next_escalation_level',
          'name'               => __('Next escalation level'),
          'datatype'           => 'datetime',
-         'nosearch'           => true,
+         'usehaving'          => true,
+         'maybefuture'        => true,
          'massiveaction'      => false,
          // COALESCE on columns "A,B,C,D", "B,C,D,A", "C,D,A,B", "D,A,B,C" ensure that
          // - all NON NULL values will be listed in LEAST arguments
