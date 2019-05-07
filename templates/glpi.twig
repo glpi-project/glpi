@@ -47,7 +47,8 @@
          <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/coreui/css/coreui-standalone.css" type="text/css" media="screen" />
          <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/fontawesome-free/css/all.css" type="text/css" media="screen" />
 
-         <link rel="stylesheet" href="{{ path_for('asset', {'file': 'glpi'}) }}" type="text/css" media="screen" />
+         {# TODO We have to pass the debug flag if session is on debug mode #}
+         <link rel="stylesheet" href="{{ path_for('asset', {'file': 'css/glpi'}) }}" type="text/css" media="screen" />
 
          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic" />
 
