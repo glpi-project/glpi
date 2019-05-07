@@ -357,6 +357,8 @@ class Contract extends CommonDBTM {
 
 
    static function rawSearchOptionsToAdd() {
+      global $DB;
+
       $tab = [];
 
       $joinparams = [
@@ -530,7 +532,10 @@ class Contract extends CommonDBTM {
          'datatype'           => 'decimal',
          'massiveaction'      => false,
          'joinparams'         => $joinparamscost,
-         'computation'        => '(SUM(TABLE.`cost`) / COUNT(TABLE.`id`)) * COUNT(DISTINCT TABLE.`id`)'
+         'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.cost') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
+            $DB->quoteName('TABLE.id') . ')'
       ];
 
       $tab[] = [
@@ -622,6 +627,8 @@ class Contract extends CommonDBTM {
 
 
    function rawSearchOptions() {
+      global $DB;
+
       $tab = [];
 
       $tab[] = [
@@ -906,8 +913,10 @@ class Contract extends CommonDBTM {
          'joinparams'         => [
             'jointype'           => 'child'
          ],
-         'computation'        => '(SUM(TABLE.`cost`) / COUNT(TABLE.`id`))
-                                       * COUNT(DISTINCT TABLE.`id`)'
+         'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.cost') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
+            $DB->quoteName('TABLE.id') . ')'
       ];
 
       $tab[] = [

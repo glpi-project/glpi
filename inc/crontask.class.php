@@ -1324,6 +1324,8 @@ class CronTask extends CommonDBTM{
 
 
    function rawSearchOptions() {
+      global $DB;
+
       $tab = [];
 
       $tab[] = [
@@ -1358,7 +1360,7 @@ class CronTask extends CommonDBTM{
          'nosort'             => true,
          'massiveaction'      => false,
          'datatype'           => 'text',
-         'computation'        => 'TABLE.`id`' // Virtual data
+         'computation'        => $DB->quoteName('TABLE.id') // Virtual data
       ];
 
       $tab[] = [

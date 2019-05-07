@@ -442,7 +442,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * In case of NetworkPort attached to a network card, list the fields that must be duplicate
     * from the network card to the network port (mac address, port type, ...)
     *
-    * @return an array with SQL field (for instance : device.`type`) => form field (type)
+    * @return an array with SQL field (for instance : device.type) => form field (type)
    **/
    function getNetworkCardInterestingFields() {
       return [];

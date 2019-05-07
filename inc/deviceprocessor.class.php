@@ -207,6 +207,8 @@ class DeviceProcessor extends CommonDevice {
    }
 
    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      global $DB;
+
       $tab = [];
 
       $tab[] = [
@@ -236,7 +238,9 @@ class DeviceProcessor extends CommonDevice {
          'datatype'           => 'number',
          'massiveaction'      => false,
          'joinparams'         => $main_joinparams,
-         'computation'        => 'SUM(TABLE.`nbcores`) * count(distinct TABLE.`id`) / count(*)'
+         'computation'        =>
+            'SUM(' . $DB->quoteName('TABLE.nbcores') . ') * COUNT(DISTINCT ' .
+            $DB->quoteName('TABLE.id') . ') / COUNT(*)'
       ];
 
       $tab[] = [
@@ -249,7 +253,9 @@ class DeviceProcessor extends CommonDevice {
          'datatype'           => 'number',
          'massiveaction'      => false,
          'joinparams'         => $main_joinparams,
-         'computation'        => 'SUM(TABLE.`nbthreads`) * count(distinct TABLE.`id`) / count(*)'
+         'computation'        =>
+            'SUM(' . $DB->quoteName('TABLE.nbthreads') . ') * COUNT(DISTINCT ' .
+            $DB->quoteName('TABLE.id') . ') / COUNT(*)'
       ];
 
       $tab[] = [
@@ -264,7 +270,9 @@ class DeviceProcessor extends CommonDevice {
          'width'              => 100,
          'massiveaction'      => false,
          'joinparams'         => $main_joinparams,
-         'computation'        => 'SUM(TABLE.`frequency`) / COUNT(TABLE.`id`)'
+         'computation'        =>
+            'SUM(' . $DB->quoteName('TABLE.frequency') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . ')'
       ];
 
       return $tab;

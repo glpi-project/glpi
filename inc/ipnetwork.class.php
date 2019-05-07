@@ -542,8 +542,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          if ($relation == "equals") {
             for ($i = $startIndex; $i < 4; ++$i) {
                $WHERE = [
-                  new \QueryExpression("(`".$addressDB[$i] . "` & '" . $netmaskPa[$i] . "') = ('".$addressPa[$i]."' & '".$netmaskPa[$i]."')"),
-                  $netmaskD[$i]  => $netmaskPa[$i]
+                  new \QueryExpression("(".$DB->quoteName($addressDB[$i]) . " & '" . $netmaskPa[$i] . "') = ('".$addressPa[$i]."' & '".$netmaskPa[$i]."')"),
+                  $netmaskDB[$i]  => $netmaskPa[$i]
                ];
             }
          } else {
@@ -551,12 +551,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                if ($relation == "is contained by") {
                   $globalNetmask = "'".$netmaskPa[$i]."'";
                } else {
-                  $globalNetmask = "`".$netmaskDB[$i]."`";
+                  $globalNetmask = $DB->quoteName($netmaskDB[$i]);
                }
 
                $WHERE = [
-                  new \QueryExpression("(`".$addressDB[$i]."` & $globalNetmask) = ('".$addressPa[$i]."' & $globalNetmask)"),
-                  new \QueryExpression("('".$netmaskPa[$i]."' & `".$netmaskDB[$i]."`)=$globalNetmask")
+                  new \QueryExpression("(".$DB->quoteName($addressDB[$i])." & $globalNetmask) = ('".$addressPa[$i]."' & $globalNetmask)"),
+                  new \QueryExpression("('".$netmaskPa[$i]."' & ".$DB->quoteName($netmaskDB[$i]).")=$globalNetmask")
                ];
             }
          }
@@ -610,7 +610,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested
       // element)
       for ($i = $startIndex; $i < 4; ++$i) {
-         $ORDER[] = new \QueryExpression("BIT_COUNT(`".$netmaskDB[$i]."`) $ORDER_ORIENTATION");
+         $ORDER[] = new \QueryExpression("BIT_COUNT(".$DB->quoteName($netmaskDB[$i]).") $ORDER_ORIENTATION");
       }
 
       if (!empty($condition["where"])) {

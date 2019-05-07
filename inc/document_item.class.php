@@ -728,9 +728,9 @@ class Document_Item extends CommonDBRelation{
 
       if ((isset($_GET["sort"]) && !empty($_GET["sort"]))
          && isset($columns[$_GET["sort"]])) {
-         $sort = "`".$_GET["sort"]."`";
+         $sort = $_GET["sort"];
       } else {
-         $sort = "`assocdate`";
+         $sort = "assocdate";
       }
 
       if (empty($withtemplate)) {
@@ -839,7 +839,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       foreach ($columns as $key => $val) {
-         $header_end .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
+         $header_end .= "<th".($sort == "$key" ? " class='order_$order'" : '').">".
                         "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                           (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
       }

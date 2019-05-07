@@ -1036,9 +1036,9 @@ class SoftwareLicense extends CommonTreeDropdown {
       }
 
       if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
-         $sort = "`".$_GET["sort"]."`";
+         $sort = $_GET["sort"];
       } else {
-         $sort = "`entity` $order, `name`";
+         $sort = ["entity $order", 'name'];
       }
 
       // Righ type is enough. Can add a License on a software we have Read access
@@ -1124,7 +1124,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                         => ['options'
                                     => ['glpi_softwareversions.name'
                                              => ['condition'
-                                                      => "`glpi_softwareversions`.`softwares_id`
+                                                      => $DB->quoteName("glpi_softwareversions.softwares_id")."
                                                                = $softwares_id"],
                                              'glpi_softwarelicenses.name'
                                              => ['itemlink_as_string' => true]]]];
@@ -1136,7 +1136,6 @@ class SoftwareLicense extends CommonTreeDropdown {
 
          $header_begin  = "<tr><th>";
          $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         $header_bottom = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_end    = '';
 
          foreach ($columns as $key => $val) {
@@ -1144,7 +1143,7 @@ class SoftwareLicense extends CommonTreeDropdown {
             if ($key[0] == '_') {
                $header_end .= "<th>$val</th>";
             } else {
-               $header_end .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
+               $header_end .= "<th".(!is_array($sort) && $sort == "$key" ? " class='order_$order'" : '').">".
                      "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                         (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
             }

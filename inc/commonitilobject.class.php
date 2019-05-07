@@ -2870,6 +2870,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 0.85
    **/
    function getSearchOptionsMain() {
+      global $DB;
 
       $tab = [];
 
@@ -2990,12 +2991,13 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Time to resolve exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF(TABLE.`time_to_resolve` IS NOT NULL
-                                            AND TABLE.`status` <> 4
-                                            AND (TABLE.`solvedate` > TABLE.`time_to_resolve`
-                                                 OR (TABLE.`solvedate` IS NULL
-                                                      AND TABLE.`time_to_resolve` < NOW())),
-                                            1, 0)'
+         'computation'        =>
+            'IF(' . $DB->quoteName('TABLE.time_to_resolve') . ' IS NOT NULL
+               AND ' . $DB->quoteName('TABLE.status') . ' <> 4
+               AND (' . $DB->quoteName('TABLE.solvedate') . ' > ' . $DB->quoteName('TABLE.time_to_resolve') . '
+                     OR (' . $DB->quoteName('TABLE.solvedate') . ' IS NULL
+                        AND ' . $DB->quoteName('TABLE.time_to_resolve') . ' < NOW())),
+               1, 0)'
       ];
 
       $tab[] = [
