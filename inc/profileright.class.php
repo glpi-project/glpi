@@ -225,17 +225,19 @@ class ProfileRight extends CommonDBChild {
     *
     * @return boolean
    **/
-   static function updateProfileRightsAsOtherRights($newright, $initialright, $condition = '') {
+   static function updateProfileRightsAsOtherRights($newright, $initialright, array $condition = []) {
       global $DB;
 
       $profiles = [];
       $ok       = true;
-      if (empty($condition)) {
-         $condition = "`name` = '$initialright'";
-      } else {
-         $condition = "`name` = '$initialright' AND $condition";
-      }
-      foreach ($DB->request('glpi_profilerights', $condition) as $data) {
+
+      $criteria = [
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['name' => $initialright] + $condition
+      ];
+      $iterator = $DB->request($criteria);
+
+      while ($data = $iterator->next()) {
          $profiles[$data['profiles_id']] = $data['rights'];
       }
       if (count($profiles)) {
