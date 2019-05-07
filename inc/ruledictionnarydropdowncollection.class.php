@@ -61,23 +61,21 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
       }
 
       // Get All items
-      $Sql = "SELECT *
-              FROM `".$this->item_table."`";
+      $criteria = ['FROM' => $this->item_table];
       if ($offset) {
-         $Sql .= " LIMIT ".intval($offset).",999999999";
+         $criteria['START'] = $offset;
+         $criteria['LIMIT'] = 999999999;
       }
-      $result  = $DB->query($Sql);
-
-      $nb      = $DB->numrows($result)+$offset;
-      $i       = $offset;
-      if ($result
-          && ($nb > $offset)) {
+      $iterator   = $DB->request($criteria);
+      $nb         = count($iterator)+$offset;
+      $i          = $offset;
+      if ($nb > $offset) {
          // Step to refresh progressbar
          $step              = (($nb > 20) ? floor($nb/20) : 1);
          $send              = [];
          $send["tablename"] = $this->item_table;
 
-         while ($data = $DB->fetchAssoc($result)) {
+         while ($data = $iterator->next()) {
             if (!($i % $step)) {
                if (isCommandLine()) {
                   //TRANS: %1$s is a row, %2$s is total rows

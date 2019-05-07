@@ -857,30 +857,51 @@ class SoftwareLicense extends CommonTreeDropdown {
       $items_notice = [];
       $items_end    = [];
 
-      foreach (Entity::getEntitiesToNotify('use_licenses_alert') as $entity => $value) {
+      $tonotify = Entity::getEntitiesToNotify('use_licenses_alert');
+      foreach (array_keys($tonotify) as $entity) {
          $before = Entity::getUsedConfig('send_licenses_alert_before_delay', $entity);
          // Check licenses
-         $query = "SELECT `glpi_softwarelicenses`.*,
-                          `glpi_softwares`.`name` AS softname
-                   FROM `glpi_softwarelicenses`
-                   INNER JOIN `glpi_softwares`
-                        ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
-                   LEFT JOIN `glpi_alerts`
-                        ON (`glpi_softwarelicenses`.`id` = `glpi_alerts`.`items_id`
-                            AND `glpi_alerts`.`itemtype` = 'SoftwareLicense'
-                            AND `glpi_alerts`.`type` = '".Alert::END."')
-                   WHERE `glpi_alerts`.`date` IS NULL
-                         AND `glpi_softwarelicenses`.`expire` IS NOT NULL
-                         AND DATEDIFF(`glpi_softwarelicenses`.`expire`,
-                                      CURDATE()) < '$before'
-                         AND `glpi_softwares`.`is_template` = 0
-                         AND `glpi_softwares`.`is_deleted` = 0
-                         AND `glpi_softwares`.`entities_id` = '".$entity."'";
+         $criteria = [
+            'SELECT' => [
+               'glpi_softwarelicenses.*',
+               'glpi_softwares.name AS softname'
+            ],
+            'FROM'   => 'glpi_softwarelicenses',
+            'INNER JOIN'   => [
+               'glpi_softwares'  => [
+                  'ON'  => [
+                     'glpi_softwarelicenses' => 'softwares_id',
+                     'glpi_softwares'        => 'id'
+                  ]
+               ]
+            ],
+            'LEFT JOIN'    => [
+               'glpi_alerts'  => [
+                  'ON'  => [
+                     'glpi_softwarelicenses' => 'id',
+                     'glpi_alerts'           => 'items_id', [
+                        'AND' => [
+                           'glpi_alerts.itemtype'  => 'SoftwareLicense'
+                        ]
+                     ]
+                  ]
+               ]
+            ],
+            'WHERE'        => [
+               'glpi_alerts.date'   => null,
+               'NOT'                => ['glpi_softwarelicenses.expire' => null],
+               new QueryExpression('DATEDIFF('.$DB->quoteName('glpi_softwarelicenses.expire').', CURDATE()) < ' . $before),
+               'glpi_softwares.is_template'  => 0,
+               'glpi_softwares.is_deleted'   => 0,
+               'glpi_softwares.entities_id'  => $entity
+            ]
+         ];
+         $iterator = $DB->request($criteria);
 
          $message = "";
          $items   = [];
 
-         foreach ($DB->request($query) as $license) {
+         while ($license = $iterator->next()) {
             $name     = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
             //TRANS: %1$s the license name, %2$s is the expiration date
             $message .= sprintf(__('License %1$s expired on %2$s'),
