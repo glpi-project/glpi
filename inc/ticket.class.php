@@ -2981,6 +2981,25 @@ class Ticket extends CommonITILObject {
       ];
 
       $tab[] = [
+         'id'                 => '188',
+         'table'              => $this->getTable(),
+         'field'              => 'next_escalation_level',
+         'name'               => __('Next escalation level'),
+         'datatype'           => 'datetime',
+         'nosearch'           => true,
+         'massiveaction'      => false,
+         // COALESCE on columns "A,B,C,D", "B,C,D,A", "C,D,A,B", "D,A,B,C" ensure that
+         // - all NON NULL values will be listed in LEAST arguments
+         // - no argument will have NULL value if at least on column is not null
+         'computation'        => 'LEAST(
+            COALESCE(TABLE.`time_to_own`, TABLE.`time_to_resolve`, TABLE.`internal_time_to_own`, TABLE.`internal_time_to_resolve`),
+            COALESCE(TABLE.`time_to_resolve`, TABLE.`internal_time_to_own`, TABLE.`internal_time_to_resolve`, TABLE.`time_to_own`),
+            COALESCE(TABLE.`internal_time_to_own`, TABLE.`internal_time_to_resolve`, TABLE.`time_to_own`, TABLE.`time_to_resolve`),
+            COALESCE(TABLE.`internal_time_to_resolve`, TABLE.`time_to_own`, TABLE.`time_to_resolve`, TABLE.`internal_time_to_own`)
+         )'
+      ];
+
+      $tab[] = [
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'type',
