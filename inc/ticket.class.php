@@ -7002,17 +7002,22 @@ class Ticket extends CommonITILObject {
          ? $input['entities_id']
          : $this->fields['entities_id'];
 
+      // If creation date is not set, then this function is called during ticket creation
+      $creation_date = !empty($this->fields['date_creation'])
+         ? strtotime($this->fields['date_creation'])
+         : time();
+
       // add calendars matching date creation (for business rules)
       $calendars = [];
-      $ite_calandar = $DB->request([
+      $ite_calendar = $DB->request([
          'SELECT' => ['id'],
          'FROM'   => Calendar::getTable(),
          'WHERE'  => getEntitiesRestrictCriteria('', '', $entities_id, true)
       ]);
-      foreach ($ite_calandar as $calendar_data) {
+      foreach ($ite_calendar as $calendar_data) {
          $calendar = new Calendar();
          $calendar->getFromDB($calendar_data['id']);
-         if ($calendar->isAWorkingHour(time())) {
+         if ($calendar->isAWorkingHour($creation_date)) {
             $calendars[] = $calendar_data['id'];
          }
       }
