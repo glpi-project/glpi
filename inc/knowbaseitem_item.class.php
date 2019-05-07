@@ -304,13 +304,18 @@ class KnowbaseItem_Item extends CommonDBRelation {
    static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false) {
       global $DB;
 
-      $options = [
-         'FROM'      => ['glpi_knowbaseitems_items', 'glpi_knowbaseitems'],
+      $criteria = [
+         'FROM'      => ['glpi_knowbaseitems_items'],
          'FIELDS'    => ['glpi_knowbaseitems_items' => '*'],
-         'FKEY'      => [
-            'glpi_knowbaseitems_items' => 'knowbaseitems_id',
-            'glpi_knowbaseitems'       => 'id'
+         'INNER JOIN' => [
+            'glpi_knowbaseitems' => [
+               'ON'  => [
+                  'glpi_knowbaseitems_items' => 'knowbaseitems_id',
+                  'glpi_knowbaseitems'       => 'id'
+               ]
+            ]
          ],
+         'WHERE'     => [],
          'ORDER'     => ['itemtype', 'items_id DESC'],
          'GROUPBY'   => [
             'glpi_knowbaseitems_items.id',
@@ -329,7 +334,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $id_field = 'glpi_knowbaseitems_items.knowbaseitems_id';
          $visibility = KnowbaseItem::getVisibilityCriteria();
          if (count($visibility['LEFT JOIN'])) {
-            $options['LEFT JOIN'] = $visibility['LEFT JOIN'];
+            $criteria['LEFT JOIN'] = $visibility['LEFT JOIN'];
             if (isset($visibility['WHERE'])) {
                $where = $visibility['WHERE'];
             }
@@ -339,24 +344,27 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $where = getEntitiesRestrictCriteria($item->getTable(), '', '', $item->maybeRecursive());
          $where[] = ['glpi_knowbaseitems_items.itemtype' => $item::getType()];
          if (count($where)) {
-            $options['FROM'][] = $item->getTable();
-            $where[] = ['glpi_knowbaseitems_items.items_id' => '`' . $item->getTable() . '`.`id`'];
+            $criteria['INNER JOIN'][$item->getTable()] = [
+               'ON' => [
+                  'glpi_knowbaseitems_items' => 'items_id',
+                  $item->getTable()          => 'id'
+               ]
+            ];
          }
       }
 
+      $criteria['WHERE'] = [$id_field => $items_id];
       if (count($where)) {
-         $options['AND'] = [$id_field => $items_id, $where];
-      } else {
-         $options['AND'] = [$id_field => $items_id];
+         $criteria['WHERE'] = array_merge($criteria['WHERE'], $where);
       }
 
       if ($limit) {
-         $options['START'] = intval($start);
-         $options['LIMIT'] = intval($limit);
+         $criteria['START'] = intval($start);
+         $criteria['LIMIT'] = intval($limit);
       }
 
       $linked_items = [];
-      $results = $DB->request($options);
+      $results = $DB->request($criteria);
       while ($data = $results->next()) {
          if ($used === false) {
             $linked_items[] = $data;
