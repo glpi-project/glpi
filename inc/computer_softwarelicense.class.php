@@ -359,10 +359,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
          // manage several param like location,compname : order first
-         $tmp  = explode(",", $_GET["sort"]);
-         $sort = "`".implode("` $order,`", $tmp)."`";
+         $tsort  = explode(",", $_GET["sort"]);
       } else {
-         $sort = "`entity` $order, `compname`";
+         $tsort = ['entity', 'compname'];
+      }
+
+      $sort = [];
+      foreach ($tsort as $tmpsort) {
+         $sort[] = "$tmpsort $order";
       }
 
       //SoftwareLicense ID
@@ -475,7 +479,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             'glpi_computers_softwarelicenses.is_deleted' => 0
 
          ] + getEntitiesRestrictCriteria('glpi_computers'),
-         'ORDER'        => "$sort $order",
+         'ORDER'        => $sort,
          'LIMIT'        => $_SESSION['glpilist_limit'],
          'START'        => $start
       ]);
@@ -542,7 +546,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if ($key[0] == '_') {
                $header_end .= "<th>$val</th>";
             } else {
-               $header_end .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
+               $header_end .= "<th".(implode(',', $tsort) == $key ? " class='order_$order'" : '').">".
                               "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                               (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
             }

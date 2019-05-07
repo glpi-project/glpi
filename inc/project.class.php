@@ -693,7 +693,7 @@ class Project extends CommonDBTM {
                ],
             ],
          ],
-         'computation'        => '(SUM(TABLE.`cost`))'
+         'computation'        => '(SUM('.$DB->quoteName('TABLE.cost').'))'
       ];
 
       $tab[] = [

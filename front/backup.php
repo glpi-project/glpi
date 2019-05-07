@@ -75,7 +75,7 @@ function xmlbackup() {
       $table = $line['TABLE_NAME'];
 
       $query[$i] = "SELECT *
-                    FROM `$table`";
+                    FROM ".$DB->quoteName($table);
       $i++;
    }
 
@@ -148,7 +148,7 @@ function get_content($DB, $table, $from, $limit) {
    if ($iterator->count()) {
 
       while ($row = $iterator->next()) {
-         $insert = "INSERT INTO `$table` VALUES (";
+         $insert = "INSERT INTO ".$DB->quoteName($table)." VALUES (";
 
          foreach ($row as $field_val) {
             if (is_null($field_val)) {
@@ -175,9 +175,9 @@ function get_content($DB, $table, $from, $limit) {
 function get_def($DB, $table) {
 
    $def  = "### Dump table $table\n\n";
-   $def .= "DROP TABLE IF EXISTS `$table`;\n";
+   $def .= "DROP TABLE IF EXISTS ".$DB->quoteName($table).";\n";
 
-   $query  = "SHOW CREATE TABLE `$table`";
+   $query  = "SHOW CREATE TABLE ".$DB->quoteName($table);
    $result = $DB->rawQuery($query);
    $DB->rawQuery("SET SESSION sql_quote_show_create = 1");
    $row = $DB->fetchRow($result);

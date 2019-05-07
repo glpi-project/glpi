@@ -208,6 +208,8 @@ class Supplier extends CommonDBTM {
    }
 
    function rawSearchOptions() {
+      global $DB;
+
       $tab = [];
 
       $tab[] = [
@@ -347,7 +349,7 @@ class Supplier extends CommonDBTM {
          'forcegroupby'       => true,
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'computation'        => "CONCAT(TABLE.`$name1`, ' ', TABLE.`$name2`)",
+         'computation'        => "CONCAT(".$DB->quoteName("TABLE.$name1").", ' ', ".$DB->quoteName("TABLE.$name2").")",
          'computationgroupby' => true,
          'joinparams'         => [
             'beforejoin'         => [

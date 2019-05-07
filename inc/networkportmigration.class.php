@@ -72,8 +72,8 @@ class NetworkPortMigration extends CommonDBChild {
       }
 
       if (countElementsInTable($this->getTable()) == 0) {
-         $query = "DROP TABLE `".$this->getTable()."`";
-         $DB->query($query);
+         $query = "DROP TABLE ".$DB->quoteName($this->getTable());
+         $DB->rawQuery($query);
       }
 
    }

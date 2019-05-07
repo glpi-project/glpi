@@ -1099,10 +1099,15 @@ class NetworkPort extends CommonDBChild {
 
       $np = new self();
       // ADD Ports
-      foreach ($DB->request('glpi_networkports',
-                            ['FIELDS' => 'id',
-                                  'WHERE'  => "`items_id` = '$old_items_id'
-                                                AND `itemtype` = '$itemtype'"]) as $data) {
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'items_id'  => $old_items_id,
+            'itemtype'  => $itemtype
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          $np->getFromDB($data["id"]);
          $instantiation = $np->getInstantiation();
          unset($np->fields["id"]);
