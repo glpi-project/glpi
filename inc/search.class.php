@@ -3116,7 +3116,7 @@ JAVASCRIPT;
       }
 
       if ($searchtype == "notcontains") {
-         $nott = !$nott;
+         $NOT = !$NOT;
       }
 
       return self::makeTextCriteria("`$NAME`", $val, $NOT, $LINK);
