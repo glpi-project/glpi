@@ -83,7 +83,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<meta name='viewport' content='width=device-width, initial-scale=1'/>";
 
    // Appel CSS
-   echo Html::scss('main_styles');
+   echo Html::scss('css/styles');
+   if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
+      echo Html::scss('css/highcontrast');
+   }
+   $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
+   echo Html::scss('css/palettes/' . $theme);
    // font awesome icons
    echo Html::css('public/lib/fontawesome-free/css/all.css');
 

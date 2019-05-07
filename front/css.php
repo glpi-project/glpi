@@ -45,4 +45,15 @@ include_once GLPI_ROOT . '/inc/config.php';
 $css = Html::compileScss($_GET);
 
 header('Content-Type: text/css');
+
+$is_cacheable = !isset($_GET['debug']) && !isset($_GET['nocache']);
+if ($is_cacheable) {
+   // Makes CSS cacheable by browsers and proxies
+   $max_age = WEEK_TIMESTAMP;
+   header_remove('Pragma');
+   header('Cache-Control: public');
+   header('Cache-Control: max-age=' . $max_age);
+   header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
+}
+
 echo $css;
