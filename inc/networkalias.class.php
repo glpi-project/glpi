@@ -411,7 +411,7 @@ class NetworkAlias extends FQDNLabel {
          $iterator = $DB->request([
             'SELECT'    => [
                'glpi_networkaliases.id AS alias_id',
-               'glpi_networkaliases`.name AS alias',
+               'glpi_networkaliases.name AS alias',
                'glpi_networknames.id AS address_id',
                'glpi_networkaliases.comment AS comment'
             ],
