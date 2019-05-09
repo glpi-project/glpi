@@ -3338,7 +3338,7 @@ JAVASCRIPT;
       }
 
       if ($searchtype == "notcontains") {
-         $nott = !$nott;
+         $NOT = !$NOT;
       }
 
       return $this->makeTextCriteria($NAME, $val, $NOT, $LINK);
