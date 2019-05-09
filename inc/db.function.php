@@ -226,24 +226,6 @@ function countElementsInTableForEntity($table, $entity, $condition = [], $recurs
  * Get data from a table in an array :
  * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  *
- * @param string  $table     table name
- * @param array   $condition condition to use (default [])
- * @param boolean $usecache  Use cache (false by default)
- * @param string  $order     result order (default '')
- *
- * @return array containing all the datas
- *
- * @deprecated 9.5.0
-**/
-function getAllDatasFromTable($table, $condition = [], $usecache = false, $order = '') {
-   Toolbox::deprecated('Use getAllDataFromTable()');
-   return getAllDataFromTable($table, $condition, $usecache, $order);
-}
-
-/**
- * Get data from a table in an array :
- * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
- *
  * @param string  $table    table name
  * @param array   $criteria condition to use (default [])
  * @param boolean $usecache Use cache (false by default)
@@ -456,22 +438,6 @@ function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0,
 function getUserName($ID, $link = 0) {
    $dbu = new DbUtils();
    return $dbu->getUserName($ID, $link);
-}
-
-
-/**
- * Determine if an index exists in database
- *
- * @param $table  string  table of the index
- * @param $field  string  name of the index
- *
- * @return boolean : index exists ?
- *
- * @deprecated 10.0.0
-**/
-function isIndex($table, $field) {
-   $dbu = new DbUtils();
-   return $dbu->isIndex($table, $field);
 }
 
 

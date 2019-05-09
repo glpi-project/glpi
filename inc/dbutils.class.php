@@ -422,7 +422,7 @@ final class DbUtils {
       $data = [];
 
       if (!is_array($criteria)) {
-         Toolbox::Deprecated('Criteria must be an array!');
+         Toolbox::Deprecated('Criteria must be an array! Will be ignored.');
          if (empty($criteria)) {
             $criteria = [];
          }
@@ -443,37 +443,6 @@ final class DbUtils {
          $cache[$table] = $data;
       }
       return $data;
-   }
-
-   /**
-    * Determine if an index exists in database
-    *
-    * @param string $table table of the index
-    * @param string $field name of the index
-    *
-    * @return boolean
-    *
-    * @deprecated 10.0.0
-    */
-   public function isIndex($table, $field) {
-      global $DB;
-
-      Toolbox::Deprecated('Use AbstractDatabase::indexExists');
-      if (!$DB->tableExists($table)) {
-         trigger_error("Table $table does not exists", E_USER_WARNING);
-         return false;
-      }
-
-      $result = $DB->rawQuery("SHOW INDEX FROM `$table`");
-
-      if ($result && $DB->numrows($result)) {
-         while ($data = $DB->fetchAssoc($result)) {
-            if ($data["Key_name"] == $field) {
-               return true;
-            }
-         }
-      }
-      return false;
    }
 
    /**
