@@ -443,7 +443,7 @@ class Search {
       // this parameter $params['stv'] comes from table : glpi_savedsearches, column : query.
       // stv is a shortcut savedtoview, this is because GET method URLs have limit for length.
       if (isset($params['stv']) && is_array($params['stv'])) {
-          $data['toview'] = array_merge(self::addDefaultToView($itemtype, $params), $params['stv']);
+         $data['toview'] = array_merge(self::addDefaultToView($itemtype, $params), $params['stv']);
       }
 
       if (count($p['criteria']) > 0) {
