@@ -1845,7 +1845,7 @@ class AuthLDAP extends CommonDBTM {
                                    'timestamp'  => $user_infos[$userfound[$field_for_sync]]['timestamp'],
                                    'date_sync'  => $tmpuser->fields['date_sync'],
                                    'dn'         => $user['user_dn']];
-               } else if (($values['action'] == self::ACTION_ALL)
+               } else if (($values['mode'] == self::ACTION_ALL)
                           || (($ldap_users[$user[$field_for_db]] - strtotime($user['date_sync'])) > 0)) {
                   //If entry was modified or if script should synchronize all the users
                   $glpi_users[] = ['id'         => $user['id'],
