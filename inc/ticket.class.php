@@ -1120,7 +1120,9 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      /// Process Business Rules
+      // Process Business Rules
+      $this->fillInputForBusinessRules($input);
+
       // Add actors on standard input
       $rules               = new RuleTicketCollection($entid);
       $rule                = $rules->getRuleClass();
@@ -1825,25 +1827,9 @@ class Ticket extends CommonITILObject {
          $input['_users_id_assign'] = Session::getLoginUserID();
       }
 
-      // add calendars matching date creation (for business rules)
-      $calendars = [];
-      $ite_calandar = $DB->request([
-         'SELECT' => ['id'],
-         'FROM'   => Calendar::getTable(),
-         'WHERE'  => getEntitiesRestrictCriteria('', '', $input['entities_id'], true)
-      ]);
-      foreach ($ite_calandar as $calendar_data) {
-         $calendar = new Calendar;
-         $calendar->getFromDB($calendar_data['id']);
-         if ($calendar->isAWorkingHour(time())) {
-            $calendars[] = $calendar_data['id'];
-         }
-      }
-      if (count($calendars)) {
-         $input['_date_creation_calendars_id'] = $calendars;
-      }
-
       // Process Business Rules
+      $this->fillInputForBusinessRules($input);
+
       $rules = new RuleTicketCollection($input['entities_id']);
 
       // Set unset variables with are needed
@@ -6987,5 +6973,44 @@ class Ticket extends CommonITILObject {
          'dates'   => $dates,
          'add_now' => $this->getField('closedate') == ""
       ]);
+   }
+
+   /**
+    * Fill input with values related to business rules.
+    *
+    * @param array $input
+    *
+    * @return void
+    */
+   private function fillInputForBusinessRules(array &$input) {
+
+      global $DB;
+
+      $entities_id = isset($input['entities_id'])
+         ? $input['entities_id']
+         : $this->fields['entities_id'];
+
+      // If creation date is not set, then this function is called during ticket creation
+      $creation_date = !empty($this->fields['date_creation'])
+         ? strtotime($this->fields['date_creation'])
+         : time();
+
+      // add calendars matching date creation (for business rules)
+      $calendars = [];
+      $ite_calendar = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'   => Calendar::getTable(),
+         'WHERE'  => getEntitiesRestrictCriteria('', '', $entities_id, true)
+      ]);
+      foreach ($ite_calendar as $calendar_data) {
+         $calendar = new Calendar();
+         $calendar->getFromDB($calendar_data['id']);
+         if ($calendar->isAWorkingHour($creation_date)) {
+            $calendars[] = $calendar_data['id'];
+         }
+      }
+      if (count($calendars)) {
+         $input['_date_creation_calendars_id'] = $calendars;
+      }
    }
 }
