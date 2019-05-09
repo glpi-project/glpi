@@ -6656,46 +6656,6 @@ class Ticket extends CommonITILObject {
       return $criteria;
    }
 
-   static function getCommonSelect() {
-      Toolbox::deprecated('Use getCommonCriteria');
-
-      $SELECT = "";
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $SELECT .= ", `glpi_entities`.`completename` AS entityname,
-                       `glpi_tickets`.`entities_id` AS entityID ";
-      }
-
-      return " DISTINCT `glpi_tickets`.*,
-                        `glpi_itilcategories`.`completename` AS catname
-                        $SELECT";
-   }
-
-
-   static function getCommonLeftJoin() {
-      Toolbox::deprecated('Use getCommonCriteria');
-
-      $FROM = "";
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $FROM .= " LEFT JOIN `glpi_entities`
-                        ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`) ";
-      }
-
-      return " LEFT JOIN `glpi_groups_tickets`
-                  ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`)
-               LEFT JOIN `glpi_tickets_users`
-                  ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
-               LEFT JOIN `glpi_suppliers_tickets`
-                  ON (`glpi_tickets`.`id` = `glpi_suppliers_tickets`.`tickets_id`)
-               LEFT JOIN `glpi_itilcategories`
-                  ON (`glpi_tickets`.`itilcategories_id` = `glpi_itilcategories`.`id`)
-               LEFT JOIN `glpi_tickettasks`
-                  ON (`glpi_tickets`.`id` = `glpi_tickettasks`.`tickets_id`)
-               LEFT JOIN `glpi_items_tickets`
-                  ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)
-               $FROM";
-
-   }
-
 
    /**
     * @param $output
