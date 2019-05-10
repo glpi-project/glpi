@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\DatabaseFactory;
 use Glpi\Application\LocalConfigurationManager;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Symfony\Component\Console\Command\Command;
@@ -191,6 +192,7 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
 
    protected function execute(InputInterface $input, OutputInterface $output) {
 
+      $db_driver   = 'mysql'; //TODO: parameter
       $db_pass     = $input->getOption('db-password');
       $db_host     = $input->getOption('db-host');
       $db_name     = $input->getOption('db-name');
@@ -249,25 +251,14 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
          }
       }
 
-      $hostport = explode(":", $db_host);
-      if (count($hostport) < 2 || intval($hostport[1]) > 0) {
-         // "host" or "host:port"
-         $dsn = "mysql:host=$db_host";
-      } else {
-         // ":socket"
-         $dsn = "mysql:unix_socket={$hostport[1]}";
-      }
-
       try {
-         $dbh = new PDO(
-            $dsn,
-            $db_user,
-            $db_pass
-         );
-         $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-         if (GLPI_FORCE_EMPTY_SQL_MODE) {
-            $dbh->query("SET SESSION sql_mode = ''");
-         }
+         $dbh = DatabaseFactory::create([
+            'driver'   => $db_driver,
+            'host'     => $db_hostport,
+            'user'     => $db_user,
+            'pass'     => $db_pass,
+            'dbname'   => $db_name
+         ]);
       } catch (\PDOException $e) {
          $message = sprintf(
             __('Database connection failed with message "(%s)\n%s".'),
@@ -280,7 +271,7 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
       }
 
       ob_start();
-      $db_version = $dbh->query('SELECT version()')->fetchColumn();
+      $db_version = $dbh->getVersion();
       $checkdb = Config::displayCheckDbEngine(false, $db_version);
       $message = ob_get_clean();
       if ($checkdb > 0) {
@@ -288,23 +279,23 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
          return self::ERROR_DB_ENGINE_UNSUPPORTED;
       }
 
-      $db_name = str_replace('`', '``', $db_name); // Escape backquotes
+      $qchar = $dbh->getQuoteNameChar();
+      $db_name = str_replace($qchar, $qchar.$qchar, $db_name); // Escape backquotes
 
       $output->writeln(
          '<comment>' . __('Creating the database...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
-      if (!$dbh->query('CREATE DATABASE IF NOT EXISTS `' . $db_name .'`')) {
-         $error = $dbh->errorInfo();
+      if (!$dbh->rawQuery('CREATE DATABASE IF NOT EXISTS ' . $dbh->quoteName($db_name))) {
+         $error = $dbh->error();
          $message = sprintf(
-            __("Database creation failed with message \"(%s)\n%s\"."),
-            $error[0],
-            $error[2]
+            __("Database creation failed with message \"%s\"."),
+            $error
          );
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
          return self::ERROR_DB_CREATION_FAILED;
       }
-      if (false === $dbh->exec('USE `' . $db_name .'`')) {
+      if (false === $dbh->rawQuery('USE ' . $dbh->quoteName($db_name))) {
          $error = $dbh->errorInfo();
          $message = sprintf(
             __("Database selection failed with message \"(%s)\n%s\"."),
@@ -319,7 +310,7 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
          '<comment>' . __('Saving configuration file...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
-      if (!DBConnection::createMainConfig('mysql', $db_hostport, $db_user, $db_pass, $db_name)) {
+      if (!DBConnection::createMainConfig($db_driver, $db_hostport, $db_user, $db_pass, $db_name)) {
          $message = sprintf(
             __('Cannot write configuration file "%s".'),
             GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'db.yaml'
