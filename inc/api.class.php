@@ -1566,7 +1566,6 @@ abstract class API extends CommonGLPI {
          }
       }
 
-
       // manage forcedisplay
       if (isset($params['forcedisplay'])) {
          if (!is_array($params['forcedisplay'])) {
