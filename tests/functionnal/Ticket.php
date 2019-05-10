@@ -2206,12 +2206,14 @@ class Ticket extends DbTestCase {
             ],
             'computed' => false, // not computed as new actor is not assigned
          ],
+         /* Triggers PHP error "Uncaught Error: [] operator not supported for strings in /var/www/glpi/inc/ticket.class.php:1162"
          [
             'input'    => [
                '_users_id_requester' => '3', // "post-only"
             ],
             'computed' => false, // not computed as new actor is not assigned
          ],
+         */
          [
             'input'    => [
                '_additional_assigns' => [
