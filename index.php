@@ -87,11 +87,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/db.yaml")) {
 
    // Appel CSS
    echo Html::scss('glpi-legacy');
-   if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
-      echo Html::scss('css/highcontrast');
-   }
-   $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
-   echo Html::scss('css/palettes/' . $theme);
    // font awesome icons
    echo Html::css('public/lib/fontawesome-free/css/all.css');
 
