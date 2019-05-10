@@ -1895,7 +1895,7 @@ class Ticket extends DbTestCase {
    /**
     * @see self::testCanTakeIntoAccount()
     */
-   public function canTakeIntoAccountProvider() {
+   protected function canTakeIntoAccountProvider() {
       return [
          [
             'input'    => [
@@ -1953,7 +1953,7 @@ class Ticket extends DbTestCase {
                   'followup' => \READ,
                ],
             ],
-            'expected' => true, // has not enough rights so cannot take into account
+            'expected' => true, // has enough rights so can take into account
          ],
          [
             'input'    => [
@@ -1967,7 +1967,7 @@ class Ticket extends DbTestCase {
                   'followup' => \READ + \ITILFollowup::ADDALLTICKET,
                ],
             ],
-            'expected' => true, // has not enough rights so cannot take into account
+            'expected' => true, // has enough rights so can take into account
          ],
          [
             'input'    => [
@@ -1981,7 +1981,7 @@ class Ticket extends DbTestCase {
                   'followup' => \READ + \ITILFollowup::ADDMYTICKET,
                ],
             ],
-            'expected' => true, // has not enough rights so cannot take into account
+            'expected' => true, // has enough rights so can take into account
          ],
          [
             'input'    => [
@@ -1995,25 +1995,25 @@ class Ticket extends DbTestCase {
                   'followup' => \READ + \ITILFollowup::ADDGROUPTICKET,
                ],
             ],
-            'expected' => true, // has not enough rights so cannot take into account
+            'expected' => true, // has enough rights so can take into account
          ],
-         /* Cannot test that requester user can take ticket into account if also assigned
-          * because assigning a user makes the ticket automatically taken into account.
-          * We decided with @orthagh to keep this rule even if it cannot be tested yet.
          [
             'input'    => [
-               '_users_id_requester' => ['4'], // "tech"
-               '_users_id_assign'    => ['4'], // "tech"
+               '_do_not_compute_takeintoaccount' => 1,
+               '_users_id_requester'             => ['4'], // "tech"
+               '_users_id_assign'                => ['4'], // "tech"
             ],
             'user'     => [
                'login'    => 'tech',
                'password' => 'tech',
             ],
-            'expected' => true, // is requester but also assigned, so can take into account
+            // is requester but also assigned, so can take into account
+            // this is only possible if "_do_not_compute_takeintoaccount" flag is set by business rules
+            'expected' => true,
          ],
-         */
       ];
    }
+
    /**
     * Tests ability to take a ticket into account.
     *
@@ -2037,11 +2037,8 @@ class Ticket extends DbTestCase {
       )->isGreaterThan(0);
       // Reload ticket to get all default fields values
       $this->boolean($ticket->getFromDB($ticketId))->isTrue();
-      // Check if "takeintoaccount_delay_stat" is not automatically defined
-      $expectedStat = array_key_exists('takeintoaccount_delay_stat', $input)
-         ? $input['takeintoaccount_delay_stat']
-         : 0;
-      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo($expectedStat);
+      // Validate that "takeintoaccount_delay_stat" is not automatically defined
+      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
       // Login with tested user
       $this->login($user['login'], $user['password']);
       // Apply specific rights if defined
@@ -2052,6 +2049,34 @@ class Ticket extends DbTestCase {
       }
       // Verify result
       $this->boolean($ticket->canTakeIntoAccount())->isEqualTo($expected);
+
+      // Check that computation of "takeintoaccount_delay_stat" can be prevented
+      sleep(1); // be sure to wait at least one second before updating
+      $this->boolean(
+         $ticket->update(
+            [
+               'id'                              => $ticketId,
+               'content'                         => 'Updated ticket 1',
+               '_do_not_compute_takeintoaccount' => 1
+            ]
+         )
+      )->isTrue();
+      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+
+      // Check that computation of "takeintoaccount_delay_stat" is done if user can take into account
+      $this->boolean(
+         $ticket->update(
+            [
+               'id'      => $ticketId,
+               'content' => 'Updated ticket 2',
+            ]
+         )
+      )->isTrue();
+      if (!$expected) {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+      } else {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+      }
    }
 
    /**
