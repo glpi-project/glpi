@@ -2029,12 +2029,13 @@ class Ticket extends DbTestCase {
       $this->login();
       $_SESSION['glpiset_default_tech'] = false;
       $ticket = new \Ticket();
-      $ticketId = $this->integer(
-         (int)$ticket->add([
+      $ticketId = $ticket->add(
+         $input + [
             'name'    => '',
             'content' => 'A ticket to check canTakeIntoAccount() results',
-         ] + $input)
-      )->isGreaterThan(0);
+         ]
+      );
+      $this->integer((int)$ticketId)->isGreaterThan(0);
       // Reload ticket to get all default fields values
       $this->boolean($ticket->getFromDB($ticketId))->isTrue();
       // Validate that "takeintoaccount_delay_stat" is not automatically defined
@@ -2166,5 +2167,237 @@ class Ticket extends DbTestCase {
       $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
       $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
       $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::SOLVED);
+   }
+
+   /**
+    * @see self::testTakeIntoAccountDelayComputationOnCreate()
+    */
+   protected function takeIntoAccountDelayComputationOnCreateProvider() {
+
+      $group = new \Group();
+      $group_id = $group->add(['name' => 'Test group']);
+      $this->integer((int)$group_id)->isGreaterThan(0);
+
+      $group_user = new \Group_User();
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id' => $group_id,
+            'users_id'  => '4', // "tech"
+         ])
+      )->isGreaterThan(0);
+
+      $test_cases = [
+         [
+            'input'    => [
+            ],
+            'computed' => false, // not computed as no asignment
+         ],
+         [
+            'input'    => [
+               '_users_id_assign' => '4', // "tech"
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'input'    => [
+               '_additional_assigns' => [
+                  ['users_id' => '4'], // "tech"
+               ],
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'input'    => [
+               '_groups_id_assign' => $group_id,
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'input'    => [
+               '_additional_groups_assigns' => [$group_id],
+            ],
+            'computed' => true, // computed on asignment
+         ],
+      ];
+
+      // for all test cases that expect a computation
+      // add a test case with '_do_not_compute_takeintoaccount' flag to check that computation is prevented
+      foreach ($test_cases as $test_case) {
+         $test_case['input']['_do_not_compute_takeintoaccount'] = 1;
+         $test_case['computed'] = false;
+         $test_cases[] = $test_case;
+      }
+
+      return $test_cases;
+   }
+
+   /**
+    * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket creation.
+    *
+    * @param array   $input    Input used to create the ticket
+    * @param boolean $computed Expected computation state
+    *
+    * @dataProvider takeIntoAccountDelayComputationOnCreateProvider
+    */
+   public function testTakeIntoAccountDelayComputationOnCreate(array $input, $computed) {
+
+      // Create a ticket
+      $this->login();
+      $_SESSION['glpiset_default_tech'] = false;
+      $ticket = new \Ticket();
+      $ticketId = $ticket->add(
+         $input + [
+            'name'    => '',
+            'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
+         ]
+      );
+      $this->integer((int)$ticketId)->isGreaterThan(0);
+
+      // Reload ticket to get all default fields values
+      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+
+      if (!$computed) {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+      } else {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+      }
+   }
+
+   /**
+    * @see self::testTakeIntoAccountDelayComputationOnUpdate()
+    */
+   protected function takeIntoAccountDelayComputationOnUpdateProvider() {
+
+      $group = new \Group();
+      $group_id = $group->add(['name' => 'Test group']);
+      $this->integer((int)$group_id)->isGreaterThan(0);
+
+      $group_user = new \Group_User();
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id' => $group_id,
+            'users_id'  => '4', // "tech"
+         ])
+      )->isGreaterThan(0);
+
+      $test_cases = [
+         [
+            'create_input'    => [
+               '_users_id_requester' => ['4'], // "tech"
+            ],
+            'update_input'    => [
+               'content' => 'test',
+            ],
+            'computed' => false, // not computed as tech is requester
+         ],
+         [
+            'create_input'    => [
+               '_users_id_requester' => ['3'], // "post-only"
+            ],
+            'update_input'    => [
+               'content' => 'test',
+            ],
+            'computed' => true, // computed as tech is not requester
+         ],
+         [
+            'create_input'    => [
+               '_users_id_requester' => ['4'], // "tech"
+            ],
+            'update_input'    => [
+               '_users_id_assign' => '4', // "tech"
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'create_input'    => [
+               '_users_id_requester' => ['4'], // "tech"
+            ],
+            'update_input'    => [
+               '_additional_assigns' => [
+                  ['users_id' => '4'], // "tech"
+               ],
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'create_input'    => [
+               '_users_id_requester' => ['4'], // "tech"
+            ],
+            'update_input'    => [
+               '_groups_id_assign' => $group_id,
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'create_input'    => [
+               '_users_id_requester' => ['4'], // "tech"
+            ],
+            'update_input'    => [
+               '_additional_groups_assigns' => [$group_id],
+            ],
+            'computed' => true, // computed on asignment
+         ],
+      ];
+
+      // for all test cases that expect a computation
+      // add a test case with '_do_not_compute_takeintoaccount' flag to check that computation is prevented
+      foreach ($test_cases as $test_case) {
+         $test_case['update_input']['_do_not_compute_takeintoaccount'] = 1;
+         $test_case['computed'] = false;
+         $test_cases[] = $test_case;
+      }
+
+      return $test_cases;
+   }
+
+   /**
+    * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket update.
+    *
+    * @param array   $create_input  Input used to create the ticket
+    * @param array   $update_input  Input used to update the ticket
+    * @param boolean $computed      Expected computation state
+    *
+    * @dataProvider takeIntoAccountDelayComputationOnUpdateProvider
+    */
+   public function testTakeIntoAccountDelayComputationOnUpdate(array $create_input, array $update_input, $computed) {
+
+      // Create a ticket
+      $this->login();
+      $_SESSION['glpiset_default_tech'] = false;
+      $ticket = new \Ticket();
+      $ticketId = $ticket->add(
+         $create_input + [
+            'name'    => '',
+            'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
+         ]
+      );
+      $this->integer((int)$ticketId)->isGreaterThan(0);
+
+      // Reload ticket to get all default fields values
+      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+
+      // Validate that "takeintoaccount_delay_stat" is not automatically defined
+      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+
+      // Login with tech to be sure to be have rights to take into account
+      $this->login('tech', 'tech');
+
+      sleep(1); // be sure to wait at least one second before updating
+      $this->boolean(
+         $ticket->update(
+            $update_input + [
+               'id' => $ticketId,
+            ]
+         )
+      )->isTrue();
+
+      // Reload ticket to get fresh values that can be defined by a tier object
+      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+
+      if (!$computed) {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+      } else {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+      }
    }
 }
