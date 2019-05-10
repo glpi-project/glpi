@@ -19,6 +19,7 @@ The present file will list all changes made to the project; according to the
 - Remove unsafe `getCommonSelect()` and `getCommonLeftJoin()` in `Change`, `Problem` and `Ticket` classes
 - Remove `isIndex` (`DBUtils::isIndex()`) replaced with `AbstractDatabase::indexExists()`
 - Remove unsafe `IPNetwork::getWHEREForMatchingElement()`
+- Remove unsafe `getRealQueryForTreeItem()` (`DBUtils::getRealQueryForTreeItem()`)
 
 ### API changes
 
