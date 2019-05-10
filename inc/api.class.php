@@ -1559,12 +1559,13 @@ abstract class API extends CommonGLPI {
 
             return true;
          };
+
+         // call the closure
+         if (!$check_criteria($params['criteria'])) {
+            return $this->returnError($check_message);
+         }
       }
 
-      // call the closure
-      if (!$check_criteria($params['criteria'])) {
-         return $this->returnError($check_message);
-      }
 
       // manage forcedisplay
       if (isset($params['forcedisplay'])) {
