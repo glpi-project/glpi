@@ -304,24 +304,31 @@ class RuleImportComputer extends Rule {
          $where_entity = $input['entities_id'];
       }
 
+      $it_criteria = [
+         'SELECT' => 'glpi_computers.id',
+         'FROM'   => '', //to fill
+         'WHERE'  => [], //to fill
+         'ORDER'  => 'glpi_computers.is_deleted ASC'
+      ];
+
       $sql_where = '1';
       $sql_from  = '';
 
-      $needport = false;
-      $needip   = false;
       foreach ($complex_criterias as $criteria) {
          switch ($criteria->fields['criteria']) {
             case 'name' :
                if ($criteria->fields['condition'] == Rule::PATTERN_IS_EMPTY) {
-                  $sql_where .= " AND (`glpi_computers`.`name`=''
-                                       OR `glpi_computers`.`name` IS NULL) ";
+                  $it_criteria['WHERE']['OR'] = [
+                     ['glpi_computers.name' => ''],
+                     ['glpi_computers.name'   => null]
+                  ];
                } else {
-                  $sql_where .= " AND (`glpi_computers`.`name`='".$input['name']."') ";
+                  $it_criteria['WHERE'][] = ['glpi_computers.name' => $input['name']];
                }
                break;
 
             case 'serial' :
-               $sql_where .= " AND `glpi_computers`.`serial`='".$input["serial"]."'";
+               $it_criteria['WHERE'][] = ['glpi_computers.serial' => $input['serial']];
                break;
 
             case 'model' :
@@ -329,24 +336,23 @@ class RuleImportComputer extends Rule {
                $options    = ['manufacturer' => $input['manufacturer']];
                $mid        = Dropdown::importExternal('ComputerModel', $input['model'], -1,
                                                       $options, '', false);
-               $sql_where .= " AND `glpi_computers`.`computermodels_id` = '$mid'";
+               $it_criteria['WHERE'][] = ['glpi_computers.computermodels_id' => $mid];
                break;
 
             case 'manufacturer' :
                // search for manufacturer, don't create it if not found
                $mid        = Dropdown::importExternal('Manufacturer', $input['manufacturer'], -1,
                                                       [], '', false);
-               $sql_where .= " AND `glpi_computers`.`manufacturers_id` = '$mid'";
+               $it_criteria['WHERE'][] = ['glpi_computers.manufacturers_id' => $mid];
                break;
 
             case 'states_id' :
+               $condition = ['glpi_computers.states_id' => $criteria->fields['pattern']];
                if ($criteria->fields['condition'] == Rule::PATTERN_IS) {
-                  $condition = " IN ";
+                  $it_criteria['WHERE'][] = $condition;
                } else {
-                  $condition = " NOT IN ";
+                  $it_criteria['WHERE'][] = ['NOT' => $condition];
                }
-               $sql_where .= " AND `glpi_computers`.`states_id`
-                                 $condition ('".$criteria->fields['pattern']."')";
                break;
          }
       }
@@ -364,20 +370,15 @@ class RuleImportComputer extends Rule {
                                     'sql_from'     => $sql_from];
                $sql_results = Plugin::doOneHook($plugin, "ruleImportComputer_getSqlRestriction",
                                                 $params);
-               $sql_where   = $sql_results['sql_where'];
-               $sql_from    = $sql_results['sql_from'];
+               $it_criteria = array_merge_recursive($it_criteria, $sql_results);
             }
          }
       }
 
-      $sql_glpi = "SELECT `glpi_computers`.`id`
-                   FROM $sql_from
-                   WHERE $sql_where
-                   ORDER BY `glpi_computers`.`is_deleted` ASC";
-      $result_glpi = $DB->query($sql_glpi);
+      $result_glpi = $DB->request($it_criteria);
 
-      if ($DB->numrows($result_glpi) > 0) {
-         while ($data = $DB->fetchAssoc($result_glpi)) {
+      if (count($result_glpi)) {
+         while ($data = $result_glpi->next()) {
             $this->criterias_results['found_computers'][] = $data['id'];
          }
          return true;
