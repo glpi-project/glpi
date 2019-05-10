@@ -44,41 +44,43 @@ if ($_POST['softwares_id'] > 0) {
       $_POST['value'] = 0;
    }
 
-   $where = '';
+   $where = [];
    if (isset($_POST['used'])) {
-
       $used = $_POST['used'];
-
       if (count($used)) {
-         $where = " AND `glpi_softwareversions`.`id` NOT IN ('".implode("','", $used)."')";
+         $where = ['NOT' => ['glpi_softwareversions.id' => $used]];
       }
    }
    // Make a select box
-   $query = "SELECT DISTINCT `glpi_softwareversions`.*,
-                             `glpi_states`.`name` AS sname
-             FROM `glpi_softwareversions`
-             LEFT JOIN `glpi_states` ON (`glpi_softwareversions`.`states_id` = `glpi_states`.`id`)
-             WHERE `glpi_softwareversions`.`softwares_id` = '".$_POST['softwares_id']."'
-                   $where
-             ORDER BY `name`";
-   $result = $DB->query($query);
-   $number = $DB->numrows($result);
+   $iterator = $DB->request([
+      'SELECT'    => ['glpi_softwareversions.*', 'glpi_states.name AS sname'],
+      'DISTINCT'  => true,
+      'FROM'      => 'glpi_softwareversions',
+      'LEFT JOIN' => [
+         'glpi_states'  => [
+            'ON'  => [
+               'glpi_softwareversions' => 'states_id',
+               'glpi_states'           => 'id'
+            ]
+         ]
+      ],
+      'WHERE'     => ['glpi_softwareversions.softwares_id' => $_POST['softwares_id']] + $where
+   ]);
+   $number = count($iterator);
 
    $values = [];
-   if ($number) {
-      while ($data = $DB->fetchAssoc($result)) {
-         $ID = $data['id'];
-         $output = $data['name'];
+   while ($data = $iterator->next()) {
+      $ID = $data['id'];
+      $output = $data['name'];
 
-         if (empty($output) || $_SESSION['glpiis_ids_visible']) {
-            $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
-         }
-         if (!empty($data['sname'])) {
-            $output = sprintf(__('%1$s - %2$s'), $output, $data['sname']);
-         }
-         $values[$ID] = $output;
-
+      if (empty($output) || $_SESSION['glpiis_ids_visible']) {
+         $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
       }
+      if (!empty($data['sname'])) {
+         $output = sprintf(__('%1$s - %2$s'), $output, $data['sname']);
+      }
+      $values[$ID] = $output;
+
    }
 
    Dropdown::showFromArray($_POST['myname'], $values, ['display_emptychoice' => true]);
