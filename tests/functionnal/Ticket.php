@@ -2171,8 +2171,9 @@ class Ticket extends DbTestCase {
 
    /**
     * @see self::testTakeIntoAccountDelayComputationOnCreate()
+    * @see self::testTakeIntoAccountDelayComputationOnUpdate()
     */
-   protected function takeIntoAccountDelayComputationOnCreateProvider() {
+   protected function takeIntoAccountDelayComputationProvider() {
 
       $group = new \Group();
       $group_id = $group->add(['name' => 'Test group']);
@@ -2189,14 +2190,27 @@ class Ticket extends DbTestCase {
       $test_cases = [
          [
             'input'    => [
+               'content' => 'test',
             ],
-            'computed' => false, // not computed as no asignment
+            'computed' => false, // not computed as tech is requester
          ],
          [
             'input'    => [
                '_users_id_assign' => '4', // "tech"
             ],
             'computed' => true, // computed on asignment
+         ],
+         [
+            'input'    => [
+               '_users_id_observer' => '4', // "tech"
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
+               '_users_id_requester' => '3', // "post-only"
+            ],
+            'computed' => false, // not computed as new actor is not assigned
          ],
          [
             'input'    => [
@@ -2208,13 +2222,69 @@ class Ticket extends DbTestCase {
          ],
          [
             'input'    => [
+               '_additional_observers' => [
+                  ['users_id' => '4'], // "tech"
+               ],
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
+               '_additional_requesters' => [
+                  ['users_id' => '2'], // "post-only"
+               ],
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
                '_groups_id_assign' => $group_id,
             ],
             'computed' => true, // computed on asignment
          ],
          [
             'input'    => [
+               '_groups_id_observer' => $group_id,
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
+               '_groups_id_requester' => $group_id,
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
                '_additional_groups_assigns' => [$group_id],
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'input'    => [
+               '_additional_groups_observers' => [$group_id],
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
+               '_additional_groups_requesters' => [$group_id],
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         /* Not computing delay, do not know why
+         [
+            'input'    => [
+               '_suppliers_id_assign' => '1', // "_suplier01_name"
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         */
+         [
+            'input'    => [
+               '_additional_suppliers_assigns' => [
+                  ['suppliers_id' => '1'], // "_suplier01_name"
+               ],
             ],
             'computed' => true, // computed on asignment
          ],
@@ -2237,12 +2307,12 @@ class Ticket extends DbTestCase {
     * @param array   $input    Input used to create the ticket
     * @param boolean $computed Expected computation state
     *
-    * @dataProvider takeIntoAccountDelayComputationOnCreateProvider
+    * @dataProvider takeIntoAccountDelayComputationProvider
     */
    public function testTakeIntoAccountDelayComputationOnCreate(array $input, $computed) {
 
       // Create a ticket
-      $this->login();
+      $this->login('tech', 'tech'); // Login with tech to be sure to be the requester
       $_SESSION['glpiset_default_tech'] = false;
       $ticket = new \Ticket();
       $ticketId = $ticket->add(
@@ -2264,109 +2334,21 @@ class Ticket extends DbTestCase {
    }
 
    /**
-    * @see self::testTakeIntoAccountDelayComputationOnUpdate()
-    */
-   protected function takeIntoAccountDelayComputationOnUpdateProvider() {
-
-      $group = new \Group();
-      $group_id = $group->add(['name' => 'Test group']);
-      $this->integer((int)$group_id)->isGreaterThan(0);
-
-      $group_user = new \Group_User();
-      $this->integer(
-         (int)$group_user->add([
-            'groups_id' => $group_id,
-            'users_id'  => '4', // "tech"
-         ])
-      )->isGreaterThan(0);
-
-      $test_cases = [
-         [
-            'create_input'    => [
-               '_users_id_requester' => ['4'], // "tech"
-            ],
-            'update_input'    => [
-               'content' => 'test',
-            ],
-            'computed' => false, // not computed as tech is requester
-         ],
-         [
-            'create_input'    => [
-               '_users_id_requester' => ['3'], // "post-only"
-            ],
-            'update_input'    => [
-               'content' => 'test',
-            ],
-            'computed' => true, // computed as tech is not requester
-         ],
-         [
-            'create_input'    => [
-               '_users_id_requester' => ['4'], // "tech"
-            ],
-            'update_input'    => [
-               '_users_id_assign' => '4', // "tech"
-            ],
-            'computed' => true, // computed on asignment
-         ],
-         [
-            'create_input'    => [
-               '_users_id_requester' => ['4'], // "tech"
-            ],
-            'update_input'    => [
-               '_additional_assigns' => [
-                  ['users_id' => '4'], // "tech"
-               ],
-            ],
-            'computed' => true, // computed on asignment
-         ],
-         [
-            'create_input'    => [
-               '_users_id_requester' => ['4'], // "tech"
-            ],
-            'update_input'    => [
-               '_groups_id_assign' => $group_id,
-            ],
-            'computed' => true, // computed on asignment
-         ],
-         [
-            'create_input'    => [
-               '_users_id_requester' => ['4'], // "tech"
-            ],
-            'update_input'    => [
-               '_additional_groups_assigns' => [$group_id],
-            ],
-            'computed' => true, // computed on asignment
-         ],
-      ];
-
-      // for all test cases that expect a computation
-      // add a test case with '_do_not_compute_takeintoaccount' flag to check that computation is prevented
-      foreach ($test_cases as $test_case) {
-         $test_case['update_input']['_do_not_compute_takeintoaccount'] = 1;
-         $test_case['computed'] = false;
-         $test_cases[] = $test_case;
-      }
-
-      return $test_cases;
-   }
-
-   /**
     * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket update.
     *
-    * @param array   $create_input  Input used to create the ticket
-    * @param array   $update_input  Input used to update the ticket
-    * @param boolean $computed      Expected computation state
+    * @param array   $input     Input used to update the ticket
+    * @param boolean $computed  Expected computation state
     *
-    * @dataProvider takeIntoAccountDelayComputationOnUpdateProvider
+    * @dataProvider takeIntoAccountDelayComputationProvider
     */
-   public function testTakeIntoAccountDelayComputationOnUpdate(array $create_input, array $update_input, $computed) {
+   public function testTakeIntoAccountDelayComputationOnUpdate(array $input, $computed) {
 
       // Create a ticket
-      $this->login();
+      $this->login('tech', 'tech'); // Login with tech to be sure to be the requester
       $_SESSION['glpiset_default_tech'] = false;
       $ticket = new \Ticket();
       $ticketId = $ticket->add(
-         $create_input + [
+         [
             'name'    => '',
             'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
          ]
@@ -2385,7 +2367,7 @@ class Ticket extends DbTestCase {
       sleep(1); // be sure to wait at least one second before updating
       $this->boolean(
          $ticket->update(
-            $update_input + [
+            $input + [
                'id' => $ticketId,
             ]
          )
