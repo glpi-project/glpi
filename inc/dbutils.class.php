@@ -464,6 +464,7 @@ final class DbUtils {
     */
    public function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "", $value = '',
                                        $is_recursive = false, $complete_request = false) {
+      global $DB;
 
       $query = $separator ." ( ";
 
@@ -489,15 +490,16 @@ final class DbUtils {
          }
       }
       if (empty($table)) {
-         $field = "`$field`";
+         $field = $DB->quoteName($field);
       } else {
-         $field = "`$table`.`$field`";
+         $field = $DB->quoteName("$table.$field");
       }
 
       $query .= "$field";
 
       if (is_array($value)) {
-         $query .= " IN ('" . implode("','", $value) . "') ";
+         array_walk($value, function(&$val) use ($DB) { return $DB->quote($val); });
+         $query .= " IN (" . implode(', ', $value) . ') ';
       } else {
          if (strlen($value) == 0 && !isset($_SESSION['glpiactiveentities_string'])) {
             //set root entity if not set
@@ -529,11 +531,12 @@ final class DbUtils {
          }
 
          if (count($ancestors)) {
+            array_walk($ancestors, function(&$val) use ($DB) { return $DB->quote($val); });
             if ($table == 'glpi_entities') {
-               $query .= " OR $field IN ('" . implode("','", $ancestors) . "')";
+               $query .= " OR $field IN (" . implode(',', $ancestors) . ')';
             } else {
-               $recur = (empty($table) ? '`is_recursive`' : "`$table`.`is_recursive`");
-               $query .= " OR ($recur='1' AND $field IN ('" . implode("','", $ancestors) . "'))";
+               $recur = $DB->quoteName((empty($table) ? 'is_recursive' : "$table.is_recursive"));
+               $query .= " OR ($recur='1' AND $field IN (" . implode(',', $ancestors) . '))';
             }
          }
       }
