@@ -1528,7 +1528,7 @@ abstract class API extends CommonGLPI {
       // Check the criterias are valid
       if (isset($params['criteria']) && is_array($params['criteria'])) {
 
-         // use a recursive clojure to check each nested criteria
+         // use a recursive closure to check each nested criteria
          $check_message = "";
          $check_criteria = function($criteria) use (&$check_criteria, $soptions, $check_message) {
             foreach ($criteria as $criterion) {
@@ -1561,7 +1561,7 @@ abstract class API extends CommonGLPI {
          };
       }
 
-      // call the clojure
+      // call the closure
       if (!$check_criteria($params['criteria'])) {
          return $this->returnError($check_message);
       }
