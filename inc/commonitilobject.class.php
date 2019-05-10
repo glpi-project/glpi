@@ -803,12 +803,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($input['_itil_assign'])) {
          if (isset($input['_itil_assign']['_type'])) {
-            $input['_itil_observer'] = [
+            $input['_itil_assign'] = [
                'type'                            => CommonITILActor::ASSIGN,
                $this->getForeignKeyField()       => $input['id'],
                '_do_not_compute_takeintoaccount' => $do_not_compute_takeintoaccount,
                '_from_object'                    => true,
-            ] + $input['_itil_observer'];
+            ] + $input['_itil_assign'];
 
             if (isset($input['_itil_assign']['use_notification'])
                   && is_array($input['_itil_assign']['use_notification'])) {
