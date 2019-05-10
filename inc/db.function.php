@@ -380,21 +380,6 @@ function contructListFromTree($tree, $parent = 0) {
 
 
 /**
- * Get the equivalent search query using ID of soons that the search of the father's ID argument
- *
- * @param $table     string   table name
- * @param $IDf       integer  The ID of the father
- * @param $reallink  string   real field to link ($table.id if not set) (default ='')
- *
- * @return string the query
-**/
-function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
-   $dbu = new DbUtils();
-   return $dbu->getRealQueryForTreeItem($table, $IDf, $reallink);
-}
-
-
-/**
  * Compute all completenames of Dropdown Tree table
  *
  * @param $table : dropdown tree table to compute
