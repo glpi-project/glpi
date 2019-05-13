@@ -265,6 +265,13 @@ class RuleTicket extends Rule {
                   $output['priority'] = Ticket::computePriority($urgency, $impact);
                   break;
 
+               case 'do_not_compute' :
+                  if ($action->fields['field'] == 'takeintoaccount_delay_stat'
+                      && $action->fields['value'] == 1) {
+                     $output['_do_not_compute_takeintoaccount'] = true;
+                  }
+                  break;
+
                case "affectbyip" :
                case "affectbyfqdn" :
                case "affectbymac" :
@@ -680,6 +687,10 @@ class RuleTicket extends Rule {
       $actions['requesttypes_id']['name']                   = __('Request source');
       $actions['requesttypes_id']['type']                   = 'dropdown';
       $actions['requesttypes_id']['table']                  = 'glpi_requesttypes';
+
+      $actions['takeintoaccount_delay_stat']['name']          = __('Take into account delay');
+      $actions['takeintoaccount_delay_stat']['type']          = 'yesno';
+      $actions['takeintoaccount_delay_stat']['force_actions'] = ['do_not_compute'];
 
       return $actions;
    }
