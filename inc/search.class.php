@@ -1179,7 +1179,11 @@ class Search {
             if (isset($criterion['criteria']) && count($criterion['criteria'])) {
                $sub_sql = $this->constructCriteriaSQL($criterion['criteria'], $data, $searchopt, $is_having);
                if (strlen($sub_sql)) {
-                  $sql .= "$LINK ($sub_sql)";
+                  if ($NOT) {
+                     $sql .= "$LINK NOT($sub_sql)";
+                  } else {
+                     $sql .= "$LINK ($sub_sql)";
+                  }
                }
             } else if (isset($searchopt[$criterion['field']]["usehaving"])
                        || ($meta && "AND NOT" === $criterion['link'])) {
@@ -3262,6 +3266,8 @@ JAVASCRIPT;
    **/
    public function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val) {
 
+      global $DB;
+
       $searchopt  = &self::getOptions($itemtype);
       if (!isset($searchopt[$ID]['table'])) {
          return false;
@@ -3298,6 +3304,36 @@ JAVASCRIPT;
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
+            case "datetime" :
+               if (in_array($searchtype, ['contains', 'notcontains'])) {
+                  break;
+               }
+
+               $force_day = false;
+               if (strstr($val, 'BEGIN') || strstr($val, 'LAST')) {
+                  $force_day = true;
+               }
+
+               $val = Html::computeGenericDateTimeSearch($val, $force_day);
+
+               $operator = '';
+               switch ($searchtype) {
+                  case 'equals':
+                     $operator = !$NOT ? '=' : '!=';
+                     break;
+                  case 'notequals':
+                     $operator = !$NOT ? '!=' : '=';
+                     break;
+                  case 'lessthan':
+                     $operator = !$NOT ? '<' : '>';
+                     break;
+                  case 'morethan':
+                     $operator = !$NOT ? '>' : '<';
+                     break;
+               }
+
+               return " {$LINK} ({$DB->quoteName($NAME)} $operator {$DB->quoteValue($val)}) ";
+               break;
             case "count" :
             case "number" :
             case "decimal" :
