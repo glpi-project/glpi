@@ -2850,7 +2850,8 @@ class Ticket extends CommonITILObject {
 
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
+      global $DB;
+
       $tab = [];
 
       $tab = array_merge($tab, $this->getSearchOptionsMain());
@@ -2965,6 +2966,33 @@ class Ticket extends CommonITILObject {
                                                  OR (TABLE.`takeintoaccount_delay_stat` = 0
                                                       AND TABLE.`internal_time_to_own` < NOW())),
                                             1, 0)'
+      ];
+
+      $ttx_fields = [
+         'TABLE.' . $DB->quoteName('time_to_own'),
+         'TABLE.' . $DB->quoteName('time_to_resolve'),
+         'TABLE.' . $DB->quoteName('internal_time_to_own'),
+         'TABLE.' . $DB->quoteName('internal_time_to_resolve'),
+      ];
+
+      $tab[] = [
+         'id'                 => '188',
+         'table'              => $this->getTable(),
+         'field'              => 'next_escalation_level',
+         'name'               => __('Next escalation level'),
+         'datatype'           => 'datetime',
+         'usehaving'          => true,
+         'maybefuture'        => true,
+         'massiveaction'      => false,
+         // COALESCE on columns "A,B,C,D", "B,C,D,A", "C,D,A,B", "D,A,B,C" ensure that
+         // - all NON NULL values will be listed in LEAST arguments
+         // - no argument will have NULL value if at least on column is not null
+         'computation'        => "LEAST(
+            COALESCE({$ttx_fields[0]}, {$ttx_fields[1]}, {$ttx_fields[2]}, {$ttx_fields[3]}),
+            COALESCE({$ttx_fields[1]}, {$ttx_fields[2]}, {$ttx_fields[3]}, {$ttx_fields[0]}),
+            COALESCE({$ttx_fields[2]}, {$ttx_fields[3]}, {$ttx_fields[0]}, {$ttx_fields[1]}),
+            COALESCE({$ttx_fields[3]}, {$ttx_fields[0]}, {$ttx_fields[1]}, {$ttx_fields[2]})
+         )"
       ];
 
       $tab[] = [
