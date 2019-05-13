@@ -2968,13 +2968,7 @@ class Ticket extends CommonITILObject {
                                             1, 0)'
       ];
 
-      $ttx_fields = [
-         'TABLE.' . $DB->quoteName('time_to_own'),
-         'TABLE.' . $DB->quoteName('time_to_resolve'),
-         'TABLE.' . $DB->quoteName('internal_time_to_own'),
-         'TABLE.' . $DB->quoteName('internal_time_to_resolve'),
-      ];
-
+      $max_date = '99999999';
       $tab[] = [
          'id'                 => '188',
          'table'              => $this->getTable(),
@@ -2984,15 +2978,26 @@ class Ticket extends CommonITILObject {
          'usehaving'          => true,
          'maybefuture'        => true,
          'massiveaction'      => false,
-         // COALESCE on columns "A,B,C,D", "B,C,D,A", "C,D,A,B", "D,A,B,C" ensure that
-         // - all NON NULL values will be listed in LEAST arguments
-         // - no argument will have NULL value if at least on column is not null
-         'computation'        => "LEAST(
-            COALESCE({$ttx_fields[0]}, {$ttx_fields[1]}, {$ttx_fields[2]}, {$ttx_fields[3]}),
-            COALESCE({$ttx_fields[1]}, {$ttx_fields[2]}, {$ttx_fields[3]}, {$ttx_fields[0]}),
-            COALESCE({$ttx_fields[2]}, {$ttx_fields[3]}, {$ttx_fields[0]}, {$ttx_fields[1]}),
-            COALESCE({$ttx_fields[3]}, {$ttx_fields[0]}, {$ttx_fields[1]}, {$ttx_fields[2]})
-         )"
+         // Get least value from TTO/TTR fields:
+         // - use TTO fields only if ticket not already taken into account,
+         // - use TTR fields only if ticket not already solved,
+         // - replace NULL or not kept values with 99999999 to be sure that they will not be returned by the LEAST function,
+         // - replace 99999999 by empty string to keep only valid values.
+         'computation'        => "REPLACE(
+            LEAST(
+               IF(".$DB->quoteName('TABLE.takeintoaccount_delay_stat')." <= 0,
+                  COALESCE(".$DB->quoteName('TABLE.time_to_own').", $max_date),
+                  $max_date),
+               IF(".$DB->quoteName('TABLE.takeintoaccount_delay_stat')." <= 0,
+                  COALESCE(".$DB->quoteName('TABLE.internal_time_to_own').", $max_date),
+                  $max_date),
+               IF(".$DB->quoteName('TABLE.solvedate')." IS NULL,
+                  COALESCE(".$DB->quoteName('TABLE.time_to_resolve').", $max_date),
+                  $max_date),
+               IF(".$DB->quoteName('TABLE.solvedate')." IS NULL,
+                  COALESCE(".$DB->quoteName('TABLE.internal_time_to_resolve').", $max_date),
+                  $max_date)
+            ), $max_date, '')"
       ];
 
       $tab[] = [
