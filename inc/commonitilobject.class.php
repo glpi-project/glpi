@@ -6248,7 +6248,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $restrict_fup['itemtype'] = self::getType();
       $restrict_fup['items_id'] = $this->getID();
 
-      if (!Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
+      if ($task_obj->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
          $restrict_task = [
             'OR' => [
                'is_private'   => 0,
