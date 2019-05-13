@@ -471,27 +471,9 @@ class Problem_Ticket extends CommonDBRelation{
     */
    private static function getTicketProblemsData($tickets_id) {
 
-      global $DB;
-
-      $iterator = $DB->request(
-         [
-            'SELECT DISTINCT' => 'glpi_problems_tickets.id AS linkID',
-            'FIELDS'          => 'glpi_problems.*',
-            'FROM'            => 'glpi_problems_tickets',
-            'LEFT JOIN'       => [
-               'glpi_problems'   => [
-                  'ON' => [
-                     'glpi_problems_tickets' => 'problems_id',
-                     'glpi_problems'         => 'id'
-                  ]
-               ]
-            ],
-            'WHERE'           => [
-               'glpi_problems_tickets.tickets_id' => $tickets_id
-            ],
-            'ORDERBY'         => 'glpi_problems.name'
-         ]
-      );
+      $ticket = new Ticket();
+      $ticket->fields['id'] = $tickets_id;
+      $iterator = self::getListForItem($ticket);
 
       $problems = [];
       foreach ($iterator as $data) {
@@ -515,27 +497,9 @@ class Problem_Ticket extends CommonDBRelation{
     */
    private static function getProblemTicketsData($problems_id) {
 
-      global $DB;
-
-      $iterator = $DB->request(
-         [
-            'SELECT DISTINCT' => 'glpi_problems_tickets.id AS linkID',
-            'FIELDS'          => 'glpi_tickets.*',
-            'FROM'            => 'glpi_problems_tickets',
-            'LEFT JOIN'       => [
-               'glpi_tickets' => [
-                  'ON' => [
-                     'glpi_problems_tickets' => 'tickets_id',
-                     'glpi_tickets'          => 'id'
-                  ]
-               ]
-            ],
-            'WHERE'           => [
-               'glpi_problems_tickets.problems_id' => $problems_id
-            ],
-            'ORDERBY'         => 'glpi_tickets.name'
-         ]
-      );
+      $problem = new Problem();
+      $problem->fields['id'] = $problems_id;
+      $iterator = self::getListForItem($problem);
 
       $tickets = [];
       foreach ($iterator as $data) {
