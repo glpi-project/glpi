@@ -3039,6 +3039,8 @@ JAVASCRIPT;
    **/
    static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val) {
 
+      global $DB;
+
       $searchopt  = &self::getOptions($itemtype);
       if (!isset($searchopt[$ID]['table'])) {
          return false;
@@ -3103,7 +3105,7 @@ JAVASCRIPT;
                      break;
                }
 
-               return " $LINK (`$NAME` $operator '$val') ";
+               return " {$LINK} ({$DB->quoteName($NAME)} $operator {$DB->quoteValue($val)}) ";
                break;
             case "count" :
             case "number" :
