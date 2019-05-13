@@ -684,8 +684,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // "do not compute" flag set by business rules for "takeintoaccount_delay_stat" field
-      $do_not_compute_takeintoaccount = array_key_exists('_do_not_compute_takeintoaccount', $input)
-         && $input['_do_not_compute_takeintoaccount'];
+      $do_not_compute_takeintoaccount = $this->isTakeIntoAccountComputationBlocked($input);
 
       if (isset($input['_itil_requester'])) {
          if (isset($input['_itil_requester']['_type'])) {
@@ -1472,8 +1471,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // "do not compute" flag set by business rules for "takeintoaccount_delay_stat" field
-      $do_not_compute_takeintoaccount = array_key_exists('_do_not_compute_takeintoaccount', $this->input)
-         && $this->input['_do_not_compute_takeintoaccount'];
+      $do_not_compute_takeintoaccount = $this->isTakeIntoAccountComputationBlocked($this->input);
 
       if (!is_null($useractors)) {
          $user_input = [
@@ -1747,8 +1745,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // "do not compute" flag set by business rules for "takeintoaccount_delay_stat" field
-      $do_not_compute_takeintoaccount = array_key_exists('_do_not_compute_takeintoaccount', $input)
-         && $input['_do_not_compute_takeintoaccount'];
+      $do_not_compute_takeintoaccount = $this->isTakeIntoAccountComputationBlocked($input);
 
       // Additional groups actors
       if (!is_null($groupactors)) {
@@ -7092,5 +7089,17 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       return $this;
+   }
+
+   /**
+    * Check if input contains a flag set to prevent 'takeintoaccount' delay computation.
+    *
+    * @param array $input
+    *
+    * @return boolean
+    */
+   public function isTakeIntoAccountComputationBlocked($input) {
+      return array_key_exists('_do_not_compute_takeintoaccount', $input)
+         && $input['_do_not_compute_takeintoaccount'];
    }
 }

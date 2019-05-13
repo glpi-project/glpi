@@ -376,8 +376,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       $no_stat_computation = true;
       if ($this->input['type'] == CommonITILActor::ASSIGN) {
          // Compute "take into account delay" unless "do not compute" flag was set by business rules
-         $no_stat_computation = array_key_exists('_do_not_compute_takeintoaccount', $this->input)
-            && $this->input['_do_not_compute_takeintoaccount'];
+         $no_stat_computation = $item->isTakeIntoAccountComputationBlocked($this->input);
       }
       $item->updateDateMod($this->fields[static::getItilObjectForeignKey()], $no_stat_computation);
 
