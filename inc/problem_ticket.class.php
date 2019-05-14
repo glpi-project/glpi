@@ -70,15 +70,15 @@ class Problem_Ticket extends CommonDBRelation{
          switch ($item->getType()) {
             case 'Ticket' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_problems_tickets',
-                                             ['tickets_id' => $item->getID()]);
+                  $problems = self::getTicketProblemsData($item->getID());
+                  $nb = count($problems);
                }
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Problem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_problems_tickets',
-                                             ['problems_id' => $item->getID()]);
+                  $tickets = self::getProblemTicketsData($item->getID());
+                  $nb = count($tickets);
                }
                return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
          }
@@ -261,10 +261,10 @@ class Problem_Ticket extends CommonDBRelation{
     * @param $problem Problem object
    **/
    static function showForProblem(Problem $problem) {
-      global $DB, $CFG_GLPI;
 
       $ID = $problem->getField('id');
-      if (!$problem->can($ID, READ)) {
+
+      if (!static::canView() || !$problem->can($ID, READ)) {
          return false;
       }
 
@@ -272,30 +272,11 @@ class Problem_Ticket extends CommonDBRelation{
 
       $rand = mt_rand();
 
-      $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_problems_tickets.id AS linkID',
-         'FIELDS'          => 'glpi_tickets.*',
-         'FROM'            => 'glpi_problems_tickets',
-         'LEFT JOIN'       => [
-            'glpi_tickets' => [
-               'ON' => [
-                  'glpi_problems_tickets' => 'tickets_id',
-                  'glpi_tickets'          => 'id'
-               ]
-            ]
-         ],
-         'WHERE'           => [
-            'glpi_problems_tickets.problems_id' => $ID
-         ],
-         'ORDERBY'         => 'glpi_tickets.name'
-      ]);
-
-      $tickets = [];
+      $tickets = self::getProblemTicketsData($ID);
       $used    = [];
-      $numrows = count($iterator);
-      while ($data = $iterator->next()) {
-         $tickets[$data['id']] = $data;
-         $used[$data['id']]    = $data['id'];
+      $numrows = count($tickets);
+      foreach ($tickets as $ticket) {
+         $used[$ticket['id']] = $ticket['id'];
       }
 
       if ($canedit) {
@@ -388,12 +369,10 @@ class Problem_Ticket extends CommonDBRelation{
     * @param $ticket Ticket object
    **/
    static function showForTicket(Ticket $ticket) {
-      global $DB, $CFG_GLPI;
 
       $ID = $ticket->getField('id');
-      if (!Session::haveRight("problem", Problem::READALL)
-          || !$ticket->can($ID, READ)) {
 
+      if (!static::canView() || !$ticket->can($ID, READ)) {
          return false;
       }
 
@@ -401,30 +380,11 @@ class Problem_Ticket extends CommonDBRelation{
 
       $rand = mt_rand();
 
-      $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_problems_tickets.id AS linkID',
-         'FIELDS'          => 'glpi_problems.*',
-         'FROM'            => 'glpi_problems_tickets',
-         'LEFT JOIN'       => [
-            'glpi_problems'   => [
-               'ON' => [
-                  'glpi_problems_tickets' => 'problems_id',
-                  'glpi_problems'         => 'id'
-               ]
-            ]
-         ],
-         'WHERE'           => [
-            'glpi_problems_tickets.tickets_id'  => $ID
-         ],
-         'ORDERBY'         => 'glpi_problems.name'
-      ]);
-
-      $problems = [];
+      $problems = self::getTicketProblemsData($ID);
       $used     = [];
-      $numrows  = count($iterator);
-      while ($data = $iterator->next()) {
-         $problems[$data['id']] = $data;
-         $used[$data['id']]     = $data['id'];
+      $numrows  = count($problems);
+      foreach ($problems as $problem) {
+         $used[$problem['id']] = $problem['id'];
       }
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -452,9 +412,11 @@ class Problem_Ticket extends CommonDBRelation{
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td><td>";
-         echo "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>";
-         echo __('Create a problem from this ticket');
-         echo "</a>";
+         if (Session::haveRight('problem', CREATE)) {
+            echo "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>";
+            echo __('Create a problem from this ticket');
+            echo "</a>";
+         }
 
          echo "</td></tr></table>";
          Html::closeForm();
@@ -499,5 +461,55 @@ class Problem_Ticket extends CommonDBRelation{
       echo "</div>";
    }
 
+   /**
+    * Returns problems data for given ticket.
+    * Returned data is usable by `Problem::showShort()` method.
+    *
+    * @param integer $tickets_id
+    *
+    * @return array
+    */
+   private static function getTicketProblemsData($tickets_id) {
 
+      $ticket = new Ticket();
+      $ticket->fields['id'] = $tickets_id;
+      $iterator = self::getListForItem($ticket);
+
+      $problems = [];
+      foreach ($iterator as $data) {
+         $problem = new Problem();
+         $problem->getFromDB($data['id']);
+         if ($problem->canViewItem()) {
+            $problems[$data['id']] = $data;
+         }
+      }
+
+      return $problems;
+   }
+
+   /**
+    * Returns tickets data for given problem.
+    * Returned data is usable by `Ticket::showShort()` method.
+    *
+    * @param integer $problems_id
+    *
+    * @return array
+    */
+   private static function getProblemTicketsData($problems_id) {
+
+      $problem = new Problem();
+      $problem->fields['id'] = $problems_id;
+      $iterator = self::getListForItem($problem);
+
+      $tickets = [];
+      foreach ($iterator as $data) {
+         $ticket = new Ticket();
+         $ticket->getFromDB($data['id']);
+         if ($ticket->canViewItem()) {
+            $tickets[$data['id']] = $data;
+         }
+      }
+
+      return $tickets;
+   }
 }
