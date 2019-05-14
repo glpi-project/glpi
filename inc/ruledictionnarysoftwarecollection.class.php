@@ -173,8 +173,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                //Find all the softwares in the database with the same name and manufacturer
                $sql = "SELECT `id`
                        FROM `glpi_softwares`
-                       WHERE `name` = '" . $input["name"] . "'
-                             AND `manufacturers_id` = '" . $input["manufacturers_id"] . "'";
+                       WHERE `name` = '" . $DB->escape($input["name"]) . "'
+                             AND `manufacturers_id` = '" . (int)$input["manufacturers_id"] . "'";
                $res_soft = $DB->query($sql);
 
                if ($DB->numrows($res_soft) > 0) {
