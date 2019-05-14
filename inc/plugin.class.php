@@ -197,40 +197,37 @@ class Plugin extends CommonDBTM {
 
       $dir = GLPI_ROOT . "/plugins/$name/locales/";
 
-      $translation_included = false;
+      $mofile = false;
       // New localisation system
       if (file_exists($dir.$CFG_GLPI["languages"][$trytoload][1])) {
-         $TRANSLATE->addTranslationFile('gettext',
-                                        $dir.$CFG_GLPI["languages"][$trytoload][1],
-                                        $name, $coretrytoload);
-
-         $translation_included = true;
-
+         $mofile = $dir.$CFG_GLPI["languages"][$trytoload][1];
       } else if (!empty($CFG_GLPI["language"])
                  && file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
-         $TRANSLATE->addTranslationFile('gettext',
-                                        $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1],
-                                        $name, $coretrytoload);
-         $translation_included = true;
+         $mofile = $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1];
       } else if (file_exists($dir."en_GB.mo")) {
-         $TRANSLATE->addTranslationFile('gettext',
-                                        $dir."en_GB.mo",
-                                        $name, $coretrytoload);
-         $translation_included = true;
-
+         $mofile = $dir."en_GB.mo";
       }
 
-      if (!$translation_included) {
-         if (file_exists($dir.$trytoload.'.php')) {
-            include ($dir.$trytoload.'.php');
-         } else if (isset($CFG_GLPI["language"])
-                    && file_exists($dir.$CFG_GLPI["language"].'.php')) {
-            include ($dir.$CFG_GLPI["language"].'.php');
-         } else if (file_exists($dir . "en_GB.php")) {
-            include ($dir . "en_GB.php");
-         } else if (file_exists($dir . "fr_FR.php")) {
-            include ($dir . "fr_FR.php");
-         }
+      if ($mofile !== false) {
+         $TRANSLATE->addTranslationFile(
+            'gettext',
+            $mofile,
+            $name,
+            $coretrytoload
+         );
+      }
+
+      $mofile = str_replace($dir, GLPI_LOCAL_I18N_DIR . '/'.$name, $mofile);
+      $phpfile = str_replace('.mo', '.php', $mofile);
+
+      // Load local PHP file if it exists
+      if (file_exists($phpfile)) {
+         $TRANSLATE->addTranslationFile('phparray', $phpfile, $name, $coretrytoload);
+      }
+
+      // Load local MO file if it exists -- keep last so it gets precedence
+      if (file_exists($mofile)) {
+         $TRANSLATE->addTranslationFile('gettext', $mofile, $name, $coretrytoload);
       }
    }
 
