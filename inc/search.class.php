@@ -3600,7 +3600,7 @@ JAVASCRIPT;
     * @since 10.0.0 Method is no longer static
    **/
    public function addSelect($itemtype, $ID, $meta = 0, $meta_type = 0) {
-      global $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $searchopt   = &self::getOptions($itemtype);
       $table       = $searchopt[$ID]["table"];
@@ -3838,7 +3838,8 @@ JAVASCRIPT;
 
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE", $this->db->quoteName("$table$addtable"), $tocompute);
+         $tocompute = str_replace($this->db->quoteName('TABLE'), 'TABLE', $tocompute);
+         $tocompute = str_replace("TABLE", $DB->quoteName("$table$addtable"), $tocompute);
       }
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
@@ -4242,6 +4243,8 @@ JAVASCRIPT;
    **/
    public function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
 
+      global $DB;
+
       $searchopt = &self::getOptions($itemtype);
       if (!isset($searchopt[$ID]['table'])) {
          return false;
@@ -4592,7 +4595,8 @@ JAVASCRIPT;
       $tocomputetrans = $this->db->quoteName("{$table}_trans.value");
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE", $this->db->quoteName($table), $tocompute);
+         $tocompute = str_replace($this->db->quoteName('TABLE'), 'TABLE', $tocompute);
+         $tocompute = str_replace("TABLE", $DB->quoteName("$table"), $tocompute);
       }
 
       // Preformat items
