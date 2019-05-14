@@ -174,7 +174,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                $sql = "SELECT `id`
                        FROM `glpi_softwares`
                        WHERE `name` = '" . $DB->escape($input["name"]) . "'
-                             AND `manufacturers_id` = '" . $input["manufacturers_id"] . "'";
+                             AND `manufacturers_id` = '" . (int)$input["manufacturers_id"] . "'";
                $res_soft = $DB->query($sql);
 
                if ($DB->numrows($res_soft) > 0) {
