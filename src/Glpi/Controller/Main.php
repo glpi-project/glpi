@@ -819,8 +819,16 @@ class Main extends AbstractController implements ControllerInterface
         // Makes CSS cacheable by browsers and proxies
         $is_cacheable = !isset($get['debug']) && !isset($get['nocache']);
         if ($is_cacheable) {
+            // For now it is nearly impossible to change automatic cache headers policy related to session
+            // as session is started prior to kernel and router instanciation.
+            // Setting header "Pragma" to empty value permits to use browser cache but this is a workaround that
+            // may not always work.
+            //
+            // TODO When it will be possible, replace this by usage of "session_cache_limiter('');"
+            // before "session_start()" for this route (or even better, do not use session for this route).
+            $response = $response->withHeader('Pragma', null);
+
             $max_age = WEEK_TIMESTAMP;
-            $response = $response->withoutHeader('Pragma');
             $response = $response->withHeader('Cache-Control', ['public', 'max-age=' . $max_age]);
             $response = $response->withHeader('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
         }
