@@ -188,9 +188,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $input["ancestors_cache"] = '';
             if (Toolbox::useCache()) {
                $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
-               if ($GLPI_CACHE->has($ckey)) {
-                  $GLPI_CACHE->delete($ckey);
-               }
+               $GLPI_CACHE->delete($ckey);
             }
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
          }
@@ -215,9 +213,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       //drop from sons cache when needed
       if ($changeParent && Toolbox::useCache()) {
          $ckey = $this->getTable() . '_ancestors_cache_' . $ID;
-         if ($GLPI_CACHE->has($ckey)) {
-            $GLPI_CACHE->delete($ckey);
-         }
+         $GLPI_CACHE->delete($ckey);
       }
 
       if (($updateName) || ($changeParent)) {
@@ -316,6 +312,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                   unset($sons[$this->getID()]);
                   $GLPI_CACHE->set($ckey, $sons);
                }
+            } else {
+               // If cache key does not exists in current context (UI using APCu), it may exists
+               // in another context (CLI using filesystem). So we force deletion of cache in all contexts
+               // to be sure to not use a stale value.
+               $GLPI_CACHE->delete($ckey);
             }
          }
       }
@@ -341,6 +342,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                   $sons[$this->getID()] = (string)$this->getID();
                   $GLPI_CACHE->set($ckey, $sons);
                }
+            } else {
+               // If cache key does not exists in current context (UI using APCu), it may exists
+               // in another context (CLI using filesystem). So we force deletion of cache in all contexts
+               // to be sure to not use a stale value.
+               $GLPI_CACHE->delete($ckey);
             }
          }
       }
