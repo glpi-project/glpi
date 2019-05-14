@@ -1527,21 +1527,42 @@ abstract class API extends CommonGLPI {
 
       // Check the criterias are valid
       if (isset($params['criteria']) && is_array($params['criteria'])) {
-         foreach ($params['criteria'] as $criteria) {
-            if (!isset($criteria['field']) || !isset($criteria['searchtype'])
-                || !isset($criteria['value'])) {
-               return $this->returnError(__("Malformed search criteria"));
+
+         // use a recursive closure to check each nested criteria
+         $check_message = "";
+         $check_criteria = function($criteria) use (&$check_criteria, $soptions, $check_message) {
+            foreach ($criteria as $criterion) {
+               // recursive call
+               if (isset($criterion['criteria'])) {
+                  return $check_criteria($criterion['criteria']);
+               }
+
+               if (!isset($criterion['field']) || !isset($criterion['searchtype'])
+                   || !isset($criterion['value'])) {
+                  $check_message = __("Malformed search criteria");
+                  return false;
+               }
+
+               if (!ctype_digit((string) $criterion['field'])
+                   || !array_key_exists($criterion['field'], $soptions)) {
+                  $check_message = __("Bad field ID in search criteria");
+                  return false;
+               }
+
+               if (isset($soptions[$criterion['field']])
+                   && isset($soptions[$criterion['field']]['nosearch'])
+                   && $soptions[$criterion['field']]['nosearch']) {
+                  $check_message = __("Forbidden field ID in search criteria");
+                  return false;
+               }
             }
 
-            if (!ctype_digit((string) $criteria['field'])
-                  || !array_key_exists($criteria['field'], $soptions)) {
-               return $this->returnError(__("Bad field ID in search criteria"));
-            }
+            return true;
+         };
 
-            if (isset($soptions[$criteria['field']]) && isset($soptions[$criteria['field']]['nosearch'])
-                && $soptions[$criteria['field']]['nosearch']) {
-               return $this->returnError(__("Forbidden field ID in search criteria"));
-            }
+         // call the closure
+         if (!$check_criteria($params['criteria'])) {
+            return $this->returnError($check_message);
          }
       }
 
