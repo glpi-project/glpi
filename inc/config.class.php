@@ -1887,6 +1887,16 @@ class Config extends CommonDBTM {
 
       Session::loadLanguage($oldlang);
 
+      $files = glob(GLPI_LOCAL_I18N_DIR."/**/*.{php,mo}", GLOB_BRACE);
+      if (count($files)) {
+         echo "<tr><th>Locales overrides</th></tr>\n";
+         echo "<tr class='tab_bg_1'><td>\n";
+         foreach ($files as $file) {
+            echo "$file<br/>\n";
+         }
+         echo "</td></tr>";
+      }
+
       echo "<tr class='tab_bg_1'><td>[/code]\n</td></tr>";
 
       echo "<tr class='tab_bg_2'><th>". __('To copy/paste in your support request')."</th></tr>\n";
