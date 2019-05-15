@@ -142,7 +142,6 @@ class Entity extends CommonTreeDropdown {
       $this->cleanParentsSons();
       $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
       $this->cache->delete($ckey);
-      }
       return true;
    }
 
