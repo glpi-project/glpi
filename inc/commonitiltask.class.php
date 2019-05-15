@@ -653,7 +653,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $name = _n('Task', 'Tasks', Session::getPluralNumber());
 
       $task_condition = '';
-      if (!Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
+      if ($task->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
          $task_condition = [
             'OR' => [
                'NEWTABLE.is_private'   => 0,

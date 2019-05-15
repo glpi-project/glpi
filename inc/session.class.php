@@ -311,7 +311,7 @@ class Session {
       $newentities = [];
       $newroots    = [];
       if (isset($_SESSION['glpiactiveprofile'])) {
-         if ($ID == "all") {
+         if ($ID === "all") {
             $ancestors = [];
             foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
                $ancestors               = array_unique(array_merge(getAncestorsOf("glpi_entities",

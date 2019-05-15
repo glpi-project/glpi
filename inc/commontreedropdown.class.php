@@ -197,9 +197,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
             $input["ancestors_cache"] = '';
             $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
-            if ($this->cache->has($ckey)) {
-               $this->cache->delete($ckey);
-            }
+            $this->cache->delete($ckey);
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
          }
       }
@@ -223,9 +221,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       //drop from sons cache when needed
       if ($changeParent) {
          $ckey = $this->getTable() . '_ancestors_cache_' . $ID;
-         if ($this->cache->has($ckey)) {
-            $this->cache->delete($ckey);
-         }
+         $this->cache->delete($ckey);
       }
 
       if (($updateName) || ($changeParent)) {
@@ -324,6 +320,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                   unset($sons[$this->getID()]);
                   $this->cache->set($ckey, $sons);
                }
+            } else {
+               // If cache key does not exists in current context (UI using APCu), it may exists
+               // in another context (CLI using filesystem). So we force deletion of cache in all contexts
+               // to be sure to not use a stale value.
+               $GLPI_CACHE->delete($ckey);
             }
          }
       }
@@ -346,6 +347,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                $sons[$this->getID()] = (string)$this->getID();
                $this->cache->set($ckey, $sons);
             }
+            } else {
+               // If cache key does not exists in current context (UI using APCu), it may exists
+               // in another context (CLI using filesystem). So we force deletion of cache in all contexts
+               // to be sure to not use a stale value.
+               $GLPI_CACHE->delete($ckey);
          }
       }
    }
