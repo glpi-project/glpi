@@ -85,6 +85,12 @@ if (!defined("GLPI_SESSION_DIR")) {
    define("GLPI_SESSION_DIR", GLPI_VAR_DIR . "/_sessions");
 }
 
+// Path for local i18n files
+define('GLPI_I18N_DIR', GLPI_ROOT . "/locales");
+if (!defined("GLPI_LOCAL_I18N_DIR")) {
+   define("GLPI_LOCAL_I18N_DIR", GLPI_VAR_DIR . "/_locales");
+}
+
 // Path for plugins documents storage
 if (!defined("GLPI_PLUGIN_DOC_DIR")) {
    define("GLPI_PLUGIN_DOC_DIR", GLPI_VAR_DIR . "/_plugins");

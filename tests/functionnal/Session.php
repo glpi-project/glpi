@@ -133,4 +133,39 @@ class Session extends \GLPITestCase {
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
    }
+
+   public function testLocalI18n() {
+      //load locales
+      \Session::loadLanguage('en_GB');
+      $this->string(__('Login'))->isIdenticalTo('Login');
+
+      //create directory for local i18n
+      if (!file_exists(GLPI_LOCAL_I18N_DIR.'/core')) {
+         mkdir(GLPI_LOCAL_I18N_DIR.'/core');
+      }
+
+      //write local MO file with i18n override
+      copy(
+         __DIR__ . '/../local_en_GB.mo',
+         GLPI_LOCAL_I18N_DIR.'/core/en_GB.mo'
+      );
+      \Session::loadLanguage('en_GB');
+
+      $this->string(__('Login'))->isIdenticalTo('Login from local gettext');
+      $this->string(__('Password'))->isIdenticalTo('Password');
+
+      //write local PHP file with i18n override
+      file_put_contents(
+         GLPI_LOCAL_I18N_DIR.'/core/en_GB.php',
+         "<?php\n\$lang['Login'] = 'Login from local PHP';\n\$lang['Password'] = 'Password from local PHP';\nreturn \$lang;"
+      );
+      \Session::loadLanguage('en_GB');
+
+      $this->string(__('Login'))->isIdenticalTo('Login from local gettext');
+      $this->string(__('Password'))->isIdenticalTo('Password from local PHP');
+
+      //cleanup -- keep at the end
+      unlink(GLPI_LOCAL_I18N_DIR.'/core/en_GB.php');
+      unlink(GLPI_LOCAL_I18N_DIR.'/core/en_GB.mo');
+   }
 }
