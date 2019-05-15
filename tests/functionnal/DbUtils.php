@@ -438,24 +438,24 @@ class DbUtils extends DbTestCase {
       $it = new \DBmysqlIterator($DB);
 
       $it->execute('glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers'));
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_computers`');
+      $this->string($it->getSql())->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers`'));
 
       //keep testing old method from db.function
       $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_computers`');
+      $this->string($it->getSql())->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers`'));
 
       // See all
       $this->setEntity('_test_root_entity', true);
 
       $it->execute('glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?,?,?)');
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?,?,?)'));
       $this->array($it->getParameters())->isIdenticalTo([1, 2, 3]);
 
       //keep testing old method from db.function
       $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?,?,?)');
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?,?,?)'));
       $this->array($it->getParameters())->isIdenticalTo([1, 2, 3]);
 
       // Root entity
@@ -463,106 +463,106 @@ class DbUtils extends DbTestCase {
 
       $it->execute('glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?)');
-      $this->array($it->getParameters())->isIdenticalTo(['1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?)'));
+      $this->array($it->getParameters())->isEqualTo([1]);
 
       $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?)');
-      $this->array($it->getParameters())->isIdenticalTo(['1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?)'));
+      $this->array($it->getParameters())->isEqualTo([1]);
 
       // Child
       $this->setEntity('_test_child_1', false);
 
       $it->execute('glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?)');
-      $this->array($it->getParameters())->isIdenticalTo(['2']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?)'));
+      $this->array($it->getParameters())->isEqualTo([2]);
 
       $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?)');
-      $this->array($it->getParameters())->isIdenticalTo(['2']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (?)'));
+      $this->array($it->getParameters())->isEqualTo([2]);
 
       // Child without table
       $it->execute('glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria());
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `entities_id` IN (?)');
-      $this->array($it->getParameters())->isIdenticalTo(['2']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE `entities_id` IN (?)'));
+      $this->array($it->getParameters())->isEqualTo([2]);
 
       $it->execute('glpi_computers', getEntitiesRestrictCriteria());
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `entities_id` IN (?)');
-      $this->array($it->getParameters())->isIdenticalTo(['2']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE `entities_id` IN (?)'));
+      $this->array($it->getParameters())->isEqualTo([2]);
 
       // Child + parent
       $this->setEntity('_test_child_2', false);
 
       $it->execute('glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers', '', '', true));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (?) OR (`glpi_computers`.`is_recursive` = ? AND `glpi_computers`.`entities_id` IN (?,?)))');
-      $this->array($it->getParameters())->isIdenticalTo(['3',1, '0', '1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (?) OR (`glpi_computers`.`is_recursive` = ? AND `glpi_computers`.`entities_id` IN (?,?)))'));
+      $this->array($it->getParameters())->isEqualTo([3,1, 0, 1]);
 
       $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', true));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (?) OR (`glpi_computers`.`is_recursive` = ? AND `glpi_computers`.`entities_id` IN (?,?)))');
-      $this->array($it->getParameters())->isIdenticalTo(['3',1, '0', '1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (?) OR (`glpi_computers`.`is_recursive` = ? AND `glpi_computers`.`entities_id` IN (?,?)))'));
+      $this->array($it->getParameters())->isEqualTo([3,1, 0, 1]);
 
       //Child + parent on glpi_entities
       $it->execute('glpi_entities', $this->testedInstance->getEntitiesRestrictCriteria('glpi_entities', '', '', true));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (?,?,?))');
-      $this->array($it->getParameters())->isIdenticalTo(['3', '0', '1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (?,?,?))'));
+      $this->array($it->getParameters())->isEqualTo([3, 0, 1]);
 
       //keep testing old method from db.function
       $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', '', true));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (?,?,?))');
-      $this->array($it->getParameters())->isIdenticalTo(['3', '0', '1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (?,?,?))'));
+      $this->array($it->getParameters())->isEqualTo([3, 0, 1]);
 
       //Child + parent -- automatic recusrivity detection
       $it->execute('glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto'));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (?) OR (`glpi_computers`.`is_recursive` = ? AND `glpi_computers`.`entities_id` IN (?,?)))');
-      $this->array($it->getParameters())->isIdenticalTo(['3', 1, '0', '1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (?) OR (`glpi_computers`.`is_recursive` = ? AND `glpi_computers`.`entities_id` IN (?,?)))'));
+      $this->array($it->getParameters())->isEqualTo([3, 1, 0, 1]);
 
       //keep testing old method from db.function
       $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto'));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (?) OR (`glpi_computers`.`is_recursive` = ? AND `glpi_computers`.`entities_id` IN (?,?)))');
-      $this->array($it->getParameters())->isIdenticalTo(['3', 1, '0', '1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (?) OR (`glpi_computers`.`is_recursive` = ? AND `glpi_computers`.`entities_id` IN (?,?)))'));
+      $this->array($it->getParameters())->isEqualTo([3, 1, 0, 1]);
 
       // Child + parent without table
       $it->execute('glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('', '', '', true));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (?) OR (`is_recursive` = ? AND `entities_id` IN (?,?)))');
-      $this->array($it->getParameters())->isIdenticalTo(['3', 1, '0', '1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (?) OR (`is_recursive` = ? AND `entities_id` IN (?,?)))'));
+      $this->array($it->getParameters())->isEqualTo([3, 1, 0, 1]);
 
       $it->execute('glpi_entities', $this->testedInstance->getEntitiesRestrictCriteria('glpi_entities', '', 3, true));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (?,?,?))');
-      $this->array($it->getParameters())->isIdenticalTo([3, '0', '1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (?,?,?))'));
+      $this->array($it->getParameters())->isEqualTo([3, 0, 1]);
 
       $it->execute('glpi_entities', $this->testedInstance->getEntitiesRestrictCriteria('glpi_entities', '', 7, true));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = ?');
-      $this->array($it->getParameters())->isIdenticalTo([7]);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = ?'));
+      $this->array($it->getParameters())->isEqualTo([7]);
 
       //keep testing old method from db.function
       $it->execute('glpi_computers', getEntitiesRestrictCriteria('', '', '', true));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (?) OR (`is_recursive` = ? AND `entities_id` IN (?,?)))');
-      $this->array($it->getParameters())->isIdenticalTo(['3', 1, '0', '1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (?) OR (`is_recursive` = ? AND `entities_id` IN (?,?)))'));
+      $this->array($it->getParameters())->isEqualTo([3, 1, 0, 1]);
 
       $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 3, true));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (?,?,?))');
-      $this->array($it->getParameters())->isIdenticalTo([3, '0', '1']);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (?,?,?))'));
+      $this->array($it->getParameters())->isEqualTo([3, 0, 1]);
 
       $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 7, true));
       $this->string($it->getSql())
-         ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = ?');
-      $this->array($it->getParameters())->isIdenticalTo([7]);
+         ->isIdenticalTo(str_replace('`', $DB->getQuoteNameChar(), 'SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = ?'));
+      $this->array($it->getParameters())->isEqualTo([7]);
    }
 
    /**
@@ -597,10 +597,10 @@ class DbUtils extends DbTestCase {
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent0);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent0))->isEqualTo($expected);
       }
 
       //test on ent1
@@ -608,14 +608,14 @@ class DbUtils extends DbTestCase {
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent1))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isEqualTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent1);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isEqualTo($expected);
       }
 
       //test on ent2
@@ -623,14 +623,14 @@ class DbUtils extends DbTestCase {
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent2))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent2))->isEqualTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent2);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent2))->isEqualTo($expected);
       }
 
       //test with new sub entity
@@ -649,14 +649,14 @@ class DbUtils extends DbTestCase {
 
       $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1"];
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_new_id))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_id))->isEqualTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_new_id))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_id))->isEqualTo($expected);
       }
 
       //test with another new sub entity
@@ -673,14 +673,14 @@ class DbUtils extends DbTestCase {
 
       $expected = [0 => '0', $ent0 => "$ent0", $ent2 => "$ent2"];
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_new_id2))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_id2))->isEqualTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id2);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_new_id2))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_id2))->isEqualTo($expected);
       }
 
       //test on multiple entities
@@ -689,14 +689,14 @@ class DbUtils extends DbTestCase {
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_new_all))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_new_all))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_all))->isEqualTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_new_all))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_all))->isEqualTo($expected);
       }
    }
 
@@ -757,14 +757,14 @@ class DbUtils extends DbTestCase {
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent0))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent0))->isEqualTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent0);
-      $this->array($sons)->isIdenticalTo($expected);
+      $this->array($sons)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent0))->isEqualTo($expected);
       }
 
       //test on ent1
@@ -772,14 +772,14 @@ class DbUtils extends DbTestCase {
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent1))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isEqualTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
-      $this->array($sons)->isIdenticalTo($expected);
+      $this->array($sons)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isEqualTo($expected);
       }
 
       //test on ent2
@@ -787,14 +787,14 @@ class DbUtils extends DbTestCase {
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent2))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent2))->isEqualTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent2);
-      $this->array($sons)->isIdenticalTo($expected);
+      $this->array($sons)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent2))->isEqualTo($expected);
       }
 
       //test with new sub entity
@@ -812,14 +812,14 @@ class DbUtils extends DbTestCase {
 
       $expected = [$ent1 => $ent1, $new_id => "$new_id"];
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isEqualTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
-      $this->array($sons)->isIdenticalTo($expected);
+      $this->array($sons)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isEqualTo($expected);
       }
 
       //test with another new sub entity
@@ -835,27 +835,27 @@ class DbUtils extends DbTestCase {
 
       $expected = [$ent1 => $ent1, $new_id => "$new_id", $new_id2 => "$new_id2"];
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isEqualTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
-      $this->array($sons)->isIdenticalTo($expected);
+      $this->array($sons)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isEqualTo($expected);
       }
 
       //drop sub entity
       $expected = [$ent1 => $ent1, $new_id2 => "$new_id2"];
       $this->boolean($entity->delete(['id' => $new_id], true))->isTrue();
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isEqualTo($expected);
       }
 
       $expected = [$ent1 => $ent1];
       $this->boolean($entity->delete(['id' => $new_id2], true))->isTrue();
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isEqualTo($expected);
       }
    }
 
