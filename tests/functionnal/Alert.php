@@ -39,10 +39,15 @@ use DbTestCase;
 class Alert extends DbTestCase {
 
    public function testAddDelete() {
+      global $DB;
+
       $alert = new \Alert();
       $nb    = (int)countElementsInTable($alert->getTable());
       $comp  = getItemByTypeName('Computer', '_test_pc01');
       $date  = '2016-09-01 12:34:56';
+      if ($DB->getDriver() == 'pgsql') {
+         $date .= '+02';
+      }
 
       // Add
       $id = $alert->add([
