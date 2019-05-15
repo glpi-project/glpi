@@ -324,7 +324,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                // If cache key does not exists in current context (UI using APCu), it may exists
                // in another context (CLI using filesystem). So we force deletion of cache in all contexts
                // to be sure to not use a stale value.
-               $GLPI_CACHE->delete($ckey);
+               $this->cache->delete($ckey);
             }
          }
       }
@@ -346,12 +346,12 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             if (!isset($sons[$this->getID()])) {
                $sons[$this->getID()] = (string)$this->getID();
                $this->cache->set($ckey, $sons);
-            }
             } else {
                // If cache key does not exists in current context (UI using APCu), it may exists
                // in another context (CLI using filesystem). So we force deletion of cache in all contexts
                // to be sure to not use a stale value.
-               $GLPI_CACHE->delete($ckey);
+               $this->cache->delete($ckey);
+            }
          }
       }
    }
