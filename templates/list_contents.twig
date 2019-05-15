@@ -48,13 +48,13 @@
             {% endfor %}
         {% endif %}
         {% if item.maybeLocated() %}
-            <a href="#" id="btn_as_map" class="card-header-action{% if search_data.search.as_map %} active{% endif %}" title="{{ __('Show as map') }}" data-toggle="tooltip">
+            <a href="#" id="btn_as_map" class="card-header-action{% if search_data is iterable and  search_data.search.as_map %} active{% endif %}" title="{{ __('Show as map') }}" data-toggle="tooltip">
                <i class="fas fa-fw fa-globe-americas"></i>
                <span class="sr-only">{{ __s('Show as map') }}</span>
             </a>
         {% endif %}
         {% if item.maybeDeleted() %}
-            <a href="#" id="btn_is_deleted" class="card-header-action{% if search_data.search.is_deleted %} active{% endif %}" title="{{ __s('Show items in dustbin') }}" data-toggle="tooltip">
+            <a href="#" id="btn_is_deleted" class="card-header-action{% if search_data is iterable and  search_data.search.is_deleted %} active{% endif %}" title="{{ __s('Show items in dustbin') }}" data-toggle="tooltip">
                <i class="fas fa-fw fa-trash"></i>
                <span class="sr-only">{{ __s('Show items in dustbin') }}</span>
             </a>

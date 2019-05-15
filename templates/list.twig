@@ -54,7 +54,7 @@
       $(function() {
          $('#default_items').on('click', function() {
             createModalWindow(
-               CFG_GLPI.root_doc + '{{ path_for('display-preference', {'itemtype': search_data.itemtype}) }}', {
+               CFG_GLPI.root_doc + '{{ path_for('display-preference', {'itemtype': (search_data is iterable ? search_data.itemtype) }) }}', {
                   'title': '{{ __('Select default items to show') }}',
                   {#'extraparams': '{{ {'target': base_path()}|json_encode(constant('JSON_FORCE_OBJECT')) }}',#}
                   'open': true
@@ -94,7 +94,7 @@
                .toggleClass('active')
          });
 
-{% if search_data.search.as_map %}
+{% if search_data is iterable and search_data.search.as_map %}
           var map = initMap($('#map_container'), 'map', 'full');
           _loadMap(map, '{{ search_data.itemtype }}');
 {% endif %}
