@@ -6309,7 +6309,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $restrict_fup['itemtype'] = self::getType();
       $restrict_fup['items_id'] = $this->getID();
 
-      if (!Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
+      if ($task_obj->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
          $restrict_task = [
             'OR' => [
                'is_private'   => 0,
@@ -6596,9 +6596,9 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "<span class='cancel_edit_item_content'></span>";
          }
          echo "<div class='displayed_content'>";
+         echo "<div class='h_controls'>";
          if (!in_array($item['type'], ['Document_Item', 'Assign'])
              && $item_i['can_edit']) {
-            echo "<div class='h_controls'>";
             // merge/split icon
             if ($objType == 'Ticket' && $item['type'] == ITILFollowup::getType()) {
                if (isset($item_i['sourceof_items_id']) && $item_i['sourceof_items_id'] > 0) {
@@ -6617,15 +6617,15 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "<span class='far fa-edit control_item' title='".__('Edit')."'";
             echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"$randdomid\")'";
             echo "></span>";
-
-            // show "is_private" icon
-            if (isset($item_i['is_private']) && $item_i['is_private']) {
-               echo "<span class='private'><i class='fas fa-lock control_item' title='" . __s('Private') .
-                  "'></i><span class='sr-only'>".__('Private')."</span></span>";
-            }
-
-            echo "</div>";
          }
+
+         // show "is_private" icon
+         if (isset($item_i['is_private']) && $item_i['is_private']) {
+            echo "<span class='private'><i class='fas fa-lock control_item' title='" . __s('Private') .
+               "'></i><span class='sr-only'>".__('Private')."</span></span>";
+         }
+
+         echo "</div>";
          if (isset($item_i['requesttypes_id'])
              && file_exists("$pics_url/".$item_i['requesttypes_id'].".png")) {
             echo "<img src='$pics_url/".$item_i['requesttypes_id'].".png' class='h_requesttype' />";
