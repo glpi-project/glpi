@@ -245,6 +245,7 @@ class AuthLDAP extends DbTestCase {
 
    public function testDefineTabs() {
       $ldap     = new \AuthLDAP();
+      $_SESSION['glpishow_count_on_tabs'] = 0;
       $tabs     = $ldap->defineTabs();
       $expected = ['AuthLDAP$main' => 'LDAP directory',
                    'Log$1'         => 'Historical'];
