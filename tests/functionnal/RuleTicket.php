@@ -75,7 +75,7 @@ class RuleTicket extends DbTestCase {
       $this->login();
 
       // prepare rule
-      $this->_createRule(\RuleTicket::ONADD);
+      $this->_createTestTriggerRule(\RuleTicket::ONADD);
 
       // test create ticket (trigger on title)
       $ticket = new \Ticket;
@@ -106,7 +106,7 @@ class RuleTicket extends DbTestCase {
       $users_id = (int) getItemByTypeName('User', 'tech', true);
 
       // prepare rule
-      $this->_createRule(\RuleTicket::ONUPDATE);
+      $this->_createTestTriggerRule(\RuleTicket::ONUPDATE);
 
       // test create ticket (for check triggering on title after update)
       $ticket = new \Ticket;
@@ -151,7 +151,7 @@ class RuleTicket extends DbTestCase {
       $this->integer((int)$ticket->getField('urgency'))->isEqualTo(5);
    }
 
-   private function _createRule($condition) {
+   private function _createTestTriggerRule($condition) {
       $ruleticket = new \RuleTicket;
       $rulecrit   = new \RuleCriteria;
       $ruleaction = new \RuleAction;
@@ -171,6 +171,7 @@ class RuleTicket extends DbTestCase {
          'condition' => \Rule::PATTERN_CONTAIN,
          'pattern'   => "trigger on rule (title)"
       ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
       $crit_id = $rulecrit->add($crit_input = [
          'rules_id'  => $ruletid,
          'criteria'  => '_users_id_assign',
@@ -242,5 +243,96 @@ class RuleTicket extends DbTestCase {
       unset($ticket_input['_users_id_assign']); // _users_id_assign is stored in glpi_tickets_users table, so remove it
       $this->checkInput($ticket, $tickets_id, $ticket_input);
       $this->integer((int)$ticket->getField('status'))->isEqualTo(\Ticket::WAITING);
+   }
+
+   /**
+    * Test that new status setting by rules is not overrided when an actor is assigned at the same time.
+    */
+   public function testStatusAssignNewFromRule() {
+      $this->login();
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test assign new actor and keep new status',
+         'match'        => 'OR',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD | \RuleTicket::ONUPDATE,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'name',
+         'condition' => \Rule::PATTERN_CONTAIN,
+         'pattern'   => 'assign to tech',
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      $act_id = $ruleaction->add($act_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => '_users_id_assign',
+         'value'       => getItemByTypeName('User', 'tech', true),
+      ]);
+      $this->checkInput($ruleaction, $act_id, $act_input);
+
+      $act_id = $ruleaction->add($act_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'status',
+         'value'       => \Ticket::INCOMING,
+      ]);
+      $this->checkInput($ruleaction, $act_id, $act_input);
+
+      // Check ticket that trigger rule on creation
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'    => 'assign to tech (on creation)',
+         'content' => 'test'
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->integer((int)$ticket->getField('status'))->isEqualTo(\Ticket::INCOMING);
+      $this->integer(countElementsInTable(
+         \Ticket_User::getTable(),
+         ['tickets_id' => $tickets_id, 'type' => \CommonITILActor::ASSIGN]
+      ))->isEqualTo(1);
+
+      // Remove assign self as default tech from session
+      $default_tech = $_SESSION['glpiset_default_tech'];
+      $_SESSION['glpiset_default_tech'] = false;
+
+      // Check ticket that trigger rule on update
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'    => 'some ticket',
+         'content' => 'test'
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->integer((int)$ticket->getField('status'))->isEqualTo(\Ticket::INCOMING);
+      $this->integer(countElementsInTable(
+         \Ticket_User::getTable(),
+         ['tickets_id' => $tickets_id, 'type' => \CommonITILActor::ASSIGN]
+      ))->isEqualTo(0);
+
+      $this->boolean($ticket->update([
+         'id'      => $tickets_id,
+         'name'    => 'assign to tech (on update)',
+         'content' => 'test'
+      ]))->isTrue();
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer((int)$ticket->getField('status'))->isEqualTo(\Ticket::INCOMING);
+      $this->integer(countElementsInTable(
+         \Ticket_User::getTable(),
+         ['tickets_id' => $tickets_id, 'type' => \CommonITILActor::ASSIGN]
+      ))->isEqualTo(1);
+
+      // Restore assign self as default tech in session
+      $_SESSION['glpiset_default_tech'] = $default_tech;
    }
 }

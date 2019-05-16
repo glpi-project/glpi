@@ -829,10 +829,11 @@ abstract class CommonITILObject extends CommonDBTM {
                          || $useractors->can(-1, CREATE, $input['_itil_assign'])) {
                         $useractors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
-                        if ((!isset($input['status'])
+                        if (((!isset($input['status'])
                              && in_array($this->fields['status'], $this->getNewStatusArray()))
                             || (isset($input['status'])
-                                && in_array($input['status'], $this->getNewStatusArray()))) {
+                                && in_array($input['status'], $this->getNewStatusArray())))
+                            && !$this->isStatusComputationBlocked($input)) {
                            if (in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))) {
                               $input['status'] = self::ASSIGNED;
                            }
@@ -850,10 +851,11 @@ abstract class CommonITILObject extends CommonDBTM {
                          || $groupactors->can(-1, CREATE, $input['_itil_assign'])) {
                         $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
-                        if ((!isset($input['status'])
+                        if (((!isset($input['status'])
                              && (in_array($this->fields['status'], $this->getNewStatusArray())))
                             || (isset($input['status'])
-                                && (in_array($input['status'], $this->getNewStatusArray())))) {
+                                && (in_array($input['status'], $this->getNewStatusArray()))))
+                            && !$this->isStatusComputationBlocked($input)) {
                            if (in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))) {
                               $input['status'] = self::ASSIGNED;
                            }
@@ -872,10 +874,11 @@ abstract class CommonITILObject extends CommonDBTM {
                          || $supplieractors->can(-1, CREATE, $input['_itil_assign'])) {
                         $supplieractors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
-                        if ((!isset($input['status'])
+                        if (((!isset($input['status'])
                              && (in_array($this->fields['status'], $this->getNewStatusArray())))
                             || (isset($input['status'])
-                                && (in_array($input['status'], $this->getNewStatusArray())))) {
+                                && (in_array($input['status'], $this->getNewStatusArray()))))
+                            && !$this->isStatusComputationBlocked($input)) {
                            if (in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))) {
                               $input['status'] = self::ASSIGNED;
                            }
@@ -7056,5 +7059,18 @@ abstract class CommonITILObject extends CommonDBTM {
    public function isTakeIntoAccountComputationBlocked($input) {
       return array_key_exists('_do_not_compute_takeintoaccount', $input)
          && $input['_do_not_compute_takeintoaccount'];
+   }
+
+   /**
+    * Check if input contains a flag set to prevent status computation.
+    *
+    * @param array $input
+    *
+    * @return boolean
+    */
+   public function isStatusComputationBlocked(array $input) {
+
+      return array_key_exists('_do_not_compute_status', $input)
+         && $input['_do_not_compute_status'];
    }
 }
