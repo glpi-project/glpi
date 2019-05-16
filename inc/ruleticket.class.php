@@ -469,6 +469,9 @@ class RuleTicket extends Rule {
       $criterias['priority']['name']                        = __('Priority');
       $criterias['priority']['type']                        = 'dropdown_priority';
 
+      $criterias['status']['name']                          = __('Status');
+      $criterias['status']['type']                          = 'dropdown_status';
+
       $criterias['_mailgate']['table']                      = 'glpi_mailcollectors';
       $criterias['_mailgate']['field']                      = 'name';
       $criterias['_mailgate']['name']                       = __('Mails receiver');
