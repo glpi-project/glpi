@@ -186,4 +186,61 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($ruleaction, $act_id, $act_input);
    }
+
+   /**
+    * Test status criterion in rules.
+    */
+   public function testStatusCriterion() {
+      $this->login();
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test status criterion',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'status',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => \Ticket::INCOMING,
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => '_users_id_assign',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => getItemByTypeName('User', 'tech', true)
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      $act_id = $ruleaction->add($act_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'status',
+         'value'       => \Ticket::WAITING,
+      ]);
+      $this->checkInput($ruleaction, $act_id, $act_input);
+
+      // Check ticket that trigger rule on creation
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'             => 'change status to waiting if new and assigned to tech',
+         'content'          => 'test',
+         '_users_id_assign' => getItemByTypeName('User', 'tech', true)
+      ]);
+      unset($ticket_input['_users_id_assign']); // _users_id_assign is stored in glpi_tickets_users table, so remove it
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->integer((int)$ticket->getField('status'))->isEqualTo(\Ticket::WAITING);
+   }
 }
