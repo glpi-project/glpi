@@ -128,6 +128,25 @@ function update94to95() {
    }
    /** /Private supplier followup in glpi_entities */
 
+   /** Entities Custom CSS configuration fields */
+   // Add 'custom_css' entities configuration fields
+   if (!$DB->fieldExists('glpi_entities', 'enable_custom_css')) {
+      $migration->addField(
+         'glpi_entities',
+         'enable_custom_css',
+         'integer',
+         [
+            'value'     => -2, // Inherit as default value
+            'update'    => '0', // Not enabled for root entity
+            'condition' => 'WHERE `id` = 0'
+         ]
+      );
+   }
+   if (!$DB->fieldExists('glpi_entities', 'custom_css_code')) {
+      $migration->addField('glpi_entities', 'custom_css_code', 'text');
+   }
+   /** /Entities Custom CSS configuration fields */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

@@ -1260,6 +1260,11 @@ class Html {
             echo Html::css('public/lib/chartist-plugin-tooltips/chartist-plugin-tooltip.css');
             Html::requireJs('charts');
          }
+
+         if (in_array('codemirror', $jslibs)) {
+            echo Html::css('public/lib/codemirror/codemirror.css');
+            Html::requireJs('codemirror');
+         }
       }
 
       if (Session::getCurrentInterface() == "helpdesk") {
@@ -1322,6 +1327,12 @@ class Html {
                }
             }
          }
+      }
+
+      // Custom CSS for active entity
+      $entity = new Entity();
+      if ($entity->getFromDB($_SESSION['glpiactive_entity'])) {
+         echo $entity->getCustomCssTag();
       }
 
       // AJAX library
@@ -5934,6 +5945,9 @@ class Html {
             break;
          case 'log_filters':
             $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
+            break;
+         case 'codemirror':
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/codemirror.js';
             break;
          default:
             $found = false;

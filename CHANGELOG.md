@@ -7,8 +7,9 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 
-- encrypted file systems support
-- mails collected from suppliers can be marked as private on an entity basis
+- Encrypted file systems support.
+- Mails collected from suppliers can be marked as private on an entity basis.
+- Ability to add custom CSS in entity configuration.
 
 ### Changed
 
