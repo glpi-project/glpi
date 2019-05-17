@@ -34,7 +34,7 @@
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
         "elvanto/litemoji": "^1.4",
         "symfony/console": "^3.4",
-        "leafo/scssphp": "^0.7.7"
+        "leafo/scssphp": "^0.8"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
@@ -71,5 +71,11 @@
         "lint":  "vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
         "post-update-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
+    },
+    "repositories": {
+        "leafo/scssphp": {
+            "type": "vcs",
+            "url": "https://github.com/leafo/scssphp"
+        }
     }
 }

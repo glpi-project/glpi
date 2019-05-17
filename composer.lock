@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bcb91d28d7eb7dd49fa3e985fc198ece",
+    "content-hash": "a79700f6d4199cd2b90d4ea2b9534504",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -109,24 +109,36 @@
         },
         {
             "name": "leafo/scssphp",
-            "version": "v0.7.7",
+            "version": "v0.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/leafo/scssphp.git",
-                "reference": "1d656f8c02a3a69404bba6b28ec4e06edddf0f49"
+                "reference": "1b168bfee60889547e1fe55b9afdf055f6d3c58d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/leafo/scssphp/zipball/1d656f8c02a3a69404bba6b28ec4e06edddf0f49",
-                "reference": "1d656f8c02a3a69404bba6b28ec4e06edddf0f49",
+                "url": "https://api.github.com/repos/leafo/scssphp/zipball/1b168bfee60889547e1fe55b9afdf055f6d3c58d",
+                "reference": "1b168bfee60889547e1fe55b9afdf055f6d3c58d",
                 "shasum": ""
+            },
+            "archive": {
+                "exclude": [
+                    "/Makefile",
+                    "/.gitattributes",
+                    "/.gitignore",
+                    "/.travis.yml",
+                    "/phpunit.xml.dist",
+                    "/tests"
+                ]
             },
             "require": {
                 "php": ">=5.4.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "~4.6",
-                "squizlabs/php_codesniffer": "~2.5"
+                "squizlabs/php_codesniffer": "~2.5",
+                "twbs/bootstrap": "~4.3",
+                "zurb/foundation": "~6.5"
             },
             "bin": [
                 "bin/pscss"
@@ -137,7 +149,11 @@
                     "Leafo\\ScssPhp\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Leafo\\ScssPhp\\Test\\": "tests/"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -157,7 +173,11 @@
                 "scss",
                 "stylesheet"
             ],
-            "time": "2018-07-22T01:22:08+00:00"
+            "support": {
+                "source": "https://github.com/leafo/scssphp/tree/v0.8.2",
+                "issues": "https://github.com/leafo/scssphp/issues"
+            },
+            "time": "2019-05-09T18:51:51+00:00"
         },
         {
             "name": "michelf/php-markdown",
