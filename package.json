@@ -9,6 +9,7 @@
         "chartist": "^0.10.1",
         "chartist-plugin-legend": "^0.6.2",
         "chartist-plugin-tooltips": "^0.0.17",
+        "codemirror": "^5.47.0",
         "diff-match-patch": "^1.0.4",
         "fullcalendar": "^3.10.0",
         "fuzzy": "^0.1.3",

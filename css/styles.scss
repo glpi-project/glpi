@@ -439,7 +439,7 @@ textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([t
    padding: 0 5px;
 }
 
-textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]) {
+textarea:not([disabled]), input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]) {
    background-color: #FCFCFC;
    color: black;
 }
@@ -6237,4 +6237,21 @@ with incorrect shading in some cases */
 
 .enabled {
    color: green !important;
+}
+
+/** Custom CSS form */
+.custom_css_configuration td:not([colspan]) {
+   width: 50%;
+}
+.custom_css_configuration .custom_css_container {
+   max-width: 100%;
+   width: 100%;
+}
+.custom_css_configuration .custom_css_container textarea {
+   box-sizing: border-box;
+   min-height: 250px;
+   width: 100%;
+}
+.custom_css_configuration .custom_css_container .CodeMirror.input-disabled {
+   background: rgb(235, 235, 228); /* default bg color for disabled inputs */
 }
