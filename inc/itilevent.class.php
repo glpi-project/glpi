@@ -380,37 +380,6 @@ class ITILEvent extends CommonDBTM
       return $iterator;
    }
 
-   public static function showDashboard($cards_only = false)
-   {
-      $default_view = [
-         'count-alerts-timerange' => ['timeunit' => isset($_GET['_timerange']) ? $_GET['_timerange'] : HOUR_TIMESTAMP],
-         'count-active-warnings' => [],
-         'count-active-exceptions' => [],
-         'count-new' => [],
-         'count-remediating' => [],
-         'list-historical' => [
-            'timerange' => isset($_GET['_timerange']) ? $_GET['_timerange'] : HOUR_TIMESTAMP,
-            'colspan' => 'var(--colcount)'],
-         'timeseries-new' => [
-            'timerange' => isset($_GET['_timerange']) ? $_GET['_timerange'] : HOUR_TIMESTAMP,
-            'timeunit' => isset($_GET['_timeunit']) ? $_GET['_timeunit'] : HOUR_TIMESTAMP,
-            'colspan' => 'var(--colcount)']
-      ];
-      if (!$cards_only) {
-         echo "<h2 class='center'>".__('Event Management Dashboard')."</h2>";
-         echo self::getDashboardToolbar();
-      }
-      echo "<div id='siem-dashboard'>";
-      foreach ($default_view as $cardname => $card_params) {
-         if (!is_null($card_params) && is_array($card_params)) {
-            echo self::getDashboardCard($cardname, $card_params);
-         } else {
-            echo self::getDashboardCard($cardname);
-         }
-      }
-      echo "</div>";
-   }
-
    public static function getDashboardToolbar()
    {
       global $CFG_GLPI;
@@ -426,6 +395,10 @@ class ITILEvent extends CommonDBTM
          'display'   => false
       ]);
       $out .= "</span>";
+
+      $out .= "<span><a href='#' class='fa fa-filter' title='Filter' onclick='toggleEventFilter();'>";
+      $out .= "<span class='sr-only'>" . __('Filter')  . "</span>";
+      $out .= "</a></span>";
 
       $out .= "<span><a href='#' class='fa fa-wrench' title='Configure dashboard'>";
       $out .= "<span class='sr-only'>" . __('Configure dashboard')  . "</span>";
@@ -476,10 +449,15 @@ class ITILEvent extends CommonDBTM
       }
    }
 
-   public static function getDashboardCard(string $cardname, array $params = [])
-   {
+   public static function getDashboardCardData(string $cardname, array $params = []) {
       global $DB;
 
+      $card = [
+         'header'             => '',
+         'extra_card_classes' => '',
+         'value'              => '',
+         'type'               => 'counter'
+      ];
       $p = [
          'colspan'      => 1,
          'rowspan'      => 1,
@@ -492,7 +470,6 @@ class ITILEvent extends CommonDBTM
          $p['timerange'] = DAY_TIMESTAMP;
       }
 
-      $stat = new \Stat();
       $global_where = [new \QueryExpression("date > DATE_ADD(now(), INTERVAL -{$p['timerange']} SECOND)")];
 
       // Get countable data and cache it (Specific counters without a timeframe)
@@ -537,45 +514,46 @@ class ITILEvent extends CommonDBTM
          }
       }
 
-      $title = self::getDashboardCardTitle($cardname);
-      $style = '';
-      if ((is_numeric($p['colspan']) && $p['colspan'] > 1) ||
-            preg_match('/(var\(--)((\w*))[\)]/', $p['colspan'])) {
-         $style .= '--colspan:'.$p['colspan'];
-      }
-      if ((is_numeric($p['rowspan']) && $p['rowspan'] > 1) ||
-            preg_match('/(var\(--)((\w*))[\)]/', $p['rowspan'])) {
-         $style .= '--rowspan:'.$p['rowspan'];
-      }
+      $card['header'] = self::getDashboardCardTitle($cardname);
 
-      $out = '';
-      $out .= "<div class='siem-dashboard-card' style='{$style}'><h3>{$title}</h3><div class='card-content'>";
       switch ($cardname) {
          case 'count-alerts-timerange':
-            $out .= "<p>".$counters['timerange_alerts']."</p>";
+            $card['type'] = 'counter';
+            $card['value'] = $counters['timerange_alerts'];
             break;
          case 'count-active-warnings':
-            $out .= "<p>".$counters['warning']."</p>";
+            $card['type'] = 'counter';
+            $card['extra_card_classes'] = 'bg-warning';
+            $card['value'] = $counters['warning'];
             break;
          case 'count-active-exceptions':
-            $out .= "<p>".$counters['exception']."</p>";
+            $card['type'] = 'counter';
+            $card['extra_card_classes'] = 'bg-danger';
+            $card['value'] = $counters['exception'];
             break;
          case 'count-new':
-            $out .= "<p>".$counters['new']."</p>";
+            $card['type'] = 'counter';
+            $card['value'] = $counters['new'];
             break;
          case 'count-remediating':
-            $out .= "<p>".$counters['remediating']."</p>";
+            $card['type'] = 'counter';
+            $card['extra_card_classes'] = 'bg-info';
+            $card['value'] = $counters['remediating'];
             break;
          case 'list-historical':
-            $out .= self::showList(false, null, false, $global_where);
+            $card['type'] = 'list';
+            $card['value'] = self::showList([
+               'where'  => $global_where,
+               'display'   => false
+            ]);
             break;
          case 'timeseries-new':
             break;
          default:
-            $out .= "<p>".__("Invalid dashboard card")."</p>";
+            $card['type'] = 'invalid';
+            $card['value'] = __("Invalid dashboard card");
       }
-      $out .= "</div></div>";
-      return $out;
+      return $card;
    }
 
    public static function showListForItem(CommonDBTM $item = null, $display = true, $where = []) {
@@ -726,31 +704,31 @@ class ITILEvent extends CommonDBTM
       }
    }
 
-   public static function showList($activeonly = false, CommonDBTM $item = null, $display = true, $where = [])
+   public static function showList($params)
    {
+      global $CFG_GLPI;
+
+      $p = [
+         'id'           => 'eventlist'.mt_rand(),
+         'display'      => true,
+         'where'        => [],
+         'list_limit'   => $_SESSION['glpilist_limit'],
+         'item'         => null
+      ];
+      $p = array_replace($p, $params);
 
       $out = '';
-      $header_text = $activeonly ? __('Active events') : __('Historical events');
-      $selftable = self::getTable();
-
       if (isset($_GET["start"])) {
          $start = intval($_GET["start"]);
       } else {
          $start = 0;
       }
-      $sql_filters = self::convertFiltersValuesToSqlCriteria(isset($_GET['listfilters']) ? $_GET['listfilters'] : []);
-      if ($activeonly) {
-         $sql_filters['status'] = self::getActiveStatusArray();
-         $sql_filters['NOT']['significance'] = self::INFORMATION;
-      }
-      $sql_filters = $sql_filters + $where;
 
-      $iterator = ITILEvent::getEventData($item, $start, $_SESSION['glpilist_limit'], $sql_filters);
-      
+      $iterator = ITILEvent::getEventData($p['item'], $start, $_SESSION['glpilist_limit'], $p['where']);
+      $ajax_url = $CFG_GLPI['root_doc']."/ajax/siemdashboard.php";
+
       // Display the pager
-      $additional_params = isset($_GET['listfilters']) ? http_build_query(['listfilters' => $_GET['listfilters']]) : '';
-      $out .= Html::printAjaxPager($header_text, $start, $iterator->count(), '', false, $additional_params);
-
+      $out .= Html::printAjaxPager('', $start, $iterator->count(), '', false);
 
       $out .= "<div class='firstbloc'>";
 
@@ -761,7 +739,6 @@ class ITILEvent extends CommonDBTM
       // Alternative is to only allow a single item link per Event
       $header = "<tr><th></th>";
       $header .= "<th>".__('Name')."</th>";
-      $header .= "<th>".__('Significance')."</th>";
       $header .= "<th>".__('Date')."</th>";
       $header .= "<th>".__('Status')."</th>";
       $header .= "<th>".__('Category')."</th>";
@@ -792,10 +769,10 @@ class ITILEvent extends CommonDBTM
                $icon = 'fas fa-exclamation-circle';
             }
             $out .= "<tr id='itilevent_{$data['id']}' class='tab_bg_2' $style onclick='toggleEventDetails(this);'>";
-            $out .= "<td class='center'><i class='{$icon} fa-lg'/></td>";
+            $out .= "<td class='center'><i class='{$icon} fa-lg' title='".
+                  ITILEvent::getSignificanceName($data['significance'])."'/></td>";
             $out .= "<td class='center'>".$data['name']."</td>";
-            $out .= "<td class='center'>".ITILEvent::getSignificanceName($data['significance'])."</td>";
-            $out .= "<td class='center'>".Html::convDateTime($data['date'])."</td>";
+            $out .= "<td class='center'><time>".Html::convDateTime($data['date'], null, true)."</time></td>";
             $out .= "<td class='center'>".ITILEvent::getStatusName($data['status'])."</td>";
             $out .= "<td class='center'>".ITILEventCategory::getCategoryName($data['itileventcategories_id'])."</td>";
             $out .= "<td class='center'>".$data['correlation_uuid']."</td>";
@@ -811,8 +788,8 @@ class ITILEvent extends CommonDBTM
          $out .= "</tbody>";
       }
       $out .= "</table></div>";
-      $out .= Html::printAjaxPager($header_text, $start, $iterator->count(), '', false, $additional_params);
-      if (!$display) {
+      $out .= Html::printAjaxPager('', $start, $iterator->count(), '', false);
+      if (!$p['display']) {
          return $out;
       } else {
          echo $out;
@@ -1084,5 +1061,117 @@ class ITILEvent extends CommonDBTM
          Toolbox::logError(__("Tracking type must be a subclass of CommonITILObject"));
          return false;
       }
+   }
+
+   function rawSearchOptions() {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
+
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
+
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'significance',
+         'name'               => __('Significance'),
+         'datatype'           => 'specific',
+      ];
+
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'correlation_uuid',
+         'name'               => __('Correlation ID'),
+         'datatype'           => 'string',
+      ];
+
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'logger',
+         'name'               => __('Logger'),
+         'datatype'           => 'string',
+      ];
+
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => 'glpi_itileventcategories',
+         'field'              => 'completename',
+         'name'               => __('Category'),
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'content',
+         'name'               => __('Content'),
+         'datatype'           => 'text'
+      ];
+
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '31',
+         'table'              => $this->getTable(),
+         'field'              => 'status',
+         'name'               => __('Status'),
+         'datatype'           => 'specific',
+      ];
+
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
+
+      return $tab;
    }
 }

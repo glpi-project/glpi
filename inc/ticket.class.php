@@ -150,8 +150,6 @@ class Ticket extends CommonITILObject {
          $menu['create_ticket']['title']    = __('Create ticket');
          $menu['create_ticket']['page']     = static::getFormURL(false);
          return $menu;
-      } else {
-         return self::getAdditionalMenuOptions();
       }
    }
 
@@ -943,6 +941,18 @@ class Ticket extends CommonITILObject {
                   echo "</div>";
                   break;
 
+               case 2 :
+                  if (!isset($_GET['load_kb_sol'])) {
+                     $_GET['load_kb_sol'] = 0;
+                  }
+                  $item->showSolutionForm($_GET['load_kb_sol']);
+
+                  if ($item->canApprove()) {
+                     $fup = new ITILFollowup();
+                     $fup->showApprobationForm($item);
+                  }
+                  break;
+
                case 3 :
                   $satisfaction = new TicketSatisfaction();
                   if (($item->fields['status'] == self::CLOSED)
@@ -979,8 +989,10 @@ class Ticket extends CommonITILObject {
 
 
    function defineTabs($options = []) {
+
       $ong = [];
-      $this->defineDefaultObjectTabs($ong, $options);
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
@@ -1233,9 +1245,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Process Business Rules
-      $this->fillInputForBusinessRules($input);
-
+      /// Process Business Rules
       // Add actors on standard input
       $rules               = new RuleTicketCollection($entid);
       $rule                = $rules->getRuleClass();
@@ -1618,8 +1628,7 @@ class Ticket extends CommonITILObject {
 
    function pre_updateInDB() {
 
-      if (!$this->isTakeIntoAccountComputationBlocked($this->input)
-          && !$this->isAlreadyTakenIntoAccount() && $this->canTakeIntoAccount()) {
+      if (!$this->isAlreadyTakenIntoAccount() && $this->canTakeIntoAccount()) {
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
@@ -1653,14 +1662,6 @@ class Ticket extends CommonITILObject {
 
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
-
-      // Put same status on duplicated tickets when solving or closing (autoclose on solve)
-      if (isset($this->input['status'])
-          && in_array('status', $this->updates)
-          && (in_array($this->input['status'], $this->getSolvedStatusArray())
-              || in_array($this->input['status'], $this->getClosedStatusArray()))) {
-         Ticket_Ticket::manageLinkedTicketsOnSolved($this->getID());
-      }
 
       $donotif = count($this->updates);
 
@@ -1762,12 +1763,6 @@ class Ticket extends CommonITILObject {
           && ($delay == 0)
           && ($rate > 0)
           && (mt_rand(1, 100) <= $rate)) {
-
-         // For reopened ticket
-         if ($inquest->getFromDB($this->fields['id'])) {
-            $resp = $inquest->fields;
-            $inquest->delete($resp);
-         }
 
          $inquest->add(
             [
@@ -1940,9 +1935,25 @@ class Ticket extends CommonITILObject {
          $input['_users_id_assign'] = Session::getLoginUserID();
       }
 
-      // Process Business Rules
-      $this->fillInputForBusinessRules($input);
+      // add calendars matching date creation (for business rules)
+      $calendars = [];
+      $ite_calandar = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'   => Calendar::getTable(),
+         'WHERE'  => getEntitiesRestrictCriteria('', '', $input['entities_id'], true)
+      ]);
+      foreach ($ite_calandar as $calendar_data) {
+         $calendar = new Calendar;
+         $calendar->getFromDB($calendar_data['id']);
+         if ($calendar->isAWorkingHour(time())) {
+            $calendars[] = $calendar_data['id'];
+         }
+      }
+      if (count($calendars)) {
+         $input['_date_creation_calendars_id'] = $calendars;
+      }
 
+      // Process Business Rules
       $rules = new RuleTicketCollection($input['entities_id']);
 
       // Set unset variables with are needed
@@ -2496,15 +2507,13 @@ class Ticket extends CommonITILObject {
             'glpi_items_tickets.items_id' => $items_id,
             'glpi_items_tickets.itemtype' => $itemtype,
             'OR'                          => [
-               [
-                  'NOT' => [
-                     $this->getTable() . '.status' => array_merge(
-                        $this->getClosedStatusArray(),
-                        $this->getSolvedStatusArray()
-                     )
-                  ]
+               'NOT' => [
+                  $this->getTable() . '.status' => array_merge(
+                     $this->getClosedStatusArray(),
+                     $this->getSolvedStatusArray()
+                  )
                ],
-               [
+               'AND' => [
                   'NOT' => [$this->getTable() . '.solvedate' => null],
                   new \QueryExpression(
                      "ADDDATE(" . $DB->quoteName($this->getTable()) .
@@ -2595,7 +2604,7 @@ class Ticket extends CommonITILObject {
                   $this->getClosedStatusArray()
             ),
             new \QueryExpression(
-               "ADDDATE(".$DB->quoteName($this->getTable().".solvedate").", INTERVAL $days DAY) > NOW()"
+               "ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW()"
             ),
             'NOT'                         => [
                $this->getTable() . '.solvedate' => null
@@ -2806,25 +2815,20 @@ class Ticket extends CommonITILObject {
                'used'         => $ma->items['Ticket'],
                'displaywith'  => ['id']
             ];
-            echo "<table class='center-h'><tr>";
-            echo "<td>".__('Ticket')."</td><td colspan='3'>";
+            echo "<div><p>";
+            echo __('Ticket')."&nbsp;";
             Ticket::dropdown($mergeparam);
-            echo "</td></tr><tr><td>".__('Merge Followups')."</td><td>";
+            echo "</p><p>".__('Merge Followups')."&nbsp;";
             Html::showCheckbox([
                'name'    => 'with_followups',
                'checked' => false
             ]);
-            echo "</td><td>".__('Merge Documents')."</td><td>";
-            Html::showCheckbox([
-               'name'    => 'with_documents',
-               'checked' => false
-            ]);
-            echo "</td></tr><tr><td colspan='4'>";
+            echo "</p><p>";
             echo Html::submit(_x('button', 'Merge'), [
                'name'      => 'merge',
                'confirm'   => __('Confirm the merge? This ticket will be deleted!')
             ]);
-            echo "</td></tr></table>";
+            echo "</p></div>";
             return true;
       }
       return parent::showMassiveActionsSubForm($ma);
@@ -2844,7 +2848,6 @@ class Ticket extends CommonITILObject {
                try {
                   $DB->beginTransaction();
                   $fup = new ITILFollowup();
-                  $document_item = new Document_Item();
                   $input2 = [];
 
                   foreach ($input as $key => $val) {
@@ -2860,11 +2863,9 @@ class Ticket extends CommonITILObject {
                      $input2 = [
                         'itemtype'        => 'Ticket',
                         'items_id'        => $input['_mergeticket'],
-                        'content'         => $DB->escape($item->fields['name']."\n\n".$item->fields['content']),
+                        'content'         => $item->fields['name']."\n\n".$item->fields['content'],
                         'users_id'        => $item->fields['users_id_recipient'],
                         'date_creation'   => $item->fields['date_creation'],
-                        'date_mod'        => $item->fields['date_mod'],
-                        'date'            => $item->fields['date_creation'],
                         'sourceitems_id'  => $item->getID()
                      ];
 
@@ -2882,33 +2883,11 @@ class Ticket extends CommonITILObject {
                         foreach ($tomerge as $key => $fup2) {
                            $fup2['items_id'] = $input['_mergeticket'];
                            $fup2['sourceitems_id'] = $item->getID();
-                           $fup2['content'] = $DB->escape($fup2['content']);
+                           $fup2['date_creation'] = $item->fields['date_creation'];
+                           $fup2['date_mod'] = $item->fields['date_mod'];
                            unset($fup2['id']);
                            if (!$fup->add($fup2)) {
                               //Cannot add followup. Abort/fail the merge
-                              throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
-                           }
-                        }
-                     }
-
-                     if (isset($input['with_documents'])) {
-                        // Create new links for any Documents
-                        $tomerge = $document_item->find([
-                           'itemtype' => 'Ticket',
-                           'items_id' => $id
-                        ]);
-                        // Need to check for each item since new duplicates could be added during the merge process
-                        $existing_docs = $document_item->find([
-                           'itemtype' => 'Ticket',
-                           'items_id' => $input['_mergeticket']
-                        ]);
-                        $tomerge = array_diff($tomerge, $existing_docs);
-
-                        foreach ($tomerge as $key => $document_item2) {
-                           $document_item2['items_id'] = $input['_mergeticket'];
-                           unset($document_item2['id']);
-                           if (!$document_item->add($document_item2)) {
-                              //Cannot add document. Abort/fail the merge
                               throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
                            }
                         }
@@ -2922,26 +2901,19 @@ class Ticket extends CommonITILObject {
                         'tickets_id_2' => $input['_mergeticket']
                      ];
 
-                     // Remove existing links
                      $tt->deleteByCriteria([
-                        'OR' => [
-                           'AND' => [
-                              'tickets_id_1' => $input['_mergeticket'],
-                              'tickets_id_2' => $id
-                           ],
-                           'AND' => [
-                              'tickets_id_2' => $input['_mergeticket'],
-                              'tickets_id_1' => $id
-                           ]
-                        ]
-                     ]);
+                        'tickets_id_1' => $input['_mergeticket'],
+                        'tickets_id_2' => $id,
+                        'link' => Ticket_Ticket::SON_OF]);
 
                      if (!$tt->add($linkparams)) {
                         //Cannot link tickets. Abort/fail the merge
                         throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
                      }
 
-                     if (!$item->delete(['id' => $id, '_disablenotif' => true])) {
+                     //Close then delete this ticket
+                     if (!$item->update(['id' => $id, 'status' => CommonITILObject::CLOSED]) ||
+                        !$item->delete(['id' => $id])) {
                         throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
                      }
 
@@ -2962,7 +2934,6 @@ class Ticket extends CommonITILObject {
                   $ma->addMessage($item->getErrorMessage($e->getMessage()));
                }
             }
-
             return;
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
@@ -2970,8 +2941,7 @@ class Ticket extends CommonITILObject {
 
 
    function rawSearchOptions() {
-      global $DB;
-
+      global $CFG_GLPI;
       $tab = [];
 
       $tab = array_merge($tab, $this->getSearchOptionsMain());
@@ -3004,13 +2974,13 @@ class Ticket extends CommonITILObject {
          'name'               => __('Time to own exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF('.$DB->quoteName('TABLE.time_to_own').' IS NOT NULL
-                                            AND '.$DB->quoteName('TABLE.status').' <> '.self::WAITING.'
-                                            AND ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').'
-                                                        > TIME_TO_SEC(TIMEDIFF('.$DB->quoteName('TABLE.time_to_own').',
-                                                                               '.$DB->quoteName('TABLE.date').'))
-                                                 OR ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').' = 0
-                                                      AND '.$DB->quoteName('TABLE.time_to_own').' < NOW())),
+         'computation'        => 'IF(TABLE.`time_to_own` IS NOT NULL
+                                            AND TABLE.`status` <> '.self::WAITING.'
+                                            AND (TABLE.`takeintoaccount_delay_stat`
+                                                        > TIME_TO_SEC(TIMEDIFF(TABLE.`time_to_own`,
+                                                                               TABLE.`date`))
+                                                 OR (TABLE.`takeintoaccount_delay_stat` = 0
+                                                      AND TABLE.`time_to_own` < NOW())),
                                             1, 0)'
       ];
 
@@ -3042,11 +3012,11 @@ class Ticket extends CommonITILObject {
          'name'               => __('Internal time to resolve exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF('.$DB->quoteName('TABLE.internal_time_to_resolve').' IS NOT NULL
-                                            AND '.$DB->quoteName('TABLE.status').' <> 4
-                                            AND ('.$DB->quoteName('TABLE.solvedate').' > '.$DB->quoteName('TABLE.internal_time_to_resolve').'
-                                                 OR ('.$DB->quoteName('TABLE.solvedate').' IS NULL
-                                                      AND '.$DB->quoteName('TABLE.internal_time_to_resolve').' < NOW())),
+         'computation'        => 'IF(TABLE.`internal_time_to_resolve` IS NOT NULL
+                                            AND TABLE.`status` <> 4
+                                            AND (TABLE.`solvedate` > TABLE.`internal_time_to_resolve`
+                                                 OR (TABLE.`solvedate` IS NULL
+                                                      AND TABLE.`internal_time_to_resolve` < NOW())),
                                             1, 0)'
       ];
 
@@ -3078,46 +3048,14 @@ class Ticket extends CommonITILObject {
          'name'               => __('Internal time to own exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF('.$DB->quoteName('TABLE.internal_time_to_own').' IS NOT NULL
-                                            AND '.$DB->quoteName('TABLE.status').' <> '.self::WAITING.'
-                                            AND ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').'
-                                                        > TIME_TO_SEC(TIMEDIFF('.$DB->quoteName('TABLE.internal_time_to_own').',
-                                                                               '.$DB->quoteName('TABLE.date').'))
-                                                 OR ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').' = 0
-                                                      AND '.$DB->quoteName('TABLE.internal_time_to_own').' < NOW())),
+         'computation'        => 'IF(TABLE.`internal_time_to_own` IS NOT NULL
+                                            AND TABLE.`status` <> '.self::WAITING.'
+                                            AND (TABLE.`takeintoaccount_delay_stat`
+                                                        > TIME_TO_SEC(TIMEDIFF(TABLE.`internal_time_to_own`,
+                                                                               TABLE.`date`))
+                                                 OR (TABLE.`takeintoaccount_delay_stat` = 0
+                                                      AND TABLE.`internal_time_to_own` < NOW())),
                                             1, 0)'
-      ];
-
-      $max_date = '99999999';
-      $tab[] = [
-         'id'                 => '188',
-         'table'              => $this->getTable(),
-         'field'              => 'next_escalation_level',
-         'name'               => __('Next escalation level'),
-         'datatype'           => 'datetime',
-         'usehaving'          => true,
-         'maybefuture'        => true,
-         'massiveaction'      => false,
-         // Get least value from TTO/TTR fields:
-         // - use TTO fields only if ticket not already taken into account,
-         // - use TTR fields only if ticket not already solved,
-         // - replace NULL or not kept values with 99999999 to be sure that they will not be returned by the LEAST function,
-         // - replace 99999999 by empty string to keep only valid values.
-         'computation'        => "REPLACE(
-            LEAST(
-               IF(".$DB->quoteName('TABLE.takeintoaccount_delay_stat')." <= 0,
-                  COALESCE(".$DB->quoteName('TABLE.time_to_own').", $max_date),
-                  $max_date),
-               IF(".$DB->quoteName('TABLE.takeintoaccount_delay_stat')." <= 0,
-                  COALESCE(".$DB->quoteName('TABLE.internal_time_to_own').", $max_date),
-                  $max_date),
-               IF(".$DB->quoteName('TABLE.solvedate')." IS NULL,
-                  COALESCE(".$DB->quoteName('TABLE.time_to_resolve').", $max_date),
-                  $max_date),
-               IF(".$DB->quoteName('TABLE.solvedate')." IS NULL,
-                  COALESCE(".$DB->quoteName('TABLE.internal_time_to_resolve').", $max_date),
-                  $max_date)
-            ), $max_date, '')"
       ];
 
       $tab[] = [
@@ -3229,9 +3167,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => ['NEWTABLE.type' => SLM::TTO]
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
          ],
-         'condition'          => ['glpi_slas.type' => SLM::TTO]
+         'condition'          => "`glpi_slas`.`type` = '".SLM::TTO."'"
       ];
 
       $tab[] = [
@@ -3243,9 +3181,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => ['NEWTABLE.type' => SLM::TTR]
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
          ],
-         'condition'          => ['glpi_slas.type' => SLM::TTR]
+         'condition'          => "`glpi_slas`.`type` = '".SLM::TTR."'"
       ];
 
       $tab[] = [
@@ -3280,9 +3218,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => ['NEWTABLE.type' => SLM::TTO]
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
          ],
-         'condition'          => ['glpi_olas.type' => SLM::TTO]
+         'condition'          => "`glpi_olas`.`type` = '".SLM::TTO."'"
       ];
 
       $tab[] = [
@@ -3294,9 +3232,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => ['NEWTABLE.type' => SLM::TTR]
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
          ],
-         'condition'          => ['glpi_olas.type' => SLM::TTR]
+         'condition'          => "`glpi_olas`.`type` = '".SLM::TTR."'"
       ];
 
       $tab[] = [
@@ -3446,7 +3384,7 @@ class Ticket extends CommonITILObject {
             'searchtype'         => 'equals',
             'joinparams'         => [
                'jointype'           => 'item_item',
-               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::DUPLICATE_WITH]
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::DUPLICATE_WITH
             ],
             'additionalfields'   => ['tickets_id_2'],
             'forcegroupby'       => true
@@ -3475,7 +3413,7 @@ class Ticket extends CommonITILObject {
             'usehaving'          => true,
             'joinparams'         => [
                'jointype'           => 'item_item',
-               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::DUPLICATE_WITH]
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::DUPLICATE_WITH
             ]
          ];
 
@@ -3495,7 +3433,7 @@ class Ticket extends CommonITILObject {
                   'joinparams'         => [
                      'jointype'           => 'child',
                      'linkfield'          => 'tickets_id_1',
-                     'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
+                     'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF,
                   ]
                ]
             ],
@@ -3518,7 +3456,7 @@ class Ticket extends CommonITILObject {
                   'joinparams'         => [
                      'jointype'           => 'child',
                      'linkfield'          => 'tickets_id_2',
-                     'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
+                     'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF,
                   ]
                ]
             ],
@@ -3536,7 +3474,7 @@ class Ticket extends CommonITILObject {
             'joinparams'         => [
                'linkfield'          => 'tickets_id_2',
                'jointype'           => 'child',
-               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF
             ],
             'forcegroupby'       => true
          ];
@@ -3552,7 +3490,7 @@ class Ticket extends CommonITILObject {
             'joinparams'         => [
                'linkfield'          => 'tickets_id_1',
                'jointype'           => 'child',
-               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF
             ],
             'additionalfields'   => ['tickets_id_2']
          ];
@@ -5595,7 +5533,7 @@ class Ticket extends CommonITILObject {
       }
 
       switch ($status) {
-         case "waiting" : // waiting tickets
+         case "waiting" : // on affiche les tickets en attente
             $WHERE = array_merge(
                $WHERE,
                $search_assign,
@@ -5603,7 +5541,7 @@ class Ticket extends CommonITILObject {
             );
             break;
 
-         case "process" : // planned or assigned tickets
+         case "process" : // on affiche les tickets planifi??s ou assign??s au user
             $WHERE = array_merge(
                $WHERE,
                $search_assign,
@@ -5611,7 +5549,7 @@ class Ticket extends CommonITILObject {
             );
             break;
 
-         case "toapprove" : //tickets waiting for approval
+         case "toapprove" : // on affiche les tickets planifi??s ou assign??s au user
             $ORWHERE = ['AND' => $search_users_id];
             if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
                $ORWHERE[] = ['glpi_tickets.users_id_recipient' => Session::getLoginUserID()];
@@ -5620,7 +5558,7 @@ class Ticket extends CommonITILObject {
             $WHERE['glpi_tickets.status'] = self::SOLVED;
             break;
 
-         case "tovalidate" : // tickets waiting for validation
+         case "tovalidate" : // on affiche les tickets ?? valider
             $JOINS['LEFT JOIN'] = [
                'glpi_ticketvalidations' => [
                   'ON' => [
@@ -5642,39 +5580,19 @@ class Ticket extends CommonITILObject {
             );
             break;
 
-         case "validation.rejected" : // tickets with rejected validation (approval)
-         case "rejected": //old ambiguous key
-            $WHERE = array_merge(
-               $WHERE,
-               $search_assign,
-               [
-                  'glpi_tickets.status'            => ['<>', self::CLOSED],
-                  'glpi_tickets.global_validation' => CommonITILValidation::REFUSED
-               ]
-            );
-            break;
-
-         case "solution.rejected" : // tickets with rejected solution
-            $subq = new QuerySubQuery([
-               'SELECT' => 'last_solution.id',
-               'FROM'   => 'glpi_itilsolutions AS last_solution',
-               'WHERE'  => [
-                  'last_solution.items_id'   => new QueryExpression($DB->quoteName('glpi_tickets.id')),
-                  'last_solution.itemtype'   => 'Ticket'
-               ],
-               'ORDER'  => 'last_solution.id DESC',
-               'LIMIT'  => 1
-            ]);
-
+         case "rejected" : // on affiche les tickets rejet??s
             $JOINS['LEFT JOIN'] = [
                'glpi_itilsolutions' => [
                   'ON' => [
-                     'glpi_itilsolutions' => 'id',
-                     $subq
+                     'glpi_itilsolutions' => 'items_id',
+                     'glpi_tickets'       => 'id', [
+                        'AND' => [
+                           'glpi_itilsolutions.itemtype' => 'Ticket'
+                        ]
+                     ]
                   ]
                ]
             ];
-
             $WHERE = array_merge(
                $WHERE,
                $search_assign,
@@ -5684,6 +5602,7 @@ class Ticket extends CommonITILObject {
                ]
             );
             break;
+
          case "observed" :
             $WHERE = array_merge(
                $WHERE,
@@ -5761,7 +5680,7 @@ class Ticket extends CommonITILObject {
       }
 
       $criteria = [
-         'SELECT'          => ['glpi_tickets.id', 'glpi_tickets.date_mod'],
+         'SELECT'          => 'glpi_tickets.id',
          'DISTINCT'        => true,
          'FROM'            => 'glpi_tickets',
          'LEFT JOIN'       => [
@@ -5951,8 +5870,7 @@ class Ticket extends CommonITILObject {
 
                   break;
 
-               case "validation.rejected" :
-               case "rejected" : // old ambiguous key
+               case "rejected" :
                   $options['criteria'][0]['field']      = 52; // validation status
                   $options['criteria'][0]['searchtype'] = 'equals';
                   $options['criteria'][0]['value']      = CommonITILValidation::REFUSED;
@@ -5965,24 +5883,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your tickets having rejected approval status'), $number, $numrows)."</a>";
-
-                  break;
-
-               case "solution.rejected" :
-                  $options['criteria'][0]['field']      = 39; // last solution status
-                  $options['criteria'][0]['searchtype'] = 'equals';
-                  $options['criteria'][0]['value']      = CommonITILValidation::REFUSED;
-                  $options['criteria'][0]['link']       = 'AND';
-
-                  $options['criteria'][1]['field']      = 5; // assign user
-                  $options['criteria'][1]['searchtype'] = 'equals';
-                  $options['criteria'][1]['value']      = Session::getLoginUserID();
-                  $options['criteria'][1]['link']       = 'AND';
-
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
-                        Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your tickets having rejected solution'), $number, $numrows)."</a>";
+                        Html::makeTitle(__('Your rejected tickets'), $number, $numrows)."</a>";
 
                   break;
 
@@ -6572,14 +6473,10 @@ class Ticket extends CommonITILObject {
       $rand = mt_rand();
       if ($job->getFromDBwithData($ID, 0)) {
          $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
-         $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
          // $rand    = mt_rand();
          echo "<tr class='tab_bg_2'>";
-         echo "<td>
-            <div class='priority_block' style='border-color: $bgcolor'>
-               <span style='background: $bgcolor'></span>&nbsp;$name
-            </div>
-         </td>";
+         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
+                                                               $job->fields["id"])."</td>";
          echo "<td class='center'>";
 
          if (isset($job->users[CommonITILActor::REQUESTER])
@@ -6666,6 +6563,46 @@ class Ticket extends CommonITILObject {
       return $criteria;
    }
 
+   static function getCommonSelect() {
+      Toolbox::deprecated('Use getCommonCriteria');
+
+      $SELECT = "";
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $SELECT .= ", `glpi_entities`.`completename` AS entityname,
+                       `glpi_tickets`.`entities_id` AS entityID ";
+      }
+
+      return " DISTINCT `glpi_tickets`.*,
+                        `glpi_itilcategories`.`completename` AS catname
+                        $SELECT";
+   }
+
+
+   static function getCommonLeftJoin() {
+      Toolbox::deprecated('Use getCommonCriteria');
+
+      $FROM = "";
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $FROM .= " LEFT JOIN `glpi_entities`
+                        ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`) ";
+      }
+
+      return " LEFT JOIN `glpi_groups_tickets`
+                  ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`)
+               LEFT JOIN `glpi_tickets_users`
+                  ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
+               LEFT JOIN `glpi_suppliers_tickets`
+                  ON (`glpi_tickets`.`id` = `glpi_suppliers_tickets`.`tickets_id`)
+               LEFT JOIN `glpi_itilcategories`
+                  ON (`glpi_tickets`.`itilcategories_id` = `glpi_itilcategories`.`id`)
+               LEFT JOIN `glpi_tickettasks`
+                  ON (`glpi_tickets`.`id` = `glpi_tickettasks`.`tickets_id`)
+               LEFT JOIN `glpi_items_tickets`
+                  ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)
+               $FROM";
+
+   }
+
 
    /**
     * @param $output
@@ -6732,27 +6669,19 @@ class Ticket extends CommonITILObject {
 
       // Recherche des entit??s
       $tot = 0;
-
-      $entities = $DB->request(
-         [
-            'SELECT' => 'id',
-            'FROM'   => Entity::getTable(),
-         ]
-      );
-      foreach ($entities as $entity) {
-         $delay  = Entity::getUsedConfig('autoclose_delay', $entity['id'], '', Entity::CONFIG_NEVER);
+      foreach (Entity::getEntitiesToNotify('autoclose_delay') as $entity => $delay) {
          if ($delay >= 0) {
             $criteria = [
                'FROM'   => self::getTable(),
                'WHERE'  => [
-                  'entities_id'  => $entity['id'],
+                  'entities_id'  => $entity,
                   'status'       => self::SOLVED,
                   'is_deleted'   => 0
                ]
             ];
 
             if ($delay > 0) {
-               $calendars_id = Entity::getUsedConfig('calendars_id', $entity['id']);
+               $calendars_id = Entity::getUsedConfig('calendars_id', $entity);
                if ($calendars_id > 0) {
                   $calendar = new Calendar;
                   $calendar->getFromDB($calendars_id);
@@ -6785,12 +6714,12 @@ class Ticket extends CommonITILObject {
             if ($nb) {
                $tot += $nb;
                $task->addVolume($nb);
-               $task->log(Dropdown::getDropdownName('glpi_entities', $entity['id'])." : $nb");
+               $task->log(Dropdown::getDropdownName('glpi_entities', $entity)." : $nb");
             }
          }
       }
 
-      return ($tot > 0 ? 1 : 0);
+      return ($tot > 0);
    }
 
 
@@ -6810,23 +6739,18 @@ class Ticket extends CommonITILObject {
       // Recherche des entit??s
       $tot = 0;
       foreach (Entity::getEntitiesToNotify('notclosed_delay') as $entity => $value) {
-         $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'entities_id'  => $entity,
-               'is_deleted'   => 0,
-               'status'       => [
-                  self::INCOMING,
-                  self::ASSIGNED,
-                  self::PLANNED,
-                  self::WAITING
-               ],
-               'closedate'    => null,
-               new QueryExpression("ADDDATE(" . $DB->quoteName('date') . ", INTERVAL $value DAY) < NOW()")
-            ]
-         ]);
+         $query = "SELECT `glpi_tickets`.*
+                   FROM `glpi_tickets`
+                   WHERE `glpi_tickets`.`entities_id` = '".$entity."'
+                         AND `glpi_tickets`.`is_deleted` = 0
+                         AND `glpi_tickets`.`status` IN ('".self::INCOMING."',
+                                                         '".self::ASSIGNED."',
+                                                         '".self::PLANNED."',
+                                                         '".self::WAITING."')
+                         AND `glpi_tickets`.`closedate` IS NULL
+                         AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < NOW()";
          $tickets = [];
-         while ($tick = $iterator->next()) {
+         foreach ($DB->request($query) as $tick) {
             $tickets[] = $tick;
          }
 
@@ -6844,7 +6768,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      return ($tot > 0 ? 1 : 0);
+      return ($tot > 0);
    }
 
 
@@ -6885,44 +6809,27 @@ class Ticket extends CommonITILObject {
          $type          = Entity::getUsedConfig('inquest_config', $entity);
          $max_closedate = Entity::getUsedConfig('inquest_config', $entity, 'max_closedate');
 
-         $table = self::getTable();
-         $iterator = $DB->request([
-            'SELECT'    => [
-               "$table.id",
-               "$table.closedate",
-               "$table.entities_id"
-            ],
-            'FROM'      => $table,
-            'LEFT JOIN' => [
-               'glpi_ticketsatisfactions' => [
-                  'ON' => [
-                     'glpi_ticketsatisfactions' => 'tickets_id',
-                     'glpi_tickets'             => 'id'
-                  ]
-               ],
-               'glpi_entities'            => [
-                  'ON' => [
-                     'glpi_tickets'    => 'entities_id',
-                     'glpi_entities'   => 'id'
-                  ]
-               ]
-            ],
-            'WHERE'     => [
-               "$table.entities_id"          => $entity,
-               "$table.is_deleted"           => 0,
-               "$table.status"               => self::CLOSED,
-               "$table.closedate"            => ['>', $max_closedate],
-               new QueryExpression("ADDDATE(" . $DB->quoteName("$table.closedate") . ", INTERVAL $delay DAY) <= NOW()"),
-               new QueryExpression("ADDDATE(" . $DB->quoteName("$table.max_closedate") . ", INTERVAL $duration DAY) <= NOW()"),
-               "glpi_ticketsatisfactions.id" => null
-            ],
-            'ORDERBY'   => 'closedate ASC'
-         ]);
+         $query = "SELECT `glpi_tickets`.`id`,
+                          `glpi_tickets`.`closedate`,
+                          `glpi_tickets`.`entities_id`
+                   FROM `glpi_tickets`
+                   LEFT JOIN `glpi_ticketsatisfactions`
+                       ON `glpi_ticketsatisfactions`.`tickets_id` = `glpi_tickets`.`id`
+                   LEFT JOIN `glpi_entities`
+                       ON `glpi_tickets`.`entities_id` = `glpi_entities`.`id`
+                   WHERE `glpi_tickets`.`entities_id` = '$entity'
+                         AND `glpi_tickets`.`is_deleted` = 0
+                         AND `glpi_tickets`.`status` = '".self::CLOSED."'
+                         AND `glpi_tickets`.`closedate` > '$max_closedate'
+                         AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
+                         AND ADDDATE(`glpi_entities`.`max_closedate`, INTERVAL $duration DAY)<=NOW()
+                         AND `glpi_ticketsatisfactions`.`id` IS NULL
+                   ORDER BY `closedate` ASC";
 
          $nb            = 0;
          $max_closedate = '';
 
-         while ($tick = $iterator->next()) {
+         foreach ($DB->request($query) as $tick) {
             $max_closedate = $tick['closedate'];
             if (mt_rand(1, 100) <= $rate) {
                if ($inquest->add(['tickets_id'  => $tick['id'],
@@ -6957,7 +6864,7 @@ class Ticket extends CommonITILObject {
                              'max_closedate' => $maxdate]);
       }
 
-      return ($tot > 0 ? 1 : 0);
+      return ($tot > 0);
    }
 
 
@@ -7231,44 +7138,5 @@ class Ticket extends CommonITILObject {
          'dates'   => $dates,
          'add_now' => $this->getField('closedate') == ""
       ]);
-   }
-
-   /**
-    * Fill input with values related to business rules.
-    *
-    * @param array $input
-    *
-    * @return void
-    */
-   private function fillInputForBusinessRules(array &$input) {
-
-      global $DB;
-
-      $entities_id = isset($input['entities_id'])
-         ? $input['entities_id']
-         : $this->fields['entities_id'];
-
-      // If creation date is not set, then this function is called during ticket creation
-      $creation_date = !empty($this->fields['date_creation'])
-         ? strtotime($this->fields['date_creation'])
-         : time();
-
-      // add calendars matching date creation (for business rules)
-      $calendars = [];
-      $ite_calendar = $DB->request([
-         'SELECT' => ['id'],
-         'FROM'   => Calendar::getTable(),
-         'WHERE'  => getEntitiesRestrictCriteria('', '', $entities_id, true)
-      ]);
-      foreach ($ite_calendar as $calendar_data) {
-         $calendar = new Calendar();
-         $calendar->getFromDB($calendar_data['id']);
-         if ($calendar->isAWorkingHour($creation_date)) {
-            $calendars[] = $calendar_data['id'];
-         }
-      }
-      if (count($calendars)) {
-         $input['_date_creation_calendars_id'] = $calendars;
-      }
    }
 }

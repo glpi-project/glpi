@@ -155,7 +155,7 @@ class User extends CommonDBTM {
 
       if (isset($this->fields['id'])) {
          foreach ($CFG_GLPI['user_pref_field'] as $f) {
-            if (is_null($this->fields[$f])) {
+            if (is_null($this->fields[$f]) || !Session::haveRight('personalization', UPDATE)) {
                $this->fields[$f] = $CFG_GLPI[$f];
             }
          }
@@ -262,20 +262,6 @@ class User extends CommonDBTM {
       return $ong;
    }
 
-   protected function getMainTabs() {
-      return [
-         'Profile_User',
-         'Group_User',
-         //'Config' TODO,
-         //__('Used items'),
-         //__('Managed items'),
-         'Ticket',
-         'Item_Problem',
-         'Change_Item',
-         'Reservation',
-         //'Auth'
-      ];
-   }
 
    function post_getEmpty() {
       global $CFG_GLPI;
@@ -722,9 +708,9 @@ class User extends CommonDBTM {
                $extension    = Toolbox::strtolower(array_pop($tmp));
                @mkdir(GLPI_PICTURE_DIR . "/$sub");
                $picture_path = GLPI_PICTURE_DIR  . "/$sub/${filename}.$extension";
-               self::dropPictureFiles("$sub/${filename}.$extension");
+               self::dropPictureFiles($filename.".".$extension);
 
-               if (Document::isImage($fullpath)
+               if (Document::isImage($input["_picture"])
                    && Document::renameForce($fullpath, $picture_path)) {
                   Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
                   // For display
@@ -866,24 +852,11 @@ class User extends CommonDBTM {
       if (isset($input['language']) && GLPI_DEMO_MODE) {
          unset($input['language']);
       }
-
-      if (empty($input['timezone'])) {
-         $input['timezone'] = 'NULL';
-      }
-
       return $input;
    }
 
 
    function post_updateItem($history = 1) {
-      //handle timezone change for current user
-      if ($this->fields['id'] == Session::getLoginUserID()) {
-         if (null == $this->fields['timezone'] || 'null' === strtolower($this->fields['timezone'])) {
-            unset($_SESSION['glpi_tz']);
-         } else {
-            $_SESSION['glpi_tz'] = $this->fields['timezone'];
-         }
-      }
 
       $this->updateUserEmails();
       $this->syncLdapGroups();
@@ -1984,7 +1957,7 @@ class User extends CommonDBTM {
     * @return boolean true if user found, false otherwise
     */
    function showForm($ID, array $options = []) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       // Affiche un formulaire User
       if (($ID != Session::getLoginUserID()) && !self::canView()) {
@@ -2032,8 +2005,8 @@ class User extends CommonDBTM {
       }
 
       if (!empty($this->fields["name"])) {
-         echo "<td rowspan='7'>" . __('Picture') . "</td>";
-         echo "<td rowspan='7'>";
+         echo "<td rowspan='4'>" . __('Picture') . "</td>";
+         echo "<td rowspan='4'>";
          echo "<div class='user_picture_border_small' id='picture$rand'>";
          echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
                 User::getThumbnailURLForPicture($this->fields['picture'])."'>";
@@ -2049,8 +2022,8 @@ class User extends CommonDBTM {
          echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
          echo "</td>";
       } else {
-         echo "<td rowspan='7'></td>";
-         echo "<td rowspan='7'></td>";
+         echo "<td rowspan='4'></td>";
+         echo "<td rowspan='4'></td>";
       }
       echo "</tr>";
 
@@ -2105,32 +2078,6 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
          echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='off'>";
-         echo "</td></tr>";
-
-      } else {
-         echo "<tr class='tab_bg_1'><td></td><td></td><td rowspan='2'></td></tr>";
-         echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
-      }
-
-      $tz_warning = '';
-      $tz_available = $DB->areTimezonesAvailable($tz_warning);
-      if ($tz_available || Session::haveRight("config", READ)) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td><label for='timezone'>".__('Time zone')."</label></td><td>";
-         if ($tz_available) {
-            $timezones = $DB->getTimezones();
-            Dropdown::showFromArray(
-               'timezone',
-               $timezones, [
-                  'value'                 => $this->fields["timezone"],
-                  'display_emptychoice'   => true
-               ]
-            );
-         } else if (Session::haveRight("config", READ)) {
-            // Display a warning but only if user is more or less an admin
-            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
-            echo $tz_warning;
-         }
          echo "</td></tr>";
       }
 
@@ -2455,7 +2402,7 @@ class User extends CommonDBTM {
     * @return boolean true if user found, false otherwise
     */
    function showMyForm($target, $ID) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       // Affiche un formulaire User
       if (($ID != Session::getLoginUserID())
@@ -2496,8 +2443,8 @@ class User extends CommonDBTM {
          echo "</td>";
 
          if (!empty($this->fields["name"])) {
-            echo "<td rowspan='7'>" . __('Picture') . "</td>";
-            echo "<td rowspan='7'>";
+            echo "<td rowspan='4'>" . __('Picture') . "</td>";
+            echo "<td rowspan='4'>";
             echo "<div class='user_picture_border_small' id='picture$rand'>";
             echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
                    User::getThumbnailURLForPicture($this->fields['picture'])."'>";
@@ -2588,31 +2535,7 @@ class User extends CommonDBTM {
             echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
             echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='off'>";
             echo "</td></tr>";
-         } else {
-            echo "<tr class='tab_bg_1'><td colspan='2'></td><td colspan='2' rowspan='2'></tr>";
-            echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
-         }
 
-         $tz_warning = '';
-         $tz_available = $DB->areTimezonesAvailable($tz_warning);
-         if ($tz_available || Session::haveRight("config", READ)) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='timezone'>".__('Time zone')."</label></td><td>";
-            if ($tz_available) {
-               $timezones = $DB->getTimezones();
-               Dropdown::showFromArray(
-                  'timezone',
-                  $timezones, [
-                     'value'                 => $this->fields["timezone"],
-                     'display_emptychoice'   => true
-                  ]
-               );
-            } else if (Session::haveRight("config", READ)) {
-               // Display a warning but only if user is more or less an admin
-               echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
-               echo $tz_warning;
-            }
-            echo "</td></tr>";
          }
 
          $phonerand = mt_rand();
@@ -3104,7 +3027,7 @@ class User extends CommonDBTM {
          'name'               => __('LDAP directory for authentication'),
          'massiveaction'      => false,
          'joinparams'         => [
-             'condition'          => ['REFTABLE.authtype' => Auth::LDAP]
+             'condition'          => 'AND REFTABLE.`authtype` = ' . Auth::LDAP
          ],
          'datatype'           => 'dropdown'
       ];
@@ -3117,7 +3040,7 @@ class User extends CommonDBTM {
          'name'               => __('Email server for authentication'),
          'massiveaction'      => false,
          'joinparams'         => [
-            'condition'          => ['REFTABLE.authtype' => Auth::MAIL]
+            'condition'          => 'AND REFTABLE.`authtype` = ' . Auth::MAIL
          ],
          'datatype'           => 'dropdown'
       ];
@@ -3295,7 +3218,7 @@ class User extends CommonDBTM {
                'table'              => 'glpi_tickets_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
+                  'condition'          => 'AND NEWTABLE.`type` = ' . CommonITILActor::REQUESTER
                ]
             ]
          ]
@@ -3330,7 +3253,7 @@ class User extends CommonDBTM {
                'table'              => 'glpi_tickets_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
+                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
                ]
             ]
          ]
@@ -3551,7 +3474,7 @@ class User extends CommonDBTM {
                switch ($r) {
                   case  'own_ticket' :
                      $ORWHERE[] = [
-                        [
+                        'AND' => [
                            'glpi_profilerights.name'     => 'ticket',
                            'glpi_profilerights.rights'   => ['&', Ticket::OWN]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3560,7 +3483,7 @@ class User extends CommonDBTM {
 
                   case 'create_ticket_validate' :
                      $ORWHERE[] = [
-                        [
+                        'AND' => [
                            'glpi_profilerights.name'  => 'ticketvalidation',
                            'OR'                       => [
                               'glpi_profilerights.rights'   => ['&', TicketValidation::CREATEREQUEST],
@@ -3573,7 +3496,7 @@ class User extends CommonDBTM {
 
                   case 'validate_request' :
                      $ORWHERE[] = [
-                        [
+                        'AND' => [
                            'glpi_profilerights.name'     => 'ticketvalidation',
                            'glpi_profilerights.rights'   => ['&', TicketValidation::VALIDATEREQUEST]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3583,7 +3506,7 @@ class User extends CommonDBTM {
 
                   case 'validate_incident' :
                      $ORWHERE[] = [
-                        [
+                        'AND' => [
                            'glpi_profilerights.name'     => 'ticketvalidation',
                            'glpi_profilerights.rights'   => ['&', TicketValidation::VALIDATEINCIDENT]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3593,7 +3516,7 @@ class User extends CommonDBTM {
 
                   case 'validate' :
                      $ORWHERE[] = [
-                        [
+                        'AND' => [
                            'glpi_profilerights.name'     => 'changevalidation',
                            'glpi_profilerights.rights'   => ['&', ChangeValidation::VALIDATE]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3602,7 +3525,7 @@ class User extends CommonDBTM {
 
                   case 'create_validate' :
                      $ORWHERE[] = [
-                        [
+                        'AND' => [
                            'glpi_profilerights.name'     => 'changevalidation',
                            'glpi_profilerights.rights'   => ['&', ChangeValidation::CREATE]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3611,7 +3534,7 @@ class User extends CommonDBTM {
 
                   case 'see_project' :
                      $ORWHERE[] = [
-                        [
+                        'AND' => [
                            'glpi_profilerights.name'     => 'project',
                            'glpi_profilerights.rights'   => ['&', Project::READMY]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3620,7 +3543,7 @@ class User extends CommonDBTM {
 
                   case 'faq' :
                      $ORWHERE[] = [
-                        [
+                        'AND' => [
                            'glpi_profilerights.name'     => 'knowbase',
                            'glpi_profilerights.rights'   => ['&', KnowbaseItem::READFAQ]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3629,7 +3552,7 @@ class User extends CommonDBTM {
                   default :
                      // Check read or active for rights
                      $ORWHERE[] = [
-                        [
+                        'AND' => [
                            'glpi_profilerights.name'     => $r,
                            'glpi_profilerights.rights'   => [
                               '&',
@@ -3702,8 +3625,7 @@ class User extends CommonDBTM {
          ]
       ];
       if ($count) {
-         $criteria['SELECT'] = ['COUNT' => 'glpi_users.id AS CPT'];
-         $criteria['DISTINCT'] = true;
+         $criteria['COUNT DISTINCT'] = 'glpi_users.*';
       } else {
          $criteria['SELECT'] = 'glpi_users.*';
          $criteria['DISTINCT'] = true;
@@ -3730,16 +3652,12 @@ class User extends CommonDBTM {
          if ((strlen($search) > 0)) {
             $search_inst = new Search(new User(), []);
             $txt_search = $search_inst->makeTextSearchValue($search);
-
-            $firstname_field = $DB->quoteName(self::getTableField('firstname'));
-            $realname_field = $DB->quoteName(self::getTableField('realname'));
-            $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
-               ? [$firstname_field, $realname_field]
-               : [$realname_field, $firstname_field];
-
             $concat = new \QueryExpression(
-               'CONCAT(' . implode(',' . $DB->quoteValue(' ') . ',', $fields) . ')'
-               . ' LIKE ' . $DB->quoteValue($txt_search)
+               "CONCAT(
+                  glpi_users.realname,
+                  glpi_users.firstname,
+                  glpi_users.firstname
+               ) LIKE '$txt_search'"
             );
             $WHERE[] = [
                'OR' => [
@@ -4595,7 +4513,7 @@ class User extends CommonDBTM {
                }
                $input2 = [
                   'password_forget_token'      => '',
-                  'password_forget_token_date' => 'NULL',
+                  'password_forget_token_date' => null,
                   'id'                         => $this->fields['id']
                ];
                $this->update($input2);
@@ -4847,48 +4765,24 @@ class User extends CommonDBTM {
     * @since 9.4
     *
     * @param string $field the field storing the token
-    * @param boolean $force_new force generation of a new token
     *
     * @return string|false token or false in case of error
     */
-   public function getAuthToken($field = 'personal_token', $force_new = false) {
-      global $CFG_GLPI;
+   public function getAuthToken($field = 'personal_token') {
+      global $DB;
 
       if ($this->isNewItem()) {
          return false;
       }
 
-      // check date validity for cookie token
-      $outdated = false;
-      if ($field === 'cookie_token') {
-         $date_create = new DateTime($this->fields[$field."_date"]);
-         $date_expir  = $date_create->add(new DateInterval('PT'.$CFG_GLPI["login_remember_time"].'S'));
-
-         if ($date_expir < new DateTime()) {
-            $outdated = true;
-         }
-      }
-
-      // token exists, is not oudated, and we may use it
-      if (!empty($this->fields[$field]) && !$force_new && !$outdated) {
+      if (!empty($this->fields[$field])) {
          return $this->fields[$field];
       }
-
-      // else get a new token
       $token = self::getUniqueToken($field);
-
-      // for cookie token, we need to store it hashed
-      $hash = $token;
-      if ($field === 'cookie_token') {
-         $hash = Auth::getPasswordHash($token);
-      }
-
-      // save this token in db
       $this->update(['id'             => $this->getID(),
-                     $field           => $hash,
+                     $field           => $token,
                      $field . "_date" => $_SESSION['glpi_currenttime']]);
-
-      return $token;
+      return $this->fields[$field];
    }
 
 
@@ -4979,7 +4873,7 @@ class User extends CommonDBTM {
       if (!empty($picture)) {
          // unlink main file
          if (file_exists(GLPI_PICTURE_DIR."/$picture")) {
-            @unlink(GLPI_PICTURE_DIR."/$picture");
+            @unlink(GLPI_DOC_DIR."/_pictures/$picture");
          }
          // unlink Thunmnail
          $tmp = explode(".", $picture);
@@ -5108,402 +5002,5 @@ class User extends CommonDBTM {
          $this->entities = Profile_User::getUserEntities($this->fields['id'], true);
       }
       return $this->entities;
-   }
-
-   protected function getFormFields() {
-      global $CFG_GLPI;
-
-      $conf = new Config;
-
-      $fields = [
-         'name'            => [
-            'label'     => __('Login')
-         ],
-         'realname'        => [
-            'label'     => __('Surname')
-         ],
-         'firstname'       => [
-            'label'     => __('First name')
-         ],
-         'password'        => [
-            'label'     => __('Password'),
-            'type'      => 'password'
-         ],
-         'is_active'       => [
-            'label'     => __('Active')
-         ],
-         'begin_date'      => [
-            'label'     => __('Valid since')
-         ],
-         'end_date'        => [
-            'label'     => __('Valid until')
-         ],
-         'phone'           => [
-            'label'     => __('Phone')
-         ],
-         'authtype'        => [
-            'label'     => __('Authentication'),
-            //'type'      => 'display' TODO should only be displayed fulltext
-         ],
-         'mobile'          => [
-            'label'     => __('Mobile phone')
-         ],
-         'usercategories_id'  => [],
-         'phone2'          => [
-            'label'     => __('Phone 2')
-         ],
-         'registration_number'   => [
-            'label'     => __('Administrative number')
-         ],
-         'usertitles_id'   => [],
-         'locations_id'    => [],
-         'profiles_id'     => [
-            'label'     => __('Default profile')
-         ],
-         'entities_id'     => [
-            'label'     => __('Default entity')
-         ],
-         'groups_id'       => [
-            'label'     => __('Default group')
-         ],
-         'users_id_supervisor'   => [
-            'label'     => __('Supervisor')
-         ],
-         'personal_token'  => [
-            'label'     => __('Personal token'),
-            'fieldset'  => 'remote'
-         ],
-         'api_token'       => [
-            'label'     => __('API token'),
-            'fieldset'  => 'remote'
-         ],
-         'personal_token_date'   => [
-            'label'     => __('Date of personal token'),
-            'fieldset'  => 'remote'
-         ],
-         'api_token_date'  => [
-            'label'     => __('Date of API token'),
-            'fieldset'  => 'remote'
-         ],
-         'language'        => [
-            'label'     => __('Language'),
-            'fieldset'  => 'settings',
-            'type'      => 'select',
-            'values'    => Dropdown::getLanguages(),
-            'empty_value'  => true,
-            'listicon'  => false,
-            'addicon'   => false,
-            'empty_value'  => true
-         ],
-         'date_format'     => [
-            'label'     => __('Date format'),
-            'fieldset'  => 'settings',
-            'type'      => 'select',
-            'values'    => Toolbox::phpDateFormats(),
-            'empty_value'  => true,
-            'listicon'  => false,
-            'addicon'   => false
-         ],
-         'names_format'    => [
-            'label'     => __('Names display format'),
-            'title'     => __('Display order of surnames firstnames'),
-            'fieldset'  => 'settings',
-            'type'      => 'select',
-            'empty_value'  => true,
-            'values'    => [
-               User::REALNAME_BEFORE  => __('Surname, First name'),
-               User::FIRSTNAME_BEFORE => __('First name, Surname')
-            ],
-            'listicon'  => false,
-            'addicon'   => false
-         ],
-         'number_format'   => [
-            'label'     => __('Number format'),
-            'fieldset'  => 'settings',
-            'type'      => 'select',
-            'empty_value'  => true,
-            'values'    => [
-               0 => '1 234.56',
-               1 => '1,234.56',
-               2 => '1 234,56',
-               3 => '1234.56',
-               4 => '1234,56'
-            ],
-            'listicon'  => false,
-            'addicon'   => false
-         ],
-         'list_limit'      => [
-            'label'     => __('Results to display by page'),
-            'fieldset'  => 'settings',
-            'type'      => 'number',
-            'min_value' => 5,
-            'max_value' => $CFG_GLPI['list_limit_max'],
-            'step_value'=> 5
-         ],
-         'backcreated'     => [
-            'label'     => _('Go to created item after creation'),
-            'type'      => 'yesno',
-            'fieldset'  => 'settings',
-            'empty_value'  => true,
-            'empty_value_value' => '' //FIXME: does not work :/
-         ],
-         'use_flat_dropdowntree' => [
-            'label'     => __('Display the complete name in tree dropdowns'),
-            'type'      => 'yesno',
-            'fieldset'  => 'settings',
-            'empty_value' => true
-         ],
-         'show_count_on_tabs' => [
-            'label'     => __('Display counters'),
-            'type'      => 'yesno',
-            'fieldset'  => 'settings',
-            'empty_value'  => true
-         ],
-         'is_ids_visible'  => [
-            'label'     => __('Show GLPI ID'),
-            'type'      => 'yesno',
-            'fieldset'  => 'settings',
-            'empty_value'  => true
-         ],
-         'keep_devices_when_purging_item' => [
-            'label'     => __('Keep devices when purging an item'),
-            'type'      => 'yesno',
-            'fieldset'  => 'settings',
-            'empty_value'  => true
-         ],
-         'notification_to_myself'   => [
-            'label'     => __('Notifications for my changes'),
-            'type'      => 'yesno',
-            'fieldset'  => 'settings',
-            'empty_value'  => true
-         ],
-         'display_count_on_home' => [
-            'label'     => __('Results to display on home page'),
-            'fieldset'  => 'settings',
-            'type'      => 'number',
-            'min_value' => 0,
-            'max_value' => 30
-         ],
-         'pdffont'         => [
-            'label'     => __('PDF export font'),
-            'fieldset'  => 'settings',
-            'type'      => 'select',
-            'values'    => GLPIPDF::getFontList(),
-            'empty_value' => true,
-            'listicon'  => false,
-            'addicon'   => false
-         ],
-         'csv_delimiter'   => [
-            'label'     => __('CSV delimiter'),
-            'fieldset'  => 'settings',
-            'type'      => 'select',
-            'values'    => [
-               ';' => ';',
-               ',' => ','
-            ],
-            'empty_value' => true,
-            'listicon'  => false,
-            'addicon'   => false
-         ],
-         'palette'         => [ //FIXME: design was made from local JS...
-            'id'        => 'theme-selector',
-            'label'     => __('Color palette'),
-            'fieldset'  => 'settings',
-            'type'      => 'select',
-            'values'    => $conf->getPalettes(),
-            'empty_value' => true,
-            'listicon'  => false,
-            'addicon'   => false
-         ],
-         'layout'          => [ //FIXME: design was made from local JS...
-            'id'        => 'layout-selector',
-            'label'     => __('Layout'),
-            'type'      => 'select',
-            'values'    => [
-               'lefttab' => __("Tabs on left"),
-               'classic' => __("Classic view"),
-               'vsplit'  => __("Vertical split")
-            ],
-            'empty_value' => true,
-            'listicon'  => false,
-            'addicon'   => false
-         ],
-         'highcontrast_css'   => [
-            'label'     => _('Enable high contrast'),
-            'fieldset'  => 'settings',
-            'type'      => 'yesno',
-            'empty_value' => true
-         ],
-         'followup_private'   => [
-            'label'     => __('Private followups by default'),
-            'fieldset'  => 'assistance',
-            'type'      => 'yesno',
-            'empty_value' => true
-         ],
-         'show_jobs_at_login' => [
-            'label'     => __('Show new tickets on the home page'),
-            'fieldset'  => 'assistance',
-            'type'      => 'yesno',
-            'empty_value' => true
-         ],
-         'task_private'       => [
-            'label'     => __('Private tasks by default'),
-            'fieldset'  => 'assistance',
-            'type'      => 'yesno',
-            'empty_value' => true
-         ],
-         'default_requesttypes_id'  => [
-            'label'     => __('Request source by default'),
-            'fieldset'  => 'assistance',
-            'empty_value' => true
-         ],
-         'task_state'         => [
-            'label'     => __('Tasks state by default'),
-            'fieldset'  => 'assistance',
-            'type'      => 'yesno',
-            'empty_value' => true
-         ],
-         'refresh_ticket_list'   => [
-            'label'     => __('Refresh tickets list (minutes)'),
-            'title'     => __('Automatically refresh tickets list, in minutes'),
-            'fieldset'  => 'assistance',
-            'type'      => 'number',
-            'min_value' => 0,
-            'max_value' => 30
-         ],
-         'set_default_tech'      => [
-            'label'     => __('Pre-select me as technician'),
-            'title'     => __('Set you as a technician when creating a new ticket'),
-            'fieldset'  => 'assistance',
-            'type'      => 'yesno',
-            'empty_value' => true
-         ],
-         'set_default_requester' => [
-            'label'     => __('Pre-select me as requester'),
-            'title'     => __('Set you as a requester when creating a new ticket'),
-            'fieldset'  => 'assistance',
-            'type'      => 'yesno',
-            'empty_value' => true
-         ],
-         'priority_1'            => [
-            'label'        => __('Priority one color'),
-            'fieldset'     => 'assistance',
-            'type'         => 'colorpicker'
-         ],
-         'priority_2'            => [
-            'label'        => __('Priority two color'),
-            'fieldset'     => 'assistance',
-            'type'         => 'colorpicker'
-         ],
-         'priority_3'            => [
-            'label'        => __('Priority three color'),
-            'fieldset'     => 'assistance',
-            'type'         => 'colorpicker'
-         ],
-         'priority_4'            => [
-            'label'        => __('Priority four color'),
-            'fieldset'     => 'assistance',
-            'type'         => 'colorpicker'
-         ],
-         'priority_5'            => [
-            'label'        => __('Priority five color'),
-            'fieldset'     => 'assistance',
-            'type'         => 'colorpicker'
-         ],
-         'priority_6'            => [
-            'label'        => __('Priority six color'),
-            'fieldset'     => 'assistance',
-            'type'         => 'colorpicker'
-         ],
-         'duedatewarning_less'   => [
-            'label'        => __('Warning state threshold'),
-            'fieldset'     => 'duedate',
-            'type'         => 'number'
-         ],
-         'duedatewarning_unit'   => [
-            'label'        => __('Warning state threshold unit'),
-            'fieldset'     => 'duedate',
-            'type'         => 'select',
-            'values'       => [
-               '%'     => '%',
-               'hours' => _n('Hour', 'Hours', Session::getPluralNumber()),
-               'days'  => _n('Day', 'Days', Session::getPluralNumber())
-            ],
-            'empty_value'  => true,
-            'listicon'     => false,
-            'addicon'      => false
-         ],
-         'duedatecritical_less'   => [
-            'label'        => __('Critical state threshold'),
-            'fieldset'     => 'duedate',
-            'type'         => 'number'
-         ],
-         'duedatecritical_unit'   => [
-            'label'        => __('Critical state threshold unit'),
-            'fieldset'     => 'duedate',
-            'type'         => 'select',
-            'values'       => [
-               '%'     => '%',
-               'hours' => _n('Hour', 'Hours', Session::getPluralNumber()),
-               'days'  => _n('Day', 'Days', Session::getPluralNumber())
-            ],
-            'empty_value'  => true,
-            'listicon'     => false,
-            'addicon'      => false
-         ],
-         'duedateok_color'       => [
-            'label'        => __('OK state color'),
-            'fieldset'     => 'duedate',
-            'type'         => 'colorpicker'
-         ],
-         'duedatewarning_color'  => [
-            'label'        => __('Warning state color'),
-            'fieldset'     => 'duedate',
-            'type'         => 'colorpicker'
-         ],
-         'duedatecritical_color' => [
-            'label'        => __('Critical state color'),
-            'fieldset'     => 'duedate',
-            'type'         => 'colorpicker'
-         ]
-      ] + parent::getFormFields();
-      $fields = $this->cleanFormFields($fields);
-      return $fields;
-   }
-
-   public function getFieldsets() :array {
-      $fieldsets = [
-         'remote'       => [
-            'title'     => __('Remote access keys')
-         ],
-         'settings'     => [
-            'title'     => __('Personalization'),
-            'subtitle'  => __('leave blank to use defaults')
-         ],
-         'assistance'   => [
-            'title'     => __('Assistance')
-         ],
-         'duedate'      => [
-            'title'     => __('Due date progression')
-         ]
-      ];
-      return $fieldsets;
-   }
-
-   public function getFormFieldsToDrop($add = false) {
-      return [
-         'is_deleted_ldap',
-         'password_forget_token',
-         'password_forget_token_date',
-         'user_dn',
-         'last_login',
-         'date_sync',
-         'display_options',
-         'privatebookmarkorder',
-         'lock_autolock_mode',
-         'lock_directunlock_notification',
-         'plannings',
-         'sync_field'
-      ];
    }
 }
