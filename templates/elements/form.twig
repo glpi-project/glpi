@@ -32,7 +32,7 @@
    'boxed': true,
    'form_class': ''
 }|merge(glpi_form) %}
-{% set canEdit = item is defined and item.canEdit(item.fields.id) or item is not defined %}
+{% set canEdit = item is defined and item.fields.id is defined and item.canEdit(item.fields.id) or item is not defined %}
 
 {% macro fieldset(fieldset, glpi_form, name, show) %}
    <fieldset  class="tab-pane{% if show == true %} active{% endif %}" id="{{ name }}" role="tabpanel">
@@ -50,7 +50,7 @@
 
 <form class="glpi_form{% if glpi_form.boxed %} form-horizontal{% endif %} {{ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
 {% block form_header %}
-   {% set multi_entities = item is defined and call_static('Session', 'isMultiEntitiesMode') and item.isEntityAssign() %}
+   {% set multi_entities = item != false and item is defined and (call_static('Session', 'isMultiEntitiesMode') and item.isEntityAssign()) %}
    {% set header = glpi_form.header|default(glpi_form.header_title is defined or multi_entities) %}
    {% if header %}
    <header class="card-header with-border row">
@@ -142,7 +142,7 @@
       {# Handle main elements #}
       {% import _self as _form %}
       {% set title = '' %}
-      {% if item is defined %}
+      {% if item is defined and item != false %}
           {% set title = item.getTypeName(1) %}
       {% endif %}
 
