@@ -752,7 +752,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string[]|null array of first results row
     */
    public function next() {
-      if (!$this->res) {
+      if (!($this->res instanceof \mysqli_result)) {
          return false;
       }
       $this->row = $this->conn->fetchAssoc($this->res);
