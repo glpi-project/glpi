@@ -81,7 +81,7 @@
    {% set menu_itemtype = false %}
    {% set menu_item = false %}
    {% if item is defined and item != false %}
-      {% for menu in glpi_menus if menu.content[item.getType()|lower()] is defined %}
+      {% for menu in glpi_menus %}
          {% set menu_itemtype = item.getType()|lower() %}
          {% if menu.content[menu_itemtype] is defined %}
             {% set sector = menu.title %}
