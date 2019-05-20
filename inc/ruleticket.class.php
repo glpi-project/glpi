@@ -416,7 +416,7 @@ class RuleTicket extends Rule {
       $criterias['_groups_id_assign']['name']               = __('Technician group');
       $criterias['_groups_id_assign']['linkfield']          = '_groups_id_assign';
       $criterias['_groups_id_assign']['type']               = 'dropdown';
-      $criterias['_groups_id_assign']['condition']          = '`is_assign`';
+      $criterias['_groups_id_assign']['condition']          = ['is_assign' => 1];
 
       $criterias['_suppliers_id_assign']['table']           = 'glpi_suppliers';
       $criterias['_suppliers_id_assign']['field']           = 'name';
@@ -546,7 +546,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_requester']['name']              = __('Requester group');
       $actions['_groups_id_requester']['type']              = 'dropdown';
       $actions['_groups_id_requester']['table']             = 'glpi_groups';
-      $actions['_groups_id_requester']['condition']         = '`is_requester`';
+      $actions['_groups_id_requester']['condition']         = ['is_requester' => 1];
       $actions['_groups_id_requester']['force_actions']     = ['assign', 'append', 'fromitem'];
       $actions['_groups_id_requester']['permitseveral']     = ['append'];
       $actions['_groups_id_requester']['appendto']          = '_additional_groups_requesters';
@@ -562,7 +562,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_assign']['table']                = 'glpi_groups';
       $actions['_groups_id_assign']['name']                 = __('Technician group');
       $actions['_groups_id_assign']['type']                 = 'dropdown';
-      $actions['_groups_id_assign']['condition']            = '`is_assign`';
+      $actions['_groups_id_assign']['condition']            = ['is_assign' => 1];
       $actions['_groups_id_assign']['force_actions']        = ['assign', 'append'];
       $actions['_groups_id_assign']['permitseveral']        = ['append'];
       $actions['_groups_id_assign']['appendto']             = '_additional_groups_assigns';
@@ -587,7 +587,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_observer']['table']              = 'glpi_groups';
       $actions['_groups_id_observer']['name']               = __('Watcher group');
       $actions['_groups_id_observer']['type']               = 'dropdown';
-      $actions['_groups_id_observer']['condition']          = '`is_requester`';
+      $actions['_groups_id_observer']['condition']          = ['is_requester' => 1];
       $actions['_groups_id_observer']['force_actions']      = ['assign', 'append'];
       $actions['_groups_id_observer']['permitseveral']      = ['append'];
       $actions['_groups_id_observer']['appendto']           = '_additional_groups_observers';

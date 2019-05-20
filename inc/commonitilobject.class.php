@@ -3249,7 +3249,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Requester group'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
-         'condition'          => 'is_requester',
+         'condition'          => ['is_requester' => 1],
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => getTableForItemType($this->grouplinkclass),
@@ -3263,7 +3263,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (!Session::isCron() // no filter for cron
           && Session::getCurrentInterface() == 'helpdesk') {
-         $newtab['condition']       .= " AND `id` IN (".implode(",", $_SESSION['glpigroups']).")";
+         $newtab['condition'] = array_merge(
+            $newtab['condition'],
+            ['id' => [$_SESSION['glpigroups']]]
+         );
       }
       $tab[] = $newtab;
 
@@ -3316,7 +3319,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Watcher group'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
-         'condition'          => 'is_requester',
+         'condition'          => ['is_requester' => 1],
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => getTableForItemType($this->grouplinkclass),
