@@ -3263,7 +3263,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (!Session::isCron() // no filter for cron
           && Session::getCurrentInterface() == 'helpdesk') {
-         $newtab['condition']       .= " AND `id` IN (".implode(",", $_SESSION['glpigroups']).")";
+         $newtab['condition'] = array_merge(
+            $newtab['condition'],
+            ['id' => [$_SESSION['glpigroups']]]
+         );
       }
       $tab[] = $newtab;
 
