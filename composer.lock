@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "19a26038bb5b75ae255b29ccd31c15cf",
+    "content-hash": "55d990f6a7d656a0ec3d0a18228b67e4",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -402,14 +402,9 @@
         {
             "name": "leafo/scssphp",
             "version": "v0.8.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/leafo/scssphp.git",
-                "reference": "1b168bfee60889547e1fe55b9afdf055f6d3c58d"
-            },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/leafo/scssphp/zipball/1b168bfee60889547e1fe55b9afdf055f6d3c58d",
+                "url": "https://github.com/leafo/scssphp/archive/v0.8.2.zip",
                 "reference": "1b168bfee60889547e1fe55b9afdf055f6d3c58d",
                 "shasum": ""
             },
