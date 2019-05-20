@@ -74,8 +74,15 @@
     },
     "repositories": {
         "leafo/scssphp": {
-            "type": "vcs",
-            "url": "https://github.com/leafo/scssphp"
+            "type": "package",
+            "package": {
+                "name": "leafo/scssphp",
+                "version": "0.8.2",
+                "dist": {
+                    "url": "https://github.com/leafo/scssphp/archive/v0.8.2.zip",
+                    "type": "zip"
+                }
+            }
         }
     }
 }
