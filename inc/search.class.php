@@ -6955,7 +6955,7 @@ JAVASCRIPT;
                self::$search[$itemtype][24]['field']         = 'name';
                self::$search[$itemtype][24]['linkfield']     = 'users_id_tech';
                self::$search[$itemtype][24]['name']          = __('Technician in charge of the hardware');
-               self::$search[$itemtype][24]['condition']      = ['is_assign' => 1];
+               self::$search[$itemtype][24]['condition']     = ['is_assign' => 1];
 
                self::$search[$itemtype][49]['table']          = 'glpi_groups';
                self::$search[$itemtype][49]['field']          = 'completename';

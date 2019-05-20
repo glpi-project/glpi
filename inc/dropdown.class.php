@@ -275,7 +275,7 @@ class Dropdown {
     *
     * @return string
     */
-   static function addNewCondition($condition) {
+   static function addNewCondition(array $condition) {
       $sha1 = sha1(serialize($condition));
       $_SESSION['glpicondition'][$sha1] = $condition;
       return $sha1;
