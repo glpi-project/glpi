@@ -629,7 +629,7 @@ class Session {
 
       $cache_storage = $CONTAINER->get('translation_cache')->getStorage();
       if (!defined('TU_USER')) {
-         $TRANSLATE->setCache($cache);
+         $TRANSLATE->setCache($cache_storage);
       }
 
       $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR.$newfile, 'glpi', $trytoload);
