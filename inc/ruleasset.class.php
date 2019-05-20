@@ -168,7 +168,7 @@ class RuleAsset extends Rule {
       $actions['groups_id_tech']['name']      = __('Group in charge of the hardware');
       $actions['groups_id_tech']['type']      = 'dropdown';
       $actions['groups_id_tech']['table']     = 'glpi_groups';
-      $actions['groups_id_tech']['condition'] = 'is_assign';
+      $actions['groups_id_tech']['condition'] = ['is_assign' => 1];
 
       $actions['comment']['table']            = '';
       $actions['comment']['field']            = 'comment';

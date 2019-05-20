@@ -6612,13 +6612,13 @@ JAVASCRIPT;
                self::$search[$itemtype][24]['field']         = 'name';
                self::$search[$itemtype][24]['linkfield']     = 'users_id_tech';
                self::$search[$itemtype][24]['name']          = __('Technician in charge of the hardware');
-               self::$search[$itemtype][24]['condition']      = '`is_assign`';
+               self::$search[$itemtype][24]['condition']     = ['is_assign' => 1];
 
                self::$search[$itemtype][49]['table']          = 'glpi_groups';
                self::$search[$itemtype][49]['field']          = 'completename';
                self::$search[$itemtype][49]['linkfield']      = 'groups_id_tech';
                self::$search[$itemtype][49]['name']           = __('Group in charge of the hardware');
-               self::$search[$itemtype][49]['condition']      = '`is_assign`';
+               self::$search[$itemtype][49]['condition']      = ['is_assign' => 1];
                self::$search[$itemtype][49]['datatype']       = 'dropdown';
 
                self::$search[$itemtype][80]['table']         = 'glpi_entities';
