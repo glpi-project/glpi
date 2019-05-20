@@ -45,15 +45,6 @@ class Report extends CommonGLPI{
    static $rightname         = 'reports';
 
 
-
-   /**
-    * @since 0.85.3
-   **/
-   static function canView() {
-      return Session::haveRight(self::$rightname, READ);
-   }
-
-
    static function getTypeName($nb = 0) {
       return _n('Report', 'Reports', $nb);
    }

@@ -60,12 +60,20 @@ class CommonGLPI {
    public $taborientation          = 'horizontal';
 
    /**
+    * Rightname used to check rights to do actions on item.
+    *
+    * @var string
+    */
+   static $rightname = '';
+
+   /**
     * @deprecated
     * will be dropped in a future version
     */
    protected $twig_compat                       = false;
 
    /**
+    /**
     * Need to get item to show tab
     *
     * @var boolean
@@ -102,6 +110,82 @@ class CommonGLPI {
    **/
    static function getType() {
       return get_called_class();
+   }
+
+
+   /**
+    * Have I the global right to "create" the Object
+    * May be overloaded if needed (ex KnowbaseItem)
+    *
+    * @return boolean
+   **/
+   static function canCreate() {
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, CREATE);
+      }
+      return false;
+   }
+
+
+   /**
+    * Have I the global right to "view" the Object
+    *
+    * Default is true and check entity if the objet is entity assign
+    *
+    * May be overloaded if needed
+    *
+    * @return boolean
+   **/
+   static function canView() {
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, READ);
+      }
+      return false;
+   }
+
+
+   /**
+    * Have I the global right to "update" the Object
+    *
+    * Default is calling canCreate
+    * May be overloaded if needed
+    *
+    * @return boolean
+   **/
+   static function canUpdate() {
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, UPDATE);
+      }
+   }
+
+
+   /**
+    * Have I the global right to "delete" the Object
+    *
+    * May be overloaded if needed
+    *
+    * @return boolean
+   **/
+   static function canDelete() {
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, DELETE);
+      }
+      return false;
+   }
+
+
+   /**
+    * Have I the global right to "purge" the Object
+    *
+    * May be overloaded if needed
+    *
+    * @return boolean
+   **/
+   static function canPurge() {
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, PURGE);
+      }
+      return false;
    }
 
 

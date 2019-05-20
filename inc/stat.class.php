@@ -42,11 +42,6 @@ class Stat extends CommonGLPI {
    static $rightname = 'statistic';
 
 
-   static function canView() {
-      return Session::haveRight(self::$rightname, READ);
-   }
-
-
    static function getTypeName($nb = 0) {
       return __('Statistics');
    }

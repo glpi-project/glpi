@@ -41,6 +41,8 @@ if (!defined('GLPI_ROOT')) {
  */
 class Auth extends CommonGLPI {
 
+   static $rightname = 'config';
+
    //Errors
    private $errors = [];
    /** User class variable
@@ -85,15 +87,6 @@ class Auth extends CommonGLPI {
       $this->user = new User();
    }
 
-   /**
-    *
-    * @return boolean
-    *
-    * @since 0.85
-    */
-   static function canView() {
-      return Session::haveRight('config', READ);
-   }
 
    static function getMenuContent() {
 

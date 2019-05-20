@@ -261,8 +261,11 @@ function glpi_autoload($classname) {
 
    // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
    if (empty($classname) || is_numeric($classname) || (strpos($classname, '.') !== false)) {
-      echo "Security die. trying to load a forbidden class name";
-      die(1);
+      trigger_error(
+         sprintf('Trying to load a forbidden class name "%1$s"', $classname),
+         E_USER_ERROR
+      );
+      return false;
    }
 
    if ($classname === 'phpCAS'
