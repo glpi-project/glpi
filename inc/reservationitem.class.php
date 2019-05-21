@@ -514,13 +514,17 @@ class ReservationItem extends CommonDBChild {
          }
          $itemtable = getTableForItemType($itemtype);
 
+         $otherserial = new \QueryExpression($DB->quote('') . ' AS ' . $DB->quoteName('otherserial'));
+         if ($item->isField('otherserial')) {
+            $otherserial = "$itemtable.otherserial AS otherserial";
+         }
          $criteria = [
             'SELECT' => [
                'glpi_reservationitems.id',
                'glpi_reservationitems.comment',
                "$itemtable.name AS name",
                "$itemtable.entities_id AS entities_id",
-               ($item->isField('otherserial') ? "$itemtable.otherserial" : new \QueryExpression($DB->quote(''))) . ' AS otherserial',
+               $otherserial,
                'glpi_locations.id AS location',
                'glpi_reservationitems.items_id AS items_id'
             ],

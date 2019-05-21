@@ -1059,7 +1059,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
          $sort = $_GET["sort"];
       } else {
-         $sort = ["entity $order", 'name'];
+         $sort = ["entity $order", "name $order"];
       }
 
       // Righ type is enough. Can add a License on a software we have Read access
@@ -1125,7 +1125,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'WHERE'     => [
             'glpi_softwarelicenses.softwares_id'   => $softwares_id
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true),
-         'ORDERBY'   => "$sort $order",
+         'ORDERBY'   => $sort,
          'START'     => (int)$start,
          'LIMIT'     => (int)$_SESSION['glpilist_limit']
       ]);
