@@ -294,6 +294,11 @@ class MailCollector  extends CommonDBTM {
       ], ["value" => $this->fields['requester_field']]);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_1'><td>" . __('Mark suppliers followup as private') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("suppliers_as_private", $this->fields['suppliers_as_private']);
+      echo "</td></tr>\n";
+
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
       echo "<td><textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
 
@@ -719,6 +724,7 @@ class MailCollector  extends CommonDBTM {
 
                   // Followup case
                   $ticket = new Ticket();
+                  $ticketExist = $ticket->getFromDB($tkt['tickets_id']);
                   $fup = new ITILFollowup();
 
                   $fup_input = $tkt;
@@ -726,7 +732,26 @@ class MailCollector  extends CommonDBTM {
                   $fup_input['items_id'] = $fup_input['tickets_id'];
                   unset($fup_input['tickets_id']);
 
-                  if (!$ticket->getFromDB($tkt['tickets_id'])) {
+                  if ($ticketExist && $this->fields['suppliers_as_private']) {
+                     // Get suppliers matching the from email
+                     $suppliers = Supplier::getSuppliersByEmail(
+                        $rejinput['from']
+                     );
+
+                     foreach ($suppliers as $supplier) {
+                        // If the supplier is assigned to this ticket then
+                        // the followup must be private
+                        if ($ticket->isSupplier(
+                              CommonITILActor::ASSIGN,
+                              $supplier['id'])
+                           ) {
+                           $fup_input['is_private'] = true;
+                           break;
+                        }
+                     }
+                  }
+
+                  if (!$ticketExist) {
                      $error++;
                      $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
                      $rejected->add($rejinput);

@@ -594,4 +594,23 @@ class Supplier extends CommonDBTM {
       echo "<td colspan='4'>&nbsp;</td></tr> ";
       echo "</table></div>";
    }
+
+   /**
+    * Get suppliers matching a given email
+    *
+    * @since 9.5
+    *
+    * @param $email boolean : also display name ? (false by default)
+   **/
+   public static function getSuppliersByEmail($email) {
+      global $DB;
+
+      $suppliers = $DB->request([
+         'SELECT' => ["id"],
+         'FROM' => 'glpi_suppliers',
+         'WHERE' => ['email' => $email]
+      ]);
+
+      return $suppliers;
+   }
 }
