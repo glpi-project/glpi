@@ -580,7 +580,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_observer']['table']              = 'glpi_groups';
       $actions['_groups_id_observer']['name']               = __('Watcher group');
       $actions['_groups_id_observer']['type']               = 'dropdown';
-      $actions['_groups_id_observer']['condition']          = '`is_requester`';
+      $actions['_groups_id_observer']['condition']          = '`is_watcher`';
       $actions['_groups_id_observer']['force_actions']      = ['assign', 'append'];
       $actions['_groups_id_observer']['permitseveral']      = ['append'];
       $actions['_groups_id_observer']['appendto']           = '_additional_groups_observers';
