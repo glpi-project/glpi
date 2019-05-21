@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DatabaseFactory;
+
 define('GLPI_ROOT', realpath('..'));
 
 include_once (GLPI_ROOT . "/inc/based_config.php");
@@ -243,32 +245,21 @@ function step3($host, $user, $password, $update) {
    error_reporting(16);
    echo "<h3>".__('Test of the connection at the database')."</h3>";
 
-   $hostport = explode(":", $host);
-   $driver   = 'mysql';
-   if (count($hostport) < 2) {
-      // Host
-      $dsn = "$driver:host=$host";
-   } else if (intval($hostport[1])>0) {
-       // Host:port
-       $dsn = "$driver:host={$hostport[0]}:{$hostport[1]}";
-   } else {
-       // :Socket
-       $dsn = "$driver:unix_socket={$hostport[1]}";
-   }
+   $driver   = 'mysql'; //TODO: parameter
 
    $connected = false;
    try {
-      $link = new PDO(
-         "$dsn;charset=utf8",
-         $user,
-         $password
-      );
+      $link = DatabaseFactory::create([
+        'driver'  => $driver,
+        'host'    => $host,
+        'user'    => $user,
+        'pass'    => $password
+      ]);
       $connected = true;
-   } catch (PDOException $e) {
+   } catch (\PDOException $e) {
       echo "<p>".__("Can't connect to the database")."\n <br>".
            sprintf(__('The server answered: %s'), $e->getMessage())."</p>";
    }
-   $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
    if (!$connected
        || empty($host)
@@ -292,8 +283,7 @@ function step3($host, $user, $password, $update) {
       echo  "<h3>".__('Database connection successful')."</h3>";
 
       //get database raw version
-      $DB_ver = $link->query("SELECT version()");
-      $row = $DB_ver->fetch(\PDO::FETCH_NUM);
+      $DB_ver = $link->getVersion();
       echo "<p class='center'>";
       $checkdb = Config::displayCheckDbEngine(true, $row[0]);
       echo "</p>";
@@ -305,7 +295,7 @@ function step3($host, $user, $password, $update) {
          echo "<p>".__('Please select a database:')."</p>";
          echo "<form action='install.php' method='post'>";
 
-         if ($DB_list = $link->query("SHOW DATABASES")) {
+         if ($DB_list = $link->rawQuery("SHOW DATABASES")) {
             while ($row = $DB_list->fetch(\PDO::FETCH_ASSOC)) {
                if (!in_array($row['Database'], ["information_schema",
                                                      "mysql",
@@ -339,7 +329,7 @@ function step3($host, $user, $password, $update) {
          echo "<p>".__('Please select the database to update:')."</p>";
          echo "<form action='install.php' method='post'>";
 
-         $DB_list = $link->query("SHOW DATABASES");
+         $DB_list = $link->rawQuery("SHOW DATABASES");
          while ($row = $DB_list->fetch(\PDO::FETCH_NUM)) {
             echo "<p>";
             echo "<label class='radio'>";
@@ -393,48 +383,40 @@ function step4 ($databasename, $newdatabasename) {
       Html::closeForm();
    }
 
-   $hostport = explode(":", $host);
-   $driver   = 'mysql';
-   if (count($hostport) < 2) {
-      // Host
-      $dsn = "$driver:host=$host";
-   } else if (intval($hostport[1])>0) {
-       // Host:port
-       $dsn = "$driver:host={$hostport[0]}:{$hostport[1]}";
-   } else {
-       // :Socket
-       $dsn = "$driver:unix_socket={$hostport[1]}";
-   }
+   $driver   = 'mysql'; //TODO: parameter
 
    $connected = false;
    try {
-      $link = new PDO(
-         "$dsn;charset=utf8",
-         $user,
-         $password
-      );
+      $link = DatabaseFactory::create([
+        'driver'  => $driver,
+        'host'    => $host,
+        'user'    => $user,
+        'pass'    => $password
+      ]);
       $connected = true;
-   } catch (PDOException $e) {
+   } catch (\PDOException $e) {
       echo "<p>".__("Can't connect to the database")."\n <br>".
            sprintf(__('The server answered: %s'), $e->getMessage())."</p>";
    }
-   $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
    if (!empty($databasename)) { // use db already created
       try {
-         $link = new PDO(
-            "$dsn;db=$databasename;charset=utf8",
-            $user,
-            $password
-         );
+         $link = DatabaseFactory::create([
+            'driver'  => $driver,
+            'host'    => $host,
+            'user'    => $user,
+            'pass'    => $password,
+            'dbname'  => $databasename
+         ]);
          $connected = true;
-      } catch (PDOException $e) {
+      } catch (\PDOException $e) {
          echo __('Impossible to use the database:');
          echo "<br>".sprintf(__('The server answered: %s'), $e->getMessage());
          prev_form($host, $user, $password);
       }
 
-      if (DBConnection::createMainConfig('mysql', $host, $user, $password, $databasename)) {
+      $driver   = 'mysql'; //TODO: parameter
+      if (DBConnection::createMainConfig($driver, $host, $user, $password, $databasename)) {
          Toolbox::createSchema($_SESSION["glpilanguage"]);
          echo "<p>".__('OK - database was initialized')."</p>";
 
@@ -450,7 +432,7 @@ function step4 ($databasename, $newdatabasename) {
       $TempDB = \Glpi\DatabaseFactory::create();
 
       // try to create the DB
-      if ($link->query("CREATE DATABASE IF NOT EXISTS ".$TempDB->quoteName($newdatabasename))) {
+      if ($link->rawQuery("CREATE DATABASE IF NOT EXISTS ".$TempDB->quoteName($newdatabasename))) {
          echo "<p>".__('Database created')."</p>";
       } else { // can't create database
          echo __('Error in creating database!');
@@ -460,12 +442,16 @@ function step4 ($databasename, $newdatabasename) {
 
       try {
          // Try to connect
-         $link = new PDO(
-            "$dsn;db=$newdatabasename;charset=utf8",
-            $user,
-            $password
-         );
-         if (!DBConnection::createMainConfig('mysql', $host, $user, $password, $newdatabasename)) {
+         $link = DatabaseFactory::create([
+            'driver'  => $driver,
+            'host'    => $host,
+            'user'    => $user,
+            'pass'    => $password,
+            'dbname'  => $newdatabasename
+         ]);
+
+         $driver   = 'mysql'; //TODO: parameter
+         if (!DBConnection::createMainConfig($driver, $host, $user, $password, $newdatabasename)) {
             echo "<p>".__('Impossible to write the database setup file')."</p>";
             prev_form($host, $user, $password);
          }
