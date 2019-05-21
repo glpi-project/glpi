@@ -2428,6 +2428,22 @@ class Toolbox {
       if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-empty.sql")) {
          echo "Errors occurred inserting default database";
       } else {
+         //dataset
+         $tables = require_once(__DIR__ . '/../install/empty_data.php');
+         foreach ($tables as $table => $data) {
+             $stmt = $DB->prepare($DB->buildInsert($table, $data[0]));
+            foreach ($data as $row) {
+               try {
+                  $stmt->execute($row);
+               } catch (\Exception $e) {
+                   $msg = "In table $table";
+                   $msg .= print_r($row, true);
+                   $msg .= "\n".$e->getMessage();
+                   throw new \RuntimeException($msg);
+               }
+            }
+         }
+
          // update default language
          Config::setConfigurationValues(
             'core',
