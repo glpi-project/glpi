@@ -50,7 +50,7 @@
 
 <form class="glpi_form{% if glpi_form.boxed %} form-horizontal{% endif %} {{ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
 {% block form_header %}
-   {% set multi_entities = item != false and item is defined and (call_static('Session', 'isMultiEntitiesMode') and item.isEntityAssign()) %}
+   {% set multi_entities = item is defined and item != false and (call_static('Session', 'isMultiEntitiesMode') and item.isEntityAssign()) %}
    {% set header = glpi_form.header|default(glpi_form.header_title is defined or multi_entities) %}
    {% if header %}
    <header class="card-header with-border row">
