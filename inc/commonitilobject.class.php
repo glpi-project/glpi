@@ -3322,7 +3322,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Watcher group'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
-         'condition'          => ['is_requester' => 1],
+         'condition'          => ['is_watcher' => 1],
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => getTableForItemType($this->grouplinkclass),
