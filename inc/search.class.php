@@ -134,7 +134,7 @@ class Search {
          array_pop($criteria);
          $criteria[] = [
             'link'         => 'AND',
-            'field'        => ($itemtype == 'Location') ? 1 : ($itemtype == 'Ticket') ? 83 : 3,
+            'field'        => ($itemtype == 'Location') ? 1 : (($itemtype == 'Ticket') ? 83 : 3),
             'searchtype'   => 'equals',
             'value'        => 'CURLOCATION'
          ];

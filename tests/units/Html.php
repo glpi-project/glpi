@@ -40,6 +40,8 @@ class Html extends \GLPITestCase {
       $this->variable(\Html::convDate(null))->isNull();
       $this->variable(\Html::convDate('NULL'))->isNull();
       $this->variable(\Html::convDate(''))->isNull();
+      $this->variable(\Html::convDate('0000-00-00'))->isNull();
+      $this->variable(\Html::convDate('0000-00-00 00:00:00'))->isNull();
 
       $mydate = date('Y-m-d H:i:s');
 
