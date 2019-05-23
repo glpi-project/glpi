@@ -5277,6 +5277,13 @@ JAVASCRIPT;
             $oparams = $searchopt[$ID]['addobjectparams'];
          }
 
+         // Search option may not exists in subtype
+         // This is the case for "Inventory number" for a Software listed from ReservationItem search
+         $subtype_so = &self::getOptions($data["TYPE"]);
+         if (!array_key_exists($ID, $subtype_so)) {
+            return '';
+         }
+
          return self::giveItem($data["TYPE"], $ID, $data, $meta, $oparams, $itemtype);
       }
       $so = $searchopt[$ID];

@@ -5702,17 +5702,21 @@ class Html {
    /**
     * Convert tag to image
     *
-    * @since 9.2
-    *
     * @param string|array $tag       the tag identifier of the document
     * @param int          $width     witdh of the final image
     * @param int          $height    height of the final image
     * @param bool         $addLink   boolean, do we need to add an anchor link
     * @param string       $more_link append to the link (ex &test=true)
     *
-    * @return nothing
+    * @return string
+    *
+    * @since 9.2
+    * @deprecated 9.4.3
    **/
    public static function convertTagFromRichTextToImageTag($tag, $width, $height, $addLink = true, $more_link = "") {
+
+      Toolbox::deprecated('Use getImageHtmlTagForDocument');
+
       global $CFG_GLPI;
 
       $doc = new Document();
@@ -5757,6 +5761,67 @@ class Html {
          return $out;
       }
       return '#'.$tag.'#';
+   }
+
+
+   /**
+    * Get image html tag for image document.
+    *
+    * @param int    $document_id  identifier of the document
+    * @param int    $width        witdh of the final image
+    * @param int    $height       height of the final image
+    * @param bool   $addLink      boolean, do we need to add an anchor link
+    * @param string $more_link    append to the link (ex &test=true)
+    *
+    * @return string
+    *
+    * @since 9.4.3
+   **/
+   public static function getImageHtmlTagForDocument($document_id, $width, $height, $addLink = true, $more_link = "") {
+      global $CFG_GLPI;
+
+      $document = new Document();
+      if (!$document->getFromDB($document_id)) {
+         return '';
+      }
+
+      $base_path = $CFG_GLPI['root_doc'];
+      if (isCommandLine()) {
+         $base_path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH);
+      }
+
+      // Add only image files : try to detect mime type
+      $ok   = false;
+      $mime = '';
+      if (isset($document->fields['filepath'])) {
+         $fullpath = GLPI_DOC_DIR."/".$document->fields['filepath'];
+         $mime = Toolbox::getMime($fullpath);
+         $ok   = Toolbox::getMime($fullpath, 'image');
+      }
+
+      if (!($ok || empty($mime))) {
+         return '';
+      }
+
+      $out = '';
+      if ($addLink) {
+         $out .= '<a '
+                 . 'href="' . $base_path . '/front/document.send.php?docid=' . $document_id . $more_link . '" '
+                 . 'target="_blank" '
+                 . '>';
+      }
+      $out .= '<img ';
+      if (isset($document->fields['tag'])) {
+         $out .= 'alt="' . $document->fields['tag'] . '" ';
+      }
+      $out .= 'width="' . $width . '" '
+              . 'src="' . $base_path . '/front/document.send.php?docid=' . $document_id . $more_link . '" '
+              . '/>';
+      if ($addLink) {
+         $out .= '</a>';
+      }
+
+      return $out;
    }
 
    /**

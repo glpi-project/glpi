@@ -2726,9 +2726,16 @@ class Toolbox {
                      }
 
                      // replace image
-                     $new_image =  Html::convertTagFromRichTextToImageTag($image['tag'],
-                                                                          $width, $height,
-                                                                          true, $itil_url_param);
+                     $new_image =  Html::getImageHtmlTagForDocument(
+                        $id,
+                        $width,
+                        $height,
+                        true,
+                        $itil_url_param
+                     );
+                     if (empty($new_image)) {
+                        $new_image = '#'.$image['tag'].'#';
+                     }
                      $content_text = preg_replace(
                         $regex,
                         $new_image,
