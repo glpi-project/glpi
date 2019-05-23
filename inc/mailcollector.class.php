@@ -294,11 +294,6 @@ class MailCollector  extends CommonDBTM {
       ], ["value" => $this->fields['requester_field']]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Mark suppliers followup as private') . "</td>";
-      echo "<td>";
-      Dropdown::showYesNo("suppliers_as_private", $this->fields['suppliers_as_private']);
-      echo "</td></tr>\n";
-
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
       echo "<td><textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
 
@@ -732,7 +727,10 @@ class MailCollector  extends CommonDBTM {
                   $fup_input['items_id'] = $fup_input['tickets_id'];
                   unset($fup_input['tickets_id']);
 
-                  if ($ticketExist && $this->fields['suppliers_as_private']) {
+                  if ($ticketExist && Entity::getUsedConfig(
+                        'suppliers_as_private',
+                        $ticket->fields['entities_id']
+                     )) {
                      // Get suppliers matching the from email
                      $suppliers = Supplier::getSuppliersByEmail(
                         $rejinput['from']

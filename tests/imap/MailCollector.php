@@ -64,8 +64,7 @@ class MailCollector extends DbTestCase {
                   'errors'               => '',
                   'use_mail_date'        => '',
                   'date_creation'        => '',
-                  'requester_field'      => '',
-                  'suppliers_as_private' => ''
+                  'requester_field'      => ''
                ]);
    }
 

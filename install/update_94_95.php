@@ -113,15 +113,20 @@ function update94to95() {
       'number'
    ], 'softwares_id_expire_number');
 
-   /** Private supplier followup in mailcollector */
-   if (!$DB->fieldExists('glpi_mailcollectors', 'suppliers_as_private')) {
+   /** Private supplier followup in glpi_entities */
+   if (!$DB->fieldExists('glpi_entities', 'suppliers_as_private')) {
       $migration->addField(
-         "glpi_mailcollectors",
+         "glpi_entities",
          "suppliers_as_private",
-         "bool"
+         "integer",
+         [
+            'value'     => -2,               // Inherit as default value
+            'update'    => 0,                // Not enabled for root entity
+            'condition' => 'WHERE `id` = 0'
+         ]
       );
    }
-   /** /Private supplier followup in mailcollector */
+   /** /Private supplier followup in glpi_entities */
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

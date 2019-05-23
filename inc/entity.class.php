@@ -103,7 +103,7 @@ class Entity extends CommonTreeDropdown {
                                                    'autoclose_delay', 'inquest_config',
                                                    'inquest_rate', 'inquest_delay',
                                                    'inquest_duration','inquest_URL',
-                                                   'max_closedate', 'tickettemplates_id']];
+                                                   'max_closedate', 'tickettemplates_id', 'suppliers_as_private']];
 
 
    function getForbiddenStandardMassiveAction() {
@@ -2207,6 +2207,33 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Mark followup added by a supplier though an email collector as private')."</td>";
+      echo "<td colspan='2'>";
+      $supplierValues = self::getSuppliersAsPrivateValues();
+      $currentSupplierValue = $entity->fields['suppliers_as_private'];
+
+      if ($ID == 0) { // Remove parent option for root entity
+         unset($supplierValues[self::CONFIG_PARENT]);
+      }
+
+      Dropdown::showFromArray(
+         'suppliers_as_private',
+         $supplierValues,
+         ['value' => $currentSupplierValue]
+      );
+
+      // If the entity is using it's parent value, print it
+      if ($currentSupplierValue == self::CONFIG_PARENT && $ID != 0) {
+         $parentSupplierValue = self::getUsedConfig(
+            'suppliers_as_private',
+            $entity->fields['entities_id']
+         );
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo $supplierValues[$parentSupplierValue];
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
       echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
@@ -2516,6 +2543,24 @@ class Entity extends CommonTreeDropdown {
          return $tab[$val];
       }
       return NOT_AVAILABLE;
+   }
+
+   /**
+    * get value for suppliers_as_private
+    *
+    * @since 9.5
+    *
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    *
+    * @return array or string
+   **/
+   static function getSuppliersAsPrivateValues() {
+
+      return [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         0                   => __('No'),
+         1                   => __('Yes'),
+      ];
    }
 
    /**
