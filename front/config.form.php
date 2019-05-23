@@ -52,7 +52,8 @@ if (!empty($_GET['reset_opcache'])) {
 }
 if (!empty($_GET['reset_cache'])) {
    $config->checkGlobal(UPDATE);
-   if ($GLPI_CACHE->clear()) {
+   $cache = isset($_GET['optname']) ? Config::getCache($_GET['optname']) : $GLPI_CACHE;
+   if ($cache->clear()) {
       Session::addMessageAfterRedirect(__('Cache reset successful'));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
