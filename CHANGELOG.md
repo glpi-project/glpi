@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 - encrypted file systems support
+- mails collected from suppliers can be marked as private on an entity basis
 
 ### Changed
 
