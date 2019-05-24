@@ -136,6 +136,30 @@ var libs = {
             from: '{css/coreui-standalone.css,js/coreui.js}',
         }
     ],
+            from: 'addon/fold/{brace-fold.js,comment-fold.js,foldcode.js,foldgutter.css,foldgutter.js}',
+        },
+        {
+            from: 'addon/hint/{css-hint.js,show-hint.css,show-hint.js}',
+        },
+        {
+            from: 'mode/css/{css.js,}',
+        }
+    ],
+    'codemirror': [
+        {
+            context: 'lib',
+            from: '{codemirror.css,codemirror.js}',
+        },
+        {
+            from: 'addon/fold/{brace-fold.js,comment-fold.js,foldcode.js,foldgutter.css,foldgutter.js}',
+        },
+        {
+            from: 'addon/hint/{css-hint.js,show-hint.css,show-hint.js}',
+        },
+        {
+            from: 'mode/css/{css.js,}',
+        }
+    ],
     'diff-match-patch':[
         {
             from: 'index.js',
