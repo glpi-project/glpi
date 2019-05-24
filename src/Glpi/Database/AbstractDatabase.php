@@ -84,6 +84,15 @@ abstract class AbstractDatabase
     protected $dbdefault;
 
     /**
+     * Options used by connection.
+     *
+     * @see PDO::__construct()
+     *
+     * @var array
+     */
+    protected $options;
+
+    /**
      * Database handler.
      *
      * @var PDO
@@ -162,6 +171,8 @@ abstract class AbstractDatabase
         $this->dbuser = $params['user'];
         $this->dbpassword = $params['pass'];
         $this->dbdefault = $params['dbname'];
+
+        $this->options = array_key_exists('options', $params) ? $params['options'] : [];
 
         $this->connect($server);
     }
