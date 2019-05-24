@@ -1543,7 +1543,7 @@ class Config extends CommonDBTM {
     * @since 9.1
    **/
    function showPerformanceInformations() {
-      global $CONTAINER;
+      global $CONTAINER, $CFG_GLPI;
 
       $cache_storage = $CONTAINER->get('application_cache')->getStorage();
 
@@ -1615,7 +1615,7 @@ class Config extends CommonDBTM {
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
-            echo "<a class='vsubmit' href='config.form.php?reset_opcache=1'>";
+            echo "<a class='vsubmit' href='{$CFG_GLPI["root_doc"]}/front/config.form.php?reset_opcache=1'>";
             echo __('Reset');
             echo "</a></td></tr>\n";
          }
@@ -1661,13 +1661,13 @@ class Config extends CommonDBTM {
 
       if ($cache_storage instanceof FlushableInterface) {
          echo "<tr><td></td><td colspan='3'>";
-         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_db'>";
+         echo "<a class='vsubmit' href='{$CFG_GLPI["root_doc"]}/front/config.form.php?reset_cache=1&optname=application_cache'>";
          echo __('Reset');
          echo "</a></td></tr>\n";
       }
 
       echo "<tr><th colspan='4'>" . __('Translation cache') . "</th></tr>";
-      $translation_cache = self::getCache('cache_trans', 'core', false);
+      $translation_cache = $CONTAINER->get('translation_cache')->getStorage();
       $adapter_class = strtolower(get_class($translation_cache));
       $adapter = substr($adapter_class, strrpos($adapter_class, '\\')+1);
       $msg = sprintf(__s('"%s" cache system is used'), $adapter);
@@ -1676,9 +1676,10 @@ class Config extends CommonDBTM {
 
       if ($translation_cache instanceof FlushableInterface) {
          echo "<tr><td></td><td colspan='3'>";
-         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_trans'>";
+         echo "<a class='vsubmit' href='{$CFG_GLPI["root_doc"]}/front/config.form.php?reset_cache=1&optname=translation_cache'>";
          echo __('Reset');
          echo "</a></td></tr>\n";
+      }
 
       echo "</table></div>\n";
    }

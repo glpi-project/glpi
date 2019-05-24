@@ -52,9 +52,8 @@ if (!empty($_GET['reset_opcache'])) {
 }
 if (!empty($_GET['reset_cache'])) {
    $config->checkGlobal(UPDATE);
-   //FIXME was $cache = isset($_GET['optname']) ? Config::getCache($_GET['optname']) : $GLPI_CACHE;
-   $appCache = Toolbox::getAppCache();
-   if ($appCache->clear()) {
+   $cache = isset($_GET['optname']) ? $CONTAINER->get($_GET['optname']) : $CONTAINER->get('application_cache');
+   if ($cache->clear()) {
       Session::addMessageAfterRedirect(__('Cache reset successful'));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
