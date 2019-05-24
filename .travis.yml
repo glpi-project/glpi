@@ -11,8 +11,7 @@ before_script:
   - composer self-update
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
-  - nvm install stable # update node
-  - npm update -g npm # update npm
+  - nvm install --lts=dubnium # update node to dubnium LTS version (node v10.x + npm v6.4.1)
   - bin/console dependencies install --ci
   - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
   - mysql -u root -e 'create database glpitest;'
