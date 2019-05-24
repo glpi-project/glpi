@@ -54,14 +54,56 @@ class DBmysql {
 
    // Slave management
    public $slave              = false;
-   // DB is using ssl
+
+   /**
+    * Defines if connection must use SSL.
+    *
+    * @var boolean
+    */
    public $dbssl              = false;
-   // ssl key path
-   public $dbsslkey           = "";
-   // ssl cert path
-   public $dbsslcert          = "";
-   // ssl ca path
-   public $dbsslca            = "";
+
+   /**
+    * The path name to the key file (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslkey           = null;
+
+   /**
+    * The path name to the certificate file (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslcert          = null;
+
+   /**
+    * The path name to the certificate authority file (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslca            = null;
+
+   /**
+    * The pathname to a directory that contains trusted SSL CA certificates in PEM format
+    * (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslcapath        = null;
+
+   /**
+    * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslcacipher      = null;
+
+
    /** Is it a first connection ?
     * Indicates if the first connection attempt is successful or not
     * if first attempt fail -> display a warning which indicates that glpi is in readonly
@@ -104,8 +146,8 @@ class DBmysql {
              $this->dbsslkey,
              $this->dbsslcert,
              $this->dbsslca,
-             null,
-             null
+             $this->dbsslcapath,
+             $this->dbsslcacipher
           );
       }
 
