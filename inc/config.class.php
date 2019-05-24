@@ -36,6 +36,7 @@ use Symfony\Component\Yaml\Yaml;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\FlushableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
+use Zend\Cache\Storage\StorageInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1659,13 +1660,25 @@ class Config extends CommonDBTM {
       }
 
       if ($cache_storage instanceof FlushableInterface) {
-         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            echo "<tr><td></td><td colspan='3'>";
-            echo "<a class='vsubmit' href='config.form.php?reset_cache=1'>";
-            echo __('Reset');
-            echo "</a></td></tr>\n";
-         }
+         echo "<tr><td></td><td colspan='3'>";
+         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_db'>";
+         echo __('Reset');
+         echo "</a></td></tr>\n";
       }
+
+      echo "<tr><th colspan='4'>" . __('Translation cache') . "</th></tr>";
+      $translation_cache = self::getCache('cache_trans', 'core', false);
+      $adapter_class = strtolower(get_class($translation_cache));
+      $adapter = substr($adapter_class, strrpos($adapter_class, '\\')+1);
+      $msg = sprintf(__s('"%s" cache system is used'), $adapter);
+      echo "<tr><td colspan='3'>" . $msg . "</td>
+            <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
+
+      if ($translation_cache instanceof FlushableInterface) {
+         echo "<tr><td></td><td colspan='3'>";
+         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_trans'>";
+         echo __('Reset');
+         echo "</a></td></tr>\n";
 
       echo "</table></div>\n";
    }
