@@ -58,7 +58,7 @@ class DatabaseFactory
         Toolbox::checkDbConfig();
         if ($db_config === null) {
             if (file_exists(GLPI_CONFIG_DIR . '/db.yaml')) {
-                $db_config = Yaml::parseFile(GLPI_CONFIG_DIR . '/db.yaml');
+                $db_config = Yaml::parseFile(GLPI_CONFIG_DIR . '/db.yaml', Yaml::PARSE_CONSTANT);
                 if ($slave === true) {
                     if (!file_exists(GLPI_CONFIG_DIR . '/db.slave.yaml')) {
                         throw new \RuntimeException('cannot run a slave database without config!');

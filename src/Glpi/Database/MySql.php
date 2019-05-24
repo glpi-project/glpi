@@ -65,7 +65,8 @@ class MySql extends AbstractDatabase
         $this->dbh = new PDO(
             "$dsn;dbname={$this->dbdefault};charset=$charset",
             $this->dbuser,
-            rawurldecode($this->dbpassword)
+            rawurldecode($this->dbpassword),
+            $this->options
         );
         $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         if (GLPI_FORCE_EMPTY_SQL_MODE) {
