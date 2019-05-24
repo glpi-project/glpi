@@ -58,7 +58,7 @@ class DBmysql {
    public $dbssl              = false;
    // ssl key path
    public $dbsslkey           = "";
-   // ssl cert path 
+   // ssl cert path
    public $dbsslcert          = "";
    // ssl ca path
    public $dbsslca            = "";
@@ -96,15 +96,18 @@ class DBmysql {
     */
    function connect($choice = null) {
       $this->connected = false;
-        $this->dbh = @new mysqli();
-        $this->dbh->init();
-        if ($this->dbssl) {
-                mysqli_ssl_set($this->dbh, $this->dbsslkey,
-                    $this->dbsslcert,
-                    $this->dbsslca,
-                    null,
-                    null);
-        }
+      $this->dbh = @new mysqli();
+      $this->dbh->init();
+      if ($this->dbssl) {
+          mysqli_ssl_set(
+             $this->dbh,
+             $this->dbsslkey,
+             $this->dbsslcert,
+             $this->dbsslca,
+             null,
+             null
+          );
+      }
 
       if (is_array($this->dbhost)) {
          // Round robin choice
@@ -120,11 +123,11 @@ class DBmysql {
          // Host
          $this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
       } else if (intval($hostport[1])>0) {
-	      // Host:port
-	       $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
+         // Host:port
+          $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
       } else {
-	       // :Socket
-	       $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
+          // :Socket
+          $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
       }
 
       if ($this->dbh->connect_error) {
