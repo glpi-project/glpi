@@ -50,22 +50,22 @@ class MailCollector extends DbTestCase {
       $this->array($fields);
       ksort($fields);
       $expected = [
-         'id'              => '',
-         'name'            => '',
-         'host'            => '',
-         'login'           => '',
-         'filesize_max'    => '2097152',
-         'is_active'       => 1,
-         'date_mod'        => '',
-         'comment'         => '',
-         'passwd'          => '',
-         'accepted'        => '',
-         'refused'         => '',
-         'use_kerberos'    => '',
-         'errors'          => '',
-         'use_mail_date'   => '',
-         'date_creation'   => '',
-         'requester_field' => ''
+                  'id'                   => '',
+                  'name'                 => '',
+                  'host'                 => '',
+                  'login'                => '',
+                  'filesize_max'         => '2097152',
+                  'is_active'            => 1,
+                  'date_mod'             => '',
+                  'comment'              => '',
+                  'passwd'               => '',
+                  'accepted'             => '',
+                  'refused'              => '',
+                  'use_kerberos'         => '',
+                  'errors'               => '',
+                  'use_mail_date'        => '',
+                  'date_creation'        => '',
+                  'requester_field'      => ''
       ];
       ksort($expected);
       $this->array($fields)->isIdenticalTo($expected);
