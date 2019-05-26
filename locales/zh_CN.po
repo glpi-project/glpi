@@ -1827,7 +1827,7 @@ msgstr[0] "组件"
 #: inc/reservationitem.class.php:781
 msgid "Administration"
 msgstr "用户管理"
-
+ 
 #: front/dictionnary.php:44
 msgid "Dictionaries"
 msgstr "词典"
