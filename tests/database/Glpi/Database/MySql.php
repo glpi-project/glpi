@@ -168,11 +168,13 @@ class MySql extends \GLPITestCase {
 
       $expected = "INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES ";
       $expected .= "(:context_0,:name_0,:value_0),(:context_1,:name_1,:value_1),(:context_2,:name_2,:value_2),(:context_3,:name_3,:value_3)";
-      $built = $DB->buildInsertBulk('glpi_configs', ['context', 'name', 'value'], [
+      $columns = ['context', 'name', 'value'];
+      $values = [
       ['core', 'cut', 250],
       ['core', 'list_limit', 15],
       ['core', 'list_limit_max', 50],
-      ['core', 'url_maxlength', 30]]);
+      ['core', 'url_maxlength', 30]];
+      $built = $DB->buildInsertBulk('glpi_configs', $columns, $values);
 
       $this->string($built)->isIdenticalTo($expected);
    }
@@ -196,7 +198,7 @@ class MySql extends \GLPITestCase {
       $expected .= "(`id` int(11) NOT NULL AUTO_INCREMENT, `tickets_id` INT(11) NOT NULL DEFAULT '0', ";
       $expected .= "`type` INT(11) NOT NULL DEFAULT '1', `date_begin` TIMESTAMP NULL DEFAULT NULL, ";
       $expected .= "`date_answered` TIMESTAMP NULL DEFAULT NULL, `satisfaction` INT(11) NOT NULL DEFAULT '0', ";
-      $expected .= "`comment` TEXT COLLATE utf8_unicode_ci DEFAULT NULL, PRIMARY KEY (`id`), KEY `type` (`type`), ";
+      $expected .= "`comment` TEXT COLLATE utf8_unicode_ci DEFAULT NULL,  PRIMARY KEY (`id`), KEY `type` (`type`), ";
       $expected .= "UNIQUE KEY `tickets_id` (`tickets_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $this->string($built)->isIdenticalTo($expected);

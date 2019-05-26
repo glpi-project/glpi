@@ -1249,7 +1249,8 @@ function createTables() {
       ->addKey('group_id_tech', ['groups_id_tech'])
       ->createOrDie(true);
 
-   $table_schema->init('glpi_entities')
+   $table_schema->init('glpi_entities', false)
+      ->addField('id', 'int', ['value' => '0'])
       ->addField('name', 'string')
       ->addIndexedField('entities_id', 'int', ['value' => '0'])
       ->addField('completename', 'text')
@@ -1315,6 +1316,7 @@ function createTables() {
       ->addIndexedField('date_mod', 'timestamp')
       ->addIndexedField('date_creation', 'timestamp')
       ->addField('autofill_decommission_date', 'string', ['value' => '-2'])
+      ->setPrimaryKey('id')
       ->addUniqueKey('unicity', ['entities_id', 'name'])
       ->createOrDie(true);
 

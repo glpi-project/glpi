@@ -2425,7 +2425,7 @@ class Toolbox {
 
       $DB = \Glpi\DatabaseFactory::create();
 
-      require('../install/install_db.php');
+      require(GLPI_ROOT . '/install/install_db.php');
       // update default language
       Config::setConfigurationValues(
          'core',
