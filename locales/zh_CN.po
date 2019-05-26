@@ -1826,7 +1826,7 @@ msgstr[0] "组件"
 #: inc/profile.class.php:1332 inc/profile.class.php:2012
 #: inc/reservationitem.class.php:781
 msgid "Administration"
-msgstr "管理"
+msgstr "用户管理"
 
 #: front/dictionnary.php:44
 msgid "Dictionaries"
@@ -3144,7 +3144,7 @@ msgstr[0] "小时"
 #: front/stat.global.php:131 front/stat.graph.php:386
 #: inc/commonitilobject.class.php:4737 inc/stat.class.php:469
 msgid "Closure"
-msgstr "结案"
+msgstr "关闭"
 
 #: front/stat.global.php:134 front/stat.graph.php:389
 #: inc/commonitilobject.class.php:4726 inc/stat.class.php:468
@@ -5063,7 +5063,7 @@ msgstr "重复"
 
 #: inc/calendar.class.php:87 inc/calendar_holiday.class.php:110
 msgid "Add a close time"
-msgstr "添加结案时间"
+msgstr "添加关闭时间"
 
 #: inc/calendar_holiday.class.php:141 inc/holiday.class.php:61
 #: inc/holiday.class.php:89
@@ -5074,7 +5074,7 @@ msgstr "循环"
 #: inc/holiday.class.php:48
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] "结案时间"
+msgstr[0] "关闭时间"
 
 #: inc/calendarsegment.class.php:60
 msgid "Time range"
@@ -5121,7 +5121,7 @@ msgstr "卸载打印耗材"
 msgctxt "cartridge"
 msgid "New"
 msgid_plural "New"
-msgstr[0] "新的"
+msgstr[0] "新建"
 
 #: inc/cartridge.class.php:375 inc/cartridge.class.php:426
 #: inc/cartridge.class.php:621
@@ -5759,7 +5759,7 @@ msgstr "检查清单"
 #: inc/ticket.class.php:3559
 msgctxt "status"
 msgid "New"
-msgstr "新的"
+msgstr "新建"
 
 #: inc/change.class.php:501
 msgid "Evaluation"
@@ -5807,7 +5807,7 @@ msgstr "复核"
 #: inc/ticket.class.php:3564
 msgctxt "status"
 msgid "Closed"
-msgstr "结案"
+msgstr "关闭"
 
 #: inc/change.class.php:513 inc/problem.class.php:568
 #: inc/ticket.class.php:3567
@@ -5819,13 +5819,13 @@ msgstr "未解决"
 #: inc/ticket.class.php:3568
 msgctxt "status"
 msgid "Not closed"
-msgstr "未结案"
+msgstr "未关闭"
 
 #: inc/change.class.php:516 inc/problem.class.php:571
 #: inc/ticket.class.php:3570
 msgctxt "status"
 msgid "Solved + Closed"
-msgstr "已解决 + 已结案"
+msgstr "已解决 + 已关闭"
 
 #. TRANS: %1$s is the itemtype, %2$d is the id of the item
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
@@ -6176,7 +6176,7 @@ msgstr "模板名称"
 #: inc/commondbtm.class.php:2663 inc/knowbaseitem.class.php:594
 #: inc/knowbaseitem.class.php:622 inc/savedsearch.class.php:371
 msgid "New item"
-msgstr "新的项目"
+msgstr "新建项目"
 
 #: inc/commondbtm.class.php:2691
 msgid "Can't change this attribute. It's inherited from its parent."
@@ -6841,7 +6841,7 @@ msgstr "解决时间"
 
 #: inc/commonitilobject.class.php:3138
 msgid "Closing time"
-msgstr "结案时间"
+msgstr "关闭时间"
 
 #: inc/commonitilobject.class.php:3148
 msgid "Waiting time"
@@ -6907,7 +6907,7 @@ msgstr[0] "时间"
 #: inc/commonitilobject.class.php:5648
 #, php-format
 msgid "Closed on %s"
-msgstr "结案于 %s"
+msgstr "关闭于 %s"
 
 #: inc/commonitilobject.class.php:5652
 #, php-format
@@ -7412,7 +7412,7 @@ msgstr "作为子项"
 
 #: inc/commontreedropdown.class.php:483
 msgid "New child heading"
-msgstr "新的子标题"
+msgstr "新建子标题"
 
 #: inc/commontreedropdown.class.php:506 inc/softwarelicense.class.php:1271
 #, php-format
@@ -8798,7 +8798,7 @@ msgstr "无耗材"
 msgctxt "consumable"
 msgid "New"
 msgid_plural "New"
-msgstr[0] "新的"
+msgstr[0] "新建"
 
 #: inc/consumable.class.php:401
 msgctxt "consumable"
@@ -8843,7 +8843,7 @@ msgstr "使用的消耗品数量"
 
 #: inc/consumableitem.class.php:306
 msgid "Number of new consumables"
-msgstr "新的消耗品数量"
+msgstr "新建消耗品数量"
 
 #: inc/consumableitem.class.php:377 inc/consumableitem.class.php:503
 msgid "Send alarms on consumables"
@@ -10350,7 +10350,7 @@ msgstr[0] "设备网卡型号"
 #: inc/profile.class.php:880 inc/profile.class.php:1754
 #: inc/transfer.class.php:3640
 msgid "Management"
-msgstr "管理"
+msgstr "设备管理"
 
 #: inc/dropdown.class.php:987 inc/event.class.php:158 inc/html.class.php:1363
 #: inc/profile.class.php:95 inc/profile.class.php:102
@@ -17613,7 +17613,7 @@ msgstr "延误的工单数量"
 
 #: inc/stat.class.php:429
 msgid "Number of closed tickets"
-msgstr "已结案的的工单数量"
+msgstr "已关闭的的工单数量"
 
 #: inc/stat.class.php:440
 msgid "Number of opened satisfaction survey"
@@ -17641,7 +17641,7 @@ msgstr "平均解决时间"
 
 #: inc/stat.class.php:463
 msgid "Average time to closure"
-msgstr "平均结案时间"
+msgstr "平均关闭时间"
 
 #: inc/stat.class.php:474
 msgid "Average real duration of treatment of the ticket"
@@ -17944,7 +17944,7 @@ msgstr "工单将被添加到实体 %s"
 
 #: inc/ticket.class.php:4795
 msgid "Close date"
-msgstr "结案日期"
+msgstr "关闭日期"
 
 #: inc/ticket.class.php:4906
 msgid "Reopen"
@@ -17965,7 +17965,7 @@ msgstr ""
 
 #: inc/ticket.class.php:5522 inc/ticket.class.php:5694
 msgid "Your tickets to close"
-msgstr "您待结案的工单"
+msgstr "您待关闭的工单"
 
 #: inc/ticket.class.php:5538 inc/ticket.class.php:5605
 msgid "Tickets on pending status"
@@ -18000,7 +18000,7 @@ msgstr "工单后续追踪"
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
-msgstr[0] "%d 新的工单"
+msgstr[0] "%d 新建工单"
 
 #: inc/ticket.class.php:5961 inc/ticket.class.php:6165
 #: inc/ticket.class.php:6215
@@ -18040,7 +18040,7 @@ msgstr "分配装备"
 
 #: inc/ticket.class.php:6398
 msgid "Automatic tickets closing"
-msgstr "工单自动结案"
+msgstr "工单自动关闭"
 
 #: inc/ticket.class.php:6404
 msgid "Generation of satisfaction surveys"
@@ -19110,7 +19110,7 @@ msgstr "根实体"
 #: install/update_084_085.php:2008
 msgctxt "ticket"
 msgid "New"
-msgstr "新的"
+msgstr "新建"
 
 #: install/update_0905_91.php:69 install/update_91_92.php:112
 #: install/update_91_92.php:130 install/update_91_92.php:170
