@@ -162,4 +162,43 @@ class MySql extends \GLPITestCase {
          'laptop'
       ]);
    }
+
+   public function testBuildInsertBulk() {
+      global $DB;
+
+      $expected = "INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES ";
+      $expected .= "(:context_0,:name_0,:value_0),(:context_1,:name_1,:value_1),(:context_2,:name_2,:value_2),(:context_3,:name_3,:value_3)";
+      $built = $DB->buildInsertBulk('glpi_configs', ['context', 'name', 'value'], [
+      ['core', 'cut', 250],
+      ['core', 'list_limit', 15],
+      ['core', 'list_limit_max', 50],
+      ['core', 'url_maxlength', 30]]);
+
+      $this->string($built)->isIdenticalTo($expected);
+   }
+
+   public function testTableSchemaCreate() {
+      global $DB;
+
+      $schema = new \DBTableSchema();
+      $schema->init('glpi_test')
+         ->addField('tickets_id', 'int', ['value' => '0'])
+         ->addIndexedField('type', 'int', ['value' => '1'])
+         ->addField('date_begin', 'timestamp')
+         ->addField('date_answered', 'timestamp')
+         ->addField('satisfaction', 'int')
+         ->addField('comment', 'text')
+         ->addUniqueKey('tickets_id', ['tickets_id']);
+      $schema_params = $schema->createTemplate();
+      $built = $DB->buildCreate('glpi_test', $schema_params['fields'], $schema_params['keys']);
+
+      $expected = "CREATE TABLE IF NOT EXISTS glpi_test ";
+      $expected .= "(`id` int(11) NOT NULL AUTO_INCREMENT, `tickets_id` INT(11) NOT NULL DEFAULT '0', ";
+      $expected .= "`type` INT(11) NOT NULL DEFAULT '1', `date_begin` TIMESTAMP NULL DEFAULT NULL, ";
+      $expected .= "`date_answered` TIMESTAMP NULL DEFAULT NULL, `satisfaction` INT(11) NOT NULL DEFAULT '0', ";
+      $expected .= "`comment` TEXT COLLATE utf8_unicode_ci DEFAULT NULL, PRIMARY KEY (`id`), KEY `type` (`type`), ";
+      $expected .= "UNIQUE KEY `tickets_id` (`tickets_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
+      $this->string($built)->isIdenticalTo($expected);
+   }
 }

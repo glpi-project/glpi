@@ -215,6 +215,16 @@ class DBTableSchema {
     }
 
     /**
+     * Creates an array to use as a template for other tables.
+     * @since 10.0.0
+     * @return array Array with a 'fields' and 'keys' array with pre-built fields and keys for other tables to re-use.
+     */
+    public function createTemplate()
+    {
+        return ['fields' => $this->fields, 'keys' => $this->keys];
+    }
+
+    /**
     * Define field's format
     * @since 10.0.0
     * @param string  $type          can be bool, byte, char, string, integer, date, datetime, text, longtext or autoincrement
