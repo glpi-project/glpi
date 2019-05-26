@@ -1316,6 +1316,9 @@ function createTables() {
       ->addIndexedField('date_mod', 'timestamp')
       ->addIndexedField('date_creation', 'timestamp')
       ->addField('autofill_decommission_date', 'string', ['value' => '-2'])
+      ->addField('suppliers_as_private', 'int', ['value' => '-2'])
+      ->addField('enable_custom_css', 'int', ['value' => '-2'])
+      ->addField('custom_css_code', 'text')
       ->setPrimaryKey('id')
       ->addUniqueKey('unicity', ['entities_id', 'name'])
       ->createOrDie(true);
@@ -3526,7 +3529,7 @@ function createTables() {
       ->addField('contact', 'string')
       ->addField('contact_num', 'string')
       ->addIndexedField('allow_overquota', 'boolean', ['value' => '0'])
-      ->addKey('softwares_id_expire', ['softwares_id', 'expire'])
+      ->addKey('softwares_id_expire_number', ['softwares_id', 'expire', 'number'])
       ->createOrDie(true);
 
    $table_schema->init('glpi_softwarelicensetypes')
@@ -4730,38 +4733,41 @@ function insertDefaultData() {
       'completename'             => 'Root entity',
       'level'                    => 1,
       'cartridges_alert_repeat'  => 0,
-      'consumables_alert_repeat'  => 0,
-      'use_licenses_alert'  => 0,
-      'send_licenses_alert_before_delay'  => 0,
-      'use_certificates_alert'  => 0,
-      'send_certificates_alert_before_delay'  => 0,
-      'use_contracts_alert'  => 0,
-      'send_contracts_alert_before_delay'  => 0,
-      'use_infocoms_alert'  => 0,
-      'send_infocoms_alert_before_delay'  => 0,
-      'use_reservations_alert'  => 0,
-      'autoclose_delay'  => -10,
-      'notclosed_delay'  => 0,
-      'calendars_id'  => 0,
-      'auto_assign_mode'  => -10,
-      'tickettype'  => 1,
-      'inquest_config'  => 1,
-      'inquest_rate'  => 0,
-      'inquest_delay'  => 0,
-      'autofill_warranty_date'  => 0,
-      'autofill_use_date'  => 0,
-      'autofill_buy_date'  => 0,
-      'autofill_delivery_date'  => 0,
-      'autofill_order_date'  => 0,
-      'tickettemplates_id'  => 1,
-      'entities_id_software'  => -10,
-      'default_contract_alert'  => 0,
-      'default_infocom_alert'  => 0,
-      'default_cartridges_alarm_threshold'  => 10,
+      'consumables_alert_repeat'             => 0,
+      'use_licenses_alert'                   => 0,
+      'send_licenses_alert_before_delay'     => 0,
+      'use_certificates_alert'               => 0,
+      'send_certificates_alert_before_delay' => 0,
+      'use_contracts_alert'                  => 0,
+      'send_contracts_alert_before_delay'    => 0,
+      'use_infocoms_alert'                   => 0,
+      'send_infocoms_alert_before_delay'     => 0,
+      'use_reservations_alert'               => 0,
+      'autoclose_delay'                      => -10,
+      'notclosed_delay'                      => 0,
+      'calendars_id'                         => 0,
+      'auto_assign_mode'                     => -10,
+      'tickettype'                           => 1,
+      'inquest_config'                       => 1,
+      'inquest_rate'                         => 0,
+      'inquest_delay'                        => 0,
+      'autofill_warranty_date'               => 0,
+      'autofill_use_date'                    => 0,
+      'autofill_buy_date'                    => 0,
+      'autofill_delivery_date'               => 0,
+      'autofill_order_date'                  => 0,
+      'tickettemplates_id'                   => 1,
+      'entities_id_software'                 => -10,
+      'default_contract_alert'               => 0,
+      'default_infocom_alert'                => 0,
+      'default_cartridges_alarm_threshold'   => 10,
       'default_consumables_alarm_threshold'  => 10,
-      'delay_send_emails'  => 0,
-      'is_notif_enable_default'  => 1,
-      'autofill_decommission_date'  => 0
+      'delay_send_emails'                    => 0,
+      'is_notif_enable_default'              => 1,
+      'autofill_decommission_date'           => 0,
+      'suppliers_as_private'                 => 0,
+      'enable_custom_css'                    => 0,
+      'custom_css_code'                      => null
    ]);
 
    $DB->insertBulkOrDie('glpi_filesystems', ['name'], [
