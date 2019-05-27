@@ -54,6 +54,56 @@ class DBmysql {
 
    // Slave management
    public $slave              = false;
+
+   /**
+    * Defines if connection must use SSL.
+    *
+    * @var boolean
+    */
+   public $dbssl              = false;
+
+   /**
+    * The path name to the key file (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslkey           = null;
+
+   /**
+    * The path name to the certificate file (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslcert          = null;
+
+   /**
+    * The path name to the certificate authority file (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslca            = null;
+
+   /**
+    * The pathname to a directory that contains trusted SSL CA certificates in PEM format
+    * (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslcapath        = null;
+
+   /**
+    * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslcacipher      = null;
+
+
    /** Is it a first connection ?
     * Indicates if the first connection attempt is successful or not
     * if first attempt fail -> display a warning which indicates that glpi is in readonly
@@ -88,6 +138,18 @@ class DBmysql {
     */
    function connect($choice = null) {
       $this->connected = false;
+      $this->dbh = @new mysqli();
+      $this->dbh->init();
+      if ($this->dbssl) {
+          mysqli_ssl_set(
+             $this->dbh,
+             $this->dbsslkey,
+             $this->dbsslcert,
+             $this->dbsslca,
+             $this->dbsslcapath,
+             $this->dbsslcacipher
+          );
+      }
 
       if (is_array($this->dbhost)) {
          // Round robin choice
@@ -101,17 +163,13 @@ class DBmysql {
       $hostport = explode(":", $host);
       if (count($hostport) < 2) {
          // Host
-         $this->dbh = @new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault);
-
+         $this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
       } else if (intval($hostport[1])>0) {
          // Host:port
-         $this->dbh = @new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault, $hostport[1]);
+          $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
       } else {
-         // :Socket
-         $this->dbh = @new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
+          // :Socket
+          $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
       }
 
       if ($this->dbh->connect_error) {
