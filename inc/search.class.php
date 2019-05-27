@@ -878,7 +878,7 @@ class Search {
                break;
             }
             if (isset($searchopt[$val2]["forcegroupby"])) {
-               $GROUPBY = " GROUP BY " . $this->db->quoteName("$itemtable.id");;
+               $GROUPBY = " GROUP BY " . $this->db->quoteName("$itemtable.id");
             }
          }
       }
@@ -3871,7 +3871,11 @@ JAVASCRIPT;
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace($this->db->quoteName('TABLE'), 'TABLE', $tocompute);
-         $tocompute = str_replace("TABLE", $this->db->quoteName("$table$addtable"), $tocompute);
+         $replace = $this->db->quoteName("$table$addtable");
+         if ($this->db->getDriver() == 'pgsql' && strstr('ROUND', $replace) !== false) {
+            $replace .= '::text ' . rtrim($replace);
+         }
+         $tocompute = str_replace("TABLE", $replace, $tocompute);
       }
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
@@ -4637,7 +4641,11 @@ JAVASCRIPT;
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace($this->db->quoteName('TABLE'), 'TABLE', $tocompute);
-         $tocompute = str_replace("TABLE", $this->db->quoteName("$table"), $tocompute);
+         $replace = $this->db->quoteName($table);
+         if ($this->db->getDriver() == 'pgsql' && strstr('ROUND', $replace) !== false) {
+            $replace .= '::text ' . rtrim($replace);
+         }
+         $tocompute = str_replace("TABLE", $replace, $tocompute);
       }
 
       // Preformat items
@@ -7887,7 +7895,12 @@ JAVASCRIPT;
    **/
    public function makeTextCriteria ($field, $val, $not = false, $link = 'AND') {
 
-      $sql = $field . $this->makeTextSearch($val, $not);
+      $sql = $field;
+      //if ($this->db->getDriver() == 'pgsql' && strstr($field, 'date') !== false || strstr($field, 'ROUND') !== false) {
+      if ($this->db->getDriver() == 'pgsql') {
+         $sql .= '::text';
+      }
+      $sql .= $this->makeTextSearch($val, $not);
       // mange empty field (string with length = 0)
       $sql_or = "";
       if (strtolower($val) == "null") {
