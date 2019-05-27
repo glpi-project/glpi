@@ -5,7 +5,7 @@
     "description": "GLPI dependencies",
     "license": "GPL-2.0",
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.8.1",
+        "@fortawesome/fontawesome-free": "^5.8.2",
         "chartist": "^0.10.1",
         "chartist-plugin-legend": "^0.6.2",
         "chartist-plugin-tooltips": "^0.0.17",
