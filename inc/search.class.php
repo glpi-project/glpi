@@ -57,7 +57,7 @@ class Search {
    const SHORTSEP = '$#$';
    const LONGSEP  = '$$##$$';
 
-   const NULLVALUE = '__NULL__';
+   const NULLVALUE = 'NULL'; //FIXME: was __NULL__ for MySQL. If still relevant, should be get from a function
 
    private $output_type = self::HTML_OUTPUT;
    static $search = [];
@@ -791,7 +791,11 @@ class Search {
             $LINK  = " ";
             $first = false;
          }
-         $COMMONWHERE .= $LINK. $this->db->quoteName("$itemtable.is_deleted") . " = " . (int)$data['search']['is_deleted'] . " ";
+         $COMMONWHERE .= $LINK. $this->db->quoteName("$itemtable.is_deleted") . " = " . (int)$data['search']['is_deleted'];
+         if ($this->db->getDriver() == 'pgsql') {
+            $COMMONWHERE .= '::boolean';
+         }
+         $COMMONWHERE . " ";
       }
 
       // Remove template items
@@ -801,7 +805,11 @@ class Search {
             $LINK  = " ";
             $first = false;
          }
-         $COMMONWHERE .= $LINK . $this->db->quoteName("$itemtable.is_template") . " = 0 ";
+         $COMMONWHERE .= $LINK . $this->db->quoteName("$itemtable.is_template") . " = 0";
+         if ($this->db->getDriver() == 'pgsql') {
+            $COMMONWHERE .= '::boolean';
+         }
+         $COMMONWHERE .= " ";
       }
 
       // Add Restrict to current entities
@@ -932,12 +940,20 @@ class Search {
 
                      // Add deleted if item have it
                      if ($citem && $citem->maybeDeleted()) {
-                        $query_num .= " AND ".$this->db->quoteName("$ctable.is_deleted")." = 0 ";
+                        $query_num .= " AND ".$this->db->quoteName("$ctable.is_deleted")." = 0";
+                        if ($this->db->getDriver() == 'pgsql') {
+                           $query_num .= '::boolean';
+                        }
+                        $query_num .= " ";
                      }
 
                      // Remove template items
                      if ($citem && $citem->maybeTemplate()) {
-                        $query_num .= " AND ".$this->db->quoteName("$ctable.is_template")." = 0 ";
+                        $query_num .= " AND ".$this->db->quoteName("$ctable.is_template")." = 0";
+                        if ($this->db->getDriver() == 'pgsql') {
+                           $query_num .= '::boolean';
+                        }
+                        $query_num .= " ";
                      }
 
                   } else {// Ref table case
@@ -1032,12 +1048,20 @@ class Search {
 
                   // Add deleted if item have it
                   if ($citem && $citem->maybeDeleted()) {
-                     $tmpquery .= " AND ".$this->db->quoteName("$ctable.is_deleted")." = 0 ";
+                     $tmpquery .= " AND ".$this->db->quoteName("$ctable.is_deleted")." = 0";
+                     if ($this->db->getDriver() == 'pgsql') {
+                        $tmpquery .= '::boolean';
+                     }
+                     $tmpquery .= ' ';
                   }
 
                   // Remove template items
                   if ($citem && $citem->maybeTemplate()) {
-                     $tmpquery .= " AND ".$this->db->quoteName("$ctable.is_template")." = 0 ";
+                     $tmpquery .= " AND ".$this->db->quoteName("$ctable.is_template")." = 0";
+                     if ($this->db->getDriver() == 'pgsql') {
+                        $tmpquery .= '::boolean';
+                     }
+                     $tmpquery .= ' ';
                   }
 
                   $tmpquery.= $GROUPBY.
@@ -3652,10 +3676,11 @@ JAVASCRIPT;
       $tocompute      = $this->db->quoteName("$table$addtable.$field");
       $tocomputeid    = $this->db->quoteName("$table$addtable.id");
 
-      $tocomputetrans = "IFNULL(".$this->db->quoteName("$table{$addtable}_trans.value").", ".$this->db->quote(self::NULLVALUE).") ";
-
       $groupkw = ($this->db->getDriver()  == 'mysql' ? 'GROUP_CONCAT' : 'string_agg');
       $sep = ($this->db->getDriver() == 'mysql' ? ' SEPARATOR ' : ', ') . $this->db->quote(self::LONGSEP);
+      $ifnull = ($this->db->getDriver() == 'mysql' ? 'IFNULL' : 'COALESCE');
+
+      $tocomputetrans = "$ifnull(".$this->db->quoteName("$table{$addtable}_trans.value").", ".self::NULLVALUE.") ";
 
       $ADDITONALFIELDS = '';
       if (isset($searchopt[$ID]["additionalfields"])
@@ -3663,8 +3688,8 @@ JAVASCRIPT;
          foreach ($searchopt[$ID]["additionalfields"] as $key) {
             if ($meta
                 || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-               $ADDITONALFIELDS .= " IFNULL($groupkw(DISTINCT CONCAT(IFNULL(".$this->db->quoteName("$table$addtable.$key").",
-                                                                         ".$this->db->quote(self::NULLVALUE)."),
+               $ADDITONALFIELDS .= " $ifnull($groupkw(DISTINCT CONCAT($ifnull(".$this->db->quoteName("$table$addtable.$key").",
+                                                                         ".self::NULLVALUE."),
                                                    ".$this->db->quote(self::SHORTSEP).", $tocomputeid) $sep), ".$this->db->quote(self::NULLVALUE.self::SHORTSEP).")
                                     AS ".$this->db->quoteName($NAME . "_$key").", ";
             } else {
@@ -3702,7 +3727,7 @@ JAVASCRIPT;
                                                         ".$this->db->quoteName("$ticket_user_table.alternative_email").")
                                                         $sep) AS ".$this->db->quoteName($NAME."_2").", ";
                   }
-                  return " $groupkw (DISTINCT ".$this->db->quoteName("$table$addtable.id")." $sep)
+                  return " $groupkw(DISTINCT ".$this->db->quoteName("$table$addtable.id")." $sep)
                                        AS ".$this->db->quoteName($NAME).",
                            $addaltemail
                            $ADDITONALFIELDS";
@@ -3886,14 +3911,14 @@ JAVASCRIPT;
 
                   $TRANS = '';
                   if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                      $TRANS = "$groupkw(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                             '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid
+                      $TRANS = "$groupkw(DISTINCT CONCAT($ifnull($tocomputetrans, ".self::NULLVALUE."),
+                                                             '".self::SHORTSEP."',$tocomputeid)
                                              $sep)
                                      AS ".$this->db->quoteName($NAME."_trans").", ";
                   }
 
                   return " $groupkw(DISTINCT CONCAT($tocompute, '".self::SHORTSEP."' ,
-                                                        ".$this->db->quoteName("$table$addtable.id").") ORDER BY ".$this->db->quoteName("$table$addtable.id")."
+                                                        ".$this->db->quoteName("$table$addtable.id").")
                                         $sep) AS ".$this->db->quoteName($NAME).",
                            $TRANS
                            $ADDITONALFIELDS";
@@ -3912,13 +3937,13 @@ JAVASCRIPT;
                      && $searchopt[$ID]["computationgroupby"]))) { // Not specific computation
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-            $TRANS = "$groupkw(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                   '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid $sep)
+            $TRANS = "$groupkw(DISTINCT CONCAT($ifnull($tocomputetrans, ".self::NULLVALUE."),
+                                                   '".self::SHORTSEP."',$tocomputeid) $sep)
                                   AS ".$this->db->quoteName($NAME."_trans").", ";
 
          }
-         return " $groupkw(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
-                                               '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid $sep)
+         return " $groupkw(DISTINCT CONCAT($ifnull($tocompute, ".self::NULLVALUE."),
+                                               '".self::SHORTSEP."',$tocomputeid) $sep)
                               AS ".$this->db->quoteName($NAME).",
                   $TRANS
                   $ADDITONALFIELDS";
@@ -4654,9 +4679,9 @@ JAVASCRIPT;
                   $date_computation = $tocompute;
                }
                if (in_array($searchtype, ["contains", "notcontains"])) {
-                  $date_computation = "CONVERT($date_computation";
-                  $date_computation .= ($this->db->getDriver() == 'mysql' ? ' USING ' : ', ');
-                  $date_computation .= "utf8)";
+                  if ($this->db->getDriver() == 'mysql') {
+                     $date_computation = "CONVERT($date_computation USING utf8)";
+                  }
                }
                $search_unit = ' MONTH ';
                if (isset($searchopt[$ID]['searchunit'])) {
