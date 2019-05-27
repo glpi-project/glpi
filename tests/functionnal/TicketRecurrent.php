@@ -67,7 +67,7 @@ class TicketRecurrent extends DbTestCase {
          $this->integer($segment_id)->isGreaterThan(0);
       }
 
-      return [
+      $data = [
          // Empty begin date
          [
             'begin_date'     => '',
@@ -143,7 +143,7 @@ class TicketRecurrent extends DbTestCase {
             'expected_value' => date('Y-m-d H:00:00', strtotime('+ 1 hour')),
          ],
 
-         // Valid case 3: ticket created every hour with no anticipation and with calendar
+         // Valid case 3: ticket created every hour with anticipation and with calendar
          [
             'begin_date'     => $start_of_current_month,
             'end_date'       => $end_of_next_year,
@@ -163,17 +163,7 @@ class TicketRecurrent extends DbTestCase {
             'expected_value' => date('Y-m-d 00:00:00', strtotime('+ 1 day')),
          ],
 
-         // Valid case 5: ticket created every hour with anticipation and no calendar
-         [
-            'begin_date'     => $start_of_current_month,
-            'end_date'       => $end_of_next_year,
-            'periodicity'    => DAY_TIMESTAMP,
-            'create_before'  => HOUR_TIMESTAMP * 2,
-            'calendars_id'   => 0,
-            'expected_value' => date('Y-m-d 22:00:00'), // 2 hours anticipation
-         ],
-
-         // Valid case 6: ticket created every hour with no anticipation and with calendar
+         // Valid case 5: ticket created every hour with no anticipation and with calendar
          [
             'begin_date'     => date('Y-m-01 09:00:00'), // first day of month at 9am
             'end_date'       => $end_of_next_year,
@@ -183,7 +173,7 @@ class TicketRecurrent extends DbTestCase {
             'expected_value' => date('Y-m-d 07:00:00', strtotime('tomorrow')), // 2 hours anticipation
          ],
 
-         // Valid case 7: ticket created every 2 month with no anticipation and no calendar
+         // Valid case 6: ticket created every 2 month with no anticipation and no calendar
          [
             'begin_date'     => $start_of_current_month,
             'end_date'       => $end_of_next_year,
@@ -193,17 +183,7 @@ class TicketRecurrent extends DbTestCase {
             'expected_value' => date('Y-m-01 00:00:00', strtotime('+ 2 month')),
          ],
 
-         // Valid case 8: ticket created every month with anticipation and no calendar
-         [
-            'begin_date'     => $start_of_current_month,
-            'end_date'       => $end_of_next_year,
-            'periodicity'    => '1MONTH',
-            'create_before'  => DAY_TIMESTAMP * 5,
-            'calendars_id'   => 0,
-            'expected_value' => date('Y-m-d 00:00:00', strtotime('+ 1 month', strtotime($start_of_current_month . ' - 5 days'))), // 5 days anticipation
-         ],
-
-         // Valid case 9: ticket created every year with no anticipation and no calendar
+         // Valid case 7: ticket created every year with no anticipation and no calendar
          [
             'begin_date'     => $start_of_current_month,
             'end_date'       => $end_of_next_year,
@@ -212,17 +192,57 @@ class TicketRecurrent extends DbTestCase {
             'calendars_id'   => 0,
             'expected_value' => date('Y-m-01 00:00:00', strtotime('+ 1 year')),
          ],
-
-         // Valid case 10: ticket created every year with anticipation and no calendar
-         [
-            'begin_date'     => $start_of_current_month,
-            'end_date'       => $end_of_next_year,
-            'periodicity'    => '1YEAR',
-            'create_before'  => DAY_TIMESTAMP * 4,
-            'calendars_id'   => 0,
-            'expected_value' => date('Y-m-d 00:00:00', strtotime('+ 1 year', strtotime($start_of_current_month . ' - 4 days'))), // 4 day anticipation
-         ],
       ];
+
+      // Valid case 8: ticket created every hour with anticipation and no calendar
+      // Next time is "2 hours before tomorrow 00:00:00" ...
+      $next_time = strtotime(date('Y-m-d 22:00:00')); // 2 hours anticipation
+      if ($next_time < time()) {
+         // ... unless "2 hours before tomorrow 00:00:00" is already passed
+         $next_time = strtotime('+ 1 day', $next_time);
+      }
+      $data[] = [
+         'begin_date'     => $start_of_current_month,
+         'end_date'       => $end_of_next_year,
+         'periodicity'    => DAY_TIMESTAMP,
+         'create_before'  => HOUR_TIMESTAMP * 2,
+         'calendars_id'   => 0,
+         'expected_value' => date('Y-m-d H:i:s', $next_time),
+      ];
+
+      // Valid case 9: ticket created every month with anticipation and no calendar
+      // Next time is "5 days before begin of next month" ...
+      $next_time = strtotime('+ 1 month', strtotime($start_of_current_month . ' - 5 days')); // 5 days anticipation
+      if ($next_time < time()) {
+         // ... unless "5 days before begin of next month" is already passed
+         $next_time = strtotime('+ 1 month', $next_time);
+      }
+      $data[] = [
+         'begin_date'     => $start_of_current_month,
+         'end_date'       => $end_of_next_year,
+         'periodicity'    => '1MONTH',
+         'create_before'  => DAY_TIMESTAMP * 5,
+         'calendars_id'   => 0,
+         'expected_value' => date('Y-m-d H:i:s', $next_time),
+      ];
+
+      // Valid case 10: ticket created every year with anticipation and no calendar
+      // Next time is "4 days before begin of next year" ...
+      $next_time = strtotime('+ 1 year', strtotime($start_of_current_month . ' - 4 days')); // 4 days anticipation
+      if ($next_time < time()) {
+         // ... unless "4 days before begin of next year" is already passed
+         $next_time = strtotime('+ 1 year', $next_time);
+      }
+      $data[] = [
+         'begin_date'     => $start_of_current_month,
+         'end_date'       => $end_of_next_year,
+         'periodicity'    => '1YEAR',
+         'create_before'  => DAY_TIMESTAMP * 4,
+         'calendars_id'   => 0,
+         'expected_value' => date('Y-m-d H:i:s', $next_time),
+      ];
+
+      return $data;
    }
 
    /**
