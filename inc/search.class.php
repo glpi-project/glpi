@@ -3654,15 +3654,18 @@ JAVASCRIPT;
 
       $tocomputetrans = "IFNULL(".$this->db->quoteName("$table{$addtable}_trans.value").", ".$this->db->quote(self::NULLVALUE).") ";
 
+      $groupkw = ($this->db->getDriver()  == 'mysql' ? 'GROUP_CONCAT' : 'string_agg');
+      $sep = ($this->db->getDriver() == 'mysql' ? ' SEPARATOR ' : ', ') . $this->db->quote(self::LONGSEP);
+
       $ADDITONALFIELDS = '';
       if (isset($searchopt[$ID]["additionalfields"])
           && count($searchopt[$ID]["additionalfields"])) {
          foreach ($searchopt[$ID]["additionalfields"] as $key) {
             if ($meta
                 || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-               $ADDITONALFIELDS .= " IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL(".$this->db->quoteName("$table$addtable.$key").",
+               $ADDITONALFIELDS .= " IFNULL($groupkw(DISTINCT CONCAT(IFNULL(".$this->db->quoteName("$table$addtable.$key").",
                                                                          ".$this->db->quote(self::NULLVALUE)."),
-                                                   ".$this->db->quote(self::SHORTSEP).", $tocomputeid) SEPARATOR '".self::LONGSEP."'), ".$this->db->quote(self::NULLVALUE.self::SHORTSEP).")
+                                                   ".$this->db->quote(self::SHORTSEP).", $tocomputeid) $sep), ".$this->db->quote(self::NULLVALUE.self::SHORTSEP).")
                                     AS ".$this->db->quoteName($NAME . "_$key").", ";
             } else {
                $ADDITONALFIELDS .= $this->db->quoteName("$table$addtable.$key"). " AS ".$this->db->quoteName($NAME . "_$key").", ";
@@ -3695,11 +3698,11 @@ JAVASCRIPT;
                           "_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']
                                                                    ['joinparams']);
                      $addaltemail
-                        = "GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("$ticket_user_table.users_id").", ' ',
+                        = "$groupkw(DISTINCT CONCAT(".$this->db->quoteName("$ticket_user_table.users_id").", ' ',
                                                         ".$this->db->quoteName("$ticket_user_table.alternative_email").")
-                                                        SEPARATOR '".self::LONGSEP."') AS ".$this->db->quoteName($NAME."_2").", ";
+                                                        $sep) AS ".$this->db->quoteName($NAME."_2").", ";
                   }
-                  return " GROUP_CONCAT(DISTINCT ".$this->db->quoteName("$table$addtable.id")." SEPARATOR '".self::LONGSEP."')
+                  return " $groupkw (DISTINCT ".$this->db->quoteName("$table$addtable.id")." $sep)
                                        AS ".$this->db->quoteName($NAME).",
                            $addaltemail
                            $ADDITONALFIELDS";
@@ -3736,12 +3739,13 @@ JAVASCRIPT;
                if ($meta) {
                   $addtable2 = "_".$meta_type;
                }
-               return " GROUP_CONCAT(".$this->db->quoteName("$table$addtable.$field")." SEPARATOR '".self::LONGSEP."') AS ".$this->db->quoteName($NAME).",
-                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.entities_id")." SEPARATOR '".self::LONGSEP."')
+
+               return " $groupkw(".$this->db->quoteName("$table$addtable.$field")." $sep) AS ".$this->db->quoteName($NAME).",
+                        $groupkw(".$this->db->quoteName("glpi_profiles_users$addtable2.entities_id")." $sep)
                                     AS ".$this->db->quoteName($NAME."_entities_id").",
-                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.is_recursive")." SEPARATOR '".self::LONGSEP."')
+                        $groupkw(".$this->db->quoteName("glpi_profiles_users$addtable2.is_recursive")." $sep)
                                     AS ".$this->db->quoteName($NAME."_is_recursive").",
-                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.is_dynamic")." SEPARATOR '".self::LONGSEP."')
+                        $groupkw(".$this->db->quoteName("glpi_profiles_users$addtable2.is_dynamic")." $sep)
                                     AS ".$this->db->quoteName($NAME."_is_dynamic").",
                         $ADDITONALFIELDS";
             }
@@ -3755,13 +3759,13 @@ JAVASCRIPT;
                if ($meta) {
                   $addtable2 = "_".$meta_type;
                }
-               return " GROUP_CONCAT(".$this->db->quoteName("$table$addtable.completename")." SEPARATOR '".self::LONGSEP."')
+               return " $groupkw(".$this->db->quoteName("$table$addtable.completename")." $sep)
                                     AS ".$this->db->quoteName($NAME).",
-                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.profiles_id")." SEPARATOR '".self::LONGSEP."')
+                        $groupkw(".$this->db->quoteName("glpi_profiles_users$addtable2.profiles_id")." $sep)
                                     AS ".$this->db->quoteName($NAME."_profiles_id").",
-                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.is_recursive")." SEPARATOR '".self::LONGSEP."')
+                        $groupkw(".$this->db->quoteName("glpi_profiles_users$addtable2.is_recursive")." $sep)
                                     AS ".$this->db->quoteName($NAME."_is_recursive").",
-                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.is_dynamic")." SEPARATOR '".self::LONGSEP."')
+                        $groupkw(".$this->db->quoteName("glpi_profiles_users$addtable2.is_dynamic")." $sep)
                                     AS ".$this->db->quoteName($NAME."_is_dynamic").",
                         $ADDITONALFIELDS";
             }
@@ -3781,9 +3785,9 @@ JAVASCRIPT;
 
          case "glpi_softwareversions.name" :
             if ($meta) {
-               return " GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwares.name").", ' - ',
+               return " $groupkw(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwares.name").", ' - ',
                                                      ".$this->db->quoteName("$table$addtable2.$field").", '".self::SHORTSEP."',
-                                                     ".$this->db->quoteName("$table$addtable2.id").") SEPARATOR '".self::LONGSEP."')
+                                                     ".$this->db->quoteName("$table$addtable2.id").") $sep)
                                     AS ".$this->db->quoteName($NAME).",
                         $ADDITONALFIELDS";
             }
@@ -3791,30 +3795,30 @@ JAVASCRIPT;
 
          case "glpi_softwareversions.comment" :
             if ($meta) {
-               return " GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwares.name").", ' - ',
+               return " $groupkw(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwares.name").", ' - ',
                                                      ".$this->db->quoteName("$table$addtable2.$field").",'".self::SHORTSEP."',
-                                                     ".$this->db->quoteName("$table$addtable2.id").") SEPARATOR '".self::LONGSEP."')
+                                                     ".$this->db->quoteName("$table$addtable2.id").") $sep)
                                     AS ".$this->db->quoteName($NAME).",
                         $ADDITONALFIELDS";
             }
-            return " GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("$table$addtable.name").", ' - ',
+            return " $groupkw(DISTINCT CONCAT(".$this->db->quoteName("$table$addtable.name").", ' - ',
                                                   ".$this->db->quoteName("$table$addtable.$field").", '".self::SHORTSEP."',
-                                                  ".$this->db->quoteName("$table$addtable.id").") SEPARATOR '".self::LONGSEP."')
+                                                  ".$this->db->quoteName("$table$addtable.id").") $sep)
                                  AS ".$this->db->quoteName($NAME).",
                      $ADDITONALFIELDS";
 
          case "glpi_states.name" :
             if ($meta && ($meta_type == 'Software')) {
-               return " GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwares.name").", ' - ',
+               return " $groupkw(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwares.name").", ' - ',
                                                      ".$this->db->quoteName("glpi_softwareversions$addtable.name").", ' - ',
                                                      ".$this->db->quoteName("$table$addtable2.$field").", '".self::SHORTSEP."',
-                                                     ".$this->db->quoteName("$table$addtable2.id").") SEPARATOR '".self::LONGSEP."')
+                                                     ".$this->db->quoteName("$table$addtable2.id").") $sep)
                                      AS ".$this->db->quoteName($NAME).",
                         $ADDITONALFIELDS";
             } else if ($itemtype == 'Software') {
-               return " GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwareversions.name").", ' - ',
+               return " $groupkw(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwareversions.name").", ' - ',
                                                      ".$this->db->quoteName("$table$addtable.$field").",'".self::SHORTSEP."',
-                                                     ".$this->db->quoteName("$table$addtable.id").") SEPARATOR '".self::LONGSEP."')
+                                                     ".$this->db->quoteName("$table$addtable.id").") $sep)
                                     AS ".$this->db->quoteName($NAME).",
                         $ADDITONALFIELDS";
             }
@@ -3863,12 +3867,12 @@ JAVASCRIPT;
                }
                if ($meta
                    || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                  return " GROUP_CONCAT(DISTINCT ADDDATE(".$this->db->quoteName("$table$addtable.".
+                  return " $groupkw(DISTINCT ADDDATE(".$this->db->quoteName("$table$addtable.".
                                                             $searchopt[$ID]["datafields"][1]).",
                                                          INTERVAL (".$this->db->quoteName("$table$addtable.".
                                                                     $searchopt[$ID]["datafields"][2]).
                                                                     " $add_minus) $interval)
-                                         SEPARATOR '".self::LONGSEP."') AS ".$this->db->quoteName($NAME).",
+                                         $sep) AS ".$this->db->quoteName($NAME).",
                            $ADDITONALFIELDS";
                }
                return "ADDDATE(".$this->db->quoteName("$table$addtable.".$searchopt[$ID]["datafields"][1]).",
@@ -3882,15 +3886,15 @@ JAVASCRIPT;
 
                   $TRANS = '';
                   if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                      $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+                      $TRANS = "$groupkw(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
                                                              '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid
-                                             SEPARATOR '".self::LONGSEP."')
+                                             $sep)
                                      AS ".$this->db->quoteName($NAME."_trans").", ";
                   }
 
-                  return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '".self::SHORTSEP."' ,
+                  return " $groupkw(DISTINCT CONCAT($tocompute, '".self::SHORTSEP."' ,
                                                         ".$this->db->quoteName("$table$addtable.id").") ORDER BY ".$this->db->quoteName("$table$addtable.id")."
-                                        SEPARATOR '".self::LONGSEP."') AS ".$this->db->quoteName($NAME).",
+                                        $sep) AS ".$this->db->quoteName($NAME).",
                            $TRANS
                            $ADDITONALFIELDS";
                }
@@ -3908,13 +3912,13 @@ JAVASCRIPT;
                      && $searchopt[$ID]["computationgroupby"]))) { // Not specific computation
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-            $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                   '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid SEPARATOR '".self::LONGSEP."')
+            $TRANS = "$groupkw(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+                                                   '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid $sep)
                                   AS ".$this->db->quoteName($NAME."_trans").", ";
 
          }
-         return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
-                                               '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid SEPARATOR '".self::LONGSEP."')
+         return " $groupkw(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
+                                               '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid $sep)
                               AS ".$this->db->quoteName($NAME).",
                   $TRANS
                   $ADDITONALFIELDS";
@@ -4650,7 +4654,9 @@ JAVASCRIPT;
                   $date_computation = $tocompute;
                }
                if (in_array($searchtype, ["contains", "notcontains"])) {
-                  $date_computation = "CONVERT($date_computation USING utf8)";
+                  $date_computation = "CONVERT($date_computation";
+                  $date_computation .= ($this->db->getDriver() == 'mysql' ? ' USING ' : ', ');
+                  $date_computation .= "utf8)";
                }
                $search_unit = ' MONTH ';
                if (isset($searchopt[$ID]['searchunit'])) {
