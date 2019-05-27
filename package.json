@@ -34,7 +34,7 @@
         "qtip2": "^3.0.3",
         "select2": "^4.0.5",
         "spectrum-colorpicker": "^1.8.0",
-        "spin.js": "^2.3.2",
+        "spin.js": "^4.0.0",
         "tinymce": "^4.9.4",
         "tinymce-i18n": "^18.12.25",
         "unorm": "^1.5.0"
