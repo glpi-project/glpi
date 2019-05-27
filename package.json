@@ -36,7 +36,7 @@
         "spectrum-colorpicker": "^1.8.0",
         "spin.js": "^2.3.2",
         "tinymce": "^4.9.4",
-        "tinymce-i18n": "^18.12.25",
+        "tinymce-i18n": "^19.5.15",
         "unorm": "^1.5.0"
     },
     "scripts": {
