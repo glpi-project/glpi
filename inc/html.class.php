@@ -3835,7 +3835,7 @@ class Html {
                   }
                } else {
                   if (is_object($val)) {
-                     print_r($val);
+                     //print_r($val);
                   } else {
                      echo htmlentities($val);
                   }
