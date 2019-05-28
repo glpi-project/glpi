@@ -2491,4 +2491,75 @@ class Ticket extends DbTestCase {
       // Check status
       $this->integer((int)$ticket->fields['status'])->isEqualTo($expected_status);
    }
+
+   public function testLocationAssignment() {
+      $rule = new \Rule();
+      $rule->getFromDBByCrit([
+         'sub_type' => 'RuleTicket',
+         'name' => 'Ticket location from user',
+      ]);
+      $location = new \Location;
+      $location->getFromDBByCrit([
+         'name' => '_location01'
+      ]);
+      $user = new \User;
+      $user->add([
+         'name' => $this->getUniqueString(),
+         'locations_id' => $location->getID(),
+      ]);
+
+      // test ad ticket with single requester
+      $ticket = new \Ticket;
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '1'
+      ]);
+      $ticket->add([
+         '_users_id_requester' => $user->getID(),
+         'name' => 'test location assignment',
+         'content' => 'test location assignment',
+      ]);
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '0'
+      ]);
+      $ticket->getFromDB($ticket->getID());
+      $this->integer((int) $ticket->fields['locations_id'])->isEqualTo($location->getID());
+
+      // test add ticket with multiple requesters
+      $ticket = new \Ticket;
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '1'
+      ]);
+      $ticket->add([
+         '_users_id_requester' => [$user->getID(), 2],
+         'name' => 'test location assignment',
+         'content' => 'test location assignment',
+      ]);
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '0'
+      ]);
+      $ticket->getFromDB($ticket->getID());
+      $this->integer((int) $ticket->fields['locations_id'])->isEqualTo($location->getID());
+
+      // test add ticket with multiple requesters
+      $ticket = new \Ticket;
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '1'
+      ]);
+      $ticket->add([
+         '_users_id_requester' => [2, $user->getID()],
+         'name' => 'test location assignment',
+         'content' => 'test location assignment',
+      ]);
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '0'
+      ]);
+      $ticket->getFromDB($ticket->getID());
+      $this->integer((int) $ticket->fields['locations_id'])->isEqualTo(0);
+   }
 }
