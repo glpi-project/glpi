@@ -3448,7 +3448,7 @@ JAVASCRIPT;
          }
       }
 
-      if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+      if (isset($CFG_GLPI["union_search_type"][$itemtype]) && $this->db->getDriver() == 'mysql') {
          return " ORDER BY ITEM_{$itemtype}_{$ID} $order ";
       }
 
@@ -3530,7 +3530,7 @@ JAVASCRIPT;
          }
       }
 
-      return " ORDER BY ITEM_{$itemtype}_{$ID} $order ";
+      return ($this->db->getDriver() == 'mysql' ? " ORDER BY ITEM_{$itemtype}_{$ID} $order " : '');
    }
 
 
