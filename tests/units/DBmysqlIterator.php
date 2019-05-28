@@ -720,33 +720,37 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testRows() {
+      global $DB;
+
       $it = $this->it->execute('foo');
       $this->integer($it->numrows())->isIdenticalTo(0);
       $this->integer(count($it))->isIdenticalTo(0);
       $this->boolean($it->next())->isFalse();
 
-      $it = $this->db->request('glpi_configs', ['context' => 'core', 'name' => 'version']);
+      $it = $DB->request('glpi_configs', ['context' => 'core', 'name' => 'version']);
       $this->integer($it->numrows())->isIdenticalTo(1);
       $this->integer(count($it))->isIdenticalTo(1);
       $row = $it->next();
       $key = $it->key();
       $this->string($row['id'])->isIdenticalTo($key);
 
-      $it = $this->db->request('glpi_configs', ['context' => 'core']);
+      $it = $DB->request('glpi_configs', ['context' => 'core']);
       $this->integer($it->numrows())->isGreaterThan(100);
       $this->integer(count($it))->isGreaterThan(100);
       $this->boolean($it->numrows() == count($it))->isTrue();
    }
 
    public function testKey() {
+      global $DB;
+
       // test keys with absence of 'id' in select
       // we should use a incremented position in the first case
       // see https://github.com/glpi-project/glpi/pull/3401
       // previously, the first query returned only one result
-      $users_list = iterator_to_array($this->db->request([
+      $users_list = iterator_to_array($DB->request([
          'SELECT' => 'name',
          'FROM'   => 'glpi_users']));
-      $users_list2 = iterator_to_array($this->db->request([
+      $users_list2 = iterator_to_array($DB->request([
          'SELECT' =>  ['id', 'name'],
          'FROM'   => 'glpi_users']));
       $nb  = count($users_list);
