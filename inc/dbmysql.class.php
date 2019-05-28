@@ -176,7 +176,18 @@ class DBmysql {
          $this->connected = false;
          $this->error     = 1;
       } else {
-         $this->dbh->set_charset(isset($this->dbenc) ? $this->dbenc : "utf8");
+         $dbenc = isset($this->dbenc) ? $this->dbenc : "utf8";
+         $this->dbh->set_charset($dbenc);
+         if ($dbenc === "utf8") {
+            // The mysqli::set_charset function will make COLLATE to be defined to the default one for used charset.
+            //
+            // For 'utf8' charset, default one is 'utf8_general_ci',
+            // so we have to redefine it to 'utf8_unicode_ci'.
+            //
+            // If encoding used by connection is not the default one (i.e utf8), then we assume
+            // that we cannot be sure of used COLLATE and that using the default one is the best option.
+            $this->dbh->query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';");
+         }
 
          if (GLPI_FORCE_EMPTY_SQL_MODE) {
             $this->dbh->query("SET SESSION sql_mode = ''");
