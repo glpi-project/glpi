@@ -3727,10 +3727,15 @@ JAVASCRIPT;
                                                         ".$this->db->quoteName("$ticket_user_table.alternative_email").")
                                                         $sep) AS ".$this->db->quoteName($NAME."_2").", ";
                   }
-                  return " $groupkw(DISTINCT ".$this->db->quoteName("$table$addtable.id")." $sep)
+                  $return = " $groupkw(DISTINCT ".$this->db->quoteName("$table$addtable.id");
+                  if ($this->db->getDriver() == 'pgsql') {
+                     $return .= '::text';
+                  }
+                  $return .= " $sep)
                                        AS ".$this->db->quoteName($NAME).",
                            $addaltemail
                            $ADDITONALFIELDS";
+                  return $return;
 
                }
                return " ".$this->db->quoteName("$table$addtable.$field")." AS ".$this->db->quoteName($NAME).",
