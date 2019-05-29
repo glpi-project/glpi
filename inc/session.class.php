@@ -541,8 +541,8 @@ class Session {
          ] + getEntitiesRestrictCriteria(
             Group::getTable(),
             'entities_id',
-            $_SESSION['glpiactiveentities'],
-            true
+            $_SESSION['glpiactive_entity'],
+            $_SESSION['glpiactive_entity_recursive']
          )
       ]);
 
