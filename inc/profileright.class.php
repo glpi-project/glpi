@@ -268,7 +268,7 @@ class ProfileRight extends CommonDBChild {
          'FROM'   => 'glpi_profilerights AS CURRENT',
          'WHERE'  => [
             'CURRENT.profiles_id'   => $profiles_id,
-            'CURRENT.NAME'          => new \QueryExpression('POSSIBLE.NAME')
+            'CURRENT.name'          => new \QueryExpression('POSSIBLE.name')
          ]
       ]);
 
@@ -277,7 +277,7 @@ class ProfileRight extends CommonDBChild {
          $subq->getParameters()
       );
       $iterator = $DB->request([
-         'SELECT'          => 'POSSIBLE.name AS NAME',
+         'SELECT'          => 'name',
          'DISTINCT'        => true,
          'FROM'            => 'glpi_profilerights AS POSSIBLE',
          'WHERE'           => [
@@ -289,7 +289,7 @@ class ProfileRight extends CommonDBChild {
       while ($right = $iterator->next()) {
          $params = [
             'profiles_id'  => $profiles_id,
-            'name'         => $right['NAME']
+            'name'         => $right['name']
          ];
 
          if ($stmt === null) {

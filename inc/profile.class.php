@@ -427,12 +427,12 @@ class Profile extends CommonDBTM {
 
       // Not logged -> no profile to see
       if (!isset($_SESSION['glpiactiveprofile'])) {
-         return [0];
+         return [false];
       }
 
       // Profile right : may modify profile so can attach all profile
       if (Profile::canCreate()) {
-         return [1];
+         return [true];
       }
 
       $criteria = ['glpi_profiles.interface' => Session::getCurrentInterface()];

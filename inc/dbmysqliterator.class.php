@@ -518,9 +518,9 @@ class DBmysqlIterator implements Iterator, Countable {
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
          //}
-         if ($crit === true) {
+         if ($crit === true || (int)$crit === 1) {
             $crit = '1 = 1';
-         } else if ($crit === false) {
+         } else if ($crit === false || (int)$crit === 0) {
             $crit = '1 = 0';
          }
          return $crit;

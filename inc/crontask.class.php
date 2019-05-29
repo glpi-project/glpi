@@ -212,10 +212,12 @@ class CronTask extends CommonDBTM{
          pcntl_signal(SIGTERM, [$this, 'signal']);
       }
 
+      $sql_expr = ($DB->getDriver() === 'mysql' ? 'DATE_FORMAT(NOW(), \'%Y-%m-%d %H:%i:00\')' : 'date_trunc(\'second\', now()::timestamp)');
+
       $result = $DB->update(
          $this->getTable(), [
             'state'  => self::STATE_RUNNING,
-            'lastrun'   => new \QueryExpression('DATE_FORMAT(NOW(),\'%Y-%m-%d %H:%i:00\')')
+            'lastrun'   => new \QueryExpression($sql_expr)
          ], [
             'id'  => $this->fields['id'],
             'NOT' => ['state' => self::STATE_RUNNING]

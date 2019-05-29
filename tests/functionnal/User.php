@@ -46,7 +46,7 @@ class User extends \DbTestCase {
 
       $user->getFromDB($user->getID());
       $this->string($user->fields['personal_token'])->isIdenticalTo($token);
-      $this->string($user->fields['personal_token_date'])->isIdenticalTo($_SESSION['glpi_currenttime']);
+      $this->string(str_replace('+02', '', $user->fields['personal_token_date']))->isIdenticalTo($_SESSION['glpi_currenttime']);
    }
 
    /**

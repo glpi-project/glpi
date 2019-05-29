@@ -887,7 +887,7 @@ class Search {
       $numrows = 0;
       //No search : count number of items using a simple count(ID) request and LIMIT search
       if ($data['search']['no_search']) {
-         $LIMIT = " LIMIT ".(int)$data['search']['start'].", ".(int)$data['search']['list_limit'];
+         $LIMIT = " LIMIT ".(int)$data['search']['list_limit'] . " OFFSET ".(int)$data['search']['start'];
 
          // Force group by for all the type -> need to count only on table ID
          if (!isset($searchopt[1]['forcegroupby'])) {
