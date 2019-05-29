@@ -515,13 +515,12 @@ class DBmysqlIterator implements Iterator, Countable {
    public function analyseCrit ($crit, $bool = "AND") {
 
       if (!is_array($crit)) {
-         //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
-         //}
-         if ($crit === true || (int)$crit === 1) {
+         if ($crit === true || $crit === 1) {
             $crit = '1 = 1';
-         } else if ($crit === false || (int)$crit === 0) {
+         } else if ($crit === false || $crit === 0) {
             $crit = '1 = 0';
+         } else {
+            Toolbox::deprecated("Deprecated usage of SQL in DB/request (criteria)");
          }
          return $crit;
       }

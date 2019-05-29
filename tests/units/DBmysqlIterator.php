@@ -151,12 +151,12 @@ class DBmysqlIterator extends DbTestCase {
       define('GLPI_SQL_DEBUG', true);
 
       $id = mt_rand();
-      $this->it->execute('foo', ['FIELDS' => 'name', 'id = ' . $id]);
+      $this->it->execute('foo', ['FIELDS' => 'name', ['id' => $id]]);
 
       $this->array($handler->getRecords())->hasSize(1);
       $this->boolean(
          $handler->hasRecordThatContains(
-            'Generated query: SELECT `name` FROM `foo` WHERE (id = ' . $id . ')',
+            'Generated query: SELECT `name` FROM `foo` WHERE (`id` = ?)',
             Logger::DEBUG
          )
       )->isTrue();
@@ -499,8 +499,9 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testWhere() {
-      $it = $this->it->execute('foo', 'id=1');
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE id=1');
+      $it = $this->it->execute('foo', ['id' =>1]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `id` = ?');
+      $this->array($it->getParameters())->isEqualTo([1]);
 
       $it = $this->it->execute('foo', ['WHERE' => ['bar' => null]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` IS NULL');
@@ -514,6 +515,26 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['bar' => 1]);
       $this->array($it->getParameters())->isIdenticalTo([1]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = ?');
+
+      $it = $this->it->execute('foo', 1);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE 1 = 1');
+
+      $it = $this->it->execute('foo', true);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE 1 = 1');
+
+      /*$it = $this->it->execute('foo', 0);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE 1 = 0');*/
+
+      /*$it = $this->it->execute('foo', false);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE 1 = 0');*/
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', 'id=1');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('Deprecated usage of SQL in DB/request (criteria) ');
 
       $this->exception(
          function() {
