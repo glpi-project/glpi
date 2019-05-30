@@ -1,0 +1,59 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% block component %}
+   <div class='siem-dashboard-card card text-center card-{{ card.type }} {{ card.extra_card_classes is defined ? card.extra_card_classes : ''}}'>
+      <p class='card-header d-flex align-items-center justify-content-center h-100'>{{ card.title }}</p>
+      <div class='card-body'>
+         {% if card.type == 'counter' %}
+            <p>{{ card.value }}</p>
+         {% elseif card.type == 'table' %}
+            <table>
+               <thead>
+                  {% for heading in card.value.headers %}
+                     <th>{{ heading }}</th>
+                  {% endfor %}
+               </thead>
+               <tbody>
+                  {% for row in card.value.rows %}
+                     <tr>
+                        {% for cell in row %}
+                           <td>{{ cell }}</td>
+                        {% endfor %}
+                     </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         {% elseif card.type == 'invalid' %}
+            <p>{{ card.value }}</p>
+         {% endif %}
+      </div>
+   </div>
+{% endblock %}

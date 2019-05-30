@@ -1002,6 +1002,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
       $this->addStandardTab('Itil_ITILEvent', $ong, $options);
+      $this->addStandardTab('Itil_ScheduledDowntime', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -2118,7 +2119,7 @@ class Ticket extends CommonITILObject {
             sprintf(__('%1$s adds the item %2$s'), $username, $this->getID()), [
                'login_name' => $username,
                'items_id' => $this->getID(),
-               '_correlation_uuid' => isset($this->input['_correlation_uuid']) ? $this->input['_correlation_uuid'] : null]);
+               '_correlation_id' => isset($this->input['_correlation_id']) ? $this->input['_correlation_id'] : null]);
 
       if (isset($this->input["_followup"])
           && is_array($this->input["_followup"])

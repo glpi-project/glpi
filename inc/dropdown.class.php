@@ -275,7 +275,7 @@ class Dropdown {
     *
     * @return string
     */
-   static function addNewCondition($condition) {
+   static function addNewCondition(array $condition) {
       $sha1 = sha1(serialize($condition));
       $_SESSION['glpicondition'][$sha1] = $condition;
       return $sha1;
@@ -902,7 +902,8 @@ class Dropdown {
                                               Session::getPluralNumber()),
                  'LineType'             => _n('Line type', 'Line types',
                                              Session::getPluralNumber()),
-                 'RackType'             => RackType::getTypeName(Session::getPluralNumber())
+                 'RackType'             => RackType::getTypeName(Session::getPluralNumber()),
+                 'PDUType'              => PDUType::getTypeName(Session::getPluralNumber())
              ],
 
              __('Model') => [
@@ -984,8 +985,7 @@ class Dropdown {
              __('Tools') => [
                  'KnowbaseItemCategory' => _n('Knowledge base category',
                                               'Knowledge base categories',
-                                              Session::getPluralNumber()),
-                 'ITILEventCategory' => ITILEventCategory::getTypeName(Session::getPluralNumber())
+                                              Session::getPluralNumber())
              ],
 
              __('Calendar') => [

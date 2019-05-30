@@ -67,24 +67,6 @@ class Event extends CommonDBTM {
       return false;
    }
 
-   function post_addItem() {
-      //TODO For the sake of consistancy, logging alerts to a file should be dropped?
-      // Maybe add it as a rule action instead?
-      if (isset($this->fields['level']) && $this->fields['level'] <= 3) {
-         $message_type = "";
-         if (isset($this->fields['type']) && $this->fields['type'] != 'system') {
-            $message_type = "[".$this->fields['type']." ".$this->fields['id']."] ";
-         }
-
-         $full_message = "[".$this->fields['service']."] ".
-                         $message_type.
-                         $this->fields['level'].": ".
-                         $this->fields['message']."\n";
-
-         Toolbox::logInFile("event", $full_message);
-      }
-   }
-
 
    /**
     * Log an event.
@@ -92,11 +74,12 @@ class Event extends CommonDBTM {
     * Log the event $event to the internal SIEM system as an {@link \ITILEvent} if
     * $level is above or equal to setting from configuration.
     *
-    * @param $items_id
-    * @param $type
-    * @param $level
-    * @param $service
-    * @param $event
+    * @param $items_id The id of the related item
+    * @param $type The type of the related item
+    * @param $level The level of the event
+    * @param $service The module/service that generated the event
+    * @param $event The name of the event
+    * @param $extrainfo Array of extra event properties
     * @param $significance int The significance of the event (0 = Information, 1 = Warning, 2 = Exception).
     *    Default is Information.
    **/
@@ -108,11 +91,11 @@ class Event extends CommonDBTM {
          return false;
       }
 
-      if (isset($extrainfo['_correlation_uuid'])) {
-         $correlation_uuid = $extrainfo['_correlation_uuid'];
-         unset($extrainfo['_correlation_uuid']);
+      if (isset($extrainfo['_correlation_id'])) {
+         $correlation_id = $extrainfo['_correlation_id'];
+         unset($extrainfo['_correlation_id']);
       } else {
-         $correlation_uuid = null;
+         $correlation_id = null;
       }
 
       $input = [
@@ -125,7 +108,7 @@ class Event extends CommonDBTM {
          ] + $extrainfo),
          'significance' => $significance,
          'date'      => $_SESSION["glpi_currenttime"],
-         'correlation_uuid'   => $correlation_uuid
+         'correlation_id'   => $correlation_id
       ];
 
       $tmp = new \ITILEvent();

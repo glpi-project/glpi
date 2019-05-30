@@ -1040,4 +1040,64 @@ class Main extends AbstractController implements ControllerInterface
 
         return $response->withJson(['res' => true]);
     }
+
+   /**
+    * path: '/ITILEvent/dashboard'
+    *
+    * @param Request  $request  Request
+    * @param Response $response Response
+    * @param array    $args     URL arguments
+    *
+    * @return void
+    *
+     * @Glpi\Annotation\Route(name="itilevent-dashboard", pattern="/ITILEvent/dashboard[/{fullscreen:fullscreen}]")
+    */
+    public function siemDashboard(Request $request, Response $response, array $args)
+    {
+        global $IS_TWIG;
+        $IS_TWIG = true;
+        $itemtype = 'ITILEvent';
+        $layout = [
+           [
+              'count-hosts',
+              'count-services',
+              'count-active-warnings',
+              'count-active-exceptions',
+              'count-all-total'
+           ],
+           [
+              'count-information-today',
+              'count-warnings-today',
+              'count-exceptions-today'
+           ]
+        ];
+
+        // Build the card deck from a custom layout
+        $decks = [];
+        foreach ($layout as $cardrow) {
+           $deck = [];
+           foreach ($cardrow as $card) {
+              $deck[] = \ITILEvent::getDashboardCard($card);
+           }
+           array_push($decks, $deck);
+        }
+
+        $params = [
+            'page_title'   => __('Event Dashboard'),
+            'fullscreen'   => isset($args['fullscreen']),
+            'itemtype'     => $itemtype,
+            'item'         => new $itemtype(),
+            'dashboard'    => [
+               'title'  => 'Event Monitoring Dashboard',
+               'class'  => 'siem-dashboard',
+               'decks'  => $decks
+            ]
+        ];
+
+        return $this->view->render(
+            $response,
+            'dashboard.twig',
+            $params
+        );
+    }
 }

@@ -28,9 +28,21 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
+*/
+
+/**
+ * ITILEventServiceTemplate class.
+ *
+ * @since 10.0.0
  */
+class ITILEventServiceTemplate extends CommonDBTM {
 
-include ('../inc/includes.php');
-
-$dropdown = new ITILEventCategory();
-include (GLPI_ROOT . '/front/dropdown.common.php');
+   /**
+    * Name of the type
+    *
+    * @param $nb : number of item in the type
+   **/
+   static function getTypeName($nb = 0) {
+      return _n('Service template', 'Service templates', $nb);
+   }
+}

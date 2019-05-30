@@ -103,7 +103,11 @@ class Entity extends CommonTreeDropdown {
                                                    'autoclose_delay', 'inquest_config',
                                                    'inquest_rate', 'inquest_delay',
                                                    'inquest_duration','inquest_URL',
-                                                   'max_closedate', 'tickettemplates_id'],
+                                                   'max_closedate', 'tickettemplates_id',
+                                                   'suppliers_as_private'],
+                                          // Configuration
+                                          'config'
+                                          => ['enable_custom_css', 'custom_css_code'],
                                           'event' => ['default_event_correlation_time',
                                                       'default_event_correlation_count',
                                                       'default_event_correlation_window',
@@ -348,8 +352,11 @@ class Entity extends CommonTreeDropdown {
                   $ong[5] = __('Assistance');
                }
                $ong[6] = __('Assets');
+               if (Session::haveRight(Config::$rightname, [UPDATE])) {
+                  $ong[7] = __('UI customization');
+               }
                if (ITILEvent::canView()) {
-                  $ong[7] = ITILEvent::getTypeName(Session::getPluralNumber());
+                  $ong[8] = ITILEvent::getTypeName(Session::getPluralNumber());
                }
 
                return $ong;
@@ -391,6 +398,10 @@ class Entity extends CommonTreeDropdown {
                break;
 
             case 7 :
+               self::showUiCustomizationOptions($item);
+               break;
+
+            case 8 :
                self::showEventOptions($item);
                break;
          }
@@ -2024,6 +2035,142 @@ class Entity extends CommonTreeDropdown {
       echo "</div>";
    }
 
+   /**
+    * UI customization configuration form.
+    *
+    * @param $entity Entity object
+    *
+    * @return void
+    *
+    * @since 9.5.0
+    */
+   static function showUiCustomizationOptions(Entity $entity) {
+
+      global $CFG_GLPI;
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, [UPDATE])) {
+         return false;
+      }
+
+      // Codemirror lib
+      echo Html::css("public/lib/codemirror/codemirror.css");
+      echo Html::css("public/lib/codemirror/addon/fold/foldgutter.css");
+      echo Html::css("public/lib/codemirror/addon/hint/show-hint.css");
+      echo Html::script("public/lib/codemirror/codemirror.js");
+      echo Html::script("public/lib/codemirror/addon/fold/foldcode.js");
+      echo Html::script("public/lib/codemirror/addon/fold/brace-fold.js");
+      echo Html::script("public/lib/codemirror/addon/fold/comment-fold.js");
+      echo Html::script("public/lib/codemirror/addon/fold/foldgutter.js");
+      echo Html::script("public/lib/codemirror/addon/hint/show-hint.js");
+      echo Html::script("public/lib/codemirror/addon/hint/css-hint.js");
+      echo Html::script("public/lib/codemirror/mode/css/css.js");
+
+      // Notification right applied
+      $canedit = Session::haveRight(Config::$rightname, [UPDATE])
+         && Session::haveAccessToEntity($ID);
+
+      echo "<div class='spaced'>";
+      if ($canedit) {
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      }
+
+      echo "<table class='tab_cadre_fixe custom_css_configuration'>";
+
+      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+
+      $rand = mt_rand();
+
+      echo "<tr><th colspan='2'>".__('UI options')."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Enable CSS customization')."</td>";
+      echo "<td>";
+      $values = [];
+      if (($ID > 0) ? 1 : 0) {
+         $values[Entity::CONFIG_PARENT] = __('Inherits configuration from the parent entity');
+      }
+      $values[0] = __('No');
+      $values[1] = __('Yes');
+      echo Dropdown::showFromArray(
+         'enable_custom_css',
+         $values,
+         [
+            'display' => false,
+            'rand'    => $rand,
+            'value'   => $entity->fields['enable_custom_css']
+         ]
+      );
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'>";
+      echo "<div id='custom_css_container' class='custom_css_container'>";
+      $value = $entity->fields['enable_custom_css'];
+      // wrap call in function to prevent modifying variables from current scope
+      call_user_func(function() use($value, $ID) {
+         $_POST  = [
+            'enable_custom_css' => $value,
+            'entities_id'       => $ID
+         ];
+         include GLPI_ROOT . '/ajax/entityCustomCssCode.php';
+      });
+      echo "</div>\n";
+      echo "</td></tr>";
+
+      Ajax::updateItemOnSelectEvent(
+         'dropdown_enable_custom_css' . $rand,
+         'custom_css_container',
+         $CFG_GLPI['root_doc'] . '/ajax/entityCustomCssCode.php',
+         [
+            'enable_custom_css' => '__VALUE__',
+            'entities_id'       => $ID
+         ]
+      );
+
+      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+
+      echo "</table>";
+
+      if ($canedit) {
+         echo "<div class='center'>";
+         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "</div>";
+         Html::closeForm();
+      }
+
+      echo "</div>";
+   }
+
+   /**
+    * Returns tag containing custom CSS code applied to entity.
+    *
+    * @return string
+    */
+   public function getCustomCssTag() {
+
+      $enable_custom_css = self::getUsedConfig(
+         'enable_custom_css',
+         $this->fields['id']
+      );
+
+      if (!$enable_custom_css) {
+         return '';
+      }
+
+      $custom_css_code = self::getUsedConfig(
+         'enable_custom_css',
+         $this->fields['id'],
+         'custom_css_code'
+      );
+
+      if (empty($custom_css_code)) {
+         return '';
+      }
+
+      return '<style>' . Html::entities_deep($custom_css_code) . '</style>';
+   }
 
    /**
     * Shows ITILEvent entity options
@@ -2298,6 +2445,33 @@ class Entity extends CommonTreeDropdown {
          $auto_assign_mode = self::getUsedConfig('auto_assign_mode', $entity->fields['entities_id']);
          echo "<font class='green'>&nbsp;&nbsp;";
          echo $autoassign[$auto_assign_mode];
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Mark followup added by a supplier though an email collector as private')."</td>";
+      echo "<td colspan='2'>";
+      $supplierValues = self::getSuppliersAsPrivateValues();
+      $currentSupplierValue = $entity->fields['suppliers_as_private'];
+
+      if ($ID == 0) { // Remove parent option for root entity
+         unset($supplierValues[self::CONFIG_PARENT]);
+      }
+
+      Dropdown::showFromArray(
+         'suppliers_as_private',
+         $supplierValues,
+         ['value' => $currentSupplierValue]
+      );
+
+      // If the entity is using it's parent value, print it
+      if ($currentSupplierValue == self::CONFIG_PARENT && $ID != 0) {
+         $parentSupplierValue = self::getUsedConfig(
+            'suppliers_as_private',
+            $entity->fields['entities_id']
+         );
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo $supplierValues[$parentSupplierValue];
          echo "</font>";
       }
       echo "</td></tr>";
@@ -2611,6 +2785,24 @@ class Entity extends CommonTreeDropdown {
          return $tab[$val];
       }
       return NOT_AVAILABLE;
+   }
+
+   /**
+    * get value for suppliers_as_private
+    *
+    * @since 9.5
+    *
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    *
+    * @return array or string
+   **/
+   static function getSuppliersAsPrivateValues() {
+
+      return [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         0                   => __('No'),
+         1                   => __('Yes'),
+      ];
    }
 
    /**

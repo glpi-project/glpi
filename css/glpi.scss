@@ -316,6 +316,13 @@ ul.pagination {
 .siem-dashboard .row .card-deck {
    width: 100%;
    margin-bottom: 1rem;
+   .card .card-body {
+      padding: unset;
+      padding-top: 0.5rem;
+   }
+   .card.card-counter .card-body {
+      font-size: 2rem;
+   }
 }
 
 .event_filter {

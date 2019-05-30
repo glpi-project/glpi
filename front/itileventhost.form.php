@@ -30,7 +30,35 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
-$dropdown = new ITILEventCategory();
-include (GLPI_ROOT . '/front/dropdown.common.form.php');
+$host = new ITILEventHost();
+
+if (isset($_POST['add'])) {
+   $host->check(-1, CREATE, $_POST);
+
+   $newID = $host->add($_POST, false);
+   Event::log($newID, 'itileventhost', 4, 'tools',
+              sprintf(__('%1$s adds the item %2$s'), $_SESSION['glpiname'], $newID));
+   Html::back();
+
+} else if (isset($_POST['purge'])) {
+   $host->check($_POST['id'], PURGE);
+   $host->delete($_POST, 1);
+   Event::log($_POST['id'], 'itileventhost', 4, 'tools',
+              //TRANS: %s is the user login
+              sprintf(__('%s purges an item'), $_SESSION['glpiname']));
+   Html::back();
+
+} else if (isset($_POST['update'])) {
+   $host->check($_POST['id'], UPDATE);
+
+   $host->update($_POST);
+   Event::log($_POST['id'], 'itileventhost', 4, 'tools',
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION['glpiname']));
+   Html::back();
+
+}

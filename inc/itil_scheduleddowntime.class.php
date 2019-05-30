@@ -35,17 +35,17 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Itil_ITILEvent Class
+ * Itil_ScheduledDowntime Class
  *
  * Relation between ITILEvents and ITILObjects
  * @since 10.0.0
 **/
-class Itil_ITILEvent extends CommonDBRelation
+class Itil_ScheduledDowntime extends CommonDBRelation
 {
    
    // From CommonDBRelation
-   static public $itemtype_1          = 'ITILEvent';
-   static public $items_id_1          = 'itilevents_id';
+   static public $itemtype_1          = 'ScheduledDowntime';
+   static public $items_id_1          = 'scheduleddowntimes_id';
 
    static public $itemtype_2          = 'itemtype';
    static public $items_id_2          = 'items_id';
@@ -61,71 +61,52 @@ class Itil_ITILEvent extends CommonDBRelation
 
    function canCreateItem()
    {
-      $event = new ITILEvent();
+      $downtime = new ScheduledDowntime();
 
-      if ($event->canUpdateItem()) {
+      if ($downtime->canUpdateItem()) {
          return true;
       }
 
       return parent::canCreateItem();
    }
 
+   function post_addItem()
+   {
+      $downtime = new ScheduledDowntime();
+      $input  = [
+         'id'              => $this->fields[self::$items_id_1],
+         'date_mod'        => $_SESSION["glpi_currenttime"],
+      ];
+
+      $downtime->update($input);
+      parent::post_addItem();
+   }
+
+   function post_purgeItem()
+   {
+
+      $downtime = new ScheduledDowntime();
+      $input  = [
+         'id'              => $this->fields[self::$items_id_1],
+         'date_mod'        => $_SESSION["glpi_currenttime"],
+      ];
+
+      $downtime->update($input);
+
+      parent::post_purgeItem();
+   }
+
    function prepareInputForAdd($input)
    {
 
       // Avoid duplicate entry
-      if (countElementsInTable($this->getTable(), ['itilevents_id' => $input['itilevents_id'],
-                                                   'itemtype'   => $input['itemtype'],
-                                                   'items_id'   => $input['items_id']]) > 0) {
+      if (countElementsInTable($this->getTable(), [self::$items_id_1 => $input[self::$items_id_1],
+                                                   self::$itemtype_2 => $input[self::$itemtype_2],
+                                                   self::$items_id_2 => $input[self::$items_id_2]]) > 0) {
          return false;
       }
 
       return parent::prepareInputForAdd($input);
-   }
-
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-   {
-
-      if (!$withtemplate) {
-         $nb = 0;
-         switch ($item->getType()) {
-            case Change::class :
-            case Problem::class :
-            case Ticket::class :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable(
-                     self::getTable(),
-                     [
-                        'itemtype' => $item->getType(),
-                        'items_id' => $item->getID(),
-                     ]
-                  );
-               }
-               return self::createTabEntry(ITILEvent::getTypeName(Session::getPluralNumber()), $nb);
-               break;
-
-            case 'ITILEvent' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable(self::getTable(), ['itilevents_id' => $item->getID()]);
-               }
-               return self::createTabEntry(_n('Itil item', 'Itil items', Session::getPluralNumber()), $nb);
-         }
-      }
-      return '';
-   }
-
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-   {
-
-      switch ($item->getType()) {
-         case 'ITILEvent' :
-            self::showForITILEvent($item);
-            break;
-         default:
-            self::showForItil($item);
-            break;
-      }
-      return true;
    }
 
    /**
@@ -136,6 +117,6 @@ class Itil_ITILEvent extends CommonDBRelation
    **/
    static function showForItil(CommonDBTM $item, $withtemplate = 0)
    {
-      ITILEvent::showListForItil(false, $item);
+      ScheduledDowntime::showListForItil(false, $item);
    }
 }

@@ -132,48 +132,26 @@ function update95to100() {
    /** Event Management */
    if (!$DB->tableExists('glpi_itilevents')) {
       $query = "CREATE TABLE `glpi_itilevents` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `entities_id` int(11) NOT NULL DEFAULT '0',
-         `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
          `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
          `status` tinyint(4) NOT NULL DEFAULT '0',
          `date` datetime DEFAULT NULL,
          `content` longtext COLLATE utf8_unicode_ci,
          `date_creation` datetime DEFAULT NULL,
-         `itileventcategories_id` int(11),
          `significance` tinyint(4) NOT NULL,
-         `correlation_uuid` int(11) DEFAULT NULL,
+         `correlation_id` VARCHAR(23) DEFAULT NULL,
          `date_mod` datetime DEFAULT NULL,
-         `logger` varchar(255)  COLLATE utf8_unicode_ci DEFAULT NULL COMMENT
-            'Indicates which plugin (or the core) logged this event. Used to delegate translations and other functions',
+         `itileventservices_id` int(11) NOT NULL,
          PRIMARY KEY (`id`),
-         KEY `entities_id` (`entities_id`),
          KEY `name` (`name`),
          KEY `status` (`status`),
          KEY `date` (`date`),
          KEY `date_creation` (`date_creation`),
-         KEY `itileventcategories_id` (`itileventcategories_id`),
          KEY `significance` (`significance`),
-         KEY `correlation_uuid` (`correlation_uuid`),
-         KEY `logger` (`logger`)
+         KEY `correlation_id` (`correlation_id`),
+         KEY `itileventservices_id` (`itileventservices_id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "10.0.0 add table glpi_itilevents");
-   }
-
-   if (!$DB->tableExists('glpi_items_itilevents')) {
-      $query = "CREATE TABLE `glpi_items_itilevents` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-         `items_id` int(11) NOT NULL,
-         `itilevents_id` int(11) NOT NULL,
-         `link` tinyint(4) NOT NULL DEFAULT '0',
-         PRIMARY KEY (`id`),
-         KEY `itemtype` (`itemtype`),
-         KEY `item_id` (`items_id`),
-         KEY `item` (`itemtype`,`items_id`),
-         KEY `itilevents_id` (`itilevents_id`)
-         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "10.0.0 add table glpi_items_itilevents");
    }
 
    if (!$DB->tableExists('glpi_itils_itilevents')) {
@@ -181,41 +159,96 @@ function update95to100() {
          `id` int(11) NOT NULL AUTO_INCREMENT,
          `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
          `items_id` int(11) NOT NULL DEFAULT '0',
-         `itilevents_id` int(11) NOT NULL DEFAULT '0',
+         `itilevents_id` int(11) unsigned NOT NULL DEFAULT '0',
          PRIMARY KEY (`id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "10.0.0 add table glpi_itils_itilevents");
    }
 
-   if (!$DB->tableExists('glpi_itileventcategories')) {
-      $query = "CREATE TABLE `glpi_itileventcategories` (
+   if (!$DB->tableExists('glpi_itileventhosts')) {
+      $query = "CREATE TABLE `glpi_itileventhosts` (
+      `id` int(11) NOT NULL,
+      `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+      `items_id` int(11) NOT NULL,
+      `itileventservices_id_availability` int(11) DEFAULT NULL,
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `unicity` (`items_id`,`itemtype`),
+      KEY `is_flapping` (`is_flapping`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "10.0.0 add table glpi_itileventhosts");
+   }
+
+   if (!$DB->tableExists('glpi_itileventservices')) {
+      $query = "CREATE TABLE `glpi_itileventservices` (
       `id` int(11) NOT NULL AUTO_INCREMENT,
-      `entities_id` int(11) NOT NULL DEFAULT '0',
-      `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-      `itileventcategories_id` int(11) NOT NULL DEFAULT '0',
-      `name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-      `completename` text COLLATE utf8_unicode_ci,
-      `comment` text COLLATE utf8_unicode_ci,
-      `level` int(11) NOT NULL,
-      `ancestors_cache` longtext COLLATE utf8_unicode_ci,
-      `sons_cache` longtext COLLATE utf8_unicode_ci,
-      `date_mod` datetime DEFAULT NULL,
-      `date_creation` datetime DEFAULT NULL,
+      `hosts_id` int(11) NOT NULL DEFAULT -1,
+      `itileventservicetemplates_id` int(11) NOT NULL,
+      `last_check` timestamp NULL DEFAULT NULL,
+      `status` tinyint(3) NOT NULL DEFAULT '2',
+      `status_since` timestamp NULL DEFAULT NULL,
+      `is_flapping` tinyint(1) NOT NULL DEFAULT '0',
+      `is_active` tinyint(1) NOT NULL DEFAULT '1',
+      `is_acknowledged` tinyint(1) NOT NULL DEFAULT '0',
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `itileventservicetemplates_id` (`itileventservicetemplates_id`),
+      KEY `hosts_id` (`hosts_id`),
+      KEY `is_flapping` (`is_flapping`),
+      KEY `is_acknowledged` (`is_acknowledged`),
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "10.0.0 add table glpi_itileventservices");
+   }
+
+   if (!$DB->tableExists('glpi_itileventservicetemplates')) {
+      $query = "CREATE TABLE `glpi_itileventservicetemplates` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+      `comment` text COLLATE utf8_unicode_ci DEFAULT NULL,
+      `links_id` int(11) DEFAULT NULL,
+      `priority` tinyint(3) NOT NULL DEFAULT 3,
+      `calendars_id` int(11) DEFAULT NULL,
+      `notificationinterval` int(11) DEFAULT NULL,
+      `check_interval` int(11) DEFAULT NULL COMMENT 'Ignored when check_mode is passive',
+      `use_flap_detection` tinyint(1) NOT NULL DEFAULT '0',
+      `check_mode` tinyint(3) NOT NULL DEFAULT '0',
+      `logger` varchar(255)  COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Indicates which plugin (or the core) logged this event. Used to delegate translations and other functions',
+      `is_volatile` tinyint(1) NOT NULL DEFAULT '0',
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
       PRIMARY KEY (`id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "10.0.0 add table glpi_itileventcategories");
+      $DB->queryOrDie($query, "10.0.0 add table glpi_itileventservicetemplates");
    }
 
-   $migration->addConfig([
-      'eventwarning_color'    => '#ffcc47',
-      'eventexception_color'  => '#ff3a3a'
-   ]);
-
-   if (!$DB->fieldExists('glpi_users', 'eventwarning_color')) {
-      $migration->addField('glpi_users', 'eventwarning_color', 'string', ['value' => '#ffcc47']);
+   if (!$DB->tableExists('glpi_itils_scheduleddowntimes')) {
+      $query = "CREATE TABLE `glpi_itils_scheduleddowntimes` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `scheduleddowntimes_id` int(11) NOT NULL,
+      `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+      `items_id` int(11) NOT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `unicity` (`items_id`,`itemtype`,`scheduleddowntimes_id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "10.0.0 add table glpi_itils_scheduleddowntimes");
    }
-   if (!$DB->fieldExists('glpi_users', 'eventexception_color')) {
-      $migration->addField('glpi_users', 'eventexception_color', 'string', ['value' => '#ff3a3a']);
+
+   if (!$DB->tableExists('glpi_scheduleddowntime')) {
+      $query = "CREATE TABLE `glpi_scheduleddowntime` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `comment` text COLLATE utf8_unicode_ci DEFAULT NULL,
+      `is_service` tinyint(1) NOT NULL DEFAULT 0,
+      `items_id_target` int(11) NOT NULL,
+      `is_fixed` tinyint(1) NOT NULL DEFAULT 1,
+      `begin_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+      `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "10.0.0 add table glpi_scheduleddowntime");
    }
 
    if (!$DB->fieldExists('glpi_entities', 'default_event_correlation_time')) {

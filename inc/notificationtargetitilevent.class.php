@@ -59,10 +59,9 @@ class NotificationTargetITILEvent extends NotificationTarget {
       $this->data['##event.action##']           = $options[$event];
       $this->data['##event.name##']             = $options['name'];
       $this->data['##event.content##']          = $options['content'];
-      $this->data['##event.category##']         = ITILEventCategory::getCategoryName($options['itileventcategories_id'], true);
-      $this->data['##event.significance##']     = ITILEvent::getStatusName($options['significance']);
+      $this->data['##event.status##']           = ITILEvent::getStatusName($options['status']);
       $this->data['##event.significance##']     = ITILEvent::getSignificanceName($options['significance']);
-      $this->data['##event.correlation_uuid##'] = $options['correlation_uuid'];
+      $this->data['##event.correlation_id##'] = $options['correlation_id'];
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -83,7 +82,7 @@ class NotificationTargetITILEvent extends NotificationTarget {
          'event.entity'             => __('Entity'),
          'event.status'             => __('Status'),
          'event.significance'       => __('Significance'),
-         'event.correlation_uuid'   => __('Correlation UUID')];
+         'event.correlation_id'   => __('Correlation ID')];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'   => $tag,

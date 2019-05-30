@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2018 Teclib' and contributors.
+ * Copyright (C) 2015-2019 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,47 +30,51 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+namespace Glpi\Event;
+
+use CommonDBTM;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
- * ITILEventCategory class.
- * A category for an ITILEvent
  * @since 10.0.0
-**/
-class ITILEventCategory extends CommonTreeDropdown
+ */
+class ScheduledDowntimeEvent extends Event
 {
+    /**
+     * Name of event triggered when a scheduled downtime period starts.
+     */
+    const DOWNTIME_START = 'scheduleddowntime.start';
 
-   // From CommonDBTM
-   public $dohistory          = true;
-   public $can_be_translated  = true;
+    /**
+     * Name of event triggered when a scheduled downtime period ends.
+     */
+    const DOWNTIME_STOP = 'scheduleddowntime.stop';
 
-   static $rightname          = 'event';
+    /**
+     * Name of event triggered when a scheduled downtime is deleted/cancelled.
+     */
+    const DOWNTIME_CANCEL = 'scheduleddowntime.cancel';
 
-   static function getTypeName($nb = 0)
-   {
-      return _n('Event category', 'Event categories', $nb);
-   }
+    /**
+     * @var ITILEventService
+     */
+    private $downtime;
 
-   function cleanDBonPurge()
-   {
-      Rule::cleanForItemCriteria($this);
-   }
+    /**
+     * @param CommonDBTM $item
+     */
+    public function __construct(ScheduledDowntime $downtime)
+    {
+        $this->downtime = $downtime;
+    }
 
-   static public function getCategoryName($category_id, $full = true) {
-      global $DB;
-
-      $iterator = $DB->request([
-         'SELECT' => [$full ? 'completename' : 'name'],
-         'FROM' => self::getTable(),
-         'WHERE' => [
-            'id' => $category_id
-         ]
-      ]);
-      if ($iterator->count()) {
-         return $iterator->next()[$full ? 'completename' : 'name'];
-      }
-      return '';
-   }
+    /**
+     * ScheduledDowntime on which event applies.
+     *
+     * @return ScheduledDowntime
+     */
+    public function getScheduledDowntime(): \ScheduledDowntime
+    {
+        return $this->downtime;
+    }
 }
