@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -90,7 +90,7 @@ var libsConfig = {
         ],
     },
     plugins: [
-        new CleanWebpackPlugin([libOutputPath]), // Clean lib dir content
+        new CleanWebpackPlugin(), // Clean lib dir content
         new MiniCssExtractPlugin({ filename: '[name]/[name].css' }), // Extract styles into CSS files
     ]
 };
