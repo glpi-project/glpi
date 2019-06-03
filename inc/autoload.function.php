@@ -344,7 +344,7 @@ if (!file_exists(GLPI_ROOT . '/public/lib')) {
 
 if ($needrun) {
    $deps_install_msg = 'Application dependencies are not up to date.' . PHP_EOL
-      . 'Run "bin/console dependencies install" in the glpi tree to fix this.' . PHP_EOL;
+      . 'Run "php bin/console dependencies install" in the glpi tree to fix this.' . PHP_EOL;
    if (isCommandLine()) {
       echo $deps_install_msg;
    } else {
