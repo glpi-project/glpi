@@ -99,7 +99,13 @@ function loadDataset() {
          ], [
             'name'        => '_test_child_2',
             'entities_id' => '_test_root_entity',
-         ]
+         ], [
+            'name'        => '_test_child_of_child_1',
+            'entities_id' => '_test_child_1',
+         ], [
+            'name'        => '_test_child_of_child_2',
+            'entities_id' => '_test_child_2',
+         ],
       ], 'Computer' => [
          [
             'name'        => '_test_pc01',

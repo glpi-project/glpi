@@ -38,7 +38,6 @@ class GLPITestCase extends atoum {
    private $int;
    private $str;
    protected $cached_methods = [];
-   protected $nscache;
 
    public function setUp() {
       // By default, no session, not connected
@@ -51,19 +50,9 @@ class GLPITestCase extends atoum {
 
    public function beforeTestMethod($method) {
       if (in_array($method, $this->cached_methods)) {
-         $this->nscache = 'glpitestcache' . GLPI_VERSION;
          global $GLPI_CACHE;
          //run with cache
          define('CACHED_TESTS', true);
-         //ZendCache does not works with PHP5 acpu...
-         $adapter = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
-         $storage = \Zend\Cache\StorageFactory::factory([
-            'adapter'   => $adapter,
-            'options'   => [
-               'namespace' => $this->nscache
-            ]
-         ]);
-         $GLPI_CACHE = new SimpleCacheDecorator($storage);
       }
    }
 
