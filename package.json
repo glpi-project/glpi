@@ -5,7 +5,7 @@
     "description": "GLPI dependencies",
     "license": "GPL-2.0",
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.8.1",
+        "@fortawesome/fontawesome-free": "^5.8.2",
         "chartist": "^0.10.1",
         "chartist-plugin-legend": "^0.6.2",
         "chartist-plugin-tooltips": "^0.0.17",
@@ -22,8 +22,8 @@
         "jquery-ui-timepicker-addon": "^1.6.3",
         "jquery.autogrow-textarea": "^0.4.1",
         "jquery.rateit": "^1.1.2",
-        "jstree": "^3.3.7",
-        "leaflet": "^1.4.0",
+        "jstree": "^3.3.8",
+        "leaflet": "^1.5.1",
         "leaflet-fullscreen": "^1.0.2",
         "leaflet-spin": "^1.1.0",
         "leaflet.awesome-markers": "^2.0.5",
@@ -32,11 +32,11 @@
         "moment": "^2.24.0",
         "prismjs": "^1.16.0",
         "qtip2": "^3.0.3",
-        "select2": "^4.0.5",
+        "select2": "^4.0.7",
         "spectrum-colorpicker": "^1.8.0",
         "spin.js": "^2.3.2",
         "tinymce": "^4.9.4",
-        "tinymce-i18n": "^18.12.25",
+        "tinymce-i18n": "^19.5.15",
         "unorm": "^1.5.0"
     },
     "scripts": {
@@ -49,9 +49,9 @@
         "copy-webpack-plugin": "^5.0.3",
         "css-loader": "^2.1.1",
         "eslint": "^5.16.0",
-        "mini-css-extract-plugin": "^0.6.0",
+        "mini-css-extract-plugin": "^0.7.0",
         "url-loader": "^1.1.2",
-        "webpack": "^4.29.6",
-        "webpack-cli": "^3.3.0"
+        "webpack": "^4.32.2",
+        "webpack-cli": "^3.3.2"
     }
 }
