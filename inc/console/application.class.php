@@ -193,7 +193,7 @@ class Application extends BaseApplication {
 
       $begin_time = microtime(true);
 
-      parent::doRunCommand($command, $input, $output);
+      $result = parent::doRunCommand($command, $input, $output);
 
       if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
          $output->writeln(
@@ -209,6 +209,8 @@ class Application extends BaseApplication {
             )
          );
       }
+
+      return $result;
    }
 
    /**
