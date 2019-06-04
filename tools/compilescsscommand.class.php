@@ -82,7 +82,22 @@ class CompileScssCommand extends Command {
       $files = $input->getOption('file');
 
       if (empty($files)) {
-         $files[] = 'css/styles'; // Compile main styles if no file option is set.
+         $root_path = realpath(GLPI_ROOT);
+
+         $css_dir_iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($root_path . '/css'),
+            RecursiveIteratorIterator::SELF_FIRST
+         );
+         /** @var SplFileInfo $file */
+         foreach ($css_dir_iterator as $file) {
+            if (!$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'scss') {
+               continue;
+            }
+
+            $files[] = str_replace($root_path . '/', '', dirname($file->getRealPath()))
+               . '/'
+               . preg_replace('/^_?(.*)\.scss$/', '$1', $file->getBasename());
+         }
       }
 
       foreach ($files as $file) {
