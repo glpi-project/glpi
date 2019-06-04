@@ -58,7 +58,7 @@ class ITILFollowupTemplate extends CommonDropdown {
          [
             'name'  => 'content',
             'label' => __('Content'),
-            'type'  => 'content',
+            'type'  => 'tinymce',
          ], [
             'name'  => 'requesttypes_id',
             'label' => __('Source of followup'),
@@ -106,7 +106,7 @@ class ITILFollowupTemplate extends CommonDropdown {
 
    function displaySpecificTypeField($ID, $field = []) {
       switch ($field['type']) {
-         case 'content' :
+         case 'tinymce' :
             Html::textarea([
                'name'            => 'content',
                'value'           => $this->fields["content"],
