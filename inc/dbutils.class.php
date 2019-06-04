@@ -631,10 +631,7 @@ final class DbUtils {
       if ($is_recursive) {
          $ancestors = [];
          if (is_array($value)) {
-            foreach ($value as $val) {
-               $ancestors = array_unique(array_merge($this->getAncestorsOf('glpi_entities', $val),
-                     $ancestors));
-            }
+            $ancestors = $this->getAncestorsOf("glpi_entities", $value);
             $ancestors = array_diff($ancestors, $value);
 
          } else if (strlen($value) == 0) {
