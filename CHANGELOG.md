@@ -10,6 +10,7 @@ The present file will list all changes made to the project; according to the
 - Encrypted file systems support.
 - Mails collected from suppliers can be marked as private on an entity basis.
 - Ability to add custom CSS in entity configuration.
+- CLI commands to enable and disable maintenance mode.
 
 ### Changed
 
