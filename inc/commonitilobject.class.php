@@ -7104,8 +7104,6 @@ abstract class CommonITILObject extends CommonDBTM {
       return $this;
    }
 
-   }
-
 
    /**
     * Get common request criteria
@@ -7357,4 +7355,5 @@ abstract class CommonITILObject extends CommonDBTM {
          ]
       ];
       return $fieldsets;
+   }
 }
