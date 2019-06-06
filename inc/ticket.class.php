@@ -1951,6 +1951,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Replay setting auto assign if set in rules engine or by auto_assign_mode
+      // Do not force status if status has been set by rules
       if (((isset($input["_users_id_assign"])
            && ((!is_array($input['_users_id_assign']) &&  $input["_users_id_assign"] > 0)
                || is_array($input['_users_id_assign']) && count($input['_users_id_assign']) > 0))
@@ -1960,8 +1961,8 @@ class Ticket extends CommonITILObject {
            || (isset($input["_suppliers_id_assign"])
            && ((!is_array($input['_suppliers_id_assign']) && $input["_suppliers_id_assign"] > 0)
                || is_array($input['_suppliers_id_assign']) && count($input['_suppliers_id_assign']) > 0)))
-          && (in_array($input['status'], $this->getNewStatusArray()))) {
-
+          && (in_array($input['status'], $this->getNewStatusArray()))
+          && !$this->isStatusComputationBlocked($input)) {
          $input["status"] = self::ASSIGNED;
       }
 

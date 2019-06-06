@@ -2384,4 +2384,111 @@ class Ticket extends DbTestCase {
          $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
       }
    }
+
+   /**
+    * @see self::testStatusComputationOnCreate()
+    */
+   protected function statusComputationOnCreateProvider() {
+
+      $group = new \Group();
+      $group_id = $group->add(['name' => 'Test group']);
+      $this->integer((int)$group_id)->isGreaterThan(0);
+
+      return [
+         [
+            'input'    => [
+               '_users_id_assign' => ['4'], // "tech"
+               'status' => \CommonITILObject::INCOMING,
+            ],
+            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
+         ],
+         [
+            'input'    => [
+               '_groups_id_assign' => $group_id,
+               'status' => \CommonITILObject::INCOMING,
+            ],
+            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
+         ],
+         [
+            'input'    => [
+               '_suppliers_id_assign' => '1', // "_suplier01_name"
+               'status' => \CommonITILObject::INCOMING,
+            ],
+            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
+         ],
+         [
+            'input'    => [
+               '_users_id_assign' => ['4'], // "tech"
+               'status' => \CommonITILObject::INCOMING,
+               '_do_not_compute_status' => '1',
+            ],
+            'expected' => \CommonITILObject::INCOMING, // flag prevent status change
+         ],
+         [
+            'input'    => [
+               '_groups_id_assign' => $group_id,
+               'status' => \CommonITILObject::INCOMING,
+               '_do_not_compute_status' => '1',
+            ],
+            'expected' => \CommonITILObject::INCOMING, // flag prevent status change
+         ],
+         [
+            'input'    => [
+               '_suppliers_id_assign' => '1', // "_suplier01_name"
+               'status' => \CommonITILObject::INCOMING,
+               '_do_not_compute_status' => '1',
+            ],
+            'expected' => \CommonITILObject::INCOMING, // flag prevent status change
+         ],
+         [
+            'input'    => [
+               '_users_id_assign' => ['4'], // "tech"
+               'status' => \CommonITILObject::WAITING,
+            ],
+            'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
+         ],
+         [
+            'input'    => [
+               '_groups_id_assign' => $group_id,
+               'status' => \CommonITILObject::WAITING,
+            ],
+            'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
+         ],
+         [
+            'input'    => [
+               '_suppliers_id_assign' => '1', // "_suplier01_name"
+               'status' => \CommonITILObject::WAITING,
+            ],
+            'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
+         ],
+      ];
+   }
+
+   /**
+    * Check computed status on ticket creation..
+    *
+    * @param array   $input            Input used to create the ticket
+    * @param boolean $expected_status  Expected status
+    *
+    * @dataProvider statusComputationOnCreateProvider
+    */
+   public function testStatusComputationOnCreate(array $input, $expected_status) {
+
+      // Create a ticket
+      $this->login();
+      $_SESSION['glpiset_default_tech'] = false;
+      $ticket = new \Ticket();
+      $ticketId = $this->integer(
+         (int)$ticket->add([
+            'name'    => '',
+            'content' => 'A ticket to check status computation',
+         ] + $input)
+      )->isGreaterThan(0);
+
+      // Reload ticket to get computed fields values
+      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+
+      // Check status
+      $this->integer((int)$ticket->fields['status'])->isEqualTo($expected_status);
+   }
 }
