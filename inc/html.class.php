@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -6761,7 +6761,7 @@ class Html {
       $ckey = isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
 
       $scss = new Compiler();
-      $scss->setFormatter('Leafo\ScssPhp\Formatter\Crunched');
+      $scss->setFormatter('ScssPhp\ScssPhp\Formatter\Crunched');
       if (isset($args['debug'])) {
          $ckey .= '_sourcemap';
          $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
