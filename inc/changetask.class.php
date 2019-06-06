@@ -45,7 +45,8 @@ class ChangeTask extends CommonITILTask {
 
 
    static function canCreate() {
-      return Session::haveRight('change', UPDATE);
+      return Session::haveRight('change', UPDATE)
+          || Session::haveRight(self::$rightname, parent::ADDALLITEM);
    }
 
 
@@ -55,7 +56,8 @@ class ChangeTask extends CommonITILTask {
 
 
    static function canUpdate() {
-      return Session::haveRight('change', UPDATE);
+      return Session::haveRight('change', UPDATE)
+          || Session::haveRight(self::$rightname, parent::UPDATEALL);
    }
 
 
@@ -92,7 +94,8 @@ class ChangeTask extends CommonITILTask {
 
       $change = new Change();
       if ($change->getFromDB($this->fields['changes_id'])) {
-         return (Session::haveRight('change', UPDATE)
+         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
+                 || Session::haveRight('change', UPDATE)
                  || (Session::haveRight('change', Change::READMY)
                      && ($change->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                          || (isset($_SESSION["glpigroups"])
@@ -116,7 +119,8 @@ class ChangeTask extends CommonITILTask {
       }
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('change', UPDATE)) {
+          && !Session::haveRight('change', UPDATE)
+          && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
          return false;
       }
 
