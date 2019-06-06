@@ -195,6 +195,12 @@ class RuleTicket extends Rule {
                case "assign" :
                   $output[$action->fields["field"]] = $action->fields["value"];
 
+                  // Special case of status
+                  if ($action->fields["field"] === 'status') {
+                     // Add a flag to remember that status was forced by rule
+                     $output['_do_not_compute_status'] = true;
+                  }
+
                   // Special case of users_id_requester
                   if ($action->fields["field"] === '_users_id_requester') {
                      // Add groups of requester
