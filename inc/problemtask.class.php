@@ -45,7 +45,8 @@ class ProblemTask extends CommonITILTask {
 
 
    static function canCreate() {
-      return Session::haveRight('problem', UPDATE);
+      return Session::haveRight('problem', UPDATE)
+          || Session::haveRight(self::$rightname, parent::ADDALLITEM);
    }
 
 
@@ -55,7 +56,8 @@ class ProblemTask extends CommonITILTask {
 
 
    static function canUpdate() {
-      return Session::haveRight('problem', UPDATE);
+      return Session::haveRight('problem', UPDATE)
+          || Session::haveRight(self::$rightname, parent::UPDATEALL);
    }
 
 
@@ -90,14 +92,14 @@ class ProblemTask extends CommonITILTask {
     * @return boolean
    **/
    function canCreateItem() {
-
       if (!parent::canReadITILItem()) {
          return false;
       }
 
       $problem = new Problem();
       if ($problem->getFromDB($this->fields['problems_id'])) {
-         return (Session::haveRight('problem', UPDATE)
+         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
+                 || Session::haveRight('problem', UPDATE)
                  || (Session::haveRight('problem', Problem::READMY)
                      && ($problem->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                          || (isset($_SESSION["glpigroups"])
@@ -120,7 +122,8 @@ class ProblemTask extends CommonITILTask {
       }
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('problem', UPDATE)) {
+          && !Session::haveRight('problem', UPDATE)
+          && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
          return false;
       }
 

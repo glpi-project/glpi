@@ -283,23 +283,7 @@ class Plugin extends CommonDBTM {
       $plugin = new self();
       $is_already_known = $plugin->getFromDBByCrit(['directory' => $directory]);
 
-      $plugin_path = implode(DIRECTORY_SEPARATOR, [GLPI_ROOT, 'plugins', $directory]);
-      $setup_file  = $plugin_path . DIRECTORY_SEPARATOR . 'setup.php';
-
-      // Retrieve plugin informations
-      $informations = [];
-      if (file_exists($setup_file)) {
-         // Includes are made inside a function to prevent included files to override
-         // variables used in this function.
-         // For example, if the included files contains a $plugin variable, it will
-         // replace the $plugin variable used here.
-         $include_fct = function () use ($directory, $setup_file) {
-            self::loadLang($directory);
-            include_once($setup_file);
-         };
-         $include_fct();
-         $informations = self::getInfo($directory);
-      }
+      $informations = $this->getInformationsFromDirectory($directory);
 
       if (empty($informations)) {
          if (!$is_already_known) {
@@ -507,11 +491,14 @@ class Plugin extends CommonDBTM {
    /**
     * Install a plugin
     *
-    * @param int $ID ID of the plugin
+    * @param int   $ID      ID of the plugin
+    * @param array $params  Additionnal params to pass to install hook.
     *
     * @return void
+    *
+    * @since 9.5.0 Added $param parameter
    **/
-   function install($ID) {
+   function install($ID, array $params = []) {
 
       global $DB;
 
@@ -526,15 +513,15 @@ class Plugin extends CommonDBTM {
          }
 
          self::load($this->fields['directory'], true);
-         $function   = 'plugin_' . $this->fields['directory'] . '_install';
-         if (function_exists($function)) {
+         $install_function = 'plugin_' . $this->fields['directory'] . '_install';
+         if (function_exists($install_function)) {
             $this->setLoaded('temp', $this->fields['directory']);  // For autoloader
             $DB->disableTableCaching(); //prevents issues on table/fieldExists upgrading from old versions
-            if ($function()) {
+            if ($install_function($params)) {
                $type = INFO;
-               $function = 'plugin_' . $this->fields['directory'] . '_check_config';
-               if (function_exists($function)) {
-                  if ($function()) {
+               $check_function = 'plugin_' . $this->fields['directory'] . '_check_config';
+               if (function_exists($check_function)) {
+                  if ($check_function()) {
                      $this->update(['id'    => $ID,
                                          'state' => self::NOTACTIVATED]);
                      $message = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
@@ -1254,6 +1241,35 @@ class Plugin extends CommonDBTM {
          return (isset($res[$info]) ? $res[$info] : '');
       }
       return $res;
+   }
+
+   /**
+    * Returns plugin informations from directory.
+    *
+    * @param string $directory
+    *
+    * @return array
+    */
+   public function getInformationsFromDirectory($directory) {
+
+      $plugin_path = implode(DIRECTORY_SEPARATOR, [GLPI_ROOT, 'plugins', $directory]);
+      $setup_file  = $plugin_path . DIRECTORY_SEPARATOR . 'setup.php';
+
+      $informations = [];
+      if (file_exists($setup_file)) {
+         // Includes are made inside a function to prevent included files to override
+         // variables used in this function.
+         // For example, if the included files contains a $plugin variable, it will
+         // replace the $plugin variable used here.
+         $include_fct = function () use ($directory, $setup_file) {
+            self::loadLang($directory);
+            include_once($setup_file);
+         };
+         $include_fct();
+         $informations = Toolbox::addslashes_deep(self::getInfo($directory));
+      }
+
+      return $informations;
    }
 
 

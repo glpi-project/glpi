@@ -11,5 +11,5 @@ Second, [download and install npm](https://www.npmjs.com/), a JS dependency mana
 Once done, go to the GLPI directory and just run:
 
 ```bash
-$ bin/console dependencies install
+$ php bin/console dependencies install
 ```
