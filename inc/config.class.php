@@ -1984,8 +1984,8 @@ class Config extends CommonDBTM {
                  'check'   => 'LitEmoji\\LitEmoji' ],
                [ 'name'    => 'symfony/console',
                  'check'   => 'Symfony\\Component\\Console\\Application' ],
-               [ 'name'    => 'leafo/scssphp',
-                 'check'   => 'Leafo\ScssPhp\Compiler' ],
+               [ 'name'    => 'scssphp/scssphp',
+                 'check'   => 'ScssPhp\ScssPhp\Compiler' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
