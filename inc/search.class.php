@@ -5198,7 +5198,7 @@ JAVASCRIPT;
          case "glpi_tickets.time_to_own" :
          case "glpi_tickets.internal_time_to_own" :
             if (!in_array($ID, [151, 158, 181, 186])
-                && !empty($data[$ID][0]['name'])
+                && !empty($data[$NAME][0]['name'])
                 && ($data[$NAME][0]['status'] != CommonITILObject::WAITING)
                 && ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime'])) {
                $out = " style=\"background-color: #cf9b9b\" ";
@@ -5246,6 +5246,13 @@ JAVASCRIPT;
          if (isset($searchopt[$ID]['addobjectparams'])
              && $searchopt[$ID]['addobjectparams']) {
             $oparams = $searchopt[$ID]['addobjectparams'];
+         }
+
+         // Search option may not exists in subtype
+         // This is the case for "Inventory number" for a Software listed from ReservationItem search
+         $subtype_so = &self::getOptions($data["TYPE"]);
+         if (!array_key_exists($ID, $subtype_so)) {
+            return '';
          }
 
          return self::giveItem($data["TYPE"], $ID, $data, $meta, $oparams, $itemtype);
