@@ -79,6 +79,7 @@ var libsConfig = {
                 // This prevents incompatibility issues with the webpack require feature.
                 test: /\.js$/,
                 include: [
+                    path.resolve(__dirname, 'node_modules/codemirror'),
                     path.resolve(__dirname, 'node_modules/fullcalendar'),
                     path.resolve(__dirname, 'node_modules/gridstack'),
                     path.resolve(__dirname, 'node_modules/jstree'),
@@ -125,21 +126,6 @@ var libsConfig = {
 };
 
 var libs = {
-    'codemirror': [
-        {
-            context: 'lib',
-            from: '{codemirror.css,codemirror.js}',
-        },
-        {
-            from: 'addon/fold/{brace-fold.js,comment-fold.js,foldcode.js,foldgutter.css,foldgutter.js}',
-        },
-        {
-            from: 'addon/hint/{css-hint.js,show-hint.css,show-hint.js}',
-        },
-        {
-            from: 'mode/css/{css.js,}',
-        }
-    ],
     'fullcalendar': [
         {
             context: 'dist',

@@ -1251,7 +1251,7 @@ class Html {
          }
 
          if (in_array('codemirror', $jslibs)) {
-            echo Html::css('public/lib/codemirror/codemirror.css');
+            echo Html::css('public/lib/codemirror.css');
             Html::requireJs('codemirror');
          }
       }
