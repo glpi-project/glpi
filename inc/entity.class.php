@@ -2034,17 +2034,8 @@ class Entity extends CommonTreeDropdown {
       }
 
       // Codemirror lib
-      echo Html::css("public/lib/codemirror/codemirror.css");
-      echo Html::css("public/lib/codemirror/addon/fold/foldgutter.css");
-      echo Html::css("public/lib/codemirror/addon/hint/show-hint.css");
-      echo Html::script("public/lib/codemirror/codemirror.js");
-      echo Html::script("public/lib/codemirror/addon/fold/foldcode.js");
-      echo Html::script("public/lib/codemirror/addon/fold/brace-fold.js");
-      echo Html::script("public/lib/codemirror/addon/fold/comment-fold.js");
-      echo Html::script("public/lib/codemirror/addon/fold/foldgutter.js");
-      echo Html::script("public/lib/codemirror/addon/hint/show-hint.js");
-      echo Html::script("public/lib/codemirror/addon/hint/css-hint.js");
-      echo Html::script("public/lib/codemirror/mode/css/css.js");
+      echo Html::css('public/lib/codemirror.css');
+      echo Html::script("public/lib/codemirror.js");
 
       // Notification right applied
       $canedit = Session::haveRight(Config::$rightname, [UPDATE])
