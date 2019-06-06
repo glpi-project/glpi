@@ -7066,6 +7066,17 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    /**
+    * Check if input contains a flag set to prevent 'takeintoaccount' delay computation.
+    *
+    * @param array $input
+    *
+    * @return boolean
+    */
+   public function isTakeIntoAccountComputationBlocked($input) {
+      return array_key_exists('_do_not_compute_takeintoaccount', $input)
+         && $input['_do_not_compute_takeintoaccount'];
+   }
+   /**
     * Define manually current tabs to set specific order
     *
     * @param array &$tab    Tab array passed as reference

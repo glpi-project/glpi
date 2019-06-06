@@ -774,6 +774,7 @@ CREATE TABLE `glpi_changetasks` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `tasktemplates_id` int(11) NOT NULL DEFAULT '0',
   `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
+  `is_private` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `changes_id` (`changes_id`),
   KEY `state` (`state`),
@@ -787,7 +788,8 @@ CREATE TABLE `glpi_changetasks` (
   KEY `begin` (`begin`),
   KEY `end` (`end`),
   KEY `taskcategories_id` (`taskcategories_id`),
-  KEY `tasktemplates_id` (`tasktemplates_id`)
+  KEY `tasktemplates_id` (`tasktemplates_id`),
+  KEY `is_private` (`is_private`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -6455,6 +6457,7 @@ CREATE TABLE `glpi_problemtasks` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `tasktemplates_id` int(11) NOT NULL DEFAULT '0',
   `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
+  `is_private` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `problems_id` (`problems_id`),
   KEY `users_id` (`users_id`),
@@ -6468,7 +6471,8 @@ CREATE TABLE `glpi_problemtasks` (
   KEY `end` (`end`),
   KEY `state` (`state`),
   KEY `taskcategories_id` (`taskcategories_id`),
-  KEY `tasktemplates_id` (`tasktemplates_id`)
+  KEY `tasktemplates_id` (`tasktemplates_id`),
+  KEY `is_private` (`is_private`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
