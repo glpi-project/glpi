@@ -1768,7 +1768,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       if (!count($where)) {
-         $where = [static::getTable() . '.' . static::$items_id_1  => $items_id];
+         $where = [
+            static::getTable() . '.' . static::$items_id_1  => $items_id,
+            static::getTable() . '.' . 'is_deleted'         => 0
+         ];
       }
 
       $params = [
