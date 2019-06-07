@@ -51,8 +51,7 @@ class RuleRight extends Rule {
     * @see Rule::maxActionsCount()
    **/
    function maxActionsCount() {
-      // Unlimited
-      return 4;
+      return 7;
    }
 
 
