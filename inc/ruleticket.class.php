@@ -67,11 +67,6 @@ class RuleTicket extends Rule {
    }
 
 
-   function maxActionsCount() {
-      return count($this->getActions());
-   }
-
-
    /**
     * @since 0.85
    **/
