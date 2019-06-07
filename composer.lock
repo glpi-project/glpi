@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f8cdca99eabcc5c9ed016f80923bbbc",
+    "content-hash": "561aa3085a903e0ff2bfc771e9d913ce",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -1602,13 +1602,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/atoum/atoum.git",
-                "reference": "6b771f59a57391cd726f17f6913dc27102d2670a"
+                "url": "https://github.com/cedric-anne/atoum.git",
+                "reference": "bcdff2f2f50fda92565f0bf65f6dab9c658e803d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/6b771f59a57391cd726f17f6913dc27102d2670a",
-                "reference": "6b771f59a57391cd726f17f6913dc27102d2670a",
+                "url": "https://api.github.com/repos/cedric-anne/atoum/zipball/bcdff2f2f50fda92565f0bf65f6dab9c658e803d",
+                "reference": "bcdff2f2f50fda92565f0bf65f6dab9c658e803d",
                 "shasum": ""
             },
             "require": {
@@ -1643,7 +1643,6 @@
                     "classes/"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -1678,7 +1677,10 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2019-04-16T19:06:51+00:00"
+            "support": {
+                "source": "https://github.com/cedric-anne/atoum/tree/master"
+            },
+            "time": "2019-06-07T15:09:40+00:00"
         },
         {
             "name": "atoum/telemetry-extension",
