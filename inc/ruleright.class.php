@@ -46,16 +46,6 @@ class RuleRight extends Rule {
    public $orderby             = "name";
    public $specific_parameters = true;
 
-
-   /**
-    * @see Rule::maxActionsCount()
-   **/
-   function maxActionsCount() {
-      // Unlimited
-      return 4;
-   }
-
-
    /**
     * @see Rule::showNewRuleForm()
    **/
