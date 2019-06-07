@@ -1040,7 +1040,7 @@ class DBmysql {
             $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
             return "$table.$field";
          }
-         return ($name[0]=='`' ? $name : ($name === '*') ? $name : "`$name`");
+         return ($name[0] == '`' ? $name : ($name === '*' ? $name : "`$name`"));
       }
    }
 
