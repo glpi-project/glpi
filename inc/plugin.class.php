@@ -339,7 +339,7 @@ class Plugin extends CommonDBTM {
          $input              = $informations;
          $input['id']        = $plugin->fields['id'];
          $input['directory'] = $directory;
-         if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED])) {
+         if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED, self::NOTUPDATED])) {
             // mark it as 'updatable' unless it was not installed
             trigger_error(
                sprintf(

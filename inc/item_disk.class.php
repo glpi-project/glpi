@@ -661,9 +661,9 @@ class Item_Disk extends CommonDBChild {
     */
    static function getAllEncryptionStatus() {
       return [
-         self::ENCRYPTION_STATUS_YES         => __('Encrypted'),
+         self::ENCRYPTION_STATUS_NO          => __('Not encrypted'),
          self::ENCRYPTION_STATUS_PARTIALLY   => __('Partially encrypted'),
-         self::ENCRYPTION_STATUS_NO          => __('Not encrypted')
+         self::ENCRYPTION_STATUS_YES         => __('Encrypted'),
       ];
    }
 
