@@ -65,11 +65,6 @@ class RuleAsset extends Rule {
    }
 
 
-   function maxActionsCount() {
-      return count($this->getActions());
-   }
-
-
    static function getConditionsArray() {
 
       return [static::ONADD                   => __('Add'),
