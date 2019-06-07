@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -390,9 +391,17 @@ class Computer_Item extends CommonDBRelation{
                echo "</td>";
             }
             echo "<td class='center'>".$data['assoc_itemtype']::getTypeName(1)."</td>";
-            echo "<td ".
-                  ((isset($data['is_deleted']) && $data['is_deleted'])?"class='tab_bg_2_2'":"").
-                 ">".$name."</td>";
+
+            // Highlight this link if the linked item OR the link is deleted
+            if ($data['link_is_deleted']
+                  || (isset($data['is_deleted']) && $data['is_deleted'])
+               ) {
+               $class = "tab_bg_2_2";
+            } else {
+               $class = "";
+            }
+
+            echo "<td class='$class'>".$name."</td>";
             if (Plugin::haveImport()) {
                echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
             }
@@ -442,28 +451,40 @@ class Computer_Item extends CommonDBRelation{
       // Is global connection ?
       $global  = $item->getField('is_global');
 
-      $used    = [];
-      $compids = [];
-      $dynamic = [];
+      $used = [];
+
+      // Array of Computer_Item data
+      $computers = [];
+
       $result = $DB->request(
          [
-            'SELECT' => ['id', 'computers_id', 'is_dynamic'],
+            'SELECT' => ['id', 'computers_id', 'is_dynamic', 'is_deleted'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                'itemtype'   => $item->getType(),
                'items_id'   => $ID,
-               'is_deleted' => 0,
             ]
          ]
       );
+
+      // Set Computer_Item data retrieved from db
       foreach ($result as $data) {
-         $compids[$data['id']] = $data['computers_id'];
-         $dynamic[$data['id']] = $data['is_dynamic'];
+         $computers[$data['id']] = [
+            'computers_id' => $data['computers_id'],
+            'is_dynamic'   => $data['is_dynamic'],
+            'is_deleted'   => $data['is_deleted'],
+         ];
          $used['Computer'][]   = $data['computers_id'];
       }
-      $number = count($compids);
+
+      // Number of links
+      $number = count($computers);
+      // Number of link that are not deleted
+      $numberNotDeleted = count(array_filter($computers, function($item) {
+         return !$item['is_deleted'];
+      }));
       if ($canedit
-          && ($global || !$number)
+          && ($global || !$numberNotDeleted)
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='firstbloc'>";
          echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
@@ -527,8 +548,9 @@ class Computer_Item extends CommonDBRelation{
          $header_end .= "</tr>";
          echo $header_begin.$header_top.$header_end;
 
-         foreach ($compids as $key => $compid) {
-            $comp->getFromDB($compid);
+         // Print a row for each Computer_Item
+         foreach ($computers as $key => $fields) {
+            $comp->getFromDB($fields['computers_id']);
 
             echo "<tr class='tab_bg_1'>";
 
@@ -537,11 +559,17 @@ class Computer_Item extends CommonDBRelation{
                Html::showMassiveActionCheckBox(__CLASS__, $key);
                echo "</td>";
             }
-            echo "<td ".
-                  ($comp->getField('is_deleted')?"class='tab_bg_2_2'":"").
-                 ">".$comp->getLink()."</td>";
+
+            // Highlight this link if the linked computer OR the link is deleted
+            if ($comp->getField('is_deleted') || $fields['is_deleted']) {
+               $class = "tab_bg_2_2";
+            } else {
+               $class = "";
+            }
+
+            echo "<td class='$class'>".$comp->getLink()."</td>";
             if (Plugin::haveImport()) {
-               echo "<td>".Dropdown::getYesNo($dynamic[$key])."</td>";
+               echo "<td>".Dropdown::getYesNo($fields['is_dynamic'])."</td>";
             }
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $comp->getField('entities_id'));
