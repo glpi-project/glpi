@@ -283,6 +283,9 @@ workflows:
           filters:
             tags:
               only: /.*/ # run also on tag creation
+      - php_7_4_dev_test_suite:
+          requires:
+            - checkout
       - php_7_3_mysql_5_6_test_suite:
           requires:
             - checkout
