@@ -55,6 +55,10 @@ class Blacklist extends CommonDropdown {
    const EMAIL  = 5;
 
 
+   function maxActionsCount() {
+      return 0;
+   }
+
    static function canCreate() {
       return static::canUpdate();
    }

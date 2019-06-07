@@ -52,6 +52,10 @@ class Transfer extends CommonDBTM {
 
    static $rightname = 'transfer';
 
+   function maxActionsCount() {
+      return 0;
+   }
+
 
    /**
     * @see CommonGLPI::defineTabs()
