@@ -1774,8 +1774,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $params = [
          'SELECT' => [
             $item->getTable() . '.*',
-            static::getTable() . '.id AS linkid',
-            static::getTable() . '.is_deleted AS link_is_deleted',
+            static::getTable() . '.id AS linkid'
          ],
          'FROM'   => $item->getTable(),
          'WHERE'  => $where,
