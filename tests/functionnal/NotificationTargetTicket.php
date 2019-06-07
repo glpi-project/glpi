@@ -105,7 +105,7 @@ class NotificationTargetTicket extends DbTestCase {
       ];
       $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
-      $this->array($ret['tasks'])->isIdenticalTo($expected);
+      $this->array($ret['tasks'])->isEqualTo($expected);
 
       // test of the getDataForObject for default language fr_FR
       $CFG_GLPI['translate_dropdowns'] = 1;

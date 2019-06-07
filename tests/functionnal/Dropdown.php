@@ -1077,7 +1077,7 @@ class Dropdown extends DbTestCase {
     */
    public function testGetDropdownUsers($params, $expected) {
       $result = \Dropdown::getDropdownUsers($params, false);
-      $this->array($result)->isIdenticalTo($expected);
+      $this->array($result)->isEqualTo($expected);
    }
 
    /**

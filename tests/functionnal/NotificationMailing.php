@@ -78,7 +78,7 @@ class NotificationMailing extends DbTestCase {
       unset($row['send_time']);
 
       $this->array($row)
-         ->isIdenticalTo([
+         ->isEqualTo([
             'itemtype'                 => 'NotificationMailing',
             'items_id'                 => '1',
             'notificationtemplates_id' => '0',

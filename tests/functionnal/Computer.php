@@ -41,6 +41,9 @@ class Computer extends DbTestCase {
    private function getNewComputer() {
       $computer = getItemByTypeName('Computer', '_test_pc01');
       $fields   = $computer->fields;
+      if (!isset($fields['is_recursive'])) {
+         $fields['is_recursive'] = 0;
+      }
       unset($fields['id']);
       unset($fields['date_creation']);
       unset($fields['date_mod']);

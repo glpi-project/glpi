@@ -52,13 +52,13 @@ class Entity extends DbTestCase {
          ->isIdenticalTo('Root entity > _test_root_entity > _test_child_2');
 
       $this->array(array_keys(getAncestorsOf('glpi_entities', $ent0->getID())))
-         ->isIdenticalTo([0]);
+         ->isEqualTo([0]);
       $this->array(array_values(getAncestorsOf('glpi_entities', $ent0->getID())))
-         ->isIdenticalTo(['0']);
+         ->isEqualTo(['0']);
       $this->array(array_keys(getSonsOf('glpi_entities', $ent0->getID())))
          ->isEqualTo([$ent0->getID(), $ent1->getID(), $ent2->getID()]);
       $this->array(array_values(getSonsOf('glpi_entities', $ent0->getID())))
-         ->isIdenticalTo([$ent0->getID(), $ent1->getID(), $ent2->getID()]);
+         ->isEqualTo([$ent0->getID(), $ent1->getID(), $ent2->getID()]);
 
       $this->array(array_keys(getAncestorsOf('glpi_entities', $ent1->getID())))
          ->isEqualTo([0, $ent0->getID()]);
@@ -133,23 +133,23 @@ class Entity extends DbTestCase {
 
       $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1"];
       if ($cache === true) {
-         $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ackey_new_id))->isEqualTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ackey_new_id))->isEqualTo($expected);
       }
 
       $expected = [$ent1 => $ent1, $new_id => "$new_id"];
 
       $sons = getSonsOf('glpi_entities', $ent1);
-      $this->array($sons)->isIdenticalTo($expected);
+      $this->array($sons)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($sckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($sckey_ent1))->isEqualTo($expected);
       }
 
       //change parent entity
@@ -162,30 +162,30 @@ class Entity extends DbTestCase {
 
       $expected = [0 => '0', $ent0 => "$ent0", $ent2 => "$ent2"];
       if ($cache === true) {
-         $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ackey_new_id))->isEqualTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ackey_new_id))->isEqualTo($expected);
       }
 
       $expected = [$ent1 => $ent1];
       $sons = getSonsOf('glpi_entities', $ent1);
-      $this->array($sons)->isIdenticalTo($expected);
+      $this->array($sons)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($sckey_ent1))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($sckey_ent1))->isEqualTo($expected);
       }
 
       $expected = [$ent2 => $ent2, $new_id => "$new_id"];
       $sons = getSonsOf('glpi_entities', $ent2);
-      $this->array($sons)->isIdenticalTo($expected);
+      $this->array($sons)->isEqualTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($sckey_ent2))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($sckey_ent2))->isEqualTo($expected);
       }
 
       //clean new entity
@@ -201,18 +201,18 @@ class Entity extends DbTestCase {
 
       $expected = [0 => '0', 1 => "$ent0"];
       $ancestors = getAncestorsOf('glpi_entities', $ent1);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isEqualTo($expected);
 
       $ancestors = getAncestorsOf('glpi_entities', $ent2);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isEqualTo($expected);
 
       $expected = [$ent1 => "$ent1"];
       $sons = getSonsOf('glpi_entities', $ent1);
-      $this->array($sons)->isIdenticalTo($expected);
+      $this->array($sons)->isEqualTo($expected);
 
       $expected = [$ent2 => "$ent2"];
       $sons = getSonsOf('glpi_entities', $ent2);
-      $this->array($sons)->isIdenticalTo($expected);
+      $this->array($sons)->isEqualTo($expected);
    }
 
    public function testChangeEntityParent() {

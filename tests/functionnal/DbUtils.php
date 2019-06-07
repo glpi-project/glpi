@@ -593,7 +593,7 @@ class DbUtils extends DbTestCase {
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent0))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent0))->isEqualTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent0);

@@ -94,6 +94,6 @@ class Monitor extends DbTestCase {
          'is_recursive' => '0'
       ];
 
-      $this->array($monitor->fields)->isIdenticalTo($expected);
+      $this->array($monitor->fields)->isEqualTo($expected);
    }
 }

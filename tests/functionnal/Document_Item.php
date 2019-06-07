@@ -118,7 +118,7 @@ class Document_Item extends DbTestCase {
 
       $this->array(
          $this->testedInstance->prepareInputForAdd($input)
-      )->isIdenticalTo($expected);
+      )->isEqualTo($expected);
    }
 
 

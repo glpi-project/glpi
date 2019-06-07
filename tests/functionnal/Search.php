@@ -241,6 +241,8 @@ class Search extends DbTestCase {
    }
 
    public function testFlagMetaComputerUser() {
+      global $DB;
+
       $search_params = [
          'reset'        => 'reset',
          'is_deleted'   => 0,
@@ -305,12 +307,14 @@ class Search extends DbTestCase {
             ->array['sql']
                ->hasKey('search')
                   ->string['search']
-                     ->contains("INNER JOIN  `glpi_users`")
-                     ->contains("LEFT JOIN `glpi_profiles`  AS `glpi_profiles_")
-                     ->contains("LEFT JOIN `glpi_entities`  AS `glpi_entities_");
+                     ->contains(str_replace('`', $DB->getQuoteNameChar(), "INNER JOIN  `glpi_users`"))
+                     ->contains(str_replace('`', $DB->getQuoteNameChar(), "LEFT JOIN `glpi_profiles`  AS `glpi_profiles_"))
+                     ->contains(str_replace('`', $DB->getQuoteNameChar(), "LEFT JOIN `glpi_entities`  AS `glpi_entities_"));
    }
 
    public function testNestedAndMetaComputer() {
+      global $DB;
+
       $search_params = [
          'reset'      => 'reset',
          'is_deleted' => 0,
@@ -396,30 +400,32 @@ class Search extends DbTestCase {
 
       $this->string($data['sql']['search'])
          // join parts
-         ->matches('/INNER JOIN\s*`glpi_computers_softwareversions`\s*AS `glpi_computers_softwareversions_Software`/im')
-         ->matches('/INNER JOIN\s*`glpi_softwareversions`\s*AS `glpi_softwareversions_Software`/im')
-         ->matches('/INNER JOIN\s*`glpi_softwares`\s*ON\s*\(`glpi_softwareversions_Software`\.`softwares_id`\s*=\s*`glpi_softwares`\.`id`\)/im')
-         ->matches('/LEFT JOIN\s*`glpi_infocoms`\s*ON\s*\(`glpi_computers`\.`id`\s*=\s*`glpi_infocoms`\.`items_id`\s*AND\s*`glpi_infocoms`.`itemtype`\s*=\s*\'Computer\'\)/im')
-         ->matches('/LEFT JOIN\s*`glpi_budgets`\s*ON\s*\(`glpi_infocoms`\.`budgets_id`\s*=\s*`glpi_budgets`\.`id`\)/im')
-         ->matches('/LEFT JOIN\s*`glpi_computers_items`\s*AS `glpi_computers_items_Printer`\s*ON\s*\(`glpi_computers_items_Printer`\.`computers_id`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_computers_items_Printer`.`itemtype`\s*=\s*\'Printer\'\s*AND\s*`glpi_computers_items_Printer`.`is_deleted`\s*=\s*0\)/im')
-         ->matches('/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_computers_items_Printer`\.`items_id`\s*=\s*`glpi_printers`\.`id`\)/im')
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), '/INNER JOIN\s*`glpi_computers_softwareversions`\s*AS `glpi_computers_softwareversions_Software`/im'))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), '/INNER JOIN\s*`glpi_softwareversions`\s*AS `glpi_softwareversions_Software`/im'))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), '/INNER JOIN\s*`glpi_softwares`\s*ON\s*\(`glpi_softwareversions_Software`\.`softwares_id`\s*=\s*`glpi_softwares`\.`id`\)/im'))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), '/LEFT JOIN\s*`glpi_infocoms`\s*ON\s*\(`glpi_computers`\.`id`\s*=\s*`glpi_infocoms`\.`items_id`\s*AND\s*`glpi_infocoms`.`itemtype`\s*=\s*\'Computer\'\)/im'))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), '/LEFT JOIN\s*`glpi_budgets`\s*ON\s*\(`glpi_infocoms`\.`budgets_id`\s*=\s*`glpi_budgets`\.`id`\)/im'))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), '/LEFT JOIN\s*`glpi_computers_items`\s*AS `glpi_computers_items_Printer`\s*ON\s*\(`glpi_computers_items_Printer`\.`computers_id`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_computers_items_Printer`.`itemtype`\s*=\s*\'Printer\'\s*AND\s*`glpi_computers_items_Printer`.`is_deleted`\s*=\s*0\)/im'))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), '/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_computers_items_Printer`\.`items_id`\s*=\s*`glpi_printers`\.`id`\)/im'))
          // match where parts
-         ->contains("`glpi_computers`.`is_deleted` = 0")
-         ->contains("AND `glpi_computers`.`is_template` = 0")
-         ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
-         ->contains("OR (`glpi_computers`.`is_recursive`='1'".
-                    " AND `glpi_computers`.`entities_id` IN (0))")
-         ->contains("`glpi_computers`.`name`  LIKE '%test%'")
-         ->contains("AND (`glpi_softwares`.`id` = 10784)")
-         ->contains("OR (`glpi_computers`.`id`  LIKE '%test2%'")
-         ->contains("AND (`glpi_locations`.`id` = 11)")
-         ->contains("(`glpi_users`.`id` = 2)")
-         ->contains("OR (`glpi_users`.`id` = 3)")
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "`glpi_computers`.`is_deleted` = 0"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "AND `glpi_computers`.`is_template` = 0"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "`glpi_computers`.`entities_id` IN ('1', '2', '3')"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "OR (`glpi_computers`.`is_recursive`='1'".
+                    " AND `glpi_computers`.`entities_id` IN (0))"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "`glpi_computers`.`name`  LIKE '%test%'"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "AND (`glpi_softwares`.`id` = 10784)"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "OR (`glpi_computers`.`id`  LIKE '%test2%'"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "AND (`glpi_locations`.`id` = 11)"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "(`glpi_users`.`id` = 2)"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "OR (`glpi_users`.`id` = 3)"))
          // match having
-         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), "/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/"));
    }
 
    function testViewCriterion() {
+      global $DB;
+
       $data = $this->doSearch('Computer', [
          'reset'      => 'reset',
          'is_deleted' => 0,
@@ -448,20 +454,20 @@ class Search extends DbTestCase {
                ->hasKey('search');
 
       $this->string($data['sql']['search'])
-         ->contains("`glpi_computers`.`is_deleted` = 0")
-         ->contains("AND `glpi_computers`.`is_template` = 0")
-         ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
-         ->contains("OR (`glpi_computers`.`is_recursive`='1'".
-                    " AND `glpi_computers`.`entities_id` IN (0))")
-         ->matches("/`glpi_computers`\.`name`  LIKE '%test%'/")
-         ->matches("/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_manufacturers`\.`name`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_computers`\.`serial`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING utf8\)\s*LIKE '%test%'\s*\)\)/");
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "`glpi_computers`.`is_deleted` = 0"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "AND `glpi_computers`.`is_template` = 0"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "`glpi_computers`.`entities_id` IN ('1', '2', '3')"))
+         ->contains(str_replace('`', $DB->getQuoteNameChar(), "OR (`glpi_computers`.`is_recursive`='1'".
+                    " AND `glpi_computers`.`entities_id` IN (0))"))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), "/`glpi_computers`\.`name`  LIKE '%test%'/"))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), "/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/"))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), "/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/"))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), "/OR\s*\(`glpi_manufacturers`\.`name`\s*LIKE '%test%'\s*\)/"))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), "/OR\s*\(`glpi_computers`\.`serial`\s*LIKE '%test%'\s*\)/"))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), "/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/"))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), "/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/"))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), "/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/"))
+         ->matches(str_replace('`', $DB->getQuoteNameChar(), "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING utf8\)\s*LIKE '%test%'\s*\)\)/"));
    }
 
    public function testUser() {
@@ -917,6 +923,8 @@ class Search extends DbTestCase {
    }
 
    public function addLeftJoinProvider() {
+      global $DB;
+
       return [
          'itemtype_item_revert' => [[
             'itemtype'           => 'Project',
@@ -935,13 +943,13 @@ class Search extends DbTestCase {
                   ]
                ]
             ],
-            'sql' => "LEFT JOIN `glpi_projectteams`
+            'sql' => str_replace('`', $DB->getQuoteNameChar(), "LEFT JOIN `glpi_projectteams`
                         ON (`glpi_projects`.`id` = `glpi_projectteams`.`projects_id`
                             )
                       LEFT JOIN `glpi_contacts`  AS `glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`
                         ON (`glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`.`id` = `glpi_projectteams`.`items_id`
                         AND `glpi_projectteams`.`itemtype` = 'Contact'
-                         )"
+                         )")
          ]],
       ];
    }

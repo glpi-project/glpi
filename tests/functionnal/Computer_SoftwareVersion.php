@@ -75,7 +75,7 @@ class Computer_SoftwareVersion extends DbTestCase {
       ];
 
       $this->setEntity('_test_root_entity', true);
-      $this->array($ins->prepareInputForAdd($input))->isIdenticalTo($expected);
+      $this->array($ins->prepareInputForAdd($input))->isEqualTo($expected);
    }
 
    public function testPrepareInputForUpdate() {

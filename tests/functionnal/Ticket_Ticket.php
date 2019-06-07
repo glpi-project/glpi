@@ -147,9 +147,9 @@ class Ticket_Ticket extends DbTestCase {
 
       //PARENT_OF is stored as inversed child
       $this->array($link->fields)
-         ->string['tickets_id_1']->isIdenticalTo($ttwo->getID())
-         ->string['tickets_id_2']->isIdenticalTo($tone->getID())
-         ->string['link']->isEqualTo(\Ticket_Ticket::SON_OF);
+         ->variable['tickets_id_1']->isEqualTo($ttwo->getID())
+         ->variable['tickets_id_2']->isEqualTo($tone->getID())
+         ->variable['link']->isEqualTo(\Ticket_Ticket::SON_OF);
    }
 
    public function testNumberOpen() {

@@ -166,7 +166,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
 
       //Test that a software category can be assigned
       $result = $categoryCollection->processAllRules(null, null, $input);
-      $this->array($result)->isIdenticalTo([
+      $this->array($result)->isEqualTo([
          "softwarecategories_id" => "$categories_id",
          "_ruleid"               => "$rules_id"
       ]);
@@ -238,7 +238,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
 
       //Test that a software category can be ignored
       $result = $categoryCollection->processAllRules(null, null, $input);
-      $this->array($result)->isIdenticalTo([
+      $this->array($result)->isEqualTo([
          "_ignore_import" => '1',
          "_ruleid"        => "$rules_id"
       ]);

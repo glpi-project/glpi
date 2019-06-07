@@ -1819,9 +1819,9 @@ class Ticket extends DbTestCase {
       $input['id'] = $ticket->fields['id'];
       $result = $ticket->prepareInputForUpdate($input);
       $this->array($result)
-         ->string['urgency']->isIdenticalTo($urgency)
-         ->string['impact']->isIdenticalTo($impact)
-         ->integer['priority']->isIdenticalTo($priority);
+         ->variable['urgency']->isEqualTo($urgency)
+         ->variable['impact']->isEqualTo($impact)
+         ->variable['priority']->isEqualTo($priority);
    }
 
    public function testGetDefaultValues() {

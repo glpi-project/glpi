@@ -78,7 +78,7 @@ class Networkport extends DbTestCase {
           'is_deleted'         => '0',
           'is_dynamic'         => '0',
       ];
-      $this->array($current_networkport)->isIdenticalTo($expected);
+      $this->array($current_networkport)->isEqualTo($expected);
 
       $all_netportethernets = getAllDataFromTable('glpi_networkportethernets', ['ORDER' => 'id']);
       $networkportethernet = end($all_netportethernets);

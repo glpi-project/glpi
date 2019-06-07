@@ -99,7 +99,7 @@ class Notification_NotificationTemplate extends DbTestCase {
    public function testGetName() {
       $n_nt = new \Notification_NotificationTemplate();
       $this->boolean($n_nt->getFromDB(1))->isTrue();
-      $this->string($n_nt->getName())->isIdenticalTo('1');
+      $this->variable($n_nt->getName())->isEqualTo(1);
    }
 
    public function testShowForFormNotLogged() {
