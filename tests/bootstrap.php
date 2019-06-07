@@ -179,7 +179,7 @@ function loadDataset() {
             'password2'     => TU_PASS,
             'entities_id'   => '_test_root_entity',
             'profiles_id'   => 4, // TODO manage test profiles
-            '_entities_id'  => '_test_root_entity',
+            '_entities_id'  => 0,
             '_profiles_id'  => 4,
             '_is_recursive' => 1,
          ]
@@ -531,9 +531,9 @@ function loadDataset() {
                $match = [];
                if (isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))) {
                   $foreigntypetxt = array_pop($match);
-                  //if (substr($foreigntypetxt, 0, 1) !== '_') {
+                  if (substr($foreigntypetxt, 0, 1) !== '_') {
                      $foreigntype = getItemTypeForTable("glpi_$foreigntypetxt");
-                  //}
+                  }
                }
                if ($foreigntype && isset($ids[$foreigntype][$v]) && !is_numeric($v)) {
                   $input[$k] = $ids[$foreigntype][$v];
