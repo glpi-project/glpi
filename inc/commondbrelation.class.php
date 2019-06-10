@@ -1724,6 +1724,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          'ORDER'     => $item->getTable() . '.' . $order_col
       ];
 
+      if ($DB->fieldExists(static::getTable(), 'is_deleted')) {
+         $params['WHERE'][static::getTable() . '.is_deleted'] = 0;
+      }
+
       if ($DB->fieldExists(static::getTable(), 'itemtype')) {
          $params['WHERE'][static::getTable() . '.itemtype'] = $itemtype;
       }

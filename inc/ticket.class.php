@@ -1834,14 +1834,18 @@ class Ticket extends CommonITILObject {
       $rules = new RuleTicketCollection($input['entities_id']);
 
       // Set unset variables with are needed
+      $tmprequester = 0;
       $user = new User();
-      if (isset($input["_users_id_requester"])
-          && !is_array($input["_users_id_requester"])
-          && $user->getFromDB($input["_users_id_requester"])) {
-         $input['users_locations'] = $user->fields['locations_id'];
-         $tmprequester = $input["_users_id_requester"];
-      } else {
-         $tmprequester = 0;
+      if (isset($input["_users_id_requester"])) {
+         if (!is_array($input["_users_id_requester"])
+             && $user->getFromDB($input["_users_id_requester"])) {
+            $input['users_locations'] = $user->fields['locations_id'];
+            $tmprequester = $input["_users_id_requester"];
+         } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
+            if ($user->getFromDB($user_id)) {
+               $input['users_locations'] = $user->fields['locations_id'];
+            }
+         }
       }
 
       // Clean new lines before passing to rules
