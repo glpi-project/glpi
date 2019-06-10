@@ -104,12 +104,11 @@ echo "<meta http-equiv='Content-Script-Type' content='text/javascript'>";
 echo "<meta http-equiv='Content-Style-Type' content='text/css'>";
 echo "<title>Setup GLPI</title>";
 //JS
-echo Html::script("public/lib/jquery/jquery.js");
+echo Html::script("public/lib/base.js");
 echo Html::script('public/lib/jquery-migrate/jquery-migrate.js');
-echo Html::script('public/lib/jquery-ui-dist/jquery-ui.js');
 // CSS
-echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen' >";
-echo Html::css('public/lib/jquery-ui/jquery-ui.css');
+echo Html::css('public/lib/base.css');
+echo Html::css('css/style_install.css');
 echo "</head>";
 echo "<body>";
 echo "<div id='principal'>";
