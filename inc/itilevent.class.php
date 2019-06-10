@@ -56,34 +56,36 @@ class ITILEvent extends CommonDBTM
     */
    const EXCEPTION = 2;
 
-   //TODO Handle status workflows as described by each status.
-   // Try to factorize the workflow as much as possible to make it easy to replace in the future.
-
    /**
     * An event that was logged but not acted on. For informational alerts, this is the only valid status.
     */
    const STATUS_NEW = 0;
 
    /**
-    * An event that has been acknowledged by a technician. Duplicate alerts should be dropped for a period of time.
+    * An event that has been acknowledged by a technician.
+    * Duplicate alerts should be dropped for a period of time.
+    * Valid only for events on volatile services.
     */
    const STATUS_ACKNOWLEDGED = 1;
 
    /**
     * An event that is currently being remediated by a technician or automatically.
-    * Similar to acknowledged events, duplicate events are dropped
+    * Similar to acknowledged events, duplicate events are dropped.
+    * Valid only for events on volatile services.
     */
    const STATUS_REMEDIATING = 2;
 
    /**
     * An event that may be resolved. The event will be considered resolved after a time.
     * If a duplicate event is logged, it is linked and this event is downgraded to acknowledged.
+    * Valid only for events on volatile services.
     */
    const STATUS_MONITORING = 3;
 
    /**
     * An event that has been determined to be resolved either manually or automatically after a time period.
     * If a duplicate alert comes in, it is treated as a new event and not linked.
+    * Valid only for events on volatile services.
     */
    const STATUS_RESOLVED = 4;
 
@@ -91,6 +93,7 @@ class ITILEvent extends CommonDBTM
     * An event that went so long without being resolved that another event has replaced it through correlation rules or a timeout period.
     * This event will be linked to the replacement event if one exists.
     * If there is no replacement (timeout), then new events will not be linked.
+    * Valid only for events on volatile services.
     */
    const STATUS_EXPIRED = 5;
 
@@ -109,16 +112,7 @@ class ITILEvent extends CommonDBTM
          $nb = 0;
          switch ($item->getType()) {
             case 'ITILEvent' :
-               if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
-                   && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0)) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = countElementsInTable('glpi_items_itilevents',
-                                                ['AND' => ['itilevents_id' => $item->getID() ],
-                                                   ['itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]]
-                                                ]);
-                  }
-                  return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
-               }
+               return '';
             default:
                return self::createTabEntry('Event Management');
          }
@@ -167,7 +161,7 @@ class ITILEvent extends CommonDBTM
       $input = parent::prepareInputForAdd($input);
 
       // All events must be associated to a service or have a service id of -1 for internal
-      if (!isset($input['itileventservice_id']) && $input['itileventservice_id'] != -1) {
+      if (!isset($input['itileventservices_id']) && $input['itileventservices_id'] != -1) {
          return false;
       }
 
@@ -219,53 +213,8 @@ class ITILEvent extends CommonDBTM
          'id' => $this->getID()
       ] + $input);
 
-      $service = new ITILEventService();
-      if ($this->fields['itileventservices_id'] >= 0 &&
-            $service->getFromDB($this->fields['itileventservices_id'])) {
-         // Trigger any needed service events
-         $last_status = $service->fields['status'];
-         $significance = $this->fields['significance'];
-
-         // Check downtime
-         $in_downtime = $service->isScheduledDown();
-         if (!$service->fields['is_volatile']) {
-            // Check problem status transition
-            if ($significance !== self::INFORMATION && $last_status === ITILEventService::STATUS_OK) {
-               if (!$in_downtime) {
-                  // Update service to reflect the problem state
-                  $service->update([
-                     'id'        => $service->getID(),
-                     '_problem'  => true
-                  ]);
-               }
-            }
-            // Check recovery status transition
-            if ($significance === self::INFORMATION && $last_status !== ITILEventService::STATUS_OK) {
-               if ($in_downtime) {
-                  // Auto-end downtimes if they are not fixed
-                  $downtime = new ScheduledDowntime();
-                  $downtimes = ScheduledDowntime::getForHostOrService($this->fields['itileventservices_id']);
-                  while ($data = $downtimes->next()) {
-                     if ($data['is_fixed'] == 0) {
-                        $downtime->update([
-                           'id'        => $data['id'],
-                           '_cancel'   => true
-                        ]);
-                     }
-                  }
-               } else {
-                  // Update service to reflect the recovery state
-                  $service->update([
-                     'id'           => $service->getID(),
-                     '_recovery'    => true
-                  ]);
-               }
-            }
-            // Check flapping state
-         } else {
-            
-         }
-      }
+      // Update the related service
+      ITILEventService::onEventAdd($this);
      
       parent::post_addItem();
    }
@@ -274,7 +223,6 @@ class ITILEvent extends CommonDBTM
    {
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Item_ITILEvent::class,
             Itil_ITILEvent::class
          ]
       );
@@ -437,7 +385,6 @@ class ITILEvent extends CommonDBTM
       $eventtable = self::getTable();
 
       $query = [
-         'SELECT' => ["$eventtable.*"],
          'FROM' => $eventtable,
          'WHERE' => [],
          'ORDERBY' => ['date DESC']

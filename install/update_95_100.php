@@ -187,19 +187,21 @@ function update95to100() {
       `itileventservicetemplates_id` int(11) NOT NULL,
       `last_check` timestamp NULL DEFAULT NULL,
       `status` tinyint(3) NOT NULL DEFAULT '2',
+      `is_hard_status` tinyint(1) NOT NULL DEFAULT '1',
       `status_since` timestamp NULL DEFAULT NULL,
       `is_flapping` tinyint(1) NOT NULL DEFAULT '0',
       `is_active` tinyint(1) NOT NULL DEFAULT '1',
       `is_acknowledged` tinyint(1) NOT NULL DEFAULT '0',
+      `acknowledged_status` tinyint(3) NOT NULL DEFAULT '2',
+      `flap_state_cache` longtext COLLATE utf8_unicode_ci,
       `date_mod` timestamp NULL DEFAULT NULL,
       `date_creation` timestamp NULL DEFAULT NULL,
       PRIMARY KEY (`id`),
       KEY `itileventservicetemplates_id` (`itileventservicetemplates_id`),
       KEY `hosts_id` (`hosts_id`),
       KEY `is_flapping` (`is_flapping`),
-      KEY `is_acknowledged` (`is_acknowledged`),
+      KEY `is_acknowledged` (`is_acknowledged`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "10.0.0 add table glpi_itileventservices");
    }
 
    if (!$DB->tableExists('glpi_itileventservicetemplates')) {
@@ -216,6 +218,9 @@ function update95to100() {
       `check_mode` tinyint(3) NOT NULL DEFAULT '0',
       `logger` varchar(255)  COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Indicates which plugin (or the core) logged this event. Used to delegate translations and other functions',
       `is_volatile` tinyint(1) NOT NULL DEFAULT '0',
+      `flap_threshold_low` tinyint(3) NOT NULL DEFAULT '15',
+      `flap_threshold_high` tinyint(3) NOT NULL DEFAULT '30',
+      `max_checks` tinyint(3) NOT NULL DEFAULT '1',
       `date_mod` timestamp NULL DEFAULT NULL,
       `date_creation` timestamp NULL DEFAULT NULL,
       PRIMARY KEY (`id`)
@@ -235,7 +240,7 @@ function update95to100() {
       $DB->queryOrDie($query, "10.0.0 add table glpi_itils_scheduleddowntimes");
    }
 
-   if (!$DB->tableExists('glpi_scheduleddowntime')) {
+   if (!$DB->tableExists('glpi_scheduleddowntimes')) {
       $query = "CREATE TABLE `glpi_scheduleddowntime` (
       `id` int(11) NOT NULL AUTO_INCREMENT,
       `comment` text COLLATE utf8_unicode_ci DEFAULT NULL,

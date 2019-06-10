@@ -30,6 +30,9 @@
  * ---------------------------------------------------------------------
 */
 
+use Glpi\Event\ITILEventHostEvent;
+use Glpi\EventDispatcher\EventDispatcher;
+
 /**
  * ITILEventHost class.
  * This represents a host that is able to be monitored through one or more ITILEventServices.
@@ -42,19 +45,25 @@ class ITILEventHost extends CommonDBTM {
    static $rightname                = 'event';
 
    /**
-    * Host is reachable
+    * Host is up
     */
-   const STATUS_OK         = 0;
+   const STATUS_UP            = 0;
 
    /**
-    * Host is not reachable. Service alerts are suppressed.
+    * Host should be reachable, but is down. Service alerts are suppressed.
     */
-   const STATUS_DOWN       = 1;
+   const STATUS_DOWN          = 1;
 
    /**
     * Host availability is not being monitored.
     */
-   const STATUS_UNKNOWN    = 2;
+   const STATUS_UNKNOWN       = 2;
+
+   /**
+    * Host is not reachable because an upstream device is down.
+    * Currently not implemented.
+    */
+   const STATUS_UNREACHABLE   = 3;
 
    /**
     * Name of the type
@@ -71,10 +80,12 @@ class ITILEventHost extends CommonDBTM {
 
    public static function getStatusName($status) : string {
       switch ($status) {
-         case self::STATUS_OK:
-            return __('OK');
+         case self::STATUS_UP:
+            return __('Up');
          case self::STATUS_DOWN:
             return __('Down');
+         case self::STATUS_UNREACHABLE:
+            return __('Unreachable');
          case self::STATUS_UNKNOWN:
          default:
             return __('Unknown');
@@ -192,8 +203,10 @@ class ITILEventHost extends CommonDBTM {
          return 'bg-warning';
       }
       switch ($this->getHostStatus()) {
-         case self::STATUS_DOWN: return 'bg-danger';
-         case self::STATUS_OK: return 'bg-success';
+         case self::STATUS_DOWN:
+         case self::STATUS_UNREACHABLE:
+            return 'bg-danger';
+         case self::STATUS_UP: return 'bg-success';
          case self::STATUS_UNKNOWN: return 'bg-warning';
       }
       return '';
@@ -395,5 +408,16 @@ class ITILEventHost extends CommonDBTM {
       }
       $out .= "</div>";
       return $out;
+   }
+
+   public function dispatchITILEventHostEvent(string $eventName) {
+      global $CONTAINER;
+
+      if (!isset($CONTAINER) || !$CONTAINER->has(EventDispatcher::class)) {
+         return;
+      }
+
+      $dispatcher = $CONTAINER->get(EventDispatcher::class);
+      $dispatcher->dispatch($eventName, new ITILEventHostEvent($this));
    }
 }

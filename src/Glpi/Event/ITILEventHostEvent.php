@@ -38,43 +38,63 @@ use Symfony\Component\EventDispatcher\Event;
 /**
  * @since 10.0.0
  */
-class ScheduledDowntimeEvent extends Event
+class ITILEventHostEvent extends Event
 {
     /**
-     * Name of event triggered when a scheduled downtime period starts.
+     * Name of event triggered when a host enters a down state.
      */
-    const DOWNTIME_START = 'scheduleddowntime.start';
+    const HOST_DOWN = 'itileventhost.down';
 
     /**
-     * Name of event triggered when a scheduled downtime period ends.
+     * Name of event triggered when a host enters a up state.
      */
-    const DOWNTIME_STOP = 'scheduleddowntime.stop';
+    const HOST_UP = 'itileventhost.up';
 
     /**
-     * Name of event triggered when a scheduled downtime is deleted/cancelled.
+     * Name of event triggered when a host becomes unreachable.
      */
-    const DOWNTIME_CANCEL = 'scheduleddowntime.cancel';
+    const HOST_UNREACHABLE = 'itileventhost.unreachable';
 
     /**
-     * @var ITILEventService
+     * Name of event triggered when a host has a problem and is acknowledged.
      */
-    private $downtime;
+    const HOST_ACKNOWLEDGE = 'itileventhost.acknowledge';
+
+    /**
+     * Name of event triggered when a host starts flapping.
+     */
+    const HOST_START_FLAPPING = 'itileventhost.start_flapping';
+
+    /**
+     * Name of event triggered when a host stops flapping.
+     */
+    const HOST_STOP_FLAPPING = 'itileventhost.stop_flapping';
+
+    /**
+     * Name of event triggered when flap detection is disabled (Host may still be flapping).
+     */
+    const HOST_DISABLE_FLAPPING = 'itileventhost.disable_flapping';
+
+    /**
+     * @var ITILEventHost
+     */
+    private $host;
 
     /**
      * @param CommonDBTM $item
      */
-    public function __construct(\ScheduledDowntime $downtime)
+    public function __construct(\ITILEventHost $host)
     {
-        $this->downtime = $downtime;
+        $this->host = $host;
     }
 
     /**
-     * ScheduledDowntime on which event applies.
+     * ITILEventHost on which event applies.
      *
-     * @return ScheduledDowntime
+     * @return ITILEventHost
      */
-    public function getScheduledDowntime(): \ScheduledDowntime
+    public function getHost(): \ITILEventHost
     {
-        return $this->downtime;
+        return $this->host;
     }
 }

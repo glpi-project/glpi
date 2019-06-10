@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2019 Teclib' and contributors.
+ * Copyright (C) 2015-2018 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,51 +30,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Event;
+namespace tests\units;
 
-use CommonDBTM;
-use Symfony\Component\EventDispatcher\Event;
+use \DbTestCase;
 
-/**
- * @since 10.0.0
- */
-class ScheduledDowntimeEvent extends Event
-{
-    /**
-     * Name of event triggered when a scheduled downtime period starts.
-     */
-    const DOWNTIME_START = 'scheduleddowntime.start';
+/* Test for inc/scheduleddowntime.class.php */
 
-    /**
-     * Name of event triggered when a scheduled downtime period ends.
-     */
-    const DOWNTIME_STOP = 'scheduleddowntime.stop';
+class ScheduledDowntime extends DbTestCase {
 
-    /**
-     * Name of event triggered when a scheduled downtime is deleted/cancelled.
-     */
-    const DOWNTIME_CANCEL = 'scheduleddowntime.cancel';
-
-    /**
-     * @var ITILEventService
-     */
-    private $downtime;
-
-    /**
-     * @param CommonDBTM $item
-     */
-    public function __construct(\ScheduledDowntime $downtime)
-    {
-        $this->downtime = $downtime;
-    }
-
-    /**
-     * ScheduledDowntime on which event applies.
-     *
-     * @return ScheduledDowntime
-     */
-    public function getScheduledDowntime(): \ScheduledDowntime
-    {
-        return $this->downtime;
-    }
+   public function testIsServiceScheduledDown() {
+      
+   }
 }

@@ -50,7 +50,7 @@ class ScheduledDowntime extends CommonDBTM {
       return _n('Scheduled Downtime', 'Scheduled Downtimes', $nb);
    }
 
-   public static function getForHostOrService(int $items_id, bool $is_service = 1, array $params = []) : DBmysqlIterator {
+   public static function getForHostOrService(int $items_id, bool $is_service = true, array $params = []) : DBmysqlIterator {
       global $DB;
 
       $p = [
@@ -63,22 +63,26 @@ class ScheduledDowntime extends CommonDBTM {
       $monitoredtable = $is_service ? ITILEventService::getTable() : ITILEventHost::getTable();
 
       $where = [
-         "$downtimetable.items_id_target" => $items_id_target,
+         "$downtimetable.items_id_target" => $items_id,
          "$downtimetable.is_service"      => $is_service
       ];
 
       if (!is_null($p['start'])) {
-         $where[$p['start']] = ['>=', 'begin_date'];
+         $where[] = new QueryExpression("'{$p['start']}' >= begin_date");
       }
       if (!is_null($p['end'])) {
-         $where[$p['end']] = ['<=', 'end_date'];
+         $where[] = new QueryExpression("'{$p['end']}' <= end_date");
       }
 
       $iterator = $DB->request([
          'FROM'   => $downtimetable,
          'LEFT JOIN' => [
-            $monitoredtable   => 'id',
-            $downtimetable    => 'items_id_target'
+            $monitoredtable => [
+               'FKEY' => [
+                  $monitoredtable   => 'id',
+                  $downtimetable    => 'items_id_target'
+               ]
+            ]
          ],
          'WHERE'  => $where
       ]);
@@ -92,7 +96,7 @@ class ScheduledDowntime extends CommonDBTM {
       }
    }
 
-   public function post_updateItem($history = 1): void {
+   public function post_updateItem($history = 1) {
       if (isset($this->input['_cancel'])) {
          $this->dispatchScheduledDowntimeEvent('scheduleddowntime.cancel');
       }
@@ -106,6 +110,17 @@ class ScheduledDowntime extends CommonDBTM {
       }
 
       $dispatcher = $CONTAINER->get(EventDispatcher::class);
-      $dispatcher->dispatcher($eventName, new ScheduledDowntimeEvent($this));
+      $dispatcher->dispatch($eventName, new ScheduledDowntimeEvent($this));
+   }
+
+   /**
+    * Check for downtimes that are starting or ending.
+    * @since 10.0.0
+    * @param CronTask $task
+    */
+   public static function cronScheduledDowntimes(CronTask $task) {
+      global $DB;
+
+      
    }
 }

@@ -31,6 +31,7 @@
 */
 
 use Glpi\Event\ITILEventServiceEvent;
+use Glpi\Event\ITILEventHostEvent;
 use Glpi\EventDispatcher\EventDispatcher;
 
 /**
@@ -42,25 +43,27 @@ use Glpi\EventDispatcher\EventDispatcher;
 class ITILEventService extends CommonDBTM {
    use Monitored;
 
-   /** Service is functioning as expected */
+   /** Service is functioning as expected. */
    const STATUS_OK         = 0;
 
-   /** Service is completely non functional */
-   const STATUS_DOWN       = 1;
+   /** Service is not functioning properly.
+    * Valid for non-volatile services only. */
+   const STATUS_CRITICAL       = 1;
 
    /** Service is not being monitored */
    const STATUS_UNKNOWN    = 2;
 
-   /** Service is functional but functionality or performance is limited */
+   /** Service is functional but functionality or performance is limited.
+    * Valid for non-volatile services only.*/
    const STATUS_DEGRADED   = 3;
 
-   /** This service is actively polled */
+   /** This service is actively polled. */
    const CHECK_MODE_ACTIVE    = 0;
 
-   /** This service sends events to GLPI as needed */
+   /** This service sends events to GLPI as needed. */
    const CHECK_MODE_PASSIVE   = 1;
 
-   /** This service can operate in both active and passive modes */
+   /** This service can operate in both active and passive modes. */
    const CHECK_MODE_HYBRID    = 2;
 
    /**
@@ -73,6 +76,7 @@ class ITILEventService extends CommonDBTM {
    }
 
    public function post_getFromDB() {
+      // Merge fields with the template
       $template = new ITILEventServiceTemplate();
       $template->getFromDB($this->fields['itileventservicetemplates_id']);
       foreach($template->fields as $field => $value) {
@@ -83,8 +87,12 @@ class ITILEventService extends CommonDBTM {
    }
 
    public function isScheduledDown() : bool {
-      $iterator = ScheduledDowntime::getForHostOrService($this->getID(), 1);
-      return $iterator->count() > 0;
+      static $is_down = null;
+      if ($is_down == null) {
+         $iterator = ScheduledDowntime::getForHostOrService($this->getID(), true);
+         $is_down = $iterator->count() > 0;
+      }
+      return $is_down;
    }
 
    public function isHostless() : bool {
@@ -94,7 +102,7 @@ class ITILEventService extends CommonDBTM {
    public static function getStatusName($status) {
       switch ($status) {
          case self::STATUS_OK: return __('OK');
-         case self::STATUS_DOWN: return __('Down');
+         case self::STATUS_CRITICAL: return __('Critical');
          case self::STATUS_DEGRADED: return __('Degraded');
          case self::STATUS_UNKNOWN:
          default:
@@ -117,7 +125,7 @@ class ITILEventService extends CommonDBTM {
    }
 
    public function getHost() {
-      $host = null;
+      static $host = null;
       if ($host == null) {
          $host = new ITILEventHost();
          $host->getFromDB($this->fields['hosts_id']);
@@ -130,7 +138,7 @@ class ITILEventService extends CommonDBTM {
          return null;
       }
       $host = $this->getHost();
-      return $host->getHostName();
+      return $host ? $host->getHostName() : null;
    }
 
    public function getEventRestrictCriteria() : array {
@@ -197,6 +205,219 @@ class ITILEventService extends CommonDBTM {
       }
 
       $dispatcher = $CONTAINER->get(EventDispatcher::class);
-      $dispatcher->dispatcher($eventName, new ITILEventServiceEvent($this));
+      $dispatcher->dispatch($eventName, new ITILEventServiceEvent($this));
+   }
+
+   public function checkFlappingState() {
+      //FIXME Does not seem to work right. Allow soft/hard states.
+      global $DB;
+
+      if (!$this->fields['use_flap_detection'] || $this->isScheduledDown()) {
+         // Ignore flapping status if check is disabled or if the service is expected to be down.
+         return;
+      }
+
+      // Get caches array of last 20 state changes
+      $flap_cache = $this->getFlappingStateCache();
+
+      $total_state_change = 0;
+      // Number of states that get cached
+      $flap_check_max = 20;
+
+      $weight = 0.80;
+      $state_changes = 0.00;
+      $last_state = $flap_cache[0];
+      for ($i = 0; $i < count($flap_cache); $i++) {
+         if ($flap_cache[$i] != $last_state) {
+            $state_changes += $weight;
+         }
+         // Newer state changes are weighted heigher
+         $weight += 0.02;
+         $last_state = $flap_cache[$i];
+      }
+
+      $total_state_change = (int) (($state_changes / 20.00) * 100.00);
+
+      if ($total_state_change < $this->fields['flap_threshold_low']) {
+         // End flapping
+         $this->update([
+            'id'           => $this->getID(),
+            'is_flapping'  => 0
+         ]);
+      } else if ($total_state_change > $this->fields['flap_threshold_high']) {
+         // Begin flapping
+         $this->update([
+            'id'           => $this->getID(),
+            'is_flapping'  => 1
+         ]);
+      }
+   }
+
+   /**
+    * Called every time an ITILEvent is added so that the related service state can be updated.
+    * 
+    * @since 10.0.0
+    * @param ITILEvent $event The event that was added
+    * @return bool True if the service was updated successfully
+    */
+   public static function onEventAdd(ITILEvent $event) {
+      $service = new ITILEventService();
+      if ($event->fields['itileventservices_id'] >= 0 &&
+            $service->getFromDB($event->fields['itileventservices_id'])) {
+         $last_status = $service->fields['status'];
+         $significance = $event->fields['significance'];
+
+         // Check downtime
+         $in_downtime = $service->isScheduledDown();
+         if (!$service->fields['is_volatile']) {
+            $to_update = [
+               'id'           => $service->getID(),
+               'last_check'   => $_SESSION['glpi_currenttime']
+            ];
+            // Stateful service checks
+            if ($significance == ITILEvent::EXCEPTION && $last_status == self::STATUS_OK) {
+               if (!$in_downtime) {
+                  // Transition to problem state
+                  $to_update['_problem'] = true;
+               }
+            } else if ($significance == ITILEvent::INFORMATION && $last_status != self::STATUS_OK) {
+               // Transition to recovery state
+               $to_update['_recovery'] = true;
+               // Recoveries should cancel all non-fixed, active downtimes
+               if ($in_downtime) {
+                  $downtime = new ScheduledDowntime();
+                  $downtimes = ScheduledDowntime::getForHostOrService($service->getID());
+                  while ($data = $downtimes->next()) {
+                     if ($data['is_fixed'] == 0) {
+                        $downtime->update([
+                           'id'        => $data['id'],
+                           '_cancel'   => true
+                        ]);
+                     }
+                  }
+               }
+            }
+
+            $flap_cache = $service->getFlappingStateCache();
+            array_shift($flap_cache);
+            $flap_cache[] = $event->fields['significance'];
+            $to_update['flap_state_cache'] = json_encode($flap_cache);
+            $service->update($to_update);
+            // Check flapping state if not in downtime and if it is enabled
+            $service->checkFlappingState();
+         } else {
+            // Stateless service checks
+         }
+      }
+   }
+
+   private function resetFlappingStateCache() {
+      $flap_cache = array_fill(0, 20, (string) self::STATUS_OK);
+      $this->update([
+         'id'                 => $this->getID(),
+         'flap_state_cache'   => json_encode($flap_cache)
+      ]);
+   }
+
+   private function rebuildFlappingStateCache() {
+      
+   }
+
+   private function getFlappingStateCache() {
+      $flap_cache = json_decode($this->fields['flap_state_cache'], true);
+      if (!$flap_cache || !count($flap_cache)) {
+         $this->resetFlappingStateCache();
+      } else if (count($flap_cache) < 20) {
+         $flap_cache = array_merge(array_fill(0, 20 - count($flap_cache), self::STATUS_OK), $flap_cache);
+         $this->update([
+            'id'                 => $this->getID(),
+            'flap_state_cache'   => json_encode($flap_cache)
+         ]);
+      } else if (count($flap_cache) > 20) {
+         $flap_cache = array_slice($flap_cache, -20);
+         $this->update([
+            'id'                 => $this->getID(),
+            'flap_state_cache'   => json_encode($flap_cache)
+         ]);
+      }
+      return json_decode($this->fields['flap_state_cache'], true);
+   }
+
+   public function prepareInputForUpdate($input): array
+   {
+      if (isset($input['_problem'])) {
+         $input['status'] = self::STATUS_CRITICAL;
+      } else if (isset($input['_recovery'])) {
+         $input['status'] = self::STATUS_OK;
+      }
+      return $input;
+   }
+
+   public function post_updateItem($history = 1) {
+
+      $host = new ITILEventHost();
+      $is_hostservice = false;
+      if ($host = $this->getHost()) {
+         if ($host->fields['itileventservices_id_availability'] == $this->getID()) {
+            $is_hostservice = true;
+         }
+      }
+      if (isset($this->input['_problem'])) {
+         if ($is_hostservice) {
+            $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_DOWN);
+         } else {
+            $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_PROBLEM);
+         }
+      } else if (isset($this->input['_recovery'])) {
+         if ($is_hostservice) {
+            $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_UP);
+         } else {
+            $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_RECOVERY);
+         }
+      }
+      if (isset($input['is_active']) && $input['is_active'] != $this->fields['is_active']) {
+         if ($input['is_active']) {
+            $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_ENABLE);
+         } else {
+            $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_DISABLE);
+            if ($is_hostservice) {
+               $host->update([
+                  'id'     => $host->getID(),
+                  'status' => ITILEventHost::STATUS_UNKNOWN
+               ]);
+            }
+         }
+      }
+      if (isset($this->input['_acknowledge'])) {
+         if ($is_hostservice) {
+            $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_ACKNOWLEDGE);
+         } else {
+            $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_ACKNOWLEDGE);
+         }
+      }
+      if (isset($input['use_flap_detection']) &&
+            $input['use_flap_detection'] != $this->fields['use_flap_detection']) {
+         if (!$input['use_flap_detection']) {
+            if ($is_hostservice) {
+               $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_DISABLE_FLAPPING);
+            } else {
+               $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_DISABLE_FLAPPING);
+            }
+         }
+      } else if (isset($input['is_flapping']) && $input['is_flapping'] != $this->fields['is_flapping']) {
+         if ($input['is_flapping']) {
+            if ($is_hostservice) {
+               $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_START_FLAPPING);
+            } else {
+               $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_START_FLAPPING);
+            }
+         } else {
+            if ($is_hostservice) {
+               $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_STOP_FLAPPING);
+            } else {
+               $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_STOP_FLAPPING);
+            }
+         }
+      }
    }
 }

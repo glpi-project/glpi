@@ -88,7 +88,7 @@ class ITILEventServiceEvent extends Event
     /**
      * @param CommonDBTM $item
      */
-    public function __construct(ITILEventService $service)
+    public function __construct(\ITILEventService $service)
     {
         $this->service = $service;
     }
