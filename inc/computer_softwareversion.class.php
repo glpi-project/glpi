@@ -100,9 +100,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          // If computer set update is_template / is_deleted infos to ensure data validity
          if (isset($input['computers_id'])) {
             $computer = new Computer();
+            $is_template = (isset($compu->fields['is_template']) ? $computer->fields['is_template'] : 0);
+            $is_deleted = (isset($computer->fields['is_deleted']) ? $computer->fields['is_deleted'] : 0);
             if ($computer->getFromDB($input['computers_id'])) {
-               $input['is_template_computer'] = $computer->getField('is_template');
-               $input['is_deleted_computer']  = $computer->getField('is_deleted');
+               $input['is_template_computer'] = $is_template;
+               $input['is_deleted_computer']  = $is_deleted;
             }
          }
       }
@@ -118,6 +120,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if (isset($input['computers_id'])) {
             // Get template and deleted information from computer
             $computer = new Computer();
+            $is_template = (isset($computer->fields['is_template']) ? $computer->fields['is_template'] : 0);
+            $is_deleted = (isset($computer->fields['is_deleted']) ? $computer->fields['is_deleted'] : 0);
             if ($computer->getFromDB($input['computers_id'])) {
                $input['is_template_computer'] = $computer->getField('is_template');
                $input['is_deleted_computer']  = $computer->getField('is_deleted');
@@ -222,10 +226,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $comp = new Computer();
       if ($comp->getFromDB($computers_id)) {
+         $is_template = (isset($comp->fields['is_template']) ? $comp->fields['is_template'] : 0);
+         $is_deleted = (isset($comp->fields['is_deleted']) ? $comp->fields['is_deleted'] : 0);
          $result = $DB->update(
             $this->getTable(), [
-               'is_template_computer'  => $comp->getField('is_template'),
-               'is_deleted_computer'   => $comp->getField('is_deleted')
+               'is_template_computer'  => $is_template,
+               'is_deleted_computer'   => $is_deleted
             ], [
                'computers_id' => $computers_id
             ]

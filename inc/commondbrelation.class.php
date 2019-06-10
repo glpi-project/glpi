@@ -1749,6 +1749,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          ];
          $params['WHERE'] += getEntitiesRestrictCriteria($item->getTable(), '', '', true);
          $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
+         $params['GROUP'] = array_merge(['glpi_entities.completename'], $params['ORDER']);
       }
 
       return $params;
