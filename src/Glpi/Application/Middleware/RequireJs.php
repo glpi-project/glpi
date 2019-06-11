@@ -88,14 +88,13 @@ class RequireJs
 
         $lib_path = 'public/lib';
         if (in_array('fullcalendar', $requirements)) {
-            $css_paths[] = $lib_path . '/fullcalendar/fullcalendar.css';
+            $css_paths[] = $lib_path . '/fullcalendar.css';
             $css_paths[] = [
-               'path'   => $lib_path . '/fullcalendar/fullcalendar.print.css',
+               'path'   => $lib_path . '/fullcalendar.print.css',
                'media'  => 'print'
             ];
 
-            $js_paths[] = $lib_path . '/moment/moment.js';
-            $js_paths[] = $lib_path . '/fullcalendar/fullcalendar.js';
+            $js_paths[] = $lib_path . '/fullcalendar.js';
 
             if (isset($_SESSION['glpilanguage'])) {
                 foreach (['fullcalendar', 'moment'] as $lib_name) {
@@ -112,32 +111,28 @@ class RequireJs
         }
 
         if (in_array('gantt', $requirements)) {
-            $css_paths[] = 'lib/jqueryplugins/jquery-gantt/css/style.css';
-            $js_paths[] = 'lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.js';
+            $css_paths[] = $lib_path . '/jquery-gantt.css';
+            $js_paths[] = $lib_path . '/jquery-gantt.js';
         }
 
         if (in_array('rateit', $requirements)) {
-            $css_paths[] = $lib_path . '/jquery.rateit/rateit.css';
-            $js_paths[] = $lib_path . '/jquery.rateit/jquery.rateit.js';
+            $css_paths[] = $lib_path . '/jquery.rateit.css';
+            $js_paths[] = $lib_path . '/jquery.rateit.js';
         }
 
         if (in_array('colorpicker', $requirements)) {
-            $css_paths[] = $lib_path . '/spectrum-colorpicker/spectrum.css';
-            $js_paths[] = $lib_path . '/spectrum-colorpicker/spectrum.js';
+            $css_paths[] = $lib_path . '/spectrum-colorpicker.css';
+            $js_paths[] = $lib_path . '/spectrum-colorpicker.js';
         }
 
         if (in_array('gridstack', $requirements)) {
-            $css_paths[] = $lib_path . '/gridstack/gridstack.css';
-            $css_paths[] = $lib_path . '/gridstack/gridstack-extra.css';
-
-            $js_paths[] = $lib_path . '/lodash/lodash.js';
-            $js_paths[] = $lib_path . '/gridstack/gridstack.js';
-            $js_paths[] = $lib_path . '/gridstack/gridstack.jQueryUI.js';
+            $css_paths[] = $lib_path . '/gridstack.css';
+            $js_paths[] = $lib_path . '/gridstack.js';
             $js_paths[] = 'js/rack.js';
         }
 
         if (in_array('tinymce', $requirements)) {
-            $js_paths[] = $lib_path . '/tinymce/tinymce.js';
+            $js_paths[] = $lib_path . '/tinymce.js';
         }
 
         if (in_array('clipboard', $requirements)) {
@@ -145,12 +140,8 @@ class RequireJs
         }
 
         if (in_array('charts', $requirements)) {
-            $css_paths[] = $lib_path . '/chartist/chartist.css';
-            $css_paths[] = $lib_path . '/chartist-plugin-tooltips/chartist-plugin-tooltip.css';
-
-            $js_paths[] = $lib_path . '/chartist/chartist.js';
-            $js_paths[] = $lib_path . '/chartist-plugin-legend/chartist-plugin-legend.js';
-            $js_paths[] = $lib_path . '/chartist-plugin-tooltips/chartist-plugin-tooltip.js';
+            $css_paths[] = $lib_path . '/chartist.css';
+            $js_paths[] = $lib_path . '/chartist.js';
         }
 
         $this->view->getEnvironment()->addGlobal(

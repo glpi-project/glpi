@@ -105,7 +105,6 @@ echo "<meta http-equiv='Content-Style-Type' content='text/css'>";
 echo "<title>Setup GLPI</title>";
 //JS
 echo Html::script("public/lib/base.js");
-echo Html::script('public/lib/jquery-migrate/jquery-migrate.js');
 // CSS
 echo Html::css('public/lib/base.css');
 echo Html::css('css/style_install.css');
