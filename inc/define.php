@@ -499,8 +499,8 @@ $CFG_GLPI['javascript'] = [
          'notificationtemplate' => ['tinymce']
       ]
    ],
-   'admin'     => ['colorpicker', 'clipboard'],
-   'preference'=> ['colorpicker', 'clipboard'],
+   'admin'        => ['colorpicker', 'clipboard'],
+   'preference'   => ['colorpicker', 'clipboard'],
    'self-service' => ['colorpicker', 'tinymce']
 ];
 
