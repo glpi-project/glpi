@@ -938,6 +938,15 @@ class CommonDBTM extends CommonGLPI {
             ]
          );
       }
+
+      if (in_array($this->getType(), $CFG_GLPI['cluster_types'])) {
+         //delete relation beetween clusterable elements type and their cluster
+         $this->deleteChildrenAndRelationsFromDb(
+            [
+               Item_Cluster::class,
+            ]
+         );
+      }
    }
 
 

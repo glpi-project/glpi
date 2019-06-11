@@ -81,6 +81,7 @@ $RELATION = [
    ],
 
    'glpi_autoupdatesystems' => [
+      'glpi_clusters'  => 'autoupdatesystems_id',
       'glpi_computers' => 'autoupdatesystems_id',
    ],
 
@@ -139,6 +140,14 @@ $RELATION = [
       '_glpi_changes_users'     => 'changes_id',
       '_glpi_changetasks'       => 'changes_id',
       '_glpi_changevalidations' => 'changes_id',
+   ],
+
+   'glpi_clusters' => [
+      '_glpi_items_clusters' => 'clusters_id',
+   ],
+
+   'glpi_clustertypes' => [
+      'glpi_clusters' => 'clustertypes_id',
    ],
 
    'glpi_computermodels' => [
@@ -395,6 +404,8 @@ $RELATION = [
       '_glpi_changecosts'                => 'entities_id',
       'glpi_changes'                     => 'entities_id',
       '_glpi_changevalidations'          => 'entities_id',
+      'glpi_clusters'                    => 'entities_id',
+      'glpi_clustertypes'                => 'entities_id',
       'glpi_computers'                   => 'entities_id',
       '_glpi_computers_softwareversions' => 'entities_id',
       '_glpi_computervirtualmachines'    => 'entities_id',
@@ -537,6 +548,7 @@ $RELATION = [
       ],
       '_glpi_changes_groups'       => 'groups_id',
       'glpi_changetasks'           => 'groups_id_tech',
+      'glpi_clusters'              => 'groups_id_tech',
       'glpi_computers'             => [
          'groups_id_tech',
          'groups_id',
@@ -1064,6 +1076,7 @@ $RELATION = [
 
    'glpi_states' => [
       'glpi_certificates'              => 'states_id',
+      'glpi_clusters'                  => 'states_id',
       'glpi_computers'                 => 'states_id',
       'glpi_devicegenerics'            => 'states_id',
       'glpi_devicesensors'             => 'states_id',
@@ -1183,6 +1196,7 @@ $RELATION = [
          'users_id',
          'users_id_validate',
       ],
+      'glpi_clusters'                 => 'users_id_tech',
       'glpi_computers'                => [
          'users_id_tech',
          'users_id',

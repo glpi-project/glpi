@@ -39,6 +39,7 @@ function update94to95() {
    global $DB, $migration;
 
    $updateresult     = true;
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.0'));
@@ -147,7 +148,94 @@ function update94to95() {
    }
    /** /Entities Custom CSS configuration fields */
 
+   /** Clusters */
+   if (!$DB->tableExists('glpi_clustertypes')) {
+      $query = "CREATE TABLE `glpi_clustertypes` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `entities_id` int(11) NOT NULL DEFAULT '0',
+         `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `comment` text COLLATE utf8_unicode_ci,
+         `date_creation` timestamp NULL DEFAULT NULL,
+         `date_mod` timestamp NULL DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         KEY `name` (`name`),
+         KEY `entities_id` (`entities_id`),
+         KEY `is_recursive` (`is_recursive`),
+         KEY `date_creation` (`date_creation`),
+         KEY `date_mod` (`date_mod`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.5 add table glpi_clustertypes");
+   }
+
+   if (!$DB->tableExists('glpi_clusters')) {
+      $query = "CREATE TABLE `glpi_clusters` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `entities_id` int(11) NOT NULL DEFAULT '0',
+         `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `version` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `users_id_tech` int(11) NOT NULL DEFAULT '0',
+         `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+         `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+         `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+         `comment` text COLLATE utf8_unicode_ci,
+         `clustertypes_id` int(11) NOT NULL DEFAULT '0',
+         `autoupdatesystems_id` int(11) NOT NULL DEFAULT '0',
+         `date_mod` timestamp NULL DEFAULT NULL,
+         `date_creation` timestamp NULL DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         KEY `users_id_tech` (`users_id_tech`),
+         KEY `group_id_tech` (`groups_id_tech`),
+         KEY `is_deleted` (`is_deleted`),
+         KEY `states_id` (`states_id`),
+         KEY `clustertypes_id` (`clustertypes_id`),
+         KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
+         KEY `entities_id` (`entities_id`),
+         KEY `is_recursive` (`is_recursive`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.5 add table glpi_clusters");
+   }
+
+   if (!$DB->tableExists('glpi_items_clusters')) {
+      $query = "CREATE TABLE `glpi_items_clusters` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `clusters_id` int(11) NOT NULL DEFAULT '0',
+         `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `items_id` int(11) NOT NULL DEFAULT '0',
+         PRIMARY KEY (`id`),
+         UNIQUE KEY `unicity` (`clusters_id`,`itemtype`,`items_id`),
+         KEY `item` (`itemtype`,`items_id`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.5 add table glpi_items_clusters");
+   }
+
+   $migration->addField('glpi_states', 'is_visible_cluster', 'bool', [
+      'value' => 1,
+      'after' => 'is_visible_pdu'
+   ]);
+   $migration->addKey('glpi_states', 'is_visible_cluster');
+
+   $migration->addRight('cluster', ALLSTANDARDRIGHT);
+
+   $ADDTODISPLAYPREF['cluster'] = [31, 19];
+   /** /Clusters */
+
    // ************ Keep it at the end **************
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $rank = 1;
+      foreach ($tab as $newval) {
+         $DB->updateOrInsert("glpi_displaypreferences", [
+            'rank'      => $rank++
+         ], [
+            'users_id'  => "0",
+            'itemtype'  => $type,
+            'num'       => $newval,
+         ]);
+      }
+   }
+
    $migration->executeMigration();
 
    return $updateresult;
