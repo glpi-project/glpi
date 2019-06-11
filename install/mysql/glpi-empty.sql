@@ -7121,6 +7121,14 @@ INSERT INTO `glpi_profilerights` VALUES ('889','4','global_validation','0');
 INSERT INTO `glpi_profilerights` VALUES ('890','5','global_validation','0');
 INSERT INTO `glpi_profilerights` VALUES ('891','6','global_validation','0');
 INSERT INTO `glpi_profilerights` VALUES ('892','7','global_validation','0');
+INSERT INTO `glpi_profilerights` VALUES ('893','1','cluster','0');
+INSERT INTO `glpi_profilerights` VALUES ('894','2','cluster','1');
+INSERT INTO `glpi_profilerights` VALUES ('895','3','cluster','31');
+INSERT INTO `glpi_profilerights` VALUES ('896','4','cluster','31');
+INSERT INTO `glpi_profilerights` VALUES ('897','5','cluster','0');
+INSERT INTO `glpi_profilerights` VALUES ('898','6','cluster','31');
+INSERT INTO `glpi_profilerights` VALUES ('899','7','cluster','31');
+INSERT INTO `glpi_profilerights` VALUES ('900','8','cluster','1');
 
 ### Dump table glpi_profiles
 
@@ -8340,6 +8348,7 @@ CREATE TABLE `glpi_states` (
   `is_visible_rack` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_enclosure` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_pdu` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_cluster` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -8358,6 +8367,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_rack` (`is_visible_rack`),
   KEY `is_visible_enclosure` (`is_visible_enclosure`),
   KEY `is_visible_pdu` (`is_visible_pdu`),
+  KEY `is_visible_cluster` (`is_visible_cluster`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -9653,4 +9663,60 @@ CREATE TABLE `glpi_itilfollowups` (
   KEY `requesttypes_id` (`requesttypes_id`),
   KEY `sourceitems_id` (`sourceitems_id`),
   KEY `sourceof_items_id` (`sourceof_items_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_clustertypes`;
+CREATE TABLE `glpi_clustertypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_clusters`;
+CREATE TABLE `glpi_clusters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `version` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `comment` text COLLATE utf8_unicode_ci,
+  `clustertypes_id` int(11) NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `group_id_tech` (`groups_id_tech`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `states_id` (`states_id`),
+  KEY `clustertypes_id` (`clustertypes_id`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_items_clusters`;
+CREATE TABLE `glpi_items_clusters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `clusters_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`clusters_id`,`itemtype`,`items_id`),
+  KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

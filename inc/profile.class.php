@@ -873,7 +873,10 @@ class Profile extends CommonDBTM {
                             'field'     => 'certificate'],
                       ['itemtype'  => 'Datacenter',
                             'label'     => Datacenter::getTypeName(Session::getPluralNumber()),
-                            'field'     => 'datacenter']
+                            'field'     => 'datacenter'],
+                      ['itemtype'  => 'Cluster',
+                            'label'     => Cluster::getTypeName(Session::getPluralNumber()),
+                            'field'     => 'cluster'],
                   ];
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);

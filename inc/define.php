@@ -203,12 +203,13 @@ $LANG             = [];
 $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'Contract',
                                                   'Infocom', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Supplier','User', 'Certicate', 'Rack', 'Enclosure', 'PDU'];
+                                                  'SoftwareLicense', 'Supplier','User', 'Certicate',
+                                                  'Rack', 'Enclosure', 'PDU', 'Cluster'];
 
 $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
                                                   'Certificate', 'Enclosure', 'PDU', 'Line',
-                                                   'Rack', 'SoftwareVersion'];
+                                                   'Rack', 'SoftwareVersion', 'Cluster'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -231,7 +232,7 @@ $CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change'
                                                   'Printer', 'Problem', 'Project', 'ProjectTask',
                                                   'Reminder', 'Software', 'Line',
                                                   'SoftwareLicense', 'Supplier', 'Ticket','User',
-                                                  'Certificate'];
+                                                  'Certificate', 'Cluster'];
 
 $CFG_GLPI["consumables_types"]            = ['Group', 'User'];
 
@@ -247,7 +248,7 @@ $CFG_GLPI["itemdevices"]                  = ['Item_DevicePowerSupply', 'Item_Dev
 $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
                                                   'Software', 'SoftwareLicense', 'Certificate',
-                                                  'DCRoom', 'Rack', 'Enclosure'],
+                                                  'DCRoom', 'Rack', 'Enclosure', 'Cluster'],
                                                   $CFG_GLPI['itemdevices']);
 
 $CFG_GLPI["report_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
@@ -291,12 +292,12 @@ $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'Consuma
 $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate',
-                                                  'Line', 'DCRoom', 'Rack', 'Enclosure'];
+                                                  'Line', 'DCRoom', 'Rack', 'Enclosure', 'Cluster'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'Supplier', 'User', 'Certificate'];
+                                                  'Printer', 'Software', 'Supplier', 'User', 'Certificate', 'Cluster'];
 
 $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'Manufacturer',
                                                   'MonitorModel', 'MonitorType',
@@ -312,7 +313,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
 $CFG_GLPI["helpdesk_visible_types"]       = ['Software'];
 
 $CFG_GLPI["networkport_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
-                                                  'Phone', 'Printer', 'Enclosure', 'PDU'];
+                                                  'Phone', 'Printer', 'Enclosure', 'PDU', 'Cluster'];
 
 // Warning : the order is used for displaying different NetworkPort types ! Keep it !
 $CFG_GLPI['networkport_instantiations']   = ['NetworkPortEthernet', 'NetworkPortWifi' ,
@@ -460,6 +461,8 @@ $CFG_GLPI["certificate_types"]     = ['Computer',
                                       'SoftwareLicense', 'User'];
 
 $CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure', 'PDU'];
+
+$CFG_GLPI["cluster_types"]        = ['Computer', 'NetworkEquipment'];
 
 $CFG_GLPI['javascript'] = [
    'central'   => [

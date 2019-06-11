@@ -1362,7 +1362,7 @@ class Html {
 
       $menu['management']['title']   = __('Management');
       $menu['management']['types']   = ['SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
-                                        'Document', 'Line', 'Certificate', 'Datacenter'];
+                                        'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster'];
 
       $menu['tools']['title']        = __('Tools');
       $menu['tools']['types']        = ['Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
