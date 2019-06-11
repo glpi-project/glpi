@@ -432,7 +432,13 @@ class Toolbox {
          global $PHPLOGGER;
          $logger = $PHPLOGGER;
       }
-      $logger->addRecord($level, $msg, $extra);
+
+      try {
+         $logger->addRecord($level, $msg, $extra);
+      } catch (\Exception $e) {
+         //something went wrong, make sure logging does not cause fatal
+         error_log($e);
+      }
 
       if (defined('TU_USER') && $level >= Logger::NOTICE) {
          throw new \RuntimeException($msg);
