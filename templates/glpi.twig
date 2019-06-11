@@ -37,22 +37,18 @@
          <meta charset="utf-8" />
          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-         {% block head %}
-            <title>{% block title %}{{ page_title }}{% endblock %} - GLPI</title>
-         {% endblock %}
+         <title>{% block title %}{{ page_title }}{% endblock %} - GLPI</title>
 
          <link rel="shortcut icon" type="images/x-icon" href="{{ CFG_GLPI.root_doc }}/pics/favicon.ico" />
 
-         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/bootstrap/css/bootstrap.css" type="text/css" media="screen" />
-         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/coreui/css/coreui-standalone.css" type="text/css" media="screen" />
-         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/fontawesome-free/css/all.css" type="text/css" media="screen" />
-
-         <link rel="stylesheet" href="{{ path_for('asset', {'file': 'css/glpi'}) }}{{ glpi_debug ? '?debug' : '' }}" type="text/css" media="screen" />
-
-         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic" />
+         {% block css %}
+             <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/base.css" type="text/css" media="screen" />
+             <link rel="stylesheet" href="{{ path_for('asset', {'file': 'css/glpi'}) }}{{ glpi_debug ? '?debug' : '' }}" type="text/css" media="screen" />
+             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic" />
+         {% endblock %}
 
          {# TODO Should be moved in "javascripts" block but requires all scripts to be moved in this block too #}
-         <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/jquery/jquery.js"></script>
+         <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/base.js"></script>
     </head>
     <body class="app sidebar-md-show aside-menu-show {{ body_class }}">
         {% block header %}{% endblock %}
@@ -102,10 +98,6 @@
             'root_doc': '{{ CFG_GLPI.root_doc }}',
          };
       </script>
-      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/popper.js/popper.js"></script>
-      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/perfect-scrollbar/perfect-scrollbar.js"></script>
-      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/bootstrap/js/bootstrap.js"></script>
-      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/coreui/js/coreui.js"></script>
       <script type="text/javascript">
          $(function() {
              _initFlashMessage();

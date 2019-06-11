@@ -79,9 +79,12 @@ var libsConfig = {
                 // This prevents incompatibility issues with the webpack require feature.
                 test: /\.js$/,
                 include: [
+                    path.resolve(__dirname, 'node_modules/@coreui/coreui'),
+                    path.resolve(__dirname, 'node_modules/bootstrap'),
                     path.resolve(__dirname, 'node_modules/codemirror'),
                     path.resolve(__dirname, 'node_modules/fullcalendar'),
                     path.resolve(__dirname, 'node_modules/gridstack'),
+                    path.resolve(__dirname, 'node_modules/jquery-migrate'),
                     path.resolve(__dirname, 'node_modules/jstree'),
                     path.resolve(__dirname, 'node_modules/spectrum-colorpicker'),
                 ],
@@ -126,28 +129,10 @@ var libsConfig = {
 };
 
 var libs = {
-    'bootstrap': [
-        {
-            context: 'dist',
-            from: '{css/bootstrap.css,js/bootstrap.js}',
-        }
-    ],
-    '@coreui/coreui': [
-        {
-            context: 'dist',
-            from: '{css/coreui-standalone.css,js/coreui.js}',
-        }
-    ],
     'fullcalendar': [
         {
             context: 'dist',
             from: 'locale/*.js',
-        }
-    ],
-    'jquery-migrate': [
-        {
-            context: 'dist',
-            from: 'jquery-migrate.js',
         }
     ],
     'jquery-ui': [
@@ -168,28 +153,10 @@ var libs = {
             from: 'locale/*.js',
         }
     ],
-    'perfect-scrollbar': [
-        {
-            context: 'dist',
-            from: 'perfect-scrollbar.js',
-        }
-    ],
-    'popper.js': [
-        {
-            context: 'dist/umd',
-            from: 'popper.js',
-        }
-    ],
     'select2': [
         {
             context: 'dist',
             from: 'js/i18n/*.js',
-        }
-    ],
-    'select2-theme-bootstrap4': [
-        {
-            context: 'dist',
-            from: 'select2-bootstrap.css',
         }
     ],
     'tinymce-i18n': [

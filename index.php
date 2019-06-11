@@ -94,11 +94,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/db.yaml")) {
    echo Html::scss('css/palettes/' . $theme);
    // external libs CSS
    echo Html::css('public/lib/base.css');
-
-   echo Html::script('public/lib/jquery/jquery.js');
-   echo Html::script('public/lib/jquery-migrate/jquery-migrate.js');
-   echo Html::script('public/lib/select2/js/select2.full.js');
-   echo Html::css('public/lib/select2/css/select2.css');
    // CFG
    echo Html::scriptBlock("
       var CFG_GLPI  = {

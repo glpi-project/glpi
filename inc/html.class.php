@@ -1321,7 +1321,6 @@ class Html {
 
       // AJAX library
       echo Html::script('public/lib/base.js');
-      echo Html::script('public/lib/jquery-migrate/jquery-migrate.js');
 
       // layout
       if (CommonGLPI::isLayoutWithMain()

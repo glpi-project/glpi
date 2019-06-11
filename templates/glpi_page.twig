@@ -32,18 +32,10 @@
 
 {% block html_class %} layout_{{ glpi_layout }}{% endblock %}
 
-{% block head %}
+{% block css %}
+   {{ parent() }}
    {% set css_paths = css_paths|default([])|merge([
-      lib_path ~ '/jquery-ui/jquery-ui.css',
-      lib_path ~ '/select2/css/select2.css',
-      lib_path ~ '/select2-theme-bootstrap4/select2-bootstrap.css',
-      lib_path ~ '/qtip2/jquery.qtip.css',
-      lib_path ~ '/leaflet/leaflet.css',
-      lib_path ~ '/leaflet.markercluster/MarkerCluster.css',
-      lib_path ~ '/leaflet.markercluster/MarkerCluster.Default.css',
-      lib_path ~ '/leaflet.awesome-markers/leaflet.awesome-markers.css',
-      'lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.css',
-      lib_path ~ '/leaflet-fullscreen/leaflet.fullscreen.css',
+      lib_path ~ '/leaflet.css',
       ]) %}
    {% for css_path in css_paths %}
       {% set media = 'screen' %}
@@ -53,7 +45,6 @@
       {% endif %}
       <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ css_path }}" type="text/css" media="{{ media }}" />
    {% endfor %}
-   {{ parent() }}
 {% endblock %}
 
 {% block header %}
@@ -356,20 +347,8 @@
 {% block javascripts %}
    {{ parent() }}
    {% set js_paths = js_paths|default([])|merge([
-         lib_path ~ '/jquery-ui-dist/jquery-ui.js',
-         lib_path ~ '/select2/js/select2.full.js',
-         lib_path ~ '/qtip2/jquery.qtip.js',
-         lib_path ~ '/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js',
-         lib_path ~ '/jquery.autogrow-textarea/jquery.autogrow-textarea.js',
-         lib_path ~ '/jquery-mousewheel/jquery.mousewheel.js',
-         'lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js',
-         lib_path ~ '/leaflet/leaflet.js',
-         lib_path ~ '/spin.js/spin.js',
-         lib_path ~ '/leaflet-spin/leaflet.spin.js',
-         lib_path ~ '/leaflet.markercluster/leaflet.markercluster-src.js',
-         lib_path ~ '/leaflet.awesome-markers/leaflet.awesome-markers.js',
-         'lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.js',
-         lib_path ~ '/leaflet-fullscreen/Leaflet.fullscreen.js',
+         lib_path ~ '/scrollable-tabs.js',
+         lib_path ~ '/leaflet.js',
          'js/common.js',
       ]) %}
    {% for js_path in js_paths %}

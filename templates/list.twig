@@ -46,10 +46,6 @@
 {% block javascripts %}
    {{ parent() }}
    {#TODO Load locale for moment.js#}
-   {% set js_paths = js_paths|default([])|merge([
-         lib_path ~ '/jquery-ui-dist/jquery-ui.js',
-         lib_path ~ '/moment/moment.js'
-      ]) %}
    <script type="text/javascript">
       $(function() {
          $('#default_items').on('click', function() {
