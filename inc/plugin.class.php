@@ -297,20 +297,30 @@ class Plugin extends CommonDBTM {
             return;
          }
 
-         trigger_error(
-            sprintf(
-               'Unable to load plugin "%s" informations. Its state has been changed to "To be cleaned".',
-               $directory
-            ),
-            E_USER_WARNING
-         );
-         $this->update(
-            [
-               'id'    => $plugin->fields['id'],
-               'state' => self::TOBECLEANED,
-            ]
-         );
-         return;
+         // Try to get information from a plugin that lists current name as its old name
+         // If something found, and not already registerd in DB,, base plugin informations on it
+         // If nothing found, mark plugin as "To be cleaned"
+         $new_specs = $this->getNewInfoAndDirBasedOnOldName($directory);
+         if (null !== $new_specs
+             && countElementsInTable(self::getTable(), ['directory' => $new_specs['directory']]) === 0) {
+            $directory    = $new_specs['directory'];
+            $informations = $new_specs['informations'];
+         } else {
+            trigger_error(
+               sprintf(
+                  'Unable to load plugin "%s" informations. Its state has been changed to "To be cleaned".',
+                  $directory
+               ),
+               E_USER_WARNING
+            );
+            $this->update(
+               [
+                  'id'    => $plugin->fields['id'],
+                  'state' => self::TOBECLEANED,
+               ]
+            );
+            return;
+         }
       }
 
       if (!$is_already_known && array_key_exists('oldname', $informations)) {
@@ -409,6 +419,37 @@ class Plugin extends CommonDBTM {
          );
          $this->unactivate($plugin->fields['id']);
       }
+   }
+
+
+   /**
+    * Get plugin informations based on its old name.
+    *
+    * @param string $oldname
+    *
+    * @return null|array If a new directory is found, returns an array containing 'directory' and 'informations' keys.
+    */
+   private function getNewInfoAndDirBasedOnOldName($oldname) {
+
+      $plugins_directories = new DirectoryIterator(GLPI_ROOT . '/plugins');
+      /** @var SplFileInfo $plugin_directory */
+      foreach ($plugins_directories as $plugin_directory) {
+         if (in_array($plugin_directory->getFilename(), ['.svn', '.', '..'])
+             || !is_dir($plugin_directory->getRealPath())) {
+            continue;
+         }
+
+         $informations = $this->getInformationsFromDirectory($plugin_directory->getFilename());
+         if (array_key_exists('oldname', $informations) && $informations['oldname'] === $oldname) {
+            // Return informations if oldname specified in parsed directory matches passed value
+            return [
+               'directory'    => $plugin_directory->getFilename(),
+               'informations' => $informations,
+            ];
+         }
+      }
+
+      return null;
    }
 
    /**
