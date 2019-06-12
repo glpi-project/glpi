@@ -1015,7 +1015,8 @@ class Rule extends CommonDBTM {
     * @return the maximum number of actions
    **/
    function maxActionsCount() {
-      return count(array_filter($this->actions, function($action) {
+      return count(array_filter($this->actions, function($action_obj) {
+         $action = $this->getAction($action_obj->fields['field']);
          return !isset($action['duplicatewith']);
       }));
    }
