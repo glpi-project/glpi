@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Template for task
+ * Template for followups
  * @since 9.5
 **/
 class ITILFollowupTemplate extends CommonDropdown {

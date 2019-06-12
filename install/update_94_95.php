@@ -244,7 +244,7 @@ function update94to95() {
          INDEX `date_creation` (`date_creation`),
          INDEX `is_private` (`is_private`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "9.3 add table glpi_itilfollowuptemplates");
+      $DB->queryOrDie($query, "add table glpi_itilfollowuptemplates");
    }
 
    // ************ Keep it at the end **************
