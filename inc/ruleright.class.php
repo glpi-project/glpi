@@ -87,14 +87,13 @@ class RuleRight extends Rule {
    function executeActions($output, $params, array $input = []) {
       global $CFG_GLPI;
 
-      $entity       = '';
+      $entity = [];
       $right        = '';
       $is_recursive = 0;
       $continue     = true;
       $output_src   = $output;
 
       if (count($this->actions)) {
-         $entity = [];
          foreach ($this->actions as $action) {
 
             switch ($action->fields["action_type"]) {
