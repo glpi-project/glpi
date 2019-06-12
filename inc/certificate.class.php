@@ -724,6 +724,8 @@ class Certificate extends CommonDBTM {
                ],
                'WHERE'     => [
                   'glpi_alerts.date'              => null,
+                  'glpi_certificates.is_deleted'  => 0,
+                  'glpi_certificates.is_template' => 0,
                   [
                      'NOT' => ['glpi_certificates.date_expiration' => null],
                   ],
