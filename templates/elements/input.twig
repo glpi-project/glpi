@@ -33,7 +33,7 @@
    {% if notag is not defined or not notag %}
       {% set md = 6 %}
       {% if glpi_form.columns is defined %}{% set md = 12/glpi_form.columns %}{% endif %}
-   <div class="form-group row col-md-{{ md }}{% if element.type == 'checkbox' %} elt_checkbox{% endif %}">
+   <div class="form-group row col-md-{{ md }}{% if element.type is defined and element.type == 'checkbox' %} elt_checkbox{% endif %}">
    {% endif %}
    {% block label %}
       {% if element.label is defined %}
