@@ -37,8 +37,9 @@
 {% macro fieldset(fieldset, glpi_form, name, show) %}
    <fieldset  class="tab-pane{% if show == true %} active{% endif %}" id="{{ name }}" role="tabpanel">
       <div class="row">
-      {% for element in fieldset.elements %}
+      {% for id, element in fieldset.elements %}
          {% set tpl = element.type|default('input') %}
+         {% set element = {'name': id}|merge(element) %}
          {% include "elements/" ~ tpl ~".twig" with {
             'element':  element,
             'glpi_form': glpi_form
