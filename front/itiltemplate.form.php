@@ -32,5 +32,5 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new TicketTemplate();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+$dropdown = new ITILTemplate();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");

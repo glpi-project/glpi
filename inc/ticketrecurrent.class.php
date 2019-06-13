@@ -78,7 +78,7 @@ class TicketRecurrent extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (Session::haveRight('tickettemplate', READ)) {
+      if (Session::haveRight('itiltemplate', READ)) {
          switch ($item->getType()) {
             case 'TicketRecurrent' :
                $ong[1] = _n('Information', 'Information', Session::getPluralNumber());
@@ -136,7 +136,7 @@ class TicketRecurrent extends CommonDropdown {
                          'label' => __('Active'),
                          'type'  => 'bool',
                          'list'  => false],
-                   ['name'  => 'tickettemplates_id',
+                   ['name'  => 'itiltemplates_id',
                          'label' => _n('Ticket template', 'Ticket templates', 1),
                          'type'  => 'dropdownValue',
                          'list'  => true],
@@ -239,7 +239,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => 'glpi_tickettemplates',
+         'table'              => 'glpi_itiltemplates',
          'field'              => 'name',
          'name'               => _n('Ticket template', 'Ticket templates', 1),
          'datatype'           => 'itemlink'
@@ -464,15 +464,15 @@ class TicketRecurrent extends CommonDropdown {
    static function createTicket($data) {
 
       $result = false;
-      $tt     = new TicketTemplate();
+      $tt     = new ITILTemplate();
 
       // Create ticket based on ticket template and entity information of ticketrecurrent
-      if ($tt->getFromDB($data['tickettemplates_id'])) {
+      if ($tt->getFromDB($data['itiltemplates_id'])) {
          // Get default values for ticket
          $input = Ticket::getDefaultValues($data['entities_id']);
-         // Apply tickettemplates predefined values
-         $ttp        = new TicketTemplatePredefinedField();
-         $predefined = $ttp->getPredefinedFields($data['tickettemplates_id'], true);
+         // Apply itiltemplates predefined values
+         $ttp        = new ITILTemplatePredefinedField();
+         $predefined = $ttp->getPredefinedFields($data['itiltemplates_id'], true);
 
          if (count($predefined)) {
             foreach ($predefined as $predeffield => $predefvalue) {

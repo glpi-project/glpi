@@ -221,6 +221,42 @@ function update94to95() {
 
    $ADDTODISPLAYPREF['cluster'] = [31, 19];
    /** /Clusters */
+   /** ITIL templates */
+   //rename tables
+   foreach ([
+      'glpi_tickettemplates',
+      'glpi_tickettemplatepredefinedfields',
+      'glpi_tickettemplatemandatoryfields',
+      'glpi_tickettemplatehiddenfields'
+   ] as $table) {
+      if ($DB->tableExists($table)) {
+         $migration->renameTable($table, str_replace('ticket', 'itil', $table));
+      }
+   }
+   //rename fkeys
+   foreach ([
+      'glpi_entities'                     => 'tickettemplates_id',
+      'glpi_itilcategories'               => 'tickettemplates_id_incident',
+      'glpi_itilcategories'               => 'tickettemplates_id_demand',
+      'glpi_profiles'                     => 'tickettemplates_id',
+      'glpi_ticketrecurrents'             => 'tickettemplates_id',
+      'glpi_itiltemplatehiddenfields'     => 'tickettemplates_id',
+      'glpi_itiltemplatemandatoryfields'  => 'tickettemplates_id',
+      'glpi_itiltemplatepredefinedfields' => 'tickettemplates_id'
+   ] as $table => $field) {
+      if ($DB->fieldExists($table, $field)) {
+         $migration->changeField($table, $field, str_replace('ticket', 'itil', $field), 'integer');
+      }
+   }
+   //rename profilerights values
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_profilerights',
+         ['name' => 'itiltemplate'],
+         ['name' => 'tickettemplate']
+      )
+   );
+   /** /ITIL templates */
 
    /** add templates for followups */
    if (!$DB->tableExists('glpi_itilfollowuptemplates')) {

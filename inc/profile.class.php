@@ -47,7 +47,7 @@ class Profile extends CommonDBTM {
                                           'password_update', 'reminder_public',
                                           'reservation', 'rssfeed_public',
                                           'show_group_hardware', 'task', 'ticket',
-                                          'tickettemplates_id', 'ticket_cost',
+                                          'itiltemplates_id', 'ticket_cost',
                                           'ticketvalidation', 'ticket_status','personalization'];
 
 
@@ -671,7 +671,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Default ticket template')."</td><td>";
       // Only root entity ones and recursive
-      $options = ['value'     => $this->fields["tickettemplates_id"],
+      $options = ['value'     => $this->fields["itiltemplates_id"],
                        'entity'    => 0];
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = ['is_recursive' => 1];
@@ -680,7 +680,7 @@ class Profile extends CommonDBTM {
       if (!isset($_SESSION['glpiactiveentities'][0])) {
          $options['addicon'] = false;
       }
-      TicketTemplate::dropdown($options);
+      ITILTemplate::dropdown($options);
       echo "</td>";
       echo "</tr>\n";
 
@@ -985,7 +985,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Ticket', 'Tickets', Session::getPluralNumber()).': '.__('Default ticket template')."</td><td  width='30%'>";
       // Only root entity ones and recursive
-      $options = ['value'     => $this->fields["tickettemplates_id"],
+      $options = ['value'     => $this->fields["itiltemplates_id"],
                        'entity'    => 0];
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = ['is_recursive' => 1];
@@ -995,7 +995,7 @@ class Profile extends CommonDBTM {
          $options['addicon'] = false;
       }
 
-      TicketTemplate::dropdown($options);
+      ITILTemplate::dropdown($options);
       echo "</td></tr>\n";
 
       echo "</table>";
@@ -1012,9 +1012,9 @@ class Profile extends CommonDBTM {
                       ['itemtype'  => 'TicketRecurrent',
                             'label'     => __('Recurrent tickets'),
                             'field'     => 'ticketrecurrent'],
-                      ['itemtype'  => 'TicketTemplate',
+                      ['itemtype'  => 'ITILTemplate',
                             'label'     => _n('Ticket template', 'Ticket templates', Session::getPluralNumber()),
-                            'field'     => 'tickettemplate']];
+                            'field'     => 'itiltemplate']];
       $matrix_options['title'] = _n('Ticket', 'Tickets', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
@@ -2242,7 +2242,7 @@ class Profile extends CommonDBTM {
 
       $newtab = [
          'id'                 => '108',
-         'table'              => 'glpi_tickettemplates',
+         'table'              => 'glpi_itiltemplates',
          'field'              => 'name',
          'name'               => __('Default ticket template'),
          'datatype'           => 'dropdown',
@@ -2260,11 +2260,11 @@ class Profile extends CommonDBTM {
          'field'              => 'rights',
          'name'               => _n('Ticket template', 'Ticket templates', Session::getPluralNumber()),
          'datatype'           => 'right',
-         'rightclass'         => 'TicketTemplate',
-         'rightname'          => 'tickettemplate',
+         'rightclass'         => 'ITILTemplate',
+         'rightname'          => 'itiltemplate',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => "AND `NEWTABLE`.`name`= 'tickettemplate'"
+            'condition'          => "AND `NEWTABLE`.`name`= 'itiltemplate'"
          ]
       ];
 

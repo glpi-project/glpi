@@ -1241,7 +1241,7 @@ abstract class API extends CommonGLPI {
 
       // filter with entity
       if ($item->isEntityAssign()
-          // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like TicketTemplateMandatoryField)
+          // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like ITILTemplateMandatoryField)
           && array_key_exists('entities_id', $item->fields)) {
          $where.= " AND (". getEntitiesRestrictRequest("",
                                              $itemtype::getTable(),

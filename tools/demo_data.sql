@@ -18,7 +18,7 @@ UPDATE glpi_profilerights SET rights = 1 WHERE profiles_id = 3 AND name = 'typed
 UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'slm';
 UPDATE glpi_profilerights SET rights = 261151 WHERE profiles_id = 3 AND name = 'ticket';
 UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'ticketrecurrent';
-UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'tickettemplate';
+UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'itiltemplate';
 UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'reminder_public';
 UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'rssfeed_public';
 UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'bookmark_public';

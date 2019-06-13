@@ -34,6 +34,8 @@ The present file will list all changes made to the project; according to the
 - `DBMysql::isMySQLStrictMode()`
 - `getAllDatasFromTable` renamed to `getAllDataFromTable()`
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
+- All `TicketTemplate` classes has been renamed to `ITILTemplate`
+- `Ticket::getTicketTemplateToUse()` renamed to `Ticket::getITILTemplateToUse()`
 
 #### Removed
 

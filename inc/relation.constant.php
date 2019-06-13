@@ -525,7 +525,7 @@ $RELATION = [
       '_glpi_ticketcosts'                => 'entities_id',
       'glpi_ticketrecurrents'            => 'entities_id',
       'glpi_tickets'                     => 'entities_id',
-      'glpi_tickettemplates'             => 'entities_id',
+      'glpi_itiltemplates'             => 'entities_id',
       '_glpi_ticketvalidations'          => 'entities_id',
       'glpi_users'                       => 'entities_id',
       'glpi_vlans'                       => 'entities_id',
@@ -1161,17 +1161,17 @@ $RELATION = [
       '_glpi_ticketvalidations'    => 'tickets_id',
    ],
 
-   'glpi_tickettemplates' => [
-      'glpi_entities'                        => 'tickettemplates_id',
+   'glpi_itiltemplates' => [
+      'glpi_entities'                        => 'itiltemplates_id',
       'glpi_itilcategories'                  => [
-         'tickettemplates_id_incident',
-         'tickettemplates_id_demand',
+         'itiltemplates_id_incident',
+         'itiltemplates_id_demand',
       ],
-      'glpi_profiles'                        => 'tickettemplates_id',
-      'glpi_ticketrecurrents'                => 'tickettemplates_id',
-      '_glpi_tickettemplatehiddenfields'     => 'tickettemplates_id',
-      '_glpi_tickettemplatemandatoryfields'  => 'tickettemplates_id',
-      '_glpi_tickettemplatepredefinedfields' => 'tickettemplates_id',
+      'glpi_profiles'                        => 'itiltemplates_id',
+      'glpi_ticketrecurrents'                => 'itiltemplates_id',
+      '_glpi_itiltemplatehiddenfields'     => 'itiltemplates_id',
+      '_glpi_itiltemplatemandatoryfields'  => 'itiltemplates_id',
+      '_glpi_itiltemplatepredefinedfields' => 'itiltemplates_id',
    ],
 
    'glpi_usercategories' => [

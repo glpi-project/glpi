@@ -34,17 +34,17 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
-Session ::checkRight('tickettemplate', UPDATE);
+Session ::checkRight('itiltemplate', UPDATE);
 
-$item = new TicketTemplateHiddenField();
+$item = new ITILTemplateMandatoryField();
 
 if (isset($_POST["add"])) {
    $item->check(-1, UPDATE, $_POST);
 
    if ($item->add($_POST)) {
-      Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds hidden field'), $_SESSION["glpiname"]));
+      Event::log($_POST["itiltemplates_id"], "itiltemplate", 4, "maintain",
+                  //TRANS: %s is the user login
+                  sprintf(__('%s adds mandatory field'), $_SESSION["glpiname"]));
    }
    Html::back();
 
