@@ -2947,7 +2947,7 @@ CREATE TABLE `glpi_entities` (
   `autofill_buy_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   `autofill_delivery_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   `autofill_order_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '-2',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '-2',
   `entities_id_software` int(11) NOT NULL DEFAULT '-2',
   `default_contract_alert` int(11) NOT NULL DEFAULT '-2',
   `default_infocom_alert` int(11) NOT NULL DEFAULT '-2',
@@ -3995,8 +3995,8 @@ CREATE TABLE `glpi_itilcategories` (
   `ancestors_cache` longtext COLLATE utf8_unicode_ci,
   `sons_cache` longtext COLLATE utf8_unicode_ci,
   `is_helpdeskvisible` tinyint(1) NOT NULL DEFAULT '1',
-  `tickettemplates_id_incident` int(11) NOT NULL DEFAULT '0',
-  `tickettemplates_id_demand` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id_incident` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id_demand` int(11) NOT NULL DEFAULT '0',
   `is_incident` int(11) NOT NULL DEFAULT '1',
   `is_request` int(11) NOT NULL DEFAULT '1',
   `is_problem` int(11) NOT NULL DEFAULT '1',
@@ -4012,8 +4012,8 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `groups_id` (`groups_id`),
   KEY `is_helpdeskvisible` (`is_helpdeskvisible`),
   KEY `itilcategories_id` (`itilcategories_id`),
-  KEY `tickettemplates_id_incident` (`tickettemplates_id_incident`),
-  KEY `tickettemplates_id_demand` (`tickettemplates_id_demand`),
+  KEY `itiltemplates_id_incident` (`itiltemplates_id_incident`),
+  KEY `itiltemplates_id_demand` (`itiltemplates_id_demand`),
   KEY `is_incident` (`is_incident`),
   KEY `is_request` (`is_request`),
   KEY `is_problem` (`is_problem`),
@@ -6551,7 +6551,7 @@ INSERT INTO `glpi_profilerights` VALUES ('85','1','problem','0');
 INSERT INTO `glpi_profilerights` VALUES ('702','2','netpoint','0');
 INSERT INTO `glpi_profilerights` VALUES ('697','4','knowbasecategory','23');
 INSERT INTO `glpi_profilerights` VALUES ('691','5','itilcategory','0');
-INSERT INTO `glpi_profilerights` VALUES ('89','1','tickettemplate','0');
+INSERT INTO `glpi_profilerights` VALUES ('89','1','itiltemplate','0');
 INSERT INTO `glpi_profilerights` VALUES ('90','1','ticketrecurrent','0');
 INSERT INTO `glpi_profilerights` VALUES ('91','1','ticketcost','0');
 INSERT INTO `glpi_profilerights` VALUES ('671','6','changevalidation','20');
@@ -6621,7 +6621,7 @@ INSERT INTO `glpi_profilerights` VALUES ('179','2','problem','1057');
 INSERT INTO `glpi_profilerights` VALUES ('701','1','netpoint','0');
 INSERT INTO `glpi_profilerights` VALUES ('696','3','knowbasecategory','23');
 INSERT INTO `glpi_profilerights` VALUES ('690','4','itilcategory','23');
-INSERT INTO `glpi_profilerights` VALUES ('183','2','tickettemplate','0');
+INSERT INTO `glpi_profilerights` VALUES ('183','2','itiltemplate','0');
 INSERT INTO `glpi_profilerights` VALUES ('184','2','ticketrecurrent','0');
 INSERT INTO `glpi_profilerights` VALUES ('185','2','ticketcost','1');
 INSERT INTO `glpi_profilerights` VALUES ('669','4','changevalidation','1044');
@@ -6692,7 +6692,7 @@ INSERT INTO `glpi_profilerights` VALUES ('269','3','rule_dictionnary_printer','0
 INSERT INTO `glpi_profilerights` VALUES ('273','3','problem','1151');
 INSERT INTO `glpi_profilerights` VALUES ('695','2','knowbasecategory','0');
 INSERT INTO `glpi_profilerights` VALUES ('689','3','itilcategory','23');
-INSERT INTO `glpi_profilerights` VALUES ('277','3','tickettemplate','23');
+INSERT INTO `glpi_profilerights` VALUES ('277','3','itiltemplate','23');
 INSERT INTO `glpi_profilerights` VALUES ('278','3','ticketrecurrent','1');
 INSERT INTO `glpi_profilerights` VALUES ('279','3','ticketcost','23');
 INSERT INTO `glpi_profilerights` VALUES ('667','2','changevalidation','1044');
@@ -6762,7 +6762,7 @@ INSERT INTO `glpi_profilerights` VALUES ('363','4','rule_dictionnary_printer','2
 INSERT INTO `glpi_profilerights` VALUES ('367','4','problem','1151');
 INSERT INTO `glpi_profilerights` VALUES ('694','1','knowbasecategory','0');
 INSERT INTO `glpi_profilerights` VALUES ('688','2','itilcategory','0');
-INSERT INTO `glpi_profilerights` VALUES ('371','4','tickettemplate','23');
+INSERT INTO `glpi_profilerights` VALUES ('371','4','itiltemplate','23');
 INSERT INTO `glpi_profilerights` VALUES ('372','4','ticketrecurrent','23');
 INSERT INTO `glpi_profilerights` VALUES ('373','4','ticketcost','23');
 INSERT INTO `glpi_profilerights` VALUES ('665','7','change','1151');
@@ -6833,7 +6833,7 @@ INSERT INTO `glpi_profilerights` VALUES ('457','5','rule_dictionnary_printer','0
 INSERT INTO `glpi_profilerights` VALUES ('461','5','problem','1024');
 INSERT INTO `glpi_profilerights` VALUES ('700','7','knowbasecategory','23');
 INSERT INTO `glpi_profilerights` VALUES ('687','1','itilcategory','0');
-INSERT INTO `glpi_profilerights` VALUES ('465','5','tickettemplate','0');
+INSERT INTO `glpi_profilerights` VALUES ('465','5','itiltemplate','0');
 INSERT INTO `glpi_profilerights` VALUES ('466','5','ticketrecurrent','0');
 INSERT INTO `glpi_profilerights` VALUES ('467','5','ticketcost','23');
 INSERT INTO `glpi_profilerights` VALUES ('663','5','change','1054');
@@ -6904,7 +6904,7 @@ INSERT INTO `glpi_profilerights` VALUES ('555','6','problem','1121');
 INSERT INTO `glpi_profilerights` VALUES ('699','6','knowbasecategory','0');
 INSERT INTO `glpi_profilerights` VALUES ('693','7','itilcategory','23');
 INSERT INTO `glpi_profilerights` VALUES ('686','7','location','23');
-INSERT INTO `glpi_profilerights` VALUES ('559','6','tickettemplate','1');
+INSERT INTO `glpi_profilerights` VALUES ('559','6','itiltemplate','1');
 INSERT INTO `glpi_profilerights` VALUES ('560','6','ticketrecurrent','1');
 INSERT INTO `glpi_profilerights` VALUES ('561','6','ticketcost','23');
 INSERT INTO `glpi_profilerights` VALUES ('661','3','change','1151');
@@ -6973,7 +6973,7 @@ INSERT INTO `glpi_profilerights` VALUES ('649','7','problem','1151');
 INSERT INTO `glpi_profilerights` VALUES ('698','5','knowbasecategory','0');
 INSERT INTO `glpi_profilerights` VALUES ('692','6','itilcategory','0');
 INSERT INTO `glpi_profilerights` VALUES ('685','6','location','0');
-INSERT INTO `glpi_profilerights` VALUES ('653','7','tickettemplate','23');
+INSERT INTO `glpi_profilerights` VALUES ('653','7','itiltemplate','23');
 INSERT INTO `glpi_profilerights` VALUES ('654','7','ticketrecurrent','1');
 INSERT INTO `glpi_profilerights` VALUES ('655','7','ticketcost','23');
 INSERT INTO `glpi_profilerights` VALUES ('659','1','change','0');
@@ -7045,7 +7045,7 @@ INSERT INTO `glpi_profilerights` VALUES ('812','8','taskcategory','1');
 INSERT INTO `glpi_profilerights` VALUES ('813','8','ticket','138241');
 INSERT INTO `glpi_profilerights` VALUES ('814','8','ticketcost','1');
 INSERT INTO `glpi_profilerights` VALUES ('815','8','ticketrecurrent','1');
-INSERT INTO `glpi_profilerights` VALUES ('816','8','tickettemplate','1');
+INSERT INTO `glpi_profilerights` VALUES ('816','8','itiltemplate','1');
 INSERT INTO `glpi_profilerights` VALUES ('817','8','ticketvalidation','0');
 INSERT INTO `glpi_profilerights` VALUES ('818','8','transfer','1');
 INSERT INTO `glpi_profilerights` VALUES ('819','8','typedoc','1');
@@ -7145,7 +7145,7 @@ CREATE TABLE `glpi_profiles` (
   `comment` text COLLATE utf8_unicode_ci,
   `problem_status` text COLLATE utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
   `create_ticket_on_login` tinyint(1) NOT NULL DEFAULT '0',
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '0',
   `change_status` text COLLATE utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -8538,7 +8538,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '0',
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '0',
   `begin_date` timestamp NULL DEFAULT NULL,
   `periodicity` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `create_before` int(11) NOT NULL DEFAULT '0',
@@ -8549,7 +8549,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_active` (`is_active`),
-  KEY `tickettemplates_id` (`tickettemplates_id`),
+  KEY `itiltemplates_id` (`itiltemplates_id`),
   KEY `next_creation_date` (`next_creation_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -8717,48 +8717,48 @@ CREATE TABLE `glpi_tickettasks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_tickettemplatehiddenfields
+### Dump table glpi_tiltemplatehiddenfields
 
-DROP TABLE IF EXISTS `glpi_tickettemplatehiddenfields`;
-CREATE TABLE `glpi_tickettemplatehiddenfields` (
+DROP TABLE IF EXISTS `glpi_itiltemplatehiddenfields`;
+CREATE TABLE `glpi_itiltemplatehiddenfields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '0',
   `num` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`tickettemplates_id`,`num`)
+  UNIQUE KEY `unicity` (`itiltemplates_id`,`num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_tickettemplatemandatoryfields
+### Dump table glpi_itiltemplatemandatoryfields
 
-DROP TABLE IF EXISTS `glpi_tickettemplatemandatoryfields`;
-CREATE TABLE `glpi_tickettemplatemandatoryfields` (
+DROP TABLE IF EXISTS `glpi_itiltemplatemandatoryfields`;
+CREATE TABLE `glpi_itiltemplatemandatoryfields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '0',
   `num` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`tickettemplates_id`,`num`)
+  UNIQUE KEY `unicity` (`itiltemplates_id`,`num`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_tickettemplatemandatoryfields` VALUES ('1','1','21');
+INSERT INTO `glpi_itiltemplatemandatoryfields` VALUES ('1','1','21');
 
-### Dump table glpi_tickettemplatepredefinedfields
+### Dump table glpi_itiltemplatepredefinedfields
 
-DROP TABLE IF EXISTS `glpi_tickettemplatepredefinedfields`;
-CREATE TABLE `glpi_tickettemplatepredefinedfields` (
+DROP TABLE IF EXISTS `glpi_itiltemplatepredefinedfields`;
+CREATE TABLE `glpi_itiltemplatepredefinedfields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '0',
   `num` int(11) NOT NULL DEFAULT '0',
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  KEY `tickettemplates_id_id_num` (`tickettemplates_id`,`num`)
+  KEY `itiltemplates_id_id_num` (`itiltemplates_id`,`num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_tickettemplates
+### Dump table glpi_itiltemplates
 
-DROP TABLE IF EXISTS `glpi_tickettemplates`;
-CREATE TABLE `glpi_tickettemplates` (
+DROP TABLE IF EXISTS `glpi_itiltemplates`;
+CREATE TABLE `glpi_itiltemplates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -8770,7 +8770,7 @@ CREATE TABLE `glpi_tickettemplates` (
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_tickettemplates` VALUES ('1','Default','0','1',NULL);
+INSERT INTO `glpi_itiltemplates` VALUES ('1','Default','0','1',NULL);
 
 ### Dump table glpi_ticketvalidations
 

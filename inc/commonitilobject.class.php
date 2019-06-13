@@ -2530,9 +2530,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $mandatory = '';
       // For ticket templates : mandatories
       if (($itemtype == 'Ticket')
-          && isset($options['_tickettemplate'])) {
-         $mandatory = $options['_tickettemplate']->getMandatoryMark("_groups_id_".$typename);
-         if ($options['_tickettemplate']->isMandatoryField("_groups_id_".$typename)
+          && isset($options['_itiltemplate'])) {
+         $mandatory = $options['_itiltemplate']->getMandatoryMark("_groups_id_".$typename);
+         if ($options['_itiltemplate']->isMandatoryField("_groups_id_".$typename)
              && isset($this->groups[$type]) && (count($this->groups[$type])==1)) {
             $candelete = false;
          }
@@ -2587,9 +2587,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $mandatory    = '';
       // For ticket templates : mandatories
       if (($itemtype == 'Ticket')
-          && isset($options['_tickettemplate'])) {
-         $mandatory = $options['_tickettemplate']->getMandatoryMark("_suppliers_id_".$typename);
-         if ($options['_tickettemplate']->isMandatoryField("_suppliers_id_".$typename)
+          && isset($options['_itiltemplate'])) {
+         $mandatory = $options['_itiltemplate']->getMandatoryMark("_suppliers_id_".$typename);
+         if ($options['_itiltemplate']->isMandatoryField("_suppliers_id_".$typename)
              && isset($this->suppliers[$type]) && (count($this->suppliers[$type])==1)) {
             $candelete = false;
          }
@@ -3642,9 +3642,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $mandatory = '';
       // For ticket templates : mandatories
       if (($itemtype == 'Ticket')
-          && isset($options['_tickettemplate'])) {
-         $mandatory = $options['_tickettemplate']->getMandatoryMark("_users_id_".$typename);
-         if ($options['_tickettemplate']->isMandatoryField("_users_id_".$typename)
+          && isset($options['_itiltemplate'])) {
+         $mandatory = $options['_itiltemplate']->getMandatoryMark("_users_id_".$typename);
+         if ($options['_itiltemplate']->isMandatoryField("_users_id_".$typename)
              && isset($this->users[$type]) && (count($this->users[$type])==1)) {
             $candelete = false;
          }
@@ -3816,8 +3816,8 @@ abstract class CommonITILObject extends CommonDBTM {
       echo self::getActorIcon('user', $type);
       // For ticket templates : mandatories
       if (($itemtype == 'Ticket')
-          && isset($options['_tickettemplate'])) {
-         echo $options['_tickettemplate']->getMandatoryMark("_users_id_".$typename);
+          && isset($options['_itiltemplate'])) {
+         echo $options['_itiltemplate']->getMandatoryMark("_users_id_".$typename);
       }
       echo "&nbsp;";
 
@@ -3980,8 +3980,8 @@ abstract class CommonITILObject extends CommonDBTM {
       echo self::getActorIcon('supplier', 'assign');
       // For ticket templates : mandatories
       if (($itemtype == 'Ticket')
-            && isset($options['_tickettemplate'])) {
-         echo $options['_tickettemplate']->getMandatoryMark("_suppliers_id_assign");
+            && isset($options['_itiltemplate'])) {
+         echo $options['_itiltemplate']->getMandatoryMark("_suppliers_id_assign");
       }
       echo "&nbsp;";
 
@@ -4077,8 +4077,8 @@ abstract class CommonITILObject extends CommonDBTM {
                      '_users_id_assign', '_groups_id_assign',
                      '_suppliers_id_assign'] as $f) {
          $is_hidden[$f] = false;
-         if (isset($options['_tickettemplate'])
-             && $options['_tickettemplate']->isHiddenField($f)) {
+         if (isset($options['_itiltemplate'])
+             && $options['_itiltemplate']->isHiddenField($f)) {
             $is_hidden[$f] = true;
          }
       }
@@ -4184,8 +4184,8 @@ abstract class CommonITILObject extends CommonDBTM {
              && !$is_hidden['_groups_id_requester']) {
             echo self::getActorIcon('group', CommonITILActor::REQUESTER);
             /// For ticket templates : mandatories
-            if (isset($options['_tickettemplate'])) {
-               echo $options['_tickettemplate']->getMandatoryMark('_groups_id_requester');
+            if (isset($options['_itiltemplate'])) {
+               echo $options['_itiltemplate']->getMandatoryMark('_groups_id_requester');
             }
             echo "&nbsp;";
 
@@ -4278,8 +4278,8 @@ abstract class CommonITILObject extends CommonDBTM {
              && !$is_hidden['_groups_id_observer']) {
             echo self::getActorIcon('group', CommonITILActor::OBSERVER);
             /// For ticket templates : mandatories
-            if (isset($options['_tickettemplate'])) {
-               echo $options['_tickettemplate']->getMandatoryMark('_groups_id_observer');
+            if (isset($options['_itiltemplate'])) {
+               echo $options['_itiltemplate']->getMandatoryMark('_groups_id_observer');
             }
             echo "&nbsp;";
 
@@ -4390,8 +4390,8 @@ abstract class CommonITILObject extends CommonDBTM {
              && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
             echo self::getActorIcon('group', CommonITILActor::ASSIGN);
             /// For ticket templates : mandatories
-            if (isset($options['_tickettemplate'])) {
-               echo $options['_tickettemplate']->getMandatoryMark('_groups_id_assign');
+            if (isset($options['_itiltemplate'])) {
+               echo $options['_itiltemplate']->getMandatoryMark('_groups_id_assign');
             }
             echo "&nbsp;";
             $rand   = mt_rand();

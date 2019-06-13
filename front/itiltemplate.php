@@ -30,24 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
-
 include ('../inc/includes.php');
 
-Session ::checkRight('tickettemplate', UPDATE);
-
-$item = new TicketTemplateMandatoryField();
-
-if (isset($_POST["add"])) {
-   $item->check(-1, UPDATE, $_POST);
-
-   if ($item->add($_POST)) {
-      Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s adds mandatory field'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
-}
-
-Html::displayErrorAndDie("lost");
+$dropdown = new ITILTemplate();
+include (GLPI_ROOT . "/front/dropdown.common.php");

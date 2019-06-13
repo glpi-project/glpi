@@ -34,20 +34,17 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
-Session ::checkRight('tickettemplate', UPDATE);
+Session ::checkRight('itiltemplate', UPDATE);
 
-$item = new TicketTemplatePredefinedField();
+$item = new ITILTemplateHiddenField();
 
-// Use masiveaction system to manage add value
-if (isset($_POST["massiveaction"])) {
+if (isset($_POST["add"])) {
    $item->check(-1, UPDATE, $_POST);
-   if (isset($_POST['items_tickets_id']) && isset($_POST['add_items_id'])) {
-      $_POST['items_tickets_id'] = $_POST['items_tickets_id']."_".$_POST['add_items_id'];
-   }
+
    if ($item->add($_POST)) {
-      Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
+      Event::log($_POST["itiltemplates_id"], "itiltemplate", 4, "maintain",
                  //TRANS: %s is the user login
-                 sprintf(__('%s adds predefined field'), $_SESSION["glpiname"]));
+                 sprintf(__('%s adds hidden field'), $_SESSION["glpiname"]));
    }
    Html::back();
 

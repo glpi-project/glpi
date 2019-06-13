@@ -191,20 +191,20 @@ class Ticket extends DbTestCase {
       $this->boolean($tasktemplate->isNewItem())->isFalse();
 
       // 3 - create a ticket template with the task templates in predefined fields
-      $tickettemplate    = new \TicketTemplate;
-      $tickettemplate_id = $tickettemplate->add([
+      $itiltemplate    = new \ITILTemplate;
+      $itiltemplate_id = $itiltemplate->add([
          'name' => 'my ticket template',
       ]);
-      $this->boolean($tickettemplate->isNewItem())->isFalse();
-      $ttp = new \TicketTemplatePredefinedField();
+      $this->boolean($itiltemplate->isNewItem())->isFalse();
+      $ttp = new \ITILTemplatePredefinedField();
       $ttp->add([
-         'tickettemplates_id' => $tickettemplate_id,
+         'itiltemplates_id' => $itiltemplate_id,
          'num'                => '175',
          'value'              => $ttA_id,
       ]);
       $this->boolean($ttp->isNewItem())->isFalse();
       $ttp->add([
-         'tickettemplates_id' => $tickettemplate_id,
+         'itiltemplates_id' => $itiltemplate_id,
          'num'                => '176',
          'value'              => $ttB_id,
       ]);
@@ -214,8 +214,8 @@ class Ticket extends DbTestCase {
       $itilcat    = new \ITILCategory;
       $itilcat_id = $itilcat->add([
          'name'                        => 'my itil category',
-         'tickettemplates_id_incident' => $tickettemplate_id,
-         'tickettemplates_id_demand'   => $tickettemplate_id,
+         'itiltemplates_id_incident' => $itiltemplate_id,
+         'itiltemplates_id_demand'   => $itiltemplate_id,
          'is_incident'                 => true,
          'is_request'                  => true,
       ]);
@@ -227,7 +227,7 @@ class Ticket extends DbTestCase {
          'name'                => 'test task template',
          'content'             => 'test task template',
          'itilcategories_id'   => $itilcat_id,
-         '_tickettemplates_id' => $tickettemplate_id,
+         '_itiltemplates_id' => $itiltemplate_id,
          '_tasktemplates_id'   => [$ttA_id, $ttB_id],
       ]);
       $this->boolean($ticket->isNewItem())->isFalse();
