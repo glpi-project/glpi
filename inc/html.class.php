@@ -1211,8 +1211,6 @@ class Html {
          if (in_array('fullcalendar', $jslibs)) {
             echo Html::css('public/lib/fullcalendar.css',
                            ['media' => '']);
-            echo Html::css('public/lib/fullcalendar.print.css',
-                           ['media' => 'print']);
             Html::requireJs('fullcalendar');
          }
 
@@ -5859,7 +5857,7 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fullcalendar.js';
             if (isset($_SESSION['glpilanguage'])) {
                foreach ([2, 3] as $loc) {
-                  $filename = "public/lib/moment/locale/".
+                  $filename = "public/lib/fullcalendar/locales/".
                      strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]).".js";
                   if (file_exists(GLPI_ROOT . '/' . $filename)) {
                      $_SESSION['glpi_js_toload'][$name][] = $filename;
@@ -5867,16 +5865,7 @@ class Html {
                   }
                }
             }
-            if (isset($_SESSION['glpilanguage'])) {
-               foreach ([2, 3] as $loc) {
-                  $filename = "public/lib/fullcalendar/locale/".
-                     strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]).".js";
-                  if (file_exists(GLPI_ROOT . '/' . $filename)) {
-                     $_SESSION['glpi_js_toload'][$name][] = $filename;
-                     break;
-                  }
-               }
-            }
+            $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
             break;
          case 'jstree':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jstree.js';
@@ -5980,11 +5969,10 @@ class Html {
 
       // transfer some var of php to javascript
       // (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
+      $debug = (isset($_SESSION['glpi_use_mode'])
+         && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? true : false);
       echo self::scriptBlock("
-         var CFG_GLPI  = {
-            'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
-            'root_doc': '".$CFG_GLPI["root_doc"]."',
-         };
+         var CFG_GLPI  = ".json_encode(Config::getSafeConfig(true), $debug ? JSON_PRETTY_PRINT : 0).";
       ");
 
       // Some Javascript-Functions which we may need later

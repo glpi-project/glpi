@@ -518,399 +518,38 @@ class Planning extends CommonGLPI {
     * @return Nothing (display function)
    **/
    static function showPlanning($fullview = true) {
-      global $CFG_GLPI, $DB;
-
       if (!static::canView()) {
          return false;
       }
 
-      $fullview_str = $fullview?"true":"false";
-
-      $pl_height = "function() {
-         var _newheight = $(window).height() - 272;
-         if ($('#debugajax').length > 0) {
-            _newheight -= $('#debugajax').height();
-         }
-         //minimal size
-         var _minheight = 300;
-         if (_newheight < _minheight) {
-            _newheight = _minheight;
-         }
-         return _newheight;
-      }";
-      if ($_SESSION['glpilayout'] == "vsplit") {
-         $pl_height = "function() {
-            var _newheight = $('.ui-tabs-panel').height() - 30;
-            //minimal size
-            var _minheight = 300;
-            if (_newheight < _minheight) {
-               _newheight = _minheight;
-            }
-            return _newheight;
-         }";
-      }
-
-      $date_format = Toolbox::jsDateFormat();
-
       self::initSessionForCurrentUser();
 
       echo "<div" . ($fullview ? " id='planning_container'" : "") . ">";
-      $rand='';
+      $rand = '';
       if ($fullview) {
          Planning::showPlanningFilter();
-         $default_view = "agendaWeek";
-         $header = "{
-            left:   'prev,next,today',
-            center: 'title',
-            right:  'month,agendaWeek,agendaDay,listFull'
-         }";
+         $options = [
+            'full_view'    => true,
+            'default_view' => 'timeGridWeek',
+         ];
       } else {
-         $default_view = "listFull";
-         $header = "false";
-         $pl_height = "'auto'";
-         $rand = rand();
+         $rand    = rand();
+         $options = [
+            'full_view'    => false,
+            'default_view' => 'listFull',
+            'header'       => false,
+            'height'       => 'auto',
+            'rand'         => $rand,
+         ];
       }
 
       echo "<div id='planning$rand'></div>";
       echo "</div>";
-      echo Html::scriptBlock("
-      $(function() {
-         var disable_qtip = false,
-             disable_edit = false;
-         $('.planning_on_central a')
-            .mousedown(function() {
-               disable_qtip = true;
-               $('.qtip').hide();
-            })
-            .mouseup(function() {
-               disable_qtip = false;
-            });
 
-         var window_focused = true;
-         var loaded = false;
-         var lastView;
-         var lastDate;
-         var lastDateDirty = false;
-         window.onblur = function() { window_focused = false; }
-         window.onfocus = function() { window_focused = true; }
+      echo Html::scriptBlock("$(function() {
+         GLPIPlanning.display(".json_encode($options).");
+      });");
 
-         // datepicker for planning
-         var initFCDatePicker = function() {
-            $('#planning_datepicker').datepicker({
-               changeMonth:     true,
-               changeYear:      true,
-               numberOfMonths:  3,
-               showOn:          'button',
-               buttonText:      '<i class=\'far fa-calendar-alt\'></i>',
-               dateFormat:      'DD, d MM, yy',
-               onSelect: function(dateText, inst) {
-                  var selected_date = $(this).datepicker('getDate');
-                  $('#planning').fullCalendar('gotoDate', selected_date);
-               }
-            }).next('.ui-datepicker-trigger').addClass('pointer');
-         }
-
-         $('#planning$rand').fullCalendar({
-            height:      $pl_height,
-            theme:       true,
-            weekNumbers: ".($fullview?'true':'false').",
-            defaultView: '$default_view',
-            timeFormat:  'H:mm',
-            eventLimit:  true, // show 'more' button when too mmany events
-            minTime:     '".$CFG_GLPI['planning_begin']."',
-            maxTime:     '".$CFG_GLPI['planning_end']."',
-            listDayAltFormat: false,
-            agendaEventMinHeight: 13,
-            header: $header,
-            views: {
-               month: {
-                  titleFormat: '$date_format'
-               },
-               agendaWeek: {
-                  titleFormat: '$date_format'
-               },
-               agendaDay: {
-                  titleFormat: '$date_format'
-               },
-               listFull: {
-                  type: 'list',
-                  titleFormat: '[]',
-                  visibleRange: function(currentDate) {
-                     return {
-                        start: currentDate.clone().subtract(5, 'years'),
-                        end: currentDate.clone().add(5, 'years')
-                     };
-                 }
-               }
-            },
-            viewRender: function(view){ // on date changes, replicate to datepicker
-               var currentdate = view.intervalStart;
-               $('#planning_datepicker').datepicker('setDate', new Date(currentdate));
-            },
-            eventRender: function(event, element, view) {
-               var eventtype_marker = '<span class=\"event_type\" style=\"background-color: '+event.typeColor+'\"></span>';
-               element.find('.fc-content').after(eventtype_marker);
-               element.find('.fc-list-item-title > a').prepend(eventtype_marker);
-
-               var content = event.content;
-               var tooltip = event.tooltip;
-               if(view.name !== 'month'
-                  && view.name.indexOf('list') < 0
-                  && !event.allDay){
-                  element
-                     .append('<div class=\"content\">'+content+'</div>');
-               }
-
-               // add classes to current event
-               added_classes = '';
-               if (typeof event.end !== 'undefined'
-                   && event.end !== null) {
-                  added_classes = event.end.isBefore(moment())      ? ' event_past'   : '';
-                  added_classes+= event.end.isAfter(moment())       ? ' event_future' : '';
-                  added_classes+= event.end.isSame(moment(), 'day') ? ' event_today'  : '';
-               }
-               if (event.state != '') {
-                  added_classes+= event.state == 0 ? ' event_info'
-                                : event.state == 1 ? ' event_todo'
-                                : event.state == 2 ? ' event_done'
-                                : '';
-               }
-               if (added_classes != '') {
-                  element.addClass(added_classes);
-               }
-
-               // add tooltip to event
-               if (!disable_qtip) {
-                  var qtip_position = {
-                     viewport: 'auto'
-                  };
-                  if (view.name.indexOf('list') >= 0) {
-                     qtip_position.target= element.find('a');
-                  }
-                  element.qtip({
-                     position: qtip_position,
-                     content: tooltip,
-                     style: {
-                        classes: 'qtip-shadow qtip-bootstrap'
-                     },
-                     show: {
-                        solo: true,
-                        delay: 400
-                     },
-                     hide: {
-                        fixed: true,
-                        delay: 100
-                     },
-                     events: {
-                        show: function(event, api) {
-                           if(!window_focused) {
-                              event.preventDefault();
-                           }
-                        }
-                     }
-                  });
-               }
-            },
-            viewRender: function(view, element) {
-               // force refetch events from ajax on view change (don't refetch on firt load)
-               if (loaded) {
-                  $('#planning$rand').fullCalendar('refetchEvents')
-               }
-
-               // specific process for full list
-               if (view.name == 'listFull') {
-                  // hide datepick on full list (which have virtually no limit)
-                  $('#planning_datepicker').datepicker('destroy')
-                                           .hide();
-
-                  // hide control buttons
-                  $('#planning .fc-left .fc-button-group').hide();
-               } else {
-                  // reinit datepicker
-                  $('#planning_datepicker').show();
-                  initFCDatePicker();
-
-                  // show controls buttons
-                  $('#planning .fc-left .fc-button-group').show();
-               }
-            },
-            eventAfterAllRender: function(view) {
-               // set a var to force refetch events (see viewRender callback)
-               loaded = true;
-
-               // scroll div to first element needed to be viewed
-               var scrolltoevent = $('#planning$rand .event_past.event_todo').first();
-               if (scrolltoevent.length == 0) {
-                  scrolltoevent = $('#planning$rand .event_today').first();
-               }
-               if (scrolltoevent.length == 0) {
-                  scrolltoevent = $('#planning$rand .event_future').first();
-               }
-               if (scrolltoevent.length == 0) {
-                  scrolltoevent = $('#planning$rand .event_past').last();
-               }
-               if (scrolltoevent.length) {
-                  $('#planning$rand .fc-scroller').scrollTop(scrolltoevent.prop('offsetTop')-25);
-               }
-            },
-            eventSources: [{
-               url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
-               type: 'POST',
-               data: function() {
-                  var view_name = $('#planning$rand').fullCalendar('getView').name;
-                  var display_done_events = 1;
-                  if (view_name.indexOf('list') >= 0) {
-                     display_done_events = 0;
-                  }
-                  return {
-                     'action': 'get_events',
-                     'display_done_events': display_done_events
-                  };
-               },
-               success: function(data) {
-                  if (!$fullview_str && data.length == 0) {
-                     $('#planning$rand').fullCalendar('option', 'height', 0);
-                  }
-               },
-               error: function() {
-                  console.log('there was an error while fetching events!');
-               }
-            }],
-
-            // EDIT EVENTS
-            editable: true, // we can drag and resize events
-            eventResize: function(event, delta, revertFunc) {
-               editEventTimes(event, revertFunc);
-            },
-            eventResizeStart: function() {
-               disable_edit = true;
-            },
-            eventResizeStop: function() {
-               setTimeout(function(){
-                  disable_edit = false;
-               }, 300);
-            },
-            eventDrop: function(event, delta, revertFunc) {
-               editEventTimes(event, revertFunc);
-            },
-            eventClick: function(event) {
-               if (event.ajaxurl && event.editable && !disable_edit) {
-                  $('<div>')
-                     .dialog({
-                        modal:  true,
-                        width:  'auto',
-                        height: 'auto',
-                        close: function(event, ui) {
-                           $('#planning$rand').fullCalendar('refetchEvents');
-                        }
-                     })
-                     .load(event.ajaxurl, function() {
-                        $(this).dialog('option', 'position', ['center', 'center'] );
-                     });
-                  return false;
-               };
-            },
-
-
-            // ADD EVENTS
-            selectable: true,
-            /*selectHelper: function(start, end) {
-               return $('<div class=\"planning-select-helper\" />').text(start+' '+end);
-            },*/ // doesn't work anymore: see https://github.com/fullcalendar/fullcalendar/issues/2832
-            select: function(start, end, jsEvent) {
-               $('<div>').dialog({
-                  modal:  true,
-                  width:  'auto',
-                  height: 'auto',
-                  open: function () {
-                      $(this).load(
-                        '".$CFG_GLPI['root_doc']."/ajax/planning.php?action=add_event_fromselect',
-                        {
-                           begin: start.format(),
-                           end:   end.format()
-                        },
-                        function() {
-                           $(this).dialog('option', 'position', ['center', 'center'] );
-                        }
-                      );
-                  },
-                  position: {
-                     my: 'center',
-                     at: 'center',
-                     viewport: $(window)
-                  }
-               });
-
-               $('#planning$rand').fullCalendar('unselect');
-            }
-         });
-
-
-         // send ajax for event storage (on event drag/resize)
-         var editEventTimes = function(event, revertFunc) {
-            if (event._allDay) {
-               var start = event.start.format()+'T00:00:00';
-               var end = start;
-               if (typeof event.end != 'undefined') {
-                  if (event.end == null) {
-                     end = $.fullCalendar.moment(event.start)
-                              .add(1, 'days')
-                              .format()+'T00:00:00';
-                  } else {
-                     end = event.end.format()+'T00:00:00';
-                  }
-               }
-
-            } else {
-               var start = event.start.format();
-               if (event.end == null) {
-                  var end = $.fullCalendar.moment(event.start)
-                              .add(2, 'hours')
-                              .format();
-               } else {
-                  var end = event.end.format();
-               }
-            }
-
-            $.ajax({
-               url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
-               type: 'POST',
-               data: {
-                  action:   'update_event_times',
-                  start:    start,
-                  end:      end,
-                  itemtype: event.itemtype,
-                  items_id: event.items_id
-               },
-               success: function(html) {
-                  if (!html) {
-                     revertFunc();
-                  }
-                  $('#planning$rand').fullCalendar('updateEvent', event);
-                  displayAjaxMessageAfterRedirect();
-               },
-               error: function() {
-                  revertFunc();
-               }
-            });
-         };
-
-         // attach button (planning and refresh) in planning header
-         $('#planning$rand .fc-toolbar .fc-center h2')
-            .after(
-               $('<i id=\"refresh_planning\" class=\"fa fa-sync pointer\"></i>')
-            ).after(
-               $('<input type=\"hidden\" id=\"planning_datepicker\">')
-            );
-
-         $('#refresh_planning').click(function() {
-            $('#planning$rand').fullCalendar('refetchEvents')
-         })
-
-         // attach the date picker to planning
-         initFCDatePicker()
-      });"
-      );
       return;
    }
 
@@ -1087,7 +726,7 @@ class Planning extends CommonGLPI {
                },
                success: function(html) {
                   li.remove();
-                  $('#planning').fullCalendar('refetchEvents')
+                  calendar.refetchEvents();
                }
             });
          });
@@ -1114,7 +753,7 @@ class Planning extends CommonGLPI {
                success: function(html) {
                   if (refresh_planning) {
                      // don't refresh planning if event triggered from parent checkbox
-                     $('#planning').fullCalendar('refetchEvents')
+                     calendar.refetchEvents();
                   }
                }
             });
@@ -1138,7 +777,7 @@ class Planning extends CommonGLPI {
                });
 
                // refresh planning once for all checkboxes (and not for each)
-               $('#planning').fullCalendar('refetchEvents')
+               calendar.refetchEvents();
             }
          );
 
@@ -1160,7 +799,7 @@ class Planning extends CommonGLPI {
                   color:  color.toHexString()
                },
                success: function(html) {
-                  $('#planning').fullCalendar('refetchEvents')
+                  calendar.refetchEvents();
                }
             });
          });
@@ -1497,7 +1136,7 @@ JAVASCRIPT;
          $item = getItemForItemtype($params['itemtype']);
          $item->showForm(intval($params['id']), $options);
          $callback = "$('.ui-dialog-content').dialog('close');
-                      $('#planning').fullCalendar('refetchEvents');
+                      window.calendar.refetchEvents();
                       displayAjaxMessageAfterRedirect();";
          Html::ajaxForm("#edit_event_form$rand", $callback);
       }
@@ -1609,7 +1248,7 @@ JAVASCRIPT;
                                    'end'                => $params['end'],
                                    'formoptions'        => "id='ajax_reminder$rand'"]);
          $callback = "$('.ui-dialog-content').dialog('close');
-                      $('#planning').fullCalendar('refetchEvents');
+                      window.calendar.refetchEvents();
                       displayAjaxMessageAfterRedirect();";
          Html::ajaxForm("#ajax_reminder$rand", $callback);
       }
