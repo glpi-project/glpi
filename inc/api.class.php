@@ -475,12 +475,9 @@ abstract class API extends CommonGLPI {
     * @return array
      */
    protected function getGlpiConfig() {
-
-      global $CFG_GLPI;
       $this->initEndpoint();
 
-      $excludedKeys = array_flip(Config::$undisclosedFields);
-      return ['cfg_glpi' => array_diff_key($CFG_GLPI, $excludedKeys)];
+      return ['cfg_glpi' => Config::getSafeConfig()];
    }
 
 
