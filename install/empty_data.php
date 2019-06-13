@@ -598,7 +598,17 @@ $tables['glpi_crontasks'] = [
         'mode'          => 1,
         'lastrun'       => '2014-06-18 08:02:00',
         'logs_lifetime' => 30
-    ]
+    ], [
+        'id'            => 33,
+        'itemtype'      => 'PurgeLog',
+        'name'          => 'PurgeLog',
+        'frequency'     => 7 * DAY_TIMESTAMP,
+        'param'         => 24,
+        'state'         => 2,
+        'mode'          => 3,
+        'lastrun'       => null,
+        'logs_lifetime' => 30
+     ]
 ];
 
 $tables['glpi_devicememorytypes'] = [
