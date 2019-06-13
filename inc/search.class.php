@@ -57,7 +57,7 @@ class Search {
    const SHORTSEP = '$#$';
    const LONGSEP  = '$$##$$';
 
-   const NULLVALUE = 'NULL'; //FIXME: was __NULL__ for MySQL. If still relevant, should be get from a function
+   const NULLVALUE = 'NULL';
 
    private $output_type = self::HTML_OUTPUT;
    static $search = [];
