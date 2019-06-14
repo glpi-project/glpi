@@ -44,9 +44,6 @@ class ITILFollowupTemplate extends CommonDropdown {
    public $dohistory          = true;
    public $can_be_translated  = true;
 
-   static $rightname          = 'taskcategory';
-
-
 
    static function getTypeName($nb = 0) {
       return _n('Followup template', 'Followup templates', $nb);
