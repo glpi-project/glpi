@@ -236,18 +236,36 @@ class Migration extends \GLPITestCase {
    public function testChangeField() {
       global $DB;
       $DB = $this->db;
+
+      // Test change field with move to first column
       $this->calling($this->db)->fieldExists = true;
 
       $this->output(
          function () {
-            $this->migration->changeField('change_table', 'ID', 'id', 'integer');
+            $this->migration->changeField('change_table', 'ID', 'id', 'integer', ['first' => 'first']);
             $this->migration->executeMigration();
          }
       )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
 
       $this->array($this->queries)->isIdenticalTo([
          "ALTER TABLE `change_table` DROP `id`  ,\n" .
-         "CHANGE `ID` `id` INT(11) NOT NULL DEFAULT '0'  ",
+         "CHANGE `ID` `id` INT(11) NOT NULL DEFAULT '0'   FIRST  ",
+      ]);
+
+      // Test change field with move to after an other column
+      $this->queries = [];
+      $this->calling($this->db)->fieldExists = true;
+
+      $this->output(
+         function () {
+            $this->migration->changeField('change_table', 'NAME', 'name', 'string', ['after' => 'id']);
+            $this->migration->executeMigration();
+         }
+      )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
+
+      $this->array($this->queries)->isIdenticalTo([
+         "ALTER TABLE `change_table` DROP `name`  ,\n" .
+         "CHANGE `NAME` `name` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   AFTER `id` ",
       ]);
    }
 

@@ -353,6 +353,7 @@ class Migration {
     *                         - value     : default_value new field's default value, if a specific default value needs to be used
     *                         - nodefault : do not define default value (default false)
     *                         - comment   : comment to be added during field creation
+    *                         - first     : add the new field at first column
     *                         - after     : where adding the new field
     *                         - null      : value could be NULL (default false)
     *
@@ -420,6 +421,9 @@ class Migration {
     * @param string $type     Field type, @see Migration::fieldFormat()
     * @param array  $options  Options:
     *                         - default_value new field's default value, if a specific default value needs to be used
+    *                         - first     : add the new field at first column
+    *                         - after     : where adding the new field
+    *                         - null      : value could be NULL (default false)
     *                         - comment comment to be added during field creation
     *                         - nodefault : do not define default value (default false)
     *
@@ -431,6 +435,9 @@ class Migration {
       $params['value']     = null;
       $params['nodefault'] = false;
       $params['comment']   = '';
+      $params['after']     = '';
+      $params['first']     = '';
+      $params['null']      = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -444,6 +451,16 @@ class Migration {
          $params['comment'] = " COMMENT '".addslashes($params['comment'])."'";
       }
 
+      if (!empty($params['after'])) {
+         $params['after'] = " AFTER `".$params['after']."`";
+      } else if (!empty($params['first'])) {
+         $params['first'] = " FIRST ";
+      }
+
+      if ($params['null']) {
+         $params['null'] = 'NULL ';
+      }
+
       if ($DB->fieldExists($table, $oldfield, false)) {
          // in order the function to be replayed
          // Drop new field if name changed
@@ -453,7 +470,8 @@ class Migration {
          }
 
          if ($format) {
-            $this->change[$table][] = "CHANGE `$oldfield` `$newfield` $format ".$params['comment']."";
+            $this->change[$table][] = "CHANGE `$oldfield` `$newfield` $format ".$params['comment']." ".
+                                      $params['null'].$params['first'].$params['after'];
          }
          return true;
       }
