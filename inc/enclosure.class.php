@@ -361,7 +361,6 @@ class Enclosure extends CommonDBTM {
 
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Change_Item::class,
             Item_Enclosure::class,
          ]
       );

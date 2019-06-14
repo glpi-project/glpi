@@ -59,7 +59,6 @@ class Certificate extends CommonDBTM {
       $this->deleteChildrenAndRelationsFromDb(
          [
             Certificate_Item::class,
-            Change_Item::class,
          ]
       );
    }
