@@ -141,8 +141,6 @@ class Peripheral extends CommonDBTM {
          [
             Certificate_Item::class,
             Computer_Item::class,
-            Item_Problem::class,
-            Change_Item::class,
             Item_Project::class,
          ]
       );

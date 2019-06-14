@@ -161,7 +161,6 @@ class SoftwareLicense extends CommonTreeDropdown {
       $this->deleteChildrenAndRelationsFromDb(
          [
             Certificate_Item::class,
-            Change_Item::class,
             Computer_SoftwareLicense::class,
          ]
       );

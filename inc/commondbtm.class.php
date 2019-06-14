@@ -910,6 +910,16 @@ class CommonDBTM extends CommonGLPI {
          $note->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
 
+      if (in_array($this->getType(), $CFG_GLPI['ticket_types'])) {
+         //delete relation beetween item and changes/problems
+         $this->deleteChildrenAndRelationsFromDb(
+            [
+               Change_Item::class,
+               Item_Problem::class,
+            ]
+         );
+      }
+
       if (in_array($this->getType(), $CFG_GLPI['rackable_types'])) {
          //delete relation beetween rackable type and its rack
          $item_rack = new Item_Rack();

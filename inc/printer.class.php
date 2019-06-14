@@ -242,9 +242,7 @@ class Printer  extends CommonDBTM {
       $this->deleteChildrenAndRelationsFromDb(
          [
             Certificate_Item::class,
-            Change_Item::class,
             Computer_Item::class,
-            Item_Problem::class,
             Item_Project::class,
          ]
       );
