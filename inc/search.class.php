@@ -6614,8 +6614,9 @@ class Search {
          $SEARCH = " IS $NOT NULL ";
 
       } else {
-         $begin = 0;
-         $end   = 0;
+         $begin    = 0;
+         $end      = 0;
+         $operator = false;
          if (($length = strlen($val)) > 0) {
             if (($val[0] == '^')) {
                $begin = 1;
@@ -6624,6 +6625,12 @@ class Search {
             if ($val[$length-1] == '$') {
                $end = 1;
             }
+
+            $re = '/^\s*(?\'operator\'[<>=]+)\s*(?\'value\'.*)/';
+            if (preg_match($re, $val, $match)) {
+               $operator = $match['operator'];
+               $val = $match['value'];
+            }
          }
 
          if ($begin || $end) {
@@ -6631,7 +6638,21 @@ class Search {
             $val = substr($val, $begin, $length-$end-$begin);
          }
 
-         $SEARCH = " $NOT LIKE '".(!$begin?"%":"").trim($val).(!$end?"%":"")."' ";
+         if ($operator !== false) {
+            if ($not) {
+               // must reverse operator
+               $not_ope = ['<'  => '>=',
+                           '<=' => '>',
+                           '>=' => '<',
+                           '>'  => '<='];
+               if (isset($not_ope[$operator])) {
+                  $operator = $not_ope[$operator];
+               }
+            }
+            $SEARCH = " $operator $val";
+         } else {
+            $SEARCH = " $NOT LIKE '".(!$begin?"%":"").trim($val).(!$end?"%":"")."' ";
+         }
       }
       return $SEARCH;
    }
