@@ -495,7 +495,11 @@ class Html {
       global $CFG_GLPI;
 
       $dest     = $CFG_GLPI["root_doc"] . "/index.php";
-      $url_dest = str_replace($CFG_GLPI["root_doc"], '', $_SERVER['REQUEST_URI']);
+      $url_dest = preg_replace(
+         '/^' . preg_quote($CFG_GLPI["root_doc"], '/') . '/',
+         '',
+         $_SERVER['REQUEST_URI']
+      );
       $dest    .= "?redirect=".rawurlencode($url_dest);
 
       if (!empty($params)) {
