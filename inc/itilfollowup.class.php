@@ -208,7 +208,7 @@ class ITILFollowup  extends CommonDBChild {
 
       $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
-      // Check if stats should be computer after this change
+      // Check if stats should be computed after this change
       $no_stat = isset($this->input['_do_not_compute_takeintoaccount']);
 
       $parentitem = $this->input['_job'];
