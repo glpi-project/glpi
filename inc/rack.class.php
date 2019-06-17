@@ -1062,7 +1062,6 @@ JAVASCRIPT;
 
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Change_Item::class,
             Item_Rack::class,
             PDU_Rack::class,
          ]

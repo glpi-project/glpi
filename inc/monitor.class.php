@@ -141,9 +141,7 @@ class Monitor extends CommonDBTM {
 
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Change_Item::class,
             Computer_Item::class,
-            Item_Problem::class,
             Item_Project::class,
          ]
       );
