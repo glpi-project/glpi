@@ -251,12 +251,14 @@ function update94to95() {
       }
    }
    //rename profilerights values
+   $set = ['name' => 'itiltemplate'];
    $migration->addPostQuery(
       $DB->buildUpdate(
          'glpi_profilerights',
-         ['name' => 'itiltemplate'],
+         $set,
          ['name' => 'tickettemplate']
-      )
+      ),
+      $set
    );
    /** /ITIL templates */
 
