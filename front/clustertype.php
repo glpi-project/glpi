@@ -1,3 +1,4 @@
+<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,15 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-// Fullcalendar library
-require('@fullcalendar/core');
-require('@fullcalendar/daygrid');
-require('@fullcalendar/interaction');
-require('@fullcalendar/list');
-require('@fullcalendar/timegrid');
+include ('../inc/includes.php');
 
-require('@fullcalendar/core/main.css');
-require('@fullcalendar/daygrid/main.css');
-require('@fullcalendar/list/main.css');
-require('@fullcalendar/timegrid/main.css');
-
+$dropdown = new ClusterType();
+include (GLPI_ROOT . "/front/dropdown.common.php");

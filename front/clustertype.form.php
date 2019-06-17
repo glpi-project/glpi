@@ -1,3 +1,4 @@
+<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,5 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-// Fullcalendar print CSS
-require('fullcalendar/dist/fullcalendar.print.css');
+include ('../inc/includes.php');
+
+$dropdown = new ClusterType();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");

@@ -903,7 +903,8 @@ class Dropdown {
                  'LineType'             => _n('Line type', 'Line types',
                                              Session::getPluralNumber()),
                  'RackType'             => RackType::getTypeName(Session::getPluralNumber()),
-                 'PDUType'              => PDUType::getTypeName(Session::getPluralNumber())
+                 'PDUType'              => PDUType::getTypeName(Session::getPluralNumber()),
+                 'ClusterType'          => ClusterType::getTypeName(Session::getPluralNumber()),
              ],
 
              __('Model') => [

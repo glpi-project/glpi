@@ -74,15 +74,15 @@ var libsConfig = {
     module: {
         rules: [
             {
-                // Load scripts with no compilation for packages that are directly providing "dist" files
-                // including a "require/define" logic.
-                // This prevents incompatibility issues with the webpack require feature.
+                // Load scripts with no compilation for packages that are directly providing "dist" files.
+                // This prevents useless compilation pass and can also 
+                // prevents incompatibility issues with the webpack require feature.
                 test: /\.js$/,
                 include: [
                     path.resolve(__dirname, 'node_modules/@coreui/coreui'),
+                    path.resolve(__dirname, 'node_modules/@fullcalendar'),
                     path.resolve(__dirname, 'node_modules/bootstrap'),
                     path.resolve(__dirname, 'node_modules/codemirror'),
-                    path.resolve(__dirname, 'node_modules/fullcalendar'),
                     path.resolve(__dirname, 'node_modules/gridstack'),
                     path.resolve(__dirname, 'node_modules/jquery-migrate'),
                     path.resolve(__dirname, 'node_modules/jstree'),
@@ -129,10 +129,10 @@ var libsConfig = {
 };
 
 var libs = {
-    'fullcalendar': [
+    '@fullcalendar': [
         {
-            context: 'dist',
-            from: 'locale/*.js',
+            context: 'core',
+            from: 'locales/*.js',
         }
     ],
     'jquery-ui': [
@@ -146,11 +146,6 @@ var libs = {
             context: 'dist',
             from: 'i18n/jquery-ui-timepicker-*.js',
             ignore: ['i18n/jquery-ui-timepicker-addon-i18n{,.min}.js'],
-        }
-    ],
-    'moment': [
-        {
-            from: 'locale/*.js',
         }
     ],
     'select2': [
@@ -168,12 +163,7 @@ var libs = {
 
 for (let packageName in libs) {
     let libPackage = libs[packageName];
-    let to = libOutputPath + '/' + packageName;
-
-    let matches = packageName.match(/^@[^/]*\/(.*)$/);
-    if (null !== matches) {
-        to = libOutputPath + '/' + matches[1]; // Remove package prefix for destination dir
-    }
+    let to = libOutputPath + '/' + packageName.replace(/^@/, ''); // remove leading @ in case of prefixed package
 
     for (let e = 0; e < libPackage.length; e++) {
         let packageEntry = libPackage[e];

@@ -1,3 +1,4 @@
+<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,15 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-// Fullcalendar library
-require('@fullcalendar/core');
-require('@fullcalendar/daygrid');
-require('@fullcalendar/interaction');
-require('@fullcalendar/list');
-require('@fullcalendar/timegrid');
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-require('@fullcalendar/core/main.css');
-require('@fullcalendar/daygrid/main.css');
-require('@fullcalendar/list/main.css');
-require('@fullcalendar/timegrid/main.css');
+class ClusterType extends CommonDropdown {
 
+   static function getTypeName($nb = 0) {
+      return _n('Cluster type', 'Cluster types', $nb);
+   }
+}
