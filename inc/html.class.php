@@ -425,6 +425,34 @@ class Html {
 
 
    /**
+    * Format a timestamp into a normalized string (hh:mm:ss).
+    *
+    * @param integer $time
+    *
+    * @return string
+   **/
+   static function timestampToCsvString($time) {
+
+      if ($time < 0) {
+         $time = abs($time);
+      }
+      $time = floor($time);
+
+      $units = Toolbox::getTimestampTimeUnits($time);
+
+      if ($units['day'] > 0) {
+         $units['hour'] += 24*$units['day'];
+      }
+
+      return str_pad($units['hour'], 2, '0', STR_PAD_LEFT)
+         . ':'
+         . str_pad($units['minute'], 2, '0', STR_PAD_LEFT)
+         . ':'
+         . str_pad($units['second'], 2, '0', STR_PAD_LEFT);
+   }
+
+
+   /**
     * Extract url from web link
     *
     * @param $value string value
