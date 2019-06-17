@@ -1355,7 +1355,7 @@ Check the user administration and the GLPI logs files (in files/_logs directory)
 
 You asked a inexistent resource (endpoint). It's not a predefined (initSession, getFullSession, etc) nor a GLPI CommonDBTM resources.
 
-See this documentation for predefined ones or [List itemtypes](https://forge.glpi-project.org/embedded/glpi/annotated.html) for available resources
+See this documentation for predefined ones or [List itemtypes](https://forge.glpi-project.org/apidoc/class-CommonDBTM.html) for available resources
 
 ### ERROR_SQL
 
