@@ -702,6 +702,7 @@ class ITILFollowup  extends CommonDBChild {
     *     - item Object : the ITILObject parent
    **/
    function showForm($ID, $options = []) {
+      global $CFG_GLPI;
 
       if ($this->isNewItem()) {
          $this->getEmpty();
@@ -752,8 +753,7 @@ class ITILFollowup  extends CommonDBChild {
       if ($tech) {
          $this->showFormHeader($options);
 
-         $rand = mt_rand();
-         $rand_text = mt_rand();
+         $rand       = mt_rand();
          $content_id = "content$rand";
 
          echo "<tr class='tab_bg_1'>";
@@ -761,7 +761,7 @@ class ITILFollowup  extends CommonDBChild {
 
          Html::textarea(['name'              => 'content',
                          'value'             => $this->fields["content"],
-                         'rand'              => $rand_text,
+                         'rand'              => $rand,
                          'editor_id'         => $content_id,
                          'enable_fileupload' => true,
                          'enable_richtext'   => true,
@@ -788,17 +788,60 @@ class ITILFollowup  extends CommonDBChild {
          echo "<tr class='tab_bg_1' style='vertical-align: top'>";
          echo "<td colspan='4'>";
          echo "<div class='fa-label'>
+            <i class='fas fa-reply fa-fw'
+               title='"._n('Followup template', 'Followup templates', 2)."'></i>";
+         $this->fields['itilfollowuptemplates_id'] = 0;
+         ITILFollowupTemplate::dropdown([
+            'value'     => $this->fields['itilfollowuptemplates_id'],
+            'entity'    => $this->getEntityID(),
+            'on_change' => "itilfollowuptemplate_update$rand(this.value)"
+         ]);
+         echo "</div>";
+
+         $ajax_url = $CFG_GLPI["root_doc"]."/ajax/itilfollowup.php";
+         $JS = <<<JAVASCRIPT
+            function itilfollowuptemplate_update{$rand}(value) {
+               $.ajax({
+                  url: '{$ajax_url}',
+                  type: 'POST',
+                  data: {
+                     itilfollowuptemplates_id: value
+                  }
+               }).done(function(data) {
+                  var requesttypes_id = isNaN(parseInt(data.requesttypes_id))
+                     ? 0
+                     : parseInt(data.requesttypes_id);
+
+                  // set textarea content
+                  $("#{$content_id}").html(data.content);
+                  // set also tinmyce (if enabled)
+                  if (tasktinymce = tinymce.get("{$content_id}")) {
+                     tasktinymce.setContent(data.content);
+                  }
+                  // set category
+                  $("#dropdown_requesttypes_id{$rand}").trigger("setValue", requesttypes_id);
+                  // set is_private
+                  $("#is_privateswitch{$rand}")
+                     .prop("checked", data.is_private == "0"
+                        ? false
+                        : true);
+               });
+            }
+JAVASCRIPT;
+         echo Html::scriptBlock($JS);
+
+         echo "<div class='fa-label'>
             <i class='fas fa-inbox fa-fw'
                title='".__('Source of followup')."'></i>";
          RequestType::dropdown([
             'value'     => $this->fields["requesttypes_id"],
-            'condition' => ['is_active' => 1, 'is_itilfollowup' => 1]
+            'condition' => ['is_active' => 1, 'is_itilfollowup' => 1],
+            'rand'      => $rand,
          ]);
          echo "</div>";
 
          echo "<div class='fa-label'>
             <i class='fas fa-lock fa-fw' title='".__('Private')."'></i>";
-         $rand = mt_rand();
          echo "<span class='switch pager_controls'>
             <label for='is_privateswitch$rand' title='".__('Private')."'>
                <input type='hidden' name='is_private' value='0'>

@@ -473,6 +473,7 @@ $RELATION = [
       '_glpi_items_disks'                => 'entities_id',
       '_glpi_items_operatingsystems'     => 'entities_id',
       'glpi_itilcategories'              => 'entities_id',
+      'glpi_itilfollowuptemplates'       => 'entities_id',
       'glpi_knowbaseitemcategories'      => 'entities_id',
       'glpi_knowbaseitems_profiles'      => 'entities_id',
       'glpi_lineoperators'               => 'entities_id',
@@ -994,9 +995,10 @@ $RELATION = [
    ],
 
    'glpi_requesttypes' => [
-      'glpi_itilfollowups' => 'requesttypes_id',
-      'glpi_tickets'       => 'requesttypes_id',
-      'glpi_users'         => 'default_requesttypes_id',
+      'glpi_itilfollowups'         => 'requesttypes_id',
+      'glpi_itilfollowuptemplates' => 'requesttypes_id',
+      'glpi_tickets'               => 'requesttypes_id',
+      'glpi_users'                 => 'default_requesttypes_id',
    ],
 
    'glpi_reservationitems' => [
