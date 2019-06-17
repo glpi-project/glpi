@@ -312,10 +312,10 @@ class SavedSearch_Alert extends CommonDBChild {
     */
    static private function saveContext() {
       global $CFG_GLPI;
-      $SavedContext = [];
-      $SavedContext['$_SESSION'] = $_SESSION;
-      $SavedContext['$CFG_GLPI'] = $CFG_GLPI;
-      return $SavedContext;
+      $context = [];
+      $context['$_SESSION'] = $_SESSION;
+      $context['$CFG_GLPI'] = $CFG_GLPI;
+      return $context;
    }
 
    /**
