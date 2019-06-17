@@ -587,6 +587,8 @@ class Stat extends CommonGLPI {
                   || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
                   || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                   $timedisplay = Html::timestampToString($timedisplay, 0, false);
+               } else if ($output_type == Search::CSV_OUTPUT) {
+                  $timedisplay = Html::timestampToCsvString($timedisplay);
                }
                echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
             }
@@ -607,6 +609,8 @@ class Stat extends CommonGLPI {
                 || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
                 || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+            } else if ($output_type == Search::CSV_OUTPUT) {
+               $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
@@ -626,6 +630,8 @@ class Stat extends CommonGLPI {
                 || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
                 || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+            } else if ($output_type == Search::CSV_OUTPUT) {
+               $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
@@ -651,6 +657,8 @@ class Stat extends CommonGLPI {
                 || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
                 || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+            } else if ($output_type == Search::CSV_OUTPUT) {
+               $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
             //Le temps total de l'intervention reelle - The total actiontime to resolv
@@ -660,6 +668,8 @@ class Stat extends CommonGLPI {
                 || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
                 || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+            } else if ($output_type == Search::CSV_OUTPUT) {
+               $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
