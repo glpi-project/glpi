@@ -528,6 +528,7 @@ class Search extends DbTestCase {
             'KnowbaseItem',
             'NetworkPortMigration',
             'TicketFollowup',
+            '/^TicketTemplate.*/'
          ]
       );
       foreach ($itemtypeslist as $itemtype) {

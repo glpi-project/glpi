@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * since version 0.83
 **/
-class TicketTemplate extends CommonDropdown {
+class ITILTemplate extends CommonDropdown {
 
    // From CommonDBTM
    public $dohistory                 = true;
@@ -47,11 +47,11 @@ class TicketTemplate extends CommonDropdown {
    // From CommonDropdown
    public $first_level_menu          = "helpdesk";
    public $second_level_menu         = "ticket";
-   public $third_level_menu          = "TicketTemplate";
+   public $third_level_menu          = "ITILTemplate";
 
    public $display_dropdowntitle     = false;
 
-   static $rightname                 = 'tickettemplate';
+   static $rightname                 = 'itiltemplate';
 
    public $can_be_translated            = false;
 
@@ -79,7 +79,7 @@ class TicketTemplate extends CommonDropdown {
 
       if ($this->getFromDB($ID)) {
          $ticket       = new Ticket();
-         $tth          = new TicketTemplateHiddenField();
+         $tth          = new ITILTemplateHiddenField();
          $this->hidden = $tth->getHiddenFields($ID, $withtypeandcategory);
 
          // Force items_id if itemtype is defined
@@ -89,7 +89,7 @@ class TicketTemplate extends CommonDropdown {
                                                                           'glpi_items_tickets');
          }
          // Always get all mandatory fields
-         $ttm             = new TicketTemplateMandatoryField();
+         $ttm             = new ITILTemplateMandatoryField();
          $this->mandatory = $ttm->getMandatoryFields($ID);
 
          // Force items_id if itemtype is defined
@@ -99,7 +99,7 @@ class TicketTemplate extends CommonDropdown {
                                                                              'glpi_items_tickets');
          }
 
-         $ttp              = new TicketTemplatePredefinedField();
+         $ttp              = new ITILTemplatePredefinedField();
          $this->predefined = $ttp->getPredefinedFields($ID, $withtypeandcategory);
          // Compute time_to_resolve
          if (isset($this->predefined['time_to_resolve'])) {
@@ -305,10 +305,10 @@ class TicketTemplate extends CommonDropdown {
 
       $ong          = [];
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('TicketTemplateMandatoryField', $ong, $options);
-      $this->addStandardTab('TicketTemplatePredefinedField', $ong, $options);
-      $this->addStandardTab('TicketTemplateHiddenField', $ong, $options);
-      $this->addStandardTab('TicketTemplate', $ong, $options);
+      $this->addStandardTab('ITILTemplateMandatoryField', $ong, $options);
+      $this->addStandardTab('ITILTemplatePredefinedField', $ong, $options);
+      $this->addStandardTab('ITILTemplateHiddenField', $ong, $options);
+      $this->addStandardTab('ITILTemplate', $ong, $options);
       $this->addStandardTab('ITILCategory', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -319,7 +319,7 @@ class TicketTemplate extends CommonDropdown {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
-         case 'TicketTemplate' :
+         case 'ITILTemplate' :
             switch ($tabnum) {
                case 1 :
                   $item->showCentralPreview($item);
@@ -340,7 +340,7 @@ class TicketTemplate extends CommonDropdown {
 
       if (Session::haveRight(self::$rightname, READ)) {
          switch ($item->getType()) {
-            case 'TicketTemplate' :
+            case 'ITILTemplate' :
                $ong[1] = __('Standard interface');
                $ong[2] = __('Simplified interface');
                return $ong;
@@ -524,11 +524,11 @@ class TicketTemplate extends CommonDropdown {
     *
     * @since 0.83
     *
-    * @param $tt TicketTemplate object
+    * @param $tt ITILTemplate object
     *
     * @return Nothing (call to classes members)
    **/
-   static function showCentralPreview(TicketTemplate $tt) {
+   static function showCentralPreview(ITILTemplate $tt) {
 
       if (!$tt->getID()) {
          return false;
@@ -543,11 +543,11 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Print preview for Ticket template
     *
-    * @param $tt TicketTemplate object
+    * @param $tt ITILTemplate object
     *
     * @return Nothing (call to classes members)
    **/
-   static function showHelpdeskPreview(TicketTemplate $tt) {
+   static function showHelpdeskPreview(ITILTemplate $tt) {
 
       if (!$tt->getID()) {
          return false;
@@ -661,8 +661,8 @@ class TicketTemplate extends CommonDropdown {
       foreach ($to_merge as $merge) {
          $source[$merge] = $this->formatFieldsToMerge(
             getAllDataFromTable(
-               'glpi_tickettemplate'.$merge,
-               ['tickettemplates_id' => $source_id]
+               'glpi_itiltemplate'.$merge,
+               ['itiltemplates_id' => $source_id]
             )
          );
       }
@@ -672,8 +672,8 @@ class TicketTemplate extends CommonDropdown {
       foreach ($to_merge as $merge) {
          $target[$merge] = $this->formatFieldsToMerge(
             getAllDataFromTable(
-               'glpi_tickettemplate'.$merge,
-               ['tickettemplates_id' => $target_id]
+               'glpi_itiltemplate'.$merge,
+               ['itiltemplates_id' => $target_id]
             )
          );
       }
@@ -683,8 +683,8 @@ class TicketTemplate extends CommonDropdown {
          foreach ($data as $key => $val) {
             if (!array_key_exists($key, $target[$merge])) {
                $DB->update(
-                  'glpi_tickettemplate'.$merge, [
-                     'tickettemplates_id' => $target_id
+                  'glpi_itiltemplate'.$merge, [
+                     'itiltemplates_id' => $target_id
                   ], [
                      'id' => $val['id']
                   ]
@@ -706,7 +706,7 @@ class TicketTemplate extends CommonDropdown {
    function mergeTemplateITILCategories($target_id, $source_id) {
       global $DB;
 
-      $to_merge = ['tickettemplates_id_incident', 'tickettemplates_id_demand'];
+      $to_merge = ['itiltemplates_id_incident', 'itiltemplates_id_demand'];
 
       // Source categories
       $source = [];

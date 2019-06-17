@@ -36,11 +36,11 @@ if (!defined('GLPI_ROOT')) {
 
 /// Mandatory fields for ticket template class
 /// since version 0.83
-class TicketTemplateMandatoryField extends CommonDBChild {
+class ITILTemplateMandatoryField extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype  = 'TicketTemplate';
-   static public $items_id  = 'tickettemplates_id';
+   static public $itemtype  = 'ITILTemplate';
+   static public $items_id  = 'itiltemplates_id';
    public $dohistory = true;
 
 
@@ -67,7 +67,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    **/
    function getRawName() {
 
-      $tt     = new TicketTemplate();
+      $tt     = new ITILTemplate();
       $fields = $tt->getAllowedFieldsNames(true);
 
       if (isset($fields[$this->fields["num"]])) {
@@ -80,12 +80,12 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
-      if (($item->getType() == 'TicketTemplate')
-          && Session::haveRight("tickettemplate", READ)) {
+      if (($item->getType() == 'ITILTemplate')
+          && Session::haveRight("itiltemplate", READ)) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable($this->getTable(),
-                                       ['tickettemplates_id' => $item->getID()]);
+                                       ['itiltemplates_id' => $item->getID()]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -95,7 +95,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-      self::showForTicketTemplate($item, $withtemplate);
+      self::showForITILTemplate($item, $withtemplate);
       return true;
    }
 
@@ -115,7 +115,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             'SELECT' => 'id',
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-               static::$items_id => $this->fields['tickettemplates_id'],
+               static::$items_id => $this->fields['itiltemplates_id'],
                'num'             => $items_id_id
             ]
          ]);
@@ -150,7 +150,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
          'ORDER'  => 'id'
       ]);
 
-      $tt             = new TicketTemplate();
+      $tt             = new ITILTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = [];
 
@@ -187,7 +187,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = 0) {
+   static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0) {
       global $DB;
 
       $ID = $tt->fields['id'];
@@ -208,7 +208,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
-         'WHERE'  => ['tickettemplates_id' => $ID]
+         'WHERE'  => ['itiltemplates_id' => $ID]
       ]);
       $numrows = count($iterator);
 
@@ -228,7 +228,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a mandatory field')."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='right'>";
-         echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
+         echo "<input type='hidden' name='itiltemplates_id' value='$ID'>";
 
          $select_fields = $fields;
          foreach ($select_fields as $key => $val) {

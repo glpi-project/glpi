@@ -2392,7 +2392,7 @@ CREATE TABLE `glpi_entities` (
   `autofill_buy_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   `autofill_delivery_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   `autofill_order_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '-2',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '-2',
   `entities_id_software` int(11) NOT NULL DEFAULT '-2',
   `default_contract_alert` int(11) NOT NULL DEFAULT '-2',
   `default_infocom_alert` int(11) NOT NULL DEFAULT '-2',
@@ -3411,8 +3411,8 @@ CREATE TABLE `glpi_itilcategories` (
   `ancestors_cache` longtext COLLATE utf8_unicode_ci,
   `sons_cache` longtext COLLATE utf8_unicode_ci,
   `is_helpdeskvisible` tinyint(1) NOT NULL DEFAULT '1',
-  `tickettemplates_id_incident` int(11) NOT NULL DEFAULT '0',
-  `tickettemplates_id_demand` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id_incident` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id_demand` int(11) NOT NULL DEFAULT '0',
   `is_incident` int(11) NOT NULL DEFAULT '1',
   `is_request` int(11) NOT NULL DEFAULT '1',
   `is_problem` int(11) NOT NULL DEFAULT '1',
@@ -3428,8 +3428,8 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `groups_id` (`groups_id`),
   KEY `is_helpdeskvisible` (`is_helpdeskvisible`),
   KEY `itilcategories_id` (`itilcategories_id`),
-  KEY `tickettemplates_id_incident` (`tickettemplates_id_incident`),
-  KEY `tickettemplates_id_demand` (`tickettemplates_id_demand`),
+  KEY `itiltemplates_id_incident` (`itiltemplates_id_incident`),
+  KEY `itiltemplates_id_demand` (`itiltemplates_id_demand`),
   KEY `is_incident` (`is_incident`),
   KEY `is_request` (`is_request`),
   KEY `is_problem` (`is_problem`),
@@ -4991,7 +4991,7 @@ CREATE TABLE `glpi_profiles` (
   `comment` text COLLATE utf8_unicode_ci,
   `problem_status` text COLLATE utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
   `create_ticket_on_login` tinyint(1) NOT NULL DEFAULT '0',
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '0',
   `change_status` text COLLATE utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -6283,7 +6283,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '0',
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '0',
   `begin_date` timestamp NULL DEFAULT NULL,
   `periodicity` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `create_before` int(11) NOT NULL DEFAULT '0',
@@ -6294,7 +6294,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_active` (`is_active`),
-  KEY `tickettemplates_id` (`tickettemplates_id`),
+  KEY `itiltemplates_id` (`itiltemplates_id`),
   KEY `next_creation_date` (`next_creation_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -6462,47 +6462,47 @@ CREATE TABLE `glpi_tickettasks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_tickettemplatehiddenfields
+### Dump table glpi_tiltemplatehiddenfields
 
-DROP TABLE IF EXISTS `glpi_tickettemplatehiddenfields`;
-CREATE TABLE `glpi_tickettemplatehiddenfields` (
+DROP TABLE IF EXISTS `glpi_itiltemplatehiddenfields`;
+CREATE TABLE `glpi_itiltemplatehiddenfields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '0',
   `num` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`tickettemplates_id`,`num`)
+  UNIQUE KEY `unicity` (`itiltemplates_id`,`num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_tickettemplatemandatoryfields
+### Dump table glpi_itiltemplatemandatoryfields
 
-DROP TABLE IF EXISTS `glpi_tickettemplatemandatoryfields`;
-CREATE TABLE `glpi_tickettemplatemandatoryfields` (
+DROP TABLE IF EXISTS `glpi_itiltemplatemandatoryfields`;
+CREATE TABLE `glpi_itiltemplatemandatoryfields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '0',
   `num` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`tickettemplates_id`,`num`)
+  UNIQUE KEY `unicity` (`itiltemplates_id`,`num`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_tickettemplatepredefinedfields
+### Dump table glpi_itiltemplatepredefinedfields
 
-DROP TABLE IF EXISTS `glpi_tickettemplatepredefinedfields`;
-CREATE TABLE `glpi_tickettemplatepredefinedfields` (
+DROP TABLE IF EXISTS `glpi_itiltemplatepredefinedfields`;
+CREATE TABLE `glpi_itiltemplatepredefinedfields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `itiltemplates_id` int(11) NOT NULL DEFAULT '0',
   `num` int(11) NOT NULL DEFAULT '0',
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  KEY `tickettemplates_id_id_num` (`tickettemplates_id`,`num`)
+  KEY `itiltemplates_id_id_num` (`itiltemplates_id`,`num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_tickettemplates
+### Dump table glpi_itiltemplates
 
-DROP TABLE IF EXISTS `glpi_tickettemplates`;
-CREATE TABLE `glpi_tickettemplates` (
+DROP TABLE IF EXISTS `glpi_itiltemplates`;
+CREATE TABLE `glpi_itiltemplates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -7364,6 +7364,28 @@ CREATE TABLE `glpi_pdus_racks` (
   KEY `pdus_id` (`pdus_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 -- /Datacenters
+
+DROP TABLE IF EXISTS `glpi_itilfollowuptemplates`;
+CREATE TABLE `glpi_itilfollowuptemplates` (
+   `id` INT(11) NOT NULL AUTO_INCREMENT,
+   `date_creation` TIMESTAMP NULL DEFAULT NULL,
+   `date_mod` TIMESTAMP NULL DEFAULT NULL,
+   `entities_id` INT(11) NOT NULL DEFAULT '0',
+   `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+   `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+   `content` TEXT NULL COLLATE 'utf8_unicode_ci',
+   `requesttypes_id` INT(11) NOT NULL DEFAULT '0',
+   `is_private` TINYINT(1) NOT NULL DEFAULT '0',
+   `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`),
+   KEY `is_recursive` (`is_recursive`),
+   KEY `requesttypes_id` (`requesttypes_id`),
+   KEY `entities_id` (`entities_id`),
+   KEY `date_mod` (`date_mod`),
+   KEY `date_creation` (`date_creation`),
+   KEY `is_private` (`is_private`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_itilfollowups`;
 CREATE TABLE `glpi_itilfollowups` (

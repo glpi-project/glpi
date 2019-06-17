@@ -223,6 +223,67 @@ function update94to95() {
 
    $ADDTODISPLAYPREF['cluster'] = [31, 19];
    /** /Clusters */
+   /** ITIL templates */
+   //rename tables
+   foreach ([
+      'glpi_tickettemplates',
+      'glpi_tickettemplatepredefinedfields',
+      'glpi_tickettemplatemandatoryfields',
+      'glpi_tickettemplatehiddenfields'
+   ] as $table) {
+      if ($DB->tableExists($table)) {
+         $migration->renameTable($table, str_replace('ticket', 'itil', $table));
+      }
+   }
+   //rename fkeys
+   foreach ([
+      'glpi_entities'                     => 'tickettemplates_id',
+      'glpi_itilcategories'               => 'tickettemplates_id_incident',
+      'glpi_itilcategories'               => 'tickettemplates_id_demand',
+      'glpi_profiles'                     => 'tickettemplates_id',
+      'glpi_ticketrecurrents'             => 'tickettemplates_id',
+      'glpi_itiltemplatehiddenfields'     => 'tickettemplates_id',
+      'glpi_itiltemplatemandatoryfields'  => 'tickettemplates_id',
+      'glpi_itiltemplatepredefinedfields' => 'tickettemplates_id'
+   ] as $table => $field) {
+      if ($DB->fieldExists($table, $field)) {
+         $migration->changeField($table, $field, str_replace('ticket', 'itil', $field), 'integer');
+      }
+   }
+   //rename profilerights values
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_profilerights',
+         ['name' => 'itiltemplate'],
+         ['name' => 'tickettemplate']
+      )
+   );
+   /** /ITIL templates */
+
+   /** add templates for followups */
+   if (!$DB->tableExists('glpi_itilfollowuptemplates')) {
+      $query = "CREATE TABLE `glpi_itilfollowuptemplates` (
+         `id`              INT(11) NOT NULL AUTO_INCREMENT,
+         `date_creation`   TIMESTAMP NULL DEFAULT NULL,
+         `date_mod`        TIMESTAMP NULL DEFAULT NULL,
+         `entities_id`     INT(11) NOT NULL DEFAULT '0',
+         `is_recursive`    TINYINT(1) NOT NULL DEFAULT '0',
+         `name`            VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+         `content`         TEXT NULL COLLATE 'utf8_unicode_ci',
+         `requesttypes_id` INT(11) NOT NULL DEFAULT '0',
+         `is_private`      TINYINT(1) NOT NULL DEFAULT '0',
+         `comment`         TEXT NULL COLLATE 'utf8_unicode_ci',
+         PRIMARY KEY (`id`),
+         INDEX `name` (`name`),
+         INDEX `is_recursive` (`is_recursive`),
+         INDEX `requesttypes_id` (`requesttypes_id`),
+         INDEX `entities_id` (`entities_id`),
+         INDEX `date_mod` (`date_mod`),
+         INDEX `date_creation` (`date_creation`),
+         INDEX `is_private` (`is_private`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_itilfollowuptemplates");
+   }
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

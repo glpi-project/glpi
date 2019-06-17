@@ -240,7 +240,7 @@ abstract class LevelAgreement extends CommonDBChild {
     *
     * @param  Ticket         $ticket Ticket item
     * @param  integer        $type
-    * @param  TicketTemplate $tt ticket template object
+    * @param  ITILTemplate $tt ticket template object
     * @param  bool           $canupdate update right
     */
    function showForTicket(Ticket $ticket, $type, $tt, $canupdate) {

@@ -268,6 +268,17 @@ function glpi_autoload($classname) {
       return false;
    }
 
+   //@since 9.5.0 -- WILL BE REMOVED IN FUTURE RELEASE
+   $deprecateds = [
+      'TicketTempate',
+      'TicketTemplateHiddenField',
+      'TicketTemplateMandatoryField',
+      'TicketTemplatePredefinedField'
+   ];
+   if (in_array($classname, $deprecateds)) {
+      Toolbox::deprecated("$classname has been dropped from GLPI.");
+   }
+
    if ($classname === 'phpCAS'
        && file_exists(stream_resolve_include_path("CAS.php"))) {
       include_once('CAS.php');

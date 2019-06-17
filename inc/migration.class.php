@@ -236,6 +236,7 @@ class Migration {
       $format = '';
       switch ($type) {
          case 'bool' :
+         case 'boolean' :
             $format = "TINYINT(1) NOT NULL";
             if (!$nodefault) {
                if (is_null($default_value)) {
@@ -249,6 +250,7 @@ class Migration {
             break;
 
          case 'char' :
+         case 'character' :
             $format = "CHAR(1)";
             if (!$nodefault) {
                if (is_null($default_value)) {
@@ -259,6 +261,7 @@ class Migration {
             }
             break;
 
+         case 'str' :
          case 'string' :
             $format = "VARCHAR(255) COLLATE utf8_unicode_ci";
             if (!$nodefault) {
@@ -270,6 +273,7 @@ class Migration {
             }
             break;
 
+         case 'int' :
          case 'integer' :
             $format = "INT(11) NOT NULL";
             if (!$nodefault) {

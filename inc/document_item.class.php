@@ -153,7 +153,7 @@ class Document_Item extends CommonDBRelation{
          $ticket = new Ticket();
          $ticket->getFromDB($this->fields['items_id']);
 
-         $tt = $ticket->getTicketTemplateToUse(0, $ticket->fields['type'],
+         $tt = $ticket->getITILTemplateToUse(0, $ticket->fields['type'],
                                                $ticket->fields['itilcategories_id'],
                                                $ticket->fields['entities_id']);
 

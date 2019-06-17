@@ -30,24 +30,23 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
+/**
+ * @since 9.5
+ */
+
+$AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
+header("Content-Type: application/json; charset=UTF-8");
+Html::header_nocache();
 
-Session ::checkRight('tickettemplate', UPDATE);
+Session::checkLoginUser();
 
-$item = new TicketTemplateHiddenField();
+if (isset($_POST['itilfollowuptemplates_id'])
+    && $_POST['itilfollowuptemplates_id'] > 0) {
+   $template = new ITILFollowupTemplate();
+   $template->getFromDB($_POST['itilfollowuptemplates_id']);
 
-if (isset($_POST["add"])) {
-   $item->check(-1, UPDATE, $_POST);
-
-   if ($item->add($_POST)) {
-      Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds hidden field'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
+   $template->fields = array_map('html_entity_decode', $template->fields);
+   echo json_encode($template->fields);
 }
-
-Html::displayErrorAndDie("lost");
