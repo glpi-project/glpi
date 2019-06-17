@@ -1474,7 +1474,6 @@ CREATE TABLE `glpi_crontasks` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
 
-INSERT INTO `glpi_crontasks` VALUES ('33','PurgeLogs','PurgeLogs','604800',24,'1','2','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 
