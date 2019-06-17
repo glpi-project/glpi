@@ -359,7 +359,7 @@ class SavedSearch_Alert extends CommonDBChild {
          }
 
          // Will save $_SESSION and $CFG_GLPI cron context into an array
-         $context = self::saveSession();
+         $context = self::saveContext();
          
          while ($row = $iterator->next()) {
             //execute saved search to get results
