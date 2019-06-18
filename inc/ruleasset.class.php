@@ -123,7 +123,7 @@ class RuleAsset extends Rule {
       $criterias['entities_id']['type']           = 'dropdown';
 
       $criterias['users_id']['name']            = __('User');
-      $criterias['users_id']['type']            = 'dropdown';
+      $criterias['users_id']['type']            = 'dropdown_users';
       $criterias['users_id']['table']           = 'glpi_users';
 
       return $criterias;
@@ -143,7 +143,7 @@ class RuleAsset extends Rule {
       $actions['locations_id']['table']       = 'glpi_locations';
 
       $actions['users_id']['name']            = __('User');
-      $actions['users_id']['type']            = 'dropdown';
+      $actions['users_id']['type']            = 'dropdown_users';
       $actions['users_id']['table']           = 'glpi_users';
 
       $actions['_affect_user_by_regex']['name']              = __('User based contact information');
@@ -157,7 +157,7 @@ class RuleAsset extends Rule {
       $actions['groups_id']['condition']      = 'is_itemgroup';
 
       $actions['users_id_tech']['table']      = 'glpi_users';
-      $actions['users_id_tech']['type']       = 'dropdown';
+      $actions['users_id_tech']['type']       = 'dropdown_users';
       $actions['users_id_tech']['name']       = __('Technician in charge of the hardware');
 
       $actions['groups_id_tech']['name']      = __('Group in charge of the hardware');
