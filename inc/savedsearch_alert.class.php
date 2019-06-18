@@ -305,9 +305,9 @@ class SavedSearch_Alert extends CommonDBChild {
 
    /**
     * Summary of saveContext
-    * 
+    *
     * Save $_SESSION and $CFG_GLPI into the returned array
-    * 
+    *
     * @return array[] which contains a copy of $_SESSION and $CFG_GLPI
     */
    static private function saveContext() {
@@ -320,17 +320,17 @@ class SavedSearch_Alert extends CommonDBChild {
 
    /**
     * Summary of restoreContext
-    * 
+    *
     * restore former $_SESSION and $CFG_GLPI
     * to be sure that logs will be in GLPI default datetime and language
     * and that session is restored for the next crontaskaction
-    * 
-    * @param mixed $session is the array returned by saveContext
+    *
+    * @param mixed $context is the array returned by saveContext
     */
-   static private function restoreContext($session) {
+   static private function restoreContext($context) {
       global $CFG_GLPI;
-      $_SESSION = $session['$_SESSION'];
-      $CFG_GLPI = $session['$CFG_GLPI'];
+      $_SESSION = $context['$_SESSION'];
+      $CFG_GLPI = $context['$CFG_GLPI'];
       Session::loadLanguage();
       Plugin::doHook("init_session");
    }
@@ -360,7 +360,7 @@ class SavedSearch_Alert extends CommonDBChild {
 
          // Will save $_SESSION and $CFG_GLPI cron context into an array
          $context = self::saveContext();
-         
+
          while ($row = $iterator->next()) {
             //execute saved search to get results
             try {
@@ -426,7 +426,7 @@ class SavedSearch_Alert extends CommonDBChild {
                //  and that notifications are sent even if $_SESSION['glpinotification_to_myself'] is false
                //  and to restore default cron $_SESSION and $CFG_GLPI global variables for next cron task
                self::restoreContext($context);
-               
+
                if ($notify) {
                   $event = 'alert' . ($savedsearch->getField('is_private') ? '' : '_' . $savedsearch->getID());
                   $alert = new self();
