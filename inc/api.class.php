@@ -919,7 +919,7 @@ abstract class API extends CommonGLPI {
             $doc_iterator = $DB->request([
                'SELECT'    => [
                   'glpi_documents_items.id AS assocID',
-                  'glpi_documents_items.date_mod AS assocdate',
+                  'glpi_documents_items.date_creation AS assocdate',
                   'glpi_entities.id AS entityID',
                   'glpi_entities.completename AS entity',
                   'glpi_documentcategories.completename AS headings',
