@@ -79,15 +79,15 @@ commands:
           key: npm-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
             - /home/circleci/.npm/_cacache/
-
-  # Run test suite command.
-  run_test_suite:
-    steps:
       - run:
           name: PHP Parallel Lint
           command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
+
+  # Database test suite command.
+  run_db_test_suite:
+    steps:
       - run:
-          name: Update DB
+          name: Update DB tests
           command: |
             mysql -h 127.0.0.1 -u root -e 'create database glpitest0723;'
             mysql -h 127.0.0.1 -u root glpitest0723 < tests/glpi-0.72.3-empty.sql
@@ -104,35 +104,59 @@ commands:
             cp tests/circleci.config_db.php tests/config_db.php
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report  --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
             rm tests/config_db.php
+
+  # Database install command.
+  install_db:
+    steps:
       - run:
           name: Install DB
           command: |
             mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
             bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-host=127.0.0.1 --db-user=root
             bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+
+  # Unit test suite command.
+  run_unit_test_suite:
+    steps:
       - run:
           name: Unit tests
           command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
+
+  # Unit test suite command.
+  run_imap_test_suite:
+    steps:
       - run:
           name: IMAP tests
           command: |
             sudo service dovecot start
             for f in `ls tests/emails-tests/*.eml`; do getmail_maildir ~/Maildir/ < $f; done
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
+
+  # Functionnal test suite command.
+  run_functionnal_test_suite:
+    steps:
       - run:
           name: Functionnal tests
           command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal
+
+  # Web test suite command.
+  run_web_test_suite:
+    steps:
       - run:
           name: WEB tests
           command: |
             php -S localhost:8088 tests/router.php &>/dev/null &
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
-#      - run:
-#          name: LDAP tests
-#          command: |
-#            ./tests/LDAP/ldap_run.sh
-#            composer testldap
 
+  # Run full test suite command.
+  run_full_test_suite:
+    steps:
+      - run_db_test_suite
+      - install_db
+      - run_unit_test_suite
+      - run_imap_test_suite
+      - run_functionnal_test_suite
+      - run_web_test_suite
 
 jobs:
   # Checkout codebase and store it into workspace.
@@ -179,56 +203,56 @@ jobs:
     executor: php_7_0_mariadb
     steps:
       - build
-      - run_test_suite
+      - run_full_test_suite
 
   # PHP 7.1 test suite.
   php_7_1_test_suite:
     executor: php_7_1_mariadb
     steps:
       - build
-      - run_test_suite
+      - run_full_test_suite
 
   # PHP 7.2 test suite.
   php_7_2_test_suite:
     executor: php_7_2_mariadb
     steps:
       - build
-      - run_test_suite
+      - run_full_test_suite
 
   # PHP 7.3 test suite.
   php_7_3_test_suite:
     executor: php_7_3_mariadb
     steps:
       - build
-      - run_test_suite
+      - run_full_test_suite
 
   # PHP 7.3 test suite using MySQL 5.6.
   php_7_3_mysql_5_6_test_suite:
     executor: php_7_3_mysql_5_6
     steps:
       - build
-      - run_test_suite
+      - run_full_test_suite
 
   # PHP 7.3 test suite using MySQL 5.7.
   php_7_3_mysql_5_7_test_suite:
     executor: php_7_3_mysql_5_7
     steps:
       - build
-      - run_test_suite
+      - run_full_test_suite
 
   # PHP 7.3 test suite using MySQL 8.0.
   php_7_3_mysql_8_0_test_suite:
     executor: php_7_3_mysql_8_0
     steps:
       - build
-      - run_test_suite
+      - run_full_test_suite
 
   # PHP latest version test suite.
   php_latest_test_suite:
     executor: php_latest_mariadb
     steps:
       - build
-      - run_test_suite
+      - run_full_test_suite
 
 
 workflows:
