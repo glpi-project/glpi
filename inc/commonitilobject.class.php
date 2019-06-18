@@ -6831,17 +6831,28 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<div class='h_date'><i class='far fa-clock'></i>".Html::convDateTime($this->fields['date'])."</div>";
       echo "<div class='h_user'>";
 
-      $user->getFromDB($this->fields['users_id_recipient']);
+      $user = new User();
+      $display_requester = false;
+      $requesters = $this->getUsers(CommonITILActor::REQUESTER);
+      if (count($requesters) === 1) {
+         $requester = reset($requesters);
+         if ($requester['users_id'] > 0) {
+            // Display requester identity only if there is only one requester
+            // and only if it is not an anonymous user
+            $display_requester = $user->getFromDB($requester['users_id']);
+         }
+      }
+
       echo "<div class='tooltip_picture_border'>";
       $picture = "";
-      if (isset($user->fields['picture'])) {
+      if ($display_requester && isset($user->fields['picture'])) {
          $picture = $user->fields['picture'];
       }
       echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
       User::getThumbnailURLForPicture($picture)."'>";
       echo "</div>";
 
-      if (isset($user->fields['id']) && $user->fields['id']) {
+      if ($display_requester) {
          echo $user->getLink()."&nbsp;";
          $reqdata = getUserName($user->getID(), 2);
          echo Html::showToolTip(
@@ -6849,7 +6860,7 @@ abstract class CommonITILObject extends CommonDBTM {
             ['link' => $reqdata['link']]
          );
       } else {
-         echo __('Requester');
+         echo _n('Requester', 'Requesters', count($requesters));
       }
 
       echo "</div>"; // h_user
