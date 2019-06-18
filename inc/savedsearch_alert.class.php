@@ -304,6 +304,38 @@ class SavedSearch_Alert extends CommonDBChild {
    }
 
    /**
+    * Summary of saveContext
+    *
+    * Save $_SESSION and $CFG_GLPI into the returned array
+    *
+    * @return array[] which contains a copy of $_SESSION and $CFG_GLPI
+    */
+   static private function saveContext() {
+      global $CFG_GLPI;
+      $context = [];
+      $context['$_SESSION'] = $_SESSION;
+      $context['$CFG_GLPI'] = $CFG_GLPI;
+      return $context;
+   }
+
+   /**
+    * Summary of restoreContext
+    *
+    * restore former $_SESSION and $CFG_GLPI
+    * to be sure that logs will be in GLPI default datetime and language
+    * and that session is restored for the next crontaskaction
+    *
+    * @param mixed $context is the array returned by saveContext
+    */
+   static private function restoreContext($context) {
+      global $CFG_GLPI;
+      $_SESSION = $context['$_SESSION'];
+      $CFG_GLPI = $context['$CFG_GLPI'];
+      Session::loadLanguage();
+      Plugin::doHook("init_session");
+   }
+
+   /**
     * Send saved searches alerts
     *
     * @param Crontask $task Crontask instance
@@ -321,17 +353,19 @@ class SavedSearch_Alert extends CommonDBChild {
       if ($iterator->numrows()) {
          $savedsearch = new SavedSearch();
 
-         $cli_logged = null;
          if (!isset($_SESSION['glpiname'])) {
             //required from search class
             $_SESSION['glpiname'] = 'crontab';
          }
 
+         // Will save $_SESSION and $CFG_GLPI cron context into an array
+         $context = self::saveContext();
+
          while ($row = $iterator->next()) {
             //execute saved search to get results
             try {
                $savedsearch->getFromDB($row['savedsearches_id']);
-               if (isCommandLine() && $cli_logged != $savedsearch->fields['users_id']) {
+               if (isCommandLine()) {
                   //search requires a logged in user...
                   $user = new User();
                   $user->getFromDB($savedsearch->fields['users_id']);
@@ -339,8 +373,6 @@ class SavedSearch_Alert extends CommonDBChild {
                   $auth->user = $user;
                   $auth->auth_succeded = true;
                   Session::init($auth);
-                  $_SESSION['glpinotification_to_myself'] = true; // Force sending of notification
-                  $cli_logged = $savedsearch->fields['users_id'];
                }
 
                $data = $savedsearch->execute(true);
@@ -389,6 +421,12 @@ class SavedSearch_Alert extends CommonDBChild {
                   $value
                );
 
+               // Will restore previously saved $_SESSION and $CFG_GLPI:
+               //  To be sure that logs will be in GLPI with default datetime and language
+               //  and that notifications are sent even if $_SESSION['glpinotification_to_myself'] is false
+               //  and to restore default cron $_SESSION and $CFG_GLPI global variables for next cron task
+               self::restoreContext($context);
+
                if ($notify) {
                   $event = 'alert' . ($savedsearch->getField('is_private') ? '' : '_' . $savedsearch->getID());
                   $alert = new self();
@@ -398,6 +436,7 @@ class SavedSearch_Alert extends CommonDBChild {
                   $task->addVolume(1);
                }
             } catch (\Exception $e) {
+               self::restoreContext($context);
                Toolbox::logError($e);
             }
          }
