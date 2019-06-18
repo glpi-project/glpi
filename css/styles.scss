@@ -6243,8 +6243,13 @@ with incorrect shading in some cases */
 .custom_css_configuration td:not([colspan]) {
    width: 50%;
 }
+.custom_css_configuration tbody,
+.custom_css_configuration tr,
+.custom_css_configuration td,
 .custom_css_configuration .custom_css_container {
-   max-width: 100%;
+   max-width: inherit; /* chain inherit "max-width" from table element to editor container */
+}
+.custom_css_configuration .custom_css_container {
    width: 100%;
 }
 .custom_css_configuration .custom_css_container textarea {
