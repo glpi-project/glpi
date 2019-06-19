@@ -1042,7 +1042,7 @@ class Main extends AbstractController implements ControllerInterface
     }
 
    /**
-    * path: '/ITILEvent/dashboard'
+    * path: '/SIEMEvent/dashboard'
     *
     * @param Request  $request  Request
     * @param Response $response Response
@@ -1050,26 +1050,20 @@ class Main extends AbstractController implements ControllerInterface
     *
     * @return void
     *
-     * @Glpi\Annotation\Route(name="itilevent-dashboard", pattern="/ITILEvent/dashboard[/{fullscreen:fullscreen}]")
+     * @Glpi\Annotation\Route(name="siemevent-dashboard", pattern="/SIEMEvent/dashboard[/{fullscreen:fullscreen}]")
     */
     public function siemDashboard(Request $request, Response $response, array $args)
     {
         global $IS_TWIG;
         $IS_TWIG = true;
-        $itemtype = 'ITILEvent';
+        $itemtype = 'SIEMEvent';
         $layout = [
            [
               'count-hosts',
               'count-services',
               'count-active-warnings',
-              'count-active-exceptions',
-              'count-all-total'
-           ],
-           [
-              'count-information-today',
-              'count-warnings-today',
-              'count-exceptions-today'
-           ]
+              'count-active-exceptions'
+            ]
         ];
 
         // Build the card deck from a custom layout
@@ -1077,7 +1071,7 @@ class Main extends AbstractController implements ControllerInterface
         foreach ($layout as $cardrow) {
            $deck = [];
            foreach ($cardrow as $card) {
-              $deck[] = \ITILEvent::getDashboardCard($card);
+              $deck[] = \SIEMEvent::getDashboardCard($card);
            }
            array_push($decks, $deck);
         }

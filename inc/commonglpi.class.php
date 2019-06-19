@@ -260,8 +260,8 @@ class CommonGLPI {
          'Lock'                     => 'lock_lockable_objects',
          'Reservation'              => 'reservation_types',
          'Computer_Item'            => 'directconnect_types',
-         'TILEvent'                 => 'event_types',
-         'Itil_ITILEvent'           => 'itil_types',
+         'SIEMEvent'                => 'event_types',
+         'Itil_SIEMEvent'           => 'itil_types',
       ];
 
       foreach ($guess_relations as $class => $conf) {

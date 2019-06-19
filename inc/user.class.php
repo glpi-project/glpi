@@ -256,7 +256,7 @@ class User extends CommonDBTM {
       $this->addStandardTab('Auth', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Certificate_Item', $ong, $options);
-      $this->addStandardTab('ITILEvent', $ong, $options);
+      $this->addStandardTab('SIEMEvent', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;

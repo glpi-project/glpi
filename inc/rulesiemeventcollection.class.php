@@ -28,21 +28,49 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
-
-/**
- * ITILEventServiceTemplate class.
- *
- * @since 10.0.0
  */
-class ITILEventServiceTemplate extends CommonDBTM {
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type
-   **/
-   static function getTypeName($nb = 0) {
-      return _n('Service template', 'Service templates', $nb);
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
+
+class RuleSIEMEventCollection extends RuleCollection
+{
+
+   // From RuleCollection
+   static $rightname             = 'rule_event';
+   public $stop_on_first_match   = true;
+   public $menu_option           = 'rulesiemevent';
+
+
+   function __construct($entity = 0)
+   {
+      $this->entity = $entity;
+   }
+
+   static function canView()
+   {
+      return Session::haveRightsOr(self::$rightname, [READ, RuleSIEMEvent::PARENT]);
+   }
+
+   function canList()
+   {
+      return static::canView();
+   }
+
+   function getTitle()
+   {
+      return __('Business rules for events');
+   }
+
+   function showInheritedTab()
+   {
+      return (Session::haveRight(self::$rightname, RuleSIEMEvent::PARENT) && ($this->entity));
+   }
+
+   function showChildrensTab()
+   {
+      return (Session::haveRight(self::$rightname, READ)
+              && (count($_SESSION['glpiactiveentities']) > 1));
    }
 }

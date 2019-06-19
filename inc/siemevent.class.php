@@ -35,10 +35,10 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * ITILEvent class
+ * SIEMEvent class
  * @since 10.0.0
  */
-class ITILEvent extends CommonDBTM
+class SIEMEvent extends CommonDBTM
 {
 
    /**
@@ -97,9 +97,6 @@ class ITILEvent extends CommonDBTM
     */
    const STATUS_EXPIRED = 5;
 
-   static $rightname                = 'event';
-
-
    static function getTypeName($nb = 0)
    {
       return _n('Event', 'Events', $nb);
@@ -111,7 +108,7 @@ class ITILEvent extends CommonDBTM
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
-            case 'ITILEvent' :
+            case 'SIEMEvent' :
                return '';
             default:
                return self::createTabEntry('Event Management');
@@ -124,8 +121,8 @@ class ITILEvent extends CommonDBTM
    {
 
       switch ($item->getType()) {
-         case 'ITILEvent' :
-            self::showForITILEvent($item);
+         case 'SIEMEvent' :
+            self::showForSIEMEvent($item);
             break;
          default:
             self::showEventManagementTab($item);
@@ -140,18 +137,18 @@ class ITILEvent extends CommonDBTM
 
    static function getAdditionalMenuContent() {
 
-      $menu['itilevent']['title'] = __('Event Management');
-      $menu['itilevent']['page']  = static::getDashboardURL(false);
+      $menu['siemevent']['title'] = __('Event Management');
+      $menu['siemevent']['page']  = static::getDashboardURL(false);
 
-      $menu['itilevent']['options']['ITILEventHost']['title'] = __('Hosts');
-      $menu['itilevent']['options']['ITILEventHost']['page'] = ITILEventHost::getSearchURL(false);
-      $menu['itilevent']['options']['ITILEventHost']['links']['search'] = ITILEventHost::getSearchURL(false);
-      $menu['itilevent']['options']['ITILEventHost']['links']['add'] = ITILEventHost::getFormURL(false);
+      $menu['siemevent']['options']['SIEMHost']['title'] = __('Hosts');
+      $menu['siemevent']['options']['SIEMHost']['page'] = SIEMHost::getSearchURL(false);
+      $menu['siemevent']['options']['SIEMHost']['links']['search'] = SIEMHost::getSearchURL(false);
+      $menu['siemevent']['options']['SIEMHost']['links']['add'] = SIEMHost::getFormURL(false);
 
-      $menu['itilevent']['options']['ITILEventService']['title'] = __('Services');
-      $menu['itilevent']['options']['ITILEventService']['page'] = ITILEventService::getSearchURL(false);
-      $menu['itilevent']['options']['ITILEventService']['links']['search'] = ITILEventService::getSearchURL(false);
-      $menu['itilevent']['options']['ITILEventService']['links']['add'] = ITILEventService::getFormURL(false);
+      $menu['siemevent']['options']['SIEMService']['title'] = __('Services');
+      $menu['siemevent']['options']['SIEMService']['page'] = SIEMService::getSearchURL(false);
+      $menu['siemevent']['options']['SIEMService']['links']['search'] = SIEMService::getSearchURL(false);
+      $menu['siemevent']['options']['SIEMService']['links']['add'] = SIEMService::getFormURL(false);
 
       return $menu;
    }
@@ -161,42 +158,57 @@ class ITILEvent extends CommonDBTM
       $input = parent::prepareInputForAdd($input);
 
       // All events must be associated to a service or have a service id of -1 for internal
-      if (!isset($input['itileventservices_id']) && $input['itileventservices_id'] != -1) {
+      if (!isset($input['siemservices_id']) && $input['siemservices_id'] != -1) {
          return false;
+      }
+
+      if (isset($input['_sensor_fault'])) {
+         $input['significance'] = self::EXCEPTION;
+         $input['name'] = 'sensor_fault';
       }
 
       if (isset($input['content']) && !is_string($input['content'])) {
          $input['content'] = json_encode($input['content']);
       }
 
-      if ($input['significance'] < 0 || $input['significance'] > 2) {
+      if (!isset($input['significance']) || $input['significance'] < 0 || $input['significance'] > 2) {
          $input['significance'] = self::INFORMATION;
       }
 
       // Process event filtering rules
-      $rules = new RuleITILEventFilterCollection();
+      $rules = new RuleSIEMEventFilterCollection();
 
       $input['_accept'] = true;
       $input = $rules->processAllRules($input,
                                        $input,
                                        ['recursive' => true],
-                                       ['condition' => RuleITILEvent::ONADD]);
+                                       ['condition' => RuleSIEMEvent::ONADD]);
       $input = Toolbox::stripslashes_deep($input);
 
       if (!$input['_accept']) {
          // Drop the event
          return false;
       } else {
+         if ($input['siemservices_id'] >= 0) {
+            $service = new SIEMService();
+            $service->getFromDB($input['siemservices_id']);
+            if ($service->fields['suppress_informational']) {
+               // Process event to update service/host state, then drop it so it doesn't get saved.
+               $event = new self();
+               $event->fields = $input;
+               $service->onEventAdd($event);
+               return false;
+            }
+         }
          return $input;
       }
    }
 
    function post_addItem()
    {
-
       if (!isset($this->input['correlation_id']) && !isset($this->fields['correlation_id'])) {
          // Create a new correlation ID in case one isn't assigned by the correlation engine
-         $this->fields['correlation_id'] = uniqid(true);
+         $this->fields['correlation_id'] = uniqid('', true);
       }
 
       $this->update([
@@ -205,8 +217,8 @@ class ITILEvent extends CommonDBTM
       ]);
 
       // Process event business rules. Only used for correlation, notifications, and tracking
-      $rules = new RuleITILEventCollection();
-      $input = $rules->processAllRules($this->fields, $this->fields, ['recursive' => true], ['condition' => RuleITILEvent::ONADD]);
+      $rules = new RuleSIEMEventCollection();
+      $input = $rules->processAllRules($this->fields, $this->fields, ['recursive' => true], ['condition' => RuleSIEMEvent::ONADD]);
       $input = Toolbox::stripslashes_deep($input);
 
       $this->update([
@@ -214,7 +226,7 @@ class ITILEvent extends CommonDBTM
       ] + $input);
 
       // Update the related service
-      ITILEventService::onEventAdd($this);
+      SIEMService::onEventAdd($this);
      
       parent::post_addItem();
    }
@@ -223,7 +235,7 @@ class ITILEvent extends CommonDBTM
    {
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Itil_ITILEvent::class
+            Itil_SIEMEvent::class
          ]
       );
 
@@ -367,58 +379,66 @@ class ITILEvent extends CommonDBTM
       return [self::STATUS_NEW, self::STATUS_ACKNOWLEDGED, self::STATUS_REMEDIATING, self::STATUS_MONITORING];
    }
 
-   /**
-    * Get event data that matches specific parameters
-    *
-    * @since 10.0.0
-    *
-    * @param type $item   An asset or tracking object that the resulting events should be linked to
-    * @param int $start   The index of the first result when paginating results
-    * @param int $limit   The maximum number of results returned
-    * @param array $where An associative array of WHERE filters for the iterator
-    * @return \DBmysqlIterator The event data iterator or false if the query failed
-    */
-   public static function getEventData($item, int $start = 0, int $limit = 0, array $where = []) : DBmysqlIterator
-   {
+   public static function getEventsForHostOrService(int $items_id, bool $is_service = true, array $params) {
       global $DB;
 
+      $p = [
+         'start'  => 0,
+         'limit'  => -1
+      ];
+      $p = array_replace($p, $params);
+
+      $events = [];
+      $servicetable = SIEMService::getTable();
+      $hosttable = SIEMHost::getTable();
       $eventtable = self::getTable();
 
-      $query = [
-         'FROM' => $eventtable,
-         'WHERE' => [],
-         'ORDERBY' => ['date DESC']
+      $criteria = [
+         'SELECT' => [
+            'glpi_siemevents.*',
+         ],
+         'FROM'   => $eventtable,
+         'LEFT JOIN' => [
+            $servicetable => [
+               'FKEY'   => [
+                  $servicetable  => 'id',
+                  $eventtable => 'siemservices_id'
+               ]
+            ]
+         ],
+         'ORDERBY'  => ['date DESC']
       ];
-
-      if ($item != null) {
-         switch ($item->getType()) {
-            case 'Ticket' :
-            case 'Change' :
-            case 'Problem' :
-               $itemeventtable = Itil_ITILEvent::getTable();
-               $query['WHERE'][] = [
-                  "{$itemeventtable}.itemtype" => $item->getType(),
-                  "{$itemeventtable}.items_id" => $item->getID()
-               ];
-               break;
-            case 'ITILEventHost' :
-            case 'ITILEventService' :
-               $query = array_merge_recursive($query, $item->getEventRestrictCriteria());
-               break;
-         }
-
+      if ($p['start'] > 0) {
+         $criteria['START'] = $p['start'];
+      }
+      if ($p['limit'] > 1) {
+         $criteria['LIMIT'] = $p['limit'];
+      }
+      if ($is_service) {
+         $criteria['WHERE'] = [
+            'siemservices_id' => $items_id
+         ];
+      } else {
+         $criteria['SELECT'][] = 'glpi_siemservices.siemhosts_id';
+         $criteria['WHERE'] = [
+            'siemhosts_id' => $items_id
+         ];
+         $criteria['LEFT JOIN'][$hosttable] = [
+            'FKEY'   => [
+               $hosttable  => 'id',
+               $servicetable => 'siemhosts_id'
+            ]
+         ];
       }
 
-      $query['WHERE'] = array_merge_recursive($query['WHERE'], $where);
-      if ($limit) {
-         $query['START'] = (int)$start;
-         $query['LIMIT'] = (int)$limit;
+      $iterator = $DB->request($criteria);
+      while ($data = $iterator->next()) {
+         $events[] = $data;
       }
 
-      $iterator = $DB->request($query);
-      return $iterator;
+      return $events;
    }
-   
+
    /**
     * Gets the dashboard card definition with the specified name.
     * If no name is provided, all card definitions are returned.
@@ -446,63 +466,43 @@ class ITILEvent extends CommonDBTM
          ];
       }
 
+      $commonservicejoin = [
+         'glpi_siemservices' => [
+            'FKEY'   => [
+               'glpi_siemservices'  => 'id',
+               'glpi_siemevents'    => 'siemservices_id'
+            ]
+         ],
+         'glpi_siemservicetemplates' => [
+            'FKEY'   => [
+               'glpi_siemservicetemplates'   => 'id',
+               'glpi_siemservices'           => 'siemservicetemplates_id'
+            ]
+         ]
+      ];
+
+      $active_exception_subquery = new QuerySubQuery([
+         'SELECT' => ['glpi_siemevents.id', 'significance', 'glpi_siemevents.status', 'date'],
+         'FROM'   => self::getTable(),
+         'LEFT JOIN' => $commonservicejoin,
+         'WHERE'  => [
+            'significance' => self::EXCEPTION,
+            'OR'           => [
+               'AND' => [
+                  'is_stateless'             => 1,
+                  'glpi_siemevents.status'   => [0,1,2,3],
+               ],
+               'AND' => [
+                  'is_stateless'             => 0,
+                  'glpi_siemevents.status'   => [1,2,3],
+               ]
+            ]
+         ]
+      ], 'tmp_events');
+
       $allcards = null;
       if (!$allcards) {
          $allcards = [
-            'count-all-total' => [
-               'title'  => __('Total Events'),
-               'type'   => 'counter',
-               'query'  => [
-                  'SELECT' => [
-                     'COUNT'  => 'id AS cpt'
-                  ],
-                  'FROM'   => self::getTable()
-               ]
-            ],
-            'count-information-today' => [
-               'title'  => __('Information Events Today'),
-               'type'   => 'counter',
-               'query'  => [
-                  'SELECT' => [
-                     'COUNT'  => 'id AS cpt'
-                  ],
-                  'FROM'   => self::getTable(),
-                  'WHERE'  => [
-                     "DATE(`date_creation`)" => new QueryExpression('CURDATE()'),
-                     'significance'          => self::INFORMATION
-                  ]
-               ]
-            ],
-            'count-warnings-today' => [
-               'title'              => __('Warning Events Today'),
-               'type'               => 'counter',
-               'extra_card_classes' => 'bg-warning',
-               'query'              => [
-                  'SELECT' => [
-                     'COUNT'  => 'id AS cpt'
-                  ],
-                  'FROM'   => self::getTable(),
-                  'WHERE'  => [
-                     "DATE(`date_creation`)" => new QueryExpression('CURDATE()'),
-                     'significance'          => self::WARNING
-                  ]
-               ]
-            ],
-            'count-exceptions-today' => [
-               'title'              => __('Exception Events Today'),
-               'type'               => 'counter',
-               'extra_card_classes' => 'bg-danger',
-               'query'              => [
-                  'SELECT' => [
-                     'COUNT'  => 'id AS cpt'
-                  ],
-                  'FROM'   => self::getTable(),
-                  'WHERE'  => [
-                     "DATE(`date_creation`)" => new QueryExpression('CURDATE()'),
-                     'significance'          => self::EXCEPTION
-                  ]
-               ]
-            ],
             'summary-active-warnings' => [
                'title'  => __('Summary of Active Warnings'),
                'type'   => 'table',
@@ -546,7 +546,18 @@ class ITILEvent extends CommonDBTM
                   'FROM'   => self::getTable(),
                   'WHERE'  => [
                      'significance' => self::WARNING,
-                     'status'       => self::getActiveStatusArray()
+                     'NOT' => [
+                        'OR'           => [
+                           'AND' => [
+                              'is_stateless' => 1,
+                              'status'       => ['0','1','2','3'],
+                           ],
+                           'AND' => [
+                              'is_stateless' => 0,
+                              'status'       => ['1','2','3'],
+                           ]
+                        ]
+                     ]
                   ]
                ]
             ],
@@ -561,7 +572,18 @@ class ITILEvent extends CommonDBTM
                   'FROM'   => self::getTable(),
                   'WHERE'  => [
                      'significance' => self::EXCEPTION,
-                     'status'       => self::getActiveStatusArray()
+                     'NOT' => [
+                        'OR'           => [
+                           'AND' => [
+                              'is_stateless' => 1,
+                              'status'       => ['0','1','2','3'],
+                           ],
+                           'AND' => [
+                              'is_stateless' => 0,
+                              'status'       => ['1','2','3'],
+                           ]
+                        ]
+                     ]
                   ]
                ]
             ],
@@ -572,10 +594,10 @@ class ITILEvent extends CommonDBTM
                   'SELECT' => [
                      'COUNT'  => 'id AS cpt'
                   ],
-                  'FROM'   => ITILEventHost::getTable(),
+                  'FROM'   => SIEMHost::getTable(),
                   'WHERE'  => [
                      'NOT' => [
-                        'itileventservices_id_availability' => null
+                        'siemservices_id_availability' => null
                      ]
                   ]
                ]
@@ -587,7 +609,7 @@ class ITILEvent extends CommonDBTM
                   'SELECT' => [
                      'COUNT'  => 'id AS cpt'
                   ],
-                  'FROM'   => ITILEventService::getTable(),
+                  'FROM'   => SIEMService::getTable(),
                   'WHERE'  => [
                      'is_active' => 1
                   ]
@@ -612,7 +634,7 @@ class ITILEvent extends CommonDBTM
     * @since 10.0.0
     * @param string $name The name of the dashboard card.
     * @return array The dashboard card data.
-    * @see ITILEvent::getDashboardCardDefinition()
+    * @see SIEMEvent::getDashboardCardDefinition()
     */
    public static function getDashboardCard(string $name)
    {
@@ -645,230 +667,6 @@ class ITILEvent extends CommonDBTM
          unset($definition['query']);
       }
       return $definition;
-   }
-
-   public static function showListForItem(CommonDBTM $item = null, $display = true, $where = []) {
-      $out = '';
-      $header_text = __('Historical events');
-      $selftable = self::getTable();
-
-      if (isset($_GET["start"])) {
-         $start = intval($_GET["start"]);
-      } else {
-         $start = 0;
-      }
-      $sql_filters = self::convertFiltersValuesToSqlCriteria(isset($_GET['listfilters']) ? $_GET['listfilters'] : []);
-      $sql_filters = $sql_filters + $where;
-
-      $iterator = ITILEvent::getEventData($item, $start, $_SESSION['glpilist_limit'], $sql_filters);
-      
-      // Display the pager
-      $additional_params = isset($_GET['listfilters']) ? http_build_query(['listfilters' => $_GET['listfilters']]) : '';
-      $out .= Html::printAjaxPager($header_text, $start, $iterator->count(), '', false, $additional_params);
-
-
-      $out .= "<div class='firstbloc'>";
-
-      $out .= "<table class='tab_cadre_fixehov'><tr>";
-
-      //TODO Find a clean way to show associated items in list entry (Useful for dashboard view)
-      // Should items be grouped together in the same row, or have some sort of expandable information panel
-      // Alternative is to only allow a single item link per Event
-      $header = "<tr><th></th>";
-      $header .= "<th>".__('Name')."</th>";
-      $header .= "<th>".__('Significance')."</th>";
-      $header .= "<th>".__('Date')."</th>";
-      $header .= "<th>".__('Status')."</th>";
-      $header .= "<th>".__('Correlation ID')."</th></tr>";
-      $colcount = 6;
-
-      $out .= "<thead>";
-      $out .= $header;
-      if (isset($_GET['listfilters'])) {
-         $out .= "<tr class='log_history_filter_row'>";
-         $out .= "<th>";
-         $out .= "<input type='hidden' name='listfilters[active]' value='1' />";
-         $out .= "<input type='hidden' name='items_id' value='{$item->getID()}' />";
-         $out .= "</th>";
-         $out .= "<th>";
-         $out .= Html::input('listfilters[name]');
-         $out .= "</th>";
-         $out .= "<th>";
-         $out .= ITILEvent::dropdownSignificance([
-            'name'                  => 'listfilters[significance]',
-            'value'                 => '',
-            'values'                => isset($_GET['listfilters']['significance']) ?
-                                          $_GET['listfilters']['significance'] : [],
-            'multiple'              => true,
-            'width'                 => '100%',
-            'display'               => false
-         ]);
-         $out .= "</th>";
-         $dateValue = isset($_GET['filters']['date']) ? Html::cleanInputText($_GET['listfilters']['date']) : null;
-         $out .= "<th><input type='date' name='listfilters[date]' value='$dateValue' /></th>";
-         $out .= "<th>";
-         $out .= ITILEvent::dropdownStatus([
-            'name'                  => 'listfilters[status]',
-            'value'                 => '',
-            'values'                => isset($_GET['listfilters']['status']) ?
-                                          $_GET['listfilters']['status'] : [],
-            'multiple'              => true,
-            'width'                 => '100%',
-            'display'               => false
-         ]);
-         $out .= "</th>";
-         $out .= "</tr>";
-      } else {
-         $out .= "<tr>";
-         $out .= "<th colspan='{$colcount}'>";
-         $out .= "<a href='#' class='show_list_filters'>" . __('Show filters') . " <span class='fa fa-filter pointer'></span></a>";
-         $out .= "</th>";
-         $out .= "</tr>";
-      }
-      $out .= "</thead>";
-
-      $out .= "<tfoot>$header</tfoot>";
-
-      if (!count($iterator)) {
-         $out .= "<tr class='tab_bg_2'>";
-         $out .= "<td class='center' colspan='{$colcount}'>".__('No event')."</td></tr>\n";
-      } else {
-         $out .= "<tbody>";
-         while ($data = $iterator->next()) {
-            $style = '';
-            $icon = 'fas fa-info-circle';
-            $active = in_array($data['status'], self::getActiveStatusArray());
-            if ($data['significance'] == ITILEvent::WARNING) {
-               if ($active) {
-                  $style = "style='background-color: {$_SESSION['glpieventwarning_color']}'";
-               }
-               $icon = 'fas fa-exclamation-triangle';
-            } else if ($data['significance'] == ITILEvent::EXCEPTION) {
-               if ($active) {
-                  $style = "style='background-color: {$_SESSION['glpieventexception_color']}'";
-               }
-               $icon = 'fas fa-exclamation-circle';
-            }
-            $out .= "<tr id='itilevent_{$data['id']}' class='tab_bg_2' $style onclick='toggleEventDetails(this);'>";
-            $out .= "<td class='center'><i class='{$icon} fa-lg'/></td>";
-            $out .= "<td class='center'>".$data['name']."</td>";
-            $out .= "<td class='center'>".ITILEvent::getSignificanceName($data['significance'])."</td>";
-            $out .= "<td class='center'>".Html::convDateTime($data['date'])."</td>";
-            $out .= "<td class='center'>".ITILEvent::getStatusName($data['status'])."</td>";
-            $out .= "<td class='center'>".$data['correlation_id']."</td>";
-            $out .= "</tr>\n";
-
-            $out .= "<tr id='itilevent_{$data['id']}_content' class='tab_bg_2' $style hidden='hidden'>";
-            $out .= "<td colspan='{$colcount}'><p>";
-            $content = '';
-            $content_json = self::getEventProperties($data['content'], $data['logger']);
-            foreach ($content_json as $property) {
-               $safename = html_entity_decode($property['name']);
-               $safeval = html_entity_decode($property['value']);
-               $content .= "{$safename}: {$safeval}<br>";
-            }
-            $out .= $content;
-            $out .= "</p></td></tr>\n";
-         }
-         $out .= "</tbody>";
-      }
-      $out .= "</table></div>";
-      $out .= Html::printAjaxPager($header_text, $start, $iterator->count(), '', false, $additional_params);
-      if (!$display) {
-         return $out;
-      } else {
-         echo $out;
-      }
-   }
-
-   public static function showList($params)
-   {
-      global $CFG_GLPI;
-
-      $p = [
-         'id'           => 'eventlist'.mt_rand(),
-         'display'      => true,
-         'where'        => [],
-         'list_limit'   => $_SESSION['glpilist_limit'],
-         'item'         => null
-      ];
-      $p = array_replace($p, $params);
-
-      $out = '';
-      if (isset($_GET["start"])) {
-         $start = intval($_GET["start"]);
-      } else {
-         $start = 0;
-      }
-
-      $iterator = ITILEvent::getEventData($p['item'], $start, $_SESSION['glpilist_limit'], $p['where']);
-      $ajax_url = $CFG_GLPI['root_doc']."/ajax/siemdashboard.php";
-
-      // Display the pager
-      $out .= Html::printAjaxPager('', $start, $iterator->count(), '', false);
-
-      $out .= "<div class='firstbloc'>";
-
-      $out .= "<table class='tab_cadre_fixehov'><tr>";
-
-      //TODO Find a clean way to show associated items in list entry (Useful for dashboard view)
-      // Should items be grouped together in the same row, or have some sort of expandable information panel
-      // Alternative is to only allow a single item link per Event
-      $header = "<tr><th></th>";
-      $header .= "<th>".__('Name')."</th>";
-      $header .= "<th>".__('Date')."</th>";
-      $header .= "<th>".__('Status')."</th>";
-      $header .= "<th>".__('Correlation ID')."</th></tr>";
-      $colcount = 7;
-
-      $out .= "<thead>$header</thead>";
-      $out .= "<tfoot>$header</tfoot>";
-
-      if (!count($iterator)) {
-         $out .= "<tr class='tab_bg_2'>";
-         $out .= "<td class='center' colspan='{$colcount}'>".__('No event')."</td></tr>\n";
-      } else {
-         $out .= "<tbody>";
-         while ($data = $iterator->next()) {
-            $style = '';
-            $icon = 'fas fa-info-circle';
-            $active = in_array($data['status'], self::getActiveStatusArray());
-            if ($data['significance'] == ITILEvent::WARNING) {
-               if ($active) {
-                  $style = "style='background-color: {$_SESSION['glpieventwarning_color']}'";
-               }
-               $icon = 'fas fa-exclamation-triangle';
-            } else if ($data['significance'] == ITILEvent::EXCEPTION) {
-               if ($active) {
-                  $style = "style='background-color: {$_SESSION['glpieventexception_color']}'";
-               }
-               $icon = 'fas fa-exclamation-circle';
-            }
-            $out .= "<tr id='itilevent_{$data['id']}' class='tab_bg_2' $style onclick='toggleEventDetails(this);'>";
-            $out .= "<td class='center'><i class='{$icon} fa-lg' title='".
-                  ITILEvent::getSignificanceName($data['significance'])."'/></td>";
-            $out .= "<td class='center'>".$data['name']."</td>";
-            $out .= "<td class='center'><time>".Html::convDateTime($data['date'], null, true)."</time></td>";
-            $out .= "<td class='center'>".ITILEvent::getStatusName($data['status'])."</td>";
-            $out .= "<td class='center'>".$data['correlation_id']."</td>";
-            $out .= "</tr>\n";
-
-            $out .= "<tr id='itilevent_{$data['id']}_content' class='tab_bg_2' $style hidden='hidden'>";
-            $out .= "<td colspan='{$colcount}'><p>";
-            $out .= self::getEventProperties($data['content'], $data['logger'], [
-               'format' => 'pretty'
-            ]);
-            $out .= "</p></td></tr>\n";
-         }
-         $out .= "</tbody>";
-      }
-      $out .= "</table></div>";
-      $out .= Html::printAjaxPager('', $start, $iterator->count(), '', false);
-      if (!$p['display']) {
-         return $out;
-      } else {
-         echo $out;
-      }
    }
 
    /**
@@ -980,7 +778,7 @@ class ITILEvent extends CommonDBTM
     * @param boolean $translate Attempt to translate the event properties.
     * @return array|string Associative array or HTML display of event properties
     */
-   public static function getEventProperties(string $content, $logger, array $params = [])
+   public static function getEventProperties($content, $logger, array $params = [])
    {
       $p = [
          'translate' => true,
@@ -995,10 +793,10 @@ class ITILEvent extends CommonDBTM
       if ($content !== null) {
          $properties = json_decode($content, true);
       } else {
-         return [];
+         return '';
       }
       if ($properties == null) {
-         return [];
+         return '';
       }
 
       $props = [];
@@ -1039,6 +837,25 @@ class ITILEvent extends CommonDBTM
       }
    }
 
+   public static function getVisibilityCriteria() {
+      $servicetable = SIEMService::getTable();
+      $service_templatetable = SIEMServiceTemplate::getTable();
+      $eventtable = self::getTable();
+
+      return [
+         'LEFT JOIN' => [
+            $servicetable => [
+               $servicetable  => 'id',
+               $eventtable    => 'siemservices_id'
+            ],
+            $service_templatetable => [
+               $service_templatetable  => 'id',
+               $servicetable           => 'siemservicetemplates_id'
+            ]
+         ]
+      ];
+   }
+
    /**
     * Create a ticket, change, or problem from this event
     *
@@ -1054,7 +871,7 @@ class ITILEvent extends CommonDBTM
       if (is_subclass_of($tracking_type, 'CommonITILObject')) {
          $tracking = new $tracking_type();
 
-         $content = ITILEvent::getEventProperties($this->fields['content'], $this->fields['logger'], [
+         $content = SIEMEvent::getEventProperties($this->fields['content'], $this->fields['logger'], [
             'format' => 'plain'
          ]);
 
@@ -1075,13 +892,14 @@ class ITILEvent extends CommonDBTM
             } else {
                $items_tracking = 'glpi_items_tickets';
             }
+            // TODO Replace Item_SIEMEvent with host or serivce?
             $iterator = $DB->request([
-               'SELECT' => ['itemtype', 'items_id'],
-               'FROM'   => Item_ITILEvent::getTable(),
-               'WHERE'  => [
-                  'itilevents_id'   => $this->getID()
+               'SELECT'    => ['itemtype', 'items_id'],
+               'FROM'      => SIEMHost::getTable(),
+               'WHERE'     => [
+                  'siemevents_id_availability'   => $this->getID()
                ]
-            ]);
+            ] + self::getVisibilityCriteria());
 
             $actors_responsible = ['user' => [], 'group' => []];
             while ($data = $iterator->next()) {
@@ -1124,11 +942,11 @@ class ITILEvent extends CommonDBTM
                }
             }
 
-            $itil_itilevent = new Itil_ITILEvent();
-            $itil_itilevent->add([
+            $itil_siemevent = new Itil_SIEMEvent();
+            $itil_siemevent->add([
                'itemtype'        => $tracking_type,
                'items_id'        => $tracking_id,
-               'itilevents_id'   => $this->getID()
+               'siemevents_id'   => $this->getID()
             ]);
          }
       } else {
@@ -1252,13 +1070,13 @@ class ITILEvent extends CommonDBTM
       global $CFG_GLPI, $router;
 
       if ($router != null) {
-         $page = $router->pathFor('itilevent-dashboard');
+         $page = $router->pathFor('siemevent-dashboard');
          return $page;
       }
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
-      // ITILEvents are only compatible with the new UI
+      // SIEMEvents are only compatible with the new UI
       return "$dir/front/central.php";
    }
 
@@ -1271,8 +1089,8 @@ class ITILEvent extends CommonDBTM
          $start = 0;
       }
 
-      $eventhost = new ITILEventHost();
-      $eventservice = new ITILEventService();
+      $eventhost = new SIEMHost();
+      $eventservice = new SIEMService();
       $matchinghosts = $eventhost->find(['items_id' => $item->getID(), 'itemtype' => $item::getType()], [], 1);
       $has_host = (count($matchinghosts) == 1);
       $matchingservices = [];
@@ -1281,13 +1099,13 @@ class ITILEvent extends CommonDBTM
          $has_services = false;
       } else {
          $eventhost->getFromDB($matchinghosts[0]['id']);
-         $matchingservices = $eventservice->find(['hosts_id' => $matchinghosts[0]]);
+         $matchingservices = $eventservice->find(['siemhosts_id' => $matchinghosts[0]]);
          $has_services = (count($matchingservices) > 0);
       }
 
       if (!$has_host && !$has_services) {
          echo "<div class='alert alert-warning'>" . __('This host is not monitored by any plugin') . "</div>";
-         Html::showSimpleForm(ITILEventHost::getFormURL(),
+         Html::showSimpleForm(SIEMHost::getFormURL(),
                'add', __('Enable monitoring'),
                ['itemtype' => $item->getType(),
                'items_id' => $item->getID()]);
@@ -1299,80 +1117,117 @@ class ITILEvent extends CommonDBTM
       }
 
       $out = $eventhost->getHostInfoDisplay();
+      $out .= SIEMService::getFormForHost($eventhost);
 
-      $servicestatuses = "<table class='tab_cadre_fixe'><thead><tr><th colspan='4'>Services</th></tr>";
-      $servicestatuses .= "<tr><th>" . __('Status') . "</th>";
-      $servicestatuses .= "<th>" . __('Name') . "</th>";
-      $servicestatuses .= "<th>" . __('Last status change') . "</th>";
-      $servicestatuses .= "<th>" . __('Latest event') . "</th></tr></thead><tbody>";
-      foreach($matchingservices as $service) {
-         $eventservice->getFromDB($service['id']);
-         $status = ITILEventService::getStatusName($eventservice->fields['status']);
-         $status_since_diff = Toolbox::getHumanReadableTimeDiff($eventservice->fields['status_since']);
-         $latest_event = '';
-         $servicestatuses .= "<tr id='service_{$service['id']}'>";
-         $servicestatuses .= "<td>{$status}</td>";
-         $servicestatuses .= "<td>{$eventservice->fields['name']}</td>";
-         $servicestatuses .= "<td>{$status_since_diff}</td>";
-         $servicestatuses .= "<td>{$latest_event}</td>";
-         $servicestatuses .= "</tr>";
-      }
+      $events = self::getEventsForHostOrService($eventhost->getID(), false, [
+         'start' => $start,
+         'limit' => $_SESSION['glpilist_limit']
+      ]);
 
-      $out .= $servicestatuses;
-
-      $iterator = ITILEvent::getEventData($eventhost, $start, $_SESSION['glpilist_limit']);
-
-      $historical = Html::printAjaxPager('', $start, $iterator->count(), '', false);
+      $historical = Html::printAjaxPager('', $start, count($events), '', false);
       $historical .= "<table class='tab_cadre_fixehov'><thead>";
-      $historical .= "<tr><th colspan='6'>Historical</th></tr><tr><th></th>";
+      $historical .= "<tr><th colspan='5'>Historical</th></tr><tr><th></th>";
       $historical .= "<th>".__('Name')."</th>";
       $historical .= "<th>".__('Significance')."</th>";
       $historical .= "<th>".__('Date')."</th>";
       $historical .= "<th>".__('Status')."</th>";
-      $historical .= "<th>".__('Correlation ID')."</th></tr></thead><tbody>";
+      $historical .= "</tr></thead><tbody>";
 
-      if (!is_null($iterator)) {
-         $temp_service = new ITILEventService();
-         while ($data = $iterator->next()) {
-            $style = '';
-            $icon = 'fas fa-info-circle';
-            $active = in_array($data['status'], self::getActiveStatusArray());
-            $temp_service->getFromDB($data['itileventservices_id']);
-            $localized_name = self::getLocalizedEventName($data['name'], $temp_service->fields['logger']);
-            if ($data['significance'] == ITILEvent::WARNING) {
-               if ($active) {
-                  $style = "style='background-color: {$_SESSION['glpieventwarning_color']}'";
-               }
-               $icon = 'fas fa-exclamation-triangle';
-            } else if ($data['significance'] == ITILEvent::EXCEPTION) {
-               if ($active) {
-                  $style = "style='background-color: {$_SESSION['glpieventexception_color']}'";
-               }
-               $icon = 'fas fa-exclamation-circle';
+      $temp_service = new SIEMService();
+      foreach ($events as $event) {
+         $style = '';
+         $icon = 'fas fa-info-circle';
+         $active = in_array($event['status'], self::getActiveStatusArray());
+         $temp_service->getFromDB($event['siemservices_id']);
+         $localized_name = self::getLocalizedEventName($event['name'], $temp_service->fields['logger']);
+         if ($event['significance'] == SIEMEvent::WARNING) {
+            if ($active) {
+               $style = "style='background-color: {$_SESSION['glpieventwarning_color']}'";
             }
-            $historical .= "<tr id='itilevent_{$data['id']}' class='tab_bg_2' $style onclick='toggleEventDetails(this);'>";
-            $historical .= "<td class='center'><i class='{$icon} fa-lg' title='".
-                  ITILEvent::getSignificanceName($data['significance'])."'/></td>";
-            $historical .= "<td>{$localized_name}</td>";
-            $historical .= "<td>" . self::getSignificanceName($data['significance']) . "</td>";
-            $historical .= "<td>{$data['date']}</td>";
-            $historical .= "<td>" . self::getStatusName($data['status']) . "</td>";
-            $historical .= "<td>{$data['correlation_id']}</td>";
-            $historical .= "<td></td></tr>";
-            $historical .= "<tr id='itilevent_{$data['id']}_content' class='tab_bg_2' $style hidden='hidden'>";
-            $historical .= "<td colspan='6'><p>";
-            $historical .= self::getEventProperties($data['content'], $temp_service->fields['logger'], [
-               'format' => 'pretty'
-            ]);
-            $historical .= "</p></td></tr>\n";
+            $icon = 'fas fa-exclamation-triangle';
+         } else if ($event['significance'] == SIEMEvent::EXCEPTION) {
+            if ($active) {
+               $style = "style='background-color: {$_SESSION['glpieventexception_color']}'";
+            }
+            $icon = 'fas fa-exclamation-circle';
          }
+         $historical .= "<tr id='siemevent_{$event['id']}' class='tab_bg_2' $style onclick='toggleEventDetails(this);'>";
+         $historical .= "<td class='center'><i class='{$icon} fa-lg' title='".
+               SIEMEvent::getSignificanceName($event['significance'])."'/></td>";
+         $historical .= "<td>{$localized_name}</td>";
+         $historical .= "<td>" . self::getSignificanceName($event['significance']) . "</td>";
+         $historical .= "<td>{$event['date']}</td>";
+         $historical .= "<td>" . self::getStatusName($event['status']) . "</td>";
+         $historical .= "</tr>";
+         $historical .= "<tr id='siemevent_{$event['id']}_content' class='tab_bg_2' $style hidden='hidden'>";
+         $historical .= "<td colspan='6'><p>";
+         $historical .= self::getEventProperties($event['content'], $temp_service->fields['logger'], [
+            'format' => 'pretty'
+         ]);
+         $historical .= "</p></td></tr>\n";
       }
 
       $historical .= "</tbody></table>";
-      $historical .= Html::printAjaxPager('', $start, $iterator->count(), '', false);
+      $historical .= Html::printAjaxPager('', $start, count($events), '', false);
 
       $out .= $historical;
       echo $out;
+   }
+
+   public static function getListForHostOrService(int $items_id, bool $is_service = true, array $params) {
+
+      $events = self::getEventsForHostOrService($eventhost->getID(), false, [
+         'start' => $start,
+         'limit' => $_SESSION['glpilist_limit']
+      ]);
+
+      $out = Html::printAjaxPager('', $start, count($events), '', false);
+      $out .= "<table class='tab_cadre_fixehov'><thead>";
+      $out .= "<tr><th colspan='5'>Historical</th></tr><tr><th></th>";
+      $out .= "<th>".__('Name')."</th>";
+      $out .= "<th>".__('Significance')."</th>";
+      $out .= "<th>".__('Date')."</th>";
+      $out .= "<th>".__('Status')."</th>";
+      $out .= "</tr></thead><tbody>";
+
+      $temp_service = new SIEMService();
+      foreach ($events as $event) {
+         $style = '';
+         $icon = 'fas fa-info-circle';
+         $active = in_array($event['status'], self::getActiveStatusArray());
+         $temp_service->getFromDB($event['siemservices_id']);
+         $localized_name = self::getLocalizedEventName($event['name'], $temp_service->fields['logger']);
+         if ($event['significance'] == SIEMEvent::WARNING) {
+            if ($active) {
+               $style = "style='background-color: {$_SESSION['glpieventwarning_color']}'";
+            }
+            $icon = 'fas fa-exclamation-triangle';
+         } else if ($event['significance'] == SIEMEvent::EXCEPTION) {
+            if ($active) {
+               $style = "style='background-color: {$_SESSION['glpieventexception_color']}'";
+            }
+            $icon = 'fas fa-exclamation-circle';
+         }
+         $out .= "<tr id='siemevent_{$event['id']}' class='tab_bg_2' $style onclick='toggleEventDetails(this);'>";
+         $out .= "<td class='center'><i class='{$icon} fa-lg' title='".
+               SIEMEvent::getSignificanceName($event['significance'])."'/></td>";
+         $out .= "<td>{$localized_name}</td>";
+         $out .= "<td>" . self::getSignificanceName($event['significance']) . "</td>";
+         $out .= "<td>{$event['date']}</td>";
+         $out .= "<td>" . self::getStatusName($event['status']) . "</td>";
+         $out .= "</tr>";
+         $out .= "<tr id='siemevent_{$event['id']}_content' class='tab_bg_2' $style hidden='hidden'>";
+         $out .= "<td colspan='6'><p>";
+         $out .= self::getEventProperties($event['content'], $temp_service->fields['logger'], [
+            'format' => 'pretty'
+         ]);
+         $out .= "</p></td></tr>\n";
+      }
+
+      $out .= "</tbody></table>";
+      $out .= Html::printAjaxPager('', $start, count($events), '', false);
+
+      return $out;
    }
 
    public static function getReportList() {
@@ -1394,8 +1249,89 @@ class ITILEvent extends CommonDBTM
          'keep-tracking'            => true,
          'archive-location'         => GLPI_DUMP_DIR,
          'keep-last-events'         => 5 // Always keep last 5 events for each service/host
-      ];
+      ];  
+   }
 
-      
+   /**
+    * Checks for any active or hybrid services that are due to check for events.
+    * Then, signals the service's logger to poll for the events.
+    * @since 10.0.0
+    * @return void
+    */
+   public static function cronPollEvents(CronTask $task) {
+      global $DB;
+
+      $event = new SIEMEvent();
+      $to_poll = $DB->request([
+         'FROM'   => SIEMService::getTable(),
+         'LEFT JOIN' => [
+            SIEMServiceTemplate::getTable() => [
+               'FKEY' => [
+                  SIEMService::getTable()          => 'siemservicetemplates_id',
+                  SIEMServiceTemplate::getTable()  => 'id',
+               ]
+            ]
+         ],
+         'WHERE'  => [
+            new QueryExpression('DATE_ADD(last_check, INTERVAL check_interval MINUTE) <= NOW()'),
+            'check_mode'   => [SIEMService::CHECK_MODE_ACTIVE, SIEMService::CHECK_MODE_HYBRID],
+            'is_active'    => 1,
+            new QueryExpression('logger IS NOT NULL'),
+            new QueryExpression('sensor IS NOT NULL'),  
+         ]
+      ]);
+
+      $eventdatas = [];
+      $allservices = [];
+      $poll_queue = [];
+
+      while ($data = $to_poll->next()) {
+         array_push($allservices, $data['id']);
+         $poll_queue[$data['logger']][$data['sensor']][] = $data['id'];
+      }
+
+      foreach ($poll_queue as $logger => $sensors) {
+         foreach ($sensors as $sensor => $service_ids) {
+            $results = Plugin::doOneHook($logger, 'poll_sensor', ['sensor' => $sensor, 'service_ids' => $service_ids]);
+            $eventdatas[$logger][$sensor] = $results;
+         }
+      }
+
+      // Array of service ids that had some data from the sensors
+      $reported = [];
+
+      // Create event from the results
+      foreach ($eventdatas as $logger => $sensors) {
+         foreach ($sensors as $sensor => $results) {
+            foreach ($results as $service_id => $result) {
+               if (!is_null($result) && is_array($result)) {
+                  $input = $result;
+                  $input['siemservices_id'] = $service_id;
+                  $event->add($input);
+                  array_push($reported, $service_id);
+               }
+            }
+         }
+      }
+
+      // Report sensor fault for all services that had no data
+      $faulted = array_diff($allservices, $reported);
+
+      foreach ($faulted as $service_id) {
+         // This will create a sensor fault event
+         $event->add([
+            '_sensor_fault'   => true,
+            'siemservices_id' => $service_id,
+            'date'            => $_SESSION['glpi_currenttime']
+         ]);
+      }
+
+      $task->addVolume(count($reported));
+
+      if (count($reported) > 0) {
+         return 1;
+      } else {
+         return 0;
+      }
    }
 }

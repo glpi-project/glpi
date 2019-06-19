@@ -28,52 +28,21 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
+*/
+
+/**
+ * SIEMServiceTemplate class.
+ *
+ * @since 10.0.0
  */
-
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-class RuleITILEventFilterCollection extends RuleCollection
-{
-
-   // From RuleCollection
-   static $rightname             = 'rule_event';
-   public $stop_on_first_match   = true;
-   public $menu_option           = 'ruleitileventfilter';
-
+class SIEMServiceTemplate extends CommonDBTM {
 
    /**
-    * @param $entity (default 0)
+    * Name of the type
+    *
+    * @param $nb : number of item in the type
    **/
-   function __construct($entity = 0)
-   {
-      $this->entity = $entity;
-   }
-
-   static function canView()
-   {
-      return Session::haveRightsOr(self::$rightname, [READ, RuleITILEvent::PARENT]);
-   }
-
-   function canList()
-   {
-      return static::canView();
-   }
-
-   function getTitle()
-   {
-      return __('Rules for event filtering');
-   }
-
-   function showInheritedTab()
-   {
-      return (Session::haveRight(self::$rightname, RuleITILEvent::PARENT) && ($this->entity));
-   }
-
-   function showChildrensTab()
-   {
-      return (Session::haveRight(self::$rightname, READ)
-              && (count($_SESSION['glpiactiveentities']) > 1));
+   static function getTypeName($nb = 0) {
+      return _n('Service template', 'Service templates', $nb);
    }
 }

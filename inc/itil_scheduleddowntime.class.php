@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Itil_ScheduledDowntime Class
  *
- * Relation between ITILEvents and ITILObjects
+ * Relation between SIEMEvents and ITILObjects
  * @since 10.0.0
 **/
 class Itil_ScheduledDowntime extends CommonDBRelation

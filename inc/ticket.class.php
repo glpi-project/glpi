@@ -1001,7 +1001,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
-      $this->addStandardTab('Itil_ITILEvent', $ong, $options);
+      $this->addStandardTab('Itil_SIEMEvent', $ong, $options);
       $this->addStandardTab('Itil_ScheduledDowntime', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 

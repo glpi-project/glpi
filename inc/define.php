@@ -369,7 +369,7 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
                                              'Project', 'ProjectTask', 'Reservation',
                                              'SoftwareLicense', 'Ticket', 'User',
                                              'SavedSearch_Alert', 'Certificate',
-                                             'ITILEvent'];
+                                             'SIEMEvent'];
 
 $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
                                                   'AllAssets'       => "asset_types"];
@@ -384,8 +384,8 @@ $CFG_GLPI["rulecollections_types"]        = ['RuleImportEntityCollection',
                                                   'RuleSoftwareCategoryCollection',
                                                   'RuleTicketCollection',
                                                   'RuleAssetCollection',
-                                                  'RuleITILEventCollection',
-                                                  'RuleITILEventFilterCollection'];
+                                                  'RuleSIEMEventCollection',
+                                                  'RuleSIEMEventFilterCollection'];
 
 // Items which can planned something
 $CFG_GLPI['planning_types']               = ['ChangeTask', 'ProblemTask', 'Reminder',
@@ -490,7 +490,7 @@ $CFG_GLPI['javascript'] = [
       'project'      => ['gantt'],
       'knowbaseitem' => ['tinymce', 'jstree'],
       'reminder'     => ['tinymce'],
-      'itilevent'    => ['charts']
+      'siemevent'    => ['charts']
    ],
    'management' => [
       'datacenter'       => [

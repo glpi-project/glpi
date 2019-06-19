@@ -35,17 +35,17 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Itil_ITILEvent Class
+ * Itil_SIEMEvent Class
  *
- * Relation between ITILEvents and ITILObjects
+ * Relation between SIEMEvents and ITILObjects
  * @since 10.0.0
 **/
-class Itil_ITILEvent extends CommonDBRelation
+class Itil_SIEMEvent extends CommonDBRelation
 {
    
    // From CommonDBRelation
-   static public $itemtype_1          = 'ITILEvent';
-   static public $items_id_1          = 'itilevents_id';
+   static public $itemtype_1          = 'SIEMEvent';
+   static public $items_id_1          = 'siemevents_id';
 
    static public $itemtype_2          = 'itemtype';
    static public $items_id_2          = 'items_id';
@@ -61,7 +61,7 @@ class Itil_ITILEvent extends CommonDBRelation
 
    function canCreateItem()
    {
-      $event = new ITILEvent();
+      $event = new SIEMEvent();
 
       if ($event->canUpdateItem()) {
          return true;
@@ -74,7 +74,7 @@ class Itil_ITILEvent extends CommonDBRelation
    {
 
       // Avoid duplicate entry
-      if (countElementsInTable($this->getTable(), ['itilevents_id' => $input['itilevents_id'],
+      if (countElementsInTable($this->getTable(), ['siemevents_id' => $input['siemevents_id'],
                                                    'itemtype'   => $input['itemtype'],
                                                    'items_id'   => $input['items_id']]) > 0) {
          return false;
@@ -101,12 +101,12 @@ class Itil_ITILEvent extends CommonDBRelation
                      ]
                   );
                }
-               return self::createTabEntry(ITILEvent::getTypeName(Session::getPluralNumber()), $nb);
+               return self::createTabEntry(SIEMEvent::getTypeName(Session::getPluralNumber()), $nb);
                break;
 
-            case 'ITILEvent' :
+            case 'SIEMEvent' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable(self::getTable(), ['itilevents_id' => $item->getID()]);
+                  $nb = countElementsInTable(self::getTable(), ['siemevents_id' => $item->getID()]);
                }
                return self::createTabEntry(_n('Itil item', 'Itil items', Session::getPluralNumber()), $nb);
          }
@@ -118,8 +118,8 @@ class Itil_ITILEvent extends CommonDBRelation
    {
 
       switch ($item->getType()) {
-         case 'ITILEvent' :
-            self::showForITILEvent($item);
+         case 'SIEMEvent' :
+            self::showForSIEMEvent($item);
             break;
          default:
             self::showForItil($item);
@@ -136,6 +136,6 @@ class Itil_ITILEvent extends CommonDBRelation
    **/
    static function showForItil(CommonDBTM $item, $withtemplate = 0)
    {
-      ITILEvent::showListForItil(false, $item);
+      SIEMEvent::showListForItil(false, $item);
    }
 }

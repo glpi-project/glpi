@@ -30,55 +30,77 @@
  * ---------------------------------------------------------------------
 */
 
-use Glpi\Event\ITILEventHostEvent;
+use Glpi\Event\SIEMHostEvent;
 use Glpi\EventDispatcher\EventDispatcher;
 
 /**
- * ITILEventHost class.
- * This represents a host that is able to be monitored through one or more ITILEventServices.
+ * SIEMHost class.
+ * This represents a host that is able to be monitored through one or more SIEMServices.
  *
  * @since 10.0.0
  */
-class ITILEventHost extends CommonDBTM {
+class SIEMHost extends CommonDBTM {
    use Monitored;
 
-   static $rightname                = 'event';
+   static $rightname                = 'siemhost';
 
-   /**
-    * Host is up
-    */
+   /** Host is up. */
    const STATUS_UP            = 0;
 
-   /**
-    * Host should be reachable, but is down. Service alerts are suppressed.
-    */
+   /** Host should be reachable, but is down. Service alerts are suppressed. */
    const STATUS_DOWN          = 1;
 
-   /**
-    * Host availability is not being monitored.
-    */
+   /** Host availability is not being monitored. */
    const STATUS_UNKNOWN       = 2;
 
-   /**
-    * Host is not reachable because an upstream device is down.
-    * Currently not implemented.
-    */
+   /** Host is not reachable because an upstream device is down. */
    const STATUS_UNREACHABLE   = 3;
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type
-   **/
-   static function getTypeName($nb = 0) {
+
+   static function getTypeName($nb = 0)
+   {
       return _n('Host', 'Hosts', $nb);
    }
 
-   public function isScheduledDown() : bool {
-      return ScheduledDowntime::isHostScheduledDown($this->getID());
+   function defineTabs($options = []) {
+
+      $ong = [];
+      $this->addDefaultFormTab($ong)
+         ->addStandardTab('SIEMService', $ong, $options);
+
+      return $ong;
    }
 
-   public static function getStatusName($status) : string {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+   {
+
+      if (!$withtemplate) {
+         $nb = 0;
+         switch ($item->getType()) {
+            case 'SIEMHost' :
+               return self::getTypeName();
+            default:
+               return self::createTabEntry('Event Management');
+         }
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+   {
+
+      switch ($item->getType()) {
+         case 'SIEMHost' :
+            return self::showForm($item);
+         default:
+            self::showForm($item);
+            break;
+      }
+      return true;
+   }
+
+   public static function getStatusName($status) : string
+   {
       switch ($status) {
          case self::STATUS_UP:
             return __('Up');
@@ -92,7 +114,8 @@ class ITILEventHost extends CommonDBTM {
       }
    }
 
-   function rawSearchOptions() {
+   function rawSearchOptions()
+   {
       $tab = [];
 
       $tab[] = [
@@ -126,28 +149,10 @@ class ITILEventHost extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'status_since',
-         'name'               => __('Status since'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
-      ];
-
-      $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'is_flapping',
-         'name'               => __('Flapping'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false
-      ];
-
-      $tab[] = [
          'id'                 => '7',
-         'table'              => 'glpi_itileventservices',
+         'table'              => 'glpi_siemservices',
          'field'              => 'name',
-         'linkfield'          => 'itileventservices_id_availability',
+         'linkfield'          => 'siemservices_id_availability',
          'name'               => __('Availability service'),
          'datatype'           => 'itemlink'
       ];
@@ -162,14 +167,6 @@ class ITILEventHost extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '31',
-         'table'              => $this->getTable(),
-         'field'              => 'status',
-         'name'               => __('Status'),
-         'datatype'           => 'specific',
-      ];
-
-      $tab[] = [
          'id'                 => '121',
          'table'              => $this->getTable(),
          'field'              => 'date_creation',
@@ -178,130 +175,76 @@ class ITILEventHost extends CommonDBTM {
          'massiveaction'      => false
       ];
 
+      //TODO Add availability service search options
+
       return $tab;
    }
 
-   static function getFormURL($id = 0, $full = true) {
-      global $router;
-
-      if ($router != null) {
-         $page = $router->pathFor(
-            'add-asset', [
-               'itemtype'  => get_class(),
-            ]
-         );
-         return $page;
-      }
-
-      $link     = parent::getFormURL($full);
-      $link    .= (strpos($link, '?') ? '&':'?').'id=' . $id;
-      return $link;
-   }
-
-   public function getBackgroundColorClass() : string {
-      if ($this->isFlapping()) {
-         return 'bg-warning';
-      }
-      switch ($this->getHostStatus()) {
+   public function getBackgroundColorClass() : string
+   {
+      switch ($this->getStatus()) {
          case self::STATUS_DOWN:
          case self::STATUS_UNREACHABLE:
             return 'bg-danger';
-         case self::STATUS_UP: return 'bg-success';
-         case self::STATUS_UNKNOWN: return 'bg-warning';
+         case self::STATUS_UP:
+            return 'bg-success';
+         case self::STATUS_UNKNOWN:
+            return 'bg-warning';
       }
       return '';
    }
 
-   public function getAvailabilityService() : ITILEventService {
-      if (!$this->fields['itileventservices_id_availability']) {
+   /**
+    * Loads the host's availability service and then caches and returns it.
+    * @since 10.0.0
+    * @return \SIEMService The loaded availability service or null if it could not be loaded.
+    */
+   public function getAvailabilityService()
+   {
+      //TODO add nullable return type ?SIEMService when minimum PHP is 7.1
+      if (!$this->fields['siemservices_id_availability']) {
          return null;
       }
+
+      // Load and cache availability service in case of multiple calls per page
       static $service = null;
       if ($service == null) {
-         $service = new ITILEventService();
-         if (!$service->getFromDB($this->fields['itileventservices_id_availability'])) {
+         $service = new SIEMService();
+         if (!$service->getFromDB($this->fields['siemservices_id_availability'])) {
             return null;
          }
       }
       return $service;
    }
 
-   public function getHostStatus() : int {
-      $service = $this->getAvailabilityService();
-      if ($service) {
-         return $service->fields['status'];
-      } else {
-         return self::STATUS_UNKNOWN;
-      }
-   }
-
-   public function getHostName() : string {
-      global $DB;
-
-      $hosttype = $this->fields['itemtype'];
-      $iterator = $DB->request([
-         'SELECT' => ['name'],
-         'FROM'   => $hosttype::getTable(),
-         'WHERE'  => [
-            'id'  => $this->fields['items_id']
-         ]
-      ]);
-      return $iterator->next()['name'];
-   }
-
-   public function getLastHostStatusCheck() {
-      $service = $this->getAvailabilityService();
-      if ($service) {
-         return $service->fields['last_check'];
-      } else {
-         return null;
-      }
-   }
-
-   public function getLastHostStatusChange() {
-      $service = $this->getAvailabilityService();
-      if ($service) {
-         return $service->fields['status_since'];
-      } else {
-         return null;
-      }
-   }
-
-   public function isFlapping() : bool {
-      $service = $this->getAvailabilityService();
-      if ($service) {
-         return $service->fields['is_flapping'];
-      } else {
-         return false;
-      }
-   }
-
-   public function getEventRestrictCriteria() : array {
+   public function getEventRestrictCriteria() : array
+   {
       $restrict = [];
       $restrict['LEFT JOIN'] = [
-         ITILEventService::getTable() => [
+         SIEMService::getTable() => [
             'FKEY' => [
-               ITILEventService::getTable()  => 'id',
-               ITILEvent::getTable()         => 'itileventservices_id'
+               SIEMService::getTable()  => 'id',
+               SIEMEvent::getTable()         => 'siemservices_id'
             ]
          ]
       ];
       $restrict['WHERE'] = [
-         'hosts_id'  => $this->getID()
+         'siemhosts_id'  => $this->getID()
       ];
       return $restrict;
    }
 
-   public function getHostInfoDisplay() {
+   public function getHostInfoDisplay()
+   {
       global $DB;
 
       // TODO Switch to twig
       $host_info_bg = $this->getBackgroundColorClass();
-      $status = self::getStatusName($this->getHostStatus());
+      $status = self::getStatusName($this->getStatus());
 
       if ($this->getAvailabilityService()) {
-         $status_since_diff = Toolbox::getHumanReadableTimeDiff($this->getLastHostStatusChange());
-         $last_check_diff = Toolbox::getHumanReadableTimeDiff($this->getLastHostStatusCheck());
+         $status_since_diff = Toolbox::getHumanReadableTimeDiff($this->getLastStatusChange());
+         $last_check_diff = Toolbox::getHumanReadableTimeDiff($this->getLastStatusCheck());
          $host_stats = [
             __('Last status change')   => (is_null($status_since_diff) ? __('No change') : $status_since_diff),
             __('Last check')           => (is_null($last_check_diff) ? __('Not checked') : $last_check_diff),
@@ -316,28 +259,28 @@ class ITILEventHost extends CommonDBTM {
       $toolbar_buttons = [
          [
             'label'  => __('Check now'),
-            'action' => 'hostCheckNow()',
-            'type'   => 'button',
+            'action' => "hostCheckNow({$this->getID()})",
          ],
          [
             'label'  => __('Schedule downtime'),
-            'action' => 'hostScheduleDowtime()',
-            'type'   => 'button',
+            'action' => "hostScheduleDowntime({$this->getID()})",
          ],
          [
-            'label'  => sprintf(__('Add %s'), ITILEventService::getTypeName(1)),
-            'action' => 'addService()',
-            'type'   => 'button',
+            'label'  => sprintf(__('Add %s'), SIEMService::getTypeName(1)),
+            'action' => "addService({$this->getID()})",
          ]
       ];
+      if (in_array($this->getStatus(), [self::STATUS_DOWN, self::STATUS_UNREACHABLE])) {
+         $toolbar_buttons[] = [
+            'label'  => sprintf(__('Acknowledge %s'), self::getTypeName(1)),
+            'action' => "acknowledge({$this->getID()})",
+         ];
+      }
+
       $btn_classes = 'btn btn-primary mx-1';
       $toolbar = "<div id='host-actions-toolbar'><div class='btn-toolbar'>";
       foreach ($toolbar_buttons as $button) {
-         if ($button['type'] == 'button') {
-            $toolbar .= "<button type='button' class='{$btn_classes}' onclick='{$button['action']}'>{$button['label']}</button>";
-         } else if ($button['type'] == 'link') {
-            $toolbar .= "<a href='{$button['action']}' class='{$btn_classes}'>{$button['label']}</a>";
-         }
+         $toolbar .= "<button type='button' class='{$btn_classes}' onclick='{$button['action']}'>{$button['label']}</button>";
       }
       $toolbar .= "</div></div>";
 
@@ -367,7 +310,7 @@ class ITILEventHost extends CommonDBTM {
          }
 
          $service_name = $host_service->fields['name'];
-         $check_mode = ITILEventService::getCheckModeName($host_service->fields['check_mode']);
+         $check_mode = SIEMService::getCheckModeName($host_service->fields['check_mode']);
          $check_interval = !is_null($host_service->fields['check_interval']) ?
                $host_service->fields['check_interval'] : __('Unspecified');
          $notif_interval = !is_null($host_service->fields['notificationinterval']) ?
@@ -401,7 +344,7 @@ class ITILEventHost extends CommonDBTM {
          $out .= "<form>";
          $out .= "<label for='service'>" . __('Service') . "</label>";
          $out .= Plugin::dropdown([
-            'name' => 'sservice',
+            'name' => 'service',
             'display' => false
          ]);
          $out .= Html::closeForm(false);
@@ -410,7 +353,7 @@ class ITILEventHost extends CommonDBTM {
       return $out;
    }
 
-   public function dispatchITILEventHostEvent(string $eventName) {
+   private function dispatchSIEMHostEvent(string $eventName) {
       global $CONTAINER;
 
       if (!isset($CONTAINER) || !$CONTAINER->has(EventDispatcher::class)) {
@@ -418,6 +361,35 @@ class ITILEventHost extends CommonDBTM {
       }
 
       $dispatcher = $CONTAINER->get(EventDispatcher::class);
-      $dispatcher->dispatch($eventName, new ITILEventHostEvent($this));
+      $dispatcher->dispatch($eventName, new SIEMHostEvent($this));
+   }
+
+   public function getServices() {
+      global $DB;
+
+      static $services = null;
+      if ($services === null) {
+         $servicetable = SIEMService::getTable();
+         $templatetable = SIEMServiceTemplate::getTable();
+
+         $iterator = $DB->request([
+            'FROM'      => $servicetable,
+            'LEFT JOIN' => [
+               $templatetable => [
+                  'FKEY'   => [
+                     $servicetable  => 'siemservicetemplates_id',
+                     $templatetable => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'siemhosts_id'  => $this->getID()
+            ]
+         ]);
+         while ($data = $iterator->next()) {
+            $services[$data['id']] = $data;
+         }
+      }
+      return $services;
    }
 }

@@ -2229,10 +2229,10 @@ class Rule extends CommonDBTM {
                   return Ticket::getTicketTypeName($pattern);
 
                case "dropdown_eventsignificance" :
-                  return ITILEvent::getSignificanceName($pattern);
+                  return SIEMEvent::getSignificanceName($pattern);
 
                case "dropdown_eventstatus" :
-                  return ITILEvent::getStatusName($pattern);
+                  return SIEMEvent::getStatusName($pattern);
             }
          }
       }
@@ -2359,13 +2359,13 @@ class Rule extends CommonDBTM {
 
             case "dropdown_eventsignificance" :
                $param['name']  = 'value';
-               ITILEvent::dropdownSignificance($param);
+               SIEMEvent::dropdownSignificance($param);
                $display = true;
                break;
 
             case "dropdown_eventstatus" :
                $param['name']  = 'value';
-               ITILEvent::dropdownStatus($param);
+               SIEMEvent::dropdownStatus($param);
                $display = true;
                break;
 
@@ -2465,10 +2465,10 @@ class Rule extends CommonDBTM {
                return Dropdown::getGlobalSwitch($value);
 
            case "dropdown_eventsignificance" :
-               return ITILEvent::getSignificanceName($value);
+               return SIEMEvent::getSignificanceName($value);
 
            case "dropdown_eventstatus" :
-               return ITILEvent::getStatusName($value);
+               return SIEMEvent::getStatusName($value);
 
             default :
                return $this->displayAdditionRuleActionValue($value);

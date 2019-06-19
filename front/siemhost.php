@@ -32,7 +32,10 @@
 
 include ('../inc/includes.php');
 
-$rulecollection = new RuleITILEventFilterCollection($_SESSION['glpiactive_entity']);
+Session::checkRight('event', READ);
 
-include (GLPI_ROOT . "/front/rule.common.php");
+Html::header(SIEMHost::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'tools', 'siemevent');
 
+Search::show('SIEMHost');
+
+Html::footer();

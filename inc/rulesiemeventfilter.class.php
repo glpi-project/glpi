@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-class RuleITILEventFilter extends Rule
+class RuleSIEMEventFilter extends Rule
 {
 
    // From Rule
@@ -106,41 +106,37 @@ class RuleITILEventFilter extends Rule
          return $criterias;
       }
 
-      $criterias['name']['table']                           = 'glpi_itilevents';
+      $eventtable = SIEMEvent::getTable();
+
+      $criterias['name']['table']                           = $eventtable;
       $criterias['name']['field']                           = 'name';
       $criterias['name']['name']                            = __('Name');
       $criterias['name']['linkfield']                       = 'name';
 
-      $criterias['entities_id']['table']                    = 'glpi_entities';
+      $criterias['entities_id']['table']                    = $eventtable;
       $criterias['entities_id']['field']                    = 'name';
       $criterias['entities_id']['name']                     = __('Entity');
       $criterias['entities_id']['linkfield']                = 'entities_id';
       $criterias['entities_id']['type']                     = 'dropdown';
 
-      $criterias['itileventcategories_id']['table']         = 'glpi_itileventcategories';
-      $criterias['itileventcategories_id']['field']         = 'name';
-      $criterias['itileventcategories_id']['name']          = __('Category')." - ".__('Name');
-      $criterias['itileventcategories_id']['linkfield']     = 'itileventcategories_id';
-      $criterias['itileventcategories_id']['type']          = 'dropdown';
-
-      $criterias['content']['table']                        = 'glpi_itilevents';
+      $criterias['content']['table']                        = $eventtable;
       $criterias['content']['field']                        = 'content';
       $criterias['content']['name']                         = __('Content');
       $criterias['content']['linkfield']                    = 'content';
 
-      $criterias['significance']['table']                   = 'glpi_itilevents';
+      $criterias['significance']['table']                   = $eventtable;
       $criterias['significance']['field']                   = 'significance';
       $criterias['significance']['name']                    = __('Significance');
       $criterias['significance']['linkfield']               = 'significance';
       $criterias['significance']['type']                    = 'dropdown_eventsignificance';
 
-      $criterias['status']['table']                         = 'glpi_itilevents';
+      $criterias['status']['table']                         = $eventtable;
       $criterias['status']['field']                         = 'status';
       $criterias['status']['name']                          = __('Status');
       $criterias['status']['linkfield']                     = 'status';
       $criterias['status']['type']                          = 'dropdown_eventstatus';
 
-      $criterias['logger']['table']                         = 'glpi_itilevents';
+      $criterias['logger']['table']                         = $eventtable;
       $criterias['logger']['field']                         = 'logger';
       $criterias['logger']['name']                          = __('Logger');
       $criterias['logger']['linkfield']                     = 'logger';

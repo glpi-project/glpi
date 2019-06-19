@@ -878,7 +878,13 @@ class Profile extends CommonDBTM {
                             'field'     => 'certificate'],
                       ['itemtype'  => 'Datacenter',
                             'label'     => Datacenter::getTypeName(Session::getPluralNumber()),
-                            'field'     => 'datacenter']
+                            'field'     => 'datacenter'],
+                      ['itemtype'  => 'SIEMHost',
+                            'label'     => __('Monitored Hosts'),
+                            'field'     => 'siemhost'],
+                      ['itemtype'  => 'SIEMService',
+                            'label'     => __('Monitored Services'),
+                            'field'     => 'siemservice']
                   ];
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
@@ -936,10 +942,7 @@ class Profile extends CommonDBTM {
                             'field'     => 'knowbase'],
                       ['itemtype'  => 'ReservationItem',
                             'label'     => __('Administration of reservations'),
-                            'field'     => 'reservation'],
-                      ['itemtype'  => 'ITILEvent',
-                            'label'     => ITILEvent::getTypeName(Session::getPluralNumber()),
-                            'field'     => 'event']];
+                            'field'     => 'reservation']];
       $matrix_options['title'] = __('Tools');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
@@ -1358,7 +1361,7 @@ class Profile extends CommonDBTM {
                             'label'     => __('Business rules for assets'),
                             'field'     => 'rule_asset',
                             'row_class' => 'tab_bg_2'],
-                      ['itemtype'  => 'RuleITILEvent',
+                      ['itemtype'  => 'RuleSIEMEvent',
                             'label'     => __('Business rules for events'),
                             'field'     => 'rule_event',
                             'row_class' => 'tab_bg_2'],

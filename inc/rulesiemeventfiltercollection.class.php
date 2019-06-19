@@ -30,8 +30,50 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-$rulecollection = new RuleITILEventCollection($_SESSION['glpiactive_entity']);
+class RuleSIEMEventFilterCollection extends RuleCollection
+{
 
-include (GLPI_ROOT . '/front/rule.common.form.php');
+   // From RuleCollection
+   static $rightname             = 'rule_event';
+   public $stop_on_first_match   = true;
+   public $menu_option           = 'rulesiemeventfilter';
+
+
+   /**
+    * @param $entity (default 0)
+   **/
+   function __construct($entity = 0)
+   {
+      $this->entity = $entity;
+   }
+
+   static function canView()
+   {
+      return Session::haveRightsOr(self::$rightname, [READ, RuleSIEMEventFilter::PARENT]);
+   }
+
+   function canList()
+   {
+      return static::canView();
+   }
+
+   function getTitle()
+   {
+      return __('Rules for event filtering');
+   }
+
+   function showInheritedTab()
+   {
+      return (Session::haveRight(self::$rightname, RuleSIEMEventFilter::PARENT) && ($this->entity));
+   }
+
+   function showChildrensTab()
+   {
+      return (Session::haveRight(self::$rightname, READ)
+              && (count($_SESSION['glpiactiveentities']) > 1));
+   }
+}

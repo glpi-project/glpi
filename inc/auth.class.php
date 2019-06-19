@@ -839,14 +839,14 @@ class Auth extends CommonGLPI {
             Event::log(-1, 'system', 3, 'login', $event_name, [
                'login_name' => $login_name,
                'source_ip' => $ip
-            ], ITILEvent::INFORMATION);
+            ], SIEMEvent::INFORMATION);
          } else {
             $event_name = GLPI_DEMO_MODE ? "Connection failed for $login_name ($ip)" :
                   sprintf(__('Failed login for %1$s from IP %2$s'), $login_name, $ip);
             Event::log(-1, 'system', 3, 'login', $event_name, [
                'login_name' => $login_name,
                'source_ip' => $ip
-            ], ITILEvent::WARNING);
+            ], SIEMEvent::WARNING);
          }
       }
 

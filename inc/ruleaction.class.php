@@ -634,13 +634,13 @@ class RuleAction extends CommonDBChild {
 
                   case "dropdown_eventsignificance" :
                      $param['name']  = 'value';
-                     ITILEvent::dropdownSignificance($param);
+                     SIEMEvent::dropdownSignificance($param);
                      $display = true;
                      break;
 
                   case "dropdown_eventstatus" :
                      $param['name']  = 'value';
-                     ITILEvent::dropdownStatus($param);
+                     SIEMEvent::dropdownStatus($param);
                      $display = true;
                      break;
 

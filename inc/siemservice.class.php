@@ -30,32 +30,34 @@
  * ---------------------------------------------------------------------
 */
 
-use Glpi\Event\ITILEventServiceEvent;
-use Glpi\Event\ITILEventHostEvent;
+use Glpi\Event\SIEMServiceEvent;
+use Glpi\Event\SIEMHostEvent;
 use Glpi\EventDispatcher\EventDispatcher;
 
 /**
- * ITILEventService class.
+ * SIEMService class.
  * This represents a software, service, or metric on a host device that is able to be monitored.
  *
  * @since 10.0.0
  */
-class ITILEventService extends CommonDBTM {
+class SIEMService extends CommonDBTM {
    use Monitored;
+
+   static $rightname                = 'siemhost';
 
    /** Service is functioning as expected. */
    const STATUS_OK         = 0;
 
    /** Service is not functioning properly.
-    * Valid for non-volatile services only. */
+    * Valid for stateful services only. */
    const STATUS_CRITICAL       = 1;
 
    /** Service is not being monitored */
    const STATUS_UNKNOWN    = 2;
 
    /** Service is functional but functionality or performance is limited.
-    * Valid for non-volatile services only.*/
-   const STATUS_DEGRADED   = 3;
+    * Valid for stateful services only.*/
+   const STATUS_WARNING   = 3;
 
    /** This service is actively polled. */
    const CHECK_MODE_ACTIVE    = 0;
@@ -77,8 +79,8 @@ class ITILEventService extends CommonDBTM {
 
    public function post_getFromDB() {
       // Merge fields with the template
-      $template = new ITILEventServiceTemplate();
-      $template->getFromDB($this->fields['itileventservicetemplates_id']);
+      $template = new SIEMServiceTemplate();
+      $template->getFromDB($this->fields['siemservicetemplates_id']);
       foreach($template->fields as $field => $value) {
          if ($field !== 'id') {
             $this->fields[$field] = $value;
@@ -86,24 +88,15 @@ class ITILEventService extends CommonDBTM {
       }
    }
 
-   public function isScheduledDown() : bool {
-      static $is_down = null;
-      if ($is_down == null) {
-         $iterator = ScheduledDowntime::getForHostOrService($this->getID(), true);
-         $is_down = $iterator->count() > 0;
-      }
-      return $is_down;
-   }
-
    public function isHostless() : bool {
-      return $this->fields['hosts_id'] < 0;
+      return $this->fields['siemhosts_id'] < 0;
    }
 
    public static function getStatusName($status) {
       switch ($status) {
          case self::STATUS_OK: return __('OK');
          case self::STATUS_CRITICAL: return __('Critical');
-         case self::STATUS_DEGRADED: return __('Degraded');
+         case self::STATUS_WARNING: return __('Warning');
          case self::STATUS_UNKNOWN:
          default:
             return __('Unknown');
@@ -120,31 +113,10 @@ class ITILEventService extends CommonDBTM {
       }
    }
 
-   public function isFlapping() : bool {
-      return $this->fields['is_flapping'];
-   }
-
-   public function getHost() {
-      static $host = null;
-      if ($host == null) {
-         $host = new ITILEventHost();
-         $host->getFromDB($this->fields['hosts_id']);
-      }
-      return $host;
-   }
-
-   public function getHostName() : string {
-      if ($this->isHostless()) {
-         return null;
-      }
-      $host = $this->getHost();
-      return $host ? $host->getHostName() : null;
-   }
-
    public function getEventRestrictCriteria() : array {
       $restrict = [];
       $restrict['WHERE'] = [
-         'itileventservices_id' => $this->getID()
+         'siemservices_id' => $this->getID()
       ];
       return $restrict;
    }
@@ -156,10 +128,10 @@ class ITILEventService extends CommonDBTM {
       $status_since_diff = Toolbox::getHumanReadableTimeDiff($this->fields['status_since']);
       $last_check_diff = Toolbox::getHumanReadableTimeDiff($this->fields['last_check']);
       $service_stats = [
-         ITILEventHost::getTypeName(1) => $this->getHostName(),
+         SIEMHost::getTypeName(1) => $this->getHostName(),
          __('Last status change')   => (is_null($status_since_diff) ? __('No change') : $status_since_diff),
          __('Last check')           => (is_null($last_check_diff) ? __('Not checked') : $last_check_diff),
-         __('Flapping')             => $this->fields['is_flapping'] ? __('Yes') : __('No')
+         __('Flapping')             => $this->isFlapping() ? __('Yes') : __('No')
       ];
 
       $toolbar_buttons = [
@@ -197,7 +169,7 @@ class ITILEventService extends CommonDBTM {
       return $out;
    }
 
-   public function dispatchITILEventServiceEvent(string $eventName) {
+   private function dispatchSIEMServiceEvent(string $eventName) {
       global $CONTAINER;
 
       if (!isset($CONTAINER) || !$CONTAINER->has(EventDispatcher::class)) {
@@ -205,7 +177,7 @@ class ITILEventService extends CommonDBTM {
       }
 
       $dispatcher = $CONTAINER->get(EventDispatcher::class);
-      $dispatcher->dispatch($eventName, new ITILEventServiceEvent($this));
+      $dispatcher->dispatch($eventName, new SIEMServiceEvent($this));
    }
 
    public function checkFlappingState() {
@@ -254,33 +226,43 @@ class ITILEventService extends CommonDBTM {
    }
 
    /**
-    * Called every time an ITILEvent is added so that the related service state can be updated.
+    * Called every time an SIEMEvent is added so that the related service state can be updated.
     * 
     * @since 10.0.0
-    * @param ITILEvent $event The event that was added
+    * @param SIEMEvent $event The event that was added
     * @return bool True if the service was updated successfully
     */
-   public static function onEventAdd(ITILEvent $event) {
-      $service = new ITILEventService();
-      if ($event->fields['itileventservices_id'] >= 0 &&
-            $service->getFromDB($event->fields['itileventservices_id'])) {
+   public static function onEventAdd(SIEMEvent $event) {
+      $service = new self();
+      if ($event->fields['siemservices_id'] >= 0 &&
+            $service->getFromDB($event->fields['siemservices_id'])) {
          $last_status = $service->fields['status'];
+         $was_flapping = $service->isFlapping();
          $significance = $event->fields['significance'];
 
          // Check downtime
          $in_downtime = $service->isScheduledDown();
-         if (!$service->fields['is_volatile']) {
+         if (!$service->fields['is_stateless']) {
             $to_update = [
                'id'           => $service->getID(),
                'last_check'   => $_SESSION['glpi_currenttime']
             ];
+            if ($significance == SIEMEvent::EXCEPTION || $significance == SIEMEvent::WARNING) {
+               if (!$in_downtime) {
+                  // Transition to problem state
+                  $transition = $significance == SIEMEvent::WARNING ? '_warning' : '_problem';
+                  $to_update['_problem'] = true;
+               }
+            } else {
+               
+            }
             // Stateful service checks
-            if ($significance == ITILEvent::EXCEPTION && $last_status == self::STATUS_OK) {
+            if ($significance == SIEMEvent::EXCEPTION && $last_status == self::STATUS_OK) {
                if (!$in_downtime) {
                   // Transition to problem state
                   $to_update['_problem'] = true;
                }
-            } else if ($significance == ITILEvent::INFORMATION && $last_status != self::STATUS_OK) {
+            } else if ($significance == SIEMEvent::INFORMATION && $last_status != self::STATUS_OK) {
                // Transition to recovery state
                $to_update['_recovery'] = true;
                // Recoveries should cancel all non-fixed, active downtimes
@@ -305,6 +287,14 @@ class ITILEventService extends CommonDBTM {
             $service->update($to_update);
             // Check flapping state if not in downtime and if it is enabled
             $service->checkFlappingState();
+
+            // Update status change timestamp if needed
+            if ($service->isFlapping() != $was_flapping || $last_status != $service->fields['status']) {
+               $service->update([
+                  'id'           => $service->getID(),
+                  'status_since' => $_SESSION['glpi_currenttime']
+               ]);
+            }
          } else {
             // Stateless service checks
          }
@@ -355,69 +345,130 @@ class ITILEventService extends CommonDBTM {
 
    public function post_updateItem($history = 1) {
 
-      $host = new ITILEventHost();
+      $host = new SIEMHost();
       $is_hostservice = false;
       if ($host = $this->getHost()) {
-         if ($host->fields['itileventservices_id_availability'] == $this->getID()) {
+         if ($host->fields['siemservices_id_availability'] == $this->getID()) {
             $is_hostservice = true;
          }
       }
       if (isset($this->input['_problem'])) {
          if ($is_hostservice) {
-            $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_DOWN);
+            $host->dispatchSIEMHostEvent(SIEMHostEvent::HOST_DOWN);
          } else {
-            $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_PROBLEM);
+            $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_PROBLEM);
          }
       } else if (isset($this->input['_recovery'])) {
          if ($is_hostservice) {
-            $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_UP);
+            $host->dispatchSIEMHostEvent(SIEMHostEvent::HOST_UP);
          } else {
-            $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_RECOVERY);
+            $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_RECOVERY);
          }
       }
       if (isset($input['is_active']) && $input['is_active'] != $this->fields['is_active']) {
          if ($input['is_active']) {
-            $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_ENABLE);
+            $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_ENABLE);
          } else {
-            $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_DISABLE);
+            $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_DISABLE);
             if ($is_hostservice) {
                $host->update([
                   'id'     => $host->getID(),
-                  'status' => ITILEventHost::STATUS_UNKNOWN
+                  'status' => SIEMHost::STATUS_UNKNOWN
                ]);
             }
          }
       }
       if (isset($this->input['_acknowledge'])) {
          if ($is_hostservice) {
-            $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_ACKNOWLEDGE);
+            $host->dispatchSIEMHostEvent(SIEMHostEvent::HOST_ACKNOWLEDGE);
          } else {
-            $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_ACKNOWLEDGE);
+            $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_ACKNOWLEDGE);
          }
       }
       if (isset($input['use_flap_detection']) &&
             $input['use_flap_detection'] != $this->fields['use_flap_detection']) {
          if (!$input['use_flap_detection']) {
             if ($is_hostservice) {
-               $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_DISABLE_FLAPPING);
+               $host->dispatchSIEMHostEvent(SIEMHostEvent::HOST_DISABLE_FLAPPING);
             } else {
-               $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_DISABLE_FLAPPING);
+               $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_DISABLE_FLAPPING);
             }
          }
       } else if (isset($input['is_flapping']) && $input['is_flapping'] != $this->fields['is_flapping']) {
          if ($input['is_flapping']) {
             if ($is_hostservice) {
-               $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_START_FLAPPING);
+               $host->dispatchSIEMHostEvent(SIEMHostEvent::HOST_START_FLAPPING);
             } else {
-               $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_START_FLAPPING);
+               $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_START_FLAPPING);
             }
          } else {
             if ($is_hostservice) {
-               $host->dispatchITILEventHostEvent(ITILEventHostEvent::HOST_STOP_FLAPPING);
+               $host->dispatchSIEMHostEvent(SIEMHostEvent::HOST_STOP_FLAPPING);
             } else {
-               $this->dispatchITILEventServiceEvent(ITILEventServiceEvent::SERVICE_STOP_FLAPPING);
+               $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_STOP_FLAPPING);
             }
          }
       }
+   }
+
+   public static function getFormForHost(SIEMHost $host) {
+      global $DB;
+
+      $services = $host->getServices();
+      $out = "<form>";
+      $out .= "<table class='tab_cadre_fixe'><thead><tr><th colspan='4'>Services</th></tr>";
+      $out .= "<tr><th>" . __('Status') . "</th>";
+      $out .= "<th>" . __('Name') . "</th>";
+      $out .= "<th>" . __('Last status change') . "</th>";
+      $out .= "<th>" . __('Latest event') . "</th></tr></thead><tbody>";
+      foreach($services as $service_id => $service) {
+         $status = self::getStatusName($service['status']);
+         $status_badges = [];
+         $status_badge = 'badge badge-secondary';
+         switch ($service['status']) {
+            case SIEMService::STATUS_OK:
+               $status_badges[] = ['class' => 'badge badge-success', 'label' => $status];
+               break;
+            case SIEMService::STATUS_CRITICAL:
+               $status_badges[] = ['class' => 'badge badge-danger', 'label' => $status];
+               break;
+            case SIEMService::STATUS_WARNING:
+               $status_badges[] = ['class' => 'badge badge-warning', 'label' => $status];
+               break;
+         }
+         if ($service['is_flapping']) {
+            $status_badges[] = ['class' => 'badge badge-warning', 'label' => __('Flapping')];
+         }
+         $status_since = $service['status_since'];
+         $status_since_diff = Toolbox::getHumanReadableTimeDiff($status_since);
+         $status_since_diff = sprintf(__('%s ago'), $status_since_diff);
+         $eventiterator = $DB->request([
+            'SELECT'    => ['name'],
+            'FROM'      => SIEMEvent::getTable(),
+            'WHERE'     => [
+               'siemservices_id' => $service_id
+            ],
+            'ORDERBY'     => ['date DESC'],
+            'LIMIT'     => 1
+         ]);
+
+         $eventdata = $eventiterator->count() ? $eventiterator->next() : null;
+
+         $out .= "<tr id='service_{$service_id}' class='center'><td>";
+         foreach ($status_badges as $status_badge) {
+            $out .= "<span class='{$status_badge['class']}' style='font-size: 1.0em;'>{$status_badge['label']}</span>";
+         }
+         $out .= "</td><td>{$service['name']}</td>";
+         $out .= "<td title='{$status_since}'>{$status_since_diff}</td>";
+         if (!is_null($eventdata)) {
+            $latest_event = SIEMEvent::getLocalizedEventName($eventdata['name'], $service['logger']);
+            $out .= "<td>{$latest_event}</td>";
+         } else {
+            $out .= "<td></td>";
+         }
+         $out .= "</tr>";
+      }
+      $out .= Html::closeForm(false);
+      return $out;
    }
 }

@@ -355,8 +355,8 @@ class Entity extends CommonTreeDropdown {
                if (Session::haveRight(Config::$rightname, [UPDATE])) {
                   $ong[7] = __('UI customization');
                }
-               if (ITILEvent::canView()) {
-                  $ong[8] = ITILEvent::getTypeName(Session::getPluralNumber());
+               if (SIEMEvent::canView()) {
+                  $ong[8] = SIEMEvent::getTypeName(Session::getPluralNumber());
                }
 
                return $ong;
@@ -2173,7 +2173,7 @@ class Entity extends CommonTreeDropdown {
    }
 
    /**
-    * Shows ITILEvent entity options
+    * Shows SIEMEvent entity options
     *
     * @param $entity Entity object
     * @return void

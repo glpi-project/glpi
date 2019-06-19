@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
  * Event Class
  * Internal event logging for GLPI services.
  * 
- * Starting in 10.0.0, any event added using this class is translated and added using ITILEvent.
+ * Starting in 10.0.0, any event added using this class is translated and added using SIEMEvent.
  * This class remains to enforce normalization of internal event data but the glpi_events table is not used.
 **/
 class Event extends CommonDBTM {
@@ -62,7 +62,7 @@ class Event extends CommonDBTM {
 
    function prepareInputForAdd($input) {
 
-      Toolbox::deprecated('GLPI Events should be logged using the log function since version 10.0.0. Plugins should add events through ITILEvent.');
+      Toolbox::deprecated('GLPI Events should be logged using the log function since version 10.0.0. Plugins should add events through SIEMEvent.');
       // Deny any attempt to add an event to the legacy table
       return false;
    }
@@ -71,7 +71,7 @@ class Event extends CommonDBTM {
    /**
     * Log an event.
     *
-    * Log the event $event to the internal SIEM system as an {@link \ITILEvent} if
+    * Log the event $event to the internal SIEM system as an {@link \SIEMEvent} if
     * $level is above or equal to setting from configuration.
     *
     * @param $items_id The id of the related item
@@ -83,7 +83,7 @@ class Event extends CommonDBTM {
     * @param $significance int The significance of the event (0 = Information, 1 = Warning, 2 = Exception).
     *    Default is Information.
    **/
-   static function log($items_id, $type, $level, $service, $event, $extrainfo = [], int $significance = \ITILEvent::INFORMATION) {
+   static function log($items_id, $type, $level, $service, $event, $extrainfo = [], int $significance = \SIEMEvent::INFORMATION) {
       global $CFG_GLPI;
 
       // Only log if the event's level is the same or lower than the setting from configuration
@@ -111,7 +111,7 @@ class Event extends CommonDBTM {
          'correlation_id'   => $correlation_id
       ];
 
-      $tmp = new \ITILEvent();
+      $tmp = new \SIEMEvent();
       return $tmp->add($input);
    }
 
@@ -123,7 +123,7 @@ class Event extends CommonDBTM {
     * @param $day integer
     *
     * @return integer number of events deleted
-    * @todo Integrate log cleanup system into ITILEvent
+    * @todo Integrate log cleanup system into SIEMEvent
    **/
    static function cleanOld($day) {
       global $DB;
@@ -136,6 +136,15 @@ class Event extends CommonDBTM {
          ]
       );
       return $result->rowCount();
+   }
+
+   public static function translateEventName($name) {
+      switch ($name) {
+         case 'sensor_fault':
+            return __('Sensor fault');
+         default:
+            return $name;
+      }
    }
 
    /**
@@ -208,5 +217,29 @@ class Event extends CommonDBTM {
             $properties[$fieldname]['name'] = $localname;
          }
       }
+   }
+
+   public static function logItemAction(string $action, string $itemtype, int $items_id, string $service, string $login_name) {
+      $name = '';
+      switch ($action) {
+         case 'add':
+            $name = __('%1$s adds the item %2$s');
+            break;
+         case 'update':
+            $name = __('%1$s updates the item %2$s');
+            break;
+         case 'delete':
+            $name = __('%1$s deletes the item %2$s');
+            break;
+         case 'purge':
+            $name = __('%1$s purges the item %2$s');
+            break;
+         case 'restore':
+            $name = __('%1$s restores the item %2$s');
+            break;
+         default:
+            return false;
+      }
+      self::log($items_id, $itemtype, 4, $service, sprintf($name, $login_name, $items_id));
    }
 }

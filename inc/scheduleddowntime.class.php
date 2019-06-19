@@ -60,7 +60,7 @@ class ScheduledDowntime extends CommonDBTM {
       $p = array_replace($p, $params);
 
       $downtimetable = self::getTable();
-      $monitoredtable = $is_service ? ITILEventService::getTable() : ITILEventHost::getTable();
+      $monitoredtable = $is_service ? SIEMService::getTable() : SIEMHost::getTable();
 
       $where = [
          "$downtimetable.items_id_target" => $items_id,
@@ -102,7 +102,7 @@ class ScheduledDowntime extends CommonDBTM {
       }
    }
 
-   public function dispatchScheduledDowntimeEvent(string $eventName) {
+   private function dispatchScheduledDowntimeEvent(string $eventName) {
       global $CONTAINER;
 
       if (!isset($CONTAINER) || !$CONTAINER->has(EventDispatcher::class)) {
@@ -111,16 +111,5 @@ class ScheduledDowntime extends CommonDBTM {
 
       $dispatcher = $CONTAINER->get(EventDispatcher::class);
       $dispatcher->dispatch($eventName, new ScheduledDowntimeEvent($this));
-   }
-
-   /**
-    * Check for downtimes that are starting or ending.
-    * @since 10.0.0
-    * @param CronTask $task
-    */
-   public static function cronScheduledDowntimes(CronTask $task) {
-      global $DB;
-
-      
    }
 }

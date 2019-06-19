@@ -36,32 +36,35 @@ if (!defined('GLPI_ROOT')) {
 
 
 /**
- * NotificationTargetITILEvent Class
- *
+ * NotificationTargetSIEMHost Class
  * @since 10.0.0
 **/
-class NotificationTargetITILEvent extends NotificationTarget {
+class NotificationTargetSIEMHost extends NotificationTarget {
 
-   /**
-    * Get events related to tickets
-   **/
+
    function getEvents() {
-      return ['new' => __('New event')];
+      return [
+         'recovery_soft'      => __('Soft recovery'),
+         'recovery_hard'      => __('Hard recovery'),
+         'problem_soft'       => __('Soft problem'),
+         'problem_hard'       => __('Hard problem'),
+         'flapping_start'     => __('Flapping started'),
+         'flapping_stop'      => __('Flapping stopped'),
+         'flapping_disable'   => __('Flapping disabled')
+      ];
    }
 
 
    function addDataForTemplate($event, $options = []) {
 
-      $events                                   = $this->getAllEvents();
+      $events = $this->getAllEvents();
+      $host = new SIEMHost();
+      $host->getFromDB($options['id']);
+      $service = $host->getAvailabilityService();
 
-      $this->data['##event.entity##']           = Dropdown::getDropdownName('glpi_entities',
-                                                                        $options['entities_id']);
-      $this->data['##event.action##']           = $options[$event];
-      $this->data['##event.name##']             = $options['name'];
-      $this->data['##event.content##']          = $options['content'];
-      $this->data['##event.status##']           = ITILEvent::getStatusName($options['status']);
-      $this->data['##event.significance##']     = ITILEvent::getSignificanceName($options['significance']);
-      $this->data['##event.correlation_id##'] = $options['correlation_id'];
+      $this->data['##siemhost.action##'] = $events[$event];
+      $this->data['##siemhost.name##'] = $host->getHostName();
+      // TODO Finish
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -75,19 +78,25 @@ class NotificationTargetITILEvent extends NotificationTarget {
    function getTags() {
 
       $tags = [
-         'event.action'             => _n('Event', 'Events', 1),
-         'event.name'               => __('Name'),
-         'event.content'            => __('Content'),
-         'event.category'           => __('Category'),
-         'event.entity'             => __('Entity'),
-         'event.status'             => __('Status'),
-         'event.significance'       => __('Significance'),
-         'event.correlation_id'   => __('Correlation ID')];
+         'siemhost.name'                  => __('Name'),
+         'siemhost.itemtype'              => __('Item type'),
+         'siemhost.availabilityservice'   => __('Availability service'),
+         'siemhost.status'                => __('Status'),
+         'siemhost.is_flapping'           => __('Is flapping'),
+         'siemhost.state_type'            => __('State type'),
+         'siemhost.current_check'         => __('Current checkk'),
+         'siemhost.max_check'             => __('Max checks'),
+         'siemhost.flap_detection'        => __('Flap detection'),
+         'siemhost.check_interval'        => __('Check interval'),
+         'siemhost.check_mode'            => __('Check mode'),
+         'siemhost.logger'                => __('Logger'),
+         'siemhost.sensor'                => __('Sensor'),
+      ];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true]);
+                              'label' => $label,
+                              'value' => true]);
       }
 
       asort($this->tag_descriptions);
