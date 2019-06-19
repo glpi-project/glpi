@@ -537,6 +537,11 @@ class Search extends DbTestCase {
             // it's the case where not have search possible in this itemtype
             continue;
          }
+         $item_class = new \ReflectionClass($itemtype);
+         if ($item_class->isAbstract()) {
+            continue;
+         }
+
          $item = getItemForItemtype($itemtype);
 
          //load all options; so rawSearchOptionsToAdd to be tested

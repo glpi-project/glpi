@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
-
-$dropdown = new ITILTemplate();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+$itiltype = 'Problem';
+$fieldtype = 'Predefined';
+include __DIR__ . '/itiltemplatefield.form.php';

@@ -34,13 +34,19 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// Hidden fields for ticket template class
-/// since version 0.83
-class TicketTemplateHiddenField extends ITILTemplateHiddenField {
+
+/**
+ * ChangeTemplatePredefinedField Class
+ *
+ * Predefined fields for change template class
+ *
+ * @since 0.83
+**/
+class ChangeTemplatePredefinedField extends ITILTemplatePredefinedField {
 
    // From CommonDBChild
-   static public $itemtype  = 'TicketTemplate';
-   static public $items_id  = 'tickettemplates_id';
-   static public $itiltype = 'Ticket';
+   static public $itemtype  = 'ChangeTemplate';
+   static public $items_id  = 'changetemplates_id';
+   static public $itiltype = 'Change';
 
 }

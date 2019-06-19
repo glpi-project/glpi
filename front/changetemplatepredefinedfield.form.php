@@ -30,17 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-/// Hidden fields for ticket template class
-/// since version 0.83
-class TicketTemplateHiddenField extends ITILTemplateHiddenField {
-
-   // From CommonDBChild
-   static public $itemtype  = 'TicketTemplate';
-   static public $items_id  = 'tickettemplates_id';
-   static public $itiltype = 'Ticket';
-
-}
+$itiltype = 'Change';
+$fieldtype = 'Predefined';
+include __DIR__ . '/itiltemplatefield.form.php';

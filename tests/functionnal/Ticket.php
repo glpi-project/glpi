@@ -191,20 +191,20 @@ class Ticket extends DbTestCase {
       $this->boolean($tasktemplate->isNewItem())->isFalse();
 
       // 3 - create a ticket template with the task templates in predefined fields
-      $itiltemplate    = new \ITILTemplate;
+      $itiltemplate    = new \TicketTemplate;
       $itiltemplate_id = $itiltemplate->add([
          'name' => 'my ticket template',
       ]);
       $this->boolean($itiltemplate->isNewItem())->isFalse();
-      $ttp = new \ITILTemplatePredefinedField();
+      $ttp = new \TicketTemplatePredefinedField();
       $ttp->add([
-         'itiltemplates_id' => $itiltemplate_id,
+         'tickettemplates_id' => $itiltemplate_id,
          'num'                => '175',
          'value'              => $ttA_id,
       ]);
       $this->boolean($ttp->isNewItem())->isFalse();
       $ttp->add([
-         'itiltemplates_id' => $itiltemplate_id,
+         'tickettemplates_id' => $itiltemplate_id,
          'num'                => '176',
          'value'              => $ttB_id,
       ]);
@@ -214,8 +214,8 @@ class Ticket extends DbTestCase {
       $itilcat    = new \ITILCategory;
       $itilcat_id = $itilcat->add([
          'name'                        => 'my itil category',
-         'itiltemplates_id_incident' => $itiltemplate_id,
-         'itiltemplates_id_demand'   => $itiltemplate_id,
+         'ticketltemplates_id_incident'=> $itiltemplate_id,
+         'tickettemplates_id_demand'   => $itiltemplate_id,
          'is_incident'                 => true,
          'is_request'                  => true,
       ]);
@@ -227,7 +227,7 @@ class Ticket extends DbTestCase {
          'name'                => 'test task template',
          'content'             => 'test task template',
          'itilcategories_id'   => $itilcat_id,
-         '_itiltemplates_id' => $itiltemplate_id,
+         '_tickettemplates_id' => $itiltemplate_id,
          '_tasktemplates_id'   => [$ttA_id, $ttB_id],
       ]);
       $this->boolean($ticket->isNewItem())->isFalse();

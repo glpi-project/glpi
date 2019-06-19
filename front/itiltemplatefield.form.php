@@ -30,17 +30,53 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+use Glpi\Event;
+
+include '../inc/includes.php';
+Session ::checkRight('itiltemplate', UPDATE);
+
+if (!isset($itiltype)) {
+   Html::displayErrorAndDie("Missing ITIL type");
 }
 
-/// Hidden fields for ticket template class
-/// since version 0.83
-class TicketTemplateHiddenField extends ITILTemplateHiddenField {
-
-   // From CommonDBChild
-   static public $itemtype  = 'TicketTemplate';
-   static public $items_id  = 'tickettemplates_id';
-   static public $itiltype = 'Ticket';
-
+if (!isset($fieldtype)) {
+   Html::displayErrorAndDie("Missing field type");
 }
+
+$item_class = $itiltype . 'Template' . $fieldtype . 'Field';
+$item = new $item_class;
+
+if (isset($_POST["add"]) || isset($_POST['massiveaction'])) {
+   $item->check(-1, UPDATE, $_POST);
+
+   if ($item->add($_POST)) {
+      switch ($fieldtype) {
+         case 'Hidden':
+            $fieldtype_name = __('hidden');
+            break;
+         case 'Mandatory':
+            $fieldtype_name = __('mandatory');
+            break;
+         case 'Predefined':
+            $fieldtype_name = __('predefined');
+            break;
+
+      }
+
+      Event::log(
+         $_POST[$item::$items_id],
+         strtolower($item::$itemtype),
+         4,
+         "maintain",
+         sprintf(
+            //TRANS: %1$s is the user login, %2$s the field type
+            __('%1$s adds %2$s field'),
+            $_SESSION["glpiname"],
+            $fieldtype_name
+         )
+      );
+   }
+   Html::back();
+}
+
+Html::displayErrorAndDie("lost");
