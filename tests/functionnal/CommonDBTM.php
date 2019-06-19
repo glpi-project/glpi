@@ -810,6 +810,8 @@ class CommonDBTM extends DbTestCase {
    }
 
    public function testAdd() {
+      global $DB;
+
       $computer = new \Computer();
       $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
       $bkp_current = $_SESSION['glpi_currenttime'];
@@ -828,8 +830,12 @@ class CommonDBTM extends DbTestCase {
          $computer->getFromDB($computerID)
       )->isTrue();
       // Verify you can override creation and modifcation dates from add
-      $this->string($computer->fields['date_creation'])->isEqualTo('2018-01-01 11:22:33');
-      $this->string($computer->fields['date_mod'])->isEqualTo('2018-01-01 22:33:44');
+      $this->string($computer->fields['date_creation'])->isEqualTo(
+         '2018-01-01 11:22:33'.($DB->getDriver() === 'pgsql' ? '+01' : '')
+      );
+      $this->string($computer->fields['date_mod'])->isEqualTo(
+         '2018-01-01 22:33:44'.($DB->getDriver() == 'pgsql' ? '+01' : '')
+      );
 
       //test with default date
       $computerID = $computer->add([
@@ -842,8 +848,12 @@ class CommonDBTM extends DbTestCase {
          $computer->getFromDB($computerID)
       )->isTrue();
       // Verify default date has been used
-      $this->string($computer->fields['date_creation'])->isEqualTo('2000-01-01 00:00:00');
-      $this->string($computer->fields['date_mod'])->isEqualTo('2000-01-01 00:00:00');
+      $this->string($computer->fields['date_creation'])->isEqualTo(
+         '2000-01-01 00:00:00'.($DB->getDriver() == 'pgsql' ? '+01' : '')
+      );
+      $this->string($computer->fields['date_mod'])->isEqualTo(
+         '2000-01-01 00:00:00'.($DB->getDriver() == 'pgsql' ? '+01' : '')
+      );
 
       $_SESSION['glpi_currenttime'] = $bkp_current;
    }
