@@ -103,7 +103,7 @@ class Entity extends CommonTreeDropdown {
                                                    'autoclose_delay', 'inquest_config',
                                                    'inquest_rate', 'inquest_delay',
                                                    'inquest_duration','inquest_URL',
-                                                   'max_closedate', 'itiltemplates_id',
+                                                   'max_closedate', 'tickettemplates_id',
                                                    'suppliers_as_private'],
                                           // Configuration
                                           'config'
@@ -903,7 +903,7 @@ class Entity extends CommonTreeDropdown {
       $tab[] = [
          'id'                 => '47',
          'table'              => $this->getTable(),
-         'field'              => 'itiltemplates_id', // not a dropdown because of special value
+         'field'              => 'tickettemplates_id', // not a dropdown because of special value
          'name'               => _n('Ticket template', 'Ticket templates', 1),
          'massiveaction'      => false,
          'nosearch'           => true,
@@ -2263,18 +2263,18 @@ class Entity extends CommonTreeDropdown {
          $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
       }
 
-      $options = ['value'  => $entity->fields["itiltemplates_id"],
+      $options = ['value'  => $entity->fields["tickettemplates_id"],
                        'entity' => $ID,
                        'toadd'  => $toadd];
 
-      ITILTemplate::dropdown($options);
+      TicketTemplate::dropdown($options);
 
-      if (($entity->fields["itiltemplates_id"] == self::CONFIG_PARENT)
+      if (($entity->fields["tickettemplates_id"] == self::CONFIG_PARENT)
           && ($ID != 0)) {
          echo "<font class='green'>&nbsp;&nbsp;";
 
-         $tt  = new ITILTemplate();
-         $tid = self::getUsedConfig('itiltemplates_id', $ID, '', 0);
+         $tt  = new TicketTemplate();
+         $tid = self::getUsedConfig('tickettemplates_id', $ID, '', 0);
          if (!$tid) {
             echo Dropdown::EMPTY_VALUE;
          } else if ($tt->getFromDB($tid)) {
@@ -2880,11 +2880,11 @@ class Entity extends CommonTreeDropdown {
             }
             return Dropdown::getDropdownName('glpi_entities', $values[$field]);
 
-         case 'itiltemplates_id' :
+         case 'tickettemplates_id' :
             if ($values[$field] == self::CONFIG_PARENT) {
                return __('Inheritance of the parent entity');
             }
-            return Dropdown::getDropdownName('glpi_itiltemplates', $values[$field]);
+            return Dropdown::getDropdownName(TicketTemplate::getTable(), $values[$field]);
 
          case 'calendars_id' :
             switch ($values[$field]) {

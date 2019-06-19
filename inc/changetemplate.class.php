@@ -31,16 +31,20 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+   die("Sorry. You can't access directly to this file");
 }
 
-/// Hidden fields for ticket template class
-/// since version 0.83
-class TicketTemplateHiddenField extends ITILTemplateHiddenField {
+/**
+ * Chang Template class
+ *
+ * since version 9.5.0
+**/
+class ChangeTemplate extends ITILTemplate {
+   public $second_level_menu         = "change";
+   public $third_level_menu          = "ChangeTemplate";
 
-   // From CommonDBChild
-   static public $itemtype  = 'TicketTemplate';
-   static public $items_id  = 'tickettemplates_id';
-   static public $itiltype = 'Ticket';
+   static function getTypeName($nb = 0) {
+      return _n('Change template', 'change templates', $nb);
+   }
 
 }

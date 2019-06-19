@@ -136,7 +136,7 @@ class TicketRecurrent extends CommonDropdown {
                          'label' => __('Active'),
                          'type'  => 'bool',
                          'list'  => false],
-                   ['name'  => 'itiltemplates_id',
+                   ['name'  => 'tickettemplates_id',
                          'label' => _n('Ticket template', 'Ticket templates', 1),
                          'type'  => 'dropdownValue',
                          'list'  => true],
@@ -239,7 +239,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => 'glpi_itiltemplates',
+         'table'              => 'glpi_tickettemplates',
          'field'              => 'name',
          'name'               => _n('Ticket template', 'Ticket templates', 1),
          'datatype'           => 'itemlink'
@@ -465,15 +465,15 @@ class TicketRecurrent extends CommonDropdown {
    static function createTicket($data) {
 
       $result = false;
-      $tt     = new ITILTemplate();
+      $tt     = new TicketTemplate();
 
       // Create ticket based on ticket template and entity information of ticketrecurrent
-      if ($tt->getFromDB($data['itiltemplates_id'])) {
+      if ($tt->getFromDB($data['tickettemplates_id'])) {
          // Get default values for ticket
          $input = Ticket::getDefaultValues($data['entities_id']);
          // Apply itiltemplates predefined values
-         $ttp        = new ITILTemplatePredefinedField();
-         $predefined = $ttp->getPredefinedFields($data['itiltemplates_id'], true);
+         $ttp        = new TicketTemplatePredefinedField();
+         $predefined = $ttp->getPredefinedFields($data['tickettemplates_id'], true);
 
          if (count($predefined)) {
             foreach ($predefined as $predeffield => $predefvalue) {

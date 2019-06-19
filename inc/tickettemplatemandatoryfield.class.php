@@ -36,6 +36,11 @@ if (!defined('GLPI_ROOT')) {
 
 /// Mandatory fields for ticket template class
 /// since version 0.83
-/// @deprecated 9.5.0
 class TicketTemplateMandatoryField extends ITILTemplateMandatoryField {
+
+   // From CommonDBChild
+   static public $itemtype  = 'TicketTemplate';
+   static public $items_id  = 'tickettemplates_id';
+   static public $itiltype = 'Ticket';
+
 }

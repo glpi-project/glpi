@@ -138,13 +138,46 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
+   /**
+    * Can manage actors
+    *
+    * @return boolean
+    */
    function canAdminActors() {
-      return false;
+      if (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1) {
+         return false;
+      }
+      return Session::haveRight(static::$rightname, UPDATE);
    }
 
 
+   /**
+    * Can assign object
+    *
+    * @return boolean
+    */
    function canAssign() {
-      return false;
+      if (isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)
+          || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
+      ) {
+         return false;
+      }
+      return Session::haveRight(static::$rightname, UPDATE);
+   }
+
+
+   /**
+    * Can be assigned to me
+    *
+    * @return boolean
+    */
+   function canAssignToMe() {
+      if (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
+         || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
+      ) {
+         return false;
+      }
+      return Session::haveRight(static::$rightname, UPDATE);
    }
 
 
@@ -186,7 +219,7 @@ abstract class CommonITILObject extends CommonDBTM {
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
-              && self::isAllowedStatus($this->fields['status'], self::SOLVED)
+              && static::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
               && !in_array($this->fields['status'], $this->getClosedStatusArray()));
    }
@@ -202,7 +235,7 @@ abstract class CommonITILObject extends CommonDBTM {
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
-              && self::isAllowedStatus($this->fields['status'], self::SOLVED));
+              && static::isAllowedStatus($this->fields['status'], self::SOLVED));
    }
 
 
@@ -643,11 +676,143 @@ abstract class CommonITILObject extends CommonDBTM {
       $this->deleteChildrenAndRelationsFromDb($link_classes);
    }
 
+   /**
+    * Handle template mandatory fields on update
+    *
+    * @param array $input Input
+    *
+    * @return array
+    */
+   protected function handleTemplateFields(array $input) {
+      //// check mandatory fields
+      // First get ticket template associated : entity and type/category
+      if (isset($input['entities_id'])) {
+         $entid = $input['entities_id'];
+      } else {
+         $entid = $this->fields['entities_id'];
+      }
+
+      $type = null;
+      if (isset($input['type'])) {
+         $type = $input['type'];
+      } else if (isset($this->field['type'])) {
+         $type = $this->fields['type'];
+      }
+
+      if (isset($input['itilcategories_id'])) {
+         $categid = $input['itilcategories_id'];
+      } else {
+         $categid = $this->fields['itilcategories_id'];
+      }
+
+      $check_allowed_fields_for_template = false;
+      $allowed_fields                    = [];
+      if (!Session::isCron()
+          && (!Session::haveRight(static::$rightname, UPDATE)
+            // Closed tickets
+            || in_array($this->fields['status'], $this->getClosedStatusArray()))
+         ) {
+
+         $allowed_fields                    = ['id'];
+         $check_allowed_fields_for_template = true;
+
+         if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+            $allowed_fields[] = 'status';
+
+            // probably transfer
+            $allowed_fields[] = 'entities_id';
+            $allowed_fields[] = 'itilcategories_id';
+         } else {
+            if ($this->canApprove()
+                || $this->canAssign()
+                || $this->canAssignToMe()
+                || isset($input['_from_assignment'])) {
+                $allowed_fields[] = 'status';
+                $allowed_fields[] = '_accepted';
+            }
+            // for post-only with validate right or validation created by rules
+            $validation_class = static::getType() . 'Validation';
+            if (class_exists($validation_class)) {
+               if ($validation_class::canValidate($this->fields['id'])
+                  || $validation_class::canCreate()
+                  || isset($input["_rule_process"])) {
+                  $allowed_fields[] = 'global_validation';
+               }
+            }
+            // Manage assign and steal right
+            if (static::getType() === Ticket::getType() && Session::haveRightsOr(static::$rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
+                $allowed_fields[] = '_itil_assign';
+            }
+
+            // Can only update initial fields if no followup or task already added
+            if ($this->canUpdateItem()) {
+                $allowed_fields[] = 'content';
+                $allowed_fields[] = 'urgency';
+                $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
+                $allowed_fields[] = 'itilcategories_id';
+                $allowed_fields[] = 'name';
+                $allowed_fields[] = 'items_id';
+                $allowed_fields[] = '_filename';
+                $allowed_fields[] = '_tag_filename';
+                $allowed_fields[] = '_prefix_filename';
+                $allowed_fields[] = 'takeintoaccount_delay_stat';
+            }
+         }
+
+         foreach ($allowed_fields as $field) {
+            if (isset($input[$field])) {
+               $ret[$field] = $input[$field];
+            }
+         }
+
+         $input = $ret;
+
+         // Only ID return false
+         if (count($input) == 1) {
+            return false;
+         }
+      }
+
+      $tt = $this->getITILTemplateToUse(0, $type, $categid, $entid);
+
+      if (count($tt->mandatory)) {
+         $mandatory_missing = [];
+         $fieldsname        = $tt->getAllowedFieldsNames(true);
+         foreach ($tt->mandatory as $key => $val) {
+            if ((!$check_allowed_fields_for_template || in_array($key, $allowed_fields))
+                && (isset($input[$key])
+                    && (empty($input[$key]) || ($input[$key] == 'NULL'))
+                    // Take only into account already set items : do not block old tickets
+                    && (!empty($this->fields[$key]))
+                )) {
+               $mandatory_missing[$key] = $fieldsname[$val];
+            }
+         }
+         if (count($mandatory_missing)) {
+            //TRANS: %s are the fields concerned
+            $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
+                               implode(", ", $mandatory_missing));
+            Session::addMessageAfterRedirect($message, false, ERROR);
+            return false;
+         }
+      }
+
+      return $input;
+   }
 
    function prepareInputForUpdate($input) {
 
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
+
+      if ($this->getType() !== Ticket::getType()) {
+         //cannot be handled here for tickets. @see Ticket::prepareInputForUpdate()
+         $input = $this->handleTemplateFields($input);
+         if ($input === false) {
+            return false;
+         }
+      }
+
       if (!isset($input['_donotadddocs']) || !$input['_donotadddocs']) {
          $options = [];
          if (isset($input['solution'])) {
@@ -1319,6 +1484,9 @@ abstract class CommonITILObject extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
 
+      // save value before clean;
+      $title = ltrim($input['name']);
+
       // Set default status to avoid notice
       if (!isset($input["status"])) {
          $input["status"] = self::INCOMING;
@@ -1391,6 +1559,100 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       $input = $this->computeDefaultValuesForAdd($input);
+
+      // Do not check mandatory on auto import (mailgates)
+      $key = $this->getTemplateFormFieldName();
+      if (!isset($input['_auto_import'])) {
+         if (isset($input[$key]) && $input[$key]) {
+            $tt_class = $this->getType() . 'Template';
+            $tt = new $tt_class;
+            if ($tt->getFromDBWithDatas($input[$key])) {
+               if (count($tt->mandatory)) {
+                  $mandatory_missing = [];
+                  $fieldsname        = $tt->getAllowedFieldsNames(true);
+                  foreach ($tt->mandatory as $key => $val) {
+                     // for title if mandatory (restore initial value)
+                     if ($key == 'name') {
+                        $input['name']                     = $title;
+                     }
+                     // Check only defined values : Not defined not in form
+                     if (isset($input[$key])) {
+                        // If content is also predefined need to be different from predefined value
+                        if (($key == 'content')
+                            && isset($tt->predefined['content'])) {
+                           // Clean new lines to be fix encoding
+                           if (strcmp(preg_replace("/\r?\n/", "",
+                                                   Html::cleanPostForTextArea($input[$key])),
+                                      preg_replace("/\r?\n/", "",
+                                                   $tt->predefined['content'])) == 0) {
+                              Session::addMessageAfterRedirect(
+                                 __('You cannot use predefined description verbatim'),
+                                 false,
+                                 ERROR
+                              );
+                              $mandatory_missing[$key] = $fieldsname[$val];
+                           }
+                        }
+
+                        if (empty($input[$key]) || ($input[$key] == 'NULL')
+                            || (is_array($input[$key])
+                                && ($input[$key] === [0 => "0"]))) {
+
+                           $mandatory_missing[$key] = $fieldsname[$val];
+                        }
+                     }
+
+                     if (($key == '_add_validation')
+                         && !empty($input['users_id_validate'])
+                         && isset($input['users_id_validate'][0])
+                         && ($input['users_id_validate'][0] > 0)) {
+
+                        unset($mandatory_missing['_add_validation']);
+                     }
+
+                     if (static::getType() === Ticket::getType()) {
+                        // For time_to_resolve and time_to_own : check also slas
+                        // For internal_time_to_resolve and internal_time_to_own : check also olas
+                        foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+                           list($dateField, $slaField) = SLA::getFieldNames($slmType);
+                           if (($key == $dateField)
+                              && isset($input[$slaField]) && ($input[$slaField] > 0)
+                              && isset($mandatory_missing[$dateField])) {
+                              unset($mandatory_missing[$dateField]);
+                           }
+                           list($dateField, $olaField) = OLA::getFieldNames($slmType);
+                           if (($key == $dateField)
+                              && isset($input[$olaField]) && ($input[$olaField] > 0)
+                              && isset($mandatory_missing[$dateField])) {
+                              unset($mandatory_missing[$dateField]);
+                           }
+                        }
+                     }
+
+                     // For document mandatory
+                     if (($key == '_documents_id')
+                           && !isset($input['_filename'])
+                           && !isset($input['_tag_filename'])
+                           && !isset($input['_stock_image'])
+                           && !isset($input['_tag_stock_image'])) {
+
+                        $mandatory_missing[$key] = $fieldsname[$val];
+                     }
+                  }
+
+                  if (count($mandatory_missing)) {
+                     //TRANS: %s are the fields concerned
+                     $message = sprintf(
+                        __('Mandatory fields are not filled. Please correct: %s'),
+                        implode(", ", $mandatory_missing)
+                     );
+                     Session::addMessageAfterRedirect($message, false, ERROR);
+                     return false;
+                  }
+               }
+            }
+         }
+      }
 
       return $input;
    }
@@ -2393,7 +2655,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       foreach (array_keys($tab) as $status) {
          if (($status != $current)
-             && !self::isAllowedStatus($current, $status)) {
+             && !static::isAllowedStatus($current, $status)) {
             unset($tab[$status]);
          }
       }
@@ -2519,20 +2781,20 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function showGroupsAssociated($type, $canedit, array $options = []) {
 
-      $groupicon = self::getActorIcon('group', $type);
+      $groupicon = static::getActorIcon('group', $type);
       $group     = new Group();
       $linkclass = new $this->grouplinkclass();
 
       $itemtype  = $this->getType();
-      $typename  = self::getActorFieldNameType($type);
+      $typename  = static::getActorFieldNameType($type);
 
       $candelete = true;
       $mandatory = '';
       // For ticket templates : mandatories
-      if (($itemtype == 'Ticket')
-          && isset($options['_itiltemplate'])) {
-         $mandatory = $options['_itiltemplate']->getMandatoryMark("_groups_id_".$typename);
-         if ($options['_itiltemplate']->isMandatoryField("_groups_id_".$typename)
+      $key = $this->getTemplateFormFieldName();
+      if (isset($options[$key])) {
+         $mandatory = $options[$key]->getMandatoryMark("_groups_id_".$typename);
+         if ($options[$key]->isMandatoryField("_groups_id_".$typename)
              && isset($this->groups[$type]) && (count($this->groups[$type])==1)) {
             $candelete = false;
          }
@@ -2576,20 +2838,20 @@ abstract class CommonITILObject extends CommonDBTM {
          $showsupplierlink = 2;
       }
 
-      $suppliericon = self::getActorIcon('supplier', $type);
+      $suppliericon = static::getActorIcon('supplier', $type);
       $supplier     = new Supplier();
       $linksupplier = new $this->supplierlinkclass();
 
       $itemtype     = $this->getType();
-      $typename     = self::getActorFieldNameType($type);
+      $typename     = static::getActorFieldNameType($type);
 
       $candelete    = true;
       $mandatory    = '';
       // For ticket templates : mandatories
-      if (($itemtype == 'Ticket')
-          && isset($options['_itiltemplate'])) {
-         $mandatory = $options['_itiltemplate']->getMandatoryMark("_suppliers_id_".$typename);
-         if ($options['_itiltemplate']->isMandatoryField("_suppliers_id_".$typename)
+      $key = $this->getTemplateFormFieldName();
+      if (isset($options[$key])) {
+         $mandatory = $options[$key]->getMandatoryMark("_suppliers_id_".$typename);
+         if ($options[$key]->isMandatoryField("_suppliers_id_".$typename)
              && isset($this->suppliers[$type]) && (count($this->suppliers[$type])==1)) {
             $candelete = false;
          }
@@ -2664,16 +2926,16 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       switch ($field) {
          case 'status':
-            return self::getStatus($values[$field]);
+            return static::getStatus($values[$field]);
 
          case 'urgency':
-            return self::getUrgencyName($values[$field]);
+            return static::getUrgencyName($values[$field]);
 
          case 'impact':
-            return self::getImpactName($values[$field]);
+            return static::getImpactName($values[$field]);
 
          case 'priority':
-            return self::getPriorityName($values[$field]);
+            return static::getPriorityName($values[$field]);
 
          case 'global_validation' :
             return CommonITILValidation::getStatus($values[$field]);
@@ -2702,22 +2964,22 @@ abstract class CommonITILObject extends CommonDBTM {
          case 'status' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
-            return self::dropdownStatus($options);
+            return static::dropdownStatus($options);
 
          case 'impact' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
-            return self::dropdownImpact($options);
+            return static::dropdownImpact($options);
 
          case 'urgency' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
-            return self::dropdownUrgency($options);
+            return static::dropdownUrgency($options);
 
          case 'priority' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
-            return self::dropdownPriority($options);
+            return static::dropdownPriority($options);
 
          case 'global_validation' :
             $options['global'] = true;
@@ -3502,7 +3764,7 @@ abstract class CommonITILObject extends CommonDBTM {
       return $class == null
          ? ''
          : 'itilstatus ' . ($solid ? 'fas fa-' : 'far fa-') . $class.
-         " ".self::getStatusKey($status);
+         " ".static::getStatusKey($status);
    }
 
    /**
@@ -3631,20 +3893,20 @@ abstract class CommonITILObject extends CommonDBTM {
       if (User::canView()) {
          $showuserlink = 2;
       }
-      $usericon  = self::getActorIcon('user', $type);
+      $usericon  = static::getActorIcon('user', $type);
       $user      = new User();
       $linkuser  = new $this->userlinkclass();
 
       $itemtype  = $this->getType();
-      $typename  = self::getActorFieldNameType($type);
+      $typename  = static::getActorFieldNameType($type);
 
       $candelete = true;
       $mandatory = '';
       // For ticket templates : mandatories
-      if (($itemtype == 'Ticket')
-          && isset($options['_itiltemplate'])) {
-         $mandatory = $options['_itiltemplate']->getMandatoryMark("_users_id_".$typename);
-         if ($options['_itiltemplate']->isMandatoryField("_users_id_".$typename)
+      $key = $this->getTemplateFormFieldName();
+      if (isset($options[$key])) {
+         $mandatory = $options[$key]->getMandatoryMark("_users_id_".$typename);
+         if ($options[$key]->isMandatoryField("_users_id_".$typename)
              && isset($this->users[$type]) && (count($this->users[$type])==1)) {
             $candelete = false;
          }
@@ -3739,7 +4001,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $types['supplier'] = __('Supplier');
       }
 
-      $typename = self::getActorFieldNameType($type);
+      $typename = static::getActorFieldNameType($type);
       switch ($type) {
          case CommonITILActor::REQUESTER :
             if (isset($is_hidden['_users_id_requester']) && $is_hidden['_users_id_requester']) {
@@ -3810,15 +4072,15 @@ abstract class CommonITILObject extends CommonDBTM {
    function showActorAddFormOnCreate($type, array $options) {
       global $CFG_GLPI;
 
-      $typename = self::getActorFieldNameType($type);
+      $typename = static::getActorFieldNameType($type);
 
       $itemtype = $this->getType();
 
-      echo self::getActorIcon('user', $type);
+      echo static::getActorIcon('user', $type);
       // For ticket templates : mandatories
-      if (($itemtype == 'Ticket')
-          && isset($options['_itiltemplate'])) {
-         echo $options['_itiltemplate']->getMandatoryMark("_users_id_".$typename);
+      $key = $this->getTemplateFormFieldName();
+      if (isset($options[$key])) {
+         echo $options[$key]->getMandatoryMark("_users_id_".$typename);
       }
       echo "&nbsp;";
 
@@ -3978,11 +4240,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $itemtype = $this->getType();
 
-      echo self::getActorIcon('supplier', 'assign');
+      echo static::getActorIcon('supplier', 'assign');
       // For ticket templates : mandatories
-      if (($itemtype == 'Ticket')
-            && isset($options['_itiltemplate'])) {
-         echo $options['_itiltemplate']->getMandatoryMark("_suppliers_id_assign");
+      $key = $this->getTemplateFormFieldName();
+      if (isset($options[$key])) {
+         echo $options[$key]->getMandatoryMark("_suppliers_id_assign");
       }
       echo "&nbsp;";
 
@@ -4078,8 +4340,9 @@ abstract class CommonITILObject extends CommonDBTM {
                      '_users_id_assign', '_groups_id_assign',
                      '_suppliers_id_assign'] as $f) {
          $is_hidden[$f] = false;
-         if (isset($options['_itiltemplate'])
-             && $options['_itiltemplate']->isHiddenField($f)) {
+         $key = $this->getTemplateFormFieldName();
+         if (isset($options[$key])
+             && $options[$key]->isHiddenField($f)) {
             $is_hidden[$f] = true;
          }
       }
@@ -4150,7 +4413,7 @@ abstract class CommonITILObject extends CommonDBTM {
                $reqdisplay = true;
             } else { // predefined value
                if (isset($options["_users_id_requester"]) && $options["_users_id_requester"]) {
-                  echo self::getActorIcon('user', CommonITILActor::REQUESTER)."&nbsp;";
+                  echo static::getActorIcon('user', CommonITILActor::REQUESTER)."&nbsp;";
                   echo Dropdown::getDropdownName("glpi_users", $options["_users_id_requester"]);
                   echo "<input type='hidden' name='_users_id_requester' value=\"".
                          $options["_users_id_requester"]."\">";
@@ -4183,10 +4446,11 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!$ID) {
          if ($can_admin
              && !$is_hidden['_groups_id_requester']) {
-            echo self::getActorIcon('group', CommonITILActor::REQUESTER);
+            echo static::getActorIcon('group', CommonITILActor::REQUESTER);
             /// For ticket templates : mandatories
-            if (isset($options['_itiltemplate'])) {
-               echo $options['_itiltemplate']->getMandatoryMark('_groups_id_requester');
+            $key = $this->getTemplateFormFieldName();
+            if (isset($options[$key])) {
+               echo $options[$key]->getMandatoryMark('_groups_id_requester');
             }
             echo "&nbsp;";
 
@@ -4199,7 +4463,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          } else { // predefined value
             if (isset($options["_groups_id_requester"]) && $options["_groups_id_requester"]) {
-               echo self::getActorIcon('group', CommonITILActor::REQUESTER)."&nbsp;";
+               echo static::getActorIcon('group', CommonITILActor::REQUESTER)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_requester"]);
                echo "<input type='hidden' name='_groups_id_requester' value=\"".
                       $options["_groups_id_requester"]."\">";
@@ -4262,7 +4526,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo '<hr>';
          } else { // predefined value
             if (isset($options["_users_id_observer"][0]) && $options["_users_id_observer"][0]) {
-               echo self::getActorIcon('user', CommonITILActor::OBSERVER)."&nbsp;";
+               echo static::getActorIcon('user', CommonITILActor::OBSERVER)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_users", $options["_users_id_observer"][0]);
                echo "<input type='hidden' name='_users_id_observer' value=\"".
                       $options["_users_id_observer"][0]."\">";
@@ -4277,10 +4541,11 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!$ID) {
          if ($can_admin
              && !$is_hidden['_groups_id_observer']) {
-            echo self::getActorIcon('group', CommonITILActor::OBSERVER);
+            echo static::getActorIcon('group', CommonITILActor::OBSERVER);
             /// For ticket templates : mandatories
-            if (isset($options['_itiltemplate'])) {
-               echo $options['_itiltemplate']->getMandatoryMark('_groups_id_observer');
+            $key = $this->getTemplateFormFieldName();
+            if (isset($options[$key])) {
+               echo $options[$key]->getMandatoryMark('_groups_id_observer');
             }
             echo "&nbsp;";
 
@@ -4292,7 +4557,7 @@ abstract class CommonITILObject extends CommonDBTM {
             ]);
          } else { // predefined value
             if (isset($options["_groups_id_observer"]) && $options["_groups_id_observer"]) {
-               echo self::getActorIcon('group', CommonITILActor::OBSERVER)."&nbsp;";
+               echo static::getActorIcon('group', CommonITILActor::OBSERVER)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_observer"]);
                echo "<input type='hidden' name='_groups_id_observer' value=\"".
                       $options["_groups_id_observer"]."\">";
@@ -4362,7 +4627,7 @@ abstract class CommonITILObject extends CommonDBTM {
          } else if ($can_assigntome
                     && !$is_hidden['_users_id_assign']
                     && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-            echo self::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
+            echo static::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
             User::dropdown(['name'        => '_users_id_assign',
                                  'value'       => $options["_users_id_assign"],
                                  'entity'      => $this->fields["entities_id"],
@@ -4372,7 +4637,7 @@ abstract class CommonITILObject extends CommonDBTM {
          } else { // predefined value
             if (isset($options["_users_id_assign"]) && $options["_users_id_assign"]
                 && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-               echo self::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
+               echo staic::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_users", $options["_users_id_assign"]);
                echo "<input type='hidden' name='_users_id_assign' value=\"".
                       $options["_users_id_assign"]."\">";
@@ -4389,10 +4654,11 @@ abstract class CommonITILObject extends CommonDBTM {
          if ($can_assign
              && !$is_hidden['_groups_id_assign']
              && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-            echo self::getActorIcon('group', CommonITILActor::ASSIGN);
+            echo static::getActorIcon('group', CommonITILActor::ASSIGN);
             /// For ticket templates : mandatories
-            if (isset($options['_itiltemplate'])) {
-               echo $options['_itiltemplate']->getMandatoryMark('_groups_id_assign');
+            $key = $this->getTemplateFormFieldName();
+            if (isset($options[$key])) {
+               echo $options[$key]->getMandatoryMark('_groups_id_assign');
             }
             echo "&nbsp;";
             $rand   = mt_rand();
@@ -4430,7 +4696,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if (isset($options["_groups_id_assign"])
                 && $options["_groups_id_assign"]
                 && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-               echo self::getActorIcon('group', CommonITILActor::ASSIGN)."&nbsp;";
+               echo static::getActorIcon('group', CommonITILActor::ASSIGN)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_assign"]);
                echo "<input type='hidden' name='_groups_id_assign' value=\"".
                       $options["_groups_id_assign"]."\">";
@@ -4452,7 +4718,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if (isset($options["_suppliers_id_assign"])
                 && $options["_suppliers_id_assign"]
                 && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-               echo self::getActorIcon('supplier', CommonITILActor::ASSIGN)."&nbsp;";
+               echo static::getActorIcon('supplier', CommonITILActor::ASSIGN)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_suppliers", $options["_suppliers_id_assign"]);
                echo "<input type='hidden' name='_suppliers_id_assign' value=\"".
                       $options["_suppliers_id_assign"]."\">";
@@ -5129,7 +5395,7 @@ abstract class CommonITILObject extends CommonDBTM {
       while ($line = $iterator->next()) {
          $tab[] = [
             'id'   => $line['priority'],
-            'link' => self::getPriorityName($line['priority']),
+            'link' => static::getPriorityName($line['priority']),
          ];
       }
       return $tab;
@@ -5173,7 +5439,7 @@ abstract class CommonITILObject extends CommonDBTM {
       while ($line = $iterator->next()) {
          $tab[] = [
             'id'   => $line['urgency'],
-            'link' => self::getUrgencyName($line['urgency']),
+            'link' => static::getUrgencyName($line['urgency']),
          ];
       }
       return $tab;
@@ -5217,7 +5483,7 @@ abstract class CommonITILObject extends CommonDBTM {
       while ($line = $iterator->next()) {
          $tab[] = [
             'id'   => $line['impact'],
-            'link' => self::getImpactName($line['impact']),
+            'link' => static::getImpactName($line['impact']),
          ];
       }
       return $tab;
@@ -6049,7 +6315,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       $item       = new static();
       $item->getFromDB($items_id);
-      $all_status   = self::getAllowedStatusArray($item->fields['status']);
+      $all_status   = static::getAllowedStatusArray($item->fields['status']);
       $rand = mt_rand();
       $html = "<div class='x-split-button' id='x-split-button'>
                <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
@@ -6060,11 +6326,11 @@ abstract class CommonITILObject extends CommonDBTM {
          if ($status_key == $item->fields['status']) {
             $checked = "checked='checked'";
          }
-         $html .= "<li data-status='".self::getStatusKey($status_key)."'>";
+         $html .= "<li data-status='".static::getStatusKey($status_key)."'>";
          $html .= "<input type='radio' id='status_radio_$status_key$rand' name='_status'
                     $checked value='$status_key'>";
          $html .= "<label for='status_radio_$status_key$rand'>";
-         $html .= self::getStatusIcon($status_key) . "&nbsp;";
+         $html .= static::getStatusIcon($status_key) . "&nbsp;";
          $html .= $status_label;
          $html .= "</label>";
          $html .= "</li>";
@@ -6087,7 +6353,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<h3>".__("Timeline filter")." : </h3>";
       echo "<ul>";
 
-      $objType = self::getType();
+      $objType = static::getType();
 
       echo "<li><a href='#' class='far fa-comment pointer' data-type='ITILFollowup' title='".__s("Followup").
          "'><span class='sr-only'>" . __('Followup') . "</span></a></li>";
@@ -6138,8 +6404,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       global $CFG_GLPI;
 
-      $objType = self::getType();
-      $foreignKey = self::getForeignKeyField();
+      $objType = static::getType();
+      $foreignKey = static::getForeignKeyField();
 
       //check sub-items rights
       $tmp = [$foreignKey => $this->getID()];
@@ -6284,8 +6550,8 @@ abstract class CommonITILObject extends CommonDBTM {
     */
    function getTimelineItems() {
 
-      $objType = self::getType();
-      $foreignKey = self::getForeignKeyField();
+      $objType = static::getType();
+      $foreignKey = static::getForeignKeyField();
       $supportsValidation = $objType === "Ticket" || $objType === "Change";
 
       $timeline = [];
@@ -6313,7 +6579,7 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      $restrict_fup['itemtype'] = self::getType();
+      $restrict_fup['itemtype'] = static::getType();
       $restrict_fup['items_id'] = $this->getID();
 
       if ($task_obj->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
@@ -6369,7 +6635,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $solution_obj = new ITILSolution();
       $solution_items = $solution_obj->find([
-         'itemtype'  => self::getType(),
+         'itemtype'  => static::getType(),
          'items_id'  => $this->getID()
       ]);
       foreach ($solution_items as $solution_item) {
@@ -6462,8 +6728,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $autolink_options['strip_protocols'] = false;
 
-      $objType = self::getType();
-      $foreignKey = self::getForeignKeyField();
+      $objType = static::getType();
+      $foreignKey = static::getForeignKeyField();
 
       //display timeline
       echo "<div class='timeline_history'>";
@@ -6481,7 +6747,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // show title for timeline
-      self::showTimelineHeader();
+      static::showTimelineHeader();
 
       $timeline_index = 0;
       foreach ($timeline as $item) {
@@ -7134,5 +7400,212 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       return $this;
+   }
+
+
+   /**
+    * @see CommonGLPI::getAdditionalMenuOptions()
+    *
+    * @since 0.85
+   **/
+   static function getAdditionalMenuOptions() {
+      $tplclass = self::getTemplateClass();
+      if ($tplclass::canView()) {
+         $menu[$tplclass]['title']           = $tplclass::getTypeName(Session::getPluralNumber());
+         $menu[$tplclass]['page']            = $tplclass::getSearchURL(false);
+         $menu[$tplclass]['links']['search'] = $tplclass::getSearchURL(false);
+         if ($tplclass::canCreate()) {
+            $menu[$tplclass]['links']['add'] = $tplclass::getFormURL(false);
+         }
+         return $menu;
+      }
+      return false;
+   }
+
+
+   /**
+    * @see CommonGLPI::getAdditionalMenuLinks()
+    *
+    * @since 9.5.0
+   **/
+   static function getAdditionalMenuLinks() {
+      $links = [];
+      $tplclass = self::getTemplateClass();
+      if ($tplclass::canView()) {
+         $links['template'] = $tplclass::getSearchURL(false);
+      }
+
+      return $links;
+   }
+
+
+   /**
+    * Get template to use
+    * Use force_template first, then try on template define for type and category
+    * then use default template of active profile of connected user and then use default entity one
+    *
+    * @param $force_template      integer itiltemplate_id to used (case of preview for example)
+    *                             (default 0)
+    * @param $type                integer type of the ticket (default 0)
+    * @param $itilcategories_id   integer ticket category (default 0)
+    * @param $entities_id         integer (default -1)
+    *
+    * @since 9.5.0
+    *
+    * @return ITIL template object
+   **/
+   function getITILTemplateToUse(
+      $force_template = 0,
+      $type = null,
+      $itilcategories_id = 0,
+      $entities_id = -1
+   ) {
+      // Load template if available :
+      $tplclass = static::getTemplateClass();
+      $tt              = new $tplclass();
+      $template_loaded = false;
+
+      if ($force_template) {
+         // with type and categ
+         if ($tt->getFromDBWithDatas($force_template, true)) {
+            $template_loaded = true;
+         }
+      }
+
+      if (!$template_loaded
+          && $type
+          && $itilcategories_id) {
+
+         $categ = new ITILCategory();
+         if ($categ->getFromDB($itilcategories_id)) {
+            $field = $this->getTemplateFieldName($type);
+
+            if (!empty($categ->fields[$field]) && $categ->fields[$field]) {
+               // without type and categ
+               if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
+                  $template_loaded = true;
+               }
+            }
+         }
+      }
+
+      // If template loaded from type and category do not check after
+      if ($template_loaded) {
+         return $tt;
+      }
+
+      if ($this->getType() == Ticket::getType()) {
+         //For tickets, get template from profile or from entity
+         if (!$template_loaded) {
+            // load default profile one if not already loaded
+            if (isset($_SESSION['glpiactiveprofile']['itiltemplates_id'])
+               && $_SESSION['glpiactiveprofile']['itiltemplates_id']) {
+               // with type and categ
+               if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['itiltemplates_id'],
+                                          true)) {
+                  $template_loaded = true;
+               }
+            }
+         }
+
+         if (!$template_loaded
+            && ($entities_id >= 0)) {
+
+            // load default entity one if not already loaded
+            if ($template_id = Entity::getUsedConfig('itiltemplates_id', $entities_id)) {
+               // with type and categ
+               if ($tt->getFromDBWithDatas($template_id, true)) {
+                  $template_loaded = true;
+               }
+            }
+         }
+      }
+
+      // Check if profile / entity set type and category and try to load template for these values
+      if ($template_loaded) { // template loaded for profile or entity
+         $newtype              = $type;
+         $newitilcategories_id = $itilcategories_id;
+         // Get predefined values for ticket template
+         if (isset($tt->predefined['itilcategories_id']) && $tt->predefined['itilcategories_id']) {
+            $newitilcategories_id = $tt->predefined['itilcategories_id'];
+         }
+         if (isset($tt->predefined['type']) && $tt->predefined['type']) {
+            $newtype = $tt->predefined['type'];
+         }
+         if ($newtype
+             && $newitilcategories_id) {
+
+            $categ = new ITILCategory();
+            if ($categ->getFromDB($newitilcategories_id)) {
+               $field = $this->getTemplateFieldName($type);
+
+               if (isset($categ->fields[$field]) && $categ->fields[$field]) {
+                  // without type and categ
+                  if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
+                     $template_loaded = true;
+                  }
+               }
+            }
+         }
+      }
+      return $tt;
+   }
+
+   /**
+    * Get template field name
+    *
+    * @param string $type Type, if any
+    *
+    * @return string
+    */
+   public function getTemplateFieldName($type = null) :string {
+      $field = strtolower(static::getType()) . 'templates_id';
+      if (static::getType() === Ticket::getType()) {
+         switch ($type) {
+            case Ticket::INCIDENT_TYPE:
+               $field .= '_incident';
+               break;
+
+            case Ticket::DEMAND_TYPE:
+               $field .= '_demand';
+               break;
+
+            default:
+               $field = '';
+               Toolbox::logError('Missing type for Ticket template!');
+               break;
+         }
+      }
+
+      return $field;
+   }
+
+   /**
+    * @since 9.5.0
+    *
+    * @param integer $entity entities_id usefull if function called by cron (default 0)
+   **/
+   abstract static function getDefaultValues($entity = 0);
+
+   /**
+    * Get template class name.
+    *
+    * @since 9.5.0
+    *
+    * @return string
+    */
+   public static function getTemplateClass() {
+      return static::getType() . 'Template';
+   }
+
+   /**
+    * Get template form field name
+    *
+    * @since 9.5.0
+    *
+    * @return string
+    */
+   public static function getTemplateFormFieldName() {
+      return '_' . strtolower(static::getType()) . 'template';
    }
 }

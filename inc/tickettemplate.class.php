@@ -38,7 +38,13 @@ if (!defined('GLPI_ROOT')) {
  * Ticket Template class
  *
  * since version 0.83
- * @deprecated 9.5.0
 **/
 class TicketTemplate extends ITILTemplate {
+   public $second_level_menu         = "ticket";
+   public $third_level_menu          = "TicketTemplate";
+
+   static function getTypeName($nb = 0) {
+      return _n('Ticket template', 'Ticket templates', $nb);
+   }
+
 }

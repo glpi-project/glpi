@@ -41,6 +41,7 @@ class Problem extends CommonITILObject {
 
    // From CommonDBTM
    public $dohistory = true;
+   static protected $forward_entity_to = ['ProblemCost'];
 
    // From CommonITIL
    public $userlinkclass        = 'Problem_User';
@@ -50,7 +51,6 @@ class Problem extends CommonITILObject {
    static $rightname            = 'problem';
    protected $usenotepad        = true;
 
-   static protected $forward_entity_to = ['ProblemCost'];
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
@@ -68,21 +68,6 @@ class Problem extends CommonITILObject {
    **/
    static function getTypeName($nb = 0) {
       return _n('Problem', 'Problems', $nb);
-   }
-
-
-   function canAdminActors() {
-      return Session::haveRight(self::$rightname, UPDATE);
-   }
-
-
-   function canAssign() {
-      return Session::haveRight(self::$rightname, UPDATE);
-   }
-
-
-   function canAssignToMe() {
-      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
@@ -261,24 +246,6 @@ class Problem extends CommonITILObject {
    }
 
 
-   function prepareInputForUpdate($input) {
-
-      // Get problem : need for comparison
-      // $this->getFromDB($input['id']);
-
-      $input = parent::prepareInputForUpdate($input);
-      return $input;
-   }
-
-
-   function pre_updateInDB() {
-      parent::pre_updateInDB();
-   }
-
-
-   /**
-    * @see CommonDBTM::post_updateItem()
-   **/
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
@@ -292,12 +259,9 @@ class Problem extends CommonITILObject {
          $donotif = false;
       }
 
-      if ($donotif
-          && $CFG_GLPI["use_notifications"]) {
+      if ($donotif && $CFG_GLPI["use_notifications"]) {
          $mailtype = "update";
-
-         if (isset($this->input["status"])
-             && $this->input["status"]
+         if (isset($this->input["status"]) && $this->input["status"]
              && in_array("status", $this->updates)
              && in_array($this->input["status"], $this->getSolvedStatusArray())) {
 
@@ -576,7 +540,6 @@ class Problem extends CommonITILObject {
 
       // To be overridden by class
       $tab = [self::CLOSED];
-
       return $tab;
    }
 
@@ -589,10 +552,8 @@ class Problem extends CommonITILObject {
     * @return array
    **/
    static function getSolvedStatusArray() {
-
       // To be overridden by class
       $tab = [self::OBSERVED, self::SOLVED];
-
       return $tab;
    }
 
@@ -1034,33 +995,11 @@ class Problem extends CommonITILObject {
       $colsize1 = '13';
       $colsize2 = '37';
 
-      $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
+      $default_values = self::getDefaultValues();
 
       // Set default options
       if (!$ID) {
-         $values = ['_users_id_requester'        => Session::getLoginUserID(),
-                         '_users_id_requester_notif'  => ['use_notification'  => $default_use_notif,
-                                                               'alternative_email' => ''],
-                         '_groups_id_requester'       => 0,
-                         '_users_id_assign'           => 0,
-                         '_users_id_assign_notif'     => ['use_notification'  => $default_use_notif,
-                                                               'alternative_email' => ''],
-                         '_groups_id_assign'          => 0,
-                         '_users_id_observer'         => 0,
-                         '_users_id_observer_notif'   => ['use_notification'  => $default_use_notif,
-                                                               'alternative_email' => ''],
-                         '_suppliers_id_assign_notif' => ['use_notification'  => $default_use_notif,
-                                                               'alternative_email' => ''],
-                         '_groups_id_observer'        => 0,
-                         '_suppliers_id_assign'       => 0,
-                         'priority'                   => 3,
-                         'urgency'                    => 3,
-                         'impact'                     => 3,
-                         'content'                    => '',
-                         'name'                       => '',
-                         'entities_id'                => $_SESSION['glpiactive_entity'],
-                         'itilcategories_id'          => 0];
-         foreach ($values as $key => $val) {
+         foreach ($default_values as $key => $val) {
             if (!isset($options[$key])) {
                $options[$key] = $val;
             }
@@ -1083,6 +1022,7 @@ class Problem extends CommonITILObject {
 
       $this->initForm($ID, $options);
 
+      $canupdate = !$ID && $this->canUpdateItem();
       $showuserlink = 0;
       if (User::canView()) {
          $showuserlink = 1;
@@ -1097,10 +1037,112 @@ class Problem extends CommonITILObject {
          //set ID as already defined
          $options['noid'] = true;
       }
-      $this->showFormHeader($options);
+
+      if (!isset($options['template_preview'])) {
+         $options['template_preview'] = 0;
+      }
+
+      // Load template if available :
+      $tt = $this->getITILTemplateToUse(
+         $options['template_preview'],
+         $this->getType(),
+         ($ID ? $this->fields['itilcategories_id'] : $options['itilcategories_id']),
+         ($ID ? $this->fields['entities_id'] : $options['entities_id'])
+      );
+
+      // Predefined fields from template : reset them
+      if (isset($options['_predefined_fields'])) {
+         $options['_predefined_fields']
+                        = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
+      } else {
+         $options['_predefined_fields'] = [];
+      }
+
+      // Restore saved value or override with page parameter
+      $saved = $this->restoreInput();
+
+      // Store predefined fields to be able not to take into account on change template
+      // Only manage predefined values on ticket creation
+      $predefined_fields = [];
+      $tpl_key = $this->getTemplateFormFieldName();
+      if (!$ID) {
+
+         if (isset($tt->predefined) && count($tt->predefined)) {
+            foreach ($tt->predefined as $predeffield => $predefvalue) {
+               if (isset($default_values[$predeffield])) {
+                  // Is always default value : not set
+                  // Set if already predefined field
+                  // Set if ticket template change
+                  if (((count($options['_predefined_fields']) == 0)
+                       && ($options[$predeffield] == $default_values[$predeffield]))
+                      || (isset($options['_predefined_fields'][$predeffield])
+                          && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
+                      || (isset($options[$tpl_key])
+                          && ($options[$tpl_key] != $tt->getID()))
+                      // user pref for requestype can't overwrite requestype from template
+                      // when change category
+                      || (($predeffield == 'requesttypes_id')
+                          && empty($saved))) {
+
+                     // Load template data
+                     $options[$predeffield]            = $predefvalue;
+                     $this->fields[$predeffield]      = $predefvalue;
+                     $predefined_fields[$predeffield] = $predefvalue;
+                  }
+               }
+            }
+            // All predefined override : add option to say predifined exists
+            if (count($predefined_fields) == 0) {
+               $predefined_fields['_all_predefined_override'] = 1;
+            }
+
+         } else { // No template load : reset predefined values
+            if (count($options['_predefined_fields'])) {
+               foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
+                  if ($options[$predeffield] == $predefvalue) {
+                     $options[$predeffield] = $default_values[$predeffield];
+                  }
+               }
+            }
+         }
+      }
+
+      foreach ($default_values as $name => $value) {
+         if (!isset($options[$name])) {
+            if (isset($saved[$name])) {
+               $options[$name] = $saved[$name];
+            } else {
+               $options[$name] = $value;
+            }
+         }
+      }
+
+      // Put ticket template on $options for actors
+      $options[str_replace('s_id', '', $tpl_key)] = $tt;
+
+      if ($options['template_preview']) {
+         // Add all values to fields of tickets for template preview
+         foreach ($options as $key => $val) {
+            if (!isset($this->fields[$key])) {
+               $this->fields[$key] = $val;
+            }
+         }
+      }
+
+      if (!$options['template_preview']) {
+         $this->showFormHeader($options);
+      }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left' width='$colsize1%'>".__('Opening date')."</th>";
+      echo "<th class='left' width='$colsize1%'>";
+      echo $tt->getBeginHiddenFieldText('date');
+      if (!$ID) {
+         printf(__('%1$s%2$s'), __('Opening date'), $tt->getMandatoryMark('date'));
+      } else {
+         echo __('Opening date');
+      }
+      echo $tt->getEndHiddenFieldText('date');
+      echo "</th>";
       echo "<td class='left' width='$colsize2%'>";
 
       if (isset($options['tickets_id'])) {
@@ -1114,22 +1156,43 @@ class Problem extends CommonITILObject {
          echo Html::hidden('_from_itemtype', ['value' => $options['_from_itemtype']]);
       }
 
+      echo $tt->getBeginHiddenFieldValue('date');
       $date = $this->fields["date"];
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
       }
-      Html::showDateTimeField("date", ['value'      => $date,
-                                            'timestep'   => 1,
-                                            'maybeempty' => false]);
+      Html::showDateTimeField(
+         "date", [
+            'value'      => $date,
+            'timestep'   => 1,
+            'maybeempty' => false,
+            'required'   => ($tt->isMandatoryField('date') && !$ID)
+         ]
+      );
+      echo $tt->getEndHiddenFieldValue('date', $this);
       echo "</td>";
-      echo "<th width='$colsize1%'>".__('Time to resolve')."</th>";
-      echo "<td width='$colsize2%' class='left'>";
 
+      echo "<th>".$tt->getBeginHiddenFieldText('time_to_resolve');
+      if (!$ID) {
+         printf(__('%1$s%2$s'), __('Time to resolve'), $tt->getMandatoryMark('time_to_resolve'));
+      } else {
+         echo __('Time to resolve');
+      }
+      echo $tt->getEndHiddenFieldText('time_to_resolve');
+      echo "</th>";
+      echo "<td width='$colsize2%' class='left'>";
+      echo $tt->getBeginHiddenFieldValue('time_to_resolve');
       if ($this->fields["time_to_resolve"] == 'NULL') {
          $this->fields["time_to_resolve"] = '';
       }
-      Html::showDateTimeField("time_to_resolve", ['value'    => $this->fields["time_to_resolve"],
-                                                  'timestep' => 1]);
+      Html::showDateTimeField(
+         "time_to_resolve", [
+            'value'    => $this->fields["time_to_resolve"],
+            'timestep' => 1,
+            'required'   => ($tt->isMandatoryField('time_to_resolve') && !$ID)
+         ]
+      );
+      echo $tt->getEndHiddenFieldValue('time_to_resolve', $this);
 
       echo "</td></tr>";
 
@@ -1174,50 +1237,151 @@ class Problem extends CommonITILObject {
       echo "</table>";
 
       echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
-
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".__('Status')."</th>";
+
+      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('status');
+      printf(__('%1$s%2$s'), __('Status'), $tt->getMandatoryMark('status'));
+      echo $tt->getEndHiddenFieldText('status')."</th>";
       echo "<td width='$colsize2%'>";
-      self::dropdownStatus(['value'    => $this->fields["status"],
-                                 'showtype' => 'allowed']);
+      echo $tt->getBeginHiddenFieldValue('status');
+      if ($canupdate) {
+         self::dropdownStatus([
+            'value'     => $this->fields["status"],
+            'showtype'  => 'allowed',
+            'required'  => ($tt->isMandatoryField('status') && !$ID)
+         ]);
+         ChangeValidation::alertValidation($this, 'status');
+      } else {
+         echo self::getStatus($this->fields["status"]);
+         if ($this->canReopen()) {
+            $link = $this->getLinkURL(). "&amp;_openfollowup=1&amp;forcetab=";
+            $link .= "Change$1";
+            echo "&nbsp;<a class='vsubmit' href='$link'>". __('Reopen')."</a>";
+         }
+      }
+      echo $tt->getEndHiddenFieldValue('status', $this);
+
       echo "</td>";
-      echo "<th width='$colsize1%'>".__('Urgency')."</th>";
-      echo "<td width='$colsize2%'>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
-      $idurgency = self::dropdownUrgency(['value' => $this->fields["urgency"]]);
-      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".__('Category')."</th>";
-      echo "<td >";
-      $opt = [
-         'value'     => $this->fields["itilcategories_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_problem' => 1]
-      ];
-      ITILCategory::dropdown($opt);
+      echo "<th>".$tt->getBeginHiddenFieldText('urgency');
+      printf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency'));
+      echo $tt->getEndHiddenFieldText('urgency')."</th>";
+      echo "<td>";
+
+      if ($canupdate) {
+         echo $tt->getBeginHiddenFieldValue('urgency');
+         $idurgency = self::dropdownUrgency(['value' => $this->fields["urgency"]]);
+         echo $tt->getEndHiddenFieldValue('urgency', $this);
+
+      } else {
+         $idurgency = "value_urgency".mt_rand();
+         echo "<input id='$idurgency' type='hidden' name='urgency' value='".
+                $this->fields["urgency"]."'>";
+         echo $tt->getBeginHiddenFieldValue('urgency');
+         echo parent::getUrgencyName($this->fields["urgency"]);
+         echo $tt->getEndHiddenFieldValue('urgency', $this);
+      }
       echo "</td>";
-      echo "<th>".__('Impact')."</th>";
-      echo "<td>";
-      $idimpact = self::dropdownImpact(['value' => $this->fields["impact"]]);
-      echo "</td></tr>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".__('Total duration')."</th>";
-      echo "<td>".parent::getActionTime($this->fields["actiontime"])."</td>";
-      echo "<th class='left'>".__('Priority')."</th>";
+      echo "<th>".sprintf(__('%1$s%2$s'), __('Category'),
+                                             $tt->getMandatoryMark('itilcategories_id'))."</th>";
+      echo "<td >";
+
+      // Permit to set category when creating ticket without update right
+      if ($canupdate) {
+         $conditions = ['is_problem' => 1];
+
+         $opt = ['value'  => $this->fields["itilcategories_id"],
+                      'entity' => $this->fields["entities_id"]];
+         /// Auto submit to load template
+         if (!$ID) {
+            $opt['on_change'] = 'this.form.submit()';
+         }
+         /// if category mandatory, no empty choice
+         /// no empty choice is default value set on ticket creation, else yes
+         if (($ID || $options['itilcategories_id'])
+             && $tt->isMandatoryField("itilcategories_id")
+             && ($this->fields["itilcategories_id"] > 0)) {
+            $opt['display_emptychoice'] = false;
+         }
+
+         echo "<span id='show_category_by_type'>";
+         $opt['condition'] = $conditions;
+         ITILCategory::dropdown($opt);
+         echo "</span>";
+      } else {
+         echo Dropdown::getDropdownName("glpi_itilcategories", $this->fields["itilcategories_id"]);
+      }
+      echo "</td>";
+      echo "<th>".$tt->getBeginHiddenFieldText('impact');
+      printf(__('%1$s%2$s'), __('Impact'), $tt->getMandatoryMark('impact'));
+      echo $tt->getEndHiddenFieldText('impact')."</th>";
+      echo "</th>";
       echo "<td>";
-      $idpriority = parent::dropdownPriority(['value'     => $this->fields["priority"],
-                                                   'withmajor' => true]);
+      echo $tt->getBeginHiddenFieldValue('impact');
+      if ($canupdate) {
+         $idimpact = self::dropdownImpact(['value' => $this->fields["impact"], 'required' => ($tt->isMandatoryField('date') && !$ID)]);
+      } else {
+         $idimpact = "value_impact".mt_rand();
+         echo "<input id='$idimpact' type='hidden' name='impact' value='".$this->fields["impact"]."'>";
+         echo parent::getImpactName($this->fields["impact"]);
+      }
+      echo $tt->getEndHiddenFieldValue('impact', $this);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>".$tt->getBeginHiddenFieldText('actiontime');
+      printf(__('%1$s%2$s'), __('Total duration'), $tt->getMandatoryMark('actiontime'));
+      echo $tt->getEndHiddenFieldText('actiontime')."</th>";
+      echo "<td>";
+      echo $tt->getBeginHiddenFieldValue('actiontime');
+      Dropdown::showTimeStamp(
+         'actiontime', [
+            'value'           => $options['actiontime'],
+            'addfirstminutes' => true
+         ]
+      );
+      echo $tt->getEndHiddenFieldValue('actiontime', $this);
+      echo "</td>";
+      echo "<th>".$tt->getBeginHiddenFieldText('priority');
+      printf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'));
+      echo $tt->getEndHiddenFieldText('priority')."</th>";
+      echo "<td>";
+      $idajax = 'change_priority_' . mt_rand();
+
+      if (!$tt->isHiddenField('priority')) {
+         $idpriority = parent::dropdownPriority([
+            'value'     => $this->fields["priority"],
+            'withmajor' => true
+         ]);
+         $idpriority = 'dropdown_priority'.$idpriority;
+         echo "&nbsp;<span id='$idajax' style='display:none'></span>";
+      } else {
+         $idpriority = 0;
+         echo $tt->getBeginHiddenFieldValue('priority');
+         echo "<span id='$idajax'>".parent::getPriorityName($this->fields["priority"])."</span>";
+         echo "<input id='$idajax' type='hidden' name='priority' value='".$this->fields["priority"]."'>";
+         echo $tt->getEndHiddenFieldValue('priority', $this);
+      }
+
       $idajax     = 'change_priority_' . mt_rand();
       echo "&nbsp;<span id='$idajax' style='display:none'></span>";
-      $params = ['urgency'  => '__VALUE0__',
-                      'impact'   => '__VALUE1__',
-                      'priority' => 'dropdown_priority'.$idpriority];
-      Ajax::updateItemOnSelectEvent(['dropdown_urgency'.$idurgency,
-                                          'dropdown_impact'.$idimpact],
-                                    $idajax,
-                                    $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
+      $params = [
+         'urgency'  => '__VALUE0__',
+         'impact'   => '__VALUE1__',
+         'priority' => 'dropdown_priority'.$idpriority
+      ];
+      Ajax::updateItemOnSelectEvent([
+         'dropdown_urgency'.$idurgency,
+         'dropdown_impact'.$idimpact],
+         $idajax,
+         $CFG_GLPI["root_doc"]."/ajax/priority.php",
+         $params
+      );
       echo "</td>";
       echo "</tr>";
       echo "</table>";
@@ -1226,18 +1390,48 @@ class Problem extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".__('Title')."</th>";
+      echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
+      printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
+      echo $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td colspan='3'>";
-      echo "<input type='text' size='90' maxlength=250 name='name' ".
-             " value=\"".Html::cleanInputText($this->fields["name"])."\">";
-      echo "</td></tr>";
+      echo $tt->getBeginHiddenFieldValue('name');
+      echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
+               ($tt->isMandatoryField('name') ? " required='required'" : '') .
+               " value=\"".Html::cleanInputText($this->fields["name"])."\">";
+      echo $tt->getEndHiddenFieldValue('name', $this);
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".__('Description')."</th>";
+      echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
+      printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
       echo "<td colspan='3'>";
       $rand = mt_rand();
-      echo "<textarea id='content$rand' name='content' cols='90' rows='6'>".
-             Html::clean(Html::entity_decode_deep($this->fields["content"]))."</textarea>";
+
+      echo $tt->getBeginHiddenFieldValue('content');
+
+      $content = $this->fields['content'];
+      if (!isset($options['template_preview'])) {
+         $content = Html::cleanPostForTextArea($content);
+      }
+
+      $content_id = "content$rand";
+      $rows       = 10;
+      $canupdate     = !$ID
+                        || (Session::getCurrentInterface() == "central"
+                            && $this->canUpdateItem());
+
+      $content = Html::setRichTextContent(
+         $content_id,
+         $content,
+         $rand,
+         !$canupdate
+      );
+
+      echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
+            ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
+            $content."</textarea></div>";
+      echo $tt->getEndHiddenFieldValue('content', $this);
       echo "</td></tr>";
 
       if ($ID) {
@@ -1253,7 +1447,15 @@ class Problem extends CommonITILObject {
       }
 
       $options['colspan'] = 2;
-      $this->showFormButtons($options);
+      if (!$options['template_preview']) {
+         if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
+            echo "<input type='hidden' name='$tpl_key' value='".$tt->fields['id']."'>";
+            echo "<input type='hidden' name='_predefined_fields'
+                     value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
+         }
+
+         $this->showFormButtons($options);
+      }
 
       return true;
 
@@ -1572,5 +1774,44 @@ class Problem extends CommonITILObject {
       $values[self::READMY]  = __('See (author)');
 
       return $values;
+   }
+
+   static function getDefaultValues($entity = 0) {
+      $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
+      return [
+         '_users_id_requester'        => Session::getLoginUserID(),
+         '_users_id_requester_notif'  => [
+            'use_notification'  => $default_use_notif,
+            'alternative_email' => ''
+         ],
+         '_groups_id_requester'       => 0,
+         '_users_id_assign'           => 0,
+         '_users_id_assign_notif'     => [
+            'use_notification'  => $default_use_notif,
+            'alternative_email' => ''],
+         '_groups_id_assign'          => 0,
+         '_users_id_observer'         => 0,
+         '_users_id_observer_notif'   => [
+            'use_notification'  => $default_use_notif,
+            'alternative_email' => ''
+         ],
+         '_suppliers_id_assign_notif' => [
+            'use_notification'  => $default_use_notif,
+            'alternative_email' => ''
+         ],
+         '_groups_id_observer'        => 0,
+         '_suppliers_id_assign'       => 0,
+         'priority'                   => 3,
+         'urgency'                    => 3,
+         'impact'                     => 3,
+         'content'                    => '',
+         'name'                       => '',
+         'entities_id'                => $_SESSION['glpiactive_entity'],
+         'itilcategories_id'          => 0,
+         'actiontime'                 => 0,
+         '_add_validation'            => 0,
+         'users_id_validate'          => []
+      ];
+
    }
 }
