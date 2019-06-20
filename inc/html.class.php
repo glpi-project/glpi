@@ -86,6 +86,7 @@ class Html {
          $value,
          [
             'elements'         => ($striptags) ? 'none' : '',
+            'deny_attribute'   => 'on*',
             'keep_bad'         => $keep_bad, // 1: neutralize tag and content, 2 : remove tag and neutralize content
             'comment'          => 1, // 1: remove
             'cdata'            => 1, // 1: remove
