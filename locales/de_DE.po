@@ -14,13 +14,13 @@
 # Administrator System, 2018
 # Stefan K <shadow_7@gmx.net>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
-# armin0103 <kkarmintestkk@yahoo.de>, 2019
 # Thofl, 2019
 # Stephan <stephan.rennert@web.de>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2019
 # Seidler Jean-Louis <jl.seidler@gmx.ch>, 2019
-# Ettore Atalan <atalanttore@googlemail.com>, 2019
 # Slow Rider, 2019
+# Ettore Atalan <atalanttore@googlemail.com>, 2019
+# armin0103 <kkarmintestkk@yahoo.de>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -29,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-06-18 10:35+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Slow Rider, 2019\n"
+"Last-Translator: armin0103 <kkarmintestkk@yahoo.de>, 2019\n"
 "Language-Team: German (Germany) (https://www.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17036,7 +17036,7 @@ msgstr "Neu berechnen"
 
 #: inc/ruleaction.class.php:400
 msgid "Do not calculate"
-msgstr ""
+msgstr "Nicht berechnen"
 
 #: inc/ruleaction.class.php:401 inc/ruleaction.class.php:402
 msgid "Send"
@@ -17700,7 +17700,7 @@ msgstr "Genehmigung beim Manager der Techniker-Gruppe anfordern"
 
 #: inc/ruleticket.class.php:700
 msgid "Take into account delay"
-msgstr ""
+msgstr "Verzögerung bis zur Kenntnisnahme"
 
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
@@ -18478,7 +18478,7 @@ msgstr "Antwortdatum"
 
 #: inc/ticket.class.php:3267
 msgid "Take into account time"
-msgstr "Berücksichtigte Zeit"
+msgstr "Zeit bis zur Kenntnisnahme"
 
 #: inc/ticket.class.php:3284
 msgid "All linked tickets"

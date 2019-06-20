@@ -4,8 +4,8 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# feonsu <feonsu@gmail.com>, 2019
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2019
+# feonsu <feonsu@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-06-18 10:35+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2019\n"
+"Last-Translator: feonsu <feonsu@gmail.com>, 2019\n"
 "Language-Team: Slovak (Slovakia) (https://www.transifex.com/glpi/teams/1637/sk_SK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14223,12 +14223,12 @@ msgstr "Zmena schémy databázy - %s"
 #: inc/migration.class.php:672
 #, php-format
 msgid "Adding fulltext indices - %s"
-msgstr ""
+msgstr "Pridávajú sa fulltextové indexy - %s"
 
 #: inc/migration.class.php:681
 #, php-format
 msgid "Adding unicity indices - %s"
-msgstr ""
+msgstr "Pridávajú sa jednoznačné indexy - %s"
 
 #: inc/migration.class.php:721 inc/software.class.php:1104
 #: install/update.php:86
@@ -17581,7 +17581,7 @@ msgstr "Prepočítať"
 
 #: inc/ruleaction.class.php:400
 msgid "Do not calculate"
-msgstr ""
+msgstr "Neprepočítať"
 
 #: inc/ruleaction.class.php:401 inc/ruleaction.class.php:402
 msgid "Send"
@@ -18999,7 +18999,7 @@ msgstr "Zlúčiť reakcie"
 
 #: inc/ticket.class.php:2707
 msgid "Merge Documents"
-msgstr ""
+msgstr "Zlúčiť dokumenty"
 
 #: inc/ticket.class.php:2715
 msgid "Confirm the merge? This ticket will be deleted!"
@@ -19154,11 +19154,11 @@ msgstr "Požiadavky na schválenie"
 
 #: inc/ticket.class.php:5735
 msgid "Your tickets having rejected approval status"
-msgstr ""
+msgstr "Vaše požiadavky, ktoré majú stav schválenia odmietnuté"
 
 #: inc/ticket.class.php:5752
 msgid "Your tickets having rejected solution"
-msgstr ""
+msgstr "Vaše požiadavky, ktoré majú riešenie odmietnuté"
 
 #: inc/ticket.class.php:5959
 msgid "Ticket followup"

@@ -16945,7 +16945,7 @@ msgstr "Yeniden hesaplansın"
 
 #: inc/ruleaction.class.php:400
 msgid "Do not calculate"
-msgstr ""
+msgstr "Hesaplanmasın"
 
 #: inc/ruleaction.class.php:401 inc/ruleaction.class.php:402
 msgid "Send"
@@ -17612,7 +17612,7 @@ msgstr "Teknisyen grup yöneticisine istek onayı"
 
 #: inc/ruleticket.class.php:700
 msgid "Take into account delay"
-msgstr ""
+msgstr "Gecikme hesabına katılsın"
 
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"

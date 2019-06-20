@@ -9795,7 +9795,7 @@ msgstr "Vérification du réplicat SQL"
 #: inc/dbconnection.class.php:378
 msgid "Max delay between master and slave (minutes)"
 msgstr ""
-"Durée maximale de désynchronisation entre le maître et l'esclave(en minutes)"
+"Délai maximal de désynchronisation entre le maître et l'esclave (en minutes)"
 
 #: inc/dbconnection.class.php:410
 #, php-format
@@ -17039,7 +17039,7 @@ msgstr "Recalculer"
 
 #: inc/ruleaction.class.php:400
 msgid "Do not calculate"
-msgstr ""
+msgstr "Ne pas calculer"
 
 #: inc/ruleaction.class.php:401 inc/ruleaction.class.php:402
 msgid "Send"
@@ -17707,7 +17707,7 @@ msgstr "Demande d'approbation au superviseur du groupe de techniciens"
 
 #: inc/ruleticket.class.php:700
 msgid "Take into account delay"
-msgstr ""
+msgstr "Délai de prise en charge"
 
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
@@ -18223,7 +18223,7 @@ msgstr "Moyenne"
 
 #: inc/stat.class.php:459
 msgid "Average time to take into account"
-msgstr "Delai moyen de prise en compte"
+msgstr "Delai moyen de prise en charge"
 
 #: inc/stat.class.php:462
 msgid "Average time to resolution"

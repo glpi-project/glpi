@@ -6,10 +6,10 @@
 # Translators:
 # DOMBRE Julien <moyo@indepnet.net>, 2018
 # Andrea Garelli <garelli.andrea@gmail.com>, 2018
-# Tiziano Sartori <tiziano.sartori@gmail.com>, 2018
 # Giudy <spam@habilitas.it>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # Pierfrancesco Passerini <p.passerini@gmail.com>, 2019
+# Tiziano Sartori <tiziano.sartori@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-06-18 10:35+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Pierfrancesco Passerini <p.passerini@gmail.com>, 2019\n"
+"Last-Translator: Tiziano Sartori <tiziano.sartori@gmail.com>, 2019\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/glpi/teams/1637/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3537,7 +3537,7 @@ msgstr "Successivo"
 #: front/stat.graph.php:408 inc/commonitilobject.class.php:4753
 #: inc/stat.class.php:466 inc/ticket.class.php:6942
 msgid "Take into account"
-msgstr "Prendere in considerazione"
+msgstr "Presa in carico"
 
 #: front/stat.location.php:84 inc/cartridgeitem_printermodel.class.php:154
 #: inc/computer.class.php:407 inc/computer.class.php:601
@@ -15976,7 +15976,7 @@ msgstr "Wi-Fi"
 
 #: inc/problem.class.php:182
 msgid "Processing problem"
-msgstr "Problema di elaborazione"
+msgstr "Lavorazione problema"
 
 #: inc/problem.class.php:553 inc/ticket.class.php:3605
 msgctxt "status"
@@ -16988,7 +16988,7 @@ msgstr "Ricalcola"
 
 #: inc/ruleaction.class.php:400
 msgid "Do not calculate"
-msgstr ""
+msgstr "Non calcolare"
 
 #: inc/ruleaction.class.php:401 inc/ruleaction.class.php:402
 msgid "Send"
@@ -17654,7 +17654,7 @@ msgstr "Richiesta di approvazione al gestore del gruppo tecnici"
 
 #: inc/ruleticket.class.php:700
 msgid "Take into account delay"
-msgstr ""
+msgstr "Ritardo nella presa in carico"
 
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
@@ -18337,7 +18337,7 @@ msgstr "Chiamate inserite"
 
 #: inc/ticket.class.php:799
 msgid "Processing ticket"
-msgstr "Lavorazione"
+msgstr "Lavorazione chiamata"
 
 #: inc/ticket.class.php:845
 msgid "Satisfaction survey expired"
@@ -18427,7 +18427,7 @@ msgstr "Data della risposta"
 
 #: inc/ticket.class.php:3267
 msgid "Take into account time"
-msgstr "Ritardo di presa in carico"
+msgstr "Tempi della presa in carico"
 
 #: inc/ticket.class.php:3284
 msgid "All linked tickets"
