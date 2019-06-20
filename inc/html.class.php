@@ -91,6 +91,7 @@ class Html {
             'comment'          => 1, // 1: remove
             'cdata'            => 1, // 1: remove
             'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
+            'schemes'          => 'aim, app, feed, file, ftp, gopher, http, https, !javascript, irc, mailto, news, nntp, sftp, ssh, tel, telnet'
          ]
       );
 
