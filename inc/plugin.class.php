@@ -1502,7 +1502,7 @@ class Plugin extends CommonDBTM {
             );
             break;
          default:
-            throw new \RuntimeException("messageMissing type $type is unknwown!");
+            throw new \RuntimeException("messageMissing type $type is unknown!");
       }
    }
 
