@@ -33,7 +33,8 @@
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
         "elvanto/litemoji": "^1.4 || ^2.0",
         "symfony/console": "^3.4",
-        "scssphp/scssphp": "^1.0"
+        "scssphp/scssphp": "^1.0",
+        "zendframework/zend-mail": "^2.10"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
@@ -49,8 +50,7 @@
         "mikey179/vfsstream": "^1.6"
     },
     "suggest": {
-        "ext-ldap": "Used ot provide LDAP authentication and synchronization",
-        "ext-imap": "Used for collection from IMAP"
+        "ext-ldap": "Used ot provide LDAP authentication and synchronization"
     },
     "config": {
         "optimize-autoloader": true,

@@ -1987,6 +1987,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Symfony\\Component\\Console\\Application' ],
                [ 'name'    => 'scssphp/scssphp',
                  'check'   => 'ScssPhp\ScssPhp\Compiler' ],
+               [ 'name'    => 'zendframework/zend-mail',
+                 'check'   => 'Zend\\Mail\\Protocol\\Imap' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
@@ -2413,10 +2415,6 @@ class Config extends CommonDBTM {
             ],
             //to sync/connect from LDAP
             'ldap'       => [
-               'required'  => false,
-            ],
-            //for mail collector
-            'imap'       => [
                'required'  => false,
             ],
             //to enhance perfs
