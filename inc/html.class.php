@@ -84,10 +84,12 @@ class Html {
          $value,
          [
             'elements'         => ($striptags) ? 'none' : '',
+            'deny_attribute'   => 'on*',
             'keep_bad'         => $keep_bad, // 1: neutralize tag and content, 2 : remove tag and neutralize content
             'comment'          => 1, // 1: remove
             'cdata'            => 1, // 1: remove
             'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
+            'schemes'          => 'aim, app, feed, file, ftp, gopher, http, https, !javascript, irc, mailto, news, nntp, sftp, ssh, tel, telnet'
          ]
       );
 
