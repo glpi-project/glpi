@@ -52,11 +52,23 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
    }
 
    chdir(dirname(__FILE__, 2));
-   passthru($composer_command);
-   passthru($npm_command);
+
+   $exit_code = 0;
+
+   passthru($composer_command, $exit_code);
+   if ($exit_code > 0) {
+      exit($exit_code);
+   }
+
+   passthru($npm_command, $exit_code);
+   if ($exit_code > 0) {
+      exit($exit_code);
+   }
+
    file_put_contents('.package.hash', sha1_file('package-lock.json'));
-   passthru('npm run-script build-dev');
-   exit();
+
+   passthru('npm run-script build-dev', $exit_code);
+   exit($exit_code);
 }
 
 // If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
