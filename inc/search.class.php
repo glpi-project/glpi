@@ -4298,6 +4298,15 @@ JAVASCRIPT;
             }
             break;
 
+         case "glpi_notifications.event" :
+            if (in_array($searchtype, ['equals', 'notequals']) && strpos($val, self::SHORTSEP)) {
+               $not = 'notequals' === $searchtype ? 'NOT' : '';
+               list($itemtype_val, $event_val) = explode(self::SHORTSEP, $val);
+               return " $link $not(`$table`.`event` = '$event_val'
+                               AND `$table`.`itemtype` = '$itemtype_val')";
+            }
+            break;
+
       }
 
       //// Default cases
