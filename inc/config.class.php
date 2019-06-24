@@ -2023,6 +2023,8 @@ class Config extends CommonDBTM {
                  'check'   => 'ScssPhp\ScssPhp\Compiler' ],
                [ 'name'    => 'zendframework/zend-mail',
                  'check'   => 'Zend\\Mail\\Protocol\\Imap' ],
+               [ 'name'    => 'rlanvin/php-rrule',
+                 'check'   => 'RRule\\RRule' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [

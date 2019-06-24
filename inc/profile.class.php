@@ -1074,13 +1074,29 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
       echo "</table>";
 
-      $rights = [['itemtype'   => 'Stat',
-                            'label'      => __('Statistics'),
-                            'field'      => 'statistic'],
-                      ['itemtype'   => 'Planning',
-                            'label'      => __('Planning'),
-                            'field'      => 'planning']];
+      $rights = [
+         [
+            'itemtype'   => 'Stat',
+            'label'      => __('Statistics'),
+            'field'      => 'statistic'
+         ],[
+            'itemtype'   => 'Planning',
+            'label'      => __('Planning'),
+            'field'      => 'planning'
+         ]
+      ];
       $matrix_options['title'] = __('Visibility');
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
+
+      $rights = [
+         [
+            'itemtype'   => 'PlanningExternalEvent',
+            'label'      => PlanningExternalEvent::getTypeName(Session::getPluralNumber()),
+            'field'      => 'externalevent'
+         ]
+      ];
+
+      $matrix_options['title'] = __('Planning');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       $rights = [['itemtype'   => 'Problem',

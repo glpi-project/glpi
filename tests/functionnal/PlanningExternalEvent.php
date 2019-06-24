@@ -1,3 +1,4 @@
+<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -27,20 +28,13 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
- */
-// RRule dependency
-window.rrule = require('rrule');
+*/
 
-// Fullcalendar library
-require('@fullcalendar/core');
-require('@fullcalendar/daygrid');
-require('@fullcalendar/interaction');
-require('@fullcalendar/list');
-require('@fullcalendar/timegrid');
-require('@fullcalendar/rrule');
+namespace tests\units;
 
-require('@fullcalendar/core/main.css');
-require('@fullcalendar/daygrid/main.css');
-require('@fullcalendar/list/main.css');
-require('@fullcalendar/timegrid/main.css');
+include_once __DIR__ . '/../abstracts/AbstractPlanningEvent.php';
 
+class PlanningExternalEvent extends \AbstractPlanningEvent {
+   public $myclass = "\PlanningExternalEvent";
+
+}

@@ -100,16 +100,4 @@ class ITILFollowupTemplate extends CommonDropdown {
 
       return $tab;
    }
-
-   function displaySpecificTypeField($ID, $field = []) {
-      switch ($field['type']) {
-         case 'tinymce' :
-            Html::textarea([
-               'name'            => 'content',
-               'value'           => $this->fields["content"],
-               'enable_richtext' => true,
-            ]);
-            break;
-      }
-   }
 }

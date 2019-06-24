@@ -383,8 +383,8 @@ $CFG_GLPI["rulecollections_types"]        = ['RuleImportEntityCollection',
 
 // Items which can planned something
 $CFG_GLPI['planning_types']               = ['ChangeTask', 'ProblemTask', 'Reminder',
-                                                  'TicketTask', 'ProjectTask'];
-$CFG_GLPI['planning_add_types']           = ['Reminder'];
+                                             'TicketTask', 'ProjectTask', 'PlanningExternalEvent'];
+$CFG_GLPI['planning_add_types']           = ['PlanningExternalEvent'];
 
 $CFG_GLPI["globalsearch_types"]           = ['Computer', 'Contact', 'Contract',
                                              'Document',  'Monitor',
@@ -495,9 +495,10 @@ $CFG_GLPI['javascript'] = [
    'config'    => [
       'config'    => ['colorpicker'],
       'commondropdown'  => [
-         'ProjectState'         => ['colorpicker'],
-         'SolutionTemplate'     => ['tinymce'],
-         'ITILFollowupTemplate' => ['tinymce']
+         'ITILFollowupTemplate'  => ['tinymce'],
+         'PlanningEventCategory' => ['colorpicker'],
+         'ProjectState'          => ['colorpicker'],
+         'SolutionTemplate'      => ['tinymce'],
       ],
       'notification'    => [
          'notificationtemplate' => ['tinymce']

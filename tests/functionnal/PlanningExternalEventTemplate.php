@@ -1,3 +1,4 @@
+<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -27,20 +28,31 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
- */
-// RRule dependency
-window.rrule = require('rrule');
+*/
 
-// Fullcalendar library
-require('@fullcalendar/core');
-require('@fullcalendar/daygrid');
-require('@fullcalendar/interaction');
-require('@fullcalendar/list');
-require('@fullcalendar/timegrid');
-require('@fullcalendar/rrule');
+namespace tests\units;
 
-require('@fullcalendar/core/main.css');
-require('@fullcalendar/daygrid/main.css');
-require('@fullcalendar/list/main.css');
-require('@fullcalendar/timegrid/main.css');
+include_once __DIR__ . '/../abstracts/AbstractPlanningEvent.php';
 
+class PlanningExternalEventTemplate extends \AbstractPlanningEvent {
+   protected $myclass = "\PlanningExternalEventTemplate";
+
+   public function beforeTestMethod($method) {
+      parent::beforeTestMethod($method);
+
+      $this->input = array_merge($this->input, [
+         '_planningrecall' => [
+            'before_time' => 2 * \HOUR_TIMESTAMP,
+         ],
+      ]);
+   }
+
+   public function testAdd() {
+      $event = parent::testAdd();
+
+      $this->integer((int) $event->fields['before_time'])
+         ->isEqualTo(2 * \HOUR_TIMESTAMP);
+      $this->integer((int) $event->fields['duration'])
+         ->isEqualTo(2 * \HOUR_TIMESTAMP);
+   }
+}

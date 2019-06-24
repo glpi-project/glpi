@@ -7643,3 +7643,78 @@ CREATE TABLE `glpi_items_clusters` (
   UNIQUE KEY `unicity` (`clusters_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_planningexternalevents
+
+DROP TABLE IF EXISTS `glpi_planningexternalevents`;
+CREATE TABLE `glpi_planningexternalevents` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `planningexternaleventtemplates_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `date` timestamp NULL DEFAULT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `text` text COLLATE utf8_unicode_ci,
+  `begin` timestamp NULL DEFAULT NULL,
+  `end` timestamp NULL DEFAULT NULL,
+  `rrule` text COLLATE utf8_unicode_ci,
+  `state` int(11) NOT NULL DEFAULT '0',
+  `planningeventcategories_id` int(11) NOT NULL DEFAULT '0',
+  `background` tinyint(1) NOT NULL DEFAULT '0',
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `planningexternaleventtemplates_id` (`planningexternaleventtemplates_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `date` (`date`),
+  KEY `begin` (`begin`),
+  KEY `end` (`end`),
+  KEY `users_id` (`users_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `state` (`state`),
+  KEY `planningeventcategories_id` (`planningeventcategories_id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_planningexternaleventtemplates
+
+DROP TABLE IF EXISTS `glpi_planningexternaleventtemplates`;
+CREATE TABLE `glpi_planningexternaleventtemplates` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `entities_id` int(11) NOT NULL DEFAULT '0',
+   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+   `text` text COLLATE utf8_unicode_ci,
+   `comment` text COLLATE utf8_unicode_ci,
+   `duration` int(11) NOT NULL DEFAULT '0',
+   `before_time` int(11) NOT NULL DEFAULT '0',
+   `rrule` text COLLATE utf8_unicode_ci,
+   `state` int(11) NOT NULL DEFAULT '0',
+   `planningeventcategories_id` int(11) NOT NULL DEFAULT '0',
+   `background` tinyint(1) NOT NULL DEFAULT '0',
+   `date_mod` timestamp NULL DEFAULT NULL,
+   `date_creation` timestamp NULL DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `entities_id` (`entities_id`),
+   KEY `state` (`state`),
+   KEY `planningeventcategories_id` (`planningeventcategories_id`),
+   KEY `date_mod` (`date_mod`),
+   KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_planningeventcategories
+
+DROP TABLE IF EXISTS `glpi_planningeventcategories`;
+CREATE TABLE `glpi_planningeventcategories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

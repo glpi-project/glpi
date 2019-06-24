@@ -1,3 +1,4 @@
+<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -28,19 +29,8 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-// RRule dependency
-window.rrule = require('rrule');
 
-// Fullcalendar library
-require('@fullcalendar/core');
-require('@fullcalendar/daygrid');
-require('@fullcalendar/interaction');
-require('@fullcalendar/list');
-require('@fullcalendar/timegrid');
-require('@fullcalendar/rrule');
+include ('../inc/includes.php');
 
-require('@fullcalendar/core/main.css');
-require('@fullcalendar/daygrid/main.css');
-require('@fullcalendar/list/main.css');
-require('@fullcalendar/timegrid/main.css');
-
+$dropdown = new PlanningEventCategory();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");

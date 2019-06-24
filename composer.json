@@ -25,6 +25,7 @@
         "michelf/php-markdown": "^1.6",
         "monolog/monolog": "^1.23",
         "phpmailer/phpmailer": "^6.0",
+        "rlanvin/php-rrule": "^2.1",
         "sabre/vobject": "^4.1",
         "scssphp/scssphp": "^1.0",
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",

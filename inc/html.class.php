@@ -655,7 +655,7 @@ class Html {
                      if ($('#message_after_redirect_$msgtype').dialog('isOpen')
                          && !$(e.target).is('.ui-dialog, a')
                          && !$(e.target).closest('.ui-dialog').length) {
-                        $('#message_after_redirect_$msgtype').dialog('close');
+                        $('#message_after_redirect_$msgtype').remove();
                         // redo focus on initial element
                         e.target.focus();
                      }

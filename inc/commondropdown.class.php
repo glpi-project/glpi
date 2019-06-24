@@ -259,7 +259,9 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "<td rowspan='".($nb+1)."'>". __('Comments')."</td>";
       echo "<td rowspan='".($nb+1)."'>
             <textarea cols='45' rows='".($nb+2)."' name='comment' >".$this->fields["comment"];
-      echo "</textarea></td></tr>\n";
+      echo "</textarea></td>";
+
+      echo "</tr>\n";
 
       foreach ($fields as $field) {
          if (($field['name'] == 'entities_id')
@@ -427,6 +429,29 @@ abstract class CommonDropdown extends CommonDBTM {
 
             case 'password':
                echo "<input type='password' name='password' value='' size='20' autocomplete='off'>";
+               break;
+
+            case 'tinymce':
+               Html::textarea([
+                  'name'            => $field['name'],
+                  'value'           => $this->fields[$field['name']],
+                  'enable_richtext' => true,
+               ]);
+               break;
+
+            case 'duration' :
+               $toadd = [];
+               for ($i=9; $i<=100; $i++) {
+                  $toadd[] = $i*HOUR_TIMESTAMP;
+               }
+               Dropdown::showTimeStamp($field['name'], [
+                  'min'             => 0,
+                  'max'             => 8*HOUR_TIMESTAMP,
+                  'value'           => $this->fields[$field['name']],
+                  'addfirstminutes' => true,
+                  'inhours'         => true,
+                  'toadd'           => $toadd
+               ]);
                break;
 
             default:

@@ -34,56 +34,20 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/**
- * SolutionTemplate Class
-**/
-class SolutionTemplate extends CommonDropdown {
-
-   // From CommonDBTM
-   public $dohistory = true;
-
-   static $rightname = 'solutiontemplate';
-
-   public $can_be_translated = false;
+class PlanningEventCategory extends CommonDropdown {
 
 
    static function getTypeName($nb = 0) {
-      return _n('Solution template', 'Solution templates', $nb);
+      return _n('Event category', 'Event categories', $nb);
    }
-
 
    function getAdditionalFields() {
-
-      return [['name'  => 'solutiontypes_id',
-                         'label' => __('Solution type'),
-                         'type'  => 'dropdownValue',
-                         'list'  => true],
-                   ['name'  => 'content',
-                         'label' => __('Content'),
-                         'type'  => 'tinymce']];
-   }
-
-
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
-
-      $tab[] = [
-         'id'                 => '4',
-         'name'               => __('Content'),
-         'field'              => 'content',
-         'table'              => $this->getTable(),
-         'datatype'           => 'text',
-         'htmltext'           => true
+      return [
+         [
+            'name'  => 'color',
+            'label' => __('Color'),
+            'type'  => 'color',
+         ]
       ];
-
-      $tab[] = [
-         'id'                 => '3',
-         'name'               => __('Solution type'),
-         'field'              => 'name',
-         'table'              => getTableForItemType('SolutionType'),
-         'datatype'           => 'dropdown'
-      ];
-
-      return $tab;
    }
 }
