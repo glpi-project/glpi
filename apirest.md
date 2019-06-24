@@ -615,7 +615,7 @@ $ curl -X GET \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/apirest.php/Computer/?expand_drodpowns=true'
 
-< 200 OK
+< 206 OK
 < Content-Range: 0-50/200
 < Accept-Range: 990
 < [
