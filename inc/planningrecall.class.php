@@ -240,6 +240,7 @@ class PlanningRecall extends CommonDBChild {
       $p['users_id'] = Session::getLoginUserID();
       $p['value']    = Entity::CONFIG_NEVER;
       $p['field']    = 'begin';
+      $p['rand']     = mt_rand();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -280,8 +281,10 @@ class PlanningRecall extends CommonDBChild {
 
       ksort($possible_values);
 
-      Dropdown::showFromArray('_planningrecall[before_time]', $possible_values,
-                              ['value' => $p['value']]);
+      Dropdown::showFromArray('_planningrecall[before_time]', $possible_values, [
+         'value' => $p['value'],
+         'rand'  => $p['rand'],
+      ]);
       echo "<input type='hidden' name='_planningrecall[itemtype]' value='".$p['itemtype']."'>";
       echo "<input type='hidden' name='_planningrecall[items_id]' value='".$p['items_id']."'>";
       echo "<input type='hidden' name='_planningrecall[users_id]' value='".$p['users_id']."'>";

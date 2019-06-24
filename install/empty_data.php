@@ -7083,9 +7083,41 @@ $tables['glpi_profilerights'] = [
       'profiles_id' => '8',
       'name'        => 'cluster',
       'rights'      => 1,
-
+   ], [
+      'profiles_id' => '1',
+      'name'        => 'externalevent',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '2',
+      'name'        => 'externalevent',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '3',
+      'name'        => 'externalevent',
+      'rights'      => 1055,
+   ], [
+      'profiles_id' => '4',
+      'name'        => 'externalevent',
+      'rights'      => 1055,
+   ], [
+      'profiles_id' => '5',
+      'name'        => 'externalevent',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '6',
+      'name'        => 'externalevent',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '7',
+      'name'        => 'externalevent',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '8',
+      'name'        => 'externalevent',
+      'rights'      => 1,
    ],
 ];
+
 
 $tables['glpi_profiles'] = [
    [

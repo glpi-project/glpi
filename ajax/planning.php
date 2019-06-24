@@ -49,6 +49,26 @@ if ($_REQUEST["action"] == "update_event_times") {
    exit;
 }
 
+if ($_REQUEST["action"] == "view_changed") {
+   echo Planning::viewChanged($_REQUEST['view']);
+   exit;
+}
+
+if ($_REQUEST["action"] == "get_externalevent_template") {
+   $key = 'planningexternaleventtemplates_id';
+   if (isset($_POST[$key])
+       && $_POST[$key] > 0) {
+      $template = new PlanningExternalEventTemplate();
+      $template->getFromDB($_POST[$key]);
+
+      $template->fields = array_map('html_entity_decode', $template->fields);
+      $template->fields['rrule'] = json_decode($template->fields['rrule'], true);
+      header("Content-Type: application/json; charset=UTF-8");
+      echo json_encode($template->fields, JSON_NUMERIC_CHECK);
+      exit;
+   }
+}
+
 Html::header_nocache();
 header("Content-Type: text/html; charset=UTF-8");
 

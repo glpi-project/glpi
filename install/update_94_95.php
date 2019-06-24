@@ -455,6 +455,104 @@ function update94to95() {
    $migration->addKey('glpi_tickettemplatepredefinedfields', 'tickettemplates_id');
    /** /ITiL templates */
 
+   /** /Add Externals events for planning */
+   if (!$DB->tableExists('glpi_planningexternalevents')) {
+      $query = "CREATE TABLE `glpi_planningexternalevents` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `planningexternaleventtemplates_id` int(11) NOT NULL DEFAULT '0',
+         `entities_id` int(11) NOT NULL DEFAULT '0',
+         `date` timestamp NULL DEFAULT NULL,
+         `users_id` int(11) NOT NULL DEFAULT '0',
+         `groups_id` int(11) NOT NULL DEFAULT '0',
+         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `text` text COLLATE utf8_unicode_ci,
+         `begin` timestamp NULL DEFAULT NULL,
+         `end` timestamp NULL DEFAULT NULL,
+         `rrule` text COLLATE utf8_unicode_ci,
+         `state` int(11) NOT NULL DEFAULT '0',
+         `planningeventcategories_id` int(11) NOT NULL DEFAULT '0',
+         `background` tinyint(1) NOT NULL DEFAULT '0',
+         `date_mod` timestamp NULL DEFAULT NULL,
+         `date_creation` timestamp NULL DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         KEY `planningexternaleventtemplates_id` (`planningexternaleventtemplates_id`),
+         KEY `entities_id` (`entities_id`),
+         KEY `date` (`date`),
+         KEY `begin` (`begin`),
+         KEY `end` (`end`),
+         KEY `users_id` (`users_id`),
+         KEY `groups_id` (`groups_id`),
+         KEY `state` (`state`),
+         KEY `planningeventcategories_id` (`planningeventcategories_id`),
+         KEY `date_mod` (`date_mod`),
+         KEY `date_creation` (`date_creation`)
+       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_planningexternalevents");
+
+      $new_rights = ALLSTANDARDRIGHT + PlanningExternalEvent::MANAGE_BG_EVENTS;
+      $migration->addRight('externalevent', $new_rights, [
+         'planning' => Planning::READMY
+      ]);
+   }
+
+   // partial update (for developers)
+   if (!$DB->fieldExists('glpi_planningexternalevents', 'planningexternaleventtemplates_id')) {
+      $migration->addField('glpi_planningexternalevents', 'planningexternaleventtemplates_id', 'int', [
+         'after' => 'id'
+      ]);
+      $migration->addKey('glpi_planningexternalevents', 'planningexternaleventtemplates_id');
+   }
+
+   if (!$DB->tableExists('glpi_planningeventcategories')) {
+      $query = "CREATE TABLE `glpi_planningeventcategories` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `comment` text COLLATE utf8_unicode_ci,
+         `date_mod` timestamp NULL DEFAULT NULL,
+         `date_creation` timestamp NULL DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         KEY `name` (`name`),
+         KEY `date_mod` (`date_mod`),
+         KEY `date_creation` (`date_creation`)
+       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "add table glpi_planningeventcategories");
+   }
+
+   // partial update (for developers)
+   if (!$DB->fieldExists('glpi_planningeventcategories', 'color')) {
+      $migration->addField("glpi_planningeventcategories", "color", "string", [
+            'after'  => "name"
+         ]
+      );
+   }
+
+   if (!$DB->tableExists('glpi_planningexternaleventtemplates')) {
+      $query = "CREATE TABLE `glpi_planningexternaleventtemplates` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `entities_id` int(11) NOT NULL DEFAULT '0',
+         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `text` text COLLATE utf8_unicode_ci,
+         `comment` text COLLATE utf8_unicode_ci,
+         `duration` int(11) NOT NULL DEFAULT '0',
+         `before_time` int(11) NOT NULL DEFAULT '0',
+         `rrule` text COLLATE utf8_unicode_ci,
+         `state` int(11) NOT NULL DEFAULT '0',
+         `planningeventcategories_id` int(11) NOT NULL DEFAULT '0',
+         `background` tinyint(1) NOT NULL DEFAULT '0',
+         `date_mod` timestamp NULL DEFAULT NULL,
+         `date_creation` timestamp NULL DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         KEY `entities_id` (`entities_id`),
+         KEY `state` (`state`),
+         KEY `planningeventcategories_id` (`planningeventcategories_id`),
+         KEY `date_mod` (`date_mod`),
+         KEY `date_creation` (`date_creation`)
+       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_planningexternaleventtemplates");
+   }
+   /** /Add Externals events for planning */
+
    if (!$DB->fieldExists('glpi_entities', 'autopurge_delay')) {
       $migration->addField("glpi_entities", "autopurge_delay", "integer", [
             'after'  => "autoclose_delay",

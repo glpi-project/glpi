@@ -606,6 +606,8 @@ class Session {
       $TRANSLATE = new Zend\I18n\Translator\Translator;
       $TRANSLATE->setLocale($trytoload);
 
+      \Locale::setDefault($trytoload);
+
       $cache = Config::getCache('cache_trans', 'core', false);
       if ($cache !== false && !defined('TU_USER')) {
          $TRANSLATE->setCache($cache);
