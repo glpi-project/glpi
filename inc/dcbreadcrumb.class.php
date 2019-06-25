@@ -40,12 +40,11 @@ if (!defined('GLPI_ROOT')) {
 trait DCBreadcrumb {
 
    /**
-    * Display datacenter element breadcrumb
-    * @see CommonGLPI::showNavigationHeader()
+    * Get datacenter element breadcrumb
     *
-    * @return void
+    * @return array
     */
-   function showDcBreadcrumb() {
+   protected function getDcBreadcrumb() {
       global $CFG_GLPI;
 
       $item = $this;
@@ -93,6 +92,18 @@ trait DCBreadcrumb {
             }
          }
       }
+
+      return $breadcrumb;
+   }
+
+   /**
+    * Display datacenter element breadcrumb
+    * @see CommonGLPI::showNavigationHeader()
+    *
+    * @return void
+    */
+   protected function showDcBreadcrumb() {
+      $breadcrumb = $this->getDcBreadcrumb();
 
       if (count($breadcrumb)) {
          echo "<tr class='tab_bg_1'>
@@ -157,5 +168,24 @@ trait DCBreadcrumb {
       }
 
       return $found;
+   }
+
+   /**
+    * Specific value for "Data center position".
+    *
+    * @return array
+    */
+   protected static function getDcBreadcrumbSpecificValueToDisplay($items_id) {
+
+      $item = new static();
+
+      if ($item->getFromDB($items_id)) {
+         $breadcrumb = $item->getDcBreadcrumb();
+         if (count($breadcrumb) > 0) {
+            return implode(' > ', array_reverse($item->getDcBreadcrumb()));
+         }
+      }
+
+      return '&nbsp;';
    }
 }

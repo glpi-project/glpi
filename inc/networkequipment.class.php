@@ -657,6 +657,8 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
 
+      $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
+
       return $tab;
    }
 }

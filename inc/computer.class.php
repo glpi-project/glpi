@@ -771,6 +771,8 @@ class Computer extends CommonDBTM {
 
       $tab = array_merge($tab, ComputerAntivirus::rawSearchOptionsToAdd());
 
+      $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
+
       return $tab;
    }
 
