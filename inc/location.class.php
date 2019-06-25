@@ -240,7 +240,7 @@ class Location extends CommonTreeDropdown {
          'name'               => __('Room number'),
          'datatype'           => 'text'
       ];
-      
+
       $tab[] = [
          'id'                 => '15',
          'table'              => 'glpi_locations',
@@ -249,7 +249,7 @@ class Location extends CommonTreeDropdown {
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
-      
+
       $tab[] = [
          'id'                 => '17',
          'table'              => 'glpi_locations',
@@ -258,7 +258,7 @@ class Location extends CommonTreeDropdown {
          'massiveaction'      => true,
          'datatype'           => 'string'
       ];
-      
+
       $tab[] = [
          'id'                 => '18',
          'table'              => 'glpi_locations',
