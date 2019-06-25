@@ -363,7 +363,7 @@ class APIRest extends APIBaseClass {
                                'searchText' => ['tickettemplates_id' => "^".$tt_id."$"]],
                             'itemtype'   => 'TicketTemplateMandatoryField',
                             'headers'    => ['Session-Token' => $this->session_token]],
-                           206);
+                           200);
       if (isset($data['headers'])) {
          unset($data['headers']);
       }
