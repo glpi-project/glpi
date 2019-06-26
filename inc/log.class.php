@@ -717,28 +717,28 @@ class Log extends CommonDBTM {
                $oldval = $data["old_value"];
 
                if ($data['id_search_option'] == '70') {
-                  $newval = explode(' ', $newval);
-                  $oldval = explode(' ', $oldval);
+                  $newval_expl = explode(' ', $newval);
+                  $oldval_expl = explode(' ', $oldval);
 
-                  if ($oldval[0] == '&nbsp;') {
+                  if ($oldval_expl[0] == '&nbsp;') {
                      $oldval = $data["old_value"];
                   } else {
-                     foreach ($DB->request('glpi_users', "`name` = '".$oldval[0]."'") as $val) {
+                     foreach ($DB->request('glpi_users', "`name` = '".$oldval_expl[0]."'") as $val) {
                         $oldval = sprintf(__('%1$s %2$s'),
-                              formatUserName($val['id'], $oldval[0], $val['realname'],
+                              formatUserName($val['id'], $oldval_expl[0], $val['realname'],
                                     $val['firstname']),
-                              $oldval[1]);
+                              $oldval_expl[1]);
                      }
                   }
 
-                  if ($newval[0] == '&nbsp;') {
+                  if ($newval_expl[0] == '&nbsp;') {
                      $newval = $data["new_value"];
                   } else {
-                     foreach ($DB->request('glpi_users', "`name` = '".$newval[0]."'") as $val) {
+                     foreach ($DB->request('glpi_users', "`name` = '".$newval_expl[0]."'") as $val) {
                         $newval = sprintf(__('%1$s %2$s'),
-                              formatUserName($val['id'], $newval[0], $val['realname'],
+                              formatUserName($val['id'], $newval_expl[0], $val['realname'],
                                     $val['firstname']),
-                              $newval[1]);
+                              $newval_expl[1]);
                      }
                   }
                }
