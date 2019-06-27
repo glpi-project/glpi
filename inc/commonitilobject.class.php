@@ -6143,30 +6143,8 @@ abstract class CommonITILObject extends CommonDBTM {
                          array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
       $canadd_solution = $objType::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
 
-      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution && !$this->canReopen()) {
-         return false;
-      }
-
       // javascript function for add and edit items
-      echo "<script type='text/javascript' >\n";
-      echo "function viewAddSubitem" . $this->fields['id'] . "$rand(itemtype) {\n";
-      $params = ['action'     => 'viewsubitem',
-                      'type'       => 'itemtype',
-                      'parenttype' => $objType,
-                      $foreignKey => $this->fields['id'],
-                      'id'         => -1];
-      if (isset($_GET['load_kb_sol'])) {
-         $params['load_kb_sol'] = $_GET['load_kb_sol'];
-      }
-      $out = Ajax::updateItemJsCode("viewitem" . $this->fields['id'] . "$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/timeline.php",
-                                    $params, "", false);
-      echo str_replace("\"itemtype\"", "itemtype", $out);
-      echo "$('#approbation_form$rand').remove()";
-      echo "};";
-
-      echo "
-
+      echo "<script type='text/javascript' >
       function change_task_state(tasks_id, target) {
          $.post('".$CFG_GLPI["root_doc"]."/ajax/timeline.php',
                 {'action':     'change_task_state',
@@ -6208,7 +6186,29 @@ abstract class CommonITILObject extends CommonDBTM {
                                                         '$foreignKey': ".$this->fields['id'].",
                                                         'id'        : items_id
                                                        });
-      };";
+      };
+      </script>";
+
+      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution && !$this->canReopen()) {
+         return false;
+      }
+
+      echo "<script type='text/javascript' >\n";
+      echo "function viewAddSubitem" . $this->fields['id'] . "$rand(itemtype) {\n";
+      $params = ['action'     => 'viewsubitem',
+                      'type'       => 'itemtype',
+                      'parenttype' => $objType,
+                      $foreignKey => $this->fields['id'],
+                      'id'         => -1];
+      if (isset($_GET['load_kb_sol'])) {
+         $params['load_kb_sol'] = $_GET['load_kb_sol'];
+      }
+      $out = Ajax::updateItemJsCode("viewitem" . $this->fields['id'] . "$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/timeline.php",
+                                    $params, "", false);
+      echo str_replace("\"itemtype\"", "itemtype", $out);
+      echo "$('#approbation_form$rand').remove()";
+      echo "};";
 
       if (isset($_GET['load_kb_sol'])) {
          echo "viewAddSubitem" . $this->fields['id'] . "$rand('Solution');";
