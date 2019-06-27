@@ -670,7 +670,7 @@ final class DbUtils {
    public function getSonsOf($table, $IDf) {
       global $DB, $GLPI_CACHE;
 
-      $ckey = 'sons_cache_' . md5($this->getTable() . $IDf);
+      $ckey = 'sons_cache_' . md5($table . $IDf);
       $sons = false;
 
       if (Toolbox::useCache()) {
