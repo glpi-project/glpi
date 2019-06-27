@@ -1367,7 +1367,7 @@ class Html {
       $menu['tools']['title']        = __('Tools');
       $menu['tools']['types']        = ['Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
                                              'ReservationItem', 'Report', 'MigrationCleaner',
-                                             'SavedSearch', 'ITILEvent'];
+                                             'SavedSearch', 'SIEMEvent'];
 
       /*$menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
       $menu['plugins']['types']      = [];*/

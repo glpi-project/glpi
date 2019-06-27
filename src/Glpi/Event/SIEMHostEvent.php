@@ -38,63 +38,71 @@ use Symfony\Component\EventDispatcher\Event;
 /**
  * @since 10.0.0
  */
-class ITILEventHostEvent extends Event
+class SIEMHostEvent extends Event
 {
     /**
      * Name of event triggered when a host enters a down state.
      */
-    const HOST_DOWN = 'itileventhost.down';
+    const HOST_DOWN = 'siemhost.down';
 
     /**
      * Name of event triggered when a host enters a up state.
      */
-    const HOST_UP = 'itileventhost.up';
+    const HOST_UP = 'siemhost.up';
 
     /**
      * Name of event triggered when a host becomes unreachable.
      */
-    const HOST_UNREACHABLE = 'itileventhost.unreachable';
+    const HOST_UNREACHABLE = 'siemhost.unreachable';
 
     /**
      * Name of event triggered when a host has a problem and is acknowledged.
      */
-    const HOST_ACKNOWLEDGE = 'itileventhost.acknowledge';
+    const HOST_ACKNOWLEDGE = 'siemhost.acknowledge';
 
     /**
      * Name of event triggered when a host starts flapping.
      */
-    const HOST_START_FLAPPING = 'itileventhost.start_flapping';
+    const HOST_START_FLAPPING = 'siemhost.start_flapping';
 
     /**
      * Name of event triggered when a host stops flapping.
      */
-    const HOST_STOP_FLAPPING = 'itileventhost.stop_flapping';
+    const HOST_STOP_FLAPPING = 'siemhost.stop_flapping';
 
     /**
      * Name of event triggered when flap detection is disabled (Host may still be flapping).
      */
-    const HOST_DISABLE_FLAPPING = 'itileventhost.disable_flapping';
+    const HOST_DISABLE_FLAPPING = 'siemhost.disable_flapping';
 
     /**
-     * @var ITILEventHost
+     * @var SIEMHost
      */
     private $host;
+
+    private $is_hard_status;
 
     /**
      * @param CommonDBTM $item
      */
-    public function __construct(\ITILEventHost $host)
+    public function __construct(\SIEMHost $host, bool $is_hard_status = true)
     {
         $this->host = $host;
+        $this->is_hard_status = $is_hard_status;
     }
 
     /**
-     * ITILEventHost on which event applies.
+     * SIEMHost on which event applies.
      *
-     * @return ITILEventHost
+     * @return SIEMHost
      */
-    public function getHost(): \ITILEventHost
+    public function getHost(): \SIEMHost
     {
         return $this->host;
+    }
+
+    public function isHardStatus(): bool
+    {
+       return $this->is_hard_status;
     }
 }

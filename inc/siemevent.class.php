@@ -440,266 +440,6 @@ class SIEMEvent extends CommonDBTM
    }
 
    /**
-    * Gets the dashboard card definition with the specified name.
-    * If no name is provided, all card definitions are returned.
-    *
-    * A card definition contains at minimum:
-    *    title - The title shown on the card
-    *    type  - The type of data shown. This changes how the data is formatted
-    *    query - The query needed to get the data
-    * Optional data includes:
-    *    extra_card_classes - Extra html classes to add to the card (Ex: Use bg-warning to change the style)
-    *
-    * @since 10.0.0
-    * @param string $name The name of the dashboard card.
-    * @return array The dashboard card definition(s).
-    */
-   public static function getDashboardCardDefinition($name = null) {
-      static $countsbyactivestatus = null;
-
-      if (!$countsbyactivestatus) {
-         $countsbyactivestatus = [
-            new QueryExpression("COUNT(CASE WHEN `status` LIKE '0' THEN 1 END) AS count-new"),
-            new QueryExpression("COUNT(CASE WHEN `status` LIKE '1' THEN 1 END) AS count-acknowledged"),
-            new QueryExpression("COUNT(CASE WHEN `status` LIKE '2' THEN 1 END) AS count-remediating"),
-            new QueryExpression("COUNT(CASE WHEN `status` LIKE '3' THEN 1 END) AS count-monitoring")
-         ];
-      }
-
-      $commonservicejoin = [
-         'glpi_siemservices' => [
-            'FKEY'   => [
-               'glpi_siemservices'  => 'id',
-               'glpi_siemevents'    => 'siemservices_id'
-            ]
-         ],
-         'glpi_siemservicetemplates' => [
-            'FKEY'   => [
-               'glpi_siemservicetemplates'   => 'id',
-               'glpi_siemservices'           => 'siemservicetemplates_id'
-            ]
-         ]
-      ];
-
-      $active_exception_subquery = new QuerySubQuery([
-         'SELECT' => ['glpi_siemevents.id', 'significance', 'glpi_siemevents.status', 'date'],
-         'FROM'   => self::getTable(),
-         'LEFT JOIN' => $commonservicejoin,
-         'WHERE'  => [
-            'significance' => self::EXCEPTION,
-            'OR'           => [
-               'AND' => [
-                  'is_stateless'             => 1,
-                  'glpi_siemevents.status'   => [0,1,2,3],
-               ],
-               'AND' => [
-                  'is_stateless'             => 0,
-                  'glpi_siemevents.status'   => [1,2,3],
-               ]
-            ]
-         ]
-      ], 'tmp_events');
-
-      $allcards = null;
-      if (!$allcards) {
-         $allcards = [
-            'summary-active-warnings' => [
-               'title'  => __('Summary of Active Warnings'),
-               'type'   => 'table',
-               'query'  => [
-                  'SELECT' => $countsbyactivestatus,
-                  'FROM'   => self::getTable(),
-                  'WHERE'  => [
-                     'significance' => self::WARNING,
-                     'status'       => self::getActiveStatusArray()
-                  ]
-               ],
-               'headers'   => [self::getStatusName(0), self::getStatusName(1),
-                  self::getStatusName(2), self::getStatusName(3)],
-               'fields'    => ['count-new', 'count-acknowledged', 'count-remediating',
-                  'count-monitoring']
-            ],
-            'summary-active-exceptions' => [
-               'title'              => __('Summary of Active Exceptions'),
-               'type'               => 'table',
-               'query'              => [
-                  'SELECT' => $countsbyactivestatus,
-                  'FROM'   => self::getTable(),
-                  'WHERE'  => [
-                     'significance' => self::EXCEPTION,
-                     'status'       => self::getActiveStatusArray()
-                  ]
-               ],
-               'headers'   => [self::getStatusName(0), self::getStatusName(1),
-                  self::getStatusName(2), self::getStatusName(3)],
-               'fields'    => ['count-new', 'count-acknowledged', 'count-remediating',
-                  'count-monitoring']
-            ],
-            'count-active-warnings' => [
-               'title'              => __('Active Warnings'),
-               'type'               => 'counter',
-               'extra_card_classes' => 'bg-warning',
-               'query'              => [
-                  'SELECT' => [
-                     'COUNT'  => 'id AS cpt'
-                  ],
-                  'FROM'   => self::getTable(),
-                  'WHERE'  => [
-                     'significance' => self::WARNING,
-                     'NOT' => [
-                        'OR'           => [
-                           'AND' => [
-                              'is_stateless' => 1,
-                              'status'       => ['0','1','2','3'],
-                           ],
-                           'AND' => [
-                              'is_stateless' => 0,
-                              'status'       => ['1','2','3'],
-                           ]
-                        ]
-                     ]
-                  ]
-               ]
-            ],
-            'count-active-exceptions' => [
-               'title'              => __('Active Exceptions'),
-               'type'               => 'counter',
-               'extra_card_classes' => 'bg-danger',
-               'query'              => [
-                  'SELECT' => [
-                     'COUNT'  => 'id AS cpt'
-                  ],
-                  'FROM'   => self::getTable(),
-                  'WHERE'  => [
-                     'significance' => self::EXCEPTION,
-                     'NOT' => [
-                        'OR'           => [
-                           'AND' => [
-                              'is_stateless' => 1,
-                              'status'       => ['0','1','2','3'],
-                           ],
-                           'AND' => [
-                              'is_stateless' => 0,
-                              'status'       => ['1','2','3'],
-                           ]
-                        ]
-                     ]
-                  ]
-               ]
-            ],
-            'count-hosts' => [
-               'title'              => __('Monitored Hosts'),
-               'type'               => 'counter',
-               'query'              => [
-                  'SELECT' => [
-                     'COUNT'  => 'id AS cpt'
-                  ],
-                  'FROM'   => SIEMHost::getTable(),
-                  'WHERE'  => [
-                     'NOT' => [
-                        'siemservices_id_availability' => null
-                     ]
-                  ]
-               ]
-            ],
-            'count-services' => [
-               'title'              => __('Monitored Services'),
-               'type'               => 'counter',
-               'query'              => [
-                  'SELECT' => [
-                     'COUNT'  => 'id AS cpt'
-                  ],
-                  'FROM'   => SIEMService::getTable(),
-                  'WHERE'  => [
-                     'is_active' => 1
-                  ]
-               ]
-            ],
-         ];
-      }
-
-      if ($name) {
-         return isset($allcards[$name]) ? $allcards[$name] : null;
-      } else {
-         return $allcards;
-      }
-   }
-
-   /**
-    * Get the dashboard card specified by the given name.
-    *
-    * The resulting data is generated from the card definition.
-    * The query is removed and the value is retrieved and formatted based on the type.
-    *
-    * @since 10.0.0
-    * @param string $name The name of the dashboard card.
-    * @return array The dashboard card data.
-    * @see SIEMEvent::getDashboardCardDefinition()
-    */
-   public static function getDashboardCard(string $name)
-   {
-      global $DB;
-
-      //TODO Cache dashboard card values?
-      $definition = self::getDashboardCardDefinition($name);
-      if (!$definition) {
-         // Return invalid card
-         return [
-            'title'     => $name,
-            'type'      => 'invalid',
-            'value'     => __('Invalid Card')
-         ];
-      }
-
-      if (isset($definition['query'])) {
-         $iterator = $DB->request($definition['query']);
-         // Format the returned data based on the card type
-         switch ($definition['type']) {
-            case 'counter':
-               $definition['value'] = $iterator->next()['cpt'];
-               if (!is_numeric($definition['value'])) {
-                  $definition['value'] = 0;
-               }
-               break;
-            default:
-               $definition['value'] = '';
-         }
-         unset($definition['query']);
-      }
-      return $definition;
-   }
-
-   /**
-    * Convert filters values into SQL filters usable in 'WHERE' condition of request build with 'DBmysqlIterator'.
-    *
-    * @since 10.0.0
-    *
-    * @param array $filters  Filters values
-    * @return array
-    **/
-   static function convertFiltersValuesToSqlCriteria(array $filters)
-   {
-      $sql_filters = [];
-
-      if (isset($filters['name']) && !empty($filters['name'])) {
-         $sql_filters['name'] = ['LIKE', "%{$filters['name']}%"];
-      }
-
-      if (isset($filters['date']) && !empty($filters['date'])) {
-         $sql_filters['date_mod'] = ['LIKE', "%{$filters['date']}%"];
-      }
-
-      if (isset($filters['status']) && !empty($filters['status'])) {
-         $sql_filters['status'] = $filters['status'];
-      }
-
-      if (isset($filters['significance']) && !empty($filters['significance'])) {
-         $sql_filters['significance'] = $filters['significance'];
-      }
-      return $sql_filters;
-   }
-
-   /**
     * Gets all events with the same correlation UUID as this event
     *
     * @since 10.0.0
@@ -950,7 +690,7 @@ class SIEMEvent extends CommonDBTM
             ]);
          }
       } else {
-         Toolbox::logError(__("Tracking type must be a subclass of CommonITILObject"));
+         Toolbox::logError(__('Tracking type must be a subclass of CommonITILObject'));
          return false;
       }
    }
@@ -1333,5 +1073,41 @@ class SIEMEvent extends CommonDBTM
       } else {
          return 0;
       }
+   }
+
+   public static function getActiveAlerts() {
+      global $DB;
+
+      $eventtable = self::getTable();
+      $servicetable = SIEMService::getTable();
+
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_siemevents.*',
+            'glpi_siemservices.name AS service_name',
+            'glpi_siemservices.is_stateless AS service_stateless'
+         ],
+         'FROM'      => $eventtable,
+         'LEFT JOIN' => [
+            $servicetable => [
+               'FKEY'   => [
+                  $servicetable  => 'id',
+                  $eventtable    => 'siemservices_id' 
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'NOT' => [
+               'glpi_siemservices.status' => 0,
+               'glpi_siemservices.status' => 2
+            ]
+         ]
+      ]);
+
+      $alerts = [];
+      while ($data = $iterator->next()) {
+         $alerts[] = $data;
+      }
+      return $alerts;
    }
 }

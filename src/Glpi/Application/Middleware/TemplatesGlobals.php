@@ -110,6 +110,11 @@ class TemplatesGlobals
             $_SESSION['glpishow_count_on_tabs']
         );
 
+        $view->getEnvironment()->addGlobal(
+            'glpi_currenttime',
+            $_SESSION['glpi_currenttime']
+        );
+
         //TODO: change that!
         if (\Session::getLoginUserID()) {
             ob_start();

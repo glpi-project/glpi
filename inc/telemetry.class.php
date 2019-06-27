@@ -83,6 +83,8 @@ class Telemetry extends CommonGLPI {
             'avg_projects'          => self::getAverage('Project'),
             'avg_users'             => self::getAverage('User'),
             'avg_groups'            => self::getAverage('Group'),
+            'avg_siemhosts'         => self::getAverage('SIEMHost'),
+            'avg_siemservices'      => self::getAverage('SIEMService'),
             'ldap_enabled'          => AuthLDAP::useAuthLdap(),
             'mailcollector_enabled' => (MailCollector::countActiveCollectors() > 0),
             'notifications_modes'   => []

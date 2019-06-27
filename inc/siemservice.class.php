@@ -46,18 +46,18 @@ class SIEMService extends CommonDBTM {
    static $rightname                = 'siemhost';
 
    /** Service is functioning as expected. */
-   const STATUS_OK         = 0;
-
-   /** Service is not functioning properly.
-    * Valid for stateful services only. */
-   const STATUS_CRITICAL       = 1;
-
-   /** Service is not being monitored */
-   const STATUS_UNKNOWN    = 2;
+   const STATUS_OK            = 0;
 
    /** Service is functional but functionality or performance is limited.
     * Valid for stateful services only.*/
-   const STATUS_WARNING   = 3;
+   const STATUS_WARNING       = 1;
+
+   /** Service is not functioning properly.
+    * Valid for stateful services only. */
+   const STATUS_CRITICAL      = 2;
+
+   /** Service is not being monitored */
+   const STATUS_UNKNOWN       = 3;
 
    /** This service is actively polled. */
    const CHECK_MODE_ACTIVE    = 0;
@@ -67,6 +67,9 @@ class SIEMService extends CommonDBTM {
 
    /** This service can operate in both active and passive modes. */
    const CHECK_MODE_HYBRID    = 2;
+
+   protected $twig_compat = true;
+
 
    /**
     * Name of the type
@@ -111,14 +114,6 @@ class SIEMService extends CommonDBTM {
          default:
             return __('Unknown');
       }
-   }
-
-   public function getEventRestrictCriteria() : array {
-      $restrict = [];
-      $restrict['WHERE'] = [
-         'siemservices_id' => $this->getID()
-      ];
-      return $restrict;
    }
 
    public function getServiceInfoDisplay() {
@@ -169,7 +164,7 @@ class SIEMService extends CommonDBTM {
       return $out;
    }
 
-   private function dispatchSIEMServiceEvent(string $eventName) {
+   private function dispatchSIEMServiceEvent(string $eventName, bool $is_hard_status = true) {
       global $CONTAINER;
 
       if (!isset($CONTAINER) || !$CONTAINER->has(EventDispatcher::class)) {
@@ -177,7 +172,7 @@ class SIEMService extends CommonDBTM {
       }
 
       $dispatcher = $CONTAINER->get(EventDispatcher::class);
-      $dispatcher->dispatch($eventName, new SIEMServiceEvent($this));
+      $dispatcher->dispatch($eventName, new SIEMServiceEvent($this, $is_hard_status));
    }
 
    public function checkFlappingState() {
@@ -247,20 +242,24 @@ class SIEMService extends CommonDBTM {
                'id'           => $service->getID(),
                'last_check'   => $_SESSION['glpi_currenttime']
             ];
-            if ($significance == SIEMEvent::EXCEPTION || $significance == SIEMEvent::WARNING) {
-               if (!$in_downtime) {
-                  // Transition to problem state
-                  $transition = $significance == SIEMEvent::WARNING ? '_warning' : '_problem';
-                  $to_update['_problem'] = true;
-               }
-            } else {
-               
-            }
+
             // Stateful service checks
             if ($significance == SIEMEvent::EXCEPTION && $last_status == self::STATUS_OK) {
                if (!$in_downtime) {
                   // Transition to problem state
                   $to_update['_problem'] = true;
+                  if ($service->isHardStatus()) {
+                     $to_update['is_hard_status'] = false;
+                  }
+               }
+            } else if ($significance == SIEMEvent::EXCEPTION && $last_status != self::STATUS_OK) {
+               if (!$in_downtime) {
+                  if (!$service->isHardStatus()) {
+                     $to_update['current_check'] = $service->fields['current_check'] + 1;
+                     if ($service->fields['current_check'] + 1 >= $service->fields['max_checks']) {
+                        $to_update['is_hard_status'] = true;
+                     }
+                  }
                }
             } else if ($significance == SIEMEvent::INFORMATION && $last_status != self::STATUS_OK) {
                // Transition to recovery state
@@ -280,9 +279,13 @@ class SIEMService extends CommonDBTM {
                }
             }
 
+            // Get current flapping status cache, fixing it if needed.
             $flap_cache = $service->getFlappingStateCache();
+            // Remove oldest status
             array_shift($flap_cache);
+            // Append new status
             $flap_cache[] = $event->fields['significance'];
+            // Save cache and then update the service in DB
             $to_update['flap_state_cache'] = json_encode($flap_cache);
             $service->update($to_update);
             // Check flapping state if not in downtime and if it is enabled
@@ -309,10 +312,6 @@ class SIEMService extends CommonDBTM {
       ]);
    }
 
-   private function rebuildFlappingStateCache() {
-      
-   }
-
    private function getFlappingStateCache() {
       $flap_cache = json_decode($this->fields['flap_state_cache'], true);
       if (!$flap_cache || !count($flap_cache)) {
@@ -336,9 +335,16 @@ class SIEMService extends CommonDBTM {
    public function prepareInputForUpdate($input): array
    {
       if (isset($input['_problem'])) {
-         $input['status'] = self::STATUS_CRITICAL;
+         if (isset($input['is_hard_status']) && !$input['is_hard_status']) {
+            $input['status'] = self::STATUS_WARNING;
+         } else {
+            $input['status'] = self::STATUS_CRITICAL;
+         }
       } else if (isset($input['_recovery'])) {
          $input['status'] = self::STATUS_OK;
+         if (isset($input['is_hard_status']) && $input['is_hard_status']) {
+            $input['current_check'] = 0;
+         }
       }
       return $input;
    }
@@ -354,15 +360,15 @@ class SIEMService extends CommonDBTM {
       }
       if (isset($this->input['_problem'])) {
          if ($is_hostservice) {
-            $host->dispatchSIEMHostEvent(SIEMHostEvent::HOST_DOWN);
+            $host->dispatchSIEMHostEvent(SIEMHostEvent::HOST_DOWN, $this->isHardStatus());
          } else {
-            $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_PROBLEM);
+            $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_PROBLEM, $this->isHardStatus());
          }
       } else if (isset($this->input['_recovery'])) {
          if ($is_hostservice) {
-            $host->dispatchSIEMHostEvent(SIEMHostEvent::HOST_UP);
+            $host->dispatchSIEMHostEvent(SIEMHostEvent::HOST_UP, $this->isHardStatus());
          } else {
-            $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_RECOVERY);
+            $this->dispatchSIEMServiceEvent(SIEMServiceEvent::SERVICE_RECOVERY, $this->isHardStatus());
          }
       }
       if (isset($input['is_active']) && $input['is_active'] != $this->fields['is_active']) {
@@ -373,7 +379,7 @@ class SIEMService extends CommonDBTM {
             if ($is_hostservice) {
                $host->update([
                   'id'     => $host->getID(),
-                  'status' => SIEMHost::STATUS_UNKNOWN
+                  'status' => self::STATUS_UNKNOWN
                ]);
             }
          }
@@ -470,5 +476,68 @@ class SIEMService extends CommonDBTM {
       }
       $out .= Html::closeForm(false);
       return $out;
+   }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = [
+         'siemhosts_id' => [
+            'label'  => SIEMHost::getTypeName(1),
+            'type'   => 'SIEMHost'
+         ],
+         'siemservicetemplates_id' => [
+            'label'  => SIEMServiceTemplate::getTypeName(1),
+            'type'   => 'SIEMServiceTemplate'
+         ],
+         'last_check' => [
+            'label'  => __('Last check'),
+            'name'   => 'last_check',
+            'type'   => 'date'
+         ],
+         'suppress_informational' => [
+            'label'  => __('Suppress informational'),
+            'type'   => 'yesno'
+         ]
+      ] + parent::getFormFields();
+      return $fields;
+   }
+
+   /**
+    * Get field to be dropped building form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormFieldsToDrop($add = false) {
+      $fields = [];
+
+      if ($add == true) {
+         $fields[] = 'id';
+         //FIXME Why isn't this field dropped on add form?
+         $fields[] = 'last_check';
+         $fields[] = 'status';
+         $fields[] = 'status_since';
+         $fields[] = 'is_flapping';
+         $fields[] = 'is_active';
+         $fields[] = 'flap_state_cache';
+         $fields[] = 'is_hard_status';
+         $fields[] = 'current_check';
+      }
+      return $fields;
    }
 }

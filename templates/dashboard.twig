@@ -1,5 +1,4 @@
-<?php
-/**
+{#
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
  * Copyright (C) 2015-2018 Teclib' and contributors.
@@ -28,13 +27,38 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
- */
+ #}
+{% extends "glpi_page.twig" %}
 
-$AJAX_INCLUDE = 1;
-include ('../inc/includes.php');
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+{% block header %}
+   {{ parent() }}
+{% endblock %}
 
-Session::checkLoginUser();
+{% block content_header %}
+<header class="content-header">
+    {% if head_dd is defined %}
+        {% include "elements/select.twig" with {'element': head_dd, 'notag': true} %}
+    {% endif %}
+    {{ block('breadcrumb') }}
+</header>
+{% endblock %}
 
-SIEMEvent::showDashboard(true);
+{% block content %}
+   <div class="container-fluid content">
+      <div style="background-color:white;">
+         <h2 class="text-center">{{ dashboard.title|default }}</h2>
+         <p class="text-center">Updated {{ glpi_currenttime }}</p>
+         <div class="dashboard {{ dashboard.class }}">
+            <div class='row'>
+               {% for deck in dashboard.decks %}
+                  <div class='card-deck'>
+                     {% for card in deck %}
+                     {% include 'elements/dashboard/dashboard_card.twig' with {'card': card} %}
+                     {% endfor %}
+                  </div>
+               {% endfor %}
+            </div>
+         </div>
+      </div>
+   </div>
+{% endblock %}

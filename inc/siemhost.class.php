@@ -45,16 +45,18 @@ class SIEMHost extends CommonDBTM {
    static $rightname                = 'siemhost';
 
    /** Host is up. */
-   const STATUS_UP            = 0;
+   //const STATUS_UP            = 0;
 
    /** Host should be reachable, but is down. Service alerts are suppressed. */
-   const STATUS_DOWN          = 1;
+   //const STATUS_DOWN          = 1;
 
    /** Host availability is not being monitored. */
-   const STATUS_UNKNOWN       = 2;
+   //const STATUS_UNKNOWN       = 2;
 
    /** Host is not reachable because an upstream device is down. */
-   const STATUS_UNREACHABLE   = 3;
+   //const STATUS_UNREACHABLE   = 3;
+
+   protected $twig_compat = true;
 
 
    static function getTypeName($nb = 0)
@@ -102,13 +104,11 @@ class SIEMHost extends CommonDBTM {
    public static function getStatusName($status) : string
    {
       switch ($status) {
-         case self::STATUS_UP:
+         case SIEMService::STATUS_OK:
+         case SIEMService::STATUS_WARNING:
             return __('Up');
-         case self::STATUS_DOWN:
+         case SIEMService::STATUS_CRITICAL:
             return __('Down');
-         case self::STATUS_UNREACHABLE:
-            return __('Unreachable');
-         case self::STATUS_UNKNOWN:
          default:
             return __('Unknown');
       }
@@ -215,23 +215,6 @@ class SIEMHost extends CommonDBTM {
          }
       }
       return $service;
-   }
-
-   public function getEventRestrictCriteria() : array
-   {
-      $restrict = [];
-      $restrict['LEFT JOIN'] = [
-         SIEMService::getTable() => [
-            'FKEY' => [
-               SIEMService::getTable()  => 'id',
-               SIEMEvent::getTable()         => 'siemservices_id'
-            ]
-         ]
-      ];
-      $restrict['WHERE'] = [
-         'siemhosts_id'  => $this->getID()
-      ];
-      return $restrict;
    }
 
    public function getHostInfoDisplay()
@@ -353,7 +336,42 @@ class SIEMHost extends CommonDBTM {
       return $out;
    }
 
-   private function dispatchSIEMHostEvent(string $eventName) {
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = [
+         'itemtype'  => [
+            'label'  => __('Item type'),
+            'type'   => 'itemtype'
+         ],
+         'items_id'  => [
+            'label'  => __('Item ID'),
+            'type'   => 'itemtype'
+         ],
+         'siemservices_id_availability' => [
+            'label'  => __('Availability service'),
+            'type'   => 'SIEMService'
+         ],
+         'is_reachable' => [
+            'label'  => __('Reachable'),
+            'type'   => 'yesno'
+         ]
+      ] + parent::getFormFields();
+      return $fields;
+   }
+
+   public function dispatchSIEMHostEvent(string $eventName, bool $is_hard_status = true) {
       global $CONTAINER;
 
       if (!isset($CONTAINER) || !$CONTAINER->has(EventDispatcher::class)) {
@@ -361,7 +379,7 @@ class SIEMHost extends CommonDBTM {
       }
 
       $dispatcher = $CONTAINER->get(EventDispatcher::class);
-      $dispatcher->dispatch($eventName, new SIEMHostEvent($this));
+      $dispatcher->dispatch($eventName, new SIEMHostEvent($this, $is_hard_status));
    }
 
    public function getServices() {

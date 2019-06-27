@@ -56,7 +56,7 @@ class ScheduledDowntimeEvent extends Event
     const DOWNTIME_CANCEL = 'scheduleddowntime.cancel';
 
     /**
-     * @var ITILEventService
+     * @var ScheduledDowntime
      */
     private $downtime;
 

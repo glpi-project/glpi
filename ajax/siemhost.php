@@ -37,4 +37,16 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-SIEMEvent::showDashboard(true);
+if (!isset($_POST['hosts_id'])) {
+   return false;
+}
+$host = new SIEMHost();
+if (!$host->getFromDB($_POST['hosts_id'])) {
+   return false;
+}
+
+if (isset($_POST['_schedule_downtime'])) {
+   
+} else if (isset($_POST['_add_service'])) {
+   
+}

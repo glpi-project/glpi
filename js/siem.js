@@ -57,3 +57,19 @@ function toggleEventDetails(row) {
       }
    }
 }
+
+function serviceCheckNow(services_id) {
+   
+}
+
+function hostScheduleDowntime(hosts_id) {
+   
+}
+
+function serviceScheduleDowntime(services_id) {
+   
+}
+
+function addService() {
+   
+}

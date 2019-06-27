@@ -90,6 +90,41 @@ class ScheduledDowntime extends CommonDBTM {
       return $iterator;
    }
 
+   public static function getActivelyDown()
+   {
+      global $DB;
+
+      $iterator = $DB->request([
+         'SELECT'    => ['is_service', 'items_id'],
+         'FROM'      => ScheduledDowntime::getTable(),
+         'WHERE'     => [
+            new QueryExpression("begin_date <= NOW()"),
+            new QueryExpression("end_date >= NOW()")
+         ]
+      ]);
+
+      $actively_down = [];
+      while ($data = $iterator->next()) {
+         $type = $data['is_service'] ? 'SIEMService' : 'SIEMHost';
+         $actively_down[$type][] = $data['items_id'];
+      }
+
+      if (isset($actively_down['SIEMHost'])) {
+         // If the host is scheduled down, all services on it are also considered to be scheduled down
+         $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => SIEMService::getTable(),
+            'WHERE'  => [
+               'siemhosts_id' => $actively_down['SIEMHost']
+            ]
+         ]);
+         while ($data = $iterator->next()) {
+            $actively_down['SIEMService'][] = $data['id'];
+         }
+      }
+      return $actively_down;
+   }
+
    public function prepareInputForUpdate($input): array {
       if (isset($input['_cancel'])) {
          $input['end_date'] = $_SESSION['glpi_currenttime'];

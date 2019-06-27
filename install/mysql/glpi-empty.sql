@@ -1712,6 +1712,7 @@ INSERT INTO `glpi_crontasks` VALUES ('29','SavedSearch_Alert','savedsearchesaler
 INSERT INTO `glpi_crontasks` VALUES ('30','Telemetry','telemetry','2592000',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('31','Certificate','certificate','86400',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('32','OlaLevel_Ticket','olaticket','300',NULL,'1','1','3','0','24','30','2014-06-18 08:02:00',NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('34','SIEMEvent','pollevents','60',NULL,'1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 
@@ -2993,9 +2994,6 @@ CREATE TABLE `glpi_entities` (
   `suppliers_as_private` int(11) NOT NULL DEFAULT '-2',
   `enable_custom_css` int(11) NOT NULL DEFAULT '-2',
   `custom_css_code` text COLLATE utf8_unicode_ci,
-  `default_event_correlation_time` int(11) NOT NULL DEFAULT '0',
-  `default_event_correlation_count` int(11) NOT NULL DEFAULT '1',
-  `default_event_correlation_window` int(11) NOT NULL DEFAULT '0',
   `default_event_filter_action` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
@@ -3004,7 +3002,7 @@ CREATE TABLE `glpi_entities` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_entities` VALUES ('0','Root entity','-1','Root entity',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'0','0','0','0','0','0','0','0','0','0','0','-10','0','0','-10','1',NULL,'1','0','0',NULL,'0','0','0','0','0','1','-10','0','0','10','10','0','1','0',NULL,NULL,'0','0','0',NULL, 0, 1, 0, 0);
+INSERT INTO `glpi_entities` VALUES ('0','Root entity','-1','Root entity',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'0','0','0','0','0','0','0','0','0','0','0','-10','0','0','-10','1',NULL,'1','0','0',NULL,'0','0','0','0','0','1','-10','0','0','10','10','0','1','0',NULL,NULL,'0','0','0',NULL, '0');
 
 ### Dump table glpi_entities_knowbaseitems
 
@@ -9709,8 +9707,8 @@ CREATE TABLE `glpi_itilfollowups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- Event Management
-DROP TABLE IF EXISTS `glpi_itilevents`;
-CREATE TABLE `glpi_itilevents` (
+DROP TABLE IF EXISTS `glpi_siemevents`;
+CREATE TABLE `glpi_siemevents` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `status` tinyint(3) NOT NULL DEFAULT '0',
@@ -9720,7 +9718,7 @@ CREATE TABLE `glpi_itilevents` (
   `significance` tinyint(3) NOT NULL,
   `correlation_id` VARCHAR(23) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
-  `itileventservices_id` int(11) NOT NULL,
+  `siemservices_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `status` (`status`),
@@ -9728,55 +9726,56 @@ CREATE TABLE `glpi_itilevents` (
   KEY `date_creation` (`date_creation`),
   KEY `significance` (`significance`),
   KEY `correlation_id` (`correlation_id`),
-  KEY `itileventservices_id` (`itileventservices_id`)
+  KEY `siemservices_id` (`siemservices_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-DROP TABLE IF EXISTS `glpi_itils_itilevents`;
-CREATE TABLE `glpi_itils_itilevents` (
+DROP TABLE IF EXISTS `glpi_itils_siemevents`;
+CREATE TABLE `glpi_itils_siemevents` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `items_id` int(11) NOT NULL DEFAULT '0',
-  `itilevents_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `siemevents_id` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-DROP TABLE IF EXISTS `glpi_itileventhosts`;
-CREATE TABLE `glpi_itileventhosts` (
+DROP TABLE IF EXISTS `glpi_siemhosts`;
+CREATE TABLE `glpi_siemhosts` (
   `id` int(11) NOT NULL,
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `items_id` int(11) NOT NULL,
-  `itileventservices_id_availability` int(11) DEFAULT NULL,
+  `siemservices_id_availability` int(11) DEFAULT NULL,
+  `is_reachable` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`items_id`,`itemtype`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-DROP TABLE IF EXISTS `glpi_itileventservices`;
-CREATE TABLE `glpi_itileventservices` (
+DROP TABLE IF EXISTS `glpi_siemservices`;
+CREATE TABLE `glpi_siemservices` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `hosts_id` int(11) NOT NULL DEFAULT -1,
-  `itileventservicetemplates_id` int(11) NOT NULL,
+  `siemhosts_id` int(11) NOT NULL DEFAULT -1,
+  `siemservicetemplates_id` int(11) NOT NULL,
   `last_check` timestamp NULL DEFAULT NULL,
   `status` tinyint(3) NOT NULL DEFAULT '2',
   `is_hard_status` tinyint(1) NOT NULL DEFAULT '1',
   `status_since` timestamp NULL DEFAULT NULL,
   `is_flapping` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
-  `is_acknowledged` tinyint(1) NOT NULL DEFAULT '0',
-  `acknowledged_status` tinyint(3) NOT NULL DEFAULT '2',
   `flap_state_cache` longtext COLLATE utf8_unicode_ci,
+  `current_check` int(11) NOT NULL DEFAULT '0',
+  `suppress_informational` tinyint(1) NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `itileventservicetemplates_id` (`itileventservicetemplates_id`),
-  KEY `hosts_id` (`hosts_id`),
+  KEY `siemservicetemplates_id` (`siemservicetemplates_id`),
+  KEY `siemhosts_id` (`hosts_id`),
   KEY `is_flapping` (`is_flapping`),
   KEY `is_acknowledged` (`is_acknowledged`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-DROP TABLE IF EXISTS `glpi_itileventservicetemplates`;
-CREATE TABLE `glpi_itileventservicetemplates` (
+DROP TABLE IF EXISTS `glpi_siemservicetemplates`;
+CREATE TABLE `glpi_siemservicetemplates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `comment` text COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -9788,7 +9787,8 @@ CREATE TABLE `glpi_itileventservicetemplates` (
   `use_flap_detection` tinyint(1) NOT NULL DEFAULT '0',
   `check_mode` tinyint(3) NOT NULL DEFAULT '0',
   `logger` varchar(255)  COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Indicates which plugin (or the core) logged this event. Used to delegate translations and other functions',
-  `is_volatile` tinyint(1) NOT NULL DEFAULT '0',
+  `sensor` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_stateless` tinyint(1) NOT NULL DEFAULT '0',
   `flap_threshold_low` tinyint(3) NOT NULL DEFAULT '15',
   `flap_threshold_high` tinyint(3) NOT NULL DEFAULT '30',
   `max_checks` tinyint(3) NOT NULL DEFAULT '1',
@@ -9814,8 +9814,25 @@ CREATE TABLE `glpi_scheduleddowntime` (
   `is_service` tinyint(1) NOT NULL DEFAULT 0,
   `items_id_target` int(11) NOT NULL,
   `is_fixed` tinyint(1) NOT NULL DEFAULT 1,
-  `begin_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `begin_date_planned` timestamp NOT NULL,
+  `end_date_planned` timestamp NOT NULL,
+  `begin_date_actual` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `end_date_actual` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `is_cancelled` tinyint(1) NOT NULL DEFAULT 0,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_acknowledgements`;
+CREATE TABLE `glpi_acknowledgements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `items_id` int(11) NOT NULL,
+  `status` tinyint(3) NOT NULL,
+  `users_id` int(11) NOT NULL,
+  `comment` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_sticky` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'If 1, no notifications are sent when going between problem states',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)

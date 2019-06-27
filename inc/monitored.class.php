@@ -42,8 +42,7 @@ trait Monitored {
 
    private function getMonitoredField(string $field)
    {
-      $class = static::class;
-      if ($class == 'SIEMHost') {
+      if (static::getType() == 'SIEMHost') {
          $service = $this->getAvailabilityService();
          if ($service) {
             return $service->fields[$field];
@@ -53,6 +52,12 @@ trait Monitored {
       } else {
          return $this->fields[$field];
       }
+   }
+
+   public function isAlertState()
+   {
+      $status = $this->getStatus();
+      return $status !== 0 && $status !== 2;
    }
 
    /**
@@ -67,13 +72,8 @@ trait Monitored {
 
    public function getStatus() : int
    {
-      $class = static::class;
-      if (($class == 'SIEMHost') && !($this->fields['is_reachable'])) {
-         return SIEMHost::STATUS_UNREACHABLE;
-      } else {
-         $status = $this->getMonitoredField('status');
-         return !is_null($status) ? $status : SIEMHost::STATUS_UNKNOWN;
-      }
+      $status = $this->getMonitoredField('status');
+      return !is_null($status) ? $status : SIEMHost::STATUS_UNKNOWN;
    }
 
    public function isHardStatus() : bool
@@ -96,7 +96,18 @@ trait Monitored {
     * Returns the translated name of the host or service's current status.
     * @since 10.0.0
     */
-   public static abstract function getStatusName() : string;
+   public static function getCurrentStatusName() : string
+   {
+      if (static::getType() == 'SIEMHost') {
+         if ($this->fields['is_reachable']) {
+            return SIEMHost::getStatusName($this->getStatus());
+         } else {
+            return __('Unreachable');
+         }
+      } else {
+         return SIEMService::getStatusName($this->getStatus());
+      }
+   }
 
    /**
     * Returns true if the host or service is scheduled for downtime right now.
@@ -125,7 +136,7 @@ trait Monitored {
    public function getHost() {
       static $host = null;
       if ($host == null) {
-         if ($class == 'SIEMHost') {
+         if (static::getType() == 'SIEMHost') {
             return $this;
          } else {
             $host = new SIEMHost();
@@ -151,19 +162,54 @@ trait Monitored {
             ]
          ]);
          return $iterator->next()['name'];
-      } else if ($class == 'SIEMService') {
+      } else {
          if ($this->isHostless()) {
             return '';
          }
          $host = $this->getHost();
          return $host ? $host->getHostName() : null;
-      } else {
-         return '';
       }
    }
 
-   /**
-    * 
-    */
-   public abstract function getEventRestrictCriteria() : array;
+   public function getEvents(array $where = [], int $start = 0, int $limit = -1)
+   {
+      global $DB;
+
+      $eventtable = SIEMEvent::getTable();
+      $servicetable = SIEMService::getTable();
+      $criteria = [
+         'FROM'      => SIEMEvent::getTable(),
+         'LEFT JOIN' => [
+            $servicetable => [
+               'FKEY'   => [
+                  $eventtable    => 'siemservices_id',
+                  $servicetable  => 'id'
+               ]
+            ]
+         ]
+      ];
+      if (static::getType() == 'SIEMHost') {
+         $hosttable = SIEMHost::getTable();
+         $criteria['LEFT JOIN'][$hosttable] = [
+            'FKEY'   => [
+               $servicetable  => 'siemhosts_id',
+               $hosttable     => 'id'
+            ]
+         ];
+         $criteria['WHERE'] = [
+            'siemhosts_id' => $this->getID()
+         ];
+      } else {
+         $criteria['WHERE'] = [
+            'siemservices_id' => $this->getID()
+         ];
+      }
+
+      $iterator = $DB->request($criteria);
+      $events = [];
+      while ($data = $iterator->next()) {
+         $events[] = $data;
+      }
+      return $events;
+   }
 }

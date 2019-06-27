@@ -1071,7 +1071,7 @@ class Main extends AbstractController implements ControllerInterface
         foreach ($layout as $cardrow) {
            $deck = [];
            foreach ($cardrow as $card) {
-              $deck[] = \SIEMEvent::getDashboardCard($card);
+              //$deck[] = \SIEMEvent::getDashboardCard($card);
            }
            array_push($decks, $deck);
         }
@@ -1084,7 +1084,7 @@ class Main extends AbstractController implements ControllerInterface
             'dashboard'    => [
                'title'  => 'Event Monitoring Dashboard',
                'class'  => 'siem-dashboard',
-               'decks'  => $decks
+               'decks'  => \SIEMEventManagement::getDashboardCards()
             ]
         ];
 

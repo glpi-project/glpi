@@ -38,68 +38,76 @@ use Symfony\Component\EventDispatcher\Event;
 /**
  * @since 10.0.0
  */
-class ITILEventServiceEvent extends Event
+class SIEMServiceEvent extends Event
 {
     /**
      * Name of event triggered when a service enters or continues to be in a warning, exception, or unknown state.
      */
-    const SERVICE_PROBLEM = 'itileventservice.problem';
+    const SERVICE_PROBLEM = 'siemservice.problem';
 
     /**
      * Name of event triggered when a service enters an OK state from a warning, exception, or unknown state.
      */
-    const SERVICE_RECOVERY = 'itileventservice.recovery';
+    const SERVICE_RECOVERY = 'siemservice.recovery';
 
     /**
      * Name of event triggered when a service has a problem and is acknowledged.
      */
-    const SERVICE_ACKNOWLEDGE = 'itileventservice.acknowledge';
+    const SERVICE_ACKNOWLEDGE = 'siemservice.acknowledge';
 
     /**
      * Name of event triggered when a service is enabled on a host (not added).
      */
-    const SERVICE_ENABLE = 'itileventservice.enable';
+    const SERVICE_ENABLE = 'siemservice.enable';
 
     /**
      * Name of event triggered when a service is disabled on a host (not removed).
      */
-    const SERVICE_DISABLE = 'itileventservice.disable';
+    const SERVICE_DISABLE = 'siemservice.disable';
 
     /**
      * Name of event triggered when a service starts flapping.
      */
-    const SERVICE_START_FLAPPING = 'itileventservice.start_flapping';
+    const SERVICE_START_FLAPPING = 'siemservice.start_flapping';
 
     /**
      * Name of event triggered when a service stops flapping.
      */
-    const SERVICE_STOP_FLAPPING = 'itileventservice.stop_flapping';
+    const SERVICE_STOP_FLAPPING = 'siemservice.stop_flapping';
 
     /**
      * Name of event triggered when flap detection is disabled (Service may still be flapping).
      */
-    const SERVICE_DISABLE_FLAPPING = 'itileventservice.disable_flapping';
+    const SERVICE_DISABLE_FLAPPING = 'siemservice.disable_flapping';
 
     /**
-     * @var ITILEventService
+     * @var SIEMService
      */
     private $service;
+
+    private $is_hard_status;
 
     /**
      * @param CommonDBTM $item
      */
-    public function __construct(\ITILEventService $service)
+    public function __construct(\SIEMService $service, bool $is_hard_status)
     {
         $this->service = $service;
+        $this->is_hard_status = $is_hard_status;
     }
 
     /**
-     * ITILEventService on which event applies.
+     * SIEMService on which event applies.
      *
-     * @return ITILEventService
+     * @return SIEMService
      */
-    public function getService(): \ITILEventService
+    public function getService(): \SIEMService
     {
         return $this->service;
+    }
+
+    public function isHardStatus(): bool
+    {
+       return $this->is_hard_status;
     }
 }

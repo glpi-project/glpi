@@ -30,11 +30,29 @@
  * ---------------------------------------------------------------------
  */
 
-$AJAX_INCLUDE = 1;
-include ('../inc/includes.php');
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+if (strpos($_SERVER['PHP_SELF'], "dropdownSIEMSensors.php")) {
+   $AJAX_INCLUDE = 1;
+   include ('../inc/includes.php');
+   header("Content-Type: text/html; charset=UTF-8");
+   Html::header_nocache();
+}
 
-Session::checkLoginUser();
+Session::checkRight('event', UPDATE);
 
-SIEMEvent::showDashboard(true);
+global $PLUGIN_HOOKS;
+
+if ($_POST['logger'] > 0) {
+   if (!isset($_POST['value'])) {
+      $_POST['value'] = 0;
+   }
+
+   $values = [];
+   $logger = Plugin::getPlugins()[$_POST['logger']];
+   if ($logger && isset($PLUGIN_HOOKS['siem_sensors'][$logger])) {
+      $sensors = $PLUGIN_HOOKS['siem_sensors'][$logger];
+   }
+   foreach ($sensors as $sensor_id => $params) {
+      $values[$sensor_id] = $params['name'];
+   }
+   Dropdown::showFromArray($_POST['myname'], $values, ['display_emptychoice' => true]);
+}
