@@ -92,6 +92,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // external libs CSS
    echo Html::css('public/lib/base.css');
 
+   // Custom CSS for root entity
+   $entity = new Entity();
+   $entity->getFromDB('0');
+   echo $entity->getCustomCssTag();
+
    // CFG
    echo Html::scriptBlock("
       var CFG_GLPI  = {
