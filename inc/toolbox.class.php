@@ -432,7 +432,13 @@ class Toolbox {
          global $PHPLOGGER;
          $logger = $PHPLOGGER;
       }
-      $logger->addRecord($level, $msg, $extra);
+
+      try {
+         $logger->addRecord($level, $msg, $extra);
+      } catch (\Exception $e) {
+         //something went wrong, make sure logging does not cause fatal
+         error_log($e);
+      }
 
       if (defined('TU_USER') && $level >= Logger::NOTICE) {
          throw new \RuntimeException($msg);
@@ -829,8 +835,8 @@ class Toolbox {
                        ? null : (is_resource($value)
                        ? $value : $DB->escape(
                           str_replace(
-                             ['&#039;', '&#39;', '&quot'],
-                             ["'", "'", "'"],
+                             ['&#039;', '&#39;', '&#x27;', '&quot'],
+                             ["'", "'", "'", "'"],
                              $value
                           )
                        ))
@@ -2726,9 +2732,16 @@ class Toolbox {
                      }
 
                      // replace image
-                     $new_image =  Html::convertTagFromRichTextToImageTag($image['tag'],
-                                                                          $width, $height,
-                                                                          true, $itil_url_param);
+                     $new_image =  Html::getImageHtmlTagForDocument(
+                        $id,
+                        $width,
+                        $height,
+                        true,
+                        $itil_url_param
+                     );
+                     if (empty($new_image)) {
+                        $new_image = '#'.$image['tag'].'#';
+                     }
                      $content_text = preg_replace(
                         $regex,
                         $new_image,

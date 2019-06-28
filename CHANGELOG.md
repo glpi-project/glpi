@@ -7,7 +7,10 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 
-- encrypted file systems support
+- Encrypted file systems support.
+- Mails collected from suppliers can be marked as private on an entity basis.
+- Ability to add custom CSS in entity configuration.
+- CLI commands to enable and disable maintenance mode.
 
 ### Changed
 
@@ -31,6 +34,8 @@ The present file will list all changes made to the project; according to the
 - `DBMysql::isMySQLStrictMode()`
 - `getAllDatasFromTable` renamed to `getAllDataFromTable()`
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
+- All `TicketTemplate` classes has been renamed to `ITILTemplate`
+- `Ticket::getTicketTemplateToUse()` renamed to `Ticket::getITILTemplateToUse()`
 
 #### Removed
 
@@ -56,6 +61,14 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::getForeignKeyFieldsOf()`
 
 ## [9.4.3] unreleased
+
+### API changes
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `Html::convertTagFromRichTextToImageTag()`
 
 ## [9.4.2] 2019-04-11
 

@@ -134,7 +134,7 @@ class Search {
          array_pop($criteria);
          $criteria[] = [
             'link'         => 'AND',
-            'field'        => ($itemtype == 'Location') ? 1 : ($itemtype == 'Ticket') ? 83 : 3,
+            'field'        => ($itemtype == 'Location') ? 1 : (($itemtype == 'Ticket') ? 83 : 3),
             'searchtype'   => 'equals',
             'value'        => 'CURLOCATION'
          ];
@@ -978,7 +978,11 @@ class Search {
             if (isset($criterion['criteria']) && count($criterion['criteria'])) {
                $sub_sql = self::constructCriteriaSQL($criterion['criteria'], $data, $searchopt, $is_having);
                if (strlen($sub_sql)) {
-                  $sql .= "$LINK ($sub_sql)";
+                  if ($NOT) {
+                     $sql .= "$LINK NOT($sub_sql)";
+                  } else {
+                     $sql .= "$LINK ($sub_sql)";
+                  }
                }
             } else if (isset($searchopt[$criterion['field']]["usehaving"])
                        || ($meta && "AND NOT" === $criterion['link'])) {
@@ -3039,6 +3043,8 @@ JAVASCRIPT;
    **/
    static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val) {
 
+      global $DB;
+
       $searchopt  = &self::getOptions($itemtype);
       if (!isset($searchopt[$ID]['table'])) {
          return false;
@@ -3075,6 +3081,36 @@ JAVASCRIPT;
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
+            case "datetime" :
+               if (in_array($searchtype, ['contains', 'notcontains'])) {
+                  break;
+               }
+
+               $force_day = false;
+               if (strstr($val, 'BEGIN') || strstr($val, 'LAST')) {
+                  $force_day = true;
+               }
+
+               $val = Html::computeGenericDateTimeSearch($val, $force_day);
+
+               $operator = '';
+               switch ($searchtype) {
+                  case 'equals':
+                     $operator = !$NOT ? '=' : '!=';
+                     break;
+                  case 'notequals':
+                     $operator = !$NOT ? '!=' : '=';
+                     break;
+                  case 'lessthan':
+                     $operator = !$NOT ? '<' : '>';
+                     break;
+                  case 'morethan':
+                     $operator = !$NOT ? '>' : '<';
+                     break;
+               }
+
+               return " {$LINK} ({$DB->quoteName($NAME)} $operator {$DB->quoteValue($val)}) ";
+               break;
             case "count" :
             case "number" :
             case "decimal" :
@@ -3116,7 +3152,7 @@ JAVASCRIPT;
       }
 
       if ($searchtype == "notcontains") {
-         $nott = !$nott;
+         $NOT = !$NOT;
       }
 
       return self::makeTextCriteria("`$NAME`", $val, $NOT, $LINK);
@@ -3337,7 +3373,7 @@ JAVASCRIPT;
     * @return select string
    **/
    static function addSelect($itemtype, $ID, $meta = 0, $meta_type = 0) {
-      global $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $searchopt   = &self::getOptions($itemtype);
       $table       = $searchopt[$ID]["table"];
@@ -3575,7 +3611,8 @@ JAVASCRIPT;
 
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE", "`$table$addtable`", $tocompute);
+         $tocompute = str_replace($DB->quoteName('TABLE'), 'TABLE', $tocompute);
+         $tocompute = str_replace("TABLE", $DB->quoteName("$table$addtable"), $tocompute);
       }
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
@@ -3903,6 +3940,8 @@ JAVASCRIPT;
     * @return select string
    **/
    static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
+
+      global $DB;
 
       $searchopt = &self::getOptions($itemtype);
       if (!isset($searchopt[$ID]['table'])) {
@@ -4259,6 +4298,15 @@ JAVASCRIPT;
             }
             break;
 
+         case "glpi_notifications.event" :
+            if (in_array($searchtype, ['equals', 'notequals']) && strpos($val, self::SHORTSEP)) {
+               $not = 'notequals' === $searchtype ? 'NOT' : '';
+               list($itemtype_val, $event_val) = explode(self::SHORTSEP, $val);
+               return " $link $not(`$table`.`event` = '$event_val'
+                               AND `$table`.`itemtype` = '$itemtype_val')";
+            }
+            break;
+
       }
 
       //// Default cases
@@ -4281,7 +4329,8 @@ JAVASCRIPT;
       $tocomputetrans = "`".$table."_trans`.`value`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE", "`$table`", $tocompute);
+         $tocompute = str_replace($DB->quoteName('TABLE'), 'TABLE', $tocompute);
+         $tocompute = str_replace("TABLE", $DB->quoteName("$table"), $tocompute);
       }
 
       // Preformat items
@@ -5187,7 +5236,7 @@ JAVASCRIPT;
          case "glpi_tickets.time_to_own" :
          case "glpi_tickets.internal_time_to_own" :
             if (!in_array($ID, [151, 158, 181, 186])
-                && !empty($data[$ID][0]['name'])
+                && !empty($data[$NAME][0]['name'])
                 && ($data[$NAME][0]['status'] != CommonITILObject::WAITING)
                 && ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime'])) {
                $out = " style=\"background-color: #cf9b9b\" ";
@@ -5235,6 +5284,13 @@ JAVASCRIPT;
          if (isset($searchopt[$ID]['addobjectparams'])
              && $searchopt[$ID]['addobjectparams']) {
             $oparams = $searchopt[$ID]['addobjectparams'];
+         }
+
+         // Search option may not exists in subtype
+         // This is the case for "Inventory number" for a Software listed from ReservationItem search
+         $subtype_so = &self::getOptions($data["TYPE"]);
+         if (!array_key_exists($ID, $subtype_so)) {
+            return '';
          }
 
          return self::giveItem($data["TYPE"], $ID, $data, $meta, $oparams, $itemtype);
@@ -6572,13 +6628,13 @@ JAVASCRIPT;
                self::$search[$itemtype][24]['field']         = 'name';
                self::$search[$itemtype][24]['linkfield']     = 'users_id_tech';
                self::$search[$itemtype][24]['name']          = __('Technician in charge of the hardware');
-               self::$search[$itemtype][24]['condition']      = '`is_assign`';
+               self::$search[$itemtype][24]['condition']     = ['is_assign' => 1];
 
                self::$search[$itemtype][49]['table']          = 'glpi_groups';
                self::$search[$itemtype][49]['field']          = 'completename';
                self::$search[$itemtype][49]['linkfield']      = 'groups_id_tech';
                self::$search[$itemtype][49]['name']           = __('Group in charge of the hardware');
-               self::$search[$itemtype][49]['condition']      = '`is_assign`';
+               self::$search[$itemtype][49]['condition']      = ['is_assign' => 1];
                self::$search[$itemtype][49]['datatype']       = 'dropdown';
 
                self::$search[$itemtype][80]['table']         = 'glpi_entities';

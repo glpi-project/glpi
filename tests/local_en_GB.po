@@ -1,0 +1,24 @@
+# Override PO file
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-13 10:43+0200\n"
+"PO-Revision-Date: 2019-04-13 10:43+0200\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: index.php:131 inc/authldap.class.php:3198 inc/authmail.class.php:231
+#: inc/config.class.php:1762 inc/dbutils.class.php:1647
+#: inc/mailcollector.class.php:270 inc/mailcollector.class.php:473
+#: inc/notificationtargetuser.class.php:107 inc/ruleright.class.php:259
+#: inc/user.class.php:1995 inc/user.class.php:2426 inc/user.class.php:2884
+#: inc/user.class.php:3892
+msgid "Login"
+msgstr "Login from local gettext"

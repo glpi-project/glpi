@@ -87,11 +87,11 @@ class ITILCategory extends CommonTreeDropdown {
                          'label'     => __('Visible for a change'),
                          'type'      => 'bool',
                          'list'      => true],
-                   ['name'      => 'tickettemplates_id_demand',
+                   ['name'      => 'itiltemplates_id_demand',
                          'label'     => __('Template for a request'),
                          'type'      => 'dropdownValue',
                          'list'      => true],
-                   ['name'      => 'tickettemplates_id_incident',
+                   ['name'      => 'itiltemplates_id_incident',
                          'label'     => __('Template for an incident'),
                          'type'      => 'dropdownValue',
                          'list'      => true],
@@ -129,18 +129,18 @@ class ITILCategory extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '72',
-         'table'              => 'glpi_tickettemplates',
+         'table'              => 'glpi_itiltemplates',
          'field'              => 'name',
-         'linkfield'          => 'tickettemplates_id_demand',
+         'linkfield'          => 'itiltemplates_id_demand',
          'name'               => __('Template for a request'),
          'datatype'           => 'dropdown'
       ];
 
       $tab[] = [
          'id'                 => '73',
-         'table'              => 'glpi_tickettemplates',
+         'table'              => 'glpi_itiltemplates',
          'field'              => 'name',
-         'linkfield'          => 'tickettemplates_id_incident',
+         'linkfield'          => 'itiltemplates_id_incident',
          'name'               => __('Template for an incident'),
          'datatype'           => 'dropdown'
       ];
@@ -266,7 +266,7 @@ class ITILCategory extends CommonTreeDropdown {
 
       if (Session::haveRight(self::$rightname, READ)) {
          switch ($item->getType()) {
-            case 'TicketTemplate' :
+            case 'ITILTemplate' :
                $ong[1] = $this->getTypeName(Session::getPluralNumber());
                return $ong;
          }
@@ -277,18 +277,18 @@ class ITILCategory extends CommonTreeDropdown {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-      if ($item->getType() == 'TicketTemplate') {
-         self::showForTicketTemplate($item, $withtemplate);
+      if ($item->getType() == 'ITILTemplate') {
+         self::showForITILTemplate($item, $withtemplate);
       }
       return parent::displayTabContentForItem($item, $tabnum, $withtemplate);
    }
 
 
    /**
-    * @param $tt           TicketTemplate object
+    * @param $tt           ITILTemplate object
     * @param $withtemplate (default 0)
    **/
-   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = 0) {
+   static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       $itilcategory = new self();
@@ -307,8 +307,8 @@ class ITILCategory extends CommonTreeDropdown {
          'FROM'   => 'glpi_itilcategories',
          'WHERE'  => [
             'OR' => [
-               'tickettemplates_id_incident' => $ID,
-               'tickettemplates_id_demand'   => $ID
+               'itiltemplates_id_incident' => $ID,
+               'itiltemplates_id_demand'   => $ID
             ]
          ],
          'ORDER'  => 'name'
@@ -333,7 +333,7 @@ class ITILCategory extends CommonTreeDropdown {
             echo "<tr class='tab_bg_2'>";
             $itilcategory->getFromDB($data['id']);
             echo "<td>".$itilcategory->getLink(['comments' => true])."</td>";
-            if ($data['tickettemplates_id_incident'] == $ID) {
+            if ($data['itiltemplates_id_incident'] == $ID) {
                echo "<td class='center'>
                      <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt=\"".__('OK').
                         "\" width='14' height='14'>
@@ -342,7 +342,7 @@ class ITILCategory extends CommonTreeDropdown {
             } else {
                echo "<td>&nbsp;</td>";
             }
-            if ($data['tickettemplates_id_demand'] == $ID) {
+            if ($data['itiltemplates_id_demand'] == $ID) {
                echo "<td class='center'>
                      <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt=\"".__('OK').
                         "\" width='14' height='14'>

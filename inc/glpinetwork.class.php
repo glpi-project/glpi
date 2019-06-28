@@ -46,8 +46,8 @@ class GLPINetwork {
    }
 
    public static function getErrorMessage() {
-      return nl2br(sprintf("Having troubles setting up an advanced GLPI module?\n".
-         "We can help you solve them. Sign up for support on %s.",
+      return nl2br(sprintf(__("Having troubles setting up an advanced GLPI module?\n".
+         "We can help you solve them. Sign up for support on %s."),
          "<a href='".GLPI_NETWORK_SERVICES."' target='_blank'>".GLPI_NETWORK_SERVICES."</a>"));
    }
 

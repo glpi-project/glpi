@@ -46,16 +46,6 @@ class RuleRight extends Rule {
    public $orderby             = "name";
    public $specific_parameters = true;
 
-
-   /**
-    * @see Rule::maxActionsCount()
-   **/
-   function maxActionsCount() {
-      // Unlimited
-      return 4;
-   }
-
-
    /**
     * @see Rule::showNewRuleForm()
    **/
@@ -97,14 +87,13 @@ class RuleRight extends Rule {
    function executeActions($output, $params, array $input = []) {
       global $CFG_GLPI;
 
-      $entity       = '';
+      $entity = [];
       $right        = '';
       $is_recursive = 0;
       $continue     = true;
       $output_src   = $output;
 
       if (count($this->actions)) {
-         $entity = [];
          foreach ($this->actions as $action) {
 
             switch ($action->fields["action_type"]) {

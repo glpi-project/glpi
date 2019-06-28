@@ -134,13 +134,6 @@ class CommonDBTM extends CommonGLPI {
    static protected $plugins_forward_entity = [];
 
    /**
-    * Rightname used to check rights to do actions on item.
-    *
-    * @var string
-    */
-   static $rightname = '';
-
-   /**
     * Flag to determine whether or not table name of item has a notepad.
     *
     * @var boolean
@@ -917,6 +910,16 @@ class CommonDBTM extends CommonGLPI {
          $note->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
 
+      if (in_array($this->getType(), $CFG_GLPI['ticket_types'])) {
+         //delete relation beetween item and changes/problems
+         $this->deleteChildrenAndRelationsFromDb(
+            [
+               Change_Item::class,
+               Item_Problem::class,
+            ]
+         );
+      }
+
       if (in_array($this->getType(), $CFG_GLPI['rackable_types'])) {
          //delete relation beetween rackable type and its rack
          $item_rack = new Item_Rack();
@@ -932,6 +935,15 @@ class CommonDBTM extends CommonGLPI {
             [
                'itemtype' => $this->getType(),
                'items_id' => $this->fields['id']
+            ]
+         );
+      }
+
+      if (in_array($this->getType(), $CFG_GLPI['cluster_types'])) {
+         //delete relation beetween clusterable elements type and their cluster
+         $this->deleteChildrenAndRelationsFromDb(
+            [
+               Item_Cluster::class,
             ]
          );
       }
@@ -1882,69 +1894,6 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Have I the global right to "create" the Object
-    * May be overloaded if needed (ex KnowbaseItem)
-    *
-    * @return boolean
-   **/
-   static function canCreate() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, CREATE);
-      }
-      return false;
-   }
-
-
-   /**
-    * Have I the global right to "delete" the Object
-    *
-    * May be overloaded if needed
-    *
-    * @return boolean
-   **/
-   static function canDelete() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, DELETE);
-      }
-      return false;
-   }
-
-
-   /**
-    * Have I the global right to "purge" the Object
-    *
-    * May be overloaded if needed
-    *
-    * @return boolean
-    **/
-   static function canPurge() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, PURGE);
-      }
-      return false;
-   }
-
-
-   /**
-    * Have I the global right to "update" the Object
-    *
-    * Default is calling canCreate
-    * May be overloaded if needed
-    *
-    * @return boolean
-   **/
-   static function canUpdate() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, UPDATE);
-      }
-   }
-
-
-   /**
     * Have I the right to "create" the Object
     *
     * Default is true and check entity if the objet is entity assign
@@ -2022,24 +1971,6 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       return true;
-   }
-
-
-   /**
-    * Have I the global right to "view" the Object
-    *
-    * Default is true and check entity if the objet is entity assign
-    *
-    * May be overloaded if needed
-    *
-    * @return boolean
-   **/
-   static function canView() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, READ);
-      }
-      return false;
    }
 
 

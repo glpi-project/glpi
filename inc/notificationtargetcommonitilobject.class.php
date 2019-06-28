@@ -1393,7 +1393,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.url'                   => __('URL'),
                     $objettype.'.category'              => __('Category'),
                     $objettype.'.content'               => __('Description'),
-                    $objettype.'.description'           => sprintf(__('%1$s: %2$s'), __('Ticket'),
+                    $objettype.'.description'           => sprintf(__('%1$s: %2$s'), $this->obj->getTypeName(1),
                                                                    __('Description')),
                     $objettype.'.status'                => __('Status'),
                     $objettype.'.urgency'               => __('Urgency'),

@@ -49,22 +49,22 @@ class MailCollector extends DbTestCase {
             ->boolean($this->testedInstance->getEmpty())
             ->array($this->testedInstance->fields)
                ->isIdenticalTo([
-                  'id'              => '',
-                  'name'            => '',
-                  'host'            => '',
-                  'login'           => '',
-                  'filesize_max'    => '2097152',
-                  'is_active'       => 1,
-                  'date_mod'        => '',
-                  'comment'         => '',
-                  'passwd'          => '',
-                  'accepted'        => '',
-                  'refused'         => '',
-                  'use_kerberos'    => '',
-                  'errors'          => '',
-                  'use_mail_date'   => '',
-                  'date_creation'   => '',
-                  'requester_field' => ''
+                  'id'                   => '',
+                  'name'                 => '',
+                  'host'                 => '',
+                  'login'                => '',
+                  'filesize_max'         => '2097152',
+                  'is_active'            => 1,
+                  'date_mod'             => '',
+                  'comment'              => '',
+                  'passwd'               => '',
+                  'accepted'             => '',
+                  'refused'              => '',
+                  'use_kerberos'         => '',
+                  'errors'               => '',
+                  'use_mail_date'        => '',
+                  'date_creation'        => '',
+                  'requester_field'      => ''
                ]);
    }
 

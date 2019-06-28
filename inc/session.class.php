@@ -311,7 +311,7 @@ class Session {
       $newentities = [];
       $newroots    = [];
       if (isset($_SESSION['glpiactiveprofile'])) {
-         if ($ID == "all") {
+         if ($ID === "all") {
             $ancestors = [];
             foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
                $ancestors               = array_unique(array_merge(getAncestorsOf("glpi_entities",
@@ -541,8 +541,8 @@ class Session {
          ] + getEntitiesRestrictCriteria(
             Group::getTable(),
             'entities_id',
-            $_SESSION['glpiactiveentities'],
-            true
+            $_SESSION['glpiactive_entity'],
+            $_SESSION['glpiactive_entity_recursive']
          )
       ]);
 
@@ -593,11 +593,11 @@ class Session {
       }
 
       if (isset($CFG_GLPI["languages"][$trytoload])) {
-         $newfile = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
+         $newfile = "/" . $CFG_GLPI["languages"][$trytoload][1];
       }
 
-      if (empty($newfile) || !is_file(GLPI_ROOT . $newfile)) {
-         $newfile = "/locales/en_GB.mo";
+      if (empty($newfile) || !is_file(GLPI_I18N_DIR . $newfile)) {
+         $newfile = "/en_GB.mo";
       }
 
       if (isset($CFG_GLPI["languages"][$trytoload][5])) {
@@ -607,11 +607,24 @@ class Session {
       $TRANSLATE->setLocale($trytoload);
 
       $cache = Config::getCache('cache_trans', 'core', false);
-      if ($cache !== false) {
+      if ($cache !== false && !defined('TU_USER')) {
          $TRANSLATE->setCache($cache);
       }
 
-      $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
+      $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR.$newfile, 'glpi', $trytoload);
+
+      $mofile = GLPI_LOCAL_I18N_DIR . '/core/' . $newfile;
+      $phpfile = str_replace('.mo', '.php', $mofile);
+
+      // Load local PHP file if it exists
+      if (file_exists($phpfile)) {
+         $TRANSLATE->addTranslationFile('phparray', $phpfile, 'glpi', $trytoload);
+      }
+
+      // Load local MO file if it exists -- keep last so it gets precedence
+      if (file_exists($mofile)) {
+         $TRANSLATE->addTranslationFile('gettext', $mofile, 'glpi', $trytoload);
+      }
 
       // Load plugin dicts
       if ($with_plugins) {
@@ -889,22 +902,16 @@ class Session {
          return false;
       }
 
-      if (!$is_recursive) {
-         return in_array($ID, $_SESSION['glpiactiveentities']);
-      }
-
       if (in_array($ID, $_SESSION['glpiactiveentities'])) {
          return true;
       }
 
-      /// Recursive object
-      foreach ($_SESSION['glpiactiveentities'] as $ent) {
-         if (in_array($ID, getAncestorsOf("glpi_entities", $ent))) {
-            return true;
-         }
+      if (!$is_recursive) {
+         return false;
       }
 
-      return false;
+      /// Recursive object
+      return in_array($ID, getAncestorsOf("glpi_entities", $_SESSION['glpiactiveentities']));
    }
 
 

@@ -275,7 +275,7 @@ class Dropdown {
     *
     * @return string
     */
-   static function addNewCondition($condition) {
+   static function addNewCondition(array $condition) {
       $sha1 = sha1(serialize($condition));
       $_SESSION['glpicondition'][$sha1] = $condition;
       return $sha1;
@@ -834,6 +834,8 @@ class Dropdown {
                                              Session::getPluralNumber()),
                  'RequestType'         => _n('Request source', 'Request sources',
                                              Session::getPluralNumber()),
+                 'ITILFollowupTemplate' => _n('Followup template', 'Followup templates',
+                                             Session::getPluralNumber()),
                  'SolutionTemplate'    => _n('Solution template',
                                              'Solution templates',
                                              Session::getPluralNumber()),
@@ -902,7 +904,9 @@ class Dropdown {
                                               Session::getPluralNumber()),
                  'LineType'             => _n('Line type', 'Line types',
                                              Session::getPluralNumber()),
-                 'RackType'             => RackType::getTypeName(Session::getPluralNumber())
+                 'RackType'             => RackType::getTypeName(Session::getPluralNumber()),
+                 'PDUType'              => PDUType::getTypeName(Session::getPluralNumber()),
+                 'ClusterType'          => ClusterType::getTypeName(Session::getPluralNumber()),
              ],
 
              __('Model') => [

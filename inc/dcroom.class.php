@@ -473,14 +473,4 @@ class DCRoom extends CommonDBTM {
       }
       return $positions;
    }
-
-
-   function cleanDBonPurge() {
-
-      $this->deleteChildrenAndRelationsFromDb(
-         [
-            Change_Item::class,
-         ]
-      );
-   }
 }

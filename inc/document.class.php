@@ -1553,6 +1553,9 @@ class Document extends CommonDBTM {
          return false;
       }
       if (extension_loaded('exif')) {
+         if (filesize($file) < 12) {
+            return false;
+         }
          $etype = exif_imagetype($file);
          return in_array($etype, [IMAGETYPE_JPEG, IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_BMP]);
       } else {

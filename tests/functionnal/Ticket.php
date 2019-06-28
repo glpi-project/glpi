@@ -191,20 +191,20 @@ class Ticket extends DbTestCase {
       $this->boolean($tasktemplate->isNewItem())->isFalse();
 
       // 3 - create a ticket template with the task templates in predefined fields
-      $tickettemplate    = new \TicketTemplate;
-      $tickettemplate_id = $tickettemplate->add([
+      $itiltemplate    = new \ITILTemplate;
+      $itiltemplate_id = $itiltemplate->add([
          'name' => 'my ticket template',
       ]);
-      $this->boolean($tickettemplate->isNewItem())->isFalse();
-      $ttp = new \TicketTemplatePredefinedField();
+      $this->boolean($itiltemplate->isNewItem())->isFalse();
+      $ttp = new \ITILTemplatePredefinedField();
       $ttp->add([
-         'tickettemplates_id' => $tickettemplate_id,
+         'itiltemplates_id' => $itiltemplate_id,
          'num'                => '175',
          'value'              => $ttA_id,
       ]);
       $this->boolean($ttp->isNewItem())->isFalse();
       $ttp->add([
-         'tickettemplates_id' => $tickettemplate_id,
+         'itiltemplates_id' => $itiltemplate_id,
          'num'                => '176',
          'value'              => $ttB_id,
       ]);
@@ -214,8 +214,8 @@ class Ticket extends DbTestCase {
       $itilcat    = new \ITILCategory;
       $itilcat_id = $itilcat->add([
          'name'                        => 'my itil category',
-         'tickettemplates_id_incident' => $tickettemplate_id,
-         'tickettemplates_id_demand'   => $tickettemplate_id,
+         'itiltemplates_id_incident' => $itiltemplate_id,
+         'itiltemplates_id_demand'   => $itiltemplate_id,
          'is_incident'                 => true,
          'is_request'                  => true,
       ]);
@@ -227,7 +227,7 @@ class Ticket extends DbTestCase {
          'name'                => 'test task template',
          'content'             => 'test task template',
          'itilcategories_id'   => $itilcat_id,
-         '_tickettemplates_id' => $tickettemplate_id,
+         '_itiltemplates_id' => $itiltemplate_id,
          '_tasktemplates_id'   => [$ttA_id, $ttB_id],
       ]);
       $this->boolean($ticket->isNewItem())->isFalse();
@@ -1895,7 +1895,7 @@ class Ticket extends DbTestCase {
    /**
     * @see self::testCanTakeIntoAccount()
     */
-   public function canTakeIntoAccountProvider() {
+   protected function canTakeIntoAccountProvider() {
       return [
          [
             'input'    => [
@@ -1953,7 +1953,7 @@ class Ticket extends DbTestCase {
                   'followup' => \READ,
                ],
             ],
-            'expected' => true, // has not enough rights so cannot take into account
+            'expected' => true, // has enough rights so can take into account
          ],
          [
             'input'    => [
@@ -1967,7 +1967,7 @@ class Ticket extends DbTestCase {
                   'followup' => \READ + \ITILFollowup::ADDALLTICKET,
                ],
             ],
-            'expected' => true, // has not enough rights so cannot take into account
+            'expected' => true, // has enough rights so can take into account
          ],
          [
             'input'    => [
@@ -1981,7 +1981,7 @@ class Ticket extends DbTestCase {
                   'followup' => \READ + \ITILFollowup::ADDMYTICKET,
                ],
             ],
-            'expected' => true, // has not enough rights so cannot take into account
+            'expected' => true, // has enough rights so can take into account
          ],
          [
             'input'    => [
@@ -1995,25 +1995,25 @@ class Ticket extends DbTestCase {
                   'followup' => \READ + \ITILFollowup::ADDGROUPTICKET,
                ],
             ],
-            'expected' => true, // has not enough rights so cannot take into account
+            'expected' => true, // has enough rights so can take into account
          ],
-         /* Cannot test that requester user can take ticket into account if also assigned
-          * because assigning a user makes the ticket automatically taken into account.
-          * We decided with @orthagh to keep this rule even if it cannot be tested yet.
          [
             'input'    => [
-               '_users_id_requester' => ['4'], // "tech"
-               '_users_id_assign'    => ['4'], // "tech"
+               '_do_not_compute_takeintoaccount' => 1,
+               '_users_id_requester'             => ['4'], // "tech"
+               '_users_id_assign'                => ['4'], // "tech"
             ],
             'user'     => [
                'login'    => 'tech',
                'password' => 'tech',
             ],
-            'expected' => true, // is requester but also assigned, so can take into account
+            // is requester but also assigned, so can take into account
+            // this is only possible if "_do_not_compute_takeintoaccount" flag is set by business rules
+            'expected' => true,
          ],
-         */
       ];
    }
+
    /**
     * Tests ability to take a ticket into account.
     *
@@ -2029,19 +2029,17 @@ class Ticket extends DbTestCase {
       $this->login();
       $_SESSION['glpiset_default_tech'] = false;
       $ticket = new \Ticket();
-      $ticketId = $this->integer(
-         (int)$ticket->add([
+      $ticketId = $ticket->add(
+         $input + [
             'name'    => '',
             'content' => 'A ticket to check canTakeIntoAccount() results',
-         ] + $input)
-      )->isGreaterThan(0);
+         ]
+      );
+      $this->integer((int)$ticketId)->isGreaterThan(0);
       // Reload ticket to get all default fields values
       $this->boolean($ticket->getFromDB($ticketId))->isTrue();
-      // Check if "takeintoaccount_delay_stat" is not automatically defined
-      $expectedStat = array_key_exists('takeintoaccount_delay_stat', $input)
-         ? $input['takeintoaccount_delay_stat']
-         : 0;
-      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo($expectedStat);
+      // Validate that "takeintoaccount_delay_stat" is not automatically defined
+      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
       // Login with tested user
       $this->login($user['login'], $user['password']);
       // Apply specific rights if defined
@@ -2052,6 +2050,34 @@ class Ticket extends DbTestCase {
       }
       // Verify result
       $this->boolean($ticket->canTakeIntoAccount())->isEqualTo($expected);
+
+      // Check that computation of "takeintoaccount_delay_stat" can be prevented
+      sleep(1); // be sure to wait at least one second before updating
+      $this->boolean(
+         $ticket->update(
+            [
+               'id'                              => $ticketId,
+               'content'                         => 'Updated ticket 1',
+               '_do_not_compute_takeintoaccount' => 1
+            ]
+         )
+      )->isTrue();
+      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+
+      // Check that computation of "takeintoaccount_delay_stat" is done if user can take into account
+      $this->boolean(
+         $ticket->update(
+            [
+               'id'      => $ticketId,
+               'content' => 'Updated ticket 2',
+            ]
+         )
+      )->isTrue();
+      if (!$expected) {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+      } else {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+      }
    }
 
    /**
@@ -2141,5 +2167,399 @@ class Ticket extends DbTestCase {
       $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
       $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
       $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::SOLVED);
+   }
+
+   /**
+    * @see self::testTakeIntoAccountDelayComputationOnCreate()
+    * @see self::testTakeIntoAccountDelayComputationOnUpdate()
+    */
+   protected function takeIntoAccountDelayComputationProvider() {
+
+      $group = new \Group();
+      $group_id = $group->add(['name' => 'Test group']);
+      $this->integer((int)$group_id)->isGreaterThan(0);
+
+      $group_user = new \Group_User();
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id' => $group_id,
+            'users_id'  => '4', // "tech"
+         ])
+      )->isGreaterThan(0);
+
+      $test_cases = [
+         [
+            'input'    => [
+               'content' => 'test',
+            ],
+            'computed' => false, // not computed as tech is requester
+         ],
+         [
+            'input'    => [
+               '_users_id_assign' => '4', // "tech"
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'input'    => [
+               '_users_id_observer' => '4', // "tech"
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         /* Triggers PHP error "Uncaught Error: [] operator not supported for strings in /var/www/glpi/inc/ticket.class.php:1162"
+         [
+            'input'    => [
+               '_users_id_requester' => '3', // "post-only"
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         */
+         [
+            'input'    => [
+               '_additional_assigns' => [
+                  ['users_id' => '4'], // "tech"
+               ],
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'input'    => [
+               '_additional_observers' => [
+                  ['users_id' => '4'], // "tech"
+               ],
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
+               '_additional_requesters' => [
+                  ['users_id' => '2'], // "post-only"
+               ],
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
+               '_groups_id_assign' => $group_id,
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'input'    => [
+               '_groups_id_observer' => $group_id,
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
+               '_groups_id_requester' => $group_id,
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
+               '_additional_groups_assigns' => [$group_id],
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         [
+            'input'    => [
+               '_additional_groups_observers' => [$group_id],
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         [
+            'input'    => [
+               '_additional_groups_requesters' => [$group_id],
+            ],
+            'computed' => false, // not computed as new actor is not assigned
+         ],
+         /* Not computing delay, do not know why
+         [
+            'input'    => [
+               '_suppliers_id_assign' => '1', // "_suplier01_name"
+            ],
+            'computed' => true, // computed on asignment
+         ],
+         */
+         [
+            'input'    => [
+               '_additional_suppliers_assigns' => [
+                  ['suppliers_id' => '1'], // "_suplier01_name"
+               ],
+            ],
+            'computed' => true, // computed on asignment
+         ],
+      ];
+
+      // for all test cases that expect a computation
+      // add a test case with '_do_not_compute_takeintoaccount' flag to check that computation is prevented
+      foreach ($test_cases as $test_case) {
+         $test_case['input']['_do_not_compute_takeintoaccount'] = 1;
+         $test_case['computed'] = false;
+         $test_cases[] = $test_case;
+      }
+
+      return $test_cases;
+   }
+
+   /**
+    * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket creation.
+    *
+    * @param array   $input    Input used to create the ticket
+    * @param boolean $computed Expected computation state
+    *
+    * @dataProvider takeIntoAccountDelayComputationProvider
+    */
+   public function testTakeIntoAccountDelayComputationOnCreate(array $input, $computed) {
+
+      // Create a ticket
+      $this->login('tech', 'tech'); // Login with tech to be sure to be the requester
+      $_SESSION['glpiset_default_tech'] = false;
+      $ticket = new \Ticket();
+      $ticketId = $ticket->add(
+         $input + [
+            'name'    => '',
+            'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
+         ]
+      );
+      $this->integer((int)$ticketId)->isGreaterThan(0);
+
+      // Reload ticket to get all default fields values
+      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+
+      if (!$computed) {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+      } else {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+      }
+   }
+
+   /**
+    * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket update.
+    *
+    * @param array   $input     Input used to update the ticket
+    * @param boolean $computed  Expected computation state
+    *
+    * @dataProvider takeIntoAccountDelayComputationProvider
+    */
+   public function testTakeIntoAccountDelayComputationOnUpdate(array $input, $computed) {
+
+      // Create a ticket
+      $this->login('tech', 'tech'); // Login with tech to be sure to be the requester
+      $_SESSION['glpiset_default_tech'] = false;
+      $ticket = new \Ticket();
+      $ticketId = $ticket->add(
+         [
+            'name'    => '',
+            'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
+         ]
+      );
+      $this->integer((int)$ticketId)->isGreaterThan(0);
+
+      // Reload ticket to get all default fields values
+      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+
+      // Validate that "takeintoaccount_delay_stat" is not automatically defined
+      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+
+      // Login with tech to be sure to be have rights to take into account
+      $this->login('tech', 'tech');
+
+      sleep(1); // be sure to wait at least one second before updating
+      $this->boolean(
+         $ticket->update(
+            $input + [
+               'id' => $ticketId,
+            ]
+         )
+      )->isTrue();
+
+      // Reload ticket to get fresh values that can be defined by a tier object
+      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+
+      if (!$computed) {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+      } else {
+         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+      }
+   }
+
+   /**
+    * @see self::testStatusComputationOnCreate()
+    */
+   protected function statusComputationOnCreateProvider() {
+
+      $group = new \Group();
+      $group_id = $group->add(['name' => 'Test group']);
+      $this->integer((int)$group_id)->isGreaterThan(0);
+
+      return [
+         [
+            'input'    => [
+               '_users_id_assign' => ['4'], // "tech"
+               'status' => \CommonITILObject::INCOMING,
+            ],
+            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
+         ],
+         [
+            'input'    => [
+               '_groups_id_assign' => $group_id,
+               'status' => \CommonITILObject::INCOMING,
+            ],
+            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
+         ],
+         [
+            'input'    => [
+               '_suppliers_id_assign' => '1', // "_suplier01_name"
+               'status' => \CommonITILObject::INCOMING,
+            ],
+            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
+         ],
+         [
+            'input'    => [
+               '_users_id_assign' => ['4'], // "tech"
+               'status' => \CommonITILObject::INCOMING,
+               '_do_not_compute_status' => '1',
+            ],
+            'expected' => \CommonITILObject::INCOMING, // flag prevent status change
+         ],
+         [
+            'input'    => [
+               '_groups_id_assign' => $group_id,
+               'status' => \CommonITILObject::INCOMING,
+               '_do_not_compute_status' => '1',
+            ],
+            'expected' => \CommonITILObject::INCOMING, // flag prevent status change
+         ],
+         [
+            'input'    => [
+               '_suppliers_id_assign' => '1', // "_suplier01_name"
+               'status' => \CommonITILObject::INCOMING,
+               '_do_not_compute_status' => '1',
+            ],
+            'expected' => \CommonITILObject::INCOMING, // flag prevent status change
+         ],
+         [
+            'input'    => [
+               '_users_id_assign' => ['4'], // "tech"
+               'status' => \CommonITILObject::WAITING,
+            ],
+            'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
+         ],
+         [
+            'input'    => [
+               '_groups_id_assign' => $group_id,
+               'status' => \CommonITILObject::WAITING,
+            ],
+            'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
+         ],
+         [
+            'input'    => [
+               '_suppliers_id_assign' => '1', // "_suplier01_name"
+               'status' => \CommonITILObject::WAITING,
+            ],
+            'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
+         ],
+      ];
+   }
+
+   /**
+    * Check computed status on ticket creation..
+    *
+    * @param array   $input            Input used to create the ticket
+    * @param boolean $expected_status  Expected status
+    *
+    * @dataProvider statusComputationOnCreateProvider
+    */
+   public function testStatusComputationOnCreate(array $input, $expected_status) {
+
+      // Create a ticket
+      $this->login();
+      $_SESSION['glpiset_default_tech'] = false;
+      $ticket = new \Ticket();
+      $ticketId = $this->integer(
+         (int)$ticket->add([
+            'name'    => '',
+            'content' => 'A ticket to check status computation',
+         ] + $input)
+      )->isGreaterThan(0);
+
+      // Reload ticket to get computed fields values
+      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+
+      // Check status
+      $this->integer((int)$ticket->fields['status'])->isEqualTo($expected_status);
+   }
+
+   public function testLocationAssignment() {
+      $rule = new \Rule();
+      $rule->getFromDBByCrit([
+         'sub_type' => 'RuleTicket',
+         'name' => 'Ticket location from user',
+      ]);
+      $location = new \Location;
+      $location->getFromDBByCrit([
+         'name' => '_location01'
+      ]);
+      $user = new \User;
+      $user->add([
+         'name' => $this->getUniqueString(),
+         'locations_id' => $location->getID(),
+      ]);
+
+      // test ad ticket with single requester
+      $ticket = new \Ticket;
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '1'
+      ]);
+      $ticket->add([
+         '_users_id_requester' => $user->getID(),
+         'name' => 'test location assignment',
+         'content' => 'test location assignment',
+      ]);
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '0'
+      ]);
+      $ticket->getFromDB($ticket->getID());
+      $this->integer((int) $ticket->fields['locations_id'])->isEqualTo($location->getID());
+
+      // test add ticket with multiple requesters
+      $ticket = new \Ticket;
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '1'
+      ]);
+      $ticket->add([
+         '_users_id_requester' => [$user->getID(), 2],
+         'name' => 'test location assignment',
+         'content' => 'test location assignment',
+      ]);
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '0'
+      ]);
+      $ticket->getFromDB($ticket->getID());
+      $this->integer((int) $ticket->fields['locations_id'])->isEqualTo($location->getID());
+
+      // test add ticket with multiple requesters
+      $ticket = new \Ticket;
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '1'
+      ]);
+      $ticket->add([
+         '_users_id_requester' => [2, $user->getID()],
+         'name' => 'test location assignment',
+         'content' => 'test location assignment',
+      ]);
+      $rule->update([
+         'id' => $rule->getID(),
+         'is_active' => '0'
+      ]);
+      $ticket->getFromDB($ticket->getID());
+      $this->integer((int) $ticket->fields['locations_id'])->isEqualTo(0);
    }
 }

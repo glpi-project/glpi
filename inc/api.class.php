@@ -475,12 +475,9 @@ abstract class API extends CommonGLPI {
     * @return array
      */
    protected function getGlpiConfig() {
-
-      global $CFG_GLPI;
       $this->initEndpoint();
 
-      $excludedKeys = array_flip(Config::$undisclosedFields);
-      return ['cfg_glpi' => array_diff_key($CFG_GLPI, $excludedKeys)];
+      return ['cfg_glpi' => Config::getSafeConfig()];
    }
 
 
@@ -1244,7 +1241,7 @@ abstract class API extends CommonGLPI {
 
       // filter with entity
       if ($item->isEntityAssign()
-          // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like TicketTemplateMandatoryField)
+          // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like ITILTemplateMandatoryField)
           && array_key_exists('entities_id', $item->fields)) {
          $where.= " AND (". getEntitiesRestrictRequest("",
                                              $itemtype::getTable(),
@@ -1527,21 +1524,42 @@ abstract class API extends CommonGLPI {
 
       // Check the criterias are valid
       if (isset($params['criteria']) && is_array($params['criteria'])) {
-         foreach ($params['criteria'] as $criteria) {
-            if (!isset($criteria['field']) || !isset($criteria['searchtype'])
-                || !isset($criteria['value'])) {
-               return $this->returnError(__("Malformed search criteria"));
+
+         // use a recursive closure to check each nested criteria
+         $check_message = "";
+         $check_criteria = function($criteria) use (&$check_criteria, $soptions, $check_message) {
+            foreach ($criteria as $criterion) {
+               // recursive call
+               if (isset($criterion['criteria'])) {
+                  return $check_criteria($criterion['criteria']);
+               }
+
+               if (!isset($criterion['field']) || !isset($criterion['searchtype'])
+                   || !isset($criterion['value'])) {
+                  $check_message = __("Malformed search criteria");
+                  return false;
+               }
+
+               if (!ctype_digit((string) $criterion['field'])
+                   || !array_key_exists($criterion['field'], $soptions)) {
+                  $check_message = __("Bad field ID in search criteria");
+                  return false;
+               }
+
+               if (isset($soptions[$criterion['field']])
+                   && isset($soptions[$criterion['field']]['nosearch'])
+                   && $soptions[$criterion['field']]['nosearch']) {
+                  $check_message = __("Forbidden field ID in search criteria");
+                  return false;
+               }
             }
 
-            if (!ctype_digit((string) $criteria['field'])
-                  || !array_key_exists($criteria['field'], $soptions)) {
-               return $this->returnError(__("Bad field ID in search criteria"));
-            }
+            return true;
+         };
 
-            if (isset($soptions[$criteria['field']]) && isset($soptions[$criteria['field']]['nosearch'])
-                && $soptions[$criteria['field']]['nosearch']) {
-               return $this->returnError(__("Forbidden field ID in search criteria"));
-            }
+         // call the closure
+         if (!$check_criteria($params['criteria'])) {
+            return $this->returnError($check_message);
          }
       }
 
@@ -2272,13 +2290,8 @@ abstract class API extends CommonGLPI {
     */
    public function inlineDocumentation($file) {
       self::header(true, __("API Documentation"));
-      echo Html::css("public/lib/prismjs/themes/prism-coy.css");
-      echo Html::script("public/lib/prismjs/components/prism-core.js");
-      echo Html::script("public/lib/prismjs/components/prism-apacheconf.js");
-      echo Html::script("public/lib/prismjs/components/prism-bash.js");
-      echo Html::script("public/lib/prismjs/components/prism-clike.js");
-      echo Html::script("public/lib/prismjs/components/prism-json.js");
-      echo Html::script("public/lib/prismjs/components/prism-nginx.js");
+      echo Html::css("public/lib/prism.css");
+      echo Html::script("public/lib/prismjs.js");
 
       echo "<div class='documentation'>";
       $documentation = file_get_contents(GLPI_ROOT.'/'.$file);

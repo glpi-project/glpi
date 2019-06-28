@@ -126,12 +126,12 @@ class Ticket extends CommonITILObject {
    **/
    static function getAdditionalMenuOptions() {
 
-      if (TicketTemplate::canView()) {
-         $menu['TicketTemplate']['title']           = TicketTemplate::getTypeName(Session::getPluralNumber());
-         $menu['TicketTemplate']['page']            = TicketTemplate::getSearchURL(false);
-         $menu['TicketTemplate']['links']['search'] = TicketTemplate::getSearchURL(false);
-         if (TicketTemplate::canCreate()) {
-            $menu['TicketTemplate']['links']['add'] = TicketTemplate::getFormURL(false);
+      if (ITILTemplate::canView()) {
+         $menu['ITILTemplate']['title']           = ITILTemplate::getTypeName(Session::getPluralNumber());
+         $menu['ITILTemplate']['page']            = ITILTemplate::getSearchURL(false);
+         $menu['ITILTemplate']['links']['search'] = ITILTemplate::getSearchURL(false);
+         if (ITILTemplate::canCreate()) {
+            $menu['ITILTemplate']['links']['add'] = ITILTemplate::getFormURL(false);
          }
          return $menu;
       }
@@ -165,8 +165,8 @@ class Ticket extends CommonITILObject {
       global $CFG_GLPI;
 
       $links = [];
-      if (TicketTemplate::canView()) {
-         $links['template'] = TicketTemplate::getSearchURL(false);
+      if (ITILTemplate::canView()) {
+         $links['template'] = ITILTemplate::getSearchURL(false);
       }
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
          $opt = [];
@@ -1096,7 +1096,7 @@ class Ticket extends CommonITILObject {
          $categid = $this->fields['itilcategories_id'];
       }
 
-      $tt = $this->getTicketTemplateToUse(0, $type, $categid, $entid);
+      $tt = $this->getITILTemplateToUse(0, $type, $categid, $entid);
 
       if (count($tt->mandatory)) {
          $mandatory_missing = [];
@@ -1120,7 +1120,9 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      /// Process Business Rules
+      // Process Business Rules
+      $this->fillInputForBusinessRules($input);
+
       // Add actors on standard input
       $rules               = new RuleTicketCollection($entid);
       $rule                = $rules->getRuleClass();
@@ -1504,7 +1506,8 @@ class Ticket extends CommonITILObject {
 
    function pre_updateInDB() {
 
-      if (!$this->isAlreadyTakenIntoAccount() && $this->canTakeIntoAccount()) {
+      if (!$this->isTakeIntoAccountComputationBlocked($this->input)
+          && !$this->isAlreadyTakenIntoAccount() && $this->canTakeIntoAccount()) {
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
@@ -1677,9 +1680,9 @@ class Ticket extends CommonITILObject {
 
       // Do not check mandatory on auto import (mailgates)
       if (!isset($input['_auto_import'])) {
-         if (isset($input['_tickettemplates_id']) && $input['_tickettemplates_id']) {
-            $tt = new TicketTemplate();
-            if ($tt->getFromDBWithDatas($input['_tickettemplates_id'])) {
+         if (isset($input['_itiltemplates_id']) && $input['_itiltemplates_id']) {
+            $tt = new ITILTemplate();
+            if ($tt->getFromDBWithDatas($input['_itiltemplates_id'])) {
                if (count($tt->mandatory)) {
                   $mandatory_missing = [];
                   $fieldsname        = $tt->getAllowedFieldsNames(true);
@@ -1825,36 +1828,24 @@ class Ticket extends CommonITILObject {
          $input['_users_id_assign'] = Session::getLoginUserID();
       }
 
-      // add calendars matching date creation (for business rules)
-      $calendars = [];
-      $ite_calandar = $DB->request([
-         'SELECT' => ['id'],
-         'FROM'   => Calendar::getTable(),
-         'WHERE'  => getEntitiesRestrictCriteria('', '', $input['entities_id'], true)
-      ]);
-      foreach ($ite_calandar as $calendar_data) {
-         $calendar = new Calendar;
-         $calendar->getFromDB($calendar_data['id']);
-         if ($calendar->isAWorkingHour(time())) {
-            $calendars[] = $calendar_data['id'];
-         }
-      }
-      if (count($calendars)) {
-         $input['_date_creation_calendars_id'] = $calendars;
-      }
-
       // Process Business Rules
+      $this->fillInputForBusinessRules($input);
+
       $rules = new RuleTicketCollection($input['entities_id']);
 
       // Set unset variables with are needed
+      $tmprequester = 0;
       $user = new User();
-      if (isset($input["_users_id_requester"])
-          && !is_array($input["_users_id_requester"])
-          && $user->getFromDB($input["_users_id_requester"])) {
-         $input['users_locations'] = $user->fields['locations_id'];
-         $tmprequester = $input["_users_id_requester"];
-      } else {
-         $tmprequester = 0;
+      if (isset($input["_users_id_requester"])) {
+         if (!is_array($input["_users_id_requester"])
+             && $user->getFromDB($input["_users_id_requester"])) {
+            $input['users_locations'] = $user->fields['locations_id'];
+            $tmprequester = $input["_users_id_requester"];
+         } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
+            if ($user->getFromDB($user_id)) {
+               $input['users_locations'] = $user->fields['locations_id'];
+            }
+         }
       }
 
       // Clean new lines before passing to rules
@@ -1964,6 +1955,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Replay setting auto assign if set in rules engine or by auto_assign_mode
+      // Do not force status if status has been set by rules
       if (((isset($input["_users_id_assign"])
            && ((!is_array($input['_users_id_assign']) &&  $input["_users_id_assign"] > 0)
                || is_array($input['_users_id_assign']) && count($input['_users_id_assign']) > 0))
@@ -1973,8 +1965,8 @@ class Ticket extends CommonITILObject {
            || (isset($input["_suppliers_id_assign"])
            && ((!is_array($input['_suppliers_id_assign']) && $input["_suppliers_id_assign"] > 0)
                || is_array($input['_suppliers_id_assign']) && count($input['_suppliers_id_assign']) > 0)))
-          && (in_array($input['status'], $this->getNewStatusArray()))) {
-
+          && (in_array($input['status'], $this->getNewStatusArray()))
+          && !$this->isStatusComputationBlocked($input)) {
          $input["status"] = self::ASSIGNED;
       }
 
@@ -2105,7 +2097,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Add tasks in tasktemplates if defined in tickettemplate
+      // Add tasks in tasktemplates if defined in itiltemplate
       if (isset($this->input['_tasktemplates_id'])
           && is_array($this->input['_tasktemplates_id'])
           && count($this->input['_tasktemplates_id'])) {
@@ -2863,7 +2855,8 @@ class Ticket extends CommonITILObject {
 
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
+      global $DB;
+
       $tab = [];
 
       $tab = array_merge($tab, $this->getSearchOptionsMain());
@@ -2978,6 +2971,38 @@ class Ticket extends CommonITILObject {
                                                  OR (TABLE.`takeintoaccount_delay_stat` = 0
                                                       AND TABLE.`internal_time_to_own` < NOW())),
                                             1, 0)'
+      ];
+
+      $max_date = '99999999';
+      $tab[] = [
+         'id'                 => '188',
+         'table'              => $this->getTable(),
+         'field'              => 'next_escalation_level',
+         'name'               => __('Next escalation level'),
+         'datatype'           => 'datetime',
+         'usehaving'          => true,
+         'maybefuture'        => true,
+         'massiveaction'      => false,
+         // Get least value from TTO/TTR fields:
+         // - use TTO fields only if ticket not already taken into account,
+         // - use TTR fields only if ticket not already solved,
+         // - replace NULL or not kept values with 99999999 to be sure that they will not be returned by the LEAST function,
+         // - replace 99999999 by empty string to keep only valid values.
+         'computation'        => "REPLACE(
+            LEAST(
+               IF(".$DB->quoteName('TABLE.takeintoaccount_delay_stat')." <= 0,
+                  COALESCE(".$DB->quoteName('TABLE.time_to_own').", $max_date),
+                  $max_date),
+               IF(".$DB->quoteName('TABLE.takeintoaccount_delay_stat')." <= 0,
+                  COALESCE(".$DB->quoteName('TABLE.internal_time_to_own').", $max_date),
+                  $max_date),
+               IF(".$DB->quoteName('TABLE.solvedate')." IS NULL,
+                  COALESCE(".$DB->quoteName('TABLE.time_to_resolve').", $max_date),
+                  $max_date),
+               IF(".$DB->quoteName('TABLE.solvedate')." IS NULL,
+                  COALESCE(".$DB->quoteName('TABLE.internal_time_to_resolve').", $max_date),
+                  $max_date)
+            ), $max_date, '')"
       ];
 
       $tab[] = [
@@ -3913,7 +3938,7 @@ class Ticket extends CommonITILObject {
            "'>";
 
       // Load ticket template if available :
-      $tt = $this->getTicketTemplateToUse($ticket_template, $options['type'],
+      $tt = $this->getITILTemplateToUse($ticket_template, $options['type'],
                                           $options['itilcategories_id'],
                                           $_SESSION["glpiactive_entity"]);
 
@@ -3938,8 +3963,8 @@ class Ticket extends CommonITILObject {
                     && ($options[$predeffield] == $default_values[$predeffield]))
                    || (isset($options['_predefined_fields'][$predeffield])
                        && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
-                   || (isset($options['_tickettemplates_id'])
-                       && ($options['_tickettemplates_id'] != $tt->getID()))) {
+                   || (isset($options['_itiltemplates_id'])
+                       && ($options['_itiltemplates_id'] != $tt->getID()))) {
                   $options[$predeffield]            = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
@@ -4182,7 +4207,7 @@ class Ticket extends CommonITILObject {
          echo "<td colspan='2' class='center'>";
 
          if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
-            echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
+            echo "<input type='hidden' name='_itiltemplates_id' value='".$tt->fields['id']."'>";
             echo "<input type='hidden' name='_predefined_fields'
                    value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
          }
@@ -4332,27 +4357,57 @@ class Ticket extends CommonITILObject {
                '_tag_filename'             => []];
    }
 
-
    /**
     * Get ticket template to use
     * Use force_template first, then try on template define for type and category
     * then use default template of active profile of connected user and then use default entity one
     *
-    * @param $force_template      integer tickettemplate_id to used (case of preview for example)
+    * @param $force_template      integer itiltemplate_id to used (case of preview for example)
     *                             (default 0)
     * @param $type                integer type of the ticket (default 0)
     * @param $itilcategories_id   integer ticket category (default 0)
     * @param $entities_id         integer (default -1)
     *
     * @since 0.84
+    * @deprecated 9.5.0
     *
     * @return ticket template object
    **/
    function getTicketTemplateToUse($force_template = 0, $type = 0, $itilcategories_id = 0,
                                    $entities_id = -1) {
+      Toolbox::deprecated('Use getITILTemplateToUse()');
+      return $this->getITILTemplateToUse(
+         $force_template,
+         $type,
+         $itilcategories_id,
+         $entities_id
+      );
+   }
 
+
+   /**
+    * Get template to use
+    * Use force_template first, then try on template define for type and category
+    * then use default template of active profile of connected user and then use default entity one
+    *
+    * @param $force_template      integer itiltemplate_id to used (case of preview for example)
+    *                             (default 0)
+    * @param $type                integer type of the ticket (default 0)
+    * @param $itilcategories_id   integer ticket category (default 0)
+    * @param $entities_id         integer (default -1)
+    *
+    * @since 9.5.0
+    *
+    * @return ITIL template object
+   **/
+   function getITILTemplateToUse(
+      $force_template = 0,
+      $type = 0,
+      $itilcategories_id = 0,
+      $entities_id = -1
+   ) {
       // Load ticket template if available :
-      $tt              = new TicketTemplate();
+      $tt              = new ITILTemplate();
       $template_loaded = false;
 
       if ($force_template) {
@@ -4370,12 +4425,12 @@ class Ticket extends CommonITILObject {
          if ($categ->getFromDB($itilcategories_id)) {
             $field = '';
             switch ($type) {
-               case self::INCIDENT_TYPE :
-                  $field = 'tickettemplates_id_incident';
+               case Ticket::INCIDENT_TYPE:
+                  $field = 'itiltemplates_id_incident';
                   break;
 
-               case self::DEMAND_TYPE :
-                  $field = 'tickettemplates_id_demand';
+               case Ticket::DEMAND_TYPE:
+                  $field = 'itiltemplates_id_demand';
                   break;
             }
 
@@ -4395,10 +4450,10 @@ class Ticket extends CommonITILObject {
 
       if (!$template_loaded) {
          // load default profile one if not already loaded
-         if (isset($_SESSION['glpiactiveprofile']['tickettemplates_id'])
-             && $_SESSION['glpiactiveprofile']['tickettemplates_id']) {
+         if (isset($_SESSION['glpiactiveprofile']['itiltemplates_id'])
+             && $_SESSION['glpiactiveprofile']['itiltemplates_id']) {
             // with type and categ
-            if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['tickettemplates_id'],
+            if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['itiltemplates_id'],
                                         true)) {
                $template_loaded = true;
             }
@@ -4409,7 +4464,7 @@ class Ticket extends CommonITILObject {
           && ($entities_id >= 0)) {
 
          // load default entity one if not already loaded
-         if ($template_id = Entity::getUsedConfig('tickettemplates_id', $entities_id)) {
+         if ($template_id = Entity::getUsedConfig('itiltemplates_id', $entities_id)) {
             // with type and categ
             if ($tt->getFromDBWithDatas($template_id, true)) {
                $template_loaded = true;
@@ -4436,11 +4491,11 @@ class Ticket extends CommonITILObject {
                $field = '';
                switch ($newtype) {
                   case self::INCIDENT_TYPE :
-                     $field = 'tickettemplates_id_incident';
+                     $field = 'itiltemplates_id_incident';
                      break;
 
                   case self::DEMAND_TYPE :
-                     $field = 'tickettemplates_id_demand';
+                     $field = 'itiltemplates_id_demand';
                      break;
                }
 
@@ -4455,7 +4510,6 @@ class Ticket extends CommonITILObject {
       }
       return $tt;
    }
-
 
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -4589,10 +4643,10 @@ class Ticket extends CommonITILObject {
 
       // Load ticket template if available :
       if ($ID) {
-         $tt = $this->getTicketTemplateToUse($options['template_preview'], $this->fields['type'],
+         $tt = $this->getITILTemplateToUse($options['template_preview'], $this->fields['type'],
                                              $this->fields['itilcategories_id'], $this->fields['entities_id']);
       } else {
-         $tt = $this->getTicketTemplateToUse($options['template_preview'], $options['type'],
+         $tt = $this->getITILTemplateToUse($options['template_preview'], $options['type'],
                                              $options['itilcategories_id'], $options['entities_id']);
       }
 
@@ -4619,8 +4673,8 @@ class Ticket extends CommonITILObject {
                        && ($options[$predeffield] == $default_values[$predeffield]))
                       || (isset($options['_predefined_fields'][$predeffield])
                           && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
-                      || (isset($options['_tickettemplates_id'])
-                          && ($options['_tickettemplates_id'] != $tt->getID()))
+                      || (isset($options['_itiltemplates_id'])
+                          && ($options['_itiltemplates_id'] != $tt->getID()))
                       // user pref for requestype can't overwrite requestype from template
                       // when change category
                       || (($predeffield == 'requesttypes_id')
@@ -4649,7 +4703,7 @@ class Ticket extends CommonITILObject {
          }
       }
       // Put ticket template on $options for actors
-      $options['_tickettemplate'] = $tt;
+      $options['_itiltemplate'] = $tt;
 
       // check right used for this ticket
       $canupdate     = !$ID
@@ -5357,7 +5411,7 @@ class Ticket extends CommonITILObject {
             }
             echo Html::submit(_x('button', 'Add'), $add_params);
             if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
-               echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
+               echo "<input type='hidden' name='_itiltemplates_id' value='".$tt->fields['id']."'>";
                echo "<input type='hidden' name='_predefined_fields'
                       value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
             }
@@ -6987,5 +7041,44 @@ class Ticket extends CommonITILObject {
          'dates'   => $dates,
          'add_now' => $this->getField('closedate') == ""
       ]);
+   }
+
+   /**
+    * Fill input with values related to business rules.
+    *
+    * @param array $input
+    *
+    * @return void
+    */
+   private function fillInputForBusinessRules(array &$input) {
+
+      global $DB;
+
+      $entities_id = isset($input['entities_id'])
+         ? $input['entities_id']
+         : $this->fields['entities_id'];
+
+      // If creation date is not set, then this function is called during ticket creation
+      $creation_date = !empty($this->fields['date_creation'])
+         ? strtotime($this->fields['date_creation'])
+         : time();
+
+      // add calendars matching date creation (for business rules)
+      $calendars = [];
+      $ite_calendar = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'   => Calendar::getTable(),
+         'WHERE'  => getEntitiesRestrictCriteria('', '', $entities_id, true)
+      ]);
+      foreach ($ite_calendar as $calendar_data) {
+         $calendar = new Calendar();
+         $calendar->getFromDB($calendar_data['id']);
+         if ($calendar->isAWorkingHour($creation_date)) {
+            $calendars[] = $calendar_data['id'];
+         }
+      }
+      if (count($calendars)) {
+         $input['_date_creation_calendars_id'] = $calendars;
+      }
    }
 }

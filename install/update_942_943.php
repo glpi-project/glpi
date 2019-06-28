@@ -124,6 +124,24 @@ function update942to943() {
    }
    /** /Fix URL of images inside ITIL objects contents */
 
+   // add is_private field to change and problems
+   $migration->addField('glpi_changetasks', 'is_private', 'bool');
+   $migration->addField('glpi_problemtasks', 'is_private', 'bool');
+   $migration->addKey('glpi_changetasks', 'is_private');
+   $migration->addKey('glpi_problemtasks', 'is_private');
+
+   /** Crontask missing from fresh install */
+   CronTask::Register(
+      'PurgeLogs',
+      'PurgeLogs',
+      7 * DAY_TIMESTAMP,
+      [
+         'param' => 24,
+         'mode' => CronTask::MODE_EXTERNAL
+      ]
+   );
+   /** /Crontask missing from fresh install */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
