@@ -34,14 +34,21 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
+use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Sabre\VObject\Component\VCalendar;
+use Sabre\VObject\Component\VTodo;
+use Sabre\VObject\Property\FlatText;
+use Sabre\VObject\Property\IntegerValue;
 
 /**
  * ProjectTask Class
  *
  * @since 0.85
 **/
-class ProjectTask extends CommonDBChild {
+class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface {
    use PlanningEvent;
+   use VobjectConverterTrait;
 
    // From CommonDBTM
    public $dohistory = true;
@@ -143,6 +150,7 @@ class ProjectTask extends CommonDBChild {
          [
             ProjectTask_Ticket::class,
             ProjectTaskTeam::class,
+            VObject::class,
          ]
       );
 
@@ -291,10 +299,12 @@ class ProjectTask extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       // ADD Documents
-      Document_Item::cloneItem('ProjectTaskTemplate',
-                               $this->input["projecttasktemplates_id"],
-                               $this->fields['id'],
-                               $this->getType());
+      if (array_key_exists('projecttasktemplates_id', $this->input)) {
+         Document_Item::cloneItem('ProjectTaskTemplate',
+                                  $this->input["projecttasktemplates_id"],
+                                  $this->fields['id'],
+                                  $this->getType());
+      }
 
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
          // Clean reload of the project
@@ -408,6 +418,9 @@ class ProjectTask extends CommonDBChild {
          return false;
       }
 
+      if (!isset($input['uuid'])) {
+         $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+      }
       if (!isset($input['users_id'])) {
          $input['users_id'] = Session::getLoginUserID();
       }
@@ -1860,5 +1873,134 @@ class ProjectTask extends CommonDBChild {
          'percent_done'       => $percent_done,
       ]);
       return true;
+   }
+
+   public static function getGroupItemsAsVCalendars($groups_id) {
+
+      return self::getItemsAsVCalendars(
+         [
+            ProjectTaskTeam::getTableField('itemtype') => Group::class,
+            ProjectTaskTeam::getTableField('items_id') => $groups_id,
+         ]
+      );
+   }
+
+   public static function getUserItemsAsVCalendars($users_id) {
+
+      return self::getItemsAsVCalendars(
+         [
+            ProjectTaskTeam::getTableField('itemtype') => User::class,
+            ProjectTaskTeam::getTableField('items_id') => $users_id,
+         ]
+      );
+   }
+
+   /**
+    * Returns items as VCalendar objects.
+    *
+    * @param array $criteria
+    *
+    * @return \Sabre\VObject\Component\VCalendar[]
+    */
+   private static function getItemsAsVCalendars(array $criteria) {
+
+      global $DB;
+
+      $query = [
+         'FROM'       => self::getTable(),
+         'INNER JOIN' => [
+            ProjectTaskTeam::getTable() => [
+               'ON' => [
+                  ProjectTaskTeam::getTable() => 'projecttasks_id',
+                  self::getTable()            => 'id',
+               ],
+            ],
+         ],
+         'WHERE'      => $criteria,
+      ];
+
+      $tasks_iterator = $DB->request($query);
+
+      $vcalendars = [];
+      foreach ($tasks_iterator as $task) {
+         $item = new self();
+         $item->getFromResultSet($task);
+         $vcalendar = $item->getAsVCalendar();
+         if (null !== $vcalendar) {
+            $vcalendars[] = $vcalendar;
+         }
+      }
+
+      return $vcalendars;
+   }
+
+   public function getAsVCalendar() {
+
+      global $CFG_GLPI;
+
+      if (!$this->canViewItem()) {
+         return null;
+      }
+
+      $is_task = true;
+      $is_planned = !empty($this->fields['plan_start_date']) && !empty($this->fields['plan_end_date']);
+      $target_component = $this->getTargetCaldavComponent($is_planned, $is_task);
+      if (null === $target_component) {
+         return null;
+      }
+
+      $vcalendar = $this->getVCalendarForItem($this, $target_component);
+
+      $fields = Html::entity_decode_deep($this->fields);
+      $utc_tz = new \DateTimeZone('UTC');
+
+      $vcomp = $vcalendar->getBaseComponent();
+
+      if ('VTODO' === $target_component) {
+         if ($is_planned) {
+            $vcomp->DTSTART = (new \DateTime($fields['plan_start_date']))->setTimeZone($utc_tz);
+            $vcomp->DUE = (new \DateTime($fields['plan_end_date']))->setTimeZone($utc_tz);
+         }
+         $vcomp->STATUS = 100 == $fields['percent_done'] ? 'COMPLETED' : 'NEEDS-ACTION';
+         $vcomp->{'PERCENT-COMPLETE'} = $fields['percent_done'];
+      } else if ('VEVENT' === $target_component) {
+         if ($is_planned) {
+            $vcomp->DTSTART = (new \DateTime($fields['plan_start_date']))->setTimeZone($utc_tz);
+            $vcomp->DTEND   = (new \DateTime($fields['plan_end_date']))->setTimeZone($utc_tz);
+         }
+      }
+
+      $vcomp->URL = $CFG_GLPI['url_base'] . Project::getFormURLWithID($fields['projects_id'], false);
+
+      return $vcalendar;
+   }
+
+   public function getInputFromVCalendar(VCalendar $vcalendar) {
+
+      $vtodo = $vcalendar->getBaseComponent();
+
+      if (!($vtodo instanceof VTodo)) {
+         throw new UnexpectedValueException('Base component of VCALENDAR object must be a VTODO');
+      }
+
+      if (null !== $vtodo->RRULE) {
+         throw new UnexpectedValueException('RRULE not yet implemented for Project tasks');
+      }
+
+      $input = $this->getCommonInputFromVcomponent($vtodo);
+
+      if ($vtodo->DESCRIPTION instanceof FlatText) {
+         // Description is not in HTML format
+         $input['content'] = $vtodo->DESCRIPTION->getValue();
+      }
+
+      if ($vtodo->{'PERCENT-COMPLETE'} instanceof IntegerValue) {
+         $input['percent_done'] = $vtodo->{'PERCENT-COMPLETE'}->getValue();
+      } else if (array_key_exists('state', $input) && $input['state'] == \Planning::DONE) {
+         // Consider task as done if status is DONE
+         $input['percent_done'] = 100;
+      }
+
+      return $input;
    }
 }

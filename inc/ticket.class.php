@@ -7106,6 +7106,7 @@ class Ticket extends CommonITILObject {
                      $task2['sourceitems_id'] = $id;
                      $task2['content'] = $DB->escape($task2['content']);
                      unset($task2['id']);
+                     unset($task2['uuid']);
                      if (!$task->add($task2)) {
                         //Cannot add followup. Abort/fail the merge
                         throw new \RuntimeException(sprintf(__('Failed to add task to ticket %d'), $merge_target_id), 1);

@@ -2002,6 +2002,8 @@ class Config extends CommonDBTM {
                  'check'   => 'TrueBV\\Punycode' ],
                [ 'name'    => 'iamcal/lib_autolink',
                  'check'   => 'autolink' ],
+               [ 'name'    => 'sabre/dav',
+                 'check'   => 'Sabre\\DAV\\Version' ],
                [ 'name'    => 'sabre/vobject',
                  'check'   => 'Sabre\\VObject\\Component' ],
                [ 'name'    => 'zendframework/zend-cache',
@@ -2026,6 +2028,8 @@ class Config extends CommonDBTM {
                  'check'   => 'RRule\\RRule' ],
                [ 'name'    => 'blueimp/jquery-file-upload',
                  'check'   => 'UploadHandler' ],
+               [ 'name'    => 'ramsey/uuid',
+                 'check'   => 'Ramsey\\Uuid\\Uuid' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [

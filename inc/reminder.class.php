@@ -34,14 +34,20 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
+use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Sabre\VObject\Component\VCalendar;
+use Sabre\VObject\Component\VJournal;
+use Sabre\VObject\Component\VTodo;
 
 /**
  * Reminder Class
 **/
-class Reminder extends CommonDBVisible {
+class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface {
    use PlanningEvent {
       post_getEmpty as trait_post_getEmpty;
    }
+   use VobjectConverterTrait;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -163,6 +169,7 @@ class Reminder extends CommonDBVisible {
             PlanningRecall::class,
             Profile_Reminder::class,
             Reminder_User::class,
+            VObject::class,
          ]
       );
    }
@@ -935,5 +942,110 @@ class Reminder extends CommonDBVisible {
          $values = parent::getRights();
       }
       return $values;
+   }
+
+   public static function getGroupItemsAsVCalendars($groups_id) {
+
+      return self::getItemsAsVCalendars(
+         [
+            'DISTINCT'  => true,
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+               Group_Reminder::getTable() => [
+                  'ON' => [
+                     Group_Reminder::getTable() => 'reminders_id',
+                     self::getTable()           => 'id',
+                  ],
+               ]
+            ],
+            'WHERE'     => [
+               Group_Reminder::getTableField('groups_id') => $groups_id,
+            ],
+         ]
+      );
+   }
+
+   public static function getUserItemsAsVCalendars($users_id) {
+
+      return self::getItemsAsVCalendars(
+         [
+            'FROM'  => self::getTable(),
+            'WHERE' => [
+               self::getTableField('users_id') => $users_id,
+            ],
+         ]
+      );
+   }
+
+   /**
+    * Returns items as VCalendar objects.
+    *
+    * @param array $query
+    *
+    * @return \Sabre\VObject\Component\VCalendar[]
+    */
+   private static function getItemsAsVCalendars(array $query) {
+
+      global $DB;
+
+      $reminder_iterator = $DB->request($query);
+
+      $vcalendars = [];
+      foreach ($reminder_iterator as $reminder) {
+         $item = new self();
+         $item->getFromResultSet($reminder);
+         $vcalendar = $item->getAsVCalendar();
+         if (null !== $vcalendar) {
+            $vcalendars[] = $vcalendar;
+         }
+      }
+
+      return $vcalendars;
+   }
+
+   public function getAsVCalendar() {
+
+      if (!$this->canViewItem()) {
+         return null;
+      }
+
+      // Transform HTML text to plain text
+      $this->fields['text'] = Html::clean(
+         Toolbox::unclean_cross_side_scripting_deep(
+            $this->fields['text']
+         )
+      );
+
+      $is_task = in_array($this->fields['state'], [Planning::DONE, Planning::TODO]);
+      $is_planned = !empty($this->fields['begin']) && !empty($this->fields['end']);
+      $target_component = $this->getTargetCaldavComponent($is_planned, $is_task);
+      if (null === $target_component) {
+         return null;
+      }
+
+      $vcalendar = $this->getVCalendarForItem($this, $target_component);
+
+      return $vcalendar;
+   }
+
+   public function getInputFromVCalendar(VCalendar $vcalendar) {
+
+      $vcomp = $vcalendar->getBaseComponent();
+
+      if (!($vcomp instanceof VTodo) && ! ($vcomp instanceof VJournal)) {
+         throw new UnexpectedValueException('Base component of VCALENDAR object must be a VTODO or a VJOURNAL');
+      }
+
+      $input = $this->getCommonInputFromVcomponent($vcomp);
+
+      $input['text'] = $input['content'];
+      unset($input['content']);
+
+      if ($vcomp instanceof VTodo && !array_key_exists('state', $input)) {
+         // Force default state to TODO or reminder will be considered as VEVENT
+         $input['state'] = \Planning::TODO;
+      }
+
+      return $input;
    }
 }

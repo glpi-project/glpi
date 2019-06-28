@@ -103,7 +103,7 @@ class PlanningExternalEventTemplate extends CommonDropdown {
             break;
 
          case 'rrule' :
-            echo self::showRepetitionForm($this->fields['rrule']);
+            echo self::showRepetitionForm($this->fields['rrule'] ?? '');
             break;
       }
    }

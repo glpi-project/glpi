@@ -2084,4 +2084,47 @@ class Planning extends CommonGLPI {
    static function viewChanged($view_name = "ListView") {
       $_SESSION['glpi_plannings']['lastview'] = $view_name;
    }
+
+   /**
+    * Returns actor type from 'planning' key (key comes from user 'plannings' field).
+    *
+    * @param string $key
+    *
+    * @return string|null
+    */
+   public static function getActorTypeFromPlanningKey($key) {
+      if (preg_match('/group_\d+_users/', $key)) {
+         return Group_User::getType();
+      }
+      $itemtype = ucfirst(preg_replace('/^([a-z]+)_\d+$/', '$1', $key));
+      return class_exists($itemtype) ? $itemtype : null;
+   }
+
+   /**
+    * Returns actor id from 'planning' key (key comes from user 'plannings' field).
+    *
+    * @param string $key
+    *
+    * @return integer|null
+    */
+   public static function getActorIdFromPlanningKey($key) {
+      $items_id = preg_replace('/^[a-z]+_(\d+)(?:_[a-z]+)?$/', '$1', $key);
+      return is_numeric($items_id) ? (int)$items_id : null;
+   }
+
+   /**
+    * Returns planning key for given actor (key is used in user 'plannings' field).
+    *
+    * @param string  $itemtype
+    * @param integer $items_id
+    *
+    * @return string
+    */
+   public static function getPlanningKeyForActor($itemtype, $items_id) {
+      if ('Group_User' === $itemtype) {
+         return 'group_' . $items_id . '_users';
+      }
+
+      return strtolower($itemtype) . '_' . $items_id;
+   }
 }
