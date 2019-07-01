@@ -829,7 +829,7 @@ class Toolbox {
                        ? null : (is_resource($value)
                        ? $value : $DB->escape(
                           str_replace(
-                             ['&#039;', '&#39;', '&#x27;', '&quot'],
+                             ['&#039;', '&#39;', '&#x27;', '&quot;'],
                              ["'", "'", "'", "'"],
                              $value
                           )
