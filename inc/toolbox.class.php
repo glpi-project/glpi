@@ -830,7 +830,7 @@ class Toolbox {
                        ? $value : $DB->escape(
                           str_replace(
                              ['&#039;', '&#39;', '&#x27;', '&quot;'],
-                             ["'", "'", "'", "'"],
+                             ["'", "'", "'", '"'],
                              $value
                           )
                        ))
