@@ -946,7 +946,7 @@ class Ticket extends CommonITILObject {
 
 
    function prepareInputForUpdate($input) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       // Get ticket : need for comparison
       $this->getFromDB($input['id']);
@@ -1671,8 +1671,6 @@ class Ticket extends CommonITILObject {
 
 
    function prepareInputForAdd($input) {
-      global $CFG_GLPI, $DB;
-
       // save value before clean;
       $title = ltrim($input['name']);
       // Standard clean datas
@@ -2685,8 +2683,6 @@ class Ticket extends CommonITILObject {
 
 
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
-
       switch ($ma->getAction()) {
          case 'merge_as_followup' :
             $itemtype = $ma->getItemtype(true);
@@ -3753,7 +3749,7 @@ class Ticket extends CommonITILObject {
     * @return nothing (print the helpdesk)
    **/
    function showFormHelpdesk($ID, $ticket_template = false) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!self::canCreate()) {
          return false;
@@ -5439,8 +5435,6 @@ class Ticket extends CommonITILObject {
     * @param $size (default 25)
    **/
    static function showDocumentAddButton($size = 25) {
-      global $CFG_GLPI;
-
       echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
       echo "<span id='addfilebutton' class='fa fa-plus pointer' title=\"".__s('Add')."\"".
              "\" onClick=\"if (nbfiles<maxfiles){
@@ -6063,7 +6057,7 @@ class Ticket extends CommonITILObject {
 
 
    static function showCentralNewList() {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!Session::haveRight(self::$rightname, self::READALL)) {
          return false;
@@ -6123,7 +6117,7 @@ class Ticket extends CommonITILObject {
     * @return void (display a table)
    **/
    static function showListForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!Session::haveRightsOr(self::$rightname,
                                   [self::READALL, self::READMY, self::READASSIGN, CREATE])) {
@@ -6373,8 +6367,6 @@ class Ticket extends CommonITILObject {
     * @param $forcetab  string   name of the tab to force at the display (default '')
    **/
    static function showVeryShort($ID, $forcetab = '') {
-      global $CFG_GLPI;
-
       // Prints a job in short form
       // Should be called in a <table>-segment
       // Print links or not in case of user view
@@ -7052,7 +7044,6 @@ class Ticket extends CommonITILObject {
     * @return void
     */
    private function fillInputForBusinessRules(array &$input) {
-
       global $DB;
 
       $entities_id = isset($input['entities_id'])
