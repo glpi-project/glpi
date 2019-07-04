@@ -126,7 +126,7 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
    }
 
 
-   function getSpecificTargets($data, $options) {
+   function addSpecificTargets($data, $options) {
       //Look for all targets whose type is Notification::ITEM_USER
       switch ($data['type']) {
          case Notification::USER_TYPE :
