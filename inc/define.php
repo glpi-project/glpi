@@ -464,6 +464,8 @@ $CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment',
 
 $CFG_GLPI["cluster_types"]        = ['Computer', 'NetworkEquipment'];
 
+$CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
+
 $CFG_GLPI['javascript'] = [
    'central'   => [
       'central'   => ['fullcalendar', 'tinymce']

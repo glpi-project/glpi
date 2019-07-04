@@ -148,7 +148,6 @@ class Monitor extends CommonDBTM {
          [
             Computer_Item::class,
             Item_Project::class,
-            Item_OperatingSystem::class,
          ]
       );
 

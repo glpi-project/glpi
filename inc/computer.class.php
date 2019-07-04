@@ -299,7 +299,6 @@ class Computer extends CommonDBTM {
             ComputerAntivirus::class,
             ComputerVirtualMachine::class,
             Item_Disk::class,
-            Item_OperatingSystem::class,
             Item_Project::class,
          ]
       );
