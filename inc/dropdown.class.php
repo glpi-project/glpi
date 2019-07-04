@@ -2346,9 +2346,11 @@ class Dropdown {
                   $swhere["namet.value"] = ['LIKE', $search];
                }
 
-               // Also search by id
-               if ($displaywith && in_array('id', $post['displaywith'])) {
-                  $swhere["$table.id"] = ['LIKE', $search];
+               // search also in displaywith columns
+               if (count($post['displaywith'])) {
+                  foreach ($post['displaywith'] as $with) {
+                     $swhere["$table.$with"] = ['LIKE', $search];
+                  }
                }
 
                $where[] = ['OR' => $swhere];
