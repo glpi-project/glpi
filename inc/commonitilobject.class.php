@@ -3690,6 +3690,7 @@ abstract class CommonITILObject extends CommonDBTM {
                    || ($d['users_id'] == Session::getLoginUserID())) {
                   $opt      = ['awesome-class' => 'fa-envelope',
                                     'popup' => $linkuser->getFormURLWithID($d['id'])];
+                  echo "&nbsp;";
                   Html::showToolTip($text, $opt);
                }
             }
