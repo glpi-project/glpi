@@ -288,16 +288,17 @@ class Toolbox {
    **/
    static function clean_cross_side_scripting_deep($value) {
 
+      if ((array) $value === $value) {
+         return array_map([__CLASS__, 'clean_cross_side_scripting_deep'], $value);
+      }
+
+      if (is_null($value) || is_resource($value) || is_int($value) || is_float($value)) {
+         return $value;
+      }
+
       $in  = ['<', '>'];
       $out = ['&lt;', '&gt;'];
-
-      $value = ((array) $value === $value)
-                  ? array_map([__CLASS__, 'clean_cross_side_scripting_deep'], $value)
-                  : (is_null($value)
-                        ? null : (is_resource($value)
-                                     ? $value : str_replace($in, $out, $value)));
-
-      return $value;
+      return str_replace($in, $out, $value);
    }
 
 
@@ -312,16 +313,17 @@ class Toolbox {
    **/
    static function unclean_cross_side_scripting_deep($value) {
 
+      if ((array) $value === $value) {
+         return array_map([__CLASS__, 'unclean_cross_side_scripting_deep'], $value);
+      }
+
+      if (is_null($value) || is_resource($value) || is_int($value) || is_float($value)) {
+         return $value;
+      }
+
       $in  = ['<', '>'];
       $out = ['&lt;', '&gt;'];
-
-      $value = ((array) $value === $value)
-                  ? array_map([__CLASS__, 'unclean_cross_side_scripting_deep'], $value)
-                  : (is_null($value)
-                        ? null : (is_resource($value)
-                                     ? $value : str_replace($out, $in, $value)));
-
-      return $value;
+      return str_replace($out, $in, $value);
    }
 
 
@@ -339,14 +341,11 @@ class Toolbox {
    static function unclean_html_cross_side_scripting_deep($value) {
       include_once(GLPI_HTMLAWED);
 
-      $in  = ['<', '>'];
-      $out = ['&lt;', '&gt;'];
-
-      $value = ((array) $value === $value)
-                  ? array_map([__CLASS__, 'unclean_html_cross_side_scripting_deep'], $value)
-                  : (is_null($value)
-                      ? null : (is_resource($value)
-                                  ? $value : str_replace($out, $in, $value)));
+      if ((array) $value === $value) {
+         $value = array_map([__CLASS__, 'unclean_html_cross_side_scripting_deep'], $value);
+      } else {
+         $value = self::unclean_cross_side_scripting_deep($value);
+      }
 
       // revert unclean inside <pre>
       if (!is_array($value)) {
