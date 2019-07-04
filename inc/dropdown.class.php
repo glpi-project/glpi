@@ -2708,7 +2708,7 @@ class Dropdown {
             // search also in displaywith columns
             if (count($post['displaywith'])) {
                foreach ($post['displaywith'] as $with) {
-                  $swhere["$table.$with"] = ['LIKE', $search];
+                  $orwhere["$table.$with"] = ['LIKE', $search];
                }
             }
 
