@@ -357,11 +357,11 @@ class Toolbox extends \GLPITestCase {
 
    protected function cleanProvider() {
       return [
-         ['mystring', 'mystring'],
-         ['<strong>string</strong>', '&lt;strong&gt;string&lt;/strong&gt;'],
+         ['mystring', 'mystring', null, 15, 0.56, false],
+         ['<strong>string</strong>', '&lt;strong&gt;string&lt;/strong&gt;', null, 15, 0.56, false],
          [
-            ['<strong>string</strong>', 'string', '<p>my</p>'],
-            ['&lt;strong&gt;string&lt;/strong&gt;', 'string', '&lt;p&gt;my&lt;/p&gt;']
+            [null, '<strong>string</strong>', 3.2, 'string', true, '<p>my</p>', 9798],
+            [null, '&lt;strong&gt;string&lt;/strong&gt;', 3.2, 'string', true, '&lt;p&gt;my&lt;/p&gt;', 9798]
          ]
       ];
    }
