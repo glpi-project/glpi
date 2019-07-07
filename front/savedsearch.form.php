@@ -65,7 +65,11 @@ if (isset($_POST["add"])) {
    $savedsearch->createNotif();
    Html::back();
 } else {//print computer information
-   Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "savedsearch");
+   if (Session::getCurrentInterface() == "helpdesk") {
+      Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
+   } else {
+      Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'tools', 'savedsearch');
+   }
    //show computer form to add
    $savedsearch->display(['id' => $_GET["id"]]);
    Html::footer();
