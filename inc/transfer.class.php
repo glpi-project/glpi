@@ -113,7 +113,7 @@ class Transfer extends CommonDBTM {
     *@param $options    options used to transfer
    **/
    function moveItems($items, $to, $options) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       // unset notifications
       NotificationSetting::disableAll();
@@ -170,44 +170,35 @@ class Transfer extends CommonDBTM {
             }
          }
 
-         // Simulate transfers To know which items need to be transfer
-         $this->simulateTransfer($items);
+         $DB->beginTransaction();
+         try {
+            // Simulate transfers To know which items need to be transfer
+            $this->simulateTransfer($items);
 
-         // Inventory Items : MONITOR....
-         $INVENTORY_TYPES = [
-            'Software', // Software first (to avoid copy during computer transfer)
-            'Computer', // Computer before all other items
-            'CartridgeItem',
-            'ConsumableItem',
-            'Monitor',
-            'NetworkEquipment',
-            'Peripheral',
-            'Phone',
-            'Printer',
-            'SoftwareLicense',
-            'Contact',
-            'Contract',
-            'Document',
-            'Supplier',
-            'Group',
-            'Link',
-            'Ticket',
-            'Problem',
-            'Change'
-         ];
+            // Inventory Items : MONITOR....
+            $INVENTORY_TYPES = [
+               'Software', // Software first (to avoid copy during computer transfer)
+               'Computer', // Computer before all other items
+               'CartridgeItem',
+               'ConsumableItem',
+               'Monitor',
+               'NetworkEquipment',
+               'Peripheral',
+               'Phone',
+               'Printer',
+               'SoftwareLicense',
+               'Contact',
+               'Contract',
+               'Document',
+               'Supplier',
+               'Group',
+               'Link',
+               'Ticket',
+               'Problem',
+               'Change'
+            ];
 
-         foreach ($INVENTORY_TYPES as $itemtype) {
-            $this->inittype = $itemtype;
-            if (isset($items[$itemtype]) && count($items[$itemtype])) {
-               foreach ($items[$itemtype] as $ID) {
-                  $this->transferItem($itemtype, $ID, $ID);
-               }
-            }
-         }
-
-         //handle all other types
-         foreach (array_keys($items) as $itemtype) {
-            if (!in_array($itemtype, $INVENTORY_TYPES)) {
+            foreach ($INVENTORY_TYPES as $itemtype) {
                $this->inittype = $itemtype;
                if (isset($items[$itemtype]) && count($items[$itemtype])) {
                   foreach ($items[$itemtype] as $ID) {
@@ -215,11 +206,27 @@ class Transfer extends CommonDBTM {
                   }
                }
             }
-         }
 
-         // Clean unused
-         // FIXME: only if Software or SoftwareLicense has been changed?
-         $this->cleanSoftwareVersions();
+            //handle all other types
+            foreach (array_keys($items) as $itemtype) {
+               if (!in_array($itemtype, $INVENTORY_TYPES)) {
+                  $this->inittype = $itemtype;
+                  if (isset($items[$itemtype]) && count($items[$itemtype])) {
+                     foreach ($items[$itemtype] as $ID) {
+                        $this->transferItem($itemtype, $ID, $ID);
+                     }
+                  }
+               }
+            }
+
+            // Clean unused
+            // FIXME: only if Software or SoftwareLicense has been changed?
+            $this->cleanSoftwareVersions();
+            $DB->commit();
+         } catch (Exception $e) {
+            $DB->rollBack();
+            Toolbox::logError($e->getMessage());
+         }
       } // $to >= 0
    }
 
