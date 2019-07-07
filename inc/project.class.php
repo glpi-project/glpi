@@ -694,6 +694,30 @@ class Project extends CommonDBTM {
          'computation'        => '(SUM(TABLE.`cost`))'
       ];
 
+      $itil_count_types = [
+         'Change'  => _x('quantity', 'Number of changes'),
+         'Problem' => _x('quantity', 'Number of problems'),
+         'Ticket'  => _x('quantity', 'Number of tickets'),
+      ];
+      $index = 92;
+      foreach ($itil_count_types as $itil_type => $label) {
+         $tab[] = [
+            'id'                 => $index,
+            'table'              => Itil_Project::getTable(),
+            'field'              => 'id',
+            'name'               => $label,
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+               'jointype'           => 'child',
+               'condition'          => "AND NEWTABLE.`itemtype` = '$itil_type'"
+            ]
+         ];
+         $index++;
+      }
+
       $tab[] = [
          'id'                 => 'project_team',
          'name'               => ProjectTeam::getTypeName(),
@@ -775,29 +799,246 @@ class Project extends CommonDBTM {
          ]
       ];
 
-      $itil_count_types = [
-         'Change'  => _x('quantity', 'Number of changes'),
-         'Problem' => _x('quantity', 'Number of problems'),
-         'Ticket'  => _x('quantity', 'Number of tickets'),
+      $tab[] = [
+         'id'                 => 'project_task',
+         'name'               => ProjectTask::getTypeName(),
       ];
-      $index = 92;
-      foreach ($itil_count_types as $itil_type => $label) {
-         $tab[] = [
-            'id'                 => $index,
-            'table'              => Itil_Project::getTable(),
-            'field'              => 'id',
-            'name'               => $label,
-            'datatype'           => 'count',
-            'forcegroupby'       => true,
-            'usehaving'          => true,
-            'massiveaction'      => false,
-            'joinparams'         => [
-               'jointype'           => 'child',
-               'condition'          => "AND NEWTABLE.`itemtype` = '$itil_type'"
+
+      $tab[] = [
+         'id'                 => '111',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '112',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'content',
+         'name'               => __('Description'),
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '113',
+         'table'              => ProjectState::getTable(),
+         'field'              => 'name',
+         'name'               => _x('item', 'State'),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'          => 'item_revert',
+            'specific_itemtype' => 'ProjectState',
+            'beforejoin'        => [
+               'table'      => ProjectTask::getTable(),
+               'joinparams' => [
+                  'jointype' => 'child',
+               ]
             ]
-         ];
-         $index++;
-      }
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '114',
+         'table'              => ProjectTaskType::getTable(),
+         'field'              => 'name',
+         'name'               => __('Type'),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'          => 'item_revert',
+            'specific_itemtype' => 'ProjectTaskType',
+            'beforejoin'        => [
+               'table'      => ProjectTask::getTable(),
+               'joinparams' => [
+                  'jointype' => 'child',
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '115',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'date',
+         'name'               => __('Opening date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '116',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '117',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'percent_done',
+         'name'               => __('Percent done'),
+         'datatype'           => 'number',
+         'unit'               => '%',
+         'min'                => 0,
+         'max'                => 100,
+         'step'               => 5,
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '118',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'plan_start_date',
+         'name'               => __('Planned start date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '119',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'plan_end_date',
+         'name'               => __('Planned end date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '120',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'real_start_date',
+         'name'               => __('Real start date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'real_end_date',
+         'name'               => __('Real end date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '122',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'planned_duration',
+         'name'               => __('Planned Duration'),
+         'datatype'           => 'timestamp',
+         'min'                => 0,
+         'max'                => 100*HOUR_TIMESTAMP,
+         'step'               => HOUR_TIMESTAMP,
+         'addfirstminutes'    => true,
+         'inhours'            => true,
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '123',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'effective_duration',
+         'name'               => __('Effective duration'),
+         'datatype'           => 'timestamp',
+         'min'                => 0,
+         'max'                => 100*HOUR_TIMESTAMP,
+         'step'               => HOUR_TIMESTAMP,
+         'addfirstminutes'    => true,
+         'inhours'            => true,
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '124',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '125',
+         'table'              => ProjectTask::getTable(),
+         'field'              => 'is_milestone',
+         'name'               => __('Milestone'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'joinparams'         => [
+            'jointype'  => 'child'
+         ]
+      ];
 
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
