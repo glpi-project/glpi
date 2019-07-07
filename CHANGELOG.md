@@ -13,6 +13,7 @@ The present file will list all changes made to the project; according to the
 - CLI commands to enable and disable maintenance mode.
 - Operating system links on Monitors, Peripherals, Phones and Printers.
 - Add datacenter items to global search
+- Project task search options for Projects
 
 ### Changed
 
