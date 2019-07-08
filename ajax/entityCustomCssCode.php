@@ -48,7 +48,8 @@ if (isset($_POST['enable_custom_css']) && isset($_POST['entities_id'])) {
       $custom_css_code = Entity::getUsedConfig(
          'enable_custom_css',
          $entity->fields['entities_id'],
-         'custom_css_code'
+         'custom_css_code',
+         ''
       );
    } else {
       $custom_css_code = $entity->fields['custom_css_code'];
