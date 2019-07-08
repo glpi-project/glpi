@@ -2346,9 +2346,11 @@ class Dropdown {
                   $swhere["namet.value"] = ['LIKE', $search];
                }
 
-               // Also search by id
-               if ($displaywith && in_array('id', $post['displaywith'])) {
-                  $swhere["$table.id"] = ['LIKE', $search];
+               // search also in displaywith columns
+               if ($displaywith && count($post['displaywith'])) {
+                  foreach ($post['displaywith'] as $with) {
+                     $swhere["$table.$with"] = ['LIKE', $search];
+                  }
                }
 
                $where[] = ['OR' => $swhere];
@@ -2702,10 +2704,14 @@ class Dropdown {
             if ($post['itemtype'] == "SoftwareLicense") {
                $orwhere['glpi_softwares.name'] = ['LIKE', $search];
             }
-            // Also search by id
-            if ($displaywith && in_array('id', $post['displaywith'])) {
-               $orwhere["$table.id"] = ['LIKE', $search];
+
+            // search also in displaywith columns
+            if ($displaywith && count($post['displaywith'])) {
+               foreach ($post['displaywith'] as $with) {
+                  $orwhere["$table.$with"] = ['LIKE', $search];
+               }
             }
+
             $where[] = ['OR' => $orwhere];
          }
          $addselect = [];
