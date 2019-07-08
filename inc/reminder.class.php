@@ -958,9 +958,9 @@ class Reminder extends CommonDBVisible {
       }
 
       if (!$options['display_done_events']) {
-         $WHERE[] = [
+         $WHERE['OR'] = [
             'state'  => Planning::TODO,
-            'OR'     => [
+            'AND'     => [
                'state'  => Planning::INFO,
                'end'    => ['>', new \QueryExpression('NOW()')]
             ]

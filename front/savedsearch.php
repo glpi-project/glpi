@@ -34,7 +34,11 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
-Html::header(__('Saved searches'), $_SERVER['PHP_SELF'], 'tools', 'savedsearch');
+if (Session::getCurrentInterface() == "helpdesk") {
+   Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
+} else {
+   Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'tools', 'savedsearch');
+}
 
 $savedsearch = new SavedSearch();
 

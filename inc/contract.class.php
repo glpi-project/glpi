@@ -1368,9 +1368,10 @@ class Contract extends CommonDBTM {
                   /**
                    * Next alert
                    */
-                  // Computation of first alert : Contract [begin date + periodicity] - Config [alert xxx days before]
+                  // Computation of first alert : Contract [begin date + initial duration] - Config [alert xxx days before]
+                  $initial_duration = $data['duration'] != 0 ? $data['duration'] : $data['periodicity'];
                   $next_alert = [
-                     $type => date('Y-m-d', strtotime($data['begin_date'] . " +" . $data['periodicity'] . " month -" . ($before) . " day")),
+                     $type => date('Y-m-d', strtotime($data['begin_date'] . " +" . $initial_duration . " month -" . ($before) . " day")),
                   ];
                   // If a notice is defined
                   if ($event == Alert::NOTICE) {
