@@ -698,16 +698,16 @@
         },
         {
             "name": "scssphp/scssphp",
-            "version": "1.0.0",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/scssphp/scssphp.git",
-                "reference": "6c8734b6edcf6c2fa785ad874b998fa854a7d030"
+                "reference": "56a2ac8b9254dd14b5e78470fa62358fbef65634"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/6c8734b6edcf6c2fa785ad874b998fa854a7d030",
-                "reference": "6c8734b6edcf6c2fa785ad874b998fa854a7d030",
+                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/56a2ac8b9254dd14b5e78470fa62358fbef65634",
+                "reference": "56a2ac8b9254dd14b5e78470fa62358fbef65634",
                 "shasum": ""
             },
             "require": {
@@ -753,7 +753,7 @@
                 "scss",
                 "stylesheet"
             ],
-            "time": "2019-06-05T01:22:01+00:00"
+            "time": "2019-07-07T02:24:57+00:00"
         },
         {
             "name": "sebastian/diff",
