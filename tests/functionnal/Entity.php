@@ -118,8 +118,8 @@ class Entity extends DbTestCase {
       $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
       $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $ackey_prefix = $this->nscache . ':ancestors_cache_';
-      $sckey_prefix = $this->nscache . ':sons_cache_';
+      $ackey_prefix = $this->getCacheNamespace() . ':ancestors_cache_';
+      $sckey_prefix = $this->getCacheNamespace() . ':sons_cache_';
       $sckey_ent1   = $sckey_prefix . md5('glpi_entities' . $ent1);
       $sckey_ent2   = $sckey_prefix . md5('glpi_entities' . $ent2);
 
