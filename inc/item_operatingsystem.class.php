@@ -562,14 +562,7 @@ class Item_OperatingSystem extends CommonDBRelation {
 
       $specificities              = parent::getRelationMassiveActionsSpecificities();
 
-      $specificities['itemtypes'] = [
-         'Computer',
-         'Monitor',
-         'NetworkEquipment',
-         'Peripheral',
-         'Phone',
-         'Printer'
-      ];
+      $specificities['itemtypes'] = $CFG_GLPI['operatingsystem_types'];
       return $specificities;
    }
    static function showMassiveActionsSubForm(MassiveAction $ma) {

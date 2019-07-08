@@ -99,7 +99,6 @@ class NetworkEquipment extends CommonDBTM {
       $this->deleteChildrenAndRelationsFromDb(
          [
             Certificate_Item::class,
-            Item_OperatingSystem::class,
             Item_Project::class,
          ]
       );
