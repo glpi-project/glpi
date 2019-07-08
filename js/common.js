@@ -906,11 +906,11 @@ function markMatch (text, term) {
    }
 
    // Put in whatever text is before the match
-   _result.text(text.substring(0, match));
+   _result.html(text.substring(0, match));
 
    // Mark the match
    var _match = $('<span class=\'select2-rendered__match\'></span>');
-   _match.text(text.substring(match, match + term.length));
+   _match.html(text.substring(match, match + term.length));
 
    // Append the matching text
    _result.append(_match);
@@ -947,7 +947,7 @@ var templateResult = function(result) {
          return _elt;
       }
 
-      var _term = query.term || '';
+      var _term = jQuery.fn.select2.defaults.defaults.escapeMarkup(query.term || '');
       var markup = markMatch(text, _term);
 
       if (result.level) {
