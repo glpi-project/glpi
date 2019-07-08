@@ -174,8 +174,12 @@ class Transfer extends CommonDBTM {
             }
          }
 
-         $DB->beginTransaction();
+         $intransaction = $DB->inTransaction();
          try {
+            if (!$intransaction) {
+               $DB->beginTransaction();
+            }
+
             // Simulate transfers To know which items need to be transfer
             $this->simulateTransfer($items);
 
@@ -226,9 +230,13 @@ class Transfer extends CommonDBTM {
             // Clean unused
             // FIXME: only if Software or SoftwareLicense has been changed?
             $this->cleanSoftwareVersions();
-            $DB->commit();
+            if (!$intransaction && $DB->inTransaction()) {
+               $DB->commit();
+            }
          } catch (Exception $e) {
-            $DB->rollBack();
+            if (!$intransaction && $DB->inTransaction()) {
+               $DB->rollBack();
+            }
             Toolbox::logError($e->getMessage());
          }
       } // $to >= 0
