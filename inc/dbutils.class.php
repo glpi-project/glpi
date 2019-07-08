@@ -670,7 +670,7 @@ final class DbUtils {
    public function getSonsOf($table, $IDf) {
       global $DB, $GLPI_CACHE;
 
-      $ckey = $table . '_sons_cache_' . $IDf;
+      $ckey = 'sons_cache_' . md5($table . $IDf);
       $sons = false;
 
       if (Toolbox::useCache()) {
@@ -777,11 +777,11 @@ final class DbUtils {
    public function getAncestorsOf($table, $items_id) {
       global $DB, $GLPI_CACHE;
 
-      $ckey = $table . '_ancestors_cache_';
+      $ckey = 'ancestors_cache_';
       if (is_array($items_id)) {
-         $ckey .= md5(implode('|', $items_id));
+         $ckey .= md5($table . implode('|', $items_id));
       } else {
-         $ckey .= $items_id;
+         $ckey .= md5($table . $items_id);
       }
       $ancestors = [];
 
