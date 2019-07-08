@@ -75,6 +75,7 @@ class Printer  extends CommonDBTM {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('Item_OperatingSystem', $ong, $options);
       $this->addStandardTab('Cartridge', $ong, $options);
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Item_Disk', $ong, $options);
@@ -203,6 +204,9 @@ class Printer  extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
+         // ADD OS
+         Item_OperatingSystem::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
          // ADD Devices
          Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 

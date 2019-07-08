@@ -1788,6 +1788,7 @@ class Ticket extends CommonITILObject {
             foreach ($items as $items_id) {
                if ($item = getItemForItemtype($itemtype)) {
                   $item->getFromDB($items_id);
+                  $input['items_states']    = $item->fields['states_id'];
                   $input['items_locations'] = $item->fields['locations_id'];
                   if ($infocom->getFromDBforDevice($itemtype, $items_id)) {
                      $input['items_businesscriticities']

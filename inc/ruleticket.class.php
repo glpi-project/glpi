@@ -394,6 +394,12 @@ class RuleTicket extends Rule {
       $criterias['items_groups']['linkfield']               = 'items_groups';
       $criterias['items_groups']['type']                    = 'dropdown';
 
+      $criterias['items_states']['table']                   = 'glpi_states';
+      $criterias['items_states']['field']                   = 'completename';
+      $criterias['items_states']['name']                    = __('Item state');
+      $criterias['items_states']['linkfield']               = 'items_states';
+      $criterias['items_states']['type']                    = 'dropdown';
+
       $criterias['locations_id']['table']                   = 'glpi_locations';
       $criterias['locations_id']['field']                   = 'completename';
       $criterias['locations_id']['name']                    = __('Ticket location');

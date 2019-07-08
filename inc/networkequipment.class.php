@@ -99,7 +99,6 @@ class NetworkEquipment extends CommonDBTM {
       $this->deleteChildrenAndRelationsFromDb(
          [
             Certificate_Item::class,
-            Item_OperatingSystem::class,
             Item_Project::class,
          ]
       );
@@ -654,6 +653,8 @@ class NetworkEquipment extends CommonDBTM {
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
+
+      $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }

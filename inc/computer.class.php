@@ -299,7 +299,6 @@ class Computer extends CommonDBTM {
             ComputerAntivirus::class,
             ComputerVirtualMachine::class,
             Item_Disk::class,
-            Item_OperatingSystem::class,
             Item_Project::class,
          ]
       );
@@ -768,6 +767,8 @@ class Computer extends CommonDBTM {
       $tab = array_merge($tab, ComputerVirtualMachine::rawSearchOptionsToAdd(get_class($this)));
 
       $tab = array_merge($tab, ComputerAntivirus::rawSearchOptionsToAdd());
+
+      $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }
