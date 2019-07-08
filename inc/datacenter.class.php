@@ -139,6 +139,29 @@ class Datacenter extends CommonDBTM {
       return $tab;
    }
 
+
+   static public function rawSearchOptionsToAdd($itemtype) {
+      return [
+         [
+            'id'                 => 'datacenter',
+            'name'               => _n('Data center', 'Data centers', Session::getPluralNumber())
+         ],
+         [
+            'id'                 => '175',
+            'table'              => $itemtype::getTable(),
+            'field'              => '_virtual_datacenter_position', // virtual field
+            'additionalfields'   => [
+               'id',
+               'name'
+            ],
+            'name'               => __('Data center position'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'massiveaction'      => false
+         ],
+      ];
+   }
+
    static function getAdditionalMenuLinks() {
       $links = [];
       if (static::canView()) {

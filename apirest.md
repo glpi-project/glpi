@@ -518,7 +518,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/Computer/71?expand_drodpowns=true'
+'http://path/to/glpi/apirest.php/Computer/71?expand_dropdowns=true'
 
 < 200 OK
 < {
@@ -613,9 +613,9 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/Computer/?expand_drodpowns=true'
+'http://path/to/glpi/apirest.php/Computer/?expand_dropdowns=true'
 
-< 200 OK
+< 206 OK
 < Content-Range: 0-50/200
 < Accept-Range: 990
 < [
