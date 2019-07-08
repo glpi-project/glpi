@@ -583,7 +583,7 @@ class DbUtils extends DbTestCase {
       //- if $cache === 1; we expect cache to be empty before call, and populated after
       //- if $hit   === 1; we expect cache to be populated
 
-      $ckey_prefix = $this->nscache . ':ancestors_cache_';
+      $ckey_prefix = $this->getCacheNamespace() . ':ancestors_cache_';
       $ckey_ent0   = $ckey_prefix . md5('glpi_entities' . $ent0);
       $ckey_ent1   = $ckey_prefix . md5('glpi_entities' . $ent1);
       $ckey_ent2   = $ckey_prefix . md5('glpi_entities' . $ent2);
@@ -747,7 +747,7 @@ class DbUtils extends DbTestCase {
       //- if $cache === 1; we expect cache to be empty before call, and populated after
       //- if $hit   === 1; we expect cache to be populated
 
-      $ckey_prefix = $this->nscache . ':sons_cache_';
+      $ckey_prefix = $this->getCacheNamespace() . ':sons_cache_';
       $ckey_ent0 = $ckey_prefix . md5('glpi_entities' . $ent0);
       $ckey_ent1 = $ckey_prefix . md5('glpi_entities' . $ent1);
       $ckey_ent2 = $ckey_prefix . md5('glpi_entities' . $ent2);
