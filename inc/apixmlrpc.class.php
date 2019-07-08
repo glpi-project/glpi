@@ -176,14 +176,18 @@ class APIXmlrpc extends API {
             $range = [0, $_SESSION['glpilist_limit']];
             if (isset($this->parameters['range'])) {
                $range = explode("-", $this->parameters['range']);
-               // fix end range
-               if ($range[1] > $totalcount - 1) {
-                  $range[1] = $totalcount - 1;
-               }
-               if ($range[1] - $range[0] + 1 < $totalcount) {
-                  $code = 206; // partial content
-               }
             }
+
+            // fix end range
+            if ($range[1] > $totalcount - 1) {
+               $range[1] = $totalcount - 1;
+            }
+
+            // trigger partial content return code
+            if ($range[1] - $range[0] + 1 < $totalcount) {
+               $code = 206; // partial content
+            }
+
             $additionalheaders                  = [];
             $additionalheaders["Accept-Range"]  = $this->parameters['itemtype']." ".
                                                   Toolbox::get_max_input_vars();

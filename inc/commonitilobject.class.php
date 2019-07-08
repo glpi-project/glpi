@@ -3690,6 +3690,7 @@ abstract class CommonITILObject extends CommonDBTM {
                    || ($d['users_id'] == Session::getLoginUserID())) {
                   $opt      = ['awesome-class' => 'fa-envelope',
                                     'popup' => $linkuser->getFormURLWithID($d['id'])];
+                  echo "&nbsp;";
                   Html::showToolTip($text, $opt);
                }
             }
@@ -6143,30 +6144,8 @@ abstract class CommonITILObject extends CommonDBTM {
                          array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
       $canadd_solution = $objType::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
 
-      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution && !$this->canReopen()) {
-         return false;
-      }
-
       // javascript function for add and edit items
-      echo "<script type='text/javascript' >\n";
-      echo "function viewAddSubitem" . $this->fields['id'] . "$rand(itemtype) {\n";
-      $params = ['action'     => 'viewsubitem',
-                      'type'       => 'itemtype',
-                      'parenttype' => $objType,
-                      $foreignKey => $this->fields['id'],
-                      'id'         => -1];
-      if (isset($_GET['load_kb_sol'])) {
-         $params['load_kb_sol'] = $_GET['load_kb_sol'];
-      }
-      $out = Ajax::updateItemJsCode("viewitem" . $this->fields['id'] . "$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/timeline.php",
-                                    $params, "", false);
-      echo str_replace("\"itemtype\"", "itemtype", $out);
-      echo "$('#approbation_form$rand').remove()";
-      echo "};";
-
-      echo "
-
+      echo "<script type='text/javascript' >
       function change_task_state(tasks_id, target) {
          $.post('".$CFG_GLPI["root_doc"]."/ajax/timeline.php',
                 {'action':     'change_task_state',
@@ -6208,7 +6187,29 @@ abstract class CommonITILObject extends CommonDBTM {
                                                         '$foreignKey': ".$this->fields['id'].",
                                                         'id'        : items_id
                                                        });
-      };";
+      };
+      </script>";
+
+      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution && !$this->canReopen()) {
+         return false;
+      }
+
+      echo "<script type='text/javascript' >\n";
+      echo "function viewAddSubitem" . $this->fields['id'] . "$rand(itemtype) {\n";
+      $params = ['action'     => 'viewsubitem',
+                      'type'       => 'itemtype',
+                      'parenttype' => $objType,
+                      $foreignKey => $this->fields['id'],
+                      'id'         => -1];
+      if (isset($_GET['load_kb_sol'])) {
+         $params['load_kb_sol'] = $_GET['load_kb_sol'];
+      }
+      $out = Ajax::updateItemJsCode("viewitem" . $this->fields['id'] . "$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/timeline.php",
+                                    $params, "", false);
+      echo str_replace("\"itemtype\"", "itemtype", $out);
+      echo "$('#approbation_form$rand').remove()";
+      echo "};";
 
       if (isset($_GET['load_kb_sol'])) {
          echo "viewAddSubitem" . $this->fields['id'] . "$rand('Solution');";
@@ -6815,17 +6816,28 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<div class='h_date'><i class='far fa-clock'></i>".Html::convDateTime($this->fields['date'])."</div>";
       echo "<div class='h_user'>";
 
-      $user->getFromDB($this->fields['users_id_recipient']);
+      $user = new User();
+      $display_requester = false;
+      $requesters = $this->getUsers(CommonITILActor::REQUESTER);
+      if (count($requesters) === 1) {
+         $requester = reset($requesters);
+         if ($requester['users_id'] > 0) {
+            // Display requester identity only if there is only one requester
+            // and only if it is not an anonymous user
+            $display_requester = $user->getFromDB($requester['users_id']);
+         }
+      }
+
       echo "<div class='tooltip_picture_border'>";
       $picture = "";
-      if (isset($user->fields['picture'])) {
+      if ($display_requester && isset($user->fields['picture'])) {
          $picture = $user->fields['picture'];
       }
       echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
       User::getThumbnailURLForPicture($picture)."'>";
       echo "</div>";
 
-      if (isset($user->fields['id']) && $user->fields['id']) {
+      if ($display_requester) {
          echo $user->getLink()."&nbsp;";
          $reqdata = getUserName($user->getID(), 2);
          echo Html::showToolTip(
@@ -6833,7 +6845,7 @@ abstract class CommonITILObject extends CommonDBTM {
             ['link' => $reqdata['link']]
          );
       } else {
-         echo __('Requester');
+         echo _n('Requester', 'Requesters', count($requesters));
       }
 
       echo "</div>"; // h_user

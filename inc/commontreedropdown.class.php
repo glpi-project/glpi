@@ -187,7 +187,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
             $input["ancestors_cache"] = '';
             if (Toolbox::useCache()) {
-               $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
+               $ckey = 'ancestors_cache_' . md5($this->getTable() . $this->getID());
                $GLPI_CACHE->delete($ckey);
             }
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
@@ -212,7 +212,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       //drop from sons cache when needed
       if ($changeParent && Toolbox::useCache()) {
-         $ckey = $this->getTable() . '_ancestors_cache_' . $ID;
+         $ckey = 'ancestors_cache_' . md5($this->getTable() . $ID);
          $GLPI_CACHE->delete($ckey);
       }
 
@@ -305,7 +305,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       //drop from sons cache when needed
       if ($cache && Toolbox::useCache()) {
          foreach ($ancestors as $ancestor) {
-            $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
+            $ckey = 'sons_cache_' . md5($this->getTable() . $ancestor);
             if ($GLPI_CACHE->has($ckey)) {
                $sons = $GLPI_CACHE->get($ckey);
                if (isset($sons[$this->getID()])) {
@@ -335,7 +335,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if (Toolbox::useCache()) {
          $ancestors = getAncestorsOf($this->getTable(), $this->getID());
          foreach ($ancestors as $ancestor) {
-            $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
+            $ckey = 'sons_cache_' . md5($this->getTable() . $ancestor);
             if ($GLPI_CACHE->has($ckey)) {
                $sons = $GLPI_CACHE->get($ckey);
                if (!isset($sons[$this->getID()])) {

@@ -855,7 +855,7 @@ abstract class APIBaseClass extends \atoum {
       $data = $this->query('getItems',
                            ['itemtype' => 'Config',
                             'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => ['expand_dropdowns' => true]]);
+                            'query'    => ['expand_dropdowns' => true]], 206);
 
       $this->variable($data)->isNotFalse();
       $this->array($data)->hasKey('headers');

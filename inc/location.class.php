@@ -340,42 +340,33 @@ class Location extends CommonTreeDropdown {
       global $DB, $CFG_GLPI;
 
       $locations_id = $this->fields['id'];
-      $crit         = Session::getSavedOption(__CLASS__, 'criterion', '');
+      $itemtype     = Session::getSavedOption(__CLASS__, 'criterion', '');
 
       if (!$this->can($locations_id, READ)) {
          return false;
       }
 
-      if ($crit) {
-         $table = getTableForItemType($crit);
-         $criteria = [
+      $queries = [];
+      $itemtypes = $itemtype ? [$itemtype] : $CFG_GLPI['location_types'];
+      foreach ($itemtypes as $itemtype) {
+         $table = getTableForItemType($itemtype);
+         $itemtype_criteria = [
             'SELECT' => [
                "$table.id",
-               new \QueryExpression($DB->quoteValue($crit) . ' AS ' . $DB->quoteName('type')),
+               new \QueryExpression($DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('type')),
             ],
             'FROM'   => $table,
             'WHERE'  => [
                "$table.locations_id"   => $locations_id,
-               'is_deleted'            => 0
             ] + getEntitiesRestrictCriteria($table, 'entities_id')
          ];
-      } else {
-         $union = new \QueryUnion();
-         foreach ($CFG_GLPI['location_types'] as $type) {
-            $table = getTableForItemType($type);
-            $union->addQuery([
-               'SELECT' => [
-                  'id',
-                  new \QueryExpression($DB->quoteValue($type) . ' AS ' . $DB->quoteName('type')),
-               ],
-               'FROM'   => $table,
-               'WHERE'  => [
-                  "$table.locations_id"   => $locations_id
-               ] + getEntitiesRestrictCriteria($table, 'entities_id')
-            ]);
+         $item = new $itemtype();
+         if ($item->maybeDeleted()) {
+            $itemtype_criteria['WHERE']['is_deleted'] = 0;
          }
-         $criteria = ['FROM' => $union];
+         $queries[] = $itemtype_criteria;
       }
+      $criteria = count($queries) === 1 ? $queries[0] : ['FROM' => new \QueryUnion($queries)];
 
       $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
       $criteria['START'] = $start;
@@ -392,7 +383,7 @@ class Location extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo __('Type')."&nbsp;";
       Dropdown::showItemType($CFG_GLPI['location_types'],
-                             ['value'      => $crit,
+                             ['value'      => $itemtype,
                                    'on_change'  => 'reloadTab("start=0&criterion="+this.value)']);
       echo "</td></tr></table>";
 

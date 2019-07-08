@@ -1593,6 +1593,14 @@ class RuleCollection extends CommonDBTM {
             echo "</td></tr>\n";
          }
 
+         // Add all used criteria on rule as `Rule::showSpecificCriteriasForPreview()`
+         // adapt its output depending on used criteria
+         $rule->criterias = [];
+         foreach ($input as $criteria) {
+            $rule->criterias[] = (object)[
+               'fields' => ['criteria' => $criteria],
+            ];
+         }
          $rule->showSpecificCriteriasForPreview($_POST);
 
          echo "<tr><td class='tab_bg_2 center' colspan='2'>";

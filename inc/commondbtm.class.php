@@ -4348,6 +4348,14 @@ class CommonDBTM extends CommonGLPI {
     * @return string the string to display
    **/
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      switch ($field) {
+         case '_virtual_datacenter_position':
+            if (method_exists(static::class, 'getDcBreadcrumbSpecificValueToDisplay')) {
+               return static::getDcBreadcrumbSpecificValueToDisplay($values['id']);
+            }
+      }
+
       return '';
    }
 

@@ -1246,8 +1246,7 @@ class SavedSearch extends CommonDBTM {
             'entities_id'  => $eid,
             'is_recursive' => $recur
          ], [
-            'id'           => $ids,
-            'is_private'   => 0
+            'id' => $ids
          ]
       );
       return $result;
