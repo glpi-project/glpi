@@ -5259,20 +5259,19 @@ class Ticket extends CommonITILObject {
          $content = Html::cleanPostForTextArea($content);
       }
 
-      $content = Html::setRichTextContent(
-         $content_id,
-         $content,
-         $rand,
-         !$canupdate
-      );
-
       echo "<div id='content$rand_text'>";
       if ($canupdate || $can_requester) {
+         $content = Html::setRichTextContent(
+            $content_id,
+            $content,
+            $rand,
+            !$canupdate
+         );
          echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
                ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
                $content."</textarea></div>";
       } else {
-         echo Toolbox::getHtmlToDisplay($content);
+         echo Html::getContentAsRichText($content);
       }
       echo $tt->getEndHiddenFieldValue('content', $this);
 

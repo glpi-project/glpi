@@ -6664,7 +6664,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "</p>";
 
             echo "<div class='rich_text_container'>";
-            echo Html::setRichTextContent('', $content, '', true);
+            echo Html::getContentAsRichText($content);
             echo "</div>";
 
             if (!empty($long_text)) {
@@ -6899,7 +6899,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</div>";
 
       echo "<div class='rich_text_container'>";
-      echo Html::setRichTextContent('', $this->fields['content'], '', true);
+      echo Html::getContentAsRichText($this->fields['content']);
       echo "</div>";
 
       echo "</div>"; // h_content ITILContent

@@ -296,9 +296,7 @@ class Toolbox {
          return $value;
       }
 
-      $in  = ['<', '>'];
-      $out = ['&lt;', '&gt;'];
-      return str_replace($in, $out, $value);
+      return htmlentities($value, ENT_NOQUOTES, 'UTF-8');
    }
 
 
@@ -321,9 +319,7 @@ class Toolbox {
          return $value;
       }
 
-      $in  = ['<', '>'];
-      $out = ['&lt;', '&gt;'];
-      return str_replace($out, $in, $value);
+      return html_entity_decode($value, ENT_NOQUOTES, 'UTF-8');
    }
 
 

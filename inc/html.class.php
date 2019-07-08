@@ -3699,8 +3699,27 @@ class Html {
       // Init html editor
       Html::initEditorSystem($name, $rand, true, $readonly);
 
+      $content = self::getContentAsRichText($content);
+
+      // Re-encode content as it will be displayed as "necoded html" inside rich text editor
+      $content = Html::entities_deep($content);
+
+      return $content;
+   }
+
+   /**
+    * Get rich text content initially input inside rich text editor.
+    *
+    * @param string  $content
+    *
+    * @return string
+    *
+    * @since 9.5.0
+    */
+   static function getContentAsRichText($content) {
+
       // Neutralize non valid HTML tags
-      $content = html::clean($content, false, 1);
+      $content = self::clean($content, false, 1);
 
       // If content does not contain <br> or <p> html tag, use nl2br
       if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {
