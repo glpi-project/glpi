@@ -649,7 +649,7 @@ final class DbUtils {
       global $DB;
 
       $appCache = Toolbox::getAppCache();
-      $ckey = $table . '_sons_cache_' . $IDf;
+      $ckey = 'sons_cache_' . md5($table . $IDf);
       $sons = false;
 
       if ($appCache->has($ckey)) {
@@ -753,11 +753,11 @@ final class DbUtils {
       global $DB;
 
       $appCache = Toolbox::getAppCache();
-      $ckey = $table . '_ancestors_cache_';
+      $ckey = 'ancestors_cache_';
       if (is_array($items_id)) {
-         $ckey .= md5(implode('|', $items_id));
+         $ckey .= md5($table . implode('|', $items_id));
       } else {
-         $ckey .= $items_id;
+         $ckey .= md5($table . $items_id);
       }
       $ancestors = [];
 

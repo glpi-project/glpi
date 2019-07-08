@@ -583,51 +583,54 @@ class DbUtils extends DbTestCase {
       //- if $cache === 1; we expect cache to be empty before call, and populated after
       //- if $hit   === 1; we expect cache to be populated
 
-      $ckey = $this->getCacheNamespace() . ':glpi_entities_ancestors_cache_';
+      $ckey_prefix = $this->nscache . ':ancestors_cache_';
+      $ckey_ent0   = $ckey_prefix . md5('glpi_entities' . $ent0);
+      $ckey_ent1   = $ckey_prefix . md5('glpi_entities' . $ent1);
+      $ckey_ent2   = $ckey_prefix . md5('glpi_entities' . $ent2);
 
       //test on ent0
       $expected = [0 => '0'];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey . $ent0))->isFalse();
+         $this->boolean(apcu_exists($ckey_ent0))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch("$ckey$ent0"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent0);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$ent0"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
       }
 
       //test on ent1
       $expected = [0 => '0', 1 => "$ent0"];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey . $ent1))->isFalse();
+         $this->boolean(apcu_exists($ckey_ent1))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent1);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
 
       //test on ent2
       $expected = [0 => '0', 1 => "$ent0"];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey . $ent2))->isFalse();
+         $this->boolean(apcu_exists($ckey_ent2))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch("$ckey$ent2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent2);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$ent2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
       }
 
       //test with new sub entity
@@ -642,17 +645,18 @@ class DbUtils extends DbTestCase {
          ]);
          $this->integer($new_id)->isGreaterThan(0);
       }
+      $ckey_new_id = $ckey_prefix . md5('glpi_entities' . $new_id);
 
       $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1"];
       if ($cache === true) {
-         $this->array(apcu_fetch("$ckey$new_id"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_id))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$new_id"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_id))->isIdenticalTo($expected);
       }
 
       //test with another new sub entity
@@ -665,33 +669,34 @@ class DbUtils extends DbTestCase {
          ]);
          $this->integer($new_id2)->isGreaterThan(0);
       }
+      $ckey_new_id2 = $ckey_prefix . md5('glpi_entities' . $new_id2);
 
       $expected = [0 => '0', $ent0 => "$ent0", $ent2 => "$ent2"];
       if ($cache === true) {
-         $this->array(apcu_fetch("$ckey$new_id2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_id2))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id2);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$new_id2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_id2))->isIdenticalTo($expected);
       }
 
       //test on multiple entities
       $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"];
-      $newckey = $ckey . md5("$new_id|$new_id2");
+      $ckey_new_all = $ckey_prefix . md5('glpi_entities' . $new_id . '|' . $new_id2);
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($newckey))->isFalse();
+         $this->boolean(apcu_exists($ckey_new_all))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($newckey))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_all))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($newckey))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_new_all))->isIdenticalTo($expected);
       }
    }
 
@@ -742,51 +747,54 @@ class DbUtils extends DbTestCase {
       //- if $cache === 1; we expect cache to be empty before call, and populated after
       //- if $hit   === 1; we expect cache to be populated
 
-      $ckey = $this->getCacheNamespace() . ':glpi_entities_sons_cache_';
+      $ckey_prefix = $this->nscache . ':sons_cache_';
+      $ckey_ent0 = $ckey_prefix . md5('glpi_entities' . $ent0);
+      $ckey_ent1 = $ckey_prefix . md5('glpi_entities' . $ent1);
+      $ckey_ent2 = $ckey_prefix . md5('glpi_entities' . $ent2);
 
       //test on ent0
       $expected = [$ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey . $ent0))->isFalse();
+         $this->boolean(apcu_exists($ckey_ent0))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch("$ckey$ent0"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent0);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$ent0"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
       }
 
       //test on ent1
       $expected = [$ent1 => "$ent1"];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey . $ent1))->isFalse();
+         $this->boolean(apcu_exists($ckey_ent1))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
 
       //test on ent2
       $expected = [$ent2 => "$ent2"];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey . $ent2))->isFalse();
+         $this->boolean(apcu_exists($ckey_ent2))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch("$ckey$ent2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent2);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$ent2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
       }
 
       //test with new sub entity
@@ -804,14 +812,14 @@ class DbUtils extends DbTestCase {
 
       $expected = [$ent1 => $ent1, $new_id => "$new_id"];
       if ($cache === true) {
-         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
 
       //test with another new sub entity
@@ -827,27 +835,27 @@ class DbUtils extends DbTestCase {
 
       $expected = [$ent1 => $ent1, $new_id => "$new_id", $new_id2 => "$new_id2"];
       if ($cache === true) {
-         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
 
       //drop sub entity
       $expected = [$ent1 => $ent1, $new_id2 => "$new_id2"];
       $this->boolean($entity->delete(['id' => $new_id], true))->isTrue();
       if ($cache === true) {
-         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
 
       $expected = [$ent1 => $ent1];
       $this->boolean($entity->delete(['id' => $new_id2], true))->isTrue();
       if ($cache === true) {
-         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
    }
 
