@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - Mails collected from suppliers can be marked as private on an entity basis.
 - Ability to add custom CSS in entity configuration.
 - CLI commands to enable and disable maintenance mode.
+- Add datacenter items to global search
 
 ### Changed
 
