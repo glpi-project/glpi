@@ -12,6 +12,7 @@ The present file will list all changes made to the project; according to the
 - Ability to add custom CSS in entity configuration.
 - CLI commands to enable and disable maintenance mode.
 - Operating system links on Monitors, Peripherals, Phones and Printers.
+- Add datacenter items to global search
 
 ### Changed
 
