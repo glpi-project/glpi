@@ -53,10 +53,6 @@ commands:
             - composer-cache-{{ .Environment.CIRCLE_JOB }}
       - restore_cache:
           keys:
-            - composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock" }}
-            - composer-install-{{ .Environment.CIRCLE_JOB }}
-      - restore_cache:
-          keys:
             - npm-cache-{{ .Environment.CIRCLE_JOB }}
       - run:
           name: Install dependencies
@@ -64,17 +60,13 @@ commands:
             composer --version
             echo "node version: $(node --version)"
             echo "npm version: $(npm --version)"
-            sed -e '/"php":/d' -i composer.json
+            perl -i -0 -p -e 's/,?\s*"platform"\:\s*\{[^\}]*}//i' composer.json
             mv composer.lock composer.lock.bak
             bin/console dependencies install --ci
       - save_cache:
           key: composer-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
             - /home/circleci/.composer/cache/
-      - save_cache:
-          key: composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock.bak" }}
-          paths:
-            - ./vendor
       - save_cache:
           key: npm-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:

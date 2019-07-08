@@ -40,11 +40,11 @@ if (!defined('GLPI_ROOT')) {
 trait DCBreadcrumb {
 
    /**
-    * Get datacenter breadcrumb elements
+    * Get datacenter element breadcrumb
     *
     * @return array
     */
-   public function getDcBreadcrumb() :array {
+   protected function getDcBreadcrumb() {
       global $CFG_GLPI;
 
       $item = $this;
@@ -102,8 +102,9 @@ trait DCBreadcrumb {
     *
     * @return void
     */
-   function showDcBreadcrumb() {
+   protected function showDcBreadcrumb() {
       $breadcrumb = $this->getDcBreadcrumb();
+
       if (count($breadcrumb)) {
          echo "<tr class='tab_bg_1'>
                   <td>" . __('Data center position') . "</td>
@@ -167,5 +168,24 @@ trait DCBreadcrumb {
       }
 
       return $found;
+   }
+
+   /**
+    * Specific value for "Data center position".
+    *
+    * @return array
+    */
+   protected static function getDcBreadcrumbSpecificValueToDisplay($items_id) {
+
+      $item = new static();
+
+      if ($item->getFromDB($items_id)) {
+         $breadcrumb = $item->getDcBreadcrumb();
+         if (count($breadcrumb) > 0) {
+            return implode(' > ', array_reverse($item->getDcBreadcrumb()));
+         }
+      }
+
+      return '&nbsp;';
    }
 }
