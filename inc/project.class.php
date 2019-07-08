@@ -963,7 +963,7 @@ class Project extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '121',
+         'id'                 => '122',
          'table'              => ProjectTask::getTable(),
          'field'              => 'real_end_date',
          'name'               => __('Real end date'),
@@ -975,7 +975,7 @@ class Project extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '122',
+         'id'                 => '123',
          'table'              => ProjectTask::getTable(),
          'field'              => 'planned_duration',
          'name'               => __('Planned Duration'),
@@ -994,7 +994,7 @@ class Project extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '123',
+         'id'                 => '124',
          'table'              => ProjectTask::getTable(),
          'field'              => 'effective_duration',
          'name'               => __('Effective duration'),
@@ -1013,7 +1013,7 @@ class Project extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '124',
+         'id'                 => '125',
          'table'              => ProjectTask::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
@@ -1027,7 +1027,7 @@ class Project extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '125',
+         'id'                 => '126',
          'table'              => ProjectTask::getTable(),
          'field'              => 'is_milestone',
          'name'               => __('Milestone'),
