@@ -951,7 +951,7 @@ class Reminder extends CommonDBVisible {
          'glpi_reminders.is_planned'   => 1,
          'begin'                       => ['<', $end],
          'end'                         => ['>', $begin]
-      ];
+      ] + $NASSIGN;
 
       if ($options['check_planned']) {
          $WHERE['state'] = ['!=', Planning::INFO];
