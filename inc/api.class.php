@@ -1277,13 +1277,15 @@ abstract class API extends CommonGLPI {
       $data_numtotalrow = $DB->request('SELECT FOUND_ROWS()')->next();
       $totalcount = $data_numtotalrow['FOUND_ROWS()'];
 
-      if ($params['range'][0] > $totalcount) {
-         $this->returnError("Provided range exceed total count of data: ".$totalcount,
-                            400,
-                            "ERROR_RANGE_EXCEED_TOTAL");
-      }
+      foreach ($found as $key => &$fields) {
+         // Check if we are allowed to see this specific item
+         $item->getFromDB($fields['id']);
+         if (!$item->canViewItem()) {
+            unset($found[$key]);
+            $totalcount--;
+            continue;
+         }
 
-      foreach ($found as &$fields) {
          // only keep id in field list
          if ($params['only_id']) {
             $fields = ['id' => $fields['id']];
@@ -1303,6 +1305,16 @@ abstract class API extends CommonGLPI {
                                           'href' => self::$api_url."/$itemtype/".$fields['id']."/$hclass/"];
             }
          }
+      }
+      unset($fields);
+
+      // Check range
+      if ($params['range'][0] > $totalcount) {
+         $this->returnError(
+            "Provided range exceed total count of data: $totalcount",
+            400,
+            "ERROR_RANGE_EXCEED_TOTAL"
+         );
       }
 
       return array_values($found);
