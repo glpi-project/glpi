@@ -485,7 +485,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $field['list'] = false;
          }
       }
-      
+
       // Minimal form for quick input.
       if (static::canCreate()) {
          $link = $this->getFormURL();
