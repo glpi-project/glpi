@@ -398,4 +398,56 @@ class Toolbox extends \GLPITestCase {
       $this->variable(\Toolbox::unclean_html_cross_side_scripting_deep($value))
          ->isIdenticalTo($expected);
    }
+
+   public function testSaveAndDeletePicture() {
+      // Save an image twice
+      $test_file = __DIR__ . '/../files/test.png';
+      copy(__DIR__ . '/../../pics/add_dropdown.png', $test_file); // saved image will be removed from FS
+      $first_pict = \Toolbox::savePicture($test_file);
+      $this->string($first_pict)->matches('#[^/]+/.+\.png#'); // generated random name inside subdir
+
+      copy(__DIR__ . '/../../pics/add_dropdown.png', $test_file); // saved image will be removed from FS
+      $second_pict = \Toolbox::savePicture($test_file);
+      $this->string($second_pict)->matches('#[^/]+/.+\.png#'); // generated random name inside subdir
+
+      // Check that second saving of same image is not overriding first saved image.
+      $this->string($first_pict)->isNotEqualTo($second_pict);
+
+      // Delete saved images
+      $this->boolean(\Toolbox::deletePicture($first_pict))->isTrue();
+      $this->boolean(\Toolbox::deletePicture($second_pict))->isTrue();
+
+      // Save not an image
+      $this->boolean(\Toolbox::savePicture(__DIR__ . '/../notanimage.jpg'))->isFalse();
+
+      // Save and delete unexisting files
+      $this->boolean(\Toolbox::savePicture('notafile.jpg'))->isFalse();
+      $this->boolean(\Toolbox::deletePicture('notafile.jpg'))->isFalse();
+   }
+
+   protected function getPictureUrlProvider() {
+      global $CFG_GLPI;
+
+      return [
+         [
+            'path' => '',
+            'url'  => null,
+         ],
+         [
+            'path' => 'image.jpg',
+            'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures/image.jpg',
+         ],
+         [
+            'path' => 'xss\' onclick="alert(\'PWNED\')".jpg',
+            'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures/xss&apos; onclick=&quot;alert(&apos;PWNED&apos;)&quot;.jpg',
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider getPictureUrlProvider
+    */
+   public function testGetPictureUrl($path, $url) {
+      $this->variable(\Toolbox::getPictureUrl($path))->isIdenticalTo($url);
+   }
 }
