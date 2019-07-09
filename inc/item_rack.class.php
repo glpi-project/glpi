@@ -246,10 +246,10 @@ class Item_Rack extends CommonDBRelation {
             }
 
             if (!empty($item->model->fields['picture_front'])) {
-               $gs_item['picture_f'] = $item->model->fields['picture_front'];
+               $gs_item['picture_f'] = Toolbox::getPictureUrl($item->model->fields['picture_front']);
             }
             if (!empty($item->model->fields['picture_rear'])) {
-               $gs_item['picture_r'] = $item->model->fields['picture_rear'];
+               $gs_item['picture_r'] = Toolbox::getPictureUrl($item->model->fields['picture_rear']);
             }
          } else {
             $item->model = null;

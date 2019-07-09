@@ -406,7 +406,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
             case 'picture' :
                if (!empty($this->fields[$field['name']])) {
-                  echo Html::image($this->fields[$field['name']], [
+                  echo Html::image(Toolbox::getPictureUrl($this->fields[$field['name']]), [
                      'style' => 'max-width: 300px; max-height: 150px;',
                      'class' => 'picture_square'
                   ]);

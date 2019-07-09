@@ -3049,4 +3049,95 @@ class Toolbox {
       $content = nl2br(Html::clean($content, false, 1));
       return $content;
    }
+
+   /**
+    * Save a picture and return destination filepath.
+    * /!\ This method is made to handle uploaded files and removes the source file filesystem.
+    *
+    * @param string|null $src          Source path of the picture
+    * @param string      $uniq_prefix  Unique prefix that can be used to improve uniqueness of destination filename
+    *
+    * @return boolean|string      Destination filepath, relative to GLPI_PICTURE_DIR, or false on failure
+    *
+    * @since 9.5.0
+    */
+   static public function savePicture($src, $uniq_prefix = null) {
+
+      if (!Document::isImage($src)) {
+         return false;
+      }
+
+      $filename     = uniqid($uniq_prefix);
+      $ext          = pathinfo($src, PATHINFO_EXTENSION);
+      $subdirectory = substr($filename, -2); // subdirectory based on last 2 hex digit
+
+      $i = 0;
+      do {
+         // Iterate on possible suffix while dest exists.
+         // This case will almost never exists as dest is based on an unique id.
+         $dest = GLPI_PICTURE_DIR
+            . '/' . $subdirectory
+            . '/' . $filename . ($i > 0 ? '_' . $i : '') . '.' . $ext;
+         $i++;
+      } while (file_exists($dest));
+
+      if (!is_dir(GLPI_PICTURE_DIR . '/' . $subdirectory) && !mkdir(GLPI_PICTURE_DIR . '/' . $subdirectory)) {
+         return false;
+      }
+
+      if (!rename($src, $dest)) {
+         return false;
+      }
+
+      return substr($dest, strlen(GLPI_PICTURE_DIR . '/')); // Return dest relative to GLPI_PICTURE_DIR
+   }
+
+
+   /**
+    * Delete a picture.
+    *
+    * @param string $path
+    *
+    * @return boolean
+    *
+    * @since 9.5.0
+    */
+   static function deletePicture($path) {
+
+      $fullpath = GLPI_PICTURE_DIR . '/' . $path;
+
+      if (!file_exists($fullpath)) {
+         return false;
+      }
+
+      $fullpath = realpath($fullpath);
+      if (!Toolbox::startsWith($fullpath, realpath(GLPI_PICTURE_DIR))) {
+         // Prevent deletion of a file ouside pictures directory
+         return false;
+      }
+
+      return @unlink($fullpath);
+   }
+
+
+   /**
+    * Get picture URL.
+    *
+    * @param string $path
+    *
+    * @return null|string
+    *
+    * @since 9.5.0
+    */
+   static function getPictureUrl($path) {
+      global $CFG_GLPI;
+
+      $path = Html::cleanInputText($path); // prevent xss
+
+      if (empty($path)) {
+         return null;
+      }
+
+      return $CFG_GLPI["root_doc"] . '/front/document.send.php?file=_pictures/' . $path;
+   }
 }
