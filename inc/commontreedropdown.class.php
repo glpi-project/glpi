@@ -480,6 +480,12 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $nb            = count($fields);
       $entity_assign = $this->isEntityAssign();
 
+      foreach ($fields as &$field) {
+         if (!isset($field['list'])) {
+            $field['list'] = false;
+         }
+      }
+      
       // Minimal form for quick input.
       if (static::canCreate()) {
          $link = $this->getFormURL();
