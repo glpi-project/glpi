@@ -1980,14 +1980,18 @@ class Transfer extends CommonDBTM {
                         $NOT = array_merge($NOT, $this->noneedtobe_transfer[$dtype]);
                      }
 
+                     $where = [
+                        'documents_id' => $item_ID,
+                        'itemtype'     => $dtype
+                     ];
+                     if (count($NOT)) {
+                        $where['NOT'] = ['items_id' => $NOT];
+                     }
+
                      $result = $DB->request([
                         'COUNT'  => 'cpt',
                         'FROM'   => 'glpi_documents_items',
-                        'WHERE'  => [
-                           'documents_id' => $item_ID,
-                           'itemtype'     => $dtype,
-                           'NOT'          => ['items_id' => $NOT]
-                        ]
+                        'WHERE'  => $where
                      ])->next();
 
                      if ($result['cpt'] > 0) {
