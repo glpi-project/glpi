@@ -223,6 +223,7 @@ function update94to95() {
 
    $ADDTODISPLAYPREF['cluster'] = [31, 19];
    /** /Clusters */
+
    /** ITIL templates */
    //rename tables
    foreach ([
@@ -286,6 +287,25 @@ function update94to95() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "add table glpi_itilfollowuptemplates");
    }
+   /** /add templates for followups */
+
+   /** Add "date_creation" field on document_items */
+   if (!$DB->fieldExists('glpi_documents_items', 'date_creation')) {
+      $migration->addField('glpi_documents_items', 'date_creation', 'datetime');
+      $migration->addPostQuery(
+         $DB->buildUpdate(
+            'glpi_documents_items',
+            [
+               'date_creation' => new \QueryExpression(
+                  $DB->quoteName('date_mod')
+               )
+            ],
+            [true]
+         )
+      );
+      $migration->addKey('glpi_documents_items', 'date_creation');
+   }
+   /** /Add "date_creation" field on document_items */
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
