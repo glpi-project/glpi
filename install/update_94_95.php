@@ -502,6 +502,14 @@ function update94to95() {
          ]
       );
    }
+   /** /Add "code" field on glpi_itilcategories */
+   if (!$DB->fieldExists("glpi_itilcategories", "code")) {
+      $migration->addField("glpi_itilcategories", "code", "string", [
+            'after'  => "groups_id"
+         ]
+      );
+   }
+   /** /Add "code" field on glpi_itilcategories */
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
