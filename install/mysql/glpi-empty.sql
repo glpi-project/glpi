@@ -3985,6 +3985,7 @@ CREATE TABLE `glpi_itilcategories` (
   `knowbaseitemcategories_id` int(11) NOT NULL DEFAULT '0',
   `users_id` int(11) NOT NULL DEFAULT '0',
   `groups_id` int(11) NOT NULL DEFAULT '0',
+  `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ancestors_cache` longtext COLLATE utf8_unicode_ci,
   `sons_cache` longtext COLLATE utf8_unicode_ci,
   `is_helpdeskvisible` tinyint(1) NOT NULL DEFAULT '1',
