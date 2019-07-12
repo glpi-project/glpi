@@ -347,7 +347,7 @@ class Problem_Ticket extends CommonDBRelation{
             Ticket::showShort($data['id'], ['followups'              => false,
                                                  'row_num'                => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']]);
+                                                 'id_for_massiveaction'   => $data['linkid']]);
             $i++;
          }
          Ticket::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
