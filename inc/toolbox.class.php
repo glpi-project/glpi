@@ -747,13 +747,14 @@ class Toolbox {
     * Send a file (not a document) to the navigator
     * See Document->send();
     *
-    * @param $file      string: storage filename
-    * @param $filename  string: file title
-    * @param $mime      string: file mime type
+    * @param string  $file             storage filename
+    * @param string  $filename         file title
+    * @param string  $mime             file mime type
+    * @param boolean $add_expires      add expires headers maximize cacheability ?
     *
     * @return nothing
    **/
-   static function sendFile($file, $filename, $mime = null) {
+   static function sendFile($file, $filename, $mime = null, $expires_headers = false) {
 
       // Test securite : document in DOC_DIR
       $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
@@ -794,8 +795,12 @@ class Toolbox {
       // Now send the file with header() magic
       header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
       header("Etag: $etag");
-      header('Pragma: private'); /// IE BUG + SSL
-      header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
+      header_remove('Pragma');
+      header('Cache-Control: private');
+      if ($expires_headers) {
+         $max_age = WEEK_TIMESTAMP;
+         header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
+      }
       header(
          "Content-disposition:$attachment filename=\"" .
          addslashes(utf8_decode($filename)) .
