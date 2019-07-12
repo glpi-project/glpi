@@ -68,13 +68,15 @@ abstract class API extends CommonGLPI {
    /**
     * Generic messages
     *
+    * @since 9.1
+    *
     * @param mixed   $response          string message or array of data to send
-    * @param integer $code              http code
+    * @param integer $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
     * @param array   $additionalheaders headers to send with http response (must be an array(key => value))
     *
     * @return void
     */
-   abstract protected function returnResponse($response, $code, $additionalheaders);
+   abstract protected function returnResponse($response, $httpcode = 200, $additionalheaders = []);
 
    /**
     * Upload and validate files from request and append to $this->parameters['input']
