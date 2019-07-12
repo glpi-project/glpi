@@ -62,6 +62,7 @@ if (isset($_GET['docid'])) { // docid for document
 } else if (isset($_GET["file"])) { // for other file
    $splitter = explode("/", $_GET["file"], 2);
    if (count($splitter) == 2) {
+      $expires_headers = false;
       $send = false;
       if (($splitter[0] == "_dumps")
           && Session::haveRight("backup", CREATE)) {
@@ -70,12 +71,14 @@ if (isset($_GET['docid'])) { // docid for document
 
       if ($splitter[0] == "_pictures") {
          if (Document::isImage(GLPI_PICTURE_DIR . '/' . $splitter[1])) {
+            // Can use expires header as picture file path changes when picture changes.
+            $expires_headers = true;
             $send = GLPI_PICTURE_DIR . '/' . $splitter[1];
          }
       }
 
       if ($send && file_exists($send)) {
-         Toolbox::sendFile($send, $splitter[1]);
+         Toolbox::sendFile($send, $splitter[1], null, $expires_headers);
       } else {
          Html::displayErrorAndDie(__('Unauthorized access to this file'), true);
       }
