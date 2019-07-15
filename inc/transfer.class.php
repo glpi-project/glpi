@@ -3590,15 +3590,15 @@ class Transfer extends CommonDBTM {
                   'SELECT'    => [
                      "$table.id",
                      "$table.name",
-                     'glpi_entities.completename AS locname',
-                     'glpi_entities.id AS entID'
+                     'entities.completename AS locname',
+                     'entities.id AS entID'
                   ],
                   'FROM'      => $table,
                   'LEFT JOIN' => [
-                     'glpi_entities'   => [
+                     'glpi_entities AS entities'   => [
                         'ON' => [
-                           'glpi_entities'   => 'id',
-                           $table            => 'entities_id'
+                           'entities' => 'id',
+                           $table     => 'entities_id'
                         ]
                      ]
                   ],
