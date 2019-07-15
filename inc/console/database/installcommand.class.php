@@ -36,108 +36,44 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Config;
-use DBConnection;
-use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
+use DB;
 use Toolbox;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Exception\RuntimeException;
 
-class InstallCommand extends Command implements ForceNoPluginsOptionCommandInterface {
-
-   /**
-    * Error code returned if DB connection initialization fails.
-    *
-    * @var integer
-    */
-   const ERROR_DB_CONNECTION_FAILED = 1;
-
-   /**
-    * Error code returned if DB engine is unsupported.
-    *
-    * @var integer
-    */
-   const ERROR_DB_ENGINE_UNSUPPORTED = 2;
-
-   /**
-    * Error code returned when trying to install and having a DB config already set.
-    *
-    * @var integer
-    */
-   const ERROR_DB_CONFIG_ALREADY_SET = 3;
+class InstallCommand extends AbstractConfigureCommand {
 
    /**
     * Error code returned when failing to create database.
     *
     * @var integer
     */
-   const ERROR_DB_CREATION_FAILED = 4;
+   const ERROR_DB_CREATION_FAILED = 5;
 
    /**
-    * Error code returned when failing to save database configuration file.
+    * Error code returned when trying to install and having a DB already containing glpi_* tables.
     *
     * @var integer
     */
-   const ERROR_DB_CONFIG_FILE_NOT_SAVED = 5;
+   const ERROR_DB_ALREADY_CONTAINS_TABLES = 6;
 
    /**
     * Error code returned when failing to create database schema.
     *
     * @var integer
     */
-   const ERROR_SCHEMA_CREATION_FAILED = 6;
+   const ERROR_SCHEMA_CREATION_FAILED = 7;
 
    protected function configure() {
+
       parent::configure();
 
       $this->setName('glpi:database:install');
       $this->setAliases(['db:install']);
       $this->setDescription('Install database schema');
-
-      $this->addOption(
-         'db-host',
-         'H',
-         InputOption::VALUE_OPTIONAL,
-         __('Database host'),
-         'localhost'
-      );
-
-      $this->addOption(
-         'db-name',
-         'd',
-         InputOption::VALUE_REQUIRED,
-         __('Database name')
-      );
-
-      $this->addOption(
-         'db-password',
-         'p',
-         InputOption::VALUE_OPTIONAL,
-         __('Database password (will be prompted for value if option passed without value)'),
-         '' // Empty string by default (enable detection of null if passed without value)
-      );
-
-      $this->addOption(
-         'db-port',
-         'P',
-         InputOption::VALUE_OPTIONAL,
-         __('Database port')
-      );
-
-      $this->addOption(
-         'db-user',
-         'u',
-         InputOption::VALUE_REQUIRED,
-         __('Database user')
-      );
 
       $this->addOption(
          'default-language',
@@ -150,86 +86,50 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
          'force',
          'f',
          InputOption::VALUE_NONE,
-         __('Force execution of installation, overriding existing database and configuration')
+         __('Force execution of installation, overriding existing database')
       );
    }
 
    protected function interact(InputInterface $input, OutputInterface $output) {
 
-      $questions = [
-         'db-name'     => new Question(__('Database name:'), ''), // Required
-         'db-user'     => new Question(__('Database user:'), ''), // Required
-         'db-password' => new Question(__('Database password:'), ''), // Prompt if null (passed without value)
-      ];
-      $questions['db-password']->setHidden(true); // Make password input hidden
-
-      foreach ($questions as $name => $question) {
-         if (null === $input->getOption($name)) {
-            /** @var QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
-            $value = $question_helper->ask($input, $output, $question);
-            $input->setOption($name, $value);
-         }
+      if ($this->shouldSetDBConfig($input, $output)) {
+         parent::interact($input, $output);
       }
    }
 
    protected function execute(InputInterface $input, OutputInterface $output) {
 
-      $db_pass     = $input->getOption('db-password');
-      $db_host     = $input->getOption('db-host');
-      $db_name     = $input->getOption('db-name');
-      $db_port     = $input->getOption('db-port');
-      $db_user     = $input->getOption('db-user');
-      $db_hostport = $db_host . (!empty($db_port) ? ':' . $db_port : '');
+      global $DB;
 
+      $db_pass          = $input->getOption('db-password');
+      $db_host          = $input->getOption('db-host');
+      $db_name          = $input->getOption('db-name');
+      $db_port          = $input->getOption('db-port');
+      $db_user          = $input->getOption('db-user');
+      $db_hostport      = $db_host . (!empty($db_port) ? ':' . $db_port : '');
       $default_language = $input->getOption('default-language');
+      $force            = $input->getOption('force');
 
-      $force          = $input->getOption('force');
-      $no_interaction = $input->getOption('no-interaction'); // Base symfony/console option
+      if ($this->shouldSetDBConfig($input, $output)) {
+         $result = $this->configureDatabase($input, $output);
 
-      if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$force) {
-         // Prevent overriding of existing DB
-         $output->writeln(
-            '<error>' . __('Database configuration already exists. Use --force option to override existing database and configuration.') . '</error>'
-         );
-         return self::ERROR_DB_CONFIG_ALREADY_SET;
-      }
+         if (self::ABORTED_BY_USER === $result) {
+            return 0; // Considered as success
+         } else if (self::SUCCESS !== $result) {
+            return $result; // Fail with error code
+         }
 
-      if (empty($db_name)) {
-         throw new InvalidArgumentException(
-            __('Database name defined by --db-name option cannot be empty.')
-         );
-      }
-
-      if (null === $db_pass) {
-         // Will be null if option used without value and without interaction
-         throw new InvalidArgumentException(
-            __('--db-password option value cannot be null.')
-         );
-      }
-
-      if (!$no_interaction) {
-         // Ask for confirmation (unless --no-interaction)
-
-         $informations = new Table($output);
-         $informations->addRow([__('Database host'), $db_hostport]);
-         $informations->addRow([__('Database name'), $db_name]);
-         $informations->addRow([__('Database user'), $db_user]);
-         $informations->render();
-
-         /** @var QuestionHelper $question_helper */
-         $question_helper = $this->getHelper('question');
-         $run = $question_helper->ask(
-            $input,
-            $output,
-            new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
-         );
-         if (!$run) {
-            $output->writeln(
-               '<comment>' . __('Installation aborted.') . '</comment>',
-               OutputInterface::VERBOSITY_VERBOSE
-            );
-            return 0;
+         if ($DB instanceof DB) {
+            // If global $DB is set at this point, it means that configuration file has been loaded
+            // prior to reconfiguration.
+            // As configuration is part of a class, it cannot be reloaded and class properties
+            // have to be updated manually in order to make `Toolbox::createSchema()` work correctly.
+            $DB->dbhost     = $db_hostport;
+            $DB->dbuser     = $db_user;
+            $DB->dbpassword = rawurlencode($db_pass);
+            $DB->dbdefault  = $db_name;
+            $DB->clearSchemaCache();
+            $DB->connect();
          }
       }
 
@@ -246,17 +146,7 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
          return self::ERROR_DB_CONNECTION_FAILED;
       }
 
-      ob_start();
-      $db_version_data = $mysqli->query('SELECT version()')->fetch_array();
-      $checkdb = Config::displayCheckDbEngine(false, $db_version_data[0]);
-      $message = ob_get_clean();
-      if ($checkdb > 0) {
-         $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
-         return self::ERROR_DB_ENGINE_UNSUPPORTED;
-      }
-
-      $db_name = $mysqli->real_escape_string($db_name);
-
+      // Create database or select existing one
       $output->writeln(
          '<comment>' . __('Creating the database...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
@@ -272,29 +162,32 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
          return self::ERROR_DB_CREATION_FAILED;
       }
 
-      $output->writeln(
-         '<comment>' . __('Saving configuration file...') . '</comment>',
-         OutputInterface::VERBOSITY_VERBOSE
+      // Prevent overriding of existing DB
+      $tables_result = $mysqli->query(
+         "SELECT COUNT(table_name)
+          FROM information_schema.tables
+          WHERE table_schema = '{$db_name}'
+             AND table_type = 'BASE TABLE'
+             AND table_name LIKE 'glpi_%'"
       );
-      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name)) {
-         $message = sprintf(
-            __('Cannot write configuration file "%s".'),
-            GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'
-         );
+      if (!$tables_result) {
+         throw new RuntimeException('Unable to check GLPI tables existence.');
+      }
+      if ($tables_result->fetch_array()[0] > 0 && !$force) {
          $output->writeln(
-            '<error>' . $message . '</error>',
-            OutputInterface::VERBOSITY_QUIET
+            '<error>' . __('Database already contains "glpi_*" tables. Use --force option to override existing database.') . '</error>'
          );
-         return self::ERROR_DB_CONFIG_FILE_NOT_SAVED;
+         return self::ERROR_DB_ALREADY_CONTAINS_TABLES;
       }
 
+      // Install schema
       $output->writeln(
          '<comment>' . __('Loading default schema...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
       // TODO Get rid of output buffering
       ob_start();
-      Toolbox::createSchema($default_language);
+      Toolbox::createSchema($default_language, $DB);
       $message = ob_get_clean();
       if (!empty($message)) {
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
@@ -306,8 +199,16 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
       return 0; // Success
    }
 
-   public function getNoPluginsOptionValue() {
+   /**
+    * Check if DB config should be set by current command run.
+    *
+    * @param InputInterface $input
+    * @param OutputInterface $output
+    *
+    * @return boolean
+    */
+   private function shouldSetDBConfig(InputInterface $input, OutputInterface $output) {
 
-      return true;
+      return $input->getOption('reconfigure') || !file_exists(GLPI_CONFIG_DIR . '/config_db.php');
    }
 }
