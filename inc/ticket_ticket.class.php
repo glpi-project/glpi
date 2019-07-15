@@ -177,7 +177,7 @@ class Ticket_Ticket extends CommonDBRelation {
       $ticket    = new Ticket();
       $tick      = new Ticket();
       if (is_array($tickets) && count($tickets)) {
-         foreach ($tickets as $linkID => $data) {
+         foreach ($tickets as $linkid => $data) {
             if ($ticket->getFromDB($data['tickets_id'])) {
                $icons =  Ticket::getStatusIcon($ticket->fields['status']);
                if ($canupdate) {
@@ -185,7 +185,7 @@ class Ticket_Ticket extends CommonDBRelation {
                       && ($tick->fields['status'] != CommonITILObject::CLOSED)) {
                      $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'purge',
                                                             _x('button', 'Delete permanently'),
-                                                         ['id'         => $linkID,
+                                                         ['id'         => $linkid,
                                                           'tickets_id' => $ID],
                                                          'fa-times-circle');
                   }

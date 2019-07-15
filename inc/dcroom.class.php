@@ -150,7 +150,7 @@ class DCRoom extends CommonDBTM {
       echo "<td><label for=''>" . __('Background picture (blueprint)') . "</label></td><td>";
 
       if (!empty($this->fields['blueprint'])) {
-         echo Html::image($this->fields['blueprint'], [
+         echo Html::image(Toolbox::getPictureUrl($this->fields['blueprint']), [
             'style' => 'max-width: 100px; max-height: 50px;',
             'class' => 'picture_square'
          ]);
@@ -184,38 +184,36 @@ class DCRoom extends CommonDBTM {
       return $this->manageBlueprint($input);
    }
 
+   function cleanDBonPurge() {
+      Toolbox::deletePicture($this->fields['blueprint']);
+   }
+
    /**
     * Add/remove blueprint picture
     * @param  array $input the form input
     * @return array        the altered input
     */
    function manageBlueprint($input) {
-      global $CFG_GLPI;
-
       if (isset($input["_blank_blueprint"])
           && $input["_blank_blueprint"]) {
          $input['blueprint'] = '';
+
+         if (array_key_exists('blueprint', $this->fields)) {
+            Toolbox::deletePicture($this->fields['blueprint']);
+         }
       }
 
       if (isset($input["_blueprint"])) {
-         $filename = array_shift($input["_blueprint"]);
-         $src      = GLPI_TMP_DIR."/".$filename;
-         $prefix   = '';
-         if (isset($input["_prefix_blueprint"])) {
-            $prefix = array_shift($input["_prefix_blueprint"]);
-         }
-         $filename = str_replace($prefix, '', $filename);
-         $dest     = GLPI_PICTURE_DIR."/".$filename;
-         $moved    = false;
+         $blueprint = array_shift($input["_blueprint"]);
 
-         if (is_file($dest)) {
-            @unlink($dest);
+         if ($dest = Toolbox::savePicture(GLPI_TMP_DIR . '/' . $blueprint)) {
+            $input['blueprint'] = $dest;
+         } else {
+            Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
          }
-         $moved = rename($src, $dest);
 
-         if ($moved) {
-            $input['blueprint'] = $CFG_GLPI["root_doc"].
-                                  "/front/document.send.php?file=_pictures/$filename";
+         if (array_key_exists('blueprint', $this->fields)) {
+            Toolbox::deletePicture($this->fields['blueprint']);
          }
       }
 

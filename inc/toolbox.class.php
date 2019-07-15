@@ -753,13 +753,14 @@ class Toolbox {
     * Send a file (not a document) to the navigator
     * See Document->send();
     *
-    * @param string      $file      storage filename
-    * @param string      $filename  file title
-    * @param string|null $mime      file mime type
+    * @param string      $file        storage filename
+    * @param string      $filename    file title
+    * @param string|null $mime        file mime type
+    * @param boolean     $add_expires add expires headers maximize cacheability ?
     *
     * @return void
    **/
-   static function sendFile($file, $filename, $mime = null) {
+   static function sendFile($file, $filename, $mime = null, $expires_headers = false) {
 
       // Test securite : document in DOC_DIR
       $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
@@ -800,8 +801,12 @@ class Toolbox {
       // Now send the file with header() magic
       header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
       header("Etag: $etag");
-      header('Pragma: private'); /// IE BUG + SSL
-      header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
+      header_remove('Pragma');
+      header('Cache-Control: private');
+      if ($expires_headers) {
+         $max_age = WEEK_TIMESTAMP;
+         header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
+      }
       header(
          "Content-disposition:$attachment filename=\"" .
          addslashes(utf8_decode($filename)) .
@@ -3169,5 +3174,87 @@ class Toolbox {
 
       global $CONTAINER;
       return $CONTAINER->get('application_cache');
+      }
+
+      return @unlink($fullpath);
+   }
+
+   /**
+    * Save a picture and return destination filepath.
+    * /!\ This method is made to handle uploaded files and removes the source file filesystem.
+    *
+    * @param string|null $src          Source path of the picture
+    * @param string      $uniq_prefix  Unique prefix that can be used to improve uniqueness of destination filename
+    *
+    * @return boolean|string      Destination filepath, relative to GLPI_PICTURE_DIR, or false on failure
+    *
+    * @since 9.5.0
+    */
+   static public function savePicture($src, $uniq_prefix = null) {
+      if (!Document::isImage($src)) {
+         return false;
+      }
+      $filename     = uniqid($uniq_prefix);
+      $ext          = pathinfo($src, PATHINFO_EXTENSION);
+      $subdirectory = substr($filename, -2); // subdirectory based on last 2 hex digit
+      $i = 0;
+      do {
+         // Iterate on possible suffix while dest exists.
+         // This case will almost never exists as dest is based on an unique id.
+         $dest = GLPI_PICTURE_DIR
+            . '/' . $subdirectory
+            . '/' . $filename . ($i > 0 ? '_' . $i : '') . '.' . $ext;
+         $i++;
+      } while (file_exists($dest));
+      if (!is_dir(GLPI_PICTURE_DIR . '/' . $subdirectory) && !mkdir(GLPI_PICTURE_DIR . '/' . $subdirectory)) {
+         return false;
+      }
+      if (!rename($src, $dest)) {
+         return false;
+      }
+      return substr($dest, strlen(GLPI_PICTURE_DIR . '/')); // Return dest relative to GLPI_PICTURE_DIR
+   }
+
+   /**
+    * Delete a picture.
+    *
+    * @param string $path
+    *
+    * @return boolean
+    *
+    * @since 9.5.0
+    */
+   static function deletePicture($path) {
+      $fullpath = GLPI_PICTURE_DIR . '/' . $path;
+      if (!file_exists($fullpath)) {
+         return false;
+      }
+      $fullpath = realpath($fullpath);
+      if (!Toolbox::startsWith($fullpath, realpath(GLPI_PICTURE_DIR))) {
+         // Prevent deletion of a file ouside pictures directory
+         return false;
+      }
+      return @unlink($fullpath);
+   }
+
+   /**
+    * Get picture URL.
+    *
+    * @param string $path
+    *
+    * @return null|string
+    *
+    * @since 9.5.0
+    */
+   static function getPictureUrl($path) {
+      global $CFG_GLPI;
+
+      $path = Html::cleanInputText($path); // prevent xss
+
+      if (empty($path)) {
+         return null;
+      }
+
+      return $CFG_GLPI["root_doc"] . '/front/document.send.php?file=_pictures/' . $path;
    }
 }

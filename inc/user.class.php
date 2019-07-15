@@ -4942,12 +4942,11 @@ class User extends CommonDBTM {
    static function getURLForPicture($picture) {
       global $CFG_GLPI;
 
-      // prevent xss
-      $picture = Html::cleanInputText($picture);
-
-      if (!empty($picture)) {
-         return $CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/$picture";
+      $url = Toolbox::getPictureUrl($picture);
+      if (null !== $url) {
+         return $url;
       }
+
       return $CFG_GLPI["root_doc"]."/pics/picture.png";
    }
 

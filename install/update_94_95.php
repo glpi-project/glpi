@@ -307,6 +307,57 @@ function update94to95() {
    }
    /** /Add "date_creation" field on document_items */
 
+   /** Make datacenter pictures path relative */
+   $doc_send_url = '/front/document.send.php?file=_pictures/';
+
+   $fix_picture_fct = function($path) use ($doc_send_url) {
+      // Keep only part of URL corresponding to relative path inside GLPI_PICTURE_DIR
+      return preg_replace('/^.*' . preg_quote($doc_send_url, '/') . '(.+)$/', '$1', $path);
+   };
+
+   $common_dc_model_tables = [
+      'glpi_computermodels',
+      'glpi_enclosuremodels',
+      'glpi_monitormodels',
+      'glpi_networkequipmentmodels',
+      'glpi_pdumodels',
+      'glpi_peripheralmodels',
+   ];
+   foreach ($common_dc_model_tables as $table) {
+      $elements_to_fix = $DB->request(
+         [
+            'SELECT'    => ['id', 'picture_front', 'picture_rear'],
+            'FROM'      => $table,
+            'WHERE'     => [
+               'OR' => [
+                  'picture_front' => ['LIKE', '%' . $doc_send_url . '%'],
+                  'picture_rear' => ['LIKE', '%' . $doc_send_url . '%'],
+               ],
+            ],
+         ]
+      );
+      foreach ($elements_to_fix as $data) {
+         $data['picture_front'] = $DB->escape($fix_picture_fct($data['picture_front']));
+         $data['picture_rear']  = $DB->escape($fix_picture_fct($data['picture_rear']));
+         $DB->update($table, $data, ['id' => $data['id']]);
+      }
+   }
+
+   $elements_to_fix = $DB->request(
+      [
+         'SELECT'    => ['id', 'blueprint'],
+         'FROM'      => 'glpi_dcrooms',
+         'WHERE'     => [
+            'blueprint' => ['LIKE', '%' . $doc_send_url . '%'],
+         ],
+      ]
+   );
+   foreach ($elements_to_fix as $data) {
+      $data['blueprint'] = $DB->escape($fix_picture_fct($data['blueprint']));
+      $DB->update('glpi_dcrooms', $data, ['id' => $data['id']]);
+   }
+   /** /Make datacenter pictures path relative */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

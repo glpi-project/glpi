@@ -125,7 +125,7 @@ class Change_Problem extends CommonDBRelation{
 
       $iterator = $DB->request([
          'SELECT' => [
-            'glpi_changes_problems.id AS linkID',
+            'glpi_changes_problems.id AS linkid',
             'glpi_changes.*'
          ],
          'DISTINCT'        => true,
@@ -203,7 +203,7 @@ class Change_Problem extends CommonDBRelation{
             Session::addToNavigateListItems('Change', $data["id"]);
             Change::showShort($data['id'], ['row_num'                => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']]);
+                                                 'id_for_massiveaction'   => $data['linkid']]);
             $i++;
          }
          Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
@@ -238,7 +238,7 @@ class Change_Problem extends CommonDBRelation{
 
       $iterator = $DB->request([
          'SELECT' => [
-            'glpi_changes_problems.id AS linkID',
+            'glpi_changes_problems.id AS linkid',
             'glpi_problems.*'
          ],
          'DISTINCT'        => true,
@@ -309,7 +309,7 @@ class Change_Problem extends CommonDBRelation{
             Session::addToNavigateListItems('Problem', $data["id"]);
             Problem::showShort($data['id'], ['row_num'               => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']]);
+                                                 'id_for_massiveaction'   => $data['linkid']]);
             $i++;
          }
          Problem::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);

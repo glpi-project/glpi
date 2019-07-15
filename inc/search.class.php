@@ -6009,13 +6009,10 @@ JAVASCRIPT;
                   }
 
                   $color = $_SESSION['glpiduedateok_color'];
-                  $bar_color = 'green';
                   if ($less_crit < $less_crit_limit) {
                      $color = $_SESSION['glpiduedatecritical_color'];
-                     $bar_color = 'red';
                   } else if ($less_warn < $less_warn_limit) {
                      $color = $_SESSION['glpiduedatewarning_color'];
-                     $bar_color = 'yellow';
                   }
 
                   if (!isset($so['datatype'])) {
@@ -6026,7 +6023,7 @@ JAVASCRIPT;
                      'text'         => Html::convDateTime($data[$ID][0]['name']),
                      'percent'      => $percentage,
                      'percent_text' => $percentage_text,
-                     'color'        => $bar_color
+                     'color'        => $color
                   ];
                }
                break;

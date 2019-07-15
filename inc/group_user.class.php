@@ -83,7 +83,7 @@ class Group_User extends CommonDBRelation{
          'SELECT' => [
             'glpi_groups.*',
             'glpi_groups_users.id AS IDD',
-            'glpi_groups_users.id AS linkID',
+            'glpi_groups_users.id AS linkid',
             'glpi_groups_users.is_dynamic AS is_dynamic',
             'glpi_groups_users.is_manager AS is_manager',
             'glpi_groups_users.is_userdelegate AS is_userdelegate'
@@ -129,7 +129,7 @@ class Group_User extends CommonDBRelation{
          'SELECT' => [
             'glpi_users.*',
             'glpi_groups_users.id AS IDD',
-            'glpi_groups_users.id AS linkID',
+            'glpi_groups_users.id AS linkid',
             'glpi_groups_users.is_dynamic AS is_dynamic',
             'glpi_groups_users.is_manager AS is_manager',
             'glpi_groups_users.is_userdelegate AS is_userdelegate'
@@ -392,7 +392,6 @@ class Group_User extends CommonDBRelation{
       $iterator = $DB->request([
          'SELECT'       => [
             'glpi_users.id',
-            'glpi_groups_users.id AS linkID',
             'glpi_groups_users.groups_id',
             'glpi_groups_users.is_dynamic AS is_dynamic',
             'glpi_groups_users.is_manager AS is_manager',
@@ -551,7 +550,7 @@ class Group_User extends CommonDBRelation{
             echo "\n<tr class='tab_bg_".($user->isDeleted() ? '1_2' : '1')."'>";
             if ($canedit) {
                echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                echo "</td>";
             }
             echo "<td>".$user->getLink();
