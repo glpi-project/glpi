@@ -76,7 +76,7 @@ class Calendar_Holiday extends CommonDBRelation {
       $rand    = mt_rand();
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_calendars_holidays.id AS linkID',
+         'SELECT DISTINCT' => 'glpi_calendars_holidays.id AS linkid',
          'FIELDS'          => 'glpi_holidays.*',
          'FROM'            => 'glpi_calendars_holidays',
          'LEFT JOIN'       => [
@@ -155,7 +155,7 @@ class Calendar_Holiday extends CommonDBRelation {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                echo "</td>";
             }
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".

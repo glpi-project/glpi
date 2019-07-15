@@ -907,7 +907,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          [
             'SELECT'       => [
                'glpi_softwarelicenses.*',
-               'glpi_computers_softwarelicenses.id AS linkID',
+               'glpi_computers_softwarelicenses.id AS linkid',
                'glpi_softwares.name AS softname',
                'glpi_softwareversions.name AS version',
                'glpi_states.name AS state'
@@ -1143,7 +1143,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    */
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
 
-      $ID = $data['linkID'];
+      $ID = $data['linkid'];
 
       $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
       $link      = $link_item."?id=".$data['id'];

@@ -492,10 +492,10 @@ class NetworkPortInstantiation extends CommonDBChild {
 
             $deviceNames = [0 => ""]; // First option : no network card
             foreach ($DB->request($query) as $availableDevice) {
-               $linkID               = $availableDevice['link_id'];
-               $deviceNames[$linkID] = $availableDevice['name'];
+               $linkid               = $availableDevice['link_id'];
+               $deviceNames[$linkid] = $availableDevice['name'];
                if (isset($availableDevice['mac'])) {
-                  $deviceNames[$linkID] = sprintf(__('%1$s - %2$s'), $deviceNames[$linkID],
+                  $deviceNames[$linkid] = sprintf(__('%1$s - %2$s'), $deviceNames[$linkid],
                                                   $availableDevice['mac']);
                }
 
@@ -507,7 +507,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                }
                //addslashes_deep($deviceInformations);
                // Fill the javascript array
-               echo "  deviceAttributs[$linkID] = {".implode(', ', $deviceInformations)."};\n";
+               echo "  deviceAttributs[$linkid] = {".implode(', ', $deviceInformations)."};\n";
             }
 
             // And add the javascript function that updates the other fields

@@ -238,7 +238,7 @@ class Change_Ticket extends CommonDBRelation{
       $rand    = mt_rand();
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_changes_tickets.id AS linkID',
+         'SELECT DISTINCT' => 'glpi_changes_tickets.id AS linkid',
          'FIELDS'          => 'glpi_tickets.*',
          'FROM'            => 'glpi_changes_tickets',
          'LEFT JOIN'       => [
@@ -323,7 +323,7 @@ class Change_Ticket extends CommonDBRelation{
             Ticket::showShort($data['id'], ['followups'              => false,
                                                  'row_num'                => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']]);
+                                                 'id_for_massiveaction'   => $data['linkid']]);
             $i++;
          }
          Ticket::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
@@ -355,7 +355,7 @@ class Change_Ticket extends CommonDBRelation{
       $rand    = mt_rand();
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_changes_tickets.id AS linkID',
+         'SELECT DISTINCT' => 'glpi_changes_tickets.id AS linkid',
          'FIELDS'          => 'glpi_changes.*',
          'FROM'            => 'glpi_changes_tickets',
          'LEFT JOIN'       => [
@@ -431,7 +431,7 @@ class Change_Ticket extends CommonDBRelation{
             Session::addToNavigateListItems('Change', $data["id"]);
             Change::showShort($data['id'], ['row_num'                => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']]);
+                                                 'id_for_massiveaction'   => $data['linkid']]);
             $i++;
          }
          Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);

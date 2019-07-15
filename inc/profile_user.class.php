@@ -299,7 +299,7 @@ class Profile_User extends CommonDBRelation {
       $iterator = $DB->request([
          'SELECT'       => [
             "glpi_users.*",
-            "$putable.id AS linkID",
+            "$putable.id AS linkid",
             "$putable.is_recursive",
             "$putable.is_dynamic",
             "$ptable.id AS pid",
@@ -390,7 +390,7 @@ class Profile_User extends CommonDBRelation {
             }
             if ($canedit) {
                echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                echo "</td>";
             }
 
@@ -453,7 +453,7 @@ class Profile_User extends CommonDBRelation {
          'SELECT DISTINCT' => "$utable.*",
          'FIELDS'          => [
             "$putable.entities_id AS entity",
-            "$putable.id AS linkID",
+            "$putable.id AS linkid",
             "$putable.is_dynamic",
             "$putable.is_recursive"
          ],
@@ -555,7 +555,7 @@ class Profile_User extends CommonDBRelation {
 
             if ($canedit_entity) {
                echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                echo "</td>";
             }
 
