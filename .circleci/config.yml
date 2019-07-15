@@ -170,10 +170,6 @@ jobs:
     steps:
       - build
       - run:
-          name: PHP Parallel Lint
-          command: |
-            vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
-      - run:
           name: sensiolabs/security-checker
           command: |
             vendor/bin/security-checker security:check
