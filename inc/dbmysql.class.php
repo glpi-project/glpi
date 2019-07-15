@@ -1615,4 +1615,14 @@ class DBmysql {
        ])->next();
        return (int)$result['cpt'];
    }
+
+   /**
+    * Clear cached schema informations.
+    *
+    * @return void
+    */
+   public function clearSchemaCache() {
+      $this->table_cache = [];
+      $this->field_cache = [];
+   }
 }

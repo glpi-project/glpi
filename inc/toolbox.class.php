@@ -2394,12 +2394,18 @@ class Toolbox {
     *
     * @return void
    **/
-   static function createSchema($lang = 'en_GB') {
+   static function createSchema($lang = 'en_GB', $db_instance = null) {
+
       global $DB;
 
-      include_once (GLPI_CONFIG_DIR . "/config_db.php");
+      if (null === $db_instance) {
+         include_once (GLPI_CONFIG_DIR . "/config_db.php");
+         $DB = new DB();
+         $db_instance = $DB;
+      } else {
+         $DB = $db_instance;
+      }
 
-      $DB = new DB();
       if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-empty.sql")) {
          echo "Errors occurred inserting default database";
       } else {
