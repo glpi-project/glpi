@@ -3174,9 +3174,6 @@ class Toolbox {
 
       global $CONTAINER;
       return $CONTAINER->get('application_cache');
-      }
-
-      return @unlink($fullpath);
    }
 
    /**
