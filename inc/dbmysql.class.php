@@ -118,6 +118,22 @@ class DBmysql {
    private $cache_disabled = false;
 
    /**
+    * Cached list fo tables.
+    *
+    * @var array
+    * @see self::tableExists()
+    */
+   private $table_cache = [];
+
+   /**
+    * Cached list of fields.
+    *
+    * @var array
+    * @see self::listFields()
+    */
+   private $field_cache = [];
+
+   /**
     * Constructor / Connect to the MySQL Database
     *
     * @param integer $choice host number (default NULL)
@@ -652,19 +668,17 @@ class DBmysql {
     */
    function listFields($table, $usecache = true) {
 
-      static $cache = [];
-
-      if (!$this->cache_disabled && $usecache && isset($cache[$table])) {
-         return $cache[$table];
+      if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
+         return $this->field_cache[$table];
       }
       $result = $this->query("SHOW COLUMNS FROM `$table`");
       if ($result) {
          if ($this->numrows($result) > 0) {
-            $cache[$table] = [];
+            $this->field_cache[$table] = [];
             while ($data = $this->fetchAssoc($result)) {
-               $cache[$table][$data["Field"]] = $data;
+               $this->field_cache[$table][$data["Field"]] = $data;
             }
-            return $cache[$table];
+            return $this->field_cache[$table];
          }
          return [];
       }
@@ -947,14 +961,13 @@ class DBmysql {
     **/
    public function tableExists($tablename, $usecache = true) {
 
-      static $table_cache = [];
-      if (!$this->cache_disabled && $usecache && in_array($tablename, $table_cache)) {
+      if (!$this->cache_disabled && $usecache && in_array($tablename, $this->table_cache)) {
          return true;
       }
 
       // Retrieve all tables if cache is empty but enabled, in order to fill cache
       // with all known tables
-      $retrieve_all = !$this->cache_disabled && empty($table_cache);
+      $retrieve_all = !$this->cache_disabled && empty($this->table_cache);
 
       $result = $this->listTables($retrieve_all ? 'glpi_%' : $tablename);
       $found_tables = [];
@@ -963,7 +976,7 @@ class DBmysql {
       }
 
       if (!$this->cache_disabled) {
-         $table_cache = array_unique(array_merge($table_cache, $found_tables));
+         $this->table_cache = array_unique(array_merge($this->table_cache, $found_tables));
       }
 
       if (in_array($tablename, $found_tables)) {
@@ -985,7 +998,7 @@ class DBmysql {
     * @return boolean
     **/
    public function fieldExists($table, $field, $usecache = true) {
-      if (!$this->tableExists($table)) {
+      if (!$this->tableExists($table, $usecache)) {
          trigger_error("Table $table does not exists", E_USER_WARNING);
          return false;
       }
