@@ -292,16 +292,18 @@ function update94to95() {
    /** Add "date_creation" field on document_items */
    if (!$DB->fieldExists('glpi_documents_items', 'date_creation')) {
       $migration->addField('glpi_documents_items', 'date_creation', 'datetime');
+      $set = [
+         'date_creation' => new \QueryExpression(
+            $DB->quoteName('date_mod')
+         )
+      ];
       $migration->addPostQuery(
          $DB->buildUpdate(
             'glpi_documents_items',
-            [
-               'date_creation' => new \QueryExpression(
-                  $DB->quoteName('date_mod')
-               )
-            ],
+            $set,
             [true]
-         )
+         ),
+         $set
       );
       $migration->addKey('glpi_documents_items', 'date_creation');
    }
