@@ -3596,7 +3596,7 @@ class Transfer extends CommonDBTM {
                   'FROM'      => $table,
                   'LEFT JOIN' => [
                      'glpi_entities AS entities'   => [
-                        'FKEY' => [
+                        'ON' => [
                            'entities' => 'id',
                            $table     => 'entities_id'
                         ]
