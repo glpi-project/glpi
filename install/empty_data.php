@@ -7970,28 +7970,24 @@ $tables['glpi_users'] = [
       'id'           => '2',
       'name'         => 'glpi',
       'password'     => '$2y$10$rXXzbc2ShaiCldwkw4AZL.n.9QSH7c0c9XJAyyjrbL9BwmWditAYm',
-      'language'     => null,
       'list_limit'   => '20',
       'authtype'     => '1'
    ], [
       'id'           => '3',
       'name'         => 'post-only',
       'password'     => '$2y$10$dTMar1F3ef5X/H1IjX9gYOjQWBR1K4bERGf4/oTPxFtJE/c3vXILm',
-      'language'     => 'en_GB',
       'list_limit'   => '20',
       'authtype'     => '1'
    ], [
       'id'           => '4',
       'name'         => 'tech',
       'password'     => '$2y$10$.xEgErizkp6Az0z.DHyoeOoenuh0RcsX4JapBk2JMD6VI17KtB1lO',
-      'language'     => 'en_GB',
       'list_limit'   => '20',
       'authtype'     => '1'
    ], [
       'id'           => '5',
       'name'         => 'normal',
       'password'     => '$2y$10$Z6doq4zVHkSPZFbPeXTCluN1Q/r0ryZ3ZsSJncJqkN3.8cRiN0NV.',
-      'language'     => 'en_GB',
       'list_limit'   => '20',
       'authtype'     => '1'
    ]
