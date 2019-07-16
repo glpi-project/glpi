@@ -2440,7 +2440,10 @@ class Toolbox {
          echo "Errors occurred inserting default database";
       } else {
          //dataset
+         Session::loadLanguage($lang, false); // Load default language locales to translate empty data
          $tables = require_once(__DIR__ . '/../install/empty_data.php');
+         Session::loadLanguage('', false); // Load back session language
+
          foreach ($tables as $table => $data) {
              $stmt = $DB->prepare($DB->buildInsert($table, $data[0]));
             foreach ($data as $row) {
