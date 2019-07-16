@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+<<<<<<< HEAD:src/Glpi/Application/View/TwigView.php
 namespace Glpi\Application\View;
 
 use Slim\Views\Twig;
@@ -42,4 +43,36 @@ use Slim\Views\Twig;
 class TwigView extends Twig
 {
 
+=======
+namespace Glpi\Console\Database;
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
+
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class ConfigureCommand extends AbstractConfigureCommand {
+
+   protected function configure() {
+
+      parent::configure();
+
+      $this->setName('glpi:database:configure');
+      $this->setAliases(['db:configure']);
+      $this->setDescription('Define database configuration');
+   }
+
+   protected function execute(InputInterface $input, OutputInterface $output) {
+
+      $result = $this->configureDatabase($input, $output);
+
+      if (self::ABORTED_BY_USER === $result) {
+         return 0; // Considered as success
+      }
+
+      return $result;
+   }
+>>>>>>> 9.5/bugfixes:inc/console/database/configurecommand.class.php
 }
