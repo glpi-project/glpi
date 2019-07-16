@@ -832,7 +832,7 @@ abstract class AbstractDatabase
     public function indexExists(string $table, $field, $name = null, bool $usecache = true): bool
     {
 
-        if (!$this->tableExists($table)) {
+        if (!$this->tableExists($table, $usecache)) {
             trigger_error("Table $table does not exists", E_USER_WARNING);
             return false;
         }
