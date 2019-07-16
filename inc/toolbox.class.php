@@ -2413,11 +2413,6 @@ class Toolbox {
                'use_timezones' => $DB->areTimezonesAvailable()
             ]
          );
-         $DB->updateOrDie(
-            'glpi_users', [
-               'language' => 'NULL'
-            ], [0], "4203"
-         );
 
          if (defined('GLPI_SYSTEM_CRON')) {
             // Downstream packages may provide a good system cron
