@@ -142,8 +142,9 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
       $this->addOption(
          'default-language',
          'L',
-         InputOption::VALUE_REQUIRED,
-         __('Default language of GLPI')
+         InputOption::VALUE_OPTIONAL,
+         __('Default language of GLPI'),
+         'en_GB'
       );
 
       $this->addOption(

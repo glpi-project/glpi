@@ -2389,7 +2389,7 @@ class Toolbox {
          $DB->updateOrDie(
             'glpi_users', [
                'language' => 'NULL'
-            ], [0], "4203"
+            ], [true], "4203"
          );
 
          if (defined('GLPI_SYSTEM_CRON')) {
