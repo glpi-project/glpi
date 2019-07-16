@@ -1596,4 +1596,16 @@ abstract class AbstractDatabase
     {
         return 0;
     }
+
+    /**
+     * Clear cached schema informations.
+     *
+     * @return void
+     */
+    public function clearSchemaCache()
+    {
+        $this->table_cache = [];
+        $this->index_cache = [];
+        $this->field_cache = [];
+    }
 }
