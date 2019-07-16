@@ -2386,11 +2386,6 @@ class Toolbox {
                'dbversion' => GLPI_SCHEMA_VERSION
             ]
          );
-         $DB->updateOrDie(
-            'glpi_users', [
-               'language' => 'NULL'
-            ], [0], "4203"
-         );
 
          if (defined('GLPI_SYSTEM_CRON')) {
             // Downstream packages may provide a good system cron

@@ -8966,12 +8966,12 @@ CREATE TABLE `glpi_users` (
 
 INSERT INTO `glpi_users` (`id`, `name`, `password`, `list_limit`, `authtype`, `last_login`, `date_mod`)
    VALUES ('2','glpi','$2y$10$rXXzbc2ShaiCldwkw4AZL.n.9QSH7c0c9XJAyyjrbL9BwmWditAYm','20','1','2014-06-18 08:02:24','2014-06-18 08:02:24');
-INSERT INTO `glpi_users` (`id`, `name`, `password`, `language`, `list_limit`, `authtype`)
-   VALUES ('3','post-only','$2y$10$dTMar1F3ef5X/H1IjX9gYOjQWBR1K4bERGf4/oTPxFtJE/c3vXILm','en_GB','20','1');
-INSERT INTO `glpi_users` (`id`, `name`, `password`, `language`, `list_limit`, `authtype`)
-   VALUES ('4','tech','$2y$10$.xEgErizkp6Az0z.DHyoeOoenuh0RcsX4JapBk2JMD6VI17KtB1lO','en_GB','20','1');
-INSERT INTO `glpi_users` (`id`, `name`, `password`, `language`, `list_limit`, `authtype`)
-   VALUES ('5','normal','$2y$10$Z6doq4zVHkSPZFbPeXTCluN1Q/r0ryZ3ZsSJncJqkN3.8cRiN0NV.','en_GB','20','1');
+INSERT INTO `glpi_users` (`id`, `name`, `password`, `list_limit`, `authtype`)
+   VALUES ('3','post-only','$2y$10$dTMar1F3ef5X/H1IjX9gYOjQWBR1K4bERGf4/oTPxFtJE/c3vXILm','20','1');
+INSERT INTO `glpi_users` (`id`, `name`, `password`, `list_limit`, `authtype`)
+   VALUES ('4','tech','$2y$10$.xEgErizkp6Az0z.DHyoeOoenuh0RcsX4JapBk2JMD6VI17KtB1lO','20','1');
+INSERT INTO `glpi_users` (`id`, `name`, `password`, `list_limit`, `authtype`)
+   VALUES ('5','normal','$2y$10$Z6doq4zVHkSPZFbPeXTCluN1Q/r0ryZ3ZsSJncJqkN3.8cRiN0NV.','20','1');
 
 ### Dump table glpi_usertitles
 
