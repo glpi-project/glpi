@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "299ffe086fd5428efe4f3ec0fc3442c5",
+    "content-hash": "8f8cdca99eabcc5c9ed016f80923bbbc",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -39,20 +39,20 @@
         },
         {
             "name": "elvanto/litemoji",
-            "version": "1.4.4",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elvanto/litemoji.git",
-                "reference": "17bf635e4d1a5b4d35d2cadf153cd589b78af7f0"
+                "reference": "a49bcfd88af64728aa2c28c79be7c3d15b44a1d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/17bf635e4d1a5b4d35d2cadf153cd589b78af7f0",
-                "reference": "17bf635e4d1a5b4d35d2cadf153cd589b78af7f0",
+                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/a49bcfd88af64728aa2c28c79be7c3d15b44a1d0",
+                "reference": "a49bcfd88af64728aa2c28c79be7c3d15b44a1d0",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4"
+                "php": ">=5.6"
             },
             "require-dev": {
                 "milesj/emojibase": "3.1.0",
@@ -73,7 +73,7 @@
                 "emoji",
                 "php-emoji"
             ],
-            "time": "2018-09-28T05:23:38+00:00"
+            "time": "2019-07-15T23:52:41+00:00"
         },
         {
             "name": "iamcal/lib_autolink",
