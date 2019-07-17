@@ -2431,16 +2431,10 @@ class Toolbox {
     *
     * @return void
    **/
-   static function createSchema($lang = 'en_GB', $db_instance = null) {
-
+   static function createSchema($lang = 'en_GB') {
       global $DB;
 
-      if (null === $db_instance) {
-         $DB = \Glpi\DatabaseFactory::create();
-         $db_instance = $DB;
-      } else {
-         $DB = $db_instance;
-      }
+      $DB = \Glpi\DatabaseFactory::create();
 
       if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-empty.sql")) {
          echo "Errors occurred inserting default database";

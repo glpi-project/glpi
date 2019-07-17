@@ -36,16 +36,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use DB;
+use Glpi\DatabaseFactory;
+use Glpi\Application\LocalConfigurationManager;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Yaml\Yaml;
-use Config;
-use DBConnection;
-use PDO;
 use Toolbox;
 
 class InstallCommand extends AbstractConfigureCommand {
@@ -118,14 +116,7 @@ class InstallCommand extends AbstractConfigureCommand {
 
    protected function execute(InputInterface $input, OutputInterface $output) {
 
-      global $DB;
-
-      $db_pass          = $input->getOption('db-password');
-      $db_host          = $input->getOption('db-host');
       $db_name          = $input->getOption('db-name');
-      $db_port          = $input->getOption('db-port');
-      $db_user          = $input->getOption('db-user');
-      $db_hostport      = $db_host . (!empty($db_port) ? ':' . $db_port : '');
       $default_language = $input->getOption('default-language');
       $force            = $input->getOption('force');
 
@@ -137,51 +128,23 @@ class InstallCommand extends AbstractConfigureCommand {
          } else if (self::SUCCESS !== $result) {
             return $result; // Fail with error code
          }
-
-         if ($DB instanceof DB) {
-            // If global $DB is set at this point, it means that configuration file has been loaded
-            // prior to reconfiguration.
-            // As configuration is part of a class, it cannot be reloaded and class properties
-            // have to be updated manually in order to make `Toolbox::createSchema()` work correctly.
-            $DB->dbhost     = $db_hostport;
-            $DB->dbuser     = $db_user;
-            $DB->dbpassword = rawurlencode($db_pass);
-            $DB->dbdefault  = $db_name;
-            $DB->clearSchemaCache();
-            $DB->connect();
-         }
       }
 
-      try {
-         $dbh = DatabaseFactory::create([
-            'driver'   => $db_driver,
-            'host'     => $db_hostport,
-            'user'     => $db_user,
-            'pass'     => $db_pass,
-            'dbname'   => $db_name
-         ]);
-      } catch (\PDOException $e) {
-         $message = sprintf(
-            __('Database connection failed with message "(%s)\n%s".'),
-            $e->getMessage(),
-            $e->getTraceAsString()
-         );
-         $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
-         return self::ERROR_DB_CONNECTION_FAILED;
-
-      }
+      $dbh = DatabaseFactory::create();
 
       // Create database or select existing one
-      $db_name = str_replace($qchar, $qchar.$qchar, $db_name); // Escape backquotes
       $output->writeln(
          '<comment>' . __('Creating the database...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
+      $qchar = $dbh->getQuoteNameChar();
+      $db_name = str_replace($qchar, $qchar.$qchar, $db_name); // Escape backquotes
       if (!$dbh->rawQuery('CREATE DATABASE IF NOT EXISTS ' . $dbh->quoteName($db_name))) {
-         $error = $dbh->error();
+         $error = $dbh->errorInfo();
          $message = sprintf(
-            __("Database creation failed with message \"%s\"."),
-            $error
+            __("Database creation failed with message \"(%s)\n%s\"."),
+            $error[0],
+            $error[2]
          );
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
          return self::ERROR_DB_CREATION_FAILED;
@@ -198,21 +161,26 @@ class InstallCommand extends AbstractConfigureCommand {
       }
 
       // Prevent overriding of existing DB
-      $tables_result = $mysqli->query(
-         "SELECT COUNT(table_name)
-          FROM information_schema.tables
-          WHERE table_schema = '{$db_name}'
-             AND table_type = 'BASE TABLE'
-             AND table_name LIKE 'glpi_%'"
+      $tables_iterator = $dbh->request(
+          [
+             'COUNT'  => 'cpt',
+             'FROM'   => 'information_schema.tables',
+             'WHERE'  => [
+                'table_schema' => $db_name,
+                'table_type'   => 'BASE TABLE',
+                'table_name'   => ['LIKE', 'glpi_%'],
+             ],
+          ]
       );
-      if (!$tables_result) {
+      if ($tables_result = $tables_iterator->next()) {
+         if ($tables_result['cpt'] > 0 && !$force) {
+            $output->writeln(
+               '<error>' . __('Database already contains "glpi_*" tables. Use --force option to override existing database.') . '</error>'
+            );
+            return self::ERROR_DB_ALREADY_CONTAINS_TABLES;
+         }
+      } else {
          throw new RuntimeException('Unable to check GLPI tables existence.');
-      }
-      if ($tables_result->fetch_array()[0] > 0 && !$force) {
-         $output->writeln(
-            '<error>' . __('Database already contains "glpi_*" tables. Use --force option to override existing database.') . '</error>'
-         );
-         return self::ERROR_DB_ALREADY_CONTAINS_TABLES;
       }
 
       // Install schema
@@ -222,7 +190,7 @@ class InstallCommand extends AbstractConfigureCommand {
       );
       // TODO Get rid of output buffering
       ob_start();
-      Toolbox::createSchema($default_language, $DB);
+      Toolbox::createSchema($default_language);
       $message = ob_get_clean();
       if (!empty($message)) {
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);

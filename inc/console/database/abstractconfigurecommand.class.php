@@ -40,6 +40,7 @@ use Config;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
+use Glpi\DatabaseFactory;
 
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Helper\Table;
@@ -100,6 +101,14 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       $this->setName('glpi:database:install');
       $this->setAliases(['db:install']);
       $this->setDescription('Install database schema');
+
+      $this->addOption(
+         'db-driver',
+         'D',
+         InputOption::VALUE_OPTIONAL,
+         __('Database driver'),
+         'mysql'
+      );
 
       $this->addOption(
          'db-host',
@@ -180,6 +189,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
     */
    protected function configureDatabase(InputInterface $input, OutputInterface $output) {
 
+      $db_driver   = $input->getOption('db-driver');
       $db_pass     = $input->getOption('db-password');
       $db_host     = $input->getOption('db-host');
       $db_name     = $input->getOption('db-name');
@@ -190,7 +200,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       $reconfigure    = $input->getOption('reconfigure');
       $no_interaction = $input->getOption('no-interaction'); // Base symfony/console option
 
-      if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
+      if (file_exists(GLPI_CONFIG_DIR . '/db.yaml') && !$reconfigure) {
          // Prevent overriding of existing DB
          $output->writeln(
             '<error>' . __('Database configuration already exists. Use --reconfigure option to override existing configuration.') . '</error>'
@@ -215,6 +225,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          // Ask for confirmation (unless --no-interaction)
 
          $informations = new Table($output);
+         $informations->addRow([__('Database driver'), $db_driver]);
          $informations->addRow([__('Database host'), $db_hostport]);
          $informations->addRow([__('Database name'), $db_name]);
          $informations->addRow([__('Database user'), $db_user]);
@@ -236,38 +247,45 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          }
       }
 
-      $mysqli = new \mysqli();
-      @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
-
-      if (0 !== $mysqli->connect_errno) {
+      try {
+         $dbh = DatabaseFactory::create([
+            'driver'   => $db_driver,
+            'host'     => $db_hostport,
+            'user'     => $db_user,
+            'pass'     => $db_pass,
+            'dbname'   => $db_name
+         ]);
+      } catch (\PDOException $e) {
          $message = sprintf(
-            __('Database connection failed with message "(%s) %s".'),
-            $mysqli->connect_errno,
-            $mysqli->connect_error
+            __('Database connection failed with message "(%s)\n%s".'),
+            $e->getMessage(),
+            $e->getTraceAsString()
          );
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
          return self::ERROR_DB_CONNECTION_FAILED;
       }
 
       ob_start();
-      $db_version_data = $mysqli->query('SELECT version()')->fetch_array();
-      $checkdb = Config::displayCheckDbEngine(false, $db_version_data[0]);
+      $db_version = $dbh->getVersion();
+      $checkdb = Config::displayCheckDbEngine(false, $db_version);
       $message = ob_get_clean();
       if ($checkdb > 0) {
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
          return self::ERROR_DB_ENGINE_UNSUPPORTED;
       }
 
-      $db_name = $mysqli->real_escape_string($db_name);
+      $qchar = $dbh->getQuoteNameChar();
+      $db_name = str_replace($qchar, $qchar.$qchar, $db_name); // Escape backquotes
 
       $output->writeln(
          '<comment>' . __('Saving configuration file...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
-      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name)) {
+
+      if (!DBConnection::createMainConfig($db_driver, $db_hostport, $db_user, $db_pass, $db_name)) {
          $message = sprintf(
             __('Cannot write configuration file "%s".'),
-            GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'
+            GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'db.yaml'
          );
          $output->writeln(
             '<error>' . $message . '</error>',
