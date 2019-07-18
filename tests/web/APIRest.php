@@ -347,7 +347,7 @@ class APIRest extends APIBaseClass {
       $ticketTMF = new \TicketTemplateMandatoryField();
 
       $tt_id = $ticketTemplate->add([
-         'entities_id' => 0,
+         'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
          'name'        => 'test'
       ]);
       $this->boolean((bool)$tt_id)->isTrue();

@@ -117,7 +117,7 @@ class ITILFollowup  extends CommonDBChild {
           && Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
          return true;
       }
-      if ($itilobject == "Ticket") {
+      if ($this->fields['itemtype'] == "Ticket") {
          if ($this->fields["users_id"] === Session::getLoginUserID()) {
             return true;
          }

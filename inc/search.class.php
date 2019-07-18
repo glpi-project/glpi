@@ -3877,6 +3877,37 @@ JAVASCRIPT;
             $condition = SavedSearch::addVisibilityRestrict();
             break;
 
+         case 'ITILFollowup':
+            // Filer on is_private
+            $allowed_is_private = [];
+            if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
+               $allowed_is_private[] = 1;
+            }
+            if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC)) {
+               $allowed_is_private[] = 0;
+            }
+
+            // If the user can't see public and private
+            if (!count($allowed_is_private)) {
+               $condition = "0 = 1";
+               break;
+            }
+
+            $in = "IN ('" . implode("','", $allowed_is_private) . "')";
+            $condition = "`glpi_itilfollowups`.`is_private` $in";
+
+            if (!Session::haveRight("ticket", Ticket::READALL)) {
+               // TODO: Filter items_id on allowed tickets (itemtype = "Ticket")
+            }
+            if (!Session::haveRight("change", Change::READALL)) {
+               // TODO: Filter items_id on allowed changes (itemtype = "Change")
+            }
+            if (!Session::haveRight("problem", Problem::READALL)) {
+               // TODO: Filter items_id on allowed problems (itemtype = "Problem")
+            }
+
+            break;
+
          default :
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {
