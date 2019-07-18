@@ -217,7 +217,7 @@ class Dropdown {
                $output .= "<span class='fa fa-plus-circle pointer' title=\"".__s('Add')."\"
                             onClick=\"".Html::jsGetElementbyID('add_'.$field_id).".dialog('open');\"
                            ><span class='sr-only'>" . __s('Add') . "</span></span>";
-               $output .= Ajax::createIframeModalWindow('add_dropdown'.$field_id.$params['rand'],
+               $output .= Ajax::createIframeModalWindow('add_'.$field_id,
                                                         $item->getFormURL(),
                                                         ['display' => false]);
          }
