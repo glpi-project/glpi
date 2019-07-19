@@ -23,7 +23,7 @@ script:
 
 matrix:
   include:
-    - php: 7.0
+    - php: 7.2
       dist: xenial
       addons:
         apt:

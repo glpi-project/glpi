@@ -4,18 +4,10 @@ executors:
   php_7_4:
     docker:
       - image: glpi/circleci-env-core:php_7.4_fpm-node
-  php_7_0_mariadb:
-    docker:
-      - image: glpi/circleci-env-core:php_7.0_fpm-node
-      - image: circleci/mariadb:10.1-ram
-  php_7_1_mariadb:
-    docker:
-      - image: glpi/circleci-env-core:php_7.1_fpm-node
-      - image: circleci/mariadb:10.2-ram
   php_7_2_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.2_fpm-node
-      - image: circleci/mariadb:10.3-ram
+      - image: circleci/mariadb:10.2-ram
   php_7_3_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
@@ -207,20 +199,6 @@ jobs:
           command: |
             node_modules/.bin/eslint ./js && node_modules/.bin/eslint --env=node --parser-options=ecmaVersion:6 --rule 'indent: ["error", 4]' ./webpack.config.js && echo "ESLint found no errors"
 
-  # PHP 7.0 test suite.
-  php_7_0_test_suite:
-    executor: php_7_0_mariadb
-    steps:
-      - build
-      - run_full_test_suite
-
-  # PHP 7.1 test suite.
-  php_7_1_test_suite:
-    executor: php_7_1_mariadb
-    steps:
-      - build
-      - run_full_test_suite
-
   # PHP 7.2 test suite.
   php_7_2_test_suite:
     executor: php_7_2_mariadb
@@ -278,28 +256,12 @@ workflows:
           filters:
             tags:
               only: /.*/ # run also on tag creation
-      - php_7_0_test_suite:
-          requires:
-            - checkout
-          filters:
-            tags:
-              only: /.*/ # run also on tag creation
-      - php_7_1_test_suite:
-          requires:
-            - checkout
-          filters:
-            tags:
-              only: /.*/ # run also on tag creation
-            branches:
-              ignore: /.*/ # do not run on branch update
       - php_7_2_test_suite:
           requires:
             - checkout
           filters:
             tags:
               only: /.*/ # run also on tag creation
-            branches:
-              ignore: /.*/ # do not run on branch update
       - php_7_3_test_suite:
           requires:
             - checkout
@@ -353,12 +315,6 @@ workflows:
     jobs:
       - checkout
       - lint:
-          requires:
-            - checkout
-      - php_7_0_test_suite:
-          requires:
-            - checkout
-      - php_7_1_test_suite:
           requires:
             - checkout
       - php_7_2_test_suite:
