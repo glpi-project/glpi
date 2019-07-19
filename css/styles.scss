@@ -3391,16 +3391,6 @@ a.copyright {
    box-shadow: none;
 }
 
-/* Restore default behavior : drop user agent CSS*/
-
-:focus {
-   outline-width: 0;
-}
-
-.nostyle:focus {
-   outline-width: 5px;
-}
-
 /* Timeline */
 
 .timeline_box {
