@@ -1566,9 +1566,9 @@ class Html {
       echo "<div id='header'>";
       echo "<header role='banner' id='header_top'>";
       echo "<div id='c_logo'>";
-      echo Html::link('', $CFG_GLPI["root_doc"]."/front/central.php",
-                      ['accesskey' => '1',
-                            'title'     => __('Home')]);
+      echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/central.php'
+               accesskey='1'
+               title='" . __s('Home') . "'><span class='sr-only'>" . __s('Home') . "</span></a>";
       echo "</div>";
 
       // Preferences and logout link
