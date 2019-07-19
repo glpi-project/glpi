@@ -1564,7 +1564,7 @@ class Html {
       echo "<body class='$body_class'>";
 
       echo "<div id='header'>";
-      echo "<div id='header_top'>";
+      echo "<header role='banner' id='header_top'>";
       echo "<div id='c_logo'>";
       echo Html::link('', $CFG_GLPI["root_doc"]."/front/central.php",
                       ['accesskey' => '1',
@@ -1573,7 +1573,7 @@ class Html {
 
       // Preferences and logout link
       self::displayTopMenu(true);
-      echo "</div>"; // header_top
+      echo "</header>"; // header_top
 
       //Main menu
       self::displayMainMenu(
@@ -1594,7 +1594,7 @@ class Html {
            "<span class='sr-only'>Top of the page</span>".
            "</a></span>";
 
-      echo "<div id='page' >";
+      echo "<main role='main' id='page'>";
 
       if ($DB->isSlave()
           && !$DB->first_connection) {
@@ -1627,10 +1627,10 @@ class Html {
          return;
       }
       $FOOTER_LOADED = true;
-      echo "</div>"; // fin de la div id ='page' initi??e dans la fonction header
+      echo "</main>"; // end of "main role='main'"
 
-      echo "<div id='footer' >";
-      echo "<table><tr>";
+      echo "<footer role='contentinfo' id='footer'>";
+      echo "<table role='presentation'><tr>";
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          echo "<td class='left'><span class='copyright'>";
@@ -1659,7 +1659,7 @@ class Html {
          echo "</td>";
       }
       echo "<td class='right'>" . self::getCopyrightMessage() . "</td>";
-      echo "</tr></table></div>";
+      echo "</tr></table></footer>";
 
       if ($CFG_GLPI['maintenance_mode']) { // mode maintenance
          echo "<div id='maintenance-float'>";
@@ -1721,7 +1721,7 @@ class Html {
 
       // Main Headline
       echo "<div id='header'>";
-      echo "<div id='header_top'>";
+      echo "<header role='banner' id='header_top'>";
 
       echo "<div id='c_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/' accesskey='1' title=\"".__s('Home')."\">".
@@ -1732,7 +1732,7 @@ class Html {
       echo "<div class='sep'></div>";
       echo "</div>";
 
-      echo "</div>"; // end #header_top
+      echo "</header>"; // end #header_top
 
       //-- Le menu principal --
       echo "<div id='c_menu'>";
@@ -1794,7 +1794,7 @@ class Html {
 
       // Main Headline
       echo "<div id='header'>";
-      echo "<div id='header_top'>";
+      echo "<header role='banner' id='header_top'>";
 
       echo "<div id='c_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='1' title=\"".
@@ -1803,13 +1803,13 @@ class Html {
 
       //Preferences and logout link
       self::displayTopMenu(false);
-      echo "</div>"; // header_top
+      echo "</header>"; // header_top
 
       //Main menu
       self::displayMainMenu(false);
 
       echo "</div>"; // fin header
-      echo "<div id='page' >";
+      echo "<main role='main' id='page'>";
 
       // call static function callcron() every 5min
       CronTask::callCron();
@@ -1829,11 +1829,11 @@ class Html {
       }
       $FOOTER_LOADED = true;
 
-      echo "</div>"; // fin de la div id ='page' initi??e dans la fonction header
+      echo "</main>"; // end of "main role='main'"
 
-      echo "<div id='footer'>";
-      echo "<table width='100%'><tr><td class='right'>" . self::getCopyrightMessage();
-      echo "</td></tr></table></div>";
+      echo "<footer role='contentinfo' id='footer'>";
+      echo "<table role='presentation' width='100%'><tr><td class='right'>" . self::getCopyrightMessage();
+      echo "</td></tr></table></footer>";
 
       self::displayDebugInfos();
       echo "</body></html>";
@@ -1874,7 +1874,7 @@ class Html {
 
       // Body with configured stuff
       echo "<body>";
-      echo "<div id='page'>";
+      echo "<main role='main' id='page'>";
       echo "<br><br>";
       echo "<div id='bloc'>";
       echo "<div id='logo_bloc'></div>";
@@ -1894,7 +1894,7 @@ class Html {
       $FOOTER_LOADED = true;
 
       if (!isCommandLine()) {
-         echo "</div></div>";
+         echo "</div></main>";
 
          echo "<div id='footer-login'>" . self::getCopyrightMessage() . "</div>";
          self::loadJavascript();
