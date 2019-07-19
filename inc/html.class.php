@@ -2869,7 +2869,7 @@ class Html {
       $js .= "$( '#showdate".$p['rand']."' ).datetimepicker({
                   altField: '#hiddendate".$p['rand']."',
                   altFormat: 'yy-mm-dd',
-                  altTimeFormat: 'HH:mm',
+                  altTimeFormat: 'HH:mm:ss',
                   pickerTimeFormat : 'HH:mm',
                   altFieldTimeOnly: false,
                   firstDay: 1,
