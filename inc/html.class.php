@@ -6298,10 +6298,12 @@ class Html {
       if ($full === true) {
          /// Search engine
          if ($CFG_GLPI['allow_search_global']) {
-            echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
-            echo "<span id='champRecherche'><input size='15' type='text' name='globalsearch'
-                                          placeholder='". __s('Search')."'>";
-            echo "<button type='submit' name='globalsearchglass'><i class='fa fa-search'></i></button>";
+            echo "<form role='search' method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
+            echo "<span id='champRecherche'>";
+            echo "<input size='15' type='search' name='globalsearch' placeholder='". __s('Search')."' aria-labelledby='globalsearchglass'>";
+            echo "<button type='submit' name='globalsearchglass' id='globalsearchglass'>";
+            echo "<i class='fa fa-search'></i><span class='sr-only'>". __s('Search')."</span>";
+            echo "</button>";
             echo "</span>";
             Html::closeForm();
          }
