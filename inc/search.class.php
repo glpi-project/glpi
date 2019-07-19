@@ -3894,18 +3894,39 @@ JAVASCRIPT;
             }
 
             $in = "IN ('" . implode("','", $allowed_is_private) . "')";
-            $condition = "`glpi_itilfollowups`.`is_private` $in";
+            $condition = "`glpi_itilfollowups`.`is_private` $in ";
 
-            if (!Session::haveRight("ticket", Ticket::READALL)) {
-               // TODO: Filter items_id on allowed tickets (itemtype = "Ticket")
-            }
-            if (!Session::haveRight("change", Change::READALL)) {
-               // TODO: Filter items_id on allowed changes (itemtype = "Change")
-            }
-            if (!Session::haveRight("problem", Problem::READALL)) {
-               // TODO: Filter items_id on allowed problems (itemtype = "Problem")
-            }
+            // Now filter on parent item visiblity
+            $condition .= "AND (";
 
+            // Filter for "ticket" parents
+            $condition .= self::buildITILFollowupParentCondition([
+               'itemType'   => "ticket",
+               'target'     => 'tickets_id',
+               'userTable'  => "glpi_tickets_users",
+               'groupTable' => "glpi_groups_tickets"
+            ]);
+            $condition .= "OR ";
+
+            // Filter for "change" parents
+            $condition .= self::buildITILFollowupParentCondition([
+               'itemType'   => "change",
+               'target'     => 'changes_id',
+               'userTable'  => "glpi_changes_users",
+               'groupTable' => "glpi_changes_groups"
+            ]);
+            $condition .= "OR ";
+
+            // Fitler for "problem" parents
+            $condition .= self::buildITILFollowupParentCondition([
+               'itemType'   => "problem",
+               'target'     => 'problems_id',
+               'userTable'  => "glpi_problems_users",
+               'groupTable' => "glpi_groups_problems"
+            ]);
+            $condition .= ")";
+
+            error_log($condition);
             break;
 
          default :
@@ -3921,6 +3942,44 @@ JAVASCRIPT;
       /* Hook to restrict user right on current itemtype */
       list($itemtype, $condition) = Plugin::doHookFunction('add_default_where', [$itemtype, $condition]);
       return $condition;
+   }
+
+   /**
+    * Build parent condition for ITILFollowup, used in addDefaultWhere
+    *
+    * @param array $params keys: itemType, target, userTable, groupTable
+    *
+    * @return string
+    */
+   public static function buildITILFollowupParentCondition($params) {
+      $itemType   = $params['itemType'];
+      $target     = $params['target'];
+      $userTable  = $params['userTable'];
+      $groupTable = $params['groupTable'];
+
+      if (!Session::haveRight($itemType, $itemType::READALL)) {
+         if (Session::haveRight($itemType, $itemType::READMY)) {
+            // Case 1: can see only owned items
+            $user   = Session::getLoginUserID();
+            $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+
+            // Avoid empty IN ()
+            if ($groups == "''") {
+               $groups = '-1';
+            }
+
+            $subQueryUser = "SELECT `$target` from `$userTable` WHERE `users_id` = '$user'";
+            $subQueryGroup = "SELECT `$target` from `$groupTable` WHERE `groups_id` IN ($groups)";
+
+            return "(`itemtype` = '$itemType' AND (`items_id` IN ($subQueryUser) OR `items_id` IN ($subQueryGroup))) ";
+         } else {
+            // Case 2: cannot see any items
+            return "(`itemtype` = '$itemType' AND 0 = 1) ";
+         }
+      } else {
+         // Case 3: can see all items
+         return "(`itemtype` = '$itemType') ";
+      }
    }
 
 
