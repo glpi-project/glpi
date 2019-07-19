@@ -23,6 +23,7 @@ phpunit.xml
 /nbproject
 .composer.hash
 /css/**/*.min.css
+/css_compiled/
 /css/compiled/
 !/css/tiny_mce/**/*.min.css
 /js/*.min.js
