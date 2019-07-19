@@ -34,7 +34,7 @@ namespace tests\units;
 
 /* Test for inc/session.class.php */
 
-class Session extends \GLPITestCase {
+class Session extends \DbTestCase {
 
    public function testAddMessageAfterRedirect() {
       $err_msg = 'Something is broken. Weird.';
@@ -132,5 +132,87 @@ class Session extends \GLPITestCase {
       )->matches('/' . str_replace(['.', ')'], ['\.', '\)'], $info_msg)  . '/');
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+   }
+
+   public function testLoadGroups() {
+
+      $entid_root = getItemByTypeName('Entity', '_test_root_entity', true);
+      $entid_1 = getItemByTypeName('Entity', '_test_child_1', true);
+      $entid_2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+      $entities_ids = [$entid_root, $entid_1, $entid_2];
+
+      $uid = (int)getItemByTypeName('User', 'normal', true);
+
+      $group = new \Group();
+      $group_user = new \Group_User();
+
+      $user_groups = [];
+
+      foreach ($entities_ids as $entid) {
+         $group_1 = [
+            'name'         => "Test group {$entid} recursive=no",
+            'entities_id'  => $entid,
+            'is_recursive' => 0,
+         ];
+         $gid_1 = (int)$group->add($group_1);
+         $this->integer($gid_1)->isGreaterThan(0);
+         $this->integer((int)$group_user->add(['groups_id' => $gid_1, 'users_id'  => $uid]))->isGreaterThan(0);
+         $group_1['id'] = $gid_1;
+         $user_groups[] = $group_1;
+
+         $group_2 = [
+            'name'         => "Test group {$entid} recursive=yes",
+            'entities_id'  => $entid,
+            'is_recursive' => 1,
+         ];
+         $gid_2 = (int)$group->add($group_2);
+         $this->integer($gid_2)->isGreaterThan(0);
+         $this->integer((int)$group_user->add(['groups_id' => $gid_2, 'users_id'  => $uid]))->isGreaterThan(0);
+         $group_2['id'] = $gid_2;
+         $user_groups[] = $group_2;
+
+         $group_3 = [
+            'name'         => "Test group {$entid} not attached to user",
+            'entities_id'  => $entid,
+            'is_recursive' => 1,
+         ];
+         $gid_3 = (int)$group->add($group_3);
+         $this->integer($gid_3)->isGreaterThan(0);
+      }
+
+      $this->login('normal', 'normal');
+
+      // Test groups from whole entity tree
+      $session_backup = $_SESSION;
+      $_SESSION['glpiactiveentities'] = $entities_ids;
+      \Session::loadGroups();
+      $groups = $_SESSION['glpigroups'];
+      $_SESSION = $session_backup;
+      $expected_groups = array_map(
+         function ($group) {
+            return (string)$group['id'];
+         },
+         $user_groups
+      );
+      $this->array($groups)->isEqualTo($expected_groups);
+
+      foreach ($entities_ids as $entid) {
+         // Test groups from a given entity
+         $expected_groups = [];
+         foreach ($user_groups as $user_group) {
+            if (($user_group['entities_id'] == $entid_root && $user_group['is_recursive'] == 1)
+                || $user_group['entities_id'] == $entid) {
+               $expected_groups[] = (string)$user_group['id'];
+            }
+         }
+
+         $session_backup = $_SESSION;
+         $_SESSION['glpiactiveentities'] = [$entid];
+         \Session::loadGroups();
+         $groups = $_SESSION['glpigroups'];
+         $_SESSION = $session_backup;
+         $this->array($groups)->isEqualTo($expected_groups);
+      }
    }
 }
