@@ -3926,7 +3926,6 @@ JAVASCRIPT;
             ]);
             $condition .= ")";
 
-            error_log($condition);
             break;
 
          default :
