@@ -6207,29 +6207,39 @@ class Html {
       echo "</a>";
       echo "</li>\n";
 
+      $username = '';
+      $title = __s('My settings');
+      if (Session::getLoginUserID()) {
+         $username = formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
+                                    $_SESSION["glpifirstname"], 0, 20);
+         $title = sprintf(
+            __s('%1$s - %2$s'),
+            __s('My settings'),
+            $username
+         );
+      }
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 __s('My settings')."\" class='fa fa-cog'>";
+                 $title."\" class='fa fa-cog'>";
       echo "<span class='sr-only'>" . __s('My settings') . "</span>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
-         echo "<span id='myname'>";
-         echo formatUserName (0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
-                              $_SESSION["glpifirstname"], 0, 20);
-         echo "</span>";
+         echo "<span id='myname'>{$username}</span>";
       }
       echo "</a></li>";
 
       if (Config::canUpdate()) {
-         $current_mode = $_SESSION['glpi_use_mode'];
-         $class = 'debug' . ($current_mode == Session::DEBUG_MODE ? 'on' : 'off');
-         $title = $current_mode == Session::DEBUG_MODE ?
-            __('Debug mode enabled') :
-            __('Debug mode disabled');
+         $is_debug_active = $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
+         $class = 'debug' . ($is_debug_active ? 'on' : 'off');
+         $title = sprintf(
+            __s('%1$s - %2$s'),
+            __s('Change mode'),
+            $is_debug_active ? __s('Debug mode enabled') : __s('Debug mode disabled')
+         );
          echo "<li id='debug_mode'>";
          echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class'
                 title='$title'>";
-         echo "<span class='sr-only'>" . __('Change mode')  . "</span>";
+         echo "<span class='sr-only'>" . __s('Change mode') . "</span>";
          echo "</a>";
          echo "</li>";
       }
