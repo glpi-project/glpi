@@ -135,10 +135,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo '<input type="hidden" name="redirect" value="'.Html::entities_deep($_GET['redirect']).'"/>';
    }
    echo '<p class="login_input" id="login_input_name">
+         <label for="login_name" class="sr-only">'.__('Login').'</label>
          <input type="text" name="'.$namfield.'" id="login_name" required="required"
                 placeholder="'.__('Login').'" autofocus="autofocus" />
          </p>';
    echo '<p class="login_input" id="login_input_password">
+         <label for="login_password" class="sr-only">'.__('Password').'</label>
          <input type="password" name="'.$pwdfield.'" id="login_password" required="required"
                 placeholder="'.__('Password').'"  />
          </p>';
