@@ -3558,6 +3558,19 @@ JAVASCRIPT;
             }
             break;
 
+         case "glpi_itilfollowups.content":
+         case "glpi_tickettasks.content":
+         case "glpi_changetasks.content":
+               // force ordering by date desc
+               return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
+                                               '".self::SHORTSEP."',$tocomputeid)
+                                     ORDER BY `$table`.`date` DESC
+                                     SEPARATOR '".self::LONGSEP."')
+                                    AS `".$NAME."`,
+
+                       $ADDITONALFIELDS";
+            break;
+
          default:
             break;
       }
