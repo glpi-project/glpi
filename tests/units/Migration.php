@@ -40,8 +40,19 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Migration extends \GLPITestCase {
 
+   /**
+    * @var \DB
+    */
    private $db;
+
+   /**
+    * @var \Migration
+    */
    private $migration;
+
+   /**
+    * @var string[]
+    */
    private $queries;
    private $qry_params;
 
@@ -626,5 +637,76 @@ class Migration extends \GLPITestCase {
          ]
       ]);
       $this->integer(count($right4))->isEqualTo(4);
+   }
+
+   public function testRenameTable() {
+
+      global $DB;
+      $DB = $this->db;
+
+      $this->calling($this->db)->tableExists = function ($table) {
+         return $table === 'glpi_oldtable';
+      };
+      $this->calling($this->db)->fieldExists = function ($table, $field) {
+         return $table === 'glpi_oldtable' && $field !== 'bool_field';
+      };
+
+      $queries = [];
+      $this->queries = &$queries;
+      $this->calling($this->db)->query = function ($query) use (&$queries) {
+         if ($query === 'SHOW INDEX FROM `glpi_oldtable`') {
+            // Make DbUtils::isIndex return false
+            return false;
+         }
+         $queries[] = $query;
+         return true;
+      };
+
+      // Case 1, rename with no buffered changes
+      $this->queries = [];
+
+      $this->migration->renameTable('glpi_oldtable', 'glpi_newtable');
+
+      $this->array($this->queries)->isIdenticalTo(
+         [
+            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+         ]
+      );
+
+      // Case 2, rename after changes were already applied
+      $this->queries = [];
+
+      $this->migration->addField('glpi_oldtable', 'bool_field', 'bool');
+      $this->migration->addKey('glpi_oldtable', 'id', 'id', 'UNIQUE');
+      $this->migration->addKey('glpi_oldtable', 'fulltext_key', 'fulltext_key', 'FULLTEXT');
+      $this->migration->migrationOneTable('glpi_oldtable');
+      $this->migration->renameTable('glpi_oldtable', 'glpi_newtable');
+
+      $this->array($this->queries)->isIdenticalTo(
+         [
+            "ALTER TABLE `glpi_oldtable` ADD `bool_field` TINYINT(1) NOT NULL DEFAULT '0'   ",
+            "ALTER TABLE `glpi_oldtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
+            "ALTER TABLE `glpi_oldtable` ADD UNIQUE `id` (`id`)",
+            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+         ]
+      );
+
+      // Case 3, apply changes after renaming
+      $this->queries = [];
+
+      $this->migration->addField('glpi_oldtable', 'bool_field', 'bool');
+      $this->migration->addKey('glpi_oldtable', 'id', 'id', 'UNIQUE');
+      $this->migration->addKey('glpi_oldtable', 'fulltext_key', 'fulltext_key', 'FULLTEXT');
+      $this->migration->renameTable('glpi_oldtable', 'glpi_newtable');
+      $this->migration->migrationOneTable('glpi_newtable');
+
+      $this->array($this->queries)->isIdenticalTo(
+         [
+            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+            "ALTER TABLE `glpi_newtable` ADD `bool_field` TINYINT(1) NOT NULL DEFAULT '0'   ",
+            "ALTER TABLE `glpi_newtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
+            "ALTER TABLE `glpi_newtable` ADD UNIQUE `id` (`id`)",
+         ]
+      );
    }
 }

@@ -563,7 +563,7 @@ class Session {
             Group::getTable(),
             'entities_id',
             $_SESSION['glpiactiveentities'],
-            $_SESSION['glpiactive_entity_recursive']
+            true
          )
       ]);
 

@@ -340,7 +340,8 @@ class TicketRecurrent extends CommonDropdown {
          return 'NULL';
       }
 
-      if (!is_int($periodicity) && !preg_match($periodicity_pattern, $periodicity)) {
+      if (!is_int($periodicity) && !preg_match('/^\d+$/', $periodicity)
+          && !preg_match($periodicity_pattern, $periodicity)) {
          // Invalid periodicity.
          return 'NULL';
       }

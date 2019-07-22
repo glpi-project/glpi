@@ -6910,7 +6910,7 @@ class Html {
     * @return string
     */
    public static function getScssCompileDir() {
-      return GLPI_ROOT . '/css/compiled';
+      return GLPI_ROOT . '/css_compiled';
    }
 
    /**

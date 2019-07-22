@@ -242,6 +242,41 @@ class TicketRecurrent extends DbTestCase {
          'expected_value' => date('Y-m-d H:i:s', $next_time),
       ];
 
+      // Special case: calendar where monday to friday are full working days
+      $calendar = new \Calendar();
+      $segment  = new \CalendarSegment();
+      $calendar_id = $calendar->add(['name' => 'TicketRecurrent testing calendar 2']);
+      $this->integer($calendar_id)->isGreaterThan(0);
+
+      for ($day = 1; $day <= 5; $day++) {
+         $segment_id = $segment->add(
+            [
+               'calendars_id' => $calendar_id,
+               'day'          => $day,
+               'begin'        => '00:00:00',
+               'end'          => '24:00:00'
+            ]
+         );
+         $this->integer($segment_id)->isGreaterThan(0);
+      }
+
+      $next_time = strtotime(date('Y-m-d H:05:00'));
+      if ((int)date('i') > 5) {
+         $next_time = strtotime('+ 1 hour', $next_time);
+      }
+      if (in_array(date('w', $next_time), ['0', '6'])) {
+         $next_time = strtotime('monday', $next_time);
+      }
+
+      $data[] = [
+         'begin_date'     => '2014-10-28 00:05:00',
+         'end_date'       => '2050-12-31 23:55:00',
+         'periodicity'    => HOUR_TIMESTAMP,
+         'create_before'  => 0,
+         'calendars_id'   => $calendar_id,
+         'expected_value' => date('Y-m-d H:i:s', $next_time),
+      ];
+
       return $data;
    }
 

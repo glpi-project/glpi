@@ -601,6 +601,20 @@ class Migration {
       if (!$DB->tableExists("$newtable") && $DB->tableExists("$oldtable")) {
          $query = "RENAME TABLE `$oldtable` TO `$newtable`";
          $DB->rawQueryOrDie($query, $this->version." rename $oldtable");
+
+         // Update target of "buffered" schema updates
+         if (isset($this->change[$oldtable])) {
+            $this->change[$newtable] = $this->change[$oldtable];
+            unset($this->change[$oldtable]);
+         }
+         if (isset($this->fulltexts[$oldtable])) {
+            $this->fulltexts[$newtable] = $this->fulltexts[$oldtable];
+            unset($this->fulltexts[$oldtable]);
+         }
+         if (isset($this->uniques[$oldtable])) {
+            $this->uniques[$newtable] = $this->uniques[$oldtable];
+            unset($this->uniques[$oldtable]);
+         }
       } else {
          if (Toolbox::startsWith($oldtable, 'glpi_plugin_')
             || Toolbox::startsWith($newtable, 'glpi_plugin_')
