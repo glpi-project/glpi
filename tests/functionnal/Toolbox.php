@@ -295,4 +295,39 @@ class Toolbox extends DbTestCase {
          \Toolbox::convertTagToImage($content_text, $item, [$doc_id_2 => ['tag' => $img_tag]])
       )->isEqualTo($expected_result_2);
    }
+
+   /**
+    * Check conversion of tags to images when content contains multiple times same inlined image.
+    */
+   public function testConvertTagToImageWithDuplicatedInlinedImg() {
+
+      $img_tag = uniqid('', true);
+
+      $item = new \Ticket();
+      $item->fields['id'] = mt_rand(1, 50);
+
+      // Create multiple documents in DB
+      $document = new \Document();
+      $doc_id = $document->add([
+         'name'     => 'img 1',
+         'filename' => 'img.png',
+         'mime'     => 'image/png',
+         'tag'      => $img_tag,
+      ]);
+      $this->integer((int)$doc_id)->isGreaterThan(0);
+
+      $content_text     = '<img id="' . $img_tag . '" width="10" height="10" />';
+      $content_text    .= $content_text;
+      $expected_url     = '/front/document.send.php?docid=' . $doc_id . '&tickets_id=' . $item->fields['id'];
+      $expected_result  = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
+      $expected_result .= $expected_result;
+
+      // Processed data is expected to be escaped
+      $content_text = \Toolbox::addslashes_deep($content_text);
+      $expected_result = \Html::entities_deep($expected_result);
+
+      $this->string(
+         \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
+      )->isEqualTo($expected_result);
+   }
 }
