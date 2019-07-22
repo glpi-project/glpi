@@ -2715,8 +2715,8 @@ class Toolbox {
                      if (empty($new_image)) {
                         $new_image = '#'.$image['tag'].'#';
                      }
-                     $content_text = preg_replace(
-                        $regex,
+                     $content_text = str_replace(
+                        $match_img,
                         $new_image,
                         Html::entity_decode_deep($content_text)
                      );
