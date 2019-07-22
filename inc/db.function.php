@@ -662,7 +662,7 @@ function getEntitiesRestrictCriteria($table = '', $field = '', $value = '',
    // Add another layer to the array to prevent losing duplicates keys if the
    // result of the function in merged with another array
    if (count($res)) {
-      return [$res];
+      $res = [-1 => $res];
    }
-   return [];
+   return $res;
 }
