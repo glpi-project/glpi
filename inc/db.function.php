@@ -651,11 +651,18 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 function getEntitiesRestrictCriteria($table = '', $field = '', $value = '',
                                      $is_recursive = false, $complete_request = false) {
    $dbu = new DbUtils();
-   return [$dbu->getEntitiesRestrictCriteria(
+   $res = $dbu->getEntitiesRestrictCriteria(
       $table,
       $field,
       $value,
       $is_recursive,
       $complete_request
-   )];
+   );
+
+   // Add another layer to the array to prevent losing duplicates keys if the
+   // result of the function in merged with another array
+   if (count($res)) {
+      return [$res];
+   }
+   return [];
 }
