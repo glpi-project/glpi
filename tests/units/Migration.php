@@ -650,17 +650,7 @@ class Migration extends \GLPITestCase {
       $this->calling($this->db)->fieldExists = function ($table, $field) {
          return $table === 'glpi_oldtable' && $field !== 'bool_field';
       };
-
-      $queries = [];
-      $this->queries = &$queries;
-      $this->calling($this->db)->query = function ($query) use (&$queries) {
-         if ($query === 'SHOW INDEX FROM `glpi_oldtable`') {
-            // Make DbUtils::isIndex return false
-            return false;
-         }
-         $queries[] = $query;
-         return true;
-      };
+      $this->calling($this->db)->indexExists = false;
 
       // Case 1, rename with no buffered changes
       $this->queries = [];

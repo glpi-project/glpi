@@ -725,7 +725,7 @@ class Migration {
          $this->displayMessage( sprintf(__('Adding unicity indices - %s'), $table));
          foreach ($this->uniques[$table] as $idx) {
             $query = "ALTER TABLE `$table` ".$idx;
-            $DB->queryOrDie($query, $this->version." $idx");
+            $DB->rawQueryOrDie($query, $this->version." $idx");
          }
          unset($this->uniques[$table]);
       }
