@@ -193,7 +193,7 @@ a, .btn-linkstyled {
    font-weight: bold;
    text-decoration: none;
 
-   &:not(.fa-lg, .fa-2x, .fa-3x, .fa-4x, .fa-25) {
+   &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
       font-size: 11px;
    }
 
@@ -201,7 +201,7 @@ a, .btn-linkstyled {
       font-weight: bold;
       text-decoration: none;
 
-      &:not(.fa-lg, .fa-2x, .fa-3x, .fa-4x, .fa-25) {
+      &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
          font-size: 11px;
       }
    }
@@ -209,14 +209,14 @@ a, .btn-linkstyled {
    &.fa, &.far, &.fas {
       font-weight: 900;
 
-      &:not(.fa-lg, .fa-2x, .fa-3x, .fa-4x, .fa-25) {
+      &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
          font-size: inherit;
       }
 
       &:link {
          font-weight: 900;
 
-         &:not(.fa-lg, .fa-2x, .fa-3x, .fa-4x, .fa-25) {
+         &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
             font-size: inherit;
          }
       }
