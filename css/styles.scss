@@ -902,12 +902,13 @@ span.vsubmit, a.vsubmit {
          border-bottom: 1px solid #EFEFEF;
          font-size: 1.5em;
          padding: 8px 0;
-
-         & > .fa, & > .far, & > .fas, & > button {
-            margin-left: 8px;
-            vertical-align: middle;
-         }
       }
+   }
+}
+.headerRow th {
+   & > .fa, & > .far, & > .fas, & > button {
+      margin-left: 8px;
+      vertical-align: middle;
    }
 }
 
