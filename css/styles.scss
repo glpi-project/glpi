@@ -177,29 +177,53 @@ sup {
    visibility: hidden;
 }
 
-a {
+.btn-linkstyled {
+   /* Remove all specific styles */
+   background: none;
+   border: 0;
+   color: inherit;
+   cursor: pointer;
+   font: inherit;
+   padding: 0;
+   text-decoration: underline;
+   outline: inherit;
+}
+
+a, .btn-linkstyled {
    font-weight: bold;
    text-decoration: none;
-   font-size: 11px;
+
+   &:not(.fa-lg, .fa-2x, .fa-3x, .fa-4x, .fa-25) {
+      font-size: 11px;
+   }
 
    &:link {
       font-weight: bold;
       text-decoration: none;
-      font-size: 11px;
+
+      &:not(.fa-lg, .fa-2x, .fa-3x, .fa-4x, .fa-25) {
+         font-size: 11px;
+      }
    }
 
-   &.fa, &.fas {
-      font-size: inherit;
+   &.fa, &.far, &.fas {
       font-weight: 900;
 
-      &:link {
+      &:not(.fa-lg, .fa-2x, .fa-3x, .fa-4x, .fa-25) {
          font-size: inherit;
+      }
+
+      &:link {
          font-weight: 900;
+
+         &:not(.fa-lg, .fa-2x, .fa-3x, .fa-4x, .fa-25) {
+            font-size: inherit;
+         }
       }
    }
 }
 
-#page a.fa {
+#page a.fa, #page a.far, #page a.fas {
    color: #222;
 
    &:link {
@@ -207,23 +231,11 @@ a {
    }
 }
 
-a .fa {
+a .fa, a .far, a .fas, .btn-linkstyled .fa, .btn-linkstyled .far, .btn-linkstyled .fas {
    color: #222;
-}
-
-#page a.far {
-   color: #222;
-
-   &:link {
-      color: #222;
-   }
 }
 
 a {
-   .far {
-      color: #222;
-   }
-
    &:hover {
       color: black;
    }
@@ -777,6 +789,7 @@ span.vsubmit, a.vsubmit {
 .layout_classic.form .main_form, .layout_vsplit.form .main_form {
    width: 950px;
    margin: 0 auto;
+   position: relative;
 }
 
 .layout_classic.form div.ui-tabs, .layout_vsplit.form div.ui-tabs {
@@ -889,6 +902,11 @@ span.vsubmit, a.vsubmit {
          border-bottom: 1px solid #EFEFEF;
          font-size: 1.5em;
          padding: 8px 0;
+
+         & > .fa, & > .far, & > .fas, & > button {
+            margin-left: 8px;
+            vertical-align: middle;
+         }
       }
    }
 }
@@ -6259,4 +6277,18 @@ with incorrect shading in some cases */
 }
 .custom_css_configuration .custom_css_container .CodeMirror.input-disabled {
    background: rgb(235, 235, 228); /* default bg color for disabled inputs */
+}
+
+/** Impersonate feature */
+div.banner-impersonate {
+   background: #ff3d2a;
+   color: #fff;
+   font-weight: bold;
+   padding: 10px;
+   text-align: right;
+}
+div.banner-impersonate button {
+   color: inherit;
+   margin-left: 5px;
+   text-decoration: underline;
 }
