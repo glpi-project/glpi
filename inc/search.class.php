@@ -3878,7 +3878,7 @@ JAVASCRIPT;
             break;
 
          case 'ITILFollowup':
-            // Filer on is_private
+            // Filter on is_private
             $allowed_is_private = [];
             if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
                $allowed_is_private[] = 1;
@@ -3900,30 +3900,30 @@ JAVASCRIPT;
             $condition .= "AND (";
 
             // Filter for "ticket" parents
-            $condition .= self::buildITILFollowupParentCondition([
-               'itemType'   => "ticket",
-               'target'     => 'tickets_id',
-               'userTable'  => "glpi_tickets_users",
-               'groupTable' => "glpi_groups_tickets"
-            ]);
+            $condition .= self::buildITILFollowupParentCondition(
+               "ticket",
+               'tickets_id',
+               "glpi_tickets_users",
+               "glpi_groups_tickets"
+            );
             $condition .= "OR ";
 
             // Filter for "change" parents
-            $condition .= self::buildITILFollowupParentCondition([
-               'itemType'   => "change",
-               'target'     => 'changes_id',
-               'userTable'  => "glpi_changes_users",
-               'groupTable' => "glpi_changes_groups"
-            ]);
+            $condition .= self::buildITILFollowupParentCondition(
+               "change",
+               'changes_id',
+               "glpi_changes_users",
+               "glpi_changes_groups"
+            );
             $condition .= "OR ";
 
             // Fitler for "problem" parents
-            $condition .= self::buildITILFollowupParentCondition([
-               'itemType'   => "problem",
-               'target'     => 'problems_id',
-               'userTable'  => "glpi_problems_users",
-               'groupTable' => "glpi_groups_problems"
-            ]);
+            $condition .= self::buildITILFollowupParentCondition(
+               "problem",
+               'problems_id',
+               "glpi_problems_users",
+               "glpi_groups_problems"
+            );
             $condition .= ")";
 
             break;
@@ -3946,38 +3946,140 @@ JAVASCRIPT;
    /**
     * Build parent condition for ITILFollowup, used in addDefaultWhere
     *
-    * @param array $params keys: itemType, target, userTable, groupTable
+    * @param string $itemtype
+    * @param string $target
+    * @param string $user_table
+    * @param string $group_table keys
     *
     * @return string
+    *
+    * @throws InvalidArgumentException
     */
-   public static function buildITILFollowupParentCondition($params) {
-      $itemType   = $params['itemType'];
-      $target     = $params['target'];
-      $userTable  = $params['userTable'];
-      $groupTable = $params['groupTable'];
+   public static function buildITILFollowupParentCondition(
+      $itemtype,
+      $target,
+      $user_table,
+      $group_table
+   ) {
+      // An ITILFollowup parent can only by a CommonItilObject
+      if (!is_a($itemtype, "CommonITILObject", true)) {
+         throw new InvalidArgumentException(
+            "'$itemtype' is not a CommonITILObject"
+         );
+      }
 
-      if (!Session::haveRight($itemType, $itemType::READALL)) {
-         if (Session::haveRight($itemType, $itemType::READMY)) {
-            // Case 1: can see only owned items
-            $user   = Session::getLoginUserID();
-            $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+      // Can see all items, no need to go further
+      if (Session::haveRight($itemtype, $itemtype::READALL)) {
+         return "(`itemtype` = '$itemtype') ";
+      }
 
-            // Avoid empty IN ()
-            if ($groups == "''") {
-               $groups = '-1';
-            }
+      $user   = Session::getLoginUserID();
+      $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
 
-            $subQueryUser = "SELECT `$target` from `$userTable` WHERE `users_id` = '$user'";
-            $subQueryGroup = "SELECT `$target` from `$groupTable` WHERE `groups_id` IN ($groups)";
+      // Avoid empty IN ()
+      if ($groups == "''") {
+         $groups = '-1';
+      }
 
-            return "(`itemtype` = '$itemType' AND (`items_id` IN ($subQueryUser) OR `items_id` IN ($subQueryGroup))) ";
-         } else {
-            // Case 2: cannot see any items
-            return "(`itemtype` = '$itemType' AND 0 = 1) ";
+      // We need to do some specific checks for tickets
+      if ($itemtype == "ticket") {
+         // Default condition
+         $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
+
+         if (Session::haveRight($itemtype, $itemtype::READMY)) {
+            // Add tickets where the users is requester, observer or recipient
+            // Subquery for requester/observer user
+            $user_query = "SELECT `$target`
+               FROM `$user_table`
+               WHERE `users_id` = '$user' AND type IN (1, 3)";
+            $condition .= "OR `items_id` IN ($user_query) ";
+
+            // Subquery for recipient
+            $recipient_query = "SELECT `id`
+               FROM `glpi_{$itemtype}s`
+               WHERE `users_id_recipient` = '$user'";
+            $condition .= "OR `items_id` IN ($recipient_query) ";
          }
+
+         if (Session::haveRight($itemtype, $itemtype::READGROUP)) {
+            // Add tickets where the users is in a requester or observer group
+            // Subquery for requester/observer group
+            $group_query = "SELECT `$target`
+               FROM `$group_table`
+               WHERE `users_id` = '$user' AND type IN (1, 3)";
+            $condition .= "OR `items_id` IN ($group_query) ";
+         }
+
+         if (Session::haveRightsOr($itemtype, [
+            $itemtype::OWN,
+            $itemtype::READASSIGN
+         ])) {
+            // Add tickets where the users is assigned
+            // Subquery for assigned user
+            $user_query = "SELECT `$target`
+               FROM `$user_table`
+               WHERE `users_id` = '$user' AND type = 2";
+            $condition .= "OR `items_id` IN ($user_query) ";
+         }
+
+         if (Session::haveRight($itemtype, $itemtype::READASSIGN)) {
+            // Add tickets where the users is part of an assigned group
+            // Subquery for assigned group
+            $group_query = "SELECT `$target`
+               FROM `$group_table`
+               WHERE `users_id` = '$user' AND type = 2";
+            $condition .= "OR `items_id` IN ($group_query) ";
+
+            if (Session::haveRight('ticket', Ticket::ASSIGN)) {
+               // Add new tickets
+               $tickets_query = "SELECT `id`
+                  FROM `glpi_{$itemtype}s`
+                  WHERE `status` = '" . CommonITILObject::INCOMING . "'";
+               $condition .= "OR `items_id` IN ($tickets_query) ";
+            }
+         }
+
+         if (Session::haveRightsOr('ticketvalidation', [
+            TicketValidation::VALIDATEINCIDENT,
+            TicketValidation::VALIDATEREQUEST
+         ])) {
+            // Add tickets where the users is the validator
+            // Subquery for validator
+            $validation_query = "SELECT `$target`
+               FROM `glpi_ticketvalidations`
+               WHERE `users_id_validate` = '$user'";
+            $condition .= "OR `items_id` IN ($validation_query) ";
+         }
+
+         return $condition .= ")) ";
       } else {
-         // Case 3: can see all items
-         return "(`itemtype` = '$itemType') ";
+         if (Session::haveRight($itemtype, $itemtype::READMY)) {
+            // Subquery for affected/assigned/observer user
+            $user_query = "SELECT `$target`
+               FROM `$user_table`
+               WHERE `users_id` = '$user'";
+
+            // Subquery for affected/assigned/observer group
+            $group_query = "SELECT `$target`
+               FROM `$group_table`
+               WHERE `groups_id` IN ($groups)";
+
+            // Subquery for recipient
+            $recipient_query = "SELECT `id`
+               FROM `glpi_{$itemtype}s`
+               WHERE `users_id_recipient` = '$user'";
+
+            return "(
+               `itemtype` = '$itemtype' AND (
+                  `items_id` IN ($user_query) OR
+                  `items_id` IN ($group_query) OR
+                  `items_id` IN ($recipient_query)
+               )
+            ) ";
+         } else {
+            // Can't see any items
+            return "(`itemtype` = '$itemtype' AND 0 = 1) ";
+         }
       }
    }
 
