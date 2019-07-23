@@ -1663,12 +1663,6 @@ class Html {
       echo "<td class='right'>" . self::getCopyrightMessage() . "</td>";
       echo "</tr></table></div>";
 
-      if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE) { // debug mode traduction
-         echo "<div id='debug-float'>";
-         echo "<a href='#see_debug'>GLPI TRANSLATION MODE</a>";
-         echo "</div>";
-      }
-
       if ($CFG_GLPI['maintenance_mode']) { // mode maintenance
          echo "<div id='maintenance-float'>";
          echo "<a href='#see_maintenance'>GLPI MAINTENANCE MODE</a>";
@@ -1829,7 +1823,7 @@ class Html {
     * Print footer for help page
    **/
    static function helpFooter() {
-      global $CFG_GLPI, $FOOTER_LOADED;
+      global $FOOTER_LOADED;
 
       // Print foot for help page
       if ($FOOTER_LOADED) {
@@ -1843,17 +1837,6 @@ class Html {
       echo "<table width='100%'><tr><td class='right'>" . self::getCopyrightMessage();
       echo "</td></tr></table></div>";
 
-      if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE) { // debug mode traduction
-         echo "<div id='debug-float'>";
-         echo "<a href='#see_debug'>GLPI TRANSLATION MODE</a>";
-         echo "</div>";
-      }
-
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
-         echo "<div id='debug-float'>";
-         echo "<a href='#see_debug'>GLPI DEBUG MODE</a>";
-         echo "</div>";
-      }
       self::displayDebugInfos();
       echo "</body></html>";
       self::loadJavascript();
