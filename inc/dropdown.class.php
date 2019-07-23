@@ -2893,7 +2893,6 @@ class Dropdown {
                } else {
                   $outputval = $data[$field];
                }
-               $outputval = Toolbox::unclean_cross_side_scripting_deep($outputval);
 
                $ID         = $data['id'];
                $addcomment = "";
@@ -2945,7 +2944,7 @@ class Dropdown {
          }
       }
 
-      $ret['results'] = $datas;
+      $ret['results'] = Toolbox::unclean_cross_side_scripting_deep($datas);
       $ret['count']   = $count;
 
       return ($json === true) ? json_encode($ret) : $ret;
