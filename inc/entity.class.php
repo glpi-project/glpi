@@ -508,7 +508,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'website',
          'name'               => __('Website'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -517,7 +518,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'phonenumber',
          'name'               => __('Phone'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -526,7 +528,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'email',
          'name'               => _n('Email', 'Emails', 1),
          'datatype'           => 'email',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -535,7 +538,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'fax',
          'name'               => __('Fax'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -543,7 +547,8 @@ class Entity extends CommonTreeDropdown {
          'table'              => $this->getTable(),
          'field'              => 'postcode',
          'name'               => __('Postal code'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -552,7 +557,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'town',
          'name'               => __('City'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -561,7 +567,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'state',
          'name'               => _x('location', 'State'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -570,7 +577,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'country',
          'name'               => __('Country'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -615,7 +623,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'ldap_dn',
          'name'               => __('LDAP directory information attribute representing the entity'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -624,7 +633,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'tag',
          'name'               => __('Information in inventory tool (TAG) representing the entity'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -642,7 +652,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'entity_ldapfilter',
          'name'               => __('Search filter (if needed)'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -651,7 +662,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'mail_domain',
          'name'               => __('Mail domain'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -690,7 +702,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'admin_email',
          'name'               => __('Administrator email'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -699,7 +712,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'admin_reply',
          'name'               => __('Administrator reply-to email (if needed)'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -707,7 +721,8 @@ class Entity extends CommonTreeDropdown {
          'table'              => $this->getTable(),
          'field'              => 'notification_subject_tag',
          'name'               => __('Prefix for notifications'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -715,7 +730,8 @@ class Entity extends CommonTreeDropdown {
          'table'              => $this->getTable(),
          'field'              => 'admin_email_name',
          'name'               => __('Administrator name'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -723,7 +739,8 @@ class Entity extends CommonTreeDropdown {
          'table'              => $this->getTable(),
          'field'              => 'admin_reply_name',
          'name'               => __('Response address (if needed)'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1047,7 +1064,8 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'inquest_URL',
          'name'               => __('URL'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

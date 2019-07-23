@@ -753,7 +753,8 @@ class ProjectTask extends CommonDBChild {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -914,6 +915,18 @@ class ProjectTask extends CommonDBChild {
          'field'              => 'is_milestone',
          'name'               => __('Milestone'),
          'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
+         'id'                 => '50',
+         'table'              => $this->getTable(),
+         'field'              => 'template_name',
+         'name'               => __('Template name'),
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'nodisplay'          => true,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

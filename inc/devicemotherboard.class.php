@@ -64,7 +64,8 @@ class DeviceMotherboard extends CommonDevice {
          'table'              => $this->getTable(),
          'field'              => 'chipset',
          'name'               => __('Chipset'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

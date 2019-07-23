@@ -68,7 +68,8 @@ class LineOperator extends CommonDropdown {
             'table'              => $this->getTable(),
             'field'              => 'mcc',
             'name'               => __('Mobile Country Code'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -76,7 +77,8 @@ class LineOperator extends CommonDropdown {
             'table'              => $this->getTable(),
             'field'              => 'mnc',
             'name'               => __('Mobile Network Code'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'autocomplete'       => true,
       ];
 
       return $tab;

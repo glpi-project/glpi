@@ -1006,7 +1006,8 @@ class NetworkPort extends CommonDBChild {
          'name'               => __('Name'),
          'type'               => 'text',
          'massiveaction'      => false,
-         'datatype'           => 'itemlink'
+         'datatype'           => 'itemlink',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1023,7 +1024,8 @@ class NetworkPort extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'logical_number',
          'name'               => __('Port number'),
-         'datatype'           => 'integer'
+         'datatype'           => 'integer',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1031,7 +1033,8 @@ class NetworkPort extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'mac',
          'name'               => __('MAC address'),
-         'datatype'           => 'mac'
+         'datatype'           => 'mac',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

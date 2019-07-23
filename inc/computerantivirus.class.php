@@ -109,6 +109,48 @@ class ComputerAntivirus extends CommonDBChild {
       }
    }
 
+   function rawSearchOptions() {
+
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
+
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'antivirus_version',
+         'name'               => __('Version'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'signature_version',
+         'name'               => __('Signature database version'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      return $tab;
+   }
+
 
    static public function rawSearchOptionsToAdd() {
       $tab = [];

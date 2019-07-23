@@ -267,7 +267,8 @@ class CartridgeItem extends CommonDBTM {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -284,7 +285,8 @@ class CartridgeItem extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'ref',
          'name'               => __('Reference'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

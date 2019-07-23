@@ -230,7 +230,8 @@ class Line extends CommonDropdown {
             'table'              => $this->getTable(),
             'field'              => 'caller_num',
             'name'               => __('Caller number'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
+            'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -238,7 +239,8 @@ class Line extends CommonDropdown {
             'table'              => $this->getTable(),
             'field'              => 'caller_name',
             'name'               => __('Caller name'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
+            'autocomplete'       => true,
       ];
 
       return $tab;

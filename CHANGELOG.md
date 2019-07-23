@@ -3,7 +3,14 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.4.3] unreleased
+## [9.4.4] unreleased
+
+### API changes
+
+#### Changes
+- For security reasons, autocompletion feature requires now to be authorized by a `'autocomplete' => true` flag in corresponding field search option.
+
+## [9.4.3] 2019-06-20
 
 ### API changes
 

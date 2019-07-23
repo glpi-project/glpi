@@ -1485,7 +1485,8 @@ class Infocom extends CommonDBChild {
          'name'               => __('Warranty information'),
          'forcegroupby'       => true,
          'joinparams'         => $joinparams,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1568,7 +1569,8 @@ class Infocom extends CommonDBChild {
          'name'               => __('Amortization coefficient'),
          'forcegroupby'       => true,
          'joinparams'         => $joinparams,
-         'datatype'           => 'decimal'
+         'datatype'           => 'decimal',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1735,7 +1737,8 @@ class Infocom extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'order_number',
          'name'               => __('Order number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1743,7 +1746,8 @@ class Infocom extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'delivery_number',
          'name'               => __('Delivery form'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1751,7 +1755,8 @@ class Infocom extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'immo_number',
          'name'               => __('Immobilization number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1802,7 +1807,8 @@ class Infocom extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'bill',
          'name'               => __('Invoice number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

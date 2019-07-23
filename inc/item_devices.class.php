@@ -205,6 +205,9 @@ class Item_Devices extends CommonDBRelation {
          if (isset($attributs['nodisplay'])) {
             $newtab['nodisplay'] = $attributs['nodisplay'];
          }
+         if (isset($attributs['autocomplete'])) {
+            $newtab['autocomplete'] = $attributs['autocomplete'];
+         }
          $tab[] = $newtab;
       }
 
@@ -329,19 +332,22 @@ class Item_Devices extends CommonDBRelation {
             return ['long name'  => __('Serial number'),
                          'short name' => __('Serial number'),
                          'size'       => 20,
-                         'id'         => 10];
+                         'id'         => 10,
+                         'autocomplete' => true,];
 
          case 'busID' :
             return ['long name'  => __('Position of the device on its bus'),
                          'short name' => __('bus ID'),
                          'size'       => 10,
-                         'id'         => 11];
+                         'id'         => 11,
+                         'autocomplete' => true,];
 
          case 'otherserial':
             return ['long name'  => __('Inventory number'),
                          'short name' => __('Inventory number'),
                          'size'       => 20,
-                         'id'         => 12];
+                         'id'         => 12,
+                         'autocomplete' => true,];
 
          case 'locations_id':
             return ['long name'  => __('Location'),

@@ -72,7 +72,8 @@ class DeviceMemory extends CommonDevice {
          'table'              => $this->getTable(),
          'field'              => 'size_default',
          'name'               => __('Size by default'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -80,7 +81,8 @@ class DeviceMemory extends CommonDevice {
          'table'              => $this->getTable(),
          'field'              => 'frequence',
          'name'               => __('Frequency'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

@@ -79,7 +79,8 @@ class APIClient extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
-         'datatype'           => 'itemlink'
+         'datatype'           => 'itemlink',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -133,7 +134,8 @@ class APIClient extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'ipv6',
          'name'               => __('IPv6 address'),
-         'datatype'           => 'text'
+         'datatype'           => 'text',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -142,7 +144,8 @@ class APIClient extends CommonDBTM {
          'field'              => 'app_token',
          'name'               => __('Application token'),
          'massiveaction'      => false,
-         'datatype'           => 'text'
+         'datatype'           => 'text',
+         'autocomplete'       => true,
       ];
 
       return $tab;

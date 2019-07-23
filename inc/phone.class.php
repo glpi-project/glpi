@@ -383,7 +383,8 @@ class Phone extends CommonDBTM {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -427,7 +428,8 @@ class Phone extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'serial',
          'name'               => __('Serial number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -435,7 +437,8 @@ class Phone extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -443,7 +446,8 @@ class Phone extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'contact',
          'name'               => __('Alternate username'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -451,7 +455,8 @@ class Phone extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'contact_num',
          'name'               => __('Alternate username number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -459,7 +464,8 @@ class Phone extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'number_line',
          'name'               => _x('quantity', 'Number of lines'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -511,7 +517,8 @@ class Phone extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'brand',
          'name'               => __('Brand'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -584,6 +591,18 @@ class Phone extends CommonDBTM {
          'field'              => 'have_hp',
          'name'               => __('Speaker'),
          'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
+         'id'                 => '50',
+         'table'              => $this->getTable(),
+         'field'              => 'template_name',
+         'name'               => __('Template name'),
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'nodisplay'          => true,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

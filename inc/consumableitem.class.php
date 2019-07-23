@@ -227,7 +227,8 @@ class ConsumableItem extends CommonDBTM {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -244,7 +245,8 @@ class ConsumableItem extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'ref',
          'name'               => __('Reference'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -252,7 +254,8 @@ class ConsumableItem extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

@@ -508,7 +508,8 @@ class Project extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'forcegroupby'       => true
+         'forcegroupby'       => true,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -526,7 +527,8 @@ class Project extends CommonDBTM {
          'field'              => 'code',
          'name'               => __('Code'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -694,6 +696,18 @@ class Project extends CommonDBTM {
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '50',
+         'table'              => $this->getTable(),
+         'field'              => 'template_name',
+         'name'               => __('Template name'),
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'nodisplay'          => true,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

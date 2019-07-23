@@ -451,7 +451,8 @@ class Software extends CommonDBTM {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -525,6 +526,18 @@ class Software extends CommonDBTM {
          'name'               => __('Group in charge of the software'),
          'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '50',
+         'table'              => $this->getTable(),
+         'field'              => 'template_name',
+         'name'               => __('Template name'),
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'nodisplay'          => true,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

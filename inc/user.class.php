@@ -2910,7 +2910,8 @@ class User extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'realname',
          'name'               => __('Last name'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -2918,7 +2919,8 @@ class User extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'firstname',
          'name'               => __('First name'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -2950,7 +2952,8 @@ class User extends CommonDBTM {
          'field'              => 'sync_field',
          'name'               => __('Synchronization field'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -2968,7 +2971,8 @@ class User extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'phone',
          'name'               => __('Phone'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -2976,7 +2980,8 @@ class User extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'phone2',
          'name'               => __('Phone 2'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -2984,7 +2989,8 @@ class User extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'mobile',
          'name'               => __('Mobile phone'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3122,7 +3128,8 @@ class User extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'registration_number',
          'name'               => __('Administrative number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

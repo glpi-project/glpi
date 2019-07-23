@@ -197,7 +197,8 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
          'table'              => $this->getTable(),
          'field'              => 'wwn',
          'name'               => __('World Wide Name'),
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

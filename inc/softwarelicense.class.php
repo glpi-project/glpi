@@ -496,7 +496,8 @@ class SoftwareLicense extends CommonTreeDropdown {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'forcegroupby'       => true
+         'forcegroupby'       => true,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -516,7 +517,8 @@ class SoftwareLicense extends CommonTreeDropdown {
          'table'              => $this->getTable(),
          'field'              => 'serial',
          'name'               => __('Serial number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -635,6 +637,18 @@ class SoftwareLicense extends CommonTreeDropdown {
       ];
 
       $tab[] = [
+         'id'                 => '50',
+         'table'              => $this->getTable(),
+         'field'              => 'template_name',
+         'name'               => __('Template name'),
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'nodisplay'          => true,
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
@@ -674,7 +688,8 @@ class SoftwareLicense extends CommonTreeDropdown {
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       // add objectlock search options

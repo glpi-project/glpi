@@ -58,7 +58,8 @@ class Item_DeviceBattery extends Item_Devices {
             'long name' => __('Manufacturing date'),
             'short name' => __('Date'),
             'size'       => 10,
-            'id'         => 20
+            'id'         => 20,
+            'autocomplete' => true,
          ]
       ];
    }

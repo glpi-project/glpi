@@ -105,6 +105,7 @@ class DeviceFirmware extends CommonDevice {
          'table'              => 'glpi_devicefirmwares',
          'field'              => 'version',
          'name'               => __('Version'),
+         'autocomplete'       => true,
       ];
 
       return $tab;

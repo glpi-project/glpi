@@ -389,6 +389,48 @@ class Item_OperatingSystem extends CommonDBRelation {
       }
    }
 
+   function rawSearchOptions() {
+
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
+
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'license_number',
+         'name'               => __('Serial number'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'licenseid',
+         'name'               => __('Product ID'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      return $tab;
+   }
+
    public static function rawSearchOptionsToAdd($itemtype) {
       $tab = [];
       $tab[] = [
