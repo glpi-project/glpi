@@ -286,16 +286,17 @@ class Toolbox {
    **/
    static function clean_cross_side_scripting_deep($value) {
 
+      if ((array) $value === $value) {
+         return array_map([__CLASS__, 'clean_cross_side_scripting_deep'], $value);
+      }
+
+      if (!is_string($value)) {
+         return $value;
+      }
+
       $in  = ['<', '>'];
       $out = ['&lt;', '&gt;'];
-
-      $value = ((array) $value === $value)
-                  ? array_map([__CLASS__, 'clean_cross_side_scripting_deep'], $value)
-                  : (is_null($value)
-                        ? null : (is_resource($value)
-                                     ? $value : str_replace($in, $out, $value)));
-
-      return $value;
+      return str_replace($in, $out, $value);
    }
 
 
@@ -310,16 +311,17 @@ class Toolbox {
    **/
    static function unclean_cross_side_scripting_deep($value) {
 
+      if ((array) $value === $value) {
+         return array_map([__CLASS__, 'unclean_cross_side_scripting_deep'], $value);
+      }
+
+      if (!is_string($value)) {
+         return $value;
+      }
+
       $in  = ['<', '>'];
       $out = ['&lt;', '&gt;'];
-
-      $value = ((array) $value === $value)
-                  ? array_map([__CLASS__, 'unclean_cross_side_scripting_deep'], $value)
-                  : (is_null($value)
-                        ? null : (is_resource($value)
-                                     ? $value : str_replace($out, $in, $value)));
-
-      return $value;
+      return str_replace($out, $in, $value);
    }
 
 
@@ -336,17 +338,14 @@ class Toolbox {
    **/
    static function unclean_html_cross_side_scripting_deep($value) {
 
-      $in  = ['<', '>'];
-      $out = ['&lt;', '&gt;'];
-
-      $value = ((array) $value === $value)
-                  ? array_map([__CLASS__, 'unclean_html_cross_side_scripting_deep'], $value)
-                  : (is_null($value)
-                      ? null : (is_resource($value)
-                                  ? $value : str_replace($out, $in, $value)));
+      if ((array) $value === $value) {
+         $value = array_map([__CLASS__, 'unclean_html_cross_side_scripting_deep'], $value);
+      } else {
+         $value = self::unclean_cross_side_scripting_deep($value);
+      }
 
       // revert unclean inside <pre>
-      if (!is_array($value)) {
+      if (is_string($value)) {
          $matches = [];
          $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
          for ($i = 0; $i < $count; ++$i) {
@@ -2799,8 +2798,8 @@ class Toolbox {
                      if (empty($new_image)) {
                         $new_image = '#'.$image['tag'].'#';
                      }
-                     $content_text = preg_replace(
-                        $regex,
+                     $content_text = str_replace(
+                        $match_img,
                         $new_image,
                         Html::entity_decode_deep($content_text)
                      );

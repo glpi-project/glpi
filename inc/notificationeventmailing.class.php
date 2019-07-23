@@ -232,11 +232,11 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             // replace a[href] by absolute URL
             foreach ($inline_docs as $docID => $tag) {
                $current->fields['body_html'] = preg_replace([
-                     '/src=["\'][^"\']*document\.send\.php\?docid='.$docID.'[^"\']*["\']/',
-                     '/href=["\'][^"\']*document\.send\.php\?docid='.$docID.'[^"\']*["\']/',
+                     '/src=["\'][^"\']*document\.send\.php\?docid='.$docID.'(&[^"\']+)?["\']/',
+                     '/href=["\'][^"\']*document\.send\.php\?docid='.$docID.'(&[^"\']+)?["\']/',
                   ], [
                      'src="cid:' . $tag . '"',
-                     'href="' . $CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID . '"',
+                     'href="' . $CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID . '$1"',
                   ],
                   $current->fields['body_html']);
             }
