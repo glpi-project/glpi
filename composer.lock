@@ -39,23 +39,23 @@
         },
         {
             "name": "elvanto/litemoji",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elvanto/litemoji.git",
-                "reference": "a49bcfd88af64728aa2c28c79be7c3d15b44a1d0"
+                "reference": "2cba2c87c505fe1d3a6e06ff4cc48d98af757521"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/a49bcfd88af64728aa2c28c79be7c3d15b44a1d0",
-                "reference": "a49bcfd88af64728aa2c28c79be7c3d15b44a1d0",
+                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/2cba2c87c505fe1d3a6e06ff4cc48d98af757521",
+                "reference": "2cba2c87c505fe1d3a6e06ff4cc48d98af757521",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.6"
             },
             "require-dev": {
-                "milesj/emojibase": "3.1.0",
+                "milesj/emojibase": "4.0.0",
                 "phpunit/phpunit": "^5.0"
             },
             "type": "library",
@@ -73,7 +73,7 @@
                 "emoji",
                 "php-emoji"
             ],
-            "time": "2019-07-15T23:52:41+00:00"
+            "time": "2019-07-24T19:58:51+00:00"
         },
         {
             "name": "iamcal/lib_autolink",
@@ -2898,8 +2898,8 @@
             "authors": [
                 {
                     "name": "Frank Kleine",
-                    "homepage": "http://frankkleine.de/",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "homepage": "http://frankkleine.de/"
                 }
             ],
             "description": "Virtual file system to mock the real file system in unit tests.",
