@@ -959,6 +959,12 @@ class CommonDBTM extends CommonGLPI {
             Item_SoftwareVersion::class
          ]);
       }
+
+      if (in_array($this->getType(), $CFG_GLPI['kanban_types'])) {
+         $this->deleteChildrenAndRelationsFromDb([
+            Item_Kanban::class
+         ]);
+      }
    }
 
 

@@ -625,3 +625,78 @@ input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
       }
    }
 }
+
+textarea:not([disabled]) {
+   background-color: #3a3938;
+}
+
+/** Kanban */
+#page .kanban {
+   .kanban-form {
+      background-color: #3a3938;
+      border: #272625 1px solid;
+      color: #ffffff !important;
+      input[type=text]:not([type=submit]):not([type=button]), textarea {
+         background-color: #3a3938 !important;
+         color: #aaa;
+      }
+   }
+   .kanban-toolbar {
+      background-color: #3a3938;
+      border: #272625 1px solid;
+      input[type=text][name=filter]:not([type=submit]):not([type=button]) {
+         background-color: #3a3938 !important;
+         color: #aaa;
+      }
+   }
+   .kanban-container {
+      #kanban-add-dropdown {
+         background-color: #2c2b2a;
+         border: 1px solid #242323;
+         li {
+            background-color: #3a3938;
+            color: white;
+            &:hover {
+               background-color: #262626;
+            }
+         }
+      }
+      .kanban-columns {
+         .kanban-column {
+            background-color: #2c2b2a;
+            border: #272625 1px solid;
+
+            .kanban-column-header {
+               background-color: #2c2b2a;
+               border-top: 3px solid #2c2b2a;
+               box-shadow: 0px 1px 1px #242323;
+
+               .kanban_nb {
+                  background-color: #3a3938;
+               }
+            }
+
+            .kanban-body {
+               .kanban-item, .kanban-form {
+                  background-color: #3a3938;
+                  border: #272625 1px solid;
+                  color: #ffffff !important;
+                  input[type=text] {
+                     background-color: #3a3938 !important;
+                  }
+                  .kanban-item-header, .kanban-item-header a {
+                     color: #ffffff !important;
+                  }
+               }
+            }
+         }
+      }
+   }
+}
+
+div.progress {
+   background-color: #262626;
+   .progress-fg {
+      background-color: #585957;
+   }
+}

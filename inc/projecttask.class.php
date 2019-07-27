@@ -425,7 +425,7 @@ class ProjectTask extends CommonDBChild {
    }
 
 
-    /**
+   /**
     * Get all tasks for a project
     *
     * @param $ID        integer  Id of the project
@@ -436,10 +436,41 @@ class ProjectTask extends CommonDBChild {
       global $DB;
 
       $tasks = [];
-      foreach ($DB->request('glpi_projecttasks',
-                            ["projects_id" => $ID,
-                                  'ORDER'       => ['plan_start_date',
-                                                         'real_start_date']]) as $data) {
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_projecttasks',
+         'WHERE'  => [
+            'projects_id'  => $ID
+         ],
+         'ORDERBY'   => ['plan_start_date', 'real_start_date']
+      ]);
+
+      while ($data = $iterator->next()) {
+         $tasks[] = $data;
+      }
+      return $tasks;
+   }
+
+
+   /**
+    * Get all sub-tasks for a project task
+    * @since 9.5.0
+    * @param $ID        integer  Id of the project task
+    *
+    * @return array of tasks ordered by dates
+   **/
+   static function getAllForProjectTask($ID) {
+      global $DB;
+
+      $tasks = [];
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_projecttasks',
+         'WHERE'  => [
+            'projecttasks_id'  => $ID
+         ],
+         'ORDERBY'   => ['plan_start_date', 'real_start_date']
+      ]);
+
+      while ($data = $iterator->next()) {
          $tasks[] = $data;
       }
       return $tasks;

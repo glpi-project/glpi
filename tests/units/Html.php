@@ -613,8 +613,8 @@ class Html extends \GLPITestCase {
 
    public function testManageRefreshPage() {
       //no session refresh, no args => no timer
-      if (isset($_SESSION['glpirefresh_ticket_list'])) {
-         unset($_SESSION['glpirefresh_ticket_list']);
+      if (isset($_SESSION['glpirefresh_views'])) {
+         unset($_SESSION['glpirefresh_views']);
       }
 
       $base_script = \Html::scriptBlock("window.setInterval(function() {
@@ -626,7 +626,7 @@ class Html extends \GLPITestCase {
       $this->string($message)->isIdenticalTo($expected);
 
       //Set session refresh to one minute
-      $_SESSION['glpirefresh_ticket_list'] = 1;
+      $_SESSION['glpirefresh_views'] = 1;
       $expected = str_replace("##CALLBACK##", "window.location.reload()", $base_script);
       $expected = str_replace("##TIMER##", 1 * MINUTE_TIMESTAMP * 1000, $expected);
       $message = \Html::manageRefreshPage();

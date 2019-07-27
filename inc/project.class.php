@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
  * @since 0.85
 **/
 class Project extends CommonDBTM {
+   use Kanban;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -51,7 +52,6 @@ class Project extends CommonDBTM {
    const READALL                       = 1024;
 
    protected $team                     = [];
-
 
    /**
     * Name of the type
@@ -137,6 +137,7 @@ class Project extends CommonDBTM {
                }
                $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
                $ong[2] = __('GANTT');
+               $ong[3] = __('Kanban');
                return $ong;
          }
       }
@@ -156,6 +157,10 @@ class Project extends CommonDBTM {
 
                case 2 :
                   $item->showGantt($item->getID());
+                  break;
+
+               case 3 :
+                  $item->showKanban($item->getID());
                   break;
             }
             break;
@@ -226,6 +231,7 @@ class Project extends CommonDBTM {
          $links[$pic_validate] = ProjectTask::getSearchURL(false);
 
          $links['summary'] = Project::getFormURL(false).'?showglobalgantt=1';
+         $links['summary_kanban'] = Project::getFormURL(false).'?showglobalkanban=1';
       }
       if (count($links)) {
          return $links;
@@ -261,7 +267,7 @@ class Project extends CommonDBTM {
 
 
    function post_addItem() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
@@ -304,7 +310,6 @@ class Project extends CommonDBTM {
 
 
    function post_deleteItem() {
-      $project = new Project();
       // Update parent percent_done
       if ($this->fields['projects_id'] > 0) {
          self::recalculatePercentDone($this->fields['projects_id']);
@@ -313,7 +318,6 @@ class Project extends CommonDBTM {
 
 
    function post_restoreItem() {
-      $project = new Project();
       // Update parent percent_done
       if ($this->fields['projects_id'] > 0) {
          self::recalculatePercentDone($this->fields['projects_id']);
@@ -375,8 +379,6 @@ class Project extends CommonDBTM {
     * @return array
     */
    static public function getVisibilityCriteria($forceall = false) {
-      global $CFG_GLPI;
-
       if (Session::haveRight('project', self::READALL)) {
          return [
             'LEFT JOIN' => [],
@@ -395,7 +397,7 @@ class Project extends CommonDBTM {
       ];
 
       $teamtable = 'glpi_projectteams';
-      $where['OR'] = [
+      $ors = [
          'glpi_projects.users_id'   => Session::getLoginUserID(),
          [
             "$teamtable.itemtype"   => 'User',
@@ -403,12 +405,16 @@ class Project extends CommonDBTM {
          ]
       ];
       if (count($_SESSION['glpigroups'])) {
-         $where['OR']['glpi_projects.groups_id'] = $_SESSION['glpigroups'];
-         $where['OR'][] = [
+         $ors['glpi_projects.groups_id'] = $_SESSION['glpigroups'];
+         $ors[] = [
             "$teamtable.itemtype"   => 'Group',
             "$teamtable.items_id"   => $_SESSION['glpigroups']
          ];
       }
+
+      $where[] = [
+         'OR' => $ors,
+      ];
 
       $criteria = [
          'LEFT JOIN' => $join,
@@ -1132,7 +1138,6 @@ class Project extends CommonDBTM {
       $items[__('Name')]             = "name";
 
       foreach ($items as $key => $val) {
-         $issort = 0;
          $link   = "";
          echo Search::showHeaderItem($output_type, $key, $header_num, $link);
       }
@@ -1156,7 +1161,7 @@ class Project extends CommonDBTM {
     *      followups              : only for Tickets : show followup columns
     */
    static function showShort($id, $options = []) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       $p['output_type']            = Search::HTML_OUTPUT;
       $p['row_num']                = 0;
@@ -1361,7 +1366,7 @@ class Project extends CommonDBTM {
     * @return void
     **/
    function showChildren() {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID   = $this->getID();
       $this->check($ID, READ);
@@ -1423,8 +1428,6 @@ class Project extends CommonDBTM {
     *@return void
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI, $DB;
-
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
@@ -1640,8 +1643,6 @@ class Project extends CommonDBTM {
     * Show team for a project
    **/
    function showTeam(Project $project) {
-      global $DB, $CFG_GLPI;
-
       $ID      = $project->fields['id'];
       $canedit = $project->can($ID, UPDATE);
 
@@ -1666,7 +1667,7 @@ class Project extends CommonDBTM {
                                                            $project->fields['entities_id'])
                                                : $project->fields['entities_id']),
                          ];
-         $addrand = Dropdown::showSelectItemFromItemtypes($params);
+         Dropdown::showSelectItemFromItemtypes($params);
 
          echo "</td>";
          echo "<td width='20%'>";
@@ -1874,7 +1875,7 @@ class Project extends CommonDBTM {
       if (count($todisplay)) {
 
          // Prepare for display
-         foreach ($todisplay as $key => $val) {
+         foreach ($todisplay as $val) {
             if (!empty($val['from']) && !empty($val['to'])) {
                $temp  = [];
                $color = 'ganttRed';
@@ -1966,6 +1967,512 @@ class Project extends CommonDBTM {
       } else {
          echo __('No item to display');
       }
+   }
+
+   static function getAllForKanban($active = true, $current_id = -1) {
+      global $DB;
+
+      $items = [
+         -1 => __('Global')
+      ];
+      $criteria = [];
+      $joins = [];
+      if ($active) {
+         $criteria += [
+            'is_deleted'   => 0,
+            [
+               'OR' => [
+                  ['is_finished' => 0],
+                  ['is_finished' => 'null'],
+               ]
+            ]
+         ];
+         $joins = [
+            'glpi_projectstates' => [
+               'FKEY' => [
+                  'glpi_projectstates' => 'id',
+                  'glpi_projects'      => 'projectstates_id'
+               ]
+            ]
+         ];
+      }
+      $iterator = $DB->request(array_merge_recursive([
+         'SELECT'   => [
+            'glpi_projects.id',
+            'glpi_projects.name',
+            'glpi_projects.is_deleted',
+            'glpi_projectstates.is_finished'],
+         'DISTINCT' => true,
+         'FROM'     => 'glpi_projects',
+         'LEFT JOIN' => $joins,
+         'WHERE'     => $criteria
+         ], self::getVisibilityCriteria()));
+      while ($data = $iterator->next()) {
+         $items[$data['id']] = $data['name'];
+      }
+
+      if ($current_id > -1 && !isset($items[$current_id])) {
+         // Current Kanban is not in the list yet
+         $iterator = $DB->request([
+            'SELECT'   => [
+               'glpi_projects.id',
+               'glpi_projects.name',
+            ],
+            'FROM'     => 'glpi_projects',
+            'WHERE'     => ['id' => $current_id]
+         ]);
+         if ($iterator->count()) {
+            $data = $iterator->next();
+            $items[$data['id']] = $data['name'];
+         }
+      }
+      return $items;
+   }
+
+   static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false) {
+      if ($column_field === null || $column_field == 'projectstates_id') {
+         $columns = ['projectstates_id' => []];
+         $projectstate = new ProjectState();
+         $restrict = [];
+         if (!empty($column_ids) && !$get_default) {
+            $restrict = ['id' => $column_ids];
+         }
+         $allstates = $projectstate->find($restrict, ['is_finished ASC', 'id']);
+         foreach ($allstates as $state) {
+            $columns['projectstates_id'][$state['id']] = [
+               'name'         => $state['name'],
+               'header_color' => $state['color']
+            ];
+         }
+         return $columns['projectstates_id'];
+      } else {
+         return [];
+      }
+   }
+
+   static function getDataToDisplayOnKanban($ID, $criteria = []) {
+      global $DB;
+
+      $items      = [];
+
+      // Get sub-projects
+      $projectteam = new ProjectTeam();
+      $project = new Project();
+      $project_visibility = self::getVisibilityCriteria();
+      $request = [
+         'SELECT' => [
+            'glpi_projects.*',
+            'glpi_projectstates.is_finished'
+         ],
+         'FROM'   => 'glpi_projects',
+         'LEFT JOIN' => [
+            'glpi_projectstates' => [
+               'FKEY' => [
+                  'glpi_projects'   => 'projectstates_id',
+                  'glpi_projectstates' => 'id'
+               ]
+            ]
+         ] + $project_visibility['LEFT JOIN'],
+         'WHERE'     => $project_visibility['WHERE']
+      ];
+      if ($ID > 0) {
+         $request['WHERE']['glpi_projects.projects_id'] = $ID;
+         $request['WHERE'] += $criteria;
+      }
+
+      $iterator = $DB->request($request);
+      $projects = [];
+      while ($data = $iterator->next()) {
+         $projects[$data['id']] = $data;
+      }
+      $project_ids = array_map(function($e) {
+         return $e['id'];
+      }, array_filter($projects, function($e) use ($ID) {
+         // Filter tasks of closed projects in Global view
+         return ($ID > 0 || !$e['is_finished']);
+      }));
+      $projectteams = count($project_ids) ? $projectteam->find(['projects_id' => $project_ids]) : [];
+
+      // Get sub-tasks
+      $projecttask = new ProjectTask();
+      $projecttaskteam = new ProjectTaskTeam();
+      $project_ids_criteria = [];
+      if ($ID <= 0 && count($project_ids)) {
+         // Global view
+         $project_ids_criteria = ['projects_id' => $project_ids];
+      } else {
+         $project_ids_criteria = ['projects_id' => $ID];
+      }
+      $projecttasks = $projecttask->find($project_ids_criteria + $criteria);
+      $projecttask_ids = array_map(function ($e) {
+         return $e['id'];
+      }, $projecttasks);
+      $projecttaskteams = count($projecttask_ids) ? $projecttaskteam->find(['projecttasks_id' => $projecttask_ids]) : [];
+
+      // Build team member data
+      $supported_teamtypes = [
+         'User' => ['id', 'firstname', 'realname'],
+         'Group' => ['id', 'name'],
+         'Supplier' => ['id', 'name'],
+         'Contact' => ['id', 'name', 'firstname']
+      ];
+      $all_members = [];
+      foreach ($supported_teamtypes as $itemtype => $fields) {
+         $all_ids = array_map(function($e) {
+            return $e['items_id'];
+         }, array_filter(array_merge($projectteams, $projecttaskteams), function($e) use ($itemtype) {
+            return ($e['itemtype'] === $itemtype);
+         }));
+         if (count($all_ids)) {
+            $itemtable = $itemtype::getTable();
+            $all_items = $DB->request([
+               'SELECT'    => $fields,
+               'FROM'      => $itemtable,
+               'WHERE'     => [
+                  "{$itemtable}.id"   => $all_ids
+               ]
+            ]);
+            $all_members[$itemtype] = [];
+            while ($data = $all_items->next()) {
+               $all_members[$itemtype][] = $data;
+            }
+         } else {
+            $all_members[$itemtype] = [];
+         }
+      }
+
+      foreach ($projects as $subproject) {
+         $item = array_merge($subproject, [
+            '_itemtype' => 'Project',
+            '_team'     => [],
+            '_steps'    => ProjectTask::getAllForProject($subproject['id'])
+         ]);
+         if ($ID <= 0 && $subproject['projects_id'] > 0) {
+            if (isset($projects[$subproject['projects_id']])) {
+               $item['_parents_id'] = $projects[$subproject['projects_id']]['id'];
+               $item['_parent_itemtype'] = 'Project';
+               $item['_parent_name'] = $projects[$subproject['projects_id']]['name'];
+            }
+         }
+
+         $project->fields = $subproject;
+         $item['_readonly'] = !Project::canUpdate() || !$project->canUpdateItem();
+
+         $subproject_teams = array_filter($projectteams, function($e) use ($subproject) {
+            return $e['projects_id'] == $subproject['id'];
+         });
+         foreach ($subproject_teams as $teammember) {
+            switch ($teammember['itemtype']) {
+               case 'Group':
+               case 'Supplier':
+                  $matches = array_filter($all_members[$teammember['itemtype']], function($e) use ($teammember) {
+                     return ($e['id'] == $teammember['items_id']);
+                  });
+                  if (count($matches)) {
+                     $item['_team'][] = array_merge($teammember, reset($matches));
+                  }
+                  break;
+               case 'User':
+               case 'Contact':
+                  $contact_matches = array_filter($all_members[$teammember['itemtype']], function($e) use ($teammember) {
+                     return ($e['id'] == $teammember['items_id']);
+                  });
+                  if (count($contact_matches)) {
+                     $match = reset($contact_matches);
+                     // contact -> name, user -> realname
+                     $realname = $match['name'] ?? $match['realname'] ?? "";
+                     $match['name'] = formatUserName($match['id'], '', $realname, $match['firstname']);
+                     $item['_team'][] = array_merge($teammember, $match);
+                  }
+                  break;
+            }
+         }
+         $items[] = $item;
+      }
+
+      foreach ($projecttasks as $subtask) {
+         $item = array_merge($subtask, [
+            '_itemtype' => 'ProjectTask',
+            '_team' => [],
+            '_steps' => ProjectTask::getAllForProjectTask($subtask['id']),
+            'type' => $subtask['projecttasktypes_id']
+         ]);
+         if ($ID <= 0) {
+            $item['_parents_id'] = $projects[$subtask['projects_id']]['id'];
+            $item['_parent_itemtype'] = 'Project';
+            $item['_parent_name'] = $projects[$subtask['projects_id']]['name'];
+         }
+
+         $projecttask->fields = $subtask;
+         $item['_readonly'] = !ProjectTask::canUpdate() || !$projecttask->canUpdateItem();
+
+         $subtask_teams = array_filter($projecttaskteams, function ($e) use ($subtask) {
+            return $e['projecttasks_id'] == $subtask['id'];
+         });
+         foreach ($subtask_teams as $teammember) {
+            switch ($teammember['itemtype']) {
+               case 'Group':
+               case 'Supplier':
+                  $matches = array_filter($all_members[$teammember['itemtype']], function ($e) use ($teammember) {
+                     return ($e['id'] == $teammember['items_id']);
+                  });
+                  if (count($matches)) {
+                     $item['_team'][] = array_merge($teammember, reset($matches));
+                  }
+                  break;
+               case 'User':
+               case 'Contact':
+                  $contact_matches = array_filter($all_members[$teammember['itemtype']], function ($e) use ($teammember) {
+                     return ($e['id'] == $teammember['items_id']);
+                  });
+                  if (count($contact_matches)) {
+                     $match = reset($contact_matches);
+                     if ($teammember['itemtype'] === 'User') {
+                        $match['name'] = formatUserName($match['id'], '', $match['realname'], $match['firstname']);
+                     } else {
+                        $match['name'] = formatUserName($match['id'], '', $match['name'], $match['firstname']);
+                     }
+                     $item['_team'][] = array_merge($teammember, $match);
+                  }
+                  break;
+            }
+         }
+         $items[] = $item;
+      }
+
+      return $items;
+   }
+
+   static function getKanbanColumns($ID, $column_field, $column_ids = [], $get_default = false) {
+
+      if ($column_field !== 'projectstates_id') {
+         return [];
+      }
+
+      $columns = [];
+      if (empty($column_ids) || $get_default || in_array(0, $column_ids)) {
+         $columns[0] = [
+               'name'         => __('No status'),
+               '_protected'   => true
+            ];
+      }
+      $criteria = [];
+      if (!empty($column_ids)) {
+         $criteria = [
+            'projectstates_id'   => $column_ids
+         ];
+      }
+      $items      = self::getDataToDisplayOnKanban($ID, $criteria);
+
+      $projecttasktype = new ProjectTaskType();
+      $alltypes = $projecttasktype->find();
+
+      $extracolumns = self::getAllKanbanColumns('projectstates_id', $column_ids, $get_default);
+      foreach ($extracolumns as $column_id => $column) {
+         $columns[$column_id] = $column;
+      }
+
+      foreach ($items as $item) {
+         if (!in_array($item['projectstates_id'], array_keys($columns))) {
+            continue;
+         }
+         $itemtype = $item['_itemtype'];
+         $card = [
+            'id'        => "{$itemtype}-{$item['id']}",
+            'title'     => Html::link($item['name'], $itemtype::getFormURLWithID($item['id']))
+         ];
+
+         $content = "<div class='kanban-plugin-content'>";
+         $plugin_content_pre = Plugin::doHookFunction('pre_kanban_content', [
+            'itemtype' => $itemtype,
+            'items_id' => $item['id'],
+         ]);
+         if (!empty($plugin_content_pre['content'])) {
+            $content .= $plugin_content_pre['content'];
+         }
+         $content .= "</div>";
+         // Core content
+         $content .= "<div class='kanban-core-content'>";
+         if (isset($item['_parents_id'])) {
+            $childref = $itemtype === 'Project' ? __('Subproject') : __('Subtask');
+            $parentname = $item['_parent_name'] ?? $item['_parents_id'];
+
+            $content .= "<div>";
+            $content .= Html::link(sprintf(__('%s of %s'), $childref, $parentname), Project::getFormURLWithID($item['_parents_id']));
+            $content .= "</div>";
+         }
+         $content .= "<div class='flex-break'></div>";
+         if ($itemtype === 'ProjectTask' && $item['projecttasktypes_id'] !== '0') {
+            $typematches = array_filter($alltypes, function($t) use ($item){
+               return $t['id'] === $item['projecttasktypes_id'];
+            });
+            $content .= reset($typematches)['name'] . '&nbsp;';
+         }
+         if (array_key_exists('is_milestone', $item) && $item['is_milestone']) {
+            $content .= "&nbsp;<i class='fas fa-map-signs' title='" . __('Milestone') . "'></i>&nbsp;";
+         }
+         if (isset($item['_steps']) && count($item['_steps'])) {
+            $done = count(array_filter($item['_steps'], function($step) {
+               return $step['percent_done'] == 100;
+            }));
+            $total = count($item['_steps']);
+            $content .= "<div class='flex-break'></div>";
+            $content .= sprintf(__('%s / %s tasks complete'), $done, $total);
+         }
+         // Percent Done
+         $content .= "<div class='flex-break'></div>";
+         $content .= Html::progress(100, $item['percent_done']);
+
+         $content .= "</div>";
+         $content .= "<div class='kanban-plugin-content'>";
+         $plugin_content_post = Plugin::doHookFunction('post_kanban_content', [
+            'itemtype' => $itemtype,
+            'items_id' => $item['id'],
+         ]);
+         if (!empty($plugin_content_post['content'])) {
+            $content .= $plugin_content_post['content'];
+         }
+         $content .= "</div>";
+
+         $card['content'] = $content;
+         $card['_team'] = $item['_team'];
+         $card['_readonly'] = $item['_readonly'];
+         $columns[$item['projectstates_id']]['items'][] = $card;
+      }
+
+      // If no specific columns were asked for, drop empty columns.
+      // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
+      // We always preserve the 'No Status' column.
+      foreach ($columns as $column_id => $column) {
+         if ($column_id !== 0 && !in_array($column_id, $column_ids) &&
+            (!isset($column['items']) || !count($column['items']))) {
+            unset($columns[$column_id]);
+         }
+      }
+      return $columns;
+   }
+
+   public function canModifyGlobalState() {
+      // Only project manager (or managing group) may change the Kanban's state
+      return $this->fields["users_id"] === Session::getLoginUserID() || $this->isInTheManagerGroup();
+   }
+
+   public function forceGlobalState() {
+      // All users must be using the global state unless viewing the global Kanban
+      return $this->getID() > 0;
+   }
+
+   /**
+    * Show Kanban view.
+    * @param int $ID ID of the parent Project or -1 for a global view.
+    * @return bool|void False if the Kanban cannot be shown.
+    */
+   static function showKanban($ID) {
+      $project = new Project();
+      if (($ID <= 0 && !Project::canView()) ||
+         ($ID > 0 && (!$project->getFromDB($ID) || !$project->canView()))) {
+         return false;
+      }
+
+      $supported_itemtypes = [];
+      if (Project::canCreate()) {
+         $supported_itemtypes['Project'] = [
+            'name' => Project::getTypeName(1),
+            'fields' => [
+               'name'   => [
+                  'placeholder'  => __('Name')
+               ],
+               'content'   => [
+                  'placeholder'  => __('Content'),
+                  'type'         => 'textarea'
+               ]
+            ]
+         ];
+      }
+
+      if (ProjectTask::canCreate()) {
+         $supported_itemtypes['ProjectTask'] = [
+            'name' => ProjectTask::getTypeName(1),
+            'fields' => [
+               'projects_id'  => [
+                  'type'   => 'hidden',
+                  'value'  => $ID
+               ],
+               'name'   => [
+                  'placeholder'  => __('Name')
+               ],
+               'content'   => [
+                  'placeholder'  => __('Content'),
+                  'type'         => 'textarea'
+               ],
+               'projecttasktemplates_id' => [
+                  'type'   => 'hidden',
+                  'value'  => 0
+               ],
+               'projecttasks_id' => [
+                  'type'   => 'hidden',
+                  'value'  => 0
+               ]
+            ]
+         ];
+         if ($ID <= 0) {
+            $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [
+               'type'   => 'raw',
+               'value'  => Project::dropdown(['display' => false, 'width' => '90%'])
+            ];
+         }
+      }
+      $column_field = [
+         'id' => 'projectstates_id',
+         'extra_fields' => [
+            'color'  => [
+               'type'   => 'color'
+            ]
+         ]
+      ];
+      $supported_itemtypes = json_encode($supported_itemtypes, JSON_FORCE_OBJECT);
+      $column_field = json_encode($column_field, JSON_FORCE_OBJECT);
+
+      echo "<div id='kanban' class='kanban'></div>";
+      $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
+      $canadd_item = json_encode(self::canCreate() || ProjectTask::canCreate());
+      $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
+      $cancreate_column = json_encode((bool)ProjectState::canCreate());
+      $limit_addcard_columns = $canmodify_view !== 'false' ? '[]' : json_encode([0]);
+      $can_order_item = json_encode((bool)$project->canOrderKanbanCard($ID));
+
+      $js = <<<JAVASCRIPT
+         $(function(){
+            // Create Kanban
+            var kanban = new GLPIKanban({
+               element: "#kanban",
+               allow_add_item: $canadd_item,
+               allow_modify_view: $canmodify_view,
+               allow_create_column: $cancreate_column,
+               limit_addcard_columns: $limit_addcard_columns,
+               allow_order_card: $can_order_item,
+               supported_itemtypes: $supported_itemtypes,
+               dark_theme: {$darkmode},
+               max_team_images: 3,
+               column_field: $column_field,
+               background_refresh_interval: {$_SESSION['glpirefresh_views']},
+               item: {
+                  itemtype: 'Project',
+                  items_id: $ID
+               }
+            });
+            // Create kanban elements and add data
+            kanban.init();
+         });
+JAVASCRIPT;
+      echo Html::scriptBlock($js);
+   }
+
+   public function canOrderKanbanCard($ID) {
+      if ($ID > 0) {
+         $this->getFromDB($ID);
+      }
+      return ($ID <= 0 || $this->canModifyGlobalState());
    }
 
    /**

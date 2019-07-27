@@ -946,6 +946,7 @@ $RELATION = [
       'glpi_projects'          => 'projects_id',
       '_glpi_projecttasks'     => 'projects_id',
       '_glpi_projectteams'     => 'projects_id',
+      'glpi_items_kanbans'     => ['items_id', 'itemtype'],
    ],
 
    'glpi_projectstates' => [
@@ -1227,6 +1228,7 @@ $RELATION = [
       'glpi_documents_items'          => 'users_id',
       'glpi_enclosures'               => 'users_id_tech',
       '_glpi_groups_users'            => 'users_id',
+      'glpi_items_kanbans'            => 'users_id',
       'glpi_itilcategories'           => 'users_id',
       'glpi_itilfollowups'            => [
          'users_id',

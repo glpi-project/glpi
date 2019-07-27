@@ -108,6 +108,8 @@ if (isset($_POST["add"])) {
 
    if (isset($_GET['showglobalgantt']) && $_GET['showglobalgantt']) {
       $project->showGantt(-1);
+   } else if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+      $project->showKanban(0);
    } else {
       $project->display(['id'           => $_GET["id"],
                          'withtemplate' => $_GET["withtemplate"]]);
