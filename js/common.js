@@ -1027,13 +1027,13 @@ window.glpiUnsavedFormChanges = false;
 $(document).ready(function() {
    // Try to limit tracking to item forms by binding to inputs under glpi_tabs only.
    var glpiTabs = $('#page .glpi_tabs');
-   glpiTabs.on('input', 'form input, form textarea', function() {
+   glpiTabs.on('input', 'form:not(.no-track) input, form:not(.no-track) textarea', function() {
       window.glpiUnsavedFormChanges = true;
    });
-   glpiTabs.on('change', 'form select', function() {
+   glpiTabs.on('change', 'form:not(.no-track) select', function() {
       window.glpiUnsavedFormChanges = true;
    });
-   glpiTabs.on('select2:select', 'form select', function() {
+   glpiTabs.on('select2:select', 'form:not(.no-track) select', function() {
       window.glpiUnsavedFormChanges = true;
    });
    $(window).on('beforeunload', function() {
@@ -1043,11 +1043,32 @@ $(document).ready(function() {
       }
    });
 
-   glpiTabs.on('submit', 'form', function() {
+   glpiTabs.on('submit', 'form:not(.no-track)', function() {
       window.glpiUnsavedFormChanges = false;
    });
 });
 
 function onTinyMCEChange() {
    window.glpiUnsavedFormChanges = true;
+}
+
+/**
+ * Updates an accessible progress bar title and foreground width.
+ * @since 9.5.0
+ * @param progressid ID of the progress bar
+ * @return void
+ */
+function updateProgress(progressid) {
+   var progress = $("progress#progress"+progressid).first();
+   $("div[data-progressid='"+progressid+"']").each(function(i, item) {
+      var j_item = $(item);
+      var fg = j_item.find(".progress-fg").first();
+      var calcWidth = (progress.attr('value') / progress.attr('max')) * 100;
+      fg.width(calcWidth+'%');
+      if (j_item.data('append-percent') === 1) {
+         var new_title = (j_item.prop('title').replace(new RegExp("\\d*%$"), progress.attr('value')+'%')).trim();
+         progress.prop('title', new_title);
+         j_item.prop('title', new_title);
+      }
+   });
 }

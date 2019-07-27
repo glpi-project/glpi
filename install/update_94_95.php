@@ -835,6 +835,32 @@ function update94to95() {
    $migration->dropKey('glpi_tickettemplatepredefinedfields', 'tickettemplates_id_id_num');
    /** /Fix indexes */
 
+   /** Kanban */
+   if (!$DB->tableExists('glpi_items_kanbans')) {
+      $query = "CREATE TABLE `glpi_items_kanbans` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+         `items_id` int(11) DEFAULT NULL,
+         `users_id` int(11) NOT NULL,
+         `state` text COLLATE utf8_unicode_ci,
+         `date_mod` timestamp NULL DEFAULT NULL,
+         `date_creation` timestamp NULL DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         UNIQUE KEY `unicity` (`itemtype`,`items_id`,`users_id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_kanbans");
+   }
+   if (!$DB->fieldExists('glpi_users', 'refresh_views')) {
+      $migration->changeField('glpi_users', 'refresh_ticket_list', 'refresh_views', 'int(11) DEFAULT NULL');
+   }
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_configs',
+         ['name' => 'refresh_ticket_list'],
+         ['name' => 'refresh_views', 'context' => 'core']
+      )
+   );
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

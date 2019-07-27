@@ -1284,8 +1284,8 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td><label for='dropdown_task_state$rand'>" . __('Tasks state by default') . "</label></td><td>";
          Planning::dropdownState("task_state", $data["task_state"], true, ['rand' => $rand]);
-         echo "</td><td><label for='dropdown_refresh_ticket_list$rand'>" . __('Automatically refresh the list of tickets (minutes)') . "</label></td><td>";
-         Dropdown::showNumber('refresh_ticket_list', ['value' => $data["refresh_ticket_list"],
+         echo "</td><td><label for='dropdown_refresh_views$rand'>" . __('Automatically refresh data (tickets list, project kanban) in minutes.') . "</label></td><td>";
+         Dropdown::showNumber('refresh_views', ['value' => $data["refresh_views"],
                                                       'min'   => 1,
                                                       'max'   => 30,
                                                       'step'  => 1,

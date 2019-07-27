@@ -6847,7 +6847,7 @@ CREATE TABLE `glpi_users` (
   `user_dn` text COLLATE utf8_unicode_ci,
   `registration_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `show_count_on_tabs` tinyint(1) DEFAULT NULL,
-  `refresh_ticket_list` int(11) DEFAULT NULL,
+  `refresh_views` int(11) DEFAULT NULL,
   `set_default_tech` tinyint(1) DEFAULT NULL,
   `personal_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `personal_token_date` timestamp NULL DEFAULT NULL,
@@ -7729,4 +7729,17 @@ CREATE TABLE `glpi_planningeventcategories` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_items_kanbans`;
+CREATE TABLE `glpi_items_kanbans` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+   `items_id` int(11) DEFAULT NULL,
+   `users_id` int(11) NOT NULL,
+   `state` text COLLATE utf8_unicode_ci,
+   `date_mod` timestamp NULL DEFAULT NULL,
+   `date_creation` timestamp NULL DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

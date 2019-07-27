@@ -1248,6 +1248,10 @@ class Html {
             Html::requireJs('gantt');
          }
 
+         if (in_array('kanban', $jslibs)) {
+            Html::requireJs('kanban');
+         }
+
          if (in_array('rateit', $jslibs)) {
             echo Html::css('public/lib/jquery.rateit.css');
             Html::requireJs('rateit');
@@ -5006,6 +5010,43 @@ JAVASCRIPT;
 
 
    /**
+    * Creates an accessible, styleable progress bar control.
+    * @since 9.5.0
+    * @param int $max    The maximum value of the progress bar.
+    * @param int $value    The current value of the progress bar.
+    * @param array $param  Array of options:
+    *                         - rand: Random int for the progress id. Default is a new random int.
+    *                         - tooltip: Text to show in the tooltip. Default is nothing.
+    *                         - append_percent_tt: If true, the percent will be appended to the tooltip.
+    *                               In this case, it will also be automatically updated. Default is true.
+    *                         - text: Text to show in the progress bar. Default is nothing.
+    *                         - append_percent_text: If true, the percent will be appended to the text.
+    *                               In this case, it will also be automatically updated. Default is false.
+    * @return string     The progress bar HTML
+    */
+   static function progress($max, $value, $params = []) {
+      $p = [
+         'rand'            => mt_rand(),
+         'tooltip'         => '',
+         'append_percent'  => true
+      ];
+      $p = array_replace($p, $params);
+
+      $tooltip = trim($p['tooltip'] . ($p['append_percent'] ? " {$value}%" : ''));
+      // Hide element except when using a screen reader. This uses FontAwesomes sr-only class.
+      $html = "<progress id='progress{$p['rand']}' class='sr-only' max='$max' value='$value'
+            onchange='updateProgress({$p['rand']})' title='{$tooltip}'/>";
+      // Custom progress control. Should be hidden for screen readers.
+      $html .= "<div aria-hidden='true' data-progressid='{$p['rand']}'
+         data-append-percent='{$p['append_percent']}' class='progress' title='{$tooltip}'>";
+      $calcWidth = ($value / $max) * 100;
+      $html .= "<span aria-hidden='true' class='progress-fg' style='width: $calcWidth%'></span>";
+      $html .= "</div>";
+      return $html;
+   }
+
+
+   /**
     * Returns a space-delimited string with items of the $options array.
     *
     * @since 0.85
@@ -6022,6 +6063,10 @@ JAVASCRIPT;
          case 'gantt':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery-gantt.js';
             break;
+         case 'kanban':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/kanban.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.ui.touch-punch.js';
+            break;
          case 'rateit':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery.rateit.js';
             break;
@@ -6225,7 +6270,7 @@ JAVASCRIPT;
     */
    static public function manageRefreshPage($timer = false, $callback = null) {
       if (!$timer) {
-         $timer = isset($_SESSION['glpirefresh_ticket_list']) ? $_SESSION['glpirefresh_ticket_list'] : 0;
+         $timer = $_SESSION['glpirefresh_views'] ?? 0;
       }
 
       if ($callback === null) {
@@ -6746,9 +6791,19 @@ JAVASCRIPT;
 
                      case "summary" :
                         echo "<span>";
-                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_show.png",
-                                       ['alt' => __('Summary'),
-                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo Html::link('<i class="pointer fas fa-stream"></i>',
+                                        $CFG_GLPI["root_doc"].$val, [
+                                          'title' => __('Summary')
+                                        ]);
+                        echo "</span>";
+                        break;
+
+                     case "summary_kanban" :
+                        echo "<span>";
+                        echo Html::link('<i class="pointer fas fa-columns"></i>',
+                           $CFG_GLPI["root_doc"].$val, [
+                              'title' => __('Global Kanban')
+                           ]);
                         echo "</span>";
                         break;
 

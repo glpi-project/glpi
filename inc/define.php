@@ -421,7 +421,7 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
                                      'names_format', 'notification_to_myself',
                                      'number_format', 'pdffont', 'priority_1',
                                      'priority_2', 'priority_3', 'priority_4', 'priority_5',
-                                     'priority_6', 'refresh_ticket_list', 'set_default_tech',
+                                     'priority_6', 'refresh_views', 'set_default_tech',
                                      'set_default_requester', 'show_count_on_tabs',
                                      'show_jobs_at_login', 'task_private', 'task_state',
                                      'use_flat_dropdowntree', 'layout', 'palette',
@@ -472,6 +472,8 @@ $CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment',
 
 $CFG_GLPI['software_types']      = ['Computer', 'Phone'];
 
+$CFG_GLPI['kanban_types']        = ['Project'];
+
 $CFG_GLPI['javascript'] = [
    'central'   => [
       'central'   => ['fullcalendar', 'tinymce']
@@ -487,7 +489,7 @@ $CFG_GLPI['javascript'] = [
       'stat'      => ['charts']
    ],
    'tools'     => [
-      'project'      => ['gantt'],
+      'project'      => ['gantt', 'kanban', 'colorpicker'],
       'knowbaseitem' => ['tinymce', 'jstree'],
       'reminder'     => ['tinymce'],
       'impact'       => ['colorpicker']
