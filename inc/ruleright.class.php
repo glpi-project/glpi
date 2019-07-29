@@ -129,6 +129,10 @@ class RuleRight extends Rule {
                         $output['profiles_id'] = $action->fields["value"];
                         break;
 
+                     case 'groups_id':
+                        $output['groups_id'] = $action->fields["value"];
+                        break;
+
                      case "is_active" :
                         $output["is_active"] = $action->fields["value"];
                         break;
