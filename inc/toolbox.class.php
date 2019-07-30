@@ -2284,8 +2284,7 @@ class Toolbox {
       if (isset($input['server_ssl']) && !empty($input['server_ssl'])) {
          $out .= $input['server_ssl'];
       }
-      if (isset($input['server_cert']) && !empty($input['server_cert'])
-          && (!empty($input['server_ssl']) || !empty($input['server_tls']))) {
+      if (isset($input['server_cert']) && !empty($input['server_cert'])) {
          $out .= $input['server_cert'];
       }
       if (isset($input['server_tls']) && !empty($input['server_tls'])) {
