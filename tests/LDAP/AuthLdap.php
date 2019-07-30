@@ -96,7 +96,7 @@ class AuthLDAP extends DbTestCase {
          $limit
       );
 
-      $this->array($users)->hasSize(909);
+      $this->array($users)->hasSize(910);
       $this->array($results)->hasSize(0);
 
       $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
@@ -684,7 +684,7 @@ class AuthLDAP extends DbTestCase {
          $limit
       );
 
-      $this->array($users)->hasSize(909);
+      $this->array($users)->hasSize(910);
       $this->array($results)->hasSize(0);
 
       $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;

@@ -114,10 +114,10 @@ objectClass: person
 sn: julien
 cn: julien
 
-dn: uid=claude,ou=people,ou=belgium,ou=europe,ou=ldap1, dc=glpi,dc=org
+dn: uid=pierre,ou=people,ou=belgium,ou=europe,ou=ldap1, dc=glpi,dc=org
 mail: walid@rollerfr.net
 userPassword:: e1NIQX04ZDJpTDJ5SE9JcE9wa2h1MFozOUQyOXQ4VDA9
-uid: claude
+uid: pierre
 objectClass: top
 objectClass: inetOrgPerson
 sn: pierre
