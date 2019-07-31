@@ -277,15 +277,18 @@ function update94to95() {
             KEY `is_recursive` (`is_recursive`)
             ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->queryOrDie($query, "add table glpi_{$itiltype}templates");
+
+         $set = [
+            'id'           => 1,
+            'name'         => 'Default',
+            'is_recursive' => 1
+         ];
          $migration->addPostQuery(
             $DB->buildInsert(
                "glpi_{$itiltype}templates",
-               [
-                  'id'           => 1,
-                  'name'         => 'Default',
-                  'is_recursive' => 1
-               ]
-            )
+               $set
+            ),
+            $set
          );
       }
 
@@ -311,15 +314,18 @@ function update94to95() {
             KEY `{$itiltype}templates_id` (`{$itiltype}templates_id`)
             ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->queryOrDie($query, "add table glpi_{$itiltype}templatemandatoryfields");
+
+         $set = [
+            'id'                       => 1,
+            $itiltype.'templates_id'   => 1,
+            'num'                      => 21
+         ];
          $migration->addPostQuery(
             $DB->buildInsert(
                "glpi_{$itiltype}templatemandatoryfields",
-               [
-                  'id'                       => 1,
-                  $itiltype.'templates_id'   => 1,
-                  'num'                      => 21
-               ]
-            )
+               $set
+            ),
+            $set
          );
       }
 
