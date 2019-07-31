@@ -7285,6 +7285,44 @@ $tables['glpi_profilerights'] = [
       'profiles_id'  => '7',
       'name'         => 'global_validation',
       'rights'       => '0'
+
+
+
+
+
+
+   ], [
+      'profiles_id'  => '1',
+      'name'         => 'cluster',
+      'rights'       => '0'
+   ], [
+      'profiles_id'  => '2',
+      'name'         => 'cluster',
+      'rights'       => '1'
+   ], [
+      'profiles_id'  => '3',
+      'name'         => 'cluster',
+      'rights'       => '31'
+   ], [
+      'profiles_id'  => '4',
+      'name'         => 'cluster',
+      'rights'       => '31'
+   ], [
+      'profiles_id'  => '5',
+      'name'         => 'cluster',
+      'rights'       => '0'
+   ], [
+      'profiles_id'  => '6',
+      'name'         => 'cluster',
+      'rights'       => '31'
+   ], [
+      'profiles_id'  => '7',
+      'name'         => 'cluster',
+      'rights'       => '31'
+   ], [
+      'profiles_id'  => '8',
+      'name'         => 'cluster',
+      'rights'       => '1'
    ]
 ];
 
@@ -7912,7 +7950,7 @@ $tables['glpi_ssovariables'] = [
    ]
 ];
 
-$tables['glpi_itiltemplates'] = [
+$tables['glpi_changetemplates'] = [
    [
       'id'           => 1,
       'name'         => 'Default',
@@ -7921,10 +7959,44 @@ $tables['glpi_itiltemplates'] = [
    ]
 ];
 
-$tables['glpi_itiltemplatemandatoryfields'] = [
+$tables['glpi_changetemplatemandatoryfields'] = [
    [
       'id'                 => 1,
-      'itiltemplates_id' => 1,
+      'changetemplates_id' => 1,
+      'num'                => 21
+   ]
+];
+
+$tables['glpi_problemtemplates'] = [
+   [
+      'id'           => 1,
+      'name'         => 'Default',
+      'entities_id'  => 0,
+      'is_recursive' => 1
+   ]
+];
+
+$tables['glpi_problemtemplatemandatoryfields'] = [
+   [
+      'id'                 => 1,
+      'problemtemplates_id' => 1,
+      'num'                => 21
+   ]
+];
+
+$tables['glpi_tickettemplates'] = [
+   [
+      'id'           => 1,
+      'name'         => 'Default',
+      'entities_id'  => 0,
+      'is_recursive' => 1
+   ]
+];
+
+$tables['glpi_tickettemplatemandatoryfields'] = [
+   [
+      'id'                 => 1,
+      'tickettemplates_id' => 1,
       'num'                => 21
    ]
 ];

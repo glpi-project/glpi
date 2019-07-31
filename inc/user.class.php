@@ -2016,9 +2016,16 @@ class User extends CommonDBTM {
       $formtitle = $this->getTypeName(1);
 
       if ($ID > 0) {
-         $formtitle .= "<a class='pointer far fa-address-card' target='_blank' href='".
+         $formtitle .= "<a class='pointer far fa-address-card fa-lg' target='_blank' href='".
                        User::getFormURLWithID($ID)."&amp;getvcard=1' title='".__s('Download user VCard').
                        "'><span class='sr-only'>". __('Vcard')."</span></a>";
+      }
+
+      if (Session::canImpersonate($ID)) {
+         $formtitle .= '<button type="submit" class="pointer btn-linkstyled btn-impersonate" name="impersonate" value="1">'
+            . '<i class="fas fa-user-secret fa-lg" title="' . __s('Impersonate') . '"></i> '
+            . '<span class="sr-only">' . __s('Impersonate') . '</span>'
+            . '</button>';
       }
 
       $options['formtitle']   = $formtitle;

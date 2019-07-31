@@ -624,8 +624,9 @@ class CommonGLPI {
                }
             }
 
-            if ($data = static::getAdditionalMenuLinks()) {
-               $menu['links'] += $data;
+            $extra_links = static::getAdditionalMenuLinks();
+            if (is_array($extra_links) && count($extra_links)) {
+               $menu['links'] += $extra_links;
             }
 
          }

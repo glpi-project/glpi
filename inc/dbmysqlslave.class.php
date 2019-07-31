@@ -39,4 +39,6 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DBmysqlSlave extends DBmysql {
    protected $slave = true;
+   // From CommonDBChild
+
 }

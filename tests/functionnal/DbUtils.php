@@ -53,7 +53,8 @@ class DbUtils extends DbTestCase {
          ['foo', ''],
          ['glpi_computers', 'computers_id'],
          ['glpi_users', 'users_id'],
-         ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']
+         ['glpi_plugin_foo_bars', 'plugin_foo_bars_id'],
+         ['glpi_plugin_fooglpis', 'plugin_fooglpis_id']
       ];
    }
 

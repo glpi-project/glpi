@@ -53,7 +53,7 @@ final class DbUtils {
       if (!Toolbox::startsWith($table, 'glpi_')) {
          return "";
       }
-      return str_replace("glpi_", "", $table)."_id";
+      return substr($table, 5)."_id";
    }
 
 
@@ -261,19 +261,25 @@ final class DbUtils {
 
          $itemtype = $prefix.$table;
          // Get real existence of itemtype
-         if (($item = $this->getItemForItemtype($itemtype))) {
-            $itemtype                                   = get_class($item);
-            $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
-            $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
-            return $itemtype;
+         if (class_exists($itemtype)) {
+            $item_class = new ReflectionClass($itemtype);
+            if (!$item_class->isAbstract() && ($item = $this->getItemForItemtype($itemtype))) {
+               $itemtype                                   = get_class($item);
+               $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
+               $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
+               return $itemtype;
+            }
          }
          // Namespaced item
          $itemtype = $pref2 . str_replace('_', '\\', $table);
-         if (($item = $this->getItemForItemtype($itemtype))) {
-            $itemtype                                   = get_class($item);
-            $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
-            $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
-            return $itemtype;
+         if (class_exists($itemtype)) {
+            $item_class = new ReflectionClass($itemtype);
+            if (!$item_class->isAbstract() && ($item = $this->getItemForItemtype($itemtype))) {
+               $itemtype                                   = get_class($item);
+               $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
+               $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
+               return $itemtype;
+            }
          }
          return "UNKNOWN";
       }

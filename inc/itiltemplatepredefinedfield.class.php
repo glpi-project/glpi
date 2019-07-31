@@ -38,42 +38,21 @@ if (!defined('GLPI_ROOT')) {
 /**
  * ITILTemplatePredefinedField Class
  *
- * Predefined fields for ticket template class
+ * Predefined fields for ITIL template class
  *
- * @since 0.83
+ * @since 9.5.0
 **/
-class ITILTemplatePredefinedField extends CommonDBChild {
-
-   // From CommonDBChild
-   static public $itemtype  = 'ITILTemplate';
-   static public $items_id  = 'itiltemplates_id';
-   public $dohistory        = true;
-
-
-   /**
-    * @since 0.84
-   **/
-   function getForbiddenStandardMassiveAction() {
-
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      return $forbidden;
-   }
-
+class ITILTemplatePredefinedField extends ITILTemplateField {
 
    static function getTypeName($nb = 0) {
       return _n('Predefined field', 'Predefined fields', $nb);
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-    *
-    * @since 0.85
-   **/
    function getRawName() {
 
-      $tt     = new ITILTemplate();
+      $tt_class = static::$itemtype;
+      $tt     = new $tt_class;
       $fields = $tt->getAllowedFieldsNames(true, true);
 
       if (isset($fields[$this->fields["num"]])) {
@@ -84,7 +63,6 @@ class ITILTemplatePredefinedField extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
-
       // Use massiveaction system to manage add system.
       // Need to update data : value not set but
       if (!isset($input['value'])) {
@@ -94,6 +72,7 @@ class ITILTemplatePredefinedField extends CommonDBChild {
             unset($input['field']);
          }
       }
+
       return parent::prepareInputForAdd($input);
    }
 
@@ -103,9 +82,10 @@ class ITILTemplatePredefinedField extends CommonDBChild {
 
       parent::post_purgeItem();
 
-      $ticket      = new Ticket();
-      $itemtype_id = $ticket->getSearchOptionIDByField('field', 'itemtype', 'glpi_tickets');
-      $items_id_id = $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_tickets');
+      $itil_class = static::$itiltype;
+      $itil_object = new $itil_class;
+      $itemtype_id = $itil_object->getSearchOptionIDByField('field', 'itemtype', $itil_object->getTable());
+      $items_id_id = $itil_object->getSearchOptionIDByField('field', 'items_id', $itil_object->getTable());
 
       // Try to delete itemtype -> delete items_id
       if ($this->fields['num'] == $itemtype_id) {
@@ -113,14 +93,14 @@ class ITILTemplatePredefinedField extends CommonDBChild {
             'SELECT' => 'id',
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-               static::$items_id => $this->fields['itiltemplates_id'],
+               static::$items_id => $this->fields[static::$items_id],
                'num'             => $items_id_id
             ]
          ]);
 
          if (count($iterator)) {
             $result = $iterator->next();
-            $a = new self();
+            $a = new static();
             $a->delete(['id' => $result['id']]);
          }
       }
@@ -130,12 +110,12 @@ class ITILTemplatePredefinedField extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
-      if (($item->getType() == 'ITILTemplate')
+      if ($item instanceof ITILTemplate
           && Session::haveRight("itiltemplate", READ)) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable($this->getTable(),
-                                       ['itiltemplates_id' => $item->getID()]);
+                                       [static::$items_id => $item->getID()]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -169,7 +149,8 @@ class ITILTemplatePredefinedField extends CommonDBChild {
          'ORDER'  => 'id'
       ]);
 
-      $tt             = new ITILTemplate();
+      $tt_class       = static::$itemtype;
+      $tt             = new $tt_class;
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
       $fields         = [];
       $multiple       = self::getMultiplePredefinedValues();
@@ -196,11 +177,32 @@ class ITILTemplatePredefinedField extends CommonDBChild {
    **/
    static function getMultiplePredefinedValues() {
 
-      $ticket = new Ticket();
-      $fields = [$ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
-                      $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_items_tickets'),
-                      $ticket->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates'),
-                     ];
+      $itil_class = static::$itiltype;
+      $itil_object = new $itil_class;
+
+      $itemstable = null;
+      switch ($itil_class) {
+         case 'Change':
+            $itemstable = 'glpi_changes_items';
+            break;
+         case 'Problem':
+            $itemstable = 'glpi_items_problems';
+            break;
+         case 'Ticket':
+            $itemstable = 'glpi_items_tickets';
+            break;
+         default:
+            throw new \RuntimeException('Unknown ITIL type ' . itiltype);
+      }
+
+      $fields = [
+         $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
+         $itil_object->getSearchOptionIDByField('field', 'items_id', $itemstable)
+      ];
+
+      if ($itil_class === Ticket::getType()) {
+         $fields[] = $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates');
+      }
 
       return $fields;
    }
@@ -224,7 +226,7 @@ class ITILTemplatePredefinedField extends CommonDBChild {
     *
     * @since 0.83
     *
-    * @param $tt                       Ticket Template
+    * @param $tt                       ITIL Template
     * @param $withtemplate    boolean  Template or basic item (default 0)
     *
     * @return Nothing (call to classes members)
@@ -242,13 +244,15 @@ class ITILTemplatePredefinedField extends CommonDBChild {
 
       $fields        = $tt->getAllowedFieldsNames(true, true);
       $fields        = array_diff_key($fields, self::getExcludedFields());
-      $searchOption  = Search::getOptions('Ticket');
-      $ticket        = new Ticket();
+
+      $itil_class    = static::$itiltype;
+      $searchOption  = Search::getOptions($itil_class);
+      $itil_object   = new $itil_class;
       $rand          = mt_rand();
 
       $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['itiltemplates_id' => $ID],
+         'FROM'   => static::getTable(),
+         'WHERE'  => [static::$items_id => $ID],
          'ORDER'  => 'id'
       ]);
 
@@ -269,12 +273,12 @@ class ITILTemplatePredefinedField extends CommonDBChild {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+               action='".static::getFormURL()."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a predefined field')."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='right top' width='30%'>";
-         echo "<input type='hidden' name='itiltemplates_id' value='$ID'>";
+         echo "<input type='hidden' name='".static::$items_id."' value='$ID'>";
          $display_fields[-1] = Dropdown::EMPTY_VALUE;
          $display_fields    += $fields;
 
@@ -290,7 +294,7 @@ class ITILTemplatePredefinedField extends CommonDBChild {
                                                                            'toadd']);
          echo "</td><td class='top'>";
          $paramsmassaction = ['id_field'         => '__VALUE__',
-                                    'itemtype'         => 'Ticket',
+                                    'itemtype'         => static::$itiltype,
                                     'inline'           => true,
                                     'submitname'       => _sx('button', 'Add'),
                                     'options'          => ['relative_dates'     => 1,
@@ -313,9 +317,9 @@ class ITILTemplatePredefinedField extends CommonDBChild {
 
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
-         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         Html::openMassiveActionsForm('mass'.static::getType().$rand);
          $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                       'container'     => 'mass'.__CLASS__.$rand];
+                                       'container'     => 'mass'.static::getType().$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -329,9 +333,9 @@ class ITILTemplatePredefinedField extends CommonDBChild {
          $header_end    = '';
          if ($canedit) {
             $header_top    .= "<th width='10'>";
-            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.static::getType().$rand)."</th>";
             $header_bottom .= "<th width='10'>";
-            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.static::getType().$rand)."</th>";
          }
          $header_end .= "<th>".__('Name')."</th>";
          $header_end .= "<th>".__('Value')."</th>";
@@ -345,13 +349,13 @@ class ITILTemplatePredefinedField extends CommonDBChild {
             }
             echo "<tr class='tab_bg_2'>";
             if ($canedit) {
-               echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
+               echo "<td>".Html::getMassiveActionCheckBox(static::getType(), $data["id"])."</td>";
             }
             echo "<td>".$fields[$data['num']]."</td>";
 
             echo "<td>";
             $display_datas[$searchOption[$data['num']]['field']] = $data['value'];
-            echo $ticket->getValueToDisplay($searchOption[$data['num']], $display_datas,
+            echo $itil_object->getValueToDisplay($searchOption[$data['num']], $display_datas,
                                              $display_options);
             echo "</td>";
             echo "</tr>";

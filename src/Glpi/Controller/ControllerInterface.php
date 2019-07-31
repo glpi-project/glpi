@@ -38,4 +38,6 @@ namespace Glpi\Controller;
 interface ControllerInterface
 {
 
+
+
 }

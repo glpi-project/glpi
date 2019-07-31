@@ -34,69 +34,34 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// Mandatory fields for ticket template class
-/// since version 0.83
-class ITILTemplateMandatoryField extends CommonDBChild {
 
-   // From CommonDBChild
-   static public $itemtype  = 'ITILTemplate';
-   static public $items_id  = 'itiltemplates_id';
-   public $dohistory = true;
-
+/**
+ * ITILTemplateMandatoryField Class
+ *
+ * Predefined fields for ITIL template class
+ *
+ * @since 9.5.0
+**/
+abstract class ITILTemplateMandatoryField extends ITILTemplateField {
 
    static function getTypeName($nb = 0) {
       return _n('Mandatory field', 'Mandatory fields', $nb);
    }
 
 
-   /**
-    * @since 0.84
-   **/
-   function getForbiddenStandardMassiveAction() {
-
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      return $forbidden;
-   }
-
-
-   /**
-    * @see CommonDBTM::getRawName()
-    *
-    * @since 0.85
-   **/
-   function getRawName() {
-
-      $tt     = new ITILTemplate();
-      $fields = $tt->getAllowedFieldsNames(true);
-
-      if (isset($fields[$this->fields["num"]])) {
-         return $fields[$this->fields["num"]];
-      }
-      return '';
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
-      if (($item->getType() == 'ITILTemplate')
+      if ($item instanceof ITILTemplate
           && Session::haveRight("itiltemplate", READ)) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable($this->getTable(),
-                                       ['itiltemplates_id' => $item->getID()]);
+                                       [static::$items_id => $item->getID()]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
-   }
-
-
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-
-      self::showForITILTemplate($item, $withtemplate);
-      return true;
    }
 
 
@@ -105,9 +70,10 @@ class ITILTemplateMandatoryField extends CommonDBChild {
 
       parent::post_purgeItem();
 
-      $ticket      = new Ticket();
-      $itemtype_id = $ticket->getSearchOptionIDByField('field', 'itemtype', 'glpi_tickets');
-      $items_id_id = $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_tickets');
+      $itil_class = static::$itiltype;
+      $itil_object = new $itil_class;
+      $itemtype_id = $itil_object->getSearchOptionIDByField('field', 'itemtype', $itil_object->getTable());
+      $items_id_id = $itil_object->getSearchOptionIDByField('field', 'items_id', $itil_object->getTable());
 
       // Try to delete itemtype -> delete items_id
       if ($this->fields['num'] == $itemtype_id) {
@@ -115,14 +81,13 @@ class ITILTemplateMandatoryField extends CommonDBChild {
             'SELECT' => 'id',
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-               static::$items_id => $this->fields['itiltemplates_id'],
+               static::$items_id => $this->fields[static::$itiltype],
                'num'             => $items_id_id
             ]
          ]);
-
          if (count($iterator)) {
             $result = $iterator->next();
-            $a = new self();
+            $a = new static();
             $a->delete(['id' => $result['id']]);
          }
       }
@@ -144,13 +109,12 @@ class ITILTemplateMandatoryField extends CommonDBChild {
 
       $iterator = $DB->request([
          'FROM'   => $this->getTable(),
-         'WHERE'  => [
-            static::$items_id => $ID,
-         ],
+         'WHERE'  => [static::$items_id => $ID],
          'ORDER'  => 'id'
       ]);
 
-      $tt             = new ITILTemplate();
+      $tt_class       = static::$itemtype;
+      $tt             = new $tt_class;
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = [];
 
@@ -176,14 +140,13 @@ class ITILTemplateMandatoryField extends CommonDBChild {
       ];
    }
 
-
    /**
     * Print the mandatory fields
     *
     * @since 0.83
     *
-    * @param $tt                       Ticket Template
-    * @param $withtemplate    boolean  Template or basic item (default 0)
+    * @param ITILTemplate $tt           ITIL Template
+    * @param boolean      $withtemplate Template or basic item (default 0)
     *
     * @return Nothing (call to classes members)
    **/
@@ -196,10 +159,8 @@ class ITILTemplateMandatoryField extends CommonDBChild {
          return false;
       }
       $canedit           = $tt->canEdit($ID);
-      $ttm               = new self();
-      $used              = $ttm->getMandatoryFields($ID);
-      $fields            = $tt->getAllowedFieldsNames(true);
-      $fields            = array_diff_key($fields, self::getExcludedFields());
+      $ttm               = new static();
+      $fields            = $ttm->getAllFields($tt);
       $simplified_fields = $tt->getSimplifiedInterfaceFields();
       $both_interfaces   = sprintf(__('%1$s + %2$s'), __('Simplified interface'), __
                                    ('Standard interface'));
@@ -207,28 +168,28 @@ class ITILTemplateMandatoryField extends CommonDBChild {
       $rand  = mt_rand();
 
       $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['itiltemplates_id' => $ID]
+         'FROM'   => static::getTable(),
+         'WHERE'  => [static::$items_id => $ID]
       ]);
+
       $numrows = count($iterator);
 
       $mandatoryfields = [];
       $used            = [];
-      if ($numrows) {
-         while ($data = $iterator->next()) {
-            $mandatoryfields[$data['id']] = $data;
-            $used[$data['num']]           = $data['num'];
-         }
+      while ($data = $iterator->next()) {
+         $mandatoryfields[$data['id']] = $data;
+         $used[$data['num']]           = $data['num'];
       }
+
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                  action='".$ttm->getFormURL()."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a mandatory field')."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='right'>";
-         echo "<input type='hidden' name='itiltemplates_id' value='$ID'>";
+         echo "<input type='hidden' name='" . static::$items_id . "' value='$ID'>";
 
          $select_fields = $fields;
          foreach ($select_fields as $key => $val) {
@@ -244,7 +205,6 @@ class ITILTemplateMandatoryField extends CommonDBChild {
          echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
                         "\" class='submit'>";
          echo "</td></tr>";
-
          echo "</table>";
          Html::closeForm();
          echo "</div>";
@@ -252,14 +212,14 @@ class ITILTemplateMandatoryField extends CommonDBChild {
 
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
-         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         Html::openMassiveActionsForm('mass'.$ttm->getType().$rand);
          $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                       'container'     => 'mass'.__CLASS__.$rand];
+                                      'container'     => 'mass'.$ttm->getType().$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr class='noHover'><th colspan='3'>";
-      echo self::getTypeName($numrows);
+      echo static::getTypeName(count($iterator));
       echo "</th></tr>";
       if ($numrows) {
          $header_begin  = "<tr>";
@@ -268,9 +228,9 @@ class ITILTemplateMandatoryField extends CommonDBChild {
          $header_end    = '';
          if ($canedit) {
             $header_top    .= "<th width='10'>";
-            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.$ttm->getType().$rand)."</th>";
             $header_bottom .= "<th width='10'>";
-            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.$ttm->getType().$rand)."</th>";
          }
          $header_end .= "<th>".__('Name')."</th>";
          $header_end .= "<th>".__("Profile's interface")."</th>";
@@ -280,7 +240,7 @@ class ITILTemplateMandatoryField extends CommonDBChild {
          foreach ($mandatoryfields as $data) {
             echo "<tr class='tab_bg_2'>";
             if ($canedit) {
-               echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
+               echo "<td>".Html::getMassiveActionCheckBox($ttm->getType(), $data["id"])."</td>";
             }
             echo "<td>".$fields[$data['num']]."</td>";
             echo "<td>";
@@ -293,7 +253,6 @@ class ITILTemplateMandatoryField extends CommonDBChild {
             echo "</tr>";
          }
          echo $header_begin.$header_bottom.$header_end;
-
       } else {
          echo "<tr><th colspan='2'>".__('No item found')."</th></tr>";
       }

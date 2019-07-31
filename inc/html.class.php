@@ -1568,6 +1568,8 @@ class Html {
       // Body
       echo "<body class='$body_class'>";
 
+      Html::displayImpersonateBanner();
+
       echo "<div id='header'>";
       echo "<header role='banner' id='header_top'>";
       echo "<div id='c_logo'>";
@@ -1795,6 +1797,8 @@ class Html {
          }
       }
       echo "<body class='$body_class'>";
+
+      Html::displayImpersonateBanner();
 
       // Main Headline
       echo "<div id='header'>";
@@ -6906,6 +6910,25 @@ class Html {
     */
    public static function getScssCompileDir() {
       return GLPI_ROOT . '/css_compiled';
+   }
+   /**
+    * Display impersonate banner if feature is currently used.
+    *
+    * @return void
+    */
+   public static function displayImpersonateBanner() {
+      if (!Session::isImpersonateActive()) {
+         return;
+      }
+      echo '<div class="banner-impersonate">';
+      echo '<form name="form" method="post" action="' . User::getFormURL() . '">';
+      echo sprintf(__('You are impersonating %s.'), $_SESSION['glpiname']);
+      echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+      echo '<button type="submit" name="impersonate" class="btn-linkstyled" value="0">';
+      echo __s('Stop impersonating');
+      echo '</button>';
+      echo '</form>';
+      echo '</div>';
    }
 
    /**
