@@ -1104,8 +1104,15 @@ class ITILFollowup  extends CommonDBChild {
          return "(`itemtype` = '$itemtype') ";
       }
 
+      $requester = CommonITILActor::REQUESTER;
+      $assign    = CommonITILActor::ASSIGN;
+      $obs       = CommonITILActor::OBSERVER;
+
       $user   = Session::getLoginUserID();
       $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+      $table = getTableNameForForeignKeyField(
+         getForeignKeyFieldForItemType($itemtype)
+      );
 
       // Avoid empty IN ()
       if ($groups == "''") {
@@ -1113,7 +1120,7 @@ class ITILFollowup  extends CommonDBChild {
       }
 
       // We need to do some specific checks for tickets
-      if ($itemtype == "ticket") {
+      if ($itemtype == "Ticket") {
          // Default condition
          $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
 
@@ -1122,12 +1129,12 @@ class ITILFollowup  extends CommonDBChild {
             // Subquery for requester/observer user
             $user_query = "SELECT `$target`
                FROM `$user_table`
-               WHERE `users_id` = '$user' AND type IN (1, 3)";
+               WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
             $condition .= "OR `items_id` IN ($user_query) ";
 
             // Subquery for recipient
             $recipient_query = "SELECT `id`
-               FROM `glpi_{$itemtype}s`
+               FROM `$table`
                WHERE `users_id_recipient` = '$user'";
             $condition .= "OR `items_id` IN ($recipient_query) ";
          }
@@ -1137,7 +1144,7 @@ class ITILFollowup  extends CommonDBChild {
             // Subquery for requester/observer group
             $group_query = "SELECT `$target`
                FROM `$group_table`
-               WHERE `users_id` = '$user' AND type IN (1, 3)";
+               WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
             $condition .= "OR `items_id` IN ($group_query) ";
          }
 
@@ -1149,7 +1156,7 @@ class ITILFollowup  extends CommonDBChild {
             // Subquery for assigned user
             $user_query = "SELECT `$target`
                FROM `$user_table`
-               WHERE `users_id` = '$user' AND type = 2";
+               WHERE `users_id` = '$user' AND type = $assign";
             $condition .= "OR `items_id` IN ($user_query) ";
          }
 
@@ -1158,13 +1165,13 @@ class ITILFollowup  extends CommonDBChild {
             // Subquery for assigned group
             $group_query = "SELECT `$target`
                FROM `$group_table`
-               WHERE `users_id` = '$user' AND type = 2";
+               WHERE `users_id` = '$user' AND type = $assign";
             $condition .= "OR `items_id` IN ($group_query) ";
 
             if (Session::haveRight('ticket', Ticket::ASSIGN)) {
                // Add new tickets
                $tickets_query = "SELECT `id`
-                  FROM `glpi_{$itemtype}s`
+                  FROM `$table`
                   WHERE `status` = '" . CommonITILObject::INCOMING . "'";
                $condition .= "OR `items_id` IN ($tickets_query) ";
             }
@@ -1197,7 +1204,7 @@ class ITILFollowup  extends CommonDBChild {
 
             // Subquery for recipient
             $recipient_query = "SELECT `id`
-               FROM `glpi_{$itemtype}s`
+               FROM `$table`
                WHERE `users_id_recipient` = '$user'";
 
             return "(

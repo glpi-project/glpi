@@ -3901,7 +3901,7 @@ JAVASCRIPT;
 
             // Filter for "ticket" parents
             $condition .= ITILFollowup::buildParentCondition(
-               "ticket",
+               "Ticket",
                'tickets_id',
                "glpi_tickets_users",
                "glpi_groups_tickets"
@@ -3910,7 +3910,7 @@ JAVASCRIPT;
 
             // Filter for "change" parents
             $condition .= ITILFollowup::buildParentCondition(
-               "change",
+               "Change",
                'changes_id',
                "glpi_changes_users",
                "glpi_changes_groups"
@@ -3919,7 +3919,7 @@ JAVASCRIPT;
 
             // Fitler for "problem" parents
             $condition .= ITILFollowup::buildParentCondition(
-               "problem",
+               "Problem",
                'problems_id',
                "glpi_problems_users",
                "glpi_groups_problems"
