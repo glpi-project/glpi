@@ -1270,4 +1270,107 @@ class Session {
       return false;
    }
 
+   /**
+    * Check if current user can impersonate another user having given id.
+    *
+    * @param integer $user_id
+    *
+    * @return boolean
+    */
+   static function canImpersonate($user_id) {
+
+      if (self::getLoginUserID() == $user_id
+          || (self::isImpersonateActive() && self::getImpersonatorId() == $user_id)) {
+         return false; // Cannot impersonate self or already impersonated user
+      }
+
+      // For now we do not check more than config update right, but we may
+      // implement more fine checks in the future.
+
+      return self::haveRight(Config::$rightname, UPDATE);
+   }
+
+   /**
+    * Impersonate user having given id.
+    *
+    * @param integer $user_id
+    *
+    * @return boolean
+    */
+   static function startImpersonating($user_id) {
+
+      if (!self::canImpersonate($user_id)) {
+         return false;
+      }
+
+      $user = new User();
+      if (!$user->getFromDB($user_id)) {
+         return false;
+      }
+
+      // Store current user values
+      $impersonator_id  = self::isImpersonateActive()
+         ? $_SESSION['impersonator_id']
+         : self::getLoginUserID();
+      $lang             = $_SESSION['glpilanguage'];
+      $session_use_mode = $_SESSION['glpi_use_mode'];
+
+      $auth = new Auth();
+      $auth->auth_succeded = true;
+      $auth->user = $user;
+      Session::init($auth);
+
+      // Force usage of current user lang and session mode
+      $_SESSION['glpilanguage'] = $lang;
+      $_SESSION['glpi_use_mode'] = $session_use_mode;
+      Session::loadLanguage();
+
+      $_SESSION['impersonator_id'] = $impersonator_id;
+
+      return true;
+   }
+
+   /**
+    * Stop impersonating any user.
+    *
+    * @return boolean
+    */
+   static function stopImpersonating() {
+
+      if (!self::isImpersonateActive()) {
+         return true; // Nothing to do
+      }
+
+      $user = new User();
+      if (!$user->getFromDB($_SESSION['impersonator_id'])) {
+         return false;
+      }
+
+      $auth = new Auth();
+      $auth->auth_succeded = true;
+      $auth->user = $user;
+      Session::init($auth);
+
+      return true;
+   }
+
+   /**
+    * Check if impersonate feature is currently used.
+    *
+    * @return boolean
+    */
+   static function isImpersonateActive() {
+
+      return array_key_exists('impersonator_id', $_SESSION);
+   }
+
+   /**
+    * Return impersonator user id.
+    *
+    * @return string|null
+    */
+   static function getImpersonatorId() {
+
+      return self::isImpersonateActive() ? $_SESSION['impersonator_id'] : null;
+   }
 }
