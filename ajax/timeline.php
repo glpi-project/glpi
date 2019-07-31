@@ -98,10 +98,11 @@ switch ($_REQUEST['action']) {
          ];
 
          $solution = new ITILSolution();
-         if (isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0) {
-            $solution->getFromDB($_REQUEST['id']);
+         $id = isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
+         if ($id) {
+            $solution->getFromDB($id);
          }
-         $solution->showForm(null, $sol_params);
+         $solution->showForm($id, $sol_params);
       } else if ($_REQUEST['type'] == "ITILFollowup") {
          $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()]);
 
@@ -110,10 +111,11 @@ switch ($_REQUEST['action']) {
          ];
 
          $fup = new ITILFollowup();
-         if (isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0) {
-            $fup->getFromDB($_REQUEST['id']);
+         $id = isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
+         if ($id) {
+            $fup->getFromDB($id);
          }
-         $fup->showForm(null, $fup_params);
+         $fup->showForm($id, $fup_params);
       } else if (isset($_REQUEST[$parent->getForeignKeyField()])
             && isset($_REQUEST["id"])
             && $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()])) {
