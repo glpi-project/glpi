@@ -218,8 +218,8 @@ class Log extends CommonDBTM {
             sprintf(__('%1$s (%2$s)'), getUserName($impersonator_id), $impersonator_id)
          );
       }
-      $old_value = $DB->escape(Toolbox::substr(stripslashes($old_value), 0, 180));
-      $new_value = $DB->escape(Toolbox::substr(stripslashes($new_value), 0, 180));
+      $old_value = Toolbox::substr($old_value, 0, 180);
+      $new_value = Toolbox::substr($new_value, 0, 180);
 
       // Security to be sure that values do not pass over the max length
       if (Toolbox::strlen($old_value) > 255) {
