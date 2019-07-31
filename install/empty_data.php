@@ -2342,7 +2342,7 @@ $tables['glpi_entities'] = [
       'autofill_buy_date'                    => 0,
       'autofill_delivery_date'               => 0,
       'autofill_order_date'                  => 0,
-      'itiltemplates_id'                   => 1,
+      'tickettemplates_id'                   => 1,
       'entities_id_software'                 => -10,
       'default_contract_alert'               => 0,
       'default_infocom_alert'                => 0,
@@ -7338,7 +7338,7 @@ $tables['glpi_profiles'] = [
       'comment'                  => '',
       'problem_status'           => '[]',
       'create_ticket_on_login'   => '0',
-      'itiltemplates_id'       => '0',
+      'tickettemplates_id'       => '0',
       'change_status'            => null
    ], [
       'id'                       => '2',
@@ -7351,7 +7351,7 @@ $tables['glpi_profiles'] = [
       'comment'                  => '',
       'problem_status'           => '[]',
       'create_ticket_on_login'   => '0',
-      'itiltemplates_id'       => '0',
+      'tickettemplates_id'       => '0',
       'change_status'            => null
    ], [
       'id'                       => '3',
@@ -7364,7 +7364,7 @@ $tables['glpi_profiles'] = [
       'comment'                  => '',
       'problem_status'           => '[]',
       'create_ticket_on_login'   => '0',
-      'itiltemplates_id'       => '0',
+      'tickettemplates_id'       => '0',
       'change_status'            => null
    ], [
       'id'                       => '4',
@@ -7377,7 +7377,7 @@ $tables['glpi_profiles'] = [
       'comment'                  => '',
       'problem_status'           => '[]',
       'create_ticket_on_login'   => '0',
-      'itiltemplates_id'       => '0',
+      'tickettemplates_id'       => '0',
       'change_status'            => null
    ], [
       'id'                       => '5',
@@ -7390,7 +7390,7 @@ $tables['glpi_profiles'] = [
       'comment'                  => '',
       'problem_status'           => '[]',
       'create_ticket_on_login'   => '1',
-      'itiltemplates_id'       => '0',
+      'tickettemplates_id'       => '0',
       'change_status'            => null
    ], [
       'id'                       => '6',
@@ -7403,7 +7403,7 @@ $tables['glpi_profiles'] = [
       'comment'                  => '',
       'problem_status'           => '[]',
       'create_ticket_on_login'   => '0',
-      'itiltemplates_id'       => '0',
+      'tickettemplates_id'       => '0',
       'change_status'            => null
    ], [
       'id'                       => '7',
@@ -7416,7 +7416,7 @@ $tables['glpi_profiles'] = [
       'comment'                  => '',
       'problem_status'           => '[]',
       'create_ticket_on_login'   => '0',
-      'itiltemplates_id'       => '0',
+      'tickettemplates_id'       => '0',
       'change_status'            => null
    ], [
       'id'                       => '8',
@@ -7441,7 +7441,7 @@ $tables['glpi_profiles'] = [
                       "8":{"1":0,"7":0,"2":0,"3":0,"4":0,"5":0,"6":0},
                       "6":{"1":0,"7":0,"2":0,"3":0,"4":0,"5":0,"8":0}}',
       'create_ticket_on_login'   => '0',
-      'itiltemplates_id'       => '0',
+      'tickettemplates_id'       => '0',
       'change_status'            => '{"1":{"9":0,"10":0,"7":0,"4":0,"11":0,"12":0,"5":0,"8":0,"6":0},
                        "9":{"1":0,"10":0,"7":0,"4":0,"11":0,"12":0,"5":0,"8":0,"6":0},
                        "10":{"1":0,"9":0,"7":0,"4":0,"11":0,"12":0,"5":0,"8":0,"6":0},
