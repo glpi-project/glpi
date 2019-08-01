@@ -1144,7 +1144,7 @@ class ITILFollowup  extends CommonDBChild {
             // Subquery for requester/observer group
             $group_query = "SELECT `$target`
                FROM `$group_table`
-               WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
+               WHERE `groups_id` IN ($groups) AND type IN ($requester, $obs)";
             $condition .= "OR `items_id` IN ($group_query) ";
          }
 
@@ -1165,7 +1165,7 @@ class ITILFollowup  extends CommonDBChild {
             // Subquery for assigned group
             $group_query = "SELECT `$target`
                FROM `$group_table`
-               WHERE `users_id` = '$user' AND type = $assign";
+               WHERE `groups_id` IN ($groups) AND type = $assign";
             $condition .= "OR `items_id` IN ($group_query) ";
 
             if (Session::haveRight('ticket', Ticket::ASSIGN)) {
