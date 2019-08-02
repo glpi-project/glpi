@@ -3923,6 +3923,57 @@ JAVASCRIPT;
             $condition = SavedSearch::addVisibilityRestrict();
             break;
 
+         case 'ITILFollowup':
+            // Filter on is_private
+            $allowed_is_private = [];
+            if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
+               $allowed_is_private[] = 1;
+            }
+            if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC)) {
+               $allowed_is_private[] = 0;
+            }
+
+            // If the user can't see public and private
+            if (!count($allowed_is_private)) {
+               $condition = "0 = 1";
+               break;
+            }
+
+            $in = "IN ('" . implode("','", $allowed_is_private) . "')";
+            $condition = "`glpi_itilfollowups`.`is_private` $in ";
+
+            // Now filter on parent item visiblity
+            $condition .= "AND (";
+
+            // Filter for "ticket" parents
+            $condition .= ITILFollowup::buildParentCondition(
+               "Ticket",
+               'tickets_id',
+               "glpi_tickets_users",
+               "glpi_groups_tickets"
+            );
+            $condition .= "OR ";
+
+            // Filter for "change" parents
+            $condition .= ITILFollowup::buildParentCondition(
+               "Change",
+               'changes_id',
+               "glpi_changes_users",
+               "glpi_changes_groups"
+            );
+            $condition .= "OR ";
+
+            // Fitler for "problem" parents
+            $condition .= ITILFollowup::buildParentCondition(
+               "Problem",
+               'problems_id',
+               "glpi_problems_users",
+               "glpi_groups_problems"
+            );
+            $condition .= ")";
+
+            break;
+
          default :
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {
@@ -3937,7 +3988,6 @@ JAVASCRIPT;
       list($itemtype, $condition) = Plugin::doHookFunction('add_default_where', [$itemtype, $condition]);
       return $condition;
    }
-
 
    /**
     * Generic Function to add where to a request
