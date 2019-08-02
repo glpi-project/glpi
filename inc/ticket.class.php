@@ -1245,7 +1245,9 @@ class Ticket extends CommonITILObject {
       }
 
       //Action for send_validation rule : do validation before clean
-      $this->manageValidationAdd($input);
+      if ($this->manageValidationAdd($input)) {
+         $input['global_validation'] = TicketValidation::WAITING;
+      }
 
       // Clean actors fields added for rules
       foreach ($tocleanafterrules as $key => $val) {
