@@ -258,13 +258,15 @@ class MailCollector extends DbTestCase {
 
       $this->doConnect();
       $msg = $this->collector->collect();
-      $this->variable($msg)->isIdenticalTo('Number of messages: available=5, retrieved=5, refused=1, errors=0, blacklisted=0');
+      $this->variable($msg)->isIdenticalTo('Number of messages: available=8, retrieved=8, refused=2, errors=1, blacklisted=0');
       $rejecteds = iterator_to_array($DB->request(['FROM' => \NotImportedEmail::getTable()]));
 
-      $this->array($rejecteds)->hasSize(1);
-      $this->array(array_pop($rejecteds))
-         ->variable['from']->isIdenticalTo('unknwon@glpi-project.org')
-         ->variable['reason']->isEqualTo(\NotImportedEmail::USER_UNKNOWN);
+      $this->array($rejecteds)->hasSize(2);
+      foreach ($rejecteds as $rejected) {
+         $this->array($rejected)
+            ->variable['from']->isIdenticalTo('unknown@glpi-project.org')
+            ->variable['reason']->isEqualTo(\NotImportedEmail::USER_UNKNOWN);
+      }
 
       $iterator = $DB->request([
          'SELECT' => ['t.id', 't.name', 'tu.users_id'],
@@ -292,6 +294,37 @@ class MailCollector extends DbTestCase {
       $expected_names = [
          'PHP fatal error',
          'Re: [GLPI #0001155] New ticket database issue'
+      ];
+      $this->array($names)->isIdenticalTo($expected_names);
+
+      $iterator = $DB->request([
+         'SELECT' => ['t.id', 't.name', 'tu.users_id'],
+         'FROM'   => \Ticket::getTable() . " AS t",
+         'INNER JOIN'   => [
+            \Ticket_User::getTable() . " AS tu"  => [
+               'ON'  => [
+                  't'   => 'id',
+                  'tu'  => 'tickets_id'
+               ]
+            ]
+         ],
+         'WHERE'  => [
+            'tu.users_id'  => $nuid,
+            'tu.type'      => \CommonITILActor::REQUESTER
+         ]
+      ]);
+
+      $this->integer(count($iterator))->isIdenticalTo(3);
+      $names = [];
+      while ($data = $iterator->next()) {
+         $names[] = $data['name'];
+      }
+      var_dump($names);
+
+      $expected_names = [
+         'Test import mail avec emoticons unicode',
+         'Test images',
+         'Test\'ed issue'
       ];
       $this->array($names)->isIdenticalTo($expected_names);
 

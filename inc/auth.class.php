@@ -173,14 +173,32 @@ class Auth extends CommonGLPI {
 
       $oldlevel = error_reporting(16);
       // No retry (avoid lock account when password is not correct)
-      if ($mbox = imap_open($host, $login, $pass, null, 1)) {
-         imap_close($mbox);
-         error_reporting($oldlevel);
-         return true;
-      }
-      $this->addToError(imap_last_error());
+      try {
+         $config = Toolbox::parseMailServerConnectString($host);
 
-      error_reporting($oldlevel);
+         $ssl = false;
+         if ($config['ssl']) {
+            $ssl = 'SSL';
+         }
+         if ($config['tls']) {
+            $ssl = 'TLS';
+         }
+
+         $imap = new \Zend\Mail\Protocol\Imap();
+         $imap->connect(
+            $config['address'],
+            $config['port'],
+            $ssl
+         );
+
+         return $imap->login($login, $pass);
+      } catch (\Exception $e) {
+         $this->addToError($e->getMessage());
+         return false;
+      } finally {
+         error_reporting($oldlevel);
+      }
+
       return false;
    }
 
@@ -766,10 +784,12 @@ class Auth extends CommonGLPI {
             if (!$this->auth_succeded) {
                if (empty($login_auth)
                      || $this->user->fields["authtype"] == $this::MAIL) {
-                  if (Toolbox::canUseImapPop()) {
-                     AuthMail::tryMailAuth($this, $login_name, $login_password,
-                                           $this->user->fields["auths_id"]);
-                  }
+                  AuthMail::tryMailAuth(
+                     $this,
+                     $login_name,
+                     $login_password,
+                     $this->user->fields["auths_id"]
+                  );
                }
             }
          }
@@ -1557,19 +1577,18 @@ class Auth extends CommonGLPI {
          }
       }
 
-      if (Toolbox::canUseImapPop()) {
-         // GET Mail servers
-         $iterator = $DB->request([
-            'FROM'   => 'glpi_authmails',
-            'WHERE'  => [
-               'is_active' => 1
-            ],
-            'ORDER'  => ['name']
-         ]);
-         while ($data = $iterator->next()) {
-            $elements['mail-'.$data['id']] = $data['name'];
-         }
+      // GET Mail servers
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_authmails',
+         'WHERE'  => [
+            'is_active' => 1
+         ],
+         'ORDER'  => ['name']
+      ]);
+      while ($data = $iterator->next()) {
+         $elements['mail-'.$data['id']] = $data['name'];
       }
+
       return $elements;
    }
 

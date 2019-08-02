@@ -169,48 +169,38 @@ class AuthMail extends CommonDBTM {
          $this->getFromDB($ID);
       }
 
-      if (Toolbox::canUseImapPop()) {
-         $options['colspan'] = 1;
-         $this->showFormHeader($options);
+      $options['colspan'] = 1;
+      $this->showFormHeader($options);
 
-         echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-         echo "<td><input size='30' type='text' name='name' value='". $this->fields["name"] ."'>";
-         echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
+      echo "<td><input size='30' type='text' name='name' value='". $this->fields["name"] ."'>";
+      echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>" . __('Active') . "</td>";
-         echo "<td colspan='3'>";
-         Dropdown::showYesNo('is_active', $this->fields['is_active']);
-         echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Active') . "</td>";
+      echo "<td colspan='3'>";
+      Dropdown::showYesNo('is_active', $this->fields['is_active']);
+      echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>". __('Email domain Name (users email will be login@domain)') ."</td>";
-         echo "<td><input size='30' type='text' name='host' value='" . $this->fields["host"] . "'>";
-         echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>". __('Email domain Name (users email will be login@domain)') ."</td>";
+      echo "<td><input size='30' type='text' name='host' value='" . $this->fields["host"] . "'>";
+      echo "</td></tr>";
 
-         Toolbox::showMailServerConfig($this->fields["connect_string"]);
+      Toolbox::showMailServerConfig($this->fields["connect_string"]);
 
-         echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-         echo "<td>";
-         echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
-         if ($ID>0) {
-            echo "<br>";
-            //TRANS: %s is the datetime of update
-            printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-         }
-
-         echo "</td></tr>";
-
-         $this->showFormButtons($options);
-
-      } else {
-         echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>" . __('Email server configuration') . "</th></tr>";
-         echo "<tr class='tab_bg_2'><td class='center'>";
-         echo "<p class='red'>".sprintf(__('%s extension is missing'), 'IMAP')."</p>";
-         echo "<p>". __('Impossible to use email server as external source of connection')."</p>";
-         echo "</td></tr></table></div>";
+      echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
+      echo "<td>";
+      echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
+      if ($ID>0) {
+         echo "<br>";
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
+
+      echo "</td></tr>";
+
+      $this->showFormButtons($options);
    }
 
    /**
@@ -284,9 +274,11 @@ class AuthMail extends CommonDBTM {
    static function mailAuth($auth, $login, $password, $mail_method) {
 
       if (isset($mail_method["connect_string"]) && !empty($mail_method["connect_string"])) {
-         $auth->auth_succeded = $auth->connection_imap($mail_method["connect_string"],
-                                                       Toolbox::decodeFromUtf8($login),
-                                                       Toolbox::decodeFromUtf8($password));
+         $auth->auth_succeded = $auth->connection_imap(
+            $mail_method["connect_string"],
+            $login,
+            $password
+         );
          if ($auth->auth_succeded) {
             $auth->extauth      = 1;
             $auth->user_present = $auth->user->getFromDBbyName($login);

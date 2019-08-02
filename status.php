@@ -181,14 +181,13 @@ if (($ok_master || $ok_slave )
          echo " ".$mc['name'];
          if ($mailcol->getFromDB($mc['id'])) {
             $mailcol->connect();
-            if ($mailcol->marubox) {
+            if ($mailcol->storage) {
                echo "_OK";
             } else {
                echo "_PROBLEM";
                $ok = false;
             }
             echo "\n";
-            $mailcol->close_mailbox();
          }
       }
 
