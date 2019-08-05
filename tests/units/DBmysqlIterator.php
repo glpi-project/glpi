@@ -199,6 +199,9 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['FIELDS' => ['MAX' => 'bar AS cpt']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT MAX(`bar`) AS cpt FROM `foo`');
+
+      $it = $this->it->execute('foo', ['FIELDS' => new \QueryExpression('IF(bar IS NOT NULL, 1, 0) AS baz')]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT IF(bar IS NOT NULL, 1, 0) AS baz FROM `foo`');
    }
 
 
