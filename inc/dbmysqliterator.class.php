@@ -373,6 +373,8 @@ class DBmysqlIterator implements Iterator, Countable {
       if (is_numeric($t)) {
          if ($f instanceof \AbstractQuery) {
             return $f->getQuery();
+         } else if ($f instanceof \QueryExpression) {
+            return $f->getValue();
          } else {
             return DBmysql::quoteName($f);
          }
