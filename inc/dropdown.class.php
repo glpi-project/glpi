@@ -3542,7 +3542,7 @@ class Dropdown {
     * @return string|array
     */
    public static function getDropdownUsers($post, $json = true) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!isset($post['right'])) {
          $post['right'] = "all";
