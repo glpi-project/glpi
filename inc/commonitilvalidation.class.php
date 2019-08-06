@@ -1342,8 +1342,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @return array
    **/
    static function getGroupUserHaveRights(array $options = []) {
-      global $DB;
-
       $params = [
          'entity' => $_SESSION['glpiactive_entity'],
       ];

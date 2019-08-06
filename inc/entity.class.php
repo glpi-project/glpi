@@ -1247,7 +1247,7 @@ class Entity extends CommonTreeDropdown {
     * @return Array of id => value
    **/
    static function getEntitiesToNotify($field) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $entities = [];
 
@@ -1385,8 +1385,6 @@ class Entity extends CommonTreeDropdown {
     * @param $entity Entity object
    **/
    static function showAdvancedOptions(Entity $entity) {
-      global $DB;
-
       $con_spotted = false;
       $ID          = $entity->getField('id');
       if (!$entity->can($ID, READ)) {
@@ -2551,8 +2549,6 @@ class Entity extends CommonTreeDropdown {
     * @return url contents
    **/
    static function generateLinkSatisfaction($ticket) {
-      global $DB;
-
       $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
 
       if (strstr($url, "[TICKET_ID]")) {
@@ -2910,8 +2906,6 @@ class Entity extends CommonTreeDropdown {
     * @param $options      array
    **/
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
-      global $DB;
-
       if (!is_array($values)) {
          $values = [$field => $values];
       }
