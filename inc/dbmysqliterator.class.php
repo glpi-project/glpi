@@ -254,6 +254,8 @@ class DBmysqlIterator implements Iterator, Countable {
          } else if ($table) {
             if ($table instanceof \AbstractQuery) {
                $table = $table->getQuery();
+            } else if ($table instanceof \QueryExpression) {
+               $table = $table->getValue();
             } else {
                $table = DBmysql::quoteName($table);
             }
