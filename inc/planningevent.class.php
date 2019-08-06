@@ -77,11 +77,14 @@ trait PlanningEvent {
 
 
    function prepareInputForAdd($input) {
+      global $DB;
+      if ($DB->fieldExists(static::getTable(), 'users_id') && (!isset($input['users_id']) || empty($input['users_id']))) {
+         $input['users_id'] = Session::getLoginUserID();
+      }
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
       $input["name"] = trim($input["name"]);
-
       if (empty($input["name"])) {
          $input["name"] = __('Without title');
       }
