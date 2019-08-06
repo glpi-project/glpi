@@ -916,6 +916,11 @@ class Planning extends CommonGLPI {
             echo "<li><a target='_blank' href='webcal://".$url['host'].":$port".
                  (isset($url['path'])?$url['path']:'')."$cal_url'>".
                  _sx("button", "Export")." - ".__("Webcal")."</a></li>";
+
+            echo "<li><a target='_blank' href='".$CFG_GLPI['root_doc'].
+                 "/front/planningcsv.php?uID=".$uID."&gID=".$gID."'>".
+                 _sx("button", "Export")." - ".__("CSV")."</a></li>";
+
          }
          echo "</ul>";
          echo "</span>";
@@ -1983,7 +1988,6 @@ class Planning extends CommonGLPI {
                       'begin'     => $begin,
                       'end'       => $end];
 
-      $interv = [];
       if (empty($limititemtype)) {
          foreach ($CFG_GLPI['planning_types'] as $itemtype) {
             $interv = array_merge($interv, $itemtype::populatePlanning($params));
