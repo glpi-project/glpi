@@ -204,6 +204,20 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo('SELECT IF(bar IS NOT NULL, 1, 0) AS baz FROM `foo`');
    }
 
+   public function testFrom() {
+      $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => 'foo']);
+      $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`');
+
+      $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => 'foo as baz']);
+      $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo` AS `baz`');
+
+      $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => ['foo', 'baz']]);
+      $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`, `baz`');
+
+      $this->it->buildQuery(['FIELDS' => 'c', 'FROM' => new \QueryExpression("(SELECT CONCAT('foo', 'baz') as c) as t")]);
+      $this->string($this->it->getSql())->isIdenticalTo("SELECT `c` FROM (SELECT CONCAT('foo', 'baz') as c) as t");
+   }
+
 
    public function testOrder() {
       $it = $this->it->execute('foo', ['ORDERBY' => 'bar']);
