@@ -701,7 +701,7 @@ class Search {
             $WHERE = "";
 
             // Each field specified in the HAVING must be in the SELECT aswell
-            $regex = "/`.*?`.`.*?`/";
+            $regex = "/`glpi_\w*?`\.`.*?`/";
             $matches = [];
             preg_match_all($regex, $HAVING, $matches);
             if (isset($matches[0])) {
