@@ -532,6 +532,7 @@ class Search {
 
          if (isset($criteria['field'])
             && isset($searchopt[$criteria['field']]["usehaving"])
+            || (isset($criteria['meta']) && $criteria['meta'] && $criteria['link'] == "AND NOT")
          ) {
             return true;
          }
@@ -1045,7 +1046,6 @@ class Search {
                      $criterion['searchtype'],
                      $criterion['value']
                   );
-
                   $sql .= $new_where;
                   continue;
                }
