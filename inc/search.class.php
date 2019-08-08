@@ -1140,7 +1140,7 @@ class Search {
          if (!in_array(getTableForItemType($m_itemtype), $already_link_tables)) {
             $FROM .= self::addMetaLeftJoin($data['itemtype'], $m_itemtype,
                                            $already_link_tables,
-                                           $criterion['value'] == "NULL" || strstr($criterion['link'], "NOT"),
+                                           true,
                                            $sopt["joinparams"]);
          }
 
