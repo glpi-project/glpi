@@ -6165,6 +6165,9 @@ class Ticket extends CommonITILObject {
 
          case 'createinquest' :
             return ['description' => __('Generation of satisfaction surveys')];
+
+         case 'purgeticket':
+            return ['description' => __('Automatic closed tickets purge')];
       }
       return [];
    }
@@ -6382,6 +6385,69 @@ class Ticket extends CommonITILObject {
       return ($tot > 0 ? 1 : 0);
    }
 
+
+   /**
+    * Cron for ticket's automatic purge
+    *
+    * @param Crontask $task Crontask object
+    *
+    * @return integer (0 : nothing done - 1 : done)
+   **/
+   static function cronPurgeTicket(Crontask $task) {
+      global $DB;
+
+      $ticket = new self();
+
+      //search entities
+      $tot = 0;
+
+      $entities = $DB->request(
+         [
+            'SELECT' => 'id',
+            'FROM'   => Entity::getTable(),
+         ]
+      );
+
+      foreach ($entities as $entity) {
+         $delay  = Entity::getUsedConfig('autopurge_delay', $entity['id'], '', Entity::CONFIG_NEVER);
+         if ($delay >= 0) {
+            $criteria = [
+               'FROM'   => $ticket->getTable(),
+               'WHERE'  => [
+                  'entities_id'  => $entity['id'],
+                  'status'       => $ticket->getClosedStatusArray(),
+               ]
+            ];
+
+            if ($delay > 0) {
+               // remove all days
+               $criteria['WHERE'][] = new \QueryExpression("ADDDATE(`closedate`, INTERVAL ".$delay." DAY) < NOW()");
+            }
+
+            $iterator = $DB->request($criteria);
+            $nb = 0;
+
+            foreach ($iterator as $tick) {
+               $ticket->delete(
+                  [
+                     'id'           => $tick['id'],
+                     '_auto_update' => true
+                  ],
+                  true
+               );
+               $nb++;
+            }
+
+            if ($nb) {
+               $tot += $nb;
+               $task->addVolume($nb);
+               $task->log(Dropdown::getDropdownName('glpi_entities', $entity['id'])." : $nb");
+            }
+         }
+      }
+
+      return ($tot > 0 ? 1 : 0);
+   }
 
    /**
     * Display debug information for current object
@@ -6674,7 +6740,7 @@ class Ticket extends CommonITILObject {
          ? $input['entities_id']
          : $this->fields['entities_id'];
 
-      // If creation date is not set, then this function is called during ticket creation
+      // If creation date is not set, then we're called during ticket creation
       $creation_date = !empty($this->fields['date_creation'])
          ? strtotime($this->fields['date_creation'])
          : time();

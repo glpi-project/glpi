@@ -454,6 +454,37 @@ function update94to95() {
    $migration->addKey('glpi_tickettemplatepredefinedfields', 'tickettemplates_id');
    /** /ITiL templates */
 
+   if (!$DB->fieldExists('glpi_entities', 'autopurge_delay')) {
+      $migration->addField("glpi_entities", "autopurge_delay", "integer", [
+            'after'  => "autoclose_delay",
+            'value'  => Entity::CONFIG_NEVER
+         ]
+      );
+   }
+
+   CronTask::Register(
+      'Ticket',
+      'purgeticket',
+      7 * DAY_TIMESTAMP,
+      [
+         'mode'  => CronTask::MODE_EXTERNAL,
+         'state' => CronTask::STATE_DISABLE
+      ]
+   );
+   /** /Add purge delay per entity */
+
+   /** Clean oprhans documents crontask */
+   CronTask::Register(
+      'Document',
+      'cleanorphans',
+      7 * DAY_TIMESTAMP,
+      [
+         'mode'  => CronTask::MODE_EXTERNAL,
+         'state' => CronTask::STATE_DISABLE
+      ]
+   );
+   /** /Clean oprhans documents crontask */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

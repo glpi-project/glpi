@@ -1715,6 +1715,8 @@ INSERT INTO `glpi_crontasks` VALUES ('30','Telemetry','telemetry','2592000',NULL
 INSERT INTO `glpi_crontasks` VALUES ('31','Certificate','certificate','86400',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('32','OlaLevel_Ticket','olaticket','300',NULL,'1','1','3','0','24','30','2014-06-18 08:02:00',NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('33','PurgeLogs','PurgeLogs','604800',24,'1','2','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('34','Ticket','purgeticket','43200',NULL,'0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('35','Document','cleanorphans','43200',NULL,'0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 
@@ -2935,6 +2937,7 @@ CREATE TABLE `glpi_entities` (
   `send_infocoms_alert_before_delay` int(11) NOT NULL DEFAULT '-2',
   `use_reservations_alert` int(11) NOT NULL DEFAULT '-2',
   `autoclose_delay` int(11) NOT NULL DEFAULT '-2',
+  `autopurge_delay` int(11) NOT NULL DEFAULT '-2',
   `notclosed_delay` int(11) NOT NULL DEFAULT '-2',
   `calendars_id` int(11) NOT NULL DEFAULT '-2',
   `auto_assign_mode` int(11) NOT NULL DEFAULT '-2',
@@ -2971,7 +2974,7 @@ CREATE TABLE `glpi_entities` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_entities` VALUES ('0','Root entity','-1','Root entity',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'0','0','0','0','0','0','0','0','0','0','0','-10','0','0','-10','1',NULL,'1','0','0',NULL,'0','0','0','0','0','1','-10','0','0','10','10','0','1','0',NULL,NULL,'0','0','0',NULL);
+INSERT INTO `glpi_entities` VALUES ('0','Root entity','-1','Root entity',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'0','0','0','0','0','0','0','0','0','0','0','-10','-10','0','0','-10','1',NULL,'1','0','0',NULL,'0','0','0','0','0','1','-10','0','0','10','10','0','1','0',NULL,NULL,'0','0','0',NULL);
 
 ### Dump table glpi_entities_knowbaseitems
 

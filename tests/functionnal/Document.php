@@ -639,4 +639,46 @@ class Document extends DbTestCase {
       $this->boolean($inlinedDocument->canViewFile())->isFalse(); // False without params
       $this->boolean($inlinedDocument->canViewFile([$fkey => $itil->getID()]))->isTrue();
    }
+
+   public function testCronCleanorphans () {
+      $doc = new \Document();
+
+      $did1 = (int)$doc->add([
+         'name'   => 'test doc'
+      ]);
+      $this->integer($did1)->isGreaterThan(0);
+
+      $did2 = (int)$doc->add([
+         'name'   => 'test doc'
+      ]);
+      $this->integer($did2)->isGreaterThan(0);
+
+      $did3 = (int)$doc->add([
+         'name'   => 'test doc'
+      ]);
+      $this->integer($did3)->isGreaterThan(0);
+
+      // create a ticket and link one document
+      $ticket = new \Ticket;
+      $tickets_id_1 = $ticket->add([
+         'name'            => "test 1",
+         'content'         => "test 1",
+         'entities_id'     => 0,
+         '_documents_id'   => [$did3]
+      ]);
+      $this->integer((int)$tickets_id_1)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
+
+      $docitem = new \Document_Item();
+      $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]))->isTrue();
+
+      // launch Cron for closing tickets
+      $mode = - \CronTask::MODE_EXTERNAL; // force
+      \CronTask::launch($mode, 5, 'cleanorphans');
+
+      // check documents presence
+      $this->boolean($doc->getFromDB($did1))->isFalse();
+      $this->boolean($doc->getFromDB($did2))->isFalse();
+      $this->boolean($doc->getFromDB($did3))->isTrue();
+   }
 }
