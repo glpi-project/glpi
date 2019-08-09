@@ -3395,6 +3395,12 @@ JAVASCRIPT;
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
 
+      if ($table == getTableForItemType($itemtype) && isset($searchopt[$ID]['joinparams']['jointype'])
+          && $searchopt[$ID]['joinparams']['jointype'] == 'reflexive') {
+         $addtable .= "_".$searchopt[$ID]['linkfield'];
+         $addtable2 .= "_".$searchopt[$ID]['linkfield'];
+      }
+
       if (!empty($complexjoin)) {
          $addtable .= "_".$complexjoin;
          $addtable2 .= "_".$complexjoin;
@@ -4027,6 +4033,9 @@ JAVASCRIPT;
 
          if (!empty($complexjoin)) {
             $table .= "_".$complexjoin;
+         } else if (isset($searchopt[$ID]['joinparams']['jointype'])
+                    && $searchopt[$ID]['joinparams']['jointype'] == 'reflexive') {
+            $table .= "_".$searchopt[$ID]['linkfield'];
          }
       }
 
@@ -4792,7 +4801,7 @@ JAVASCRIPT;
 
       // Auto link
       if (($ref_table == $new_table)
-          && empty($complexjoin)) {
+          && empty($complexjoin) && (!isset($joinparams['jointype']) || $joinparams['jointype'] != 'reflexive')) {
          $transitemtype = getItemTypeForTable($new_table);
          if (Session::haveTranslations($transitemtype, $field)) {
             $transAS            = $nt.'_trans';
@@ -4941,6 +4950,13 @@ JAVASCRIPT;
                   // Child join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                              ON (`$rt`.`id` = `$nt`.`$linkfield`
+                                                 $addcondition)";
+                  break;
+
+               case 'reflexive' :
+                  // Reflexive join
+                  $specific_leftjoin = " LEFT JOIN `$new_table` $AS
+                                             ON (`$rt`.`$linkfield` = `$nt`.`id`
                                                  $addcondition)";
                   break;
 
