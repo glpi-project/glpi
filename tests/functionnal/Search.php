@@ -310,6 +310,44 @@ class Search extends DbTestCase {
                      ->contains("LEFT JOIN `glpi_entities`  AS `glpi_entities_");
    }
 
+   public function testHaving() {
+      $search_params = [
+         'reset'        => 'reset',
+         'is_deleted'   => 0,
+         'start'        => 0,
+         'search'       => 'Search',
+         'criteria'     => [
+            0 => [
+               'field'      => 1,
+               'searchtype' => 'contains',
+               'value'      => 'vm'
+            ],
+            1 => [
+               'link'       => 'OR',
+               'field'      => 18,
+               'searchtype' => 'contains',
+               'value'      => 4
+            ],
+         ]
+      ];
+
+      $data = $this->doSearch('Computer', $search_params);
+
+      // check for sql error (data key missing or empty)
+      $this->array($data)
+         ->hasKey('data')
+         ->array['last_errors']->isIdenticalTo([])
+         ->array['data']->isNotEmpty();
+
+      // Check having
+      $this->array($data)
+         ->hasKey('sql')
+         ->array['sql']
+         ->hasKey('search')
+         ->string['search']
+         ->contains("HAVING    (`glpi_computers`.`name`  LIKE '%vm%'  )  OR (`ITEM_Computer_18` = 4) ");
+   }
+
    public function testNestedAndMetaComputer() {
       $search_params = [
          'reset'      => 'reset',

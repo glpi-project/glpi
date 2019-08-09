@@ -519,7 +519,7 @@ class Search {
     *
     * @return bool
     */
-   public static function hasHaving($criterias, $searchopt) {
+   private static function hasHaving($criterias, $searchopt) {
       foreach ($criterias as $criteria) {
          // Search recursively for groups
          if (isset($criteria['criteria'])) {
