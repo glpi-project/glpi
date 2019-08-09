@@ -1333,7 +1333,10 @@ class SavedSearch extends CommonDBTM {
                $_SESSION['glpigroups'] = [];
             }
 
-            $DB->beginTransaction();
+            $in_transaction = $DB->inTransaction();
+            if (!$in_transaction) {
+               $DB->beginTransaction();
+            }
             while ($row = $iterator->next()) {
                try {
                   $self->fields = $row;
@@ -1348,8 +1351,10 @@ class SavedSearch extends CommonDBTM {
                }
             }
 
-            $DB->commit();
             $stmt->close();
+            if (!$in_transaction) {
+               $DB->commit();
+            }
 
             $cron_status = 1;
          }
