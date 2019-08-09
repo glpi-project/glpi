@@ -54,6 +54,7 @@ class DBmysql {
 
    // Slave management
    public $slave              = false;
+   private $in_transaction;
 
    /**
     * Defines if connection must use SSL.
@@ -1489,6 +1490,7 @@ class DBmysql {
     * @return boolean
     */
    public function beginTransaction() {
+      $this->in_transaction = true;
       return $this->dbh->begin_transaction();
    }
 
@@ -1498,16 +1500,27 @@ class DBmysql {
     * @return boolean
     */
    public function commit() {
+      $this->in_transaction = false;
       return $this->dbh->commit();
    }
 
    /**
-    * Roolbacks a transaction
+    * Rollbacks a transaction
     *
     * @return boolean
     */
    public function rollBack() {
+      $this->in_transaction = false;
       return $this->dbh->rollback();
+   }
+
+   /**
+    * Are we in a transaction?
+    *
+    * @return boolean
+    */
+   public function inTransaction() {
+      return $this->in_transaction;
    }
 
    /**

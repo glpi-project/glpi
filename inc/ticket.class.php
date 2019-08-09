@@ -2514,9 +2514,12 @@ class Ticket extends CommonITILObject {
             $merge_succeeded = false;
             $input = $ma->getInput();
 
+            $in_transaction = $DB->inTransaction();
             foreach ($ids as $id) {
                try {
-                  $DB->beginTransaction();
+                  if (!$in_transaction) {
+                     $DB->beginTransaction();
+                  }
                   $fup = new ITILFollowup();
                   $document_item = new Document_Item();
                   $input2 = [];
@@ -2619,7 +2622,9 @@ class Ticket extends CommonITILObject {
                         throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
                      }
 
-                     $DB->commit();
+                     if (!$in_transaction) {
+                        $DB->commit();
+                     }
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      Event::log($input['_mergeticket'], 'ticket', 4, 'tracking',
                         sprintf(__('%s merges ticket %s into %s'), $_SESSION['glpiname'],
@@ -2628,7 +2633,9 @@ class Ticket extends CommonITILObject {
                      throw new \RuntimeException(ERROR_RIGHT, MassiveAction::ACTION_NORIGHT);
                   }
                } catch (\RuntimeException $e) {
-                  $DB->rollBack();
+                  if (!$in_transaction) {
+                     $DB->rollBack();
+                  }
                   $ma->itemDone($item->getType(), $id, $e->getCode());
                   $ma->addMessage($item->getErrorMessage($e->getMessage()));
                }
