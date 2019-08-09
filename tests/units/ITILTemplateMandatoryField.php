@@ -35,7 +35,7 @@ namespace tests\units;
 use \DbTestCase;
 
 /* Test for inc/itiltemplate.class.php */
-class ITILTemplate extends DbTestCase {
+class ITILTemplateMandatoryField extends DbTestCase {
    protected function fieldsProvider() {
       return [
          [
