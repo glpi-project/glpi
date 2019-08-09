@@ -3890,6 +3890,33 @@ JAVASCRIPT;
             $condition = SavedSearch::addVisibilityRestrict();
             break;
 
+         case 'TicketTask':
+            // Filter on is_private
+            $allowed_is_private = [];
+            if (Session::haveRight(TicketTask::$rightname, CommonITILTask::SEEPRIVATE)) {
+               $allowed_is_private[] = 1;
+            }
+            if (Session::haveRight(TicketTask::$rightname, CommonITILTask::SEEPUBLIC)) {
+               $allowed_is_private[] = 0;
+            }
+
+            // If the user can't see public and private
+            if (!count($allowed_is_private)) {
+               $condition = "0 = 1";
+               break;
+            }
+
+            $in = "IN ('" . implode("','", $allowed_is_private) . "')";
+            $condition = "(`glpi_tickettasks`.`is_private` $in ";
+
+            // Check for assigned or created tasks
+            $condition .= "OR `users_id` = " . Session::getLoginUserID() . " ";
+            $condition .= "OR `users_id_tech` = " . Session::getLoginUserID() . " ";
+
+            // Check for parent item visibility
+            $condition .= "AND " . TicketTask::buildParentCondition() . ")";
+            break;
+
          case 'ITILFollowup':
             // Filter on is_private
             $allowed_is_private = [];
@@ -3907,18 +3934,13 @@ JAVASCRIPT;
             }
 
             $in = "IN ('" . implode("','", $allowed_is_private) . "')";
-            $condition = "`glpi_itilfollowups`.`is_private` $in ";
+            $condition = "(`glpi_itilfollowups`.`is_private` $in ";
 
             // Now filter on parent item visiblity
             $condition .= "AND (";
 
             // Filter for "ticket" parents
-            $condition .= ITILFollowup::buildParentCondition(
-               "Ticket",
-               'tickets_id',
-               "glpi_tickets_users",
-               "glpi_groups_tickets"
-            );
+            $condition .= ITILFollowup::buildParentCondition("Ticket");
             $condition .= "OR ";
 
             // Filter for "change" parents
@@ -3937,7 +3959,7 @@ JAVASCRIPT;
                "glpi_problems_users",
                "glpi_groups_problems"
             );
-            $condition .= ")";
+            $condition .= "))";
 
             break;
 

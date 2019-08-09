@@ -7031,4 +7031,94 @@ class Ticket extends CommonITILObject {
          $input['_date_creation_calendars_id'] = $calendars;
       }
    }
+
+   /**
+    * Build parent condition for search
+    *
+    * @param string $fieldID field used in the condition: tickets_id, items_id
+    *
+    * @return string
+    */
+   public static function buildCanViewCondition($fieldID) {
+
+      $condition = "";
+      $user   = Session::getLoginUserID();
+      $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+
+      $requester = CommonITILActor::REQUESTER;
+      $assign    = CommonITILActor::ASSIGN;
+      $obs       = CommonITILActor::OBSERVER;
+
+      // Avoid empty IN ()
+      if ($groups == "''") {
+         $groups = '-1';
+      }
+
+      if (Session::haveRight("ticket", Ticket::READMY)) {
+         // Add tickets where the users is requester, observer or recipient
+         // Subquery for requester/observer user
+         $user_query = "SELECT `tickets_id`
+            FROM `glpi_tickets_users`
+            WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
+         $condition .= "OR `$fieldID` IN ($user_query) ";
+
+         // Subquery for recipient
+         $recipient_query = "SELECT `id`
+            FROM `glpi_tickets`
+            WHERE `users_id_recipient` = '$user'";
+         $condition .= "OR `$fieldID` IN ($recipient_query) ";
+      }
+
+      if (Session::haveRight("ticket", Ticket::READGROUP)) {
+         // Add tickets where the users is in a requester or observer group
+         // Subquery for requester/observer group
+         $group_query = "SELECT `tickets_id`
+            FROM `glpi_groups_tickets`
+            WHERE `groups_id` IN ($groups) AND type IN ($requester, $obs)";
+         $condition .= "OR `$fieldID` IN ($group_query) ";
+      }
+
+      if (Session::haveRightsOr("ticket", [
+         Ticket::OWN,
+         Ticket::READASSIGN
+      ])) {
+         // Add tickets where the users is assigned
+         // Subquery for assigned user
+         $user_query = "SELECT `tickets_id`
+            FROM `glpi_tickets_users`
+            WHERE `users_id` = '$user' AND type = $assign";
+         $condition .= "OR `$fieldID` IN ($user_query) ";
+      }
+
+      if (Session::haveRight("ticket", Ticket::READASSIGN)) {
+         // Add tickets where the users is part of an assigned group
+         // Subquery for assigned group
+         $group_query = "SELECT `tickets_id`
+            FROM `glpi_groups_tickets`
+            WHERE `groups_id` IN ($groups) AND type = $assign";
+         $condition .= "OR `$fieldID` IN ($group_query) ";
+
+         if (Session::haveRight('ticket', Ticket::ASSIGN)) {
+            // Add new tickets
+            $tickets_query = "SELECT `id`
+               FROM `glpi_tickets`
+               WHERE `status` = '" . CommonITILObject::INCOMING . "'";
+            $condition .= "OR `$fieldID` IN ($tickets_query) ";
+         }
+      }
+
+      if (Session::haveRightsOr('ticketvalidation', [
+         TicketValidation::VALIDATEINCIDENT,
+         TicketValidation::VALIDATEREQUEST
+      ])) {
+         // Add tickets where the users is the validator
+         // Subquery for validator
+         $validation_query = "SELECT `tickets_id`
+            FROM `glpi_ticketvalidations`
+            WHERE `users_id_validate` = '$user'";
+         $condition .= "OR `$fieldID` IN ($validation_query) ";
+      }
+
+      return $condition;
+   }
 }

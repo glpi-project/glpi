@@ -83,7 +83,7 @@ class TicketTask extends CommonITILTask {
          return false;
       }
 
-      if (Session::haveRightsOr(self::$rightname, [parent::SEEPRIVATE, parent::SEEPUBLIC])) {
+      if (Session::haveRight(self::$rightname, parent::SEEPRIVATE)) {
          return true;
       }
 
@@ -308,5 +308,14 @@ class TicketTask extends CommonITILTask {
 
       echo "</td></tr></table></div>";
       Html::closeForm();
+   }
+
+   /**
+    * Build parent condition for search
+    *
+    * @return string
+    */
+   public static function buildParentCondition() {
+      return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id") . ") ";
    }
 }
