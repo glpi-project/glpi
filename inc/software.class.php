@@ -95,7 +95,7 @@ class Software extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('SoftwareVersion', $ong, $options);
       $this->addStandardTab('SoftwareLicense', $ong, $options);
-      $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
+      $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -571,7 +571,7 @@ class Software extends CommonDBTM {
 
       $newtab = [
          'id'                 => '72',
-         'table'              => 'glpi_computers_softwareversions',
+         'table'              => 'glpi_items_softwareversions',
          'field'              => 'id',
          'name'               => _x('quantity', 'Number of installations'),
          'forcegroupby'       => true,
@@ -584,9 +584,9 @@ class Software extends CommonDBTM {
             'beforejoin' => [
                'table'      => 'glpi_softwareversions',
                'joinparams' => ['jointype' => 'child'],
-               'condition'  => "AND NEWTABLE.`is_deleted_computer` = 0
+               'condition'  => "AND NEWTABLE.`is_deleted_item` = 0
                                 AND NEWTABLE.`is_deleted` = 0
-                                AND NEWTABLE.`is_template_computer` = 0"
+                                AND NEWTABLE.`is_template_item` = 0"
             ],
          ]
       ];
@@ -972,7 +972,7 @@ class Software extends CommonDBTM {
             echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
             echo "<td><a href='".$link."?id=".$data["id"]."'>".$data["name"]."</a></td>";
             echo "<td>".$data["entity"]."</td>";
-            echo "<td class='right'>".Computer_SoftwareVersion::countForSoftware($data["id"])."</td>";
+            echo "<td class='right'>".Item_SoftwareVersion::countForSoftware($data["id"])."</td>";
             echo "<td class='right'>".SoftwareLicense::countForSoftware($data["id"])."</td></tr>\n";
          }
          echo "</table>\n";
@@ -1041,7 +1041,7 @@ class Software extends CommonDBTM {
 
                // Move installation to existing version in destination software
                $DB->update(
-                  'glpi_computers_softwareversions', [
+                  'glpi_items_softwareversions', [
                      'softwareversions_id' => $dest['id']
                   ], [
                      'softwareversions_id' => $from['id']

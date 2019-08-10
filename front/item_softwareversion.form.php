@@ -34,18 +34,20 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", UPDATE);
-$inst = new Computer_SoftwareVersion();
+Session::checkRight('software', UPDATE);
+$inst = new Item_SoftwareVersion();
 
-// From Computer - Software tab (add form)
-if (isset($_POST["add"])) {
-   if (isset($_POST["computers_id"]) && $_POST["computers_id"]
-       && isset($_POST["softwareversions_id"]) && $_POST["softwareversions_id"]) {
+// From asset - Software tab (add form)
+if (isset($_POST['add'])) {
+   if (isset($_POST['itemtype']) && isset($_POST['items_id']) && $_POST['items_id']
+       && isset($_POST['softwareversions_id']) && $_POST['softwareversions_id']) {
 
-      if ($inst->add(['computers_id'        => $_POST["computers_id"],
-                                    'softwareversions_id' => $_POST["softwareversions_id"]])) {
-
-         Event::log($_POST["computers_id"], "computers", 5, "inventory",
+      if ($inst->add([
+         'itemtype'        => $_POST['itemtype'],
+         'items_id'        => $_POST['items_id'],
+         'softwareversions_id' => $_POST['softwareversions_id']
+      ])) {
+         Event::log($_POST["items_id"], $_POST['itemtype'], 5, "inventory",
                     //TRANS: %s is the user login
                     sprintf(__('%s installs software'), $_SESSION["glpiname"]));
       }

@@ -16,6 +16,7 @@ The present file will list all changes made to the project; according to the
 - Project task search options for Projects
 - Automatic action to purge closed tickets
 - Ability to automatically calculate project's percent done
+- Software link on Phones.
 
 ### Changed
 
@@ -46,6 +47,14 @@ The present file will list all changes made to the project; according to the
 - All `TicketTemplate` classes has been renamed to `ITILTemplate`
 - `Ticket::getTicketTemplateToUse()` renamed to `Ticket::getITILTemplateToUse()`
 - `TicketTemplate::getFromDBWithDatas()` renamed to `Ticket::getFromDBWithData()` (inherited from `ITILTemplate`)
+- `Computer_SoftwareLicense` replaced by `Item_SoftwareLicense`
+- `Computer_SoftwareVersion` replaced by `Item_SoftwareVersion`
+- `Item_SoftwareVersion::updateDatasForComputer` renamed to `Item_SoftwareVersion::updateDatasForItem`
+- `Item_SoftwareVersion::showForComputer` renamed to `Item_SoftwareVersion::showForItem`
+- `Item_SoftwareVersion::softsByCategory` renamed to `Item_SoftwareVersion::softwareByCategory`
+- `Item_SoftwareVersion::displaySoftsByLicense` renamed to `Item_SoftwareVersion::displaySoftwareByLicense`
+- `Item_SoftwareVersion::cloneComputer` renamed to `Item_SoftwareVersion::cloneItem`
+- `Transfer::transferComputerSoftwares` renamed to `Transfer::transferItemSoftwares`
 
 #### Removed
 

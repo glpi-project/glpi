@@ -44,7 +44,7 @@ class Computer extends CommonDBTM {
    public $dohistory                   = true;
 
    static protected $forward_entity_to = ['Item_Disk','ComputerVirtualMachine',
-                                          'Computer_SoftwareVersion', 'Infocom',
+                                          'Item_SoftwareVersion', 'Infocom',
                                           'NetworkPort', 'ReservationItem',
                                           'Item_OperatingSystem'];
    // Specific ones
@@ -77,7 +77,7 @@ class Computer extends CommonDBTM {
          ->addStandardTab('Item_OperatingSystem', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
          ->addStandardTab('Item_Disk', $ong, $options)
-         ->addStandardTab('Computer_SoftwareVersion', $ong, $options)
+         ->addStandardTab('Item_SoftwareVersion', $ong, $options)
          ->addStandardTab('Computer_Item', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
@@ -102,15 +102,15 @@ class Computer extends CommonDBTM {
 
    function post_restoreItem() {
 
-      $comp_softvers = new Computer_SoftwareVersion();
-      $comp_softvers->updateDatasForComputer($this->fields['id']);
+      $comp_softvers = new Item_SoftwareVersion();
+      $comp_softvers->updateDatasForItem('Computer', $this->fields['id']);
    }
 
 
    function post_deleteItem() {
 
-      $comp_softvers = new Computer_SoftwareVersion();
-      $comp_softvers->updateDatasForComputer($this->fields['id']);
+      $comp_softvers = new Item_SoftwareVersion();
+      $comp_softvers->updateDatasForItem('Computer', $this->fields['id']);
    }
 
 
@@ -263,9 +263,9 @@ class Computer extends CommonDBTM {
          Item_Disk::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD software
-         Computer_SoftwareVersion::cloneComputer($this->input["_oldID"], $this->fields['id']);
+         Item_SoftwareVersion::cloneItem('Computer', $this->input["_oldID"], $this->fields['id']);
 
-         Computer_SoftwareLicense::cloneComputer($this->input["_oldID"], $this->fields['id']);
+         Item_SoftwareLicense::cloneItem('Computer', $this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
          Contract_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
@@ -294,8 +294,8 @@ class Computer extends CommonDBTM {
          [
             Certificate_Item::class,
             Computer_Item::class,
-            Computer_SoftwareLicense::class,
-            Computer_SoftwareVersion::class,
+            Item_SoftwareLicense::class,
+            Item_SoftwareVersion::class,
             ComputerAntivirus::class,
             ComputerVirtualMachine::class,
             Item_Disk::class,
@@ -541,7 +541,7 @@ class Computer extends CommonDBTM {
       if ($isadmin) {
          $actions['Item_OperatingSystem'.MassiveAction::CLASS_ACTION_SEPARATOR.'update']    = OperatingSystem::getTypeName();
          $actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = _x('button', 'Connect');
-         $actions['Computer_SoftwareVersion'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Install');
+         $actions['Item_SoftwareVersion'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Install');
 
          $kb_item = new KnowbaseItem();
          $kb_item->getEmpty();

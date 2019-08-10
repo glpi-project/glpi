@@ -34,7 +34,7 @@ namespace tests\units;
 
 use DbTestCase;
 
-/* Test for inc/computer_softwareversion.class.php */
+/* Test for inc/computer.class.php */
 
 class Computer extends DbTestCase {
 

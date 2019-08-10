@@ -73,6 +73,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    if (isset($_POST['used'][$_POST['idtable']])) {
       $p['used'] = $_POST['used'][$_POST['idtable']];
    }
+   if (isset($_POST['width'])) {
+      $p['width'] = $_POST['width'];
+   }
 
    echo  Html::jsAjaxDropdown($_POST["name"], $field_id,
                               $CFG_GLPI['root_doc']."/ajax/".$link,

@@ -119,12 +119,12 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @since 0.85
     *
-    * @return validity indicator
+    * @return int validity indicator
    **/
    static function computeValidityIndicator($ID, $number = -1) {
 
       if (($number >= 0)
-          && ($number < Computer_SoftwareLicense::countForLicense($ID, -1))) {
+          && ($number < Item_SoftwareLicense::countForLicense($ID, -1))) {
          return 0;
       }
       // Default return 1
@@ -161,7 +161,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       $this->deleteChildrenAndRelationsFromDb(
          [
             Certificate_Item::class,
-            Computer_SoftwareLicense::class,
+            Item_SoftwareLicense::class,
          ]
       );
 
@@ -226,7 +226,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('SoftwareLicense', $ong, $options);
-      $this->addStandardTab('Computer_SoftwareLicense', $ong, $options);
+      $this->addStandardTab('Item_SoftwareLicense', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -995,7 +995,6 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $softwares_id  = $software->getField('id');
       $license       = new self();
-      $computer      = new Computer();
 
       if (!$software->can($softwares_id, READ)) {
          return false;
@@ -1005,7 +1004,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                        'entity'    => __('Entity'),
                        'serial'    => __('Serial number'),
                        'number'    => _x('quantity', 'Number'),
-                       '_affected' => __('Affected computers'),
+                       '_affected' => __('Affected items'),
                        'typename'  => __('Type'),
                        'buyname'   => __('Purchase version'),
                        'usename'   => __('Version in use'),
@@ -1149,7 +1148,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                echo "<td>".$data['serial']."</td>";
                echo "<td class='numeric'>".
                       (($data['number'] > 0) ?$data['number']:__('Unlimited'))."</td>";
-               $nb_assoc   = Computer_SoftwareLicense::countForLicense($data['id']);
+               $nb_assoc   = Item_SoftwareLicense::countForLicense($data['id']);
                $tot_assoc += $nb_assoc;
                $color = ($data['is_valid']?'green':'red');
 

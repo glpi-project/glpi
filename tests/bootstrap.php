@@ -430,28 +430,35 @@ function loadDataset() {
             'softwares_id' => '_test_soft',
             'softwarelicenses_id' => '_test_softlic_1',
          ],
-      ], 'Computer_SoftwareLicense' => [
+      ], 'Item_SoftwareLicense' => [
          [
-            'softwarelicenses_id' => '_test_softlic_1',
-            'computers_id'        => '_test_pc21',
+            'softwarelicenses_id'   => '_test_softlic_1',
+            'items_id'              => '_test_pc21',
+            'itemtype'              => 'Computer',
          ], [
-            'softwarelicenses_id' => '_test_softlic_1',
-            'computers_id'        => '_test_pc01',
+            'softwarelicenses_id'   => '_test_softlic_1',
+            'items_id'              => '_test_pc01',
+            'itemtype'              => 'Computer',
          ], [
-            'softwarelicenses_id' => '_test_softlic_1',
-            'computers_id'        => '_test_pc02',
+            'softwarelicenses_id'   => '_test_softlic_1',
+            'items_id'              => '_test_pc02',
+            'itemtype'              => 'Computer',
          ], [
-            'softwarelicenses_id' => '_test_softlic_2',
-            'computers_id'        => '_test_pc02',
+            'softwarelicenses_id'   => '_test_softlic_2',
+            'items_id'              => '_test_pc02',
+            'itemtype'              => 'Computer',
          ], [
-            'softwarelicenses_id' => '_test_softlic_3',
-            'computers_id'        => '_test_pc02',
+            'softwarelicenses_id'   => '_test_softlic_3',
+            'items_id'              => '_test_pc02',
+            'itemtype'              => 'Computer',
          ], [
-            'softwarelicenses_id' => '_test_softlic_3',
-            'computers_id'        => '_test_pc21',
+            'softwarelicenses_id'   => '_test_softlic_3',
+            'items_id'              => '_test_pc21',
+            'itemtype'              => 'Computer',
          ], [
-            'softwarelicenses_id' => '_test_softlic_2',
-            'computers_id'        => '_test_pc21',
+            'softwarelicenses_id'   => '_test_softlic_2',
+            'items_id'              => '_test_pc21',
+            'itemtype'              => 'Computer',
          ]
       ], 'devicesimcard' => [
          [

@@ -76,11 +76,11 @@ class PurgeLogs extends CommonDBTM {
    static function purgeSoftware() {
       global $DB, $CFG_GLPI;
 
-      $month = self::getDateModRestriction($CFG_GLPI['purge_computer_software_install']);
+      $month = self::getDateModRestriction($CFG_GLPI['purge_item_software_install']);
       if ($month) {
          $DB->delete(
             'glpi_logs', [
-               'itemtype'        => 'Computer',
+               'itemtype'        => $CFG_GLPI['software_types'],
                'linked_action'   => [
                   Log::HISTORY_INSTALL_SOFTWARE,
                   Log::HISTORY_UNINSTALL_SOFTWARE
@@ -89,7 +89,7 @@ class PurgeLogs extends CommonDBTM {
          );
       }
 
-      $month = self::getDateModRestriction($CFG_GLPI['purge_software_computer_install']);
+      $month = self::getDateModRestriction($CFG_GLPI['purge_software_item_install']);
       if ($month) {
          $DB->delete(
             'glpi_logs', [

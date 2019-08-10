@@ -3032,8 +3032,8 @@ function generate_entity($ID_entity) {
    $soft       = new Software();
    $softvers   = new SoftwareVersion();
    $softlic    = new SoftwareLicense();
-   $csv        = new Computer_SoftwareVersion();
-   $csl        = new Computer_SoftwareLicense();
+   $isv        = new Item_SoftwareVersion();
+   $isl        = new Item_SoftwareLicense();
    for ($i=0; $i<$MAX['software']; $i++) {
 
       if (isset($items[$i])) {
@@ -3108,9 +3108,10 @@ function generate_entity($ID_entity) {
             if ($comp_id>$LAST["computers"]) {
                $comp_id = $FIRST["computers"];
             }
-            $csv->add([
-               'computers_id'        => $comp_id,
-               'softwareversions_id' => $versID
+            $isv->add([
+               'items_id'              => $comp_id,
+               'itemtype'              => 'Computer',
+               'softwareversions_id'   => $versID
             ]);
          }
       }
@@ -3146,8 +3147,9 @@ function generate_entity($ID_entity) {
             if ($comp_id>$LAST["computers"]) {
                $comp_id = $FIRST["computers"];
             }
-            $csl->add([
+            $isl->add([
                'computers_id'          => $comp_id,
+               'itemtype'              => 'Computer',
                'softwarelicenses_id'   => $licID
             ]);
          }

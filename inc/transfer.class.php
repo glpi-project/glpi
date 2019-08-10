@@ -389,24 +389,12 @@ class Transfer extends CommonDBTM {
       // License / Software :  keep / delete + clean unused / keep unused
       if ($this->options['keep_software']) {
          // Clean DB
-         $DB->delete('glpi_computers_softwareversions', ['glpi_computers.id'  => null], [
-            'LEFT JOIN' => [
-               'glpi_computers'  => [
-                  'ON' => [
-                     'glpi_computers_softwareversions'   => 'computers_id',
-                     'glpi_computers'                    => 'id'
-                  ]
-               ]
-            ]
-         ]);
-
-         // Clean DB
-         $DB->delete('glpi_computers_softwareversions', ['glpi_softwareversions.id'  => null], [
+         $DB->delete('glpi_items_softwareversions', ['glpi_softwareversions.id'  => null], [
             'LEFT JOIN' => [
                'glpi_softwareversions'  => [
                   'ON' => [
-                     'glpi_computers_softwareversions'   => 'softwareversions_id',
-                     'glpi_softwareversions'             => 'id'
+                     'glpi_items_softwareversions' => 'softwareversions_id',
+                     'glpi_softwareversions'       => 'id'
                   ]
                ]
             ]
@@ -423,42 +411,61 @@ class Transfer extends CommonDBTM {
                ]
             ]
          ]);
-
-         if (count($this->needtobe_transfer['Computer'])) {
-            $iterator = $DB->request([
-               'SELECT'       => [
-                  'glpi_softwares.id',
-                  'glpi_softwares.entities_id',
-                  'glpi_softwares.is_recursive',
-                  'glpi_softwareversions.id AS vID'
-               ],
-               'FROM'         => 'glpi_computers_softwareversions',
-               'INNER JOIN'   => [
-                  'glpi_softwareversions' => [
+         foreach ($CFG_GLPI['software_types'] as $itemtype) {
+            $itemtable = getTableForItemType($itemtype);
+            // Clean DB
+            $DB->delete('glpi_items_softwareversions', ["{$itemtable}.id"  => null], [
+               'LEFT JOIN' => [
+                  $itemtable  => [
                      'ON' => [
-                        'glpi_computers_softwareversions'   => 'softwareversions_id',
-                        'glpi_softwareversions'             => 'id'
-                     ]
-                  ],
-                  'glpi_softwares'        => [
-                     'ON' => [
-                        'glpi_softwareversions' => 'softwares_id',
-                        'glpi_softwares'        => 'id'
+                        'glpi_items_softwareversions' => 'items_id',
+                        $itemtable                    => 'id', [
+                           'AND' => [
+                              'glpi_items_softwareversions.itemtype' => $itemtype
+                           ]
+                        ]
                      ]
                   ]
-               ],
-               'WHERE'        => [
-                  'glpi_computers_softwareversions.computers_id'  => $this->needtobe_transfer['Computer']
                ]
             ]);
 
-            if (count($iterator)) {
-               while ($data = $iterator->next()) {
-                  if ($data['is_recursive']
+            if (count($this->needtobe_transfer[$itemtype])) {
+               $iterator = $DB->request([
+                  'SELECT'       => [
+                     'glpi_softwares.id',
+                     'glpi_softwares.entities_id',
+                     'glpi_softwares.is_recursive',
+                     'glpi_softwareversions.id AS vID'
+                  ],
+                  'FROM'         => 'glpi_items_softwareversions',
+                  'INNER JOIN'   => [
+                     'glpi_softwareversions' => [
+                        'ON' => [
+                           'glpi_items_softwareversions' => 'softwareversions_id',
+                           'glpi_softwareversions'       => 'id'
+                        ]
+                     ],
+                     'glpi_softwares'        => [
+                        'ON' => [
+                           'glpi_softwareversions' => 'softwares_id',
+                           'glpi_softwares'        => 'id'
+                        ]
+                     ]
+                  ],
+                  'WHERE'        => [
+                     'glpi_items_softwareversions.items_id' => $this->needtobe_transfer[$itemtype],
+                     'glpi_items_softwareversions.itemtype' => $itemtype
+                  ]
+               ]);
+
+               if (count($iterator)) {
+                  while ($data = $iterator->next()) {
+                     if ($data['is_recursive']
                         && in_array($data['entities_id'], $to_entity_ancestors)) {
-                     $this->addNotToBeTransfer('SoftwareVersion', $data['vID']);
-                  } else {
-                     $this->addToBeTransfer('SoftwareVersion', $data['vID']);
+                        $this->addNotToBeTransfer('SoftwareVersion', $data['vID']);
+                     } else {
+                        $this->addToBeTransfer('SoftwareVersion', $data['vID']);
+                     }
                   }
                }
             }
@@ -1160,10 +1167,13 @@ class Transfer extends CommonDBTM {
                $this->transferDirectConnection($itemtype, $ID, 'Phone');
                // Printer Direct Connect : keep / delete + clean unused / keep unused
                $this->transferDirectConnection($itemtype, $ID, 'Printer');
-               // License / Software :  keep / delete + clean unused / keep unused
-               $this->transferComputerSoftwares($ID);
                // Computer Disks :  delete them or not ?
                $this->transferItem_Disks($itemtype, $ID);
+            }
+
+            if (in_array($itemtype, $CFG_GLPI['software_types'])) {
+               // License / Software :  keep / delete + clean unused / keep unused
+               $this->transferItemSoftwares($itemtype, $ID);
             }
 
             Plugin::doHook("item_transfer", ['type'        => $itemtype,
@@ -1551,14 +1561,26 @@ class Transfer extends CommonDBTM {
     * @param $ID           ID of the computer
    **/
    function transferComputerSoftwares($ID) {
+      Toolbox::deprecated('Use transferItemSoftwares()');
+      return $this->transferItemSoftwares('Computer', $ID);
+   }
+
+   /**
+    * Transfer software of an item
+    *
+    * @param string $itemtype  Type of the item
+    * @param int    $ID        ID of the item
+   **/
+   function transferItemSoftwares($itemtype, $ID) {
       global $DB;
 
       if (isset($this->noneedtobe_transfer['SoftwareVersion']) && count($this->noneedtobe_transfer['SoftwareVersion'])) {
          // Get Installed version
          $iterator = $DB->request([
-            'FROM'   => 'glpi_computers_softwareversions',
+            'FROM'   => 'glpi_items_softwareversions',
             'WHERE'  => [
-               'computers_id' => $ID,
+               'items_id'     => $ID,
+               'itemtype'     => $itemtype,
                'NOT'          => ['softwareversions_id' => $this->noneedtobe_transfer['SoftwareVersion']]
             ]
          ]);
@@ -1570,7 +1592,7 @@ class Transfer extends CommonDBTM {
                if (($newversID > 0)
                    && ($newversID != $data['softwareversions_id'])) {
                   $DB->update(
-                     'glpi_computers_softwareversions', [
+                     'glpi_items_softwareversions', [
                         'softwareversions_id' => $newversID
                      ], [
                         'id' => $data['id']
@@ -1579,8 +1601,8 @@ class Transfer extends CommonDBTM {
                }
 
             } else { // Do not keep
-               // Delete inst software for computer
-               $DB->delete('glpi_computers_softwareversions', ['id' => $data['id']]);
+               // Delete inst software for item
+               $DB->delete('glpi_items_softwareversions', ['id' => $data['id']]);
             }
          } // each installed version
       }
@@ -1589,31 +1611,37 @@ class Transfer extends CommonDBTM {
       if ($this->options['keep_software']) {
          $iterator = $DB->request([
             'SELECT' => 'id',
-            'FROM'   => 'glpi_computers_softwarelicenses',
-            'WHERE'  => ['computers_id' => $ID]
+            'FROM'   => 'glpi_items_softwarelicenses',
+            'WHERE'  => [
+               'items_id'  => $ID,
+               'itemtype'  => $itemtype
+            ]
          ]);
          while ($data = $iterator->next()) {
             $this->transferAffectedLicense($data['id']);
          }
       } else {
-         $DB->delete('glpi_computers_softwarelicenses', ['computers_id' => $ID]);
+         $DB->delete('glpi_items_softwarelicenses', [
+            'items_id'  => $ID,
+            'itemtype'  => $itemtype
+         ]);
       }
    }
 
 
    /**
-    * Transfer affected licenses to a computer
+    * Transfer affected licenses to an item
     *
     * @param $ID ID of the License
    **/
    function transferAffectedLicense($ID) {
       global $DB;
 
-      $computer_softwarelicense = new Computer_SoftwareLicense();
+      $item_softwarelicense = new Item_SoftwareLicense();
       $license                  = new SoftwareLicense();
 
-      if ($computer_softwarelicense->getFromDB($ID)) {
-         if ($license->getFromDB($computer_softwarelicense->getField('softwarelicenses_id'))) {
+      if ($item_softwarelicense->getFromDB($ID)) {
+         if ($license->getFromDB($item_softwarelicense->getField('softwarelicenses_id'))) {
 
             //// Update current : decrement number by 1 if valid
             if ($license->getField('number') > 1) {
@@ -1672,7 +1700,7 @@ class Transfer extends CommonDBTM {
                if ($newlicID > 0) {
                   $input = ['id'                  => $ID,
                                  'softwarelicenses_id' => $newlicID];
-                  $computer_softwarelicense->update($input);
+                  $item_softwarelicense->update($input);
                }
             }
          }
@@ -1722,7 +1750,7 @@ class Transfer extends CommonDBTM {
       foreach ($this->already_transfer['SoftwareVersion'] AS $old => $new) {
          if ((countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_buy'=>$old]) == 0)
              && (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_use'=>$old]) == 0)
-             && (countElementsInTable("glpi_computers_softwareversions",
+             && (countElementsInTable("glpi_items_softwareversions",
                                       ['softwareversions_id'=>$old]) == 0)) {
 
             $vers->delete(['id' => $old]);
@@ -3428,7 +3456,7 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Software of computers')."</td><td>";
+      echo "<td>".__('Software of items')."</td><td>";
       $params['value'] = $this->fields['keep_software'];
       Dropdown::showFromArray('keep_software', $keep, $params);
       echo "</td>";

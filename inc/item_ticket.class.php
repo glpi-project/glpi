@@ -411,8 +411,7 @@ class Item_Ticket extends CommonDBRelation{
             self::dropdownMyDevices($dev_user_id, $ticket->fields["entities_id"], null, 0, ['tickets_id' => $instID]);
          }
 
-         $data =  array_keys(getAllDataFromTable('glpi_items_tickets'));
-         $used = self::getUsedItems($ticket->fields['id']);
+         $used = self::getUsedItems($instID);
          self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $ticket->fields["entities_id"], ['tickets_id' => $instID, 'used' => $used, 'rand' => $rand]);
          echo "<span id='item_ticket_selection_information$rand'></span>";
          echo "</td><td class='center' width='30%'>";
@@ -822,6 +821,69 @@ class Item_Ticket extends CommonDBRelation{
                }
             }
          }
+         // Get software linked to all owned items
+         if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+            $software_helpdesk_types = array_intersect($CFG_GLPI['software_types'], $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]);
+            foreach ($software_helpdesk_types as $itemtype) {
+               if (isset($already_add[$itemtype]) && count($already_add[$itemtype])) {
+                  $iterator = $DB->request([
+                     'SELECT'          => [
+                        'glpi_softwareversions.name AS version',
+                        'glpi_softwares.name AS name',
+                        'glpi_softwares.id'
+                     ],
+                     'DISTINCT'        => true,
+                     'FROM'            => 'glpi_items_softwareversions',
+                     'LEFT JOIN'       => [
+                        'glpi_softwareversions'  => [
+                           'ON' => [
+                              'glpi_items_softwareversions' => 'softwareversions_id',
+                              'glpi_softwareversions'       => 'id'
+                           ]
+                        ],
+                        'glpi_softwares'        => [
+                           'ON' => [
+                              'glpi_softwareversions' => 'softwares_id',
+                              'glpi_softwares'        => 'id'
+                           ]
+                        ]
+                     ],
+                     'WHERE'        => [
+                           'glpi_items_softwareversions.items_id' => $already_add[$itemtype],
+                           'glpi_items_softwareversions.itemtype' => $itemtype,
+                           'glpi_softwares.is_helpdesk_visible'   => 1
+                        ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
+                     'ORDERBY'      => 'glpi_softwares.name'
+                  ]);
+
+                  $devices = [];
+                  if (count($iterator)) {
+                     $item       = new Software();
+                     $type_name  = $item->getTypeName();
+                     if (!isset($already_add['Software'])) {
+                        $already_add['Software'] = [];
+                     }
+                     while ($data = $iterator->next()) {
+                        if (!in_array($data["id"], $already_add['Software'])) {
+                           $output = sprintf(__('%1$s - %2$s'), $type_name, $data["name"]);
+                           $output = sprintf(__('%1$s (%2$s)'), $output,
+                              sprintf(__('%1$s: %2$s'), __('version'),
+                                 $data["version"]));
+                           if ($_SESSION["glpiis_ids_visible"]) {
+                              $output = sprintf(__('%1$s (%2$s)'), $output, $data["id"]);
+                           }
+                           $devices["Software_".$data["id"]] = $output;
+
+                           $already_add['Software'][] = $data["id"];
+                        }
+                     }
+                     if (count($devices)) {
+                        $my_devices[__('Installed software')] = $devices;
+                     }
+                  }
+               }
+            }
+         }
          // Get linked items to computers
          if (isset($already_add['Computer']) && count($already_add['Computer'])) {
             $devices = [];
@@ -884,65 +946,6 @@ class Item_Ticket extends CommonDBRelation{
             }
             if (count($devices)) {
                $my_devices[__('Connected devices')] = $devices;
-            }
-
-            // Software
-            if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-               $iterator = $DB->request([
-                  'SELECT'          => [
-                     'glpi_softwareversions.name AS version',
-                     'glpi_softwares.name AS name',
-                     'glpi_softwares.id'
-                  ],
-                  'DISTINCT'        => true,
-                  'FROM'            => 'glpi_computers_softwareversions',
-                  'LEFT JOIN'       => [
-                     'glpi_softwareversions'  => [
-                        'ON' => [
-                           'glpi_computers_softwareversions'   => 'softwareversions_id',
-                           'glpi_softwareversions'             => 'id'
-                        ]
-                     ],
-                     'glpi_softwares'        => [
-                        'ON' => [
-                           'glpi_softwareversions' => 'softwares_id',
-                           'glpi_softwares'        => 'id'
-                        ]
-                     ]
-                  ],
-                  'WHERE'        => [
-                     'glpi_computers_softwareversions.computers_id'   => $already_add['Computer'],
-                     'glpi_softwares.is_helpdesk_visible'   => 1
-                  ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
-                  'ORDERBY'      => 'glpi_softwares.name'
-               ]);
-
-               $devices = [];
-               if (count($iterator)) {
-                  $tmp_device = "";
-                  $item       = new Software();
-                  $type_name  = $item->getTypeName();
-                  if (!isset($already_add['Software'])) {
-                     $already_add['Software'] = [];
-                  }
-                  while ($data = $iterator->next()) {
-                     if (!in_array($data["id"], $already_add['Software'])) {
-                        $output = sprintf(__('%1$s - %2$s'), $type_name, $data["name"]);
-                        $output = sprintf(__('%1$s (%2$s)'), $output,
-                                          sprintf(__('%1$s: %2$s'), __('version'),
-                                                  $data["version"]));
-                        if ($_SESSION["glpiis_ids_visible"]) {
-                           $output = sprintf(__('%1$s (%2$s)'), $output, $data["id"]);
-                        }
-                        $devices["Software_".$data["id"]] = $output;
-
-                        $already_add['Software'][] = $data["id"];
-                     }
-                  }
-                  if (count($devices)) {
-                     $my_devices[__('Installed software')] = $devices;
-                  }
-               }
             }
          }
          echo "<div id='tracking_my_devices'>";
