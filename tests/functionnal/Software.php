@@ -34,7 +34,7 @@ namespace tests\units;
 
 use \DbTestCase;
 
-/* Test for inc/computer_softwareversion.class.php */
+/* Test for inc/software.class.php */
 
 class Software extends DbTestCase {
 
@@ -334,12 +334,13 @@ class Software extends DbTestCase {
       $this->integer((int)$license_id)->isGreaterThan(0);
 
       //attach 2 licenses
-      $license_computer = new \Computer_SoftwareLicense();
+      $license_computer = new \Item_SoftwareLicense();
       foreach (['_test_pc01', '_test_pc02'] as $pcid) {
          $computer = getItemByTypeName('Computer', $pcid);
          $input_comp = [
             'softwarelicenses_id'   => $license_id,
-            'computers_id'          => $computer->getID(),
+            'items_id'              => $computer->getID(),
+            'itemtype'              => 'Computer',
             'is_deleted'            => 0,
             'is_dynamic'            => 0
          ];

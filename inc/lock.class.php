@@ -173,80 +173,101 @@ class Lock {
             echo "<td class='left' width='95%'>" . $line['name'] . "</td>";
             echo "</tr>\n";
          }
+      }
 
-         //Software versions
-         $computer_sv = new Computer_SoftwareVersion();
-         $params = ['is_dynamic'    => 1,
-                         'is_deleted'    => 1,
-                         'computers_id'  => $ID];
-         $first  = true;
-         $query  = "SELECT `csv`.`id` AS `id`,
-                           `sv`.`name` AS `version`,
-                           `s`.`name` AS `software`
-                    FROM `glpi_computers_softwareversions` AS csv
-                    LEFT JOIN `glpi_softwareversions` AS sv
-                       ON (`csv`.`softwareversions_id` = `sv`.`id`)
-                    LEFT JOIN `glpi_softwares` AS s
-                       ON (`sv`.`softwares_id` = `s`.`id`)
-                    WHERE `csv`.`is_deleted` = 1
-                          AND `csv`.`is_dynamic` = 1
-                          AND `csv`.`computers_id` = '$ID'";
-         foreach ($DB->request($query) as $line) {
-            if ($first) {
-               echo "<tr><th colspan='2'>".Software::getTypeName(Session::getPluralNumber())."</th></tr>\n";
-               $first = false;
-            }
+      //Software versions
+      $item_sv = new Item_SoftwareVersion();
+      $item_sv_table = Item_SoftwareVersion::getTable();
 
-            echo "<tr class='tab_bg_1'>";
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'isv.id AS id',
+            'sv.name AS version',
+            's.name AS software'
+         ],
+         'FROM'      => "{$item_sv_table} AS isv",
+         'LEFT JOIN' => [
+            'glpi_softwareversions AS sv' => [
+               'FKEY' => [
+                  'csv' => 'softwareversions_id',
+                  'sv'  => 'id'
+               ]
+            ],
+            'glpi_softwares AS s'         => [
+               'FKEY' => [
+                  'sv'  => 'softwares_id',
+                  's'   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'isv.is_deleted'  => 1,
+            'isv.is_dynamic'  => 1,
+            'isv.items_id'    => $ID,
+            'isv.itemtype'    => $itemtype,
+         ]
+      ]);
+      echo "<tr><th colspan='2'>".Software::getTypeName(Session::getPluralNumber())."</th></tr>\n";
+      while ($data = $iterator->next()) {
+         echo "<tr class='tab_bg_1'>";
 
-            echo "<td class='center' width='10'>";
-            if ($computer_sv->can($line['id'], UPDATE) || $computer_sv->can($line['id'], PURGE)) {
-               $header = true;
-               echo "<input type='checkbox' name='Computer_SoftwareVersion[" . $line['id'] . "]'>";
-            }
-            echo "</td>";
-
-            echo "<td class='left' width='95%'>" . $line['software']." ".$line['version'] . "</td>";
-            echo "</tr>\n";
-
+         echo "<td class='center' width='10'>";
+         if ($item_sv->can($data['id'], UPDATE) || $item_sv->can($data['id'], PURGE)) {
+            $header = true;
+            echo "<input type='checkbox' name='Item_SoftwareVersion[" . $data['id'] . "]'>";
          }
+         echo "</td>";
 
-         //Software licenses
-         $computer_sl = new Computer_SoftwareLicense();
-         $params = ['is_dynamic'    => 1,
-                         'is_deleted'    => 1,
-                         'computers_id'  => $ID];
-         $first  = true;
-         $query  = "SELECT `csv`.`id` AS `id`,
-                           `sv`.`name` AS `version`,
-                           `s`.`name` AS `software`
-                    FROM `glpi_computers_softwarelicenses` AS csv
-                    LEFT JOIN `glpi_softwarelicenses` AS sv
-                       ON (`csv`.`softwarelicenses_id` = `sv`.`id`)
-                    LEFT JOIN `glpi_softwares` AS s
-                       ON (`sv`.`softwares_id` = `s`.`id`)
-                    WHERE `csv`.`is_deleted` = 1
-                          AND `csv`.`is_dynamic` = 1
-                          AND `csv`.`computers_id` = '$ID'";
-         foreach ($DB->request($query) as $line) {
-            if ($first) {
-               echo "<tr><th colspan='2'>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th>".
-                     "</tr>\n";
-               $first = false;
-            }
+         echo "<td class='left' width='95%'>" . $data['software']." ".$data['version'] . "</td>";
+         echo "</tr>\n";
+      }
 
-            echo "<tr class='tab_bg_1'>";
+      //Software licenses
+      $item_sl = new Item_SoftwareLicense();
+      $item_sl_table = Item_SoftwareLicense::getTable();
 
-            echo "<td class='center' width='10'>";
-            if ($computer_sl->can($line['id'], UPDATE) || $computer_sl->can($line['id'], PURGE)) {
-               $header = true;
-               echo "<input type='checkbox' name='Computer_SoftwareLicense[" . $line['id'] . "]'>";
-            }
-            echo "</td>";
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'isl.id AS id',
+            'sl.name AS version',
+            's.name AS software'
+         ],
+         'FROM'      => "{$item_sl_table} AS isl",
+         'LEFT JOIN' => [
+            'glpi_softwarelicenses AS sl' => [
+               'FKEY' => [
+                  'isl' => 'softwarelicenses_id',
+                  'sl'  => 'id'
+               ]
+            ],
+            'glpi_softwares AS s'         => [
+               'FKEY' => [
+                  'sl'  => 'softwares_id',
+                  's'   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'isl.is_deleted'  => 1,
+            'isl.is_dynamic'  => 1,
+            'isl.items_id'    => $ID,
+            'isl.itemtype'    => $itemtype,
+         ]
+      ]);
 
-            echo "<td class='left' width='95%'>" . $line['software']." ".$line['version'] . "</td>";
-            echo "</tr>\n";
+      echo "<tr><th colspan='2'>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th></tr>\n";
+      while ($data = $iterator->next()) {
+         echo "<tr class='tab_bg_1'>";
+
+         echo "<td class='center' width='10'>";
+         if ($item_sl->can($data['id'], UPDATE) || $item_sl->can($data['id'], PURGE)) {
+            $header = true;
+            echo "<input type='checkbox' name='Item_SoftwareLicense[" . $data['id'] . "]'>";
          }
+         echo "</td>";
+
+         echo "<td class='left' width='95%'>" . $data['software']." ".$data['version'] . "</td>";
+         echo "</tr>\n";
       }
 
       $first  = true;
@@ -505,18 +526,22 @@ class Lock {
             break;
 
          case 'ComputerVirtualMachine' :
-            $condition = ['is_dynamic' => 1,
-                               'is_deleted' => 1];
+            $condition = [
+               'is_dynamic' => 1,
+               'is_deleted' => 1,
+               'itemtype'   => $itemtype];
             $table     = 'glpi_computervirtualmachines';
             $field     = 'computers_id';
             break;
 
          case 'SoftwareVersion' :
-            $condition = ['is_dynamic' => 1,
-                               'is_deleted' => 1];
-            $table     = 'glpi_computers_softwareversions';
-            $field     = 'computers_id';
-            $type      = 'Computer_SoftwareVersion';
+            $condition = [
+               'is_dynamic' => 1,
+               'is_deleted' => 1,
+               'itemtype'   => $itemtype];
+            $table     = 'glpi_items_softwareversions';
+            $field     = 'items_id';
+            $type      = 'Item_SoftwareVersion';
             break;
 
          default :

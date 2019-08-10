@@ -281,6 +281,14 @@ function glpi_autoload($classname) {
       Toolbox::deprecated('TicketFollowup has been replaced by ITILFollowup.');
    }
 
+   // Deprecation warn for Computer_Software* classes
+   if ($classname === 'Computer_SoftwareLicense') {
+      Toolbox::deprecated('Computer_SoftwareLicense has been replaced by Item_SoftwareLicense.');
+   }
+   if ($classname === 'Computer_SoftwareVersion') {
+      Toolbox::deprecated('Computer_SoftwareVersion has been replaced by Item_SoftwareVersion.');
+   }
+
    if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";

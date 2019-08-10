@@ -518,6 +518,84 @@ function update94to95() {
       }
    }
 
+   /** Make software linkable to other itemtypes besides Computers */
+   $migration->displayWarning('Updating software tables. This may take several minutes.');
+   if (!$DB->tableExists('glpi_items_softwareversions')) {
+      $migration->renameTable('glpi_computers_softwareversions', 'glpi_items_softwareversions');
+      $migration->addField(
+         'glpi_items_softwareversions',
+         'itemtype',
+         "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
+         [
+            'after' => 'id',
+            'update' => "'Computer'", // Defines value for all existing elements
+         ]
+      );
+      $migration->changeField(
+         'glpi_items_softwareversions',
+         'computers_id',
+         'items_id',
+         "int(11) NOT NULL DEFAULT '0'"
+      );
+      $migration->changeField('glpi_items_softwareversions', 'is_deleted_computer', 'is_deleted_item', 'bool');
+      $migration->changeField('glpi_items_softwareversions', 'is_template_computer', 'is_template_item', 'bool');
+      $migration->addKey('glpi_items_softwareversions', 'itemtype');
+      $migration->dropKey('glpi_items_softwareversions', 'computers_id');
+      $migration->addKey('glpi_items_softwareversions', 'items_id', 'items_id');
+      $migration->addKey('glpi_items_softwareversions', [
+         'itemtype',
+         'items_id'
+      ], 'item');
+      $migration->dropKey('glpi_items_softwareversions', 'unicity');
+      $migration->addKey('glpi_items_softwareversions', [
+         'itemtype',
+         'items_id',
+         'softwareversions_id'
+      ], 'unicity', 'UNIQUE');
+   }
+
+   if (!$DB->tableExists('glpi_items_softwarelicenses')) {
+      $migration->renameTable('glpi_computers_softwarelicenses', 'glpi_items_softwarelicenses');
+      $migration->addField(
+         'glpi_items_softwarelicenses',
+         'itemtype',
+         "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
+         [
+            'after' => 'id',
+            'update' => "'Computer'", // Defines value for all existing elements
+         ]
+      );
+      $migration->changeField(
+         'glpi_items_softwarelicenses',
+         'computers_id',
+         'items_id',
+         "int(11) NOT NULL DEFAULT '0'"
+      );
+      $migration->addKey('glpi_items_softwarelicenses', 'itemtype');
+      $migration->dropKey('glpi_items_softwarelicenses', 'computers_id');
+      $migration->addKey('glpi_items_softwarelicenses', 'items_id', 'items_id');
+      $migration->addKey('glpi_items_softwarelicenses', [
+         'itemtype',
+         'items_id'
+      ], 'item');
+   }
+
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_configs',
+         ['name' => 'purge_item_software_install'],
+         ['name' => 'purge_computer_software_install', 'context' => 'core']
+      )
+   );
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_configs',
+         ['name' => 'purge_software_item_install'],
+         ['name' => 'purge_software_computer_install', 'context' => 'core']
+      )
+   );
+   /** /Make software linkable to other itemtypes besides Computers */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

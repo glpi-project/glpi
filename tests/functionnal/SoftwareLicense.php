@@ -34,7 +34,7 @@ namespace tests\units;
 
 use \DbTestCase;
 
-/* Test for inc/computer_softwareversion.class.php */
+/* Test for inc/softwarelicense.class.php */
 
 /**
  * @engine isolate
@@ -155,13 +155,14 @@ class SoftwareLicense extends DbTestCase {
       $this->integer((int)$lic_id)->isGreaterThan(0);
       $this->boolean($license->getFromDB($lic_id))->isTrue();
 
-      $license_computer = new \Computer_SoftwareLicense();
+      $license_computer = new \Item_SoftwareLicense();
       $comp1            = getItemByTypeName('Computer', '_test_pc01');
       $comp2            = getItemByTypeName('Computer', '_test_pc02');
 
       $input_comp = [
          'softwarelicenses_id'   => $lic_id,
-         'computers_id'          => $comp1->getID(),
+         'items_id'              => $comp1->getID(),
+         'itemtype'              => 'Computer',
          'is_deleted'            => 0,
          'is_dynamic'            => 0
       ];
@@ -224,10 +225,11 @@ class SoftwareLicense extends DbTestCase {
       );
 
       //Delete a license installation
-      $license_computer = new \Computer_SoftwareLicense();
+      $license_computer = new \Item_SoftwareLicense();
       $input = [
-         'softwarelicenses_id' => $license->getID(),
-         'computers_id'        => $comp1->getID(),
+         'softwarelicenses_id'   => $license->getID(),
+         'items_id'              => $comp1->getID(),
+         'itemtype'              => 'Computer'
       ];
       $this->boolean($license_computer->deleteByCriteria($input, true))->isTrue();
 
@@ -266,13 +268,14 @@ class SoftwareLicense extends DbTestCase {
       }
    }
 
-   private function createInstall($licenses_id, $computers_id) {
-      $license_computer = new \Computer_SoftwareLicense();
+   private function createInstall($licenses_id, $items_id) {
+      $license_computer = new \Item_SoftwareLicense();
       $input = [
-         'softwarelicenses_id' => $licenses_id,
-         'computers_id'        => $computers_id,
-         'is_dynamic'          => 0,
-         'is_deleted'          => 0
+         'softwarelicenses_id'   => $licenses_id,
+         'items_id'              => $items_id,
+         'itemtype'              => 'Computer',
+         'is_dynamic'            => 0,
+         'is_deleted'            => 0
       ];
       $this->integer((int)$license_computer->add($input))->isGreaterThan(0);
    }

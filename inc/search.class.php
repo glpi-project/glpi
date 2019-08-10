@@ -5222,13 +5222,14 @@ JAVASCRIPT;
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_softwareversions_$to_type");
                   array_push($already_link_tables2, "glpi_softwarelicenses_$to_type");
-                  return " $LINK `glpi_computers_softwareversions`
-                                    AS `glpi_computers_softwareversions_$complexjoin$to_type`
-                              ON (`glpi_computers_softwareversions_$complexjoin$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`
-                                  AND `glpi_computers_softwareversions_$complexjoin$to_type`.`is_deleted` = 0)
+                  return " $LINK `glpi_items_softwareversions`
+                                    AS `glpi_items_softwareversions_$complexjoin$to_type`
+                              ON (`glpi_items_softwareversions_$complexjoin$to_type`.`items_id`
+                                       = `$from_table`.`id`
+                                  AND `glpi_items_softwareversions_$complexjoin$to_type`.`itemtype` = '$from_type'
+                                  AND `glpi_items_softwareversions_$complexjoin$to_type`.`is_deleted` = 0)
                            $LINK `glpi_softwareversions` AS `glpi_softwareversions_$complexjoin$to_type`
-                              ON (`glpi_computers_softwareversions_$complexjoin$to_type`.`softwareversions_id`
+                              ON (`glpi_items_softwareversions_$complexjoin$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$complexjoin$to_type`.`id`)
                            $LINK `glpi_softwares`
                               ON (`glpi_softwareversions_$complexjoin$to_type`.`softwares_id`
@@ -5236,9 +5237,9 @@ JAVASCRIPT;
                            LEFT JOIN `glpi_softwarelicenses` AS `glpi_softwarelicenses_$complexjoin$to_type`
                               ON (`glpi_softwares`.`id`
                                        = `glpi_softwarelicenses_$complexjoin$to_type`.`softwares_id`".
-                                  getEntitiesRestrictRequest(' AND',
-                                                             "glpi_softwarelicenses_$complexjoin$to_type",
-                                                             '', '', true).") ";
+                     getEntitiesRestrictRequest(' AND',
+                        "glpi_softwarelicenses_$complexjoin$to_type",
+                        '', '', true).") ";
             }
             break;
 
@@ -5254,6 +5255,28 @@ JAVASCRIPT;
                            $LINK `glpi_computers`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`) ";
+               case 'Software' :
+                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, "glpi_softwareversions_$to_type");
+                  array_push($already_link_tables2, "glpi_softwarelicenses_$to_type");
+                  return " $LINK `glpi_items_softwareversions`
+                                    AS `glpi_items_softwareversions_$complexjoin$to_type`
+                              ON (`glpi_items_softwareversions_$complexjoin$to_type`.`items_id`
+                                       = `$from_table`.`id`
+                                  AND `glpi_items_softwareversions_$complexjoin$to_type`.`itemtype` = '$from_type'
+                                  AND `glpi_items_softwareversions_$complexjoin$to_type`.`is_deleted` = 0)
+                           $LINK `glpi_softwareversions` AS `glpi_softwareversions_$complexjoin$to_type`
+                              ON (`glpi_items_softwareversions_$complexjoin$to_type`.`softwareversions_id`
+                                       = `glpi_softwareversions_$complexjoin$to_type`.`id`)
+                           $LINK `glpi_softwares`
+                              ON (`glpi_softwareversions_$complexjoin$to_type`.`softwares_id`
+                                       = `glpi_softwares`.`id`)
+                           LEFT JOIN `glpi_softwarelicenses` AS `glpi_softwarelicenses_$complexjoin$to_type`
+                              ON (`glpi_softwares`.`id`
+                                       = `glpi_softwarelicenses_$complexjoin$to_type`.`softwares_id`".
+                     getEntitiesRestrictRequest(' AND',
+                        "glpi_softwarelicenses_$complexjoin$to_type",
+                        '', '', true).") ";
             }
             break;
 
@@ -5313,15 +5336,17 @@ JAVASCRIPT;
                   return " $LINK `glpi_softwareversions` AS `glpi_softwareversions_$to_type`
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
                                        = `glpi_softwares`.`id`)
-                           $LINK `glpi_computers_softwareversions`
-                                    AS `glpi_computers_softwareversions_$to_type`
-                              ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
+                           $LINK `glpi_items_softwareversions`
+                                    AS `glpi_items_softwareversions_$to_type`
+                              ON (`glpi_items_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`
-                                  AND `glpi_computers_softwareversions_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_computers`
-                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id` ".
-                                  getEntitiesRestrictRequest("AND", 'glpi_computers').") ";
+                                  AND `glpi_items_softwareversions_$to_type`.`itemtype` = '$from_type'
+                                  AND `glpi_items_softwareversions_$to_type`.`is_deleted` = 0)
+                           $LINK `$to_table`
+                              ON (`glpi_items_softwareversions_$to_type`.`items_id`
+                                       = `$to_table`.`id`
+                                  AND `glpi_items_softwareversions_$to_type`.`itemtype` = '$to_type' ".
+                                  getEntitiesRestrictRequest("AND", $to_table).") ";
             }
             break;
       }

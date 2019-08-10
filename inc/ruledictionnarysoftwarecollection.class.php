@@ -393,12 +393,13 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    /**
     * Change software's name, and move versions if needed
     *
-    * @param $ID                    old software ID
-    * @param $new_software_id       new software ID
-    * @param $version_id            version ID to move
-    * @param $old_version           old version name
-    * @param $new_version           new version name
-    * @param $entity                entity ID
+    * @param int $ID                    old software ID
+    * @param int $new_software_id       new software ID
+    * @param int $version_id            version ID to move
+    * @param string $old_version        old version name
+    * @param string $new_version        new version name
+    * @param int $entity                entity ID
+    * @return void
    */
    function moveVersions($ID, $new_software_id, $version_id, $old_version, $new_version, $entity) {
       global $DB;
@@ -420,26 +421,38 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
             );
          } else {
             // Delete software can be in double after update
-            $sql = "SELECT gcs_2.*
-                    FROM `glpi_computers_softwareversions`
-                    LEFT JOIN  `glpi_computers_softwareversions` AS gcs_2
-                       ON `glpi_computers_softwareversions`.`computers_id` = gcs_2.`computers_id`
-                    WHERE `glpi_computers_softwareversions`.`softwareversions_id` = '$new_versionID'
-                          AND gcs_2.`softwareversions_id` = '$version_id'";
-            $res = $DB->query($sql);
-            if ($DB->numrows($res) > 0) {
-               while ($result = $DB->fetchAssoc($res)) {
-                  $DB->delete(
-                     'glpi_computers_softwareversions', [
-                        'id' => $result['id']
+            $item_softwareversion_table = Item_SoftwareVersion::getTable();
+            $iterator = $DB->request([
+               'SELECT'    => ['gcs_2.*'],
+               'FROM'      => $item_softwareversion_table,
+               'LEFT JOIN' => [
+                  "{$item_softwareversion_table} AS gcs_2" => [
+                     'FKEY'   => [
+                        'gcs_2'                       => 'items_id',
+                        $item_softwareversion_table   => 'items_id', [
+                           'AND' => [
+                              'gcs_2.itemtype' => $item_softwareversion_table.'.itemtype'
+                           ]
+                        ]
                      ]
-                  );
-               }
+                  ]
+               ],
+               'WHERE'     => [
+                  "{$item_softwareversion_table}.softwareversions_id"   => $new_versionID,
+                  'gcs_2.softwareversions_id'                           => $version_id
+               ]
+            ]);
+            while ($data = $iterator->next()) {
+               $DB->delete(
+                  'glpi_items_softwareversions', [
+                     'id' => $data['id']
+                  ]
+               );
             }
 
-            //Change ID of the version in glpi_computers_softwareversions
+            //Change ID of the version in glpi_items_softwareversions
             $DB->update(
-               'glpi_computers_softwareversions', [
+               $item_softwareversion_table, [
                   'softwareversions_id' => $new_versionID
                ], [
                   'softwareversions_id' => $version_id

@@ -157,8 +157,8 @@ $RELATION = [
    'glpi_computers' => [
       '_glpi_computerantiviruses'       => 'computers_id',
       '_glpi_computers_items'           => 'computers_id',
-      'glpi_computers_softwarelicenses' => 'computers_id',
-      'glpi_computers_softwareversions' => 'computers_id',
+      'glpi_items_softwarelicenses'     => ['items_id', 'itemtype'],
+      'glpi_items_softwareversions'     => ['items_id', 'itemtype'],
       'glpi_computervirtualmachines'    => 'computers_id',
    ],
 
@@ -407,7 +407,7 @@ $RELATION = [
       'glpi_clusters'                    => 'entities_id',
       'glpi_clustertypes'                => 'entities_id',
       'glpi_computers'                   => 'entities_id',
-      '_glpi_computers_softwareversions' => 'entities_id',
+      '_glpi_items_softwareversions'     => 'entities_id',
       '_glpi_computervirtualmachines'    => 'entities_id',
       'glpi_consumableitems'             => 'entities_id',
       '_glpi_consumables'                => 'entities_id',
@@ -1048,7 +1048,7 @@ $RELATION = [
    ],
 
    'glpi_softwarelicenses' => [
-      '_glpi_computers_softwarelicenses' => 'softwarelicenses_id',
+      '_glpi_items_softwarelicenses'     => 'softwarelicenses_id',
       '_glpi_softwarelicenses'           => 'softwarelicenses_id',
    ],
 
@@ -1064,7 +1064,7 @@ $RELATION = [
    ],
 
    'glpi_softwareversions' => [
-      '_glpi_computers_softwareversions' => 'softwareversions_id',
+      '_glpi_items_softwareversions'     => 'softwareversions_id',
       'glpi_softwarelicenses'            => [
          'softwareversions_id_buy',
          'softwareversions_id_use',

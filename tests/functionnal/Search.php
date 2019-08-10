@@ -434,7 +434,7 @@ class Search extends DbTestCase {
 
       $this->string($data['sql']['search'])
          // join parts
-         ->matches('/LEFT JOIN\s*`glpi_computers_softwareversions`\s*AS `glpi_computers_softwareversions_Software`/im')
+         ->matches('/LEFT JOIN\s*`glpi_items_softwareversions`\s*AS `glpi_items_softwareversions_Software`/im')
          ->matches('/LEFT JOIN\s*`glpi_softwareversions`\s*AS `glpi_softwareversions_Software`/im')
          ->matches('/LEFT JOIN\s*`glpi_softwares`\s*ON\s*\(`glpi_softwareversions_Software`\.`softwares_id`\s*=\s*`glpi_softwares`\.`id`\)/im')
          ->matches('/LEFT JOIN\s*`glpi_infocoms`\s*ON\s*\(`glpi_computers`\.`id`\s*=\s*`glpi_infocoms`\.`items_id`\s*AND\s*`glpi_infocoms`.`itemtype`\s*=\s*\'Computer\'\)/im')
@@ -566,7 +566,8 @@ class Search extends DbTestCase {
             'KnowbaseItem',
             'NetworkPortMigration',
             'TicketFollowup',
-            '/^TicketTemplate.*/'
+            '/^TicketTemplate.*/',
+            '/^Computer_Software.*/'
          ]
       );
       foreach ($itemtypeslist as $itemtype) {

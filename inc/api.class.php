@@ -609,8 +609,8 @@ abstract class API extends CommonGLPI {
 
       // retrieve computer softwares
       if (isset($params['with_softwares'])
-          && $params['with_softwares']
-          && $itemtype == "Computer") {
+            && $params['with_softwares']
+            && in_array($itemtype, $CFG_GLPI['software_types'])) {
          $fields['_softwares'] = [];
          if (!Software::canView()) {
             $fields['_softwares'] = self::arrayRightError();
@@ -620,16 +620,16 @@ abstract class API extends CommonGLPI {
                   'glpi_softwares.softwarecategories_id',
                   'glpi_softwares.id AS softwares_id',
                   'glpi_softwareversions.id AS softwareversions_id',
-                  'glpi_computers_softwareversions.is_dynamic',
+                  'glpi_items_softwareversions.is_dynamic',
                   'glpi_softwareversions.states_id',
                   'glpi_softwares.is_valid'
                ],
-               'FROM'      => 'glpi_computers_softwareversions',
+               'FROM'      => 'glpi_items_softwareversions',
                'LEFT JOIN' => [
                   'glpi_softwareversions' => [
                      'ON' => [
-                        'glpi_computers_softwareversions'   => 'softwareversions_id',
-                        'glpi_softwareversions'             => 'id'
+                        'glpi_items_softwareversions' => 'softwareversions_id',
+                        'glpi_softwareversions'       => 'id'
                      ]
                   ],
                   'glpi_softwares'        => [
@@ -640,8 +640,9 @@ abstract class API extends CommonGLPI {
                   ]
                ],
                'WHERE'     => [
-                  'glpi_computers_softwareversions.computers_id'  => $id,
-                  'glpi_computers_softwareversions.is_deleted'    => 0
+                  'glpi_items_softwareversions.items_id'   => $id,
+                  'glpi_items_softwareversions.itemtype'   => $itemtype,
+                  'glpi_items_softwareversions.is_deleted' => 0
                ],
                'ORDERBY'   => [
                   'glpi_softwares.name',

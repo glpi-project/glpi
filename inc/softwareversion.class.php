@@ -56,7 +56,7 @@ class SoftwareVersion extends CommonDBChild {
 
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Computer_SoftwareVersion::class,
+            Item_SoftwareVersion::class,
          ]
       );
    }
@@ -66,7 +66,7 @@ class SoftwareVersion extends CommonDBChild {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
+      $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -142,7 +142,7 @@ class SoftwareVersion extends CommonDBChild {
 
       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
       if ((SoftwareLicense::countForVersion($ID) > 0)
-          || (Computer_SoftwareVersion::countForVersion($ID) > 0)) {
+          || (Item_SoftwareVersion::countForVersion($ID) > 0)) {
          $options['candel'] = false;
       }
 
@@ -318,7 +318,7 @@ class SoftwareVersion extends CommonDBChild {
 
             for ($tot=$nb=0; $data=$DB->fetchAssoc($result); $tot+=$nb) {
                Session::addToNavigateListItems('SoftwareVersion', $data['id']);
-               $nb = Computer_SoftwareVersion::countForVersion($data['id']);
+               $nb = Item_SoftwareVersion::countForVersion($data['id']);
 
                echo "<tr class='tab_bg_2'>";
                echo "<td><a href='".SoftwareVersion::getFormURLWithID($data['id'])."'>";

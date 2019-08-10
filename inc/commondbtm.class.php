@@ -953,6 +953,12 @@ class CommonDBTM extends CommonGLPI {
             Item_OperatingSystem::class
          ]);
       }
+
+      if (in_array($this->getType(), $CFG_GLPI['software_types'])) {
+         $this->deleteChildrenAndRelationsFromDb([
+            Item_SoftwareVersion::class
+         ]);
+      }
    }
 
 

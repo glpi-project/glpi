@@ -997,42 +997,50 @@ CREATE TABLE `glpi_computers_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_computers_softwarelicenses
+### Previously glpi_computers_softwarelicenses < 9.5.0
+### Dump table glpi_items_softwarelicenses
 
-DROP TABLE IF EXISTS `glpi_computers_softwarelicenses`;
-CREATE TABLE `glpi_computers_softwarelicenses` (
+DROP TABLE IF EXISTS `glpi_items_softwarelicenses`;
+CREATE TABLE `glpi_items_softwarelicenses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) NOT NULL,
   `softwarelicenses_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
+  KEY `items_id` (`items_id`),
+  KEY `itemtype` (`itemtype`),
+  KEY `item` (`itemtype`, `items_id`),
   KEY `softwarelicenses_id` (`softwarelicenses_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+### Previously glpi_computers_softwareversions < 9.5.0
+### Dump table glpi_items_softwareversions
 
-### Dump table glpi_computers_softwareversions
-
-DROP TABLE IF EXISTS `glpi_computers_softwareversions`;
-CREATE TABLE `glpi_computers_softwareversions` (
+DROP TABLE IF EXISTS `glpi_items_softwareversions`;
+CREATE TABLE `glpi_items_softwareversions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) NOT NULL,
   `softwareversions_id` int(11) NOT NULL DEFAULT '0',
-  `is_deleted_computer` tinyint(1) NOT NULL DEFAULT '0',
-  `is_template_computer` tinyint(1) NOT NULL DEFAULT '0',
+  `is_deleted_item` tinyint(1) NOT NULL DEFAULT '0',
+  `is_template_item` tinyint(1) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_install` date DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`computers_id`,`softwareversions_id`),
+  UNIQUE KEY `unicity` (`itemtype`, `items_id` ,`softwareversions_id`),
+  KEY `items_id` (`items_id`),
+  KEY `itemtype` (`itemtype`),
+  KEY `item` (`itemtype`, `items_id`),
   KEY `softwareversions_id` (`softwareversions_id`),
-  KEY `computers_info` (`entities_id`,`is_template_computer`,`is_deleted_computer`),
-  KEY `is_template` (`is_template_computer`),
-  KEY `is_deleted` (`is_deleted_computer`),
+  KEY `computers_info` (`entities_id`,`is_template_item`,`is_deleted_item`),
+  KEY `is_template` (`is_template_item`),
+  KEY `is_deleted` (`is_deleted_item`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `date_install` (`date_install`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -1362,8 +1370,8 @@ INSERT INTO `glpi_configs` VALUES ('188','core','purge_createitem','0');
 INSERT INTO `glpi_configs` VALUES ('189','core','purge_deleteitem','0');
 INSERT INTO `glpi_configs` VALUES ('190','core','purge_restoreitem','0');
 INSERT INTO `glpi_configs` VALUES ('191','core','purge_updateitem','0');
-INSERT INTO `glpi_configs` VALUES ('192','core','purge_computer_software_install','0');
-INSERT INTO `glpi_configs` VALUES ('193','core','purge_software_computer_install','0');
+INSERT INTO `glpi_configs` VALUES ('192','core','purge_item_software_install','0');
+INSERT INTO `glpi_configs` VALUES ('193','core','purge_software_item_install','0');
 INSERT INTO `glpi_configs` VALUES ('194','core','purge_software_version_install','0');
 INSERT INTO `glpi_configs` VALUES ('195','core','purge_infocom_creation','0');
 INSERT INTO `glpi_configs` VALUES ('196','core','purge_profile_user','0');
