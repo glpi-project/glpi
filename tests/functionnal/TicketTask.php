@@ -39,22 +39,36 @@ use \DbTestCase;
 class TicketTask extends DbTestCase {
 
    /**
-    * Create a new ticket and return its id
+    * Create a new ticket
     *
-    * @return integer
+    * @param boolean $as_object Return Ticket object or its id
+    *
+    * @return integer|Ticket
     */
-   private function getNewTicket() {
+   private function getNewTicket($as_object = false) {
       //create reference ticket
       $ticket = new \Ticket();
-      $this->integer((int)$ticket->add([
-            'name'         => 'ticket title',
-            'description'  => 'a description',
-            'content'      => '',
-            'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true)
-      ]))->isGreaterThan(0);
+      $this->integer(
+         (int)$ticket->add([
+            'name'               => 'ticket title',
+            'description'        => 'a description',
+            'content'            => '',
+            'entities_id'        => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_users_id_assign'   => getItemByTypeName('User', 'tech', true)
+         ])
+      )->isGreaterThan(0);
 
       $this->boolean($ticket->isNewItem())->isFalse();
-      return (int)$ticket->getID();
+      $tid = (int)$ticket->fields['id'];
+
+      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
+         INFO => [
+            "Your ticket has been registered, its treatment is in progress. (Ticket: <a href='".\Ticket::getFormURLWithID($tid)."'>$tid</a>)"
+         ]
+      ]);
+      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+
+      return ($as_object ? $ticket : $tid);
    }
 
    public function testSchedulingAndRecall() {
@@ -249,5 +263,92 @@ class TicketTask extends DbTestCase {
       )
          ->contains("Ticket tasks to do <span class='primary-bg primary-fg count'>2 on 4</span>")
          ->matches("/a id='[^']+' href='\/glpi\/front\/ticket.form.php\?id=\d+[^']+'>/");
+   }
+
+   public function testPlanningConflict() {
+      $this->login();
+
+      $user = getItemByTypeName('User', 'tech');
+      $users_id = (int)$user->fields['id'];
+
+      $ticket = $this->getNewTicket(true);
+      $tid = $ticket->fields['id'];
+
+      $ttask = new \TicketTask();
+      $this->integer(
+         (int)$ttask->add([
+            'name'               => 'first test, whole period',
+            'tickets_id'         => $tid,
+            'plan'               => [
+               'begin'  => '2019-08-10',
+               'end'    => '2019-08-20'
+            ],
+            'users_id_tech'      => $users_id,
+            'tasktemplates_id'   => 0
+         ])
+      )->isGreaterThan(0);
+      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+
+      $this->integer(
+         (int)$ttask->add([
+            'name'               => 'test, subperiod',
+            'tickets_id'         => $tid,
+            'plan'               => [
+               'begin'   => '2019-08-13',
+               'end'     => '2019-08-14'
+            ],
+            'users_id_tech'      => $users_id,
+            'tasktemplates_id'   => 0
+         ])
+      )->isGreaterThan(0);
+
+      $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
+      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
+         WARNING => [
+            "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-13  to 2019-08-14 :<br/><a href='".
+            $ticket->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br>"
+         ]
+      ]);
+      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->integer($tid)->isGreaterThan(0);
+
+      //add another task to be updated
+      $this->integer(
+         (int)$ttask->add([
+            'name'               => 'first test, whole period',
+            'tickets_id'         => $tid,
+            'plan'               => [
+               'begin'  => '2018-08-10',
+               'end'    => '2018-08-20'
+            ],
+            'users_id_tech'      => $users_id,
+            'tasktemplates_id'   => 0
+         ])
+      )->isGreaterThan(0);
+      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+
+      $this->boolean($ttask->getFromDB($ttask->fields['id']))->isTrue();
+
+      $this->boolean(
+         $ttask->update([
+            'id'           => $ttask->fields['id'],
+            'tickets_id'   => $tid,
+            'plan'               => [
+               'begin'  => str_replace('2018', '2019', $ttask->fields['begin']),
+               'end'    => str_replace('2018', '2019', $ttask->fields['end'])
+            ],
+            'users_id_tech'      => $users_id,
+         ])
+      )->isTrue();
+
+      $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
+      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
+         WARNING => [
+            "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-10 00:00 to 2019-08-20 00:00:<br/><a href='".
+            $ticket->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='".$ticket
+            ->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br>"
+         ]
+      ]);
+      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
    }
 }

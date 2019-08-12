@@ -210,7 +210,51 @@ class ProjectTask extends CommonDBChild {
 
 
    function post_updateItem($history = 1) {
-      global $CFG_GLPI;
+      global $DB, $CFG_GLPI;
+
+      if (in_array('plan_start_date', $this->updates) || in_array('plan_end_date', $this->updates)) {
+         //dates has changed, check for planning conflicts on attached team
+         $team = ProjectTaskTeam::getTeamFor($this->fields['id']);
+         $users = [];
+         foreach ($team as $type => $actors) {
+            switch ($type) {
+               case User::getType():
+                  foreach ($actors as $actor) {
+                     $users[$actor['items_id']] = $actor['items_id'];
+                  }
+                  break;
+               case Group::getType():
+                  foreach ($actors as $actor) {
+                     $group_iterator = $DB->request([
+                        'SELECT' => 'users_id',
+                        'FROM'   => Group_User::getTable(),
+                        'WHERE'  => ['groups_id' => $actor['items_id']]
+                     ]);
+                     while ($row = $group_iterator->next()) {
+                        $users[$row['users_id']] = $row['users_id'];
+                     }
+                  }
+                  break;
+               case Supplier::getType():
+               case Contact::getType():
+                  //only Users can be checked for planning conflicts
+                  break;
+               default:
+                  if (count($actors)) {
+                     throw new \RuntimeException($type . " is not (yet?) handled.");
+                  }
+            }
+         }
+
+         foreach ($users as $user) {
+            Planning::checkAlreadyPlanned(
+               $user,
+               $this->fields['plan_start_date'],
+               $this->fields['plan_end_date']
+            );
+         }
+
+      }
 
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
          // Read again project to be sure that all data are up to date
@@ -311,6 +355,15 @@ class ProjectTask extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
+
+      if (!isset($input['projects_id'])) {
+         Session::addMessageAfterRedirect(
+            __('A linked project is mandatory'),
+            false,
+            ERROR
+         );
+         return false;
+      }
 
       if (!isset($input['users_id'])) {
          $input['users_id'] = Session::getLoginUserID();
@@ -1622,5 +1675,20 @@ class ProjectTask extends CommonDBChild {
       $html.= "</div>";
       $html.= "<div class='event-description rich_text_container'>".html_entity_decode($val["content"])."</div>";
       return $html;
+   }
+
+   /**
+    * Display a Planning Item
+    *
+    * @param $val Array of the item to display
+    *
+    * @return Already planned information
+    **/
+   static function getAlreadyPlannedInformation($itemtype, array $val) {
+      return CommonITILTask::getAlreadyPlannedInformation($itemtype, $val);
+   }
+
+   function getItilObjectItemType() {
+      return $this->getType();
    }
 }
