@@ -1116,12 +1116,12 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Display a Planning Item
     *
-    * @param string $itemtype  itemtype
-    * @param array  $val       the item to display
+    * @param string $itemtype itemtype
+    * @param array  $val      the item to display
     *
     * @return string Output
    **/
-   static function genericGetAlreadyPlannedInformation($itemtype, array $val) {
+   public static function getAlreadyPlannedInformation($itemtype, array $val) {
 
       if ($item = getItemForItemtype($itemtype)) {
          $objectitemtype = $item->getItilObjectItemType();
@@ -1129,8 +1129,11 @@ abstract class CommonITILTask  extends CommonDBTM {
          //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
          $out  = sprintf(__('%1$s: from %2$s to %3$s:'), $item->getTypeName(1),
                          Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
-         $out .= "<br><a href='".$objectitemtype::getFormURLWithID($val[getForeignKeyFieldForItemType($objectitemtype)])
-                       ."&amp;forcetab=".$itemtype."$1'>";
+         $out .= "<br/><a href='".$objectitemtype::getFormURLWithID($val[getForeignKeyFieldForItemType($objectitemtype)]);
+         if ($item instanceof CommonITILTask) {
+            $out .= "&amp;forcetab=".$itemtype."$1";
+         }
+         $out .= "'>";
          $out .= Html::resume_text($val["name"], 80).'</a>';
 
          return $out;

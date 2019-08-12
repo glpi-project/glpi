@@ -1035,15 +1035,7 @@ class Reminder extends CommonDBVisible {
     * @return Already planned information
     **/
    static function getAlreadyPlannedInformation(array $val) {
-      global $CFG_GLPI;
-
-      //TRANS: %1$s is the begin date, %2$s is the end date
-      $beginend = sprintf(__('From %1$s to %2$s'),
-                          Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
-      $out      = sprintf(__('%1$s: %2$s'), $beginend,
-         "<a href='".Reminder::getFormURLWithID($val["reminders_id"])."'>".
-         Html::resume_text($val["name"], 80)."</a>");
-      return $out;
+      return CommonITILTask::getAlreadyPlannedInformation(static::getType(), $val);
    }
 
 
@@ -1249,4 +1241,7 @@ class Reminder extends CommonDBVisible {
       return $values;
    }
 
+   function getItilObjectItemType() {
+      return $this->getType();
+   }
 }
