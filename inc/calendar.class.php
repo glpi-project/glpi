@@ -246,24 +246,38 @@ class Calendar extends CommonDropdown {
    function isHoliday($date) {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `glpi_calendars_holidays`
-                INNER JOIN `glpi_holidays`
-                     ON (`glpi_calendars_holidays`.`holidays_id` = `glpi_holidays`.`id`)
-                WHERE `glpi_calendars_holidays`.`calendars_id` = '".$this->fields['id']."'
-                      AND (('$date' <= `glpi_holidays`.`end_date`
-                             AND '$date' >= `glpi_holidays`.`begin_date`)
-                           OR (`glpi_holidays`.`is_perpetual` = 1
-                               AND MONTH(`end_date`)*100 + DAY(`end_date`)
-                                       >= ".date('nd', strtotime($date))."
-                               AND MONTH(`begin_date`)*100 + DAY(`begin_date`)
-                                       <= ".date('nd', strtotime($date))."
-                              )
-                          )";
-      if ($result=$DB->query($query)) {
-         return $DB->result($result, 0, 'cpt');
-      }
-      return false;
+      $result = $DB->request([
+         'COUNT'        => 'cpt',
+         'FROM'         => 'glpi_calendars_holidays',
+         'INNER JOIN'   => [
+            'glpi_holidays'   => [
+               'ON' => [
+                  'glpi_calendars_holidays'  => 'holidays_id',
+                  'glpi_holidays'            => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_calendars_holidays.calendars_id' => $this->fields['id'],
+            'OR'                                   => [
+               [
+                  'AND' => [
+                     'glpi_holidays.end_date'            => ['>=', $date],
+                     'glpi_holidays.begin_date'          => ['<=', $date]
+                  ]
+               ],
+               [
+                  'AND' => [
+                     'glpi_holidays.is_perpetual'  => 1,
+                     new \QueryExpression("MONTH(".$DB->quoteName('end_date').")*100 + DAY(".$DB->quoteName('end_date').") >= ".date('nd', strtotime($date))),
+                     new \QueryExpression("MONTH(".$DB->quoteName('begin_date').")*100 + DAY(".$DB->quoteName('begin_date').") <= ".date('nd', strtotime($date)))
+                  ]
+               ]
+            ]
+         ]
+      ])->next();
+
+      return (int)$result['cpt'] > 0;
    }
 
 
