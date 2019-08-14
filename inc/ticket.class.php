@@ -1222,9 +1222,6 @@ class Ticket extends CommonITILObject {
                                           'only_criteria' => $changes]);
       }
 
-      //Action for send_validation rule : do validation before clean
-      $this->manageValidationAdd($input);
-
       // Clean actors fields added for rules
       foreach ($tocleanafterrules as $key => $val) {
          if ($input[$key] == $val) {
@@ -1521,6 +1518,9 @@ class Ticket extends CommonITILObject {
 
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
+
+      //Action for send_validation rule : do validation before clean
+      $this->manageValidationAdd($this->input);
 
       // Put same status on duplicated tickets when solving or closing (autoclose on solve)
       if (isset($this->input['status'])
@@ -1889,6 +1889,8 @@ class Ticket extends CommonITILObject {
    function post_addItem() {
       global $CFG_GLPI;
 
+      $this->manageValidationAdd($this->input);
+
       // Log this event
       $username = 'anonymous';
       if (isset($_SESSION["glpiname"])) {
@@ -2043,8 +2045,6 @@ class Ticket extends CommonITILObject {
       }
 
       parent::post_addItem();
-
-      $this->manageValidationAdd($this->input);
 
       // Processing Email
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
