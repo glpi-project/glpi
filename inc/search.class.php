@@ -660,14 +660,20 @@ class Search {
 
       // Add search conditions
       // If there is search items
+      $useglobalhaving = false;
       if (count($data['search']['criteria'])) {
          $WHERE  = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt);
          $HAVING = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
 
          // if criteria (with meta flag) need additional join/from sql
          self::constructAdditionalSqlForMetacriteria($data['search']['criteria'], $SELECT, $FROM, $already_link_tables, $data);
-      }
 
+         foreach ($data['search']['criteria'] as $key => $criteria) {
+            if (isset($searchopt[$criteria['field']]["usehaving"])) {
+               $useglobalhaving = true;
+            }
+         }
+      }
       //// 4 - ORDER
       $ORDER = " ORDER BY `id` ";
       foreach ($data['tocompute'] as $val) {
@@ -730,7 +736,11 @@ class Search {
          if (!empty($COMMONWHERE)) {
             $LINK = " AND ";
             if ($first) {
-               $LINK  = " WHERE ";
+               if ($useglobalhaving) {
+                  $LINK = " HAVING";
+               } else {
+                  $LINK  = " WHERE ";
+               }
                $first = false;
             }
             $query_num .= $LINK.$COMMONWHERE;
@@ -799,15 +809,19 @@ class Search {
 
       if (!empty($WHERE) || !empty($COMMONWHERE)) {
          if (!empty($COMMONWHERE)) {
-            $WHERE = ' WHERE '.$COMMONWHERE.(!empty($WHERE)?' AND ( '.$WHERE.' )':'');
+            if ($useglobalhaving) {
+               $WHERE = ' HAVING '.$COMMONWHERE.(!empty($WHERE)?' AND ( '.$WHERE.' )':'');
+            } else {
+               $WHERE = ' WHERE '.$COMMONWHERE.(!empty($WHERE)?' AND ( '.$WHERE.' )':'');
+            }
          } else {
-            $WHERE = ' WHERE '.$WHERE.' ';
+         if ($useglobalhaving) {
+               $WHERE = ' HAVING '.$HAVING.' ';
+            } else {
+               $WHERE = ' WHERE '.$WHERE.' ';
+            }
          }
          $first = false;
-      }
-
-      if (!empty($HAVING)) {
-         $HAVING = ' HAVING '.$HAVING;
       }
 
       // Create QUERY
@@ -842,8 +856,7 @@ class Search {
                      $tmpquery .= " AND `$ctable`.`is_template` = 0 ";
                   }
 
-                  $tmpquery.= $GROUPBY.
-                              $HAVING;
+                  $tmpquery.= $GROUPBY;
 
                   // Replace 'asset_types' by itemtype table name
                   $tmpquery = str_replace(
@@ -904,9 +917,8 @@ class Search {
       } else {
          $QUERY = $SELECT.
                   $FROM.
-                  $WHERE.
                   $GROUPBY.
-                  $HAVING.
+                  $WHERE.
                   $ORDER.
                   $LIMIT;
       }
@@ -967,7 +979,7 @@ class Search {
                   $tmplink = " ".$criterion['link'];
                }
             } else {
-               $tmplink = " AND ";
+               $tmplink = " $LINK ";
             }
 
             // Manage Link if not first item
@@ -990,7 +1002,7 @@ class Search {
                   // the having part will be managed in a second pass
                   continue;
                }
-
+               $useglobalhaving = true;
                $new_having = self::addHaving($LINK, $NOT, $itemtype,
                                              $criterion['field'], $criterion['searchtype'],
                                              $criterion['value']);
@@ -3302,6 +3314,8 @@ JAVASCRIPT;
       if ($itemtype != 'AllAssets') {
          $item           = getItemForItemtype($itemtype);
          $mayberecursive = $item->maybeRecursive();
+         $maybedeleted   = $item->maybeDeleted();
+         $maybetemplate  = $item->maybeTemplate();
       }
       $ret = "";
       switch ($itemtype) {
@@ -3323,6 +3337,12 @@ JAVASCRIPT;
          $ret .= "`$itemtable`.`id` AS entities_id, '1' AS is_recursive, ";
       } else if ($mayberecursive) {
          $ret .= "`$itemtable`.`entities_id`, `$itemtable`.`is_recursive`, ";
+      }
+      if ($maybedeleted) {
+         $ret .= "`$itemtable`.`is_deleted`, ";
+      }
+      if ($maybetemplate) {
+         $ret .= "`$itemtable`.`is_template`, ";
       }
       return $ret;
    }
