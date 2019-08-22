@@ -1665,7 +1665,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>"._x('Planning', 'Reminder')."</td><td class='center'>";
          PlanningRecall::dropdown(['itemtype' => $this->getType(),
-                                        'items_id' => $this->getID()]);
+                                        'items_id' => $this->getID(),
+                                        'users_id' => $this->getField('users_id')]);
          echo "</td><td colspan='2'></td></tr>";
       }
 
