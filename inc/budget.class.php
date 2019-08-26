@@ -720,7 +720,7 @@ class Budget extends CommonDropdown{
                      ]
                   ],
                   'WHERE'        => [
-                     'glpi_contractcosts.budgets_id'  => $budgets_id
+                     'glpi_projectcosts.budgets_id'  => $budgets_id
                   ] + getEntitiesRestrictCriteria($table, 'entities_id'),
                   'GROUPBY'      => [
                      $item->getTable() . '.entities_id'
