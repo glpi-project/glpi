@@ -659,6 +659,36 @@ class Search {
       return $data;
    }
 
+   /**
+    * Search for a "usehaving" field in the searchOption of for each criteria
+    *
+    * @param $criterias List of criterias
+    * @param $searchopt List of searchOptions
+    *
+    * @return bool
+    */
+   private static function hasHaving($criterias, $searchopt) {
+      foreach ($criterias as $criteria) {
+         // Search recursively for groups
+         if (isset($criteria['criteria'])) {
+            $hasHaving = self::hasHaving($criteria['criteria'], $searchopt);
+            if ($hasHaving) {
+               return true;
+            }
+            continue;
+         }
+
+         if (isset($criteria['field'])
+            && isset($searchopt[$criteria['field']]["usehaving"])
+            || (isset($criteria['meta']) && $criteria['meta'] && $criteria['link'] == "AND NOT")
+         ) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
 
    /**
     * Construct SQL request depending of search parameters
@@ -831,6 +861,25 @@ class Search {
       if (count($data['search']['criteria'])) {
          $WHERE  = $this->constructCriteriaSQL($data['search']['criteria'], $data, $searchopt);
          $HAVING = $this->constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
+
+         // Check if a criteria was meant to be used as a having field
+         $hasHaving = self::hasHaving($data['search']['criteria'], $searchopt);
+         if ($hasHaving) {
+            $HAVING = $WHERE;
+            $WHERE = "";
+
+            // Each field specified in the HAVING must be in the SELECT aswell
+            $regex = "/`glpi_\w*?`\.`.*?`/";
+            $matches = [];
+            preg_match_all($regex, $HAVING, $matches);
+            if (isset($matches[0])) {
+               foreach ($matches[0] as $havingElement) {
+                  if (strpos($SELECT, $havingElement) === false) {
+                     $SELECT .= " $havingElement, ";
+                  }
+               }
+            }
+         }
 
          // if criteria (with meta flag) need additional join/from sql
          $this->constructAdditionalSqlForMetacriteria($data['search']['criteria'], $SELECT, $FROM, $already_link_tables, $data);
@@ -1188,15 +1237,18 @@ class Search {
             } else if (isset($searchopt[$criterion['field']]["usehaving"])
                        || ($meta && "AND NOT" === $criterion['link'])) {
                if (!$is_having) {
-                  // the having part will be managed in a second pass
+                  // Add the having in the where as the whole WHERE will be
+                  // converted into an HAVING later
+                  $new_where = $this->addHaving(
+                     $LINK,
+                     $NOT,
+                     $itemtype,
+                     $criterion['field'],
+                     $criterion['searchtype'],
+                     $criterion['value']
+                  );
+                  $sql .= $new_where;
                   continue;
-               }
-
-               $new_having = $this->addHaving($LINK, $NOT, $itemtype,
-                                             $criterion['field'], $criterion['searchtype'],
-                                             $criterion['value']);
-               if ($new_having !== false) {
-                  $sql .= $new_having;
                }
             } else {
                if ($is_having) {
