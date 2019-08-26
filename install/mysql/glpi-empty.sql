@@ -8809,7 +8809,6 @@ CREATE TABLE `glpi_tickettemplatepredefinedfields` (
   `num` int(11) NOT NULL DEFAULT '0',
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`tickettemplates_id`,`num`),
   KEY `tickettemplates_id` (`tickettemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -8822,7 +8821,6 @@ CREATE TABLE `glpi_changetemplatepredefinedfields` (
   `num` int(11) NOT NULL DEFAULT '0',
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`changetemplates_id`,`num`),
   KEY `changetemplates_id` (`changetemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -8835,7 +8833,6 @@ CREATE TABLE `glpi_problemtemplatepredefinedfields` (
   `num` int(11) NOT NULL DEFAULT '0',
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`problemtemplates_id`,`num`),
   KEY `problemtemplates_id` (`problemtemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
