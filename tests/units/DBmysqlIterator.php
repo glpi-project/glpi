@@ -244,6 +244,18 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['ORDER' => 'bar DESC, baz ASC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC');
+
+      $it = $this->it->execute('foo', ['ORDER' => new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END")]);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END");
+
+      $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC']]);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC");
+
+      $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC, baz DESC']]);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC");
+
+      $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC', 'baz DESC']]);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC");
    }
 
 

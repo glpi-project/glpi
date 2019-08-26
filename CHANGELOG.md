@@ -21,6 +21,10 @@ The present file will list all changes made to the project; according to the
 
 ### API changes
 
+#### Changes
+
+- `DBmysqlIterator::handleOrderClause()` supports QueryExpressions
+
 #### Deprecated
 
 - `DBMysql::fetch_array()`

@@ -319,16 +319,22 @@ class DBmysqlIterator implements Iterator, Countable {
 
       $cleanorderby = [];
       foreach ($clause as $o) {
-         $fields = explode(',', $o);
-         foreach ($fields as $field) {
-            $new = '';
-            $tmp = explode(' ', trim($field));
-            $new .= DBmysql::quoteName($tmp[0]);
-            // ASC OR DESC added
-            if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
-               $new .= ' '.$tmp[1];
+         if (is_string($o)) {
+            $fields = explode(',', $o);
+            foreach ($fields as $field) {
+               $new = '';
+               $tmp = explode(' ', trim($field));
+               $new .= DBmysql::quoteName($tmp[0]);
+               // ASC OR DESC added
+               if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
+                  $new .= ' ' . $tmp[1];
+               }
+               $cleanorderby[] = $new;
             }
-            $cleanorderby[] = $new;
+         } else if ($o instanceof QueryExpression) {
+            $cleanorderby[] = $o->getValue();
+         } else {
+            trigger_error("Invalid order clause", E_USER_ERROR);
          }
       }
 
