@@ -326,10 +326,12 @@ function update94to95() {
             `num` int(11) NOT NULL DEFAULT '0',
             `value` text COLLATE utf8_unicode_ci,
             PRIMARY KEY (`id`),
-            UNIQUE KEY `unicity` (`{$itiltype}templates_id`,`num`),
             KEY `{$itiltype}templates_id` (`{$itiltype}templates_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->queryOrDie($query, "add table glpi_{$itiltype}templatepredefinedfields");
+      } else {
+         //drop key -- usefull only for 9.5 rolling release
+         $migration->dropKey("glpi_{$itiltype}templatepredefinedfields", 'unicity');
       }
    }
    /** /ITIL templates */
