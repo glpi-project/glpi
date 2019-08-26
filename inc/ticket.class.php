@@ -1887,29 +1887,6 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Add tasks in tasktemplates if defined in itiltemplate
-      if (isset($this->input['_tasktemplates_id'])
-          && is_array($this->input['_tasktemplates_id'])
-          && count($this->input['_tasktemplates_id'])) {
-         $tasktemplate = new TaskTemplate;
-         $tickettask   = new TicketTask;
-         foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
-            $tasktemplate->getFromDB($tasktemplates_id);
-            $tasktemplate_content = Toolbox::addslashes_deep($tasktemplate->fields["content"]);
-            $tickettask->add(['tasktemplates_id'  => $tasktemplates_id,
-                              'content'           => $tasktemplate_content,
-                              'taskcategories_id' => $tasktemplate->fields['taskcategories_id'],
-                              'actiontime'        => $tasktemplate->fields['actiontime'],
-                              'state'             => $tasktemplate->fields['state'],
-                              'tickets_id'        => $this->fields['id'],
-                              'is_private'        => $tasktemplate->fields['is_private'],
-                              'users_id_tech'     => $tasktemplate->fields['users_id_tech'],
-                              'groups_id_tech'    => $tasktemplate->fields['groups_id_tech'],
-                              '_disablenotif'     => true
-                              ]);
-         }
-      }
-
       if (isset($this->input['_promoted_fup_id']) && $this->input['_promoted_fup_id'] > 0) {
          $fup = new ITILFollowup();
          $fup->getFromDB($this->input['_promoted_fup_id']);

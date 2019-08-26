@@ -748,6 +748,11 @@ class Change extends CommonITILObject {
 
       if (!$options['template_preview']) {
          $this->showFormHeader($options);
+         if (isset($this->fields['_tasktemplates_id'])) {
+            foreach ($this->fields['_tasktemplates_id'] as $tasktemplates_id) {
+               echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
+            }
+         }
       }
 
       echo "<tr class='tab_bg_1'>";
@@ -1517,7 +1522,8 @@ class Change extends CommonITILObject {
          'itilcategories_id'          => 0,
          'actiontime'                 => 0,
          '_add_validation'            => 0,
-         'users_id_validate'          => []
+         'users_id_validate'          => [],
+         '_tasktemplates_id'          => []
       ];
    }
 }
