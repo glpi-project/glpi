@@ -3673,7 +3673,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Technician group'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
-         'condition'          => 'is_assign',
+         'condition'          => ['is_assign' => 1],
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => getTableForItemType($this->grouplinkclass),

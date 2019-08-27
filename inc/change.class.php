@@ -437,7 +437,7 @@ class Change extends CommonITILObject {
          'id'                 => '60',
          'table'              => $this->getTable(),
          'field'              => 'impactcontent',
-         'name'               => __('Impact'),
+         'name'               => __('Analysis impact'),
          'massiveaction'      => false,
          'datatype'           => 'text'
       ];
@@ -1110,6 +1110,22 @@ class Change extends CommonITILObject {
       echo "</td></tr>";
 
       $options['colspan'] = 2;
+
+      if (!$ID) {
+         $fields = [
+            'controlistcontent',
+            'impactcontent',
+            'rolloutplancontent',
+            'backoutplancontent',
+            'checklistcontent'
+         ];
+         foreach ($fields as $field) {
+            if (isset($tt->predefined[$field])) {
+               echo Html::hidden($field, ['value' => $tt->predefined[$field]]);
+            }
+         }
+      }
+
       if (!$options['template_preview']) {
          if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
             echo "<input type='hidden' name='$tpl_key' value='".$tt->fields['id']."'>";
@@ -1523,7 +1539,12 @@ class Change extends CommonITILObject {
          'actiontime'                 => 0,
          '_add_validation'            => 0,
          'users_id_validate'          => [],
-         '_tasktemplates_id'          => []
+         '_tasktemplates_id'          => [],
+         'controlistcontent'          => '',
+         'impactcontent'              => '',
+         'rolloutplancontent'         => '',
+         'backoutplancontent'         => '',
+         'checklistcontent'           => ''
       ];
    }
 }

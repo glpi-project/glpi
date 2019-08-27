@@ -47,4 +47,10 @@ class TicketTemplate extends ITILTemplate {
       return _n('Ticket template', 'Ticket templates', $nb);
    }
 
+   public static function getExtraAllowedFields() {
+      $ticket = new Ticket();
+      return [$ticket->getSearchOptionIDByField('field', 'name',
+                                                       'glpi_requesttypes')
+                                                                         => 'requesttypes_id'];
+   }
 }

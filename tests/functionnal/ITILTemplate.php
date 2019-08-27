@@ -121,8 +121,10 @@ class ITILTemplate extends DbTestCase {
       $tid = (int)$object->add($content);
       $this->integer($tid)->isIdenticalTo(0);
 
+      $err_msg = 'Mandatory fields are not filled. Please correct: Title' .
+         ($itiltype === \Ticket::getType() ? ', Location' : '') . ', Description';
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Mandatory fields are not filled. Please correct: Title, Location, Description']]
+         [ERROR => [$err_msg]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -144,5 +146,44 @@ class ITILTemplate extends DbTestCase {
       $content['content'] = 'A content for our ' . $itiltype;
       $tid = (int)$object->add($content);
       $this->integer($tid)->isGreaterThan(0);
+   }
+
+   /**
+    * @dataProvider itilProvider
+    */
+   public function testGetAllowedFields($itiltype) {
+      $class = $itiltype.'Template';
+      $fields = $class::getAllowedFields();
+      foreach ($fields as $field) {
+         if (is_array($field)) {
+            foreach ($field as $sfield) {
+               $this->checkField($itiltype, $sfield);
+            }
+         } else {
+            $this->checkField($itiltype, $field);
+         }
+      }
+   }
+
+   /**
+    * Check one field
+    *
+    * @param string $itiltype ITIL type
+    * @param string $field    Field name
+    *
+    * @return void
+    */
+   private function checkField($itiltype, $field) {
+      global $DB;
+
+      if (!\Toolbox::startsWith($field, '_') && 'items_id' != $field) {
+         $this->boolean(
+            $DB->fieldExists($itiltype::getTable(), $field)
+         )->isTrue("$field in $itiltype");
+      } else {
+         //howto test dynamic fields (those wich names begin with a "_")?
+         //howto test items_id (from Ticket at least)?
+         $empty = true;
+      }
    }
 }
