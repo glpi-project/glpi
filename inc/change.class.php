@@ -1039,7 +1039,7 @@ class Change extends CommonITILObject {
       } else {
          echo $tt->getBeginHiddenFieldValue('global_validation');
 
-         if (Session::haveRightsOr('changevalidation', ChangeeValidation::getCreateRights())
+         if (Session::haveRightsOr('changevalidation', ChangeValidation::getCreateRights())
              && $canupdate) {
             ChangeValidation::dropdownStatus('global_validation',
                                              ['global' => true,
