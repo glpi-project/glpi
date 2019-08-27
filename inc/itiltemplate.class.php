@@ -175,55 +175,68 @@ abstract class ITILTemplate extends CommonDropdown {
       }
 
       if (!isset($allowed_fields[$withtypeandcategory][$withitemtype])) {
-         $ticket = new Ticket();
+         $itiltype = str_replace('Template', '', static::getType());
+         $itil_object = new $itiltype;
+
+         $itemstable = null;
+         switch ($itiltype) {
+            case 'Change':
+               $itemstable = 'glpi_changes_items';
+               break;
+            case 'Problem':
+               $itemstable = 'glpi_items_problems';
+               break;
+            case 'Ticket':
+               $itemstable = 'glpi_items_tickets';
+               break;
+            default:
+               throw new \RuntimeException('Unknown ITIL type ' . $itiltype);
+         }
 
          // SearchOption ID => name used for options
-         $allowed_fields[$withtypeandcategory][$withitemtype]
-             = [$ticket->getSearchOptionIDByField('field', 'name',
-                                                       'glpi_tickets')   => 'name',
-                     $ticket->getSearchOptionIDByField('field', 'content',
-                                                       'glpi_tickets')   => 'content',
-                     $ticket->getSearchOptionIDByField('field', 'status',
-                                                       'glpi_tickets')   => 'status',
-                     $ticket->getSearchOptionIDByField('field', 'urgency',
-                                                       'glpi_tickets')   => 'urgency',
-                     $ticket->getSearchOptionIDByField('field', 'impact',
-                                                       'glpi_tickets')   => 'impact',
-                     $ticket->getSearchOptionIDByField('field', 'priority',
-                                                       'glpi_tickets')   => 'priority',
-                     $ticket->getSearchOptionIDByField('field', 'name',
-                                                       'glpi_requesttypes')
-                                                                         => 'requesttypes_id',
-                     $ticket->getSearchOptionIDByField('field', 'completename',
+         $allowed_fields[$withtypeandcategory][$withitemtype] = [
+                     $itil_object->getSearchOptionIDByField('field', 'name',
+                                                       $itil_object->getTable())   => 'name',
+                     $itil_object->getSearchOptionIDByField('field', 'content',
+                                                       $itil_object->getTable())   => 'content',
+                     $itil_object->getSearchOptionIDByField('field', 'status',
+                                                       $itil_object->getTable())   => 'status',
+                     $itil_object->getSearchOptionIDByField('field', 'urgency',
+                                                       $itil_object->getTable())   => 'urgency',
+                     $itil_object->getSearchOptionIDByField('field', 'impact',
+                                                       $itil_object->getTable())   => 'impact',
+                     $itil_object->getSearchOptionIDByField('field', 'priority',
+                                                       $itil_object->getTable())   => 'priority',
+                     $itil_object->getSearchOptionIDByField('field', 'completename',
                                                        'glpi_locations') => 'locations_id',
-                     $ticket->getSearchOptionIDByField('field', 'slas_id_tto',
+                     $itil_object->getSearchOptionIDByField('field', 'slas_id_tto',
                                                        'glpi_slas')      => 'slas_id_tto',
-                     $ticket->getSearchOptionIDByField('field', 'slas_id_ttr',
+                     $itil_object->getSearchOptionIDByField('field', 'slas_id_ttr',
                                                        'glpi_slas')      => 'slas_id_ttr',
-                     $ticket->getSearchOptionIDByField('field', 'olas_id_tto',
+                     $itil_object->getSearchOptionIDByField('field', 'olas_id_tto',
                                                        'glpi_olas')      => 'olas_id_tto',
-                     $ticket->getSearchOptionIDByField('field', 'olas_id_ttr',
+                     $itil_object->getSearchOptionIDByField('field', 'olas_id_ttr',
                                                        'glpi_olas')      => 'olas_id_ttr',
-                     $ticket->getSearchOptionIDByField('field', 'time_to_resolve',
+                     $itil_object->getSearchOptionIDByField('field', 'time_to_resolve',
                                                        'glpi_tickets')   => 'time_to_resolve',
-                     $ticket->getSearchOptionIDByField('field', 'time_to_own',
+                     $itil_object->getSearchOptionIDByField('field', 'time_to_own',
                                                        'glpi_tickets')   => 'time_to_own',
-                     $ticket->getSearchOptionIDByField('field', 'internal_time_to_resolve',
+                     $itil_object->getSearchOptionIDByField('field', 'internal_time_to_resolve',
                                                        'glpi_tickets')   => 'internal_time_to_resolve',
-                     $ticket->getSearchOptionIDByField('field', 'internal_time_to_own',
+                     $itil_object->getSearchOptionIDByField('field', 'internal_time_to_own',
                                                        'glpi_tickets')   => 'internal_time_to_own',
-                     $ticket->getSearchOptionIDByField('field', 'date',
-                                                       'glpi_tickets')   => 'date',
-                     $ticket->getSearchOptionIDByField('field', 'actiontime',
+                     $itil_object->getSearchOptionIDByField('field', 'date',
+                                                       $itil_object->getTable())   => 'date',
+                     $itil_object->getSearchOptionIDByField('field', 'actiontime',
                                                        'glpi_tickets')   => 'actiontime',
-                     $ticket->getSearchOptionIDByField('field', 'global_validation',
+                     $itil_object->getSearchOptionIDByField('field', 'global_validation',
                                                        'glpi_tickets')   => 'global_validation',
 
                                                        4                 => '_users_id_requester',
                                                        71                => '_groups_id_requester',
                                                        5                 => '_users_id_assign',
                                                        8                 => '_groups_id_assign',
-                     $ticket->getSearchOptionIDByField('field', 'name',
+                     $itil_object->getSearchOptionIDByField('field', 'name',
                                                        'glpi_suppliers') => '_suppliers_id_assign',
 
                                                        66                => '_users_id_observer',
@@ -232,38 +245,54 @@ abstract class ITILTemplate extends CommonDropdown {
 
          if ($withtypeandcategory) {
             $allowed_fields[$withtypeandcategory][$withitemtype]
-               [$ticket->getSearchOptionIDByField('field', 'completename',
+               [$itil_object->getSearchOptionIDByField('field', 'completename',
                                                   'glpi_itilcategories')]  = 'itilcategories_id';
             $allowed_fields[$withtypeandcategory][$withitemtype]
-               [$ticket->getSearchOptionIDByField('field', 'type',
-                                                  'glpi_tickets')]         = 'type';
+               [$itil_object->getSearchOptionIDByField('field', 'type',
+                                                  $itil_object->getTable())]         = 'type';
          }
 
          if ($withitemtype) {
             $allowed_fields[$withtypeandcategory][$withitemtype]
-               [$ticket->getSearchOptionIDByField('field', 'itemtype',
-                                                  'glpi_items_tickets')] = 'itemtype';
+               [$itil_object->getSearchOptionIDByField('field', 'itemtype',
+                                                  $itemstable)] = 'itemtype';
          }
 
          $allowed_fields[$withtypeandcategory][$withitemtype]
-            [$ticket->getSearchOptionIDByField('field', 'items_id',
-                                               'glpi_items_tickets')] = 'items_id';
+            [$itil_object->getSearchOptionIDByField('field', 'items_id',
+                                               $itemstable)] = 'items_id';
 
          // Add validation request
          $allowed_fields[$withtypeandcategory][$withitemtype][-2] = '_add_validation';
 
          // Add document
          $allowed_fields[$withtypeandcategory][$withitemtype]
-               [$ticket->getSearchOptionIDByField('field', 'name',
+               [$itil_object->getSearchOptionIDByField('field', 'name',
                                                   'glpi_documents')] = '_documents_id';
 
          // Add TicketTask (from task templates)
          $allowed_fields[$withtypeandcategory][$withitemtype]
-               [$ticket->getSearchOptionIDByField('field', 'name',
+               [$itil_object->getSearchOptionIDByField('field', 'name',
                                                   TaskTemplate::getTable())] = '_tasktemplates_id';
+
+         //add specific itil type fields
+         $allowed_fields[$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields();
       }
 
       return $allowed_fields[$withtypeandcategory][$withitemtype];
+   }
+
+   /**
+    * Get extra allowed field names that can be used in templates_id
+    *
+    * @since 9.5.0
+    *
+    * @return array
+    *
+    * @see getAllowedFields
+    */
+   public static function getExtraAllowedFields() {
+      return [];
    }
 
 
@@ -273,9 +302,10 @@ abstract class ITILTemplate extends CommonDropdown {
    **/
    function getAllowedFieldsNames($withtypeandcategory = 0, $with_items_id = 0) {
 
-      $searchOption = Search::getOptions('Ticket');
+      $itiltype = str_replace('Template', '', static::getType());
+      $searchOption = Search::getOptions($itiltype);
       $tab          = $this->getAllowedFields($withtypeandcategory, $with_items_id);
-      foreach ($tab as $ID => $shortname) {
+      foreach (array_keys($tab) as $ID) {
          switch ($ID) {
             case -2 :
                $tab[-2] = __('Approval request');
@@ -291,6 +321,7 @@ abstract class ITILTemplate extends CommonDropdown {
                }
          }
       }
+
       return $tab;
    }
 
@@ -547,8 +578,9 @@ abstract class ITILTemplate extends CommonDropdown {
          return false;
       }
       if ($tt->getFromDBWithDatas($tt->getID())) {
-         $ticket = new Ticket();
-         $ticket->showForm(0, ['template_preview' => $tt->getID()]);
+         $ititype = str_replace('Template', '', static::getType());
+         $itil_object = new $itiltype;
+         $itil_object->showForm(0, ['template_preview' => $tt->getID()]);
       }
    }
 
