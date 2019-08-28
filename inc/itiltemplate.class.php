@@ -154,8 +154,8 @@ abstract class ITILTemplate extends CommonDropdown {
 
 
    /**
-    * @param $withtypeandcategory   (default 0)
-    * @param $withitemtype         (default 0)
+    * @param boolean $withtypeandcategory (default 0)
+    * @param boolean $withitemtype        (default 0)
    **/
    static function getAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {
 
@@ -207,31 +207,8 @@ abstract class ITILTemplate extends CommonDropdown {
                                                        $itil_object->getTable())   => 'impact',
                      $itil_object->getSearchOptionIDByField('field', 'priority',
                                                        $itil_object->getTable())   => 'priority',
-                     $itil_object->getSearchOptionIDByField('field', 'completename',
-                                                       'glpi_locations') => 'locations_id',
-                     $itil_object->getSearchOptionIDByField('field', 'slas_id_tto',
-                                                       'glpi_slas')      => 'slas_id_tto',
-                     $itil_object->getSearchOptionIDByField('field', 'slas_id_ttr',
-                                                       'glpi_slas')      => 'slas_id_ttr',
-                     $itil_object->getSearchOptionIDByField('field', 'olas_id_tto',
-                                                       'glpi_olas')      => 'olas_id_tto',
-                     $itil_object->getSearchOptionIDByField('field', 'olas_id_ttr',
-                                                       'glpi_olas')      => 'olas_id_ttr',
-                     $itil_object->getSearchOptionIDByField('field', 'time_to_resolve',
-                                                       'glpi_tickets')   => 'time_to_resolve',
-                     $itil_object->getSearchOptionIDByField('field', 'time_to_own',
-                                                       'glpi_tickets')   => 'time_to_own',
-                     $itil_object->getSearchOptionIDByField('field', 'internal_time_to_resolve',
-                                                       'glpi_tickets')   => 'internal_time_to_resolve',
-                     $itil_object->getSearchOptionIDByField('field', 'internal_time_to_own',
-                                                       'glpi_tickets')   => 'internal_time_to_own',
                      $itil_object->getSearchOptionIDByField('field', 'date',
                                                        $itil_object->getTable())   => 'date',
-                     $itil_object->getSearchOptionIDByField('field', 'actiontime',
-                                                       'glpi_tickets')   => 'actiontime',
-                     $itil_object->getSearchOptionIDByField('field', 'global_validation',
-                                                       'glpi_tickets')   => 'global_validation',
-
                                                        4                 => '_users_id_requester',
                                                        71                => '_groups_id_requester',
                                                        5                 => '_users_id_assign',
@@ -247,9 +224,6 @@ abstract class ITILTemplate extends CommonDropdown {
             $allowed_fields[$withtypeandcategory][$withitemtype]
                [$itil_object->getSearchOptionIDByField('field', 'completename',
                                                   'glpi_itilcategories')]  = 'itilcategories_id';
-            $allowed_fields[$withtypeandcategory][$withitemtype]
-               [$itil_object->getSearchOptionIDByField('field', 'type',
-                                                  $itil_object->getTable())]         = 'type';
          }
 
          if ($withitemtype) {
@@ -270,13 +244,13 @@ abstract class ITILTemplate extends CommonDropdown {
                [$itil_object->getSearchOptionIDByField('field', 'name',
                                                   'glpi_documents')] = '_documents_id';
 
-         // Add TicketTask (from task templates)
+         // Add ITILTask (from task templates)
          $allowed_fields[$withtypeandcategory][$withitemtype]
                [$itil_object->getSearchOptionIDByField('field', 'name',
                                                   TaskTemplate::getTable())] = '_tasktemplates_id';
 
          //add specific itil type fields
-         $allowed_fields[$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields();
+         $allowed_fields[$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields($withtypeandcategory, $withitemtype);
       }
 
       return $allowed_fields[$withtypeandcategory][$withitemtype];
@@ -287,11 +261,14 @@ abstract class ITILTemplate extends CommonDropdown {
     *
     * @since 9.5.0
     *
+    * @param boolean $withtypeandcategory (default 0)
+    * @param boolean $withitemtype        (default 0)
+    *
     * @return array
     *
     * @see getAllowedFields
     */
-   public static function getExtraAllowedFields() {
+   public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {
       return [];
    }
 

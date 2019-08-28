@@ -47,6 +47,19 @@ class ITILTemplateMandatoryField extends DbTestCase {
                10 => 'Urgency',
                11 => 'Impact',
                3 => 'Priority',
+               15 => 'Opening date',
+               4 => 'Requester',
+               71 => 'Requester group',
+               5 => 'Technician',
+               8 => 'Technician group',
+               6 => 'Assigned to a supplier',
+               66 => 'Watcher',
+               65 => 'Watcher group',
+               7 => 'Category',
+               13 => 'Associated elements',
+               -2 => 'Approval request',
+               142 => 'Documents',
+               9 => 'Request source',
                83 => 'Location',
                37 => 'SLA&nbsp;Time to own',
                30 => 'SLA&nbsp;Time to resolve',
@@ -56,22 +69,9 @@ class ITILTemplateMandatoryField extends DbTestCase {
                155 => 'Time to own',
                180 => 'Internal time to resolve',
                185 => 'Internal time to own',
-               15 => 'Opening date',
                45 => 'Total duration',
                52 => 'Approval',
-               4 => 'Requester',
-               71 => 'Requester group',
-               5 => 'Technician',
-               8 => 'Technician group',
-               6 => 'Assigned to a supplier',
-               66 => 'Watcher',
-               65 => 'Watcher group',
-               7 => 'Category',
                14 => 'Type',
-               13 => 'Associated elements',
-               -2 => 'Approval request',
-               142 => 'Documents',
-               9 => 'Request source',
             ]
          ], [
             'Change',
@@ -82,7 +82,6 @@ class ITILTemplateMandatoryField extends DbTestCase {
                10 => 'Urgency',
                11 => 'Impact',
                3 => 'Priority',
-               -1 => '_documents_id', // FIXME, see 142
                15 => 'Opening date',
                4 => 'Requester',
                71 => 'Requester group',
@@ -94,7 +93,7 @@ class ITILTemplateMandatoryField extends DbTestCase {
                7 => 'Category',
                13 => 'Associated elements',
                -2 => 'Approval request',
-               //142 => 'Documents',
+               142 => 'Documents',
                60 => 'Analysis impact',
                61 => 'Control list',
                62 => 'Deployment plan',
@@ -110,7 +109,6 @@ class ITILTemplateMandatoryField extends DbTestCase {
                10 => 'Urgency',
                11 => 'Impact',
                3 => 'Priority',
-               -1 => '_documents_id', // FIXME, see 142
                15 => 'Opening date',
                4 => 'Requester',
                71 => 'Requester group',
@@ -122,7 +120,7 @@ class ITILTemplateMandatoryField extends DbTestCase {
                7 => 'Category',
                13 => 'Associated elements',
                -2 => 'Approval request',
-               //142 => 'Documents',
+               142 => 'Documents',
             ]
          ]
       ];
@@ -136,6 +134,7 @@ class ITILTemplateMandatoryField extends DbTestCase {
       $tpl = new $tpl_class;
       $class = $tpl_class . 'MandatoryField';
       $tpl_field = new $class();
-      $this->array($tpl_field->getAllFields($tpl))->isIdenticalTo($fields);
+      $result = $tpl_field->getAllFields($tpl);
+      $this->array($result)->isIdenticalTo($fields);
    }
 }
