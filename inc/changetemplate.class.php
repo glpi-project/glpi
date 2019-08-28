@@ -47,7 +47,7 @@ class ChangeTemplate extends ITILTemplate {
       return _n('Change template', 'change templates', $nb);
    }
 
-   public static function getExtraAllowedFields() {
+   public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {
       $change = new Change();
       return [
          $change->getSearchOptionIDByField('field', 'impactcontent', 'glpi_changes')      => 'impactcontent',

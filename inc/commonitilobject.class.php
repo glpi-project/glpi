@@ -3365,6 +3365,29 @@ abstract class CommonITILObject extends CommonDBTM {
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
+      // For ITIL template
+      $tab[] = [
+         'id'                 => '142',
+         'table'              => 'glpi_documents',
+         'field'              => 'name',
+         'name'               => _n('Document', 'Documents', Session::getPluralNumber()),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'nosearch'           => true,
+         'nodisplay'          => true,
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'items_id',
+            'beforejoin'         => [
+               'table'              => 'glpi_documents_items',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
+
       return $tab;
    }
 
