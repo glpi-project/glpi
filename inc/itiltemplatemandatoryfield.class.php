@@ -193,10 +193,14 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
 
          $select_fields = $fields;
          foreach ($select_fields as $key => $val) {
-            if (in_array($key, $simplified_fields)) {
-               $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, $both_interfaces);
+            if (static::$itiltype == Ticket::getType()) {
+               if (in_array($key, $simplified_fields)) {
+                  $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, $both_interfaces);
+               } else {
+                  $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, __('Standard interface'));
+               }
             } else {
-               $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, __('Standard interface'));
+               $select_fields[$key] = $val;
             }
          }
 
