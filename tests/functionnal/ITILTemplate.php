@@ -313,4 +313,101 @@ class ITILTemplate extends DbTestCase {
       }
       $this->array($tpl->getTabNameForItem($tpl))->isIdenticalTo($expected);
    }
+
+   /**
+    * @dataProvider itilProvider
+    */
+   public function testTasks($itiltype) {
+      $this->login();
+
+      //create template
+      $tpl_class = '\\' . $itiltype . 'Template';
+      $tpl = new $tpl_class;
+
+      $mandat_class = '\\' . $itiltype . 'TemplateMandatoryField';
+      $mandat = new $mandat_class;
+
+      $tpl_id = (int)$tpl->add([
+         'name'   => 'Template for ' . $itiltype
+      ]);
+      $this->integer($tpl_id)->isGreaterThan(0);
+
+      $task_tpl = new \TaskTemplate();
+      $tid1 = (int)$task_tpl->add([
+         'name'         => 'First task template',
+         'content'      => 'First task content',
+         'is_recursive' => 1
+      ]);
+      $this->integer($tid1)->isGreaterThan(0);
+      $this->boolean($task_tpl->getFromDB($tid1))->isTrue();
+
+      $tid2 = (int)$task_tpl->add([
+         'name'         => 'Second task template',
+         'content'      => 'Second task content',
+         'is_recursive' => 1
+      ]);
+      $this->integer($tid1)->isGreaterThan(0);
+
+      //add predefined tasks
+      $predef_class = '\\' . $itiltype . 'TemplatePredefinedField';
+      $predef = new $predef_class;
+      $puid = (int)$predef->add([
+         $mandat::$items_id   => $tpl_id,
+         'num'                => $predef->getFieldNum($tpl, 'Tasks'),
+         'value'              => $tid1,
+         'is_recursive'       => 1
+      ]);
+      $this->integer($puid)->isGreaterThan(0);
+      $this->boolean($predef->getFromDB($puid))->isTrue();
+
+      $puid = (int)$predef->add([
+         $mandat::$items_id   => $tpl_id,
+         'num'                => $predef->getFieldNum($tpl, 'Tasks'),
+         'value'              => $tid2,
+         'is_recursive'       => 1
+      ]);
+      $this->integer($puid)->isGreaterThan(0);
+      $this->boolean($predef->getFromDB($puid))->isTrue();
+
+      $category = new \ITILCategory();
+      $cat_field = strtolower($itiltype) . 'templates_id';
+      if ($itiltype === \Ticket::getType()) {
+         $cat_field .= '_demand';
+      }
+      $cat_id = (int)$category->add([
+         'name'      => 'Category for a template',
+         $cat_field  => $tpl_id
+      ]);
+      $this->integer($cat_id)->isGreaterThan(0);
+
+      $object = new $itiltype;
+      $tpl_key = $object->getTemplateFormFieldName();
+      $content = [
+         'name'                  => 'Title is required',
+         'content'               => 'A content for our ' . $itiltype,
+         'itilcategories_id'     => $cat_id,
+         $tpl_key                => $tpl_id,
+         'entities_id'           => 0,
+         '_tasktemplates_id'     => [
+            $tid1,
+            $tid2
+         ]
+      ];
+      if ($itiltype === \Ticket::getType()) {
+         $content['type'] = \Ticket::INCIDENT_TYPE;
+      }
+
+      $tid = (int)$object->add($content);
+      $this->integer($tid)->isGreaterThan(0);
+
+      global $DB;
+      $task_class = $itiltype . 'Task';
+      $iterator = $DB->request([
+         'FROM'   => $task_class::getTable(),
+         'WHERE'  => [
+            $object->getForeignKeyField() => $tid
+         ]
+      ]);
+      $this->integer(count($iterator))->isIdenticalTo(2);
+   }
 }
