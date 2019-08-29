@@ -1566,7 +1566,7 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($input[$key]) && $input[$key]) {
             $tt_class = $this->getType() . 'Template';
             $tt = new $tt_class;
-            if ($tt->getFromDBWithDatas($input[$key])) {
+            if ($tt->getFromDBWithData($input[$key])) {
                if (count($tt->mandatory)) {
                   $mandatory_missing = [];
                   $fieldsname        = $tt->getAllowedFieldsNames(true);
@@ -7515,7 +7515,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($force_template) {
          // with type and categ
-         if ($tt->getFromDBWithDatas($force_template, true)) {
+         if ($tt->getFromDBWithData($force_template, true)) {
             $template_loaded = true;
          }
       }
@@ -7530,7 +7530,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if (!empty($categ->fields[$field]) && $categ->fields[$field]) {
                // without type and categ
-               if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
+               if ($tt->getFromDBWithData($categ->fields[$field], false)) {
                   $template_loaded = true;
                }
             }
@@ -7549,7 +7549,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if (isset($_SESSION['glpiactiveprofile']['itiltemplates_id'])
                && $_SESSION['glpiactiveprofile']['itiltemplates_id']) {
                // with type and categ
-               if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['itiltemplates_id'],
+               if ($tt->getFromDBWithData($_SESSION['glpiactiveprofile']['itiltemplates_id'],
                                           true)) {
                   $template_loaded = true;
                }
@@ -7562,7 +7562,7 @@ abstract class CommonITILObject extends CommonDBTM {
             // load default entity one if not already loaded
             if ($template_id = Entity::getUsedConfig('itiltemplates_id', $entities_id)) {
                // with type and categ
-               if ($tt->getFromDBWithDatas($template_id, true)) {
+               if ($tt->getFromDBWithData($template_id, true)) {
                   $template_loaded = true;
                }
             }
@@ -7589,7 +7589,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if (isset($categ->fields[$field]) && $categ->fields[$field]) {
                   // without type and categ
-                  if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
+                  if ($tt->getFromDBWithData($categ->fields[$field], false)) {
                      $template_loaded = true;
                   }
                }

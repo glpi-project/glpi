@@ -73,7 +73,7 @@ abstract class ITILTemplate extends CommonDropdown {
     *
     * @return true if succeed else false
    **/
-   function getFromDBWithDatas($ID, $withtypeandcategory = true) {
+   function getFromDBWithData($ID, $withtypeandcategory = true) {
       global $DB;
 
       if ($this->getFromDB($ID)) {
@@ -554,8 +554,8 @@ abstract class ITILTemplate extends CommonDropdown {
       if (!$tt->getID()) {
          return false;
       }
-      if ($tt->getFromDBWithDatas($tt->getID())) {
-         $ititype = str_replace('Template', '', static::getType());
+      if ($tt->getFromDBWithData($tt->getID())) {
+         $itiltype = str_replace('Template', '', static::getType());
          $itil_object = new $itiltype;
          $itil_object->showForm(0, ['template_preview' => $tt->getID()]);
       }
@@ -574,7 +574,7 @@ abstract class ITILTemplate extends CommonDropdown {
       if (!$tt->getID()) {
          return false;
       }
-      if ($tt->getFromDBWithDatas($tt->getID())) {
+      if ($tt->getFromDBWithData($tt->getID())) {
          $ticket = new  Ticket();
          $ticket->showFormHelpdesk(Session::getLoginUserID(), $tt->getID());
       }

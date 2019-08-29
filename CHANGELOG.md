@@ -43,6 +43,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - All `TicketTemplate` classes has been renamed to `ITILTemplate`
 - `Ticket::getTicketTemplateToUse()` renamed to `Ticket::getITILTemplateToUse()`
+- `TicketTemplate::getFromDBWithDatas()` renamed to `Ticket::getFromDBWithData()` (inherited from `ITILTemplate`)
 
 #### Removed
 
