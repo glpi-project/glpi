@@ -1138,6 +1138,10 @@ class Problem extends CommonITILObject {
          }
       }
 
+      echo "<div class='spaced' id='tabsbody'>";
+
+      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<th class='left' width='$colsize1%'>";
       echo $tt->getBeginHiddenFieldText('date');
@@ -1410,6 +1414,7 @@ class Problem extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
+      echo $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td colspan='3'>";
       $rand = mt_rand();
 
@@ -1461,6 +1466,8 @@ class Problem extends CommonITILObject {
 
          $this->showFormButtons($options);
       }
+      echo "</table>";
+      echo "</div>";
 
       return true;
 

@@ -288,4 +288,29 @@ class ITILTemplate extends DbTestCase {
       $result = $tpl_field->getAllFields($tpl);
       $this->array($result)->isIdenticalTo($fields);
    }
+
+   /**
+    * @dataProvider itilProvider
+    */
+   public function testGetTabNameForItem($itiltype) {
+      $this->login();
+
+      $tpl_class = '\\' . $itiltype . 'Template';
+      $tpl = new $tpl_class;
+
+      switch ($itiltype) {
+         case 'Ticket':
+            $expected = [
+               1 => 'Standard interface',
+               2 => 'Simplified interface'
+            ];
+            break;
+         default:
+            $expected = [
+               1 => 'Preview'
+            ];
+            break;
+      }
+      $this->array($tpl->getTabNameForItem($tpl))->isIdenticalTo($expected);
+   }
 }
