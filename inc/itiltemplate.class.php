@@ -149,7 +149,12 @@ abstract class ITILTemplate extends CommonDropdown {
 
 
    static function getTypeName($nb = 0) {
-      return _n('Ticket template', 'Ticket templates', $nb);
+      $itiltype = str_replace('Template', '', static::getType());
+      //TRANS %1$S is the ITIL type
+      return sprintf(
+         _n('%1$s template', '%1$s templates', $nb),
+         $itiltype::getTypeName()
+      );
    }
 
 
@@ -346,11 +351,6 @@ abstract class ITILTemplate extends CommonDropdown {
             case 1 :
                $item->showCentralPreview($item);
                return true;
-
-            case 2 :
-               $item->showHelpdeskPreview($item);
-               return true;
-
          }
       }
       return false;
@@ -361,10 +361,14 @@ abstract class ITILTemplate extends CommonDropdown {
 
       if (Session::haveRight(self::$rightname, READ)) {
          switch ($item->getType()) {
-            case 'TicketTemplate' :
-               $ong[1] = __('Standard interface');
-               $ong[2] = __('Simplified interface');
-               return $ong;
+            case 'TicketTemplate':
+               return [
+                  1 => __('Standard interface'),
+                  2 => __('Simplified interface')
+               ];
+            case 'ChangeTemplate':
+            case 'ProblemTemplate':
+               return [1 => __('Preview')];
          }
       }
       return '';
@@ -541,7 +545,7 @@ abstract class ITILTemplate extends CommonDropdown {
 
 
    /**
-    * Print preview for Ticket template
+    * Print preview for ITIL template
     *
     * @since 0.83
     *
@@ -558,25 +562,6 @@ abstract class ITILTemplate extends CommonDropdown {
          $itiltype = str_replace('Template', '', static::getType());
          $itil_object = new $itiltype;
          $itil_object->showForm(0, ['template_preview' => $tt->getID()]);
-      }
-   }
-
-
-   /**
-    * Print preview for Ticket template
-    *
-    * @param $tt ITILTemplate object
-    *
-    * @return Nothing (call to classes members)
-   **/
-   static function showHelpdeskPreview(ITILTemplate $tt) {
-
-      if (!$tt->getID()) {
-         return false;
-      }
-      if ($tt->getFromDBWithData($tt->getID())) {
-         $ticket = new  Ticket();
-         $ticket->showFormHelpdesk(Session::getLoginUserID(), $tt->getID());
       }
    }
 

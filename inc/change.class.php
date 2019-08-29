@@ -755,6 +755,10 @@ class Change extends CommonITILObject {
          }
       }
 
+      echo "<div class='spaced' id='tabsbody'>";
+
+      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<th class='left' width='$colsize1%'>";
       echo $tt->getBeginHiddenFieldText('date');
@@ -1059,11 +1063,13 @@ class Change extends CommonITILObject {
       echo "<th></th>";
       echo "<td></td>";
       echo "</tr>";
-      echo "</table>";
 
-      $this->showActorsPartForm($ID, $options);
+      if (!$ID) {
+         echo "</table>";
+         $this->showActorsPartForm($ID, $options);
+         echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
+      }
 
-      echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
       printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
@@ -1080,7 +1086,8 @@ class Change extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-      echo "<td colspan='3'>";
+      echo $tt->getEndHiddenFieldText('content', $this);
+      echo "</th><td colspan='3'>";
       $rand = mt_rand();
 
       echo $tt->getBeginHiddenFieldValue('content');
@@ -1105,26 +1112,11 @@ class Change extends CommonITILObject {
 
       echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
             ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
-            $content."</textarea></div>";
+            $content."</textarea>";
       echo $tt->getEndHiddenFieldValue('content', $this);
       echo "</td></tr>";
 
       $options['colspan'] = 2;
-
-      if (!$ID) {
-         $fields = [
-            'controlistcontent',
-            'impactcontent',
-            'rolloutplancontent',
-            'backoutplancontent',
-            'checklistcontent'
-         ];
-         foreach ($fields as $field) {
-            if (isset($tt->predefined[$field])) {
-               echo Html::hidden($field, ['value' => $tt->predefined[$field]]);
-            }
-         }
-      }
 
       if (!$options['template_preview']) {
          if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
@@ -1132,9 +1124,25 @@ class Change extends CommonITILObject {
             echo "<input type='hidden' name='_predefined_fields'
                      value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
          }
+         if (!$ID) {
+            $fields = [
+               'controlistcontent',
+               'impactcontent',
+               'rolloutplancontent',
+               'backoutplancontent',
+               'checklistcontent'
+            ];
+            foreach ($fields as $field) {
+               if (isset($tt->predefined[$field])) {
+                  echo Html::hidden($field, ['value' => $tt->predefined[$field]]);
+               }
+            }
+         }
 
          $this->showFormButtons($options);
       }
+      echo "</table>";
+      echo "</div>";
 
       return true;
 

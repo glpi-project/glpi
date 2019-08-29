@@ -86,6 +86,7 @@ class TicketTemplate extends ITILTemplate {
       return $tab;
    }
 
+
    /**
     * Retrieve an item from the database with additional datas
     *
@@ -101,4 +102,40 @@ class TicketTemplate extends ITILTemplate {
       Toolbox::deprecated('Use getFromDBWithData');
       return $this->getFromDBWithData($ID, $withtypeandcategory);
    }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+      if ($item instanceof ITILTemplate) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showCentralPreview($item);
+               return true;
+
+            case 2 :
+               $item->showHelpdeskPreview($item);
+               return true;
+
+         }
+      }
+      return false;
+   }
+
+
+   /**
+    * Print preview for Ticket template
+    *
+    * @param $tt ITILTemplate object
+    *
+    * @return Nothing (call to classes members)
+   **/
+   static function showHelpdeskPreview(ITILTemplate $tt) {
+
+      if (!$tt->getID()) {
+         return false;
+      }
+      if ($tt->getFromDBWithData($tt->getID())) {
+         $ticket = new  Ticket();
+         $ticket->showFormHelpdesk(Session::getLoginUserID(), $tt->getID());
+      }
+   }
+
 }
