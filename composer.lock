@@ -2570,16 +2570,16 @@
         },
         {
             "name": "zendframework/zend-cache",
-            "version": "2.8.2",
+            "version": "2.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-cache.git",
-                "reference": "4983dff629956490c78b88adcc8ece4711d7d8a3"
+                "reference": "edde41f1ee5c28e01701a032f434d03751b65df4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-cache/zipball/4983dff629956490c78b88adcc8ece4711d7d8a3",
-                "reference": "4983dff629956490c78b88adcc8ece4711d7d8a3",
+                "url": "https://api.github.com/repos/zendframework/zend-cache/zipball/edde41f1ee5c28e01701a032f434d03751b65df4",
+                "reference": "edde41f1ee5c28e01701a032f434d03751b65df4",
                 "shasum": ""
             },
             "require": {
@@ -2649,7 +2649,7 @@
                 "psr-6",
                 "zf"
             ],
-            "time": "2018-05-01T21:58:00+00:00"
+            "time": "2019-08-28T21:34:32+00:00"
         },
         {
             "name": "zendframework/zend-eventmanager",
