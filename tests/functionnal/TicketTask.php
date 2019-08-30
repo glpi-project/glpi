@@ -57,6 +57,119 @@ class TicketTask extends DbTestCase {
       return (int)$ticket->getID();
    }
 
+   public function testSchedulingAndRecall() {
+      $this->login();
+      $ticketId = $this->getNewTicket();
+      $uid = getItemByTypeName('User', TU_USER, true);
+
+      $date_begin = new \DateTime(); // ==> now
+      $date_begin_string = $date_begin->format('Y-m-d H:i:s');
+
+      $date_end = new \DateTime(); // ==> +2days
+      $date_end->add(new \DateInterval('P2D'));
+      $date_end_string = $date_end->format('Y-m-d H:i:s');
+
+      //create one task with schedule and recall
+      $task = new \TicketTask();
+      $task_id = $task->add([
+         'state'              => \Planning::TODO,
+         'tickets_id'         => $ticketId,
+         'tasktemplates_id'   => '0',
+         'taskcategories_id'  => '0',
+         'actiontime'         => "172800", //1hours
+         'content'            => "Task with schedule and recall",
+         'users_id_tech'      => $uid,
+         '_plan'              => ['begin'  => $date_begin_string],
+         'plan'               => ['begin'        => $date_begin_string, //start date
+                                  'end'          => $date_end_string, //end date auto calculate
+                                  '_duraction'   => "172800"],  //period (2 days)
+         '_planningrecall'    => ['before_time' => '14400', //recall 4 hours
+                                  'itemtype'    => 'TicketTask',
+                                  'users_id'    => $uid,
+                                  'field'       => 'begin', //default
+                                 ]
+      ]);
+      $this->integer($task_id)->isGreaterThan(0);
+
+      //load plannig schedule with recall
+      $recall = new \PlanningRecall();
+
+      //calcul 'when'
+      $when = date("Y-m-d H:i:s", strtotime($task->fields['begin']) - 14400);
+      $this->boolean($recall->getFromDBByCrit(['before_time'   => '14400', //recall 4 hours
+                                                'itemtype'     => 'TicketTask',
+                                                'items_id'     => $task_id,
+                                                'users_id'     => $uid,
+                                                'when'         => $when,
+                                             ]))->isTrue();
+
+      //create one task with schedule and without recall
+      $task = new \TicketTask();
+      $task_id = $task->add([
+         'state'              => \Planning::TODO,
+         'tickets_id'         => $ticketId,
+         'tasktemplates_id'   => '0',
+         'taskcategories_id'  => '0',
+         'actiontime'         => "172800", //2 days
+         'content'            => "Task with schedule and without recall",
+         'users_id_tech'      => $uid,
+         '_plan'              => ['begin' => $date_begin_string],
+         'plan'               => ['begin'       => $date_begin_string, // start date
+                                  'end'         => $date_end_string, //end date auto calculate
+                                  '_duraction'  => "172800"],  //period (2 days)
+         '_planningrecall' => ['before_time' => '-10', //recall to none
+                               'itemtype'    => 'TicketTask',
+                               'users_id'    => $uid,
+                               'field'       => 'begin', //default
+                              ]
+      ]);
+      $this->integer($task_id)->isGreaterThan(0);
+
+      //load schedule //which return false (not exist yet without recall)
+      $recall = new \PlanningRecall();
+      $this->boolean($recall->getFromDBByCrit(['itemtype'   => 'TicketTask',
+                                                'items_id'  => $task_id,
+                                                'users_id'  => $uid,
+                                             ]))->isFalse();
+
+      //update task schedule with recall
+      $this->boolean(
+      $task->update([
+         'id'                 => $task_id,
+         'state'              => \Planning::TODO,
+         'tickets_id'         => $ticketId,
+         'tasktemplates_id'   => '0',
+         'taskcategories_id'  => '0',
+         'actiontime'         => "172800", //2 days
+         'content'            => "Task with schedule and without recall",
+         'users_id_tech'      => $uid,
+         'actiontime'         => "172800", //1hours  //period (2 days)
+         '_plan'              => ['begin' => $date_begin_string],
+         'plan'               => ['begin'       => $date_begin_string, // start date
+                                  'end'         => $date_end_string, //end date auto calculate
+                                  '_duraction'  => "172800"],  //period (2 days)
+         '_planningrecall' => ['before_time' => '900',
+                               'itemtype'    => 'TicketTask',
+                               'users_id'    => $uid,
+                               'field'       => 'begin', //default
+                              ]
+      ])
+      )->isTrue();
+
+      //load planning recall
+      $recall = new \PlanningRecall();
+
+      //calcul when
+      $when = date("Y-m-d H:i:s", strtotime($task->fields['begin']) - 900);
+      $this->boolean($recall->getFromDBByCrit(['before_time'  => '900',
+                                                'itemtype'    => 'TicketTask',
+                                                'items_id'    => $task_id,
+                                                'users_id'    => $uid,
+                                                'when'        => $when,
+                                             ]))->isTrue();
+
+   }
+
    public function testGetTaskList() {
 
       $this->login();
