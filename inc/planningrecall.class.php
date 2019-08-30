@@ -53,7 +53,7 @@ class PlanningRecall extends CommonDBChild {
 
 
    function canCreateItem() {
-      return $this->fields['users_id'] == Session::getLoginUserID();
+      return true;
    }
 
 
