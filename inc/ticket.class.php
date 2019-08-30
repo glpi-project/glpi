@@ -6873,7 +6873,12 @@ class Ticket extends CommonITILObject {
                if (isset($field_id_or_search_options['joinparams']) && Toolbox::in_array_recursive('glpi_itilfollowups', $field_id_or_search_options['joinparams'])) {
                   $opt = ['is_itilfollowup' => 1];
                } else {
-                  $opt = ['is_ticketheader' => 1];
+                  $opt = [
+                     'OR' => [
+                        'is_mail_default' => 1,
+                        'is_ticketheader' => 1
+                     ]
+                  ];
                }
                if ($field_id_or_search_options['linkfield']  == $name) {
                   $opt['is_active'] = 1;
