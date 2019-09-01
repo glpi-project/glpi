@@ -116,6 +116,14 @@ switch ($_REQUEST['action']) {
             $fup->getFromDB($id);
          }
          $fup->showForm($id, $fup_params);
+      } else if (substr_compare($_REQUEST['type'], 'Validation', -10) === 0) {
+         $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()]);
+         $validation = new $_REQUEST['type']();
+         $id = isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
+         if ($id) {
+            $validation->getFromDB($id);
+         }
+         $validation->showForm($id, ['parent' => $parent]);
       } else if (isset($_REQUEST[$parent->getForeignKeyField()])
             && isset($_REQUEST["id"])
             && $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()])) {

@@ -930,11 +930,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "<input type='hidden' name='users_id_validate' value='".
                    $this->fields['users_id_validate']."'>";
          } else {
-            $users_id_validate  = [];
             $params             = ['id'                 => $this->fields["id"],
                                         'entity'             => $this->getEntityID(),
-                                        'right'              => $validation_right,
-                                        'users_id_validate'  => $users_id_validate];
+                                        'right'              => $validation_right];
+            if (!is_null($this->fields['users_id_validate'])) {
+               $params['users_id_validate'] = $this->fields['users_id_validate'];
+            }
             self::dropdownValidator($params);
          }
          echo "</td></tr>";

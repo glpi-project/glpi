@@ -6476,6 +6476,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $taskClass = $objType."Task";
       $task = new $taskClass;
 
+      $validationClass = $objType.'Validation';
+      $validation = new $validationClass();
+
       $canadd_fup = $fup->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
       $canadd_task = $task->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
@@ -6483,6 +6486,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $canadd_document = $canadd_fup || $this->canAddItem('Document') && !in_array($this->fields["status"],
                          array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
       $canadd_solution = $objType::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
+      $canadd_validation = $validation->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
+            array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
 
       // javascript function for add and edit items
       echo "<script type='text/javascript' >
@@ -6582,6 +6587,11 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<li class='document' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Document_Item\");'>"
               ."<i class='fa fa-paperclip'></i>".__("Document")."</li>";
+      }
+      if ($canadd_validation) {
+         echo "<li class='validation' onclick='".
+            "javascript:viewAddSubitem".$this->fields['id']."$rand(\"$validationClass\");'>"
+            ."<i class='far fa-thumbs-up'></i>".__("Approval")."</li>";
       }
       if ($canadd_solution) {
          echo "<li class='solution' onclick='".
@@ -6721,10 +6731,12 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      if ($supportsValidation and $validationClass::canCreate()) {
+      if ($supportsValidation and $validationClass::canView()) {
          $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
          foreach ($validations as $validations_id => $validation) {
             $canedit = $valitation_obj->can($validations_id, UPDATE);
+            $cananswer = ($validation['users_id_validate'] === Session::getLoginUserID() &&
+               $validation['status'] == CommonITILValidation::WAITING);
             $user->getFromDB($validation['users_id_validate']);
             $timeline[$validation['submission_date']."_validation_".$validations_id] = [
                'type' => $validationClass,
@@ -6735,6 +6747,8 @@ abstract class CommonITILObject extends CommonDBTM {
                                                  "<br>".$validation['comment_submission'],
                   'users_id'  => $validation['users_id'],
                   'can_edit'  => $canedit,
+                  'can_answer'   => $cananswer,
+                  'users_id_validate'  => $validation['users_id_validate'],
                   'timeline_position' => $validation['timeline_position']
                ],
                'itiltype' => 'Validation'
@@ -7071,6 +7085,24 @@ abstract class CommonITILObject extends CommonDBTM {
                Html::link($item_i['sourceof_items_id'], Ticket::getFormURLWithID($item_i['sourceof_items_id']))
             );
             echo "</div>";
+         }
+         if (strpos($item['type'], 'Validation') > 0 &&
+            (isset($item_i['can_answer']) && $item_i['can_answer'])) {
+            $form_url = $item['type']::getFormURL();
+            echo "<form id='validationanswers_id_{$item_i['id']}' class='center' action='$form_url' method='post'>";
+            echo Html::hidden('id', ['value' => $item_i['id']]);
+            echo Html::hidden('users_id_validate', ['value' => $item_i['users_id_validate']]);
+            Html::textarea([
+               'name'   => 'comment_validation',
+               'rows'   => 5
+            ]);
+            echo "<button type='submit' class='submit approve' name='approval_action' value='approve'>";
+            echo "<i class='far fa-thumbs-up'/>&nbsp;&nbsp;".__('Approve')."</button>";
+
+            echo "<button type='submit' class='submit refuse very_small_space' name='approval_action' value='refuse'>";
+            echo "<i class='far fa-thumbs-down'/>&nbsp;&nbsp;".__('Refuse')."</button>";
+            Html::closeForm();
+            echo "</form>";
          }
          if ($item['type'] == 'Solution' && $item_i['status'] != CommonITILValidation::WAITING && $item_i['status'] != CommonITILValidation::NONE) {
             echo "<div class='users_id_approval' id='users_id_approval_".$item_i['users_id_approval']."'>";
