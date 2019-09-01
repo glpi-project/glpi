@@ -3607,6 +3607,11 @@ a.copyright {
          background-color: #9FD6ED;
          color: #425B64;
       }
+
+      &.validation {
+         background-color: #b6f47e;
+         color: #535353;
+      }
    }
 }
 
@@ -3894,6 +3899,23 @@ a.copyright {
 
       &.status_4:after {
          border-color: #D3A4A4;
+      }
+
+      .b_right {
+         button[type='submit'] {
+            border: unset;
+            padding: 0.5em 0.5em;
+            font-weight: bold;
+            font-size: unset;
+            &.approve {
+               background-color: #b6f47e;
+               color: #002e00;
+            }
+            &.refuse {
+               background-color: #eba696;
+               color: #380b0b;
+            }
+         }
       }
    }
 

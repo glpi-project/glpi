@@ -384,6 +384,46 @@ a, .btn-linkstyled {
    color: rgb(209, 209, 209);
 }
 
+.timeline_history .h_content.ITILValidation {
+   background-color: #686868;
+   color: black;
+
+   .tab_bg_1 {
+      color: black;
+   }
+   .control_item {
+      color: black;
+   }
+   &.status_3:after {
+      border-color: #A1D7A2;
+   }
+   &:after {
+      border-color: #FFFFFF;
+   }
+   &.status_4:after {
+      border-color: #D3A4A4;
+   }
+   .b_right {
+      button[type='submit'] {
+         border: unset;
+         padding: 0.5em 0.5em;
+         font-weight: bold;
+         font-size: unset;
+         .far {
+            color: unset;
+         }
+         &.approve {
+            background-color: #b0f462;
+            color: #002e00;
+         }
+         &.refuse {
+            background-color: #e46767;
+            color: #380b0b;
+         }
+      }
+   }
+}
+
 .timeline_history .b_right {
    color: #FFF;
 }

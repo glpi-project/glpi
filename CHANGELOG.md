@@ -17,6 +17,7 @@ The present file will list all changes made to the project; according to the
 - Automatic action to purge closed tickets
 - Ability to automatically calculate project's percent done
 - Software link on Phones.
+- Add and answer approvals from timeline
 
 ### Changed
 

@@ -91,5 +91,12 @@ if (isset($_POST["add"])) {
               sprintf(__('%s purges an approval'), $_SESSION["glpiname"]));
    Html::back();
 
+} else if (isset($_POST['approval_action'])) {
+   if ($_POST['users_id_validate'] == Session::getLoginUserID()) {
+      $validation->update($_POST + [
+         'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED
+      ]);
+      Html::back();
+   }
 }
 Html::displayErrorAndDie('Lost');
