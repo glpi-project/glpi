@@ -1,0 +1,14 @@
+name: "GLPI code lint"
+
+on: ["push"]
+
+jobs:
+  phpmd:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v1"
+      - name: "PHPMD"
+        uses: "./.github/actions/phpmd"
+        with:
+          args: . text .phpmd/ruleset.xml --suffixes php --exclude /vendor/,/plugins/,/files/,/lib/,/config/,/css/tiny_mce/,/.git
