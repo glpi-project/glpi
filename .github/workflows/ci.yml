@@ -8,7 +8,7 @@ jobs:
     runs-on: "ubuntu-latest"
     services:
       app:
-        image: "glpi/githubactions-php:5.6"
+        image: "glpi/githubactions-php:7.0"
         options: >-
           --volume /glpi:/var/glpi
     steps:
@@ -25,7 +25,9 @@ jobs:
           docker exec ${{ job.services.app.id }} composer config --unset platform
           docker exec ${{ job.services.app.id }} rm composer.lock
           docker exec ${{ job.services.app.id }} composer --version
-          docker exec ${{ job.services.app.id }} composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
+          docker exec ${{ job.services.app.id }} echo "node version: $(node --version)"
+          docker exec ${{ job.services.app.id }} echo "npm version: $(npm --version)"
+          docker exec ${{ job.services.app.id }} bin/console dependencies install --ci
       - name: "PHP Parallel Lint"
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
@@ -34,7 +36,14 @@ jobs:
           docker exec ${{ job.services.app.id }} vendor/bin/security-checker security:check
       - name: "PHP CS"
         run: |
-          docker exec ${{ job.services.app.id }} vendor/bin/phpcs -d memory_limit=512M -p -n --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/plugins/,/tests/config/,/vendor/ ./
+          docker exec ${{ job.services.app.id }} vendor/bin/phpcs -d memory_limit=512M -p -n --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/node_modules/,/plugins/,/tests/config/,/vendor/ ./
+      - name: "ESLint"
+        run: |
+          docker exec ${{ job.services.app.id }} node_modules/.bin/eslint ./js && echo "ESLint found no errors"
+          docker exec ${{ job.services.app.id }} node_modules/.bin/eslint --env=node --parser-options=ecmaVersion:6 --rule 'indent: ["error", 4]' ./webpack.config.js && echo "ESLint found no errors"
+      - name: "Check CSS compilation"
+        run: |
+          docker exec ${{ job.services.app.id }} bin/console build:compile_scss
 
   tests:
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
@@ -51,11 +60,13 @@ jobs:
           #- "mysql:5.7"
           - "mysql:8.0"
         php-version:
-          #- "5.6"
           #- "7.0"
           #- "7.1"
           #- "7.2"
           - "7.3"
+          - "7.4-rc"
+        exclude:
+          - {db-image: "mysql:8.0", php-version: "7.4-rc"}
     services:
       app:
         image: "glpi/githubactions-php:${{ matrix.php-version }}"
@@ -67,6 +78,8 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         options: >-
           --shm-size=1g
+      dovecot:
+        image: "glpi/githubactions-dovecot"
       openldap:
         image: "glpi/githubactions-openldap"
     steps:
@@ -86,11 +99,26 @@ jobs:
           docker exec ${{ job.services.app.id }} composer config --unset platform
           docker exec ${{ job.services.app.id }} rm composer.lock
           docker exec ${{ job.services.app.id }} composer --version
-          docker exec ${{ job.services.app.id }} composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
+          docker exec ${{ job.services.app.id }} echo "node version: $(node --version)"
+          docker exec ${{ job.services.app.id }} echo "npm version: $(npm --version)"
+          docker exec ${{ job.services.app.id }} bin/console dependencies install --ci
+      - name: "Update DB tests"
+        run: |
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=db --db-user=root
+          docker exec ${{ job.services.app.id }} bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+          docker exec ${{ job.services.app.id }} bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
+          docker exec ${{ job.services.app.id }} bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction
       - name: "Install DB tests"
         run: |
-          docker exec ${{ job.services.app.id }} bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpi --db-host=db --db-user=root
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:install --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
           docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+      - name: "Database tests"
+        run: |
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=db --db-user=root
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
       - name: "Unit tests"
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
@@ -101,19 +129,12 @@ jobs:
         run: |
           for f in `ls tests/LDAP/ldif/*.ldif`; do cat $f | docker exec --interactive ${{ job.services.openldap.id }} ldapadd -x -H ldap://127.0.0.1:3890/ -D "cn=Manager,dc=glpi,dc=org" -w insecure ; done
           docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP
+      - name: "IMAP tests"
+        run: |
+          for f in `ls tests/emails-tests/*.eml`; do cat $f | docker exec --user glpi --interactive ${{ job.services.dovecot.id }} getmail_maildir /home/glpi/Maildir/ ; done
+          docker exec ${{ job.services.app.id }} sed -e 's/127.0.0.1/dovecot/g' -i tests/imap/MailCollector.php
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
       - name: "WEB tests"
         run: |
           docker exec ${{ job.services.app.id }} php -S localhost:8088 tests/router.php &>/dev/null &
           docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
-      - name: "Update DB tests"
-        run: |
-          docker exec ${{ job.services.app.id }} cp tests/github_actions.config_db.php tests/config_db.php
-          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
-          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
-          docker exec ${{ job.services.app.id }} bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
-          docker exec ${{ job.services.app.id }} rm tests/config_db.php
-      - name: "Database tests"
-        run: |
-          docker exec ${{ job.services.app.id }} cp tests/github_actions.config_db.php tests/config_db.php
-          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
-          docker exec ${{ job.services.app.id }} rm tests/config_db.php
