@@ -4,6 +4,7 @@ on: ["push"]
 
 jobs:
   test:
+    runs-on: "ubuntu-latest"
     container:
       image: "glpi/githubactions-env-core:php_7.3"
       volumes:
