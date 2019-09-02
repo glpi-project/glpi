@@ -1,0 +1,17 @@
+name: "GLPI CI"
+
+on: ["push"]
+
+jobs:
+  test:
+    container:
+      image: "glpi/githubactions-env-core:php_7.3"
+      volumes:
+        - "$GITHUB_WORKSPACE:/var/glpi"
+    steps:
+      - uses: "actions/checkout@v1"
+      - name: "Install dependencies"
+        run: |
+          sed -e '/"php":/d' -i composer.json
+          mv composer.lock composer.lock.bak
+          composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
