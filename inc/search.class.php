@@ -3982,6 +3982,7 @@ JAVASCRIPT;
       $addtable  = '';
       if (($table != 'asset_types')
          //  && ($table != getTableForItemType($itemtype))
+          && !$meta
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;
