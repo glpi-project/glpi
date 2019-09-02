@@ -1,0 +1,120 @@
+name: "GLPI CI"
+
+on: ["push"]
+
+jobs:
+  lint:
+    name: "Lint"
+    runs-on: "ubuntu-latest"
+    services:
+      app:
+        image: "glpi/githubactions-php:5.6"
+        options: >-
+          --volume /glpi:/var/glpi
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v1"
+        with:
+          fetch-depth: 1
+      - name: "Deploy source into app container"
+        run: |
+          sudo cp --no-target-directory --preserve --recursive `pwd` /glpi
+          sudo chown -R 1000:1000 /glpi
+      - name: "Install dependencies"
+        run: |
+          docker exec ${{ job.services.app.id }} composer config --unset platform
+          docker exec ${{ job.services.app.id }} rm composer.lock
+          docker exec ${{ job.services.app.id }} composer --version
+          docker exec ${{ job.services.app.id }} composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
+      - name: "PHP Parallel Lint"
+        run: |
+          docker exec ${{ job.services.app.id }} vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
+      - name: "PHP Security checker"
+        run: |
+          docker exec ${{ job.services.app.id }} vendor/bin/security-checker security:check
+      - name: "PHP CS"
+        run: |
+          docker exec ${{ job.services.app.id }} vendor/bin/phpcs -d memory_limit=512M -p -n --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/plugins/,/tests/config/,/vendor/ ./
+
+  tests:
+    name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
+    runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        db-image:
+          #- "mariadb:10.1"
+          #- "mariadb:10.2"
+          #- "mariadb:10.3"
+          - "mariadb:10.4"
+          #- "mysql:5.6"
+          #- "mysql:5.7"
+          - "mysql:8.0"
+        php-version:
+          #- "5.6"
+          #- "7.0"
+          #- "7.1"
+          #- "7.2"
+          - "7.3"
+    services:
+      app:
+        image: "glpi/githubactions-php:${{ matrix.php-version }}"
+        options: >-
+          --volume /glpi:/var/glpi
+      db:
+        image: "glpi/githubactions-${{ matrix.db-image }}"
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        options: >-
+          --shm-size=1g
+      openldap:
+        image: "glpi/githubactions-openldap"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v1"
+      - name: "Deploy source into app container"
+        run: |
+          sudo cp --no-target-directory --preserve --recursive `pwd` /glpi
+          sudo chown -R 1000:1000 /glpi
+      - name: "Initialize databases"
+        run: |
+          docker exec ${{ job.services.db.id }} mysql --user=root --execute="CREATE DATABASE \`glpi\`;"
+          docker exec ${{ job.services.db.id }} mysql --user=root --execute="CREATE DATABASE \`glpitest0723\`;"
+          cat tests/glpi-0.72.3-empty.sql | docker exec --interactive ${{ job.services.db.id }} mysql --user=root glpitest0723
+      - name: "Install dependencies"
+        run: |
+          docker exec ${{ job.services.app.id }} composer config --unset platform
+          docker exec ${{ job.services.app.id }} rm composer.lock
+          docker exec ${{ job.services.app.id }} composer --version
+          docker exec ${{ job.services.app.id }} composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
+      - name: "Install DB tests"
+        run: |
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpi --db-host=db --db-user=root
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+      - name: "Unit tests"
+        run: |
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
+      - name: "Functionnal tests"
+        run: |
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal
+      - name: "LDAP tests"
+        run: |
+          for f in `ls tests/LDAP/ldif/*.ldif`; do cat $f | docker exec --interactive ${{ job.services.openldap.id }} ldapadd -x -H ldap://127.0.0.1:3890/ -D "cn=Manager,dc=glpi,dc=org" -w insecure ; done
+          docker exec ${{ job.services.db.id }} mysql --user=root --execute="UPDATE \`glpi\`.\`glpi_authldaps\` SET \`host\` = 'openldap';"
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP
+      - name: "WEB tests"
+        run: |
+          docker exec ${{ job.services.app.id }} php -S localhost:8088 tests/router.php &>/dev/null &
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
+      - name: "Update DB tests"
+        run: |
+          docker exec ${{ job.services.app.id }} cp tests/github_actions.config_db.php tests/config_db.php
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+          docker exec ${{ job.services.app.id }} bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
+          docker exec ${{ job.services.app.id }} rm tests/config_db.php
+      - name: "Database tests"
+        run: |
+          docker exec ${{ job.services.app.id }} cp tests/github_actions.config_db.php tests/config_db.php
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
+          docker exec ${{ job.services.app.id }} rm tests/config_db.php
