@@ -1249,7 +1249,7 @@ abstract class API extends CommonGLPI {
                                              $itemtype::getTable(),
                                              '',
                                              $_SESSION['glpiactiveentities'],
-                                             false,
+                                             $item->maybeRecursive(),
                                              true);
 
          if ($item instanceof SavedSearch) {
