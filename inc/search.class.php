@@ -3980,20 +3980,22 @@ JAVASCRIPT;
 
       $inittable = $table;
       $addtable  = '';
+
+      $complexjoin = "";
+      if (isset($searchopt[$ID]['joinparams'])) {
+         $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
+      }
+
       if (($table != 'asset_types')
          //  && ($table != getTableForItemType($itemtype))
-          && !$meta
-          && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
+         && !empty($complexjoin)
+         && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;
       }
 
-      if (isset($searchopt[$ID]['joinparams'])) {
-         $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
-
-         if (!empty($complexjoin)) {
-            $table .= "_".$complexjoin;
-         }
+      if (!empty($complexjoin)) {
+         $table .= "_".$complexjoin;
       }
 
       if ($meta
