@@ -1,0 +1,5 @@
+name: "GLPI phpmd"
+description: "GLPI source code analysis using PHPMD"
+runs:
+  using: "docker"
+  image: "Dockerfile"
