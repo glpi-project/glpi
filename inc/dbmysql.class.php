@@ -635,6 +635,27 @@ class DBmysql {
    }
 
    /**
+    * List views in database
+    *
+    * @param string $table Table name condition (glpi_% as default to retrieve only glpi tables)
+    * @param array  $where Where clause to append
+    *
+    * @return DBmysqlIterator
+    */
+   function listViews($table = 'glpi_%', array $where = []) {
+      $iterator = $this->request([
+         'SELECT' => 'table_name as TABLE_NAME',
+         'FROM'   => 'information_schema.views',
+         'WHERE'  => [
+            'table_schema' => $this->dbdefault,
+            'table_name'   => ['LIKE', $table]
+         ] + $where
+      ]);
+      return $iterator;
+   }
+
+
+   /**
     * Returns tables using "MyIsam" engine.
     *
     * @return DBmysqlIterator
@@ -970,8 +991,13 @@ class DBmysql {
       // with all known tables
       $retrieve_all = !$this->cache_disabled && empty($this->table_cache);
 
-      $result = $this->listTables($retrieve_all ? 'glpi_%' : $tablename);
       $found_tables = [];
+      $result = $this->listTables($retrieve_all ? 'glpi_%' : $tablename);
+      while ($data = $result->next()) {
+         $found_tables[] = $data['TABLE_NAME'];
+      }
+
+      $result = $this->listViews($retrieve_all ? 'glpi_%' : $tablename);
       while ($data = $result->next()) {
          $found_tables[] = $data['TABLE_NAME'];
       }
