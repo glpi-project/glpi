@@ -2395,7 +2395,20 @@ class Entity extends CommonTreeDropdown {
       echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
-           "<td>".__('Automatic closing of solved tickets after')."</td>";
+         "<td>".__('Automatic closing of solved tickets after');
+
+      //Check if crontask is disabled
+      $crontask = new CronTask();
+      $criteria = [
+         'itemtype'  => 'Ticket',
+         'name'      => 'closeticket',
+         'state'     => CronTask::STATE_DISABLE
+      ];
+      if ($crontask->getFromDBByCrit($criteria)) {
+         echo "<br/><strong>".__('Close ticket action is disabled.')."</strong>";
+      }
+
+      echo "</td>";
       echo "<td>";
       $autoclose = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                          self::CONFIG_NEVER  => __('Never'),
@@ -2425,7 +2438,19 @@ class Entity extends CommonTreeDropdown {
          }
          echo "</font>";
       }
-      echo "<td>".__('Automatic purge of closed tickets after')."</td>";
+      echo "<td>".__('Automatic purge of closed tickets after');
+
+      //Check if crontask is disabled
+      $crontask = new CronTask();
+      $criteria = [
+         'itemtype'  => 'Ticket',
+         'name'      => 'purgeticket',
+         'state'     => CronTask::STATE_DISABLE
+      ];
+      if ($crontask->getFromDBByCrit($criteria)) {
+         echo "<br/><strong>".__('Purge ticket action is disabled.')."</strong>";
+      }
+      echo "</td>";
       echo "<td>";
       $autopurge = [
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
