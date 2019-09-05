@@ -14,6 +14,7 @@ The present file will list all changes made to the project; according to the
 - Operating system links on Monitors, Peripherals, Phones and Printers.
 - Add datacenter items to global search
 - Project task search options for Projects
+- Automatic action to purge closed tickets
 
 ### Changed
 
