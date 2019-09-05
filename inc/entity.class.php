@@ -104,7 +104,7 @@ class Entity extends CommonTreeDropdown {
                                                    'inquest_rate', 'inquest_delay',
                                                    'inquest_duration','inquest_URL',
                                                    'max_closedate', 'tickettemplates_id',
-                                                   'suppliers_as_private'],
+                                                   'suppliers_as_private', 'autopurge_delay'],
                                           // Configuration
                                           'config'
                                           => ['enable_custom_css', 'custom_css_code']];
@@ -920,6 +920,25 @@ class Entity extends CommonTreeDropdown {
          'datatype'           => 'number',
          'min'                => 1,
          'max'                => 99,
+         'step'               => 1,
+         'unit'               => 'day',
+         'toadd'              => [
+            self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
+            self::CONFIG_NEVER   => __('Never'),
+            0                  => __('Immediatly')
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '59',
+         'table'              => $this->getTable(),
+         'field'              => 'autopurge_delay',
+         'name'               => __('Automatic purge of closed tickets after'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'datatype'           => 'number',
+         'min'                => 1,
+         'max'                => 3650,
          'step'               => 1,
          'unit'               => 'day',
          'toadd'              => [
@@ -2376,8 +2395,21 @@ class Entity extends CommonTreeDropdown {
       echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
-           "<td colspan='2'>".__('Automatic closing of solved tickets after')."</td>";
-      echo "<td colspan='2'>";
+         "<td>".__('Automatic closing of solved tickets after');
+
+      //Check if crontask is disabled
+      $crontask = new CronTask();
+      $criteria = [
+         'itemtype'  => 'Ticket',
+         'name'      => 'closeticket',
+         'state'     => CronTask::STATE_DISABLE
+      ];
+      if ($crontask->getFromDBByCrit($criteria)) {
+         echo "<br/><strong>".__('Close ticket action is disabled.')."</strong>";
+      }
+
+      echo "</td>";
+      echo "<td>";
       $autoclose = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                          self::CONFIG_NEVER  => __('Never'),
                          0                   => __('Immediatly')];
@@ -2403,6 +2435,55 @@ class Entity extends CommonTreeDropdown {
             printf(_n('%d day', '%d days', $autoclose_mode), $autoclose_mode);
          } else {
             echo $autoclose[$autoclose_mode];
+         }
+         echo "</font>";
+      }
+      echo "<td>".__('Automatic purge of closed tickets after');
+
+      //Check if crontask is disabled
+      $crontask = new CronTask();
+      $criteria = [
+         'itemtype'  => 'Ticket',
+         'name'      => 'purgeticket',
+         'state'     => CronTask::STATE_DISABLE
+      ];
+      if ($crontask->getFromDBByCrit($criteria)) {
+         echo "<br/><strong>".__('Purge ticket action is disabled.')."</strong>";
+      }
+      echo "</td>";
+      echo "<td>";
+      $autopurge = [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         self::CONFIG_NEVER  => __('Never')
+      ];
+      if ($ID == 0) {
+         unset($autopurge[self::CONFIG_PARENT]);
+      }
+
+      Dropdown::showNumber(
+         'autopurge_delay',
+         [
+            'value' => $entity->fields['autopurge_delay'],
+            'min'   => 1,
+            'max'   => 3650,
+            'step'  => 1,
+            'toadd' => $autopurge,
+            'unit'  => 'day']);
+
+      if (($entity->fields['autopurge_delay'] == self::CONFIG_PARENT)
+          && ($ID != 0)) {
+          $autopurge_mode = self::getUsedConfig(
+             'autopurge_delay',
+             $entity->fields['entities_id'],
+            '',
+            self::CONFIG_NEVER
+          );
+
+         echo "<br><font class='green'>&nbsp;&nbsp;";
+         if ($autopurge_mode >= 0) {
+            printf(_n('%d day', '%d days', $autopurge_mode), $autopurge_mode);
+         } else {
+            echo $autopurge[$autopurge_mode];
          }
          echo "</font>";
       }
