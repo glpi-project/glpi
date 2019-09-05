@@ -237,8 +237,6 @@ function update94to95() {
    //rename fkeys -- usefull only for 9.5 rolling release
    foreach ([
       'glpi_entities'                        => 'itiltemplates_id',
-      'glpi_itilcategories'                  => 'itiltemplates_id_incident',
-      'glpi_itilcategories'                  => 'itiltemplates_id_demand',
       'glpi_profiles'                        => 'itiltemplates_id',
       'glpi_ticketrecurrents'                => 'itiltemplates_id',
       'glpi_tickettemplatehiddenfields'      => 'itiltemplates_id',
@@ -249,6 +247,9 @@ function update94to95() {
          $migration->changeField($table, $field, str_replace('itil', 'ticket', $field), 'integer');
       }
    }
+   $migration->changeField('glpi_itilcategories', 'itiltemplates_id_incident', 'tickettemplates_id_incident', 'integer');
+   $migration->changeField('glpi_itilcategories', 'itiltemplates_id_demand', 'tickettemplates_id_demand', 'integer');
+
    //rename profilerights values
    $migration->addPostQuery(
       $DB->buildUpdate(
