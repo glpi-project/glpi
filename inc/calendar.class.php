@@ -304,8 +304,7 @@ class Calendar extends CommonDropdown {
       $timeend    = strtotime($end);
       $datestart  = date('Y-m-d', $timestart);
       $dateend    = date('Y-m-d', $timeend);
-      // Need to finish at the closing day : set hour to midnight :
-      /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
+      // Need to finish at the closing day : set hour to midnight (23:59:59 for PHP)
       $timerealend = strtotime($dateend.' 23:59:59');
 
       $activetime = 0;
@@ -321,8 +320,8 @@ class Calendar extends CommonDropdown {
 
             if (!$this->isHoliday($actualdate)) {
                $beginhour    = '00:00:00';
-               /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
-               $endhour      = '23:59:59';
+               // Calendar segment work with '24:00:00' format for midnight
+               $endhour      = '24:00:00';
                $dayofweek    = self::getDayNumberInWeek($actualtime);
                $timeoftheday = 0;
 
@@ -494,6 +493,8 @@ class Calendar extends CommonDropdown {
          // If day is an holiday must start on the begin of next working day
          $actualdate = date('Y-m-d', $actualtime);
          $dayofweek  = self::getDayNumberInWeek($actualtime);
+         $firstworkhour = CalendarSegment::getFirstWorkingHour($this->fields['id'],
+                                                               $dayofweek);
          if ($this->isHoliday($actualdate)
              || ($cache_duration[$dayofweek] == 0)) {
 
@@ -506,6 +507,9 @@ class Calendar extends CommonDropdown {
             $firstworkhour = CalendarSegment::getFirstWorkingHour($this->fields['id'],
                                                                   $dayofweek);
             $actualtime    = strtotime($actualdate.' '.$firstworkhour);
+         } else if (date('H:i:s', $actualtime) < $firstworkhour) {
+            // Go to first working hour of current day if actual time is before first working hour
+            $actualtime = strtotime($actualdate.' '.$firstworkhour);
          }
 
          while ($delay > 0) {
@@ -544,36 +548,24 @@ class Calendar extends CommonDropdown {
             if (!$this->isHoliday($actualdate)) {
                $dayofweek = self::getDayNumberInWeek($actualtime);
                $beginhour = '00:00:00';
-               /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
-               $endhour   = '23:59:59';
 
                if ($actualdate == $datestart) { // First day cannot use cache
                   $beginhour    = date('H:i:s', $timestart);
                   $timeoftheday = CalendarSegment::getActiveTimeBetween($this->fields['id'],
                                                                         $dayofweek, $beginhour,
-                                                                        $endhour);
+                                                                        '24:00:00');
                } else {
                   $timeoftheday = $cache_duration[$dayofweek];
                }
 
-               // Day do not complete the delay : pass to next day
-               if ($timeoftheday < $delay && !$negative_delay) {
-                  $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP);
+               if ($timeoftheday <= $delay && !$negative_delay
+                  || $timeoftheday >= $delay && $negative_delay) {
+                  // Delay is greater or equal than remaining time in day
+                  // -> pass to next day
+                  $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
                   $delay      -= $timeoftheday;
-
-               } else if ($timeoftheday > $delay && $negative_delay) {
-                  $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, true);
-                  $delay      -= $timeoftheday;
-
-               } else { // End of the delay in the day : get hours with this delay
-                  $beginhour = '00:00:00';
-                  /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
-                  $endhour   = '23:59:59';
-
-                  if ($actualdate == $datestart) {
-                     $beginhour = date('H:i:s', $timestart);
-                  }
-
+               } else {
+                  // End of the delay in the day : get hours with this delay
                   $endhour = CalendarSegment::addDelayInDay($this->fields['id'], $dayofweek,
                                                             $beginhour, $delay);
                   return $actualdate.' '.$endhour;
@@ -631,9 +623,8 @@ class Calendar extends CommonDropdown {
 
       $results = [];
       for ($i=0; $i<7; $i++) {
-         /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
          $results[$i] = CalendarSegment::getActiveTimeBetween($this->fields['id'], $i, '00:00:00',
-                                                              '23:59:59');
+                                                              '24:00:00');
       }
       return $results;
    }
