@@ -7389,7 +7389,7 @@ JAVASCRIPT;
             header('Pragma: private'); /// IE BUG + SSL
             header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
             header("Content-disposition: filename=glpi.csv");
-            header('Content-type: application/octetstream');
+            header('Content-type: text/csv');
             // zero width no break space (for excel)
             echo"\xEF\xBB\xBF";
             break;
