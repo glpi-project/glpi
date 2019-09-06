@@ -306,7 +306,7 @@ class TicketTask extends DbTestCase {
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
          WARNING => [
             "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-13  to 2019-08-14 :<br/><a href='".
-            $ticket->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br>"
+            $ticket->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br/>"
          ]
       ]);
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
@@ -345,8 +345,8 @@ class TicketTask extends DbTestCase {
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
          WARNING => [
             "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-10 00:00 to 2019-08-20 00:00:<br/><a href='".
-            $ticket->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='".$ticket
-            ->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br>"
+            $ticket->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='".$ticket
+            ->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br/>"
          ]
       ]);
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset

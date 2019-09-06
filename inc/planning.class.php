@@ -203,13 +203,15 @@ class Planning extends CommonGLPI {
       $message = '';
 
       foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-         $data = call_user_func([$itemtype, 'populatePlanning'],
-                                ['who'           => $users_id,
-                                      'who_group'     => 0,
-                                      'whogroup'      => 0,
-                                      'begin'         => $begin,
-                                      'end'           => $end,
-                                      'check_planned' => true]);
+         $item = new $itemtype;
+         $data = $item->populatePlanning([
+             'who'           => $users_id,
+            'who_group'     => 0,
+            'whogroup'      => 0,
+            'begin'         => $begin,
+            'end'           => $end,
+            'check_planned' => true
+         ]);
          if (isPluginItemType($itemtype)) {
             if (isset($data['items'])) {
                $data = $data['items'];
@@ -225,8 +227,8 @@ class Planning extends CommonGLPI {
                    || (is_array($except[$itemtype]) && !in_array($val['id'], $except[$itemtype]))) {
 
                   $planned  = true;
-                  $message .= '- '.call_user_func([$itemtype, 'getAlreadyPlannedInformation'],
-                                                  $itemtype, $val).'<br>';
+                  $message .= '- ' . $item->getAlreadyPlannedInformation($val);
+                  $message .= '<br/>';
                }
             }
          }
@@ -1644,9 +1646,13 @@ JAVASCRIPT;
             }
 
             if (!$abort) {
-               $update = ['id'   => $params['items_id'],
-                           'plan' => ['begin' => $params['start'],
-                                           'end'   => $params['end']]];
+               $update = [
+                  'id'   => $params['items_id'],
+                  'plan' => [
+                     'begin' => $params['start'],
+                     'end'   => $params['end']
+                  ]
+               ];
 
                if (isset($item->fields['users_id_tech'])) {
                   $update['users_id_tech'] = $item->fields['users_id_tech'];

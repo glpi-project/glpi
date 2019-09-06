@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * Reminder Class
 **/
 class Reminder extends CommonDBVisible {
+   use PlanningEvent;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -1030,18 +1031,6 @@ class Reminder extends CommonDBVisible {
    /**
     * Display a Planning Item
     *
-    * @param $val Array of the item to display
-    *
-    * @return Already planned information
-    **/
-   static function getAlreadyPlannedInformation(array $val) {
-      return CommonITILTask::getAlreadyPlannedInformation(static::getType(), $val);
-   }
-
-
-   /**
-    * Display a Planning Item
-    *
     * @param $val       array of the item to display
     * @param $who             ID of the user (0 if all)
     * @param $type            position of the item in the time block (in, through, begin or end)
@@ -1239,9 +1228,5 @@ class Reminder extends CommonDBVisible {
          $values = parent::getRights();
       }
       return $values;
-   }
-
-   function getItilObjectItemType() {
-      return $this->getType();
    }
 }

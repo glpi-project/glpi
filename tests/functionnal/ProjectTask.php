@@ -105,7 +105,7 @@ class ProjectTask extends DbTestCase {
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
          WARNING => [
             "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='".
-            $ptask->getFormURLWithID($task_id)."'>first test, whole period</a><br>"
+            $ptask->getFormURLWithID($task_id)."'>first test, whole period</a><br/>"
          ]
       ]);
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
@@ -184,7 +184,7 @@ class ProjectTask extends DbTestCase {
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
          WARNING => [
             "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-11  to 2019-08-12 :<br/><a href='".
-            $ptask->getFormURLWithID($task_id)."'>first test, whole period</a><br>"
+            $ptask->getFormURLWithID($task_id)."'>first test, whole period</a><br/>"
          ]
       ]);
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
