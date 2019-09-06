@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c2ff462b27a40cc5b8b87bfcee9e118b",
+    "content-hash": "ca0eaa72e7c9c4554d0130110e0ae011",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -778,14 +778,14 @@
             "authors": [
                 {
                     "name": "Evert Pot",
+                    "role": "Developer",
                     "email": "me@evertpot.com",
-                    "homepage": "http://evertpot.com/",
-                    "role": "Developer"
+                    "homepage": "http://evertpot.com/"
                 },
                 {
                     "name": "Markus Staab",
-                    "email": "markus.staab@redaxo.de",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "markus.staab@redaxo.de"
                 }
             ],
             "description": "sabre/xml is an XML library that you may not hate.",
@@ -1642,16 +1642,16 @@
     "packages-dev": [
         {
             "name": "atoum/atoum",
-            "version": "3.3.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "c5279d0ecd4e2d53af6b38815db2cafee8fc46b6"
+                "reference": "be412c0d5c01a4d9d64f7422a510b5a5a9611c9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/c5279d0ecd4e2d53af6b38815db2cafee8fc46b6",
-                "reference": "c5279d0ecd4e2d53af6b38815db2cafee8fc46b6",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/be412c0d5c01a4d9d64f7422a510b5a5a9611c9f",
+                "reference": "be412c0d5c01a4d9d64f7422a510b5a5a9611c9f",
                 "shasum": ""
             },
             "require": {
@@ -1659,7 +1659,7 @@
                 "ext-json": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
-                "php": "^5.6.0 || ^7.0.0 <7.4.0"
+                "php": "^5.6.0 || ^7.0.0 <7.5.0"
             },
             "replace": {
                 "mageekguy/atoum": "*"
@@ -1721,7 +1721,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2018-03-15T22:46:39+00:00"
+            "time": "2019-06-08T11:00:07+00:00"
         },
         {
             "name": "atoum/telemetry-extension",
@@ -2859,16 +2859,16 @@
             "time": "2017-05-10T09:20:27+00:00"
         },
         {
-            "name": "mikey179/vfsStream",
+            "name": "mikey179/vfsstream",
             "version": "v1.6.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mikey179/vfsStream.git",
+                "url": "https://github.com/bovigo/vfsStream.git",
                 "reference": "d5fec95f541d4d71c4823bb5e30cf9b9e5b96145"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
+                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
                 "reference": "d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
                 "shasum": ""
             },
@@ -2896,8 +2896,8 @@
             "authors": [
                 {
                     "name": "Frank Kleine",
-                    "homepage": "http://frankkleine.de/",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "homepage": "http://frankkleine.de/"
                 }
             ],
             "description": "Virtual file system to mock the real file system in unit tests.",
@@ -3516,7 +3516,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "atoum/atoum": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
