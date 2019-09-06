@@ -41,6 +41,7 @@ if (!defined('GLPI_ROOT')) {
  * @since 0.85
 **/
 class ProjectTask extends CommonDBChild {
+   use PlanningEvent;
 
    // From CommonDBTM
    public $dohistory = true;
@@ -1675,20 +1676,5 @@ class ProjectTask extends CommonDBChild {
       $html.= "</div>";
       $html.= "<div class='event-description rich_text_container'>".html_entity_decode($val["content"])."</div>";
       return $html;
-   }
-
-   /**
-    * Display a Planning Item
-    *
-    * @param $val Array of the item to display
-    *
-    * @return Already planned information
-    **/
-   static function getAlreadyPlannedInformation($itemtype, array $val) {
-      return CommonITILTask::getAlreadyPlannedInformation($itemtype, $val);
-   }
-
-   function getItilObjectItemType() {
-      return $this->getType();
    }
 }
