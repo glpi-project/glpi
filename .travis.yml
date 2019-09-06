@@ -6,7 +6,7 @@ env:
   - DB=mysql
 
 before_script:
-  - phpenv config-rm xdebug.ini
+  - phpenv config-rm xdebug.ini || true
   - ./tests/LDAP/ldap_run.sh
   - composer self-update
   - sed -e '/"php":/d' -i composer.json
@@ -55,6 +55,12 @@ matrix:
           packages:
             - ldap-utils
             - slapd
+    - php: 7.4snapshot
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
     - php: nightly
       addons:
         apt:
@@ -63,6 +69,7 @@ matrix:
             - slapd
   allow_failures:
     - php: nightly
+    - php: 7.4snapshot
 
 cache:
   directories:
