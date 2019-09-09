@@ -647,6 +647,7 @@ class Config extends CommonDBTM {
       Html::closeForm();
    }
 
+
    /**
     * Print the config form for restrictions
     *

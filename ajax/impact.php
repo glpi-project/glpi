@@ -168,8 +168,3 @@ switch ($_SERVER['REQUEST_METHOD']) {
       http_response_code(200);
       break;
 }
-
-
-
-
-
