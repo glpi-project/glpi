@@ -3350,6 +3350,20 @@ class User extends CommonDBTM {
          ]
       ];
 
+      $tab[] = [
+         'id'                 => '99',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'linkfield'          => 'users_id_supervisor',
+         'name'               => __('Responsible'),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            // force complex join generation
+            'condition' => "AND 1=1"
+         ]
+      ];
+
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 

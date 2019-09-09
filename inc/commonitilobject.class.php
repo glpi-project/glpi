@@ -1562,7 +1562,7 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($input[$key]) && $input[$key]) {
             $tt_class = $this->getType() . 'Template';
             $tt = new $tt_class;
-            if ($tt->getFromDBWithDatas($input[$key])) {
+            if ($tt->getFromDBWithData($input[$key])) {
                if (count($tt->mandatory)) {
                   $mandatory_missing = [];
                   $fieldsname        = $tt->getAllowedFieldsNames(true);
@@ -1700,6 +1700,31 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    function post_addItem() {
+
+      // Add tasks in tasktemplates if defined in itiltemplate
+      if (isset($this->input['_tasktemplates_id'])
+          && is_array($this->input['_tasktemplates_id'])
+          && count($this->input['_tasktemplates_id'])) {
+         $tasktemplate = new TaskTemplate;
+         $itiltask_class = $this->getType().'Task';
+         $itiltask   = new $itiltask_class;
+         foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
+            $tasktemplate->getFromDB($tasktemplates_id);
+            $tasktemplate_content = Toolbox::addslashes_deep($tasktemplate->fields["content"]);
+            $itiltask->add([
+               'tasktemplates_id'            => $tasktemplates_id,
+               'content'                     => $tasktemplate_content,
+               'taskcategories_id'           => $tasktemplate->fields['taskcategories_id'],
+               'actiontime'                  => $tasktemplate->fields['actiontime'],
+               'state'                       => $tasktemplate->fields['state'],
+               $this->getForeignKeyField()   => $this->fields['id'],
+               'is_private'                  => $tasktemplate->fields['is_private'],
+               'users_id_tech'               => $tasktemplate->fields['users_id_tech'],
+               'groups_id_tech'              => $tasktemplate->fields['groups_id_tech'],
+               '_disablenotif'               => true
+            ]);
+         }
+      }
 
       // Add document if needed, without notification
       $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -3337,6 +3362,29 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
+
+      // For ITIL template
+      $tab[] = [
+         'id'                 => '142',
+         'table'              => 'glpi_documents',
+         'field'              => 'name',
+         'name'               => _n('Document', 'Documents', Session::getPluralNumber()),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'nosearch'           => true,
+         'nodisplay'          => true,
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'items_id',
+            'beforejoin'         => [
+               'table'              => 'glpi_documents_items',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
 
       return $tab;
    }
@@ -7466,7 +7514,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($force_template) {
          // with type and categ
-         if ($tt->getFromDBWithDatas($force_template, true)) {
+         if ($tt->getFromDBWithData($force_template, true)) {
             $template_loaded = true;
          }
       }
@@ -7481,7 +7529,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if (!empty($categ->fields[$field]) && $categ->fields[$field]) {
                // without type and categ
-               if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
+               if ($tt->getFromDBWithData($categ->fields[$field], false)) {
                   $template_loaded = true;
                }
             }
@@ -7500,7 +7548,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if (isset($_SESSION['glpiactiveprofile']['itiltemplates_id'])
                && $_SESSION['glpiactiveprofile']['itiltemplates_id']) {
                // with type and categ
-               if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['itiltemplates_id'],
+               if ($tt->getFromDBWithData($_SESSION['glpiactiveprofile']['itiltemplates_id'],
                                           true)) {
                   $template_loaded = true;
                }
@@ -7513,7 +7561,7 @@ abstract class CommonITILObject extends CommonDBTM {
             // load default entity one if not already loaded
             if ($template_id = Entity::getUsedConfig('itiltemplates_id', $entities_id)) {
                // with type and categ
-               if ($tt->getFromDBWithDatas($template_id, true)) {
+               if ($tt->getFromDBWithData($template_id, true)) {
                   $template_loaded = true;
                }
             }
@@ -7540,7 +7588,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if (isset($categ->fields[$field]) && $categ->fields[$field]) {
                   // without type and categ
-                  if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
+                  if ($tt->getFromDBWithData($categ->fields[$field], false)) {
                      $template_loaded = true;
                   }
                }

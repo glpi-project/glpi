@@ -2553,4 +2553,72 @@ class Ticket extends DbTestCase {
       $ticket->getFromDB($ticket->getID());
       $this->integer((int) $ticket->fields['locations_id'])->isEqualTo(0);
    }
+
+   public function testCronPurgeTicket() {
+      global $DB;
+      // set default calendar and autoclose delay in root entity
+      $entity = new \Entity;
+      $this->boolean($entity->update([
+         'id'              => 0,
+         'calendars_id'    => 1,
+         'autopurge_delay' => 5,
+      ]))->isTrue();
+
+      $doc = new \Document();
+      $did = (int)$doc->add([
+         'name'   => 'test doc'
+      ]);
+      $this->integer($did)->isGreaterThan(0);
+
+      // create some closed tickets at various solvedate
+      $ticket = new \Ticket;
+      $tickets_id_1 = $ticket->add([
+         'name'            => "test autopurge 1",
+         'content'         => "test autopurge 1",
+         'entities_id'     => 0,
+         'status'          => \CommonITILObject::CLOSED,
+         '_documents_id'   => [$did]
+      ]);
+      $this->integer((int)$tickets_id_1)->isGreaterThan(0);
+      $this->boolean(
+         $DB->update('glpi_tickets', [
+            'closedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
+         ], [
+            'id' => $tickets_id_1,
+         ])
+      )->isTrue();
+      $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
+
+      $docitem = new \Document_Item();
+      $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]))->isTrue();
+
+      $tickets_id_2 = $ticket->add([
+         'name'        => "test autopurge 2",
+         'content'     => "test autopurge 2",
+         'entities_id' => 0,
+         'status'      => \CommonITILObject::CLOSED,
+      ]);
+      $this->integer((int)$tickets_id_2)->isGreaterThan(0);
+      $this->boolean(
+         $DB->update('glpi_tickets', [
+            'closedate' => date('Y-m-d 10:00:00', time()),
+         ], [
+            'id' => $tickets_id_2,
+         ])
+      );
+
+      // launch Cron for closing tickets
+      $mode = - \CronTask::MODE_EXTERNAL; // force
+      \CronTask::launch($mode, 5, 'purgeticket');
+
+      // check ticket presence
+      // first ticket should have been removed
+      $this->boolean($ticket->getFromDB($tickets_id_1))->isFalse();
+      //also ensure linked document has been dropped
+      $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]))->isFalse();
+      $this->boolean($doc->getFromDB($did))->isTrue(); //document itself remains
+      //second ticket is still present
+      $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
+      $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
+   }
 }

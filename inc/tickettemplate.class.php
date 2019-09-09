@@ -47,4 +47,95 @@ class TicketTemplate extends ITILTemplate {
       return _n('Ticket template', 'Ticket templates', $nb);
    }
 
+   public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {
+      $itil_object = new Ticket();
+      $tab =  [
+         $itil_object->getSearchOptionIDByField('field', 'name',
+                                                       'glpi_requesttypes')
+                                                       => 'requesttypes_id',
+         $itil_object->getSearchOptionIDByField('field', 'completename',
+                                             'glpi_locations') => 'locations_id',
+         $itil_object->getSearchOptionIDByField('field', 'slas_id_tto',
+                                             'glpi_slas')      => 'slas_id_tto',
+         $itil_object->getSearchOptionIDByField('field', 'slas_id_ttr',
+                                             'glpi_slas')      => 'slas_id_ttr',
+         $itil_object->getSearchOptionIDByField('field', 'olas_id_tto',
+                                             'glpi_olas')      => 'olas_id_tto',
+         $itil_object->getSearchOptionIDByField('field', 'olas_id_ttr',
+                                             'glpi_olas')      => 'olas_id_ttr',
+         $itil_object->getSearchOptionIDByField('field', 'time_to_resolve',
+                                             'glpi_tickets')   => 'time_to_resolve',
+         $itil_object->getSearchOptionIDByField('field', 'time_to_own',
+                                             'glpi_tickets')   => 'time_to_own',
+         $itil_object->getSearchOptionIDByField('field', 'internal_time_to_resolve',
+                                             'glpi_tickets')   => 'internal_time_to_resolve',
+         $itil_object->getSearchOptionIDByField('field', 'internal_time_to_own',
+                                             'glpi_tickets')   => 'internal_time_to_own',
+         $itil_object->getSearchOptionIDByField('field', 'actiontime',
+                                             'glpi_tickets')   => 'actiontime',
+         $itil_object->getSearchOptionIDByField('field', 'global_validation',
+                                             'glpi_tickets')   => 'global_validation',
+
+      ];
+
+      if ($withtypeandcategory) {
+         $tab[$itil_object->getSearchOptionIDByField('field', 'type',
+                                                $itil_object->getTable())]         = 'type';
+      }
+
+      return $tab;
+   }
+
+
+   /**
+    * Retrieve an item from the database with additional datas
+    *
+    * @since 0.83
+    * @deprecated 9.5.0
+    *
+    * @param $ID                    integer  ID of the item to get
+    * @param $withtypeandcategory   boolean  with type and category (true by default)
+    *
+    * @return true if succeed else false
+   **/
+   function getFromDBWithDatas($ID, $withtypeandcategory = true) {
+      Toolbox::deprecated('Use getFromDBWithData');
+      return $this->getFromDBWithData($ID, $withtypeandcategory);
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+      if ($item instanceof ITILTemplate) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showCentralPreview($item);
+               return true;
+
+            case 2 :
+               $item->showHelpdeskPreview($item);
+               return true;
+
+         }
+      }
+      return false;
+   }
+
+
+   /**
+    * Print preview for Ticket template
+    *
+    * @param $tt ITILTemplate object
+    *
+    * @return Nothing (call to classes members)
+   **/
+   static function showHelpdeskPreview(ITILTemplate $tt) {
+
+      if (!$tt->getID()) {
+         return false;
+      }
+      if ($tt->getFromDBWithData($tt->getID())) {
+         $ticket = new  Ticket();
+         $ticket->showFormHelpdesk(Session::getLoginUserID(), $tt->getID());
+      }
+   }
+
 }

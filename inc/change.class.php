@@ -437,7 +437,7 @@ class Change extends CommonITILObject {
          'id'                 => '60',
          'table'              => $this->getTable(),
          'field'              => 'impactcontent',
-         'name'               => __('Impact'),
+         'name'               => __('Analysis impact'),
          'massiveaction'      => false,
          'datatype'           => 'text'
       ];
@@ -748,7 +748,16 @@ class Change extends CommonITILObject {
 
       if (!$options['template_preview']) {
          $this->showFormHeader($options);
+         if (isset($this->fields['_tasktemplates_id'])) {
+            foreach ($this->fields['_tasktemplates_id'] as $tasktemplates_id) {
+               echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
+            }
+         }
       }
+
+      echo "<div class='spaced' id='tabsbody'>";
+
+      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th class='left' width='$colsize1%'>";
@@ -1039,7 +1048,7 @@ class Change extends CommonITILObject {
       } else {
          echo $tt->getBeginHiddenFieldValue('global_validation');
 
-         if (Session::haveRightsOr('changevalidation', ChangeeValidation::getCreateRights())
+         if (Session::haveRightsOr('changevalidation', ChangeValidation::getCreateRights())
              && $canupdate) {
             ChangeValidation::dropdownStatus('global_validation',
                                              ['global' => true,
@@ -1054,11 +1063,13 @@ class Change extends CommonITILObject {
       echo "<th></th>";
       echo "<td></td>";
       echo "</tr>";
-      echo "</table>";
 
-      $this->showActorsPartForm($ID, $options);
+      if (!$ID) {
+         echo "</table>";
+         $this->showActorsPartForm($ID, $options);
+         echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
+      }
 
-      echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
       printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
@@ -1075,7 +1086,8 @@ class Change extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-      echo "<td colspan='3'>";
+      echo $tt->getEndHiddenFieldText('content', $this);
+      echo "</th><td colspan='3'>";
       $rand = mt_rand();
 
       echo $tt->getBeginHiddenFieldValue('content');
@@ -1100,20 +1112,37 @@ class Change extends CommonITILObject {
 
       echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
             ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
-            $content."</textarea></div>";
+            $content."</textarea>";
       echo $tt->getEndHiddenFieldValue('content', $this);
       echo "</td></tr>";
 
       $options['colspan'] = 2;
+
       if (!$options['template_preview']) {
          if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
             echo "<input type='hidden' name='$tpl_key' value='".$tt->fields['id']."'>";
             echo "<input type='hidden' name='_predefined_fields'
                      value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
          }
+         if (!$ID) {
+            $fields = [
+               'controlistcontent',
+               'impactcontent',
+               'rolloutplancontent',
+               'backoutplancontent',
+               'checklistcontent'
+            ];
+            foreach ($fields as $field) {
+               if (isset($tt->predefined[$field])) {
+                  echo Html::hidden($field, ['value' => $tt->predefined[$field]]);
+               }
+            }
+         }
 
          $this->showFormButtons($options);
       }
+      echo "</table>";
+      echo "</div>";
 
       return true;
 
@@ -1462,7 +1491,13 @@ class Change extends CommonITILObject {
          'itilcategories_id'          => 0,
          'actiontime'                 => 0,
          '_add_validation'            => 0,
-         'users_id_validate'          => []
+         'users_id_validate'          => [],
+         '_tasktemplates_id'          => [],
+         'controlistcontent'          => '',
+         'impactcontent'              => '',
+         'rolloutplancontent'         => '',
+         'backoutplancontent'         => '',
+         'checklistcontent'           => ''
       ];
    }
 }

@@ -233,7 +233,7 @@ class Item_Ticket extends CommonDBRelation{
             $opt['templates_id'] = $tt->fields['id'];
          }
       } else if (isset($options['templates_id'])) {
-         $tt->getFromDBWithDatas($options['templates_id']);
+         $tt->getFromDBWithData($options['templates_id']);
          if (isset($tt->fields['id'])) {
             $opt['templates_id'] = $tt->fields['id'];
          }

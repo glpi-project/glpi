@@ -319,7 +319,6 @@ class MailCollector extends DbTestCase {
       while ($data = $iterator->next()) {
          $names[] = $data['name'];
       }
-      var_dump($names);
 
       $expected_names = [
          'Test import mail avec emoticons unicode',

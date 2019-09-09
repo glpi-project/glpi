@@ -1997,29 +1997,6 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Add tasks in tasktemplates if defined in itiltemplate
-      if (isset($this->input['_tasktemplates_id'])
-          && is_array($this->input['_tasktemplates_id'])
-          && count($this->input['_tasktemplates_id'])) {
-         $tasktemplate = new TaskTemplate;
-         $tickettask   = new TicketTask;
-         foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
-            $tasktemplate->getFromDB($tasktemplates_id);
-            $tasktemplate_content = $tasktemplate->fields["content"];
-            $tickettask->add(['tasktemplates_id'  => $tasktemplates_id,
-                              'content'           => $tasktemplate_content,
-                              'taskcategories_id' => $tasktemplate->fields['taskcategories_id'],
-                              'actiontime'        => $tasktemplate->fields['actiontime'],
-                              'state'             => $tasktemplate->fields['state'],
-                              'tickets_id'        => $this->fields['id'],
-                              'is_private'        => $tasktemplate->fields['is_private'],
-                              'users_id_tech'     => $tasktemplate->fields['users_id_tech'],
-                              'groups_id_tech'    => $tasktemplate->fields['groups_id_tech'],
-                              '_disablenotif'     => true
-                              ]);
-         }
-      }
-
       if (isset($this->input['_promoted_fup_id']) && $this->input['_promoted_fup_id'] > 0) {
          $fup = new ITILFollowup();
          $fup->getFromDB($this->input['_promoted_fup_id']);
@@ -2624,9 +2601,12 @@ class Ticket extends CommonITILObject {
             $merge_succeeded = false;
             $input = $ma->getInput();
 
+            $in_transaction = $DB->inTransaction();
             foreach ($ids as $id) {
                try {
-                  $DB->beginTransaction();
+                  if (!$in_transaction) {
+                     $DB->beginTransaction();
+                  }
                   $fup = new ITILFollowup();
                   $document_item = new Document_Item();
                   $input2 = [];
@@ -2729,7 +2709,9 @@ class Ticket extends CommonITILObject {
                         throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
                      }
 
-                     $DB->commit();
+                     if (!$in_transaction) {
+                        $DB->commit();
+                     }
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      Event::log($input['_mergeticket'], 'ticket', 4, 'tracking',
                         sprintf(__('%s merges ticket %s into %s'), $_SESSION['glpiname'],
@@ -2738,7 +2720,9 @@ class Ticket extends CommonITILObject {
                      throw new \RuntimeException(ERROR_RIGHT, MassiveAction::ACTION_NORIGHT);
                   }
                } catch (\RuntimeException $e) {
-                  $DB->rollBack();
+                  if (!$in_transaction) {
+                     $DB->rollBack();
+                  }
                   $ma->itemDone($item->getType(), $id, $e->getCode());
                   $ma->addMessage($item->getErrorMessage($e->getMessage()));
                }
@@ -2970,29 +2954,6 @@ class Ticket extends CommonITILObject {
          }
       }
       $tab = array_merge($tab, $location_so);
-
-      // For ticket template
-      $tab[] = [
-         'id'                 => '142',
-         'table'              => 'glpi_documents',
-         'field'              => 'name',
-         'name'               => _n('Document', 'Documents', Session::getPluralNumber()),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'nosearch'           => true,
-         'nodisplay'          => true,
-         'datatype'           => 'dropdown',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'items_id',
-            'beforejoin'         => [
-               'table'              => 'glpi_documents_items',
-               'joinparams'         => [
-                  'jointype'           => 'itemtype_item'
-               ]
-            ]
-         ]
-      ];
 
       $tab = array_merge($tab, $this->getSearchOptionsActors());
 
@@ -6388,6 +6349,9 @@ class Ticket extends CommonITILObject {
 
          case 'createinquest' :
             return ['description' => __('Generation of satisfaction surveys')];
+
+         case 'purgeticket':
+            return ['description' => __('Automatic closed tickets purge')];
       }
       return [];
    }
@@ -6637,6 +6601,69 @@ class Ticket extends CommonITILObject {
 
 
    /**
+    * Cron for ticket's automatic purge
+    *
+    * @param Crontask $task Crontask object
+    *
+    * @return integer (0 : nothing done - 1 : done)
+   **/
+   static function cronPurgeTicket(Crontask $task) {
+      global $DB;
+
+      $ticket = new self();
+
+      //search entities
+      $tot = 0;
+
+      $entities = $DB->request(
+         [
+            'SELECT' => 'id',
+            'FROM'   => Entity::getTable(),
+         ]
+      );
+
+      foreach ($entities as $entity) {
+         $delay  = Entity::getUsedConfig('autopurge_delay', $entity['id'], '', Entity::CONFIG_NEVER);
+         if ($delay >= 0) {
+            $criteria = [
+               'FROM'   => $ticket->getTable(),
+               'WHERE'  => [
+                  'entities_id'  => $entity['id'],
+                  'status'       => $ticket->getClosedStatusArray(),
+               ]
+            ];
+
+            if ($delay > 0) {
+               // remove all days
+               $criteria['WHERE'][] = new \QueryExpression("ADDDATE(`closedate`, INTERVAL ".$delay." DAY) < NOW()");
+            }
+
+            $iterator = $DB->request($criteria);
+            $nb = 0;
+
+            foreach ($iterator as $tick) {
+               $ticket->delete(
+                  [
+                     'id'           => $tick['id'],
+                     '_auto_update' => true
+                  ],
+                  true
+               );
+               $nb++;
+            }
+
+            if ($nb) {
+               $tot += $nb;
+               $task->addVolume($nb);
+               $task->log(Dropdown::getDropdownName('glpi_entities', $entity['id'])." : $nb");
+            }
+         }
+      }
+
+      return ($tot > 0 ? 1 : 0);
+   }
+
+   /**
     * Display debug information for current object
    **/
    function showDebug() {
@@ -6788,7 +6815,12 @@ class Ticket extends CommonITILObject {
                if (isset($field_id_or_search_options['joinparams']) && Toolbox::in_array_recursive('glpi_itilfollowups', $field_id_or_search_options['joinparams'])) {
                   $opt = ['is_itilfollowup' => 1];
                } else {
-                  $opt = ['is_ticketheader' => 1];
+                  $opt = [
+                     'OR' => [
+                        'is_mail_default' => 1,
+                        'is_ticketheader' => 1
+                     ]
+                  ];
                }
                if ($field_id_or_search_options['linkfield']  == $name) {
                   $opt['is_active'] = 1;
@@ -6922,7 +6954,7 @@ class Ticket extends CommonITILObject {
          ? $input['entities_id']
          : $this->fields['entities_id'];
 
-      // If creation date is not set, then this function is called during ticket creation
+      // If creation date is not set, then we're called during ticket creation
       $creation_date = !empty($this->fields['date_creation'])
          ? strtotime($this->fields['date_creation'])
          : time();
@@ -6944,5 +6976,95 @@ class Ticket extends CommonITILObject {
       if (count($calendars)) {
          $input['_date_creation_calendars_id'] = $calendars;
       }
+   }
+
+   /**
+    * Build parent condition for search
+    *
+    * @param string $fieldID field used in the condition: tickets_id, items_id
+    *
+    * @return string
+    */
+   public static function buildCanViewCondition($fieldID) {
+
+      $condition = "";
+      $user   = Session::getLoginUserID();
+      $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+
+      $requester = CommonITILActor::REQUESTER;
+      $assign    = CommonITILActor::ASSIGN;
+      $obs       = CommonITILActor::OBSERVER;
+
+      // Avoid empty IN ()
+      if ($groups == "''") {
+         $groups = '-1';
+      }
+
+      if (Session::haveRight("ticket", Ticket::READMY)) {
+         // Add tickets where the users is requester, observer or recipient
+         // Subquery for requester/observer user
+         $user_query = "SELECT `tickets_id`
+            FROM `glpi_tickets_users`
+            WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
+         $condition .= "OR `$fieldID` IN ($user_query) ";
+
+         // Subquery for recipient
+         $recipient_query = "SELECT `id`
+            FROM `glpi_tickets`
+            WHERE `users_id_recipient` = '$user'";
+         $condition .= "OR `$fieldID` IN ($recipient_query) ";
+      }
+
+      if (Session::haveRight("ticket", Ticket::READGROUP)) {
+         // Add tickets where the users is in a requester or observer group
+         // Subquery for requester/observer group
+         $group_query = "SELECT `tickets_id`
+            FROM `glpi_groups_tickets`
+            WHERE `groups_id` IN ($groups) AND type IN ($requester, $obs)";
+         $condition .= "OR `$fieldID` IN ($group_query) ";
+      }
+
+      if (Session::haveRightsOr("ticket", [
+         Ticket::OWN,
+         Ticket::READASSIGN
+      ])) {
+         // Add tickets where the users is assigned
+         // Subquery for assigned user
+         $user_query = "SELECT `tickets_id`
+            FROM `glpi_tickets_users`
+            WHERE `users_id` = '$user' AND type = $assign";
+         $condition .= "OR `$fieldID` IN ($user_query) ";
+      }
+
+      if (Session::haveRight("ticket", Ticket::READASSIGN)) {
+         // Add tickets where the users is part of an assigned group
+         // Subquery for assigned group
+         $group_query = "SELECT `tickets_id`
+            FROM `glpi_groups_tickets`
+            WHERE `groups_id` IN ($groups) AND type = $assign";
+         $condition .= "OR `$fieldID` IN ($group_query) ";
+
+         if (Session::haveRight('ticket', Ticket::ASSIGN)) {
+            // Add new tickets
+            $tickets_query = "SELECT `id`
+               FROM `glpi_tickets`
+               WHERE `status` = '" . CommonITILObject::INCOMING . "'";
+            $condition .= "OR `$fieldID` IN ($tickets_query) ";
+         }
+      }
+
+      if (Session::haveRightsOr('ticketvalidation', [
+         TicketValidation::VALIDATEINCIDENT,
+         TicketValidation::VALIDATEREQUEST
+      ])) {
+         // Add tickets where the users is the validator
+         // Subquery for validator
+         $validation_query = "SELECT `tickets_id`
+            FROM `glpi_ticketvalidations`
+            WHERE `users_id_validate` = '$user'";
+         $condition .= "OR `$fieldID` IN ($validation_query) ";
+      }
+
+      return $condition;
    }
 }

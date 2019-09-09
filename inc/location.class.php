@@ -295,6 +295,46 @@ class Location extends CommonTreeDropdown {
          'datatype'           => 'string'
       ];
 
+      $tab[] = [
+         'id'                 => '101',
+         'table'              => 'glpi_locations',
+         'field'              => 'address',
+         'name'               => __('Address'),
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '102',
+         'table'              => 'glpi_locations',
+         'field'              => 'postcode',
+         'name'               => __('Postal code'),
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '103',
+         'table'              => 'glpi_locations',
+         'field'              => 'town',
+         'name'               => __('Town'),
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '104',
+         'table'              => 'glpi_locations',
+         'field'              => 'state',
+         'name'               => _x('location', 'State'),
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '105',
+         'table'              => 'glpi_locations',
+         'field'              => 'country',
+         'name'               => __('Country'),
+         'datatype'           => 'string'
+      ];
+
       return $tab;
    }
 

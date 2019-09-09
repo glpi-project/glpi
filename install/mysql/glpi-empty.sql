@@ -1474,6 +1474,8 @@ CREATE TABLE `glpi_crontasks` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
 
+INSERT INTO `glpi_crontasks` VALUES ('34','Ticket','purgeticket','43200',NULL,'0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('35','Document','cleanorphans','43200',NULL,'0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 
@@ -2380,6 +2382,7 @@ CREATE TABLE `glpi_entities` (
   `send_infocoms_alert_before_delay` int(11) NOT NULL DEFAULT '-2',
   `use_reservations_alert` int(11) NOT NULL DEFAULT '-2',
   `autoclose_delay` int(11) NOT NULL DEFAULT '-2',
+  `autopurge_delay` int(11) NOT NULL DEFAULT '-2',
   `notclosed_delay` int(11) NOT NULL DEFAULT '-2',
   `calendars_id` int(11) NOT NULL DEFAULT '-2',
   `auto_assign_mode` int(11) NOT NULL DEFAULT '-2',
@@ -6539,7 +6542,6 @@ CREATE TABLE `glpi_tickettemplatepredefinedfields` (
   `num` int(11) NOT NULL DEFAULT '0',
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`tickettemplates_id`,`num`),
   KEY `tickettemplates_id` (`tickettemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -6552,7 +6554,6 @@ CREATE TABLE `glpi_changetemplatepredefinedfields` (
   `num` int(11) NOT NULL DEFAULT '0',
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`changetemplates_id`,`num`),
   KEY `changetemplates_id` (`changetemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -6565,7 +6566,6 @@ CREATE TABLE `glpi_problemtemplatepredefinedfields` (
   `num` int(11) NOT NULL DEFAULT '0',
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`problemtemplates_id`,`num`),
   KEY `problemtemplates_id` (`problemtemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

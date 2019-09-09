@@ -1168,7 +1168,16 @@ class Problem extends CommonITILObject {
 
       if (!$options['template_preview']) {
          $this->showFormHeader($options);
+         if (isset($this->fields['_tasktemplates_id'])) {
+            foreach ($this->fields['_tasktemplates_id'] as $tasktemplates_id) {
+               echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
+            }
+         }
       }
+
+      echo "<div class='spaced' id='tabsbody'>";
+
+      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th class='left' width='$colsize1%'>";
@@ -1442,6 +1451,7 @@ class Problem extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
+      echo $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td colspan='3'>";
       $rand = mt_rand();
 
@@ -1493,6 +1503,8 @@ class Problem extends CommonITILObject {
 
          $this->showFormButtons($options);
       }
+      echo "</table>";
+      echo "</div>";
 
       return true;
 
@@ -1790,7 +1802,8 @@ class Problem extends CommonITILObject {
          'itilcategories_id'          => 0,
          'actiontime'                 => 0,
          '_add_validation'            => 0,
-         'users_id_validate'          => []
+         'users_id_validate'          => [],
+         '_tasktemplates_id'          => []
       ];
 
    }

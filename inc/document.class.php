@@ -1648,4 +1648,66 @@ class Document extends CommonDBTM {
       );
       return ($result ? $context_path : $path);
    }
+
+   /**
+    * Give cron information
+    *
+    * @param string $name task's name
+    *
+    * @return arrray of information
+   **/
+   static function cronInfo($name) {
+
+      switch ($name) {
+         case 'cleanorphans' :
+            return ['description' => __('Clean orphaned documents')];
+      }
+      return [];
+   }
+
+   /**
+    * Cron for clean orphan documents (without Document_Item)
+    *
+    * @param Crontask $task Crontask object
+    *
+    * @return integer (0 : nothing done - 1 : done)
+   **/
+   static function cronCleanOrphans(Crontask $task) {
+      global $DB;
+
+      $dtable = static::getTable();
+      $ditable = Document_Item::getTable();
+      //documents tht are nt present in Document_Item are oprhan
+      $iterator = $DB->request([
+         'SELECT'    => ["$dtable.id"],
+         'FROM'      => $dtable,
+         'LEFT JOIN' => [
+            $ditable => [
+               'ON'  => [
+                  $dtable  => 'id',
+                  $ditable => 'documents_id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+               "$ditable.documents_id" => null
+         ]
+      ]);
+
+      $nb = 0;
+      if (count($iterator)) {
+         while ($row = $iterator->next()) {
+            $doc = new Document();
+            $doc->delete(['id' => $row['id']], true);
+            ++$nb;
+         }
+      }
+
+      if ($nb) {
+         $task->addVolume($nb);
+         $task->log("Documents : $nb");
+      }
+
+      return ($nb > 0 ? 1 : 0);
+   }
 }

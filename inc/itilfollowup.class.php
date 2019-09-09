@@ -1141,9 +1141,9 @@ JAVASCRIPT;
     */
    public static function buildParentCondition(
       $itemtype,
-      $target,
-      $user_table,
-      $group_table
+      $target = "",
+      $user_table = "",
+      $group_table = ""
    ) {
       // An ITILFollowup parent can only by a CommonItilObject
       if (!is_a($itemtype, "CommonITILObject", true)) {
@@ -1156,10 +1156,6 @@ JAVASCRIPT;
       if (Session::haveRight($itemtype, $itemtype::READALL)) {
          return "(`itemtype` = '$itemtype') ";
       }
-
-      $requester = CommonITILActor::REQUESTER;
-      $assign    = CommonITILActor::ASSIGN;
-      $obs       = CommonITILActor::OBSERVER;
 
       $user   = Session::getLoginUserID();
       $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
@@ -1176,73 +1172,7 @@ JAVASCRIPT;
       if ($itemtype == "Ticket") {
          // Default condition
          $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
-
-         if (Session::haveRight($itemtype, $itemtype::READMY)) {
-            // Add tickets where the users is requester, observer or recipient
-            // Subquery for requester/observer user
-            $user_query = "SELECT `$target`
-               FROM `$user_table`
-               WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
-            $condition .= "OR `items_id` IN ($user_query) ";
-
-            // Subquery for recipient
-            $recipient_query = "SELECT `id`
-               FROM `$table`
-               WHERE `users_id_recipient` = '$user'";
-            $condition .= "OR `items_id` IN ($recipient_query) ";
-         }
-
-         if (Session::haveRight($itemtype, $itemtype::READGROUP)) {
-            // Add tickets where the users is in a requester or observer group
-            // Subquery for requester/observer group
-            $group_query = "SELECT `$target`
-               FROM `$group_table`
-               WHERE `groups_id` IN ($groups) AND type IN ($requester, $obs)";
-            $condition .= "OR `items_id` IN ($group_query) ";
-         }
-
-         if (Session::haveRightsOr($itemtype, [
-            $itemtype::OWN,
-            $itemtype::READASSIGN
-         ])) {
-            // Add tickets where the users is assigned
-            // Subquery for assigned user
-            $user_query = "SELECT `$target`
-               FROM `$user_table`
-               WHERE `users_id` = '$user' AND type = $assign";
-            $condition .= "OR `items_id` IN ($user_query) ";
-         }
-
-         if (Session::haveRight($itemtype, $itemtype::READASSIGN)) {
-            // Add tickets where the users is part of an assigned group
-            // Subquery for assigned group
-            $group_query = "SELECT `$target`
-               FROM `$group_table`
-               WHERE `groups_id` IN ($groups) AND type = $assign";
-            $condition .= "OR `items_id` IN ($group_query) ";
-
-            if (Session::haveRight('ticket', Ticket::ASSIGN)) {
-               // Add new tickets
-               $tickets_query = "SELECT `id`
-                  FROM `$table`
-                  WHERE `status` = '" . CommonITILObject::INCOMING . "'";
-               $condition .= "OR `items_id` IN ($tickets_query) ";
-            }
-         }
-
-         if (Session::haveRightsOr('ticketvalidation', [
-            TicketValidation::VALIDATEINCIDENT,
-            TicketValidation::VALIDATEREQUEST
-         ])) {
-            // Add tickets where the users is the validator
-            // Subquery for validator
-            $validation_query = "SELECT `$target`
-               FROM `glpi_ticketvalidations`
-               WHERE `users_id_validate` = '$user'";
-            $condition .= "OR `items_id` IN ($validation_query) ";
-         }
-
-         return $condition .= ")) ";
+         return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";
       } else {
          if (Session::haveRight($itemtype, $itemtype::READMY)) {
             // Subquery for affected/assigned/observer user

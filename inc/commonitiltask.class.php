@@ -298,6 +298,11 @@ abstract class CommonITILTask  extends CommonDBTM {
                                                $this->fields["begin"]);
       }
 
+      if (isset($this->input['_planningrecall'])) {
+         $this->input['_planningrecall']['items_id'] = $this->fields['id'];
+         PlanningRecall::manageDatas($this->input['_planningrecall']);
+      }
+
       $update_done = false;
       $itemtype    = $this->getItilObjectItemType();
       $item        = new $itemtype();
@@ -1420,6 +1425,11 @@ abstract class CommonITILTask  extends CommonDBTM {
          // Create item
          $options[$fkfield] = $item->getField('id');
          $this->check(-1, CREATE, $options);
+      }
+
+      //prevent null fields due to getFromDB
+      if (is_null($this->fields['begin'])) {
+         $this->fields['begin'] = "";
       }
 
       $rand = mt_rand();

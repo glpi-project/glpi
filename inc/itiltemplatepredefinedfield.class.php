@@ -197,12 +197,9 @@ class ITILTemplatePredefinedField extends ITILTemplateField {
 
       $fields = [
          $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
-         $itil_object->getSearchOptionIDByField('field', 'items_id', $itemstable)
+         $itil_object->getSearchOptionIDByField('field', 'items_id', $itemstable),
+         $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates')
       ];
-
-      if ($itil_class === Ticket::getType()) {
-         $fields[] = $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates');
-      }
 
       return $fields;
    }

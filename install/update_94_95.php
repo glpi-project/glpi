@@ -239,8 +239,6 @@ function update94to95() {
    //rename fkeys -- usefull only for 9.5 rolling release
    foreach ([
       'glpi_entities'                        => 'itiltemplates_id',
-      'glpi_itilcategories'                  => 'itiltemplates_id_incident',
-      'glpi_itilcategories'                  => 'itiltemplates_id_demand',
       'glpi_profiles'                        => 'itiltemplates_id',
       'glpi_ticketrecurrents'                => 'itiltemplates_id',
       'glpi_tickettemplatehiddenfields'      => 'itiltemplates_id',
@@ -251,6 +249,9 @@ function update94to95() {
          $migration->changeField($table, $field, str_replace('itil', 'ticket', $field), 'integer');
       }
    }
+   $migration->changeField('glpi_itilcategories', 'itiltemplates_id_incident', 'tickettemplates_id_incident', 'integer');
+   $migration->changeField('glpi_itilcategories', 'itiltemplates_id_demand', 'tickettemplates_id_demand', 'integer');
+
    //rename profilerights values
    $set = ['name' => 'itiltemplate'];
    $migration->addPostQuery(
@@ -336,10 +337,12 @@ function update94to95() {
             `num` int(11) NOT NULL DEFAULT '0',
             `value` text COLLATE utf8_unicode_ci,
             PRIMARY KEY (`id`),
-            UNIQUE KEY `unicity` (`{$itiltype}templates_id`,`num`),
             KEY `{$itiltype}templates_id` (`{$itiltype}templates_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->queryOrDie($query, "add table glpi_{$itiltype}templatepredefinedfields");
+      } else {
+         //drop key -- usefull only for 9.5 rolling release
+         $migration->dropKey("glpi_{$itiltype}templatepredefinedfields", 'unicity');
       }
    }
    /** /ITIL templates */
@@ -463,6 +466,37 @@ function update94to95() {
    $migration->addKey('glpi_tickettemplatemandatoryfields', 'tickettemplates_id');
    $migration->addKey('glpi_tickettemplatepredefinedfields', 'tickettemplates_id');
    /** /ITiL templates */
+
+   if (!$DB->fieldExists('glpi_entities', 'autopurge_delay')) {
+      $migration->addField("glpi_entities", "autopurge_delay", "integer", [
+            'after'  => "autoclose_delay",
+            'value'  => Entity::CONFIG_NEVER
+         ]
+      );
+   }
+
+   CronTask::Register(
+      'Ticket',
+      'purgeticket',
+      7 * DAY_TIMESTAMP,
+      [
+         'mode'  => CronTask::MODE_EXTERNAL,
+         'state' => CronTask::STATE_DISABLE
+      ]
+   );
+   /** /Add purge delay per entity */
+
+   /** Clean oprhans documents crontask */
+   CronTask::Register(
+      'Document',
+      'cleanorphans',
+      7 * DAY_TIMESTAMP,
+      [
+         'mode'  => CronTask::MODE_EXTERNAL,
+         'state' => CronTask::STATE_DISABLE
+      ]
+   );
+   /** /Clean oprhans documents crontask */
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
