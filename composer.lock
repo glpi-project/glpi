@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8bd960e9115f6abc4ab623a4754cf0ab",
+    "content-hash": "b3ba41de7bfbc8aaa7f0d91affc01ffa",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -137,9 +137,9 @@
             "authors": [
                 {
                     "name": "Michel Fortin",
-                    "role": "Developer",
                     "email": "michel.fortin@michelf.ca",
-                    "homepage": "https://michelf.ca/"
+                    "homepage": "https://michelf.ca/",
+                    "role": "Developer"
                 },
                 {
                     "name": "John Gruber",
@@ -584,21 +584,21 @@
             "authors": [
                 {
                     "name": "Evert Pot",
-                    "role": "Developer",
                     "email": "me@evertpot.com",
-                    "homepage": "http://evertpot.com/"
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
                 },
                 {
                     "name": "Dominik Tobschall",
-                    "role": "Developer",
                     "email": "dominik@fruux.com",
-                    "homepage": "http://tobschall.de/"
+                    "homepage": "http://tobschall.de/",
+                    "role": "Developer"
                 },
                 {
                     "name": "Ivan Enderlin",
-                    "role": "Developer",
                     "email": "ivan.enderlin@hoa-project.net",
-                    "homepage": "http://mnt.io/"
+                    "homepage": "http://mnt.io/",
+                    "role": "Developer"
                 }
             ],
             "description": "The VObject library for PHP allows you to easily parse and manipulate iCalendar and vCard objects",
@@ -635,16 +635,16 @@
         },
         {
             "name": "sabre/xml",
-            "version": "2.1.2",
+            "version": "2.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/xml.git",
-                "reference": "e15454e68805e3713271ea58c0b2d6a82dac56b7"
+                "reference": "f08a58f57e2b0d7df769a432756aa371417ab9eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/xml/zipball/e15454e68805e3713271ea58c0b2d6a82dac56b7",
-                "reference": "e15454e68805e3713271ea58c0b2d6a82dac56b7",
+                "url": "https://api.github.com/repos/sabre-io/xml/zipball/f08a58f57e2b0d7df769a432756aa371417ab9eb",
+                "reference": "f08a58f57e2b0d7df769a432756aa371417ab9eb",
                 "shasum": ""
             },
             "require": {
@@ -656,7 +656,7 @@
                 "sabre/uri": ">=1.0,<3.0.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "*"
+                "phpunit/phpunit": "^6"
             },
             "type": "library",
             "autoload": {
@@ -693,7 +693,7 @@
                 "dom",
                 "xml"
             ],
-            "time": "2019-01-09T13:50:52+00:00"
+            "time": "2019-08-14T15:41:34+00:00"
         },
         {
             "name": "scssphp/scssphp",
@@ -1107,8 +1107,8 @@
             "authors": [
                 {
                     "name": "Nicola Asuni",
-                    "role": "lead",
-                    "email": "info@tecnick.com"
+                    "email": "info@tecnick.com",
+                    "role": "lead"
                 }
             ],
             "description": "TCPDF is a PHP class for generating PDF documents and barcodes.",
@@ -1427,16 +1427,16 @@
         },
         {
             "name": "zendframework/zend-loader",
-            "version": "2.6.0",
+            "version": "2.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-loader.git",
-                "reference": "78f11749ea340f6ca316bca5958eef80b38f9b6c"
+                "reference": "91da574d29b58547385b2298c020b257310898c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-loader/zipball/78f11749ea340f6ca316bca5958eef80b38f9b6c",
-                "reference": "78f11749ea340f6ca316bca5958eef80b38f9b6c",
+                "url": "https://api.github.com/repos/zendframework/zend-loader/zipball/91da574d29b58547385b2298c020b257310898c6",
+                "reference": "91da574d29b58547385b2298c020b257310898c6",
                 "shasum": ""
             },
             "require": {
@@ -1468,7 +1468,7 @@
                 "loader",
                 "zf"
             ],
-            "time": "2018-04-30T15:20:54+00:00"
+            "time": "2019-09-04T19:38:14+00:00"
         },
         {
             "name": "zendframework/zend-mail",
@@ -1831,16 +1831,16 @@
     "packages-dev": [
         {
             "name": "atoum/atoum",
-            "version": "3.3.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "c5279d0ecd4e2d53af6b38815db2cafee8fc46b6"
+                "reference": "be412c0d5c01a4d9d64f7422a510b5a5a9611c9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/c5279d0ecd4e2d53af6b38815db2cafee8fc46b6",
-                "reference": "c5279d0ecd4e2d53af6b38815db2cafee8fc46b6",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/be412c0d5c01a4d9d64f7422a510b5a5a9611c9f",
+                "reference": "be412c0d5c01a4d9d64f7422a510b5a5a9611c9f",
                 "shasum": ""
             },
             "require": {
@@ -1848,7 +1848,7 @@
                 "ext-json": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
-                "php": "^5.6.0 || ^7.0.0 <7.4.0"
+                "php": "^5.6.0 || ^7.0.0 <7.5.0"
             },
             "replace": {
                 "mageekguy/atoum": "*"
@@ -1910,7 +1910,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2018-03-15T22:46:39+00:00"
+            "time": "2019-06-08T11:00:07+00:00"
         },
         {
             "name": "atoum/telemetry-extension",
@@ -1975,16 +1975,16 @@
         },
         {
             "name": "composer/ca-bundle",
-            "version": "1.2.2",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "ec2e24d4fa6a0d50d423794a56605ecec3401b85"
+                "reference": "10bb96592168a0f8e8f6dcde3532d9fa50b0b527"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/ec2e24d4fa6a0d50d423794a56605ecec3401b85",
-                "reference": "ec2e24d4fa6a0d50d423794a56605ecec3401b85",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/10bb96592168a0f8e8f6dcde3532d9fa50b0b527",
+                "reference": "10bb96592168a0f8e8f6dcde3532d9fa50b0b527",
                 "shasum": ""
             },
             "require": {
@@ -2027,7 +2027,7 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2019-08-01T07:52:17+00:00"
+            "time": "2019-08-30T08:44:50+00:00"
         },
         {
             "name": "consolidation/annotated-command",
@@ -3143,7 +3143,7 @@
             "time": "2019-08-01T01:38:37+00:00"
         },
         {
-            "name": "natxet/cssmin",
+            "name": "natxet/CssMin",
             "version": "v3.0.6",
             "source": {
                 "type": "git",
@@ -3425,16 +3425,16 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v3.4.30",
+            "version": "v3.4.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "f18fdd6cc7006441865e698420cee26bac94741f"
+                "reference": "3e922c4c3430b9de624e8a285dada5e61e230959"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/f18fdd6cc7006441865e698420cee26bac94741f",
-                "reference": "f18fdd6cc7006441865e698420cee26bac94741f",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/3e922c4c3430b9de624e8a285dada5e61e230959",
+                "reference": "3e922c4c3430b9de624e8a285dada5e61e230959",
                 "shasum": ""
             },
             "require": {
@@ -3484,20 +3484,20 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2019-06-25T07:45:31+00:00"
+            "time": "2019-08-23T08:05:57+00:00"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v3.4.30",
+            "version": "v3.4.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "70adda061ef83bb7def63a17953dc41f203308a7"
+                "reference": "00e3a6ddd723b8bcfe4f2a1b6f82b98eeeb51516"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/70adda061ef83bb7def63a17953dc41f203308a7",
-                "reference": "70adda061ef83bb7def63a17953dc41f203308a7",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/00e3a6ddd723b8bcfe4f2a1b6f82b98eeeb51516",
+                "reference": "00e3a6ddd723b8bcfe4f2a1b6f82b98eeeb51516",
                 "shasum": ""
             },
             "require": {
@@ -3534,20 +3534,20 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2019-06-23T09:29:17+00:00"
+            "time": "2019-08-20T13:31:17+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "v3.4.30",
+            "version": "v3.4.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "1e762fdf73ace6ceb42ba5a6ca280be86082364a"
+                "reference": "1fcad80b440abcd1451767349906b6f9d3961d37"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/1e762fdf73ace6ceb42ba5a6ca280be86082364a",
-                "reference": "1e762fdf73ace6ceb42ba5a6ca280be86082364a",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/1fcad80b440abcd1451767349906b6f9d3961d37",
+                "reference": "1fcad80b440abcd1451767349906b6f9d3961d37",
                 "shasum": ""
             },
             "require": {
@@ -3583,20 +3583,20 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2019-06-28T08:02:59+00:00"
+            "time": "2019-08-14T09:39:58+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.11.0",
+            "version": "v1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "82ebae02209c21113908c229e9883c419720738a"
+                "reference": "550ebaac289296ce228a706d0867afc34687e3f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/82ebae02209c21113908c229e9883c419720738a",
-                "reference": "82ebae02209c21113908c229e9883c419720738a",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/550ebaac289296ce228a706d0867afc34687e3f4",
+                "reference": "550ebaac289296ce228a706d0867afc34687e3f4",
                 "shasum": ""
             },
             "require": {
@@ -3608,7 +3608,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.11-dev"
+                    "dev-master": "1.12-dev"
                 }
             },
             "autoload": {
@@ -3625,12 +3625,12 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                },
-                {
                     "name": "Gert de Pagter",
                     "email": "BackEndTea@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -3641,20 +3641,20 @@
                 "polyfill",
                 "portable"
             ],
-            "time": "2019-02-06T07:57:58+00:00"
+            "time": "2019-08-06T08:03:45+00:00"
         },
         {
             "name": "symfony/process",
-            "version": "v3.4.30",
+            "version": "v3.4.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "d129c017e8602507688ef2c3007951a16c1a8407"
+                "reference": "d822cb654000a95b7855362c0d5b127f6a6d8baa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/d129c017e8602507688ef2c3007951a16c1a8407",
-                "reference": "d129c017e8602507688ef2c3007951a16c1a8407",
+                "url": "https://api.github.com/repos/symfony/process/zipball/d822cb654000a95b7855362c0d5b127f6a6d8baa",
+                "reference": "d822cb654000a95b7855362c0d5b127f6a6d8baa",
                 "shasum": ""
             },
             "require": {
@@ -3690,20 +3690,20 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2019-05-30T15:47:52+00:00"
+            "time": "2019-08-26T07:52:58+00:00"
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.4.30",
+            "version": "v3.4.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "051d045c684148060ebfc9affb7e3f5e0899d40b"
+                "reference": "3dc414b7db30695bae671a1d86013d03f4ae9834"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/051d045c684148060ebfc9affb7e3f5e0899d40b",
-                "reference": "051d045c684148060ebfc9affb7e3f5e0899d40b",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/3dc414b7db30695bae671a1d86013d03f4ae9834",
+                "reference": "3dc414b7db30695bae671a1d86013d03f4ae9834",
                 "shasum": ""
             },
             "require": {
@@ -3749,12 +3749,14 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2019-07-24T13:01:31+00:00"
+            "time": "2019-08-20T13:31:17+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "atoum/atoum": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
