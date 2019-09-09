@@ -2580,13 +2580,13 @@ class Ticket extends DbTestCase {
          '_documents_id'   => [$did]
       ]);
       $this->integer((int)$tickets_id_1)->isGreaterThan(0);
-      $this->boolean(
-         $DB->update('glpi_tickets', [
+      $DB->update(
+         'glpi_tickets', [
             'closedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
          ], [
             'id' => $tickets_id_1,
-         ])
-      )->isTrue();
+         ]
+      );
       $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
 
       $docitem = new \Document_Item();
@@ -2599,12 +2599,12 @@ class Ticket extends DbTestCase {
          'status'      => \CommonITILObject::CLOSED,
       ]);
       $this->integer((int)$tickets_id_2)->isGreaterThan(0);
-      $this->boolean(
-         $DB->update('glpi_tickets', [
+      $DB->update(
+         'glpi_tickets', [
             'closedate' => date('Y-m-d 10:00:00', time()),
          ], [
             'id' => $tickets_id_2,
-         ])
+         ]
       );
 
       // launch Cron for closing tickets
