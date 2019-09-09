@@ -3209,7 +3209,8 @@ class Dropdown {
       // If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
       $filterHelpdesk = in_array($post['itemtype'], $CFG_GLPI["helpdesk_visible_types"]);
 
-      if ($post['context'] == "impact" && isset($CFG_GLPI['impact_asset_types'][$post['itemtype']])) {
+      if (isset($post['context']) && $post['context'] == "impact"
+          && isset($CFG_GLPI['impact_asset_types'][$post['itemtype']])) {
          $filterHelpdesk = false;
       }
 
