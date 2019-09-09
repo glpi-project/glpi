@@ -58,37 +58,6 @@ class Calendar extends DbTestCase {
       $this->string($end_date)->isEqualTo("2018-11-08 20:00:00");
    }
 
-   /**
-    * Test is holiday
-    *
-    * @return void
-    */
-   public function testIsHoliday() {
-      $calendar = new \Calendar;
-
-      $holidays = new \Calendar_Holiday();
-      $this->integer(
-         (int)$holidays->add([
-            'calendars_id' => getItemByTypeName('Calendar', 'Default', true),
-            'holidays_id'  => getItemByTypeName('Holiday', 'X-Mas', true)
-         ])
-      )->isGreaterThan(0);
-
-      // get Default calendar
-      $this->boolean($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)))->isTrue();
-
-      $this->boolean(
-         $calendar->isHoliday('2018-01-01')
-      )->isFalse();
-
-      $this->boolean(
-         $calendar->isHoliday('2019-01-01')
-      )->isTrue();
-            'value'  => WEEK_TIMESTAMP,
-            'day'    => true
-         ]
-      ];
-   }
    protected function activeProvider() {
       return [
          [
@@ -120,6 +89,7 @@ class Calendar extends DbTestCase {
          ]
       ];
    }
+
    /**
     * @dataProvider activeProvider
     */
@@ -193,7 +163,25 @@ class Calendar extends DbTestCase {
 
    public function testIsHoliday() {
       $calendar = new \Calendar();
-      $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
+
+      $calendar_holiday = new \Calendar_Holiday();
+      $this->integer(
+         (int)$calendar_holiday->add([
+            'calendars_id' => getItemByTypeName('Calendar', 'Default', true),
+            'holidays_id'  => getItemByTypeName('Holiday', 'X-Mas', true)
+         ])
+      )->isGreaterThan(0);
+
+      // get Default calendar
+      $this->boolean($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)))->isTrue();
+
+      $this->boolean(
+         $calendar->isHoliday('2018-01-01')
+      )->isFalse();
+
+      $this->boolean(
+         $calendar->isHoliday('2019-01-01')
+      )->isTrue();
 
       $dates= [
          '2019-05-01'   => true,
