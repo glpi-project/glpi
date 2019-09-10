@@ -221,8 +221,6 @@ class DCRoom extends CommonDBTM {
    }
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
-
       $tab = [];
 
       $tab[] = [
@@ -340,7 +338,7 @@ class DCRoom extends CommonDBTM {
     * @return void
    **/
    static function showForDatacenter(Datacenter $datacenter) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $datacenter->getID();
       $rand = mt_rand();

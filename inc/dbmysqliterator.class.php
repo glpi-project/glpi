@@ -277,6 +277,8 @@ class DBmysqlIterator implements Iterator, Countable {
             if ($table instanceof \AbstractQuery) {
                $this->parameters = array_merge($this->parameters, $table->getParameters());
                $table = $table->getQuery();
+            } else if ($table instanceof \QueryExpression) {
+               $table = $table->getValue();
             } else {
                $table = $this->conn->quoteName($table);
             }
@@ -406,6 +408,8 @@ class DBmysqlIterator implements Iterator, Countable {
          if ($f instanceof \AbstractQuery) {
             $this->parameters = array_merge($this->parameters, $f->getParameters());
             return $f->getQuery();
+         } else if ($f instanceof \QueryExpression) {
+            return $f->getValue();
          } else {
             return $this->conn->quoteName($f);
          }

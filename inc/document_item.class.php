@@ -146,8 +146,6 @@ class Document_Item extends CommonDBRelation{
     * @see CommonDBTM::pre_deleteItem()
    **/
    function pre_deleteItem() {
-      global $DB;
-
       // fordocument mandatory
       if ($this->fields['itemtype'] == 'Ticket') {
          $ticket = new Ticket();
@@ -344,8 +342,6 @@ class Document_Item extends CommonDBRelation{
     * @return nothing (HTML display)
    **/
    static function showForDocument(Document $doc) {
-      global $DB, $CFG_GLPI;
-
       $instID = $doc->fields['id'];
       if (!$doc->can($instID, READ)) {
          return false;
@@ -696,7 +692,7 @@ class Document_Item extends CommonDBRelation{
     * @param $options        array
     */
    static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = []) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       //default options
       $params['rand'] = mt_rand();
@@ -945,8 +941,6 @@ class Document_Item extends CommonDBRelation{
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
    static function getRelationMassiveActionsSpecificities() {
-      global $CFG_GLPI;
-
       $specificities              = parent::getRelationMassiveActionsSpecificities();
       $specificities['itemtypes'] = Document::getItemtypesThatCanHave();
 

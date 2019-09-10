@@ -94,7 +94,7 @@ abstract class API extends CommonGLPI {
     * @return void
     */
    public function initApi() {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       // Load GLPI configuration
       include_once (GLPI_ROOT . '/inc/includes.php');

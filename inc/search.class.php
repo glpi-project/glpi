@@ -1395,7 +1395,6 @@ class Search {
          if (!in_array(getTableForItemType($m_itemtype), $already_link_tables)) {
             $FROM .= $this->addMetaLeftJoin($data['itemtype'], $m_itemtype,
                                            $already_link_tables,
-                                           $criterion['value'] == "NULL" || strstr($criterion['link'], "NOT"),
                                            $sopt["joinparams"]);
          }
 
@@ -5406,20 +5405,14 @@ JAVASCRIPT;
     * @param $from_type                   reference item type ID
     * @param $to_type                     item type to add
     * @param $already_link_tables2  array of tables already joined
-    * @param $nullornott                  Used LEFT JOIN (null generation)
-    *                                     or INNER JOIN for strict join
     *
     * @return Meta Left join string
     *
     * @since 10.0.0 Method is no longer static
    **/
    public function addMetaLeftJoin($from_type, $to_type, array &$already_link_tables2,
-                                   $nullornott, $joinparams = []) {
-
-      $LINK = " INNER JOIN ";
-      if ($nullornott) {
-         $LINK = " LEFT JOIN ";
-      }
+                                   $joinparams = []) {
+      $LINK = " LEFT JOIN ";
 
       $from_table = getTableForItemType($from_type);
       $from_fk    = getForeignKeyFieldForTable($from_table);

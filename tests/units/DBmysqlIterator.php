@@ -201,6 +201,23 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['FIELDS' => ['MAX' => 'bar AS cpt']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT MAX(`bar`) AS `cpt` FROM `foo`');
+
+      $it = $this->it->execute('foo', ['FIELDS' => new \QueryExpression('IF(bar IS NOT NULL, 1, 0) AS baz')]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT IF(bar IS NOT NULL, 1, 0) AS baz FROM `foo`');
+   }
+
+   public function testFrom() {
+      $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => 'foo']);
+      $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`');
+
+      $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => 'foo as baz']);
+      $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo` AS `baz`');
+
+      $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => ['foo', 'baz']]);
+      $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`, `baz`');
+
+      $this->it->buildQuery(['FIELDS' => 'c', 'FROM' => new \QueryExpression("(SELECT CONCAT('foo', 'baz') as c) as t")]);
+      $this->string($this->it->getSql())->isIdenticalTo("SELECT `c` FROM (SELECT CONCAT('foo', 'baz') as c) as t");
    }
 
 
