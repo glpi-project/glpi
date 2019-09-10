@@ -2292,7 +2292,7 @@ abstract class API extends CommonGLPI {
     */
    public function inlineDocumentation($file) {
       self::header(true, __("API Documentation"));
-      echo Html::css("public/lib/prism.css");
+      echo Html::css("public/lib/prismjs.css");
       echo Html::script("public/lib/prismjs.js");
 
       echo "<div class='documentation'>";
