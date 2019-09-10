@@ -291,6 +291,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          );
       }
 
+      if (empty($db_user)) {
+         throw new InvalidArgumentException(
+            __('Database user defined by --db-user option cannot be empty.')
+         );
+      }
+
       if (null === $db_pass) {
          // Will be null if option used without value and without interaction
          throw new InvalidArgumentException(
