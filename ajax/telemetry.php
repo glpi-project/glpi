@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-echo Html::css("public/lib/prism.css");
+echo Html::css("public/lib/prismjs.css");
 echo Html::script("public/lib/prismjs.js");
 
 $infos = Telemetry::getTelemetryInfos();
