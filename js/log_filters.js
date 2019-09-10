@@ -28,6 +28,9 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
+/* global reloadTab */
+
 $(function() {
    var bindShowFiltersBtn = function () {
       $('.show_log_filters').on('click', showFilters);
@@ -35,7 +38,6 @@ $(function() {
 
    var showFilters = function (event) {
       event.preventDefault();
-      /* global reloadTab */
       reloadTab('filters[active]=1');
    };
 
@@ -56,7 +58,6 @@ $(function() {
       // Prevent dropdown to remain in page after tab has been reload.
       $('.log_history_filter_row .select2-hidden-accessible').select2('close');
 
-      /* global reloadTab */
       reloadTab($('[name^="filters\\["]').serialize());
    };
 

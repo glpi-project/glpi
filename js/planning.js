@@ -1,3 +1,6 @@
+
+/* global FullCalendar, FullCalendarLocales */
+
 var calendar = null;
 var GLPIPlanning = {
 
@@ -24,7 +27,6 @@ var GLPIPlanning = {
       var disable_qtip   = false;
       var disable_edit   = false;
 
-      /* global FullCalendar */
       calendar = new FullCalendar.Calendar(document.getElementById(dom_id), {
          plugins:     ['dayGrid', 'interaction', 'list', 'timeGrid'],
          height:      options.height,
@@ -290,7 +292,6 @@ var GLPIPlanning = {
          }
       });
 
-      /* global FullCalendarLocales */
       var loadedLocales = Object.keys(FullCalendarLocales);
       if (loadedLocales.length === 1) {
          calendar.setOption('locale', loadedLocales[0]);
