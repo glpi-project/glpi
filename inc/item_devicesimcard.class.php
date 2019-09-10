@@ -50,6 +50,10 @@ class Item_DeviceSimcard extends Item_Devices {
 
    static $undisclosedFields      = ['pin', 'pin2', 'puk', 'puk2'];
 
+   static function getTypeName($nb = 0) {
+      return _n('Simcard', 'Simcards', $nb);
+   }
+
    /**
     * @since 0.85
     **/

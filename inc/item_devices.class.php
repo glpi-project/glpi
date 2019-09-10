@@ -70,6 +70,8 @@ class Item_Devices extends CommonDBRelation {
 
    static $undisclosedFields      = [];
 
+   static public $mustBeAttached_2 = false; // Mandatory to display creation form
+
    /**
     * @since 0.85
     * No READ right for devices and extends CommonDBRelation not CommonDevice
@@ -94,11 +96,22 @@ class Item_Devices extends CommonDBRelation {
     * @since 0.85
    **/
    static function getTypeName($nb = 0) {
+      $device_type = static::getDeviceType();
+      return $device_type::getTypeName($nb);
+   }
 
+
+   /**
+    * Get type name for device (used in Log)
+    *
+    * @param integer $nb Count
+    *
+    * @return string
+    */
+   static function getDeviceTypeName($nb = 0) {
       $device_type = static::getDeviceType();
       //TRANS: %s is the type of the component
       return sprintf(__('Item - %s link'), $device_type::getTypeName($nb));
-
    }
 
 
@@ -1268,7 +1281,17 @@ class Item_Devices extends CommonDBRelation {
       echo "</td>";
 
       echo "<td>"._n('Component', 'Components', 1)."</td>";
-      echo "<td>".$device->getLink()."</td>";
+      echo "<td>";
+      if (false === $device) {
+         Dropdown::show(
+            static::$itemtype_2, [
+               'name'   => static::$items_id_2
+            ]
+         );
+      } else {
+         echo $device->getLink();
+      }
+      echo "</td>";
       echo "</tr>";
       $even = 0;
       $nb = count(static::getSpecificities());
@@ -1402,6 +1425,11 @@ class Item_Devices extends CommonDBRelation {
    **/
    function prepareInputForAdd($input) {
       global $DB, $CFG_GLPI;
+
+      if (!isset($input[static::$items_id_2]) || !$input[static::$items_id_2]) {
+         Session::addMessageAfterRedirect(__('A device ID is mandatory'), false, ERROR);
+         return false;
+      }
 
       $computer = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $input);
 

@@ -486,6 +486,10 @@ function update94to95() {
    );
    /** /Clean oprhans documents crontask */
 
+   /** Item devices menu config */
+   $migration->addConfig(['devices_in_menu' => exportArrayToDB(['Item_DeviceSimcard'])]);
+   /** /Item devices menu config */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

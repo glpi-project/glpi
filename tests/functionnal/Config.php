@@ -610,4 +610,30 @@ class Config extends DbTestCase {
                ->isEqualTo($replacement_item->fields['id']);
       }
    }
+
+   public function testDevicesInMenu() {
+      global $CFG_GLPI, $DB;
+
+      $conf = new \Config();
+      $this->array($CFG_GLPI['devices_in_menu'])->isIdenticalTo([
+         'Item_DeviceSimcard'
+      ]);
+
+      //Config::prepareInputForUpdate() always return false.
+      $conf->update([
+         'id'                       => 1,
+         '_update_devices_in_menu'  => 1,
+         'devices_in_menu'          => ['Item_DeviceSimcard', 'Item_DeviceBattery']
+      ]);
+
+      //check values in db
+      $res = $DB->request([
+         'SELECT' => 'value',
+         'FROM'   => $conf->getTable(),
+         'WHERE'  => ['name' => 'devices_in_menu']
+      ])->next();
+      $this->array($res)->isIdenticalTo(
+         ['value' => exportArrayToDB(['Item_DeviceSimcard', 'Item_DeviceBattery'])]
+      );
+   }
 }

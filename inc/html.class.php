@@ -1382,12 +1382,17 @@ class Html {
     * @return string
    **/
    static function getMenuInfos() {
+      global $CFG_GLPI;
 
       $menu['assets']['title']       = __('Assets');
       $menu['assets']['types']       = ['Computer', 'Monitor', 'Software',
                                              'NetworkEquipment', 'Peripheral', 'Printer',
                                              'CartridgeItem', 'ConsumableItem', 'Phone',
                                              'Rack', 'Enclosure', 'PDU'];
+
+      foreach ($CFG_GLPI['devices_in_menu'] as $dmenu) {
+         $menu['assets']['types'][] = $dmenu;
+      }
 
       $menu['helpdesk']['title']     = __('Assistance');
       $menu['helpdesk']['types']     = ['Ticket', 'Problem', 'Change',
@@ -1467,9 +1472,9 @@ class Html {
             $menu += array_splice($menu, array_search('config', $categories, true), 1);
          }
 
-         foreach ($menu as $category => $datas) {
-            if (isset($datas['types']) && count($datas['types'])) {
-               foreach ($datas['types'] as $type) {
+         foreach ($menu as $category => $entries) {
+            if (isset($entries['types']) && count($entries['types'])) {
+               foreach ($entries['types'] as $type) {
                   if ($data = $type::getMenuContent()) {
                      // Multi menu entries management
                      if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
@@ -1500,8 +1505,14 @@ class Html {
             }
          }
 
-         $allassets = ['Computer', 'Monitor', 'Peripheral', 'NetworkEquipment', 'Phone',
-                            'Printer'];
+         $allassets = [
+            'Computer',
+            'Monitor',
+            'Peripheral',
+            'NetworkEquipment',
+            'Phone',
+            'Printer'
+         ];
 
          foreach ($allassets as $type) {
             if (isset($menu['assets']['content'][strtolower($type)])) {
