@@ -13,46 +13,6 @@ class ImpactItem extends CommonDBTM {
       return $input;
    }
 
-   // public function update(array $input, $options = [], $history = true) {
-   //    global $DB;
-
-   //    // Find id from itemtype and items_id
-   //    $it = $DB->request([
-   //       'FROM'   => 'glpi_impactitems',
-   //       'WHERE'  => [
-   //          'itemtype'   => $input['itemtype'],
-   //          'items_id'   => $input['items_id'],
-   //       ]
-   //    ]);
-
-   //    if (count($it) !== 1) {
-   //       return false;
-   //    }
-
-   //    $input['id'] = $it->next()['id'];
-   //    return parent::update($input, $options, $history);
-   // }
-
-   // public function delete(array $input, $options = [], $history = true) {
-   //    global $DB;
-
-   //    // Find id from itemtype and items_id
-   //    $it = $DB->request([
-   //       'FROM'   => 'glpi_impactitems',
-   //       'WHERE'  => [
-   //          'itemtype'   => $input['itemtype'],
-   //          'items_id'   => $input['items_id'],
-   //       ]
-   //    ]);
-
-   //    if (count($it) !== 1) {
-   //       return false;
-   //    }
-
-   //    $input['id'] = $it->next()['id'];
-   //    return parent::delete($input, $options, $history);
-   // }
-
    public static function findForItem(CommonDBTM $item) {
       global $DB;
 

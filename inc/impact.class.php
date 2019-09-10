@@ -190,7 +190,7 @@ class Impact extends CommonGLPI {
                      items_id:     values[1],
                   },
                   success: function(data, textStatus, jqXHR) {
-                     impact.buildNetwork(
+                     GLPIImpact.buildNetwork(
                         JSON.parse(data.graph),
                         JSON.parse(data.params)
                      );
@@ -582,7 +582,7 @@ class Impact extends CommonGLPI {
 
       echo Html::scriptBlock("
          $(function() {
-            impact.buildNetwork($graph, $params);
+            GLPIImpact.buildNetwork($graph, $params);
          });
       ");
    }
@@ -867,7 +867,7 @@ class Impact extends CommonGLPI {
 
       // Bind the backend values to the client and start the network
       echo  Html::scriptBlock("
-         impact.prepareNetwork(
+         GLPIImpact.prepareNetwork(
             $(\"#network_container\"),
             '$locales',
             {

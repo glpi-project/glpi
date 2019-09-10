@@ -653,7 +653,6 @@ function update94to95() {
             `impact_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
             `depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
             `impact_and_depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
-            `nodes_positions` LONGTEXT NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
             `position_x` FLOAT NOT NULL DEFAULT '0',
             `position_y` FLOAT NOT NULL DEFAULT '0',
             `show_depends` TINYINT NOT NULL DEFAULT '1',
