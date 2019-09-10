@@ -320,16 +320,16 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       $db_name,
       $db_user) {
 
-      if ($input->getOption('no-interaction')) {
-         // Consider that config is validated if user require no interaction
-         return true;
-      }
-
       $informations = new Table($output);
       $informations->addRow([__('Database host'), $db_hostport]);
       $informations->addRow([__('Database name'), $db_name]);
       $informations->addRow([__('Database user'), $db_user]);
       $informations->render();
+
+      if ($input->getOption('no-interaction')) {
+         // Consider that config is validated if user require no interaction
+         return true;
+      }
 
       /** @var Symfony\Component\Console\Helper\QuestionHelper $question_helper */
       $question_helper = $this->getHelper('question');
