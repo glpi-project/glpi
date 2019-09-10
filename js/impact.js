@@ -2281,8 +2281,7 @@ var GLPIImpact = {
       $(GLPIImpact.toolbar.export).click(function() {
          GLPIImpact.download(
             'png',
-            false,
-            // $(GLPIImpact.dialogs.exportDialog.inputs.link)
+            false
          );
       });
       $(GLPIImpact.toolbar.export).qtip(this.getTooltip("downloadTooltip"));
