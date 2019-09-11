@@ -5734,7 +5734,6 @@ JAVASCRIPT;
                $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
             },
             close: function(){
-               $(this).parent().prev('.ui-widget-overlay').removeClass('glpi_modal');
                $(this).remove();
             },
             draggable: true,

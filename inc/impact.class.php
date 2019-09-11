@@ -31,37 +31,45 @@ class Impact extends CommonGLPI {
       $class = get_class($item);
 
       // Only enabled for CommonDBTM
-      if (!is_a($item, "CommonDBTM")) {
+      if (!is_a($item, "CommonDBTM", true)) {
          throw new InvalidArgumentException(
-            "Argument \$item ($class) must be a CommonDBTM)."
+            "Argument \$item ($class) must be a CommonDBTM."
          );
       }
 
-      // If on an asset, get the number its direct dependencies
-      if (isset($CFG_GLPI['impact_asset_types'][$class])) {
+      $isEnabledAsset = isset($CFG_GLPI['impact_asset_types'][$class]);
+      $isITILObject = is_a($item, "CommonITILObject", true);
+
+      // Check if itemtype is valid
+      if (!$isEnabledAsset && !$isITILObject) {
+         throw new InvalidArgumentException(
+            "Argument \$item ($class) is not a valid target for impact analysis."
+         );
+      }
+
+      if (!$_SESSION['glpishow_count_on_tabs']) {
+         // Count is disabled in config -> 0
+         $total = 0;
+      } else if ($isEnabledAsset) {
+         // If on an asset, get the number of its direct dependencies
          $total = count($DB->request([
             'FROM'   => ImpactRelation::getTable(),
             'WHERE'  => [
                'OR' => [
                   [
                      'itemtype_source' => get_class($item),
-                     'items_id_source' => $item->getID(),
+                     'items_id_source' => $item->fields['id'],
                   ],
                   [
                      'itemtype_impacted' => get_class($item),
-                     'items_id_impacted' => $item->getID(),
+                     'items_id_impacted' => $item->fields['id'],
                   ]
                ]
             ]
          ]));
-      } else if (is_a($item, "CommonITILObject")) {
+      } else if ($isITILObject) {
          // Tab name for an ITIL object : always 0
          $total = 0;
-      } else {
-         // Neither an asset nor an CommonITILObject
-         throw new InvalidArgumentException(
-            "Argument \$item ($class) is not a valid target for impact analysis."
-         );
       }
 
       return self::createTabEntry(
@@ -86,7 +94,7 @@ class Impact extends CommonGLPI {
          );
       }
 
-      $ID = $item->getID();
+      $ID = $item->fields['id'];
 
       // Don't show the impact analysis on new object
       if ($item->isNewID($ID)) {
@@ -108,18 +116,18 @@ class Impact extends CommonGLPI {
          foreach ($linked_items as $linked_item) {
             $class = $linked_item['itemtype'];
             if (isset($CFG_GLPI['impact_asset_types'][$class])) {
-               self::printAssetSelectionForm($linked_items);
-               $found = true;
                $item = new $class;
-               $item->getFromDB($linked_item['items_id']);
+               $found = $item->getFromDB($linked_item['items_id']);
                break;
             }
          }
 
          // No valid linked item were found, tab shouldn't be visible
          if (!$found) {
-            return true;
+            return false;
          }
+
+         self::printAssetSelectionForm($linked_items);
       }
 
       // Show graph if the impact analysis is enable for $class
@@ -161,7 +169,7 @@ class Impact extends CommonGLPI {
       foreach ($items as $item) {
          if (isset($CFG_GLPI['impact_asset_types'][$item['itemtype']])) {
             // Add itemtype group if it doesn't exist in the dropdown yet
-            $itemtype_label = __($item['itemtype']);
+            $itemtype_label =  $item['itemtype']::getTypeName();
             if (!isset($values[$itemtype_label])) {
                $values[$itemtype_label] = [];
             }
@@ -172,7 +180,7 @@ class Impact extends CommonGLPI {
       }
 
       Dropdown::showFromArray("impact_assets_selection_dropdown", $values);
-      echo "<br><br>";
+      echo '<div class="impact-mb-2"></div>';
 
       // Form interaction: load a new graph on value change
       echo Html::scriptBlock('
@@ -400,7 +408,7 @@ class Impact extends CommonGLPI {
          'FROM'   => ImpactRelation::getTable(),
          'WHERE'  => [
             'itemtype_' . $target => get_class($node),
-            'items_id_' . $target => $node->getID()
+            'items_id_' . $target => $node->fields['id']
          ]
       ]);
 
@@ -484,7 +492,7 @@ class Impact extends CommonGLPI {
          $impact_item = new ImpactItem();
          $newID = $impact_item->add([
             'itemtype' => get_class($item),
-            'items_id' => $item->getID()
+            'items_id' => $item->fields['id']
          ]);
          $impact_item->getFromDB($newID);
       }
@@ -847,7 +855,7 @@ class Impact extends CommonGLPI {
     */
    public static function prepareImpactNetwork(CommonDBTM $item) {
       // Load requirements
-      echo Html::css('css/impact.css');
+      echo Html::scss('css/impact');
       self::printImpactNetworkContainer();
       self::printAddNodeDialog();
       self::printColorConfigDialog();
@@ -922,7 +930,7 @@ class Impact extends CommonGLPI {
     * @return string
     */
    public static function getNodeID(CommonDBTM $item) {
-      return get_class($item) . "::" . $item->getID();
+      return get_class($item) . "::" . $item->fields['id'];
    }
 
    /**

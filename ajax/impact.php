@@ -52,14 +52,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
       // Check required params
       if (empty($itemtype) || empty($items_id)) {
-         http_response_code(400);
-         die;
+         Toolbox::throwBadRequest("Missing itemtype or items_id");
       }
 
       // Check that the the target asset exist
       if (!Impact::assetExist($itemtype, $items_id)) {
-         http_response_code(400);
-         die;
+         Toolbox::throwBadRequest("Object[class=$itemtype, id=$items_id] doesn't exist");
       }
 
       // Prepare graph
@@ -81,15 +79,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
    case 'POST':
       // Check required params
       if (!isset($_POST['impacts'])) {
-         http_response_code(400);
-         die;
+         Toolbox::throwBadRequest("Missing 'impacts' payload");
       }
 
       // Decode data (should be json)
       $data = Toolbox::jsonDecode($_POST['impacts'], true);
       if (!is_array($data)) {
-         http_response_code(400);
-         die;
+         Toolbox::throwBadRequest("Payload should be an array");
       }
 
       // Save impact relation delta
@@ -151,15 +147,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
       // Save impact item delta
       $em = new ImpactItem();
-      foreach ($data['items'] as $id => $parent) {
+      foreach ($data['items'] as $id => $impactItem) {
          // Extract action
-         $action = $parent['action'];
-         unset($parent['action']);
+         $action = $impactItem['action'];
+         unset($impactItem['action']);
 
          switch ($action) {
             case DELTA_ACTION_UPDATE:
-               $parent['id'] = $id;
-               $em->update($parent);
+               $impactItem['id'] = $id;
+               $em->update($impactItem);
                break;
          }
       }

@@ -5270,8 +5270,10 @@ class CommonDBTM extends CommonGLPI {
       ];
 
       if ($count) {
-         $data['count'] = count($data['incidents']) + count($data['requests'])
-            + count($data['changes']) + count($data['problems']);
+         $data['count'] = count($data['incidents'])
+            + count($data['requests'])
+            + count($data['changes'])
+            + count($data['problems']);
       }
 
       return $data;

@@ -1,10 +1,10 @@
 #network_container {
    height: 70vh;
-}
 
-#network_container div {
-   z-index: 1 !important;
-   position: absolute !important;
+   div {
+      z-index: 1 !important;
+      position: absolute !important;
+   }
 }
 
 #help_text {
@@ -19,6 +19,11 @@
    padding         : 5px;
    border          : 1px solid lightgray;
    border-radius   : 2px;
+
+   span:hover {
+      background-color: lightgray;
+      border-radius: 2px;
+   }
 }
 
 #save_impact {
@@ -27,9 +32,8 @@
    margin-right  : 20px;
 }
 
-#impactTools span:hover, .networkToolbarHightlight:hover {
-   background-color: lightgray;
-   border-radius: 2px;
+.impact-mb-2 {
+   margin-bottom: 2em;
 }
 
 .network-parent {
@@ -50,30 +54,6 @@ i.fa-impact-manipulation {
    font-size: 14px;
 }
 
-.impact-dropdown {
-   display: inline-block;
-}
-
-.impact-dropdown-content {
-   display         : none;
-   position        : absolute;
-   background-color: white;
-   min-width       : 100px;
-   z-index         : 15;
-   right           : 0;
-}
-
-.impact-dropdown-content li {
-   color          : black;
-   padding        : 12px 16px;
-   text-decoration: none;
-   display        : block;
- }
-
-.impact-dropdown:hover .impact-dropdown-content {
-   display: block;
-}
-
 .impact_toolbar {
    position       : absolute;
    display        : inline-flex;
@@ -82,21 +62,21 @@ i.fa-impact-manipulation {
    right          : 0;
    z-index        : 20;
    flex-wrap      : wrap;
-}
 
-.impact_toolbar span {
-   float     : left;
-   color     : gray;
-   font-size : 1.3em;
-   padding   : 4px 8px;
-   transition: all 0.3s ease;
-   cursor    : pointer;
-   border    : 2px inset transparent;
-}
+   span {
+      float     : left;
+      color     : gray;
+      font-size : 1.3em;
+      padding   : 4px 8px;
+      transition: all 0.3s ease;
+      cursor    : pointer;
+      border    : 2px inset transparent;
+   }
 
-.impact_toolbar .active {
-   border: 2px inset #f4f4f4;
-   background-color: #fafafa;
+   .active {
+      border: 2px inset #f4f4f4;
+      background-color: #fafafa;
+   }
 }
 
 .impact_toolbar_right {
@@ -109,11 +89,11 @@ i.fa-impact-manipulation {
 
 .dirty {
    color: #eea818 !important;
-}
 
-.dirty:hover {
-   background-color: #fec95c !important;
-   color: #8f5a0a !important;
+   &:hover {
+      background-color: #fec95c !important;
+      color: #8f5a0a !important;
+   }
 }
 
 /*
@@ -137,10 +117,10 @@ i.fa-impact-manipulation {
 
 .more-disabled {
    cursor: default !important;
-}
 
-.more-disabled:hover {
-   background-color: white !important;
+   &:hover {
+      background-color: white !important;
+   }
 }
 
 .more-dot {
@@ -215,6 +195,10 @@ i.fa-impact-manipulation {
 
 .more-menu-item {
    display: block;
+
+   &:hover {
+      background-color: lightgray;
+   }
 }
 
 .more-menu-btn {
@@ -228,10 +212,6 @@ i.fa-impact-manipulation {
    position   : relative;
    white-space: nowrap;
    font-size  : 1.2em !important;
-}
-
-.more-menu-item:hover {
-   background-color: lightgray;
 }
 
 .more-btn:hover .more-dot,
@@ -253,12 +233,12 @@ i.fa-impact-manipulation {
    padding-left: 5px !important;
    font-size: 1.15em;
    background-color:white;
-}
 
-.cy-context-menus-cxt-menuitem i {
-   padding-right: 10px !important;
-   color: gray;
-   max-width: 10px;
+   i {
+      padding-right: 10px !important;
+      color: gray;
+      max-width: 10px;
+   }
 }
 
 .cy-context-menus-cxt-menu {
