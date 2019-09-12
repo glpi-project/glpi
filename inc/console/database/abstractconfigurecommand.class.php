@@ -188,7 +188,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       $db_hostport = $db_host . (!empty($db_port) ? ':' . $db_port : '');
 
       $reconfigure    = $input->getOption('reconfigure');
-      $no_interaction = $input->getOption('no-interaction'); // Base symfony/console option
 
       if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
          // Prevent overriding of existing DB
@@ -198,42 +197,21 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          return self::ERROR_DB_CONFIG_ALREADY_SET;
       }
 
-      if (empty($db_name)) {
-         throw new InvalidArgumentException(
-            __('Database name defined by --db-name option cannot be empty.')
+      $this->validateConfigInput($input);
+
+      $run = $this->askForDbConfigConfirmation(
+         $input,
+         $output,
+         $db_hostport,
+         $db_name,
+         $db_user
+      );
+      if (!$run) {
+         $output->writeln(
+            '<comment>' . __('Configuration aborted.') . '</comment>',
+            OutputInterface::VERBOSITY_VERBOSE
          );
-      }
-
-      if (null === $db_pass) {
-         // Will be null if option used without value and without interaction
-         throw new InvalidArgumentException(
-            __('--db-password option value cannot be null.')
-         );
-      }
-
-      if (!$no_interaction) {
-         // Ask for confirmation (unless --no-interaction)
-
-         $informations = new Table($output);
-         $informations->addRow([__('Database host'), $db_hostport]);
-         $informations->addRow([__('Database name'), $db_name]);
-         $informations->addRow([__('Database user'), $db_user]);
-         $informations->render();
-
-         /** @var Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-         $question_helper = $this->getHelper('question');
-         $run = $question_helper->ask(
-            $input,
-            $output,
-            new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
-         );
-         if (!$run) {
-            $output->writeln(
-               '<comment>' . __('Configuration aborted.') . '</comment>',
-               OutputInterface::VERBOSITY_VERBOSE
-            );
-            return self::ABORTED_BY_USER;
-         }
+         return self::ABORTED_BY_USER;
       }
 
       $mysqli = new \mysqli();
@@ -282,5 +260,83 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
    public function getNoPluginsOptionValue() {
 
       return true;
+   }
+
+   /**
+    * Check if DB is already configured.
+    *
+    * @return boolean
+    */
+   protected function isDbAlreadyConfigured() {
+
+      return file_exists(GLPI_CONFIG_DIR . '/config_db.php');
+   }
+
+   /**
+    * Validate configuration variables from input.
+    *
+    * @param InputInterface $input
+    *
+    * @throws InvalidArgumentException
+    */
+   protected function validateConfigInput(InputInterface $input) {
+
+      $db_name = $input->getOption('db-name');
+      $db_user = $input->getOption('db-user');
+      $db_pass = $input->getOption('db-password');
+
+      if (empty($db_name)) {
+         throw new InvalidArgumentException(
+            __('Database name defined by --db-name option cannot be empty.')
+         );
+      }
+
+      if (empty($db_user)) {
+         throw new InvalidArgumentException(
+            __('Database user defined by --db-user option cannot be empty.')
+         );
+      }
+
+      if (null === $db_pass) {
+         // Will be null if option used without value and without interaction
+         throw new InvalidArgumentException(
+            __('--db-password option value cannot be null.')
+         );
+      }
+   }
+
+   /**
+    * Ask user to confirm DB configuration.
+    *
+    * @param InputInterface $input
+    * @param OutputInterface $output
+    *
+    * @return boolean
+    */
+   protected function askForDbConfigConfirmation(
+      InputInterface $input,
+      OutputInterface $output,
+      $db_hostport,
+      $db_name,
+      $db_user) {
+
+      $informations = new Table($output);
+      $informations->addRow([__('Database host'), $db_hostport]);
+      $informations->addRow([__('Database name'), $db_name]);
+      $informations->addRow([__('Database user'), $db_user]);
+      $informations->render();
+
+      if ($input->getOption('no-interaction')) {
+         // Consider that config is validated if user require no interaction
+         return true;
+      }
+
+      /** @var Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+      $question_helper = $this->getHelper('question');
+      return $question_helper->ask(
+         $input,
+         $output,
+         new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
+      );
    }
 }
