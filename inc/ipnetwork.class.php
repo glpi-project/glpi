@@ -629,7 +629,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $returnValues = [];
       if ($result = $DB->query($query)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             if (count($fields) > 1) {
                $returnValue = [];
                foreach ($fields as $field) {

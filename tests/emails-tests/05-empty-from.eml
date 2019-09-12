@@ -1,0 +1,96 @@
+Received: from 192.168.1.3 (LHLO mail.glpi-project.org) (192.168.1.3)
+ by mail.glpi-project.org with LMTP; Wed, 31 Jul 2019 09:52:04 +0200
+ (CEST)
+Received: from mail.glpi-projet.org (localhost [127.0.0.1])
+	by mail.glpi-project.org (Postfix) with ESMTP id 1747D7E808BB
+	for <unittests@glpi-project.org>; Wed, 31 Jul 2019 09:52:04 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.glpi-project.org (Postfix) with ESMTP id 016557E8083B
+	for <unittests@glpi-project.org>; Wed, 31 Jul 2019 09:52:04 +0200 (CEST)
+Authentication-Results:mail.glpi-project.org; dkim=permerror (bad message/signature format)
+Received: from mail.glpi-projet.org ([127.0.0.1])
+	by localhost (mail.glpi-project.org [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Ysz0ubkLZksR for <unittests@glpi-project.org>;
+	Wed, 31 Jul 2019 09:52:03 +0200 (CEST)
+X-PureMail-Virus-Protected: YES
+X-Spam-Flag: NO
+X-Spam-Score: -0.898
+X-PureMail-Spam-Protected: YES
+Received: from chat.glpi-project.org (chat.glpi-project.org [192.168.1.3])
+	by vm000023 (Postfix) with ESMTP id BA69844D7D
+	for <unittests@glpi-project.org>; Wed, 31 Jul 2019 09:51:53 +0200 (CEST)
+MIME-Version: 1.0
+Auto-Submitted: auto-generated
+Precedence: bulk
+From: <"">
+Reply-To: <chat@glpi-project.org>
+Date: Wed, 31 Jul 2019 09:52:00 +0200
+To: unittests@glpi-project.org
+Subject: [Chat] New Direct Message from @glpi-dev on July 31,
+ 2019
+Content-Type: multipart/alternative;
+ boundary=def861597808f25300f81fc10df5395b2eac21014c683f500f7b9f01f10e
+Content-Transfer-Encoding: 7bit
+Message-Id: <20190731075159.F33639F94A@glpi-project.org>
+
+--def861597808f25300f81fc10df5395b2eac21014c683f500f7b9f01f10e
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+------------------------------
+You have a new Direct Message.
+------------------------------
+
+@glpi-dev - 09:52 CEST, July 31
+
+Hello,
+Unit tests are failing, could you take an eye please?
+
+--def861597808f25300f81fc10df5395b2eac21014c683f500f7b9f01f10e
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=UTF-8
+
+
+<html><body>
+
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" wi=
+dth=3D"100%" style=3D"margin-top: 20px; line-height: 1.7; color: #555;">
+    <tr>
+        <td>
+            <table align=3D"center" border=3D"0" cellpadding=3D"0" cellspac=
+ing=3D"0" width=3D"100%" style=3D"max-width: 660px; font-family: Helvetica,=
+ Arial, sans-serif; font-size: 14px; background: #FFF;">
+                <tr>
+                    <td style=3D"border: 1px solid #ddd;">
+                        <table align=3D"center" border=3D"0" cellpadding=3D=
+"0" cellspacing=3D"0" width=3D"100%" style=3D"border-collapse: collapse;">
+                            <tr>
+                                <td>
+                                    <table border=3D"0" cellpadding=3D"0" c=
+ellspacing=3D"0" style=3D"padding: 20px 50px 0; text-align: center; margin:=
+ 0 auto">
+                                        <tr>
+                                            <td style=3D"border-bottom: 1px=
+ solid #ddd; padding: 0 0 20px;">
+                                                <h2 style=3D"font-weight: n=
+ormal; margin-top: 10px;">You have a new Direct Message.</h2>
+                                                <p><br>@gbougard - 09:52 CE=
+ST, July 31<br><pre style=3D"text-align:left;font-family: 'Lato', sans-seri=
+f; white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wra=
+p; white-space: -o-pre-wrap; word-wrap: break-word;">Hello,<br/>Unit tests 
+are failing, could you take an eye please?</pre></p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body></html>
+--def861597808f25300f81fc10df5395b2eac21014c683f500f7b9f01f10e--

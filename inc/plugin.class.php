@@ -134,20 +134,6 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * Are plugin initialized (Plugin::Init() called)
-    *
-    * @return boolean
-    *
-    * @deprecated 9.4.1
-    */
-   public static function hasBeenInit() {
-      Toolbox::deprecated();
-
-      return self::$plugins_init;
-   }
-
-
-   /**
     * Init a plugin including setup.php file
     * launching plugin_init_NAME function  after checking compatibility
     *
@@ -211,40 +197,37 @@ class Plugin extends CommonDBTM {
 
       $dir = GLPI_ROOT . "/plugins/$name/locales/";
 
-      $translation_included = false;
+      $mofile = false;
       // New localisation system
       if (file_exists($dir.$CFG_GLPI["languages"][$trytoload][1])) {
-         $TRANSLATE->addTranslationFile('gettext',
-                                        $dir.$CFG_GLPI["languages"][$trytoload][1],
-                                        $name, $coretrytoload);
-
-         $translation_included = true;
-
+         $mofile = $dir.$CFG_GLPI["languages"][$trytoload][1];
       } else if (!empty($CFG_GLPI["language"])
                  && file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
-         $TRANSLATE->addTranslationFile('gettext',
-                                        $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1],
-                                        $name, $coretrytoload);
-         $translation_included = true;
+         $mofile = $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1];
       } else if (file_exists($dir."en_GB.mo")) {
-         $TRANSLATE->addTranslationFile('gettext',
-                                        $dir."en_GB.mo",
-                                        $name, $coretrytoload);
-         $translation_included = true;
-
+         $mofile = $dir."en_GB.mo";
       }
 
-      if (!$translation_included) {
-         if (file_exists($dir.$trytoload.'.php')) {
-            include ($dir.$trytoload.'.php');
-         } else if (isset($CFG_GLPI["language"])
-                    && file_exists($dir.$CFG_GLPI["language"].'.php')) {
-            include ($dir.$CFG_GLPI["language"].'.php');
-         } else if (file_exists($dir . "en_GB.php")) {
-            include ($dir . "en_GB.php");
-         } else if (file_exists($dir . "fr_FR.php")) {
-            include ($dir . "fr_FR.php");
-         }
+      if ($mofile !== false) {
+         $TRANSLATE->addTranslationFile(
+            'gettext',
+            $mofile,
+            $name,
+            $coretrytoload
+         );
+      }
+
+      $mofile = str_replace($dir, GLPI_LOCAL_I18N_DIR . '/'.$name, $mofile);
+      $phpfile = str_replace('.mo', '.php', $mofile);
+
+      // Load local PHP file if it exists
+      if (file_exists($phpfile)) {
+         $TRANSLATE->addTranslationFile('phparray', $phpfile, $name, $coretrytoload);
+      }
+
+      // Load local MO file if it exists -- keep last so it gets precedence
+      if (file_exists($mofile)) {
+         $TRANSLATE->addTranslationFile('gettext', $mofile, $name, $coretrytoload);
       }
    }
 
@@ -301,23 +284,7 @@ class Plugin extends CommonDBTM {
       $plugin = new self();
       $is_already_known = $plugin->getFromDBByCrit(['directory' => $directory]);
 
-      $plugin_path = implode(DIRECTORY_SEPARATOR, [GLPI_ROOT, 'plugins', $directory]);
-      $setup_file  = $plugin_path . DIRECTORY_SEPARATOR . 'setup.php';
-
-      // Retrieve plugin informations
-      $informations = [];
-      if (file_exists($setup_file)) {
-         // Includes are made inside a function to prevent included files to override
-         // variables used in this function.
-         // For example, if the included files contains a $plugin variable, it will
-         // replace the $plugin variable used here.
-         $include_fct = function () use ($directory, $setup_file) {
-            self::loadLang($directory);
-            include_once($setup_file);
-         };
-         $include_fct();
-         $informations = Toolbox::addslashes_deep(self::getInfo($directory));
-      }
+      $informations = $this->getInformationsFromDirectory($directory);
 
       if (empty($informations)) {
          if (!$is_already_known) {
@@ -326,13 +293,35 @@ class Plugin extends CommonDBTM {
          }
 
          // Plugin is known but we are unable to load informations, it should be cleaned
-         $this->update(
-            [
-               'id'    => $plugin->fields['id'],
-               'state' => self::TOBECLEANED,
-            ]
-         );
-         return;
+         if ($plugin->fields['state'] == self::TOBECLEANED) {
+            // unless its state is already self::TOBECLEANED
+            return;
+         }
+
+         // Try to get information from a plugin that lists current name as its old name
+         // If something found, and not already registerd in DB,, base plugin informations on it
+         // If nothing found, mark plugin as "To be cleaned"
+         $new_specs = $this->getNewInfoAndDirBasedOnOldName($directory);
+         if (null !== $new_specs
+             && countElementsInTable(self::getTable(), ['directory' => $new_specs['directory']]) === 0) {
+            $directory    = $new_specs['directory'];
+            $informations = $new_specs['informations'];
+         } else {
+            trigger_error(
+               sprintf(
+                  'Unable to load plugin "%s" informations. Its state has been changed to "To be cleaned".',
+                  $directory
+               ),
+               E_USER_WARNING
+            );
+            $this->update(
+               [
+                  'id'    => $plugin->fields['id'],
+                  'state' => self::TOBECLEANED,
+               ]
+            );
+            return;
+         }
       }
 
       if (!$is_already_known && array_key_exists('oldname', $informations)) {
@@ -361,8 +350,16 @@ class Plugin extends CommonDBTM {
          $input              = $informations;
          $input['id']        = $plugin->fields['id'];
          $input['directory'] = $directory;
-         if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED])) {
+         if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED, self::NOTUPDATED])) {
             // mark it as 'updatable' unless it was not installed
+            trigger_error(
+               sprintf(
+                  'Plugin "%s" version changed. It has been deactivated as its update process has to be launched.',
+                  $directory
+               ),
+               E_USER_WARNING
+            );
+
             $input['state']     = self::NOTUPDATED;
          }
 
@@ -414,8 +411,46 @@ class Plugin extends CommonDBTM {
 
       if (!$usage_ok) {
          // Deactivate if not usable
+         trigger_error(
+            sprintf(
+               'Plugin "%s" prerequisites are not matched. It has been deactivated.',
+               $directory
+            ),
+            E_USER_WARNING
+         );
          $this->unactivate($plugin->fields['id']);
       }
+   }
+
+
+   /**
+    * Get plugin informations based on its old name.
+    *
+    * @param string $oldname
+    *
+    * @return null|array If a new directory is found, returns an array containing 'directory' and 'informations' keys.
+    */
+   private function getNewInfoAndDirBasedOnOldName($oldname) {
+
+      $plugins_directories = new DirectoryIterator(GLPI_ROOT . '/plugins');
+      /** @var SplFileInfo $plugin_directory */
+      foreach ($plugins_directories as $plugin_directory) {
+         if (in_array($plugin_directory->getFilename(), ['.svn', '.', '..'])
+             || !is_dir($plugin_directory->getRealPath())) {
+            continue;
+         }
+
+         $informations = $this->getInformationsFromDirectory($plugin_directory->getFilename());
+         if (array_key_exists('oldname', $informations) && $informations['oldname'] === $oldname) {
+            // Return informations if oldname specified in parsed directory matches passed value
+            return [
+               'directory'    => $plugin_directory->getFilename(),
+               'informations' => $informations,
+            ];
+         }
+      }
+
+      return null;
    }
 
    /**
@@ -498,11 +533,16 @@ class Plugin extends CommonDBTM {
    /**
     * Install a plugin
     *
-    * @param int $ID ID of the plugin
+    * @param int   $ID      ID of the plugin
+    * @param array $params  Additionnal params to pass to install hook.
     *
     * @return void
+    *
+    * @since 9.5.0 Added $param parameter
    **/
-   function install($ID) {
+   function install($ID, array $params = []) {
+
+      global $DB;
 
       $message = '';
       $type = ERROR;
@@ -515,14 +555,15 @@ class Plugin extends CommonDBTM {
          }
 
          self::load($this->fields['directory'], true);
-         $function   = 'plugin_' . $this->fields['directory'] . '_install';
-         if (function_exists($function)) {
+         $install_function = 'plugin_' . $this->fields['directory'] . '_install';
+         if (function_exists($install_function)) {
             $this->setLoaded('temp', $this->fields['directory']);  // For autoloader
-            if ($function()) {
+            $DB->disableTableCaching(); //prevents issues on table/fieldExists upgrading from old versions
+            if ($install_function($params)) {
                $type = INFO;
-               $function = 'plugin_' . $this->fields['directory'] . '_check_config';
-               if (function_exists($function)) {
-                  if ($function()) {
+               $check_function = 'plugin_' . $this->fields['directory'] . '_check_config';
+               if (function_exists($check_function)) {
+                  if ($check_function()) {
                      $this->update(['id'    => $ID,
                                          'state' => self::NOTACTIVATED]);
                      $message = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
@@ -855,8 +896,8 @@ class Plugin extends CommonDBTM {
          }
       }
 
-      if (in_array('glpi_infocoms', $glpitables)) {
-         $entities    = getAllDatasFromTable('glpi_entities');
+      if (in_array('glpi_infocoms', $glpitables) && count($types)) {
+         $entities    = getAllDataFromTable('glpi_entities');
          $entities[0] = "Root";
 
          foreach ($types as $num => $name) {
@@ -1244,6 +1285,35 @@ class Plugin extends CommonDBTM {
       return $res;
    }
 
+   /**
+    * Returns plugin informations from directory.
+    *
+    * @param string $directory
+    *
+    * @return array
+    */
+   public function getInformationsFromDirectory($directory) {
+
+      $plugin_path = implode(DIRECTORY_SEPARATOR, [GLPI_ROOT, 'plugins', $directory]);
+      $setup_file  = $plugin_path . DIRECTORY_SEPARATOR . 'setup.php';
+
+      $informations = [];
+      if (file_exists($setup_file)) {
+         // Includes are made inside a function to prevent included files to override
+         // variables used in this function.
+         // For example, if the included files contains a $plugin variable, it will
+         // replace the $plugin variable used here.
+         $include_fct = function () use ($directory, $setup_file) {
+            self::loadLang($directory);
+            include_once($setup_file);
+         };
+         $include_fct();
+         $informations = Toolbox::addslashes_deep(self::getInfo($directory));
+      }
+
+      return $informations;
+   }
+
 
    /**
     * Get database relations for plugins
@@ -1432,7 +1502,7 @@ class Plugin extends CommonDBTM {
             );
             break;
          default:
-            throw new \RuntimeException("messageMissing type $type is unknwown!");
+            throw new \RuntimeException("messageMissing type $type is unknown!");
       }
    }
 

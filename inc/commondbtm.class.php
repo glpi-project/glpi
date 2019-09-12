@@ -108,7 +108,7 @@ class CommonDBTM extends CommonGLPI {
    protected $fkfield = "";
 
    /**
-    * Search option of item. Initialized on first call to `self::getOptions()` and used as cache.
+    * Search option of item. Initialized on first call to self::getOptions() and used as cache.
     *
     * @var array
     *
@@ -132,13 +132,6 @@ class CommonDBTM extends CommonGLPI {
     * @var array
     */
    static protected $plugins_forward_entity = [];
-
-   /**
-    * Rightname used to check rights to do actions on item.
-    *
-    * @var string
-    */
-   static $rightname = '';
 
    /**
     * Flag to determine whether or not table name of item has a notepad.
@@ -175,20 +168,6 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Get known tables
-    *
-    * @return array
-    *
-    * @deprecated 9.4.2
-    */
-   public static function getTablesOf() {
-      Toolbox::deprecated();
-
-      return self::$tables_of;
-   }
-
-
-   /**
     * Return the table used to store this object
     *
     * @param string $classname Force class (to avoid late_binding on inheritance)
@@ -221,20 +200,6 @@ class CommonDBTM extends CommonGLPI {
    **/
    static function forceTable($table) {
       self::$tables_of[get_called_class()] = $table;
-   }
-
-
-   /**
-    * Get known foreign keys
-    *
-    * @return array
-    *
-    * @deprecated 9.4.2
-    */
-   public static function getForeignKeyFieldsOf() {
-      Toolbox::deprecated();
-
-      return self::$foreign_key_fields_of;
    }
 
 
@@ -462,8 +427,6 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Retrieve all items from the database
     *
-    * @since 9.4 string condition is deprecated
-    *
     * @param array        $condition condition used to search if needed (empty get all) (default '')
     * @param array|string $order     order field if needed (default '')
     * @param integer      $limit     limit retrieved data if needed (default '')
@@ -472,60 +435,30 @@ class CommonDBTM extends CommonGLPI {
    **/
    function find($condition = [], $order = [], $limit = null) {
       global $DB;
-      // Make new database object and fill variables
 
-      if (!is_array($condition)) {
-         Toolbox::deprecated('Using string condition in find is deprecated!');
+      $criteria = [
+         'FROM'   => $this->getTable()
+      ];
 
-         $query = "SELECT *
-                  FROM `".$this->getTable()."`";
+      if (count($condition)) {
+         $criteria['WHERE'] = $condition;
+      }
 
-         if (!empty($condition)) {
-            $query .= " WHERE $condition";
-         }
+      if (!is_array($order)) {
+         $order = [$order];
+      }
+      if (count($order)) {
+         $criteria['ORDERBY'] = $order;
+      }
 
-         if (!empty($order)) {
-            $query .= " ORDER BY $order";
-         }
+      if ((int)$limit > 0) {
+         $criteria['LIMIT'] = (int)$limit;
+      }
 
-         if (!empty($limit)) {
-            $query .= " LIMIT ".intval($limit);
-         }
-
-         $data = [];
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result)) {
-               while ($line = $DB->fetch_assoc($result)) {
-                  $data[$line['id']] = $line;
-               }
-            }
-         }
-      } else {
-         //@since 9.4: use iterator
-         $criteria = [
-            'FROM'   => $this->getTable()
-         ];
-
-         if (count($condition)) {
-            $criteria['WHERE'] = $condition;
-         }
-
-         if (!is_array($order)) {
-            $order = [$order];
-         }
-         if (count($order)) {
-            $criteria['ORDERBY'] = $order;
-         }
-
-         if ((int)$limit > 0) {
-            $criteria['LIMIT'] = (int)$limit;
-         }
-
-         $data = [];
-         $iterator = $DB->request($criteria);
-         while ($line = $iterator->next()) {
-            $data[$line['id']] = $line;
-         }
+      $data = [];
+      $iterator = $DB->request($criteria);
+      while ($line = $iterator->next()) {
+         $data[$line['id']] = $line;
       }
 
       return $data;
@@ -554,7 +487,7 @@ class CommonDBTM extends CommonGLPI {
       $table = $this->getTable();
 
       if (!empty($table) &&
-          ($fields = $DB->list_fields($table))) {
+          ($fields = $DB->listFields($table))) {
 
          foreach (array_keys($fields) as $key) {
             $this->fields[$key] = "";
@@ -615,7 +548,7 @@ class CommonDBTM extends CommonGLPI {
                [$field => $this->fields[$field]],
                ['id' => $this->fields['id']]
             );
-            if ($DB->affected_rows() == 0) {
+            if ($DB->affectedRows() == 0) {
                if (isset($oldvalues[$field])) {
                   unset($oldvalues[$field]);
                }
@@ -661,7 +594,7 @@ class CommonDBTM extends CommonGLPI {
             if (!isset($this->fields['id'])
                   || is_null($this->fields['id'])
                   || ($this->fields['id'] == 0)) {
-               $this->fields['id'] = $DB->insert_id();
+               $this->fields['id'] = $DB->insertId();
             }
 
             return $this->fields['id'];
@@ -977,6 +910,16 @@ class CommonDBTM extends CommonGLPI {
          $note->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
 
+      if (in_array($this->getType(), $CFG_GLPI['ticket_types'])) {
+         //delete relation beetween item and changes/problems
+         $this->deleteChildrenAndRelationsFromDb(
+            [
+               Change_Item::class,
+               Item_Problem::class,
+            ]
+         );
+      }
+
       if (in_array($this->getType(), $CFG_GLPI['rackable_types'])) {
          //delete relation beetween rackable type and its rack
          $item_rack = new Item_Rack();
@@ -994,6 +937,21 @@ class CommonDBTM extends CommonGLPI {
                'items_id' => $this->fields['id']
             ]
          );
+      }
+
+      if (in_array($this->getType(), $CFG_GLPI['cluster_types'])) {
+         //delete relation beetween clusterable elements type and their cluster
+         $this->deleteChildrenAndRelationsFromDb(
+            [
+               Item_Cluster::class,
+            ]
+         );
+      }
+
+      if (in_array($this->getType(), $CFG_GLPI['operatingsystem_types'])) {
+         $this->deleteChildrenAndRelationsFromDb([
+            Item_OperatingSystem::class
+         ]);
       }
    }
 
@@ -1117,7 +1075,7 @@ class CommonDBTM extends CommonGLPI {
 
       if ($this->input && is_array($this->input)) {
          $this->fields = [];
-         $table_fields = $DB->list_fields($this->getTable());
+         $table_fields = $DB->listFields($this->getTable());
 
          // fill array for add
          foreach (array_keys($this->input) as $key) {
@@ -1942,69 +1900,6 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Have I the global right to "create" the Object
-    * May be overloaded if needed (ex KnowbaseItem)
-    *
-    * @return boolean
-   **/
-   static function canCreate() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, CREATE);
-      }
-      return false;
-   }
-
-
-   /**
-    * Have I the global right to "delete" the Object
-    *
-    * May be overloaded if needed
-    *
-    * @return boolean
-   **/
-   static function canDelete() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, DELETE);
-      }
-      return false;
-   }
-
-
-   /**
-    * Have I the global right to "purge" the Object
-    *
-    * May be overloaded if needed
-    *
-    * @return boolean
-    **/
-   static function canPurge() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, PURGE);
-      }
-      return false;
-   }
-
-
-   /**
-    * Have I the global right to "update" the Object
-    *
-    * Default is calling canCreate
-    * May be overloaded if needed
-    *
-    * @return boolean
-   **/
-   static function canUpdate() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, UPDATE);
-      }
-   }
-
-
-   /**
     * Have I the right to "create" the Object
     *
     * Default is true and check entity if the objet is entity assign
@@ -2082,24 +1977,6 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       return true;
-   }
-
-
-   /**
-    * Have I the global right to "view" the Object
-    *
-    * Default is true and check entity if the objet is entity assign
-    *
-    * May be overloaded if needed
-    *
-    * @return boolean
-   **/
-   static function canView() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, READ);
-      }
-      return false;
    }
 
 
@@ -2207,7 +2084,8 @@ class CommonDBTM extends CommonGLPI {
                         $typefield = $rel[$tablename][1]; // itemtype...
 
                         $iterator = $DB->request([
-                           'SELECT DISTINCT' => $typefield,
+                           'SELECT'          => $typefield,
+                           'DISTINCT'        => true,
                            'FROM'            => $tablename,
                            'WHERE'           => [$field => $ID]
                         ]);
@@ -4240,7 +4118,7 @@ class CommonDBTM extends CommonGLPI {
                            $message[$field] = $this->input[$field];
                         }
 
-                        $doubles      = getAllDatasFromTable($this->getTable(), $where);
+                        $doubles      = getAllDataFromTable($this->getTable(), $where);
                         $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                         if ($p['unicity_error_message']) {
                            if (!$fields['action_refuse']) {

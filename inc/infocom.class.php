@@ -2047,7 +2047,8 @@ class Infocom extends CommonDBChild {
       global $DB;
 
       $types_iterator = $DB->request([
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_infocoms',
          'WHERE'           => [
             'NOT'          => ['itemtype' => self::getExcludedTypes()]

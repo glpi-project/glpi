@@ -68,13 +68,15 @@ abstract class API extends CommonGLPI {
    /**
     * Generic messages
     *
+    * @since 9.1
+    *
     * @param mixed   $response          string message or array of data to send
-    * @param integer $code              http code
+    * @param integer $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
     * @param array   $additionalheaders headers to send with http response (must be an array(key => value))
     *
     * @return void
     */
-   abstract protected function returnResponse($response, $code, $additionalheaders);
+   abstract protected function returnResponse($response, $httpcode = 200, $additionalheaders = []);
 
    /**
     * Upload and validate files from request and append to $this->parameters['input']
@@ -92,7 +94,7 @@ abstract class API extends CommonGLPI {
     * @return void
     */
    public function initApi() {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       // Load GLPI configuration
       include_once (GLPI_ROOT . '/inc/includes.php');
@@ -475,12 +477,9 @@ abstract class API extends CommonGLPI {
     * @return array
      */
    protected function getGlpiConfig() {
-
-      global $CFG_GLPI;
       $this->initEndpoint();
 
-      $excludedKeys = array_flip(Config::$undisclosedFields);
-      return ['cfg_glpi' => array_diff_key($CFG_GLPI, $excludedKeys)];
+      return ['cfg_glpi' => Config::getSafeConfig()];
    }
 
 
@@ -553,7 +552,7 @@ abstract class API extends CommonGLPI {
           && in_array($itemtype, Item_Devices::getConcernedItems())) {
          $all_devices = [];
          foreach (Item_Devices::getItemAffinities($item->getType()) as $device_type) {
-            $found_devices = getAllDatasFromTable(
+            $found_devices = getAllDataFromTable(
                $device_type::getTable(), [
                   'items_id'     => $item->getID(),
                   'itemtype'     => $item->getType(),
@@ -922,7 +921,7 @@ abstract class API extends CommonGLPI {
             $doc_iterator = $DB->request([
                'SELECT'    => [
                   'glpi_documents_items.id AS assocID',
-                  'glpi_documents_items.date_mod AS assocdate',
+                  'glpi_documents_items.date_creation AS assocdate',
                   'glpi_entities.id AS entityID',
                   'glpi_entities.completename AS entity',
                   'glpi_documentcategories.completename AS headings',
@@ -975,7 +974,7 @@ abstract class API extends CommonGLPI {
                             getEntitiesRestrictRequest("AND", "glpi_tickets")."
                       ORDER BY `glpi_tickets`.`date_mod` DESC";
             if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
+               while ($data = $DB->fetchAssoc($result)) {
                   $fields['_tickets'][] = $data;
                }
             }
@@ -999,7 +998,7 @@ abstract class API extends CommonGLPI {
                                   getEntitiesRestrictRequest("AND", "glpi_problems")."
                             ORDER BY `glpi_problems`.`date_mod` DESC";
             if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
+               while ($data = $DB->fetchAssoc($result)) {
                   $fields['_problems'][] = $data;
                }
             }
@@ -1023,7 +1022,7 @@ abstract class API extends CommonGLPI {
                                   getEntitiesRestrictRequest("AND", "glpi_changes")."
                             ORDER BY `glpi_changes`.`date_mod` DESC";
             if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
+               while ($data = $DB->fetchAssoc($result)) {
                   $fields['_changes'][] = $data;
                }
             }
@@ -1048,7 +1047,7 @@ abstract class API extends CommonGLPI {
          if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
             $fields['_logs'] = self::arrayRightError();
          } else {
-            $fields['_logs'] = getAllDatasFromTable(
+            $fields['_logs'] = getAllDataFromTable(
                "glpi_logs", [
                   'items_id'  => $item->getID(),
                   'itemtype'  => $item->getType()
@@ -1244,7 +1243,7 @@ abstract class API extends CommonGLPI {
 
       // filter with entity
       if ($item->isEntityAssign()
-          // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like TicketTemplateMandatoryField)
+          // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like ITILTemplateMandatoryField)
           && array_key_exists('entities_id', $item->fields)) {
          $where.= " AND (". getEntitiesRestrictRequest("",
                                              $itemtype::getTable(),
@@ -1268,7 +1267,7 @@ abstract class API extends CommonGLPI {
                 ORDER BY ".$params['sort']." ".$params['order']."
                 LIMIT ".$params['start'].", ".$params['list_limit'];
       if ($result = $DB->query($query)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $found[] = $data;
          }
       }
@@ -2293,8 +2292,8 @@ abstract class API extends CommonGLPI {
     */
    public function inlineDocumentation($file) {
       self::header(true, __("API Documentation"));
-      echo Html::css("lib/prism/prism.css");
-      echo Html::script("lib/prism/prism.js");
+      echo Html::css("public/lib/prism.css");
+      echo Html::script("public/lib/prismjs.js");
 
       echo "<div class='documentation'>";
       $documentation = file_get_contents(GLPI_ROOT.'/'.$file);

@@ -64,8 +64,9 @@ class Rack extends CommonDBTM {
 
    function defineTabs($options = []) {
       $ong = [];
-      $this->addDefaultFormTab($ong)
+      $this
          ->addStandardTab('Item_Rack', $ong, $options)
+         ->addDefaultFormTab($ong)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
@@ -76,6 +77,7 @@ class Rack extends CommonDBTM {
       ;
       return $ong;
    }
+
 
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
@@ -679,9 +681,10 @@ class Rack extends CommonDBTM {
       $blueprint = "";
       $blueprint_ctrl = "";
       if (strlen($room->fields['blueprint'])) {
+         $blueprint_url = Toolbox::getPictureUrl($room->fields['blueprint']);
          $blueprint = "
             <div class='blueprint'
-                 style='background: url({$room->fields['blueprint']}) no-repeat top left/100% 100%;
+                 style='background: url({$blueprint_url}) no-repeat top left/100% 100%;
                         height: ".$grid_h."px;></div>";
          $blueprint_ctrl = "<span class='mini_toggle active'
                                   id='toggle_blueprint'>".__('Blueprint')."</span>";
@@ -1061,7 +1064,6 @@ JAVASCRIPT;
 
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Change_Item::class,
             Item_Rack::class,
             PDU_Rack::class,
          ]

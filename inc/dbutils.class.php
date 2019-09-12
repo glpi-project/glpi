@@ -53,7 +53,7 @@ final class DbUtils {
       if (!Toolbox::startsWith($table, 'glpi_')) {
          return "";
       }
-      return str_replace("glpi_", "", $table)."_id";
+      return substr($table, 5)."_id";
    }
 
 
@@ -201,7 +201,7 @@ final class DbUtils {
                $table = substr($table, \strlen(NS_GLPI));
             }
          }
-         $table = str_replace('\\', '_', $table);
+         $table = str_replace(['mock\\', '\\'], ['', '_'], $table);
          if (strstr($table, '_')) {
             $split = explode('_', $table);
 
@@ -261,19 +261,25 @@ final class DbUtils {
 
          $itemtype = $prefix.$table;
          // Get real existence of itemtype
-         if (($item = $this->getItemForItemtype($itemtype))) {
-            $itemtype                                   = get_class($item);
-            $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
-            $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
-            return $itemtype;
+         if (class_exists($itemtype)) {
+            $item_class = new ReflectionClass($itemtype);
+            if (!$item_class->isAbstract() && ($item = $this->getItemForItemtype($itemtype))) {
+               $itemtype                                   = get_class($item);
+               $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
+               $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
+               return $itemtype;
+            }
          }
          // Namespaced item
          $itemtype = $pref2 . str_replace('_', '\\', $table);
-         if (($item = $this->getItemForItemtype($itemtype))) {
-            $itemtype                                   = get_class($item);
-            $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
-            $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
-            return $itemtype;
+         if (class_exists($itemtype)) {
+            $item_class = new ReflectionClass($itemtype);
+            if (!$item_class->isAbstract() && ($item = $this->getItemForItemtype($itemtype))) {
+               $itemtype                                   = get_class($item);
+               $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
+               $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
+               return $itemtype;
+            }
          }
          return "UNKNOWN";
       }
@@ -347,7 +353,8 @@ final class DbUtils {
          }
       }
       $condition['COUNT'] = 'cpt';
-      $condition['SELECT DISTINCT'] = $field;
+      $condition['FIELDS'] = $field;
+      $condition['DISTINCT'] = true;
 
       return $this->countElementsInTable($table, $condition);
    }
@@ -398,45 +405,46 @@ final class DbUtils {
    }
 
    /**
-    * Get datas from a table in an array :
+    * Get data from a table in an array :
     * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
     *
-    * @param string  $table     Table name
-    * @param array   $condition Condition to use (default '') or array of criteria
-    * @param boolean $usecache  Use cache (false by default)
-    * @param string  $order     Result order (default '')
+    * @param string  $table    Table name
+    * @param array   $criteria Request criteria
+    * @param boolean $usecache Use cache (false by default)
+    * @param string  $order    Result order (default '')
     *
     * @return array containing all the datas
     */
-   public function getAllDataFromTable($table, $condition = [], $usecache = false, $order = '') {
+   public function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '') {
       global $DB;
 
       static $cache = [];
 
-      if (empty($condition) && empty($order) && $usecache && isset($cache[$table])) {
+      if (empty($criteria) && empty($order) && $usecache && isset($cache[$table])) {
          return $cache[$table];
       }
 
       $data = [];
 
-      if (!is_array($condition)) {
-         if (empty($condition)) {
-            $condition = [];
+      if (!is_array($criteria)) {
+         Toolbox::Deprecated('Criteria must be an array!');
+         if (empty($criteria)) {
+            $criteria = [];
          }
       }
 
       if (!empty($order)) {
-         //Toolbox::Deprecated('Order should be defined in condition!');
-         $condition['ORDER'] = $order; // Deprecated use case
+         Toolbox::Deprecated('Order should be defined in criteria!');
+         $criteria['ORDER'] = $order; // Deprecated use case
       }
 
-      $iterator = $DB->request($table, $condition);
+      $iterator = $DB->request($table, $criteria);
 
       while ($row = $iterator->next()) {
          $data[$row['id']] = $row;
       }
 
-      if (empty($condition) && empty($order) && $usecache) {
+      if (empty($criteria) && empty($order) && $usecache) {
          $cache[$table] = $data;
       }
       return $data;
@@ -461,7 +469,7 @@ final class DbUtils {
       $result = $DB->query("SHOW INDEX FROM `$table`");
 
       if ($result && $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             if ($data["Key_name"] == $field) {
                return true;
             }
@@ -1342,190 +1350,6 @@ final class DbUtils {
             ]
          );
       }
-   }
-
-
-   /**
-    * Get the ID of the next Item
-    *
-    * @deprecated 9.4
-    *
-    * @param string  $table         table to search next item
-    * @param integer $ID            current ID
-    * @param string  $condition     condition to add to the search (default ='')
-    * @param string  $nextprev_item field used to sort (default ='name')
-    *
-    * @return integer the next ID, -1 if not exist
-    */
-   public function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
-      global $DB;
-      Toolbox::deprecated();
-
-      if (empty($nextprev_item)) {
-         return false;
-      }
-
-      $itemtype = $this->getItemTypeForTable($table);
-      $item     = new $itemtype();
-      $search   = $ID;
-
-      if ($nextprev_item != "id") {
-         $iterator = $DB->request([
-            'SELECT' => $nextprev_item,
-            'FROM'   => $table,
-            'WHERE'  => ['id' => $ID]
-         ]);
-
-         if (count($iterator) > 0) {
-            $search = addslashes($iterator->next()[$nextprev_item]);
-         } else {
-            $nextprev_item = "id";
-         }
-      }
-
-      $LEFTJOIN = '';
-      if ($table == "glpi_users") {
-         $LEFTJOIN = " LEFT JOIN `glpi_profiles_users`
-                              ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)";
-      }
-
-      $query = "SELECT `$table`.`id`
-               FROM `$table`
-               $LEFTJOIN
-               WHERE (`$table`.`$nextprev_item` > '$search' ";
-
-      // Same name case
-      if ($nextprev_item != "id") {
-         $query .= " OR (`$table`.`".$nextprev_item."` = '$search'
-                        AND `$table`.`id` > '$ID') ";
-      }
-      $query .= ") ";
-
-      if (!empty($condition)) {
-         $query .= " AND $condition ";
-      }
-
-      if ($item->maybeDeleted()) {
-         $query .= " AND `$table`.`is_deleted` = 0 ";
-      }
-
-      if ($item->maybeTemplate()) {
-         $query .= " AND `$table`.`is_template` = 0 ";
-      }
-
-      // Restrict to active entities
-      if ($table == "glpi_entities") {
-         $query .= $this->getEntitiesRestrictRequest("AND", $table, '', '', true);
-
-      } else if ($item->isEntityAssign()) {
-         $query .= $this->getEntitiesRestrictRequest("AND", $table, '', '', $item->maybeRecursive());
-
-      } else if ($table == "glpi_users") {
-         $query .= $this->getEntitiesRestrictRequest("AND", "glpi_profiles_users");
-      }
-
-      $query .= " ORDER BY `$table`.`$nextprev_item` ASC,
-                           `$table`.`id` ASC";
-
-      $result = $DB->query($query);
-      if ($result
-         && ($DB->numrows($result) > 0)) {
-         return $DB->result($result, 0, "id");
-      }
-
-      return -1;
-   }
-
-
-   /**
-    * Get the ID of the previous Item
-    *
-    * @deprecated 9.4
-    *
-    * @param string  $table         table to search next item
-    * @param integer $ID            current ID
-    * @param string  $condition     condition to add to the search (default ='')
-    * @param string  $nextprev_item field used to sort (default ='name')
-    *
-    * @return integer the previous ID, -1 if not exist
-    */
-   public function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {
-      global $DB;
-      Toolbox::deprecated();
-
-      if (empty($nextprev_item)) {
-         return false;
-      }
-
-      $itemtype = $this->getItemTypeForTable($table);
-      $item     = new $itemtype();
-      $search   = $ID;
-
-      if ($nextprev_item != "id") {
-         $iterator = $DB->request([
-            'SELECT' => $nextprev_item,
-            'FROM'   => $table,
-            'WHERE'  => ['id' => $ID]
-         ]);
-
-         if (count($iterator) > 0) {
-            $search = addslashes($iterator->next()[$nextprev_item]);
-         } else {
-            $nextprev_item = "id";
-         }
-      }
-
-      $LEFTJOIN = '';
-      if ($table == "glpi_users") {
-         $LEFTJOIN = " LEFT JOIN `glpi_profiles_users`
-                              ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)";
-      }
-
-      $query = "SELECT `$table`.`id`
-               FROM `$table`
-               $LEFTJOIN
-               WHERE (`$table`.`$nextprev_item` < '$search' ";
-
-      // Same name case
-      if ($nextprev_item != "id") {
-         $query .= " OR (`$table`.`$nextprev_item` = '$search'
-                        AND `$table`.`id` < '$ID') ";
-      }
-      $query .= ") ";
-
-      if (!empty($condition)) {
-         $query .= " AND $condition ";
-      }
-
-      if ($item->maybeDeleted()) {
-         $query .= "AND `$table`.`is_deleted` = 0";
-      }
-
-      if ($item->maybeTemplate()) {
-         $query .= "AND `$table`.`is_template` = 0";
-      }
-
-      // Restrict to active entities
-      if ($table == "glpi_entities") {
-         $query .= $this->getEntitiesRestrictRequest("AND", $table, '', '', true);
-
-      } else if ($item->isEntityAssign()) {
-         $query .= $this->getEntitiesRestrictRequest("AND", $table, '', '', $item->maybeRecursive());
-
-      } else if ($table == "glpi_users") {
-         $query .= $this->getEntitiesRestrictRequest("AND", "glpi_profiles_users");
-      }
-
-      $query .= " ORDER BY `$table`.`$nextprev_item` DESC,
-                           `$table`.`id` DESC";
-
-      $result = $DB->query($query);
-      if ($result
-         && ($DB->numrows($result) > 0)) {
-         return $DB->result($result, 0, "id");
-      }
-
-      return -1;
    }
 
 

@@ -208,6 +208,15 @@ class Log extends CommonDBTM {
          $username = "";
       }
 
+      if (Session::isImpersonateActive()) {
+         $impersonator_id = Session::getImpersonatorId();
+         $username = sprintf(
+            __('%1$s impersonated by %2$s'),
+            $username,
+            sprintf(__('%1$s (%2$s)'), getUserName($impersonator_id), $impersonator_id)
+         );
+      }
+
       $old_value = $DB->escape(Toolbox::substr(stripslashes($old_value), 0, 180));
       $new_value = $DB->escape(Toolbox::substr(stripslashes($new_value), 0, 180));
 
@@ -232,8 +241,8 @@ class Log extends CommonDBTM {
       ];
       $result = $DB->insert(self::getTable(), $params);
 
-      if ($result && $DB->affected_rows($result) > 0) {
-         return $_SESSION['glpi_maxhistory'] = $DB->insert_id();
+      if ($result && $DB->affectedRows($result) > 0) {
+         return $_SESSION['glpi_maxhistory'] = $DB->insertId();
       }
       return false;
    }
@@ -767,7 +776,8 @@ class Log extends CommonDBTM {
       $items_id = $item->getField('id');
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'user_name',
+         'SELECT'          => 'user_name',
+         'DISTINCT'        => true,
          'FROM'            => self::getTable(),
          'WHERE'  => [
                'items_id'  => $items_id,
@@ -975,7 +985,8 @@ class Log extends CommonDBTM {
       $items_id = $item->getField('id');
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'linked_action',
+         'SELECT'          => 'linked_action',
+         'DISTINCT'        => true,
          'FROM'            => self::getTable(),
          'WHERE'  => [
                'items_id'  => $items_id,

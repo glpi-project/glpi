@@ -1102,7 +1102,8 @@ class SavedSearch extends CommonDBTM {
 
       $types= [];
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => static::getTable()
       ]);
       while ($data = $iterator->next()) {
@@ -1332,7 +1333,10 @@ class SavedSearch extends CommonDBTM {
                $_SESSION['glpigroups'] = [];
             }
 
-            $DB->beginTransaction();
+            $in_transaction = $DB->inTransaction();
+            if (!$in_transaction) {
+               $DB->beginTransaction();
+            }
             while ($row = $iterator->next()) {
                try {
                   $self->fields = $row;
@@ -1347,8 +1351,10 @@ class SavedSearch extends CommonDBTM {
                }
             }
 
-            $DB->commit();
             $stmt->close();
+            if (!$in_transaction) {
+               $DB->commit();
+            }
 
             $cron_status = 1;
          }

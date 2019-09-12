@@ -100,7 +100,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
       $nb   = $DB->numrows($res) + $offset;
       $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor($DB->numrows($res) / 20) : 1));
 
-      while ($input = $DB->fetch_assoc($res)) {
+      while ($input = $DB->fetchAssoc($res)) {
          if (!($i % $step)) {
             if (isCommandLine()) {
                //TRANS: %1$s is a date, %2$s is a row, %3$s is total row, %4$s is memory
@@ -331,11 +331,13 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
 
       $computeritem = new Computer_Item();
       //For each direct connection of this printer
-      foreach (getAllDatasFromTable(
+      $connections = getAllDataFromTable(
          'glpi_computers_items', [
             'itemtype'  => 'Printer',
-            'items_id'  => $ID]
-         ) as $connection) {
+            'items_id'  => $ID
+         ]
+      );
+      foreach ($connections as $connection) {
 
          //Direct connection exists in the target printer ?
          if (!countElementsInTable("glpi_computers_items",

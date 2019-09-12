@@ -35,7 +35,7 @@
 }
 
 #logo_login {
-   background: url(../pics/login_logo_glpi.png) center no-repeat, #8E21A1;
+   background: #8E21A1;
 }
 
 #display-login {
@@ -53,7 +53,7 @@
 
 /* ====== GENERAL ====== */
 
-a {
+a, .btn-linkstyled {
    color: #8E21A1;
 
    &:link {

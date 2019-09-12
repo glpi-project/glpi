@@ -329,7 +329,6 @@ class PDU extends CommonDBTM {
 
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Change_Item::class,
             Pdu_Plug::class,
             PDU_Rack::class,
          ]

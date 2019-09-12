@@ -859,11 +859,24 @@ class User extends CommonDBTM {
       if (isset($input['language']) && GLPI_DEMO_MODE) {
          unset($input['language']);
       }
+
+      if (empty($input['timezone'])) {
+         $input['timezone'] = 'NULL';
+      }
+
       return $input;
    }
 
 
    function post_updateItem($history = 1) {
+      //handle timezone change for current user
+      if ($this->fields['id'] == Session::getLoginUserID()) {
+         if (null == $this->fields['timezone'] || 'null' === strtolower($this->fields['timezone'])) {
+            unset($_SESSION['glpi_tz']);
+         } else {
+            $_SESSION['glpi_tz'] = $this->fields['timezone'];
+         }
+      }
 
       $this->updateUserEmails();
       $this->syncLdapGroups();
@@ -1333,7 +1346,8 @@ class User extends CommonDBTM {
 
       // Search in DB the ldap_field we need to search for in LDAP
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'ldap_field',
+         'SELECT'          => 'ldap_field',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_groups',
          'WHERE'           => ['NOT' => ['ldap_field' => '']],
          'ORDER'           => 'ldap_field'
@@ -1964,7 +1978,7 @@ class User extends CommonDBTM {
     * @return boolean true if user found, false otherwise
     */
    function showForm($ID, array $options = []) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       // Affiche un formulaire User
       if (($ID != Session::getLoginUserID()) && !self::canView()) {
@@ -1989,9 +2003,16 @@ class User extends CommonDBTM {
       $formtitle = $this->getTypeName(1);
 
       if ($ID > 0) {
-         $formtitle .= "<a class='pointer far fa-address-card' target='_blank' href='".
+         $formtitle .= "<a class='pointer far fa-address-card fa-lg' target='_blank' href='".
                        User::getFormURLWithID($ID)."&amp;getvcard=1' title='".__s('Download user VCard').
                        "'><span class='sr-only'>". __('Vcard')."</span></a>";
+      }
+
+      if (Session::canImpersonate($ID)) {
+         $formtitle .= '<button type="submit" class="pointer btn-linkstyled btn-impersonate" name="impersonate" value="1">'
+            . '<i class="fas fa-user-secret fa-lg" title="' . __s('Impersonate') . '"></i> '
+            . '<span class="sr-only">' . __s('Impersonate') . '</span>'
+            . '</button>';
       }
 
       $options['formtitle']   = $formtitle;
@@ -2012,9 +2033,8 @@ class User extends CommonDBTM {
       }
 
       if (!empty($this->fields["name"])) {
-
-         echo "<td rowspan='4'>" . __('Picture') . "</td>";
-         echo "<td rowspan='4'>";
+         echo "<td rowspan='7'>" . __('Picture') . "</td>";
+         echo "<td rowspan='7'>";
          echo "<div class='user_picture_border_small' id='picture$rand'>";
          echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
                 User::getThumbnailURLForPicture($this->fields['picture'])."'>";
@@ -2030,8 +2050,8 @@ class User extends CommonDBTM {
          echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
          echo "</td>";
       } else {
-         echo "<td rowspan='4'></td>";
-         echo "<td rowspan='4'></td>";
+         echo "<td rowspan='7'></td>";
+         echo "<td rowspan='7'></td>";
       }
       echo "</tr>";
 
@@ -2086,6 +2106,32 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
          echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='off'>";
+         echo "</td></tr>";
+
+      } else {
+         echo "<tr class='tab_bg_1'><td></td><td></td><td rowspan='2'></td></tr>";
+         echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
+      }
+
+      $tz_warning = '';
+      $tz_available = $DB->areTimezonesAvailable($tz_warning);
+      if ($tz_available || Session::haveRight("config", READ)) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td><label for='timezone'>".__('Time zone')."</label></td><td>";
+         if ($tz_available) {
+            $timezones = $DB->getTimezones();
+            Dropdown::showFromArray(
+               'timezone',
+               $timezones, [
+                  'value'                 => $this->fields["timezone"],
+                  'display_emptychoice'   => true
+               ]
+            );
+         } else if (Session::haveRight("config", READ)) {
+            // Display a warning but only if user is more or less an admin
+            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
+            echo $tz_warning;
+         }
          echo "</td></tr>";
       }
 
@@ -2410,7 +2456,7 @@ class User extends CommonDBTM {
     * @return boolean true if user found, false otherwise
     */
    function showMyForm($target, $ID) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       // Affiche un formulaire User
       if (($ID != Session::getLoginUserID())
@@ -2451,8 +2497,8 @@ class User extends CommonDBTM {
          echo "</td>";
 
          if (!empty($this->fields["name"])) {
-            echo "<td rowspan='4'>" . __('Picture') . "</td>";
-            echo "<td rowspan='4'>";
+            echo "<td rowspan='7'>" . __('Picture') . "</td>";
+            echo "<td rowspan='7'>";
             echo "<div class='user_picture_border_small' id='picture$rand'>";
             echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
                    User::getThumbnailURLForPicture($this->fields['picture'])."'>";
@@ -2543,7 +2589,31 @@ class User extends CommonDBTM {
             echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
             echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='off'>";
             echo "</td></tr>";
+         } else {
+            echo "<tr class='tab_bg_1'><td colspan='2'></td><td colspan='2' rowspan='2'></tr>";
+            echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
+         }
 
+         $tz_warning = '';
+         $tz_available = $DB->areTimezonesAvailable($tz_warning);
+         if ($tz_available || Session::haveRight("config", READ)) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='timezone'>".__('Time zone')."</label></td><td>";
+            if ($tz_available) {
+               $timezones = $DB->getTimezones();
+               Dropdown::showFromArray(
+                  'timezone',
+                  $timezones, [
+                     'value'                 => $this->fields["timezone"],
+                     'display_emptychoice'   => true
+                  ]
+               );
+            } else if (Session::haveRight("config", READ)) {
+               // Display a warning but only if user is more or less an admin
+               echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
+               echo $tz_warning;
+            }
+            echo "</td></tr>";
          }
 
          $phonerand = mt_rand();
@@ -3337,7 +3407,8 @@ class User extends CommonDBTM {
       global $DB;
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_groups_users.groups_id',
+         'SELECT'          => 'glpi_groups_users.groups_id',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_groups_users',
          'INNER JOIN'      => [
             'glpi_groups'  => [
@@ -3648,7 +3719,8 @@ class User extends CommonDBTM {
       if ($count) {
          $criteria['SELECT'] = ['COUNT DISTINCT' => 'glpi_users.id AS CPT'];
       } else {
-         $criteria['SELECT DISTINCT'] = 'glpi_users.*';
+         $criteria['SELECT'] = 'glpi_users.*';
+         $criteria['DISTINCT'] = true;
       }
 
       if ($joinprofile) {
@@ -4876,12 +4948,11 @@ class User extends CommonDBTM {
    static function getURLForPicture($picture) {
       global $CFG_GLPI;
 
-      // prevent xss
-      $picture = Html::cleanInputText($picture);
-
-      if (!empty($picture)) {
-         return $CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/$picture";
+      $url = Toolbox::getPictureUrl($picture);
+      if (null !== $url) {
+         return $url;
       }
+
       return $CFG_GLPI["root_doc"]."/pics/picture.png";
    }
 

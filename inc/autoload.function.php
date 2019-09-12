@@ -261,8 +261,11 @@ function glpi_autoload($classname) {
 
    // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
    if (empty($classname) || is_numeric($classname) || (strpos($classname, '.') !== false)) {
-      echo "Security die. trying to load a forbidden class name";
-      die(1);
+      trigger_error(
+         sprintf('Trying to load a forbidden class name "%1$s"', $classname),
+         E_USER_ERROR
+      );
+      return false;
    }
 
    if ($classname === 'phpCAS'
@@ -283,19 +286,9 @@ function glpi_autoload($classname) {
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
       $item     = str_replace('\\', '/', strtolower($plug['class']));
       // Is the plugin active?
-      // Command line usage of GLPI : need to do a real check plugin activation
-      if (isCommandLine()) {
-         $plugin = new Plugin();
-         if (count($plugin->find(['directory' => $plugname, 'state' => Plugin::ACTIVATED])) == 0) {
-            // Plugin does not exists or not activated
-            return false;
-         }
-      } else {
-         // Standard use of GLPI
-         if (!Plugin::isPluginLoaded($plugname)) {
-            // Plugin not activated
-            return false;
-         }
+      if (!Plugin::isPluginLoaded($plugname)) {
+         // Plugin not activated
+         return false;
       }
    } else {
       $item = strtolower($classname);
@@ -318,9 +311,12 @@ function glpi_autoload($classname) {
    }
 }
 
-// composer autoload
-$autoload = GLPI_ROOT . '/vendor/autoload.php';
+
+// Check if dependencies are up to date
 $needrun  = false;
+
+// composer dependencies
+$autoload = GLPI_ROOT . '/vendor/autoload.php';
 if (!file_exists($autoload)) {
    $needrun = true;
 } else if (file_exists(GLPI_ROOT . '/composer.lock')) {
@@ -332,17 +328,31 @@ if (!file_exists($autoload)) {
       $needrun = true;
    }
 }
+
+// node dependencies
+if (!file_exists(GLPI_ROOT . '/public/lib')) {
+   $needrun = true;
+} else if (file_exists(GLPI_ROOT . '/package-lock.json')) {
+   if (!file_exists(GLPI_ROOT . '/.package.hash')) {
+      /* First time */
+      $needrun = true;
+   } else if (sha1_file(GLPI_ROOT . '/package-lock.json') != file_get_contents(GLPI_ROOT . '/.package.hash')) {
+      /* update */
+      $needrun = true;
+   }
+}
+
 if ($needrun) {
-   $getComposerUrl = 'https://getcomposer.org/';
+   $deps_install_msg = 'Application dependencies are not up to date.' . PHP_EOL
+      . 'Run "php bin/console dependencies install" in the glpi tree to fix this.' . PHP_EOL;
    if (isCommandLine()) {
-      echo 'Run "composer install --no-dev" in the glpi tree.' . PHP_EOL
-          . 'To install composer please refer to ' . $getComposerUrl . PHP_EOL;
+      echo $deps_install_msg;
    } else {
-      echo 'Run "composer install --no-dev" in the glpi tree.<br>'
-          . 'To install composer please refer to <a href="'.$getComposerUrl.'">'.$getComposerUrl.'</a>';
+      echo nl2br($deps_install_msg);
    }
    die(1);
 }
+
 require_once $autoload;
 
 // Use spl autoload to allow stackable autoload.

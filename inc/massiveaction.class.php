@@ -491,7 +491,7 @@ class MassiveAction {
     * @return an array of massive actions or false if $item is not valid
    **/
    static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null) {
-      global $CFG_GLPI, $PLUGIN_HOOKS;
+      global $PLUGIN_HOOKS;
 
       // TODO: when maybe* will be static, when can completely switch to $itemtype !
       if (is_string($item)) {
@@ -613,8 +613,6 @@ class MassiveAction {
     * @return nothing: display
    **/
    function showSubForm() {
-      global $CFG_GLPI;
-
       $processor = $this->processor;
 
       if (!$processor::showMassiveActionsSubForm($this)) {

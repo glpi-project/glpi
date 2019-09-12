@@ -36,9 +36,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use CliMigration;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
+use Migration;
 use Session;
 use Update;
 
@@ -106,8 +106,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       $current_db_version  = $currents['dbversion'];
 
       global $migration; // Migration scripts are using global migrations
-      $migration = new CliMigration(GLPI_SCHEMA_VERSION);
-      $migration->setOutput($output);
+      $migration = new Migration(GLPI_SCHEMA_VERSION);
+      $migration->setOutputHandler($output);
       $update->setMigration($migration);
 
       $informations = new Table($output);
@@ -156,11 +156,6 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
          }
       }
 
-      if (substr($current_version, -4) === '-dev') {
-         // Normalize version
-         $current_version = str_replace('-dev', '', $current_version);
-      }
-
       $update->doUpdates($current_version);
 
       if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
@@ -170,8 +165,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       } else if ($force) {
          // Replay last update script even if there is no schema change.
          // It can be used in dev environment when update script has been updated/fixed.
-         include_once(GLPI_ROOT . '/install/update_942_943.php');
-         update942to943();
+         include_once(GLPI_ROOT . '/install/update_94_95.php');
+         update94to95();
 
          $output->writeln('<info>' . __('Last migration replayed.') . '</info>');
       }

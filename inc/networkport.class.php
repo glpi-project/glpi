@@ -724,7 +724,7 @@ class NetworkPort extends CommonDBChild {
                   $canedit = false;
                }
 
-               while ($devid = $DB->fetch_row($result)) {
+               while ($devid = $DB->fetchRow($result)) {
                   $t_row = $t_group->createRow();
 
                   $netport->getFromDB(current($devid));

@@ -321,7 +321,7 @@ class Fieldblacklist extends CommonDropdown {
 
       if ($target = getItemForItemtype($itemtype)) {
          $criteria = [];
-         foreach ($DB->list_fields($target->getTable()) as $field) {
+         foreach ($DB->listFields($target->getTable()) as $field) {
             $searchOption = $target->getSearchOptionByField('field', $field['Field']);
 
             // MoYo : do not know why  this part ?

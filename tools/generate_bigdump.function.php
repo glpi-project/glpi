@@ -1275,8 +1275,8 @@ function generateGlobalDropdowns() {
          'name'                        => "category '$i",
          'comment'                     => "comment ' category $i",
          'is_recursive'                => 1,
-         'tickettemplates_id_incident' => 1,
-         'tickettemplates_id_demand'   => 1
+         'itiltemplates_id_incident' => 1,
+         'itiltemplates_id_demand'   => 1
       ]));
 
       for ($j=0; $j<mt_rand(0, pow($MAX['tracking_category'], 1/2)); $j++) {
@@ -1284,8 +1284,8 @@ function generateGlobalDropdowns() {
             'name'                        => "s-category '$j",
             'comment'                     => "comment 'category $i s-category $j",
             'is_recursive'                => 1,
-            'tickettemplates_id_incident' => 1,
-            'tickettemplates_id_demand'   => 1,
+            'itiltemplates_id_incident' => 1,
+            'itiltemplates_id_demand'   => 1,
             'itilcategories_id'           => $newID
          ]));
 
@@ -1294,8 +1294,8 @@ function generateGlobalDropdowns() {
                'name'                        => "ss-category' $k",
                'comment'      => "comment ' category $i s-category $j ss-category $k",
                'is_recursive'                => 1,
-               'tickettemplates_id_incident' => 1,
-               'tickettemplates_id_demand'   => 1,
+               'itiltemplates_id_incident' => 1,
+               'itiltemplates_id_demand'   => 1,
                'itilcategories_id'           => $newID2
             ]));
          }
@@ -1945,8 +1945,8 @@ function generate_entity($ID_entity) {
       'comment'         => "comment category for entity' $ID_entity",
       'users_id'        => mt_rand($FIRST['users_sadmin'], $LAST['users_admin']),
       'groups_id'       => mt_rand($FIRST['techgroups'], $LAST['techgroups']),
-      'tickettemplates_id_incident' => 1,
-      'tickettemplates_id_demand'   => 1
+      'itiltemplates_id_incident' => 1,
+      'itiltemplates_id_demand'   => 1
    ]));
 
    for ($i=0; $i<max(1, pow($MAX['tracking_category'], 1/3)); $i++) {
@@ -1957,8 +1957,8 @@ function generate_entity($ID_entity) {
          'comment'                     => "comment scategory for entity' $ID_entity",
          'users_id'                    => mt_rand($FIRST['users_sadmin'], $LAST['users_admin']),
          'groups_id'                   => mt_rand($FIRST['techgroups'], $LAST['techgroups']),
-         'tickettemplates_id_incident' => 1,
-         'tickettemplates_id_demand'   => 1,
+         'itiltemplates_id_incident' => 1,
+         'itiltemplates_id_demand'   => 1,
          'itilcategories_id'           => $newID
       ]));
    }

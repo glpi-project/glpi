@@ -161,10 +161,10 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testFields() {
-      $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar']);
+      $it = $this->it->execute('foo', ['FIELDS' => 'bar', 'DISTINCT' => true]);
       $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar` FROM `foo`');
 
-      $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => 'baz']);
+      $it = $this->it->execute('foo', ['FIELDS' => ['bar', 'baz'], 'DISTINCT' => true]);
       $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
 
       $it = $this->it->execute('foo', ['FIELDS' => 'bar']);
@@ -200,14 +200,22 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['FIELDS' => ['MAX' => 'bar AS cpt']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT MAX(`bar`) AS cpt FROM `foo`');
 
-      $this->exception(
-         function() {
-            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar', 'baz']]);
-            $this->string($it->getSql())->isIdenticalTo('SELECT `bar`, `baz` FROM `foo`');
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('DISTINCT selection can only take one field!');
+      $it = $this->it->execute('foo', ['FIELDS' => new \QueryExpression('IF(bar IS NOT NULL, 1, 0) AS baz')]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT IF(bar IS NOT NULL, 1, 0) AS baz FROM `foo`');
+   }
+
+   public function testFrom() {
+      $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => 'foo']);
+      $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`');
+
+      $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => 'foo as baz']);
+      $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo` AS `baz`');
+
+      $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => ['foo', 'baz']]);
+      $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`, `baz`');
+
+      $this->it->buildQuery(['FIELDS' => 'c', 'FROM' => new \QueryExpression("(SELECT CONCAT('foo', 'baz') as c) as t")]);
+      $this->string($this->it->getSql())->isIdenticalTo("SELECT `c` FROM (SELECT CONCAT('foo', 'baz') as c) as t");
    }
 
 
@@ -253,6 +261,18 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['ORDER' => 'bar DESC, baz ASC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC');
+
+      $it = $this->it->execute('foo', ['ORDER' => new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END")]);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END");
+
+      $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC']]);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC");
+
+      $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC, baz DESC']]);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC");
+
+      $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC', 'baz DESC']]);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC");
    }
 
 
@@ -260,7 +280,7 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['COUNT' => 'cpt']);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt FROM `foo`');
 
-      $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT DISTINCT' => 'bar']);
+      $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT' => 'bar', 'DISTINCT' => true]);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
 
       $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'FIELDS' => ['name', 'version']]);
@@ -806,8 +826,9 @@ class DBmysqlIterator extends DbTestCase {
       $union = new \QueryUnion($union_crit, false, 'theunion');
       $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
       $crit = [
-         'SELECT DISTINCT' => 'theunion.field',
-         'FROM'            => $union,
+         'SELECT'    => 'theunion.field',
+         'DISTINCT'  => true,
+         'FROM'      => $union,
       ];
       $it = $this->it->execute($crit);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
@@ -816,8 +837,9 @@ class DBmysqlIterator extends DbTestCase {
       $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
       $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
       $crit = [
-         'SELECT DISTINCT' => 'theunion.field',
-         'FROM'            => $union,
+         'SELECT'    => 'theunion.field',
+         'DISTINCT'  => true,
+         'FROM'      => $union,
       ];
       $it = $this->it->execute($crit);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
@@ -888,8 +910,11 @@ class DBmysqlIterator extends DbTestCase {
 
       $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
       $it = $this->it->execute([
-         'SELECT DISTINCT' => 'users_id',
-         'FIELDS'          => ['type'],
+         'FIELDS'          => [
+            'users_id',
+            'type'
+         ],
+         'DISTINCT'        => true,
          'FROM'            => $union
       ]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);

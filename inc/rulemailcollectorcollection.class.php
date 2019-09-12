@@ -132,8 +132,7 @@ class RuleMailCollectorCollection extends RuleCollection {
    function canList() {
 
       return static::canView()
-             && Toolbox::canUseImapPop()
-             && MailCollector::getNumberOfMailCollectors();
+             && MailCollector::countCollectors();
    }
 
 }

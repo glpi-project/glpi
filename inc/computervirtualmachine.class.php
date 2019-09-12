@@ -244,7 +244,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<div class='center'>";
 
       if (isset($comp->fields['uuid']) && ($comp->fields['uuid'] != '')) {
-         $hosts = getAllDatasFromTable(
+         $hosts = getAllDataFromTable(
             self::getTable(), [
                'RAW' => [
                   'LOWER(uuid)' => self::getUUIDRestrictCriteria($comp->fields['uuid'])
@@ -323,13 +323,14 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       echo "<div class='center'>";
 
-      $virtualmachines = getAllDatasFromTable(
+      $virtualmachines = getAllDataFromTable(
          self::getTable(), [
-            'computers_id' => $ID,
-            'is_deleted'   => 0
-         ],
-         false,
-         'name'
+            'WHERE'  => [
+               'computers_id' => $ID,
+               'is_deleted'   => 0
+            ],
+            'ORDER'  => 'name'
+         ]
       );
 
       echo "<table class='tab_cadre_fixehov'>";

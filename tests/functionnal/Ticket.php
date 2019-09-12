@@ -191,20 +191,20 @@ class Ticket extends DbTestCase {
       $this->boolean($tasktemplate->isNewItem())->isFalse();
 
       // 3 - create a ticket template with the task templates in predefined fields
-      $tickettemplate    = new \TicketTemplate;
-      $tickettemplate_id = $tickettemplate->add([
+      $itiltemplate    = new \TicketTemplate;
+      $itiltemplate_id = $itiltemplate->add([
          'name' => 'my ticket template',
       ]);
-      $this->boolean($tickettemplate->isNewItem())->isFalse();
+      $this->boolean($itiltemplate->isNewItem())->isFalse();
       $ttp = new \TicketTemplatePredefinedField();
       $ttp->add([
-         'tickettemplates_id' => $tickettemplate_id,
+         'tickettemplates_id' => $itiltemplate_id,
          'num'                => '175',
          'value'              => $ttA_id,
       ]);
       $this->boolean($ttp->isNewItem())->isFalse();
       $ttp->add([
-         'tickettemplates_id' => $tickettemplate_id,
+         'tickettemplates_id' => $itiltemplate_id,
          'num'                => '176',
          'value'              => $ttB_id,
       ]);
@@ -214,8 +214,8 @@ class Ticket extends DbTestCase {
       $itilcat    = new \ITILCategory;
       $itilcat_id = $itilcat->add([
          'name'                        => 'my itil category',
-         'tickettemplates_id_incident' => $tickettemplate_id,
-         'tickettemplates_id_demand'   => $tickettemplate_id,
+         'ticketltemplates_id_incident'=> $itiltemplate_id,
+         'tickettemplates_id_demand'   => $itiltemplate_id,
          'is_incident'                 => true,
          'is_request'                  => true,
       ]);
@@ -227,7 +227,7 @@ class Ticket extends DbTestCase {
          'name'                => 'test task template',
          'content'             => 'test task template',
          'itilcategories_id'   => $itilcat_id,
-         '_tickettemplates_id' => $tickettemplate_id,
+         '_tickettemplates_id' => $itiltemplate_id,
          '_tasktemplates_id'   => [$ttA_id, $ttB_id],
       ]);
       $this->boolean($ticket->isNewItem())->isFalse();
@@ -2561,5 +2561,73 @@ class Ticket extends DbTestCase {
       ]);
       $ticket->getFromDB($ticket->getID());
       $this->integer((int) $ticket->fields['locations_id'])->isEqualTo(0);
+   }
+
+   public function testCronPurgeTicket() {
+      global $DB;
+      // set default calendar and autoclose delay in root entity
+      $entity = new \Entity;
+      $this->boolean($entity->update([
+         'id'              => 0,
+         'calendars_id'    => 1,
+         'autopurge_delay' => 5,
+      ]))->isTrue();
+
+      $doc = new \Document();
+      $did = (int)$doc->add([
+         'name'   => 'test doc'
+      ]);
+      $this->integer($did)->isGreaterThan(0);
+
+      // create some closed tickets at various solvedate
+      $ticket = new \Ticket;
+      $tickets_id_1 = $ticket->add([
+         'name'            => "test autopurge 1",
+         'content'         => "test autopurge 1",
+         'entities_id'     => 0,
+         'status'          => \CommonITILObject::CLOSED,
+         '_documents_id'   => [$did]
+      ]);
+      $this->integer((int)$tickets_id_1)->isGreaterThan(0);
+      $this->boolean(
+         $DB->update('glpi_tickets', [
+            'closedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
+         ], [
+            'id' => $tickets_id_1,
+         ])
+      )->isTrue();
+      $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
+
+      $docitem = new \Document_Item();
+      $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]))->isTrue();
+
+      $tickets_id_2 = $ticket->add([
+         'name'        => "test autopurge 2",
+         'content'     => "test autopurge 2",
+         'entities_id' => 0,
+         'status'      => \CommonITILObject::CLOSED,
+      ]);
+      $this->integer((int)$tickets_id_2)->isGreaterThan(0);
+      $this->boolean(
+         $DB->update('glpi_tickets', [
+            'closedate' => date('Y-m-d 10:00:00', time()),
+         ], [
+            'id' => $tickets_id_2,
+         ])
+      );
+
+      // launch Cron for closing tickets
+      $mode = - \CronTask::MODE_EXTERNAL; // force
+      \CronTask::launch($mode, 5, 'purgeticket');
+
+      // check ticket presence
+      // first ticket should have been removed
+      $this->boolean($ticket->getFromDB($tickets_id_1))->isFalse();
+      //also ensure linked document has been dropped
+      $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]))->isFalse();
+      $this->boolean($doc->getFromDB($did))->isTrue(); //document itself remains
+      //second ticket is still present
+      $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
+      $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
    }
 }

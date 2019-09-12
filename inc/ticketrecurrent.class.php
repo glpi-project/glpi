@@ -78,7 +78,7 @@ class TicketRecurrent extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (Session::haveRight('tickettemplate', READ)) {
+      if (Session::haveRight('itiltemplate', READ)) {
          switch ($item->getType()) {
             case 'TicketRecurrent' :
                $ong[1] = _n('Information', 'Information', Session::getPluralNumber());
@@ -471,7 +471,7 @@ class TicketRecurrent extends CommonDropdown {
       if ($tt->getFromDB($data['tickettemplates_id'])) {
          // Get default values for ticket
          $input = Ticket::getDefaultValues($data['entities_id']);
-         // Apply tickettemplates predefined values
+         // Apply itiltemplates predefined values
          $ttp        = new TicketTemplatePredefinedField();
          $predefined = $ttp->getPredefinedFields($data['tickettemplates_id'], true);
 

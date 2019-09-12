@@ -58,7 +58,7 @@ if ($_POST['softwares_id'] > 0) {
 
    $values = [];
    if ($number) {
-      while ($data = $DB->fetch_assoc($result)) {
+      while ($data = $DB->fetchAssoc($result)) {
          $ID     = $data['id'];
          $output = $data['name'];
 

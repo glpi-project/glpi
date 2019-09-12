@@ -358,7 +358,7 @@ class Search {
                break;
             case 'sort':
                $p[$key] = intval($val);
-               if ($p[$key] <= 0) {
+               if ($p[$key] < 0) {
                   $p[$key] = 1;
                }
                break;
@@ -1247,7 +1247,7 @@ class Search {
       /// Check group concat limit : if warning : increase limit
       if ($result2 = $DBread->query('SHOW WARNINGS')) {
          if ($DBread->numrows($result2) > 0) {
-            $res = $DBread->fetch_assoc($result2);
+            $res = $DBread->fetchAssoc($result2);
             if ($res['Code'] == 1260) {
                $DBread->query("SET SESSION group_concat_max_len = 8194304;");
                $DBread->execution_time = true;
@@ -1398,7 +1398,7 @@ class Search {
 
          // if real search seek to begin of items to display (because of complete search)
          if (!$data['search']['no_search']) {
-            $DBread->data_seek($result, $data['search']['start']);
+            $DBread->dataSeek($result, $data['search']['start']);
          }
 
          $i = $data['data']['begin'];
@@ -1411,7 +1411,7 @@ class Search {
          self::$output_type = $data['display_type'];
 
          while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
-            $row = $DBread->fetch_assoc($result);
+            $row = $DBread->fetchAssoc($result);
             $newrow        = [];
             $newrow['raw'] = $row;
 
@@ -3094,6 +3094,8 @@ JAVASCRIPT;
    **/
    static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val) {
 
+      global $DB;
+
       $searchopt  = &self::getOptions($itemtype);
       if (!isset($searchopt[$ID]['table'])) {
          return false;
@@ -3130,6 +3132,36 @@ JAVASCRIPT;
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
+            case "datetime" :
+               if (in_array($searchtype, ['contains', 'notcontains'])) {
+                  break;
+               }
+
+               $force_day = false;
+               if (strstr($val, 'BEGIN') || strstr($val, 'LAST')) {
+                  $force_day = true;
+               }
+
+               $val = Html::computeGenericDateTimeSearch($val, $force_day);
+
+               $operator = '';
+               switch ($searchtype) {
+                  case 'equals':
+                     $operator = !$NOT ? '=' : '!=';
+                     break;
+                  case 'notequals':
+                     $operator = !$NOT ? '!=' : '=';
+                     break;
+                  case 'lessthan':
+                     $operator = !$NOT ? '<' : '>';
+                     break;
+                  case 'morethan':
+                     $operator = !$NOT ? '>' : '<';
+                     break;
+               }
+
+               return " {$LINK} ({$DB->quoteName($NAME)} $operator {$DB->quoteValue($val)}) ";
+               break;
             case "count" :
             case "number" :
             case "decimal" :
@@ -3392,7 +3424,7 @@ JAVASCRIPT;
     * @return select string
    **/
    static function addSelect($itemtype, $ID, $meta = 0, $meta_type = 0) {
-      global $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $searchopt   = &self::getOptions($itemtype);
       $table       = $searchopt[$ID]["table"];
@@ -3643,7 +3675,8 @@ JAVASCRIPT;
 
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE", "`$table$addtable`", $tocompute);
+         $tocompute = str_replace($DB->quoteName('TABLE'), 'TABLE', $tocompute);
+         $tocompute = str_replace("TABLE", $DB->quoteName("$table$addtable"), $tocompute);
       }
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
@@ -4044,6 +4077,8 @@ JAVASCRIPT;
    **/
    static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
 
+      global $DB;
+
       $searchopt = &self::getOptions($itemtype);
       if (!isset($searchopt[$ID]['table'])) {
          return false;
@@ -4432,7 +4467,8 @@ JAVASCRIPT;
       $tocomputetrans = "`".$table."_trans`.`value`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE", "`$table`", $tocompute);
+         $tocompute = str_replace($DB->quoteName('TABLE'), 'TABLE', $tocompute);
+         $tocompute = str_replace("TABLE", $DB->quoteName("$table"), $tocompute);
       }
 
       // Preformat items
@@ -5325,13 +5361,6 @@ JAVASCRIPT;
       $NAME = "{$itemtype}_{$ID}";
 
       switch ($table.".".$field) {
-         case "glpi_tickets.priority" :
-         case "glpi_problems.priority" :
-         case "glpi_changes.priority" :
-         case "glpi_projects.priority" :
-            $out = " style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME][0]['name']].";\" ";
-            break;
-
          case "glpi_tickets.time_to_resolve" :
          case "glpi_tickets.internal_time_to_resolve" :
          case "glpi_problems.time_to_resolve" :
@@ -6039,6 +6068,17 @@ JAVASCRIPT;
                } else {
                   return "&nbsp;";
                }
+
+            case "glpi_tickets.priority" :
+            case "glpi_problems.priority" :
+            case "glpi_changes.priority" :
+            case "glpi_projects.priority" :
+               $index = $data[$ID][0]['name'];
+               $color = $_SESSION["glpipriority_$index"];
+               $name  = CommonITILObject::getPriorityName($index);
+               return "<div class='priority_block' style='border-color: $color'>
+                        <span style='background: $color'></span>&nbsp;$name
+                       </div>";
          }
       }
 
@@ -6717,13 +6757,13 @@ JAVASCRIPT;
                self::$search[$itemtype][24]['field']         = 'name';
                self::$search[$itemtype][24]['linkfield']     = 'users_id_tech';
                self::$search[$itemtype][24]['name']          = __('Technician in charge of the hardware');
-               self::$search[$itemtype][24]['condition']      = '`is_assign`';
+               self::$search[$itemtype][24]['condition']     = ['is_assign' => 1];
 
                self::$search[$itemtype][49]['table']          = 'glpi_groups';
                self::$search[$itemtype][49]['field']          = 'completename';
                self::$search[$itemtype][49]['linkfield']      = 'groups_id_tech';
                self::$search[$itemtype][49]['name']           = __('Group in charge of the hardware');
-               self::$search[$itemtype][49]['condition']      = '`is_assign`';
+               self::$search[$itemtype][49]['condition']      = ['is_assign' => 1];
                self::$search[$itemtype][49]['datatype']       = 'dropdown';
 
                self::$search[$itemtype][80]['table']         = 'glpi_entities';

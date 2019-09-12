@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1212,24 +1212,15 @@ class Html {
       // auto desktop / mobile viewport
       echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
 
-      echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
+      echo Html::css('public/lib/base.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
       echo Html::css('css/jstree-glpi.css');
-      echo Html::css('lib/jqueryplugins/select2/css/select2.css');
-      echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
-      echo Html::css('/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.min.css');
-      echo Html::css('lib/font-awesome/css/all.css');
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
          Html::requireJs('notifications_ajax');
       }
 
-      echo Html::css('lib/leaflet/leaflet.css', ['media' => '']);
-      echo Html::css('lib/leaflet/plugins/Leaflet.markercluster/MarkerCluster.css', ['media' => '']);
-      echo Html::css('lib/leaflet/plugins/Leaflet.markercluster/MarkerCluster.Default.css', ['media' => '']);
-      echo Html::css('lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.css', ['media' => '']);
-      echo Html::css('lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.css');
-      echo Html::css('lib/leaflet/plugins/Leaflet.fullscreen/leaflet.fullscreen.css');
+      echo Html::css('public/lib/leaflet.css');
       Html::requireJs('leaflet');
 
       //on demand JS
@@ -1248,31 +1239,28 @@ class Html {
          }
 
          if (in_array('fullcalendar', $jslibs)) {
-            echo Html::css('lib/jqueryplugins/fullcalendar/fullcalendar.css',
+            echo Html::css('public/lib/fullcalendar.css',
                            ['media' => '']);
-            echo Html::css('/lib/jqueryplugins/fullcalendar/fullcalendar.print.css',
-                           ['media' => 'print']);
             Html::requireJs('fullcalendar');
          }
 
          if (in_array('gantt', $jslibs)) {
-            echo Html::css('lib/jqueryplugins/jquery-gantt/css/style.css');
+            echo Html::css('public/lib/jquery-gantt.css');
             Html::requireJs('gantt');
          }
 
          if (in_array('rateit', $jslibs)) {
-            echo Html::css('lib/jqueryplugins/rateit/rateit.css');
+            echo Html::css('public/lib/jquery.rateit.css');
             Html::requireJs('rateit');
          }
 
          if (in_array('colorpicker', $jslibs)) {
-            echo Html::css('lib/jqueryplugins/spectrum-colorpicker/spectrum.css');
+            echo Html::css('public/lib/spectrum-colorpicker.css');
             Html::requireJs('colorpicker');
          }
 
          if (in_array('gridstack', $jslibs)) {
-            echo Html::css('lib/gridstack/src/gridstack.css');
-            echo Html::css('lib/gridstack/src/gridstack-extra.css');
+            echo Html::css('public/lib/gridstack.css');
             Html::requireJs('gridstack');
          }
 
@@ -1289,15 +1277,19 @@ class Html {
          }
 
          if (in_array('charts', $jslibs)) {
-            echo Html::css('lib/chartist-js-0.10.1/chartist.css');
+            echo Html::css('public/lib/chartist.css');
             echo Html::css('css/chartists-glpi.css');
-            echo Html::css('lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.css');
             Html::requireJs('charts');
+         }
+
+         if (in_array('codemirror', $jslibs)) {
+            echo Html::css('public/lib/codemirror.css');
+            Html::requireJs('codemirror');
          }
       }
 
       if (Session::getCurrentInterface() == "helpdesk") {
-         echo Html::css('lib/jqueryplugins/rateit/rateit.css');
+         echo Html::css('public/lib/jquery.rateit.css');
          Html::requireJs('rateit');
       }
 
@@ -1313,11 +1305,16 @@ class Html {
       echo Html::css('css/jquery-glpi.css');
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::css('/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.css');
+         echo Html::css('public/lib/scrollable-tabs.css');
       }
 
       //  CSS link
-      echo Html::scss('main_styles');
+      echo Html::scss('css/styles');
+      if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
+         echo Html::scss('css/highcontrast');
+      }
+      $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
+      echo Html::scss('css/palettes/' . $theme);
 
       echo Html::css('css/print.css', ['media' => 'print']);
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
@@ -1353,23 +1350,24 @@ class Html {
          }
       }
 
-      // AJAX library
-      echo Html::script('lib/jquery/js/jquery.js');
-      echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
+      // Custom CSS for active entity
+      $entity = new Entity();
+      if (isset($_SESSION['glpiactive_entity'])) {
+         // Apply active entity styles
+         $entity->getFromDB($_SESSION['glpiactive_entity']);
+      } else {
+         // Apply root entity styles
+         $entity->getFromDB('0');
+      }
+      echo $entity->getCustomCssTag();
 
-      // PLugins jquery
-      //echo Html::script('lib/jqueryplugins/select2/js/select2.js');
-      //use full for compat; see https://select2.org/upgrading/migrating-from-35
-      echo Html::script('lib/jqueryplugins/select2/js/select2.full.js');
-      echo Html::script('lib/jqueryplugins/qtip2/jquery.qtip.js');
-      echo Html::script('lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js');
-      echo Html::script('lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js');
+      // AJAX library
+      echo Html::script('public/lib/base.js');
 
       // layout
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::script('lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.js');
-         echo Html::script('lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js');
+         echo Html::script('public/lib/scrollable-tabs.js');
       }
 
       // End of Head
@@ -1397,7 +1395,7 @@ class Html {
 
       $menu['management']['title']   = __('Management');
       $menu['management']['types']   = ['SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
-                                        'Document', 'Line', 'Certificate', 'Datacenter'];
+                                        'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster'];
 
       $menu['tools']['title']        = __('Tools');
       $menu['tools']['types']        = ['Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
@@ -1565,17 +1563,19 @@ class Html {
       // Body
       echo "<body class='$body_class'>";
 
+      Html::displayImpersonateBanner();
+
       echo "<div id='header'>";
-      echo "<div id='header_top'>";
+      echo "<header role='banner' id='header_top'>";
       echo "<div id='c_logo'>";
-      echo Html::link('', $CFG_GLPI["root_doc"]."/front/central.php",
-                      ['accesskey' => '1',
-                            'title'     => __('Home')]);
+      echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/central.php'
+               accesskey='1'
+               title='" . __s('Home') . "'><span class='sr-only'>" . __s('Home') . "</span></a>";
       echo "</div>";
 
       // Preferences and logout link
       self::displayTopMenu(true);
-      echo "</div>"; // header_top
+      echo "</header>"; // header_top
 
       //Main menu
       self::displayMainMenu(
@@ -1596,7 +1596,7 @@ class Html {
            "<span class='sr-only'>Top of the page</span>".
            "</a></span>";
 
-      echo "<div id='page' >";
+      echo "<main role='main' id='page'>";
 
       if ($DB->isSlave()
           && !$DB->first_connection) {
@@ -1629,10 +1629,10 @@ class Html {
          return;
       }
       $FOOTER_LOADED = true;
-      echo "</div>"; // fin de la div id ='page' initi??e dans la fonction header
+      echo "</main>"; // end of "main role='main'"
 
-      echo "<div id='footer' >";
-      echo "<table><tr>";
+      echo "<footer role='contentinfo' id='footer'>";
+      echo "<table role='presentation'><tr>";
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          echo "<td class='left'><span class='copyright'>";
@@ -1661,7 +1661,7 @@ class Html {
          echo "</td>";
       }
       echo "<td class='right'>" . self::getCopyrightMessage() . "</td>";
-      echo "</tr></table></div>";
+      echo "</tr></table></footer>";
 
       if ($CFG_GLPI['maintenance_mode']) { // mode maintenance
          echo "<div id='maintenance-float'>";
@@ -1723,7 +1723,7 @@ class Html {
 
       // Main Headline
       echo "<div id='header'>";
-      echo "<div id='header_top'>";
+      echo "<header role='banner' id='header_top'>";
 
       echo "<div id='c_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/' accesskey='1' title=\"".__s('Home')."\">".
@@ -1734,7 +1734,7 @@ class Html {
       echo "<div class='sep'></div>";
       echo "</div>";
 
-      echo "</div>"; // end #header_top
+      echo "</header>"; // end #header_top
 
       //-- Le menu principal --
       echo "<div id='c_menu'>";
@@ -1794,9 +1794,11 @@ class Html {
       }
       echo "<body class='$body_class'>";
 
+      Html::displayImpersonateBanner();
+
       // Main Headline
       echo "<div id='header'>";
-      echo "<div id='header_top'>";
+      echo "<header role='banner' id='header_top'>";
 
       echo "<div id='c_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='1' title=\"".
@@ -1805,13 +1807,13 @@ class Html {
 
       //Preferences and logout link
       self::displayTopMenu(false);
-      echo "</div>"; // header_top
+      echo "</header>"; // header_top
 
       //Main menu
       self::displayMainMenu(false);
 
       echo "</div>"; // fin header
-      echo "<div id='page' >";
+      echo "<main role='main' id='page'>";
 
       // call static function callcron() every 5min
       CronTask::callCron();
@@ -1831,11 +1833,11 @@ class Html {
       }
       $FOOTER_LOADED = true;
 
-      echo "</div>"; // fin de la div id ='page' initi??e dans la fonction header
+      echo "</main>"; // end of "main role='main'"
 
-      echo "<div id='footer'>";
-      echo "<table width='100%'><tr><td class='right'>" . self::getCopyrightMessage();
-      echo "</td></tr></table></div>";
+      echo "<footer role='contentinfo' id='footer'>";
+      echo "<table role='presentation' width='100%'><tr><td class='right'>" . self::getCopyrightMessage();
+      echo "</td></tr></table></footer>";
 
       self::displayDebugInfos();
       echo "</body></html>";
@@ -1876,7 +1878,7 @@ class Html {
 
       // Body with configured stuff
       echo "<body>";
-      echo "<div id='page'>";
+      echo "<main role='main' id='page'>";
       echo "<br><br>";
       echo "<div id='bloc'>";
       echo "<div id='logo_bloc'></div>";
@@ -1896,7 +1898,7 @@ class Html {
       $FOOTER_LOADED = true;
 
       if (!isCommandLine()) {
-         echo "</div></div>";
+         echo "</div></main>";
 
          echo "<div id='footer-login'>" . self::getCopyrightMessage() . "</div>";
          self::loadJavascript();
@@ -2027,7 +2029,7 @@ class Html {
 
       /// Button to toggle responsive menu
       echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open'); return false;\"
-            id='menu_all_button' class='button-icon'>";
+            id='menu_all_button'><i class='fa fa-bars'></i>";
       echo "</a>";
 
       echo "</div>";
@@ -3562,26 +3564,29 @@ class Html {
       Html::requireJs('tinymce');
 
       $language = $_SESSION['glpilanguage'];
-      if (!file_exists(GLPI_ROOT."/lib/tiny_mce/lib/langs/$language.js")) {
+      if (!file_exists(GLPI_ROOT."/public/lib/tinymce-i18n/langs/$language.js")) {
          $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
-         if (!file_exists(GLPI_ROOT."/lib/tiny_mce/lib/langs/$language.js")) {
+         if (!file_exists(GLPI_ROOT."/public/lib/tinymce-i18n/langs/$language.js")) {
             $language = "en_GB";
          }
       }
+      $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs/' . $language . '.js';
 
       $readonlyjs = "readonly: false";
       if ($readonly) {
          $readonlyjs = "readonly: true";
       }
 
+      $darker_css = '';
+      if ($_SESSION['glpipalette'] === 'darker') {
+         $darker_css = $CFG_GLPI['root_doc']."/css/tiny_mce/dark_content.css";
+      }
+
       // init tinymce
       $js = "$(function() {
-         // additional plugins
-         tinymce.PluginManager.load('stickytoolbar','".$CFG_GLPI['root_doc'].
-                                    "/lib/tiny_mce/custom_plugins/stickytoolbar/plugin.js');
          // init editor
          tinyMCE.init({
-            language: '$language',
+            language_url: '$language_url',
             invalid_elements: 'form,iframe,script,@[onclick|ondblclick|'
                + 'onmousedown|onmouseup|onmouseover|onmousemove|onmouseout|onkeypress|'
                + 'onkeydown|onkeyup]',
@@ -3590,6 +3595,7 @@ class Html {
             elements: '$name',
             relative_urls: false,
             remove_script_host: false,
+            content_css: '$darker_css',
             entity_encoding: 'raw',
             paste_data_images: $('.fileupload').length,
             menubar: false,
@@ -3764,11 +3770,9 @@ class Html {
       // Back and fast backward button
       if (!$start == 0) {
          $out .= "<th class='left'><a href='javascript:reloadTab(\"start=0$additional_params\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
-                "\" title=\"".__s('Start')."\" class='pointer'></a></th>";
+                     <i class='fa fa-step-backward' title=\"".__s('Start')."\"></i></a></th>";
          $out .= "<th class='left'><a href='javascript:reloadTab(\"start=$back$additional_params\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                "\" title=\"".__s('Previous')."\" class='pointer'></th>";
+                     <i class='fa fa-chevron-left' title=\"".__s('Previous')."\"></i></a></th>";
       }
 
       $out .= "<td width='50%' class='tab_bg_2'>";
@@ -3788,11 +3792,9 @@ class Html {
       // Forward and fast forward button
       if ($forward < $numrows) {
          $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$forward$additional_params\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                "\" title=\"".__s('Next')."\" class='pointer'></a></th>";
+                     <i class='fa fa-chevron-right' title=\"".__s('Next')."\"></i></a></th>";
          $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$end$additional_params\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
-                "\" title=\"".__s('End')."\" class='pointer'></a></th>";
+                     <i class='fa fa-step-forward' title=\"".__s('End')."\"></i></a></th>";
       }
 
       // End pager
@@ -3929,13 +3931,12 @@ class Html {
       if (!$start == 0) {
          echo "<th class='left'>";
          echo "<a href='$fulltarget&amp;start=0'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
-               "\" title=\"".__s('Start')."\" class='pointer'>";
+         echo "
+               <i class='fa fa-step-backward' title=\"".__s('Start')."\"></i>";
          echo "</a></th>";
          echo "<th class='left'>";
          echo "<a href='$fulltarget&amp;start=$back'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-               "\" title=\"".__s('Previous')."\" class='pointer'>";
+         echo "<i class='fa fa-chevron-left' title=\"".__s('Previous')."\"></i>";
          echo "</a></th>";
       }
 
@@ -3990,15 +3991,13 @@ class Html {
       // Forward and fast forward button
       if ($forward<$numrows) {
          echo "<th class='right'>";
-         echo "<a href='$fulltarget&amp;start=$forward'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-               "\" title=\"".__s('Next')."\" class='pointer'>";
+         echo "<a href='$fulltarget&amp;start=$forward'>
+               <i class='fa fa-chevron-right' title=\"".__s('Next')."\">";
          echo "</a></th>\n";
 
          echo "<th class='right'>";
          echo "<a href='$fulltarget&amp;start=$end'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
-                "\" title=\"".__s('End')."\" class='pointer'>";
+         echo "<i class='fa fa-step-forward' title=\"".__s('End')."\"></i>";
          echo "</a></th>\n";
       }
       // End pager
@@ -4949,6 +4948,9 @@ class Html {
          $file = $url;
          $url = self::getPrefixedUrl('/front/css.php');
          $url .= '?file=' . $file;
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            $url .= '&debug';
+         }
       }
 
       return self::csslink($url, $options);
@@ -5871,14 +5873,13 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
             break;
          case 'tinymce':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/tiny_mce/lib/tinymce.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce.js';
             break;
          case 'fullcalendar':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/moment.min.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/fullcalendar.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fullcalendar.js';
             if (isset($_SESSION['glpilanguage'])) {
                foreach ([2, 3] as $loc) {
-                  $filename = "lib/jqueryplugins/fullcalendar/locale/".
+                  $filename = "public/lib/fullcalendar/locales/".
                      strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]).".js";
                   if (file_exists(GLPI_ROOT . '/' . $filename)) {
                      $_SESSION['glpi_js_toload'][$name][] = $filename;
@@ -5886,18 +5887,19 @@ class Html {
                   }
                }
             }
+            $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
             break;
          case 'jstree':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jstree/jstree.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jstree.js';
             break;
          case 'gantt':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery-gantt.js';
             break;
          case 'rateit':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/rateit/jquery.rateit.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery.rateit.js';
             break;
          case 'colorpicker':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/spectrum-colorpicker.js';
             break;
          case 'fileupload':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js';
@@ -5905,35 +5907,27 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
             break;
          case 'charts':
-            $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-js-0.10.1/chartist.js';
-            $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-legend-0.6.0/chartist-plugin-legend.js';
-            $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.js';
+            $_SESSION['glpi_js_toload']['charts'][] = 'public/lib/chartist.js';
             break;
          case 'notifications_ajax';
             $_SESSION['glpi_js_toload']['notifications_ajax'][] = 'js/notifications_ajax.js';
             break;
          case 'fuzzy':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/fuzzy/fuzzy-min.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.hotkeys.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fuzzy.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/fuzzysearch.js';
             break;
          case 'gridstack':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/lodash.min.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack/src/gridstack.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack/src/gridstack.jQueryUI.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
             break;
          case 'leaflet':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/leaflet.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/spin.js/spin.min.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/leaflet.spin/leaflet.spin.min.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/Leaflet.markercluster/leaflet.markercluster.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.min.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/Leaflet.fullscreen/Leaflet.fullscreen.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.js';
             break;
          case 'log_filters':
             $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
+            break;
+         case 'codemirror':
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/codemirror.js';
             break;
          default:
             $found = false;
@@ -5979,16 +5973,16 @@ class Html {
       //locales for js libraries
       if (isset($_SESSION['glpilanguage'])) {
          // jquery ui
-         echo Html::script("lib/jquery/i18n/jquery.ui.datepicker-".
+         echo Html::script("public/lib/jquery-ui/i18n/datepicker-".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
-         $filename = "lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
+         $filename = "public/lib/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.'/'.$filename)) {
             echo Html::script($filename);
          }
 
          // select2
-         $filename = "lib/jqueryplugins/select2/js/i18n/".
+         $filename = "public/lib/select2/js/i18n/".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.'/'.$filename)) {
             echo Html::script($filename);
@@ -5997,11 +5991,10 @@ class Html {
 
       // transfer some var of php to javascript
       // (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
+      $debug = (isset($_SESSION['glpi_use_mode'])
+         && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? true : false);
       echo self::scriptBlock("
-         var CFG_GLPI  = {
-            'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
-            'root_doc': '".$CFG_GLPI["root_doc"]."',
-         };
+         var CFG_GLPI  = ".json_encode(Config::getSafeConfig(true), $debug ? JSON_PRETTY_PRINT : 0).";
       ");
 
       // Some Javascript-Functions which we may need later
@@ -6218,29 +6211,39 @@ class Html {
       echo "</a>";
       echo "</li>\n";
 
+      $username = '';
+      $title = __s('My settings');
+      if (Session::getLoginUserID()) {
+         $username = formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
+                                    $_SESSION["glpifirstname"], 0, 20);
+         $title = sprintf(
+            __s('%1$s - %2$s'),
+            __s('My settings'),
+            $username
+         );
+      }
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 __s('My settings')."\" class='fa fa-cog'>";
+                 $title."\" class='fa fa-cog'>";
       echo "<span class='sr-only'>" . __s('My settings') . "</span>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
-         echo "<span id='myname'>";
-         echo formatUserName (0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
-                              $_SESSION["glpifirstname"], 0, 20);
-         echo "</span>";
+         echo "<span id='myname'>{$username}</span>";
       }
       echo "</a></li>";
 
       if (Config::canUpdate()) {
-         $current_mode = $_SESSION['glpi_use_mode'];
-         $class = 'debug' . ($current_mode == Session::DEBUG_MODE ? 'on' : 'off');
-         $title = $current_mode == Session::DEBUG_MODE ?
-            __('Debug mode enabled') :
-            __('Debug mode disabled');
+         $is_debug_active = $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
+         $class = 'debug' . ($is_debug_active ? 'on' : 'off');
+         $title = sprintf(
+            __s('%1$s - %2$s'),
+            __s('Change mode'),
+            $is_debug_active ? __s('Debug mode enabled') : __s('Debug mode disabled')
+         );
          echo "<li id='debug_mode'>";
          echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class'
                 title='$title'>";
-         echo "<span class='sr-only'>" . __('Change mode')  . "</span>";
+         echo "<span class='sr-only'>" . __s('Change mode') . "</span>";
          echo "</a>";
          echo "</li>";
       }
@@ -6292,10 +6295,12 @@ class Html {
       if ($full === true) {
          /// Search engine
          if ($CFG_GLPI['allow_search_global']) {
-            echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
-            echo "<span id='champRecherche'><input size='15' type='text' name='globalsearch'
-                                          placeholder='". __s('Search')."'>";
-            echo "<button type='submit' name='globalsearchglass'><i class='fa fa-search'></i></button>";
+            echo "<form role='search' method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
+            echo "<span id='champRecherche'>";
+            echo "<input size='15' type='search' name='globalsearch' placeholder='". __s('Search')."' aria-labelledby='globalsearchglass'>";
+            echo "<button type='submit' name='globalsearchglass' id='globalsearchglass'>";
+            echo "<i class='fa fa-search'></i><span class='sr-only'>". __s('Search')."</span>";
+            echo "</button>";
             echo "</span>";
             Html::closeForm();
          }
@@ -6595,9 +6600,10 @@ class Html {
 
                      case "template" :
                         echo "<span>";
-                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
-                                       ['alt' => __('Manage templates...'),
-                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo Html::link('<i class="pointer fa fa-layer-group"></i>',
+                                        $CFG_GLPI["root_doc"].$val, [
+                                          'title' => __('Manage templates...')
+                                        ]);
                         echo "</span>";
                         break;
 
@@ -6744,12 +6750,10 @@ class Html {
       global $CFG_GLPI, $GLPI_CACHE;
 
       $ckey = isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
-      $is_debug = $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
-      $files = [];
 
       $scss = new Compiler();
-      $scss->setFormatter('Leafo\ScssPhp\Formatter\Crunched');
-      if ($is_debug || isset($args['debug'])) {
+      $scss->setFormatter('ScssPhp\ScssPhp\Formatter\Crunched');
+      if (isset($args['debug'])) {
          $ckey .= '_sourcemap';
          $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
          $scss->setSourceMapOptions(
@@ -6760,74 +6764,56 @@ class Html {
          );
       }
 
-      if (!isset($args['file']) || $args['file'] == 'main_styles') {
-         $files[] = 'css/styles';
-         if (isset($_SESSION['glpihighcontrast_css'])
-            && $_SESSION['glpihighcontrast_css']) {
-            $ckey .= '_highcontrast';
-            $files[] = 'css/highcontrast';
-         }
+      $file = isset($args['file']) ? $args['file'] : 'css/styles';
 
-         // CSS theme
-         $theme = 'auror';
-         if (isset($_SESSION["glpipalette"])) {
-            $theme = $_SESSION['glpipalette'];
-         }
-         $ckey .= '_' . $theme;
-         $files[] = 'css/palettes/' . $theme;
-      } else {
-         $ckey .= '_' . md5($args['file']);
+      $ckey .= '_' . $file;
+      $ckey = 'css_' . md5($ckey);
 
-         $filename = realpath(GLPI_ROOT . '/' . $args['file']);
-         if (!Toolbox::startsWith($filename, realpath(GLPI_ROOT))) {
-            // Prevent import of a file from ouside GLPI dir
-            return '';
-         }
-
-         if (!Toolbox::endsWith($args['file'], '.scss')) {
-            // Prevent include of file if ext is not .scss
-            $args['file'] .= '.scss';
-         }
-
-         $files[] = $args['file'];
+      if (!Toolbox::endsWith($file, '.scss')) {
+         // Prevent include of file if ext is not .scss
+         $file .= '.scss';
       }
 
-      $ckey = md5($ckey);
-      $import = '';
+      // Requested file path
+      $path = GLPI_ROOT . '/' . $file;
 
-      foreach ($files as $file) {
-         $path = GLPI_ROOT . "/$file";
-         if (!Toolbox::endsWith($file, '.scss')) {
-            $path .= ".scss";
+      // Alternate file path (prefixed by a "_", i.e. "_highcontrast.scss").
+      $pathargs = explode('/', $file);
+      $pathargs[] = '_' . array_pop($pathargs);
+      $pathalt = GLPI_ROOT . '/' . implode('/', $pathargs);
+
+      if (!file_exists($path) && !file_exists($pathalt)) {
+         Toolbox::logWarning('Requested file ' . $path . ' does not exists.');
+         return '';
+      }
+      if (!file_exists($path)) {
+         $path = $pathalt;
+      }
+
+      // Prevent import of a file from ouside GLPI dir
+      $path = realpath($path);
+      if (!Toolbox::startsWith($path, realpath(GLPI_ROOT))) {
+         Toolbox::logWarning('Requested file ' . $path . ' is outside GLPI file tree.');
+         return '';
+      }
+
+      $import = '@import "' . $file . '";';
+      $fckey = md5($file);
+      $md5file = md5(file_get_contents($path));
+
+      //check if files has changed
+      if ($GLPI_CACHE->has($fckey)) {
+         $md5 = $GLPI_CACHE->get($fckey);
+
+         if ($md5file != $md5) {
+            //file has changed
+            Toolbox::logDebug("$file has changed, reloading");
+            $args['reload'] = true;
+            $GLPI_CACHE->set($fckey, $md5file);
          }
-         $pathargs = explode('/', $file);
-         $pathargs[] = '_' . array_pop($pathargs);
-         $pathalt = GLPI_ROOT . '/' . implode('/', $pathargs) . '.scss';
-         if (file_exists($path) || file_exists($pathalt)) {
-            if (!file_exists($path)) {
-               $path = $pathalt;
-            }
-            $import .= '@import "' . $file . '";';
-            $fckey = md5($file);
-            $md5file = md5(file_get_contents($path));
-
-            //check if files has changed
-            if ($GLPI_CACHE->has($fckey)) {
-               $md5 = $GLPI_CACHE->get($fckey);
-
-               if ($md5file != $md5) {
-                  //file has changed
-                  Toolbox::logDebug("$file has changed, reloading");
-                  $args['reload'] = true;
-                  $GLPI_CACHE->set($fckey, $md5file);
-               }
-            } else {
-               Toolbox::logDebug("$file is new, loading");
-               $GLPI_CACHE->set($fckey, $md5file);
-            }
-         } else {
-            Toolbox::logWarning('Requested file ' . $path . ' does not exists.');
-         }
+      } else {
+         Toolbox::logDebug("$file is new, loading");
+         $GLPI_CACHE->set($fckey, $md5file);
       }
 
       $scss->addImportPath(GLPI_ROOT);
@@ -6865,6 +6851,28 @@ class Html {
     * @return string
     */
    public static function getScssCompileDir() {
-      return GLPI_ROOT . '/css/compiled';
+      return GLPI_ROOT . '/css_compiled';
+   }
+
+   /**
+    * Display impersonate banner if feature is currently used.
+    *
+    * @return void
+    */
+   public static function displayImpersonateBanner() {
+
+      if (!Session::isImpersonateActive()) {
+         return;
+      }
+
+      echo '<div class="banner-impersonate">';
+      echo '<form name="form" method="post" action="' . User::getFormURL() . '">';
+      echo sprintf(__('You are impersonating %s.'), $_SESSION['glpiname']);
+      echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+      echo '<button type="submit" name="impersonate" class="btn-linkstyled" value="0">';
+      echo __s('Stop impersonating');
+      echo '</button>';
+      echo '</form>';
+      echo '</div>';
    }
 }

@@ -246,10 +246,10 @@ class Item_Rack extends CommonDBRelation {
             }
 
             if (!empty($item->model->fields['picture_front'])) {
-               $gs_item['picture_f'] = $item->model->fields['picture_front'];
+               $gs_item['picture_f'] = Toolbox::getPictureUrl($item->model->fields['picture_front']);
             }
             if (!empty($item->model->fields['picture_rear'])) {
-               $gs_item['picture_r'] = $item->model->fields['picture_rear'];
+               $gs_item['picture_r'] = Toolbox::getPictureUrl($item->model->fields['picture_rear']);
             }
          } else {
             $item->model = null;
@@ -934,12 +934,12 @@ JAVASCRIPT;
    private function prepareInput($input) {
       $error_detected = [];
 
-      $itemtype = $this->fields['itemtype'];
-      $items_id = $this->fields['items_id'];
-      $racks_id = $this->fields['racks_id'];
-      $position = $this->fields['position'];
-      $hpos = $this->fields['hpos'];
-      $orientation = $this->fields['orientation'];
+      $itemtype    = !$this->isNewItem() ? $this->fields['itemtype'] : null;
+      $items_id    = !$this->isNewItem() ? $this->fields['items_id'] : null;
+      $racks_id    = !$this->isNewItem() ? $this->fields['racks_id'] : null;
+      $position    = !$this->isNewItem() ? $this->fields['position'] : null;
+      $hpos        = !$this->isNewItem() ? $this->fields['hpos'] : null;
+      $orientation = !$this->isNewItem() ? $this->fields['orientation'] : null;
 
       //check for requirements
       if (($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))

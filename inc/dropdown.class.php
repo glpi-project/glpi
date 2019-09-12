@@ -75,14 +75,10 @@ class Dropdown {
     *
     * @return boolean : false if error and random id if OK
     *
-    * @since 9.4.0 Usage of string in condition option is deprecated
+    * @since 9.5.0 Usage of string in condition option is removed
    **/
    static function show($itemtype, $options = []) {
       global $DB, $CFG_GLPI;
-
-      if (array_key_exists('condition', $options) && !is_array($options['condition'])) {
-         Toolbox::deprecated('Using a string in condition option is deprecated.');
-      }
 
       if ($itemtype && !($item = getItemForItemtype($itemtype))) {
          return false;
@@ -219,9 +215,9 @@ class Dropdown {
              && $params['addicon']) {
 
                $output .= "<span class='fa fa-plus-circle pointer' title=\"".__s('Add')."\"
-                            onClick=\"".Html::jsGetElementbyID('add_dropdown'.$params['name'].$params['rand']).".dialog('open');\"
+                            onClick=\"".Html::jsGetElementbyID('add_'.$field_id).".dialog('open');\"
                            ><span class='sr-only'>" . __s('Add') . "</span></span>";
-               $output .= Ajax::createIframeModalWindow('add_dropdown'.$params['name'].$params['rand'],
+               $output .= Ajax::createIframeModalWindow('add_'.$field_id,
                                                         $item->getFormURL(),
                                                         ['display' => false]);
          }
@@ -279,15 +275,8 @@ class Dropdown {
     *
     * @return string
     */
-   static function addNewCondition($condition) {
-      if (!is_array($condition)) {
-         Toolbox::deprecated('Using a string in dropdown condition is deprecated.');
-         $condition = Toolbox::cleanNewLines($condition);
-         $sha1 = sha1($condition);
-      } else {
-         $sha1 = sha1(serialize($condition));
-      }
-
+   static function addNewCondition(array $condition) {
+      $sha1 = sha1(serialize($condition));
       $_SESSION['glpicondition'][$sha1] = $condition;
       return $sha1;
    }
@@ -610,7 +599,8 @@ class Dropdown {
       }
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => $p['field'],
+         'SELECT'          => $p['field'],
+         'DISTINCT'        => true,
          'FROM'            => getTableForItemType($itemtype_ref)
       ]);
 
@@ -844,6 +834,8 @@ class Dropdown {
                                              Session::getPluralNumber()),
                  'RequestType'         => _n('Request source', 'Request sources',
                                              Session::getPluralNumber()),
+                 'ITILFollowupTemplate' => _n('Followup template', 'Followup templates',
+                                             Session::getPluralNumber()),
                  'SolutionTemplate'    => _n('Solution template',
                                              'Solution templates',
                                              Session::getPluralNumber()),
@@ -913,7 +905,8 @@ class Dropdown {
                  'LineType'             => _n('Line type', 'Line types',
                                              Session::getPluralNumber()),
                  'RackType'             => RackType::getTypeName(Session::getPluralNumber()),
-                 'PDUType'              => PDUType::getTypeName(Session::getPluralNumber())
+                 'PDUType'              => PDUType::getTypeName(Session::getPluralNumber()),
+                 'ClusterType'          => ClusterType::getTypeName(Session::getPluralNumber()),
              ],
 
              __('Model') => [
@@ -2316,12 +2309,7 @@ class Dropdown {
       }
 
       if (isset($post['condition']) && ($post['condition'] != '')) {
-         if (!is_array($post['condition']) && $post['condition'] != '') {
-            Toolbox::deprecated('Please no longer use raw SQL for conditions!');
-            $where[] = new \QueryExpression($post['condition']);
-         } else if (count($post['condition'])) {
-            $where = array_merge($where, $post['condition']);
-         }
+         $where = array_merge($where, $post['condition']);
       }
 
       $one_item = -1;
@@ -2784,7 +2772,8 @@ class Dropdown {
 
             case "Profile" :
                $criteria = [
-                  'SELECT DISTINCT' => "$table.*",
+                  'SELECT'          => "$table.*",
+                  'DISTINCT'        => true,
                   'FROM'            => $table,
                   'LEFT JOIN'       => [
                      'glpi_profilerights' => [
@@ -2799,8 +2788,8 @@ class Dropdown {
 
             case KnowbaseItem::getType():
                $criteria = [
-                  'SELECT DISTINCT' => "$table.*",
-                  'FIELDS'          => $addselect,
+                  'SELECT' => array_merge(["$table.*"], $addselect),
+                  'DISTINCT'        => true,
                   'FROM'            => $table
                ];
                if (count($ljoin)) {
@@ -3063,13 +3052,14 @@ class Dropdown {
       }
 
       $criteria = [
-         'SELECT DISTINCT' => "$table.id",
-         'FIELDS'          => [
+         'SELECT'          => [
+            "$table.id",
             "$table.name AS name",
             "$table.serial AS serial",
             "$table.otherserial AS otherserial",
             "$table.entities_id AS entities_id"
          ],
+         'DISTINCT'        => true,
          'FROM'            => $table,
          'WHERE'           => $where,
          'ORDERBY'         => ['entities_id', 'name ASC'],
@@ -3552,7 +3542,7 @@ class Dropdown {
     * @return string|array
     */
    public static function getDropdownUsers($post, $json = true) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!isset($post['right'])) {
          $post['right'] = "all";

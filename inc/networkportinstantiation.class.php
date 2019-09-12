@@ -685,7 +685,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                                                  $DB->numrows($result));
             $possible_ports[$array_element_name] = [];
 
-            while ($portEntry = $DB->fetch_assoc($result)) {
+            while ($portEntry = $DB->fetchAssoc($result)) {
                $macAddresses[$portEntry['id']] = $portEntry['mac'];
                if (!empty($portEntry['mac'])) {
                   $portEntry['name'] = sprintf(__('%1$s - %2$s'), $portEntry['name'],

@@ -137,7 +137,7 @@ class DBmysqlIterator implements Iterator, Countable {
 
          // Check field, orderby, limit, start in criterias
          $field    = "";
-         $dfield    = "";
+         $distinct = false;
          $orderby  = null;
          $limit    = 0;
          $start    = 0;
@@ -154,9 +154,10 @@ class DBmysqlIterator implements Iterator, Countable {
                      unset($crit[$key]);
                      break;
 
-                  case 'SELECT DISTINCT' :
-                  case 'DISTINCT FIELDS' :
-                     $dfield = $val;
+                  case 'DISTINCT' :
+                     if ($val) {
+                        $distinct = true;
+                     }
                      unset($crit[$key]);
                      break;
 
@@ -206,23 +207,13 @@ class DBmysqlIterator implements Iterator, Countable {
          $this->sql = 'SELECT ';
          $first = true;
 
-         //check DISTINCT is not an array
-         if (is_array($dfield)) {
-            Toolbox::logWarning('DISTINCT selection can only take one field!');
-            if (!is_array($field)) {
-               $field = $dfield;
-            } else {
-               $field = array_merge($field, $dfield);
-            }
-            $dfield = '';
-         }
-
          // SELECT field list
          if ($count) {
             $this->sql .= 'COUNT(';
-            if (!empty($dfield)) {
-               $this->sql .= "DISTINCT " . DBmysql::quoteName($dfield);
-            } else if (!empty($field) && !is_array($field)) {
+            if ($distinct) {
+               $this->sql .= 'DISTINCT ';
+            }
+            if (!empty($field) && !is_array($field)) {
                $this->sql .= "" . DBmysql::quoteName($field);
             } else {
                $this->sql .= "*";
@@ -231,12 +222,11 @@ class DBmysqlIterator implements Iterator, Countable {
             $first = false;
          }
          if (!$count || $count && is_array($field)) {
-            if (empty($field) && empty($dfield)) {
-               $this->sql .= '*';
+            if ($distinct && !$count) {
+               $this->sql .= 'DISTINCT ';
             }
-            if (!empty($dfield)) {
-               $this->sql .= 'DISTINCT ' . DBmysql::quoteName($dfield);
-               $first = false;
+            if (empty($field)) {
+               $this->sql .= '*';
             }
             if (!empty($field)) {
                if (!is_array($field)) {
@@ -264,6 +254,8 @@ class DBmysqlIterator implements Iterator, Countable {
          } else if ($table) {
             if ($table instanceof \AbstractQuery) {
                $table = $table->getQuery();
+            } else if ($table instanceof \QueryExpression) {
+               $table = $table->getValue();
             } else {
                $table = DBmysql::quoteName($table);
             }
@@ -329,16 +321,22 @@ class DBmysqlIterator implements Iterator, Countable {
 
       $cleanorderby = [];
       foreach ($clause as $o) {
-         $fields = explode(',', $o);
-         foreach ($fields as $field) {
-            $new = '';
-            $tmp = explode(' ', trim($field));
-            $new .= DBmysql::quoteName($tmp[0]);
-            // ASC OR DESC added
-            if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
-               $new .= ' '.$tmp[1];
+         if (is_string($o)) {
+            $fields = explode(',', $o);
+            foreach ($fields as $field) {
+               $new = '';
+               $tmp = explode(' ', trim($field));
+               $new .= DBmysql::quoteName($tmp[0]);
+               // ASC OR DESC added
+               if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
+                  $new .= ' ' . $tmp[1];
+               }
+               $cleanorderby[] = $new;
             }
-            $cleanorderby[] = $new;
+         } else if ($o instanceof QueryExpression) {
+            $cleanorderby[] = $o->getValue();
+         } else {
+            trigger_error("Invalid order clause", E_USER_ERROR);
          }
       }
 
@@ -377,6 +375,8 @@ class DBmysqlIterator implements Iterator, Countable {
       if (is_numeric($t)) {
          if ($f instanceof \AbstractQuery) {
             return $f->getQuery();
+         } else if ($f instanceof \QueryExpression) {
+            return $f->getValue();
          } else {
             return DBmysql::quoteName($f);
          }
@@ -460,8 +460,8 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return void
     */
    function __destruct () {
-      if ($this->res) {
-         $this->conn->free_result($this->res);
+      if ($this->res instanceof \mysqli_result) {
+         $this->conn->freeResult($this->res);
       }
    }
 
@@ -656,7 +656,7 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    public function rewind() {
       if ($this->res && $this->conn->numrows($this->res)) {
-         $this->conn->data_seek($this->res, 0);
+         $this->conn->dataSeek($this->res, 0);
       }
       $this->position = 0;
       return $this->next();
@@ -686,10 +686,10 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string[]|null fetch_assoc() of first results row
     */
    public function next() {
-      if (!$this->res) {
+      if (!($this->res instanceof \mysqli_result)) {
          return false;
       }
-      $this->row = $this->conn->fetch_assoc($this->res);
+      $this->row = $this->conn->fetchAssoc($this->res);
       ++$this->position;
       return $this->row;
    }
@@ -700,7 +700,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return boolean
     */
    public function valid() {
-      return $this->res && $this->row;
+      return $this->res instanceof \mysqli_result && $this->row;
    }
 
    /**
@@ -709,7 +709,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return integer
     */
    public function numrows() {
-      return ($this->res ? $this->conn->numrows($this->res) : 0);
+      return ($this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0);
    }
 
    /**
@@ -720,7 +720,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return integer
     */
    public function count() {
-      return ($this->res ? $this->conn->numrows($this->res) : 0);
+      return ($this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0);
    }
 
    /**

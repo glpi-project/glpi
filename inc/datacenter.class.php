@@ -147,7 +147,7 @@ class Datacenter extends CommonDBTM {
             'name'               => _n('Data center', 'Data centers', Session::getPluralNumber())
          ],
          [
-            'id'                 => '175',
+            'id'                 => '178',
             'table'              => $itemtype::getTable(),
             'field'              => '_virtual_datacenter_position', // virtual field
             'additionalfields'   => [

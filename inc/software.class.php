@@ -185,8 +185,6 @@ class Software extends CommonDBTM {
 
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Change_Item::class,
-            Item_Problem::class,
             Item_Project::class,
             SoftwareVersion::class,
          ]
@@ -562,8 +560,6 @@ class Software extends CommonDBTM {
          'datatype'           => 'bool'
       ];
 
-      $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
-
       $tab[] = [
          'id'                 => '80',
          'table'              => 'glpi_entities',
@@ -608,6 +604,8 @@ class Software extends CommonDBTM {
          'datatype'           => 'bool',
          'massiveaction'      => false
       ];
+
+      $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
 
       $name = _n('Version', 'Versions', Session::getPluralNumber());
       $tab[] = [
@@ -743,7 +741,7 @@ class Software extends CommonDBTM {
       $result = $DB->query($query);
       $values = [];
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $softwares_id          = $data["id"];
             $values[$softwares_id] = $data["name"];
          }
@@ -845,7 +843,7 @@ class Software extends CommonDBTM {
 
       if ($DB->numrows($result_search) > 0) {
          //Software already exists for this entity, get his ID
-         $data = $DB->fetch_assoc($result_search);
+         $data = $DB->fetchAssoc($result_search);
          $ID   = $data["id"];
 
          // restore software
@@ -1106,5 +1104,11 @@ class Software extends CommonDBTM {
       return $i == ($nb+1);
    }
 
+
+   static function getDefaultSearchRequest() {
+      return [
+         'sort' => 0
+      ];
+   }
 
 }

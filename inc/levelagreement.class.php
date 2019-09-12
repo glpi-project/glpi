@@ -240,7 +240,7 @@ abstract class LevelAgreement extends CommonDBChild {
     *
     * @param  Ticket         $ticket Ticket item
     * @param  integer        $type
-    * @param  TicketTemplate $tt ticket template object
+    * @param  ITILTemplate $tt ticket template object
     * @param  bool           $canupdate update right
     */
    function showForTicket(Ticket $ticket, $type, $tt, $canupdate) {
@@ -529,7 +529,8 @@ abstract class LevelAgreement extends CommonDBChild {
       $canedit = self::canUpdate();
 
       $rules_id_list = iterator_to_array($DB->request([
-         'SELECT DISTINCT' => 'rules_id',
+         'SELECT'          => 'rules_id',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_ruleactions',
          'WHERE'           => [
             'field' => $fk,

@@ -608,7 +608,7 @@ class Consumable extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $used[$data['itemtype'].'####'.$data['items_id']][$data["consumableitems_id"]]
                   = $data["count"];
             }
@@ -626,7 +626,7 @@ class Consumable extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $new[$data["consumableitems_id"]] = $data["count"];
             }
          }
@@ -639,7 +639,7 @@ class Consumable extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $types[$data["id"]] = $data["name"];
             }
          }

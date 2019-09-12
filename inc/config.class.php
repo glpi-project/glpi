@@ -36,6 +36,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\FlushableInterface;
+use Zend\Cache\Storage\StorageInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -60,6 +61,7 @@ class Config extends CommonDBTM {
    static $rightname              = 'config';
 
    static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd'];
+   static $saferUndisclosedFields = ['admin_email', 'admin_reply'];
 
    static function getTypeName($nb = 0) {
       return __('Setup');
@@ -974,7 +976,7 @@ class Config extends CommonDBTM {
     * @return void
    **/
    function showFormUserPrefs($data = []) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $oncentral = (Session::getCurrentInterface() == "central");
       $userpref  = false;
@@ -1199,8 +1201,26 @@ class Config extends CommonDBTM {
       echo "<td>";
       Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css'], -1, ['rand' => $rand]);
       echo "</td>";
-      echo "<td colspan='2'>";
-      echo "</td></tr>";
+      echo "<td><label for='dropdown_timezone$rand'>" . __('Timezone') . "</label></td>";
+      echo "<td>";
+      $tz_warning = '';
+      $tz_available = $DB->areTimezonesAvailable($tz_warning);
+      if ($tz_available) {
+         $timezones = $DB->getTimezones();
+         Dropdown::showFromArray(
+            'timezone',
+            $timezones, [
+               'value'                 => $data["timezone"],
+               'display_emptychoice'   => true,
+               'emptylabel'            => __('Use server configuration')
+            ]
+         );
+      } else {
+         echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
+         echo $tz_warning;
+      }
+      echo "</td>";
+      echo "</tr>";
 
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
@@ -1593,53 +1613,59 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
-      if (Toolbox::useCache()) {
-         $ext = strtolower(get_class($GLPI_CACHE));
-         $ext = substr($ext, strrpos($ext, '\\')+1);
-         if (in_array($ext, ['apcu', 'memcache', 'memcached', 'wincache', 'redis'])) {
-            $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
-         } else {
-            $msg = sprintf(__s('"%s" cache system is used'), $ext);
-         }
-         echo "<tr><td>" . $msg . "</td>
-               <td>" . phpversion($ext) . "</td>
-               <td></td>
-               <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
-
-         if ($ext != 'filesystem' && $GLPI_CACHE instanceof AvailableSpaceCapableInterface && $GLPI_CACHE instanceof TotalSpaceCapableInterface) {
-            $free = $GLPI_CACHE->getAvailableSpace();
-            $max  = $GLPI_CACHE->getTotalSpace();
-            $used = $max - $free;
-            $rate = round(100.0 * $used / $max);
-            $max  = Toolbox::getSize($max);
-            $used = Toolbox::getSize($used);
-
-            echo "<tr><td>" . __('Memory') . "</td>
-            <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
-            Html::displayProgressBar('100', $rate, ['simple'       => true,
-                                                    'forcepadding' => false]);
-            $class   = 'info-circle missing';
-            $msg     = sprintf(__s('%1$ss memory usage is too high'), $ext);
-            if ($rate < 80) {
-               $class   = 'check-circle ok';
-               $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
-            }
-            echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
-         }
-
-         if ($GLPI_CACHE instanceof FlushableInterface) {
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-               echo "<tr><td></td><td colspan='3'>";
-               echo "<a class='vsubmit' href='config.form.php?reset_cache=1'>";
-               echo __('Reset');
-               echo "</a></td></tr>\n";
-            }
-         }
+      $ext = strtolower(get_class($GLPI_CACHE));
+      $ext = substr($ext, strrpos($ext, '\\')+1);
+      if (in_array($ext, ['apcu', 'memcache', 'memcached', 'wincache', 'redis'])) {
+         $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
       } else {
-         $ext = 'APCu'; // Default cache, can be improved later
-         $msg = sprintf(__s('%s extension is not present'), $ext);
-         echo "<tr><td colspan='3'>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
-               <td><i class='fa fa-info-circle missing' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
+         $msg = sprintf(__s('"%s" cache system is used'), $ext);
+      }
+      echo "<tr><td>" . $msg . "</td>
+            <td>" . phpversion($ext) . "</td>
+            <td></td>
+            <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
+
+      if ($ext != 'filesystem' && $GLPI_CACHE instanceof AvailableSpaceCapableInterface && $GLPI_CACHE instanceof TotalSpaceCapableInterface) {
+         $free = $GLPI_CACHE->getAvailableSpace();
+         $max  = $GLPI_CACHE->getTotalSpace();
+         $used = $max - $free;
+         $rate = round(100.0 * $used / $max);
+         $max  = Toolbox::getSize($max);
+         $used = Toolbox::getSize($used);
+
+         echo "<tr><td>" . __('Memory') . "</td>
+         <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
+         Html::displayProgressBar('100', $rate, ['simple'       => true,
+                                                 'forcepadding' => false]);
+         $class   = 'info-circle missing';
+         $msg     = sprintf(__s('%1$ss memory usage is too high'), $ext);
+         if ($rate < 80) {
+            $class   = 'check-circle ok';
+            $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
+         }
+         echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
+      }
+
+      if ($GLPI_CACHE instanceof FlushableInterface) {
+         echo "<tr><td></td><td colspan='3'>";
+         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_db'>";
+         echo __('Reset');
+         echo "</a></td></tr>\n";
+      }
+
+      echo "<tr><th colspan='4'>" . __('Translation cache') . "</th></tr>";
+      $translation_cache = self::getCache('cache_trans', 'core', false);
+      $adapter_class = strtolower(get_class($translation_cache));
+      $adapter = substr($adapter_class, strrpos($adapter_class, '\\')+1);
+      $msg = sprintf(__s('"%s" cache system is used'), $adapter);
+      echo "<tr><td colspan='3'>" . $msg . "</td>
+            <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
+
+      if ($translation_cache instanceof FlushableInterface) {
+         echo "<tr><td></td><td colspan='3'>";
+         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_trans'>";
+         echo __('Reset');
+         echo "</a></td></tr>\n";
       }
 
       echo "</table></div>\n";
@@ -1846,6 +1872,15 @@ class Config extends CommonDBTM {
 
       self::displayCheckDbEngine(true);
 
+      $tz_warning = '';
+      $tz_available = $DB->areTimezonesAvailable($tz_warning);
+      if (!$tz_available) {
+         echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . $tz_warning . "\n";
+      } else {
+         echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\">";
+         echo __('Timezones seems not loaded in database') . "\n";
+      }
+
       self::checkWriteAccessToDirs(true);
       toolbox::checkSELinux(true);
 
@@ -1859,6 +1894,16 @@ class Config extends CommonDBTM {
       }
 
       Session::loadLanguage($oldlang);
+
+      $files = glob(GLPI_LOCAL_I18N_DIR."/**/*.{php,mo}", GLOB_BRACE);
+      if (count($files)) {
+         echo "<tr><th>Locales overrides</th></tr>\n";
+         echo "<tr class='tab_bg_1'><td>\n";
+         foreach ($files as $file) {
+            echo "$file<br/>\n";
+         }
+         echo "</td></tr>";
+      }
 
       echo "<tr class='tab_bg_1'><td>[/code]\n</td></tr>";
 
@@ -1940,15 +1985,11 @@ class Config extends CommonDBTM {
                  'check'   => 'LitEmoji\\LitEmoji' ],
                [ 'name'    => 'symfony/console',
                  'check'   => 'Symfony\\Component\\Console\\Application' ],
-               [ 'name'    => 'leafo/scssphp',
-                 'check'   => 'Leafo\ScssPhp\Compiler' ],
+               [ 'name'    => 'scssphp/scssphp',
+                 'check'   => 'ScssPhp\ScssPhp\Compiler' ],
+               [ 'name'    => 'zendframework/zend-mail',
+                 'check'   => 'Zend\\Mail\\Protocol\\Imap' ],
       ];
-      if ($all || PHP_VERSION_ID < 70000) {
-         $deps[] = [
-            'name'    => 'paragonie/random_compat',
-            'check'   => 'random_int'
-         ];
-      }
       if (Toolbox::canUseCAS()) {
          $deps[] = [
             'name'    => 'phpCas',
@@ -2374,10 +2415,6 @@ class Config extends CommonDBTM {
             ],
             //to sync/connect from LDAP
             'ldap'       => [
-               'required'  => false,
-            ],
-            //for mail collector
-            'imap'       => [
                'required'  => false,
             ],
             //to enhance perfs
@@ -3389,5 +3426,27 @@ class Config extends CommonDBTM {
          }
          Log::constructHistory($this, $this->oldvalues, $this->fields);
       }
+   }
+
+   /**
+    * Get the GLPI Config without unsafe keys like passwords and emails (true on $safer)
+    *
+    * @param boolean $safer do we need to clean more (avoid emails disclosure)
+    * @return array of $CFG_GLPI without unsafe keys
+    *
+    * @since 9.5
+    */
+   public static function getSafeConfig($safer = false) {
+      global $CFG_GLPI;
+
+      $excludedKeys = array_flip(self::$undisclosedFields);
+      $safe_config  = array_diff_key($CFG_GLPI, $excludedKeys);
+
+      if ($safer) {
+         $excludedKeys = array_flip(self::$saferUndisclosedFields);
+         $safe_config = array_diff_key($safe_config, $excludedKeys);
+      }
+
+      return $safe_config;
    }
 }

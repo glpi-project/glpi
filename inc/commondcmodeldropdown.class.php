@@ -247,7 +247,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
          case 'picture_front':
          case 'picture_rear':
             if (isset($options['html']) && $options['html']) {
-               return Html::image($values[$field], [
+               return Html::image(Toolbox::getPictureUrl($values[$field]), [
                   'alt'   => $options['searchopt']['name'],
                   'style' => 'height: 30px;',
                ]);
@@ -265,39 +265,44 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
       return $this->managePictures($input);
    }
 
+   function cleanDBonPurge() {
+      Toolbox::deletePicture($this->fields['picture_front']);
+      Toolbox::deletePicture($this->fields['picture_rear']);
+   }
+
    /**
     * Add/remove front and rear pictures for models
     * @param  array $input the form input
     * @return array        the altered input
     */
    function managePictures($input) {
-      global $CFG_GLPI;
-
       foreach (['picture_front', 'picture_rear'] as $name) {
          if (isset($input["_blank_$name"])
              && $input["_blank_$name"]) {
             $input[$name] = '';
+
+            if (array_key_exists($name, $this->fields)) {
+               Toolbox::deletePicture($this->fields[$name]);
+            }
          }
 
          if (isset($input["_$name"])) {
             $filename = array_shift($input["_$name"]);
-            $src      = GLPI_TMP_DIR."/".$filename;
-            $prefix   = '';
+            $src      = GLPI_TMP_DIR . '/' . $filename;
+
+            $prefix   = null;
             if (isset($input["_prefix_$name"])) {
                $prefix = array_shift($input["_prefix_$name"]);
             }
-            $filename = str_replace($prefix, '', $filename);
-            $dest     = GLPI_PICTURE_DIR."/".$filename;
-            $moved    = false;
 
-            if (is_file($dest)) {
-               $moved = @unlink($dest);
+            if ($dest = Toolbox::savePicture($src, $prefix)) {
+               $input[$name] = $dest;
+            } else {
+               Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
             }
-            $moved = rename($src, $dest);
 
-            if ($moved) {
-               $input[$name] = $CFG_GLPI["root_doc"].
-                               "/front/document.send.php?file=_pictures/$filename";
+            if (array_key_exists($name, $this->fields)) {
+               Toolbox::deletePicture($this->fields[$name]);
             }
          }
       }

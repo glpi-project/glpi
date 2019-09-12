@@ -175,12 +175,23 @@ class Supplier extends CommonDBTM {
       Html::autocompletionTextField($this, "country");
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Active')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_active', $this->fields['is_active']);
+      echo "</td></tr>";
+
       $this->showFormButtons($options);
 
       return true;
 
    }
 
+   static function dropdown($options = []) {
+      $condition = ['is_active' => true];
+      $options['condition'] = (isset($options['condition']) ? $options['condition'] + $condition : $condition);
+      return Dropdown::show(get_called_class(), $options);
+   }
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
@@ -542,7 +553,7 @@ class Supplier extends CommonDBTM {
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 
             } else if ($nb) {
-               for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
+               for ($prem=true; $data=$DB->fetchAssoc($result_linked); $prem=false) {
                   $name = $data[$linktype::getNameField()];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
@@ -582,5 +593,24 @@ class Supplier extends CommonDBTM {
                                              : "&nbsp;")."</td>";
       echo "<td colspan='4'>&nbsp;</td></tr> ";
       echo "</table></div>";
+   }
+
+   /**
+    * Get suppliers matching a given email
+    *
+    * @since 9.5
+    *
+    * @param $email boolean : also display name ? (false by default)
+   **/
+   public static function getSuppliersByEmail($email) {
+      global $DB;
+
+      $suppliers = $DB->request([
+         'SELECT' => ["id"],
+         'FROM' => 'glpi_suppliers',
+         'WHERE' => ['email' => $email]
+      ]);
+
+      return $suppliers;
    }
 }

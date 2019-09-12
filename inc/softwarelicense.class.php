@@ -161,7 +161,6 @@ class SoftwareLicense extends CommonTreeDropdown {
       $this->deleteChildrenAndRelationsFromDb(
          [
             Certificate_Item::class,
-            Change_Item::class,
             Computer_SoftwareLicense::class,
          ]
       );
@@ -1107,7 +1106,7 @@ class SoftwareLicense extends CommonTreeDropdown {
             echo $header_begin.$header_top.$header_end;
 
             $tot_assoc = 0;
-            for ($tot=0; $data=$DB->fetch_assoc($result);) {
+            for ($tot=0; $data=$DB->fetchAssoc($result);) {
                Session::addToNavigateListItems('SoftwareLicense', $data['id']);
                $expired = true;
                if (is_null($data['expire'])

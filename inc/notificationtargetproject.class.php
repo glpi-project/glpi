@@ -314,7 +314,7 @@ class NotificationTargetProject extends NotificationTarget {
       }
       // Team infos
       $restrict = ['projects_id' => $item->getField('id')];
-      $items    = getAllDatasFromTable('glpi_projectteams', $restrict);
+      $items    = getAllDataFromTable('glpi_projectteams', $restrict);
 
       $this->data['teammembers'] = [];
       if (count($items)) {
@@ -333,7 +333,12 @@ class NotificationTargetProject extends NotificationTarget {
       $this->data['##project.numberofteammembers##'] = count($this->data['teammembers']);
 
       // Task infos
-      $tasks                = getAllDatasFromTable('glpi_projecttasks', $restrict, false, ['date DESC', 'id ASC']);
+      $tasks                = getAllDataFromTable(
+         'glpi_projecttasks', [
+            'WHERE'  => $restrict,
+            'ORDER'  => ['date DESC', 'id ASC']
+         ]
+      );
       $this->data['tasks'] = [];
       foreach ($tasks as $task) {
          $tmp                            = [];
@@ -372,7 +377,12 @@ class NotificationTargetProject extends NotificationTarget {
       $this->data["##project.numberoftasks##"] = count($this->data['tasks']);
 
       //costs infos
-      $costs                = getAllDatasFromTable('glpi_projectcosts', $restrict, false, ['begin_date DESC', 'id ASC']);
+      $costs                = getAllDataFromTable(
+         'glpi_projectcosts', [
+            'WHERE'  => $restrict,
+            'ORDER'  => ['begin_date DESC', 'id ASC']
+         ]
+      );
       $this->data['costs'] = [];
       $this->data["##project.totalcost##"] = 0;
       foreach ($costs as $cost) {
@@ -414,7 +424,7 @@ class NotificationTargetProject extends NotificationTarget {
             'projects_id' => $item->getField('id'),
             'itemtype'    => $itemtype,
          ];
-         $link_items = getAllDatasFromTable(Itil_Project::getTable(), $restrict);
+         $link_items = getAllDataFromTable(Itil_Project::getTable(), $restrict);
          if (count($link_items)) {
             $nitem = new $itemtype();
             foreach ($link_items as $data) {
@@ -488,7 +498,7 @@ class NotificationTargetProject extends NotificationTarget {
                      = count($this->data['documents']);
 
       // Items infos
-      $items                = getAllDatasFromTable('glpi_items_projects', $restrict);
+      $items                = getAllDataFromTable('glpi_items_projects', $restrict);
 
       $this->data['items'] = [];
       if (count($items)) {

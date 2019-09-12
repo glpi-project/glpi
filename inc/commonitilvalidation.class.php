@@ -1342,8 +1342,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @return array
    **/
    static function getGroupUserHaveRights(array $options = []) {
-      global $DB;
-
       $params = [
          'entity' => $_SESSION['glpiactive_entity'],
       ];
@@ -1391,7 +1389,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $statuses           = [self::ACCEPTED => 0,
                                   self::WAITING  => 0,
                                   self::REFUSED  => 0];
-      $validations        = getAllDatasFromTable(
+      $validations        = getAllDataFromTable(
          static::getTable(), [
             static::$items_id => $item->getID()
          ]

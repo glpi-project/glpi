@@ -111,4 +111,51 @@ abstract class AbstractCommand extends Command {
       );
       $progress_bar->display();
    }
+
+   /**
+    * Output session buffered messages.
+    *
+    * @param array $levels_to_output
+    *
+    * @return void
+    */
+   protected function outputSessionBufferedMessages($levels_to_output = [INFO, WARNING, ERROR]) {
+
+      if (empty($_SESSION['MESSAGE_AFTER_REDIRECT'])) {
+         return;
+      }
+
+      $msg_levels = [
+         INFO    => [
+            'tag'       => 'info',
+            'verbosity' => OutputInterface::VERBOSITY_VERBOSE,
+         ],
+         WARNING => [
+            'tag'       => 'comment',
+            'verbosity' => OutputInterface::VERBOSITY_NORMAL,
+         ],
+         ERROR   => [
+            'tag'       => 'error',
+            'verbosity' => OutputInterface::VERBOSITY_QUIET,
+         ],
+      ];
+
+      foreach ($msg_levels as $key => $options) {
+         if (!in_array($key, $levels_to_output)) {
+            continue;
+         }
+
+         if (!array_key_exists($key, $_SESSION['MESSAGE_AFTER_REDIRECT'])) {
+            continue;
+         }
+
+         foreach ($_SESSION['MESSAGE_AFTER_REDIRECT'][$key] as $message) {
+            $message = strip_tags(preg_replace('/<br\s*\/?>/', ' ', $message)); // Output raw text
+            $this->output->writeln(
+               "<{$options['tag']}>{$message}</{$options['tag']}>",
+               $options['verbosity']
+            );
+         }
+      }
+   }
 }

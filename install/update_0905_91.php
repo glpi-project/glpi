@@ -95,7 +95,7 @@ function update0905to91() {
                         '{\"1\":{\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"9\":{\"1\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"10\":{\"1\":0,\"9\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"7\":{\"1\":0,\"9\":0,\"10\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"4\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"11\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"12\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"5\":0,\"8\":0,\"6\":0},\"5\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"8\":0,\"6\":0},\"8\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"6\":0},\"6\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0}}')";
 
       $DB->queryOrDie($query, "9.1 update profile with Unlock profile");
-      $ro_p_id = $DB->insert_id();
+      $ro_p_id = $DB->insertId();
       $DB->queryOrDie("INSERT INTO `glpi_profilerights`
                               (`profiles_id`, `name`, `rights`)
                        VALUES ($ro_p_id, 'backup',                    '1'),
@@ -228,7 +228,7 @@ function update0905to91() {
          ],
          "9.1 Add unlock request notification template"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $contentText =
          '##objectlock.type## ###objectlock.id## - ##objectlock.name##
@@ -285,7 +285,7 @@ function update0905to91() {
          ],
          "9.1 add Unlock Request notification"
       );
-      $notifid = $DB->insert_id();
+      $notifid = $DB->insertId();
 
       $DB->insertOrDie("glpi_notificationtargets", [
             'id'                 => null,
@@ -714,17 +714,19 @@ function update0905to91() {
    $ADDTODISPLAYPREF['SoftwareLicense'] = [3, 10, 162, 5];
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $displaypreferencesIterator = $DB->request([
-         'SELECT DISTINCT' => "users_id",
-         'FROM'            => "glpi_displaypreferences",
-         'WHERE'           => ['itemtype' => $type]
+         'SELECT'    => "users_id",
+         'DISTINCT'  => true,
+         'FROM'      => "glpi_displaypreferences",
+         'WHERE'     => ['itemtype' => $type]
       ]);
 
       if (count($displaypreferencesIterator)) {
          while ($data = $displaypreferencesIterator->next()) {
             $rank = $DB->request([
-               'SELECT DISTINCT' => ['MAX' => "rank AS max_rank"],
-               'FROM'            => "glpi_displaypreferences",
-               'WHERE'           => [
+               'SELECT'    => ['MAX' => "rank AS max_rank"],
+               'DISTINCT'  => true,
+               'FROM'      => "glpi_displaypreferences",
+               'WHERE'     => [
                   'users_id' => $data['users_id'],
                   'itemtype' => $type
                ]

@@ -192,7 +192,7 @@ class Document extends CommonDBTM {
     * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       // security (don't accept filename from $_REQUEST)
       if (array_key_exists('filename', $_REQUEST)) {
@@ -357,8 +357,6 @@ class Document extends CommonDBTM {
     * @return Nothing (display)
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       $this->initForm($ID, $options);
       // $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
@@ -892,8 +890,6 @@ class Document extends CommonDBTM {
 
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
-
       $tab = [];
 
       $tab[] = [
@@ -1067,8 +1063,6 @@ class Document extends CommonDBTM {
     * @return boolean for success / $input array is updated
    **/
    public function moveUploadedDocument(array &$input, $filename) {
-      global $CFG_GLPI;
-
       $prefix = '';
       if (isset($input['_prefix_filename'])) {
          $prefix = array_shift($input['_prefix_filename']);
@@ -1155,8 +1149,6 @@ class Document extends CommonDBTM {
     * @return boolean for success / $input array is updated
    **/
    static function moveDocument(array &$input, $filename) {
-      global $CFG_GLPI;
-
       $prefix = '';
       if (isset($input['_prefix_filename'])) {
          $prefix = array_shift($input['_prefix_filename']);
@@ -1320,8 +1312,6 @@ class Document extends CommonDBTM {
     * @return nothing
    **/
    static function getUploadFileValidLocationName($dir, $sha1sum) {
-      global $CFG_GLPI;
-
       if (empty($dir)) {
          $message = __('Unauthorized file type');
 
@@ -1364,8 +1354,6 @@ class Document extends CommonDBTM {
     * @param $myname dropdown name
    **/
    static function showUploadedFilesDropdown($myname) {
-      global $CFG_GLPI;
-
       if (is_dir(GLPI_UPLOAD_DIR)) {
 
          $uploaded_files = [];
@@ -1474,7 +1462,8 @@ class Document extends CommonDBTM {
          'FROM'   => 'glpi_documentcategories',
          'WHERE'  => [
             'id' => new QuerySubQuery([
-               'SELECT DISTINCT' => 'documentcategories_id',
+               'SELECT'          => 'documentcategories_id',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_documents',
                'WHERE'           => $subwhere
             ])
@@ -1525,8 +1514,6 @@ class Document extends CommonDBTM {
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
-      global $CFG_GLPI;
-
       $action_prefix = 'Document_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
 
       if (self::canApplyOn($itemtype)) {
@@ -1646,5 +1633,67 @@ class Document extends CommonDBTM {
          ($mwidth > $mheight ? $mwidth : $mheight)
       );
       return ($result ? $context_path : $path);
+   }
+
+   /**
+    * Give cron information
+    *
+    * @param string $name task's name
+    *
+    * @return arrray of information
+   **/
+   static function cronInfo($name) {
+
+      switch ($name) {
+         case 'cleanorphans' :
+            return ['description' => __('Clean orphaned documents')];
+      }
+      return [];
+   }
+
+   /**
+    * Cron for clean orphan documents (without Document_Item)
+    *
+    * @param Crontask $task Crontask object
+    *
+    * @return integer (0 : nothing done - 1 : done)
+   **/
+   static function cronCleanOrphans(Crontask $task) {
+      global $DB;
+
+      $dtable = static::getTable();
+      $ditable = Document_Item::getTable();
+      //documents tht are nt present in Document_Item are oprhan
+      $iterator = $DB->request([
+         'SELECT'    => ["$dtable.id"],
+         'FROM'      => $dtable,
+         'LEFT JOIN' => [
+            $ditable => [
+               'ON'  => [
+                  $dtable  => 'id',
+                  $ditable => 'documents_id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+               "$ditable.documents_id" => null
+         ]
+      ]);
+
+      $nb = 0;
+      if (count($iterator)) {
+         while ($row = $iterator->next()) {
+            $doc = new Document();
+            $doc->delete(['id' => $row['id']], true);
+            ++$nb;
+         }
+      }
+
+      if ($nb) {
+         $task->addVolume($nb);
+         $task->log("Documents : $nb");
+      }
+
+      return ($nb > 0 ? 1 : 0);
    }
 }

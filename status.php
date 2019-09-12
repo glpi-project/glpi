@@ -96,7 +96,7 @@ if (($ok_master || $ok_slave )
     && DBConnection::establishDBConnection(false, false, false)) {
 
    // Check LDAP Auth connections
-   $ldap_methods = getAllDatasFromTable('glpi_authldaps', ['is_active' => 1]);
+   $ldap_methods = getAllDataFromTable('glpi_authldaps', ['is_active' => 1]);
 
    if (count($ldap_methods)) {
       echo "Check LDAP servers:";
@@ -119,7 +119,7 @@ if (($ok_master || $ok_slave )
    }
 
    // Check IMAP Auth connections
-   $imap_methods = getAllDatasFromTable('glpi_authmails', ['is_active' => 1]);
+   $imap_methods = getAllDataFromTable('glpi_authmails', ['is_active' => 1]);
 
    if (count($imap_methods)) {
       echo "Check IMAP servers:";
@@ -171,7 +171,7 @@ if (($ok_master || $ok_slave )
    }
 
    /// Check mailcollectors
-   $mailcollectors = getAllDatasFromTable('glpi_mailcollectors', ['is_active' => 1]);
+   $mailcollectors = getAllDataFromTable('glpi_mailcollectors', ['is_active' => 1]);
    if (count($mailcollectors)) {
       echo "Check mail collectors:";
       $mailcol = new MailCollector();
@@ -179,14 +179,13 @@ if (($ok_master || $ok_slave )
          echo " ".$mc['name'];
          if ($mailcol->getFromDB($mc['id'])) {
             $mailcol->connect();
-            if ($mailcol->marubox) {
+            if ($mailcol->storage) {
                echo "_OK";
             } else {
                echo "_PROBLEM";
                $ok = false;
             }
             echo "\n";
-            $mailcol->close_mailbox();
          }
       }
 
@@ -195,7 +194,7 @@ if (($ok_master || $ok_slave )
    }
 
    // Check crontask
-   $crontasks = getAllDatasFromTable(
+   $crontasks = getAllDataFromTable(
       'glpi_crontasks', [
          'state'  => CronTask::STATE_RUNNING,
          'OR'     => [

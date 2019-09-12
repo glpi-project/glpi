@@ -56,6 +56,13 @@ class CommonGLPI {
    public $taborientation          = 'horizontal';
 
    /**
+    * Rightname used to check rights to do actions on item.
+    *
+    * @var string
+    */
+   static $rightname = '';
+
+    /**
     * Need to get item to show tab
     *
     * @var boolean
@@ -84,6 +91,82 @@ class CommonGLPI {
    **/
    static function getType() {
       return get_called_class();
+   }
+
+
+   /**
+    * Have I the global right to "create" the Object
+    * May be overloaded if needed (ex KnowbaseItem)
+    *
+    * @return boolean
+   **/
+   static function canCreate() {
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, CREATE);
+      }
+      return false;
+   }
+
+
+   /**
+    * Have I the global right to "view" the Object
+    *
+    * Default is true and check entity if the objet is entity assign
+    *
+    * May be overloaded if needed
+    *
+    * @return boolean
+   **/
+   static function canView() {
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, READ);
+      }
+      return false;
+   }
+
+
+   /**
+    * Have I the global right to "update" the Object
+    *
+    * Default is calling canCreate
+    * May be overloaded if needed
+    *
+    * @return boolean
+   **/
+   static function canUpdate() {
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, UPDATE);
+      }
+   }
+
+
+   /**
+    * Have I the global right to "delete" the Object
+    *
+    * May be overloaded if needed
+    *
+    * @return boolean
+   **/
+   static function canDelete() {
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, DELETE);
+      }
+      return false;
+   }
+
+
+   /**
+    * Have I the global right to "purge" the Object
+    *
+    * May be overloaded if needed
+    *
+    * @return boolean
+   **/
+   static function canPurge() {
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, PURGE);
+      }
+      return false;
    }
 
 
@@ -281,8 +364,9 @@ class CommonGLPI {
                }
             }
 
-            if ($data = static::getAdditionalMenuLinks()) {
-               $menu['links'] += $data;
+            $extra_links = static::getAdditionalMenuLinks();
+            if (is_array($extra_links) && count($extra_links)) {
+               $menu['links'] += $extra_links;
             }
 
          }
@@ -748,8 +832,6 @@ class CommonGLPI {
     * @return void
    **/
    function showNavigationHeader($options = []) {
-      global $CFG_GLPI;
-
       // for objects not in table like central
       if (isset($this->fields['id'])) {
          $ID = $this->fields['id'];
@@ -826,17 +908,12 @@ class CommonGLPI {
 
          if ($first >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
-                    "\" title=\"".__s('First')."\" class='pointer'></a></td>";
-         } else {
-            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/first_off.png' alt=\"" .
-                __s('First')."\" title=\"".__s('First')."\"></td>";
+                "<i class='fa fa-angle-double-left' title=\"".__s('First')."\"></i></a></td>";
          }
 
          if ($prev >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                    "\" title=\"".__s('Previous')."\" class='pointer'></a></td>";
+                "<i class='fa fa-chevron-left' title=\"".__s('Previous')."\"></i></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 37 && e.ctrlKey) {
@@ -845,9 +922,6 @@ class CommonGLPI {
                        }
                   });';
             echo Html::scriptBlock($js);
-         } else {
-            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/left_off.png' alt=\"" .
-                __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
 
          if (!$glpilisttitle) {
@@ -893,8 +967,8 @@ class CommonGLPI {
 
          if ($next >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>" .
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                    "\" title=\"".__s('Next')."\" class='pointer'></a></td>";
+                "<i class='fa fa-chevron-right' title=\"".__s('Next')."\"></i>
+                    </a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 39 && e.ctrlKey) {
@@ -903,18 +977,11 @@ class CommonGLPI {
                        }
                   });';
             echo Html::scriptBlock($js);
-         } else {
-            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/right_off.png' alt=\"" .
-                __s('Next')."\" title=\"".__s('Next')."\"></td>";
          }
 
          if ($last >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>" .
-                "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
-                    "\" title=\"".__s('Last')."\" class='pointer'></a></td>";
-         } else {
-            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/last_off.png' alt=\"" .
-                __s('Last')."\" title=\"".__s('Last')."\"></td>";
+                "<i class='fa fa-angle-double-right' title=\"".__s('Last')."\"></i></a></td>";
          }
 
          // End pager

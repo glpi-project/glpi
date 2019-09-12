@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask  extends CommonDBTM {
+   use PlanningEvent;
 
    // From CommonDBTM
    public $auto_message_on_action = false;
@@ -49,7 +50,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
 
-   function getItilObjectItemType() {
+   public function getItilObjectItemType() {
       return str_replace('Task', '', $this->getType());
    }
 
@@ -1040,7 +1041,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $interv = [];
 
       if ($DB->numrows($result) > 0) {
-         for ($i=0; $data=$DB->fetch_assoc($result); $i++) {
+         for ($i=0; $data=$DB->fetchAssoc($result); $i++) {
             if ($item->getFromDB($data["id"])
                 && $item->canViewItem()) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()], 0)) {
@@ -1110,31 +1111,6 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       }
       return $interv;
-   }
-
-
-   /**
-    * Display a Planning Item
-    *
-    * @param string $itemtype  itemtype
-    * @param array  $val       the item to display
-    *
-    * @return string Output
-   **/
-   static function genericGetAlreadyPlannedInformation($itemtype, array $val) {
-
-      if ($item = getItemForItemtype($itemtype)) {
-         $objectitemtype = $item->getItilObjectItemType();
-
-         //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
-         $out  = sprintf(__('%1$s: from %2$s to %3$s:'), $item->getTypeName(1),
-                         Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
-         $out .= "<br><a href='".$objectitemtype::getFormURLWithID($val[getForeignKeyFieldForItemType($objectitemtype)])
-                       ."&amp;forcetab=".$itemtype."$1'>";
-         $out .= Html::resume_text($val["name"], 80).'</a>';
-
-         return $out;
-      }
    }
 
 
@@ -1918,10 +1894,14 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
 
          $bgcolor = $_SESSION["glpipriority_".$item_link->fields["priority"]];
-         // $rand    = mt_rand();
+         $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
-                                                               $job->fields["id"])."</td>";
+         echo "<td>
+            <div class='priority_block' style='border-color: $bgcolor'>
+               <span style='background: $bgcolor'></span>&nbsp;$name
+            </div>
+         </td>";
+
          echo "<td class='center'>";
          echo $item_link->fields['name'];
          echo "</td>";

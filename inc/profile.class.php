@@ -873,7 +873,10 @@ class Profile extends CommonDBTM {
                             'field'     => 'certificate'],
                       ['itemtype'  => 'Datacenter',
                             'label'     => Datacenter::getTypeName(Session::getPluralNumber()),
-                            'field'     => 'datacenter']
+                            'field'     => 'datacenter'],
+                      ['itemtype'  => 'Cluster',
+                            'label'     => Cluster::getTypeName(Session::getPluralNumber()),
+                            'field'     => 'cluster'],
                   ];
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
@@ -2955,10 +2958,10 @@ class Profile extends CommonDBTM {
          // For standard rights sort by right
          if (($a[0] < 1024) || ($b[0] < 1024)) {
             if ($a[0] > $b[0]) {
-               return true;
+                return true;
             }
             if ($a[0] < $b[0]) {
-               return false;
+                return false;
             }
             return ($a[1] > $b[1]);
             // For extra right sort by type

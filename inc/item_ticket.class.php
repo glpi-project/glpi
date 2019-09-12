@@ -233,7 +233,7 @@ class Item_Ticket extends CommonDBRelation{
             $opt['templates_id'] = $tt->fields['id'];
          }
       } else if (isset($options['templates_id'])) {
-         $tt->getFromDBWithDatas($options['templates_id']);
+         $tt->getFromDBWithData($options['templates_id']);
          if (isset($tt->fields['id'])) {
             $opt['templates_id'] = $tt->fields['id'];
          }
@@ -411,7 +411,8 @@ class Item_Ticket extends CommonDBRelation{
             self::dropdownMyDevices($dev_user_id, $ticket->fields["entities_id"], null, 0, ['tickets_id' => $instID]);
          }
 
-         $used = self::getUsedItems($instID);
+         $data =  array_keys(getAllDataFromTable('glpi_items_tickets'));
+         $used = self::getUsedItems($ticket->fields['id']);
          self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $ticket->fields["entities_id"], ['tickets_id' => $instID, 'used' => $used, 'rand' => $rand]);
          echo "<span id='item_ticket_selection_information$rand'></span>";
          echo "</td><td class='center' width='30%'>";
@@ -835,7 +836,8 @@ class Item_Ticket extends CommonDBRelation{
                      $already_add[$itemtype] = [];
                   }
                   $criteria = [
-                     'SELECT DISTINCT' => "$itemtable.*",
+                     'SELECT'          => "$itemtable.*",
+                     'DISTINCT'        => true,
                      'FROM'            => 'glpi_computers_items',
                      'LEFT JOIN'       => [
                         $itemtable  => [
@@ -887,11 +889,12 @@ class Item_Ticket extends CommonDBRelation{
             // Software
             if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
                $iterator = $DB->request([
-                  'SELECT DISTINCT' => 'glpi_softwareversions.name AS version',
-                  'FIELDS'          => [
+                  'SELECT'          => [
+                     'glpi_softwareversions.name AS version',
                      'glpi_softwares.name AS name',
                      'glpi_softwares.id'
                   ],
+                  'DISTINCT'        => true,
                   'FROM'            => 'glpi_computers_softwareversions',
                   'LEFT JOIN'       => [
                      'glpi_softwareversions'  => [
@@ -1036,11 +1039,12 @@ class Item_Ticket extends CommonDBRelation{
     * Return used items for a ticket
     *
     * @param type $tickets_id
+    *
     * @return type
     */
    static function getUsedItems($tickets_id) {
 
-      $data = getAllDatasFromTable('glpi_items_tickets', ['tickets_id' => $tickets_id]);
+      $data = getAllDataFromTable('glpi_items_tickets', ['tickets_id' => $tickets_id]);
       $used = [];
       if (!empty($data)) {
          foreach ($data as $val) {

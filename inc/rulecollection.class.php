@@ -108,65 +108,6 @@ class RuleCollection extends CommonDBTM {
 
 
    /**
-    * @deprecated 9.4
-    * @param $options   array
-   **/
-   function getRuleListQuery($options = []) {
-      Toolbox::deprecated('Use getRuleListCriteria');
-
-      $p['active']    = true;
-      $p['start']     = 0;
-      $p['limit']     = 0;
-      $p['inherited'] = 1;
-      $p['childrens'] = 0;
-      $p['condition'] = 0;
-
-      foreach ($options as $key => $value) {
-         $p[$key] = $value;
-      }
-
-      if ($p['active']) {
-         $sql_active = " `is_active` = 1";
-      } else {
-         $sql_active = "1";
-      }
-
-      if ($p['condition'] > 0) {
-         $sql_active .= " AND `condition` & ". (int) $p['condition'];
-      }
-
-      $sql = "SELECT `glpi_rules`.*
-              FROM `glpi_rules`";
-
-      //Select all the rules of a different type
-      if ($this->isRuleRecursive()) {
-         $sql .= " LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_rules`.`entities_id`)
-                   WHERE $sql_active
-                         AND `sub_type` = '".$this->getRuleClassName()."' ";
-
-         if (!$p['childrens']) {
-            $sql .= getEntitiesRestrictRequest(" AND", "glpi_rules", "entities_id", $this->entity,
-                                               $p['inherited']);
-         } else {
-            $sons = getSonsOf('glpi_entities', $this->entity);
-            $sql .= " AND `glpi_rules`.`entities_id` IN (".implode(',', $sons).")";
-         }
-         $sql .= " ORDER BY `glpi_entities`.`level` ASC,
-                            `".$this->orderby."` ASC";
-
-      } else {
-         $sql .= "WHERE $sql_active
-                        AND `sub_type` = '".$this->getRuleClassName()."'
-                  ORDER BY `".$this->orderby."` ASC";
-      }
-
-      if ($p['limit']) {
-         $sql .= " LIMIT ".intval($p['start']).",".intval($p['limit']);
-      }
-      return $sql;
-   }
-
-   /**
     * Get rules list criteria
     *
     * @param array $options Options
@@ -699,7 +640,7 @@ class RuleCollection extends CommonDBTM {
 
             if ($result2 = $DB->query($sql2)) {
                if ($DB->numrows($result2) == 1) {
-                  list($other_ID,$new_rank) = $DB->fetch_row($result2);
+                  list($other_ID,$new_rank) = $DB->fetchRow($result2);
                   echo $current_rank.' '.$ID.'<br>';
                   echo $new_rank.' '.$other_ID.'<br>';
 
@@ -803,7 +744,7 @@ class RuleCollection extends CommonDBTM {
                    FROM `glpi_rules`
                    WHERE `sub_type` ='".$this->getRuleClassName()."' ";
          $result = $DB->query($query);
-         $ligne  = $DB->fetch_assoc($result);
+         $ligne  = $DB->fetchAssoc($result);
          $rank   = $ligne['maxi'];
 
       } else {
@@ -1745,7 +1686,7 @@ class RuleCollection extends CommonDBTM {
                                  $limit
                                  AND `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'");
 
-      while ($data = $DB->fetch_assoc($res)) {
+      while ($data = $DB->fetchAssoc($res)) {
          $input[] = $data["criteria"];
       }
       return $input;

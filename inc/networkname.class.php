@@ -421,7 +421,7 @@ class NetworkName extends FQDNLabel {
 
          switch ($DB->numrows($result)) {
             case 1 :
-               $nameID = $DB->fetch_assoc($result);
+               $nameID = $DB->fetchAssoc($result);
                $name->getFromDB($nameID['id']);
                break;
 
@@ -845,7 +845,7 @@ class NetworkName extends FQDNLabel {
                             AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`
                             AND `glpi_networknames`.`is_deleted` = 0";
             $result = $DB->query($query);
-            $ligne  = $DB->fetch_assoc($result);
+            $ligne  = $DB->fetchAssoc($result);
             return $ligne['cpt'];
       }
    }

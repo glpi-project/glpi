@@ -32,8 +32,8 @@
 
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
-if (version_compare(PHP_VERSION, '5.6') < 0) {
-   die('PHP >= 5.6 required');
+if (version_compare(PHP_VERSION, '7.0.8') < 0) {
+   die('PHP >= 7.0.8 required');
 }
 
 
@@ -83,9 +83,19 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<meta name='viewport' content='width=device-width, initial-scale=1'/>";
 
    // Appel CSS
-   echo Html::scss('main_styles');
-   // font awesome icons
-   echo Html::css('lib/font-awesome/css/all.css');
+   echo Html::scss('css/styles');
+   if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
+      echo Html::scss('css/highcontrast');
+   }
+   $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
+   echo Html::scss('css/palettes/' . $theme);
+   // external libs CSS
+   echo Html::css('public/lib/base.css');
+
+   // Custom CSS for root entity
+   $entity = new Entity();
+   $entity->getFromDB('0');
+   echo $entity->getCustomCssTag();
 
    // CFG
    echo Html::scriptBlock("
@@ -95,17 +105,15 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       };
    ");
 
-   echo Html::script('lib/jquery/js/jquery.js');
-   echo Html::script('lib/jqueryplugins/select2/js/select2.full.js');
-   echo Html::script("lib/fuzzy/fuzzy-min.js");
-   echo Html::css('lib/jqueryplugins/select2/css/select2.css');
+   echo Html::script("public/lib/base.js");
+   echo Html::script("public/lib/fuzzy.js");
    echo Html::script('js/common.js');
 
    echo "</head>";
 
    echo "<body>";
    echo "<div id='firstboxlogin'>";
-   echo "<div id='logo_login'></div>";
+   echo "<h1 id='logo_login'><img src='".$CFG_GLPI['root_doc']."/pics/login_logo_glpi.png' alt='GLPI' title='GLPI' /></h1>";
    echo "<div id='text-login'>";
    echo nl2br(Toolbox::unclean_html_cross_side_scripting_deep($CFG_GLPI['text_login']));
    echo "</div>";
@@ -127,10 +135,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo '<input type="hidden" name="redirect" value="'.Html::entities_deep($_GET['redirect']).'"/>';
    }
    echo '<p class="login_input" id="login_input_name">
+         <label for="login_name" class="sr-only">'.__('Login').'</label>
          <input type="text" name="'.$namfield.'" id="login_name" required="required"
                 placeholder="'.__('Login').'" autofocus="autofocus" />
          </p>';
    echo '<p class="login_input" id="login_input_password">
+         <label for="login_password" class="sr-only">'.__('Password').'</label>
          <input type="password" name="'.$pwdfield.'" id="login_password" required="required"
                 placeholder="'.__('Password').'"  />
          </p>';

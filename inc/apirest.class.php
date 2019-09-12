@@ -521,16 +521,6 @@ class APIRest extends API {
    }
 
 
-   /**
-    * Generic function to send a message and an http code to client
-    *
-    * @param string  $response          message or array of data to send
-    * @param integer $httpcode          http code (default 200)
-    *                                   (see: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-    * @param array   $additionalheaders headers to send with http response (must be an array(key => value))
-    *
-    * @return void
-    */
    public function returnResponse($response, $httpcode = 200, $additionalheaders = []) {
 
       if (empty($httpcode)) {

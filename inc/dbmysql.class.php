@@ -54,6 +54,57 @@ class DBmysql {
 
    // Slave management
    public $slave              = false;
+   private $in_transaction;
+
+   /**
+    * Defines if connection must use SSL.
+    *
+    * @var boolean
+    */
+   public $dbssl              = false;
+
+   /**
+    * The path name to the key file (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslkey           = null;
+
+   /**
+    * The path name to the certificate file (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslcert          = null;
+
+   /**
+    * The path name to the certificate authority file (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslca            = null;
+
+   /**
+    * The pathname to a directory that contains trusted SSL CA certificates in PEM format
+    * (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslcapath        = null;
+
+   /**
+    * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
+    *
+    * @see mysqli::ssl_set()
+    * @var string|null
+    */
+   public $dbsslcacipher      = null;
+
+
    /** Is it a first connection ?
     * Indicates if the first connection attempt is successful or not
     * if first attempt fail -> display a warning which indicates that glpi is in readonly
@@ -66,6 +117,22 @@ class DBmysql {
    public $execution_time          = false;
 
    private $cache_disabled = false;
+
+   /**
+    * Cached list fo tables.
+    *
+    * @var array
+    * @see self::tableExists()
+    */
+   private $table_cache = [];
+
+   /**
+    * Cached list of fields.
+    *
+    * @var array
+    * @see self::listFields()
+    */
+   private $field_cache = [];
 
    /**
     * Constructor / Connect to the MySQL Database
@@ -88,6 +155,18 @@ class DBmysql {
     */
    function connect($choice = null) {
       $this->connected = false;
+      $this->dbh = @new mysqli();
+      $this->dbh->init();
+      if ($this->dbssl) {
+          mysqli_ssl_set(
+             $this->dbh,
+             $this->dbsslkey,
+             $this->dbsslcert,
+             $this->dbsslca,
+             $this->dbsslcapath,
+             $this->dbsslcacipher
+          );
+      }
 
       if (is_array($this->dbhost)) {
          // Round robin choice
@@ -101,17 +180,13 @@ class DBmysql {
       $hostport = explode(":", $host);
       if (count($hostport) < 2) {
          // Host
-         $this->dbh = @new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault);
-
+         $this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
       } else if (intval($hostport[1])>0) {
          // Host:port
-         $this->dbh = @new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault, $hostport[1]);
+          $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
       } else {
-         // :Socket
-         $this->dbh = @new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
+          // :Socket
+          $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
       }
 
       if ($this->dbh->connect_error) {
@@ -135,7 +210,41 @@ class DBmysql {
             $this->dbh->query("SET SESSION sql_mode = ''");
          }
          $this->connected = true;
+
+         $this->setTimezone($this->guessTimezone());
       }
+   }
+
+   /**
+    * Guess timezone
+    *
+    * Will  check for an existing loaded timezone from user,
+    * then will check in preferences and finally will fallback to system one.
+    *
+    * @return string
+    *
+    * @since 9.5.0
+    */
+   protected function guessTimezone() {
+      if (isset($_SESSION['glpi_tz'])) {
+         $zone = $_SESSION['glpi_tz'];
+      } else {
+         $conf_tz = ['value' => null];
+         if ($this->tableExists(Config::getTable())
+             && $this->fieldExists(Config::getTable(), 'value')) {
+            $conf_tz = $this->request([
+               'SELECT' => 'value',
+               'FROM'   => Config::getTable(),
+               'WHERE'  => [
+                  'context'   => 'core',
+                  'name'      => 'timezone'
+                ]
+            ])->next();
+         }
+         $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
+      }
+
+      return $zone;
    }
 
    /**
@@ -298,13 +407,28 @@ class DBmysql {
 
    /**
     * Fetch array of the next row of a Mysql query
-    * Please prefer fetch_row or fetch_assoc
+    * Please prefer fetchRow or fetchAssoc
+    *
+    * @param mysqli_result $result MySQL result handler
+    *
+    * @return string[]|null array results
+    *
+    * @deprecated 9.5.0
+    */
+   function fetch_array($result) {
+      Toolbox::deprecated('Use DBmysql::fetchArray()');
+      return $this->fetchArray($result);
+   }
+
+   /**
+    * Fetch array of the next row of a Mysql query
+    * Please prefer fetchRow or fetchAssoc
     *
     * @param mysqli_result $result MySQL result handler
     *
     * @return string[]|null array results
     */
-   function fetch_array($result) {
+   function fetchArray($result) {
       return $result->fetch_array();
    }
 
@@ -314,8 +438,22 @@ class DBmysql {
     * @param mysqli_result $result MySQL result handler
     *
     * @return mixed|null result row
+    *
+    * @deprecated 9.5.0
     */
    function fetch_row($result) {
+      Toolbox::deprecated('Use DBmysql::fetchRow()');
+      return $this->fetchRow($result);
+   }
+
+   /**
+    * Fetch row of the next row of a Mysql query
+    *
+    * @param mysqli_result $result MySQL result handler
+    *
+    * @return mixed|null result row
+    */
+   function fetchRow($result) {
       return $result->fetch_row();
    }
 
@@ -325,8 +463,22 @@ class DBmysql {
     * @param mysqli_result $result MySQL result handler
     *
     * @return string[]|null result associative array
+    *
+    * @deprecated 9.5.0
     */
    function fetch_assoc($result) {
+      Toolbox::deprecated('Use DBmysql::fetchAssoc()');
+      return $this->fetchAssoc($result);
+   }
+
+   /**
+    * Fetch assoc of the next row of a Mysql query
+    *
+    * @param mysqli_result $result MySQL result handler
+    *
+    * @return string[]|null result associative array
+    */
+   function fetchAssoc($result) {
       return $result->fetch_assoc();
    }
 
@@ -338,7 +490,34 @@ class DBmysql {
     * @return object|null
     */
    function fetch_object($result) {
+      Toolbox::deprecated('Use DBmysql::fetchObject()');
+      return $this->fetchObject();
+   }
+
+   /**
+    * Fetch object of the next row of an SQL query
+    *
+    * @param mysqli_result $result MySQL result handler
+    *
+    * @return object|null
+    */
+   function fetchObject($result) {
       return $result->fetch_object();
+   }
+
+   /**
+    * Move current pointer of a Mysql result to the specific row
+    *
+    * @deprecated 9.5.0
+    *
+    * @param mysqli_result $result MySQL result handler
+    * @param integer       $num    Row to move current pointer
+    *
+    * @return boolean
+    */
+   function data_seek($result, $num) {
+      Toolbox::deprecated('Use DBmysql::dataSeek()');
+      return $this->dataSeek($result, $num);
    }
 
    /**
@@ -349,17 +528,46 @@ class DBmysql {
     *
     * @return boolean
     */
-   function data_seek($result, $num) {
+   function dataSeek($result, $num) {
       return $result->data_seek($num);
+   }
+
+
+   /**
+    * Give ID of the last inserted item by Mysql
+    *
+    * @return mixed
+    *
+    * @deprecated 9.5.0
+    */
+   function insert_id() {
+      Toolbox::deprecated('Use DBmysql::insertId()');
+      return $this->insertId();
    }
 
    /**
     * Give ID of the last inserted item by Mysql
     *
     * @return mixed
+    *
+    * @deprecated 9.5.0
     */
-   function insert_id() {
+   function insertId() {
       return $this->dbh->insert_id;
+   }
+
+   /**
+    * Give number of fields of a Mysql result
+    *
+    * @deprecated 9.5.0
+    *
+    * @param mysqli_result $result MySQL result handler
+    *
+    * @return int number of fields
+    */
+   function num_fields($result) {
+      Toolbox::deprecated('Use DBmysql::numFields()');
+      return $this->numFields($result);
    }
 
    /**
@@ -369,8 +577,24 @@ class DBmysql {
     *
     * @return int number of fields
     */
-   function num_fields($result) {
+   function numFields($result) {
       return $result->field_count;
+   }
+
+
+   /**
+    * Give name of a field of a Mysql result
+    *
+    * @param mysqli_result $result MySQL result handler
+    * @param integer       $nb     ID of the field
+    *
+    * @return string name of the field
+    *
+    * @deprecated 9.5.0
+    */
+   function field_name($result, $nb) {
+      Toolbox::deprecated('Use DBmysql::fieldName()');
+      return $this->fieldName($result, $nb);
    }
 
    /**
@@ -380,8 +604,10 @@ class DBmysql {
     * @param integer       $nb     ID of the field
     *
     * @return string name of the field
+    *
+    * @deprecated 9.5.0
     */
-   function field_name($result, $nb) {
+   function fieldName($result, $nb) {
       $finfo = $result->fetch_fields();
       return $finfo[$nb]->name;
    }
@@ -397,22 +623,41 @@ class DBmysql {
     */
    function listTables($table = 'glpi_%', array $where = []) {
       $iterator = $this->request([
-         'SELECT' => 'TABLE_NAME',
-         'FROM'   => 'information_schema.TABLES',
+         'SELECT' => 'table_name as TABLE_NAME',
+         'FROM'   => 'information_schema.tables',
          'WHERE'  => [
-            'TABLE_SCHEMA' => $this->dbdefault,
-            'TABLE_TYPE'   => 'BASE TABLE',
-            'TABLE_NAME'   => ['LIKE', $table]
+            'table_schema' => $this->dbdefault,
+            'table_type'   => 'BASE TABLE',
+            'table_name'   => ['LIKE', $table]
          ] + $where
       ]);
       return $iterator;
    }
 
-   public function getMyIsamTables() {
+   /**
+    * Returns tables using "MyIsam" engine.
+    *
+    * @return DBmysqlIterator
+    */
+   public function getMyIsamTables(): DBmysqlIterator {
       $iterator = $this->listTables('glpi_%', ['engine' => 'MyIsam']);
       return $iterator;
    }
 
+   /**
+    * List fields of a table
+    *
+    * @param string  $table    Table name condition
+    * @param boolean $usecache If use field list cache (default true)
+    *
+    * @return mixed list of fields
+    *
+    * @deprecated 9.5.0
+    */
+   function list_fields($table, $usecache = true) {
+       Toolbox::deprecated('Use DBmysql::listFields()');
+      return $this->listFields($table, $usecache);
+   }
 
    /**
     * List fields of a table
@@ -422,20 +667,19 @@ class DBmysql {
     *
     * @return mixed list of fields
     */
-   function list_fields($table, $usecache = true) {
-      static $cache = [];
+   function listFields($table, $usecache = true) {
 
-      if (!$this->cache_disabled && $usecache && isset($cache[$table])) {
-         return $cache[$table];
+      if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
+         return $this->field_cache[$table];
       }
       $result = $this->query("SHOW COLUMNS FROM `$table`");
       if ($result) {
          if ($this->numrows($result) > 0) {
-            $cache[$table] = [];
-            while ($data = $result->fetch_assoc()) {
-               $cache[$table][$data["Field"]] = $data;
+            $this->field_cache[$table] = [];
+            while ($data = $this->fetchAssoc($result)) {
+               $this->field_cache[$table][$data["Field"]] = $data;
             }
-            return $cache[$table];
+            return $this->field_cache[$table];
          }
          return [];
       }
@@ -446,9 +690,36 @@ class DBmysql {
     * Get number of affected rows in previous MySQL operation
     *
     * @return int number of affected rows on success, and -1 if the last query failed.
+    *
+    * @deprecated 9.5.0
     */
    function affected_rows() {
+      Toolbox::deprecated('Use DBmysql::affectedRows()');
+      return $this->affectedRows();
+   }
+
+   /**
+    * Get number of affected rows in previous MySQL operation
+    *
+    * @return int number of affected rows on success, and -1 if the last query failed.
+    */
+   function affectedRows() {
       return $this->dbh->affected_rows;
+   }
+
+
+   /**
+    * Free result memory
+    *
+    * @param mysqli_result $result MySQL result handler
+    *
+    * @return boolean
+    *
+    * @deprecated 9.5.0
+    */
+   function free_result($result) {
+      Toolbox::deprecated('Use DBmysql::freeResult()');
+      return $this->freeResult($result);
    }
 
    /**
@@ -456,9 +727,9 @@ class DBmysql {
     *
     * @param mysqli_result $result MySQL result handler
     *
-    * @return boolean TRUE on success or FALSE on failure.
+    * @return boolean
     */
-   function free_result($result) {
+   function freeResult($result) {
       return $result->free();
    }
 
@@ -617,15 +888,18 @@ class DBmysql {
 
    /**
     * Is MySQL strict mode ?
-    * @since 0.90
     *
     * @var DB $DB
     *
     * @param string $msg Mode
     *
     * @return boolean
+    *
+    * @since 0.90
+    * @deprecated 9.5.0
     */
-   static function isMySQLStrictMode(&$msg) {
+   static public function isMySQLStrictMode(&$msg) {
+      Toolbox::deprecated();
       global $DB;
 
       $msg = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ZERO_DATE,NO_ZERO_IN_DATE,ONLY_FULL_GROUP_BY,NO_AUTO_CREATE_USER';
@@ -651,9 +925,9 @@ class DBmysql {
       $name          = addslashes($this->dbdefault.'.'.$name);
       $query         = "SELECT GET_LOCK('$name', 0)";
       $result        = $this->query($query);
-      list($lock_ok) = $this->fetch_row($result);
+      list($lock_ok) = $this->fetchRow($result);
 
-      return $lock_ok;
+      return (bool)$lock_ok;
    }
 
    /**
@@ -669,7 +943,7 @@ class DBmysql {
       $name          = addslashes($this->dbdefault.'.'.$name);
       $query         = "SELECT RELEASE_LOCK('$name')";
       $result        = $this->query($query);
-      list($lock_ok) = $this->fetch_row($result);
+      list($lock_ok) = $this->fetchRow($result);
 
       return $lock_ok;
    }
@@ -679,21 +953,35 @@ class DBmysql {
     * Check if a table exists
     *
     * @since 9.2
+    * @since 9.5 Added $usecache parameter.
     *
-    * @param string $tablename Table name
+    * @param string  $tablename Table name
+    * @param boolean $usecache  If use table list cache
     *
     * @return boolean
     **/
-   public function tableExists($tablename) {
-      // Get a list of tables contained within the database.
-      $result = $this->listTables("%$tablename%");
+   public function tableExists($tablename, $usecache = true) {
 
-      if (count($result)) {
-         while ($data = $result->next()) {
-            if ($data['TABLE_NAME'] === $tablename) {
-               return true;
-            }
-         }
+      if (!$this->cache_disabled && $usecache && in_array($tablename, $this->table_cache)) {
+         return true;
+      }
+
+      // Retrieve all tables if cache is empty but enabled, in order to fill cache
+      // with all known tables
+      $retrieve_all = !$this->cache_disabled && empty($this->table_cache);
+
+      $result = $this->listTables($retrieve_all ? 'glpi_%' : $tablename);
+      $found_tables = [];
+      while ($data = $result->next()) {
+         $found_tables[] = $data['TABLE_NAME'];
+      }
+
+      if (!$this->cache_disabled) {
+         $this->table_cache = array_unique(array_merge($this->table_cache, $found_tables));
+      }
+
+      if (in_array($tablename, $found_tables)) {
+         return true;
       }
 
       return false;
@@ -706,17 +994,17 @@ class DBmysql {
     *
     * @param string  $table    Table name for the field we're looking for
     * @param string  $field    Field name
-    * @param Boolean $usecache Use cache; @see DBmysql::list_fields(), defaults to true
+    * @param Boolean $usecache Use cache; @see DBmysql::listFields(), defaults to true
     *
     * @return boolean
     **/
    public function fieldExists($table, $field, $usecache = true) {
-      if (!$this->tableExists($table)) {
+      if (!$this->tableExists($table, $usecache)) {
          trigger_error("Table $table does not exists", E_USER_WARNING);
          return false;
       }
 
-      if ($fields = $this->list_fields($table, $usecache)) {
+      if ($fields = $this->listFields($table, $usecache)) {
          if (isset($fields[$field])) {
             return true;
          }
@@ -1202,6 +1490,7 @@ class DBmysql {
     * @return boolean
     */
    public function beginTransaction() {
+      $this->in_transaction = true;
       return $this->dbh->begin_transaction();
    }
 
@@ -1211,15 +1500,142 @@ class DBmysql {
     * @return boolean
     */
    public function commit() {
+      $this->in_transaction = false;
       return $this->dbh->commit();
    }
 
    /**
-    * Roolbacks a transaction
+    * Rollbacks a transaction
     *
     * @return boolean
     */
    public function rollBack() {
+      $this->in_transaction = false;
       return $this->dbh->rollback();
+   }
+
+   /**
+    * Are we in a transaction?
+    *
+    * @return boolean
+    */
+   public function inTransaction() {
+      return $this->in_transaction;
+   }
+
+   /**
+    * Check if timezone data is accessible and available in database.
+    *
+    * @param string $msg  Variable that would contain the reason of data unavailability.
+    *
+    * @return boolean
+    *
+    * @since 9.5.0
+    */
+   public function areTimezonesAvailable(string &$msg = '') {
+      $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
+      if ($mysql_db_res->count() === 0) {
+         $msg = __('Access to timezone database (mysql) is not allowed.');
+         return false;
+      }
+
+      $tz_table_res = $this->request(
+         'SHOW TABLES FROM '
+         . $this->quoteName('mysql')
+         . ' LIKE '
+         . $this->quoteValue('time_zone_name')
+      );
+      if ($tz_table_res->count() === 0) {
+         $msg = __('Access to timezone table (mysql.time_zone_name) is not allowed.');
+         return false;
+      }
+
+      $criteria = [
+         'COUNT'  => 'cpt',
+         'FROM'   => 'mysql.time_zone_name',
+      ];
+      $iterator = $this->request($criteria);
+      $result = $iterator->next();
+      if ($result['cpt'] == 0) {
+         $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
+         return false;
+      }
+
+      return true;
+   }
+
+   /**
+    * Defines timezone to use.
+    *
+    * @param string $timezone
+    *
+    * @return DBmysql
+    */
+   public function setTimezone($timezone) {
+      //setup timezone
+      if ($this->areTimezonesAvailable()) {
+         date_default_timezone_set($timezone);
+         $this->dbh->query("SET SESSION time_zone = '$timezone'");
+         $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
+      }
+      return $this;
+   }
+
+   /**
+    * Returns list of timezones.
+    *
+    * @return string[]
+    *
+    * @since 9.5.0
+    */
+   public function getTimezones() {
+      $list = []; //default $tz is empty
+
+      $from_php = \DateTimeZone::listIdentifiers();
+      $now = new \DateTime();
+
+      $iterator = $this->request([
+         'SELECT' => 'Name',
+         'FROM'   => 'mysql.time_zone_name',
+         'WHERE'  => ['Name' => $from_php]
+      ]);
+
+      while ($from_mysql = $iterator->next()) {
+         $now->setTimezone(new \DateTimeZone($from_mysql['Name']));
+         $list[$from_mysql['Name']] = $from_mysql['Name'] . $now->format(" (T P)");
+      }
+
+      return $list;
+   }
+
+   /**
+    * Returns count of tables that were not migrated to be compatible with timezones usage.
+    *
+    * @return number
+    *
+    * @since 9.5.0
+    */
+   public function notTzMigrated() {
+       global $DB;
+
+       $result = $DB->request([
+           'COUNT'       => 'cpt',
+           'FROM'        => 'information_schema.columns',
+           'WHERE'       => [
+              'information_schema.columns.table_schema'  => $DB->dbdefault,
+              'information_schema.columns.data_type'     => ['datetime']
+           ]
+       ])->next();
+       return (int)$result['cpt'];
+   }
+
+   /**
+    * Clear cached schema informations.
+    *
+    * @return void
+    */
+   public function clearSchemaCache() {
+      $this->table_cache = [];
+      $this->field_cache = [];
    }
 }

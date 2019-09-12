@@ -22,10 +22,12 @@ phpunit.xml
 /config/define.php
 /nbproject
 .composer.hash
-/css/**/*.min.css
+/**/*.min.css
+/css_compiled/
 /css/compiled/
 !/css/tiny_mce/**/*.min.css
-/js/*.min.js
-# ignore incomplete locale, fallback to ru.js
-# see https://github.com/glpi-project/glpi/issues/3788
-/lib/tiny_mce/langs/ru_RU.js
+/**/*.min.js
+/node_modules/
+.package.hash
+/public/build/
+/public/lib/

@@ -177,29 +177,53 @@ sup {
    visibility: hidden;
 }
 
-a {
+.btn-linkstyled {
+   /* Remove all specific styles */
+   background: none;
+   border: 0;
+   color: inherit;
+   cursor: pointer;
+   font: inherit;
+   padding: 0;
+   text-decoration: underline;
+   outline: inherit;
+}
+
+a, .btn-linkstyled {
    font-weight: bold;
    text-decoration: none;
-   font-size: 11px;
+
+   &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
+      font-size: 11px;
+   }
 
    &:link {
       font-weight: bold;
       text-decoration: none;
-      font-size: 11px;
+
+      &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
+         font-size: 11px;
+      }
    }
 
-   &.fa, &.fas {
-      font-size: inherit;
+   &.fa, &.far, &.fas {
       font-weight: 900;
 
-      &:link {
+      &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
          font-size: inherit;
+      }
+
+      &:link {
          font-weight: 900;
+
+         &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
+            font-size: inherit;
+         }
       }
    }
 }
 
-#page a.fa {
+#page a.fa, #page a.far, #page a.fas {
    color: #222;
 
    &:link {
@@ -207,23 +231,11 @@ a {
    }
 }
 
-a .fa {
+a .fa, a .far, a .fas, .btn-linkstyled .fa, .btn-linkstyled .far, .btn-linkstyled .fas {
    color: #222;
-}
-
-#page a.far {
-   color: #222;
-
-   &:link {
-      color: #222;
-   }
 }
 
 a {
-   .far {
-      color: #222;
-   }
-
    &:hover {
       color: black;
    }
@@ -439,7 +451,7 @@ textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([t
    padding: 0 5px;
 }
 
-textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]) {
+textarea:not([disabled]), input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]) {
    background-color: #FCFCFC;
    color: black;
 }
@@ -890,6 +902,12 @@ span.vsubmit, a.vsubmit {
          font-size: 1.5em;
          padding: 8px 0;
       }
+   }
+}
+.headerRow th {
+   & > .fa, & > .far, & > .fas, & > button {
+      margin-left: 8px;
+      vertical-align: middle;
    }
 }
 
@@ -1530,6 +1548,21 @@ td {
 
 .search_actions > * {
    margin: 0 3px;
+}
+
+.priority_block {
+   white-space: nowrap;
+   border: 1px solid transparent;
+   padding-right: 6px;
+   border-radius: 2px;
+   display: inline-block;
+
+   span {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      vertical-align: middle;
+   }
 }
 
 .reset-search {
@@ -2569,10 +2602,13 @@ a.icon_nav_move {
 }
 
 #logo_login {
-   padding: 80px 0 0;
-   margin: 0 auto 0;
-   width: 100%;
-   height: 76px;
+   margin: 0;
+   padding: 38px 0;
+   text-align: center;
+}
+#logo_login img {
+   display: block; /* Prevent whitespace below element */
+   margin: 0 auto;
 }
 
 #display-login, #text-login {
@@ -2925,10 +2961,10 @@ ul#menu {
    float: right;
    width: 24px;
    height: 24px;
-   margin-right: 20px;
+   margin-right: 10px;
    display: inline-block;
    margin-top: 2px;
-   background: url("../pics/menu_all.png");
+   font-size: 1.6em;
 }
 
 /* hide menu on small screen */
@@ -3371,16 +3407,6 @@ a.copyright {
 
 .debug .tab_cadre {
    box-shadow: none;
-}
-
-/* Restore default behavior : drop user agent CSS*/
-
-:focus {
-   outline-width: 0;
-}
-
-.nostyle:focus {
-   outline-width: 5px;
 }
 
 /* Timeline */
@@ -4692,7 +4718,7 @@ tr.log_history_filter_row {
    }
 
    #logo_login {
-      height: inherit;
+      padding: 0;
    }
 
    #display-login, #text-login {
@@ -5510,7 +5536,6 @@ div#viewgraph {
 .grid-stack .grid-stack-item {
    z-index: 3;
    opacity: 1;
-   filter: Alpha(Opacity = 100);
 }
 
 .clear_picture .grid-stack .grid-stack-item {
@@ -5909,7 +5934,10 @@ ul.indexes {
    }
 
    width: 217px;
-   background: repeating-linear-gradient(#FFF, #FFF 21px, #F0F0F0 21px, #F0F0F0 42px);
+   background: #FFF repeating-linear-gradient(transparent,
+                                                transparent 21px,
+                                              rgba(0, 0, 0, .1) 21px,
+                                              rgba(0, 0, 0, .1) 42px);
    z-index: 1;
    border: 1px solid #D4D4D4;
    float: left;
@@ -6219,4 +6247,40 @@ with incorrect shading in some cases */
 
 .enabled {
    color: green !important;
+}
+
+/** Custom CSS form */
+.custom_css_configuration td:not([colspan]) {
+   width: 50%;
+}
+.custom_css_configuration tbody,
+.custom_css_configuration tr,
+.custom_css_configuration td,
+.custom_css_configuration .custom_css_container {
+   max-width: inherit; /* chain inherit "max-width" from table element to editor container */
+}
+.custom_css_configuration .custom_css_container {
+   width: 100%;
+}
+.custom_css_configuration .custom_css_container textarea {
+   box-sizing: border-box;
+   min-height: 250px;
+   width: 100%;
+}
+.custom_css_configuration .custom_css_container .CodeMirror.input-disabled {
+   background: rgb(235, 235, 228); /* default bg color for disabled inputs */
+}
+
+/** Impersonate feature */
+div.banner-impersonate {
+   background: #ff3d2a;
+   color: #fff;
+   font-weight: bold;
+   padding: 10px;
+   text-align: right;
+}
+div.banner-impersonate button {
+   color: inherit;
+   margin-left: 5px;
+   text-decoration: underline;
 }

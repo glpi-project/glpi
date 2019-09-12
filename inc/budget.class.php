@@ -311,7 +311,8 @@ class Budget extends CommonDropdown{
       }
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_infocoms',
          'WHERE'           => [
             'budgets_id'   => $budgets_id,
@@ -827,7 +828,7 @@ class Budget extends CommonDropdown{
       echo "</tr>";
 
       // get all entities ordered by names
-      $allentities = getAllDatasFromTable('glpi_entities', [], true, 'completename');
+      $allentities = getAllDataFromTable('glpi_entities', ['ORDER' => 'completename'], true);
 
       foreach (array_keys($allentities) as $entity) {
          if (isset($entities_values[$entity])) {

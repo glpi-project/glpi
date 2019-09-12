@@ -2641,7 +2641,7 @@ class AuthLDAP extends CommonDBTM {
     * @return array
     */
    static function getLdapServers() {
-      return getAllDatasFromTable('glpi_authldaps', [], false, '`is_default` DESC');
+      return getAllDataFromTable('glpi_authldaps', ['ORDER' => 'is_default DESC']);
    }
 
 

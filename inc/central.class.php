@@ -181,6 +181,15 @@ class Central extends CommonGLPI {
                count($myisam_tables)
             );
          }
+         if ($DB->areTimezonesAvailable()) {
+            $not_tstamp = $DB->notTzMigrated();
+            if ($not_tstamp > 0) {
+                $warnings[] = sprintf(
+                    __('%1$s columns are not compatible with timezones usage.'),
+                    $not_tstamp
+                );
+            }
+         }
       }
 
       if ($DB->isSlave()

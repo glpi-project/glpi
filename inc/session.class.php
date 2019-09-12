@@ -480,7 +480,7 @@ class Session {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $_SESSION['glpiprofiles'][$data['id']]['name'] = $data['name'];
          }
          foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
@@ -497,7 +497,7 @@ class Session {
             $result2 = $DB->query($query2);
 
             if ($DB->numrows($result2)) {
-               while ($data = $DB->fetch_assoc($result2)) {
+               while ($data = $DB->fetchAssoc($result2)) {
                   // Do not override existing entity if define as recursive
                   if (!isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
                       || $data['is_recursive']) {
@@ -593,11 +593,11 @@ class Session {
       }
 
       if (isset($CFG_GLPI["languages"][$trytoload])) {
-         $newfile = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
+         $newfile = "/" . $CFG_GLPI["languages"][$trytoload][1];
       }
 
-      if (empty($newfile) || !is_file(GLPI_ROOT . $newfile)) {
-         $newfile = "/locales/en_GB.mo";
+      if (empty($newfile) || !is_file(GLPI_I18N_DIR . $newfile)) {
+         $newfile = "/en_GB.mo";
       }
 
       if (isset($CFG_GLPI["languages"][$trytoload][5])) {
@@ -607,11 +607,24 @@ class Session {
       $TRANSLATE->setLocale($trytoload);
 
       $cache = Config::getCache('cache_trans', 'core', false);
-      if ($cache !== false) {
+      if ($cache !== false && !defined('TU_USER')) {
          $TRANSLATE->setCache($cache);
       }
 
-      $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
+      $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR.$newfile, 'glpi', $trytoload);
+
+      $mofile = GLPI_LOCAL_I18N_DIR . '/core/' . $newfile;
+      $phpfile = str_replace('.mo', '.php', $mofile);
+
+      // Load local PHP file if it exists
+      if (file_exists($phpfile)) {
+         $TRANSLATE->addTranslationFile('phparray', $phpfile, 'glpi', $trytoload);
+      }
+
+      // Load local MO file if it exists -- keep last so it gets precedence
+      if (file_exists($mofile)) {
+         $TRANSLATE->addTranslationFile('gettext', $mofile, 'glpi', $trytoload);
+      }
 
       // Load plugin dicts
       if ($with_plugins) {
@@ -1257,4 +1270,107 @@ class Session {
       return false;
    }
 
+   /**
+    * Check if current user can impersonate another user having given id.
+    *
+    * @param integer $user_id
+    *
+    * @return boolean
+    */
+   static function canImpersonate($user_id) {
+
+      if (self::getLoginUserID() == $user_id
+          || (self::isImpersonateActive() && self::getImpersonatorId() == $user_id)) {
+         return false; // Cannot impersonate self or already impersonated user
+      }
+
+      // For now we do not check more than config update right, but we may
+      // implement more fine checks in the future.
+
+      return self::haveRight(Config::$rightname, UPDATE);
+   }
+
+   /**
+    * Impersonate user having given id.
+    *
+    * @param integer $user_id
+    *
+    * @return boolean
+    */
+   static function startImpersonating($user_id) {
+
+      if (!self::canImpersonate($user_id)) {
+         return false;
+      }
+
+      $user = new User();
+      if (!$user->getFromDB($user_id)) {
+         return false;
+      }
+
+      // Store current user values
+      $impersonator_id  = self::isImpersonateActive()
+         ? $_SESSION['impersonator_id']
+         : self::getLoginUserID();
+      $lang             = $_SESSION['glpilanguage'];
+      $session_use_mode = $_SESSION['glpi_use_mode'];
+
+      $auth = new Auth();
+      $auth->auth_succeded = true;
+      $auth->user = $user;
+      Session::init($auth);
+
+      // Force usage of current user lang and session mode
+      $_SESSION['glpilanguage'] = $lang;
+      $_SESSION['glpi_use_mode'] = $session_use_mode;
+      Session::loadLanguage();
+
+      $_SESSION['impersonator_id'] = $impersonator_id;
+
+      return true;
+   }
+
+   /**
+    * Stop impersonating any user.
+    *
+    * @return boolean
+    */
+   static function stopImpersonating() {
+
+      if (!self::isImpersonateActive()) {
+         return true; // Nothing to do
+      }
+
+      $user = new User();
+      if (!$user->getFromDB($_SESSION['impersonator_id'])) {
+         return false;
+      }
+
+      $auth = new Auth();
+      $auth->auth_succeded = true;
+      $auth->user = $user;
+      Session::init($auth);
+
+      return true;
+   }
+
+   /**
+    * Check if impersonate feature is currently used.
+    *
+    * @return boolean
+    */
+   static function isImpersonateActive() {
+
+      return array_key_exists('impersonator_id', $_SESSION);
+   }
+
+   /**
+    * Return impersonator user id.
+    *
+    * @return string|null
+    */
+   static function getImpersonatorId() {
+
+      return self::isImpersonateActive() ? $_SESSION['impersonator_id'] : null;
+   }
 }

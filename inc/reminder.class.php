@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * Reminder Class
 **/
 class Reminder extends CommonDBVisible {
+   use PlanningEvent;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -783,8 +784,8 @@ class Reminder extends CommonDBVisible {
                        'items_id' => $this->getID()];
 
             if ($ID && $this->fields["is_planned"]) {
-               $params['begin'] = $this->fields["begin"];
-               $params['end']   = $this->fields["end"];
+                  $params['begin'] = $this->fields["begin"];
+                  $params['end']   = $this->fields["end"];
             }
 
             Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
@@ -969,7 +970,8 @@ class Reminder extends CommonDBVisible {
 
       $table = self::getTable();
       $criteria = [
-         'SELECT DISTINCT' => "$table.*",
+         'SELECT'          => "$table.*",
+         'DISTINCT'        => true,
          'FROM'            => $table,
          'WHERE'           => $WHERE,
          'ORDER'           => 'begin'
@@ -1023,26 +1025,6 @@ class Reminder extends CommonDBVisible {
          }
       }
       return $interv;
-   }
-
-
-   /**
-    * Display a Planning Item
-    *
-    * @param $val Array of the item to display
-    *
-    * @return Already planned information
-    **/
-   static function getAlreadyPlannedInformation(array $val) {
-      global $CFG_GLPI;
-
-      //TRANS: %1$s is the begin date, %2$s is the end date
-      $beginend = sprintf(__('From %1$s to %2$s'),
-                          Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
-      $out      = sprintf(__('%1$s: %2$s'), $beginend,
-         "<a href='".Reminder::getFormURLWithID($val["reminders_id"])."'>".
-         Html::resume_text($val["name"], 80)."</a>");
-      return $out;
    }
 
 
@@ -1161,7 +1143,8 @@ class Reminder extends CommonDBVisible {
 
          $criteria = array_merge_recursive(
             [
-               'SELECT DISTINCT' => 'glpi_reminders.*',
+               'SELECT'          => 'glpi_reminders.*',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_reminders',
                'WHERE'           => $visibility_criteria,
                'ORDERBY'         => 'name'
@@ -1246,5 +1229,4 @@ class Reminder extends CommonDBVisible {
       }
       return $values;
    }
-
 }

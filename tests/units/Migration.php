@@ -38,8 +38,19 @@ namespace tests\units;
  */
 class Migration extends \GLPITestCase {
 
+   /**
+    * @var \DB
+    */
    private $db;
+
+   /**
+    * @var \Migration
+    */
    private $migration;
+
+   /**
+    * @var string[]
+    */
    private $queries;
 
    public function beforeTestMethod($method) {
@@ -52,7 +63,7 @@ class Migration extends \GLPITestCase {
             $queries[] = $query;
             return true;
          };
-         $this->calling($this->db)->free_result = true;
+         $this->calling($this->db)->freeResult = true;
 
          $this->output(
             function () {
@@ -100,9 +111,9 @@ class Migration extends \GLPITestCase {
    public function testAddConfig() {
       global $DB;
       $this->calling($this->db)->numrows = 0;
-      $this->calling($this->db)->fetch_assoc = [];
-      $this->calling($this->db)->data_seek = true;
-      $this->calling($this->db)->list_fields = [
+      $this->calling($this->db)->fetchAssoc = [];
+      $this->calling($this->db)->dataSeek = true;
+      $this->calling($this->db)->listFields = [
          'id'        => '',
          'context'   => '',
          'name'      => '',
@@ -188,12 +199,12 @@ class Migration extends \GLPITestCase {
       )->isIdenticalTo("Task completed.");
 
       $this->array($this->queries)->isIdenticalTo([
-         0 => 'SELECT `TABLE_NAME` FROM `information_schema`.`TABLES`' .
-               ' WHERE `TABLE_SCHEMA` = \'' . $DB->dbdefault .
-               '\' AND `TABLE_TYPE` = \'BASE TABLE\' AND `TABLE_NAME` LIKE \'%table1%\'',
-         1 => 'SELECT `TABLE_NAME` FROM `information_schema`.`TABLES`' .
-               ' WHERE `TABLE_SCHEMA` = \'' . $DB->dbdefault  .
-               '\' AND `TABLE_TYPE` = \'BASE TABLE\' AND `TABLE_NAME` LIKE \'%table2%\''
+         0 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
+               ' WHERE `table_schema` = \'' . $DB->dbdefault .
+               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table1\'',
+         1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
+               ' WHERE `table_schema` = \'' . $DB->dbdefault  .
+               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\''
              ]);
 
       //try to backup existant tables
@@ -236,18 +247,36 @@ class Migration extends \GLPITestCase {
    public function testChangeField() {
       global $DB;
       $DB = $this->db;
+
+      // Test change field with move to first column
       $this->calling($this->db)->fieldExists = true;
 
       $this->output(
          function () {
-            $this->migration->changeField('change_table', 'ID', 'id', 'integer');
+            $this->migration->changeField('change_table', 'ID', 'id', 'integer', ['first' => 'first']);
             $this->migration->executeMigration();
          }
       )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
 
       $this->array($this->queries)->isIdenticalTo([
          "ALTER TABLE `change_table` DROP `id`  ,\n" .
-         "CHANGE `ID` `id` INT(11) NOT NULL DEFAULT '0'  ",
+         "CHANGE `ID` `id` INT(11) NOT NULL DEFAULT '0'   FIRST  ",
+      ]);
+
+      // Test change field with move to after an other column
+      $this->queries = [];
+      $this->calling($this->db)->fieldExists = true;
+
+      $this->output(
+         function () {
+            $this->migration->changeField('change_table', 'NAME', 'name', 'string', ['after' => 'id']);
+            $this->migration->executeMigration();
+         }
+      )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
+
+      $this->array($this->queries)->isIdenticalTo([
+         "ALTER TABLE `change_table` DROP `name`  ,\n" .
+         "CHANGE `NAME` `name` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   AFTER `id` ",
       ]);
    }
 
@@ -508,5 +537,76 @@ class Migration extends \GLPITestCase {
          ]
       ]);
       $this->integer(count($right4))->isEqualTo(4);
+   }
+
+   public function testRenameTable() {
+
+      global $DB;
+      $DB = $this->db;
+
+      $this->calling($this->db)->tableExists = function ($table) {
+         return $table === 'glpi_oldtable';
+      };
+      $this->calling($this->db)->fieldExists = function ($table, $field) {
+         return $table === 'glpi_oldtable' && $field !== 'bool_field';
+      };
+
+      $queries = [];
+      $this->queries = &$queries;
+      $this->calling($this->db)->query = function ($query) use (&$queries) {
+         if ($query === 'SHOW INDEX FROM `glpi_oldtable`') {
+            // Make DbUtils::isIndex return false
+            return false;
+         }
+         $queries[] = $query;
+         return true;
+      };
+
+      // Case 1, rename with no buffered changes
+      $this->queries = [];
+
+      $this->migration->renameTable('glpi_oldtable', 'glpi_newtable');
+
+      $this->array($this->queries)->isIdenticalTo(
+         [
+            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+         ]
+      );
+
+      // Case 2, rename after changes were already applied
+      $this->queries = [];
+
+      $this->migration->addField('glpi_oldtable', 'bool_field', 'bool');
+      $this->migration->addKey('glpi_oldtable', 'id', 'id', 'UNIQUE');
+      $this->migration->addKey('glpi_oldtable', 'fulltext_key', 'fulltext_key', 'FULLTEXT');
+      $this->migration->migrationOneTable('glpi_oldtable');
+      $this->migration->renameTable('glpi_oldtable', 'glpi_newtable');
+
+      $this->array($this->queries)->isIdenticalTo(
+         [
+            "ALTER TABLE `glpi_oldtable` ADD `bool_field` TINYINT(1) NOT NULL DEFAULT '0'   ",
+            "ALTER TABLE `glpi_oldtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
+            "ALTER TABLE `glpi_oldtable` ADD UNIQUE `id` (`id`)",
+            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+         ]
+      );
+
+      // Case 3, apply changes after renaming
+      $this->queries = [];
+
+      $this->migration->addField('glpi_oldtable', 'bool_field', 'bool');
+      $this->migration->addKey('glpi_oldtable', 'id', 'id', 'UNIQUE');
+      $this->migration->addKey('glpi_oldtable', 'fulltext_key', 'fulltext_key', 'FULLTEXT');
+      $this->migration->renameTable('glpi_oldtable', 'glpi_newtable');
+      $this->migration->migrationOneTable('glpi_newtable');
+
+      $this->array($this->queries)->isIdenticalTo(
+         [
+            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+            "ALTER TABLE `glpi_newtable` ADD `bool_field` TINYINT(1) NOT NULL DEFAULT '0'   ",
+            "ALTER TABLE `glpi_newtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
+            "ALTER TABLE `glpi_newtable` ADD UNIQUE `id` (`id`)",
+         ]
+      );
    }
 }

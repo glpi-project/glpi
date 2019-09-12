@@ -55,6 +55,10 @@ class Blacklist extends CommonDropdown {
    const EMAIL  = 5;
 
 
+   function maxActionsCount() {
+      return 0;
+   }
+
    static function canCreate() {
       return static::canUpdate();
    }
@@ -247,10 +251,10 @@ class Blacklist extends CommonDropdown {
    **/
    static function getBlacklistedItems($type) {
 
-      $datas = getAllDatasFromTable('glpi_blacklists', ['type' => $type]);
+      $data = getAllDataFromTable('glpi_blacklists', ['type' => $type]);
       $items = [];
-      if (count($datas)) {
-         foreach ($datas as $val) {
+      if (count($data)) {
+         foreach ($data as $val) {
             $items[] = $val['value'];
          }
       }

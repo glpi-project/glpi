@@ -76,8 +76,11 @@ class Calendar_Holiday extends CommonDBRelation {
       $rand    = mt_rand();
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_calendars_holidays.id AS linkid',
-         'FIELDS'          => 'glpi_holidays.*',
+         'SELECT ' => [
+            'glpi_calendars_holidays.id AS linkid',
+            'glpi_holidays.*'
+         ],
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_calendars_holidays',
          'LEFT JOIN'       => [
             'glpi_holidays'   => [

@@ -75,6 +75,7 @@ class Printer  extends CommonDBTM {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('Item_OperatingSystem', $ong, $options);
       $this->addStandardTab('Cartridge', $ong, $options);
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Item_Disk', $ong, $options);
@@ -143,7 +144,7 @@ class Printer  extends CommonDBTM {
          $res = $DB->query($sql);
 
          if ($res) {
-            while ($data = $DB->fetch_assoc($res)) {
+            while ($data = $DB->fetchAssoc($res)) {
                $itemtable = getTableForItemType($data["itemtype"]);
                if ($item = getItemForItemtype($data["itemtype"])) {
                   // For each itemtype which are entity dependant
@@ -203,6 +204,9 @@ class Printer  extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
+         // ADD OS
+         Item_OperatingSystem::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
          // ADD Devices
          Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
@@ -242,9 +246,7 @@ class Printer  extends CommonDBTM {
       $this->deleteChildrenAndRelationsFromDb(
          [
             Certificate_Item::class,
-            Change_Item::class,
             Computer_Item::class,
-            Item_Problem::class,
             Item_Project::class,
          ]
       );

@@ -103,7 +103,11 @@ class Entity extends CommonTreeDropdown {
                                                    'autoclose_delay', 'inquest_config',
                                                    'inquest_rate', 'inquest_delay',
                                                    'inquest_duration','inquest_URL',
-                                                   'max_closedate', 'tickettemplates_id']];
+                                                   'max_closedate', 'tickettemplates_id',
+                                                   'suppliers_as_private', 'autopurge_delay'],
+                                          // Configuration
+                                          'config'
+                                          => ['enable_custom_css', 'custom_css_code']];
 
 
    function getForbiddenStandardMassiveAction() {
@@ -336,6 +340,9 @@ class Entity extends CommonTreeDropdown {
                   $ong[5] = __('Assistance');
                }
                $ong[6] = __('Assets');
+               if (Session::haveRight(Config::$rightname, [UPDATE])) {
+                  $ong[7] = __('UI customization');
+               }
 
                return $ong;
          }
@@ -373,6 +380,10 @@ class Entity extends CommonTreeDropdown {
 
             case 6 :
                self::showInventoryOptions($item);
+               break;
+
+            case 7 :
+               self::showUiCustomizationOptions($item);
                break;
          }
       }
@@ -919,6 +930,25 @@ class Entity extends CommonTreeDropdown {
       ];
 
       $tab[] = [
+         'id'                 => '59',
+         'table'              => $this->getTable(),
+         'field'              => 'autopurge_delay',
+         'name'               => __('Automatic purge of closed tickets after'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'datatype'           => 'number',
+         'min'                => 1,
+         'max'                => 3650,
+         'step'               => 1,
+         'unit'               => 'day',
+         'toadd'              => [
+            self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
+            self::CONFIG_NEVER   => __('Never'),
+            0                  => __('Immediatly')
+         ]
+      ];
+
+      $tab[] = [
          'id'                 => '34',
          'table'              => $this->getTable(),
          'field'              => 'notclosed_delay',
@@ -1107,7 +1137,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<script type='text/javascript'>";
       echo "   $(function() {
-                  $.getScript('{$CFG_GLPI["root_doc"]}/lib/jqueryplugins/jstree/jstree.min.js').done(function(data, textStatus, jqxhr) {
+                  $.getScript('{$CFG_GLPI["root_doc"]}/public/lib/jstree.js').done(function(data, textStatus, jqxhr) {
                      $('#tree_projectcategory$rand')
                      // call `.jstree` with the options object
                      .jstree({
@@ -1236,7 +1266,7 @@ class Entity extends CommonTreeDropdown {
     * @return Array of id => value
    **/
    static function getEntitiesToNotify($field) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $entities = [];
 
@@ -1374,8 +1404,6 @@ class Entity extends CommonTreeDropdown {
     * @param $entity Entity object
    **/
    static function showAdvancedOptions(Entity $entity) {
-      global $DB;
-
       $con_spotted = false;
       $ID          = $entity->getField('id');
       if (!$entity->can($ID, READ)) {
@@ -1488,7 +1516,8 @@ class Entity extends CommonTreeDropdown {
          $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
-      foreach (getAllDatasFromTable('glpi_states') as $state) {
+      $states = getAllDataFromTable('glpi_states');
+      foreach ($states as $state) {
          $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
                      //TRANS: %s is the name of the state
             = sprintf(__('Fill when shifting to state %s'), $state['name']);
@@ -1556,7 +1585,7 @@ class Entity extends CommonTreeDropdown {
          $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
-      foreach (getAllDatasFromTable('glpi_states') as $state) {
+      foreach ($states as $state) {
          $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
                      //TRANS: %s is the name of the state
             = sprintf(__('Fill when shifting to state %s'), $state['name']);
@@ -2003,6 +2032,134 @@ class Entity extends CommonTreeDropdown {
       echo "</div>";
    }
 
+   /**
+    * UI customization configuration form.
+    *
+    * @param $entity Entity object
+    *
+    * @return void
+    *
+    * @since 9.5.0
+    */
+   static function showUiCustomizationOptions(Entity $entity) {
+
+      global $CFG_GLPI;
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, [UPDATE])) {
+         return false;
+      }
+
+      // Codemirror lib
+      echo Html::css('public/lib/codemirror.css');
+      echo Html::script("public/lib/codemirror.js");
+
+      // Notification right applied
+      $canedit = Session::haveRight(Config::$rightname, [UPDATE])
+         && Session::haveAccessToEntity($ID);
+
+      echo "<div class='spaced'>";
+      if ($canedit) {
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      }
+
+      echo "<table class='tab_cadre_fixe custom_css_configuration'>";
+
+      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+
+      $rand = mt_rand();
+
+      echo "<tr><th colspan='2'>".__('UI options')."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Enable CSS customization')."</td>";
+      echo "<td>";
+      $values = [];
+      if (($ID > 0) ? 1 : 0) {
+         $values[Entity::CONFIG_PARENT] = __('Inherits configuration from the parent entity');
+      }
+      $values[0] = __('No');
+      $values[1] = __('Yes');
+      echo Dropdown::showFromArray(
+         'enable_custom_css',
+         $values,
+         [
+            'display' => false,
+            'rand'    => $rand,
+            'value'   => $entity->fields['enable_custom_css']
+         ]
+      );
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'>";
+      echo "<div id='custom_css_container' class='custom_css_container'>";
+      $value = $entity->fields['enable_custom_css'];
+      // wrap call in function to prevent modifying variables from current scope
+      call_user_func(function() use($value, $ID) {
+         $_POST  = [
+            'enable_custom_css' => $value,
+            'entities_id'       => $ID
+         ];
+         include GLPI_ROOT . '/ajax/entityCustomCssCode.php';
+      });
+      echo "</div>\n";
+      echo "</td></tr>";
+
+      Ajax::updateItemOnSelectEvent(
+         'dropdown_enable_custom_css' . $rand,
+         'custom_css_container',
+         $CFG_GLPI['root_doc'] . '/ajax/entityCustomCssCode.php',
+         [
+            'enable_custom_css' => '__VALUE__',
+            'entities_id'       => $ID
+         ]
+      );
+
+      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+
+      echo "</table>";
+
+      if ($canedit) {
+         echo "<div class='center'>";
+         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "</div>";
+         Html::closeForm();
+      }
+
+      echo "</div>";
+   }
+
+   /**
+    * Returns tag containing custom CSS code applied to entity.
+    *
+    * @return string
+    */
+   public function getCustomCssTag() {
+
+      $enable_custom_css = self::getUsedConfig(
+         'enable_custom_css',
+         $this->fields['id']
+      );
+
+      if (!$enable_custom_css) {
+         return '';
+      }
+
+      $custom_css_code = self::getUsedConfig(
+         'enable_custom_css',
+         $this->fields['id'],
+         'custom_css_code',
+         ''
+      );
+
+      if (empty($custom_css_code)) {
+         return '';
+      }
+
+      return '<style>' . Html::entities_deep($custom_css_code) . '</style>';
+   }
 
    /**
     * @since 0.84 (before in entitydata.class)
@@ -2206,11 +2363,51 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Mark followup added by a supplier though an email collector as private')."</td>";
+      echo "<td colspan='2'>";
+      $supplierValues = self::getSuppliersAsPrivateValues();
+      $currentSupplierValue = $entity->fields['suppliers_as_private'];
+
+      if ($ID == 0) { // Remove parent option for root entity
+         unset($supplierValues[self::CONFIG_PARENT]);
+      }
+
+      Dropdown::showFromArray(
+         'suppliers_as_private',
+         $supplierValues,
+         ['value' => $currentSupplierValue]
+      );
+
+      // If the entity is using it's parent value, print it
+      if ($currentSupplierValue == self::CONFIG_PARENT && $ID != 0) {
+         $parentSupplierValue = self::getUsedConfig(
+            'suppliers_as_private',
+            $entity->fields['entities_id']
+         );
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo $supplierValues[$parentSupplierValue];
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
       echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
-           "<td colspan='2'>".__('Automatic closing of solved tickets after')."</td>";
-      echo "<td colspan='2'>";
+         "<td>".__('Automatic closing of solved tickets after');
+
+      //Check if crontask is disabled
+      $crontask = new CronTask();
+      $criteria = [
+         'itemtype'  => 'Ticket',
+         'name'      => 'closeticket',
+         'state'     => CronTask::STATE_DISABLE
+      ];
+      if ($crontask->getFromDBByCrit($criteria)) {
+         echo "<br/><strong>".__('Close ticket action is disabled.')."</strong>";
+      }
+
+      echo "</td>";
+      echo "<td>";
       $autoclose = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                          self::CONFIG_NEVER  => __('Never'),
                          0                   => __('Immediatly')];
@@ -2236,6 +2433,55 @@ class Entity extends CommonTreeDropdown {
             printf(_n('%d day', '%d days', $autoclose_mode), $autoclose_mode);
          } else {
             echo $autoclose[$autoclose_mode];
+         }
+         echo "</font>";
+      }
+      echo "<td>".__('Automatic purge of closed tickets after');
+
+      //Check if crontask is disabled
+      $crontask = new CronTask();
+      $criteria = [
+         'itemtype'  => 'Ticket',
+         'name'      => 'purgeticket',
+         'state'     => CronTask::STATE_DISABLE
+      ];
+      if ($crontask->getFromDBByCrit($criteria)) {
+         echo "<br/><strong>".__('Purge ticket action is disabled.')."</strong>";
+      }
+      echo "</td>";
+      echo "<td>";
+      $autopurge = [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         self::CONFIG_NEVER  => __('Never')
+      ];
+      if ($ID == 0) {
+         unset($autopurge[self::CONFIG_PARENT]);
+      }
+
+      Dropdown::showNumber(
+         'autopurge_delay',
+         [
+            'value' => $entity->fields['autopurge_delay'],
+            'min'   => 1,
+            'max'   => 3650,
+            'step'  => 1,
+            'toadd' => $autopurge,
+            'unit'  => 'day']);
+
+      if (($entity->fields['autopurge_delay'] == self::CONFIG_PARENT)
+          && ($ID != 0)) {
+          $autopurge_mode = self::getUsedConfig(
+             'autopurge_delay',
+             $entity->fields['entities_id'],
+            '',
+            self::CONFIG_NEVER
+          );
+
+         echo "<br><font class='green'>&nbsp;&nbsp;";
+         if ($autopurge_mode >= 0) {
+            printf(_n('%d day', '%d days', $autopurge_mode), $autopurge_mode);
+         } else {
+            echo $autopurge[$autopurge_mode];
          }
          echo "</font>";
       }
@@ -2384,8 +2630,6 @@ class Entity extends CommonTreeDropdown {
     * @return url contents
    **/
    static function generateLinkSatisfaction($ticket) {
-      global $DB;
-
       $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
 
       if (strstr($url, "[TICKET_ID]")) {
@@ -2515,6 +2759,24 @@ class Entity extends CommonTreeDropdown {
          return $tab[$val];
       }
       return NOT_AVAILABLE;
+   }
+
+   /**
+    * get value for suppliers_as_private
+    *
+    * @since 9.5
+    *
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    *
+    * @return array or string
+   **/
+   static function getSuppliersAsPrivateValues() {
+
+      return [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         0                   => __('No'),
+         1                   => __('Yes'),
+      ];
    }
 
    /**
@@ -2699,7 +2961,7 @@ class Entity extends CommonTreeDropdown {
             if ($values[$field] == self::CONFIG_PARENT) {
                return __('Inheritance of the parent entity');
             }
-            return Dropdown::getDropdownName('glpi_tickettemplates', $values[$field]);
+            return Dropdown::getDropdownName(TicketTemplate::getTable(), $values[$field]);
 
          case 'calendars_id' :
             switch ($values[$field]) {
@@ -2725,8 +2987,6 @@ class Entity extends CommonTreeDropdown {
     * @param $options      array
    **/
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
-      global $DB;
-
       if (!is_array($values)) {
          $values = [$field => $values];
       }
@@ -2780,7 +3040,8 @@ class Entity extends CommonTreeDropdown {
          case 'autofill_decommission_date' :
             $tab[0]                   = __('No autofill');
             $tab[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
-            foreach (getAllDatasFromTable('glpi_states') as $state) {
+            $states = getAllDataFromTable('glpi_states');
+            foreach ($states as $state) {
                $tab[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
                            //TRANS: %s is the name of the state
                   = sprintf(__('Fill when shifting to state %s'), $state['name']);

@@ -40,9 +40,7 @@ class Calendar extends DbTestCase {
 
    public function testComputeEndDate() {
       $calendar = new \Calendar;
-
-      // get Default calendar
-      $calendar->getFromDB(1);
+      $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
 
       // ## test future dates
       $end_date = $calendar->ComputeEndDate("2018-11-19 10:00:00", 7 * DAY_TIMESTAMP, 0, true);
@@ -57,5 +55,164 @@ class Calendar extends DbTestCase {
       // end of day
       $end_date = $calendar->ComputeEndDate("2018-11-19 10:00:00", -7 * DAY_TIMESTAMP, 0, true, true);
       $this->string($end_date)->isEqualTo("2018-11-08 20:00:00");
+   }
+
+   protected function activeProvider() {
+      return [
+         [
+            'start'  => '2019-01-01 07:00:00',
+            'end'    => '2019-01-01 09:00:00',
+            'value'  => HOUR_TIMESTAMP
+         ], [
+            'start'  => '2019-01-01 06:00:00',
+            'end'    => '2019-01-01 07:00:00',
+            'value'  => 0
+         ], [
+            'start'  => '2019-01-01 00:00:00',
+            'end'    => '2019-01-08 00:00:00',
+            'value'  => 12 * HOUR_TIMESTAMP * 5
+         ], [
+            'start'  => '2019-01-08 00:00:00',
+            'end'    => '2019-01-01 00:00:00',
+            'value'  => 0
+         ], [
+            'start'  => '2019-01-01 07:00:00',
+            'end'    => '2019-01-01 09:00:00',
+            'value'  => HOUR_TIMESTAMP * 2,
+            'day'    => true
+         ], [
+            'start'  => '2019-01-01 00:00:00',
+            'end'    => '2019-01-08 00:00:00',
+            'value'  => WEEK_TIMESTAMP,
+            'day'    => true
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider activeProvider
+    */
+   public function testGetActiveTimeBetween($start, $end, $value, $days = false) {
+      $calendar = new \Calendar();
+      $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
+
+      $this->variable(
+         $calendar->getActiveTimeBetween(
+            $start,
+            $end,
+            $days
+         )
+      )->isEqualTo($value);
+   }
+
+   protected function workingdayProvider() {
+      return [
+         ['2019-01-01 00:00:00', true],
+         ['2019-01-02 00:00:00', true],
+         ['2019-01-03 00:00:00', true],
+         ['2019-01-04 00:00:00', true],
+         ['2019-01-05 00:00:00', false],
+         ['2019-01-06 00:00:00', false]
+      ];
+   }
+
+   /**
+    * @dataProvider workingdayProvider
+    */
+   public function testIsAWorkingDay($date, $expected) {
+      $calendar = new \Calendar();
+      $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
+
+      $this->boolean($calendar->isAWorkingDay(strtotime($date)))->isIdenticalTo($expected);
+   }
+
+   public function testHasAWorkingDay() {
+      $calendar = new \Calendar();
+      $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
+      $this->boolean($calendar->hasAWorkingDay())->isTrue();
+
+      $cid = $calendar->add([
+         'name'   => 'Test'
+      ]);
+      $this->integer($cid)->isGreaterThan(0);
+      $this->boolean($calendar->getFromDB($cid));
+      $this->boolean($calendar->hasAWorkingDay())->isFalse();
+   }
+
+   protected function workinghourProvider() {
+      return [
+         ['2019-01-01 00:00:00', false],
+         ['2019-01-02 08:30:00', true],
+         ['2019-01-03 18:10:00', true],
+         ['2019-01-04 21:00:00', false],
+         ['2019-01-05 08:30:00', false],
+         ['2019-01-06 00:00:00', false]
+      ];
+   }
+
+   /**
+    * @dataProvider workinghourProvider
+    */
+   public function testIsAWorkingHour($date, $expected) {
+      $calendar = new \Calendar();
+      $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
+
+      $this->boolean($calendar->isAWorkingHour(strtotime($date)))->isIdenticalTo($expected);
+   }
+
+   public function testIsHoliday() {
+      $calendar = new \Calendar();
+      $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
+
+      $dates= [
+         '2019-05-01'   => true,
+         '2019-05-02'   => false,
+         '2019-07-01'   => false,
+         '2019-07-12'   => true
+      ];
+
+      //no holiday by default
+      foreach (array_keys($dates) as $date) {
+         $this->boolean($calendar->isHoliday($date))->isFalse;
+      }
+
+      //Add holidays
+      $calendar_holiday = new \Calendar_Holiday();
+      $holiday = new \Holiday();
+      $hid = (int)$holiday->add([
+         'name'         => '1st of may',
+         'entities_id'  => 0,
+         'is_recursive' => 1,
+         'begin_date'   => '2019-05-01',
+         'end_date'     => '2019-05-01',
+         'is_perpetual' => 1
+      ]);
+      $this->integer($hid)->isGreaterThan(0);
+      $this->integer(
+         (int)$calendar_holiday->add([
+            'holidays_id'  => $hid,
+            'calendars_id' => $calendar->fields['id']
+         ])
+      )->isGreaterThan(0);
+
+      $hid = (int)$holiday->add([
+         'name'   => 'Summer vacations',
+         'entities_id'  => 0,
+         'is_recursive' => 1,
+         'begin_date'   => '2019-07-08',
+         'end_date'     => '2019-09-01',
+         'is_perpetual' => 0
+      ]);
+      $this->integer($hid)->isGreaterThan(0);
+      $this->integer(
+         (int)$calendar_holiday->add([
+            'holidays_id'  => $hid,
+            'calendars_id' => $calendar->fields['id']
+         ])
+      )->isGreaterThan(0);
+
+      foreach ($dates as $date => $expected) {
+         $this->boolean($calendar->isHoliday($date))->isIdenticalTo($expected);
+      }
    }
 }

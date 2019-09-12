@@ -223,7 +223,7 @@ function countElementsInTableForEntity($table, $entity, $condition = [], $recurs
 
 
 /**
- * Get datas from a table in an array :
+ * Get data from a table in an array :
  * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  *
  * @param string  $table     table name
@@ -232,12 +232,31 @@ function countElementsInTableForEntity($table, $entity, $condition = [], $recurs
  * @param string  $order     result order (default '')
  *
  * @return array containing all the datas
+ *
+ * @deprecated 9.5.0
 **/
 function getAllDatasFromTable($table, $condition = [], $usecache = false, $order = '') {
-   $dbu = new DbUtils();
-   return $dbu->getAllDataFromTable($table, $condition, $usecache, $order);
+   Toolbox::deprecated('Use getAllDataFromTable()');
+   return getAllDataFromTable($table, $condition, $usecache, $order);
 }
 
+/**
+ * Get data from a table in an array :
+ * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
+ *
+ * @param string  $table    table name
+ * @param array   $criteria condition to use (default [])
+ * @param boolean $usecache Use cache (false by default)
+ * @param string  $order    result order (default '')
+ *
+ * @return array containing all the datas
+ *
+ * @since 9.5.0
+**/
+function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '') {
+   $dbu = new DbUtils();
+   return $dbu->getAllDataFromTable($table, $criteria, $usecache, $order);
+}
 /**
  * Get the Name of the element of a Dropdown Tree table
  *
@@ -403,42 +422,6 @@ function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
 function regenerateTreeCompleteName($table) {
    $dbu = new DbUtils();
    return $dbu->regenerateTreeCompleteName($table);
-}
-
-
-/**
- * Get the ID of the next Item
- *
- * @deprecated 9.4
- *
- * @param string  $table         table to search next item
- * @param integer $ID            current ID
- * @param string  $condition     condition to add to the search (default ='')
- * @param string  $nextprev_item field used to sort (default ='name')
- *
- * @return integer the next ID, -1 if not exist
- */
-function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
-   $dbu = new DbUtils();
-   return $dbu->getNextItem($table, $ID, $condition, $nextprev_item);
-}
-
-
-/**
- * Get the ID of the previous Item
- *
- * @deprecated 9.4
- *
- * @param string  $table         table to search next item
- * @param integer $ID            current ID
- * @param string  $condition     condition to add to the search (default ='')
- * @param string  $nextprev_item field used to sort (default ='name')
- *
- * @return integer the previous ID, -1 if not exist
- */
-function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {
-   $dbu = new DbUtils();
-   return $dbu->getPreviousItem($table, $ID, $condition, $nextprev_item);
 }
 
 

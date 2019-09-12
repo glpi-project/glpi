@@ -3,6 +3,72 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [9.5] unreleased
+
+### Added
+
+- Encrypted file systems support.
+- Mails collected from suppliers can be marked as private on an entity basis.
+- Ability to add custom CSS in entity configuration.
+- CLI commands to enable and disable maintenance mode.
+- Operating system links on Monitors, Peripherals, Phones and Printers.
+- Add datacenter items to global search
+- Project task search options for Projects
+- Automatic action to purge closed tickets
+
+### Changed
+
+- `scripts/migrations/racks_plugin.php` has been replaced by `glpi:migration:racks_plugin_to_core` command available using `bin/console`
+
+### API changes
+
+#### Changes
+
+- `DBmysqlIterator::handleOrderClause()` supports QueryExpressions
+
+#### Deprecated
+
+- `DBMysql::fetch_array()`
+- `DBMysql::fetch_row()`
+- `DBMysql::fetch_assoc()`
+- `DBMysql::fetch_object()`
+- `DBMysql::data_seek()`
+- `DBMysql::insert_id()`
+- `DBMysql::num_fields()`
+- `DBMysql::field_name()`
+- `DBMysql::list_fields()`
+- `DBMysql::affected_rows()`
+- `DBMysql::free_result()`
+- `DBMysql::isMySQLStrictMode()`
+- `getAllDatasFromTable` renamed to `getAllDataFromTable()`
+- Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
+- All `TicketTemplate` classes has been renamed to `ITILTemplate`
+- `Ticket::getTicketTemplateToUse()` renamed to `Ticket::getITILTemplateToUse()`
+- `TicketTemplate::getFromDBWithDatas()` renamed to `Ticket::getFromDBWithData()` (inherited from `ITILTemplate`)
+
+#### Removed
+
+- Usage of string `$condition` parameter in `CommonDBTM::find()`
+- Usage of string `$condition` parameter in `Dropdown::addNewCondition()`
+- Usage of string in `$option['condition']` parameter in `Dropdown::show()`
+- `KnowbaseItemCategory::showFirstLevel()`
+- `Ticket::getTicketActors()`
+- `NotificationTarget::getProfileJoinSql()`
+- `NotificationTarget::getDistinctUserSql()`
+- `NotificationTargetCommonITILObject::getProfileJoinSql()`
+- `RuleCollection::getRuleListQuery()`
+- `getNextItem()`
+- `getPreviousItem()`
+- `CommonDBChild::getSQLRequestToSearchForItem()`
+- `CommonDBConnexity::getSQLRequestToSearchForItem()`
+- `CommonDBRelation::getSQLRequestToSearchForItem()`
+- `Project::addVisibility()`
+- `Project::addVisibilityJoins()`
+- `Plugin::hasBeenInit()`
+- 'SELECT DISTINCT' and 'DISTINCT FIELDS' criteria in `DBmysqlIterator::buildQuery()`
+- `CommonDBTM::getTablesOf()`
+- `CommonDBTM::getForeignKeyFieldsOf()`
+
 ## [9.4.3] unreleased
 
 ### API changes
@@ -38,6 +104,7 @@ The following methods have been deprecated:
 The following methods have been deprecated:
 
 - `Plugin::hasBeenInit()`
+- Deprecate 'SELECT DISTINCT' and 'DISTINCT FIELDS' criteria in `DBmysqlIterator::buildQuery()`
 
 #### Removed
 

@@ -547,7 +547,7 @@ class Search extends DbTestCase {
 
       $displaypref = new \DisplayPreference();
       // save table glpi_displaypreferences
-      $dp = getAllDatasFromTable($displaypref->getTable());
+      $dp = getAllDataFromTable($displaypref->getTable());
       foreach ($dp as $line) {
          $displaypref->delete($line, true);
       }
@@ -566,6 +566,7 @@ class Search extends DbTestCase {
             'KnowbaseItem',
             'NetworkPortMigration',
             'TicketFollowup',
+            '/^TicketTemplate.*/'
          ]
       );
       foreach ($itemtypeslist as $itemtype) {
@@ -574,6 +575,11 @@ class Search extends DbTestCase {
             // it's the case where not have search possible in this itemtype
             continue;
          }
+         $item_class = new \ReflectionClass($itemtype);
+         if ($item_class->isAbstract()) {
+            continue;
+         }
+
          $item = getItemForItemtype($itemtype);
 
          //load all options; so rawSearchOptionsToAdd to be tested
@@ -621,7 +627,7 @@ class Search extends DbTestCase {
       }
       // restore displaypreference table
       /// TODO: review, this can't work.
-      foreach (getAllDatasFromTable($displaypref->getTable()) as $line) {
+      foreach (getAllDataFromTable($displaypref->getTable()) as $line) {
          $displaypref->delete($line, true);
       }
       $this->integer((int)countElementsInTable($displaypref->getTable()))->isIdenticalTo(0);

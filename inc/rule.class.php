@@ -1015,8 +1015,10 @@ class Rule extends CommonDBTM {
     * @return the maximum number of actions
    **/
    function maxActionsCount() {
-      // Unlimited
-      return 0;
+      return count(array_filter($this->actions, function($action_obj) {
+         $action = $this->getAction($action_obj->fields['field']);
+         return !isset($action['duplicatewith']);
+      }));
    }
 
 
@@ -1954,7 +1956,7 @@ class Rule extends CommonDBTM {
       $result = $DB->query($sql);
 
       if ($DB->numrows($result) > 0) {
-         $datas = $DB->fetch_assoc($result);
+         $datas = $DB->fetchAssoc($result);
          return $datas["rank"] + 1;
       }
       return 0;

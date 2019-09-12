@@ -449,7 +449,8 @@ class ReservationItem extends CommonDBChild {
       echo "<tr class='tab_bg_2'><td>".__('Item type')."</td><td>";
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_reservationitems',
          'WHERE'           => [
             'is_active' => 1
@@ -565,7 +566,7 @@ class ReservationItem extends CommonDBChild {
                             `$itemtable`.`name`";
 
          if ($result = $DB->query($query)) {
-            while ($row = $DB->fetch_assoc($result)) {
+            while ($row = $DB->fetchAssoc($result)) {
                echo "<tr class='tab_bg_2'><td>";
                echo "<input type='checkbox' name='item[".$row["id"]."]' value='".$row["id"]."'>".
                     "</td>";

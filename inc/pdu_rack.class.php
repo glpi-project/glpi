@@ -611,11 +611,12 @@ JAVASCRIPT;
                $item_rand = mt_rand();
 
                if ($picture) {
+                  $picture_url = Toolbox::getPictureUrl($picture);
                   $picture_c = 'with_picture';
                   echo "<style>
                      #item_$item_rand:after {
                         width: ".($height * 21 - 9) ."px;
-                        background: $bg_color url($picture) 0 0/100% no-repeat;
+                        background: $bg_color url($picture_url) 0 0/100% no-repeat;
                      }
                   </style>";
                }

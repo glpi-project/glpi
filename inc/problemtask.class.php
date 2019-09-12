@@ -160,18 +160,6 @@ class ProblemTask extends CommonITILTask {
    /**
     * Display a Planning Item
     *
-    * @param array $val Array of the item to display
-    *
-    * @return string Already planned information
-   **/
-   static function getAlreadyPlannedInformation($val) {
-      return parent::genericGetAlreadyPlannedInformation(__CLASS__, $val);
-   }
-
-
-   /**
-    * Display a Planning Item
-    *
     * @param array           $val       array of the item to display
     * @param integer         $who       ID of the user (0 if all)
     * @param string          $type      position of the item in the time block (in, through, begin or end)
