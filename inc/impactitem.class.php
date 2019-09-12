@@ -9,10 +9,6 @@ if (!defined('GLPI_ROOT')) {
  */
 class ImpactItem extends CommonDBTM {
 
-   function prepareInputForUpdate($input) {
-      return $input;
-   }
-
    public static function findForItem(CommonDBTM $item) {
       global $DB;
 
@@ -20,7 +16,7 @@ class ImpactItem extends CommonDBTM {
          'SELECT' => [
             'glpi_impactitems.id',
          ],
-         'FROM' => 'glpi_impactitems',
+         'FROM' => self::getTable(),
          'WHERE'  => [
             'glpi_impactitems.itemtype' => get_class($item),
             'glpi_impactitems.items_id' => $item->getID(),

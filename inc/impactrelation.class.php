@@ -37,7 +37,7 @@ class ImpactRelation extends CommonDBRelation {
 
       // Check for duplicate
       $it = $DB->request([
-         'FROM'   => 'glpi_impacts',
+         'FROM'   => self::getTable(),
          'WHERE'  => [
             'itemtype_source'   => $input['itemtype_source'],
             'items_id_source'   => $input['items_id_source'],

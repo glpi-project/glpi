@@ -9,13 +9,13 @@ if (!defined('GLPI_ROOT')) {
  */
 class Impact extends CommonGLPI {
    // Constants used to express the direction or "flow" of a graph
-   // Theses constants can also be used to express if and edge is reachable
+   // Theses constants can also be used to express if an edge is reachable
    // when exploring the graph forward, backward or both (0b11)
    const DIRECTION_FORWARD    = 0b01;
    const DIRECTION_BACKWARD   = 0b10;
 
    // Default colors used for the edges of the graph according to their flow
-   const DEFAULT_COLOR            = 'black';  // No flow, this mean the edge is not accessible from the starting point of the graph
+   const DEFAULT_COLOR            = 'black';   // The edge is not accessible from the starting point of the graph
    const IMPACT_COLOR             = '#ff3418'; // Forward
    const DEPENDS_COLOR            = '#1c76ff'; // Backward
    const IMPACT_AND_DEPENDS_COLOR = '#ca29ff'; // Forward and backward
@@ -377,7 +377,7 @@ class Impact extends CommonGLPI {
     *
     * @throws InvalidArgumentException
     */
-   public static function buildGraphFromNode(
+   private static function buildGraphFromNode(
       array &$nodes,
       array &$edges,
       CommonDBTM $node,
@@ -453,7 +453,7 @@ class Impact extends CommonGLPI {
     *
     * @return bool true if the node was missing, else false
     */
-   public static function addNode(array &$nodes, CommonDBTM $item) {
+   private static function addNode(array &$nodes, CommonDBTM $item) {
       global $CFG_GLPI;
 
       // Check if the node already exist
@@ -537,7 +537,7 @@ class Impact extends CommonGLPI {
     *
     * @throws InvalidArgumentException
     */
-   public static function addEdge(
+   private static function addEdge(
       array &$edges,
       string $key,
       CommonDBTM $itemA,
