@@ -280,8 +280,18 @@ JAVASCRIPT;
          ]
       ]);
 
+      $inst = new KnowbaseItemCategory;
       $categories = [];
       foreach ($cat_iterator as $category) {
+         if (DropdownTranslation::canBeTranslated($inst)) {
+            $tname = DropdownTranslation::getTranslatedValue(
+               $category['id'],
+               $inst->getType()
+            );
+            if (!empty($tname)) {
+               $category['name'] = $tname;
+            }
+         }
          $categories[] = $category;
       }
 

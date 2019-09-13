@@ -1518,6 +1518,17 @@ class KnowbaseItem extends CommonDBVisible {
                }
 
                $categ = $data["category"];
+               $inst = new KnowbaseItemCategory;
+               if (DropdownTranslation::canBeTranslated($inst)) {
+                  $tcateg = DropdownTranslation::getTranslatedValue(
+                     $data["knowbaseitemcategories_id"],
+                     $inst->getType()
+                  );
+                  if (!empty($tcateg)) {
+                     $categ = $tcateg;
+                  }
+               }
+
                if ($output_type == Search::HTML_OUTPUT) {
                   $cathref = $ki->getSearchURL()."?knowbaseitemcategories_id=".
                               $data["knowbaseitemcategories_id"].'&amp;forcetab=Knowbase$2';
