@@ -476,7 +476,12 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $ID            = $this->getID();
       $this->check($ID, READ);
-      $fields        = $this->getAdditionalFields();
+      $fields = array_filter(
+         $this->getAdditionalFields(),
+         function ($field) {
+            return isset($field['list']) && $field['list'];
+         }
+      );
       $nb            = count($fields);
       $entity_assign = $this->isEntityAssign();
 
@@ -518,9 +523,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $header .= "<th>".__('Entity')."</th>";
       }
       foreach ($fields as $field) {
-         if ($field['list']) {
-            $header .= "<th>".$field['label']."</th>";
-         }
+         $header .= "<th>".$field['label']."</th>";
       }
       $header .= "<th>".__('Comments')."</th>";
       $header .= "</tr>\n";
@@ -554,27 +557,25 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          }
 
          foreach ($fields as $field) {
-            if ($field['list']) {
-               echo "<td>";
-               switch ($field['type']) {
-                  case 'UserDropdown' :
-                     echo getUserName($data[$field['name']]);
-                     break;
+            echo "<td>";
+            switch ($field['type']) {
+               case 'UserDropdown' :
+                  echo getUserName($data[$field['name']]);
+                  break;
 
-                  case 'bool' :
-                     echo Dropdown::getYesNo($data[$field['name']]);
-                     break;
+               case 'bool' :
+                  echo Dropdown::getYesNo($data[$field['name']]);
+                  break;
 
-                  case 'dropdownValue' :
-                     echo Dropdown::getDropdownName(getTableNameForForeignKeyField($field['name']),
-                                                    $data[$field['name']]);
-                     break;
+               case 'dropdownValue' :
+                  echo Dropdown::getDropdownName(getTableNameForForeignKeyField($field['name']),
+                                                 $data[$field['name']]);
+                  break;
 
-                  default:
-                     echo $data[$field['name']];
-               }
-               echo "</td>";
+               default:
+                  echo $data[$field['name']];
             }
+            echo "</td>";
          }
          echo "<td>".$data['comment']."</td>";
          echo "</tr>\n";
