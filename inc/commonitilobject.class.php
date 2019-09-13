@@ -170,7 +170,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return boolean
     */
-    function canAddFollowups() {
+   function canAddFollowups() {
       return ((Session::haveRight("followup", ITILFollowup::ADDMYTICKET)
                && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                    || (isset($this->fields["users_id_recipient"])
