@@ -490,6 +490,19 @@ function update94to95() {
    $migration->addConfig(['devices_in_menu' => exportArrayToDB(['Item_DeviceSimcard'])]);
    /** /Item devices menu config */
 
+   if (!$DB->fieldExists("glpi_projects", "auto_percent_done")) {
+      $migration->addField("glpi_projects", "auto_percent_done", "bool", [
+            'after'  => "percent_done"
+         ]
+      );
+   }
+   if (!$DB->fieldExists("glpi_projecttasks", "auto_percent_done")) {
+      $migration->addField("glpi_projecttasks", "auto_percent_done", "bool", [
+            'after'  => "percent_done"
+         ]
+      );
+   }
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
