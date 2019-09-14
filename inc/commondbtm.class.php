@@ -5143,4 +5143,41 @@ class CommonDBTM extends CommonGLPI {
          }
       }
    }
+
+   /**
+    * Ensure the relation would not create a circular parent-child relation.
+    * @since 9.5.0
+    * @param int    $items_id The ID of the item to evaluate.
+    * @param int    $parents_id  The wanted parent of the specified item.
+    * @return bool True if there is a circular relation.
+    */
+   static function checkCircularRelation($items_id, $parents_id) {
+      global $DB;
+
+      $fk = static::getForeignKeyField();
+      if ($items_id == 0 || $parents_id == 0 || !$DB->fieldExists(static::getTable(), $fk)) {
+         return false;
+      }
+
+      $next_parent = $parents_id;
+      while ($next_parent > 0) {
+         if ($next_parent == $items_id) {
+            // This item is a parent higher up
+            return true;
+         }
+         $iterator = $DB->request([
+            'SELECT' => [$fk],
+            'FROM'   => static::getTable(),
+            'WHERE'  => ['id' => $next_parent]
+         ]);
+         if ($iterator->count()) {
+            $next_parent = $iterator->next()[$fk];
+         } else {
+            // Invalid parent
+            return false;
+         }
+      }
+      // No circular relations
+      return false;
+   }
 }

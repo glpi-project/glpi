@@ -2320,7 +2320,12 @@ class Html {
       $out .= ">";
       $out .= "<label class='label-checkbox' title=\"".$params['title']."\" for='".$params['id']."'>";
       $out .= " <span class='check'></span>";
-      $out .= " <span class='box'></span>";
+      $out .= " <span class='box'";
+      if (isset($params['onclick'])) {
+         $params['onclick'] = htmlspecialchars($params['onclick'], ENT_QUOTES);
+         $out .= " onclick='{$params['onclick']}'";
+      }
+      $out .= "></span>";
       $out .= "&nbsp;";
       $out .= "</label>";
       $out .= "</span>";

@@ -885,4 +885,33 @@ class CommonDBTM extends DbTestCase {
       $this->boolean($comp->getFromDB($cid));
       $this->string($comp->fields['date_creation'])->matches('/2019-03-04 1[12]:00:00/');
    }
+
+   public function testCircularRelation() {
+      $project = new \Project();
+      $project_id_1 = $project->add([
+         'name' => 'Project 1',
+         'auto_percent_done' => 1
+      ]);
+      $this->integer((int) $project_id_1)->isGreaterThan(0);
+      $project_id_2 = $project->add([
+         'name' => 'Project 2',
+         'auto_percent_done' => 1,
+         'projects_id' => $project_id_1
+      ]);
+      $this->integer((int) $project_id_2)->isGreaterThan(0);
+      $project_id_3 = $project->add([
+         'name' => 'Project 3',
+         'projects_id' => $project_id_2
+      ]);
+      $this->integer((int) $project_id_3)->isGreaterThan(0);
+      $project_id_4 = $project->add([
+         'name' => 'Project 4',
+      ]);
+      $this->integer((int) $project_id_4)->isGreaterThan(0);
+
+      // This should evaluate as a circular relation
+      $this->boolean(\Project::checkCircularRelation($project_id_1, $project_id_3))->isTrue();
+      // This should not evaluate as a circular relation
+      $this->boolean(\Project::checkCircularRelation($project_id_4, $project_id_3))->isFalse();
+   }
 }

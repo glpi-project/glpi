@@ -1495,17 +1495,20 @@ class Dropdown {
    static function showNumber($myname, $options = []) {
       global $CFG_GLPI;
 
-      $p['value']     = 0;
-      $p['rand']      = mt_rand();
-      $p['min']       = 0;
-      $p['max']       = 100;
-      $p['step']      = 1;
-      $p['toadd']     = [];
-      $p['unit']      = '';
-      $p['display']   = true;
-      $p['width']     = '';
-      $p['on_change'] = '';
-      $p['used']      = [];
+      $p = [
+         'value'           => 0,
+         'rand'            => mt_rand(),
+         'min'             => 0,
+         'max'             => 100,
+         'step'            => 1,
+         'toadd'           => [],
+         'unit'            => '',
+         'display'         => true,
+         'width'           => '',
+         'on_change'       => '',
+         'used'            => [],
+         'specific_tags'   => [],
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1536,7 +1539,8 @@ class Dropdown {
                      'min'                 => $p['min'],
                      'max'                 => $p['max'],
                      'step'                => $p['step'],
-                     'toadd'               => $p['toadd']];
+                     'toadd'               => $p['toadd'],
+                     'specific_tags'       => $p['specific_tags']];
 
       $out   = Html::jsAjaxDropdown($myname, $field_id,
                                     $CFG_GLPI['root_doc']."/ajax/getDropdownNumber.php",
