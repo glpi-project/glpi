@@ -39,7 +39,6 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\DatabaseFactory;
 use Glpi\Application\LocalConfigurationManager;
 use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -163,8 +162,6 @@ class InstallCommand extends AbstractConfigureCommand {
          $db_name     = $input->getOption('db-name');
          $db_user     = $input->getOption('db-user');
          $db_pass     = $input->getOption('db-password');
-
-      }
       } else {
          // Ask to confirm installation based on existing configuration.
          $run = $this->askForDbConfigConfirmation(
@@ -200,6 +197,7 @@ class InstallCommand extends AbstractConfigureCommand {
          $db_name = $DB->dbdefault;
          $db_user = $DB->dbuser;
          $db_pass = rawurldecode($DB->dbpassword); //rawurldecode as in DBmysql::connect()
+      }
 
       $dbh = DatabaseFactory::create();
 
