@@ -53,8 +53,6 @@ class GLPI {
     * @return void
     */
    public function initLogger() {
-      global $PHPLOGGER, $SQLLOGGER;
-
       $this->log_level = Logger::WARNING;
       if (defined('TU_USER')) {
          $this->log_level = Logger::DEBUG;
