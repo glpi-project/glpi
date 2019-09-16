@@ -563,7 +563,7 @@ class RuleTicket extends Rule {
       $actions['itilcategories_id']['type']                 = 'dropdown';
       $actions['itilcategories_id']['table']                = 'glpi_itilcategories';
 
-      $actions['_affect_itilcategorie_by_code']['name']           = __('Ticket category from CODE');
+      $actions['_affect_itilcategorie_by_code']['name']           = __('Ticket category from code');
       $actions['_affect_itilcategorie_by_code']['type']           = 'text';
       $actions['_affect_itilcategorie_by_code']['force_actions']  = ['regex_result'];
 

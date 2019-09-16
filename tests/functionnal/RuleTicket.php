@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use \DbTestCase;
+use ITILCategory;
 
 /* Test for inc/ruleticket.class.php */
 
@@ -334,5 +335,78 @@ class RuleTicket extends DbTestCase {
 
       // Restore assign self as default tech in session
       $_SESSION['glpiset_default_tech'] = $default_tech;
+   }
+
+   public function testITILCategoryAssignFromRule() {
+      $this->login();
+
+      // Create ITILCategory with code
+      $ITILCategoryForAdd = new \ITILCategory();
+      $ITILCategoryForAddId = $ITILCategoryForAdd->add($categoryinput = [
+         "name" => "ITIL Category",
+         "code" => "itil_category_for_add",
+      ]);
+
+      $this->integer((int)$ITILCategoryForAddId)->isGreaterThan(0);
+
+      // Create ITILCategory with code
+      $ITILCategoryForUpdate = new \ITILCategory();
+      $ITILCategoryForUpdateId = $ITILCategoryForUpdate->add($categoryinput = [
+         "name" => "ITIL Category",
+         "code" => "itil_category_for_update",
+      ]);
+
+      $this->integer((int)$ITILCategoryForUpdateId)->isGreaterThan(0);
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test to assign ITILCategory',
+         'match'        => 'OR',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD | \RuleTicket::ONUPDATE,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'content',
+         'condition' => \Rule::REGEX_MATCH,
+         'pattern'   => '/#(.*?)#/',
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      $act_id = $ruleaction->add($act_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'regex_result',
+         'field'       => '_affect_itilcategorie_by_code',
+         'value'       => '#0',
+      ]);
+      $this->checkInput($ruleaction, $act_id, $act_input);
+
+      // Check ticket that trigger rule on add
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'    => 'some ticket (on insert)',
+         'content' => 'some text #itil_category_for_add# some text'
+      ]);
+
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->integer((int)$ticket->getField('itilcategories_id'))->isEqualTo($ITILCategoryForAddId);
+
+      $this->boolean($ticket->update($ticket_input = [
+         'id'      => $tickets_id,
+         'name'    => 'some ticket (on update)',
+         'content' => 'some text #itil_category_for_update# some text'
+      ]))->isTrue();
+
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->integer((int)$ticket->getField('itilcategories_id'))->isEqualTo($ITILCategoryForUpdateId);
+
    }
 }
