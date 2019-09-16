@@ -312,7 +312,7 @@ class RuleTicket extends Rule {
                   break;
 
                case 'regex_result';
-                  if ($action->fields["field"] == "_affect_itilcategorie_by_code") {
+                  if ($action->fields["field"] == "_affect_itilcategory_by_code") {
                      if (isset($this->regex_results[0])) {
                         $regexvalue = RuleAction::getRegexResultById($action->fields["value"],
                                                                      $this->regex_results[0]);
@@ -321,9 +321,9 @@ class RuleTicket extends Rule {
                      }
 
                      if (!is_null($regexvalue)) {
-                        $target_itilcategorie = ITILCategory::getITILCategoryIDByCode($regexvalue);
-                        if ($target_itilcategorie != -1) {
-                           $output["itilcategories_id"] = $target_itilcategorie;
+                        $target_itilcategory = ITILCategory::getITILCategoryIDByCode($regexvalue);
+                        if ($target_itilcategory != -1) {
+                           $output["itilcategories_id"] = $target_itilcategory;
                         }
                      }
                   }
@@ -563,9 +563,9 @@ class RuleTicket extends Rule {
       $actions['itilcategories_id']['type']                 = 'dropdown';
       $actions['itilcategories_id']['table']                = 'glpi_itilcategories';
 
-      $actions['_affect_itilcategorie_by_code']['name']           = __('Ticket category from code');
-      $actions['_affect_itilcategorie_by_code']['type']           = 'text';
-      $actions['_affect_itilcategorie_by_code']['force_actions']  = ['regex_result'];
+      $actions['_affect_itilcategory_by_code']['name']           = __('Ticket category from code');
+      $actions['_affect_itilcategory_by_code']['type']           = 'text';
+      $actions['_affect_itilcategory_by_code']['force_actions']  = ['regex_result'];
 
       $actions['type']['name']                              = __('Type');
       $actions['type']['table']                             = 'glpi_tickets';

@@ -33,7 +33,6 @@
 namespace tests\units;
 
 use \DbTestCase;
-use ITILCategory;
 
 /* Test for inc/ruleticket.class.php */
 
@@ -384,7 +383,7 @@ class RuleTicket extends DbTestCase {
       $act_id = $ruleaction->add($act_input = [
          'rules_id'    => $ruletid,
          'action_type' => 'regex_result',
-         'field'       => '_affect_itilcategorie_by_code',
+         'field'       => '_affect_itilcategory_by_code',
          'value'       => '#0',
       ]);
       $this->checkInput($ruleaction, $act_id, $act_input);
