@@ -212,6 +212,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       $run = $this->askForDbConfigConfirmation(
          $input,
          $output,
+         $db_driver,
          $db_hostport,
          $db_name,
          $db_user
@@ -286,7 +287,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
     */
    protected function isDbAlreadyConfigured() {
 
-      return file_exists(GLPI_CONFIG_DIR . '/config_db.php');
+      return file_exists(GLPI_CONFIG_DIR . '/db.yaml');
    }
 
    /**
@@ -325,14 +326,19 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
    /**
     * Ask user to confirm DB configuration.
     *
-    * @param InputInterface $input
+    * @param InputInterface  $input
     * @param OutputInterface $output
+    * @param string          $db_driver
+    * @param string          $db_hostport
+    * @param string          $db_name
+    * @param string          $db_user
     *
     * @return boolean
     */
    protected function askForDbConfigConfirmation(
       InputInterface $input,
       OutputInterface $output,
+      $db_driver,
       $db_hostport,
       $db_name,
       $db_user) {

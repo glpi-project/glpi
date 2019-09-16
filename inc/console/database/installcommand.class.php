@@ -157,6 +157,7 @@ class InstallCommand extends AbstractConfigureCommand {
          } else if (self::SUCCESS !== $result) {
             return $result; // Fail with error code
          }
+         $db_driver   = $input->getOption('db-driver');
          $db_host     = $input->getOption('db-host');
          $db_port     = $input->getOption('db-port');
          $db_hostport = $db_host . (!empty($db_port) ? ':' . $db_port : '');
@@ -165,12 +166,19 @@ class InstallCommand extends AbstractConfigureCommand {
          $db_pass     = $input->getOption('db-password');
       } else {
          // Ask to confirm installation based on existing configuration.
+         $db_config = Yaml::parseFile(GLPI_CONFIG_DIR . '/db.yaml', Yaml::PARSE_CONSTANT);
+         $db_driver   = $db_config['driver'];
+         $db_hostport = $db_config['host'];
+         $db_name     = $db_config['dbname'];
+         $db_user     = $db_config['user'];
+         $db_pass     = $db_config['pass'];
          $run = $this->askForDbConfigConfirmation(
             $input,
             $output,
-            $DB->dbhost,
-            $DB->dbdefault,
-            $DB->dbuser
+            $db_driver,
+            $db_hostport,
+            $db_name,
+            $db_user
          );
          if (!$run) {
             $output->writeln(
@@ -179,28 +187,17 @@ class InstallCommand extends AbstractConfigureCommand {
             );
             return 0;
          }
-
-         // $DB->dbhost can be array when using round robin feature
-         $hostport = explode(':', is_array($DB->dbhost) ? $DB->dbhost[0] : $DB->dbhost);
-         $db_host = $hostport[0];
-         if (count($hostport) < 2) {
-            // Host only case
-            $db_port = null;
-         } else if (intval($hostport[1]) > 0) {
-            // Host:port case
-            $db_port = $hostport[1];
-         } else {
-            // :Socket case
-            // TODO Handle socket connection
-            throw new \UnexpectedValueException('DB connection through socket is not yet handled in installation command');
-         }
-
-         $db_name = $DB->dbdefault;
-         $db_user = $DB->dbuser;
-         $db_pass = rawurldecode($DB->dbpassword); //rawurldecode as in DBmysql::connect()
       }
 
-      $dbh = DatabaseFactory::create();
+      $dbh = DatabaseFactory::create(
+         [
+            'driver'   => $db_driver,
+            'host'     => $db_hostport,
+            'dbname'   => $db_name,
+            'user'     => $db_user,
+            'pass'     => $db_pass,
+         ]
+      );
 
       // Create database or select existing one
       $output->writeln(
@@ -313,6 +310,7 @@ class InstallCommand extends AbstractConfigureCommand {
    private function isInputContainingConfigValues(InputInterface $input, OutputInterface $output) {
 
       $config_options = [
+         'db-driver',
          'db-host',
          'db-port',
          'db-name',
