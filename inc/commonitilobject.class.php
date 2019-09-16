@@ -204,7 +204,17 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return boolean
     */
    function canAddFollowups() {
-      return Session::haveRight(static::$rightname, UPDATE) and Session::haveRight('followup', CREATE);
+      return ((Session::haveRight("followup", ITILFollowup::ADDMYTICKET)
+               && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+                   || (isset($this->fields["users_id_recipient"])
+                        && ($this->fields["users_id_recipient"] === Session::getLoginUserID()))))
+              || Session::haveRight('followup', ITILFollowup::ADDALLTICKET)
+              || (Session::haveRight('followup', ITILFollowup::ADDGROUPTICKET)
+                  && isset($_SESSION["glpigroups"])
+                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups']))
+              || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+              || (isset($_SESSION["glpigroups"])
+                  && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
    }
 
 

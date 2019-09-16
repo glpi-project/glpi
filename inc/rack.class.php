@@ -699,9 +699,14 @@ class Rack extends CommonDBTM {
             <div class='sep'></div>
          </span>
          <ul class='indexes indexes-x'></ul>
-         <ul class='indexes indexes-y'></ul>
-         <div class='racks_add' style='width: ".$grid_w."px'></div>
-         <div class='grid-stack grid-stack-$cols' style='width: ".$grid_w."px'>";
+         <ul class='indexes indexes-y'></ul>";
+
+      $dcroom = new DCRoom();
+      if ($dcroom->canCreate()) {
+         echo "<div class='racks_add' style='width: ".$grid_w."px'></div>";
+      }
+
+      echo "<div class='grid-stack grid-stack-$cols' style='width: ".$grid_w."px'>";
 
       foreach ($cells as $cell) {
          if ($rack->getFromDB($cell['id'])) {

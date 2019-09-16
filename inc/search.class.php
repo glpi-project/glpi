@@ -445,27 +445,27 @@ class Search {
             foreach ($criteria as $criterion) {
                // recursive call
                if (isset($criterion['criteria'])) {
-                  return $parse_criteria($criterion['criteria']);
-               }
-
-               // normal behavior
-               if (isset($criterion['field'])
-                   && !in_array($criterion['field'], $data['toview'])) {
-                  if ($criterion['field'] != 'all'
-                      && $criterion['field'] != 'view'
-                      && (!isset($criterion['meta'])
-                          || !$criterion['meta'])) {
-                     array_push($data['toview'], $criterion['field']);
-                  } else if ($criterion['field'] == 'all') {
-                     $data['search']['all_search'] = true;
-                  } else if ($criterion['field'] == 'view') {
-                     $data['search']['view_search'] = true;
+                  $parse_criteria($criterion['criteria']);
+               } else {
+                  // normal behavior
+                  if (isset($criterion['field'])
+                     && !in_array($criterion['field'], $data['toview'])) {
+                     if ($criterion['field'] != 'all'
+                        && $criterion['field'] != 'view'
+                        && (!isset($criterion['meta'])
+                           || !$criterion['meta'])) {
+                        array_push($data['toview'], $criterion['field']);
+                     } else if ($criterion['field'] == 'all') {
+                        $data['search']['all_search'] = true;
+                     } else if ($criterion['field'] == 'view') {
+                        $data['search']['view_search'] = true;
+                     }
                   }
-               }
 
-               if (isset($criterion['value'])
-                   && (strlen($criterion['value']) > 0)) {
-                  $data['search']['no_search'] = false;
+                  if (isset($criterion['value'])
+                     && (strlen($criterion['value']) > 0)) {
+                     $data['search']['no_search'] = false;
+                  }
                }
             }
          };

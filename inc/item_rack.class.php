@@ -40,7 +40,7 @@ class Item_Rack extends CommonDBRelation {
    static public $items_id_1 = 'racks_id';
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
-   static public $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
    static public $mustBeAttached_1      = false;
    static public $mustBeAttached_2      = false;
 
@@ -315,8 +315,12 @@ class Item_Rack extends CommonDBRelation {
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid-front"
                  data-gs-width="2"
-                 data-gs-height="'.($rack->fields['number_units'] + 1).'">
-               <div class="racks_add"></div>';
+                 data-gs-height="'.($rack->fields['number_units'] + 1).'">';
+
+      if ($link->canCreate()) {
+         echo '<div class="racks_add"></div>';
+      }
+
       foreach ($data[Rack::FRONT] as $current_item) {
          echo self::getCell($current_item);
       }
@@ -340,8 +344,12 @@ class Item_Rack extends CommonDBRelation {
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid2-rear"
                  data-gs-width="2"
-                 data-gs-height="'.($rack->fields['number_units'] + 1).'">
-               <div class="racks_add"></div>';
+                 data-gs-height="'.($rack->fields['number_units'] + 1).'">';
+
+      if ($link->canCreate()) {
+         echo '<div class="racks_add"></div>';
+      }
+
       foreach ($data[Rack::REAR] as $current_item) {
          echo self::getCell($current_item);
       }
