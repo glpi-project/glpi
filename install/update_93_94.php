@@ -215,7 +215,6 @@ function update93to94() {
             111
          ]
       ]
-      $delete
    );
    /** /Drop old embed ocs search options */
 
