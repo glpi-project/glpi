@@ -287,7 +287,8 @@ $default_prefs = [
    'purge_all' => '0',
    'purge_user_auth_changes' => '0',
    'purge_plugins' => '0',
-   'display_login_source' => '1'
+   'display_login_source' => '1',
+   'devices_in_menu' => exportArrayToDB(['Item_DeviceSimcard'])
 ];
 
 foreach ($default_prefs as $name => $value) {
@@ -608,7 +609,27 @@ $tables['glpi_crontasks'] = [
         'mode'          => 3,
         'lastrun'       => null,
         'logs_lifetime' => 30
-     ]
+    ], [
+        'id'            => 34,
+        'itemtype'      => 'Ticket',
+        'name'          => 'purgeticket',
+        'frequency'     => 43200,
+        'param'         => null,
+        'state'         => 0,
+        'mode'          => 1,
+        'lastrun'       => null,
+        'logs_lifetime' => 30
+    ], [
+        'id'            => 35,
+        'itemtype'      => 'Document',
+        'name'          => 'cleanorphans',
+        'frequency'     => 43200,
+        'param'         => null,
+        'state'         => 0,
+        'mode'          => 1,
+        'lastrun'       => null,
+        'logs_lifetime' => 30
+    ]
 ];
 
 $tables['glpi_devicememorytypes'] = [

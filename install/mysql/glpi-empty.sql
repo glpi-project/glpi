@@ -1170,8 +1170,6 @@ CREATE TABLE `glpi_configs` (
   UNIQUE KEY `unicity` (`context`,`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_configs` VALUES ('210','core','devices_in_menu','["Item_DeviceSimcard"]');
-
 ### Dump table glpi_consumableitems
 
 DROP TABLE IF EXISTS `glpi_consumableitems`;
@@ -1474,9 +1472,6 @@ CREATE TABLE `glpi_crontasks` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
-
-INSERT INTO `glpi_crontasks` VALUES ('34','Ticket','purgeticket','43200',NULL,'0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('35','Document','cleanorphans','43200',NULL,'0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 
