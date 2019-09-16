@@ -340,7 +340,6 @@ var insertImageInTinyMCE = function(editor, image) {
  */
 if (typeof tinyMCE != 'undefined') {
    tinyMCE.PluginManager.add('glpi_upload_doc', function(editor) {
-      /* global stopEvent */
       editor.on('PastePreProcess', function(event) {
          //Check if data is an image
          if (isImageFromPaste(event.content)) {
