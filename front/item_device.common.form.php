@@ -54,10 +54,21 @@ if (!$item_device->canView()) {
 if (isset($_POST["id"])) {
    $_GET["id"] = $_POST["id"];
 } else if (!isset($_GET["id"])) {
-   $_GET["id"] = -1;
+   $_GET["id"] = "";
 }
 
-if (isset($_POST["purge"])) {
+if (isset($_POST["add"])) {
+   $item_device->check(-1, CREATE, $_POST);
+   if ($newID = $item_device->add($_POST)) {
+      Event::log($newID, get_class($item_device), 4, "setup",
+                 sprintf(__('%1$s adds an item'), $_SESSION["glpiname"]));
+
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($item_device->getLinkURL());
+      }
+   }
+   Html::back();
+} else if (isset($_POST["purge"])) {
    $item_device->check($_POST["id"], PURGE);
    $item_device->delete($_POST, 1);
 
@@ -78,7 +89,12 @@ if (isset($_POST["purge"])) {
    Html::back();
 
 } else {
-   Html::header($item_device->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $item_device->getDeviceType());
+
+   if (in_array($item_device->getType(), $CFG_GLPI['devices_in_menu'])) {
+      Html::header($item_device->getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", strtolower($item_device->getType()));
+   } else {
+      Html::header($item_device->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $item_device->getDeviceType());
+   }
 
    if (!isset($options)) {
       $options = [];

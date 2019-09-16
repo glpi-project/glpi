@@ -191,11 +191,10 @@ class Planning extends CommonGLPI {
    /**
     * Check already planned user for a period
     *
-    * @param $users_id        user id
-    * @param $begin           begin date
-    * @param $end             end date
-    * @param $except    array of items which not be into account array
-    *                         ('Reminder'=>array(1,2,id_of_items))
+    * @param integer $users_id user id
+    * @param string  $begin    begin date
+    * @param string  $end      end date
+    * @param array   $except   items which not be into account ['Reminder' => [1, 2, id_of_items]]
    **/
    static function checkAlreadyPlanned($users_id, $begin, $end, $except = []) {
       global $CFG_GLPI;
@@ -204,13 +203,15 @@ class Planning extends CommonGLPI {
       $message = '';
 
       foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-         $data = call_user_func([$itemtype, 'populatePlanning'],
-                                ['who'           => $users_id,
-                                      'who_group'     => 0,
-                                      'whogroup'      => 0,
-                                      'begin'         => $begin,
-                                      'end'           => $end,
-                                      'check_planned' => true]);
+         $item = new $itemtype;
+         $data = $item->populatePlanning([
+             'who'           => $users_id,
+            'who_group'     => 0,
+            'whogroup'      => 0,
+            'begin'         => $begin,
+            'end'           => $end,
+            'check_planned' => true
+         ]);
          if (isPluginItemType($itemtype)) {
             if (isset($data['items'])) {
                $data = $data['items'];
@@ -221,20 +222,28 @@ class Planning extends CommonGLPI {
 
          if (count($data)
              && method_exists($itemtype, 'getAlreadyPlannedInformation')) {
-            foreach ($data as $key => $val) {
+            foreach ($data as $val) {
                if (!isset($except[$itemtype])
                    || (is_array($except[$itemtype]) && !in_array($val['id'], $except[$itemtype]))) {
 
                   $planned  = true;
-                  $message .= '- '.call_user_func([$itemtype, 'getAlreadyPlannedInformation'],
-                                                  $val).'<br>';
+                  $message .= '- ' . $item->getAlreadyPlannedInformation($val);
+                  $message .= '<br/>';
                }
             }
          }
       }
       if ($planned) {
-         Session::addMessageAfterRedirect(__('The user is busy at the selected timeframe.').
-                                          '<br>'.$message, false, WARNING);
+         $user = new User();
+         $user->getFromDB($users_id);
+         Session::addMessageAfterRedirect(
+            sprintf(
+               __('The user %1$s is busy at the selected timeframe.'),
+               '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>'
+            ).'<br/>'.$message,
+            false,
+            WARNING
+         );
       }
       return $planned;
    }
@@ -1637,9 +1646,13 @@ JAVASCRIPT;
             }
 
             if (!$abort) {
-               $update = ['id'   => $params['items_id'],
-                           'plan' => ['begin' => $params['start'],
-                                           'end'   => $params['end']]];
+               $update = [
+                  'id'   => $params['items_id'],
+                  'plan' => [
+                     'begin' => $params['start'],
+                     'end'   => $params['end']
+                  ]
+               ];
 
                if (isset($item->fields['users_id_tech'])) {
                   $update['users_id_tech'] = $item->fields['users_id_tech'];

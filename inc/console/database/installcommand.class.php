@@ -39,10 +39,11 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\DatabaseFactory;
 use Glpi\Application\LocalConfigurationManager;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Yaml\Yaml;
 use Toolbox;
 
@@ -109,18 +110,46 @@ class InstallCommand extends AbstractConfigureCommand {
 
    protected function interact(InputInterface $input, OutputInterface $output) {
 
-      if ($this->shouldSetDBConfig($input, $output)) {
+      if ($this->isDbAlreadyConfigured()
+          && $this->isInputContainingConfigValues($input, $output)
+          && !$input->getOption('reconfigure')) {
+         /** @var Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+         $question_helper = $this->getHelper('question');
+         $reconfigure = $question_helper->ask(
+            $input,
+            $output,
+            new ConfirmationQuestion(
+               __('Command input contains configuration options that may override existing configuration.')
+                  . PHP_EOL
+                  . __('Do you want to reconfigure database ?') . ' [Yes/no]',
+               true
+            )
+         );
+         $input->setOption('reconfigure', $reconfigure);
+      }
+
+      if (!$this->isDbAlreadyConfigured() || $input->getOption('reconfigure')) {
          parent::interact($input, $output);
       }
    }
 
    protected function execute(InputInterface $input, OutputInterface $output) {
 
-      $db_name          = $input->getOption('db-name');
       $default_language = $input->getOption('default-language');
       $force            = $input->getOption('force');
 
-      if ($this->shouldSetDBConfig($input, $output)) {
+      if ($this->isDbAlreadyConfigured()
+          && $this->isInputContainingConfigValues($input, $output)
+          && !$input->getOption('reconfigure')) {
+         // Prevent overriding of existing DB when input contains configuration values and
+         // --reconfigure option is not used.
+         $output->writeln(
+            '<error>' . __('Database configuration already exists. Use --reconfigure option to override existing configuration.') . '</error>'
+         );
+         return self::ERROR_DB_CONFIG_ALREADY_SET;
+      }
+
+      if (!$this->isDbAlreadyConfigured() || $input->getOption('reconfigure')) {
          $result = $this->configureDatabase($input, $output);
 
          if (self::ABORTED_BY_USER === $result) {
@@ -128,7 +157,49 @@ class InstallCommand extends AbstractConfigureCommand {
          } else if (self::SUCCESS !== $result) {
             return $result; // Fail with error code
          }
+         $db_host     = $input->getOption('db-host');
+         $db_port     = $input->getOption('db-port');
+         $db_hostport = $db_host . (!empty($db_port) ? ':' . $db_port : '');
+         $db_name     = $input->getOption('db-name');
+         $db_user     = $input->getOption('db-user');
+         $db_pass     = $input->getOption('db-password');
+
       }
+      } else {
+         // Ask to confirm installation based on existing configuration.
+         $run = $this->askForDbConfigConfirmation(
+            $input,
+            $output,
+            $DB->dbhost,
+            $DB->dbdefault,
+            $DB->dbuser
+         );
+         if (!$run) {
+            $output->writeln(
+               '<comment>' . __('Installation aborted.') . '</comment>',
+               OutputInterface::VERBOSITY_VERBOSE
+            );
+            return 0;
+         }
+
+         // $DB->dbhost can be array when using round robin feature
+         $hostport = explode(':', is_array($DB->dbhost) ? $DB->dbhost[0] : $DB->dbhost);
+         $db_host = $hostport[0];
+         if (count($hostport) < 2) {
+            // Host only case
+            $db_port = null;
+         } else if (intval($hostport[1]) > 0) {
+            // Host:port case
+            $db_port = $hostport[1];
+         } else {
+            // :Socket case
+            // TODO Handle socket connection
+            throw new \UnexpectedValueException('DB connection through socket is not yet handled in installation command');
+         }
+
+         $db_name = $DB->dbdefault;
+         $db_user = $DB->dbuser;
+         $db_pass = rawurldecode($DB->dbpassword); //rawurldecode as in DBmysql::connect()
 
       $dbh = DatabaseFactory::create();
 
@@ -230,5 +301,34 @@ class InstallCommand extends AbstractConfigureCommand {
    private function shouldSetDBConfig(InputInterface $input, OutputInterface $output) {
 
       return $input->getOption('reconfigure') || !file_exists(GLPI_CONFIG_DIR . '/config_db.php');
+   }
+
+   /**
+    * Check if input contains DB config options.
+    *
+    * @param InputInterface $input
+    * @param OutputInterface $output
+    *
+    * @return boolean
+    */
+   private function isInputContainingConfigValues(InputInterface $input, OutputInterface $output) {
+
+      $config_options = [
+         'db-host',
+         'db-port',
+         'db-name',
+         'db-user',
+         'db-password',
+      ];
+      foreach ($config_options as $option) {
+         $default_value = $this->getDefinition()->getOption($option)->getDefault();
+         $input_value   = $input->getOption($option);
+
+         if ($default_value !== $input_value) {
+            return true;
+         }
+      }
+
+      return false;
    }
 }

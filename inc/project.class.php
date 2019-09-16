@@ -237,6 +237,21 @@ class Project extends CommonDBTM {
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
+      if (in_array('auto_percent_done', $this->updates) && $this->input['auto_percent_done'] == 1) {
+         // Auto-calculate was toggled. Force recalculation of this and parents
+         self::recalculatePercentDone($this->getID());
+      } else {
+         if ($this->fields['projects_id'] > 0) {
+            // Update parent percent_done
+            self::recalculatePercentDone($this->fields['projects_id']);
+         }
+      }
+
+      if (isset($this->input['_old_projects_id'])) {
+         // Recalculate previous parent percent done
+         self::recalculatePercentDone($this->input['_old_projects_id']);
+      }
+
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
          // Read again project to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
@@ -273,11 +288,35 @@ class Project extends CommonDBTM {
          //Add KB links
          KnowbaseItem_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
       }
+
+      // Update parent percent_done
+      if (isset($this->fields['projects_id']) && $this->fields['projects_id'] > 0) {
+         self::recalculatePercentDone($this->fields['projects_id']);
+      }
+
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
          // Clean reload of the project
          $this->getFromDB($this->fields['id']);
 
          NotificationEvent::raiseEvent('new', $this);
+      }
+   }
+
+
+   function post_deleteItem() {
+      $project = new Project();
+      // Update parent percent_done
+      if ($this->fields['projects_id'] > 0) {
+         self::recalculatePercentDone($this->fields['projects_id']);
+      }
+   }
+
+
+   function post_restoreItem() {
+      $project = new Project();
+      // Update parent percent_done
+      if ($this->fields['projects_id'] > 0) {
+         self::recalculatePercentDone($this->fields['projects_id']);
       }
    }
 
@@ -1260,6 +1299,20 @@ class Project extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
+      if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
+         unset($input['percent_done']);
+      }
+      if (isset($input['projects_id']) && $input['projects_id'] > 0) {
+         if (self::checkCircularRelation($input['id'], $input['projects_id'])) {
+            Session::addMessageAfterRedirect(__('Circular relation found. Parent not updated.'), false,
+                                          ERROR);
+            unset($input['projects_id']);
+         }
+      }
+      if ($this->fields['projects_id'] > 0 && isset($input['projects_id'])
+          && ($input['projects_id'] != $this->fields['projects_id'])) {
+         $input['_old_projects_id'] = $this->fields['projects_id'];
+      }
       return self::checkPlanAndRealDates($input);
    }
 
@@ -1413,12 +1466,30 @@ class Project extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Percent done')."</td>";
       echo "<td>";
-      Dropdown::showNumber("percent_done", ['value' => $this->fields['percent_done'],
-                                                 'min'   => 0,
-                                                 'max'   => 100,
-                                                 'step'  => 5,
-                                                 'unit'  => '%']);
-      echo "</td>";
+      $percent_done_params = [
+         'value' => $this->fields['percent_done'],
+         'min'   => 0,
+         'max'   => 100,
+         'step'  => 5,
+         'unit'  => '%'
+      ];
+      if ($this->fields['auto_percent_done']) {
+         $percent_done_params['specific_tags'] = ['disabled' => 'disabled'];
+      }
+      Dropdown::showNumber("percent_done", $percent_done_params);
+      $auto_percent_done_params = [
+         'type'      => 'checkbox',
+         'name'      => 'auto_percent_done',
+         'title'     => __('Automatically calculate'),
+         'onclick'   => "$(\"select[name='percent_done']\").prop('disabled', !$(\"input[name='auto_percent_done']\").prop('checked'));"
+      ];
+      if ($this->fields['auto_percent_done']) {
+         $auto_percent_done_params['checked'] = 'checked';
+      }
+      Html::showCheckbox($auto_percent_done_params);
+      echo "<span class='very_small_space'>";
+      Html::showToolTip(__('When automatic computation is active, percentage is computed based on the average of all child project and task percent done.'));
+      echo "</span></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1888,5 +1959,61 @@ class Project extends CommonDBTM {
    **/
    function showDebug() {
       NotificationEvent::debugEvent($this);
+   }
+
+   /**
+    * Update the specified project's percent_done based on the percent_done of subprojects and tasks.
+    * This function indirectly updates the percent done for all parents if they are set to automatically update.
+    * @since 9.5.0
+    * @return boolean False if the specified project is not set to automatically update the percent done.
+    */
+   public static function recalculatePercentDone($ID) {
+      global $DB;
+
+      $project = new self();
+      $project->getFromDB($ID);
+      if (!$project->fields['auto_percent_done']) {
+         return false;
+      }
+
+      $query1 = new \QuerySubQuery([
+         'SELECT' => [
+            'percent_done'
+         ],
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'projects_id'  => $ID,
+            'is_deleted'   => 0
+         ]
+      ]);
+      $query2 = new \QuerySubQuery([
+         'SELECT' => [
+            'percent_done'
+         ],
+         'FROM'   => ProjectTask::getTable(),
+         'WHERE'  => [
+            'projects_id' => $ID
+         ]
+      ]);
+      $union = new QueryUnion([$query1, $query2], false, 'all_items');
+      $iterator = $DB->request([
+         'SELECT' => [
+            new QueryExpression('CAST(AVG('.$DB->quoteName('percent_done').') AS INT) AS percent_done')
+         ],
+         'FROM'   => $union
+      ]);
+
+      if ($iterator->count()) {
+         $avg = $iterator->next()['percent_done'];
+         $percent_done = is_null($avg) ? 0 : $avg;
+      } else {
+         $percent_done = 0;
+      }
+
+      $project->update([
+         'id'           => $ID,
+         'percent_done' => $percent_done
+      ]);
+      return true;
    }
 }

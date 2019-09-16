@@ -1377,12 +1377,17 @@ class Html {
     * @return string
    **/
    static function getMenuInfos() {
+      global $CFG_GLPI;
 
       $menu['assets']['title']       = __('Assets');
       $menu['assets']['types']       = ['Computer', 'Monitor', 'Software',
                                              'NetworkEquipment', 'Peripheral', 'Printer',
                                              'CartridgeItem', 'ConsumableItem', 'Phone',
                                              'Rack', 'Enclosure', 'PDU'];
+
+      foreach ($CFG_GLPI['devices_in_menu'] as $dmenu) {
+         $menu['assets']['types'][] = $dmenu;
+      }
 
       $menu['helpdesk']['title']     = __('Assistance');
       $menu['helpdesk']['types']     = ['Ticket', 'Problem', 'Change',
@@ -1462,9 +1467,9 @@ class Html {
             $menu += array_splice($menu, array_search('config', $categories, true), 1);
          }
 
-         foreach ($menu as $category => $entry) {
-            if (isset($entry['types']) && count($entry['types'])) {
-               foreach ($entry['types'] as $type) {
+         foreach ($menu as $category => $entries) {
+            if (isset($entries['types']) && count($entries['types'])) {
+               foreach ($entries['types'] as $type) {
                   if ($data = $type::getMenuContent()) {
                      // Multi menu entries management
                      if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
@@ -1496,8 +1501,14 @@ class Html {
             }
          }
 
-         $allassets = ['Computer', 'Monitor', 'Peripheral', 'NetworkEquipment', 'Phone',
-                            'Printer'];
+         $allassets = [
+            'Computer',
+            'Monitor',
+            'Peripheral',
+            'NetworkEquipment',
+            'Phone',
+            'Printer'
+         ];
 
          $page = '/front/allassets.php';
          if ($router != null) {
@@ -2313,7 +2324,12 @@ class Html {
       $out .= ">";
       $out .= "<label class='label-checkbox' title=\"".$params['title']."\" for='".$params['id']."'>";
       $out .= " <span class='check'></span>";
-      $out .= " <span class='box'></span>";
+      $out .= " <span class='box'";
+      if (isset($params['onclick'])) {
+         $params['onclick'] = htmlspecialchars($params['onclick'], ENT_QUOTES);
+         $out .= " onclick='{$params['onclick']}'";
+      }
+      $out .= "></span>";
       $out .= "&nbsp;";
       $out .= "</label>";
       $out .= "</span>";

@@ -53,6 +53,7 @@ The present file will list all changes made to the project; according to the
 - Add datacenter items to global search
 - Project task search options for Projects
 - Automatic action to purge closed tickets
+- Ability to automatically calculate project's percent done
 
 ### Changed
 

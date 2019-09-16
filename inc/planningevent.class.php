@@ -30,16 +30,36 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+trait PlanningEvent {
 
-echo Html::css("public/lib/prismjs.css");
-echo Html::script("public/lib/prismjs.js");
+   /**
+    * Display a Planning Item
+    *
+    * @param array $val the item to display
+    *
+    * @return string
+   **/
+   public function getAlreadyPlannedInformation(array $val) {
+      $itemtype = $this->getType();
+      if ($item = getItemForItemtype($itemtype)) {
+         $objectitemtype = (method_exists($item, 'getItilObjectItemType') ? $item->getItilObjectItemType() : $itemtype);
 
-$infos = Telemetry::getTelemetryInfos();
-echo "<p>" . __("We only collect the following data : plugins usage, performance and responsiveness statistics about user interface features, memory, and hardware configuration.") . "</p>";
-echo "<pre><code class='language-json'>";
-echo json_encode($infos, JSON_PRETTY_PRINT);
-echo "</code></pre>";
+         //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
+         $out  = sprintf(__('%1$s: from %2$s to %3$s:'), $item->getTypeName(1),
+                         Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
+         $out .= "<br/><a href='".$objectitemtype::getFormURLWithID($val[getForeignKeyFieldForItemType($objectitemtype)]);
+         if ($item instanceof CommonITILTask) {
+            $out .= "&amp;forcetab=".$itemtype."$1";
+         }
+         $out .= "'>";
+         $out .= Html::resume_text($val["name"], 80).'</a>';
+
+         return $out;
+      }
+   }
+
+}

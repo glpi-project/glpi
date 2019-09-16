@@ -125,7 +125,13 @@ var libsConfig = {
     plugins: [
         new CleanWebpackPlugin(), // Clean lib dir content
         new MiniCssExtractPlugin({ filename: '[name].css' }), // Extract styles into CSS files
-    ]
+    ],
+    resolve: {
+        // Use only main file in requirement resolution as we do not yet handle modules correctly
+        mainFields: [
+            'main',
+        ],
+    },
 };
 
 var libs = {
@@ -169,7 +175,7 @@ for (let packageName in libs) {
         let packageEntry = libPackage[e];
 
         let context = 'node_modules/' + packageName;
-        if (packageEntry.hasOwnProperty('context')) {
+        if (Object.prototype.hasOwnProperty.call(packageEntry, 'context')) {
             context += '/' + packageEntry.context;
         }
 
@@ -180,7 +186,7 @@ for (let packageName in libs) {
             toType:  'dir',
         };
 
-        if (packageEntry.hasOwnProperty('ignore')) {
+        if (Object.prototype.hasOwnProperty.call(packageEntry, 'ignore')) {
             copyParams.ignore = packageEntry.ignore;
         }
 

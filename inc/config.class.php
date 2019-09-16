@@ -239,6 +239,12 @@ class Config extends CommonDBTM {
          }
       }
 
+      if (isset($input['_update_devices_in_menu'])) {
+         $input['devices_in_menu'] = exportArrayToDB(
+            (isset($input['devices_in_menu']) ? $input['devices_in_menu'] : [])
+         );
+      }
+
       // lock mechanism update
       if (isset( $input['lock_use_lock_item'])) {
           $input['lock_item_list'] = exportArrayToDB((isset($input['lock_item_list'])
@@ -545,6 +551,34 @@ class Config extends CommonDBTM {
                                       $CFG_GLPI["printers_management_restrict"],
                                       $rand);
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='devices_in_menu$rand'>".__('Devices displayed in menu')."</label></td>";
+      echo "<td>";
+
+      $dd_params = [
+         'name'      => 'devices_in_menu',
+         'values'    => $CFG_GLPI['devices_in_menu'],
+         'display'   => true,
+         'rand'      => $rand,
+         'multiple'  => true,
+         'size'      => 3
+      ];
+
+      $item_devices_types = [];
+      foreach ($CFG_GLPI['itemdevices'] as $key => $itemtype) {
+         if ($item = getItemForItemtype($itemtype)) {
+            $item_devices_types[$itemtype] = $item->getTypeName();
+         } else {
+            unset($CFG_GLPI['itemdevices'][$key]);
+         }
+      }
+
+      Dropdown::showFromArray($dd_params['name'], $item_devices_types, $dd_params);
+
+      echo "<input type='hidden' name='_update_devices_in_menu' value='1'>";
+      echo "</td>";
+      echo "</tr>\n";
 
       echo "</table>";
 
@@ -2882,6 +2916,10 @@ class Config extends CommonDBTM {
 
       if (isset($CFG_GLPI['priority_matrix'])) {
          $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix']);
+      }
+
+      if (isset($CFG_GLPI['devices_in_menu'])) {
+         $CFG_GLPI['devices_in_menu'] = importArrayFromDB($CFG_GLPI['devices_in_menu']);
       }
 
       if (isset($CFG_GLPI['lock_item_list'])) {

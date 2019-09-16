@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask  extends CommonDBTM {
+   use PlanningEvent;
 
    // From CommonDBTM
    public $auto_message_on_action = false;
@@ -49,7 +50,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
 
-   function getItilObjectItemType() {
+   public function getItilObjectItemType() {
       return str_replace('Task', '', $this->getType());
    }
 
@@ -1146,31 +1147,6 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       }
       return $interv;
-   }
-
-
-   /**
-    * Display a Planning Item
-    *
-    * @param string $itemtype  itemtype
-    * @param array  $val       the item to display
-    *
-    * @return string Output
-   **/
-   static function genericGetAlreadyPlannedInformation($itemtype, array $val) {
-
-      if ($item = getItemForItemtype($itemtype)) {
-         $objectitemtype = $item->getItilObjectItemType();
-
-         //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
-         $out  = sprintf(__('%1$s: from %2$s to %3$s:'), $item->getTypeName(1),
-                         Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
-         $out .= "<br><a href='".$objectitemtype::getFormURLWithID($val[getForeignKeyFieldForItemType($objectitemtype)])
-                       ."&amp;forcetab=".$itemtype."$1'>";
-         $out .= Html::resume_text($val["name"], 80).'</a>';
-
-         return $out;
-      }
    }
 
 

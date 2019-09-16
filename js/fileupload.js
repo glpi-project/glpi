@@ -28,6 +28,9 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
+/* global getExtIcon, getSize, isImage, stopEvent, Uint8Array */
+
 function uploadFile(file, editor, input_name) {
    var returnTag = false;
 
@@ -51,7 +54,6 @@ function uploadFile(file, editor, input_name) {
                returnTag = '';
                var tag = getFileTag(element);
                //if is an image add tag
-               /* global isImage */
                if (isImage(file)) {
                   returnTag = tag.tag;
                }
@@ -131,7 +133,6 @@ var displayUploadedFile = function(file, tag, editor, input_name) {
    if (filecontainer.length) {
       var ext = file.name.split('.').pop();
 
-      /* global getExtIcon getSize */
       var p = $('<p/>')
          .attr('id',file.id)
          .html(
@@ -271,7 +272,6 @@ var dataURItoBlob = function(dataURI) {
    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
    // write the bytes of the string to a typed array
-   /* global Uint8Array */
    var ia = new Uint8Array(byteString.length);
    for (var i = 0; i < byteString.length; i++) {
       ia[i] = byteString.charCodeAt(i);
@@ -344,7 +344,6 @@ if (typeof tinyMCE != 'undefined') {
       editor.on('PastePreProcess', function(event) {
          //Check if data is an image
          if (isImageFromPaste(event.content)) {
-            /* global stopEvent */
             stopEvent(event);
 
             //extract base64 data
@@ -358,7 +357,6 @@ if (typeof tinyMCE != 'undefined') {
             }
 
          } else if (isImageBlobFromPaste(event.content)) {
-            /* global stopEvent */
             stopEvent(event);
 
             var src = extractSrcFromImgTag(event.content);

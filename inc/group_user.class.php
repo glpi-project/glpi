@@ -392,6 +392,7 @@ class Group_User extends CommonDBRelation{
       $iterator = $DB->request([
          'SELECT'       => [
             'glpi_users.id',
+            'glpi_groups_users.id AS linkid',
             'glpi_groups_users.groups_id',
             'glpi_groups_users.is_dynamic AS is_dynamic',
             'glpi_groups_users.is_manager AS is_manager',

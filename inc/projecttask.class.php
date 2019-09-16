@@ -41,6 +41,7 @@ if (!defined('GLPI_ROOT')) {
  * @since 0.85
 **/
 class ProjectTask extends CommonDBChild {
+   use PlanningEvent;
 
    // From CommonDBTM
    public $dohistory = true;
@@ -209,7 +210,73 @@ class ProjectTask extends CommonDBChild {
 
 
    function post_updateItem($history = 1) {
-      global $CFG_GLPI;
+      global $DB, $CFG_GLPI;
+
+      if (in_array('plan_start_date', $this->updates) || in_array('plan_end_date', $this->updates)) {
+         //dates has changed, check for planning conflicts on attached team
+         $team = ProjectTaskTeam::getTeamFor($this->fields['id']);
+         $users = [];
+         foreach ($team as $type => $actors) {
+            switch ($type) {
+               case User::getType():
+                  foreach ($actors as $actor) {
+                     $users[$actor['items_id']] = $actor['items_id'];
+                  }
+                  break;
+               case Group::getType():
+                  foreach ($actors as $actor) {
+                     $group_iterator = $DB->request([
+                        'SELECT' => 'users_id',
+                        'FROM'   => Group_User::getTable(),
+                        'WHERE'  => ['groups_id' => $actor['items_id']]
+                     ]);
+                     while ($row = $group_iterator->next()) {
+                        $users[$row['users_id']] = $row['users_id'];
+                     }
+                  }
+                  break;
+               case Supplier::getType():
+               case Contact::getType():
+                  //only Users can be checked for planning conflicts
+                  break;
+               default:
+                  if (count($actors)) {
+                     throw new \RuntimeException($type . " is not (yet?) handled.");
+                  }
+            }
+         }
+
+         foreach ($users as $user) {
+            Planning::checkAlreadyPlanned(
+               $user,
+               $this->fields['plan_start_date'],
+               $this->fields['plan_end_date']
+            );
+         }
+
+      }
+
+      if (in_array('auto_percent_done', $this->updates) && $this->input['auto_percent_done'] == 1) {
+         // Auto-calculate was toggled. Force recalculation of this and parents
+         self::recalculatePercentDone($this->getID());
+      } else {
+         // Update parent percent_done
+         if ($this->fields['projecttasks_id'] > 0) {
+            self::recalculatePercentDone($this->fields['projecttasks_id']);
+         }
+         if ($this->fields['projects_id'] > 0) {
+            Project::recalculatePercentDone($this->fields['projects_id']);
+         }
+      }
+
+      if (isset($this->input['_old_projects_id'])) {
+         // Recalculate previous parent project percent done
+         Project::recalculatePercentDone($this->input['_old_projects_id']);
+      }
+      if (isset($this->input['_old_projecttasks_id'])) {
+         // Recalculate previous parent task percent done
+         self::recalculatePercentDone($this->input['_old_projecttasks_id']);
+      }
 
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
          // Read again project to be sure that all data are up to date
@@ -295,6 +362,9 @@ class ProjectTask extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
+      if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
+         unset($input['percent_done']);
+      }
       if (isset($input["plan"])) {
          $input["plan_start_date"] = $input['plan']["begin"];
          $input["plan_end_date"]   = $input['plan']["end"];
@@ -305,11 +375,37 @@ class ProjectTask extends CommonDBChild {
          $input['plan_end_date'] = $input['plan_start_date'];
          $input['real_end_date'] = $input['real_start_date'];
       }
+
+      if (isset($input['projecttasks_id']) && $input['projecttasks_id'] > 0) {
+         if (self::checkCircularRelation($input['id'], $input['projecttasks_id'])) {
+            Session::addMessageAfterRedirect(__('Circular relation found. Parent not updated.'), false,
+                                          ERROR);
+            unset($input['projecttasks_id']);
+         }
+      }
+      if ($this->fields['projects_id'] > 0 && isset($input['projects_id'])
+         && ($input['projects_id'] != $this->fields['projects_id'])) {
+         $input['_old_projects_id'] = $this->fields['projects_id'];
+      }
+      if ($this->fields['projecttasks_id'] > 0 && isset($input['projecttasks_id'])
+         && ($input['projecttasks_id'] != $this->fields['projecttasks_id'])) {
+         $input['_old_projecttasks_id'] = $this->fields['projecttasks_id'];
+      }
+
       return Project::checkPlanAndRealDates($input);
    }
 
 
    function prepareInputForAdd($input) {
+
+      if (!isset($input['projects_id'])) {
+         Session::addMessageAfterRedirect(
+            __('A linked project is mandatory'),
+            false,
+            ERROR
+         );
+         return false;
+      }
 
       if (!isset($input['users_id'])) {
          $input['users_id'] = Session::getLoginUserID();
@@ -540,12 +636,31 @@ class ProjectTask extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Percent done')."</td>";
       echo "<td>";
-      Dropdown::showNumber("percent_done", ['value' => $this->fields['percent_done'],
-                                            'rand'  => $rand_percent,
-                                            'min'   => 0,
-                                            'max'   => 100,
-                                            'step'  => 5,
-                                            'unit'  => '%']);
+      $percent_done_params = [
+         'value' => $this->fields['percent_done'],
+         'rand'  => $rand_percent,
+         'min'   => 0,
+         'max'   => 100,
+         'step'  => 5,
+         'unit'  => '%'
+      ];
+      if ($this->fields['auto_percent_done']) {
+         $percent_done_params['specific_tags'] = ['disabled' => 'disabled'];
+      }
+      Dropdown::showNumber("percent_done", $percent_done_params);
+      $auto_percent_done_params = [
+         'type'      => 'checkbox',
+         'name'      => 'auto_percent_done',
+         'title'     => __('Automatically calculate'),
+         'onclick'   => "$(\"select[name='percent_done']\").prop('disabled', !$(\"input[name='auto_percent_done']\").prop('checked'));"
+      ];
+      if ($this->fields['auto_percent_done']) {
+         $auto_percent_done_params['checked'] = 'checked';
+      }
+      Html::showCheckbox($auto_percent_done_params);
+      echo "<span class='very_small_space'>";
+      Html::showToolTip(__('When automatic computation is active, percentage is computed based on the average of all child task percent done.'));
+      echo "</span></td>";
 
       echo "</td>";
       echo "<td>";
@@ -1670,5 +1785,42 @@ class ProjectTask extends CommonDBChild {
       $html.= "</div>";
       $html.= "<div class='event-description rich_text_container'>".html_entity_decode($val["content"])."</div>";
       return $html;
+   }
+
+   /**
+    * Update the specified project task's percent_done based on the percent_done of sub-tasks.
+    * This function indirectly updates the percent done for all parent tasks if they are set to automatically update.
+    * The parent project's percent_done is not updated here to avoid duplicate updates.
+    * @since 9.5.0
+    * @return boolean False if the specified project task is not set to automatically update the percent done.
+    */
+   public static function recalculatePercentDone($ID) {
+      global $DB;
+
+      $projecttask = new self();
+      $projecttask->getFromDB($ID);
+      if (!$projecttask->fields['auto_percent_done']) {
+         return false;
+      }
+
+      $iterator = $DB->request([
+         'SELECT' => [
+            new QueryExpression('CAST(AVG('.$DB->quoteName('percent_done').') AS INT) AS percent_done')
+         ],
+         'FROM'   => ProjectTask::getTable(),
+         'WHERE'  => [
+            'projecttasks_id' => $ID
+         ]
+      ]);
+      if ($iterator->count()) {
+         $percent_done = $iterator->next()['percent_done'];
+      } else {
+         $percent_done = 0;
+      }
+      $projecttask->update([
+         'id'                 => $ID,
+         'percent_done'       => $percent_done,
+      ]);
+      return true;
    }
 }

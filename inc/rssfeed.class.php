@@ -646,8 +646,6 @@ class RSSFeed extends CommonDBVisible {
     *     - target filename : where to go when done.
     **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       // Test _rss cache directory. I permission trouble : unable to edit
       if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
          echo "<div class='center'>";
@@ -658,8 +656,6 @@ class RSSFeed extends CommonDBVisible {
       }
 
       $this->initForm($ID, $options);
-
-      $canedit = $this->can($ID, UPDATE);
 
       $this->showFormHeader($options);
 
@@ -915,8 +911,6 @@ class RSSFeed extends CommonDBVisible {
       global $DB, $CFG_GLPI;
 
       $users_id             = Session::getLoginUserID();
-      $today                = date('Y-m-d');
-      $now                  = date('Y-m-d H:i:s');
 
       $table = self::getTable();
       $criteria = [

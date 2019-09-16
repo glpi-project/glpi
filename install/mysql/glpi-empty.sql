@@ -1170,6 +1170,7 @@ CREATE TABLE `glpi_configs` (
   UNIQUE KEY `unicity` (`context`,`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+INSERT INTO `glpi_configs` VALUES ('210','core','devices_in_menu','["Item_DeviceSimcard"]');
 
 ### Dump table glpi_consumableitems
 
@@ -5102,6 +5103,7 @@ CREATE TABLE `glpi_projects` (
   `real_start_date` timestamp NULL DEFAULT NULL,
   `real_end_date` timestamp NULL DEFAULT NULL,
   `percent_done` int(11) NOT NULL DEFAULT '0',
+  `auto_percent_done` tinyint(1) NOT NULL DEFAULT '0',
   `show_on_global_gantt` tinyint(1) NOT NULL DEFAULT '0',
   `content` longtext COLLATE utf8_unicode_ci,
   `comment` longtext COLLATE utf8_unicode_ci,
@@ -5178,6 +5180,7 @@ CREATE TABLE `glpi_projecttasks` (
   `projecttasktypes_id` int(11) NOT NULL DEFAULT '0',
   `users_id` int(11) NOT NULL DEFAULT '0',
   `percent_done` int(11) NOT NULL DEFAULT '0',
+  `auto_percent_done` tinyint(1) NOT NULL DEFAULT '0',
   `is_milestone` tinyint(1) NOT NULL DEFAULT '0',
   `projecttasktemplates_id` int(11) NOT NULL DEFAULT '0',
   `is_template` tinyint(1) NOT NULL DEFAULT '0',

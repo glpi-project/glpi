@@ -2279,7 +2279,7 @@ abstract class API extends CommonGLPI {
    public function inlineDocumentation($file) {
         //this should be served from a slim route
       $this->header(true, __("API Documentation"));
-      echo Html::css("public/lib/prism.css");
+      echo Html::css("public/lib/prismjs.css");
       echo Html::script("public/lib/prismjs.js");
 
       echo "<div class='documentation'>";

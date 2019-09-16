@@ -323,7 +323,8 @@ class Html extends \GLPITestCase {
          'Phone',
          'Rack',
          'Enclosure',
-         'PDU'
+         'PDU',
+         'Item_DeviceSimcard'
       ];
       $this->string($menu['assets']['title'])->isIdenticalTo('Assets');
       $this->array($menu['assets']['types'])->isIdenticalTo($expected);

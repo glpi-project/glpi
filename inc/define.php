@@ -242,21 +242,6 @@ $CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change'
 
 $CFG_GLPI["consumables_types"]            = ['Group', 'User'];
 
-$CFG_GLPI["itemdevices"]                  = ['Item_DevicePowerSupply', 'Item_DevicePci',
-                                                  'Item_DeviceCase', 'Item_DeviceGraphicCard',
-                                                  'Item_DeviceMotherBoard', 'Item_DeviceNetworkCard',
-                                                  'Item_DeviceSoundCard', 'Item_DeviceControl',
-                                                  'Item_DeviceHardDrive', 'Item_DeviceDrive', 'Item_DeviceMemory',
-                                                  'Item_DeviceProcessor', 'Item_DeviceGeneric',
-                                                  'Item_DeviceBattery', 'Item_DeviceFirmware', 'Item_DeviceSimcard',
-                                                  'Item_DeviceSensor'];
-
-$CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
-                                                  'Software', 'SoftwareLicense', 'Certificate',
-                                                  'DCRoom', 'Rack', 'Enclosure', 'PDU', 'Cluster'],
-                                                  $CFG_GLPI['itemdevices']);
-
 $CFG_GLPI["report_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project',
                                                   'Software', 'SoftwareLicense', 'Certificate'];
@@ -306,7 +291,8 @@ $CFG_GLPI['ticket_types']                 = $CFG_GLPI['itil_types'];
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'Supplier', 'User', 'Certificate', 'Cluster'];
+                                                  'Printer', 'Software', 'Supplier', 'User', 'Certificate', 'Cluster',
+                                                  'DCRoom'];
 
 $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'Manufacturer',
                                                   'MonitorModel', 'MonitorType',
@@ -329,6 +315,11 @@ $CFG_GLPI['networkport_instantiations']   = ['NetworkPortEthernet', 'NetworkPort
                                                   'NetworkPortAggregate', 'NetworkPortAlias',
                                                   'NetworkPortDialup',   'NetworkPortLocal',
                                                   'NetworkPortFiberchannel'];
+
+$CFG_GLPI['itemdevices'] = [];
+foreach ($CFG_GLPI['device_types'] as $dtype) {
+   $CFG_GLPI["itemdevices"][] = 'Item_' . $dtype;
+}
 
 $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer', 'Enclosure'];
@@ -370,6 +361,13 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
                                              'Project', 'ProjectTask', 'Reservation',
                                              'SoftwareLicense', 'Ticket', 'User',
                                              'SavedSearch_Alert', 'Certificate'];
+
+$CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
+                                                  'Software', 'SoftwareLicense', 'Certificate',
+                                                  'DCRoom', 'Rack', 'Enclosure', 'Cluster'],
+                                                  $CFG_GLPI['itemdevices']);
+
 
 $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
                                                   'AllAssets'       => "asset_types"];

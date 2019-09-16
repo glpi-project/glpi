@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * Reminder Class
 **/
 class Reminder extends CommonDBVisible {
+   use PlanningEvent;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -1031,26 +1032,6 @@ class Reminder extends CommonDBVisible {
    /**
     * Display a Planning Item
     *
-    * @param $val Array of the item to display
-    *
-    * @return Already planned information
-    **/
-   static function getAlreadyPlannedInformation(array $val) {
-      global $CFG_GLPI;
-
-      //TRANS: %1$s is the begin date, %2$s is the end date
-      $beginend = sprintf(__('From %1$s to %2$s'),
-                          Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
-      $out      = sprintf(__('%1$s: %2$s'), $beginend,
-         "<a href='".Reminder::getFormURLWithID($val["reminders_id"])."'>".
-         Html::resume_text($val["name"], 80)."</a>");
-      return $out;
-   }
-
-
-   /**
-    * Display a Planning Item
-    *
     * @param $val       array of the item to display
     * @param $who             ID of the user (0 if all)
     * @param $type            position of the item in the time block (in, through, begin or end)
@@ -1249,5 +1230,4 @@ class Reminder extends CommonDBVisible {
       }
       return $values;
    }
-
 }
