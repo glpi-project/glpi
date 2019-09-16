@@ -65,7 +65,7 @@
         "stylelint": "^9.10.1",
         "stylelint-config-recommended": "^2.1.0",
         "webpack": "^4.39.3",
-        "webpack-cli": "^3.3.8"
-        "url-loader": "^1.1.2",
+        "webpack-cli": "^3.3.8",
+        "url-loader": "^1.1.2"
     }
 }
