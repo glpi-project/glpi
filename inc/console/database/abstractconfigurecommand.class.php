@@ -208,7 +208,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       }
 
       $this->validateConfigInput($input);
-         $informations->addRow([__('Database driver'), $db_driver]);
 
       $run = $this->askForDbConfigConfirmation(
          $input,
@@ -339,6 +338,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       $db_user) {
 
       $informations = new Table($output);
+      $informations->addRow([__('Database driver'), $db_driver]);
       $informations->addRow([__('Database host'), $db_hostport]);
       $informations->addRow([__('Database name'), $db_name]);
       $informations->addRow([__('Database user'), $db_user]);
