@@ -372,25 +372,40 @@ class TicketRecurrent extends CommonDropdown {
       }
 
       // First occurence of creation
-      $occurence_time = strtotime($begin_date);
-      $creation_time  = $occurence_time - $create_before;
-
-      // Add steps while creation time is in past
-      while ($creation_time < $now) {
-         $creation_time  = strtotime("+ $periodicity_as_interval", $creation_time);
-         $occurence_time = $creation_time + $create_before;
-
-         // Stop if end date reached
-         if ($has_end_date && $occurence_time > strtotime($end_date)) {
-            return 'NULL';
-         }
-      }
-
-      // Add steps while start time is not in working hours
       $calendar = new Calendar();
       if ($calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay()) {
-         while (!$calendar->isAWorkingHour($occurence_time)) {
-            $creation_time = strtotime("+ $periodicity_as_interval", $creation_time);
+         // Base computation on calendar if calendar is defined
+         $occurence_date = $calendar->computeEndDate(
+            $begin_date,
+            1, // 1 second delay for first occurence as calendar method does not handle 0 delay
+            0,
+            $periodicity_in_seconds >= DAY_TIMESTAMP
+         );
+         $occurence_time = strtotime($occurence_date) - 1;
+         $creation_time  = $occurence_time - $create_before;
+
+         while ($creation_time < $now) {
+            $occurence_date = $calendar->computeEndDate(
+               date('Y-m-d H:i:s', $occurence_time),
+               $periodicity_in_seconds,
+               0,
+               $periodicity_in_seconds >= DAY_TIMESTAMP
+            );
+            $occurence_time = strtotime($occurence_date);
+            $creation_time  = $occurence_time - $create_before;
+
+            // Stop if end date reached
+            if ($has_end_date && $occurence_time > strtotime($end_date)) {
+               return 'NULL';
+            }
+         };
+      } else {
+         $occurence_time = strtotime($begin_date);
+         $creation_time  = $occurence_time - $create_before;
+
+         // Add steps while creation time is in past
+         while ($creation_time < $now) {
+            $creation_time  = strtotime("+ $periodicity_as_interval", $creation_time);
             $occurence_time = $creation_time + $create_before;
 
             // Stop if end date reached

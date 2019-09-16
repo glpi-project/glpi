@@ -1169,7 +1169,7 @@ class MailCollector  extends CommonDBTM {
       // and rich text mode is enabled (otherwise remove them)
       $string = str_replace(
          ["\r\n", "\n", "\r"],
-         $this->body_is_html ? '' : $br_marker,
+         $this->body_is_html ? ' ' : $br_marker,
          $string
       );
 
