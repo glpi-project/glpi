@@ -51,8 +51,8 @@ foreach (readdir(DIRHANDLE)){
 			}
 		} else {
 	 		if(!(-l "$dir/$_")){
-				# Included filetypes - php, css, js => default comment style
-				if ((index($_,".php",0)!=-1)||(index($_,".css",0)!=-1)||(index($_,".js",0)!=-1)){
+				# Included filetypes - php, css, js, scss => default comment style
+				if ((index($_,".php",0)!=-1)||(index($_,".css",0)!=-1)||(index($_,".scss",0)!=-1)||(index($_,".js",0)!=-1)){
 					do_file("$dir/$_", "");
 	 			}
 				# Included filetypes - sql, sh, pl => Add a specific comment style (#)
