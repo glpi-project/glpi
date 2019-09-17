@@ -483,6 +483,8 @@ class Project extends CommonDBTM {
 
 
    function rawSearchOptions() {
+      global $DB;
+
       $tab = [];
 
       $tab[] = [
@@ -526,7 +528,7 @@ class Project extends CommonDBTM {
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'joinparams'         => [
-            'condition'          => 'AND 1=1'
+            'condition'       => [new QueryExpression('1=1')]
          ]
       ];
 
@@ -722,7 +724,7 @@ class Project extends CommonDBTM {
          'joinparams'         => [
             'jointype'           => 'child',
             'specific_itemtype'  => 'ProjectCost',
-            'condition'          => 'AND NEWTABLE.`projects_id` = REFTABLE.`id`',
+            'condition'          => ['NEWTABLE.projects_id' => new QueryExpression($DB->quoteName('REFTABLE.id'))],
             'beforejoin'         => [
                'table'        => $this->getTable(),
                'joinparams'   => [
@@ -730,7 +732,7 @@ class Project extends CommonDBTM {
                ],
             ],
          ],
-         'computation'        => '(SUM(TABLE.`cost`))'
+         'computation'        => '(SUM('.$DB->quoteName('TABLE.cost').'))'
       ];
 
       $itil_count_types = [
@@ -751,7 +753,7 @@ class Project extends CommonDBTM {
             'massiveaction'      => false,
             'joinparams'         => [
                'jointype'           => 'child',
-               'condition'          => "AND NEWTABLE.`itemtype` = '$itil_type'"
+               'condition'          => ['NEWTABLE.itemtype' => $itil_type]
             ]
          ];
          $index++;
@@ -1191,10 +1193,12 @@ class Project extends CommonDBTM {
          $first_col = '';
          $color     = '';
          if ($item->fields["projectstates_id"]) {
-            $query = "SELECT `color`
-                      FROM `glpi_projectstates`
-                      WHERE `id` = '".$item->fields["projectstates_id"]."'";
-            foreach ($DB->request($query) as $color) {
+            $iterator = $DB->request([
+               'SELECT' => 'color',
+               'FROM'   => 'glpi_projectstates',
+               'WHERE'  => ['id' => $item->fields['projectstates_id']]
+            ]);
+            while ($color = $iterator->next()) {
                $color = $color['color'];
             }
             $first_col = Dropdown::getDropdownName('glpi_projectstates', $item->fields["projectstates_id"]);
@@ -1837,13 +1841,15 @@ class Project extends CommonDBTM {
       } else {
          $todisplay = [];
          // Get all root projects
-         $query = "SELECT *
-                   FROM `glpi_projects`
-                   WHERE `projects_id` = 0
-                        AND `show_on_global_gantt` = 1
-                        AND `is_template` = 0
-                         ".getEntitiesRestrictRequest("AND", 'glpi_projects', "", '', true);
-         foreach ($DB->request($query) as $data) {
+         $iterator = $DB->request([
+            'FROM'   => 'glpi_projects',
+            'WHERE'  => [
+               'projects_id'           => 0,
+               'show_on_global_gantt'  => 1,
+               'is_template'           => 0
+            ] + getEntitiesRestrictCriteria('glpi_projects', '', '', true)
+         ]);
+         while ($data = $iterator->next()) {
             $todisplay += static::getDataToDisplayOnGantt($data['id'], false);
          }
          ksort($todisplay);

@@ -72,7 +72,7 @@ class NetworkPortMigration extends CommonDBChild {
       }
 
       if (countElementsInTable($this->getTable()) == 0) {
-         $query = "DROP TABLE `".$this->getTable()."`";
+         $query = "DROP TABLE ".$DB->quoteName($this->getTable());
          $DB->query($query);
       }
 
@@ -293,12 +293,14 @@ class NetworkPortMigration extends CommonDBChild {
       echo "<$gateway_cell>" . $this->fields['gateway'] . "</$gateway_cell></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>". __('Network interface') ."</td><$interface_cell>\n";
-      $query = "SELECT `name`
-                FROM `glpi_networkinterfaces`
-                WHERE `id`='".$this->fields['networkinterfaces_id']."'";
+      $iterator = $DB->request([
+         'SELECT' => 'name',
+         'FROM'   => 'glpi_networkinterfaces',
+         'WHERE'  => ['id' => $this->fields['networkinterfaces_id']]
+      ]);
       $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         $row = $DB->fetchAssoc($result);
+      if (count($iterator)) {
+         $row = $iterator->next();
          echo $row['name'];
       } else {
          echo __('Unknown interface');

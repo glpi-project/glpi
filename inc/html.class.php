@@ -3325,8 +3325,8 @@ class Html {
 
          Dropdown::showFromArray('newprofile', $values,
                                  ['value'     => $_SESSION["glpiactiveprofile"]["id"],
-                                       'width'     => '150px',
-                                       'on_change' => 'submit()']);
+                                  'width'     => '150px',
+                                  'on_change' => 'submit()']);
          Html::closeForm();
          echo '</li>';
       }

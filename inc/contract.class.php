@@ -358,6 +358,8 @@ class Contract extends CommonDBTM {
 
 
    static function rawSearchOptionsToAdd() {
+      global $DB;
+
       $tab = [];
 
       $joinparams = [
@@ -531,7 +533,10 @@ class Contract extends CommonDBTM {
          'datatype'           => 'decimal',
          'massiveaction'      => false,
          'joinparams'         => $joinparamscost,
-         'computation'        => '(SUM(TABLE.`cost`) / COUNT(TABLE.`id`)) * COUNT(DISTINCT TABLE.`id`)'
+         'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.cost') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
+            $DB->quoteName('TABLE.id') . ')'
       ];
 
       $tab[] = [
@@ -623,6 +628,8 @@ class Contract extends CommonDBTM {
 
 
    function rawSearchOptions() {
+      global $DB;
+
       $tab = [];
 
       $tab[] = [
@@ -907,8 +914,10 @@ class Contract extends CommonDBTM {
          'joinparams'         => [
             'jointype'           => 'child'
          ],
-         'computation'        => '(SUM(TABLE.`cost`) / COUNT(TABLE.`id`))
-                                       * COUNT(DISTINCT TABLE.`id`)'
+         'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.cost') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
+            $DB->quoteName('TABLE.id') . ')'
       ];
 
       $tab[] = [
@@ -1000,70 +1009,67 @@ class Contract extends CommonDBTM {
 
       // No recursive contract, not in local management
       // contrats echus depuis moins de 30j
-      $query = "SELECT COUNT(*)
-                FROM `glpi_contracts`
-                WHERE `glpi_contracts`.`is_deleted`='0' ".
-                      getEntitiesRestrictRequest("AND", "glpi_contracts")."
-                      AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                           `glpi_contracts`.`duration` MONTH),CURDATE() )>-30
-                      AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                           `glpi_contracts`.`duration` MONTH),CURDATE() )<'0'";
-      $result    = $DB->query($query);
-      $contract0 = $DB->result($result, 0, 0);
+      $table = self::getTable();
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => $table,
+         'WHERE'  => [
+            'is_deleted'   => 0,
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())>-30'),
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())<0')
+         ] + getEntitiesRestrictCriteria($table)
+      ])->next();
+      $contract0 = $result['cpt'];
 
       // contrats  echeance j-7
-      $query = "SELECT COUNT(*)
-                FROM `glpi_contracts`
-                WHERE `glpi_contracts`.`is_deleted`='0' ".
-                      getEntitiesRestrictRequest("AND", "glpi_contracts")."
-                      AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                           `glpi_contracts`.`duration` MONTH),CURDATE() )>'0'
-                      AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                           `glpi_contracts`.`duration` MONTH),CURDATE() )<='7'";
-      $result    = $DB->query($query);
-      $contract7 = $DB->result($result, 0, 0);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => $table,
+         'WHERE'  => [
+            'is_deleted'   => 0,
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())>0'),
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())<=7')
+         ] + getEntitiesRestrictCriteria($table)
+      ])->next();
+      $contract7 = $result['cpt'];
 
       // contrats echeance j -30
-      $query = "SELECT COUNT(*)
-                FROM `glpi_contracts`
-                WHERE `glpi_contracts`.`is_deleted`='0' ".
-                      getEntitiesRestrictRequest("AND", "glpi_contracts")."
-                      AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                           `glpi_contracts`.`duration` MONTH),CURDATE() )>'7'
-                      AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                           `glpi_contracts`.`duration` MONTH),CURDATE() )<'30'";
-      $result     = $DB->query($query);
-      $contract30 = $DB->result($result, 0, 0);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => $table,
+         'WHERE'  => [
+            'is_deleted'   => 0,
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())>7'),
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())<30')
+         ] + getEntitiesRestrictCriteria($table)
+      ])->next();
+      $contract30 = $result['cpt'];
 
       // contrats avec pr??avis echeance j-7
-      $query = "SELECT COUNT(*)
-                FROM `glpi_contracts`
-                WHERE `glpi_contracts`.`is_deleted`='0' ".
-                      getEntitiesRestrictRequest("AND", "glpi_contracts")."
-                      AND `glpi_contracts`.`notice`<>'0'
-                      AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                           (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
-                                           MONTH),CURDATE() )>'0'
-                      AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                           (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
-                                           MONTH),CURDATE() )<='7'";
-      $result       = $DB->query($query);
-      $contractpre7 = $DB->result($result, 0, 0);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => $table,
+         'WHERE'  => [
+            'is_deleted'   => 0,
+            'notice'       => ['<>', 0],
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration").'-' . $DB->quoteName('notice') . ') MONTH),CURDATE())>0'),
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration").'-' . $DB->quoteName('notice') . ') MONTH),CURDATE())<=7')
+         ] + getEntitiesRestrictCriteria($table)
+      ])->next();
+      $contractpre7 = $result['cpt'];
 
       // contrats avec pr??avis echeance j -30
-      $query = "SELECT COUNT(*)
-                FROM `glpi_contracts`
-                WHERE `glpi_contracts`.`is_deleted`='0'".
-                      getEntitiesRestrictRequest("AND", "glpi_contracts")."
-                      AND `glpi_contracts`.`notice`<>'0'
-                      AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                           (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
-                                           MONTH),CURDATE() )>'7'
-                      AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                           (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
-                                           MONTH),CURDATE() )<'30'";
-      $result        = $DB->query($query);
-      $contractpre30 = $DB->result($result, 0, 0);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => $table,
+         'WHERE'  => [
+            'is_deleted'   => 0,
+            'notice'       => ['<>', 0],
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration").'-' . $DB->quoteName('notice') . ') MONTH),CURDATE())>7'),
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration").'-' . $DB->quoteName('notice') . ') MONTH),CURDATE())<30')
+         ] + getEntitiesRestrictCriteria($table)
+      ])->next();
+      $contractpre30 = $result['cpt'];
 
       echo "<table class='tab_cadrehov'>";
       echo "<tr class='noHover'><th colspan='2'>";
@@ -1215,7 +1221,7 @@ class Contract extends CommonDBTM {
             'WHERE'     => [
                [
                   'RAW' => [
-                     DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::NOTICE) => ['>', 0]
+                     $DB->quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::NOTICE) => ['>', 0]
                   ]
                ],
                'glpi_alerts.date'           => null,
@@ -1230,8 +1236,8 @@ class Contract extends CommonDBTM {
                   'RAW' => [
                      'DATEDIFF(
                          ADDDATE(
-                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
-                            INTERVAL ' . DBmysql::quoteName('glpi_contracts.duration') . ' MONTH
+                            ' . $DB->quoteName('glpi_contracts.begin_date') . ',
+                            INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH
                          ),
                          CURDATE()
                       )' => ['>', 0]
@@ -1241,10 +1247,10 @@ class Contract extends CommonDBTM {
                   'RAW' => [
                      'DATEDIFF(
                          ADDDATE(
-                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
+                            ' . $DB->quoteName('glpi_contracts.begin_date') . ',
                             INTERVAL (
-                               ' . DBmysql::quoteName('glpi_contracts.duration') . '
-                               - ' . DBmysql::quoteName('glpi_contracts.notice') . '
+                               ' . $DB->quoteName('glpi_contracts.duration') . '
+                               - ' . $DB->quoteName('glpi_contracts.notice') . '
                             ) MONTH
                          ),
                          CURDATE()
@@ -1276,7 +1282,7 @@ class Contract extends CommonDBTM {
             'WHERE'     => [
                [
                   'RAW' => [
-                     DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::END) => ['>', 0]
+                     $DB->quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::END) => ['>', 0]
                   ]
                ],
                'glpi_alerts.date'           => null,
@@ -1290,8 +1296,8 @@ class Contract extends CommonDBTM {
                   'RAW' => [
                      'DATEDIFF(
                          ADDDATE(
-                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
-                            INTERVAL ' . DBmysql::quoteName('glpi_contracts.duration') . ' MONTH
+                            ' . $DB->quoteName('glpi_contracts.begin_date') . ',
+                            INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH
                          ),
                          CURDATE()
                       )' => ['<', $before]
@@ -1512,38 +1518,50 @@ class Contract extends CommonDBTM {
          }
       }
 
-      $entrest = "";
-      $idrest = "";
-      $expired = "";
+      $WHERE = [];
       if ($p['entity'] >= 0) {
-         $entrest = getEntitiesRestrictRequest("AND", "glpi_contracts", "entities_id",
-                                               $p['entity'], true);
+         $WHERE = $WHERE + getEntitiesRestrictCriteria('glpi_contracts', 'entities_id', $p['entity'], true);
       }
       if (count($p['used'])) {
-          $idrest = " AND `glpi_contracts`.`id` NOT IN (".implode(",", $p['used']).") ";
+         $WHERE['NOT'] = ['glpi_contracts.id' => $p['used']];
       }
       if (!$p['expired']) {
-         $expired = " AND (DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                               `glpi_contracts`.`duration` MONTH), CURDATE()) > '0'
-                           OR `glpi_contracts`.`begin_date` IS NULL
-                           OR (`glpi_contracts`.`duration` = 0
-                               AND DATEDIFF(`glpi_contracts`.`begin_date`, CURDATE() ) < '0' ))";
+         $WHERE[] = ['OR' => [
+            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_contracts.begin_date') . ', INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH), CURDATE()) > 0'),
+            'glpi_contracts.begin_date'   => null,
+            ['AND' => [
+               'glpi_contracts.duration'  => 0,
+               new \QueryExpression('DATEDIFF(' . $DB->quoteName('glpi_contracts.begin_date') . ', CURDATE() ) < 0')
+            ]]
+         ]];
       }
 
-      $query = "SELECT `glpi_contracts`.*
-                FROM `glpi_contracts`
-                LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id` = `glpi_entities`.`id`)
-                WHERE `glpi_contracts`.`is_deleted` = 0 AND `glpi_contracts`.`is_template` = 0
-                $entrest $idrest $expired
-                ORDER BY `glpi_entities`.`completename`,
-                         `glpi_contracts`.`name` ASC,
-                         `glpi_contracts`.`begin_date` DESC";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'    => 'glpi_contracts.*',
+         'FROM'      => 'glpi_contracts',
+         'LEFT JOIN' => [
+            'glpi_entities'   => [
+               'ON' => [
+                  'glpi_contracts'  => 'entities_id',
+                  'glpi_entities'   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => array_merge([
+            'glpi_contracts.is_deleted'   => 0,
+            'glpi_contracts.is_template'  => 0
+         ], $WHERE),
+         'ORDERBY'   => [
+            'glpi_entities.completename',
+            'glpi_contracts.name ASC',
+            'glpi_contracts.begin_date DESC'
+         ]
+      ]);
 
       $group  = '';
       $prev   = -1;
       $values = [];
-      while ($data = $DB->fetchAssoc($result)) {
+      while ($data = $iterator->next()) {
          if ($p['nochecklimit']
              || ($data["max_links_allowed"] == 0)
              || ($data["max_links_allowed"] > countElementsInTable('glpi_contracts_items',

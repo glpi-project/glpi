@@ -48,12 +48,14 @@ if ($_POST['items_id']
    $linktype   = $devicetype::getItem_DeviceType();
 
    if (count($linktype::getSpecificities())) {
+      $keys = array_keys($linktype::getSpecificities());
+      array_walk($keys, function (&$val) use ($DB) { return $DB->quoteName($val); });
       $name_field = new QueryExpression(
-         "CONCAT_WS(' - ', `" . implode('`, `', array_keys($linktype::getSpecificities())) . "`)"
-         . "AS `name`"
+         "CONCAT_WS(' - ', " . implode(', ', $keys) . ")"
+         . "AS ".$DB->quoteName("name")
       );
    } else {
-      $name_field = "id AS name";
+      $name_field = 'id AS name';
    }
    $result = $DB->request(
       [

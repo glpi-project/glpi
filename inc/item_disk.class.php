@@ -455,7 +455,7 @@ class Item_Disk extends CommonDBChild {
          'field'              => 'freepercent',
          'name'               => __('Free percentage'),
          'forcegroupby'       => true,
-         'datatype'           => 'decimal',
+         'datatype'           => 'progressbar',
          'width'              => 2,
          'computation'        => 'ROUND(100*TABLE.freesize/TABLE.totalsize)',
          'computationgroupby' => true,
@@ -664,7 +664,14 @@ class Item_Disk extends CommonDBChild {
 
       switch ($field) {
          case 'encryption_status':
-            return self::getEncryptionStatus($values[$field]);
+            if ($values[$field] != self::ENCRYPTION_STATUS_NO) {
+               return Html::showTooltip(self::getEncryptionInfos($values['id']), [
+                  'awesome-class'   => "fas fa-lock",
+                  'display'         => false
+               ]);
+            } else {
+               return "<i class='fas fa-lock-open' title='" .  self::getEncryptionStatus($values[$field]) . "'></i>";
+            }
       }
 
       return parent::getSpecificValueToDisplay($field, $values, $options);

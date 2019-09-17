@@ -218,6 +218,8 @@ class DeviceHardDrive extends CommonDevice {
    }
 
    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      global $DB;
+
       $tab = [];
 
       $tab[] = [
@@ -249,8 +251,10 @@ class DeviceHardDrive extends CommonDevice {
          'width'              => 1000,
          'massiveaction'      => false,
          'joinparams'         => $main_joinparams,
-         'computation'        => '(SUM(TABLE.`capacity`) / COUNT(TABLE.`id`))
-                                       * COUNT(DISTINCT TABLE.`id`)'
+         'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.capacity') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . '))
+            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')'
       ];
 
       return $tab;

@@ -1403,9 +1403,9 @@ class User extends CommonDBTM {
                   $lgroups = [];
                   foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
                      $lgroups[] = [
-                        new \QueryExpression($DB::quoteValue($lgroup).
+                        new \QueryExpression($DB->quoteValue($lgroup).
                                              " LIKE ".
-                                             $DB::quoteName('ldap_value'))
+                                             $DB->quoteName('ldap_value'))
                      ];
                   }
                   $group_iterator = $DB->request([
@@ -3105,7 +3105,7 @@ class User extends CommonDBTM {
          'name'               => __('LDAP directory for authentication'),
          'massiveaction'      => false,
          'joinparams'         => [
-             'condition'          => 'AND REFTABLE.`authtype` = ' . Auth::LDAP
+             'condition'          => ['REFTABLE.authtype' => Auth::LDAP]
          ],
          'datatype'           => 'dropdown'
       ];
@@ -3118,7 +3118,7 @@ class User extends CommonDBTM {
          'name'               => __('Email server for authentication'),
          'massiveaction'      => false,
          'joinparams'         => [
-            'condition'          => 'AND REFTABLE.`authtype` = ' . Auth::MAIL
+            'condition'          => ['REFTABLE.authtype' => Auth::MAIL]
          ],
          'datatype'           => 'dropdown'
       ];
@@ -3296,7 +3296,7 @@ class User extends CommonDBTM {
                'table'              => 'glpi_tickets_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = ' . CommonITILActor::REQUESTER
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
                ]
             ]
          ]
@@ -3331,7 +3331,7 @@ class User extends CommonDBTM {
                'table'              => 'glpi_tickets_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
                ]
             ]
          ]
@@ -3717,7 +3717,8 @@ class User extends CommonDBTM {
          ]
       ];
       if ($count) {
-         $criteria['SELECT'] = ['COUNT DISTINCT' => 'glpi_users.id AS CPT'];
+         $criteria['SELECT'] = ['COUNT' => 'glpi_users.id AS CPT'];
+         $criteria['DISTINCT'] = true;
       } else {
          $criteria['SELECT'] = 'glpi_users.*';
          $criteria['DISTINCT'] = true;

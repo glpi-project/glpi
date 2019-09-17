@@ -178,6 +178,24 @@ class Lock {
       //Software versions
       $item_sv = new Item_SoftwareVersion();
       $item_sv_table = Item_SoftwareVersion::getTable();
+                     'sv'  => 'id'
+                  ]
+               ],
+               'glpi_softwares AS s'         => [
+                  'ON' => [
+                     'sv'  => 'softwares_id',
+                     's'   => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'csv.is_deleted'     => 1,
+               'csv.is_dynamic'     => 1,
+               'csv.computers_id'   => $ID
+            ]
+         ]);
+
+         while ($line = $iterator->next()) {
 
       $iterator = $DB->request([
          'SELECT'    => [
@@ -254,6 +272,10 @@ class Lock {
             'isl.itemtype'    => $itemtype,
          ]
       ]);
+            ]
+         ]);
+
+         while ($line = $iterator->next()) {
 
       echo "<tr><th colspan='2'>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th></tr>\n";
       while ($data = $iterator->next()) {
@@ -300,12 +322,14 @@ class Lock {
 
       $first = true;
       $networkname = new NetworkName();
-      $params = ['`glpi_networknames`.`is_dynamic`' => 1,
-                      '`glpi_networknames`.`is_deleted`' => 1,
-                      '`glpi_networknames`.`itemtype`'   => 'NetworkPort',
-                      '`glpi_networknames`.`items_id`'   => '`glpi_networkports`.`id`',
-                      '`glpi_networkports`.`items_id`'   => $ID,
-                      '`glpi_networkports`.`itemtype`'   => $itemtype];
+      $params = [
+         'glpi_networknames.is_dynamic' => 1,
+         'glpi_networknames.is_deleted' => 1,
+         'glpi_networknames.itemtype'   => 'NetworkPort',
+         'glpi_networknames.items_id'   => new QueryExpression($DB->quoteName('glpi_networkports.id')),
+         'glpi_networkports.items_id'   => $ID,
+         'glpi_networkports.itemtype'   => $itemtype
+      ];
       $params['FIELDS'] = ['glpi_networknames' => 'id'];
       foreach ($DB->request(['glpi_networknames', 'glpi_networkports'], $params) as $line) {
          $networkname->getFromDB($line['id']);
@@ -330,14 +354,16 @@ class Lock {
 
       $first  = true;
       $ipaddress = new IPAddress();
-      $params = ['`glpi_ipaddresses`.`is_dynamic`' => 1,
-                      '`glpi_ipaddresses`.`is_deleted`' => 1,
-                      '`glpi_ipaddresses`.`itemtype`'   => 'Networkname',
-                      '`glpi_ipaddresses`.`items_id`'   => '`glpi_networknames`.`id`',
-                      '`glpi_networknames`.`itemtype`'  => 'NetworkPort',
-                      '`glpi_networknames`.`items_id`'  => '`glpi_networkports`.`id`',
-                      '`glpi_networkports`.`items_id`'  => $ID,
-                      '`glpi_networkports`.`itemtype`'  => $itemtype];
+      $params = [
+         'glpi_ipaddresses.is_dynamic' => 1,
+         'glpi_ipaddresses.is_deleted' => 1,
+         'glpi_ipaddresses.itemtype'   => 'Networkname',
+         'glpi_ipaddresses.items_id'   => new QueryExpression($DB->quoteName('glpi_networknames.id')),
+         'glpi_networknames.itemtype'  => 'NetworkPort',
+         'glpi_networknames.items_id'  => new QueryExpression($DB->quoteName('glpi_networkports.id')),
+         'glpi_networkports.items_id'  => $ID,
+         'glpi_networkports.itemtype'  => $itemtype
+      ];
       $params['FIELDS'] = ['glpi_ipaddresses' => 'id'];
       foreach ($DB->request(['glpi_ipaddresses',
                                   'glpi_networknames',
@@ -380,16 +406,29 @@ class Lock {
             $associated_table = getTableForItemType($associated_type);
             $fk               = getForeignKeyFieldForTable($associated_table);
 
-            $query = "SELECT `i`.`id`,
-                             `t`.`designation` AS `name`
-                      FROM `".getTableForItemType($type)."` AS i
-                      LEFT JOIN `$associated_table` AS t
-                         ON (`t`.`id` = `i`.`$fk`)
-                      WHERE `itemtype` = '$itemtype'
-                            AND `items_id` = '$ID'
-                            AND `is_dynamic` = 1
-                            AND `is_deleted` = 1";
-            foreach ($DB->request($query) as $data) {
+            $iterator = $DB->request([
+               'SELECT'    => [
+                  'i.id',
+                  't.designation AS name'
+               ],
+               'FROM'      => getTableForItemType($type) . ' AS i',
+               'LEFT JOIN' => [
+                  "$associated_table AS t"   => [
+                     'ON' => [
+                        't'   => 'id',
+                        'i'   => $fk
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'itemtype'     => $itemtype,
+                  'items_id'     => $ID,
+                  'is_dynamic'   => 1,
+                  'is_deleted'   => 1
+               ]
+            ]);
+
+            while ($data = $iterator->next()) {
                echo "<tr class='tab_bg_1'>";
 
                echo "<td class='center' width='10'>";
@@ -462,6 +501,7 @@ class Lock {
     * @return an array which contains necessary informations to build the SQL query
    **/
    static function getLocksQueryInfosByItemType($itemtype, $baseitemtype) {
+      global $DB;
 
       $condition = [];
       $table     = false;
@@ -490,29 +530,32 @@ class Lock {
             break;
 
          case 'NetworkName' :
-            $condition = ['`glpi_networknames`.`is_dynamic`' => 1,
-                               '`glpi_networknames`.`is_deleted`' => 1,
-                               '`glpi_networknames`.`itemtype`'   => 'NetworkPort',
-                               '`glpi_networknames`.`items_id`'   => '`glpi_networkports`.`id`',
-                               '`glpi_networkports`.`itemtype`'   => $baseitemtype];
+            $condition = [
+               'glpi_networknames.is_dynamic' => 1,
+               'glpi_networknames.is_deleted' => 1,
+               'glpi_networknames.itemtype'   => 'NetworkPort',
+               'glpi_networknames.items_id'   => new QueryExpression($DB->quoteName('glpi_networkports.id')),
+               'glpi_networkports.itemtype'   => $baseitemtype
+            ];
             $condition['FIELDS']
                        = ['glpi_networknames' => 'id'];
             $table     = ['glpi_networknames', 'glpi_networkports'];
-            $field     = '`glpi_networkports`.`items_id`';
+            $field     = 'glpi_networkports.items_id';
             break;
 
          case 'IPAddress' :
-            $condition = ['`glpi_ipaddresses`.`is_dynamic`' => 1,
-                               '`glpi_ipaddresses`.`is_deleted`' => 1,
-                               '`glpi_ipaddresses`.`itemtype`'   => 'NetworkName',
-                               '`glpi_ipaddresses`.`items_id`'   => '`glpi_networknames`.`id`',
-                               '`glpi_networknames`.`itemtype`'   => 'NetworkPort',
-                               '`glpi_networknames`.`items_id`'   => '`glpi_networkports`.`id`',
-                               '`glpi_networkports`.`itemtype`'   => $baseitemtype];
+            $condition = [
+               'glpi_ipaddresses.is_dynamic'   => 1,
+               'glpi_ipaddresses.is_deleted'   => 1,
+               'glpi_ipaddresses.itemtype'     => 'NetworkName',
+               'glpi_ipaddresses.items_id'     => 'glpi_networknames.id',
+               'glpi_networknames.itemtype'    => 'NetworkPort',
+               'glpi_networknames.items_id'    => 'glpi_networkports.id',
+               'glpi_networkports.itemtype'    => $baseitemtype];
             $condition['FIELDS']
                        = ['glpi_ipaddresses' => 'id'];
             $table     = ['glpi_ipaddresses', 'glpi_networknames', 'glpi_networkports'];
-            $field     = '`glpi_networkports`.`items_id`';
+            $field     = 'glpi_networkports.items_id';
             break;
 
          case 'Item_Disk' :

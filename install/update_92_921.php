@@ -36,11 +36,9 @@
  * @return bool for success (will die for most error)
 **/
 function update92to921() {
-   global $DB, $migration, $CFG_GLPI;
+   global $DB, $migration;
 
-   $current_config   = Config::getConfigurationValues('core');
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+   $updateresult = true;
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.2.1'));
@@ -55,7 +53,7 @@ function update92to921() {
       $migration->changeField("glpi_tickets", "slas_id", "slts_ttr_id", "integer");
       $migration->migrationOneTable('glpi_tickets');
    }
-   if (isIndex('glpi_tickets', 'slas_id')) {
+   if ($DB->indexExists('glpi_tickets', 'slas_id')) {
       $migration->dropKey('glpi_tickets', 'slas_id');
    }
    if ($DB->fieldExists('glpi_tickets', 'slts_ttr_id')) {
@@ -106,7 +104,7 @@ function update92to921() {
                `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevelactions");
    }
 
@@ -120,7 +118,7 @@ function update92to921() {
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`),
                KEY `condition` (`condition`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevelcriterias");
    }
 
@@ -139,7 +137,7 @@ function update92to921() {
                KEY `name` (`name`),
                KEY `is_active` (`is_active`),
                KEY `olas_id` (`olas_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevels");
    }
 
@@ -153,7 +151,7 @@ function update92to921() {
                   KEY `tickets_id` (`tickets_id`),
                   KEY `olalevels_id` (`olalevels_id`),
                   KEY `unicity` (`tickets_id`,`olalevels_id`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevels_tickets");
 
       $DB->insertOrDie("glpi_crontasks", [
@@ -306,46 +304,53 @@ function update92to921() {
    );
 
    //see https://github.com/glpi-project/glpi/issues/3037
+   $set = ['itemtype' => 'QueuedNotification'];
    $migration->addPreQuery(
       $DB->buildUpdate("glpi_crontasks",
-         ['itemtype' => "QueuedNotification"],
+         $set,
          ['itemtype' => "QueuedMail"]
       )
    );
 
+   $set = ['name' => 'queuednotification'];
    $migration->addPreQuery(
       $DB->buildUpdate("glpi_crontasks",
-         ['name' => "queuednotification"],
+         $set,
          ['name' => "queuedmail"]
       )
    );
 
+   $set = ['name' => 'queuednotificationclean'];
    $migration->addPreQuery(
       $DB->buildUpdate("glpi_crontasks",
-         ['name' => "queuednotificationclean"],
+         $set,
          ['name' => "queuedmailclean"]
       )
    );
 
    // TODO: can be done when DB::delete() supports JOINs
-   $migration->addPreQuery("DELETE `duplicated` FROM `glpi_profilerights` AS `duplicated`
-                            INNER JOIN `glpi_profilerights` AS `original`
-                            WHERE `duplicated`.`profiles_id` = `original`.`profiles_id`
-                            AND `original`.`name` = 'queuednotification'
-                            AND `duplicated`.`name` = 'queuedmail'");
+   $migration->addPreQuery(
+      "DELETE `duplicated` FROM `glpi_profilerights` AS `duplicated`
+         INNER JOIN `glpi_profilerights` AS `original`
+         WHERE `duplicated`.`profiles_id` = `original`.`profiles_id`
+         AND `original`.`name` = ".$DB->quoteValue('queuednotification')."
+         AND `duplicated`.`name` = ".$DB->quoteValue('queuedmail')
+   );
 
+   $set = ['name' => 'queuednotification'];
    $migration->addPreQuery(
       $DB->buildUpdate("glpi_profilerights",
-         ['name' => "queuednotification"],
+         $set,
          ['name' => "queuedmail"]
       )
    );
 
    //ensure do_count is set to AUTO
    //do_count update query may have been affected, but we cannot run it here
+   $set = ['entities_id' => 0];
    $migration->addPreQuery(
       $DB->buildUpdate("glpi_savedsearches",
-         ['entities_id' => "0"],
+         $set,
          ['entities_id' => "-1"]
       )
    );
@@ -394,9 +399,8 @@ function update92to921() {
       // TODO: can be done when DB::update() supports JOINs
       $migration->addPostQuery(
          "UPDATE glpi_items_operatingsystems AS ios
-            INNER JOIN `$table` as item ON ios.items_id = item.id AND ios.itemtype = '$itemtype'
-            SET ios.entities_id = item.entities_id, ios.is_recursive = item.is_recursive
-         "
+            INNER JOIN `$table` as item ON ios.items_id = item.id AND ios.itemtype = ".$DB->quoteValue($itemtype)."
+            SET ios.entities_id = item.entities_id, ios.is_recursive = item.is_recursive"
       );
    }
 

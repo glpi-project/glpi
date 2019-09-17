@@ -34,7 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-
 /**
  * CommonDevice Class
  * for Device*class
@@ -186,7 +185,7 @@ abstract class CommonDevice extends CommonDropdown {
          [
             'SELECT'    => [
                'itemtype',
-               new QueryExpression('GROUP_CONCAT(DISTINCT ' . DBmysql::quoteName('items_id') . ') AS ids'),
+               new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
             ],
             'FROM'      => $linktable,
             'WHERE'     => [

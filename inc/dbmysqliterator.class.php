@@ -121,6 +121,7 @@ class DBmysqlIterator implements Iterator, Countable {
       }
 
       if ($is_legacy) {
+         //Toolbox::Deprecated("Deprecated usage of SQL in DB/request (full query)");
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          //   trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
          //}
@@ -145,6 +146,7 @@ class DBmysqlIterator implements Iterator, Countable {
          $count    = '';
          $join     = [];
          $groupby  = '';
+         $having   = '';
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
                switch ((string)$key) {
@@ -187,6 +189,11 @@ class DBmysqlIterator implements Iterator, Countable {
                      unset($crit[$key]);
                      break;
 
+                  case 'HAVING' :
+                     $having = $val;
+                     unset($crit[$key]);
+                     break;
+
                   case 'GROUP' :
                   case 'GROUPBY' :
                      $groupby = $val;
@@ -218,7 +225,7 @@ class DBmysqlIterator implements Iterator, Countable {
             } else {
                $this->sql .= "*";
             }
-            $this->sql .= ") AS $count";
+            $this->sql .= ") AS " . DBmysql::quoteName($count);
             $first = false;
          }
          if (!$count || $count && is_array($field)) {
@@ -293,6 +300,11 @@ class DBmysqlIterator implements Iterator, Countable {
             $this->sql .= " GROUP BY $groupby";
          }
 
+         // HAVING criteria list
+         if ($having) {
+            $this->sql .= " HAVING ".$this->analyseCrit($having);
+         }
+
          // ORDER BY
          if ($orderby !== null) {
             $this->sql .= $this->handleOrderClause($orderby);
@@ -310,33 +322,35 @@ class DBmysqlIterator implements Iterator, Countable {
    /**
     * Handle "ORDER BY" SQL clause
     *
-    * @param string|array $clause Clause parameters
+    * @param string|array|QueryExpression $clause Clause parameters
     *
     * @reutn string
     */
    public function handleOrderClause($clause) {
-      if (!is_array($clause)) {
-         $clause = [$clause];
-      }
-
       $cleanorderby = [];
-      foreach ($clause as $o) {
-         if (is_string($o)) {
-            $fields = explode(',', $o);
-            foreach ($fields as $field) {
-               $new = '';
-               $tmp = explode(' ', trim($field));
-               $new .= DBmysql::quoteName($tmp[0]);
-               // ASC OR DESC added
-               if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
-                  $new .= ' ' . $tmp[1];
+      if ($clause instanceof \QueryExpression) {
+         $cleanorderby = [$clause->getValue()];
+      } else {
+         if (!is_array($clause)) {
+            $clause = [$clause];
+         }
+
+         foreach ($clause as $o) {
+            if ($o instanceof \QueryExpression) {
+               $cleanorderby[] = $o->getValue();
+            } else {
+               $fields = explode(',', $o);
+               foreach ($fields as $field) {
+                  $new = '';
+                  $tmp = explode(' ', trim($field));
+                  $new .= DBmysql::quoteName($tmp[0]);
+                  // ASC OR DESC added
+                  if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
+                     $new .= ' '.$tmp[1];
+                  }
+                  $cleanorderby[] = $new;
                }
-               $cleanorderby[] = $new;
             }
-         } else if ($o instanceof QueryExpression) {
-            $cleanorderby[] = $o->getValue();
-         } else {
-            trigger_error("Invalid order clause", E_USER_ERROR);
          }
       }
 
@@ -437,7 +451,7 @@ class DBmysqlIterator implements Iterator, Countable {
       $names = preg_split('/ AS /i', $f);
       $expr  = "$t(".$this->handleFields(0, $names[0])."$suffix)";
       if (isset($names[1])) {
-         $expr .= " AS {$names[1]}";
+         $expr .= " AS " . DBmysql::quoteName($names[1]);
       }
 
       return $expr;
@@ -536,26 +550,40 @@ class DBmysqlIterator implements Iterator, Countable {
          // NULL condition
          $criterion = 'IS NULL';
       } else {
-         $criterion = "= %crit_value";
          if (is_array($value)) {
             if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
-               $criterion = "{$value[0]} %crit_value";
-               $crit_value = $this->analyzeCriterionValue($value[1]);
+               if ($value[1] instanceof \AbstractQuery) {
+                  $criterion = "{$value[0]} " . $value[1]->getQuery();
+               } else if ($value[1] instanceof \QueryExpression) {
+                  $criterion = "{$value[0]} " . $value[1]->getValue();
+               } else if (DBmysql::isNameQuoted($value[1])) { //FIXME: database related
+                  $criterion = "{$value[0]} " . $value[1];
+               } else if ($value[1] instanceof \QueryParam) {
+                   $criterion = "{$value[0]} " . $value[1]->getValue();
+               } else {
+                  $criterion = "{$value[0]} ".$this->analyzeCriterionValue($value[1]);
+               }
             } else {
                if (!count($value)) {
                   throw new \RuntimeException('Empty IN are not allowed');
                }
                // Array of Values
-               $criterion = "IN (%crit_value)";
-               $crit_value = $this->analyzeCriterionValue($value);
+               $clause = array_map([DBmysql::class, 'quoteValue'], $value);
+               $criterion = 'IN (' . implode(', ', $clause) . ')';
             }
          } else {
-            if ($value instanceof \QuerySubquery) {
-               $criterion = "IN %crit_value";
+            if ($value instanceof \AbstractQuery) {
+               $criterion = "IN " . $value->getQuery();
+            } else if ($value instanceof \QueryExpression) {
+                $criterion = "= " . $value->getValue();
+            } else if (DBmysql::isNameQuoted($value)) { //FIXME: database related
+                $criterion = "= " . $value;
+            } else if ($value instanceof \QueryParam) {
+                $criterion = "= " . $value->getValue();
+            } else {
+               $criterion = "= ".$this->analyzeCriterionValue($value);
             }
-            $crit_value = $this->analyzeCriterionValue($value);
          }
-         $criterion = str_replace('%crit_value', $crit_value, $criterion);
       }
 
       return $criterion;
@@ -568,8 +596,6 @@ class DBmysqlIterator implements Iterator, Countable {
             $value[$k] = DBmysql::quoteValue($v);
          }
          $crit_value = implode(', ', $value);
-      } else if ($value instanceof \AbstractQuery) {
-         $crit_value = $value->getQuery();
       } else {
          $crit_value = DBmysql::quoteValue($value);
       }
@@ -638,8 +664,13 @@ class DBmysqlIterator implements Iterator, Countable {
             $f1 = $values[$t1];
             $t2 = $keys[1];
             $f2 = $values[$t2];
-            return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
-                     (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
+            if ($f2 instanceof QuerySubQuery) {
+               return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
+                  $f2->getQuery();
+            } else {
+               return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
+                  (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
+            }
          } else if (count($values) == 3) {
             $condition = array_pop($values);
             $fkey = $this->analyseFkey($values);

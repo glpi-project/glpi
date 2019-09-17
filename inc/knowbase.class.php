@@ -257,7 +257,7 @@ JAVASCRIPT;
                'FROM'   => KnowbaseItem::getTable(),
                'WHERE'  => [
                   KnowbaseItem::getTableField($cat_fk) => new QueryExpression(
-                     DB::quoteName(KnowbaseItemCategory::getTableField('id'))
+                     $DB->quoteName(KnowbaseItemCategory::getTableField('id'))
                   ),
                ]
             ],

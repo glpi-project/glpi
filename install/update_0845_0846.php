@@ -38,35 +38,17 @@
 function update0845to0846() {
    global $DB, $migration;
 
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+   $updateresult = true;
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.84.6'));
    $migration->setVersion('0.84.6');
 
-   $backup_tables = false;
-   $newtables     = [];
-
-   foreach ($newtables as $new_table) {
-      // rename new tables if exists ?
-      if ($DB->tableExists($new_table)) {
-         $migration->dropTable("backup_$new_table");
-         $migration->displayWarning("$new_table table already exists. ".
-                                    "A backup have been done to backup_$new_table.");
-         $backup_tables = true;
-         $query         = $migration->renameTable("$new_table", "backup_$new_table");
-      }
-   }
-   if ($backup_tables) {
-      $migration->displayWarning("You can delete backup tables if you have no need of them.",
-                                 true);
-   }
-
+   // TODO : can be improved once DBmysql->update() supports JOIN
    // correct entities_id in documents_items
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
                    INNER JOIN `glpi_documents` as `doc`
-                     ON  `doc`.`id` = `doc_i`.`documents_id`
+                   ON  `doc`.`id` = `doc_i`.`documents_id`
                    SET `doc_i`.`entities_id` = `doc`.`entities_id`,
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
    $DB->queryOrDie($query_doc_i, "0.84.6 change entities_id in documents_items");
@@ -85,11 +67,14 @@ function update0845to0846() {
                     'qualification' => CommonITILObject::QUALIFICATION];
    // Migrate datas
    foreach ($status as $old => $new) {
-      $query = "UPDATE `glpi_tickettemplatepredefinedfields`
-                SET `value` = '$new'
-                WHERE `value` = '$old'
-                      AND `num` = 12";
-      $DB->queryOrDie($query, "0.84.6 status in glpi_tickettemplatepredefinedfields $old to $new");
+      $DB->updateOrDie("glpi_tickettemplatepredefinedfields", [
+            'value' => $new
+         ], [
+            'value'  => $old,
+            'num'    => 12
+         ],
+         "0.84.6 status in glpi_tickettemplatepredefinedfields $old to $new"
+      );
    }
    foreach (['glpi_ipaddresses', 'glpi_networknames'] as $table) {
       $migration->dropKey($table, 'item');

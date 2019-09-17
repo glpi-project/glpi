@@ -498,15 +498,16 @@ class NotificationTemplate extends CommonDBTM {
    function getByLanguage($language) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_notificationtemplatetranslations`
-                WHERE `notificationtemplates_id` = '".$this->getField('id')."'
-                      AND `language` IN ('$language','')
-                ORDER BY `language` DESC
-                LIMIT 1";
-
-      $iterator = $DB->request($query);
-      if ($iterator->numrows()) {
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_notificationtemplatetranslations',
+         'WHERE'  => [
+            'notificationtemplates_id' => $this->getField('id'),
+            'language'                 => [$language, '']
+         ],
+         'ORDER'  => 'language DESC',
+         'LIMIT'  => 1
+      ]);
+      if (count($iterator)) {
          return $iterator->next();
       }
 

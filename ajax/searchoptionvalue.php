@@ -69,7 +69,7 @@ if (isset($_POST['searchtype'])) {
       case "lessthan" :
       case "under" :
       case "notunder" :
-         if (!$display && isset($searchopt['field'])) {
+         if (isset($searchopt['field'])) {
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {
                // Add mygroups choice to searchopt
@@ -114,7 +114,7 @@ if (isset($_POST['searchtype'])) {
             }
 
             // Standard datatype usage
-            if (!$display && isset($searchopt['datatype'])) {
+            if (isset($searchopt['datatype'])) {
                switch ($searchopt['datatype']) {
 
                   case "date" :

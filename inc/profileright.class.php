@@ -83,11 +83,20 @@ class ProfileRight extends CommonDBChild {
    }
 
    /**
-    * @param $profiles_id
-    * @param $rights         array
-   **/
+    * Get rights for a profile
+    *
+    * @param integer $profiles_id Profile ID
+    * @param array   $rights      Rihts
+    *
+    * @return array
+    */
    static function getProfileRights($profiles_id, array $rights = []) {
       global $DB;
+
+      if (!version_compare(Config::getCurrentDBVersion(), '0.84', '>=')) {
+         //table does not exists.
+         return [];
+      }
 
       $query = [
          'FROM'   => 'glpi_profilerights',
@@ -121,15 +130,17 @@ class ProfileRight extends CommonDBChild {
           'FROM'     => Profile::getTable()
       ]);
 
+      $stmt = null;
       while ($profile = $iterator->next()) {
          $profiles_id = $profile['id'];
          foreach ($rights as $name) {
-            $res = $DB->insert(
-               self::getTable(), [
-                  'profiles_id'  => $profiles_id,
-                  'name'         => $name
-               ]
-            );
+            if ($stmt === null) {
+               $stmt = $DB->prepare($DB->buildInsert(self::getTable(), [new QueryParam(), new QueryParam()]));
+            }
+
+            $stmt->bind_param('ss', $profiles_id, $name);
+            $res = $stmt->execute();
+
             if (!$res) {
                $ok = false;
             }
@@ -204,17 +215,19 @@ class ProfileRight extends CommonDBChild {
     *
     * @return boolean
    **/
-   static function updateProfileRightsAsOtherRights($newright, $initialright, $condition = '') {
+   static function updateProfileRightsAsOtherRights($newright, $initialright, array $condition = []) {
       global $DB;
 
       $profiles = [];
       $ok       = true;
-      if (empty($condition)) {
-         $condition = "`name` = '$initialright'";
-      } else {
-         $condition = "`name` = '$initialright' AND $condition";
-      }
-      foreach ($DB->request('glpi_profilerights', $condition) as $data) {
+
+      $criteria = [
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['name' => $initialright] + $condition
+      ];
+      $iterator = $DB->request($criteria);
+
+      while ($data = $iterator->next()) {
          $profiles[$data['profiles_id']] = $data['rights'];
       }
       if (count($profiles)) {
@@ -241,20 +254,31 @@ class ProfileRight extends CommonDBChild {
    static function fillProfileRights($profiles_id) {
       global $DB;
 
-      $query = "SELECT DISTINCT POSSIBLE.`name` AS NAME
-                FROM `glpi_profilerights` AS POSSIBLE
-                WHERE NOT EXISTS (SELECT *
-                                  FROM `glpi_profilerights` AS CURRENT
-                                  WHERE CURRENT.`profiles_id` = '$profiles_id'
-                                        AND CURRENT.`NAME` = POSSIBLE.`NAME`)";
+      $subq =new \QuerySubQuery([
+         'FROM'   => 'glpi_profilerights AS CURRENT',
+         'WHERE'  => [
+            'CURRENT.profiles_id'   => $profiles_id,
+            'CURRENT.NAME'          => new \QueryExpression('POSSIBLE.NAME')
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $right) {
-         $DB->insert(
-            self::getTable(), [
-               'profiles_id'  => $profiles_id,
-               'name'         => $right['NAME']
-            ]
-         );
+      $iterator = $DB->request([
+         'SELECT'          => 'POSSIBLE.name AS NAME',
+         'DISTINCT'        => true,
+         'FROM'            => 'glpi_profilerights AS POSSIBLE',
+         'WHERE'           => [
+            new \QueryExpression('NOT EXISTS ' . $subq->getQuery())
+         ]
+      ]);
+
+      $stmt = null;
+      while ($right = $iterator->next()) {
+         if ($stmt === null) {
+            $stmt = $DB->prepare($DB->buildInsert(self::getTable(), [new QueryParam(), new QueryParam()]));
+         }
+
+         $stmt->bind_param('ss', $profiles_id, $rights['NAME']);
+         $stmt->execute();
       }
    }
 
@@ -349,5 +373,4 @@ class ProfileRight extends CommonDBChild {
    function getLogTypeID() {
       return ['Profile', $this->fields['profiles_id']];
    }
-
 }

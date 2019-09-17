@@ -45,16 +45,17 @@ function update940to941() {
    $migration->setVersion('9.4.1');
 
    /** Add a search option for profile id */
-   $migration->addPostQuery($DB->buildUpdate(
-      'glpi_displaypreferences',
-      [
-         'num' => '5'
-      ],
-      [
-         'num' => '2',
-         'itemtype' => 'Profile'
-      ]
-   ));
+   $set = ['num' => 5];
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_displaypreferences',
+         $set,
+         [
+            'num' => '2',
+            'itemtype' => 'Profile'
+         ]
+      )
+   );
 
    /** Fix URL of images inside ITIL objects contents */
    // There is an exact copy of this process in "update941to942()".

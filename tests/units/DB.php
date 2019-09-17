@@ -317,4 +317,116 @@ class DB extends \GLPITestCase {
             ->string($this->testedInstance->escape("First\rSecond"))->isIdenticalTo("First\\rSecond")
             ->string($this->testedInstance->escape('Hi, "you"'))->isIdenticalTo('Hi, \\"you\\"');
    }
+
+   public function testIndexExists() {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+         ->boolean($this->testedInstance->indexExists('glpi_configs', 'fakeField'))->isFalse()
+         ->boolean($this->testedInstance->indexExists('glpi_configs', 'id'))->isTrue()
+         ->boolean($this->testedInstance->indexExists('glpi_configs', 'context'))->isFalse()
+         ->boolean($this->testedInstance->indexExists('glpi_configs', 'name'))->isFalse()
+         ->boolean($this->testedInstance->indexExists('glpi_configs', ['name', 'context']))->isTrue()
+         ->boolean($this->testedInstance->indexExists('glpi_groups_tickets', ['tickets_id', 'type'], 'unicity'))->isTrue()
+         ->boolean($this->testedInstance->indexExists('glpi_groups_tickets', ['tickets_id', 'type', 'groups_id']))->isTrue()
+         ->boolean($this->testedInstance->indexExists('glpi_configs', 'value'))->isFalse()
+         ->boolean($this->testedInstance->indexExists('glpi_users', 'locations_id'))->isTrue()
+         ->boolean($this->testedInstance->indexExists('glpi_users', [], 'unicityloginauth'))->isTrue()
+         ->when(
+            function () {
+               $this->boolean($this->testedInstance->indexExists('fakeTable', 'id'))->isFalse();
+            }
+         )->error
+            ->withType(E_USER_WARNING)
+            ->exists();
+   }
+
+   public function testListIndexes() {
+       $this
+         ->if($this->newTestedInstance)
+         ->then
+         ->array($this->testedInstance->listIndexes('glpi_groups_tickets'))
+         ->isEqualTo([
+            'PRIMARY' => [
+               0 => 'id',
+            ],
+            'unicity' => [
+               0 => 'tickets_id',
+               1 => 'type',
+               2 => 'groups_id',
+            ],
+            'group' => [
+               0 => 'groups_id',
+               1 => 'type',
+            ]
+         ]);
+
+       $this
+          ->array($this->testedInstance->listIndexes('glpi_users'))
+         ->isEqualTo([
+            'PRIMARY' => [
+               0 => 'id'
+            ],
+            'unicityloginauth' => [
+               0 => 'name',
+               1 => 'authtype',
+               2 => 'auths_id'
+            ],
+            'firstname' => [
+               0 => 'firstname'
+            ],
+            'realname' => [
+               0 => 'realname'
+            ],
+            'entities_id' => [
+               0 => 'entities_id'
+            ],
+            'profiles_id' => [
+               0 => 'profiles_id'
+            ],
+            'locations_id' => [
+               0 => 'locations_id'
+            ],
+            'usertitles_id' => [
+               0 => 'usertitles_id'
+            ],
+            'usercategories_id' => [
+               0 => 'usercategories_id'
+            ],
+            'is_deleted' => [
+               0 => 'is_deleted'
+            ],
+            'is_active' => [
+               0 => 'is_active'
+            ],
+            'date_mod' => [
+               0 => 'date_mod'
+            ],
+            'authitem' => [
+               0 => 'authtype',
+               1 => 'auths_id'
+            ],
+            'is_deleted_ldap' => [
+               0 => 'is_deleted_ldap'
+            ],
+            'date_creation' => [
+               0 => 'date_creation'
+            ],
+            'begin_date' => [
+               0 => 'begin_date'
+            ],
+            'end_date' => [
+               0 => 'end_date'
+            ],
+            'sync_field' => [
+               0 => 'sync_field'
+            ],
+            'groups_id' => [
+               0 => 'groups_id'
+            ],
+            'users_id_supervisor' => [
+               0 => 'users_id_supervisor'
+            ]
+         ]);
+   }
 }

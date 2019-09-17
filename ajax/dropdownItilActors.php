@@ -42,6 +42,7 @@ if (isset($_POST["type"])
     && isset($_POST["actortype"])
     && isset($_POST["itemtype"])) {
    $rand = mt_rand();
+   /** @var CommonITILObject $item */
    if ($item = getItemForItemtype($_POST["itemtype"])) {
       switch ($_POST["type"]) {
          case "user" :

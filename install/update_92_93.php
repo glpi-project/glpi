@@ -36,8 +36,7 @@
  * @return bool for success (will die for most error)
 **/
 function update92to93() {
-   global $DB, $migration, $CFG_GLPI;
-   $dbutils = new DbUtils();
+   global $DB, $migration;
 
    $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
@@ -602,8 +601,9 @@ function update92to93() {
    if (!countElementsInTable('glpi_plugs')) {
       $plugs = ['C13', 'C15', 'C19'];
       foreach ($plugs as $plug) {
+         $params = ['name' => $plug];
          $migration->addPostQuery(
-            $DB->buildInsert('glpi_plugs', ['name' => $plug])
+            $DB->buildInsert('glpi_plugs', $params)
          );
       }
    }
@@ -716,13 +716,15 @@ function update92to93() {
    }
    $migration->addKey('glpi_items_disks', 'itemtype');
    $migration->addKey('glpi_items_disks', ['itemtype', 'items_id'], 'item');
-   $migration->addPostQuery(
-      $DB->buildUpdate(
-         'glpi_items_disks',
-         ['itemtype' => 'Computer'],
-         ['itemtype' => null]
-      )
+
+   $values = ['itemtype' => 'Computer'];
+   $where = ['itemtype' => null];
+   $update = $DB->buildUpdate(
+      'glpi_items_disks',
+      $values,
+      $where
    );
+   $migration->addPostQuery($update, $values);
    /** /Migrate computerdisks to items_disks */
 
    /** Add Item_Device* display preferences */
@@ -747,21 +749,8 @@ function update92to93() {
    }
    /** /Add Item_Device* display preferences */
 
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-         ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-         ]);
-      }
-   }
-
    // upgrade for users multi-domains
-   if (!isIndex('glpi_users', 'unicityloginauth')) {
+   if (!$DB->indexExists('glpi_users', [], 'unicityloginauth')) {
       $migration->dropKey("glpi_users", "unicity");
       $migration->addKey(
          'glpi_users',
@@ -771,10 +760,11 @@ function update92to93() {
       );
    }
    $migration->addField('glpi_authldaps', 'inventory_domain', 'string');
+   $set = ['glpi_users.authtype' => 1];
    $migration->addPostQuery(
       $DB->buildUpdate(
          "glpi_users",
-         ["glpi_users.authtype" => 1],
+         $set,
          ["glpi_users.authtype" => 0]
       )
    );
@@ -863,6 +853,8 @@ function update92to93() {
    /** /Clean item rack relation on deleted items */
 
    // ************ Keep it at the end **************
+   $migration->updateDisplayPrefs($ADDTODISPLAYPREF);
+
    $migration->executeMigration();
 
    return $updateresult;

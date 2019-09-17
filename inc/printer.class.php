@@ -129,31 +129,43 @@ class Printer  extends CommonDBTM {
       $tabend = ['networkports_id_1' => 'networkports_id_2',
                  'networkports_id_2' => 'networkports_id_1'];
       foreach ($tabend as $enda => $endb) {
+         $criteria = [
+            'SELECT'       => [
+               'itemtype',
+               new QueryExpression('GROUP_CONCAT(DISTINCT '.$DB->quoteName('items_id').') AS '.$DB->quoteName('ids'))
+            ],
+            'FROM'         => 'glpi_networkports_networkports',
+            'INNER JOIN'   => [
+               'glpi_networkports'  => [
+                  'ON'  => [
+                     'glpi_networkports_networkports' => $endb,
+                     'glpi_networkports'              => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'        => [
+               'glpi_networkports_networkports.'.$enda   => new QuerySubQuery([
+                  'SELECT' => 'id',
+                  'FROM'   => 'glpi_networkports',
+                  'WHERE'  => [
+                     'itemtype'  => $this->getType(),
+                     'items_id'  => $ID
+                  ]
+               ])
+            ],
+            'GROUPBY'      => 'itemtype'
+         ];
 
-         $sql = "SELECT `itemtype`,
-                        GROUP_CONCAT(DISTINCT `items_id`) AS ids
-                 FROM `glpi_networkports_networkports`,
-                      `glpi_networkports`
-                 WHERE `glpi_networkports_networkports`.`$endb` = `glpi_networkports`.`id`
-                       AND `glpi_networkports_networkports`.`$enda`
-                            IN (SELECT `id`
-                                FROM `glpi_networkports`
-                                WHERE `itemtype` = '".$this->getType()."'
-                                      AND `items_id` = '$ID')
-                 GROUP BY `itemtype`";
-         $res = $DB->query($sql);
+         $iterator = $DB->request($criteria);
+         while ($data = $iterator->next()) {
+            $itemtable = getTableForItemType($data["itemtype"]);
+            if ($item = getItemForItemtype($data["itemtype"])) {
+               // For each itemtype which are entity dependant
+               if ($item->isEntityAssign()) {
 
-         if ($res) {
-            while ($data = $DB->fetchAssoc($res)) {
-               $itemtable = getTableForItemType($data["itemtype"]);
-               if ($item = getItemForItemtype($data["itemtype"])) {
-                  // For each itemtype which are entity dependant
-                  if ($item->isEntityAssign()) {
-
-                     if (countElementsInTable($itemtable, ['id' => $data["ids"],
-                                              'NOT' => [ 'entities_id' => $entities]]) > 0) {
-                        return false;
-                     }
+                  if (countElementsInTable($itemtable, ['id' => $data["ids"],
+                                             'NOT' => [ 'entities_id' => $entities]]) > 0) {
+                     return false;
                   }
                }
             }
@@ -232,7 +244,6 @@ class Printer  extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-
       global $DB;
 
       $DB->update(
@@ -723,8 +734,8 @@ class Printer  extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => 'AND NEWTABLE.`date_use` IS NOT NULL
-                                     AND NEWTABLE.`date_out` IS NULL'
+            'condition'          => ['AND' => ['NOT' => ['NEWTABLE.date_use' => null],
+                                     'NEWTABLE.date_out' => null]]
          ]
       ];
 
@@ -739,7 +750,7 @@ class Printer  extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => 'AND NEWTABLE.`date_out` IS NOT NULL'
+            'condition'          => ['AND' => ['NOT' => ['NEWTABLE.date_out' => null]]]
          ]
       ];
 

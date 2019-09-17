@@ -493,7 +493,7 @@ class SavedSearch extends CommonDBTM {
       switch ($type) {
          case self::SEARCH:
          case self::ALERT:
-            // Check if all datas are valid
+            // Check if all data are valid
             $opt            = Search::getCleanedOptions($this->fields['itemtype']);
             $query_tab_save = $query_tab;
             $partial_load   = false;
@@ -1440,6 +1440,7 @@ class SavedSearch extends CommonDBTM {
     * @return string restrict to add
    **/
    static function addVisibilityRestrict() {
+      global $DB;
       //not deprecated because used in Search
 
       if (Session::haveRight('config', UPDATE)) {
@@ -1451,7 +1452,7 @@ class SavedSearch extends CommonDBTM {
       unset($criteria['LEFT JOIN']);
       $criteria['FROM'] = self::getTable();
 
-      $it = new \DBmysqlIterator(null);
+      $it = new \DBmysqlIterator($DB);
       $it->buildQuery($criteria);
       $sql = $it->getSql();
       $sql = preg_replace('/.*WHERE /', '', $sql);

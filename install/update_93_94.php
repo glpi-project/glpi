@@ -36,13 +36,11 @@
  * @return bool for success (will die for most error)
 **/
 function update93to94() {
-   global $DB, $migration, $CFG_GLPI;
-   $dbutils = new DbUtils();
+   global $DB, $migration;
 
-   $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
-   $config_to_drop = [];
+   $config_to_drop   = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.4.0'));
@@ -156,7 +154,7 @@ function update93to94() {
          "varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
          [
             'after'  => 'id',
-            'update' => "'Change'",
+            'update' => 'Change',
          ]
       );
 
@@ -253,7 +251,7 @@ function update93to94() {
          "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
          [
             'after'  => 'id',
-            'update' => "'Ticket'", // Defines value for all existing elements
+            'update' => 'Ticket', // Defines value for all existing elements
          ]
       );
 
@@ -325,19 +323,6 @@ function update93to94() {
    /** Search engine on plugins */
    $ADDTODISPLAYPREF['Plugin'] = [2, 3, 4, 5, 6, 7, 8];
 
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-         ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-         ]);
-      }
-   }
-
    /** Renaming olas / slas foreign keys that does not match naming conventions */
    $olas_slas_mapping = [
       'olas_tto_id'      => 'olas_id_tto',
@@ -354,27 +339,21 @@ function update93to94() {
       $migration->dropKey('glpi_tickets', $old_fieldname);
       $migration->addKey('glpi_tickets', $new_fieldname);
 
+      $set = ['criteria' => $new_fieldname];
       $migration->addPostQuery(
          $DB->buildUpdate(
             'glpi_rulecriterias',
-            [
-               'criteria' => $new_fieldname
-            ],
-            [
-               'criteria' => $old_fieldname
-            ]
+            $set,
+            ['criteria' => $old_fieldname]
          )
       );
 
+      $set = ['field' => $new_fieldname];
       $migration->addPostQuery(
          $DB->buildUpdate(
             'glpi_ruleactions',
-            [
-               'field' => $new_fieldname
-            ],
-            [
-               'field' => $old_fieldname
-            ]
+            $set,
+            ['field' => $old_fieldname]
          )
       );
    }
@@ -409,6 +388,8 @@ function update93to94() {
    }
 
    // ************ Keep it at the end **************
+   $migration->updateDisplayPrefs($ADDTODISPLAYPREF);
+
    $migration->executeMigration();
 
    return $updateresult;

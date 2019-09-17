@@ -332,7 +332,7 @@ class RuleRight extends Rule {
       $actions['groups_id']['name']                         = __('Default group');
       $actions['groups_id']['linkfield']                    = 'groups_id';
       $actions['groups_id']['type']                         = 'dropdown';
-      $actions['groups_id']['condition']                    = "`is_usergroup`='1'";
+      $actions['groups_id']['condition']                    = ['is_usergroup' => 1];
 
       $actions['_profiles_id_default']['table']             = 'glpi_profiles';
       $actions['_profiles_id_default']['field']             = 'name';

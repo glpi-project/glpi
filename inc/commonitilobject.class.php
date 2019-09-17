@@ -562,6 +562,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return integer
    **/
    private function countActiveObjectsFor(CommonITILActor $linkclass, $id, $role) {
+      global $DB;
 
       $itemtable = $this->getTable();
       $itemfk    = $this->getForeignKeyField();
@@ -570,7 +571,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return countElementsInTable(
          [$itemtable, $linktable], [
-            "$linktable.$itemfk"    => new \QueryExpression(DBmysql::quoteName("$itemtable.id")),
+            "$linktable.$itemfk"    => new \QueryExpression($DB->quoteName("$itemtable.id")),
             "$linktable.$field"     => $id,
             "$linktable.type"       => $role,
             "$itemtable.is_deleted" => 0,
@@ -3174,6 +3175,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 0.85
    **/
    function getSearchOptionsMain() {
+      global $DB;
 
       $tab = [];
 
@@ -3294,12 +3296,13 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Time to resolve exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF(TABLE.`time_to_resolve` IS NOT NULL
-                                            AND TABLE.`status` <> 4
-                                            AND (TABLE.`solvedate` > TABLE.`time_to_resolve`
-                                                 OR (TABLE.`solvedate` IS NULL
-                                                      AND TABLE.`time_to_resolve` < NOW())),
-                                            1, 0)'
+         'computation'        =>
+            'IF(' . $DB->quoteName('TABLE.time_to_resolve') . ' IS NOT NULL
+               AND ' . $DB->quoteName('TABLE.status') . ' <> 4
+               AND (' . $DB->quoteName('TABLE.solvedate') . ' > ' . $DB->quoteName('TABLE.time_to_resolve') . '
+                     OR (' . $DB->quoteName('TABLE.solvedate') . ' IS NULL
+                        AND ' . $DB->quoteName('TABLE.time_to_resolve') . ' < NOW())),
+               1, 0)'
       ];
 
       $tab[] = [
@@ -3330,7 +3333,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (!Session::isCron() // no filter for cron
           && Session::getCurrentInterface() == 'helpdesk') {
-         $newtab['condition']         = "`is_helpdeskvisible`";
+         $newtab['condition']         = ['is_helpdeskvisible' => 1];
       }
       $tab[] = $newtab;
 
@@ -3406,6 +3409,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 0.85
    **/
    function getSearchOptionsSolution() {
+      global $DB;
 
       $tab = [];
 
@@ -3473,14 +3477,18 @@ abstract class CommonITILObject extends CommonDBTM {
          'joinparams'          => [
             'jointype'  => 'itemtype_item',
             // Get only last created solution
-            'condition' => '
-               AND NEWTABLE.`id` = (
-                  SELECT `id` FROM `' . ITILSolution::getTable() . '`
-                  WHERE `' . ITILSolution::getTable() . '`.`items_id` = REFTABLE.`id`
-                     AND `' . ITILSolution::getTable() . '`.`itemtype` = \'' . static::getType() . '\'
-                  ORDER BY `' . ITILSolution::getTable() . '`.`id` DESC
-                  LIMIT 1
-               )'
+            'condition' => [
+               'NEWTABLE.id'  => ['=', new QuerySubQuery([
+                  'SELECT' => 'id',
+                  'FROM'   => ITILSolution::getTable(),
+                  'WHERE'  => [
+                     ITILSolution::getTable() . '.items_id' => new QueryExpression($DB->quoteName('REFTABLE.id')),
+                     ITILSolution::getTable() . '.itemtype' => static::getType()
+                  ],
+                  'ORDER'  => ITILSolution::getTable() . '.id DESC',
+                  'LIMIT'  => 1
+               ])]
+            ]
          ]
       ];
 
@@ -3552,7 +3560,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->userlinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
                ]
             ]
          ]
@@ -3578,7 +3586,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->grouplinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
                ]
             ]
          ]
@@ -3628,7 +3636,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->userlinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::OBSERVER
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::OBSERVER]
                ]
             ]
          ]
@@ -3648,7 +3656,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->grouplinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::OBSERVER
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::OBSERVER]
                ]
             ]
          ]
@@ -3673,7 +3681,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->userlinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
                ]
             ]
          ]
@@ -3692,7 +3700,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->supplierlinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
                ]
             ]
          ]
@@ -3712,7 +3720,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'table'              => getTableForItemType($this->grouplinkclass),
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+                  'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
                ]
             ]
          ]
@@ -3732,7 +3740,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+            'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
          ]
       ];
 
@@ -3745,7 +3753,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+            'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
          ]
       ];
 
@@ -7377,7 +7385,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    /**
-    * Number of tasks of the objec
+    * Number of tasks of the object
     *
     * @param boolean $with_private true : all followups / false : only public ones (default 1)
     *
@@ -7666,4 +7674,84 @@ abstract class CommonITILObject extends CommonDBTM {
    public static function getTemplateFormFieldName() {
       return '_' . strtolower(static::getType()) . 'template';
    }
+
+   /**
+    * Get common request criteria
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   public static function getCommonCriteria() {
+      $fk = self::getForeignKeyField();
+      $gtable = str_replace('glpi_', 'glpi_groups_', static::getTable());
+      $itable = str_replace('glpi_', 'glpi_items_', static::getTable());
+      if (self::getType() == 'Change') {
+         $gtable = 'glpi_changes_groups';
+         $itable = 'glpi_changes_items';
+      }
+      $utable = static::getTable() . '_users';
+      $stable = static::getTable() . '_suppliers';
+      if (self::getType() == 'Ticket') {
+         $stable = 'glpi_suppliers_tickets';
+      }
+      $table = self::getTable();
+      $criteria = [
+         'SELECT'          => [
+            "$table.*",
+            'glpi_itilcategories.completename AS catname'
+         ],
+         'DISTINCT'        => true,
+         'FROM'            => $table,
+         'LEFT JOIN'       => [
+            $gtable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $gtable  => $fk
+               ]
+            ],
+            $utable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $utable  => $fk
+               ]
+            ],
+            $stable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $stable  => $fk
+               ]
+            ],
+            'glpi_itilcategories'      => [
+               'ON' => [
+                  $table                  => 'itilcategories_id',
+                  'glpi_itilcategories'   => 'id'
+               ]
+            ],
+            $itable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $itable  => $fk
+               ]
+            ]
+         ],
+         'ORDERBY'            => "$table.date_mod DESC"
+      ];
+      if (count($_SESSION["glpiactiveentities"]) > 1) {
+         $criteria['LEFT JOIN']['glpi_entities'] = [
+            'ON' => [
+               'glpi_entities'   => 'id',
+               $table            => 'entities_id'
+            ]
+         ];
+         $criteria['SELECT'] = array_merge(
+            $criteria['SELECT'], [
+               'glpi_entities.completename AS entityname',
+               "$table.entities_id AS entityID"
+            ]
+         );
+      }
+      return $criteria;
+   }
+
 }

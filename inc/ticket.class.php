@@ -647,7 +647,7 @@ class Ticket extends CommonITILObject {
                case 'User' :
                   $nb = countElementsInTable(
                      ['glpi_tickets', 'glpi_tickets_users'], [
-                        'glpi_tickets_users.tickets_id'  => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                        'glpi_tickets_users.tickets_id'  => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
                         'glpi_tickets_users.users_id'    => $item->getID(),
                         'glpi_tickets_users.type'        => CommonITILActor::REQUESTER
                      ] + getEntitiesRestrictCriteria(self::getTable())
@@ -658,7 +658,7 @@ class Ticket extends CommonITILObject {
                case 'Supplier' :
                   $nb = countElementsInTable(
                      ['glpi_tickets', 'glpi_suppliers_tickets'], [
-                        'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                        'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
                         'glpi_suppliers_tickets.suppliers_id'  => $item->getID()
                      ] + getEntitiesRestrictCriteria(self::getTable())
                   );
@@ -688,7 +688,7 @@ class Ticket extends CommonITILObject {
                case 'Group' :
                   $nb = countElementsInTable(
                      ['glpi_tickets', 'glpi_groups_tickets'], [
-                        'glpi_groups_tickets.tickets_id' => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                        'glpi_groups_tickets.tickets_id' => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
                         'glpi_groups_tickets.groups_id'  => $item->getID(),
                         'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER
                      ] + getEntitiesRestrictCriteria(self::getTable())
@@ -2128,7 +2128,7 @@ class Ticket extends CommonITILObject {
     * @param $items_id  integer  ID of the Item
     * @param $days      integer  day number
     *
-    * @return integer
+    * @return array
    **/
    function getActiveOrSolvedLastDaysTicketsForItem($itemtype, $items_id, $days) {
       global $DB;
@@ -2248,7 +2248,7 @@ class Ticket extends CommonITILObject {
                   $this->getClosedStatusArray()
             ),
             new \QueryExpression(
-               "ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW()"
+               "ADDDATE(".$DB->quoteName($this->getTable().".solvedate").", INTERVAL $days DAY) > NOW()"
             ),
             'NOT'                         => [
                $this->getTable() . '.solvedate' => null
@@ -2644,13 +2644,13 @@ class Ticket extends CommonITILObject {
          'name'               => __('Time to own exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF(TABLE.`time_to_own` IS NOT NULL
-                                            AND TABLE.`status` <> '.self::WAITING.'
-                                            AND (TABLE.`takeintoaccount_delay_stat`
-                                                        > TIME_TO_SEC(TIMEDIFF(TABLE.`time_to_own`,
-                                                                               TABLE.`date`))
-                                                 OR (TABLE.`takeintoaccount_delay_stat` = 0
-                                                      AND TABLE.`time_to_own` < NOW())),
+         'computation'        => 'IF('.$DB->quoteName('TABLE.time_to_own').' IS NOT NULL
+                                            AND '.$DB->quoteName('TABLE.status').' <> '.self::WAITING.'
+                                            AND ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').'
+                                                        > TIME_TO_SEC(TIMEDIFF('.$DB->quoteName('TABLE.time_to_own').',
+                                                                               '.$DB->quoteName('TABLE.date').'))
+                                                 OR ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').' = 0
+                                                      AND '.$DB->quoteName('TABLE.time_to_own').' < NOW())),
                                             1, 0)'
       ];
 
@@ -2682,11 +2682,11 @@ class Ticket extends CommonITILObject {
          'name'               => __('Internal time to resolve exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF(TABLE.`internal_time_to_resolve` IS NOT NULL
-                                            AND TABLE.`status` <> 4
-                                            AND (TABLE.`solvedate` > TABLE.`internal_time_to_resolve`
-                                                 OR (TABLE.`solvedate` IS NULL
-                                                      AND TABLE.`internal_time_to_resolve` < NOW())),
+         'computation'        => 'IF('.$DB->quoteName('TABLE.internal_time_to_resolve').' IS NOT NULL
+                                            AND '.$DB->quoteName('TABLE.status').' <> 4
+                                            AND ('.$DB->quoteName('TABLE.solvedate').' > '.$DB->quoteName('TABLE.internal_time_to_resolve').'
+                                                 OR ('.$DB->quoteName('TABLE.solvedate').' IS NULL
+                                                      AND '.$DB->quoteName('TABLE.internal_time_to_resolve').' < NOW())),
                                             1, 0)'
       ];
 
@@ -2718,13 +2718,13 @@ class Ticket extends CommonITILObject {
          'name'               => __('Internal time to own exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF(TABLE.`internal_time_to_own` IS NOT NULL
-                                            AND TABLE.`status` <> '.self::WAITING.'
-                                            AND (TABLE.`takeintoaccount_delay_stat`
-                                                        > TIME_TO_SEC(TIMEDIFF(TABLE.`internal_time_to_own`,
-                                                                               TABLE.`date`))
-                                                 OR (TABLE.`takeintoaccount_delay_stat` = 0
-                                                      AND TABLE.`internal_time_to_own` < NOW())),
+         'computation'        => 'IF('.$DB->quoteName('TABLE.internal_time_to_own').' IS NOT NULL
+                                            AND '.$DB->quoteName('TABLE.status').' <> '.self::WAITING.'
+                                            AND ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').'
+                                                        > TIME_TO_SEC(TIMEDIFF('.$DB->quoteName('TABLE.internal_time_to_own').',
+                                                                               '.$DB->quoteName('TABLE.date').'))
+                                                 OR ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').' = 0
+                                                      AND '.$DB->quoteName('TABLE.internal_time_to_own').' < NOW())),
                                             1, 0)'
       ];
 
@@ -2846,9 +2846,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
+            'condition'          => ['NEWTABLE.type' => SLM::TTO]
          ],
-         'condition'          => "`glpi_slas`.`type` = '".SLM::TTO."'"
+         'condition'          => ['glpi_slas.type' => SLM::TTO]
       ];
 
       $tab[] = [
@@ -2860,9 +2860,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
+            'condition'          => ['NEWTABLE.type' => SLM::TTR]
          ],
-         'condition'          => "`glpi_slas`.`type` = '".SLM::TTR."'"
+         'condition'          => ['glpi_slas.type' => SLM::TTR]
       ];
 
       $tab[] = [
@@ -2897,9 +2897,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
+            'condition'          => ['NEWTABLE.type' => SLM::TTO]
          ],
-         'condition'          => "`glpi_olas`.`type` = '".SLM::TTO."'"
+         'condition'          => ['glpi_olas.type' => SLM::TTO]
       ];
 
       $tab[] = [
@@ -2911,9 +2911,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
+            'condition'          => ['NEWTABLE.type' => SLM::TTR]
          ],
-         'condition'          => "`glpi_olas`.`type` = '".SLM::TTR."'"
+         'condition'          => ['glpi_olas.type' => SLM::TTR]
       ];
 
       $tab[] = [
@@ -3063,7 +3063,7 @@ class Ticket extends CommonITILObject {
             'searchtype'         => 'equals',
             'joinparams'         => [
                'jointype'           => 'item_item',
-               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::DUPLICATE_WITH
+               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::DUPLICATE_WITH]
             ],
             'additionalfields'   => ['tickets_id_2'],
             'forcegroupby'       => true
@@ -3092,7 +3092,7 @@ class Ticket extends CommonITILObject {
             'usehaving'          => true,
             'joinparams'         => [
                'jointype'           => 'item_item',
-               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::DUPLICATE_WITH
+               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::DUPLICATE_WITH]
             ]
          ];
 
@@ -3112,7 +3112,7 @@ class Ticket extends CommonITILObject {
                   'joinparams'         => [
                      'jointype'           => 'child',
                      'linkfield'          => 'tickets_id_1',
-                     'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF,
+                     'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
                   ]
                ]
             ],
@@ -3135,7 +3135,7 @@ class Ticket extends CommonITILObject {
                   'joinparams'         => [
                      'jointype'           => 'child',
                      'linkfield'          => 'tickets_id_2',
-                     'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF,
+                     'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
                   ]
                ]
             ],
@@ -3153,7 +3153,7 @@ class Ticket extends CommonITILObject {
             'joinparams'         => [
                'linkfield'          => 'tickets_id_2',
                'jointype'           => 'child',
-               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF
+               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
             ],
             'forcegroupby'       => true
          ];
@@ -3169,7 +3169,7 @@ class Ticket extends CommonITILObject {
             'joinparams'         => [
                'linkfield'          => 'tickets_id_1',
                'jointype'           => 'child',
-               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF
+               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
             ],
             'additionalfields'   => ['tickets_id_2']
          ];
@@ -5067,161 +5067,248 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      $search_users_id = " (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
-                            AND `glpi_tickets_users`.`type` = '".CommonITILActor::REQUESTER."') ";
-      $search_assign   = " (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
-                            AND `glpi_tickets_users`.`type` = '".CommonITILActor::ASSIGN."')";
-      $search_observer = " (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
-                            AND `glpi_tickets_users`.`type` = '".CommonITILActor::OBSERVER."')";
-      $is_deleted      = " `glpi_tickets`.`is_deleted` = 0 ";
+      $JOINS = [];
+      $WHERE = [
+         'is_deleted' => 0
+      ];
+      $search_users_id = [
+         'glpi_tickets_users.users_id' => Session::getLoginUserID(),
+         'glpi_tickets_users.type'     => CommonITILActor::REQUESTER
+      ];
+      $search_assign = [
+         'glpi_tickets_users.users_id' => Session::getLoginUserID(),
+         'glpi_tickets_users.type'     => CommonITILActor::ASSIGN
+      ];
+      $search_observer = [
+         'glpi_tickets_users.users_id' => Session::getLoginUserID(),
+         'glpi_tickets_users.type'     => CommonITILActor::OBSERVER
+      ];
 
       if ($showgrouptickets) {
-         $search_users_id = " 0 = 1 ";
-         $search_assign   = " 0 = 1 ";
+         $search_users_id  = [0];
+         $search_assign = [0];
 
          if (count($_SESSION['glpigroups'])) {
-            $groups        = implode("','", $_SESSION['glpigroups']);
-            $search_assign = " (`glpi_groups_tickets`.`groups_id` IN ('".$groups."')
-                                AND `glpi_groups_tickets`.`type` = '".CommonITILActor::ASSIGN."')";
+            $search_assign = [
+               'glpi_groups_tickets.groups_id'  => $_SESSION['glpigroups'],
+               'glpi_groups_tickets.type'       => CommonITILActor::ASSIGN
+            ];
 
             if (Session::haveRight(self::$rightname, self::READGROUP)) {
-               $search_users_id = " (`glpi_groups_tickets`.`groups_id` IN ('".$groups."')
-                                     AND `glpi_groups_tickets`.`type`
-                                           = '".CommonITILActor::REQUESTER."') ";
-               $search_observer = " (`glpi_groups_tickets`.`groups_id` IN ('".$groups."')
-                                     AND `glpi_groups_tickets`.`type`
-                                           = '".CommonITILActor::OBSERVER."') ";
+               $search_users_id = [
+                  'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
+                  'glpi_groups_tickets.type'      => CommonITILActor::REQUESTER
+               ];
+               $search_observer = [
+                  'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
+                  'glpi_groups_tickets.type'      => CommonITILActor::ASSIGN
+               ];
             }
          }
       }
 
-      $query = "SELECT DISTINCT `glpi_tickets`.`id`
-                FROM `glpi_tickets`
-                LEFT JOIN `glpi_tickets_users`
-                     ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
-                LEFT JOIN `glpi_groups_tickets`
-                     ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`)";
-
       switch ($status) {
-         case "waiting" : // on affiche les tickets en attente
-            $query .= "WHERE $is_deleted
-                             AND ($search_assign)
-                             AND `glpi_tickets`.`status` = '".self::WAITING."' ".
-                             getEntitiesRestrictRequest("AND", "glpi_tickets");
+         case "waiting" : // waiting tickets
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               ['glpi_tickets.status' => self::WAITING]
+            );
             break;
 
-         case "process" : // on affiche les tickets planifi??s ou assign??s au user
-            $query .= "WHERE $is_deleted
-                             AND ( $search_assign )
-                             AND (`glpi_tickets`.`status` IN ('".implode("','", self::getProcessStatusArray())."')) ".
-                             getEntitiesRestrictRequest("AND", "glpi_tickets");
+         case "process" : // planned or assigned tickets
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               ['glpi_tickets.status' => self::getProcessStatusArray()]
+            );
             break;
 
-         case "toapprove" : // on affiche les tickets planifi??s ou assign??s au user
-            $query .= "WHERE $is_deleted
-                             AND (`glpi_tickets`.`status` = '".self::SOLVED."')
-                             AND ($search_users_id";
+         case "toapprove" : //tickets waiting for approval
+            $ORWHERE = ['AND' => $search_users_id];
             if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
-               $query .= " OR `glpi_tickets`.users_id_recipient = '".Session::getLoginUserID()."' ";
+               $ORWHERE[] = ['glpi_tickets.users_id_recipient' => Session::getLoginUserID()];
             }
-            $query .= ")".
-                      getEntitiesRestrictRequest("AND", "glpi_tickets");
+            $WHERE[] = ['OR' => $ORWHERE];
+            $WHERE['glpi_tickets.status'] = self::SOLVED;
             break;
 
-         case "tovalidate" : // on affiche les tickets ?? valider
-            $query .= " LEFT JOIN `glpi_ticketvalidations`
-                           ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
-                        WHERE $is_deleted
-                              AND `users_id_validate` = '".Session::getLoginUserID()."'
-                              AND `glpi_ticketvalidations`.`status` = '".CommonITILValidation::WAITING."'
-                              AND `glpi_tickets`.`global_validation` = '".CommonITILValidation::WAITING."'
-                              AND (`glpi_tickets`.`status` NOT IN ('".self::CLOSED."',
-                                                                   '".self::SOLVED."')) ".
-                       getEntitiesRestrictRequest("AND", "glpi_tickets");
+         case "tovalidate" : // tickets waiting for validation
+            $JOINS['LEFT JOIN'] = [
+               'glpi_ticketvalidations' => [
+                  'ON' => [
+                     'glpi_ticketvalidations'   => 'tickets_id',
+                     'glpi_tickets'             => 'id'
+                  ]
+               ]
+            ];
+            $WHERE = array_merge(
+               $WHERE,
+               [
+                  'users_id_validate'              => Session::getLoginUserID(),
+                  'glpi_ticketvalidations.status'  => CommonITILValidation::WAITING,
+                  'glpi_tickets.global_validation' => CommonITILValidation::WAITING,
+                  'NOT'                            => [
+                     'glpi_tickets.status'   => [self::SOLVED, self::CLOSED]
+                  ]
+               ]
+            );
             break;
 
          case "validation.rejected" : // tickets with rejected validation (approval)
-         case "rejected" : // old ambiguous key
-            $query .= "WHERE $is_deleted
-                             AND ($search_assign)
-                             AND `status` <> '".self::CLOSED."'
-                             AND `global_validation` = '".CommonITILValidation::REFUSED."' ".
-                             getEntitiesRestrictRequest("AND", "glpi_tickets");
+         case "rejected": //old ambiguous key
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               [
+                  'glpi_tickets.status'            => ['<>', self::CLOSED],
+                  'glpi_tickets.global_validation' => CommonITILValidation::REFUSED
+               ]
+            );
             break;
 
          case "solution.rejected" : // tickets with rejected solution
-            $last_solution_query = "SELECT `last_solution`.`id`
-                                    FROM `glpi_itilsolutions` as `last_solution`
-                                    WHERE `last_solution`.`items_id` = `glpi_tickets`.`id`
-                                    AND `last_solution`.`itemtype` = 'Ticket'
-                                    ORDER BY `last_solution`.`id` DESC
-                                    LIMIT 1";
-            $query .= " LEFT JOIN `glpi_itilsolutions`
-                           ON (`glpi_itilsolutions`.`id` = ($last_solution_query))
-                        WHERE $is_deleted
-                             AND ($search_assign)
-                             AND `glpi_tickets`.`status` <> '".self::CLOSED."'
-                             AND `glpi_itilsolutions`.`status` = '".CommonITILValidation::REFUSED."' ".
-                             getEntitiesRestrictRequest("AND", "glpi_tickets");
-            break;
+            $subq = new QuerySubQuery([
+               'SELECT' => 'last_solution.id',
+               'FROM'   => 'glpi_itilsolutions AS last_solution',
+               'WHERE'  => [
+                  'last_solution.items_id'   => new QueryExpression($DB->quoteName('glpi_tickets.id')),
+                  'last_solution.itemtype'   => 'Ticket'
+               ],
+               'ORDER'  => 'last_solution.id DESC',
+               'LIMIT'  => 1
+            ]);
 
+            $JOINS['LEFT JOIN'] = [
+               'glpi_itilsolutions' => [
+                  'ON' => [
+                     'glpi_itilsolutions' => 'id',
+                     $subq
+                  ]
+               ]
+            ];
+
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               [
+                  'glpi_tickets.status'         => ['<>', self::CLOSED],
+                  'glpi_itilsolutions.status'   => CommonITILValidation::REFUSED
+               ]
+            );
+            break;
          case "observed" :
-            $query .= "WHERE $is_deleted
-                             AND ($search_observer)
-                             AND (`glpi_tickets`.`status` IN ('".self::INCOMING."',
-                                                              '".self::PLANNED."',
-                                                              '".self::ASSIGNED."',
-                                                              '".self::WAITING."'))
-                             AND NOT ( $search_assign )
-                             AND NOT ( $search_users_id ) ".
-                             getEntitiesRestrictRequest("AND", "glpi_tickets");
+            $WHERE = array_merge(
+               $WHERE,
+               $search_observer,
+               [
+                  'glpi_tickets.status'   => [
+                     self::INCOMING,
+                     self::PLANNED,
+                     self::ASSIGNED,
+                     self::WAITING
+                  ],
+                  'NOT'                   => [
+                     $search_assign,
+                     $search_users_id
+                  ]
+               ]
+            );
             break;
 
          case "survey" : // tickets dont l'enqu??te de satisfaction n'est pas remplie et encore valide
-            $query .= " INNER JOIN `glpi_ticketsatisfactions`
-                           ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
-                        INNER JOIN `glpi_entities`
-                           ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`)
-                        WHERE $is_deleted
-                              AND ($search_users_id";
-            if (Session::haveRight('ticket', Ticket::SURVEY)) {
-               $query .= " OR `glpi_tickets`.`users_id_recipient` = '" . Session::getLoginUserID() . "'";
+            $JOINS['INNER JOIN'] = [
+               'glpi_ticketsatisfactions' => [
+                  'ON' => [
+                     'glpi_ticketsatisfactions' => 'tickets_id',
+                     'glpi_tickets'             => 'id'
+                  ]
+               ],
+               'glpi_entities'            => [
+                  'ON' => [
+                     'glpi_tickets'    => 'entities_id',
+                     'glpi_entities'   => 'id'
+                  ]
+               ]
+            ];
+            $ORWHERE = ['AND' => $search_users_id];
+            if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
+               $ORWHERE[] = ['glpi_tickets.users_id_recipient' => Session::getLoginUserID()];
             }
-            $query .=  ")
-                              AND `glpi_tickets`.`status` = '".self::CLOSED."'
-                              AND (`glpi_entities`.`inquest_duration` = 0
-                                   OR DATEDIFF(ADDDATE(`glpi_ticketsatisfactions`.`date_begin`,
-                                                       INTERVAL
-                                                       `glpi_entities`.`inquest_duration` DAY),
-                                               CURDATE()) > 0)
-                              AND `glpi_ticketsatisfactions`.`date_answered` IS NULL ".
-                              getEntitiesRestrictRequest("AND", "glpi_tickets");
+            $WHERE[] = ['OR' => $ORWHERE];
+            $WHERE['glpi_tickets.status'] = self::SOLVED;
+
+            $WHERE = array_merge(
+               $WHERE,
+               [
+                  'glpi_tickets.status'   => self::CLOSED,
+                  ['OR'                   => [
+                     'glpi_entities.inquest_duration' => 0,
+                     new \QueryExpression(
+                        'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_ticketsatisfactions.date_begin') .
+                        ', INTERVAL ' . $DB->quoteName('glpi_entities.inquest_duration')  . ' DAY), CURDATE()) > 0'
+                     )
+                  ]],
+                  'glpi_ticketsatisfactions.date_answered'  => null
+               ]
+            );
             break;
 
          case "requestbyself" : // on affiche les tickets demand??s le user qui sont planifi??s ou assign??s
                // ?? quelqu'un d'autre (exclut les self-tickets)
 
          default :
-            $query .= "WHERE $is_deleted
-                             AND ($search_users_id)
-                             AND (`glpi_tickets`.`status` IN ('".self::INCOMING."',
-                                                              '".self::PLANNED."',
-                                                              '".self::ASSIGNED."',
-                                                              '".self::WAITING."'))
-                             AND NOT ( $search_assign ) ".
-                             getEntitiesRestrictRequest("AND", "glpi_tickets");
+            $WHERE = array_merge(
+               $WHERE,
+               $search_users_id,
+               [
+                  'glpi_tickets.status'   => [
+                     self::INCOMING,
+                     self::PLANNED,
+                     self::ASSIGNED,
+                     self::WAITING
+                  ],
+                  'NOT' => $search_assign
+               ]
+            );
       }
 
-      $query  .= " ORDER BY `glpi_tickets`.`date_mod` DESC";
-      $result  = $DB->query($query);
-      $numrows = $DB->numrows($result);
+      $criteria = [
+         'SELECT'          => ['glpi_tickets.id', 'glpi_tickets.date_mod'],
+         'DISTINCT'        => true,
+         'FROM'            => 'glpi_tickets',
+         'LEFT JOIN'       => [
+            'glpi_tickets_users'    => [
+               'ON' => [
+                  'glpi_tickets_users' => 'tickets_id',
+                  'glpi_tickets'       => 'id'
+               ]
+            ],
+            'glpi_groups_tickets'   => [
+               'ON' => [
+                  'glpi_groups_tickets'   => 'tickets_id',
+                  'glpi_tickets'          => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_tickets'),
+         'ORDERBY'         => 'glpi_tickets.date_mod DESC'
+      ];
+      if (count($JOINS)) {
+         $criteria = array_merge_recursive($criteria, $JOINS);
+      }
+      $iterator = $DB->request($criteria);
+      $numrows = count($iterator);
+      $number = 0;
 
       if ($_SESSION['glpidisplay_count_on_home'] > 0) {
-         $query  .= " LIMIT ".intval($start).','.intval($_SESSION['glpidisplay_count_on_home']);
-         $result  = $DB->query($query);
-         $number  = $DB->numrows($result);
-      } else {
-         $number = 0;
+         $iterator = $DB->request(
+            $criteria + [
+               'START' => (int)$start,
+               'LIMIT' => (int)$_SESSION['glpidisplay_count_on_home']
+            ]
+         );
+         $number = count($iterator);
       }
 
       if ($numrows > 0) {
@@ -5514,9 +5601,8 @@ class Ticket extends CommonITILObject {
             echo "<th>".__('Requester')."</th>";
             echo "<th>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
             echo "<th>".__('Description')."</th></tr>";
-            for ($i = 0; $i < $number; $i++) {
-               $ID = $DB->result($result, $i, "id");
-               self::showVeryShort($ID, $forcetab);
+            while ($data = $iterator->next()) {
+               self::showVeryShort($data['id'], $forcetab);
             }
          }
          echo "</table>";
@@ -5540,67 +5626,86 @@ class Ticket extends CommonITILObject {
          $foruser = true;
       }
 
-      $query = "SELECT `glpi_tickets`.`status`,
-                       COUNT(DISTINCT `glpi_tickets`.`id`) AS COUNT
-                FROM `glpi_tickets` ";
+      $table = self::getTable();
+      $criteria = [
+         'SELECT'    => [
+            'glpi_tickets.status',
+            'COUNT DISTINCT' => ["$table.id AS COUNT"],
+         ],
+         'FROM'      => $table,
+         'WHERE'     => getEntitiesRestrictCriteria($table),
+         'GROUPBY'   => 'status'
+      ];
 
       if ($foruser) {
-         $query .= " LEFT JOIN `glpi_tickets_users`
-                        ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
-                            AND `glpi_tickets_users`.`type` = '".CommonITILActor::REQUESTER."')
-                     LEFT JOIN `glpi_ticketvalidations`
-                        ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)";
+         $criteria['LEFT JOIN'] = [
+            'glpi_tickets_users' => [
+               'ON' => [
+                  'glpi_tickets_users' => 'tickets_id',
+                  $table               => 'id', [
+                     'AND' => [
+                        'glpi_tickets_users.type' => CommonITILActor::REQUESTER
+                     ]
+                  ]
+               ]
+            ],
+            'glpi_ticketvalidations' => [
+               'ON' => [
+                  'glpi_ticketvalidations'   => 'tickets_id',
+                  $table                     => 'id'
+               ]
+            ]
+         ];
 
          if (Session::haveRight(self::$rightname, self::READGROUP)
              && isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
-            $query .= " LEFT JOIN `glpi_groups_tickets`
-                           ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`
-                               AND `glpi_groups_tickets`.`type` = '".CommonITILActor::REQUESTER."')";
+            $criteria['LEFT JOIN']['glpi_groups_tickets'] = [
+               'ON' => [
+                  'glpi_groups_tickets'   => 'tickets_id',
+                  $table                  => 'id', [
+                     'AND' => ['glpi_groups_tickets.type' => CommonITILActor::REQUESTER]
+                  ]
+               ]
+            ];
          }
       }
-      $query .= getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if ($foruser) {
-         $query .= " AND (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
-                           OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
-                           OR `glpi_ticketvalidations`.`users_id_validate` = '".Session::getLoginUserID()."'";
+         $ORWHERE = ['OR' => [
+            'glpi_tickets_users.users_id'                => Session::getLoginUserID(),
+            'glpi_tickets.users_id_recipient'            => Session::getLoginUserID(),
+            'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID()
+         ]];
 
          if (Session::haveRight(self::$rightname, self::READGROUP)
              && isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
-            $groups = implode(",", $_SESSION['glpigroups']);
-            $query .= " OR `glpi_groups_tickets`.`groups_id` IN (".$groups.") ";
+            $ORWHERE['OR']['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
          }
-         $query.= ")";
+         $criteria['WHERE'][] = $ORWHERE;
       }
-      $query_deleted = $query;
 
-      $query         .= " AND `glpi_tickets`.`is_deleted` = 0
-                         GROUP BY `status`";
-      $query_deleted .= " AND `glpi_tickets`.`is_deleted` = 1
-                         GROUP BY `status`";
-
-      $result         = $DB->query($query);
-      $result_deleted = $DB->query($query_deleted);
+      $deleted_criteria = $criteria;
+      $criteria['WHERE']['glpi_tickets.is_deleted'] = 0;
+      $deleted_criteria['WHERE']['glpi_tickets.is_deleted'] = 1;
+      $iterator = $DB->request($criteria);
+      $deleted_iterator = $DB->request($deleted_criteria);
 
       $status = [];
       foreach (self::getAllStatusArray() as $key => $val) {
          $status[$key] = 0;
       }
 
-      if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetchAssoc($result)) {
-            $status[$data["status"]] = $data["COUNT"];
-         }
+      while ($data = $iterator->next()) {
+         $status[$data["status"]] = $data["COUNT"];
       }
 
       $number_deleted = 0;
-      if ($DB->numrows($result_deleted) > 0) {
-         while ($data = $DB->fetchAssoc($result_deleted)) {
-            $number_deleted += $data["COUNT"];
-         }
+      while ($data = $deleted_iterator->next()) {
+         $number_deleted += $data["COUNT"];
       }
+
       $options['criteria'][0]['field']      = 12;
       $options['criteria'][0]['searchtype'] = 'equals';
       $options['criteria'][0]['value']      = 'process';
@@ -5667,16 +5772,14 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      $query = "SELECT ".self::getCommonSelect()."
-                FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE `status` = '".self::INCOMING."' ".
-                      getEntitiesRestrictRequest("AND", "glpi_tickets")."
-                      AND `is_deleted` = 0
-                ORDER BY `glpi_tickets`.`date_mod` DESC
-                LIMIT ".intval($_SESSION['glpilist_limit']);
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $criteria = self::getCommonCriteria();
+      $criteria['WHERE'] = [
+         'status'       => self::INCOMING,
+         'is_deleted'   => 0
+      ] + getEntitiesRestrictCriteria(self::getTable());
+      $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
+      $iterator = $DB->request($criteria);
+      $number = count($iterator);
 
       if ($number > 0) {
          Session::initNavigateListItems('Ticket');
@@ -5695,7 +5798,7 @@ class Ticket extends CommonITILObject {
 
          self::commonListHeader(Search::HTML_OUTPUT);
 
-         while ($data = $DB->fetchAssoc($result)) {
+         while ($data = $iterator->next()) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
             self::showShort($data["id"]);
          }
@@ -5732,15 +5835,14 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      $restrict         = '';
-      $order            = '';
+      $criteria         = self::getCommonCriteria();
+      $restrict         = [];
       $options['reset'] = 'reset';
 
       switch ($item->getType()) {
          case 'User' :
-            $restrict = "(`glpi_tickets_users`.`users_id` = '".$item->getID()."' ".
-                        " AND `glpi_tickets_users`.`type` = ".CommonITILActor::REQUESTER.")";
-            $order    = '`glpi_tickets`.`date_mod` DESC';
+            $restrict['glpi_tickets_users.users_id'] = $item->getID();
+            $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
 
             $options['reset'] = 'reset';
 
@@ -5751,9 +5853,13 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'SLA' :
-            $restrict  = "`slas_id_tto` = '".$item->getID()."'
-                           OR `slas_id_ttr` = '".$item->getID()."'";
-            $order     = '`glpi_tickets`.`time_to_resolve` DESC';
+            $restrict[] = [
+               'OR' => [
+                  'slas_id_tto'  => $item->getID(),
+                  'slas_id_ttr'  => $item->getID()
+               ]
+            ];
+            $criteria['ORDERBY'] = 'glpi_tickets.time_to_resolve DESC';
 
             $options['criteria'][0]['field']      = 30;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -5762,9 +5868,13 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'OLA' :
-            $restrict  = "`olas_id_tto` = '".$item->getID()."'
-                           OR `olas_id_ttr` = '".$item->getID()."'";
-            $order     = '`glpi_tickets`.`internal_time_to_resolve` DESC';
+            $restrict[] = [
+               'OR' => [
+                  'olas_id_tto'  => $item->getID(),
+                  'olas_id_ttr'  => $item->getID()
+               ]
+            ];
+            $criteria['ORDERBY'] = 'glpi_tickets.internal_time_to_resolve DESC';
 
             $options['criteria'][0]['field']      = 30;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -5773,9 +5883,8 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'Supplier' :
-            $restrict = "(`glpi_suppliers_tickets`.`suppliers_id` = '".$item->getID()."' ".
-                        "  AND `glpi_suppliers_tickets`.`type` = ".CommonITILActor::ASSIGN.")";
-            $order    = '`glpi_tickets`.`date_mod` DESC';
+            $restrict['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
+            $restrict['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
 
             $options['criteria'][0]['field']      = 6;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -5798,14 +5907,8 @@ class Ticket extends CommonITILObject {
             }
             echo "</td></tr></table>";
 
-            if ($tree) {
-               $restrict = "IN (".implode(',', getSonsOf('glpi_groups', $item->getID())).")";
-            } else {
-               $restrict = "='".$item->getID()."'";
-            }
-            $restrict = "(`glpi_groups_tickets`.`groups_id` $restrict".
-                         " AND `glpi_groups_tickets`.`type` = ".CommonITILActor::REQUESTER.")";
-            $order    = '`glpi_tickets`.`date_mod` DESC';
+            $restrict['glpi_groups_tickets.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
+            $restrict['glpi_groups_tickets.type'] = CommonITILActor::REQUESTER;
 
             $options['criteria'][0]['field']      = 71;
             $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
@@ -5814,22 +5917,25 @@ class Ticket extends CommonITILObject {
             break;
 
          default :
-            $restrict = "(`glpi_items_tickets`.`items_id` = '".$item->getID()."' ".
-                        " AND `glpi_items_tickets`.`itemtype` = '".$item->getType()."')";
+            $restrict['glpi_items_tickets.items_id'] = $item->getID();
+            $restrict['glpi_items_tickets.itemtype'] = $item->getType();
 
             // you can only see your tickets
             if (!Session::haveRight(self::$rightname, self::READALL)) {
-               $restrict .= " AND (`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
-                                   OR (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
-                                       AND `glpi_tickets_users`.`users_id`
-                                            = '".Session::getLoginUserID()."')";
+               $or = [
+                  'glpi_tickets.users_id_recipient'   => Session::getLoginUserID(),
+                  [
+                     'AND' => [
+                        'glpi_tickets_users.tickets_id'  => new \QueryExpression('glpi_tickets.id'),
+                        'glpi_tickets_users.users_id'    => Session::getLoginUserID()
+                     ]
+                  ]
+               ];
                if (count($_SESSION['glpigroups'])) {
-                  $restrict .= " OR `glpi_groups_tickets`.`groups_id` IN (".implode(",", $_SESSION['glpigroups']).")";
+                  $or['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
                }
-               $restrict .= ")";
+               $restrict[] = ['OR' => $or];
             }
-
-            $order    = '`glpi_tickets`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 12;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -5845,15 +5951,11 @@ class Ticket extends CommonITILObject {
             break;
       }
 
-      $query = "SELECT ".self::getCommonSelect()."
-                FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE $restrict ".
-                      getEntitiesRestrictRequest("AND", "glpi_tickets")."
-                AND glpi_tickets.is_deleted = 0
-                ORDER BY $order
-                LIMIT ".intval($_SESSION['glpilist_limit']);
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
+      $criteria['WHERE']['glpi_tickets.is_deleted'] = 0;
+      $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
+      $iterator = $DB->request($criteria);
+      $number = count($iterator);
 
       $colspan = 11;
       if (count($_SESSION["glpiactiveentities"]) > 1) {
@@ -5915,7 +6017,7 @@ class Ticket extends CommonITILObject {
       if ($number > 0) {
          self::commonListHeader(Search::HTML_OUTPUT);
 
-         while ($data = $DB->fetchAssoc($result)) {
+         while ($data = $iterator->next()) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
             self::showShort($data["id"]);
          }
@@ -5930,21 +6032,18 @@ class Ticket extends CommonITILObject {
       if (count($linkeditems)) {
          foreach ($linkeditems as $ltype => $tab) {
             foreach ($tab as $lID) {
-               $restrict[] = "(`glpi_items_tickets`.`itemtype` = '$ltype' AND `glpi_items_tickets`.`items_id` = '$lID')";
+               $restrict[] = ['AND' => ['itemtype' => $ltype, 'items_id' => $lID]];
             }
          }
       }
 
       if (count($restrict)
           && Session::haveRight(self::$rightname, self::READALL)) {
-         $query = "SELECT ".self::getCommonSelect()."
-                   FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                   WHERE ".implode(' OR ', $restrict).
-                         getEntitiesRestrictRequest(' AND ', 'glpi_tickets') . "
-                   ORDER BY `glpi_tickets`.`date_mod` DESC
-                   LIMIT ".intval($_SESSION['glpilist_limit']);
-         $result = $DB->query($query);
-         $number = $DB->numrows($result);
+         $criteria = self::getCommonCriteria();
+         $criteria['WHERE'] = ['OR' => $restrict]
+             + getEntitiesRestrictCriteria(self::getTable());
+         $iterator = $DB->request($criteria);
+         $number = count($iterator);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='12'>";
@@ -5952,7 +6051,7 @@ class Ticket extends CommonITILObject {
          echo "</th></tr>";
          if ($number > 0) {
             self::commonListHeader(Search::HTML_OUTPUT);
-            while ($data = $DB->fetchAssoc($result)) {
+            while ($data = $iterator->next()) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
                self::showShort($data["id"]);
             }
@@ -6065,42 +6164,17 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function getCommonSelect() {
+   public static function getCommonCriteria() {
+      $criteria = parent::getCommonCriteria();
 
-      $SELECT = "";
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $SELECT .= ", `glpi_entities`.`completename` AS entityname,
-                       `glpi_tickets`.`entities_id` AS entityID ";
-      }
+      $criteria['LEFT JOIN']['glpi_tickettasks'] = [
+         'ON' => [
+            self::getTable()     => 'id',
+            'glpi_tickettasks'   => 'tickets_id'
+         ]
+      ];
 
-      return " DISTINCT `glpi_tickets`.*,
-                        `glpi_itilcategories`.`completename` AS catname
-                        $SELECT";
-   }
-
-
-   static function getCommonLeftJoin() {
-
-      $FROM = "";
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $FROM .= " LEFT JOIN `glpi_entities`
-                        ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`) ";
-      }
-
-      return " LEFT JOIN `glpi_groups_tickets`
-                  ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`)
-               LEFT JOIN `glpi_tickets_users`
-                  ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
-               LEFT JOIN `glpi_suppliers_tickets`
-                  ON (`glpi_tickets`.`id` = `glpi_suppliers_tickets`.`tickets_id`)
-               LEFT JOIN `glpi_itilcategories`
-                  ON (`glpi_tickets`.`itilcategories_id` = `glpi_itilcategories`.`id`)
-               LEFT JOIN `glpi_tickettasks`
-                  ON (`glpi_tickets`.`id` = `glpi_tickettasks`.`tickets_id`)
-               LEFT JOIN `glpi_items_tickets`
-                  ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)
-               $FROM";
-
+      return $criteria;
    }
 
 
@@ -6182,11 +6256,14 @@ class Ticket extends CommonITILObject {
       foreach ($entities as $entity) {
          $delay  = Entity::getUsedConfig('autoclose_delay', $entity['id'], '', Entity::CONFIG_NEVER);
          if ($delay >= 0) {
-            $query = "SELECT *
-                      FROM `glpi_tickets`
-                      WHERE `entities_id` = '".$entity['id']."'
-                            AND `status` = '".self::SOLVED."'
-                            AND `is_deleted` = 0";
+            $criteria = [
+               'FROM'   => self::getTable(),
+               'WHERE'  => [
+                  'entities_id'  => $entity['id'],
+                  'status'       => self::SOLVED,
+                  'is_deleted'   => 0
+               ]
+            ];
 
             if ($delay > 0) {
                $calendars_id = Entity::getUsedConfig('calendars_id', $entity['id']);
@@ -6199,18 +6276,23 @@ class Ticket extends CommonITILObject {
                      0,
                      true
                   );
-                  $query .= " AND `solvedate` <= '$end_date'";
+                  $criteria['WHERE']['solvedate'] = ['<=', $end_date];
                } else {
                   // no calendar, remove all days
-                  $query .= " AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < NOW()";
+                  $criteria['WHERE'][] = new \QueryExpression(
+                     "ADDDATE(" . $DB->quoteName('solvedate') . ", INTERVAL $delay DAY) < NOW()"
+                  );
                }
             }
 
             $nb = 0;
-            foreach ($DB->request($query) as $tick) {
-               $ticket->update(['id'           => $tick['id'],
-                                     'status'       => self::CLOSED,
-                                     '_auto_update' => true]);
+            $iterator = $DB->request($criteria);
+            while ($tick = $iterator->next()) {
+               $ticket->update([
+                  'id'           => $tick['id'],
+                  'status'       => self::CLOSED,
+                  '_auto_update' => true
+               ]);
                $nb++;
             }
 
@@ -6242,18 +6324,23 @@ class Ticket extends CommonITILObject {
       // Recherche des entit??s
       $tot = 0;
       foreach (Entity::getEntitiesToNotify('notclosed_delay') as $entity => $value) {
-         $query = "SELECT `glpi_tickets`.*
-                   FROM `glpi_tickets`
-                   WHERE `glpi_tickets`.`entities_id` = '".$entity."'
-                         AND `glpi_tickets`.`is_deleted` = 0
-                         AND `glpi_tickets`.`status` IN ('".self::INCOMING."',
-                                                         '".self::ASSIGNED."',
-                                                         '".self::PLANNED."',
-                                                         '".self::WAITING."')
-                         AND `glpi_tickets`.`closedate` IS NULL
-                         AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < NOW()";
+         $iterator = $DB->request([
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+               'entities_id'  => $entity,
+               'is_deleted'   => 0,
+               'status'       => [
+                  self::INCOMING,
+                  self::ASSIGNED,
+                  self::PLANNED,
+                  self::WAITING
+               ],
+               'closedate'    => null,
+               new QueryExpression("ADDDATE(" . $DB->quoteName('date') . ", INTERVAL $value DAY) < NOW()")
+            ]
+         ]);
          $tickets = [];
-         foreach ($DB->request($query) as $tick) {
+         while ($tick = $iterator->next()) {
             $tickets[] = $tick;
          }
 
@@ -6312,27 +6399,44 @@ class Ticket extends CommonITILObject {
          $type          = Entity::getUsedConfig('inquest_config', $entity);
          $max_closedate = Entity::getUsedConfig('inquest_config', $entity, 'max_closedate');
 
-         $query = "SELECT `glpi_tickets`.`id`,
-                          `glpi_tickets`.`closedate`,
-                          `glpi_tickets`.`entities_id`
-                   FROM `glpi_tickets`
-                   LEFT JOIN `glpi_ticketsatisfactions`
-                       ON `glpi_ticketsatisfactions`.`tickets_id` = `glpi_tickets`.`id`
-                   LEFT JOIN `glpi_entities`
-                       ON `glpi_tickets`.`entities_id` = `glpi_entities`.`id`
-                   WHERE `glpi_tickets`.`entities_id` = '$entity'
-                         AND `glpi_tickets`.`is_deleted` = 0
-                         AND `glpi_tickets`.`status` = '".self::CLOSED."'
-                         AND `glpi_tickets`.`closedate` > '$max_closedate'
-                         AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
-                         AND ADDDATE(`glpi_entities`.`max_closedate`, INTERVAL $duration DAY)<=NOW()
-                         AND `glpi_ticketsatisfactions`.`id` IS NULL
-                   ORDER BY `closedate` ASC";
+         $table = self::getTable();
+         $iterator = $DB->request([
+            'SELECT'    => [
+               "$table.id",
+               "$table.closedate",
+               "$table.entities_id"
+            ],
+            'FROM'      => $table,
+            'LEFT JOIN' => [
+               'glpi_ticketsatisfactions' => [
+                  'ON' => [
+                     'glpi_ticketsatisfactions' => 'tickets_id',
+                     'glpi_tickets'             => 'id'
+                  ]
+               ],
+               'glpi_entities'            => [
+                  'ON' => [
+                     'glpi_tickets'    => 'entities_id',
+                     'glpi_entities'   => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               "$table.entities_id"          => $entity,
+               "$table.is_deleted"           => 0,
+               "$table.status"               => self::CLOSED,
+               "$table.closedate"            => ['>', $max_closedate],
+               new QueryExpression("ADDDATE(" . $DB->quoteName("$table.closedate") . ", INTERVAL $delay DAY) <= NOW()"),
+               new QueryExpression("ADDDATE(" . $DB->quoteName("$table.max_closedate") . ", INTERVAL $duration DAY) <= NOW()"),
+               "glpi_ticketsatisfactions.id" => null
+            ],
+            'ORDERBY'   => 'closedate ASC'
+         ]);
 
          $nb            = 0;
          $max_closedate = '';
 
-         foreach ($DB->request($query) as $tick) {
+         while ($tick = $iterator->next()) {
             $max_closedate = $tick['closedate'];
             if (mt_rand(1, 100) <= $rate) {
                if ($inquest->add(['tickets_id'  => $tick['id'],

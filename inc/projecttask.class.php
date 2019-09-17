@@ -160,8 +160,8 @@ class ProjectTask extends CommonDBChild {
    static function cloneProjectTask ($oldid, $newid) {
       global $DB;
 
-      foreach ($DB->request('glpi_projecttasks',
-                            ['WHERE' => "`projects_id` = '$oldid'"]) as $data) {
+      $iterator = $DB->request(['FROM' => 'glpi_projecttasks', 'WHERE' => ['projects_id' => $oldid]]);
+      while ($data = $iterator->next()) {
          $cd                  = new self();
          unset($data['id']);
          $data['projects_id'] = $newid;
@@ -1081,6 +1081,41 @@ class ProjectTask extends CommonDBChild {
          'fname'            => __('Father')
       ];
 
+      $criteria = [
+         'SELECT' => [
+            'glpi_projecttasks.*',
+            'glpi_projecttasktypes.name AS tname',
+            'glpi_projectstates.name AS sname',
+            'glpi_projectstates.color',
+            'father.name AS fname',
+            'father.id AS fID'
+         ],
+         'FROM'   => 'glpi_projecttasks',
+         //$addjoin
+         'LEFT JOIN' => [
+           'glpi_projecttasktypes'        => [
+               'ON'  => [
+                  'glpi_projecttasktypes' => 'id',
+                  'glpi_projecttasks'     => 'projecttasktypes_id'
+               ]
+            ],
+            'glpi_projectstates'          => [
+               'ON'  => [
+                  'glpi_projectstates' => 'id',
+                  'glpi_projecttasks'  => 'projectstates_id'
+               ]
+            ],
+            'glpi_projecttasks AS father' => [
+               'ON'  => [
+                  'father' => 'id',
+                  'glpi_projecttasks'  => 'projecttasks_id'
+               ]
+            ]
+         ],
+         'WHERE'  => [], //$where
+         'ORDERBY'   => [] // $sort $order";
+      ];
+
       if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
          $order = "DESC";
       } else {
@@ -1092,9 +1127,9 @@ class ProjectTask extends CommonDBChild {
       }
 
       if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
-         $sort = "`".$_GET["sort"]."`";
+         $sort = $_GET["sort"];
       } else {
-         $sort = "`plan_start_date` $order, `name`";
+         $sort = ["plan_start_date $order", "name"];
       }
 
       $canedit = false;
@@ -1104,11 +1139,11 @@ class ProjectTask extends CommonDBChild {
 
       switch ($item->getType()) {
          case 'Project' :
-            $where = "WHERE `glpi_projecttasks`.`projects_id` = '$ID'";
+            $criteria['WHERE']['glpi_projecttasks.projects_id'] = $ID;
             break;
 
          case 'ProjectTask' :
-            $where = "WHERE `glpi_projecttasks`.`projecttasks_id` = '$ID'";
+            $criteria['WHERE']['glpi_projecttasks.projecttasks_id'] = $ID;
             break;
 
          default : // Not available type
@@ -1138,43 +1173,37 @@ class ProjectTask extends CommonDBChild {
          echo "</div>";
       }
 
-      $addselect = '';
-      $addjoin = '';
       if (Session::haveTranslations('ProjectTaskType', 'name')) {
-         $addselect .= ", `namet2`.`value` AS transname2";
-         $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet2
-                           ON (`namet2`.`itemtype` = 'ProjectTaskType'
-                               AND `namet2`.`items_id` = `glpi_projecttasks`.`projecttasktypes_id`
-                               AND `namet2`.`language` = '".$_SESSION['glpilanguage']."'
-                               AND `namet2`.`field` = 'name')";
+         $criteria['SELECT'][] = 'namet2.value AS transname2';
+         $criteria['LEFT JOIN']['glpi_dropdowntranslations AS namet2'] = [
+            'ON'  => [
+               'namet2'             => 'items_id',
+               'glpi_projecttasks'  => 'projecttasktypes_id', [
+                  'AND' => [
+                     'namet2.itemtype' => 'ProjectTaskType',
+                     'namet2.language' => $_SESSION['glpilanguage'],
+                     'namet2.field'    => 'name'
+                  ]
+               ]
+            ]
+         ];
       }
 
       if (Session::haveTranslations('ProjectState', 'name')) {
-         $addselect .= ", `namet3`.`value` AS transname3";
-         $addjoin   .= "LEFT JOIN `glpi_dropdowntranslations` AS namet3
-                           ON (`namet3`.`itemtype` = 'ProjectState'
-                               AND `namet3`.`language` = '".$_SESSION['glpilanguage']."'
-                               AND `namet3`.`field` = 'name')";
-         $where     .= " AND `namet3`.`items_id` = `glpi_projectstates`.`id` ";
+         $criteria['SELECT'][] = 'namet3.value AS transname3';
+         $criteria['LEFT JOIN']['glpi_dropdowntranslations AS namet3'] = [
+            'ON'  => [
+               'namet3'             => 'items_id',
+               'glpi_projectstates' => 'id', [
+                  'AND' => [
+                     'namet3.itemtype' => 'ProjectState',
+                     'namet3.language' => $_SESSION['glpilanguage'],
+                     'namet3.field'    => 'name'
+                  ]
+               ]
+            ]
+         ];
       }
-
-      $query = "SELECT `glpi_projecttasks`.*,
-                       `glpi_projecttasktypes`.`name` AS tname,
-                       `glpi_projectstates`.`name` AS sname,
-                       `glpi_projectstates`.`color`,
-                       `father`.`name` AS fname,
-                       `father`.`id` AS fID
-                       $addselect
-                FROM `glpi_projecttasks`
-                $addjoin
-                LEFT JOIN `glpi_projecttasktypes`
-                   ON (`glpi_projecttasktypes`.`id` = `glpi_projecttasks`.`projecttasktypes_id`)
-                LEFT JOIN `glpi_projectstates`
-                   ON (`glpi_projectstates`.`id` = `glpi_projecttasks`.`projectstates_id`)
-                LEFT JOIN `glpi_projecttasks` as father
-                   ON (`father`.`id` = `glpi_projecttasks`.`projecttasks_id`)
-                $where
-                ORDER BY $sort $order";
 
       Session::initNavigateListItems('ProjectTask',
             //TRANS : %1$s is the itemtype name,
@@ -1182,70 +1211,69 @@ class ProjectTask extends CommonDBChild {
                                      sprintf(__('%1$s = %2$s'), $item::getTypeName(1),
                                              $item->getName()));
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            echo "<table class='tab_cadre_fixehov'>";
+      $iterator = $DB->request($criteria);
+      if (count($criteria)) {
+         echo "<table class='tab_cadre_fixehov'>";
 
-            $header = '<tr>';
-            foreach ($columns as $key => $val) {
-               // Non order column
-               if ($key[0] == '_') {
-                  $header .= "<th>$val</th>";
-               } else {
-                  $header .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
-                        "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
-                           (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
-               }
+         $header = '<tr>';
+         foreach ($columns as $key => $val) {
+            // Non order column
+            if ($key[0] == '_') {
+               $header .= "<th>$val</th>";
+            } else {
+               $header .= "<th".($sort == "$key" ? " class='order_$order'" : '').">".
+                     "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
+                        (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
             }
-            $header .= "</tr>\n";
-            echo $header;
-
-            while ($data=$DB->fetchAssoc($result)) {
-               Session::addToNavigateListItems('ProjectTask', $data['id']);
-               $rand = mt_rand();
-               echo "<tr class='tab_bg_2'>";
-               echo "<td>";
-               $link = "<a id='ProjectTask".$data["id"].$rand."' href='".
-                         ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
-                         (empty($data['name'])?"(".$data['id'].")":"")."</a>";
-               echo sprintf(__('%1$s %2$s'), $link,
-                             Html::showToolTip($data['content'],
-                                               ['display' => false,
-                                                     'applyto' => "ProjectTask".$data["id"].$rand]));
-               echo "</td>";
-               $name = !empty($data['transname2'])?$data['transname2']:$data['tname'];
-               echo "<td>".$name."</td>";
-               echo "<td";
-               $statename = !empty($data['transname3'])?$data['transname3']:$data['sname'];
-               echo " style=\"background-color:".$data['color']."\"";
-               echo ">".$statename."</td>";
-               echo "<td>";
-               echo Dropdown::getValueWithUnit($data["percent_done"], "%");
-               echo "</td>";
-               echo "<td>".Html::convDateTime($data['plan_start_date'])."</td>";
-               echo "<td>".Html::convDateTime($data['plan_end_date'])."</td>";
-               echo "<td>".Html::timestampToString($data['planned_duration'], false)."</td>";
-               echo "<td>".Html::timestampToString(self::getTotalEffectiveDuration($data['id']),
-                                                   false)."</td>";
-               echo "<td>";
-               if ($data['projecttasks_id']>0) {
-                  $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
-                  echo "<a id='ProjectTask".$data["projecttasks_id"].$rand."' href='".
-                           ProjectTask::getFormURLWithID($data['projecttasks_id'])."'>".$father.
-                           (empty($father)?"(".$data['projecttasks_id'].")":"")."</a>";
-               }
-               echo "</td></tr>";
-            }
-            echo $header;
-            echo "</table>\n";
-
-         } else {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>".__('No item found')."</th></tr>";
-            echo "</table>\n";
          }
+         $header .= "</tr>\n";
+         echo $header;
 
+         while ($data = $iterator->next()) {
+            Session::addToNavigateListItems('ProjectTask', $data['id']);
+            $rand = mt_rand();
+            echo "<tr class='tab_bg_2'>";
+            echo "<td>";
+            $link = "<a id='ProjectTask".$data["id"].$rand."' href='".
+                        ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
+                        (empty($data['name'])?"(".$data['id'].")":"")."</a>";
+            echo sprintf(__('%1$s %2$s'), $link,
+                           Html::showToolTip($data['content'],
+                                             ['display' => false,
+                                                   'applyto' => "ProjectTask".$data["id"].$rand]));
+            echo "</td>";
+            $name = !empty($data['transname2'])?$data['transname2']:$data['tname'];
+            echo "<td>".$name."</td>";
+            echo "<td";
+            $statename = !empty($data['transname3'])?$data['transname3']:$data['sname'];
+            echo " style=\"background-color:".$data['color']."\"";
+            echo ">".$statename."</td>";
+            echo "<td>";
+            echo Dropdown::getValueWithUnit($data["percent_done"], "%");
+            echo "</td>";
+            echo "<td>".Html::convDateTime($data['plan_start_date'])."</td>";
+            echo "<td>".Html::convDateTime($data['plan_end_date'])."</td>";
+            echo "<td>".Html::timestampToString($data['planned_duration'], false)."</td>";
+            echo "<td>".Html::timestampToString(self::getTotalEffectiveDuration($data['id']),
+                                                false)."</td>";
+            echo "<td>";
+            if ($data['projecttasks_id']>0) {
+               $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
+               echo "<a id='ProjectTask".$data["projecttasks_id"].$rand."' href='".
+                        ProjectTask::getFormURLWithID($data['projecttasks_id'])."'>".$father.
+                        (empty($father)?"(".$data['projecttasks_id'].")":"")."</a>";
+            }
+            echo "</td></tr>";
+         }
+         echo $header;
+         echo "</table>\n";
+
+      } else {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".__('No item found')."</th></tr>";
+         echo "</table>\n";
       }
+
       echo "</div>";
    }
 
@@ -1555,79 +1583,100 @@ class ProjectTask extends CommonDBChild {
       $end       = $options['end'];
 
       // Get items to print
-      $ASSIGN = "";
+      $WHERE = [];
+      $ADDWHERE = [];
 
       if ($who_group === "mine") {
          if (!$options['genical']
              && count($_SESSION["glpigroups"])) {
-            $groups = implode("','", $_SESSION['glpigroups']);
-            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
-                       AND `glpi_projecttaskteams`.`items_id`
-                           IN (SELECT DISTINCT `groups_id`
-                               FROM `glpi_groups`
-                               WHERE `groups_id` IN ('$groups')
-                                     AND `glpi_groups`.`is_assign`)
-                                     AND ";
+            $ADDWHERE['glpi_projecttaskteams.itemtype'] = ['Group'];
+            $ADDWHERE['glpi_projecttaskteams.items_id'] = new \QuerySubQuery([
+               'SELECT'          => 'groups_id',
+               'DISTINCT'        => true,
+               'FROM'            => 'glpi_groups',
+               'WHERE'           => [
+                  'groups_id' => $_SESSION['glpigroups'],
+                  'is_assign' => 1
+               ]
+            ]);
          } else { // Only personal ones
-            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
-                       AND `glpi_projecttaskteams`.`items_id` = '$who'
-                       AND ";
+            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'User';
+            $ADDWHERE['glpi_projecttaskteams.items_id'] = $who;
          }
 
       } else {
          if ($who > 0) {
-            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
-                       AND `glpi_projecttaskteams`.`items_id` = '$who'
-                       AND ";
+            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'User';
+            $ADDWHERE['glpi_projecttaskteams.items_id'] = $who;
          }
 
          if ($who_group > 0) {
-            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
-                       AND `glpi_projecttaskteams`.`items_id`
-                           IN ('$who_group')
-                       AND ";
+            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'Group';
+            $ADDWHERE['glpi_projecttaskteams.items_id'] = $who_group;
          }
       }
-      if (empty($ASSIGN)) {
-         $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
-                       AND `glpi_projecttaskteams`.`items_id`
-                        IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
-                            FROM `glpi_profiles`
-                            LEFT JOIN `glpi_profiles_users`
-                                 ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
-                            WHERE `glpi_profiles`.`interface` = 'central' ".
-                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                             $_SESSION["glpiactive_entity"], 1).")
-                     AND ";
+
+      if (!count($ADDWHERE)) {
+         $ADDWHERE = [
+            'glpi_projecttaskteams.itemtype' => 'User',
+            'glpi_projecttaskteams.items_id' => new \QuerySubQuery([
+               'SELECT'          => 'glpi_profiles_users.users_id',
+               'DISTINCT'        => true,
+               'FROM'            => 'glpi_profiles',
+               'LEFT JOIN'       => [
+                  'glpi_profiles_users'   => [
+                     'ON' => [
+                        'glpi_profiles_users'   => 'profiles_id',
+                        'glpi_profiles'         => 'id'
+                     ]
+                  ]
+               ],
+               'WHERE'           => [
+                  'glpi_profiles.interface'  => 'central'
+               ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], 1)
+            ])
+         ];
       }
 
-      $DONE_EVENTS = '';
       if (!isset($options['display_done_events']) || !$options['display_done_events']) {
-         $DONE_EVENTS = "`glpi_projecttasks`.`percent_done` < 100
-                         AND (glpi_projectstates.is_finished = 0
-                              OR glpi_projectstates.is_finished IS NULL)
-                         AND ";
+         $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
+         $ADDWHERE[] = ['OR' => [
+            ['glpi_projecttasks.is_finished'  => 0],
+            ['glpi_projecttasks.is_finished'  => null]
+         ]];
       }
 
-      $query = "SELECT `glpi_projecttasks`.*
-                FROM `glpi_projecttaskteams`
-                INNER JOIN `glpi_projecttasks`
-                  ON (`glpi_projecttasks`.`id` = `glpi_projecttaskteams`.`projecttasks_id`)
-                LEFT JOIN `glpi_projectstates`
-                  ON (`glpi_projecttasks`.`projectstates_id` = `glpi_projectstates`.`id`)
-                WHERE $ASSIGN
-                      $DONE_EVENTS
-                      '$begin' < `glpi_projecttasks`.`plan_end_date`
-                      AND '$end' > `glpi_projecttasks`.`plan_start_date`
-                ORDER BY `glpi_projecttasks`.`plan_start_date`";
+      $WHERE[$ttask->getTable() . '.plan_end_date'] = ['>=', $begin];
+      $WHERE[$ttask->getTable() . '.plan_start_date'] = ['<=', $end];
 
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'       => $ttask->getTable() . '.*',
+         'FROM'         => 'glpi_projecttaskteams',
+         'INNER JOIN'   => [
+            $ttask->getTable() => [
+               'ON' => [
+                  'glpi_projecttaskteams' => 'projecttasks_id',
+                  $ttask->getTable()      => 'id'
+               ]
+            ]
+         ],
+         'LEFT JOIN'    => [
+            'glpi_projectstates' => [
+               'ON' => [
+                  $ttask->getTable()   => 'projectstates_id',
+                  'glpi_projectstates' => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => $WHERE,
+         'ORDERBY'      => $ttask->getTable() . '.plan_start_date'
+      ]);
 
       $interv = [];
       $task   = new self();
 
-      if ($DB->numrows($result) > 0) {
-         for ($i=0; $data=$DB->fetchAssoc($result); $i++) {
+      if (count($iterator)) {
+         while ($data = $iterator->next()) {
             if ($task->getFromDB($data["id"])) {
                $key = $data["plan_start_date"]."$$$"."ProjectTask"."$$$".$data["id"];
                $interv[$key]['color']            = $options['color'];

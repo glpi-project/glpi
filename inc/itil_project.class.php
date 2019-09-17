@@ -403,7 +403,7 @@ class Itil_Project extends CommonDBRelation {
 
       global $DB;
 
-      $itil_items = $DB->request(self::getTable(), ['WHERE'  => "`projects_id` = '$oldid'"]);
+      $itil_items = $DB->request(self::getTable(), ['WHERE'  => ['projects_id' => $oldid]]);
       foreach ($itil_items as $data) {
          unset($data['id']);
          $data['projects_id'] = $newid;

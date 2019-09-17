@@ -737,8 +737,8 @@ abstract class API extends CommonGLPI {
                   if (isset($data['netport_id'])) {
                      // append network name
                      $concat_expr = new QueryExpression(
-                        "GROUP_CONCAT(CONCAT(ipadr.`id`, '".Search::SHORTSEP."' , ipadr.`name`)
-                        SEPARATOR '".Search::LONGSEP."') AS ipadresses"
+                        "GROUP_CONCAT(CONCAT(".$DB->quoteName('ipadr.id').", ".$DB->quoteValue(Search::SHORTSEP)." , ".$DB->quoteName('ipadr.name').")
+                        SEPARATOR ".$DB->quoteValue(Search::LONGSEP).") AS ".$DB->quoteName('ipadresses')
                      );
                      $netn_iterator = $DB->request([
                         'SELECT'    => [
@@ -967,17 +967,14 @@ abstract class API extends CommonGLPI {
          if (!Ticket::canView()) {
             $fields['_tickets'] = self::arrayRightError();
          } else {
-            $query = "SELECT ".Ticket::getCommonSelect()."
-                      FROM `glpi_tickets` ".
-                      Ticket::getCommonLeftJoin()."
-                      WHERE `glpi_items_tickets`.`items_id` = '$id'
-                             AND `glpi_items_tickets`.`itemtype` = '$itemtype' ".
-                            getEntitiesRestrictRequest("AND", "glpi_tickets")."
-                      ORDER BY `glpi_tickets`.`date_mod` DESC";
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetchAssoc($result)) {
-                  $fields['_tickets'][] = $data;
-               }
+            $criteria = Ticket::getCommonCriteria();
+            $criteria['WHERE'] = [
+               'glpi_items_tickets.items_id' => $id,
+               'glpi_items_tickets.itemtype' => $itemtype
+            ] + getEntitiesRestrictCriteria(Ticket::getTable());
+            $iterator = $DB->request($criteria);
+            while ($data = $iterator->next()) {
+               $fields['_tickets'][] = $data;
             }
          }
       }
@@ -989,19 +986,14 @@ abstract class API extends CommonGLPI {
          if (!Problem::canView()) {
             $fields['_problems'] = self::arrayRightError();
          } else {
-            $query = "SELECT ".Problem::getCommonSelect()."
-                            FROM `glpi_problems`
-                            LEFT JOIN `glpi_items_problems`
-                              ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
-                            Problem::getCommonLeftJoin()."
-                            WHERE `items_id` = '$id'
-                                  AND `itemtype` = '$itemtype' ".
-                                  getEntitiesRestrictRequest("AND", "glpi_problems")."
-                            ORDER BY `glpi_problems`.`date_mod` DESC";
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetchAssoc($result)) {
-                  $fields['_problems'][] = $data;
-               }
+            $criteria = Problem::getCommonCriteria();
+            $criteria['WHERE'] = [
+               'glpi_items_problems.items_id' => $id,
+               'glpi_items_problems.itemtype' => $itemtype
+            ] + getEntitiesRestrictCriteria(Problem::getTable());
+            $iterator = $DB->request($criteria);
+            while ($data = $iterator->next()) {
+               $fields['_problems'][] = $data;
             }
          }
       }
@@ -1013,19 +1005,14 @@ abstract class API extends CommonGLPI {
          if (!Change::canView()) {
             $fields['_changes'] = self::arrayRightError();
          } else {
-            $query = "SELECT ".Change::getCommonSelect()."
-                            FROM `glpi_changes`
-                            LEFT JOIN `glpi_changes_items`
-                              ON (`glpi_changes`.`id` = `glpi_changes_items`.`problems_id`) ".
-                            Change::getCommonLeftJoin()."
-                            WHERE `items_id` = '$id'
-                                  AND `itemtype` = '$itemtype' ".
-                                  getEntitiesRestrictRequest("AND", "glpi_changes")."
-                            ORDER BY `glpi_changes`.`date_mod` DESC";
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetchAssoc($result)) {
-                  $fields['_changes'][] = $data;
-               }
+            $criteria = Change::getCommonCriteria();
+            $criteria['WHERE'] = [
+               'glpi_changes_items.items_id' => $id,
+               'glpi_changes_items.itemtype' => $itemtype
+            ] + getEntitiesRestrictCriteria(Change::getTable());
+            $iterator = $DB->request($criteria);
+            while ($data = $iterator->next()) {
+               $fields['_changes'][] = $data;
             }
          }
       }
@@ -1171,7 +1158,7 @@ abstract class API extends CommonGLPI {
          $where = "1=1 ";
       }
       if ($item->maybeDeleted()) {
-         $where.= "AND `$table`.`is_deleted` = ".intval($params['is_deleted']);
+         $where.= "AND ".$DB->quoteName("$table.is_deleted")." = ".(int)$params['is_deleted'];
       }
 
       // add filter for a parent itemtype
@@ -1200,20 +1187,20 @@ abstract class API extends CommonGLPI {
 
          // filter with parents fields
          if (isset($item->fields[$fk_parent])) {
-            $where.= " AND `$table`.`$fk_parent` = ".$this->parameters['parent_id'];
+            $where.= " AND ".$DB->quoteName("$table.$fk_parent")." = ".(int)$this->parameters['parent_id'];
          } else if (isset($item->fields['itemtype'])
                  && isset($item->fields['items_id'])) {
-            $where.= " AND `$table`.`itemtype` = '".$this->parameters['parent_itemtype']."'
-                       AND `$table`.`items_id` = ".$this->parameters['parent_id'];
+            $where.= " AND ".$DB->quoteName("$table.itemtype")." = ".$DB->quoteValue($this->parameters['parent_itemtype'])."
+                       AND ".$DB->quoteName("$table.items_id")." = ".(int)$this->parameters['parent_id'];
          } else if (isset($parent_item->fields[$fk_child])) {
             $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
-            $join.= " LEFT JOIN `$parentTable` ON `$parentTable`.`$fk_child` = `$table`.`id` ";
-            $where.= " AND `$parentTable`.`id` = '" . $this->parameters['parent_id'] . "'";
+            $join.= " LEFT JOIN ".$DB->quoteName($parentTable)." ON ".$DB->quoteName("$parentTable.$fk_child")." = ".$DB->quoteName("$table.id");
+            $where.= " AND ".$DB->quoteName("$parentTable.id")." = " . (int)$this->parameters['parent_id'];
          } else if (isset($parent_item->fields['itemtype'])
                  && isset($parent_item->fields['items_id'])) {
             $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
-            $join.= " LEFT JOIN `$parentTable` ON `itemtype`='$itemtype' AND `$parentTable`.`items_id` = `$table`.`id` ";
-            $where.= " AND `$parentTable`.`id` = '" . $this->parameters['parent_id'] . "'";
+            $join.= " LEFT JOIN ".$DB->quoteName($parentTable)." ON ".$DB->quoteName("itemtype")."=".$DB->quoteValue($itemtype)." AND ".$DB->quoteName("$parentTable.items_id")." = ".$DB->quoteName("$table.id");
+            $where.= " AND ".$DB->quoteName("$parentTable.id")." = " . (int)$this->parameters['parent_id'];
          }
       }
 
@@ -1236,8 +1223,8 @@ abstract class API extends CommonGLPI {
          // make text search
          foreach ($params['searchText']  as $filter_field => $filter_value) {
             if (!empty($filter_value)) {
-               $search = Search::makeTextSearch($filter_value);
-               $where.= " AND (`$table`.`$filter_field` $search)";
+               $search_value = Search::makeTextSearch($filter_value);
+               $where.= " AND (".$DB->quoteName("$table.$filter_field")." $search_value)";
             }
          }
       }
@@ -1261,12 +1248,12 @@ abstract class API extends CommonGLPI {
       }
 
       // build query
-      $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT `$table`.id,  `$table`.*
-                FROM `$table`
+      $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT ".$DB->quoteName("$table.id").",  ".$DB->quoteName("$table.*")."
+                FROM ".$DB->quoteName($table)."
                 $join
                 WHERE $where
-                ORDER BY ".$params['sort']." ".$params['order']."
-                LIMIT ".$params['start'].", ".$params['list_limit'];
+                ORDER BY ".$DB->quoteName($params['sort'])." ".$params['order']."
+                LIMIT ".(int)$params['start'].", ".(int)$params['list_limit'];
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetchAssoc($result)) {
             $found[] = $data;
@@ -1417,8 +1404,8 @@ abstract class API extends CommonGLPI {
     *
     * It permits to identify a searchoption with an named index instead a numeric one
     *
-    * @param CommonDBTM $itemtype current itemtype called on ressource listSearchOption
-    * @param array      $option   current option to generate an unique id
+    * @param string $itemtype current itemtype called on ressource listSearchOption
+    * @param array  $option   current option to generate an unique id
     *
     * @return string the unique id
     */
