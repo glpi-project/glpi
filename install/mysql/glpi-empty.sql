@@ -1237,6 +1237,7 @@ CREATE TABLE `glpi_impactitems` (
 	KEY `source` (`itemtype`, `items_id`),
 	KEY `parent_id` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+INSERT INTO `glpi_configs` VALUES ('211','core','lock_floating_message','1');
 
 ### Dump table glpi_consumableitems
 
@@ -6867,6 +6868,7 @@ CREATE TABLE `glpi_users` (
   `set_default_requester` tinyint(1) DEFAULT NULL,
   `lock_autolock_mode` tinyint(1) DEFAULT NULL,
   `lock_directunlock_notification` tinyint(1) DEFAULT NULL,
+  `lock_floating_message` tinyint(1) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `highcontrast_css` tinyint(1) DEFAULT 0,
   `plannings` text COLLATE utf8_unicode_ci DEFAULT NULL,

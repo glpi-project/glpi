@@ -1386,6 +1386,11 @@ class Config extends CommonDBTM {
               "</td><td>";
          Dropdown::showYesNo("lock_directunlock_notification", $data["lock_directunlock_notification"]);
          echo "</td></tr>";
+
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . __('Floating messages') . "</td><td>";
+         Dropdown::showYesNo("lock_floating_message", $data["lock_floating_message"]);
+         echo "</td></tr>";
       }
 
       if ((!$userpref && $canedit) || ($userpref && $canedituser)) {

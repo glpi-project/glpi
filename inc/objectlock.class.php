@@ -504,19 +504,56 @@ class ObjectLock extends CommonDBTM {
     * @param  $title    : if $title is '' then title bar it is not shown (default '')
    **/
    private function displayLockMessage($msg, $title = '') {
-
+      global $CFG_GLPI;
+      
       $style = 'display:table;background-color:lightSalmon;flex-wrap:wrap;align-items:center;';
       echo "<div id='message_after_lock' class='navigationheader' style='$style'>";
+      $style = 'display:none;';
+      if ($_SESSION['glpilock_floating_message'] == 0) {
+         $style .= 'margin-bottom: 5px;padding-top: 2px;padding-bottom: 2px;';
+      }
+
+      echo "<div id='message_after_lock' class='message_after_redirect ui-widget-content' title='$title' style='$style'>";
       echo $msg;
       echo "</div>";
       echo Html::scriptBlock("$('#message_after_lock').hide();");
 
-      echo Html::scriptBlock("
-         $(function() {
-            $('#message_after_lock').insertAfter('.navigationheader:not(#message_after_lock)');
-            $('#message_after_lock').show('slide', {direction: 'up'} , 1000);
-         });
-      ");
+      if ($_SESSION['glpilock_floating_message'] == 1) {
+         echo Html::scriptBlock("
+            $(function() {
+               $('#message_after_lock').dialog({
+                  dialogClass: 'message_after_redirect',
+                  minHeight: 10,
+                  width: 'auto',
+                  height: 'auto',
+                  position: {
+                     my: 'left top',
+                     at: 'left+20 top-30',
+                     of: $('#page'),
+                     collision: 'none'
+                  },
+                  autoOpen: false,
+                  create: function(event, ui) {
+                     $hideTitle
+                     $('.ui-dialog-titlebar-close', ui.dialog | ui).hide();
+                  },
+                  show: {
+                     effect: 'slide',
+                     direction: 'up',
+                     duration: 800
+                  },
+               })
+               .dialog('open');
+            });
+         ");
+      } else {
+         echo Html::scriptBlock("
+            $(function() {
+               $('#message_after_lock').insertAfter('.navigationheader');
+               $('#message_after_lock').show('slide', {direction: 'up'} , 800);
+            });
+         ");
+      }
    }
 
 
