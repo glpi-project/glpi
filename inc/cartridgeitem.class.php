@@ -323,8 +323,8 @@ class CartridgeItem extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['NOT' => ['NEWTABLE.date_use' >= null],
-                                     'NEWTABLE.date_out' => null]
+            'condition'          => ['AND' => ['NOT' => ['NEWTABLE.date_use' >= null],
+                                     'NEWTABLE.date_out' => null]]
          ]
       ];
 
@@ -339,7 +339,7 @@ class CartridgeItem extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['NOT' => ['NEWTABLE.date_out' => null]]
+            'condition'          => ['AND' => ['NOT' => ['NEWTABLE.date_out' => null]]]
          ]
       ];
 
@@ -354,8 +354,8 @@ class CartridgeItem extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['NEWTABLE.date_use' => null,
-                                     'NEWTABLE.date_out' => null]
+            'condition'          => ['AND' => ['NEWTABLE.date_use' => null,
+                                     'NEWTABLE.date_out' => null]]
          ]
       ];
 
