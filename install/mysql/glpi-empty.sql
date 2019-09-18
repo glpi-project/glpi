@@ -3118,6 +3118,7 @@ INSERT INTO `glpi_filesystems` VALUES ('17','UDF',NULL,NULL,NULL);
 INSERT INTO `glpi_filesystems` VALUES ('18','UFS',NULL,NULL,NULL);
 INSERT INTO `glpi_filesystems` VALUES ('19','XFS',NULL,NULL,NULL);
 INSERT INTO `glpi_filesystems` VALUES ('20','ZFS',NULL,NULL,NULL);
+INSERT INTO `glpi_filesystems` VALUES ('21','APFS',NULL,NULL,NULL);
 
 ### Dump table glpi_fqdns
 
