@@ -310,6 +310,24 @@ class RuleTicket extends Rule {
                      $output["items_id"][$result["itemtype"]][] = $result["id"];
                   }
                   break;
+
+               case 'regex_result';
+                  if ($action->fields["field"] == "_affect_itilcategory_by_code") {
+                     if (isset($this->regex_results[0])) {
+                        $regexvalue = RuleAction::getRegexResultById($action->fields["value"],
+                                                                     $this->regex_results[0]);
+                     } else {
+                        $regexvalue = $action->fields["value"];
+                     }
+
+                     if (!is_null($regexvalue)) {
+                        $target_itilcategory = ITILCategory::getITILCategoryIDByCode($regexvalue);
+                        if ($target_itilcategory != -1) {
+                           $output["itilcategories_id"] = $target_itilcategory;
+                        }
+                     }
+                  }
+                  break;
             }
          }
       }
@@ -356,6 +374,10 @@ class RuleTicket extends Rule {
       $criterias['itilcategories_id_cn']['name']               = __('Category').' - '.__('Complete name');
       $criterias['itilcategories_id_cn']['linkfield']          = 'itilcategories_id';
       $criterias['itilcategories_id_cn']['type']               = 'dropdown';
+
+      $criterias['itilcategories_id_code']['table']              = 'glpi_itilcategories';
+      $criterias['itilcategories_id_code']['field']              = 'code';
+      $criterias['itilcategories_id_code']['name']               = __('Code representing the ticket category');
 
       $criterias['type']['table']                           = 'glpi_tickets';
       $criterias['type']['field']                           = 'type';
@@ -540,6 +562,10 @@ class RuleTicket extends Rule {
       $actions['itilcategories_id']['name']                 = __('Category');
       $actions['itilcategories_id']['type']                 = 'dropdown';
       $actions['itilcategories_id']['table']                = 'glpi_itilcategories';
+
+      $actions['_affect_itilcategory_by_code']['name']           = __('Ticket category from code');
+      $actions['_affect_itilcategory_by_code']['type']           = 'text';
+      $actions['_affect_itilcategory_by_code']['force_actions']  = ['regex_result'];
 
       $actions['type']['name']                              = __('Type');
       $actions['type']['table']                             = 'glpi_tickets';

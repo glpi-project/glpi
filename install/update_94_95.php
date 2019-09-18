@@ -502,6 +502,14 @@ function update94to95() {
          ]
       );
    }
+   /** /Add "code" field on glpi_itilcategories */
+   if (!$DB->fieldExists("glpi_itilcategories", "code")) {
+      $migration->addField("glpi_itilcategories", "code", "string", [
+            'after'  => "groups_id"
+         ]
+      );
+   }
+   /** /Add "code" field on glpi_itilcategories */
 
    //Add over-quota option to software licenses to allow assignment after all alloted licenses are used
    if (!$DB->fieldExists('glpi_softwarelicenses', 'allow_overquota')) {
