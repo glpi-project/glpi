@@ -330,7 +330,7 @@ $CFG_GLPI["itemdevicepowersupply_types"]  = ['Computer', 'NetworkEquipment', 'En
 
 $CFG_GLPI["itemdevicenetworkcard_types"]  = ['Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
 
-$CFG_GLPI['itemdeviceharddrive_types']    = ['Computer', 'Peripheral', 'NetworkEquipment', 'Printer'];
+$CFG_GLPI['itemdeviceharddrive_types']    = ['Computer', 'Peripheral', 'NetworkEquipment', 'Printer', 'Phone'];
 
 $CFG_GLPI['itemdevicebattery_types']      = ['Computer', 'Peripheral', 'Phone', 'Printer'];
 
