@@ -44,7 +44,7 @@ class Phone extends CommonDBTM {
    public $dohistory                   = true;
 
    static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
-                                          'Item_OperatingSystem'];
+                                          'Item_OperatingSystem', 'Item_Disk'];
 
    static $rightname                   = 'phone';
    protected $usenotepad               = true;
@@ -73,6 +73,7 @@ class Phone extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Item_OperatingSystem', $ong, $options);
       $this->addStandardTab('Item_Devices', $ong, $options);
+      $this->addStandardTab('Item_Disk', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
