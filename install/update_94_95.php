@@ -610,6 +610,13 @@ function update94to95() {
       }
    }
 
+   // Add Apple File System (All Apple devices since 2017)
+   if (countElementsInTable('glpi_filesystems', ['name' => 'APFS']) === 0) {
+      $DB->insertOrDie('glpi_filesystems', [
+         'name'   => 'APFS'
+      ]);
+   }
+
    $migration->executeMigration();
 
    return $updateresult;
