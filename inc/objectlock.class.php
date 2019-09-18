@@ -505,7 +505,7 @@ class ObjectLock extends CommonDBTM {
    **/
    private function displayLockMessage($msg, $title = '') {
       global $CFG_GLPI;
-      
+
       $style = 'display:table;background-color:lightSalmon;flex-wrap:wrap;align-items:center;';
       echo "<div id='message_after_lock' class='navigationheader' style='$style'>";
       $style = 'display:none;';

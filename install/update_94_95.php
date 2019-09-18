@@ -767,7 +767,7 @@ function update94to95() {
       $DB->queryOrDie($query, "add table glpi_impacts_parent");
    }
    /** /Impact analysis */
-   
+
    if (!$DB->fieldExists("glpi_users", "lock_floating_message")) {
       $migration->addField("glpi_users", "lock_floating_message", "tinyint(1) NULL DEFAULT NULL", [
             'after' => 'lock_directunlock_notification'
