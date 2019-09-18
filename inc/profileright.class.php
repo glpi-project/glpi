@@ -135,7 +135,14 @@ class ProfileRight extends CommonDBChild {
          $profiles_id = $profile['id'];
          foreach ($rights as $name) {
             if ($stmt === null) {
-               $stmt = $DB->prepare($DB->buildInsert(self::getTable(), [new QueryParam(), new QueryParam()]));
+               $stmt = $DB->prepare(
+                  $DB->buildInsert(
+                     self::getTable(), [
+                        'profiles_id'  => new QueryParam(),
+                        'name'         => new QueryParam()
+                     ]
+                  )
+               );
             }
 
             $stmt->bind_param('ss', $profiles_id, $name);
@@ -274,7 +281,14 @@ class ProfileRight extends CommonDBChild {
       $stmt = null;
       while ($right = $iterator->next()) {
          if ($stmt === null) {
-            $stmt = $DB->prepare($DB->buildInsert(self::getTable(), [new QueryParam(), new QueryParam()]));
+            $stmt = $DB->prepare(
+               $DB->buildInsert(
+                  self::getTable(), [
+                     'profiles_id'  => new QueryParam(),
+                     'name'         => new QueryParam()
+                  ]
+               )
+            );
          }
 
          $stmt->bind_param('ss', $profiles_id, $rights['NAME']);
