@@ -1552,7 +1552,7 @@ class Transfer extends CommonDBTM {
             ]
          ];
 
-         $iterator = $DB->request();
+         $iterator = $DB->request($criteria);
 
          while ($data = $iterator->next()) {
             if ($this->options['keep_software']) {
