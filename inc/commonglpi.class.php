@@ -986,26 +986,14 @@ class CommonGLPI {
 
          if (count($actions)) {
             $rand          = mt_rand();
-            $nb_hightlight = min(2, count($actions));
 
-            echo "<span class='btn-group'>";
-            for ($i = 0; $i < $nb_hightlight; $i++) {
-               $key    = array_keys($actions)[0];
-               $action = array_shift($actions);
-               echo "<button type='button' class='btn btn-secondary' data-action='$key'>
-                        $action
-                     </button>";
-            }
             if (count($actions)) {
-               echo "<span class='btn-group'>";
-               echo "<button id='moreactions'
-                           type='button'
-                           class='btn btn-secondary dropdown-toggle'
-                           data-toggle='dropdown'
-                           aria-haspopup='true'
-                           aria-expanded='false'>
+               echo "<span class='single-actions'>";
+               echo "<button type='button' class='btn btn-secondary moreactions'>
+                        ".__("Actions")."
                         <i class='fas fa-caret-down'></i>
                      </button>";
+
                echo "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>";
                foreach ($actions as $key => $action) {
                   echo "<a class='dropdown-item' data-action='$key' href='#'>$action</a>";
@@ -1013,7 +1001,6 @@ class CommonGLPI {
                echo "</div>";
                echo "</span>";
             }
-            echo "</span>";
 
             Html::openMassiveActionsForm();
             echo "<div id='dialog_container_$rand'></div>";
@@ -1023,24 +1010,31 @@ class CommonGLPI {
             //restore
             unset($CFG_GLPI['checkbox-zero-on-empty']);
 
-            $entr = ($this->getType() === Entity::getType() ?
-               $this->fields['id'] :
-               (isset($this->fields['entities_id']) ? $this->fields['entities_id'] : ''));
             echo Html::scriptBlock( "$(function() {
                var ma = ".json_encode($input).";
 
-               $(document).on('click', '#moreactions', function() {
-                  $('#moreactions + .dropdown-menu').toggle();
+               $(document).on('click', '.moreactions', function() {
+                  $('.moreactions + .dropdown-menu').toggle();
+               });
+
+               $(document).on('click', function(event) {
+                  var target = $(event.target);
+                  var parent = target.parent();
+
+                  if(!target.hasClass('moreactions')
+                     && !parent.hasClass('moreactions')) {
+                     $('.moreactions + .dropdown-menu').hide();
+                  }
                });
 
                $(document).on('click', '[data-action]', function() {
-                  $('#moreactions + .dropdown-menu').hide();
+                  $('.moreactions + .dropdown-menu').hide();
 
                   var current_action = $(this).data('action');
 
                   $('<div />').dialog({
                      title: ma.actions[current_action],
-                     width: 400,
+                     width: 500,
                      height: 'auto',
                      modal: true,
                      appendTo: '#dialog_container_$rand'
@@ -1056,7 +1050,7 @@ class CommonGLPI {
          }
 
          if ($current !== false) {
-            echo "<span class='right'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
+            echo "<span class='right navicon'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
          }
 
          if ($next >= 0) {
