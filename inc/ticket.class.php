@@ -6855,8 +6855,8 @@ class Ticket extends CommonITILObject {
       return $excluded;
    }
 
-   public function getWhitelistedActions() {
-      $whitelist = parent::getWhitelistedActions();
+   public function getWhitelistedSingleMassiveActions() {
+      $whitelist = parent::getWhitelistedSingleMassiveActions();
 
       if (!in_array($this->fields['status'], $this->getClosedStatusArray())) {
          $whitelist[] = 'Item_Ticket:add_item';

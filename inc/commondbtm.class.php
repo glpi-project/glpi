@@ -3702,13 +3702,13 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-    * Get forbidden single action
+    * Get whitelisted single actions
     *
     * @since 9.5.0
     *
     * @return array
    **/
-   public function getWhitelistedActions() {
+   public function getWhitelistedSingleMassiveActions() {
       return ['MassiveAction:add_transfer_list'];
    }
 

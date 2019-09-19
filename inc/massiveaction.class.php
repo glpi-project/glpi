@@ -602,7 +602,7 @@ class MassiveAction {
             $item->getForbiddenSingleMassiveActions()
          );
       }
-      $whitedlisted_actions = $item->getWhitelistedActions();
+      $whitedlisted_actions = $item->getWhitelistedSingleMassiveActions();
 
       if (is_array($forbidden_actions) && count($forbidden_actions)) {
          foreach ($forbidden_actions as $actiontodel) {
