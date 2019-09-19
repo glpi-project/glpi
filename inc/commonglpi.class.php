@@ -832,6 +832,8 @@ class CommonGLPI {
     * @return void
    **/
    function showNavigationHeader($options = []) {
+      global $CFG_GLPI;
+
       // for objects not in table like central
       if (isset($this->fields['id'])) {
          $ID = $this->fields['id'];
