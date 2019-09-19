@@ -79,32 +79,43 @@ if (isset($_GET['node'])) {
       }
    } else { // standard node
       $node_id = $_GET['node'];
-      $query   = "SELECT ent.`id`, ent.`name`, ent.`sons_cache`, count(sub_entities.id) as nb_subs
-                  FROM `glpi_entities` as ent
-                  LEFT JOIN `glpi_entities` as sub_entities
-                     ON sub_entities.entities_id = ent.id
-                  WHERE ent.`entities_id` = '$node_id'
-                  GROUP BY ent.`id`, ent.`name`, ent.`sons_cache`
-                  ORDER BY `name`";
+      $iterator = $DB->request([
+         'SELECT' => [
+            'ent.id',
+            'ent.name',
+            'ent.sons_cache',
+            'COUNT'  => 'sub_entities.id AS nb_subs'
+         ],
+         'FROM'   => 'glpi_entities AS ent',
+         'LEFT JOIN' => [
+            'glpi_entities AS sub_entities'  => [
+               'ON'  => [
+                  'sub_entities' => 'entities_id',
+                  'ent'          => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => ['ent.entities_id' => $node_id],
+         'GROUPBY'   => ['ent.id', 'ent.name', 'ent.sons_cache'],
+         'ORDERBY'   => 'name'
+      ]);
 
-      if ($result = $DB->query($query)) {
-         while ($row = $DB->fetchAssoc($result)) {
-            $path = [
-               'id'   => $row['id'],
-               'text' => $row['name']
-            ];
+      while ($row = $iterator->next()) {
+         $path = [
+            'id'   => $row['id'],
+            'text' => $row['name']
+         ];
 
-            if ($row['nb_subs'] > 0) {
-               //apend a i tag (one of shortest tags) to have the is_recursive link
-               $path['text'].= '<i/>';
-               $path['children'] = true;
+         if ($row['nb_subs'] > 0) {
+            //apend a i tag (one of shortest tags) to have the is_recursive link
+            $path['text'].= '<i/>';
+            $path['children'] = true;
 
-               if (isset($ancestors[$row['id']])) {
-                  $path['state']['opened'] = 'true';
-               }
+            if (isset($ancestors[$row['id']])) {
+               $path['state']['opened'] = 'true';
             }
-            $nodes[] = $path;
          }
+         $nodes[] = $path;
       }
    }
    echo json_encode($nodes);

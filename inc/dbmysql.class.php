@@ -1656,4 +1656,28 @@ class DBmysql {
       //return $this->dbh->quote($value, $type);
    }
 
+   /**
+    * Get character used to quote names for current database engine
+    *
+    * @return string
+    *
+    * @since 9.5.0
+    */
+   public static function getQuoteNameChar(): string {
+      return '`';
+   }
+
+   /**
+    * Is value quoted as database field/expression?
+    *
+    * @param string|\QueryExpression $value Value to check
+    *
+    * @return boolean
+    *
+    * @since 9.5.0
+    */
+   public static function isNameQuoted($value): bool {
+      $quote = static::getQuoteNameChar();
+      return is_string($value) && trim($value, $quote) != $value;
+   }
 }

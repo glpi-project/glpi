@@ -65,7 +65,6 @@ $cleantarget = preg_replace("/&/", "&amp;", $cleantarget);
 $next    = 0;
 $prev    = 0;
 $title   = "";
-$cond    = '';
 $parent  = 0;
 
 $showuserlink = 0;
@@ -114,7 +113,6 @@ switch ($_GET["type"]) {
 
    case "itilcategories_tree" :
       $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-      $cond   = "(`id` = '$parent' OR `itilcategories_id` = '$parent')";
       // nobreak;
 
    case "itilcategories_id" :
@@ -128,7 +126,6 @@ switch ($_GET["type"]) {
 
    case 'locations_tree' :
       $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-      $cond   = "(`id` = '$parent' OR `locations_id` = '$parent')";
       // nobreak;
 
    case 'locations_id' :
@@ -150,8 +147,6 @@ switch ($_GET["type"]) {
    case 'group_tree' :
    case 'groups_tree_assign' :
       $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-      $cond   = " (`id` = '$parent' OR `groups_id` = '$parent')
-                   AND ".(($_GET["type"] == 'group_tree') ? '`is_requester`' : '`is_assign`');
       // nobreak;
 
    case "group" :

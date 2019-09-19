@@ -3174,6 +3174,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 0.85
    **/
    function getSearchOptionsMain() {
+      global $DB;
 
       $tab = [];
 
@@ -3294,12 +3295,13 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Time to resolve exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF(TABLE.`time_to_resolve` IS NOT NULL
-                                            AND TABLE.`status` <> 4
-                                            AND (TABLE.`solvedate` > TABLE.`time_to_resolve`
-                                                 OR (TABLE.`solvedate` IS NULL
-                                                      AND TABLE.`time_to_resolve` < NOW())),
-                                            1, 0)'
+         'computation'        =>
+            'IF(' . $DB->quoteName('TABLE.time_to_resolve') . ' IS NOT NULL
+               AND ' . $DB->quoteName('TABLE.status') . ' <> 4
+               AND (' . $DB->quoteName('TABLE.solvedate') . ' > ' . $DB->quoteName('TABLE.time_to_resolve') . '
+                     OR (' . $DB->quoteName('TABLE.solvedate') . ' IS NULL
+                        AND ' . $DB->quoteName('TABLE.time_to_resolve') . ' < NOW())),
+               1, 0)'
       ];
 
       $tab[] = [
@@ -3406,6 +3408,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 0.85
    **/
    function getSearchOptionsSolution() {
+      global $DB;
 
       $tab = [];
 
@@ -7420,7 +7423,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    /**
-    * Number of tasks of the objec
+    * Number of tasks of the object
     *
     * @param boolean $with_private true : all followups / false : only public ones (default 1)
     *
@@ -7716,6 +7719,85 @@ abstract class CommonITILObject extends CommonDBTM {
     */
    public static function getTemplateFormFieldName() {
       return '_' . strtolower(static::getType()) . 'template';
+   }
+
+   /**
+    * Get common request criteria
+    *
+    * @since 9.5.0
+    *
+    * @return array
+    */
+   public static function getCommonCriteria() {
+      $fk = self::getForeignKeyField();
+      $gtable = str_replace('glpi_', 'glpi_groups_', static::getTable());
+      $itable = str_replace('glpi_', 'glpi_items_', static::getTable());
+      if (self::getType() == 'Change') {
+         $gtable = 'glpi_changes_groups';
+         $itable = 'glpi_changes_items';
+      }
+      $utable = static::getTable() . '_users';
+      $stable = static::getTable() . '_suppliers';
+      if (self::getType() == 'Ticket') {
+         $stable = 'glpi_suppliers_tickets';
+      }
+      $table = static::getTable();
+      $criteria = [
+         'SELECT'          => [
+            "$table.*",
+            'glpi_itilcategories.completename AS catname'
+         ],
+         'DISTINCT'        => true,
+         'FROM'            => $table,
+         'LEFT JOIN'       => [
+            $gtable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $gtable  => $fk
+               ]
+            ],
+            $utable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $utable  => $fk
+               ]
+            ],
+            $stable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $stable  => $fk
+               ]
+            ],
+            'glpi_itilcategories'      => [
+               'ON' => [
+                  $table                  => 'itilcategories_id',
+                  'glpi_itilcategories'   => 'id'
+               ]
+            ],
+            $itable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $itable  => $fk
+               ]
+            ]
+         ],
+         'ORDERBY'            => "$table.date_mod DESC"
+      ];
+      if (count($_SESSION["glpiactiveentities"]) > 1) {
+         $criteria['LEFT JOIN']['glpi_entities'] = [
+            'ON' => [
+               'glpi_entities'   => 'id',
+               $table            => 'entities_id'
+            ]
+         ];
+         $criteria['SELECT'] = array_merge(
+            $criteria['SELECT'], [
+               'glpi_entities.completename AS entityname',
+               "$table.entities_id AS entityID"
+            ]
+         );
+      }
+      return $criteria;
    }
 
    public function getForbiddenSingleMassiveActions() {

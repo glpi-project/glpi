@@ -48,7 +48,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
 
    function getNetworkCardInterestingFields() {
-      return ['link.`mac`' => 'mac'];
+      return ['link.mac' => 'mac'];
    }
 
 

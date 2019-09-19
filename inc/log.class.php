@@ -732,7 +732,8 @@ class Log extends CommonDBTM {
                   if ($oldval_expl[0] == '&nbsp;') {
                      $oldval = $data["old_value"];
                   } else {
-                     foreach ($DB->request('glpi_users', "`name` = '".$oldval_expl[0]."'") as $val) {
+                     $old_iterator = $DB->request('glpi_users', ['name' => $oldval_expl[0]]);
+                     while ($val = $old_iterator->next()) {
                         $oldval = sprintf(__('%1$s %2$s'),
                               formatUserName($val['id'], $oldval_expl[0], $val['realname'],
                                     $val['firstname']),
@@ -743,7 +744,8 @@ class Log extends CommonDBTM {
                   if ($newval_expl[0] == '&nbsp;') {
                      $newval = $data["new_value"];
                   } else {
-                     foreach ($DB->request('glpi_users', "`name` = '".$newval_expl[0]."'") as $val) {
+                     $new_iterator = $DB->request('glpi_users', ['name' => $newval_expl[0]]);
+                     while ($val = $new_iterator->next()) {
                         $newval = sprintf(__('%1$s %2$s'),
                               formatUserName($val['id'], $newval_expl[0], $val['realname'],
                                     $val['firstname']),

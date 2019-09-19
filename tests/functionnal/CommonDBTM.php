@@ -186,11 +186,6 @@ class CommonDBTM extends DbTestCase {
       unset($_SESSION['glpiactive_entity']);
       $this->array($comp->fields)
          ->integer['entities_id']->isIdenticalTo(12);
-
-      /* do not work
-      $_SESSION['glpi_table_of']['Computer'] = '';
-      $this->boolean($comp->getEmpty())->isFalse();
-      unset($_SESSION['glpi_table_of']);*/
    }
 
    /**

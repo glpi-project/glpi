@@ -45,4 +45,4 @@ if ($_POST['id'] > 0) {
    $field->getEmpty();
    $field->fields['itemtype'] = $_POST['itemtype'];
 }
-$field->selectCriterias($field);
+$field->selectCriterias();

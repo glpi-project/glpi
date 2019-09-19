@@ -405,6 +405,8 @@ function contructListFromTree($tree, $parent = 0) {
  * @param $reallink  string   real field to link ($table.id if not set) (default ='')
  *
  * @return string the query
+ *
+ * @deprecated 9.5.0
 **/
 function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
    $dbu = new DbUtils();

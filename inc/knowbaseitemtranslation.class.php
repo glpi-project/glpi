@@ -397,8 +397,13 @@ class KnowbaseItemTranslation extends CommonDBChild {
       global $DB;
 
       $tab = [];
-      foreach ($DB->request(getTableForItemType(__CLASS__),
-                           "`knowbaseitems_id`='".$item->getID()."'") as $data) {
+
+      $iterator = $DB->request([
+         'FROM'   => getTableForItemType(__CLASS__),
+         'WHERE'  => ['knowbaseitems_id' => $item->getID()]
+      ]);
+
+      while ($data = $iterator->next()) {
          $tab[$data['language']] = $data['language'];
       }
       return $tab;

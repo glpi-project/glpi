@@ -446,7 +446,7 @@ class Search extends DbTestCase {
          ->contains("AND `glpi_computers`.`is_template` = 0")
          ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
          ->contains("OR (`glpi_computers`.`is_recursive`='1'".
-                    " AND `glpi_computers`.`entities_id` IN ('0'))")
+                    " AND `glpi_computers`.`entities_id` IN (0))")
          ->contains("`glpi_computers`.`name`  LIKE '%test%'")
          ->contains("AND (`glpi_softwares`.`id` = '10784')")
          ->contains("OR (`glpi_computers`.`id`  LIKE '%test2%'")
@@ -490,7 +490,7 @@ class Search extends DbTestCase {
          ->contains("AND `glpi_computers`.`is_template` = 0")
          ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
          ->contains("OR (`glpi_computers`.`is_recursive`='1'".
-                    " AND `glpi_computers`.`entities_id` IN ('0'))")
+                    " AND `glpi_computers`.`entities_id` IN (0))")
          ->matches("/`glpi_computers`\.`name`  LIKE '%test%'/")
          ->matches("/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/")

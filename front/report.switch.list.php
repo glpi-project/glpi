@@ -47,11 +47,11 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
    $name = Dropdown::getDropdownName("glpi_networkequipments", $_POST["switch"]);
    echo "<div class='center spaced'><h2>".sprintf(__('Network report by hardware: %s'), $name).
         "</h2></div>";
-
-   Report::reportForNetworkInformations("`glpi_networkequipments` AS ITEM",
-                                        "PORT_1.`itemtype` = 'NetworkEquipment'
-                                              AND PORT_1.`items_id` = ITEM.`id`",
-                                        "ITEM.`id` = '".$_POST["switch"]."'");
+   Report::reportForNetworkInformations(
+      'glpi_networkequipments AS ITEM', //from
+      ['PORT_1' => 'items_id', 'ITEM' => 'id', ['AND' => ['PORT_1.itemtype' => 'NetworkEquipment']]], //joincrit
+      ['ITEM.id' => $_POST['switch']] //where
+   );
 
    Html::footer();
 

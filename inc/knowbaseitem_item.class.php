@@ -393,10 +393,16 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $newitemtype = $itemtype;
       }
 
-      foreach ($DB->request('glpi_knowbaseitems_items',
-                            ['FIELDS' => 'knowbaseitems_id',
-                                  'WHERE'  => "`items_id` = '$oldid'
-                                                AND `itemtype` = '$itemtype'"]) as $data) {
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_knowbaseitems_items',
+         'FIELDS' => 'knowbaseitems_id',
+         'WHERE'  => [
+            'items_id'  => $oldid,
+            'itemtype'  => $itemtype
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          $kb_link = new self();
          $kb_link->add(['knowbaseitems_id' => $data['knowbaseitems_id'],
                                   'itemtype'    => $newitemtype,

@@ -336,12 +336,16 @@ class NetworkName extends FQDNLabel {
    static function unaffectAddressesOfItem($items_id, $itemtype) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_networknames`
-                WHERE `items_id` = '".$items_id."'
-                AND `itemtype` = '".$itemtype."'";
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'itemtype'  => $itemtype,
+            'items_id'  => $items_id
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $networkNameID) {
+      while ($networkNameID = $iterator->next()) {
          self::unaffectAddressByID($networkNameID['id']);
       }
    }
@@ -404,25 +408,28 @@ class NetworkName extends FQDNLabel {
       $number_names = 0;
 
       if ($networkPortID > 0) {
-         $query = "SELECT `id`
-                   FROM `".$name->getTable()."`
-                   WHERE `itemtype` = 'NetworkPort'
-                   AND `items_id` = '$networkPortID'
-                   AND `is_deleted` = 0";
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $name->getTable(),
+            'WHERE'  => [
+               'itemtype'     => 'NetworkPort',
+               'items_id'     => $networkPortID,
+               'is_deleted'   => 0
+            ]
+         ]);
+         $numrows = count($iterator);
 
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result) > 1) {
+         if ($numrows > 1) {
             echo "<tr class='tab_bg_1'><th colspan='4'>" .
-                   __("Several network names available! Go to the tab 'Network Name' to manage them.") .
-                 "</th></tr>\n";
-            return;
+               __("Several network names available! Go to the tab 'Network Name' to manage them.") .
+               "</th></tr>\n";
+               return;
          }
 
-         switch ($DB->numrows($result)) {
+         switch ($numrows) {
             case 1 :
-               $nameID = $DB->fetchAssoc($result);
-               $name->getFromDB($nameID['id']);
+               $result = $iterator->next();
+               $name->getFromDB($result['id']);
                break;
 
             case 0 :
@@ -546,10 +553,18 @@ class NetworkName extends FQDNLabel {
          $item = $father->getItem();
       }
 
+      $table = static::getTable();
+      $criteria = [
+         'SELECT' => [
+            "$table.id"
+         ],
+         'FROM'   => $table,
+         'WHERE'  => []
+      ];
+
       switch ($item->getType()) {
          case 'FQDN' :
-            $JOINS = "";
-            $ORDER = "`glpi_networknames`.`name`";
+            $criteria['ORDERBY'] = "$table.name";
 
             if (isset($options['order'])) {
                switch ($options['order']) {
@@ -557,55 +572,81 @@ class NetworkName extends FQDNLabel {
                      break;
 
                   case 'ip' :
-                     $JOINS = " LEFT JOIN `glpi_ipaddresses`
-                                    ON (`glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`
-                                        AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
-                                        AND `glpi_ipaddresses`.`is_deleted` = 0)";
-                     $ORDER = "ISNULL (`glpi_ipaddresses`.`id`),
-                               `glpi_ipaddresses`.`binary_3`, `glpi_ipaddresses`.`binary_2`,
-                               `glpi_ipaddresses`.`binary_1`, `glpi_ipaddresses`.`binary_0`";
+                     $criteria['LEFT JOIN'] = [
+                        'glpi_ipaddresses'   => [
+                           'glpi_ipaddresses'   => 'items_id',
+                           $table               => 'id', [
+                              'AND' => [
+                                 'glpi_ipaddresses.itemtype'   => self::getType(),
+                                 'glpi_ipaddresses.is_deleted' => 0
+                              ]
+                           ]
+                        ]
+                     ];
+                     $criteria['ORDERBY'] = [
+                        new QueryExpression("ISNULL (".$DB->quoteName('glpi_ipaddresses.id').")"),
+                        'glpi_ipaddresses.binary_3',
+                        'glpi_ipaddresses.binary_2',
+                        'glpi_ipaddresses.binary_1',
+                        'glpi_ipaddresses.binary_0'
+                     ];
                      break;
 
                   case 'alias' :
-                     $JOINS = " LEFT JOIN `glpi_networkaliases`
-                                    ON (`glpi_networkaliases`.`networknames_id`
-                                          = `glpi_networknames`.`id`)";
-                     $ORDER = "ISNULL(`glpi_networkaliases`.`name`),
-                               `glpi_networkaliases`.`name`";
+                     $criteria['LEFT JOIN'] = [
+                        'glpi_networkaliases'   => [
+                           'ON'  => [
+                              'glpi_networkaliases'   => 'networknames_id',
+                              $table                  => 'id'
+                           ]
+                        ]
+                     ];
+                     $criteria['ORDERBY'] = [
+                        new QueryExpression("ISNULL (".$DB->quoteName('glpi_networkaliases.name').")"),
+                        'glpi_networkaliases.name'
+                     ];
                      break;
                }
             }
 
-            $query = "SELECT `glpi_networknames`.`id`
-                      FROM `glpi_networknames`
-                      $JOINS
-                      WHERE `glpi_networknames`.`fqdns_id` = '".$item->fields["id"]."'
-                            AND `glpi_networknames`.`is_deleted` = 0
-                      ORDER BY $ORDER";
+            $criteria['WHERE'] = [
+               "$table.fqdns_id"    => $item->fields['id'],
+               "$table.is_deleted"  => 0
+            ];
             break;
 
          case 'NetworkPort' :
-            $query = "SELECT `id`
-                      FROM `glpi_networknames`
-                      WHERE `itemtype` = '".$item->getType()."'
-                            AND `items_id` = '".$item->getID()."'
-                            AND `glpi_networknames`.`is_deleted` = 0";
+            $criteria['WHERE'] = [
+               'itemtype'     => $item->getType(),
+               'items_id'     => $item->getID(),
+               'is_deleted'   => 0
+            ];
             break;
 
          case 'NetworkEquipment' :
-            $query = "SELECT `glpi_networknames`.`id`
-                      FROM `glpi_networknames`, `glpi_networkports`
-                      WHERE `glpi_networkports`.`itemtype` = '".$item->getType()."'
-                            AND `glpi_networkports`.`items_id` ='".$item->getID()."'
-                            AND `glpi_networknames`.`itemtype` = 'NetworkPort'
-                            AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`
-                            AND `glpi_networknames`.`is_deleted` = 0";
+            $criteria['INNER JOIN'] = [
+               'glpi_networkports'  => [
+                  'ON'  => [
+                     'glpi_networkports'  => 'id',
+                     $table               => 'items_id', [
+                        'AND' => [
+                           "$table.itemtype"    => 'NetworkPort',
+                           "$table.is_deleted"  => 0
+                        ]
+                     ]
+                  ]
+               ]
+            ];
+            $criteria['WHERE'] = [
+               'glpi_networkports.itemtype'  => $item->getType(),
+               'glpi_networkports.items_id'  => $item->getID()
+            ];
             break;
 
       }
 
       if (isset($options['SQL_options'])) {
-         $query .= " ".$options['SQL_options'];
+         $criteria = array_merge($criteria, $options['SQL_options']);
       }
 
       $canedit              = (isset($options['canedit']) && $options['canedit']);
@@ -613,7 +654,8 @@ class NetworkName extends FQDNLabel {
       $options['createRow'] = false;
       $address              = new self();
 
-      foreach ($DB->request($query) as $line) {
+      $iterator = $DB->request($criteria);
+      while ($line = $iterator->next()) {
          if ($address->getFromDB($line["id"])) {
 
             if ($createRow) {
@@ -624,7 +666,7 @@ class NetworkName extends FQDNLabel {
                && $options['massiveactionnetworkname']) {
                $header      = $row->getGroup()->getHeaderByName('Internet', 'delete');
                $cell_value  = Html::getMassiveActionCheckBox(__CLASS__, $line["id"]);
-               $delete_cell = $row->addCell($header, $cell_value, $father);
+               $row->addCell($header, $cell_value, $father);
             }
 
             $internetName = $address->getInternetName();
@@ -743,8 +785,10 @@ class NetworkName extends FQDNLabel {
                                                          => 'javascript:reloadTab("order=ip");'];
          }
 
-         $table_options['SQL_options']  = "LIMIT ".$_SESSION['glpilist_limit']."
-                                           OFFSET $start";
+         $table_options['SQL_options']  = [
+            'LIMIT'  => $_SESSION['glpilist_limit'],
+            'START'  => $start
+         ];
 
          $canedit = false;
 
@@ -836,17 +880,30 @@ class NetworkName extends FQDNLabel {
                                         'is_deleted' => 0 ]);
 
          case 'NetworkEquipment' :
-            $query = "SELECT DISTINCT COUNT(*) AS cpt
-                      FROM `glpi_networknames`, `glpi_networkports`
-                      WHERE `glpi_networkports`.`itemtype` = '".$item->getType()."'
-                            AND `glpi_networkports`.`items_id` ='".$item->getID()."'
-                            AND `glpi_networkports`.`is_deleted` ='0'
-                            AND `glpi_networknames`.`itemtype` = 'NetworkPort'
-                            AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`
-                            AND `glpi_networknames`.`is_deleted` = 0";
-            $result = $DB->query($query);
-            $ligne  = $DB->fetchAssoc($result);
-            return $ligne['cpt'];
+            $result = $DB->request([
+               'DISTINCT COUNT'  => 'cpt',
+               'FROM'            => 'glpi_networknames',
+               'INNER JOIN'       => [
+                  'glpi_networkports'  => [
+                     'ON' => [
+                        'glpi_networknames'  => 'items_id',
+                        'glpi_networkports'  => 'id', [
+                           'AND' => [
+                              'glpi_networknames.itemtype' => 'NetworkPort'
+                           ]
+                        ]
+                     ]
+                  ]
+               ],
+               'WHERE'           => [
+                  'glpi_networkports.itemtype'     => $item->getType(),
+                  'glpi_networkports.items_id'     => $item->getID(),
+                  'glpi_networkports.is_deleted'   => 0,
+                  'glpi_networknames.is_deleted'   => 0
+               ]
+            ])->next();
+
+            return (int)$result['cpt'];
       }
    }
 

@@ -122,7 +122,6 @@ class Event extends CommonDBTM {
 
       $secs = $day * DAY_TIMESTAMP;
 
-      //TODO: migrate to DB::delete()
       $DB->delete(
          'glpi_events', [
             new \QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")

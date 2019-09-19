@@ -80,27 +80,40 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
       $i  = $offset;
 
       //Select all the differents software
-      $sql = "SELECT DISTINCT `glpi_printers`.`name`,
-                     `glpi_manufacturers`.`name` AS manufacturer,
-                     `glpi_printers`.`manufacturers_id` AS manufacturers_id,
-                     `glpi_printers`.`comment` AS comment
-              FROM `glpi_printers`
-              LEFT JOIN `glpi_manufacturers`
-                  ON (`glpi_manufacturers`.`id` = `glpi_printers`.`manufacturers_id`) ";
-
-      // Do not replay on trashbin and templates
-      $sql .= "WHERE `glpi_printers`.`is_deleted` = 0
-                     AND `glpi_printers`.`is_template` = 0 ";
+      $criteria = [
+         'SELECT' => [
+            'glpi_printers.name',
+            'glpi_manufacturers.name AS manufacturer',
+            'glpi_printers.manufacturers_id AS manufacturers_id',
+            'glpi_printers.comment AS comment'
+         ],
+         'DISTINCT'  => true,
+         'FROM'      => 'glpi_printers',
+         'LEFT JOIN' => [
+            'glpi_manufacturers' => [
+               'ON'  => [
+                  'glpi_manufacturers' => 'id',
+                  'glpi_printers'      => 'manufacturers_id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            // Do not replay on trashbin and templates
+            'glpi_printers.is_deleted'    => 0,
+            'glpi_printers.is_template'   => 0
+         ]
+      ];
 
       if ($offset) {
-         $sql .= " LIMIT " . intval($offset) . ",999999999";
+         $criteria['START'] = (int)$offset;
+         $criteria['LIMIT'] = 999999999;
       }
 
-      $res  = $DB->query($sql);
-      $nb   = $DB->numrows($res) + $offset;
-      $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor($DB->numrows($res) / 20) : 1));
+      $iterator = $DB->request($criteria);
+      $nb   = count($iterator) + $offset;
+      $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor(count($iterator) / 20) : 1));
 
-      while ($input = $DB->fetchAssoc($res)) {
+      while ($input = $iterator->next()) {
          if (!($i % $step)) {
             if (isCommandLine()) {
                //TRANS: %1$s is a date, %2$s is a row, %3$s is total row, %4$s is memory

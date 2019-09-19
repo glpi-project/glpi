@@ -364,9 +364,9 @@ class NetworkPortInstantiation extends CommonDBChild {
          if ($count == 0) {
             $mac = '%'.$mac.'%';
          }
-         $relation = "LIKE '$mac'";
+         $relation = ['LIKE', $mac];
       } else {
-         $relation = "= '$mac'";
+         $relation = $mac;
       }
 
       $macItemWithItems = [];
@@ -374,16 +374,19 @@ class NetworkPortInstantiation extends CommonDBChild {
       foreach (['NetworkPort'] as $netporttype) {
          $netport = new $netporttype();
 
-         $query = "SELECT `id`
-                   FROM `".$netport->getTable()."`
-                   WHERE `mac` $relation ";
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $netport->getTable(),
+            'WHERE'  => ['mac' => $relation]
+         ]);
 
-         foreach ($DB->request($query) as $element) {
+         while ($element = $iterator->next()) {
             if ($netport->getFromDB($element['id'])) {
-
                if ($netport instanceof CommonDBChild) {
-                  $macItemWithItems[] = array_merge(array_reverse($netport->recursivelyGetItems()),
-                                                    [clone $netport]);
+                  $macItemWithItems[] = array_merge(
+                     array_reverse($netport->recursivelyGetItems()),
+                     [clone $netport]
+                  );
                } else {
                   $macItemWithItems[] = [clone $netport];
                }
@@ -439,7 +442,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * In case of NetworkPort attached to a network card, list the fields that must be duplicate
     * from the network card to the network port (mac address, port type, ...)
     *
-    * @return an array with SQL field (for instance : device.`type`) => form field (type)
+    * @return an array with SQL field (for instance : device.type) => form field (type)
    **/
    function getNetworkCardInterestingFields() {
       return [];
@@ -471,27 +474,41 @@ class NetworkPortInstantiation extends CommonDBChild {
              && !$options['several']) {
 
             // Query each link to network cards
-            $query = "SELECT link.`id` AS link_id,
-                             device.`designation` AS name";
+            $criteria = [
+               'SELECT'    => [
+                  'link.id AS link_id',
+                  'device.designation AS name'
+               ],
+               'FROM'      => 'glpi_devicenetworkcards AS device',
+               'INNER JOIN' => [
+                  'glpi_items_devicenetworkcards AS link'   => [
+                     'ON' => [
+                        'link'   => 'devicenetworkcards_id',
+                        'device' => 'id'
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'link.items_id'   => $lastItem->getID(),
+                  'link.itemtype'   => $lastItem->getType()
+               ]
+            ];
 
             // $deviceFields contains the list of fields to update
             $deviceFields = [];
             foreach ($this->getNetworkCardInterestingFields() as $SQL_field => $form_field) {
                $deviceFields[] = $form_field;
-               $query         .= ", $SQL_field AS $form_field";
+               $criteria['SELECT'][] = "$SQL_field AS $form_field";
             }
-            $query .= " FROM `glpi_devicenetworkcards` AS device,
-                             `glpi_items_devicenetworkcards` AS link
-                        WHERE link.`items_id` = '".$lastItem->getID()."'
-                              AND link.`itemtype` = '".$lastItem->getType()."'
-                              AND device.`id` = link.`devicenetworkcards_id`";
+
+            $iterator = $DB->request($criteria);
 
             // Add the javascript to update each field
             echo "\n<script type=\"text/javascript\">
    var deviceAttributs = [];\n";
 
             $deviceNames = [0 => ""]; // First option : no network card
-            foreach ($DB->request($query) as $availableDevice) {
+            while ($availableDevice = $iterator->next()) {
                $linkid               = $availableDevice['link_id'];
                $deviceNames[$linkid] = $availableDevice['name'];
                if (isset($availableDevice['mac'])) {
@@ -671,21 +688,27 @@ class NetworkPortInstantiation extends CommonDBChild {
       $macAddresses = [];
       foreach ($netport_types as $netport_type) {
          $instantiationTable = getTableForItemType($netport_type);
-         $query = "SELECT port.`id`, port.`name`, port.`mac`
-                   FROM `glpi_networkports` AS port
-                   WHERE `items_id` = '".$lastItem->getID()."'
-                         AND `itemtype` = '".$lastItem->getType()."'
-                         AND `instantiation_type` = '$netport_type'
-                   ORDER BY `logical_number`, `name`";
+         $iterator = $DB->request([
+            'SELECT' => [
+               'port.id',
+               'port.name',
+               'port.mac'
+            ],
+            'FROM'   => 'glpi_networkports AS port',
+            'WHERE'  => [
+               'items_id'           => $lastItem->getID(),
+               'itemtype'           => $lastItem->getType(),
+               'instantiation_type' => $netport_type
+            ],
+            'ORDER'  => ['logical_number', 'name']
+         ]);
 
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result) > 0) {
+         if (count($iterator)) {
             $array_element_name = call_user_func([$netport_type, 'getTypeName'],
-                                                 $DB->numrows($result));
+                                                 count($iterator));
             $possible_ports[$array_element_name] = [];
 
-            while ($portEntry = $DB->fetchAssoc($result)) {
+            while ($portEntry = $iterator->next()) {
                $macAddresses[$portEntry['id']] = $portEntry['mac'];
                if (!empty($portEntry['mac'])) {
                   $portEntry['name'] = sprintf(__('%1$s - %2$s'), $portEntry['name'],

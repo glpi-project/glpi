@@ -505,9 +505,15 @@ class Item_Devices extends CommonDBRelation {
 
       foreach (self::getItemAffinities($itemtype) as $link_type) {
          $table = $link_type::getTable();
-         foreach ($DB->request($table,
-                               "`itemtype` = '$itemtype'
-                                 AND `items_id` = '$oldid'") as $data) {
+         $olds = $DB->request([
+            'FROM'   => $table,
+            'WHERE'  => [
+               'itemtype'  => $itemtype,
+               'items_id'  => $oldid
+            ]
+         ]);
+
+         while ($data = $olds->next()) {
             $link = new $link_type();
             unset($data['id']);
             $data['items_id']     = $newid;

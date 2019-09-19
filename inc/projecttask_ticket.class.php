@@ -377,9 +377,9 @@ class ProjectTask_Ticket extends CommonDBRelation{
          }
 
          if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
-            $sort = "`".$_GET["sort"]."`";
+            $sort = $_GET["sort"];
          } else {
-            $sort = "`plan_start_date` $order, `name`";
+            $sort = ["plan_start_date $order", 'name'];
          }
          $iterator = $DB->request([
             'SELECT'    => [
@@ -450,7 +450,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
                if ($key[0] == '_') {
                   $header .= "<th>$val</th>";
                } else {
-                  $header .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
+                  $header .= "<th".($sort == "$key" ? " class='order_$order'" : '').">".
                               "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                                  (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                }
