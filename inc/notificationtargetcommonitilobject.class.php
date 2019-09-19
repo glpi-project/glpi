@@ -198,13 +198,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       // Anonymous user
-      $query = "SELECT `alternative_email`
-                FROM `$userlinktable`
-                WHERE `$userlinktable`.`$fkfield` = '".$this->obj->fields["id"]."'
-                      AND `$userlinktable`.`users_id` = 0
-                      AND `$userlinktable`.`use_notification` = 1
-                      AND `$userlinktable`.`type` = '$type'";
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'SELECT' => 'alternative_email',
+         'FROM'   => $userlinktable,
+         'WHERE'  => [
+            $fkfield             => $this->obj->fields['id'],
+            'users_id'           => 0,
+            'use_notification'   => 1,
+            'type'               => $type
+         ]
+      ]);
+      while ($data = $iterator->next()) {
          if ($this->isMailMode()) {
             if (NotificationMailing::isUserAddressValid($data['alternative_email'])) {
                $this->addToRecipientsList([
@@ -232,12 +236,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $fkfield        = $this->obj->getForeignKeyField();
 
       //Look for the user by his id
-      $query = "SELECT `groups_id`
-                FROM `$grouplinktable`
-                WHERE `$grouplinktable`.`$fkfield` = '".$this->obj->fields["id"]."'
-                      AND `$grouplinktable`.`type` = '$type'";
+      $iterator = $DB->request([
+         'SELECT' => 'groups_id',
+         'FROM'   => $grouplinktable,
+         'WHERE'  => [
+            $fkfield => $this->obj->fields['id'],
+            'type'   => $type
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          //Add the group in the notified users list
          $this->addForGroup(0, $data['groups_id']);
       }
@@ -260,12 +268,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $grouplinktable = getTableForItemType($this->obj->grouplinkclass);
       $fkfield        = $this->obj->getForeignKeyField();
 
-      $query = "SELECT `groups_id`
-                FROM `$grouplinktable`
-                WHERE `$grouplinktable`.`$fkfield` = '".$this->obj->fields["id"]."'
-                      AND `$grouplinktable`.`type` = '$type'";
+      $iterator = $DB->request([
+         'SELECT' => 'groups_id',
+         'FROM'   => $grouplinktable,
+         'WHERE'  => [
+            $fkfield => $this->obj->fields['id'],
+            'type'   => $type
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          //Add the group in the notified users list
          $this->addForGroup(2, $data['groups_id']);
       }
@@ -285,12 +297,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $grouplinktable = getTableForItemType($this->obj->grouplinkclass);
       $fkfield        = $this->obj->getForeignKeyField();
 
-      $query = "SELECT `groups_id`
-                FROM `$grouplinktable`
-                WHERE `$grouplinktable`.`$fkfield` = '".$this->obj->fields["id"]."'
-                      AND `$grouplinktable`.`type` = '$type'";
+      $iterator = $DB->request([
+         'SELECT' => 'groups_id',
+         'FROM'   => $grouplinktable,
+         'WHERE'  => [
+            $fkfield => $this->obj->fields['id'],
+            'type'   => $type
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          //Add the group in the notified users list
          $this->addForGroup(1, $data['groups_id']);
       }
@@ -376,14 +392,27 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $supplierlinktable = getTableForItemType($this->obj->supplierlinkclass);
          $fkfield           = $this->obj->getForeignKeyField();
 
-         $query = "SELECT DISTINCT `glpi_suppliers`.`email` AS email,
-                                   `glpi_suppliers`.`name` AS name
-                   FROM `$supplierlinktable`
-                   LEFT JOIN `glpi_suppliers`
-                     ON (`$supplierlinktable`.`suppliers_id` = `glpi_suppliers`.`id`)
-                   WHERE `$supplierlinktable`.`$fkfield` = '".$this->obj->getID()."'";
+         $iterator = $DB->request([
+            'SELECT'          => [
+               'glpi_suppliers.email AS email',
+               'glpi_suppliers.name AS name'
+            ],
+            'DISTINCT'        => true,
+            'FROM'            => $supplierlinktable,
+            'LEFT JOIN'       => [
+               'glpi_suppliers'  => [
+                  'ON' => [
+                     $supplierlinktable   => 'suppliers_id',
+                     'glpi_suppliers'     => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'           => [
+               "$supplierlinktable.$fkfield" => $this->obj->getID()
+            ]
+         ]);
 
-         foreach ($DB->request($query) as $data) {
+         while ($data = $iterator->next()) {
             $this->addToRecipientsList($data);
          }
       }
@@ -596,9 +625,19 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       } else if (isset($options['task_id'])) {
          $tasktable = getTableForItemType($this->obj->getType().'Task');
-         foreach ($DB->request([$tasktable, 'glpi_groups'],
-                               "`glpi_groups`.`id` = `$tasktable`.`groups_id_tech`
-                                AND `$tasktable`.`id` = '".$options['task_id']."'") as $data) {
+         $iterator = $DB->request([
+            'FROM'   => $tasktable,
+            'INNER JOIN'   => [
+               'glpi_groups'  => [
+                  'ON'  => [
+                     'glpi_groups'  => 'id',
+                     $tasktable     => 'groups_id_tech'
+                  ]
+               ]
+            ],
+            'WHERE'        => ["$tasktable.id" => $options['task_id']]
+         ]);
+         while ($data = $iterator->next()) {
             $this->addForGroup(0, $data['groups_id_tech']);
          }
       }

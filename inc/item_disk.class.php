@@ -521,7 +521,7 @@ class Item_Disk extends CommonDBChild {
          'field'              => 'freepercent',
          'name'               => __('Free percentage'),
          'forcegroupby'       => true,
-         'datatype'           => 'decimal',
+         'datatype'           => 'progressbar',
          'width'              => 2,
          'computation'        => 'ROUND(100*TABLE.freesize/TABLE.totalsize)',
          'computationgroupby' => true,

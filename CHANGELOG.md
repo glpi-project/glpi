@@ -63,6 +63,8 @@ The present file will list all changes made to the project; according to the
 - `Item_SoftwareVersion::displaySoftsByLicense` renamed to `Item_SoftwareVersion::displaySoftwareByLicense`
 - `Item_SoftwareVersion::cloneComputer` renamed to `Item_SoftwareVersion::cloneItem`
 - `Transfer::transferComputerSoftwares` renamed to `Transfer::transferItemSoftwares`
+- 'getRealQueryForTreeItem()'
+- ``getCommonSelect`` and ``getCommonLeftJoin()`` from ``Ticket``, ``Change`` and ``Problem`` are replaced with ``getCommonCriteria()`` compliant with db iterator
 
 #### Removed
 

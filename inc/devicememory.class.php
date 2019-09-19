@@ -215,6 +215,8 @@ class DeviceMemory extends CommonDevice {
    }
 
    public static function rawSearchOptionsToAdd($class, $main_joinparams) {
+      global $DB;
+
       $tab = [];
 
       $tab[] = [
@@ -246,8 +248,10 @@ class DeviceMemory extends CommonDevice {
          'width'              => 100,
          'massiveaction'      => false,
          'joinparams'         => $main_joinparams,
-         'computation'        => '(SUM(TABLE.`size`) / COUNT(TABLE.`id`))
-                                    * COUNT(DISTINCT TABLE.`id`)'
+         'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.size') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . '))
+            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')'
       ];
 
       return $tab;

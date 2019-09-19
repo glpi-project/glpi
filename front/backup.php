@@ -70,11 +70,12 @@ function xmlbackup() {
 
    $result = $DB->listTables();
    $i      = 0;
+   $query  = [];
    while ($line = $result->next()) {
       $table = $line['TABLE_NAME'];
 
       $query[$i] = "SELECT *
-                    FROM `$table`";
+                    FROM ".$DB->quoteName($table);
       $i++;
    }
 
@@ -147,9 +148,9 @@ function get_content($DB, $table, $from, $limit) {
    if ($iterator->count()) {
 
       while ($row = $iterator->next()) {
-         $insert = "INSERT INTO `$table` VALUES (";
+         $insert = "INSERT INTO ".$DB->quoteName($table)." VALUES (";
 
-         foreach ($row as $field_key => $field_val) {
+         foreach ($row as $field_val) {
             if (is_null($field_val)) {
                $insert .= "NULL,";
             } else if ($field_val != "") {
@@ -174,9 +175,9 @@ function get_content($DB, $table, $from, $limit) {
 function get_def($DB, $table) {
 
    $def  = "### Dump table $table\n\n";
-   $def .= "DROP TABLE IF EXISTS `$table`;\n";
+   $def .= "DROP TABLE IF EXISTS ".$DB->quoteName($table).";\n";
 
-   $query  = "SHOW CREATE TABLE `$table`";
+   $query  = "SHOW CREATE TABLE ".$DB->quoteName($table);
    $result = $DB->query($query);
    $DB->query("SET SESSION sql_quote_show_create = 1");
    $row = $DB->fetchRow($result);
@@ -339,6 +340,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
 
    $result = $DB->listTables();
    $numtab = 0;
+   $tables = [];
    while ($t = $result->next()) {
       $tables[$numtab] = $t['TABLE_NAME'];
       $numtab++;
@@ -549,8 +551,10 @@ if (isset($_GET["file"]) && ($_GET["file"] != "") && is_file(GLPI_DUMP_DIR . "/"
       } else {
          // Compatiblity for old version for utf8 complete conversion
          $cnf                = new Config();
-         $input['id']        = 1;
-         $input['utf8_conv'] = 1;
+         $input = [
+            'id'        => 1,
+            'utf8_conv' => 1,
+         ];
          $cnf->update($input);
       }
    }

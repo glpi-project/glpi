@@ -86,7 +86,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => '4.3',
+      '_version' => '4.4',
 
       // Type => array of entries
       'Entity' => [
@@ -497,6 +497,14 @@ function loadDataset() {
             'group_search_type'  => \AuthLdap::GROUP_SEARCH_GROUP,
             'group_condition' => '(objectclass=groupOfNames)',
             'group_member_field' => 'member'
+         ]
+      ], 'Holiday'   => [
+         [
+            'name'         => 'X-Mas',
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
+            'begin_date'   => '2018-12-29',
+            'end_date'     => '2019-01-06'
          ]
       ],
    ];

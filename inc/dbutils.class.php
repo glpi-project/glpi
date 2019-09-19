@@ -497,6 +497,7 @@ final class DbUtils {
     */
    public function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "", $value = '',
                                        $is_recursive = false, $complete_request = false) {
+      global $DB;
 
       $query = $separator ." ( ";
 
@@ -522,9 +523,9 @@ final class DbUtils {
          }
       }
       if (empty($table)) {
-         $field = "`$field`";
+         $field = $DB->quoteName($field);
       } else {
-         $field = "`$table`.`$field`";
+         $field = $DB->quoteName("$table.$field");
       }
 
       $query .= "$field";
@@ -565,8 +566,8 @@ final class DbUtils {
             if ($table == 'glpi_entities') {
                $query .= " OR $field IN ('" . implode("','", $ancestors) . "')";
             } else {
-               $recur = (empty($table) ? '`is_recursive`' : "`$table`.`is_recursive`");
-               $query .= " OR ($recur='1' AND $field IN ('" . implode("','", $ancestors) . "'))";
+               $recur = $DB->quoteName((empty($table) ? 'is_recursive' : "$table.is_recursive"));
+               $query .= " OR ($recur='1' AND $field IN (" . implode(', ', $ancestors) . '))';
             }
          }
       }
@@ -1306,8 +1307,11 @@ final class DbUtils {
     * @param string  $reallink real field to link ($table.id if not set) (default ='')
     *
     * @return string the query
+    *
+    * @Deprecated 9.5.0
     */
    public function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
+      Toolbox::deprecated();
 
       if (empty($IDf)) {
          return "";

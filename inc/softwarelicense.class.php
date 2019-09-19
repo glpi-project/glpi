@@ -865,30 +865,51 @@ class SoftwareLicense extends CommonTreeDropdown {
       $items_notice = [];
       $items_end    = [];
 
-      foreach (Entity::getEntitiesToNotify('use_licenses_alert') as $entity => $value) {
+      $tonotify = Entity::getEntitiesToNotify('use_licenses_alert');
+      foreach (array_keys($tonotify) as $entity) {
          $before = Entity::getUsedConfig('send_licenses_alert_before_delay', $entity);
          // Check licenses
-         $query = "SELECT `glpi_softwarelicenses`.*,
-                          `glpi_softwares`.`name` AS softname
-                   FROM `glpi_softwarelicenses`
-                   INNER JOIN `glpi_softwares`
-                        ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
-                   LEFT JOIN `glpi_alerts`
-                        ON (`glpi_softwarelicenses`.`id` = `glpi_alerts`.`items_id`
-                            AND `glpi_alerts`.`itemtype` = 'SoftwareLicense'
-                            AND `glpi_alerts`.`type` = '".Alert::END."')
-                   WHERE `glpi_alerts`.`date` IS NULL
-                         AND `glpi_softwarelicenses`.`expire` IS NOT NULL
-                         AND DATEDIFF(`glpi_softwarelicenses`.`expire`,
-                                      CURDATE()) < '$before'
-                         AND `glpi_softwares`.`is_template` = 0
-                         AND `glpi_softwares`.`is_deleted` = 0
-                         AND `glpi_softwares`.`entities_id` = '".$entity."'";
+         $criteria = [
+            'SELECT' => [
+               'glpi_softwarelicenses.*',
+               'glpi_softwares.name AS softname'
+            ],
+            'FROM'   => 'glpi_softwarelicenses',
+            'INNER JOIN'   => [
+               'glpi_softwares'  => [
+                  'ON'  => [
+                     'glpi_softwarelicenses' => 'softwares_id',
+                     'glpi_softwares'        => 'id'
+                  ]
+               ]
+            ],
+            'LEFT JOIN'    => [
+               'glpi_alerts'  => [
+                  'ON'  => [
+                     'glpi_softwarelicenses' => 'id',
+                     'glpi_alerts'           => 'items_id', [
+                        'AND' => [
+                           'glpi_alerts.itemtype'  => 'SoftwareLicense'
+                        ]
+                     ]
+                  ]
+               ]
+            ],
+            'WHERE'        => [
+               'glpi_alerts.date'   => null,
+               'NOT'                => ['glpi_softwarelicenses.expire' => null],
+               new QueryExpression('DATEDIFF('.$DB->quoteName('glpi_softwarelicenses.expire').', CURDATE()) < ' . $before),
+               'glpi_softwares.is_template'  => 0,
+               'glpi_softwares.is_deleted'   => 0,
+               'glpi_softwares.entities_id'  => $entity
+            ]
+         ];
+         $iterator = $DB->request($criteria);
 
          $message = "";
          $items   = [];
 
-         foreach ($DB->request($query) as $license) {
+         while ($license = $iterator->next()) {
             $name     = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
             //TRANS: %1$s the license name, %2$s is the expiration date
             $message .= sprintf(__('License %1$s expired on %2$s'),
@@ -950,17 +971,15 @@ class SoftwareLicense extends CommonTreeDropdown {
    static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
 
-      $query = "SELECT COUNT(*)
-                FROM `glpi_softwarelicenses`
-                WHERE `softwareversions_id_buy` = '$softwareversions_id' " .
-                      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', $entity);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_softwarelicenses',
+         'WHERE'  => [
+            'softwareversions_id_buy'  => $softwareversions_id
+         ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', $entity)
+      ])->next();
 
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) != 0) {
-         return $DB->result($result, 0, 0);
-      }
-      return 0;
+      return $result['cpt'];
    }
 
 
@@ -974,27 +993,31 @@ class SoftwareLicense extends CommonTreeDropdown {
    static function countForSoftware($softwares_id) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_softwarelicenses`
-                WHERE `softwares_id` = '$softwares_id'
-                      AND `number` = '-1' " .
-                      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
+      $iterator = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_softwarelicenses',
+         'WHERE'  => [
+            'softwares_id' => $softwares_id,
+            'number'       => -1
+         ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
+      ]);
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result)) {
-         // At least 1 unlimited license, means unlimited
-         return -1;
+      if ($line = $iterator->next()) {
+         if ($line['cpt'] > 0) {
+            // At least 1 unlimited license, means unlimited
+            return -1;
+         }
       }
 
-      $query = "SELECT SUM(`number`)
-                FROM `glpi_softwarelicenses`
-                WHERE `softwares_id` = '$softwares_id'
-                      AND `number` > '0' " .
-                      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
-
-      $result = $DB->query($query);
-      $nb     = $DB->result($result, 0, 0);
-      return ($nb ? $nb : 0);
+      $result = $DB->request([
+         'SELECT' => ['SUM' => 'number AS numsum'],
+         'FROM'   => 'glpi_softwarelicenses',
+         'WHERE'  => [
+            'softwares_id' => $softwares_id,
+            'number'       => ['>', 0]
+         ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
+      ])->next();
+      return ($result['numsum'] ? $result['numsum'] : 0);
    }
 
 
@@ -1041,9 +1064,9 @@ class SoftwareLicense extends CommonTreeDropdown {
       }
 
       if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
-         $sort = "`".$_GET["sort"]."`";
+         $sort = $_GET["sort"];
       } else {
-         $sort = "`entity` $order, `name`";
+         $sort = ["entity $order", "name $order"];
       }
 
       // Righ type is enough. Can add a License on a software we have Read access
@@ -1071,140 +1094,162 @@ class SoftwareLicense extends CommonTreeDropdown {
       }
 
       $rand  = mt_rand();
-      $query = "SELECT `glpi_softwarelicenses`.*,
-                       `buyvers`.`name` AS buyname,
-                       `usevers`.`name` AS usename,
-                       `glpi_entities`.`completename` AS entity,
-                       `glpi_softwarelicensetypes`.`name` AS typename
-                FROM `glpi_softwarelicenses`
-                LEFT JOIN `glpi_softwareversions` AS buyvers
-                     ON (`buyvers`.`id` = `glpi_softwarelicenses`.`softwareversions_id_buy`)
-                LEFT JOIN `glpi_softwareversions` AS usevers
-                     ON (`usevers`.`id` = `glpi_softwarelicenses`.`softwareversions_id_use`)
-                LEFT JOIN `glpi_entities`
-                     ON (`glpi_entities`.`id` = `glpi_softwarelicenses`.`entities_id`)
-                LEFT JOIN `glpi_softwarelicensetypes`
-                     ON (`glpi_softwarelicensetypes`.`id`
-                          = `glpi_softwarelicenses`.`softwarelicensetypes_id`)
-                WHERE (`glpi_softwarelicenses`.`softwares_id` = '$softwares_id') " .
-                       getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) ."
-                ORDER BY $sort $order
-                LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_softwarelicenses.*',
+            'buyvers.name AS buyname',
+            'usevers.name AS usename',
+            'glpi_entities.completename AS entity',
+            'glpi_softwarelicensetypes.name AS typename'
+         ],
+         'FROM'      => 'glpi_softwarelicenses',
+         'LEFT JOIN' => [
+            'glpi_softwareversions AS buyvers'  => [
+               'ON' => [
+                  'glpi_softwarelicenses' => 'softwareversions_id_buy',
+                  'buyvers'               => 'id'
+               ]
+            ],
+            'glpi_softwareversions AS usevers'  => [
+               'ON' => [
+                  'glpi_softwarelicenses' => 'softwareversions_id_use',
+                  'usevers'               => 'id'
+               ]
+            ],
+            'glpi_entities'                     => [
+               'ON' => [
+                  'glpi_entities'         => 'id',
+                  'glpi_softwarelicenses' => 'entities_id'
+               ]
+            ],
+            'glpi_softwarelicensetypes'         => [
+               'ON' => [
+                  'glpi_softwarelicensetypes'   => 'id',
+                  'glpi_softwarelicenses'       => 'softwarelicensetypes_id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_softwarelicenses.softwares_id'   => $softwares_id
+         ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true),
+         'ORDERBY'   => $sort,
+         'START'     => (int)$start,
+         'LIMIT'     => (int)$_SESSION['glpilist_limit']
+      ]);
+      $num_displayed = count($iterator);
 
-      if ($result = $DB->query($query)) {
-         if ($num_displayed = $DB->numrows($result)) {
-            // Display the pager
-            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
-            if ($showmassiveactions) {
-               Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $massiveactionparams
-                  = ['num_displayed'
-                           => min($_SESSION['glpilist_limit'], $num_displayed),
-                          'container'
-                           => 'mass'.__CLASS__.$rand,
-                          'extraparams'
-                           => ['options'
-                                     => ['glpi_softwareversions.name'
-                                               => ['condition'
-                                                         => "`glpi_softwareversions`.`softwares_id`
-                                                                  = $softwares_id"],
-                                               'glpi_softwarelicenses.name'
-                                               => ['itemlink_as_string' => true]]]];
+      if ($num_displayed) {
+         // Display the pager
+         Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
+         if ($showmassiveactions) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams
+               = ['num_displayed'
+                        => min($_SESSION['glpilist_limit'], $num_displayed),
+                        'container'
+                        => 'mass'.__CLASS__.$rand,
+                        'extraparams'
+                        => ['options'
+                                    => ['glpi_softwareversions.name'
+                                             => ['condition'
+                                                      => $DB->quoteName("glpi_softwareversions.softwares_id")."
+                                                               = $softwares_id"],
+                                             'glpi_softwarelicenses.name'
+                                             => ['itemlink_as_string' => true]]]];
 
-               Html::showMassiveActions($massiveactionparams);
-            }
-
-            echo "<table class='tab_cadre_fixehov'>";
-
-            $header_begin  = "<tr><th>";
-            $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header_bottom = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header_end    = '';
-
-            foreach ($columns as $key => $val) {
-               // Non order column
-               if ($key[0] == '_') {
-                  $header_end .= "<th>$val</th>";
-               } else {
-                  $header_end .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
-                        "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
-                           (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
-               }
-            }
-
-            $header_end .= "</tr>\n";
-            echo $header_begin.$header_top.$header_end;
-
-            $tot_assoc = 0;
-            for ($tot=0; $data=$DB->fetchAssoc($result);) {
-               Session::addToNavigateListItems('SoftwareLicense', $data['id']);
-               $expired = true;
-               if (is_null($data['expire'])
-                  || ($data['expire'] > date('Y-m-d'))) {
-                  $expired = false;
-               }
-               echo "<tr class='tab_bg_2".($expired?'_2':'')."'>";
-
-               if ($license->canEdit($data['id'])) {
-                  echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
-               } else {
-                  echo "<td>&nbsp;</td>";
-               }
-
-               echo "<td>";
-               echo $license->getLink(['complete' => true, 'comments' => true]);
-               echo "</td>";
-
-               if (isset($columns['entity'])) {
-                  echo "<td>";
-                  echo $data['entity'];
-                  echo "</td>";
-               }
-               echo "<td>".$data['serial']."</td>";
-               echo "<td class='numeric'>".
-                      (($data['number'] > 0) ?$data['number']:__('Unlimited'))."</td>";
-               $nb_assoc   = Item_SoftwareLicense::countForLicense($data['id']);
-               $tot_assoc += $nb_assoc;
-               $color = ($data['is_valid']?'green':'red');
-
-               echo "<td class='numeric $color'>".$nb_assoc."</td>";
-               echo "<td>".$data['typename']."</td>";
-               echo "<td>".$data['buyname']."</td>";
-               echo "<td>".$data['usename']."</td>";
-               echo "<td class='center'>".Html::convDate($data['expire'])."</td>";
-               echo "</tr>";
-
-               if ($data['number'] < 0) {
-                  // One illimited license, total is illimited
-                  $tot = -1;
-               } else if ($tot >= 0) {
-                  // Expire license not count
-                  if (!$expired) {
-                     // Not illimited, add the current number
-                     $tot += $data['number'];
-                  }
-               }
-            }
-            echo "<tr class='tab_bg_1 noHover'>";
-            echo "<td colspan='".
-                   ($software->isRecursive()?4:3)."' class='right b'>".__('Total')."</td>";
-            echo "<td class='numeric'>".(($tot > 0)?$tot."":__('Unlimited')).
-                 "</td>";
-            $color = ($software->fields['is_valid']?'green':'red');
-            echo "<td class='numeric $color'>".$tot_assoc."</td><td></td><td></td><td></td><td></td>";
-            echo "</tr>";
-            echo "</table>\n";
-
-            if ($showmassiveactions) {
-               $massiveactionparams['ontop'] = false;
-               Html::showMassiveActions($massiveactionparams);
-
-               Html::closeForm();
-            }
-            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
-         } else {
-            echo "<table class='tab_cadre_fixe'><tr><th>".__('No item found')."</th></tr></table>";
+            Html::showMassiveActions($massiveactionparams);
          }
+
+         echo "<table class='tab_cadre_fixehov'>";
+
+         $header_begin  = "<tr><th>";
+         $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_end    = '';
+
+         foreach ($columns as $key => $val) {
+            // Non order column
+            if ($key[0] == '_') {
+               $header_end .= "<th>$val</th>";
+            } else {
+               $header_end .= "<th".(!is_array($sort) && $sort == "$key" ? " class='order_$order'" : '').">".
+                     "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
+                        (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
+            }
+         }
+
+         $header_end .= "</tr>\n";
+         echo $header_begin.$header_top.$header_end;
+
+         $tot_assoc = 0;
+         $tot       = 0;
+         while ($data = $iterator->next()) {
+            Session::addToNavigateListItems('SoftwareLicense', $data['id']);
+            $expired = true;
+            if (is_null($data['expire'])
+               || ($data['expire'] > date('Y-m-d'))) {
+               $expired = false;
+            }
+            echo "<tr class='tab_bg_2".($expired?'_2':'')."'>";
+
+            if ($license->canEdit($data['id'])) {
+               echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
+            } else {
+               echo "<td>&nbsp;</td>";
+            }
+
+            echo "<td>";
+            echo $license->getLink(['complete' => true, 'comments' => true]);
+            echo "</td>";
+
+            if (isset($columns['entity'])) {
+               echo "<td>";
+               echo $data['entity'];
+               echo "</td>";
+            }
+            echo "<td>".$data['serial']."</td>";
+            echo "<td class='numeric'>".
+                     (($data['number'] > 0) ?$data['number']:__('Unlimited'))."</td>";
+            $nb_assoc   = Item_SoftwareLicense::countForLicense($data['id']);
+            $tot_assoc += $nb_assoc;
+            $color = ($data['is_valid']?'green':'red');
+
+            echo "<td class='numeric $color'>".$nb_assoc."</td>";
+            echo "<td>".$data['typename']."</td>";
+            echo "<td>".$data['buyname']."</td>";
+            echo "<td>".$data['usename']."</td>";
+            echo "<td class='center'>".Html::convDate($data['expire'])."</td>";
+            echo "</tr>";
+
+            if ($data['number'] < 0) {
+               // One illimited license, total is illimited
+               $tot = -1;
+            } else if ($tot >= 0) {
+               // Expire license not count
+               if (!$expired) {
+                  // Not illimited, add the current number
+                  $tot += $data['number'];
+               }
+            }
+         }
+         echo "<tr class='tab_bg_1 noHover'>";
+         echo "<td colspan='".
+                  ($software->isRecursive()?4:3)."' class='right b'>".__('Total')."</td>";
+         echo "<td class='numeric'>".(($tot > 0)?$tot."":__('Unlimited')).
+               "</td>";
+         $color = ($software->fields['is_valid']?'green':'red');
+         echo "<td class='numeric $color'>".$tot_assoc."</td><td></td><td></td><td></td><td></td>";
+         echo "</tr>";
+         echo "</table>\n";
+
+         if ($showmassiveactions) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+
+            Html::closeForm();
+         }
+         Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
+      } else {
+         echo "<table class='tab_cadre_fixe'><tr><th>".__('No item found')."</th></tr></table>";
       }
 
       echo "</div>";

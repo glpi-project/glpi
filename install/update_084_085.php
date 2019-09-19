@@ -2634,7 +2634,7 @@ function update084to085() {
 
       foreach ($DB->request($queryl) AS $datal) {
          if (($datal['number'] >= 0)
-             && ($datal['number'] < Computer_SoftwareLicense::countForLicense($datal['id'], -1))) {
+             && ($datal['number'] < Item_SoftwareLicense::countForLicense($datal['id'], -1, 'Computer'))) {
 
             $queryl2 = "UPDATE `glpi_softwarelicenses`
                         SET `is_valid` = 0

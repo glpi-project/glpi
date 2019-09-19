@@ -191,6 +191,8 @@ abstract class CommonITILCost extends CommonDBChild {
 
 
    static function rawSearchOptionsToAdd() {
+      global $DB;
+
       $tab = [];
 
       $tab[] = [
@@ -210,12 +212,13 @@ abstract class CommonITILCost extends CommonDBChild {
          'joinparams'         => [
             'jointype'           => 'child'
          ],
-         'computation'        => '(SUM(TABLE.`actiontime`
-                                         * TABLE.`cost_time`/'.HOUR_TIMESTAMP.'
-                                         + TABLE.`cost_fixed`
-                                         + TABLE.`cost_material`)
-                                     / COUNT(TABLE.`id`))
-                                   * COUNT(DISTINCT TABLE.`id`)'
+         'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.actiontime') . ' * ' .
+            $DB->quoteName('TABLE.cost_time') . '/' . HOUR_TIMESTAMP .
+            ' + ' . $DB->quoteName('TABLE.cost_fixed') . ' + ' .
+            $DB->quoteName('TABLE.cost_material') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
+            $DB->quoteName('TABLE.id') . ')'
       ];
 
       $tab[] = [
@@ -230,9 +233,11 @@ abstract class CommonITILCost extends CommonDBChild {
          'joinparams'         => [
             'jointype'           => 'child'
          ],
-         'computation'        => '(SUM(TABLE.`cost_time`*TABLE.`actiontime`/'.HOUR_TIMESTAMP.')
-                                      / COUNT(TABLE.`id`))
-                                    * COUNT(DISTINCT TABLE.`id`)'
+         'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.actiontime') . ' * ' .
+            $DB->quoteName('TABLE.cost_time') . '/' . HOUR_TIMESTAMP .
+            ') / COUNT(' . $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
+            $DB->quoteName('TABLE.id') . ')'
       ];
 
       $tab[] = [
@@ -261,8 +266,10 @@ abstract class CommonITILCost extends CommonDBChild {
          'joinparams'         => [
             'jointype'           => 'child'
          ],
-         'computation'        => '(SUM(TABLE.`cost_fixed`) / COUNT(TABLE.`id`))
-                                    * COUNT(DISTINCT TABLE.`id`)'
+         'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.cost_fixed') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . '))
+            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')'
       ];
 
       $tab[] = [
@@ -277,8 +284,10 @@ abstract class CommonITILCost extends CommonDBChild {
          'joinparams'         => [
             'jointype'           => 'child'
          ],
-         'computation'        => '(SUM(TABLE.`cost_material`) / COUNT(TABLE.`id`))
-                                    * COUNT(DISTINCT TABLE.`id`)'
+         'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.cost_material') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . '))
+            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')'
       ];
 
       return $tab;
