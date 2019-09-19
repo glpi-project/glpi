@@ -1309,7 +1309,7 @@ class Transfer extends CommonDBTM {
                            'cartridgeitems_id'  => $data['cartridgeitems_id'],
                            'printers_id'        => ['>', 0],
                            'NOT'                => [
-                              'printers_id'  => $this->needtobe_transfer['Printer²']
+                              'printers_id'  => $this->needtobe_transfer['Printer']
                            ]
                         ]
                      ];
