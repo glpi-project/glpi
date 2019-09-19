@@ -2919,7 +2919,7 @@ class Transfer extends CommonDBTM {
                      ]
                   ];
                   if (count($this->needtobe_transfer['Supplier'])
-                     || count($this->noneedtobe_transfer['Supplier'])
+                      || count($this->noneedtobe_transfer['Supplier'])
                   ) {
                      $scriteria['WHERE']['NOT'] = ['suppliers_id' => $this->needtobe_transfer['Supplier'] + $this->noneedtobe_transfer['Supplier']];
                   }
