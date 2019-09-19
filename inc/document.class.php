@@ -1518,7 +1518,8 @@ class Document extends CommonDBTM {
 
       if (self::canApplyOn($itemtype)) {
          if (Document::canView()) {
-            $actions[$action_prefix.'add']    = _x('button', 'Add a document');
+            $actions[$action_prefix.'add']    = "<i class='ma-icon far fa-file'></i>".
+                                                _x('button', 'Add a document');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove a document');
          }
       }

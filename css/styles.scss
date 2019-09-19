@@ -818,12 +818,14 @@ span.vsubmit, a.vsubmit {
 }
 
 .layout_lefttab .ui-tabs, .layout_classic .ui-tabs, .layout_vsplit .ui-tabs {
-   border: 0;
+   border: 1px solid #e1e1e1;
+   border-top-width: 0;
+   box-sizing: border-box;
 }
 
 .ui-tabs {
    background: #FFF repeat-x top left;
-   box-shadow: 0px 1px 1px #7F7979;
+   box-shadow: 0px 3px 1px #dfdfdf;
    width: 90%;
 }
 
@@ -1011,6 +1013,11 @@ span.vsubmit, a.vsubmit {
             bottom: 33px;
          }
       }
+
+   }
+
+   div.singleaction {
+      text-align: center;
    }
 
    .layout_classic #tabspanel + div.ui-tabs:not(.horizontal) {
@@ -1594,11 +1601,124 @@ td {
    }
 }
 
-.navigationheader {
-   margin: 10px auto;
+#page .navigationheader {
+   margin: 0 auto;
+   padding: 7px 10px;
+   width: 90%;
+   border: 1px solid #e1e1e1;
+   background-color: #FFF;
+   box-sizing: border-box;
+   display: flex;
+
+   & > * {
+      margin: 0 5px;
+   }
+
+   .navicon {
+      margin-top: 5px;
+
+      i.fa, i.fas, i.far {
+         font-size: 1.53em;
+      }
+   }
+
+   i.ma-icon {
+      font-size: 0.875em;
+      margin-right: 5px;
+   }
 
    .big {
       font-size: 16px;
+   }
+
+   form {
+      display: inline-block;
+      margin-bottom: 0;
+   }
+
+   .center {
+      margin: 0 auto;
+   }
+
+   .dropdown-menu {
+      display: none;
+   }
+
+   .nav_title {
+      font-size: 13px;
+      font-weight: bold;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+      @media screen and (max-width: $break_tablets) {
+         max-width: 30%;
+      }
+   }
+
+   .single-actions {
+      position: relative;
+      font-size: 11px;
+
+      .btn {
+         background-color: rgb(231, 231, 231);
+         border-radius: .2rem;
+         border: 1px solid transparent;
+         padding: .1rem 1rem;
+         line-height: 1.5;
+
+         &:hover {
+            background-color: #CCC;
+            cursor: pointer;
+         }
+
+
+         i.fa-caret-down {
+            margin-left: 5px;
+         }
+      }
+
+      .dropdown-menu {
+         background-color: #fff;
+         background-clip: padding-box;
+         border: 1px solid rgba(0,0,0,.15);
+         position: absolute;
+         top: 25px;
+         right: 0;
+         white-space: nowrap;
+         padding: 5px 10px;
+         z-index: 1000;
+         font-size: 11px;
+         border-radius: 2px;
+         box-shadow: 0 1px 3px rgba(0,0,0,0.12),
+                     0 1px 2px rgba(0,0,0,0.24);
+
+         a {
+            padding: 5px;
+            display: block;
+
+            &:hover {
+               background-color: #CCC;
+            }
+         }
+      }
+   }
+}
+
+.layout_vsplit #page .navigationheader {
+   width: calc(100% - 30px);
+   margin-bottom: 10px;
+   box-shadow: 0px 1px 2px 0px #D2D2D2;
+   border: 0;
+}
+
+.layout_classic #page .navigationheader {
+   width: 952px;
+}
+
+@media screen and (max-width: $break_sphones) {
+   #page .navigationheader {
+      display: none;
    }
 }
 
@@ -6153,6 +6273,7 @@ input[name=as_map] {
    margin-right: .2em;
    color: red;
    background-color: transparent;
+   vertical-align: middle;
 
    &.assigned, &.new {
       color: #49bf4d;

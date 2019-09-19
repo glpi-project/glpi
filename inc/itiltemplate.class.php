@@ -579,7 +579,7 @@ abstract class ITILTemplate extends CommonDropdown {
       if ($isadmin
           &&  $this->maybeRecursive()
           && (count($_SESSION['glpiactiveentities']) > 1)) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge'] = __('Transfer and merge');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge'] = __('Merge and assign to current entity');
       }
 
       return $actions;

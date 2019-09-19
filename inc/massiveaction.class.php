@@ -63,10 +63,11 @@ class MassiveAction {
     * @param $POST  something like $_POST
     * @param $GET   something like $_GET
     * @param $stage the current stage
+    * @param boolean $single Get actions for a single item
     *
     * @return nothing (it is a constructor).
    **/
-   function __construct (array $POST, array $GET, $stage) {
+   function __construct (array $POST, array $GET, $stage, $single = false) {
       global $CFG_GLPI;
 
       if (!empty($POST)) {
@@ -119,8 +120,12 @@ class MassiveAction {
                      }
                      $POST['items'][$itemtype] = $items;
                      if (!$specific_action) {
-                        $actions         = self::getAllMassiveActions($itemtype, $POST['is_deleted'],
-                                                                      $this->getCheckItem($POST));
+                        $actions = self::getAllMassiveActions(
+                           $itemtype,
+                           $POST['is_deleted'],
+                           $this->getCheckItem($POST),
+                           $single
+                        );
                         $POST['actions'] = array_merge($actions, $POST['actions']);
                         foreach ($actions as $action => $label) {
                            $POST['action_filter'][$action][] = $itemtype;
@@ -128,7 +133,7 @@ class MassiveAction {
                         }
                      }
                   }
-                  if (empty($POST['actions'])) {
+                  if (empty($POST['actions']) && false === $single) {
                      throw new Exception(__('No action available'));
                   }
                   // Initial items is used to define $_SESSION['glpimassiveactionselected']
@@ -475,7 +480,8 @@ class MassiveAction {
       if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()) {
          $actions[__CLASS__.self::CLASS_ACTION_SEPARATOR.'add_transfer_list']
-                  = _x('button', 'Add to transfer list');
+                  = "<i class='ma-icon fas fa-level-up-alt'></i>".
+                    _x('button', 'Add to transfer list');
       }
 
    }
@@ -484,16 +490,16 @@ class MassiveAction {
    /**
     * Get the standard massive actions
     *
-    * @param $item                   the item for which we want the massive actions
-    * @param $is_deleted             massive action for deleted items ?   (default 0)
-    * @param $checkitem              link item to check right              (default NULL)
+    * @param string|CommonDBTM $item        the item for which we want the massive actions
+    * @param boolean           $is_deleted  massive action for deleted items ?   (default 0)
+    * @param CommonDBTM        $checkitem   link item to check right              (default NULL)
+    * @param integer|boolean   $single      Get actions for a single item
     *
     * @return an array of massive actions or false if $item is not valid
    **/
-   static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null) {
+   static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null, $single = false) {
       global $PLUGIN_HOOKS;
 
-      // TODO: when maybe* will be static, when can completely switch to $itemtype !
       if (is_string($item)) {
          $itemtype = $item;
          if (!($item = getItemForItemtype($itemtype))) {
@@ -531,7 +537,6 @@ class MassiveAction {
          if ($candelete) {
             $actions[$self_pref.'restore'] = _x('button', 'Restore');
          }
-
       } else {
          if (Session::getCurrentInterface() == 'central'
              && ($canupdate
@@ -565,15 +570,15 @@ class MassiveAction {
             }
          }
 
-         Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
-         Contract::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
-
          // Specific actions
          $actions += $item->getSpecificMassiveActions($checkitem);
 
+         Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+         Contract::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+
          // Plugin Specific actions
          if (isset($PLUGIN_HOOKS['use_massive_action'])) {
-            foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val) {
+            foreach (array_keys($PLUGIN_HOOKS['use_massive_action']) as $plugin) {
                if (!Plugin::isPluginLoaded($plugin)) {
                   continue;
                }
@@ -590,11 +595,39 @@ class MassiveAction {
 
       // Manage forbidden actions : try complete action name or MassiveAction:action_name
       $forbidden_actions = $item->getForbiddenStandardMassiveAction();
+      if (false !== $single) {
+         $item->getFromDB($single);
+         $forbidden_actions = array_merge(
+            $forbidden_actions,
+            $item->getForbiddenSingleMassiveActions()
+         );
+      }
+      $whitedlisted_actions = $item->getWhitelistedSingleMassiveActions();
+
       if (is_array($forbidden_actions) && count($forbidden_actions)) {
          foreach ($forbidden_actions as $actiontodel) {
             if (isset($actions[$actiontodel])) {
                unset($actions[$actiontodel]);
             } else {
+               if (Toolbox::startsWith($actiontodel, '*:')) {
+                  foreach (array_keys($actions) as $action) {
+                     if (preg_match('/[^:]+:' . str_replace('*:', '', $actiontodel . '/'), $action)
+                        && !in_array($action, $whitedlisted_actions)
+                     ) {
+                        unset($actions[$action]);
+                     }
+                  }
+               }
+               if (Toolbox::endsWith($actiontodel, ':*')) {
+                  foreach (array_keys($actions) as $action) {
+                     if (preg_match('/' . str_replace(':*', '', $actiontodel . ':.+/'), $action)
+                        && !in_array($action, $whitedlisted_actions)
+                     ) {
+                        unset($actions[$action]);
+                     }
+                  }
+               }
+
                // Not found search adding MassiveAction prefix
                $actiontodel = $self_pref.$actiontodel;
                if (isset($actions[$actiontodel])) {
@@ -896,6 +929,14 @@ class MassiveAction {
 
             return true;
 
+         case 'add_transfer_list':
+            echo _n("Are you sure you want to add this item to transfer list?",
+                    "Are you sure you want to add these items to transfer list?",
+                    count($ma->items, COUNT_RECURSIVE) - count($ma->items));
+            echo "<br><br>";
+            echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction']);
+
+            return true;
       }
       return false;
    }

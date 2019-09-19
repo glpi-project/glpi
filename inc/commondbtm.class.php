@@ -3676,6 +3676,44 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Get forbidden single action
+    *
+    * @since 9.5.0
+    *
+    * @return array
+   **/
+   public function getForbiddenSingleMassiveActions() {
+      $excluded = [
+         '*:update',
+         '*:delete',
+         '*:remove',
+         '*:purge',
+         '*:unlock'
+      ];
+
+      if (Infocom::canApplyOn($this)) {
+         $ic = new InfoCom();
+         if ($ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
+            $excluded[] = 'Infocom:activate';
+         }
+      }
+
+      return $excluded;
+   }
+
+   /**
+    * Get whitelisted single actions
+    *
+    * @since 9.5.0
+    *
+    * @return array
+   **/
+   public function getWhitelistedSingleMassiveActions() {
+      return ['MassiveAction:add_transfer_list'];
+   }
+
+
+   /**
     * Get the specific massive actions
     *
     * @since 0.84

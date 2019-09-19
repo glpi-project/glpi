@@ -832,6 +832,8 @@ class CommonGLPI {
     * @return void
    **/
    function showNavigationHeader($options = []) {
+      global $CFG_GLPI;
+
       // for objects not in table like central
       if (isset($this->fields['id'])) {
          $ID = $this->fields['id'];
@@ -903,17 +905,21 @@ class CommonGLPI {
             }
          }
          $cleantarget = HTML::cleanParametersURL($target);
-         echo "<div class='navigationheader'><table class='tab_cadre_pager'>";
-         echo "<tr class='tab_bg_2'>";
+         echo "<div class='navigationheader'>";
 
          if ($first >= 0) {
-            echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>" .
-                "<i class='fa fa-angle-double-left' title=\"".__s('First')."\"></i></a></td>";
+            echo "<a href='$cleantarget?id=$first$extraparamhtml'
+                     class='navicon left'>
+                     <i class='fas fa-angle-double-left pointer' title=\"".__s('First')."\"></i>
+                  </a>";
          }
 
          if ($prev >= 0) {
-            echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>" .
-                "<i class='fa fa-chevron-left' title=\"".__s('Previous')."\"></i></td>";
+            echo "<a href='$cleantarget?id=$prev$extraparamhtml'
+                     id='previouspage'
+                     class='navicon left'>
+                     <i class='fas fa-angle-left pointer' title=\"".__s('Previous')."\"></i>
+                  </a>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 37 && e.ctrlKey) {
@@ -927,11 +933,10 @@ class CommonGLPI {
          if (!$glpilisttitle) {
             $glpilisttitle = __s('List');
          }
-         echo "<td><a href=\"".$glpilisturl."\" title='$glpilisttitle'>";
-         echo "<i class='far fa-list-alt fa-2x pointer'><span class='sr-only'>";
-         echo Toolbox::substr($glpilisttitle, 0, 100)."...";
-         echo "</span></i>";
-         echo "</a></td>";
+         echo "<a href='$glpilisturl' title=\"$glpilisttitle\"
+                  class='navicon left'>
+                  <i class='far fa-list-alt pointer'></i>
+               </a>";
 
          $name = '';
          if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
@@ -950,7 +955,7 @@ class CommonGLPI {
             $name = sprintf(__('%1$s (%2$s)'), $name, $entname);
 
          }
-         echo "<td class='b big'>";
+         echo "<span class='center nav_title'>&nbsp;";
          if (!self::isLayoutWithMain() || self::isLayoutExcludedPage()) {
             if ($this instanceof CommonITILObject) {
                echo "<span class='status'>";
@@ -959,16 +964,101 @@ class CommonGLPI {
             }
             echo $name;
          }
-         echo "</td>";
+         echo "</span>";
+
+         $ma = new MassiveAction([
+               'item' => [
+                  $this->getType() => [
+                     $this->fields['id'] => 1
+                  ]
+               ]
+            ],
+            $_GET,
+            'initial',
+            $this->fields['id']
+         );
+         $actions = $ma->getInput()['actions'];
+         $input   = $ma->getInput();
+
+         if ($this->isEntityAssign()) {
+            $input['entity_restrict'] = $this->fields['entities_id'];
+         }
+
+         if (count($actions)) {
+            $rand          = mt_rand();
+
+            if (count($actions)) {
+               echo "<span class='single-actions'>";
+               echo "<button type='button' class='btn btn-secondary moreactions'>
+                        ".__("Actions")."
+                        <i class='fas fa-caret-down'></i>
+                     </button>";
+
+               echo "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>";
+               foreach ($actions as $key => $action) {
+                  echo "<a class='dropdown-item' data-action='$key' href='#'>$action</a>";
+               }
+               echo "</div>";
+               echo "</span>";
+            }
+
+            Html::openMassiveActionsForm();
+            echo "<div id='dialog_container_$rand'></div>";
+            // Force 'checkbox-zero-on-empty', because some massive actions can use checkboxes
+            $CFG_GLPI['checkbox-zero-on-empty'] = true;
+            Html::closeForm();
+            //restore
+            unset($CFG_GLPI['checkbox-zero-on-empty']);
+
+            echo Html::scriptBlock( "$(function() {
+               var ma = ".json_encode($input).";
+
+               $(document).on('click', '.moreactions', function() {
+                  $('.moreactions + .dropdown-menu').toggle();
+               });
+
+               $(document).on('click', function(event) {
+                  var target = $(event.target);
+                  var parent = target.parent();
+
+                  if(!target.hasClass('moreactions')
+                     && !parent.hasClass('moreactions')) {
+                     $('.moreactions + .dropdown-menu').hide();
+                  }
+               });
+
+               $(document).on('click', '[data-action]', function() {
+                  $('.moreactions + .dropdown-menu').hide();
+
+                  var current_action = $(this).data('action');
+
+                  $('<div />').dialog({
+                     title: ma.actions[current_action],
+                     width: 500,
+                     height: 'auto',
+                     modal: true,
+                     appendTo: '#dialog_container_$rand'
+                  }).load(
+                     '".$CFG_GLPI['root_doc']. "/ajax/dropdownMassiveAction.php',
+                     Object.assign(
+                        {action: current_action},
+                        ma
+                     )
+                  );
+               });
+            });");
+         }
 
          if ($current !== false) {
-            echo "<td>".($current+1) . "/" . count($glpilistitems)."</td>";
+            echo "<span class='right navicon'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
          }
 
          if ($next >= 0) {
-            echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>" .
-                "<i class='fa fa-chevron-right' title=\"".__s('Next')."\"></i>
-                    </a></td>";
+            echo "<a href='$cleantarget?id=$next$extraparamhtml'
+                     id='nextpage'
+                     class='navicon right'>" .
+               "<i class='fas fa-angle-right pointer' title=\"".__s('Next')."\"></i>
+                    </a>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 39 && e.ctrlKey) {
@@ -980,12 +1070,12 @@ class CommonGLPI {
          }
 
          if ($last >= 0) {
-            echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>" .
-                "<i class='fa fa-angle-double-right' title=\"".__s('Last')."\"></i></a></td>";
+            echo "<a href='$cleantarget?id=$last $extraparamhtml'
+                     class='navicon right'>" .
+               "<i class='fas fa-angle-double-right pointer' title=\"" . __s('Last') . "\"></i></a>";
          }
 
-         // End pager
-         echo "</tr></table></div>";
+         echo "</div>"; // .navigationheader
       }
    }
 

@@ -409,4 +409,20 @@ class KnowbaseItem_Item extends CommonDBRelation {
       $forbidden[] = 'update';
       return $forbidden;
    }
+
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
+                                                CommonDBTM $checkitem = null) {
+
+      $kb_item = new KnowbaseItem();
+      $kb_item->getEmpty();
+      if ($kb_item->canViewItem()) {
+         $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
+
+         $actions[$action_prefix.'add']
+            = "<i class='ma-icon fas fa-book'></i>".
+              _x('button', 'Link knowledgebase article');
+      }
+
+      parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+   }
 }
