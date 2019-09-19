@@ -269,4 +269,134 @@ class Slm extends DbTestCase {
       $this->boolean($saction->getFromDB($saction_id))->isFalse();
       $this->boolean($oaction->getFromDB($oaction_id))->isFalse();
    }
+
+   /**
+    * Check 'internal_time_to_resolve' computed dates.
+    */
+   public function testInternalTtrComputation() {
+      $this->login();
+
+      $currenttime_bak = $_SESSION['glpi_currenttime'];
+      $tomorrow_1pm = date('Y-m-d H:i:s', strtotime('tomorrow 1pm'));
+      $tomorrow_2pm = date('Y-m-d H:i:s', strtotime('tomorrow 2pm'));
+
+      // Create a calendar having tommorow as working day
+      $calendar = new \Calendar();
+      $segment  = new \CalendarSegment();
+      $calendar_id = $calendar->add(['name' => 'TicketRecurrent testing calendar']);
+      $this->integer($calendar_id)->isGreaterThan(0);
+
+      $segment_id = $segment->add(
+         [
+            'calendars_id' => $calendar_id,
+            'day'          => (int)date('w')+1,
+            'begin'        => '09:00:00',
+            'end'          => '19:00:00'
+         ]
+      );
+      $this->integer($segment_id)->isGreaterThan(0);
+
+      // Create SLM with TTR OLA
+      $slm = new \Slm();
+      $slm_id = $slm->add(
+         [
+            'name'         => 'Test SLM',
+            'calendars_id' => $calendar_id,
+         ]
+      );
+      $this->integer($slm_id)->isGreaterThan(0);
+
+      $ola = new \Ola();
+      $ola_id = $ola->add(
+         [
+            'slms_id'         => $slm_id,
+            'name'            => 'Test TTR OLA',
+            'type'            => \SLM::TTR,
+            'number_time'     => 4,
+            'definition_time' => 'hour',
+         ]
+      );
+      $this->integer($ola_id)->isGreaterThan(0);
+
+      // Create ticket to test computation based on OLA
+      $ticket = new \Ticket();
+      $ticket_id = $ticket->add(
+         [
+            'name'    => 'Test Ticket',
+            'content' => 'Ticket for TTR OLA test',
+         ]
+      );
+      $this->integer($ticket_id)->isGreaterThan(0);
+
+      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
+      $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
+      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
+
+      //Wait...
+      sleep(1);
+
+      // Assign TTR OLA
+      $update_time_1 = time();
+      $this->boolean($ticket->update(['id' => $ticket_id, 'olas_id_ttr' => $ola_id]))->isTrue();
+      $update_time_2 = time();
+      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_id);
+      $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))
+         ->isGreaterThanOrEqualTo($update_time_1)
+         ->isLessThanOrEqualTo($update_time_2);
+      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_1pm);
+
+      // Simulate waiting to first working hour +1
+      $this->boolean(
+         $ticket->update(
+            [
+               'id' => $ticket_id,
+               'status' => \CommonITILObject::WAITING,
+            ]
+         )
+      )->isTrue();
+      $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('tomorrow 10am'));
+      $updated = $ticket->update(['id' => $ticket_id, 'status' => \CommonITILObject::ASSIGNED]);
+      $_SESSION['glpi_currenttime'] = $currenttime_bak;
+      $this->boolean($updated)->isTrue();
+      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_2pm);
+
+      // Create ticket to test computation based on manual date
+      $ticket = new \Ticket();
+      $ticket_id = $ticket->add(
+         [
+            'name'    => 'Test Ticket',
+            'content' => 'Ticket for TTR manual test',
+         ]
+      );
+      $this->integer($ticket_id)->isGreaterThan(0);
+
+      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
+      $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
+      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
+
+      // Assign manual TTR
+      $this->boolean($ticket->update(['id' => $ticket_id, 'internal_time_to_resolve' => $tomorrow_1pm]))->isTrue();
+      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
+      $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
+      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_1pm);
+
+      // Simulate 1 hour of waiting time
+      $this->boolean(
+         $ticket->update(
+            [
+               'id' => $ticket_id,
+               'status' => \CommonITILObject::WAITING,
+            ]
+         )
+      )->isTrue();
+      $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('+1 hour', strtotime($currenttime_bak)));
+      $updated = $ticket->update(['id' => $ticket_id, 'status' => \CommonITILObject::ASSIGNED]);
+      $_SESSION['glpi_currenttime'] = $currenttime_bak;
+      $this->boolean($updated)->isTrue();
+      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_2pm);
+   }
 }
