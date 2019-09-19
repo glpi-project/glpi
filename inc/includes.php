@@ -99,9 +99,10 @@ if (!isset($PLUGINS_INCLUDED)) {
    $plugin->init();
 
    $plugins_list = $plugin->getPlugins();
+   $withHooks = isApi();
    if (count($plugins_list)) {
       foreach ($plugins_list as $name) {
-         Plugin::load($name);
+         Plugin::load($name, $withHooks);
       }
       // For plugins which require action after all plugin init
       Plugin::doHook("post_init");
