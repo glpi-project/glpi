@@ -295,7 +295,7 @@ class ConsumableItem extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['NOT' => ['NEWTABLE.date_out' => null]]
+            'condition'          => 'AND NEWTABLE.`date_out` IS NOT NULL'
          ]
       ];
 
@@ -310,7 +310,7 @@ class ConsumableItem extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['NEWTABLE.date_out' => null]
+            'condition'          => 'AND NEWTABLE.`date_out` IS NULL'
          ]
       ];
 

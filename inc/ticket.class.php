@@ -2846,9 +2846,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => ['AND' => ['NEWTABLE.type' => SLM::TTO]]
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
          ],
-         'condition'          => ['glpi_slas.type' => SLM::TTO]
+         'condition'          => "`glpi_slas`.`type` = '".SLM::TTO."'"
       ];
 
       $tab[] = [
@@ -2860,9 +2860,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => ['AND' => ['NEWTABLE.type' => SLM::TTR]]
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
          ],
-         'condition'          => ['glpi_slas.type' => SLM::TTR]
+         'condition'          => "`glpi_slas`.`type` = '".SLM::TTR."'"
       ];
 
       $tab[] = [
@@ -2897,9 +2897,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => ['NEWTABLE.type' => SLM::TTO]
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
          ],
-         'condition'          => ['glpi_olas.type' => SLM::TTO]
+         'condition'          => "`glpi_olas`.`type` = '".SLM::TTO."'"
       ];
 
       $tab[] = [
@@ -2911,9 +2911,9 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => ['AND' => ['NEWTABLE.type' => SLM::TTR]]
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
          ],
-         'condition'          => ['glpi_olas.type' => SLM::TTR]
+         'condition'          => "`glpi_olas`.`type` = '".SLM::TTR."'"
       ];
 
       $tab[] = [
@@ -3063,7 +3063,7 @@ class Ticket extends CommonITILObject {
             'searchtype'         => 'equals',
             'joinparams'         => [
                'jointype'           => 'item_item',
-               'condition'          => ['AND' => ['NEWTABLE.link' => Ticket_Ticket::DUPLICATE_WITH]]
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::DUPLICATE_WITH
             ],
             'additionalfields'   => ['tickets_id_2'],
             'forcegroupby'       => true
@@ -3092,7 +3092,7 @@ class Ticket extends CommonITILObject {
             'usehaving'          => true,
             'joinparams'         => [
                'jointype'           => 'item_item',
-               'condition'          => ['NEWTABLE.link' => Ticket_Ticket::DUPLICATE_WITH]
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::DUPLICATE_WITH
             ]
          ];
 
@@ -3112,7 +3112,7 @@ class Ticket extends CommonITILObject {
                   'joinparams'         => [
                      'jointype'           => 'child',
                      'linkfield'          => 'tickets_id_1',
-                     'condition'          => ['AND' => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]]
+                     'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF,
                   ]
                ]
             ],
@@ -3135,7 +3135,7 @@ class Ticket extends CommonITILObject {
                   'joinparams'         => [
                      'jointype'           => 'child',
                      'linkfield'          => 'tickets_id_2',
-                     'condition'          => ['AND' => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]]
+                     'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF,
                   ]
                ]
             ],
@@ -3153,7 +3153,7 @@ class Ticket extends CommonITILObject {
             'joinparams'         => [
                'linkfield'          => 'tickets_id_2',
                'jointype'           => 'child',
-               'condition'          => ['AND' => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]]
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF
             ],
             'forcegroupby'       => true
          ];
@@ -3169,7 +3169,7 @@ class Ticket extends CommonITILObject {
             'joinparams'         => [
                'linkfield'          => 'tickets_id_1',
                'jointype'           => 'child',
-               'condition'          => ['AND' => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]]
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF
             ],
             'additionalfields'   => ['tickets_id_2']
          ];

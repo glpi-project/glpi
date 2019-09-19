@@ -178,24 +178,6 @@ class Lock {
       //Software versions
       $item_sv = new Item_SoftwareVersion();
       $item_sv_table = Item_SoftwareVersion::getTable();
-                     'sv'  => 'id'
-                  ]
-               ],
-               'glpi_softwares AS s'         => [
-                  'ON' => [
-                     'sv'  => 'softwares_id',
-                     's'   => 'id'
-                  ]
-               ]
-            ],
-            'WHERE'     => [
-               'csv.is_deleted'     => 1,
-               'csv.is_dynamic'     => 1,
-               'csv.computers_id'   => $ID
-            ]
-         ]);
-
-         while ($line = $iterator->next()) {
 
       $iterator = $DB->request([
          'SELECT'    => [
@@ -272,10 +254,6 @@ class Lock {
             'isl.itemtype'    => $itemtype,
          ]
       ]);
-            ]
-         ]);
-
-         while ($line = $iterator->next()) {
 
       echo "<tr><th colspan='2'>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th></tr>\n";
       while ($data = $iterator->next()) {

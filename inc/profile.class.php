@@ -1630,7 +1630,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'computer',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'computer']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'computer'"
          ]
       ];
 
@@ -1644,7 +1644,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'monitor',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'monitor']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'monitor'"
          ]
       ];
 
@@ -1658,7 +1658,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'software',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'software']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'software'"
          ]
       ];
 
@@ -1672,7 +1672,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'networking',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'networking']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'networking'"
          ]
       ];
 
@@ -1686,7 +1686,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'printer',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['NEWTABLE.name' => 'printer']
+            'condition'          => "AND `NEWTABLE`.`name`= 'printer'"
          ]
       ];
 
@@ -1700,7 +1700,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'peripheral',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'peripheral']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'peripheral'"
          ]
       ];
 
@@ -1714,7 +1714,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'cartridge',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'cartridge']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'cartridge'"
          ]
       ];
 
@@ -1728,7 +1728,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'consumable',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'consumable']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'consumable'"
          ]
       ];
 
@@ -1742,7 +1742,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'phone',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'phone']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'phone'"
          ]
       ];
 
@@ -1756,7 +1756,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'internet',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'internet']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'internet'"
          ]
       ];
 
@@ -1775,7 +1775,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'contact_entreprise',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'contact_enterprise']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'contact_enterprise'"
          ]
       ];
 
@@ -1789,7 +1789,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'document',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'document']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'document'"
          ]
       ];
 
@@ -1803,7 +1803,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'contract',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'contract']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'contract'"
          ]
       ];
 
@@ -1817,7 +1817,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'infocom',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'infocom']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'infocom'"
          ]
       ];
 
@@ -1831,7 +1831,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'budget',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'budget']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'budget'"
          ]
       ];
 
@@ -1850,7 +1850,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'knowbase',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'knowbase']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'knowbase'"
          ]
       ];
 
@@ -1864,7 +1864,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'reservation',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'reservation']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'reservation'"
          ]
       ];
 
@@ -1879,7 +1879,7 @@ class Profile extends CommonDBTM {
          'nowrite'            => true,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'reports']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'reports'"
          ]
       ];
 
@@ -1898,7 +1898,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'dropdown',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'dropdown']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'dropdown'"
          ]
       ];
 
@@ -1913,7 +1913,7 @@ class Profile extends CommonDBTM {
          'noread'             => true,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'device']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'device'"
          ]
       ];
 
@@ -1927,7 +1927,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'notification',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'notification']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'notification'"
          ]
       ];
 
@@ -1941,7 +1941,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'typedoc',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'typedoc']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'typedoc'"
          ]
       ];
 
@@ -1955,7 +1955,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'link',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'link']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'link'"
          ]
       ];
 
@@ -1970,7 +1970,7 @@ class Profile extends CommonDBTM {
          'noread'             => true,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'config']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'config'"
          ]
       ];
 
@@ -1985,7 +1985,7 @@ class Profile extends CommonDBTM {
          'noread'             => true,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'personalization']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'personalization'"
          ]
       ];
 
@@ -2000,7 +2000,7 @@ class Profile extends CommonDBTM {
          'noread'             => true,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'search_config']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'search_config'"
          ]
       ];
 
@@ -2014,7 +2014,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'calendar',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'calendar']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'calendar'"
          ]
       ];
 
@@ -2034,7 +2034,7 @@ class Profile extends CommonDBTM {
          'nowrite'            => true,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'rule_ticket']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_ticket'"
          ]
       ];
 
@@ -2048,7 +2048,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'rule_mailcollector',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'rule_mailcollector']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_mailcollector'"
          ]
       ];
 
@@ -2062,7 +2062,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'rule_import',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'rule_import']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_import'"
          ]
       ];
 
@@ -2076,7 +2076,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'rule_ldap',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'rule_ldap']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_ldap'"
          ]
       ];
 
@@ -2090,7 +2090,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'rule_softwarecategories',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'rule_softwarecategories']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_softwarecategories'"
          ]
       ];
 
@@ -2104,7 +2104,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'rule_dictionnary_software',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'rule_dictionnary_software']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_dictionnary_software'"
          ]
       ];
 
@@ -2118,7 +2118,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'rule_dictionnary_dropdown',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'rule_dictionnary_dropdown']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_dictionnary_dropdown'"
          ]
       ];
 
@@ -2132,7 +2132,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'profile',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'profile']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'profile'"
          ]
       ];
 
@@ -2146,7 +2146,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'user',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'user']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'user'"
          ]
       ];
 
@@ -2160,7 +2160,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'group',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'group']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'group'"
          ]
       ];
 
@@ -2174,7 +2174,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'entity',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'entity']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'entity'"
          ]
       ];
 
@@ -2188,7 +2188,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'transfer',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'transfer']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'transfer'"
          ]
       ];
 
@@ -2203,7 +2203,7 @@ class Profile extends CommonDBTM {
          'nowrite'            => true,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'logs']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'logs'"
          ]
       ];
 
@@ -2218,7 +2218,7 @@ class Profile extends CommonDBTM {
          'noread'             => true,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'backup']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'backup'"
          ]
       ];
 
@@ -2237,7 +2237,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'ticket',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'ticket']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'ticket'"
          ]
       ];
 
@@ -2249,9 +2249,9 @@ class Profile extends CommonDBTM {
          'datatype'           => 'dropdown',
       ];
       if (Session::isMultiEntitiesMode()) {
-         $newtab['condition']     = ['AND' => ['entities_id' => 0, 'is_recursive' => 1]];
+         $newtab['condition']     = '`entities_id` = 0 AND `is_recursive`';
       } else {
-         $newtab['condition']     = ['AND' => ['entities_id' => 0]];
+         $newtab['condition']     = '`entities_id` = 0';
       }
       $tab[] = $newtab;
 
@@ -2265,7 +2265,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'tickettemplate',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'tickettemplate']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'tickettemplate'"
          ]
       ];
 
@@ -2279,7 +2279,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'planning',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'planning']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'planning'"
          ]
       ];
 
@@ -2293,7 +2293,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'statistic',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'statistic']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'statistic'"
          ]
       ];
 
@@ -2307,7 +2307,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'ticketcost',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'ticketcost']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'ticketcost'"
          ]
       ];
 
@@ -2337,7 +2337,7 @@ class Profile extends CommonDBTM {
          'datatype'           => 'bool',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'show_group_hardware']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'show_group_hardware'"
          ]
       ];
 
@@ -2371,7 +2371,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'problem',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'problem']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'problem'"
          ]
       ];
 
@@ -2395,7 +2395,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'change',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'change']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'change'"
          ]
       ];
 
@@ -2412,7 +2412,7 @@ class Profile extends CommonDBTM {
          'datatype'           => 'bool',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'password_update']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'password_update'"
          ]
       ];
 
@@ -2426,7 +2426,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'reminder_public',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'reminder_public']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'reminder_public'"
          ]
       ];
 
@@ -2440,7 +2440,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'bookmark_public',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'bookmark_public']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'bookmark_public'"
          ]
       ];
 
@@ -2454,7 +2454,7 @@ class Profile extends CommonDBTM {
          'rightname'          => 'rssfeed_public',
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NEWTABLE.name' => 'rssfeed_public']]
+            'condition'          => "AND `NEWTABLE`.`name`= 'rssfeed_public'"
          ]
       ];
 

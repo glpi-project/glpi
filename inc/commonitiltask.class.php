@@ -660,12 +660,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $task_condition = '';
       if ($task->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
-         $task_condition = [
-            'OR' => [
-               'NEWTABLE.is_private'   => 0,
-               'NEWTABLE.users_id'     => Session::getLoginUserID()
-            ]
-         ];
+         $task_condition = "AND (`NEWTABLE`.`is_private` = 0
+                                 OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
       }
 
       $tab[] = [

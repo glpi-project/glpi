@@ -734,8 +734,8 @@ class Printer  extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NOT' => ['NEWTABLE.date_use' => null],
-                                     'NEWTABLE.date_out' => null]]
+            'condition'          => 'AND NEWTABLE.`date_use` IS NOT NULL
+                                     AND NEWTABLE.`date_out` IS NULL'
          ]
       ];
 
@@ -750,7 +750,7 @@ class Printer  extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['AND' => ['NOT' => ['NEWTABLE.date_out' => null]]]
+            'condition'          => 'AND NEWTABLE.`date_out` IS NOT NULL'
          ]
       ];
 

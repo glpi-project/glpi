@@ -528,7 +528,7 @@ class Project extends CommonDBTM {
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'joinparams'         => [
-            'condition'       => ['AND' => [new QueryExpression('1=1')]]
+            'condition'          => 'AND 1=1'
          ]
       ];
 
@@ -724,7 +724,7 @@ class Project extends CommonDBTM {
          'joinparams'         => [
             'jointype'           => 'child',
             'specific_itemtype'  => 'ProjectCost',
-            'condition'          => ['AND' => ['NEWTABLE.projects_id' => new QueryExpression($DB->quoteName('REFTABLE.id'))]],
+            'condition'          => 'AND NEWTABLE.`projects_id` = REFTABLE.`id`',
             'beforejoin'         => [
                'table'        => $this->getTable(),
                'joinparams'   => [
@@ -753,7 +753,7 @@ class Project extends CommonDBTM {
             'massiveaction'      => false,
             'joinparams'         => [
                'jointype'           => 'child',
-               'condition'          => ['AND' => ['NEWTABLE.itemtype' => $itil_type]]
+               'condition'          => "AND NEWTABLE.`itemtype` = '$itil_type'"
             ]
          ];
          $index++;
