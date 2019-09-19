@@ -599,7 +599,7 @@ class MassiveAction {
          $item->getFromDB($single);
          $forbidden_actions = array_merge(
             $forbidden_actions,
-            $item->getForbiddenSingleMassiveAction()
+            $item->getForbiddenSingleMassiveActions()
          );
       }
       $whitedlisted_actions = $item->getWhitelistedActions();

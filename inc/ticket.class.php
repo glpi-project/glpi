@@ -6845,8 +6845,8 @@ class Ticket extends CommonITILObject {
       return $condition;
    }
 
-   public function getForbiddenSingleMassiveAction() {
-      $excluded = parent::getForbiddenSingleMassiveAction();
+   public function getForbiddenSingleMassiveActions() {
+      $excluded = parent::getForbiddenSingleMassiveActions();
       if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
          //for closed Tickets, only keep transfer and unlock
          $excluded[] = 'TicketValidation:submit_validation';

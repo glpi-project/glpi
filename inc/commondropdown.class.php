@@ -989,8 +989,8 @@ abstract class CommonDropdown extends CommonDBTM {
       return $ret;
    }
 
-   public function getForbiddenSingleMassiveAction() {
-      $excluded = parent::getForbiddenSingleMassiveAction();
+   public function getForbiddenSingleMassiveActions() {
+      $excluded = parent::getForbiddenSingleMassiveActions();
       $excluded[] = '*:merge';
       return $excluded;
    }

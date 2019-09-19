@@ -3682,7 +3682,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return array
    **/
-   public function getForbiddenSingleMassiveAction() {
+   public function getForbiddenSingleMassiveActions() {
       $excluded = [
          '*:update',
          '*:delete',
