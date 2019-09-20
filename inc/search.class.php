@@ -4054,7 +4054,7 @@ JAVASCRIPT;
          default :
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {
-               $condition = Plugin::doOneHook($plug['plugin'], 'addDefaultWhere');
+               $condition = Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype);
             }
             break;
       }
