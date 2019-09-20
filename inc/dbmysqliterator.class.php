@@ -531,7 +531,7 @@ class DBmysqlIterator implements Iterator, Countable {
    }
 
    /**
-    * Analyze a criterion
+    * analyse a criterion
     *
     * @since 9.3.1
     *
@@ -610,7 +610,7 @@ class DBmysqlIterator implements Iterator, Countable {
    }
 
    /**
-    * Analyze an array of joins criteria
+    * analyse an array of joins criteria
     *
     * @since 9.4.0
     *
