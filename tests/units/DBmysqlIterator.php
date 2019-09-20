@@ -464,13 +464,13 @@ class DBmysqlIterator extends DbTestCase {
 
    }
 
-   public function testAnalyzeJoins() {
-      $join = $this->it->analyzeJoins(['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+   public function testAnalyseJoins() {
+      $join = $this->it->analyseJoins(['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($join)->isIdenticalTo(' LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
       $this->exception(
          function() {
-            $it = $this->it->analyzeJoins(['LEFT OUTER JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
+            $it = $this->it->analyseJoins(['LEFT OUTER JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
          }
       )
          ->isInstanceOf('RuntimeException')
