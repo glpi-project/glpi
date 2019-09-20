@@ -2068,6 +2068,7 @@ class AuthLDAP extends CommonDBTM {
       $config_ldap->getFromDB($auths_id);
       $infos       = [];
       $groups      = [];
+      $search_in_groups = false;
 
       $ds = $config_ldap->connect();
       if ($ds) {
@@ -2094,19 +2095,27 @@ class AuthLDAP extends CommonDBTM {
 
             //Get all groups from GLPI DB for the current entity and the subentities
             $iterator = $DB->request([
-               'SELECT' => ['name'],
+               'SELECT' => ['ldap_group_dn','ldap_value'],
                'FROM'   => 'glpi_groups',
                'WHERE'  => getEntitiesRestrictCriteria('glpi_groups')
             ]);
 
             //If the group exists in DB -> unset it from the LDAP groups
             while ($group = $iterator->next()) {
-               $glpi_groups[$group["name"]] = 1;
+               //use DN for next step
+               //depending on the type of search when groups is imported
+               //the DN may be in two separate fields
+               if (isset($group["ldap_group_dn"]) && !empty($group["ldap_group_dn"])) {
+                  $glpi_groups['groups'][$group["ldap_group_dn"]] = 1;
+               } else if (isset($group["ldap_value"]) && !empty($group["ldap_value"])) {
+                  $glpi_groups['users'][$group["ldap_value"]] = 1;
+               }
             }
             $ligne = 0;
 
             foreach ($infos as $dn => $info) {
-               if (!isset($glpi_groups[$info["cn"]])) {
+               //reconcile by DN
+               if (!isset($glpi_groups['users'][$dn])) {
                   $groups[$ligne]["dn"]          = $dn;
                   $groups[$ligne]["cn"]          = $info["cn"];
                   $groups[$ligne]["search_type"] = $info["search_type"];
