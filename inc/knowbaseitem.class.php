@@ -1378,14 +1378,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                                    /* 8 */   "/\)/",
                                    /* 9 */   "/\-/"];
                   $contains = preg_replace($search1, "", $params["contains"]);
+                  $search_inst = new Search(new KnowbaseItem(), []);
                   $ors = [
-                     ["glpi_knowbaseitems.name"     => ['LIKE', Search::makeTextSearchValue($contains)]],
-                     ["glpi_knowbaseitems.answer"   => ['LIKE', Search::makeTextSearchValue($contains)]]
+                     ["glpi_knowbaseitems.name"     => ['LIKE', $search_inst->makeTextSearchValue($contains)]],
+                     ["glpi_knowbaseitems.answer"   => ['LIKE', $search_inst->makeTextSearchValue($contains)]]
                   ];
                   if (KnowbaseItemTranslation::isKbTranslationActive()
                       && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)) {
-                     $ors[] = ["glpi_knowbaseitemtranslations.name"   => ['LIKE', Search::makeTextSearchValue($contains)]];
-                     $ors[] = ["glpi_knowbaseitemtranslations.answer" => ['LIKE', Search::makeTextSearchValue($contains)]];
+                     $ors[] = ["glpi_knowbaseitemtranslations.name"   => ['LIKE', $search_inst->makeTextSearchValue($contains)]];
+                     $ors[] = ["glpi_knowbaseitemtranslations.answer" => ['LIKE', $search_inst->makeTextSearchValue($contains)]];
                   }
                   $criteria['WHERE'][] = ['OR' => $ors];
                   // Add visibility date

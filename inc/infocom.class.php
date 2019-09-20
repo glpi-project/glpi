@@ -147,6 +147,13 @@ class Infocom extends CommonDBChild {
       return '';
    }
 
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      switch ($item->getType()) {
+         case Supplier::getType():
+            return self::countForSupplier($item);
+      }
+      return parent::countForTab($item, $tab, $deleted, $template);
+   }
 
    /**
     * @param $item            CommonGLPI object

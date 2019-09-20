@@ -780,949 +780,1186 @@ $tables['glpi_displaypreferences'] = [
       'itemtype' => 'Computer',
       'num'      => '4',
       'rank'     => '4',
+       'is_main'  => '1'
    ], [
       'itemtype' => 'Computer',
       'num'      => '45',
       'rank'     => '6',
+       'is_main'  => '1'
    ], [
       'itemtype' => 'Computer',
       'num'      => '40',
       'rank'     => '5',
+       'is_main'  => '1',
    ], [
       'itemtype' => 'Computer',
       'num'      => '5',
       'rank'     => '3',
+       'is_main'  => '1'
    ], [
       'itemtype' => 'Computer',
       'num'      => '23',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'DocumentType',
       'num'      => '3',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Monitor',
       'num'      => '31',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Monitor',
       'num'      => '23',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Monitor',
       'num'      => '3',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Monitor',
       'num'      => '4',
       'rank'     => '4',
+      'is_main' => 1
    ], [
       'itemtype' => 'Printer',
       'num'      => '31',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NetworkEquipment',
       'num'      => '31',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NetworkEquipment',
       'num'      => '23',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Printer',
       'num'      => '23',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Printer',
       'num'      => '3',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Software',
       'num'      => '4',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Software',
       'num'      => '5',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Software',
       'num'      => '23',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'CartridgeItem',
       'num'      => '4',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'CartridgeItem',
       'num'      => '34',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Peripheral',
       'num'      => '3',
       'rank'     => '3',
+      'is_main' => 1
    ], [
       'itemtype' => 'Peripheral',
       'num'      => '23',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Peripheral',
       'num'      => '31',
       'rank'     => '1',
+      'is_main' => 1
    ], [
       'itemtype' => 'Computer',
       'num'      => '31',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Computer',
       'num'      => '3',
       'rank'     => '7',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Computer',
       'num'      => '19',
       'rank'     => '8',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Computer',
       'num'      => '17',
       'rank'     => '9',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NetworkEquipment',
       'num'      => '3',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NetworkEquipment',
       'num'      => '4',
       'rank'     => '4',
+      'is_main' => 1
    ], [
       'itemtype' => 'NetworkEquipment',
       'num'      => '11',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NetworkEquipment',
       'num'      => '19',
       'rank'     => '7',
+      'is_main' => 1
    ], [
       'itemtype' => 'Printer',
       'num'      => '4',
       'rank'     => '4',
+      'is_main' => 1
    ], [
       'itemtype' => 'Printer',
       'num'      => '19',
       'rank'     => '6',
+      'is_main' => 1
    ], [
       'itemtype' => 'Monitor',
       'num'      => '19',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Monitor',
       'num'      => '7',
       'rank'     => '7',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Peripheral',
       'num'      => '4',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Peripheral',
       'num'      => '19',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Peripheral',
       'num'      => '7',
       'rank'     => '7',
+      'is_main' => 1
    ], [
       'itemtype' => 'Contact',
       'num'      => '3',
       'rank'     => '1',
+      'is_main' => 1
    ], [
       'itemtype' => 'Contact',
       'num'      => '4',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Contact',
       'num'      => '5',
       'rank'     => '3',
+      'is_main' => 1
    ], [
       'itemtype' => 'Contact',
       'num'      => '6',
       'rank'     => '4',
+      'is_main' => 1
    ], [
       'itemtype' => 'Contact',
       'num'      => '9',
       'rank'     => '5',
+      'is_main' => 1
    ], [
       'itemtype' => 'Supplier',
       'num'      => '9',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Supplier',
       'num'      => '3',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Supplier',
       'num'      => '4',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Supplier',
       'num'      => '5',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Supplier',
       'num'      => '10',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Supplier',
       'num'      => '6',
       'rank'     => '6',
+      'is_main' => 1
    ], [
       'itemtype' => 'Contract',
       'num'      => '4',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Contract',
       'num'      => '3',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Contract',
       'num'      => '5',
       'rank'     => '3',
+      'is_main' => 1
    ], [
       'itemtype' => 'Contract',
       'num'      => '6',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Contract',
       'num'      => '7',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Contract',
       'num'      => '11',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'CartridgeItem',
       'num'      => '23',
       'rank'     => '3',
+      'is_main' => 1
    ], [
       'itemtype' => 'CartridgeItem',
       'num'      => '3',
       'rank'     => '4',
+      'is_main' => 1
    ], [
       'itemtype' => 'DocumentType',
       'num'      => '6',
       'rank'     => '2',
+      'is_main' => 1
    ], [
       'itemtype' => 'DocumentType',
       'num'      => '4',
       'rank'     => '3',
+      'is_main' => 1
    ], [
       'itemtype' => 'DocumentType',
       'num'      => '5',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Document',
       'num'      => '3',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Document',
       'num'      => '4',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Document',
       'num'      => '7',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Document',
       'num'      => '5',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Document',
       'num'      => '16',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'User',
       'num'      => '34',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'User',
       'num'      => '5',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'User',
       'num'      => '6',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'User',
       'num'      => '3',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ConsumableItem',
       'num'      => '34',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ConsumableItem',
       'num'      => '4',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ConsumableItem',
       'num'      => '23',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ConsumableItem',
       'num'      => '3',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NetworkEquipment',
       'num'      => '40',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Printer',
       'num'      => '40',
       'rank'     => '5',
+      'is_main' => 1
    ], [
       'itemtype' => 'Monitor',
       'num'      => '40',
       'rank'     => '5',
+      'is_main' => 1
    ], [
       'itemtype' => 'Peripheral',
       'num'      => '40',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'User',
       'num'      => '8',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Phone',
       'num'      => '31',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Phone',
       'num'      => '23',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Phone',
       'num'      => '3',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Phone',
       'num'      => '4',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Phone',
       'num'      => '40',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Phone',
       'num'      => '19',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Phone',
       'num'      => '7',
       'rank'     => '7',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Group',
       'num'      => '16',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'AllAssets',
       'num'      => '31',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ReservationItem',
       'num'      => '4',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ReservationItem',
       'num'      => '3',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Budget',
       'num'      => '3',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Software',
       'num'      => '72',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Software',
       'num'      => '163',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Budget',
       'num'      => '5',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Budget',
       'num'      => '4',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Budget',
       'num'      => '19',
       'rank'     => '4',
+      'is_main' => 1
    ], [
       'itemtype' => 'CronTask',
       'num'      => '8',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'CronTask',
       'num'      => '3',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'CronTask',
       'num'      => '4',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'CronTask',
       'num'      => '7',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'RequestType',
       'num'      => '14',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'RequestType',
       'num'      => '15',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NotificationTemplate',
       'num'      => '4',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NotificationTemplate',
       'num'      => '16',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Notification',
       'num'      => '5',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Notification',
       'num'      => '6',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Notification',
       'num'      => '2',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Notification',
       'num'      => '4',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Notification',
       'num'      => '80',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Notification',
       'num'      => '86',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'MailCollector',
       'num'      => '2',
       'rank'     => '1',
+      'is_main' => 1
    ], [
       'itemtype' => 'MailCollector',
       'num'      => '19',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'AuthLDAP',
       'num'      => '3',
       'rank'     => '1',
+      'is_main' => 1
    ], [
       'itemtype' => 'AuthLDAP',
       'num'      => '19',
       'rank'     => '2',
+      'is_main' => 1
    ], [
       'itemtype' => 'AuthMail',
       'num'      => '3',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'AuthMail',
       'num'      => '19',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'IPNetwork',
       'num'      => '18',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'WifiNetwork',
       'num'      => '10',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Profile',
       'num'      => '2',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Profile',
       'num'      => '3',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Profile',
       'num'      => '19',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Transfer',
       'num'      => '19',
       'rank'     => '1',
+      'is_main' => 1
    ], [
       'itemtype' => 'TicketValidation',
       'num'      => '3',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'TicketValidation',
       'num'      => '2',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'TicketValidation',
       'num'      => '8',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'TicketValidation',
       'num'      => '4',
       'rank'     => '4',
+      'is_main' => 1
    ], [
       'itemtype' => 'TicketValidation',
       'num'      => '9',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'TicketValidation',
       'num'      => '7',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NotImportedEmail',
       'num'      => '2',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NotImportedEmail',
       'num'      => '5',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NotImportedEmail',
       'num'      => '4',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NotImportedEmail',
       'num'      => '6',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NotImportedEmail',
       'num'      => '16',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NotImportedEmail',
       'num'      => '19',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'RuleRightParameter',
       'num'      => '11',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Ticket',
       'num'      => '12',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Ticket',
       'num'      => '19',
       'rank'     => '2',
+      'is_main' => 1
    ], [
       'itemtype' => 'Ticket',
       'num'      => '15',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Ticket',
       'num'      => '3',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Ticket',
       'num'      => '4',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Ticket',
       'num'      => '5',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Ticket',
       'num'      => '7',
       'rank'     => '7',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Calendar',
       'num'      => '19',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Holiday',
       'num'      => '11',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Holiday',
       'num'      => '12',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Holiday',
       'num'      => '13',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SLA',
       'num'      => '4',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Ticket',
       'num'      => '18',
       'rank'     => '8',
+      'is_main'   => 1
    ], [
       'itemtype' => 'AuthLDAP',
       'num'      => '30',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'AuthMail',
       'num'      => '6',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'FQDN',
       'num'      => '11',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'FieldUnicity',
       'num'      => '1',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'FieldUnicity',
       'num'      => '80',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'FieldUnicity',
       'num'      => '4',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'FieldUnicity',
       'num'      => '3',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'FieldUnicity',
       'num'      => '86',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'FieldUnicity',
       'num'      => '30',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Problem',
       'num'      => '21',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Problem',
       'num'      => '12',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Problem',
       'num'      => '19',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Problem',
       'num'      => '15',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Problem',
       'num'      => '3',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Problem',
       'num'      => '7',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Problem',
       'num'      => '18',
       'rank'     => '7',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Vlan',
       'num'      => '11',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'TicketRecurrent',
       'num'      => '11',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'TicketRecurrent',
       'num'      => '12',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'TicketRecurrent',
       'num'      => '13',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'TicketRecurrent',
       'num'      => '15',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'TicketRecurrent',
       'num'      => '14',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Reminder',
       'num'      => '2',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Reminder',
       'num'      => '3',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Reminder',
       'num'      => '4',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Reminder',
       'num'      => '5',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Reminder',
       'num'      => '6',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Reminder',
       'num'      => '7',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'IPNetwork',
       'num'      => '10',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'IPNetwork',
       'num'      => '11',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'IPNetwork',
       'num'      => '12',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'IPNetwork',
       'num'      => '17',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NetworkName',
       'num'      => '12',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'NetworkName',
       'num'      => '13',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'RSSFeed',
       'num'      => '2',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'RSSFeed',
       'num'      => '4',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'RSSFeed',
       'num'      => '5',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'RSSFeed',
       'num'      => '19',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'RSSFeed',
       'num'      => '6',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'RSSFeed',
       'num'      => '7',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Blacklist',
       'num'      => '12',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Blacklist',
       'num'      => '11',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ReservationItem',
       'num'      => '5',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'QueueMail',
       'num'      => '16',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'QueueMail',
       'num'      => '7',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'QueueMail',
       'num'      => '20',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'QueueMail',
       'num'      => '21',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'QueueMail',
       'num'      => '22',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'QueueMail',
       'num'      => '15',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Change',
       'num'      => '12',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Change',
       'num'      => '19',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Change',
       'num'      => '15',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Change',
       'num'      => '7',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Change',
       'num'      => '18',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Project',
       'num'      => '3',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Project',
       'num'      => '4',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Project',
       'num'      => '12',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Project',
       'num'      => '5',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Project',
       'num'      => '15',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Project',
       'num'      => '21',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ProjectState',
       'num'      => '12',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ProjectState',
       'num'      => '11',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ProjectTask',
       'num'      => '2',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ProjectTask',
       'num'      => '12',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ProjectTask',
       'num'      => '14',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ProjectTask',
       'num'      => '5',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ProjectTask',
       'num'      => '7',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ProjectTask',
       'num'      => '8',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ProjectTask',
       'num'      => '13',
       'rank'     => '7',
+      'is_main'   => 1
    ], [
       'itemtype' => 'CartridgeItem',
       'num'      => '9',
       'rank'     => '5',
+      'is_main' => 1
    ], [
       'itemtype' => 'ConsumableItem',
       'num'      => '9',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'ReservationItem',
       'num'      => '9',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SoftwareLicense',
       'num'      => '1',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SoftwareLicense',
       'num'      => '3',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SoftwareLicense',
       'num'      => '10',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SoftwareLicense',
       'num'      => '162',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SoftwareLicense',
       'num'      => '5',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SavedSearch',
       'num'      => '8',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SavedSearch',
       'num'      => '9',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SavedSearch',
       'num'      => '3',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SavedSearch',
       'num'      => '10',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'SavedSearch',
       'num'      => '11',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Plugin',
       'num'      => '2',
       'rank'     => '1',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Plugin',
       'num'      => '3',
       'rank'     => '2',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Plugin',
       'num'      => '4',
       'rank'     => '3',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Plugin',
       'num'      => '5',
       'rank'     => '4',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Plugin',
       'num'      => '6',
       'rank'     => '5',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Plugin',
       'num'      => '7',
       'rank'     => '6',
+      'is_main'   => 1
    ], [
       'itemtype' => 'Plugin',
       'num'      => '8',
       'rank'     => '7',
+      'is_main'   => 1
    ]
 ];
 
+$ADDTODISPLAYPREF = [];
 $ADDTODISPLAYPREF['Cluster'] = [31, 19];
 $ADDTODISPLAYPREF['Domain'] = [3, 4, 2, 6, 7];
 $ADDTODISPLAYPREF['DomainRecord'] = [2, 3];
@@ -1733,7 +1970,6 @@ $ADDTODISPLAYPREF['NetworkPortType'] = [10, 11, 12];
 $ADDTODISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40];
 $ADDTODISPLAYPREF['USBVendor'] = [10, 11];
 $ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
-
 foreach ($ADDTODISPLAYPREF as $type => $options) {
    $rank = 1;
    foreach ($options as $newval) {
@@ -1741,6 +1977,30 @@ foreach ($ADDTODISPLAYPREF as $type => $options) {
          'itemtype'  => $type,
          'num'       => $newval,
          'rank'      => $rank++,
+         'is_main'   => 1
+      ];
+   }
+}
+
+/** add display preferences for sub items */
+$ADDTOSUBDISPLAYPREF = [];
+$ADDTOSUBDISPLAYPREF['Contract'] = [3, 4, 29, 5];
+$ADDTOSUBDISPLAYPREF['Item_Disk'] = [2, 3, 4, 5, 6, 7, 8];
+$ADDTOSUBDISPLAYPREF['Certificate'] = [7, 4, 8, 121, 10, 31];
+$ADDTOSUBDISPLAYPREF['Notepad'] = [200, 201, 202, 203, 204];
+$ADDTOSUBDISPLAYPREF['SoftwareVersion'] = [3, 31, 2, 122, 123, 124];
+$ADDTOSUBDISPLAYPREF['ComputerVirtualMachine'] = [1, 6, 7, 5, 2, 3, 4, 8];
+$ADDTOSUBDISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40];
+$ADDTOSUBDISPLAYPREF['Item_RemoteManagement'] = [1, 2, 997];
+$ADDTOSUBDISPLAYPREF['Document'] = [2, 80, 73, 4, 7, 5, 6, 121];
+$ADDTOSUBDISPLAYPREF['Certificate'] = [1, 7, 18, 8, 121, 10, 31];
+foreach ($ADDTOSUBDISPLAYPREF as $type => $options) {
+   foreach ($options as $newval) {
+      $tables['glpi_displaypreferences'][] = [
+         'itemtype'  => $type,
+         'num'       => $newval,
+         'rank'      => $rank++,
+         'is_main'   => 0
       ];
    }
 }

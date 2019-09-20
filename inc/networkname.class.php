@@ -401,7 +401,6 @@ class NetworkName extends FQDNLabel {
       global $DB, $CFG_GLPI;
 
       $name         = new self();
-      $number_names = 0;
 
       if ($networkPortID > 0) {
          $iterator = $DB->request([

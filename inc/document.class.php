@@ -960,6 +960,14 @@ class Document extends CommonDBTM {
          ]
       ];
 
+      $tab[] = [
+         'id'                 => '73',
+         'table'              => $this->getTable(),
+         'field'              => 'filename',
+         'name'               => __('File'),
+         'datatype'           => 'specific'
+      ];
+
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 

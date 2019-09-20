@@ -557,10 +557,6 @@ class Inventory
                if (method_exists($this, 'processExtraInventoryData')) {
                   $assettype = $this->processExtraInventoryData($key);
                }
-               if ($assettype === false) {
-                  //unhandled
-                  throw new \RuntimeException("Unhandled schema entry $key");
-               }
                break;
          }
 

@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  *
  *  Relation between Documents and Items
 **/
-class Document_Item extends CommonDBRelation{
+class Document_Item extends CommonDBRelation {
 
 
    // From CommonDBRelation
@@ -275,6 +275,17 @@ class Document_Item extends CommonDBRelation{
       return '';
    }
 
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      if ($item->getType() == Document::getType()) {
+         switch ($tab) {
+            case self::getType() . '__1':
+               return self::countForMainItem($item, ['NOT' => ['itemtype' => 'Document']]);
+            case self::getType() . '__2':
+               return self::countForMainItem($item, ['itemtype' => 'Document']);
+         }
+      }
+      return self::countForItem($item);
+   }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -495,7 +506,9 @@ class Document_Item extends CommonDBRelation{
       $params['rand'] = mt_rand();
 
       self::showAddFormForItem($item, $withtemplate, $params);
-      self::showListForItem($item, $withtemplate, $params);
+
+      $get = ['withtemplate' => $withtemplate] + $_GET;
+      $item->showSublist(self::getType(), $get);
    }
 
 
@@ -661,191 +674,6 @@ class Document_Item extends CommonDBRelation{
 
          echo "</div>";
       }
-   }
-
-
-   /**
-    * @since 0.90
-    *
-    * @param $item
-    * @param $withtemplate   (default 0)
-    * @param $options        array
-    */
-   static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = []) {
-      global $DB;
-
-      //default options
-      $params['rand'] = mt_rand();
-
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $params[$key] = $val;
-         }
-      }
-
-      $canedit = $item->canAddItem('Document') && Document::canView();
-
-      $columns = [
-         'name'      => __('Name'),
-         'entity'    => Entity::getTypeName(1),
-         'filename'  => __('File'),
-         'link'      => __('Web link'),
-         'headings'  => __('Heading'),
-         'mime'      => __('MIME type'),
-         'tag'       => __('Tag'),
-         'assocdate' => _n('Date', 'Dates', 1)
-      ];
-
-      if (isset($_GET["order"]) && ($_GET["order"] == "ASC")) {
-         $order = "ASC";
-      } else {
-         $order = "DESC";
-      }
-
-      if ((isset($_GET["sort"]) && !empty($_GET["sort"]))
-         && isset($columns[$_GET["sort"]])) {
-         $sort = $_GET["sort"];
-      } else {
-         $sort = "assocdate";
-      }
-
-      if (empty($withtemplate)) {
-         $withtemplate = 0;
-      }
-      $linkparam = '';
-
-      if (get_class($item) == 'Ticket') {
-         $linkparam = "&amp;tickets_id=".$item->fields['id'];
-      }
-
-      $criteria = self::getDocumentForItemRequest($item, ["$sort $order"]);
-
-      // Document : search links in both order using union
-      if ($item->getType() == 'Document') {
-         $owhere = $criteria['WHERE'];
-         $o2where =  $owhere + ['glpi_documents_items.documents_id' => $item->getID()];
-         unset($o2where['glpi_documents_items.items_id']);
-         $criteria['WHERE'] = [
-            'OR' => [
-               $owhere,
-               $o2where
-            ]
-         ];
-      }
-
-      $iterator = $DB->request($criteria);
-      $number = count($iterator);
-      $i      = 0;
-
-      $documents = [];
-      $used      = [];
-      while ($data = $iterator->next()) {
-         $documents[$data['assocID']] = $data;
-         $used[$data['id']]           = $data['id'];
-      }
-
-      echo "<div class='spaced table-responsive'>";
-      if ($canedit
-          && $number
-          && ($withtemplate < 2)) {
-         Html::openMassiveActionsForm('mass'.__CLASS__.$params['rand']);
-         $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $number),
-                                      'container'      => 'mass'.__CLASS__.$params['rand']];
-         Html::showMassiveActions($massiveactionparams);
-      }
-
-      echo "<table class='tab_cadre_fixehov'>";
-
-      $header_begin  = "<tr>";
-      $header_top    = '';
-      $header_bottom = '';
-      $header_end    = '';
-      if ($canedit
-          && $number
-          && ($withtemplate < 2)) {
-         $header_top    .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$params['rand']);
-         $header_top    .= "</th>";
-         $header_bottom .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$params['rand']);
-         $header_bottom .= "</th>";
-      }
-
-      foreach ($columns as $key => $val) {
-         $header_end .= "<th".($sort == "$key" ? " class='order_$order'" : '').">".
-                        "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
-                          (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
-      }
-
-      $header_end .= "</tr>";
-      echo $header_begin.$header_top.$header_end;
-
-      $used = [];
-
-      if ($number) {
-         // Don't use this for document associated to document
-         // To not loose navigation list for current document
-         if ($item->getType() != 'Document') {
-            Session::initNavigateListItems('Document',
-                              //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
-                                           sprintf(__('%1$s = %2$s'),
-                                                   $item->getTypeName(1), $item->getName()));
-         }
-
-         $document = new Document();
-         foreach ($documents as $data) {
-            $docID        = $data["id"];
-            $link         = NOT_AVAILABLE;
-            $downloadlink = NOT_AVAILABLE;
-
-            if ($document->getFromDB($docID)) {
-               $link         = $document->getLink();
-               $downloadlink = $document->getDownloadLink($linkparam);
-            }
-
-            if ($item->getType() != 'Document') {
-               Session::addToNavigateListItems('Document', $docID);
-            }
-            $used[$docID] = $docID;
-
-            echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-            if ($canedit
-                && ($withtemplate < 2)) {
-               echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
-               echo "</td>";
-            }
-            echo "<td class='center'>$link</td>";
-            echo "<td class='center'>".$data['entity']."</td>";
-            echo "<td class='center'>$downloadlink</td>";
-            echo "<td class='center'>";
-            if (!empty($data["link"])) {
-               echo "<a target=_blank href='".Toolbox::formatOutputWebLink($data["link"])."'>".$data["link"];
-               echo "</a>";
-            } else {
-               echo "&nbsp;";
-            }
-            echo "</td>";
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_documentcategories",
-                                                                 $data["documentcategories_id"]);
-            echo "</td>";
-            echo "<td class='center'>".$data["mime"]."</td>";
-            echo "<td class='center'>";
-            echo !empty($data["tag"]) ? Document::getImageTag($data["tag"]) : '';
-            echo "</td>";
-            echo "<td class='center'>".Html::convDateTime($data["assocdate"])."</td>";
-            echo "</tr>";
-            $i++;
-         }
-         echo $header_begin.$header_bottom.$header_end;
-      }
-
-      echo "</table>";
-      if ($canedit && $number && ($withtemplate < 2)) {
-         $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions($massiveactionparams);
-         Html::closeForm();
-      }
-      echo "</div>";
    }
 
 

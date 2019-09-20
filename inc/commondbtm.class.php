@@ -178,6 +178,9 @@ class CommonDBTM extends CommonGLPI {
     */
    static $undisclosedFields = [];
 
+   /** @var Search */
+   public $sub_search;
+
    /**
     * Constructor
    **/
@@ -3632,6 +3635,17 @@ class CommonDBTM extends CommonGLPI {
          ];
       }
 
+      if ($this->isField('is_dynamic')) {
+         $tab[] = [
+            'id'         => 997,
+            'table'      => $this->getTable(),
+            'field'      => 'is_dynamic',
+            'name'       => __('Is dynamic'),
+            'datatype'   => 'bool',
+            'searchtype' => 'equals',
+         ];
+      }
+
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
@@ -5519,5 +5533,97 @@ class CommonDBTM extends CommonGLPI {
     */
    public function getNonLoggedFields(): array {
       return [];
+   }
+
+   public function getSubItems(CommonGLPI $item, array $params): array {
+      return [];
+   }
+
+   public function showSublist($sub_itemtype, array $params) {
+      $item = $this;
+
+      $get = $params;
+      $args = [
+         'itemtype'     => $this->getType(),
+         'target'       => $this->getLinkURL(),
+         'as_map'       => 0,
+         'show_pager'   => 0,
+         'addlink'      => false
+         //'showmassiveactions' => 0
+      ];
+
+      if (!isset($get["withtemplate"])) {
+         $get["withtemplate"] = "";
+      }
+
+      if ($item->get_item_to_display_tab) {
+         // No id if ruleCollection but check right
+         if ($item instanceof \RuleCollection) {
+            if (!$item->canList()) {
+               //TODO: redirect with error
+               throw new \RuntimeException('Cannot list');
+            }
+         } else if (!$item->can($item->fields['id'], READ)) {
+            //TODO: redirect with error
+            throw new \RuntimeException('Cannot read');
+         }
+      }
+
+      $notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate', 'formoptions'];
+      $options         = $get;
+
+      foreach ($notvalidoptions as $key) {
+         if (isset($options[$key])) {
+               unset($options[$key]);
+         }
+      }
+
+      if (isset($options['locked'])) {
+         \ObjectLock::setReadOnlyProfile();
+      }
+
+      $sub_item = new $sub_itemtype;
+      $params = $options + $args;
+      $data = $sub_item->getSubItems($item, $params);
+
+      if ($params['addlink'] === true) {
+         $rand = mt_rand();
+         echo "<div class='firstbloc'>";
+         echo "<form name='contractitem_form$rand' id='contractitem_form$rand' method='post'
+                action='".Toolbox::getItemTypeFormURL($sub_itemtype)."'>";
+         echo "<input type='hidden' name='items_id' value='".$this->fields['id']."'>";
+         echo "<input type='hidden' name='itemtype' value='".$this->getType()."'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='2'>";
+         echo sprintf(
+             //TRANS: parameter will be replaced with an item name like Contract or Disk
+             __('Add link to %1$s'),
+             $link->getTypeName(1)
+          );
+         echo "</th></tr>";
+
+         echo "<tr class='tab_bg_1'><td>";
+         $link::dropdown([
+            'entity'  => $this->getEntityID(),
+            'expired' => false
+         ]);
+
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+
+      echo "<div class='search_page'>";
+      //$search->showGenericSearch($sub_itemtype, $params);
+      if (isset($params['as_map']) && $params['as_map'] == 1) {
+         $sub_item->sub_search->showMap($sub_itemtype, $params, $data);
+      } else {
+         $sub_item->sub_search->showList($sub_itemtype, $params, $data);
+      }
+      echo "</div>";
    }
 }

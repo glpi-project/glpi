@@ -85,7 +85,6 @@ class Item_Disk extends CommonDBChild {
     * @param $withtemplate    (default 0)
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-
       self::showForItem($item, $withtemplate);
       return true;
    }
@@ -246,8 +245,6 @@ class Item_Disk extends CommonDBChild {
     * @return void
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB;
-
       $ID = $item->fields['id'];
       $itemtype = $item->getType();
 
@@ -266,155 +263,89 @@ class Item_Disk extends CommonDBChild {
          echo "</a></div>\n";
       }
 
-      echo "<div class='center table-responsive'>";
-
-      $iterator = self::getFromItem($item);
-      echo "<table class='tab_cadre_fixehov'>";
-      $colspan = 9;
-      echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName(count($iterator)).
-            "</th></tr>";
-
-      if (count($iterator)) {
-
-         $header = "<tr><th>".__('Name')."</th>";
-         $header .= "<th>".__('Automatic inventory')."</th>";
-         $header .= "<th>".__('Partition')."</th>";
-         $header .= "<th>".__('Mount point')."</th>";
-         $header .= "<th>".Filesystem::getTypeName(1)."</th>";
-         $header .= "<th>".__('Global size')."</th>";
-         $header .= "<th>".__('Free size')."</th>";
-         $header .= "<th>".__('Free percentage')."</th>";
-         $header .= "<th>".__('Encryption')."</th>";
-         $header .= "</tr>";
-         echo $header;
-
-         Session::initNavigateListItems(__CLASS__,
-                           //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                          sprintf(__('%1$s = %2$s'),
-                                                $item::getTypeName(1), $item->getName()));
-
-         $disk = new self();
-         while ($data = $iterator->next()) {
-            $disk->getFromResultSet($data);
-            echo "<tr class='tab_bg_2" .(isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'")."'>";
-            echo "<td>".$disk->getLink()."</td>";
-            echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
-            echo "<td>".$data['device']."</td>";
-            echo "<td>".$data['mountpoint']."</td>";
-            echo "<td>".$data['fsname']."</td>";
-            //TRANS: %s is a size
-            $tmp = Toolbox::getSize($data['totalsize'] * 1024 * 1024);
-            echo "<td>$tmp<span class='small_space'></span></td>";
-            $tmp = Toolbox::getSize($data['freesize'] * 1024 * 1024);
-            echo "<td>$tmp<span class='small_space'></span></td>";
-            echo "<td>";
-            $percent = 0;
-            if ($data['totalsize'] > 0) {
-               $percent = round(100*$data['freesize']/$data['totalsize']);
-            }
-            $rand = mt_rand();
-            Html::progressBar("percent$rand", [
-               'create'  => true,
-               'percent' => $percent,
-               'message' => "$percent %",
-            ]);
-            echo "</td>";
-            echo "<td class=\"center\">";
-
-            if ($data['encryption_status'] != self::ENCRYPTION_STATUS_NO) {
-               $encryptionTooltip = "<strong>" . __('Partial encryption') . "</strong> : " .
-                  Dropdown::getYesNo($data['encryption_status'] == self::ENCRYPTION_STATUS_PARTIALLY) .
-                  "<br/>" .
-                  "<strong>" . __('Encryption tool') . "</strong> : " . $data['encryption_tool'] .
-                  "</br>" .
-                  "<strong>" . __('Encryption algorithm') . "</strong> : " .
-                  $data['encryption_algorithm'] . "</br>" .
-                  "<strong>" . __('Encryption type') . "</strong> : " . $data['encryption_type'] .
-                  "</br>";
-
-               Html::showTooltip($encryptionTooltip, [
-                  'awesome-class' => "fas fa-lock"
-               ]);
-            }
-
-            echo "</td>";
-            echo "</tr>";
-            Session::addToNavigateListItems(__CLASS__, $data['id']);
-         }
-         echo $header;
-      } else {
-         echo "<tr class='tab_bg_2'><th colspan='$colspan'>".__('No item found')."</th></tr>";
-      }
-
-      echo "</table>";
-      echo "</div>";
+      $get = ['withtemplate' => $withtemplate] + $_GET;
+      $item->showSublist(self::getType(), $get);
    }
 
-   function rawSearchOptions() {
+   public function rawSearchOptions() {
+      $tabs = parent::rawSearchOptions();
 
-      $tab = [];
-
-      $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
-      ];
-
-      $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+      $tabs[] = [
+         'id'     => 2,
+         'table'  => $this->getTable(),
+         'field'  => 'device',
+         'name'   => __('Partition'),
          'autocomplete'       => true,
       ];
 
-      $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'device',
-         'name'               => __('Partition'),
-         'datatype'           => 'string',
-         'massiveaction'      => false,
+      $tabs[] = [
+         'id'     => 3,
+         'table'  => $this->getTable(),
+         'field'  => 'mountpoint',
+         'name'   => __('Mount point'),
          'autocomplete'       => true,
       ];
 
-      $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'mountpoint',
-         'name'               => __('Mount point'),
-         'datatype'           => 'string',
-         'massiveaction'      => false,
+      $tabs[] = [
+         'id'              => 4,
+         'table'           => Filesystem::getTable(),
+         'field'           => 'name',
+         'name'            => Filesystem::getTypeName(1),
+         'datatype'        => 'dropdown',
+         'massiveaction'   => false,
+         'joinparams'      => [
+            'table'  => 'glpi_filesystems',
+         ]
+      ];
+
+      $tabs[] =  [
+         'id'        => 5,
+         'table'     => self::getTable(),
+         'field'     => 'totalsize',
+         'name'      => __('Global size'),
+         'datatype'  => 'number',
+         'unit'      => 'auto',
          'autocomplete'       => true,
       ];
 
-      $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'totalsize',
-         'unit'               => 'auto',
-         'name'               => __('Global size'),
-         'datatype'           => 'number',
-         'width'              => 1000,
-         'massiveaction'      => false,
+      $tabs[] = [
+         'id'        => 6,
+         'table'     => self::getTable(),
+         'field'     => 'freesize',
+         'name'      => __('Free size'),
+         'datatype'  => 'number',
+         'unit'      => 'auto',
          'autocomplete'       => true,
       ];
 
-      $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'freesize',
-         'unit'               => 'auto',
-         'name'               => __('Free size'),
-         'datatype'           => 'number',
-         'width'              => 1000,
-         'massiveaction'      => false,
-         'autocomplete'       => true,
+      $tabs[] = [
+         'id'                 => 7,
+         'table'              => self::getTable(),
+         'name'               => __('Free percentage'),
+         'datatype'           => 'progressbar',
+         'field'              => 'freepercent',
+         'width'              => 2,
+         'computation'        => 'IF(TABLE.totalsize > 0, ROUND(100*TABLE.freesize/TABLE.totalsize), "-")',
+         'computationgroupby' => true,
+         'unit'               => '%',
       ];
 
-      return $tab;
+      $tabs[] = [
+         'id'                 => '8',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_status',
+         'name'               => __('Encryption status'),
+         'searchtype'         => 'equals',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'searchequalsonfield' => true,
+         'datatype'           => 'specific',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      return $tabs;
    }
 
    public static function rawSearchOptionsToAdd($itemtype) {

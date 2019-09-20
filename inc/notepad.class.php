@@ -166,6 +166,17 @@ class Notepad extends CommonDBChild {
       return $data;
    }
 
+   public function rawSearchOptions() {
+      $so = self::rawSearchOptionsToAdd();
+      foreach ($so as &$s) {
+         if ($s['id'] == 200) {
+               $s['name'] = __('Content');
+         } else if ($s['id'] == 'notepad') {
+            $s['id'] = 'common';
+         }
+      }
+      return $so;
+   }
 
    static public function rawSearchOptionsToAdd() {
       $tab = [];

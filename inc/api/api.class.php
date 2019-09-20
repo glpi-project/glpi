@@ -1011,6 +1011,7 @@ abstract class API {
 
       $this->initEndpoint();
       $itemtype = $this->handleDepreciation($itemtype);
+      $search = new \Search(new $itemtype(), $params);
 
       // default params
       $default = ['expand_dropdowns' => false,
@@ -1060,8 +1061,8 @@ abstract class API {
 
       //specific case for restriction
       $already_linked_table = [];
-      $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
-      $where = Search::addDefaultWhere($itemtype);
+      $join = $search->addDefaultJoin($itemtype, $table, $already_linked_table);
+      $where = $search->addDefaultWhere($itemtype);
 
       if ($where == '') {
          $where = "1=1 ";
@@ -1133,7 +1134,7 @@ abstract class API {
          // make text search
          foreach ($params['searchText']  as $filter_field => $filter_value) {
             if (!empty($filter_value)) {
-               $search_value = Search::makeTextSearch($DB->escape($filter_value));
+               $search_value = $search->makeTextSearch($filter_value);
                $where.= " AND (".$DB->quoteName("$table.$filter_field")." $search_value)";
             }
          }
@@ -1552,7 +1553,8 @@ abstract class API {
       $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
 
       // call Core Search method
-      $rawdata = Search::getDatas($itemtype, $params, $params['forcedisplay']);
+      $search = new \Search(new $itemtype(), $params);
+      $rawdata = $search->getData();
 
       // probably a sql error
       if (!isset($rawdata['data']) || count($rawdata['data']) === 0) {
@@ -1723,7 +1725,7 @@ abstract class API {
                $object["_add"] = true;
 
                //add current item
-               $object = Toolbox::sanitize($object);
+               $object = Toolbox::clean_cross_side_scripting_deep($object);
                $new_id = $item->add($object);
                if ($new_id === false) {
                   $failed++;
@@ -1779,7 +1781,7 @@ abstract class API {
 
       if (is_array($input)) {
          foreach ($input as &$sub_input) {
-            $sub_input = self::inputObjectToArray($sub_input);
+            $sub_input = $this->inputObjectToArray($sub_input);
          }
       }
 
@@ -1850,7 +1852,7 @@ abstract class API {
                   }
 
                   //update item
-                  $object = Toolbox::sanitize((array)$object);
+                  $object = Toolbox::clean_cross_side_scripting_deep((array)$object);
                   $update_return = $item->update($object);
                   if ($update_return === false) {
                      $failed++;

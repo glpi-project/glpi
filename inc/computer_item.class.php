@@ -728,6 +728,24 @@ class Computer_Item extends CommonDBRelation{
       return '';
    }
 
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      global $CFG_GLPI;
+
+      if ($item->getType() == Computer::getType()) {
+         return self::countForMainItem($item);
+      }
+
+      if (in_array($CFG_GLPI['directconnect_types'])) {
+         return self::countForItem($item);
+      }
+
+      throw new \RuntimeException(
+         sprintf(
+            'Cannot link a computer with a %s',
+            $item->getType()
+         )
+      );
+   }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;

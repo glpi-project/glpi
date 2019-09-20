@@ -2469,11 +2469,13 @@ CREATE TABLE `glpi_displaypreferences` (
   `num` int NOT NULL DEFAULT '0',
   `rank` int NOT NULL DEFAULT '0',
   `users_id` int NOT NULL DEFAULT '0',
+  `is_main` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`),
+  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`,`is_main`),
   KEY `rank` (`rank`),
   KEY `num` (`num`),
-  KEY `itemtype` (`itemtype`)
+  KEY `itemtype` (`itemtype`),
+  KEY `is_main` (`is_main`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

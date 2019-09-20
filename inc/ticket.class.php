@@ -763,6 +763,117 @@ class Ticket extends CommonITILObject {
       return '';
    }
 
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+
+      global $DB;
+
+      $nb    = 0;
+      if (static::canView()) {
+         switch ($item->getType()) {
+            case 'User' :
+               $nb = countElementsInTable(
+                  ['glpi_tickets', 'glpi_tickets_users'], [
+                     'glpi_tickets_users.tickets_id'  => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
+                     'glpi_tickets_users.users_id'    => $item->getID(),
+                     'glpi_tickets_users.type'        => CommonITILActor::REQUESTER
+                  ] + getEntitiesRestrictCriteria(self::getTable())
+               );
+               break;
+
+            case 'Supplier' :
+               $nb = countElementsInTable(
+                  ['glpi_tickets', 'glpi_suppliers_tickets'], [
+                     'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
+                     'glpi_suppliers_tickets.suppliers_id'  => $item->getID()
+                  ] + getEntitiesRestrictCriteria(self::getTable())
+               );
+               break;
+
+            case 'SLA' :
+               $nb = countElementsInTable(
+                  'glpi_tickets', [
+                     'OR'  => [
+                        'slas_id_tto'  => $item->getID(),
+                        'slas_id_ttr'  => $item->getID()
+                     ]
+                  ]
+               );
+               break;
+            case 'OLA' :
+               $nb = countElementsInTable(
+                  'glpi_tickets', [
+                     'OR'  => [
+                        'olas_id_tto'  => $item->getID(),
+                        'olas_id_ttr'  => $item->getID()
+                     ]
+                  ]
+               );
+               break;
+
+            case 'Group' :
+               $nb = countElementsInTable(
+                  ['glpi_tickets', 'glpi_groups_tickets'], [
+                     'glpi_groups_tickets.tickets_id' => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
+                     'glpi_groups_tickets.groups_id'  => $item->getID(),
+                     'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER
+                  ] + getEntitiesRestrictCriteria(self::getTable())
+               );
+               break;
+
+            default :
+               // Direct one
+               $nb = countElementsInTable(
+                  'glpi_items_tickets',
+                  [
+                     'INNER JOIN' => [
+                        'glpi_tickets' => [
+                           'FKEY' => [
+                              'glpi_items_tickets' => 'tickets_id',
+                              'glpi_tickets'       => 'id'
+                           ]
+                        ]
+                     ],
+                     'WHERE' => [
+                        'itemtype' => $item->getType(),
+                        'items_id' => $item->getID(),
+                        'is_deleted' => 0
+                     ]
+                  ]
+               );
+
+               // Linked items
+               $linkeditems = $item->getLinkedItems();
+
+               if (count($linkeditems)) {
+                  foreach ($linkeditems as $type => $tab) {
+                     foreach ($tab as $ID) {
+                        $nb += countElementsInTable(
+                           'glpi_items_tickets',
+                           [
+                              'INNER JOIN' => [
+                                 'glpi_tickets' => [
+                                    'FKEY' => [
+                                       'glpi_items_tickets' => 'tickets_id',
+                                       'glpi_tickets'       => 'id'
+                                    ]
+                                 ]
+                              ],
+                              'WHERE' => [
+                                 'itemtype' => $type,
+                                 'items_id' => $ID,
+                                 'is_deleted' => 0
+                              ]
+                           ]
+                        );
+                     }
+                  }
+               }
+               break;
+         }
+      } // self::READALL right check
+
+      return $nb;
+   }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 

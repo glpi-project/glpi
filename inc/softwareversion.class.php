@@ -162,6 +162,14 @@ class SoftwareVersion extends CommonDBChild {
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'name',
+         'name'               => $this->getTypeName(1),
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => 'glpi_softwares',
+         'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'string',
          'autocomplete'       => true,
@@ -199,6 +207,42 @@ class SoftwareVersion extends CommonDBChild {
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '122',
+         'table'              => 'glpi_items_softwareversions',
+         'field'              => 'date_install',
+         'name'               => __('Installation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '123',
+         'table'              => 'glpi_softwarecategories',
+         'field'              => 'name',
+         'name'               => __('Software category'),
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_softwares',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '124',
+         'table'              => 'glpi_softwares',
+         'field'              => 'is_valid',
+         'name'               => __('Valid license'),
+         'datatype'           => 'bool'
       ];
 
       return $tab;

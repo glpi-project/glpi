@@ -47,7 +47,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
    $itemtype = $_POST['itemtype'];
    $params   = $_POST['params'];
 
-   $data = Search::prepareDatasForSearch($itemtype, $params);
+   $data = Search::prepareDataForSearch($itemtype, $params);
    Search::constructSQL($data);
    Search::constructData($data);
 

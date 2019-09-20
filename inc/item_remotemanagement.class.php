@@ -112,6 +112,7 @@ class Item_RemoteManagement extends CommonDBChild {
           || !$item->can($ID, READ)) {
          return false;
       }
+
       $canedit = $item->canEdit($ID);
 
       if ($canedit
@@ -123,67 +124,8 @@ class Item_RemoteManagement extends CommonDBChild {
          echo "</a></div>\n";
       }
 
-      echo "<div class='center'>";
-      $iterator = self::getFromItem($item);
-
-      $rand = mt_rand();
-      if ($canedit && count($iterator)) {
-         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams
-            = ['num_displayed'
-                        => min($_SESSION['glpilist_limit'], count($iterator)),
-                     'container'
-                        => 'mass'.__CLASS__.$rand];
-         Html::showMassiveActions($massiveactionparams);
-      }
-
-      echo "<table class='tab_cadre_fixehov'>";
-      $colspan = 9;
-      echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName(count($iterator)).
-            "</th></tr>";
-
-      if (count($iterator)) {
-         $header = '<tr>';
-         $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         $header .= "</th>";
-         $header .= "<th>".__('Remote ID')."</th>";
-         $header .= "<th>"._n('Type', 'Types', 1)."</th>";
-         $header .= "<th>".__('Automatic inventory')."</th>";
-         $header .= "</tr>";
-         echo $header;
-
-         Session::initNavigateListItems(
-            __CLASS__,
-            //TRANS : %1$s is the itemtype name,
-            //        %2$s is the name of the item (used for headings of a list)
-            sprintf(
-               __('%1$s = %2$s'),
-               $item::getTypeName(1),
-               $item->getName()
-            )
-         );
-
-         $mgmt = new self();
-         while ($data = $iterator->next()) {
-            $mgmt->getFromResultSet($data);
-            echo "<tr class='tab_bg_2'>";
-
-            echo "<td width='10'>";
-            Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-            echo "</td>";
-            echo "<td>".$mgmt->getRemoteLink()."</td>";
-            echo "<td>".$mgmt->fields['type']."</td>";
-            echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
-            echo "</tr>";
-            Session::addToNavigateListItems(__CLASS__, $data['id']);
-         }
-         echo $header;
-      } else {
-         echo "<tr class='tab_bg_2'><th colspan='$colspan'>".__('No item found')."</th></tr>";
-      }
-
-      echo "</table>";
-      echo "</div>";
+      $get = ['withtemplate' => $withtemplate] + $_GET;
+      $item->showSublist(self::getType(), $get);
    }
 
 
@@ -218,19 +160,14 @@ class Item_RemoteManagement extends CommonDBChild {
 
    function rawSearchOptions() {
 
-      $tab = [];
-
-      $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
-      ];
+      $tab = parent::rawSearchOptions();
 
       $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'remoteid',
          'name'               => __('ID'),
-         'datatype'           => 'itemlink',
+         'datatype'           => 'specific',
          'massiveaction'      => false,
          'autocomplete'       => true,
       ];
@@ -264,10 +201,7 @@ class Item_RemoteManagement extends CommonDBChild {
          'name'               => __('ID'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
+         'datatype'           => 'specific',
       ];
 
       $tab[] = [
@@ -363,6 +297,24 @@ class Item_RemoteManagement extends CommonDBChild {
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
+   }
+
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if ($options['searchopt']['datatype'] !== 'specific') {
+         return;
+      }
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+         case 'remoteid':
+            $mgmt = new self;
+            $mgmt->getFromDB($options['raw_data']['id']);
+            return $mgmt->getRemoteLink();
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
 }

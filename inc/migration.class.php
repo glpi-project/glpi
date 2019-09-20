@@ -662,7 +662,6 @@ class Migration {
          $DB->queryOrDie($query, $this->version." create $newtable");
 
          if ($insert) {
-            //needs DB::insert to support subqueries to get migrated
             $query = "INSERT INTO `$newtable` (SELECT * FROM `$oldtable`)";
             $DB->queryOrDie($query, $this->version." copy from $oldtable to $newtable");
          }
@@ -711,8 +710,8 @@ class Migration {
       global $DB;
 
       if (isset($this->change[$table])) {
-         $query = "ALTER TABLE `$table` ".implode(" ,\n", $this->change[$table])." ";
-         $this->displayMessage( sprintf(__('Change of the database layout - %s'), $table));
+         $query = "ALTER TABLE `$table` ".implode( " ,\n", $this->change[$table])." ";
+         $this->displayMessage(sprintf(__('Change of the database layout - %s'), $table));
          $DB->queryOrDie($query, $this->version." multiple alter in $table");
          unset($this->change[$table]);
       }
