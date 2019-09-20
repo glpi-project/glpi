@@ -343,7 +343,7 @@ var GLPIImpact = {
       // First iterate on the edges we had in the initial state
       Object.keys(GLPIImpact.initialState.edges).forEach(function(edgeID) {
          var edge = GLPIImpact.initialState.edges[edgeID];
-         if (currentEdges.hasOwnProperty(edgeID)) {
+         if (Object.prototype.hasOwnProperty.call(currentEdges, edgeID)) {
             // If the edge is still here in the current state, nothing happened
             // Remove it from the currentEdges data so we can skip it later
             delete currentEdges[edgeID];
@@ -391,7 +391,7 @@ var GLPIImpact = {
       // First iterate on the compounds we had in the initial state
       Object.keys(GLPIImpact.initialState.compounds).forEach(function(compoundID) {
          var compound = GLPIImpact.initialState.compounds[compoundID];
-         if (currentCompounds.hasOwnProperty(compoundID)) {
+         if (Object.prototype.hasOwnProperty.call(currentCompounds, compoundID)) {
             // If the compound is still here in the current state
             var currentCompound = currentCompounds[compoundID];
 
