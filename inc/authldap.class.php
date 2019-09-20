@@ -2068,7 +2068,6 @@ class AuthLDAP extends CommonDBTM {
       $config_ldap->getFromDB($auths_id);
       $infos       = [];
       $groups      = [];
-      $search_in_groups = false;
 
       $ds = $config_ldap->connect();
       if ($ds) {
@@ -2103,19 +2102,19 @@ class AuthLDAP extends CommonDBTM {
             //If the group exists in DB -> unset it from the LDAP groups
             while ($group = $iterator->next()) {
                //use DN for next step
-               //depending on the type of search when groups is imported
+               //depending on the type of search when groups are imported
                //the DN may be in two separate fields
                if (isset($group["ldap_group_dn"]) && !empty($group["ldap_group_dn"])) {
-                  $glpi_groups['groups'][$group["ldap_group_dn"]] = 1;
+                  $glpi_groups[$group["ldap_group_dn"]] = 1;
                } else if (isset($group["ldap_value"]) && !empty($group["ldap_value"])) {
-                  $glpi_groups['users'][$group["ldap_value"]] = 1;
+                  $glpi_groups[$group["ldap_value"]] = 1;
                }
             }
             $ligne = 0;
 
             foreach ($infos as $dn => $info) {
                //reconcile by DN
-               if (!isset($glpi_groups['users'][$dn])) {
+               if (!isset($glpi_groups[$dn])) {
                   $groups[$ligne]["dn"]          = $dn;
                   $groups[$ligne]["cn"]          = $info["cn"];
                   $groups[$ligne]["search_type"] = $info["search_type"];
