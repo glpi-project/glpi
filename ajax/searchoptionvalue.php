@@ -134,14 +134,16 @@ if (isset($_POST['searchtype'])) {
             //Could display be handled by a plugin ?
             if (!$display
                 && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))) {
-               $function = 'plugin_'.$plug['plugin'].'_searchOptionsValues';
-               if (function_exists($function)) {
-                  $params = ['name'           => $inputname,
-                                  'searchtype'     => $_POST['searchtype'],
-                                  'searchoption'   => $searchopt,
-                                  'value'          => $_POST['value']];
-                  $display = $function($params);
-               }
+               $display = Plugin::doOneHook(
+                  $plug['plugin'],
+                  'searchOptionsValues',
+                  [
+                     'name'           => $inputname,
+                     'searchtype'     => $_POST['searchtype'],
+                     'searchoption'   => $searchopt,
+                     'value'          => $_POST['value']
+                  ]
+               );
             }
 
          }
