@@ -371,17 +371,17 @@ class TicketRecurrent extends CommonDropdown {
          return 'NULL';
       }
 
-      // First occurence of creation
       $calendar = new Calendar();
       if ($calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay()) {
          // Base computation on calendar if calendar is defined
+
          $occurence_date = $calendar->computeEndDate(
             $begin_date,
-            1, // 1 second delay for first occurence as calendar method does not handle 0 delay
+            0, // 0 second delay to get the first working "second"
             0,
-            $periodicity_in_seconds >= DAY_TIMESTAMP
+            false
          );
-         $occurence_time = strtotime($occurence_date) - 1;
+         $occurence_time = strtotime($occurence_date);
          $creation_time  = $occurence_time - $create_before;
 
          while ($creation_time < $now) {
@@ -400,6 +400,7 @@ class TicketRecurrent extends CommonDropdown {
             }
          };
       } else {
+         // First occurence of creation
          $occurence_time = strtotime($begin_date);
          $creation_time  = $occurence_time - $create_before;
 
