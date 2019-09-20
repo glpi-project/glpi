@@ -1441,8 +1441,6 @@ CREATE TABLE `glpi_impactitems` (
 	KEY `parent_id` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-
->>>>>>> Impact analysis
 ### Dump table glpi_consumableitems
 
 DROP TABLE IF EXISTS `glpi_consumableitems`;
