@@ -1991,14 +1991,6 @@ class Search {
                   $gdname    = '';
                   $valuename = '';
 
-                  if (isset($criteria['meta']) && $criteria['meta']) {
-                     $searchoptname = sprintf(__('%1$s / %2$s'),
-                                    $criteria['itemtype'],
-                                    $searchopt[$criteria['field']]["name"]);
-                  } else {
-                     $searchoptname = $searchopt[$criteria['field']]["name"];
-                  }
-
                   switch ($criteria['field']) {
                      case "all" :
                         $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, __('All'));
@@ -2009,6 +2001,14 @@ class Search {
                         break;
 
                      default :
+                        if (isset($criteria['meta']) && $criteria['meta']) {
+                           $searchoptname = sprintf(__('%1$s / %2$s'),
+                                          $criteria['itemtype'],
+                                          $searchopt[$criteria['field']]["name"]);
+                        } else {
+                           $searchoptname = $searchopt[$criteria['field']]["name"];
+                        }
+
                         $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, $searchoptname);
                         $itemtype     = getItemTypeForTable($searchopt[$criteria['field']]["table"]);
                         $valuename    = '';

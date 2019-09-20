@@ -493,8 +493,6 @@ class Calendar extends CommonDropdown {
          // If day is an holiday must start on the begin of next working day
          $actualdate = date('Y-m-d', $actualtime);
          $dayofweek  = self::getDayNumberInWeek($actualtime);
-         $firstworkhour = CalendarSegment::getFirstWorkingHour($this->fields['id'],
-                                                               $dayofweek);
          if ($this->isHoliday($actualdate)
              || ($cache_duration[$dayofweek] == 0)) {
 
@@ -507,9 +505,6 @@ class Calendar extends CommonDropdown {
             $firstworkhour = CalendarSegment::getFirstWorkingHour($this->fields['id'],
                                                                   $dayofweek);
             $actualtime    = strtotime($actualdate.' '.$firstworkhour);
-         } else if (date('H:i:s', $actualtime) < $firstworkhour) {
-            // Go to first working hour of current day if actual time is before first working hour
-            $actualtime = strtotime($actualdate.' '.$firstworkhour);
          }
 
          while ($delay > 0) {
