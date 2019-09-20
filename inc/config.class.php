@@ -1386,11 +1386,6 @@ class Config extends CommonDBTM {
               "</td><td>";
          Dropdown::showYesNo("lock_directunlock_notification", $data["lock_directunlock_notification"]);
          echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>" . __('Floating messages') . "</td><td>";
-         Dropdown::showYesNo("lock_floating_message", $data["lock_floating_message"]);
-         echo "</td></tr>";
       }
 
       if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
@@ -2478,9 +2473,6 @@ class Config extends CommonDBTM {
             ],
             'exif' => [
                'required'  => false
-            ],
-            'intl' => [
-               'required' => true
             ]
          ];
       } else {
@@ -3316,9 +3308,9 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Software', 'Software', 2)."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>".
-           __("Installation/uninstallation of software on items")."</td><td>";
-      self::showLogsInterval('purge_item_software_install',
-                          $CFG_GLPI["purge_item_software_install"]);
+           __("Installation/uninstallation of software on computers")."</td><td>";
+      self::showLogsInterval('purge_computer_software_install',
+                          $CFG_GLPI["purge_computer_software_install"]);
       echo "</td>";
       echo "<td>".__("Installation/uninstallation versions on softwares")."</td><td>";
       self::showLogsInterval('purge_software_version_install',
@@ -3327,9 +3319,9 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td class='center'>".
-           __("Add/Remove items from software versions")."</td><td>";
-      self::showLogsInterval('purge_software_item_install',
-                          $CFG_GLPI["purge_software_item_install"]);
+           __("Add/Remove computers from software versions")."</td><td>";
+      self::showLogsInterval('purge_software_computer_install',
+                          $CFG_GLPI["purge_software_computer_install"]);
       echo "</td>";
       echo "</tr>";
 

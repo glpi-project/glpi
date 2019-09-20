@@ -986,50 +986,42 @@ CREATE TABLE `glpi_computers_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Previously glpi_computers_softwarelicenses < 9.5.0
-### Dump table glpi_items_softwarelicenses
+### Dump table glpi_computers_softwarelicenses
 
-DROP TABLE IF EXISTS `glpi_items_softwarelicenses`;
-CREATE TABLE `glpi_items_softwarelicenses` (
+DROP TABLE IF EXISTS `glpi_computers_softwarelicenses`;
+CREATE TABLE `glpi_computers_softwarelicenses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `items_id` int(11) NOT NULL DEFAULT '0',
-  `itemtype` varchar(100) NOT NULL,
+  `computers_id` int(11) NOT NULL DEFAULT '0',
   `softwarelicenses_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `items_id` (`items_id`),
-  KEY `itemtype` (`itemtype`),
-  KEY `item` (`itemtype`, `items_id`),
+  KEY `computers_id` (`computers_id`),
   KEY `softwarelicenses_id` (`softwarelicenses_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-### Previously glpi_computers_softwareversions < 9.5.0
-### Dump table glpi_items_softwareversions
 
-DROP TABLE IF EXISTS `glpi_items_softwareversions`;
-CREATE TABLE `glpi_items_softwareversions` (
+### Dump table glpi_computers_softwareversions
+
+DROP TABLE IF EXISTS `glpi_computers_softwareversions`;
+CREATE TABLE `glpi_computers_softwareversions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `items_id` int(11) NOT NULL DEFAULT '0',
-  `itemtype` varchar(100) NOT NULL,
+  `computers_id` int(11) NOT NULL DEFAULT '0',
   `softwareversions_id` int(11) NOT NULL DEFAULT '0',
-  `is_deleted_item` tinyint(1) NOT NULL DEFAULT '0',
-  `is_template_item` tinyint(1) NOT NULL DEFAULT '0',
+  `is_deleted_computer` tinyint(1) NOT NULL DEFAULT '0',
+  `is_template_computer` tinyint(1) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_install` date DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`itemtype`, `items_id` ,`softwareversions_id`),
-  KEY `items_id` (`items_id`),
-  KEY `itemtype` (`itemtype`),
-  KEY `item` (`itemtype`, `items_id`),
+  UNIQUE KEY `unicity` (`computers_id`,`softwareversions_id`),
   KEY `softwareversions_id` (`softwareversions_id`),
-  KEY `computers_info` (`entities_id`,`is_template_item`,`is_deleted_item`),
-  KEY `is_template` (`is_template_item`),
-  KEY `is_deleted` (`is_deleted_item`),
+  KEY `computers_info` (`entities_id`,`is_template_computer`,`is_deleted_computer`),
+  KEY `is_template` (`is_template_computer`),
+  KEY `is_deleted` (`is_deleted_computer`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `date_install` (`date_install`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -1237,7 +1229,6 @@ CREATE TABLE `glpi_impactitems` (
 	KEY `source` (`itemtype`, `items_id`),
 	KEY `parent_id` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-INSERT INTO `glpi_configs` VALUES ('211','core','lock_floating_message','1');
 
 ### Dump table glpi_consumableitems
 
@@ -3476,7 +3467,6 @@ CREATE TABLE `glpi_itilcategories` (
   `knowbaseitemcategories_id` int(11) NOT NULL DEFAULT '0',
   `users_id` int(11) NOT NULL DEFAULT '0',
   `groups_id` int(11) NOT NULL DEFAULT '0',
-  `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ancestors_cache` longtext COLLATE utf8_unicode_ci,
   `sons_cache` longtext COLLATE utf8_unicode_ci,
   `is_helpdeskvisible` tinyint(1) NOT NULL DEFAULT '1',
@@ -5919,7 +5909,6 @@ CREATE TABLE `glpi_softwarelicenses` (
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `allow_overquota` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -5941,8 +5930,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `is_deleted` (`is_deleted`),
   KEY `date_creation` (`date_creation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `states_id` (`states_id`),
-  KEY `allow_overquota` (`allow_overquota`)
+  KEY `states_id` (`states_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -6868,7 +6856,6 @@ CREATE TABLE `glpi_users` (
   `set_default_requester` tinyint(1) DEFAULT NULL,
   `lock_autolock_mode` tinyint(1) DEFAULT NULL,
   `lock_directunlock_notification` tinyint(1) DEFAULT NULL,
-  `lock_floating_message` tinyint(1) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `highcontrast_css` tinyint(1) DEFAULT 0,
   `plannings` text COLLATE utf8_unicode_ci DEFAULT NULL,

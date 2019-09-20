@@ -286,15 +286,15 @@ class ObjectLock extends CommonDBTM {
       ");
       echo $ret;
 
-      $msg = "<span class='red' style='white-space: nowrap;'>";
+      $msg = "<span class='red' style='white-space: nowrap;'><span style='vertical-align: middle;'>";
 
       $msg .= __('Locked by ')."<a href='".$user->getLinkURL()."'>$completeUserName</a> -> ".
                Html::convDateTime($this->fields['date_mod']);
-      $msg .= "</span><span style='padding-right:15px;'>";
+      $msg .= "</span></span><span style='padding-right:15px;'>";
       if ($showAskUnlock) {
          $msg .= "<a class='vsubmit' onclick='javascript:askUnlock();'>".__('Ask for unlock')."</a>";
       }
-      $msg .= "</span><span style='white-space:nowrap;padding-right:15px;'>".__('Alert me when unlocked')."<span style='padding-left:5px;'>".Html::getCheckbox(['id' => 'alertMe'])."</span>";
+      $msg .= "</span><span style='white-space:nowrap;padding-right:15px;'><span style='vertical-align: middle;'>".__('Alert me when unlocked')."</span><span style='padding-left:5px;'>".Html::getCheckbox(['id' => 'alertMe'])."</span></span>";
       $msg .= $this->getForceUnlockMessage(); // will get a button to force unlock if UNLOCK rights are in the user's profile
       $msg .= "</span>";
 
@@ -504,56 +504,19 @@ class ObjectLock extends CommonDBTM {
     * @param  $title    : if $title is '' then title bar it is not shown (default '')
    **/
    private function displayLockMessage($msg, $title = '') {
-      global $CFG_GLPI;
 
       $style = 'display:table;background-color:lightSalmon;flex-wrap:wrap;align-items:center;';
       echo "<div id='message_after_lock' class='navigationheader' style='$style'>";
-      $style = 'display:none;';
-      if ($_SESSION['glpilock_floating_message'] == 0) {
-         $style .= 'margin-bottom: 5px;padding-top: 2px;padding-bottom: 2px;';
-      }
-
-      echo "<div id='message_after_lock' class='message_after_redirect ui-widget-content' title='$title' style='$style'>";
       echo $msg;
       echo "</div>";
       echo Html::scriptBlock("$('#message_after_lock').hide();");
 
-      if ($_SESSION['glpilock_floating_message'] == 1) {
-         echo Html::scriptBlock("
-            $(function() {
-               $('#message_after_lock').dialog({
-                  dialogClass: 'message_after_redirect',
-                  minHeight: 10,
-                  width: 'auto',
-                  height: 'auto',
-                  position: {
-                     my: 'left top',
-                     at: 'left+20 top-30',
-                     of: $('#page'),
-                     collision: 'none'
-                  },
-                  autoOpen: false,
-                  create: function(event, ui) {
-                     $hideTitle
-                     $('.ui-dialog-titlebar-close', ui.dialog | ui).hide();
-                  },
-                  show: {
-                     effect: 'slide',
-                     direction: 'up',
-                     duration: 800
-                  },
-               })
-               .dialog('open');
-            });
-         ");
-      } else {
-         echo Html::scriptBlock("
-            $(function() {
-               $('#message_after_lock').insertAfter('.navigationheader');
-               $('#message_after_lock').show('slide', {direction: 'up'} , 800);
-            });
-         ");
-      }
+      echo Html::scriptBlock("
+         $(function() {
+            $('#message_after_lock').insertAfter('.navigationheader:not(#message_after_lock)');
+            $('#message_after_lock').show('slide', {direction: 'up'} , 1000);
+         });
+      ");
    }
 
 
