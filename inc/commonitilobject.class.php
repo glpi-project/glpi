@@ -6930,7 +6930,9 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<div class='displayed_content'>";
          echo "<div class='h_controls'>";
          if (!in_array($item['type'], ['Document_Item', 'Assign'])
-             && $item_i['can_edit']) {
+            && $item_i['can_edit']
+            && !in_array($this->fields['status'], $this->getClosedStatusArray())
+         ) {
             // merge/split icon
             if ($objType == 'Ticket' && $item['type'] == ITILFollowup::getType()) {
                if (isset($item_i['sourceof_items_id']) && $item_i['sourceof_items_id'] > 0) {
