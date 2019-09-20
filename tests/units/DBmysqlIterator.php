@@ -273,6 +273,15 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC', 'baz DESC']]);
       $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC");
+
+      $this->when(
+         function () {
+            $it = $this->it->execute('foo', ['ORDER' => [new \stdClass]]);
+         }
+      )->error()
+         ->withType(E_USER_ERROR)
+         ->withMessage('Invalid order clause')
+         ->exists();
    }
 
 
@@ -325,6 +334,10 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
 
       $it = $this->it->execute('foo', ['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+
+      //old JOIN alias for LEFT JOIN
+      $it = $this->it->execute('foo', ['JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
       $it = $this->it->execute('foo', ['LEFT JOIN' => [['TABLE' => 'bar', 'FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
@@ -449,6 +462,19 @@ class DBmysqlIterator extends DbTestCase {
          'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) AS `t2` ON (`t2`.`id` = `foo`.`fk`)'
       );
 
+   }
+
+   public function testAnalyzeJoins() {
+      $join = $this->it->analyzeJoins(['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+      $this->string($join)->isIdenticalTo(' LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+
+      $this->exception(
+         function() {
+            $it = $this->it->analyzeJoins(['LEFT OUTER JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->hasMessage('BAD JOIN');
    }
 
    public function testHaving() {
