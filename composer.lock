@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca0eaa72e7c9c4554d0130110e0ae011",
+    "content-hash": "7b1c01ed242aba58aa8334f6a9395373",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -778,14 +778,14 @@
             "authors": [
                 {
                     "name": "Evert Pot",
-                    "role": "Developer",
                     "email": "me@evertpot.com",
-                    "homepage": "http://evertpot.com/"
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
                 },
                 {
                     "name": "Markus Staab",
-                    "role": "Developer",
-                    "email": "markus.staab@redaxo.de"
+                    "email": "markus.staab@redaxo.de",
+                    "role": "Developer"
                 }
             ],
             "description": "sabre/xml is an XML library that you may not hate.",
@@ -2859,16 +2859,16 @@
             "time": "2017-05-10T09:20:27+00:00"
         },
         {
-            "name": "mikey179/vfsstream",
+            "name": "mikey179/vfsStream",
             "version": "v1.6.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/bovigo/vfsStream.git",
+                "url": "https://github.com/mikey179/vfsStream.git",
                 "reference": "d5fec95f541d4d71c4823bb5e30cf9b9e5b96145"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
+                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
                 "reference": "d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
                 "shasum": ""
             },
@@ -2896,8 +2896,8 @@
             "authors": [
                 {
                     "name": "Frank Kleine",
-                    "role": "Developer",
-                    "homepage": "http://frankkleine.de/"
+                    "homepage": "http://frankkleine.de/",
+                    "role": "Developer"
                 }
             ],
             "description": "Virtual file system to mock the real file system in unit tests.",
@@ -3523,13 +3523,13 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=5.6.0",
-        "ext-mysqli": "*",
+        "ext-curl": "*",
         "ext-fileinfo": "*",
+        "ext-gd": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "ext-gd": "*",
-        "ext-zlib": "*",
-        "ext-curl": "*"
+        "ext-mysqli": "*",
+        "ext-zlib": "*"
     },
     "platform-dev": [],
     "platform-overrides": {
