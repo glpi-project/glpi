@@ -3468,6 +3468,9 @@ JAVASCRIPT;
             'addSelect',
             $itemtype, $ID, "{$itemtype}_{$ID}"
          );
+         if (!empty($out)) {
+            return $out;
+         }
       }
 
       $tocompute      = "`$table$addtable`.`$field`";
