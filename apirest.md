@@ -990,18 +990,18 @@ $ curl -X GET \
         {
             "totalcount": ":numberofresults_without_pagination",
             "range": ":start-:end",
-            "data": {
-                ":items_id": {
+            "data": [
+                {
                     ":searchoptions_id": "value",
                     ...
                 },
-                ":items_id": {
+                {
                  ...
-               }
-           },
-           "rawdata": {
+                }
+            ],
+            "rawdata": {
               ...
-           }
+            }
         }
      ```
 
