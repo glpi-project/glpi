@@ -4,10 +4,10 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 9.4.x   | :heavy_check_mark: |
-| 9.3.x   | :x:                |
-| 9.2.x   | :x:                |
-| < 9.2   | :x:                |
+| 9.4.x   | :x:         1      |
+| 9.3.x   | :x:           2    |
+| 9.2.x   | :x:      4         |
+| 9.2.3   | :x:         3      |
 
 ## Reporting a Vulnerability
 
