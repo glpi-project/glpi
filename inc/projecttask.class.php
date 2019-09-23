@@ -1757,7 +1757,7 @@ class ProjectTask extends CommonDBChild {
 
       $iterator = $DB->request([
          'SELECT' => [
-            new QueryExpression('CAST(AVG('.$DB->quoteName('percent_done').') AS INT) AS percent_done')
+            new QueryExpression('CAST(AVG('.$DB->quoteName('percent_done').') AS '.$DB->quoteName('INT').') AS '.$DB->quoteName('percent_done'))
          ],
          'FROM'   => ProjectTask::getTable(),
          'WHERE'  => [
