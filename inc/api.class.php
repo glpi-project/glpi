@@ -1265,7 +1265,7 @@ abstract class API extends CommonGLPI {
                 FROM `$table`
                 $join
                 WHERE $where
-                ORDER BY ".$params['sort']." ".$params['order']."
+                ORDER BY `".$params['sort']."` ".$params['order']."
                 LIMIT ".$params['start'].", ".$params['list_limit'];
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetchAssoc($result)) {

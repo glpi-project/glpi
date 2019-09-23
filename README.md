@@ -22,6 +22,10 @@ GLPI features:
 
 Moreover, GLPI supports many [plugins](http://plugins.glpi-project.org) that provide additional features.
 
+## Demonstration
+
+Check GLPI features by asking a free personnal demonstration on **[glpi-network.cloud](https://www.glpi-network.cloud)**
+
 ## License
 
 ![license](https://img.shields.io/github/license/glpi-project/glpi.svg)
@@ -90,7 +94,7 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
 ## Additional resources
 
 * [Official website](http://glpi-project.org)
-* [Demo](http://demo.glpi-project.org/)
+* [Demo](https://www.glpi-network.cloud)
 * [Translations on transifex service](https://www.transifex.com/glpi/public/)
 * [Issues](https://github.com/glpi-project/glpi/issues)
 * [Suggestions](http://suggest.glpi-project.org)
