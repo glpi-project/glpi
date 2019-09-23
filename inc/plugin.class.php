@@ -1213,14 +1213,13 @@ class Plugin extends CommonDBTM {
    /**
     * This function executes a hook for 1 plugin.
     *
-    * @param string      $plugname         Name of the plugin
-    * @param string      $hook             function to be called (may be an array for call a class method)
-    * @param array|mixed $options          First argument passed to hook function
-    * @param mixed       $additionnal_args [optional] One or more additionnal arguments passed to hook function
+    * @param string $plugname Name of the plugin
+    * @param string $hook     function to be called (may be an array for call a class method)
+    * @param mixed  ...$args  [optional] One or more arguments passed to hook function
     *
     * @return mixed $data
    **/
-   static function doOneHook($plugname, $hook, $options = []/*, $...  */) {
+   static function doOneHook($plugname, $hook, ...$args) {
 
       $plugname=strtolower($plugname);
 
@@ -1235,12 +1234,6 @@ class Plugin extends CommonDBTM {
          }
       }
       if (is_callable($hook)) {
-         // Pass legacy $options argument as first hook argument
-         $args = [$options];
-         // Pass additionnal arguments (key 3 is for 4th argument = first additionnal argument)
-         for ($i = 3; $i < func_num_args(); $i++) {
-            $args[] = func_get_arg($i);
-         }
          return call_user_func_array($hook, $args);
       }
    }
