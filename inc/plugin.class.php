@@ -1213,13 +1213,13 @@ class Plugin extends CommonDBTM {
    /**
     * This function executes a hook for 1 plugin.
     *
-    * @param $plugname        Name of the plugin
-    * @param $hook            function to be called (may be an array for call a class method)
-    * @param $options   array of params passed to the function
+    * @param string $plugname Name of the plugin
+    * @param string $hook     function to be called (may be an array for call a class method)
+    * @param mixed  ...$args  [optional] One or more arguments passed to hook function
     *
     * @return mixed $data
    **/
-   static function doOneHook($plugname, $hook, $options = []) {
+   static function doOneHook($plugname, $hook, ...$args) {
 
       $plugname=strtolower($plugname);
 
@@ -1234,7 +1234,7 @@ class Plugin extends CommonDBTM {
          }
       }
       if (is_callable($hook)) {
-         return call_user_func($hook, $options);
+         return call_user_func_array($hook, $args);
       }
    }
 

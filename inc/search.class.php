@@ -1559,13 +1559,9 @@ class Search {
          if ($data['display_type'] == self::HTML_OUTPUT) {
             // For plugin add new parameter if available
             if ($plug = isPluginItemType($data['itemtype'])) {
-               $function = 'plugin_'.$plug['plugin'].'_addParamFordynamicReport';
-
-               if (function_exists($function)) {
-                  $out = $function($data['itemtype']);
-                  if (is_array($out) && count($out)) {
-                     $parameters .= Toolbox::append_params($out, '&amp;');
-                  }
+               $out = Plugin::doOneHook($plug['plugin'], 'addParamFordynamicReport', $data['itemtype']);
+               if (is_array($out) && count($out)) {
+                  $parameters .= Toolbox::append_params($out, '&amp;');
                }
             }
             $search_config_top    = "";
@@ -3055,15 +3051,16 @@ JAVASCRIPT;
                //Could display be handled by a plugin ?
                if (!$display
                    && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))) {
-                  $function = 'plugin_'.$plug['plugin'].'_searchOptionsValues';
-                  if (function_exists($function)) {
-                     $display = $function([
+                  $display = Plugin::doOneHook(
+                     $plug['plugin'],
+                     'searchOptionsValues',
+                     [
                         'name'           => $inputname,
                         'searchtype'     => $request['searchtype'],
                         'searchoption'   => $searchopt,
                         'value'          => $request['value']
-                     ]);
-                  }
+                     ]
+                  );
                }
 
             }
@@ -3105,12 +3102,13 @@ JAVASCRIPT;
 
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
-         $function = 'plugin_'.$plug['plugin'].'_addHaving';
-         if (function_exists($function)) {
-            $out = $function($LINK, $NOT, $itemtype, $ID, $val, "{$itemtype}_{$ID}");
-            if (!empty($out)) {
-               return $out;
-            }
+         $out = Plugin::doOneHook(
+            $plug['plugin'],
+            'addHaving',
+            $LINK, $NOT, $itemtype, $ID, $val, "{$itemtype}_{$ID}"
+         );
+         if (!empty($out)) {
+            return $out;
          }
       }
 
@@ -3119,12 +3117,13 @@ JAVASCRIPT;
       if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
          if (count($matches) == 2) {
             $plug     = $matches[1];
-            $function = 'plugin_'.$plug.'_addHaving';
-            if (function_exists($function)) {
-               $out = $function($LINK, $NOT, $itemtype, $ID, $val, "{$itemtype}_{$ID}");
-               if (!empty($out)) {
-                  return $out;
-               }
+            $out = Plugin::doOneHook(
+               $plug,
+               'addHaving',
+               $LINK, $NOT, $itemtype, $ID, $val, "{$itemtype}_{$ID}"
+            );
+            if (!empty($out)) {
+               return $out;
             }
          }
       }
@@ -3255,12 +3254,13 @@ JAVASCRIPT;
 
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
-         $function = 'plugin_'.$plug['plugin'].'_addOrderBy';
-         if (function_exists($function)) {
-            $out = $function($itemtype, $ID, $order, "{$itemtype}_{$ID}");
-            if (!empty($out)) {
-               return $out;
-            }
+         $out = Plugin::doOneHook(
+            $plug['plugin'],
+            'addOrderBy',
+            $itemtype, $ID, $order, "{$itemtype}_{$ID}"
+         );
+         if (!empty($out)) {
+            return $out;
          }
       }
 
@@ -3301,12 +3301,13 @@ JAVASCRIPT;
       if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
          if (count($matches) == 2) {
             $plug     = $matches[1];
-            $function = 'plugin_'.$plug.'_addOrderBy';
-            if (function_exists($function)) {
-               $out = $function($itemtype, $ID, $order, "{$itemtype}_{$ID}");
-               if (!empty($out)) {
-                  return $out;
-               }
+            $out = Plugin::doOneHook(
+               $plug,
+               'addOrderBy',
+               $itemtype, $ID, $order, "{$itemtype}_{$ID}"
+            );
+            if (!empty($out)) {
+               return $out;
             }
          }
       }
@@ -3396,10 +3397,11 @@ JAVASCRIPT;
          default :
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {
-               $function = 'plugin_'.$plug['plugin'].'_addDefaultSelect';
-               if (function_exists($function)) {
-                  $ret = $function($itemtype);
-               }
+               $ret = Plugin::doOneHook(
+                  $plug['plugin'],
+                  'addDefaultSelect',
+                  $itemtype
+               );
             }
       }
       if ($itemtable == 'glpi_entities') {
@@ -3461,12 +3463,13 @@ JAVASCRIPT;
 
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
-         $function = 'plugin_'.$plug['plugin'].'_addSelect';
-         if (function_exists($function)) {
-            $out = $function($itemtype, $ID, "{$itemtype}_{$ID}");
-            if (!empty($out)) {
-               return $out;
-            }
+         $out = Plugin::doOneHook(
+            $plug['plugin'],
+            'addSelect',
+            $itemtype, $ID, "{$itemtype}_{$ID}"
+         );
+         if (!empty($out)) {
+            return $out;
          }
       }
 
@@ -3663,12 +3666,13 @@ JAVASCRIPT;
       if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
          if (count($matches) == 2) {
             $plug     = $matches[1];
-            $function = 'plugin_'.$plug.'_addSelect';
-            if (function_exists($function)) {
-               $out = $function($itemtype, $ID, "{$itemtype}_{$ID}");
-               if (!empty($out)) {
-                  return $out;
-               }
+            $out = Plugin::doOneHook(
+               $plug,
+               'addSelect',
+               $itemtype, $ID, "{$itemtype}_{$ID}"
+            );
+            if (!empty($out)) {
+               return $out;
             }
          }
       }
@@ -4050,11 +4054,9 @@ JAVASCRIPT;
          default :
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {
-               $function = 'plugin_'.$plug['plugin'].'_addDefaultWhere';
-               if (function_exists($function)) {
-                  $condition = $function($itemtype);
-               }
+               $condition = Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype);
             }
+            break;
       }
 
       /* Hook to restrict user right on current itemtype */
@@ -4186,12 +4188,13 @@ JAVASCRIPT;
 
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
-         $function = 'plugin_'.$plug['plugin'].'_addWhere';
-         if (function_exists($function)) {
-            $out = $function($link, $nott, $itemtype, $ID, $val, $searchtype);
-            if (!empty($out)) {
-               return $out;
-            }
+         $out = Plugin::doOneHook(
+            $plug['plugin'],
+            'addWhere',
+            $link, $nott, $itemtype, $ID, $val, $searchtype
+         );
+         if (!empty($out)) {
+            return $out;
          }
       }
 
@@ -4453,12 +4456,13 @@ JAVASCRIPT;
       if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $inittable, $matches)) {
          if (count($matches) == 2) {
             $plug     = $matches[1];
-            $function = 'plugin_'.$plug.'_addWhere';
-            if (function_exists($function)) {
-               $out = $function($link, $nott, $itemtype, $ID, $val, $searchtype);
-               if (!empty($out)) {
-                  return $out;
-               }
+            $out = Plugin::doOneHook(
+               $plug,
+               'addWhere',
+               $link, $nott, $itemtype, $ID, $val, $searchtype
+            );
+            if (!empty($out)) {
+               return $out;
             }
          }
       }
@@ -4821,12 +4825,13 @@ JAVASCRIPT;
          default :
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {
-               $function = 'plugin_'.$plug['plugin'].'_addDefaultJoin';
-               if (function_exists($function)) {
-                  $out = $function($itemtype, $ref_table, $already_link_tables);
-                  if (!empty($out)) {
-                     return $out;
-                  }
+               $out = Plugin::doOneHook(
+                  $plug['plugin'],
+                  'addDefaultJoin',
+                  $itemtype, $ref_table, $already_link_tables
+               );
+               if (!empty($out)) {
+                  return $out;
                }
             }
 
@@ -4916,22 +4921,22 @@ JAVASCRIPT;
 
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
-         $function = 'plugin_'.$plug['plugin'].'_addLeftJoin';
-         if (function_exists($function)) {
-            $specific_leftjoin = $function($itemtype, $ref_table, $new_table, $linkfield,
-                                           $already_link_tables);
-         }
+         $specific_leftjoin = Plugin::doOneHook(
+            $plug['plugin'],
+            'addLeftJoin',
+            $itemtype, $ref_table, $new_table, $linkfield, $already_link_tables
+         );
       }
 
       // Link with plugin tables : need to know left join structure
       if (empty($specific_leftjoin)
           && preg_match("/^glpi_plugin_([a-z0-9]+)/", $new_table, $matches)) {
          if (count($matches) == 2) {
-            $function = 'plugin_'.$matches[1].'_addLeftJoin';
-            if (function_exists($function)) {
-               $specific_leftjoin = $function($itemtype, $ref_table, $new_table, $linkfield,
-                                              $already_link_tables);
-            }
+            $specific_leftjoin = Plugin::doOneHook(
+               $matches[1],
+               'addLeftJoin',
+               $itemtype, $ref_table, $new_table, $linkfield, $already_link_tables
+            );
          }
       }
       if (!empty($linkfield)) {
@@ -5373,12 +5378,13 @@ JAVASCRIPT;
 
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
-         $function = 'plugin_'.$plug['plugin'].'_displayConfigItem';
-         if (function_exists($function)) {
-            $out = $function($itemtype, $ID, $data, "{$itemtype}_{$ID}");
-            if (!empty($out)) {
-               return $out;
-            }
+         $out = Plugin::doOneHook(
+            $plug['plugin'],
+            'displayConfigItem',
+            $itemtype, $ID, $data, "{$itemtype}_{$ID}"
+         );
+         if (!empty($out)) {
+            return $out;
          }
       }
 
@@ -5461,12 +5467,13 @@ JAVASCRIPT;
       }
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
-         $function = 'plugin_'.$plug['plugin'].'_giveItem';
-         if (function_exists($function)) {
-            $out = $function($itemtype, $orig_id, $data, $ID);
-            if (!empty($out)) {
-               return $out;
-            }
+         $out = Plugin::doOneHook(
+            $plug['plugin'],
+            'giveItem',
+            $itemtype, $orig_id, $data, $ID
+         );
+         if (!empty($out)) {
+            return $out;
          }
       }
 
@@ -6114,12 +6121,13 @@ JAVASCRIPT;
          if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table.'.'.$field, $matches)) {
             if (count($matches) == 2) {
                $plug     = $matches[1];
-               $function = 'plugin_'.$plug.'_giveItem';
-               if (function_exists($function)) {
-                  $out = $function($itemtype, $orig_id, $data, $ID);
-                  if (!empty($out)) {
-                     return $out;
-                  }
+               $out = Plugin::doOneHook(
+                  $plug,
+                  'giveItem',
+                  $itemtype, $orig_id, $data, $ID
+               );
+               if (!empty($out)) {
+                  return $out;
                }
             }
          }
