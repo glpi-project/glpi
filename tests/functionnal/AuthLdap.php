@@ -254,7 +254,7 @@ class AuthLDAP extends DbTestCase {
    public function testGetSearchOptionsNew() {
       $ldap     = new \AuthLDAP();
       $options  = $ldap->rawSearchOptions();
-      $this->array($options)->hasSize(32);
+      $this->array($options)->hasSize(33);
    }
 
    public function testGetSyncFields() {
