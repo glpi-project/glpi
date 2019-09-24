@@ -17021,7 +17021,7 @@ msgstr "Recalcular"
 
 #: inc/ruleaction.class.php:400
 msgid "Do not calculate"
-msgstr ""
+msgstr "No calcular"
 
 #: inc/ruleaction.class.php:401 inc/ruleaction.class.php:402
 msgid "Send"
@@ -17695,7 +17695,7 @@ msgstr "Petición de aprobación al gestor del grupo técnico"
 
 #: inc/ruleticket.class.php:700
 msgid "Take into account delay"
-msgstr ""
+msgstr "Tener en cuenta el retraso"
 
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"

@@ -9267,7 +9267,7 @@ msgstr "クリア"
 
 #: inc/crontask.class.php:581 inc/crontask.class.php:788
 msgid "Maintenance mode enabled, running tasks is disabled"
-msgstr ""
+msgstr "メンテナンスモードが有効となっているので、タスク実行はできません。"
 
 #: inc/crontask.class.php:688 inc/crontask.class.php:1183
 msgid "Running"
@@ -9656,7 +9656,7 @@ msgstr[0] "ケース"
 #: inc/devicecasemodel.class.php:44 inc/dropdown.class.php:939
 msgid "Device case model"
 msgid_plural "Device case models"
-msgstr[0] ""
+msgstr[0] "デバイス ケース モデル"
 
 #: inc/devicecasetype.class.php:42 inc/dropdown.class.php:900
 msgid "Case type"
@@ -9683,7 +9683,7 @@ msgstr "インターフェース"
 #: inc/devicecontrolmodel.class.php:44 inc/dropdown.class.php:941
 msgid "Device control model"
 msgid_plural "Device control models"
-msgstr[0] ""
+msgstr[0] "デバイス 制御 モデル"
 
 #: inc/devicedrive.class.php:43
 msgid "Drive"
@@ -9703,7 +9703,7 @@ msgstr "速度"
 #: inc/devicedrivemodel.class.php:44 inc/dropdown.class.php:943
 msgid "Device drive model"
 msgid_plural "Device drive models"
-msgstr[0] ""
+msgstr[0] "デバイス ドライブ モデル"
 
 #: inc/devicefirmware.class.php:42 inc/networkequipment.class.php:565
 #: inc/phone.class.php:529
@@ -9734,7 +9734,7 @@ msgstr[0] "デバイス全般モデル"
 #: inc/devicegenerictype.class.php:41
 msgid "Generic type"
 msgid_plural "Generic types"
-msgstr[0] ""
+msgstr[0] "全般種類 "
 
 #: inc/devicegraphiccard.class.php:43 inc/devicegraphiccard.class.php:212
 msgid "Graphics card"
@@ -9753,7 +9753,7 @@ msgstr "物理メモリ容量"
 #: inc/devicegraphiccardmodel.class.php:44 inc/dropdown.class.php:947
 msgid "Device graphic card model"
 msgid_plural "Device graphic card models"
-msgstr[0] ""
+msgstr[0] "デバイス グラフィックカード モデル"
 
 #: inc/deviceharddrive.class.php:43
 msgid "Hard drive"
@@ -9785,7 +9785,7 @@ msgstr "ハードディスクサイズ"
 #: inc/deviceharddrivemodel.class.php:44 inc/dropdown.class.php:949
 msgid "Device hard drive model"
 msgid_plural "Device hard drive models"
-msgstr[0] ""
+msgstr[0] "デバイス HDD モデル"
 
 #: inc/devicememory.class.php:51 inc/devicememory.class.php:74
 msgid "Size by default"
@@ -9822,7 +9822,7 @@ msgstr[0] "マザーボード"
 #: inc/devicemotherboardmodel.class.php:44
 msgid "System board model"
 msgid_plural "System board models"
-msgstr[0] ""
+msgstr[0] "マザーボード モデル"
 
 #: inc/devicenetworkcard.class.php:45
 #: inc/networkportinstantiation.class.php:462
@@ -10131,7 +10131,7 @@ msgstr "許可されていないファイルタイプ"
 
 #: inc/document.class.php:1315
 msgid "Manage document types"
-msgstr ""
+msgstr "ドキュメント種別の管理"
 
 #: inc/document.class.php:1322
 #, php-format
@@ -10307,7 +10307,7 @@ msgstr[0] "デバイスタイプ"
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2128
 msgid "Phone type"
 msgid_plural "Phones types"
-msgstr[0] ""
+msgstr[0] "電話機の種類"
 
 #: inc/dropdown.class.php:876 inc/softwarelicensetype.class.php:43
 msgid "License type"
@@ -10369,12 +10369,12 @@ msgstr[0] "電話機モデル"
 #: inc/dropdown.class.php:953
 msgid "Device mother board model"
 msgid_plural "Device mother board models"
-msgstr[0] ""
+msgstr[0] "デバイス マザーボードモデル"
 
 #: inc/dropdown.class.php:955
 msgid "Device network card model"
 msgid_plural "Device network card models"
-msgstr[0] ""
+msgstr[0] "デバイス ネットワークカードモデル"
 
 #: inc/dropdown.class.php:984 inc/event.class.php:159 inc/html.class.php:1368
 #: inc/infocom.class.php:145 inc/profile.class.php:101
@@ -10421,7 +10421,7 @@ msgstr[0] "アーキテクチャ"
 #: inc/operatingsystemedition.class.php:42
 msgid "Edition"
 msgid_plural "Editions"
-msgstr[0] ""
+msgstr[0] "エディション"
 
 #: inc/dropdown.class.php:1028 inc/item_operatingsystem.class.php:317
 #: inc/item_operatingsystem.class.php:501
@@ -10694,7 +10694,7 @@ msgstr[0] "ケース モデル"
 
 #: inc/entity.class.php:243
 msgid "You can't add an entity without name"
-msgstr ""
+msgstr "名前無しで項目を追加できません。"
 
 #: inc/entity.class.php:616 inc/entity.class.php:1411
 msgid "LDAP directory information attribute representing the entity"
@@ -10818,7 +10818,7 @@ msgstr "期限切れライセンスの警告"
 
 #: inc/entity.class.php:881
 msgid "Send Certificate alarms before"
-msgstr ""
+msgstr "指定日前に証明書に関する警告を送る"
 
 #: inc/entity.class.php:896 inc/entity.class.php:2118
 #: inc/profile.class.php:1013 inc/profile.class.php:2258
@@ -10884,7 +10884,7 @@ msgstr "ソフトウェア作成のエンティティ"
 #: inc/infocom.class.php:1088 inc/infocom.class.php:1608
 #: inc/infocom.class.php:1691
 msgid "Decommission date"
-msgstr ""
+msgstr "廃止日"
 
 #: inc/entity.class.php:1097
 msgid "to see the entity and its sub-entities"
@@ -10898,7 +10898,7 @@ msgstr "全てを表示"
 
 #: inc/entity.class.php:1127
 msgid "Load more entities..."
-msgstr ""
+msgstr "もっと表示..."
 
 #. TRANS: %s is the user login
 #: inc/entity.class.php:1224
@@ -10989,7 +10989,7 @@ msgstr "消耗品のアラートに関する定期的なリマインダ"
 
 #: inc/entity.class.php:1939
 msgid "Send certificates alarms before"
-msgstr ""
+msgstr "指定日前に証明書に関する警告を送る"
 
 #: inc/entity.class.php:1958 inc/event.class.php:150 inc/event.class.php:163
 #: inc/html.class.php:6342 inc/profile.class.php:726
@@ -11160,6 +11160,13 @@ msgid ""
 "\n"
 "Or, support the GLPI development effort by <b>donating</b>."
 msgstr ""
+"不具合の修正やあらかじめ定義されたルールやリスト等、あなたのITにGLPIの総合的な支援が必要ですか？\n"
+"\n"
+"私たちはあなたのために %s 空間を提供します。\n"
+"GLPI-Network は、約束された期間内での不具合の修正を保証するティア3のサポートが含まれた商用製品です。\n"
+"同じ空間で、GLPIの導入を助けるために<b>認定パートナーとの連絡</b>を可能にします。\n"
+"\n"
+"または、<b>寄付</b>でGLPIの開発努力を支援してください。"
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -11420,7 +11427,7 @@ msgstr "個人別設定"
 
 #: inc/html.class.php:1565
 msgid "Back to top of the page"
-msgstr ""
+msgstr "ページの先頭へ戻る"
 
 #: inc/html.class.php:1626 inc/toolbox.class.php:1428
 #: inc/toolbox.class.php:1432
@@ -12046,7 +12053,7 @@ msgstr ""
 
 #: inc/item_enclosure.class.php:306 inc/item_rack.class.php:951
 msgid "An item is required"
-msgstr ""
+msgstr "アイテムが必要です。"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
@@ -12055,7 +12062,7 @@ msgstr "ケースが必要です"
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
 msgid "A position is required"
-msgstr ""
+msgstr "ポジションが必要です"
 
 #: inc/item_operatingsystem.class.php:47
 msgid "Item operating system"
@@ -12135,7 +12142,7 @@ msgstr "向き（ラック正面側）"
 #: inc/item_rack.class.php:678 inc/pdu_rack.class.php:280
 #: inc/rack.class.php:314
 msgid "Background color"
-msgstr ""
+msgstr "背景色"
 
 #: inc/item_rack.class.php:690
 msgid "Horizontal position (from rack point of view)"
@@ -12143,28 +12150,28 @@ msgstr "水平位置（ラック正面側）"
 
 #: inc/item_rack.class.php:696 inc/pdu_rack.class.php:705
 msgid "Left"
-msgstr ""
+msgstr "左"
 
 #: inc/item_rack.class.php:697 inc/pdu_rack.class.php:706
 msgid "Right"
-msgstr ""
+msgstr "右"
 
 #: inc/item_rack.class.php:704
 msgid "Reserved position ?"
-msgstr ""
+msgstr "予約された位置?"
 
 #: inc/item_rack.class.php:819
 msgid "asset rear side"
-msgstr ""
+msgstr "資産の背面"
 
 #: inc/item_rack.class.php:820
 msgid "asset front side"
-msgstr ""
+msgstr "資産の前面"
 
 #: inc/item_rack.class.php:831 inc/pdu_rack.class.php:587
 #: inc/rack.class.php:1094
 msgid "name"
-msgstr ""
+msgstr "名前"
 
 #: inc/item_rack.class.php:837 inc/pdu_rack.class.php:592
 #: inc/rack.class.php:1098
@@ -12177,7 +12184,7 @@ msgstr "モデル"
 
 #: inc/item_rack.class.php:870 inc/pdu_rack.class.php:641
 msgid "Edit rack relation"
-msgstr ""
+msgstr "ラックの関連性を編集"
 
 #: inc/item_rack.class.php:955 inc/pdu_rack.class.php:99
 msgid "A rack is required"
@@ -12572,7 +12579,7 @@ msgstr "FAQの発行"
 
 #: inc/knowbaseitem.class.php:1828
 msgid "Comment KB entries"
-msgstr ""
+msgstr "KB項目 へ コメント"
 
 #: inc/knowbaseitem.class.php:1830
 msgid "Read the FAQ"
@@ -12593,7 +12600,7 @@ msgstr[0] ""
 
 #: inc/knowbaseitem_comment.class.php:132
 msgid "No comments"
-msgstr ""
+msgstr "コメントはありません"
 
 #: inc/knowbaseitem_comment.class.php:185
 #: inc/knowbaseitem_comment.class.php:219
@@ -12606,19 +12613,19 @@ msgstr "GLPI 管理者に連絡してください！"
 #: inc/knowbaseitem_comment.class.php:219
 #: inc/knowbaseitem_revision.class.php:226
 msgid "Unable to load revision!"
-msgstr ""
+msgstr "リビジョンのロードに失敗！"
 
 #: inc/knowbaseitem_comment.class.php:319
 msgid "Add an answer"
-msgstr ""
+msgstr "回答を追加"
 
 #: inc/knowbaseitem_comment.class.php:369
 msgid "New comment"
-msgstr ""
+msgstr "新着コメント"
 
 #: inc/knowbaseitem_comment.class.php:369
 msgid "Edit comment"
-msgstr ""
+msgstr "コメントを編集"
 
 #: inc/knowbaseitem_comment.class.php:381
 msgctxt "button"
@@ -12657,7 +12664,7 @@ msgstr[0] ""
 
 #: inc/knowbaseitem_item.class.php:215
 msgid "Update date"
-msgstr ""
+msgstr "更新日"
 
 #: inc/knowbaseitem_item.class.php:249
 msgid "template"
@@ -12671,7 +12678,7 @@ msgstr[0] ""
 
 #: inc/knowbaseitem_revision.class.php:115
 msgid "No revisions"
-msgstr ""
+msgstr "リビジョンなし"
 
 #: inc/knowbaseitem_revision.class.php:128
 #: inc/knowbaseitem_revision.class.php:285
@@ -12681,7 +12688,7 @@ msgstr ""
 
 #: inc/knowbaseitem_revision.class.php:134
 msgid "Author"
-msgstr ""
+msgstr "作成者"
 
 #: inc/knowbaseitem_revision.class.php:144
 msgid "cur"
@@ -12689,11 +12696,11 @@ msgstr ""
 
 #: inc/knowbaseitem_revision.class.php:174
 msgid "Unknown user"
-msgstr ""
+msgstr "不明なユーザー"
 
 #: inc/knowbaseitem_revision.class.php:185
 msgid "show"
-msgstr ""
+msgstr "表示"
 
 #: inc/knowbaseitem_revision.class.php:187
 msgid "restore"
@@ -13607,7 +13614,7 @@ msgstr ""
 
 #: inc/networkportfiberchannel.class.php:46
 msgid "Fiber channel port"
-msgstr ""
+msgstr "ファイバー チャンネル ポート"
 
 #: inc/networkportfiberchannel.class.php:92
 #: inc/networkportfiberchannel.class.php:133
@@ -13619,7 +13626,7 @@ msgstr ""
 #: inc/networkportfiberchannel.class.php:132
 #: inc/networkportfiberchannel.class.php:207
 msgid "Fiber channel port speed"
-msgstr ""
+msgstr "ファイバー チャンネル ポート速度"
 
 #: inc/networkportfiberchannel.class.php:339
 msgid "Network fiber outlet"

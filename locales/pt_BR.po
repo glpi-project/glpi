@@ -27,6 +27,7 @@
 # Carlos Filho <ccorrea@gmail.com>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2019
 # wcreis <wesley.c.reis@gmail.com>, 2019
+# Hélio Guardabaxo <helio.guardabaxo@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -35,7 +36,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-06-18 10:35+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: wcreis <wesley.c.reis@gmail.com>, 2019\n"
+"Last-Translator: Hélio Guardabaxo <helio.guardabaxo@gmail.com>, 2019\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16993,7 +16994,7 @@ msgstr "Recalcular"
 
 #: inc/ruleaction.class.php:400
 msgid "Do not calculate"
-msgstr ""
+msgstr "Não calcular"
 
 #: inc/ruleaction.class.php:401 inc/ruleaction.class.php:402
 msgid "Send"
@@ -17657,7 +17658,7 @@ msgstr "Requisição de aprovação para o gerente de grupo técnico"
 
 #: inc/ruleticket.class.php:700
 msgid "Take into account delay"
-msgstr ""
+msgstr "Leve em conta o atraso"
 
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"

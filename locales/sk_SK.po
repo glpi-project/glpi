@@ -12736,7 +12736,7 @@ msgstr "Vlákna"
 #: inc/item_devices.class.php:86
 #, php-format
 msgid "%1$s of item \"%2$s\""
-msgstr ""
+msgstr "%1$s položky \"%2$s\""
 
 #. TRANS: %s is the type of the component
 #: inc/item_devices.class.php:100
@@ -20351,7 +20351,7 @@ msgstr "Pridať dátum vytvorenia do %s"
 #: install/update_940_941.php:65 install/update_941_942.php:69
 #: install/update_942_943.php:52
 msgid "Fix URL of images in ITIL tasks, followups ans solutions."
-msgstr ""
+msgstr "Oprava URL obrázkov v ITIL úlohách, reakciách a riešeniach."
 
 #: install/update.php:137
 msgid "Update successful, your database is up to date"

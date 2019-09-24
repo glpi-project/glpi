@@ -1867,7 +1867,7 @@ msgstr "Görünüm ayarları"
 #: inc/profile.class.php:1469 inc/profile.class.php:1516
 #: inc/profile.class.php:1884
 msgid "Setup"
-msgstr "Ayarlar"
+msgstr "Yapılandırma"
 
 #: front/document.send.php:43
 msgid "Unknown file"
@@ -4448,7 +4448,7 @@ msgstr "Bir kez kullanılan bir eşitleme alanı değiştirilemez."
 
 #: inc/authldap.class.php:350
 msgid "Preconfiguration"
-msgstr "Ön ayar"
+msgstr "Hazır yapılandırma"
 
 #: inc/authldap.class.php:352
 msgid "Active Directory"
@@ -4660,7 +4660,7 @@ msgstr "Aramada DN kullanılsın"
 
 #: inc/authldap.class.php:732
 msgid "Test of connection to LDAP directory"
-msgstr "LDAP dizini bağlantısının sınaması"
+msgstr "LDAP dizini bağlantısı sınaması"
 
 #: inc/authldap.class.php:766
 msgid "Binding to the LDAP directory"
@@ -4895,7 +4895,7 @@ msgstr "Son güncelleme %s zamanında"
 
 #: inc/authmail.class.php:208
 msgid "Email server configuration"
-msgstr "E-posta sunucu ayarları"
+msgstr "E-posta sunucu yapılandırması"
 
 #: inc/authmail.class.php:229
 msgid "Test connection to email server"
@@ -7918,7 +7918,7 @@ msgstr "Bakım kipi etkin. Kullanılan arka kapı: %s"
 #: inc/config.class.php:2117 inc/profile.class.php:1407
 #: inc/profile.class.php:1962
 msgid "General setup"
-msgstr "Genel ayarlar"
+msgstr "Genel yapılandırma"
 
 #: inc/config.class.php:286 inc/notificationtarget.class.php:1234
 msgid "URL of the application"
@@ -8648,11 +8648,11 @@ msgstr "Bakım metni"
 
 #: inc/config.class.php:1750
 msgid "Proxy configuration for upgrade check"
-msgstr "Güncelleme denetimi için vekil sunucu ayarları"
+msgstr "Güncelleme denetimi için vekil sunucu yapılandırması"
 
 #: inc/config.class.php:1782
 msgid "Information about system installation and configuration"
-msgstr "Kurulu sistem ve ayarları hakkında bilgiler"
+msgstr "Kurulu sistem ve yapılandırması hakkında bilgiler"
 
 #: inc/config.class.php:1865
 msgid "To copy/paste in your support request"
@@ -8793,7 +8793,7 @@ msgstr "Files klasörü web üzerinden erişime karşı korunmalıdır"
 
 #: inc/config.class.php:2621 inc/config.class.php:2625
 msgid "Check the .htaccess file and the web server configuration."
-msgstr ".htaccess dosyasını ve web sunucu ayarlarını denetleyin."
+msgstr ".htaccess dosyasını ve web sunucu yapılandırmasını denetleyin."
 
 #: inc/config.class.php:2640
 msgid ""
@@ -9474,7 +9474,7 @@ msgstr "GLPI için genellikle en az 64 MB gereklidir"
 
 #: inc/crontask.class.php:803
 msgid "No task with Run mode = CLI, fix your tasks configuration"
-msgstr "Çalışma kipinde bir görev yok = CLI, görev ayarlarınızı düzeltin"
+msgstr "Çalışma kipinde bir görev yok = CLI, görev yapılandırmasını düzeltin"
 
 #: inc/crontask.class.php:809
 msgid "External"
@@ -9647,15 +9647,15 @@ msgstr ""
 #, php-format
 msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
-msgstr[0] "%2$s saniyeden önce oluşturulmuş %1$d grafik dosyasını silin"
-msgstr[1] "%2$s saniyeden önce oluşturulmuş %1$d grafik dosyasını silin"
+msgstr[0] "%2$s saniyeden önce oluşturulmuş %1$d çizelge dosyasını sil"
+msgstr[1] "%2$s saniyeden önce oluşturulmuş %1$d çizelge dosyasını sil"
 
 #: inc/crontask.class.php:1611
 #, php-format
 msgid "Clean %1$d temporary file created since more than %2$s seconds"
 msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
-msgstr[0] "%2$s saniyeden önce oluşturulmuş %1$d geçici dosyayı silin"
-msgstr[1] "%2$s saniyeden önce oluşturulmuş %1$d geçici dosyayı silin"
+msgstr[0] "%2$s saniyeden önce oluşturulmuş %1$d geçici dosyayı sil"
+msgstr[1] "%2$s saniyeden önce oluşturulmuş %1$d geçici dosyayı sil"
 
 #: inc/crontask.class.php:1714
 msgid "Check for new updates"
@@ -10154,7 +10154,7 @@ msgstr "İşlemci frekansı"
 msgid "Device processor model"
 msgid_plural "Device processor models"
 msgstr[0] "Aygıt işlemci modeli"
-msgstr[1] "Aygıt işlemci modeli"
+msgstr[1] "Aygıt işlemci modelleri"
 
 #: inc/devicesensor.class.php:45
 msgid "Sensor"
@@ -10165,19 +10165,19 @@ msgstr[1] "Almaçlar"
 #: inc/devicesensormodel.class.php:46 inc/dropdown.class.php:965
 msgid "Device sensor model"
 msgid_plural "Device sensor models"
-msgstr[0] "Aygıt almaç modelleri"
+msgstr[0] "Aygıt almaç modeli"
 msgstr[1] "Aygıt almaç modelleri"
 
 #: inc/devicesensortype.class.php:43 inc/dropdown.class.php:890
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] "Almaç türleri"
+msgstr[0] "Almaç türü"
 msgstr[1] "Almaç türleri"
 
 #: inc/devicesimcard.class.php:42
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] "SIM kartları"
+msgstr[0] "SIM kartı"
 msgstr[1] "SIM kartları"
 
 #: inc/devicesimcard.class.php:63 inc/devicesimcard.class.php:93
@@ -10187,38 +10187,38 @@ msgstr "VOIP kullanılabilsin"
 #: inc/devicesimcardtype.class.php:45 inc/dropdown.class.php:911
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] "SIM kart türleri"
+msgstr[0] "SIM kart türü"
 msgstr[1] "SIM kart türleri"
 
 #: inc/devicesoundcard.class.php:45 inc/devicesoundcard.class.php:146
 msgid "Soundcard"
 msgid_plural "Soundcards"
 msgstr[0] "Ses kartı"
-msgstr[1] "Ses kartı"
+msgstr[1] "Ses kartları"
 
 #: inc/devicesoundcardmodel.class.php:44 inc/dropdown.class.php:963
 msgid "Device sound card model"
 msgid_plural "Device sound card models"
 msgstr[0] "Aygıt ses kartı modeli"
-msgstr[1] "Aygıt ses kartı modeli"
+msgstr[1] "Aygıt ses kartı modelleri"
 
 #: inc/displaypreference.class.php:306
 msgid "No personal criteria. Create personal parameters?"
-msgstr "Özel bir ölçüt yok. Özel ayarlar oluşturulsun mu?"
+msgstr "Kişisel bir ölçüt yok. Kişisel parametreler oluşturulsun mu?"
 
 #: inc/displaypreference.class.php:320 inc/displaypreference.class.php:474
 #: inc/search.class.php:1545 inc/search.class.php:1546
 #: inc/search.class.php:1557 inc/search.class.php:1566
 msgid "Select default items to show"
-msgstr "Görüntülenecek varsayılan ögeleri seçin"
+msgstr "Varsayılan olarak görüntülenecek ögeleri seçin"
 
 #: inc/displaypreference.class.php:387 inc/displaypreference.class.php:547
 msgid "Bring up"
-msgstr "Yukarı"
+msgstr "Yukarı taşı"
 
 #: inc/displaypreference.class.php:403 inc/displaypreference.class.php:563
 msgid "Bring down"
-msgstr "Aşağı"
+msgstr "Aşağı taşı"
 
 #. TRANS: short for : Search result user display
 #: inc/displaypreference.class.php:736
@@ -10242,7 +10242,7 @@ msgstr "Varsayılan arama sonuçları görünümü"
 msgid "Document heading"
 msgid_plural "Document headings"
 msgstr[0] "Belge başlığı"
-msgstr[1] "Belge başlığı"
+msgstr[1] "Belge başlıkları"
 
 #: inc/document.class.php:167 inc/document.class.php:1091
 #: inc/document.class.php:1178 inc/document.class.php:1265
@@ -10306,7 +10306,7 @@ msgstr "FTP kurulmuş bir dosya kullanılsın"
 #: inc/document.class.php:463
 #, php-format
 msgid "%s Mio max"
-msgstr "%s MB en fazla"
+msgstr "En fazla %s MB"
 
 #: inc/document.class.php:864
 #: inc/notificationtargetcommonitilobject.class.php:1467
@@ -10382,7 +10382,7 @@ msgstr "%s klasörü bulunamadı."
 #: inc/document.class.php:1331
 #, php-format
 msgid "Create the directory %s"
-msgstr "%s klasörünü oluşturun"
+msgstr "%s klasörünü oluştur"
 
 #: inc/document.class.php:1336
 #, php-format
@@ -10390,7 +10390,7 @@ msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
 "permission"
 msgstr ""
-"%s klasörü oluşturulamadı. Yeterli izinlere sahip olduğunuzu denetleyin"
+"%s klasörü oluşturulamadı. Yeterli izinlere sahip olduğunuzdan emin olun"
 
 #: inc/document.class.php:1371
 msgid "No file available"
@@ -10413,12 +10413,12 @@ msgstr "Belge ekle"
 #: inc/document_item.class.php:643
 msgctxt "button"
 msgid "Add a new file"
-msgstr "Dosya ekle"
+msgstr "Yeni bir dosya ekle"
 
 #: inc/document_item.class.php:668
 msgctxt "button"
 msgid "Associate an existing document"
-msgstr "Varolan bir belgeyle ilişkilendir"
+msgstr "Var olan bir belgeyle ilişkilendir"
 
 #: inc/documenttype.class.php:48 inc/documenttype.class.php:88
 msgid "Icon"
@@ -10440,7 +10440,7 @@ msgstr "Bir kurallı ifade olabilir"
 #: inc/profile.class.php:1452 inc/profile.class.php:1934
 msgid "Document type"
 msgid_plural "Document types"
-msgstr[0] "Belge türleri"
+msgstr[0] "Belge türü"
 msgstr[1] "Belge türleri"
 
 #: inc/documenttype.class.php:173 inc/documenttype.class.php:174
@@ -10489,7 +10489,7 @@ msgstr "Ortak"
 #: inc/state.class.php:62
 msgid "Status of items"
 msgid_plural "Statuses of items"
-msgstr[0] "Ögelerin durumları"
+msgstr[0] "Ögelerin durumu"
 msgstr[1] "Ögelerin durumları"
 
 #: inc/dropdown.class.php:836 inc/itilcategory.class.php:240
@@ -10497,38 +10497,38 @@ msgstr[1] "Ögelerin durumları"
 msgid "Ticket category"
 msgid_plural "Ticket categories"
 msgstr[0] "Destek kaydı kategorisi"
-msgstr[1] "Destek kaydı kategorisi"
+msgstr[1] "Destek kaydı kategorileri"
 
 #: inc/dropdown.class.php:847 inc/itilsolution.class.php:165
 #: inc/profile.class.php:1446 inc/solutiontemplate.class.php:51
 msgid "Solution template"
 msgid_plural "Solution templates"
 msgstr[0] "Çözüm kalıbı"
-msgstr[1] "Çözüm kalıbı"
+msgstr[1] "Çözüm kalıpları"
 
 #: inc/dropdown.class.php:850 inc/projectstate.class.php:46
 msgid "Project state"
 msgid_plural "Project states"
 msgstr[0] "Proje durumu"
-msgstr[1] "Proje durumu"
+msgstr[1] "Proje durumları"
 
 #: inc/dropdown.class.php:852 inc/projecttype.class.php:46
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] "Proje türleri"
+msgstr[0] "Proje türü"
 msgstr[1] "Proje türleri"
 
 #: inc/dropdown.class.php:854 inc/projecttasktype.class.php:46
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
 msgstr[0] "Proje görev türü"
-msgstr[1] "Proje görev türü"
+msgstr[1] "Proje görev türleri"
 
 #: inc/dropdown.class.php:857 inc/projecttask.class.php:430
 #: inc/projecttasktemplate.class.php:50
 msgid "Project task template"
 msgid_plural "Project task templates"
-msgstr[0] "Proje görev kalıpları"
+msgstr[0] "Proje görev kalıbı"
 msgstr[1] "Proje görev kalıpları"
 
 #: inc/dropdown.class.php:865 inc/networkequipmenttype.class.php:42
@@ -10536,27 +10536,27 @@ msgstr[1] "Proje görev kalıpları"
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
 msgstr[0] "Ağ aygıtı türü"
-msgstr[1] "Ağ aygıtı türü"
+msgstr[1] "Ağ aygıtı türleri"
 
 #: inc/dropdown.class.php:868 inc/printertype.class.php:42
 #: inc/rule.class.php:372 inc/rulecollection.class.php:2119
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] "Yazıcı türleri"
+msgstr[0] "Yazıcı türü"
 msgstr[1] "Yazıcı türleri"
 
 #: inc/dropdown.class.php:870 inc/monitortype.class.php:42
 #: inc/rule.class.php:360 inc/rulecollection.class.php:2116
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] "Ekran türleri"
+msgstr[0] "Ekran türü"
 msgstr[1] "Ekran türleri"
 
 #: inc/dropdown.class.php:872 inc/peripheraltype.class.php:42
 msgid "Devices type"
 msgid_plural "Devices types"
 msgstr[0] "Aygıt türü"
-msgstr[1] "Aygıt türü"
+msgstr[1] "Aygıt türleri"
 
 #: inc/dropdown.class.php:874 inc/phonetype.class.php:42
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2128
@@ -10569,25 +10569,25 @@ msgstr[1] "Telefon türleri"
 msgid "License type"
 msgid_plural "License types"
 msgstr[0] "Lisans türü"
-msgstr[1] "Lisans türü"
+msgstr[1] "Lisans türleri"
 
 #: inc/dropdown.class.php:888
 msgid "Generic device type"
 msgid_plural "Generic device types"
 msgstr[0] "Genel aygıt türü"
-msgstr[1] "Genel aygıt türü"
+msgstr[1] "Genel aygıt türleri"
 
 #: inc/dropdown.class.php:897 inc/interfacetype.class.php:44
 msgid "Interface type (Hard drive...)"
 msgid_plural "Interface types (Hard drive...)"
 msgstr[0] "Arabirim türü (Sabit disk...)"
-msgstr[1] "Arabirim türü (Sabit disk...)"
+msgstr[1] "Arabirim türleri (Sabit disk...)"
 
 #: inc/dropdown.class.php:902 inc/phonepowersupply.class.php:44
 msgid "Phone power supply type"
 msgid_plural "Phones power supply types"
 msgstr[0] "Telefon güç kaynağı türü"
-msgstr[1] "Telefon güç kaynağı türü"
+msgstr[1] "Telefon güç kaynağı türleri"
 
 #: inc/dropdown.class.php:905 inc/filesystem.class.php:44
 #: inc/item_disk.class.php:212 inc/item_disk.class.php:304
@@ -10595,13 +10595,13 @@ msgstr[1] "Telefon güç kaynağı türü"
 msgid "File system"
 msgid_plural "File systems"
 msgstr[0] "Dosya sistemi"
-msgstr[1] "Dosya sistemi"
+msgstr[1] "Dosya sistemleri"
 
 #: inc/dropdown.class.php:913 inc/line.class.php:120 inc/line.class.php:188
 #: inc/linetype.class.php:42
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] "Hat türleri"
+msgstr[0] "Hat türü"
 msgstr[1] "Hat türleri"
 
 #: inc/dropdown.class.php:923 inc/networkequipmentmodel.class.php:41
@@ -10814,8 +10814,8 @@ msgstr "Alanların tekliği"
 #: inc/dropdown.class.php:1084 inc/fieldblacklist.class.php:48
 msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
-msgstr[0] "Eşsizlik nedeniyle yoksayılan değerler"
-msgstr[1] "Eşsizlik nedeniyle yoksayılan değerler"
+msgstr[0] "Eşsizlik nedeniyle yok sayılan değerler"
+msgstr[1] "Eşsizlik nedeniyle yok sayılan değerler"
 
 #: inc/dropdown.class.php:1094
 msgid "Power management"
@@ -11165,7 +11165,7 @@ msgstr "Garanti başlangıç tarihi"
 
 #: inc/entity.class.php:1020
 msgid "Satisfaction survey configuration"
-msgstr "Memnuniyet anketi ayarları"
+msgstr "Memnuniyet anketi yapılandırması"
 
 #: inc/entity.class.php:1030
 msgid "Satisfaction survey trigger rate"
@@ -11311,11 +11311,11 @@ msgstr "7/24"
 
 #: inc/entity.class.php:2209
 msgid "Automatic closing configuration"
-msgstr "Ayarların otomatik olarak kapatılması"
+msgstr "Yapılandırmanın otomatik olarak kapatılması"
 
 #: inc/entity.class.php:2244 inc/entity.class.php:2247
 msgid "Configuring the satisfaction survey"
-msgstr "Memnuniyet anketi ayarları"
+msgstr "Memnuniyet anketi yapılandırması"
 
 #: inc/entity.class.php:2252 inc/entity.class.php:2812
 #: inc/ticketsatisfaction.class.php:232 inc/ticketsatisfaction.class.php:282
@@ -11463,7 +11463,7 @@ msgid ""
 "\n"
 "Or, support the GLPI development effort by <b>donating</b>."
 msgstr ""
-"GLPI uygulamasını BT uygulamalarınız ile birleştirmek, hata düzeltmesi ya da hazır kural ve sözlükleri kullanmak gibi istekleriniz mi var?\n"
+"GLPI uygulamasını BT uygulamalarınız ile birleştirmek, hata düzeltmesi ya da hazır yapılandırılmış kural ve sözlükleri kullanmak gibi istekleriniz mi var?\n"
 "\n"
 "Sizin için %s alanı sunuyoruz.\n"
 "GLPI-Network, tier 3 destek aboneliği bulunan ticari bir üründür. Hataların belirli bir sürede düzeltileceğinden emin olmanızı sağlar.\n"
@@ -13006,8 +13006,8 @@ msgstr "Henüz bir bilgi bankası kaydı bağlanmamış"
 #: inc/knowbaseitem_item.class.php:186
 msgid "Linked item"
 msgid_plural "Linked items"
-msgstr[0] "Bağlantıl öge"
-msgstr[1] "Bağlantıl öge"
+msgstr[0] "Bağlantılı öge"
+msgstr[1] "Bağlantılı öge"
 
 #: inc/knowbaseitem_item.class.php:215
 msgid "Update date"
@@ -13483,7 +13483,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:790
 msgid "Could not connect to mailgate server"
-msgstr "E-posta geçidi sunucusuna bağlanılamadı"
+msgstr "E-posta geçidi sunucusu ile bağlantı kurulamadı"
 
 #. TRANS: %s is the ID of the mailgate
 #: inc/mailcollector.class.php:801
@@ -13509,7 +13509,7 @@ msgstr "Eklenen dosya geçersiz"
 #: inc/mailcollector.class.php:1737
 #, php-format
 msgid "Invalid configuration for %1$s folder in receiver %2$s"
-msgstr "%2$s alıcısındaki %1$s klasörünün ayarları geçersiz"
+msgstr "%2$s alıcısındaki %1$s klasörünün yapılandırması geçersiz"
 
 #: inc/mailcollector.class.php:1759
 msgid "Retrieve email (Mails receivers)"
@@ -13910,7 +13910,7 @@ msgstr "Sanal ağı ayır"
 
 #: inc/networkportdialup.class.php:44
 msgid "Connection by dial line - Dialup Port"
-msgstr "Çevirmeli bağlantı - Çevirme Kapısı"
+msgstr "Çevirmeli bağlantı - Çevirme Kapı Numarası"
 
 #: inc/networkportdialup.class.php:56 inc/networkportdialup.class.php:81
 #: inc/networkportethernet.class.php:110 inc/networkportethernet.class.php:126
@@ -14344,7 +14344,7 @@ msgstr "%s kullanıcısı için bir e-posta kuyruğa eklendi"
 
 #: inc/notificationmailingsetting.class.php:43
 msgid "Email followups configuration"
-msgstr "E-posta izleme ayarları"
+msgstr "E-posta izleme yapılandırması"
 
 #: inc/notificationmailingsetting.class.php:48
 msgid "Enable followups via email"
@@ -14511,7 +14511,7 @@ msgid ""
 "Unable to configure notifications: please configure at least one followup "
 "type using the above configuration."
 msgstr ""
-"Bİldirimler yapılandırılamadı; lütfen yukarıdaki yapılandırmayı kullanan en "
+"Bildirimler yapılandırılamadı; lütfen yukarıdaki yapılandırmayı kullanan en "
 "az bir izleme türü yapılandırın."
 
 #: inc/notificationtargetcartridgeitem.class.php:47
@@ -14801,7 +14801,7 @@ msgstr "SQL kopyalama eşitlemesi kaldırılıyor"
 
 #: inc/notificationtargetdbconnection.class.php:62
 msgid "Can't connect to the database."
-msgstr "Veri tabanına bağlanılamıyor."
+msgstr "Veri tabanı bağlantısı kurulamadı."
 
 #: inc/notificationtargetdbconnection.class.php:91
 msgid "Slave database out of sync!"
@@ -15354,7 +15354,7 @@ msgstr "Tek değer"
 
 #: inc/notificationtemplatetranslation.class.php:453
 msgid "Preview"
-msgstr "Önizleme"
+msgstr "Ön izleme"
 
 #: inc/notimportedemail.class.php:62
 msgid "Refused email"
@@ -15772,7 +15772,7 @@ msgstr "%activate_link yapmak istiyor musunuz?"
 #: inc/plugin.class.php:538
 #, php-format
 msgid "Plugin %1$s has been installed and must be configured!"
-msgstr "%1$s uygulama eki kurulmuş ancak ayarlanması gerekiyor!"
+msgstr "%1$s uygulama eki kurulmuş ancak yapılandırması gerekiyor!"
 
 #: inc/plugin.class.php:545
 #, php-format
@@ -15856,7 +15856,7 @@ msgstr "Güncellemeye"
 #: inc/plugin.class.php:1719 inc/plugin.class.php:2146
 msgctxt "plugin"
 msgid "Installed / not configured"
-msgstr "Kurulmamış / ayarlanmamış"
+msgstr "Kurulmamış / yapılandırılmamış"
 
 #: inc/plugin.class.php:1723 inc/plugin.class.php:2147
 msgctxt "plugin"
@@ -17250,7 +17250,7 @@ msgstr "Bilgisayar türleri sözlüğü"
 #, php-format
 msgid "Replay rules on existing database started on %s"
 msgstr ""
-"Kuralların varolan veritabanı üzerine uygulanmasına %s zamanında başlandı"
+"Kuralların var olan veritabanı üzerine uygulanmasına %s zamanında başlandı"
 
 #. TRANS: %1$s is a row, %2$s is total rows
 #: inc/ruledictionnarydropdowncollection.class.php:84
@@ -17259,7 +17259,7 @@ msgstr ""
 #: inc/ruledictionnarysoftwarecollection.class.php:199
 #, php-format
 msgid "Replay rules on existing database: %1$s/%2$s"
-msgstr "Varolan veritabanı üzerine uygulanacak kurallar: %1$s/%2$s"
+msgstr "Var olan veritabanı üzerine uygulanacak kurallar: %1$s/%2$s"
 
 #: inc/ruledictionnarydropdowncollection.class.php:140
 msgid "Error replaying rules"
@@ -17271,7 +17271,7 @@ msgstr "Kurallar uygulanırken hata oluştu"
 #, php-format
 msgid "Replay rules on existing database ended on %s"
 msgstr ""
-"Kuralların varolan veritabanı üzerine uygulanması %s zamanında tamamlandı"
+"Kuralların var olan veritabanı üzerine uygulanması %s zamanında tamamlandı"
 
 #: inc/ruledictionnarymanufacturercollection.class.php:45
 msgid "Dictionary of manufacturers"
@@ -18854,7 +18854,7 @@ msgstr "Bazı özellikler için bu seçenek etkinleştirilmelidir"
 #: inc/toolbox.class.php:1176
 #, php-format
 msgid "SELinux boolean configuration for %s"
-msgstr "%s için SELinux ikili ayarları"
+msgstr "%s için SELinux ikili yapılandırması"
 
 #. TRANS: list of unit (o for octet)
 #: inc/toolbox.class.php:1242
@@ -18882,12 +18882,13 @@ msgstr "Son sürümü kullanıyorsunuz"
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
 msgstr ""
-"Bağlanılamadı. Vekil sunucu kullanıyorsanız, ayarları denetleyin. (%s)"
+"Bağlantı kurulamadı. Vekil sunucu kullanıyorsanız yapılandırmayı denetleyin."
+" (%s)"
 
 #: inc/toolbox.class.php:1758
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
-msgstr "Vekil sunucuya bağlanılamadı (%s)"
+msgstr "Vekil sunucu bağlantısı kurulamadı (%s)"
 
 #: inc/toolbox.class.php:1766
 msgid "No data available on the web site"
@@ -19317,7 +19318,8 @@ msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
 msgstr ""
-"Kimlik doğrulama yöntemi ayarları, parolanızı değiştirmenize izin vermiyor."
+"Kimlik doğrulama yöntemi yapılandırması parolanızı değiştirmenize izin "
+"vermiyor."
 
 #: inc/user.class.php:4533 inc/user.class.php:4644
 msgid "Email address not found."
@@ -19329,7 +19331,7 @@ msgstr "Kullanıcı bilgileri"
 
 #: inc/user.class.php:4684
 msgid "Connection failed"
-msgstr "Bağlanılamadı"
+msgstr "Bağlantı kurulamadı"
 
 #. TRANS: short for : Add users from an external source
 #: inc/user.class.php:4918
@@ -19446,11 +19448,11 @@ msgstr "Devam etmek ister misiniz?"
 
 #: install/install.php:219
 msgid "Database connection setup"
-msgstr "Veritabanı bağlantısı"
+msgstr "Veritabanı bağlantısı yapılandırması"
 
 #: install/install.php:222
 msgid "Database connection parameters"
-msgstr "Veritabanı bağlantı ayarları"
+msgstr "Veritabanı bağlantısı ayarları"
 
 #: install/install.php:240
 msgid "Test of the connection at the database"
@@ -19458,7 +19460,7 @@ msgstr "Veritabanı bağlantısı sınaması"
 
 #: install/install.php:253
 msgid "Can't connect to the database"
-msgstr "Veritabanına bağlanılamıyor"
+msgstr "Veritabanı bağlantısı kurulamadı"
 
 #: install/install.php:254 install/install.php:394 install/install.php:443
 #, php-format
@@ -19471,7 +19473,7 @@ msgstr "Sunucu ve/veya kullanıcı adı alanı boş"
 
 #: install/install.php:272 install/update.php:566
 msgid "Database connection successful"
-msgstr "Veritabanına bağlanıldı"
+msgstr "Veritabanı bağlantısı kuruldu"
 
 #: install/install.php:285
 msgid "Please select a database:"
@@ -19479,7 +19481,7 @@ msgstr "Bir veritabanı seçin:"
 
 #: install/install.php:308
 msgid "Create a new database or use an existing one:"
-msgstr "Yeni bir veritabanı oluşturun ya da varolanı kullanın:"
+msgstr "Yeni bir veritabanı oluşturun ya da var olanı kullanın:"
 
 #: install/install.php:320
 msgid "Please select the database to update:"
@@ -19499,7 +19501,7 @@ msgstr "Tamam - veritabanı hazırlandı"
 
 #: install/install.php:405 install/install.php:421 install/install.php:437
 msgid "Impossible to write the database setup file"
-msgstr "Veritabanı ayar dosyasına yazılamıyor."
+msgstr "Veritabanı yapılandırma dosyasına yazılamıyor."
 
 #: install/install.php:413 install/install.php:427
 msgid "Database created"
@@ -19751,5 +19753,5 @@ msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
 msgstr ""
-"Veritabanına bağlanılamadı. config_db.php dosyasındaki bağlantı ayarlarını "
-"denetleyin"
+"Veritabanı bağlantısı kurulamadı. config_db.php dosyasındaki bağlantı "
+"yapılandırmasını denetleyin"

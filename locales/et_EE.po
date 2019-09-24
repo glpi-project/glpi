@@ -8,9 +8,9 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2018
 # Indrek Teppan <indrek@laanesaare.ee>, 2018
 # croco3008 <croco3008@gmail.com>, 2018
-# Diana Lõhmus <diana.lohmus@saaremaavald.ee>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2019
 # Roomet K. <progeja@gmail.com>, 2019
+# Diana Lõhmus <diana.lohmus@saaremaavald.ee>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-06-18 10:35+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Roomet K. <progeja@gmail.com>, 2019\n"
+"Last-Translator: Diana Lõhmus <diana.lohmus@saaremaavald.ee>, 2019\n"
 "Language-Team: Estonian (Estonia) (https://www.transifex.com/glpi/teams/1637/et_EE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -101,7 +101,7 @@ msgstr "Korduma kippuvad küsimused"
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:255
 msgid "No room found or selected"
-msgstr ""
+msgstr "Ei ole ruumi valitud"
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #. TRANS: %1$s is the location, %2$s is the comment
@@ -547,8 +547,8 @@ msgstr "%1$s: %2$s"
 #: install/update_0681_07.php:573 install/update_0723_078.php:3659
 msgid "Email"
 msgid_plural "Emails"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "E-post"
+msgstr[1] "E-msilid"
 
 #: ajax/dropdownMassiveActionAddActor.php:46
 #: ajax/dropdownMassiveActionAddValidator.php:54
@@ -2223,7 +2223,7 @@ msgstr "Kirjelda oma probleemi"
 #: inc/reminder.class.php:706 inc/ruleticket.class.php:345
 #: inc/ticket.class.php:4121 inc/ticket.class.php:5165 inc/user.class.php:3161
 msgid "Title"
-msgstr "Ametikoht"
+msgstr "Pealkiri"
 
 #: front/helpdesk.php:109 inc/blacklistedmailcontent.class.php:70
 #: inc/blacklistedmailcontent.class.php:84 inc/knowbaseitem.class.php:790
@@ -3294,8 +3294,8 @@ msgstr[1] ""
 #: install/update_0713_072.php:549
 msgid "User"
 msgid_plural "Users"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kasutajad"
+msgstr[1] "Kasutajad"
 
 #: front/stat.graph.php:125 front/stat.graph.php:215
 #: front/stat.tracking.php:82 front/stat.tracking.php:84
@@ -3483,7 +3483,7 @@ msgstr "Mõju"
 #: inc/user.class.php:2178
 msgctxt "person"
 msgid "Title"
-msgstr "Ametikoht"
+msgstr "Pealkiri"
 
 #: front/stat.graph.php:207 front/stat.tracking.php:89
 #: inc/commonitilobject.class.php:3101 inc/dropdown.class.php:843

@@ -1665,11 +1665,11 @@ msgstr "%sसॉफ्टवेयर स्थापित करता है"
 
 #: front/computer_softwareversion.form.php:55
 msgid "Please select a software!"
-msgstr ""
+msgstr "कृपया एक सॉफ्टवेयर का चयन करें!"
 
 #: front/computer_softwareversion.form.php:57
 msgid "Please select a version!"
-msgstr ""
+msgstr "कृपया एक संस्करण चुनें!"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:54
@@ -4214,15 +4214,15 @@ msgstr "मेल सर्वर पर प्रमाणीकरण"
 
 #: inc/auth.class.php:959
 msgid "Version 1"
-msgstr ""
+msgstr "संस्करण 1"
 
 #: inc/auth.class.php:960
 msgid "Version 2"
-msgstr ""
+msgstr "संस्करण 2"
 
 #: inc/auth.class.php:961
 msgid "Version 3+"
-msgstr ""
+msgstr "संस्करण 3+"
 
 #: inc/auth.class.php:992 inc/authmail.class.php:87
 #: inc/ruleright.class.php:243
@@ -4667,7 +4667,7 @@ msgstr "चित्र"
 #: inc/authldap.class.php:828 inc/authldap.class.php:1165
 #: inc/user.class.php:2257
 msgid "Responsible"
-msgstr ""
+msgstr "जिम्मेदार"
 
 #: inc/authldap.class.php:833
 msgid "You can use a field name or an expression using various %{fieldname}"
@@ -5822,7 +5822,7 @@ msgstr "सभी सक्रियक के लिए अधिसूचन�
 
 #: inc/change.class.php:195
 msgid "Processing change"
-msgstr ""
+msgstr "प्रसंस्करण परिवर्तन"
 
 #: inc/change.class.php:196 inc/problem.class.php:183
 #: inc/problem.class.php:476
@@ -6085,7 +6085,7 @@ msgstr "बाल समूह"
 
 #: inc/change.class.php:1126
 msgid "New change for this item..."
-msgstr ""
+msgstr "इस आइटम के लिए नया परिवर्तन"
 
 #. TRANS : %d is the number of problems
 #: inc/change.class.php:1166
@@ -6965,11 +6965,11 @@ msgstr[1] "सुलझाव"
 
 #: inc/commonitilobject.class.php:3132
 msgid "Any solution status"
-msgstr ""
+msgstr "किसी भी समाधान की स्थिति"
 
 #: inc/commonitilobject.class.php:3147
 msgid "Last solution status"
-msgstr ""
+msgstr "अंतिम समाधान की स्थिति"
 
 #: inc/commonitilobject.class.php:3183
 msgid "Resolution time"
@@ -7194,11 +7194,11 @@ msgstr "प्रमाणीकरण अनुरोध उत्तर"
 
 #: inc/commonitilobject.class.php:6597
 msgid "Followup was already promoted"
-msgstr ""
+msgstr "फॉलोअप को पहले से ही प्रचारित किया गया था"
 
 #: inc/commonitilobject.class.php:6602
 msgid "Promote to Ticket"
-msgstr ""
+msgstr "टिकट के लिए प्रचार करें"
 
 #: inc/commonitilobject.class.php:6607 inc/knowbaseitem.class.php:200
 #: inc/knowbaseitemtranslation.class.php:91 inc/user.class.php:2385
@@ -7254,7 +7254,7 @@ msgstr "प्रदर्शन"
 
 #: inc/commonitilobject.class.php:6871
 msgid "Followup promotion source"
-msgstr ""
+msgstr "फॉलोअप प्रमोशन सोर्स"
 
 #: inc/commonitilobject.class.php:6876
 #, php-format
@@ -9769,7 +9769,7 @@ msgstr "पता:"
 
 #: inc/dcbreadcrumb.class.php:99
 msgid "Data center position"
-msgstr ""
+msgstr "डेटा केंद्र की स्थिति"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/dcroom.class.php:50 inc/rack.class.php:200 inc/rack.class.php:411
@@ -10131,11 +10131,11 @@ msgstr "धागे की संख्या"
 
 #: inc/deviceprocessor.class.php:233
 msgid "processor: number of cores"
-msgstr ""
+msgstr "प्रोसेसर: कोर की संख्या"
 
 #: inc/deviceprocessor.class.php:246
 msgid "processor: number of threads"
-msgstr ""
+msgstr "प्रोसेसर: थ्रेड्स की संख्या"
 
 #: inc/deviceprocessor.class.php:259
 msgid "Processor frequency"
@@ -11525,11 +11525,11 @@ msgstr "फ़ाइल प्रकार की अनुमति नही�
 
 #: inc/glpiuploadhandler.class.php:112
 msgid "File upload aborted"
-msgstr ""
+msgstr "फ़ाइल अपलोड निरस्त"
 
 #: inc/glpiuploadhandler.class.php:116
 msgid "Failed to resize image"
-msgstr ""
+msgstr "छवि का आकार बदलने में विफल"
 
 #: inc/group.class.php:130 inc/group.class.php:762 inc/user.class.php:214
 msgid "Used items"
@@ -12372,7 +12372,7 @@ msgstr "एक वस्तु की आवश्यकता है"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
-msgstr ""
+msgstr "एक बाड़े की आवश्यकता है"
 
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
@@ -12644,7 +12644,7 @@ msgstr "समाधान अनुमोदित"
 
 #: inc/itilfollowup.class.php:360
 msgid "If you want to reopen this item, you must specify a reason"
-msgstr ""
+msgstr "यदि आप इस आइटम को फिर से खोलना चाहते हैं, तो आपको एक कारण बताना होगा"
 
 #: inc/itilfollowup.class.php:364
 msgid "If you reject the solution, you must specify a reason"
@@ -12761,6 +12761,7 @@ msgstr "सहेजें और ज्ञान आधार में जो�
 #: inc/itilsolution.class.php:285
 msgid "The item is already solved, did anyone pushed a solution before you ?"
 msgstr ""
+"आइटम पहले से ही हल है, क्या किसी ने आपसे पहले एक समाधान को धक्का दिया?"
 
 #: inc/knowbase.class.php:66
 msgctxt "button"
@@ -12778,7 +12779,7 @@ msgstr "रूट श्रेणी"
 
 #: inc/knowbase.class.php:337
 msgid "This category contains articles"
-msgstr ""
+msgstr "इस श्रेणी में लेख शामिल हैं"
 
 #: inc/knowbaseitem.class.php:198 inc/knowbaseitem.class.php:810
 #: inc/reminder.class.php:539 inc/rssfeed.class.php:532
@@ -12865,7 +12866,7 @@ msgstr "सभी प्रकाशित लेख"
 
 #: inc/knowbaseitem.class.php:1494
 msgid "This item is not published yet"
-msgstr ""
+msgstr "यह आइटम अभी तक प्रकाशित नहीं हुआ है"
 
 #: inc/knowbaseitem.class.php:1563
 msgid "Use as a solution"
@@ -13018,7 +13019,7 @@ msgstr "चयनित संशोधन की तुलना करें"
 
 #: inc/knowbaseitem_revision.class.php:134
 msgid "Author"
-msgstr ""
+msgstr "लेखक"
 
 #: inc/knowbaseitem_revision.class.php:144
 msgid "cur"
@@ -13026,7 +13027,7 @@ msgstr "cur"
 
 #: inc/knowbaseitem_revision.class.php:174
 msgid "Unknown user"
-msgstr ""
+msgstr "अज्ञात उपयोगकर्ता"
 
 #: inc/knowbaseitem_revision.class.php:185
 msgid "show"
@@ -13169,7 +13170,7 @@ msgstr "मोबाइल नेटवर्क कोड"
 
 #: inc/lineoperator.class.php:109
 msgid "Mobile country code and network code combination must be unique!"
-msgstr ""
+msgstr "मोबाइल देश कोड और नेटवर्क कोड संयोजन अद्वितीय होना चाहिए!"
 
 #: inc/link.class.php:51 inc/link.class.php:590 inc/profile.class.php:1455
 #: inc/profile.class.php:1948 inc/search.class.php:6663
@@ -13435,7 +13436,7 @@ msgstr "एक एकत्र करने के बजाय, मेल त�
 
 #: inc/mailcollector.class.php:311
 msgid "Use Reply-To as requester (when available)"
-msgstr ""
+msgstr "उत्तरदाता से अनुरोधकर्ता के रूप में (जब उपलब्ध हो) का उपयोग करें"
 
 #: inc/mailcollector.class.php:407
 #, php-format
@@ -15286,7 +15287,7 @@ msgstr "CSS"
 #: inc/notificationtemplate.class.php:255
 #: inc/notificationtemplate.class.php:319
 msgid "Automatically generated by GLPI"
-msgstr ""
+msgstr "जीएलपीआई द्वारा स्वचालित रूप से उत्पन्न"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -15386,7 +15387,7 @@ msgstr "ईमेल नहीं मिला असंभव आयात"
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "पर्याप्त अधिकार नहीं"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"
@@ -15490,7 +15491,7 @@ msgstr "OLA की स्वचालित अनुस्मारक"
 
 #: inc/olalevel_ticket.class.php:45
 msgid "OLA level for Ticket"
-msgstr ""
+msgstr "टिकट के लिए OLA स्तर"
 
 #: inc/olalevel_ticket.class.php:146
 msgid "Automatic actions of OLA"
@@ -15852,7 +15853,7 @@ msgstr "त्रुटि / साफ करने के लिए"
 
 #: inc/plugin.class.php:1830
 msgid "Directory"
-msgstr ""
+msgstr "संचालक-वर्ग"
 
 #: inc/plugin.class.php:1867
 msgid "Authors"
@@ -15919,7 +15920,7 @@ msgstr "वाईफ़ाई"
 
 #: inc/problem.class.php:182
 msgid "Processing problem"
-msgstr ""
+msgstr "प्रसंस्करण समस्या"
 
 #: inc/problem.class.php:553 inc/ticket.class.php:3605
 msgctxt "status"
@@ -15974,7 +15975,7 @@ msgstr "अंतिम समस्याएं"
 
 #: inc/problem.class.php:1450
 msgid "New problem for this item..."
-msgstr ""
+msgstr "इस आइटम के लिए नई समस्या "
 
 #. TRANS : %d is the number of problems
 #: inc/problem.class.php:1490
@@ -16168,7 +16169,7 @@ msgstr "टिकट (इकाई) के लिए व्यापार न�
 #: inc/profile.class.php:1350 inc/ruleasset.class.php:49
 #: inc/ruleassetcollection.class.php:45
 msgid "Business rules for assets"
-msgstr ""
+msgstr "संपत्ति के लिए व्यावसायिक नियम"
 
 #: inc/profile.class.php:1360 inc/profile.class.php:1368
 #: inc/profile.class.php:2111
@@ -16593,7 +16594,7 @@ msgstr "यहाँ एक रैक डालें"
 
 #: inc/rack.class.php:932
 msgid "Position must be set"
-msgstr ""
+msgstr "स्थिति निर्धारित की जानी चाहिए"
 
 #: inc/rack.class.php:953
 #, php-format
@@ -16767,7 +16768,7 @@ msgstr "एक आइटम आरक्षित करें"
 
 #: inc/reservation.class.php:730
 msgid "Repetition"
-msgstr ""
+msgstr "पुनरावृत्ति"
 
 #: inc/reservation.class.php:732
 msgctxt "periodicity"
@@ -16791,7 +16792,7 @@ msgstr "मासिक"
 
 #: inc/reservation.class.php:770
 msgid "Delete all repetition"
-msgstr ""
+msgstr "सभी पुनरावृत्ति को हटा दें"
 
 #: inc/reservation.class.php:1093 inc/reservation.class.php:1095
 #: inc/reservation.class.php:1255
@@ -16944,7 +16945,7 @@ msgstr "आइटम से कॉपी करें"
 
 #: inc/ruleasset.class.php:154
 msgid "User based contact information"
-msgstr ""
+msgstr "उपयोगकर्ता आधारित संपर्क जानकारी"
 
 #. TRANS: short for : Business rules for ticket (entity parent)
 #: inc/ruleasset.class.php:185 inc/ruleticket.class.php:717
@@ -17361,6 +17362,8 @@ msgid ""
 "Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
+"चेतावनी! यह ऑपरेशन अपने उपयोगकर्ताओं को सूचित करने के लिए मर्ज किए गए "
+"सॉफ़्टवेयर को trashbin.Sure में डाल सकता है।"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:88
 msgid "Manufacturer choice"
@@ -17520,7 +17523,7 @@ msgstr "डिफ़ॉल्ट अस्तित्व"
 
 #: inc/ruleright.class.php:333 inc/user.class.php:2243
 msgid "Default group"
-msgstr ""
+msgstr "डिफ़ॉल्ट समूह"
 
 #: inc/ruleright.class.php:355
 msgid "LDAP criteria"
@@ -17573,11 +17576,11 @@ msgstr "टिकट स्थान"
 
 #: inc/ruleticket.class.php:524
 msgid "Creation date is a working hour in calendar"
-msgstr ""
+msgstr "निर्माण की तारीख कैलेंडर में एक काम का समय है"
 
 #: inc/ruleticket.class.php:662
 msgid "Responsible of the requester"
-msgstr ""
+msgstr "आवश्यकता के जिम्मेदार"
 
 #: inc/ruleticket.class.php:678
 msgid "Approval request to requester group manager"
@@ -17845,7 +17848,7 @@ msgstr "%1$s > %2$s"
 
 #: inc/search.class.php:2208
 msgid "NOT"
-msgstr ""
+msgstr "नहीं"
 
 #: inc/search.class.php:2213
 msgid "AND"
@@ -17865,34 +17868,34 @@ msgstr "या नहीं"
 
 #: inc/search.class.php:2294
 msgid "rule"
-msgstr ""
+msgstr "नियम"
 
 #: inc/search.class.php:2299
 msgid "global rule"
-msgstr ""
+msgstr " वैश्विक नियम "
 
 #: inc/search.class.php:2304
 msgid "group"
-msgstr ""
+msgstr "समूह"
 
 #: inc/search.class.php:2331
 msgid "Fold search"
-msgstr ""
+msgstr "तह खोज"
 
 #: inc/search.class.php:2497 inc/search.class.php:2720
 msgid "Delete a rule"
-msgstr ""
+msgstr "एक नियम हटाएं"
 
 #: inc/search.class.php:2637
 msgid "Delete a global rule"
-msgstr ""
+msgstr "एक वैश्विक नियम हटाएं"
 
 #: inc/search.class.php:6747 inc/search.class.php:6774
 #: inc/search.class.php:6778 inc/search.class.php:6807
 #: inc/search.class.php:6825 inc/search.class.php:6848
 #: inc/search.class.php:6871
 msgid "not contains"
-msgstr ""
+msgstr "शामिल नहीं है"
 
 #: inc/search.class.php:6790 inc/search.class.php:6845
 msgid "before"
@@ -17938,7 +17941,7 @@ msgstr "एसएलए की स्वचालित अनुस्मार
 
 #: inc/slalevel_ticket.class.php:41
 msgid "SLA level for Ticket"
-msgstr ""
+msgstr "टिकट के लिए एसएलए स्तर"
 
 #: inc/slalevel_ticket.class.php:142
 msgid "Automatic actions of SLA"
@@ -18195,7 +18198,7 @@ msgstr "वेब"
 
 #: inc/telemetry.class.php:40
 msgid "Telemetry"
-msgstr ""
+msgstr "दूरमापी"
 
 #: inc/telemetry.class.php:261
 msgid "Send telemetry informations"
@@ -18312,19 +18315,19 @@ msgstr "लिंक टिकट"
 
 #: inc/ticket.class.php:2681
 msgid "Merge as Followup"
-msgstr ""
+msgstr "फॉलोअप के रूप में मर्ज करें"
 
 #: inc/ticket.class.php:2702
 msgid "Merge Followups"
-msgstr ""
+msgstr "मर्ज फॉलोअप"
 
 #: inc/ticket.class.php:2707
 msgid "Merge Documents"
-msgstr ""
+msgstr "दस्तावेज़ मर्ज करें"
 
 #: inc/ticket.class.php:2715
 msgid "Confirm the merge? This ticket will be deleted!"
-msgstr ""
+msgstr "मर्ज की पुष्टि करें? इस टिकट को हटा दिया जाएगा!"
 
 #: inc/ticket.class.php:2841
 #, php-format
@@ -18447,7 +18450,7 @@ msgstr "डिफ़ॉल्ट दस्तावेज:"
 
 #: inc/ticket.class.php:5350
 msgid "Confirm the promotion?"
-msgstr ""
+msgstr "प्रचार की पुष्टि करें?"
 
 #: inc/ticket.class.php:5591 inc/ticket.class.php:5781
 msgid "Your tickets to close"
@@ -18475,11 +18478,11 @@ msgstr "मान्य करने के लिए आपके टिकट"
 
 #: inc/ticket.class.php:5735
 msgid "Your tickets having rejected approval status"
-msgstr ""
+msgstr "आपके टिकटों ने अनुमोदन की स्थिति को अस्वीकार कर दिया है"
 
 #: inc/ticket.class.php:5752
 msgid "Your tickets having rejected solution"
-msgstr ""
+msgstr "आपके टिकट अस्वीकृत समाधान वाले हैं"
 
 #: inc/ticket.class.php:5959
 msgid "Ticket followup"
@@ -19502,11 +19505,11 @@ msgstr "डेटा इकट्ठा करना"
 
 #: install/install.php:479 install/update.php:610
 msgid "One last thing before starting"
-msgstr ""
+msgstr "शुरू करने से पहले एक आखिरी बात"
 
 #: install/install.php:488 install/update.php:615
 msgid "Donate"
-msgstr ""
+msgstr "दान करना"
 
 #: install/install.php:530
 msgid "The installation is finished"
@@ -19666,6 +19669,7 @@ msgstr "%sदिनांक_क्रिएशन जोड़ें"
 #: install/update_942_943.php:52
 msgid "Fix URL of images in ITIL tasks, followups ans solutions."
 msgstr ""
+"ITIL कार्यों में छवियों का URL ठीक करें, अनुवर्ती समाधानों का पालन करें।"
 
 #: install/update.php:137
 msgid "Update successful, your database is up to date"

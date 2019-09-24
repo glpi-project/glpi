@@ -17,6 +17,7 @@
 # Alfred Rapozo <alfred.rapozo@gmail.com>, 2018
 # Roberto Flores <robertocarlos.floresh@gmail.com>, 2018
 # DOMBRE Julien <moyo@indepnet.net>, 2019
+# Oscar Loza <oscarloza@yahoo.es>, 2019
 # Dario, 2019
 # 
 #, fuzzy
@@ -17007,7 +17008,7 @@ msgstr "Recalcular"
 
 #: inc/ruleaction.class.php:400
 msgid "Do not calculate"
-msgstr ""
+msgstr "No calcular"
 
 #: inc/ruleaction.class.php:401 inc/ruleaction.class.php:402
 msgid "Send"
@@ -17674,7 +17675,7 @@ msgstr "Solicitud de aprobación al administrador del grupo de técnicos"
 
 #: inc/ruleticket.class.php:700
 msgid "Take into account delay"
-msgstr ""
+msgstr "Considerar retraso"
 
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"

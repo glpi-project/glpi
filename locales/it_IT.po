@@ -14228,7 +14228,7 @@ msgstr "Una notifica browser per %s è stata aggiunta alla coda"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr "Configurazione risposte dal browser"
+msgstr "Configurazione notifiche dal browser"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
@@ -14384,7 +14384,7 @@ msgstr "Una e-mail per %s è stata aggiunta alla coda"
 
 #: inc/notificationmailingsetting.class.php:43
 msgid "Email followups configuration"
-msgstr "Configurazione risposte per e-mail"
+msgstr "Configurazione notifiche via e-mail"
 
 #: inc/notificationmailingsetting.class.php:48
 msgid "Enable followups via email"

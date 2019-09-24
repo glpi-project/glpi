@@ -9,6 +9,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # Georgi Komsiyski <georgi.komsiyski@gmail.com>, 2018
+# Zornitsa Koleva <zornitsa.koleva@mr-bricolage.bg>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-06-18 10:35+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Georgi Komsiyski <georgi.komsiyski@gmail.com>, 2018\n"
+"Last-Translator: Zornitsa Koleva <zornitsa.koleva@mr-bricolage.bg>, 2019\n"
 "Language-Team: Bulgarian (Bulgaria) (https://www.transifex.com/glpi/teams/1637/bg_BG/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,7 +37,7 @@ msgstr "GLPI - Представяне"
 #: inc/user.class.php:1995 inc/user.class.php:2426 inc/user.class.php:2884
 #: inc/user.class.php:3892
 msgid "Login"
-msgstr "Име на потребителя"
+msgstr "Потребител"
 
 #: index.php:135 inc/authmail.class.php:234 inc/config.class.php:1764
 #: inc/mailcollector.class.php:274 inc/user.class.php:2065
@@ -46,7 +47,7 @@ msgstr "Парола"
 
 #: index.php:144
 msgid "Default (from user profile)"
-msgstr ""
+msgstr "По подразбиране (за профила)"
 
 #: index.php:161
 msgid "Remember me"
@@ -99,7 +100,7 @@ msgstr "Достъп до \"Често Задавани Въпроси\""
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:255
 msgid "No room found or selected"
-msgstr ""
+msgstr "Няма намерени или маркирани стаи"
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #. TRANS: %1$s is the location, %2$s is the comment
@@ -737,7 +738,7 @@ msgstr ""
 
 #: ajax/getMapPoint.php:43 ajax/map.php:44
 msgid "Required argument missing!"
-msgstr ""
+msgstr "Липсва задължителен аргумент!"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
@@ -843,11 +844,11 @@ msgstr "Всеки месец, същия ден от седмицата"
 
 #: ajax/savedsearch.php:47
 msgid "Search has been saved"
-msgstr ""
+msgstr "Търсенето е запазено"
 
 #: ajax/savedsearch.php:54
 msgid "Search has not been saved"
-msgstr ""
+msgstr "Търсенето не беше запазено"
 
 #: ajax/searchoptionvalue.php:77 inc/search.class.php:2950
 msgid "My groups"
@@ -964,11 +965,11 @@ msgstr[1] ""
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Debug mode беше активиран!"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Debug mode беше изключен!"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -991,8 +992,8 @@ msgstr "В процес на изпълнение"
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%sтикет e в процес или e решен наскоро за този елемент"
+msgstr[1] "%sтикети са в процес или са решени наскоро за този елемент"
 
 #: ajax/ticketsatisfaction.php:58 inc/entity.class.php:1039
 msgid "Create survey after"
@@ -1519,8 +1520,8 @@ msgstr "Задължителните полета не са попълнени. 
 #: inc/stat.class.php:1418
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Промени"
+msgstr[1] "Промени"
 
 #: front/change_ticket.form.php:49 front/problem_ticket.form.php:50
 #: inc/commonitilcost.class.php:542 inc/document_item.class.php:420
@@ -1560,8 +1561,8 @@ msgstr[1] ""
 #: inc/transfer.class.php:3397
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Заявка"
+msgstr[1] "Заявки"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:66 front/contractcost.form.php:57
@@ -2003,7 +2004,7 @@ msgstr[1] ""
 #: inc/ticket_ticket.class.php:66 inc/user.class.php:2894
 #: inc/user.class.php:4707
 msgid "ID"
-msgstr "Идентификатор"
+msgstr "ID"
 
 #: front/find_num.php:89 inc/blacklist.class.php:232 inc/budget.class.php:339
 #: inc/certificate.class.php:98 inc/certificate.class.php:415
@@ -2317,7 +2318,7 @@ msgstr ""
 #: front/knowbaseitem_comment.form.php:60
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr ""
+msgstr "%sдобави коментар в Базата знания"
 
 #: front/knowbaseitem_comment.form.php:62
 msgid "Your comment has been added"
@@ -2326,7 +2327,7 @@ msgstr ""
 #: front/knowbaseitem_comment.form.php:81
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr ""
+msgstr "%sпромени коментар в Базата знания"
 
 #: front/knowbaseitem_comment.form.php:83
 msgid "Your comment has been edited"
@@ -3772,7 +3773,7 @@ msgstr "%s изтрива потребител от група"
 
 #: front/user.form.php:151
 msgid "Lang has been changed!"
-msgstr ""
+msgstr "Езикът беше сменен!"
 
 #: inc/ajax.class.php:156
 msgid "Close"
@@ -3924,7 +3925,7 @@ msgstr ""
 
 #: inc/api.class.php:1548
 msgid "Bad field ID in search criteria"
-msgstr ""
+msgstr "Грешно ID в критерия за търсене"
 
 #: inc/api.class.php:1555
 msgid "Forbidden field ID in search criteria"
@@ -3945,7 +3946,7 @@ msgstr ""
 
 #: inc/api.class.php:2038
 msgid "email parameter missing"
-msgstr ""
+msgstr "Липсва имейл параметър"
 
 #: inc/api.class.php:2042
 msgid "A session is active"
@@ -4140,7 +4141,7 @@ msgstr ""
 
 #: inc/apixmlrpc.class.php:158
 msgid "missing id"
-msgstr ""
+msgstr "липсва ID"
 
 #: inc/auth.class.php:115 inc/log.class.php:924 inc/log.class.php:947
 #: inc/log.class.php:998 inc/log.class.php:1012
@@ -4161,7 +4162,7 @@ msgstr ""
 
 #: inc/auth.class.php:517
 msgid "Invalid cookie data"
-msgstr ""
+msgstr "Невалидни бисквитки-данни"
 
 #: inc/auth.class.php:521
 msgid "Auto login disabled"
@@ -4668,7 +4669,7 @@ msgstr ""
 
 #: inc/authldap.class.php:834
 msgid "Example for location: %{city} > %{roomnumber}"
-msgstr ""
+msgstr "Пример за локация: %{city} > %{roomnumber}"
 
 #: inc/authldap.class.php:858
 msgid "Import entities from LDAP directory"
@@ -4744,11 +4745,11 @@ msgstr "Последно обновяване в GLPI"
 
 #: inc/authldap.class.php:1615 inc/authldap.class.php:1620
 msgid "No user to be synchronized"
-msgstr ""
+msgstr "Няма потребители за синхронизиране"
 
 #: inc/authldap.class.php:1616 inc/authldap.class.php:1621
 msgid "No user to be imported"
-msgstr ""
+msgstr "Няма потребители за импортиране"
 
 #: inc/authldap.class.php:1987 inc/group.class.php:443 inc/group.class.php:582
 msgid "Group DN"
@@ -4756,7 +4757,7 @@ msgstr "DN на групата"
 
 #: inc/authldap.class.php:1988
 msgid "Destination entity"
-msgstr ""
+msgstr "Целева организация"
 
 #: inc/authldap.class.php:2041 inc/authldap.class.php:2044
 msgid "No group to be imported"
@@ -4765,6 +4766,7 @@ msgstr "Няма група за внасяне"
 #: inc/authldap.class.php:2307
 msgid "Please choose LDAP directory to import users and groups from"
 msgstr ""
+"Изберете LDAP директория от която да се импортират потребители и групи"
 
 #: inc/authldap.class.php:2309 inc/authldap.class.php:3126
 #: inc/authldap.class.php:3154
@@ -4794,7 +4796,7 @@ msgstr "Опростен режим"
 #: inc/authldap.class.php:3134 inc/authldap.class.php:3162
 msgctxt "button"
 msgid "Change"
-msgstr ""
+msgstr "Промяна"
 
 #: inc/authldap.class.php:3170 inc/entity.class.php:1096
 #: inc/html.class.php:3306 inc/rulecollection.class.php:1285
@@ -4836,7 +4838,7 @@ msgstr "Разреши филтриране по дата"
 
 #: inc/authldap.class.php:3523
 msgid "View updated users"
-msgstr ""
+msgstr "Виж обновените потребители"
 
 #: inc/authldap.class.php:3524 inc/networkport.class.php:882
 #: inc/software.class.php:307
@@ -5181,7 +5183,7 @@ msgstr[1] ""
 
 #: inc/cartridge.class.php:288
 msgid "Installing a cartridge"
-msgstr ""
+msgstr "Инсталиране на касета"
 
 #: inc/cartridge.class.php:295
 msgid "No free cartridge"
@@ -5337,7 +5339,7 @@ msgstr "Инсталиране"
 
 #: inc/cartridge.class.php:953
 msgid "No cartridge available"
-msgstr ""
+msgstr "Няма свободна касета"
 
 #: inc/cartridge.class.php:970
 msgid "End of life"
@@ -5972,7 +5974,7 @@ msgstr "Дата на откриване"
 #: inc/ticket.class.php:3096 inc/ticket.class.php:4797
 #: inc/ticket.class.php:4799 inc/ticket.class.php:6971
 msgid "Time to resolve"
-msgstr ""
+msgstr "Време за решаване"
 
 #: inc/change.class.php:752 inc/change.class.php:761
 #: inc/problem.class.php:1136 inc/problem.class.php:1145
@@ -6066,7 +6068,7 @@ msgstr ""
 
 #: inc/change.class.php:1085
 msgid "Last changes"
-msgstr ""
+msgstr "Последни промени"
 
 #: inc/change.class.php:1087 inc/group.class.php:127 inc/group.class.php:784
 #: inc/group_user.class.php:486 inc/problem.class.php:1411
@@ -6103,7 +6105,7 @@ msgstr[1] ""
 #: inc/change_problem.class.php:159 inc/change_ticket.class.php:392
 #: inc/itil_project.class.php:179
 msgid "Add a change"
-msgstr ""
+msgstr "Добави Промяна"
 
 #: inc/change_problem.class.php:171
 msgid "Create a change from this problem"
@@ -6297,7 +6299,7 @@ msgstr ""
 
 #: inc/commondbtm.class.php:2700
 msgid "You are not allowed to change the visibility flag for child entities."
-msgstr ""
+msgstr "Не сте оторизиран да промените флага за видимост на подорганизациите."
 
 #: inc/commondbtm.class.php:2704
 msgid "Flag change forbidden. Linked items found."
@@ -6305,7 +6307,7 @@ msgstr ""
 
 #: inc/commondbtm.class.php:2708
 msgid "Change visibility in child entities"
-msgstr ""
+msgstr "Промяна на видимостта на подорганизациите"
 
 #: inc/commondbtm.class.php:3299 inc/commontreedropdown.class.php:680
 #: inc/dbutils.class.php:1090 inc/entity.class.php:473
@@ -6654,7 +6656,7 @@ msgstr "Email за проследяване"
 #: inc/notificationmailingsetting.class.php:92
 #: inc/notificationmailingsetting.class.php:109 inc/user.class.php:4635
 msgid "Invalid email address"
-msgstr ""
+msgstr "Невалиден имейл адрес"
 
 #: inc/commonitilcost.class.php:48 inc/commonitilcost.class.php:197
 #: inc/commonitilcost.class.php:241 inc/contract.class.php:528
@@ -6923,11 +6925,11 @@ msgstr[1] ""
 
 #: inc/commonitilobject.class.php:2987
 msgid "Time to resolve + Progress"
-msgstr ""
+msgstr "Вътрешно време за решаване + Прогрес"
 
 #: inc/commonitilobject.class.php:2997
 msgid "Time to resolve exceedeed"
-msgstr ""
+msgstr "Времето за решаване е изтекло"
 
 #: inc/commonitilobject.class.php:3012 inc/commonitilobject.class.php:4736
 #: inc/ticket.class.php:4840 inc/ticket.class.php:6979
@@ -7160,7 +7162,7 @@ msgstr[1] ""
 
 #: inc/commonitilobject.class.php:6105
 msgid "Actions historical"
-msgstr ""
+msgstr "Действия-история"
 
 #: inc/commonitilobject.class.php:6392
 #: inc/notificationtargetchange.class.php:55
@@ -7339,7 +7341,7 @@ msgstr ""
 
 #: inc/commonitiltask.class.php:1305 inc/commonitiltask.class.php:1331
 msgid "By user"
-msgstr ""
+msgstr "По потребител"
 
 #: inc/commonitiltask.class.php:1308 inc/commonitiltask.class.php:1334
 msgid "By group"
@@ -7532,6 +7534,8 @@ msgid ""
 "This item is waiting for approval, do you really want to resolve or close "
 "it?"
 msgstr ""
+"Този елемент очаква потвърждение. Наистина ли искате да решите или "
+"затворите?"
 
 #: inc/commontreedropdown.class.php:50 inc/commontreedropdown.class.php:608
 #: inc/group.class.php:227 inc/itilcategory.class.php:53
@@ -7938,7 +7942,7 @@ msgstr ""
 
 #: inc/config.class.php:344
 msgid "Knowledge base translation"
-msgstr ""
+msgstr "База знания - превод"
 
 #: inc/config.class.php:348
 msgid "Dynamic display"
@@ -7992,7 +7996,7 @@ msgstr ""
 
 #: inc/config.class.php:418
 msgid "List of items to lock"
-msgstr ""
+msgstr "Лист с елементи за заключване"
 
 #: inc/config.class.php:427
 msgid "Auto Login"
@@ -8015,7 +8019,7 @@ msgstr ""
 #: inc/profile.class.php:98 inc/profile.class.php:809
 #: inc/profile.class.php:1616 inc/transfer.class.php:3387
 msgid "Assets"
-msgstr ""
+msgstr "Активи"
 
 #: inc/config.class.php:486
 msgid "Enable the financial and administrative information by default"
@@ -8047,7 +8051,7 @@ msgstr ""
 
 #: inc/config.class.php:525
 msgid "By entity"
-msgstr ""
+msgstr "По организации"
 
 #: inc/config.class.php:528
 msgid "Restrict printer management"
@@ -8137,7 +8141,7 @@ msgstr "База данни"
 
 #: inc/config.class.php:693 install/install.php:225
 msgid "SQL user"
-msgstr ""
+msgstr "SQL потребител"
 
 #: inc/config.class.php:695 install/install.php:227
 msgid "SQL password"
@@ -8294,7 +8298,7 @@ msgstr ""
 
 #: inc/config.class.php:1086
 msgid "Show GLPI ID"
-msgstr "Покажи GLPI Идентификатор"
+msgstr "Покажи GLPI ID"
 
 #: inc/config.class.php:1093
 msgid "Keep devices when purging an item"
@@ -8570,11 +8574,11 @@ msgstr "5 - Пълно (Всичко)"
 
 #: inc/config.class.php:1678
 msgid "Maximal number of automatic actions (run by CLI)"
-msgstr ""
+msgstr "Максимален брой Aвтоматични действия (стартирани чрез CLI)"
 
 #: inc/config.class.php:1686
 msgid "Logs in files (SQL, email, automatic action...)"
-msgstr ""
+msgstr "Логове на файловете (SQL, имейл, автоматични действия...)"
 
 #: inc/config.class.php:1694 inc/user.class.php:2070 inc/user.class.php:2525
 #: inc/user.class.php:4430
@@ -8791,7 +8795,7 @@ msgstr ""
 
 #: inc/config.class.php:3191
 msgid "Add/update relation between items"
-msgstr ""
+msgstr "Добавяне/промяна на връзки между елементите"
 
 #: inc/config.class.php:3195
 msgid "Delete relation between items"
@@ -8836,11 +8840,11 @@ msgstr ""
 
 #: inc/config.class.php:3262
 msgid "Add/remove profiles to users"
-msgstr ""
+msgstr "Добави/Премахни профили на потребители"
 
 #: inc/config.class.php:3265
 msgid "Add/remove groups to users"
-msgstr ""
+msgstr "Добави/Премахни групи на потребители"
 
 #: inc/config.class.php:3271
 msgid "User authentication method changes"
@@ -10945,7 +10949,7 @@ msgstr[1] ""
 
 #: inc/entity.class.php:243
 msgid "You can't add an entity without name"
-msgstr ""
+msgstr "Не може да добавите организация без име"
 
 #: inc/entity.class.php:616 inc/entity.class.php:1411
 msgid "LDAP directory information attribute representing the entity"
@@ -10957,7 +10961,7 @@ msgstr ""
 
 #: inc/entity.class.php:634 inc/entity.class.php:1429
 msgid "LDAP directory of an entity"
-msgstr ""
+msgstr "LDAP директория за организация"
 
 #: inc/entity.class.php:643
 msgid "Search filter (if needed)"
@@ -11152,7 +11156,7 @@ msgstr "Покажи всички"
 
 #: inc/entity.class.php:1127
 msgid "Load more entities..."
-msgstr ""
+msgstr "Зареди още организации..."
 
 #. TRANS: %s is the user login
 #: inc/entity.class.php:1224
@@ -11404,7 +11408,7 @@ msgstr ""
 
 #: inc/fqdn.class.php:89
 msgid "FQDN is not valid"
-msgstr ""
+msgstr "FQDN не е валиден"
 
 #: inc/fqdnlabel.class.php:114
 #, php-format
@@ -11500,15 +11504,15 @@ msgstr ""
 
 #: inc/group.class.php:130 inc/group.class.php:762 inc/user.class.php:214
 msgid "Used items"
-msgstr ""
+msgstr "Използвани елементи"
 
 #: inc/group.class.php:133 inc/group.class.php:758 inc/user.class.php:215
 msgid "Managed items"
-msgstr ""
+msgstr "Управлявани елементи"
 
 #: inc/group.class.php:235
 msgid "Visible in a ticket"
-msgstr ""
+msgstr "Видим в заявката"
 
 #: inc/group.class.php:261 inc/group.class.php:476
 msgid "Can be notified"
@@ -11544,7 +11548,7 @@ msgstr ""
 #: inc/group.class.php:336
 msgctxt "button"
 msgid "Remove a user"
-msgstr ""
+msgstr "Премахване на потребител"
 
 #: inc/group.class.php:427 inc/group.class.php:566
 msgid "Attribute of the user containing its groups"
@@ -11612,7 +11616,7 @@ msgstr ""
 #: inc/html.class.php:160 inc/softwarelicense.class.php:444
 msgctxt "adjective"
 msgid "Invalid"
-msgstr ""
+msgstr "Невалиден"
 
 #. TRANS: %1$s is the sign (-or empty), %2$d number of days, %3$d number of
 #. hours,
@@ -11777,7 +11781,7 @@ msgstr ""
 
 #: inc/html.class.php:3043
 msgid "last Friday"
-msgstr ""
+msgstr "Последния петък"
 
 #: inc/html.class.php:3044
 msgid "last Saturday"
@@ -11943,7 +11947,7 @@ msgstr ""
 #: inc/ticket.class.php:200 inc/ticket.class.php:3749
 #: inc/ticket.class.php:3750 inc/ticket.class.php:5981
 msgid "Ticket waiting for your approval"
-msgstr ""
+msgstr "Заявката очаква Вашето потвърждение"
 
 #: inc/infocom.class.php:420
 #, php-format
@@ -12000,7 +12004,7 @@ msgstr ""
 
 #: inc/infocom.class.php:1056
 msgid "Asset lifecycle"
-msgstr ""
+msgstr "Жизнен цикъл на Актива"
 
 #: inc/infocom.class.php:1082 inc/infocom.class.php:1450
 #: inc/infocom.class.php:1682
@@ -12077,7 +12081,7 @@ msgstr "Доживотен"
 #: inc/infocom.class.php:1252
 #, php-format
 msgid "Valid to %s"
-msgstr ""
+msgstr "Валиден до %s"
 
 #: inc/infocom.class.php:1588
 msgid "Comments on financial and administrative information"
@@ -12100,7 +12104,7 @@ msgstr ""
 
 #: inc/ipaddress.class.php:264
 msgid "Other kind of items"
-msgstr ""
+msgstr "Друг вид елементи"
 
 #: inc/ipaddress.class.php:287
 msgid "No IP address found"
@@ -12161,7 +12165,7 @@ msgstr "Свързване към VLAN"
 #: inc/ipnetwork_vlan.class.php:166 inc/networkport_vlan.class.php:163
 #: inc/vlan.class.php:56 inc/vlan.class.php:79 inc/vlan.class.php:163
 msgid "ID TAG"
-msgstr ""
+msgstr "ID TAG"
 
 #: inc/item_devicebattery.class.php:58
 msgid "Manufacturing date"
@@ -12192,7 +12196,7 @@ msgstr ""
 
 #: inc/item_devices.class.php:336
 msgid "bus ID"
-msgstr ""
+msgstr "bus ID"
 
 #: inc/item_devices.class.php:580
 msgid "Type of component"
@@ -12441,11 +12445,11 @@ msgstr ""
 
 #: inc/item_rack.class.php:819
 msgid "asset rear side"
-msgstr ""
+msgstr "Актив - задна страна"
 
 #: inc/item_rack.class.php:820
 msgid "asset front side"
-msgstr ""
+msgstr "Актив - предна страна"
 
 #: inc/item_rack.class.php:831 inc/pdu_rack.class.php:587
 #: inc/rack.class.php:1094
@@ -12500,7 +12504,7 @@ msgstr[1] ""
 
 #: inc/item_ticket.class.php:307
 msgid "Display all items"
-msgstr ""
+msgstr "Покажи всички елементи"
 
 #: inc/item_ticket.class.php:593
 msgid "Or complete search"
@@ -12636,7 +12640,7 @@ msgstr ""
 
 #: inc/itilfollowup.class.php:739
 msgid "If you want to reopen the ticket, you must specify a reason"
-msgstr ""
+msgstr "За да отворите заявка е необходимо да посочите причина"
 
 #: inc/itilfollowup.class.php:792 inc/itilfollowup.class.php:1005
 msgid "Source of followup"
@@ -12648,7 +12652,7 @@ msgstr ""
 
 #: inc/itilfollowup.class.php:981
 msgid "Add to all tickets"
-msgstr ""
+msgstr "Добави във всички заявки"
 
 #: inc/itilfollowup.class.php:982 inc/tickettask.class.php:234
 msgid "See private ones"
@@ -12831,11 +12835,11 @@ msgstr "Използвайте като решение"
 
 #: inc/knowbaseitem.class.php:1607
 msgid "Recent entries"
-msgstr "Последни влизания"
+msgstr "Последно въведени"
 
 #: inc/knowbaseitem.class.php:1610
 msgid "Last updated entries"
-msgstr ""
+msgstr "Последно обновени записи"
 
 #: inc/knowbaseitem.class.php:1613
 msgid "Most popular questions"
@@ -12855,7 +12859,7 @@ msgstr ""
 
 #: inc/knowbaseitem.class.php:1826
 msgid "Knowledge base administration"
-msgstr ""
+msgstr "База знания - администриране"
 
 #: inc/knowbaseitem.class.php:1827
 msgid "Publish in the FAQ"
@@ -12937,11 +12941,11 @@ msgstr ""
 
 #: inc/knowbaseitem_item.class.php:173
 msgid "No linked items"
-msgstr ""
+msgstr "Няма свързани елементи"
 
 #: inc/knowbaseitem_item.class.php:174
 msgid "No knowledge base entries linked"
-msgstr ""
+msgstr "Няма линкове към Базата знания"
 
 #: inc/knowbaseitem_item.class.php:186
 msgid "Linked item"
@@ -12984,7 +12988,7 @@ msgstr ""
 
 #: inc/knowbaseitem_revision.class.php:174
 msgid "Unknown user"
-msgstr ""
+msgstr "Непознат потребител"
 
 #: inc/knowbaseitem_revision.class.php:185
 msgid "show"
@@ -13219,7 +13223,7 @@ msgstr[1] ""
 
 #: inc/lock.class.php:80
 msgid "Locked items"
-msgstr ""
+msgstr "Заключени елементи"
 
 #: inc/lock.class.php:393
 msgctxt "button"
@@ -13403,7 +13407,7 @@ msgstr ""
 #: inc/mailcollector.class.php:425
 msgctxt "button"
 msgid "Get email tickets now"
-msgstr ""
+msgstr "Дръпни имейл заявките сега"
 
 #: inc/mailcollector.class.php:626
 #, php-format
@@ -13468,7 +13472,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1930
 msgid "List of not imported emails"
-msgstr ""
+msgstr "Лист на непотвърдените имейли"
 
 #: inc/mailcollector.class.php:1942
 #, php-format
@@ -14229,7 +14233,7 @@ msgstr ""
 
 #: inc/notificationeventmailing.class.php:264
 msgid "Error in sending the email"
-msgstr ""
+msgstr "Грешка при изпращането на имейла"
 
 #: inc/notificationeventmailing.class.php:271
 #, php-format
@@ -14249,11 +14253,11 @@ msgstr ""
 #: inc/notificationeventmailing.class.php:300
 #, php-format
 msgid "An email was sent to %s"
-msgstr ""
+msgstr "Имейлът беше изпратен на %s"
 
 #: inc/notificationmailing.class.php:91
 msgid "This is a test email."
-msgstr ""
+msgstr "Това е тестов имейл."
 
 #: inc/notificationmailing.class.php:101
 msgid "Mail test"
@@ -14261,11 +14265,11 @@ msgstr ""
 
 #: inc/notificationmailing.class.php:105
 msgid "Failed to send test email to administrator"
-msgstr ""
+msgstr "Неуспешно изпращамне на тестови имейл на администратора"
 
 #: inc/notificationmailing.class.php:110
 msgid "Test email sent to administrator"
-msgstr ""
+msgstr "Тестови имейл е изпратен на администратора"
 
 #: inc/notificationmailing.class.php:160
 msgid "Error inserting email to queue"
@@ -14292,7 +14296,7 @@ msgstr[1] ""
 
 #: inc/notificationmailingsetting.class.php:87
 msgid "From email"
-msgstr ""
+msgstr "От имейл"
 
 #: inc/notificationmailingsetting.class.php:88
 msgid "Address to use in from for sent emails."
@@ -14398,7 +14402,7 @@ msgstr ""
 
 #: inc/notificationmailingsetting.class.php:233
 msgid "Email sender"
-msgstr ""
+msgstr "Имейл изпращач"
 
 #: inc/notificationmailingsetting.class.php:234
 msgid "May be required for some mails providers."
@@ -14518,7 +14522,7 @@ msgstr "Администратор"
 
 #: inc/notificationtarget.class.php:861
 msgid "Entity administrator"
-msgstr ""
+msgstr "Администратор на организацията"
 
 #: inc/notificationtargetcommonitilobject.class.php:117
 msgid "New user in requesters"
@@ -14594,7 +14598,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:735
 msgid "Technician in charge of the ticket"
-msgstr ""
+msgstr "Техник, отговорен за заявката"
 
 #: inc/notificationtargetcommonitilobject.class.php:738
 #: inc/notificationtargetreservation.class.php:58
@@ -14624,7 +14628,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:1425
 msgid "Requester ID"
-msgstr ""
+msgstr "Заявител ID"
 
 #: inc/notificationtargetcommonitilobject.class.php:1427
 #: inc/ruleticket.class.php:386
@@ -14633,7 +14637,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:1435
 msgid "Supplier ID"
-msgstr ""
+msgstr "Снабдител ID"
 
 #: inc/notificationtargetcommonitilobject.class.php:1450
 msgid "Assigned to technicians"
@@ -14645,7 +14649,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:1466
 msgid "Number of unresolved items"
-msgstr ""
+msgstr "Брой неразрешени елементи"
 
 #: inc/notificationtargetcommonitilobject.class.php:1472
 #: inc/notificationtargetproject.class.php:595
@@ -14654,7 +14658,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:1497
 msgid "Category id"
-msgstr ""
+msgstr "Категория ID"
 
 #: inc/notificationtargetcommonitilobject.class.php:1499
 msgid "Category comment"
@@ -14685,7 +14689,7 @@ msgstr ""
 #: inc/notificationtargetcommonitilobject.class.php:1613
 #: inc/notificationtargetticket.class.php:802
 msgid "Status value in database"
-msgstr ""
+msgstr "Статус в базата"
 
 #: inc/notificationtargetconsumableitem.class.php:47
 msgid "Consumables alarm"
@@ -14773,7 +14777,7 @@ msgstr ""
 
 #: inc/notificationtargetobjectlock.class.php:60
 msgid "Item ID"
-msgstr ""
+msgstr "Елемент ID"
 
 #: inc/notificationtargetobjectlock.class.php:61
 msgid "Item Type"
@@ -15028,7 +15032,7 @@ msgstr[1] ""
 #: inc/notificationtargetprojecttask.class.php:474
 #: inc/projecttask.class.php:623
 msgid "Tickets duration"
-msgstr ""
+msgstr "Заявки-продължителност"
 
 #: inc/notificationtargetreservation.class.php:45
 msgid "New reservation"
@@ -15070,11 +15074,11 @@ msgstr ""
 
 #: inc/notificationtargetticket.class.php:80
 msgid "To answer by email, write above this line"
-msgstr ""
+msgstr "За да отговорите чрез имейл, пишете под тази линия"
 
 #: inc/notificationtargetticket.class.php:96
 msgid "To answer by email, write under this line"
-msgstr ""
+msgstr "За да отговорите чрез имейл, пишете над тази линия"
 
 #: inc/notificationtargetticket.class.php:144
 msgid "Update of a ticket"
@@ -15152,7 +15156,7 @@ msgstr ""
 #: inc/ticket.class.php:3147 inc/ticket.class.php:4824
 #: inc/ticket.class.php:4826 inc/ticket.class.php:6963
 msgid "Internal time to resolve"
-msgstr ""
+msgstr "Вътрешно време за решаване"
 
 #: inc/notificationtargetticket.class.php:595
 msgid "Location name"
@@ -15202,8 +15206,8 @@ msgstr ""
 #: inc/ticket.class.php:5226
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Свързана заявка"
+msgstr[1] "Свързани заявки"
 
 #: inc/notificationtargetticket.class.php:761
 msgid "Link"
@@ -15245,7 +15249,7 @@ msgstr ""
 #: inc/notificationtemplatetranslation.class.php:505
 #: inc/queuednotification.class.php:299 inc/queuednotification.class.php:737
 msgid "Email text body"
-msgstr ""
+msgstr "Имейл текст тяло"
 
 #: inc/notificationtemplatetranslation.class.php:148
 msgid "(leave the field empty for a generation from HTML)"
@@ -15256,7 +15260,7 @@ msgstr ""
 #: inc/notificationtemplatetranslation.class.php:506
 #: inc/queuednotification.class.php:289 inc/queuednotification.class.php:736
 msgid "Email HTML body"
-msgstr ""
+msgstr "Имейл HTML тяло"
 
 #: inc/notificationtemplatetranslation.class.php:226
 msgid "Default translation"
@@ -15291,7 +15295,7 @@ msgstr[1] ""
 
 #: inc/notimportedemail.class.php:76
 msgid "Delete emails"
-msgstr ""
+msgstr "Изтрий имейли"
 
 #: inc/notimportedemail.class.php:139 inc/rulemailcollector.class.php:92
 msgid "From email header"
@@ -15320,7 +15324,7 @@ msgstr ""
 
 #: inc/notimportedemail.class.php:239
 msgid "Unable to affect the email to an entity"
-msgstr ""
+msgstr "Правило за организация"
 
 #: inc/notimportedemail.class.php:240
 msgid "Email not found. Impossible import"
@@ -15436,7 +15440,7 @@ msgstr ""
 
 #: inc/olalevel_ticket.class.php:146
 msgid "Automatic actions of OLA"
-msgstr ""
+msgstr "Автоматични действията на OLA"
 
 #: inc/operatingsystemarchitecture.class.php:44 inc/rule.class.php:456
 #: inc/ruledictionnaryoperatingsystemarchitecture.class.php:56
@@ -15884,7 +15888,7 @@ msgstr "Под наблюдение"
 
 #: inc/problem.class.php:734 inc/problem.class.php:784
 msgid "Problems on pending status"
-msgstr ""
+msgstr "Проблеми - В очакване"
 
 #: inc/problem.class.php:750 inc/problem.class.php:800
 msgid "Problems to be processed"
@@ -15892,7 +15896,7 @@ msgstr ""
 
 #: inc/problem.class.php:766 inc/problem.class.php:816
 msgid "Your problems in progress"
-msgstr ""
+msgstr "Твоите Проблеми - В процес"
 
 #: inc/problem.class.php:919
 msgid "Problem followup"
@@ -16011,7 +16015,7 @@ msgstr "Асоциирани елементи на билет"
 #: inc/profile.class.php:672 inc/profile.class.php:983
 #: inc/profile.class.php:2244
 msgid "Default ticket template"
-msgstr ""
+msgstr "Шаблон по подразбиране за заявка"
 
 #: inc/profile.class.php:729 inc/profile.class.php:918
 #: inc/profile.class.php:2419 inc/reminder.class.php:1179
@@ -16075,15 +16079,15 @@ msgstr ""
 #: inc/profile.class.php:1169 inc/profile.class.php:1270
 #: inc/profile.class.php:2344
 msgid "Life cycle of tickets"
-msgstr ""
+msgstr "Жизнен цикъл на заявките"
 
 #: inc/profile.class.php:1172 inc/profile.class.php:2354
 msgid "Life cycle of problems"
-msgstr ""
+msgstr "Жизнен цикъл на проблемите"
 
 #: inc/profile.class.php:1175 inc/profile.class.php:2378
 msgid "Life cycle of changes"
-msgstr ""
+msgstr "Жизнен цикъл на Промените"
 
 #: inc/profile.class.php:1322 inc/queuednotification.class.php:48
 msgid "Notification queue"
@@ -16105,12 +16109,12 @@ msgstr ""
 
 #: inc/profile.class.php:1346
 msgid "Business rules for tickets (entity)"
-msgstr ""
+msgstr "Бизнес првила за Заявки (Организация)"
 
 #: inc/profile.class.php:1350 inc/ruleasset.class.php:49
 #: inc/ruleassetcollection.class.php:45
 msgid "Business rules for assets"
-msgstr ""
+msgstr "Бизнес правила за Активи"
 
 #: inc/profile.class.php:1360 inc/profile.class.php:1368
 #: inc/profile.class.php:2111
@@ -16142,7 +16146,7 @@ msgstr ""
 #: inc/profile.class.php:2026 inc/ruleticket.class.php:51
 #: inc/ruleticketcollection.class.php:67
 msgid "Business rules for tickets"
-msgstr ""
+msgstr "Бизнес правила за заявки"
 
 #: inc/profile.class.php:2605
 msgid "No access"
@@ -16186,7 +16190,7 @@ msgstr ""
 
 #: inc/profile_user.class.php:599
 msgid "No user found"
-msgstr ""
+msgstr "Не са намерени потребители"
 
 #: inc/profile_user.class.php:960 inc/profile_user.class.php:967
 #: inc/profile_user.class.php:972
@@ -16419,7 +16423,7 @@ msgstr ""
 
 #: inc/queuednotification.class.php:226 inc/queuednotification.class.php:704
 msgid "Sender email"
-msgstr ""
+msgstr "Имейл на изпращача"
 
 #: inc/queuednotification.class.php:235 inc/queuednotification.class.php:706
 msgid "Sender name"
@@ -16427,7 +16431,7 @@ msgstr ""
 
 #: inc/queuednotification.class.php:244 inc/queuednotification.class.php:711
 msgid "Recipient email"
-msgstr ""
+msgstr "Имейл на получателя"
 
 #: inc/queuednotification.class.php:253 inc/queuednotification.class.php:713
 msgid "Recipient name"
@@ -16435,7 +16439,7 @@ msgstr ""
 
 #: inc/queuednotification.class.php:262 inc/queuednotification.class.php:718
 msgid "Reply-to email"
-msgstr ""
+msgstr "Отговор на имейл"
 
 #: inc/queuednotification.class.php:280 inc/queuednotification.class.php:727
 msgid "Additional headers"
@@ -16443,7 +16447,7 @@ msgstr ""
 
 #: inc/queuednotification.class.php:308 inc/queuednotification.class.php:725
 msgid "Message ID"
-msgstr ""
+msgstr "Съобщение ID"
 
 #: inc/queuednotification.class.php:317 inc/queuednotification.class.php:698
 msgid "Number of tries of sent"
@@ -16455,7 +16459,7 @@ msgstr ""
 
 #: inc/queuednotification.class.php:457
 msgid "Maximum emails to send at once"
-msgstr ""
+msgstr "Максимален брой имейли за изпращане наведнъж"
 
 #: inc/queuednotification.class.php:460
 msgid "Clean notification queue"
@@ -16467,11 +16471,11 @@ msgstr ""
 
 #: inc/rack.class.php:237
 msgid "Position in room"
-msgstr ""
+msgstr "Позиция в стаята"
 
 #: inc/rack.class.php:261
 msgid "Door orientation in room"
-msgstr ""
+msgstr "Ориентация на вратата в стаята"
 
 #: inc/rack.class.php:266
 msgid "North"
@@ -16652,7 +16656,7 @@ msgstr ""
 
 #: inc/requesttype.class.php:52 inc/requesttype.class.php:80
 msgid "Default for tickets"
-msgstr ""
+msgstr "По подразбиране за заявки"
 
 #: inc/requesttype.class.php:55 inc/requesttype.class.php:89
 msgid "Default for followups"
@@ -16895,7 +16899,7 @@ msgstr ""
 
 #: inc/ruleasset.class.php:186 inc/ruleticket.class.php:718
 msgid "Business rules for ticket (entity parent)"
-msgstr ""
+msgstr "Бизнес првила за заявка"
 
 #: inc/rule.class.php:247
 msgid "Dictionary"
@@ -17032,7 +17036,7 @@ msgstr ""
 
 #: inc/rulecollection.class.php:1281
 msgid "Entity not found"
-msgstr ""
+msgstr "Организацията не е намерена"
 
 #: inc/rulecollection.class.php:1298
 msgid "Criteria refused"
@@ -17040,7 +17044,7 @@ msgstr ""
 
 #: inc/rulecollection.class.php:1330
 msgid "Actions refused"
-msgstr ""
+msgstr "Действията са отказани"
 
 #: inc/rulecollection.class.php:1497
 msgid "Successful importation"
@@ -17366,7 +17370,7 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:88
 msgid "Email body"
-msgstr ""
+msgstr "Тяло на имейла"
 
 #: inc/rulemailcollector.class.php:100
 msgid "In-Reply-To email header"
@@ -17410,11 +17414,11 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:183
 msgid "Entity from domain"
-msgstr ""
+msgstr "Организация от домейн"
 
 #: inc/rulemailcollector.class.php:187 inc/ruleright.class.php:294
 msgid "Entity from TAG"
-msgstr ""
+msgstr "Организация от TAG"
 
 #: inc/rulemailcollector.class.php:191
 msgid "Entity based on user's profile"
@@ -17459,7 +17463,7 @@ msgstr ""
 #: inc/ruleright.class.php:327 inc/user.class.php:2234 inc/user.class.php:2600
 #: inc/user.class.php:3186
 msgid "Default entity"
-msgstr ""
+msgstr "Оррганизация по подразбиране"
 
 #: inc/ruleright.class.php:333 inc/user.class.php:2243
 msgid "Default group"
@@ -17510,7 +17514,7 @@ msgstr ""
 
 #: inc/ruleticket.class.php:404
 msgid "Ticket location"
-msgstr ""
+msgstr "Локация на завката"
 
 #: inc/ruleticket.class.php:524
 msgid "Creation date is a working hour in calendar"
@@ -17729,7 +17733,7 @@ msgstr ""
 
 #: inc/search.class.php:157
 msgid "assets"
-msgstr ""
+msgstr "активи"
 
 #: inc/search.class.php:159
 msgid "Search results for localized items only"
@@ -18203,12 +18207,12 @@ msgstr "Няма генерирани проучвания"
 
 #: inc/ticket.class.php:1286 inc/ticket.class.php:2066
 msgid "Unknown ticket"
-msgstr ""
+msgstr "Непозната заявка"
 
 #: inc/ticket.class.php:1880
 #, php-format
 msgid "Invalid email address %s"
-msgstr ""
+msgstr "Невалиден имейл адрес %s"
 
 #: inc/ticket.class.php:2134
 #, php-format
@@ -18253,7 +18257,7 @@ msgstr ""
 
 #: inc/ticket.class.php:2880
 msgid "Time to own + Progress"
-msgstr ""
+msgstr "Време за взимане + Прогрес"
 
 #: inc/ticket.class.php:2890
 msgid "Time to own exceedeed"
@@ -18346,7 +18350,7 @@ msgstr "Изпрати съобщение"
 #: inc/ticket.class.php:4714
 #, php-format
 msgid "The ticket will be added in the entity %s"
-msgstr ""
+msgstr "Заявката ще бъде добавена в организация %s"
 
 #: inc/ticket.class.php:4848
 msgid "Close date"
@@ -18371,11 +18375,11 @@ msgstr ""
 
 #: inc/ticket.class.php:5591 inc/ticket.class.php:5781
 msgid "Your tickets to close"
-msgstr ""
+msgstr "Вашите заявки за Затваряне"
 
 #: inc/ticket.class.php:5607 inc/ticket.class.php:5674
 msgid "Tickets on pending status"
-msgstr ""
+msgstr "Заявки - В очакване"
 
 #: inc/ticket.class.php:5623 inc/ticket.class.php:5690
 msgid "Tickets to be processed"
@@ -18391,7 +18395,7 @@ msgstr "Вашите заявки в процес на изпълнение"
 
 #: inc/ticket.class.php:5717
 msgid "Your tickets to validate"
-msgstr ""
+msgstr "Вашите завки за валидация"
 
 #: inc/ticket.class.php:5735
 msgid "Your tickets having rejected approval status"
@@ -18424,7 +18428,7 @@ msgstr ""
 
 #: inc/ticket.class.php:6213 inc/ticket.class.php:6225
 msgid "New ticket for this item..."
-msgstr ""
+msgstr "Нова заявка от този елемент..."
 
 #: inc/ticket.class.php:6241
 #, php-format
@@ -18824,13 +18828,13 @@ msgstr ""
 #. open.php
 #: inc/toolbox.class.php:2147
 msgid "NO-VALIDATE-CERT"
-msgstr ""
+msgstr "NO-VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:2149
 msgid "VALIDATE-CERT"
-msgstr ""
+msgstr "VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
@@ -19064,7 +19068,7 @@ msgstr ""
 
 #: inc/user.class.php:2139
 msgid "User missing in LDAP directory"
-msgstr ""
+msgstr "Потребител липсващ в LDAP директорията"
 
 #: inc/user.class.php:2268 inc/user.class.php:2638
 msgid "Remote access keys"
@@ -19197,7 +19201,7 @@ msgstr ""
 
 #: inc/user.class.php:4533 inc/user.class.php:4644
 msgid "Email address not found."
-msgstr ""
+msgstr "Имейл адресът не е намерен."
 
 #: inc/user.class.php:4666
 msgid "User information"
@@ -19214,7 +19218,7 @@ msgstr ""
 
 #: inc/user.class.php:4919
 msgid "Add users from an external source"
-msgstr ""
+msgstr "Добави потребители от външен източник"
 
 #. TRANS: short for : Read method for user authentication and synchronization
 #: inc/user.class.php:4921

@@ -14,6 +14,7 @@
 # Michal Čermák <michal.cermak79@gmail.com>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # Pavel Borecki <pavel.borecki@gmail.com>, 2019
+# David Stepan <stepand@tiscali.cz>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-06-18 10:35+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>, 2019\n"
+"Last-Translator: David Stepan <stepand@tiscali.cz>, 2019\n"
 "Language-Team: Czech (Czech Republic) (https://www.transifex.com/glpi/teams/1637/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1754,7 +1755,7 @@ msgid_plural "Contract"
 msgstr[0] "Smlouva"
 msgstr[1] "Smlouvy"
 msgstr[2] "Smluv"
-msgstr[3] "Smlouvy"
+msgstr[3] "Smlouva"
 
 #. TRANS: %s is a directory
 #: front/cron.php:42
@@ -2046,7 +2047,7 @@ msgstr[3] "Související prvky"
 #: inc/ticket_ticket.class.php:66 inc/user.class.php:2894
 #: inc/user.class.php:4707
 msgid "ID"
-msgstr "Identifikátor"
+msgstr "ID"
 
 #: front/find_num.php:89 inc/blacklist.class.php:232 inc/budget.class.php:339
 #: inc/certificate.class.php:98 inc/certificate.class.php:415
@@ -2208,7 +2209,7 @@ msgstr "Nejčastější dotazy (FAQ)"
 #: inc/config.class.php:630 inc/config.class.php:768 inc/user.class.php:2127
 #: inc/user.class.php:3012
 msgid "Authentication"
-msgstr "Ověření totožnosti"
+msgstr "Autentikace"
 
 #: front/helpdesk.php:85
 msgid "Helpdesk reporting form"
@@ -5061,7 +5062,7 @@ msgstr "MAC adresa"
 #: inc/computervirtualmachine.class.php:354
 #: inc/computervirtualmachine.class.php:608
 msgid "UUID"
-msgstr "nikde se neopak. identifikátor"
+msgstr "UUID"
 
 #: inc/blacklistedmailcontent.class.php:53 inc/dropdown.class.php:832
 msgid "Blacklisted mail content"
@@ -6697,7 +6698,7 @@ msgstr "Spotřeba energie"
 #: inc/commondcmodeldropdown.class.php:98
 #: inc/commondcmodeldropdown.class.php:108
 msgid "watts"
-msgstr "watů"
+msgstr "wattů"
 
 #: inc/commondcmodeldropdown.class.php:107 inc/rack.class.php:305
 msgid "Max. power (in watts)"
@@ -7396,11 +7397,11 @@ msgstr "Odpověď na žádost o schválení"
 
 #: inc/commonitilobject.class.php:6597
 msgid "Followup was already promoted"
-msgstr "Následná komunikace už byla povýšena"
+msgstr "Doplňující zpráva byla již uložena"
 
 #: inc/commonitilobject.class.php:6602
 msgid "Promote to Ticket"
-msgstr "Povýšit požadavku"
+msgstr "Povýšit požadavek"
 
 #: inc/commonitilobject.class.php:6607 inc/knowbaseitem.class.php:200
 #: inc/knowbaseitemtranslation.class.php:91 inc/user.class.php:2385
@@ -7427,7 +7428,7 @@ msgstr "Naposledy upravil %2$s v %1$s "
 #: inc/commonitilobject.class.php:6718
 #, php-format
 msgid "Merged from Ticket %1$s"
-msgstr "Sloučeno z požadavku %1$s"
+msgstr "Spojeno z požadavku%1$s"
 
 #: inc/commonitilobject.class.php:6726
 #, php-format
@@ -7456,7 +7457,7 @@ msgstr "Zobrazit"
 
 #: inc/commonitilobject.class.php:6871
 msgid "Followup promotion source"
-msgstr "Zdroj povýšení následné komunikace"
+msgstr "Zdroj doplňující zprávy"
 
 #: inc/commonitilobject.class.php:6876
 #, php-format
@@ -8086,7 +8087,7 @@ msgid_plural "Memory"
 msgstr[0] "Paměť"
 msgstr[1] "Paměti"
 msgstr[2] "Pamětí"
-msgstr[3] "Paměti"
+msgstr[3] "Paměť"
 
 #: inc/computervirtualmachine.class.php:195
 #: inc/computervirtualmachine.class.php:356 inc/devicegraphiccard.class.php:56
@@ -9467,7 +9468,7 @@ msgstr "Počáteční doba trvání smlouvy"
 #: inc/contract.class.php:724 inc/contract.class.php:1686
 #: inc/notificationtargetcontract.class.php:47
 msgid "Notice"
-msgstr "Výpověď"
+msgstr "Poznámka"
 
 #: inc/contract.class.php:243 inc/contract.class.php:487
 #: inc/contract.class.php:774
@@ -9521,7 +9522,7 @@ msgstr "Počet smluv"
 #: inc/contract.class.php:414 inc/pdu_plug.class.php:126
 #: inc/pdu_plug.class.php:161 inc/softwarelicense.class.php:526
 msgid "Number"
-msgstr "Počet"
+msgstr "Číslo"
 
 #. TRANS: %1$s is Contract, %2$s is field name
 #: inc/contract.class.php:454 inc/contract.class.php:734
@@ -9708,7 +9709,7 @@ msgstr "Vyčistit formulář"
 
 #: inc/crontask.class.php:581 inc/crontask.class.php:788
 msgid "Maintenance mode enabled, running tasks is disabled"
-msgstr "Zapnut režim údržby – úlohy proto není možné spouštět"
+msgstr "Zapnut režim údržby, spouštění úloh je vypnuto"
 
 #: inc/crontask.class.php:688 inc/crontask.class.php:1183
 msgid "Running"
@@ -9862,7 +9863,7 @@ msgstr "Přehled posledního běhu"
 #: inc/stat.class.php:405 inc/ticket.class.php:5962
 msgctxt "quantity"
 msgid "Number"
-msgstr "Počet"
+msgstr "Číslo"
 
 #: inc/crontask.class.php:1263
 msgid "Reset last run"
@@ -17609,7 +17610,7 @@ msgstr "Přepočítat"
 
 #: inc/ruleaction.class.php:400
 msgid "Do not calculate"
-msgstr ""
+msgstr "Nepočítat"
 
 #: inc/ruleaction.class.php:401 inc/ruleaction.class.php:402
 msgid "Send"
@@ -18285,7 +18286,7 @@ msgstr "Žádost o schválení vedoucímu skupiny technika"
 
 #: inc/ruleticket.class.php:700
 msgid "Take into account delay"
-msgstr ""
+msgstr "Vzít v úvahu prodlevu"
 
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
