@@ -744,6 +744,15 @@ function update0723to078() {
                   $changes[$table][] = "ADD INDEX `$newname` (`$newname`)";
                }
                if ($oldname!=$newname && $DB->indexExists($table, $oldname)) {
+                  switch ($oldname) {
+                     //dirty hack for specific ones...
+                     case 'vID':
+                        $oldname = 'sID';
+                        break;
+                     case 'FK_glpi_consumables_type':
+                        $oldname = 'FK_glpi_cartridges_type';
+                        break;
+                  }
                   $changes[$table][]="DROP INDEX `$oldname`";
                }
             }
