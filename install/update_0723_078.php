@@ -2390,88 +2390,88 @@ function update0723to078() {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
                                          'Clean DB: index management'));
 
-   if (!$DB->indexExists('glpi_alerts', 'unicity')) {
+   if (!$DB->indexExists('glpi_alerts', ['itemtype', 'items_id', 'type'], 'unicity')) {
       $changes['glpi_alerts'][] = "ADD UNIQUE `unicity` (`itemtype`, `items_id`, `type`)";
    }
 
-   if (!$DB->indexExists('glpi_cartridges_printermodels', 'unicity')) {
+   if (!$DB->indexExists('glpi_cartridges_printermodels', ['printermodels_id', 'cartridgeitems_id'], 'unicity')) {
       $changes['glpi_cartridges_printermodels'][] = "ADD UNIQUE `unicity` (`printermodels_id`,
                                                                            `cartridgeitems_id`)";
    }
 
-   if (!$DB->indexExists('glpi_computers_items', 'unicity')) {
+   if (!$DB->indexExists('glpi_computers_items', ['itemtype', 'items_id', 'computers_id'], 'unicity')) {
       $changes['glpi_computers_items'][] = "ADD UNIQUE `unicity` (`itemtype`, `items_id`,
                                                                   `computers_id`)";
    }
 
-   if (!$DB->indexExists('glpi_contacts_suppliers', 'unicity')) {
+   if (!$DB->indexExists('glpi_contacts_suppliers', ['suppliers_id', 'contracts_id'], 'unicity')) {
       $changes['glpi_contacts_suppliers'][] = "ADD UNIQUE `unicity` (`suppliers_id`, `contacts_id`)";
    }
 
-   if (!$DB->indexExists('glpi_contracts_items', 'unicity')) {
+   if (!$DB->indexExists('glpi_contracts_items', ['contracts_id', 'itemtype', 'items_id'], 'unicity')) {
       $changes['glpi_contracts_items'][] = "ADD UNIQUE `unicity` (`contracts_id`, `itemtype`,
                                                                   `items_id`)";
    }
 
-   if (!$DB->indexExists('glpi_contracts_items', 'item')) {
+   if (!$DB->indexExists('glpi_contracts_items', ['itemtype', 'items_id'], 'item')) {
       $changes['glpi_contracts_items'][] = "ADD INDEX `item` (`itemtype`, `items_id`)";
    }
 
-   if (!$DB->indexExists('glpi_contracts_suppliers', 'unicity')) {
+   if (!$DB->indexExists('glpi_contracts_suppliers', ['suppliers_id', 'contracts_id'], 'unicity')) {
       $changes['glpi_contracts_suppliers'][] = "ADD UNIQUE `unicity` (`suppliers_id`, `contracts_id`)";
    }
 
-   if (!$DB->indexExists('glpi_displaypreferences', 'unicity')) {
+   if (!$DB->indexExists('glpi_displaypreferences', ['users_id', 'itemtype', 'num'], 'unicity')) {
       $changes['glpi_displaypreferences'][] = "ADD UNIQUE `unicity` (`users_id`, `itemtype`, `num`)";
    }
 
-   if (!$DB->indexExists('glpi_bookmarks_users', 'unicity')) {
+   if (!$DB->indexExists('glpi_bookmarks_users', ['users_id', 'itemtype'], 'unicity')) {
       $changes['glpi_bookmarks_users'][] = "ADD UNIQUE `unicity` (`users_id`, `itemtype`)";
    }
 
-   if (!$DB->indexExists('glpi_documents_items', 'unicity')) {
+   if (!$DB->indexExists('glpi_documents_items', ['docuemnts_id', 'itemtype', 'items_id'], 'unicity')) {
       $changes['glpi_documents_items'][] = "ADD UNIQUE `unicity` (`documents_id`, `itemtype`,
                                                                   `items_id`)";
    }
 
-   if (!$DB->indexExists('glpi_documents_items', 'item')) {
+   if (!$DB->indexExists('glpi_documents_items', ['itemtype', 'items_id'], 'item')) {
       $changes['glpi_documents_items'][] = "ADD INDEX `item` (`itemtype`, `items_id`)";
    }
 
-   if (!$DB->indexExists('glpi_knowbaseitemcategories', 'unicity')) {
+   if (!$DB->indexExists('glpi_knowbaseitemcategories', ['knowbaseitemcategories_id', 'name'], 'unicity')) {
       $changes['glpi_knowbaseitemcategories'][] = "ADD UNIQUE `unicity` (`knowbaseitemcategories_id`,
                                                                          `name`)";
    }
 
-   if (!$DB->indexExists('glpi_locations', 'unicity')) {
+   if (!$DB->indexExists('glpi_locations', ['entities_id', 'locations_id', 'name'], 'unicity')) {
       $changes['glpi_locations'][] = "ADD UNIQUE `unicity` (`entities_id`, `locations_id`, `name`)";
    }
 
-   if ($DB->indexExists('glpi_locations', 'name')) {
+   if ($DB->indexExists('glpi_locations', [], 'name')) {
       $changes['glpi_locations'][] = "DROP INDEX `name` ";
    }
 
-   if (!$DB->indexExists('glpi_netpoints', 'complete')) {
+   if (!$DB->indexExists('glpi_netpoints', ['entities_id', 'locations_id', 'name'], 'complete')) {
       $changes['glpi_netpoints'][] = "ADD INDEX `complete` (`entities_id`, `locations_id`, `name`)";
    }
 
-   if (!$DB->indexExists('glpi_netpoints', 'location_name')) {
+   if (!$DB->indexExists('glpi_netpoints', ['locations_id', 'name'], 'location_name')) {
       $changes['glpi_netpoints'][] = "ADD INDEX `location_name` (`locations_id`, `name`)";
    }
 
-   if (!$DB->indexExists('glpi_entities', 'unicity')) {
+   if (!$DB->indexExists('glpi_entities', ['entities_id', 'name'], 'unicity')) {
       $changes['glpi_entities'][] = "ADD UNIQUE `unicity` (`entities_id`, `name`)";
    }
 
-   if (!$DB->indexExists('glpi_entitydatas', 'unicity')) {
+   if (!$DB->indexExists('glpi_entitydatas', ['entities_id'], 'unicity')) {
       $changes['glpi_entitydatas'][] = "ADD UNIQUE `unicity` (`entities_id`)";
    }
 
-   if (!$DB->indexExists('glpi_events', 'item')) {
+   if (!$DB->indexExists('glpi_events', ['type', 'items_id'], 'item')) {
       $changes['glpi_events'][] = "ADD INDEX `item` (`type`, `items_id`)";
    }
 
-   if (!$DB->indexExists('glpi_infocoms', 'unicity')) {
+   if (!$DB->indexExists('glpi_infocoms', ['itemtype', 'items_id'], 'unicity')) {
       $changes['glpi_infocoms'][] = "ADD UNIQUE `unicity` (`itemtype`, `items_id`)";
    }
    if (!$DB->indexExists('glpi_knowbaseitems', 'date_mod')) {
@@ -2482,28 +2482,28 @@ function update0723to078() {
       $changes['glpi_networkequipments'][] = "ADD INDEX `date_mod` (`date_mod`)";
    }
 
-   if (!$DB->indexExists('glpi_links_itemtypes', 'unicity')) {
+   if (!$DB->indexExists('glpi_links_itemtypes', ['itemtype', 'links_id'], 'unicity')) {
       $changes['glpi_links_itemtypes'][] = "ADD UNIQUE `unicity` (`itemtype`, `links_id`)";
    }
 
-   if (!$DB->indexExists('glpi_mailingsettings', 'unicity')) {
+   if (!$DB->indexExists('glpi_mailingsettings', ['type', 'items_id', 'mailingtype'], 'unicity')) {
       $changes['glpi_mailingsettings'][] = "ADD UNIQUE `unicity` (`type`, `items_id`, `mailingtype`)";
    }
 
-   if (!$DB->indexExists('glpi_networkports', 'item')) {
+   if (!$DB->indexExists('glpi_networkports', ['itemtype', 'items_id'], 'item')) {
       $changes['glpi_networkports'][] = "ADD INDEX `item` (`itemtype`, `items_id`)";
    }
 
-   if (!$DB->indexExists('glpi_networkports_vlans', 'unicity')) {
+   if (!$DB->indexExists('glpi_networkports_vlans', ['networkports_id', 'vlans_id'], 'unicity')) {
       $changes['glpi_networkports_vlans'][] = "ADD UNIQUE `unicity` (`networkports_id`, `vlans_id`)";
    }
 
-   if (!$DB->indexExists('glpi_networkports_networkports', 'unicity')) {
+   if (!$DB->indexExists('glpi_networkports_networkports', ['networkports_id_1', 'networkports_id_2'], 'unicity')) {
       $changes['glpi_networkports_networkports'][] = "ADD UNIQUE `unicity` (`networkports_id_1`,
                                                                             `networkports_id_2`)";
    }
 
-   if (!$DB->indexExists('glpi_ocslinks', 'unicity')) {
+   if (!$DB->indexExists('glpi_ocslinks', ['ocsservers_id', 'ocsid'], 'unicity')) {
       $changes['glpi_ocslinks'][] = "ADD UNIQUE `unicity` (`ocsservers_id`, `ocsid`)";
    }
 
@@ -2515,7 +2515,7 @@ function update0723to078() {
       $changes['glpi_phones'][] = "ADD INDEX `date_mod` (`date_mod`)";
    }
 
-   if (!$DB->indexExists('glpi_plugins', 'unicity')) {
+   if (!$DB->indexExists('glpi_plugins', 'directory', 'unicity')) {
       $changes['glpi_plugins'][] = "ADD UNIQUE `unicity` (`directory`)";
    }
 
@@ -2527,11 +2527,11 @@ function update0723to078() {
       $changes['glpi_reminders'][] = "ADD INDEX `date_mod` (`date_mod`)";
    }
 
-   if (!$DB->indexExists('glpi_reservationitems', 'item')) {
+   if (!$DB->indexExists('glpi_reservationitems', ['itemtype', 'items_id'], 'item')) {
       $changes['glpi_reservationitems'][] = "ADD INDEX `item` (`itemtype`, `items_id`)";
    }
 
-   if (!$DB->indexExists('glpi_tickets', 'item')) {
+   if (!$DB->indexExists('glpi_tickets', ['itemtype', 'items_id'], 'item')) {
       $changes['glpi_tickets'][] = "ADD INDEX `item` (`itemtype`, `items_id`)";
    }
 
@@ -2539,19 +2539,19 @@ function update0723to078() {
       $changes['glpi_documenttypes'][] = "ADD INDEX `date_mod` (`date_mod`)";
    }
 
-   if (!$DB->indexExists('glpi_documenttypes', 'unicity')) {
+   if (!$DB->indexExists('glpi_documenttypes', 'ext', 'unicity')) {
       $changes['glpi_documenttypes'][] = "ADD UNIQUE `unicity` (`ext`)";
    }
-   if (!$DB->indexExists('glpi_users', 'unicity')) {
+   if (!$DB->indexExists('glpi_users', 'name', 'unicity')) {
       $changes['glpi_users'][] = "ADD UNIQUE `unicity` (`name`)";
    }
    if (!$DB->indexExists('glpi_users', 'date_mod')) {
       $changes['glpi_users'][] = "ADD INDEX `date_mod` (`date_mod`)";
    }
-   if (!$DB->indexExists('glpi_users', 'authitem')) {
+   if (!$DB->indexExists('glpi_users', ['authtype', 'auths_id'], 'authitem')) {
       $changes['glpi_users'][] = "ADD INDEX `authitem` (`authtype`, `auths_id`)";
    }
-   if (!$DB->indexExists('glpi_groups_users', 'unicity')) {
+   if (!$DB->indexExists('glpi_groups_users', ['users_id', 'groups_id'], 'unicity')) {
       $changes['glpi_groups_users'][] = "ADD UNIQUE `unicity` (`users_id`, `groups_id`)";
    }
 
