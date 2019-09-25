@@ -1011,7 +1011,6 @@ class Item_Ticket extends CommonDBRelation{
 
       $union = new \QueryUnion();
       foreach ($itemtypes as $type) {
-         //TODO: migrate when iterator usuports UNION
          $table = getTableForItemType($type);
          $union->addQuery([
             'SELECT' => [
