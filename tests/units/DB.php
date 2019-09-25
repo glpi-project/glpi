@@ -320,19 +320,21 @@ class DB extends \GLPITestCase {
 
    public function testIndexExists() {
       $this
-         ->boolean($this->db->indexExists('glpi_configs', 'fakeField'))->isFalse()
-         ->boolean($this->db->indexExists('glpi_configs', 'id'))->isTrue()
-         ->boolean($this->db->indexExists('glpi_configs', 'context'))->isFalse()
-         ->boolean($this->db->indexExists('glpi_configs', 'name'))->isFalse()
-         ->boolean($this->db->indexExists('glpi_configs', ['name', 'context']))->isTrue()
-         ->boolean($this->db->indexExists('glpi_groups_tickets', ['tickets_id', 'type'], 'unicity'))->isTrue()
-         ->boolean($this->db->indexExists('glpi_groups_tickets', ['tickets_id', 'type', 'groups_id']))->isTrue()
-         ->boolean($this->db->indexExists('glpi_configs', 'value'))->isFalse()
-         ->boolean($this->db->indexExists('glpi_users', 'locations_id'))->isTrue()
-         ->boolean($this->db->indexExists('glpi_users', [], 'unicityloginauth'))->isTrue()
+         ->if($this->newTestedInstance)
+         ->then
+         ->boolean($this->testedInstance->indexExists('glpi_configs', 'fakeField'))->isFalse()
+         ->boolean($this->testedInstance->indexExists('glpi_configs', 'id'))->isTrue()
+         ->boolean($this->testedInstance->indexExists('glpi_configs', 'context'))->isFalse()
+         ->boolean($this->testedInstance->indexExists('glpi_configs', 'name'))->isFalse()
+         ->boolean($this->testedInstance->indexExists('glpi_configs', ['name', 'context']))->isTrue()
+         ->boolean($this->testedInstance->indexExists('glpi_groups_tickets', ['tickets_id', 'type'], 'unicity'))->isTrue()
+         ->boolean($this->testedInstance->indexExists('glpi_groups_tickets', ['tickets_id', 'type', 'groups_id']))->isTrue()
+         ->boolean($this->testedInstance->indexExists('glpi_configs', 'value'))->isFalse()
+         ->boolean($this->testedInstance->indexExists('glpi_users', 'locations_id'))->isTrue()
+         ->boolean($this->testedInstance->indexExists('glpi_users', [], 'unicityloginauth'))->isTrue()
          ->when(
             function () {
-               $this->boolean($this->db->indexExists('fakeTable', 'id'))->isFalse();
+               $this->boolean($this->testedInstance->indexExists('fakeTable', 'id'))->isFalse();
             }
          )->error
             ->withType(E_USER_WARNING)
@@ -341,7 +343,9 @@ class DB extends \GLPITestCase {
 
    public function testListIndexes() {
        $this
-         ->array($this->db->listIndexes('glpi_groups_tickets'))
+         ->if($this->newTestedInstance)
+         ->then
+         ->array($this->testedInstance->listIndexes('glpi_groups_tickets'))
          ->isIdenticalTo([
             'PRIMARY' => [
                0 => 'id',
@@ -358,7 +362,7 @@ class DB extends \GLPITestCase {
          ]);
 
        $this
-          ->array($this->db->listIndexes('glpi_users'))
+          ->array($this->testedInstance->listIndexes('glpi_users'))
          ->isIdenticalTo([
             'PRIMARY' => [
                0 => 'id'
