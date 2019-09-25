@@ -872,20 +872,22 @@ class Impact extends CommonGLPI {
 
       // Bind the backend values to the client and start the network
       echo  Html::scriptBlock("
-         GLPIImpact.prepareNetwork(
-            $(\"#network_container\"),
-            '$locales',
-            {
-               default : '$default',
-               forward : '$forward',
-               backward: '$backward',
-               both    : '$both',
-            },
-            '$start_node',
-            '$form',
-            '$dialogs',
-            '$toolbar'
-         )
+         $(function() {
+            GLPIImpact.prepareNetwork(
+               $(\"#network_container\"),
+               '$locales',
+               {
+                  default : '$default',
+                  forward : '$forward',
+                  backward: '$backward',
+                  both    : '$both',
+               },
+               '$start_node',
+               '$form',
+               '$dialogs',
+               '$toolbar'
+            )
+         });
       ");
    }
 
