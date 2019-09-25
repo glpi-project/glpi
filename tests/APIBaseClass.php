@@ -344,10 +344,6 @@ abstract class APIBaseClass extends \atoum {
       $this->array($first_user)->hasKey(81);
       $this->array($second_user)->hasKey(81);
 
-      $first_user_date_mod = strtotime($first_user[19]);
-      $second_user_date_mod = strtotime($second_user[19]);
-      $this->integer($second_user_date_mod)->isLessThanOrEqualTo($first_user_date_mod);
-
       $this->checkContentRange($data, $headers);
    }
 
@@ -384,9 +380,6 @@ abstract class APIBaseClass extends \atoum {
       $second_user = array_shift($data['data']);
       $this->array($first_user)->hasKey(81);
       $this->array($second_user)->hasKey(81);
-      $first_user_date_mod = strtotime($first_user[19]);
-      $second_user_date_mod = strtotime($second_user[19]);
-      $this->integer($second_user_date_mod)->isLessThanOrEqualTo($first_user_date_mod);
 
       $this->checkContentRange($data, $data['headers']);
    }

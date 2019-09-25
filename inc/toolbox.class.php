@@ -2437,6 +2437,44 @@ class Toolbox {
       if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-empty.sql")) {
          echo "Errors occurred inserting default database";
       } else {
+         //dataset
+         Session::loadLanguage($lang, false); // Load default language locales to translate empty data
+         $tables = require_once(__DIR__ . '/../install/empty_data.php');
+         Session::loadLanguage('', false); // Load back session language
+
+         foreach ($tables as $table => $data) {
+            $reference = array_replace(
+               $data[0],
+               array_fill_keys(
+                  array_keys($data[0]),
+                  new QueryParam()
+               )
+            );
+
+            $stmt = $DB->prepare($DB->buildInsert($table, $reference));
+            if (false === $stmt) {
+               $msg = "Error preparing statement in table $table";
+               throw new \RuntimeException($msg);
+            }
+
+            $types = str_repeat('s', count($data[0]));
+            foreach ($data as $row) {
+               $res = $stmt->bind_param($types, ...array_values($row));
+               if (false === $res) {
+                  $msg = "Error binding params in table $table\n";
+                  $msg .= print_r($row, true);
+                  throw new \RuntimeException($msg);
+               }
+               $res = $stmt->execute();
+               if (false === $res) {
+                  $msg = $stmt->error;
+                  $msg .= "\nError execution statement in table $table\n";
+                  $msg .= print_r($row, true);
+                  throw new \RuntimeException($msg);
+               }
+            }
+         }
+
          // update default language
          Config::setConfigurationValues(
             'core',
