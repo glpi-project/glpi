@@ -834,7 +834,7 @@ function update042to05() {
       $DB->queryOrDie($query, "0.5 alter field is_template");
    }
 
-   if (!isIndex("glpi_computers", "is_template")) {
+   if (!$DB->indexExists("glpi_computers", "is_template")) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD INDEX (`is_template`) ";
       $DB->queryOrDie($query, "5");
@@ -887,7 +887,7 @@ function update042to05() {
       $DB->queryOrDie($query, "0.5 alter field date_mod");
    }
 
-   if (!isIndex("glpi_computers", "date_mod")) {
+   if (!$DB->indexExists("glpi_computers", "date_mod")) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD INDEX (`date_mod`) ";
       $DB->queryOrDie($query, "5");
@@ -1118,31 +1118,31 @@ function update042to05() {
       $DB->queryOrDie($query, "Error creating table docs");
    }
 
-   if (!isIndex("glpi_contacts", "deleted")) {
+   if (!$DB->indexExists("glpi_contacts", "deleted")) {
       $query = "ALTER TABLE `glpi_contacts`
                 ADD INDEX `deleted` (`deleted`) ";
       $DB->queryOrDie($query, "0.5 alter field deleted");
    }
 
-   if (!isIndex("glpi_contacts", "type")) {
+   if (!$DB->indexExists("glpi_contacts", "type")) {
       $query = "ALTER TABLE `glpi_contacts`
                 ADD INDEX `type` (`type`) ";
       $DB->queryOrDie($query, "0.5 alter field type");
    }
 
-   if (!isIndex("glpi_event_log", "itemtype")) {
+   if (!$DB->indexExists("glpi_event_log", "itemtype")) {
       $query = "ALTER TABLE `glpi_event_log`
                 ADD INDEX (`itemtype`) ";
       $DB->queryOrDie($query, "0.5 alter field itemtype");
    }
 
-   if (!isIndex("glpi_followups", "date")) {
+   if (!$DB->indexExists("glpi_followups", "date")) {
       $query = "ALTER TABLE `glpi_followups`
                 ADD INDEX (`date`) ";
       $DB->queryOrDie($query, "0.5 alter field date");
    }
 
-   if (!isIndex("glpi_tracking", "category")) {
+   if (!$DB->indexExists("glpi_tracking", "category")) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD INDEX (`category`) ";
       $DB->queryOrDie($query, "0.5 alter field category");
@@ -1179,7 +1179,7 @@ function update042to05() {
    }
 
    if ($DB->tableExists("glpi_prefs")&&!$DB->fieldExists("glpi_prefs", "username", false)) {
-      if (isIndex("glpi_prefs", "user")) {
+      if ($DB->indexExists("glpi_prefs", "user")) {
          $query = " ALTER TABLE `glpi_prefs`
                     DROP INDEX `user`";
          $DB->queryOrDie($query, "0.5 drop key user");

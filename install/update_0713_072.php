@@ -578,7 +578,7 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 add title in glpi_users");
    }
 
-   if (!isIndex("glpi_users", "title")) {
+   if (!$DB->indexExists("glpi_users", "title")) {
       $query = " ALTER TABLE `glpi_users`
                 ADD INDEX `title` (`title`)";
       $DB->queryOrDie($query, "0.72 add index on title in glpi_users");
@@ -608,13 +608,13 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 add type in glpi_users");
    }
 
-   if (!isIndex("glpi_users", "type")) {
+   if (!$DB->indexExists("glpi_users", "type")) {
       $query = " ALTER TABLE `glpi_users`
                  ADD INDEX `type` (`type`)";
       $DB->queryOrDie($query, "0.72 add index on type in glpi_users");
    }
 
-   if (!isIndex("glpi_users", "active")) {
+   if (!$DB->indexExists("glpi_users", "active")) {
       $query = " ALTER TABLE `glpi_users`
                  ADD INDEX `active` (`active`)";
       $DB->queryOrDie($query, "0.72 add index on active in glpi_users");
@@ -973,25 +973,25 @@ function update0713to072() {
    }
 
    // INDEX key order change
-   if (isIndex("glpi_contract_device", "FK_contract")) {
+   if ($DB->indexExists("glpi_contract_device", "FK_contract")) {
       $query = "ALTER TABLE `glpi_contract_device`
                 DROP INDEX `FK_contract`";
       $DB->queryOrDie($query, "0.72 drop index FK_contract on glpi_contract_device");
    }
 
-   if (!isIndex("glpi_contract_device", "FK_contract_device")) {
+   if (!$DB->indexExists("glpi_contract_device", "FK_contract_device")) {
       $query = "ALTER TABLE `glpi_contract_device`
                 ADD UNIQUE INDEX `FK_contract_device` (`FK_contract` , `device_type`, `FK_device` )";
       $DB->queryOrDie($query, "0.72 add index FK_contract_device in glpi_contract_device");
    }
 
-   if (isIndex("glpi_doc_device", "FK_doc")) {
+   if ($DB->indexExists("glpi_doc_device", "FK_doc")) {
       $query = "ALTER TABLE `glpi_doc_device`
                 DROP INDEX `FK_doc`";
       $DB->queryOrDie($query, "0.72 drop index FK_doc on glpi_doc_device");
    }
 
-   if (!isIndex("glpi_doc_device", "FK_doc_device")) {
+   if (!$DB->indexExists("glpi_doc_device", "FK_doc_device")) {
       $query = "ALTER TABLE `glpi_doc_device`
                 ADD UNIQUE INDEX `FK_doc_device` (`FK_doc` , `device_type`, `FK_device` )";
       $DB->queryOrDie($query, "0.72 add index FK_doc_device in glpi_doc_device");
@@ -1025,28 +1025,28 @@ function update0713to072() {
    }
 
    //// Clean DB
-   if (isIndex("glpi_alerts", "item") && isIndex("glpi_alerts", "alert")) {
+   if ($DB->indexExists("glpi_alerts", "item") && $DB->indexExists("glpi_alerts", "alert")) {
       $query = "ALTER TABLE `glpi_alerts`
                 DROP INDEX `item`";
       $DB->queryOrDie($query, "0.72 drop item index on glpi_alerts");
    }
 
-   if (isIndex("glpi_alerts", "device_type") && isIndex("glpi_alerts", "alert")) {
+   if ($DB->indexExists("glpi_alerts", "device_type") && $DB->indexExists("glpi_alerts", "alert")) {
       $query = "ALTER TABLE `glpi_alerts`
                 DROP INDEX `device_type`";
       $DB->queryOrDie($query, "0.72 drop device_type index on glpi_alerts");
    }
 
-   if (isIndex("glpi_cartridges_assoc", "FK_glpi_type_printer_2")
-       && isIndex("glpi_cartridges_assoc", "FK_glpi_type_printer")) {
+   if ($DB->indexExists("glpi_cartridges_assoc", "FK_glpi_type_printer_2")
+       && $DB->indexExists("glpi_cartridges_assoc", "FK_glpi_type_printer")) {
 
       $query = "ALTER TABLE `glpi_cartridges_assoc`
                 DROP INDEX `FK_glpi_type_printer_2`";
       $DB->queryOrDie($query, "0.72 drop FK_glpi_type_printer_2 index on glpi_cartridges_assoc");
    }
 
-   if (isIndex("glpi_computer_device", "device_type")
-       && isIndex("glpi_computer_device", "device_type_2")) {
+   if ($DB->indexExists("glpi_computer_device", "device_type")
+       && $DB->indexExists("glpi_computer_device", "device_type_2")) {
 
       $query = "ALTER TABLE `glpi_computer_device`
                 DROP INDEX `device_type`";
@@ -1058,7 +1058,7 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 rename device_type_2 index on glpi_computer_device");
    }
 
-   if (isIndex("glpi_connect_wire", "end1") && isIndex("glpi_connect_wire", "end1_1")) {
+   if ($DB->indexExists("glpi_connect_wire", "end1") && $DB->indexExists("glpi_connect_wire", "end1_1")) {
       $query = "ALTER TABLE `glpi_connect_wire`
                 DROP INDEX `end1`";
       $DB->queryOrDie($query, "0.72 drop end1 index on glpi_connect_wire");
@@ -1069,31 +1069,31 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 rename end1_1 index on glpi_connect_wire");
    }
 
-   if (isIndex("glpi_contract_enterprise", "FK_enterprise")
-       && isIndex("glpi_contract_enterprise", "FK_enterprise_2")) {
+   if ($DB->indexExists("glpi_contract_enterprise", "FK_enterprise")
+       && $DB->indexExists("glpi_contract_enterprise", "FK_enterprise_2")) {
 
       $query = "ALTER TABLE `glpi_contract_enterprise`
                 DROP INDEX `FK_enterprise_2`";
       $DB->queryOrDie($query, "0.72 drop FK_enterprise_2 index on glpi_contract_enterprise");
    }
 
-   if (isIndex("glpi_contact_enterprise", "FK_enterprise")
-       && isIndex("glpi_contact_enterprise", "FK_enterprise_2")) {
+   if ($DB->indexExists("glpi_contact_enterprise", "FK_enterprise")
+       && $DB->indexExists("glpi_contact_enterprise", "FK_enterprise_2")) {
 
       $query = "ALTER TABLE `glpi_contact_enterprise`
                 DROP INDEX `FK_enterprise_2`";
       $DB->queryOrDie($query, "0.72 drop FK_enterprise_2 index on glpi_contact_enterprise");
    }
 
-   if (isIndex("glpi_contract_device", "FK_contract_2")
-       && isIndex("glpi_contract_device", "FK_contract_device")) {
+   if ($DB->indexExists("glpi_contract_device", "FK_contract_2")
+       && $DB->indexExists("glpi_contract_device", "FK_contract_device")) {
 
       $query = "ALTER TABLE `glpi_contract_device`
                 DROP INDEX `FK_contract_2`";
       $DB->queryOrDie($query, "0.72 drop FK_contract_2 index on glpi_contract_device");
    }
 
-   if (isIndex("glpi_display", "type") && isIndex("glpi_display", "type_2")) {
+   if ($DB->indexExists("glpi_display", "type") && $DB->indexExists("glpi_display", "type_2")) {
       $query = "ALTER TABLE `glpi_display`
                 DROP INDEX `type`";
       $DB->queryOrDie($query, "0.72 drop type index on glpi_display");
@@ -1104,14 +1104,14 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 rename type_2 index on glpi_display");
    }
 
-   if (isIndex("glpi_doc_device", "FK_doc_2") && isIndex("glpi_doc_device", "FK_doc_device")) {
+   if ($DB->indexExists("glpi_doc_device", "FK_doc_2") && $DB->indexExists("glpi_doc_device", "FK_doc_device")) {
       $query = "ALTER TABLE `glpi_doc_device`
                 DROP INDEX `FK_doc_2`";
       $DB->queryOrDie($query, "0.72 drop FK_doc_2 index on glpi_doc_device");
    }
 
-   if (isIndex("glpi_links_device", "device_type")
-       && isIndex("glpi_links_device", "device_type_2")) {
+   if ($DB->indexExists("glpi_links_device", "device_type")
+       && $DB->indexExists("glpi_links_device", "device_type_2")) {
 
       $query = "ALTER TABLE `glpi_links_device`
                 DROP INDEX `device_type`";
@@ -1123,28 +1123,28 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 rename device_type_2 index on glpi_links_device");
    }
 
-   if (isIndex("glpi_mailing", "item_type") && isIndex("glpi_mailing", "items")) {
+   if ($DB->indexExists("glpi_mailing", "item_type") && $DB->indexExists("glpi_mailing", "items")) {
       $query = "ALTER TABLE `glpi_mailing`
                 DROP INDEX `item_type`";
       $DB->queryOrDie($query, "0.72 drop item_type index on glpi_mailing");
    }
 
-   if (isIndex("glpi_mailing", "type") && isIndex("glpi_mailing", "mailings")) {
+   if ($DB->indexExists("glpi_mailing", "type") && $DB->indexExists("glpi_mailing", "mailings")) {
       $query = "ALTER TABLE `glpi_mailing`
                 DROP INDEX `type`";
       $DB->queryOrDie($query, "0.72 drop type index on glpi_mailing");
    }
 
-   if (isIndex("glpi_networking_ports", "on_device_2")
-       && isIndex("glpi_networking_ports", "on_device")) {
+   if ($DB->indexExists("glpi_networking_ports", "on_device_2")
+       && $DB->indexExists("glpi_networking_ports", "on_device")) {
 
       $query = "ALTER TABLE `glpi_networking_ports`
                 DROP INDEX `on_device_2`";
       $DB->queryOrDie($query, "0.72 drop on_device_2 index on glpi_networking_ports");
    }
 
-   if (isIndex("glpi_networking_vlan", "FK_port")
-       && isIndex("glpi_networking_vlan", "FK_port_2")) {
+   if ($DB->indexExists("glpi_networking_vlan", "FK_port")
+       && $DB->indexExists("glpi_networking_vlan", "FK_port_2")) {
 
       $query = "ALTER TABLE `glpi_networking_vlan`
                 DROP INDEX `FK_port`";
@@ -1156,7 +1156,7 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 rename FK_port_2 index on glpi_networking_vlan");
    }
 
-   if (isIndex("glpi_networking_wire", "end1") && isIndex("glpi_networking_wire", "end1_1")) {
+   if ($DB->indexExists("glpi_networking_wire", "end1") && $DB->indexExists("glpi_networking_wire", "end1_1")) {
       $query = "ALTER TABLE `glpi_networking_wire`
                 DROP INDEX `end1`";
       $DB->queryOrDie($query, "0.72 drop end1 index on glpi_networking_wire");
@@ -1167,8 +1167,8 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 rename end1_1 index on glpi_networking_wire");
    }
 
-   if (isIndex("glpi_reservation_item", "device_type")
-       && isIndex("glpi_reservation_item", "device_type_2")) {
+   if ($DB->indexExists("glpi_reservation_item", "device_type")
+       && $DB->indexExists("glpi_reservation_item", "device_type_2")) {
 
       $query = "ALTER TABLE `glpi_reservation_item`
                 DROP INDEX `device_type`";
@@ -1180,7 +1180,7 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 rename device_type_2 index on glpi_reservation_item");
    }
 
-   if (isIndex("glpi_users_groups", "FK_users") && isIndex("glpi_users_groups", "FK_users_2")) {
+   if ($DB->indexExists("glpi_users_groups", "FK_users") && $DB->indexExists("glpi_users_groups", "FK_users_2")) {
       $query = "ALTER TABLE `glpi_users_groups`
                 DROP INDEX `FK_users_2`";
       $DB->queryOrDie($query, "0.72 drop FK_users_2 index on glpi_users_groups");
@@ -1234,7 +1234,7 @@ function update0713to072() {
    }
 
    // Duplicate index with PRIMARY
-   if (isIndex("glpi_monitors", "ID")) {
+   if ($DB->indexExists("glpi_monitors", "ID")) {
       $query = "ALTER TABLE `glpi_monitors`
                 DROP INDEX `ID`";
       $DB->queryOrDie($query, "0.72 drop ID index on glpi_monitors");

@@ -91,7 +91,7 @@ function update0781to0782($output = 'HTML') {
              WHERE `language` = 'sl_SL';";
    $DB->queryOrDie($query, "0.78.2 clean sl_SL langage");
 
-   if (isIndex('glpi_computers_items', 'unicity')) {
+   if ($DB->indexExists('glpi_computers_items', 'unicity')) {
       $query = "ALTER TABLE `glpi_computers_items` DROP INDEX `unicity`";
       $DB->queryOrDie($query, "0.78.2 drop unicity index for glpi_computers_items");
 
