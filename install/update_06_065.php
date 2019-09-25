@@ -36,19 +36,19 @@ function update06to065() {
 
        echo "<p class='center'>Version 0.65 </p>";
 
-   if (!$DB->indexExists("glpi_networking_ports", "on_device_2")) {
+   if (!$DB->indexExists("glpi_networking_ports", [], "on_device_2")) {
       $query = "ALTER TABLE `glpi_networking_ports`
                 ADD INDEX (`on_device`) ";
       $DB->queryOrDie($query, "0.65");
    }
 
-   if (!$DB->indexExists("glpi_networking_ports", "device_type")) {
+   if (!$DB->indexExists("glpi_networking_ports", [], "device_type")) {
       $query = "ALTER TABLE `glpi_networking_ports`
                 ADD INDEX (`device_type`) ";
       $DB->queryOrDie($query, "0.65");
    }
 
-   if (!$DB->indexExists("glpi_computer_device", "FK_device")) {
+   if (!$DB->indexExists("glpi_computer_device", [], "FK_device")) {
       $query = "ALTER TABLE `glpi_computer_device`
                 ADD INDEX (`FK_device`) ";
       $DB->queryOrDie($query, "0.65");
@@ -248,7 +248,7 @@ function update06to065() {
       }
    }
 
-   if (!$DB->indexExists("glpi_tracking_planning", "id_assign")) {
+   if (!$DB->indexExists("glpi_tracking_planning", [], "id_assign")) {
       $query = "ALTER TABLE `glpi_tracking_planning`
                 ADD INDEX ( `id_assign` ) ";
       $DB->queryOrDie($query, "0.65 add index for id_assign in tracking_planning");
@@ -738,7 +738,7 @@ function update06to065() {
          $DB->queryOrDie($query, "0.65 alter various fields in device_$dev");
       }
 
-      if (!$DB->indexExists("glpi_device_$dev", "designation")) {
+      if (!$DB->indexExists("glpi_device_$dev", [], "designation")) {
          $query = "ALTER TABLE `glpi_device_$dev`
                    ADD INDEX (`designation`)";
          $DB->queryOrDie($query, "0.65 alter various fields in device_$dev");
@@ -1176,7 +1176,7 @@ function update06to065() {
                 "software", "users"];
 
    foreach ($tbl as $t) {
-      if (!$DB->indexExists("glpi_$t", "name")) {
+      if (!$DB->indexExists("glpi_$t", [], "name")) {
          $query = "ALTER TABLE `glpi_$t`
                    ADD INDEX (`name`) ";
          $DB->queryOrDie($query, "0.65 add index in name field $t");
@@ -1186,7 +1186,7 @@ function update06to065() {
    $result = $DB->listTables();
    while ($line = $result->next()) {
       if (strstr($line['TABLE_NAME'], "glpi_dropdown") || strstr($line['TABLE_NAME'], "glpi_type")) {
-         if (!$DB->indexExists($line['TABLE_NAME'], "name")) {
+         if (!$DB->indexExists($line['TABLE_NAME'], [], "name")) {
             $query = "ALTER TABLE `".$line['TABLE_NAME']."`
                       ADD INDEX (`name`) ";
             $DB->queryOrDie($query, "0.65 add index in name field ".$line['TABLE_NAME']."");
@@ -1194,7 +1194,7 @@ function update06to065() {
       }
    }
 
-   if (!$DB->indexExists("glpi_reservation_item", "device_type_2")) {
+   if (!$DB->indexExists("glpi_reservation_item", [], "device_type_2")) {
       $query = "ALTER TABLE `glpi_reservation_item`
                 ADD INDEX  `device_type_2` (`device_type`, `id_device`) ";
       $DB->queryOrDie($query, "0.65 add index in reservation_item ");

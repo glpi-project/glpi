@@ -473,7 +473,7 @@ function update0782to080() {
       $migration->dropField("glpi_softwares", "operatingsystems_id");
    }
 
-   if (!$DB->indexExists("glpi_computers_softwareversions", "unicity")) {
+   if (!$DB->indexExists("glpi_computers_softwareversions", [], "unicity")) {
       // clean datas
       $query = "SELECT `computers_id`,
                        `softwareversions_id`,

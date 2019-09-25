@@ -152,7 +152,7 @@ function update07to071() {
                 CHANGE `author` `FK_users` INT( 11 ) NOT NULL DEFAULT '0'";
       $DB->queryOrDie($query, "0.71 rename author in glpi_reminder");
 
-      if ($DB->indexExists("glpi_reminder", "author")) {
+      if ($DB->indexExists("glpi_reminder", [], "author")) {
          $query = "ALTER TABLE `glpi_reminder`
                    DROP INDEX `author`";
          $DB->queryOrDie($query, "0.7 drop index author on glpi_reminder");
@@ -199,7 +199,7 @@ function update07to071() {
       $DB->queryOrDie($query, "0.71 alter title to namein glpi_reminder");
    }
 
-   if (!$DB->indexExists("glpi_ocs_link", "last_ocs_update")) {
+   if (!$DB->indexExists("glpi_ocs_link", [], "last_ocs_update")) {
       $query = "ALTER TABLE `glpi_ocs_link`
                 ADD INDEX `last_ocs_update` (`ocs_server_id`, `last_ocs_update`)";
       $DB->queryOrDie($query, "0.7 alter ocs_link add index on last_ocs_update");
@@ -248,7 +248,7 @@ function update07to071() {
       $DB->queryOrDie($query, "0.71 add recursive in glpi_kbitems");
    }
 
-   if (!$DB->indexExists("glpi_kbitems", "FK_entities")) {
+   if (!$DB->indexExists("glpi_kbitems", [], "FK_entities")) {
       $query = "ALTER TABLE `glpi_kbitems`
                 ADD INDEX `FK_entities` (`FK_entities`)";
       $DB->queryOrDie($query, "0.7 alter ocs_link add index on last_ocs_update");
@@ -501,7 +501,7 @@ function update07to071() {
       $DB->queryOrDie($query, "0.71 add admin_reply to glpi_entities_data");
    }
 
-   if (!$DB->indexExists("glpi_kbitems", "fulltext")) {
+   if (!$DB->indexExists("glpi_kbitems", [], "fulltext")) {
       $query = "ALTER TABLE `glpi_kbitems`
                 ADD FULLTEXT `fulltext` (`question`, `answer`)";
       $DB->queryOrDie($query, "0.71 add fulltext index  glpi_kbitems");
@@ -517,13 +517,13 @@ function update07to071() {
       $DB->queryOrDie($query, "0.71 init user_auth_method value in glpi_profiles");
    }
 
-   if ($DB->indexExists("glpi_printers", "id")) {
+   if ($DB->indexExists("glpi_printers", [], "id")) {
       $query = "ALTER TABLE `glpi_printers`
                 DROP INDEX `id`";
       $DB->queryOrDie($query, "0.71 drop id index in glpi_printers");
    }
 
-   if ($DB->indexExists("glpi_users", "name_2")) {
+   if ($DB->indexExists("glpi_users", [], "name_2")) {
       $query = "ALTER TABLE `glpi_users`
                 DROP INDEX `name_2`";
       $DB->queryOrDie($query, "0.71 drop name_2 index in glpi_users");
