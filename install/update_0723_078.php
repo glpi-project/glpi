@@ -718,13 +718,6 @@ function update0723to078() {
             }
             // Rename field
             if ($DB->fieldExists($table, $oldname, false)) {
-               // If do index : delete old one
-               if ($doindex) {
-                  if ($oldname!=$newname && $DB->indexExists($table, $oldname)) {
-                     $changes[$table][]="DROP INDEX `$oldname`";
-                  }
-               }
-
                $addcomment = '';
                if (isset($tab['comments']) && isset($tab['comments'][$table])) {
                   $addcomment = " COMMENT '".$tab['comments'][$table]."' ";
@@ -745,10 +738,13 @@ function update0723to078() {
                $updateresult = false;
                $migration->displayWarning("Error: $table.$oldname does not exist.", true);
             }
-            // If do index : create new one
+            // If do index : delete old one / create new one
             if ($doindex) {
                if (!$DB->indexExists($table, $newname)) {
                   $changes[$table][] = "ADD INDEX `$newname` (`$newname`)";
+               }
+               if ($oldname!=$newname && $DB->indexExists($table, $oldname)) {
+                  $changes[$table][]="DROP INDEX `$oldname`";
                }
             }
          }
