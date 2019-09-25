@@ -389,7 +389,6 @@ class ReservationItem extends CommonDBChild {
          return false;
       }
 
-      $ri         = new self();
       $ok         = false;
       $showentity = Session::isMultiEntitiesMode();
       $values     = [];

@@ -148,8 +148,8 @@ class NetworkPort extends CommonDBChild {
     *
     * @param $new_instantiation_type the name of the new instaniation type
     *
-    * @return false on error, true if the previous instantiation is not available (ie.: invalid
-    *         instantiation type) or the object of the previous instantiation.
+    * @return boolean false on error, true if the previous instantiation is not available
+    *                 (ie.: invalid instantiation type) or the object of the previous instantiation.
    **/
    function switchInstantiationType($new_instantiation_type) {
 
