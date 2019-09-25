@@ -32,17 +32,9 @@
 
 namespace tests\units;
 
-class ImpactRelation extends \GLPITestCase {
-
-   private function clearItems() {
-      global $DB;
-
-      $DB->delete(\ImpactRelation::getTable(), [true]);
-   }
+class ImpactRelation extends \DbTestCase {
 
    public function testPrepareInputForAdd_requiredFields() {
-      $this->clearItems();
-
       $impactRelationManager = new \ImpactRelation();
       $res = $impactRelationManager->add([]);
 
@@ -50,8 +42,6 @@ class ImpactRelation extends \GLPITestCase {
    }
 
    public function testPrepareInputForAdd_differentItems() {
-      $this->clearItems();
-
       $computer = getItemByTypeName('Computer', '_test_pc02');
       $impactRelationManager = new \ImpactRelation();
       $res = $impactRelationManager->add([
@@ -65,8 +55,6 @@ class ImpactRelation extends \GLPITestCase {
    }
 
    public function testPrepareInputForAdd_duplicate() {
-      $this->clearItems();
-
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer2 = getItemByTypeName('Computer', '_test_pc02');
       $impactRelationManager = new \ImpactRelation();
@@ -89,8 +77,6 @@ class ImpactRelation extends \GLPITestCase {
    }
 
    public function testPrepareInputForAdd_assetExist() {
-      $this->clearItems();
-
       $impactRelationManager = new \ImpactRelation();
 
       $res = $impactRelationManager->add([
@@ -104,8 +90,6 @@ class ImpactRelation extends \GLPITestCase {
    }
 
    public function testPrepareInputForAdd_valid() {
-      $this->clearItems();
-
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer2 = getItemByTypeName('Computer', '_test_pc02');
       $impactRelationManager = new \ImpactRelation();
@@ -121,8 +105,6 @@ class ImpactRelation extends \GLPITestCase {
    }
 
    public function testGetIDFromInput_invalid() {
-      $this->clearItems();
-
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer2 = getItemByTypeName('Computer', '_test_pc02');
 
@@ -138,8 +120,6 @@ class ImpactRelation extends \GLPITestCase {
    }
 
    public function testGetIDFromInput_valid() {
-      $this->clearItems();
-
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer2 = getItemByTypeName('Computer', '_test_pc02');
       $impactRelationManager = new \ImpactRelation();

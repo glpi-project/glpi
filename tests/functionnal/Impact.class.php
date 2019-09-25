@@ -32,18 +32,9 @@
 
 namespace tests\units;
 
-class Impact extends \GLPITestCase {
-
-   private function clearImpactItems() {
-      global $DB;
-
-      $DB->delete(\ImpactItem::getTable(), [true]);
-      $DB->delete(\ImpactRelation::getTable(), [true]);
-      $DB->delete(\ImpactCompound::getTable(), [true]);
-   }
+class Impact extends \DbTestCase {
 
    public function testGetTabNameForItem_notCommonDBTM() {
-      $this->clearImpactItems();
       $impact = new \Impact();
 
       $this->exception(function() use ($impact) {
@@ -53,7 +44,6 @@ class Impact extends \GLPITestCase {
    }
 
    public function testGetTabNameForItem_notEnabledOrITIL() {
-      $this->clearImpactItems();
       $impact = new \Impact();
 
       $this->exception(function() use ($impact) {
@@ -63,53 +53,49 @@ class Impact extends \GLPITestCase {
    }
 
    public function testGetTabNameForItem_tabCountDisabled() {
-      $this->clearImpactItems();
       $oldSession = $_SESSION['glpishow_count_on_tabs'];
       $_SESSION['glpishow_count_on_tabs'] = false;
 
       $impact = new \Impact();
       $computer = new \Computer();
-
-      $this->string($impact->getTabNameForItem($computer))
-         ->isEqualTo("Impacts ");
-
+      $tab_name = $impact->getTabNameForItem($computer);
       $_SESSION['glpishow_count_on_tabs'] = $oldSession;
+
+      $this->string($tab_name)->isEqualTo("Impacts");
    }
 
    public function testGetTabNameForItem_enabledAsset() {
-      $this->clearImpactItems();
       $oldSession = $_SESSION['glpishow_count_on_tabs'];
       $_SESSION['glpishow_count_on_tabs'] = true;
 
       $impact = new \Impact();
       $impactRelationManager = new \ImpactRelation();
 
-      // Get computer
-      $computer = getItemByTypeName('Computer', '_test_pc02');
+      // Get computers
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+      $computer2 = getItemByTypeName('Computer', '_test_pc02');
+      $computer3 = getItemByTypeName('Computer', '_test_pc03');
 
       // Create an impact graph
       $impactRelationManager->add([
          'itemtype_source'   => "Computer",
-         'items_id_source'   => "1",
+         'items_id_source'   => $computer1->fields['id'],
          'itemtype_impacted' => "Computer",
-         'items_id_impacted' => "2",
+         'items_id_impacted' => $computer2->fields['id'],
       ]);
       $impactRelationManager->add([
          'itemtype_source'   => "Computer",
-         'items_id_source'   => "2",
+         'items_id_source'   => $computer2->fields['id'],
          'itemtype_impacted' => "Computer",
-         'items_id_impacted' => "3",
+         'items_id_impacted' => $computer3->fields['id'],
       ]);
-
-      $this->string($impact->getTabNameForItem($computer))
-         ->isEqualTo("Impacts  <sup class='tab_nb'>2</sup>");
-
-      // Clean up
+      $tab_name = $impact->getTabNameForItem($computer2);
       $_SESSION['glpishow_count_on_tabs'] = $oldSession;
+
+      $this->string($tab_name)->isEqualTo("Impacts <sup class='tab_nb'>2</sup>");
    }
 
    public function testGetTabNameForItem_ITILObject() {
-      $this->clearImpactItems();
       $oldSession = $_SESSION['glpishow_count_on_tabs'];
       $_SESSION['glpishow_count_on_tabs'] = true;
 
@@ -118,25 +104,30 @@ class Impact extends \GLPITestCase {
       $ticketManager = new \Ticket();
       $itemTicketManger = new \Item_Ticket();
 
+      // Get computers
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+      $computer2 = getItemByTypeName('Computer', '_test_pc02');
+      $computer3 = getItemByTypeName('Computer', '_test_pc03');
+
       // Create an impact graph
       $impactRelationManager->add([
          'itemtype_source'   => "Computer",
-         'items_id_source'   => "1",
+         'items_id_source'   => $computer1->fields['id'],
          'itemtype_impacted' => "Computer",
-         'items_id_impacted' => "2",
+         'items_id_impacted' => $computer2->fields['id'],
       ]);
       $impactRelationManager->add([
          'itemtype_source'   => "Computer",
-         'items_id_source'   => "2",
+         'items_id_source'   => $computer2->fields['id'],
          'itemtype_impacted' => "Computer",
-         'items_id_impacted' => "3",
+         'items_id_impacted' => $computer3->fields['id'],
       ]);
 
       // Create a ticket and link it to the computer
       $ticketId = $ticketManager->add(['name' => "test", 'content' => "test"]);
       $itemTicketManger->add([
          'itemtype'   => "Computer",
-         'items_id'   => 2,
+         'items_id'   => $computer2->fields['id'],
          'tickets_id' => $ticketId,
       ]);
 
@@ -144,33 +135,38 @@ class Impact extends \GLPITestCase {
       $ticket = new \Ticket;
       $ticket->getFromDB($ticketId);
 
-      $this->string($impact->getTabNameForItem($ticket))
-         ->isEqualTo("Impacts ");
-
-      // Clean up
+      $tab_name = $impact->getTabNameForItem($ticket);
       $_SESSION['glpishow_count_on_tabs'] = $oldSession;
+
+      $this->string($tab_name)->isEqualTo("Impacts");
    }
 
    public function testBuildGraph_empty() {
-      $this->clearImpactItems();
       $computer = getItemByTypeName('Computer', '_test_pc01');
       $graph = \Impact::buildGraph($computer);
 
       $this->array($graph)->hasKeys(["nodes", "edges"]);
 
       // Nodes should contain only _test_pc01
+      $id = $computer->fields['id'];
       $this->array($graph["nodes"])->hasSize(1);
-      $this->string($graph["nodes"]["Computer::1"]['label'])->isEqualTo("_test_pc01");
+      $this->string($graph["nodes"]["Computer::$id"]['label'])->isEqualTo("_test_pc01");
 
       // Edges should be empty
       $this->array($graph["edges"])->hasSize(0);
    }
 
    public function testBuildGraph_complex() {
-      $this->clearImpactItems();
       $impactRelationManager = new \ImpactRelation();
       $impactItemManager = new \ImpactItem();
       $impactCompoundManager = new \ImpactCompound();
+
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+      $computer2 = getItemByTypeName('Computer', '_test_pc02');
+      $computer3 = getItemByTypeName('Computer', '_test_pc03');
+      $computer4 = getItemByTypeName('Computer', '_test_pc04');
+      $computer5 = getItemByTypeName('Computer', '_test_pc05');
+      $computer6 = getItemByTypeName('Computer', '_test_pc06');
 
       // Set compounds
       $compound01Id = $impactCompoundManager->add([
@@ -185,71 +181,71 @@ class Impact extends \GLPITestCase {
       // Set impact items
       $impactItemManager->add([
          'itemtype'  => "Computer",
-         'items_id'  => 1,
+         'items_id'  => $computer1->fields['id'],
          'parent_id' => 0,
       ]);
       $impactItemManager->add([
          'itemtype'  => "Computer",
-         'items_id'  => 2,
+         'items_id'  => $computer2->fields['id'],
          'parent_id' => $compound01Id,
       ]);
       $impactItemManager->add([
          'itemtype'  => "Computer",
-         'items_id'  => 3,
+         'items_id'  => $computer3->fields['id'],
          'parent_id' => $compound01Id,
       ]);
       $impactItemManager->add([
          'itemtype'  => "Computer",
-         'items_id'  => 4,
+         'items_id'  => $computer4->fields['id'],
          'parent_id' => $compound02Id,
       ]);
       $impactItemManager->add([
          'itemtype'  => "Computer",
-         'items_id'  => 5,
+         'items_id'  => $computer5->fields['id'],
          'parent_id' => $compound02Id,
       ]);
       $impactItemManager->add([
          'itemtype'  => "Computer",
-         'items_id'  => 6,
+         'items_id'  => $computer6->fields['id'],
          'parent_id' => $compound02Id,
       ]);
 
       // Set relations
       $impactRelationManager->add([
          'itemtype_source'   => "Computer",
-         'items_id_source'   => "1",
+         'items_id_source'   => $computer1->fields['id'],
          'itemtype_impacted' => "Computer",
-         'items_id_impacted' => "2",
+         'items_id_impacted' => $computer2->fields['id'],
       ]);
       $impactRelationManager->add([
          'itemtype_source'   => "Computer",
-         'items_id_source'   => "2",
+         'items_id_source'   => $computer2->fields['id'],
          'itemtype_impacted' => "Computer",
-         'items_id_impacted' => "3",
+         'items_id_impacted' => $computer3->fields['id'],,
+         ]);
+      $impactRelationManager->add([
+         'itemtype_source'   => "Computer",
+         'items_id_source'   => $computer3->fields['id'],
+         'itemtype_impacted' => "Computer",
+         'items_id_impacted' => $computer4->fields['id'],
       ]);
       $impactRelationManager->add([
          'itemtype_source'   => "Computer",
-         'items_id_source'   => "3",
+         'items_id_source'   => $computer4->fields['id'],
          'itemtype_impacted' => "Computer",
-         'items_id_impacted' => "4",
+         'items_id_impacted' => $computer5->fields['id'],
       ]);
       $impactRelationManager->add([
          'itemtype_source'   => "Computer",
-         'items_id_source'   => "4",
+         'items_id_source'   => $computer2->fields['id'],
          'itemtype_impacted' => "Computer",
-         'items_id_impacted' => "5",
+         'items_id_impacted' => $computer6->fields['id'],
       ]);
       $impactRelationManager->add([
          'itemtype_source'   => "Computer",
-         'items_id_source'   => "2",
+         'items_id_source'   => $computer6->fields['id'],
          'itemtype_impacted' => "Computer",
-         'items_id_impacted' => "6",
-      ]);
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => "6",
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => "2",
+         'items_id_impacted' => $computer2->fields['id'],
       ]);
 
       // Build graph from pc02

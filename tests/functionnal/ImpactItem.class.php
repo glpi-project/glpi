@@ -32,23 +32,15 @@
 
 namespace tests\units;
 
-class ImpactItem extends \GLPITestCase {
-
-   private function clearItems() {
-      global $DB;
-
-      $DB->delete(\ImpactItem::getTable(), [true]);
-   }
+class ImpactItem extends \DbTestCase {
 
    public function testFindForItem_inexistent() {
-      $this->clearItems();
       $computer = getItemByTypeName('Computer', '_test_pc02');
 
       $this->boolean(\ImpactItem::findForItem($computer))->isFalse();
    }
 
    public function testFindForItem_exist() {
-      $this->clearItems();
       $impactItemManager = new \ImpactItem();
       $computer = getItemByTypeName('Computer', '_test_pc02');
 
