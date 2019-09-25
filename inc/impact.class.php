@@ -72,10 +72,7 @@ class Impact extends CommonGLPI {
          $total = 0;
       }
 
-      return self::createTabEntry(
-         _n('Impact', 'Impacts', Session::getPluralNumber()),
-         $total
-      );
+      return self::createTabEntry(__("Impact analysis"), $total);
    }
 
    public static function displayTabContentForItem(

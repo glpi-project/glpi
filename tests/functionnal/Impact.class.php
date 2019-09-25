@@ -61,7 +61,7 @@ class Impact extends \DbTestCase {
       $tab_name = $impact->getTabNameForItem($computer);
       $_SESSION['glpishow_count_on_tabs'] = $oldSession;
 
-      $this->string($tab_name)->isEqualTo("Impacts");
+      $this->string($tab_name)->isEqualTo("Impact analysis");
    }
 
    public function testGetTabNameForItem_enabledAsset() {
@@ -92,7 +92,7 @@ class Impact extends \DbTestCase {
       $tab_name = $impact->getTabNameForItem($computer2);
       $_SESSION['glpishow_count_on_tabs'] = $oldSession;
 
-      $this->string($tab_name)->isEqualTo("Impacts <sup class='tab_nb'>2</sup>");
+      $this->string($tab_name)->isEqualTo("Impact analysis <sup class='tab_nb'>2</sup>");
    }
 
    public function testGetTabNameForItem_ITILObject() {
@@ -138,7 +138,7 @@ class Impact extends \DbTestCase {
       $tab_name = $impact->getTabNameForItem($ticket);
       $_SESSION['glpishow_count_on_tabs'] = $oldSession;
 
-      $this->string($tab_name)->isEqualTo("Impacts");
+      $this->string($tab_name)->isEqualTo("Impact analysis");
    }
 
    public function testBuildGraph_empty() {
@@ -164,9 +164,9 @@ class Impact extends \DbTestCase {
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer2 = getItemByTypeName('Computer', '_test_pc02');
       $computer3 = getItemByTypeName('Computer', '_test_pc03');
-      $computer4 = getItemByTypeName('Computer', '_test_pc04');
-      $computer5 = getItemByTypeName('Computer', '_test_pc05');
-      $computer6 = getItemByTypeName('Computer', '_test_pc06');
+      $computer4 = getItemByTypeName('Computer', '_test_pc11');
+      $computer5 = getItemByTypeName('Computer', '_test_pc12');
+      $computer6 = getItemByTypeName('Computer', '_test_pc13');
 
       // Set compounds
       $compound01Id = $impactCompoundManager->add([
@@ -221,7 +221,7 @@ class Impact extends \DbTestCase {
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer2->fields['id'],
          'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer3->fields['id'],,
+         'items_id_impacted' => $computer3->fields['id'],
          ]);
       $impactRelationManager->add([
          'itemtype_source'   => "Computer",
