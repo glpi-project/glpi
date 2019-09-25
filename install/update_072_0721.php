@@ -41,17 +41,17 @@ function update072to0721() {
    echo "<h3>".sprintf(__('Update to %s'), '0.72.1')."</h3>";
    displayMigrationMessage("0721"); // Start
 
-   if (!$DB->indexExists("glpi_groups", [], "ldap_group_dn")) {
+   if (!$DB->indexExists("glpi_groups", "ldap_group_dn")) {
       $query = "ALTER TABLE `glpi_groups` ADD INDEX `ldap_group_dn` ( `ldap_group_dn` );";
       $DB->query($query, "0.72.1 add index on ldap_group_dn in glpi_groups");
    }
 
-   if (!$DB->indexExists("glpi_groups", [], "ldap_value")) {
+   if (!$DB->indexExists("glpi_groups", "ldap_value")) {
       $query = "ALTER TABLE `glpi_groups` ADD INDEX `ldap_value`  ( `ldap_value` );";
       $DB->query($query, "0.72.1 add index on ldap_value in glpi_groups");
    }
 
-   if (!$DB->indexExists('glpi_tracking', [], 'date_mod')) {
+   if (!$DB->indexExists('glpi_tracking', 'date_mod')) {
       $query=" ALTER TABLE `glpi_tracking` ADD INDEX `date_mod` (`date_mod`)  ";
       $DB->query($query, "0.72.1 add date_mod index in glpi_tracking");
    }

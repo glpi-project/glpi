@@ -2029,7 +2029,7 @@ Regards,',
       'registration_uuid'  => Telemetry::generateRegistrationUuid()
    ]);
 
-   if ($DB->indexExists('glpi_authldaps', [], 'use_tls')) {
+   if ($DB->indexExists('glpi_authldaps', 'use_tls')) {
       $migration->dropKey('glpi_authldaps', 'use_tls');
    }
 

@@ -37,13 +37,13 @@ function update0681to07() {
    $DB->query("SET NAMES 'latin1'");
 
    // Improve user table :
-   if (!$DB->indexExists("glpi_users", [], "firstname")) {
+   if (!$DB->indexExists("glpi_users", "firstname")) {
       $query = "ALTER TABLE `glpi_users`
                 ADD INDEX (`firstname`)";
       $DB->queryOrDie($query, "0.7 alter users add index on firstname");
    }
 
-   if (!$DB->indexExists("glpi_users", [], "realname")) {
+   if (!$DB->indexExists("glpi_users", "realname")) {
       $query = "ALTER TABLE `glpi_users`
                 ADD INDEX (`realname`)";
       $DB->queryOrDie($query, "0.7 alter users add index on realname");
@@ -93,7 +93,7 @@ function update0681to07() {
       $DB->queryOrDie($query, "0.7 add cas_logout in glpi_config");
    }
 
-   if (!$DB->indexExists("glpi_computer_device", [], "specificity")) {
+   if (!$DB->indexExists("glpi_computer_device", "specificity")) {
       $query = "ALTER TABLE `glpi_computer_device`
                 ADD INDEX (`specificity`)";
       $DB->queryOrDie($query, "0.7 add index specificity in glpi_computer_device");
@@ -227,7 +227,7 @@ function update0681to07() {
                 ADD `active` INT(2) NOT NULL DEFAULT '1' ";
       $DB->queryOrDie($query, "0.7 add active field for beta of glpi_users");
 
-      if (!$DB->indexExists("glpi_users", [], "active")) {
+      if (!$DB->indexExists("glpi_users", "active")) {
          $query = "ALTER TABLE `glpi_users`
                    ADD INDEX (`active`)";
          $DB->queryOrDie($query, "0.7 add index active in glpi_users");
@@ -253,7 +253,7 @@ function update0681to07() {
                    ADD `FK_entities` INT NOT NULL DEFAULT '0' AFTER `ID`";
          $DB->queryOrDie($query, "0.7 add FK_entities in $tbl");
       }
-      if (!$DB->indexExists($tbl, [], "FK_entities")) {
+      if (!$DB->indexExists($tbl, "FK_entities")) {
          $query = "ALTER TABLE `$tbl`
                    ADD INDEX (`FK_entities`)";
          $DB->queryOrDie($query, "0.7 add index FK_entities in $tbl");
@@ -263,12 +263,12 @@ function update0681to07() {
    // Regenerate Indexes :
    $tables = [ "glpi_dropdown_locations" ];
    foreach ($tables as $tbl) {
-      if ($DB->indexExists($tbl, [], "name")) {
+      if ($DB->indexExists($tbl, "name")) {
          $query = "ALTER TABLE `$tbl`
                    DROP INDEX `name`";
          $DB->queryOrDie($query, "0.7 drop index name in $tbl");
       }
-      if ($DB->indexExists($tbl, [], "parentID_2")) {
+      if ($DB->indexExists($tbl, "parentID_2")) {
          $query = "ALTER TABLE `$tbl`
                    DROP INDEX `parentID_2`";
          $DB->queryOrDie($query, "0.7 drop index name in $tbl");
@@ -278,19 +278,19 @@ function update0681to07() {
       $DB->queryOrDie($query, "0.7 add index name in $tbl");
    }
 
-   if ($DB->indexExists("glpi_users_profiles", [], "FK_users_profiles")) {
+   if ($DB->indexExists("glpi_users_profiles", "FK_users_profiles")) {
       $query = "ALTER TABLE `glpi_users_profiles`
                 DROP INDEX `FK_users_profiles`";
       $DB->queryOrDie($query, "0.7 drop index FK_users_profiles in glpi_users_profiles");
    }
 
-   if (!$DB->indexExists("glpi_users_profiles", [], "FK_entities")) {
+   if (!$DB->indexExists("glpi_users_profiles", "FK_entities")) {
       $query = "ALTER TABLE `glpi_users_profiles`
                 ADD INDEX (`FK_entities`)";
       $DB->queryOrDie($query, "0.7 add index FK_entities in glpi_users_profiles");
    }
 
-   if (!$DB->indexExists("glpi_users_profiles", [], "recursive")) {
+   if (!$DB->indexExists("glpi_users_profiles", "recursive")) {
       $query = "ALTER TABLE `glpi_users_profiles`
                 ADD INDEX (`recursive`)";
       $DB->queryOrDie($query, "0.7 add index recursive in glpi_users_profiles");
@@ -596,13 +596,13 @@ function update0681to07() {
       }
    }
 
-   if ($DB->indexExists("glpi_ocs_link", [], "ocs_id_2")) {
+   if ($DB->indexExists("glpi_ocs_link", "ocs_id_2")) {
       $query = "ALTER TABLE `glpi_ocs_link`
                 DROP INDEX `ocs_id_2` ";
       $DB->queryOrDie($query, "0.7 alter ocs_link clean index ocs_id");
    }
 
-   if ($DB->indexExists("glpi_ocs_link", [], "ocs_id")) {
+   if ($DB->indexExists("glpi_ocs_link", "ocs_id")) {
       $query = "ALTER TABLE `glpi_ocs_link`
                 DROP INDEX `ocs_id` ";
       $DB->queryOrDie($query, "0.7 alter ocs_link clean index ocs_id");
@@ -618,7 +618,7 @@ function update0681to07() {
       $DB->queryOrDie($query, "0.7 update ocs_server_id=1 in glpi_ocs_link");
    }
 
-   if (!$DB->indexExists("glpi_ocs_link", [], "ocs_server_id")) {
+   if (!$DB->indexExists("glpi_ocs_link", "ocs_server_id")) {
       // Clean duplicates
       $query = "SELECT COUNT(*) AS CPT, `ocs_id`
                 FROM `glpi_ocs_link`
@@ -651,7 +651,7 @@ function update0681to07() {
       $DB->queryOrDie($query, "0.7 alter ocs_link add index ocs_server_id");
    }
 
-   if (!$DB->indexExists("glpi_ocs_link", [], "`ocs_deviceid`")) {
+   if (!$DB->indexExists("glpi_ocs_link", "`ocs_deviceid`")) {
       $query = "ALTER TABLE `glpi_ocs_link`
                 ADD INDEX (`ocs_deviceid`)";
       $DB->queryOrDie($query, "0.7 alter ocs_link add index ocs_deviceid");
@@ -1125,7 +1125,7 @@ function update0681to07() {
       $DB->queryOrDie($query, "0.7 update recipient in glpi_tracking");
    }
 
-   if (!$DB->indexExists("glpi_tracking", [], "recipient")) {
+   if (!$DB->indexExists("glpi_tracking", "recipient")) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD INDEX (`recipient`) ";
       $DB->queryOrDie($query, "0.7 add recipient index in glpi_tracking");
@@ -1841,7 +1841,7 @@ function update0681to07() {
       $DB->queryOrDie($query, "0.7 add ocs_agent_version in glpi_ocs_link if not present for compatibility");
    }
 
-   if (!$DB->indexExists("glpi_history", [], "date_mod")) {
+   if (!$DB->indexExists("glpi_history", "date_mod")) {
       $query = "ALTER TABLE `glpi_history`
                 ADD INDEX (`date_mod`)";
       $DB->queryOrDie($query, "0.7 alter history add index on date_mod");

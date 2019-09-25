@@ -260,91 +260,91 @@ function update031to04() {
       $DB->queryOrDie($query, "4");
    }
 
-   if (!$DB->indexExists("glpi_computers", [], "location")) {
+   if (!$DB->indexExists("glpi_computers", "location")) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD INDEX (`location`)";
       $DB->queryOrDie($query, "5");
    }
 
-   if (!$DB->indexExists("glpi_computers", [], "os")) {
+   if (!$DB->indexExists("glpi_computers", "os")) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD INDEX (`os`)";
       $DB->queryOrDie($query, "6");
    }
 
-   if (!$DB->indexExists("glpi_computers", [], "type")) {
+   if (!$DB->indexExists("glpi_computers", "type")) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD INDEX (`type`)";
       $DB->queryOrDie($query, "7");
    }
 
-   if (!$DB->indexExists("glpi_followups", [], "tracking")) {
+   if (!$DB->indexExists("glpi_followups", "tracking")) {
       $query = "ALTER TABLE `glpi_followups`
                 ADD INDEX (`tracking`)";
       $DB->queryOrDie($query, "12");
    }
 
-   if (!$DB->indexExists("glpi_networking", [], "location")) {
+   if (!$DB->indexExists("glpi_networking", "location")) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD INDEX (`location`)";
       $DB->queryOrDie($query, "13");
    }
 
-   if (!$DB->indexExists("glpi_networking_ports", [], "on_device")) {
+   if (!$DB->indexExists("glpi_networking_ports", "on_device")) {
       $query = "ALTER TABLE `glpi_networking_ports`
                 ADD INDEX (`on_device` , `device_type`)";
       $DB->queryOrDie($query, "14");
    }
 
-   if (!$DB->indexExists("glpi_peripherals", [], "type")) {
+   if (!$DB->indexExists("glpi_peripherals", "type")) {
       $query = "ALTER TABLE `glpi_peripherals`
                 ADD INDEX (`type`)";
       $DB->queryOrDie($query, "14");
    }
 
-   if (!$DB->indexExists("glpi_peripherals", [], "location")) {
+   if (!$DB->indexExists("glpi_peripherals", "location")) {
       $query = "ALTER TABLE `glpi_peripherals`
                 ADD INDEX (`location`)";
       $DB->queryOrDie($query, "15");
    }
 
-   if (!$DB->indexExists("glpi_printers", [], "location")) {
+   if (!$DB->indexExists("glpi_printers", "location")) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD INDEX (`location`)";
       $DB->queryOrDie($query, "16");
    }
 
-   if (!$DB->indexExists("glpi_tracking", [], "computer")) {
+   if (!$DB->indexExists("glpi_tracking", "computer")) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD INDEX (`computer`)";
       $DB->queryOrDie($query, "17");
    }
 
-   if (!$DB->indexExists("glpi_tracking", [], "author")) {
+   if (!$DB->indexExists("glpi_tracking", "author")) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD INDEX (`author`)";
       $DB->queryOrDie($query, "18");
    }
 
-   if (!$DB->indexExists("glpi_tracking", [], "assign")) {
+   if (!$DB->indexExists("glpi_tracking", "assign")) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD INDEX (`assign`)";
       $DB->queryOrDie($query, "19");
    }
 
-   if (!$DB->indexExists("glpi_tracking", [], "date")) {
+   if (!$DB->indexExists("glpi_tracking", "date")) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD INDEX (`date`)";
       $DB->queryOrDie($query, "20");
    }
 
-   if (!$DB->indexExists("glpi_tracking", [], "closedate")) {
+   if (!$DB->indexExists("glpi_tracking", "closedate")) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD INDEX (`closedate`)";
       $DB->queryOrDie($query, "21");
    }
 
-   if (!$DB->indexExists("glpi_tracking", [], "status")) {
+   if (!$DB->indexExists("glpi_tracking", "status")) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD INDEX (`status`)";
       $DB->queryOrDie($query, "22");
@@ -382,61 +382,61 @@ function update031to04() {
       $DB->queryOrDie($query, "27");
    }
 
-   if (!$DB->indexExists("glpi_licenses", [], "sID")) {
+   if (!$DB->indexExists("glpi_licenses", "sID")) {
       $query = "ALTER TABLE `glpi_licenses`
                 ADD INDEX (`sID`) ";
       $DB->queryOrDie($query, "32");
    }
 
-   if (!$DB->indexExists("glpi_followups", [], "author")) {
+   if (!$DB->indexExists("glpi_followups", "author")) {
       $query = "ALTER TABLE `glpi_followups`
                 ADD INDEX (`author`) ";
       $DB->queryOrDie($query, "33");
    }
 
-   if (!$DB->indexExists("glpi_monitors", [], "type")) {
+   if (!$DB->indexExists("glpi_monitors", "type")) {
       $query = "ALTER TABLE `glpi_monitors`
                 ADD INDEX (`type`) ";
       $DB->queryOrDie($query, "34");
    }
 
-   if (!$DB->indexExists("glpi_monitors", [], "location")) {
+   if (!$DB->indexExists("glpi_monitors", "location")) {
       $query = "ALTER TABLE `glpi_monitors`
                 ADD INDEX (`location`) ";
       $DB->queryOrDie($query, "35");
    }
 
-   if (!$DB->indexExists("glpi_monitors", [], "type")) {
+   if (!$DB->indexExists("glpi_monitors", "type")) {
       $query = "ALTER TABLE `glpi_monitors`
                 ADD INDEX (`type`)";
       $DB->queryOrDie($query, "37");
    }
 
-   if (!$DB->indexExists("glpi_networking", [], "type")) {
+   if (!$DB->indexExists("glpi_networking", "type")) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD INDEX (`type`)";
       $DB->queryOrDie($query, "38");
    }
 
-   if (!$DB->indexExists("glpi_networking", [], "firmware")) {
+   if (!$DB->indexExists("glpi_networking", "firmware")) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD INDEX (`firmware`)";
       $DB->queryOrDie($query, "39");
    }
 
-   if (!$DB->indexExists("glpi_printers", [], "type")) {
+   if (!$DB->indexExists("glpi_printers", "type")) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD INDEX (`type`)";
       $DB->queryOrDie($query, "42");
    }
 
-   if (!$DB->indexExists("glpi_software", [], "platform")) {
+   if (!$DB->indexExists("glpi_software", "platform")) {
       $query = "ALTER TABLE `glpi_software`
                 ADD INDEX (`platform`)";
       $DB->queryOrDie($query, "44");
    }
 
-   if (!$DB->indexExists("glpi_software", [], "location")) {
+   if (!$DB->indexExists("glpi_software", "location")) {
       $query = "ALTER TABLE `glpi_software`
                 ADD INDEX (`location`) ";
       $DB->queryOrDie($query, "45");
@@ -451,7 +451,7 @@ function update031to04() {
       $DB->queryOrDie($query, "46");
    }
 
-   if (!$DB->indexExists("glpi_dropdown_netpoint", [], "location")) {
+   if (!$DB->indexExists("glpi_dropdown_netpoint", "location")) {
       $query = "ALTER TABLE `glpi_dropdown_netpoint`
                 ADD INDEX (`location`) ";
       $DB->queryOrDie($query, "47");
@@ -463,13 +463,13 @@ function update031to04() {
       $DB->queryOrDie($query, "27");
    }
 
-   if (!$DB->indexExists("glpi_networking_ports", [], "netpoint")) {
+   if (!$DB->indexExists("glpi_networking_ports", "netpoint")) {
       $query = "ALTER TABLE `glpi_networking_ports`
                 ADD INDEX (`netpoint`) ";
       $DB->queryOrDie($query, "47");
    }
 
-   if (!$DB->indexExists("glpi_networking_wire", [], "end1")) {
+   if (!$DB->indexExists("glpi_networking_wire", "end1")) {
       $query = "ALTER TABLE `glpi_networking_wire`
                 ADD INDEX (`end1`) ";
       $DB->queryOrDie($query, "40");
@@ -499,13 +499,13 @@ function update031to04() {
       $DB->queryOrDie($query, "477");
    }
 
-   if (!$DB->indexExists("glpi_networking_wire", [], "end2")) {
+   if (!$DB->indexExists("glpi_networking_wire", "end2")) {
       $query = "ALTER TABLE `glpi_networking_wire`
                 ADD INDEX (`end2`) ";
       $DB->queryOrDie($query, "41");
    }
 
-   if (!$DB->indexExists("glpi_connect_wire", [], "end1")) {
+   if (!$DB->indexExists("glpi_connect_wire", "end1")) {
       $query = "ALTER TABLE `glpi_connect_wire`
                 ADD INDEX (`end1`) ";
       $DB->queryOrDie($query, "40");
@@ -537,13 +537,13 @@ function update031to04() {
       $DB->queryOrDie($query, "478");
    }
 
-   if (!$DB->indexExists("glpi_connect_wire", [], "end2")) {
+   if (!$DB->indexExists("glpi_connect_wire", "end2")) {
       $query = "ALTER TABLE `glpi_connect_wire`
                 ADD INDEX (`end2`) ";
       $DB->queryOrDie($query, "40");
    }
 
-   if (!$DB->indexExists("glpi_connect_wire", [], "type")) {
+   if (!$DB->indexExists("glpi_connect_wire", "type")) {
       $query = "ALTER TABLE `glpi_connect_wire`
                 ADD INDEX (`type`)";
       $DB->queryOrDie($query, "40");
