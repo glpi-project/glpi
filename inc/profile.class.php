@@ -1003,6 +1003,12 @@ class Profile extends CommonDBTM {
       $matrix_options = ['canedit'       => $canedit,
                               'default_class' => 'tab_bg_2'];
 
+      $rights = [['itemtype'  => 'TicketTemplate',
+                            'label'     => _n('Template', 'Templates', Session::getPluralNumber()),
+                            'field'     => 'itiltemplate']];
+      $matrix_options['title'] = _n('ITIL object', 'ITIL objects', Session::getPluralNumber());
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
+
       $rights = [['itemtype'  => 'Ticket',
                             'label'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                             'field'     => 'ticket'],
@@ -1011,10 +1017,7 @@ class Profile extends CommonDBTM {
                             'field'     => 'ticketcost'],
                       ['itemtype'  => 'TicketRecurrent',
                             'label'     => __('Recurrent tickets'),
-                            'field'     => 'ticketrecurrent'],
-                      ['itemtype'  => 'TicketTemplate',
-                            'label'     => _n('Ticket template', 'Ticket templates', Session::getPluralNumber()),
-                            'field'     => 'tickettemplate']];
+                            'field'     => 'ticketrecurrent']];
       $matrix_options['title'] = _n('Ticket', 'Tickets', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
