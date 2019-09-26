@@ -2443,7 +2443,6 @@ class Ticket extends CommonITILObject {
       switch ($ma->getAction()) {
          case 'merge_as_followup' :
             $rand = mt_rand();
-            $itemtype = $ma->getItemtype(true);
             $mergeparam = [
                'name'         => "_mergeticket",
                'used'         => $ma->items['Ticket'],
@@ -2457,25 +2456,25 @@ class Ticket extends CommonITILObject {
             Html::showCheckbox([
                'name'    => 'with_followups',
                'id'      => 'with_followups',
-               'checked' => false
+               'checked' => true
             ]);
             echo "</td><td><label for='with_documents'>".__('Merge documents')."</label></td><td>";
             Html::showCheckbox([
                'name'    => 'with_documents',
                'id'      => 'with_documents',
-               'checked' => false
+               'checked' => true
             ]);
             echo "</td></tr><tr><td><label for='with_tasks'>".__('Merge tasks')."<label></td><td>";
             Html::showCheckbox([
                'name'    => 'with_tasks',
                'id'      => 'with_tasks',
-               'checked' => false
+               'checked' => true
             ]);
             echo "</td><td><label for='with_actors'>".__('Merge actors')."</label></td><td>";
             Html::showCheckbox([
                'name'    => 'with_actors',
                'id'      => 'with_actors',
-               'checked' => false
+               'checked' => true
             ]);
             echo "</td></tr><tr><td><label for='dropdown_link_type$rand'>".__('Link type')."</label></td><td colspan='3'>";
             Dropdown::showFromArray('link_type', [
@@ -7024,17 +7023,17 @@ class Ticket extends CommonITILObject {
                         }
                         return true;
                      });
-                     foreach ($users as $user_id => $user) {
+                     foreach ($users as $user) {
                         $user['tickets_id'] = $merge_target_id;
                         unset($user['id']);
                         $tu->add($user);
                      }
-                     foreach ($groups as $group_id => $group) {
+                     foreach ($groups as $group) {
                         $group['tickets_id'] = $merge_target_id;
                         unset($group['id']);
                         $gt->add($group);
                      }
-                     foreach ($suppliers as $supplier_id => $supplier) {
+                     foreach ($suppliers as $supplier) {
                         $supplier['tickets_id'] = $merge_target_id;
                         unset($supplier['id']);
                         $st->add($supplier);
