@@ -565,7 +565,6 @@ class Search extends DbTestCase {
             'Glpi\\Event',
             'KnowbaseItem',
             'NetworkPortMigration',
-            'TicketFollowup',
             '/^TicketTemplate.*/',
             '/^Computer_Software.*/'
          ]
