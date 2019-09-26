@@ -500,23 +500,6 @@ function closeDBConnections() {
    return $dbu->closeDBConnections();
 }
 
-
-/**
- * Add dates for request
- *
- * @deprecated 9.4
- *
- * @param string $field table.field to request
- * @param string $begin begin date
- * @param string $end   end date
- *
- * @return string SQL
- */
-function getDateRequest($field, $begin, $end) {
-   $dbu = new DbUtils();
-   return $dbu->getDateRequest($field, $begin, $end);
-}
-
 /**
  * Add dates for request
  *

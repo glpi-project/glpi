@@ -81,6 +81,10 @@ The present file will list all changes made to the project; according to the
 - 'SELECT DISTINCT' and 'DISTINCT FIELDS' criteria in `DBmysqlIterator::buildQuery()`
 - `CommonDBTM::getTablesOf()`
 - `CommonDBTM::getForeignKeyFieldsOf()`
+- `TicketFollowup`
+- `getDateRequest` and `DbUtils::getDateRequest()`
+- `Html::convertTagFromRichTextToImageTag()`
+- `Transfer::createSearchConditionUsingArray()`
 
 ## [9.4.3] unreleased
 

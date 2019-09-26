@@ -276,11 +276,6 @@ function glpi_autoload($classname) {
 
    $dir = GLPI_ROOT . "/inc/";
 
-   // Deprecation warn for TicketFollowup
-   if ($classname === 'TicketFollowup') {
-      Toolbox::deprecated('TicketFollowup has been replaced by ITILFollowup.');
-   }
-
    // Deprecation warn for Computer_Software* classes
    if ($classname === 'Computer_SoftwareLicense') {
       Toolbox::deprecated('Computer_SoftwareLicense has been replaced by Item_SoftwareLicense.');
