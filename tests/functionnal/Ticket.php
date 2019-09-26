@@ -2630,4 +2630,250 @@ class Ticket extends DbTestCase {
       $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
       $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
    }
+
+   public function testMerge() {
+      $this->login();
+      $_SESSION['glpiactiveprofile']['interface'] = '';
+      $this->setEntity('Root entity', true);
+
+      $ticket = new \Ticket();
+      $ticket1 = $ticket->add([
+         'name'        => "test merge 1",
+         'content'     => "test merge 1",
+         'entities_id' => 0,
+         'status'      => \CommonITILObject::INCOMING,
+      ]);
+      $ticket2 = $ticket->add([
+         'name'        => "test merge 2",
+         'content'     => "test merge 2",
+         'entities_id' => 0,
+         'status'      => \CommonITILObject::INCOMING,
+      ]);
+      $ticket3 = $ticket->add([
+         'name'        => "test merge 3",
+         'content'     => "test merge 3",
+         'entities_id' => 0,
+         'status'      => \CommonITILObject::INCOMING,
+      ]);
+
+      $task = new \TicketTask();
+      $fup = new \ITILFollowup();
+      $task->add([
+         'tickets_id'   => $ticket2,
+         'content'      => 'ticket 2 task 1'
+      ]);
+      $task->add([
+         'tickets_id'   => $ticket3,
+         'content'      => 'ticket 3 task 1'
+      ]);
+      $fup->add([
+         'itemtype'  => 'Ticket',
+         'items_id'  => $ticket2,
+         'content'   => 'ticket 2 fup 1'
+      ]);
+      $fup->add([
+         'itemtype'  => 'Ticket',
+         'items_id'  => $ticket3,
+         'content'   => 'ticket 3 fup 1'
+      ]);
+
+      $document = new \Document();
+      $documents_id = $document->add([
+         'name'     => 'basic document in both',
+         'filename' => 'doc.xls',
+         'users_id' => '2', // user "glpi"
+      ]);
+      $documents_id2 = $document->add([
+         'name'     => 'basic document in target',
+         'filename' => 'doc.xls',
+         'users_id' => '2', // user "glpi"
+      ]);
+      $documents_id3 = $document->add([
+         'name'     => 'basic document in sources',
+         'filename' => 'doc.xls',
+         'users_id' => '2', // user "glpi"
+      ]);
+
+      $document_item = new \Document_Item();
+      // Add document to two tickets to test merging duplicates
+      $document_item->add([
+         'itemtype'     => 'Ticket',
+         'items_id'     => $ticket2,
+         'documents_id' => $documents_id,
+         'users_id'     => false,
+         'entities_id'  => '0',
+         'is_recursive' => 0
+      ]);
+      $document_item->add([
+         'itemtype'     => 'Ticket',
+         'items_id'     => $ticket1,
+         'documents_id' => $documents_id,
+         'users_id'     => false,
+         'entities_id'  => '0',
+         'is_recursive' => 0
+      ]);
+      $document_item->add([
+         'itemtype'     => 'Ticket',
+         'items_id'     => $ticket1,
+         'documents_id' => $documents_id2,
+         'users_id'     => false,
+         'entities_id'  => '0',
+         'is_recursive' => 0
+      ]);
+      $document_item->add([
+         'itemtype'     => 'Ticket',
+         'items_id'     => $ticket2,
+         'documents_id' => $documents_id3,
+         'users_id'     => false,
+         'entities_id'  => '0',
+         'is_recursive' => 0
+      ]);
+      $document_item->add([
+         'itemtype'     => 'Ticket',
+         'items_id'     => $ticket3,
+         'documents_id' => $documents_id3,
+         'users_id'     => false,
+         'entities_id'  => '0',
+         'is_recursive' => 0
+      ]);
+
+      $ticket_user = new \Ticket_User();
+      $ticket_user->add([
+         'tickets_id'         => $ticket1,
+         'type'               => \Ticket_User::REQUESTER,
+         'users_id'           => 2
+      ]);
+      $ticket_user->add([ // Duplicate with #1
+         'tickets_id'         => $ticket3,
+         'type'               => \Ticket_User::REQUESTER,
+         'users_id'           => 2
+      ]);
+      $ticket_user->add([
+         'tickets_id'         => $ticket1,
+         'users_id'           => 0,
+         'type'               => \Ticket_User::REQUESTER,
+         'alternative_email'  => 'test@glpi.com'
+      ]);
+      $ticket_user->add([ // Duplicate with #3
+         'tickets_id'         => $ticket2,
+         'users_id'           => 0,
+         'type'               => \Ticket_User::REQUESTER,
+         'alternative_email'  => 'test@glpi.com'
+      ]);
+      $ticket_user->add([ // Duplicate with #1
+         'tickets_id'         => $ticket2,
+         'users_id'           => 2,
+         'type'               => \Ticket_User::REQUESTER,
+         'alternative_email'  => 'test@glpi.com'
+      ]);
+      $ticket_user->add([
+         'tickets_id'         => $ticket3,
+         'users_id'           => 2,
+         'type'               => \Ticket_User::ASSIGN,
+         'alternative_email'  => 'test@glpi.com'
+      ]);
+
+      $ticket_group = new \Group_Ticket();
+      $ticket_group->add([
+         'tickets_id'         => $ticket1,
+         'groups_id'          => 1,
+         'type'               => \Group_Ticket::REQUESTER
+      ]);
+      $ticket_group->add([ // Duplicate with #1
+         'tickets_id'         => $ticket3,
+         'groups_id'          => 1,
+         'type'               => \Group_Ticket::REQUESTER
+      ]);
+      $ticket_group->add([
+         'tickets_id'         => $ticket3,
+         'groups_id'          => 1,
+         'type'               => \Group_Ticket::ASSIGN
+      ]);
+
+      $ticket_supplier = new \Supplier_Ticket();
+      $ticket_supplier->add([
+         'tickets_id'         => $ticket1,
+         'type'               => \Supplier_Ticket::REQUESTER,
+         'suppliers_id'       => 2
+      ]);
+      $ticket_supplier->add([ // Duplicate with #1
+         'tickets_id'         => $ticket3,
+         'type'               => \Supplier_Ticket::REQUESTER,
+         'suppliers_id'       => 2
+      ]);
+      $ticket_supplier->add([
+         'tickets_id'         => $ticket1,
+         'suppliers_id'       => 0,
+         'type'               => \Supplier_Ticket::REQUESTER,
+         'alternative_email'  => 'test@glpi.com'
+      ]);
+      $ticket_supplier->add([ // Duplicate with #3
+         'tickets_id'         => $ticket2,
+         'suppliers_id'       => 0,
+         'type'               => \Supplier_Ticket::REQUESTER,
+         'alternative_email'  => 'test@glpi.com'
+      ]);
+      $ticket_supplier->add([ // Duplicate with #1
+         'tickets_id'         => $ticket2,
+         'suppliers_id'       => 2,
+         'type'               => \Supplier_Ticket::REQUESTER,
+         'alternative_email'  => 'test@glpi.com'
+      ]);
+      $ticket_supplier->add([
+         'tickets_id'         => $ticket3,
+         'suppliers_id'       => 2,
+         'type'               => \Supplier_Ticket::ASSIGN,
+         'alternative_email'  => 'test@glpi.com'
+      ]);
+
+      $status = [];
+      $mergeparams = [
+         'linktypes' => [
+            'ITILFollowup',
+            'TicketTask',
+            'Document'
+         ],
+         'link_type'  => \Ticket_Ticket::SON_OF
+      ];
+
+      \Ticket::merge($ticket1, [$ticket2, $ticket3], $status, $mergeparams);
+
+      $status_counts = array_count_values($status);
+      $failure_count = 0;
+      if (array_key_exists(1, $status_counts)) {
+         $failure_count += $status_counts[1];
+      }
+      if (array_key_exists(2, $status_counts)) {
+         $failure_count += $status_counts[2];
+      }
+
+      $this->integer((int)$failure_count)->isEqualTo(0);
+
+      $task_count = count($task->find(['tickets_id' => $ticket1]));
+      $fup_count = count($fup->find([
+         'itemtype' => 'Ticket',
+         'items_id' => $ticket1]));
+      $doc_count = count($document_item->find([
+         'itemtype' => 'Ticket',
+         'items_id' => $ticket1]));
+      $user_count = count($ticket_user->find([
+         'tickets_id' => $ticket1]));
+      $group_count = count($ticket_group->find([
+         'tickets_id' => $ticket1]));
+      $supplier_count = count($ticket_supplier->find([
+         'tickets_id' => $ticket1]));
+
+      // Target ticket should have all tasks
+      $this->integer((int)$task_count)->isEqualTo(2);
+      // Target ticket should have all followups + 1 for each source ticket description
+      $this->integer((int)$fup_count)->isEqualTo(4);
+      // Target ticket should have the original document, one instance of the duplicate, and the new document from one of the source tickets
+      $this->integer((int)$doc_count)->isEqualTo(3);
+      // Target ticket should have all users not marked as duplicates above + original requester (ID: 6)
+      $this->integer((int)$user_count)->isEqualTo(4);
+      // Target ticket should have all groups not marked as duplicates above
+      $this->integer((int)$group_count)->isEqualTo(2);
+      // Target ticket should have all suppliers not marked as duplicates above
+      $this->integer((int)$supplier_count)->isEqualTo(3);
+   }
 }
