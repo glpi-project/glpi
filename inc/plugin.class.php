@@ -1213,26 +1213,29 @@ class Plugin extends CommonDBTM {
    /**
     * This function executes a hook for 1 plugin.
     *
-    * @param string $plugname Name of the plugin
-    * @param string $hook     function to be called (may be an array for call a class method)
-    * @param mixed  ...$args  [optional] One or more arguments passed to hook function
+    * @param string          $plugname Name of the plugin
+    * @param string|callable $hook     suffix used to build function to be called ("plugin_myplugin_{$hook}")
+    *                                  or callable function
+    * @param mixed           ...$args  [optional] One or more arguments passed to hook function
     *
     * @return mixed $data
    **/
    static function doOneHook($plugname, $hook, ...$args) {
 
-      $plugname=strtolower($plugname);
+      $plugname = strtolower($plugname);
 
       if (!Plugin::isPluginLoaded($plugname)) {
          return;
       }
 
-      if (!is_array($hook)) {
-         $hook = "plugin_" . $plugname . "_" . $hook;
-         if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
-            include_once(GLPI_ROOT . "/plugins/$plugname/hook.php");
-         }
+      if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
+         include_once(GLPI_ROOT . "/plugins/$plugname/hook.php");
       }
+
+      if (is_string($hook) && !is_callable($hook)) {
+         $hook = "plugin_" . $plugname . "_" . $hook;
+      }
+
       if (is_callable($hook)) {
          return call_user_func_array($hook, $args);
       }
