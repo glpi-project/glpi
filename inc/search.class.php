@@ -4825,11 +4825,14 @@ JAVASCRIPT;
          default :
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {
-               $out = Plugin::doOneHook(
-                  $plug['plugin'],
-                  'addDefaultJoin',
-                  $itemtype, $ref_table, $already_link_tables
-               );
+               $plugin_name   = $plug['plugin'];
+               $hook_function = 'plugin_' . $plugin_name . '_addDefaultJoin';
+               $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, &$already_link_tables) {
+                  if (is_callable($hook_function)) {
+                     return $hook_function($itemtype, $ref_table, $already_link_tables);
+                  }
+               };
+               $out = Plugin::doOneHook($plug['plugin'], $hook_closure);
                if (!empty($out)) {
                   return $out;
                }
@@ -4921,22 +4924,27 @@ JAVASCRIPT;
 
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
-         $specific_leftjoin = Plugin::doOneHook(
-            $plug['plugin'],
-            'addLeftJoin',
-            $itemtype, $ref_table, $new_table, $linkfield, $already_link_tables
-         );
+         $plugin_name   = $plug['plugin'];
+         $hook_function = 'plugin_' . $plugin_name . '_addLeftJoin';
+         $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
+            if (is_callable($hook_function)) {
+               return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
+            }
+         };
+         $specific_leftjoin = Plugin::doOneHook($plug['plugin'], $hook_closure);
       }
 
       // Link with plugin tables : need to know left join structure
       if (empty($specific_leftjoin)
           && preg_match("/^glpi_plugin_([a-z0-9]+)/", $new_table, $matches)) {
          if (count($matches) == 2) {
-            $specific_leftjoin = Plugin::doOneHook(
-               $matches[1],
-               'addLeftJoin',
-               $itemtype, $ref_table, $new_table, $linkfield, $already_link_tables
-            );
+            $plugin_name   = $matches[1];
+            $hook_function = 'plugin_' . $plugin_name . '_addLeftJoin';
+            $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
+               if (is_callable($hook_function)) {
+                  return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
+               }
+            };
          }
       }
       if (!empty($linkfield)) {
