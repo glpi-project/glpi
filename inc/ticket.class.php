@@ -2442,43 +2442,49 @@ class Ticket extends CommonITILObject {
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       switch ($ma->getAction()) {
          case 'merge_as_followup' :
+            $rand = mt_rand();
             $itemtype = $ma->getItemtype(true);
             $mergeparam = [
                'name'         => "_mergeticket",
                'used'         => $ma->items['Ticket'],
-               'displaywith'  => ['id']
+               'displaywith'  => ['id'],
+               'rand'         => $rand
             ];
             echo "<table class='center-h'><tr>";
-            echo "<td>".__('Ticket')."</td><td colspan='3'>";
+            echo "<td><label for='dropdown__mergeticket$rand'>".__('Ticket')."</label></td><td colspan='3'>";
             Ticket::dropdown($mergeparam);
-            echo "</td></tr><tr><td>".__('Merge Followups')."</td><td>";
+            echo "</td></tr><tr><td><label for='with_followups'>".__('Merge followups')."</label></td><td>";
             Html::showCheckbox([
                'name'    => 'with_followups',
+               'id'      => 'with_followups',
                'checked' => false
             ]);
-            echo "</td><td>".__('Merge Documents')."</td><td>";
+            echo "</td><td><label for='with_documents'>".__('Merge documents')."</label></td><td>";
             Html::showCheckbox([
                'name'    => 'with_documents',
+               'id'      => 'with_documents',
                'checked' => false
             ]);
-            echo "</td></tr><tr><td>".__('Merge Tasks')."</td><td>";
+            echo "</td></tr><tr><td><label for='with_tasks'>".__('Merge tasks')."<label></td><td>";
             Html::showCheckbox([
                'name'    => 'with_tasks',
+               'id'      => 'with_tasks',
                'checked' => false
             ]);
-            echo "</td><td>".__('Merge Actors')."</td><td>";
+            echo "</td><td><label for='with_actors'>".__('Merge actors')."</label></td><td>";
             Html::showCheckbox([
                'name'    => 'with_actors',
+               'id'      => 'with_actors',
                'checked' => false
             ]);
-            echo "</td></tr><tr><td>".__('Link type')."</td><td colspan='3'>";
+            echo "</td></tr><tr><td><label for='dropdown_link_type$rand'>".__('Link type')."</label></td><td colspan='3'>";
             Dropdown::showFromArray('link_type', [
                0                             => __('None'),
                Ticket_Ticket::LINK_TO        => __('Linked to'),
                Ticket_Ticket::DUPLICATE_WITH => __('Duplicates'),
                Ticket_Ticket::SON_OF         => __('Son of'),
                Ticket_Ticket::PARENT_OF      => __('Parent of')
-            ], ['value' => Ticket_Ticket::SON_OF]);
+            ], ['value' => Ticket_Ticket::SON_OF, 'rand' => $rand]);
             echo "</td></tr><tr><tr><td colspan='4'>";
             echo Html::submit(_x('button', 'Merge'), [
                'name'      => 'merge',
