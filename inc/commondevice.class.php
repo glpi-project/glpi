@@ -230,7 +230,8 @@ abstract class CommonDevice extends CommonDropdown {
          'field'              => 'designation',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

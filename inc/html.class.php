@@ -3520,8 +3520,12 @@ class Html {
       $rand = (isset($params['rand']) ? $params['rand'] : mt_rand());
       $name    = "field_".$params['name'].$rand;
 
+      // Check if field is allowed
+      $field_so = $item->getSearchOptionByField('field', $field, $item->getTable());
+      $can_autocomplete = true || array_key_exists('autocomplete', $field_so) && $field_so['autocomplete'];
+
       $output = '';
-      if ($CFG_GLPI["use_ajax_autocompletion"]) {
+      if ($can_autocomplete && $CFG_GLPI["use_ajax_autocompletion"]) {
          $output .=  "<input ".$params['option']." id='text$name' type='{$params['type']}' name='".
                        $params['name']."' value=\"".self::cleanInputText($params['value'])."\"
                        class='autocompletion-text-field'";

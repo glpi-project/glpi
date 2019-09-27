@@ -52,11 +52,10 @@ if (!isset($item->fields[$_GET['field']]) || !$item->canView()) {
    exit();
 }
 
-// Security : blacklist fields
-if (in_array($table.'.'.$_GET['field'],
-             ['glpi_authldaps.rootdn', 'glpi_authldaps.rootdn_passwd',
-              'glpi_configs.value', 'glpi_mailcollectors.login',
-              'glpi_mailcollectors.passwd', 'glpi_users.name', 'glpi_users.password'])) {
+// Security : check whitelist
+$field_so = $item->getSearchOptionByField('field', $_GET['field'], $item->getTable());
+$can_autocomplete = array_key_exists('autocomplete', $field_so) && $field_so['autocomplete'];
+if (!$can_autocomplete) {
    exit();
 }
 

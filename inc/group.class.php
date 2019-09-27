@@ -428,7 +428,8 @@ class Group extends CommonTreeDropdown {
             'table'              => $this->getTable(),
             'field'              => 'ldap_field',
             'name'               => __('Attribute of the user containing its groups'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
+            'autocomplete'       => true,
          ];
 
          $tab[] = [
@@ -436,7 +437,8 @@ class Group extends CommonTreeDropdown {
             'table'              => $this->getTable(),
             'field'              => 'ldap_value',
             'name'               => __('Attribute value'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'autocomplete'       => true,
          ];
 
          $tab[] = [
@@ -444,7 +446,8 @@ class Group extends CommonTreeDropdown {
             'table'              => $this->getTable(),
             'field'              => 'ldap_group_dn',
             'name'               => __('Group DN'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'autocomplete'       => true,
          ];
       }
 

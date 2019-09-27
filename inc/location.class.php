@@ -230,7 +230,8 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'building',
          'name'               => __('Building number'),
-         'datatype'           => 'text'
+         'datatype'           => 'text',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -238,7 +239,8 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'room',
          'name'               => __('Room number'),
-         'datatype'           => 'text'
+         'datatype'           => 'text',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -274,7 +276,8 @@ class Location extends CommonTreeDropdown {
          'field'              => 'latitude',
          'name'               => __('Latitude'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -283,7 +286,8 @@ class Location extends CommonTreeDropdown {
          'field'              => 'longitude',
          'name'               => __('Longitude'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -292,7 +296,8 @@ class Location extends CommonTreeDropdown {
          'field'              => 'altitude',
          'name'               => __('Altitude'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -300,7 +305,8 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'address',
          'name'               => __('Address'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -308,7 +314,8 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'postcode',
          'name'               => __('Postal code'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -316,7 +323,8 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'town',
          'name'               => __('Town'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -324,7 +332,8 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'state',
          'name'               => _x('location', 'State'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -332,7 +341,8 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'country',
          'name'               => __('Country'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       return $tab;

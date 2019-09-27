@@ -86,7 +86,14 @@ The present file will list all changes made to the project; according to the
 - `Html::convertTagFromRichTextToImageTag()`
 - `Transfer::createSearchConditionUsingArray()`
 
-## [9.4.3] unreleased
+## [9.4.4] 2019-09-24
+
+### API changes
+
+#### Changes
+- For security reasons, autocompletion feature requires now to be authorized by a `'autocomplete' => true` flag in corresponding field search option.
+
+## [9.4.3] 2019-06-20
 
 ### API changes
 

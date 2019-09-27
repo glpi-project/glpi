@@ -175,7 +175,8 @@ class RuleAction extends CommonDBChild {
          'name'               => __('Value'),
          'massiveaction'      => false,
          'datatype'           => 'specific',
-         'additionalfields'   => ['rules_id']
+         'additionalfields'   => ['rules_id'],
+         'autocomplete'       => true,
       ];
 
       return $tab;

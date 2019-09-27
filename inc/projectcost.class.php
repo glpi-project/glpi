@@ -125,7 +125,8 @@ class ProjectCost extends CommonDBChild {
          'name'               => __('Title'),
          'searchtype'         => 'contains',
          'datatype'           => 'itemlink',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

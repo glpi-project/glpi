@@ -903,7 +903,8 @@ class Document extends CommonDBTM {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -929,7 +930,8 @@ class Document extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'link',
          'name'               => __('Web link'),
-         'datatype'           => 'weblink'
+         'datatype'           => 'weblink',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -937,7 +939,8 @@ class Document extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'mime',
          'name'               => __('MIME type'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

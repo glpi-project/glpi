@@ -396,6 +396,72 @@ class Item_Disk extends CommonDBChild {
       echo "</div>";
    }
 
+   function rawSearchOptions() {
+
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
+
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'device',
+         'name'               => __('Partition'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'mountpoint',
+         'name'               => __('Mount point'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'totalsize',
+         'unit'               => 'auto',
+         'name'               => __('Global size'),
+         'datatype'           => 'number',
+         'width'              => 1000,
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'freesize',
+         'unit'               => 'auto',
+         'name'               => __('Free size'),
+         'datatype'           => 'number',
+         'width'              => 1000,
+         'massiveaction'      => false,
+         'autocomplete'       => true,
+      ];
+
+      return $tab;
+   }
+
    public static function rawSearchOptionsToAdd($itemtype) {
       $tab = [];
 

@@ -193,7 +193,8 @@ class Link extends CommonDBTM {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -210,7 +211,8 @@ class Link extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'link',
          'name'               => __('Link or filename'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

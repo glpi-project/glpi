@@ -73,11 +73,21 @@ class DeviceGraphicCard extends CommonDevice {
       $tab = parent::rawSearchOptions();
 
       $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'chipset',
+         'name'               => __('Chipset'),
+         'datatype'           => 'string',
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'memory_default',
          'name'               => __('Memory by default'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

@@ -1167,6 +1167,16 @@ class AuthLDAP extends CommonDBTM {
          'datatype'           => 'string'
       ];
 
+      $tab[] = [
+         'id'                 => '31',
+         'table'              => $this->getTable(),
+         'field'              => 'inventory_domain',
+         'name'               => __('Domain name used by inventory tool'),
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'autocomplete'       => true,
+      ];
+
       return $tab;
    }
 

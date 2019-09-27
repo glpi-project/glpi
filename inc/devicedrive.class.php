@@ -78,7 +78,8 @@ class DeviceDrive extends CommonDevice {
          'table'              => $this->getTable(),
          'field'              => 'speed',
          'name'               => __('Speed'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

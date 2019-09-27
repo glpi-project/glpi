@@ -148,6 +148,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'table' => $table,
             'field' => 'product_number',
             'name'  => __('Product Number'),
+            'autocomplete' => true,
          ];
       }
 

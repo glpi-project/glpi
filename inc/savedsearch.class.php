@@ -192,7 +192,8 @@ class SavedSearch extends CommonDBTM {
                 'field'              => 'name',
                 'name'               => __('Name'),
                 'datatype'           => 'itemlink',
-                'massiveaction'      => false // implicit key==1
+                'massiveaction'      => false, // implicit key==1
+                'autocomplete'       => true,
                ];
 
       $tab[] = ['id'                 => '2',

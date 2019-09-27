@@ -75,7 +75,8 @@ class DevicePowerSupply extends CommonDevice {
          'table'              => $this->getTable(),
          'field'              => 'power',
          'name'               => __('Power'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

@@ -54,7 +54,8 @@ class Item_DeviceProcessor extends Item_Devices {
                                                                 __('MHz')),
                                         'short name' => __('Frequency'),
                                         'size'       => 10,
-                                        'id'         => 20],
+                                        'id'         => 20,
+                                        'autocomplete' => true,],
                    'serial'    => parent::getSpecificities('serial'),
                    'otherserial' => parent::getSpecificities('otherserial'),
                    'locations_id' => parent::getSpecificities('locations_id'),
@@ -62,11 +63,13 @@ class Item_DeviceProcessor extends Item_Devices {
                    'nbcores'   => ['long name'  => __('Number of cores'),
                                         'short name' => __('Cores'),
                                         'size'       => 2,
-                                        'id'         => 21],
+                                        'id'         => 21,
+                                        'autocomplete' => true,],
                    'nbthreads' => ['long name' => __('Number of threads'),
                                         'short name' => __('Threads'),
                                         'size'       => 2,
-                                        'id'         => 22],
+                                        'id'         => 22,
+                                        'autocomplete' => true,],
                    'busID'     => parent::getSpecificities('busID')];
    }
 

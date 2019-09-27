@@ -488,7 +488,8 @@ class Contract extends CommonDBTM {
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'joinparams'         => $joinparams
+         'joinparams'         => $joinparams,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -636,7 +637,8 @@ class Contract extends CommonDBTM {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -653,7 +655,8 @@ class Contract extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'num',
          'name'               => _x('phone', 'Number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -883,6 +886,18 @@ class Contract extends CommonDBTM {
                ]
             ]
          ]
+      ];
+
+      $tab[] = [
+         'id'                 => '50',
+         'table'              => $this->getTable(),
+         'field'              => 'template_name',
+         'name'               => __('Template name'),
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'nodisplay'          => true,
+         'autocomplete'       => true,
       ];
 
       // add objectlock search options

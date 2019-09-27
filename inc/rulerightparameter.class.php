@@ -71,7 +71,8 @@ class RuleRightParameter extends CommonDropdown {
          'table'              => $this->getTable(),
          'field'              => 'value',
          'name'               => _n('Criterion', 'Criteria', 1),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       return $tab;

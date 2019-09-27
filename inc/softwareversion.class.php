@@ -165,7 +165,8 @@ class SoftwareVersion extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       $tab[] = [

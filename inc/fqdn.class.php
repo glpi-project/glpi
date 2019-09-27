@@ -201,7 +201,8 @@ class FQDN extends CommonDropdown {
          'table'              => $this->getTable(),
          'field'              => 'fqdn',
          'name'               => __('FQDN'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'autocomplete'       => true,
       ];
 
       return $tab;
