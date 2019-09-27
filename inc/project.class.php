@@ -2006,7 +2006,7 @@ class Project extends CommonDBTM {
       $union = new QueryUnion([$query1, $query2], false, 'all_items');
       $iterator = $DB->request([
          'SELECT' => [
-            new QueryExpression('CAST(AVG('.$DB->quoteName('percent_done').') AS INT) AS percent_done')
+            new QueryExpression('CAST(AVG('.$DB->quoteName('percent_done').') AS UNSIGNED) AS percent_done')
          ],
          'FROM'   => $union
       ]);
