@@ -2591,7 +2591,7 @@ function update0723to078() {
    foreach ($changes as $table => $tab) {
       $migration->displayMessage(sprintf(__('Change of the database layout - %s'), $table));
       $query = "ALTER TABLE `$table`
-                ".implode($tab, " ,\n").";";
+                ".implode(" ,\n", $tab).";";
       $DB->queryOrDie($query, "0.78 multiple alter in $table");
    }
 
