@@ -4060,7 +4060,7 @@ JAVASCRIPT;
       }
 
       if (($table != 'asset_types')
-         && !empty($complexjoin)
+         && (($table == getTableForItemType($itemtype) && !empty($complexjoin)) || $table != getTableForItemType($itemtype))
          && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;
