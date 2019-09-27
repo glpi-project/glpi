@@ -318,7 +318,6 @@ class SimpleCache extends SimpleCacheDecorator {
          $is_locked = flock($handle, LOCK_EX);
 
          $result = ftruncate($handle, 0)
-            && rewind($handle)
             && fwrite($handle, $json)
             && fflush($handle);
 

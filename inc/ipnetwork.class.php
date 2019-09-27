@@ -87,16 +87,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'network',
-         'name'               => self::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'autocomplete'       => true,
-      ];
-
-      $tab[] = [
          'id'                 => '17',
          'table'              => $this->getTable(),
          'field'              => 'gateway',
