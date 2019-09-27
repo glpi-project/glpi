@@ -1725,6 +1725,24 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td><td colspan='2'></td></tr>";
 
+      echo "<tr><th colspan='4'>" . __('Transfer') . "</th></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
+      echo __('Model for automatic entity transfer on inventories');
+      echo "</td>";
+      echo "<td>";
+      $params = [
+          'name'       => 'transfers_id',
+          'value'      => $entity->fields['transfers_id'],
+          'emptylabel' => __('No automatic transfer')
+      ];
+      if ($entity->fields['id'] > 0) {
+         $params['toadd'] = ['-1' => __('Inheritance of the parent entity')];
+      }
+      Dropdown::show('Transfer', $params);
+      echo "</td>";
+      echo "</td><td colspan='2'></td></tr>";
+
       Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";

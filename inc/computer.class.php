@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class Computer extends CommonDBTM {
    use Glpi\Features\DCBreadcrumb;
    use Glpi\Features\Clonable;
+   use Glpi\Features\Inventoriable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -114,6 +115,7 @@ class Computer extends CommonDBTM {
          ->addStandardTab('Reservation', $ong, $options)
          ->addStandardTab('Domain_Item', $ong, $options)
          ->addStandardTab('Appliance_Item', $ong, $options)
+         ->addStandardTab('RuleMatchedLog', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -480,6 +482,8 @@ class Computer extends CommonDBTM {
          Plugin::doHook("autoinventory_information", $this);
          echo "</td></tr>";
       }
+
+      $this->showInventoryInfo();
 
       $this->showFormButtons($options);
 

@@ -52,6 +52,10 @@ if (isset($_POST["condition"])) {
    $condition = 0;
 }
 
+if (isset($_GET['refusedequipments_id'])) {
+    $_POST['refusedequipments_id'] = $_GET['refusedequipments_id'];
+}
+
 $rulecollection = RuleCollection::getClassByType($sub_type);
 if ($rulecollection->isRuleRecursive()) {
    $rulecollection->setEntity($_SESSION['glpiactive_entity']);

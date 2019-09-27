@@ -24,6 +24,7 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
+- `RuleImportComputer` and `RuleImportComputerCollection`
 
 #### Removed
 - `Update::declareOldItems()`

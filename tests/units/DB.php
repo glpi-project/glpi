@@ -306,6 +306,7 @@ class DB extends \GLPITestCase {
             continue;
          }
          $type = $dbu->getItemTypeForTable($table);
+         $this->string($type)->isNotEqualTo('UNKNOWN', "$table does not have corresponding item");
 
          $this->string($type)->isNotEqualTo('UNKNOWN', 'Cannot find type for table ' . $table);
          $this->object($item = $dbu->getItemForItemtype($type))->isInstanceOf('CommonDBTM', $table);

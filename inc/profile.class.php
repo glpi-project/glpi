@@ -1465,32 +1465,45 @@ class Profile extends CommonDBTM {
       $matrix_options = ['canedit'       => $canedit,
                               'default_class' => 'tab_bg_4'];
 
-      $rights = [['itemtype'  => 'User',
-                            'label'     => User::getTypeName(Session::getPluralNumber()),
-                            'field'     => 'user',
-                            'row_class' => 'tab_bg_2'],
-                      ['itemtype'  => 'Entity',
-                            'label'     => Entity::getTypeName(Session::getPluralNumber()),
-                            'field'     => 'entity'],
-                      ['itemtype'  => 'Group',
-                            'label'     => Group::getTypeName(Session::getPluralNumber()),
-                            'field'     => 'group'],
-                      ['itemtype'  => 'Profile',
-                            'label'     => Profile::getTypeName(Session::getPluralNumber()),
-                            'field'     => 'profile'],
-                      ['itemtype'  => 'QueuedNotification',
-                            'label'     => __('Notification queue'),
-                            'field'     => 'queuednotification'],
-                      ['itemtype'  => 'Log',
-                            'label'     => Log::getTypeName(Session::getPluralNumber()),
-                            'field'     => 'logs']];
+      $rights = [
+         [
+            'itemtype'  => 'User',
+            'label'     => User::getTypeName(Session::getPluralNumber()),
+            'field'     => 'user',
+            'row_class' => 'tab_bg_2'
+         ], [
+            'itemtype'  => 'Entity',
+            'label'     => Entity::getTypeName(Session::getPluralNumber()),
+            'field'     => 'entity'
+         ], [
+            'itemtype'  => 'Group',
+            'label'     => Group::getTypeName(Session::getPluralNumber()),
+            'field'     => 'group'
+         ], [
+            'itemtype'  => 'Profile',
+            'label'     => Profile::getTypeName(Session::getPluralNumber()),
+            'field'     => 'profile'
+         ], [
+            'itemtype'  => 'QueuedNotification',
+            'label'     => __('Notification queue'),
+            'field'     => 'queuednotification'
+         ], [
+            'itemtype'  => 'Glpi\Inventory\Conf',
+            'label'     => __('Inventory'),
+            'field'     => 'inventory'
+         ], [
+            'itemtype'  => 'Log',
+            'label'     => Log::getTypeName(Session::getPluralNumber()),
+            'field'     => 'logs'
+         ]
+      ];
       $matrix_options['title'] = __('Administration');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       $rights = [['itemtype'  => 'Rule',
                             'label'     => __('Authorizations assignment rules'),
                             'field'     => 'rule_ldap'],
-                      ['itemtype'  => 'RuleImportComputer',
+                      ['itemtype'  => 'RuleImportAsset',
                             'label'     => __('Rules for assigning a computer to an entity'),
                             'field'     => 'rule_import'],
                       ['itemtype'  => 'RuleMailCollector',
@@ -2252,7 +2265,7 @@ class Profile extends CommonDBTM {
          'field'              => 'rights',
          'name'               => __('Rules for assigning a computer to an entity'),
          'datatype'           => 'right',
-         'rightclass'         => 'RuleImportComputer',
+         'rightclass'         => 'RuleImportAsset',
          'rightname'          => 'rule_import',
          'joinparams'         => [
             'jointype'           => 'child',

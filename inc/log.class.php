@@ -121,6 +121,9 @@ class Log extends CommonDBTM {
       $result = 0;
 
       foreach ($oldvalues as $key => $oldval) {
+         if (in_array($key, $item->getNonLoggedFields())) {
+            continue;
+         }
          $changes = [];
 
          // Parsing $SEARCHOPTION to find changed field

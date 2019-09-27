@@ -92,7 +92,12 @@ class Transfer extends DbTestCase {
             'Consumable',
             'Infocom',
             'ComputerAntivirus',
-            'TicketRecurrent'
+            'TicketRecurrent',
+            'Agent',
+            'Printer_CartridgeInfo',
+            'PrinterLog',
+            'USBVendor',
+            'PCIVendor'
          ]
       );
 

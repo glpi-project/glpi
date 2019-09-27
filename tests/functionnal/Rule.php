@@ -497,7 +497,7 @@ class Rule extends DbTestCase {
                 'value' => 1
                ];
       $result = $rule->getMinimalActionText($input);
-      $expected = "<td >Category</td><td >Assign</td><td >FUSION</td>";
+      $expected = "<td >Category</td><td >Assign</td><td >Software from inventories</td>";
       $this->string($result)->isIdenticalTo($expected);
 
       $input = ['field' => '_import_category',

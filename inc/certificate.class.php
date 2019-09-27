@@ -774,7 +774,7 @@ class Certificate extends CommonDBTM {
 
          foreach ($result as $certificate) {
             $name     = $certificate['name'].' - '.$certificate['serial'];
-            //TRANS: %1$s the license name, %2$s is the expiration date
+            //TRANS: %1$s the certificate name, %2$s is the expiration date
             $message .= sprintf(__('Certificate %1$s expired on %2$s'),
                                 Html::convDate($certificate["date_expiration"]), $name)."<br>\n";
             $items[$certificate['id']] = $certificate;

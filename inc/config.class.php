@@ -2075,6 +2075,8 @@ class Config extends CommonDBTM {
                  'check'   => 'GuzzleHttp\\Client' ],
                [ 'name'    => 'guzzlehttp/psr7',
                  'check'   => 'GuzzleHttp\\Psr7\\Response' ],
+               [ 'name'    => 'glpi-project/inventory_format',
+                 'check'   => 'Glpi\Inventory\Converter'],
                [ 'name'    => 'wapmorgan/unified-archive',
                  'check'   => 'wapmorgan\\UnifiedArchive\\UnifiedArchive' ],
                [ 'name'    => 'paragonie/sodium_compat',
@@ -3068,7 +3070,8 @@ class Config extends CommonDBTM {
            __("Plugins")."</td><td>";
       self::showLogsInterval('purge_plugins', $CFG_GLPI["purge_plugins"]);
       echo "</td>";
-      echo "<td class='center'></td><td>";
+      echo "<td class='center'>" . RefusedEquipment::getTypeName(Session::getPluralNumber()) . "</td><td>";
+      self::showLogsInterval('purge_refusedequipment', $CFG_GLPI["purge_refusedequipment"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Software', 'Software', Session::getPluralNumber())."</th></tr>";

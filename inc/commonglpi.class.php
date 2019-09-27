@@ -624,6 +624,26 @@ class CommonGLPI {
             if ($tabnum == 'main') {
                Plugin::doHook('pre_show_item', ['item' => $item, 'options' => &$options]);
                $ret = $item->showForm($item->getID(), $options);
+
+               $lockedfield = new Lockedfield();
+               if (!$item->isNewItem() && $lockedfield->isHandled($item)) {
+                  $locks = $lockedfield->getLocks($item->getType(), $item->fields['id']);
+                  if (count($locks)) {
+                     $js_expr = '[name='.implode('], [name=', $locks).']';
+                     $lockedtitle = __s('Field will not be updated from inventory');
+
+                     $locked_js = <<<JAVASCRIPT
+                        $(function() {
+                            $("{$js_expr}").closest("td").prev()
+                            .append("<i class=\"fas fa-lock\" title=\"{$lockedtitle}\"></i>")
+                            .toggleClass("lockedfield", true)
+                            .removeClass("lockfield") //to drop duplicated fusion icon
+                            ;
+                        });
+JAVASCRIPT;
+                     echo Html::scriptBlock($locked_js);
+                  }
+               }
                Plugin::doHook('post_show_item', ['item' => $item, 'options' => $options]);
                return $ret;
             }

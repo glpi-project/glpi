@@ -1423,7 +1423,7 @@ class Ticket extends DbTestCase {
                   function() use ($k) {
                       dump($k);
                   }
-               )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k))->dump($k);
+               )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k));
          }
       }
    }

@@ -219,6 +219,7 @@ class NetworkPort extends CommonDBChild {
       parent::post_updateItem($history);
 
       $this->updateDependencies(!$this->input['_no_history']);
+      $this->updateMetrics();
    }
 
    function post_clone($source, $history) {
@@ -370,6 +371,18 @@ class NetworkPort extends CommonDBChild {
    }
 
 
+   public function updateMetrics() {
+      $metrics = new NetworkPortMetrics();
+      $metrics->add([
+         'networkports_id' => $this->fields['id'],
+         'ifinbytes'       => $this->fields['ifinbytes'] ?? 0,
+         'ifoutbytes'      => $this->fields['ifoutbytes'] ?? 0,
+         'ifinerrors'      => $this->fields['ifinerrors'] ?? 0,
+         'ifouterrors'     => $this->fields['ifouterrors'] ?? 0,
+      ], [], false);
+   }
+
+
    function prepareInputForAdd($input) {
 
       if (isset($input["logical_number"]) && (strlen($input["logical_number"]) == 0)) {
@@ -390,6 +403,7 @@ class NetworkPort extends CommonDBChild {
 
    function post_addItem() {
       $this->updateDependencies(!$this->input['_no_history']);
+      $this->updateMetrics();
    }
 
    function cleanDBonPurge() {
@@ -431,9 +445,11 @@ class NetworkPort extends CommonDBChild {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('NetworkPortMetrics', $ong, $options);
       $this->addStandardTab('NetworkName', $ong, $options);
       $this->addStandardTab('NetworkPort_Vlan', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
+      $this->addStandardTab('NetworkPortConnectionLog', $ong, $options);
       $this->addStandardTab('NetworkPortInstantiation', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
 
@@ -496,9 +512,7 @@ class NetworkPort extends CommonDBChild {
     * @param $withtemplate   integer   withtemplate param (default 0)
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB;
-
-      $rand     = mt_rand();
+      global $DB, $CFG_GLPI;
 
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
@@ -508,18 +522,68 @@ class NetworkPort extends CommonDBChild {
          return false;
       }
 
-      $netport       = new self();
+      $netport = new self();
       $netport->item = $item;
 
-      if (($itemtype == 'NetworkPort')
-          || ($withtemplate == 2)) {
+      if (($itemtype == 'NetworkPort') || ($withtemplate == 2)) {
          $canedit = false;
       } else {
          $canedit = $item->canEdit($items_id);
       }
+
+      $aggegate_iterator = $DB->request([
+         'FROM'   => $netport->getTable(),
+         'WHERE'  => [
+            'itemtype'  => $item->getType(),
+            'items_id'  => $item->getID()
+         ],
+         'ORDER'  => 'logical_number'
+      ]);
+
+      $aggregated_ports = [];
+      while ($row = $aggegate_iterator->next()) {
+         $port_iterator = $DB->request([
+            'FROM'   => 'glpi_networkportaggregates',
+            'WHERE'  => ['networkports_id' => $row['id']],
+            'LIMIT'  => 1
+         ]);
+
+         while ($prow = $port_iterator->next()) {
+            $aggregated_ports = array_merge(
+               $aggregated_ports,
+               importArrayFromDB($prow['networkports_id_list'])
+            );
+         }
+      }
+
+      $criteria = [
+         'FROM'   => $netport->getTable(),
+         'WHERE'  => [
+            'items_id'  => $item->getID(),
+            'itemtype'  => $item->getType(), [
+               'OR' => [
+                  ['name' => ['!=', __('Management')]],
+                  ['name' => null]
+               ]
+            ]
+         ]
+      ];
+
+      $ports_iterator = $DB->request($criteria);
+
+      $so = $netport->rawSearchOptions();
+      $dprefs = DisplayPreference::getForTypeUser(
+         'Networkport',
+         Session::getLoginUserID()
+      );
+      //hardcode add name column
+      array_unshift($dprefs, 1);
+      $colspan = count($dprefs);
+
       $showmassiveactions = false;
       if ($withtemplate != 2) {
          $showmassiveactions = $canedit;
+         ++$colspan;
       }
 
       // Show Add Form
@@ -553,267 +617,555 @@ class NetworkPort extends CommonDBChild {
          Html::closeForm();
       }
 
+      $search_config_top    = '';
+      if (Session::haveRightsOr('search_config', [
+         DisplayPreference::PERSONAL,
+         DisplayPreference::GENERAL
+      ])) {
+         $options_link = "<span class='fa fa-wrench pointer' title='".
+            __s('Select default items to show')."' onClick=\"$('#%id').dialog('open');\">
+            <span class='sr-only'>" .  __s('Select default items to show') . "</span></span>";
+
+         $search_config_top .= str_replace('%id', 'search_config_top', $options_link);
+
+         $pref_url = $CFG_GLPI["root_doc"]."/front/displaypreference.form.php?itemtype=".
+                     self::getType();
+         $search_config_top .= Ajax::createIframeModalWindow(
+            'search_config_top',
+            $pref_url,
+            [
+               'title'         => __('Select default items to show'),
+               'reloadonclose' => true,
+               'display'       => false
+            ]
+         );
+      }
+
+      $rand = mt_rand();
       if ($showmassiveactions) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
       }
 
-      $is_active_network_port = false;
+      Session::initNavigateListItems(
+         'NetworkPort',
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+         sprintf(
+            __('%1$s = %2$s'),
+            $item->getTypeName(1),
+            $item->getName()
+         )
+      );
 
-      Session::initNavigateListItems('NetworkPort',
-                                     //TRANS : %1$s is the itemtype name,
-                                     //        %2$s is the name of the item (used for headings of a list)
-                                     sprintf(__('%1$s = %2$s'),
-                                             $item->getTypeName(1), $item->getName()));
-
-      if ($itemtype == 'NetworkPort') {
-         $porttypes = ['NetworkPortAlias', 'NetworkPortAggregate'];
-      } else {
-         $porttypes = self::getNetworkPortInstantiations();
-         // Manage NetworkPortMigration
-         $porttypes[] = '';
-      }
-      $display_options = self::getDisplayOptions($itemtype);
-      $table           = new HTMLTableMain();
-      $number_port     = self::countForItem($item);
-      $table_options   = ['canedit'         => $canedit,
-                               'display_options' => &$display_options];
-
-      // Make table name and add the correct show/hide parameters
-      $table_name  = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
-
-      // Add the link to the modal to display the options ...
-      $table_namelink = self::getDisplayOptionsLink($itemtype);
-
-      $table_name = sprintf(__('%1$s - %2$s'), $table_name, $table_namelink);
-
-      $table->setTitle($table_name);
-
-      $c_main = $table->addHeader('main', self::getTypeName(Session::getPluralNumber()));
-
-      if (($display_options['dynamic_import']) && ($item->isDynamic())) {
-         $table_options['display_isDynamic'] = true;
-      } else {
-         $table_options['display_isDynamic'] = false;
-      }
-
-      if ($display_options['characteristics']) {
-         $c_instant = $table->addHeader('Instantiation', __('Characteristics'));
-         $c_instant->setHTMLClass('center');
-      }
-
-      if ($display_options['internet']) {
-
-         $options = ['names'       => 'NetworkName',
-                          'aliases'     => 'NetworkAlias',
-                          'ipaddresses' => 'IPAddress',
-                          'ipnetworks'  => 'IPNetwork'];
-
-         $table_options['dont_display'] = [];
-         foreach ($options as $option => $itemtype_for_option) {
-            if (!$display_options[$option]) {
-               $table_options['dont_display'][$itemtype_for_option] = true;
-            }
-         }
-
-         $c_network = $table->addHeader('Internet', __('Internet information'));
-         $c_network->setHTMLClass('center');
-
-      } else {
-         $c_network = null;
-      }
-
-      foreach ($porttypes as $portType) {
-
-         if (empty($portType)) {
-            $group_name  = 'Migration';
-            $group_title = __('Network ports waiting for manual migration');
-         } else {
-            $group_name  = $portType;
-            $group_title = $portType::getTypeName(Session::getPluralNumber());
-         }
-
-         $t_group = $table->createGroup($group_name, $group_title);
-
-         if (($withtemplate != 2)
-             && $canedit) {
-            $c_checkbox = $t_group->addHeader('checkbox',
-                                              Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand,
-                                                                          '__RAND__'), $c_main);
-         } else {
-            $c_checkbox = null;
-         }
-
-         $c_number  = $t_group->addHeader('NetworkPort', "#", $c_main);
-         $c_name    = $t_group->addHeader("Name", __('Name'), $c_main);
-         $c_name->setItemType('NetworkPort');
-         $c_name->setHTMLClass('center');
-
-         if ($table_options['display_isDynamic']) {
-            $c_dynamic = $t_group->addHeader("Dynamic", __('Automatic inventory'), $c_main);
-            $c_dynamic->setHTMLClass('center');
-         }
-
-         if ($display_options['characteristics']) {
-            if (empty($portType)) {
-               NetworkPortMigration::getMigrationInstantiationHTMLTableHeaders($t_group, $c_instant,
-                                                                               $c_network, null,
-                                                                               $table_options);
-            } else {
-               $instantiation = new $portType();
-               $instantiation->getInstantiationHTMLTableHeaders($t_group, $c_instant, $c_network,
-                                                                null, $table_options);
-               unset ($instantiation);
-            }
-         }
-
-         if ($display_options['internet']
-             && !$display_options['characteristics']) {
-            NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, null, $table_options);
-         }
-
-         if ($itemtype == 'NetworkPort') {
-            switch ($portType) {
-               case 'NetworkPortAlias' :
-                  $search_table   = 'glpi_networkportaliases';
-                  $search_request = ['networkports_id_alias' => $items_id];
-                  break;
-
-               case 'NetworkPortAggregate' :
-                  $search_table   = 'glpi_networkportaggregates';
-                  $search_request = ['networkports_id_list' => ['LIKE', "%$items_id%"]];
-                  break;
-            }
-            $criteria = [
-               'SELECT' => 'networkports_id AS id',
-               'FROM'   => $search_table,
-               'WHERE'  => $search_request
-            ];
-         } else {
-            $criteria = [
-               'SELECT' => 'id',
-               'FROM'   => 'glpi_networkports',
-               'WHERE'  => [
-                  'items_id'           => $items_id,
-                  'itemtype'           => $itemtype,
-                  'instantiation_type' => $portType,
-                  'is_deleted'         => 0
-               ],
-               'ORDER'  => ['name', 'logical_number']
-            ];
-         }
-
-         echo "<div class='spaced'>";
-
-         $iterator = $DB->request($criteria);
-         $number_port = count($iterator);
-
-         if ($number_port != 0) {
-            $is_active_network_port = true;
-
-            $save_canedit = $canedit;
-
-            if (!empty($portType)) {
-               $name = sprintf(__('%1$s (%2$s)'), self::getTypeName($number_port),
-                                 call_user_func([$portType, 'getTypeName']));
-               $name = sprintf(__('%1$s: %2$s'), $name, $number_port);
-            } else {
-               $name    = __('Network ports waiting for manual migration');
-               $canedit = false;
-            }
-
-            while ($devid = $iterator->next()) {
-               $t_row = $t_group->createRow();
-
-               $netport->getFromDB(current($devid));
-
-               // No massive action for migration ports
-               if (($withtemplate != 2)
-                     && $canedit
-                     && !empty($portType)) {
-                  $t_row->addCell(
-                     $c_checkbox,
-                     Html::getMassiveActionCheckBox(__CLASS__, $netport->fields["id"])
-                  );
-               }
-               $content = "<span class='b'>";
-               // Display link based on default rights
-               if ($save_canedit
-                     && ($withtemplate != 2)) {
-
-                  if (!empty($portType)) {
-                     $content .= "<a href=\"" . NetworkPort::getFormURLWithID($netport->fields["id"]) ."\">";
-                  } else {
-                     $content .= "<a href=\"" . NetworkPortMigration::getFormURLWithID($netport->fields["id"]) ."\">";
-                  }
-               }
-               $content .= $netport->fields["logical_number"];
-
-               if ($canedit
-                     && ($withtemplate != 2)) {
-                  $content .= "</a>";
-               }
-               $content .= "</span>";
-               $content .= Html::showToolTip($netport->fields['comment'],
-                                             ['display' => false]);
-
-               $t_row->addCell($c_number, $content);
-
-               $value = $netport->fields["name"];
-               $t_row->addCell($c_name, $value, null, $netport);
-
-               if ($table_options['display_isDynamic']) {
-                  $t_row->addCell($c_dynamic,
-                                    Dropdown::getYesNo($netport->fields['is_dynamic']));
-               }
-
-               if ($display_options['characteristics']) {
-                  $instantiation = $netport->getInstantiation();
-                  if ($instantiation !== false) {
-                     $instantiation->getInstantiationHTMLTable($netport, $t_row, null,
-                                                               $table_options);
-                     unset($instantiation);
-                  }
-               } else if ($display_options['internet']) {
-                  NetworkName::getHTMLTableCellsForItem($t_row, $netport, null, $table_options);
-               }
-
-            }
-
-            $canedit = $save_canedit;
-         }
-         echo "</div>";
-      }
-      if ($is_active_network_port
-          && $showmassiveactions) {
-         $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $number_port),
-                                      'check_itemtype' => $itemtype,
-                                      'container'      => 'mass'.__CLASS__.$rand,
-                                      'check_items_id' => $items_id];
-
+      if ($showmassiveactions) {
+         $massiveactionparams = [
+            'num_displayed'  => min($_SESSION['glpilist_limit'], count($ports_iterator)),
+            'check_itemtype' => $itemtype,
+            'container'      => 'mass'.__CLASS__.$rand,
+            'check_items_id' => $items_id
+         ];
          Html::showMassiveActions($massiveactionparams);
       }
 
-      $table->display(['display_thead'                         => false,
-                            'display_tfoot'                         => false,
-                            'display_header_on_foot_for_each_group' => true]);
-      unset($table);
+      echo "<table class='tab_cadre_fixehov'>";
 
-      if (!$is_active_network_port) {
-         echo "<table class='tab_cadre_fixe'><tr><th>".__('No network port found')."</th></tr>";
-         echo "</table>";
+      echo "<thead><tr><td colspan='$colspan'>";
+      echo "<table class='legend'>";
+      echo "<thead><tr><th colspan='4'>".__('Connections legend')."</th></tr></thead><tr>";
+      echo "<td class='netport trunk'>".__('Equipment in trunk or tagged mode')."</td>";
+      echo "<td class='netport hub'>".__('Hub ')."</td>";
+      echo "<td class='netport cotrunk'>".__('Other equipments')."</td>";
+      echo "<td class='netport aggregated'>".__('Aggregated port')."</td>";
+      echo "</tr></table>";
+      echo "</td></tr>";
+
+      echo "<tr><th colspan='$colspan'>";
+      echo sprintf(
+         __('%s %s'),
+         count($ports_iterator),
+         NetworkPort::getTypeName(count($ports_iterator))
+      );
+      echo ' ' . $search_config_top;
+      echo "</td></tr></thead>";
+
+      //display table headers
+      echo "<tr>";
+      if ($canedit) {
+         echo "<td>" . Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand, '__RAND__') . "</td>";
+      }
+      foreach ($dprefs as $dpref) {
+         echo "<th>";
+         foreach ($so as $option) {
+            if ($option['id'] == $dpref) {
+               echo $option['name'];
+               continue;
+            }
+         }
+         echo "</th>";
+      }
+      echo "</tr>";
+
+      //display row contents
+      if (!count($ports_iterator)) {
+         echo "<tr><th colspan='$colspan'>".__('No network port found')."</th></tr>";
+      }
+      while ($row = $ports_iterator->next()) {
+         echo $netport->showPort(
+            $row,
+            $dprefs,
+            $so,
+            $canedit,
+            (count($aggregated_ports) && in_array($row['id'], $aggregated_ports)),
+            $rand
+         );
       }
 
-      if ($is_active_network_port
-          && $showmassiveactions) {
+      echo "</table>";
+
+      if ($showmassiveactions) {
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions($massiveactionparams);
-      }
-      if ($showmassiveactions) {
          Html::closeForm();
       }
 
+      //management ports
+      $criteria = [
+         'FROM'   => $netport->getTable(),
+         'WHERE'  => [
+            'items_id'  => $item->getID(),
+            'itemtype'  => $item->getType(),
+            'name'      => __('Management')
+         ]
+      ];
+
+      $mports_iterator = $DB->request($criteria);
+
+      if (count($mports_iterator)) {
+         echo "<hr/>";
+         echo "<table class='tab_cadre_fixehov'>";
+
+         //hradcode display preferences form management port
+         $dprefs = [
+            1, //name
+            4, //mac
+            127, //network names
+            126 // IPs
+         ];
+
+         echo "<thead><tr><th colspan='".count($dprefs)."'>";
+         echo sprintf(
+            __('%s %s'),
+            count($mports_iterator),
+            _n('Management port', 'Management ports', count($mports_iterator))
+         );
+         echo "</th></tr></thead>";
+
+         echo "<tr>";
+         //display table headers
+         foreach ($dprefs as $dpref) {
+            echo "<th>";
+            foreach ($so as $option) {
+               if ($option['id'] == $dpref) {
+                  echo $option['name'];
+                  continue;
+               }
+            }
+            echo "</th>";
+         }
+         echo "</tr>";
+
+         //display row contents
+         while ($row = $mports_iterator->next()) {
+            echo $netport->showPort(
+               $row,
+               $dprefs,
+               $so,
+               $canedit,
+               (count($aggregated_ports) && in_array($row['id'], $aggregated_ports)),
+               $rand,
+               false
+            );
+         }
+
+         echo "</table>";
+      }
    }
 
+   /**
+    * Display port row
+    *
+    * @param array $port    Port entry in db
+    * @param array $dprefs  Display preferences
+    * @param array $so      Search options
+    * @param bool  $canedit Can edit ACL
+    * @param bool  $agg     Is an aggregated port
+    * @param int   $rand    Random value
+    * @param bool  $with_ma Flag massive actions
+    *
+    * @return string
+    */
+   protected function showPort(array $port, $dprefs, $so, $canedit, $agg, $rand, $with_ma = true) {
+      global $DB;
+
+      $css_class = 'netport';
+      if ($port['ifstatus'] == 1) {
+         if ($port['trunk'] == 1) {
+            $css_class .= ' trunk'; // port_trunk.png
+         } else if ($this->isHubConnected($port['id'])) {
+            $css_class .= ' hub'; //multiple_mac_addresses.png
+         } else {
+            $css_class .= ' cotrunk'; //connected_trunk.png
+         }
+      }
+
+      $whole_output = "<tr class='$css_class'>";
+      if ($canedit && $with_ma) {
+         $whole_output .= "<td>" . Html::getMassiveActionCheckBox(__CLASS__, $port['id']) . "</td>";
+      }
+      foreach ($dprefs as $dpref) {
+         $output = '';
+         $td_class = '';
+         foreach ($so as $option) {
+            if ($option['id'] == $dpref) {
+               switch ($dpref) {
+                  case 1:
+                     if ($agg === true) {
+                        $td_class = 'aggregated';
+                     }
+
+                     $name = $port['name'];
+                     $url = NetworkPort::getFormURLWithID($port['id']);
+                     if ($_SESSION["glpiis_ids_visible"] || empty($name)) {
+                        $name = sprintf(__('%1$s (%2$s)'), $name, $port['id']);
+                     }
+
+                     $output .= "<a href='$url'>$name</a>";
+                     break;
+                  case 31:
+                     $speed = $port[$option['field']];
+                     //TRANS: list of unit (bps for bytes per second)
+                     $bytes = [__('bps'), __('Kbps'), __('Mbps'), __('Gbps'), __('Tbps')];
+                     foreach ($bytes as $val) {
+                        if ($speed >= 1000) {
+                           $speed = $speed / 1000;
+                        } else {
+                           break;
+                        }
+                     }
+                     //TRANS: %1$s is a number maybe float or string and %2$s the unit
+                     $output .= sprintf(__('%1$s %2$s'), round($speed, 2), $val);
+                     break;
+                  case 32:
+                     $state_class = '';
+                     $state_title = __('Unknown');
+                     switch ($port[$option['field']]) {
+                        case 1: //up
+                           $state_class = 'green';
+                           $state_title = __('Up');
+                           break;
+                        case 2: //down
+                           $state_class = 'red';
+                           $state_title = __('Down');
+                           break;
+                        case 3: //testing
+                           $state_class = 'orange';
+                           $state_title = __('Test');
+                           break;
+                     }
+                     $output .= sprintf(
+                        "<i class='fas fa-circle %s' title='%s'></i> <span class='sr-only'>%s</span>",
+                        $state_class,
+                        $state_title,
+                        $state_title
+                     );
+                     break;
+                  case 34:
+                     $in = $port[$option['field']];
+                     $out = $port['ifoutbytes'];
+
+                     if (empty($in) && empty($out)) {
+                        break;
+                     }
+
+                     if (!empty($in)) {
+                        $in = Toolbox::getSize($in, 1000);
+                     } else {
+                        $in = ' - ';
+                     }
+
+                     if (!empty($out)) {
+                        $out = Toolbox::getSize($out, 1000);
+                     } else {
+                        $out = ' - ';
+                     }
+
+                     $output .= sprintf('%s / %s', $in, $out);
+                     break;
+                  case 35:
+                     $in = $port[$option['field']];
+                     $out = $port['ifouterrors'];
+
+                     if ($in == 0 && $out == 0) {
+                        break;
+                     }
+
+                     if ($in > 0 || $out > 0) {
+                        $td_class = 'orange';
+                     }
+
+                     $output .= sprintf('%s / %s', $in, $out);
+                     break;
+                  case 36:
+                     switch ($port[$option['field']]) {
+                        case 2: //half
+                           $td_class = 'orange';
+                           $output .= __('Half');
+                           break;
+                        case 3: //full
+                           $output .= __('Full');
+                           break;
+                     }
+                     break;
+                  case 38:
+                     $vlans = $DB->request([
+                        'SELECT' => [
+                           NetworkPort_Vlan::getTable() . '.id',
+                           Vlan::getTable() . '.name',
+                           NetworkPort_Vlan::getTable() . '.tagged',
+                           Vlan::getTable() . '.tag',
+                        ],
+                        'FROM'   => NetworkPort_Vlan::getTable(),
+                        'INNER JOIN'   => [
+                           Vlan::getTable() => [
+                              'ON' => [
+                                 NetworkPort_Vlan::getTable()  => 'vlans_id',
+                                 Vlan::getTable()              => 'id'
+                              ]
+                           ]
+                        ],
+                        'WHERE'  => ['networkports_id' => $port['id']]
+                     ]);
+
+                     if (count($vlans) > 10) {
+                        $output .= sprintf(
+                           __('%s linked VLANs'),
+                           count($vlans)
+                        );
+                     } else {
+                        while ($row = $vlans->next()) {
+                           $output .= $row['name'];
+                           if (!empty($row['tag'])) {
+                              $output .= ' [' . $row['tag'] . ']';
+                           }
+                           $output .= ($row['tagged'] == 1 ? 'T' : 'U');
+                           if ($canedit) {
+                              $output .= "<a title='". __('Delete') . "' href='" . NetworkPort::getFormURLWithID($row['id']) . "&unassign_vlan=unassigned'> <i class='fas fa-trash'></i> <span class='sr-only'>" . __('Delete') . "</span></a>";
+                           }
+                           $output .= '<br/>';
+                        }
+                     }
+                     break;
+                  case 39:
+                     $netport = new NetworkPort();
+                     $netport->getFromDB($port['id']);
+
+                     $device1 = $netport->getItem();
+
+                     if (!$device1->can($device1->getID(), READ)) {
+                        break;
+                     }
+
+                     $relations_id = 0;
+                     $oppositePort = NetworkPort_NetworkPort::getOpposite($netport, $relations_id);
+
+                     if ($oppositePort !== false) {
+                        $device2 = $oppositePort->getItem();
+                        $output .= $this->getUnmanagedLink($device2, $oppositePort);
+
+                        //equipments connected to hubs
+                        if ($device2->getType() == Unmanaged::getType() && $device2->fields['hub'] == 1) {
+                           $houtput = "<div class='hub'>";
+
+                           $hub_ports = $DB->request([
+                              'FROM'   => NetworkPort::getTable(),
+                              'WHERE'  => [
+                                 'itemtype'  => $device2->getType(),
+                                 'items_id'  => $device2->getID()
+                              ]
+                           ]);
+
+                           $list_ports = [];
+                           while ($hrow = $hub_ports->next()) {
+                              $npo = NetworkPort::getContact($hrow['id']);
+                              $list_ports[] = $npo;
+                           }
+
+                           $hub_equipments = $DB->request([
+                              'SELECT' => ['unm.*', 'netp.mac'],
+                              'FROM'   => Unmanaged::getTable() . ' AS unm',
+                              'INNER JOIN'   => [
+                                 NetworkPort::getTable() . ' AS netp' => [
+                                    'ON' => [
+                                       'netp'   => 'items_id',
+                                       'unm'    => 'id', [
+                                          'AND' => [
+                                             'netp.itemtype' => $device2->getType()
+                                          ]
+                                       ]
+                                    ]
+                                 ]
+                              ],
+                              'WHERE'  => [
+                                 'netp.itemtype'  => $device2->getType(),
+                                 'netp.id'  => $list_ports
+                              ]
+                           ]);
+
+                           if (count($hub_equipments) > 10) {
+                              $houtput .= '<div>' . sprintf(
+                                 __('%s equipments connected to the hub'),
+                                 count($hub_equipments)
+                              ) . '</div>';
+                           } else {
+                              while ($hrow = $hub_equipments->next()) {
+                                 $hub = new Unmanaged();
+                                 $hub->getFromDB($hrow['id']);
+                                 $hub->fields['mac'] = $hrow['mac'];
+                                 $houtput .= '<div>' . $this->getUnmanagedLink($hub, $hub) . '</div>';
+                              }
+                           }
+
+                           $houtput .= "</div>";
+                           $output .= $houtput;
+                        }
+                     }
+                     break;
+                  case 40:
+                     $co_class = '';
+                     if (empty($port['ifstatus'])) {
+                        break;
+                     }
+                     switch ($port['ifstatus']) {
+                        case 1: //up
+                           $co_class = 'fa-link netport green';
+                           $title = __('Connected');
+                           break;
+                        case 2: //down
+                           $co_class = 'fa-unlink netport red';
+                           $title = __('Not connected');
+                           break;
+                        case 3: //testing
+                           $co_class = 'fa-link netport orange';
+                           $title = __('Testing');
+                           break;
+                        case 4: //unknown
+                           $co_class = 'fa-question-circle';
+                           $title = __('Unknown');
+                           break;
+                        case 5: //dormant
+                           $co_class = 'fa-link netport grey';
+                           $title = __('Dormant');
+                           break;
+                     }
+                     $output .= "<i class='fas $co_class' title='$title'></i> <span class='sr-only'>$title</span>";
+                     break;
+                  case 41:
+                     if ($port['ifstatus'] == 1) {
+                        $output .= sprintf("<i class='fa fa-circle green' title='%s'></i>", __s('Connected'));
+                     } else if (!empty($port['lastup'])) {
+                        $time = strtotime(date('Y-m-d H:i:s')) - strtotime($port['lastup']);
+                        $output .= Html::timestampToString($time, false);
+                     }
+                     break;
+                  case 126: //IP address
+                     $ips_iterator = $this->getIpsForPort('NetworkPort', $port['id']);
+                     while ($iprow = $ips_iterator->next()) {
+                        $output .= '<br/>' . $iprow['name'];
+                     }
+                     break;
+                  case 127:
+                     $names_iterator = $DB->request([
+                        'FROM'   => 'glpi_networknames',
+                        'WHERE'  => [
+                           'itemtype'  => 'NetworkPort',
+                           'items_id'  => $port['id']
+                        ]
+                     ]);
+                     while ($namerow = $names_iterator->next()) {
+                        $netname = new NetworkName();
+                        $netname->getFromDB($namerow['id']);
+                        $output .= '<br/>' . $netname->getLink(1);
+                     }
+                     break;
+                  default:
+                     $output .= $port[$option['field']];
+                     break;
+               }
+               continue;
+            }
+         }
+         $whole_output .= "<td class='$td_class'>" . $output . "</td>";
+      }
+      $whole_output .= '</tr>';
+      return $whole_output;
+   }
+
+   protected function getIpsForPort($itemtype, $items_id) {
+      global $DB;
+
+      $iterator = $DB->request([
+         'SELECT' => 'ipa.*',
+         'FROM'   => IPAddress::getTable() . ' AS ipa',
+         'INNER JOIN'   => [
+            NetworkName::getTable() . ' AS netname' => [
+               'ON' => [
+                  'ipa' => 'items_id',
+                  'netname' => 'id', [
+                     'AND' => [
+                        'ipa.itemtype' => 'NetworkName'
+                     ]
+                  ]
+               ]
+            ]
+         ],
+         'WHERE'  => [
+            'netname.items_id'   => $items_id,
+            'netname.itemtype'   => $itemtype
+         ]
+      ]);
+      return $iterator;
+   }
+
+   protected function getUnmanagedLink($device, $port) {
+      $device_link = $device->getLink(1);
+
+      $link_replaces = $device->getName(0);
+      if (!empty($port->fields['mac'])) {
+         $link_replaces .= '<br/>' . $port->fields['mac'];
+      }
+
+      $ips_iterator = $this->getIpsForPort($port->getType(), $port->getID());
+
+      $ips = '';
+      while ($ipa = $ips_iterator->next()) {
+         $ips .= ' ' . $ipa['name'];
+      }
+      if (!empty($ips)) {
+         $link_replaces .= '<br/>' . $ips;
+      }
+
+      $device_link = str_replace(
+         $device->getName(0),
+         $link_replaces,
+         $device->getLink(1)
+      );
+
+      $icon = sprintf(
+         "<i class='%s'></i> ",
+         $device->getIcon()
+      );
+
+      return $icon . $device_link;
+   }
 
    function showForm($ID, $options = []) {
       if (!isset($options['several'])) {
@@ -1042,7 +1394,7 @@ class NetworkPort extends CommonDBChild {
             'id'                 => '9',
             'table'              => 'glpi_netpoints',
             'field'              => 'name',
-            'name'               => _n('Network outlet', 'Network outlets', 1),
+            'name'               => Netpoint::getTypeName(1),
             'datatype'           => 'dropdown'
          ];
       }
@@ -1072,6 +1424,117 @@ class NetworkPort extends CommonDBChild {
          'datatype'           => 'integer',
          'massiveaction'      => false
       ];
+
+      $tab[] = [
+         'id'    => '30',
+         'table' => $this->getTable(),
+         'field' => 'ifmtu',
+         'name'  => __('MTU'),
+      ];
+
+      $tab[] = [
+         'id'    => '31',
+         'table' => $this->getTable(),
+         'field' => 'ifspeed',
+         'name'  => __('Speed'),
+      ];
+
+      $tab[] = [
+         'id'    => '32',
+         'table' => $this->getTable(),
+         'field' => 'ifinternalstatus',
+         'name'  => __('Internal status'),
+      ];
+
+      $tab[] = [
+         'id'    => '33',
+         'table' => $this->getTable(),
+         'field' => 'iflastchange',
+         'name'  => __('Last change'),
+      ];
+
+      $tab[] = [
+         'id'    => '34',
+         'table' => $this->getTable(),
+         'field' => 'ifinbytes',
+         'name'  => __('Number of I/O bytes'),
+      ];
+
+      $tab[] = [
+         'id'    => '35',
+         'table' => $this->getTable(),
+         'field' => 'ifinerrors',
+         'name'  => __('Number of I/O errors'),
+      ];
+
+      $tab[] = [
+         'id'    => '36',
+         'table' => $this->getTable(),
+         'field' => 'portduplex',
+         'name'  => __('Duplex'),
+      ];
+
+      $netportjoin = [
+         [
+            'table'      => 'glpi_networkports',
+            'joinparams' => ['jointype' => 'itemtype_item']
+         ], [
+            'table'      => 'glpi_networkports_vlans',
+            'joinparams' => ['jointype' => 'child']
+         ]
+      ];
+
+      $tab[] = [
+         'id' => '38',
+         'table' => Vlan::getTable(),
+         'field' => 'name',
+         'name' => Vlan::getTypeName(1),
+         'datatype' => 'dropdown',
+         'forcegroupby' => true,
+         'massiveaction' => false,
+         'joinparams' => ['beforejoin' => $netportjoin]
+      ];
+
+      if (!defined('TU_USER')) {
+         $tab[] = [
+            'id'    => '39',
+            'table' => $this->getTable(),
+            'field' => 'noone',
+            'name' => __('Connected to'),
+            'nosearch' => true,
+            'nodisplay' => true,
+            'massiveaction' => false
+         ];
+      }
+
+      $tab[] = [
+         'id'    => '40',
+         'table' => $this->getTable(),
+         'field' => 'ifconnectionstatus',
+         'name'  => __('Connection'),
+      ];
+
+      $tab[] = [
+         'id'    => '41',
+         'table' => $this->getTable(),
+         'field' => 'lastup',
+         'name'  => __('Last connection'),
+      ];
+
+      $tab[] = [
+         'id'    => '42',
+         'table' => $this->getTable(),
+         'field' => 'ifalias',
+         'name'  => __('Alias')
+      ];
+
+      $joinparams = ['jointype' => 'itemtype_item'];
+      $networkNameJoin = ['jointype'          => 'itemtype_item',
+                               'specific_itemtype' => 'NetworkPort',
+                               'condition'         => ['NEWTABLE.is_deleted' => 0],
+                               'beforejoin'        => ['table'      => 'glpi_networkports',
+                                                            'joinparams' => $joinparams]];
+      NetworkName::rawSearchOptionsToAdd($tab, $networkNameJoin);
 
       return $tab;
    }
@@ -1173,5 +1636,55 @@ class NetworkPort extends CommonDBChild {
       }
 
       return parent::computeFriendlyName();
+   }
+
+   /**
+    * Is port connected to a hub?
+    *
+    * @param integer $networkports_id Port ID
+    *
+    * @return boolean
+    */
+   public function isHubConnected($networkports_id): bool {
+      global $DB;
+
+      $wired = new NetworkPort_NetworkPort();
+      $opposite = $wired->getOppositeContact($networkports_id);
+
+      if (empty($opposite)) {
+         return false;
+      }
+
+      $result = $DB->request([
+         'FROM'         => Unmanaged::getTable(),
+         'COUNT'        => 'cpt',
+         'INNER JOIN'   => [
+            $this->getTable() => [
+               'ON' => [
+                  $this->getTable()       => 'items_id',
+                  Unmanaged::getTable()   => 'id', [
+                     'AND' => [
+                        $this->getTable() . '.itemtype' => Unmanaged::getType()
+                     ]
+                  ]
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'hub' => 1,
+            $this->getTable() . '.id' => $opposite
+         ]
+      ])->next();
+
+      return ($result['cpt'] > 0);
+   }
+
+   public function getNonLoggedFields(): array {
+      return [
+         'ifinbytes',
+         'ifoutbytes',
+         'ifinerrors',
+         'ifouterrors'
+      ];
    }
 }

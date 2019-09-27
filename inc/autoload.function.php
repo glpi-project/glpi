@@ -290,6 +290,17 @@ function glpi_autoload($classname) {
 
    $dir = GLPI_ROOT . "/inc/";
 
+   // Deprecation warn for RuleImportComputer* classes
+   if (in_array($classname, ['RuleImportComputer', 'RuleImportComputerCollection'])) {
+      Toolbox::deprecated(
+         sprintf(
+            '%s has been replaced by %s.',
+            $classname,
+            str_replace('Computer', 'Asset', $classname)
+         )
+      );
+   }
+
    if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
 

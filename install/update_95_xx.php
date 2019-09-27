@@ -50,6 +50,7 @@ function update95toXX() {
       'comment_fields',
       'devicebattery',
       'domains',
+      'native_inventory',
       'reservationitem',
       'softwares',
       'recurrentchange',

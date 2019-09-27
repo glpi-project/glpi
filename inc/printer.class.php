@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Printer  extends CommonDBTM {
    use Glpi\Features\Clonable;
+   use Glpi\Features\Inventoriable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -92,6 +93,7 @@ class Printer  extends CommonDBTM {
       $this->addStandardTab('Item_OperatingSystem', $ong, $options);
       $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
       $this->addStandardTab('Cartridge', $ong, $options);
+      $this->addStandardTab('PrinterLog', $ong, $options);
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Item_Disk', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
@@ -109,6 +111,7 @@ class Printer  extends CommonDBTM {
       $this->addStandardTab('Certificate_Item', $ong, $options);
       $this->addStandardTab('Domain_Item', $ong, $options);
       $this->addStandardTab('Appliance_Item', $ong, $options);
+      $this->addStandardTab('RuleMatchedLog', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -454,6 +457,7 @@ class Printer  extends CommonDBTM {
          echo "</td></tr>";
       }
 
+      $this->showInventoryInfo();
       $this->showFormButtons($options);
 
       return true;

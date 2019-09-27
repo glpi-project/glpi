@@ -121,7 +121,7 @@ class DbTestCase extends \GLPITestCase {
          $excludes,
          [
             'TicketFollowup', // Deprecated
-            '/^Computer_Software.*/', // Deprecated
+            '/^RuleImportComputer.*/', // Deprecated
          ]
       );
 

@@ -178,7 +178,16 @@ class RuleCollection extends CommonDBTM {
          $criteria['LIMIT'] = (int)$p['limit'];
          $criteria['START'] = (int)$p['start'];
       }
+
       $criteria['WHERE'] = $where;
+
+      if (method_exists($this, 'collectionFilter')) {
+         $filter_opts = [];
+         if (isset($options['_glpi_tab'])) {
+            $filter_opts['_glpi_tab'] = $options['_glpi_tab'];
+         }
+         $criteria = $this->collectionFilter($criteria, $filter_opts);
+      }
 
       return $criteria;
    }
@@ -211,12 +220,22 @@ class RuleCollection extends CommonDBTM {
 
       //Select all the rules of a different type
       $criteria   = $this->getRuleListCriteria($p);
+
       $iterator   = $DB->request($criteria);
+
+      $current_tab = str_replace($this->getType().'$', '', Session::getActiveTab($this->getType()));
+      $tabs = $this->getTabNameForItem($this);
 
       while ($data = $iterator->next()) {
          //For each rule, get a Rule object with all the criterias and actions
          $tempRule               = $this->getRuleClass();
          $tempRule->fields       = $data;
+
+         if (isset($tabs[$current_tab])) {
+            //in a subtab disable sorting
+            $tempRule->can_sort = false;
+         }
+
          $this->RuleList->list[] = $tempRule;
       }
    }
@@ -246,6 +265,8 @@ class RuleCollection extends CommonDBTM {
 
          if (count($iterator)) {
             $this->RuleList->list = [];
+            $current_tab = str_replace($this->getType().'$', '', Session::getActiveTab($this->getType()));
+            $tabs = $this->getTabNameForItem($this);
 
             while ($rule = $iterator->next()) {
                //For each rule, get a Rule object with all the criterias and actions
@@ -253,6 +274,11 @@ class RuleCollection extends CommonDBTM {
 
                if ($tempRule->getRuleWithCriteriasAndActions($rule["id"], $retrieve_criteria,
                                                              $retrieve_action)) {
+
+                  if (!isset($tabs[$current_tab])) {
+                     $tempRule->can_sort = false;
+                  }
+
                   //Add the object to the list of rules
                   $this->RuleList->list[] = $tempRule;
                }
@@ -413,6 +439,7 @@ class RuleCollection extends CommonDBTM {
       $p['childrens'] = 0;
       $p['active']    = false;
       $p['condition'] = 0;
+      $p['_glpi_tab'] = $options['_glpi_tab'];
       $rand           = mt_rand();
 
       foreach (['inherited','childrens', 'condition'] as $param) {
@@ -474,7 +501,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       echo "<table class='tab_cadre_fixehov'>";
-      $colspan = 6;
+      $colspan = 4;
 
       if ($display_entities) {
          $colspan++;
@@ -482,59 +509,47 @@ class RuleCollection extends CommonDBTM {
       if ($use_conditions) {
          $colspan++;
       }
-      echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>\n";
 
-      echo "<tr>";
-      echo "<th>";
-      if ($canedit) {
-         echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-      }
-      echo "</th>";
-      echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Description')."</th>";
-      if ($use_conditions) {
-         echo "<th>".__('Use rule for')."</th>";
-      }
-      echo "<th>".__('Active')."</th>";
-
-      if ($display_entities) {
-         echo "<th>".Entity::getTypeName(1)."</th>\n";
-      }
-      if (!$display_entities) {
-         echo "<th colspan='2'>&nbsp;</th>";
-      }
-      echo "</tr>\n";
-
+      $can_sort = $canedit && $nb;
       if (count($this->RuleList->list)) {
          $ruletype = $this->RuleList->list[0]->getType();
+         $can_sort = $this->RuleList->list[0]->can_sort && $canedit && $nb;
          Session::initNavigateListItems($ruletype);
       }
+
+      if ($can_sort) {
+         $colspan += 2;
+      }
+
+      echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>\n";
+      $header_row = "<tr>";
+      $header_row.= "<th>";
+      if ($canedit) {
+         $header_row .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+      }
+      $header_row.= "</th>";
+      $header_row.= "<th>".__('Name')."</th>";
+      $header_row.= "<th>".__('Description')."</th>";
+      if ($use_conditions) {
+         $header_row.= "<th>".__('Use rule for')."</th>";
+      }
+      $header_row .= "<th>".__('Active')."</th>";
+
+      if ($display_entities) {
+         $header_row .= "<th>".Entity::getTypeName(1)."</th>\n";
+      }
+      if ($nb && $canedit && $can_sort) {
+         $header_row .= "<th></th><th></th>";
+      }
+      $header_row .= "</tr>\n";
+      echo $header_row;
 
       for ($i=$p['start'],$j=0; isset($this->RuleList->list[$j]); $i++,$j++) {
          $this->RuleList->list[$j]->showMinimalForm($target, $i==0, $i==$nb-1, $display_entities, $p['condition']);
          Session::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
       }
       if ($nb) {
-         echo "<tr>";
-         echo "<th>";
-         if ($canedit) {
-            echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         }
-         echo "</th>";
-         echo "<th>".__('Name')."</th>";
-         echo "<th>".__('Description')."</th>";
-         if ($use_conditions) {
-            echo "<th>".__('Use rule for')."</th>";
-         }
-         echo "<th>".__('Active')."</th>";
-
-         if ($display_entities) {
-            echo "<th>".Entity::getTypeName(1)."</th>\n";
-         }
-         if (!$display_entities) {
-            echo "<th colspan='2'>&nbsp;</th>";
-         }
-         echo "</tr>\n";
+         echo $header_row;
       }
       echo "</table>\n";
 
@@ -556,6 +571,14 @@ class RuleCollection extends CommonDBTM {
          $url = $CFG_GLPI["root_doc"];
       }
 
+      //if rules provides an initRules method, then we're able to reset them
+      if (method_exists($this->getRuleClass(), 'initRules')) {
+         echo "<a class='vsubmit' id='reset_rules' href='".$rule->getSearchURL()."?reinit=true' " .
+            //does not work.
+            //"onClick='if(confirm(\"" . __s('All rules will be erased and recreated from scratch. Are you sure?')."\")) { return true } else { return false; };' " .
+            "title='".__s("Remove all equipment import rules and recreate from defaults")."'" .
+            ">" . __('Reset rules') . "</a>&nbsp;";
+      }
       echo "<a class='vsubmit' href='#' onClick=\"".
                   Html::jsGetElementbyID('allruletest'.$rand).".dialog('open'); return false;\">".
                   __('Test rules engine')."</a>";
@@ -1530,6 +1553,7 @@ class RuleCollection extends CommonDBTM {
 
       // Get Collection data
       $this->getCollectionDatas(1, 1, $condition);
+      $input = $this->prepareInputDataForProcess($input, $params);
 
       $output["_no_rule_matches"] = true;
 
@@ -1908,6 +1932,14 @@ class RuleCollection extends CommonDBTM {
       return $ong;
    }
 
+   /**
+    * Get label for main tab
+    *
+    * @return string
+    */
+   public function getMainTabLabel() {
+      return _n('Rule', 'Rules', Session::getPluralNumber());
+   }
 
    /**
     * @see CommonGLPI::getTabNameForItem()
@@ -1922,7 +1954,7 @@ class RuleCollection extends CommonDBTM {
                               Dropdown::getDropdownName('glpi_entities',
                                                         $_SESSION['glpiactive_entity']));
          }
-         $title = _n('Rule', 'Rules', Session::getPluralNumber());
+         $title = $item->getMainTabLabel();
          if ($item->isRuleRecursive()) {
             //TRANS: %s is the entity name
             $title = sprintf(__('Local rules: %s'),

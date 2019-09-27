@@ -66,17 +66,32 @@ class NetworkPort extends DbTestCase {
       unset($current_networkport['date_mod']);
       unset($current_networkport['date_creation']);
       $expected = [
-          'items_id'           => $computer1->getID(),
-          'itemtype'           => 'Computer',
-          'entities_id'        => $computer1->fields['entities_id'],
-          'is_recursive'       => 0,
-          'logical_number'     => 1,
-          'name'               => 'eth1',
-          'instantiation_type' => 'NetworkPortEthernet',
-          'mac'                => '00:24:81:eb:c6:d0',
-          'comment'            => null,
-          'is_deleted'         => 0,
-          'is_dynamic'         => 0,
+         'items_id' => $computer1->getID(),
+         'itemtype' => 'Computer',
+         'entities_id' => $computer1->fields['entities_id'],
+         'is_recursive' => 0,
+         'logical_number' => 1,
+         'name' => 'eth1',
+         'instantiation_type' => 'NetworkPortEthernet',
+         'mac' => '00:24:81:eb:c6:d0',
+         'comment' => null,
+         'is_deleted' => 0,
+         'is_dynamic' => 0,
+         'ifmtu' => 0,
+         'ifspeed' => 0,
+         'ifinternalstatus' => null,
+         'ifconnectionstatus' => 0,
+         'iflastchange' => null,
+         'ifinbytes' => 0,
+         'ifinerrors' => 0,
+         'ifoutbytes' => 0,
+         'ifouterrors' => 0,
+         'ifstatus' => null,
+         'ifdescr' => null,
+         'ifalias' => null,
+         'portduplex' => null,
+         'trunk' => 0,
+         'lastup' => null
       ];
       $this->array($current_networkport)->isIdenticalTo($expected);
 

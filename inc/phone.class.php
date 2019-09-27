@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Phone extends CommonDBTM {
    use Glpi\Features\Clonable;
+   use Glpi\Features\Inventoriable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -315,6 +316,7 @@ class Phone extends CommonDBTM {
          echo "</td></tr>";
       }
 
+      $this->showInventoryInfo();
       $this->showFormButtons($options);
 
       return true;

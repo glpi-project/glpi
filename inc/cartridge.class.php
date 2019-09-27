@@ -1247,6 +1247,8 @@ class Cartridge extends CommonDBChild {
 
       switch ($item->getType()) {
          case 'Printer' :
+            $info = new Printer_CartridgeInfo();
+            $info->showForPrinter($item);
             self::showForPrinter($item);
             self::showForPrinter($item, 1);
             return true;

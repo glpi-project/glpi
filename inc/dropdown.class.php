@@ -177,6 +177,7 @@ class Dropdown {
             'permit_select_parent' => $params['permit_select_parent'],
             'specific_tags'        => $params['specific_tags'],
             '_idor_token'          => Session::getNewIDORToken($itemtype),
+            'order'                => $params['order'] ?? null,
       ];
 
       $output = "<span class='no-wrap'>";
@@ -940,6 +941,7 @@ class Dropdown {
                  'NetworkInterface' => null,
                  'Netpoint' => null,
                  'Network' => null,
+                 'NetworkPortType' => null,
                  'Vlan' => null,
                  'LineOperator' => null,
                  'DomainType' => null,
@@ -979,7 +981,11 @@ class Dropdown {
              ],
              __('Appliances') => [
                'ApplianceType' => null,
-               'ApplianceEnvironment' => null
+               'ApplianceEnvironment' => null,
+             ],
+             __('Other') => [
+               'USBVendor' => null,
+               'PCIVendor' => null
              ]
 
          ]; //end $opt
@@ -2823,10 +2829,14 @@ class Dropdown {
             ]
          );
 
+         $order_field = "$table.$field";
+         if (isset($post['order']) && !empty($post['order'])) {
+            $order_field = $post['order'];
+         }
          if ($multi) {
-            $criteria['ORDERBY'] = ["$table.entities_id", "$table.$field"];
+            $criteria['ORDERBY'] = ["$table.entities_id", $order_field];
          } else {
-            $criteria['ORDERBY'] = ["$table.$field"];
+            $criteria['ORDERBY'] = [$order_field];
          }
 
          $iterator = $DB->request($criteria);

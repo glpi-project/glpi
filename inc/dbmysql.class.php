@@ -1417,6 +1417,9 @@ class DBmysql {
     * @return boolean
     */
    public function beginTransaction() {
+      if ($this->in_transaction === true) {
+         Toolbox::logError('A database transaction has already been started!');
+      }
       $this->in_transaction = true;
       return $this->dbh->begin_transaction();
    }

@@ -80,6 +80,8 @@ class RequirementsManager {
       $requirements[] = new Extension('curl');
       $requirements[] = new Extension('gd');
       $requirements[] = new Extension('simplexml');
+      $requirements[] = new Extension('dom');
+      $requirements[] = new Extension('libxml');
       $requirements[] = new Extension('intl');
       $requirements[] = new Extension('ldap', true); // to sync/connect from LDAP
       $requirements[] = new Extension('apcu', true); // to enhance perfs

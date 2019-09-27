@@ -70,6 +70,7 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
       'GLPI_SESSION_DIR'     => '{GLPI_VAR_DIR}/_sessions', // Path for sessions storage
       'GLPI_TMP_DIR'         => '{GLPI_VAR_DIR}/_tmp', // Path for temp storage
       'GLPI_UPLOAD_DIR'      => '{GLPI_VAR_DIR}/_uploads', // Path for upload storage
+      "GLPI_INVENTORY_DIR"   => '{GLPI_VAR_DIR}/_inventories', //Path for inventories
 
       // Security constants
       'GLPI_USE_CSRF_CHECK'  => '1',

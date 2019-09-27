@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Import rules collection class
+// @deprecated x.x.x @see RuleImportAssetCollection
 class RuleImportComputerCollection extends RuleCollection {
 
    // From RuleCollection

@@ -585,8 +585,10 @@ class Rule extends CommonDBTM {
       switch ($ma->getAction()) {
          case 'move_rule' :
             $input = $ma->getInput();
-            $values = ['after'  => __('After'),
-                            'before' => __('Before')];
+            $values = [
+               'after'  => __('After'),
+               'before' => __('Before')
+            ];
             Dropdown::showFromArray('move_type', $values, ['width' => '20%']);
 
             if (isset($input['entity'])) {
@@ -602,11 +604,14 @@ class Rule extends CommonDBTM {
             }
             echo Html::hidden('rule_class_name', ['value' => $input['rule_class_name']]);
 
-            Rule::dropdown(['sub_type'        => $input['rule_class_name'],
-                                 'name'            => "ranking",
-                                 'condition'       => $condition,
-                                 'entity'          => $entity,
-                                 'width'           => '50%']);
+            Rule::dropdown([
+               'sub_type'        => $input['rule_class_name'],
+               'name'            => "ranking",
+               'condition'       => $condition,
+               'entity'          => $entity,
+               'width'           => '50%',
+               'order'           => 'ranking'
+            ]);
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
@@ -776,6 +781,12 @@ class Rule extends CommonDBTM {
       if (!is_array($values)) {
          $values = [$field => $values];
       }
+
+      if (isset($options['searchopt']['real_type'])) {
+          $ruleclass = new $options['searchopt']['real_type'];
+          return $ruleclass->getSpecificValueToDisplay($field, $values, $options);
+      }
+
       switch ($field) {
          case 'match' :
             switch ($values[$field]) {
@@ -806,6 +817,12 @@ class Rule extends CommonDBTM {
          $values = [$field => $values];
       }
       $options['display'] = false;
+
+      if (isset($options['searchopt']['real_type'])) {
+          $ruleclass = new $options['searchopt']['real_type'];
+          return $ruleclass->getSpecificValueToSelect($field, $name, $values, $options);
+      }
+
       switch ($field) {
          case 'match' :
             if (isset($values['itemtype']) && !empty($values['itemtype'])) {
@@ -1866,7 +1883,14 @@ class Rule extends CommonDBTM {
       if ($this->useConditions()) {
          echo "<td>".$this->getConditionName($this->fields["condition"])."</td>";
       }
-      echo "<td>".Dropdown::getYesNo($this->fields["is_active"])."</td>";
+
+      $output = sprintf(
+         "<i class='fas fa-circle %s' title='%s'></i> <span class='sr-only'>%s</span>",
+         ($this->fields['is_active'] ? 'green' : 'red'),
+         ($this->fields['is_active'] ? __('Rule is active') : __('Rule is inactive')),
+         Dropdown::getYesNo($this->fields["is_active"])
+      );
+      echo "<td>" . $output . "</td>";
 
       if ($display_entities) {
          $entname = Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']);
@@ -1878,32 +1902,26 @@ class Rule extends CommonDBTM {
          echo "<td>".$entname."</td>";
       }
 
-      if (!$display_entities) {
-         if ($this->can_sort
-             && !$first
-             && $canedit) {
+      if ($this->can_sort && $canedit) {
+         if (!$first) {
             echo "<td>";
             Html::showSimpleForm($target, ['action' => 'up',
                                                 'condition' => $active_condition], '',
                                  ['type' => $this->fields["sub_type"],
                                        'id'   => $this->fields["id"],],
-                                 $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
+                                 'fa-caret-up');
             echo "</td>";
          } else {
             echo "<td>&nbsp;</td>";
          }
-      }
 
-      if (!$display_entities) {
-         if ($this->can_sort
-             && !$last
-             && $canedit) {
+         if (!$last) {
             echo "<td>";
             Html::showSimpleForm($target, ['action' => 'down',
                                                 'condition' => $active_condition], '',
                                  ['type' => $this->fields["sub_type"],
                                        'id'   => $this->fields["id"]],
-                                 $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
+                                 'fa-caret-down');
             echo "</td>";
          } else {
             echo "<td>&nbsp;</td>";
@@ -2312,6 +2330,13 @@ class Rule extends CommonDBTM {
                $display = true;
                break;
 
+            case "dropdown_inventory_itemtype" :
+               $types = $CFG_GLPI['state_types'];
+               $types[''] = __('No item type defined');
+               Dropdown::showItemTypes($name, $types, ['value' => $value]);
+               $display = true;
+               break;
+
             case "dropdown_import_type" :
                RuleAsset::dropdownImportType($name, $value);
                $display = true;
@@ -2357,9 +2382,15 @@ class Rule extends CommonDBTM {
          $display = $this->displayAdditionalRuleCondition($condition, $crit, $name, $value, $test);
       }
 
-      if (($condition == self::PATTERN_EXISTS)
-          || ($condition == self::PATTERN_DOES_NOT_EXISTS)) {
-         echo "<input type='hidden' name='$name' value='1'>";
+      $hiddens = [
+         self::PATTERN_EXISTS,
+         self::PATTERN_DOES_NOT_EXISTS,
+         RuleImportAsset::PATTERN_ENTITY_RESTRICT,
+         RuleImportAsset::PATTERN_NETWORK_PORT_RESTRICT,
+         RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE
+      ];
+      if (in_array($condition, $hiddens)) {
+         echo Html::hidden($name, ['value' => 1]);
          $display = true;
       }
 
@@ -2502,7 +2533,9 @@ class Rule extends CommonDBTM {
    /**
     * Function used to add specific params before rule processing
     *
-    * @param $params parameters
+    * @param array $params parameters
+    *
+    * @return array
    **/
    function addSpecificParamsForPreview($params) {
       return $params;
@@ -2611,10 +2644,12 @@ class Rule extends CommonDBTM {
     *    - sub_type : integer / sub_type of rule
    **/
    static function dropdown($options = []) {
-      $p['sub_type']        = '';
-      $p['name']            = 'rules_id';
-      $p['entity'] = '';
-      $p['condition'] = 0;
+      $p = [
+         'sub_type'     => '',
+         'name'         => 'rules_id',
+         'entity'       => '',
+         'condition'    => 0
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {

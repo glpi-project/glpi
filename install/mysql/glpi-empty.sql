@@ -31,6 +31,8 @@
 
 ### Dump table glpi_alerts
 
+SET FOREIGN_KEY_CHECKS=0;
+
 DROP TABLE IF EXISTS `glpi_alerts`;
 CREATE TABLE `glpi_alerts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -427,6 +429,19 @@ CREATE TABLE `glpi_cartridgeitems` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `glpi_printers_cartridgeinfos`;
+CREATE TABLE `glpi_printers_cartridgeinfos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `printers_id` int(11) NOT NULL,
+  `property` varchar(255)  NOT NULL,
+  `value` varchar(255)  NOT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `printers_id` (`printers_id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_cartridgeitems_printermodels
 
@@ -2556,6 +2571,7 @@ CREATE TABLE `glpi_entities` (
   `latitude` varchar(255) DEFAULT NULL,
   `longitude` varchar(255) DEFAULT NULL,
   `altitude` varchar(255) DEFAULT NULL,
+  `transfers_id` int(11) NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `entities_id` (`entities_id`),
@@ -2563,7 +2579,8 @@ CREATE TABLE `glpi_entities` (
   KEY `date_creation` (`date_creation`),
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `changetemplates_id` (`changetemplates_id`),
-  KEY `problemtemplates_id` (`problemtemplates_id`)
+  KEY `problemtemplates_id` (`problemtemplates_id`),
+  KEY `transfers_id` (`transfers_id`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
@@ -4115,6 +4132,8 @@ CREATE TABLE `glpi_networkequipments` (
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `uuid` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
+  `autoupdatesystems_id` int(11) NOT NULL DEFAULT '0',
+  `sysdescr` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -4135,7 +4154,8 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
@@ -4320,6 +4340,21 @@ CREATE TABLE `glpi_networkports` (
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
+  `ifmtu` int(8) NOT NULL DEFAULT '0',
+  `ifspeed` bigint(50) NOT NULL DEFAULT '0',
+  `ifinternalstatus` varchar(255) DEFAULT NULL,
+  `ifconnectionstatus` int(8) NOT NULL DEFAULT '0',
+  `iflastchange` varchar(255) DEFAULT NULL,
+  `ifinbytes` bigint(50) NOT NULL DEFAULT '0',
+  `ifinerrors` bigint(50) NOT NULL DEFAULT '0',
+  `ifoutbytes` bigint(50) NOT NULL DEFAULT '0',
+  `ifouterrors` bigint(50) NOT NULL DEFAULT '0',
+  `ifstatus` varchar(255) DEFAULT NULL,
+  `ifdescr` varchar(255) DEFAULT NULL,
+  `ifalias` varchar(255) DEFAULT NULL,
+  `portduplex` varchar(255) DEFAULT NULL,
+  `trunk` tinyint(1) NOT NULL DEFAULT '0',
+  `lastup` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `on_device` (`items_id`,`itemtype`),
   KEY `item` (`itemtype`,`items_id`),
@@ -4995,6 +5030,7 @@ CREATE TABLE `glpi_printers` (
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `uuid` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
+  `sysdescr` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -8162,3 +8198,242 @@ CREATE TABLE IF NOT EXISTS `glpi_appliances_items_relations` (
    KEY `items_id` (`items_id`),
    KEY `item` (`itemtype`,`items_id`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_agenttypes`;
+CREATE TABLE `glpi_agenttypes` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_agents`;
+CREATE TABLE `glpi_agents` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `deviceid` VARCHAR(255) NOT NULL,
+   `entities_id` int(11) NOT NULL DEFAULT '0',
+   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+   `name` varchar(255) DEFAULT NULL,
+   `agenttypes_id` int(11) NOT NULL,
+   `last_contact` timestamp NULL DEFAULT NULL,
+   `version` varchar(255) DEFAULT NULL,
+   `locked` tinyint(1) NOT NULL DEFAULT '0',
+   `itemtype` varchar(100) NOT NULL,
+   `items_id` int(11) NOT NULL,
+   `useragent` varchar(255) DEFAULT NULL,
+   `tag` varchar(255) DEFAULT NULL,
+   `port` varchar(6) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`),
+   KEY `items_id` (`items_id`),
+   KEY `itemtype` (`itemtype`),
+   UNIQUE KEY `deviceid` (`deviceid`),
+   FOREIGN KEY (agenttypes_id) REFERENCES glpi_agenttypes (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_rulematchedlogs`;
+CREATE TABLE `glpi_rulematchedlogs` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `date` timestamp NULL DEFAULT NULL,
+   `items_id` int(11) NOT NULL DEFAULT '0',
+   `itemtype` varchar(100) DEFAULT NULL,
+   `rules_id` int(11) NULL DEFAULT NULL,
+   `agents_id` int(11) NOT NULL DEFAULT '0',
+   `method` varchar(255) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `item` (`itemtype`,`items_id`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_lockedfields`;
+CREATE TABLE `glpi_lockedfields` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `itemtype` varchar(100) DEFAULT NULL,
+   `items_id` int(11) NOT NULL DEFAULT '0',
+   `field` varchar(50) NOT NULL,
+   `value` varchar(255) DEFAULT NULL,
+   `date_creation` timestamp NULL DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `item` (`itemtype`,`items_id`),
+   UNIQUE KEY `unicity` (`itemtype`, `items_id`, `field`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_unmanageds`;
+CREATE TABLE `glpi_unmanageds` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `serial` varchar(255) DEFAULT NULL,
+  `otherserial` varchar(255) DEFAULT NULL,
+  `contact` varchar(255) DEFAULT NULL,
+  `contact_num` varchar(255) DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `comment` text,
+  `locations_id` int(11) NOT NULL DEFAULT '0',
+  `networks_id` int(11) NOT NULL DEFAULT '0',
+  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `states_id` int(11) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `autoupdatesystems_id` int(11) NOT NULL DEFAULT '0',
+  `sysdescr` text,
+  `domains_id` int(11) NOT NULL DEFAULT '0',
+  `agents_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) NULL DEFAULT NULL,
+  `accepted` tinyint(1) NOT NULL DEFAULT '0',
+  `hub` tinyint(1) NOT NULL DEFAULT '0',
+  `ip` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
+  KEY `networks_id` (`networks_id`),
+  KEY `states_id` (`states_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `date_mod` (`date_mod`),
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`),
+  KEY `otherserial` (`otherserial`),
+  KEY `date_creation` (`date_creation`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
+  KEY `domains_id` (`domains_id`),
+  KEY `agents_id` (`agents_id`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_networkporttypes`;
+CREATE TABLE `glpi_networkporttypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `value_decimal` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `is_importable` tinyint(1) NOT NULL DEFAULT '0',
+  `instantiation_type` varchar(255) DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `value_decimal` (`value_decimal`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_importable` (`is_importable`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `glpi_printerlogs`;
+CREATE TABLE `glpi_printerlogs` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `printers_id` int(11) NOT NULL,
+   `total_pages` int(11) NOT NULL DEFAULT '0',
+   `bw_pages` int(11) NOT NULL DEFAULT '0',
+   `color_pages` int(11) NOT NULL DEFAULT '0',
+   `rv_pages` int(11) NOT NULL DEFAULT '0',
+   `prints` int(11) NOT NULL DEFAULT '0',
+   `bw_prints` int(11) NOT NULL DEFAULT '0',
+   `color_prints` int(11) NOT NULL DEFAULT '0',
+   `copies` int(11) NOT NULL DEFAULT '0',
+   `bw_copies` int(11) NOT NULL DEFAULT '0',
+   `color_copies` int(11) NOT NULL DEFAULT '0',
+   `scanned` int(11) NOT NULL DEFAULT '0',
+   `faxed` int(11) NOT NULL DEFAULT '0',
+   `date_creation` timestamp NULL DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `printers_id` (`printers_id`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `glpi_networkportconnectionlogs`;
+CREATE TABLE `glpi_networkportconnectionlogs` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `date_creation` timestamp NULL DEFAULT NULL,
+   `connected` tinyint(1) NOT NULL DEFAULT '0',
+   `networkports_id_source` int(11) NOT NULL DEFAULT '0',
+   `networkports_id_destination` int(11) NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   KEY `date_creation` (`date_creation`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `glpi_networkportmetrics`;
+CREATE TABLE `glpi_networkportmetrics` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `date_creation` timestamp NULL DEFAULT NULL,
+   `ifinbytes` bigint(50) NOT NULL DEFAULT '0',
+   `ifinerrors` bigint(50) NOT NULL DEFAULT '0',
+   `ifoutbytes` bigint(50) NOT NULL DEFAULT '0',
+   `ifouterrors` bigint(50) NOT NULL DEFAULT '0',
+   `networkports_id` int(11) NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   KEY `date_creation` (`date_creation`),
+   KEY `networkports_id` (`networkports_id`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_refusedequipments`;
+CREATE TABLE `glpi_refusedequipments` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) DEFAULT NULL,
+   `itemtype` varchar(100) DEFAULT NULL,
+   `entities_id` int(11) NOT NULL DEFAULT '0',
+   `ip` varchar(255) DEFAULT NULL,
+   `mac` varchar(255) DEFAULT NULL,
+   `rules_id` int(11) NOT NULL DEFAULT '0',
+   `method` varchar(255) DEFAULT NULL,
+   `serial` varchar(255) DEFAULT NULL,
+   `uuid` varchar(255) DEFAULT NULL,
+   `agents_id` int(11) NOT NULL DEFAULT '0',
+   `date_creation` timestamp NULL DEFAULT NULL,
+   `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_usbvendors`;
+CREATE TABLE `glpi_usbvendors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `vendorid` varchar(4) NOT NULL,
+  `deviceid` varchar(4) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `vendorid` (`vendorid`),
+  KEY `deviceid` (`deviceid`),
+  UNIQUE KEY `unicity` (`vendorid`, `deviceid`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_pcivendors`;
+CREATE TABLE `glpi_pcivendors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `vendorid` varchar(4) NOT NULL,
+  `deviceid` varchar(4) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `vendorid` (`vendorid`),
+  KEY `deviceid` (`deviceid`),
+  UNIQUE KEY `unicity` (`vendorid`, `deviceid`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS=1;

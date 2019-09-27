@@ -65,7 +65,8 @@ final class DbUtils {
     * @return boolean
     */
    public function isForeignKeyField($field) {
-      return preg_match("/._id$/", $field) || preg_match("/._id_/", $field);
+      //check empty, then strpos, then regexp; for performances
+      return !empty($field) && strpos($field, '_id', 1) !== false && preg_match("/._id(_.+)?$/", $field);
    }
 
 
@@ -143,6 +144,7 @@ final class DbUtils {
       $rules = [
          //'plural'           => 'singular'
          'pdus$'              => 'pdu', // special case for acronym pdu (to avoid us rule)
+         'metrics$'           => 'metrics',// Special case
          'ches$'              => 'ch',
          'ch$'                => 'ch',
          'shes$'              => 'sh',

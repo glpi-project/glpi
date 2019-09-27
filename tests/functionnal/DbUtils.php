@@ -111,6 +111,10 @@ class DbUtils extends DbTestCase {
       $this->boolean(isForeignKeyField('id_Another_Fake_Id'))->isFalse();
       $this->boolean(isForeignKeyField('users_id_tech'))->isTrue();
       $this->boolean(isForeignKeyField('_id'))->isFalse();
+      $this->boolean(isForeignKeyField(''))->isFalse();
+      $this->boolean(isForeignKeyField(null))->isFalse();
+      $this->boolean(isForeignKeyField(false))->isFalse();
+      $this->boolean(isForeignKeyField(42))->isFalse();
    }
 
 
@@ -132,13 +136,16 @@ class DbUtils extends DbTestCase {
       require_once __DIR__ . '/../fixtures/pluginfoobar.php';
       require_once __DIR__ . '/../fixtures/pluginbarfoo.php';
 
-      return [['glpi_computers', 'Computer', true],
-                   ['glpi_events', 'Glpi\\Event', true],
-                   ['glpi_users', 'User', true],
-                   ['glpi_plugin_bar_foos', 'GlpiPlugin\\Bar\\Foo', true],
-                   ['glpi_plugin_baz_foos', 'GlpiPlugin\\Baz\\Foo', false],
-                   ['glpi_plugin_foo_bars', 'PluginFooBar', true],
-                   ['glpi_plugin_foo_bazs', 'PluginFooBaz', false]];
+      return [
+         ['glpi_computers', 'Computer', true],
+         ['glpi_events', 'Glpi\\Event', true],
+         ['glpi_users', 'User', true],
+         ['glpi_plugin_bar_foos', 'GlpiPlugin\\Bar\\Foo', true],
+         ['glpi_plugin_baz_foos', 'GlpiPlugin\\Baz\\Foo', false],
+         ['glpi_plugin_foo_bars', 'PluginFooBar', true],
+         ['glpi_plugin_foo_bazs', 'PluginFooBaz', false],
+         ['glpi_networkportmetrics', 'NetworkPortMetrics', true]
+      ];
    }
 
    /**
@@ -216,7 +223,8 @@ class DbUtils extends DbTestCase {
          ['machine', 'machines'],
          ['memory', 'memories'],
          ['licence', 'licences'],
-         ['pdu', 'pdus']
+         ['pdu', 'pdus'],
+         ['metrics', 'metrics']
       ];
    }
 

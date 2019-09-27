@@ -25,6 +25,7 @@
         "ext-zlib": "*",
         "blueimp/jquery-file-upload": "^10.2",
         "elvanto/litemoji": "^3.0.1",
+        "glpi-project/inventory_format": "^1.0",
         "guzzlehttp/guzzle": "^7.2",
         "guzzlehttp/psr7": "^1.6",
         "htmlawed/htmlawed": "^1.2",
@@ -96,11 +97,13 @@
         "lint": "parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'"
+            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'",
+            "@php -f vendor/bin/build_hw_jsons"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'"
+            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'",
+            "@php -f vendor/bin/build_hw_jsons"
         ]
     },
     "repositories": {

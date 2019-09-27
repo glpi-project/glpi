@@ -1583,7 +1583,7 @@ class Document extends CommonDBTM {
 
       $dtable = static::getTable();
       $ditable = Document_Item::getTable();
-      //documents tht are nt present in Document_Item are oprhan
+      //documents that are not present in Document_Item are oprhan
       $iterator = $DB->request([
          'SELECT'    => ["$dtable.id"],
          'FROM'      => $dtable,

@@ -1003,11 +1003,13 @@ abstract class APIBaseClass extends atoum {
     * @covers  API::deleteItems
     */
    public function testDeleteItem() {
+      $eid = getItemByTypeName('Entity', '_test_root_entity', true);
+      $_SESSION['glpiactive_entity'] = $eid;
       $computer = new \Computer();
       $this->integer(
          $computer->add([
             'name'         => 'A computer to delete',
-            'entities_id'  => 1
+            'entities_id'  => $eid
          ])
       )->isGreaterThan(0);
       $computers_id = $computer->getID();

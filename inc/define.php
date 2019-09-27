@@ -277,7 +277,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
 $CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance'];
 
 $CFG_GLPI["networkport_types"]            = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                                                  'Phone', 'Printer', 'Enclosure', 'PDU', 'Cluster'];
+                                                  'Phone', 'Printer', 'Enclosure', 'PDU', 'Cluster', 'Unmanaged'];
 
 // Warning : the order is used for displaying different NetworkPort types ! Keep it !
 $CFG_GLPI['networkport_instantiations']   = ['NetworkPortEthernet', 'NetworkPortWifi' ,
@@ -353,12 +353,13 @@ $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_t
 $CFG_GLPI["systeminformations_types"]     = ['AuthLDAP', 'DBConnection', 'MailCollector',
                                                   'Plugin'];
 
-$CFG_GLPI["rulecollections_types"]        = ['RuleImportEntityCollection',
-                                                  'RuleImportComputerCollection',
+$CFG_GLPI["rulecollections_types"]        = ['RuleImportAssetCollection',
+                                                  'RuleImportEntityCollection',
                                                   'RuleMailCollectorCollection',
                                                   'RuleRightCollection',
                                                   'RuleSoftwareCategoryCollection',
                                                   'RuleTicketCollection',
+                                                  //'RuleImportComputerCollection', //deprecated
                                                   'RuleAssetCollection'];
 
 // Items which can planned something
@@ -433,6 +434,13 @@ $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract'
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
                                            'SoftwareLicense', 'Certificate'];
 
+$CFG_GLPI['inventory_types'] = [
+   'Computer',
+   'Phone',
+   'Printer',
+   'NetworkEquipment'
+];
+
 $CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Item_SoftwareLicense',
                                            'Item_SoftwareVersion', 'Item_Disk', 'ComputerVirtualMachine',
                                            'NetworkPort', 'NetworkName', 'IPAddress'];
@@ -484,7 +492,8 @@ $CFG_GLPI['javascript'] = [
    ],
    'assets'    => [
       'dashboard' => $dashboard_libs,
-      'rack'      => ['gridstack', 'rack']
+      'rack'      => ['gridstack', 'rack'],
+      'printer'   => $dashboard_libs
    ],
    'helpdesk'  => [
       'dashboard' => $dashboard_libs,
