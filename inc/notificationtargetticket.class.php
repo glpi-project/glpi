@@ -452,9 +452,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          ];
          $replysolved = getAllDatasFromTable('glpi_itilfollowups', $solution_restrict, false, ['date_mod DESC', 'id ASC']);
          $current = current($replysolved);
-         $data['##ticket.solution.approval.description##'] = $current['content'];
-         $data['##ticket.solution.approval.date##']        = Html::convDateTime($current['date']);
-         $data['##ticket.solution.approval.author##']      = Html::clean(getUserName($current['users_id']));
+         $data['##ticket.solution.approval.description##'] = $current ? $current['content'] : '';
+         $data['##ticket.solution.approval.date##']        = $current ? Html::convDateTime($current['date']) : '';
+         $data['##ticket.solution.approval.author##']      = $current ? Html::clean(getUserName($current['users_id'])) : '';
 
          //Validation infos
          $restrict = ['tickets_id' => $item->getField('id')];
