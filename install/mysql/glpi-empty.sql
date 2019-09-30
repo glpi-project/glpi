@@ -2460,6 +2460,8 @@ CREATE TABLE `glpi_entities` (
   `autofill_delivery_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   `autofill_order_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   `tickettemplates_id` int(11) NOT NULL DEFAULT '-2',
+  `changetemplates_id` int(11) NOT NULL DEFAULT '-2',
+  `problemtemplates_id` int(11) NOT NULL DEFAULT '-2',
   `entities_id_software` int(11) NOT NULL DEFAULT '-2',
   `default_contract_alert` int(11) NOT NULL DEFAULT '-2',
   `default_infocom_alert` int(11) NOT NULL DEFAULT '-2',
@@ -2478,7 +2480,10 @@ CREATE TABLE `glpi_entities` (
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `tickettemplates_id` (`tickettemplates_id`),
+  KEY `changetemplates_id` (`changetemplates_id`),
+  KEY `problemtemplates_id` (`problemtemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -5055,13 +5060,18 @@ CREATE TABLE `glpi_profiles` (
   `problem_status` text COLLATE utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
   `create_ticket_on_login` tinyint(1) NOT NULL DEFAULT '0',
   `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+  `changetemplates_id` int(11) NOT NULL DEFAULT '0',
+  `problemtemplates_id` int(11) NOT NULL DEFAULT '0',
   `change_status` text COLLATE utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `interface` (`interface`),
   KEY `is_default` (`is_default`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `tickettemplates_id` (`tickettemplates_id`),
+  KEY `changetemplates_id` (`changetemplates_id`),
+  KEY `problemtemplates_id` (`problemtemplates_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

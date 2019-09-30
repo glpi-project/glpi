@@ -433,7 +433,7 @@ function update94to95() {
    /** /Make datacenter pictures path relative */
 
    /** ITIL templates */
-   if (!$DB->fieldExists('glpi_itilcategories', 'changeemplates_id')) {
+   if (!$DB->fieldExists('glpi_itilcategories', 'changetemplates_id')) {
       $migration->addField("glpi_itilcategories", "changetemplates_id", "integer", [
             'after'  => "tickettemplates_id_demand",
             'value'  => 0
@@ -767,6 +767,57 @@ function update94to95() {
       $DB->queryOrDie($query, "add table glpi_impacts_parent");
    }
    /** /Impact analysis */
+
+   /** Default template configuration for changes and problems */
+   $migration->addKey('glpi_entities', 'tickettemplates_id');
+   if (!$DB->fieldExists('glpi_entities', 'changetemplates_id')) {
+      $migration->addField(
+         'glpi_entities',
+         'changetemplates_id',
+         'integer',
+         [
+            'value'     => -2, // Inherit as default value
+         ]
+      );
+   }
+   $migration->addKey('glpi_entities', 'changetemplates_id');
+   if (!$DB->fieldExists('glpi_entities', 'problemtemplates_id')) {
+      $migration->addField(
+         'glpi_entities',
+         'problemtemplates_id',
+         'integer',
+         [
+            'value'     => -2, // Inherit as default value
+         ]
+      );
+   }
+   $migration->addKey('glpi_entities', 'problemtemplates_id');
+
+   $migration->addKey('glpi_profiles', 'tickettemplates_id');
+   if (!$DB->fieldExists('glpi_profiles', 'changetemplates_id')) {
+      $migration->addField(
+         'glpi_profiles',
+         'changetemplates_id',
+         'integer',
+         [
+            'value'     => -2, // Inherit as default value
+         ]
+      );
+   }
+   $migration->addKey('glpi_profiles', 'changetemplates_id');
+   if (!$DB->fieldExists('glpi_profiles', 'problemtemplates_id')) {
+      $migration->addField(
+         'glpi_profiles',
+         'problemtemplates_id',
+         'integer',
+         [
+            'value'     => -2, // Inherit as default value
+         ]
+      );
+   }
+   $migration->addKey('glpi_profiles', 'problemtemplates_id');
+
+   /** /Default template configuration for changes and problems */
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

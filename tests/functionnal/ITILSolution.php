@@ -148,7 +148,7 @@ class ITILSolution extends DbTestCase {
       $this->integer((int)$problem->add([
          'name'               => 'problem title',
          'description'        => 'a description',
-         'content'            => '',
+         'content'            => 'a content',
          '_users_id_assign'   => $uid
       ]))->isGreaterThan(0);
 
@@ -181,7 +181,7 @@ class ITILSolution extends DbTestCase {
       $this->integer((int)$change->add([
          'name'               => 'change title',
          'description'        => 'a description',
-         'content'            => '',
+         'content'            => 'a content',
          '_users_id_assign'   => $uid
       ]))->isGreaterThan(0);
 
@@ -216,7 +216,7 @@ class ITILSolution extends DbTestCase {
       $duplicated = (int)$ticket->add([
          'name'               => 'Duplicated ticket',
          'description'        => 'A ticket that will be duplicated',
-         'content'            => '',
+         'content'            => 'a content',
          '_users_id_assign'   => $uid
       ]);
       $this->integer($duplicated)->isGreaterThan(0);
@@ -224,7 +224,7 @@ class ITILSolution extends DbTestCase {
       $duplicate = (int)$ticket->add([
          'name'               => 'Duplicate ticket',
          'description'        => 'A ticket that is a duplicate',
-         'content'            => '',
+         'content'            => 'a content',
          '_users_id_assign'   => $uid
       ]);
       $this->integer($duplicate)->isGreaterThan(0);
@@ -264,7 +264,7 @@ class ITILSolution extends DbTestCase {
       $this->integer((int)$ticket->add([
          'name'               => 'ticket title',
          'description'        => 'a description',
-         'content'            => '',
+         'content'            => 'a content',
          '_users_id_assign'   => $uid
       ]))->isGreaterThan(0);
 

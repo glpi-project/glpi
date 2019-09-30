@@ -410,4 +410,102 @@ class ITILTemplate extends DbTestCase {
       ]);
       $this->integer(count($iterator))->isIdenticalTo(2);
    }
+
+   /**
+    * @dataProvider itilProvider
+    */
+   public function testGetITILTemplateToUse($itiltype) {
+      $this->login('tech', 'tech');
+      $itilobject = new $itiltype;
+
+      //1- per default, no template is assigned
+      $tt = $itilobject->getITILTemplateToUse();
+      $this->boolean($tt->isNewItem())->isTrue('Not an empty template');
+
+      //2- create a category with an new template for it,
+      //   and check the correct template is returned
+      $category_tpl_id = $this->createTemplate($itiltype);
+      $category = new \ITILCategory();
+
+      $field = strtolower($itiltype) . 'templates_id';
+      $cat_field = $field;
+      if ($itiltype === \Ticket::getType()) {
+         $cat_field .= '_demand';
+      }
+      $cat_id = (int)$category->add([
+         'name'      => 'Category for a ' . $itiltype . ' template',
+         $cat_field  => $category_tpl_id
+      ]);
+      $this->integer($cat_id)->isGreaterThan(0);
+
+      $type = ($itiltype == 'Ticket' ? \Ticket::DEMAND_TYPE : null);
+      $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id);
+      $this->boolean($tt->isNewItem())
+           ->isFalse('Not template expected from category assignment');
+      $this->integer((int)$tt->fields['id'])->isIdenticalTo($category_tpl_id);
+
+      //3- edit existing entity with new template as default
+      //   and check the correct template is returned
+      //   check if category has precedence
+      $entity_tpl_id = $this->createTemplate($itiltype);
+      //login as admin to change entity conf
+      $this->login();
+      $entity = getItemByTypeName('Entity', '_test_child_1');
+      $this->boolean($entity->update(['id' => $entity->fields['id'], $field => $entity_tpl_id]))->isTrue();
+
+      //login back as tech
+      $this->login('tech', 'tech');
+
+      $tt = $itilobject->getITILTemplateToUse(0, $type, 0, $entity->fields['id']);
+      $this->boolean($tt->isNewItem())
+           ->isFalse('Not template expected from entity assignment');
+      $this->integer((int)$tt->fields['id'])->isIdenticalTo($entity_tpl_id);
+
+      $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id, $entity->fields['id']);
+      $this->boolean($tt->isNewItem())
+           ->isFalse('Not template expected from entity assignment overrided with category');
+      $this->integer((int)$tt->fields['id'])->isIdenticalTo($category_tpl_id);
+
+      //4- set default to a new template fo tech profile
+      //   check the correct template is returned
+      //   check if profile has precedence on entity
+      //   check if category has precedence
+      $profile_tpl_id = $this->createTemplate($itiltype);
+      $profile = getItemByTypeName('Profile', 'Technician');
+      $this->boolean($profile->update(['id' => $profile->fields['id'], $field => $profile_tpl_id]))->isTrue();
+
+      //login again to refresh profile
+      $this->login('tech', 'tech');
+
+      $tt = $itilobject->getITILTemplateToUse(0, $type, 0);
+      $this->boolean($tt->isNewItem())
+           ->isFalse('Not template expected from profile assignment');
+      $this->integer((int)$tt->fields['id'])->isIdenticalTo($profile_tpl_id);
+
+      $tt = $itilobject->getITILTemplateToUse(0, $type, 0, $entity->fields['id']);
+      $this->boolean($tt->isNewItem())
+           ->isFalse('Not template expected from entity assignment overrided by profile');
+      $this->integer((int)$tt->fields['id'])->isIdenticalTo($profile_tpl_id);
+
+      $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id, $entity->fields['id']);
+      $this->boolean($tt->isNewItem())
+           ->isFalse('Not template expected');
+      $this->integer((int)$tt->fields['id'])->isIdenticalTo($category_tpl_id);
+
+      //reset entities and profiles to default, for next entry in dataProvider
+      $this->login();
+      $this->boolean($entity->update(['id' => $entity->fields['id'], $field => -2]))->isTrue();
+      $this->boolean($profile->update(['id' => $profile->fields['id'], $field => -2]))->isTrue();
+   }
+
+   private function createTemplate($itiltype) {
+      //create template
+      $tpl_class = '\\' . $itiltype . 'Template';
+      $tpl = new $tpl_class;
+      $tpl_id = (int)$tpl->add([
+         'name'   => 'Template for ' . $itiltype
+      ]);
+      $this->integer($tpl_id)->isGreaterThan(0);
+      return $tpl_id;
+   }
 }
