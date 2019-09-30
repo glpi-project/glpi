@@ -36,6 +36,7 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
 
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
    if (!is_writable(GLPI_SESSION_DIR)) {

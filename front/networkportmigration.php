@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $DB;
+
 Session::checkRight("networking", UPDATE);
 
 if (!$DB->tableExists('glpi_networkportmigrations')) {

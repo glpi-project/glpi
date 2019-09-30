@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $DB;
+
 Session::checkRight("link", READ);
 
 if (isset($_GET["lID"])) {

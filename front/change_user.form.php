@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
+global $CFG_GLPI;
+
 $link = new Change_User();
 $item = new Change();
 

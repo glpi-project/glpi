@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 Session::checkRight("reports", READ);
 
 if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {

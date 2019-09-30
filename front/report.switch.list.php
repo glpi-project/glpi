@@ -36,6 +36,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 Session::checkRight("reports", READ);
 
 // Titre

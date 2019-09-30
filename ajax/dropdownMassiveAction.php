@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 

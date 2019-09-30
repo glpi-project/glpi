@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 // Redirect management
 if (isset($_GET["redirect"])) {
    Toolbox::manageRedirect($_GET["redirect"]);

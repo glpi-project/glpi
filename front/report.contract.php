@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 Session::checkRight("reports", READ);
 
 Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");

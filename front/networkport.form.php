@@ -38,6 +38,7 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
 
 $np  = new NetworkPort();
 $nn  = new NetworkPort_NetworkPort();

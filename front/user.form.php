@@ -34,6 +34,8 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }

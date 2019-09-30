@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI, $DB;
+
 if (isset($_POST['check_version'])) {
    Session::checkRight('backup', Backup::CHECKUPDATE);
    Toolbox::checkNewVersionAvailable(0, true);

@@ -36,6 +36,8 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
+global $CFG_GLPI;
+
 $link = new Ticket_User();
 $item = new Ticket();
 

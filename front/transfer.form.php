@@ -34,6 +34,8 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 Session::checkRight("transfer", READ);
 
 if (empty($_GET["id"])) {

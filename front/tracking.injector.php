@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 if (empty($_POST["_type"])
     || ($_POST["_type"] != "Helpdesk")
     || !$CFG_GLPI["use_anonymous_helpdesk"]) {

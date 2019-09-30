@@ -38,6 +38,8 @@ if (strpos($_SERVER['PHP_SELF'], "visibility.php")) {
    Html::header_nocache();
 }
 
+global $CFG_GLPI;
+
 Session::checkLoginUser();
 
 if (isset($_POST['type']) && !empty($_POST['type'])

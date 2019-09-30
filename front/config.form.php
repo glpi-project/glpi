@@ -31,6 +31,9 @@
  */
 
 include ('../inc/includes.php');
+
+global $GLPI_CACHE;
+
 Session::checkRight("config", READ);
 
 $config = new Config();

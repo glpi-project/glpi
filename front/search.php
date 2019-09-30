@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 Session::checkCentralAccess();
 Html::header(__('Search'), $_SERVER['PHP_SELF']);
 

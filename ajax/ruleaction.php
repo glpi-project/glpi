@@ -39,6 +39,8 @@ if (strpos($_SERVER['PHP_SELF'], "ruleaction.php")) {
    die("Sorry. You can't access this file directly");
 }
 
+global $CFG_GLPI;
+
 Session::checkLoginUser();
 
 // Non define case

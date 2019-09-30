@@ -43,6 +43,8 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 if (!isset($_GET["name"]) || !isset($_GET["plugin"])) {
    Event::log("-1", "system", 2, "security",
               //TRANS: %s is user name

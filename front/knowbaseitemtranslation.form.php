@@ -36,6 +36,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 $translation = new KnowbaseItemTranslation();
 if (isset($_POST['add'])) {
    $translation->add($_POST);

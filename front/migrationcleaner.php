@@ -37,6 +37,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 Session::checkSeveralRightsOr(["networking" => UPDATE,
                                     "internet"   => UPDATE]);
 

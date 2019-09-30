@@ -37,6 +37,7 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownTypeCertificates.php")) {
    Html::header_nocache();
 }
 
+global $DB;
 
 Session::checkCentralAccess();
 

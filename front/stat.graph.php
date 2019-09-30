@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI, $DB;
+
 Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);

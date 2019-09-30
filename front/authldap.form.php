@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 Session::checkRight("config", UPDATE);
 
 $config_ldap = new AuthLDAP();

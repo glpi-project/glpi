@@ -37,6 +37,8 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownRubDocument.php")) {
    Html::header_nocache();
 }
 
+global $DB;
+
 Session::checkCentralAccess();
 
 // Make a select box

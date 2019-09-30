@@ -42,6 +42,8 @@ if (strpos($_SERVER['PHP_SELF'], "planningcheck.php")) {
    Html::header_nocache();
 }
 
+global $CFG_GLPI;
+
 Session::checkLoginUser();
 
 if (isset($_POST['users_id']) && ($_POST['users_id'] > 0)) {

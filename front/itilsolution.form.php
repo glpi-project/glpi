@@ -34,6 +34,8 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
+global $DB;
+
 Session::checkLoginUser();
 
 $solution = new ITILSolution();

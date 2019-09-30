@@ -36,6 +36,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 //@session_start();
 
 if (!isset($_SESSION["noAUTO"])

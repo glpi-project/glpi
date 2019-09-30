@@ -34,6 +34,8 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 $alias = new NetworkAlias();
 
 if (!isset($_GET["id"])) {

@@ -35,6 +35,9 @@ if (!strstr($_GET['itemtype'], "Plugin")) {
    $AJAX_INCLUDE = 1;
 }
 include ('../inc/includes.php');
+
+global $DB;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 

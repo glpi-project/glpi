@@ -32,6 +32,7 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
 
 Session::checkRightsOr('group', [CREATE, UPDATE]);
 Session::checkRight('user', User::UPDATEAUTHENT);

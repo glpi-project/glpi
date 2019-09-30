@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 if (!$CFG_GLPI["use_public_faq"]) {
    Session::checkLoginUser();
 }

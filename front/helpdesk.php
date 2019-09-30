@@ -33,6 +33,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 echo "<!DOCTYPE html>";
 echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
 ?>

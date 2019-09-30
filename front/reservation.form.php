@@ -34,6 +34,8 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 
 $rr = new Reservation();

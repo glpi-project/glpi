@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 if (!$CFG_GLPI['notifications_mailing']
     || !countElementsInTable('glpi_notifications',
                              ['itemtype' => 'User', 'event' => 'passwordforget', 'is_active' => 1])) {

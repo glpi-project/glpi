@@ -37,6 +37,8 @@ chdir(__DIR__);
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 if (!is_writable(GLPI_LOCK_DIR)) {
    //TRANS: %s is a directory
    echo "\t".sprintf(__('ERROR: %s is not writable')."\n", GLPI_LOCK_DIR);

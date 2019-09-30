@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
+global $CFG_GLPI;
+
 $link = new Group_Problem();
 $item = new Problem();
 

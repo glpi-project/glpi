@@ -31,6 +31,9 @@
  */
 
 include ('../inc/includes.php');
+
+global $CFG_GLPI;
+
 Html::header_nocache();
 
 if (!$CFG_GLPI["use_public_faq"]

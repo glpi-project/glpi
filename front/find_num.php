@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI, $DB;
+
 if (!$CFG_GLPI["use_anonymous_helpdesk"]) {
    exit();
 }

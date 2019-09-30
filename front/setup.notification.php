@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 Session::checkSeveralRightsOr(['notification' => READ,
                                     'config'       => UPDATE]);
 

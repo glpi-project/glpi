@@ -32,6 +32,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 if (strpos($_SERVER['HTTP_REFERER'], 'bookmark.php') === false) {
    Session::checkCentralAccess();
 }

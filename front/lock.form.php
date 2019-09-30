@@ -36,6 +36,8 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 if (isset($_POST['itemtype'])) {
 
    $itemtype    = $_POST['itemtype'];

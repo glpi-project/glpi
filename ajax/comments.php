@@ -33,6 +33,8 @@
 $AJAX_INCLUDE = 1;
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();

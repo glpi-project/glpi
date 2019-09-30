@@ -39,6 +39,8 @@ if (strpos($_SERVER['PHP_SELF'], "rulecriteria.php")) {
    die("Sorry. You can't access this file directly");
 }
 
+global $CFG_GLPI;
+
 Session::checkLoginUser();
 
 if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"]))) {

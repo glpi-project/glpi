@@ -41,6 +41,8 @@
 
 use Glpi\Event;
 
+global $CFG_GLPI;
+
 if (!($item_device instanceof Item_Devices)) {
    Html::displayErrorAndDie('');
 }

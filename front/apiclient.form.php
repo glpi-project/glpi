@@ -32,6 +32,8 @@
 
 include ("../inc/includes.php");
 
+global $CFG_GLPI;
+
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }

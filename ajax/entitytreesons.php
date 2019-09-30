@@ -34,6 +34,8 @@ $AJAX_INCLUDE = 1;
 
 include ("../inc/includes.php");
 
+global $DB;
+
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
