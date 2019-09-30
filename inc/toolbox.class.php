@@ -723,25 +723,15 @@ class Toolbox {
 
       // If debug mode activated : display some information
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         // display_errors only need for for E_ERROR, E_PARSE, ... which cannot be catched
          // Recommended development settings
          ini_set('display_errors', 'On');
-         error_reporting(E_ALL | E_STRICT);
+         error_reporting(E_ALL);
          set_error_handler(['Toolbox','userErrorHandlerDebug']);
-
-      } else {
+      } else if (!defined('TU_USER')) {
          // Recommended production settings
          ini_set('display_errors', 'Off');
-         if (defined('TU_USER')) {
-            //do not set error_reporting to a low level for unit tests
-            error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
-         }
+         error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
          set_error_handler(['Toolbox', 'userErrorHandlerNormal']);
-      }
-
-      if (defined('TU_USER')) {
-         //user default error handler from tests
-         set_error_handler(null);
       }
    }
 
