@@ -88,7 +88,7 @@ class Search extends DbTestCase {
    private function getClasses($function = false, array $excludes = []) {
       $classes = [];
       foreach (new \DirectoryIterator('inc/') as $fileInfo) {
-         if ($fileInfo->isDot()) {
+         if (!$fileInfo->isFile()) {
             continue;
          }
 
