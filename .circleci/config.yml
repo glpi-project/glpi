@@ -60,8 +60,8 @@ commands:
             composer --version
             echo "node version: $(node --version)"
             echo "npm version: $(npm --version)"
-            perl -i -0 -p -e 's/,?\s*"platform"\:\s*\{[^\}]*}//i' composer.json
             mv composer.lock composer.lock.bak
+            composer config --unset platform
             bin/console dependencies install --ci
       - save_cache:
           key: composer-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
