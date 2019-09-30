@@ -852,7 +852,6 @@ class Impact extends CommonGLPI {
     */
    public static function prepareImpactNetwork(CommonDBTM $item) {
       // Load requirements
-      echo Html::scss('css/impact');
       self::printImpactNetworkContainer();
       self::printAddNodeDialog();
       self::printColorConfigDialog();
