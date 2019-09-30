@@ -104,6 +104,7 @@ class Entity extends CommonTreeDropdown {
                                                    'inquest_rate', 'inquest_delay',
                                                    'inquest_duration','inquest_URL',
                                                    'max_closedate', 'tickettemplates_id',
+                                                   'changetemplates_id', 'problemtemplates_id',
                                                    'suppliers_as_private', 'autopurge_delay'],
                                           // Configuration
                                           'config'
@@ -2290,6 +2291,8 @@ class Entity extends CommonTreeDropdown {
 
       Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
 
+      echo "<tr><th colspan='4'>".__('Templates configuration')."</th></tr>";
+
       echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Ticket template', 'Ticket templates', 1).
            "</td>";
       echo "<td colspan='2'>";
@@ -2318,6 +2321,66 @@ class Entity extends CommonTreeDropdown {
          echo "</font>";
       }
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Change template', 'Change templates', 1).
+           "</td>";
+      echo "<td colspan='2'>";
+      $toadd = [];
+      if ($ID != 0) {
+         $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+      }
+
+      $options = ['value'  => $entity->fields["changetemplates_id"],
+                       'entity' => $ID,
+                       'toadd'  => $toadd];
+
+      ChangeTemplate::dropdown($options);
+
+      if (($entity->fields["changetemplates_id"] == self::CONFIG_PARENT)
+          && ($ID != 0)) {
+         echo "<font class='green'>&nbsp;&nbsp;";
+
+         $tt  = new ChangeTemplate();
+         $tid = self::getUsedConfig('changetemplates_id', $ID, '', 0);
+         if (!$tid) {
+            echo Dropdown::EMPTY_VALUE;
+         } else if ($tt->getFromDB($tid)) {
+            echo $tt->getLink();
+         }
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Problem template', 'Problem templates', 1).
+           "</td>";
+      echo "<td colspan='2'>";
+      $toadd = [];
+      if ($ID != 0) {
+         $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+      }
+
+      $options = ['value'  => $entity->fields["problemtemplates_id"],
+                       'entity' => $ID,
+                       'toadd'  => $toadd];
+
+      ProblemTemplate::dropdown($options);
+
+      if (($entity->fields["problemtemplates_id"] == self::CONFIG_PARENT)
+          && ($ID != 0)) {
+         echo "<font class='green'>&nbsp;&nbsp;";
+
+         $tt  = new ProblemTemplate();
+         $tid = self::getUsedConfig('problemtemplates_id', $ID, '', 0);
+         if (!$tid) {
+            echo Dropdown::EMPTY_VALUE;
+         } else if ($tt->getFromDB($tid)) {
+            echo $tt->getLink();
+         }
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
+      echo "<tr><th colspan='4'>".__('Tickets configuration')."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='2'>".__('Calendar')."</td>";
       echo "<td colspan='2'>";

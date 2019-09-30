@@ -684,6 +684,38 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Default change template')."</td><td>";
+      // Only root entity ones and recursive
+      $options = ['value'     => $this->fields["changetemplates_id"],
+                       'entity'    => 0];
+      if (Session::isMultiEntitiesMode()) {
+         $options['condition'] = ['is_recursive' => 1];
+      }
+      // Only add profile if on root entity
+      if (!isset($_SESSION['glpiactiveentities'][0])) {
+         $options['addicon'] = false;
+      }
+      ChangeTemplate::dropdown($options);
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Default problem template')."</td><td>";
+      // Only root entity ones and recursive
+      $options = ['value'     => $this->fields["problemtemplates_id"],
+                       'entity'    => 0];
+      if (Session::isMultiEntitiesMode()) {
+         $options['condition'] = ['is_recursive' => 1];
+      }
+      // Only add profile if on root entity
+      if (!isset($_SESSION['glpiactiveentities'][0])) {
+         $options['addicon'] = false;
+      }
+      ProblemTemplate::dropdown($options);
+      echo "</td>";
+      echo "</tr>\n";
+
       if ($canedit) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='4' class='center'>";
@@ -980,23 +1012,28 @@ class Profile extends CommonDBTM {
 
       echo "<table class='tab_cadre_fixe'>";
       // Assistance / Tracking-helpdesk
-      echo "<tr class='tab_bg_1'><th colspan='2'>".__('Assistance')."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".__('ITIL Templates')."</th></tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Ticket', 'Tickets', Session::getPluralNumber()).': '.__('Default ticket template')."</td><td  width='30%'>";
-      // Only root entity ones and recursive
-      $options = ['value'     => $this->fields["tickettemplates_id"],
-                       'entity'    => 0];
-      if (Session::isMultiEntitiesMode()) {
-         $options['condition'] = ['is_recursive' => 1];
-      }
-      // Only add profile if on root entity
-      if (!isset($_SESSION['glpiactiveentities'][0])) {
-         $options['addicon'] = false;
-      }
+      foreach (['Ticket', 'Change', 'Problem'] as $itiltype) {
+         $object = new $itiltype;
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>".sprintf(__('Default %1$s template'), $object->getTypeName())."</td><td  width='30%'>";
+         // Only root entity ones and recursive
+         $options = [
+            'value'     => $this->fields[strtolower($itiltype)."templates_id"],
+            'entity'    => 0];
+         if (Session::isMultiEntitiesMode()) {
+            $options['condition'] = ['is_recursive' => 1];
+         }
+         // Only add profile if on root entity
+         if (!isset($_SESSION['glpiactiveentities'][0])) {
+            $options['addicon'] = false;
+         }
 
-      TicketTemplate::dropdown($options);
-      echo "</td></tr>\n";
+         $tpl_class = $itiltype . 'Template';
+         $tpl_class::dropdown($options);
+         echo "</td></tr>\n";
+      }
 
       echo "</table>";
 

@@ -1589,11 +1589,11 @@ abstract class CommonITILObject extends CommonDBTM {
                      if (isset($input[$key])) {
                         // If content is also predefined need to be different from predefined value
                         if (($key == 'content')
-                            && isset($tt->predefined['content'])) {
+                              && isset($tt->predefined['content'])) {
                            // Clean new lines to be fix encoding
                            if (strcmp(preg_replace("/\r?\n/", "",
                                                    Html::cleanPostForTextArea($input[$key])),
-                                      preg_replace("/\r?\n/", "",
+                                       preg_replace("/\r?\n/", "",
                                                    $tt->predefined['content'])) == 0) {
                               Session::addMessageAfterRedirect(
                                  __('You cannot use predefined description verbatim'),
@@ -1605,17 +1605,17 @@ abstract class CommonITILObject extends CommonDBTM {
                         }
 
                         if (empty($input[$key]) || ($input[$key] == 'NULL')
-                            || (is_array($input[$key])
-                                && ($input[$key] === [0 => "0"]))) {
+                              || (is_array($input[$key])
+                                 && ($input[$key] === [0 => "0"]))) {
 
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
                      }
 
                      if (($key == '_add_validation')
-                         && !empty($input['users_id_validate'])
-                         && isset($input['users_id_validate'][0])
-                         && ($input['users_id_validate'][0] > 0)) {
+                           && !empty($input['users_id_validate'])
+                           && isset($input['users_id_validate'][0])
+                           && ($input['users_id_validate'][0] > 0)) {
 
                         unset($mandatory_missing['_add_validation']);
                      }
@@ -7561,6 +7561,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $itilcategories_id = 0,
       $entities_id = -1
    ) {
+      if (!$type && $this->getType() != Ticket::getType()) {
+         $type = true;
+      }
       // Load template if available :
       $tplclass = static::getTemplateClass();
       $tt              = new $tplclass();
@@ -7595,29 +7598,29 @@ abstract class CommonITILObject extends CommonDBTM {
          return $tt;
       }
 
-      if ($this->getType() == Ticket::getType()) {
-         //For tickets, get template from profile or from entity
-         if (!$template_loaded) {
-            // load default profile one if not already loaded
-            if (isset($_SESSION['glpiactiveprofile']['itiltemplates_id'])
-               && $_SESSION['glpiactiveprofile']['itiltemplates_id']) {
-               // with type and categ
-               if ($tt->getFromDBWithData($_SESSION['glpiactiveprofile']['itiltemplates_id'],
-                                          true)) {
-                  $template_loaded = true;
-               }
+      //Get template from profile
+      if (!$template_loaded && $type) {
+         $field = $this->getTemplateFieldName($type);
+         $field = str_replace(['_incident', '_demand'], ['', ''], $field);
+         // load default profile one if not already loaded
+         if (isset($_SESSION['glpiactiveprofile'][$field])
+            && $_SESSION['glpiactiveprofile'][$field]) {
+            // with type and categ
+            if ($tt->getFromDBWithData($_SESSION['glpiactiveprofile'][$field],
+                                       true)) {
+               $template_loaded = true;
             }
          }
+      }
 
-         if (!$template_loaded
-            && ($entities_id >= 0)) {
-
-            // load default entity one if not already loaded
-            if ($template_id = Entity::getUsedConfig('itiltemplates_id', $entities_id)) {
-               // with type and categ
-               if ($tt->getFromDBWithData($template_id, true)) {
-                  $template_loaded = true;
-               }
+      //Get template from entity
+      if (!$template_loaded
+         && ($entities_id >= 0)) {
+         // load default entity one if not already loaded
+         if ($template_id = Entity::getUsedConfig(strtolower($this->getType()).'templates_id', $entities_id)) {
+            // with type and categ
+            if ($tt->getFromDBWithData($template_id, true)) {
+               $template_loaded = true;
             }
          }
       }
@@ -7669,6 +7672,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
             case Ticket::DEMAND_TYPE:
                $field .= '_demand';
+               break;
+
+            case true:
+               //for changes and problem, or from profiles
+               $field = $field;
                break;
 
             default:
