@@ -9,8 +9,8 @@ before_script:
   - phpenv config-rm xdebug.ini || true
   - ./tests/LDAP/ldap_run.sh
   - composer self-update
-  - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
+  - composer config --unset platform
   - nvm install --lts=dubnium # update node to dubnium LTS version (node v10.x + npm v6.9.0)
   - bin/console dependencies install --ci
   - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
