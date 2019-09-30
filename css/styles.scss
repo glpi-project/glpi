@@ -4327,7 +4327,8 @@ a.copyright {
    }
 
    &.assigned:after {
-      content: '\f10c';
+      content: '\f111';
+      font-weight: 400;
       color: #49bf4d;
    }
 
@@ -4342,7 +4343,8 @@ a.copyright {
    }
 
    &.solved:after {
-      content: '\f10c';
+      content: '\f111';
+      font-weight: 400;
       color: black;
    }
 

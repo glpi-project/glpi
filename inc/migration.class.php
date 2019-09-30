@@ -533,7 +533,7 @@ class Migration {
       // si pas de nom d'index, on prend celui du ou des champs
       if (!$indexname) {
          if (is_array($fields)) {
-            $indexname = implode($fields, "_");
+            $indexname = implode("_", $fields);
          } else {
             $indexname = $fields;
          }
@@ -542,9 +542,9 @@ class Migration {
       if (!isIndex($table, $indexname)) {
          if (is_array($fields)) {
             if ($len) {
-               $fields = "`".implode($fields, "`($len), `")."`($len)";
+               $fields = "`".implode("`($len), `", $fields)."`($len)";
             } else {
-               $fields = "`".implode($fields, "`, `")."`";
+               $fields = "`".implode("`, `", $fields)."`";
             }
          } else if ($len) {
             $fields = "`$fields`($len)";
@@ -706,7 +706,7 @@ class Migration {
       global $DB;
 
       if (isset($this->change[$table])) {
-         $query = "ALTER TABLE `$table` ".implode($this->change[$table], " ,\n")." ";
+         $query = "ALTER TABLE `$table` ".implode(" ,\n", $this->change[$table])." ";
          $this->displayMessage( sprintf(__('Change of the database layout - %s'), $table));
          $DB->queryOrDie($query, $this->version." multiple alter in $table");
          unset($this->change[$table]);
