@@ -152,14 +152,22 @@ class Migration extends \GLPITestCase {
 
       //test with one existing value => only new key should be inserted
       $this->queries = [];
-      $dbresult = [[
-         'id'        => '42',
-         'context'   => 'core',
-         'name'      => 'one',
-         'value'     => 'setted value'
-      ]];
-      $it = new \ArrayIterator($dbresult);
-      $this->calling($this->db)->request = $it;
+      $this->calling($this->db)->request = function ($table) {
+         // Call using 'glpi_configs' value for first parameter
+         // corresponds to the call made to retrieve exisintg values
+         // -> returns a value for config 'one'
+         if ('glpi_configs' === $table) {
+            $dbresult = [[
+               'id'        => '42',
+               'context'   => 'core',
+               'name'      => 'one',
+               'value'     => 'setted value'
+            ]];
+            return new \ArrayIterator($dbresult);
+         }
+         // Other calls corresponds to call made in Config::setConfigurationValues()
+         return new \ArrayIterator();
+      };
 
       $DB = $this->db;
 
