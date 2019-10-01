@@ -953,6 +953,33 @@ class Search extends DbTestCase {
 
    }
 
+   public function addSelectProvider() {
+      return [
+         'special_fk' => [[
+            'itemtype'  => 'Computer',
+            'ID'        => 24, // users_id_tech
+            'sql'       => '`glpi_users`.`name` AS `ITEM_Computer_24`, `glpi_users`.`realname` AS `ITEM_Computer_24_realname`, 
+                           `glpi_users`.`id` AS `ITEM_Computer_24_id`, `glpi_users`.`firstname` AS `ITEM_Computer_24_firstname`,'
+         ]],
+         'regular_fk' => [[
+            'itemtype'  => 'Computer',
+            'ID'        => 70, // users_id
+            'sql'       => '`glpi_users`.`name` AS `ITEM_Computer_70`, `glpi_users`.`realname` AS `ITEM_Computer_70_realname`, 
+                           `glpi_users`.`id` AS `ITEM_Computer_70_id`, `glpi_users`.`firstname` AS `ITEM_Computer_70_firstname`,'
+         ]],
+      ];
+   }
+
+   /**
+    * @dataProvider addSelectProvider
+    */
+   public function testAddSelect($provider) {
+      $sql_select = \Search::addSelect($provider['itemtype'], $provider['ID']);
+
+      $this->string($this->cleanSQL($sql_select))
+         ->isEqualTo($this->cleanSQL($provider['sql']));
+   }
+
    public function addLeftJoinProvider() {
       return [
          'itemtype_item_revert' => [[
@@ -979,6 +1006,26 @@ class Search extends DbTestCase {
                         ON (`glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`.`id` = `glpi_projectteams`.`items_id`
                         AND `glpi_projectteams`.`itemtype` = 'Contact'
                          )"
+         ]],
+         'special_fk' => [[
+            'itemtype'           => 'Computer',
+            'table'              => \User::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'meta'               => false,
+            'meta_type'          => null,
+            'joinparams'         => [],
+            'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id_tech` = `glpi_users`.`id` )"
+         ]],
+         'regular_fk' => [[
+            'itemtype'           => 'Computer',
+            'table'              => \User::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'users_id',
+            'meta'               => false,
+            'meta_type'          => null,
+            'joinparams'         => [],
+            'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id` )"
          ]],
       ];
    }
