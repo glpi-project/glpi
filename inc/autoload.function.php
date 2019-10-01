@@ -65,7 +65,7 @@ function isAPI() {
 /**
  * Determine if an object name is a plugin one
  *
- * @param string $classname class name to analyze
+ * @param string $classname class name to analyse
  *
  * @return boolean[object false or an object containing plugin name and class name
  */

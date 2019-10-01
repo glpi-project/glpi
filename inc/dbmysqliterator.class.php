@@ -270,7 +270,7 @@ class DBmysqlIterator implements Iterator, Countable {
 
          // JOIN
          if (!empty($join)) {
-            $this->sql .= $this->analyzeJoins($join);
+            $this->sql .= $this->analyseJoins($join);
          }
 
          // WHERE criteria list
@@ -511,9 +511,9 @@ class DBmysqlIterator implements Iterator, Countable {
          } else if ($name === 'RAW') {
             $key = key($value);
             $value = current($value);
-            $ret .= '((' . $key . ') ' . $this->analyzeCriterion($value) . ')';
+            $ret .= '((' . $key . ') ' . $this->analyseCriterion($value) . ')';
          } else {
-            $ret .= DBmysql::quoteName($name) . ' ' . $this->analyzeCriterion($value);
+            $ret .= DBmysql::quoteName($name) . ' ' . $this->analyseCriterion($value);
          }
       }
       return $ret;
@@ -524,11 +524,11 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @since 9.3.1
     *
-    * @param mixed $value Value to analyze
+    * @param mixed $value Value to analyse
     *
     * @return string
     */
-   private function analyzeCriterion($value) {
+   private function analyseCriterion($value) {
       $criterion = null;
       $crit_value;
 
@@ -540,20 +540,20 @@ class DBmysqlIterator implements Iterator, Countable {
          if (is_array($value)) {
             if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
                $criterion = "{$value[0]} %crit_value";
-               $crit_value = $this->analyzeCriterionValue($value[1]);
+               $crit_value = $this->analyseCriterionValue($value[1]);
             } else {
                if (!count($value)) {
                   throw new \RuntimeException('Empty IN are not allowed');
                }
                // Array of Values
                $criterion = "IN (%crit_value)";
-               $crit_value = $this->analyzeCriterionValue($value);
+               $crit_value = $this->analyseCriterionValue($value);
             }
          } else {
             if ($value instanceof \QuerySubquery) {
                $criterion = "IN %crit_value";
             }
-            $crit_value = $this->analyzeCriterionValue($value);
+            $crit_value = $this->analyseCriterionValue($value);
          }
          $criterion = str_replace('%crit_value', $crit_value, $criterion);
       }
@@ -561,7 +561,7 @@ class DBmysqlIterator implements Iterator, Countable {
       return $criterion;
    }
 
-   private function analyzeCriterionValue($value) {
+   private function analyseCriterionValue($value) {
       $crit_value = null;
       if (is_array($value)) {
          foreach ($value as $k => $v) {
@@ -581,12 +581,12 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @since 9.4.0
     *
-    * @param array $joinarray Array of joins to analyze
+    * @param array $joinarray Array of joins to analyse
     *       [jointype => [table => criteria]]
     *
     * @return string
     */
-   public function analyzeJoins(array $joinarray) {
+   public function analyseJoins(array $joinarray) {
       $query = '';
       foreach ($joinarray as $jointype => $jointables) {
          if (!in_array($jointype, ['JOIN', 'LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'])) {
