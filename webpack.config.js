@@ -75,12 +75,14 @@ var libsConfig = {
         rules: [
             {
                 // Load scripts with no compilation for packages that are directly providing "dist" files.
-                // This prevents useless compilation pass and can also 
+                // This prevents useless compilation pass and can also
                 // prevents incompatibility issues with the webpack require feature.
                 test: /\.js$/,
                 include: [
                     path.resolve(__dirname, 'node_modules/@fullcalendar'),
                     path.resolve(__dirname, 'node_modules/codemirror'),
+                    path.resolve(__dirname, 'node_modules/cystoscape'),
+                    path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
                     path.resolve(__dirname, 'node_modules/gridstack'),
                     path.resolve(__dirname, 'node_modules/jstree'),
                     path.resolve(__dirname, 'node_modules/photoswipe'),

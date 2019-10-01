@@ -306,6 +306,24 @@ class CommonGLPI {
       return $this;
    }
 
+   /**
+    * Add the impact tab if enabled for this item type
+    *
+    * @param array  $ong      defined tabs
+    * @param array  $options  options (for withtemplate)
+    *
+    * @return CommonGLPI
+   **/
+   function addImpactTab(array &$ong, array $options) {
+      global $CFG_GLPI;
+
+      // Check if impact analysis is enabled for this item type
+      if (isset($CFG_GLPI['impact_asset_types'][static::class])) {
+         $this->addStandardTab('Impact', $ong, $options);
+      }
+
+      return $this;
+   }
 
    /**
     * Add default tab for form

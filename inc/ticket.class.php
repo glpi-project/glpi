@@ -832,11 +832,24 @@ class Ticket extends CommonITILObject {
 
 
    function defineTabs($options = []) {
+      global $CFG_GLPI;
+
       $ong = [];
+
       $this->defineDefaultObjectTabs($ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
+
+      // Enable impact tab if there is a valid linked item
+      foreach ($this->getLinkedItems() as $linkedItem) {
+         $class = $linkedItem['itemtype'];
+         if (isset($CFG_GLPI['impact_asset_types'][$class])) {
+            $this->addStandardTab('Impact', $ong, $options);
+            break;
+         }
+      }
+
       $this->addStandardTab('TicketCost', $ong, $options);
       $this->addStandardTab('Itil_Project', $ong, $options);
       $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
@@ -2214,6 +2227,47 @@ class Ticket extends CommonITILObject {
       return $result['cpt'];
    }
 
+   /**
+    * Get active tickets for an item
+    *
+    * @since 9.5
+    *
+    * @param string $itemtype     Item type
+    * @param integer $items_id    ID of the Item
+    * @param string $type         Type of the tickets (incident or request)
+    *
+    * @return DBmysqlIterator
+    */
+   public function getActiveTicketsForItem($itemtype, $items_id, $type) {
+      global $DB;
+
+      return $DB->request([
+         'SELECT'    => [
+            $this->getTable() . '.id',
+            $this->getTable() . '.name'
+         ],
+         'FROM'      => $this->getTable(),
+         'LEFT JOIN' => [
+            'glpi_items_tickets' => [
+               'ON' => [
+                  'glpi_items_tickets' => 'tickets_id',
+                  $this->getTable()    => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_items_tickets.itemtype' => $itemtype,
+            'glpi_items_tickets.items_id' => $items_id,
+            $this->getTable() . '.type'   => $type,
+            'NOT'                         => [
+               $this->getTable() . '.status' => array_merge(
+                  $this->getSolvedStatusArray(),
+                  $this->getClosedStatusArray()
+               )
+            ]
+         ]
+      ]);
+   }
 
    /**
     * Count solved tickets for an hardware last X days
@@ -7073,5 +7127,39 @@ class Ticket extends CommonITILObject {
          $DB->commit();
       }
       return true;
+   }
+
+   /**
+    * Get assets linked to this object
+    *
+    * @since 9.5
+    *
+    * @param bool $addNames Insert asset names
+    *
+    * @return array
+    */
+   public function getLinkedItems(bool $addNames = true) {
+      global $DB;
+
+      $assets = $DB->request([
+         'SELECT' => ["id", "itemtype", "items_id"],
+         'FROM'   => "glpi_items_tickets",
+         'WHERE'  => ["tickets_id" => $this->getID()]
+      ]);
+
+      $assets = iterator_to_array($assets);
+
+      if ($addNames) {
+         foreach ($assets as $key => $asset) {
+            /** @var CommonDBTM $item */
+            $item = new $asset['itemtype'];
+            $item->getFromDB($asset['items_id']);
+
+            // Add name
+            $assets[$key]['name'] = $item->fields['name'];
+         }
+      }
+
+      return $assets;
    }
 }

@@ -498,8 +498,7 @@ function loadDataset() {
             'group_condition' => '(objectclass=groupOfNames)',
             'group_member_field' => 'member'
          ]
-      ]
-
+      ],
    ];
 
    // To bypass various right checks
@@ -577,7 +576,7 @@ function loadDataset() {
  * @param string  $type
  * @param string  $name
  * @param boolean $onlyid
- * @return the item, or its id
+ * @return CommonGLPI|false the item, or its id
  */
 function getItemByTypeName($type, $name, $onlyid = false) {
 

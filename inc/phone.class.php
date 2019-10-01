@@ -71,6 +71,7 @@ class Phone extends CommonDBTM {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addImpactTab($ong, $options);
       $this->addStandardTab('Item_OperatingSystem', $ong, $options);
       $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
       $this->addStandardTab('Item_Devices', $ong, $options);

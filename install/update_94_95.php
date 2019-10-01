@@ -604,6 +604,72 @@ function update94to95() {
    }
    /** /Add source item id to TicketTask. Used by tasks created by merging tickets */
 
+   /** Impact analysis */
+   // Impact config
+   $migration->addConfig(['impact_assets_list' => '[]']);
+
+   // Impact dependencies
+   if (!$DB->tableExists('glpi_impactrelations')) {
+      $query = "CREATE TABLE `glpi_impactrelations` (
+         `id` INT(11) NOT NULL AUTO_INCREMENT,
+         `itemtype_source` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+         `items_id_source` INT(11) NOT NULL DEFAULT '0',
+         `itemtype_impacted` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+         `items_id_impacted` INT(11) NOT NULL DEFAULT '0',
+         PRIMARY KEY (`id`),
+         UNIQUE KEY `unicity` (
+            `itemtype_source`,
+            `items_id_source`,
+            `itemtype_impacted`,
+            `items_id_impacted`
+         ),
+         KEY `source_asset` (`itemtype_source`, `items_id_source`),
+         KEY `impacted_asset` (`itemtype_impacted`, `items_id_impacted`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_impacts");
+   }
+
+   // Impact compounds
+   if (!$DB->tableExists('glpi_impactcompounds')) {
+      $query = "CREATE TABLE `glpi_impactcompounds` (
+            `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `name` VARCHAR(255) NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            `color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            PRIMARY KEY (`id`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_impacts_compounds");
+   }
+
+   // Impact parents
+   if (!$DB->tableExists('glpi_impactitems')) {
+      $query = "CREATE TABLE `glpi_impactitems` (
+            `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `itemtype` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            `items_id` INT(11) NOT NULL DEFAULT '0',
+            `parent_id` INT(11) NOT NULL DEFAULT '0',
+            `zoom` FLOAT NOT NULL DEFAULT '0',
+            `pan_x` FLOAT NOT NULL DEFAULT '0',
+            `pan_y` FLOAT NOT NULL DEFAULT '0',
+            `impact_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            `depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            `impact_and_depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            `position_x` FLOAT NOT NULL DEFAULT '0',
+            `position_y` FLOAT NOT NULL DEFAULT '0',
+            `show_depends` TINYINT NOT NULL DEFAULT '1',
+            `show_impact` TINYINT NOT NULL DEFAULT '1',
+            `max_depth` INT(11) NOT NULL DEFAULT '5',
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `unicity` (
+               `itemtype`,
+               `items_id`
+            ),
+            KEY `source` (`itemtype`, `items_id`),
+            KEY `parent_id` (`parent_id`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_impacts_parent");
+   }
+   /** /Impact analysis */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

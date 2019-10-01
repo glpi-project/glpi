@@ -3206,8 +3206,15 @@ class Dropdown {
          $where[] = ['OR' => $orwhere];
       }
 
-      //If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
-      if (in_array($post['itemtype'], $CFG_GLPI["helpdesk_visible_types"])) {
+      // If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
+      $filterHelpdesk = in_array($post['itemtype'], $CFG_GLPI["helpdesk_visible_types"]);
+
+      if (isset($post['context']) && $post['context'] == "impact"
+          && isset($CFG_GLPI['impact_asset_types'][$post['itemtype']])) {
+         $filterHelpdesk = false;
+      }
+
+      if ($filterHelpdesk) {
          $where['is_helpdesk_visible'] = 1;
       }
 

@@ -93,6 +93,7 @@ class Software extends CommonDBTM {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addImpactTab($ong, $options);
       $this->addStandardTab('SoftwareVersion', $ong, $options);
       $this->addStandardTab('SoftwareLicense', $ong, $options);
       $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
