@@ -140,7 +140,7 @@ class Plugin extends CommonDBTM {
     * @param $name             Name of hook to use
     * @param $withhook boolean to load hook functions (false by default)
     *
-    * @return nothing
+    * @return void
    **/
    static function load($name, $withhook = false) {
       global $LOADED_PLUGINS;
@@ -170,7 +170,7 @@ class Plugin extends CommonDBTM {
     * @param $forcelang       force a specific lang (default '')
     * @param $coretrytoload lang trying to be load from core (default '')
     *
-    * @return nothing
+    * @return void
    **/
    static function loadLang($name, $forcelang = '', $coretrytoload = '') {
       // $LANG needed : used when include lang file
@@ -817,7 +817,7 @@ class Plugin extends CommonDBTM {
     * @param $glpitables   array of GLPI table name used by the plugin
     * @param $plugtables   array of Plugin table name which have an itemtype
     *
-    * @return nothing
+    * @return void
    **/
    static function migrateItemType($types = [], $glpitables = [], $plugtables = []) {
       global $DB;

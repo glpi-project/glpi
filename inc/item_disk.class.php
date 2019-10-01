@@ -262,7 +262,7 @@ class Item_Disk extends CommonDBChild {
     * @param $item                  Item object
     * @param $withtemplate boolean  Template or basic item (default 0)
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;

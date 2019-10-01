@@ -182,7 +182,7 @@ class HTMLTableGroup extends HTMLTableBase {
     *     'display_header_for_each_group'          display the header of each group
     *     'display_header_on_foot_for_each_group'  repeat group header on foot of group
     *
-    * @return nothing (display only)
+    * @return void
    **/
    function displayGroup($totalNumberOfColumn, array $params) {
 

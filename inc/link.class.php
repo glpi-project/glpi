@@ -131,7 +131,7 @@ class Link extends CommonDBTM {
    * @param $options array
    *     - target filename : where to go when done.
    *
-   * @return Nothing (display)
+   * @return void
    **/
    function showForm($ID, $options = []) {
 

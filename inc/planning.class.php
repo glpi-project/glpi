@@ -309,7 +309,7 @@ class Planning extends CommonGLPI {
     *    optional :
     *          - limitto : limit display to a specific user
     *
-    * @return Nothing (display function)
+    * @return void
    **/
    static function checkAvailability($params = []) {
       global $CFG_GLPI, $DB;
@@ -570,7 +570,7 @@ class Planning extends CommonGLPI {
     * Function name change since version 0.84 show() => showPlanning
     * Function prototype changes in 9.1 (no more parameters)
     *
-    * @return Nothing (display function)
+    * @return void
    **/
    static function showPlanning($fullview = true) {
       if (!static::canView()) {
@@ -719,7 +719,7 @@ class Planning extends CommonGLPI {
     *
     * Also manage color index in $_SESSION['glpi_plannings_color_index']
     *
-    * @return Nothing (display function)
+    * @return void
     */
    static function initSessionForCurrentUser() {
       global $CFG_GLPI;
@@ -766,7 +766,7 @@ class Planning extends CommonGLPI {
     * and color choosing.
     * Call self::showSingleLinePlanningFilter for each filters and plannings
     *
-    * @return Nothing (display function)
+    * @return void
     */
    static function showPlanningFilter() {
       global $CFG_GLPI;
@@ -820,7 +820,7 @@ class Planning extends CommonGLPI {
     *   * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
     * @param $options
     *
-    * @return Nothing (display function)
+    * @return void
     */
    static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = []) {
       global $CFG_GLPI;
@@ -950,7 +950,7 @@ class Planning extends CommonGLPI {
    /**
     * Display ajax form to add actor on planning
     *
-    * @return Nothing (display function)
+    * @return void
     */
    static function showAddPlanningForm() {
       global $CFG_GLPI;
@@ -988,7 +988,7 @@ class Planning extends CommonGLPI {
     * Display 'User' part of self::showAddPlanningForm spcified by planning type dropdown.
     * Actually called by ajax/planning.php
     *
-    * @return Nothing (display function)
+    * @return void
     */
    static function showAddUserForm() {
       global $CFG_GLPI;
@@ -1044,7 +1044,7 @@ class Planning extends CommonGLPI {
     * Display 'All users of a group' part of self::showAddPlanningForm spcified by planning type dropdown.
     * Actually called by ajax/planning.php
     *
-    * @return Nothing (display function)
+    * @return void
     */
    static function showAddGroupUsersForm() {
       echo __("Group")." : <br>";
@@ -1143,7 +1143,7 @@ class Planning extends CommonGLPI {
     *
     * @since 9.1
     *
-    * @return Nothing (display function)
+    * @return void
     */
    static function showAddGroupForm($params = []) {
 
@@ -1229,7 +1229,7 @@ class Planning extends CommonGLPI {
     *  - end : end of selection range.
     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
     *
-    * @return Nothing (display function)
+    * @return void
     */
    static function showAddEventSubForm($params = []) {
 
@@ -1389,7 +1389,7 @@ class Planning extends CommonGLPI {
     *  - parent : in case of type=users_group, must contains the id of the group
     *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
     *  - display : boolean value to set to his line
-    * @return nothing
+    * @return void
     */
    static function toggleFilter($options = []) {
 
@@ -1420,7 +1420,7 @@ class Planning extends CommonGLPI {
     *  - parent : in case of type=users_group, must contains the id of the group
     *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
     *  - color : rgb color (preceded by '#'' char)
-    * @return nothing
+    * @return void
     */
    static function colorFilter($options = []) {
       $key = 'filters';
@@ -1446,7 +1446,7 @@ class Planning extends CommonGLPI {
     * @param  array $options: should contains :
     *  - type : event type, can be event_filter, user, group or group_users
     *  - filter : contains a string with type and id concatened with a '_' char (ex user_41).
-    * @return nothing
+    * @return void
     */
    static function deleteFilter($options = []) {
 
@@ -1670,7 +1670,7 @@ class Planning extends CommonGLPI {
     *  - color: string with #rgb color for event's foreground color.
     *  - event_type_color : string with #rgb color for event's foreground color.
     * @param  array  $raw_events: (passed by reference) the events array in construction
-    * @return nothing
+    * @return void
     */
    static function constructEventsArraySingleLine($actor, $params = [], &$raw_events = []) {
 
@@ -1859,7 +1859,7 @@ class Planning extends CommonGLPI {
     *                         (default '')
     * @param $complete        complete display (more details) (default 0)
     *
-    * @return Nothing (display function)
+    * @return string
    **/
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
@@ -1914,7 +1914,7 @@ class Planning extends CommonGLPI {
     *
     * @param $who ID of the user
     *
-    * @return Nothing (display function)
+    * @return void
    **/
    static function showCentral($who) {
       global $CFG_GLPI;

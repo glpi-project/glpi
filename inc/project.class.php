@@ -1354,7 +1354,7 @@ class Project extends CommonDBTM {
    /**
     * Print the HTML array children of a TreeDropdown
     *
-    * @return Nothing (display)
+    * @return void
     **/
    function showChildren() {
       global $DB, $CFG_GLPI;
@@ -1416,7 +1416,7 @@ class Project extends CommonDBTM {
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
-    *@return Nothing (display)
+    *@return void
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;

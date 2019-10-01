@@ -72,7 +72,7 @@ class Item_OperatingSystem extends CommonDBRelation {
     *
     * @since 9.2
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;

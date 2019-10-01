@@ -98,7 +98,7 @@ class OlaLevel_Ticket extends CommonDBTM {
     *
     * @since 9.1 2 parameters mandatory
     *
-    * @return nothing
+    * @return void
    **/
    function deleteForTicket($tickets_id, $olaType) {
       global $DB;
@@ -204,7 +204,7 @@ class OlaLevel_Ticket extends CommonDBTM {
     *
     * @since 9.1   2 parameters mandatory
     *
-    * @return nothing
+    * @return void
    **/
    static function doLevelForTicket(array $data, $olaType) {
 

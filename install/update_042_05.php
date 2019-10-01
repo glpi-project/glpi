@@ -1379,7 +1379,7 @@ function dropMaintenanceField() {
  * @param $compDpdName string the name of the dropdown foreign key on glpi_computers (eg : hdtype, processor)
  * @param $specif string the name of the dropdown value entry on glpi_computer (eg : hdspace, processor_speed) optionnal argument.
  *
- * @return nothing if everything is good, else display mysql query and error.
+ * @return void
  */
 function compDpd2Device($devtype, $devname, $dpdname, $compDpdName, $specif = '') {
    global $DB;

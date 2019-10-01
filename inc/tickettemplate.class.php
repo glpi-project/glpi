@@ -125,7 +125,7 @@ class TicketTemplate extends ITILTemplate {
     *
     * @param $tt ITILTemplate object
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showHelpdeskPreview(ITILTemplate $tt) {
 

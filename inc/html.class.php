@@ -471,7 +471,7 @@ class Html {
    /**
     * Redirection to $_SERVER['HTTP_REFERER'] page
     *
-    * @return nothing
+    * @return void
    **/
    static function back() {
       self::redirect(self::getBackUrl());
@@ -484,7 +484,7 @@ class Html {
     * @param $dest string: Redirection destination
     * @param $http_response_code string: Forces the HTTP response code to the specified value
     *
-    * @return nothing
+    * @return void
    **/
    static function redirect($dest, $http_response_code = 302) {
 
@@ -519,7 +519,7 @@ class Html {
     * @param $params       param to add to URL (default '')
     * @since 0.85
     *
-    * @return nothing
+    * @return void
    **/
    static function redirectToLogin($params = '') {
       global $CFG_GLPI;
@@ -543,7 +543,7 @@ class Html {
    /**
     * Display common message for item not found
     *
-    * @return Nothing
+    * @return void
    **/
    static function displayNotFoundError() {
       global $CFG_GLPI, $HEADER_LOADED;
@@ -570,7 +570,7 @@ class Html {
    /**
     * Display common message for privileges errors
     *
-    * @return Nothing (die)
+    * @return void
    **/
    static function displayRightError() {
       self::displayErrorAndDie(__("You don't have permission to perform this action."));
@@ -701,7 +701,7 @@ class Html {
     * @param $ref_title       Title to display (default '')
     * @param $ref_btts        Extra items to display array(link=>text...) (default '')
     *
-    * @return nothing
+    * @return void
    **/
    static function displayTitle($ref_pic_link = "", $ref_pic_text = "", $ref_title = "", $ref_btts = "") {
 
@@ -923,7 +923,7 @@ class Html {
     * @param $message   string   displayed before dying
     * @param $minimal            set to true do not display app menu (false by default)
     *
-    * @return nothing as function kill script
+    * @return void
    **/
    static function displayErrorAndDie ($message, $minimal = false) {
       global $CFG_GLPI, $HEADER_LOADED;
@@ -954,7 +954,7 @@ class Html {
     * @param $additionalactions  string   additional actions to do on success confirmation
     *                                     (default '')
     *
-    * @return nothing
+    * @return string
    **/
    static function addConfirmationOnAction($string, $additionalactions = '') {
 
@@ -971,7 +971,7 @@ class Html {
     * @param $additionalactions  string   additional actions to do on success confirmation
     *                                     (default '')
     *
-    * @return confirmation script
+    * @return string confirmation script
    **/
    static function getConfirmationOnActionScript($string, $additionalactions = '') {
 
@@ -1017,7 +1017,7 @@ class Html {
     *                    - percent   current level
     *
     *
-    * @return nothing (display)
+    * @return void
     **/
    static function progressBar($id, array $options = []) {
 
@@ -1063,7 +1063,7 @@ class Html {
     *
     * @param $msg initial message (under the bar) (default '&nbsp;')
     *
-    * @return nothing
+    * @return void
     **/
    static function createProgressBar($msg = "&nbsp;") {
 
@@ -1080,7 +1080,7 @@ class Html {
     *
     * @param $msg message under the bar (default '&nbsp;')
     *
-    * @return nothing
+    * @return void
    **/
    static function changeProgressBarMessage($msg = "&nbsp;") {
 
@@ -1096,7 +1096,7 @@ class Html {
     * @param $tot   Maximum Value
     * @param $msg   message inside the bar (default is %) (default '')
     *
-    * @return nothing
+    * @return void
    **/
    static function changeProgressBarPosition($crt, $tot, $msg = "") {
 
@@ -1129,7 +1129,7 @@ class Html {
     *            - simple : display a simple progress bar (no title / only percent)
     *            - forcepadding : boolean force str_pad to force refresh (default true)
     *
-    * @return nothing
+    * @return void
    **/
    static function displayProgressBar($width, $percent, $options = []) {
       global $CFG_GLPI;
@@ -1182,7 +1182,7 @@ class Html {
     * @param $item      item corresponding to the page displayed (default 'none')
     * @param $option    option corresponding to the page displayed (default '')
     *
-    * @return nothing
+    * @return void
    **/
    static function includeHeader($title = '', $sector = 'none', $item = 'none', $option = '') {
       global $CFG_GLPI, $PLUGIN_HOOKS;
@@ -2351,7 +2351,7 @@ class Html {
     *
     * @param $options   array
     *
-    * @return nothing (display only)
+    * @return void
    **/
    static function showCheckbox(array $options = []) {
       echo self::getCheckbox($options);
@@ -2405,7 +2405,7 @@ class Html {
     *
     * @param $name given name/id to the form   (default '')
     *
-    * @return nothing / display item
+    * @return void
    **/
    static function openMassiveActionsForm($name = '') {
       echo Html::getOpenMassiveActionsForm($name);
@@ -3316,7 +3316,7 @@ class Html {
     *
     * @param $target target of the form
     *
-    * @return nothing
+    * @return void
    **/
    static function showProfileSelecter($target) {
       global $CFG_GLPI;
@@ -3368,7 +3368,9 @@ class Html {
     *   - display : boolean / display the item : false return the datas
     *   - autoclose : boolean / autoclose the item : default true (false permit to scroll)
     *
-    * @return nothing (print out an HTML div)
+    * @return void|string
+    *    void if option display=true
+    *    string if option display=false (HTML code)
    **/
    static function showToolTip($content, $options = []) {
       global $CFG_GLPI;
@@ -3580,7 +3582,10 @@ class Html {
     * @param $display    boolean display or get js script (true by default)
     * @param $readonly   boolean editor will be readonly or not
     *
-    * @return nothing
+    *
+    * @return void|string
+    *    integer if param display=true
+    *    string if param display=false (HTML code)
    **/
    static function initEditorSystem($name, $rand = '', $display = true, $readonly = false) {
       global $CFG_GLPI;
@@ -3842,7 +3847,7 @@ class Html {
     * @param $pad          Pad used (default 0)
     * @param $jsexpand     Expand using JS ? (default  false)
     *
-    * @return nothing
+    * @return void
    **/
    static function printCleanArray($tab, $pad = 0, $jsexpand = false) {
 
@@ -3907,7 +3912,7 @@ class Html {
     * @param $item_type_output_param      item type parameter for export (default 0)
     * @param $additional_info             Additional information to display (default '')
     *
-    * @return nothing (print a pager)
+    * @return void
     *
    **/
    static function printPager($start, $numrows, $target, $parameters, $item_type_output = 0,
@@ -6245,7 +6250,7 @@ JAVASCRIPT;
     *
     * @param string $action action to switch (should be actually 'getHtml' or 'getList')
     *
-    * @return nothing (display)
+    * @return string
     */
    static function fuzzySearch($action = '') {
       global $CFG_GLPI;

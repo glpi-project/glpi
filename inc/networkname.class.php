@@ -87,7 +87,7 @@ class NetworkName extends FQDNLabel {
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
-    *@return Nothing (display)
+    *@return void
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;

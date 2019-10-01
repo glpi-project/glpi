@@ -200,7 +200,7 @@ class Software extends CommonDBTM {
     *
     * @since 0.85
     *
-    * @return nothing
+    * @return void
    **/
    static function updateValidityIndicator($ID) {
 
@@ -702,7 +702,7 @@ class Software extends CommonDBTM {
     * @param $myname          select name
     * @param $entity_restrict restrict to a defined entity
     *
-    * @return nothing (print out an HTML select box)
+    * @return integer random part of elements id
    **/
    static function dropdownSoftwareToInstall($myname, $entity_restrict) {
       global $CFG_GLPI;
@@ -732,7 +732,7 @@ class Software extends CommonDBTM {
     * @param $myname          select name
     * @param $entity_restrict restrict to a defined entity
     *
-    * @return nothing (print out an HTML select box)
+    * @return integer random part of elements id
    **/
    static function dropdownLicenseToInstall($myname, $entity_restrict) {
       global $CFG_GLPI, $DB;
@@ -932,7 +932,7 @@ class Software extends CommonDBTM {
    /**
     * Show softwares candidates to be merged with the current
     *
-    * @return nothing
+    * @return void
    **/
    function showMergeCandidates() {
       global $DB, $CFG_GLPI;

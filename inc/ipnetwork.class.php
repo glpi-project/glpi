@@ -878,7 +878,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * First, reset the tree, then, update each network by its own field, letting
     * CommonImplicitTreeDropdown working such as it would in case of standard update
     *
-    * @return nothing
+    * @return void
    **/
    static function recreateTree() {
       global $DB;

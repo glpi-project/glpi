@@ -327,7 +327,7 @@ class ProjectCost extends CommonDBChild {
     * @param $project               Project object
     * @param $withtemplate  boolean  Template or basic item (default 0)
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForProject(Project $project, $withtemplate = 0) {
       global $DB, $CFG_GLPI;

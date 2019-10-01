@@ -215,7 +215,7 @@ class OlaLevel extends LevelAgreementLevel {
     * @param $ID              ID of the rule
     * @param $options   array of possible options
     *
-    * @return nothing
+    * @return void
    **/
    function showForm($ID, $options = []) {
 

@@ -304,7 +304,7 @@ class Session {
     *                                    (default 'all')
     * @param boolean       $is_recursive Also display sub entities of the active entity? (false by default)
     *
-    * @return Nothing
+    * @return boolean true on success, false on failure
    **/
    static function changeActiveEntities($ID = "all", $is_recursive = false) {
 

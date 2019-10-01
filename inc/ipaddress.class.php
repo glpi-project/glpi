@@ -535,7 +535,7 @@ class IPAddress extends CommonDBChild {
    /**
     * Replace textual representation by its canonical form.
     *
-    * @return nothing (internal class update)
+    * @return void
    **/
    function canonicalizeTextual() {
       $this->setAddressFromBinary($this->getBinary());

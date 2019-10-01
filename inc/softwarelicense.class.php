@@ -138,7 +138,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @since 0.85
     *
-    * @return nothing
+    * @return void
    **/
    static function updateValidityIndicator($ID) {
 
@@ -1003,7 +1003,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @param $software Software object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForSoftware(Software $software) {
       global $DB, $CFG_GLPI;

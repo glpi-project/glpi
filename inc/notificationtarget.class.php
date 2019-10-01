@@ -1339,7 +1339,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @param $group Group object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForGroup(Group $group) {
       global $DB;

@@ -268,7 +268,7 @@ class DisplayPreference extends CommonDBTM {
     * @param $target    form target
     * @param $itemtype  item type
     *
-    * @return nothing
+    * @return void
    **/
    function showFormPerso($target, $itemtype) {
       global $CFG_GLPI, $DB;
@@ -440,7 +440,7 @@ class DisplayPreference extends CommonDBTM {
     * @param $target    form target
     * @param $itemtype  item type
     *
-    * @return nothing
+    * @return void
    **/
    function showFormGlobal($target, $itemtype) {
       global $CFG_GLPI, $DB;

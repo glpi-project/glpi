@@ -543,7 +543,9 @@ class Dropdown {
     *    - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
     *    - display_emptychoice : display empty choice (default false)
     *
-    * @return nothing (print out an HTML select box)
+    * @return integer|string
+    *    integer if option display=true (random part of elements id)
+    *    string if option display=false (HTML code)
    **/
    static function showItemTypes($name, $types = [], $options = []) {
       global $CFG_GLPI;
@@ -584,7 +586,9 @@ class Dropdown {
     * @param $options       array    of possible options:
     *        - may be value (default value) / field (used field to search itemtype)
     *
-    * @return nothing (print out an HTML select box)
+    * @return integer|string
+    *    integer if option display=true (random part of elements id)
+    *    string if option display=false (HTML code)
    **/
    static function dropdownUsedItemTypes($name, $itemtype_ref, $options = []) {
       global $DB;
@@ -620,7 +624,10 @@ class Dropdown {
     * @param $store_path            path where icons are stored
     * @param $display      boolean  display of get string ? (true by default)
     *
-    * @return nothing (print out an HTML select box)
+    *
+    * @return void|string
+    *    void if param display=true
+    *    string if param display=false (HTML code)
    **/
    static function dropdownIcons($myname, $value, $store_path, $display = true) {
 
@@ -1253,7 +1260,10 @@ class Dropdown {
     *     - step               step time (defaut config GLPI)
     *
     * @since 0.85 update prototype
-    *@return Nothing (display)
+    *
+    * @return integer|string
+    *    integer if option display=true (random part of elements id)
+    *    string if option display=false (HTML code)
     **/
    static function showHours($name, $options = []) {
       global $CFG_GLPI;
@@ -1801,6 +1811,10 @@ class Dropdown {
     *                                'key2' => 'val2'),
     *       'optgroupname2' => array('key3' => 'val3',
     *                                'key4' => 'val4'))
+    *
+    * @return integer|string
+    *    integer if option display=true (random part of elements id)
+    *    string if option display=false (HTML code)
    **/
    static function showFromArray($name, array $elements, $options = []) {
 

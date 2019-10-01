@@ -78,7 +78,7 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * @param $name the name to print inside the header
     *
-    * @return nothing
+    * @return void
    **/
    function setTitle($name) {
       $this->title = $name;
@@ -101,7 +101,7 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * TODO : study to be sure that the order is the one we have defined ...
     *
-    * @return nothing
+    * @return boolean|HTMLTableGroup
    **/
    function createGroup($name, $content) {
 
@@ -128,7 +128,7 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * @param $group_name (string) the group name
     *
-    * @return nothing
+    * @return boolean|HTMLTableGroup
    **/
    function getGroup($group_name) {
 
@@ -184,7 +184,7 @@ class HTMLTableMain extends HTMLTableBase {
     *    'display_super_for_each_group'           display the super header befor each group
     *    'display_title_for_each_group'           display the title of each group
     *
-    * @return nothing (display only)
+    * @return void
    **/
    function display(array $params) {
 

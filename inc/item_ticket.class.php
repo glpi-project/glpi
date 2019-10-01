@@ -170,7 +170,7 @@ class Item_Ticket extends CommonDBRelation{
     *    - _users_id_requester : ID of the requester user
     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
     *
-    * @return Nothing (display)
+    * @return void
    **/
    static function itemAddForm(Ticket $ticket, $options = []) {
       global $CFG_GLPI;
@@ -370,7 +370,7 @@ class Item_Ticket extends CommonDBRelation{
     *
     * @param $ticket Ticket object
     *
-    * @return Nothing (display)
+    * @return void
    **/
    static function showForTicket(Ticket $ticket) {
       global $DB, $CFG_GLPI;
@@ -561,7 +561,7 @@ class Item_Ticket extends CommonDBRelation{
     *    - multiple   : allow multiple choice
     *    - rand       : random number
     *
-    * @return nothing (print out an HTML select box)
+    * @return integer random part of elements id
    **/
    static function dropdownAllDevices($myname, $itemtype, $items_id = 0, $admin = 0, $users_id = 0,
                                       $entity_restrict = -1, $options = []) {
@@ -656,7 +656,7 @@ class Item_Ticket extends CommonDBRelation{
     *    - used     : ID of the requester user
     *    - multiple : allow multiple choice
     *
-    * @return nothing (print out an HTML select box)
+    * @return void
    **/
    static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = []) {
       global $DB, $CFG_GLPI;

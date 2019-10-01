@@ -64,8 +64,6 @@ class MassiveAction {
     * @param $GET   something like $_GET
     * @param $stage the current stage
     * @param boolean $single Get actions for a single item
-    *
-    * @return nothing (it is a constructor).
    **/
    function __construct (array $POST, array $GET, $stage, $single = false) {
       global $CFG_GLPI;
@@ -405,7 +403,7 @@ class MassiveAction {
    /**
     * Add hidden fields containing all the checked items to the current form
     *
-    * @return nothing (display)
+    * @return void
    **/
    function addHiddenFields() {
 
@@ -643,7 +641,7 @@ class MassiveAction {
    /**
     * Main entry of the modal window for massive actions
     *
-    * @return nothing: display
+    * @return void
    **/
    function showSubForm() {
       $processor = $this->processor;
@@ -659,7 +657,7 @@ class MassiveAction {
     /**
     * Class-specific method used to show the fields to specify the massive action
     *
-    * @return nothing (display only)
+    * @return void
    **/
    function showDefaultSubForm() {
       echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
@@ -947,7 +945,7 @@ class MassiveAction {
     *
     * Display and update the progress bar. If the delay is more than 1 second, then activate it
     *
-    * @return nothing (display only)
+    * @return void
    **/
    function updateProgressBars() {
 
@@ -1268,7 +1266,7 @@ class MassiveAction {
     *
     * @param $redirect link to the page
     *
-    * @return nothing
+    * @return void
    **/
    function setRedirect($redirect) {
       $this->redirect = $redirect;
@@ -1280,7 +1278,7 @@ class MassiveAction {
     *
     * @param $message the message to add
     *
-    * @return nothing
+    * @return void
    **/
    function addMessage($message) {
       $this->results['messages'][] = $message;

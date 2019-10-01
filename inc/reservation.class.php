@@ -275,7 +275,7 @@ class Reservation extends CommonDBChild {
     * @param $type   error type : date / is_res / other
     * @param $ID     ID of the item
     *
-    * @return nothing
+    * @return void
    **/
    function displayError($type, $ID) {
 

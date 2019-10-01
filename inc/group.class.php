@@ -206,7 +206,7 @@ class Group extends CommonTreeDropdown {
    *     - target filename : where to go when done.
    *     - withtemplate boolean : template or basic item
    *
-   * @return Nothing (display)
+   * @return void
    **/
    function showForm($ID, $options = []) {
 
@@ -299,7 +299,7 @@ class Group extends CommonTreeDropdown {
    /**
     * Print a good title for group pages
     *
-    *@return nothing (display)
+    *@return void
     **/
    function title() {
       global $CFG_GLPI;

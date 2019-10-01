@@ -1137,7 +1137,7 @@ class Profile extends CommonDBTM {
     * @param $statuses       all available statuses for the given cycle (obj::getAllStatusArray())
     * @param $canedit        can we edit the elements ?
     *
-    * @return nothing
+    * @return void
    **/
    function displayLifeCycleMatrix($title, $html_field, $db_field, $statuses, $canedit) {
 
@@ -1219,7 +1219,7 @@ class Profile extends CommonDBTM {
     * @param $db_field       field inside the DB (to get current state)
     * @param $canedit        can we edit the elements ?
     *
-    * @return nothing
+    * @return void
    **/
    function displayLifeCycleMatrixTicketHelpdesk($title, $html_field, $db_field, $canedit) {
 
@@ -2605,7 +2605,9 @@ class Profile extends CommonDBTM {
     *       - display : display or get string (default true)
     *       - rand    : specific rand (default is generated one)
     *
-    * @return nothing (print out an HTML select box)
+    * @return integer|string
+    *    integer if option display=true (random part of elements id)
+    *    string if option display=false (HTML code)
    **/
    static function dropdownRight($name, $options = []) {
 
