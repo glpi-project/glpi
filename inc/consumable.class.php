@@ -226,7 +226,7 @@ class Consumable extends CommonDBChild {
                      $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                   }
                }
-               Event::log($item->fields['consumableitems_id'], "consumables", 5, "inventory",
+               Event::log($item->fields['consumableitems_id'], "consumableitems", 5, "inventory",
                           //TRANS: %s is the user login
                           sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
             } else {
