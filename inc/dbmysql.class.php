@@ -1195,7 +1195,7 @@ class DBmysql {
 
       //JOINS
       $it = new DBmysqlIterator($this);
-      $query .= $it->analyzeJoins($joins);
+      $query .= $it->analyseJoins($joins);
 
       $query .= " SET ";
       foreach ($params as $field => $value) {
@@ -1320,7 +1320,7 @@ class DBmysql {
       $query  = "DELETE " . self::quoteName($table) . " FROM ". self::quoteName($table);
 
       $it = new DBmysqlIterator($this);
-      $query .= $it->analyzeJoins($joins);
+      $query .= $it->analyseJoins($joins);
       $query .= " WHERE " . $it->analyseCrit($where);
 
       return $query;
