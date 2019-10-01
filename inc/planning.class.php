@@ -1577,10 +1577,22 @@ class Planning extends CommonGLPI {
 
          // manage reccurent events
          if (isset($event['rrule']) && count($event['rrule'])) {
-            $rrule = array_merge($event['rrule'], [
-               'dtstart' => $new_event['start']
-            ]);
-            $rrule_o = new RRule($rrule);
+            $rrule = $event['rrule'];
+            $rrule['dtstart'] = $new_event['start'];
+
+            // RRule PHP lib fails on some timezone format
+            // i.e. datefmt_create: no such time zone: 'GMT+00:00': U_ILLEGAL_ARGUMENT_ERROR
+            // convert dtstart to UTC and use Z as timezone indication
+            $dtstart_datetime = new \DateTime($rrule['dtstart']);
+            $dtstart_datetime->setTimezone(new DateTimeZone('UTC'));
+            $rrule_o = new RRule(
+               array_merge(
+                  $rrule,
+                  [
+                     'dtstart' => $dtstart_datetime->format('Ymd\THis\Z')
+                  ]
+               )
+            );
 
             // append icon to distinguish reccurent event in views
             $new_event = array_merge($new_event, [
@@ -1623,7 +1635,7 @@ class Planning extends CommonGLPI {
 
                // rrule.js lib decides to change one key for day of the week.
                // see https://github.com/jakubroztocil/rrule#differences-from-icalendar-rfc
-               if (isset(($rrule['byday']))) {
+               if (isset($rrule['byday'])) {
                   $rrule['byweekday'] = $rrule['byday'];
                   unset($rrule['byday']);
                }

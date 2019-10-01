@@ -405,7 +405,7 @@ trait PlanningEvent {
                   'end'              => !$is_rrule && (strcmp($end, $data["end"]) < 0)
                                           ? $end
                                           : $data["end"],
-                  'rrule'            => isset($data['rrule'])
+                  'rrule'            => isset($data['rrule']) && !empty($data['rrule'])
                                           ? json_decode($data['rrule'], true)
                                           : []
                ];
@@ -423,10 +423,10 @@ trait PlanningEvent {
                   // so we remove the duration from the begin part of the range
                   // (minus 1second to avoid mathing precise end date)
                   // to check if event started before begin and could be still valid
-                  $begin = new DateTime($options['begin']);
-                  $begin->sub(New DateInterval("PT".($duration - 1)."S"));
+                  $begin_datetime = new DateTime($options['begin']);
+                  $begin_datetime->sub(New DateInterval("PT".($duration - 1)."S"));
 
-                  $occurences = $rrule->getOccurrencesBetween($begin, $options['end']);
+                  $occurences = $rrule->getOccurrencesBetween($begin_datetime, $options['end']);
 
                   // add the found occurences to the final tab after replacing their dates
                   foreach ($occurences as $currentDate) {
@@ -559,10 +559,10 @@ trait PlanningEvent {
       $out.= "<span id='toggle_ar' style='display: $display_tar'>";
       $out.= "<a class='vsubmit'
                  title='".__("Personalization")."'
-                 onclick='$(\"#advanced_repetition\").toggle()'>
+                 onclick='$(\"#advanced_repetition$rand\").toggle()'>
                  <i class='fas fa-cog'></i>
               </a>";
-      $out.= "<div id='advanced_repetition' style='display: $display_ar; max-width: 23'>";
+      $out.= "<div id='advanced_repetition$rand' style='display: $display_ar; max-width: 23'>";
 
       $out.= "<div class='field'>";
       $out.= "<label for='dropdown_interval$rand'>".__("Interval")."</label>";
