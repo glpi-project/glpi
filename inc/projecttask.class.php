@@ -1071,7 +1071,7 @@ class ProjectTask extends CommonDBChild {
     *
     * @param $item Project or ProjectTask object
     *
-    * @return nothing
+    * @return void
    **/
    static function showFor($item) {
       global $DB, $CFG_GLPI;
@@ -1699,7 +1699,7 @@ class ProjectTask extends CommonDBChild {
     *                         (default '')
     * @param $complete        complete display (more details) (default 0)
     *
-    * @return Nothing (display function)
+    * @return string
     **/
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;

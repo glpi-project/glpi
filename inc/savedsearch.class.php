@@ -552,7 +552,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @param integer $ID ID of the saved search
     *
-    * @return nothing
+    * @return void
    **/
    function load($ID) {
       global $CFG_GLPI;

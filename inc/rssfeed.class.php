@@ -905,7 +905,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @param $personal boolean   display rssfeeds created by me ? (true by default)
     *
-    * @return Nothing (display function)
+    * @return void
     **/
    static function showListForCentral($personal = true) {
       global $DB, $CFG_GLPI;

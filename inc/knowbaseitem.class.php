@@ -230,7 +230,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Actions done at the end of the getEmpty function
     *
-    *@return nothing
+    *@return void
    **/
    function post_getEmpty() {
 
@@ -647,7 +647,7 @@ class KnowbaseItem extends CommonDBVisible {
     * @param $options array
     *     - target for the Form
     *
-    * @return nothing (display the form)
+    * @return void
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -832,7 +832,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Add kb item to the public FAQ
     *
-    * @return nothing
+    * @return void
    **/
    function addToFaq() {
       global $DB;
@@ -870,7 +870,9 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $options      array of options
     *
-    * @return nothing (display item : question and answer)
+    * @return void|string
+    *    void if option display=true
+    *    string if option display=false (HTML code)
    **/
    function showFull($options = []) {
       global $DB, $CFG_GLPI;
@@ -977,7 +979,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $options   $_GET
     *
-    * @return nothing (display the form)
+    * @return void
    **/
    function searchForm($options) {
       global $CFG_GLPI;
@@ -1024,7 +1026,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $options   $_GET
     *
-    * @return nothing (display the form)
+    * @return void
    **/
    function showBrowseForm($options) {
       global $CFG_GLPI;
@@ -1073,7 +1075,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $options   $_GET
     *
-    * @return nothing (display the form)
+    * @return void
    **/
    function showManageForm($options) {
       global $CFG_GLPI;
@@ -1606,7 +1608,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $type      type : recent / popular / not published
     *
-    * @return nothing (display table)
+    * @return void
    **/
    static function showRecentPopular($type) {
       global $DB, $CFG_GLPI;

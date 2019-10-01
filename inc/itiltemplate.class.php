@@ -551,7 +551,7 @@ abstract class ITILTemplate extends CommonDropdown {
     *
     * @param $tt ITILTemplate object
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showCentralPreview(ITILTemplate $tt) {
 

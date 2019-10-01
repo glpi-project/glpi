@@ -298,7 +298,9 @@ abstract class LevelAgreementLevel extends RuleTicket {
     *       - max_time : max time to use
     *       - used : already used values
     *
-    * @return nothing
+    * @return integer|string
+    *    integer if option display=true (random part of elements id)
+    *    string if option display=false (HTML code)
    **/
    static function dropdownExecutionTime($name, $options = []) {
       $p['value']    = '';

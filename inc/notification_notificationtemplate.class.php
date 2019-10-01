@@ -109,7 +109,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
     * @param Notification $notif        Notification object
     * @param boolean      $withtemplate Template or basic item (default '')
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForNotification(Notification $notif, $withtemplate = 0) {
       global $DB;

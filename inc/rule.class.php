@@ -847,7 +847,7 @@ class Rule extends CommonDBTM {
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return nothing
+    * @return void
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;

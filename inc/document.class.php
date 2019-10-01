@@ -354,7 +354,7 @@ class Document extends CommonDBTM {
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showForm($ID, $options = []) {
       $this->initForm($ID, $options);
@@ -1312,7 +1312,7 @@ class Document extends CommonDBTM {
     * @param $dir       dir to search a free path for the file
     * @param $sha1sum   SHA1 of the file
     *
-    * @return nothing
+    * @return string
    **/
    static function getUploadFileValidLocationName($dir, $sha1sum) {
       if (empty($dir)) {
@@ -1437,7 +1437,9 @@ class Document extends CommonDBTM {
     *
     * @param $options array of possible options
     *
-    * @return nothing (print out an HTML select box)
+    * @return integer|string
+    *    integer if option display=true (random part of elements id)
+    *    string if option display=false (HTML code)
    **/
    static function dropdown($options = []) {
       global $DB, $CFG_GLPI;

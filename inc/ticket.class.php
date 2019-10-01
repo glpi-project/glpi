@@ -851,7 +851,7 @@ class Ticket extends CommonITILObject {
    /**
     * Retrieve data of the hardware linked to the ticket if exists
     *
-    * @return nothing : set computerfound to 1 if founded
+    * @return void
    **/
    function getAdditionalDatas() {
 
@@ -1943,7 +1943,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $input array : input array
     *
-    * @return nothing
+    * @return boolean
    **/
    function manageValidationAdd($input) {
 
@@ -3418,7 +3418,7 @@ class Ticket extends CommonITILObject {
     * @param $ticket_template boolean  ticket template for preview : false if not used for preview
     *                                  (false by default)
     *
-    * @return nothing (print the helpdesk)
+    * @return void
    **/
    function showFormHelpdesk($ID, $ticket_template = false) {
       global $CFG_GLPI;

@@ -404,7 +404,7 @@ class RuleCollection extends CommonDBTM {
     * @param $target
     * @param $options   array
     *
-    * @return nothing
+    * @return void
    **/
    function showListRules($target, $options = []) {
       global $CFG_GLPI;
@@ -584,7 +584,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $target
     *
-    * @return nothing
+    * @return void
    **/
    function showAdditionalInformationsInForm($target) {
    }
@@ -810,7 +810,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @since 0.85
     *
-    * @return nothing (display)
+    * @return void
    **/
    static function titleBackup() {
       global $CFG_GLPI;
@@ -900,7 +900,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @since 0.85
     *
-    * @return nothing, send attachment to browser
+    * @return void send attachment to browser
    **/
    static function exportRulesToXML($items = []) {
 
@@ -1003,7 +1003,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @since 0.85
     *
-    * @return nothing (display)
+    * @return void
    **/
    static function displayImportRulesForm() {
 
@@ -1837,7 +1837,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * Print a title if needed which will be displayed above list of rules
     *
-    * @return nothing (display)
+    * @return void
    **/
    function title() {
    }

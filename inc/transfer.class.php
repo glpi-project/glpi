@@ -1043,7 +1043,7 @@ class Transfer extends CommonDBTM {
     *
     * Transfer item to a new Item if $ID==$newID : only update entities_id field :
     *                                $ID!=$new ID -> copy datas (like template system)
-    * @return nothing (diplays)
+    * @return void
    **/
    function transferItem($itemtype, $ID, $newID) {
       global $CFG_GLPI, $DB;

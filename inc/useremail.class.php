@@ -192,7 +192,7 @@ class UserEmail  extends CommonDBChild {
     *
     * @param $user User object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForUser(User $user) {
 

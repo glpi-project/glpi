@@ -394,7 +394,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * Print a good title for entity pages
     *
-    *@return nothing (display)
+    *@return void
     **/
    function title() {
       // Empty title for entities

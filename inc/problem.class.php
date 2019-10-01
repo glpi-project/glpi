@@ -1567,7 +1567,7 @@ class Problem extends CommonITILObject {
     *
     * @param $item CommonDBTM object
     *
-    * @return nothing (display a table)
+    * @return void
    **/
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;

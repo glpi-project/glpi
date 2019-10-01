@@ -138,7 +138,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     *
     * @param $options      array of options
     *
-    * @return nothing (display item : question and answer)
+    * @return void
    **/
    function showFull($options = []) {
       global $DB, $CFG_GLPI;

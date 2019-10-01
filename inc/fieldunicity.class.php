@@ -152,7 +152,7 @@ class FieldUnicity extends CommonDropdown {
     * @param ID      the field unicity item id
     * @param value   the selected value (default 0)
     *
-    * @return nothing
+    * @return void
    **/
    function showItemtype($ID, $value = 0) {
       global $CFG_GLPI;
@@ -234,7 +234,7 @@ class FieldUnicity extends CommonDropdown {
     *
     * @param $unicity an instance of CommonDBTM class
     *
-    * @return nothing
+    * @return void
    **/
    static function selectCriterias(CommonDBTM $unicity) {
       global $DB;
@@ -509,7 +509,7 @@ class FieldUnicity extends CommonDropdown {
     *
     * @param itemtype
     *
-    * @return nothing
+    * @return void
    **/
    static function deleteForItemtype($itemtype) {
       global $DB;

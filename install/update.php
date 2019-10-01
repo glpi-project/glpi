@@ -128,7 +128,7 @@ function update_importDropdown ($table, $name) {
 /**
  * Display the form of content update (addslashes compatibility (V0.4))
  *
- * @return nothing (displays)
+ * @return void
  */
 function showContentUpdateForm() {
    $_SESSION['do_content_update'] = true;

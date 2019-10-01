@@ -83,7 +83,7 @@ class Item_Project extends CommonDBRelation{
     *
     * @param $project Project object
     *
-    * @return Nothing (display)
+    * @return void
    **/
    static function showForProject(Project $project) {
       global $DB, $CFG_GLPI;

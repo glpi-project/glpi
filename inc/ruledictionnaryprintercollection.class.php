@@ -324,7 +324,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
     * @param $ID                 the old printer's id
     * @param $new_printers_id    the new printer's id
     *
-    * @return nothing
+    * @return void
    **/
    function moveDirectConnections($ID, $new_printers_id) {
       global $DB;

@@ -56,7 +56,7 @@ class Link_Itemtype extends CommonDBChild {
     *
     * @param $link : Link
     *
-    * @return Nothing (display)
+    * @return void
    **/
    static function showForLink($link) {
       global $DB,$CFG_GLPI;

@@ -85,7 +85,7 @@ class Line extends CommonDropdown {
     *     - target for the Form
     *     - withtemplate : template or basic item
     *
-    * @return Nothing (display)
+    * @return void
     **/
    function showForm($ID, $options = []) {
 

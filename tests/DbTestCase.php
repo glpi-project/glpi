@@ -81,7 +81,7 @@ class DbTestCase extends \GLPITestCase {
     * @param  int    $id     The id of added object
     * @param  array  $input  the input used for add object (optionnal)
     *
-    * @return nothing (do tests)
+    * @return void
     */
    protected function checkInput(CommonDBTM $object, $id = 0, $input = []) {
       $this->integer((int)$id)->isGreaterThan(0);

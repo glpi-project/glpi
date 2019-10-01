@@ -166,7 +166,7 @@ class Ticket_Ticket extends CommonDBRelation {
     *
     * @param $ID ID of the ticket id
     *
-    * @return nothing display
+    * @return void
    **/
    static function displayLinkedTicketsTo ($ID) {
       global $DB, $CFG_GLPI;

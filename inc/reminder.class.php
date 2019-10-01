@@ -1038,7 +1038,7 @@ class Reminder extends CommonDBVisible {
     *                         (default '')
     * @param $complete        complete display (more details) (default 0)
     *
-    * @return Nothing (display function)
+    * @return string
    **/
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
@@ -1089,7 +1089,7 @@ class Reminder extends CommonDBVisible {
     *
     * @param $personal boolean : display reminders created by me ? (true by default)
     *
-    * @return Nothing (display function)
+    * @return void
     **/
    static function showListForCentral($personal = true) {
       global $DB, $CFG_GLPI;

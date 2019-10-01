@@ -270,7 +270,7 @@ class Infocom extends CommonDBChild {
     * @param item          CommonDBTM object: the item whose status have changed
     * @param action_add    true if object is added, false if updated (true by default)
     *
-    * @return nothing
+    * @return void
    **/
    static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true) {
       global $CFG_GLPI;
@@ -319,7 +319,7 @@ class Infocom extends CommonDBChild {
     * @param action           the action to peform (copy from another date) (default 0)
     * @param params     array of additional parameters needed to perform the task
     *
-    * @return nothing
+    * @return void
    **/
    static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = []) {
 

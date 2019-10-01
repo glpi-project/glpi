@@ -148,7 +148,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
     * @param ITILTemplate $tt           ITIL Template
     * @param boolean      $withtemplate Template or basic item (default 0)
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0) {
       global $DB;

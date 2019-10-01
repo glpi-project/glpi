@@ -89,7 +89,7 @@ class Search {
     * @param $itemtype item type to manage
     * @param $params search params passed to prepareDatasForSearch function
     *
-    * @return nothing
+    * @return void
    **/
    static function showList($itemtype, $params) {
 
@@ -555,7 +555,7 @@ class Search {
     *
     * @param $data    array of search datas prepared to generate SQL
     *
-    * @return nothing
+    * @return void
    **/
    static function constructSQL(array &$data) {
       global $CFG_GLPI, $DB;
@@ -1219,7 +1219,7 @@ class Search {
     * @param array   $data      array of search data prepared to get data
     * @param boolean $onlycount If we just want to count results
     *
-    * @return nothing
+    * @return void
    **/
    static function constructData(array &$data, $onlycount = false) {
       if (!isset($data['sql']) || !isset($data['sql']['search'])) {
@@ -1512,7 +1512,7 @@ class Search {
     *
     * @param $data array of search datas prepared to get datas
     *
-    * @return nothing
+    * @return void
    **/
    static function displayData(array &$data) {
       global $CFG_GLPI;
@@ -2273,7 +2273,7 @@ class Search {
     * @param $itemtype        type to display the form
     * @param $params    array of parameters may include sort, is_deleted, criteria, metacriteria
     *
-    * @return nothing (displays)
+    * @return void
    **/
    static function showGenericSearch($itemtype, array $params) {
       global $CFG_GLPI;
@@ -6452,7 +6452,7 @@ JAVASCRIPT;
    /**
     * Reset save searches
     *
-    * @return nothing
+    * @return void
    **/
    static function resetSaveSearch() {
 

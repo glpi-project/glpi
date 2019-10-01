@@ -328,7 +328,7 @@ class Document_Item extends CommonDBRelation{
     *
     * @param $doc Document object
     *
-    * @return nothing (HTML display)
+    * @return void
    **/
    static function showForDocument(Document $doc) {
       $instID = $doc->fields['id'];

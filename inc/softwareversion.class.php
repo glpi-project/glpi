@@ -216,7 +216,9 @@ class SoftwareVersion extends CommonDBChild {
     *    - value         : integer / value of the selected version
     *    - used          : array / already used items
     *
-    * @return nothing (print out an HTML select box)
+    * @return integer|string
+    *    integer if option display=true (random part of elements id)
+    *    string if option display=false (HTML code)
    **/
    static function dropdownForOneSoftware($options = []) {
       global $CFG_GLPI, $DB;
@@ -273,7 +275,7 @@ class SoftwareVersion extends CommonDBChild {
     *
     * @param $soft Software object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForSoftware(Software $soft) {
       global $DB, $CFG_GLPI;

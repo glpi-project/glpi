@@ -239,7 +239,7 @@ class DropdownTranslation extends CommonDBChild {
     * @param $input array    of user values
     * @param $add   boolean  true if translation is added, false if update (tgrue by default)
     *
-    * @return nothing
+    * @return void
    **/
    function generateCompletename($input, $add = true) {
       global $DB;

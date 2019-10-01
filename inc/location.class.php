@@ -411,7 +411,7 @@ class Location extends CommonTreeDropdown {
     *
     * @since 0.85
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showItems() {
       global $DB, $CFG_GLPI;

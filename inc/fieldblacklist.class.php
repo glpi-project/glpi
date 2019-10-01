@@ -238,7 +238,7 @@ class Fieldblacklist extends CommonDropdown {
    /**
     * Display a dropdown which contains all the available itemtypes
     *
-    * @return nothing
+    * @return void
    **/
    function showItemtype() {
       global $CFG_GLPI;

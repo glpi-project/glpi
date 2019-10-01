@@ -104,7 +104,7 @@ class Supplier extends CommonDBTM {
     *     - target form target
     *     - withtemplate boolean : template or basic item
     *
-    *@return Nothing (display)
+    *@return void
    **/
    function showForm($ID, $options = []) {
 
@@ -453,7 +453,7 @@ class Supplier extends CommonDBTM {
    /**
     * Print the HTML array for infocoms linked
     *
-    *@return Nothing (display)
+    *@return void
     *
    **/
    function showInfocoms() {
