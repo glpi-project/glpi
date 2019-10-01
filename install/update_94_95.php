@@ -365,7 +365,7 @@ function update94to95() {
 
    /** Add "date_creation" field on document_items */
    if (!$DB->fieldExists('glpi_documents_items', 'date_creation')) {
-      $migration->addField('glpi_documents_items', 'date_creation', 'datetime');
+      $migration->addField('glpi_documents_items', 'date_creation', 'timestamp', ['null' => true]);
       $migration->addPostQuery(
          $DB->buildUpdate(
             'glpi_documents_items',

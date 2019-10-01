@@ -2273,7 +2273,7 @@ CREATE TABLE `glpi_documents_items` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `users_id` int(11) DEFAULT '0',
   `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
-  `date_creation` datetime DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`documents_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`,`entities_id`,`is_recursive`),
