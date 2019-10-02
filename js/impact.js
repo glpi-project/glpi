@@ -65,6 +65,11 @@ var GLPIImpact = {
    DELTA_ACTION_UPDATE: 2,
    DELTA_ACTION_DELETE: 3,
 
+   // Constans for depth
+   DEFAULT_DEPTH: 5,
+   MAX_DEPTH: 10,
+   NO_DEPTH_LIMIT: 10000,
+
    // Store the initial state of the graph
    initialState: null,
 
@@ -93,7 +98,7 @@ var GLPIImpact = {
    form: null,
 
    // Maximum depth of the graph
-   maxDepth: 5,
+   maxDepth: this.DEFAULT_DEPTH,
 
    // Is the graph readonly ?
    readonly: true,
@@ -991,7 +996,7 @@ var GLPIImpact = {
 
       // Init depth value
       var text = GLPIImpact.maxDepth;
-      if (GLPIImpact.maxDepth >= 10) {
+      if (GLPIImpact.maxDepth >= GLPIImpact.MAX_DEPTH) {
          text = "infinity";
       }
       $(GLPIImpact.toolbar.maxDepthView).html("Max depth: " + text);
@@ -2392,9 +2397,9 @@ var GLPIImpact = {
          var max = $(GLPIImpact.toolbar.maxDepth).val();
          GLPIImpact.maxDepth = max;
 
-         if (max == 10) {
+         if (max == GLPIImpact.MAX_DEPTH) {
             max = "infinity";
-            GLPIImpact.maxDepth = Number.MAX_VALUE;
+            GLPIImpact.maxDepth = GLPIImpact.NO_DEPTH_LIMIT;
          }
 
          $(GLPIImpact.toolbar.maxDepthView).html("Max depth: " + max);

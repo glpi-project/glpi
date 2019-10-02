@@ -375,3 +375,52 @@ i.fa-impact-manipulation {
 .impact-range:focus::-ms-fill-upper {
    background: #AEC8D8;
 }
+
+.impact-header {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background-color: #f1f1f1;
+
+   h2 {
+      margin-left: auto;
+   }
+
+   #switchview {
+      margin-left: auto;
+      margin-right: 10px;
+   }
+}
+
+#impact_list_view {
+   margin-top: 2em;
+   display: flex;
+   justify-content: center;
+}
+
+.impact-list-container {
+   flex-grow: 1;
+}
+
+.impact-list-group {
+   margin-bottom: 5em;
+}
+
+.impact-left {
+   padding-left: 50px !important;
+}
+
+.impact-pointer {
+   cursor: pointer;
+}
+
+.impact-list-toolbar {
+   display: flex;
+   flex-direction: column;
+   flex-wrap: wrap;
+   text-align: right;
+}
+
+.impact-list-toolbar i {
+   padding: 10px;
+}

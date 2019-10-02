@@ -1385,6 +1385,10 @@ td {
       background-color: #EEEEEE;
       text-align: center;
       font-weight: bold;
+
+      &.left {
+         text-align: left !important;
+      }
    }
 
    &.rotate {

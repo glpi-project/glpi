@@ -34,4 +34,20 @@ class ImpactItem extends CommonDBTM {
 
       return $impactItem;
    }
+
+   public function prepareInputForUpdate($input) {
+      $max_depth = $input['max_depth'] ?? '';
+
+      if (!empty($max_depth)) {
+         if (intval($max_depth) == 0) {
+            // If value is not valid, reset to default
+            $input['max_depth'] = Impact::DEFAULT_DEPTH;
+         } else if ($max_depth >= Impact::MAX_DEPTH && $max_depth != Impact::NO_DEPTH_LIMIT) {
+            // Set to no limit if greater than max
+            $input['max_depth'] = Impact::NO_DEPTH_LIMIT;
+         }
+      }
+
+      return $input;
+   }
 }
