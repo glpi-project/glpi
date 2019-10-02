@@ -600,6 +600,99 @@ function update94to95() {
          ]
       );
    }
+   /** /Add "code" field on glpi_itilcategories */
+   if (!$DB->fieldExists("glpi_itilcategories", "code")) {
+      $migration->addField("glpi_itilcategories", "code", "string", [
+            'after'  => "groups_id"
+         ]
+      );
+   }
+   /** /Add "code" field on glpi_itilcategories */
+
+   //Add over-quota option to software licenses to allow assignment after all alloted licenses are used
+   if (!$DB->fieldExists('glpi_softwarelicenses', 'allow_overquota')) {
+      if ($migration->addField('glpi_softwarelicenses', 'allow_overquota', 'bool')) {
+         $migration->addKey('glpi_softwarelicenses', 'allow_overquota');
+      }
+   }
+
+   /** Make software linkable to other itemtypes besides Computers */
+   $migration->displayWarning('Updating software tables. This may take several minutes.');
+   if (!$DB->tableExists('glpi_items_softwareversions')) {
+      $migration->renameTable('glpi_computers_softwareversions', 'glpi_items_softwareversions');
+      $migration->addField(
+         'glpi_items_softwareversions',
+         'itemtype',
+         "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
+         [
+            'after' => 'id',
+            'update' => "'Computer'", // Defines value for all existing elements
+         ]
+      );
+      $migration->changeField(
+         'glpi_items_softwareversions',
+         'computers_id',
+         'items_id',
+         "int(11) NOT NULL DEFAULT '0'"
+      );
+      $migration->changeField('glpi_items_softwareversions', 'is_deleted_computer', 'is_deleted_item', 'bool');
+      $migration->changeField('glpi_items_softwareversions', 'is_template_computer', 'is_template_item', 'bool');
+      $migration->addKey('glpi_items_softwareversions', 'itemtype');
+      $migration->dropKey('glpi_items_softwareversions', 'computers_id');
+      $migration->addKey('glpi_items_softwareversions', 'items_id', 'items_id');
+      $migration->addKey('glpi_items_softwareversions', [
+         'itemtype',
+         'items_id'
+      ], 'item');
+      $migration->dropKey('glpi_items_softwareversions', 'unicity');
+      $migration->addKey('glpi_items_softwareversions', [
+         'itemtype',
+         'items_id',
+         'softwareversions_id'
+      ], 'unicity', 'UNIQUE');
+   }
+
+   if (!$DB->tableExists('glpi_items_softwarelicenses')) {
+      $migration->renameTable('glpi_computers_softwarelicenses', 'glpi_items_softwarelicenses');
+      $migration->addField(
+         'glpi_items_softwarelicenses',
+         'itemtype',
+         "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
+         [
+            'after' => 'id',
+            'update' => "'Computer'", // Defines value for all existing elements
+         ]
+      );
+      $migration->changeField(
+         'glpi_items_softwarelicenses',
+         'computers_id',
+         'items_id',
+         "int(11) NOT NULL DEFAULT '0'"
+      );
+      $migration->addKey('glpi_items_softwarelicenses', 'itemtype');
+      $migration->dropKey('glpi_items_softwarelicenses', 'computers_id');
+      $migration->addKey('glpi_items_softwarelicenses', 'items_id', 'items_id');
+      $migration->addKey('glpi_items_softwarelicenses', [
+         'itemtype',
+         'items_id'
+      ], 'item');
+   }
+
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_configs',
+         ['name' => 'purge_item_software_install'],
+         ['name' => 'purge_computer_software_install', 'context' => 'core']
+      )
+   );
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_configs',
+         ['name' => 'purge_software_item_install'],
+         ['name' => 'purge_software_computer_install', 'context' => 'core']
+      )
+   );
+   /** /Make software linkable to other itemtypes besides Computers */
 
    /** Add source item id to TicketTask. Used by tasks created by merging tickets */
    if (!$DB->fieldExists('glpi_tickettasks', 'sourceitems_id')) {
@@ -687,6 +780,13 @@ function update94to95() {
             'num'       => $newval,
          ]);
       }
+   }
+
+   // Add Apple File System (All Apple devices since 2017)
+   if (countElementsInTable('glpi_filesystems', ['name' => 'APFS']) === 0) {
+      $DB->insertOrDie('glpi_filesystems', [
+         'name'   => 'APFS'
+      ]);
    }
 
    $migration->executeMigration();

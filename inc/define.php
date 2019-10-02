@@ -330,7 +330,7 @@ $CFG_GLPI["itemdevicepowersupply_types"]  = ['Computer', 'NetworkEquipment', 'En
 
 $CFG_GLPI["itemdevicenetworkcard_types"]  = ['Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
 
-$CFG_GLPI['itemdeviceharddrive_types']    = ['Computer', 'Peripheral', 'NetworkEquipment', 'Printer'];
+$CFG_GLPI['itemdeviceharddrive_types']    = ['Computer', 'Peripheral', 'NetworkEquipment', 'Printer', 'Phone'];
 
 $CFG_GLPI['itemdevicebattery_types']      = ['Computer', 'Peripheral', 'Phone', 'Printer'];
 
@@ -443,8 +443,8 @@ $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract'
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
                                            'SoftwareLicense', 'Certificate'];
 
-$CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Computer_SoftwareLicense',
-                                           'Computer_SoftwareVersion', 'Item_Disk', 'ComputerVirtualMachine',
+$CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Item_SoftwareLicense',
+                                           'Item_SoftwareVersion', 'Item_Disk', 'ComputerVirtualMachine',
                                            'NetworkPort', 'NetworkName', 'IPAddress'];
 
 $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
@@ -464,6 +464,8 @@ $CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment',
 $CFG_GLPI["cluster_types"]        = ['Computer', 'NetworkEquipment'];
 
 $CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
+
+$CFG_GLPI['software_types']      = ['Computer', 'Phone'];
 
 $CFG_GLPI['javascript'] = [
    'central'   => [
