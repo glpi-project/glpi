@@ -215,6 +215,8 @@ class APIRest extends APIBaseClass {
       $data = json_decode($body, true);
       $this->variable($data)->isNotFalse();
       $this->array($data)->hasKey('session_token');
+      $this->array($data)->hasKey('users_id');
+      $this->integer((int) $data['users_id'])->isEqualTo($uid);
    }
 
    /**
