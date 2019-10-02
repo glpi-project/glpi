@@ -90,7 +90,7 @@ class ObjectLock extends CommonDBTM {
    /**
     * Summary of getLockableObjects
     *
-    * @return an array of lockable objects 'itemtype' => 'plural itemtype'
+    * @return array of lockable objects 'itemtype' => 'plural itemtype'
    **/
    static function getLockableObjects() {
       global $CFG_GLPI;
@@ -133,12 +133,9 @@ class ObjectLock extends CommonDBTM {
 
 
    /**
-    * Summary of setLockedByYouMessage
-    * Shows 'Locked by You!' message and proposes to unlock it
-   **/
-   private function setLockedByYouMessage() {
-      global $CFG_GLPI;
-
+    * Summary of getScriptToUnlock
+    */
+   private function getScriptToUnlock() {
       $ret = Html::scriptBlock("
          function unlockIt(obj) {
             $('#message_after_lock').fadeToggle();
@@ -160,7 +157,7 @@ class ObjectLock extends CommonDBTM {
                      }
                });
             }".
-            Html::jsConfirmCallback(__('Unlock this item?'), $this->itemtypename." #".$this->itemid, "callUnlock", "function() {
+            Html::jsConfirmCallback(__('Force unlock this item?'), $this->itemtypename." #".$this->itemid, "callUnlock", "function() {
                   $('#message_after_lock').fadeToggle();
                }"
             )."
@@ -168,13 +165,50 @@ class ObjectLock extends CommonDBTM {
 
          ");
 
-      echo $ret;
+      return $ret;
+   }
 
-      $msg = "<table><tr><td class=red>";
-      $msg .= __("Locked by you!")."</td>";
-      $msg .= "<td><a class='vsubmit' onclick='javascript:unlockIt(this);'>"
-              .sprintf(__('Unlock %1s #%2s'), $this->itemtypename, $this->itemid)."</a>";
-      $msg .="</td></tr></table>";
+   /**
+    * Summary of getForceUnlockMessage
+    * @return string '' if no rights to unlock type,
+    *                else a <td></td> with a button to force unlock
+    */
+   private function getForceUnlockMessage() {
+      global $CFG_GLPI;
+
+      if (isset($_SESSION['glpilocksavedprofile']) && ($_SESSION['glpilocksavedprofile'][strtolower($this->itemtype)] & UNLOCK)) {
+
+         echo $this->getScriptToUnlock();
+
+         return $this->getForceUnlockButton('right');
+      }
+
+      return '';
+   }
+
+
+   private function getForceUnlockButton($float = null) {
+      $float = isset($float) ? "float:$float;" : "";
+      $msg = "<span style='padding-left:5px;$float'><a class='vsubmit' onclick='javascript:unlockIt(this);'>"
+              .sprintf(__('Force Unlock %1s #%2s'), $this->itemtypename, $this->itemid)."</a>";
+      $msg .="</span";
+      return $msg;
+   }
+
+
+   /**
+    * Summary of setLockedByYouMessage
+    * Shows 'Locked by You!' message and proposes to unlock it
+   **/
+   private function setLockedByYouMessage() {
+      global $CFG_GLPI;
+
+      echo $this->getScriptToUnlock();
+
+      $msg = "<span class=red>";
+      $msg .= __("Locked by you!");
+      $msg .= $this->getForceUnlockButton();
+      $msg .="</span>";
 
       $this->displayLockMessage($msg);
    }
@@ -252,15 +286,17 @@ class ObjectLock extends CommonDBTM {
       ");
       echo $ret;
 
-      $msg = "<table><tr><td class=red nowrap>";
+      $msg = "<span class='red' style='white-space: nowrap;'>";
 
       $msg .= __('Locked by ')."<a href='".$user->getLinkURL()."'>$completeUserName</a> -> ".
                Html::convDateTime($this->fields['date_mod']);
-      $msg .= "</td><td nowrap>";
+      $msg .= "</span><span style='padding-right:15px;'>";
       if ($showAskUnlock) {
          $msg .= "<a class='vsubmit' onclick='javascript:askUnlock();'>".__('Ask for unlock')."</a>";
       }
-      $msg .= "</td><td>&nbsp;&nbsp;</td><td>".__('Alert me when unlocked')."</td><td>&nbsp;".Html::getCheckbox(['id' => 'alertMe'])."</td></tr></table>";
+      $msg .= "</span><span style='white-space:nowrap;padding-right:15px;'>".__('Alert me when unlocked')."<span style='padding-left:5px;'>".Html::getCheckbox(['id' => 'alertMe'])."</span>";
+      $msg .= $this->getForceUnlockMessage(); // will get a button to force unlock if UNLOCK rights are in the user's profile
+      $msg .= "</span>";
 
       $this->displayLockMessage($msg);
    }
@@ -279,11 +315,11 @@ class ObjectLock extends CommonDBTM {
                }
          ");
 
-      $msg = "<table><tr><td class=red nowrap>";
-      $msg .= __('Warning: read-only!')."</td>";
-      $msg .= "<td nowrap><a class='vsubmit' onclick='javascript:requestLock();'>".
+      $msg = "<span class=red style='padding-left:5px;'>";
+      $msg .= __('Warning: read-only!')."</span>";
+      $msg .= "<span style='padding-left:5px;'><a class='vsubmit' onclick='javascript:requestLock();'>".
                 __('Request write on ').$this->itemtypename." #".$this->itemid."</a>";
-      $msg .="</td></tr></table>";
+      $msg .="</span>";
 
       $this->displayLockMessage($msg);
    }
@@ -469,40 +505,16 @@ class ObjectLock extends CommonDBTM {
    **/
    private function displayLockMessage($msg, $title = '') {
 
-      $hideTitle = '';
-      if ($title == '') {
-         $hideTitle = "$('.ui-dialog-titlebar', ui.dialog | ui).hide();";
-      }
-
-      echo "<div id='message_after_lock' title='$title'>";
+      $style = 'display:table;background-color:lightSalmon;flex-wrap:wrap;align-items:center;';
+      echo "<div id='message_after_lock' class='navigationheader' style='$style'>";
       echo $msg;
       echo "</div>";
+      echo Html::scriptBlock("$('#message_after_lock').hide();");
 
       echo Html::scriptBlock("
          $(function() {
-            $('#message_after_lock').dialog({
-               dialogClass: 'message_after_redirect',
-               minHeight: 10,
-               width: 'auto',
-               height: 'auto',
-               position: {
-                  my: 'left top',
-                  at: 'left+20 top-30',
-                  of: $('#page'),
-                  collision: 'none'
-               },
-               autoOpen: false,
-               create: function(event, ui) {
-                  $hideTitle
-                  $('.ui-dialog-titlebar-close', ui.dialog | ui).hide();
-               },
-               show: {
-                  effect: 'slide',
-                  direction: 'up',
-                  duration: 800
-               },
-            })
-            .dialog('open');
+            $('#message_after_lock').insertAfter('.navigationheader:not(#message_after_lock)');
+            $('#message_after_lock').show('slide', {direction: 'up'} , 1000);
          });
       ");
    }
