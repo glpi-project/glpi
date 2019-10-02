@@ -116,7 +116,7 @@ App(lication) token
         * "Authorization: user_token q56hqkniwot8wntb3z1qarka5atf365taaa2uyjrn"
 
 * **Returns**:
-  * 200 (OK) with the *session_token* string.
+  * 200 (OK) with the *session_token* string and the *ID of the logged in user*.
   * 400 (Bad Request) with a message indicating an error in input parameter.
   * 401 (UNAUTHORIZED)
 
@@ -131,7 +131,8 @@ $ curl -X GET \
 
 < 200 OK
 < {
-   "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62"
+   "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62",
+   "users_id": "42"
 }
 
 $ curl -X GET \
@@ -142,7 +143,8 @@ $ curl -X GET \
 
 < 200 OK
 < {
-   "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62"
+   "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62",
+   "users_id": "42"
 }
 ```
 

@@ -106,6 +106,7 @@ class APIXmlrpc extends APIBaseClass {
     * @covers API::initSession
     */
    public function initSessionCredentials() {
+      $uid = getItemByTypeName('User', TU_USER, true);
       $data = $this->query('initSession',
             ['query' => [
                   'login'    => TU_USER,
@@ -114,6 +115,8 @@ class APIXmlrpc extends APIBaseClass {
       $this->variable($data)->isNotFalse();
       $this->array($data)->hasKey('session_token');
       $this->session_token = $data['session_token'];
+      $this->array($data)->hasKey('users_id');
+      $this->integer((int) $data['users_id'])->isEqualTo($uid);
    }
 
    /**

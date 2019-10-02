@@ -20,6 +20,7 @@ The present file will list all changes made to the project; according to the
 - Add and answer approvals from timeline
 - Add lightbox with PhotoSwipe to timeline images
 - Ability to copy tasks while merging tickets
+- the API gives the ID of the user who logs in with initSession
 
 ### Changed
 
