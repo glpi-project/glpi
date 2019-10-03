@@ -466,7 +466,7 @@ function loadDataset() {
       ], 'AuthLdap' => [
          [
             'name'            => '_local_ldap',
-            'host'            => '127.0.0.1',
+            'host'            => 'openldap',
             'basedn'          => 'dc=glpi,dc=org',
             'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
             'port'            => '3890',
