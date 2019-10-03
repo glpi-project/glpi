@@ -5970,7 +5970,7 @@ ul.indexes {
 
 .grid-room {
    .grid-stack-item {
-      border: 1px solid rgb(68, 68, 68, 0.2);
+      border: 1px solid rgb(68, 68, 68);
       box-sizing: border-box;
 
       &:after {
@@ -6458,7 +6458,7 @@ with incorrect shading in some cases */
    width: 100%;
 }
 .custom_css_configuration .custom_css_container .CodeMirror.input-disabled {
-   background: rgb(235, 235, 228, 0.2); /* default bg color for disabled inputs */
+   background: rgb(235, 235, 228); /* default bg color for disabled inputs */
 }
 
 /** Impersonate feature */
