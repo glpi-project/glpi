@@ -261,8 +261,6 @@ workflows:
           filters:
             tags:
               only: /.*/ # run also on tag creation
-            branches:
-              ignore: /.*/ # do not run on branch update
       - php_7_1_test_suite:
           requires:
             - checkout
