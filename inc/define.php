@@ -277,7 +277,7 @@ $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'Consuma
 $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate',
-                                                  'Line', 'DCRoom', 'Rack', 'Enclosure', 'Cluster'];
+                                                  'Line', 'DCRoom', 'Rack', 'Enclosure', Cluster', 'PDU'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -363,7 +363,7 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
 $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
                                                   'Software', 'SoftwareLicense', 'Certificate',
-                                                  'DCRoom', 'Rack', 'Enclosure', 'Cluster'],
+                                                  'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU'],
                                                   $CFG_GLPI['itemdevices']);
 
 

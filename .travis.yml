@@ -25,6 +25,8 @@ script:
 #note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
   include:
+        hosts:
+          - openldap
     - php: 7.0
       addons:
         mariadb: 10.2
@@ -32,6 +34,8 @@ matrix:
           packages:
             - ldap-utils
             - slapd
+        hosts:
+          - openldap
     - php: 7.1
       addons:
         mariadb: 10.1
@@ -39,30 +43,40 @@ matrix:
           packages:
             - ldap-utils
             - slapd
+        hosts:
+          - openldap
     - php: 7.2
       addons:
         apt:
           packages:
             - ldap-utils
             - slapd
+        hosts:
+          - openldap
     - php: 7.3
       addons:
         apt:
           packages:
             - ldap-utils
             - slapd
+        hosts:
+          - openldap
     - php: 7.4snapshot
       addons:
         apt:
           packages:
             - ldap-utils
             - slapd
+        hosts:
+          - openldap
     - php: nightly
       addons:
         apt:
           packages:
             - ldap-utils
             - slapd
+        hosts:
+          - openldap
   allow_failures:
     - php: nightly
     - php: 7.4snapshot

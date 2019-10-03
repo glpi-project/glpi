@@ -207,10 +207,10 @@ class Event extends CommonDBTM {
                $type = getSingular($type);
                $url  = '';
                if ($item = getItemForItemtype($type)) {
-                  $url  =  $item->getFormURL();
+                  $url  =  $item->getFormURLWithID($items_id);
                }
                if (!empty($url)) {
-                  echo "<a href=\"".$url."?id=".$items_id."\">".$items_id."</a>";
+                  echo "<a href=\"".$url."\">".$items_id."</a>";
                } else {
                   echo $items_id;
                }

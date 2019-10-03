@@ -443,9 +443,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $this->data["##projecttask.numberofdocuments##"]
                      = count($this->data['documents']);
 
-      // Items infos
-      $items    = getAllDataFromTable('glpi_items_projects', $restrict);
-
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
          if (!isset($this->data[$tag])) {
