@@ -3615,7 +3615,7 @@ JAVASCRIPT;
                // force ordering by date desc
                return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
                                                '".self::SHORTSEP."',$tocomputeid)
-                                     ORDER BY `$table`.`date` DESC
+                                     ORDER BY `$table$addtable`.`date` DESC
                                      SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."`,
 
