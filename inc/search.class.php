@@ -1264,15 +1264,15 @@ class Search {
          }
       }
 
-      $data['data']['execution_time'] = $DBread->execution_time;
-      if (isset($data['search']['savedsearches_id'])) {
-         SavedSearch::updateExecutionTime(
-            (int)$data['search']['savedsearches_id'],
-            $DBread->execution_time
-         );
-      }
-
       if ($result) {
+         $data['data']['execution_time'] = $DBread->execution_time;
+         if (isset($data['search']['savedsearches_id'])) {
+            SavedSearch::updateExecutionTime(
+               (int)$data['search']['savedsearches_id'],
+               $DBread->execution_time
+            );
+         }
+
          $data['data']['totalcount'] = 0;
          // if real search or complete export : get numrows from request
          if (!$data['search']['no_search']
