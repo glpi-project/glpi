@@ -2490,11 +2490,12 @@ class AuthLDAP extends CommonDBTM {
 
          try {
             $infos = self::searchUserDn($ds, $attribs);
-            $login   = self::getFieldValue($infos, $search_parameters['fields'][$search_parameters['method']]);
 
             if ($infos && $infos['dn']) {
                $user_dn = $infos['dn'];
                $user    = new User();
+
+               $login   = self::getFieldValue($infos, $search_parameters['fields'][$search_parameters['method']]);
 
                //Get information from LDAP
                if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login),
