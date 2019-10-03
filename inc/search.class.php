@@ -4868,7 +4868,7 @@ JAVASCRIPT;
 
       // Do not take into account standard linkfield
       $tocheck = $nt.".".$linkfield;
-      if (getTableNameForForeignKeyField($linkfield) !== $new_table) {
+      if ($linkfield == $ref_fk || strpos($linkfield, $ref_fk . '_') === 0) {
          $tocheck = $nt;
       }
 
