@@ -6479,6 +6479,14 @@ div.banner-impersonate button {
    text-decoration: underline;
 }
 
+/** objectlock message */
+div.objectlockmessage {
+   @extend .navigationheader;
+   background-color: lightSalmon !important;
+   flex-wrap: wrap;
+   align-items: center;
+}
+
 @import 'impact';
 
 /** Kanban */
