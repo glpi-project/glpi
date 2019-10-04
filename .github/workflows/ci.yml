@@ -27,7 +27,7 @@ jobs:
           docker exec ${{ job.services.app.id }} composer --version
           docker exec ${{ job.services.app.id }} echo "node version: $(node --version)"
           docker exec ${{ job.services.app.id }} echo "npm version: $(npm --version)"
-          docker exec ${{ job.services.app.id }} bin/console dependencies install --ci
+          docker exec ${{ job.services.app.id }} bin/console dependencies install --composer-options="--apcu-autoloader --prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
@@ -101,7 +101,7 @@ jobs:
           docker exec ${{ job.services.app.id }} composer --version
           docker exec ${{ job.services.app.id }} echo "node version: $(node --version)"
           docker exec ${{ job.services.app.id }} echo "npm version: $(npm --version)"
-          docker exec ${{ job.services.app.id }} bin/console dependencies install --ci
+          docker exec ${{ job.services.app.id }} bin/console dependencies install --composer-options="--apcu-autoloader --prefer-dist --no-progress"
       - name: "Update DB tests"
         run: |
           docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=db --db-user=root

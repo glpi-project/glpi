@@ -62,7 +62,7 @@ commands:
             echo "npm version: $(npm --version)"
             mv composer.lock composer.lock.bak
             composer config --unset platform
-            bin/console dependencies install --ci
+            bin/console dependencies install --composer-options="--apcu-autoloader --prefer-dist --no-progress"
       - save_cache:
           key: composer-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
