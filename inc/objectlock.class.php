@@ -136,6 +136,8 @@ class ObjectLock extends CommonDBTM {
     * Summary of getScriptToUnlock
     */
    private function getScriptToUnlock() {
+      global $CFG_GLPI;
+
       $ret = Html::scriptBlock("
          function unlockIt(obj) {
             function callUnlock( ) {
