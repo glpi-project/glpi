@@ -3650,7 +3650,7 @@ JAVASCRIPT;
                // force ordering by date desc
                return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
                                                '".self::SHORTSEP."',$tocomputeid)
-                                     ORDER BY `$table`.`date` DESC
+                                     ORDER BY `$table$addtable`.`date` DESC
                                      SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."`,
 
@@ -4097,7 +4097,7 @@ JAVASCRIPT;
       }
 
       if (($table != 'asset_types')
-         && !empty($complexjoin)
+         && (($table == getTableForItemType($itemtype) && !empty($complexjoin)) || $table != getTableForItemType($itemtype))
          && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;

@@ -1274,6 +1274,39 @@ class Search extends DbTestCase {
    public function testMakeTextSearchValue($value, $expected) {
       $this->string(\Search::makeTextSearchValue($value))->isIdenticalTo($expected);
    }
+
+   public function providerAddWhere() {
+      return [
+         [
+            'link' => ' ',
+            'nott' => 0,
+            'itemtype' => \User::class,
+            'id' => 99,
+            'searchtype' => 'equals',
+            'val' => '5',
+            'meta' => false,
+            'expected' => "   `glpi_users_users_id_supervisor_c49005e57f22539b078d72faca40cdf3`.`id` = '5'",
+         ],
+         [
+            'link' => ' AND ',
+            'nott' => 0,
+            'itemtype' => \CartridgeItem::class,
+            'id' => 24,
+            'searchtype' => 'equals',
+            'val' => '2',
+            'meta' => false,
+            'expected' => "  AND  (`glpi_users_users_id_tech`.`id` = '2') ",
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider providerAddWhere
+    */
+   public function testAddWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta, $expected) {
+      $output = \Search::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta);
+      $this->string($output)->isEqualTo($expected);
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
