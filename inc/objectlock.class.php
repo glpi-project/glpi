@@ -111,7 +111,7 @@ class ObjectLock extends CommonDBTM {
     * @return bool: true if read-only profile lock has been set
    **/
    private function autoLockMode() {
-      global $CFG_GLPI, $_SESSION, $_REQUEST;
+      global $CFG_GLPI;
 
       // if !autolock mode then we are going to view the item with read-only profile
       // if isset($_REQUEST['lockwrite']) then will behave like if automode was true but for this object only and for the lifetime of the session
@@ -167,7 +167,6 @@ class ObjectLock extends CommonDBTM {
     *                else a <td></td> with a button to force unlock
     */
    private function getForceUnlockMessage() {
-      global $CFG_GLPI;
 
       if (isset($_SESSION['glpilocksavedprofile']) && ($_SESSION['glpilocksavedprofile'][strtolower($this->itemtype)] & UNLOCK)) {
          echo $this->getScriptToUnlock();
@@ -192,7 +191,6 @@ class ObjectLock extends CommonDBTM {
     * Shows 'Locked by You!' message and proposes to unlock it
    **/
    private function setLockedByYouMessage() {
-      global $CFG_GLPI;
 
       echo $this->getScriptToUnlock();
 
