@@ -12,7 +12,7 @@
         "@fullcalendar/list": "^4.3.0",
         "@fullcalendar/timegrid": "^4.3.0",
         "@fullcalendar/rrule": "^4.3.0",
-        "chartist": "^0.10.1",
+        "chartist": "^0.11.4",
         "chartist-plugin-legend": "^0.6.2",
         "chartist-plugin-tooltips": "^0.0.17",
         "codemirror": "^5.49.0",
