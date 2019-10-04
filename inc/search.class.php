@@ -4846,8 +4846,7 @@ JAVASCRIPT;
       }
 
       // Multiple link possibilies case
-      $ref_fk = getForeignKeyFieldForTable($new_table);
-      if (!empty($linkfield) && ($linkfield != $ref_fk) && strpos($linkfield, $ref_fk . '_') !== 0) {
+      if (!empty($linkfield) && getTableNameForForeignKeyField($linkfield) != $new_table) {
          $nt .= "_".$linkfield;
          $AS  = " AS `$nt`";
       }
