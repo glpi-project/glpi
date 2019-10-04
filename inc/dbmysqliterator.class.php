@@ -448,7 +448,7 @@ class DBmysqlIterator implements Iterator, Countable {
       $names = preg_split('/ AS /i', $f);
       $expr  = "$t(".$this->handleFields(0, $names[0])."$suffix)";
       if (isset($names[1])) {
-         $expr .= " AS {$names[1]}";
+          $expr .= " AS " . DBmysql::quoteName($names[1]);
       }
 
       return $expr;
