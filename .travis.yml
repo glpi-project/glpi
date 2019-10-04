@@ -12,7 +12,7 @@ before_script:
   - rm -f composer.lock
   - composer config --unset platform
   - nvm install --lts=dubnium # update node to dubnium LTS version (node v10.x + npm v6.9.0)
-  - bin/console dependencies install --ci
+  - bin/console dependencies install --composer-options="--prefer-dist --no-progress"
   - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
   - mysql -u root -e 'create database glpitest;'
   - bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-user=root
