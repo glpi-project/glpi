@@ -44,7 +44,7 @@
         "rrule": "^2.6.0",
         "select2": "^4.0.10",
         "spectrum-colorpicker": "^1.8.0",
-        "spin.js": "^2.3.2",
+        "spin.js": "^4.0.0",
         "tinymce": "^4.9.6",
         "tinymce-i18n": "^19.5.15",
         "unorm": "^1.6.0"
