@@ -521,7 +521,7 @@ class ObjectLock extends CommonDBTM {
 
    /**
     * Summary of rawSearchOptionsToAdd
-    * @param mixed $itemtype 
+    * @param mixed $itemtype
     * @return array[]
     */
    static public function rawSearchOptionsToAdd($itemtype) {
