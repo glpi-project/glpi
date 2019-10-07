@@ -72,12 +72,10 @@
         "cs":  "vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./",
         "lint":  "vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": [
-            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "patch -p1 < tools/atoum-php7.4.patch || echo 'Error applying patch, tests may produce unexcpected results on PHP 7.4'"
+            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
         ],
         "post-update-cmd": [
-            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "patch -p1 < tools/atoum-php7.4.patch || echo 'Error applying patch, tests may produce unexcpected results on PHP 7.4'"
+            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
         ]
     }
 }
