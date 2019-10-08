@@ -502,6 +502,40 @@ class Search extends DbTestCase {
          ->matches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING utf8\)\s*LIKE '%test%'\s*\)\)/");
    }
 
+   public function testSearchOnRelationTable() {
+      $data = $this->doSearch(\Change_Ticket::class, [
+         'reset'      => 'reset',
+         'is_deleted' => 0,
+         'start'      => 0,
+         'search'     => 'Search',
+         'criteria'   => [
+            [
+               'link'       => 'AND',
+               'field'      => '3',
+               'searchtype' => 'equals',
+               'value'      => '1',
+            ],
+         ]
+      ]);
+
+      // check for sql error (data key missing or empty)
+      $this->array($data)
+      ->hasKey('data')
+         ->array['last_errors']->isIdenticalTo([])
+         ->array['data']->isNotEmpty();
+
+      // Check sql generation
+      $this->array($data)
+         ->hasKey('sql')
+            ->array['sql']
+               ->hasKey('search');
+
+      $this->string($data['sql']['search'])
+         ->contains("`glpi_changes`.`id` AS `ITEM_Change_Ticket_3`")
+         ->contains("`glpi_changes_tickets`.`changes_id` = `glpi_changes`.`id`")
+         ->contains("`glpi_changes`.`id` = '1'");
+   }
+
    public function testUser() {
       $search_params = ['is_deleted'   => 0,
                         'start'        => 0,
