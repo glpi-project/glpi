@@ -1026,7 +1026,14 @@ var getTextWithoutDiacriticalMarks = function (text) {
 window.glpiUnsavedFormChanges = false;
 $(document).ready(function() {
    // Try to limit tracking to item forms by binding to inputs under glpi_tabs only.
-   $('#page .glpi_tabs form').on('change', 'input, textarea, select', function() {
+   var glpiTabs = $('#page .glpi_tabs');
+   glpiTabs.on('input', 'form input, form textarea', function() {
+      window.glpiUnsavedFormChanges = true;
+   });
+   glpiTabs.on('change', 'form select', function() {
+      window.glpiUnsavedFormChanges = true;
+   });
+   glpiTabs.on('select2:select', 'form select', function() {
       window.glpiUnsavedFormChanges = true;
    });
    $(window).on('beforeunload', function() {
@@ -1036,3 +1043,7 @@ $(document).ready(function() {
       }
    });
 });
+
+function onTinyMCEChange() {
+   window.glpiUnsavedFormChanges = true;
+}
