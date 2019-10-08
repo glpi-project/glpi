@@ -308,23 +308,25 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          'datatype'           => 'number'
       ];
 
-      if (!preg_match('/^itemtype/', static::$itemtype_1)) {
+      $itemtype1 = static::$itemtype_1;
+      if (!preg_match('/^itemtype/', $itemtype1)) {
          $tab[] = [
             'id'                 => '3',
-            'table'              => getTableForItemType(static::$itemtype_1),
-            'field'              => static::$items_id_1,
-            'name'               => call_user_func([static::$itemtype_1, 'getTypeName']),
+            'table'              => getTableForItemType($itemtype1),
+            'field'              => $itemtype1::getIndexName(),
+            'name'               => call_user_func([$itemtype1, 'getTypeName']),
             'datatype'           => 'text',
             'massiveaction'      => false
          ];
       }
 
-      if (!preg_match('/^itemtype/', static::$itemtype_2)) {
+      $itemtype2 = static::$itemtype_2;
+      if (!preg_match('/^itemtype/', $itemtype2)) {
          $tab[] = [
             'id'                 => '4',
-            'table'              => getTableForItemType(static::$itemtype_2),
-            'field'              => static::$items_id_2,
-            'name'               => call_user_func([static::$itemtype_2, 'getTypeName']),
+            'table'              => getTableForItemType($itemtype2),
+            'field'              => $itemtype2::getIndexName(),
+            'name'               => call_user_func([$itemtype2, 'getTypeName']),
             'datatype'           => 'text',
             'massiveaction'      => false
          ];
