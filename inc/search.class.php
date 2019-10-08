@@ -3444,7 +3444,7 @@ JAVASCRIPT;
             && (!isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($CFG_GLPI["union_search_type"][$itemtype] != $table)))
            || !empty($complexjoin))
-          && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
+          && getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) != $table) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
 
@@ -4890,7 +4890,7 @@ JAVASCRIPT;
       }
 
       // Multiple link possibilies case
-      if (!empty($linkfield) && ($linkfield != getForeignKeyFieldForTable($new_table))) {
+      if (!empty($linkfield) && getTableNameForForeignKeyField($linkfield) != $new_table) {
          $nt .= "_".$linkfield;
          $AS  = " AS `$nt`";
       }
@@ -4911,7 +4911,7 @@ JAVASCRIPT;
 
       // Do not take into account standard linkfield
       $tocheck = $nt.".".$linkfield;
-      if ($linkfield == getForeignKeyFieldForTable($new_table)) {
+      if (getTableNameForForeignKeyField($linkfield) == $new_table) {
          $tocheck = $nt;
       }
 
