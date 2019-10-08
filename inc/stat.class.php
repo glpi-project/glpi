@@ -635,8 +635,7 @@ class Stat extends CommonGLPI {
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
-            //le nombre d'interventions résolues ayant une durée
-            //the number of solved intervention with a duration time
+            //the number of solved interventions with a duration time
             $solved_with_actiontime = self::constructEntryValues($itemtype, "inter_solved_with_actiontime",
                                                                  $date1, $date2, $type, $value[$i]["id"], $value2);
             $nb_solved_with_actiontime = array_sum($solved_with_actiontime);
