@@ -460,6 +460,26 @@ class ObjectLock extends CommonDBTM {
 
 
    /**
+    * Summary of isReadOnly
+    * @param mixed $itemtype
+    * @param mixed $id
+    * @return boolean, true if object is locked or if auto-lock mode is disable
+    */
+   static function isReadOnly($itemtype, $id) {
+
+      if (Session::getCurrentInterface() == "central"
+          && (self::isLocked($itemtype, $id)
+              || isset($_SESSION['glpilock_autolock_items'][ $itemtype ][ $id ])
+              || $_SESSION['glpilock_autolock_mode'] == 0)
+         ) {
+         return true;
+      }
+
+      return false;
+   }
+
+
+   /**
     * Summary of displayLockMessage
     * Shows a short message top-left of screen
     * This message is permanent, and can't be closed
