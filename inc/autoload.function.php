@@ -63,11 +63,11 @@ function isAPI() {
 
 
 /**
- * Determine if an object name is a plugin one
+ * Determine if an class name is a plugin one
  *
- * @param string $classname class name to analyse
+ * @param string $classname Class name to analyze
  *
- * @return boolean[object false or an object containing plugin name and class name
+ * @return boolean|array False or an array containing plugin name and class name
  */
 function isPluginItemType($classname) {
 
@@ -153,7 +153,7 @@ function _sx($ctx, $str, $domain = 'glpi') {
  *
  * @param string  $sing   in singular
  * @param string  $plural in plural
- * @param integer $nb     to select singular or plurial
+ * @param integer $nb     to select singular or plural
  * @param string  $domain domain used (default is glpi, may be plugin name)
  *
  * @return string translated string
@@ -180,7 +180,7 @@ function _n($sing, $plural, $nb, $domain = 'glpi') {
  *
  * @param string  $sing   in singular
  * @param string  $plural in plural
- * @param integer $nb     to select singular or plurial
+ * @param integer $nb     to select singular or plural
  * @param string  $domain domain used (default is glpi, may be plugin name)
  *
  * @return string protected string (with htmlentities)
@@ -223,7 +223,7 @@ function _x($ctx, $str, $domain = 'glpi') {
  * @param string  $ctx    context
  * @param string  $sing   in singular
  * @param string  $plural in plural
- * @param integer $nb     to select singular or plurial
+ * @param integer $nb     to select singular or plural
  * @param string  $domain domain used (default is glpi, may be plugin name)
  *
  * @return string
@@ -252,7 +252,7 @@ function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi') {
  *
  * @param string $classname : class to load
  *
- * @return void
+ * @return void|boolean
  */
 function glpi_autoload($classname) {
    global $DEBUG_AUTOLOAD;

@@ -2630,7 +2630,7 @@ class AuthLDAP extends CommonDBTM {
                                      $ldap_method['deref_option']);
       }
 
-      //If connection is not successfull on this directory, try replicates (if replicates exists)
+      //If connection is not successful on this directory, try replicates (if replicates exists)
       if (!$ds
           && ($ldap_method['id'] > 0)) {
          foreach (self::getAllReplicateForAMaster($ldap_method['id']) as $replicate) {
@@ -2842,8 +2842,7 @@ class AuthLDAP extends CommonDBTM {
          $values[$key] = $value;
       }
 
-      //By default authentify users by login
-      //$authentification_value = '';
+      //By default authenticate users by login
       $login_attr      = $values['search_parameters']['fields'][self::IDENTIFIER_LOGIN];
       $sync_attr       = (isset($values['search_parameters']['fields']['sync_field'])) ?
          $values['search_parameters']['fields']['sync_field'] : null;
@@ -2870,8 +2869,7 @@ class AuthLDAP extends CommonDBTM {
          }
       }
 
-      //$authentification_value = $values['user_params']['value'];
-      // Tenter une recherche pour essayer de retrouver le DN
+      // Try a search to find the DN
       $filter_value = $values['user_params']['value'];
       if ($values['login_field'] == 'objectguid' && self::isValidGuid($filter_value)) {
          $filter_value = self::guidToHex($filter_value);
@@ -2908,7 +2906,7 @@ class AuthLDAP extends CommonDBTM {
     * @param resource $ds        the active connection to the directory
     * @param string   $condition the LDAP filter to use for the search
     * @param string   $dn        DN of the object
-    * @param array    $attrs     of the attributes to retreive
+    * @param array    $attrs     Array of the attributes to retrieve
     * @param boolean  $clean     (true by default)
     *
     * @return array|boolean false if failed
@@ -3094,7 +3092,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Show import user form
     *
-    * @param object $authldap AuthLDAP object
+    * @param AuthLDAP $authldap AuthLDAP object
     *
     * @return void
     */
@@ -3304,7 +3302,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Build LDAP filter
     *
-    * @param resource $authldap AuthLDAP object
+    * @param AuthLdap $authldap AuthLDAP object
     *
     * @return string
     */
@@ -3663,7 +3661,7 @@ class AuthLDAP extends CommonDBTM {
 
    /**
     * Check if ldap results can be paged or not
-    * This functionnality is available for PHP 5.4 and higher
+    * This functionality is available for PHP 5.4 and higher
     *
     * @since 0.84
     *
@@ -3793,7 +3791,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Converts binary objectguid to string representation
     *
-    * @param mixed $binary_guid Binary objectguid from AD
+    * @param mixed $guid_bin Binary objectguid from AD
     *
     * @return string
     */
@@ -3826,7 +3824,7 @@ class AuthLDAP extends CommonDBTM {
     * Get the list of LDAP users to add/synchronize
     * When importing, already existing users will be filtered
     *
-    * @param array   $options       possible options:
+    * @param array   $values        possible options:
     *          - authldaps_id ID of the server to use
     *          - mode user to synchronise or add?
     *          - ldap_filter ldap filter to use
