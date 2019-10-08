@@ -74,9 +74,6 @@ class Calendar extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -90,11 +87,6 @@ class Calendar extends CommonDropdown {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -115,11 +107,6 @@ class Calendar extends CommonDropdown {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -197,10 +184,12 @@ class Calendar extends CommonDropdown {
    }
 
 
-   /** Clone a calendar to another entity : name is updated
+   /**
+    * Clone a calendar to another entity : name is updated
     *
     * @param $options array of new values to set
-   **/
+    * @return boolean True on success
+    */
    function duplicate($options = []) {
 
       if (is_array($options) && count($options)) {
@@ -237,9 +226,9 @@ class Calendar extends CommonDropdown {
    }
 
    /**
-    * is an holiday day ?
+    * Check if the given date is a holiday
     *
-    * @param string $date date of the day to check
+    * @param string $date Date of the day to check
     *
     * @return boolean
    **/
@@ -289,7 +278,7 @@ class Calendar extends CommonDropdown {
     * @param $work_in_days    boolean  force working in days (false by default)
     *
     * @return integer timestamp of delay
-   **/
+    */
    function getActiveTimeBetween($start, $end, $work_in_days = false) {
 
       if (!isset($this->fields['id'])) {
@@ -341,9 +330,7 @@ class Calendar extends CommonDropdown {
                } else {
                   $timeoftheday = $cache_duration[$dayofweek];
                }
-               // echo "time of the day = $timeoftheday ".Html::timestampToString($timeoftheday).'<br>';
                $activetime += $timeoftheday;
-               // echo "cumulate time = $activetime ".Html::timestampToString($activetime).'<br>';
             }
          }
       }
@@ -352,14 +339,14 @@ class Calendar extends CommonDropdown {
 
 
    /**
-    * Is the time passed is in a working day
+    * Check if the given time is on a working day (does not check working hours)
     *
     * @since 0.84
     *
-    * @param integer $time    time  time to check
+    * @param integer $time Time to check
     *
     * @return boolean
-   **/
+    */
    function isAWorkingDay($time) {
 
       $cache_duration   = $this->getDurationsCache();
@@ -375,7 +362,7 @@ class Calendar extends CommonDropdown {
     * @since 9.4.3
     *
     * @return boolean
-   **/
+    */
    public function hasAWorkingDay() {
 
       $durations = $this->getDurationsCache();
@@ -384,14 +371,15 @@ class Calendar extends CommonDropdown {
 
 
    /**
-    * Is the time passed is in a working hour
+    *
+    * Check if the given time is in a working hour
     *
     * @since 0.85
     *
-    * @param integer $time    time  time to check
+    * @param integer $time Time to check
     *
     * @return boolean
-   **/
+    */
    function isAWorkingHour($time) {
 
       if ($this->isAWorkingDay($time)) {
@@ -628,8 +616,10 @@ class Calendar extends CommonDropdown {
    /**
     * Update the calendar cache
     *
-    * @param $calendars_id integer calendar ID
-   **/
+    * @param integer $calendars_id ID of the calendar
+    *
+    * @return bool True if successful in updating the cache, otherwise returns false.
+    */
    function updateDurationCache($calendars_id) {
 
       if ($this->getFromDB($calendars_id)) {

@@ -43,25 +43,23 @@ class Auth extends CommonGLPI {
 
    static $rightname = 'config';
 
-   //Errors
+   /** @var array Array of errors */
    private $errors = [];
-   /** User class variable
-    * @see User
-    */
+   /** @var User User class variable */
    public $user;
-   //! External authentification variable : boolean
+   /** @var int External authentication variable */
    public $extauth = 0;
-   // External authentifications methods;
+   /** @var array External authentication methods */
    public $authtypes;
-   // Indicates if the user is authenticated or not
+   /** @var int Indicates if the user is authenticated or not */
    public $auth_succeded = 0;
-   // Indicates if the user is already present in database
+   /** @var int Indicates if the user is already present in database */
    public $user_present = 0;
-   // Indicates if the user is deleted in the directory (doesn't mean that it can login)
+   /** @var int Indicates if the user is deleted in the directory (doesn't mean that it can login) */
    public $user_deleted_ldap = 0;
-   // LDAP connection descriptor
+   /** @var resource|boolean LDAP connection descriptor */
    public $ldap_connection;
-   // Store user LDAP dn
+   /** @var bool Store user LDAP dn */
    public $user_dn = false;
 
    const DB_GLPI  = 1;
@@ -120,12 +118,11 @@ class Auth extends CommonGLPI {
    /**
     * Check user existence in DB
     *
-    * @var DBmysql $DB
-    *
-    * @param array $options conditions : array('name'=>'glpi')
+    * @global DBmysql $DB
+    * @param  array   $options conditions : array('name'=>'glpi')
     *                                    or array('email' => 'test at test.com')
     *
-    * @return integer Auth::USER_DOESNT_EXIST, Auth::USER_EXISTS_WITHOUT_PWD or Auth::USER_EXISTS_WITH_PWD
+    * @return integer {@link Auth::USER_DOESNT_EXIST}, {@link Auth::USER_EXISTS_WITHOUT_PWD} or {@link Auth::USER_EXISTS_WITH_PWD}
     */
    function userExists($options = []) {
       global $DB;
@@ -274,7 +271,7 @@ class Auth extends CommonGLPI {
     *
     * @since 0.85
     *
-    * @param string $pass Passowrd
+    * @param string $pass Password (pain-text)
     * @param string $hash Hash
     *
     * @return boolean
@@ -337,7 +334,7 @@ class Auth extends CommonGLPI {
     * If not found or can't connect to DB updates the instance variable err
     * with an eventual error message
     *
-    * @var DBmysql $DB
+    * @global DBmysql $DB
     * @param string $name     User Login
     * @param string $password User Password
     *
@@ -606,7 +603,7 @@ class Auth extends CommonGLPI {
     * @param string $login_auth      type of auth - id of the auth
     *
     * @return boolean (success)
-   */
+    */
    function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '') {
       global $DB, $CFG_GLPI;
 
@@ -664,7 +661,7 @@ class Auth extends CommonGLPI {
                       && $authldap->fields['is_active']) {
                      $ldapservers[] = $authldap->fields;
                   }
-               } else { // User has never beeen authenticated : try all active ldap server to find the right one
+               } else { // User has never been authenticated : try all active ldap server to find the right one
                   foreach (getAllDataFromTable('glpi_authldaps', ['is_active' => 1]) as $ldap_config) {
                      $ldapservers[] = $ldap_config;
                   }
@@ -911,15 +908,16 @@ class Auth extends CommonGLPI {
    }
 
    /**
-   * Print all the authentication methods
-   *
-   * Parameters which could be used in options array :
-   *    - name : string / name of the select (default is auths_id)
-   *
-   * @param array $options Possible options
-   *
-   * @return void (display)
-   */
+    * Print all the authentication methods
+    *
+    * @param array $options Possible options:
+    * - name : Name of the select (default is auths_id)
+    * - value : Selected value (default 0)
+    * - display : If true, the dropdown is displayed instead of returned (default true)
+    * - display_emptychoice : If true, an empty option is added (default true)
+    *
+    * @return void|string (Based on 'display' option)
+    */
    static function dropdown($options = []) {
       global $DB;
 
@@ -1255,9 +1253,10 @@ class Auth extends CommonGLPI {
       }
    }
 
-   /** Display refresh button in the user page
+   /**
+    * Display refresh button in the user page
     *
-    * @param object $user User object
+    * @param User $user User object
     *
     * @return void
     */
@@ -1316,12 +1315,12 @@ class Auth extends CommonGLPI {
    }
 
    /**
-     * Check if a login is valid
-     *
-     * @param string $login login to check
-     *
-     * @return boolean
-     */
+    * Check if a login is valid
+    *
+    * @param string $login login to check
+    *
+    * @return boolean
+    */
    static function isValidLogin($login) {
       return preg_match( "/^[[:alnum:]'@.\-_ ]+$/iu", $login);
    }
@@ -1360,9 +1359,9 @@ class Auth extends CommonGLPI {
    }
 
    /**
-    * Form for configuration authentication
+    * Show form for authentication configuration.
     *
-    * @return void
+    * @return void|boolean False if the form is not shown due to right error. Form is directly printed.
     */
    static function showOtherAuthList() {
       global $CFG_GLPI;
@@ -1600,8 +1599,8 @@ class Auth extends CommonGLPI {
    }
 
    /**
-     * Display the authentication source dropdown for login form
-     */
+    * Display the authentication source dropdown for login form
+    */
    static function dropdownLogin() {
       $elements = self::getLoginAuthMethods();
       $default = $elements['_default'];

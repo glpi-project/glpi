@@ -156,7 +156,7 @@ class AuthMail extends CommonDBTM {
     * @param integer $ID      ID of the item
     * @param array   $options Options
     *
-    * @return void (display)
+    * @return void|boolean (display) Returns false if there is a rights error.
     */
    function showForm($ID, $options = []) {
 
@@ -251,7 +251,7 @@ class AuthMail extends CommonDBTM {
     * @param string $login          user login
     * @param string $password       user password
     *
-    * @return boolean authentification succeeded?
+    * @return boolean Authentication succeeded?
     */
    static function testAuth($connect_string, $login, $password) {
 
@@ -262,7 +262,7 @@ class AuthMail extends CommonDBTM {
 
 
    /**
-    * Authentify a user by checking a specific mail server
+    * Authenticate a user by checking a specific mail server
     *
     * @param object $auth        identification object
     * @param string $login       user login
@@ -293,7 +293,7 @@ class AuthMail extends CommonDBTM {
 
 
    /**
-    * Try to authentify a user by checking all the mail server
+    * Try to authenticate a user by checking all the mail server
     *
     * @param object  $auth     identification object
     * @param string  $login    user login

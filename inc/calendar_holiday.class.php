@@ -62,7 +62,9 @@ class Calendar_Holiday extends CommonDBRelation {
     * Show holidays for a calendar
     *
     * @param $calendar Calendar object
-   **/
+    *
+    * @return void|boolean (HTML display) False if there is a rights error.
+    */
    static function showForCalendar(Calendar $calendar) {
       global $DB;
 
@@ -183,8 +185,8 @@ class Calendar_Holiday extends CommonDBRelation {
    /**
     * Duplicate all holidays from a calendar to its clone
     *
-    * @param $oldid
-    * @param $newid
+    * @param integer $oldid The ID of the calendar to copy from.
+    * @param integer $newid The ID of the calendar to copy to.
    **/
    static function cloneCalendar($oldid, $newid) {
       global $DB;
