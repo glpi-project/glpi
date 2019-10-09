@@ -873,9 +873,9 @@ class Ticket extends CommonITILObject {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
-      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       if (!in_array($this->fields['status'], array_merge($this->getClosedStatusArray(),
-                                                         $this->getSolvedStatusArray()))) {
+            $this->getSolvedStatusArray()))) {
+         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
          $this->addStandardTab('Item_Ticket', $ong, $options);
       }
       $this->addStandardTab('TicketCost', $ong, $options);
