@@ -1175,7 +1175,6 @@ class Ticket extends CommonITILObject {
 
       if (isset($input['content'])) {
          if (isset($input['_filename'])) {
-            $input['content']       = $input['content'];
             $input['_disablenotif'] = true;
          } else {
             $input['_donotadddocs'] = true;
@@ -7149,13 +7148,17 @@ class Ticket extends CommonITILObject {
                   ];
                   $tt->deleteByCriteria([
                      'OR' => [
-                        'AND' => [
-                           'tickets_id_1' => $merge_target_id,
-                           'tickets_id_2' => $id
+                        [
+                           'AND' => [
+                              'tickets_id_1' => $merge_target_id,
+                              'tickets_id_2' => $id
+                           ]
                         ],
-                        'AND' => [
-                           'tickets_id_2' => $merge_target_id,
-                           'tickets_id_1' => $id
+                        [
+                           'AND' => [
+                              'tickets_id_2' => $merge_target_id,
+                              'tickets_id_1' => $id
+                           ]
                         ]
                      ]
                   ]);

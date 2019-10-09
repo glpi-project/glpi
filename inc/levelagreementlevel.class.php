@@ -320,7 +320,6 @@ abstract class LevelAgreementLevel extends RuleTicket {
 
       $possible_values = self::getExecutionTimes($p);
 
-      $p['value'] = $p['value'];
       return Dropdown::showFromArray($name, $possible_values, $p);
    }
 
