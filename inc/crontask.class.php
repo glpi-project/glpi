@@ -1455,7 +1455,7 @@ class CronTask extends CommonDBTM{
       // max time to keep the file session
       $maxlifetime = ini_get('session.gc_maxlifetime');
       if ($maxlifetime == 0) {
-         $maxlifetime == WEEK_TIMESTAMP;
+         $maxlifetime = WEEK_TIMESTAMP;
       }
       $nb = 0;
       foreach (glob(GLPI_SESSION_DIR."/sess_*") as $filename) {
