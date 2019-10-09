@@ -378,7 +378,7 @@ class Problem_Ticket extends CommonDBRelation{
          return false;
       }
 
-       = $ticket->can($ID, UPDATE);
+      $canedit = $ticket->can($ID, UPDATE);
 
       $rand = mt_rand();
 
