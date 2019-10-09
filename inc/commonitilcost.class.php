@@ -501,7 +501,9 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $rand   = mt_rand();
 
-      if ($canedit) {
+      if ($canedit
+          && !in_array($item->fields['status'], array_merge($item->getClosedStatusArray(),
+                                                         $item->getSolvedStatusArray()))) {
          echo "<div id='viewcost".$ID."_$rand'></div>\n";
          echo "<script type='text/javascript' >\n";
          echo "function viewAddCost".$ID."_$rand() {\n";
