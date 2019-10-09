@@ -65,6 +65,8 @@ abstract class AbstractPlanningEvent extends \DbTestCase {
    }
 
    public function testAdd() {
+      $this->login();
+
       $event = new $this->myclass;
       $id    = $event->add($this->input);
 
@@ -129,11 +131,15 @@ abstract class AbstractPlanningEvent extends \DbTestCase {
 
 
    public function testDelete() {
+      $this->login();
+
       $event = new $this->myclass;
       $id    = $event->add($this->input);
+      $this->integer((int)$id)->isGreaterThan(0);
 
       $this->boolean($event->delete([
          'id' => $id,
       ]))->isTrue();
+      $this->boolean($event->getFromDB($id))->isFalse();
    }
 }
