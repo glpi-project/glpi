@@ -632,8 +632,18 @@ class Contract_Item extends CommonDBRelation{
                    || empty($data["name"])) {
                   $name = sprintf(__('%1$s (%2$s)'), $name, $objdata["id"]);
                }
-               $link = $itemtype::getFormURLWithID($objdata["id"]);
-               $name = "<a href=\"".$link."\">".$name."</a>";
+
+               $itemdata = new $item();
+               $itemdata->getFromDB($objdata['id']);
+               if (Session::haveRight($item::$rightname, $item::READMY)
+                   && (($itemdata->fields["users_id"] === Session::getLoginUserID())
+                       || in_array($itemdata->fields["users_id"],
+                                   Group_User::getUserGroups($itemdata->fields["users_id"])))) {
+                  $link     = $itemtype::getFormURLWithID($objdata['id']);
+                  $namelink = "<a href=\"".$link."\">".$name."</a>";
+               } else {
+                  $namelink = $name;
+               }
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -651,7 +661,7 @@ class Contract_Item extends CommonDBRelation{
                echo Dropdown::getDropdownName("glpi_entities", $objdata['entity'])."</td>";
                echo "<td class='center".
                       (isset($objdata['is_deleted']) && $objdata['is_deleted'] ? " tab_bg_2_2'" : "'");
-               echo ">".$name."</td>";
+               echo ">".$namelink."</td>";
                echo"<td class='center'>".
                       (isset($objdata["serial"])? "".$objdata["serial"]."" :"-")."</td>";
                echo "<td class='center'>".
