@@ -6244,7 +6244,6 @@ class Ticket extends CommonITILObject {
                          AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < NOW()";
          $tickets = [];
          foreach ($DB->request($query) as $tick) {
-            ;
             $tickets[] = $tick;
          }
 
