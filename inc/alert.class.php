@@ -196,15 +196,18 @@ class Alert extends CommonDBTM {
    /**
     * Does alert exists
     *
-    * @param string  $itemtype (default '')
-    * @param integer $items_id (default '')
-    * @param integer $type     (default '')
+    * @param string  $itemtype
+    * @param integer $items_id
+    * @param integer $type
     *
     * @return integer|boolean
     */
-   static function alertExists($itemtype = '', $items_id = '', $type = '') {
+   static function alertExists($itemtype, $items_id, $type) {
       global $DB;
 
+      if ($items_id <= 0 || $type <= 0) {
+         return false;
+      }
       $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
       if ($row = $iter->next()) {
          return $row['id'];
@@ -218,15 +221,18 @@ class Alert extends CommonDBTM {
     *
     * @since 0.84
     *
-    * @param string  $itemtype (default '')
-    * @param integer $items_id (default '')
-    * @param integer $type     (default '')
+    * @param string  $itemtype
+    * @param integer $items_id
+    * @param integer $type
     *
     * @return mixed|boolean
     */
-   static function getAlertDate($itemtype = '', $items_id = '', $type = '') {
+   static function getAlertDate($itemtype, $items_id, $type) {
       global $DB;
 
+      if ($items_id <= 0 || $type <= 0) {
+         return false;
+      }
       $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
       if ($row = $iter->next()) {
          return $row['date'];
