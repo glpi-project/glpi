@@ -1021,3 +1021,33 @@ var getTextWithoutDiacriticalMarks = function (text) {
    // They are removed to keep only chars without their diacritical mark.
    return text.replace(/[\u0300-\u036f]/g, '');
 };
+
+/** Track input changes and warn the user of unsaved changes if they try to navigate away */
+window.glpiUnsavedFormChanges = false;
+$(document).ready(function() {
+   // Try to limit tracking to item forms by binding to inputs under glpi_tabs only.
+   var glpiTabs = $('#page .glpi_tabs');
+   glpiTabs.on('input', 'form input, form textarea', function() {
+      window.glpiUnsavedFormChanges = true;
+   });
+   glpiTabs.on('change', 'form select', function() {
+      window.glpiUnsavedFormChanges = true;
+   });
+   glpiTabs.on('select2:select', 'form select', function() {
+      window.glpiUnsavedFormChanges = true;
+   });
+   $(window).on('beforeunload', function() {
+      if (window.glpiUnsavedFormChanges) {
+         // Only used for older browsers. Newer ones will display a localized message that is unique to the browser.
+         return "Do you want to leave this site? Changes you made may not be saved.";
+      }
+   });
+
+   glpiTabs.on('submit', 'form', function() {
+      window.glpiUnsavedFormChanges = false;
+   });
+});
+
+function onTinyMCEChange() {
+   window.glpiUnsavedFormChanges = true;
+}

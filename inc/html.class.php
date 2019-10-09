@@ -3657,6 +3657,11 @@ class Html {
                editor.on('SaveContent', function (contentEvent) {
                   contentEvent.content = contentEvent.content.replace(/\\r?\\n/g, '');
                });
+               editor.on('Change', function (e) {
+                  // Nothing fancy here. Since this is only used for tracking unsaved changes,
+                  // we want to keep the logic in common.js with the other form input events.
+                  onTinyMCEChange(e);
+               });
 
                // ctrl + enter submit the parent form
                editor.addShortcut('ctrl+13', 'submit', function() {
