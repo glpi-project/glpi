@@ -1679,7 +1679,6 @@ final class DbUtils {
                                                                            $data["usercategories_id"])];
                }
                if (count($comments)) {
-                  $user['comment'] = $user['comment'];
                   foreach ($comments as $datas) {
                      // Do not use SPAN here
                      $user['comment'] .= sprintf(__('%1$s: %2$s')."<br>",

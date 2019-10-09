@@ -1125,8 +1125,7 @@ class Reservation extends CommonDBChild {
                         $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
                         __s('See planning')."\">";
                   echo "<i class='far fa-calendar-alt'></i>";
-                  echo "<span class='sr-only'>".__('See planning')."</span>";
-                       "</a>";
+                  echo "<span class='sr-only'>".__('See planning')."</span></a>";
                } else {
                   echo "&nbsp;";
                }

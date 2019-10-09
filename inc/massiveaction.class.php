@@ -199,7 +199,6 @@ class MassiveAction {
                         $POST['action']    = $action[1];
                      } else {
                         $POST['processor'] = 'MassiveAction';
-                        $POST['action']    = $POST['action'];
                      }
                   }
                   // Count number of items !

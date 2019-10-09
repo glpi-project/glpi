@@ -1287,7 +1287,6 @@ class NotificationTarget extends CommonDBChild {
 
             if ($p['label']&&$p['lang']) {
                $tag = "##lang.".$p['tag']."##";
-               $p['label'] = $p['label'];
                $this->tag_descriptions[self::TAG_LANGUAGE][$tag] = $p;
             }
          }

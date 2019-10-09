@@ -1296,7 +1296,6 @@ class Ticket extends CommonITILObject {
 
       if (isset($input['content'])) {
          if (isset($input['_filename'])) {
-            $input['content']       = $input['content'];
             $input['_disablenotif'] = true;
          } else {
             $input['_donotadddocs'] = true;
