@@ -94,6 +94,8 @@ The present file will list all changes made to the project; according to the
 - `Html::convertTagFromRichTextToImageTag()`
 - `Transfer::createSearchConditionUsingArray()`
 
+## [9.4.5] unreleased
+
 ## [9.4.4] 2019-09-24
 
 ### API changes

@@ -404,6 +404,7 @@ class Ticket extends CommonITILObject {
          $ola->setTicketCalendar($calendars_id);
          if ($ola->fields['type'] == SLM::TTR) {
             $data["olalevels_id_ttr"] = OlaLevel::getFirstOlaLevel($olas_id);
+            $data['ola_ttr_begin_date'] = $date;
          }
          // Compute time_to_resolve
          $data[$dateField]             = $ola->computeDate($date);

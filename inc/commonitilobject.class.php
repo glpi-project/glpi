@@ -1357,12 +1357,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
             // Compute new internal_time_to_resolve
             $this->updates[]                          = "internal_time_to_resolve";
-            $this->fields['internal_time_to_resolve'] = $ola->computeDate($this->fields['date'],
+            $this->fields['internal_time_to_resolve'] = $ola->computeDate($this->fields['ola_ttr_begin_date'],
                                                                           $this->fields["ola_waiting_duration"]);
             // Add current level to do
             $ola->addLevelToDo($this, $this->fields["olalevels_id_ttr"]);
 
-         } else if (in_array("internal_time_to_resolve", $this->fields)) {
+         } else if (array_key_exists("internal_time_to_resolve", $this->fields)) {
             // Change doesn't have internal_time_to_resolve
             // Using calendar
             if (($calendars_id > 0)
