@@ -376,7 +376,7 @@ class Problem_Ticket extends CommonDBRelation{
          return false;
       }
 
-      $canedit = $ticket->can($ID, UPDATE);
+       = $ticket->can($ID, UPDATE);
 
       $rand = mt_rand();
 
@@ -386,7 +386,9 @@ class Problem_Ticket extends CommonDBRelation{
       foreach ($problems as $problem) {
          $used[$problem['id']] = $problem['id'];
       }
-      if ($canedit) {
+      if ($canedit
+          && !in_array($ticket->fields['status'], array_merge($ticket->getClosedStatusArray(),
+                                                              $ticket->getSolvedStatusArray()))) {
          echo "<div class='firstbloc'>";
          echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
