@@ -47,6 +47,8 @@ trait PlanningEvent {
       if (isset($this->field['rrule'])) {
          $this->field['rrule'] = json_decode($this->field['rrule'], true);
       }
+
+      parent::post_getEmpty();
    }
 
    function post_addItem() {

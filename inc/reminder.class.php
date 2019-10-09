@@ -39,7 +39,9 @@ if (!defined('GLPI_ROOT')) {
  * Reminder Class
 **/
 class Reminder extends CommonDBVisible {
-   use PlanningEvent;
+   use PlanningEvent {
+      post_getEmpty as trait_post_getEmpty;
+   }
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -546,7 +548,7 @@ class Reminder extends CommonDBVisible {
    function post_getEmpty() {
       $this->fields["name"]        = __('New note');
 
-      parent::post_getEmpty();
+      self::trait_post_getEmpty();
    }
 
 
