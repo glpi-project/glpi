@@ -1175,7 +1175,6 @@ class Ticket extends CommonITILObject {
 
       if (isset($input['content'])) {
          if (isset($input['_filename'])) {
-            $input['content']       = $input['content'];
             $input['_disablenotif'] = true;
          } else {
             $input['_donotadddocs'] = true;
@@ -6245,6 +6244,7 @@ class Ticket extends CommonITILObject {
                          AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < NOW()";
          $tickets = [];
          foreach ($DB->request($query) as $tick) {
+            ;
             $tickets[] = $tick;
          }
 
