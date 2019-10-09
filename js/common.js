@@ -1042,6 +1042,10 @@ $(document).ready(function() {
          return "Do you want to leave this site? Changes you made may not be saved.";
       }
    });
+
+   glpiTabs.on('submit', 'form', function() {
+      window.glpiUnsavedFormChanges = false;
+   });
 });
 
 function onTinyMCEChange() {
