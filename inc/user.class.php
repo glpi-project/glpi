@@ -3590,8 +3590,8 @@ class User extends CommonDBTM {
                         [
                            'glpi_profilerights.name'  => 'ticketvalidation',
                            'OR'                       => [
-                              'glpi_profilerights.rights'   => ['&', TicketValidation::CREATEREQUEST],
-                              'glpi_profilerights.rights'   => ['&', TicketValidation::CREATEINCIDENT]
+                              ['glpi_profilerights.rights'   => ['&', TicketValidation::CREATEREQUEST]],
+                              ['glpi_profilerights.rights'   => ['&', TicketValidation::CREATEINCIDENT]]
                            ]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
                      ];
