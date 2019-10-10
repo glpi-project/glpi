@@ -140,7 +140,7 @@ class Change_Ticket extends CommonDBRelation{
                return true;
             }
             return false;
-            
+
          case "solveticket" :
             $change = new Change();
             $input = $ma->getInput();
@@ -267,7 +267,9 @@ class Change_Ticket extends CommonDBRelation{
          }
       }
 
-      if ($canedit) {
+      if ($canedit
+          && !in_array($change->fields['status'], array_merge($change->getClosedStatusArray(),
+                                                              $change->getSolvedStatusArray()))) {
          echo "<div class='firstbloc'>";
          echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -298,7 +300,7 @@ class Change_Ticket extends CommonDBRelation{
                     'specific_actions' => array('purge' => _x('button', 'Delete permanently'),
                                                  __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'solveticket'
                                                         => __('Solve tickets'),
-                                                 __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task' 
+                                                 __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task'
                                                         => __('Add a new task')),
                      'container'        => 'mass'.__CLASS__.$rand,
                      'extraparams'      => array('changes_id' => $change->getID()),
@@ -372,7 +374,9 @@ class Change_Ticket extends CommonDBRelation{
             $used[$data['id']] = $data['id'];
          }
       }
-      if ($canedit) {
+      if ($canedit
+          && !in_array($ticket->fields['status'], array_merge($ticket->getClosedStatusArray(),
+                                                              $ticket->getSolvedStatusArray()))) {
          echo "<div class='firstbloc'>";
          echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";

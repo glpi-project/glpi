@@ -5421,6 +5421,7 @@ class Ticket extends CommonITILObject {
       echo "<div class='firstbloc'>";
       // Link to open a new ticket
       if ($item->getID()
+          && !$item->isDeleted()
           && Ticket::isPossibleToAssignType($item->getType())
           && self::canCreate()
           && !(!empty($withtemplate) && ($withtemplate == 2))
