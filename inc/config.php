@@ -41,6 +41,9 @@ include_once (GLPI_ROOT."/inc/based_config.php");
 include_once (GLPI_ROOT."/inc/define.php");
 include_once (GLPI_ROOT."/inc/dbconnection.class.php");
 
+Session::setPath();
+Session::start();
+
 // Default Use mode
 if (!isset($_SESSION['glpi_use_mode'])) {
    $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
@@ -51,9 +54,6 @@ $GLPI->initLogger();
 
 //init cache
 $GLPI_CACHE = Config::getCache('cache_db');
-
-Session::setPath();
-Session::start();
 
 Config::detectRootDoc();
 
