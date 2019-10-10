@@ -307,7 +307,9 @@ class Itil_Project extends CommonDBRelation {
          $used[$data['id']]     = $data['id'];
       }
 
-      if ($canedit) {
+      if ($canedit
+          && !in_array($itil->fields['status'], array_merge($itil->getClosedStatusArray(),
+                                                               $itil->getSolvedStatusArray()))) {
          echo '<div class="firstbloc">';
          $formId = 'itilproject_form' . $rand;
          echo '<form name="' . $formId .'"
