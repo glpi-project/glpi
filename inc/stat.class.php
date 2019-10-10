@@ -1075,7 +1075,7 @@ class Stat extends CommonGLPI {
             $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
             $date_unix = new QueryExpression(
-               "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.solvedate") . "),'%Y-%m') AS date_unix"
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.solvedate") . "),'%Y-%m') AS ".$DB->quoteName('date_unix')
             );
 
             $criteria = [
