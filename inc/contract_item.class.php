@@ -635,10 +635,11 @@ class Contract_Item extends CommonDBRelation{
 
                $itemdata = new $item();
                $itemdata->getFromDB($objdata['id']);
-               if (Session::haveRight($item::$rightname, $item::READMY)
-                   && (($itemdata->fields["users_id"] === Session::getLoginUserID())
-                       || in_array($itemdata->fields["users_id"],
-                                   Group_User::getUserGroups($itemdata->fields["users_id"])))) {
+               if (Session::haveRight($item::$rightname, $item::READ)
+                   || (Session::haveRight($item::$rightname, $item::READMY)
+                       && (($itemdata->fields["users_id"] === Session::getLoginUserID())
+                           || in_array($itemdata->fields["users_id"],
+                                       Group_User::getUserGroups($itemdata->fields["users_id"]))))) {
                   $link     = $itemtype::getFormURLWithID($objdata['id']);
                   $namelink = "<a href=\"".$link."\">".$name."</a>";
                } else {
