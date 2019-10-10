@@ -1348,6 +1348,45 @@ class Search extends DbTestCase {
       $output = \Search::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta);
       $this->string($output)->isEqualTo($expected);
    }
+
+   public function testSearchWGroups() {
+      $this->login();
+      $this->setEntity('_test_root_entity', true);
+
+      $search_params = ['is_deleted'   => 0,
+                        'start'        => 0,
+                        'search'       => 'Search',
+                        'criteria'     => [0 => ['field'      => 'view',
+                                                 'searchtype' => 'contains',
+                                                 'value'      => 'pc']]];
+      $data = $this->doSearch('Computer', $search_params);
+
+      // check for sql error (data key missing or empty)
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty()
+            //expecting no result
+            ->integer['totalcount']->isIdenticalTo(8);
+
+      $displaypref = new \DisplayPreference();
+      $input = [
+            'itemtype'  => 'Computer',
+            'users_id'  => \Session::getLoginUserID(),
+            'num'       => 49, //Compyer groups_id_tech SO
+      ];
+      $this->integer((int)$displaypref->add($input))->isGreaterThan(0);
+
+      $data = $this->doSearch('Computer', $search_params);
+
+      // check for sql error (data key missing or empty)
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty()
+            //expecting one result
+            ->integer['totalcount']->isIdenticalTo(8);
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
