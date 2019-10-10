@@ -299,7 +299,6 @@ class Impact extends CommonGLPI {
          echo '</div>';
       }
 
-
       // Hide / show handler
       echo Html::scriptBlock('
          // jQuery doesn\'t allow slide animation on table elements, we need
