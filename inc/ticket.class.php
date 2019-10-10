@@ -6101,6 +6101,7 @@ class Ticket extends CommonITILObject {
       // Ticket for the item
       // Link to open a new ticket
       if ($item->getID()
+          && !$item->isDeleted()
           && Ticket::isPossibleToAssignType($item->getType())
           && self::canCreate()
           && !(!empty($withtemplate) && ($withtemplate == 2))
