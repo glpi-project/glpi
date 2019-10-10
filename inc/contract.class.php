@@ -1546,7 +1546,10 @@ class Contract extends CommonDBTM {
             'glpi_contracts.begin_date'   => null,
             ['AND' => [
                'glpi_contracts.duration'  => 0,
-               new \QueryExpression('DATEDIFF(' . $DB->quoteName('glpi_contracts.begin_date') . ', CURDATE() ) < 0')
+               'OR' => [
+                  new \QueryExpression('DATEDIFF(' . $DB->quoteName('glpi_contracts.begin_date') . ', CURDATE() ) < 0'),
+                  'glpi_contracts.renewal' => 1
+               ]
             ]]
          ]];
       }
