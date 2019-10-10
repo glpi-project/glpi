@@ -309,7 +309,9 @@ class Problem_Ticket extends CommonDBRelation{
          }
       }
 
-      if ($canedit) {
+      if ($canedit
+          && !in_array($problem->fields['status'], array_merge($problem->getClosedStatusArray(),
+                                                               $problem->getSolvedStatusArray()))) {
          echo "<div class='firstbloc'>";
          echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -422,7 +424,9 @@ class Problem_Ticket extends CommonDBRelation{
             $used[$data['id']]     = $data['id'];
          }
       }
-      if ($canedit) {
+      if ($canedit
+          && !in_array($ticket->fields['status'], array_merge($ticket->getClosedStatusArray(),
+                                                              $ticket->getSolvedStatusArray()))) {
          echo "<div class='firstbloc'>";
          echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";

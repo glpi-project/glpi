@@ -127,7 +127,9 @@ class Item_Project extends CommonDBRelation{
       $number = $DB->numrows($result);
 
 
-      if ($canedit) {
+      if ($canedit
+          && !in_array($project->fields['status'], array_merge($project->getClosedStatusArray(),
+                                                               $project->getSolvedStatusArray()))) {
          echo "<div class='firstbloc'>";
          echo "<form name='projectitem_form$rand' id='projectitem_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
