@@ -133,7 +133,9 @@ class KnowbaseItem_Item extends CommonDBRelation {
          );
       }
 
-      if ($canedit) {
+      if ($canedit
+          && !in_array($item->fields['status'], array_merge($item->getClosedStatusArray(),
+                                                            $item->getSolvedStatusArray()))) {
          echo '<form method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
          echo "<div class='center'>";
          echo "<table class=\"tab_cadre_fixe\">";

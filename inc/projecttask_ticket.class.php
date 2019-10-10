@@ -273,7 +273,9 @@ class ProjectTask_Ticket extends CommonDBRelation{
          }
       }
 
-      if ($canedit) {
+      if ($canedit
+          && !in_array($ticket->fields['status'], array_merge($ticket->getClosedStatusArray(),
+                                                              $ticket->getSolvedStatusArray()))) {
          echo "<div class='firstbloc'>";
          echo "<form name='projecttaskticket_form$rand' id='projecttaskticket_form$rand'
                  method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
