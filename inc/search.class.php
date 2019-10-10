@@ -3205,7 +3205,7 @@ JAVASCRIPT;
       $addtable = '';
 
       if (($table != getTableForItemType($itemtype))
-          && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
+          && (getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) != $table)) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
 
@@ -3256,7 +3256,7 @@ JAVASCRIPT;
                                  ".$table.$addtable.".$name2 $order,
                                  ".$table.$addtable.".`name` $order";
             }
-            return " ORDER BY `".$table."`.`name` $order";
+            return " ORDER BY `".$table.$addtable."`.`name` $order";
 
          case "glpi_networkequipments.ip" :
          case "glpi_ipaddresses.name" :
@@ -4053,21 +4053,19 @@ JAVASCRIPT;
 
       $inittable = $table;
       $addtable  = '';
-
-      $complexjoin = "";
-      if (isset($searchopt[$ID]['joinparams'])) {
-         $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
-      }
-
       if (($table != 'asset_types')
-         && (($table == getTableForItemType($itemtype) && !empty($complexjoin)) || $table != getTableForItemType($itemtype))
-         && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
+         && ($table != getTableForItemType($itemtype))
+         && (getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) != $table)) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;
       }
 
-      if (!empty($complexjoin)) {
-         $table .= "_".$complexjoin;
+      if (isset($searchopt[$ID]['joinparams'])) {
+         $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
+
+         if (!empty($complexjoin)) {
+            $table .= "_".$complexjoin;
+         }
       }
 
       if ($meta
@@ -4166,7 +4164,19 @@ JAVASCRIPT;
          case "glpi_users.name" :
             if ($itemtype == 'User') { // glpi_users case / not link table
                if (in_array($searchtype, ['equals', 'notequals'])) {
-                  return " $link `$table`.`id`".$SEARCH;
+                  $search_str = "`$table`.`id`" . $SEARCH;
+
+                  if ($searchtype == 'notequals') {
+                     $nott = !$nott;
+                  }
+
+                  // Add NULL if $val = 0 and not negative search
+                  // Or negative search on real value
+                  if ((!$nott && ($val == 0)) || ($nott && ($val != 0))) {
+                     $search_str .= " OR `$table`.`id` IS NULL";
+                  }
+
+                  return " $link ($search_str)";
                }
                return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
             }

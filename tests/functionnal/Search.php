@@ -958,13 +958,13 @@ class Search extends DbTestCase {
          'special_fk' => [[
             'itemtype'  => 'Computer',
             'ID'        => 24, // users_id_tech
-            'sql'       => '`glpi_users`.`name` AS `ITEM_Computer_24`, `glpi_users`.`realname` AS `ITEM_Computer_24_realname`, 
+            'sql'       => '`glpi_users`.`name` AS `ITEM_Computer_24`, `glpi_users`.`realname` AS `ITEM_Computer_24_realname`,
                            `glpi_users`.`id` AS `ITEM_Computer_24_id`, `glpi_users`.`firstname` AS `ITEM_Computer_24_firstname`,'
          ]],
          'regular_fk' => [[
             'itemtype'  => 'Computer',
             'ID'        => 70, // users_id
-            'sql'       => '`glpi_users`.`name` AS `ITEM_Computer_70`, `glpi_users`.`realname` AS `ITEM_Computer_70_realname`, 
+            'sql'       => '`glpi_users`.`name` AS `ITEM_Computer_70`, `glpi_users`.`realname` AS `ITEM_Computer_70_realname`,
                            `glpi_users`.`id` AS `ITEM_Computer_70_id`, `glpi_users`.`firstname` AS `ITEM_Computer_70_firstname`,'
          ]],
       ];
@@ -1326,7 +1326,7 @@ class Search extends DbTestCase {
             'searchtype' => 'equals',
             'val' => '5',
             'meta' => false,
-            'expected' => "   `glpi_users_users_id_supervisor_c49005e57f22539b078d72faca40cdf3`.`id` = '5'",
+            'expected' => "   (`glpi_users_c49005e57f22539b078d72faca40cdf3`.`id` = '5')",
          ],
          [
             'link' => ' AND ',
@@ -1336,7 +1336,7 @@ class Search extends DbTestCase {
             'searchtype' => 'equals',
             'val' => '2',
             'meta' => false,
-            'expected' => "  AND  (`glpi_users_users_id_tech`.`id` = '2') ",
+            'expected' => "  AND  (`glpi_users`.`id` = '2') ",
          ],
       ];
    }
@@ -1347,6 +1347,45 @@ class Search extends DbTestCase {
    public function testAddWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta, $expected) {
       $output = \Search::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta);
       $this->string($output)->isEqualTo($expected);
+   }
+
+   public function testSearchWGroups() {
+      $this->login();
+      $this->setEntity('_test_root_entity', true);
+
+      $search_params = ['is_deleted'   => 0,
+                        'start'        => 0,
+                        'search'       => 'Search',
+                        'criteria'     => [0 => ['field'      => 'view',
+                                                 'searchtype' => 'contains',
+                                                 'value'      => 'pc']]];
+      $data = $this->doSearch('Computer', $search_params);
+
+      // check for sql error (data key missing or empty)
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty()
+            //expecting no result
+            ->integer['totalcount']->isIdenticalTo(8);
+
+      $displaypref = new \DisplayPreference();
+      $input = [
+            'itemtype'  => 'Computer',
+            'users_id'  => \Session::getLoginUserID(),
+            'num'       => 49, //Compyer groups_id_tech SO
+      ];
+      $this->integer((int)$displaypref->add($input))->isGreaterThan(0);
+
+      $data = $this->doSearch('Computer', $search_params);
+
+      // check for sql error (data key missing or empty)
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty()
+            //expecting one result
+            ->integer['totalcount']->isIdenticalTo(8);
    }
 }
 
