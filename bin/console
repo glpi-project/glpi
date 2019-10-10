@@ -70,18 +70,34 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
    exit($exit_code);
 }
 
+// Prevent console execution from root user.
+// Main purpose of this limitation is to prevent creation of files (cache, logs, ...)
+// owned by root user to prevent possible file rights errors.
+if (function_exists('posix_getuid') && 0 === posix_getuid()
+    && !(array_key_exists('allow-superuser', $options) && $options['allow-superuser'])) {
+   $user = function_exists('posix_getpwuid') ? posix_getpwuid(0) : ['name' => 'root'];
+   echo(
+      sprintf(
+         'Using bin/console as %s/super user is discouraged. Use --allow-superuser option to bypass this limitation.' . "\n",
+         $user['name']
+      )
+   );
+   exit(1);
+}
+
 // If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
 if (array_key_exists('config-dir', $options)) {
    $config_dir = $options['config-dir'];
 
    if (false === $config_dir || !@is_dir($config_dir)) {
-      die(
+      echo(
          sprintf(
             '--config-dir "%s" does not exists in "%s".' . "\n",
             $config_dir,
             getcwd()
          )
       );
+      exit(1);
    }
 
    define('GLPI_CONFIG_DIR', realpath($config_dir));

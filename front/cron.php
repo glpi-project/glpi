@@ -30,6 +30,21 @@
  * ---------------------------------------------------------------------
  */
 
+// Prevent cron execution from root user.
+// Main purpose of this limitation is to prevent creation of files (cache, logs, ...)
+// owned by root user to prevent possible file rights errors.
+if ('cli' === PHP_SAPI && function_exists('posix_getuid') && 0 === posix_getuid()
+    && !(isset($_SERVER['argv']) && array_search('--allow-superuser', $_SERVER['argv']))) {
+   $user = function_exists('posix_getpwuid') ? posix_getpwuid(0) : ['name' => 'root'];
+   echo(
+      sprintf(
+         'Using cron as %s/super user is discouraged to prevent file rights issues. Use --allow-superuser option to bypass this limitation.' . "\n",
+         $user['name']
+      )
+   );
+   exit(1);
+}
+
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
