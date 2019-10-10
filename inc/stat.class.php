@@ -635,20 +635,25 @@ class Stat extends CommonGLPI {
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
+            //the number of solved interventions with a duration time
+            $solved_with_actiontime = self::constructEntryValues($itemtype, "inter_solved_with_actiontime",
+                                                                 $date1, $date2, $type, $value[$i]["id"], $value2);
+            $nb_solved_with_actiontime = array_sum($solved_with_actiontime);
+
             //Le temps moyen de l'intervention reelle - The average actiontime to resolv
             $data = self::constructEntryValues($itemtype, "inter_avgactiontime", $date1, $date2,
                                                $type, $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
-               if (isset($solved[$key2])) {
-                  $data[$key2] *= $solved[$key2];
+               if (isset($solved_with_actiontime[$key2])) {
+                  $data[$key2] *= $solved_with_actiontime[$key2];
                } else {
                   $data[$key2] *= 0;
                }
             }
             $total_actiontime = array_sum($data);
 
-            if ($nb_solved > 0) {
-               $timedisplay = $total_actiontime/$nb_solved;
+            if ($nb_solved_with_actiontime > 0) {
+               $timedisplay = $total_actiontime/$nb_solved_with_actiontime;
             } else {
                $timedisplay = 0;
             }
@@ -1060,6 +1065,28 @@ class Stat extends CommonGLPI {
                'WHERE'     => $WHERE,
                'GROUPBY'   => 'date_unix',
                'ORDERBY'   => "$table.closedate"
+            ];
+            break;
+
+         case "inter_solved_with_actiontime" :
+            $WHERE["$table.status"] = $solved_status;
+            $WHERE["$table.actiontime"] = ['>', 0];
+            $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
+            $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
+
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.solvedate") . "),'%Y-%m') AS ".$DB->quoteName('date_unix')
+            );
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'COUNT'  => "$table.id AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.solvedate"
             ];
             break;
 
