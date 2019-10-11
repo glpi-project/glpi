@@ -1722,7 +1722,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      Planning::dropdownState("state", $_SESSION['glpitask_state'] ?? 0);
+      Planning::dropdownState("state", $_SESSION['glpitask_state']);
       echo "</td>";
       echo "</tr>";
 
