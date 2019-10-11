@@ -40,9 +40,15 @@ $items_id = $_GET["id"]    ?? null;
 if (!empty($itemtype) && !empty($items_id) && Impact::assetExist($itemtype, $items_id)) {
    $item = new $itemtype;
    $item->getFromDB($items_id);
+
    Impact::loadLibs();
+   $graph = Impact::makeDataForCytoscape(Impact::buildGraph($item));
+   $params = Impact::prepareParams($item);
+
+   echo '<div id="impact_graph_view">';
    Impact::prepareImpactNetwork($item);
-   Impact::buildNetwork($item);
+   Impact::buildNetwork($graph, $params);
+   echo '</div>';
 }
 
 Impact::printImpactForm();

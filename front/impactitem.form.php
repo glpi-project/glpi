@@ -35,10 +35,10 @@ include ('../inc/includes.php');
 $impact_item = new ImpactItem();
 
 if (isset($_POST["update"])) {
-   $id = $_POST["id"] ?? "";
+   $id = $_POST["id"] ?? 0;
 
    // Can't update, id is missing
-   if (empty($id)) {
+   if ($id === 0) {
       Html::back();
    }
 

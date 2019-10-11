@@ -51,6 +51,9 @@ $item->getFromDB($items_id);
 // Load graph and impactitem
 $graph = Impact::buildGraph($item);
 $impact_item = ImpactItem::findForItem($item);
+if (!$impact_item) {
+   throw new \InvalidArgumentException("No ImpactItem found for $itemtype $items_id");
+}
 
 // Load list data
 $data = [];
@@ -61,9 +64,12 @@ foreach ($directions as $direction) {
 
 // Output csv data
 $filename = $item->fields['name'];
-$output = fopen('php://output', 'w');
 header("Content-Type: application/csv");
 header("Content-Disposition: attachment; filename='$filename.csv';");
+$output = fopen('php://output', 'w');
+if (!$output) {
+   throw new \RuntimeException("Can't open php://output");
+}
 
 // Title of the cols in the first line
 fputcsv($output, [

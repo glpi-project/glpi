@@ -145,10 +145,9 @@ class Impact extends CommonGLPI {
 
       // Build graph and params
       $graph = Impact::buildGraph($item);
-      $params = self::prepareParams($item);
 
       // Displays views
-      self::displayGraphView($item, self::makeDataForCytoscape($graph), $params);
+      self::displayGraphView($item, self::makeDataForCytoscape($graph));
       self::displayListView($item, $graph);
 
       return true;
@@ -163,14 +162,14 @@ class Impact extends CommonGLPI {
     */
    public static function displayGraphView(
       CommonDBTM $item,
-      string $graph,
-      string $params
+      string $graph
    ) {
       self::loadLibs();
+      $params = self::prepareParams($item);
 
       echo '<div id="impact_graph_view">';
-         self::prepareImpactNetwork($item);
-         self::buildNetwork($graph, $params);
+      self::prepareImpactNetwork($item);
+      self::buildNetwork($graph, $params);
       echo '</div>';
    }
 
@@ -185,6 +184,11 @@ class Impact extends CommonGLPI {
       array $graph
    ) {
       $impact_item = ImpactItem::findForItem($item);
+
+      // Should not happen, $impact_item is created before
+      if (!$impact_item) {
+         throw new \InvalidArgumentException("No ImpactItem found");
+      }
 
       echo '<div id="impact_list_view" style="display: none">';
       echo '<div class="impact-list-container">';
@@ -486,10 +490,14 @@ class Impact extends CommonGLPI {
             $start = $a;
             $target = $b;
             break;
+
          case self::DIRECTION_BACKWARD:
             $start = $b;
             $target = $a;
             break;
+
+         default:
+            throw new \InvalidArgumentException("Invalid direction : $direction");
       }
 
       // Insert start node in the queue
