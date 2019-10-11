@@ -1720,6 +1720,13 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Status')."</td>";
+      echo "<td>";
+      Planning::dropdownState("state", $_SESSION['glpitask_state'] ?? 0);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>";
       if ($this->maybePrivate()) {
          echo "<input type='hidden' name='is_private' value='".$_SESSION['glpitask_private']."'>";
