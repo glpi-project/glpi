@@ -544,14 +544,6 @@ class Search extends DbTestCase {
     * @return void
     */
    public function testSearchOptions() {
-
-      $displaypref = new \DisplayPreference();
-      // save table glpi_displaypreferences
-      $dp = getAllDatasFromTable($displaypref->getTable());
-      foreach ($dp as $line) {
-         $displaypref->delete($line, true);
-      }
-
       $itemtypeslist = $this->getClasses(
          'searchOptions',
          [
@@ -569,7 +561,6 @@ class Search extends DbTestCase {
          ]
       );
       foreach ($itemtypeslist as $itemtype) {
-         $number = 0;
          if (!file_exists('front/'.strtolower($itemtype).'.php')) {
             // it's the case where not have search possible in this itemtype
             continue;
@@ -580,53 +571,41 @@ class Search extends DbTestCase {
          $options = \Search::getCleanedOptions($itemtype);
          //but reload only items one because of mysql join limit
          $options = $item->searchOptions();
-         $compare_options = [];
-         foreach ($options as $key => $value) {
-            if (is_array($value) && count($value) == 1) {
-               $compare_options[$key] = $value['name'];
-            } else {
-               $compare_options[$key] = $value;
-            }
-         }
 
+         $all_criteria = [];
          foreach ($options as $key=>$data) {
-            if (is_int($key)) {
-               $input = [
-                   'itemtype' => $itemtype,
-                   'users_id' => 0,
-                   'num' => $key,
-               ];
-                $displaypref->add($input);
-               $number++;
+            if (!is_int($key) || (array_key_exists('nosearch', $data) && $data['nosearch'])) {
+               continue;
             }
-         }
-         $this->integer(
-            (int)countElementsInTable(
-               $displaypref->getTable(),
-               ['itemtype' => $itemtype, 'users_id' => 0]
-            )
-         )->isIdenticalTo($number);
+            $actions = \Search::getActionsFor($itemtype, $key);
+            $searchtype = array_keys($actions)[0];
 
-         // do a search query
+            $criterion = [
+               'field'      => $key,
+               'searchtype' => $searchtype,
+               'value'      => 0
+            ];
+
+            // do a search query based on current search option
+            $data = $this->doSearch(
+               $itemtype,
+               [
+                  'is_deleted'   => 0,
+                  'start'        => 0,
+                  'criteria'     => [$criterion],
+                  'metacriteria' => []
+               ]
+            );
+
+            $all_criteria[] = $criterion;
+         }
+
+         // do a search query with all criteria at the same time
          $search_params = ['is_deleted'   => 0,
                            'start'        => 0,
-                           'criteria'     => [],
+                           'criteria'     => $all_criteria,
                            'metacriteria' => []];
          $data = $this->doSearch($itemtype, $search_params);
-         // check for sql error (data key missing or empty)
-         $this->array($data)
-            ->hasKey('data')
-               ->array['last_errors']->isIdenticalTo([])
-               ->array['data']->isNotEmpty();
-      }
-      // restore displaypreference table
-      /// TODO: review, this can't work.
-      foreach (getAllDatasFromTable($displaypref->getTable()) as $line) {
-         $displaypref->delete($line, true);
-      }
-      $this->integer((int)countElementsInTable($displaypref->getTable()))->isIdenticalTo(0);
-      foreach ($dp as $input) {
-         $displaypref->add($input);
       }
    }
 
