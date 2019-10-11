@@ -1347,6 +1347,26 @@ class Search extends DbTestCase {
    public function testAddWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta, $expected) {
       $output = \Search::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta);
       $this->string($output)->isEqualTo($expected);
+
+      if ($meta) {
+         return; // Do not know how to run search on meta here
+      }
+
+      $search_params = [
+         'is_deleted'   => 0,
+         'start'        => 0,
+         'criteria'     => [
+            [
+               'field'      => $ID,
+               'searchtype' => $searchtype,
+               'value'      => $val
+            ]
+         ],
+         'metacriteria' => []
+      ];
+
+      // Run a search to trigger a test failure if anything goes wrong.
+      $this->doSearch($itemtype, $search_params);
    }
 
    public function testSearchWGroups() {
