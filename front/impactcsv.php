@@ -67,7 +67,7 @@ $filename = $item->fields['name'];
 header("Content-Type: application/csv");
 header("Content-Disposition: attachment; filename='$filename.csv';");
 $output = fopen('php://output', 'w');
-if (!$output) {
+if ($output === false) {
    throw new \RuntimeException("Can't open php://output");
 }
 
