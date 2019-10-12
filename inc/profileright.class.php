@@ -126,21 +126,18 @@ class ProfileRight extends CommonDBChild {
           'FROM'     => Profile::getTable()
       ]);
 
+      $columns = ['profiles_id', 'name'];
+      $values = [];
       while ($profile = $iterator->next()) {
-         $profiles_id = $profile['id'];
          foreach ($rights as $name) {
-            $res = $DB->insert(
-               self::getTable(), [
-                  'profiles_id'  => $profiles_id,
-                  'name'         => $name
-               ]
-            );
-            if (!$res) {
-               $ok = false;
-            }
+            $values[] = [
+               $profile['id'],
+               $name
+            ];
          }
       }
-      return $ok;
+      $res = $DB->insertBulk(self::getTable(), $columns, $values);
+      return ((boolean)$res);
    }
 
 

@@ -2433,13 +2433,19 @@ class Toolbox {
          Session::loadLanguage('', false); // Load back session language
 
          foreach ($tables as $table => $data) {
-            $reference = array_replace(
-               $data[0],
-               array_fill_keys(
-                  array_keys($data[0]),
-                  new QueryParam()
-               )
-            );
+            $is_bulk = count($data) && array_key_exists('COLUMNS', $data) && is_array($data['COLUMNS'])
+               && array_key_exists('VALUES', $data) && is_array($data['VALUES']);
+            if (!$is_bulk) {
+               $reference = array_replace(
+                  $data[0],
+                  array_fill_keys(
+                     array_keys($data[0]),
+                     new QueryParam()
+                  )
+               );
+            } else {
+               $reference = $data;
+            }
 
             $stmt = $DB->prepare($DB->buildInsert($table, $reference));
             if (false === $stmt) {

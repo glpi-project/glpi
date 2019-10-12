@@ -46,27 +46,13 @@ $tables['glpi_apiclients'] = [
 ];
 
 $tables['glpi_blacklists'] = [
-   [
-      'id'    => 1,
-      'type'  => 1,
-      'name'  => 'empty IP',
-      'value' => '',
-   ], [
-      'id'    => 2,
-      'type'  => 1,
-      'name'  => 'localhost',
-      'value' => '127.0.0.1',
-   ], [
-      'id'    => 3,
-      'type'  => 1,
-      'name'  => 'zero IP',
-      'value' => '0.0.0.0',
-   ], [
-      'id'    => 4,
-      'type'  => 2,
-      'name'  => 'empty MAC',
-      'value' => '',
-   ],
+   'COLUMNS'   => ['id', 'type', 'name', 'value'],
+   'VALUES'    => [
+      [1, 1, 'empty IP', ''],
+      [2, 1, 'localhost', '127.0.0.1'],
+      [3, 1, 'zero IP', '0.0.0.0'],
+      [4, 2, 'empty MAC', '']
+   ]
 ];
 
 $tables['glpi_calendars'] = [
@@ -296,365 +282,66 @@ $default_prefs = [
    'devices_in_menu'                         => '["Item_DeviceSimcard"]',
 ];
 
-$tables['glpi_configs'] = [];
+$default_prefs_values = [];
 foreach ($default_prefs as $name => $value) {
-   $tables['glpi_configs'][] = [
+   $default_prefs_values[] = [
       'context' => 'core',
       'name'    => $name,
       'value'   => $value,
    ];
 }
+$tables['glpi_configs'] = [
+   'COLUMNS'   => ['context', 'name', 'value'],
+   'VALUES'    => $default_prefs_values
+];
+
 $tables['glpi_crontasks'] = [
-   [
-      'id'            => 2,
-      'itemtype'      => 'CartridgeItem',
-      'name'          => 'cartridge',
-      'frequency'     => '86400',
-      'param'         => 10,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 3,
-      'itemtype'      => 'ConsumableItem',
-      'name'          => 'consumable',
-      'frequency'     => '86400',
-      'param'         => 10,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 4,
-      'itemtype'      => 'SoftwareLicense',
-      'name'          => 'software',
-      'frequency'     => '86400',
-      'param'         => null,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 5,
-      'itemtype'      => 'Contract',
-      'name'          => 'contract',
-      'frequency'     => '86400',
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => '2010-05-06 09:31:02',
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 6,
-      'itemtype'      => 'InfoCom',
-      'name'          => 'infocom',
-      'frequency'     => '86400',
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => '2011-01-18 11:40:43',
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 7,
-      'itemtype'      => 'CronTask',
-      'name'          => 'logs',
-      'frequency'     => '86400',
-      'param'         => '30',
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 9,
-      'itemtype'      => 'MailCollector',
-      'name'          => 'mailgate',
-      'frequency'     => '600',
-      'param'         => '10',
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => '2011-06-28 11:34:37',
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 10,
-      'itemtype'      => 'DBconnection',
-      'name'          => 'checkdbreplicate',
-      'frequency'     => '300',
-      'param'         => null,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 11,
-      'itemtype'      => 'CronTask',
-      'name'          => 'checkupdate',
-      'frequency'     => '604800',
-      'param'         => null,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 12,
-      'itemtype'      => 'CronTask',
-      'name'          => 'session',
-      'frequency'     => '86400',
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => '2011-08-30 08:22:27',
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 13,
-      'itemtype'      => 'CronTask',
-      'name'          => 'graph',
-      'frequency'     => 3600,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => '2011-12-06 09:48:42',
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 14,
-      'itemtype'      => 'ReservationItem',
-      'name'          => 'reservation',
-      'frequency'     => 3600,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => '2012-04-05 20:31:57',
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 15,
-      'itemtype'      => 'Ticket',
-      'name'          => 'closeticket',
-      'frequency'     => 43200,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => '2012-04-05 20:31:57',
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 16,
-      'itemtype'      => 'Ticket',
-      'name'          => 'alertnotclosed',
-      'frequency'     => 43200,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => '2014-04-16 15:32:00',
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 17,
-      'itemtype'      => 'SlaLevel_Ticket',
-      'name'          => 'slaticket',
-      'frequency'     => 300,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => '2014-06-18 08:02:00',
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 18,
-      'itemtype'      => 'Ticket',
-      'name'          => 'createinquest',
-      'frequency'     => 86400,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 19,
-      'itemtype'      => 'CronTask',
-      'name'          => 'watcher',
-      'frequency'     => 86400,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 20,
-      'itemtype'      => 'TicketRecurrent',
-      'name'          => 'ticketrecurrent',
-      'frequency'     => 3600,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 21,
-      'itemtype'      => 'PlanningRecall',
-      'name'          => 'planningrecall',
-      'frequency'     => 300,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 22,
-      'itemtype'      => 'QueuedNotification',
-      'name'          => 'queuednotification',
-      'frequency'     => 60,
-      'param'         => 50,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 23,
-      'itemtype'      => 'QueuedNotification',
-      'name'          => 'queuednotificationclean',
-      'frequency'     => 86400,
-      'param'         => 30,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 24,
-      'itemtype'      => 'CronTask',
-      'name'          => 'temp',
-      'frequency'     => 3600,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 25,
-      'itemtype'      => 'MailCollector',
-      'name'          => 'mailgateerror',
-      'frequency'     => 86400,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 26,
-      'itemtype'      => 'CronTask',
-      'name'          => 'circularlogs',
-      'frequency'     => 86400,
-      'param'         => 4,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 27,
-      'itemtype'      => 'ObjectLock',
-      'name'          => 'unlockobject',
-      'frequency'     => 86400,
-      'param'         => 4,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 28,
-      'itemtype'      => 'SavedSearch',
-      'name'          => 'countAll',
-      'frequency'     => 604800,
-      'param'         => null,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 10,
-   ], [
-      'id'            => 29,
-      'itemtype'      => 'SavedSearch_Alert',
-      'name'          => 'savedsearchesalerts',
-      'frequency'     => 86400,
-      'param'         => null,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 10,
-   ], [
-      'id'            => 30,
-      'itemtype'      => 'Telemetry',
-      'name'          => 'telemetry',
-      'frequency'     => 2592000,
-      'param'         => null,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 10,
-   ], [
-      'id'            => 31,
-      'itemtype'      => 'Certificate',
-      'name'          => 'certificate',
-      'frequency'     => 86400,
-      'param'         => null,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 10,
-   ], [
-      'id'            => 32,
-      'itemtype'      => 'OlaLevel_Ticket',
-      'name'          => 'olaticket',
-      'frequency'     => 300,
-      'param'         => null,
-      'state'         => 1,
-      'mode'          => 1,
-      'lastrun'       => '2014-06-18 08:02:00',
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 33,
-      'itemtype'      => 'PurgeLogs',
-      'name'          => 'PurgeLogs',
-      'frequency'     => 604800,
-      'param'         => 24,
-      'state'         => 1,
-      'mode'          => 2,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 34,
-      'itemtype'      => 'Ticket',
-      'name'          => 'purgeticket',
-      'frequency'     => 43200,
-      'param'         => null,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ], [
-      'id'            => 35,
-      'itemtype'      => 'Document',
-      'name'          => 'cleanorphans',
-      'frequency'     => 43200,
-      'param'         => null,
-      'state'         => 0,
-      'mode'          => 1,
-      'lastrun'       => null,
-      'logs_lifetime' => 30,
-   ],
+   'COLUMNS'   => ['id', 'itemtype', 'name', 'frequency', 'param', 'state', 'mode', 'lastrun', 'logs_lifetime'],
+   'VALUES'    => [
+      [2, 'CartridgeItem', 'cartridge', '86400', 10, 0, 1, null, 30],
+      [3, 'ConsumableItem', 'consumable', '86400', 10, 0, 1, null, 30],
+      [4, 'SoftwareLicense', 'software', '86400', null, 0, 1, null, 30],
+      [5, 'Contract', 'contract', '86400', null, 1, 1, '2010-05-06 09:31:02', 30],
+      [6, 'InfoCom', 'infocom', '86400', null, 1, 1, '2011-01-18 11:40:43', 30],
+      [7, 'CronTask', 'logs', '86400', '30', 0, 1, null, 30],
+      [9, 'MailCollector', 'mailgate', '600', '10', 1, 1, '2011-06-28 11:34:37', 30],
+      [10, 'DBconnection', 'checkdbreplicate', '300', null, 0, 1, null, 30],
+      [11, 'CronTask', 'checkupdate', '604800', null, 0, 1, null, 30],
+      [12, 'CronTask', 'session', '86400', null, 1, 1, '2011-08-30 08:22:27', 30],
+      [13, 'CronTask', 'graph', 3600, null, 1, 1, '2011-12-06 09:48:42', 30],
+      [14, 'ReservationItem', 'reservation', 3600, null, 1, 1, '2012-04-05 20:31:57', 30],
+      [15, 'Ticket', 'closeticket', 43200, null, 1, 1, '2012-04-05 20:31:57', 30],
+      [16, 'Ticket', 'alertnotclosed', 43200, null, 1, 1, '2014-04-16 15:32:00', 30],
+      [17, 'SlaLevel_Ticket', 'slaticket', 300, null, 1, 1, '2014-06-18 08:02:00', 30],
+      [18, 'Ticket', 'createinquest', 86400, null, 1, 1, null, 30],
+      [19, 'CronTask', 'watcher', 86400, null, 1, 1, null, 30],
+      [20, 'TicketRecurrent', 'ticketrecurrent', 3600, null, 1, 1, null, 30],
+      [21, 'PlanningRecall', 'planningrecall', 300, null, 1, 1, null, 30],
+      [22, 'QueuedNotification', 'queuednotification', 60, 50, 1, 1, null, 30],
+      [23, 'QueuedNotification', 'queuednotificationclean', 86400, 30, 1, 1, null, 30],
+      [24, 'CronTask', 'temp', 3600, null, 1, 1, null, 30],
+      [25, 'MailCollector', 'mailgateerror', 86400, null, 1, 1, null, 30],
+      [26, 'CronTask', 'circularlogs', 86400, 4, 0, 1, null, 30],
+      [27, 'ObjectLock', 'unlockobject', 86400, 4, 0, 1, null, 30],
+      [28, 'SavedSearch', 'countAll', 604800, null, 0, 1, null, 10],
+      [29, 'SavedSearch_Alert', 'savedsearchesalerts', 86400, null, 0, 1, null, 10],
+      [30, 'Telemetry', 'telemetry', 2592000, null, 0, 1, null, 10],
+      [31, 'Certificate', 'certificate', 86400, null, 0, 1, null, 10],
+      [32, 'OlaLevel_Ticket', 'olaticket', 300, null, 1, 1, '2014-06-18 08:02:00', 30],
+      [33, 'PurgeLogs', 'PurgeLogs', 604800, 24, 1, 2, null, 30],
+      [34, 'Ticket', 'purgeticket', 43200, null, 0, 1, null, 30],
+      [35, 'Document', 'cleanorphans', 43200, null, 0, 1, null, 30]
+   ]
 ];
 
 $tables['glpi_devicememorytypes'] = [
-   [
-      'id'   => 1,
-      'name' => 'EDO',
-   ],
-   [
-      'id'   => 2,
-      'name' => 'DDR',
-   ],
-   [
-      'id'   => 3,
-      'name' => 'SDRAM',
-   ],
-   [
-      'id'   => 4,
-      'name' => 'SDRAM-2',
-   ],
+   'COLUMNS'   => ['id', 'name'],
+   'VALUES'    => [
+      [1, 'EDO'],
+      [2, 'DDR'],
+      [3, 'SDRAM'],
+      [4, 'SDRAM-2'],
+   ]
 ];
 
 $tables['glpi_devicesimcardtypes'] = [
@@ -4523,2599 +4210,657 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 ];
 
 $tables['glpi_profilerights'] = [
-   [
-      'profiles_id' => '1',
-      'name'        => 'computer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'monitor',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'software',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'networking',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'internet',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'printer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'peripheral',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'cartridge',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'consumable',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'phone',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'queuednotification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'contact_enterprise',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'document',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'contract',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'infocom',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'knowbase',
-      'rights'      => '2048',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'reservation',
-      'rights'      => '1024',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'reports',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'device',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'typedoc',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'link',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'rule_ticket',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'rule_import',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'rule_ldap',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'rule_softwarecategories',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'search_config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'location',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'domain',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'profile',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'user',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'group',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'entity',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'transfer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'logs',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'reminder_public',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'rssfeed_public',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'bookmark_public',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'backup',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'ticket',
-      'rights'      => '5',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'followup',
-      'rights'      => '5',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'task',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'planning',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'state',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'taskcategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'statistic',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'password_update',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'show_group_hardware',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'rule_dictionnary_software',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'rule_dictionnary_dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'budget',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'notification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'rule_mailcollector',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'solutiontemplate',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'calendar',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'slm',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'rule_dictionnary_printer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'problem',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'netpoint',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'knowbasecategory',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'itilcategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'itiltemplate',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'ticketrecurrent',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'ticketcost',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'changevalidation',
-      'rights'      => '20',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'ticketvalidation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'computer',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'monitor',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'software',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'networking',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'internet',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'printer',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'peripheral',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'cartridge',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'consumable',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'phone',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'queuednotification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'contact_enterprise',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'document',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'contract',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'infocom',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'knowbase',
-      'rights'      => '10241',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'reservation',
-      'rights'      => '1025',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'reports',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'device',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'typedoc',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'link',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'rule_ticket',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'rule_import',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'rule_ldap',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'rule_softwarecategories',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'search_config',
-      'rights'      => '1024',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'location',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'domain',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'profile',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'user',
-      'rights'      => '2049',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'group',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'entity',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'transfer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'logs',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'reminder_public',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'rssfeed_public',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'bookmark_public',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'backup',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'ticket',
-      'rights'      => '168989',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'followup',
-      'rights'      => '5',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'task',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'projecttask',
-      'rights'      => '1025',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'projecttask',
-      'rights'      => '1025',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'planning',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'state',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'taskcategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'statistic',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'password_update',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'show_group_hardware',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'rule_dictionnary_software',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'rule_dictionnary_dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'budget',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'notification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'rule_mailcollector',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'solutiontemplate',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'solutiontemplate',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'calendar',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'slm',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'rule_dictionnary_printer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'problem',
-      'rights'      => '1057',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'netpoint',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'knowbasecategory',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'itilcategory',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'itiltemplate',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'ticketrecurrent',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'ticketcost',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'changevalidation',
-      'rights'      => '1044',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'changevalidation',
-      'rights'      => '20',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'ticketvalidation',
-      'rights'      => '15376',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'computer',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'monitor',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'software',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'networking',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'internet',
-      'rights'      => '31',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'printer',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'peripheral',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'cartridge',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'consumable',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'phone',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'queuednotification',
-      'rights'      => '31',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'contact_enterprise',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'document',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'contract',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'infocom',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'knowbase',
-      'rights'      => '14359',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'reservation',
-      'rights'      => '1055',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'reports',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'dropdown',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'device',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'typedoc',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'link',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'rule_ticket',
-      'rights'      => '1047',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'rule_import',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'rule_ldap',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'rule_softwarecategories',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'search_config',
-      'rights'      => '3072',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'location',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'domain',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'profile',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'user',
-      'rights'      => '7199',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'group',
-      'rights'      => '119',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'entity',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'transfer',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'logs',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'reminder_public',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'rssfeed_public',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'bookmark_public',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'backup',
-      'rights'      => '1024',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'ticket',
-      'rights'      => '261151',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'followup',
-      'rights'      => '15383',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'task',
-      'rights'      => '13329',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'projecttask',
-      'rights'      => '1121',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'projecttask',
-      'rights'      => '1121',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'projecttask',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'planning',
-      'rights'      => '3073',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'taskcategory',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'netpoint',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'statistic',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'password_update',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'show_group_hardware',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'rule_dictionnary_software',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'rule_dictionnary_dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'budget',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'notification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'rule_mailcollector',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'solutiontemplate',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'solutiontemplate',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'calendar',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'slm',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'rule_dictionnary_printer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'problem',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'knowbasecategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'itilcategory',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'itiltemplate',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'ticketrecurrent',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'ticketcost',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'changevalidation',
-      'rights'      => '1044',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'changevalidation',
-      'rights'      => '1044',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'ticketvalidation',
-      'rights'      => '15376',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'computer',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'monitor',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'software',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'networking',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'internet',
-      'rights'      => '159',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'printer',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'peripheral',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'cartridge',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'consumable',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'phone',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'contact_enterprise',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'document',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'contract',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'infocom',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'knowbase',
-      'rights'      => '15383',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'reservation',
-      'rights'      => '1055',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'reports',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'dropdown',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'device',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'typedoc',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'link',
-      'rights'      => '159',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'config',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'rule_ticket',
-      'rights'      => '1047',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'rule_import',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'rule_ldap',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'rule_softwarecategories',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'search_config',
-      'rights'      => '3072',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'location',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'domain',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'profile',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'user',
-      'rights'      => '7327',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'group',
-      'rights'      => '119',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'entity',
-      'rights'      => '3327',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'transfer',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'logs',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'reminder_public',
-      'rights'      => '159',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'rssfeed_public',
-      'rights'      => '159',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'bookmark_public',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'backup',
-      'rights'      => '1045',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'ticket',
-      'rights'      => '261151',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'followup',
-      'rights'      => '15383',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'task',
-      'rights'      => '13329',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'project',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'projecttask',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'projecttask',
-      'rights'      => '1025',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'planning',
-      'rights'      => '3073',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'taskcategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'netpoint',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'statistic',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'password_update',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'show_group_hardware',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'rule_dictionnary_software',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'rule_dictionnary_dropdown',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'budget',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'notification',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'rule_mailcollector',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'solutiontemplate',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'solutiontemplate',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'calendar',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'slm',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'rule_dictionnary_printer',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'problem',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'knowbasecategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'itilcategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'itiltemplate',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'ticketrecurrent',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'ticketcost',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'change',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'changevalidation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'ticketvalidation',
-      'rights'      => '15376',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'computer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'monitor',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'software',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'networking',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'internet',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'printer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'peripheral',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'cartridge',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'consumable',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'phone',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'queuednotification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'contact_enterprise',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'document',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'contract',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'infocom',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'knowbase',
-      'rights'      => '10240',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'reservation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'reports',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'device',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'typedoc',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'link',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'rule_ticket',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'rule_import',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'rule_ldap',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'rule_softwarecategories',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'search_config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'location',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'domain',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'profile',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'user',
-      'rights'      => '1025',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'group',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'entity',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'transfer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'logs',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'reminder_public',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'rssfeed_public',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'bookmark_public',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'backup',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'ticket',
-      'rights'      => '140295',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'followup',
-      'rights'      => '12295',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'task',
-      'rights'      => '8193',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'project',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'project',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'project',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'planning',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'taskcategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'netpoint',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'statistic',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'password_update',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'show_group_hardware',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'rule_dictionnary_software',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'rule_dictionnary_dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'budget',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'notification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'rule_mailcollector',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'state',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'state',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'calendar',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'slm',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'rule_dictionnary_printer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'problem',
-      'rights'      => '1024',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'knowbasecategory',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'itilcategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'itiltemplate',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'ticketrecurrent',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'ticketcost',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'change',
-      'rights'      => '1054',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'change',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'ticketvalidation',
-      'rights'      => '3088',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'computer',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'monitor',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'software',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'networking',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'internet',
-      'rights'      => '31',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'printer',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'peripheral',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'cartridge',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'consumable',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'phone',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'queuednotification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'contact_enterprise',
-      'rights'      => '96',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'document',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'contract',
-      'rights'      => '96',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'infocom',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'knowbase',
-      'rights'      => '14359',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'reservation',
-      'rights'      => '1055',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'reports',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'device',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'typedoc',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'link',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'rule_ticket',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'rule_import',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'rule_ldap',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'rule_softwarecategories',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'search_config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'domain',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'profile',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'user',
-      'rights'      => '1055',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'group',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'entity',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'transfer',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'logs',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'reminder_public',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'rssfeed_public',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'bookmark_public',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'backup',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'ticket',
-      'rights'      => '166919',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'followup',
-      'rights'      => '13319',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'task',
-      'rights'      => '13329',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'project',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'project',
-      'rights'      => '1025',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'project',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'planning',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'taskcategory',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'netpoint',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'statistic',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'password_update',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'show_group_hardware',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'rule_dictionnary_software',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'rule_dictionnary_dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'budget',
-      'rights'      => '96',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'notification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'rule_mailcollector',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'state',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'state',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'calendar',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'slm',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'rule_dictionnary_printer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'problem',
-      'rights'      => '1121',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'knowbasecategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'itilcategory',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'location',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'itiltemplate',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'ticketrecurrent',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'ticketcost',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'change',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'change',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'ticketvalidation',
-      'rights'      => '3088',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'computer',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'monitor',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'software',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'networking',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'internet',
-      'rights'      => '31',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'printer',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'peripheral',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'cartridge',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'consumable',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'phone',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'queuednotification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'contact_enterprise',
-      'rights'      => '96',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'document',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'contract',
-      'rights'      => '96',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'infocom',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'knowbase',
-      'rights'      => '14359',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'reservation',
-      'rights'      => '1055',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'reports',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'device',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'typedoc',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'link',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'rule_ticket',
-      'rights'      => '1047',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'rule_import',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'rule_ldap',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'rule_softwarecategories',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'search_config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'domain',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'profile',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'user',
-      'rights'      => '1055',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'group',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'entity',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'transfer',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'logs',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'reminder_public',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'rssfeed_public',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'bookmark_public',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'backup',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'ticket',
-      'rights'      => '261151',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'followup',
-      'rights'      => '15383',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'task',
-      'rights'      => '13329',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'queuednotification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'planning',
-      'rights'      => '3073',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'taskcategory',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'netpoint',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'statistic',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'password_update',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'show_group_hardware',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'rule_dictionnary_software',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'rule_dictionnary_dropdown',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'budget',
-      'rights'      => '96',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'notification',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'rule_mailcollector',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'changevalidation',
-      'rights'      => '1044',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'state',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'calendar',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'slm',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'rule_dictionnary_printer',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'problem',
-      'rights'      => '1151',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'knowbasecategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'itilcategory',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'location',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'itiltemplate',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'ticketrecurrent',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'ticketcost',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'change',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'change',
-      'rights'      => '1057',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'ticketvalidation',
-      'rights'      => '15376',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'backup',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'bookmark_public',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'budget',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'calendar',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'cartridge',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'change',
-      'rights'      => '1057',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'changevalidation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'computer',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'config',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'consumable',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'contact_enterprise',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'contract',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'device',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'document',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'domain',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'dropdown',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'entity',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'followup',
-      'rights'      => '8193',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'global_validation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'group',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'infocom',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'internet',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'itilcategory',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'knowbase',
-      'rights'      => '10241',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'knowbasecategory',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'link',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'location',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'logs',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'monitor',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'netpoint',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'networking',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'notification',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'password_update',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'peripheral',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'phone',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'planning',
-      'rights'      => '3073',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'printer',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'problem',
-      'rights'      => '1057',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'profile',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'project',
-      'rights'      => '1057',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'projecttask',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'queuednotification',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'reminder_public',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'reports',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'reservation',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'rssfeed_public',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'rule_dictionnary_dropdown',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'rule_dictionnary_printer',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'rule_dictionnary_software',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'rule_import',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'rule_ldap',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'rule_mailcollector',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'rule_softwarecategories',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'rule_ticket',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'search_config',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'show_group_hardware',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'slm',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'software',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'solutiontemplate',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'state',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'statistic',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'task',
-      'rights'      => '8193',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'taskcategory',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'ticket',
-      'rights'      => '138241',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'ticketcost',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'ticketrecurrent',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'itiltemplate',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'ticketvalidation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'transfer',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'typedoc',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'user',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'license',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'license',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'license',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'license',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'license',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'license',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'license',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'license',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'line',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'line',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'line',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'line',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'line',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'line',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'line',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'line',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'lineoperator',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'lineoperator',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'lineoperator',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'lineoperator',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'lineoperator',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'lineoperator',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'lineoperator',
-      'rights'      => '23',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'lineoperator',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'devicesimcard_pinpuk',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'devicesimcard_pinpuk',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'devicesimcard_pinpuk',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'devicesimcard_pinpuk',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'devicesimcard_pinpuk',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'devicesimcard_pinpuk',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'devicesimcard_pinpuk',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'devicesimcard_pinpuk',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'certificate',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'certificate',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'certificate',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'certificate',
-      'rights'      => '255',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'certificate',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'certificate',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'certificate',
-      'rights'      => '127',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'certificate',
-      'rights'      => '33',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'datacenter',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'datacenter',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'datacenter',
-      'rights'      => '31',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'datacenter',
-      'rights'      => '31',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'datacenter',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'datacenter',
-      'rights'      => '31',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'datacenter',
-      'rights'      => '31',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'datacenter',
-      'rights'      => '1',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'rule_asset',
-      'rights'      => '1047',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'personalization',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'personalization',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'personalization',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'personalization',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'personalization',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'personalization',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'personalization',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'personalization',
-      'rights'      => '3',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'rule_asset',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'rule_asset',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'rule_asset',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'rule_asset',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'rule_asset',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'rule_asset',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'rule_asset',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'global_validation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'global_validation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'global_validation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'global_validation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'global_validation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'global_validation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'global_validation',
-      'rights'      => '0',
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'cluster',
-      'rights'      => 0,
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'cluster',
-      'rights'      => 1,
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'cluster',
-      'rights'      => 31,
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'cluster',
-      'rights'      => 31,
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'cluster',
-      'rights'      => 0,
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'cluster',
-      'rights'      => 31,
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'cluster',
-      'rights'      => 31,
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'cluster',
-      'rights'      => 1,
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'externalevent',
-      'rights'      => 0,
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'externalevent',
-      'rights'      => 1,
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'externalevent',
-      'rights'      => 1055,
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'externalevent',
-      'rights'      => 1055,
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'externalevent',
-      'rights'      => 0,
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'externalevent',
-      'rights'      => 1,
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'externalevent',
-      'rights'      => 31,
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'externalevent',
-      'rights'      => 1,
-   ],
+   'COLUMNS'   => ['id', 'name', 'rights'],
+   'VALUES'    => [
+      ['1', 'computer', '0'],
+      ['1', 'monitor', '0'],
+      ['1', 'software', '0'],
+      ['1', 'networking', '0'],
+      ['1', 'internet', '0'],
+      ['1', 'printer', '0'],
+      ['1', 'peripheral', '0'],
+      ['1', 'cartridge', '0'],
+      ['1', 'consumable', '0'],
+      ['1', 'phone', '0'],
+      ['6', 'queuednotification', '0'],
+      ['1', 'contact_enterprise', '0'],
+      ['1', 'document', '0'],
+      ['1', 'contract', '0'],
+      ['1', 'infocom', '0'],
+      ['1', 'knowbase', '2048'],
+      ['1', 'reservation', '1024'],
+      ['1', 'reports', '0'],
+      ['1', 'dropdown', '0'],
+      ['1', 'device', '0'],
+      ['1', 'typedoc', '0'],
+      ['1', 'link', '0'],
+      ['1', 'config', '0'],
+      ['1', 'rule_ticket', '0'],
+      ['1', 'rule_import', '0'],
+      ['1', 'rule_ldap', '0'],
+      ['1', 'rule_softwarecategories', '0'],
+      ['1', 'search_config', '0'],
+      ['5', 'location', '0'],
+      ['7', 'domain', '23'],
+      ['1', 'profile', '0'],
+      ['1', 'user', '0'],
+      ['1', 'group', '0'],
+      ['1', 'entity', '0'],
+      ['1', 'transfer', '0'],
+      ['1', 'logs', '0'],
+      ['1', 'reminder_public', '1'],
+      ['1', 'rssfeed_public', '1'],
+      ['1', 'bookmark_public', '0'],
+      ['1', 'backup', '0'],
+      ['1', 'ticket', '5'],
+      ['1', 'followup','5'],
+      ['1', 'task', '1'],
+      ['1', 'planning', '0'],
+      ['2', 'state', '0'],
+      ['2', 'taskcategory', '0'],
+      ['1', 'statistic', '0'],
+      ['1', 'password_update', '1'],
+      ['1', 'show_group_hardware', '0'],
+      ['1', 'rule_dictionnary_software', '0'],
+      ['1', 'rule_dictionnary_dropdown', '0'],
+      ['1', 'budget', '0'],
+      ['1', 'notification', '0'],
+      ['1', 'rule_mailcollector', '0'],
+      ['7', 'solutiontemplate', '23'],
+      ['1', 'calendar', '0'],
+      ['1', 'slm', '0'],
+      ['1', 'rule_dictionnary_printer', '0'],
+      ['1', 'problem', '0'],
+      ['2', 'netpoint', '0'],
+      ['4', 'knowbasecategory', '23'],
+      ['5', 'itilcategory', '0'],
+      ['1', 'itiltemplate', '0'],
+      ['1', 'ticketrecurrent', '0'],
+      ['1', 'ticketcost', '0'],
+      ['6', 'changevalidation', '20'],
+      ['1', 'ticketvalidation', '0'],
+      ['2', 'computer', '33'],
+      ['2', 'monitor', '33'],
+      ['2', 'software', '33'],
+      ['2', 'networking', '33'],
+      ['2', 'internet', '1'],
+      ['2', 'printer', '33'],
+      ['2', 'peripheral', '33'],
+      ['2', 'cartridge', '33'],
+      ['2', 'consumable', '33'],
+      ['2', 'phone', '33'],
+      ['5', 'queuednotification', '0'],
+      ['2', 'contact_enterprise', '33'],
+      ['2', 'document', '33'],
+      ['2', 'contract', '33'],
+      ['2', 'infocom', '1'],
+      ['2', 'knowbase', '10241'],
+      ['2', 'reservation', '1025'],
+      ['2', 'reports', '1'],
+      ['2', 'dropdown', '0'],
+      ['2', 'device', '0'],
+      ['2', 'typedoc', '1'],
+      ['2', 'link', '1'],
+      ['2', 'config', '0'],
+      ['2', 'rule_ticket', '0'],
+      ['2', 'rule_import', '0'],
+      ['2', 'rule_ldap', '0'],
+      ['2', 'rule_softwarecategories','0'],
+      ['2', 'search_config', '1024'],
+      ['4', 'location', '23'],
+      ['6', 'domain', '0'],
+      ['2', 'profile', '0'],
+      ['2', 'user', '2049'],
+      ['2', 'group', '33'],
+      ['2', 'entity', '0'],
+      ['2', 'transfer', '0'],
+      ['2', 'logs', '0'],
+      ['2', 'reminder_public', '1'],
+      ['2', 'rssfeed_public', '1'],
+      ['2', 'bookmark_public', '0'],
+      ['2', 'backup', '0'],
+      ['2', 'ticket', '168989'],
+      ['2', 'followup', '5'],
+      ['2', 'task', '1'],
+      ['6', 'projecttask', '1025'],
+      ['7', 'projecttask', '1025'],
+      ['2', 'planning', '1'],
+      ['1', 'state', '0'],
+      ['1', 'taskcategory', '0'],
+      ['2', 'statistic', '1'],
+      ['2', 'password_update', '1'],
+      ['2', 'show_group_hardware', '0'],
+      ['2', 'rule_dictionnary_software', '0'],
+      ['2', 'rule_dictionnary_dropdown', '0'],
+      ['2', 'budget', '33'],
+      ['2', 'notification', '0'],
+      ['2', 'rule_mailcollector', '0'],
+      ['5', 'solutiontemplate', '0'],
+      ['6', 'solutiontemplate', '0'],
+      ['2', 'calendar', '0'],
+      ['2', 'slm', '0'],
+      ['2', 'rule_dictionnary_printer', '0'],
+      ['2', 'problem', '1057'],
+      ['1', 'netpoint', '0'],
+      ['3', 'knowbasecategory', '23'],
+      ['4', 'itilcategory', '23'],
+      ['2', 'itiltemplate', '0'],
+      ['2', 'ticketrecurrent', '0'],
+      ['2', 'ticketcost', '1'],
+      ['4', 'changevalidation', '1044'],
+      ['5', 'changevalidation', '20'],
+      ['2', 'ticketvalidation', '15376'],
+      ['3', 'computer', '127'],
+      ['3', 'monitor', '127'],
+      ['3', 'software', '127'],
+      ['3', 'networking', '127'],
+      ['3', 'internet', '31'],
+      ['3', 'printer', '127'],
+      ['3', 'peripheral', '127'],
+      ['3', 'cartridge', '127'],
+      ['3', 'consumable', '127'],
+      ['3', 'phone', '127'],
+      ['4', 'queuednotification', '31'],
+      ['3', 'contact_enterprise', '127'],
+      ['3', 'document', '127'],
+      ['3', 'contract', '127'],
+      ['3', 'infocom', '23'],
+      ['3', 'knowbase', '14359'],
+      ['3', 'reservation', '1055'],
+      ['3', 'reports', '1'],
+      ['3', 'dropdown', '23'],
+      ['3', 'device', '23'],
+      ['3', 'typedoc', '23'],
+      ['3', 'link', '23'],
+      ['3', 'config', '0'],
+      ['3', 'rule_ticket', '1047'],
+      ['3', 'rule_import', '0'],
+      ['3', 'rule_ldap', '0'],
+      ['3', 'rule_softwarecategories', '0'],
+      ['3', 'search_config', '3072'],
+      ['3', 'location', '23'],
+      ['5', 'domain', '0'],
+      ['3', 'profile', '1'],
+      ['3', 'user', '7199'],
+      ['3', 'group', '119'],
+      ['3', 'entity', '33'],
+      ['3', 'transfer',  '1'],
+      ['3', 'logs', '1'],
+      ['3', 'reminder_public', '23'],
+      ['3', 'rssfeed_public','23'],
+      ['3', 'bookmark_public', '23'],
+      ['3', 'backup', '1024'],
+      ['3', 'ticket', '261151'],
+      ['3', 'followup', '15383'],
+      ['3', 'task', '13329'],
+      ['3', 'projecttask', '1121'],
+      ['4', 'projecttask', '1121'],
+      ['5', 'projecttask', '0'],
+      ['3', 'planning', '3073'],
+      ['7', 'taskcategory', '23'],
+      ['7', 'netpoint', '23'],
+      ['3', 'statistic', '1'],
+      ['3', 'password_update', '1'],
+      ['3', 'show_group_hardware', '0'],
+      ['3', 'rule_dictionnary_software', '0'],
+      ['3', 'rule_dictionnary_dropdown', '0'],
+      ['3', 'budget', '127'],
+      ['3', 'notification', '0'],
+      ['3', 'rule_mailcollector', '23'],
+      ['3', 'solutiontemplate', '23'],
+      ['4', 'solutiontemplate', '23'],
+      ['3', 'calendar', '23'],
+      ['3', 'slm', '23'],
+      ['3', 'rule_dictionnary_printer', '0'],
+      ['3', 'problem', '1151'],
+      ['2', 'knowbasecategory', '0'],
+      ['3', 'itilcategory', '23'],
+      ['3', 'itiltemplate', '23'],
+      ['3', 'ticketrecurrent', '1'],
+      ['3', 'ticketcost', '23'],
+      ['2', 'changevalidation', '1044'],
+      ['3', 'changevalidation', '1044'],
+      ['3', 'ticketvalidation', '15376'],
+      ['4', 'computer', '255'],
+      ['4', 'monitor', '255'],
+      ['4', 'software', '255'],
+      ['4', 'networking', '255'],
+      ['4', 'internet', '159'],
+      ['4', 'printer', '255'],
+      ['4', 'peripheral', '255'],
+      ['4', 'cartridge', '255'],
+      ['4', 'consumable', '255'],
+      ['4', 'phone', '255'],
+      ['4', 'contact_enterprise', '255'],
+      ['4', 'document', '255'],
+      ['4', 'contract', '255'],
+      ['4', 'infocom', '23'],
+      ['4', 'knowbase', '15383'],
+      ['4', 'reservation', '1055'],
+      ['4', 'reports', '1'],
+      ['4', 'dropdown', '23'],
+      ['4', 'device', '23'],
+      ['4', 'typedoc', '23'],
+      ['4', 'link', '159'],
+      ['4', 'config', '3'],
+      ['4', 'rule_ticket', '1047'],
+      ['4', 'rule_import', '23'],
+      ['4', 'rule_ldap', '23'],
+      ['4', 'rule_softwarecategories', '23'],
+      ['4', 'search_config', '3072'],
+      ['2', 'location', '0'],
+      ['4', 'domain', '23'],
+      ['4', 'profile', '23'],
+      ['4', 'user', '7327'],
+      ['4', 'group', '119'],
+      ['4', 'entity', '3327'],
+      ['4', 'transfer', '23'],
+      ['4', 'logs', '1'],
+      ['4', 'reminder_public', '159'],
+      ['4', 'rssfeed_public', '159'],
+      ['4', 'bookmark_public', '23'],
+      ['4', 'backup', '1045'],
+      ['4', 'ticket', '261151'],
+      ['4', 'followup', '15383'],
+      ['4', 'task', '13329'],
+      ['7', 'project', '1151'],
+      ['1', 'projecttask', '0'],
+      ['2', 'projecttask', '1025'],
+      ['4', 'planning', '3073'],
+      ['6', 'taskcategory', '0'],
+      ['6', 'netpoint', '0'],
+      ['4', 'statistic', '1'],
+      ['4', 'password_update', '1'],
+      ['4', 'show_group_hardware', '1'],
+      ['4', 'rule_dictionnary_software', '23'],
+      ['4', 'rule_dictionnary_dropdown', '23'],
+      ['4', 'budget', '127'],
+      ['4', 'notification', '23'],
+      ['4', 'rule_mailcollector', '23'],
+      ['1', 'solutiontemplate', '0'],
+      ['2', 'solutiontemplate', '0'],
+      ['4', 'calendar', '23'],
+      ['4', 'slm', '23'],
+      ['4', 'rule_dictionnary_printer', '23'],
+      ['4', 'problem', '1151'],
+      ['1', 'knowbasecategory', '0'],
+      ['2', 'itilcategory', '0'],
+      ['4', 'itiltemplate', '23'],
+      ['4', 'ticketrecurrent', '23'],
+      ['4', 'ticketcost', '23'],
+      ['7', 'change', '1151'],
+      ['1', 'changevalidation', '0'],
+      ['4', 'ticketvalidation', '15376'],
+      ['5', 'computer', '0'],
+      ['5', 'monitor', '0'],
+      ['5', 'software', '0'],
+      ['5', 'networking', '0'],
+      ['5', 'internet', '0'],
+      ['5', 'printer', '0'],
+      ['5', 'peripheral', '0'],
+      ['5', 'cartridge', '0'],
+      ['5', 'consumable', '0'],
+      ['5', 'phone', '0'],
+      ['3', 'queuednotification', '0'],
+      ['5', 'contact_enterprise', '0'],
+      ['5', 'document', '0'],
+      ['5', 'contract', '0'],
+      ['5', 'infocom', '0'],
+      ['5', 'knowbase', '10240'],
+      ['5', 'reservation', '0'],
+      ['5', 'reports', '0'],
+      ['5', 'dropdown', '0'],
+      ['5', 'device', '0'],
+      ['5', 'typedoc', '0'],
+      ['5', 'link', '0'],
+      ['5', 'config', '0'],
+      ['5', 'rule_ticket', '0'],
+      ['5', 'rule_import', '0'],
+      ['5', 'rule_ldap', '0'],
+      ['5', 'rule_softwarecategories', '0'],
+      ['5', 'search_config', '0'],
+      ['1', 'location', '0'],
+      ['3', 'domain', '23'],
+      ['5', 'profile', '0'],
+      ['5', 'user', '1025'],
+      ['5', 'group', '0'],
+      ['5', 'entity', '0'],
+      ['5', 'transfer', '0'],
+      ['5', 'logs', '0'],
+      ['5', 'reminder_public', '0'],
+      ['5', 'rssfeed_public', '0'],
+      ['5', 'bookmark_public', '0'],
+      ['5', 'backup', '0'],
+      ['5', 'ticket', '140295'],
+      ['5', 'followup', '12295'],
+      ['5', 'task', '8193'],
+      ['4', 'project', '1151'],
+      ['5', 'project', '1151'],
+      ['6', 'project', '1151'],
+      ['5', 'planning', '1'],
+      ['5', 'taskcategory', '0'],
+      ['5', 'netpoint', '0'],
+      ['5', 'statistic', '1'],
+      ['5', 'password_update', '1'],
+      ['5', 'show_group_hardware', '0'],
+      ['5', 'rule_dictionnary_software', '0'],
+      ['5', 'rule_dictionnary_dropdown', '0'],
+      ['5', 'budget', '0'],
+      ['5', 'notification', '0'],
+      ['5', 'rule_mailcollector', '0'],
+      ['6', 'state', '0'],
+      ['7', 'state', '23'],
+      ['5', 'calendar', '0'],
+      ['5', 'slm', '0'],
+      ['5', 'rule_dictionnary_printer', '0'],
+      ['5', 'problem', '1024'],
+      ['7', 'knowbasecategory', '23'],
+      ['1', 'itilcategory', '0'],
+      ['5', 'itiltemplate', '0'],
+      ['5', 'ticketrecurrent', '0'],
+      ['5', 'ticketcost', '23'],
+      ['5', 'change', '1054'],
+      ['6', 'change', '1151'],
+      ['5', 'ticketvalidation', '3088'],
+      ['6', 'computer', '127'],
+      ['6', 'monitor', '127'],
+      ['6', 'software', '127'],
+      ['6', 'networking', '127'],
+      ['6', 'internet', '31'],
+      ['6', 'printer', '127'],
+      ['6', 'peripheral', '127'],
+      ['6', 'cartridge', '127'],
+      ['6', 'consumable', '127'],
+      ['6', 'phone', '127'],
+      ['2', 'queuednotification', '0'],
+      ['6', 'contact_enterprise', '96'],
+      ['6', 'document', '127'],
+      ['6', 'contract', '96'],
+      ['6', 'infocom', '0'],
+      ['6', 'knowbase', '14359'],
+      ['6', 'reservation', '1055'],
+      ['6', 'reports', '1'],
+      ['6', 'dropdown', '0'],
+      ['6', 'device', '0'],
+      ['6', 'typedoc', '0'],
+      ['6', 'link', '0'],
+      ['6', 'config', '0'],
+      ['6', 'rule_ticket', '0'],
+      ['6', 'rule_import', '0'],
+      ['6', 'rule_ldap', '0'],
+      ['6', 'rule_softwarecategories', '0'],
+      ['6', 'search_config', '0'],
+      ['2', 'domain', '0'],
+      ['6', 'profile', '0'],
+      ['6', 'user', '1055'],
+      ['6', 'group', '1'],
+      ['6', 'entity', '33'],
+      ['6', 'transfer', '1'],
+      ['6', 'logs', '0'],
+      ['6', 'reminder_public', '23'],
+      ['6', 'rssfeed_public', '23'],
+      ['6', 'bookmark_public', '0'],
+      ['6', 'backup', '0'],
+      ['6', 'ticket', '166919'],
+      ['6', 'followup', '13319'],
+      ['6', 'task', '13329'],
+      ['1', 'project', '0'],
+      ['2', 'project', '1025'],
+      ['3', 'project', '1151'],
+      ['6', 'planning', '1'],
+      ['4', 'taskcategory', '23'],
+      ['4', 'netpoint', '23'],
+      ['6', 'statistic', '1'],
+      ['6', 'password_update', '1'],
+      ['6', 'show_group_hardware', '0'],
+      ['6', 'rule_dictionnary_software', '0'],
+      ['6', 'rule_dictionnary_dropdown', '0'],
+      ['6', 'budget', '96'],
+      ['6', 'notification', '0'],
+      ['6', 'rule_mailcollector', '0'],
+      ['4', 'state', '23'],
+      ['5', 'state', '0'],
+      ['6', 'calendar', '0'],
+      ['6', 'slm', '1'],
+      ['6', 'rule_dictionnary_printer', '0'],
+      ['6', 'problem', '1121'],
+      ['6', 'knowbasecategory', '0'],
+      ['7', 'itilcategory', '23'],
+      ['7', 'location', '23'],
+      ['6', 'itiltemplate', '1'],
+      ['6', 'ticketrecurrent', '1'],
+      ['6', 'ticketcost', '23'],
+      ['3', 'change', '1151'],
+      ['4', 'change', '1151'],
+      ['6', 'ticketvalidation', '3088'],
+      ['7', 'computer', '127'],
+      ['7', 'monitor', '127'],
+      ['7', 'software', '127'],
+      ['7', 'networking', '127'],
+      ['7', 'internet', '31'],
+      ['7', 'printer', '127'],
+      ['7', 'peripheral', '127'],
+      ['7', 'cartridge', '127'],
+      ['7', 'consumable', '127'],
+      ['7', 'phone', '127'],
+      ['1', 'queuednotification', '0'],
+      ['7', 'contact_enterprise', '96'],
+      ['7', 'document', '127'],
+      ['7', 'contract', '96'],
+      ['7', 'infocom', '0'],
+      ['7', 'knowbase', '14359'],
+      ['7', 'reservation', '1055'],
+      ['7', 'reports', '1'],
+      ['7', 'dropdown', '0'],
+      ['7', 'device', '0'],
+      ['7', 'typedoc', '0'],
+      ['7', 'link', '0'],
+      ['7', 'config', '0'],
+      ['7', 'rule_ticket', '1047'],
+      ['7', 'rule_import', '0'],
+      ['7', 'rule_ldap', '0'],
+      ['7', 'rule_softwarecategories', '0'],
+      ['7', 'search_config', '0'],
+      ['1', 'domain', '0'],
+      ['7', 'profile', '0'],
+      ['7', 'user', '1055'],
+      ['7', 'group', '1'],
+      ['7', 'entity', '33'],
+      ['7', 'transfer', '1'],
+      ['7', 'logs', '1'],
+      ['7', 'reminder_public', '23'],
+      ['7', 'rssfeed_public', '23'],
+      ['7', 'bookmark_public', '0'],
+      ['7', 'backup', '0'],
+      ['7', 'ticket', '261151'],
+      ['7', 'followup', '15383'],
+      ['7', 'task', '13329'],
+      ['7', 'queuednotification', '0'],
+      ['7', 'planning', '3073'],
+      ['3', 'taskcategory', '23'],
+      ['3', 'netpoint', '23'],
+      ['7', 'statistic', '1'],
+      ['7', 'password_update', '1'],
+      ['7', 'show_group_hardware', '0'],
+      ['7', 'rule_dictionnary_software', '0'],
+      ['7', 'rule_dictionnary_dropdown', '0'],
+      ['7', 'budget', '96'],
+      ['7', 'notification', '0'],
+      ['7', 'rule_mailcollector', '23'],
+      ['7', 'changevalidation', '1044'],
+      ['3', 'state', '23'],
+      ['7', 'calendar', '23'],
+      ['7', 'slm', '23'],
+      ['7', 'rule_dictionnary_printer', '0'],
+      ['7', 'problem', '1151'],
+      ['5', 'knowbasecategory', '0'],
+      ['6', 'itilcategory', '0'],
+      ['6', 'location', '0'],
+      ['7', 'itiltemplate', '23'],
+      ['7', 'ticketrecurrent', '1'],
+      ['7', 'ticketcost', '23'],
+      ['1', 'change', '0'],
+      ['2', 'change', '1057'],
+      ['7', 'ticketvalidation', '15376'],
+      ['8', 'backup', '1'],
+      ['8', 'bookmark_public', '1'],
+      ['8', 'budget', '33'],
+      ['8', 'calendar', '1'],
+      ['8', 'cartridge', '33'],
+      ['8', 'change', '1057'],
+      ['8', 'changevalidation', '0'],
+      ['8', 'computer', '33'],
+      ['8', 'config', '1'],
+      ['8', 'consumable', '33'],
+      ['8', 'contact_enterprise', '33'],
+      ['8', 'contract', '33'],
+      ['8', 'device', '1'],
+      ['8', 'document', '33'],
+      ['8', 'domain', '1'],
+      ['8', 'dropdown', '1'],
+      ['8', 'entity', '33'],
+      ['8', 'followup', '8193'],
+      ['8', 'global_validation', '0'],
+      ['8', 'group', '33'],
+      ['8', 'infocom', '1'],
+      ['8', 'internet', '1'],
+      ['8', 'itilcategory', '1'],
+      ['8', 'knowbase', '10241'],
+      ['8', 'knowbasecategory', '1'],
+      ['8', 'link', '1'],
+      ['8', 'location', '1'],
+      ['8', 'logs', '1'],
+      ['8', 'monitor', '33'],
+      ['8', 'netpoint', '1'],
+      ['8', 'networking', '33'],
+      ['8', 'notification', '1'],
+      ['8', 'password_update', '0'],
+      ['8', 'peripheral', '33'],
+      ['8', 'phone', '33'],
+      ['8', 'planning', '3073'],
+      ['8', 'printer', '33'],
+      ['8', 'problem', '1057'],
+      ['8', 'profile', '1'],
+      ['8', 'project', '1057'],
+      ['8', 'projecttask', '33'],
+      ['8', 'queuednotification', '1'],
+      ['8', 'reminder_public', '1'],
+      ['8', 'reports', '1'],
+      ['8', 'reservation', '1'],
+      ['8', 'rssfeed_public', '1'],
+      ['8', 'rule_dictionnary_dropdown', '1'],
+      ['8', 'rule_dictionnary_printer', '1'],
+      ['8', 'rule_dictionnary_software', '1'],
+      ['8', 'rule_import', '1'],
+      ['8', 'rule_ldap', '1'],
+      ['8', 'rule_mailcollector', '1'],
+      ['8', 'rule_softwarecategories', '1'],
+      ['8', 'rule_ticket', '1'],
+      ['8', 'search_config', '0'],
+      ['8', 'show_group_hardware', '1'],
+      ['8', 'slm', '1'],
+      ['8', 'software', '33'],
+      ['8', 'solutiontemplate', '1'],
+      ['8', 'state', '1'],
+      ['8', 'statistic', '1'],
+      ['8', 'task', '8193'],
+      ['8', 'taskcategory', '1'],
+      ['8', 'ticket', '138241'],
+      ['8', 'ticketcost', '1'],
+      ['8', 'ticketrecurrent', '1'],
+      ['8', 'itiltemplate', '1'],
+      ['8', 'ticketvalidation', '0'],
+      ['8', 'transfer', '1'],
+      ['8', 'typedoc', '1'],
+      ['8', 'user', '1'],
+      ['1', 'license', '0'],
+      ['2', 'license', '33'],
+      ['3', 'license', '127'],
+      ['4', 'license', '255'],
+      ['5', 'license', '0'],
+      ['6', 'license', '127'],
+      ['7', 'license', '127'],
+      ['8', 'license', '33'],
+      ['1', 'line', '0'],
+      ['2', 'line', '33'],
+      ['3', 'line', '127'],
+      ['4', 'line', '255'],
+      ['5', 'line', '0'],
+      ['6', 'line', '127'],
+      ['7', 'line', '127'],
+      ['8', 'line', '33'],
+      ['1', 'lineoperator', '0'],
+      ['2', 'lineoperator', '33'],
+      ['3', 'lineoperator', '23'],
+      ['4', 'lineoperator', '23'],
+      ['5', 'lineoperator', '0'],
+      ['6', 'lineoperator', '0'],
+      ['7', 'lineoperator', '23'],
+      ['8', 'lineoperator', '1'],
+      ['1', 'devicesimcard_pinpuk', '0'],
+      ['2', 'devicesimcard_pinpuk', '1'],
+      ['3', 'devicesimcard_pinpuk', '3'],
+      ['4', 'devicesimcard_pinpuk', '3'],
+      ['5', 'devicesimcard_pinpuk', '0'],
+      ['6', 'devicesimcard_pinpuk', '3'],
+      ['7', 'devicesimcard_pinpuk', '3'],
+      ['8', 'devicesimcard_pinpuk', '1'],
+      ['1', 'certificate', '0'],
+      ['2', 'certificate', '33'],
+      ['3', 'certificate', '127'],
+      ['4', 'certificate', '255'],
+      ['5', 'certificate', '0'],
+      ['6', 'certificate', '127'],
+      ['7', 'certificate', '127'],
+      ['8', 'certificate', '33'],
+      ['1', 'datacenter', '0'],
+      ['2', 'datacenter', '1'],
+      ['3', 'datacenter', '31'],
+      ['4', 'datacenter', '31'],
+      ['5', 'datacenter', '0'],
+      ['6', 'datacenter', '31'],
+      ['7', 'datacenter', '31'],
+      ['8', 'datacenter', '1'],
+      ['4', 'rule_asset', '1047'],
+      ['1', 'personalization', '3'],
+      ['2', 'personalization', '3'],
+      ['3', 'personalization', '3'],
+      ['4', 'personalization', '3'],
+      ['5', 'personalization', '3'],
+      ['6', 'personalization', '3'],
+      ['7', 'personalization', '3'],
+      ['8', 'personalization', '3'],
+      ['1', 'rule_asset', '0'],
+      ['2', 'rule_asset', '0'],
+      ['3', 'rule_asset', '0'],
+      ['5', 'rule_asset', '0'],
+      ['6', 'rule_asset', '0'],
+      ['7', 'rule_asset', '0'],
+      ['8', 'rule_asset', '0'],
+      ['1', 'global_validation', '0'],
+      ['2', 'global_validation', '0'],
+      ['3', 'global_validation', '0'],
+      ['4', 'global_validation', '0'],
+      ['5', 'global_validation', '0'],
+      ['6', 'global_validation', '0'],
+      ['7', 'global_validation', '0'],
+      ['1', 'cluster', 0],
+      ['2', 'cluster', 1],
+      ['3', 'cluster', 31],
+      ['4', 'cluster', 31],
+      ['5', 'cluster', 0],
+      ['6', 'cluster', 31],
+      ['7', 'cluster', 31],
+      ['8', 'cluster', 1],
+      ['1', 'externalevent', 0],
+      ['2', 'externalevent', 1],
+      ['3', 'externalevent', 1055],
+      ['4', 'externalevent', 1055],
+      ['5', 'externalevent', 0],
+      ['6', 'externalevent', 1],
+      ['7', 'externalevent', 31],
+      ['8', 'externalevent', 1]
+   ]
 ];
 
 
@@ -7261,18 +5006,15 @@ $tables['glpi_profiles_users'] = [
 
 $tables['glpi_projectstates'] = [
    [
-      'id'          => '1',
-      'name'        => 'New',
+      'id'          => '1', 'New',
       'color'       => '#06ff00',
       'is_finished' => '0',
    ], [
-      'id'          => '2',
-      'name'        => 'Processing',
+      'id'          => '2', 'Processing',
       'color'       => '#ffb800',
       'is_finished' => '0',
    ], [
-      'id'          => '3',
-      'name'        => 'Closed',
+      'id'          => '3', 'Closed',
       'color'       => '#ff0000',
       'is_finished' => '1',
    ],
@@ -7701,25 +5443,15 @@ $tables['glpi_softwarelicensetypes'] = [
 ];
 
 $tables['glpi_ssovariables'] = [
-   [
-      'id'   => 1,
-      'name' => 'HTTP_AUTH_USER',
-   ], [
-      'id'   => 2,
-      'name' => 'REMOTE_USER',
-   ], [
-      'id'   => 3,
-      'name' => 'PHP_AUTH_USER',
-   ], [
-      'id'   => 4,
-      'name' => 'USERNAME',
-   ], [
-      'id'   => 5,
-      'name' => 'REDIRECT_REMOTE_USER',
-   ], [
-      'id'   => 6,
-      'name' => 'HTTP_REMOTE_USER',
-   ],
+   'COLUMNS'   => ['id', 'name'],
+   'VALUES'    => [
+      [1, 'HTTP_AUTH_USER'],
+      [2, 'REMOTE_USER'],
+      [3, 'PHP_AUTH_USER'],
+      [4, 'USERNAME'],
+      [5, 'REDIRECT_REMOTE_USER'],
+      [6, 'HTTP_REMOTE_USER']
+   ]
 ];
 
 $tables['glpi_tickettemplates'] = [
@@ -7810,50 +5542,22 @@ $tables['glpi_transfers'] = [
 ];
 
 $tables['glpi_users'] = [
-   [
-      'id'         => '2',
-      'name'       => 'glpi',
-      'password'   => '$2y$10$rXXzbc2ShaiCldwkw4AZL.n.9QSH7c0c9XJAyyjrbL9BwmWditAYm',
-      'language'   => null,
-      'list_limit' => '20',
-      'authtype'   => '1',
-   ], [
-      'id'         => '3',
-      'name'       => 'post-only',
-      'password'   => '$2y$10$dTMar1F3ef5X/H1IjX9gYOjQWBR1K4bERGf4/oTPxFtJE/c3vXILm',
-      'language'   => 'en_GB',
-      'list_limit' => '20',
-      'authtype'   => '1',
-   ], [
-      'id'         => '4',
-      'name'       => 'tech',
-      'password'   => '$2y$10$.xEgErizkp6Az0z.DHyoeOoenuh0RcsX4JapBk2JMD6VI17KtB1lO',
-      'language'   => 'en_GB',
-      'list_limit' => '20',
-      'authtype'   => '1',
-   ], [
-      'id'         => '5',
-      'name'       => 'normal',
-      'password'   => '$2y$10$Z6doq4zVHkSPZFbPeXTCluN1Q/r0ryZ3ZsSJncJqkN3.8cRiN0NV.',
-      'language'   => 'en_GB',
-      'list_limit' => '20',
-      'authtype'   => '1',
-   ],
+   'COLUMNS'   => ['id', 'name', 'password', 'language', 'list_limit', 'authtype'],
+   'VALUES'    => [
+      ['2', 'glpi', '$2y$10$rXXzbc2ShaiCldwkw4AZL.n.9QSH7c0c9XJAyyjrbL9BwmWditAYm', null, '20', '1'],
+      ['3', 'post-only', '$2y$10$dTMar1F3ef5X/H1IjX9gYOjQWBR1K4bERGf4/oTPxFtJE/c3vXILm', 'en_GB', '20', '1'],
+      ['4', 'tech', '$2y$10$.xEgErizkp6Az0z.DHyoeOoenuh0RcsX4JapBk2JMD6VI17KtB1lO', 'en_GB', '20', '1'],
+      ['5', 'normal', '$2y$10$Z6doq4zVHkSPZFbPeXTCluN1Q/r0ryZ3ZsSJncJqkN3.8cRiN0NV.', 'en_GB', '20', '1']
+   ]
 ];
 
 $tables['glpi_devicefirmwaretypes'] = [
-   [
-      'id'   => '1',
-      'name' => 'BIOS',
-   ],
-   [
-      'id'   => '2',
-      'name' => 'UEFI',
-   ],
-   [
-      'id'   => '3',
-      'name' => 'Firmware',
-   ],
+   'COLUMNS'   => [],
+   'VALUES'    => [
+      ['1', 'BIOS'],
+      ['2', 'UEFI'],
+      ['3', 'Firmware']
+   ]
 ];
 
 return $tables;

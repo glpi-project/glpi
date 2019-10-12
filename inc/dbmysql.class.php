@@ -1082,25 +1082,47 @@ class DBmysql {
     * Builds an insert statement
     *
     * @since 9.3
+    * @since 9.5.0 Support bulk inserts
     *
     * @param string $table  Table name
-    * @param array  $params Query parameters ([field name => field value)
+    * @param array  $params Query parameters ([field name => field value) OR
+    *    [
+    *       'COLUMNS' => Array of column names,
+    *       'VALUES'  => Array of field values
+    *    ]
     *
     * @return string
     */
    public function buildInsert($table, $params) {
       $query = "INSERT INTO " . self::quoteName($table) . " (";
 
+      $is_bulk = count($params) && array_key_exists('COLUMNS', $params) && is_array($params['COLUMNS'])
+            && array_key_exists('VALUES', $params) && is_array($params['VALUES']);
+
+      if (!$is_bulk) {
+         $params = [
+            'COLUMNS'   => array_keys($params),
+            'VALUES'    => [array_values($params)]
+         ];
+      }
+
       $fields = [];
-      foreach ($params as $key => &$value) {
-         $fields[] = $this->quoteName($key);
-         $value = $this->quoteValue($value);
+      foreach ($params['COLUMNS'] as $column) {
+         $fields[] = $this->quoteName($column);
+      }
+      foreach ($params['VALUES'] as $row_id => $row) {
+         foreach ($row as $key => $value) {
+            $params['VALUES'][$row_id][$key] = $this->quoteValue($value);
+         }
       }
 
       $query .= implode(', ', $fields);
-      $query .= ") VALUES (";
-      $query .= implode(", ", $params);
-      $query .= ")";
+      $query .= ") VALUES ";
+
+      foreach ($params['VALUES'] as $row) {
+         $query .= '(' . implode(', ', array_values($row)) . '),';
+      }
+      $query = rtrim($query, ',');
 
       return $query;
    }
@@ -1679,5 +1701,43 @@ class DBmysql {
    public static function isNameQuoted($value): bool {
       $quote = static::getQuoteNameChar();
       return is_string($value) && trim($value, $quote) != $value;
+   }
+
+   /**
+    * Insert multiple rows in the database
+    *
+    * @since 9.5.0
+    * @param string $table    Table name
+    * @param array  $columns  Array of column names
+    * @param array  $values   Array of arrays of values
+    * @return mysqli_result|boolean Query result handler
+    * @throws GlpitestSQLError Only thrown during unit tests
+    */
+   public function insertBulk(string $table, array $columns, array $values) {
+      $result = $this->query(
+         $this->buildInsert($table, [
+            'COLUMNS'   => $columns,
+            'VALUES'    => $values
+         ])
+      );
+      return $result;
+   }
+
+   /**
+    * Insert multiple rows in the database and die (optionally with a message) if it fails
+    *
+    * @since 9.5.0
+    * @param string      $table    Table name
+    * @param array       $columns  Array of column names
+    * @param array       $values   Array of arrays of values
+    * @param string|null $message  Explanation of query
+    * @return mysqli_result|boolean Query result handler
+    */
+   public function insertBulkOrDie(string $table, array $columns, array $values, $message = null) {
+      $res = $this->queryOrDie($this->buildInsert($table, [
+         'COLUMNS'   => $columns,
+         'VALUES'    => $values
+      ]), $message);
+      return $res;
    }
 }

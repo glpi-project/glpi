@@ -146,4 +146,33 @@ class DBmysql extends \GLPITestCase {
       ]);
       $this->string($built)->isIdenticalTo($expected);
    }
+
+   public function testBuildInsert() {
+      global $DB;
+
+      // Single Insert
+      $expected = "INSERT INTO `glpi_profilerights` (`profiles_id`, `name`) VALUES ('1', 'test_right_1')";
+      $built = $DB->buildInsert('glpi_profilerights', [
+         'profiles_id'  => 1,
+         'name'         => 'test_right_1'
+      ]);
+      $this->string($built)->isIdenticalTo($expected);
+
+      // Bulk Insert
+      $expected = "INSERT INTO `glpi_profilerights` (`profiles_id`, `name`) VALUES ('1', 'test_right_1'),('1', 'test_right_2')";
+      $built = $DB->buildInsert('glpi_profilerights', [
+         'COLUMNS'   => ['profiles_id', 'name'],
+         'VALUES'    => [
+            [
+               '1',
+               'test_right_1'
+            ],
+            [
+               '1',
+               'test_right_2'
+            ]
+         ]
+      ]);
+      $this->string($built)->isIdenticalTo($expected);
+   }
 }
