@@ -2443,29 +2443,36 @@ class Toolbox {
                      new QueryParam()
                   )
                );
-            } else {
-               $reference = $data;
-            }
 
-            $stmt = $DB->prepare($DB->buildInsert($table, $reference));
-            if (false === $stmt) {
-               $msg = "Error preparing statement in table $table";
-               throw new \RuntimeException($msg);
-            }
+               $stmt = $DB->prepare($DB->buildInsert($table, $reference));
 
-            $types = str_repeat('s', count($data[0]));
-            foreach ($data as $row) {
-               $res = $stmt->bind_param($types, ...array_values($row));
-               if (false === $res) {
-                  $msg = "Error binding params in table $table\n";
-                  $msg .= print_r($row, true);
+               if (false === $stmt) {
+                  $msg = "Error preparing statement in table $table";
                   throw new \RuntimeException($msg);
                }
-               $res = $stmt->execute();
+
+               $types = str_repeat('s', count($data[0]));
+               foreach ($data as $row) {
+                  $res = $stmt->bind_param($types, ...array_values($row));
+                  if (false === $res) {
+                     $msg = "Error binding params in table $table\n";
+                     $msg .= print_r($row, true);
+                     throw new \RuntimeException($msg);
+                  }
+                  $res = $stmt->execute();
+                  if (false === $res) {
+                     $msg = $stmt->error;
+                     $msg .= "\nError execution statement in table $table\n";
+                     $msg .= print_r($row, true);
+                     throw new \RuntimeException($msg);
+                  }
+               }
+            } else {
+               //TODO Use prepared statements
+               $res = $DB->insertBulk($table, $data['COLUMNS'], $data['VALUES']);
                if (false === $res) {
-                  $msg = $stmt->error;
-                  $msg .= "\nError execution statement in table $table\n";
-                  $msg .= print_r($row, true);
+                  $msg = $DB->error();
+                  $msg .= "\nError bulk insert statement in table $table\n";
                   throw new \RuntimeException($msg);
                }
             }
@@ -2486,11 +2493,11 @@ class Toolbox {
             // Downstream packages may provide a good system cron
             $DB->updateOrDie(
                'glpi_crontasks', [
-                  'mode'   => 2
-               ], [
-                  'name'      => ['!=', 'watcher'],
-                  'allowmode' => ['&', 2]
-               ],
+               'mode'   => 2
+            ], [
+               'name'      => ['!=', 'watcher'],
+               'allowmode' => ['&', 2]
+            ],
                '4203'
             );
          }
