@@ -4210,7 +4210,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 ];
 
 $tables['glpi_profilerights'] = [
-   'COLUMNS'   => ['id', 'name', 'rights'],
+   'COLUMNS'   => ['profiles_id', 'name', 'rights'],
    'VALUES'    => [
       ['1', 'computer', '0'],
       ['1', 'monitor', '0'],
