@@ -1722,125 +1722,44 @@ $tables['glpi_entities'] = [
 ];
 
 $tables['glpi_filesystems'] = [
-   [
-      'id'   => 1,
-      'name' => 'ext',
-   ],
-   [
-      'id'   => 2,
-      'name' => 'ext2',
-   ],
-   [
-      'id'   => 3,
-      'name' => 'ext3',
-   ],
-   [
-      'id'   => 4,
-      'name' => 'ext4',
-   ],
-   [
-      'id'   => 5,
-      'name' => 'FAT',
-   ],
-   [
-      'id'   => 6,
-      'name' => 'FAT32',
-   ],
-   [
-      'id'   => 7,
-      'name' => 'VFAT',
-   ],
-   [
-      'id'   => 8,
-      'name' => 'HFS',
-   ],
-   [
-      'id'   => 9,
-      'name' => 'HPFS',
-   ],
-   [
-      'id'   => 10,
-      'name' => 'HTFS',
-   ],
-   [
-      'id'   => 11,
-      'name' => 'JFS',
-   ],
-   [
-      'id'   => 12,
-      'name' => 'JFS2',
-   ],
-   [
-      'id'   => 13,
-      'name' => 'NFS',
-   ],
-   [
-      'id'   => 14,
-      'name' => 'NTFS',
-   ],
-   [
-      'id'   => 15,
-      'name' => 'ReiserFS',
-   ],
-   [
-      'id'   => 16,
-      'name' => 'SMBFS',
-   ],
-   [
-      'id'   => 17,
-      'name' => 'UDF',
-   ],
-   [
-      'id'   => 18,
-      'name' => 'UFS',
-   ],
-   [
-      'id'   => 19,
-      'name' => 'XFS',
-   ],
-   [
-      'id'   => 20,
-      'name' => 'ZFS',
-   ],
-   [
-      'id'   => 21,
-      'name' => 'APFS',
-   ],
+   'COLUMNS'   => ['id', 'name'],
+   'VALUES'    => [
+      [1, 'ext'],
+      [2, 'ext2'],
+      [3, 'ext3'],
+      [4, 'ext4'],
+      [5, 'FAT'],
+      [6, 'FAT32'],
+      [7, 'VFAT'],
+      [8, 'HFS'],
+      [9, 'HPFS'],
+      [10, 'HTFS'],
+      [11, 'JFS'],
+      [12, 'JFS2'],
+      [13, 'NFS'],
+      [14, 'NTFS'],
+      [15, 'ReiserFS'],
+      [16, 'SMBFS'],
+      [17, 'UDF'],
+      [18, 'UFS'],
+      [19, 'XFS'],
+      [20, 'ZFS'],
+      [21, 'APFS'],
+   ]
 ];
 
 $tables['glpi_interfacetypes'] = [
-   [
-      'id'   => 1,
-      'name' => 'IDE',
-   ],
-   [
-      'id'   => 2,
-      'name' => 'SATA',
-   ],
-   [
-      'id'   => 3,
-      'name' => 'SCSI',
-   ],
-   [
-      'id'   => 4,
-      'name' => 'USB',
-   ],
-   [
-      'id'   => 5,
-      'name' => 'AGP',
-   ],
-   [
-      'id'   => 6,
-      'name' => 'PCI',
-   ],
-   [
-      'id'   => 7,
-      'name' => 'PCIe',
-   ],
-   [
-      'id'   => 8,
-      'name' => 'PCI-X',
-   ],
+   'COLUMNS'   => ['id', 'name'],
+   'VALUES'    => [
+      [1, 'IDE'],
+      [2, 'SATA'],
+      [3, 'SCSI'],
+      [4, 'USB'],
+      [5, 'AGP'],
+      [6, 'PCI'],
+      [7, 'PCIe'],
+      [8, 'PCI-X'],
+   ]
 ];
 
 $tables['glpi_notifications'] = [
@@ -5006,15 +4925,18 @@ $tables['glpi_profiles_users'] = [
 
 $tables['glpi_projectstates'] = [
    [
-      'id'          => '1', 'New',
+      'id'          => '1',
+      'name'        => 'New',
       'color'       => '#06ff00',
       'is_finished' => '0',
    ], [
-      'id'          => '2', 'Processing',
+      'id'          => '2',
+      'name'        => 'Processing',
       'color'       => '#ffb800',
       'is_finished' => '0',
    ], [
-      'id'          => '3', 'Closed',
+      'id'          => '3',
+      'name'        => 'Closed',
       'color'       => '#ff0000',
       'is_finished' => '1',
    ],
@@ -5552,7 +5474,7 @@ $tables['glpi_users'] = [
 ];
 
 $tables['glpi_devicefirmwaretypes'] = [
-   'COLUMNS'   => [],
+   'COLUMNS'   => ['id', 'name'],
    'VALUES'    => [
       ['1', 'BIOS'],
       ['2', 'UEFI'],
