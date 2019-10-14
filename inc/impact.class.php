@@ -207,7 +207,7 @@ class Impact extends CommonGLPI {
          // Header
          echo '<thead>';
          echo '<tr class="noHover">';
-         echo '<th colspan="2"><h3>' . $label . '</h3></th>';
+         echo '<th colspan="2" width="90%"><h3>' . $label . '</h3></th>';
          echo '<th><i class="fas fa-2x fa-caret-down impact-toggle-subitems-master impact-pointer"></i></th>';
          echo '</tr>';
          echo '</thead>';
@@ -340,13 +340,8 @@ class Impact extends CommonGLPI {
                }
             });
 
-            if ($(e.target).hasClass("fa-caret-up")) {
-               $(e.target).removeClass("fa-caret-up");
-               $(e.target).addClass("fa-caret-down");
-            } else {
-               $(e.target).removeClass("fa-caret-down");
-               $(e.target).addClass("fa-caret-up");
-            }
+            $(e.target).toggleClass("fa-caret-up");
+            $(e.target).toggleClass("fa-caret-down");
          });
       ');
 
@@ -354,7 +349,6 @@ class Impact extends CommonGLPI {
          // Handle settings actions
          echo Html::scriptBlock('
             $("#impact-list-settings").click(function() {
-               console.log("esrres");
                $("#list_depth_dialog").dialog({
                   modal: true,
                   buttons: {
@@ -385,6 +379,8 @@ class Impact extends CommonGLPI {
     *                                 impacted by $item or that impact $item ?
     * @param CommonDBTM $item         starting point of the graph
     * @param ImpactItem $impact_item  saved params for $item
+    *
+    * @return array
     */
    public static function buildListData(
       array $graph,
@@ -392,8 +388,15 @@ class Impact extends CommonGLPI {
       CommonDBTM $item,
       ImpactItem $impact_item
    ) {
+      $data = [];
+
       // Filter tree
       $sub_graph = self::filterGraph($graph, $direction);
+
+      // Empty graph, no need to go further
+      if (!count($sub_graph['nodes'])) {
+         return $data;
+      }
 
       // Evaluate path to each assets from the starting node
       $start_node_id = self::getNodeID($item);
@@ -417,7 +420,6 @@ class Impact extends CommonGLPI {
       }
 
       // Split the items by type
-      $data = [];
       foreach ($sub_graph['nodes'] as $node) {
          $details = explode(self::NODE_ID_DELIMITER, $node['id']);
          $itemtype = $details[0];

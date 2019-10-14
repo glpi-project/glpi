@@ -63,9 +63,9 @@ foreach ($directions as $direction) {
 }
 
 // Output csv data
-$filename = $item->fields['name'];
+$filename = rawurlencode("{$item->fields['name']}.csv");
 header("Content-Type: application/csv");
-header("Content-Disposition: attachment; filename='$filename.csv';");
+header("Content-Disposition: attachment; filename='impact.csv'; filename*=UTF-8''$filename");
 $output = fopen('php://output', 'w');
 if ($output === false) {
    throw new \RuntimeException("Can't open php://output");
