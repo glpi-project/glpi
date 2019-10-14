@@ -117,24 +117,24 @@ jobs:
       - name: "Database tests"
         run: |
           docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=db --db-user=root
-          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
           docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
       - name: "Unit tests"
         run: |
-          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
       - name: "Functionnal tests"
         run: |
-          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal
       - name: "LDAP tests"
         run: |
           for f in `ls tests/LDAP/ldif/*.ldif`; do cat $f | docker exec --interactive ${{ job.services.openldap.id }} ldapadd -x -H ldap://127.0.0.1:3890/ -D "cn=Manager,dc=glpi,dc=org" -w insecure ; done
-          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP
       - name: "IMAP tests"
         run: |
           for f in `ls tests/emails-tests/*.eml`; do cat $f | docker exec --user glpi --interactive ${{ job.services.dovecot.id }} getmail_maildir /home/glpi/Maildir/ ; done
           docker exec ${{ job.services.app.id }} sed -e 's/127.0.0.1/dovecot/g' -i tests/imap/MailCollector.php
-          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
       - name: "WEB tests"
         run: |
           docker exec ${{ job.services.app.id }} php -S localhost:8088 tests/router.php &>/dev/null &
-          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
+          docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web

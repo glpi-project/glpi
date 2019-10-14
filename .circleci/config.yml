@@ -93,7 +93,7 @@ commands:
           name: Database tests
           command: |
             bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=127.0.0.1 --db-user=root
-            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report  --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
 
   # Database install command.
   install_db:
@@ -110,7 +110,7 @@ commands:
     steps:
       - run:
           name: Unit tests
-          command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
+          command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
 
   # Unit test suite command.
   run_imap_test_suite:
@@ -120,14 +120,14 @@ commands:
           command: |
             sudo service dovecot start
             for f in `ls tests/emails-tests/*.eml`; do getmail_maildir ~/Maildir/ < $f; done
-            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
 
   # Functionnal test suite command.
   run_functionnal_test_suite:
     steps:
       - run:
           name: Functionnal tests
-          command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal
+          command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal
 
   # Web test suite command.
   run_web_test_suite:
@@ -136,7 +136,7 @@ commands:
           name: WEB tests
           command: |
             php -S localhost:8088 tests/router.php &>/dev/null &
-            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
 
   # Run full test suite command.
   run_full_test_suite:
