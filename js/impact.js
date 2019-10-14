@@ -2327,6 +2327,7 @@ var GLPIImpact = {
             },
             success: function(){
                GLPIImpact.initialState = GLPIImpact.getCurrentState();
+               $(document).trigger('impactUpdated');
             },
             error: function(){
                GLPIImpact.showDirtyWorkspaceStatus();

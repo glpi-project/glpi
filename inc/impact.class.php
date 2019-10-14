@@ -190,7 +190,7 @@ class Impact extends CommonGLPI {
          throw new \InvalidArgumentException("No ImpactItem found");
       }
 
-      echo '<div id="impact_list_view" style="display: none">';
+      echo '<div id="impact_list_view">';
       echo '<div class="impact-list-container">';
 
       // One table will be printed for each direction
@@ -342,6 +342,21 @@ class Impact extends CommonGLPI {
 
             $(e.target).toggleClass("fa-caret-up");
             $(e.target).toggleClass("fa-caret-down");
+         });
+
+         $(document).on("impactUpdated", function() {
+            $.ajax({
+               type: "GET",
+               url: "../ajax/impact.php",
+               data: {
+                  itemtype: "' . get_class($item) . '",
+                  items_id: "' . $item->fields['id'] . '",
+                  view: "list",
+               },
+               success: function(data){
+                  $("#impact_list_view").replaceWith(data);
+               },
+            });
          });
       ');
 
@@ -554,25 +569,50 @@ class Impact extends CommonGLPI {
       echo '<div class="impact-header">';
       echo "<h2>" . __("Impact analysis") . "</h2>";
       echo "<div id='switchview'>";
-      echo "<i id='sviewgraph' class='pointer fa fa-project-diagram selected' title='".__('View graphical representation')."'></i>";
-      echo "<i id='sviewlist' class='pointer fa fa-list-alt' title='".__('View as list')."'></i>";
+      echo "<a id='sviewgraph' href='#graph'><i class='pointer fa fa-project-diagram' title='".__('View graphical representation')."'></i></a>";
+      echo "<a id='sviewlist' href='#list'><i class='pointer fa fa-list-alt' title='".__('View as list')."'></i></a>";
       echo "</div>";
       echo "</div>";
 
       // View selection
       echo Html::scriptBlock("
-         $('#sviewgraph').click(function() {
+         function showGraphView() {
             $('#impact_list_view').hide();
             $('#impact_graph_view').show();
-            $('#sviewlist').removeClass('selected');
-            $('#sviewgraph').addClass('selected');
+            $('#sviewlist i').removeClass('selected');
+            $('#sviewgraph i').addClass('selected');
+
+            if (window.GLPIImpact !== undefined) {
+               // Force cytoscape render
+               window.GLPIImpact.cy.resize();
+
+               // Force grid guide render
+               $(document).trigger('resize');
+            }
+         }
+
+         function showListView() {
+            $('#impact_graph_view').hide();
+            $('#impact_list_view').show();
+            $('#sviewgraph i').removeClass('selected');
+            $('#sviewlist i').addClass('selected');
+         }
+
+         $('#sviewgraph').click(function() {
+            showGraphView();
          });
 
          $('#sviewlist').click(function() {
-            $('#impact_graph_view').hide();
-            $('#impact_list_view').show();
-            $('#sviewgraph').removeClass('selected');
-            $('#sviewlist').addClass('selected');
+            showListView();
+         });
+
+         // Select default view
+         $(document).ready(function() {
+            if (location.hash == '#list') {
+               showListView();
+            } else {
+               showGraphView();
+            }
          });
       ");
    }

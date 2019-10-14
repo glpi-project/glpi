@@ -48,7 +48,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
    // GET request: build the impact graph for a given asset
    case 'GET':
       $itemtype =  $_GET["itemtype"]  ?? "";
-      $items_id   =  $_GET["items_id"]    ?? "";
+      $items_id =  $_GET["items_id"]  ?? "";
+      $view     =  $_GET["view"]      ?? "graph";
 
       // Check required params
       if (empty($itemtype) || empty($items_id)) {
@@ -63,17 +64,23 @@ switch ($_SERVER['REQUEST_METHOD']) {
       // Prepare graph
       $item = new $itemtype;
       $item->getFromDB($items_id);
-      $graph = Impact::makeDataForCytoscape(Impact::buildGraph($item));
+      $graph = Impact::buildGraph($item);
       $params = Impact::prepareParams($item);
       $readonly = $item->can($items_id, UPDATE);
 
-      // Output graph
-      header('Content-Type: application/json');
-      echo json_encode([
-         'graph'    => $graph,
-         'params'   => $params,
-         'readonly' => $readonly,
-      ]);
+      if ($view == "graph") {
+         // Output graph as json
+         header('Content-Type: application/json');
+         echo json_encode([
+            'graph'  => Impact::makeDataForCytoscape($graph),
+            'params' => $params,
+            'readonly' => $readonly,
+         ]);
+      } else if ($view == "list") {
+         // Output list as HTML
+         header('Content-Type: text/html');
+         Impact::displayListView($item, $graph);
+      }
 
       break;
 

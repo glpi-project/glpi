@@ -48,5 +48,5 @@ if (isset($_POST["update"])) {
 
    // Update item and back
    $impact_item->update($_POST);
-   Html::back();
+   Html::redirect(Html::getBackUrl() . "#list");
 }
