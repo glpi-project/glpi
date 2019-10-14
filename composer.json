@@ -39,7 +39,7 @@
         "zendframework/zend-serializer": "^2.8"
     },
     "require-dev": {
-        "glpi-project/atoum": "dev-master",
+        "atoum/atoum": "dev-master",
         "consolidation/robo": "^1.0",
         "fzaninotto/faker": "^1.7",
         "glpi-project/coding-standard": "^0.7.1",
