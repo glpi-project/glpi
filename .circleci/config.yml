@@ -75,6 +75,16 @@ commands:
           name: PHP Parallel Lint
           command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
 
+  # Database install command.
+  install_db:
+    steps:
+      - run:
+          name: Install DB
+          command: |
+            mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
+            bin/console glpi:database:install --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest --db-host=127.0.0.1 --db-user=root
+            bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+
   # Database test suite command.
   run_db_test_suite:
     steps:
@@ -92,18 +102,8 @@ commands:
       - run:
           name: Database tests
           command: |
-            bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=127.0.0.1 --db-user=root
+            bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest --db-host=127.0.0.1 --db-user=root
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
-
-  # Database install command.
-  install_db:
-    steps:
-      - run:
-          name: Install DB
-          command: |
-            mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
-            bin/console glpi:database:install --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest --db-host=127.0.0.1 --db-user=root
-            bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
 
   # Unit test suite command.
   run_unit_test_suite:
@@ -141,8 +141,8 @@ commands:
   # Run full test suite command.
   run_full_test_suite:
     steps:
-      - run_db_test_suite
       - install_db
+      - run_db_test_suite
       - run_unit_test_suite
       - run_imap_test_suite
       - run_functionnal_test_suite

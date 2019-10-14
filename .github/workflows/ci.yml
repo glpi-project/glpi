@@ -102,6 +102,10 @@ jobs:
           docker exec ${{ job.services.app.id }} echo "npm version: $(npm --version)"
           docker exec ${{ job.services.app.id }} composer config --unset platform
           docker exec ${{ job.services.app.id }} bin/console dependencies install --composer-options="--prefer-dist --no-progress"
+      - name: "Install DB tests"
+        run: |
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:install --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
       - name: "Update DB tests"
         run: |
           docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=db --db-user=root
@@ -110,13 +114,9 @@ jobs:
           docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
           docker exec ${{ job.services.app.id }} bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
           docker exec ${{ job.services.app.id }} bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction
-      - name: "Install DB tests"
-        run: |
-          docker exec ${{ job.services.app.id }} bin/console glpi:database:install --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
-          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
       - name: "Database tests"
         run: |
-          docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=db --db-user=root
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
           docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
           docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
       - name: "Unit tests"
