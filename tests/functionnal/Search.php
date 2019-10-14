@@ -1381,30 +1381,26 @@ class Search extends DbTestCase {
                                                  'value'      => 'pc']]];
       $data = $this->doSearch('Computer', $search_params);
 
-      // check for sql error (data key missing or empty)
       $this->array($data)
          ->hasKey('data')
             ->array['last_errors']->isIdenticalTo([])
             ->array['data']->isNotEmpty()
-            //expecting no result
             ->integer['totalcount']->isIdenticalTo(8);
 
       $displaypref = new \DisplayPreference();
       $input = [
             'itemtype'  => 'Computer',
             'users_id'  => \Session::getLoginUserID(),
-            'num'       => 49, //Compyer groups_id_tech SO
+            'num'       => 49, //Computer groups_id_tech SO
       ];
       $this->integer((int)$displaypref->add($input))->isGreaterThan(0);
 
       $data = $this->doSearch('Computer', $search_params);
 
-      // check for sql error (data key missing or empty)
       $this->array($data)
          ->hasKey('data')
             ->array['last_errors']->isIdenticalTo([])
             ->array['data']->isNotEmpty()
-            //expecting one result
             ->integer['totalcount']->isIdenticalTo(8);
    }
 }
