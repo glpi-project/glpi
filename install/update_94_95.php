@@ -107,7 +107,7 @@ function update94to95() {
    /** /Timezones */
 
    // Fix search Softwares performance
-   $migration->dropKey('glpi_softwarelicenses', 'softwares_id_expire_number');
+   $migration->dropKey('glpi_softwarelicenses', 'softwares_id_expire');
    $migration->addKey('glpi_softwarelicenses', [
       'softwares_id',
       'expire',
@@ -620,20 +620,20 @@ function update94to95() {
    $migration->displayWarning('Updating software tables. This may take several minutes.');
    if (!$DB->tableExists('glpi_items_softwareversions')) {
       $migration->renameTable('glpi_computers_softwareversions', 'glpi_items_softwareversions');
-      $migration->addField(
-         'glpi_items_softwareversions',
-         'itemtype',
-         "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
-         [
-            'after' => 'id',
-            'update' => "'Computer'", // Defines value for all existing elements
-         ]
-      );
       $migration->changeField(
          'glpi_items_softwareversions',
          'computers_id',
          'items_id',
          "int(11) NOT NULL DEFAULT '0'"
+      );
+      $migration->addField(
+         'glpi_items_softwareversions',
+         'itemtype',
+         "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
+         [
+            'after' => 'items_id',
+            'update' => "'Computer'", // Defines value for all existing elements
+         ]
       );
       $migration->changeField('glpi_items_softwareversions', 'is_deleted_computer', 'is_deleted_item', 'bool');
       $migration->changeField('glpi_items_softwareversions', 'is_template_computer', 'is_template_item', 'bool');
@@ -645,6 +645,7 @@ function update94to95() {
          'items_id'
       ], 'item');
       $migration->dropKey('glpi_items_softwareversions', 'unicity');
+      $migration->migrationOneTable('glpi_items_softwareversions');
       $migration->addKey('glpi_items_softwareversions', [
          'itemtype',
          'items_id',
@@ -654,20 +655,20 @@ function update94to95() {
 
    if (!$DB->tableExists('glpi_items_softwarelicenses')) {
       $migration->renameTable('glpi_computers_softwarelicenses', 'glpi_items_softwarelicenses');
-      $migration->addField(
-         'glpi_items_softwarelicenses',
-         'itemtype',
-         "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
-         [
-            'after' => 'id',
-            'update' => "'Computer'", // Defines value for all existing elements
-         ]
-      );
       $migration->changeField(
          'glpi_items_softwarelicenses',
          'computers_id',
          'items_id',
          "int(11) NOT NULL DEFAULT '0'"
+      );
+      $migration->addField(
+         'glpi_items_softwarelicenses',
+         'itemtype',
+         "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
+         [
+            'after' => 'items_id',
+            'update' => "'Computer'", // Defines value for all existing elements
+         ]
       );
       $migration->addKey('glpi_items_softwarelicenses', 'itemtype');
       $migration->dropKey('glpi_items_softwarelicenses', 'computers_id');
@@ -777,6 +778,7 @@ function update94to95() {
          'integer',
          [
             'value'     => -2, // Inherit as default value
+            'after'     => 'tickettemplates_id'
          ]
       );
    }
@@ -788,6 +790,7 @@ function update94to95() {
          'integer',
          [
             'value'     => -2, // Inherit as default value
+            'after'     => 'changetemplates_id'
          ]
       );
    }
@@ -800,7 +803,8 @@ function update94to95() {
          'changetemplates_id',
          'integer',
          [
-            'value'     => -2, // Inherit as default value
+            'value'     => 0, // Inherit as default value
+            'after'     => 'tickettemplates_id'
          ]
       );
    }
@@ -811,13 +815,25 @@ function update94to95() {
          'problemtemplates_id',
          'integer',
          [
-            'value'     => -2, // Inherit as default value
+            'value'     => 0, // Inherit as default value
+            'after'     => 'changetemplates_id'
          ]
       );
    }
    $migration->addKey('glpi_profiles', 'problemtemplates_id');
-
    /** /Default template configuration for changes and problems */
+
+   /** Add Apple File System (All Apple devices since 2017) */
+   if (countElementsInTable('glpi_filesystems', ['name' => 'APFS']) === 0) {
+      $DB->insertOrDie('glpi_filesystems', [
+         'name'   => 'APFS'
+      ]);
+   }
+   /** /Add Apple File System (All Apple devices since 2017) */
+
+   /** Fix indexes */
+   $migration->dropKey('glpi_tickettemplatepredefinedfields', 'tickettemplates_id_id_num');
+   /** /Fix indexes */
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
@@ -831,13 +847,6 @@ function update94to95() {
             'num'       => $newval,
          ]);
       }
-   }
-
-   // Add Apple File System (All Apple devices since 2017)
-   if (countElementsInTable('glpi_filesystems', ['name' => 'APFS']) === 0) {
-      $DB->insertOrDie('glpi_filesystems', [
-         'name'   => 'APFS'
-      ]);
    }
 
    $migration->executeMigration();

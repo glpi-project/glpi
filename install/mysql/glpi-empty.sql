@@ -2444,7 +2444,7 @@ CREATE TABLE `glpi_entities` (
   `send_infocoms_alert_before_delay` int(11) NOT NULL DEFAULT '-2',
   `use_reservations_alert` int(11) NOT NULL DEFAULT '-2',
   `autoclose_delay` int(11) NOT NULL DEFAULT '-2',
-  `autopurge_delay` int(11) NOT NULL DEFAULT '-2',
+  `autopurge_delay` int(11) NOT NULL DEFAULT '-10',
   `notclosed_delay` int(11) NOT NULL DEFAULT '-2',
   `calendars_id` int(11) NOT NULL DEFAULT '-2',
   `auto_assign_mode` int(11) NOT NULL DEFAULT '-2',
@@ -6407,7 +6407,7 @@ CREATE TABLE `glpi_tickets` (
   `olas_id_tto` int(11) NOT NULL DEFAULT '0',
   `olas_id_ttr` int(11) NOT NULL DEFAULT '0',
   `olalevels_id_ttr` int(11) NOT NULL DEFAULT '0',
-  `ola_ttr_begin_date` datetime DEFAULT NULL,
+  `ola_ttr_begin_date` timestamp NULL DEFAULT NULL,
   `internal_time_to_resolve` timestamp NULL DEFAULT NULL,
   `internal_time_to_own` timestamp NULL DEFAULT NULL,
   `waiting_duration` int(11) NOT NULL DEFAULT '0',
@@ -6560,7 +6560,8 @@ CREATE TABLE `glpi_changetemplatehiddenfields` (
   `changetemplates_id` int(11) NOT NULL DEFAULT '0',
   `num` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`changetemplates_id`,`num`)
+  UNIQUE KEY `unicity` (`changetemplates_id`,`num`),
+  KEY `changetemplates_id` (`changetemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_problemtemplatehiddenfields

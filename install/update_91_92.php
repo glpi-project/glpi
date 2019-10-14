@@ -298,7 +298,7 @@ function update91to92() {
               'glpi_devicesoundcards'    => 'devicesoundcardmodels_id'];
 
    foreach ($tables as $table => $field) {
-      $migration->addField($table, $field, 'int', ['after' => 'is_recursive']);
+      $migration->addField($table, $field, 'int(11) DEFAULT NULL', ['after' => 'is_recursive']);
       $migration->migrationOneTable($table);
       $migration->addKey($table, $field);
    }

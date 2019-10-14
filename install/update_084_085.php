@@ -2379,11 +2379,11 @@ function update084to085() {
       }
    }
 
-   $migration->addField('glpi_deviceprocessors', 'nbcores_default', 'int');
-   $migration->addField('glpi_deviceprocessors', 'nbthreads_default', 'int');
+   $migration->addField('glpi_deviceprocessors', 'nbcores_default', 'int(11) DEFAULT NULL');
+   $migration->addField('glpi_deviceprocessors', 'nbthreads_default', 'int(11) DEFAULT NULL');
 
-   $migration->addField('glpi_items_deviceprocessors', 'nbcores', 'int');
-   $migration->addField('glpi_items_deviceprocessors', 'nbthreads', 'int');
+   $migration->addField('glpi_items_deviceprocessors', 'nbcores', 'int(11) DEFAULT NULL');
+   $migration->addField('glpi_items_deviceprocessors', 'nbthreads', 'int(11) DEFAULT NULL');
    $migration->addKey('glpi_items_deviceprocessors', 'nbcores');
    $migration->addKey('glpi_items_deviceprocessors', 'nbthreads');
 
