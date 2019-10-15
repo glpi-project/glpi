@@ -64,7 +64,7 @@ foreach ($directions as $direction) {
 
 // Output csv data
 $filename = rawurlencode("{$item->fields['name']}.csv");
-header("Content-Type: application/csv");
+header("Content-Type: text/csv");
 header("Content-Disposition: attachment; filename='impact.csv'; filename*=UTF-8''$filename");
 $output = fopen('php://output', 'w');
 if ($output === false) {
