@@ -274,19 +274,23 @@ class Impact extends CommonGLPI {
 
       // Settings dialog
       if ($can_update) {
+         $rand = mt_rand();
+
          echo '<div id="list_depth_dialog" class="impact-dialog" title=' . __("Settings") . '>';
          echo '<form action="../front/impactitem.form.php" method="POST">';
          echo '<table class="tab_cadre_fixe">';
          echo '<tr>';
-         echo '<td><label>' . __("Max depth") . '</label></td>';
+         echo '<td><label for="impact_max_depth_' . $rand . '">' . __("Max depth") . '</label></td>';
          echo '<td>' . Html::input("max_depth", [
+            'id'    => "impact_max_depth_$rand",
             'value' => $impact_item->fields['max_depth'] >= self::MAX_DEPTH ? '' : $impact_item->fields['max_depth'],
          ]) . '</td>';
          echo '</tr>';
          echo '<tr>';
-         echo '<td><label>' . __("No limit") . '</label></td>';
+         echo '<td><label for="check_no_limit_' . $rand . '">' . __("No limit") . '</label></td>';
          echo '<td>' . Html::getCheckbox([
             'name'    => 'no_limit',
+            'id'      => "check_no_limit_$rand",
             'checked' => $impact_item->fields['max_depth'] >= self::MAX_DEPTH,
          ]) . '</td>';
          echo '</tr>';
