@@ -39,6 +39,7 @@ if (isset($_POST["update"])) {
 
    // Can't update, id is missing
    if ($id === 0) {
+      Toolbox::logWarning("Can't update the target impact item, id is missing");
       Html::back();
    }
 
