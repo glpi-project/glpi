@@ -41,14 +41,9 @@ if (!empty($itemtype) && !empty($items_id) && Impact::assetExist($itemtype, $ite
    $item = new $itemtype;
    $item->getFromDB($items_id);
 
-   Impact::loadLibs();
-   $graph = Impact::makeDataForCytoscape(Impact::buildGraph($item));
-   $params = Impact::prepareParams($item);
-
-   echo '<div id="impact_graph_view">';
-   Impact::prepareImpactNetwork($item);
-   Impact::buildNetwork($graph, $params);
-   echo '</div>';
+   // Build graph and params
+   $graph = Impact::buildGraph($item);
+   Impact::displayGraphView($item, Impact::makeDataForCytoscape($graph));
 }
 
 Impact::printImpactForm();
