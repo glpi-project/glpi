@@ -898,6 +898,9 @@ var GLPIImpact = {
          panGrid: true,
       });
 
+      // Disable box selection as we don't need it
+      this.cy.boxSelectionEnabled(false);
+
       // Apply saved visibility
       if (!parseInt(params.show_depends)) {
          GLPIImpact.toggleVisibility(GLPIImpact.BACKWARD);
@@ -2084,10 +2087,19 @@ var GLPIImpact = {
    onMouseover: function(event) {
       switch (GLPIImpact.editionMode) {
          case GLPIImpact.EDITION_DEFAULT:
-            if (event.target.data('id') == undefined || !event.target.isNode()) {
+            // No valid target, no action needed
+            if (event.target.data('id') == undefined) {
                break;
             }
-            $(GLPIImpact.impactContainer).css('cursor', "grab");
+
+            if (event.target.isNode()) {
+               // If mouseover on node, show grab cursor
+               $(GLPIImpact.impactContainer).css('cursor', "grab");
+            } else if (event.target.isEdge()) {
+               // If mouseover on edge, show default cursor and disable panning
+               $(GLPIImpact.impactContainer).css('cursor', "default");
+               GLPIImpact.cy.panningEnabled(false);
+            }
             break;
 
          case GLPIImpact.EDITION_ADD_NODE:
@@ -2138,6 +2150,9 @@ var GLPIImpact = {
       switch (GLPIImpact.editionMode) {
          case GLPIImpact.EDITION_DEFAULT:
             $(GLPIImpact.impactContainer).css('cursor', "move");
+
+            // Re-enable panning in case the mouse was over an edge
+            GLPIImpact.cy.panningEnabled(true);
             break;
 
          case GLPIImpact.EDITION_ADD_NODE:
