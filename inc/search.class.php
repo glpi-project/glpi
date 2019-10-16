@@ -705,8 +705,30 @@ class Search {
             $matches = [];
             preg_match_all($regex, $HAVING, $matches);
             if (isset($matches[0])) {
+               // For each match, we will check that the field exist in the
+               // SELECT clause and if not insert it
                foreach ($matches[0] as $havingElement) {
-                  if (strpos($SELECT, $havingElement) === false) {
+                  $exist = false;
+                  // Parse SELECT clause
+                  $parser = new PhpMyAdmin\SqlParser\Parser("$SELECT FROM A WHERE 1");
+
+                  foreach ($parser->statements[0]->expr as $expression) {
+                     // Compare if alias if defined, else compare with raw expression
+                     if (isset($expression->alias)) {
+                        if ($expression->alias === $havingElement) {
+                           $exist = true;
+                           break;
+                        }
+                     } else {
+                        if ($expression->expr === $havingElement) {
+                           $exist = true;
+                           break;
+                        }
+                     }
+                  }
+
+                  // Insert into the SELECT clause if missing
+                  if (!$exist) {
                      $SELECT .= " $havingElement, ";
                   }
                }
