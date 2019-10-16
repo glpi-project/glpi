@@ -52,12 +52,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
       // Check required params
       if (empty($itemtype) || empty($items_id)) {
-         Toolbox::throwBadRequest("Missing itemtype or items_id");
+         Toolbox::throwError(400, "Missing itemtype or items_id");
       }
 
       // Check that the the target asset exist
       if (!Impact::assetExist($itemtype, $items_id)) {
-         Toolbox::throwBadRequest("Object[class=$itemtype, id=$items_id] doesn't exist");
+         Toolbox::throwError(400, "Object[class=$itemtype, id=$items_id] doesn't exist");
       }
 
       // Prepare graph
@@ -65,12 +65,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
       $item->getFromDB($items_id);
       $graph = Impact::makeDataForCytoscape(Impact::buildGraph($item));
       $params = Impact::prepareParams($item);
+      $readonly = !Session::haveRight(get_class($item)::$rightname, UPDATE);
 
       // Output graph
       header('Content-Type: application/json');
       echo json_encode([
-         'graph'  => $graph,
-         'params' => $params
+         'graph'    => $graph,
+         'params'   => $params,
+         'readonly' => $readonly,
       ]);
 
       break;
@@ -79,13 +81,31 @@ switch ($_SERVER['REQUEST_METHOD']) {
    case 'POST':
       // Check required params
       if (!isset($_POST['impacts'])) {
-         Toolbox::throwBadRequest("Missing 'impacts' payload");
+         Toolbox::throwError(400, "Missing 'impacts' payload");
       }
 
       // Decode data (should be json)
       $data = Toolbox::jsonDecode($_POST['impacts'], true);
       if (!is_array($data)) {
-         Toolbox::throwBadRequest("Payload should be an array");
+         Toolbox::throwError(400, "Payload should be an array");
+      }
+
+      $readonly = true;
+
+      // Search for current object
+      foreach ($data['items'] as $id => $impact_item) {
+         // Current objet has unique properties like zoom, pan_x, ...
+         if (isset($impact_item['zoom'])) {
+            $stored_impact_item = new ImpactItem();
+            $stored_impact_item->getFromDB($id);
+            $itemtype = $stored_impact_item->fields['itemtype'];
+            $readonly = !Session::haveRight($itemtype::$rightname, UPDATE);
+            break;
+         }
+      }
+
+      if ($readonly) {
+         Toolbox::throwError(403, "Missing rights");
       }
 
       // Save impact relation delta

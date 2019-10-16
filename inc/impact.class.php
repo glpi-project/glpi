@@ -197,7 +197,8 @@ class Impact extends CommonGLPI {
                   success: function(data, textStatus, jqXHR) {
                      GLPIImpact.buildNetwork(
                         JSON.parse(data.graph),
-                        JSON.parse(data.params)
+                        JSON.parse(data.params),
+                        data.readonly
                      );
                   }
                });
@@ -230,13 +231,13 @@ class Impact extends CommonGLPI {
       echo '<div class="impact_toolbar">';
       echo '<span id="help_text"></span>';
       echo '<div id="impact_tools">';
-      echo '<span id="save_impact">' . __("Save") . '&nbsp;<i></i></span>';
-      echo '<span id="add_node"><i class="fas fa-plus"></i></span>';
-      echo '<span id="add_edge"><i class="fas fa-marker"></i></span>';
-      echo '<span id="add_compound"><i class="far fa-square"></i></span>';
-      echo '<span id="delete_element"><i class="fas fa-trash"></i></span>';
+      echo '<span id="save_impact" style="display: none">' . __("Save") . '&nbsp;<i></i></span>';
+      echo '<span id="add_node" style="display: none"><i class="fas fa-plus"></i></span>';
+      echo '<span id="add_edge" style="display: none"><i class="fas fa-marker"></i></span>';
+      echo '<span id="add_compound" style="display: none"><i class="far fa-square"></i></span>';
+      echo '<span id="delete_element" style="display: none"><i class="fas fa-trash"></i></span>';
       echo '<span id="export_graph"><i class="fas fa-download"></i></span>';
-      echo '<span id="expand_toolbar"><i class="fas fa-ellipsis-v "></i></span>';
+      echo '<span id="expand_toolbar" style="display: none"><i class="fas fa-ellipsis-v "></i></span>';
       echo '</div>';
       self::printDropdownMenu();
       echo '</div>';
@@ -584,10 +585,11 @@ class Impact extends CommonGLPI {
       // Build the graph
       $graph = self::makeDataForCytoscape(Impact::buildGraph($item));
       $params = self::prepareParams($item);
+      $readonly = !Session::haveRight(get_class($item)::$rightname, UPDATE);
 
       echo Html::scriptBlock("
          $(function() {
-            GLPIImpact.buildNetwork($graph, $params);
+            GLPIImpact.buildNetwork($graph, $params, $readonly);
          });
       ");
    }

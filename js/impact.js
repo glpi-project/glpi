@@ -95,6 +95,9 @@ var GLPIImpact = {
    // Maximum depth of the graph
    maxDepth: 5,
 
+   // Is the graph readonly ?
+   readonly: true,
+
    // Store registered dialogs and their inputs
    dialogs: {
       addNode: {
@@ -511,7 +514,7 @@ var GLPIImpact = {
             id             : 'goTo',
             content        : '<i class="fas fa-link"></i>' + this.getLocale("goTo"),
             tooltipText    : this.getLocale("goTo+"),
-            selector       : 'node',
+            selector       : 'node[!color]',
             onClickFunction: this.menuOnGoTo
          },
          {
@@ -526,28 +529,32 @@ var GLPIImpact = {
             content        : '<i class="fas fa-edit"></i>' + this.getLocale("compoundProperties"),
             tooltipText    : this.getLocale("compoundProperties+"),
             selector       : 'node:parent',
-            onClickFunction: this.menuOnEditCompound
+            onClickFunction: this.menuOnEditCompound,
+            show           : !this.readonly,
          },
          {
             id             : 'removeFromCompound',
             content        : '<i class="fas fa-external-link-alt"></i>' + this.getLocale("removeFromCompound"),
             tooltipText    : this.getLocale("removeFromCompound+"),
             selector       : 'node:child',
-            onClickFunction: this.menuOnRemoveFromCompound
+            onClickFunction: this.menuOnRemoveFromCompound,
+            show           : !this.readonly,
          },
          {
             id             : 'delete',
             content        : '<i class="fas fa-trash"></i>' + this.getLocale("delete"),
             tooltipText    : this.getLocale("delete+"),
             selector       : 'node, edge',
-            onClickFunction: this.menuOnDelete
+            onClickFunction: this.menuOnDelete,
+            show           : !this.readonly,
          },
          {
             id             : 'new',
             content        : '<i class="fas fa-plus"></i>' + this.getLocale("new"),
             tooltipText    : this.getLocale("new+"),
             coreAsWell     : true,
-            onClickFunction: this.menuOnNew
+            onClickFunction: this.menuOnNew,
+            show           : !this.readonly,
          }
       ];
    },
@@ -816,7 +823,6 @@ var GLPIImpact = {
       dialogs,
       toolbar
    ) {
-
       // Set container
       this.impactContainer = impactContainer;
 
@@ -853,7 +859,7 @@ var GLPIImpact = {
     *
     * @param {string} data (json)
     */
-   buildNetwork: function(data, params) {
+   buildNetwork: function(data, params, readonly) {
       // Init workspace status
       GLPIImpact.showDefaultWorkspaceStatus();
 
@@ -880,6 +886,11 @@ var GLPIImpact = {
 
       // Store initial data
       this.initialState = this.getCurrentState();
+
+      // Enable editing if not readonly
+      if (!readonly) {
+         this.enableGraphEdition();
+      }
 
       // Enable context menu
       this.cy.contextMenus({
@@ -978,6 +989,22 @@ var GLPIImpact = {
       }
       $(GLPIImpact.toolbar.maxDepthView).html("Max depth: " + text);
       $(GLPIImpact.toolbar.maxDepth).val(GLPIImpact.maxDepth);
+   },
+
+   /**
+    * Set readonly and show toolbar
+    */
+   enableGraphEdition() {
+      // Show toolbar
+      $(this.toolbar.save).show();
+      $(this.toolbar.addNode).show();
+      $(this.toolbar.addEdge).show();
+      $(this.toolbar.addCompound).show();
+      $(this.toolbar.deleteElement).show();
+      $(this.toolbar.expandToolbar).show();
+
+      // Keep track of readonly so that events handler can update their behavior
+      this.readonly = false;
    },
 
    /**
@@ -1825,6 +1852,10 @@ var GLPIImpact = {
 
          // Delete
          case 46:
+            if (GLPIImpact.readonly) {
+               break;
+            }
+
             // Delete selected elements
             GLPIImpact.cy.filter(":selected").forEach(function(ele) {
                GLPIImpact.deleteFromGraph(ele);
