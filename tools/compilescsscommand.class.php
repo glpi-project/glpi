@@ -114,7 +114,7 @@ class CompileScssCommand extends Command {
             ]
          );
 
-         if (@file_put_contents($compiled_path, $css)) {
+         if (strlen($css) === @file_put_contents($compiled_path, $css)) {
             $message = sprintf('"%s" compiled successfully in "%s".', $file, $compiled_path);
             $output->writeln(
                '<info>' . $message . '</info>',
