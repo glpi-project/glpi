@@ -994,7 +994,7 @@ var GLPIImpact = {
    /**
     * Set readonly and show toolbar
     */
-   enableGraphEdition() {
+   enableGraphEdition: function() {
       // Show toolbar
       $(this.toolbar.save).show();
       $(this.toolbar.addNode).show();
