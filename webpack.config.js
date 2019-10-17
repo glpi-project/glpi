@@ -87,6 +87,7 @@ var libsConfig = {
                     path.resolve(__dirname, 'node_modules/jstree'),
                     path.resolve(__dirname, 'node_modules/photoswipe'),
                     path.resolve(__dirname, 'node_modules/spectrum-colorpicker'),
+                    path.resolve(__dirname, 'vendor/blueimp/jquery-file-upload'),
                 ],
                 use: ['script-loader'],
             },
