@@ -183,6 +183,8 @@ class Impact extends CommonGLPI {
       CommonDBTM $item,
       array $graph
    ) {
+      global $CFG_GLPI;
+
       $impact_item = ImpactItem::findForItem($item);
 
       // Should not happen, $impact_item is created before
@@ -261,7 +263,7 @@ class Impact extends CommonGLPI {
 
       // Toolbar
       echo '<div class="impact-list-toolbar">';
-      echo '<a target="_blank" href="../front/impactcsv.php?itemtype=' . $impact_item->fields['itemtype'] . '&items_id=' . $impact_item->fields['items_id'] .'">';
+      echo '<a target="_blank" href="'.$CFG_GLPI['root_doc'].'/front/impactcsv.php?itemtype=' . $impact_item->fields['itemtype'] . '&items_id=' . $impact_item->fields['items_id'] .'">';
       echo '<i class="fas fa-2x fa-download impact-pointer"></i>';
       echo '</a>';
       if ($can_update) {
@@ -274,7 +276,7 @@ class Impact extends CommonGLPI {
          $rand = mt_rand();
 
          echo '<div id="list_depth_dialog" class="impact-dialog" title=' . __("Settings") . '>';
-         echo '<form action="../front/impactitem.form.php" method="POST">';
+         echo '<form action="'.$CFG_GLPI['root_doc'].'/front/impactitem.form.php" method="POST">';
          echo '<table class="tab_cadre_fixe">';
          echo '<tr>';
          echo '<td><label for="impact_max_depth_' . $rand . '">' . __("Max depth") . '</label></td>';
@@ -348,7 +350,7 @@ class Impact extends CommonGLPI {
          $(document).on("impactUpdated", function() {
             $.ajax({
                type: "GET",
-               url: "../ajax/impact.php",
+               url: "' . $CFG_GLPI['root_doc'] . '/ajax/impact.php",
                data: {
                   itemtype: "' . get_class($item) . '",
                   items_id: "' . $item->fields['id'] . '",
