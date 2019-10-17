@@ -6929,21 +6929,21 @@ JAVASCRIPT;
 
       $import = '@import "' . $file . '";';
       $fckey = md5($file);
-      $md5file = md5(file_get_contents($path));
+      $file_hash = self::getScssFileHash($path);
 
       //check if files has changed
       if ($GLPI_CACHE->has($fckey)) {
-         $md5 = $GLPI_CACHE->get($fckey);
+         $cached_file_hash = $GLPI_CACHE->get($fckey);
 
-         if ($md5file != $md5) {
+         if ($file_hash != $cached_file_hash) {
             //file has changed
             Toolbox::logDebug("$file has changed, reloading");
             $args['reload'] = true;
-            $GLPI_CACHE->set($fckey, $md5file);
+            $GLPI_CACHE->set($fckey, $file_hash);
          }
       } else {
          Toolbox::logDebug("$file is new, loading");
-         $GLPI_CACHE->set($fckey, $md5file);
+         $GLPI_CACHE->set($fckey, $file_hash);
       }
 
       $scss->addImportPath(GLPI_ROOT);
@@ -6958,6 +6958,45 @@ JAVASCRIPT;
       }
 
       return $css;
+   }
+
+   /**
+    * Returns SCSS file hash.
+    * This function evaluates recursivly imports to compute a hash that represent the whole
+    * contents of the final SCSS.
+    *
+    * @param string $filepath
+    *
+    * @return null|string
+    */
+   public static function getScssFileHash(string $filepath) {
+
+      if (!is_file($filepath) || !is_readable($filepath)) {
+         return null;
+      }
+
+      $contents = file_get_contents($filepath);
+      $hash = md5($contents);
+
+      $matches = [];
+      preg_match_all('/@import\s+[\'"]([^\'"]*)[\'"];/', $contents, $matches);
+
+      if (empty($matches)) {
+         return $hash;
+      }
+
+      $basedir = dirname($filepath);
+      foreach ($matches[1] as $import_url) {
+         $has_extension = preg_match('/\.s?css$/', $import_url);
+         $imported_filepath = $basedir . '/' . $import_url;
+         if (!$has_extension && is_file($imported_filepath . '.scss')) {
+            $imported_filepath = $imported_filepath . '.scss';
+         }
+
+         $hash .= self::getScssFileHash($imported_filepath);
+      }
+
+      return $hash;
    }
 
    /**

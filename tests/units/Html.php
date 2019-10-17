@@ -32,6 +32,8 @@
 
 namespace tests\units;
 
+use org\bovigo\vfs\vfsStream;
+
 /* Test for inc/html.class.php */
 
 class Html extends \GLPITestCase {
@@ -913,5 +915,58 @@ class Html extends \GLPITestCase {
     */
    public function testGetBackUrl($url_in, $url_out) {
       $this->string(\Html::getBackUrl($url_in), $url_out);
+   }
+
+   public function testGetScssFileHash() {
+
+      $structure = [
+         'css' => [
+            'all.scss' => <<<SCSS
+body {
+   font-size: 12px;
+}
+@import 'imports/borders';     /* import without extension */
+@import 'imports/colors.scss'; /* import with extension */
+SCSS
+            ,
+
+            'another.scss' => <<<SCSS
+form input {
+   background: grey;
+}
+SCSS
+            ,
+
+            'imports' => [
+               'borders.scss' => <<<SCSS
+.big-border {
+   border: 5px dashed black;
+}
+SCSS
+               ,
+               'colors.scss' => <<<SCSS
+.red {
+   color:red;
+}
+SCSS
+            ],
+         ],
+      ];
+      vfsStream::setup('glpi', null, $structure);
+
+      $files_md5 = [
+         'all.scss'             => md5_file(vfsStream::url('glpi/css/all.scss')),
+         'another.scss'         => md5_file(vfsStream::url('glpi/css/another.scss')),
+         'imports/borders.scss' => md5_file(vfsStream::url('glpi/css/imports/borders.scss')),
+         'imports/colors.scss'  => md5_file(vfsStream::url('glpi/css/imports/colors.scss')),
+      ];
+
+      // Composite scss file hash corresponds to self md5 suffixed by all imported scss md5
+      $this->string(\Html::getScssFileHash(vfsStream::url('glpi/css/all.scss')))
+         ->isEqualTo($files_md5['all.scss'] . $files_md5['imports/borders.scss'] . $files_md5['imports/colors.scss']);
+
+      // Simple scss file hash corresponds to self md5
+      $this->string(\Html::getScssFileHash(vfsStream::url('glpi/css/another.scss')))
+         ->isEqualTo($files_md5['another.scss']);
    }
 }
