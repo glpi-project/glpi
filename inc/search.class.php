@@ -691,12 +691,13 @@ class Search {
       // Add search conditions
       // If there is search items
       if (count($data['search']['criteria'])) {
-         $WHERE  = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt);
+         // Check if a criteria was meant to be used as a having field
+         $has_having = self::hasHaving($data['search']['criteria'], $searchopt);
+
+         $WHERE  = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, false, $has_having);
          $HAVING = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
 
-         // Check if a criteria was meant to be used as a having field
-         $hasHaving = self::hasHaving($data['search']['criteria'], $searchopt);
-         if ($hasHaving) {
+         if ($has_having) {
             $HAVING = $WHERE;
             $WHERE = "";
 
@@ -713,7 +714,7 @@ class Search {
                   $parser = new PhpMyAdmin\SqlParser\Parser("$SELECT FROM A WHERE 1");
 
                   foreach ($parser->statements[0]->expr as $expression) {
-                     // Compare if alias if defined, else compare with raw expression
+                     // Compare with alias if defined, else compare with raw expression
                      if (isset($expression->alias)) {
                         if ($expression->alias === $havingElement) {
                            $exist = true;
@@ -999,10 +1000,11 @@ class Search {
     *                            TODO: should be a property of the class
     * @param  array   $searchopt Search options for the current itemtype
     * @param  boolean $is_having Do we construct sql WHERE or HAVING part
+    * @param  boolean $has_having Does this request have an having clause
     *
     * @return string             the sql sub string
     */
-   static function constructCriteriaSQL($criteria = [], $data = [], $searchopt = [], $is_having = false) {
+   static function constructCriteriaSQL($criteria = [], $data = [], $searchopt = [], $is_having = false, $has_having = false) {
       $sql = "";
 
       foreach ($criteria as $criterion) {
@@ -1077,8 +1079,32 @@ class Search {
                   continue;
                }
 
-               $new_where = self::addWhere($LINK, $NOT, $itemtype, $criterion['field'],
-                                           $criterion['searchtype'], $criterion['value'], $meta);
+               $searchopt2 = $searchopt[$criterion['field']];
+               $has_forcegroupby = isset($searchopt2['forcegroupby'])
+                  && $searchopt2['forcegroupby'] == true;
+               // If the field use a group by and the request have an having
+               // clause, set the condition on the aggregated column
+               if ($has_having && $has_forcegroupby) {
+                  $new_where = self::addHaving(
+                     $LINK,
+                     $NOT,
+                     $itemtype,
+                     $criterion['field'],
+                     $criterion['searchtype'],
+                     $criterion['value']
+                  );
+               } else {
+                  $new_where = self::addWhere(
+                     $LINK,
+                     $NOT,
+                     $itemtype,
+                     $criterion['field'],
+                     $criterion['searchtype'],
+                     $criterion['value'],
+                     $meta
+                  );
+               }
+
                if ($new_where !== false) {
                   $sql .= $new_where;
                }
