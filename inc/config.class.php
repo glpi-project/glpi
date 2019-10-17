@@ -1942,6 +1942,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Symfony\\Component\\Console\\Application' ],
                [ 'name'    => 'leafo/scssphp',
                  'check'   => 'Leafo\ScssPhp\Compiler' ],
+               [ 'name'    => 'phpmyadmin/sql-parser',
+                 'check'   => 'PhpMyAdmin\SqlParser\Parser' ],
       ];
       if ($all || PHP_VERSION_ID < 70000) {
          $deps[] = [

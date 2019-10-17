@@ -1079,9 +1079,9 @@ class Search {
                   continue;
                }
 
-               $searchopt2 = $searchopt[$criterion['field']];
-               $has_forcegroupby = isset($searchopt2['forcegroupby'])
-                  && $searchopt2['forcegroupby'] == true;
+               $has_forcegroupby = isset($searchopt[$criterion['field']])
+                  && isset($searchopt[$criterion['field']]['forcegroupby'])
+                  && $searchopt[$criterion['field']]['forcegroupby'] == true;
                // If the field use a group by and the request have an having
                // clause, set the condition on the aggregated column
                if ($has_having && $has_forcegroupby) {
