@@ -20,6 +20,7 @@
         "ext-mbstring": "*",
         "ext-mysqli": "*",
         "ext-zlib": "*",
+        "blueimp/jquery-file-upload": "^10.2",
         "elvanto/litemoji": "^1.4 || ^2.0",
         "fossar/htmlawed": "1.2.4.1",
         "iamcal/lib_autolink": "^1.7",

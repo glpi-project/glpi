@@ -2024,6 +2024,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Zend\\Mail\\Protocol\\Imap' ],
                [ 'name'    => 'rlanvin/php-rrule',
                  'check'   => 'RRule\\RRule' ],
+               [ 'name'    => 'blueimp/jquery-file-upload',
+                 'check'   => 'UploadHandler' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
