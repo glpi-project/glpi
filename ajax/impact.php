@@ -65,7 +65,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
       $item->getFromDB($items_id);
       $graph = Impact::makeDataForCytoscape(Impact::buildGraph($item));
       $params = Impact::prepareParams($item);
-      $readonly = !Session::haveRight(get_class($item)::$rightname, UPDATE);
+      $readonly = $item->can($items_id, UPDATE);
 
       // Output graph
       header('Content-Type: application/json');
@@ -99,7 +99,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $stored_impact_item = new ImpactItem();
             $stored_impact_item->getFromDB($id);
             $itemtype = $stored_impact_item->fields['itemtype'];
-            $readonly = !Session::haveRight($itemtype::$rightname, UPDATE);
+            $item = new $itemtype();
+            $readonly = !$item->can($stored_impact_item->fields['items_id'], UPDATE);
             break;
          }
       }

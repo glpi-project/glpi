@@ -585,7 +585,7 @@ class Impact extends CommonGLPI {
       // Build the graph
       $graph = self::makeDataForCytoscape(Impact::buildGraph($item));
       $params = self::prepareParams($item);
-      $readonly = !Session::haveRight(get_class($item)::$rightname, UPDATE);
+      $readonly = !$item->can($item->fields['id'], UPDATE);
 
       echo Html::scriptBlock("
          $(function() {
