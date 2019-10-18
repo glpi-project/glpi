@@ -257,10 +257,7 @@ class Impact extends CommonGLPI {
 
       echo '</div>';
 
-      $can_update = Session::haveRight(
-         $impact_item->fields['itemtype']::$rightname,
-         UPDATE
-      );
+      $can_update = $item->can($item->fields['id'], UPDATE);
 
       // Toolbar
       echo '<div class="impact-list-toolbar">';
