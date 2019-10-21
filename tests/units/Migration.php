@@ -131,25 +131,29 @@ class Migration extends \GLPITestCase {
          function () {
             $this->migration->executeMigration();
          }
-      )->isIdenticalTo('Configuration values added for one, two.Task completed.');
+      )->isIdenticalTo('Configuration values added for one, two (core).Task completed.');
 
-      $this->array($this->queries)->isIdenticalTo([
+      $core_queries = [
          0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
          1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
          2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
          3 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
          4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')'
-      ]);
+      ];
+      $this->array($this->queries)->isIdenticalTo($core_queries);
 
-      //test with context set => new keys should be inserted in correct context
+      //test with existing value on different context => new keys should be inserted in correct context
       $this->queries = [];
-      $this->migration->setContext('test-context');
+      $this->migration->addConfig([
+         'one' => 'key',
+         'two' => 'value'
+      ], 'test-context');
 
       $this->output(
          function () {
             $this->migration->executeMigration();
          }
-      )->isIdenticalTo('Configuration values added for one, two.Task completed.');
+      )->isIdenticalTo('Configuration values added for one, two (test-context).Task completed.');
 
       $this->array($this->queries)->isIdenticalTo([
          0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
@@ -159,9 +163,11 @@ class Migration extends \GLPITestCase {
          4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')'
       ]);
 
-      $this->migration->setContext('core'); //reset
-
       //test with one existing value => only new key should be inserted
+      $this->migration->addConfig([
+         'one' => 'key',
+         'two' => 'value'
+      ]);
       $this->queries = [];
       $this->calling($this->db)->request = function ($table) {
          // Call using 'glpi_configs' value for first parameter
@@ -186,7 +192,7 @@ class Migration extends \GLPITestCase {
          function () {
             $this->migration->executeMigration();
          }
-      )->isIdenticalTo('Configuration values added for two.Task completed.');
+      )->isIdenticalTo('Configuration values added for two (core).Task completed.');
 
       $this->array($this->queries)->isIdenticalTo([
          0 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')'
