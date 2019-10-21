@@ -983,16 +983,21 @@ class Migration {
    }
 
    /**
-    * Add configuration value(s) to current context; @see Migration::setContext()
+    * Add configuration value(s) to current context; @see Migration::addConfig()
     *
     * @since 9.2
     *
-    * @param string|array $values Value(s) to add
+    * @param string|array $values  Value(s) to add
+    * @param string       $context Context to add on (optional)
     *
     * @return Migration
     */
-   public function addConfig($values) {
-      $this->configs += (array)$values;
+   public function addConfig($values, $context = null) {
+      $context = $context ?? $this->context;
+      if (!isset($this->configs[$context])) {
+         $this->configs[$context] = [];
+      }
+      $this->configs[$context] += (array)$values;
       return $this;
    }
 
@@ -1006,39 +1011,30 @@ class Migration {
    private function storeConfig() {
       global $DB;
 
-      if (count($this->configs)) {
-         $existing = $DB->request(
-            "glpi_configs", [
-               'context'   => $this->context,
-               'name'      => array_keys($this->configs)
-            ]
-         );
-         foreach ($existing as $conf) {
-            unset($this->configs[$conf['name']]);
+      foreach ($this->configs as $context => $config) {
+         if (count($config)) {
+            $existing = $DB->request(
+               "glpi_configs", [
+                  'context'   => $context,
+                  'name'      => array_keys($config)
+               ]
+            );
+            foreach ($existing as $conf) {
+               unset($config[$conf['name']]);
+            }
+            if (count($config)) {
+               Config::setConfigurationValues($context, $config);
+               $this->displayMessage(sprintf(
+                  __('Configuration values added for %1$s (%2$s).'),
+                  implode(', ', array_keys($config)),
+                  $context
+               ));
+            }
          }
-         if (count($this->configs)) {
-            Config::setConfigurationValues($this->context, $this->configs);
-            $this->displayMessage(sprintf(
-               __('Configuration values added for %1$s.'),
-               implode(', ', array_keys($this->configs))
-            ));
-         }
+         unset($this->configs[$context]);
       }
    }
 
-   /**
-    * Set configuration context
-    *
-    * @since 9.2
-    *
-    * @param string $context Configuration context
-    *
-    * @return Migration
-    */
-   public function setContext($context) {
-      $this->context = $context;
-      return $this;
-   }
 
    /**
     * Add new right to profiles that match rights requirements
