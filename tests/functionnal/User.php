@@ -275,15 +275,15 @@ class User extends \DbTestCase {
       $this->boolean($user->getFromDB($uid))->isTrue();
       $this->array($user->fields)
          ->string['name']->isIdenticalTo('create_user')
-         ->string['profiles_id']->isEqualTo(0);
+         ->integer['profiles_id']->isEqualTo(0);
 
       $puser = new \Profile_User();
       $this->boolean($puser->getFromDBByCrit(['users_id' => $uid]))->isTrue();
       $this->array($puser->fields)
-         ->string['profiles_id']->isEqualTo($pid)
-         ->string['entities_id']->isEqualTo($eid)
-         ->string['is_recursive']->isEqualTo(0)
-         ->string['is_dynamic']->isEqualTo(0);
+         ->integer['profiles_id']->isEqualTo($pid)
+         ->integer['entities_id']->isEqualTo($eid)
+         ->integer['is_recursive']->isEqualTo(0)
+         ->integer['is_dynamic']->isEqualTo(0);
 
       $pid = (int)\Profile::getDefault();
       $this->integer($pid)->isGreaterThan(0);
@@ -297,15 +297,15 @@ class User extends \DbTestCase {
       $this->boolean($user->getFromDB($uid2))->isTrue();
       $this->array($user->fields)
          ->string['name']->isIdenticalTo('create_user2')
-         ->string['profiles_id']->isEqualTo(0);
+         ->integer['profiles_id']->isEqualTo(0);
 
       $puser = new \Profile_User();
       $this->boolean($puser->getFromDBByCrit(['users_id' => $uid2]))->isTrue();
       $this->array($puser->fields)
-         ->string['profiles_id']->isEqualTo($pid)
-         ->string['entities_id']->isEqualTo($eid)
-         ->string['is_recursive']->isEqualTo(0)
-         ->string['is_dynamic']->isEqualTo('1');
+         ->integer['profiles_id']->isEqualTo($pid)
+         ->integer['entities_id']->isEqualTo($eid)
+         ->integer['is_recursive']->isEqualTo(0)
+         ->integer['is_dynamic']->isEqualTo(1);
 
       //user with entity not recursive
       $eid2 = (int)getItemByTypeName('Entity', '_test_child_1', true);
@@ -323,10 +323,10 @@ class User extends \DbTestCase {
       $puser = new \Profile_User();
       $this->boolean($puser->getFromDBByCrit(['users_id' => $uid3]))->isTrue();
       $this->array($puser->fields)
-         ->string['profiles_id']->isEqualTo($pid)
-         ->string['entities_id']->isEqualTo($eid2)
-         ->string['is_recursive']->isEqualTo(0)
-         ->string['is_dynamic']->isEqualTo('1');
+         ->integer['profiles_id']->isEqualTo($pid)
+         ->integer['entities_id']->isEqualTo($eid2)
+         ->integer['is_recursive']->isEqualTo(0)
+         ->integer['is_dynamic']->isEqualTo(1);
 
       //user with entity recursive
       $uid4 = (int)$user->add([
@@ -343,10 +343,10 @@ class User extends \DbTestCase {
       $puser = new \Profile_User();
       $this->boolean($puser->getFromDBByCrit(['users_id' => $uid4]))->isTrue();
       $this->array($puser->fields)
-         ->string['profiles_id']->isEqualTo($pid)
-         ->string['entities_id']->isEqualTo($eid2)
-         ->string['is_recursive']->isEqualTo(1)
-         ->string['is_dynamic']->isEqualTo('1');
+         ->integer['profiles_id']->isEqualTo($pid)
+         ->integer['entities_id']->isEqualTo($eid2)
+         ->integer['is_recursive']->isEqualTo(1)
+         ->integer['is_dynamic']->isEqualTo(1);
 
    }
 
@@ -362,7 +362,7 @@ class User extends \DbTestCase {
 
       $this->boolean($user->getFromDBbyDn($dn))->isTrue();
       $this->array($user->fields)
-         ->string['id']->isIdenticalTo((string)$uid)
+         ->integer['id']->isIdenticalTo($uid)
          ->string['name']->isIdenticalTo('user_with_dn');
    }
 
@@ -379,7 +379,7 @@ class User extends \DbTestCase {
 
       $this->boolean($user->getFromDBbySyncField($sync_field))->isTrue();
       $this->array($user->fields)
-         ->string['id']->isIdenticalTo((string)$uid)
+         ->integer['id']->isIdenticalTo($uid)
          ->string['name']->isIdenticalTo('user_with_syncfield');
    }
 
@@ -395,7 +395,7 @@ class User extends \DbTestCase {
 
       $this->boolean($user->getFromDBbyName($name))->isTrue();
       $this->array($user->fields)
-         ->string['id']->isIdenticalTo((string)$uid);
+         ->integer['id']->isIdenticalTo($uid);
    }
 
    public function testGetFromDBbyNameAndAuth() {
@@ -412,7 +412,7 @@ class User extends \DbTestCase {
 
       $this->boolean($user->getFromDBbyNameAndAuth($name, \Auth::DB_GLPI, 12))->isTrue();
       $this->array($user->fields)
-         ->string['id']->isIdenticalTo((string)$uid)
+         ->integer['id']->isIdenticalTo($uid)
          ->string['name']->isIdenticalTo($name);
    }
 

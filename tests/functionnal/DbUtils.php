@@ -637,7 +637,7 @@ class DbUtils extends DbTestCase {
       $ckey_ent2   = $ckey_prefix . md5('glpi_entities' . $ent2);
 
       //test on ent0
-      $expected = [0 => '0'];
+      $expected = [0 => 0];
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent0))->isFalse();
       } else if ($cache === true && $hit === true) {
@@ -652,7 +652,7 @@ class DbUtils extends DbTestCase {
       }
 
       //test on ent1
-      $expected = [0 => '0', 1 => "$ent0"];
+      $expected = [0 => 0, 1 => $ent0];
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent1))->isFalse();
       } else if ($cache === true && $hit === true) {
@@ -667,7 +667,7 @@ class DbUtils extends DbTestCase {
       }
 
       //test on ent2
-      $expected = [0 => '0', 1 => "$ent0"];
+      $expected = [0 => 0, 1 => $ent0];
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent2))->isFalse();
       } else if ($cache === true && $hit === true) {
@@ -695,7 +695,7 @@ class DbUtils extends DbTestCase {
       }
       $ckey_new_id = $ckey_prefix . md5('glpi_entities' . $new_id);
 
-      $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1"];
+      $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
       if ($cache === true) {
          $this->array(apcu_fetch($ckey_new_id))->isIdenticalTo($expected);
       }
@@ -719,7 +719,7 @@ class DbUtils extends DbTestCase {
       }
       $ckey_new_id2 = $ckey_prefix . md5('glpi_entities' . $new_id2);
 
-      $expected = [0 => '0', $ent0 => "$ent0", $ent2 => "$ent2"];
+      $expected = [0 => 0, $ent0 => $ent0, $ent2 => $ent2];
       if ($cache === true) {
          $this->array(apcu_fetch($ckey_new_id2))->isIdenticalTo($expected);
       }
@@ -732,7 +732,7 @@ class DbUtils extends DbTestCase {
       }
 
       //test on multiple entities
-      $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"];
+      $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
       $ckey_new_all = $ckey_prefix . md5('glpi_entities' . $new_id . '|' . $new_id2);
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_new_all))->isFalse();
@@ -801,7 +801,7 @@ class DbUtils extends DbTestCase {
       $ckey_ent2 = $ckey_prefix . md5('glpi_entities' . $ent2);
 
       //test on ent0
-      $expected = [$ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"];
+      $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent0))->isFalse();
       } else if ($cache === true && $hit === true) {
@@ -816,7 +816,7 @@ class DbUtils extends DbTestCase {
       }
 
       //test on ent1
-      $expected = [$ent1 => "$ent1"];
+      $expected = [$ent1 => $ent1];
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent1))->isFalse();
       } else if ($cache === true && $hit === true) {
@@ -831,7 +831,7 @@ class DbUtils extends DbTestCase {
       }
 
       //test on ent2
-      $expected = [$ent2 => "$ent2"];
+      $expected = [$ent2 => $ent2];
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_ent2))->isFalse();
       } else if ($cache === true && $hit === true) {
@@ -858,7 +858,7 @@ class DbUtils extends DbTestCase {
          $this->integer($new_id)->isGreaterThan(0);
       }
 
-      $expected = [$ent1 => $ent1, $new_id => "$new_id"];
+      $expected = [$ent1 => $ent1, $new_id => $new_id];
       if ($cache === true) {
          $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
@@ -881,7 +881,7 @@ class DbUtils extends DbTestCase {
          $this->integer($new_id2)->isGreaterThan(0);
       }
 
-      $expected = [$ent1 => $ent1, $new_id => "$new_id", $new_id2 => "$new_id2"];
+      $expected = [$ent1 => $ent1, $new_id => $new_id, $new_id2 => $new_id2];
       if ($cache === true) {
          $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
       }
@@ -894,7 +894,7 @@ class DbUtils extends DbTestCase {
       }
 
       //drop sub entity
-      $expected = [$ent1 => $ent1, $new_id2 => "$new_id2"];
+      $expected = [$ent1 => $ent1, $new_id2 => $new_id2];
       $this->boolean($entity->delete(['id' => $new_id], true))->isTrue();
       if ($cache === true) {
          $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);

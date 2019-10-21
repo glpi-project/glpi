@@ -389,7 +389,7 @@ class Rule extends DbTestCase {
       //Check that an uuid has been generated
       $this->string($rule->fields['uuid'])->isNotEmpty();
       //Check that a ranking has been added
-      $this->string($rule->fields['ranking'])->isNotEmpty();
+      $this->integer($rule->fields['ranking'])->isGreaterThan(0);
 
       //Add a rule and provide an uuid
       $rules_id = $rule->add(['name' => 'MyRule', 'uuid' => '12345']);

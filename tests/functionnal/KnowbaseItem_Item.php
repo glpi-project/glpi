@@ -123,7 +123,7 @@ class KnowbaseItem_Item extends DbTestCase {
       foreach ($kbs as $kb) {
          $this->array($kb)
             ->string['itemtype']->isIdenticalTo($ticket3->getType())
-            ->string['items_id']->isIdenticalTo($ticket3->getID());
+            ->integer['items_id']->isIdenticalTo($ticket3->getID());
 
          $kb_ids[] = $kb['knowbaseitems_id'];
       }
@@ -144,7 +144,7 @@ class KnowbaseItem_Item extends DbTestCase {
       foreach ($kbs as $kb) {
          $this->array($kb)
             ->string['itemtype']->isIdenticalTo($ticket1->getType())
-            ->string['items_id']->isIdenticalTo($ticket1->getID());
+            ->integer['items_id']->isIdenticalTo($ticket1->getID());
       }
 
       $computer21 = getItemByTypeName(\Computer::getType(), '_test_pc21');
@@ -154,7 +154,7 @@ class KnowbaseItem_Item extends DbTestCase {
       foreach ($kbs as $kb) {
          $this->array($kb)
             ->string['itemtype']->isIdenticalTo($computer21->getType())
-            ->string['items_id']->isIdenticalTo($computer21->getID());
+            ->integer['items_id']->isIdenticalTo($computer21->getID());
       }
 
       //test with entitiesrestriction

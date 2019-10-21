@@ -513,8 +513,7 @@ class AuthLDAP extends DbTestCase {
     */
    public function testLdapAuth() {
       //try to login from a user that does not exists yet
-      $auth = new \Auth();
-      $this->boolean($auth->login('brazil6', 'password'))->isTrue();
+      $auth = $this->login('brazil6', 'password', false);
 
       $user = new \User();
       $user->getFromDBbyName('brazil6');
@@ -557,8 +556,7 @@ class AuthLDAP extends DbTestCase {
          ->string['name']->isIdenticalTo('brazil7')
          ->string['user_dn']->isIdenticalTo('uid=brazil7,ou=people,ou=ldap3,dc=glpi,dc=org');
 
-      $auth = new \Auth();
-      $this->boolean($auth->login('brazil7', 'password'))->isTrue();
+      $auth = $this->login('brazil7', 'password', false, true);
 
       $this->boolean($auth->user_present)->isTrue();
       $this->string($auth->user_dn)->isIdenticalTo($user->fields['user_dn']);
@@ -575,9 +573,8 @@ class AuthLDAP extends DbTestCase {
          )
       )->isTrue();
 
-      $auth = new \Auth();
-      $this->boolean($auth->login('brazil7', 'password'))->isFalse();
-      $this->boolean($auth->login('brazil7test', 'password'))->isTrue();
+      $this->login('brazil7', 'password', false, false);
+      $auth = $this->login('brazil7test', 'password', false);
 
       //reset entry before any test can fail
       $this->boolean(
@@ -614,9 +611,9 @@ class AuthLDAP extends DbTestCase {
          (int)$user->add($dup)
       )->isGreaterThan(0);
 
-      $this->boolean($auth->login('brazil6', 'password'))->isTrue();
+      $auth = $this->login('brazil6', 'password', false);
       $this->array($auth->user->fields)
-         ->string['auths_id']->isIdenticalTo($aid)
+         ->integer['auths_id']->isIdenticalTo($aid)
          ->string['name']->isIdenticalTo('brazil6')
          ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=ldap3,dc=glpi,dc=org');
 
@@ -659,7 +656,7 @@ class AuthLDAP extends DbTestCase {
       $this->boolean($auth->login('brazil8', 'password', false, false, 'local'))->isFalse();
       $auth = new \Auth();
       $this->boolean($auth->login('brazil8', 'passwordlocal', false, false, 'local'))->isTrue();
-      $this->string($auth->user->fields['id'])->isNotEqualTo($user_ldap_id);
+      $this->integer($auth->user->fields['id'])->isNotEqualTo($user_ldap_id);
    }
 
    /**

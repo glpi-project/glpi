@@ -66,7 +66,7 @@ class Printer extends DbTestCase {
 
       // fields property
       $this->array($obj->fields)
-         ->string['id']->isEqualTo($id)
+         ->integer['id']->isEqualTo($id)
          ->string['name']->isidenticalTo($this->method);
    }
 

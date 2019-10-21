@@ -81,7 +81,7 @@ class NotificationTargetTicket extends DbTestCase {
       $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
       $expected = [
                      [
-                     '##task.id##'              => '1',
+                     '##task.id##'              => 1,
                      '##task.isprivate##'       => 'No',
                      '##task.author##'          => '_test_user',
                      '##task.categoryid##'      => $taskcat->getID(),
@@ -116,7 +116,7 @@ class NotificationTargetTicket extends DbTestCase {
 
       $expected = [
                      [
-                     '##task.id##'              => '1',
+                     '##task.id##'              => 1,
                      '##task.isprivate##'       => 'Non',
                      '##task.author##'          => '_test_user',
                      '##task.categoryid##'      => $taskcat->getID(),
