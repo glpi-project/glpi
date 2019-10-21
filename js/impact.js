@@ -1717,7 +1717,7 @@ var GLPIImpact = {
       this.fullscreen = !this.fullscreen;
       $(this.toolbar.toggleFullscreen).toggleClass('active');
       $(this.impactContainer).toggleClass('fullscreen');
-      $(this.toolbar.toggleFullscreen).parent().parent().toggleClass('fullscreen');
+      $('.impact_toolbar').toggleClass('fullscreen');
 
       if (this.fullscreen) {
          $(this.impactContainer).children("canvas:eq(0)").css({
