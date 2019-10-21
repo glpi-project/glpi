@@ -1803,11 +1803,14 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
    onDoubleClick: function(event) {
-      // Open edit dialog on compound nodes
       if (event.target.isParent()) {
+         // Open edit dialog on compound nodes
          $(GLPIImpact.dialogs.editCompoundDialog.id).dialog(
             GLPIImpact.getEditCompoundDialog(event.target)
          );
+      } else if (event.target.isNode()) {
+         // Go to on nodes
+         window.open(event.target.data('link'));
       }
    },
 
@@ -2176,7 +2179,7 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
    menuOnGoTo: function(event) {
-      window.open(event.target.data('link'), 'blank');
+      window.open(event.target.data('link'));
    },
 
    /**
