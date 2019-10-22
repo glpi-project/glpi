@@ -166,10 +166,11 @@ class Impact extends CommonGLPI {
    ) {
       self::loadLibs();
       $params = self::prepareParams($item);
+      $readonly = !$item->can($item->fields['id'], UPDATE);
 
       echo '<div id="impact_graph_view">';
       self::prepareImpactNetwork($item);
-      self::buildNetwork($graph, $params);
+      self::buildNetwork($graph, $params, $readonly);
       echo '</div>';
    }
 
@@ -1056,14 +1057,13 @@ class Impact extends CommonGLPI {
     * @since 9.5
     *
     * @param string  $graph   The network graph (json)
-    * @param string $params  Params of the graph (json)
+    * @param string  $params  Params of the graph (json)
     */
-   public static function buildNetwork(CommonDBTM $item) {
-      // Build the graph
-      $graph = self::makeDataForCytoscape(Impact::buildGraph($item));
-      $params = self::prepareParams($item);
-      $readonly = !$item->can($item->fields['id'], UPDATE);
-
+   public static function buildNetwork(
+      string $graph,
+      string $params,
+      bool $readonly
+   ) {
       echo Html::scriptBlock("
          $(function() {
             GLPIImpact.buildNetwork($graph, $params, $readonly);
