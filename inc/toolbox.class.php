@@ -3205,8 +3205,8 @@ class Toolbox {
       return $CFG_GLPI["root_doc"] . '/front/document.send.php?file=_pictures/' . $path;
    }
 
-   public static function throwBadRequest($message) {
-      http_response_code(400);
+   public static function throwError($code, $message) {
+      http_response_code($code);
       Toolbox::logWarning($message);
       die(json_encode(["message" => $message]));
    }
