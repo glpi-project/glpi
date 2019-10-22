@@ -1179,7 +1179,7 @@ class Rule extends CommonDBTM {
          echo "</script>\n";
          echo "<div class='center firstbloc'>".
                "<a class='vsubmit' href='javascript:viewAddCriteria".$rules_id."$rand();'>";
-         echo __('Add a new criteria')."</a></div>\n";
+         echo __('Add a new criterion')."</a></div>\n";
       }
 
       echo "<div class='spaced'>";
@@ -1221,8 +1221,8 @@ class Rule extends CommonDBTM {
       $header_end .= "</tr>\n";
       echo $header_begin.$header_top.$header_end;
 
-      foreach ($this->criterias as $criteria) {
-         $this->showMinimalCriteriaForm($criteria->fields, $canedit, $rand);
+      foreach ($this->criterias as $criterion) {
+         $this->showMinimalCriteriaForm($criterion->fields, $canedit, $rand);
       }
 
       if ($nb) {
@@ -1242,7 +1242,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * Display the dropdown of the criterias for the rule
+    * Display the dropdown of the criteria for the rule
     *
     * @since 0.84 new proto
     *
@@ -1357,9 +1357,9 @@ class Rule extends CommonDBTM {
    **/
    function getCriteria($ID) {
 
-      $criterias = $this->getAllCriteria();
-      if (isset($criterias[$ID])) {
-         return $criterias[$ID];
+      $criteria = $this->getAllCriteria();
+      if (isset($criteria[$ID])) {
+         return $criteria[$ID];
       }
       return [];
    }
@@ -1420,7 +1420,7 @@ class Rule extends CommonDBTM {
    /**
     * Process the rule
     *
-    * @param &$input          the input data used to check criterias
+    * @param &$input          the input data used to check criteria
     * @param &$output         the initial output array used to be manipulate by actions
     * @param &$params         parameters for all internal functions
     * @param &options   array options:
@@ -1498,13 +1498,12 @@ class Rule extends CommonDBTM {
    }
 
 
-   /// Are criterias valid to be processed
    /**
-    *  Are criterias valid to be processed
+    *  Are criteria valid to be processed
     *
     *  @since 0.85
     *
-    * @param $options
+    * @param array $options
     *
     * @return boolean
    **/
@@ -1514,8 +1513,8 @@ class Rule extends CommonDBTM {
          if (isset($options['only_criteria'])
              && !is_null($options['only_criteria'])
              && is_array($options['only_criteria'])) {
-            foreach ($this->criterias as $criteria) {
-               if (in_array($criteria->fields['criteria'], $options['only_criteria'])) {
+            foreach ($this->criterias as $criterion) {
+               if (in_array($criterion->fields['criteria'], $options['only_criteria'])) {
                   return true;
                }
             }
@@ -1529,11 +1528,11 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * Check criterias
+    * Check criteria
     *
-    * @param $input the input data used to check criterias
+    * @param aray $input the input data used to check criteri
     *
-    * @return boolean if criterias match
+    * @return boolean if criteria match
    **/
    function checkCriterias($input) {
 
@@ -1542,11 +1541,11 @@ class Rule extends CommonDBTM {
       if ($this->fields["match"] == self::AND_MATCHING) {
          $doactions = true;
 
-         foreach ($this->criterias as $criteria) {
+         foreach ($this->criterias as $criterion) {
 
-            $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
-            if (!isset($definition_criteria['is_global']) || !$definition_criteria['is_global']) {
-               $doactions &= $this->checkCriteria($criteria, $input);
+            $definition_criterion = $this->getCriteria($criterion->fields['criteria']);
+            if (!isset($definition_criterion['is_global']) || !$definition_criterion['is_global']) {
+               $doactions &= $this->checkCriteria($criterion, $input);
                if (!$doactions) {
                   break;
                }
@@ -1555,12 +1554,12 @@ class Rule extends CommonDBTM {
 
       } else { // OR MATCHING
          $doactions = false;
-         foreach ($this->criterias as $criteria) {
-            $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
+         foreach ($this->criterias as $criterion) {
+            $definition_criterion = $this->getCriteria($criterion->fields['criteria']);
 
-            if (!isset($definition_criteria['is_global'])
-                || !$definition_criteria['is_global']) {
-               $doactions |= $this->checkCriteria($criteria, $input);
+            if (!isset($definition_criterion['is_global'])
+                || !$definition_criterion['is_global']) {
+               $doactions |= $this->checkCriteria($criterion, $input);
                if ($doactions) {
                   break;
                }
@@ -1577,23 +1576,23 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * Check criterias
+    * Check criteria
     *
-    * @param $input           the input data used to check criterias
-    * @param &$check_results
+    * @param array $input          the input data used to check criteria
+    * @param array &$check_results
     *
-    * @return boolean if criterias match
+    * @return boolean if criteria match
    **/
    function testCriterias($input, &$check_results) {
 
       reset($this->criterias);
 
-      foreach ($this->criterias as $criteria) {
-         $result = $this->checkCriteria($criteria, $input);
-         $check_results[$criteria->fields["id"]]["name"]   = $criteria->fields["criteria"];
-         $check_results[$criteria->fields["id"]]["value"]  = $criteria->fields["pattern"];
-         $check_results[$criteria->fields["id"]]["result"] = ((!$result)?0:1);
-         $check_results[$criteria->fields["id"]]["id"]     = $criteria->fields["id"];
+      foreach ($this->criterias as $criterion) {
+         $result = $this->checkCriteria($criterion, $input);
+         $check_results[$criterion->fields["id"]]["name"]   = $criterion->fields["criteria"];
+         $check_results[$criterion->fields["id"]]["value"]  = $criterion->fields["pattern"];
+         $check_results[$criterion->fields["id"]]["result"] = ((!$result)?0:1);
+         $check_results[$criterion->fields["id"]]["id"]     = $criterion->fields["id"];
       }
    }
 
@@ -1602,7 +1601,7 @@ class Rule extends CommonDBTM {
     * Process a criteria of a rule
     *
     * @param &$criteria  criteria to check
-    * @param &$input     the input data used to check criterias
+    * @param &$input     the input data used to check criteria
    **/
    function checkCriteria(&$criteria, &$input) {
 
@@ -1686,7 +1685,7 @@ class Rule extends CommonDBTM {
    /**
     * Specific prepare input datas for the rule
     *
-    * @param $input  the input data used to check criterias
+    * @param $input  the input data used to check criteria
     * @param $params parameters
     *
     * @return the updated input datas
@@ -1700,7 +1699,7 @@ class Rule extends CommonDBTM {
     * Get all data needed to process rules (core + plugins)
     *
     * @since 0.84
-    * @param $input  the input data used to check criterias
+    * @param $input  the input data used to check criteria
     * @param $params parameters
     *
     * @return the updated input datas
@@ -1840,7 +1839,7 @@ class Rule extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      // Delete a rule and all associated criterias and actions
+      // Delete a rule and all associated criteria and actions
       if (!empty($this->ruleactionclass)) {
          $ruleactionclass = $this->ruleactionclass;
          $ra = new $ruleactionclass();
@@ -2019,7 +2018,7 @@ class Rule extends CommonDBTM {
       $check_results = [];
       $output        = [];
 
-      //Test all criterias, without stopping at the first good one
+      //Test all criteria, without stopping at the first good one
       $this->testCriterias($input, $check_results);
       //Process the rule
       $this->process($input, $output, $params);
@@ -2100,7 +2099,7 @@ class Rule extends CommonDBTM {
     * Show the minimal form for the criteria rule
     *
     * @param $fields    datas used to display the criteria
-    * @param $canedit   can edit the criterias rule ?
+    * @param $canedit   can edit the criteria rule?
     * @param $rand      random value of the form
    **/
    function showMinimalCriteriaForm($fields, $canedit, $rand) {
@@ -2491,7 +2490,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * Function used to display type specific criterias during rule's preview
+    * Function used to display type specific criteria during rule's preview
     *
     * @param $fields fields values
    **/
@@ -2518,7 +2517,7 @@ class Rule extends CommonDBTM {
    function showRulePreviewCriteriasForm($target, $rules_id) {
       global $DB;
 
-      $criterias = $this->getAllCriteria();
+      $criteria = $this->getAllCriteria();
 
       if ($this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
          echo "<form name='testrule_form' id='testrule_form' method='post' action='$target'>\n";
@@ -2530,13 +2529,13 @@ class Rule extends CommonDBTM {
          $already_displayed = [];
          $first             = true;
 
-         //Brower all criterias
-         foreach ($this->criterias as $criteria) {
+         //Brower all criteria
+         foreach ($this->criterias as $criterion) {
 
             //Look for the criteria in the field of already displayed criteria :
             //if present, don't display it again
-            if (!in_array($criteria->fields["criteria"], $already_displayed)) {
-               $already_displayed[] = $criteria->fields["criteria"];
+            if (!in_array($criterion->fields["criteria"], $already_displayed)) {
+               $already_displayed[] = $criterion->fields["criteria"];
                echo "<tr class='tab_bg_1'>";
                echo "<td>";
 
@@ -2548,17 +2547,17 @@ class Rule extends CommonDBTM {
                }
 
                echo "</td>";
-               $criteria_constants = $criterias[$criteria->fields["criteria"]];
+               $criteria_constants = $criteria[$criterion->fields["criteria"]];
                echo "<td>".$criteria_constants["name"]."</td>";
                echo "<td>";
                $value = "";
-               if (isset($_POST[$criteria->fields["criteria"]])) {
-                  $value = $_POST[$criteria->fields["criteria"]];
+               if (isset($_POST[$criterion->fields["criteria"]])) {
+                  $value = $_POST[$criterion->fields["criteria"]];
                }
 
-               $this->displayCriteriaSelectPattern($criteria->fields['criteria'],
-                                                   $criteria->fields['criteria'],
-                                                   $criteria->fields['condition'], $value, true);
+               $this->displayCriteriaSelectPattern($criterion->fields['criteria'],
+                                                   $criterion->fields['criteria'],
+                                                   $criterion->fields['condition'], $value, true);
                echo "</td></tr>\n";
             }
          }
