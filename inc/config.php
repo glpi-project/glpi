@@ -41,11 +41,19 @@ include_once (GLPI_ROOT."/inc/based_config.php");
 include_once (GLPI_ROOT."/inc/define.php");
 include_once (GLPI_ROOT."/inc/dbconnection.class.php");
 
-//init cache
-$GLPI_CACHE = Config::getCache('cache_db');
-
 Session::setPath();
 Session::start();
+
+// Default Use mode
+if (!isset($_SESSION['glpi_use_mode'])) {
+   $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+}
+
+$GLPI = new GLPI();
+$GLPI->initLogger();
+
+//init cache
+$GLPI_CACHE = Config::getCache('cache_db');
 
 Config::detectRootDoc();
 
@@ -71,14 +79,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
 } else {
    include_once(GLPI_CONFIG_DIR . "/config_db.php");
-
-   // Default Use mode
-   if (!isset($_SESSION['glpi_use_mode'])) {
-      $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-   }
-
-   $GLPI = new GLPI();
-   $GLPI->initLogger();
 
    //Database connection
    DBConnection::establishDBConnection((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
