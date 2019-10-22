@@ -515,6 +515,7 @@ class Search extends DbTestCase {
             'SlaLevel',
             'OlaLevel',
             'Reservation',
+            'ReservationItem',
             'Event',
             'Glpi\\Event',
             'KnowbaseItem',
