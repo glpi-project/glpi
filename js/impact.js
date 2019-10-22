@@ -98,6 +98,9 @@ var GLPIImpact = {
    // Is the graph readonly ?
    readonly: true,
 
+   // Fullscreen
+   fullscreen: false,
+
    // Store registered dialogs and their inputs
    dialogs: {
       addNode: {
@@ -129,20 +132,21 @@ var GLPIImpact = {
 
    // Store registered toolbar items
    toolbar: {
-      helpText     : null,
-      tools        : null,
-      save         : null,
-      addNode      : null,
-      addEdge      : null,
-      addCompound  : null,
-      deleteElement: null,
-      export       : null,
-      expandToolbar: null,
-      toggleImpact : null,
-      toggleDepends: null,
-      colorPicker  : null,
-      maxDepth     : null,
-      maxDepthView : null,
+      helpText        : null,
+      tools           : null,
+      save            : null,
+      addNode         : null,
+      addEdge         : null,
+      addCompound     : null,
+      deleteElement   : null,
+      export          : null,
+      expandToolbar   : null,
+      toggleImpact    : null,
+      toggleDepends   : null,
+      colorPicker     : null,
+      maxDepth        : null,
+      maxDepthView    : null,
+      toggleFullscreen: null,
    },
 
    // Data that needs to be stored/shared between events
@@ -786,8 +790,8 @@ var GLPIImpact = {
    getTooltip: function(content) {
       return {
          position: {
-            my: 'bottom center',
-            at: 'top center'
+            my: 'top center',
+            at: 'bottom center'
          },
          content: this.getLocale(content),
          style: {
@@ -1707,6 +1711,30 @@ var GLPIImpact = {
    },
 
    /**
+    * Toggle fullscreen mode
+    */
+   toggleFullscreen: function() {
+      this.fullscreen = !this.fullscreen;
+      $(this.toolbar.toggleFullscreen).toggleClass('active');
+      $(this.impactContainer).toggleClass('fullscreen');
+      $('.impact_toolbar').toggleClass('fullscreen');
+
+      if (this.fullscreen) {
+         $(this.impactContainer).children("canvas:eq(0)").css({
+            height: "100vh"
+         });
+         $('html, body').css('overflow', 'hidden');
+      } else {
+         $(this.impactContainer).children("canvas:eq(0)").css({
+            height: "unset"
+         });
+         $('html, body').css('overflow', 'unset');
+      }
+
+      GLPIImpact.cy.resize();
+   },
+
+   /**
     * Handle global click events
     *
     * @param {JQuery.Event} event
@@ -2372,6 +2400,10 @@ var GLPIImpact = {
          $(GLPIImpact.toolbar.maxDepthView).html("Max depth: " + max);
          GLPIImpact.updateStyle();
          GLPIImpact.cy.trigger("change");
+      });
+
+      $(GLPIImpact.toolbar.toggleFullscreen).click(function() {
+         GLPIImpact.toggleFullscreen();
       });
    }
 };

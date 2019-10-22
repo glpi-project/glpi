@@ -237,6 +237,7 @@ class Impact extends CommonGLPI {
       echo '<span id="add_compound" style="display: none"><i class="far fa-square"></i></span>';
       echo '<span id="delete_element" style="display: none"><i class="fas fa-trash"></i></span>';
       echo '<span id="export_graph"><i class="fas fa-download"></i></span>';
+      echo '<span id="toggle_fullscreen"><i class="fas fa-expand"></i></span>';
       echo '<span id="expand_toolbar" style="display: none"><i class="fas fa-ellipsis-v "></i></span>';
       echo '</div>';
       self::printDropdownMenu();
@@ -828,20 +829,21 @@ class Impact extends CommonGLPI {
     */
    public static function exportToolbar() {
       return json_encode([
-         ['key'    => 'helpText',      'id' => "#help_text"],
-         ['key'    => 'tools',         'id' => "#impact_tools"],
-         ['key'    => 'save',          'id' => "#save_impact"],
-         ['key'    => 'addNode',       'id' => "#add_node"],
-         ['key'    => 'addEdge',       'id' => "#add_edge"],
-         ['key'    => 'addCompound',   'id' => "#add_compound"],
-         ['key'    => 'deleteElement', 'id' => "#delete_element"],
-         ['key'    => 'export',        'id' => "#export_graph"],
-         ['key'    => 'expandToolbar', 'id' => "#expand_toolbar"],
-         ['key'    => 'toggleImpact',  'id' => "#toggle_impact"],
-         ['key'    => 'toggleDepends', 'id' => "#toggle_depends"],
-         ['key'    => 'colorPicker',   'id' => "#color_picker"],
-         ['key'    => 'maxDepth',      'id' => "#max_depth"],
-         ['key'    => 'maxDepthView',  'id' => "#max_depth_view"],
+         ['key'    => 'helpText',            'id' => "#help_text"],
+         ['key'    => 'tools',               'id' => "#impact_tools"],
+         ['key'    => 'save',                'id' => "#save_impact"],
+         ['key'    => 'addNode',             'id' => "#add_node"],
+         ['key'    => 'addEdge',             'id' => "#add_edge"],
+         ['key'    => 'addCompound',         'id' => "#add_compound"],
+         ['key'    => 'deleteElement',       'id' => "#delete_element"],
+         ['key'    => 'export',              'id' => "#export_graph"],
+         ['key'    => 'expandToolbar',       'id' => "#expand_toolbar"],
+         ['key'    => 'toggleImpact',        'id' => "#toggle_impact"],
+         ['key'    => 'toggleDepends',       'id' => "#toggle_depends"],
+         ['key'    => 'colorPicker',         'id' => "#color_picker"],
+         ['key'    => 'maxDepth',            'id' => "#max_depth"],
+         ['key'    => 'maxDepthView',        'id' => "#max_depth_view"],
+         ['key'    => 'toggleFullscreen',    'id' => "#toggle_fullscreen"],
       ]);
    }
 
