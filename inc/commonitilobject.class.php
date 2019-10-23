@@ -2857,10 +2857,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
             foreach ($ids as $id) {
                if ($item->getFromDB($id)) {
-                  $input2 = [$field              => $id,
-                                  'taskcategories_id' => $input['taskcategories_id'],
-                                  'actiontime'        => $input['actiontime'],
-                                  'content'           => $input['content']];
+                  $input2 = [
+                     $field              => $id,
+                     'taskcategories_id' => $input['taskcategories_id'],
+                     'actiontime'        => $input['actiontime'],
+                     'state'             => $input['state'],
+                     'content'           => $input['content']
+                  ];
                   if ($task->can(-1, CREATE, $input2)) {
                      if ($task->add($input2)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
