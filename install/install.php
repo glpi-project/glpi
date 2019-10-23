@@ -35,10 +35,10 @@ define('GLPI_ROOT', realpath('..'));
 include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
-Config::detectRootDoc();
-
 $GLPI = new GLPI();
 $GLPI->initLogger();
+
+Config::detectRootDoc();
 
 //Print a correct  Html header for application
 function header_html($etape) {
