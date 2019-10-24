@@ -205,13 +205,17 @@ class Impact extends CommonGLPI {
          $start_node_id = self::getNodeID($item);
          $data = self::buildListData($graph, $direction, $item, $impact_item);
 
+         if (!count($data)) {
+            continue;
+         }
+
          echo '<table class="tab_cadre_fixehov impact-list-group">';
 
          // Header
          echo '<thead>';
          echo '<tr class="noHover">';
-         echo '<th colspan="2" width="90%"><h3>' . $label . '</h3></th>';
-         echo '<th><i class="fas fa-2x fa-caret-down impact-toggle-subitems-master impact-pointer"></i></th>';
+         echo '<th class="impact-list-header" colspan="2" width="90%"><h3>' . $label . '';
+         echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems-master impact-pointer"></i></h3></th>';
          echo '</tr>';
          echo '</thead>';
 
@@ -220,12 +224,9 @@ class Impact extends CommonGLPI {
 
             // Subheader
             echo '<tr class="tab_bg_1">';
-            echo '<td class="left subheader impact-left" width="20%">';
+            echo '<td class="left subheader impact-left" colspan="2"">';
             $total = count($items);
             echo '<a>' . _n($itemtype, $itemtype, $total) . '</a>' . ' (' . $total . ')';
-            echo '</td>';
-            echo '<td class="left subheader" width="70%"></td>';
-            echo '<td class="subheader" width="10%">';
             echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems impact-pointer"></i>';
             echo '</td>';
             echo '</tr>';
@@ -233,8 +234,8 @@ class Impact extends CommonGLPI {
             foreach ($items as $itemtype_item) {
                // Content: one row per item
                echo '<tr class=tab_bg_1><div></div>';
-               echo '<td class="impact-left"><div>' . $itemtype_item['stored']->fields['name']  . '</div></td>';
-               echo '<td><div>';
+               echo '<td class="impact-left" width="20%"><div>' . $itemtype_item['stored']->fields['name']  . '</div></td>';
+               echo '<td width="80%"><div>';
 
                $path = [];
                foreach ($itemtype_item['node']['path'] as $node) {
@@ -248,7 +249,6 @@ class Impact extends CommonGLPI {
                echo implode(" $separator ", $path);
 
                echo '</div></td>';
-               echo '<td class="center"></td>';
                echo '</tr>';
             }
 
@@ -265,10 +265,10 @@ class Impact extends CommonGLPI {
       // Toolbar
       echo '<div class="impact-list-toolbar">';
       echo '<a target="_blank" href="'.$CFG_GLPI['root_doc'].'/front/impactcsv.php?itemtype=' . $impact_item->fields['itemtype'] . '&items_id=' . $impact_item->fields['items_id'] .'">';
-      echo '<i class="fas fa-2x fa-download impact-pointer"></i>';
+      echo '<i class="fas fa-download impact-pointer impact-list-tools"></i>';
       echo '</a>';
       if ($can_update) {
-         echo '<i id="impact-list-settings" class="fas fa-2x fa-cog impact-pointer"></i>';
+         echo '<i id="impact-list-settings" class="fas fa-cog impact-pointer impact-list-tools"></i>';
       }
       echo '</div>';
 

@@ -391,7 +391,7 @@ i.fa-impact-manipulation {
       margin-right: 10px;
 
       a {
-         font-size: 1em !important;
+         font-size: 0.85em !important;
       }
    }
 }
@@ -411,7 +411,7 @@ i.fa-impact-manipulation {
 }
 
 .impact-left {
-   padding-left: 50px !important;
+   padding-left: 10px !important;
 }
 
 .impact-pointer {
@@ -427,4 +427,24 @@ i.fa-impact-manipulation {
 
 .impact-list-toolbar i {
    padding: 10px;
+}
+
+.impact-list-header {
+   padding: 1px 5px !important;
+}
+
+.impact-list-tools {
+   font-size: 1.3em;
+}
+
+.impact-toggle-subitems-master {
+   float: right;
+   padding-right: 5px;
+   font-size: 1.15rem;
+}
+
+.impact-toggle-subitems {
+   float: right;
+   padding-right: 5px;
+   font-size: 1.15rem;
 }
