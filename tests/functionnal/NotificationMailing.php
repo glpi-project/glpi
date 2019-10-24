@@ -84,11 +84,11 @@ class NotificationMailing extends DbTestCase {
       $this->array($row)
          ->isIdenticalTo([
             'itemtype'                 => 'NotificationMailing',
-            'items_id'                 => '1',
-            'notificationtemplates_id' => '0',
-            'entities_id'              => '0',
-            'is_deleted'               => '0',
-            'sent_try'                 => '0',
+            'items_id'                 => 1,
+            'notificationtemplates_id' => 0,
+            'entities_id'              => 0,
+            'is_deleted'               => 0,
+            'sent_try'                 => 0,
             'sent_time'                => null,
             'name'                     => 'Test notification',
             'sender'                   => 'glpi@tests',

@@ -537,7 +537,6 @@ class APIRest extends API {
       if ($response !== null) {
          $json = json_encode($response, JSON_UNESCAPED_UNICODE
                                       | JSON_UNESCAPED_SLASHES
-                                      | JSON_NUMERIC_CHECK
                                       | ($this->debug
                                           ? JSON_PRETTY_PRINT
                                           : 0));

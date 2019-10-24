@@ -339,7 +339,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             if ($GLPI_CACHE->has($ckey)) {
                $sons = $GLPI_CACHE->get($ckey);
                if (!isset($sons[$this->getID()])) {
-                  $sons[$this->getID()] = (string)$this->getID();
+                  $sons[$this->getID()] = $this->getID();
                   $GLPI_CACHE->set($ckey, $sons);
                }
             } else {

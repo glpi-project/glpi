@@ -2825,45 +2825,46 @@ JAVASCRIPT;
 
       }
 
-      /// Security system except for login update
-      if (Session::getLoginUserID()
+      // ## Security system except for login update:
+      //
+      // An **external** (ldap, mail) user without User::UPDATE right
+      // should not be able to update its own fields
+      // (for example, fields concerned by ldap synchronisation)
+      // except on login action (which triggers synchronisation).
+      if (Session::getLoginUserID() === $this->input['id']
           && !Session::haveRight("user", UPDATE)
-          && !strpos($_SERVER['PHP_SELF'], "/front/login.php")) {
+          && !strpos($_SERVER['PHP_SELF'], "/front/login.php")
+          && isset($this->fields["authtype"])) {
 
-         if (Session::getLoginUserID() === $this->input['id']) {
-            if (isset($this->fields["authtype"])) {
+         // extauth ldap case
+         if ($_SESSION["glpiextauth"]
+             && ($this->fields["authtype"] == Auth::LDAP
+                 || Auth::isAlternateAuth($this->fields["authtype"]))) {
 
-               // extauth ldap case
-               if ($_SESSION["glpiextauth"]
-                   && (($this->fields["authtype"] == Auth::LDAP)
-                       || Auth::isAlternateAuth($this->fields["authtype"]))) {
+            $authtype = Auth::getMethodsByID($this->fields["authtype"],
+                                             $this->fields["auths_id"]);
+            if (count($authtype)) {
+               $fields = AuthLDAP::getSyncFields($authtype);
+               foreach ($fields as $key => $val) {
+                  if (!empty($val)
+                        && (($key2 = array_search($key, $this->updates)) !== false)) {
 
-                  $authtype = Auth::getMethodsByID($this->fields["authtype"],
-                                                   $this->fields["auths_id"]);
-                  if (count($authtype)) {
-                     $fields = AuthLDAP::getSyncFields($authtype);
-                     foreach ($fields as $key => $val) {
-                        if (!empty($val)
-                            && (($key2 = array_search($key, $this->updates)) !== false)) {
+                     unset ($this->updates[$key2]);
+                     unset($this->oldvalues[$key]);
 
-                           unset ($this->updates[$key2]);
-                           unset($this->oldvalues[$key]);
-
-                        }
-                     }
                   }
                }
-
-               if (($key = array_search("is_active", $this->updates)) !== false) {
-                  unset ($this->updates[$key]);
-                  unset($this->oldvalues['is_active']);
-               }
-
-               if (($key = array_search("comment", $this->updates)) !== false) {
-                  unset ($this->updates[$key]);
-                  unset($this->oldvalues['comment']);
-               }
             }
+         }
+
+         if (($key = array_search("is_active", $this->updates)) !== false) {
+            unset ($this->updates[$key]);
+            unset($this->oldvalues['is_active']);
+         }
+
+         if (($key = array_search("comment", $this->updates)) !== false) {
+            unset ($this->updates[$key]);
+            unset($this->oldvalues['comment']);
          }
       }
    }

@@ -172,7 +172,7 @@ class Certificate extends DbTestCase {
       $alert_certificate = array_pop($alerts);
       $this->array($alert_certificate)
          ->string['itemtype']->isEqualTo('Certificate')
-         ->string['items_id']->isEqualTo($id);
+         ->integer['items_id']->isEqualTo($id);
 
    }
 }

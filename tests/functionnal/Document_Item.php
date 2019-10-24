@@ -112,7 +112,7 @@ class Document_Item extends DbTestCase {
          'items_id'     => $cid,
          'documents_id' => $document->getID(),
          'users_id'     => false,
-         'entities_id'  => '0',
+         'entities_id'  => 0,
          'is_recursive' => 0
       ];
 

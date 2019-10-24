@@ -47,7 +47,7 @@ class Monitor extends DbTestCase {
 
       $data = [
          'name'         => '_test_monitor01',
-         'entities_id'  => '0'
+         'entities_id'  => 0
       ];
 
       $monitor = new \Monitor();
@@ -57,41 +57,41 @@ class Monitor extends DbTestCase {
       $monitor = getItemByTypeName('Monitor', '_test_monitor01');
 
       $expected = [
-         'id' => "$added",
-         'entities_id' => '0',
+         'id' => $added,
+         'entities_id' => 0,
          'name' => '_test_monitor01',
          'date_mod' => $date,
          'contact' => null,
          'contact_num' => null,
-         'users_id_tech' => '0',
-         'groups_id_tech' => '0',
+         'users_id_tech' => 0,
+         'groups_id_tech' => 0,
          'comment' => null,
          'serial' => null,
          'otherserial' => null,
          'size' => '0.00',
-         'have_micro' => '0',
-         'have_speaker' => '0',
-         'have_subd' => '0',
-         'have_bnc' => '0',
-         'have_dvi' => '0',
-         'have_pivot' => '0',
-         'have_hdmi' => '0',
-         'have_displayport' => '0',
-         'locations_id' => '0',
-         'monitortypes_id' => '0',
-         'monitormodels_id' => '0',
-         'manufacturers_id' => '0',
-         'is_global' => '0',
-         'is_deleted' => '0',
-         'is_template' => '0',
+         'have_micro' => 0,
+         'have_speaker' => 0,
+         'have_subd' => 0,
+         'have_bnc' => 0,
+         'have_dvi' => 0,
+         'have_pivot' => 0,
+         'have_hdmi' => 0,
+         'have_displayport' => 0,
+         'locations_id' => 0,
+         'monitortypes_id' => 0,
+         'monitormodels_id' => 0,
+         'manufacturers_id' => 0,
+         'is_global' => 0,
+         'is_deleted' => 0,
+         'is_template' => 0,
          'template_name' => null,
-         'users_id' => '0',
-         'groups_id' => '0',
-         'states_id' => '0',
+         'users_id' => 0,
+         'groups_id' => 0,
+         'states_id' => 0,
          'ticket_tco' => '0.0000',
-         'is_dynamic' => '0',
+         'is_dynamic' => 0,
          'date_creation' => $date,
-         'is_recursive' => '0'
+         'is_recursive' => 0
       ];
 
       $this->array($monitor->fields)->isIdenticalTo($expected);

@@ -69,14 +69,14 @@ class Networkport extends DbTestCase {
           'items_id'           => $computer1->getID(),
           'itemtype'           => 'Computer',
           'entities_id'        => $computer1->fields['entities_id'],
-          'is_recursive'       => '0',
-          'logical_number'     => '1',
+          'is_recursive'       => 0,
+          'logical_number'     => 1,
           'name'               => 'eth1',
           'instantiation_type' => 'NetworkPortEthernet',
           'mac'                => '00:24:81:eb:c6:d0',
           'comment'            => null,
-          'is_deleted'         => '0',
-          'is_dynamic'         => '0',
+          'is_deleted'         => 0,
+          'is_dynamic'         => 0,
       ];
       $this->array($current_networkport)->isIdenticalTo($expected);
 
@@ -140,11 +140,11 @@ class Networkport extends DbTestCase {
       unset($networkportethernet['date_mod']);
       unset($networkportethernet['date_creation']);
       $expected = [
-          'networkports_id'             => "$new_id",
-          'items_devicenetworkcards_id' => '0',
-          'netpoints_id'                => '0',
+          'networkports_id'             => $new_id,
+          'items_devicenetworkcards_id' => 0,
+          'netpoints_id'                => 0,
           'type'                        => 'T',
-          'speed'                       => '1000',
+          'speed'                       => 1000,
       ];
       $this->array($networkportethernet)->isIdenticalTo($expected);
 
@@ -157,13 +157,13 @@ class Networkport extends DbTestCase {
       unset($networkname['date_creation']);
       $expected = [
           'entities_id' => $computer1->fields['entities_id'],
-          'items_id'    => "$new_id",
+          'items_id'    => $new_id,
           'itemtype'    => 'NetworkPort',
           'name'        => 'test1',
           'comment'     => 'test1 comment',
-          'fqdns_id'    => '0',
-          'is_deleted'  => '0',
-          'is_dynamic'  => '0',
+          'fqdns_id'    => 0,
+          'is_deleted'  => 0,
+          'is_dynamic'  => 0,
       ];
       $this->array($networkname)->isIdenticalTo($expected);
 
@@ -177,14 +177,14 @@ class Networkport extends DbTestCase {
           'entities_id'  => $computer1->fields['entities_id'],
           'items_id'     => $networknames_id,
           'itemtype'     => 'NetworkName',
-          'version'      => '4',
+          'version'      => 4,
           'name'         => '192.168.20.1',
-          'binary_0'     => '0',
-          'binary_1'     => '0',
-          'binary_2'     => '65535',
-          'binary_3'     => '3232240641',
-          'is_deleted'   => '0',
-          'is_dynamic'   => '0',
+          'binary_0'     => 0,
+          'binary_1'     => 0,
+          'binary_2'     => 65535,
+          'binary_3'     => 3232240641,
+          'is_deleted'   => 0,
+          'is_dynamic'   => 0,
           'mainitems_id' => $computer1->getID(),
           'mainitemtype' => 'Computer',
       ];

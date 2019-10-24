@@ -713,7 +713,7 @@ final class DbUtils {
 
       if (!is_array($sons)) {
          // IDs to be present in the final array
-         $sons[$IDf] = "$IDf";
+         $sons[$IDf] = $IDf;
          // current ID found to be added
          $found = [];
          // First request init the  varriables

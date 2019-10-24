@@ -57,7 +57,7 @@ class Entity extends DbTestCase {
       $this->array(array_keys(getAncestorsOf('glpi_entities', $ent0->getID())))
          ->isIdenticalTo([0]);
       $this->array(array_values(getAncestorsOf('glpi_entities', $ent0->getID())))
-         ->isIdenticalTo(['0']);
+         ->isIdenticalTo([0]);
       $this->array(array_keys(getSonsOf('glpi_entities', $ent0->getID())))
          ->isEqualTo([$ent0->getID(), $ent1->getID(), $ent2->getID()]);
       $this->array(array_values(getSonsOf('glpi_entities', $ent0->getID())))
@@ -134,7 +134,7 @@ class Entity extends DbTestCase {
       $this->integer($new_id)->isGreaterThan(0);
       $ackey_new_id = $ackey_prefix . md5('glpi_entities' . $new_id);
 
-      $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1"];
+      $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
       if ($cache === true) {
          $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
       }
@@ -146,7 +146,7 @@ class Entity extends DbTestCase {
          $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
       }
 
-      $expected = [$ent1 => $ent1, $new_id => "$new_id"];
+      $expected = [$ent1 => $ent1, $new_id => $new_id];
 
       $sons = getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
@@ -163,7 +163,7 @@ class Entity extends DbTestCase {
          ])
       )->isTrue();
 
-      $expected = [0 => '0', $ent0 => "$ent0", $ent2 => "$ent2"];
+      $expected = [0 => 0, $ent0 => $ent0, $ent2 => $ent2];
       if ($cache === true) {
          $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
       }
@@ -183,7 +183,7 @@ class Entity extends DbTestCase {
          $this->array(apcu_fetch($sckey_ent1))->isIdenticalTo($expected);
       }
 
-      $expected = [$ent2 => $ent2, $new_id => "$new_id"];
+      $expected = [$ent2 => $ent2, $new_id => $new_id];
       $sons = getSonsOf('glpi_entities', $ent2);
       $this->array($sons)->isIdenticalTo($expected);
 
@@ -202,18 +202,18 @@ class Entity extends DbTestCase {
       $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
       $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $expected = [0 => '0', 1 => "$ent0"];
+      $expected = [0 => 0, 1 => $ent0];
       $ancestors = getAncestorsOf('glpi_entities', $ent1);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       $ancestors = getAncestorsOf('glpi_entities', $ent2);
       $this->array($ancestors)->isIdenticalTo($expected);
 
-      $expected = [$ent1 => "$ent1"];
+      $expected = [$ent1 => $ent1];
       $sons = getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
 
-      $expected = [$ent2 => "$ent2"];
+      $expected = [$ent2 => $ent2];
       $sons = getSonsOf('glpi_entities', $ent2);
       $this->array($sons)->isIdenticalTo($expected);
    }

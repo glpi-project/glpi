@@ -86,8 +86,8 @@ class Project extends DbTestCase {
       $this->boolean($project_1->getFromDB($project_id_1))->isTrue();
       $this->boolean($project_2->getFromDB($project_id_2))->isTrue();
       // Test parent and parent's parent percent done
-      $this->string($project_2->fields['percent_done'])->isEqualTo('5');
-      $this->string($project_1->fields['percent_done'])->isEqualTo('5');
+      $this->integer($project_2->fields['percent_done'])->isEqualTo(5);
+      $this->integer($project_1->fields['percent_done'])->isEqualTo(5);
 
       $projecttask_1 = new \ProjectTask();
       $this->boolean($projecttask_1->getFromDB($projecttask_id_1))->isTrue();
@@ -104,18 +104,18 @@ class Project extends DbTestCase {
       $this->boolean($project_2->getFromDB($project_id_2))->isTrue();
       $this->boolean($project_3->getFromDB($project_id_3))->isTrue();
       $this->boolean($projecttask_1->getFromDB($projecttask_id_1))->isTrue();
-      $this->string($projecttask_1->fields['percent_done'])->isEqualTo('40');
+      $this->integer($projecttask_1->fields['percent_done'])->isEqualTo(40);
       // Check that the child project wasn't changed
-      $this->string($project_3->fields['percent_done'])->isEqualTo('10');
-      $this->string($project_2->fields['percent_done'])->isEqualTo('25');
-      $this->string($project_1->fields['percent_done'])->isEqualTo('25');
+      $this->integer($project_3->fields['percent_done'])->isEqualTo(10);
+      $this->integer($project_2->fields['percent_done'])->isEqualTo(25);
+      $this->integer($project_1->fields['percent_done'])->isEqualTo(25);
 
       // Test that percent done updates on delete and restore
       $project_3->delete(['id' => $project_id_3]);
       $this->boolean($project_2->getFromDB($project_id_2))->isTrue();
-      $this->string($project_2->fields['percent_done'])->isEqualTo('40');
+      $this->integer($project_2->fields['percent_done'])->isEqualTo(40);
       $project_3->restore(['id' => $project_id_3]);
       $this->boolean($project_2->getFromDB($project_id_2))->isTrue();
-      $this->string($project_2->fields['percent_done'])->isEqualTo('25');
+      $this->integer($project_2->fields['percent_done'])->isEqualTo(25);
    }
 }

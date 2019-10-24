@@ -52,13 +52,24 @@ class DbTestCase extends \GLPITestCase {
     *
     * @param string $user_name User name (defaults to TU_USER)
     * @param string $user_pass user password (defaults to TU_PASS)
+    * @param bool $noauto disable autologin (from CAS by example)
+    * @param bool $expected bool result expected from login return
     *
-    * @return voidd
+    * @return \Auth
     */
-   protected function login($user_name = TU_USER, $user_pass = TU_PASS) {
+   protected function login(
+      string $user_name = TU_USER,
+      string $user_pass = TU_PASS,
+      bool $noauto = true,
+      bool $expected = true
+   ): \Auth {
+      \Session::destroy();
+      \Session::start();
 
       $auth = new Auth();
-      $this->boolean($auth->login($user_name, $user_pass, true))->isTrue();
+      $this->boolean($auth->login($user_name, $user_pass, $noauto))->isEqualTo($expected);
+
+      return $auth;
    }
 
    /**

@@ -206,9 +206,15 @@ class DBmysql {
             $this->dbh->query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';");
          }
 
+         // force mysqlnd to return int and float types correctly (not as strings)
+         if (GLPI_FORCE_NATIVE_SQL_TYPES) {
+            $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
+         }
+
          if (GLPI_FORCE_EMPTY_SQL_MODE) {
             $this->dbh->query("SET SESSION sql_mode = ''");
          }
+
          $this->connected = true;
 
          $this->setTimezone($this->guessTimezone());

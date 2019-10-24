@@ -67,6 +67,11 @@ if (!defined('GLPI_FORCE_EMPTY_SQL_MODE')) {
    define("GLPI_FORCE_EMPTY_SQL_MODE", "1");
 }
 
+// force mysql driver to retrieve int and float types correctly (and not convert them to strings)
+if (!defined('GLPI_FORCE_NATIVE_SQL_TYPES')) {
+   define("GLPI_FORCE_NATIVE_SQL_TYPES", "1");
+}
+
 // rights
 define("READ", 1);
 define("UPDATE", 2);
