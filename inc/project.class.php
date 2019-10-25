@@ -2302,7 +2302,7 @@ class Project extends CommonDBTM {
             $content .= "</div>";
          }
          $content .= "<div class='flex-break'></div>";
-         if ($itemtype === 'ProjectTask' && $item['projecttasktypes_id'] !== '0') {
+         if ($itemtype === 'ProjectTask' && $item['projecttasktypes_id'] !== 0) {
             $typematches = array_filter($alltypes, function($t) use ($item){
                return $t['id'] === $item['projecttasktypes_id'];
             });
