@@ -38,12 +38,41 @@ use \DbTestCase;
 
 class GLPIMailer extends DbTestCase {
 
-   public function testValidateAddress() {
+   protected function valideAddressProvider() {
+      return [
+         // Test local part
+         ["!#$%&+-=?^_`.{|}~@localhost.dot", true],
+         ["test.test@localhost.dot", true],
+         ["test..test@localhost.dot", false],
+         [".test.test@localhost.dot", false],
+         ["test.test.@localhost.dot", false],
+         ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@localhost.dot", true],
+         ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@localhost.dot", false],
+
+         // Test domain part
+         ["user", false],
+         ["user@localhost", true],
+         ["user@localhost.dot", true],
+         ["user@localhost.1", true],
+         ["user@127.0.0.1", true],
+         ["user@[127.0.0.1]", true],
+         ["user@[IPv6:2001:db8:1ff::a0b:dbd0]", true],
+         ["user@local-host", true],
+         ["user@local-host-", false],
+         ["user@-local-host", false],
+         ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.dot", true],
+         ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.dot", false],
+         ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", true],
+      ];
+   }
+
+   /**
+    * @dataProvider valideAddressProvider
+    */
+   public function testValidateAddress($address, $is_valid) {
       $mailer = new \GLPIMailer;
 
-      $this->boolean($mailer->validateAddress('user'))->isFalse();
-      $this->boolean($mailer->validateAddress('user@localhost'))->isTrue();
-      $this->boolean($mailer->validateAddress('user@localhost.dot'))->isTrue();
+      $this->boolean($mailer->validateAddress($address))->isEqualTo($is_valid);
    }
 
    public function testPhpMailerLang() {
