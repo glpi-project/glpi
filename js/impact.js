@@ -232,7 +232,7 @@ var GLPIImpact = {
             }
          },
          {
-            selector: '[hidden=1], [depth > ' + GLPIImpact.maxDepth + ']',
+            selector: '[hidden=1], [depth > ' + this.maxDepth + ']',
             style: {
                'opacity': '0',
             }
@@ -884,6 +884,9 @@ var GLPIImpact = {
       // Preset layout
       var layout = this.getPresetLayout();
 
+      // Apply max depth
+      this.maxDepth = params.max_depth;
+
       // Init cytoscape
       this.cy = cytoscape({
          container: this.impactContainer,
@@ -928,9 +931,6 @@ var GLPIImpact = {
       if (!parseInt(params.show_impact)) {
          GLPIImpact.toggleVisibility(GLPIImpact.FORWARD);
       }
-
-      // Apply max depth
-      this.maxDepth = params.max_depth;
       this.updateFlags();
 
       // Set viewport
