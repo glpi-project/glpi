@@ -1587,7 +1587,7 @@ class Search {
          // Form to massive actions
          $isadmin = ($data['item'] && $data['item']->canUpdate());
          if (!$isadmin
-               && InfoCom::canApplyOn($data['itemtype'])) {
+               && Infocom::canApplyOn($data['itemtype'])) {
             $isadmin = (Infocom::canUpdate() || Infocom::canCreate());
          }
          if ($data['itemtype'] != 'AllAssets') {
@@ -3735,7 +3735,7 @@ JAVASCRIPT;
 
          case 'Notification' :
             if (!Config::canView()) {
-               $condition = " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
+               $condition = " `glpi_notifications`.`itemtype` NOT IN ('CronTask', 'DBConnection') ";
             }
             break;
 
@@ -6582,7 +6582,7 @@ JAVASCRIPT;
       $todel   = [];
 
       if (!Session::haveRight('infocom', $action)
-          && InfoCom::canApplyOn($itemtype)) {
+          && Infocom::canApplyOn($itemtype)) {
          $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
@@ -6830,7 +6830,7 @@ JAVASCRIPT;
             self::$search[$itemtype] += Document::getSearchOptionsToAdd();
          }
 
-         if (InfoCom::canApplyOn($itemtype)
+         if (Infocom::canApplyOn($itemtype)
              || ($itemtype == 'AllAssets')) {
             self::$search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
          }
@@ -6898,7 +6898,7 @@ JAVASCRIPT;
     * @return boolean
    **/
    static function isInfocomOption($itemtype, $searchID) {
-      if (!InfoCom::canApplyOn($itemtype)) {
+      if (!Infocom::canApplyOn($itemtype)) {
          return false;
       }
 

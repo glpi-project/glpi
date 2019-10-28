@@ -537,7 +537,7 @@ class MassiveAction {
       } else {
          if (Session::getCurrentInterface() == 'central'
              && ($canupdate
-                 || (InfoCom::canApplyOn($itemtype)
+                 || (Infocom::canApplyOn($itemtype)
                      && Infocom::canUpdate()))) {
 
             //TRANS: select action 'update' (before doing it)
@@ -682,7 +682,7 @@ class MassiveAction {
                   $show_infocoms               = true;
                   $itemtable                   = getTableForItemType($itemtype);
 
-                  if (InfoCom::canApplyOn($itemtype)
+                  if (Infocom::canApplyOn($itemtype)
                       && (!$itemtype::canUpdate()
                           || !Infocom::canUpdate())) {
                      $show_all      = false;
@@ -855,7 +855,7 @@ class MassiveAction {
                   continue;
                }
 
-               if (InfoCom::canApplyOn($itemtype)) {
+               if (Infocom::canApplyOn($itemtype)) {
                   Session::checkSeveralRightsOr([$itemtype  => UPDATE,
                                                       "infocom"  => UPDATE]);
                } else {

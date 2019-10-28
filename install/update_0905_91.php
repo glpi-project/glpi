@@ -304,7 +304,7 @@ function update0905to91() {
    Config::setConfigurationValues('core', ['set_default_requester' => 1]);
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
-   // ************ Networkport ethernets **************
+   // ************ NetworkPort ethernets **************
    if (!$DB->tableExists("glpi_networkportfiberchannels")) {
       $query = "CREATE TABLE `glpi_networkportfiberchannels` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,

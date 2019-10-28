@@ -47,7 +47,7 @@ class Cartridge extends DbTestCase {
       $this->integer((int)$pid)->isGreaterThan(0);
       $this->boolean($printer->getFromDB($pid))->isTrue();
 
-      $ctype = new \CartridgeItemtype();
+      $ctype = new \CartridgeItemType();
       $tid = $ctype->add([
          'name'         => 'Test cartridge type',
       ]);

@@ -48,7 +48,7 @@ if (isset($_POST["update"])) {
    //If no name has been given to this configuration, then go back to the page without adding
    if ($_POST["name"] != "") {
       if ($newID = $config_ldap->add($_POST)) {
-         if (AuthLdap::testLDAPConnection($newID)) {
+         if (AuthLDAP::testLDAPConnection($newID)) {
             Session::addMessageAfterRedirect(__('Test successful'));
          } else {
             Session::addMessageAfterRedirect(__('Test failed'), false, ERROR);
@@ -67,7 +67,7 @@ if (isset($_POST["update"])) {
 } else if (isset($_POST["test_ldap"])) {
    $config_ldap->getFromDB($_POST["id"]);
 
-   if (AuthLdap::testLDAPConnection($_POST["id"])) {
+   if (AuthLDAP::testLDAPConnection($_POST["id"])) {
                                        //TRANS: %s is the description of the test
       $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test successful: %s'),
                                                //TRANS: %s is the name of the LDAP main server
@@ -85,7 +85,7 @@ if (isset($_POST["update"])) {
    $replicate = new AuthLdapReplicate();
    $replicate->getFromDB($_POST["ldap_replicate_id"]);
 
-   if (AuthLdap::testLDAPConnection($_POST["id"], $_POST["ldap_replicate_id"])) {
+   if (AuthLDAP::testLDAPConnection($_POST["id"], $_POST["ldap_replicate_id"])) {
                                        //TRANS: %s is the description of the test
       $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test successful: %s'),
                                                //TRANS: %s is the name of the LDAP replica server

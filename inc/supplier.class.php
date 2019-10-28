@@ -466,7 +466,7 @@ class Supplier extends CommonDBTM {
          return false;
       }
 
-      $types_iterator = InfoCom::getTypes(['suppliers_id' => $instID]);
+      $types_iterator = Infocom::getTypes(['suppliers_id' => $instID]);
       $number = count($types_iterator);
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";

@@ -576,7 +576,7 @@ class NetworkPort extends CommonDBChild {
          $porttypes = ['NetworkPortAlias', 'NetworkPortAggregate'];
       } else {
          $porttypes = self::getNetworkPortInstantiations();
-         // Manage NetworkportMigration
+         // Manage NetworkPortMigration
          $porttypes[] = '';
       }
       $display_options = self::getDisplayOptions($itemtype);
@@ -750,7 +750,7 @@ class NetworkPort extends CommonDBChild {
                   if (!empty($portType)) {
                      $content .= "<a href=\"" . NetworkPort::getFormURLWithID($netport->fields["id"]) ."\">";
                   } else {
-                     $content .= "<a href=\"" . NetworkportMigration::getFormURLWithID($netport->fields["id"]) ."\">";
+                     $content .= "<a href=\"" . NetworkPortMigration::getFormURLWithID($netport->fields["id"]) ."\">";
                   }
                }
                $content .= $netport->fields["logical_number"];

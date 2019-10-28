@@ -358,7 +358,7 @@ $CFG_GLPI['itemdevicegraphiccard_types']  = ['Computer'];
 $CFG_GLPI['itemdevicemotherboard_types']  = ['Computer'];
 
 $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'ConsumableItem',
-                                             'Contract', 'Crontask', 'DBConnection',
+                                             'Contract', 'CronTask', 'DBConnection',
                                              'FieldUnicity', 'Infocom', 'MailCollector',
                                              'ObjectLock', 'PlanningRecall', 'Problem',
                                              'Project', 'ProjectTask', 'Reservation',

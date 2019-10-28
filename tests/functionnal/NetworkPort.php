@@ -36,7 +36,7 @@ use \DbTestCase;
 
 /* Test for inc/networkport.class.php */
 
-class Networkport extends DbTestCase {
+class NetworkPort extends DbTestCase {
 
    public function testAddSimpleNetworkPort() {
       $this->login();

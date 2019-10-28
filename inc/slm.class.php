@@ -84,8 +84,8 @@ class SLM extends CommonDBTM {
 
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Sla::class,
-            Ola::class,
+            SLA::class,
+            OLA::class,
          ]
       );
    }
@@ -184,7 +184,7 @@ class SLM extends CommonDBTM {
          $menu['page']            = static::getSearchURL(false);
          $menu['links']['search'] = static::getSearchURL(false);
          if (static::canCreate()) {
-            $menu['links']['add'] = Slm::getFormURL(false);
+            $menu['links']['add'] = SLM::getFormURL(false);
          }
 
          $menu['options']['sla']['title']           = SLA::getTypeName(1);

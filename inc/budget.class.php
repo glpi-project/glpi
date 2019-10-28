@@ -660,7 +660,7 @@ class Budget extends CommonDropdown{
          return false;
       }
 
-      $types_iterator = InfoCom::getTypes(
+      $types_iterator = Infocom::getTypes(
          [
             'budgets_id' => $budgets_id
          ] + getEntitiesRestrictCriteria('glpi_infocoms', 'entities_id')

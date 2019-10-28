@@ -99,7 +99,7 @@ if (isset($_GET['getvcard'])) {
    Session::checkRight('user', User::UPDATEAUTHENT);
 
    $user->getFromDB($_POST["id"]);
-   AuthLdap::forceOneUserSynchronization($user);
+   AuthLDAP::forceOneUserSynchronization($user);
    Html::back();
 
 } else if (isset($_POST["update"])) {
@@ -183,7 +183,7 @@ if (isset($_GET['getvcard'])) {
       Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
       if (isset($_POST['login']) && !empty($_POST['login'])) {
-         AuthLdap::importUserFromServers(['name' => $_POST['login']]);
+         AuthLDAP::importUserFromServers(['name' => $_POST['login']]);
       }
       Html::back();
    } else if (isset($_POST['add_ext_auth_simple'])) {

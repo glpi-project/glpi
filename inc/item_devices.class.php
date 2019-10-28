@@ -125,7 +125,7 @@ class Item_Devices extends CommonDBRelation {
       $forbidden = parent::getForbiddenStandardMassiveAction();
 
       if ((count(static::getSpecificities()) == 0)
-          && !InfoCom::canApplyOn($this)) {
+          && !Infocom::canApplyOn($this)) {
          $forbidden[] = 'update';
       }
 

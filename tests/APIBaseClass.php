@@ -1203,7 +1203,7 @@ abstract class APIBaseClass extends \atoum {
       $this->object($computer)->isInstanceOf('\Computer');
       $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
       $this->integer((int) $deviceSimcard->getID())->isGreaterThan(0);
-      $this->object($deviceSimcard)->isInstanceOf('\Devicesimcard');
+      $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
       $input = [
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),

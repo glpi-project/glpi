@@ -268,7 +268,7 @@ class Telemetry extends CommonGLPI {
    /**
     * Send telemetry informations
     *
-    * @param Crontask $task Crontask instance
+    * @param CronTask $task CronTask instance
     *
     * @return void
     */

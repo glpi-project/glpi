@@ -6515,11 +6515,11 @@ class Ticket extends CommonITILObject {
    /**
     * Cron for ticket's automatic purge
     *
-    * @param Crontask $task Crontask object
+    * @param CronTask $task CronTask object
     *
     * @return integer (0 : nothing done - 1 : done)
    **/
-   static function cronPurgeTicket(Crontask $task) {
+   static function cronPurgeTicket(CronTask $task) {
       global $DB;
 
       $ticket = new self();

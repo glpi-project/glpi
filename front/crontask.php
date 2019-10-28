@@ -38,7 +38,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
-Html::header(Crontask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'config', 'crontask');
+Html::header(CronTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'config', 'crontask');
 
 $crontask = new CronTask();
 if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {

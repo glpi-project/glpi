@@ -98,9 +98,9 @@ abstract class LevelAgreementLevel extends RuleTicket {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => Sla::getTable(),
+         'table'              => SLA::getTable(),
          'field'              => 'name',
-         'name'               => Sla::getTypeName(),
+         'name'               => SLA::getTypeName(),
          'datatype'           => 'itemlink',
          'massiveaction'      => false
       ];

@@ -69,8 +69,8 @@ class Item_DeviceSimcard extends DbTestCase {
       // Add
       $computer = getItemByTypeName('Computer', '_test_pc01');
       $this->object($computer)->isInstanceOf('\Computer');
-      $deviceSimcard = getItemForItemtype('Devicesimcard', '_test_simcard_1');
-      $this->object($deviceSimcard)->isInstanceOf('\Devicesimcard');
+      $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+      $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
       $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
@@ -124,8 +124,8 @@ class Item_DeviceSimcard extends DbTestCase {
       // Add
       $computer = getItemByTypeName('Computer', '_test_pc01');
       $this->object($computer)->isInstanceOf('\Computer');
-      $deviceSimcard = getItemForItemtype('Devicesimcard', '_test_simcard_1');
-      $this->object($deviceSimcard)->isInstanceOf('\Devicesimcard');
+      $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+      $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
       $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
@@ -165,8 +165,8 @@ class Item_DeviceSimcard extends DbTestCase {
       // Add
       $computer = getItemByTypeName('Computer', '_test_pc01');
       $this->object($computer)->isInstanceOf('\Computer');
-      $deviceSimcard = getItemForItemtype('Devicesimcard', '_test_simcard_1');
-      $this->object($deviceSimcard)->isInstanceOf('\Devicesimcard');
+      $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+      $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
       $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),

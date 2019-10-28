@@ -1237,14 +1237,16 @@ class Migration {
     *  - renaming of foreign key fields corresponding to this itemtype;
     *  - update of "itemtype" column values in all tables.
     *
-    * @param string $old_itemtype
-    * @param string $new_itemtype
+    * @param string  $old_itemtype
+    * @param string  $new_itemtype
+    * @param boolean $update_structure
+    *    Whether to update or not DB structure (itemtype table name and foreign key fields)
     *
     * @return void
     *
     * @since 9.5.0
     */
-   public function renameItemtype($old_itemtype, $new_itemtype) {
+   public function renameItemtype($old_itemtype, $new_itemtype, $update_structure = true) {
       global $DB;
 
       if ($old_itemtype == $new_itemtype) {
@@ -1254,89 +1256,91 @@ class Migration {
 
       $this->displayTitle(sprintf('Rename "%s" itemtype to "%s"', $old_itemtype, $new_itemtype));
 
-      $old_table = getTableForItemType($old_itemtype);
-      $new_table = getTableForItemType($new_itemtype);
-      $old_fkey  = getForeignKeyFieldForItemType($old_itemtype);
-      $new_fkey  = getForeignKeyFieldForItemType($new_itemtype);
+      if ($update_structure) {
+         $old_table = getTableForItemType($old_itemtype);
+         $new_table = getTableForItemType($new_itemtype);
+         $old_fkey  = getForeignKeyFieldForItemType($old_itemtype);
+         $new_fkey  = getForeignKeyFieldForItemType($new_itemtype);
 
-      // Check prerequisites
-      if (!$DB->tableExists($old_table)) {
-         throw new \RuntimeException(
-            sprintf(
-               'Table "%s" does not exists.',
-               $old_table,
-               $new_table
-            )
-         );
-      }
-      if ($DB->tableExists($new_table)) {
-         throw new \RuntimeException(
-            sprintf(
-               'Table "%s" cannot be renamed as table "%s" already exists.',
-               $old_table,
-               $new_table
-            )
-         );
-      }
-      $fkey_column_iterator = $DB->request(
-         [
-            'SELECT' => [
-               'table_name  AS TABLE_NAME',
-               'column_name AS COLUMN_NAME',
-            ],
-            'FROM'   => 'information_schema.columns',
-            'WHERE'  => [
-               'table_schema' => $DB->dbdefault,
-               'table_name'   => ['LIKE', 'glpi_%'],
-               'OR' => [
-                  ['column_name'  => $old_fkey],
-                  ['column_name'  => ['LIKE', $old_fkey . '_%']],
-               ],
-            ],
-            'ORDER'  => 'TABLE_NAME',
-         ]
-      );
-      $fkey_column_array = iterator_to_array($fkey_column_iterator); // Convert to array to be able to loop twice
-      foreach ($fkey_column_array as $fkey_column) {
-         $fkey_table   = $fkey_column['TABLE_NAME'];
-         $fkey_oldname = $fkey_column['COLUMN_NAME'];
-         $fkey_newname = preg_replace('/^' . preg_quote($old_fkey) . '/', $new_fkey, $fkey_oldname);
-         if ($DB->fieldExists($fkey_table, $fkey_newname)) {
+         // Check prerequisites
+         if (!$DB->tableExists($old_table)) {
             throw new \RuntimeException(
                sprintf(
-                  'Field "%s" cannot be renamed in table "%s" as "%s" is field already exists.',
-                  $fkey_oldname,
-                  $fkey_table,
-                  $fkey_newname
+                  'Table "%s" does not exists.',
+                  $old_table,
+                  $new_table
                )
             );
          }
-      }
-
-      //1. Rename itemtype table
-      $this->displayMessage(sprintf('Rename "%s" table to "%s"', $old_table, $new_table));
-      $this->renameTable($old_table, $new_table);
-
-      //2. Rename foreign key fields
-      $this->displayMessage(
-         sprintf('Rename "%s" foreign keys to "%s" in all tables', $old_fkey, $new_fkey)
-      );
-      foreach ($fkey_column_array as $fkey_column) {
-         $fkey_table   = $fkey_column['TABLE_NAME'];
-         $fkey_oldname = $fkey_column['COLUMN_NAME'];
-         $fkey_newname = preg_replace('/^' . preg_quote($old_fkey) . '/', $new_fkey, $fkey_oldname);
-
-         if ($fkey_table == $old_table) {
-            // Special case, foreign key is inside renamed table, use new name
-            $fkey_table = $new_table;
+         if ($DB->tableExists($new_table)) {
+            throw new \RuntimeException(
+               sprintf(
+                  'Table "%s" cannot be renamed as table "%s" already exists.',
+                  $old_table,
+                  $new_table
+               )
+            );
+         }
+         $fkey_column_iterator = $DB->request(
+            [
+               'SELECT' => [
+                  'table_name AS TABLE_NAME',
+                  'column_name AS COLUMN_NAME',
+               ],
+               'FROM'   => 'information_schema.columns',
+               'WHERE'  => [
+                  'table_schema' => $DB->dbdefault,
+                  'table_name'   => ['LIKE', 'glpi_%'],
+                  'OR' => [
+                     ['column_name'  => $old_fkey],
+                     ['column_name'  => ['LIKE', $old_fkey . '_%']],
+                  ],
+               ],
+               'ORDER'  => 'TABLE_NAME',
+            ]
+         );
+         $fkey_column_array = iterator_to_array($fkey_column_iterator); // Convert to array to be able to loop twice
+         foreach ($fkey_column_array as $fkey_column) {
+            $fkey_table   = $fkey_column['TABLE_NAME'];
+            $fkey_oldname = $fkey_column['COLUMN_NAME'];
+            $fkey_newname = preg_replace('/^' . preg_quote($old_fkey) . '/', $new_fkey, $fkey_oldname);
+            if ($DB->fieldExists($fkey_table, $fkey_newname)) {
+               throw new \RuntimeException(
+                  sprintf(
+                     'Field "%s" cannot be renamed in table "%s" as "%s" is field already exists.',
+                     $fkey_oldname,
+                     $fkey_table,
+                     $fkey_newname
+                  )
+               );
+            }
          }
 
-         $this->changeField(
-            $fkey_table,
-            $fkey_oldname,
-            $fkey_newname,
-            'integer' // assume that foreign key always uses integer type
+         //1. Rename itemtype table
+         $this->displayMessage(sprintf('Rename "%s" table to "%s"', $old_table, $new_table));
+         $this->renameTable($old_table, $new_table);
+
+         //2. Rename foreign key fields
+         $this->displayMessage(
+            sprintf('Rename "%s" foreign keys to "%s" in all tables', $old_fkey, $new_fkey)
          );
+         foreach ($fkey_column_array as $fkey_column) {
+            $fkey_table   = $fkey_column['TABLE_NAME'];
+            $fkey_oldname = $fkey_column['COLUMN_NAME'];
+            $fkey_newname = preg_replace('/^' . preg_quote($old_fkey) . '/', $new_fkey, $fkey_oldname);
+
+            if ($fkey_table == $old_table) {
+               // Special case, foreign key is inside renamed table, use new name
+               $fkey_table = $new_table;
+            }
+
+            $this->changeField(
+               $fkey_table,
+               $fkey_oldname,
+               $fkey_newname,
+               'integer' // assume that foreign key always uses integer type
+            );
+         }
       }
 
       //3. Update "itemtype" values in all tables
@@ -1346,7 +1350,7 @@ class Migration {
       $itemtype_column_iterator = $DB->request(
          [
             'SELECT' => [
-               'table_name  AS TABLE_NAME',
+               'table_name AS TABLE_NAME',
                'column_name AS COLUMN_NAME',
             ],
             'FROM'   => 'information_schema.columns',

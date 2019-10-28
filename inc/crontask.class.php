@@ -108,7 +108,7 @@ class CronTask extends CommonDBTM{
 
 
    /**
-    * Read a Crontask by its name
+    * Read a CronTask by its name
     *
     * Used by plugins to load its crontasks
     *
@@ -1703,7 +1703,7 @@ class CronTask extends CommonDBTM{
    static function cronWatcher($task) {
       global $DB;
 
-      // Crontasks running for more than 1 hour or 2 frequency
+      // CronTasks running for more than 1 hour or 2 frequency
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
@@ -1721,7 +1721,7 @@ class CronTask extends CommonDBTM{
 
       if (count($crontasks)) {
          $task = new self();
-         $task->getFromDBByCrit(['itemtype' => 'Crontask', 'name' => 'watcher']);
+         $task->getFromDBByCrit(['itemtype' => 'CronTask', 'name' => 'watcher']);
          if (NotificationEvent::raiseEvent("alert", $task, ['items' => $crontasks])) {
             $task->addVolume(1);
          }

@@ -266,7 +266,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
             ];
             $limitexceeded = false;
 
-            $users = AuthLdap::getAllUsers(
+            $users = AuthLDAP::getAllUsers(
                [
                   'authldaps_id' => $server_id,
                   'mode'         => $action,
@@ -346,7 +346,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
                   $user_sync_field
                );
 
-               if ($existing_user instanceof User && $action == AuthLdap::ACTION_IMPORT) {
+               if ($existing_user instanceof User && $action == AuthLDAP::ACTION_IMPORT) {
                   continue; // Do not update existing user if current action is only import
                }
 
@@ -361,7 +361,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
                   $id_field   = $server->fields['sync_field'];
                }
 
-               $result = AuthLdap::ldapImportUserByServerId(
+               $result = AuthLDAP::ldapImportUserByServerId(
                   [
                      'method'           => AuthLDAP::IDENTIFIER_LOGIN,
                      'value'            => $value,

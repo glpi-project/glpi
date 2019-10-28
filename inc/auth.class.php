@@ -216,7 +216,7 @@ class Auth extends CommonGLPI {
          return false;
       }
 
-      $this->ldap_connection   = AuthLdap::tryToConnectToServer($ldap_method, $login, $password);
+      $this->ldap_connection   = AuthLDAP::tryToConnectToServer($ldap_method, $login, $password);
       $this->user_deleted_ldap = false;
 
       if ($this->ldap_connection) {
@@ -229,7 +229,7 @@ class Auth extends CommonGLPI {
          if (!empty($ldap_method['sync_field'])) {
             $params['fields']['sync_field'] = $ldap_method['sync_field'];
          }
-         $infos = AuthLdap::searchUserDn($this->ldap_connection,
+         $infos = AuthLDAP::searchUserDn($this->ldap_connection,
                                          ['basedn'            => $ldap_method['basedn'],
                                                'login_field'       => $ldap_method['login_field'],
                                                'search_parameters' => $params,
@@ -655,7 +655,7 @@ class Auth extends CommonGLPI {
                //User has already authenticate, at least once : it's ldap server if filled
                if (isset($this->user->fields["auths_id"])
                    && ($this->user->fields["auths_id"] > 0)) {
-                  $authldap = new AuthLdap();
+                  $authldap = new AuthLDAP();
                   //If ldap server is enabled
                   if ($authldap->getFromDB($this->user->fields["auths_id"])
                       && $authldap->fields['is_active']) {
@@ -669,7 +669,7 @@ class Auth extends CommonGLPI {
 
                $ldapservers_status = false;
                foreach ($ldapservers as $ldap_method) {
-                  $ds = AuthLdap::connectToServer($ldap_method["host"],
+                  $ds = AuthLDAP::connectToServer($ldap_method["host"],
                                                   $ldap_method["port"],
                                                   $ldap_method["rootdn"],
                                                   Toolbox::decrypt($ldap_method["rootdn_passwd"],
@@ -680,13 +680,13 @@ class Auth extends CommonGLPI {
                   if ($ds) {
                      $ldapservers_status = true;
                      $params = [
-                        'method' => AuthLdap::IDENTIFIER_LOGIN,
+                        'method' => AuthLDAP::IDENTIFIER_LOGIN,
                         'fields' => [
-                           AuthLdap::IDENTIFIER_LOGIN => $ldap_method["login_field"],
+                           AuthLDAP::IDENTIFIER_LOGIN => $ldap_method["login_field"],
                         ],
                      ];
                      try {
-                        $user_dn = AuthLdap::searchUserDn($ds, [
+                        $user_dn = AuthLDAP::searchUserDn($ds, [
                            'basedn'            => $ldap_method["basedn"],
                            'login_field'       => $ldap_method['login_field'],
                            'search_parameters' => $params,
@@ -761,7 +761,7 @@ class Auth extends CommonGLPI {
                      || $this->user->fields["authtype"] == $this::LDAP) {
 
                   if (Toolbox::canUseLdap()) {
-                     AuthLdap::tryLdapAuth($this, $login_name, $login_password,
+                     AuthLDAP::tryLdapAuth($this, $login_name, $login_password,
                                              $this->user->fields["auths_id"]);
                      if (!$this->auth_succeded && $this->user_deleted_ldap) {
                         $search_params = [
@@ -993,10 +993,10 @@ class Auth extends CommonGLPI {
 
       switch ($authtype) {
          case self::LDAP :
-            $auth = new AuthLdap();
+            $auth = new AuthLDAP();
             if ($auth->getFromDB($auths_id)) {
                //TRANS: %1$s is the auth method type, %2$s the auth method name or link
-               return sprintf(__('%1$s: %2$s'), AuthLdap::getTypeName(1), $auth->getLink());
+               return sprintf(__('%1$s: %2$s'), AuthLDAP::getTypeName(1), $auth->getLink());
             }
             return sprintf(__('%1$s: %2$s'), __('LDAP directory'), $name);
 
@@ -1004,17 +1004,17 @@ class Auth extends CommonGLPI {
             $auth = new AuthMail();
             if ($auth->getFromDB($auths_id)) {
                //TRANS: %1$s is the auth method type, %2$s the auth method name or link
-               return sprintf(__('%1$s: %2$s'), AuthLdap::getTypeName(1), $auth->getLink());
+               return sprintf(__('%1$s: %2$s'), AuthLDAP::getTypeName(1), $auth->getLink());
             }
             return sprintf(__('%1$s: %2$s'), __('Email server'), $name);
 
          case self::CAS :
             if ($auths_id > 0) {
-               $auth = new AuthLdap();
+               $auth = new AuthLDAP();
                if ($auth->getFromDB($auths_id)) {
                   return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
-                                         __('CAS'), AuthLdap::getTypeName(1)),
+                                         __('CAS'), AuthLDAP::getTypeName(1)),
                                  $auth->getLink());
                }
             }
@@ -1022,12 +1022,12 @@ class Auth extends CommonGLPI {
 
          case self::X509 :
             if ($auths_id > 0) {
-               $auth = new AuthLdap();
+               $auth = new AuthLDAP();
                if ($auth->getFromDB($auths_id)) {
                   return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
                                          __('x509 certificate authentication'),
-                                         AuthLdap::getTypeName(1)),
+                                         AuthLDAP::getTypeName(1)),
                                  $auth->getLink());
                }
             }
@@ -1035,11 +1035,11 @@ class Auth extends CommonGLPI {
 
          case self::EXTERNAL :
             if ($auths_id > 0) {
-               $auth = new AuthLdap();
+               $auth = new AuthLDAP();
                if ($auth->getFromDB($auths_id)) {
                   return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
-                                         __('Other'), AuthLdap::getTypeName(1)),
+                                         __('Other'), AuthLDAP::getTypeName(1)),
                                  $auth->getLink());
                }
             }
@@ -1073,7 +1073,7 @@ class Auth extends CommonGLPI {
          case self::EXTERNAL :
          case self::CAS :
          case self::LDAP :
-            $auth = new AuthLdap();
+            $auth = new AuthLDAP();
             if ($auths_id>0 && $auth->getFromDB($auths_id)) {
                return ($auth->fields);
             }
@@ -1099,7 +1099,7 @@ class Auth extends CommonGLPI {
       global $CFG_GLPI;
 
       //Get all the ldap directories
-      if (AuthLdap::useAuthLdap()) {
+      if (AuthLDAP::useAuthLdap()) {
          return true;
       }
 

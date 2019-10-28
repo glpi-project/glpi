@@ -1243,7 +1243,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                   $peertype::$dropdown_method($options);
                }
             }
-            // Allow any relation to display its own fields (Networkport_Vlan for tagged ...)
+            // Allow any relation to display its own fields (NetworkPort_Vlan for tagged ...)
             static::showRelationMassiveActionsSubForm($ma, $peer_number);
             echo "<br><br>".Html::submit($specificities['button_labels'][$action],
                                          ['name' => 'massiveaction']);
