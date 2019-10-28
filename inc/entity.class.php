@@ -126,7 +126,6 @@ class Entity extends CommonTreeDropdown {
     * @since 0.84
    **/
    function pre_deleteItem() {
-      global $GLPI_CACHE;
 
       // Security do not delete root entity
       if ($this->input['id'] == 0) {
@@ -136,8 +135,8 @@ class Entity extends CommonTreeDropdown {
       //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
       $this->cleanParentsSons();
       if (Toolbox::useCache()) {
-         $ckey = 'ancestors_cache_' . md5($this->getTable() . $this->getID());
-         $GLPI_CACHE->delete($ckey);
+         $dbu = new DbUtils();
+         $dbu->unsetAncestorsOfCache($this->getTable(), $this->getID());
       }
       return true;
    }

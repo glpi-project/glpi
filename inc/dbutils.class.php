@@ -43,6 +43,20 @@ if (!defined('GLPI_ROOT')) {
 final class DbUtils {
 
    /**
+    * Internal cache of "ancestors_of".
+    *
+    * @var array
+    */
+   private static $ancestors_of_cache;
+
+   /**
+    * Internal cache of "sons_of".
+    *
+    * @var array
+    */
+   private static $sons_of_cache;
+
+   /**
     * Return foreign key field name for a table
     *
     * @param string $table table name
@@ -677,17 +691,14 @@ final class DbUtils {
     * @return array of IDs of the sons
     */
    public function getSonsOf($table, $IDf) {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
-      $ckey = 'sons_cache_' . md5($table . $IDf);
       $sons = false;
 
       if (Toolbox::useCache()) {
-         if ($GLPI_CACHE->has($ckey)) {
-            $sons = $GLPI_CACHE->get($ckey);
-            if ($sons !== null) {
-               return $sons;
-            }
+         $cached_sons_of = $this->getSonsOfCache($table, $IDf);
+         if (null !== $cached_sons_of) {
+            return $cached_sons_of;
          }
       }
 
@@ -769,7 +780,7 @@ final class DbUtils {
       }
 
       if (Toolbox::useCache()) {
-         $GLPI_CACHE->set($ckey, $sons);
+         $this->setSonsOfCache($table, $IDf, $sons);
       }
 
       return $sons;
@@ -784,32 +795,38 @@ final class DbUtils {
     * @return array of IDs of the ancestors
     */
    public function getAncestorsOf($table, $items_id) {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
-      $ckey = 'ancestors_cache_';
-      if (is_array($items_id)) {
-         $ckey .= md5($table . implode('|', $items_id));
-      } else {
-         $ckey .= md5($table . $items_id);
+      if (!is_array($items_id)) {
+         $items_id = [$items_id];
       }
-      $ancestors = [];
 
       if (Toolbox::useCache()) {
-         if ($GLPI_CACHE->has($ckey)) {
-            $ancestors = $GLPI_CACHE->get($ckey);
-            if ($ancestors !== null) {
-               return $ancestors;
+         $ancestors = [];
+         $is_cache_usable = true;
+
+         foreach ($items_id as $son_id) {
+            $cached_ancestors_of = $this->getAncestorsOfCache($table, $son_id);
+            if (null === $cached_ancestors_of) {
+               // If one of requested items do not have cached ancestors
+               // skip using of cached values (from cache storage) and
+               // go directly to usage of cached value into DB or computation of missing values.
+               $is_cache_usable = false;
+               break;
             }
+            $ancestors = array_replace($ancestors, $cached_ancestors_of);
+         }
+
+         if ($is_cache_usable) {
+            return $ancestors;
          }
       }
+
+      $ancestors = [];
 
       // IDs to be present in the final array
       $parentIDfield = $this->getForeignKeyFieldForTable($table);
       $use_cache     = $DB->fieldExists($table, "ancestors_cache");
-
-      if (!is_array($items_id)) {
-         $items_id = (array)$items_id;
-      }
 
       if ($use_cache) {
          $iterator = $DB->request([
@@ -825,39 +842,47 @@ final class DbUtils {
 
                // Return datas from cache in DB
                if (!empty($rancestors)) {
-                  $ancestors = array_replace($ancestors, $this->importArrayFromDB($rancestors, true));
+                  $items_ancestors = $this->importArrayFromDB($rancestors, true);
                } else {
-                  $loc_id_found = [];
+                  $items_ancestors = [];
                   // Recursive solution for table with-cache
                   if ($parent > 0) {
-                     $loc_id_found = $this->getAncestorsOf($table, $parent);
+                     $items_ancestors = $this->getAncestorsOf($table, $parent);
                   }
 
                   // ID=0 only exists for Entities
                   if (($parent > 0)
                      || ($table == 'glpi_entities')) {
-                     $loc_id_found[$parent] = $parent;
+                     $items_ancestors[$parent] = $parent;
                   }
 
                   // Store cache datas in DB
                   $DB->update(
                      $table, [
-                        'ancestors_cache' => $this->exportArrayToDB($loc_id_found)
+                        'ancestors_cache' => $this->exportArrayToDB($items_ancestors)
                      ], [
                         'id' => $row['id']
                      ]
                   );
-
-                  $ancestors = array_replace($ancestors, $loc_id_found);
                }
+
+               if (Toolbox::useCache()) {
+                  // Store value into cache storage
+                  $this->setAncestorsOfCache($table, $row['id'], $items_ancestors);
+               }
+
+               // Merge item ancestors into result list
+               $ancestors = array_replace($ancestors, $items_ancestors);
             }
          }
       } else {
 
          // Get the ancestors
          // iterative solution for table without cache
-         foreach ($items_id as $id) {
-            $IDf = $id;
+         foreach ($items_id as $son_id) {
+            $items_ancestors = [];
+
+            $IDf = $son_id;
             while ($IDf > 0) {
                // Get next elements
                $iterator = $DB->request([
@@ -875,16 +900,19 @@ final class DbUtils {
 
                if (!isset($ancestors[$IDf])
                      && (($IDf > 0) || ($table == 'glpi_entities'))) {
-                  $ancestors[$IDf] = $IDf;
+                  $items_ancestors[$IDf] = $IDf;
                } else {
                   $IDf = 0;
                }
             }
-         }
-      }
 
-      if (Toolbox::useCache()) {
-         $GLPI_CACHE->set($ckey, $ancestors);
+            // Store value into cache storage
+            if (Toolbox::useCache()) {
+               $this->setAncestorsOfCache($table, $son_id, $items_ancestors);
+            }
+
+            $ancestors = array_replace($ancestors, $items_ancestors);
+         }
       }
 
       return $ancestors;
@@ -1828,5 +1856,197 @@ final class DbUtils {
    function getItemtypeForForeignKeyField($fkname) {
       $table = $this->getTableNameForForeignKeyField($fkname);
       return $this->getItemTypeForTable($table);
+   }
+
+   /**
+    * Load "sons_of" values from cache storage.
+    *
+    * @param string  $table
+    * @param integer $parent_id
+    *
+    * @return void
+    */
+   private function loadSonsOfCache() {
+
+      if (!Toolbox::useCache() || null !== self::$sons_of_cache) {
+         // Do not load data from cache storage if already init or if cache disabled
+         return;
+      }
+
+      global $GLPI_CACHE;
+      self::$sons_of_cache = $GLPI_CACHE->get('sons_of_cache', []);
+   }
+
+   /**
+    * Returns cached "sons_of" value (from cache storage).
+    *
+    * @param string  $table
+    * @param integer $parent_id
+    *
+    * @return null|array
+    */
+   public function getSonsOfCache($table, $parent_id) {
+
+      if (!Toolbox::useCache()) {
+         return null;
+      }
+
+      if (null === self::$sons_of_cache) {
+         $this->loadSonsOfCache();
+      }
+
+      $ckey = $table . '_' . $parent_id;
+      return array_key_exists($ckey, self::$sons_of_cache) ? self::$sons_of_cache[$ckey] : null;
+   }
+
+   /**
+    * Defines cached "sons_of" value (into cache storage).
+    *
+    * @param string  $table
+    * @param integer $parent_id
+    * @param array   $sons
+    *
+    * @return void
+    */
+   public function setSonsOfCache($table, $parent_id, array $sons) {
+
+      if (!Toolbox::useCache()) {
+         return;
+      }
+
+      if (null === self::$sons_of_cache) {
+         $this->loadSonsOfCache();
+      }
+
+      // Save value into class internal cache
+      $ckey = $table . '_' . $parent_id;
+      self::$sons_of_cache[$ckey] = $sons;
+
+      // Save all values into cache storage
+      global $GLPI_CACHE;
+      $GLPI_CACHE->set('sons_of_cache', self::$sons_of_cache);
+   }
+
+   /**
+    * Unset cached "sons_of" value (into cache storage).
+    *
+    * @param string  $table
+    * @param integer $parent_id
+    *
+    * @return void
+    */
+   public function unsetSonsOfCache($table, $parent_id) {
+
+      if (!Toolbox::useCache()) {
+         return;
+      }
+
+      if (null === self::$sons_of_cache) {
+         $this->loadSonsOfCache();
+      }
+
+      // Save value into class internal cache
+      $ckey = $table . '_' . $parent_id;
+      unset(self::$sons_of_cache[$ckey]);
+
+      // Save all values into cache storage
+      global $GLPI_CACHE;
+      $GLPI_CACHE->set('sons_of_cache', self::$sons_of_cache);
+   }
+
+   /**
+    * Load "ancestors_of" values from cache storage.
+    *
+    * @param string  $table
+    * @param integer $parent_id
+    *
+    * @return void
+    */
+   private function loadAncestorsOfCache() {
+
+      if (!Toolbox::useCache() || null !== self::$ancestors_of_cache) {
+         // Do not load data from cache storage if already init or if cache disabled
+         return;
+      }
+
+      global $GLPI_CACHE;
+      self::$ancestors_of_cache = $GLPI_CACHE->get('ancestors_of_cache', []);
+   }
+
+   /**
+    * Returns cached "ancestors_of" value (from cache storage).
+    *
+    * @param string  $table
+    * @param integer $son_id
+    *
+    * @return null|array
+    */
+   public function getAncestorsOfCache($table, $son_id) {
+
+      if (!Toolbox::useCache()) {
+         return null;
+      }
+
+      if (null === self::$ancestors_of_cache) {
+         $this->loadAncestorsOfCache();
+      }
+
+      $ckey = $table . '_' . $son_id;
+      return array_key_exists($ckey, self::$ancestors_of_cache) ? self::$ancestors_of_cache[$ckey] : null;
+   }
+
+   /**
+    * Defines cached "ancestors_of" value (into cache storage).
+    *
+    * @param string  $table
+    * @param integer $son_id
+    * @param array   $ancestors
+    *
+    * @return void
+    */
+   public function setAncestorsOfCache($table, $son_id, array $ancestors) {
+
+      if (!Toolbox::useCache()) {
+         return;
+      }
+
+      if (null === self::$ancestors_of_cache) {
+         $this->loadAncestorsOfCache();
+      }
+
+      // Save value into class internal cache
+      $ckey = $table . '_' . $son_id;
+      self::$ancestors_of_cache[$ckey] = $ancestors;
+
+      // Save all values into cache storage
+      global $GLPI_CACHE;
+      $GLPI_CACHE->set('ancestors_of_cache', self::$ancestors_of_cache);
+   }
+
+   /**
+    * Unset cached "ancestors_of" value (into cache storage).
+    *
+    * @param string  $table
+    * @param integer $son_id
+    *
+    * @return void
+    */
+   public function unsetAncestorsOfCache($table, $son_id) {
+
+      if (!Toolbox::useCache()) {
+         return;
+      }
+
+      if (null === self::$ancestors_of_cache) {
+         $this->loadAncestorsOfCache();
+      }
+
+      // Save value into class internal cache
+      $ckey = $table . '_' . $son_id;
+      unset(self::$ancestors_of_cache[$ckey]);
+
+      // Save all values into cache storage
+      global $GLPI_CACHE;
+      $GLPI_CACHE->set('ancestors_of_cache', self::$ancestors_of_cache);
    }
 }

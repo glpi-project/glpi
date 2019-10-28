@@ -211,13 +211,16 @@ class Entity extends DbTestCase {
     */
    private function validateParentsCachedData($relation, $entities_id, $expected_cached_value) {
       global $GLPI_CACHE;
+      $cache = $GLPI_CACHE->get($relation . '_of_cache', []);
 
-      $cache_entity_key = $relation . '_cache_' . md5('glpi_entities' . $entities_id);
+      $cache_entity_key = 'glpi_entities_' . $entities_id;
 
       if (false === $expected_cached_value) {
-         $this->boolean($GLPI_CACHE->has($cache_entity_key))->isFalse();
+         $this->array($cache)->notHasKey($cache_entity_key);
       } else {
-         $this->array($GLPI_CACHE->get($cache_entity_key))->isIdenticalTo($expected_cached_value);
+         $this->array($cache)
+            ->hasKey($cache_entity_key)
+            ->array[$cache_entity_key]->isIdenticalTo($expected_cached_value);
       }
    }
 

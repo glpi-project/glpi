@@ -623,13 +623,16 @@ class DbUtils extends DbTestCase {
     */
    private function validateParentsCachedData($relation, $entities_id, $expected_cached_value) {
       global $GLPI_CACHE;
+      $cache = $GLPI_CACHE->get($relation . '_of_cache', []);
 
-      $cache_entity_key = $relation . '_cache_' . md5('glpi_entities' . $entities_id);
+      $cache_entity_key = 'glpi_entities_' . $entities_id;
 
       if (false === $expected_cached_value) {
-         $this->boolean($GLPI_CACHE->has($cache_entity_key))->isFalse();
+         $this->array($cache)->notHasKey($cache_entity_key);
       } else {
-         $this->array($GLPI_CACHE->get($cache_entity_key))->isIdenticalTo($expected_cached_value);
+         $this->array($cache)
+            ->hasKey($cache_entity_key)
+            ->array[$cache_entity_key]->isIdenticalTo($expected_cached_value);
       }
    }
 
@@ -701,19 +704,24 @@ class DbUtils extends DbTestCase {
       }
 
       // test on multiple items
-      $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
+      $sub_ent1_expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
+      $sub_ent2_expected = [0 => 0, $ent0 => $ent0, $ent2 => $ent2];
+      $combination_expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
 
       if ($cache === true && $hit === false) {
-         $this->validateParentsCachedData('ancestors', $sub_ent1 . '|' . $sub_ent2, false);
+         $this->validateParentsCachedData('ancestors', $sub_ent1, false);
+         $this->validateParentsCachedData('ancestors', $sub_ent2, false);
       } else if ($cache === true && $hit === true) {
-         $this->validateParentsCachedData('ancestors', $sub_ent1 . '|' . $sub_ent2, $expected);
+         $this->validateParentsCachedData('ancestors', $sub_ent1, $sub_ent1_expected);
+         $this->validateParentsCachedData('ancestors', $sub_ent2, $sub_ent2_expected);
       }
 
       $ancestors = $this->testedInstance->getAncestorsOf('glpi_entities', [$sub_ent1, $sub_ent2]);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isIdenticalTo($combination_expected);
 
       if ($cache === true) {
-         $this->validateParentsCachedData('ancestors', $sub_ent1 . '|' . $sub_ent2, $expected);
+         $this->validateParentsCachedData('ancestors', $sub_ent1, $sub_ent1_expected);
+         $this->validateParentsCachedData('ancestors', $sub_ent2, $sub_ent2_expected);
       }
    }
 
@@ -781,13 +789,16 @@ class DbUtils extends DbTestCase {
       }
 
       // test on multiple items
-      $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
+      $sub_ent1_expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
+      $sub_ent2_expected = [0 => 0, $ent0 => $ent0, $ent2 => $ent2];
+      $combination_expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
 
       $ancestors = $this->testedInstance->getAncestorsOf('glpi_entities', [$sub_ent1, $sub_ent2]);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isIdenticalTo($combination_expected);
 
       if ($cache === true) {
-         $this->validateParentsCachedData('ancestors', $sub_ent1 . '|' . $sub_ent2, $expected);
+         $this->validateParentsCachedData('ancestors', $sub_ent1, $sub_ent1_expected);
+         $this->validateParentsCachedData('ancestors', $sub_ent2, $sub_ent2_expected);
       }
 
       // Move an entity and validates that getAncestorsOf returns fresh data
@@ -803,13 +814,15 @@ class DbUtils extends DbTestCase {
       $entity = new \Entity();
       $this->boolean($entity->update(['id' => $sub_ent2, 'entities_id' => $ent3]))->isTrue();
 
-      $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent3 => $ent3];
+      $sub_ent2_expected = [0 => 0, $ent0 => $ent0, $ent3 => $ent3];
+      $combination_expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent3 => $ent3];
 
       $ancestors = $this->testedInstance->getAncestorsOf('glpi_entities', [$sub_ent1, $sub_ent2]);
-      $this->array($ancestors)->isIdenticalTo($expected);
+      $this->array($ancestors)->isIdenticalTo($combination_expected);
 
       if ($cache === true) {
-         $this->validateParentsCachedData('ancestors', $sub_ent1 . '|' . $sub_ent2, $expected);
+         $this->validateParentsCachedData('ancestors', $sub_ent1, $sub_ent1_expected);
+         $this->validateParentsCachedData('ancestors', $sub_ent2, $sub_ent2_expected);
       }
    }
 

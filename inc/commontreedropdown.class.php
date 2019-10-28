@@ -175,7 +175,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    function prepareInputForUpdate($input) {
-      global $GLPI_CACHE;
 
       if (isset($input[$this->getForeignKeyField()])) {
          // Can't move a parent under a child
@@ -187,8 +186,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
             $input["ancestors_cache"] = '';
             if (Toolbox::useCache()) {
-               $ckey = 'ancestors_cache_' . md5($this->getTable() . $this->getID());
-               $GLPI_CACHE->delete($ckey);
+               $dbu = new DbUtils();
+               $dbu->unsetAncestorsOfCache($this->getTable(), $this->getID());
             }
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
          }
@@ -208,12 +207,12 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @param $changeParent
    **/
    function regenerateTreeUnderID($ID, $updateName, $changeParent) {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
       //drop from sons cache when needed
       if ($changeParent && Toolbox::useCache()) {
-         $ckey = 'ancestors_cache_' . md5($this->getTable() . $ID);
-         $GLPI_CACHE->delete($ckey);
+         $dbu = new DbUtils();
+         $dbu->unsetAncestorsOfCache($this->getTable(), $ID);
       }
 
       if (($updateName) || ($changeParent)) {
@@ -280,7 +279,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @return void
     */
    protected function cleanParentsSons($id = null, $cache = true) {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
       if ($id === null) {
          $id = $this->getID();
@@ -304,19 +303,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       //drop from sons cache when needed
       if ($cache && Toolbox::useCache()) {
+         $dbu = new DbUtils();
          foreach ($ancestors as $ancestor) {
-            $ckey = 'sons_cache_' . md5($this->getTable() . $ancestor);
-            if ($GLPI_CACHE->has($ckey)) {
-               $sons = $GLPI_CACHE->get($ckey);
-               if (isset($sons[$this->getID()])) {
-                  unset($sons[$this->getID()]);
-                  $GLPI_CACHE->set($ckey, $sons);
-               }
+            $cached_sons = $dbu->getSonsOfCache($this->getTable(), $ancestor);
+            if (null !== $cached_sons && isset($cached_sons[$this->getID()])) {
+               unset($cached_sons[$this->getID()]);
+               $dbu->setSonsOfCache($this->getTable(), $ancestor, $cached_sons);
             } else {
                // If cache key does not exists in current context (UI using APCu), it may exists
                // in another context (CLI using filesystem). So we force deletion of cache in all contexts
                // to be sure to not use a stale value.
-               $GLPI_CACHE->delete($ckey);
+               $dbu->unsetSonsOfCache($this->getTable(), $ancestor);
             }
          }
       }
@@ -329,24 +326,21 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @return void
     */
    protected function addSonInParents() {
-      global $GLPI_CACHE;
 
       //add sons cache when needed
       if (Toolbox::useCache()) {
+         $dbu = new DbUtils();
          $ancestors = getAncestorsOf($this->getTable(), $this->getID());
          foreach ($ancestors as $ancestor) {
-            $ckey = 'sons_cache_' . md5($this->getTable() . $ancestor);
-            if ($GLPI_CACHE->has($ckey)) {
-               $sons = $GLPI_CACHE->get($ckey);
-               if (!isset($sons[$this->getID()])) {
-                  $sons[$this->getID()] = $this->getID();
-                  $GLPI_CACHE->set($ckey, $sons);
-               }
+            $cached_sons = $dbu->getSonsOfCache($this->getTable(), $ancestor);
+            if (null !== $cached_sons && !isset($cached_sons[$this->getID()])) {
+               $cached_sons[$this->getID()] = $this->getID();
+               $dbu->setSonsOfCache($this->getTable(), $ancestor, $cached_sons);
             } else {
                // If cache key does not exists in current context (UI using APCu), it may exists
                // in another context (CLI using filesystem). So we force deletion of cache in all contexts
                // to be sure to not use a stale value.
-               $GLPI_CACHE->delete($ckey);
+               $dbu->unsetSonsOfCache($this->getTable(), $ancestor);
             }
          }
       }
