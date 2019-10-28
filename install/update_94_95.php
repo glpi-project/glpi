@@ -856,8 +856,8 @@ function update94to95() {
    $migration->addPostQuery(
       $DB->buildUpdate(
          'glpi_configs',
-         ['name' => 'refresh_ticket_list'],
-         ['name' => 'refresh_views', 'context' => 'core']
+         ['name' => 'refresh_views'],
+         ['name' => 'refresh_ticket_list', 'context' => 'core']
       )
    );
 
