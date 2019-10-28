@@ -1043,7 +1043,7 @@ class DBmysql {
          return $name->getValue();
       }
       //handle aliases
-      $names = preg_split('/ AS /i', $name);
+      $names = preg_split('/\s+AS\s+/i', $name);
       if (count($names) > 2) {
          throw new \RuntimeException(
             'Invalid field name ' . $name

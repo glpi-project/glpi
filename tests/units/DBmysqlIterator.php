@@ -792,6 +792,20 @@ class DBmysqlIterator extends DbTestCase {
          ]
       ]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `bar` AS `b` INNER JOIN `foo` AS `f` ON (`b`.`fid` = `f`.`id`)');
+
+      $it = $this->it->execute([
+         'SELECT' => ['id', 'field  AS  f', 'baz as  Z'],
+         'FROM' => 'bar  AS b',
+         'INNER JOIN'   => [
+            'foo AS  f' => [
+               'FKEY' => [
+                  'b'   => 'fid',
+                  'f'   => 'id'
+               ]
+            ]
+         ]
+      ]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT `id`, `field` AS `f`, `baz` AS `Z` FROM `bar` AS `b` INNER JOIN `foo` AS `f` ON (`b`.`fid` = `f`.`id`)');
    }
 
    public function testExpression() {
