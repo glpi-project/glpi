@@ -986,7 +986,7 @@ class Dropdown extends DbTestCase {
                      'text'   => '-----',
                   ],
                   1 => [
-                     'id'     => (int)getItemByTypeName('user', '_test_user', true),
+                     'id'     => (int)getItemByTypeName('User', '_test_user', true),
                      'text'   => '_test_user',
                      'title'  => '_test_user - _test_user',
                   ],

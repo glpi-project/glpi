@@ -1457,7 +1457,7 @@ JAVASCRIPT;
 
       $menu['config']['title']       = __('Setup');
       $menu['config']['types']       = ['CommonDropdown', 'CommonDevice', 'Notification',
-                                        'SLM', 'Config', 'FieldUnicity', 'Crontask', 'Auth',
+                                        'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
                                         'MailCollector', 'Link', 'Plugin'];
 
       // Special items

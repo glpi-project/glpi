@@ -135,7 +135,7 @@ class Group extends CommonTreeDropdown {
                if ($item->getField('is_usergroup')
                    && Group::canUpdate()
                    && Session::haveRight("user", User::UPDATEAUTHENT)
-                   && AuthLdap::useAuthLdap()) {
+                   && AuthLDAP::useAuthLdap()) {
                   $ong[3] = __('LDAP directory link');
                }
                return $ong;
@@ -307,7 +307,7 @@ class Group extends CommonTreeDropdown {
       $buttons = [];
       if (Group::canUpdate()
           && Session::haveRight("user", User::UPDATEAUTHENT)
-          && AuthLdap::useAuthLdap()) {
+          && AuthLDAP::useAuthLdap()) {
 
          $buttons["ldap.group.php"] = __('LDAP directory link');
          $title                     = "";
@@ -422,7 +422,7 @@ class Group extends CommonTreeDropdown {
    function rawSearchOptions() {
       $tab = parent::rawSearchOptions();
 
-      if (AuthLdap::useAuthLdap()) {
+      if (AuthLDAP::useAuthLdap()) {
          $tab[] = [
             'id'                 => '3',
             'table'              => $this->getTable(),
@@ -564,7 +564,7 @@ class Group extends CommonTreeDropdown {
 
       if (Group::canUpdate()
           && Session::haveRight("user", User::UPDATEAUTHENT)
-          && AuthLdap::useAuthLdap()) {
+          && AuthLDAP::useAuthLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2' class='center'>".__('In users')."</th></tr>";
 

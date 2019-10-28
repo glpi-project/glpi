@@ -184,7 +184,7 @@ class AuthLDAP extends DbTestCase {
       $this->array($users)->hasSize(1);
       $this->array($results)->hasSize(0);
 
-      $import = \AuthLdap::ldapImportUserByServerId(
+      $import = \AuthLDAP::ldapImportUserByServerId(
          [
             'method' => \AuthLDAP::IDENTIFIER_LOGIN,
             'value'  => 'ecuador0'
@@ -342,7 +342,7 @@ class AuthLDAP extends DbTestCase {
       $group = new \Group();
       $this->boolean($group->getFromDB($import))->isTrue();
 
-      $import = \AuthLdap::ldapImportUserByServerId(
+      $import = \AuthLDAP::ldapImportUserByServerId(
          [
             'method' => \AuthLDAP::IDENTIFIER_LOGIN,
             'value'  => 'remi'
@@ -377,7 +377,7 @@ class AuthLDAP extends DbTestCase {
       $ldap = $this->ldap;
       $this->boolean($ldap->isSyncFieldEnabled())->isFalse();
 
-      $import = \AuthLdap::ldapImportUserByServerId(
+      $import = \AuthLDAP::ldapImportUserByServerId(
          [
             'method' => \AuthLDAP::IDENTIFIER_LOGIN,
             'value'  => 'ecuador0'
@@ -535,7 +535,7 @@ class AuthLDAP extends DbTestCase {
       $this->boolean($ldap->isSyncFieldEnabled())->isTrue();
 
       //try to import an user from its sync_field
-      $import = \AuthLdap::ldapImportUserByServerId(
+      $import = \AuthLDAP::ldapImportUserByServerId(
          [
             'method' => \AuthLDAP::IDENTIFIER_LOGIN,
             'value'  => '10'
@@ -761,7 +761,7 @@ class AuthLDAP extends DbTestCase {
       )->isTrue();
 
       //import the user
-      $import = \AuthLdap::ldapImportUserByServerId(
+      $import = \AuthLDAP::ldapImportUserByServerId(
          [
             'method' => \AuthLDAP::IDENTIFIER_LOGIN,
             'value'  => 'toremovetest'
@@ -939,7 +939,7 @@ class AuthLDAP extends DbTestCase {
          )
       )->isTrue(ldap_error($ldap_con));
 
-      $import = \AuthLdap::ldapImportUserByServerId(
+      $import = \AuthLDAP::ldapImportUserByServerId(
          [
             'method' => \AuthLDAP::IDENTIFIER_LOGIN,
             'value'  => 'verylongdn'
@@ -1039,7 +1039,7 @@ class AuthLDAP extends DbTestCase {
          )
       )->isTrue(ldap_error($ldap_con));
 
-      $import = \AuthLdap::ldapImportUserByServerId(
+      $import = \AuthLDAP::ldapImportUserByServerId(
          [
             'method' => \AuthLDAP::IDENTIFIER_LOGIN,
             'value'  => 'Тестов Тест Тестович'

@@ -382,11 +382,11 @@ class DBConnection extends CommonDBTM {
    /**
     * Cron process to check DB replicate state
     *
-    * @param Crontask $task to log and get param
+    * @param CronTask $task to log and get param
     *
     * @return integer
    **/
-   static function cronCheckDBreplicate(Crontask $task) {
+   static function cronCheckDBreplicate(CronTask $task) {
       global $DB;
 
       //Lauch cron only is :

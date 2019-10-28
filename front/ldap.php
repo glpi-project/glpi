@@ -40,7 +40,7 @@ if (isset($_SESSION["ldap_sortorder"])) {
    unset($_SESSION["ldap_sortorder"]);
 }
 
-AuthLdap::manageValuesInSession([], true);
+AuthLDAP::manageValuesInSession([], true);
 echo "<div class='center'><table class='tab_cadre'>";
 echo "<tr><th>".__('Bulk import users from a LDAP directory')."</th></tr>";
 

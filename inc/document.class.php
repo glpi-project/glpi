@@ -1660,11 +1660,11 @@ class Document extends CommonDBTM {
    /**
     * Cron for clean orphan documents (without Document_Item)
     *
-    * @param Crontask $task Crontask object
+    * @param CronTask $task CronTask object
     *
     * @return integer (0 : nothing done - 1 : done)
    **/
-   static function cronCleanOrphans(Crontask $task) {
+   static function cronCleanOrphans(CronTask $task) {
       global $DB;
 
       $dtable = static::getTable();

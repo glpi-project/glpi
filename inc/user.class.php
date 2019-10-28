@@ -1125,7 +1125,7 @@ class User extends CommonDBTM {
                }
 
                //get picture content in ldap
-               $info = AuthLdap::getUserByDn($ds, $this->fields['user_dn'],
+               $info = AuthLDAP::getUserByDn($ds, $this->fields['user_dn'],
                                              [$picture_field], false);
 
                //getUserByDn returns an array. If the picture is empty,
@@ -1945,7 +1945,7 @@ class User extends CommonDBTM {
       }
       if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)
          && (static::canCreate() || static::canUpdate())) {
-         if (AuthLdap::useAuthLdap()) {
+         if (AuthLDAP::useAuthLdap()) {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
       }
@@ -2927,7 +2927,7 @@ JAVASCRIPT;
                if ($item->can($id, UPDATE)) {
                   if (($item->fields["authtype"] == Auth::LDAP)
                       || ($item->fields["authtype"] == Auth::EXTERNAL)) {
-                     if (AuthLdap::forceOneUserSynchronization($item, false)) {
+                     if (AuthLDAP::forceOneUserSynchronization($item, false)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -4372,16 +4372,16 @@ JAVASCRIPT;
       } else {
          if ($CFG_GLPI["is_users_auto_add"]) {
             //Get all ldap servers with email field configured
-            $ldaps = AuthLdap::getServersWithImportByEmailActive();
+            $ldaps = AuthLDAP::getServersWithImportByEmailActive();
             //Try to find the user by his email on each ldap server
 
             foreach ($ldaps as $ldap) {
                $params = [
-                  'method' => AuthLdap::IDENTIFIER_EMAIL,
+                  'method' => AuthLDAP::IDENTIFIER_EMAIL,
                   'value'  => $email,
                ];
-               $res = AuthLdap::ldapImportUserByServerId($params,
-                                                         AuthLdap::ACTION_IMPORT,
+               $res = AuthLDAP::ldapImportUserByServerId($params,
+                                                         AuthLDAP::ACTION_IMPORT,
                                                          $ldap);
 
                if (isset($res['id'])) {
@@ -4796,7 +4796,7 @@ JAVASCRIPT;
          }
 
          if ($ds) {
-            $info = AuthLdap::getUserByDn($ds, $this->fields['user_dn'],
+            $info = AuthLDAP::getUserByDn($ds, $this->fields['user_dn'],
                                           ['*', 'createTimeStamp', 'modifyTimestamp']);
             if (is_array($info)) {
                Html::printCleanArray($info);

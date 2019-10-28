@@ -223,7 +223,7 @@ class Notification extends CommonDBTM {
       } else {
          $rand = Dropdown::showItemTypes('itemtype',
                                          array_diff($CFG_GLPI["notificationtemplates_types"],
-                                                    ['Crontask', 'DBConnection', 'User']),
+                                                    ['CronTask', 'DBConnection', 'User']),
                                          ['value' => $this->fields['itemtype']]);
       }
 
@@ -435,7 +435,7 @@ class Notification extends CommonDBTM {
 
    function canViewItem() {
 
-      if ((($this->fields['itemtype'] == 'Crontask')
+      if ((($this->fields['itemtype'] == 'CronTask')
            || ($this->fields['itemtype'] == 'DBConnection'))
           && !Config::canView()) {
           return false;
@@ -451,7 +451,7 @@ class Notification extends CommonDBTM {
    **/
    function canCreateItem() {
 
-      if ((($this->fields['itemtype'] == 'Crontask')
+      if ((($this->fields['itemtype'] == 'CronTask')
            || ($this->fields['itemtype'] == 'DBConnection'))
           && !Config::canUpdate()) {
           return false;

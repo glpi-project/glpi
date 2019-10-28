@@ -916,6 +916,17 @@ function update94to95() {
    }
    /** /Add glpi_vobjects table for CalDAV server */
 
+   /** Fix mixed classes case in DB */
+   $mixed_case_classes = [
+      'AuthLdap' => 'AuthLDAP',
+      'Crontask' => 'CronTask',
+      'InfoCom'  => 'Infocom',
+   ];
+   foreach ($mixed_case_classes as $bad_case_classname => $classname) {
+      $migration->renameItemtype($bad_case_classname, $classname, false);
+   }
+   /** /Fix mixed classes case in DB */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

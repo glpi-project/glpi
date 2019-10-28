@@ -338,7 +338,7 @@ class SavedSearch_Alert extends CommonDBChild {
    /**
     * Send saved searches alerts
     *
-    * @param Crontask $task Crontask instance
+    * @param CronTask $task CronTask instance
     *
     * @return int : <0 : need to run again, 0:nothing to do, >0:ok
     */

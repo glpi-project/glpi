@@ -473,7 +473,7 @@ function loadDataset() {
             'entities_id'  => '_test_root_entity',
             'is_recursive' => 1
          ]
-      ], 'AuthLdap' => [
+      ], 'AuthLDAP' => [
          [
             'name'            => '_local_ldap',
             'host'            => 'openldap',
@@ -494,7 +494,7 @@ function loadDataset() {
             'title_field'     => 'title',
             'category_field'  => 'businesscategory',
             'language_field'  => 'preferredlanguage',
-            'group_search_type'  => \AuthLdap::GROUP_SEARCH_GROUP,
+            'group_search_type'  => \AuthLDAP::GROUP_SEARCH_GROUP,
             'group_condition' => '(objectclass=groupOfNames)',
             'group_member_field' => 'member'
          ]

@@ -1293,7 +1293,7 @@ class SavedSearch extends CommonDBTM {
    /**
     * Update all bookmarks execution time
     *
-    * @param Crontask $task Crontask instance
+    * @param CronTask $task CronTask instance
     *
     * @return void
    **/

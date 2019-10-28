@@ -74,7 +74,7 @@ class PlanningRecall extends CommonDBChild {
 
       $_SESSION['glpiplanningreminder_isavailable'] = 0;
       if ($CFG_GLPI["use_notifications"]) {
-         $task = new Crontask();
+         $task = new CronTask();
          if ($task->getFromDBbyName('PlanningRecall', 'planningrecall')) {
             // Only disabled by config
             if ($task->isDisabled() != 1) {

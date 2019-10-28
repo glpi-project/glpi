@@ -721,6 +721,7 @@ class Migration extends \GLPITestCase {
          return [];
       };
 
+      // Test renaming with DB structure update
       $this->output(
          function () {
             $this->migration->renameItemtype('SomeOldType', 'NewName');
@@ -746,6 +747,32 @@ class Migration extends \GLPITestCase {
          "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` INT(11) NOT NULL DEFAULT '0'   ",
          "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` INT(11) NOT NULL DEFAULT '0'   ,\n"
          . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` INT(11) NOT NULL DEFAULT '0'   ",
+         "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+         "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+         "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
+         "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
+      ]);
+
+      // Test renaming without DB structure update
+      $this->queries = [];
+
+      $this->output(
+         function () {
+            $this->migration->renameItemtype('SomeOldType', 'NewName', false);
+            $this->migration->executeMigration();
+         }
+      )->isIdenticalTo(
+         implode(
+            '',
+            [
+               '============================ Rename "SomeOldType" itemtype to "NewName" ============================' . "\n",
+               'Rename "SomeOldType" itemtype to "NewName" in all tables',
+               'Task completed.',
+            ]
+         )
+      );
+
+      $this->array($this->queries)->isIdenticalTo([
          "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
          "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
          "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",

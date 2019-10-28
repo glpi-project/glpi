@@ -34,7 +34,7 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Slm extends DbTestCase {
+class SLM extends DbTestCase {
    private $method;
 
    public function beforeTestMethod($method) {
@@ -93,14 +93,14 @@ class Slm extends DbTestCase {
       $sla2_in['name'] = "SLA TTR";
 
       // add two sla (TTO & TTR)
-      $sla    = new \Sla();
+      $sla    = new \SLA();
       $sla1_id = $sla->add($sla1_in);
       $this->checkInput($sla, $sla1_id, $sla1_in);
       $sla2_id = $sla->add($sla2_in);
       $this->checkInput($sla, $sla2_id, $sla2_in);
 
       // add two ola (TTO & TTR), we re-use the same inputs as sla
-      $ola  = new \Ola();
+      $ola  = new \OLA();
       $sla1_in['name'] = str_replace("SLA", "OLA", $sla1_in['name']);
       $sla2_in['name'] = str_replace("SLA", "OLA", $sla2_in['name']);
       $ola1_id = $ola->add($sla1_in);
@@ -306,7 +306,7 @@ class Slm extends DbTestCase {
       );
       $this->integer($slm_id)->isGreaterThan(0);
 
-      $ola = new \Ola();
+      $ola = new \OLA();
       $ola_id = $ola->add(
          [
             'slms_id'         => $slm_id,

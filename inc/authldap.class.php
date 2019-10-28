@@ -283,7 +283,7 @@ class AuthLDAP extends CommonDBTM {
                                         'entities_id'  => $entity,
                                         'is_recursive' => $is_recursive,
                                         'type'         => $input['ldap_import_type'][$id]];
-                  if (AuthLdap::ldapImportGroup($group_dn, $options)) {
+                  if (AuthLDAP::ldapImportGroup($group_dn, $options)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -303,7 +303,7 @@ class AuthLDAP extends CommonDBTM {
                return;
             }
             foreach ($ids as $id) {
-               if (AuthLdap::ldapImportUserByServerId(['method' => AuthLDAP::IDENTIFIER_LOGIN,
+               if (AuthLDAP::ldapImportUserByServerId(['method' => AuthLDAP::IDENTIFIER_LOGIN,
                                                        'value'  => $id],
                                                       $_SESSION['ldap_import']['mode'],
                                                       $_SESSION['ldap_import']['authldaps_id'],
@@ -2359,7 +2359,7 @@ class AuthLDAP extends CommonDBTM {
     * @return array|boolean  with state, else false
     */
    static function forceOneUserSynchronization(User $user, $display = true) {
-      $authldap = new AuthLdap();
+      $authldap = new AuthLDAP();
 
       //Get the LDAP server from which the user has been imported
       if ($authldap->getFromDB($user->fields['auths_id'])) {
@@ -2369,7 +2369,7 @@ class AuthLDAP extends CommonDBTM {
             $user_field = 'sync_field';
             $id_field   = $authldap->fields['sync_field'];
          }
-         return AuthLdap::ldapImportUserByServerId(
+         return AuthLDAP::ldapImportUserByServerId(
             [
                'method'             => self::IDENTIFIER_LOGIN,
                'value'              => $user->fields[$user_field],
@@ -3302,11 +3302,11 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Build LDAP filter
     *
-    * @param AuthLdap $authldap AuthLDAP object
+    * @param AuthLDAP $authldap AuthLDAP object
     *
     * @return string
     */
-   static function buildLdapFilter(AuthLdap $authldap) {
+   static function buildLdapFilter(AuthLDAP $authldap) {
       //Build search filter
       $counter = 0;
       $filter  = '';

@@ -111,9 +111,9 @@ class UnlockCommand extends AbstractCommand {
                   . ') AS ' . $this->db->quoteName('task')
                )
             ],
-            'FROM'   => Crontask::getTable(),
+            'FROM'   => CronTask::getTable(),
             'WHERE'  => [
-               'state' => Crontask::STATE_RUNNING,
+               'state' => CronTask::STATE_RUNNING,
                new QueryExpression(
                   'UNIX_TIMESTAMP(' .  $this->db->quoteName('lastrun') . ') + ' . $delay
                   . ' <  UNIX_TIMESTAMP(NOW())'

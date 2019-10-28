@@ -1608,7 +1608,7 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
 
    // Using gethostbyaddr() allows us to define its reald internet name according to its IP.
    //   But each gethostbyaddr() may reach several milliseconds. With very large number of
-   //   Networkports or NetworkeEquipment, the migration may take several minutes or hours ...
+   //   NetworkPorts or NetworkeEquipment, the migration may take several minutes or hours ...
    //$computerName = gethostbyaddr($IP);
    $computerName = $IP;
    if ($computerName != $IP) {

@@ -245,7 +245,7 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
    }
    if ($locations_id && $refportID && $newportID) {
       // link ports
-      $nn = new Networkport_Networkport();
+      $nn = new NetworkPort_NetworkPort();
       $nn->add([
          'networkports_id_1' => $refportID,
          'networkports_id_2' => $newportID,

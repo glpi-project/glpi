@@ -1135,7 +1135,7 @@ class CommonDBTM extends CommonGLPI {
 
                // If itemtype is in infocomtype and if states_id field is filled
                // and item is not a template
-               if (InfoCom::canApplyOn($this)
+               if (Infocom::canApplyOn($this)
                    && isset($this->input['states_id'])
                             && (!isset($this->input['is_template'])
                                 || !$this->input['is_template'])) {
@@ -1433,7 +1433,7 @@ class CommonDBTM extends CommonGLPI {
 
                      // If itemtype is in infocomtype and if states_id field is filled
                      // and item not a template
-                     if (InfoCom::canApplyOn($this)
+                     if (Infocom::canApplyOn($this)
                          && in_array('states_id', $this->updates)
                          && ($this->getField('is_template') != NOT_AVAILABLE)) {
                         //Check if we have to automatical fill dates
@@ -1981,7 +1981,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Can purge an object with Infocom only if can purge Infocom
-      if (InfoCom::canApplyOn($this)) {
+      if (Infocom::canApplyOn($this)) {
          $infocom = new Infocom();
 
          if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
@@ -3251,7 +3251,7 @@ class CommonDBTM extends CommonGLPI {
                           'value' => nl2br($this->getField('contact_num'))];
       }
 
-      if (InfoCom::canApplyOn($this)) {
+      if (Infocom::canApplyOn($this)) {
          $infocom = new Infocom();
          if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
             $toadd[] = ['name'  => __('Warranty expiration date'),
@@ -3699,7 +3699,7 @@ class CommonDBTM extends CommonGLPI {
       ];
 
       if (Infocom::canApplyOn($this)) {
-         $ic = new InfoCom();
+         $ic = new Infocom();
          if ($ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
             $excluded[] = 'Infocom:activate';
          }

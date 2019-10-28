@@ -347,7 +347,7 @@ $tables['glpi_crontasks'] = [
       'logs_lifetime' => 30,
    ], [
       'id'            => 6,
-      'itemtype'      => 'InfoCom',
+      'itemtype'      => 'Infocom',
       'name'          => 'infocom',
       'frequency'     => '86400',
       'param'         => null,
@@ -1266,7 +1266,7 @@ $tables['glpi_displaypreferences'] = [
       'num'      => '18',
       'rank'     => '8',
    ], [
-      'itemtype' => 'AuthLdap',
+      'itemtype' => 'AuthLDAP',
       'num'      => '30',
       'rank'     => '3',
    ], [
@@ -2348,7 +2348,7 @@ $tables['glpi_notifications'] = [
       'is_active'    => 1,
    ], [
       'id'           => 28,
-      'name'         => 'Crontask Watcher',
+      'name'         => 'CronTask Watcher',
       'itemtype'     => 'CronTask',
       'event'        => 'alert',
       'is_recursive' => 1,

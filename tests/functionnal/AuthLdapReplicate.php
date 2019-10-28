@@ -36,7 +36,7 @@ use \DbTestCase;
 
 /* Test for inc/authldapreplicate.class.php */
 
-class AuthLDAPReplicate extends DbTestCase {
+class AuthLdapReplicate extends DbTestCase {
 
    public function testCanCreate() {
       $this->login();

@@ -150,9 +150,9 @@ function import(array $options) {
    foreach ($actions_to_do as $action_to_do) {
       $options['mode']         = $action_to_do;
       $options['authldaps_id'] = $options['ldapservers_id'];
-      $authldap = new \AuthLdap();
+      $authldap = new \AuthLDAP();
       $authldap->getFromDB($options['authldaps_id']);
-      $users                   = AuthLdap::getAllUsers($options, $results, $limitexceeded);
+      $users                   = AuthLDAP::getAllUsers($options, $results, $limitexceeded);
       $contact_ok              = true;
 
       if (is_array($users)) {
@@ -171,7 +171,7 @@ function import(array $options) {
                $user_sync_field
             );
 
-            if ($dbuser && $action_to_do == AuthLdap::ACTION_IMPORT) {
+            if ($dbuser && $action_to_do == AuthLDAP::ACTION_IMPORT) {
                continue;
             }
 
@@ -184,7 +184,7 @@ function import(array $options) {
                $id_field   = $authldap->fields['sync_field'];
             }
 
-            $result = AuthLdap::ldapImportUserByServerId(
+            $result = AuthLDAP::ldapImportUserByServerId(
                [
                   'method'             => AuthLDAP::IDENTIFIER_LOGIN,
                   'value'              => $value,

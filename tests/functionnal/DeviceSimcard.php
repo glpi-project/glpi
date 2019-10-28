@@ -34,7 +34,7 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Devicesimcard extends DbTestCase {
+class DeviceSimcard extends DbTestCase {
    private $method;
 
    public function beforeTestMethod($method) {
