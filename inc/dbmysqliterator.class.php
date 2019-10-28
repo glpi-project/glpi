@@ -114,7 +114,7 @@ class DBmysqlIterator implements Iterator, Countable {
       $is_legacy = false;
 
       if (is_string($table) && strpos($table, " ")) {
-         $names = preg_split('/ AS /i', $table);
+         $names = preg_split('/\s+AS\s+/i', $table);
          if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1]) || strpos($names[0], ' ')) {
             $is_legacy = true;
          }
@@ -445,7 +445,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string
     */
    private function handleFieldsAlias($t, $f, $suffix = '') {
-      $names = preg_split('/ AS /i', $f);
+      $names = preg_split('/\s+AS\s+/i', $f);
       $expr  = "$t(".$this->handleFields(0, $names[0])."$suffix)";
       if (isset($names[1])) {
           $expr .= " AS " . DBmysql::quoteName($names[1]);
