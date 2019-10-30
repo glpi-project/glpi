@@ -667,6 +667,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @return array
    **/
    function getCriteriaForMatchingElement($tableName, $binaryFieldPrefix, $versionField) {
+      global $DB;
+
       $version = $this->fields["version"];
       $start   = null;
       $this->computeNetworkRange($start);
