@@ -194,10 +194,10 @@ class ObjectLock extends CommonDBTM {
 
       echo $this->getScriptToUnlock();
 
-      $msg = "<span class=red>";
+      $msg  = "<span class=red>";
       $msg .= __("Locked by you!");
       $msg .= $this->getForceUnlockButton();
-      $msg .="</span>";
+      $msg .= "</span>";
 
       $this->displayLockMessage($msg);
    }
@@ -271,7 +271,7 @@ class ObjectLock extends CommonDBTM {
 
       $msg = "<span class='red' style='white-space: nowrap;'>";
 
-      $msg .= __('Locked by ')."<a href='".$user->getLinkURL()."'>".$userdata['name']."</a>";
+      $msg .= sprintf(__('Locked by %s'), "<a href='" . $user->getLinkURL() . "'>" . $userdata['name'] . "</a>");
       $msg .= "&nbsp;" . Html::showToolTip($userdata["comment"], ['link' => $userdata['link'], 'display' => false]);
       $msg .= " -> " . Html::convDateTime($this->fields['date_mod']);
       $msg .= "</span><span style='padding-right:15px;'>";
