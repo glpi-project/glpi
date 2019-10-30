@@ -915,10 +915,10 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     * @param string $itemtype itemtype
     * @param array $options   options must contains :
-    *    - who ID of the user (0 = undefined)
-    *    - who_group ID of the group of users (0 = undefined)
-    *    - begin Date
-    *    - end Date
+    *    - who                ID of the user (0 = undefined)
+    *    - whogroup           ID of the group of users (0 = undefined)
+    *    - begin              Date
+    *    - end                Date
     *    - color
     *    - event_type_color
     *    - display_done_events (boolean)
@@ -951,11 +951,10 @@ abstract class CommonITILTask  extends CommonDBTM {
       ];
       $options = array_merge($default_options, $options);
 
-      $who       = $options['who'];
-      $who_group = $options['who_group'];
-      $whogroup  = $options['whogroup'];
-      $begin     = $options['begin'];
-      $end       = $options['end'];
+      $who      = $options['who'];
+      $whogroup = $options['whogroup']; // direct group
+      $begin    = $options['begin'];
+      $end      = $options['end'];
 
       // Get items to print
       $WHERE = [
@@ -964,49 +963,21 @@ abstract class CommonITILTask  extends CommonDBTM {
       ];
       $ADDWHERE = [];
 
-      if ($who_group === "mine") {
-         if (!$options['genical']
-             && count($_SESSION["glpigroups"])) {
-            $ADDWHERE[$item->getTable() . '.users_id_tech'] = new QuerySubQuery([
-               'SELECT'          => 'users_id',
-               'DISTINCT'        => true,
-               'FROM'            => 'glpi_groups_users',
-               'INNER JOIN'      => [
-                  'glpi_groups'  => [
-                     'ON' => [
-                        'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id'
-                     ]
-                  ]
-               ],
-               'WHERE'           => [
-                  'glpi_groups_users.groups_id' => $_SESSION['glpigroups'],
-                  'glpi_groups.is_assign'       => 1
-               ]
-            ]);
-         } else { // Only personal ones
-            $ADDWHERE[$item->getTable() . '.users_id_tech'] = $who;
+      if ($whogroup === "mine") {
+         if (isset($_SESSION['glpigroups'])) {
+            $whogroup = $_SESSION['glpigroups'];
+         } else if ($who > 0) {
+            $whogroup = Group_User::getUserGroups($who);
          }
+      }
 
-      } else {
-         if ($who > 0) {
-            $ADDWHERE[$item->getTable() . '.users_id_tech'] = $who;
-         }
-         if ($who_group > 0) {
-            $ADDWHERE[$item->getTable() . '.users_id_tech'] = new QuerySubQuery([
-               'SELECT'          => 'users_id',
-               'DISTINCT'        => true,
-               'FROM'            => 'glpi_groups_users',
-               'WHERE'           => [
-                  'groups_id' => $who_group,
-               ]
-            ]);
-         }
-         //This means we can pass 2 groups here, not sure this is expected. Not documented :/
-         if ($whogroup > 0) {
-            $ADDWHERE[$item->getTable() . '.groups_id_tech'] = $whogroup;
-         }
+      if ($who > 0) {
+         $ADDWHERE[$item->getTable() . '.users_id_tech'] = $who;
+      }
 
+      //This means we can pass 2 groups here, not sure this is expected. Not documented :/
+      if ($whogroup > 0) {
+         $ADDWHERE[$item->getTable() . '.groups_id_tech'] = $whogroup;
       }
 
       if (!count($ADDWHERE)) {
@@ -1028,7 +999,9 @@ abstract class CommonITILTask  extends CommonDBTM {
          ];
       }
 
-      $WHERE = array_merge($WHERE, $ADDWHERE);
+      if (count($ADDWHERE) > 0) {
+         $WHERE[] = ['OR' => $ADDWHERE];
+      }
 
       if (!$options['display_done_events']) {
          $WHERE[] = ['OR' => [
@@ -1080,7 +1053,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                   $key = $data["begin"].
                          "$$$".$itemtype.
                          "$$$".$data["id"].
-                         "$$$".$who."$$$".$who_group;
+                         "$$$".$who."$$$".$whogroup;
                   $interv[$key]['color']            = $options['color'];
                   $interv[$key]['event_type_color'] = $options['event_type_color'];
                   $interv[$key]['itemtype']         = $itemtype;

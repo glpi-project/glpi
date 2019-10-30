@@ -1594,11 +1594,11 @@ class ProjectTask extends CommonDBChild {
     *
     * @since 9.1
     *
-    * @param $options   array of possible options:
-    *    - who ID of the user (0 = undefined)
-    *    - who_group ID of the group of users (0 = undefined)
-    *    - begin Date
-    *    - end Date
+    * @param $options  array of possible options:
+    *    - who         ID of the user (0 = undefined)
+    *    - whogroup    ID of the group of users (0 = undefined)
+    *    - begin       Date
+    *    - end         Date
     *    - color
     *    - event_type_color
     *
@@ -1624,41 +1624,29 @@ class ProjectTask extends CommonDBChild {
       $options = array_merge($default_options, $options);
 
       $who       = $options['who'];
-      $who_group = $options['who_group'];
+      $whogroup  = $options['whogroup'];
       $begin     = $options['begin'];
       $end       = $options['end'];
 
       // Get items to print
       $ADDWHERE = [];
 
-      if ($who_group === "mine") {
-         if (!$options['genical']
-             && count($_SESSION["glpigroups"])) {
-            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'Group';
-            $ADDWHERE['glpi_projecttaskteams.items_id'] = new \QuerySubQuery([
-               'SELECT'          => 'groups_id',
-               'DISTINCT'        => true,
-               'FROM'            => 'glpi_groups',
-               'WHERE'           => [
-                  'groups_id' => $_SESSION['glpigroups'],
-                  'is_assign' => 1
-               ]
-            ]);
-         } else { // Only personal ones
-            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'User';
-            $ADDWHERE['glpi_projecttaskteams.items_id'] = $who;
+      if ($whogroup === "mine") {
+         if (isset($_SESSION['glpigroups'])) {
+            $whogroup = $_SESSION['glpigroups'];
+         } else if ($who > 0) {
+            $whogroup = Group_User::getUserGroups($who);
          }
+      }
 
-      } else {
-         if ($who > 0) {
-            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'User';
-            $ADDWHERE['glpi_projecttaskteams.items_id'] = $who;
-         }
+      if ($who > 0) {
+         $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'User';
+         $ADDWHERE['glpi_projecttaskteams.items_id'] = $who;
+      }
 
-         if ($who_group > 0) {
-            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'Group';
-            $ADDWHERE['glpi_projecttaskteams.items_id'] = $who_group;
-         }
+      if ($whogroup > 0) {
+         $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'Group';
+         $ADDWHERE['glpi_projecttaskteams.items_id'] = $whogroup;
       }
 
       if (!count($ADDWHERE)) {
@@ -1727,7 +1715,7 @@ class ProjectTask extends CommonDBChild {
                $key = $data["plan_start_date"].
                       "$$$"."ProjectTask".
                       "$$$".$data["id"].
-                      "$$$".$who."$$$".$who_group;
+                      "$$$".$who."$$$".$whogroup;
                $interv[$key]['color']            = $options['color'];
                $interv[$key]['event_type_color'] = $options['event_type_color'];
                $interv[$key]['itemtype']         = 'ProjectTask';

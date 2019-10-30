@@ -251,8 +251,7 @@ class Planning extends CommonGLPI {
       foreach ($CFG_GLPI['planning_types'] as $itemtype) {
          $item = new $itemtype;
          $data = $item->populatePlanning([
-             'who'           => $users_id,
-            'who_group'     => 0,
+            'who'           => $users_id,
             'whogroup'      => 0,
             'begin'         => $begin,
             'end'           => $end,
@@ -435,11 +434,12 @@ class Planning extends CommonGLPI {
 
       if (count($displayuser)) {
          foreach ($displayuser as $who => $whoname) {
-            $params = ['who'       => $who,
-                            'who_group' => 0,
-                            'whogroup'  => 0,
-                            'begin'     => $realbegin,
-                            'end'       => $realend];
+            $params = [
+               'who'       => $who,
+               'whogroup'  => 0,
+               'begin'     => $realbegin,
+               'end'       => $realend
+            ];
 
             $interv = [];
             foreach ($CFG_GLPI['planning_types'] as $itemtype) {
@@ -1671,7 +1671,7 @@ class Planning extends CommonGLPI {
     *  - display: boolean for pass or not the consstruction of this line (a group of users can be displayed but its users not).
     *  - type: event type, can be event_filter, user, group or group_users
     *  - who: integer for identify user
-    *  - who_group: integer for identify group
+    *  - whogroup: integer for identify group
     *  - color: string with #rgb color for event's foreground color.
     *  - event_type_color : string with #rgb color for event's foreground color.
     * @param  array  $raw_events: (passed by reference) the events array in construction
@@ -1690,12 +1690,10 @@ class Planning extends CommonGLPI {
             }
          } else {
             $params['who']       = $actor_array[1];
-            $params['who_group'] = 0;
             $params['whogroup']  = 0;
             if ($params['type'] == "group"
                 && in_array($params['planning_type'], self::$directgroup_itemtype)) {
                $params['who']       = 0;
-               $params['who_group'] = $actor_array[1];
                $params['whogroup']  = $actor_array[1];
             }
 
@@ -1951,16 +1949,16 @@ class Planning extends CommonGLPI {
     *  Generate ical file content
     *
     * @param $who             user ID
-    * @param $who_group       group ID
+    * @param $whogroup        group ID
     * @param $limititemtype   itemtype only display this itemtype (default '')
     *
     * @return icalendar string
    **/
-   static function generateIcal($who, $who_group, $limititemtype = '') {
+   static function generateIcal($who, $whogroup, $limititemtype = '') {
       global $CFG_GLPI;
 
       if (($who === 0)
-          && ($who_group === 0)) {
+          && ($whogroup === 0)) {
          return false;
       }
 
@@ -1981,12 +1979,13 @@ class Planning extends CommonGLPI {
       $end    = time()+MONTH_TIMESTAMP*12;
       $begin  = date("Y-m-d H:i:s", $begin);
       $end    = date("Y-m-d H:i:s", $end);
-      $params = ['genical'   => true,
-                      'who'       => $who,
-                      'who_group' => $who_group,
-                      'whogroup'  => $who_group,
-                      'begin'     => $begin,
-                      'end'       => $end];
+      $params = [
+         'genical'   => true,
+         'who'       => $who,
+         'whogroup'  => $whogroup,
+         'begin'     => $begin,
+         'end'       => $end
+      ];
 
       if (empty($limititemtype)) {
          foreach ($CFG_GLPI['planning_types'] as $itemtype) {

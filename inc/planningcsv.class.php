@@ -51,15 +51,15 @@ class PlanningCsv extends CommonGLPI {
 
    /**
     * @param integer $who          user ID
-    * @param integer $who_group    group ID
+    * @param integer $whogroup     group ID
     * @param string $limititemtype itemtype only display this itemtype (default '')
    **/
 
-   public function __construct($who, $who_group = null, $limititemtype = '') {
-      $this->users_id = $who;
-      $this->groups_id = $who_group;
+   public function __construct($who, $whogroup = null, $limititemtype = '') {
+      $this->users_id      = $who;
+      $this->groups_id     = $whogroup;
       $this->limititemtype = $limititemtype;
-      $this->titles = [
+      $this->titles        = [
          __('Actor'),
          __('Title'),
          __('Item type'),
@@ -85,7 +85,6 @@ class PlanningCsv extends CommonGLPI {
       $end    = date("Y-m-d H:i:s", $end);
       $params = [
          'who'       => $this->users_id,
-         'who_group' => $this->groups_id,
          'whogroup'  => $this->groups_id,
          'begin'     => $begin,
          'end'       => $end

@@ -222,10 +222,10 @@ trait PlanningEvent {
     * Populate the planning with planned event
     *
     * @param $options   array of possible options:
-    *    - who ID of the user (0 = undefined)
-    *    - who_group ID of the group of users (0 = undefined)
-    *    - begin Date
-    *    - end Date
+    *    - who          ID of the user (0 = undefined)
+    *    - whogroup     ID of the group of users (0 = undefined)
+    *    - begin        Date
+    *    - end          Date
     *    - color
     *    - event_type_color
     *    - check_planned (boolean)
@@ -258,7 +258,7 @@ trait PlanningEvent {
       }
 
       $who        = $options['who'];
-      $who_group  = $options['who_group'];
+      $whogroup   = $options['whogroup'];
       $begin      = $options['begin'];
       $end        = $options['end'];
 
@@ -281,20 +281,25 @@ trait PlanningEvent {
       }
       unset($visibility_criteria['WHERE']);
 
-      // See my private event ?
-      if (($who_group === "mine") || ($who === Session::getLoginUserID())) {
-         $nreadpriv = ["$table.users_id" => Session::getLoginUserID()];
-      } else {
-         if ($who > 0) {
-            $nreadpriv = ["$table.users_id" => $who];
+      if ($whogroup === "mine") {
+         if (isset($_SESSION['glpigroups'])) {
+            $whogroup = $_SESSION['glpigroups'];
+         } else if ($who > 0) {
+            $whogroup = Group_User::getUserGroups($who);
          }
-         if ($who_group > 0 && $itemtype == 'Reminder') {
-            $ngrouppriv = ["glpi_groups_reminders.groups_id" => $who_group];
-            if (!empty($nreadpriv)) {
-               $nreadpriv['OR'] = [$nreadpriv, $ngrouppriv];
-            } else {
-               $nreadpriv = $ngrouppriv;
-            }
+      }
+
+      // See my private event ?
+      if ($who > 0) {
+         $nreadpriv = ["$table.users_id" => $who];
+      }
+
+      if ($whogroup > 0 && $itemtype == 'Reminder') {
+         $ngrouppriv = ["glpi_groups_reminders.groups_id" => $whogroup];
+         if (!empty($nreadpriv)) {
+            $nreadpriv['OR'] = [$nreadpriv, $ngrouppriv];
+         } else {
+            $nreadpriv = $ngrouppriv;
          }
       }
 
