@@ -753,7 +753,7 @@ class Software extends CommonDBTM {
             ]
          ],
          'WHERE'           => [
-            'glpi_software.is_deleted'    => 0,
+            'glpi_softwares.is_deleted'    => 0,
             'glpi_softwares.is_template'  => 0
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', 'entities_id', $entity_restrict, true),
          'ORDERBY'         => 'glpi_softwares.name'
