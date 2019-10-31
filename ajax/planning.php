@@ -101,6 +101,10 @@ if ($_REQUEST["action"] == "add_group_form") {
    Planning::showAddGroupForm();
 }
 
+if ($_REQUEST["action"] == "add_external_form") {
+   Planning::showAddExternalForm();
+}
+
 if ($_REQUEST["action"] == "add_event_classic_form") {
    Planning::showAddEventClassicForm($_REQUEST);
 }

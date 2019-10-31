@@ -1786,10 +1786,8 @@ class Toolbox {
                $errstr
             );
          }
-         return '';
-      }
-
-      if (empty($content)) {
+         $content = '';
+      } else if (empty($content)) {
          $msgerr = __('No data available on the web site');
       }
       if (!empty($msgerr)) {
