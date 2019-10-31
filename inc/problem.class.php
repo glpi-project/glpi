@@ -328,7 +328,7 @@ class Problem extends CommonITILObject {
                   'tickets_id'   => $this->input['_tickets_id']
                ]
             ]);
-            $assoc = new Change_Item;
+            $assoc = new Item_Problem;
             while ($row = $iterator->next()) {
                unset($row['tickets_id']);
                unset($row['id']);
