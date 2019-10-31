@@ -44,7 +44,7 @@
         "atoum/atoum": "dev-master",
         "consolidation/robo": "^1.0",
         "fzaninotto/faker": "^1.7",
-        "glpi-project/coding-standard": "^0.7.1",
+        "glpi-project/coding-standard": "^0.7",
         "guzzlehttp/guzzle": "^6.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
         "mikey179/vfsstream": "^1.6",
