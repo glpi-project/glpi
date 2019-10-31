@@ -1123,7 +1123,9 @@ class Problem extends CommonITILObject {
                       // user pref for requestype can't overwrite requestype from template
                       // when change category
                       || (($predeffield == 'requesttypes_id')
-                          && empty($saved))) {
+                          && empty($saved))
+                      || (isset($ticket) && $options[$predeffield] == $ticket->getField($predeffield))
+                  ) {
 
                      // Load template data
                      $options[$predeffield]            = $predefvalue;
