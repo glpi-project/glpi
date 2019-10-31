@@ -64,6 +64,6 @@
         "mini-css-extract-plugin": "^0.8.0",
         "script-loader": "^0.7.2",
         "webpack": "^4.41.2",
-        "webpack-cli": "^3.3.9"
+        "webpack-cli": "^3.3.10"
     }
 }
