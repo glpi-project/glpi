@@ -50,4 +50,8 @@ if ($_REQUEST["action"] == "send_add_group_form") {
    Planning::sendAddGroupForm($_REQUEST);
 }
 
+if ($_REQUEST["action"] == "send_add_external_form") {
+   Planning::sendAddExternalForm($_REQUEST);
+}
+
 Html::back();
