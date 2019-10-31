@@ -967,7 +967,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (isset($_SESSION['glpigroups'])) {
             $whogroup = $_SESSION['glpigroups'];
          } else if ($who > 0) {
-            $whogroup = Group_User::getUserGroups($who);
+            $whogroup = array_column(Group_User::getUserGroups($who), 'id');
          }
       }
 
