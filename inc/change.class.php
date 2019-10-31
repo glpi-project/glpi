@@ -1064,7 +1064,7 @@ class Change extends CommonITILObject {
       echo "<td></td>";
       echo "</tr>";
 
-      if (!$ID) {
+      if (!$options['template_preview']) {
          echo "</table>";
          $this->showActorsPartForm($ID, $options);
          echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
