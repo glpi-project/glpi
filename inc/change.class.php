@@ -604,7 +604,7 @@ class Change extends CommonITILObject {
          }
 
          if (isset($options['tickets_id']) || isset($options['_tickets_id'])) {
-            $tickets_id = (isset($options['tickets_id']) ? $options['tickets_id'] : $options['_tickets_id']);
+            $tickets_id = $options['tickets_id'] ?? $options['_tickets_id']);
             $ticket = new Ticket();
             if ($ticket->getFromDB($tickets_id)) {
                $options['content']             = $ticket->getField('content');
@@ -622,7 +622,7 @@ class Change extends CommonITILObject {
          }
 
          if (isset($options['problems_id']) || isset($options['_problems_id'])) {
-            $problems_id = (isset($options['problems_id']) ? $options['problems_id'] : $options['_problems_id']);
+            $problems_id = $options['problems_id'] ?? $options['_problems_id']);
             $problem = new Problem();
             if ($problem->getFromDB($problems_id)) {
                $options['content']             = $problem->getField('content');
