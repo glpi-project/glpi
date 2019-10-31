@@ -621,7 +621,7 @@ class Change extends CommonITILObject {
             }
          }
 
-         if (isset($options['problems_id'])) {
+         if (isset($options['problems_id']) || isset($options['_problems_id'])) {
             $problems_id = (isset($options['problems_id']) ? $options['problems_id'] : $options['_problems_id']);
             $problem = new Problem();
             if ($problem->getFromDB($problems_id)) {
@@ -630,7 +630,7 @@ class Change extends CommonITILObject {
                $options['impact']              = $problem->getField('impact');
                $options['urgency']             = $problem->getField('urgency');
                $options['priority']            = $problem->getField('priority');
-               if (isset($options['tickets_id'])) {
+               if (isset($options['problems_id'])) {
                   //page is reloaded on category change, we only want category on the very first load
                   $options['itilcategories_id']   = $problem->getField('itilcategories_id');
                }
