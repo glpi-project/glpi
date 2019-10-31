@@ -449,7 +449,7 @@ var GLPIPlanning  = {
          .keydown(function(event) {
             if (!GLPIPlanning.ctrl_pressed
                && (event.ctrlKey
-                  || event.keyCode === 16)) { // shift key
+                  || event.shiftKey)) {
                event.preventDefault();
                GLPIPlanning.setEventsClonable(true);
             }
@@ -458,6 +458,7 @@ var GLPIPlanning  = {
                GLPIPlanning.setEventsClonable(false);
             }
          });
+
 
       // attach the date picker to planning
       GLPIPlanning.initFCDatePicker();
@@ -770,7 +771,7 @@ var GLPIPlanning  = {
 
       if (is_clonable) {
          // set element as draggable like external dom nodes
-         GLPIPlanning.draggable_objects = new FullCalendarInteraction.Draggable(document.getElementById(GLPIPlanning.dom_id), {
+         GLPIPlanning.drag_object = new FullCalendarInteraction.Draggable(document.getElementById(GLPIPlanning.dom_id), {
             itemSelector: ".fc-event",
             eventData: function(eventEl) {
                var myevent  = $(eventEl).data('myevent');
@@ -798,7 +799,9 @@ var GLPIPlanning  = {
          });
       } else {
          // remove draggable behavior when ctrl is not active
-         GLPIPlanning.draggable_objects.destroy();
+         if (GLPIPlanning.drag_object != null) {
+            GLPIPlanning.drag_object.destroy();
+         }
       }
    }
 };
