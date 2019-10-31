@@ -1043,7 +1043,7 @@ class Problem extends CommonITILObject {
          }
 
          if (isset($options['tickets_id']) || isset($options['_tickets_id'])) {
-            $tickets_id = $options['tickets_id'] ?? $options['_tickets_id']);
+            $tickets_id = $options['tickets_id'] ?? $options['_tickets_id'];
             $ticket = new Ticket();
             if ($ticket->getFromDB($tickets_id)) {
                $options['content']             = $ticket->getField('content');
