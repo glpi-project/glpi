@@ -300,7 +300,7 @@ class Problem extends CommonITILObject {
 
 
    function post_addItem() {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       parent::post_addItem();
 
@@ -319,6 +319,21 @@ class Problem extends CommonITILObject {
                               'itemtype'    => $ticket->fields['itemtype'],
                               'items_id'    => $ticket->fields['items_id'],
                               /*'_no_notif'   => true*/]);
+            }
+
+            //Copy associated elements
+            $iterator = $DB->request([
+               'FROM'   => Item_Ticket::getTable(),
+               'WHERE'  => [
+                  'tickets_id'   => $this->input['_tickets_id']
+               ]
+            ]);
+            $assoc = new Change_Item;
+            while ($row = $iterator->next()) {
+               unset($row['tickets_id']);
+               unset($row['id']);
+               $row['problems_id'] = $this->fields['id'];
+               $assoc->add(Toolbox::addslashes_deep($row));
             }
          }
       }
