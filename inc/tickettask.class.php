@@ -179,10 +179,10 @@ class TicketTask extends CommonITILTask {
     * Populate the planning with planned ticket tasks
     *
     * @param $options   array of possible options:
-    *    - who ID of the user (0 = undefined)
-    *    - who_group ID of the group of users (0 = undefined)
-    *    - begin Date
-    *    - end Date
+    *    - who          ID of the user (0 = undefined)
+    *    - whogroup     ID of the group of users (0 = undefined)
+    *    - begin        Date
+    *    - end          Date
     *
     * @return array of planning item
    **/
