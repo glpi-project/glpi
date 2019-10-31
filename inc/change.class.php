@@ -603,29 +603,37 @@ class Change extends CommonITILObject {
             }
          }
 
-         if (isset($options['tickets_id'])) {
+         if (isset($options['tickets_id']) || isset($options['_tickets_id'])) {
+            $tickets_id = $options['tickets_id'] ?? $options['_tickets_id'];
             $ticket = new Ticket();
-            if ($ticket->getFromDB($options['tickets_id'])) {
+            if ($ticket->getFromDB($tickets_id)) {
                $options['content']             = $ticket->getField('content');
                $options['name']                = $ticket->getField('name');
                $options['impact']              = $ticket->getField('impact');
                $options['urgency']             = $ticket->getField('urgency');
                $options['priority']            = $ticket->getField('priority');
-               $options['itilcategories_id']   = $ticket->getField('itilcategories_id');
+               if (isset($options['tickets_id'])) {
+                  //page is reloaded on category change, we only want category on the very first load
+                  $options['itilcategories_id']   = $ticket->getField('itilcategories_id');
+               }
                $options['time_to_resolve']     = $ticket->getField('time_to_resolve');
                $options['entities_id']         = $ticket->getField('entities_id');
             }
          }
 
-         if (isset($options['problems_id'])) {
+         if (isset($options['problems_id']) || isset($options['_problems_id'])) {
+            $problems_id = $options['problems_id'] ?? $options['_problems_id'];
             $problem = new Problem();
-            if ($problem->getFromDB($options['problems_id'])) {
+            if ($problem->getFromDB($problems_id)) {
                $options['content']             = $problem->getField('content');
                $options['name']                = $problem->getField('name');
                $options['impact']              = $problem->getField('impact');
                $options['urgency']             = $problem->getField('urgency');
                $options['priority']            = $problem->getField('priority');
-               $options['itilcategories_id']   = $problem->getField('itilcategories_id');
+               if (isset($options['problems_id'])) {
+                  //page is reloaded on category change, we only want category on the very first load
+                  $options['itilcategories_id']   = $problem->getField('itilcategories_id');
+               }
                $options['time_to_resolve']     = $problem->getField('time_to_resolve');
                $options['entities_id']         = $problem->getField('entities_id');
             }
@@ -699,7 +707,10 @@ class Change extends CommonITILObject {
                       // user pref for requestype can't overwrite requestype from template
                       // when change category
                       || (($predeffield == 'requesttypes_id')
-                          && empty($saved))) {
+                          && empty($saved))
+                      || (isset($ticket) && $options[$predeffield] == $ticket->getField($predeffield))
+                      || (isset($problem) && $options[$predeffield] == $problem->getField($predeffield))
+                  ) {
 
                      // Load template data
                      $options[$predeffield]            = $predefvalue;
@@ -771,11 +782,11 @@ class Change extends CommonITILObject {
       echo "</th>";
       echo "<td class='left' width='$colsize2%'>";
 
-      if (isset($options['tickets_id'])) {
-         echo "<input type='hidden' name='_tickets_id' value='".$options['tickets_id']."'>";
+      if (isset($tickets_id)) {
+         echo "<input type='hidden' name='_tickets_id' value='".$tickets_id."'>";
       }
-      if (isset($options['problems_id'])) {
-         echo "<input type='hidden' name='_problems_id' value='".$options['problems_id']."'>";
+      if (isset($problems_id)) {
+         echo "<input type='hidden' name='_problems_id' value='".$problems_id."'>";
       }
 
       if (isset($options['_add_fromitem'])
