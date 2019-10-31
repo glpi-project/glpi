@@ -305,7 +305,7 @@ class Change extends CommonITILObject {
 
 
    function post_addItem() {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       parent::post_addItem();
 
@@ -322,6 +322,21 @@ class Change extends CommonITILObject {
                               'itemtype'   => $ticket->fields['itemtype'],
                               'items_id'   => $ticket->fields['items_id']]);
             }
+
+            //Copy associated elements
+            $iterator = $DB->request([
+               'FROM'   => Item_Ticket::getTable(),
+               'WHERE'  => [
+                  'tickets_id'   => $this->input['_tickets_id']
+               ]
+            ]);
+            $assoc = new Change_Item;
+            while ($row = $iterator->next()) {
+               unset($row['tickets_id']);
+               unset($row['id']);
+               $row['changes_id'] = $this->fields['id'];
+               $assoc->add(Toolbox::addslashes_deep($row));
+            }
          }
       }
 
@@ -331,6 +346,22 @@ class Change extends CommonITILObject {
             $cp = new Change_Problem();
             $cp->add(['problems_id' => $this->input['_problems_id'],
                            'changes_id'  => $this->fields['id']]);
+
+            //Copy associated elements
+            $iterator = $DB->request([
+               'FROM'   => Problem_Item::getTable(),
+               'WHERE'  => [
+                  'problems_id'   => $this->input['_problems_id']
+               ]
+            ]);
+            $assoc = new Change_Item;
+            while ($row = $iterator->next()) {
+               unset($row['problems_id']);
+               unset($row['id']);
+               $row['changes_id'] = $this->fields['id'];
+               $assoc->add(Toolbox::addslashes_deep($row));
+            }
+
          }
       }
 
