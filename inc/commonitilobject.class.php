@@ -6479,9 +6479,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $taskClass = $objType."Task";
       $task = new $taskClass;
 
-      $validationClass = $objType.'Validation';
-      $validation = new $validationClass();
-
       $canadd_fup = $fup->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
       $canadd_task = $task->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
@@ -6489,8 +6486,14 @@ abstract class CommonITILObject extends CommonDBTM {
       $canadd_document = $canadd_fup || $this->canAddItem('Document') && !in_array($this->fields["status"],
                          array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
       $canadd_solution = $objType::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
-      $canadd_validation = $validation->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
-            array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+
+      $validation_class = $objType.'Validation';
+      $canadd_validation = false;
+      if (class_exists($validation_class)) {
+         $validation = new $validation_class();
+         $canadd_validation = $validation->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
+               array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+      }
 
       // javascript function for add and edit items
       echo "<script type='text/javascript' >
@@ -6593,7 +6596,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       if ($canadd_validation) {
          echo "<li class='validation' onclick='".
-            "javascript:viewAddSubitem".$this->fields['id']."$rand(\"$validationClass\");'>"
+            "javascript:viewAddSubitem".$this->fields['id']."$rand(\"$validation_class\");'>"
             ."<i class='far fa-thumbs-up'></i>".__("Approval")."</li>";
       }
       if ($canadd_solution) {
@@ -6635,8 +6638,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $task_obj              = new $taskClass;
       $document_item_obj     = new Document_Item();
       if ($supportsValidation) {
-         $validationClass    = $objType."Validation";
-         $valitation_obj     = new $validationClass;
+         $validation_class    = $objType."Validation";
+         $valitation_obj     = new $validation_class;
       }
 
       //checks rights
@@ -6734,7 +6737,7 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      if ($supportsValidation and $validationClass::canView()) {
+      if ($supportsValidation and $validation_class::canView()) {
          $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
          foreach ($validations as $validations_id => $validation) {
             $canedit = $valitation_obj->can($validations_id, UPDATE);
@@ -6742,7 +6745,7 @@ abstract class CommonITILObject extends CommonDBTM {
                $validation['status'] == CommonITILValidation::WAITING);
             $user->getFromDB($validation['users_id_validate']);
             $timeline[$validation['submission_date']."_validation_".$validations_id] = [
-               'type' => $validationClass,
+               'type' => $validation_class,
                'item' => [
                   'id'        => $validations_id,
                   'date'      => $validation['submission_date'],
@@ -6759,12 +6762,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if (!empty($validation['validation_date'])) {
                $timeline[$validation['validation_date']."_validation_".$validations_id] = [
-                  'type' => $validationClass,
+                  'type' => $validation_class,
                   'item' => [
                      'id'        => $validations_id,
                      'date'      => $validation['validation_date'],
                      'content'   => __('Validation request answer')." : ". _sx('status',
-                                                 ucfirst($validationClass::getStatus($validation['status'])))
+                                                 ucfirst($validation_class::getStatus($validation['status'])))
                                                    ."<br>".$validation['comment_validation'],
                      'users_id'  => $validation['users_id_validate'],
                      'status'    => "status_".$validation['status'],
@@ -7803,7 +7806,7 @@ abstract class CommonITILObject extends CommonDBTM {
    public function getForbiddenSingleMassiveActions() {
       $excluded = parent::getForbiddenSingleMassiveActions();
 
-      if ($this->fields['global_validation'] != CommonITILValidation::NONE) {
+      if (isset($this->fields['global_validation']) && $this->fields['global_validation'] != CommonITILValidation::NONE) {
          //a validation has already been requested/done
          $excluded[] = 'TicketValidation:submit_validation';
       }
