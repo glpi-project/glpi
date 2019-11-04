@@ -135,9 +135,6 @@ class Impact extends CommonGLPI {
          self::printAssetSelectionForm($linked_items);
       }
 
-      // Print header
-      self::printHeader();
-
       // Check is the impact analysis is enabled for $class
       if (!isset($CFG_GLPI['impact_asset_types'][$class])) {
          return false;
@@ -145,10 +142,27 @@ class Impact extends CommonGLPI {
 
       // Build graph and params
       $graph = Impact::buildGraph($item);
+      $params = self::prepareParams($item);
+      $readonly = !$item->can($item->fields['id'], UPDATE);
+
+      // Print header
+      self::printHeader(self::makeDataForCytoscape($graph), $params, $readonly);
 
       // Displays views
-      self::displayGraphView($item, self::makeDataForCytoscape($graph));
+      self::displayGraphView($item);
       self::displayListView($item, $graph);
+
+      // Select view
+      echo Html::scriptBlock("
+         // Select default view
+         $(document).ready(function() {
+            if (location.hash == '#list') {
+               showListView();
+            } else {
+               showGraphView();
+            }
+         });
+      ");
 
       return true;
    }
@@ -157,20 +171,14 @@ class Impact extends CommonGLPI {
     * Display the impact analysis as an interactive graph
     *
     * @param CommonDBTM $item    starting point of the graph
-    * @param string     $graph   graph in the format expected by cytoscape (json)
-    * @param string     $params  saved graph params (json)
     */
    public static function displayGraphView(
-      CommonDBTM $item,
-      string $graph
+      CommonDBTM $item
    ) {
       self::loadLibs();
-      $params = self::prepareParams($item);
-      $readonly = !$item->can($item->fields['id'], UPDATE);
 
       echo '<div id="impact_graph_view">';
       self::prepareImpactNetwork($item);
-      self::buildNetwork($graph, $params, $readonly);
       echo '</div>';
    }
 
@@ -567,9 +575,17 @@ class Impact extends CommonGLPI {
    }
 
    /**
-    * Print the title and view swtich
+    * Print the title and view switch
+    *
+    * @param string  $graph      The network graph (json)
+    * @param string  $params     Params of the graph (json)
+    * @param bool    $readonly   Is the graph editable ?
     */
-   public static function printHeader() {
+   public static function printHeader(
+      string $graph,
+      string $params,
+      bool $readonly
+   ) {
       echo '<div class="impact-header">';
       echo "<h2>" . __("Impact analysis") . "</h2>";
       echo "<div id='switchview'>";
@@ -586,12 +602,8 @@ class Impact extends CommonGLPI {
             $('#sviewlist i').removeClass('selected');
             $('#sviewgraph i').addClass('selected');
 
-            if (window.GLPIImpact !== undefined) {
-               // Force cytoscape render
-               window.GLPIImpact.cy.resize();
-
-               // Force grid guide render
-               $(document).trigger('resize');
+            if (window.GLPIImpact !== undefined && GLPIImpact.cy === null) {
+               GLPIImpact.buildNetwork($graph, $params, $readonly);
             }
          }
 
@@ -608,15 +620,6 @@ class Impact extends CommonGLPI {
 
          $('#sviewlist').click(function() {
             showListView();
-         });
-
-         // Select default view
-         $(document).ready(function() {
-            if (location.hash == '#list') {
-               showListView();
-            } else {
-               showGraphView();
-            }
          });
       ");
    }
@@ -1056,8 +1059,9 @@ class Impact extends CommonGLPI {
     *
     * @since 9.5
     *
-    * @param string  $graph   The network graph (json)
-    * @param string  $params  Params of the graph (json)
+    * @param string  $graph      The network graph (json)
+    * @param string  $params     Params of the graph (json)
+    * @param bool    $readonly   Is the graph editable ?
     */
    public static function buildNetwork(
       string $graph,

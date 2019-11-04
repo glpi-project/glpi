@@ -79,6 +79,9 @@ var GLPIImpact = {
    // Store the visibility settings of the different direction of the graph
    directionVisibility: {},
 
+   // Store defaults colors for edge
+   defaultColors: {},
+
    // Store color for egdes
    edgeColors: {},
 
@@ -843,6 +846,7 @@ var GLPIImpact = {
       this.directionVisibility[GLPIImpact.BACKWARD] = true;
 
       // Set colors for edges
+      this.defaultColors = colors;
       this.setEdgeColors(colors);
 
       // Set start node
@@ -879,6 +883,8 @@ var GLPIImpact = {
             backward: params.depends_color,
             both    : params.impact_and_depends_color,
          });
+      } else {
+         this.setEdgeColors(this.defaultColors);
       }
 
       // Preset layout
