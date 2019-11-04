@@ -936,11 +936,11 @@ class Planning extends CommonGLPI {
                . '/caldav.php/'
                . self::getCaldavBaseCalendarUrl($filter_data['type'] == 'user' ? $user : $group);
             $copy_js = 'copyTextToClipboard("' . $caldav_url . '");'
-               . ' alert("' . __('CalDAV URL has been copied to clipboard') . '");'
+               . ' alert("' . __s('CalDAV URL has been copied to clipboard') . '");'
                . ' return false;';
             echo "<li><a target='_blank' href='#'
                  onclick='$copy_js'>".
-                 __("Copy CalDAV URL to clipboard")."</a></li>";
+                 __s("Copy CalDAV URL to clipboard")."</a></li>";
          }
          echo "</ul>";
          echo "</span>";

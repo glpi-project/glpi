@@ -79,4 +79,4 @@ function copyTextToClipboard (text) {
 
    // Remove textarea
    document.body.removeChild(textarea);
-};
+}
