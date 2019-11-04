@@ -65,7 +65,7 @@ $(function() {
  *
  * @return {void}
  */
-copyTextToClipboard = function (text) {
+function copyTextToClipboard (text) {
    // Create a textarea to be able to select its content
    var textarea = document.createElement('textarea');
    textarea.value = text;
