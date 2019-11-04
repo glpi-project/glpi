@@ -6,7 +6,11 @@
     "extends": "eslint:recommended",
     "globals": {
         "CFG_GLPI": true,
-        "tinyMCE": true
+        "tinyMCE": true,
+        "__": true,
+        "_n": true,
+        "_x": true,
+        "_nx": true
     },
     "parserOptions": {
         "ecmaVersion": 5

@@ -32,6 +32,7 @@ The present file will list all changes made to the project; according to the
 
 #### Added
 
+- Add translation functions `__()`,  `_n()`,  `_x()` and  `_nx()` in javascript in browser context.
 - `Migration::renameItemtype()` method to update of database schema/values when an itemtype class is renamed
 
 #### Changes
