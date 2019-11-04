@@ -92,28 +92,6 @@ trait Kanban {
    abstract static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false);
 
    /**
-    * Get all locatizations needed to display a Kanban.
-    * This only includes text for the base UI, not the contents of the cards or column titles.
-    * @since 9.5.0
-    */
-   public static function getLocalizedKanbanStrings() {
-      $strings = [
-         'Add'                               => __('Add'),
-         'Delete'                            => __('Delete'),
-         'Close'                             => __('Close'),
-         'Toggle collapse'                   => __('Toggle collapse'),
-         'Search'                            => __('Search'),
-         'Search or filter results'          => __('Search or filter results'),
-         'Add column'                        => __('Add column'),
-         'Create status'                     => __('Create status'),
-         '%d other team members'             => __('%d other team members'),
-         'Add a column from existing status' => __('Add a column from existing status'),
-         'Or add a new status'               => __('Or add a new status'),
-      ];
-      return $strings;
-   }
-
-   /**
     * Check if the current user can modify the global Kanban state.
     * @since 9.5.0
     * @return bool
