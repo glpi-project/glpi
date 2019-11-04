@@ -1621,8 +1621,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options = []) {
-
+   static function populatePlanning($options = []) :array {
       global $DB, $CFG_GLPI;
 
       $interv = [];
@@ -1696,12 +1695,33 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          ]];
       }
 
+      $SELECT = [$ttask->getTable() . '.*'];
       $WHERE = $ADDWHERE;
-      $WHERE[$ttask->getTable() . '.plan_end_date'] = ['>=', $begin];
-      $WHERE[$ttask->getTable() . '.plan_start_date'] = ['<=', $end];
+      if (isset($options['not_planned'])) {
+         //not planned case
+         $bdate = "DATE_SUB(".$DB->quoteName($ttask->getTable() . '.date') .
+            ", INTERVAL ".$DB->quoteName($ttask->getTable() . '.planned_duration')." SECOND)";
+         $SELECT[] = new QueryExpression($bdate . ' AS ' . $DB->quoteName('notp_date'));
+         $edate = "DATE_ADD(".$DB->quoteName($ttask->getTable() . '.date') .
+            ", INTERVAL ".$DB->quoteName($ttask->getTable() . '.planned_duration')." SECOND)";
+         $SELECT[] = new QueryExpression($edate . ' AS ' . $DB->quoteName('notp_edate'));
+
+         $WHERE = [
+            $ttask->getTable() . '.plan_start_date'   => null,
+            $ttask->getTable() . '.plan_end_date'     => null,
+            $ttask->getTable() . '.planned_duration'  => ['>', 0],
+            //begin is replaced with creation tim minus duration
+            new QueryExpression($edate . " >= '" . $begin . "'"),
+            new QueryExpression($bdate . " <= '" . $end . "'")
+         ];
+      } else {
+         //std case: get tasks for current view dates
+         $WHERE[$ttask->getTable() . '.plan_end_date'] = ['>=', $begin];
+         $WHERE[$ttask->getTable() . '.plan_start_date'] = ['<=', $end];
+      }
 
       $iterator = $DB->request([
-         'SELECT'       => $ttask->getTable() . '.*',
+         'SELECT'       => $SELECT,
          'FROM'         => 'glpi_projecttaskteams',
          'INNER JOIN'   => [
             $ttask->getTable() => [
@@ -1729,6 +1749,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       if (count($iterator)) {
          while ($data = $iterator->next()) {
             if ($task->getFromDB($data["id"])) {
+               if (isset($data['notp_date'])) {
+                  $data['plan_start_date'] = $data['notp_date'];
+                  $data['plan_end_date'] = $data['notp_edate'];
+               }
                $key = $data["plan_start_date"].
                       "$$$"."ProjectTask".
                       "$$$".$data["id"].
@@ -1777,6 +1801,28 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
       return $interv;
    }
+
+
+   /**
+    * Populate the planning with not planned project tasks
+    *
+    * @since 9.1
+    *
+    * @param $options  array of possible options:
+    *    - who         ID of the user (0 = undefined)
+    *    - whogroup    ID of the group of users (0 = undefined)
+    *    - begin       Date
+    *    - end         Date
+    *    - color
+    *    - event_type_color
+    *
+    * @return array of planning item
+   **/
+   static function populateNotPlanned($options = []) :array {
+      $options['not_planned'] = true;
+      return self::populatePlanning($options);
+   }
+
 
    /**
     * Display a Planning Item

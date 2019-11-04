@@ -238,7 +238,7 @@ trait PlanningEvent {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options = []) {
+   static function populatePlanning($options = []) :array {
       global $DB, $CFG_GLPI;
 
       $default_options = [
@@ -466,6 +466,7 @@ trait PlanningEvent {
 
       return $events;
    }
+
 
    /**
     * Display a Planning Item

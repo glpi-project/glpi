@@ -455,6 +455,7 @@ class Planning extends CommonGLPI {
             $interv = [];
             foreach ($CFG_GLPI['planning_types'] as $itemtype) {
                $interv = array_merge($interv, $itemtype::populatePlanning($params));
+               $interv = array_merge($interv, $itemtype::populateNotPlanned($params));
             }
 
             // Print Headers
@@ -720,6 +721,14 @@ class Planning extends CommonGLPI {
       return false;
    }
 
+   public static function getPlanningTypes() {
+      global $CFG_GLPI;
+
+      return array_merge(
+         $CFG_GLPI['planning_types'],
+         ['NotPlanned']
+      );
+   }
 
    /**
     * Init $_SESSION['glpi_plannings'] var with thses keys :
@@ -747,12 +756,12 @@ class Planning extends CommonGLPI {
       // complete missing filters
       $filters = &$_SESSION['glpi_plannings']['filters'];
       $index_color = 0;
-      foreach ($CFG_GLPI['planning_types'] as $planning_type) {
-         if ($planning_type::canView()) {
+      foreach (self::getPlanningTypes() as $planning_type) {
+         if ($planning_type == 'NotPlanned' || $planning_type::canView()) {
             if (!isset($filters[$planning_type])) {
                $filters[$planning_type] = ['color'   => self::getPaletteColor('ev',
                                                                                    $index_color),
-                                                'display' => true,
+                                                'display' => ($planning_type != 'NotPlanned'),
                                                 'type'    => 'event_filter'];
             }
             $index_color++;
@@ -862,12 +871,16 @@ class Planning extends CommonGLPI {
          $group->getFromDB($actor[1]);
          $title = $group->getName();
       } else if ($filter_data['type'] == 'event_filter') {
-         if (!($item = getItemForItemtype($filter_key))) {
-            return false;
-         } else if (!$filter_key::canView()) {
-            return false;
+         if ($filter_key == 'NotPlanned') {
+            $title = __('Not planned tasks');
+         } else {
+            if (!($item = getItemForItemtype($filter_key))) {
+               return false;
+            } else if (!$filter_key::canView()) {
+               return false;
+            }
+            $title = $filter_key::getTypeName();
          }
-         $title = $filter_key::getTypeName();
       }
 
       echo "<li event_type='".$filter_data['type']."'
@@ -1593,6 +1606,7 @@ class Planning extends CommonGLPI {
       $param['end']   = date("Y-m-d H:i:s", strtotime($param['end']));
 
       $raw_events = [];
+      $not_planned = [];
       foreach ($CFG_GLPI['planning_types'] as $planning_type) {
          if (!$planning_type::canView()) {
             continue;
@@ -1604,10 +1618,13 @@ class Planning extends CommonGLPI {
                $actor_params['planning_type'] = $planning_type;
                self::constructEventsArraySingleLine($actor,
                                                     array_merge($param, $actor_params),
-                                                    $raw_events);
+                                                    $raw_events, $not_planned);
             }
          }
       }
+
+      //handle not planned events
+      $raw_events = array_merge($raw_events, $not_planned);
 
       // construct events (in fullcalendar format)
       $events = [];
@@ -1759,18 +1776,19 @@ class Planning extends CommonGLPI {
     *
     * @since 9.1
     *
-    * @param  string $actor: a type and id concaneted separated by '_' char, ex 'user_41'
-    * @param  array  $params: must contains this keys :
+    * @param string $actor: a type and id concaneted separated by '_' char, ex 'user_41'
+    * @param array  $params: must contains this keys :
     *  - display: boolean for pass or not the consstruction of this line (a group of users can be displayed but its users not).
     *  - type: event type, can be event_filter, user, group or group_users
     *  - who: integer for identify user
     *  - whogroup: integer for identify group
     *  - color: string with #rgb color for event's foreground color.
     *  - event_type_color : string with #rgb color for event's foreground color.
-    * @param  array  $raw_events: (passed by reference) the events array in construction
+    * @param array  $raw_events: (passed by reference) the events array in construction
+    * @param array  $not_planned (passed by references) not planned events array in construction
     * @return void
     */
-   static function constructEventsArraySingleLine($actor, $params = [], &$raw_events = []) {
+   static function constructEventsArraySingleLine($actor, $params = [], &$raw_events = [], &$not_planned = []) {
 
       if ($params['display']) {
          $actor_array = explode("_", $actor);
@@ -1779,7 +1797,7 @@ class Planning extends CommonGLPI {
             unset($subparams['users']);
             foreach ($params['users'] as $user => $userdata) {
                $subparams = array_merge($subparams, $userdata);
-               self::constructEventsArraySingleLine($user, $subparams, $raw_events);
+               self::constructEventsArraySingleLine($user, $subparams, $raw_events, $not_planned);
             }
          } else {
             $params['who']       = $actor_array[1];
@@ -1794,6 +1812,11 @@ class Planning extends CommonGLPI {
             if (count($current_events) > 0) {
                $raw_events = array_merge($raw_events, $current_events);
             }
+            if ($_SESSION['glpi_plannings']['filters']['NotPlanned']['display']
+               && method_exists($params['planning_type'], 'populateNotPlanned')
+            ) {
+               $not_planned = array_merge($not_planned, $params['planning_type']::populateNotPlanned($params));
+            }
          }
       }
 
@@ -1801,6 +1824,17 @@ class Planning extends CommonGLPI {
       $raw_events = array_map(function($arr) use($actor) {
          return $arr + ['resourceId' => $actor];
       }, $raw_events);
+      if ($_SESSION['glpi_plannings']['filters']['NotPlanned']['display']) {
+         $not_planned = array_map(function($arr) use($actor) {
+            return array_merge(
+               $arr, [
+                  'not_planned' => true,
+                  'resourceId' => $actor,
+                  'event_type_color' => $_SESSION['glpi_plannings']['filters']['NotPlanned']['color']
+               ]
+            );
+         }, $not_planned);
+      }
    }
 
 
@@ -1980,7 +2014,7 @@ class Planning extends CommonGLPI {
       }*/
 
       // Plugins case
-      if (isset($val['itemtype']) && !empty($val['itemtype'])) {
+      if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
          $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
       }
 
