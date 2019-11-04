@@ -52,12 +52,6 @@ if (!isset($_REQUEST['action'])) {
 }
 $action = $_REQUEST['action'];
 
-if ($action === 'get_translated_strings') {
-   header("Content-Type: application/json; charset=UTF-8", true);
-   echo json_encode((Kanban::getLocalizedKanbanStrings()), JSON_FORCE_OBJECT);
-   return;
-}
-
 $nonkanban_actions = ['update', 'add_item', 'move_item'];
 if (isset($_REQUEST['itemtype'])) {
    $traits = class_uses($_REQUEST['itemtype'], true);
