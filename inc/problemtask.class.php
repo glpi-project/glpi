@@ -142,7 +142,7 @@ class ProblemTask extends CommonITILTask {
 
 
    /**
-    * Populate the planning with planned ticket tasks
+    * Populate the planning with planned problem tasks
     *
     * @param $options  array of possible options:
     *    - who         ID of the user (0 = undefined)
@@ -152,7 +152,7 @@ class ProblemTask extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options = []) {
+   static function populatePlanning($options = []) :array {
       return parent::genericPopulatePlanning(__CLASS__, $options);
    }
 
@@ -169,6 +169,21 @@ class ProblemTask extends CommonITILTask {
     */
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
+   }
+
+   /**
+    * Populate the planning with not planned problem tasks
+    *
+    * @param $options  array of possible options:
+    *    - who         ID of the user (0 = undefined)
+    *    - whogroup    ID of the group of users (0 = undefined)
+    *    - begin Date
+    *    - end Date
+    *
+    * @return array of planning item
+   **/
+   static function populateNotPlanned($options = []) :array {
+      return parent::genericPopulateNotPlanned(__CLASS__, $options);
    }
 
 

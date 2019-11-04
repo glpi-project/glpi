@@ -149,7 +149,7 @@ class ChangeTask extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options = []) {
+   static function populatePlanning($options = []) :array {
       return parent::genericPopulatePlanning(__CLASS__, $options);
    }
 
@@ -168,5 +168,18 @@ class ChangeTask extends CommonITILTask {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }
 
-
+   /**
+    * Populate the planning with not planned ticket tasks
+    *
+    * @param $options array of possible options:
+    *    - who ID of the user (0 = undefined)
+    *    - whogroup ID of the group of users (0 = undefined)
+    *    - begin Date
+    *    - end Date
+    *
+    * @return array of planning item
+   **/
+   static function populateNotPlanned($options = []) :array {
+      return parent::genericPopulateNotPlanned(__CLASS__, $options);
+   }
 }

@@ -966,11 +966,32 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       $begin    = $options['begin'];
       $end      = $options['end'];
 
+      $SELECT = [$item->getTable() . '.*'];
+
       // Get items to print
-      $WHERE = [
-         $item->getTable() . '.end'     => ['>=', $begin],
-         $item->getTable() . '.begin'   => ['<=', $end]
-      ];
+      if (isset($options['not_planned'])) {
+         //not planned case
+         $bdate = "DATE_SUB(".$DB->quoteName($item->getTable() . '.date_creation') .
+            ", INTERVAL ".$DB->quoteName($item->getTable() . '.actiontime')." SECOND)";
+         $SELECT[] = new QueryExpression($bdate . ' AS ' . $DB->quoteName('notp_date'));
+         $edate = "DATE_ADD(".$DB->quoteName($item->getTable() . '.date_creation') .
+            ", INTERVAL ".$DB->quoteName($item->getTable() . '.actiontime')." SECOND)";
+         $SELECT[] = new QueryExpression($edate . ' AS ' . $DB->quoteName('notp_edate'));
+         $WHERE = [
+            $item->getTable() . '.end'     => null,
+            $item->getTable() . '.begin'   => null,
+            $item->getTable() . '.actiontime' => ['>', 0],
+            //begin is replaced with creation tim minus duration
+            new QueryExpression($edate . " >= '" . $begin . "'"),
+            new QueryExpression($bdate . " <= '" . $end . "'")
+         ];
+      } else {
+         //std case: get tasks for current view dates
+         $WHERE = [
+            $item->getTable() . '.end'     => ['>=', $begin],
+            $item->getTable() . '.begin'   => ['<=', $end]
+         ];
+      }
       $ADDWHERE = [];
 
       if ($whogroup === "mine") {
@@ -1041,7 +1062,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       }
 
       $iterator = $DB->request([
-         'SELECT'       => $item->getTable() . '.*',
+         'SELECT'       => $SELECT,
          'FROM'         => $item->getTable(),
          'INNER JOIN'   => [
             $parentitem->getTable() => [
@@ -1062,6 +1083,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             if ($item->getFromDB($data["id"])
                 && $item->canViewItem()) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()], 0)) {
+                  //not planned
+                  if (isset($data['notp_date'])) {
+                     $data['begin'] = $data['notp_date'];
+                     $data['end'] = $data['notp_edate'];
+                  }
                   $key = $data["begin"].
                          "$$$".$itemtype.
                          "$$$".$data["id"].
@@ -1133,6 +1159,25 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       return $interv;
    }
 
+   /**
+    * Populate the planning with not planned tasks
+    *
+    * @param string $itemtype itemtype
+    * @param array $options   options must contains :
+    *    - who                ID of the user (0 = undefined)
+    *    - whogroup           ID of the group of users (0 = undefined)
+    *    - begin              Date
+    *    - end                Date
+    *    - color
+    *    - event_type_color
+    *    - display_done_events (boolean)
+    *
+    * @return array of planning item
+   **/
+   static function genericPopulateNotPlanned($itemtype, $options = []) {
+      $options['not_planned'] = true;
+      return self::genericPopulatePlanning($itemtype, $options);
+   }
 
    /**
     * Display a Planning Item
