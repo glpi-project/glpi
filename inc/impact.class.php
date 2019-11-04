@@ -573,8 +573,8 @@ class Impact extends CommonGLPI {
       echo '<div class="impact-header">';
       echo "<h2>" . __("Impact analysis") . "</h2>";
       echo "<div id='switchview'>";
-      echo "<a id='sviewgraph' href='#graph'><i class='pointer fa fa-project-diagram' title='".__('View graphical representation')."'></i></a>";
       echo "<a id='sviewlist' href='#list'><i class='pointer fa fa-list-alt' title='".__('View as list')."'></i></a>";
+      echo "<a id='sviewgraph' href='#graph'><i class='pointer fa fa-project-diagram' title='".__('View graphical representation')."'></i></a>";
       echo "</div>";
       echo "</div>";
 
