@@ -1372,6 +1372,39 @@ class Html {
       // AJAX library
       echo Html::script('public/lib/base.js');
 
+      // Locales
+      $locales_domains = ['glpi' => GLPI_VERSION]; // base domain
+      $plugins = Plugin::getPlugins();
+      foreach ($plugins as $plugin) {
+         $locales_domains[$plugin] = Plugin::getInfo($plugin, 'version');
+      }
+      if (isset($_SESSION['glpilanguage'])) {
+         echo Html::scriptBlock(<<<JAVASCRIPT
+            $(function() {
+               i18n.setLocale('{$_SESSION['glpilanguage']}');
+            });
+JAVASCRIPT
+         );
+         foreach ($locales_domains as $locale_domain => $locale_version) {
+            $locales_url = $CFG_GLPI['root_doc'] . '/front/locale.php'
+               . '?domain=' . $locale_domain
+               . '&version=' . $locale_version
+               . ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? '&debug' : '');
+            $locale_js = <<<JAVASCRIPT
+               $(function() {
+                  $.ajax({
+                     type: 'GET',
+                     url: '{$locales_url}',
+                     success: function(json) {
+                        i18n.loadJSON(json, '{$locale_domain}');
+                     }
+                  });
+               });
+JAVASCRIPT;
+            echo Html::scriptBlock($locale_js);
+         }
+      }
+
       // layout
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {

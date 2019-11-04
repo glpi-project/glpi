@@ -1,0 +1,82 @@
+<?php
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+include ('../inc/includes.php');
+
+header("Content-Type: application/json; charset=UTF-8");
+
+$is_cacheable = !isset($_GET['debug']);
+if ($is_cacheable) {
+   // Makes CSS cacheable by browsers and proxies
+   $max_age = WEEK_TIMESTAMP;
+   header_remove('Pragma');
+   header('Cache-Control: public');
+   header('Cache-Control: max-age=' . $max_age);
+   header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
+}
+
+global $CFG_GLPI, $TRANSLATE;
+
+// Extract headers from main po file
+$po_file = preg_replace(
+   '/\.mo$/',
+   '.po',
+   $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1]
+);
+$po_file_handle = fopen(
+   GLPI_ROOT . '/locales/' . $po_file,
+   'r'
+);
+$in_headers = false;
+$headers = [];
+while (false !== ($line = fgets($po_file_handle))) {
+   if (preg_match('/^msgid\s+""$/', $line)) {
+      $in_headers = true;
+      continue;
+   }
+   if ($in_headers && preg_match('/^msgid\s+".*"$/', $line)) {
+      break; // new msgid = end of headers parsing
+   }
+   $header = [];
+   if ($in_headers && preg_match('/^"(?P<name>[a-z-]+):\s*(?P<value>.*)\\\n"$/i', $line, $header)) {
+      $header_name = strtolower($header['name']);
+      $header_value = $header['value'];
+      if (in_array($header_name, ['language', 'plural-forms'])) {
+         $headers[$header_name] = $header_value;
+      }
+   }
+}
+
+// Output messages and headers
+$messages = $TRANSLATE->getAllMessages($_GET['domain']);
+$messages[''] = $headers;
+echo(json_encode($messages, JSON_PRETTY_PRINT));
