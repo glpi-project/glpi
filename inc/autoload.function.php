@@ -287,11 +287,21 @@ function glpi_autoload($classname) {
 
    if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
-      $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
-      $item     = str_replace('\\', '/', strtolower($plug['class']));
+
+      // check plugin exists and is enabled
       if (!Plugin::isPluginLoaded($plugname)) {
          // Do not load plugin class if plugin is not loaded
          return false;
+      }
+
+      $item = str_replace('\\', '/', strtolower($plug['class']));
+
+      // load from first found directory
+      foreach (PLUGINS_DIRECTORIES as $base_dir) {
+         $dir = "$base_dir/$plugname/inc/";
+         if (is_dir($dir)) {
+            break;
+         }
       }
    } else {
       $item = strtolower($classname);

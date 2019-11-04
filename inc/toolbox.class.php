@@ -34,6 +34,7 @@ use Glpi\Event;
 use Glpi\System\RequirementsManager;
 use Monolog\Logger;
 use Mexitek\PHPColors\Color;
+use Psr\Log\InvalidArgumentException;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1489,7 +1490,7 @@ class Toolbox {
 
       if ($plug = isPluginItemType($itemtype)) {
          /* PluginFooBar => /plugins/foo/front/bar */
-         $dir .= "/plugins/".strtolower($plug['plugin']);
+         $dir.= Plugin::getPhpDir(strtolower($plug['plugin']), false);
          $item = str_replace('\\', '/', strtolower($plug['class']));
 
       } else { // Standard case
@@ -1517,7 +1518,7 @@ class Toolbox {
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
       if ($plug = isPluginItemType($itemtype)) {
-         $dir .=  "/plugins/".strtolower($plug['plugin']);
+         $dir .= Plugin::getPhpDir(strtolower($plug['plugin']), false);
          $item = str_replace('\\', '/', strtolower($plug['class']));
 
       } else { // Standard case
@@ -3186,6 +3187,55 @@ HTML;
       }
 
       return $formatted;
+   }
+
+
+   /**
+    * Get a fixed hex color for a input string
+    * Inpsired by shahonseven/php-color-hash
+    * @since 9.5
+    *
+    * @param string $str
+    *
+    * @return string hex color (ex #FAFAFA)
+    */
+   static function getColorForString(string $str = ""):string {
+      $seed  = 131;
+      $seed2 = 137;
+      $hash  = 0;
+      // Make hash more sensitive for short string like 'a', 'b', 'c'
+      $str .= 'x';
+      $max = intval(9007199254740991 / $seed2);
+
+      // Backport of Javascript function charCodeAt()
+      $getCharCode = function($c) {
+         list(, $ord) = unpack('N', mb_convert_encoding($c, 'UCS-4BE', 'UTF-8'));
+         return $ord;
+      };
+
+      // generate integer hash
+      for ($i = 0, $ilen = mb_strlen($str, 'UTF-8'); $i < $ilen; $i++) {
+         if ($hash > $max) {
+            $hash = intval($hash / $seed2);
+         }
+         $hash = $hash * $seed + $getCharCode(mb_substr($str, $i, 1, 'UTF-8'));
+      }
+
+      //get Hsl
+      $base_L = $base_S = [0.35, 0.5, 0.65];
+      $H = $hash % 359;
+      $hash = intval($hash / 360);
+      $S = $base_S[$hash % count($base_S)];
+      $hash = intval($hash / count($base_S));
+      $L = $base_L[$hash % count($base_L)];
+      $hsl = [
+         'H' => $H,
+         'S' => $S,
+         'L' => $L
+      ];
+
+      // return hex
+      return "#".Color::hslToHex($hsl);
    }
 
 

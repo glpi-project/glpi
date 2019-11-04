@@ -1272,6 +1272,11 @@ class Html {
             Html::requireJs('dashboard');
          }
 
+         if (in_array('marketplace', $jslibs)) {
+            echo Html::scss('css/marketplace');
+            Html::requireJs('marketplace');
+         }
+
          if (in_array('rack', $jslibs)) {
             Html::requireJs('rack');
          }
@@ -1350,23 +1355,25 @@ class Html {
                continue;
             }
 
-            $version = Plugin::getInfo($plugin, 'version');
+            $plugin_root_dir = Plugin::getPhpDir($plugin, true);
+            $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+            $version         = Plugin::getInfo($plugin, 'version');
 
             if (!is_array($files)) {
                $files = [$files];
             }
 
             foreach ($files as $file) {
-               $filename = GLPI_ROOT."/plugins/$plugin/$file";
+               $filename = "$plugin_root_dir/$file";
 
                if (!file_exists($filename)) {
                   continue;
                }
 
                if ('scss' === substr(strrchr($filename, '.'), 1)) {
-                  echo Html::scss("plugins/$plugin/$file", ['version' => $version]);
+                  echo Html::scss("$plugin_web_dir/$file", ['version' => $version]);
                } else {
-                  echo Html::css("plugins/$plugin/$file", ['version' => $version]);
+                  echo Html::css("$plugin_web_dir/$file", ['version' => $version]);
                }
             }
          }
@@ -6378,6 +6385,9 @@ JAVASCRIPT;
          case 'dashboard':
             $_SESSION['glpi_js_toload'][$name][] = 'js/dashboard.js';
             break;
+         case 'marketplace':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/marketplace.js';
+            break;
          case 'gridstack':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';
             break;
@@ -6457,13 +6467,8 @@ JAVASCRIPT;
          }
       }
 
-      // transfer some var of php to javascript
-      // (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
-      $debug = (isset($_SESSION['glpi_use_mode'])
-         && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? true : false);
-      echo self::scriptBlock("
-         var CFG_GLPI  = ".json_encode(Config::getSafeConfig(true), $debug ? JSON_PRETTY_PRINT : 0).";
-      ");
+      // transfer core variables to javascript side
+      echo self::getCoreVariablesForJavascript(true);
 
       // Some Javascript-Functions which we may need later
       echo Html::script('js/common.js');
@@ -6489,8 +6494,9 @@ JAVASCRIPT;
 
       // Add specific javascript for plugins
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
-
          foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
+            $plugin_root_dir = Plugin::getPhpDir($plugin, true);
+            $plugin_web_dir  = Plugin::getWebDir($plugin, false);
             if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
@@ -6499,8 +6505,8 @@ JAVASCRIPT;
                $files = [$files];
             }
             foreach ($files as $file) {
-               if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                  echo Html::script("plugins/$plugin/$file", ['version' => $version]);
+               if (file_exists($plugin_root_dir."/$file")) {
+                  echo Html::script("$plugin_web_dir/$file", ['version' => $version]);
                } else {
                   Toolbox::logWarning("$file file not found from plugin $plugin!");
                }
@@ -6511,6 +6517,42 @@ JAVASCRIPT;
       if (file_exists(GLPI_ROOT."/js/analytics.js")) {
          echo Html::script("js/analytics.js");
       }
+   }
+
+
+   /**
+    * transfer some var of php to javascript
+    * (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
+    *
+    * @param bool $full if false, don't expose all variables from CFG_GLPI (only url_base & root_doc)
+    *
+    * @since 9.5
+    * @return string
+    */
+   static function getCoreVariablesForJavascript(bool $full = false) {
+      global $CFG_GLPI;
+
+      $cfg_glpi = "var CFG_GLPI  = {
+         'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
+         'root_doc': '".$CFG_GLPI["root_doc"]."',
+      };";
+
+      if ($full) {
+         $debug = (isset($_SESSION['glpi_use_mode'])
+                   && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? true : false);
+         $cfg_glpi = "var CFG_GLPI  = ".json_encode(Config::getSafeConfig(true), $debug ? JSON_PRETTY_PRINT : 0).";";
+      }
+
+      $plugins_path = [];
+      foreach (Plugin::getPlugins() as $key) {
+         $plugins_path[$key] = Plugin::getWebDir($key, false);
+      }
+      $plugins_path = 'var GLPI_PLUGINS_PATH = '.json_encode($plugins_path).';';
+
+      return self::scriptBlock("
+         $cfg_glpi
+         $plugins_path
+      ");
    }
 
    /**
