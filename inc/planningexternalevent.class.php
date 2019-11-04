@@ -37,8 +37,6 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Sabre\VObject\Component\VCalendar;
-use Sabre\VObject\Component\VEvent;
-use Sabre\VObject\Component\VJournal;
 use Sabre\VObject\Component\VTodo;
 
 class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemInterface {
@@ -360,12 +358,6 @@ JAVASCRIPT;
    public function getInputFromVCalendar(VCalendar $vcalendar) {
 
       $vcomp = $vcalendar->getBaseComponent();
-
-      if (!($vcomp instanceof VEvent) && !($vcomp instanceof VTodo) && ! ($vcomp instanceof VJournal)) {
-         throw new UnexpectedValueException(
-            'Base component of VCALENDAR object must be a VEVENT, a VJOURNAL, or a VTODO'
-         );
-      }
 
       $input = $this->getCommonInputFromVcomponent($vcomp);
 

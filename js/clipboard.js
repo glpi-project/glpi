@@ -57,3 +57,26 @@ $(function() {
       }
    });
 });
+
+/**
+ * Copy a text to the clipboard
+ *
+ * @param {string} text
+ *
+ * @return {void}
+ */
+copyTextToClipboard = function (text) {
+   // Create a textarea to be able to select its content
+   var textarea = document.createElement('textarea');
+   textarea.value = text;
+   textarea.setAttribute('readonly', ''); // readonly to prevent focus
+   textarea.style = {position: 'absolute', visibility: 'hidden'};
+   document.body.appendChild(textarea);
+
+   // Select and copy text to clipboard
+   textarea.select();
+   document.execCommand('copy');
+
+   // Remove textarea
+   document.body.removeChild(textarea);
+};

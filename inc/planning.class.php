@@ -34,8 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Sabre\VObject;
 use RRule\RRule;
+use Sabre\VObject;
 
 /**
  * Planning Class
@@ -100,6 +100,8 @@ class Planning extends CommonGLPI {
 
 
    static function getAdditionalMenuLinks() {
+      global $CFG_GLPI;
+
       $links = [];
 
       if (Planning::canView()) {
@@ -118,6 +120,15 @@ class Planning extends CommonGLPI {
                        </i>";
 
          $links[$external] = PlanningExternalEvent::getSearchURL(false);
+      }
+
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         $caldav_title = __('CalDAV browser interface');
+         $caldav  = "<i class='fa fas fa-sync pointer' title='$caldav_title'>
+                        <span class='sr-only'>$caldav_title</span>
+                       </i>";
+
+         $links[$caldav] = $CFG_GLPI['root_doc'] . '/caldav.php';
       }
 
       return $links;
@@ -921,6 +932,15 @@ class Planning extends CommonGLPI {
                  "/front/planningcsv.php?uID=".$uID."&gID=".$gID."'>".
                  _sx("button", "Export")." - ".__("CSV")."</a></li>";
 
+            $caldav_url = $CFG_GLPI['url_base']
+               . '/caldav.php/'
+               . self::getCaldavBaseCalendarUrl($filter_data['type'] == 'user' ? $user : $group);
+            $copy_js = 'copyTextToClipboard("' . $caldav_url . '");'
+               . ' alert("' . __('CalDAV URL has been copied to clipboard') . '");'
+               . ' return false;';
+            echo "<li><a target='_blank' href='#'
+                 onclick='$copy_js'>".
+                 __("Copy CalDAV URL to clipboard")."</a></li>";
          }
          echo "</ul>";
          echo "</span>";
@@ -2126,5 +2146,32 @@ class Planning extends CommonGLPI {
       }
 
       return strtolower($itemtype) . '_' . $items_id;
+   }
+
+   /**
+    * Get CalDAV base calendar URL for given actor.
+    *
+    * @param CommonDBTM $item
+    *
+    * @return string|null
+    */
+   private static function getCaldavBaseCalendarUrl(\CommonDBTM $item) {
+
+      $calendar_uri = null;
+
+      switch (get_class($item)) {
+         case \Group::class:
+            $calendar_uri = \Glpi\CalDAV\Backend\Calendar::PREFIX_GROUPS
+               . '/' . $item->fields['id']
+               . '/' . \Glpi\CalDAV\Backend\Calendar::BASE_CALENDAR_URI;
+            break;
+         case \User::class:
+            $calendar_uri = \Glpi\CalDAV\Backend\Calendar::PREFIX_USERS
+               . '/' . $item->fields['name']
+               . '/' . \Glpi\CalDAV\Backend\Calendar::BASE_CALENDAR_URI;
+            break;
+      }
+
+      return $calendar_uri;
    }
 }

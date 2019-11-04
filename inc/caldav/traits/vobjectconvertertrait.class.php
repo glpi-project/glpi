@@ -35,6 +35,8 @@ namespace Glpi\CalDAV\Traits;
 use RRule\RRule;
 use Sabre\VObject\Component;
 use Sabre\VObject\Component\VCalendar;
+use Sabre\VObject\Component\VEvent;
+use Sabre\VObject\Component\VJournal;
 use Sabre\VObject\Component\VTodo;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\DateTime;
@@ -204,6 +206,14 @@ trait VobjectConverterTrait {
     * @return array
     */
    protected function getCommonInputFromVcomponent(Component $vcomponent) {
+      if (!($vcomponent instanceof VEvent)
+          && !($vcomponent instanceof VTodo)
+          && !($vcomponent instanceof VJournal)) {
+         throw new \UnexpectedValueException(
+            'Component object must be a VEVENT, a VJOURNAL, or a VTODO'
+         );
+      }
+
       $input = [];
 
       if ($vcomponent->CREATED instanceof DateTime) {

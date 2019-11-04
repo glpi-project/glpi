@@ -1032,10 +1032,6 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
 
       $vcomp = $vcalendar->getBaseComponent();
 
-      if (!($vcomp instanceof VTodo) && ! ($vcomp instanceof VJournal)) {
-         throw new UnexpectedValueException('Base component of VCALENDAR object must be a VTODO or a VJOURNAL');
-      }
-
       $input = $this->getCommonInputFromVcomponent($vcomp);
 
       $input['text'] = $input['content'];

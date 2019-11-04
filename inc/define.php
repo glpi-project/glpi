@@ -484,7 +484,7 @@ $CFG_GLPI['javascript'] = [
       'rack'         => ['colorpicker', 'gridstack']
    ],
    'helpdesk'  => [
-      'planning'  => ['fullcalendar', 'colorpicker', 'tinymce'],
+      'planning'  => ['clipboard', 'fullcalendar', 'colorpicker', 'tinymce'],
       'ticket'    => ['rateit', 'tinymce', 'photoswipe'],
       'problem'   => ['tinymce', 'photoswipe'],
       'change'    => ['tinymce', 'photoswipe'],

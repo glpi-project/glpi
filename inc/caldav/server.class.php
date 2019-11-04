@@ -41,6 +41,7 @@ use Glpi\CalDAV\Backend\Calendar;
 use Glpi\CalDAV\Backend\Principal;
 use Glpi\CalDAV\Node\CalendarRoot;
 use Glpi\CalDAV\Plugin\Acl;
+use Glpi\CalDAV\Plugin\Browser;
 use Glpi\CalDAV\Plugin\CalDAV;
 use Sabre\DAV;
 use Sabre\DAVACL;
@@ -79,8 +80,8 @@ class Server extends DAV\Server {
       $this->addPlugin(new Acl());
       $this->addPlugin(new CalDAV());
 
-      // Support for html frontend
-      $this->addPlugin(new \Sabre\DAV\Browser\Plugin(false));
+      // Support for html frontend (only in debug mode)
+      $this->addPlugin(new Browser(false));
    }
 
    /**

@@ -60,9 +60,10 @@ class Calendar extends AbstractBackend {
 
    use CalDAVUriUtilTrait;
 
-   const CALENDAR_ROOT = 'calendars';
-   const PREFIX_GROUPS = self::CALENDAR_ROOT . '/groups';
-   const PREFIX_USERS  = self::CALENDAR_ROOT . '/users';
+   const BASE_CALENDAR_URI = 'calendar';
+   const CALENDAR_ROOT     = 'calendars';
+   const PREFIX_GROUPS     = self::CALENDAR_ROOT . '/groups';
+   const PREFIX_USERS      = self::CALENDAR_ROOT . '/users';
 
    public function getCalendarsForUser($principalPath) {
       global $CFG_GLPI;
@@ -82,7 +83,7 @@ class Calendar extends AbstractBackend {
          // Calendar of current principal
          $principal_calendar_key => [
             'key'          => $principal_calendar_key,
-            'uri'          => 'calendar',
+            'uri'          => self::BASE_CALENDAR_URI,
             'principaluri' => $principalPath,
             'name'         => $principal_item->getName(),
             'desc'         => sprintf(__('Calendar of %s'), $principal_item->getRawName()),

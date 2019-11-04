@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Sabre\VObject\Component\VCalendar;
-use Sabre\VObject\Component\VTodo;
 
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItemInterface {
@@ -2061,10 +2060,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
    public function getInputFromVCalendar(VCalendar $vcalendar) {
 
       $vtodo = $vcalendar->getBaseComponent();
-
-      if (!($vtodo instanceof VTodo)) {
-         throw new UnexpectedValueException('Base component of VCALENDAR object must be a VTODO');
-      }
 
       if (null !== $vtodo->RRULE) {
          throw new UnexpectedValueException('RRULE not yet implemented for ITIL tasks');

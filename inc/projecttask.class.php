@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Sabre\VObject\Component\VCalendar;
-use Sabre\VObject\Component\VTodo;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\IntegerValue;
 
@@ -1978,10 +1977,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    public function getInputFromVCalendar(VCalendar $vcalendar) {
 
       $vtodo = $vcalendar->getBaseComponent();
-
-      if (!($vtodo instanceof VTodo)) {
-         throw new UnexpectedValueException('Base component of VCALENDAR object must be a VTODO');
-      }
 
       if (null !== $vtodo->RRULE) {
          throw new UnexpectedValueException('RRULE not yet implemented for Project tasks');
