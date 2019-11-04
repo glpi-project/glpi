@@ -687,8 +687,9 @@ class Impact extends CommonGLPI {
                   type: "GET",
                   url: "'. $CFG_GLPI['root_doc'] . '/ajax/impact.php",
                   data: {
-                     itemtype:   values[0],
-                     items_id:     values[1],
+                     itemtype: values[0],
+                     items_id: values[1],
+                     action  : "load",
                   },
                   success: function(data, textStatus, jqXHR) {
                      GLPIImpact.buildNetwork(
@@ -701,6 +702,77 @@ class Impact extends CommonGLPI {
             });
          });
       ');
+   }
+
+   /**
+    * Search asset by itemtype and name
+    *
+    * @param string  $itemtype   type
+    * @param array   $used       ids to exlude from the search
+    * @param string  $filter     filter on name
+    * @param int     $page       page offset
+    */
+   public static function searchAsset(
+      string $itemtype,
+      array $used,
+      string $filter,
+      int $page = 0
+   ) {
+      global $CFG_GLPI, $DB;
+
+      // Check if this type is enabled in config
+      if (!isset($CFG_GLPI['impact_asset_types'][$itemtype])) {
+         throw new \InvalidArgumentException(
+            "itemtype ($itemtype) must be enabled in cfg/impact_asset_types"
+         );
+      }
+
+      // Check class exist and is a child of CommonDBTM
+      if (!is_subclass_of($itemtype, "CommonDBTM", true)) {
+         throw new \InvalidArgumentException(
+            "itemtype ($itemtype) must be a valid child of CommonDBTM"
+         );
+      }
+
+      // This array can't be empty since we will use it in the NOT IN part of the reqeust
+      if (!count($used)) {
+         $used[] = -1;
+      }
+
+      // Search for items
+      $filter = strtolower($filter);
+      $base_request = [
+         'FROM'   => $itemtype::getTable(),
+         'WHERE'  => [
+            'RAW'  => [
+               'LOWER(' . DBmysql::quoteName('name') . ')' => ['LIKE', "%$filter%"]
+            ],
+            'NOT' => [
+               'id' => $used
+            ],
+         ],
+      ];
+      $select = [
+         'SELECT' => ['id', 'name'],
+      ];
+      $limit = [
+         'START' => $page * 20,
+         'LIMIT' => "20",
+      ];
+      $count = [
+         'COUNT' => "total",
+      ];
+
+      // Get items
+      $rows = $DB->request($base_request + $select + $limit);
+
+      // Get total
+      $total = $DB->request($base_request + $count);
+
+      return [
+         "items" => iterator_to_array($rows, false),
+         "total" =>  iterator_to_array($total, false)[0]['total'],
+      ];
    }
 
    /**
@@ -717,105 +789,130 @@ class Impact extends CommonGLPI {
       echo "<form name=\"$formName\" action=\"$action\" method=\"post\">";
       echo "<table class='tab_cadre_fixe network-table'>";
       echo '<tr><td class="network-parent">';
-      echo '<div class="impact_toolbar">';
       echo '<span id="help_text"></span>';
-      echo '<div id="impact_tools">';
-      echo '<span id="save_impact" style="display: none">' . __("Save") . '&nbsp;<i></i></span>';
-      echo '<span id="add_node" style="display: none"><i class="fas fa-plus"></i></span>';
-      echo '<span id="add_edge" style="display: none"><i class="fas fa-marker"></i></span>';
-      echo '<span id="add_compound" style="display: none"><i class="far fa-square"></i></span>';
-      echo '<span id="delete_element" style="display: none"><i class="fas fa-trash"></i></span>';
-      echo '<span id="export_graph"><i class="fas fa-download"></i></span>';
-      echo '<span id="toggle_fullscreen"><i class="fas fa-expand"></i></span>';
-      echo '<span id="expand_toolbar" style="display: none"><i class="fas fa-ellipsis-v "></i></span>';
-      echo '</div>';
-      self::printDropdownMenu();
-      echo '</div>';
+
       echo '<div id="network_container"></div>';
+      echo '<img class="impact-drop-preview">';
+
+      echo '<div class="impact-side">';
+
+      echo '<div class="impact-side-panel">';
+
+      echo '<div class="impact-side-add-node">';
+      echo '<h3>' . __('Add assets') . '</h3>';
+      echo '<div class="impact-side-select-itemtype">';
+
+      echo Html::input("impact-side-filter-itemtypes", [
+         'id' => 'impact-side-filter-itemtypes',
+         'placeholder' => __('Filter itemtypes...'),
+      ]);
+
+      echo '<div class="impact-side-filter-itemtypes-items">';
+      foreach ($CFG_GLPI["impact_asset_types"] as $itemtype => $icon) {
+         echo '<div class="impact-side-filter-itemtypes-item">';
+         // Add default image if the real path doesn't lead to an existing file
+         if (!file_exists(__DIR__ . "/../$icon")) {
+            $icon = "pics/impact/default.png";
+         }
+
+         echo '<h4><img class="impact-side-icon" src="/../' . $icon . '" title="' . __($itemtype) . '" data-itemtype="' . $itemtype . '">';
+         echo "<span>" . __($itemtype) . "</span></h4>";
+         echo '</div>'; // impact-side-filter-itemtypes-item
+      }
+      echo '</div>'; // impact-side-filter-itemtypes-items
+      echo '</div>'; // <div class="impact-side-select-itemtype">
+
+      echo '<div class="impact-side-search">';
+      echo '<h4><i class="fas fa-chevron-left"></i><img><span></span></h4>';
+      echo Html::input("impact-side-filter-assets", [
+         'id' => 'impact-side-filter-assets',
+         'placeholder' => __('Filter assets...'),
+      ]);
+
+      echo '<div class="impact-side-search-panel">';
+      echo '<div class="impact-side-search-results"></div>';
+
+      echo '<div class="impact-side-search-more">';
+      echo '<h4><i class="fas fa-chevron-down"></i>' . __("More...") . '</h4>';
+      echo '</div>'; // <div class="impact-side-search-more">
+
+      echo '<div class="impact-side-search-no-results">';
+      echo '<p>'. __("No results") . '</p>';
+      echo '</div>'; // <div class="impact-side-search-no-results">
+
+      echo '<div class="impact-side-search-spinner">';
+      echo '<i class="fas fa-spinner fa-2x fa-spin"></i>';
+      echo '</div>'; // <div class="impact-side-search-spinner">
+
+      echo '</div>'; // <div class="impact-side-search-panel">
+
+      echo '</div>'; // <div class="impact-side-search">
+
+      echo '</div>'; // div class="impact-side-add-node">
+
+      echo '<div class="impact-side-settings">';
+      echo '<h3>' . __('Settings') . '</h3>';
+
+      echo '<h4>' . __('Visibility') . '</h4>';
+      echo '<div class="impact-side-settings-item">';
+      echo \Html::getCheckbox([
+         'id'      => "toggle_impact",
+         'name'    => "toggle_impact",
+         'checked' => "true",
+      ]);
+      echo '<span class="impact-checkbox-label">' . _("Show impact") . '</span>';
+      echo '</div>';
+
+      echo '<div class="impact-side-settings-item">';
+      echo \Html::getCheckbox([
+         'id'      => "toggle_depends",
+         'name'    => "toggle_depends",
+         'checked' => "true",
+      ]);
+      echo '<span class="impact-checkbox-label">' . _("Show depends") . '</span>';
+      echo '</div>';
+
+      echo '<h4>' . __('Colors') . '</h4>';
+      echo '<div class="impact-side-settings-item">';
+      Html::showColorField("depends_color", []);
+      echo '<span class="impact-checkbox-label">' . _("Depends") . '</span>';
+      echo '</div>';
+
+      echo '<div class="impact-side-settings-item">';
+      Html::showColorField("impact_color", []);
+      echo '<span class="impact-checkbox-label">' . _("Impact") . '</span>';
+      echo '</div>';
+
+      echo '<div class="impact-side-settings-item">';
+      Html::showColorField("impact_and_depends_color", []);
+      echo '<span class="impact-checkbox-label">' . _("Impact and depends") . '</span>';
+      echo '</div>';
+
+      echo '<h4>' . __('Max depth') . '</h4>';
+      echo '<div class="impact-side-settings-item">';
+      echo '<input id="max_depth" type="range" class="impact-range" min="1" max ="10" step="1" value="5"><span id="max_depth_view" class="impact-checkbox-label"></span>';
+      echo '</div>';
+
+      echo '</div>'; // div class="impact-side-settings">
+
+      echo '<div class="impact-side-search-footer"></div>';
+      echo '</div>'; // div class="impact-side-panel">
+
+      echo '<ul>';
+      echo '<li id="save_impact" title="' . _("Save") .'"><i class="fas fa-fw fa-save"></i></li>';
+      echo '<li id="add_node" title="' . _("Add asset") .'"><i class="fas fa-fw fa-plus"></i></li>';
+      echo '<li id="add_edge" title="' . _("Add relation") .'"><i class="fas fa-fw fa-pencil-alt"></i></li>';
+      echo '<li id="add_compound" title="' . _("Add group") .'"><i class="far fa-fw fa-square"></i></li>';
+      echo '<li id="delete_element" title="' . _("Delete element") .'"><i class="fas fa-fw fa-trash"></i></li>';
+      echo '<li id="export_graph" title="' . _("Download") .'"><i class="fas fa-fw fa-download"></i></li>';
+      echo '<li id="toggle_fullscreen" title="' . _("Fullscreen") .'"><i class="fas fa-fw fa-expand"></i></li>';
+      echo '<li id="impact_settings" title="' . _("Settings") .'"><i class="fas fa-fw fa-cog"></i></li>';
+      echo '</ul>';
+      echo '<span class="impact-side-toggle"><i class="fas fa-2x fa-chevron-left"></i></span>';
+      echo '</div>'; // <div class="impact-side impact-side-expanded">
       echo "</td></tr>";
       echo "</table>";
       Html::closeForm();
-   }
-
-   /**
-    * Print the dropdown menu at the end of the toolbar
-    */
-   public static function printDropdownMenu() {
-      echo
-         '<div class="more">' .
-            '<div class="more-menu" style="display: none;">' .
-               '<div class="more-menu-caret">' .
-                  '<div class="more-menu-caret-outer"></div>' .
-                  '<div class="more-menu-caret-inner"></div>' .
-               '</div>' .
-               '<ul class="more-menu-items" tabindex="-1">' .
-                  '<li id="toggle_impact" class="more-menu-item">' .
-                     '<button type="button" class="more-menu-btn">' .
-                        '<i class="fas fa-eye"></i> Toggle impact' .
-                     '</button>' .
-                  '</li>' .
-                  '<li id="toggle_depends" class="more-menu-item">' .
-                     '<button type="button" class="more-menu-btn">' .
-                        '<i class="fas fa-eye"></i> Toggle depends' .
-                     '</button>' .
-                  '</li>' .
-                  '<li id="color_picker" class="more-menu-item">' .
-                     '<button type="button" class="more-menu-btn">' .
-                        '<i class="fas fa-palette"></i> Colors' .
-                     '</button>' .
-                  '</li>' .
-                  '<hr>' .
-                  '<li id="color_picker" class="more-menu-item">' .
-                     '<button type="button" class="more-menu-btn more-disabled" id="max_depth_view">' .
-                        'Max depth : 5' .
-                     '</button>' .
-                  '</li>' .
-                  '<li id="color_picker" class="more-menu-item">' .
-                     '<span class="more-menu-btn">' .
-                        '<input id="max_depth" type="range" class="impact-range" min="1" max ="10" step="1" value="5">' .
-                     '</span>' .
-                  '</li>' .
-               '</ul>' .
-            '</div>' .
-         "</div>";
-
-      // JS to show/hide the dropdown
-      echo Html::scriptBlock("
-         var el = document.querySelector('.more');
-         var btn = $('.more')[0];
-         var menu = el.querySelector('.more-menu');
-         var visible = false;
-
-         function showMenu(e) {
-            e.preventDefault();
-            if (!visible) {
-               visible = true;
-               el.classList.add('show-more-menu');
-               $(menu).show();
-               document.addEventListener('mousedown', hideMenu, false);
-            } else {
-               visible = false;
-               el.classList.remove('show-more-menu');
-               $(menu).hide();
-               document.removeEventListener('mousedown', hideMenu);
-            }
-         }
-
-         function hideMenu(e) {
-            if (e.target.id == 'expand_toolbar') {
-               return;
-            }
-            if (btn.contains(e.target)) {
-               return;
-            }
-            if (visible) {
-               visible = false;
-               el.classList.remove('show-more-menu');
-               $(menu).hide();
-               document.removeEventListener('mousedown', hideMenu);
-            }
-         }
-      ");
    }
 
    /**
@@ -1136,105 +1233,13 @@ class Impact extends CommonGLPI {
    }
 
    /**
-    * Load the add node dialog
-    *
-    * @since 9.5
-    */
-   public static function printAddNodeDialog() {
-      global $CFG_GLPI;
-      $rand = mt_rand();
-
-      echo '<div id="add_node_dialog" class="impact-dialog">';
-      echo '<table class="tab_cadre_fixe">';
-
-      // First row: itemtype field
-      echo "<tr>";
-      echo "<td> <label>" . __('Item type') . "</label> </td>";
-      echo "<td>";
-      Dropdown::showItemTypes(
-         'item_type',
-         array_keys($CFG_GLPI['impact_asset_types']),
-         [
-            'value'        => null,
-            'width'        => '100%',
-            'emptylabel'   => Dropdown::EMPTY_VALUE,
-            'rand'         => $rand
-         ]
-      );
-      echo "</td>";
-      echo "</tr>";
-
-      // Second row: items_id field
-      echo "<tr>";
-      echo "<td> <label>" . __('Item') . "</label> </td>";
-      echo "<td>";
-      Ajax::updateItemOnSelectEvent("dropdown_item_type$rand", "results",
-         $CFG_GLPI["root_doc"].
-         "/ajax/dropdownTrackingDeviceType.php",
-         [
-            'itemtype'        => '__VALUE__',
-            'entity_restrict' => 0,
-            'multiple'        => 1,
-            'admin'           => 1,
-            'rand'            => $rand,
-            'myname'          => "item_id",
-            'context'         => "impact"
-         ]
-      );
-      echo "<span id='results'>\n";
-      echo "</span>\n";
-      echo "</td>";
-      echo "</tr>";
-
-      echo "</table>";
-      echo "</div>";
-   }
-
-   /**
     * Load the "show ongoing tickets" dialog
     *
     * @since 9.5
     */
    public static function printShowOngoingDialog() {
-      // This dialog will be built dynamically on the front end
+      // This dialog will be built dynamically by the front end
       echo '<div id="ongoing_dialog"></div>';
-   }
-
-   /**
-    * Load the color configuration dialog
-    *
-    * @since 9.5
-    */
-   public static function printColorConfigDialog() {
-      echo '<div id="color_config_dialog" class="impact-dialog">';
-      echo "<table class='tab_cadre_fixe'>";
-
-      // First row: depends color field
-      echo "<tr>";
-      echo "<td>";
-      Html::showColorField("depends_color", []);
-      echo "<label>&nbsp;" . __("Depends") . "</label>";
-      echo "</td>";
-      echo "</tr>";
-
-      // Second row: impact color field
-      echo "<tr>";
-      echo "<td>";
-      Html::showColorField("impact_color", []);
-      echo "<label>&nbsp;" . __("Impact") . "</label>";
-      echo "</td>";
-      echo "</tr>";
-
-      // Third row: impact and depends color field
-      echo "<tr>";
-      echo "<td>";
-      Html::showColorField("impact_and_depends_color", []);
-      echo "<label>&nbsp;" . __("Impact and depends") . "</label>";
-      echo "</td>";
-      echo "</tr>";
-
-      echo "</table>";
-      echo "</div>";
    }
 
    /**
@@ -1273,70 +1278,6 @@ class Impact extends CommonGLPI {
    }
 
    /**
-    * Export the dialogs defined in the backend
-    *
-    * @return string
-    */
-   public static function exportDialogs() {
-      return json_encode([
-         [
-            'key'    => 'addNode',
-            'id'     => "#add_node_dialog",
-            'inputs' => [
-               'itemType' => "select[name=item_type]",
-               'itemID'   => "select[name=item_id]"
-            ]
-         ],
-         [
-            'key'    => 'configColor',
-            'id'     => '#color_config_dialog',
-            'inputs' => [
-               'dependsColor'          => "input[name=depends_color]",
-               'impactColor'           => "input[name=impact_color]",
-               'impactAndDependsColor' => "input[name=impact_and_depends_color]",
-            ]
-         ],
-         [
-            'key' => "ongoingDialog",
-            'id'  => "#ongoing_dialog"
-         ],
-         [
-            'key'    => "editCompoundDialog",
-            'id'     => "#edit_compound_dialog",
-            'inputs' => [
-               'name'  => "input[name=compound_name]",
-               'color' => "input[name=compound_color]",
-            ]
-         ]
-      ]);
-   }
-
-   /**
-    * Export the toolbar defined in the backend
-    *
-    * @return string
-    */
-   public static function exportToolbar() {
-      return json_encode([
-         ['key'    => 'helpText',            'id' => "#help_text"],
-         ['key'    => 'tools',               'id' => "#impact_tools"],
-         ['key'    => 'save',                'id' => "#save_impact"],
-         ['key'    => 'addNode',             'id' => "#add_node"],
-         ['key'    => 'addEdge',             'id' => "#add_edge"],
-         ['key'    => 'addCompound',         'id' => "#add_compound"],
-         ['key'    => 'deleteElement',       'id' => "#delete_element"],
-         ['key'    => 'export',              'id' => "#export_graph"],
-         ['key'    => 'expandToolbar',       'id' => "#expand_toolbar"],
-         ['key'    => 'toggleImpact',        'id' => "#toggle_impact"],
-         ['key'    => 'toggleDepends',       'id' => "#toggle_depends"],
-         ['key'    => 'colorPicker',         'id' => "#color_picker"],
-         ['key'    => 'maxDepth',            'id' => "#max_depth"],
-         ['key'    => 'maxDepthView',        'id' => "#max_depth_view"],
-         ['key'    => 'toggleFullscreen',    'id' => "#toggle_fullscreen"],
-      ]);
-   }
-
-   /**
     * Prepare the impact network
     *
     * @since 9.5
@@ -1346,8 +1287,7 @@ class Impact extends CommonGLPI {
    public static function prepareImpactNetwork(CommonDBTM $item) {
       // Load requirements
       self::printImpactNetworkContainer();
-      self::printAddNodeDialog();
-      self::printColorConfigDialog();
+      self::printShowOngoingDialog();
       self::printEditCompoundDialog();
       echo Html::script("js/impact.js");
 
@@ -1357,9 +1297,6 @@ class Impact extends CommonGLPI {
       $backward  = self::DEPENDS_COLOR;
       $both      = self::IMPACT_AND_DEPENDS_COLOR;
       $start_node = self::getNodeID($item);
-      $form      = "form[name=form_impact_network]";
-      $dialogs   = self::exportDialogs();
-      $toolbar   = self::exportToolbar();
 
       // Bind the backend values to the client and start the network
       echo  Html::scriptBlock("
@@ -1372,10 +1309,7 @@ class Impact extends CommonGLPI {
                   backward: '$backward',
                   both    : '$both',
                },
-               '$start_node',
-               '$form',
-               '$dialogs',
-               '$toolbar'
+               '$start_node'
             )
          });
       ");
