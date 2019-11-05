@@ -300,8 +300,12 @@ var GLPIPlanning  = {
          eventReceive: function(info) {
             var event    = info.event;
             var extprops = event.extendedProps;
-            var resource = event.getResources();
+            var resource = {};
             var actor    = {};
+
+            if (typeof event.getresources === "function") {
+               resource = event.getresources();
+            }
 
             // manage resource changes
             if (resource.length === 1) {
