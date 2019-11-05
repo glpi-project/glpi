@@ -881,17 +881,19 @@ function update94to95() {
                'after'  => 'id'
             ]
          );
-         $migration->addPostQuery(
-            $DB->buildUpdate(
-               $table,
-               [
-                  'uuid' => new \QueryExpression('UUID()'),
-               ],
-               [true]
-            )
-         );
          $migration->addKey($table, 'uuid', '', 'UNIQUE');
       }
+      $migration->addPostQuery(
+         $DB->buildUpdate(
+            $table,
+            [
+               'uuid' => new \QueryExpression('UUID()'),
+            ],
+            [
+               'uuid' => null,
+            ]
+         )
+      );
    }
    /** /Add uuid on planning items */
 
