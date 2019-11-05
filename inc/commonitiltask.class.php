@@ -34,9 +34,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
+use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Sabre\VObject\Component\VCalendar;
+
 /// TODO extends it from CommonDBChild
-abstract class CommonITILTask  extends CommonDBTM {
+abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItemInterface {
    use PlanningEvent;
+   use VobjectConverterTrait;
 
    // From CommonDBTM
    public $auto_message_on_action = false;
@@ -383,6 +388,10 @@ abstract class CommonITILTask  extends CommonDBTM {
    function prepareInputForAdd($input) {
       $itemtype = $this->getItilObjectItemType();
 
+      if (!isset($input['uuid'])) {
+         $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+      }
+
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
       if (isset($input["plan"])) {
@@ -542,6 +551,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $this->deleteChildrenAndRelationsFromDb(
          [
             PlanningRecall::class,
+            VObject::class,
          ]
       );
    }
@@ -988,8 +998,10 @@ abstract class CommonITILTask  extends CommonDBTM {
                'FROM'            => 'glpi_profiles',
                'LEFT JOIN'       => [
                   'glpi_profiles_users'   => [
-                     'glpi_profiles_users'   => 'profiles_id',
-                     'glpi_profiles'         => 'id'
+                     'ON' => [
+                        'glpi_profiles_users'   => 'profiles_id',
+                        'glpi_profiles'         => 'id',
+                     ]
                   ]
                ],
                'WHERE'           => [
@@ -1943,4 +1955,127 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
    }
 
+   public static function getGroupItemsAsVCalendars($groups_id) {
+
+      return self::getItemsAsVCalendars([static::getTableField('groups_id_tech') => $groups_id]);
+   }
+
+   public static function getUserItemsAsVCalendars($users_id) {
+
+      return self::getItemsAsVCalendars([static::getTableField('users_id_tech') => $users_id]);
+   }
+
+   /**
+    * Returns items as VCalendar objects.
+    *
+    * @param array $criteria
+    *
+    * @return \Sabre\VObject\Component\VCalendar[]
+    */
+   private static function getItemsAsVCalendars(array $criteria) {
+
+      global $DB;
+
+      $item = new static();
+      $parent_item = getItemForItemtype($item->getItilObjectItemType());
+      if (!$parent_item) {
+         return;
+      }
+
+      $query = [
+         'SELECT'     => [$item->getTableField('*')],
+         'FROM'       => $item->getTable(),
+         'INNER JOIN' => [],
+         'WHERE'      => $criteria,
+      ];
+      if ($parent_item->maybeDeleted()) {
+         $query['INNER JOIN'][$parent_item->getTable()] = [
+            'ON' => [
+               $parent_item->getTable() => 'id',
+               $item->getTable()        => $parent_item->getForeignKeyField(),
+            ]
+         ];
+         $query['WHERE'][$parent_item->getTableField('is_deleted')] = 0;
+      }
+
+      $tasks_iterator = $DB->request($query);
+
+      $vcalendars = [];
+      foreach ($tasks_iterator as $task) {
+         $item->getFromResultSet($task);
+         $vcalendar = $item->getAsVCalendar();
+         if (null !== $vcalendar) {
+            $vcalendars[] = $vcalendar;
+         }
+      }
+
+      return $vcalendars;
+   }
+
+   public function getAsVCalendar() {
+
+      global $CFG_GLPI;
+
+      if (!$this->canViewItem()) {
+         return null;
+      }
+
+      $parent_item = getItemForItemtype($this->getItilObjectItemType());
+      if (!$parent_item) {
+         return null;
+      }
+      $parent_id = $this->fields[$parent_item->getForeignKeyField()];
+      if (!$parent_item->getFromDB($parent_id)) {
+         return null;
+      }
+
+      // Transform HTML text to plain text
+      $this->fields['content'] = Html::clean(
+         Toolbox::unclean_cross_side_scripting_deep(
+            $this->fields['content']
+         )
+      );
+
+      $is_task =true;
+      $is_planned = !empty($this->fields['begin']) && !empty($this->fields['end']);
+      $target_component = $this->getTargetCaldavComponent($is_planned, $is_task);
+      if (null === $target_component) {
+         return null;
+      }
+
+      $vcalendar = $this->getVCalendarForItem($this, $target_component);
+
+      $parent_fields = Html::entity_decode_deep($parent_item->fields);
+      $utc_tz = new \DateTimeZone('UTC');
+
+      $vcomp = $vcalendar->getBaseComponent();
+      $vcomp->SUMMARY           = $parent_fields['name'];
+      $vcomp->DTSTAMP           = (new \DateTime($parent_fields['date_mod']))->setTimeZone($utc_tz);
+      $vcomp->{'LAST-MODIFIED'} = (new \DateTime($parent_fields['date_mod']))->setTimeZone($utc_tz);
+      $vcomp->URL               = $CFG_GLPI['url_base'] . $parent_item->getFormURLWithID($parent_id, false);
+
+      return $vcalendar;
+   }
+
+   public function getInputFromVCalendar(VCalendar $vcalendar) {
+
+      $vtodo = $vcalendar->getBaseComponent();
+
+      if (null !== $vtodo->RRULE) {
+         throw new UnexpectedValueException('RRULE not yet implemented for ITIL tasks');
+      }
+
+      $input = $this->getCommonInputFromVcomponent($vtodo);
+
+      if (!$this->isNewItem()) {
+         // self::prepareInputForUpdate() expect these fields to be set in input.
+         // We should be able to not pass these fields in input
+         // but fixing self::prepareInputForUpdate() seems complex right now.
+         $itil_fkey = getForeignKeyFieldForItemType($this->getItilObjectItemType());
+         $input[$itil_fkey] = $this->fields[$itil_fkey];
+         $input['users_id_tech'] = $this->fields['users_id_tech'];
+      }
+
+      return $input;
+   }
 }

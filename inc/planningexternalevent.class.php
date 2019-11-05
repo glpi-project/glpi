@@ -30,8 +30,18 @@
  * ---------------------------------------------------------------------
  */
 
-class PlanningExternalEvent extends CommonDBTM {
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
+
+use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
+use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Sabre\VObject\Component\VCalendar;
+use Sabre\VObject\Component\VTodo;
+
+class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemInterface {
    use PlanningEvent;
+   use VobjectConverterTrait;
 
    public $dohistory = true;
    static $rightname = 'externalevent';
@@ -232,7 +242,7 @@ JAVASCRIPT;
 
       echo "<tr class='tab_bg_2'><td  colspan='2'>".__('Repeat')."</td>";
       echo "<td>";
-      echo self::showRepetitionForm($this->fields['rrule'], [
+      echo self::showRepetitionForm($this->fields['rrule'] ?? '', [
          'rand' => $rand_rrule
       ]);
       echo "</td></tr>";
@@ -268,5 +278,97 @@ JAVASCRIPT;
       $values[self::MANAGE_BG_EVENTS] = __('manage background events');
 
       return $values;
+   }
+
+   function cleanDBonPurge() {
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            VObject::class,
+         ]
+      );
+   }
+
+   public static function getGroupItemsAsVCalendars($groups_id) {
+
+      return self::getItemsAsVCalendars([self::getTableField('groups_id') => $groups_id]);
+   }
+
+   public static function getUserItemsAsVCalendars($users_id) {
+
+      return self::getItemsAsVCalendars([self::getTableField('users_id') => $users_id]);
+   }
+
+   /**
+    * Returns items as VCalendar objects.
+    *
+    * @param array $criteria
+    *
+    * @return \Sabre\VObject\Component\VCalendar[]
+    */
+   private static function getItemsAsVCalendars(array $criteria) {
+
+      global $DB;
+
+      $query = [
+         'FROM'  => self::getTable(),
+         'WHERE' => $criteria,
+      ];
+
+      $event_iterator = $DB->request($query);
+
+      $vcalendars = [];
+      foreach ($event_iterator as $event) {
+         $item = new self();
+         $item->getFromResultSet($event);
+         $vcalendar = $item->getAsVCalendar();
+         if (null !== $vcalendar) {
+            $vcalendars[] = $vcalendar;
+         }
+      }
+
+      return $vcalendars;
+   }
+
+   public function getAsVCalendar() {
+
+      if (!$this->canViewItem()) {
+         return null;
+      }
+
+      // Transform HTML text to plain text
+      $this->fields['text'] = Html::clean(
+         Toolbox::unclean_cross_side_scripting_deep(
+            $this->fields['text']
+         )
+      );
+
+      $is_task = in_array($this->fields['state'], [Planning::DONE, Planning::TODO]);
+      $is_planned = !empty($this->fields['begin']) && !empty($this->fields['end']);
+      $target_component = $this->getTargetCaldavComponent($is_planned, $is_task);
+      if (null === $target_component) {
+         return null;
+      }
+
+      $vcalendar = $this->getVCalendarForItem($this, $target_component);
+
+      return $vcalendar;
+   }
+
+   public function getInputFromVCalendar(VCalendar $vcalendar) {
+
+      $vcomp = $vcalendar->getBaseComponent();
+
+      $input = $this->getCommonInputFromVcomponent($vcomp);
+
+      $input['text'] = $input['content'];
+      unset($input['content']);
+
+      if ($vcomp instanceof VTodo && !array_key_exists('state', $input)) {
+         // Force default state to TO DO or event will be considered as VEVENT
+         $input['state'] = \Planning::TODO;
+      }
+
+      return $input;
    }
 }

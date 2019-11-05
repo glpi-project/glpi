@@ -747,6 +747,7 @@ CREATE TABLE `glpi_changes_users` (
 DROP TABLE IF EXISTS `glpi_changetasks`;
 CREATE TABLE `glpi_changetasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `changes_id` int(11) NOT NULL DEFAULT '0',
   `taskcategories_id` int(11) NOT NULL DEFAULT '0',
   `state` int(11) NOT NULL DEFAULT '0',
@@ -765,6 +766,7 @@ CREATE TABLE `glpi_changetasks` (
   `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
   `is_private` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
   KEY `changes_id` (`changes_id`),
   KEY `state` (`state`),
   KEY `users_id` (`users_id`),
@@ -4997,6 +4999,7 @@ CREATE TABLE `glpi_problems_users` (
 DROP TABLE IF EXISTS `glpi_problemtasks`;
 CREATE TABLE `glpi_problemtasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `problems_id` int(11) NOT NULL DEFAULT '0',
   `taskcategories_id` int(11) NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
@@ -5015,6 +5018,7 @@ CREATE TABLE `glpi_problemtasks` (
   `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
   `is_private` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
   KEY `problems_id` (`problems_id`),
   KEY `users_id` (`users_id`),
   KEY `users_id_editor` (`users_id_editor`),
@@ -5233,6 +5237,7 @@ CREATE TABLE `glpi_projectstates` (
 DROP TABLE IF EXISTS `glpi_projecttasks`;
 CREATE TABLE `glpi_projecttasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `content` longtext COLLATE utf8_unicode_ci,
   `comment` longtext COLLATE utf8_unicode_ci,
@@ -5258,6 +5263,7 @@ CREATE TABLE `glpi_projecttasks` (
   `is_template` tinyint(1) NOT NULL DEFAULT '0',
   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
@@ -5457,6 +5463,7 @@ CREATE TABLE `glpi_registeredids` (
 DROP TABLE IF EXISTS `glpi_reminders`;
 CREATE TABLE `glpi_reminders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date` timestamp NULL DEFAULT NULL,
   `users_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -5470,6 +5477,7 @@ CREATE TABLE `glpi_reminders` (
   `end_view_date` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
   KEY `date` (`date`),
   KEY `begin` (`begin`),
   KEY `end` (`end`),
@@ -6503,6 +6511,7 @@ CREATE TABLE `glpi_ticketsatisfactions` (
 DROP TABLE IF EXISTS `glpi_tickettasks`;
 CREATE TABLE `glpi_tickettasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `tickets_id` int(11) NOT NULL DEFAULT '0',
   `taskcategories_id` int(11) NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
@@ -6522,6 +6531,7 @@ CREATE TABLE `glpi_tickettasks` (
   `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
   `sourceitems_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
   KEY `date` (`date`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
@@ -7661,6 +7671,7 @@ CREATE TABLE `glpi_items_clusters` (
 DROP TABLE IF EXISTS `glpi_planningexternalevents`;
 CREATE TABLE `glpi_planningexternalevents` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `planningexternaleventtemplates_id` int(11) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
@@ -7677,6 +7688,7 @@ CREATE TABLE `glpi_planningexternalevents` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
   KEY `planningexternaleventtemplates_id` (`planningexternaleventtemplates_id`),
   KEY `entities_id` (`entities_id`),
   KEY `date` (`date`),
@@ -7731,6 +7743,8 @@ CREATE TABLE `glpi_planningeventcategories` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+### Dump table glpi_items_kanbans
+
 DROP TABLE IF EXISTS `glpi_items_kanbans`;
 CREATE TABLE `glpi_items_kanbans` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -7742,4 +7756,21 @@ CREATE TABLE `glpi_items_kanbans` (
    `date_creation` timestamp NULL DEFAULT NULL,
    PRIMARY KEY (`id`),
    UNIQUE KEY `unicity` (`itemtype`,`items_id`,`users_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_vobjects
+
+DROP TABLE IF EXISTS `glpi_vobjects`;
+CREATE TABLE `glpi_vobjects` (
+   `id` INT(11) NOT NULL AUTO_INCREMENT,
+   `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+   `items_id` int(11) NOT NULL DEFAULT '0',
+   `data` text COLLATE utf8_unicode_ci,
+   `date_mod` timestamp NULL DEFAULT NULL,
+   `date_creation` timestamp NULL DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `unicity` (`itemtype`, `items_id`),
+   KEY `item` (`itemtype`,`items_id`),
+   KEY `date_mod` (`date_mod`),
+   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

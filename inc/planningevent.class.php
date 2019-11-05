@@ -86,6 +86,10 @@ trait PlanningEvent {
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
+      if (!isset($input['uuid'])) {
+         $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+      }
+
       $input["name"] = trim($input["name"]);
       if (empty($input["name"])) {
          $input["name"] = __('Without title');
@@ -116,7 +120,7 @@ trait PlanningEvent {
       $input["date"] = $_SESSION["glpi_currenttime"];
 
       // encode rrule
-      if (isset($input['rrule'])) {
+      if (isset($input['rrule']) && is_array($input['rrule'])) {
          $input['rrule'] = $this->encodeRrule($input['rrule']);
       }
 
@@ -163,7 +167,7 @@ trait PlanningEvent {
       $input = $this->addFiles($input, ['content_field' => 'text']);
 
       // encode rrule
-      if (isset($input['rrule'])) {
+      if (isset($input['rrule']) && is_array($input['rrule'])) {
          $input['rrule'] = $this->encodeRrule($input['rrule']);
       }
 
@@ -171,6 +175,7 @@ trait PlanningEvent {
    }
 
    function encodeRrule(Array $rrule = []) {
+
       if ($rrule['freq'] == null) {
          return "";
       }

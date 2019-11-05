@@ -860,6 +860,61 @@ function update94to95() {
          ['name' => 'refresh_ticket_list', 'context' => 'core']
       )
    );
+   /** /Kanban */
+
+   /** Add uuid on planning items */
+   $planning_items_tables = [
+      'glpi_planningexternalevents',
+      'glpi_reminders',
+      'glpi_projecttasks',
+      'glpi_changetasks',
+      'glpi_problemtasks',
+      'glpi_tickettasks',
+   ];
+   foreach ($planning_items_tables as $table) {
+      if (!$DB->fieldExists($table, 'uuid')) {
+         $migration->addField(
+            $table,
+            'uuid',
+            'string',
+            [
+               'after'  => 'id'
+            ]
+         );
+         $migration->addKey($table, 'uuid', '', 'UNIQUE');
+      }
+      $migration->addPostQuery(
+         $DB->buildUpdate(
+            $table,
+            [
+               'uuid' => new \QueryExpression('UUID()'),
+            ],
+            [
+               'uuid' => null,
+            ]
+         )
+      );
+   }
+   /** /Add uuid on planning items */
+
+   /** Add glpi_vobjects table for CalDAV server */
+   if (!$DB->tableExists('glpi_vobjects')) {
+      $query = "CREATE TABLE `glpi_vobjects` (
+            `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+            `items_id` int(11) NOT NULL DEFAULT '0',
+            `data` text COLLATE utf8_unicode_ci,
+            `date_mod` timestamp NULL DEFAULT NULL,
+            `date_creation` timestamp NULL DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `unicity` (`itemtype`, `items_id`),
+            KEY `item` (`itemtype`,`items_id`),
+            KEY `date_mod` (`date_mod`),
+            KEY `date_creation` (`date_creation`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_vobjects");
+   }
+   /** /Add glpi_vobjects table for CalDAV server */
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

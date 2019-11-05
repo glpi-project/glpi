@@ -391,6 +391,8 @@ $CFG_GLPI['planning_types']               = ['ChangeTask', 'ProblemTask', 'Remin
                                              'TicketTask', 'ProjectTask', 'PlanningExternalEvent'];
 $CFG_GLPI['planning_add_types']           = ['PlanningExternalEvent'];
 
+$CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
+
 $CFG_GLPI["globalsearch_types"]           = ['Computer', 'Contact', 'Contract',
                                              'Document',  'Monitor',
                                              'NetworkEquipment', 'Peripheral', 'Phone',
@@ -482,7 +484,7 @@ $CFG_GLPI['javascript'] = [
       'rack'         => ['colorpicker', 'gridstack']
    ],
    'helpdesk'  => [
-      'planning'  => ['fullcalendar', 'colorpicker', 'tinymce'],
+      'planning'  => ['clipboard', 'fullcalendar', 'colorpicker', 'tinymce'],
       'ticket'    => ['rateit', 'tinymce', 'photoswipe'],
       'problem'   => ['tinymce', 'photoswipe'],
       'change'    => ['tinymce', 'photoswipe'],

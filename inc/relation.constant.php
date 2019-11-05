@@ -142,6 +142,10 @@ $RELATION = [
       '_glpi_changevalidations' => 'changes_id',
    ],
 
+   'glpi_changetasks' => [
+      '_glpi_vobjects' => ['items_id', 'itemtype'],
+   ],
+
    'glpi_clusters' => [
       '_glpi_items_clusters' => 'clusters_id',
    ],
@@ -902,6 +906,10 @@ $RELATION = [
       'glpi_phones' => 'phonetypes_id',
    ],
 
+   'glpi_planningexternalevents' => [
+      '_glpi_vobjects' => ['items_id', 'itemtype'],
+   ],
+
    'glpi_plugs' => [
       '_glpi_pdus_plugs' => 'pdus_id',
    ],
@@ -928,6 +936,10 @@ $RELATION = [
       '_glpi_problems_tickets'   => 'problems_id',
       '_glpi_problems_users'     => 'problems_id',
       '_glpi_problemtasks'       => 'problems_id',
+   ],
+
+   'glpi_problemtasks' => [
+      '_glpi_vobjects' => ['items_id', 'itemtype'],
    ],
 
    'glpi_profiles' => [
@@ -960,6 +972,7 @@ $RELATION = [
       '_glpi_projecttasks_tickets' => 'projecttasks_id',
       '_glpi_projecttaskteams'     => 'projecttasks_id',
       'glpi_projecttasktemplates'  => 'projecttasks_id',
+      '_glpi_vobjects'             => ['items_id', 'itemtype'],
    ],
 
    'glpi_projecttasktemplates' => [
@@ -993,6 +1006,7 @@ $RELATION = [
       '_glpi_groups_reminders'   => 'reminders_id',
       '_glpi_profiles_reminders' => 'reminders_id',
       '_glpi_reminders_users'    => 'reminders_id',
+      '_glpi_vobjects'           => ['items_id', 'itemtype'],
    ],
 
    'glpi_requesttypes' => [
@@ -1160,6 +1174,10 @@ $RELATION = [
       '_glpi_ticketsatisfactions'  => 'tickets_id',
       '_glpi_tickettasks'          => 'tickets_id',
       '_glpi_ticketvalidations'    => 'tickets_id',
+   ],
+
+   'glpi_tickettasks' => [
+      '_glpi_vobjects' => ['items_id', 'itemtype'],
    ],
 
    'glpi_tickettemplates' => [

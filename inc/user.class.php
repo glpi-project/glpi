@@ -834,6 +834,7 @@ class User extends CommonDBTM {
          if (isset($input['use_mode'])
              && ($_SESSION['glpi_use_mode'] !=  $input['use_mode'])) {
             $_SESSION['glpi_use_mode'] = $input['use_mode'];
+            unset($_SESSION['glpimenu']); // Force menu regeneration
             //Session::loadLanguage();
          }
       }
