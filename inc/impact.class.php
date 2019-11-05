@@ -863,7 +863,6 @@ class Impact extends CommonGLPI {
       echo Html::script("js/impact.js");
 
       // Load backend values
-      $locales   = self::getLocales();
       $default   = self::DEFAULT_COLOR;
       $forward   = self::IMPACT_COLOR;
       $backward  = self::DEPENDS_COLOR;
@@ -878,7 +877,6 @@ class Impact extends CommonGLPI {
          $(function() {
             GLPIImpact.prepareNetwork(
                $(\"#network_container\"),
-               '$locales',
                {
                   default : '$default',
                   forward : '$forward',
@@ -1026,76 +1024,5 @@ class Impact extends CommonGLPI {
       echo "</table>";
       echo "<br><br>";
       Html::closeForm();
-   }
-
-   /**
-    * Build the locales that will be used in the client side
-    *
-    * @return string json encoded locales array
-    */
-   public static function getLocales() {
-      $locales = [
-         'add'                  => __('Add'),
-         'addDescription'       => __('Click in an empty space to place a new asset.'),
-         'addEdge'              => __('Add Impact relation'),
-         'addEdgeHelpText'      => __("Draw a line between two assets to add an impact relation"),
-         'addNode'              => __('Add Asset'),
-         'addNodeHelpText'      => __("Click anywhere to add a new asset"),
-         'addCompoundHelpText'  => __("Draw a square containing the assets you wish to group"),
-         'addCompoundTooltip'   => __("Create a new group"),
-         'addEdgeTooltip'       => __("Add a new impact relation"),
-         'addNodeTooltip'       => __("Add a new asset to the impact network"),
-         'back'                 => __('Back'),
-         'cancel'               => __('Cancel'),
-         'changes'              => __("Changes"),
-         'colorConfiguration'   => __("Colors"),
-         'compoundProperties'   => __("Group properties..."),
-         'compoundProperties+'  => __("Set name and/or color for this group"),
-         'createEdgeError'      => __('Cannot link edges to a cluster.'),
-         'del'                  => __('Delete selected'),
-         'delete'               => __("Delete"),
-         'delete+'              => __("Delete element"),
-         'deleteClusterError'   => __('Clusters cannot be deleted.'),
-         'deleteHelpText'       => __("Click on an element to remove it from the network"),
-         'deleteTooltip'        => __("Delete an element from the impact network"),
-         'downloadTooltip'      => __("Export the impact network"),
-         'duplicateAsset'       => __('This asset already exists.'),
-         'duplicateEdge'        => __("An identical link already exist between theses two asset."),
-         'edgeDescription'      => __('Click on an asset and drag the link to another asset to connect them.'),
-         'edit'                 => __('Edit'),
-         'editEdge'             => __('Edit Impact relation'),
-         'editEdgeDescription'  => __('Click on the control points and drag them to a asset to connect to it.'),
-         'editGroup'            => __("Edit group"),
-         'editNode'             => __('Edit Asset'),
-         'editClusterError'     => __('Clusters cannot be edited.'),
-         'expandToolbarTooltip' => __("Show more options ..."),
-         'export'               => __("Export"),
-         'goTo'                 => __("Go to"),
-         'goTo+'                => __("Open this element in a new tab"),
-         'incidents'            => __("Incidents"),
-         'linkToSelf'           => __("Can't link an asset to itself."),
-         'new'                  => __("Add asset"),
-         'new+'                 => __("Add a new asset to the graph"),
-         'newAsset'             => __("New asset"),
-         'notEnoughItems'       => __("You need to select at least 2 assets to make a group"),
-         'ongoingTickets'       => __("Ongoing tickets"),
-         'problems'             => __("Problems"),
-         'removeFromCompound'   => __("Remove from group"),
-         'removeFromCompound+'  => __("Remove this asset from the group"),
-         'requests'             => __("Requests"),
-         'save'                 => __("Save"),
-         'showDepends'          => __("Depends"),
-         'showImpact'           => __("Impact"),
-         'showColorsTooltip'    => __("Edit relation's color"),
-         'showDependsTooltip'   => __("Toggle \"depends\" visibility"),
-         'showImpactTooltip'    => __("Toggle \"impacted\" visibility"),
-         'showOngoing'          => __("Show ongoing tickets"),
-         'showOngoing+'         => __("Show ongoing tickets for this item"),
-         'unexpectedError'      => __("Unexpected error."),
-         'unsavedChanges'       => __("You have unsaved changes"),
-         'workspaceSaved'       => __("No unsaved changes"),
-      ];
-
-      return addslashes(json_encode($locales));
    }
 }

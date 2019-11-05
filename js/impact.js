@@ -68,9 +68,6 @@ var GLPIImpact = {
    // Store the initial state of the graph
    initialState: null,
 
-   // Store translated labels
-   locales: {},
-
    // Store the visibility settings of the different direction of the graph
    directionVisibility: {},
 
@@ -516,46 +513,46 @@ var GLPIImpact = {
       return [
          {
             id             : 'goTo',
-            content        : '<i class="fas fa-link"></i>' + this.getLocale("goTo"),
-            tooltipText    : this.getLocale("goTo+"),
+            content        : '<i class="fas fa-link"></i>' + __("Go to"),
+            tooltipText    : __("Open this element in a new tab"),
             selector       : 'node[!color]',
             onClickFunction: this.menuOnGoTo
          },
          {
             id             : 'showOngoing',
-            content        : '<i class="fas fa-list"></i>' + this.getLocale("showOngoing"),
-            tooltipText    : this.getLocale("showOngoing+"),
+            content        : '<i class="fas fa-list"></i>' + __("Show ongoing tickets"),
+            tooltipText    :  __("Show ongoing tickets for this item"),
             selector       : 'node[hasITILObjects=1]',
             onClickFunction: this.menuOnShowOngoing
          },
          {
             id             : 'editCompound',
-            content        : '<i class="fas fa-edit"></i>' + this.getLocale("compoundProperties"),
-            tooltipText    : this.getLocale("compoundProperties+"),
+            content        : '<i class="fas fa-edit"></i>' + __("Group properties..."),
+            tooltipText    : __("Set name and/or color for this group"),
             selector       : 'node:parent',
             onClickFunction: this.menuOnEditCompound,
             show           : !this.readonly,
          },
          {
             id             : 'removeFromCompound',
-            content        : '<i class="fas fa-external-link-alt"></i>' + this.getLocale("removeFromCompound"),
-            tooltipText    : this.getLocale("removeFromCompound+"),
+            content        : '<i class="fas fa-external-link-alt"></i>' + __("Remove from group"),
+            tooltipText    : __("Remove this asset from the group"),
             selector       : 'node:child',
             onClickFunction: this.menuOnRemoveFromCompound,
             show           : !this.readonly,
          },
          {
             id             : 'delete',
-            content        : '<i class="fas fa-trash"></i>' + this.getLocale("delete"),
-            tooltipText    : this.getLocale("delete+"),
+            content        : '<i class="fas fa-trash"></i>' + __("Delete"),
+            tooltipText    : __("Delete element"),
             selector       : 'node, edge',
             onClickFunction: this.menuOnDelete,
             show           : !this.readonly,
          },
          {
             id             : 'new',
-            content        : '<i class="fas fa-plus"></i>' + this.getLocale("new"),
-            tooltipText    : this.getLocale("new+"),
+            content        : '<i class="fas fa-plus"></i>' + __("Add asset"),
+            tooltipText    : __("Add a new asset to the graph"),
             coreAsWell     : true,
             onClickFunction: this.menuOnNew,
             show           : !this.readonly,
@@ -575,7 +572,7 @@ var GLPIImpact = {
    getAddNodeDialog: function(itemID, itemType, position) {
       // Build a new graph from the selected node and insert it
       var buttonAdd = {
-         text: GLPIImpact.getLocale("add"),
+         text: __('Add'),
          click: function() {
             var node = {
                itemtype: $(itemID).val(),
@@ -585,7 +582,7 @@ var GLPIImpact = {
 
             // Check if the node is already on the graph
             if (GLPIImpact.cy.filter('node[id="' + nodeID + '"]').length > 0) {
-               alert(GLPIImpact.getLocale("duplicateAsset"));
+               alert(__('This asset already exists.'));
                return;
             }
 
@@ -604,7 +601,7 @@ var GLPIImpact = {
                },
                function () {
                   // Ajax failed
-                  alert(GLPIImpact.getLocale("unexpectedError"));
+                  alert(__("Unexpected error."));
                }
             );
          }
@@ -612,7 +609,7 @@ var GLPIImpact = {
 
       // Exit edit mode
       var buttonCancel = {
-         text: GLPIImpact.getLocale("cancel"),
+         text: __('Cancel'),
          click: function() {
             $(this).dialog("close");
             GLPIImpact.setEditionMode(GLPIImpact.EDITION_DEFAULT);
@@ -620,7 +617,7 @@ var GLPIImpact = {
       };
 
       return {
-         title: this.getLocale("newAsset"),
+         title: __("New asset"),
          modal: true,
          position: {
             my: 'center',
@@ -678,7 +675,7 @@ var GLPIImpact = {
             of: GLPIImpact.impactContainer
          },
          draggable: false,
-         title: this.getLocale("colorConfiguration"),
+         title: __("Colors"),
          buttons: [buttonUpdate]
       };
    },
@@ -690,7 +687,7 @@ var GLPIImpact = {
     */
    getOngoingDialog: function() {
       return {
-         title: GLPIImpact.getLocale("ongoingTickets"),
+         title: __("Ongoing tickets"),
          modal: true,
          position: {
             my: 'center',
@@ -722,7 +719,7 @@ var GLPIImpact = {
 
       // Save group details
       var buttonSave = {
-         text: GLPIImpact.getLocale("save"),
+         text: __("Save"),
          click: function() {
             // Save compound name
             compound.data(
@@ -743,7 +740,7 @@ var GLPIImpact = {
       };
 
       return {
-         title: GLPIImpact.getLocale("editGroup"),
+         title: __("Edit group"),
          modal: true,
          position: {
             my: 'center',
@@ -793,7 +790,7 @@ var GLPIImpact = {
             my: 'top center',
             at: 'bottom center'
          },
-         content: this.getLocale(content),
+         content: content,
          style: {
             classes: 'qtip-shadow qtip-bootstrap'
          },
@@ -812,7 +809,6 @@ var GLPIImpact = {
     * Initialise variables
     *
     * @param {JQuery} impactContainer
-    * @param {string} locales json
     * @param {Object} colors properties: default, forward, backward, both
     * @param {string} startNode
     * @param {string} dialogs json
@@ -820,7 +816,6 @@ var GLPIImpact = {
     */
    prepareNetwork: function(
       impactContainer,
-      locales,
       colors,
       startNode,
       form,
@@ -829,9 +824,6 @@ var GLPIImpact = {
    ) {
       // Set container
       this.impactContainer = impactContainer;
-
-      // Set locales from json
-      this.locales = JSON.parse(locales);
 
       // Init directionVisibility
       this.directionVisibility[GLPIImpact.FORWARD] = true;
@@ -1216,15 +1208,6 @@ var GLPIImpact = {
    },
 
    /**
-    * Get translated value for a given key
-    *
-    * @param {string} key
-    */
-   getLocale: function(key) {
-      return this.locales[key];
-   },
-
-   /**
     * Ask the backend to build a graph from a specific node
     *
     * @param {Object} node
@@ -1467,27 +1450,27 @@ var GLPIImpact = {
             break;
 
          case GLPIImpact.EDITION_ADD_NODE:
-            this.showHelpText("addNodeHelpText");
+            this.showHelpText(__("Click anywhere to add a new asset"));
             $(this.toolbar.addNode).addClass("active");
             $(this.impactContainer).css('cursor', "copy");
             break;
 
          case GLPIImpact.EDITION_ADD_EDGE:
-            this.showHelpText("addEdgeHelpText");
+            this.showHelpText(__("Draw a line between two assets to add an impact relation"));
             $(this.toolbar.addEdge).addClass("active");
             $(this.impactContainer).css('cursor', "crosshair");
             break;
 
          case GLPIImpact.EDITION_DELETE:
             this.cy.filter().unselect();
-            this.showHelpText("deleteHelpText");
+            this.showHelpText(__("Click on an element to remove it from the network"));
             $(this.toolbar.deleteElement).addClass("active");
             break;
 
          case GLPIImpact.EDITION_ADD_COMPOUND:
             GLPIImpact.cy.panningEnabled(false);
             GLPIImpact.cy.boxSelectionEnabled(true);
-            this.showHelpText("addCompoundHelpText");
+            this.showHelpText(__("Draw a square containing the assets you wish to group"));
             $(this.toolbar.addCompound).addClass("active");
             $(this.impactContainer).css('cursor', "crosshair");
             break;
@@ -1500,7 +1483,7 @@ var GLPIImpact = {
     * @param {string} text
     */
    showHelpText: function(text) {
-      $(GLPIImpact.toolbar.helpText).html(this.getLocale(text)).show();
+      $(GLPIImpact.toolbar.helpText).html(text).show();
    },
 
    /**
@@ -1579,7 +1562,7 @@ var GLPIImpact = {
       $(GLPIImpact.toolbar.save).addClass('clean');
       $(GLPIImpact.toolbar.save).find('i').removeClass("fas fa-exclamation-triangle");
       $(GLPIImpact.toolbar.save).find('i').addClass("fas fa-check");
-      $(GLPIImpact.toolbar.save).find('i').qtip(GLPIImpact.getTooltip("workspaceSaved"));
+      $(GLPIImpact.toolbar.save).find('i').qtip(GLPIImpact.getTooltip(__("No unsaved changes")));
    },
 
    /**
@@ -1590,7 +1573,7 @@ var GLPIImpact = {
       $(GLPIImpact.toolbar.save).addClass('dirty');
       $(GLPIImpact.toolbar.save).find('i').removeClass("fas fa-check");
       $(GLPIImpact.toolbar.save).find('i').addClass("fas fa-exclamation-triangle");
-      $(GLPIImpact.toolbar.save).find('i').qtip(this.getTooltip("unsavedChanges"));
+      $(GLPIImpact.toolbar.save).find('i').qtip(this.getTooltip(__("You have unsaved changes")));
    },
 
    /**
@@ -1611,10 +1594,10 @@ var GLPIImpact = {
     * @returns {string}
     */
    buildOngoingDialogContent: function(ITILObjects) {
-      return this.listElements("requests", ITILObjects.requests, "ticket")
-         + this.listElements("incidents", ITILObjects.incidents, "ticket")
-         + this.listElements("changes", ITILObjects.changes , "change")
-         + this.listElements("problems", ITILObjects.problems, "problem");
+      return this.listElements(__("Requests"), ITILObjects.requests, "ticket")
+         + this.listElements(__("Incidents"), ITILObjects.incidents, "ticket")
+         + this.listElements(__("Changes"), ITILObjects.changes , "change")
+         + this.listElements(__("Problems"), ITILObjects.problems, "problem");
    },
 
    /**
@@ -1630,7 +1613,7 @@ var GLPIImpact = {
       var html = "";
 
       if (elements.length > 0) {
-         html += "<h3>" + this.getLocale(title) + "</h3>";
+         html += "<h3>" + title + "</h3>";
          html += "<ul>";
 
          elements.forEach(function(element) {
@@ -1650,7 +1633,7 @@ var GLPIImpact = {
    addCompoundFromSelection: _.debounce(function(){
       // Check that there is enough selected nodes
       if (GLPIImpact.eventData.boxSelected.length < 2) {
-         alert(GLPIImpact.getLocale("notEnoughItems"));
+         alert(__("You need to select at least 2 assets to make a group"));
       } else {
          // Create the compound
          var newCompound = GLPIImpact.cy.add({group: 'nodes'});
@@ -2334,25 +2317,25 @@ var GLPIImpact = {
       $(GLPIImpact.toolbar.addNode).click(function() {
          GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_NODE);
       });
-      $(GLPIImpact.toolbar.addNode).qtip(this.getTooltip("addNodeTooltip"));
+      $(GLPIImpact.toolbar.addNode).qtip(this.getTooltip(__("Add a new asset to the impact network")));
 
       // Add a new edge on the graph
       $(GLPIImpact.toolbar.addEdge).click(function() {
          GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_EDGE);
       });
-      $(GLPIImpact.toolbar.addEdge).qtip(this.getTooltip("addEdgeTooltip"));
+      $(GLPIImpact.toolbar.addEdge).qtip(this.getTooltip(__("Add a new impact relation")));
 
       // Add a new compound on the graph
       $(GLPIImpact.toolbar.addCompound).click(function() {
          GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_COMPOUND);
       });
-      $(GLPIImpact.toolbar.addCompound).qtip(this.getTooltip("addCompoundTooltip"));
+      $(GLPIImpact.toolbar.addCompound).qtip(this.getTooltip(__("Create a new group")));
 
       // Enter delete mode
       $(GLPIImpact.toolbar.deleteElement).click(function() {
          GLPIImpact.setEditionMode(GLPIImpact.EDITION_DELETE);
       });
-      $(GLPIImpact.toolbar.deleteElement).qtip(this.getTooltip("deleteTooltip"));
+      $(GLPIImpact.toolbar.deleteElement).qtip(this.getTooltip(__("Delete an element from the impact network")));
 
       // Export graph
       $(GLPIImpact.toolbar.export).click(function() {
@@ -2361,7 +2344,7 @@ var GLPIImpact = {
             false
          );
       });
-      $(GLPIImpact.toolbar.export).qtip(this.getTooltip("downloadTooltip"));
+      $(GLPIImpact.toolbar.export).qtip(this.getTooltip(__("Export the impact network")));
 
       // "More" dropdown menu
       $(GLPIImpact.toolbar.expandToolbar).click(showMenu);
