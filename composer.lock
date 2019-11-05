@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
-            "version": "v10.2.0",
+            "version": "v10.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vkhramtsov/jQuery-File-Upload.git",
-                "reference": "bc9ef60d7d705883af08a1cbf95b504134e28ad6"
+                "reference": "63cb566b29a5407cfbfbda8a5154e10b6e098678"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vkhramtsov/jQuery-File-Upload/zipball/bc9ef60d7d705883af08a1cbf95b504134e28ad6",
-                "reference": "bc9ef60d7d705883af08a1cbf95b504134e28ad6",
+                "url": "https://api.github.com/repos/vkhramtsov/jQuery-File-Upload/zipball/63cb566b29a5407cfbfbda8a5154e10b6e098678",
+                "reference": "63cb566b29a5407cfbfbda8a5154e10b6e098678",
                 "shasum": ""
             },
             "type": "library",
@@ -59,7 +59,7 @@
                 "upload",
                 "widget"
             ],
-            "time": "2019-09-16T05:43:34+00:00"
+            "time": "2019-11-04T09:18:09+00:00"
         },
         {
             "name": "container-interop/container-interop",
