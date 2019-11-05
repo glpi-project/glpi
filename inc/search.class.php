@@ -6843,6 +6843,11 @@ JAVASCRIPT;
          'searchopt'   => []
       ];
 
+      // Use field 1 as default value
+      if ($field_num == "") {
+         $field_num = 1;
+      }
+
       if (isset($searchopt[$field_num]) && isset($searchopt[$field_num]['table'])) {
          $actions['searchopt'] = $searchopt[$field_num];
 
