@@ -2842,6 +2842,13 @@ JAVASCRIPT;
          $request['meta'] = 0;
       }
 
+      // When addind a global criteria, field will be empty
+      // We need to get the correct id from the lastest criteria
+      if ($request['field'] == "") {
+         $request_criteria = $request['p']['criteria'];
+         $request['field'] = $request_criteria[count($request_criteria) - 1]['field'];
+      }
+
       $actions = Search::getActionsFor($request["itemtype"], $request["field"]);
 
       // is it a valid action for type ?
@@ -6842,11 +6849,6 @@ JAVASCRIPT;
          'notcontains' => __('not contains'),
          'searchopt'   => []
       ];
-
-      // Use field 1 as default value
-      if ($field_num == "") {
-         $field_num = 1;
-      }
 
       if (isset($searchopt[$field_num]) && isset($searchopt[$field_num]['table'])) {
          $actions['searchopt'] = $searchopt[$field_num];
