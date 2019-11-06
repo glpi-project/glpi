@@ -6479,6 +6479,23 @@ div.banner-impersonate button {
    text-decoration: underline;
 }
 
+/** objectlock message */
+div.objectlockmessage {
+   @extend .navigationheader;
+   background-color: lightSalmon !important;
+   flex-wrap: wrap;
+   align-items: center;
+}
+
+div.objectlockmessage a.vsubmit {
+   margin: 0 15px;
+   white-space:nowrap;
+}
+
+div.objectlockmessage > .form-group-checkbox {
+   padding-left: 5px;
+}
+
 @import 'impact';
 
 /** Kanban */
