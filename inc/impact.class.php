@@ -209,6 +209,8 @@ class Impact extends CommonGLPI {
          __("Impact")      => self::DIRECTION_FORWARD,
          __("Impacted by") => self::DIRECTION_BACKWARD,
       ];
+      $has_impact = false;
+
       foreach ($lists as $label => $direction) {
          $start_node_id = self::getNodeID($item);
          $data = self::buildListData($graph, $direction, $item, $impact_item);
@@ -217,6 +219,7 @@ class Impact extends CommonGLPI {
             continue;
          }
 
+         $has_impact = true;
          echo '<table class="tab_cadre_fixehov impact-list-group">';
 
          // Header
@@ -266,17 +269,23 @@ class Impact extends CommonGLPI {
          echo '</table>';
       }
 
+      if (!$has_impact) {
+         echo '<p>' . _("This asset doesn't have any impact dependencies.") . '</p>';
+      }
+
       echo '</div>';
 
       $can_update = $item->can($item->fields['id'], UPDATE);
 
       // Toolbar
       echo '<div class="impact-list-toolbar">';
-      echo '<a target="_blank" href="'.$CFG_GLPI['root_doc'].'/front/impactcsv.php?itemtype=' . $impact_item->fields['itemtype'] . '&items_id=' . $impact_item->fields['items_id'] .'">';
-      echo '<i class="fas fa-download impact-pointer impact-list-tools"></i>';
-      echo '</a>';
+      if ($has_impact) {
+         echo '<a target="_blank" href="'.$CFG_GLPI['root_doc'].'/front/impactcsv.php?itemtype=' . $impact_item->fields['itemtype'] . '&items_id=' . $impact_item->fields['items_id'] .'">';
+         echo '<i class="fas fa-download impact-pointer impact-list-tools" title="' . __('Export to csv') .'"></i>';
+         echo '</a>';
+      }
       if ($can_update) {
-         echo '<i id="impact-list-settings" class="fas fa-cog impact-pointer impact-list-tools"></i>';
+         echo '<i id="impact-list-settings" class="fas fa-cog impact-pointer impact-list-tools" title="' . __('Settings') .'"></i>';
       }
       echo '</div>';
 
