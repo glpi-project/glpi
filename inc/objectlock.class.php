@@ -164,24 +164,22 @@ class ObjectLock extends CommonDBTM {
    /**
     * Summary of getForceUnlockMessage
     * @return string '' if no rights to unlock type,
-    *                else a <td></td> with a button to force unlock
+    *                else html @see getForceUnlockButton
     */
    private function getForceUnlockMessage() {
 
       if (isset($_SESSION['glpilocksavedprofile']) && ($_SESSION['glpilocksavedprofile'][strtolower($this->itemtype)] & UNLOCK)) {
          echo $this->getScriptToUnlock();
-         return $this->getForceUnlockButton('right');
+         return $this->getForceUnlockButton();
       }
 
       return '';
    }
 
 
-   private function getForceUnlockButton($float = null) {
-      $float = isset($float) ? "float:$float;" : "";
-      $msg = "<span style='padding-left:5px;$float'><a class='vsubmit' onclick='javascript:unlockIt(this);'>"
+   private function getForceUnlockButton() {
+      $msg = "<a class='vsubmit floatright' onclick='javascript:unlockIt(this);'>"
               .sprintf(__('Force unlock %1s #%2s'), $this->itemtypename, $this->itemid)."</a>";
-      $msg .= "</span";
       return $msg;
    }
 
@@ -194,10 +192,10 @@ class ObjectLock extends CommonDBTM {
 
       echo $this->getScriptToUnlock();
 
-      $msg  = "<span class=red>";
+      $msg  = "<strong class='nowrap'>";
       $msg .= __("Locked by you!");
       $msg .= $this->getForceUnlockButton();
-      $msg .= "</span>";
+      $msg .= "</strong>";
 
       $this->displayLockMessage($msg);
    }
@@ -269,16 +267,15 @@ class ObjectLock extends CommonDBTM {
 
       echo $ret;
 
-      $msg = "<span class='red' style='white-space: nowrap;'>";
-
+      $msg = "<strong class='nowrap'>";
       $msg .= sprintf(__('Locked by %s'), "<a href='" . $user->getLinkURL() . "'>" . $userdata['name'] . "</a>");
       $msg .= "&nbsp;" . Html::showToolTip($userdata["comment"], ['link' => $userdata['link'], 'display' => false]);
       $msg .= " -> " . Html::convDateTime($this->fields['date_mod']);
-      $msg .= "</span>";
+      $msg .= "</strong>";
       if ($showAskUnlock) {
          $msg .= "<a class='vsubmit' onclick='javascript:askUnlock();'>".__('Ask for unlock')."</a>";
       }
-      $msg .= __('Alert me when unlocked');
+      $msg .= "<label for='alertMe'>" . __('Alert me when unlocked') . "</label>";
       $msg .= Html::getCheckbox(['id' => 'alertMe']);
       $msg .= $this->getForceUnlockMessage(); // will get a button to force unlock if UNLOCK rights are in the user's profile
       $msg .= "</span>";
@@ -302,10 +299,8 @@ class ObjectLock extends CommonDBTM {
 
       $msg = "<span class=red style='padding-left:5px;'>";
       $msg .= __('Warning: read-only!')."</span>";
-      $msg .= "<span style='padding-left:5px;'><a class='vsubmit' onclick='javascript:requestLock();'>".
+      $msg .= "<a class='vsubmit' onclick='javascript:requestLock();'>".
                 __('Request write on ').$this->itemtypename." #".$this->itemid."</a>";
-      $msg .="</span>";
-
       $this->displayLockMessage($msg);
    }
 
@@ -517,11 +512,6 @@ class ObjectLock extends CommonDBTM {
    }
 
 
-   /**
-    * Summary of rawSearchOptionsToAdd
-    * @param mixed $itemtype
-    * @return array[]
-    */
    static public function rawSearchOptionsToAdd($itemtype) {
       global $CFG_GLPI;
       $tab = [];
