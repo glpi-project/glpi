@@ -74,8 +74,4 @@ class QuerySubQuery extends AbstractQuery {
       }
       return $sql;
    }
-
-   public function __toString() {
-      return $this->getQuery();
-   }
 }
