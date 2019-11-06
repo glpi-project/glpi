@@ -65,4 +65,8 @@ abstract class AbstractQuery {
     * @return string
     */
    abstract public function getQuery();
+
+   public function __toString() {
+      return $this->getQuery();
+   }
 }

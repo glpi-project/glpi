@@ -3925,7 +3925,11 @@ JAVASCRIPT;
                   }
                } else {
                   if (is_object($val)) {
-                     print_r($val);
+                     if (method_exists($val, '__toString')) {
+                        echo (string) $val;
+                     } else {
+                        echo "(object) " . get_class($val);
+                     }
                   } else {
                      echo htmlentities($val);
                   }
