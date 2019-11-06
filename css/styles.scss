@@ -6487,6 +6487,15 @@ div.objectlockmessage {
    align-items: center;
 }
 
+div.objectlockmessage > a.vsubmit {
+   padding-right: 15px;
+   white-space:nowrap;
+}
+
+div.objectlockmessage > .form-group-checkbox {
+   padding-left: 5px;
+}
+
 @import 'impact';
 
 /** Kanban */

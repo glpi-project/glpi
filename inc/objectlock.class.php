@@ -274,12 +274,12 @@ class ObjectLock extends CommonDBTM {
       $msg .= sprintf(__('Locked by %s'), "<a href='" . $user->getLinkURL() . "'>" . $userdata['name'] . "</a>");
       $msg .= "&nbsp;" . Html::showToolTip($userdata["comment"], ['link' => $userdata['link'], 'display' => false]);
       $msg .= " -> " . Html::convDateTime($this->fields['date_mod']);
-      $msg .= "</span><span style='padding-right:15px;'>";
+      $msg .= "</span>";
       if ($showAskUnlock) {
          $msg .= "<a class='vsubmit' onclick='javascript:askUnlock();'>".__('Ask for unlock')."</a>";
       }
-      $msg .= "</span><span style='white-space:nowrap;padding-right:15px;'>".__('Alert me when unlocked');
-      $msg .= "<span style='padding-left:5px;'>".Html::getCheckbox(['id' => 'alertMe'])."</span>";
+      $msg .= __('Alert me when unlocked');
+      $msg .= Html::getCheckbox(['id' => 'alertMe']);
       $msg .= $this->getForceUnlockMessage(); // will get a button to force unlock if UNLOCK rights are in the user's profile
       $msg .= "</span>";
 
