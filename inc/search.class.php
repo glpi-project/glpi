@@ -2542,6 +2542,16 @@ JAVASCRIPT;
 
       if (isset($criteria['field'])) {
          $value = $criteria['field'];
+      } else if (isset($request['from_meta'])
+         && $request['from_meta']
+         && count($values)) {
+         // Get first field of the first category
+         foreach ($values as $categories) {
+            foreach ($categories as $field_id => $field_name) {
+               $value = $field_id;
+               break 2;
+            }
+         }
       }
 
       $rand = Dropdown::showFromArray("criteria{$prefix}[$num][field]", $values, [
@@ -2840,13 +2850,6 @@ JAVASCRIPT;
       } else {
          $fieldname = 'criteria';
          $request['meta'] = 0;
-      }
-
-      // When addind a global criteria, field will be empty
-      // We need to get the correct id from the lastest criteria
-      if ($request['field'] == "") {
-         $request_criteria = $request['p']['criteria'];
-         $request['field'] = $request_criteria[count($request_criteria) - 1]['field'];
       }
 
       $actions = Search::getActionsFor($request["itemtype"], $request["field"]);
