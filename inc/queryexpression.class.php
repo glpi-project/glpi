@@ -60,4 +60,9 @@ class QueryExpression {
    public function getValue() {
       return $this->expression;
    }
+
+
+   public function __toString() {
+      return $this->getValue();
+   }
 }
