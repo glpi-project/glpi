@@ -3925,7 +3925,11 @@ JAVASCRIPT;
                   }
                } else {
                   if (is_object($val)) {
-                     echo (string) $val; // It is expected that the object implements __toString()
+                     if (method_exists($val, '__toString')) {
+                        echo (string) $val;
+                     } else {
+                        echo "(object) " . get_class($val);
+                     }
                   } else {
                      echo htmlentities($val);
                   }
