@@ -54,6 +54,11 @@ if ($_REQUEST["action"] == "view_changed") {
    exit;
 }
 
+if ($_REQUEST["action"] == "post_cloned_event") {
+   echo Planning::postClonedEvent($_REQUEST['event']);
+   exit;
+}
+
 if ($_REQUEST["action"] == "get_externalevent_template") {
    $key = 'planningexternaleventtemplates_id';
    if (isset($_POST[$key])

@@ -1405,6 +1405,72 @@ class Planning extends CommonGLPI {
 
 
    /**
+    * Clone an event
+    *
+    * @since 9.5
+    *
+    * @param array $event the event to clone
+    *
+    * @return mixed the id (integer) or false if it failed
+    */
+   static function postClonedEvent(array $event = []) {
+      $item = new $event['old_itemtype'];
+      $item->getFromDB((int) $event['old_items_id']);
+
+      $input = array_merge($item->fields, [
+         'plan' => [
+            'begin' => date("Y-m-d H:i:s", strtotime($event['start'])),
+            'end'   => date("Y-m-d H:i:s", strtotime($event['end'])),
+         ],
+      ]);
+      unset($input['id'], $input['uuid']);
+
+      if (isset($item->fields['name'])) {
+         $input['name'] = sprintf(__('Copy of %s'), $item->fields['name']);
+      }
+
+      // manage change of assigment for CommonITILTask
+      if ($item instanceof CommonITILTask
+          && isset($event['actor']['itemtype'])
+          && isset($event['actor']['items_id'])) {
+         switch ($event['actor']['itemtype']) {
+            case "group":
+               $key = "groups_id_tech";
+               break;
+            case "user":
+               $key = isset($item->fields['users_id_tech']) ? "users_id_tech" : "users_id";
+               break;
+         }
+
+         unset(
+            $input['users_id_tech'],
+            $input['users_id'],
+            $input['groups_id_tech'],
+            $input['groups_id']
+         );
+
+         $input[$key] = $event['actor']['items_id'];
+      }
+
+      $new_items_id = $item->add($input);
+
+      // manage all assigments for ProjectTask
+      if ($item instanceof ProjectTask
+          && isset($event['actor']['itemtype'])
+          && isset($event['actor']['items_id'])) {
+         $team = new ProjectTaskTeam;
+         $team->add([
+            'projecttasks_id' => $new_items_id,
+            'itemtype'        => ucfirst($event['actor']['itemtype']),
+            'items_id'        => $event['actor']['items_id']
+         ]);
+      }
+
+      return $new_items_id;
+   }
+
+
+   /**
     * toggle display for selected line of $_SESSION['glpi_plannings']
     *
     * @since 9.1
@@ -1562,6 +1628,9 @@ class Planning extends CommonGLPI {
             $end = date('Y-m-d', strtotime($event['end']));
          }
 
+         // get duration in milliseconds
+         $ms_duration = (strtotime($end) - strtotime($begin)) * 1000;
+
          $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']));
          $new_event = [
             'title'       => $event['name'],
@@ -1569,7 +1638,9 @@ class Planning extends CommonGLPI {
             'tooltip'     => $tooltip,
             'start'       => $begin,
             'end'         => $end,
-            'editable'    => $event['editable'] ?? false,
+            'duration'    => $ms_duration,
+            '_duration'   => $ms_duration, // sometimes duration is removed from event object in fullcalendar
+            '_editable'   => $event['editable'], // same, avoid loss of editable key in fullcalendar
             'rendering'   => isset($event['background']) && $event['background']
                               ? 'background'
                               : '',
@@ -1592,6 +1663,11 @@ class Planning extends CommonGLPI {
             'priority'    => $event['priority'] ?? "",
             'state'       => $event['state'] ?? "",
          ];
+
+         // if we can't update the event, pass the editable key
+         if (!$event['editable']) {
+            $new_event['editable'] = false;
+         }
 
          // override color if view is ressource and category color exists
          // maybe we need a better way for displaying categories color
@@ -1626,9 +1702,6 @@ class Planning extends CommonGLPI {
             ]);
 
             // for fullcalendar, we need to pass start in the rrule key
-            // and also set a duration in milliseconds
-            // (we'll compute it between [end-start] dates)
-            $ms_duration = (strtotime($new_event['end']) - strtotime($new_event['start'])) * 1000;
             unset($new_event['start'], $new_event['end']);
 
             // For list view, only display only the next occurence

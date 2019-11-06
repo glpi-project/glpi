@@ -427,6 +427,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          $input['date'] = $_SESSION['glpi_currenttime'];
       }
 
+      if (isset($input["plan"])) {
+         $input["plan_start_date"] = $input['plan']["begin"];
+         $input["plan_end_date"]   = $input['plan']["end"];
+      }
+
       if (isset($input['is_milestone'])
             && $input['is_milestone']) {
          $input['plan_end_date'] = $input['plan_start_date'];

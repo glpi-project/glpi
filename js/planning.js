@@ -1,8 +1,11 @@
-/* global FullCalendar, FullCalendarLocales */
+/* global FullCalendar, FullCalendarLocales, FullCalendarInteraction */
 var GLPIPlanning  = {
    calendar:      null,
+   dom_id:        "",
    all_resources: [],
    visible_res:   [],
+   ctrl_pressed:  false,
+   drag_object:   null,
 
    display: function(params) {
       // get passed options and merge it with default ones
@@ -24,11 +27,11 @@ var GLPIPlanning  = {
       };
       options = Object.assign({}, default_options, options);
 
-      var dom_id         = 'planning'+options.rand;
-      var window_focused = true;
-      var loaded         = false;
-      var disable_qtip   = false;
-      var disable_edit   = false;
+      GLPIPlanning.dom_id = 'planning'+options.rand;
+      var window_focused  = true;
+      var loaded          = false;
+      var disable_qtip    = false;
+      var disable_edit    = false;
 
       // manage visible resources
       this.all_resources = options.resources;
@@ -36,7 +39,7 @@ var GLPIPlanning  = {
          return GLPIPlanning.all_resources[index].is_visible;
       });
 
-      this.calendar = new FullCalendar.Calendar(document.getElementById(dom_id), {
+      this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
          plugins:     options.plugins,
          height:      options.height,
          theme:       true,
@@ -48,6 +51,8 @@ var GLPIPlanning  = {
          maxTime:     CFG_GLPI.planning_end,
          schedulerLicenseKey: options.license_key,
          resourceAreaWidth: '15%',
+         editable: true, // we can drag / resize items
+         droppable: false, // we cant drop external items by default
          nowIndicator: true,
          listDayAltFormat: false,
          agendaEventMinHeight: 13,
@@ -107,6 +112,9 @@ var GLPIPlanning  = {
             var extProps = event.extendedProps;
             var element = $(info.el);
             var view = info.view;
+
+            // append event data to dom (to re-use they in clone behavior)
+            element.data('myevent', event);
 
             var eventtype_marker = '<span class="event_type" style="background-color: '+extProps.typeColor+'"></span>';
             element.append(eventtype_marker);
@@ -266,9 +274,7 @@ var GLPIPlanning  = {
             }
          },
 
-
          // EDIT EVENTS
-         editable: true, // we can drag and resize events
          eventResize: function(info) {
             GLPIPlanning.editEventTimes(info);
          },
@@ -285,14 +291,60 @@ var GLPIPlanning  = {
          eventDragStart: function() {
             disable_qtip = true;
          },
+         // event was moved (internal element)
          eventDrop: function(info) {
             disable_qtip = false;
             GLPIPlanning.editEventTimes(info);
          },
+         // we receive a new event (from external dropping or when cloning)
+         eventReceive: function(info) {
+            var event    = info.event;
+            var extprops = event.extendedProps;
+            var resource = {};
+            var actor    = {};
+
+            if (typeof event.getresources === "function") {
+               resource = event.getresources();
+            }
+
+            // manage resource changes
+            if (resource.length === 1) {
+               actor = {
+                  itemtype: resource[0].extendedProps.itemtype || null,
+                  items_id: resource[0].extendedProps.items_id || null,
+               };
+            }
+
+            $.ajax({
+               url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+               type: 'POST',
+               data: {
+                  action: 'post_cloned_event',
+                  event: {
+                     old_itemtype: extprops.itemtype,
+                     old_items_id: extprops.items_id,
+                     actor:        actor,
+                     start:        event.start.toISOString(),
+                     end:          event.end.toISOString(),
+                  }
+               },
+               success: function() {
+                  GLPIPlanning.refresh();
+
+                  // drop the dragged event to avoid duplicate view
+                  event.remove();
+               }
+            });
+         },
+         // Determines if external draggable elements
+         // can be dropped onto the calendar.
+         dropAccept: function() {
+            return GLPIPlanning.ctrl_pressed;
+         },
          eventClick: function(info) {
             var event    = info.event;
             var ajaxurl  = event.extendedProps.ajaxurl;
-            var editable = event.startEditable && event.durationEditable; // do not know why editable property is not available
+            var editable = event.extendedProps._editable; // do not know why editable property is not available
             if (ajaxurl && editable && !disable_edit) {
                info.jsEvent.preventDefault(); // don't let the browser navigate
                $('<div>')
@@ -385,7 +437,7 @@ var GLPIPlanning  = {
       GLPIPlanning.calendar.render();
 
       // attach button (planning and refresh) in planning header
-      $('#'+dom_id+' .fc-toolbar .fc-center h2')
+      $('#'+GLPIPlanning.dom_id+' .fc-toolbar .fc-center h2')
          .after(
             $('<i id="refresh_planning" class="fa fa-sync pointer"></i>')
          ).after(
@@ -396,8 +448,27 @@ var GLPIPlanning  = {
          GLPIPlanning.refresh();
       });
 
+      // clone events behavior
+      $(document)
+         .keydown(function(event) {
+            if (!GLPIPlanning.ctrl_pressed
+               && (event.ctrlKey
+                  || event.shiftKey)) {
+               event.preventDefault();
+               GLPIPlanning.setEventsClonable(true);
+            }
+         }).keyup(function() { // if control has been released stop events being copyable
+            if (GLPIPlanning.ctrl_pressed) {
+               GLPIPlanning.setEventsClonable(false);
+            }
+         });
+
+
       // attach the date picker to planning
       GLPIPlanning.initFCDatePicker();
+
+      // force focus on the current window
+      $(window).focus();
    },
 
    refresh: function() {
@@ -405,6 +476,7 @@ var GLPIPlanning  = {
          GLPIPlanning.calendar.refetchResources();
       }
       GLPIPlanning.calendar.refetchEvents();
+      GLPIPlanning.calendar.rerenderEvents();
       window.displayAjaxMessageAfterRedirect();
    },
 
@@ -450,6 +522,7 @@ var GLPIPlanning  = {
             .addClass('end-of-day');
       }
    },
+
    planningFilters: function() {
       $('#planning_filter a.planning_add_filter' ).on( 'click', function( e ) {
          e.preventDefault(); // to prevent change of url on anchor
@@ -691,5 +764,48 @@ var GLPIPlanning  = {
       }
 
       return _newheight;
+   },
+
+   // toggle clone / move mode for events
+   setEventsClonable: function(is_clonable) {
+      GLPIPlanning.ctrl_pressed = !GLPIPlanning.ctrl_pressed;
+
+      GLPIPlanning.calendar.setOption("droppable", is_clonable);
+      GLPIPlanning.calendar.setOption("editable", !is_clonable);
+
+      if (is_clonable) {
+         // set element as draggable like external dom nodes
+         GLPIPlanning.drag_object = new FullCalendarInteraction.Draggable(document.getElementById(GLPIPlanning.dom_id), {
+            itemSelector: ".fc-event",
+            eventData: function(eventEl) {
+               var myevent  = $(eventEl).data('myevent');
+               //console.log(myevent);
+               var extprops = myevent.extendedProps;
+               return {
+                  title:           myevent.title           || "",
+                  duration:        extprops._duration      || null,
+                  textColor:       myevent.textColor       || "",
+                  backgroundColor: myevent.backgroundColor || "",
+                  borderColor:     myevent.borderColor     || "",
+                  allDay:          myevent.allDay          || false,
+                  extendedProps: {
+                     clone:     true,
+                     content:   extprops.content   || "",
+                     itemtype:  extprops.itemtype  || "",
+                     items_id:  extprops.items_id  || "",
+                     typeColor: extprops.typeColor || "",
+                     tooltip:   extprops.tooltip   || "",
+                     icon:      extprops.icon      || "",
+                     state:     extprops.state     || "",
+                  }
+               };
+            }
+         });
+      } else {
+         // remove draggable behavior when ctrl is not active
+         if (GLPIPlanning.drag_object != null) {
+            GLPIPlanning.drag_object.destroy();
+         }
+      }
    }
 };

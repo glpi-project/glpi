@@ -999,8 +999,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                'LEFT JOIN'       => [
                   'glpi_profiles_users'   => [
                      'ON' => [
-                        'glpi_profiles_users'   => 'profiles_id',
-                        'glpi_profiles'         => 'id',
+                        'glpi_profiles_users' => 'profiles_id',
+                        'glpi_profiles'       => 'id'
                      ]
                   ]
                ],
