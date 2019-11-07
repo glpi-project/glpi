@@ -67,7 +67,7 @@ class Planning extends \DbTestCase {
       $this->array($event->fields)
          ->string['begin']->isEqualTo($new_start)
          ->string['end']->isEqualTo($new_end)
-         ->string['rrule']->isEqualTo($input['rrule'])
-         ->string['name']->contains(__('Copy of %s'));
+         ->string['rrule']->isEqualTo($input['rrule']);
+      $this->string($event->fields['name'])->contains(sprintf(__('Copy of %s'), $input['name']));
    }
 }
