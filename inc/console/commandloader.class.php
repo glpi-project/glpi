@@ -126,15 +126,10 @@ class CommandLoader implements CommandLoaderInterface {
             continue;
          }
 
-         $is_in_namespace = strpos(
-            $this->getRelativePath($basedir, $file->getPathname()),
-            DIRECTORY_SEPARATOR
-         ) > 0;
-
          $class = $this->getCommandClassnameFromFile(
             $file,
             $basedir,
-            $is_in_namespace ? 'glpi\\' : null
+            ['', NS_GLPI]
          );
 
          if (null === $class) {
@@ -166,7 +161,10 @@ class CommandLoader implements CommandLoaderInterface {
             continue;
          }
 
-         $plugin_files = new DirectoryIterator($plugin_basedir);
+         $plugin_files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($plugin_basedir),
+            RecursiveIteratorIterator::SELF_FIRST
+         );
          /** @var SplFileInfo $file */
          foreach ($plugin_files as $file) {
             if (!$file->isReadable() || !$file->isFile()) {
@@ -176,7 +174,10 @@ class CommandLoader implements CommandLoaderInterface {
             $class = $this->getCommandClassnameFromFile(
                $file,
                $plugin_basedir,
-               'plugin' . $plugin_directory->getFilename()
+               [
+                  NS_PLUG . ucfirst($plugin_directory->getFilename()) . '\\',
+                  'Plugin' . ucfirst($plugin_directory->getFilename()),
+               ]
             );
 
             if (null === $class) {
@@ -241,13 +242,13 @@ class CommandLoader implements CommandLoaderInterface {
    /**
     * Return classname of command contained in file, if file contains one.
     *
-    * @param SplFileInfo $file    File to inspect
-    * @param string      $basedir Directory containing classes (eg GLPI_ROOT . '/inc')
-    * @param string      $prefix  Prefix to add to classname (eg 'PluginExample')
+    * @param SplFileInfo $file      File to inspect
+    * @param string      $basedir   Directory containing classes (eg GLPI_ROOT . '/inc')
+    * @param string      $prefixes  Possible prefixes to add to classname (eg 'PluginExample', 'GlpiPlugin\Example')
     *
     * @return null|string
     */
-   private function getCommandClassnameFromFile(SplFileInfo $file, $basedir, $prefix = null) {
+   private function getCommandClassnameFromFile(SplFileInfo $file, $basedir, array $prefixes = []) {
 
       // Check if file is readable and contained classname finishes by "command"
       if (!$file->isReadable() || !$file->isFile()
@@ -262,15 +263,25 @@ class CommandLoader implements CommandLoaderInterface {
          ['', '\\'],
          $this->getRelativePath($basedir, $file->getPathname())
       );
-      if (null !== $prefix) {
-         $classname = $prefix . $classname;
+
+      if (empty($prefixes)) {
+         $prefixes = [''];
       }
+      foreach ($prefixes as $prefix) {
+         $classname_to_check = $prefix . $classname;
 
-      include_once($file->getPathname()); // Required as ReflectionClass will not use autoload
+         include_once($file->getPathname()); // Required as ReflectionClass will not use autoload
 
-      $reflectionClass = new ReflectionClass($classname);
-      if ($reflectionClass->isInstantiable() && $reflectionClass->isSubclassOf(Command::class)) {
-         return $classname;
+         if (!class_exists($classname_to_check, false)) {
+            // Try with other prefixes.
+            // Needed as a file located in root source dir of Glpi can be either namespaced either not.
+            continue;
+         }
+
+         $reflectionClass = new ReflectionClass($classname_to_check);
+         if ($reflectionClass->isInstantiable() && $reflectionClass->isSubclassOf(Command::class)) {
+            return $classname_to_check;
+         }
       }
 
       return null;

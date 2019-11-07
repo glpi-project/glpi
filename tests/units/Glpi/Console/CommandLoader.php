@@ -61,6 +61,18 @@ class InstallCommand extends \\Symfony\\Component\\Console\\Command\\Command {
 PHP
             ,
 
+            // Namespaced command case located in root of source dir
+            'validatecommand.class.php' => <<<PHP
+<?php
+namespace Glpi;
+class ValidateCommand extends \\Symfony\\Component\\Console\\Command\\Command {
+   protected function configure() {
+      \$this->setName('glpi:validate');
+   }
+}
+PHP
+            ,
+
             // Not a command case
             'somename.class.php' => '<?php class SomeName {}',
 
@@ -116,7 +128,33 @@ class PluginAwesomeUpdateCommand extends \\Symfony\\Component\\Console\\Command\
    }
 }
 PHP
-               ]
+                  ,
+
+                  // Plugin namespaced command case (inside "inc" dir)
+                  'namespacedcommand.class.php' => <<<PHP
+<?php
+namespace GlpiPlugin\\Awesome;
+class NamespacedCommand extends \\Symfony\\Component\\Console\\Command\\Command {
+   protected function configure() {
+      \$this->setName('plugin_awesome:namespaced');
+   }
+}
+PHP
+                  ,
+
+                  'console' => [
+                     // Plugin namespaced command case (inside a sub dir)
+                    'anothercommand.class.php' => <<<PHP
+<?php
+namespace GlpiPlugin\\Awesome\\Console;
+class AnotherCommand extends \\Symfony\\Component\\Console\\Command\\Command {
+   protected function configure() {
+      \$this->setName('plugin_awesome:another');
+   }
+}
+PHP
+                  ],
+               ],
             ],
             'misc' => [
                'inc' => [
@@ -131,13 +169,16 @@ PHP
       $core_names_to_class = [
          'glpi:database:install' => 'InstallCommand',
          'db:install'            => 'InstallCommand',
+         'glpi:validate'         => 'Glpi\\ValidateCommand',
          'glpi:test'             => 'Glpi\\Console\\TestCommand',
          'glpi:tools:debug'      => 'DebugCommand',
          'tools:debug'           => 'DebugCommand',
       ];
 
       $plugins_names_to_class = [
-         'plugin_awesome:update' => 'PluginAwesomeUpdateCommand',
+         'plugin_awesome:update'     => 'PluginAwesomeUpdateCommand',
+         'plugin_awesome:namespaced' => 'GlpiPlugin\\Awesome\\NamespacedCommand',
+         'plugin_awesome:another'    => 'GlpiPlugin\\Awesome\\Console\\AnotherCommand',
       ];
 
       $all_names_to_class = array_merge($core_names_to_class, $plugins_names_to_class);
