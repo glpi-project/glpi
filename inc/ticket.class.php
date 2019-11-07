@@ -5293,11 +5293,8 @@ class Ticket extends CommonITILObject {
 
       echo "</table>";
 
-      $display_save_btn = $canupdate
-                       || $can_requester
-                       || $canpriority
-                       || $canassign
-                       || $canassigntome;
+      $display_save_btn = (!array_key_exists('locked', $options) || !$options['locked'])
+         && ($canupdate || $can_requester || $canpriority || $canassign || $canassigntome);
 
       if ($display_save_btn
           && !$options['template_preview']) {
