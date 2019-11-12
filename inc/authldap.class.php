@@ -1685,19 +1685,15 @@ class AuthLDAP extends CommonDBTM {
          }
 
          if ($sr) {
-            if (version_compare(PHP_VERSION, '7.3') < 0) {
-               if (in_array(ldap_errno($ds), [4,11])) {
-                  // openldap return 4 for Size limit exceeded
-                  $limitexceeded = true;
-               }
+            if (in_array(ldap_errno($ds), [4,11])) {
+               // openldap return 4 for Size limit exceeded
+               $limitexceeded = true;
             }
 
             $info = self::get_entries_clean($ds, $sr);
-            if (version_compare(PHP_VERSION, '7.3') < 0) {
-               if (in_array(ldap_errno($ds), [4,11])) {
-                  // openldap return 4 for Size limit exceeded
-                  $limitexceeded = true;
-               }
+            if (in_array(ldap_errno($ds), [4,11])) {
+               // openldap return 4 for Size limit exceeded
+               $limitexceeded = true;
             }
 
             $count += $info['count'];
@@ -2270,19 +2266,15 @@ class AuthLDAP extends CommonDBTM {
          }
 
          if ($sr) {
-            if (version_compare(PHP_VERSION, '7.3') < 0) {
-               if (in_array(ldap_errno($ldap_connection), [4,11])) {
-                  // openldap return 4 for Size limit exceeded
-                  $limitexceeded = true;
-               }
+            if (in_array(ldap_errno($ldap_connection), [4,11])) {
+               // openldap return 4 for Size limit exceeded
+               $limitexceeded = true;
             }
 
             $infos  = self::get_entries_clean($ldap_connection, $sr);
-            if (version_compare(PHP_VERSION, '7.3') < 0) {
-               if (in_array(ldap_errno($ldap_connection), [4,11])) {
-                  // openldap return 4 for Size limit exceeded
-                  $limitexceeded = true;
-               }
+            if (in_array(ldap_errno($ldap_connection), [4,11])) {
+               // openldap return 4 for Size limit exceeded
+               $limitexceeded = true;
             }
 
             $count += $infos['count'];
