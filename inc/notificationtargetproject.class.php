@@ -246,8 +246,12 @@ class NotificationTargetProject extends NotificationTarget {
             = $item->getField('content');
       $this->data["##project.comments##"]
             = $item->getField('comment');
+      $createddate = $item->getField('date_creation');
+      if (is_null($item->getField('date_creation'))) {
+         $createddate = $item->getField('date');
+      }
       $this->data["##project.creationdate##"]
-            = Html::convDateTime($item->getField('date'));
+            = Html::convDateTime($createddate);
       $this->data["##project.lastupdatedate##"]
             = Html::convDateTime($item->getField('date_mod'));
       $this->data["##project.priority##"]

@@ -1184,7 +1184,10 @@ class Project extends CommonDBTM {
       echo "<td>".__('Creation date')."</td>";
       echo "<td>";
 
-      $date = $this->fields["date"];
+      $date = $this->fields["date_creation"];
+      if (is_null($this->fields["date_creation"])) {
+         $date = $this->fields["date"];
+      }
       if (!$ID) {
          $date = $_SESSION['glpi_currenttime'];
       }
