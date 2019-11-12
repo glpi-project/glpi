@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2019 Teclib' and contributors.
+ * Copyright (C) 2015-2018 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,20 +31,23 @@
  */
 
 include ('../inc/includes.php');
-Html::header(__('Impact'), $_SERVER['PHP_SELF'], "tools", "impact");
 
+$impact_item = new ImpactItem();
 
-$itemtype = $_GET["type"]  ?? null;
-$items_id = $_GET["id"]    ?? null;
+if (isset($_POST["update"])) {
+   $id = $_POST["id"] ?? 0;
 
-if (!empty($itemtype) && !empty($items_id) && Impact::assetExist($itemtype, $items_id)) {
-   $item = new $itemtype;
-   $item->getFromDB($items_id);
+   // Can't update, id is missing
+   if ($id === 0) {
+      Toolbox::logWarning("Can't update the target impact item, id is missing");
+      Html::back();
+   }
 
-   // Build graph and params
-   $graph = Impact::buildGraph($item);
-   Impact::displayGraphView($item, Impact::makeDataForCytoscape($graph));
+   // Load item and check rights
+   $impact_item->getFromDB($id);
+   Session::checkRight($impact_item->fields['itemtype']::$rightname, UPDATE);
+
+   // Update item and back
+   $impact_item->update($_POST);
+   Html::redirect(Html::getBackUrl() . "#list");
 }
-
-Impact::printImpactForm();
-Html::footer();
