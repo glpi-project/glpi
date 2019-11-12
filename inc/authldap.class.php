@@ -1665,7 +1665,7 @@ class AuthLDAP extends CommonDBTM {
                $controls = [
                   [
                      'oid'       =>LDAP_CONTROL_PAGEDRESULTS,
-                     'isritical' => true,
+                     'iscritical' => true,
                      'value'     => [
                         'size'   => $config_ldap->fields['pagesize'],
                         'cookie' => $cookie
@@ -2250,7 +2250,7 @@ class AuthLDAP extends CommonDBTM {
                $controls = [
                   [
                      'oid'       =>LDAP_CONTROL_PAGEDRESULTS,
-                     'isritical' => true,
+                     'iscritical' => true,
                      'value'     => [
                         'size'   => $config_ldap->fields['pagesize'],
                         'cookie' => $cookie
