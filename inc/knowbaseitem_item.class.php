@@ -128,6 +128,11 @@ class KnowbaseItem_Item extends CommonDBRelation {
             ]
          );
       }
+      if (($item_type != KnowbaseItem::getType())
+          && !in_array($item->fields['status'], array_merge($item->getClosedStatusArray(),
+                                                            $item->getSolvedStatusArray()))) {
+         $canedit = false;
+      }
 
       if ($canedit
           && !in_array($item->fields['status'], array_merge($item->getClosedStatusArray(),
