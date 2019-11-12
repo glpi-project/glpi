@@ -461,7 +461,9 @@ class Planning extends CommonGLPI {
             $interv = [];
             foreach ($CFG_GLPI['planning_types'] as $itemtype) {
                $interv = array_merge($interv, $itemtype::populatePlanning($params));
-               $interv = array_merge($interv, $itemtype::populateNotPlanned($params));
+               if (method_exists($itemtype, 'populateNotPlanned')) {
+                  $interv = array_merge($interv, $itemtype::populateNotPlanned($params));
+               }
             }
 
             // Print Headers
