@@ -6,6 +6,7 @@ var GLPIPlanning  = {
    visible_res:   [],
    ctrl_pressed:  false,
    drag_object:   null,
+   last_view:     null,
 
    display: function(params) {
       // get passed options and merge it with default ones
@@ -233,14 +234,22 @@ var GLPIPlanning  = {
             // set end of day markers for timeline
             GLPIPlanning.setEndofDays(info.view);
          },
-         viewSkeletonRender : function(info) {
+         viewSkeletonRender: function(info) {
+            var view_type = info.view.type;
+
+            // forece refetch events when view changed (avoid to do it on initial render)
+            if (GLPIPlanning.last_view !== null) {
+               GLPIPlanning.refresh();
+            }
+
+            GLPIPlanning.last_view = view_type;
             // inform backend we changed view (to store it in session)
             $.ajax({
                url:  CFG_GLPI.root_doc+"/ajax/planning.php",
                type: 'POST',
                data: {
                   action: 'view_changed',
-                  view:   info.view.type
+                  view:   view_type
                }
             });
 
