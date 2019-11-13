@@ -48,7 +48,7 @@ if (isset($_POST["update"])) {
    list($begin_year,$begin_month) = explode("-", $_POST['resa']["begin"]);
    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
    if (Session::haveRight("reservation", UPDATE)
-       || (Session::getLoginUserID() === $_POST["users_id"])) {
+       || (Session::getLoginUserID() == $_POST["users_id"])) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
       $_POST['_item']   = key($_POST["items"]);
       $_POST['begin']   = $_POST['resa']["begin"];
@@ -110,7 +110,7 @@ if (isset($_POST["update"])) {
          foreach ($dates_to_add as $begin => $end) {
             $input['begin']    = $begin;
             $input['end']      = $end;
-            $input['users_id'] = $_POST['users_id'];
+            $input['users_id'] = (int)$_POST['users_id'];
 
             if (Session::haveRight("reservation", UPDATE)
                 || (Session::getLoginUserID() === $input["users_id"])) {

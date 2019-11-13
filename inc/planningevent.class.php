@@ -279,7 +279,7 @@ trait PlanningEvent {
 
       // See public event ?
       if (!$options['genical']
-         && $who === Session::getLoginUserID()
+         && (Session::getLoginUserID() !== false && $who == Session::getLoginUserID())
          && self::canView()
          && isset($visibility_criteria['WHERE'])) {
          $nreadpub = $visibility_criteria['WHERE'];
