@@ -858,6 +858,9 @@ class Dropdown {
                  'PlanningExternalEventTemplate'
                                        => PlanningExternalEventTemplate::getTypeName(
                                              Session::getPluralNumber()),
+                 'PlanningEventCategory'
+                                       => PlanningEventCategory::getTypeName(
+                                             Session::getPluralNumber()),
              ],
 
              _n('Type', 'Types', Session::getPluralNumber()) => [
