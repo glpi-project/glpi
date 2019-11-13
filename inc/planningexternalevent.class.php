@@ -153,8 +153,8 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
                      $("#dropdown_rrule_freq_{$rand_rrule}").trigger("setValue", data.rrule.freq);
                      $("#dropdown_rrule_interval_{$rand_rrule}").trigger("setValue", data.rrule.interval);
                      $("#showdate{$rand_rrule}").val(data.rrule.until);
-                     $("#dropdown_rrule_byweekday_{$rand_rrule}").trigger("setValue", data.rrule.byweekday);
-                     $("#dropdown_rrule_bymonth_{$rand_rrule}").trigger("setValue", data.rrule.bymonth);
+                     $("#dropdown_rrule_byday_{$rand_rrule}").val(data.rrule.byday).trigger('change');
+                     $("#dropdown_rrule_bymonth_{$rand_rrule}").val(data.rrule.bymonth).trigger('change');
                   }
                });
             }
