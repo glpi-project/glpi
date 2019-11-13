@@ -87,6 +87,13 @@ var GLPIPlanning  = {
                duration: { weeks: 1 },
                //hiddenDays: [6, 0],
                groupByDateAndResource: true,
+               slotLabelFormat: [
+                  { week: 'short' },
+                  { weekday: 'short', day: 'numeric', month: 'numeric', omitCommas: true },
+                  function(date) {
+                     return date.date.hour;
+                  }
+               ]
             },
          },
          resourceRender: function(info) {
