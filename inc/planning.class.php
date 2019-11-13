@@ -1904,15 +1904,14 @@ class Planning extends CommonGLPI {
       $raw_events = array_map(function($arr) use($actor) {
          return $arr + ['resourceId' => $actor];
       }, $raw_events);
+
       if ($_SESSION['glpi_plannings']['filters']['NotPlanned']['display']) {
          $not_planned = array_map(function($arr) use($actor) {
-            return array_merge(
-               $arr, [
+            return $arr + [
                   'not_planned' => true,
                   'resourceId' => $actor,
                   'event_type_color' => $_SESSION['glpi_plannings']['filters']['NotPlanned']['color']
-               ]
-            );
+            ];
          }, $not_planned);
       }
    }
