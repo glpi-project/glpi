@@ -793,7 +793,7 @@ class User extends CommonDBTM {
       }
 
       if (isset($input["entities_id"])
-          && (Session::getLoginUserID() === $input['id'])) {
+          && (Session::getLoginUserID() == $input['id'])) {
          $_SESSION["glpidefault_entity"] = $input["entities_id"];
       }
 
@@ -830,7 +830,7 @@ class User extends CommonDBTM {
       }
 
       // Manage preferences fields
-      if (Session::getLoginUserID() === $input['id']) {
+      if (Session::getLoginUserID() == $input['id']) {
          if (isset($input['use_mode'])
              && ($_SESSION['glpi_use_mode'] !=  $input['use_mode'])) {
             $_SESSION['glpi_use_mode'] = $input['use_mode'];
@@ -841,7 +841,7 @@ class User extends CommonDBTM {
 
       foreach ($CFG_GLPI['user_pref_field'] as $f) {
          if (isset($input[$f])) {
-            if (Session::getLoginUserID() === $input['id']) {
+            if (Session::getLoginUserID() == $input['id']) {
                if ($_SESSION["glpi$f"] != $input[$f]) {
                   $_SESSION["glpi$f"] = $input[$f];
                   // reinit translations
@@ -2832,7 +2832,7 @@ JAVASCRIPT;
       // should not be able to update its own fields
       // (for example, fields concerned by ldap synchronisation)
       // except on login action (which triggers synchronisation).
-      if (Session::getLoginUserID() === $this->input['id']
+      if (Session::getLoginUserID() === (int)$this->input['id']
           && !Session::haveRight("user", UPDATE)
           && !strpos($_SERVER['PHP_SELF'], "/front/login.php")
           && isset($this->fields["authtype"])) {
