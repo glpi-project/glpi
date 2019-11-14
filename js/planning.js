@@ -40,6 +40,11 @@ var GLPIPlanning  = {
          return GLPIPlanning.all_resources[index].is_visible;
       });
 
+      // get more space for planning
+      if (options.full_view) {
+         $('#'+GLPIPlanning.dom_id).closest('.ui-tabs').width('98%');
+      }
+
       this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
          plugins:     options.plugins,
          height:      options.height,
@@ -88,6 +93,13 @@ var GLPIPlanning  = {
                duration: { weeks: 1 },
                //hiddenDays: [6, 0],
                groupByDateAndResource: true,
+               slotLabelFormat: [
+                  { week: 'short' },
+                  { weekday: 'short', day: 'numeric', month: 'numeric', omitCommas: true },
+                  function(date) {
+                     return date.date.hour;
+                  }
+               ]
             },
          },
          resourceRender: function(info) {
