@@ -1008,7 +1008,11 @@ class CommonGLPI {
          $input   = $ma->getInput();
 
          if ($this->isEntityAssign()) {
-            $input['entity_restrict'] = $this->fields['entities_id'];
+            if (is_subclass_of($this, 'CommonDBChild')) {
+               $input['entity_restrict'] = $this->getItem()->fields['entities_id'];
+            } else {
+               $input['entity_restrict'] = $this->fields['entities_id'];
+            }
          }
 
          if (count($actions)) {
