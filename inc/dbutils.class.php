@@ -1698,33 +1698,6 @@ final class DbUtils {
    }
 
    /**
-    * Add dates for request
-    *
-    * @Deprecated 9.4
-    *
-    * @param string $field table.field to request
-    * @param string $begin begin date
-    * @param string $end   end date
-    *
-    * @return string SQL
-    */
-   public function getDateRequest($field, $begin, $end) {
-      Toolbox::deprecated('Use getDateCriteria');
-      $sql = '';
-      if (!empty($begin)) {
-         $sql .= " $field >= '$begin' ";
-      }
-
-      if (!empty($end)) {
-         if (!empty($sql)) {
-            $sql .= " AND ";
-         }
-         $sql .= " $field <= ADDDATE('$end' , INTERVAL 1 DAY) ";
-      }
-      return " (".$sql.") ";
-   }
-
-   /**
     * Get dates conditions to use in 'WHERE' clause
     *
     * @param string $field table.field to request
