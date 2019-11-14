@@ -984,13 +984,22 @@ class CommonGLPI {
          }
          echo "</span>";
 
-         $ma = new MassiveAction([
-               'item' => [
-                  $this->getType() => [
-                     $this->fields['id'] => 1
-                  ]
+         $ma_post = [
+            'item' => [
+               $this->getType() => [
+                  $this->fields['id'] => 1
                ]
-            ],
+            ]
+         ];
+         if (is_subclass_of($this, 'CommonDBChild')) {
+            if (strpos(static::$itemtype, 'itemtype') === 0) {
+               $ma_post['check_itemtype'] = $this->fields[static::$itemtype];
+            } else {
+               $ma_post['check_itemtype'] = static::$itemtype;
+            }
+            $ma_post['check_items_id'] = $this->fields[static::$items_id];
+         }
+         $ma = new MassiveAction($ma_post,
             $_GET,
             'initial',
             $this->fields['id']
