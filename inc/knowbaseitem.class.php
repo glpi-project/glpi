@@ -1928,13 +1928,18 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Get ids of KBI in given category
     *
-    * @param $category_id
-    * @return array Array of ids
+    * @param int           $category_id   id of the parent category
+    * @param KnowbaseItem  $kbi           used only for unit tests
+    *
+    * @return array        Array of ids
     */
-   public static function getForCategory($category_id) {
+   public static function getForCategory($category_id, $kbi = null) {
       global $DB;
 
-      $kbi = new self();
+      if ($kbi === null) {
+         $kbi = new self();
+      }
+
       $ids = $DB->request([
          'SELECT' => 'id',
          'FROM'   => self::getTable(),
