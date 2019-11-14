@@ -2542,6 +2542,16 @@ JAVASCRIPT;
 
       if (isset($criteria['field'])) {
          $value = $criteria['field'];
+      } else if (isset($request['from_meta'])
+         && $request['from_meta']
+         && count($values)) {
+         // Get first field of the first category
+         foreach ($values as $categories) {
+            foreach ($categories as $field_id => $field_name) {
+               $value = $field_id;
+               break 2;
+            }
+         }
       }
 
       $rand = Dropdown::showFromArray("criteria{$prefix}[$num][field]", $values, [
