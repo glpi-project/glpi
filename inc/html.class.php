@@ -3499,7 +3499,7 @@ class Html {
 
       // Check if field is allowed
       $field_so = $item->getSearchOptionByField('field', $field, $item->getTable());
-      $can_autocomplete = true || array_key_exists('autocomplete', $field_so) && $field_so['autocomplete'];
+      $can_autocomplete = array_key_exists('autocomplete', $field_so) && $field_so['autocomplete'];
 
       $output = '';
       if ($can_autocomplete && $CFG_GLPI["use_ajax_autocompletion"]) {
