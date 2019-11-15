@@ -38,11 +38,13 @@ if (!defined('GLPI_ROOT')) {
 
 use DB;
 
+use Glpi\System\RequirementsManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 abstract class AbstractCommand extends Command {
 
@@ -60,6 +62,13 @@ abstract class AbstractCommand extends Command {
     * @var OutputInterface
     */
    protected $output;
+
+   /**
+    * Flag to indicate if command requires a BD connection.
+    *
+    * @var boolean
+    */
+   protected $requires_db = true;
 
    protected function initialize(InputInterface $input, OutputInterface $output) {
 
@@ -80,7 +89,7 @@ abstract class AbstractCommand extends Command {
 
       global $DB;
 
-      if (!($DB instanceof DB) || !$DB->connected) {
+      if ($this->requires_db && (!($DB instanceof DB) || !$DB->connected)) {
          throw new RuntimeException(__('Unable to connect to database.'));
       }
 
@@ -157,5 +166,53 @@ abstract class AbstractCommand extends Command {
             );
          }
       }
+   }
+
+   /**
+    * Check if core requirements are OK.
+    *
+    * @param InputInterface $input
+    * @param OutputInterface $output
+    *
+    * @return boolean  true if requirements are OK, false otherwise
+    */
+   protected function checkCoreRequirements(InputInterface $input, OutputInterface $output) {
+      $db = property_exists($this, 'db') ? $this->db : null;
+
+      $requirements_manager = new RequirementsManager();
+      $core_requirements = $requirements_manager->getCoreRequirementList(
+         $db instanceof \DBmysql && $db ? $db : null
+      );
+
+      if ($core_requirements->hasMissingMandatoryRequirements()) {
+         $message = __('Some mandatory system requirements are missing.')
+            . ' '
+            . __('Run "php bin/console glpi:system:check_requirements" for more details.');
+         $output->writeln(
+            '<error>' . $message . '</error>',
+            OutputInterface::VERBOSITY_QUIET
+         );
+         return false;
+      }
+      if ($core_requirements->hasMissingOptionalRequirements()) {
+         $message = __('Some optional system requirements are missing.')
+            . ' '
+            . __('Run "php bin/console glpi:system:check_requirements" for more details.');
+         $output->writeln(
+            '<comment>' . $message . '</comment>',
+            OutputInterface::VERBOSITY_NORMAL
+         );
+         if (!$input->getOption('no-interaction')) {
+            /** @var Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            $question_helper = $this->getHelper('question');
+            return $question_helper->ask(
+               $input,
+               $output,
+               new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
+            );
+         }
+      }
+
+      return true;
    }
 }

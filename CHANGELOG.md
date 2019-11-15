@@ -67,6 +67,9 @@ The present file will list all changes made to the project; according to the
 - `Transfer::transferComputerSoftwares` renamed to `Transfer::transferItemSoftwares`
 - 'getRealQueryForTreeItem()'
 - ``getCommonSelect`` and ``getCommonLeftJoin()`` from ``Ticket``, ``Change`` and ``Problem`` are replaced with ``getCommonCriteria()`` compliant with db iterator
+- `Config::checkWriteAccessToDirs()`
+- `Config::displayCheckExtensions()`
+- `Toolbox::checkSELinux()`
 
 #### Removed
 

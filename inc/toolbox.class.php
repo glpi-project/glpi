@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\System\RequirementsManager;
 use Monolog\Logger;
 
 if (!defined('GLPI_ROOT')) {
@@ -959,173 +960,52 @@ class Toolbox {
 
 
    /**
-    * Common Checks needed to use GLPI
+    * Check GLPI system requirement.
+    *
     * @param boolean $isInstall Is the check run on a install process (don't check DB as not configured yet)
     *
-    * @return integer 2 = creation error / 1 = delete error  / 0 = OK
+    * @return integer
+    *    2 = missing mandatory requirement
+    *    1 = missing optional requirement
+    *    0 = OK
     */
    static function commonCheckForUseGLPI($isInstall = false) {
-      global $CFG_GLPI;
+      global $DB;
 
-      $error = 0;
-
-      // Title
       echo "<tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr>";
 
-      // Parser test
-      echo "<tr class='tab_bg_1'><td class='b left'>".__('Testing PHP Parser')."</td>";
-
-      // PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
-      if (version_compare(PHP_VERSION, GLPI_MIN_PHP) >= 0) {
-         // PHP version ok, now check PHP zend.ze1_compatibility_mode
-         if (ini_get("zend.ze1_compatibility_mode") == 1) {
-            $error = 2;
-            echo "<td class='red'>
-                  <img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                  __('GLPI is not compatible with the option zend.ze1_compatibility_mode = On.').
-                 "</td>";
-         } else {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                       sprintf(__s('PHP version is at least %s - Perfect!'), GLPI_MIN_PHP)."\"
-                       title=\"".sprintf(__s('PHP version is at least %s - Perfect!'), GLPI_MIN_PHP)."\"></td>";
+      $core_requirements = (new RequirementsManager())->getCoreRequirementList($isInstall ? null : $DB);
+      /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
+      foreach ($core_requirements as $requirement) {
+         if ($requirement->isOutOfContext()) {
+            continue; // skip requirement if not relevant
          }
 
-      } else { // PHP <5
-         $error = 2;
-         echo "<td class='red'>
-               <img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                sprintf(__('You must install at least PHP %s.'), GLPI_MIN_PHP)."</td>";
-      }
-      echo "</tr>";
+         echo '<tr class="tab_bg_1">';
+         echo '<td class="b left">' . $requirement->getTitle() . '</td>';
 
-      // session test
-      echo "<tr class='tab_bg_1'><td class='b left'>".__('Sessions test')."</td>";
+         $class = $requirement->isMissing() && !$requirement->isOptional() ? 'red' : '';
+         $pict  = $requirement->isValidated()
+            ? 'fas fa-check'
+            : ($requirement->isOptional() ? 'fas fa-exclamation-triangle' : 'fas fa-times');
+         $messages = Html::entities_deep($requirement->getValidationMessages());
 
-      // check whether session are enabled at all!!
-      if (!extension_loaded('session')) {
-         $error = 2;
-         echo "<td class='red b'>".__('Your parser PHP is not installed with sessions support!').
-              "</td>";
-
-      } else if ((isset($_SESSION["Test_session_GLPI"]) && ($_SESSION["Test_session_GLPI"] == 1)) // From install
-                 || isset($_SESSION["glpi_currenttime"])) { // From Update
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                    __s('Sessions support is available - Perfect!').
-                    "\" title=\"".__s('Sessions support is available - Perfect!')."\"></td>";
-
-      } else if ($error != 2) {
-         echo "<td class='red'>";
-         echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
-                __('Make sure that sessions support has been activated in your php.ini')."</td>";
-         $error = 1;
-      }
-      echo "</tr>";
-
-      // Test for session auto_start
-      if (ini_get('session.auto_start')==1) {
-         echo "<tr class='tab_bg_1'><td class='b'>".__('Test session auto start')."</td>";
-         echo "<td class='red'>";
-         echo "<img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-               __('session.auto_start is activated. See .htaccess file in the GLPI root for more information.').
-               "</td></tr>";
-         $error = 2;
+         echo '<td class="' . $class . '">';
+         echo '<i class="' . $pict . '" title="' . implode(' ', $messages) . '"> </i>';
+         if (!$requirement->isValidated()) {
+            echo implode('<br />', $messages);
+         }
+         echo '</td>';
+         echo '</tr>';
       }
 
-      // Test for option session use trans_id loaded or not.
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='left b'>".__('Test if Session_use_trans_sid is used')."</td>";
-
-      if (isset($_POST[session_name()]) || isset($_GET[session_name()])) {
-         echo "<td class='red'>";
-         echo "<img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-               __('You must desactivate the Session_use_trans_id option in your php.ini')."</td>";
-         $error = 2;
-
+      if ($core_requirements->hasMissingMandatoryRequirements()) {
+         return 2;
+      } else if ($core_requirements->hasMissingOptionalRequirements()) {
+         return 1;
       } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                    __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
-                    "\" title=\"". __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
-                    "\"></td>";
+         return 0;
       }
-      echo "</tr>";
-
-      $suberr = Config::displayCheckExtensions();
-      if ($suberr > $error) {
-         $error = $suberr;
-      }
-
-      // No DB version check on system check on the install (DB conf not defined when test are running)
-      if (!$isInstall) {
-         //database version check
-         echo "<tr class='tab_bg_1'><td class='b left'>" . __('Testing DB engine version') . "</td>";
-         $suberr = Config::displayCheckDbEngine();
-         if ($suberr > $error) {
-            $error = $suberr;
-         }
-         echo "</tr>";
-
-         //timezone data check
-         echo "<tr class='tab_bg_1'><td class='b left'>" . __('Testing DB timezone data') . "</td>";
-         global $DB;
-         $tz_warning = '';
-         $tz_available = $DB->areTimezonesAvailable($tz_warning);
-         if (!$tz_available) {
-            echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">" . $tz_warning . "</td>";
-         } else {
-            echo "<td>";
-            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\">";
-            echo __('Timezones seems not loaded in database');
-            echo "</td>";
-         }
-         echo "</tr>";
-      }
-
-      // memory test
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
-
-      //Get memory limit
-      $mem = self::getMemoryLimit();
-      switch (self::checkMemoryLimit()) {
-         case 0 : // memory_limit not compiled -> no memory limit
-         case 1 : // memory_limit compiled and unlimited
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                  __s('Unlimited memory - Perfect!')."\" title=\"".
-                  __s('Unlimited memory - Perfect!')."\"></td>";
-            break;
-
-         case 2: //Insufficient memory
-            $showmem = $mem/1048576;
-            echo "<td class='red'><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                 "<span class='b'>".sprintf(__('%1$s: %2$s'), __('Allocated memory'),
-                                            sprintf(__('%1$s %2$s'), $showmem, __('Mio'))).
-                 "</span>".
-                 "<br>".__('A minimum of 64Mio is commonly required for GLPI.').
-                 "<br>".__('Try increasing the memory_limit parameter in the php.ini file.').
-                 "</td>";
-            $error = 2;
-            break;
-
-         case 3: //Got enough memory, going to the next step
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                  __s('Allocated memory > 64Mio - Perfect!')."\" title=\"".
-                  __s('Allocated memory > 64Mio - Perfect!')."\"></td>";
-            break;
-      }
-      echo "</tr>";
-
-      if (!isset($_REQUEST['skipCheckWriteAccessToDirs'])) {
-         $suberr = Config::checkWriteAccessToDirs();
-         if ($suberr > $error) {
-            $error = $suberr;
-         }
-      }
-
-      $suberr = self::checkSELinux();
-      if ($suberr > $error) {
-         $error = $suberr;
-      }
-
-      return $error;
    }
 
 
@@ -1137,8 +1017,12 @@ class Toolbox {
     * @param boolean $fordebug  true is displayed in system information
     *
     * @return integer 0: OK, 1:Warning, 2:Error
+    *
+    * @deprecated 9.5.0
    **/
    static function checkSELinux($fordebug = false) {
+      Toolbox::deprecated();
+
       global $CFG_GLPI;
 
       if ((DIRECTORY_SEPARATOR != '/')
@@ -1194,7 +1078,7 @@ class Toolbox {
          } else {
             $state = exec('/usr/sbin/getsebool '.$bool);
             if (empty($state)) {
-               $state = "$bool --> unkwown";
+               $state = "$bool --> unknown";
             }
          }
          //TRANS: %s is an option name

@@ -130,6 +130,17 @@ th {
    border-bottom:1px solid #bbbbbb;
 }
 
+.tab_check td i.fas {
+   font-size: 12px;
+   margin-right: 3px;
+}
+.tab_check td i.fa-check {
+   color: #008e2c;
+}
+.tab_check td i.fa-exclamation-triangle {
+   color: #ffa500;
+}
+
 
 .red {
    color:red;
