@@ -52,9 +52,8 @@ class KnowbaseItem extends \GLPITestCase {
       // Ignore get fromDB
       $this->calling($m_kbi)->getFromDB = true;
 
-      // True for call 1 & 3, false for call 2
-      $this->calling($m_kbi)->canViewItem = true;
-      $this->calling($m_kbi)->canViewItem[0] = true;
+      // True for call 1 & 3, false for call 2 and every following calls
+      $this->calling($m_kbi)->canViewItem[0] = false;
       $this->calling($m_kbi)->canViewItem[1] = true;
       $this->calling($m_kbi)->canViewItem[2] = false;
       $this->calling($m_kbi)->canViewItem[3] = true;
@@ -66,5 +65,10 @@ class KnowbaseItem extends \GLPITestCase {
       $this->array(\KnowbaseItem::getForCategory(1, $m_kbi))
          ->hasSize(2)
          ->containsValues([1, 3]);
+
+      // Expected : [-1]
+      $this->array(\KnowbaseItem::getForCategory(1, $m_kbi))
+         ->hasSize(1)
+         ->contains(-1);
    }
 }
