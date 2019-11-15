@@ -2379,6 +2379,10 @@ class Project extends CommonDBTM {
          $supported_itemtypes['Project'] = [
             'name' => Project::getTypeName(1),
             'fields' => [
+               'projects_id'  => [
+                  'type'   => 'hidden',
+                  'value'  => $ID
+               ],
                'name'   => [
                   'placeholder'  => __('Name')
                ],
