@@ -5067,32 +5067,28 @@ class CommonDBTM extends CommonGLPI {
 
             // for sub item, attach to document to parent item
             $item_fordocitem = $this;
-            $skip_docitem = false;
             if (isset($input['_job'])) {
                $item_fordocitem = $input['_job'];
             }
 
-            // if doc is an image and already inserted in content, do not attach in docitem
+            // add doc - item link
+            $toadd = [
+               'documents_id'  => $docID,
+               '_do_notif'     => $donotif,
+               '_disablenotif' => $disablenotif,
+               'itemtype'      => $item_fordocitem->getType(),
+               'items_id'      => $item_fordocitem->getID()
+            ];
+            if (isset($input['users_id'])) {
+               $toadd['users_id'] = $input['users_id'];
+            }
             if (isset($input[$options['content_field']])
                 && strpos($input[$options['content_field']], $doc->fields["tag"]) !== false
                 && strpos($doc->fields['mime'], 'image/') !== false) {
-               $skip_docitem = true;
+               $toadd['timeline_position'] = CommonITILObject::NO_TIMELINE;
             }
 
-            // add doc - item link
-            if (!$skip_docitem) {
-               $toadd = [
-                  'documents_id'  => $docID,
-                  '_do_notif'     => $donotif,
-                  '_disablenotif' => $disablenotif,
-                  'itemtype'      => $item_fordocitem->getType(),
-                  'items_id'      => $item_fordocitem->getID()
-               ];
-               if (isset($input['users_id'])) {
-                  $toadd['users_id'] = $input['users_id'];
-               }
-               $docitem->add($toadd);
-            }
+            $docitem->add($toadd);
          }
          // Only notification for the first New doc
          $donotif = false;

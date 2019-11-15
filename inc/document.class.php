@@ -675,9 +675,6 @@ class Document extends CommonDBTM {
          [
             'COUNT'     => 'cpt',
             'FROM'      => 'glpi_reminders',
-            'WHERE'     => [
-               'text' => ['REGEXP', $this->getSelfUrlRegexPattern()]
-            ]
          ],
          Reminder::getVisibilityCriteria()
       );
@@ -739,35 +736,6 @@ class Document extends CommonDBTM {
       if ($result['cpt'] > 0) {
          return true;
       }
-
-      // Inlined images do not have entries in glpi_documents_items table.
-      // Check in KnowbaseItem content
-      $request = [
-         'FROM'      => 'glpi_knowbaseitems',
-         'COUNT'     => 'cpt',
-         'LEFT JOIN' => [
-            'glpi_entities_knowbaseitems' => [
-               'FKEY' => [
-                  'glpi_knowbaseitems'          => 'id',
-                  'glpi_entities_knowbaseitems' => 'knowbaseitems_id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'glpi_knowbaseitems.answer' => ['REGEXP', $this->getSelfUrlRegexPattern()],
-         ]
-      ];
-
-      if (array_key_exists('LEFT JOIN', $visibilityCriteria) && count($visibilityCriteria['LEFT JOIN']) > 0) {
-         $request['LEFT JOIN'] += $visibilityCriteria['LEFT JOIN'];
-      }
-      if (array_key_exists('WHERE', $visibilityCriteria) && count($visibilityCriteria['WHERE']) > 0) {
-         $request['WHERE'] += $visibilityCriteria['WHERE'];
-      }
-
-      $result = $DB->request($request)->next();
-
-      return $result['cpt'] > 0;
    }
 
    /**
@@ -808,8 +776,6 @@ class Document extends CommonDBTM {
       }
 
       // Check ticket and child items (followups, tasks, solutions) contents
-      $regexPattern = $this->getSelfUrlRegexPattern();
-
       $itil_table = $itil->getTable();
       $itil_key   = $itil->getForeignKeyField();
       $task_table = getTableForItemType($itil->getType() . 'Task');
@@ -841,26 +807,10 @@ class Document extends CommonDBTM {
          ],
          'WHERE'     => [
             $itil_table . '.id' => $items_id,
-            'OR' => [
-               $itil_table . '.content'     => ['REGEXP', $regexPattern],
-               'glpi_itilfollowups.content' => ['REGEXP', $regexPattern],
-               $task_table . '.content'     => ['REGEXP', $regexPattern],
-               'glpi_itilsolutions.content' => ['REGEXP', $regexPattern]
-            ]
          ]
       ])->next();
 
       return $result['cpt'] > 0;
-   }
-
-   /**
-    * Gives URL regex pattern for current document.
-    * This pattern can be use to find link to document into rich text contents.
-    *
-    * @return string
-    */
-   private function getSelfUrlRegexPattern() {
-      return 'document\\\.send\\\.php\\\?docid=' . $this->fields['id'] . '[^0-9]+';
    }
 
    static function rawSearchOptionsToAdd($itemtype = null) {

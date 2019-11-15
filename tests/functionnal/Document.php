@@ -361,24 +361,6 @@ class Document extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-      $inlinedDocument = new \Document();
-      $this->integer(
-         (int)$inlinedDocument->add([
-            'name'     => 'inlined document',
-            'filename' => 'inlined.png',
-            'users_id' => '2', // user "glpi"
-         ])
-      )->isGreaterThan(0);
-
-      $kbItem = new \KnowbaseItem();
-      $this->integer(
-         (int)$kbItem->add([
-            'name'     => 'Generic KB item',
-            'answer'   => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
-            'users_id' => '2', // user "glpi"
-         ])
-      )->isGreaterThan(0);
-
       $document_item = new \Document_Item();
       $this->integer(
          (int)$document_item->add([
@@ -390,7 +372,6 @@ class Document extends DbTestCase {
 
       // anonymous cannot see documents if not linked to FAQ items
       $this->boolean($basicDocument->canViewFile())->isFalse();
-      $this->boolean($inlinedDocument->canViewFile())->isFalse();
 
       // anonymous cannot see documents linked to FAQ items if public FAQ is not active
       $CFG_GLPI['use_public_faq'] = 0;
@@ -414,13 +395,11 @@ class Document extends DbTestCase {
       $this->integer($ent_kb_id)->isGreaterThan(0);
 
       $this->boolean($basicDocument->canViewFile())->isFalse();
-      $this->boolean($inlinedDocument->canViewFile())->isFalse();
 
       // anonymous can see documents linked to FAQ items when public FAQ is active
       $CFG_GLPI['use_public_faq'] = 1;
 
       $this->boolean($basicDocument->canViewFile())->isTrue();
-      $this->boolean($inlinedDocument->canViewFile())->isTrue();
 
       $CFG_GLPI['use_public_faq'] = 0;
 
@@ -428,7 +407,6 @@ class Document extends DbTestCase {
       $this->login('post-only', 'postonly');
 
       $this->boolean($basicDocument->canViewFile())->isTrue();
-      $this->boolean($inlinedDocument->canViewFile())->isTrue();
 
       // post-only cannot see documents if not linked to FAQ items
       $this->boolean(
@@ -446,7 +424,6 @@ class Document extends DbTestCase {
       )->isTrue();
 
       $this->boolean($basicDocument->canViewFile())->isFalse();
-      $this->boolean($inlinedDocument->canViewFile())->isFalse();
    }
 
    /**
