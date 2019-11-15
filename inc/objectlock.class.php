@@ -313,7 +313,6 @@ class ObjectLock extends CommonDBTM {
             $(window).on('unload', function() {
                if (typeof window.fetch !== 'undefined') {
                   fetch('".$CFG_GLPI['root_doc']."/ajax/unlockobject.php?unlock=1&id=$id', {
-                     method: 'POST',
                      keepalive: true,
                      cache: 'no-cache'
                   });
