@@ -32,6 +32,7 @@
 
 use Glpi\Cache\SimpleCache;
 use Glpi\Exception\PasswordTooWeakException;
+use Glpi\System\RequirementsManager;
 use PHPMailer\PHPMailer\PHPMailer;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
@@ -1902,21 +1903,24 @@ class Config extends CommonDBTM {
       }
       echo "\n";
 
-      self::displayCheckExtensions(true);
+      $core_requirements = (new RequirementsManager())->getCoreRequirementList($DB);
+      /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
+      foreach ($core_requirements as $requirement) {
+         if ($requirement->isOutOfContext()) {
+            continue; // skip requirement if not relevant
+         }
 
-      self::displayCheckDbEngine(true);
+         $img = $requirement->isValidated()
+            ? 'ok'
+            : ($requirement->isOptional() ? 'warning' : 'ko');
+         $messages = Html::entities_deep($requirement->getValidationMessages());
 
-      $tz_warning = '';
-      $tz_available = $DB->areTimezonesAvailable($tz_warning);
-      if (!$tz_available) {
-         echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . $tz_warning . "\n";
-      } else {
-         echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\">";
-         echo __('Timezones seems not loaded in database') . "\n";
+         echo '<img src="' . $CFG_GLPI['root_doc'] . '/pics/' . $img . '_min.png"'
+            . ' alt="' . implode(' ', $messages) . '" title="' . implode(' ', $messages) . '" />';
+         echo implode("\n", $messages);
+
+         echo "\n";
       }
-
-      self::checkWriteAccessToDirs(true);
-      toolbox::checkSELinux(true);
 
       echo "\n</pre></td></tr>";
 
@@ -2331,8 +2335,12 @@ class Config extends CommonDBTM {
     * @param boolean    $fordebug display for debug (no html required) (false by default)
     *
     * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
+    *
+    * @deprecated 9.5.0
     **/
    static function displayCheckExtensions($fordebug = false) {
+      Toolbox::deprecated();
+
       global $CFG_GLPI;
 
       $report = self::checkExtensions();
@@ -2542,8 +2550,12 @@ class Config extends CommonDBTM {
     * Get data directories for checks
     *
     * @return array
+    *
+    * @deprecated 9.5.0
     */
    private static function getDataDirectories() {
+      Toolbox::deprecated();
+
       $dir_to_check = [
          GLPI_CONFIG_DIR      => __('Checking write permissions for setting files'),
          GLPI_DOC_DIR         => __('Checking write permissions for document files'),
@@ -2570,8 +2582,12 @@ class Config extends CommonDBTM {
     * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
     *
     * @return integer 2 : creation error 1 : delete error 0: OK
+    *
+    * @deprecated 9.5.0
    **/
    static function checkWriteAccessToDirs($fordebug = false) {
+      Toolbox::deprecated();
+
       global $CFG_GLPI;
 
       // Only write test for GLPI_LOG as SElinux prevent removing log file.

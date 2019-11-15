@@ -170,7 +170,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       } else {
          Html::nullHeader("UPDATE NEEDED", $CFG_GLPI["root_doc"]);
          echo "<div class='center'>";
-         echo "<table class='tab_cadre'>";
+         echo "<table class='tab_cadre tab_check'>";
          $error = Toolbox::commonCheckForUseGLPI();
          echo "</table><br>";
 
