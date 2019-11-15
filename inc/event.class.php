@@ -192,6 +192,7 @@ class Event extends CommonDBTM {
                Ajax::createIframeModalWindow('infocom'.$rand,
                                              Infocom::getFormURLWithID($items_id),
                                              ['height' => 600]);
+               break;
 
             case "devices" :
                echo $items_id;
