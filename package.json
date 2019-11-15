@@ -29,6 +29,7 @@
         "jquery-prettytextdiff": "^1.0.4",
         "jquery-ui": "^1.11.4",
         "jquery-ui-dist": "^1.11.4",
+        "jquery-ui-multidatespicker": "^1.6.6",
         "jquery-ui-timepicker-addon": "^1.6.3",
         "jquery.autogrow-textarea": "^0.4.1",
         "jquery.rateit": "^1.1.2",

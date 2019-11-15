@@ -41,10 +41,11 @@ abstract class AbstractPlanningEvent extends \DbTestCase {
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
 
-      $now            = time();
-      $this->duration = 2 * \HOUR_TIMESTAMP;
-      $this->begin    = date('Y-m-d H:i:s', $now);
-      $this->end      = date('Y-m-d H:i:s', $now + $this->duration);
+      $now             = time();
+      $this->duration  = 2 * \HOUR_TIMESTAMP;
+      $this->begin     = date('Y-m-d H:i:s', $now);
+      $this->end       = date('Y-m-d H:i:s', $now + $this->duration);
+      $this->exception = date('Y-m-d', $now + 2 * \DAY_TIMESTAMP);
 
       $this->input = [
          'name'       => 'test add external event',
@@ -58,6 +59,7 @@ abstract class AbstractPlanningEvent extends \DbTestCase {
             'interval'  => 1,
             'byweekday' => 'MO',
             'bymonth'   => 1,
+            'exceptions' => [$this->exception]
          ],
          'state'      => \Planning::TODO,
          'background' => 1,
@@ -80,7 +82,8 @@ abstract class AbstractPlanningEvent extends \DbTestCase {
 
       // check rrule encoding
       $this->string($event->fields['rrule'])
-           ->isEqualTo('{"freq":"daily","interval":1,"byweekday":"MO","bymonth":1}');
+           ->isEqualTo('{"freq":"daily","interval":1,"byweekday":"MO","bymonth":1,"exceptions":'.
+                       $this->exception.'}');
 
       return $event;
    }

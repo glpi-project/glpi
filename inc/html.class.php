@@ -2674,8 +2674,6 @@ JAVASCRIPT;
     * @return rand value used if displayes else string
    **/
    static function showDateField($name, $options = []) {
-      global $CFG_GLPI;
-
       $p['value']      = '';
       $p['maybeempty'] = true;
       $p['canedit']    = true;
@@ -2685,6 +2683,8 @@ JAVASCRIPT;
       $p['display']    = true;
       $p['rand']       = mt_rand();
       $p['yearrange']  = '';
+      $p['multiple']   = false;
+      $p['size']       = 10;
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -2692,7 +2692,7 @@ JAVASCRIPT;
          }
       }
       $output = "<div class='no-wrap'>";
-      $output .= "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
+      $output .= "<input id='showdate".$p['rand']."' type='text' size='".$p['size']."' name='_$name' ".
                   "value='".self::convDate($p['value'])."'>";
       $output .= Html::hidden($name, ['value' => $p['value'],
                                            'id'    => "hiddendate".$p['rand']]);
@@ -2710,7 +2710,14 @@ JAVASCRIPT;
                   $('#hiddendate".$p['rand']."').val('');
                   });";
       }
-      $js .= "$( '#showdate".$p['rand']."' ).datepicker({
+
+      // choose if we use the standard jquery ui datepicker or a plugin for mulitple dates
+      $plugin = "datepicker";
+      if ($p['multiple']) {
+         $plugin = "multiDatesPicker";
+      }
+
+      $js .= "$( '#showdate".$p['rand']."' ).$plugin({
                   altField: '#hiddendate".$p['rand']."',
                   altFormat: 'yy-mm-dd',
                   firstDay: 1,

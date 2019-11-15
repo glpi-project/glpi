@@ -180,6 +180,12 @@ trait PlanningEvent {
          return "";
       }
 
+      if (isset($rrule['exceptions']) && strlen($rrule['exceptions'])) {
+         $rrule['exceptions'] = explode(', ', $rrule['exceptions']);
+      } else {
+         unset($rrule['exceptions']);
+      }
+
       if (count($rrule) > 0) {
          $rrule = json_encode($rrule);
       }
@@ -536,11 +542,12 @@ trait PlanningEvent {
    static function showRepetitionForm(string $rrule = "", array $options = []): string {
       $rrule = json_decode($rrule, true) ?? [];
       $defaults = [
-         'freq'     => null,
-         'interval' => 1,
-         'until'    => null,
-         'byday'    => [],
-         'bymonth'  => [],
+         'freq'       => null,
+         'interval'   => 1,
+         'until'      => null,
+         'byday'      => [],
+         'bymonth'    => [],
+         'exceptions' => [],
       ];
       $rrule = array_merge($defaults, $rrule);
 
@@ -550,7 +557,7 @@ trait PlanningEvent {
       $options = array_merge($default_options, $options);
       $rand    = $options['rand'];
 
-      $out = "<div class='card' style='padding: 5px; width: 231px;'>";
+      $out = "<div class='card' style='padding: 5px; width: 100%;'>";
       $out.= Dropdown::showFromArray('rrule[freq]', [
          null      => __("Never"),
          'daily'   => __("Each day"),
@@ -591,7 +598,7 @@ trait PlanningEvent {
 
       $out.= "<div class='field'>";
       $out.= "<label for='showdate$rand'>".__("Until")."</label>";
-      $out.= "<div>".Html::showDateTimeField('rrule[until]', [
+      $out.= "<div>".Html::showDateField('rrule[until]', [
          'value'   => $rrule['until'],
          'rand'    => $rand,
          'display' => false,
@@ -613,6 +620,7 @@ trait PlanningEvent {
          'rand'                => $rand,
          'display'             => false,
          'display_emptychoice' => true,
+         'width'               => '100%',
          'multiple'            => true,
       ])."</div>";
       $out.= "</div>";
@@ -637,7 +645,20 @@ trait PlanningEvent {
          'rand'                => $rand,
          'display'             => false,
          'display_emptychoice' => true,
+         'width'               => '100%',
          'multiple'            => true,
+      ])."</div>";
+      $out.= "</div>";
+
+      $rand = mt_rand();
+      $out.= "<div class='field'>";
+      $out.= "<label for='showdate$rand'>".__("Exceptions")."</label>";
+      $out.= "<div>".Html::showDateField('rrule[exceptions]', [
+         'value'    => implode(', ', $rrule['exceptions']),
+         'rand'     => $rand,
+         'display'  => false,
+         'multiple' => true,
+         'size'     => 30,
       ])."</div>";
       $out.= "</div>";
 
