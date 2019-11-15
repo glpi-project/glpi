@@ -665,21 +665,6 @@ class Document extends CommonDBTM {
       );
 
       $result = $DB->request($criteria)->next();
-      if ($result['cpt'] > 0) {
-         return true;
-      }
-
-      // Inlined images do not have entries in glpi_documents_items table.
-      // Check in Reminder content
-      $criteria = array_merge_recursive(
-         [
-            'COUNT'     => 'cpt',
-            'FROM'      => 'glpi_reminders',
-         ],
-         Reminder::getVisibilityCriteria()
-      );
-
-      $result = $DB->request($criteria)->next();
       return $result['cpt'] > 0;
    }
 
@@ -733,9 +718,7 @@ class Document extends CommonDBTM {
 
       $result = $DB->request($request)->next();
 
-      if ($result['cpt'] > 0) {
-         return true;
-      }
+      return $result['cpt'] > 0;
    }
 
    /**
