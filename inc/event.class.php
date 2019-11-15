@@ -316,7 +316,7 @@ class Event extends CommonDBTM {
     * @param $start     (default 0)
    **/
    static function showList($target, $order = 'DESC', $sort = 'date', $start = 0) {
-      global $DB, $CFG_GLPI;
+      $DBread = DBConnection::getReadConnection();
 
       // Show events from $result in table form
       list($logItemtype, $logService) = self::logArray();
@@ -338,7 +338,7 @@ class Event extends CommonDBTM {
       }
 
       // Query Database
-      $iterator = $DB->request([
+      $iterator = $DBread->request([
          'FROM'   => 'glpi_events',
          'ORDER'  => "$sort $order",
          'START'  => (int)$start,
