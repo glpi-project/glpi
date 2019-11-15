@@ -111,8 +111,6 @@ class KnowbaseItem extends CommonDBVisible {
 
 
    function canViewItem() {
-      global $CFG_GLPI;
-
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
@@ -875,7 +873,7 @@ class KnowbaseItem extends CommonDBVisible {
     *    string if option display=false (HTML code)
    **/
    function showFull($options = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!$this->can($this->fields['id'], READ)) {
          return false;
@@ -1078,8 +1076,6 @@ class KnowbaseItem extends CommonDBVisible {
     * @return void
    **/
    function showManageForm($options) {
-      global $CFG_GLPI;
-
       if (!Session::haveRightsOr(self::$rightname,
                                  [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN])) {
          return false;
@@ -1090,8 +1086,6 @@ class KnowbaseItem extends CommonDBVisible {
             $params[$key] = $val;
          }
       }
-
-      $faq = !Session::haveRight(self::$rightname, UPDATE);
 
       echo "<div>";
       echo "<form method='get' action='".$this->getSearchURL()."'>";
@@ -1648,7 +1642,7 @@ class KnowbaseItem extends CommonDBVisible {
     * @return void
    **/
    static function showRecentPopular($type) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $faq = !Session::haveRight(self::$rightname, READ);
 
