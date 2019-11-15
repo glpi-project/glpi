@@ -311,7 +311,7 @@ class ObjectLock extends CommonDBTM {
          // add a script to unlock the Object
          echo Html::scriptBlock( "$(function() {
             $(window).on('unload', function() {
-               if (window.fetch !== 'undefined') {
+               if (typeof window.fetch !== 'undefined') {
                   fetch('".$CFG_GLPI['root_doc']."/ajax/unlockobject.php?unlock=1&id=$id', {
                      method: 'POST',
                      keepalive: true,
@@ -324,7 +324,6 @@ class ObjectLock extends CommonDBTM {
                      cache: false,
                      data: 'unlock=1&id=$id'
                   });
-                 });
                }
             });
          })" );
