@@ -6127,6 +6127,7 @@ JAVASCRIPT;
          case 'gridstack':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.ui.touch-punch.js';
             break;
          case 'leaflet':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.js';
