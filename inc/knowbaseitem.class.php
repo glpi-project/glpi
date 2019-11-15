@@ -1362,7 +1362,9 @@ class KnowbaseItem extends CommonDBVisible {
     * @param $type      string   search type : browse / search (default search)
    **/
    static function showList($options, $type = 'search') {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
+
+      $DBread = DBConnection::getReadConnection();
 
       // Default values of parameters
       $params['faq']                       = !Session::haveRight(self::$rightname, READ);
@@ -1400,7 +1402,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $criteria = self::getListRequest($params, $type);
 
-      $main_iterator = $DB->request($criteria);
+      $main_iterator = $DBread->request($criteria);
       $rows = count($main_iterator);
       $numrows = $rows;
 
@@ -1426,7 +1428,7 @@ class KnowbaseItem extends CommonDBVisible {
          && !isset($_GET['export_all'])) {
          $criteria['START'] = (int)$params['start'];
          $criteria['LIMIT'] = (int)$list_limit;
-         $main_iterator = $DB->request($criteria);
+         $main_iterator = $DBread->request($criteria);
          $numrows = count($main_iterator);
       }
 
@@ -1580,7 +1582,7 @@ class KnowbaseItem extends CommonDBVisible {
             if ($output_type == Search::HTML_OUTPUT) {
                echo "<td class='center'>";
                $j=0;
-               $iterator = $DB->request([
+               $iterator = $DBread->request([
                   'FIELDS' => 'documents_id',
                   'FROM'   => 'glpi_documents_items',
                   'WHERE'  => [
