@@ -1184,7 +1184,7 @@ class Html {
     * @return void
    **/
    static function includeHeader($title = '', $sector = 'none', $item = 'none', $option = '') {
-      global $CFG_GLPI, $PLUGIN_HOOKS;
+      global $CFG_GLPI, $DB, $PLUGIN_HOOKS;
 
       // complete title with id if exist
       if (isset($_GET['id']) && $_GET['id']) {
@@ -1359,15 +1359,17 @@ class Html {
       }
 
       // Custom CSS for active entity
-      $entity = new Entity();
-      if (isset($_SESSION['glpiactive_entity'])) {
-         // Apply active entity styles
-         $entity->getFromDB($_SESSION['glpiactive_entity']);
-      } else {
-         // Apply root entity styles
-         $entity->getFromDB('0');
+      if ($DB instanceof DBmysql && $DB->connected) {
+         $entity = new Entity();
+         if (isset($_SESSION['glpiactive_entity'])) {
+            // Apply active entity styles
+            $entity->getFromDB($_SESSION['glpiactive_entity']);
+         } else {
+            // Apply root entity styles
+            $entity->getFromDB('0');
+         }
+         echo $entity->getCustomCssTag();
       }
-      echo $entity->getCustomCssTag();
 
       // AJAX library
       echo Html::script('public/lib/base.js');
