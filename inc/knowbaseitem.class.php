@@ -111,8 +111,6 @@ class KnowbaseItem extends CommonDBVisible {
 
 
    function canViewItem() {
-      global $CFG_GLPI;
-
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
@@ -875,7 +873,7 @@ class KnowbaseItem extends CommonDBVisible {
     *    string if option display=false (HTML code)
    **/
    function showFull($options = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!$this->can($this->fields['id'], READ)) {
          return false;
@@ -1078,8 +1076,6 @@ class KnowbaseItem extends CommonDBVisible {
     * @return void
    **/
    function showManageForm($options) {
-      global $CFG_GLPI;
-
       if (!Session::haveRightsOr(self::$rightname,
                                  [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN])) {
          return false;
@@ -1090,8 +1086,6 @@ class KnowbaseItem extends CommonDBVisible {
             $params[$key] = $val;
          }
       }
-
-      $faq = !Session::haveRight(self::$rightname, UPDATE);
 
       echo "<div>";
       echo "<form method='get' action='".$this->getSearchURL()."'>";
@@ -1362,7 +1356,9 @@ class KnowbaseItem extends CommonDBVisible {
     * @param $type      string   search type : browse / search (default search)
    **/
    static function showList($options, $type = 'search') {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
+
+      $DBread = DBConnection::getReadConnection();
 
       // Default values of parameters
       $params['faq']                       = !Session::haveRight(self::$rightname, READ);
@@ -1400,7 +1396,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $criteria = self::getListRequest($params, $type);
 
-      $main_iterator = $DB->request($criteria);
+      $main_iterator = $DBread->request($criteria);
       $rows = count($main_iterator);
       $numrows = $rows;
 
@@ -1426,7 +1422,7 @@ class KnowbaseItem extends CommonDBVisible {
          && !isset($_GET['export_all'])) {
          $criteria['START'] = (int)$params['start'];
          $criteria['LIMIT'] = (int)$list_limit;
-         $main_iterator = $DB->request($criteria);
+         $main_iterator = $DBread->request($criteria);
          $numrows = count($main_iterator);
       }
 
@@ -1580,7 +1576,7 @@ class KnowbaseItem extends CommonDBVisible {
             if ($output_type == Search::HTML_OUTPUT) {
                echo "<td class='center'>";
                $j=0;
-               $iterator = $DB->request([
+               $iterator = $DBread->request([
                   'FIELDS' => 'documents_id',
                   'FROM'   => 'glpi_documents_items',
                   'WHERE'  => [
@@ -1646,7 +1642,7 @@ class KnowbaseItem extends CommonDBVisible {
     * @return void
    **/
    static function showRecentPopular($type) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $faq = !Session::haveRight(self::$rightname, READ);
 

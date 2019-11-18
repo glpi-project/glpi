@@ -397,7 +397,7 @@ class Log extends CommonDBTM {
     * @return array of localized log entry (TEXT only, no HTML)
    **/
    static function getHistoryData(CommonDBTM $item, $start = 0, $limit = 0, array $sqlfilters = []) {
-      global $DB;
+      $DBread = DBConnection::getReadConnection();
 
       $itemtype  = $item->getType();
       $items_id  = $item->getField('id');
@@ -419,7 +419,7 @@ class Log extends CommonDBTM {
          $query['LIMIT'] = (int)$limit;
       }
 
-      $iterator = $DB->request($query);
+      $iterator = $DBread->request($query);
 
       $changes = [];
       while ($data = $iterator->next()) {
@@ -732,7 +732,7 @@ class Log extends CommonDBTM {
                   if ($oldval_expl[0] == '&nbsp;') {
                      $oldval = $data["old_value"];
                   } else {
-                     $old_iterator = $DB->request('glpi_users', ['name' => $oldval_expl[0]]);
+                     $old_iterator = $DBread->request('glpi_users', ['name' => $oldval_expl[0]]);
                      while ($val = $old_iterator->next()) {
                         $oldval = sprintf(__('%1$s %2$s'),
                               formatUserName($val['id'], $oldval_expl[0], $val['realname'],
@@ -744,7 +744,7 @@ class Log extends CommonDBTM {
                   if ($newval_expl[0] == '&nbsp;') {
                      $newval = $data["new_value"];
                   } else {
-                     $new_iterator = $DB->request('glpi_users', ['name' => $newval_expl[0]]);
+                     $new_iterator = $DBread->request('glpi_users', ['name' => $newval_expl[0]]);
                      while ($val = $new_iterator->next()) {
                         $newval = sprintf(__('%1$s %2$s'),
                               formatUserName($val['id'], $newval_expl[0], $val['realname'],
