@@ -339,6 +339,7 @@ class ObjectLock extends CommonDBTM {
                }
             });
          })" );
+
          $ret = true;
       } else { // can't add a lock as another one is already existing
          if (!$gotIt) {
