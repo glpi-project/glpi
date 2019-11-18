@@ -310,15 +310,22 @@ class ObjectLock extends CommonDBTM {
                                           'users_id' => Session::getLoginUserID()])) {
          // add a script to unlock the Object
          echo Html::scriptBlock( "$(function() {
-                  $(window).on('beforeunload', function() {
-                     //debugger;
-                      $.ajax({
-                          url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
-                          cache: false,
-                          data: 'unlock=1&id=$id'
-                          });
-                      });
-                  });" );
+            $(window).on('unload', function() {
+               if (typeof window.fetch !== 'undefined') {
+                  fetch('".$CFG_GLPI['root_doc']."/ajax/unlockobject.php?unlock=1&id=$id', {
+                     keepalive: true,
+                     cache: 'no-cache'
+                  });
+               } else {
+                  //fallback for browsers with fetch support
+                  $.ajax({
+                     url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
+                     cache: false,
+                     data: 'unlock=1&id=$id'
+                  });
+               }
+            });
+         })" );
          $ret = true;
       } else { // can't add a lock as another one is already existing
          if (!$gotIt) {
