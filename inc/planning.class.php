@@ -1812,9 +1812,19 @@ class Planning extends CommonGLPI {
             $rset->addRRule($rrule_o);
 
             // append icon to distinguish reccurent event in views
+            // use UTC datetime to avoid some issues with rlan/phprrule
+            $hr_rrule   = $rrule;
+            $hr_rrule_o = new RRule(
+               array_merge(
+                  $hr_rrule,
+                  [
+                     'dtstart' => $dtstart_datetime->format('Ymd\THis\Z')
+                  ]
+               )
+            );
             $new_event = array_merge($new_event, [
                'icon'     => 'fas fa-history',
-               'icon_alt' => $rrule_o->humanReadable(),
+               'icon_alt' => $hr_rrule_o->humanReadable(),
             ]);
 
             // for fullcalendar, we need to pass start in the rrule key

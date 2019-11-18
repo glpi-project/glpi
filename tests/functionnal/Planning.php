@@ -85,11 +85,7 @@ class Planning extends \DbTestCase {
             'title'   => 'Recur event',
             'tooltip' => 'Monday, 11 am to 12 am starting on 1st of July',
             'color'   => '#ff0000',
-            'rrule'   => [
-               'freq'      => 'WEEKLY',
-               'dtstart'   => '2019-07-01T09:00:00+00:00',
-               'byweekday' => 'MO',
-            ],
+            'rrule'   => "DTSTART:20190701T090000\nRRULE:FREQ=WEEKLY;BYDAY=MO\n",
          ],
          'simple_evt_1'    => [
             'title'   => 'Base event with no desc',
@@ -173,7 +169,9 @@ class Planning extends \DbTestCase {
                ->string['tooltip']->isEqualTo($event_data['tooltip'])
                ->string['color']->isEqualTo($event_data['color']);
             if (array_key_exists('rrule', $event_data)) {
-               $this->array($events_list[$index])->array['rrule']->isEqualTo($event_data['rrule']);
+               $this->array($events_list[$index])
+                  ->string['rrule']
+                     ->isEqualTo($event_data['rrule']);
             } else {
                $this->array($events_list[$index])->notHasKey('rrule');
             }
