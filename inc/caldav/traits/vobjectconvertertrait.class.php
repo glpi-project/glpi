@@ -359,6 +359,15 @@ trait VobjectConverterTrait {
          $rrule['until'] = $until_datetime->format('Y-m-d H:i:s');
       }
 
+      $exceptions = $vcomponent->select('EXDATE');
+      if (count($exceptions) > 0) {
+         $rrule['exceptions'] = [];
+         foreach ($exceptions as $exdate) {
+            $rrule['exceptions'][] = $exdate->getDateTime()->format('Y-m-d');
+         }
+         $rrule['exceptions'] = implode (', ', $rrule['exceptions']);
+      }
+
       return $rrule;
    }
 }

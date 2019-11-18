@@ -180,11 +180,13 @@ trait PlanningEvent {
          return "";
       }
 
-      if (isset($rrule['exceptions'])
-          && strlen($rrule['exceptions'])) {
-         $rrule['exceptions'] = explode(', ', $rrule['exceptions']);
-      } else {
-         unset($rrule['exceptions']);
+      if (isset($rrule['exceptions'])) {
+         if (is_string($rrule['exceptions']) && strlen($rrule['exceptions'])) {
+            $rrule['exceptions'] = explode(', ', $rrule['exceptions']);
+         }
+         if (!is_array($rrule['exceptions']) || count($rrule['exceptions']) === 0) {
+            unset($rrule['exceptions']);
+         }
       }
 
       if (count($rrule) > 0) {
