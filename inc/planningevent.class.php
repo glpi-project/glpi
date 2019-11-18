@@ -180,7 +180,8 @@ trait PlanningEvent {
          return "";
       }
 
-      if (isset($rrule['exceptions']) && strlen($rrule['exceptions'])) {
+      if (isset($rrule['exceptions'])
+          && strlen($rrule['exceptions'])) {
          $rrule['exceptions'] = explode(', ', $rrule['exceptions']);
       } else {
          unset($rrule['exceptions']);

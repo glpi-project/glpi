@@ -31,21 +31,24 @@
 */
 
 abstract class AbstractPlanningEvent extends \DbTestCase {
-   protected $myclass  = "";
-   protected $input    = [];
+   protected $myclass = "";
+   protected $input   = [];
 
-   private $begin    = "";
-   private $end      = "";
-   private $duration = "";
+   private $begin     = "";
+   private $end       = "";
+   private $duration  = "";
+   private $exdate1   = "";
+   private $exdate2   = "";
 
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
 
-      $now             = time();
-      $this->duration  = 2 * \HOUR_TIMESTAMP;
-      $this->begin     = date('Y-m-d H:i:s', $now);
-      $this->end       = date('Y-m-d H:i:s', $now + $this->duration);
-      $this->exception = date('Y-m-d', $now + 2 * \DAY_TIMESTAMP);
+      $now            = time();
+      $this->duration = 2 * \HOUR_TIMESTAMP;
+      $this->begin    = date('Y-m-d H:i:s', $now);
+      $this->end      = date('Y-m-d H:i:s', $now + $this->duration);
+      $this->exdate1  = date('Y-m-d', $now + (2 * \DAY_TIMESTAMP));
+      $this->exdate2  = date('Y-m-d', $now + (3 * \DAY_TIMESTAMP));
 
       $this->input = [
          'name'       => 'test add external event',
@@ -59,7 +62,7 @@ abstract class AbstractPlanningEvent extends \DbTestCase {
             'interval'  => 1,
             'byweekday' => 'MO',
             'bymonth'   => 1,
-            'exceptions' => [$this->exception]
+            'exceptions' => "$this->exdate1, $this->exdate2"
          ],
          'state'      => \Planning::TODO,
          'background' => 1,
@@ -81,9 +84,9 @@ abstract class AbstractPlanningEvent extends \DbTestCase {
       }
 
       // check rrule encoding
+      $exp_exdates = '"exceptions":["'.$this->exdate1.'","'.$this->exdate2.'"]';
       $this->string($event->fields['rrule'])
-           ->isEqualTo('{"freq":"daily","interval":1,"byweekday":"MO","bymonth":1,"exceptions":'.
-                       $this->exception.'}');
+           ->isEqualTo('{"freq":"daily","interval":1,"byweekday":"MO","bymonth":1,'.$exp_exdates.'}');
 
       return $event;
    }
