@@ -55,11 +55,10 @@ The present file will list all changes made to the project; according to the
 - `DBMysql::isMySQLStrictMode()`
 - `getAllDatasFromTable` renamed to `getAllDataFromTable()`
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
-- All `TicketTemplate` classes has been renamed to `ITILTemplate`
 - `Ticket::getTicketTemplateToUse()` renamed to `Ticket::getITILTemplateToUse()`
-- `TicketTemplate::getFromDBWithDatas()` renamed to `Ticket::getFromDBWithData()` (inherited from `ITILTemplate`)
-- `Computer_SoftwareLicense` replaced by `Item_SoftwareLicense`
-- `Computer_SoftwareVersion` replaced by `Item_SoftwareVersion`
+- `TicketTemplate::getFromDBWithDatas()` renamed to `TicketTemplate::getFromDBWithData()` (inherited from `ITILTemplate`)
+- `Computer_SoftwareLicense` replaced by `Item_SoftwareLicense` and table `glpi_computers_softwarelicenses` renamed to `glpi_items_softwarelicenses`
+- `Computer_SoftwareVersion` replaced by `Item_SoftwareVersion` and table `glpi_computers_softwareversions` renamed to `glpi_items_softwareversions`
 - `Item_SoftwareVersion::updateDatasForComputer` renamed to `Item_SoftwareVersion::updateDatasForItem`
 - `Item_SoftwareVersion::showForComputer` renamed to `Item_SoftwareVersion::showForItem`
 - `Item_SoftwareVersion::softsByCategory` renamed to `Item_SoftwareVersion::softwareByCategory`

@@ -555,8 +555,6 @@ class DBmysql {
     * Give ID of the last inserted item by Mysql
     *
     * @return mixed
-    *
-    * @deprecated 9.5.0
     */
    function insertId() {
       return $this->dbh->insert_id;
