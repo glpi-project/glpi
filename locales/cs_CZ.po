@@ -9,20 +9,20 @@
 # Radek Johanides, 2019
 # Ivo Pokorný <ivo@ivopokorny.cz>, 2019
 # Martin Šikuda <msikuda@gmail.com>, 2019
+# DOMBRE Julien <moyo@indepnet.net>, 2019
 # Tomáš Binder <trevorbin@gmail.com>, 2019
 # Michal Čermák <michal.cermak79@gmail.com>, 2019
-# Pavel Borecki <pavel.borecki@gmail.com>, 2019
-# DOMBRE Julien <moyo@indepnet.net>, 2019
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2019
+# Pavel Borecki <pavel.borecki@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 09:43+0100\n"
+"POT-Creation-Date: 2019-11-18 10:19+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2019\n"
+"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>, 2019\n"
 "Language-Team: Czech (Czech Republic) (https://www.transifex.com/glpi/teams/1637/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -132,7 +132,7 @@ msgstr "Nebyly nalezeny nebo označeny žádné místnosti"
 #: inc/dropdown.class.php:3301 inc/dropdown.class.php:3304
 #: inc/dropdown.class.php:3453 inc/dropdown.class.php:3454
 #: inc/dropdown.class.php:3672 inc/html.class.php:1191 inc/html.class.php:1695
-#: inc/html.class.php:6431 inc/html.class.php:6450 inc/infocom.class.php:507
+#: inc/html.class.php:6430 inc/html.class.php:6449 inc/infocom.class.php:507
 #: inc/infocom.class.php:1052 inc/ipaddress.class.php:248
 #: inc/ipnetwork.class.php:987 inc/item_softwarelicense.class.php:721
 #: inc/item_softwareversion.class.php:652 inc/item_ticket.class.php:721
@@ -763,7 +763,7 @@ msgstr "Zvažte vyplnění zeměpisné šířky a délky tohoto umístění."
 
 #: ajax/kanban.php:166 inc/project.class.php:140
 msgid "Kanban"
-msgstr ""
+msgstr "Kanban"
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2527
 #: inc/mailcollector.class.php:191 inc/ruleaction.class.php:88
@@ -1229,7 +1229,7 @@ msgstr "Velikost"
 #: inc/commonitiltask.class.php:609 inc/commonitiltask.class.php:831
 #: inc/commonitiltask.class.php:1532 inc/crontask.class.php:1123
 #: inc/crontask.class.php:1183 inc/document_item.class.php:705
-#: inc/event.class.php:271 inc/event.class.php:326
+#: inc/event.class.php:272 inc/event.class.php:327
 #: inc/item_devicebattery.class.php:59 inc/itilfollowup.class.php:515
 #: inc/itilfollowup.class.php:575 inc/itilfollowup.class.php:778
 #: inc/itilfollowup.class.php:997 inc/knowbaseitem.class.php:1787
@@ -1252,7 +1252,6 @@ msgstr "Velikost"
 #: inc/notificationtargetticket.class.php:782
 #: inc/notificationtargetticket.class.php:789
 #: inc/notimportedemail.class.php:201 inc/project.class.php:1128
-#: inc/rulematechedlog.class.php:231 inc/rulematechedlog.class.php:308
 #: inc/ticket.class.php:6846
 msgid "Date"
 msgid_plural "Dates"
@@ -1560,7 +1559,7 @@ msgstr[3] "Změny"
 
 #: front/change_ticket.form.php:49 front/problem_ticket.form.php:50
 #: inc/commonitilcost.class.php:554 inc/document_item.class.php:416
-#: inc/entity.class.php:2024 inc/event.class.php:154 inc/html.class.php:6562
+#: inc/entity.class.php:2024 inc/event.class.php:154 inc/html.class.php:6561
 #: inc/notificationtargetchange.class.php:325
 #: inc/notificationtargetchange.class.php:339
 #: inc/notificationtargetchange.class.php:351
@@ -1878,7 +1877,7 @@ msgstr "Možnosti zobrazení"
 #: front/dropdown.php:37 front/plugin.php:42 front/rulesengine.test.php:61
 #: front/rule.test.php:60 front/setup.auth.php:43 inc/auth.class.php:109
 #: inc/config.class.php:67 inc/event.class.php:160 inc/html.class.php:1458
-#: inc/html.class.php:6850 inc/notificationsetting.class.php:92
+#: inc/html.class.php:6849 inc/notificationsetting.class.php:92
 #: inc/profile.class.php:96 inc/profile.class.php:104
 #: inc/profile.class.php:1528 inc/profile.class.php:1575
 #: inc/profile.class.php:1943
@@ -1995,7 +1994,7 @@ msgstr[3] "Související prvky"
 #: inc/crontask.class.php:1351 inc/datacenter.class.php:107
 #: inc/dcroom.class.php:246 inc/document.class.php:914
 #: inc/enclosure.class.php:224 inc/entity.class.php:494
-#: inc/event.class.php:325 inc/fieldunicity.class.php:327
+#: inc/event.class.php:326 inc/fieldunicity.class.php:327
 #: inc/group_user.class.php:666 inc/infocom.class.php:1650
 #: inc/infocom.class.php:1853 inc/item_devices.class.php:147
 #: inc/item_softwarelicense.class.php:78 inc/item_softwareversion.class.php:69
@@ -2187,7 +2186,7 @@ msgstr "%s přidal uživatele do skupiny"
 #: front/knowbaseitemtranslation.form.php:80
 #: front/knowbaseitemtranslation.form.php:84
 #: front/knowbaseitemtranslation.form.php:87 inc/commondropdown.class.php:960
-#: inc/html.class.php:6580 inc/knowbaseitem.class.php:84
+#: inc/html.class.php:6579 inc/knowbaseitem.class.php:84
 #: inc/profile.class.php:755
 msgid "FAQ"
 msgstr "Nejčastější dotazy (FAQ)"
@@ -2272,8 +2271,8 @@ msgstr "Nadpis"
 #: inc/knowbaseitem_revision.class.php:215
 #: inc/knowbaseitem_revision.class.php:252
 #: inc/knowbaseitemtranslation.class.php:164
-#: inc/knowbaseitemtranslation.class.php:310 inc/project.class.php:2386
-#: inc/project.class.php:2405 inc/rssfeed.class.php:528
+#: inc/knowbaseitemtranslation.class.php:310 inc/project.class.php:2390
+#: inc/project.class.php:2409 inc/rssfeed.class.php:528
 #: inc/solutiontemplate.class.php:62 inc/solutiontemplate.class.php:72
 #: inc/tasktemplate.class.php:59 inc/tasktemplate.class.php:90
 msgid "Content"
@@ -2290,22 +2289,22 @@ msgid "New ticket"
 msgstr "Nový požadavek"
 
 #: front/helpdesk.public.php:97 inc/html.class.php:1625
-#: inc/html.class.php:1781 inc/html.class.php:1857 inc/html.class.php:6599
-#: inc/html.class.php:6717 inc/html.class.php:6718
+#: inc/html.class.php:1781 inc/html.class.php:1857 inc/html.class.php:6598
+#: inc/html.class.php:6716 inc/html.class.php:6717
 msgid "Home"
 msgstr "Domů"
 
 #: front/impactcsv.php:76
 msgid "Relation"
-msgstr ""
+msgstr "Vztah"
 
 #: front/impactcsv.php:77
 msgid "Itemtype"
-msgstr ""
+msgstr "Typ položky"
 
 #: front/impactcsv.php:78
 msgid "Id"
-msgstr ""
+msgstr "Identifikátor"
 
 #: front/impactcsv.php:79 front/report.contract.list.php:200
 #: front/report.infocom.php:153 front/report.year.list.php:177
@@ -2410,7 +2409,7 @@ msgstr ""
 #: inc/profile.class.php:576 inc/profile.class.php:1603
 #: inc/project.class.php:505 inc/project.class.php:872
 #: inc/project.class.php:1138 inc/project.class.php:1455
-#: inc/project.class.php:2383 inc/project.class.php:2402
+#: inc/project.class.php:2387 inc/project.class.php:2406
 #: inc/projectcost.class.php:286 inc/projectcost.class.php:375
 #: inc/projecttask.class.php:667 inc/projecttask.class.php:917
 #: inc/rack.class.php:91 inc/rack.class.php:352 inc/rack.class.php:605
@@ -2450,7 +2449,7 @@ msgstr "Dopad"
 
 #: front/impactcsv.php:87 inc/impact.class.php:210
 msgid "Impacted by"
-msgstr ""
+msgstr "Ovlivněno"
 
 #: front/ipnetwork.form.php:41
 msgid "Successfully recreated network tree"
@@ -2508,7 +2507,7 @@ msgstr "%s změnil svazek"
 #: inc/pdu_rack.class.php:329 inc/queuednotification.class.php:667
 #: inc/queuednotification.class.php:674 inc/reservation.class.php:657
 #: inc/reservation.class.php:1267 inc/reservation.class.php:1351
-#: inc/reservationitem.class.php:364 inc/rulematechedlog.class.php:320
+#: inc/reservationitem.class.php:364
 msgid "Item"
 msgid_plural "Items"
 msgstr[0] "Položka"
@@ -2975,8 +2974,8 @@ msgstr "Hardware ve smlouvě"
 #: inc/notificationtargetsavedsearch_alert.class.php:108
 #: inc/notificationtargetticket.class.php:599 inc/planningcsv.class.php:65
 #: inc/reservationitem.class.php:448 inc/ruleasset.class.php:90
-#: inc/rulematechedlog.class.php:316 inc/ruleticket.class.php:476
-#: inc/savedsearch.class.php:217 inc/search.class.php:1705
+#: inc/ruleticket.class.php:476 inc/savedsearch.class.php:217
+#: inc/search.class.php:1705
 msgid "Item type"
 msgstr "Typ položky"
 
@@ -3159,8 +3158,8 @@ msgstr "%s odstranil upozornění"
 msgid "%s updates an alert"
 msgstr "%s změnil upozornění"
 
-#: front/search.php:36 inc/entity.class.php:1154 inc/html.class.php:6511
-#: inc/html.class.php:6513 inc/html.class.php:6795 inc/html.class.php:6796
+#: front/search.php:36 inc/entity.class.php:1154 inc/html.class.php:6510
+#: inc/html.class.php:6512 inc/html.class.php:6794 inc/html.class.php:6795
 #: inc/location.class.php:547 inc/location.class.php:548 js/kanban.js:621
 msgid "Search"
 msgstr "Hledat"
@@ -3215,7 +3214,7 @@ msgstr[1] "Oznámení"
 msgstr[2] "Oznámení"
 msgstr[3] "Oznámení"
 
-#: front/setup.templates.php:55 inc/html.class.php:6816
+#: front/setup.templates.php:55 inc/html.class.php:6815
 msgid "Manage templates..."
 msgstr "Spravovat šablony…"
 
@@ -3902,7 +3901,7 @@ msgid "Your ticket has been registered, its treatment is in progress."
 msgstr "Váš požadavek byl zaregistrován, probíhá jeho zpracování."
 
 #: front/tracking.injector.php:73 inc/config.class.php:2596
-#: inc/config.class.php:2647 inc/html.class.php:5815 inc/html.class.php:5974
+#: inc/config.class.php:2647 inc/html.class.php:5813 inc/html.class.php:5972
 #: inc/itilcategory.class.php:439 inc/itilcategory.class.php:447
 #: inc/itilcategory.class.php:455 inc/itilcategory.class.php:463
 #: inc/telemetry.class.php:392 inc/toolbox.class.php:1162
@@ -4024,7 +4023,7 @@ msgstr "Každý měsíc"
 #: inc/entity.class.php:1928 inc/entity.class.php:1960
 #: inc/entity.class.php:1993 inc/entity.class.php:2100
 #: inc/entity.class.php:2832 inc/entity.class.php:2858
-#: inc/entity.class.php:2938 inc/entity.class.php:3095 inc/html.class.php:5866
+#: inc/entity.class.php:2938 inc/entity.class.php:3095 inc/html.class.php:5864
 #: inc/item_disk.class.php:195 inc/mailcollector.class.php:290
 #: inc/ruleimportcomputer.class.php:163 inc/savedsearch.class.php:93
 #: inc/savedsearch.class.php:388 inc/savedsearch.class.php:1151
@@ -4036,7 +4035,7 @@ msgstr "Ne"
 #: inc/alert.class.php:148 inc/config.class.php:389 inc/config.class.php:390
 #: inc/config.class.php:404 inc/config.class.php:1107
 #: inc/dropdown.class.php:758 inc/dropdown.class.php:777
-#: inc/entity.class.php:2101 inc/entity.class.php:2859 inc/html.class.php:5862
+#: inc/entity.class.php:2101 inc/entity.class.php:2859 inc/html.class.php:5860
 #: inc/mailcollector.class.php:291 inc/rule.class.php:2180
 #: inc/ruleimportcomputer.class.php:189 inc/savedsearch.class.php:92
 #: inc/savedsearch.class.php:387 inc/savedsearch.class.php:1154
@@ -6494,8 +6493,8 @@ msgstr "Položka není spojena s objektem"
 #: inc/commonitilobject.class.php:4452 inc/commonitilobject.class.php:4561
 #: inc/commonitilobject.class.php:4563 inc/commonitilobject.class.php:4657
 #: inc/commonitilobject.class.php:4659 inc/dropdown.class.php:217
-#: inc/dropdown.class.php:219 inc/html.class.php:6782 inc/html.class.php:6783
-#: inc/html.class.php:6891 inc/html.class.php:6892 inc/infocom.class.php:726
+#: inc/dropdown.class.php:219 inc/html.class.php:6781 inc/html.class.php:6782
+#: inc/html.class.php:6890 inc/html.class.php:6891 inc/infocom.class.php:726
 #: inc/netpoint.class.php:146 inc/netpoint.class.php:148
 #: inc/reminder.class.php:892 inc/reminder.class.php:893
 #: inc/rssfeed.class.php:980 inc/rssfeed.class.php:981
@@ -6916,13 +6915,13 @@ msgstr ""
 "Pokud potvrdíte smazání, všechny výskyty této rozbalovací nabídky budou "
 "odstraněny."
 
-#: inc/commondropdown.class.php:671 inc/html.class.php:5905
+#: inc/commondropdown.class.php:671 inc/html.class.php:5903
 msgctxt "button"
 msgid "Confirm"
 msgstr "Potvrdit"
 
 #: inc/commondropdown.class.php:674 inc/commondropdown.class.php:705
-#: inc/html.class.php:5916
+#: inc/html.class.php:5914
 msgctxt "button"
 msgid "Cancel"
 msgstr "Storno"
@@ -7706,7 +7705,7 @@ msgid "Recall on %s"
 msgstr "Připomenutí %s"
 
 #: inc/commonitiltask.class.php:1292 inc/html.class.php:607
-#: inc/html.class.php:5811 inc/planning.class.php:224
+#: inc/html.class.php:5809 inc/planning.class.php:224
 #: inc/planning.class.php:245 inc/ticketrecurrent.class.php:84
 msgid "Information"
 msgid_plural "Information"
@@ -8723,6 +8722,8 @@ msgstr "Výchozí stav úkolů"
 #: inc/config.class.php:1287
 msgid "Automatically refresh data (tickets list, project kanban) in minutes."
 msgstr ""
+"Automaticky znovu načíst data (seznam požadavků, kanban projektu) v "
+"minutách."
 
 #: inc/config.class.php:1296
 msgid "Pre-select me as a technician when creating a ticket"
@@ -9184,7 +9185,7 @@ msgstr "Obnovit položku"
 msgid "Update the item"
 msgstr "Změnit položku"
 
-#: inc/config.class.php:3311 inc/html.class.php:6690
+#: inc/config.class.php:3311 inc/html.class.php:6689
 msgid "Plugins"
 msgstr "Zásuvné moduly"
 
@@ -10951,7 +10952,7 @@ msgstr[2] "Typů dokumentů"
 msgstr[3] "Typy dokumentů"
 
 #: inc/documenttype.class.php:175 inc/documenttype.class.php:176
-#: inc/html.class.php:6491 inc/html.class.php:6492
+#: inc/html.class.php:6490 inc/html.class.php:6491
 msgid "Help"
 msgstr "Nápověda"
 
@@ -11814,7 +11815,7 @@ msgstr "Datum vyřazení z provozu"
 msgid "to see the entity and its sub-entities"
 msgstr "zobrazit tuto entitu a jí podřízené entity"
 
-#: inc/entity.class.php:1149 inc/html.class.php:6824
+#: inc/entity.class.php:1149 inc/html.class.php:6823
 #: inc/reservation.class.php:448 inc/ticket.class.php:5783
 #: inc/ticket.class.php:5992
 msgid "Show all"
@@ -11934,7 +11935,7 @@ msgid "Send certificates alarms before"
 msgstr "Posílat výstrahy ohledně certifikátů před"
 
 #: inc/entity.class.php:2006 inc/event.class.php:149 inc/event.class.php:162
-#: inc/html.class.php:6571 inc/profile.class.php:758
+#: inc/html.class.php:6570 inc/profile.class.php:758
 #: inc/profile.class.php:1916 inc/reservation.class.php:54
 #: inc/reservationitem.class.php:822 inc/transfer.class.php:3472
 #: install/update_0723_078.php:4794
@@ -11963,7 +11964,7 @@ msgstr "Převzít nastavení z nadřazené entity"
 
 #: inc/entity.class.php:2294
 msgid "Templates configuration"
-msgstr ""
+msgstr "Nastavení šablon"
 
 #: inc/entity.class.php:2354 inc/problemtemplate.class.php:47
 msgid "Problem template"
@@ -11975,7 +11976,7 @@ msgstr[3] "Šablony problémů"
 
 #: inc/entity.class.php:2383
 msgid "Tickets configuration"
-msgstr ""
+msgstr "Nastavení požadavků"
 
 #: inc/entity.class.php:2388 inc/entity.class.php:2401
 #: inc/entity.class.php:3053 inc/levelagreement.class.php:496
@@ -12053,8 +12054,8 @@ msgstr[3] "Pravidla"
 msgid "Security"
 msgstr "Zabezpečení"
 
-#: inc/event.class.php:166 inc/html.class.php:1451 inc/html.class.php:6660
-#: inc/html.class.php:6689 inc/plugin.class.php:71 inc/search.class.php:6848
+#: inc/event.class.php:166 inc/html.class.php:1451 inc/html.class.php:6659
+#: inc/html.class.php:6688 inc/plugin.class.php:71 inc/search.class.php:6848
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] "Zásuvný modul"
@@ -12062,31 +12063,31 @@ msgstr[1] "Zásuvné moduly"
 msgstr[2] "Zásuvných modulů"
 msgstr[3] "Zásuvné moduly"
 
-#: inc/event.class.php:255 inc/event.class.php:354
+#: inc/event.class.php:256 inc/event.class.php:355
 msgid "No Event"
 msgstr "Žádná událost"
 
-#: inc/event.class.php:267
+#: inc/event.class.php:268
 #, php-format
 msgid "Last %d events"
 msgstr "Posledních %d událostí"
 
-#: inc/event.class.php:270 inc/event.class.php:324
+#: inc/event.class.php:271 inc/event.class.php:325
 #: inc/ruleimportentity.class.php:106
 msgid "Source"
 msgstr "Zdroj"
 
-#: inc/event.class.php:272 inc/event.class.php:327
+#: inc/event.class.php:273 inc/event.class.php:328
 msgid "Service"
 msgstr "Služby"
 
-#: inc/event.class.php:273 inc/event.class.php:329
+#: inc/event.class.php:274 inc/event.class.php:330
 #: inc/notificationtargetfieldunicity.class.php:79
 #: inc/notificationtargetsavedsearch_alert.class.php:105
 msgid "Message"
 msgstr "Zpráva"
 
-#: inc/event.class.php:328
+#: inc/event.class.php:329
 msgid "Level"
 msgstr "Úroveň"
 
@@ -12442,8 +12443,8 @@ msgstr "Zobrazit GLPI ladící informace"
 msgid "Progress"
 msgstr "Postup"
 
-#: inc/html.class.php:1464 inc/html.class.php:6426 inc/html.class.php:6432
-#: inc/html.class.php:6438
+#: inc/html.class.php:1464 inc/html.class.php:6425 inc/html.class.php:6431
+#: inc/html.class.php:6437
 msgid "My settings"
 msgstr "Má nastavení"
 
@@ -12705,106 +12706,106 @@ msgstr "Nahrání úspěšné"
 msgid "Check/uncheck all"
 msgstr "Zaškrtnout/odškrtnout vše"
 
-#: inc/html.class.php:5618 inc/html.class.php:5725 inc/profile.class.php:3129
+#: inc/html.class.php:5618 inc/html.class.php:5723 inc/profile.class.php:3129
 msgid "Select/unselect all"
 msgstr "Označit/odznačit vše"
 
-#: inc/html.class.php:6346
+#: inc/html.class.php:6345
 msgid "Start typing to find a menu"
 msgstr "Pro hledání v nabídce začněte psát"
 
-#: inc/html.class.php:6419 inc/html.class.php:6421
+#: inc/html.class.php:6418 inc/html.class.php:6420
 msgid "Logout"
 msgstr "Odhlásit"
 
-#: inc/html.class.php:6451 inc/html.class.php:6457
+#: inc/html.class.php:6450 inc/html.class.php:6456
 msgid "Change mode"
 msgstr "Změnit režim"
 
-#: inc/html.class.php:6452
+#: inc/html.class.php:6451
 msgid "Debug mode enabled"
 msgstr "Ladící režim byl zapnut!"
 
-#: inc/html.class.php:6452
+#: inc/html.class.php:6451
 msgid "Debug mode disabled"
 msgstr "Ladící režim byl vypnut!"
 
-#: inc/html.class.php:6467 inc/html.class.php:6476
+#: inc/html.class.php:6466 inc/html.class.php:6475
 msgid "Saved searches"
 msgstr "Uložená hledání"
 
-#: inc/html.class.php:6471
+#: inc/html.class.php:6470
 msgid "Manage saved searches"
 msgstr "Spravovat uložená hledání"
 
-#: inc/html.class.php:6475 inc/search.class.php:2311
+#: inc/html.class.php:6474 inc/search.class.php:2311
 msgid "Load a saved search"
 msgstr "Načíst uložené hledání"
 
-#: inc/html.class.php:6551 inc/profile.class.php:2289
+#: inc/html.class.php:6550 inc/profile.class.php:2289
 #: inc/ticket.class.php:5707
 msgid "Create a ticket"
 msgstr "Vytvořit požadavek"
 
-#: inc/html.class.php:6785 inc/html.class.php:6787
+#: inc/html.class.php:6784 inc/html.class.php:6786
 msgid "Add is disabled"
 msgstr "Přidání je vypnuto"
 
-#: inc/html.class.php:6798 inc/html.class.php:6800
+#: inc/html.class.php:6797 inc/html.class.php:6799
 msgid "Search is disabled"
 msgstr "Hledání je vypnuto"
 
-#: inc/html.class.php:6833 inc/item_softwarelicense.class.php:950
+#: inc/html.class.php:6832 inc/item_softwarelicense.class.php:950
 #: inc/item_softwareversion.class.php:1490
 msgid "Summary"
 msgstr "Souhrn"
 
-#: inc/html.class.php:6842
+#: inc/html.class.php:6841
 msgid "Global Kanban"
-msgstr ""
+msgstr "Globální Kanban"
 
-#: inc/html.class.php:6883 inc/html.class.php:6884 inc/ticket.class.php:176
+#: inc/html.class.php:6882 inc/html.class.php:6883 inc/ticket.class.php:176
 #: inc/ticket.class.php:177 inc/ticket.class.php:3503
 #: inc/ticket.class.php:3504 inc/ticket.class.php:5732
 msgid "Ticket waiting for your approval"
 msgstr "Požadavek čeká na vaše schválení"
 
-#: inc/html.class.php:7130
+#: inc/html.class.php:7129
 #, php-format
 msgid "You are impersonating %s."
 msgstr "Právě jste přepnutí do %s."
 
-#: inc/html.class.php:7133
+#: inc/html.class.php:7132
 msgid "Stop impersonating"
 msgstr "Opustit přepnutí se do jiného uživatele."
 
 #: inc/impact.class.php:32
 msgid "Asset impact"
 msgid_plural "Asset impacts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Dopad inventáře"
+msgstr[1] "Dopady inventáře"
+msgstr[2] "Dopadů inventáře"
+msgstr[3] "Dopady inventáře"
 
 #: inc/impact.class.php:83 inc/impact.class.php:599 inc/impact.class.php:1468
 msgid "Impact analysis"
-msgstr ""
+msgstr "Analýza dopadu"
 
 #: inc/impact.class.php:273
 msgid "This asset doesn't have any impact dependencies."
-msgstr ""
+msgstr "Tento inventář nemá žádné závislosti dopadu."
 
 #: inc/impact.class.php:284
 msgid "Export to csv"
-msgstr ""
+msgstr "Exportovat do csv"
 
 #: inc/impact.class.php:300
 msgid "Max depth"
-msgstr ""
+msgstr "Nejvyšší umožněná hloubka"
 
 #: inc/impact.class.php:307
 msgid "No limit"
-msgstr ""
+msgstr "Bez omezení"
 
 #: inc/impact.class.php:398 inc/knowbaseitem_comment.class.php:386
 #: js/impact.js:620
@@ -12821,11 +12822,11 @@ msgstr "Zobrazit grafické ztvárnění"
 
 #: inc/impact.class.php:1216
 msgid "Depends"
-msgstr ""
+msgstr "Závisí"
 
 #: inc/impact.class.php:1232
 msgid "Impact and depends"
-msgstr ""
+msgstr "Dopad a závisí"
 
 #: inc/impact.class.php:1262 inc/planningeventcategory.class.php:48
 #: inc/projectstate.class.php:58 inc/projectstate.class.php:75
@@ -12834,7 +12835,7 @@ msgstr "Barva"
 
 #: inc/impact.class.php:1510
 msgid "Show impact analysis"
-msgstr ""
+msgstr "Zobrazit analýzu dopadu"
 
 #: inc/infocom.class.php:420
 #, php-format
@@ -16535,12 +16536,12 @@ msgstr "Položka NENÍ odemčena!"
 
 #: inc/objectlock.class.php:158
 msgid "Force unlock this item?"
-msgstr ""
+msgstr "Vynutit odemknutí této položky?"
 
 #: inc/objectlock.class.php:182
 #, php-format
 msgid "Force unlock %1s #%2s"
-msgstr ""
+msgstr "Vynutit odemknutí %1s č. %2s"
 
 #: inc/objectlock.class.php:196
 msgid "Locked by you!"
@@ -16548,7 +16549,7 @@ msgstr "Uzamčeno vámi!"
 
 #: inc/objectlock.class.php:226
 msgid "Ask for unlock this item?"
-msgstr ""
+msgstr "Zeptat se na odemknutí této položky?"
 
 #: inc/objectlock.class.php:232
 msgid "Request sent to"
@@ -16557,7 +16558,7 @@ msgstr "Požadavek odeslán na"
 #: inc/objectlock.class.php:271
 #, php-format
 msgid "Locked by %s"
-msgstr ""
+msgstr "Uzamčeno %s"
 
 #: inc/objectlock.class.php:276
 msgid "Ask for unlock"
@@ -16575,23 +16576,23 @@ msgstr "Varování: pouze pro čtení!"
 msgid "Request write on "
 msgstr "Požádat o zápis do"
 
-#: inc/objectlock.class.php:530
+#: inc/objectlock.class.php:538
 msgid "Locked by"
 msgstr "Kdo uzamknul"
 
-#: inc/objectlock.class.php:547
+#: inc/objectlock.class.php:555
 msgid "Locked date"
 msgstr "Datum uzamčení"
 
-#: inc/objectlock.class.php:574
+#: inc/objectlock.class.php:582
 msgid "Unlock"
 msgstr "Odemknout"
 
-#: inc/objectlock.class.php:591
+#: inc/objectlock.class.php:599
 msgid "Unlock forgotten locked objects"
 msgstr "Odemknout zapomenuté zamknuté objekty"
 
-#: inc/objectlock.class.php:592
+#: inc/objectlock.class.php:600
 msgid "Timeout to force unlock (hours)"
 msgstr "Časový limit pro vynucené odemknutí (hodin)"
 
@@ -16763,7 +16764,7 @@ msgstr "Reproduktor"
 
 #: inc/planning.class.php:132
 msgid "CalDAV browser interface"
-msgstr ""
+msgstr "CalDAV rozhraní prohlížeče"
 
 #: inc/planning.class.php:303
 #, php-format
@@ -16796,7 +16797,7 @@ msgstr "Vyp/zap. filtry"
 
 #: inc/planning.class.php:888
 msgid "Not planned tasks"
-msgstr ""
+msgstr "Žádné naplánované úkoly"
 
 #: inc/planning.class.php:951
 msgid "Ical"
@@ -16813,11 +16814,11 @@ msgstr "CSV"
 
 #: inc/planning.class.php:965
 msgid "CalDAV URL has been copied to clipboard"
-msgstr ""
+msgstr "URL adresa CalDAV byla zkopírována do schránky"
 
 #: inc/planning.class.php:969
 msgid "Copy CalDAV URL to clipboard"
-msgstr ""
+msgstr "Zkopírovat URL CalDAV do schránky"
 
 #: inc/planning.class.php:1016
 msgid "All users of a group"
@@ -16825,7 +16826,7 @@ msgstr "Všichni uživatelé skupiny"
 
 #: inc/planning.class.php:1020
 msgid "External calendar"
-msgstr ""
+msgstr "Externí kalendář"
 
 #: inc/planning.class.php:1171
 msgid "View this item in his context"
@@ -16833,11 +16834,11 @@ msgstr "Zobrazit tuto položku v souvislostech"
 
 #: inc/planning.class.php:1251
 msgid "Calendar name"
-msgstr ""
+msgstr "Název kalendáře"
 
 #: inc/planning.class.php:1263
 msgid "Calendar URL"
-msgstr ""
+msgstr "URL adresa kalendáře"
 
 #: inc/planning.class.php:1307
 msgid "Event type"
@@ -16860,6 +16861,8 @@ msgstr "Kopie z %s"
 #: inc/planning.class.php:2031
 msgid "You cannot directly move or resize reccurent events"
 msgstr ""
+"Jednotlivé výskyty opakující se události není možné přímo přesouvat nebo "
+"měnit jejich délku"
 
 #: inc/planning.class.php:2204
 msgid "Your planning"
@@ -16884,15 +16887,15 @@ msgstr "Zobrazit všechna plánování"
 
 #: inc/planningcsv.class.php:66
 msgid "Item id"
-msgstr ""
+msgstr "Identifikátor položky"
 
 #: inc/planningeventcategory.class.php:41
 msgid "Event category"
 msgid_plural "Event categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Kategorie událostí"
+msgstr[1] "Kategorie událostí"
+msgstr[2] "Kategorií událostí"
+msgstr[3] "Kategorie událostí"
 
 #: inc/planningevent.class.php:95 inc/planningevent.class.php:143
 #: inc/rssfeed.class.php:598 inc/ticket.class.php:4828
@@ -16901,15 +16904,15 @@ msgstr "Bez názvu"
 
 #: inc/planningevent.class.php:559
 msgid "Each year"
-msgstr ""
+msgstr "Každý rok"
 
 #: inc/planningevent.class.php:584
 msgid "Interval"
-msgstr ""
+msgstr "Interval"
 
 #: inc/planningevent.class.php:593
 msgid "Until"
-msgstr ""
+msgstr "Do"
 
 #: inc/planningevent.class.php:604 inc/project.class.php:1942
 #: inc/reservation.class.php:533 inc/toolbox.class.php:2300
@@ -16948,7 +16951,7 @@ msgstr "neděle"
 
 #: inc/planningevent.class.php:621
 msgid "By month"
-msgstr ""
+msgstr "Podle měsíce"
 
 #: inc/planningevent.class.php:623 inc/project.class.php:1938
 #: inc/toolbox.class.php:2317
@@ -17019,34 +17022,34 @@ msgstr "%1$s: od %2$s do %3$s:"
 #: inc/planningexternalevent.class.php:52
 msgid "External event"
 msgid_plural "External events"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Vnější událost"
+msgstr[1] "Vnější události"
+msgstr[2] "Vnějších událostí"
+msgstr[3] "Vnější události"
 
 #: inc/planningexternalevent.class.php:219
 #: inc/planningexternaleventtemplate.class.php:70
 #: inc/planningexternaleventtemplate.class.php:135
 msgid "Background event"
-msgstr ""
+msgstr "Událost na pozadí"
 
 #: inc/planningexternalevent.class.php:243
 #: inc/planningexternaleventtemplate.class.php:78
 #: inc/planningexternaleventtemplate.class.php:141
 msgid "Repeat"
-msgstr ""
+msgstr "Opakovat"
 
 #: inc/planningexternalevent.class.php:278
 msgid "manage background events"
-msgstr ""
+msgstr "spravovat události na pozadí"
 
 #: inc/planningexternaleventtemplate.class.php:53
 msgid "External events template"
 msgid_plural "External events templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Šablona vnějších událostí"
+msgstr[1] "Šablony vnějších událostí"
+msgstr[2] "Šablon vnějších událostí"
+msgstr[3] "Šablony vnějších události"
 
 #: inc/planningrecall.class.php:46
 msgid "Planning reminder"
@@ -17427,11 +17430,11 @@ msgstr "Výchozí šablona požadavku"
 
 #: inc/profile.class.php:688
 msgid "Default change template"
-msgstr ""
+msgstr "Výchozí šablona změny"
 
 #: inc/profile.class.php:704
 msgid "Default problem template"
-msgstr ""
+msgstr "Výchozí šablona problému"
 
 #: inc/profile.class.php:761 inc/profile.class.php:953
 #: inc/profile.class.php:2478 inc/reminder.class.php:876
@@ -17484,12 +17487,12 @@ msgstr "Správa rezervací"
 
 #: inc/profile.class.php:1015
 msgid "ITIL Templates"
-msgstr ""
+msgstr "ITIL šablony"
 
 #: inc/profile.class.php:1020
 #, php-format
 msgid "Default %1$s template"
-msgstr ""
+msgstr "Výchozí šablona %1$s "
 
 #: inc/profile.class.php:1046
 msgid "ITIL object"
@@ -17730,25 +17733,25 @@ msgstr "Neplatné položky (není počáteční nebo koncové datum): %s"
 
 #: inc/project.class.php:2255
 msgid "No status"
-msgstr ""
+msgstr "Žádný stav"
 
 #: inc/project.class.php:2297
 msgid "Subproject"
-msgstr ""
+msgstr "Podprojekt"
 
 #: inc/project.class.php:2297
 msgid "Subtask"
-msgstr ""
+msgstr "Dílčí úkol"
 
 #: inc/project.class.php:2301
 #, php-format
 msgid "%s of %s"
-msgstr ""
+msgstr "%s z %s"
 
 #: inc/project.class.php:2320
 #, php-format
 msgid "%s / %s tasks complete"
-msgstr ""
+msgstr "%s / %s úkolů dokončeno"
 
 #: inc/projectstate.class.php:62 inc/projectstate.class.php:83
 msgid "Finished state"
@@ -18404,7 +18407,7 @@ msgstr "Typ akce"
 
 #: inc/rule.class.php:1182
 msgid "Add a new criterion"
-msgstr ""
+msgstr "Přidat nové hledisk"
 
 #: inc/rule.class.php:1219 inc/rule.class.php:2035
 #: inc/rulecollection.class.php:1267 inc/rulecriteria.class.php:168
@@ -18890,31 +18893,6 @@ msgstr "bez odpovědi e-mailem"
 #: inc/rulemailcollector.class.php:201
 msgid "with email response"
 msgstr "s odpovědí e-mailem"
-
-#: inc/rulematechedlog.class.php:46
-msgid "Matched rules logs"
-msgstr ""
-
-#: inc/rulematechedlog.class.php:78 inc/rulematechedlog.class.php:86
-#: inc/rulematechedlog.class.php:92 inc/rulematechedlog.class.php:114
-msgid "Import information"
-msgstr ""
-
-#: inc/rulematechedlog.class.php:224 inc/rulematechedlog.class.php:301
-msgid "Rule import logs"
-msgstr ""
-
-#: inc/rulematechedlog.class.php:235 inc/rulematechedlog.class.php:312
-msgid "Rule name"
-msgstr "Název pravidla"
-
-#: inc/rulematechedlog.class.php:239
-msgid "Agent"
-msgstr "Agent"
-
-#: inc/rulematechedlog.class.php:243 inc/rulematechedlog.class.php:324
-msgid "Module"
-msgstr ""
 
 #: inc/ruleright.class.php:219
 msgid "Automatic user assignment"
@@ -21228,103 +21206,105 @@ msgstr ""
 
 #: js/impact.js:524
 msgid "Go to"
-msgstr ""
+msgstr "Přejít na"
 
 #: js/impact.js:525
 msgid "Open this element in a new tab"
-msgstr ""
+msgstr "Otevřít tento prvek v novém panelu"
 
 #: js/impact.js:531
 msgid "Show ongoing tickets"
-msgstr ""
+msgstr "Zobrazit probíhající požadavky"
 
 #: js/impact.js:532
 msgid "Show ongoing tickets for this item"
-msgstr ""
+msgstr "Zobrazit probíhající požadavky pro tuto položku"
 
 #: js/impact.js:538
 msgid "Group properties..."
-msgstr ""
+msgstr "Vlastnosti skupiny…"
 
 #: js/impact.js:539
 msgid "Set name and/or color for this group"
-msgstr ""
+msgstr "Nastavit název a/nebo barvu pro tuto skupinu"
 
 #: js/impact.js:546
 msgid "Remove from group"
-msgstr ""
+msgstr "Odebrat ze skupiny"
 
 #: js/impact.js:547
 msgid "Remove this asset from the group"
-msgstr ""
+msgstr "Odebrat tento inventář ze skupiny"
 
 #: js/impact.js:555
 msgid "Delete element"
-msgstr ""
+msgstr "Smazat prvek"
 
 #: js/impact.js:562
 msgid "Add asset"
-msgstr ""
+msgstr "Přidat inventář"
 
 #: js/impact.js:563
 msgid "Add a new asset to the graph"
-msgstr ""
+msgstr "Přidat do grafu nový inventář"
 
 #: js/impact.js:593
 msgid "This asset already exists."
-msgstr ""
+msgstr "Tento inventář už existuje."
 
 #: js/impact.js:612
 msgid "Unexpected error."
-msgstr ""
+msgstr "Neočekávaná chyba."
 
 #: js/impact.js:628
 msgid "New asset"
-msgstr ""
+msgstr "Nový inventář"
 
 #: js/impact.js:686
 msgid "Colors"
-msgstr ""
+msgstr "Barvy"
 
 #: js/impact.js:698
 msgid "Ongoing tickets"
-msgstr ""
+msgstr "Probíhající požadavky"
 
 #: js/impact.js:751
 msgid "Edit group"
-msgstr ""
+msgstr "Upravit skupinu"
 
 #: js/impact.js:1464
 msgid "Click anywhere to add a new asset"
-msgstr ""
+msgstr "Pro přidání inventáře kamkoli klikněte"
 
 #: js/impact.js:1470
 msgid "Draw a line between two assets to add an impact relation"
 msgstr ""
+"Pro přidání souvislosti dopadu nakreslete čáru mezi dvěma položkami "
+"inventáře"
 
 #: js/impact.js:1477
 msgid "Click on an element to remove it from the network"
-msgstr ""
+msgstr "Klikněte na prvek pro jeho odebrání ze sítě"
 
 #: js/impact.js:1484
 msgid "Draw a square containing the assets you wish to group"
-msgstr ""
+msgstr "Nakreslete obdélník obsahující inventář, který si přejete seskupit"
 
 #: js/impact.js:1576
 msgid "No unsaved changes"
-msgstr ""
+msgstr "Žádné neuložené změny"
 
 #: js/impact.js:1587
 msgid "You have unsaved changes"
-msgstr ""
+msgstr "Máte neuložené změny"
 
 #: js/impact.js:1608
 msgid "Requests"
-msgstr ""
+msgstr "Požadavky"
 
 #: js/impact.js:1609
 msgid "Incidents"
-msgstr ""
+msgstr "Incidenty"
 
 #: js/impact.js:1610
 msgid "Changes"
@@ -21332,53 +21312,53 @@ msgstr "Změny"
 
 #: js/impact.js:1647
 msgid "You need to select at least 2 assets to make a group"
-msgstr ""
+msgstr "Pro vytvoření skupiny je zapotřebí alespoň dvou položek inventáře"
 
 #: js/impact.js:2332
 msgid "Add a new asset to the impact network"
-msgstr ""
+msgstr "Přidat do sítě dopadu novou položku inventáře"
 
 #: js/impact.js:2338
 msgid "Add a new impact relation"
-msgstr ""
+msgstr "Přidat novou souvislost dopadu"
 
 #: js/impact.js:2344
 msgid "Create a new group"
-msgstr ""
+msgstr "Vytvořit novou skupinu"
 
 #: js/impact.js:2350
 msgid "Delete an element from the impact network"
-msgstr ""
+msgstr "Smazat prvek ze sítě dopadu"
 
 #: js/impact.js:2359
 msgid "Export the impact network"
-msgstr ""
+msgstr "Exportovat síť dopadu"
 
 #: js/kanban.js:310
 msgid "Search or filter results"
-msgstr ""
+msgstr "Prohledat nebo filtrovat výsledky"
 
 #: js/kanban.js:312
 msgid "Add column"
-msgstr ""
+msgstr "Přidat sloupec"
 
 #: js/kanban.js:1209
 #, javascript-format
 msgid "%d other team members"
-msgstr ""
+msgstr "%d další členové týmu"
 
 #: js/kanban.js:1342
 msgid "Add a column from existing status"
-msgstr ""
+msgstr "Přidat sloupec z existujícího stavu"
 
 #: js/kanban.js:1346
 msgid "Or add a new status"
-msgstr ""
+msgstr "Nebo přidat nový stav"
 
 #: js/kanban.js:1347 js/kanban.js:1364 js/kanban.js:1383
 msgid "Create status"
-msgstr ""
+msgstr "Vytvořit stav"
 
 #: js/kanban.js:1508
 msgid "Toggle collapse"
-msgstr ""
+msgstr "Vyp/zap. sbalení"
