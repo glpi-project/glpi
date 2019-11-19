@@ -2691,9 +2691,13 @@ JAVASCRIPT;
             $p[$key] = $val;
          }
       }
+
+      $values = true === $p['multiple'] ? explode(', ', $p['value']) : [$p['value']];
+      $displayed_value = implode(', ', array_map('Html::convDate', $values));
+
       $output = "<div class='no-wrap'>";
       $output .= "<input id='showdate".$p['rand']."' type='text' size='".$p['size']."' name='_$name' ".
-                  "value='".self::convDate($p['value'])."'>";
+                  "value='".$displayed_value."'>";
       $output .= Html::hidden($name, ['value' => $p['value'],
                                            'id'    => "hiddendate".$p['rand']]);
       if ($p['maybeempty'] && $p['canedit']) {
@@ -2760,7 +2764,21 @@ JAVASCRIPT;
       }
       $js .= ",dateFormat: '".$format."'";
 
+      if ($p['multiple']) {
+         // Fix altField date format
+         // onSelect callback will be called by multiDatePicker after update of the altField
+         $js .= ",onSelect: function(date, datepicker) {
+               normalizeMultiDateAltField($('#hiddendate{$p['rand']}'), '{$format}');
+            }";
+      }
+
       $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
+
+      if ($p['multiple']) {
+         // Fix altField date format that has just been filled by multiDatePicker
+         $js .= "normalizeMultiDateAltField($('#hiddendate{$p['rand']}'), '{$format}');";
+      }
+
       $js .= "});";
       $output .= Html::scriptBlock($js);
 

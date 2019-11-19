@@ -1072,3 +1072,21 @@ function updateProgress(progressid) {
       }
    });
 }
+
+/**
+ * Normalize altfield value of a MultiDatePicker instance.
+ *
+ * @param input_id
+ * @param date_format
+ *
+ * @return void
+ */
+function normalizeMultiDateAltField(input_id, date_format) {
+   var dates = $(input_id).val().split(', ');
+   var alt_dates = [];
+   for (var i = 0; i < dates.length; i++) {
+      var date_obj = $.datepicker.parseDate(date_format, dates[i]);
+      alt_dates.push($.datepicker.formatDate('yy-mm-dd', date_obj));
+   }
+   $(input_id).val(alt_dates.join(', '));
+}

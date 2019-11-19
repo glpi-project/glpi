@@ -441,6 +441,14 @@ trait PlanningEvent {
                   $event      = $events[$key];
                   $duration   = strtotime($event['end']) - strtotime($event['begin']);
                   $rrule_data = array_merge($event['rrule'], ['dtstart' => $event['begin']]);
+
+                  $exceptions = [];
+                  if (isset($rrule_data['exceptions'])) {
+                     $exceptions = $rrule_data['exceptions'];
+                     // remove exceptions key (as libraries throw exception for unknown keys)
+                     unset($rrule_data['exceptions']);
+                  }
+
                   $rrule      = new RRule($rrule_data);
 
                   // rrule object doesn't any duration property,
@@ -454,10 +462,30 @@ trait PlanningEvent {
 
                   // add the found occurences to the final tab after replacing their dates
                   foreach ($occurences as $currentDate) {
+                     $occurence_begin = $currentDate;
+                     $occurence_end   = (clone $currentDate)->add(new DateInterval("PT".$duration."S"));
+
+                     // Check all days on which event occurence belongs.
+                     // If any of these days is not an EXDATE, keep the occurence.
+                     $keep_occurence = false;
+                     $occurence_period = new DatePeriod(
+                        (clone $occurence_begin)->setTime(0, 0, 0),
+                        new DateInterval('P1D'),
+                        (clone $occurence_end)->setTime(0, 0, 0)
+                     );
+                     foreach ($occurence_period as $occurence_day) {
+                        if (!in_array($occurence_day->format('Y-m-d'), $exceptions)) {
+                           $keep_occurence = true;
+                           break;
+                        }
+                     }
+
+                     if (!$keep_occurence) {
+                        continue; // Ignore occurence if in list of dates exception
+                     }
                      $events_toadd[] = array_merge($event, [
-                        'begin' => $currentDate->format('Y-m-d H:i:s'),
-                        'end'   => $currentDate->add(new DateInterval("PT".$duration."S"))
-                                               ->format('Y-m-d H:i:s'),
+                        'begin' => $occurence_begin->format('Y-m-d H:i:s'),
+                        'end'   => $occurence_end->format('Y-m-d H:i:s'),
                      ]);
                   }
 
