@@ -64,7 +64,8 @@ class MailCollector extends DbTestCase {
                   'errors'               => '',
                   'use_mail_date'        => '',
                   'date_creation'        => '',
-                  'requester_field'      => ''
+                  'requester_field'      => '',
+                  'add_cc_to_observer'   => ''
                ]);
    }
 
@@ -199,16 +200,18 @@ class MailCollector extends DbTestCase {
       }
 
       $this->mailgate_id = (int)$collector->add([
-         'name'         => 'testuser',
-         'login'        => 'testuser',
-         'is_active'    => true,
-         'passwd'       => 'applesauce',
-         'mail_server'  => '127.0.0.1',
-         'server_type'  => '/imap',
-         'server_port'  => 143,
-         'server_ssl'   => '',
-         'server_cert'  => '/novalidate-cert'
+         'name'               => 'testuser',
+         'login'              => 'testuser',
+         'is_active'          => true,
+         'passwd'             => 'applesauce',
+         'mail_server'        => '127.0.0.1',
+         'server_type'        => '/imap',
+         'server_port'        => 143,
+         'server_ssl'         => '',
+         'add_cc_to_observer' => 1, //add ccuser as observer in ticket
+         'server_cert'        => '/novalidate-cert'
       ]);
+
       $this->integer($this->mailgate_id)->isGreaterThan(0);
 
       $this->boolean($collector->getFromDB($this->mailgate_id))->isTrue();
@@ -255,7 +258,7 @@ class MailCollector extends DbTestCase {
 
       $this->doConnect();
       $msg = $this->collector->collect($this->mailgate_id);
-      $this->variable($msg)->isIdenticalTo('Number of messages: available=8, retrieved=8, refused=2, errors=1, blacklisted=0');
+      $this->variable($msg)->isIdenticalTo('Number of messages: available=9, retrieved=9, refused=2, errors=1, blacklisted=0');
       $rejecteds = iterator_to_array($DB->request(['FROM' => \NotImportedEmail::getTable()]));
 
       $this->array($rejecteds)->hasSize(2);
@@ -282,7 +285,7 @@ class MailCollector extends DbTestCase {
          ]
       ]);
 
-      $this->integer(count($iterator))->isIdenticalTo(2);
+      $this->integer(count($iterator))->isIdenticalTo(3);
       $names = [];
       while ($data = $iterator->next()) {
          $names[] = $data['name'];
@@ -290,7 +293,8 @@ class MailCollector extends DbTestCase {
 
       $expected_names = [
          'PHP fatal error',
-         'Re: [GLPI #0001155] New ticket database issue'
+         'Re: [GLPI #0001155] New ticket database issue',
+         'Ticket with observer'
       ];
       $this->array($names)->isIdenticalTo($expected_names);
 
@@ -321,6 +325,37 @@ class MailCollector extends DbTestCase {
          'Test import mail avec emoticons unicode',
          'Test images',
          'Test\'ed issue'
+      ];
+      $this->array($names)->isIdenticalTo($expected_names);
+
+      //load ticket with observer for user normal
+      //see function doConnect
+      //wich allow to add cc as observer (add_cc_to_observer = true)
+      $iterator = $DB->request([
+         'SELECT' => ['t.id', 't.name', 'tu.users_id'],
+         'FROM'   => \Ticket::getTable() . " AS t",
+         'INNER JOIN'   => [
+            \Ticket_User::getTable() . " AS tu"  => [
+               'ON'  => [
+                  't'   => 'id',
+                  'tu'  => 'tickets_id'
+               ]
+            ]
+         ],
+         'WHERE'  => [
+            'tu.users_id'  => $nuid,
+            'tu.type'      => \CommonITILActor::OBSERVER
+         ]
+      ]);
+
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $names = [];
+      while ($data = $iterator->next()) {
+         $names[] = $data['name'];
+      }
+
+      $expected_names = [
+         'Ticket with observer',
       ];
       $this->array($names)->isIdenticalTo($expected_names);
 

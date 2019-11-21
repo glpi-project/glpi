@@ -83,6 +83,7 @@ function update943to945() {
    }
    /** /Fix language fields */
 
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
