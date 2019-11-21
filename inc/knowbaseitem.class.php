@@ -1924,4 +1924,44 @@ class KnowbaseItem extends CommonDBVisible {
          return false;
       }
    }
+
+   /**
+    * Get ids of KBI in given category
+    *
+    * @param int           $category_id   id of the parent category
+    * @param KnowbaseItem  $kbi           used only for unit tests
+    *
+    * @return array        Array of ids
+    */
+   public static function getForCategory($category_id, $kbi = null) {
+      global $DB;
+
+      if ($kbi === null) {
+         $kbi = new self();
+      }
+
+      $ids = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['knowbaseitemcategories_id' => $category_id],
+      ]);
+
+      // Get array of ids
+      $ids = array_map(function($row){
+         return $row['id'];
+      }, iterator_to_array($ids, false));
+
+      // Filter on canViewItem
+      $ids = array_filter($ids, function($id) use ($kbi) {
+         $kbi->getFromDB($id);
+         return $kbi->canViewItem();
+      });
+
+      // Avoid empty IN
+      if (count($ids) === 0) {
+         $ids[] = -1;
+      }
+
+      return $ids;
+   }
 }

@@ -941,7 +941,7 @@ abstract class CommonDropdown extends CommonDBTM {
          $rand = mt_rand();
          $kbitem = new KnowbaseItem;
          $found_kbitem = $kbitem->find([
-            'knowbaseitemcategories_id' => $this->fields['knowbaseitemcategories_id']
+            KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
          ]);
 
          $kbitem->getFromDB(reset($found_kbitem)['id']);
@@ -976,7 +976,7 @@ abstract class CommonDropdown extends CommonDBTM {
                   'display'   => false,
                   'rand'      => $rand,
                   'condition' => [
-                     'knowbaseitemcategories_id' => $this->fields['knowbaseitemcategories_id']
+                     KnowbaseItem::getTable() . '.id' => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
                   ],
                   'on_change' => "getKnowbaseItemAnswer$rand()"
                ]);
