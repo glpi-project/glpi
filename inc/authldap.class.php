@@ -2254,7 +2254,7 @@ class AuthLDAP extends CommonDBTM {
                   ]
                ];
                $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
-               ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
+               ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
                if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
                   $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
                } else {
