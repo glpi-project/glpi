@@ -33,6 +33,8 @@
 namespace tests\units;
 
 use \DbTestCase;
+use Ticket_User;
+use Toolbox;
 
 /* Test for inc/ruleticket.class.php */
 
@@ -406,6 +408,76 @@ class RuleTicket extends DbTestCase {
 
       $this->checkInput($ticket, $tickets_id, $ticket_input);
       $this->integer((int)$ticket->getField('itilcategories_id'))->isEqualTo($ITILCategoryForUpdateId);
+
+   }
+
+   public function testITILSolutionAssignFromRule() {
+      $this->login();
+
+      // Create solution template
+      $solutionTemplate = new \SolutionTemplate();
+      $solutionTemplate_id = $solutionTemplate->add($solutionInput = [
+         'content' => Toolbox::addslashes_deep("content of solution template  white ' quote")
+      ]);
+      $this->integer((int)$solutionTemplate_id)->isGreaterThan(0);
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => "test to assign ITILSolution",
+         'match'        => 'OR',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONUPDATE,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'content',
+         'condition' => \Rule::REGEX_MATCH,
+         'pattern'   => '/(.*?)/',
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      $act_id = $ruleaction->add($act_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'solution_template',
+         'value'       => $solutionTemplate_id,
+      ]);
+      $this->checkInput($ruleaction, $act_id, $act_input);
+
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'    => 'some ticket',
+         'content' => 'some text some text'
+      ]);
+
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->integer((int)$tickets_id)->isGreaterThan(0);
+
+      // update ticket content and trigger rule on content updating
+      $ticket->update([
+         'id'   => $tickets_id,
+         'content' => 'test ticket, will trigger on rule (content)'
+      ]);
+
+      //load ITILSolution
+      $itilSolution = new \ITILSolution();
+      $this->boolean($itilSolution->getFromDBByCrit(['items_id'            => $tickets_id,
+                                                   'itemtype'              => 'Ticket',
+                                                   'content'               => Toolbox::addslashes_deep("content of solution template  white ' quote")]))->isTrue();
+
+      $this->integer((int)$itilSolution->getID())->isGreaterThan(0);
+
+      //reload and check ticket status
+      $ticket->getFromDB($tickets_id);
+      $this->integer((int)$ticket->getField('status'))->isEqualTo(\CommonITILObject::SOLVED);
 
    }
 }
