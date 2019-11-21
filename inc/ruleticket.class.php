@@ -215,6 +215,21 @@ class RuleTicket extends Rule {
                      $output['_'.$action->fields["field"]] = $action->fields["value"];
 
                   }
+
+                  // special case of itil solution template
+                  if ($action->fields["field"] == 'solution_template') {
+                     //load template
+                     $template = new SolutionTemplate();
+                     if ($template->getFromDB($action->fields["value"]) && $output['id'] != null) {
+                        $solution = new ITILSolution();
+                        $solution->add([
+                           "itemtype" => "Ticket",
+                           "content" => Toolbox::addslashes_deep($template->getField('content')),
+                           "status" => CommonITILValidation::WAITING,
+                           "items_id" => $output['id']]);
+                     }
+                  }
+
                   break;
 
                case "append" :
@@ -727,6 +742,11 @@ class RuleTicket extends Rule {
       $actions['takeintoaccount_delay_stat']['name']          = __('Take into account delay');
       $actions['takeintoaccount_delay_stat']['type']          = 'yesno';
       $actions['takeintoaccount_delay_stat']['force_actions'] = ['do_not_compute'];
+
+      $actions['solution_template']['name']                  = _n('Solution template', 'Solution templates', 1);
+      $actions['solution_template']['type']                  = 'dropdown';
+      $actions['solution_template']['table']                 = 'glpi_solutiontemplates';
+      $actions['solution_template']['force_actions']         = ['assign'];
 
       return $actions;
    }
