@@ -49,6 +49,8 @@ if ($argv) {
 
 include ('../inc/includes.php');
 
+echo "Usage of this script is deprecated, please use 'php bin/console rules:replay_dictionnary_rules' command.\n";
+
 // No debug mode
 $_SESSION['glpi_use_mode'] == Session::NORMAL_MODE;
 
