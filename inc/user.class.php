@@ -1263,7 +1263,7 @@ class User extends CommonDBTM {
 
                $useremail = new UserEmail();
                while ($data = $iterator->next()) {
-                  $i = array_search($data["email"], $this->input["_emails"]);
+                  $i = array_search(strtolower($data["email"]), array_map('strtolower', $this->input["_emails"]));
                   if ($i !== false) {
                      // Delete found item in order not to add it again
                      unset($this->input["_emails"][$i]);
