@@ -6111,6 +6111,7 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/spectrum-colorpicker.js';
             break;
          case 'fileupload':
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/file-type.js';
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery-file-upload.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
             break;
