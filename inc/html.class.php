@@ -5902,6 +5902,7 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js';
             break;
          case 'fileupload':
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/file-type.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';

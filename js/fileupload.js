@@ -261,6 +261,7 @@ var dataURItoBlob = function(dataURI) {
 
    // separate out the mime component
    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+   var imgExt = mimeString.split('/')[1];
 
    // write the bytes of the string to a typed array
    var ia = new Uint8Array(byteString.length);
@@ -269,7 +270,7 @@ var dataURItoBlob = function(dataURI) {
    }
 
    var file = new Blob([ia], {type:mimeString});
-   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
+   file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + imgExt;
 
    return file;
 };
@@ -350,19 +351,29 @@ if (typeof tinymce != 'undefined') {
             stopEvent(event);
 
             var src = extractSrcFromImgTag(event.content);
+
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
-            xhr.responseType = 'blob';
+            xhr.responseType = 'arraybuffer';
             xhr.onload = function() {
-               if (this.status == 200) {
-                  // fill missing file properties
-                  var file  = new Blob([this.response], {type: 'image/png'});
-                  file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
-
-                  insertImageInTinyMCE(editor, file);
-               } else {
+               if (this.status !== 200) {
                   console.error("paste error");
+                  return;
                }
+
+               var imgData = new Uint8Array(this.response);
+               var imgType = fileType(imgData);
+
+               if (!imgType || !imgType.ext || !imgType.mime) {
+                  // Unable to retrieve file ext
+                  console.error("paste error");
+                  return;
+               }
+
+               var file  = new Blob([imgData.buffer], {type: imgType.mime});
+               file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + imgType.ext;
+
+               insertImageInTinyMCE(editor, file);
             };
             xhr.send();
          }
