@@ -3501,7 +3501,7 @@ class Dropdown {
       for ($i=$post['min']; $i<=$post['max']; $i+=$post['step']) {
          if (!empty($post['searchText']) && strstr($i, $post['searchText']) || empty($post['searchText'])) {
             if (!in_array($i, $used)) {
-               $values[$i] = $i;
+               $values["$i"] = $i;
             }
          }
       }
