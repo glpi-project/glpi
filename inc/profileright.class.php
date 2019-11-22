@@ -266,17 +266,21 @@ class ProfileRight extends CommonDBChild {
          ]
       ]);
 
-      $stmt = null;
-      while ($right = $iterator->next()) {
-         $params = [
-            'profiles_id'  => $profiles_id,
-            'name'         => $right['NAME']
-         ];
+      if ($iterator->count() === 0) {
+         return;
+      }
 
-         if ($stmt === null) {
-            $stmt = $DB->prepare($DB->buildInsert(self::getTable(), $params));
-         }
-         $stmt->execute($params);
+      $query = $DB->buildInsert(
+         self::getTable(),
+         [
+            'profiles_id' => new QueryParam(),
+            'name'        => new QueryParam(),
+         ]
+      );
+      $stmt = $DB->prepare($query);
+      while ($right = $iterator->next()) {
+         $stmt->bind_param('ss', $profiles_id, $right['NAME']);
+         $stmt->execute();
       }
    }
 
