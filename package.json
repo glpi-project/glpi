@@ -60,7 +60,7 @@
         "copy-webpack-plugin": "^5.0.5",
         "css-loader": "^3.2.0",
         "eslint": "^6.7.1",
-        "file-loader": "^4.3.0",
+        "file-loader": "^5.0.0",
         "glob": "^7.1.6",
         "mini-css-extract-plugin": "^0.8.0",
         "script-loader": "^0.7.2",
