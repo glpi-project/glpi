@@ -681,6 +681,12 @@ class Toolbox {
       // For file record
       $type = self::userErrorHandlerNormal($errno, $errmsg, $filename, $linenum);
 
+      if (0 === error_reporting()) {
+         // Do not display error message if '@' operator is used on errored expression
+         // see https://www.php.net/manual/en/language.operators.errorcontrol.php
+         return;
+      }
+
       // Display
       if (!isCommandLine()) {
          echo '<div style="position:float-left; background-color:red; z-index:10000">'.
