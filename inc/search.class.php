@@ -1442,7 +1442,7 @@ class Search {
                      }
 
                      if (!$handled) {
-                        if ($val == self::NULLVALUE) {
+                        if ($val === self::NULLVALUE) {
                            $newrow[$j][0][$fieldname] = null;
                         } else {
                            $newrow[$j][0][$fieldname] = $val;
