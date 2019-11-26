@@ -75,7 +75,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
       $iterator = $DB->request([
          'SELECT' => [
             new \QueryExpression($DB->quoteValue($ipnetworks_id) . ' AS ' . $DB->quoteName('ipnetworks_id')),
-            'id AD ipaddresses_id'
+            'id AS ipaddresses_id'
          ],
          'FROM'   => 'glpi_ipaddresses',
          'WHERE'  => $network->getCriteriaForMatchingElement('glpi_ipaddresses', 'binary', 'version'),
