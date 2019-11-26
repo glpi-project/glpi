@@ -35,7 +35,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use RRule\RRule;
-use RRule\RSet;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Reader;
@@ -1792,31 +1791,15 @@ class Planning extends CommonGLPI {
                }
             }
 
-            $dtstart_datetime  = new \DateTime($new_event['start']);
-            $rrule['dtstart']  = $dtstart_datetime->format('Y-m-d\TH:i:sP');
-
-            // create a ruleset containing dtstart, the rrule, and the exclusions
-            $rset    = new Rset();
-            // manage date exclusions,
-            // we need to set a top level property for that (not directly in rrule one)
-            if (isset($rrule['exceptions'])) {
-               foreach ($rrule['exceptions'] as $exception) {
-                  $rset->addExDate(new \Datetime($exception));
-               }
-
-               // remove exceptions key (as libraries throw exception for unknow keys)
-               unset($rrule['exceptions']);
-            }
-
-            $rrule_o = new RRule($rrule);
-            $rset->addRRule($rrule_o);
+            $rset = PlanningExternalEvent::getRsetFromRRuleField($rrule, $new_event['start']);
 
             // append icon to distinguish reccurent event in views
             // use UTC datetime to avoid some issues with rlan/phprrule
-            $hr_rrule   = $rrule;
+            $dtstart_datetime  = new \DateTime($new_event['start']);
+            unset($rrule['exceptions']); // remove exceptions key (as libraries throw exception for unknow keys)
             $hr_rrule_o = new RRule(
                array_merge(
-                  $hr_rrule,
+                  $rrule,
                   [
                      'dtstart' => $dtstart_datetime->format('Ymd\THis\Z')
                   ]
@@ -1848,14 +1831,10 @@ class Planning extends CommonGLPI {
                }
                $ex_dates = [];
                foreach ($rset->getExDates() as $occurence) {
-                  $occurence->setTimezone(new DateTimeZone("UTC"));
-
                   // we forge the ex date with only the date part of the exception
                   // and the hour of the dtstart.
                   // This to presents only date selection to the user
-                  $ex_dates[] = "EXDATE:".date('Ymd', $occurence->getTimestamp())
-                                         ."T"
-                                         .$dtstart_datetime->format('His');
+                  $ex_dates[] = "EXDATE:".$occurence->format('Ymd\THis');
                }
 
                if (count($ex_dates)) {

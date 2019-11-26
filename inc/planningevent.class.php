@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use RRule\RRule;
+use RRule\RSet;
 
 trait PlanningEvent {
 
@@ -440,16 +441,8 @@ trait PlanningEvent {
                if ($options['check_planned'] && count($events[$key]['rrule'])) {
                   $event      = $events[$key];
                   $duration   = strtotime($event['end']) - strtotime($event['begin']);
-                  $rrule_data = array_merge($event['rrule'], ['dtstart' => $event['begin']]);
 
-                  $exceptions = [];
-                  if (isset($rrule_data['exceptions'])) {
-                     $exceptions = $rrule_data['exceptions'];
-                     // remove exceptions key (as libraries throw exception for unknown keys)
-                     unset($rrule_data['exceptions']);
-                  }
-
-                  $rrule      = new RRule($rrule_data);
+                  $rset = self::getRsetFromRRuleField($event['rrule'], $event['begin']);
 
                   // rrule object doesn't any duration property,
                   // so we remove the duration from the begin part of the range
@@ -458,31 +451,13 @@ trait PlanningEvent {
                   $begin_datetime = new DateTime($options['begin']);
                   $begin_datetime->sub(New DateInterval("PT".($duration - 1)."S"));
 
-                  $occurences = $rrule->getOccurrencesBetween($begin_datetime, $options['end']);
+                  $occurences = $rset->getOccurrencesBetween($begin_datetime, $options['end']);
 
                   // add the found occurences to the final tab after replacing their dates
                   foreach ($occurences as $currentDate) {
                      $occurence_begin = $currentDate;
                      $occurence_end   = (clone $currentDate)->add(new DateInterval("PT".$duration."S"));
 
-                     // Check all days on which event occurence belongs.
-                     // If any of these days is not an EXDATE, keep the occurence.
-                     $keep_occurence = false;
-                     $occurence_period = new DatePeriod(
-                        (clone $occurence_begin)->setTime(0, 0, 0),
-                        new DateInterval('P1D'),
-                        (clone $occurence_end)->setTime(0, 0, 0)
-                     );
-                     foreach ($occurence_period as $occurence_day) {
-                        if (!in_array($occurence_day->format('Y-m-d'), $exceptions)) {
-                           $keep_occurence = true;
-                           break;
-                        }
-                     }
-
-                     if (!$keep_occurence) {
-                        continue; // Ignore occurence if in list of dates exception
-                     }
                      $events_toadd[] = array_merge($event, [
                         'begin' => $occurence_begin->format('Y-m-d H:i:s'),
                         'end'   => $occurence_end->format('Y-m-d H:i:s'),
@@ -726,4 +701,40 @@ trait PlanningEvent {
       }
    }
 
+   /**
+    * Returns RSet occurence corresponding to rrule field value.
+    *
+    * @param array  $rrule    RRule field value
+    * @param string $dtstart  Start of first occurence
+    *
+    * @return \RRule\RSet
+    */
+   public static function getRsetFromRRuleField(array $rrule, $dtstart): RSet {
+      $dtstart_datetime  = new \DateTime($dtstart);
+      $rrule['dtstart']  = $dtstart_datetime->format('Y-m-d\TH:i:s\Z');
+
+      // create a ruleset containing dtstart, the rrule, and the exclusions
+      $rset = new RSet();
+
+      // manage date exclusions,
+      // we need to set a top level property for that (not directly in rrule one)
+      if (isset($rrule['exceptions'])) {
+         foreach ($rrule['exceptions'] as $exception) {
+            $exdate = new \Datetime($exception);
+            $exdate->setTime(
+               $dtstart_datetime->format('G'),
+               $dtstart_datetime->format('i'),
+               $dtstart_datetime->format('s')
+            );
+            $rset->addExDate($exdate->format('Y-m-d\TH:i:s\Z'));
+         }
+
+         // remove exceptions key (as libraries throw exception for unknow keys)
+         unset($rrule['exceptions']);
+      }
+
+      $rset->addRRule(new RRule($rrule));
+
+      return $rset;
+   }
 }

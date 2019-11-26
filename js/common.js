@@ -1076,8 +1076,9 @@ function updateProgress(progressid) {
 /**
  * Normalize altfield value of a MultiDatePicker instance.
  *
- * @param input_id
- * @param date_format
+ * @param input_id     id of the date input field
+ * @param date_format  dateFormat option used in MultiDatePicker instance
+ *    (i.e. 'dd-mm-yy', 'mm-dd-yy' or 'yy-mm-dd')
  *
  * @return void
  */
