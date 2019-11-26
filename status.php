@@ -178,10 +178,10 @@ if (($ok_master || $ok_slave )
       foreach ($mailcollectors as $mc) {
          echo " ".$mc['name'];
          if ($mailcol->getFromDB($mc['id'])) {
-            $mailcol->connect();
-            if ($mailcol->storage) {
+            try {
+               $mailcol->connect();
                echo "_OK";
-            } else {
+            } catch (\Exception $e) {
                echo "_PROBLEM";
                $ok = false;
             }
