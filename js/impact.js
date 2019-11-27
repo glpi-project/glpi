@@ -776,13 +776,10 @@ var GLPIImpact = {
       this.cy.boxSelectionEnabled(false);
 
       // Apply saved visibility
-      var checkbox_val;
       if (!parseInt(params.show_depends)) {
-         checkbox_val = $(GLPIImpact.selectors.toggleImpact).prop("checked");
          $(GLPIImpact.selectors.toggleImpact).prop("checked", false);
       }
       if (!parseInt(params.show_impact)) {
-         checkbox_val = $(GLPIImpact.selectors.toggleDepends).prop("checked");
          $(GLPIImpact.selectors.toggleDepends).prop("checked", false);
       }
       this.updateFlags();
