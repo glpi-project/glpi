@@ -776,6 +776,7 @@ var GLPIImpact = {
       this.cy.boxSelectionEnabled(false);
 
       // Apply saved visibility
+      var checkbox_val;
       if (!parseInt(params.show_depends)) {
          checkbox_val = $(GLPIImpact.selectors.toggleImpact).prop("checked");
          $(GLPIImpact.selectors.toggleImpact).prop("checked", false);
@@ -958,8 +959,6 @@ var GLPIImpact = {
     * @param {*} toToggle
     */
    toggleVisibility: function(toToggle) {
-      var checkbox_val;
-
       // Update visibility setting
       GLPIImpact.directionVisibility[toToggle] = !GLPIImpact.directionVisibility[toToggle];
 
@@ -1622,7 +1621,7 @@ var GLPIImpact = {
     *
     * @param {JQuery.Event} event
     */
-   onClick: function (event) {
+   onClick: function () {
       switch (GLPIImpact.editionMode) {
          case GLPIImpact.EDITION_DEFAULT:
             break;
@@ -1811,7 +1810,7 @@ var GLPIImpact = {
                && GLPIImpact.eventData.previousEditionMode !== undefined) {
                GLPIImpact.setEditionMode(GLPIImpact.eventData.previousEditionMode);
 
-               GLPIImpact.eventData.previousEditionMode = undefined
+               GLPIImpact.eventData.previousEditionMode = undefined;
             }
             break;
 
@@ -1822,7 +1821,7 @@ var GLPIImpact = {
                && GLPIImpact.eventData.previousEditionMode !== undefined) {
                GLPIImpact.setEditionMode(GLPIImpact.eventData.previousEditionMode);
 
-               GLPIImpact.eventData.previousEditionMode = undefined
+               GLPIImpact.eventData.previousEditionMode = undefined;
             }
             break;
       }
@@ -2327,33 +2326,33 @@ var GLPIImpact = {
          x: ((clientX - offsetLeft) / scale - pan.x) / zoom,
          y: ((clientY - offsetTop) / scale - pan.y) / zoom
       };
-    },
+   },
 
-    /**
-     * Used for projectIntoViewport
-     *
-     * @returns {Array}
-     */
-    findContainerClientCoords: function () {
+   /**
+    * Used for projectIntoViewport
+    *
+    * @returns {Array}
+    */
+   findContainerClientCoords: function () {
       var container = this.impactContainer[0];
       var rect = container.getBoundingClientRect();
       var style = window.getComputedStyle(container);
 
       var styleValue = function styleValue(name) {
-        return parseFloat(style.getPropertyValue(name));
+         return parseFloat(style.getPropertyValue(name));
       };
 
       var padding = {
-        left  : styleValue('padding-left'),
-        right : styleValue('padding-right'),
-        top   : styleValue('padding-top'),
-        bottom: styleValue('padding-bottom')
+         left  : styleValue('padding-left'),
+         right : styleValue('padding-right'),
+         top   : styleValue('padding-top'),
+         bottom: styleValue('padding-bottom')
       };
       var border = {
-        left  : styleValue('border-left-width'),
-        right : styleValue('border-right-width'),
-        top   : styleValue('border-top-width'),
-        bottom: styleValue('border-bottom-width')
+         left  : styleValue('border-left-width'),
+         right : styleValue('border-right-width'),
+         top   : styleValue('border-top-width'),
+         bottom: styleValue('border-bottom-width')
       };
       var clientWidth      = container.clientWidth;
       var clientHeight     = container.clientHeight;
