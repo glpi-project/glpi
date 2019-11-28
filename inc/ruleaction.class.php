@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleAction extends CommonDBChild {
 
    // From CommonDBChild
+   static public $itemtype        = "Rule";
    static public $items_id        = 'rules_id';
    public $dohistory              = true;
    public $auto_message_on_action = false;
