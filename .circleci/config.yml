@@ -20,23 +20,23 @@ executors:
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
       - image: circleci/mariadb:10.3-ram
-  php_7_3_mysql_5_6:
+  php_7_4_mariadb:
     docker:
-      - image: glpi/circleci-env-core:php_7.3_fpm-node
+      - image: glpi/circleci-env-core:php_7.4_fpm-node
+      - image: circleci/mariadb:10.4-ram
+  php_7_4_mysql_5_6:
+    docker:
+      - image: glpi/circleci-env-core:php_7.4_fpm-node
       - image: circleci/mysql:5.6-ram
-  php_7_3_mysql_5_7:
+  php_7_4_mysql_5_7:
     docker:
-      - image: glpi/circleci-env-core:php_7.3_fpm-node
+      - image: glpi/circleci-env-core:php_7.4_fpm-node
       - image: circleci/mysql:5.7-ram
-  php_7_3_mysql_8_0:
+  php_7_4_mysql_8_0:
     docker:
-      - image: glpi/circleci-env-core:php_7.3_fpm-node
+      - image: glpi/circleci-env-core:php_7.4_fpm-node
       - image: circleci/mysql:8.0-ram
         command: [--default-authentication-plugin=mysql_native_password] # Fix "Authentication plugin 'caching_sha2_password' cannot be loaded"
-  php_latest_mariadb:
-    docker:
-      - image: glpi/circleci-env-core:php_latest_fpm-node
-      - image: circleci/mariadb:10.3-ram
 
 commands:
   # Build command.
@@ -214,30 +214,30 @@ jobs:
       - build
       - run_full_test_suite
 
-  # PHP 7.3 test suite using MySQL 5.6.
-  php_7_3_mysql_5_6_test_suite:
-    executor: php_7_3_mysql_5_6
+  # PHP 7.4 test suite.
+  php_7_4_test_suite:
+    executor: php_7_4_mariadb
     steps:
       - build
       - run_full_test_suite
 
-  # PHP 7.3 test suite using MySQL 5.7.
-  php_7_3_mysql_5_7_test_suite:
-    executor: php_7_3_mysql_5_7
+  # PHP 7.4 test suite using MySQL 5.6.
+  php_7_4_mysql_5_6_test_suite:
+    executor: php_7_4_mysql_5_6
     steps:
       - build
       - run_full_test_suite
 
-  # PHP 7.3 test suite using MySQL 8.0.
-  php_7_3_mysql_8_0_test_suite:
-    executor: php_7_3_mysql_8_0
+  # PHP 7.4 test suite using MySQL 5.7.
+  php_7_4_mysql_5_7_test_suite:
+    executor: php_7_4_mysql_5_7
     steps:
       - build
       - run_full_test_suite
 
-  # PHP latest version test suite.
-  php_latest_test_suite:
-    executor: php_latest_mariadb
+  # PHP 7.4 test suite using MySQL 8.0.
+  php_7_4_mysql_8_0_test_suite:
+    executor: php_7_4_mysql_8_0
     steps:
       - build
       - run_full_test_suite
@@ -285,7 +285,15 @@ workflows:
           filters:
             tags:
               only: /.*/ # run also on tag creation
-      - php_7_3_mysql_5_6_test_suite:
+            branches:
+              ignore: /.*/ # do not run on branch update
+      - php_7_4_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+      - php_7_4_mysql_5_6_test_suite:
           requires:
             - checkout
           filters:
@@ -293,7 +301,7 @@ workflows:
               only: /.*/ # run also on tag creation
             branches:
               ignore: /.*/ # do not run on branch update
-      - php_7_3_mysql_5_7_test_suite:
+      - php_7_4_mysql_5_7_test_suite:
           requires:
             - checkout
           filters:
@@ -301,7 +309,7 @@ workflows:
               only: /.*/ # run also on tag creation
             branches:
               ignore: /.*/ # do not run on branch update
-      - php_7_3_mysql_8_0_test_suite:
+      - php_7_4_mysql_8_0_test_suite:
           requires:
             - checkout
           filters:
@@ -338,15 +346,15 @@ workflows:
       - php_7_3_test_suite:
           requires:
             - checkout
-      - php_7_3_mysql_5_6_test_suite:
+      - php_7_4_test_suite:
           requires:
             - checkout
-      - php_7_3_mysql_5_7_test_suite:
+      - php_7_4_mysql_5_6_test_suite:
           requires:
             - checkout
-      - php_7_3_mysql_8_0_test_suite:
+      - php_7_4_mysql_5_7_test_suite:
           requires:
             - checkout
-      - php_latest_test_suite:
+      - php_7_4_mysql_8_0_test_suite:
           requires:
             - checkout
