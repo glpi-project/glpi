@@ -61,10 +61,8 @@ jobs:
           #- "7.0"
           #- "7.1"
           #- "7.2"
-          - "7.3"
-          - "7.4-rc"
-        exclude:
-          - {db-image: "mysql:8.0", php-version: "7.4-rc"}
+          #- "7.3"
+          - "7.4"
     services:
       app:
         image: "glpi/githubactions-php:${{ matrix.php-version }}"
