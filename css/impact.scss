@@ -370,8 +370,9 @@ i.fa-impact-manipulation {
       }
 
       &.active {
-         color: rgb(14, 14, 14) !important;
-         background-color: #f1f1f1 !important;
+         color: #444 !important;
+         background-color: #d5d5d5 !important;
+         border-radius: 2px;
       }
    }
 
@@ -534,6 +535,15 @@ i.fa-impact-manipulation {
 .impact-side-settings-item {
    margin-bottom: 10px;
    white-space: nowrap;
+}
+
+.impact-res-hidden {
+   float: right;
+}
+
+.impact-res-disabled {
+   opacity: 0.5;
+   cursor: not-allowed !important;
 }
 
 /*

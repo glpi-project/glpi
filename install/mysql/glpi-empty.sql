@@ -1210,7 +1210,7 @@ CREATE TABLE `glpi_impactcompounds` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_impacts_parent
+### Dump table glpi_impactitems
 
 DROP TABLE IF EXISTS `glpi_impactitems`;
 CREATE TABLE `glpi_impactitems` (
@@ -1218,24 +1218,34 @@ CREATE TABLE `glpi_impactitems` (
 	`itemtype` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
 	`items_id` INT(11) NOT NULL DEFAULT '0',
 	`parent_id` INT(11) NOT NULL DEFAULT '0',
-	`zoom` FLOAT NOT NULL DEFAULT '0',
-	`pan_x` FLOAT NOT NULL DEFAULT '0',
-	`pan_y` FLOAT NOT NULL DEFAULT '0',
-	`impact_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
-	`depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
-	`impact_and_depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
-	`position_x` FLOAT NOT NULL DEFAULT '0',
-	`position_y` FLOAT NOT NULL DEFAULT '0',
-	`show_depends` TINYINT NOT NULL DEFAULT '1',
-	`show_impact` TINYINT NOT NULL DEFAULT '1',
-	`max_depth` INT(11) NOT NULL DEFAULT '5',
+	`impactcontexts_id` INT(11) NOT NULL DEFAULT '0',
+	`is_slave` TINYINT(1) NOT NULL DEFAULT '1',
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `unicity` (
     `itemtype`,
     `items_id`
   ),
 	KEY `source` (`itemtype`, `items_id`),
-	KEY `parent_id` (`parent_id`)
+	KEY `parent_id` (`parent_id`),
+	KEY `impactcontexts_id` (`impactcontexts_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_impactcontexts
+
+DROP TABLE IF EXISTS `glpi_impactcontexts`;
+CREATE TABLE `glpi_impactcontexts` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`positions` TEXT NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+	`zoom` FLOAT NOT NULL DEFAULT '0',
+	`pan_x` FLOAT NOT NULL DEFAULT '0',
+	`pan_y` FLOAT NOT NULL DEFAULT '0',
+	`impact_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+	`depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+	`impact_and_depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+	`show_depends` TINYINT(1) NOT NULL DEFAULT '1',
+	`show_impact` TINYINT(1) NOT NULL DEFAULT '1',
+	`max_depth` INT(11) NOT NULL DEFAULT '5',
+	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_consumableitems

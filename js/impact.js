@@ -107,6 +107,9 @@ var GLPIImpact = {
    selectedItemtype: "",
    addAssetPage: 0,
 
+   // Buffer used when generating positions for unset nodes
+   no_positions: [],
+
    // Store selectors
    selectors: {
       // Dialogs
@@ -160,12 +163,13 @@ var GLPIImpact = {
 
    // Data that needs to be stored/shared between events
    eventData: {
-      addEdgeStart : null,   // Store starting node of a new edge
-      tmpEles      : null,   // Temporary collection used when adding an edge
-      lastClick    : null,   // Store last click timestamp
-      boxSelected  : [],
-      grabNodeStart: null,
-      boundingBox  : null,
+      addEdgeStart      : null,   // Store starting node of a new edge
+      tmpEles           : null,   // Temporary collection used when adding an edge
+      lastClicktimestamp: null,   // Store last click timestamp
+      lastClickTarget   : null,   // Store last click target
+      boxSelected       : [],
+      grabNodeStart     : null,
+      boundingBox       : null,
    },
 
    /**
@@ -210,12 +214,6 @@ var GLPIImpact = {
             }
          },
          {
-            selector: ':selected',
-            style: {
-               'overlay-opacity': 0.2,
-            }
-         },
-         {
             selector: '[todelete=1]:selected',
             style: {
                'overlay-opacity': 0.2,
@@ -233,6 +231,20 @@ var GLPIImpact = {
                'background-opacity': '0',
                'font-size'         : '1em',
                'text-opacity'      : 0.7,
+            }
+         },
+         {
+            selector: 'node[highlight]',
+            style: {
+               'overlay-opacity': 0.18,
+               'overlay-color'  : "gold",
+            }
+         },
+         {
+            selector: ':selected',
+            style: {
+               'overlay-opacity': 0.2,
+               'overlay-color'  : "gray",
             }
          },
          {
@@ -287,16 +299,225 @@ var GLPIImpact = {
     *
     * @returns {Object}
     */
-   getPresetLayout: function () {
+   getPresetLayout: function (positions) {
+      this.no_positions = [];
+
       return {
          name: 'preset',
          positions: function(node) {
+            var x = 0;
+            var y = 0;
+
+            if (!node.isParent() && positions[node.data('id')] !== undefined) {
+               x = parseFloat(positions[node.data('id')].x);
+               y = parseFloat(positions[node.data('id')].y);
+            }
+
             return {
-               x: parseFloat(node.data('position_x')),
-               y: parseFloat(node.data('position_y')),
+               x: x,
+               y: y,
             };
          }
       };
+   },
+
+   /**
+    * Generate postion for nodes that are not saved in the current context
+    *
+    * Firstly, order the positionless nodes in a way that the one that depends
+    * on others positionless nodes are placed after their respective
+    * dependencies
+    *
+    * Secondly, try to place each nodes on the graph:
+    *    1) take a random non positionless neighbor of our node
+    *    2) Find the closest node to this neighbor, save the distance (if this
+    *    neighbor has no neighbor of its own use a set value for the distance)
+    *    3) Try to place the node at the left or the right of the neighbor (
+    *    depending on the edge direction, we want the graph to flow from left
+    *    to right) at the saved position.
+    *    4) If the position is not avaible, try at various angles bewteen -75°
+    *    and 75°
+    *    5) If the position is still not available, increase the distance and
+    *    try again until a valid position is found
+    */
+   generateMissingPositions: function() {
+      // Safety check, should not happen
+      if (this.cy.filter("node:childless").length == this.no_positions.length) {
+         // Set a random node as valid
+         this.no_positions.pop();
+      }
+
+      // Keep tracks of the id of all the no yet placed nodes
+      var not_placed = [];
+      this.no_positions.forEach(function(node){
+         not_placed.push(node.data('id'));
+      });
+
+      // First we need to order no_positions in a way that the ones that depend
+      // on the positions of other nodes with no position are used last
+      var clean_order = [];
+      var np_valid = [];
+      while (this.no_positions.length !== 0) {
+         this.no_positions.forEach(function(node, index) {
+            // Check that any neibhor is either valid (no in not placed) or has
+            // just been validated (in np_valid)
+
+            var valid = false;
+            node.neighborhood().forEach(function(ele) {
+               if (valid) {
+                  return;
+               }
+
+               // We don't need edges
+               if (!ele.isNode()) {
+                  return;
+               }
+
+               if (not_placed.indexOf(ele.data('id')) === -1
+                  || np_valid.indexOf(ele.data('id')) !== -1) {
+                  valid = true;
+               }
+            });
+
+            if (valid) {
+               // Add to the list of validated nodes, set order and remove it
+               // from buffer
+               np_valid.push(node.data('id'));
+               clean_order.push(node);
+               // not_placed.splice(index, 1);
+               GLPIImpact.no_positions.splice(index, 1);
+            }
+         });
+      }
+
+      this.no_positions = clean_order;
+
+      // Generate positions for nodes which lake them
+      this.no_positions.forEach(function(node){
+         // Find random neighbor with a valid position
+         var neighbor = null;
+         node.neighborhood().forEach(function(ele) {
+            // We already found a valid neighor, skip until the end
+            if (neighbor !== null) {
+               return;
+            }
+
+            if (!ele.isNode()) {
+               return;
+            }
+
+            // Ignore our starting node
+            if (ele.data('id') == node.data('id')) {
+               return;
+            }
+
+            // Ignore node with no positions not yet placed
+            if (not_placed.indexOf(ele.data('id')) !== -1) {
+               return;
+            }
+
+            // Valid neighor, let's pick it
+            neighbor = ele;
+         });
+
+         // Should not happen if no_positions is correctly sorted
+         if (neighbor === null) {
+            return;
+         }
+
+         // We now need to find the closest node to the neighor
+         var closest = null;
+         var distance = Number.MAX_SAFE_INTEGER;
+         neighbor.neighborhood().forEach(function(ele){
+            if (!ele.isNode()) {
+               return;
+            }
+
+            var ele_distance = GLPIImpact.getDistance(neighbor.position(), ele.position());
+            if (ele_distance < distance) {
+               distance = ele_distance;
+               closest = ele;
+            }
+         });
+
+         // If our neighbor node has no neighors himself, use a set distance
+         if (closest === null) {
+            distance = 100;
+         }
+
+         // Find the edge between our node and the chosen neighbor
+         var edge = node.edgesTo(neighbor)[0];
+         if (edge == undefined) {
+            edge = neighbor.edgesTo(node)[0];
+         }
+
+         // Set direction factor according to the edge direction (are we the
+         // source or the target of this edge ?). This factor will be used to
+         // know if the node must be placed before or after the neighbor
+         var direction_factor;
+         if (edge.data('target') == node.data('id')) {
+            direction_factor = 1;
+         } else {
+            direction_factor = -1;
+         }
+
+         // Keep trying to place the node until we succeed$
+         var success = false;
+         while(!success) {
+            var angle = 0;
+            var angle_mirror = false;
+
+            // Try all possible angles bewteen -75° and 75°
+            while (angle !== -75) {
+               // Calculate the position
+               var position = {
+                  x: direction_factor * (distance * Math.cos(angle * (Math.PI / 180))) + (neighbor.position().x),
+                  y: distance * Math.sin(angle * (Math.PI / 180)) + neighbor.position().y,
+               };
+
+               // Check if position is available
+               var available = true;
+               GLPIImpact.cy.filter().forEach(function(ele){
+                  var bdb = ele.boundingBox();
+                  // var bdb = ele.renderedBoundingBox();
+
+                  if ((bdb.x1 - 20) < position.x && (bdb.x2 + 20) > position.x
+                     && (bdb.y1 - 20) < position.y && (bdb.y2 + 20) > position.y) {
+                     available = false;
+                  }
+               });
+
+               // Success, set the node position and go to the next one
+               if (available) {
+                  node.position(position);
+                  var np_index = not_placed.indexOf(node.data('id'));
+                  not_placed.splice(np_index, 1);
+                  success = true;
+                  break;
+               }
+
+               if (!angle_mirror && angle !== 0) {
+                  // We tried X°, lets try the "mirror angle" -X°]
+                  angle = angle * -1;
+                  angle_mirror = true;
+               } else {
+                  // Add 15° and return to positive number
+                  if (angle < 0) {
+                     angle = 0 - angle;
+                     angle_mirror = false;
+                  }
+
+                  angle += 15;
+               }
+            }
+
+            // Increase distance and try again
+            distance += 30;
+         }
+      });
+
+      // Reset buffer
+      this.no_positions = [];
    },
 
    /**
@@ -448,6 +669,37 @@ var GLPIImpact = {
     *
     * @returns {Object}
     */
+   computeContext: function(currentNodes) {
+      var positions = {};
+
+      Object.keys(currentNodes).forEach(function (nodeID) {
+         var node = currentNodes[nodeID];
+         positions[nodeID] = {
+            x: node.position.x,
+            y: node.position.y
+         };
+      });
+
+      return {
+         node_id                 : this.startNode,
+         positions               : JSON.stringify(positions),
+         zoom                    : GLPIImpact.cy.zoom(),
+         pan_x                   : GLPIImpact.cy.pan().x,
+         pan_y                   : GLPIImpact.cy.pan().y,
+         impact_color            : GLPIImpact.edgeColors[GLPIImpact.FORWARD],
+         depends_color           : GLPIImpact.edgeColors[GLPIImpact.BACKWARD],
+         impact_and_depends_color: GLPIImpact.edgeColors[GLPIImpact.BOTH],
+         show_depends            : GLPIImpact.directionVisibility[GLPIImpact.BACKWARD],
+         show_impact             : GLPIImpact.directionVisibility[GLPIImpact.FORWARD],
+         max_depth               : GLPIImpact.maxDepth,
+      };
+   },
+
+   /**
+    * Delta computation for parents
+    *
+    * @returns {Object}
+    */
    computeItemsDelta: function(currentNodes) {
       var itemsDelta = {};
 
@@ -464,33 +716,11 @@ var GLPIImpact = {
             node.parent = 0;
          }
 
-         if (nodeID == GLPIImpact.startNode) {
-            // Starting node of the graph, save viewport and edge colors
-            itemsDelta[node.impactitem_id] = {
-               action                  : GLPIImpact.DELTA_ACTION_UPDATE,
-               parent_id               : node.parent,
-               position_x              : node.position.x,
-               position_y              : node.position.y,
-               zoom                    : GLPIImpact.cy.zoom(),
-               pan_x                   : GLPIImpact.cy.pan().x,
-               pan_y                   : GLPIImpact.cy.pan().y,
-               impact_color            : GLPIImpact.edgeColors[GLPIImpact.FORWARD],
-               depends_color           : GLPIImpact.edgeColors[GLPIImpact.BACKWARD],
-               impact_and_depends_color: GLPIImpact.edgeColors[GLPIImpact.BOTH],
-               show_depends            : GLPIImpact.directionVisibility[GLPIImpact.BACKWARD],
-               show_impact             : GLPIImpact.directionVisibility[GLPIImpact.FORWARD],
-               max_depth               : GLPIImpact.maxDepth,
-            };
-         } else {
-            // Others nodes of the graph, store only their parents and position
-            itemsDelta[node.impactitem_id] = {
-               action    : GLPIImpact.DELTA_ACTION_UPDATE,
-               parent_id : node.parent,
-               position_x: node.position.x,
-               position_y: node.position.y,
-            };
-         }
-
+         // Store parent
+         itemsDelta[node.impactitem_id] = {
+            action    : GLPIImpact.DELTA_ACTION_UPDATE,
+            parent_id : node.parent,
+         };
       });
 
       return itemsDelta;
@@ -512,6 +742,7 @@ var GLPIImpact = {
       result.edges = this.computeEdgeDelta(currentState.edges);
       result.compounds = this.computeCompoundsDelta(currentState.compounds);
       result.items = this.computeItemsDelta(currentState.items);
+      result.context = this.computeContext(currentState.items);
 
       return result;
    },
@@ -581,9 +812,9 @@ var GLPIImpact = {
       // Build the new subgraph
       $.when(GLPIImpact.buildGraphFromNode(node))
          .done(
-            function (graph) {
+            function (graph, params) {
                // Insert the new graph data into the current graph
-               GLPIImpact.insertGraph(graph, {
+               GLPIImpact.insertGraph(graph, params, {
                   id: nodeID,
                   x: position.x,
                   y: position.y
@@ -704,39 +935,33 @@ var GLPIImpact = {
     * @param {string} data (json)
     */
    buildNetwork: function(data, params, readonly) {
+      var layout;
+
       // Init workspace status
       GLPIImpact.showDefaultWorkspaceStatus();
 
-      // Apply custom colors if defined
-      if (params.impact_color != '') {
+      // Load params - phase1 (before cytoscape creation)
+      if (params.impactcontexts_id !== undefined && params.impactcontexts_id !== 0) {
+         // Apply custom colors if defined
          this.setEdgeColors({
             forward : params.impact_color,
             backward: params.depends_color,
             both    : params.impact_and_depends_color,
          });
+
+         // Apply max depth
+         this.maxDepth = params.max_depth;
+
+         // Preset layout based on node positions
+         layout = this.getPresetLayout(JSON.parse(params.positions));
       } else {
+         // Default params if no context was found
          this.setEdgeColors(this.defaultColors);
+         this.maxDepth = this.DEFAULT_DEPTH;
+
+         // Procedural layout
+         layout = this.getDagreLayout();
       }
-
-      // Set color widgets
-      $(GLPIImpact.selectors.dependsColor).spectrum(
-         "set",
-         GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
-      );
-      $(GLPIImpact.selectors.impactColor).spectrum(
-         "set",
-         GLPIImpact.edgeColors[GLPIImpact.FORWARD]
-      );
-      $(GLPIImpact.selectors.impactAndDependsColor).spectrum(
-         "set",
-         GLPIImpact.edgeColors[GLPIImpact.BOTH]
-      );
-
-      // Preset layout
-      var layout = this.getPresetLayout();
-
-      // Apply max depth
-      this.maxDepth = params.max_depth;
 
       // Init cytoscape
       this.cy = cytoscape({
@@ -746,6 +971,9 @@ var GLPIImpact = {
          layout   : layout,
          wheelSensitivity: 0.25,
       });
+
+      // If we used the preset layout, some nodes might lack positions
+      this.generateMissingPositions();
 
       this.cy.minZoom(0.5);
 
@@ -757,6 +985,11 @@ var GLPIImpact = {
          this.enableGraphEdition();
       }
 
+      // Highlight starting node
+      this.cy.filter("node[start]").data({
+         highlight: 1,
+      });
+
       // Enable context menu
       this.cy.contextMenus({
          menuItems: this.getContextMenuItems(),
@@ -767,7 +1000,7 @@ var GLPIImpact = {
       // Enable grid
       this.cy.gridGuide({
          gridStackOrder: 0,
-         snapToGridOnRelease: true,
+         snapToGridOnRelease: false,
          snapToGridDuringDrag: true,
          gridSpacing: 12,
          drawGrid: true,
@@ -777,40 +1010,51 @@ var GLPIImpact = {
       // Disable box selection as we don't need it
       this.cy.boxSelectionEnabled(false);
 
-      // Apply saved visibility
-      if (!parseInt(params.show_depends)) {
-         $(GLPIImpact.selectors.toggleImpact).prop("checked", false);
-      }
-      if (!parseInt(params.show_impact)) {
-         $(GLPIImpact.selectors.toggleDepends).prop("checked", false);
-      }
-      this.updateFlags();
+      // Load params - phase 2 (after cytoscape creation)
+      if (params.impactcontexts_id !== undefined && params.impactcontexts_id !== 0) {
+         // Apply saved visibility
+         if (!parseInt(params.show_depends)) {
+            $(GLPIImpact.selectors.toggleImpact).prop("checked", false);
+         }
+         if (!parseInt(params.show_impact)) {
+            $(GLPIImpact.selectors.toggleDepends).prop("checked", false);
+         }
+         this.updateFlags();
 
-      // Set viewport
-      if (params.zoom != '0') {
-         // If viewport params are set, apply them
-         this.cy.viewport({
-            zoom: parseFloat(params.zoom),
-            pan: {
-               x: parseFloat(params.pan_x),
-               y: parseFloat(params.pan_y),
+         // Set viewport
+         if (params.zoom != '0') {
+            // If viewport params are set, apply them
+            this.cy.viewport({
+               zoom: parseFloat(params.zoom),
+               pan: {
+                  x: parseFloat(params.pan_x),
+                  y: parseFloat(params.pan_y),
+               }
+            });
+
+            // Check viewport is not empty or contains only one item
+            var viewport = GLPIImpact.cy.extent();
+            var empty = true;
+            GLPIImpact.cy.nodes().forEach(function(node) {
+               if (node.position().x > viewport.x1
+                  && node.position().x < viewport.x2
+                  && node.position().y > viewport.x1
+                  && node.position().y < viewport.x2
+               ){
+                  empty = false;
+               }
+            });
+
+            if (empty || GLPIImpact.cy.filter("node:childless").length == 1) {
+               this.cy.fit();
+
+               if (this.cy.zoom() > 2.3) {
+                  this.cy.zoom(2.3);
+                  this.cy.center();
+               }
             }
-         });
-
-         // Check viewport is not empty or contains only one item
-         var viewport = GLPIImpact.cy.extent();
-         var empty = true;
-         GLPIImpact.cy.nodes().forEach(function(node) {
-            if (node.position().x > viewport.x1
-               && node.position().x < viewport.x2
-               && node.position().y > viewport.x1
-               && node.position().y < viewport.x2
-            ){
-               empty = false;
-            }
-         });
-
-         if (empty || GLPIImpact.cy.filter("node:childless").length == 1) {
+         } else {
+            // Else fit the graph and reduce zoom if needed
             this.cy.fit();
 
             if (this.cy.zoom() > 2.3) {
@@ -819,7 +1063,7 @@ var GLPIImpact = {
             }
          }
       } else {
-         // Else fit the graph and reduce zoom if needed
+         // Default params if no context was found
          this.cy.fit();
 
          if (this.cy.zoom() > 2.3) {
@@ -838,8 +1082,9 @@ var GLPIImpact = {
       this.cy.on('click', 'edge', this.edgeOnClick);
       this.cy.on('click', 'node', this.nodeOnClick);
       this.cy.on('box', this.onBox);
-      this.cy.on('drag add remove pan zoom change', this.onChange);
+      this.cy.on('drag add remove change', this.onChange);
       this.cy.on('doubleClick', this.onDoubleClick);
+      this.cy.on('remove', this.onRemove);
 
       // Global events
       $(document).keydown(this.onKeyDown);
@@ -855,6 +1100,20 @@ var GLPIImpact = {
       }
       $(GLPIImpact.selectors.maxDepthView).html(text);
       $(GLPIImpact.selectors.maxDepth).val(GLPIImpact.maxDepth);
+
+      // Set color widgets default values
+      $(GLPIImpact.selectors.dependsColor).spectrum(
+         "set",
+         GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
+      );
+      $(GLPIImpact.selectors.impactColor).spectrum(
+         "set",
+         GLPIImpact.edgeColors[GLPIImpact.FORWARD]
+      );
+      $(GLPIImpact.selectors.impactAndDependsColor).spectrum(
+         "set",
+         GLPIImpact.edgeColors[GLPIImpact.BOTH]
+      );
    },
 
    /**
@@ -1085,7 +1344,7 @@ var GLPIImpact = {
          dataType: "json",
          data: node,
          success: function(data) {
-            dfd.resolve(JSON.parse(data.graph));
+            dfd.resolve(JSON.parse(data.graph), JSON.parse(data.params));
          },
          error: function () {
             dfd.reject();
@@ -1095,7 +1354,12 @@ var GLPIImpact = {
       return dfd.promise();
    },
 
-
+   /**
+    * Get distance between two point A and B
+    * @param {Object} a x, y
+    * @param {Object} b x, y
+    * @returns {Number}
+    */
    getDistance: function(a, b) {
       return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
    },
@@ -1103,51 +1367,17 @@ var GLPIImpact = {
    /**
     * Insert another new graph into the current one
     *
-    * @param {Array} graph
+    * @param {Array}  graph
+    * @param {Object} params
     * @param {Object} startNode data, x, y
     */
-   insertGraph: function(graph, startNode) {
+   insertGraph: function(graph, params, startNode) {
       var toAdd = [];
-
-      // Find closest available space near the graph
-      var boundingBox = this.cy.filter().boundingBox();
-      var distances   = {
-         right: this.getDistance(
-            {
-               x: boundingBox.x2,
-               y: (boundingBox.y1 + boundingBox.y2) / 2
-            },
-            startNode
-         ),
-         left: this.getDistance(
-            {
-               x: boundingBox.x1,
-               y: (boundingBox.y1 + boundingBox.y2) / 2
-            },
-            startNode
-         ),
-         top: this.getDistance(
-            {
-               x: (boundingBox.x1 + boundingBox.x2) / 2,
-               y: boundingBox.y2
-            },
-            startNode
-         ),
-         bottom: this.getDistance(
-            {
-               x: (boundingBox.x1 + boundingBox.x2) / 2,
-               y: boundingBox.y1
-            },
-            startNode
-         ),
-      };
-      var lowest = Math.min.apply(null, Object.values(distances));
-      var direction = Object.keys(distances).filter(function (x) {
-         return distances[x] === lowest;
-      })[0];
+      var mainBoundingBox = this.cy.filter().boundingBox();
 
       // Try to add the new graph nodes
-      for (var i=0; i<graph.length; i++) {
+      var i;
+      for (i=0; i<graph.length; i++) {
          var id = graph[i].data.id;
          // Check that the element is not already on the graph,
          if (this.cy.filter('[id="' + id + '"]').length > 0) {
@@ -1178,54 +1408,170 @@ var GLPIImpact = {
 
       // Add nodes and apply layout
       var eles = this.cy.add(toAdd);
-      var options = GLPIImpact.getDagreLayout();
+
+      var options;
+      if (params.positions === undefined) {
+         options = this.getDagreLayout();
+      } else {
+         options = this.getPresetLayout(JSON.parse(params.positions));
+      }
 
       // Place the layout anywhere to compute it's bounding box
       var layout = eles.layout(options);
       layout.run();
+      this.generateMissingPositions();
 
+      // First, position the graph on the clicked areaa
       var newGraphBoundingBox = eles.boundingBox();
-      var startingPoint;
+      var center = {
+         x: (newGraphBoundingBox.x1 + newGraphBoundingBox.x2) / 2,
+         y: (newGraphBoundingBox.y1 + newGraphBoundingBox.y2) / 2,
+      };
 
-      // Now compute the real location where we want it
-      switch (direction) {
-         case 'right':
-            startingPoint = {
-               x: newGraphBoundingBox.x1,
-               y: (newGraphBoundingBox.y1 + newGraphBoundingBox.y2) / 2,
+      var centerToClickVector = [
+         startNode.x - center.x,
+         startNode.y - center.y,
+      ];
+
+      // Apply vector to each node
+      eles.nodes().forEach(function(node) {
+         if (!node.isParent()) {
+            node.position({
+               x: node.position().x + centerToClickVector[0],
+               y: node.position().y + centerToClickVector[1],
+            });
+         }
+      });
+
+      newGraphBoundingBox = eles.boundingBox();
+
+      // If the two bouding box overlap
+      if (!(mainBoundingBox.x1 > newGraphBoundingBox.x2
+         || newGraphBoundingBox.x1 > mainBoundingBox.x2
+         || mainBoundingBox.y1 > newGraphBoundingBox.y2
+         || newGraphBoundingBox.y1 > mainBoundingBox.y2)) {
+
+         // We want to find the point "intersect", which is the closest
+         // intersection between the point at the center of the new bounding box
+         // and the main bouding bouding box.
+         // We then want to find the point "closest" which is the vertice of
+         // the new bounding box which is the closest to the center of the
+         // main bouding box
+
+         // Then the vector betwteen "intersect" and "closest" can be applied
+         // to the new graph to make it "slide" out of the main graph
+
+         // Center of the new graph
+         center = {
+            x: Math.round((newGraphBoundingBox.x1 + newGraphBoundingBox.x2) / 2),
+            y: Math.round((newGraphBoundingBox.y1 + newGraphBoundingBox.y2) / 2),
+         };
+
+         var directions = [
+            [1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, 1], [-1, -1], [1, -1]
+         ];
+
+         var edges = [
+            {
+               a: {x: Math.round(mainBoundingBox.x1), y: Math.round(mainBoundingBox.y1)},
+               b: {x: Math.round(mainBoundingBox.x2), y: Math.round(mainBoundingBox.y1)},
+            },
+            {
+               a: {x: Math.round(mainBoundingBox.x2), y: Math.round(mainBoundingBox.y1)},
+               b: {x: Math.round(mainBoundingBox.x1), y: Math.round(mainBoundingBox.y2)},
+            },
+            {
+               a: {x: Math.round(mainBoundingBox.x1), y: Math.round(mainBoundingBox.y2)},
+               b: {x: Math.round(mainBoundingBox.x2), y: Math.round(mainBoundingBox.y2)},
+            },
+            {
+               a: {x: Math.round(mainBoundingBox.x2), y: Math.round(mainBoundingBox.y2)},
+               b: {x: Math.round(mainBoundingBox.x1), y: Math.round(mainBoundingBox.y1)},
+            }
+         ];
+
+         i = 0; // Safegard, no more than X tries
+         var intersect;
+         while (i < 50000) {
+            directions.forEach(function(vector) {
+               if (intersect !== undefined) {
+                  return;
+               }
+
+               var point = {
+                  x: center.x + (vector[0] * i),
+                  y: center.y + (vector[1] * i),
+               };
+
+               // Check if the point intersect with one of the edges
+               edges.forEach(function(edge) {
+                  if (intersect !== undefined) {
+                     return;
+                  }
+
+                  if ((GLPIImpact.getDistance(point, edge.a)
+                     + GLPIImpact.getDistance(point, edge.b))
+                     == GLPIImpact.getDistance(edge.a, edge.b)) {
+                     // Found intersection
+                     intersect = {
+                        x: point.x,
+                        y: point.y,
+                     };
+                  }
+               });
+            });
+
+            i++;
+
+            if (intersect !== undefined) {
+               break;
+            }
+         }
+
+         if (intersect !== undefined) {
+            // Center of the main graph
+            center = {
+               x: (mainBoundingBox.x1 + mainBoundingBox.x2) / 2,
+               y: (mainBoundingBox.y1 + mainBoundingBox.y2) / 2,
             };
-            break;
-         case 'left':
-            startingPoint = {
-               x: newGraphBoundingBox.x2,
-               y: (newGraphBoundingBox.y1 + newGraphBoundingBox.y2) / 2,
-            };
-            break;
-         case 'top':
-            startingPoint = {
-               x: (newGraphBoundingBox.x1 + newGraphBoundingBox.x2) / 2,
-               y: newGraphBoundingBox.y1,
-            };
-            break;
-         case 'bottom':
-            startingPoint = {
-               x: (newGraphBoundingBox.x1 + newGraphBoundingBox.x2) / 2,
-               y: newGraphBoundingBox.y2,
-            };
-            break;
+
+            var vertices = [
+               {x: newGraphBoundingBox.x1, y: newGraphBoundingBox.y1},
+               {x: newGraphBoundingBox.x1, y: newGraphBoundingBox.y2},
+               {x: newGraphBoundingBox.x2, y: newGraphBoundingBox.y1},
+               {x: newGraphBoundingBox.x2, y: newGraphBoundingBox.y2},
+            ];
+
+            var closest;
+            var min_dist;
+
+            vertices.forEach(function(vertice) {
+               var dist = GLPIImpact.getDistance(vertice, center);
+               if (min_dist == undefined || dist < min_dist) {
+                  min_dist = dist;
+                  closest = vertice;
+               }
+            });
+
+            // Compute vector between closest and intersect
+            var vector = [
+               intersect.x - closest.x,
+               intersect.y - closest.y,
+            ];
+
+            // Apply vector to each node
+            eles.nodes().forEach(function(node) {
+               if (!node.isParent()) {
+                  node.position({
+                     x: node.position().x + vector[0],
+                     y: node.position().y + vector[1],
+                  });
+               }
+            });
+         }
       }
 
-      newGraphBoundingBox.x1 += startNode.x - startingPoint.x;
-      newGraphBoundingBox.x2 += startNode.x - startingPoint.x;
-      newGraphBoundingBox.y1 += startNode.y - startingPoint.y;
-      newGraphBoundingBox.y2 += startNode.y - startingPoint.y;
-
-      options.boundingBox = newGraphBoundingBox;
-
-      // Apply layout again with correct bounding box
-      layout = eles.layout(options);
-      layout.run();
-
+      this.generateMissingPositions();
       this.cy.animate({
          center: {
             eles : GLPIImpact.cy.filter(""),
@@ -1460,7 +1806,9 @@ var GLPIImpact = {
     * Enable the save button
     */
    showCleanWorkspaceStatus: function() {
+      window.glpiUnsavedFormChanges = false;
       $(GLPIImpact.selectors.save).removeClass('dirty');
+      $(GLPIImpact.selectors.save).removeClass('clean'); // Needed for animations if the workspace is not dirty
       $(GLPIImpact.selectors.save).addClass('clean');
       $(GLPIImpact.selectors.save).find('i').removeClass("fas fa-exclamation-triangle");
       $(GLPIImpact.selectors.save).find('i').addClass("fas fa-check");
@@ -1470,6 +1818,7 @@ var GLPIImpact = {
     * Enable the save button
     */
    showDirtyWorkspaceStatus: function() {
+      window.glpiUnsavedFormChanges = true;
       $(GLPIImpact.selectors.save).removeClass('clean');
       $(GLPIImpact.selectors.save).addClass('dirty');
       $(GLPIImpact.selectors.save).find('i').removeClass("fas fa-check");
@@ -1667,14 +2016,16 @@ var GLPIImpact = {
    nodeOnClick: function (event) {
       switch (GLPIImpact.editionMode) {
          case GLPIImpact.EDITION_DEFAULT:
-            if (GLPIImpact.eventData.lastClick != null) {
+            if (GLPIImpact.eventData.lastClicktimestamp != null) {
                // Trigger homemade double click event
-               if (event.timeStamp - GLPIImpact.eventData.lastClick < 500) {
+               if (event.timeStamp - GLPIImpact.eventData.lastClicktimestamp < 500
+                  && event.target == GLPIImpact.eventData.lastClickTarget) {
                   event.target.trigger('doubleClick', event);
                }
             }
 
-            GLPIImpact.eventData.lastClick = event.timeStamp;
+            GLPIImpact.eventData.lastClicktimestamp = event.timeStamp;
+            GLPIImpact.eventData.lastClickTarget = event.target;
             break;
 
          case GLPIImpact.EDITION_ADD_NODE:
@@ -1745,11 +2096,39 @@ var GLPIImpact = {
    },
 
    /**
+    * Remove handler
+    * @param {JQuery.Event} event
+    */
+   onRemove: function(event) {
+      if (event.target.isNode() && !event.target.isParent()) {
+         var itemtype = event.target.data('id')
+            .split(GLPIImpact.NODE_ID_SEPERATOR)[0];
+
+         // If a node was deleted and its itemtype is the same as the one
+         // selected in the add node panel, refresh the search
+         if (itemtype == GLPIImpact.selectedItemtype) {
+            $(GLPIImpact.selectors.sideSearchResults).html("");
+            GLPIImpact.searchAssets(
+               GLPIImpact.selectedItemtype,
+               JSON.stringify(GLPIImpact.getUsedAssets()),
+               $(GLPIImpact.selectors.sideFilterAssets).val(),
+               0
+            );
+         }
+      }
+   },
+
+   /**
     * Handler for key down events
     *
     * @param {JQuery.Event} event
     */
    onKeyDown: function(event) {
+      // Ignore key events if typing inside input
+      if (event.target.nodeName == "INPUT") {
+         return;
+      }
+
       switch (event.which) {
          // Shift
          case 16:
@@ -1869,12 +2248,9 @@ var GLPIImpact = {
          case GLPIImpact.EDITION_DEFAULT:
             $(GLPIImpact.impactContainer).css('cursor', "grab");
 
-            // Check if we were grabbing a node
-            if (GLPIImpact.eventData.grabNodeStart != null) {
-               // Reset eventData for node grabbing
-               GLPIImpact.eventData.grabNodeStart = null;
-               GLPIImpact.eventData.boundingBox = null;
-            }
+            // Reset eventData for node grabbing
+            GLPIImpact.eventData.grabNodeStart = null;
+            GLPIImpact.eventData.boundingBox = null;
 
             break;
 
@@ -1953,8 +2329,8 @@ var GLPIImpact = {
             if (node) {
                // If we have a bounding box defined, the grabbed node is already
                // being placed into a compound, we need to check if it was moved
-               // outside this original bouding box to know if the user is trying
-               // to move if away from the compound
+               // outside this original bouding box to know if the user is
+               // trying to move it away from the compound
                if (GLPIImpact.eventData.boundingBox != null) {
                   // If the user tried to move out of the compound
                   if (GLPIImpact.eventData.boundingBox.x1 > event.position.x
@@ -2246,6 +2622,15 @@ var GLPIImpact = {
     * @param {Number} page
     */
    searchAssets: function(itemtype, used, filter, page) {
+      var hidden = GLPIImpact.cy
+         .nodes("[hidden=1], [depth > " + GLPIImpact.maxDepth + "]")
+         .filter(function(node) {
+            return !node.isParent();
+         })
+         .map(function(node) {
+            return node.data('id');
+         });
+
       $(GLPIImpact.selectors.sideSearchSpinner).show();
       $(GLPIImpact.selectors.sideSearchNoResults).hide();
       $.ajax({
@@ -2260,9 +2645,22 @@ var GLPIImpact = {
          },
          success: function(data){
             $.each(data.items, function(index, value) {
-               var str = '<p data-id="' + value['id'] + '" data-type="' + itemtype + '">';
+               var graph_id = itemtype + GLPIImpact.NODE_ID_SEPERATOR + value['id'];
+               var isHidden = hidden.indexOf(graph_id) !== -1;
+               var cssClass = "";
+
+               if (isHidden) {
+                  cssClass = "impact-res-disabled";
+               }
+
+               var str = '<p class="' + cssClass + '" data-id="' + value['id'] + '" data-type="' + itemtype + '">';
                str += '<img src="' + $(GLPIImpact.selectors.sideSearch + " img").attr('src') + '"></img>';
                str += value["name"];
+
+               if (isHidden) {
+                  str += '<i class="fas fa-eye-slash impact-res-hidden"></i>';
+               }
+
                str += "</p>";
 
                $(GLPIImpact.selectors.sideSearchResults).append(str);
@@ -2294,7 +2692,11 @@ var GLPIImpact = {
    getUsedAssets: function() {
       // Get used ids for this itemtype
       var used = [];
-      GLPIImpact.cy.nodes().forEach(function(node) {
+      GLPIImpact.cy.nodes().not("[hidden=1], [depth > " + this.maxDepth + "]").forEach(function(node) {
+         if (node.isParent()) {
+            return;
+         }
+
          var nodeId = node.data('id')
             .split(GLPIImpact.NODE_ID_SEPERATOR);
          if (nodeId[0] == GLPIImpact.selectedItemtype) {
@@ -2386,7 +2788,6 @@ var GLPIImpact = {
             },
             error: function(){
                GLPIImpact.showDirtyWorkspaceStatus();
-               alert("error");
             },
          });
       });
@@ -2490,7 +2891,7 @@ var GLPIImpact = {
          $(GLPIImpact.selectors.sideSearch).show();
          $(GLPIImpact.selectors.sideSearch + " img").attr('title', $(img).attr('title'));
          $(GLPIImpact.selectors.sideSearch + " img").attr('src', $(img).attr('src'));
-         $(GLPIImpact.selectors.sideSearch + " span").html($(img).attr('title'));
+         $(GLPIImpact.selectors.sideSearch + " > h4 > span").html($(img).attr('title'));
          $(GLPIImpact.selectors.sideSearchSelectItemtype).hide();
 
          // Empty search
@@ -2563,8 +2964,8 @@ var GLPIImpact = {
 
       // Handle drag & drop on add node search result
       $(document).on('mousedown', GLPIImpact.selectors.sideSearchResults + ' p', function(e) {
-         // Only on left click
-         if (e.which !== 1) {
+         // Only on left click and not for disabled item
+         if (e.which !== 1 || $(e.target).hasClass('impact-res-disabled')) {
             return;
          }
 
