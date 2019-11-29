@@ -1,9 +1,8 @@
 language: php
 sudo: required
-dist: trusty
 
-env:
-  - DB=mysql
+services:
+  - mysql
 
 before_script:
   - phpenv config-rm xdebug.ini || true
@@ -22,28 +21,10 @@ script:
   - mysql -u root -e 'select version();'
   - composer testldap
 
-#note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
   include:
     - php: 7.0
-      addons:
-        mariadb: 10.2
-        apt:
-          packages:
-            - ldap-utils
-            - slapd
-        hosts:
-          - openldap
-    - php: 7.1
-      addons:
-        mariadb: 10.1
-        apt:
-          packages:
-            - ldap-utils
-            - slapd
-        hosts:
-          - openldap
-    - php: 7.2
+      dist: xenial
       addons:
         apt:
           packages:
@@ -51,15 +32,8 @@ matrix:
             - slapd
         hosts:
           - openldap
-    - php: 7.3
-      addons:
-        apt:
-          packages:
-            - ldap-utils
-            - slapd
-        hosts:
-          - openldap
-    - php: 7.4snapshot
+    - php: 7.4
+      dist: bionic
       addons:
         apt:
           packages:
@@ -68,6 +42,7 @@ matrix:
         hosts:
           - openldap
     - php: nightly
+      dist: bionic
       addons:
         apt:
           packages:
@@ -81,6 +56,7 @@ matrix:
 cache:
   directories:
     - $HOME/.composer/cache
+    - $HOME/.npm/_cacache
 
 notifications:
   irc:
