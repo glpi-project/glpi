@@ -391,7 +391,12 @@ var GLPIPlanning  = {
                .resource || {})
                ._resource || {})
                .extendedProps || {})
-               .itemtype || {});
+               .itemtype || '');
+            var items_id = (((((info || {})
+               .resource || {})
+               ._resource || {})
+               .extendedProps || {})
+               .items_id || 0);
 
             // prevent adding events on group users
             if (itemtype === 'Group_User') {
@@ -411,7 +416,9 @@ var GLPIPlanning  = {
                      {
                         action: 'add_event_fromselect',
                         begin:  start.toISOString(),
-                        end:    end.toISOString()
+                        end:    end.toISOString(),
+                        res_itemtype: itemtype,
+                        res_items_id: items_id,
                      },
                      function() {
                         $(this).dialog('option', 'position', ['center', 'center'] );
