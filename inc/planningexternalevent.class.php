@@ -100,6 +100,13 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
+      // set event for another user
+      if (isset($options['res_itemtype'])
+          && isset($options['res_items_id'])
+          && strtolower($options['res_itemtype']) == "user") {
+         $this->fields['users_id'] =  $options['res_items_id'];
+      }
+
       if ($canedit) {
          $tpl_class = 'PlanningExternalEventTemplate';
          echo "<tr class='tab_bg_1' style='vertical-align: top'>";

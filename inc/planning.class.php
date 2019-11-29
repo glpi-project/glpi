@@ -1345,11 +1345,17 @@ class Planning extends CommonGLPI {
       $rand            = mt_rand();
       $params['begin'] = date("Y-m-d H:i:s", strtotime($params['begin']));
       $params['end']   = date("Y-m-d H:i:s", strtotime($params['end']));
+      $params['res_itemtype'] = $params['res_itemtype'] ?? '';
+      $params['res_items_id'] = $params['res_items_id'] ?? 0;
       if ($item = getItemForItemtype($params['itemtype'])) {
-         $item->showForm('', ['from_planning_ajax' => true,
-                                   'begin'              => $params['begin'],
-                                   'end'                => $params['end'],
-                                   'formoptions'        => "id='ajax_reminder$rand'"]);
+         $item->showForm('', [
+            'from_planning_ajax' => true,
+            'begin'              => $params['begin'],
+            'end'                => $params['end'],
+            'res_itemtype'       => $params['res_itemtype'],
+            'res_items_id'       => $params['res_items_id'],
+            'formoptions'        => "id='ajax_reminder$rand'"
+         ]);
          $callback = "$('.ui-dialog-content').dialog('close');
                       GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
