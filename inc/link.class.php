@@ -303,12 +303,6 @@ class Link extends CommonDBTM {
                                 Dropdown::getDropdownName("glpi_networks",
                                                           $item->getField('networks_id')), $link);
       }
-      if (strstr($link, "[DOMAIN]")
-          && $item->isField('domains_id')) {
-            $link = str_replace("[DOMAIN]",
-                                Dropdown::getDropdownName("glpi_domains",
-                                                          $item->getField('domains_id')), $link);
-      }
       if (strstr($link, "[USER]")
           && $item->isField('users_id')) {
             $link = str_replace("[USER]",

@@ -2626,6 +2626,20 @@ $tables['glpi_notifications'] = [
       'event'        => 'alert',
       'is_recursive' => 1,
       'is_active'    => 1,
+   ], [
+      'id'           => 68,
+      'name'         => 'Alert expired domains',
+      'itemtype'     => 'Domain',
+      'event'        => 'ExpiredDomains',
+      'is_recursive' => 1,
+      'is_active'    => 1,
+   ], [
+      'id'           => 69,
+      'name'         => 'Alert domains close expiries',
+      'itemtype'     => 'Domain',
+      'event'        => 'DomainsWhichExpire',
+      'is_recursive' => 1,
+      'is_active'    => 1,
    ],
 ];
 
@@ -2965,6 +2979,11 @@ $tables['glpi_notifications_notificationtemplates'] = [
       'notifications_id'         =>  '67',
       'mode'                     =>  'mailing',
       'notificationtemplates_id' =>  25,
+   ], [
+      'id'                       => 68,
+      'notifications_id'         =>  '68',
+      'mode'                     =>  'mailing',
+      'notificationtemplates_id' =>  26,
    ],
 ];
 
@@ -3718,6 +3737,10 @@ $tables['glpi_notificationtemplates'] = [
       'id'       => '25',
       'name'     => 'Certificates',
       'itemtype' => 'Certificate',
+   ], [
+      'id'       => '26',
+      'name'     => 'Alert domains',
+      'itemtype' => 'Domain',
    ],
 ];
 
@@ -4519,6 +4542,20 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 ##lang.certificate.expirationdate## : ##certificate.expirationdate##
 &lt;br /&gt; &lt;a href="##certificate.url##"&gt; ##certificate.url##
 &lt;/a&gt;&lt;br /&gt; ##ENDFOREACHcertificates##&lt;/p&gt;',
+   ], [
+      'id'                       => '26',
+      'notificationtemplates_id' => '26',
+      'language'                 => '',
+      'subject'                  => '##domain.action## : ##domain.entity##',
+      'content_text'             => '##lang.domain.entity## :##domain.entity##
+   ##FOREACHdomains##
+   ##lang.domain.name## : ##domain.name## - ##lang.domain.dateexpiration## : ##domain.dateexpiration##
+   ##ENDFOREACHdomains##',
+      'content_html'             => '&lt;p&gt;##lang.domain.entity## :##domain.entity##&lt;br /&gt; &lt;br /&gt;
+                        ##FOREACHdomains##&lt;br /&gt;
+                        ##lang.domain.name##  : ##domain.name## - ##lang.domain.dateexpiration## :  ##domain.dateexpiration##&lt;br /&gt; 
+                        ##ENDFOREACHdomains##&lt;/p&gt;',
+
    ],
 ];
 

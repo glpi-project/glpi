@@ -1048,8 +1048,6 @@ class Dropdown {
                                                   Session::getPluralNumber()),
                  'Netpoint'                 => _n('Network outlet', 'Network outlets',
                                                   Session::getPluralNumber()),
-                 'Domain'                   => _n('Domain', 'Domains',
-                                                  Session::getPluralNumber()),
                  'Network'                  => _n('Network', 'Networks',
                                                   Session::getPluralNumber()),
                  'Vlan'                     => __('VLAN'),

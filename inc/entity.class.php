@@ -99,7 +99,8 @@ class Entity extends CommonTreeDropdown {
                                                    'send_contracts_alert_before_delay',
                                                    'use_reservations_alert', 'use_infocoms_alert',
                                                    'send_infocoms_alert_before_delay',
-                                                   'notification_subject_tag'],
+                                                   'notification_subject_tag', 'use_domains_alert',
+                                                   'send_domains_alert_close_expiries_delay', 'send_domains_alert_expired_delay'],
                                           // Helpdesk
                                           'entity_helpdesk'
                                           => ['calendars_id', 'tickettype', 'auto_assign_mode',
@@ -2105,6 +2106,48 @@ class Entity extends CommonTreeDropdown {
          echo self::getSpecificValueToDisplay('notclosed_delay', $tid);
          echo "</font>";
       }
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2' rowspan='3'>";
+      echo Domain::getTypeName(Session::getPluralNumber());
+      echo "</th>";
+      echo "<td>" . __('Alarms on domains expiries') . "</td><td>";
+      $default_value = $entity->fields['use_domains_alert'];
+      Alert::dropdownYesNo(['name'           => "use_domains_alert",
+                                 'value'          => $default_value,
+                                 'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+      if ($entity->fields['use_domains_alert'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('use_domains_alert', $entity->getField('entities_id'));
+         echo "<font class='green'><br>";
+         echo self::getSpecificValueToDisplay('use_domains_alert', $tid);
+         echo "</font>";
+      }
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+
+      echo "<td>" . __('Domains closes expiries') . "</td><td>";
+      Alert::dropdownIntegerNever(
+         'send_domains_alert_close_expiries_delay',
+         $entity->fields["send_domains_alert_close_expiries_delay"],
+         [
+            'max'            => 99,
+            'inherit_parent' => (($ID > 0) ? 1 : 0),
+            'unit'           => 'day'
+         ]
+      );
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Domains expired') . "</td><td>";
+      Alert::dropdownIntegerNever(
+         'send_domains_alert_expired_delay',
+         $entity->fields["send_domains_alert_expired_delay"],
+         [
+            'max'            => 99,
+            'inherit_parent' => (($ID > 0) ? 1 : 0),
+            'unit'           => 'day'
+         ]
+      );
       echo "</td></tr>";
 
       Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);

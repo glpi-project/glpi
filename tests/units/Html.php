@@ -354,7 +354,8 @@ class Html extends \GLPITestCase {
          'Line',
          'Certificate',
          'Datacenter',
-         'Cluster'
+         'Cluster',
+         'Domain'
       ];
       $this->string($menu['management']['title'])->isIdenticalTo('Management');
       $this->array($menu['management']['types'])->isIdenticalTo($expected);

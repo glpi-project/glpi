@@ -381,12 +381,6 @@ $RELATION = [
       'glpi_documents_items' => 'documents_id',
    ],
 
-   'glpi_domains' => [
-      'glpi_computers'         => 'domains_id',
-      'glpi_networkequipments' => 'domains_id',
-      'glpi_printers'          => 'domains_id',
-   ],
-
    'glpi_enclosuremodels' => [
       'glpi_enclosures' => 'enclosuremodels_id',
    ],

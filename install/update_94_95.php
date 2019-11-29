@@ -942,6 +942,131 @@ function update94to95() {
    $migration->addField("glpi_entities", "altitude", "string");
    /** Add geolocation to entity */
 
+   /** Domains */
+   if (!$DB->tableExists('glpi_domaintypes')) {
+      $query = "CREATE TABLE `glpi_domaintypes` (
+            `id` int(11) NOT NULL        AUTO_INCREMENT,
+            `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+            `entities_id` int(11) NOT NULL        DEFAULT '0',
+            `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+            `comment` text COLLATE utf8_unicode_ci,
+            PRIMARY KEY (`id`),
+            KEY `name` (`name`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_domaintypes");
+   }
+
+   $dfields = [
+      'domaintypes_id'        => 'integer',
+      'date_expiration'       => 'timestamp',
+      'users_id_tech'         => 'integer',
+      'groups_id_tech'        => 'integer',
+      'others'                => 'string',
+      'is_helpdesk_visible'   => 'boolean',
+      'is_deleted'            => 'boolean',
+   ];
+   $dindex = $dfields;
+   unset($dindex['others']);
+   $dindex = array_keys($dindex);
+   $dindex[] = 'entities_id';
+
+   $after = 'is_recursive';
+   foreach ($dfields as $dfield => $dtype) {
+      if (!$DB->fieldExists('glpi_domains', $dfield)) {
+         $options = ['after' => $after];
+         if ($dfield == 'is_helpdesk_visible') {
+            $options['value'] = 1;
+         }
+         $migration->addField("glpi_domains", $dfield, $dtype, $options);
+      }
+      $after = $dfield;
+   }
+
+   //add indexes
+   foreach ($dindex as $didx) {
+      $migration->addKey('glpi_domains', $didx);
+   }
+
+   if (!$DB->tableExists('glpi_domains_items')) {
+      $query = "CREATE TABLE `glpi_domains_items` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `domains_id` int(11) NOT NULL DEFAULT '0',
+            `items_id` int(11) NOT NULL DEFAULT '0',
+            `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `unicity` (`domains_id`, `itemtype`, `items_id`),
+            KEY `domains_id` (`domains_id`),
+            KEY `FK_device` (`items_id`, `itemtype`),
+            KEY `item` (`itemtype`, `items_id`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_domains_items");
+   }
+
+   foreach (['Computer', 'NetworkEquipment', 'Printer'] as $itemtype) {
+      if ($DB->fieldExists($itemtype::getTable(), 'domains_id')) {
+         $iterator = $DB->request([
+            'SELECT' => ['id', 'domains_id'],
+            'FROM'   => $itemtype::getTable(),
+            'WHERE'  => ['domains_id' => ['>', 0]]
+         ]);
+         if (count($iterator)) {
+            //migrate existing data
+            $migration->migrationOneTable('glpi_domains_items');
+            while ($row = $iterator->next()) {
+               $DB->insert("glpi_domains_items", [
+                  'domains_id'   => $row['domains_id'],
+                  'itemtype'     => $itemtype,
+                  'items_id'     => $row['id']
+               ]);
+            }
+         }
+         $migration->dropField($itemtype::getTable(), 'domains_id');
+      }
+   }
+
+   if (!$DB->fieldExists('glpi_entities', 'use_domains_alert')) {
+      $migration->addField("glpi_entities", "use_domains_alert", "integer", [
+            'after'  => "use_reservations_alert",
+            'value'  => -2
+         ]
+      );
+   }
+
+   if (!$DB->fieldExists('glpi_entities', 'send_domains_alert_close_expiries_delay')) {
+      $migration->addField("glpi_entities", "send_domains_alert_close_expiries_delay", "integer", [
+            'after'  => "use_domains_alert",
+            'value'  => -2
+         ]
+      );
+   }
+
+   if (!$DB->fieldExists('glpi_entities', 'send_domains_alert_expired_delay')) {
+      $migration->addField("glpi_entities", "send_domains_alert_expired_delay", "integer", [
+            'after'  => "send_domains_alert_close_expiries_delay",
+            'value'  => -2
+         ]
+      );
+   }
+
+   $ADDTODISPLAYPREF['domain'] = [3, 4, 2, 6, 7];
+
+   //update preferences
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_displaypreferences', [
+            'num'       => '205',
+         ], [
+            'num'       => '33',
+            'itemtype'  => [
+               'Computer',
+               'NetworkEquipment',
+               'Printer'
+            ]
+         ]
+      )
+   );
+   /** /Domains */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

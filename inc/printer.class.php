@@ -93,6 +93,7 @@ class Printer  extends CommonDBTM {
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);
       $this->addStandardTab('Certificate_Item', $ong, $options);
+      $this->addStandardTab('Domain_Item', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -407,11 +408,7 @@ class Printer  extends CommonDBTM {
       // Display auto inventory informations
       $rowspan        = 5;
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Domain')."</td>\n";
-      echo "<td>";
-      Domain::dropdown(['value'  => $this->fields["domains_id"],
-                             'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
+      echo "<td colspan='2'></td>\n";
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>\n";
       echo "<td rowspan='$rowspan'>";
       echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
@@ -763,14 +760,6 @@ class Printer  extends CommonDBTM {
          'table'              => 'glpi_networks',
          'field'              => 'name',
          'name'               => __('Network'),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '33',
-         'table'              => 'glpi_domains',
-         'field'              => 'name',
-         'name'               => __('Domain'),
          'datatype'           => 'dropdown'
       ];
 

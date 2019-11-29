@@ -257,7 +257,7 @@ $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Comp
                                                   'Consumable', 'ConsumableItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'SoftwareLicense',
-                                                  'Line', 'Certificate'];
+                                                  'Line', 'Certificate', 'Domain'];
 
 $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software'];
@@ -480,6 +480,9 @@ $CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment',
 $CFG_GLPI['software_types']      = ['Computer', 'Phone'];
 
 $CFG_GLPI['kanban_types']        = ['Project'];
+
+$CFG_GLPI['domain_types']        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
+                                       'Phone', 'Printer', 'Software'];
 
 $CFG_GLPI['javascript'] = [
    'central'   => [

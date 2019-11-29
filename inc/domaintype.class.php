@@ -30,12 +30,54 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-Session::checkRight("domain", READ);
+class DomainType extends CommonDropdown
+{
+   static $rightname = 'dropdown';
 
-Html::header(Domain::getTypeName(1), $_SERVER['PHP_SELF'], "management", "domain");
+   /**
+    * @param int $nb
+    * @return translated
+    */
+   static function getTypeName($nb = 0) {
+      return _n('Domain type', 'Domain types', $nb);
+   }
 
-Search::show('Domain');
+   /**
+    * @param $ID
+    * @param $entity
+    * @return ID|int|the
+    */
+   static function transfer($ID, $entity) {
+      global $DB;
 
-Html::footer();
+      if ($ID > 0) {
+         // Not already transfer
+         // Search init item
+         $iterator = $DB->request([
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['id' => $ID]
+         ]);
+
+         if (count($iterator)) {
+            $data = $iterator->next();
+            $input = [
+               'name'         => Toolbox::addslashes_deep($data['name']),
+               'entities_id'  => $entity
+            ];
+            $temp = new self();
+            $newID = $temp->getID();
+
+            if ($newID < 0) {
+               $newID = $temp->import($input);
+            }
+
+            return $newID;
+         }
+      }
+      return 0;
+   }
+}
