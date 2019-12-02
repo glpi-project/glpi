@@ -270,7 +270,7 @@ class Impact extends CommonGLPI {
       }
 
       if (!$has_impact) {
-         echo '<p>' . _("This asset doesn't have any impact dependencies.") . '</p>';
+         echo '<p>' . __("This asset doesn't have any impact dependencies.") . '</p>';
       }
 
       echo '</div>';
@@ -372,7 +372,8 @@ class Impact extends CommonGLPI {
                data: {
                   itemtype: "' . get_class($item) . '",
                   items_id: "' . $item->fields['id'] . '",
-                  view: "list",
+                  action  : "load",
+                  view    : "list",
                },
                success: function(data){
                   $("#impact_list_view").replaceWith(data);
@@ -815,8 +816,8 @@ class Impact extends CommonGLPI {
             $icon = "pics/impact/default.png";
          }
 
-         echo '<h4><img class="impact-side-icon" src="/../' . $icon . '" title="' . __($itemtype) . '" data-itemtype="' . $itemtype . '">';
-         echo "<span>" . __($itemtype) . "</span></h4>";
+         echo '<h4><img class="impact-side-icon" src="/../' . $icon . '" title="' . $itemtype::getTypeName() . '" data-itemtype="' . $itemtype . '">';
+         echo "<span>" . $itemtype::getTypeName() . "</span></h4>";
          echo '</div>'; // impact-side-filter-itemtypes-item
       }
       echo '</div>'; // impact-side-filter-itemtypes-items
@@ -860,7 +861,7 @@ class Impact extends CommonGLPI {
          'name'    => "toggle_impact",
          'checked' => "true",
       ]);
-      echo '<span class="impact-checkbox-label">' . _("Show impact") . '</span>';
+      echo '<span class="impact-checkbox-label">' . __("Show impact") . '</span>';
       echo '</div>';
 
       echo '<div class="impact-side-settings-item">';
@@ -869,23 +870,23 @@ class Impact extends CommonGLPI {
          'name'    => "toggle_depends",
          'checked' => "true",
       ]);
-      echo '<span class="impact-checkbox-label">' . _("Show depends") . '</span>';
+      echo '<span class="impact-checkbox-label">' . __("Show depends") . '</span>';
       echo '</div>';
 
       echo '<h4>' . __('Colors') . '</h4>';
       echo '<div class="impact-side-settings-item">';
       Html::showColorField("depends_color", []);
-      echo '<span class="impact-checkbox-label">' . _("Depends") . '</span>';
+      echo '<span class="impact-checkbox-label">' . __("Depends") . '</span>';
       echo '</div>';
 
       echo '<div class="impact-side-settings-item">';
       Html::showColorField("impact_color", []);
-      echo '<span class="impact-checkbox-label">' . _("Impact") . '</span>';
+      echo '<span class="impact-checkbox-label">' . __("Impact") . '</span>';
       echo '</div>';
 
       echo '<div class="impact-side-settings-item">';
       Html::showColorField("impact_and_depends_color", []);
-      echo '<span class="impact-checkbox-label">' . _("Impact and depends") . '</span>';
+      echo '<span class="impact-checkbox-label">' . __("Impact and depends") . '</span>';
       echo '</div>';
 
       echo '<h4>' . __('Max depth') . '</h4>';
@@ -899,14 +900,14 @@ class Impact extends CommonGLPI {
       echo '</div>'; // div class="impact-side-panel">
 
       echo '<ul>';
-      echo '<li id="save_impact" title="' . _("Save") .'"><i class="fas fa-fw fa-save"></i></li>';
-      echo '<li id="add_node" title="' . _("Add asset") .'"><i class="fas fa-fw fa-plus"></i></li>';
-      echo '<li id="add_edge" title="' . _("Add relation") .'"><i class="fas fa-fw fa-pencil-alt"></i></li>';
-      echo '<li id="add_compound" title="' . _("Add group") .'"><i class="far fa-fw fa-square"></i></li>';
-      echo '<li id="delete_element" title="' . _("Delete element") .'"><i class="fas fa-fw fa-trash"></i></li>';
-      echo '<li id="export_graph" title="' . _("Download") .'"><i class="fas fa-fw fa-download"></i></li>';
-      echo '<li id="toggle_fullscreen" title="' . _("Fullscreen") .'"><i class="fas fa-fw fa-expand"></i></li>';
-      echo '<li id="impact_settings" title="' . _("Settings") .'"><i class="fas fa-fw fa-cog"></i></li>';
+      echo '<li id="save_impact" title="' . __("Save") .'"><i class="fas fa-fw fa-save"></i></li>';
+      echo '<li id="add_node" title="' . __("Add asset") .'"><i class="fas fa-fw fa-plus"></i></li>';
+      echo '<li id="add_edge" title="' . __("Add relation") .'"><i class="fas fa-fw fa-pencil-alt"></i></li>';
+      echo '<li id="add_compound" title="' . __("Add group") .'"><i class="far fa-fw fa-square"></i></li>';
+      echo '<li id="delete_element" title="' . __("Delete element") .'"><i class="fas fa-fw fa-trash"></i></li>';
+      echo '<li id="export_graph" title="' . __("Download") .'"><i class="fas fa-fw fa-download"></i></li>';
+      echo '<li id="toggle_fullscreen" title="' . __("Fullscreen") .'"><i class="fas fa-fw fa-expand"></i></li>';
+      echo '<li id="impact_settings" title="' . __("Settings") .'"><i class="fas fa-fw fa-cog"></i></li>';
       echo '</ul>';
       echo '<span class="impact-side-toggle"><i class="fas fa-2x fa-chevron-left"></i></span>';
       echo '</div>'; // <div class="impact-side impact-side-expanded">
