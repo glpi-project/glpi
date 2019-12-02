@@ -172,7 +172,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             foreach ($documents_ids as $document_id) {
                $doc->getFromDB($document_id);
                // Add embeded image if tag present in ticket content
-               if (preg_match_all('/'.Document::getImageTag($doc->fields['tag']).'/',
+               if (preg_match_all('/'.preg_quote($doc->fields['tag']).'/',
                                   $current->fields['body_html'], $matches, PREG_PATTERN_ORDER)) {
                   $image_path = Document::getImage(
                      GLPI_DOC_DIR."/".$doc->fields['filepath'],
