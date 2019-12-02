@@ -1316,12 +1316,12 @@ HTML
          ]
       ]);
       while ($data = $result->next()) {
-         //TODO create Document_Item entry, with a timeline_position set to Document_Item::NO_TL
          preg_match('/document\\.send\\.php\\?docid=([0-9]+)/', $data[$field], $matches);
          $docs_input[] = [
-            'documents_id' => $matches[1],
-            'itemtype'     => $itemtype,
-            'items_id'     => $data['id']
+            'documents_id'       => $matches[1],
+            'itemtype'           => $itemtype,
+            'items_id'           => $data['id'],
+            'timeline_position'  => CommonITILObject::NO_TIMELINE
          ];
       }
    }
