@@ -1596,7 +1596,7 @@ class Config extends CommonDBTM {
                                                       'forcepadding' => false]);
 
          $class   = 'info-circle missing';
-         $msg     = sprintf(__s('%1$ss memory usage is too low or too high'), $ext);
+         $msg     = sprintf(__s('%1$s memory usage is too low or too high'), $ext);
          if ($rate > 5 && $rate < 75) {
             $class   = 'check-circle ok';
             $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
@@ -1614,7 +1614,7 @@ class Config extends CommonDBTM {
                                                       'forcepadding' => false]);
 
          $class   = 'info-circle missing';
-         $msg     = sprintf(__s('%1$ss hits rate is low'), $ext);
+         $msg     = sprintf(__s('%1$s hits rate is low'), $ext);
          if ($rate > 90) {
             $class   = 'check-circle ok';
             $msg     = sprintf(__s('%1$s hits rate is correct'), $ext);
@@ -1627,7 +1627,7 @@ class Config extends CommonDBTM {
                <td>$max</td><td>";
 
          $class   = 'info-circle missing';
-         $msg     = sprintf(__s('%1$ss restart rate is too high'), $ext);
+         $msg     = sprintf(__s('%1$s restart rate is too high'), $ext);
          if ($max < 2) {
             $class   = 'check-circle ok';
             $msg     = sprintf(__s('%1$s restart rate is correct'), $ext);
@@ -1672,7 +1672,7 @@ class Config extends CommonDBTM {
          Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                  'forcepadding' => false]);
          $class   = 'info-circle missing';
-         $msg     = sprintf(__s('%1$ss memory usage is too high'), $ext);
+            $msg     = sprintf(__s('%1$s memory usage is too high'), $ext);
          if ($rate < 80) {
             $class   = 'check-circle ok';
             $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
