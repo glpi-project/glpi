@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use RRule\RRule;
+use RRule\RSet;
 
 trait PlanningEvent {
 
@@ -178,6 +179,15 @@ trait PlanningEvent {
 
       if ($rrule['freq'] == null) {
          return "";
+      }
+
+      if (isset($rrule['exceptions'])) {
+         if (is_string($rrule['exceptions']) && strlen($rrule['exceptions'])) {
+            $rrule['exceptions'] = explode(', ', $rrule['exceptions']);
+         }
+         if (!is_array($rrule['exceptions']) || count($rrule['exceptions']) === 0) {
+            unset($rrule['exceptions']);
+         }
       }
 
       if (count($rrule) > 0) {
@@ -431,8 +441,8 @@ trait PlanningEvent {
                if ($options['check_planned'] && count($events[$key]['rrule'])) {
                   $event      = $events[$key];
                   $duration   = strtotime($event['end']) - strtotime($event['begin']);
-                  $rrule_data = array_merge($event['rrule'], ['dtstart' => $event['begin']]);
-                  $rrule      = new RRule($rrule_data);
+
+                  $rset = self::getRsetFromRRuleField($event['rrule'], $event['begin']);
 
                   // rrule object doesn't any duration property,
                   // so we remove the duration from the begin part of the range
@@ -441,14 +451,16 @@ trait PlanningEvent {
                   $begin_datetime = new DateTime($options['begin']);
                   $begin_datetime->sub(New DateInterval("PT".($duration - 1)."S"));
 
-                  $occurences = $rrule->getOccurrencesBetween($begin_datetime, $options['end']);
+                  $occurences = $rset->getOccurrencesBetween($begin_datetime, $options['end']);
 
                   // add the found occurences to the final tab after replacing their dates
                   foreach ($occurences as $currentDate) {
+                     $occurence_begin = $currentDate;
+                     $occurence_end   = (clone $currentDate)->add(new DateInterval("PT".$duration."S"));
+
                      $events_toadd[] = array_merge($event, [
-                        'begin' => $currentDate->format('Y-m-d H:i:s'),
-                        'end'   => $currentDate->add(new DateInterval("PT".$duration."S"))
-                                               ->format('Y-m-d H:i:s'),
+                        'begin' => $occurence_begin->format('Y-m-d H:i:s'),
+                        'end'   => $occurence_end->format('Y-m-d H:i:s'),
                      ]);
                   }
 
@@ -536,11 +548,12 @@ trait PlanningEvent {
    static function showRepetitionForm(string $rrule = "", array $options = []): string {
       $rrule = json_decode($rrule, true) ?? [];
       $defaults = [
-         'freq'     => null,
-         'interval' => 1,
-         'until'    => null,
-         'byday'    => [],
-         'bymonth'  => [],
+         'freq'       => null,
+         'interval'   => 1,
+         'until'      => null,
+         'byday'      => [],
+         'bymonth'    => [],
+         'exceptions' => [],
       ];
       $rrule = array_merge($defaults, $rrule);
 
@@ -550,7 +563,7 @@ trait PlanningEvent {
       $options = array_merge($default_options, $options);
       $rand    = $options['rand'];
 
-      $out = "<div class='card' style='padding: 5px; width: 231px;'>";
+      $out = "<div class='card' style='padding: 5px; width: 100%;'>";
       $out.= Dropdown::showFromArray('rrule[freq]', [
          null      => __("Never"),
          'daily'   => __("Each day"),
@@ -591,7 +604,7 @@ trait PlanningEvent {
 
       $out.= "<div class='field'>";
       $out.= "<label for='showdate$rand'>".__("Until")."</label>";
-      $out.= "<div>".Html::showDateTimeField('rrule[until]', [
+      $out.= "<div>".Html::showDateField('rrule[until]', [
          'value'   => $rrule['until'],
          'rand'    => $rand,
          'display' => false,
@@ -613,6 +626,7 @@ trait PlanningEvent {
          'rand'                => $rand,
          'display'             => false,
          'display_emptychoice' => true,
+         'width'               => '100%',
          'multiple'            => true,
       ])."</div>";
       $out.= "</div>";
@@ -637,7 +651,20 @@ trait PlanningEvent {
          'rand'                => $rand,
          'display'             => false,
          'display_emptychoice' => true,
+         'width'               => '100%',
          'multiple'            => true,
+      ])."</div>";
+      $out.= "</div>";
+
+      $rand = mt_rand();
+      $out.= "<div class='field'>";
+      $out.= "<label for='showdate$rand'>".__("Exceptions")."</label>";
+      $out.= "<div>".Html::showDateField('rrule[exceptions]', [
+         'value'    => implode(', ', $rrule['exceptions']),
+         'rand'     => $rand,
+         'display'  => false,
+         'multiple' => true,
+         'size'     => 30,
       ])."</div>";
       $out.= "</div>";
 
@@ -674,4 +701,40 @@ trait PlanningEvent {
       }
    }
 
+   /**
+    * Returns RSet occurence corresponding to rrule field value.
+    *
+    * @param array  $rrule    RRule field value
+    * @param string $dtstart  Start of first occurence
+    *
+    * @return \RRule\RSet
+    */
+   public static function getRsetFromRRuleField(array $rrule, $dtstart): RSet {
+      $dtstart_datetime  = new \DateTime($dtstart);
+      $rrule['dtstart']  = $dtstart_datetime->format('Y-m-d\TH:i:s\Z');
+
+      // create a ruleset containing dtstart, the rrule, and the exclusions
+      $rset = new RSet();
+
+      // manage date exclusions,
+      // we need to set a top level property for that (not directly in rrule one)
+      if (isset($rrule['exceptions'])) {
+         foreach ($rrule['exceptions'] as $exception) {
+            $exdate = new \Datetime($exception);
+            $exdate->setTime(
+               $dtstart_datetime->format('G'),
+               $dtstart_datetime->format('i'),
+               $dtstart_datetime->format('s')
+            );
+            $rset->addExDate($exdate->format('Y-m-d\TH:i:s\Z'));
+         }
+
+         // remove exceptions key (as libraries throw exception for unknow keys)
+         unset($rrule['exceptions']);
+      }
+
+      $rset->addRRule(new RRule($rrule));
+
+      return $rset;
+   }
 }

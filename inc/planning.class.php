@@ -1713,8 +1713,9 @@ class Planning extends CommonGLPI {
          $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, 'in', false);
          $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, 'in', true);
 
-         $begin = date('c', strtotime($event['begin']));
-         $end = date('c', strtotime($event['end']));
+         // dates should be set with the user timezone
+         $begin = $event['begin'];
+         $end   = $event['end'];
 
          // retreive all day events
          if (strpos($event['begin'], "00:00:00") != false
@@ -1774,14 +1775,29 @@ class Planning extends CommonGLPI {
          // manage reccurent events
          if (isset($event['rrule']) && count($event['rrule'])) {
             $rrule = $event['rrule'];
-            $rrule['dtstart'] = $new_event['start'];
 
-            // RRule PHP lib fails on some timezone format
-            // i.e. datefmt_create: no such time zone: 'GMT+00:00': U_ILLEGAL_ARGUMENT_ERROR
-            // convert dtstart to UTC and use Z as timezone indication
-            $dtstart_datetime = new \DateTime($rrule['dtstart']);
-            $dtstart_datetime->setTimezone(new DateTimeZone('UTC'));
-            $rrule_o = new RRule(
+            // the fullcalencard plugin waits for integer types for number (not strings)
+            if (isset($rrule['interval'])) {
+               $rrule['interval'] = (int) $rrule['interval'];
+            }
+            if (isset($rrule['count'])) {
+               $rrule['count'] = (int) $rrule['count'];
+            }
+
+            // clean empty values in rrule
+            foreach ($rrule as $key => $value) {
+               if (is_null($value) || $value == '') {
+                  unset($rrule[$key]);
+               }
+            }
+
+            $rset = PlanningExternalEvent::getRsetFromRRuleField($rrule, $new_event['start']);
+
+            // append icon to distinguish reccurent event in views
+            // use UTC datetime to avoid some issues with rlan/phprrule
+            $dtstart_datetime  = new \DateTime($new_event['start']);
+            unset($rrule['exceptions']); // remove exceptions key (as libraries throw exception for unknow keys)
+            $hr_rrule_o = new RRule(
                array_merge(
                   $rrule,
                   [
@@ -1789,20 +1805,18 @@ class Planning extends CommonGLPI {
                   ]
                )
             );
-
-            // append icon to distinguish reccurent event in views
             $new_event = array_merge($new_event, [
                'icon'     => 'fas fa-history',
-               'icon_alt' => $rrule_o->humanReadable(),
+               'icon_alt' => $hr_rrule_o->humanReadable(),
             ]);
 
             // for fullcalendar, we need to pass start in the rrule key
             unset($new_event['start'], $new_event['end']);
 
             // For list view, only display only the next occurence
-            // to avoid issues performances (range in list view is 10 years long)
+            // to avoid issues performances (range in list view can be 10 years long)
             if ($param['view_name'] == "listFull") {
-               $next_date = $rrule_o->getNthOccurrenceAfter(new DateTime(), 1);
+               $next_date = $rset->getNthOccurrenceAfter(new DateTime(), 1);
                if ($next_date) {
                   $new_event = array_merge($new_event, [
                      'start'    => $next_date->format('c'),
@@ -1811,32 +1825,24 @@ class Planning extends CommonGLPI {
                   ]);
                }
             } else {
-               // merge rrule properties for others view
-
-               // the fullcalencard plugin waits for integer types for number (not strings)
-               if (isset($rrule['interval'])) {
-                  $rrule['interval'] = (int) $rrule['interval'];
+               $rrule_string = "";
+               foreach ($rset->getRRules() as $occurence) {
+                  $rrule_string.= $occurence->rfcString(false)."\n";
                }
-               if (isset($rrule['count'])) {
-                  $rrule['count'] = (int) $rrule['count'];
-               }
-
-               // clean empty values in rrule
-               foreach ($rrule as $key => $value) {
-                  if (is_null($value) || $value == '') {
-                     unset($rrule[$key]);
-                  }
+               $ex_dates = [];
+               foreach ($rset->getExDates() as $occurence) {
+                  // we forge the ex date with only the date part of the exception
+                  // and the hour of the dtstart.
+                  // This to presents only date selection to the user
+                  $ex_dates[] = "EXDATE:".$occurence->format('Ymd\THis');
                }
 
-               // rrule.js lib decides to change one key for day of the week.
-               // see https://github.com/jakubroztocil/rrule#differences-from-icalendar-rfc
-               if (isset($rrule['byday'])) {
-                  $rrule['byweekday'] = $rrule['byday'];
-                  unset($rrule['byday']);
+               if (count($ex_dates)) {
+                  $rrule_string.= implode("\n", $ex_dates)."\n";
                }
 
                $new_event = array_merge($new_event, [
-                  'rrule'    => $rrule,
+                  'rrule'    => $rrule_string,
                   'duration' => $ms_duration
                ]);
 

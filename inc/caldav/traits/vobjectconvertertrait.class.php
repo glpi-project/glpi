@@ -146,7 +146,13 @@ trait VobjectConverterTrait {
                unset($rrule_specs['byweekday']);
             }
             if (array_key_exists('until', $rrule_specs) && empty($rrule_specs['until'])) {
-               unset($rrule_specs['until']);;
+               unset($rrule_specs['until']);
+            }
+            if (array_key_exists('exceptions', $rrule_specs)) {
+               foreach ($rrule_specs['exceptions'] as $exdate) {
+                  $vcomp->add('EXDATE', (new \DateTime($exdate))->setTimeZone($utc_tz));
+               }
+               unset($rrule_specs['exceptions']);
             }
             $rrule = new RRule($rrule_specs);
             $vcomp->RRULE = $rrule->rfcString();
@@ -351,6 +357,15 @@ trait VobjectConverterTrait {
          $until_datetime = new \DateTime($rrule['until']);
          $until_datetime->setTimezone($user_tz);
          $rrule['until'] = $until_datetime->format('Y-m-d H:i:s');
+      }
+
+      $exceptions = $vcomponent->select('EXDATE');
+      if (count($exceptions) > 0) {
+         $rrule['exceptions'] = [];
+         foreach ($exceptions as $exdate) {
+            $rrule['exceptions'][] = $exdate->getDateTime()->format('Y-m-d');
+         }
+         $rrule['exceptions'] = implode (', ', $rrule['exceptions']);
       }
 
       return $rrule;
