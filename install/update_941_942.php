@@ -66,7 +66,7 @@ function update941to942() {
    // on MariaDB but not on MySQL due to usage of "\d" in a REGEXP expression.
    // It has been fixed there for people who had not yet updated to 9.4.1 but have to
    // be put back here for people already having updated to 9.4.1.
-   $migration->displayMessage(sprintf(__('Fix URL of images in ITIL tasks, followups ans solutions.')));
+   $migration->displayMessage(sprintf(__('Fix URL of images in ITIL tasks, followups and solutions.')));
 
    // Search for contents that does not contains the itil object parameter after the docid parameter
    // (i.e. having a quote that ends the href just after the docid param value).

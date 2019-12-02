@@ -49,7 +49,7 @@ function update942to943() {
    // which was not working for elements having a simple quote in their content.
    // It has been fixed there for people who had not yet updated to 9.4.1 / 9.4.2 but have to
    // be put back here for people already having updated to 9.4.1 / 9.4.2.
-   $migration->displayMessage(sprintf(__('Fix URL of images in ITIL tasks, followups ans solutions.')));
+   $migration->displayMessage(sprintf(__('Fix URL of images in ITIL tasks, followups and solutions.')));
 
    // Search for contents that does not contains the itil object parameter after the docid parameter
    // (i.e. having a quote that ends the href just after the docid param value).
