@@ -574,7 +574,7 @@ var GLPIImpact = {
 
       // Check if the node is already on the graph
       if (GLPIImpact.cy.filter('node[id="' + nodeID + '"]').length > 0) {
-         alert(GLPIImpact.getLocale("duplicateAsset"));
+         alert(__('This asset already exists.'));
          return;
       }
 
@@ -591,7 +591,7 @@ var GLPIImpact = {
          },
          function () {
             // Ajax failed
-            alert(GLPIImpact.getLocale("unexpectedError"));
+            alert(__("Unexpected error."));
          }
       );
    },
