@@ -22,7 +22,12 @@
 
 #help_text {
    font-weight: bold;
-   display: none;
+   display    : none;
+   position   : absolute;
+   padding    : 10px;
+   color      : #707e8c;
+   font-size  : 1.3em;
+   z-index    : 2;
 }
 
 #impact_tools {
@@ -39,19 +44,14 @@
    }
 }
 
-#save_impact {
-   font-weight   : bold;
-   color         : gray;
-   margin-right  : 20px;
-}
-
 .impact-mb-2 {
    margin-bottom: 2em;
 }
 
 .network-parent {
-   border: 1px solid #f1f1f1;
-   position:relative
+   border  : 1px solid #f1f1f1;
+   position: relative;
+   padding : 0 !important;
 }
 
 .network-table {
@@ -103,7 +103,16 @@ i.fa-impact-manipulation {
 }
 
 .clean {
-   color: #1ca448 !important;
+   animation: clean-fade 3s;
+}
+
+@keyframes clean-fade {
+   0% {
+     color: #1ca448;
+   }
+   100% {
+     color: #707e8c;
+   }
 }
 
 .dirty {
@@ -113,135 +122,6 @@ i.fa-impact-manipulation {
       background-color: #fec95c !important;
       color: #8f5a0a !important;
    }
-}
-
-/*
- * "More" dropdown menu at the end of the toolbar
- */
-
-.more-btn,
-.more-menu-btn {
-   background         : none;
-   border             : 0 none;
-   line-height        : normal;
-   overflow           : visible;
-   -webkit-user-select: none;
-   -moz-user-select   : none;
-   -ms-user-select    : none;
-   width              : 100%;
-   text-align         : left;
-   outline            : none;
-   cursor             : pointer;
-}
-
-.more-disabled {
-   cursor: default !important;
-
-   &:hover {
-      background-color: white !important;
-   }
-}
-
-.more-dot {
-   background-color: #aab8c2;
-   margin          : 0 auto;
-   display         : inline-block;
-   width           : 7px;
-   height          : 7px;
-   margin-right    : 1px;
-   border-radius   : 50%;
-   transition      : background-color 0.3s;
-}
-
-.more-menu {
-   position        : absolute;
-   top             : 42px;
-   z-index         : 900;
-   padding         : 10px 0;
-   background-color: #fff;
-   border          : 1px solid #ccd8e0;
-   border-radius   : 4px;
-   box-shadow      : 1px 1px 3px rgba(0,0,0,0.25);
-   opacity         : 0;
-   transform       : translate(0, 15px) scale(.95);
-   transition      : transform 0.1s ease-out, opacity 0.1s ease-out;
-   pointer-events  : none;
-   right           : 1px;
-}
-
-.more-menu-caret {
-   position: absolute;
-   top     : -10px;
-   right   : 10px;
-   width   : 18px;
-   height  : 10px;
-   float   : left;
-   overflow: hidden;
-}
-
-.more-menu-caret-outer,
-.more-menu-caret-inner {
-   position   : absolute;
-   display    : inline-block;
-   margin-left: -1px;
-   font-size  : 0;
-   line-height: 1;
-}
-
-.more-menu-caret-outer {
-   border-bottom: 10px solid #c1d0da;
-   border-left  : 10px solid transparent;
-   border-right : 10px solid transparent;
-   height       : auto;
-   left         : 0;
-   top          : 0;
-   width        : auto;
-}
-
-.more-menu-caret-inner {
-   top          : 1px;
-   left         : 1px;
-   border-left  : 9px solid transparent;
-   border-right : 9px solid transparent;
-   border-bottom: 9px solid #fff;
-}
-
-.more-menu-items {
-   margin    : 0;
-   list-style: none;
-   padding   : 0;
-}
-
-.more-menu-item {
-   display: block;
-
-   &:hover {
-      background-color: lightgray;
-   }
-}
-
-.more-menu-btn {
-   min-width  : 100%;
-   color      : #66757f;
-   cursor     : pointer;
-   display    : block;
-   font-size  : 13px;
-   line-height: 18px;
-   padding    : 5px 10px;
-   position   : relative;
-   white-space: nowrap;
-   font-size  : 1.2em !important;
-}
-
-.more-btn:hover .more-dot,
-.show-more-menu .more-dot {
-   background-color: #516471;
-}
-
-.show-more-menu .more-menu {
-   opacity: 1;
-   transform: translate(0, 0) scale(1);
-   pointer-events: auto;
 }
 
 /*
@@ -376,6 +256,9 @@ i.fa-impact-manipulation {
    background: #AEC8D8;
 }
 
+/*
+ * Header
+ */
 .impact-header {
    display: flex;
    justify-content: center;
@@ -447,4 +330,220 @@ i.fa-impact-manipulation {
    float: right;
    padding-right: 5px;
    font-size: 1.15rem;
+}
+
+/*
+ * Sidebar
+ */
+.impact-side {
+   height          : 100%;
+   // width           : 40px;
+   position        : absolute;
+   top             : 0;
+   right           : 0;
+   background-color: #fafafa;
+   z-index         : 80;
+   border-left     : 1px solid #f1f1f1;
+   border-right    : 1px solid #f1f1f1;
+   display         : flex;
+   justify-content: space-between;
+
+   ul {
+      list-style : none;
+      border-left: 1px solid #f1f1f1;
+   }
+
+   li {
+      color         : #707e8c;
+      width         : 100%;
+      vertical-align: middle;
+      cursor        : pointer;
+
+      i {
+         padding  : 10px 8px;
+         font-size: 1.5em;
+      }
+
+      &:hover {
+         color: rgb(14, 14, 14);
+         background-color: #f1f1f1;
+      }
+
+      &.active {
+         color: rgb(14, 14, 14) !important;
+         background-color: #f1f1f1 !important;
+      }
+   }
+
+   &.impact-side-expanded {
+      // width : 250px;
+      border-left: 3px solid #f1f1f1;
+
+      li {
+         text-align: right;
+      }
+   }
+
+   &.fullscreen {
+      position: fixed;
+      // top     : 5px;
+      z-index : 81;
+   }
+}
+
+.impact-drop-preview {
+   display : none;
+   position: fixed;
+   z-index : 83;
+   opacity : 50%;
+   width   : 48px;
+   height  : 48px;
+   pointer-events: none;
+}
+
+.impact-side-panel {
+   color: #707e8c;
+   width: 0px;
+   overflow: hidden;
+   transition: width 0.5s ease;
+
+   &.impact-side-expanded {
+      padding: 3px 10px;
+      overflow: auto;
+      width: 210px;
+   }
+
+   h3 {
+      white-space: nowrap;
+   }
+}
+
+.impact-side-icon {
+   width: 32px;
+   height: 32px;
+   padding: 4px;
+}
+
+#impact-side-filter-itemtypes {
+   margin-bottom: 1em;
+}
+
+.impact-side-search {
+   display: none;
+
+   i {
+      cursor: pointer;
+      margin-right: 5px;
+   }
+
+   img {
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
+   }
+
+   h4 {
+      white-space: nowrap;
+   }
+}
+
+.impact-side-search-footer {
+   height: 37px;
+}
+
+.impact-side-search-more {
+   cursor: pointer;
+
+   i {
+      margin-right: 3px;
+   }
+}
+
+.impact-side-toggle {
+   display         : none;
+   background-color: #f1f1f1;
+   position        : absolute;
+   bottom          : 0;
+   color           : #707e8c;
+   width           : 100%;
+   text-align      : center;
+   cursor          : pointer;
+
+   i {
+      padding  : 10px 5px;
+      font-size: 1.5em;
+   }
+
+   &:hover {
+      color: rgb(14, 14, 14);
+   }
+}
+
+.impact-side-filter-itemtypes-items {
+   display: flex;
+   flex-wrap: wrap;
+   flex-direction: column;
+   white-space: nowrap;
+}
+
+.impact-side-search-results {
+   p {
+      cursor: pointer;
+      -webkit-user-select: none; /* Safari */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* IE10+/Edge */
+      user-select: none;
+      white-space: nowrap;
+   }
+}
+
+.impact-side-filter-itemtypes-item {
+   cursor: pointer;
+
+   span {
+      display: inline;
+      margin-left: 4px;
+   }
+   h4 {
+      margin-top: 0;
+      margin-bottom: 0;
+   }
+}
+
+.impact-side-search-spinner {
+   margin-top: 10px;
+   text-align: center;
+   display: none;
+}
+
+.impact-side-search-no-results {
+   display: none;
+}
+
+.impact-checkbox-label {
+   margin-left: 8px;
+}
+
+.impact-side-settings {
+   h4 {
+      white-space: nowrap;
+      margin-top: 25px;
+   }
+}
+
+.impact-side-settings-item {
+   margin-bottom: 10px;
+   white-space: nowrap;
+}
+
+/*
+ * Hide toolbar for readonly, will be shown in JS if needed
+ */
+#save_impact,
+#add_node,
+#add_edge,
+#add_compound,
+#delete_element,
+#impact_settings {
+   display: none;
 }

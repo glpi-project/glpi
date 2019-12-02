@@ -3209,9 +3209,31 @@ class Toolbox {
       return $CFG_GLPI["root_doc"] . '/front/document.send.php?file=_pictures/' . $path;
    }
 
-   public static function throwError($code, $message) {
+   /**
+    * Send the given HTTP code then die with the error message in the given format
+    *
+    * @param int     $code    HTTP code to set for the response
+    * @param string  $message Error message to display
+    * @param string  $format  Output format (json or string)
+    */
+   public static function throwError(
+      int $code,
+      string $message,
+      string $format = "json"
+   ) {
+      switch ($format) {
+         case 'json':
+            $output = json_encode(["message" => $message]);
+            break;
+
+         case 'string':
+         default:
+            $output = $message;
+            break;
+      }
+
       http_response_code($code);
       Toolbox::logWarning($message);
-      die(json_encode(["message" => $message]));
+      die($output);
    }
 }

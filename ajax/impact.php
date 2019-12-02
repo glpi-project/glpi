@@ -47,41 +47,67 @@ Session::checkLoginUser();
 switch ($_SERVER['REQUEST_METHOD']) {
    // GET request: build the impact graph for a given asset
    case 'GET':
-      $itemtype =  $_GET["itemtype"]  ?? "";
-      $items_id =  $_GET["items_id"]  ?? "";
-      $view     =  $_GET["view"]      ?? "graph";
+      $action = $_GET["action"]  ?? "";
 
-      // Check required params
-      if (empty($itemtype) || empty($items_id)) {
-         Toolbox::throwError(400, "Missing itemtype or items_id");
+      switch ($action) {
+         case "search":
+            $itemtype = $_GET["itemtype"] ?? "";
+            $used     = $_GET["used"]     ?? "[]";
+            $filter   = $_GET["filter"]   ?? "";
+            $page     = $_GET["page"]     ?? 0;
+
+            // Check required params
+            if (empty($itemtype)) {
+               Toolbox::throwError(400, "Missing itemtype");
+            }
+
+            // Execute search
+            $assets = Impact::searchAsset($itemtype, json_decode($used), $filter, $page);
+            header('Content-Type: application/json');
+            echo json_encode($assets);
+            break;
+
+         case 'load':
+            $itemtype = $_GET["itemtype"]  ?? "";
+            $items_id = $_GET["items_id"]  ?? "";
+            $view     = $_GET["view"]      ?? "graph";
+
+            // Check required params
+            if (empty($itemtype) || empty($items_id)) {
+               Toolbox::throwError(400, "Missing itemtype or items_id");
+            }
+
+            // Check that the the target asset exist
+            if (!Impact::assetExist($itemtype, $items_id)) {
+               Toolbox::throwError(400, "Object[class=$itemtype, id=$items_id] doesn't exist");
+            }
+
+            // Prepare graph
+            $item = new $itemtype;
+            $item->getFromDB($items_id);
+            $graph = Impact::buildGraph($item);
+            $params = Impact::prepareParams($item);
+            $readonly = $item->can($items_id, UPDATE);
+
+            if ($view == "graph") {
+               // Output graph as json
+               header('Content-Type: application/json');
+               echo json_encode([
+                  'graph'  => Impact::makeDataForCytoscape($graph),
+                  'params' => $params,
+                  'readonly' => $readonly,
+               ]);
+            } else if ($view == "list") {
+               // Output list as HTML
+               header('Content-Type: text/html');
+               Impact::displayListView($item, $graph);
+            }
+            break;
+
+         default:
+            Toolbox::throwError(400, "Missing or invalid 'action' parameter");
+            break;
       }
-
-      // Check that the the target asset exist
-      if (!Impact::assetExist($itemtype, $items_id)) {
-         Toolbox::throwError(400, "Object[class=$itemtype, id=$items_id] doesn't exist");
-      }
-
-      // Prepare graph
-      $item = new $itemtype;
-      $item->getFromDB($items_id);
-      $graph = Impact::buildGraph($item);
-      $params = Impact::prepareParams($item);
-      $readonly = $item->can($items_id, UPDATE);
-
-      if ($view == "graph") {
-         // Output graph as json
-         header('Content-Type: application/json');
-         echo json_encode([
-            'graph'  => Impact::makeDataForCytoscape($graph),
-            'params' => $params,
-            'readonly' => $readonly,
-         ]);
-      } else if ($view == "list") {
-         // Output list as HTML
-         header('Content-Type: text/html');
-         Impact::displayListView($item, $graph);
-      }
-
       break;
 
    // Post request: update the store impact dependencies, compounds or items
