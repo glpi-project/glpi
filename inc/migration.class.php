@@ -287,7 +287,7 @@ class Migration {
             }
             break;
 
-         case 'date' :
+         case 'date':
             $format = "DATE";
             if (!$nodefault) {
                if (is_null($default_value)) {
@@ -298,11 +298,12 @@ class Migration {
             }
             break;
 
-         case 'datetime' :
-            $format = "DATETIME";
+         case 'timestamp':
+         case 'datetime':
+            $format = "TIMESTAMP";
             if (!$nodefault) {
                if (is_null($default_value)) {
-                  $format.= " DEFAULT NULL";
+                  $format.= " NULL DEFAULT NULL";
                } else {
                   $format.= " DEFAULT '$default_value'";
                }
