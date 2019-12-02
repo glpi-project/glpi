@@ -355,13 +355,13 @@ class Migration extends \GLPITestCase {
             'field'     => 'my_field',
             'format'    => 'datetime',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATETIME DEFAULT NULL   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TIMESTAMP NULL DEFAULT NULL   "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'datetime',
             'options'   => ['value' => '2018-06-04 08:16:38'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATETIME DEFAULT '2018-06-04 08:16:38'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TIMESTAMP DEFAULT '2018-06-04 08:16:38'   "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
