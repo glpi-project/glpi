@@ -42,7 +42,7 @@ class DevicePci extends CommonDevice {
    static protected $forward_entity_to = ['Item_DevicePci', 'Infocom'];
 
    static function getTypeName($nb = 0) {
-      return _n('Other component', 'Other components', $nb);
+      return _n('PCI device', 'PCI devices', $nb);
    }
 
 
