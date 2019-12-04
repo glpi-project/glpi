@@ -564,7 +564,7 @@ class Supplier extends CommonDBTM {
 
             $criteria['ORDERBY'] = [
                'glpi_infocoms.entities_id',
-               "$linktable." . $linktable::getNameField()
+               "$linktable." . $linktype::getNameField()
             ];
 
             $iterator = $DB->request($criteria);
