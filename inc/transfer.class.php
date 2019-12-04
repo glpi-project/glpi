@@ -371,7 +371,7 @@ class Transfer extends CommonDBTM {
                'WHERE'           => [
                   'itemtype'     => $itemtype,
                   'computers_id' => $this->needtobe_transfer['Computer']
-               ]
+                  ]
             ]);
 
             while ($data = $iterator->next()) {

@@ -350,7 +350,7 @@ class ITILCategory extends CommonTreeDropdown {
 
       $input['code'] = isset($input['code']) ? trim($input['code']) : '';
       if (!empty($input["code"])
-            && !in_array(ITILCategory::getITILCategoryIDByCode($input["code"]), [$input['id'],-1]) ) {
+            && !in_array(ITILCategory::getITILCategoryIDByCode($input["code"]), [$input['id'],-1])) {
          Session::addMessageAfterRedirect(__("Code representing the ticket category is already used"),
                                           false, ERROR);
          return false;
