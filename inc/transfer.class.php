@@ -365,13 +365,13 @@ class Transfer extends CommonDBTM {
             }
 
             $iterator = $DB->request([
-                  'SELECT'          => 'items_id',
-                  'DISTINCT'        => true,
+               'SELECT'          => 'items_id',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_computers_items',
                'WHERE'           => [
                   'itemtype'     => $itemtype,
                   'computers_id' => $this->needtobe_transfer['Computer']
-                  ]
+               ]
             ]);
 
             while ($data = $iterator->next()) {
