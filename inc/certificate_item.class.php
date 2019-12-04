@@ -85,7 +85,7 @@ class Certificate_Item extends CommonDBRelation {
             return _n('Associated item', 'Associated items', 2);
 
          } else if (in_array($item->getType(), Certificate::getTypes(true))
-            && Certificate::canView() ) {
+            && Certificate::canView()) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(Certificate::getTypeName(2),
                                            self::countForItem($item));

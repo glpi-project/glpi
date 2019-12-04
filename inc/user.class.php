@@ -2048,7 +2048,7 @@ JAVASCRIPT;
       echo "<td><label for='name'>" . __('Login') . "</label></td>";
       if ($this->fields["name"] == "" ||
           !empty($this->fields["password"])
-          || ($this->fields["authtype"] == Auth::DB_GLPI) ) {
+          || ($this->fields["authtype"] == Auth::DB_GLPI)) {
          //display login field for new records, or if this is not external auth
          echo "<td><input name='name' id='name' value=\"" . $this->fields["name"] . "\"></td>";
       } else {

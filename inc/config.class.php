@@ -2910,7 +2910,7 @@ class Config extends CommonDBTM {
       if (isset($CFG_GLPI['lock_lockprofile_id'])
           && $CFG_GLPI['lock_use_lock_item']
           && $CFG_GLPI['lock_lockprofile_id'] > 0
-          && !isset($CFG_GLPI['lock_lockprofile']) ) {
+          && !isset($CFG_GLPI['lock_lockprofile'])) {
          $prof = new Profile();
          $prof->getFromDB($CFG_GLPI['lock_lockprofile_id']);
          $prof->cleanProfile();
