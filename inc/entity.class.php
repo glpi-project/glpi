@@ -41,6 +41,8 @@ if (!defined('GLPI_ROOT')) {
  */
 class Entity extends CommonTreeDropdown {
 
+   use MapGeolocation;
+
    public $must_be_replace              = true;
    public $dohistory                    = true;
 
@@ -120,10 +122,6 @@ class Entity extends CommonTreeDropdown {
       $forbidden[] = 'restore';
       $forbidden[] = 'CommonDropdown'.MassiveAction::CLASS_ACTION_SEPARATOR.'merge';
       return $forbidden;
-   }
-
-   function maybeLocated() {
-      return true;
    }
 
    /**
@@ -1444,7 +1442,8 @@ class Entity extends CommonTreeDropdown {
          'type'   => 'setlocation',
          'label'  => __('Location on map'),
          'list'   => false
-      ]);      echo "</td></tr>";
+      ]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'Longitude')."</td>";
@@ -3254,108 +3253,4 @@ class Entity extends CommonTreeDropdown {
 
       return $values;
    }
-
-   function displaySpecificTypeField($ID, $field = []) {
-      switch ($field['type']) {
-         case 'setlocation':
-            echo "<div id='setlocation_container'></div>";
-            $js = "var map_elt, _marker;
-            var _setLocation = function(lat, lng) {
-               if (_marker) {
-                  map_elt.removeLayer(_marker);
-               }
-               _marker = L.marker([lat, lng]).addTo(map_elt);
-               map_elt.fitBounds(
-                  L.latLngBounds([_marker.getLatLng()]), {
-                     padding: [50, 50],
-                     maxZoom: 10
-                  }
-               );
-            };
-
-            var _autoSearch = function() {
-               var _tosearch = '';
-               var _address = $('*[name=address]').val();
-               var _town = $('*[name=town]').val();
-               var _country = $('*[name=country]').val();
-               if (_address != '') {
-                  _tosearch += _address;
-               }
-               if (_town != '') {
-                  if (_address != '') {
-                     _tosearch += ' ';
-                  }
-                  _tosearch += _town;
-               }
-               if (_country != '') {
-                  if (_address != '' || _town != '') {
-                     _tosearch += ' ';
-                  }
-                  _tosearch += _country;
-               }
-
-               $('.leaflet-control-geocoder-form > input[type=text]').val(_tosearch);
-            }
-
-            $(function(){
-               map_elt = initMap($('#setlocation_container'), 'setlocation', '200px');
-
-               var osmGeocoder = new L.Control.OSMGeocoder({
-                  collapsed: false,
-                  placeholder: '".__s('Search')."',
-                  text: '".__s('Search')."'
-               });
-               map_elt.addControl(osmGeocoder);
-               _autoSearch();
-
-               function onMapClick(e) {
-                  var popup = L.popup();
-                  popup
-                     .setLatLng(e.latlng)
-                     .setContent('SELECTPOPUP')
-                     .openOn(map_elt);
-               }
-
-               map_elt.on('click', onMapClick);
-
-               map_elt.on('popupopen', function(e){
-                  var _popup = e.popup;
-                  var _container = $(_popup._container);
-
-                  var _clat = _popup._latlng.lat.toString();
-                  var _clng = _popup._latlng.lng.toString();
-
-                  _popup.setContent('<p><a href=\'#\'>".__s('Set location here')."</a></p>');
-
-                  $(_container).find('a').on('click', function(e){
-                     e.preventDefault();
-                     _popup.remove();
-                     $('*[name=latitude]').val(_clat);
-                     $('*[name=longitude]').val(_clng).trigger('change');
-                  });
-               });
-
-               var _curlat = $('*[name=latitude]').val();
-               var _curlng = $('*[name=longitude]').val();
-
-               if (_curlat && _curlng) {
-                  _setLocation(_curlat, _curlng);
-               }
-
-               $('*[name=latitude],*[name=longitude]').on('change', function(){
-                  var _curlat = $('*[name=latitude]').val();
-                  var _curlng = $('*[name=longitude]').val();
-
-                  if (_curlat && _curlng) {
-                     _setLocation(_curlat, _curlng);
-                  }
-               });
-            });";
-            echo Html::scriptBlock($js);
-            break;
-         default:
-            throw new \RuntimeException("Unknown {$field['type']}");
-      }
-   }
-
 }
