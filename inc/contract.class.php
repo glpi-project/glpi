@@ -1428,7 +1428,7 @@ class Contract extends CommonDBTM {
       foreach (['notice'            => Alert::NOTICE,
                   'end'               => Alert::END,
                   'periodicity'       => Alert::PERIODICITY,
-                  'periodicitynotice' => Alert::NOTICE] as $event => $type ) {
+                  'periodicitynotice' => Alert::NOTICE] as $event => $type) {
          if (isset($contract_infos[$event]) && count($contract_infos[$event])) {
             foreach ($contract_infos[$event] as $entity => $contracts) {
                if (NotificationEvent::raiseEvent($event, new self(),
