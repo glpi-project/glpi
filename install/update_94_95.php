@@ -927,6 +927,12 @@ function update94to95() {
    }
    /** /Fix mixed classes case in DB */
 
+   /** Add geolocation to entity */
+   $migration->addField("glpi_entities", "latitude", "string");
+   $migration->addField("glpi_entities", "longitude", "string");
+   $migration->addField("glpi_entities", "altitude", "string");
+   /** Add geolocation to entity */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

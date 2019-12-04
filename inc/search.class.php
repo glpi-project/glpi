@@ -110,15 +110,26 @@ class Search {
    static function showMap($itemtype, $params) {
       global $CFG_GLPI;
 
+      if ($itemtype == 'Location') {
+         $latitude = 21;
+         $longitude = 20;
+      } else if ($itemtype == 'Entity') {
+         $latitude = 67;
+         $longitude = 68;
+      } else {
+         $latitude = 998;
+         $longitude = 999;
+      }
+
       $params['criteria'][] = [
          'link'         => 'AND NOT',
-         'field'        => ($itemtype == 'Location') ? 21 : 998,
+         'field'        => $latitude,
          'searchtype'   => 'contains',
          'value'        => 'NULL'
       ];
       $params['criteria'][] = [
          'link'         => 'AND NOT',
-         'field'        => ($itemtype == 'Location') ? 20 : 999,
+         'field'        => $longitude,
          'searchtype'   => 'contains',
          'value'        => 'NULL'
       ];
@@ -134,7 +145,7 @@ class Search {
          array_pop($criteria);
          $criteria[] = [
             'link'         => 'AND',
-            'field'        => ($itemtype == 'Location') ? 1 : (($itemtype == 'Ticket') ? 83 : 3),
+            'field'        => ($itemtype == 'Location' || $itemtype == 'Entity') ? 1 : (($itemtype == 'Ticket') ? 83 : 3),
             'searchtype'   => 'equals',
             'value'        => 'CURLOCATION'
          ];
@@ -566,7 +577,7 @@ class Search {
          $SELECT .= self::addSelect($data['itemtype'], $val);
       }
 
-      if (isset($data['search']['as_map']) && $data['search']['as_map'] == 1) {
+      if (isset($data['search']['as_map']) && $data['search']['as_map'] == 1 && $data['itemtype'] != 'Entity') {
          $SELECT .= ' `glpi_locations`.`id` AS loc_id, ';
       }
 

@@ -55,6 +55,10 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
       $lat_field = $itemtype . '_21';
       $lng_field = $itemtype . '_20';
       $name_field = $itemtype . '_1';
+   } else if ($itemtype == 'Entity') {
+      $lat_field = $itemtype . '_67';
+      $lng_field = $itemtype . '_68';
+      $name_field = $itemtype . '_1';
    } else {
       $lat_field = $itemtype . '_998';
       $lng_field = $itemtype . '_999';
@@ -72,13 +76,22 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
       if (isset($points[$idx])) {
          $points[$idx]['count'] += 1;
       } else {
-         $points[$idx] = [
-            'lat'    => $row['raw']["ITEM_$lat_field"],
-            'lng'    => $row['raw']["ITEM_$lng_field"],
-            'title'  => $row['raw']["ITEM_$name_field"],
-            'loc_id' => $row['raw']['loc_id'],
-            'count'  => 1
-         ];
+         if ($itemtype == 'Entity') {
+            $points[$idx] = [
+               'lat'    => $row['raw']["ITEM_$lat_field"],
+               'lng'    => $row['raw']["ITEM_$lng_field"],
+               'title'  => $row['raw']["ITEM_$name_field"],
+               'count'  => 1
+            ];
+         } else {
+            $points[$idx] = [
+               'lat'    => $row['raw']["ITEM_$lat_field"],
+               'lng'    => $row['raw']["ITEM_$lng_field"],
+               'title'  => $row['raw']["ITEM_$name_field"],
+               'loc_id' => $row['raw']['loc_id'],
+               'count'  => 1
+            ];
+         }
       }
 
       if ($itemtype == 'AllAssets') {
