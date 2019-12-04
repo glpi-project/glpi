@@ -1457,7 +1457,7 @@ class CommonDBTM extends CommonGLPI {
                      // forward entity information if needed
                      if (count(static::$forward_entity_to)
                          && (in_array("entities_id", $this->updates)
-                             || in_array("is_recursive", $this->updates)) ) {
+                             || in_array("is_recursive", $this->updates))) {
                         $this->forwardEntityInformations();
                      }
 

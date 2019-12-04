@@ -978,7 +978,7 @@ class Infocom extends CommonDBChild {
       if (!array_search(date("Y"), $tab["annee"])) {
          $vnc = 0;
       } else if (mktime(0, 0, 0, $date_m2, $date_d2, date("Y"))
-                 - mktime(0, 0, 0, date("m"), date("d"), date("Y")) < 0 ) {
+                 - mktime(0, 0, 0, date("m"), date("d"), date("Y")) < 0) {
          // on a depasse la fin d'exercice de l'annee en cours
          //on prend la valeur residuelle de l'annee en cours
          $vnc = $tab["vcnetfin"][array_search(date("Y"), $tab["annee"])];

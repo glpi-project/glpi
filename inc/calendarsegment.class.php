@@ -65,7 +65,7 @@ class CalendarSegment extends CommonDBChild {
 
       // Check override of segment : do not add
       if (count(self::getSegmentsBetween($input['calendars_id'], $input['day'], $input['begin'],
-                                         $input['day'], $input['end'])) > 0 ) {
+                                         $input['day'], $input['end'])) > 0) {
          Session::addMessageAfterRedirect(__('Can not add a range riding an existing period'),
                                           false, ERROR);
          return false;

@@ -2432,7 +2432,7 @@ JAVASCRIPT;
       global $CFG_GLPI;
 
       if (!isset($request["itemtype"])
-          || !isset($request["num"]) ) {
+          || !isset($request["num"])) {
          return "";
       }
 
@@ -2613,7 +2613,7 @@ JAVASCRIPT;
       global $CFG_GLPI;
 
       if (!isset($request["itemtype"])
-          || !isset($request["num"]) ) {
+          || !isset($request["num"])) {
          return "";
       }
 
@@ -2833,7 +2833,7 @@ JAVASCRIPT;
       global $CFG_GLPI;
       if (!isset($request["itemtype"])
           || !isset($request["field"])
-          || !isset($request["num"]) ) {
+          || !isset($request["num"])) {
          return "";
       }
 
