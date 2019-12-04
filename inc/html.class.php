@@ -2994,6 +2994,137 @@ JAVASCRIPT;
    }
 
    /**
+    * Display TimeField form
+    *
+    * @param string $name
+    * @param array  $options
+    *   - value      : default value to display (default '')
+    *   - timestep   : step for time in minute (-1 use default config) (default -1)
+    *   - maybeempty : may be empty ? (true by default)
+    *   - canedit    : could not modify element (true by default)
+    *   - mintime    : minimum allowed time (default '')
+    *   - maxtime    : maximum allowed time (default '')
+    *   - display    : boolean display or get string (default true)
+    *   - rand       : specific random value (default generated one)
+    *   - required   : required field (will add required attribute)
+    * @return void
+    */
+   public static function showTimeField($name, $options = []) {
+      global $CFG_GLPI;
+
+      $p['value']      = '';
+      $p['maybeempty'] = true;
+      $p['canedit']    = true;
+      $p['mintime']    = '';
+      $p['maxtime']    = '';
+      $p['timestep']   = -1;
+      $p['display']    = true;
+      $p['rand']       = mt_rand();
+      $p['required']   = false;
+
+      foreach ($options as $key => $val) {
+         if (isset($p[$key])) {
+            $p[$key] = $val;
+         }
+      }
+
+      if ($p['timestep'] < 0) {
+         $p['timestep'] = $CFG_GLPI['time_step'];
+      }
+
+      $minHour   = 0;
+      $maxHour   = 23;
+      $minMinute = 0;
+      $maxMinute = 59;
+
+      $hour_value = '';
+      if (!empty($p['value'])) {
+         $hour_value = $p['value'];
+      }
+
+      if (!empty($p['mintime'])) {
+         list($minHour, $minMinute) = explode(':', $p['mintime']);
+         $minMinute = 0;
+
+         // Check time in interval
+         if (!empty($hour_value) && ($hour_value < $p['mintime'])) {
+            $hour_value = $p['mintime'];
+         }
+      }
+
+      if (!empty($p['maxtime'])) {
+         list($maxHour, $maxMinute) = explode(':', $p['maxtime']);
+         $maxMinute = 59;
+
+         // Check time in interval
+         if (!empty($hour_value) && ($hour_value > $p['maxtime'])) {
+            $hour_value = $p['maxtime'];
+         }
+      }
+
+      // reconstruct value to be valid
+      if (!empty($hour_value)) {
+         $p['value'] = $hour_value;
+      }
+
+      $output = "<span class='no-wrap'>";
+      $output .= "<input id='showtime".$p['rand']."' type='text' name='_$name' value='".
+                   trim($p['value'])."'";
+      if ($p['required'] == true) {
+         $output .= " required='required'";
+      }
+      $output .= ">";
+      $output .= Html::hidden($name, ['value' => $p['value'], 'id' => "hiddentime".$p['rand']]);
+      if ($p['maybeempty'] && $p['canedit']) {
+         $output .= "<span class='fa fa-times-circle pointer' title='".__s('Clear').
+                      "' id='resettime".$p['rand']."'>" .
+                      "<span class='sr-only'>" . __('Clear') . "</span></span>";
+      }
+      $output .= "</span>";
+
+      $js = "$(function(){";
+      if ($p['maybeempty'] && $p['canedit']) {
+         $js .= "$('#resettime".$p['rand']."').click(function(){
+                  $('#showtime".$p['rand']."').val('');
+                  $('#hiddentime".$p['rand']."').val('');
+                  });";
+      }
+
+      $js .= "$( '#showtime".$p['rand']."' ).timepicker({
+         altField: '#hiddentime".$p['rand']."',
+         altFormat: 'yy-mm-dd',
+         altTimeFormat: 'HH:mm:ss',
+         pickerTimeFormat : 'HH:mm',
+         altFieldTimeOnly: false,
+         firstDay: 1,
+         parse: 'loose',
+         showAnim: '',
+         stepMinute: ".$p['timestep'].",
+         showSecond: false,
+         showButtonPanel: true,
+         changeMonth: true,
+         changeYear: true,
+         showOn: 'both',
+         controlType: 'select',
+         buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
+
+      if (!$p['canedit']) {
+         $js .= ",disabled: true";
+      }
+
+      $js .= ",timeFormat: 'HH:mm'";
+      $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
+      $js .= "});";
+      $output .= Html::scriptBlock($js);
+
+      if ($p['display']) {
+         echo $output;
+         return $p['rand'];
+      }
+      return $output;
+   }
+
+   /**
     * Show generic date search
     *
     * @param $element         name of the html element
