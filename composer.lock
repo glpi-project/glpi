@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "adff3f698d4e7321637e4af07ed165fe",
@@ -1151,14 +1151,14 @@
             "authors": [
                 {
                     "name": "Evert Pot",
+                    "role": "Developer",
                     "email": "me@evertpot.com",
-                    "homepage": "http://evertpot.com/",
-                    "role": "Developer"
+                    "homepage": "http://evertpot.com/"
                 },
                 {
                     "name": "Markus Staab",
-                    "email": "markus.staab@redaxo.de",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "markus.staab@redaxo.de"
                 }
             ],
             "description": "sabre/xml is an XML library that you may not hate.",
@@ -3616,7 +3616,7 @@
             "time": "2019-10-30T15:31:00+00:00"
         },
         {
-            "name": "natxet/cssmin",
+            "name": "natxet/CssMin",
             "version": "v3.0.6",
             "source": {
                 "type": "git",
