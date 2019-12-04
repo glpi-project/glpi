@@ -1017,9 +1017,8 @@ class Rule extends CommonDBTM {
     * @return the maximum number of actions
    **/
    function maxActionsCount() {
-      return count(array_filter($this->actions, function($action_obj) {
-         $action = $this->getAction($action_obj->fields['field']);
-         return !isset($action['duplicatewith']);
+      return count(array_filter($this->getAllActions(), function($action_obj) {
+         return !isset($action_obj['duplicatewith']);
       }));
    }
 
@@ -2652,6 +2651,7 @@ class Rule extends CommonDBTM {
 
    /**
     * @since 0.84
+    * @return array
    */
    function getAllActions() {
       return self::doHookAndMergeResults("getRuleActions", $this->getActions(), $this->getType());
