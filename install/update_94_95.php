@@ -941,6 +941,10 @@ function update94to95() {
       }
    }
 
+     /** Add new option to mailcollector */
+     $migration->addField("glpi_mailcollectors", "add_cc_to_observer", "tinyint(1) NOT NULL DEFAULT '0'");
+     /** /add new option to mailcollector */
+
    $migration->executeMigration();
 
    return $updateresult;
