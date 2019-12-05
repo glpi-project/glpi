@@ -132,7 +132,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
       // Check status for CommonITILObjects, they must not be edited if they
       // are resolved or closed
       if ($item instanceof CommonITILObject) {
-         $canedit = !in_array(
+         $canedit &= !in_array(
             $item->fields['status'],
             array_merge(
                $item::getClosedStatusArray(),
