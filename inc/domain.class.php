@@ -250,6 +250,7 @@ class Domain extends CommonDropdown {
    function defineTabs($options = []) {
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('DomainRecord', $ong, $options);
       $this->addStandardTab('Domain_Item', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
@@ -763,5 +764,34 @@ class Domain extends CommonDropdown {
          $used[$data['id']] = $data['id'];
       }
       return $used;
+   }
+
+   static function getAdditionalMenuLinks() {
+      $links = [];
+      if (static::canView()) {
+         $rooms = "<i class=\"fa fa-clipboard-list pointer\" title=\"" . DomainRecord::getTypeName(Session::getPluralNumber()) .
+            "\"></i><span class=\"sr-only\">" . DomainRecord::getTypeName(Session::getPluralNumber()). "</span>";
+         $links[$rooms] = DomainRecord::getSearchURL(false);
+
+      }
+      if (count($links)) {
+         return $links;
+      }
+      return false;
+   }
+
+   static function getAdditionalMenuOptions() {
+      if (static::canView()) {
+         return [
+            'domainrecord' => [
+               'title' => DomainRecord::getTypeName(Session::getPluralNumber()),
+               'page'  => DomainRecord::getSearchURL(false),
+               'links' => [
+                  'add'    => '/front/domainrecord.form.php',
+                  'search' => '/front/domainrecord.php',
+               ]
+            ]
+         ];
+      }
    }
 }

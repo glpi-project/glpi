@@ -1067,6 +1067,58 @@ function update94to95() {
    );
    /** /Domains */
 
+   /** Domain records */
+   if (!$DB->tableExists('glpi_domainrecordtypes')) {
+      $query = "CREATE TABLE `glpi_domainrecordtypes` (
+            `id` int(11) NOT NULL        AUTO_INCREMENT,
+            `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+            `entities_id` int(11) NOT NULL        DEFAULT '0',
+            `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+            `comment` text COLLATE utf8_unicode_ci,
+            PRIMARY KEY (`id`),
+            KEY `name` (`name`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_domainrecordtypes");
+      $types = DomainRecordType::getDefaults();
+      foreach ($types as $type) {
+         $migration->addPostQuery(
+            $DB->buildInsert(
+               DomainRecordType::getTable(),
+               $type
+            )
+         );
+      }
+   }
+
+   if (!$DB->tableExists('glpi_domainrecords')) {
+      $query = "CREATE TABLE `glpi_domainrecords` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+            `entities_id` int(11) NOT NULL DEFAULT '0',
+            `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+            `domains_id` int(11) NOT NULL DEFAULT '0',
+            `domainrecordtypes_id` int(11) NOT NULL DEFAULT '0',
+            `users_id_tech` int(11) NOT NULL DEFAULT '0',
+            `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+            `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+            `comment` text COLLATE utf8_unicode_ci,
+            `date_mod` timestamp NULL DEFAULT NULL,
+            `date_creation` timestamp NULL DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            KEY `name` (`name`),
+            KEY `entities_id` (`entities_id`),
+            KEY `domains_id` (`domains_id`),
+            KEY `domainrecordtypes_id` (`domainrecordtypes_id`),
+            KEY `users_id_tech` (`users_id_tech`),
+            KEY `groups_id_tech` (`groups_id_tech`),
+            KEY `date_mod` (`date_mod`),
+            KEY `is_deleted` (`is_deleted`),
+            KEY `date_creation` (`date_creation`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_domainrecords");
+   }
+   /** /Domain records */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

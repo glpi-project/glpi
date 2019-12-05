@@ -7893,4 +7893,6 @@ $tables['glpi_devicefirmwaretypes'] = [
    ],
 ];
 
+$tables[DomainRecordType::getTable()] = DomainRecordType::getDefaults();
+
 return $tables;

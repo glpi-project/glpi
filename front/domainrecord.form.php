@@ -1,0 +1,106 @@
+<?php
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+include ('../inc/includes.php');
+
+Session::checkCentralAccess();
+
+if (empty($_GET["id"])) {
+   $_GET["id"] = '';
+}
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = '';
+}
+
+$record = new DomainRecord();
+
+if (isset($_POST["add"])) {
+   $record->check(-1, CREATE, $_POST);
+   $newID = $record->add($_POST);
+   if ($_SESSION['glpibackcreated']) {
+      Html::redirect($record->getFormURLWithID($newID));
+   }
+   Html::back();
+} else if (isset($_POST["delete"])) {
+   $record->check($_POST['id'], DELETE);
+   $record->delete($_POST);
+   $record->redirectToList();
+
+} else if (isset($_POST["restore"])) {
+   $record->check($_POST['id'], PURGE);
+   $record->restore($_POST);
+   $record->redirectToList();
+
+} else if (isset($_POST["purge"])) {
+   $record->check($_POST['id'], PURGE);
+   $record->delete($_POST, 1);
+   $record->redirectToList();
+
+} else if (isset($_POST["update"])) {
+   $record->check($_POST['id'], UPDATE);
+   $record->update($_POST);
+   Html::back();
+
+} else if (isset($_POST["additem"])) {
+
+   if (!empty($_POST['itemtype']) && $_POST['items_id'] > 0) {
+      $ditem->check(-1, UPDATE, $_POST);
+      $ditem->addItem($_POST);
+   }
+   Html::back();
+
+} else if (isset($_POST["deleteitem"])) {
+   foreach ($_POST["item"] as $key => $val) {
+      $input = ['id' => $key];
+      if ($val == 1) {
+         $ditem->check($key, UPDATE);
+         $ditem->delete($input);
+      }
+   }
+   Html::back();
+
+} else if (isset($_POST["deleterecords"])) {
+   $input = ['id' => $_POST["id"]];
+   $ditem->check($_POST["id"], UPDATE);
+   $ditem->delete($input);
+   Html::back();
+
+} else {
+   Html::header(DomainRecord::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "domain", "domainrecord");
+   $record->display([
+      'id'           => $_GET["id"],
+      'domains_id'   => $_GET['domains_id'] ?? null,
+      'withtemplate' => $_GET["withtemplate"]
+   ]);
+
+   Html::footer();
+}
