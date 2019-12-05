@@ -274,17 +274,17 @@ class TicketRecurrent extends DbTestCase {
       // Ticket created every 7 days with no anticipation and with calendar.
       // We expect ticket to be created every monday at opening hour.
       $data[] = [
-         'begin_date'     => date('Y-m-d 00:00:00', strtotime('last monday')),
+         'begin_date'     => date('Y-m-d 12:00:00', strtotime('last monday')),
          'end_date'       => $end_of_next_year,
          'periodicity'    => DAY_TIMESTAMP * 7,
          'create_before'  => 0,
          'calendars_id'   => $calendar_id,
          'expected_value' => $this->getNextWorkingDayDate(
             $working_days,
-            (int)date('w') === 1 && (int)date('G') >= 9
-               ? 'next monday' // monday on next week if today is monday and creation time is already passed
-               : 'monday', // else monday on current week
-            'Y-m-d 09:00:00'
+            (int)date('w') === 1
+               ? 'tomorrow' // postpone to tomorrow if we are on monday, as today is a day off
+               : 'monday',
+            'Y-m-d 12:00:00'
          ),
       ];
 
