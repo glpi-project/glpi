@@ -374,7 +374,7 @@ class TicketRecurrent extends CommonDropdown {
       $calendar = new Calendar();
       $is_calendar_valid = $calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay();
 
-      if (!$is_calendar_valid || $periodicity_in_seconds > DAY_TIMESTAMP) {
+      if (!$is_calendar_valid || $periodicity_in_seconds >= DAY_TIMESTAMP) {
          // Compute next occurence without using the calendar if calendar is not valid
          // or if periodicity is at least one day.
 
@@ -394,20 +394,27 @@ class TicketRecurrent extends CommonDropdown {
          }
 
          if ($is_calendar_valid) {
-            // If calendar is valid, set begin date to found occurence date.
-            // Calendar based computation will be done and will jump to next working second if necessary.
-            $begin_date = date('Y-m-d H:i:s', $occurence_time);
+            // Jump to next working day if occurence is outside working days.
+            while ($calendar->isHoliday(date('Y-m-d', $occurence_time))
+                   || !$calendar->isAWorkingDay($occurence_time)) {
+               $occurence_time = strtotime('+ 1 day', $occurence_time);
+            }
+            // Jump to next working hour if occurence is outside working hours.
+            if (!$calendar->isAWorkingHour($occurence_time)) {
+               $occurence_date = $calendar->computeEndDate(
+                  date('Y-m-d', $occurence_time),
+                  0 // 0 second delay to get the first working "second"
+               );
+               $occurence_time = strtotime($occurence_date);
+            }
+            $creation_time  = $occurence_time - $create_before;
          }
-      }
-
-      if ($is_calendar_valid) {
+      } else {
          // Base computation on calendar if calendar is valid
 
          $occurence_date = $calendar->computeEndDate(
             $begin_date,
-            0, // 0 second delay to get the first working "second"
-            0,
-            false
+            0 // 0 second delay to get the first working "second"
          );
          $occurence_time = strtotime($occurence_date);
          $creation_time  = $occurence_time - $create_before;
