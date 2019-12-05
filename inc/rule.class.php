@@ -69,6 +69,8 @@ class Rule extends CommonDBTM {
 
    static $rightname             = 'config';
 
+   protected $object_fields      = [];
+
    const RULE_NOT_IN_CACHE       = -1;
    const RULE_WILDCARD           = '*';
 
@@ -1419,21 +1421,18 @@ class Rule extends CommonDBTM {
     * @param array &$params  Parameters for all internal functions
     * @param array &options  Options:
     *                           - only_criteria : only react on specific criteria
-    * @param array $fields   Contains the fields of the object on which we are
-    *                        applying the rules (ONLY USED for addme_assign and
-    *                        addme_observer special forms)
     *
     * @return array The output array updated by actions.
     *         If rule matched add field _rule_process to return value
     */
-   function process(&$input, &$output, &$params, &$options = [], $fields = []) {
+   function process(&$input, &$output, &$params, &$options = []) {
 
       if ($this->validateCriterias($options)) {
          $this->regex_results     = [];
          $this->criterias_results = [];
          $input = $this->prepareInputDataForProcess($input, $params);
 
-         if ($this->checkCriterias($input, $fields)) {
+         if ($this->checkCriterias($input)) {
             unset($output["_no_rule_matches"]);
             $refoutput = $output;
             $output    = $this->executeActions($output, $params, $input);
@@ -1529,13 +1528,10 @@ class Rule extends CommonDBTM {
     * Check criterias
     *
     * @param array $input  The input data used to check criterias
-    * @param array $fields Contains the fields of the object on which we are
-    *                      applying the rules (ONLY USED for addme_assign and
-    *                      addme_observer special forms)
     *
     * @return boolean if criterias match
     */
-   function checkCriterias($input, $fields = []) {
+   function checkCriterias($input) {
 
       reset($this->criterias);
 
@@ -1546,7 +1542,7 @@ class Rule extends CommonDBTM {
 
             $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
             if (!isset($definition_criteria['is_global']) || !$definition_criteria['is_global']) {
-               $doactions &= $this->checkCriteria($criteria, $input, $fields);
+               $doactions &= $this->checkCriteria($criteria, $input);
                if (!$doactions) {
                   break;
                }
@@ -1603,21 +1599,18 @@ class Rule extends CommonDBTM {
     *
     * @param array &$criteria Criteria to check
     * @param array &$input    The input data used to check criterias
-    * @param array $fields    Contains the fields of the object on which we are
-    *                         applying the rules (ONLY USED for addme_assign and
-    *                         addme_observer special forms)
     *
     * @return bool
     */
-   function checkCriteria(&$criteria, &$input, $fields = []) {
+   function checkCriteria(&$criteria, &$input) {
 
       $partial_regex_result = [];
       // Undefine criteria field : set to blank
       if (!isset($input[$criteria->fields["criteria"]])) {
          // Check if we can find value in fields
-         if (isset($fields[$criteria->fields["criteria"]])) {
+         if (isset($this->object_fields[$criteria->fields["criteria"]])) {
             // Field value found, let's use it
-            $data = $fields[$criteria->fields["criteria"]];
+            $data = $this->object_fields[$criteria->fields["criteria"]];
          } else {
             // No field value found use default empty string unless target is
             // a dropdown
@@ -3194,5 +3187,14 @@ class Rule extends CommonDBTM {
       echo "</div>";
    }
 
+   /**
+    * Set the value of object_fields
+    *
+    * @return self
+    */
+   public function set_object_fields($object_fields) {
+      $this->object_fields = $object_fields;
 
+      return $this;
+   }
 }

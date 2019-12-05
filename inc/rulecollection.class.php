@@ -1545,7 +1545,8 @@ class RuleCollection extends CommonDBTM {
 
             if ($rule->fields["is_active"]) {
                $output["_rule_process"] = false;
-               $rule->process($input, $output, $params, $p, $fields);
+               $rule->set_object_fields($fields);
+               $rule->process($input, $output, $params, $p);
 
                if ($output["_rule_process"] && $this->stop_on_first_match) {
                   unset($output["_rule_process"]);
