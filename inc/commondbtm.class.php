@@ -5065,19 +5065,13 @@ class CommonDBTM extends CommonGLPI {
                                                 stripslashes($doc->fields["filename"]));
             $docadded[$docID]['filepath'] = $doc->fields["filepath"];
 
-            // for sub item, attach to document to parent item
-            $item_fordocitem = $this;
-            if (isset($input['_job'])) {
-               $item_fordocitem = $input['_job'];
-            }
-
             // add doc - item link
             $toadd = [
                'documents_id'  => $docID,
                '_do_notif'     => $donotif,
                '_disablenotif' => $disablenotif,
-               'itemtype'      => $item_fordocitem->getType(),
-               'items_id'      => $item_fordocitem->getID()
+               'itemtype'      => $this->getType(),
+               'items_id'      => $this->getID()
             ];
             if (isset($input['users_id'])) {
                $toadd['users_id'] = $input['users_id'];
@@ -5085,6 +5079,7 @@ class CommonDBTM extends CommonGLPI {
             if (isset($input[$options['content_field']])
                 && strpos($input[$options['content_field']], $doc->fields["tag"]) !== false
                 && strpos($doc->fields['mime'], 'image/') !== false) {
+               //do not display inline docs in timeline
                $toadd['timeline_position'] = CommonITILObject::NO_TIMELINE;
             }
 
