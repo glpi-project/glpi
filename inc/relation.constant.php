@@ -381,6 +381,19 @@ $RELATION = [
       'glpi_documents_items' => 'documents_id',
    ],
 
+   'glpi_domains'    => [
+      'glpi_domainrecords'  => 'domains_id',
+      'glpi_domains_items' => ['items_id', 'itemtype']
+   ],
+
+   'glpi_domaintypes' => [
+      'glpi_domains'  => 'domaintypes_id'
+   ],
+
+   'glpi_domainrecordtypes'    => [
+      'glpi_domainrecords'  => 'domainrecordtypes_id'
+   ],
+
    'glpi_enclosuremodels' => [
       'glpi_enclosures' => 'enclosuremodels_id',
    ],
@@ -528,6 +541,9 @@ $RELATION = [
       'glpi_users'                       => 'entities_id',
       'glpi_vlans'                       => 'entities_id',
       'glpi_wifinetworks'                => 'entities_id',
+      'glpi_domaintypes'                 => 'entities_id',
+      'glpi_domainrecords'                     => 'entities_id',
+      'glpi_domainrecordtypes'                 => 'entities_id'
    ],
 
    'glpi_filesystems' => [
@@ -553,6 +569,8 @@ $RELATION = [
          'groups_id',
       ],
       'glpi_consumableitems'       => 'groups_id_tech',
+      'glpi_domains'               => 'groups_id_tech',
+      'glpi_domainrecords'         => 'groups_id_tech',
       'glpi_enclosures'            => 'groups_id_tech',
       'glpi_groups'                => 'groups_id',
       '_glpi_groups_knowbaseitems' => 'groups_id',
@@ -1236,6 +1254,8 @@ $RELATION = [
       ],
       'glpi_consumableitems'          => 'users_id_tech',
       '_glpi_displaypreferences'      => 'users_id',
+      'glpi_domains'                  => 'users_id_tech',
+      'glpi_domainrecords'            => 'users_id_tech',
       'glpi_documents'                => 'users_id',
       'glpi_documents_items'          => 'users_id',
       'glpi_enclosures'               => 'users_id_tech',
