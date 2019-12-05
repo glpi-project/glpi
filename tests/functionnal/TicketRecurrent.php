@@ -42,12 +42,16 @@ class TicketRecurrent extends DbTestCase {
     * Data provider for self::testConvertTagToImage().
     */
    protected function computeNextCreationDateProvider() {
+      $calendar    = new \Calendar();
+      $cal_holiday = new \Calendar_Holiday();
+      $cal_segment = new \CalendarSegment();
+      $holiday     = new \Holiday();
+
       $start_of_previous_month = date('Y-m-01 00:00:00', strtotime('-1 month'));
       $end_of_next_year        = date('Y-m-d 23:59:59', strtotime('last day of next year'));
 
-      // Create a calendar where evey day except today is a working day
-      $calendar = new \Calendar();
-      $segment  = new \CalendarSegment();
+      // Create a calendar where every day except today is a working day.
+      // Used to test cases with periodicity smaller than one day.
       $calendar_id = $calendar->add(['name' => 'TicketRecurrent testing calendar']);
       $this->integer($calendar_id)->isGreaterThan(0);
 
@@ -56,7 +60,7 @@ class TicketRecurrent extends DbTestCase {
             continue;
          }
 
-         $segment_id = $segment->add(
+         $cal_segment_id = $cal_segment->add(
             [
                'calendars_id' => $calendar_id,
                'day'          => $day,
@@ -64,7 +68,7 @@ class TicketRecurrent extends DbTestCase {
                'end'          => '19:00:00'
             ]
          );
-         $this->integer($segment_id)->isGreaterThan(0);
+         $this->integer($cal_segment_id)->isGreaterThan(0);
       }
 
       $data = [
@@ -173,81 +177,170 @@ class TicketRecurrent extends DbTestCase {
             'create_before'  => HOUR_TIMESTAMP,
             'calendars_id'   => $calendar_id,
             'expected_value' => date('Y-m-d 08:00:00', strtotime('tomorrow')),
-         ],
+         ]
+      ];
 
-         // Ticket created every day with no anticipation and no calendar, but no end date
-         [
-            'begin_date'     => $start_of_previous_month,
-            'end_date'       => null,
-            'periodicity'    => DAY_TIMESTAMP,
-            'create_before'  => 0,
-            'calendars_id'   => 0,
-            'expected_value' => date('Y-m-d 00:00:00', strtotime('+ 1 day')),
-         ],
+      // Create a calendar where every day are working days, from 9am to 7pm, but with today as a day off.
+      // Used to test cases with periodicity periodicity of at least one day.
+      $calendar_id = $calendar->add(['name' => 'TicketRecurrent testing calendar']);
+      $this->integer($calendar_id)->isGreaterThan(0);
 
-         // Ticket created every day with no anticipation and with calendar
-         // Begin hour is outside working hours, so creation will be done on next day at opening hour.
-         [
-            'begin_date'     => $start_of_previous_month,
-            'end_date'       => $end_of_next_year,
-            'periodicity'    => DAY_TIMESTAMP,
-            'create_before'  => 0,
-            'calendars_id'   => $calendar_id,
-            'expected_value' => date('Y-m-d 09:00:00', strtotime('tomorrow')),
-         ],
+      $working_days = [1, 2, 3, 4, 5];
+      foreach ($working_days as $day) {
+         $cal_segment_id = $cal_segment->add(
+            [
+               'calendars_id' => $calendar_id,
+               'day'          => $day,
+               'begin'        => '09:00:00',
+               'end'          => '19:00:00',
+            ]
+         );
+         $this->integer($cal_segment_id)->isGreaterThan(0);
+      }
 
-         // Ticket created every day with anticipation and with calendar, but no end date
-         // Begin hour is outside working hours, so creation will be done on next day at opening hour - anticipation.
+      $holiday_id = $holiday->add(
          [
-            'begin_date'     => $start_of_previous_month,
-            'end_date'       => null,
-            'periodicity'    => DAY_TIMESTAMP,
-            'create_before'  => HOUR_TIMESTAMP * 2,
-            'calendars_id'   => $calendar_id,
-            'expected_value' => date('Y-m-d 07:00:00', strtotime('tomorrow')),
-         ],
+            'name'       => 'Today is a day off',
+            'begin_date' => date('Y-m-d'),
+            'end_date'   => date('Y-m-d'),
+         ]
+      );
+      $this->integer($holiday_id)->isGreaterThan(0);
 
-         // Ticket created every day with no anticipation and with calendar and having a begin date in the future
-         // As begin date is inside working hours, first occurence should be on begin date.
+      $cal_holiday_id = $cal_holiday->add(
          [
-            'begin_date'     => date('Y-m-d 09:00:00', strtotime('tomorrow')),
-            'end_date'       => $end_of_next_year,
-            'periodicity'    => DAY_TIMESTAMP,
-            'create_before'  => 0,
-            'calendars_id'   => $calendar_id,
-            'expected_value' => date('Y-m-d 09:00:00', strtotime('tomorrow')),
-         ],
+            'calendars_id' => $calendar_id,
+            'holidays_id'  => $holiday_id,
+         ]
+      );
+      $this->integer($cal_holiday_id)->isGreaterThan(0);
 
-         // Ticket created every day with anticipation and with calendar and having a begin date in the future
-         // As begin date is outside working hours, first occurence should be on opening hour - anticipation.
-         [
-            'begin_date'     => date('Y-m-d 04:00:00', strtotime('tomorrow')),
-            'end_date'       => $end_of_next_year,
-            'periodicity'    => DAY_TIMESTAMP,
-            'create_before'  => HOUR_TIMESTAMP * 4,
-            'calendars_id'   => $calendar_id,
-            'expected_value' => date('Y-m-d 05:00:00', strtotime('tomorrow')),
-         ],
+      // Ticket created every day with no anticipation and no calendar, but no end date
+      $data[] = [
+         'begin_date'     => $start_of_previous_month,
+         'end_date'       => null,
+         'periodicity'    => DAY_TIMESTAMP,
+         'create_before'  => 0,
+         'calendars_id'   => 0,
+         'expected_value' => date('Y-m-d 00:00:00', strtotime('+ 1 day')),
+      ];
 
-         // Ticket created every 2 month with no anticipation and no calendar
-         [
-            'begin_date'     => $start_of_previous_month,
-            'end_date'       => $end_of_next_year,
-            'periodicity'    => '2MONTH',
-            'create_before'  => 0,
-            'calendars_id'   => 0,
-            'expected_value' => date('Y-m-01 00:00:00', strtotime($start_of_previous_month . ' + 2 month')),
-         ],
+      // Ticket created every day with no anticipation and with calendar
+      // Begin hour is outside working hours (today is a day off),
+      // so creation will be done on next working day at opening hour.
+      $data[] = [
+         'begin_date'     => $start_of_previous_month,
+         'end_date'       => $end_of_next_year,
+         'periodicity'    => DAY_TIMESTAMP,
+         'create_before'  => 0,
+         'calendars_id'   => $calendar_id,
+         'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 09:00:00'),
+      ];
 
-         // Ticket created every year with no anticipation and no calendar
+      // Ticket created every day with anticipation and with calendar, but no end date
+      // Begin hour is outside working hours (today is a day off),
+      // so creation will be done on next day at opening hour - anticipation.
+      $data[] = [
+         'begin_date'     => $start_of_previous_month,
+         'end_date'       => null,
+         'periodicity'    => DAY_TIMESTAMP,
+         'create_before'  => HOUR_TIMESTAMP * 2,
+         'calendars_id'   => $calendar_id,
+         'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 07:00:00'),
+      ];
+
+      // Ticket created every day with no anticipation and with calendar and having a begin date in the future
+      // As begin date is inside working hours, first occurence should be on begin date.
+      $data[] = [
+         'begin_date'     => date('Y-m-d 09:00:00', strtotime('tomorrow')),
+         'end_date'       => $end_of_next_year,
+         'periodicity'    => DAY_TIMESTAMP,
+         'create_before'  => 0,
+         'calendars_id'   => $calendar_id,
+         'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 09:00:00'),
+      ];
+
+      // Ticket created every day with anticipation and with calendar and having a begin date in the future
+      // As begin date is outside working hours, first occurence should be on opening hour - anticipation.
+      $data[] = [
+         'begin_date'     => date('Y-m-d 04:00:00', strtotime('tomorrow')),
+         'end_date'       => $end_of_next_year,
+         'periodicity'    => DAY_TIMESTAMP,
+         'create_before'  => HOUR_TIMESTAMP * 4,
+         'calendars_id'   => $calendar_id,
+         'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 05:00:00'),
+      ];
+
+      // Ticket created every 7 days with no anticipation and with calendar.
+      // We expect ticket to be created every monday at opening hour.
+      $data[] = [
+         'begin_date'     => date('Y-m-d 00:00:00', strtotime('last monday')),
+         'end_date'       => $end_of_next_year,
+         'periodicity'    => DAY_TIMESTAMP * 7,
+         'create_before'  => 0,
+         'calendars_id'   => $calendar_id,
+         'expected_value' => $this->getNextWorkingDayDate(
+            $working_days,
+            (int)date('w') === 1 && (int)date('G') >= 9
+               ? 'next monday' // monday on next week if today is monday and creation time is already passed
+               : 'monday', // else monday on current week
+            'Y-m-d 09:00:00'
+         ),
+      ];
+
+      // Ticket created every 2 month with no anticipation and no calendar
+      $data[] = [
+         'begin_date'     => $start_of_previous_month,
+         'end_date'       => $end_of_next_year,
+         'periodicity'    => '2MONTH',
+         'create_before'  => 0,
+         'calendars_id'   => 0,
+         'expected_value' => date('Y-m-01 00:00:00', strtotime($start_of_previous_month . ' + 2 month')),
+      ];
+
+      // Ticket created every 2 month with no anticipation and with calendar.
+      // Next occurence day will be on a day off, so creation will be done on next working day.
+      $next_occurence_date = date('Y-m-d', strtotime($start_of_previous_month . ' + 2 month'));
+      $week_off_begin = $next_occurence_date;
+      $week_off_end   = date('Y-m-d', strtotime($week_off_begin . ' + 7 days'));
+      $holiday_id = $holiday->add(
          [
-            'begin_date'     => $start_of_previous_month,
-            'end_date'       => $end_of_next_year,
-            'periodicity'    => '1YEAR',
-            'create_before'  => 0,
-            'calendars_id'   => 0,
-            'expected_value' => date('Y-m-01 00:00:00', strtotime($start_of_previous_month . ' + 1 year')),
-         ],
+            'name'       => 'Day off from ' . $week_off_begin . ' to ' . $week_off_end,
+            'begin_date' => $week_off_begin,
+            'end_date'   => $week_off_end,
+         ]
+      );
+      $this->integer($holiday_id)->isGreaterThan(0);
+
+      $cal_holiday_id = $cal_holiday->add(
+         [
+            'calendars_id' => $calendar_id,
+            'holidays_id'  => $holiday_id,
+         ]
+      );
+      $this->integer($cal_holiday_id)->isGreaterThan(0);
+
+      $data[] = [
+         'begin_date'     => $start_of_previous_month,
+         'end_date'       => $end_of_next_year,
+         'periodicity'    => '2MONTH',
+         'create_before'  => 0,
+         'calendars_id'   => $calendar_id,
+         'expected_value' => $this->getNextWorkingDayDate(
+            $working_days,
+            $week_off_end . ' + 1 day', // next occurence will be on first working day after days off
+            'Y-m-d 09:00:00'
+         ),
+      ];
+
+      // Ticket created every year with no anticipation and no calendar
+      $data[] = [
+         'begin_date'     => $start_of_previous_month,
+         'end_date'       => $end_of_next_year,
+         'periodicity'    => '1YEAR',
+         'create_before'  => 0,
+         'calendars_id'   => 0,
+         'expected_value' => date('Y-m-01 00:00:00', strtotime($start_of_previous_month . ' + 1 year')),
       ];
 
       // Ticket created every hour with anticipation and no calendar
@@ -299,13 +392,11 @@ class TicketRecurrent extends DbTestCase {
       ];
 
       // Special case: calendar where monday to friday are full working days
-      $calendar = new \Calendar();
-      $segment  = new \CalendarSegment();
       $calendar_id = $calendar->add(['name' => 'TicketRecurrent testing calendar 2']);
       $this->integer($calendar_id)->isGreaterThan(0);
 
       for ($day = 1; $day <= 5; $day++) {
-         $segment_id = $segment->add(
+         $cal_segment_id = $cal_segment->add(
             [
                'calendars_id' => $calendar_id,
                'day'          => $day,
@@ -313,7 +404,7 @@ class TicketRecurrent extends DbTestCase {
                'end'          => '24:00:00'
             ]
          );
-         $this->integer($segment_id)->isGreaterThan(0);
+         $this->integer($cal_segment_id)->isGreaterThan(0);
       }
 
       $next_time = strtotime('+1 hour');
@@ -361,5 +452,26 @@ class TicketRecurrent extends DbTestCase {
       );
 
       $this->string($value)->isIdenticalTo($expected_value);
+   }
+
+   /**
+    * Get next working day for reference date.
+    *
+    * @param array  $working_days    List of working days (0 for sunday, 6 for saturday).
+    * @param string $reference_date  Reference date.
+    * @param string $format          Date return format.
+    *
+    * @return string
+    */
+   private function getNextWorkingDayDate(array $working_days, $reference_date, $format) {
+      $reference_date = date('Y-m-d H:i:s', strtotime($reference_date)); // normalize reference date
+      $i = 0;
+      do {
+         $time = strtotime($reference_date . ' + ' . $i . ' days');
+         $day = date('w', $time);
+         $i++;
+      } while (!in_array($day, $working_days));
+
+      return date($format, $time);
    }
 }
