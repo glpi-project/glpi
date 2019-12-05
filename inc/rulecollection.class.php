@@ -1503,16 +1503,25 @@ class RuleCollection extends CommonDBTM {
    /**
     * Process all the rules collection
     *
-    * @param input            array the input data used to check criterias (need to be clean slashes)
-    * @param output           array the initial ouput array used to be manipulate by actions (need to be clean slashes)
-    * @param params           array parameters for all internal functions (need to be clean slashes)
-    * @param options          array options :
-    *                            - condition : specific condition to limit rule list
-    *                            - only_criteria : only react on specific criteria
+    * @param array $input    The input data used to check criterias (need to be clean slashes)
+    * @param array $output   The initial ouput array used to be manipulate by actions (need to be clean slashes)
+    * @param array $params   Parameters for all internal functions (need to be clean slashes)
+    * @param array $options  Options :
+    *                           - condition : specific condition to limit rule list
+    *                           - only_criteria : only react on specific criteria
+    * @param array $fields   Contains the fields of the object on which we are
+    *                        applying the rules (ONLY USED for addme_assign and
+    *                        addme_observer special forms)
     *
-    * @return the output array updated by actions (addslashes datas)
-   **/
-   function processAllRules($input = [], $output = [], $params = [], $options = []) {
+    * @return array the output array updated by actions (addslashes datas)
+    */
+   function processAllRules(
+      $input = [],
+      $output = [],
+      $params = [],
+      $options = [],
+      $fields = []
+   ) {
 
       $p['condition']     = 0;
       $p['only_criteria'] = null;
@@ -1536,7 +1545,7 @@ class RuleCollection extends CommonDBTM {
 
             if ($rule->fields["is_active"]) {
                $output["_rule_process"] = false;
-               $rule->process($input, $output, $params, $p);
+               $rule->process($input, $output, $params, $p, $fields);
 
                if ($output["_rule_process"] && $this->stop_on_first_match) {
                   unset($output["_rule_process"]);

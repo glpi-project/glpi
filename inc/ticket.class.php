@@ -1236,12 +1236,23 @@ class Ticket extends CommonITILObject {
             $changes[] = '_groups_id_of_requester';
          }
 
-         $input = $rules->processAllRules($input,
-                                          $input,
-                                          ['recursive'   => true,
-                                                'entities_id' => $entid],
-                                          ['condition'     => RuleTicket::ONUPDATE,
-                                          'only_criteria' => $changes]);
+         $fields = [];
+
+         // Since addme_assign and addme_observer send a simplified form that
+         // only contain the new assigned/observer user, we need to inject the
+         // others fields so that rules can check their conditions against the
+         // reals values of the objets and not the (almost) empty addme_XXX form
+         if (isset($_POST['addme_assign']) || isset($_POST['addme_observer'])) {
+            $fields = $this->fields;
+         }
+
+         $input = $rules->processAllRules(
+            $input,
+            $input,
+            ['recursive' => true, 'entities_id' => $entid],
+            ['condition' => RuleTicket::ONUPDATE, 'only_criteria' => $changes],
+            $fields
+         );
          $input = Toolbox::stripslashes_deep($input);
       }
 

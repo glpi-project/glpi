@@ -1414,23 +1414,26 @@ class Rule extends CommonDBTM {
    /**
     * Process the rule
     *
-    * @param &$input          the input data used to check criterias
-    * @param &$output         the initial output array used to be manipulate by actions
-    * @param &$params         parameters for all internal functions
-    * @param &options   array options:
-    *                     - only_criteria : only react on specific criteria
+    * @param array &$input   The input data used to check criterias
+    * @param array &$output  The initial output array used to be manipulate by actions
+    * @param array &$params  Parameters for all internal functions
+    * @param array &options  Options:
+    *                           - only_criteria : only react on specific criteria
+    * @param array $fields   Contains the fields of the object on which we are
+    *                        applying the rules (ONLY USED for addme_assign and
+    *                        addme_observer special forms)
     *
-    * @return the output array updated by actions.
+    * @return array The output array updated by actions.
     *         If rule matched add field _rule_process to return value
-   **/
-   function process(&$input, &$output, &$params, &$options = []) {
+    */
+   function process(&$input, &$output, &$params, &$options = [], $fields = []) {
 
       if ($this->validateCriterias($options)) {
          $this->regex_results     = [];
          $this->criterias_results = [];
          $input = $this->prepareInputDataForProcess($input, $params);
 
-         if ($this->checkCriterias($input)) {
+         if ($this->checkCriterias($input, $fields)) {
             unset($output["_no_rule_matches"]);
             $refoutput = $output;
             $output    = $this->executeActions($output, $params, $input);
@@ -1525,11 +1528,14 @@ class Rule extends CommonDBTM {
    /**
     * Check criterias
     *
-    * @param $input the input data used to check criterias
+    * @param array $input  The input data used to check criterias
+    * @param array $fields Contains the fields of the object on which we are
+    *                      applying the rules (ONLY USED for addme_assign and
+    *                      addme_observer special forms)
     *
     * @return boolean if criterias match
-   **/
-   function checkCriterias($input) {
+    */
+   function checkCriterias($input, $fields = []) {
 
       reset($this->criterias);
 
@@ -1540,7 +1546,7 @@ class Rule extends CommonDBTM {
 
             $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
             if (!isset($definition_criteria['is_global']) || !$definition_criteria['is_global']) {
-               $doactions &= $this->checkCriteria($criteria, $input);
+               $doactions &= $this->checkCriteria($criteria, $input, $fields);
                if (!$doactions) {
                   break;
                }
@@ -1595,15 +1601,39 @@ class Rule extends CommonDBTM {
    /**
     * Process a criteria of a rule
     *
-    * @param &$criteria  criteria to check
-    * @param &$input     the input data used to check criterias
-   **/
-   function checkCriteria(&$criteria, &$input) {
+    * @param array &$criteria Criteria to check
+    * @param array &$input    The input data used to check criterias
+    * @param array $fields    Contains the fields of the object on which we are
+    *                         applying the rules (ONLY USED for addme_assign and
+    *                         addme_observer special forms)
+    *
+    * @return bool
+    */
+   function checkCriteria(&$criteria, &$input, $fields = []) {
 
       $partial_regex_result = [];
       // Undefine criteria field : set to blank
       if (!isset($input[$criteria->fields["criteria"]])) {
-         $input[$criteria->fields["criteria"]] = '';
+         // Check if we can find value in fields
+         if (isset($fields[$criteria->fields["criteria"]])) {
+            // Field value found, let's use it
+            $data = $fields[$criteria->fields["criteria"]];
+         } else {
+            // No field value found use default empty string unless target is
+            // a dropdown
+            $data = '';
+
+            if (isset($this->getCriterias()[$criteria->fields["criteria"]]["type"])) {
+               $crt = $this->getCriterias()[$criteria->fields["criteria"]];
+
+               if ($crt["type"] == "dropdown"
+                  || strpos($crt["type"], "dropdown_") !== false) {
+                     $data = 0;
+               }
+            }
+         }
+
+         $input[$criteria->fields["criteria"]] = $data;
       }
 
       //If the value is not an array
