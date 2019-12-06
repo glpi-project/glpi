@@ -190,10 +190,31 @@ class ProjectCost extends CommonDBChild {
       return $tab;
    }
 
+   /**
+    * get the request results to get items associated to the given one (defined by $itemtype and $items_id)
+    *
+    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
+    * @param string  $items_id          the name of the item we want the resulting items to be associated to
+    *
+    * @return array the items associated to the given one (empty if none was found)
+    **/
+   static function getItemsAssociationRequest($itemtype, $items_id) {
+      global $DB;
+
+      return $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => static::getTable(),
+         'WHERE'  => [
+            static::$items_id  => $items_id
+         ]
+      ]);
+   }
+
 
    /**
     * Duplicate all costs from a project template to its clone
     *
+    * @deprecated 9.5
     * @since 0.84
     *
     * @param $oldid
@@ -202,6 +223,7 @@ class ProjectCost extends CommonDBChild {
    static function cloneProject ($oldid, $newid) {
       global $DB;
 
+      Toolbox::deprecated('Use clone');
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => ['projects_id'=> $oldid]

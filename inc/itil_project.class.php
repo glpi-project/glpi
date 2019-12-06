@@ -396,15 +396,17 @@ class Itil_Project extends CommonDBRelation {
    /**
     * Duplicate all itil items from a project template to his clone.
     *
+    * @deprecated 9.5
+    *
     * @param integer $oldid  ID of the item to clone
     * @param integer $newid  ID of the item cloned
     *
     * @return void
     **/
    static function cloneItilProject($oldid, $newid) {
-
       global $DB;
 
+      Toolbox::deprecated('Use clone');
       $itil_items = $DB->request(self::getTable(), ['WHERE'  => ['projects_id' => $oldid]]);
       foreach ($itil_items as $data) {
          unset($data['id']);

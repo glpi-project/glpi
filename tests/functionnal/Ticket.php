@@ -1387,6 +1387,46 @@ class Ticket extends DbTestCase {
          ->variable['users_id_editor']->isEqualTo($uid2);
    }
 
+   public function testClone() {
+      $this->login();
+      $this->setEntity('Root entity', true);
+      $ticket = new \Ticket();
+      $ticket = getItemByTypeName('Ticket', '_ticket01');
+
+      $date = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date;
+
+      // Test item cloning
+      $added = $ticket->clone();
+      $this->integer((int)$added)->isGreaterThan(0);
+
+      $clonedTicket = new \Ticket();
+      $this->boolean($clonedTicket->getFromDB($added))->isTrue();
+
+      $fields = $ticket->fields;
+
+      // Check the ticket values. Id and dates must be different, everything else must be equal
+      foreach ($fields as $k => $v) {
+         switch ($k) {
+            case 'id':
+               $this->variable($clonedTicket->getField($k))->isNotEqualTo($ticket->getField($k));
+               break;
+            case 'date_mod':
+            case 'date_creation':
+               $dateClone = new \DateTime($clonedTicket->getField($k));
+               $expectedDate = new \DateTime($date);
+               $this->dateTime($dateClone)->isEqualTo($expectedDate);
+               break;
+            default:
+               $this->executeOnFailure(
+                  function() use ($k) {
+                      dump($k);
+                  }
+               )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k))->dump($k);
+         }
+      }
+   }
+
    protected function _testGetTimelinePosition($tlp, $tickets_id) {
       foreach ($tlp as $users_name => $user) {
          $this->login($users_name, $user['pass']);

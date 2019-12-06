@@ -98,6 +98,7 @@ class Notepad extends CommonDBChild {
    /**
     * Duplicate all notepads from a item template to his clone
     *
+    * @deprecated 9.5
     * @since 9.2
     *
     * @param string $itemtype      itemtype of the item
@@ -107,6 +108,7 @@ class Notepad extends CommonDBChild {
    static function cloneItem ($itemtype, $oldid, $newid) {
       global $DB;
 
+      Toolbox::deprecated('Use clone');
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [

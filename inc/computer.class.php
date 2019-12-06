@@ -247,48 +247,44 @@ class Computer extends CommonDBTM {
       return $input;
    }
 
+   /**
+    * @see CommonDBTM::post_clone
+   **/
+   function post_clone($source, $history) {
+      parent::post_clone($source,$history);
+      $relations_classes = [
+         Item_OperatingSystem::class,
+         Item_devices::class,
+         Infocom::class,
+         Item_Disk::class,
+         Item_SoftwareVersion::class,
+         Item_SoftwareLicense::class,
+         Contract_Item::class,
+         Document_Item::class,
+         NetworkPort::class,
+         Computer_Item::class,
+         Notepad::class,
+         KnowbaseItem_Item::class
+      ];
 
-   function post_addItem() {
-
-      // Manage add from template
-      if (isset($this->input["_oldID"])) {
-         // ADD OS
-         Item_OperatingSystem::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         // ADD Devices
-         Item_Devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         // ADD Infocoms
-         Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         // ADD volumes
-         Item_Disk::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         // ADD software
-         Item_SoftwareVersion::cloneItem('Computer', $this->input["_oldID"], $this->fields['id']);
-
-         Item_SoftwareLicense::cloneItem('Computer', $this->input["_oldID"], $this->fields['id']);
-
-         // ADD Contract
-         Contract_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         // ADD Documents
-         Document_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         // ADD Ports
-         NetworkPort::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         // Add connected devices
-         Computer_Item::cloneComputer($this->input["_oldID"], $this->fields['id']);
-
-         //Add notepad
-         Notepad::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         //Add KB links
-         KnowbaseItem_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+      $override_input['items_id'] = $this->getID();
+      foreach ($relations_classes as $classname) {
+         if (!is_a($classname, CommonDBConnexity::class, true)) {
+            Toolbox::logWarning(
+               sprintf(
+                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
+                  $classname
+               )
+            );
+            continue;
+         }
+         
+         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
+         foreach ($relation_items as $relation_item) {        
+            $newId = $relation_item->clone($override_input, $history);
+         }
       }
    }
-
 
    function cleanDBonPurge() {
 

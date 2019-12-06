@@ -77,7 +77,7 @@ switch ($_REQUEST['action']) {
       exit;
 
    case 'clone_dashboard':
-      $new_dashboard = $dashboard->clone();
+      $new_dashboard = $dashboard->cloneCurrent();
       echo json_encode($new_dashboard);
       exit;
 }

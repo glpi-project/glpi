@@ -1429,12 +1429,14 @@ class Item_SoftwareVersion extends CommonDBRelation {
    /**
     * Duplicate all software from a computer template to its clone
     *
+    * @deprecated 9.5
+    *
     * @param integer $oldid ID of the computer to clone
     * @param integer $newid ID of the computer cloned
    **/
    static function cloneComputer($oldid, $newid) {
 
-      Toolbox::deprecated('Use cloneItem()');
+      Toolbox::deprecated('Use clone');
       return self::cloneItem('Computer', $oldid, $newid);
    }
 
@@ -1442,13 +1444,16 @@ class Item_SoftwareVersion extends CommonDBRelation {
    /**
     * Duplicate all software from a item template to its clone
     *
+    * @deprecated 9.5
+    *
     * @param string  $itemtype Itemtype of the item to clone
     * @param integer $oldid ID of the item to clone
     * @param integer $newid ID of the item cloned
    **/
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
-
+      
+      Toolbox::deprecated('Use clone');
       $iterator = $DB->request([
          'FROM'   => 'glpi_items_softwareversions',
          'WHERE'  => [

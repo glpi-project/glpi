@@ -1046,6 +1046,21 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
+      // This means we are not adding a cloned object
+      if (!isset($input['clone'])) {
+         // This means we are asked to clone the object (old way). This will clone the clone method
+         // that will set the clone parameter to true
+         if (isset($input['_oldID'])) {
+            $id_to_clone = $input['_oldID'];
+         }
+         if (isset($input['id'])) {
+            $id_to_clone = $input['id'];
+         }
+         if (isset($id_to_clone) && $this->getFromDB($id_to_clone)) {
+            return $this->clone($input, $history);
+         } 
+      }
+
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -1162,6 +1177,50 @@ class CommonDBTM extends CommonGLPI {
       }
 
       return false;
+   }
+
+   /**
+    * Clones the current item
+    *
+    * @since 9.5
+    *
+    * @param array $override_input custom input to override
+    * @param boolean $history do history log ? (true by default)
+    *
+    * @return integer the new ID of the clone (or false if fail)
+    */
+   function clone(array $override_input = [], bool $history = true) {
+      global $DB, $CFG_GLPI;
+
+      if ($DB->isSlave()) {
+         return false;
+      }
+      $new_item = new static();
+      $input = $this->fields;
+      foreach($override_input as $key => $value)
+      {
+         $input[$key] = $value;
+      }
+      $input = $new_item->prepareInputForClone($input);
+      if (isset($input['id'])) {
+         $input['_oldID'] =  $input['id'];
+         unset($input['id']);
+      }
+      unset($input['date_creation']);
+      unset($input['date_mod']);
+
+      if (isset($input['template_name'])) {
+         unset($input['template_name']);
+      }
+      if (isset($input['is_template'])) {
+         unset($input['is_template']);
+      }
+
+      $input['clone'] = true;
+      $newID = $new_item->add($input, [], $history);
+      // If the item needs post clone (recursive cloning for example)
+      $new_item->post_clone($this, $history);
+      return $newID;
    }
 
 
@@ -1292,6 +1351,19 @@ class CommonDBTM extends CommonGLPI {
       return $input;
    }
 
+    /**
+    * Prepare input datas for cloning the item
+    *
+    * @since 9.5
+    *
+    * @param array $input datas used to add the item
+    *
+    * @return array the modified $input array
+   **/
+   function prepareInputForClone($input) {
+      return $input;
+   }
+
 
    /**
     * Actions done after the ADD of the item in the database
@@ -1299,6 +1371,19 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function post_addItem() {
+   }
+
+   /**
+    * Actions done after the clone of the item in the database
+    *
+    * @since 9.5
+    *
+    * @param $source the item that is being cloned
+    * @param $history do history log ?
+    *
+    * @return void
+   **/
+   function post_clone($source, $history) {
    }
 
 

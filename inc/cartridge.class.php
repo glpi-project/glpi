@@ -98,14 +98,30 @@ class Cartridge extends CommonDBChild {
                    "date_in"           => date("Y-m-d")];
    }
 
+   function post_clone($source, $history) {
+      parent::post_clone($source,$history);
+      $relations_classes = [
+         Infocom::class
+      ];
 
-   function post_addItem() {
-
-      Infocom::cloneItem('CartridgeItem', $this->fields["cartridgeitems_id"], $this->fields['id'],
-                         $this->getType());
-      parent::post_addItem();
+      $override_input['items_id'] = $this->getID();
+      foreach ($relations_classes as $classname) {
+         if (!is_a($classname, CommonDBConnexity::class, true)) {
+            Toolbox::logWarning(
+               sprintf(
+                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
+                  $classname
+               )
+            );
+            continue;
+         }
+         
+         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
+         foreach ($relation_items as $relation_item) {        
+            $newId = $relation_item->clone($override_input);
+         }
+      }
    }
-
 
    function post_updateItem($history = 1) {
 

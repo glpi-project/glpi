@@ -97,6 +97,7 @@ class Contract extends CommonDBTM {
    /**
     * Duplicate all contracts from a item template to his clone
     *
+    * @deprecated 9.5
     * @since 9.2
     *
     * @param string $itemtype      itemtype of the item
@@ -105,7 +106,8 @@ class Contract extends CommonDBTM {
     **/
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
-
+      
+      Toolbox::deprecated('Use clone');
       $result = $DB->request(
          [
             'FROM'   => Contract_Item::getTable(),

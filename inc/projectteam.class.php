@@ -110,12 +110,14 @@ class ProjectTeam extends CommonDBRelation {
    /**
     * Duplicate all teams from a project template to his clone
     *
+    * @deprecated 9.5
     * @since 9.2
     *
     * @param integer $oldid        ID of the item to clone
     * @param integer $newid        ID of the item cloned
     **/
    static function cloneProjectTeam ($oldid, $newid) {
+      Toolbox::deprecated('Use clone');
       $team = self::getTeamFor($oldid);
       foreach ($team as $type) {
          foreach ($type as $data) {

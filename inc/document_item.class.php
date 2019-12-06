@@ -288,6 +288,7 @@ class Document_Item extends CommonDBRelation{
    /**
     * Duplicate documents from an item template to its clone
     *
+    * @deprecated 9.5
     * @since 0.84
     *
     * @param string  $itemtype     itemtype of the item
@@ -297,7 +298,8 @@ class Document_Item extends CommonDBRelation{
    **/
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
-
+      
+      Toolbox::deprecated('Use clone');
       if (empty($newitemtype)) {
          $newitemtype = $itemtype;
       }

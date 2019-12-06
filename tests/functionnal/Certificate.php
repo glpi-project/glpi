@@ -107,6 +107,53 @@ class Certificate extends DbTestCase {
       $this->boolean($obj->delete($in))->isTrue();
    }
 
+   public function testClone() {
+      $this->login();
+      $certificate = new \Certificate();
+
+      // Add
+      $id = $certificate->add([
+         'name'        => $this->getUniqueString(),
+         'entities_id' => 0
+      ]);
+      $this->integer($id)->isGreaterThan(0);
+
+      // Update
+      $id = $certificate->getID();
+      $in = array_merge(['id' => $id], $this->_getIn($this->method));
+      $this->boolean($certificate->update($in))->isTrue();
+      $this->boolean($certificate->getFromDB($id))->isTrue();
+
+      $date = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date;
+
+      // Test item cloning
+      $added = $certificate->clone();
+      $this->integer((int)$added)->isGreaterThan(0);
+
+      $clonedCertificate = new \Certificate();
+      $this->boolean($clonedCertificate->getFromDB($added))->isTrue();
+
+      $fields = $certificate->fields;
+
+      // Check the certificate values. Id and dates must be different, everything else must be equal
+      foreach ($fields as $k => $v) {
+         switch ($k) {
+            case 'id':
+               $this->variable($clonedCertificate->getField($k))->isNotEqualTo($certificate->getField($k));
+               break;
+            case 'date_mod':
+            case 'date_creation':
+               $dateClone = new \DateTime($clonedCertificate->getField($k));
+               $expectedDate = new \DateTime($date);
+               $this->dateTime($dateClone)->isEqualTo($expectedDate);
+               break;
+            default:
+               $this->variable($clonedCertificate->getField($k))->isEqualTo($certificate->getField($k));
+         }
+      }
+   }
+
    public function _getIn($method = "") {
       return [
          'name'                => $method,

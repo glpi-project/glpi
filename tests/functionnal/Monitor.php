@@ -38,26 +38,9 @@ use \DbTestCase;
 
 class Monitor extends DbTestCase {
 
-   public function testBasicMonitor() {
-      $this->login();
-      $this->setEntity('_test_root_entity', true);
-
-      $date = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currenttime'] = $date;
-
-      $data = [
-         'name'         => '_test_monitor01',
-         'entities_id'  => 0
-      ];
-
-      $monitor = new \Monitor();
-      $added = $monitor->add($data);
-      $this->integer((int)$added)->isGreaterThan(0);
-
-      $monitor = getItemByTypeName('Monitor', '_test_monitor01');
-
-      $expected = [
-         'id' => $added,
+   private static function getMonitorFields($id, $date) {
+      return [
+         'id' => $id,
          'entities_id' => 0,
          'name' => '_test_monitor01',
          'date_mod' => $date,
@@ -93,7 +76,49 @@ class Monitor extends DbTestCase {
          'date_creation' => $date,
          'is_recursive' => 0
       ];
+   }
 
+   private function getNewMonitor() {
+      $this->login();
+      $this->setEntity('_test_root_entity', true);
+
+      $date = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date;
+
+      $data = [
+         'name'         => '_test_monitor01',
+         'entities_id'  => 0
+      ];
+
+      $monitor = new \Monitor();
+      $added = $monitor->add($data);
+      $this->integer((int)$added)->isGreaterThan(0);
+
+      $monitor = getItemByTypeName('Monitor', '_test_monitor01');
+
+      $expected = Monitor::getMonitorFields($added, $date);
       $this->array($monitor->fields)->isIdenticalTo($expected);
+      return $monitor;
+   }
+
+   public function testBasicMonitor() {
+      $monitor = $this->getNewMonitor();
+   }
+
+   public function testClone() {
+      $monitor = $this->getNewMonitor();
+
+      $date = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date;
+
+      $added = $monitor->clone();
+      $this->integer((int)$added)->isGreaterThan(0);
+
+      $clonedMonitor = new \Monitor();
+      $this->boolean($clonedMonitor->getFromDB($added))->isTrue();
+
+      $expected = Monitor::getMonitorFields($added, $date);
+
+      $this->array($clonedMonitor->fields)->isIdenticalTo($expected);
    }
 }

@@ -153,6 +153,52 @@ abstract class CommonDBConnexity extends CommonDBTM {
                                       $getEmpty, $getFromDBOrEmpty);
    }
 
+   /**
+    * get items associated to the given one (defined by $itemtype and $items_id)
+    *
+    * @see CommonDBConnexity::getItemsAssociationRequest()
+    * @since 9.5
+    *
+    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
+    * @param string  $items_id          the name of the item we want the resulting items to be associated to
+    *
+    * @return array the items associated to the given one (empty if none was found)
+   **/
+   static function getItemsAssociatedTo($itemtype, $items_id) {
+      $res = array();
+      $iterator = static::getItemsAssociationRequest($itemtype, $items_id);
+
+      while ($row = $iterator->next()) {
+         $input = Toolbox::addslashes_deep($row);
+         $item = new static();
+         $item->getFromDB($input['id']);
+         $res[] = $item;
+      }
+      return $res;
+   }
+
+   /**
+    * get the request results to get items associated to the given one (defined by $itemtype and $items_id)
+    *
+    * @since 9.5
+    *
+    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
+    * @param string  $items_id          the name of the item we want the resulting items to be associated to
+    *
+    * @return array the items associated to the given one (empty if none was found)
+    */
+   static function getItemsAssociationRequest($itemtype, $items_id) {
+      global $DB;
+
+      return $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => static::getTable(),
+         'WHERE'  => [
+            'itemtype'  => $itemtype,
+            'items_id'  => $items_id
+         ]
+      ]);
+   }
 
    /**
     * get associated item (defined by $itemtype and $items_id)

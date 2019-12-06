@@ -388,6 +388,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
    /**
     * Duplicate KB links from an item template to its clone
     *
+    * @deprecated 9.5
     * @since 9.2
     *
     * @param string  $itemtype     itemtype of the item
@@ -397,7 +398,8 @@ class KnowbaseItem_Item extends CommonDBRelation {
    **/
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
-
+      
+      Toolbox::deprecated('Use clone');
       if (empty($newitemtype)) {
          $newitemtype = $itemtype;
       }

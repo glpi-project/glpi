@@ -542,6 +542,8 @@ class MassiveAction {
 
             //TRANS: select action 'update' (before doing it)
             $actions[$self_pref.'update'] = _x('button', 'Update');
+
+            $actions[$self_pref.'clone'] = _x('button', 'Clone');
          }
 
          Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
@@ -926,6 +928,27 @@ class MassiveAction {
 
             return true;
 
+         case 'clone':
+            $rand = mt_rand();
+
+            echo "<table width='100%'><tr>";
+            echo "<td>";
+            echo __('How many copies do you want to create ?');
+            echo "</td><tr>";
+            echo "<td>".Html::input("nb_copy", ['id' => "nb_copy$rand", 'value' => 0]);
+            echo "</td>";
+            echo "</tr></table>";
+
+            echo "<br>\n";
+
+            $submitname = _sx('button', 'Post');
+            if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
+               $submitname= stripslashes($ma->POST['submitname']);
+            }
+            echo Html::submit($submitname, ['name' => 'massiveaction']);
+
+            return true;
+
          case 'add_transfer_list':
             echo _n("Are you sure you want to add this item to transfer list?",
                     "Are you sure you want to add these items to transfer list?",
@@ -1236,6 +1259,34 @@ class MassiveAction {
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                      }
                   }
+               }
+            }
+            break;
+
+         case 'clone':
+            $input = $ma->POST;
+            foreach ($ids as $id) {
+               // check rights
+               if ($item->can($id, CREATE)) {
+                  // recovers the item from DB
+                  if ($item->getFromDB($id)) {
+                     $succeed = true;
+                     // clone in a loop
+                     for ($i = 0; $i < $input["nb_copy"] && $succeed; $i++) {
+                        if ($item->clone() === false) {
+                           $succeed = false;
+                        }
+                     }
+                     if ($succeed) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             }
             break;

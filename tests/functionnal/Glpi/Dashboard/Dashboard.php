@@ -125,7 +125,7 @@ class Dashboard extends DbTestCase {
    public function testClone() {
       $clone_name = sprintf(__('Copy of %s'), "Test_Dashboard");
       $clone_key  = \Toolbox::slugify($clone_name);
-      $this->array($this->dashboard->clone())->isEqualTo([
+      $this->array($this->dashboard->cloneCurrent())->isEqualTo([
          'title' => $clone_name,
          'key'   => $clone_key
       ]);

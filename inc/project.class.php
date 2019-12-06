@@ -265,35 +265,40 @@ class Project extends CommonDBTM {
       }
    }
 
+   function post_clone($source, $history) {
+      parent::post_clone($source,$history);
+      $relations_classes = [
+         ProjectCost::class,
+         ProjectTask::class,
+         Document_Item::class,
+         ProjectTeam::class,
+         Itil_Project::class,
+         Contract_Item::class,
+         Notepad::class,
+         KnowbaseItem_Item::class
+      ];
+
+      $override_input['items_id'] = $this->getID();
+      foreach ($relations_classes as $classname) {
+         if (!is_a($classname, CommonDBConnexity::class, true)) {
+            Toolbox::logWarning(
+               sprintf(
+                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
+                  $classname
+               )
+            );
+            continue;
+         }
+         
+         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
+         foreach ($relation_items as $relation_item) {        
+            $newId = $relation_item->clone($override_input, $history);
+         }
+      }
+   }
 
    function post_addItem() {
       global $CFG_GLPI;
-
-      // Manage add from template
-      if (isset($this->input["_oldID"])) {
-         ProjectCost::cloneProject($this->input["_oldID"], $this->fields['id']);
-
-         // ADD Task
-         ProjectTask::cloneProjectTask($this->input["_oldID"], $this->fields['id']);
-
-         // ADD Documents
-         Document_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         // ADD Team
-         ProjectTeam::cloneProjectTeam($this->input["_oldID"], $this->fields['id']);
-
-         // ADD Itil
-         Itil_Project::cloneItilProject($this->input["_oldID"], $this->fields['id']);
-
-         // ADD Contract
-         Contract::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         // ADD Notepad
-         Notepad::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-
-         //Add KB links
-         KnowbaseItem_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-      }
 
       // Update parent percent_done
       if (isset($this->fields['projects_id']) && $this->fields['projects_id'] > 0) {

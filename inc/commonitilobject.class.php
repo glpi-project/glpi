@@ -2026,6 +2026,26 @@ abstract class CommonITILObject extends CommonDBTM {
 
    }
 
+   /**
+   * @see CommonDBTM::post_clone
+   */
+   function post_clone($source, $history) {
+      global $DB;
+      $update = [];
+      if (isset($source->fields['users_id_lastupdater'])) {
+         $update['users_id_lastupdater'] = $source->fields['users_id_lastupdater'];
+      }
+      if (isset($source->fields['status'])) {
+         $update['status'] = $source->fields['status'];
+      }
+      $DB->update(
+         $this->getTable(),
+         $update,
+         ['id' => $this->getID()]
+      );
+
+   }
+
 
    /**
     * @since 0.84

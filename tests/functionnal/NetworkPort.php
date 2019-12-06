@@ -214,4 +214,93 @@ class NetworkPort extends DbTestCase {
       $this->integer((int)$new_id)->isGreaterThan(0);
       $this->integer((int)countElementsInTable('glpi_logs'))->isIdenticalTo($nb_log);
    }
+
+   public function testClone() {
+      $this->login();
+
+      $date = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date;
+
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+
+      // Do some installations
+      $networkport = new \NetworkPort();
+
+      // Be sure added
+      $nb_log = (int)countElementsInTable('glpi_logs');
+      $new_id = $networkport->add([
+         'items_id'                    => $computer1->getID(),
+         'itemtype'                    => 'Computer',
+         'entities_id'                 => $computer1->fields['entities_id'],
+         'is_recursive'                => 0,
+         'logical_number'              => 3,
+         'mac'                         => '00:24:81:eb:c6:d2',
+         'instantiation_type'          => 'NetworkPortEthernet',
+         'name'                        => 'em3',
+         'comment'                     => 'Comment me!',
+         'netpoints_id'                => 0,
+         'items_devicenetworkcards_id' => 0,
+         'type'                        => 'T',
+         'speed'                       => 1000,
+         'speed_other_value'           => '',
+         'NetworkName_name'            => 'test1',
+         'NetworkName_comment'         => 'test1 comment',
+         'NetworkName_fqdns_id'        => 0,
+         'NetworkName__ipaddresses'    => ['-1' => '192.168.20.1'],
+         '_create_children'            => true // automatically add instancation, networkname and ipadresses
+      ]);
+      $this->integer($new_id)->isGreaterThan(0);
+      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+
+      // Test item cloning
+      $added = $networkport->clone();
+      $this->integer((int)$added)->isGreaterThan(0);
+
+      $clonedNetworkport = new \NetworkPort();
+      $this->boolean($clonedNetworkport->getFromDB($added))->isTrue();
+
+      $fields = $networkport->fields;
+
+      // Check the networkport values. Id and dates must be different, everything else must be equal
+      foreach ($fields as $k => $v) {
+         switch ($k) {
+            case 'id':
+               $this->variable($clonedNetworkport->getField($k))->isNotEqualTo($networkport->getField($k));
+               break;
+            case 'date_mod':
+            case 'date_creation':
+               $dateClone = new \DateTime($clonedNetworkport->getField($k));
+               $expectedDate = new \DateTime($date);
+               $this->dateTime($dateClone)->isEqualTo($expectedDate);
+               break;
+            default:
+               $this->variable($clonedNetworkport->getField($k))->isEqualTo($networkport->getField($k));
+         }
+      }
+
+      $instantiation = $networkport->getInstantiation();
+      $clonedInstantiation = $clonedNetworkport->getInstantiation();
+      $instantiationFields = $networkport->fields;
+
+      // Check the networkport instantiation values. Id, networkports_id and dates must be different, everything else must be equal
+      foreach ($fields as $k => $v) {
+         switch ($k) {
+            case 'id':
+               $this->variable($clonedInstantiation->getField($k))->isNotEqualTo($instantiation->getField($k));
+               break;
+            case 'networkports_id':
+               $this->variable($clonedInstantiation->getField($k))->isNotEqualTo($instantiation->getField($k));
+               $this->variable($clonedInstantiation->getField($k))->isEqualTo($clonedNetworkport->getID());
+               break;
+            case 'date_mod':
+            case 'date_creation':
+               $dateClone = new \DateTime($clonedInstantiation->getField($k));
+               $expectedDate = new \DateTime($date);
+               $this->dateTime($dateClone)->isEqualTo($expectedDate);
+               break;
+            default:
+               $this->variable($clonedInstantiation->getField($k))->isEqualTo($instantiation->getField($k));
+         }
+      }
+   }
 }
