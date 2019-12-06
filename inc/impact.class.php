@@ -228,8 +228,16 @@ class Impact extends CommonGLPI {
          // Header
          echo '<thead>';
          echo '<tr class="noHover">';
-         echo '<th class="impact-list-header" colspan="2" width="90%"><h3>' . $label . '';
+         echo '<th class="impact-list-header" colspan="6" width="90%"><h3>' . $label . '';
          echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems-master impact-pointer"></i></h3></th>';
+         echo '</tr>';
+         echo '<tr class="noHover">';
+         echo '<th>Item</th>';
+         echo '<th>Relation</th>';
+         echo '<th>Incidents</th>';
+         echo '<th>Problems</th>';
+         echo '<th>Changes</th>';
+         echo '<th width="50px"></th>';
          echo '</tr>';
          echo '</thead>';
 
@@ -238,7 +246,7 @@ class Impact extends CommonGLPI {
 
             // Subheader
             echo '<tr class="tab_bg_1">';
-            echo '<td class="left subheader impact-left" colspan="2"">';
+            echo '<td class="left subheader impact-left" colspan="6">';
             $total = count($items);
             echo '<a>' . $itemtype::getTypeName() . '</a>' . ' (' . $total . ')';
             echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems impact-pointer"></i>';
@@ -248,8 +256,12 @@ class Impact extends CommonGLPI {
             foreach ($items as $itemtype_item) {
                // Content: one row per item
                echo '<tr class=tab_bg_1><div></div>';
-               echo '<td class="impact-left" width="20%"><div>' . $itemtype_item['stored']->fields['name']  . '</div></td>';
-               echo '<td width="80%"><div>';
+               echo '<td class="impact-left" width="15%">';
+               echo '<div><a target="_blank" href="' .
+                  $itemtype_item['stored']->getLinkURL() . '">' .
+                  $itemtype_item['stored']->fields['name'] . '</a></div>';
+               echo '</td>';
+               echo '<td width="40%"><div>';
 
                $path = [];
                foreach ($itemtype_item['node']['path'] as $node) {
@@ -263,6 +275,24 @@ class Impact extends CommonGLPI {
                echo implode(" $separator ", $path);
 
                echo '</div></td>';
+
+               self::displayListNumber(
+                  $itemtype_item['node']['ITILObjects']['incidents'],
+                  Ticket::class,
+                  $itemtype_item['node']['id']
+               );
+               self::displayListNumber(
+                  $itemtype_item['node']['ITILObjects']['problems'],
+                  Problem::class,
+                  $itemtype_item['node']['id']
+               );
+               self::displayListNumber(
+                  $itemtype_item['node']['ITILObjects']['changes'],
+                  Change::class,
+                  $itemtype_item['node']['id']
+               );
+
+               echo '<td class="center"><div></div></td>';
                echo '</tr>';
             }
 
@@ -415,6 +445,75 @@ class Impact extends CommonGLPI {
             });
          ');
       }
+   }
+
+   /**
+    * Display "number" cell in list view
+    * The cell is empty if no itilobjets are found, else it contains the
+    * number of iitilobjets found, use the highest priority as it's background
+    * color and is a link to matching search result
+    *
+    * @param array   $itil_objects
+    * @param string  $type
+    * @param string  $node_id
+    */
+   private static function displayListNumber($itil_objects, $type, $node_id) {
+      $user = new User();
+      $user->getFromDB(Session::getLoginUserID());
+      $user->computePreferences();
+
+      $count = count($itil_objects) ?: "";
+      $extra = "";
+      $node_details = explode(self::NODE_ID_DELIMITER, $node_id);
+
+      if ($count) {
+         $priority = 1;
+         $id = "impact_list_itilcount_" . mt_rand();
+         $link = "";
+
+         switch ($type) {
+            case Ticket::class:
+               $link = Ticket::getSearchURL();
+               $link .= "?is_deleted=0&as_map=0&search=Search&itemtype=Ticket";
+               $link .= "&criteria[0][link]=AND&criteria[0][field]=13&criteria[0][searchtype]=contains&criteria[0][value]=" . $node_details[1];
+               $link .= "&criteria[1][link]=AND&criteria[1][field]=131&criteria[1][searchtype]=equals&criteria[1][value]=" . $node_details[0];
+               $link .= "&criteria[2][link]=AND&criteria[2][field]=14&criteria[2][searchtype]=equals&criteria[2][value]=1";
+               $link .= "&criteria[3][link]=AND&criteria[3][field]=12&criteria[3][searchtype]=equals&criteria[3][value]=notold";
+               break;
+
+            case Problem::class:
+               $link = Problem::getSearchURL();
+               $link .= "?is_deleted=0&as_map=0&search=Search&itemtype=Problem";
+               $link .= "&criteria[0][link]=AND&criteria[0][field]=13&criteria[0][searchtype]=contains&criteria[0][value]=" . $node_details[1];
+               $link .= "&criteria[1][link]=AND&criteria[1][field]=131&criteria[1][searchtype]=equals&criteria[1][value]=" . $node_details[0];
+               $link .= "&criteria[3][link]=AND&criteria[3][field]=12&criteria[3][searchtype]=equals&criteria[3][value]=notold";
+               break;
+
+            case Change::class:
+               $link = Change::getSearchURL();
+               $link .= "?is_deleted=0&as_map=0&search=Search&itemtype=Change";
+               $link .= "&criteria[0][link]=AND&criteria[0][field]=13&criteria[0][searchtype]=contains&criteria[0][value]=" . $node_details[1];
+               $link .= "&criteria[1][link]=AND&criteria[1][field]=131&criteria[1][searchtype]=equals&criteria[1][value]=" . $node_details[0];
+               $link .= "&criteria[3][link]=AND&criteria[3][field]=12&criteria[3][searchtype]=equals&criteria[3][value]=notold";
+               break;
+         }
+
+         // Compute max priority
+         foreach ($itil_objects as $itil_object) {
+            if ($priority < $itil_object['priority']) {
+               $priority = $itil_object['priority'];
+            }
+         }
+         $extra = 'id="' . $id . '" style="background-color:' .  $user->fields["priority_$priority"] .'; cursor:pointer;"';
+
+         echo Html::scriptBlock('
+            $(document).on("click", "#' . $id . '", function(e) {
+               window.open("' . $link . '");
+            });
+         ');
+      }
+
+      echo '<td class="center" ' . $extra . '><div>' . $count . '</div></td>';
    }
 
    /**
@@ -1076,8 +1175,27 @@ class Impact extends CommonGLPI {
          'name'        => $item->fields['name'],
          'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
          'ITILObjects' => $item->getITILTickets(true),
-         'link'        => $item->getLinkURL()
+         'link'        => $item->getLinkURL(),
       ];
+
+      // Set incident badge if needed
+      if (count($new_node['ITILObjects']['incidents'])) {
+         $priority = 0;
+         foreach ($new_node['ITILObjects']['incidents'] as $incident) {
+            if ($priority < $incident['priority']) {
+               $priority = $incident['priority'];
+            }
+         }
+
+         $user = new User();
+         $user->getFromDB(Session::getLoginUserID());
+         $user->computePreferences();
+         $new_node['badge'] = [
+            'color'  => $user->fields["priority_$priority"],
+            'count'  => count($new_node['ITILObjects']['incidents']),
+            'target' => Ticket::getSearchURL(),
+         ];
+      }
 
       // Alter the label if we found some linked ITILObjects
       $itil_tickets_count = $new_node['ITILObjects']['count'];
