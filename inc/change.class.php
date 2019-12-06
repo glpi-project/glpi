@@ -1596,7 +1596,8 @@ class Change extends CommonITILObject {
       return $DB->request([
          'SELECT'    => [
             $this->getTable() . '.id',
-            $this->getTable() . '.name'
+            $this->getTable() . '.name',
+            $this->getTable() . '.priority',
          ],
          'FROM'      => $this->getTable(),
          'LEFT JOIN' => [

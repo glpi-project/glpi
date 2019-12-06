@@ -35,6 +35,8 @@ var cytoscape = window.cytoscape;
 
 // Needed for JS lint validation
 /* global _ */
+/* global hexToRgb */
+/* global contrast */
 
 var GLPIImpact = {
 
@@ -110,6 +112,9 @@ var GLPIImpact = {
    // Buffer used when generating positions for unset nodes
    no_positions: [],
 
+   // Register badges hitbox so they can be clicked
+   badgesHitboxes: [],
+
    // Store selectors
    selectors: {
       // Dialogs
@@ -163,13 +168,15 @@ var GLPIImpact = {
 
    // Data that needs to be stored/shared between events
    eventData: {
-      addEdgeStart      : null,   // Store starting node of a new edge
-      tmpEles           : null,   // Temporary collection used when adding an edge
-      lastClicktimestamp: null,   // Store last click timestamp
-      lastClickTarget   : null,   // Store last click target
-      boxSelected       : [],
-      grabNodeStart     : null,
-      boundingBox       : null,
+      addEdgeStart       : null, // Store starting node of a new edge
+      tmpEles            : null, // Temporary collection used when adding an edge
+      lastClicktimestamp : null, // Store last click timestamp
+      lastClickTarget    : null, // Store last click target
+      boxSelected        : [],
+      grabNodeStart      : null,
+      boundingBox        : null,
+      showPointerForBadge: false,
+      previousCursor     : "default",
    },
 
    /**
@@ -214,13 +221,6 @@ var GLPIImpact = {
             }
          },
          {
-            selector: '[todelete=1]:selected',
-            style: {
-               'overlay-opacity': 0.2,
-               'overlay-color': 'red',
-            }
-         },
-         {
             selector: 'node[image]',
             style: {
                'label'             : 'data(label)',
@@ -231,6 +231,8 @@ var GLPIImpact = {
                'background-opacity': '0',
                'font-size'         : '1em',
                'text-opacity'      : 0.7,
+               'overlay-opacity'   : 0.01,
+               'overlay-color'     : "white",
             }
          },
          {
@@ -244,6 +246,13 @@ var GLPIImpact = {
             style: {
                'overlay-opacity': 0.2,
                'overlay-color'  : "gray",
+            }
+         },
+         {
+            selector: '[todelete=1]:selected',
+            style: {
+               'overlay-opacity': 0.2,
+               'overlay-color': 'red',
             }
          },
          {
@@ -1087,6 +1096,7 @@ var GLPIImpact = {
       this.cy.on('drag add remove change', this.onChange);
       this.cy.on('doubleClick', this.onDoubleClick);
       this.cy.on('remove', this.onRemove);
+      this.initCanvasOverlay();
 
       // Global events
       $(document).keydown(this.onKeyDown);
@@ -1969,11 +1979,60 @@ var GLPIImpact = {
    },
 
    /**
+    * Check if a given position match the hitbox of a badge
+    *
+    * @param {Object}   renderedPosition  {x, y}
+    * @param {Boolean}  trigger           should we trigger the link if there
+    *                                     is a match ?
+    * @returns {Boolean}
+    */
+   checkBadgeHitboxes: function (renderedPosition, trigger) {
+      var hit = false;
+      var margin = 5 * GLPIImpact.cy.zoom();
+
+      GLPIImpact.badgesHitboxes.forEach(function(badgeHitboxDetails) {
+         if (hit) {
+            return;
+         }
+
+         var position = badgeHitboxDetails.position;
+         var bb = {
+            x1: position.x - margin,
+            x2: position.x + margin,
+            y1: position.y - margin,
+            y2: position.y + margin,
+         };
+
+         if (bb.x1 < renderedPosition.x && bb.x2 > renderedPosition.x
+            && bb.y1 < renderedPosition.y && bb.y2 > renderedPosition.y) {
+            hit = true;
+
+            if (trigger) {
+               var target = badgeHitboxDetails.target + "?is_deleted=0&as_map=0&search=Search&itemtype=Ticket";
+
+               // Add items_id criteria
+               target += "&criteria[0][link]=AND&criteria[0][field]=13&criteria[0][searchtype]=contains&criteria[0][value]=" + badgeHitboxDetails.id;
+               // Add itemtype criteria
+               target += "&criteria[1][link]=AND&criteria[1][field]=131&criteria[1][searchtype]=equals&criteria[1][value]=" + badgeHitboxDetails.itemtype;
+               // Add type criteria (incident)
+               target += "&criteria[2][link]=AND&criteria[2][field]=14&criteria[2][searchtype]=equals&criteria[2][value]=1";
+               // Add status criteria (not solved)
+               target += "&criteria[3][link]=AND&criteria[3][field]=12&criteria[3][searchtype]=equals&criteria[3][value]=notold";
+
+               window.open(target);
+            }
+         }
+      });
+
+      return hit;
+   },
+
+   /**
     * Handle global click events
     *
     * @param {JQuery.Event} event
     */
-   onClick: function () {
+   onClick: function (event) {
       switch (GLPIImpact.editionMode) {
          case GLPIImpact.EDITION_DEFAULT:
             break;
@@ -1987,6 +2046,8 @@ var GLPIImpact = {
          case GLPIImpact.EDITION_DELETE:
             break;
       }
+
+      GLPIImpact.checkBadgeHitboxes(event.renderedPosition, true);
    },
 
    /**
@@ -2321,6 +2382,27 @@ var GLPIImpact = {
    onMousemove: _.throttle(function(event) {
       var node;
 
+      // Check for badges hitboxes
+      if (GLPIImpact.checkBadgeHitboxes(event.renderedPosition, false)
+         && !GLPIImpact.eventData.showPointerForBadge) {
+         // Entering a badge hitbox
+         GLPIImpact.eventData.showPointerForBadge = true;
+
+         // Store previous cursor and show pointer
+         GLPIImpact.eventData.previousCursor = $(GLPIImpact.impactContainer).css('cursor');
+         $(GLPIImpact.impactContainer).css('cursor', "pointer");
+      } else if (GLPIImpact.eventData.showPointerForBadge
+         && !GLPIImpact.checkBadgeHitboxes(event.renderedPosition, false)) {
+         // Exiiting a badge hitbox
+         GLPIImpact.eventData.showPointerForBadge = false;
+
+         // Reset to previous cursor
+         $(GLPIImpact.impactContainer).css(
+            'cursor',
+            GLPIImpact.eventData.previousCursor
+         );
+      }
+
       switch (GLPIImpact.editionMode) {
          case GLPIImpact.EDITION_DEFAULT:
             // No action if we are not grabbing a node
@@ -2466,12 +2548,17 @@ var GLPIImpact = {
             }
 
             if (event.target.isNode()) {
-               // If mouseover on node, show grab cursor
-               $(GLPIImpact.impactContainer).css('cursor', "grab");
+               if (!GLPIImpact.eventData.showPointerForBadge) {
+                  // Don't alter the cursor if hovering a badge
+                  $(GLPIImpact.impactContainer).css('cursor', "grab");
+               }
             } else if (event.target.isEdge()) {
                // If mouseover on edge, show default cursor and disable panning
-               $(GLPIImpact.impactContainer).css('cursor', "default");
                GLPIImpact.cy.panningEnabled(false);
+               if (!GLPIImpact.eventData.showPointerForBadge) {
+                  // Don't alter the cursor if hovering a badge
+                  $(GLPIImpact.impactContainer).css('cursor', "default");
+               }
             }
             break;
 
@@ -2534,15 +2621,20 @@ var GLPIImpact = {
    onMouseout: function(event) {
       switch (GLPIImpact.editionMode) {
          case GLPIImpact.EDITION_DEFAULT:
-            $(GLPIImpact.impactContainer).css('cursor', "move");
+            if (!GLPIImpact.eventData.showPointerForBadge) {
+               // Don't alter the cursor if hovering a badge
+               $(GLPIImpact.impactContainer).css('cursor', "move");
+            }
 
             // Re-enable panning in case the mouse was over an edge
             GLPIImpact.cy.panningEnabled(true);
             break;
 
          case GLPIImpact.EDITION_ADD_NODE:
-            $(GLPIImpact.impactContainer).css('cursor', "move");
-
+            if (!GLPIImpact.eventData.showPointerForBadge) {
+               // Don't alter the cursor if hovering a badge
+               $(GLPIImpact.impactContainer).css('cursor', "move");
+            }
             // Re-enable panning in case the mouse was over an edge
             GLPIImpact.cy.panningEnabled(true);
             break;
@@ -2552,9 +2644,12 @@ var GLPIImpact = {
 
          case GLPIImpact.EDITION_DELETE:
             // Remove red overlay
-            $(GLPIImpact.impactContainer).css('cursor', "move");
             event.cy.filter().data('todelete', 0);
             event.cy.filter().unselect();
+            if (!GLPIImpact.eventData.showPointerForBadge) {
+               // Don't alter the cursor if hovering a badge
+               $(GLPIImpact.impactContainer).css('cursor', "move");
+            }
             break;
       }
    },
@@ -3027,6 +3122,78 @@ var GLPIImpact = {
          });
       });
    },
+
+   /**
+    * Init and render the canvas overlay used to show the badges
+    */
+   initCanvasOverlay: function() {
+      var layer = GLPIImpact.cy.cyCanvas();
+      var canvas = layer.getCanvas();
+      var ctx = canvas.getContext('2d');
+
+      GLPIImpact.cy.on("render cyCanvas.resize", function() {
+         layer.resetTransform(ctx);
+         layer.clear(ctx);
+         GLPIImpact.badgesHitboxes = [];
+
+         GLPIImpact.cy.filter("node:childless").forEach(function(node) {
+            // Stop here if the node has no badge defined
+            if (!node.data('badge')) {
+               return;
+            }
+
+            // Set badge color, adjust contract as needed (target ratio is > 1.8)
+            var rgb = hexToRgb(node.data('badge').color);
+            while (contrast([255, 255, 255], [rgb.r, rgb.g, rgb.b]) < 1.8) {
+               rgb.r *= 0.95;
+               rgb.g *= 0.95;
+               rgb.b *= 0.95;
+            }
+
+            // Set badge position (bottom right corner of the node)
+            var bbox = node.renderedBoundingBox({
+               includeLabels  : false,
+               includeOverlays: false,
+               includeNodes   : true,
+            });
+            var pos = {
+               x: bbox.x2 + GLPIImpact.cy.zoom(),
+               y: bbox.y2 + GLPIImpact.cy.zoom(),
+            };
+
+            // Register badge position so it can be clicked
+            GLPIImpact.badgesHitboxes.push({
+               position: pos,
+               target  : node.data('badge').target,
+               itemtype: node.data('id').split(GLPIImpact.NODE_ID_SEPERATOR)[0],
+               id      : node.data('id').split(GLPIImpact.NODE_ID_SEPERATOR)[1],
+            });
+
+            // Draw the badge
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 4 * GLPIImpact.cy.zoom(), 0, 2 * Math.PI, false);
+            ctx.fillStyle = "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")";
+            ctx.fill();
+
+            // Check if text should be light or dark by calculating the
+            // grayscale of the background color
+            var greyscale = (
+               Math.round(rgb.r * 299)
+               + Math.round(rgb.g * 587)
+               + Math.round(rgb.b * 114)
+            ) / 1000;
+            ctx.fillStyle = (greyscale >= 138) ? '#4e4e4e' : 'white';
+
+            // Print number
+            ctx.font = 6 * GLPIImpact.cy.zoom() + "px sans-serif";
+            ctx.fillText(
+               node.data('badge').count,
+               pos.x - (1.95 * GLPIImpact.cy.zoom()),
+               pos.y + (2.23 * GLPIImpact.cy.zoom())
+            );
+         });
+      });
+   }
 };
 
 var searchAssetsDebounced = _.debounce(GLPIImpact.searchAssets, 400, false);
