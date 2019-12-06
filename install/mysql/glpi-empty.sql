@@ -7803,15 +7803,28 @@ CREATE TABLE `glpi_domaintypes` (
   KEY `name` (`name`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
+DROP TABLE IF EXISTS `glpi_domainrelations`;
+CREATE TABLE `glpi_domainrelations` (
+  `id` int(11) NOT NULL        AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL        DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+
 DROP TABLE IF EXISTS `glpi_domains_items`;
 CREATE TABLE `glpi_domains_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `domains_id` int(11) NOT NULL DEFAULT '0',
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `domainrelations_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`domains_id`, `itemtype`, `items_id`),
   KEY `domains_id` (`domains_id`),
+  KEY `domainrelations_id` (`domainrelations_id`),
   KEY `FK_device` (`items_id`, `itemtype`),
   KEY `item` (`itemtype`, `items_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;

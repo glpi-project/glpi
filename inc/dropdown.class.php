@@ -1052,7 +1052,9 @@ class Dropdown {
                                                   Session::getPluralNumber()),
                  'Vlan'                     => __('VLAN'),
                  'LineOperator'             => _n('Line operator', 'Line operators',
-                                                  Session::getPluralNumber())
+                                                  Session::getPluralNumber()),
+                 'DomainType'               => DomainType::getTypeName(Session::getPluralNumber()),
+                 'DomainRelation'           => DomainRelation::getTypeName(Session::getPluralNumber())
              ],
 
              __('Internet') => [

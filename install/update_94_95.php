@@ -1067,6 +1067,35 @@ function update94to95() {
    );
    /** /Domains */
 
+   /** Domains relations */
+   if (!$DB->tableExists('glpi_domainrelations')) {
+      $query = "CREATE TABLE `glpi_domainrelations` (
+            `id` int(11) NOT NULL        AUTO_INCREMENT,
+            `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+            `entities_id` int(11) NOT NULL        DEFAULT '0',
+            `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+            `comment` text COLLATE utf8_unicode_ci,
+            PRIMARY KEY (`id`),
+            KEY `name` (`name`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_domainrelations");
+      $relations = DomainRelation::getDefaults();
+      foreach ($relations as $relation) {
+         $migration->addPostQuery(
+            $DB->buildInsert(
+               DomainRelation::getTable(),
+               $relation
+            )
+         );
+      }
+   }
+
+   if (!$DB->fieldExists('glpi_domains_items', 'domainrelations_id')) {
+      $migration->addField('glpi_domains_items', 'domainrelations_id', 'integer');
+      $migration->addKey('glpi_domains_items', 'domainrelations_id');
+   }
+   /** /Domains relations */
+
    /** Domain records */
    if (!$DB->tableExists('glpi_domainrecordtypes')) {
       $query = "CREATE TABLE `glpi_domainrecordtypes` (
