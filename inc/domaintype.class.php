@@ -49,7 +49,7 @@ class DomainType extends CommonDropdown
    /**
     * @param $ID
     * @param $entity
-    * @return ID|int|the
+    * @return integer
     */
    static function transfer($ID, $entity) {
       global $DB;

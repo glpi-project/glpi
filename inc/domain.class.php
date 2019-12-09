@@ -368,10 +368,10 @@ class Domain extends CommonDropdown {
     *
     * @param $options array of possible options
     *
-    * @return nothing (print out an HTML select box)
+    * @return void
     * */
    static function dropdownDomains($options = []) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $p['name']    = 'domains_id';
       $p['entity']  = '';
@@ -439,7 +439,6 @@ class Domain extends CommonDropdown {
    }
 
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       switch ($ma->getAction()) {
          case 'add_item':
@@ -634,7 +633,7 @@ class Domain extends CommonDropdown {
    /**
     * Cron action on domains : ExpiredDomains or DomainsWhichExpire
     *
-    * @param $task for log, if NULL display
+    * @param CronTask $task for log, if NULL display
     *
     *
     * @return int
