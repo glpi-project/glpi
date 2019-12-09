@@ -498,4 +498,14 @@ class Location extends CommonTreeDropdown {
       echo "</table></div>";
 
    }
+
+   function displaySpecificTypeField($ID, $field = []) {
+      switch ($field['type']) {
+         case 'setlocation':
+            $this->showMap();
+            break;
+         default:
+            throw new \RuntimeException("Unknown {$field['type']}");
+      }
+   }
 }

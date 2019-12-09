@@ -638,6 +638,18 @@ class CommonGLPI {
 
 
    /**
+   * Can object have a location
+   *
+   * @since 9.3
+   *
+   * @return boolean
+   */
+   function maybeLocated() {
+      return false;
+   }
+
+
+   /**
     * is the current object a new  one - Always false here (virtual Objet)
     *
     * @since 0.83

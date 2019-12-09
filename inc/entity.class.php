@@ -190,6 +190,16 @@ class Entity extends CommonTreeDropdown {
       return (($ID < 0) || !strlen($ID));
    }
 
+   /**
+    * Can object have a location
+    *
+    * @since 9.3
+    *
+    * @return boolean
+    */
+   function maybeLocated() {
+      return true;
+   }
 
    /**
     * Check right on each field before add / update
@@ -3252,5 +3262,15 @@ class Entity extends CommonTreeDropdown {
                                             'long'  => __('Update helpdesk parameters')];
 
       return $values;
+   }
+
+   function displaySpecificTypeField($ID, $field = []) {
+      switch ($field['type']) {
+         case 'setlocation':
+            $this->showMap();
+            break;
+         default:
+            throw new \RuntimeException("Unknown {$field['type']}");
+      }
    }
 }

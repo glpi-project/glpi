@@ -41,8 +41,6 @@ if (!defined('GLPI_ROOT')) {
 **/
 class CommonDBTM extends CommonGLPI {
 
-   use MapGeolocation;
-
    /**
     * Data fields of the Item.
     *
@@ -3101,6 +3099,20 @@ class CommonDBTM extends CommonGLPI {
       return false;
    }
 
+   /**
+    * Can object have a location
+    *
+    * @since 9.3
+    *
+    * @return boolean
+    */
+   function maybeLocated() {
+
+      if (!array_key_exists('id', $this->fields)) {
+         $this->getEmpty();
+      }
+      return array_key_exists('locations_id', $this->fields);
+   }
 
    /**
     * Return the linked items (in computers_items)
