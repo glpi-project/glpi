@@ -155,7 +155,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['addme_observer'])) {
    $track->check($_POST['tickets_id'], READ);
-   $track->update([
+   $input = array_merge($track->fields, [
       'id' => $_POST['tickets_id'],
       '_itil_observer' => [
          '_type' => "user",
@@ -163,6 +163,7 @@ if (isset($_POST["add"])) {
          'use_notification' => 1,
       ]
    ]);
+   $track->update($input);
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
@@ -170,7 +171,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['addme_assign'])) {
    $track->check($_POST['tickets_id'], READ);
-   $track->update([
+   $input = array_merge($track->fields, [
       'id' => $_POST['tickets_id'],
       '_itil_assign' => [
          '_type' => "user",
@@ -178,6 +179,7 @@ if (isset($_POST["add"])) {
          'use_notification' => 1,
       ]
    ]);
+   $track->update($input);
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
