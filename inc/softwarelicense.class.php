@@ -711,7 +711,8 @@ class SoftwareLicense extends CommonTreeDropdown {
       $licjoinexpire = ['jointype'  => 'child',
                               'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
                                                                         '', '', true).
-                                             " AND (NEWTABLE.`expire` IS NULL
+                                             " AND NEWTABLE.`is_template` = 0
+                                               AND (NEWTABLE.`expire` IS NULL
                                                    OR NEWTABLE.`expire` > NOW())"];
 
       $tab[] = [
@@ -962,7 +963,8 @@ class SoftwareLicense extends CommonTreeDropdown {
       $query = "SELECT `id`
                 FROM `glpi_softwarelicenses`
                 WHERE `softwares_id` = '$softwares_id'
-                      AND `number` = '-1' " .
+                      AND `number` = '-1'
+                      AND `is_template` = 0 " .
                       getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
 
       $result = $DB->query($query);
@@ -974,7 +976,8 @@ class SoftwareLicense extends CommonTreeDropdown {
       $query = "SELECT SUM(`number`)
                 FROM `glpi_softwarelicenses`
                 WHERE `softwares_id` = '$softwares_id'
-                      AND `number` > '0' " .
+                      AND `number` > '0'
+                      AND `is_template` = 0 " .
                       getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
 
       $result = $DB->query($query);
@@ -1039,7 +1042,8 @@ class SoftwareLicense extends CommonTreeDropdown {
       // Total Number of events
       $number = countElementsInTable(
          "glpi_softwarelicenses", [
-            'glpi_softwarelicenses.softwares_id'   => $softwares_id
+            'glpi_softwarelicenses.softwares_id' => $softwares_id,
+            'glpi_softwarelicenses.is_template'  => 0,
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
       );
       echo "<div class='spaced'>";
@@ -1072,7 +1076,8 @@ class SoftwareLicense extends CommonTreeDropdown {
                 LEFT JOIN `glpi_softwarelicensetypes`
                      ON (`glpi_softwarelicensetypes`.`id`
                           = `glpi_softwarelicenses`.`softwarelicensetypes_id`)
-                WHERE (`glpi_softwarelicenses`.`softwares_id` = '$softwares_id') " .
+                WHERE `glpi_softwarelicenses`.`softwares_id` = '$softwares_id'
+                      AND `glpi_softwarelicenses`.`is_template` = 0 " .
                        getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) ."
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
