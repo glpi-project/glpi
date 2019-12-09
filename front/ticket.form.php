@@ -154,14 +154,15 @@ if (isset($_POST["add"])) {
    Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
 
 } else if (isset($_POST['addme_observer'])) {
-   $ticket_user = new Ticket_User();
    $track->check($_POST['tickets_id'], READ);
-   $input = ['tickets_id'       => $_POST['tickets_id'],
-                  'users_id'         => Session::getLoginUserID(),
-                  'use_notification' => 1,
-                  'type'             => CommonITILActor::OBSERVER];
-   $ticket_user->add($input);
-
+   $track->update([
+      'id' => $_POST['tickets_id'],
+      '_itil_observer' => [
+         '_type' => "user",
+         'users_id' => Session::getLoginUserID(),
+         'use_notification' => 1,
+      ]
+   ]);
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
