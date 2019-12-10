@@ -961,7 +961,7 @@ class MailCollector  extends CommonDBTM {
          foreach ($ccs as $cc) {
             if ($cc != $requester
                && !Toolbox::inArrayCaseCompare($cc, $blacklisted_emails) // not blacklisted emails
-               && ($tmp = User::getOrImportByEmail($cc) > 0)) {
+               && (($tmp = User::getOrImportByEmail($cc)) > 0)) {
                $nb = (isset($tkt['_users_id_observer']) ? count($tkt['_users_id_observer']) : 0);
                $tkt['_users_id_observer'][$nb] = $tmp;
                $tkt['_users_id_observer_notif']['use_notification'][$nb] = 1;
@@ -975,7 +975,7 @@ class MailCollector  extends CommonDBTM {
          foreach ($tos as $to) {
             if ($to != $requester
                && !Toolbox::inArrayCaseCompare($to, $blacklisted_emails) // not blacklisted emails
-               && ($tmp = User::getOrImportByEmail($to) > 0)) {
+               && (($tmp = User::getOrImportByEmail($to)) > 0)) {
                $nb = (isset($tkt['_users_id_observer']) ? count($tkt['_users_id_observer']) : 0);
                $tkt['_users_id_observer'][$nb] = $tmp;
                $tkt['_users_id_observer_notif']['use_notification'][$nb] = 1;
