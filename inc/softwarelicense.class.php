@@ -726,7 +726,8 @@ class SoftwareLicense extends CommonTreeDropdown {
       $licjoinexpire = ['jointype'  => 'child',
                               'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
                                                                         '', '', true).
-                                             " AND (NEWTABLE.`expire` IS NULL
+                                             " AND NEWTABLE.`is_template` = 0
+                                               AND (NEWTABLE.`expire` IS NULL
                                                    OR NEWTABLE.`expire` > NOW())"];
 
       $tab[] = [
@@ -998,6 +999,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'FROM'   => 'glpi_softwarelicenses',
          'WHERE'  => [
             'softwares_id' => $softwares_id,
+            'is_template'  => 0
             'number'       => -1
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
       ]);
@@ -1014,6 +1016,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'FROM'   => 'glpi_softwarelicenses',
          'WHERE'  => [
             'softwares_id' => $softwares_id,
+            'is_template'  => 0,
             'number'       => ['>', 0]
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
       ])->next();
@@ -1076,7 +1079,8 @@ class SoftwareLicense extends CommonTreeDropdown {
       // Total Number of events
       $number = countElementsInTable(
          "glpi_softwarelicenses", [
-            'glpi_softwarelicenses.softwares_id'   => $softwares_id
+            'glpi_softwarelicenses.softwares_id' => $softwares_id,
+            'glpi_softwarelicenses.is_template'  => 0,
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
       );
       echo "<div class='spaced'>";
@@ -1130,7 +1134,8 @@ class SoftwareLicense extends CommonTreeDropdown {
             ]
          ],
          'WHERE'     => [
-            'glpi_softwarelicenses.softwares_id'   => $softwares_id
+            'glpi_softwarelicenses.softwares_id'   => $softwares_id,
+            'glpi_softwarelicenses.is_template'    => 0
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true),
          'ORDERBY'   => $sort,
          'START'     => (int)$start,

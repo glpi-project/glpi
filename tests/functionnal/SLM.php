@@ -289,7 +289,7 @@ class SLM extends DbTestCase {
       $segment_id = $segment->add(
          [
             'calendars_id' => $calendar_id,
-            'day'          => (int)date('w')+1,
+            'day'          => (int)date('w') === 6 ? 0 : (int)date('w')+1,
             'begin'        => '09:00:00',
             'end'          => '19:00:00'
          ]

@@ -141,6 +141,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
       }
 
       if ($canedit && $ok_state) {
+      if ($canedit) {
          echo '<form method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
          echo "<div class='center'>";
          echo "<table class=\"tab_cadre_fixe\">";
