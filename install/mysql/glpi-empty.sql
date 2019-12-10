@@ -3812,6 +3812,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `use_mail_date` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `requester_field` int(11) NOT NULL DEFAULT '0',
+  `add_cc_to_observer` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`),

@@ -292,6 +292,11 @@ class MailCollector  extends CommonDBTM {
       ], ["value" => $this->fields['requester_field']]);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_1'><td>" . __('Add CC users as observer') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("add_cc_to_observer", $this->fields["add_cc_to_observer"]);
+      echo "</td></tr>\n";
+
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
       echo "<td><textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
 
@@ -952,11 +957,11 @@ class MailCollector  extends CommonDBTM {
 
       // Add to and cc as additional observer if user found
       $ccs = $headers['ccs'];
-      if (is_array($ccs) && count($ccs)) {
+      if (is_array($ccs) && count($ccs) && $this->getField("add_cc_to_observer")) {
          foreach ($ccs as $cc) {
             if ($cc != $requester
                && !Toolbox::inArrayCaseCompare($cc, $blacklisted_emails) // not blacklisted emails
-               && ($tmp = User::getOrImportByEmail($cc) > 0)) {
+               && ($tmp = User::getOrImportByEmail($cc)) > 0) {
                $nb = (isset($tkt['_users_id_observer']) ? count($tkt['_users_id_observer']) : 0);
                $tkt['_users_id_observer'][$nb] = $tmp;
                $tkt['_users_id_observer_notif']['use_notification'][$nb] = 1;
@@ -970,7 +975,7 @@ class MailCollector  extends CommonDBTM {
          foreach ($tos as $to) {
             if ($to != $requester
                && !Toolbox::inArrayCaseCompare($to, $blacklisted_emails) // not blacklisted emails
-               && ($tmp = User::getOrImportByEmail($to) > 0)) {
+               && ($tmp = User::getOrImportByEmail($to)) > 0) {
                $nb = (isset($tkt['_users_id_observer']) ? count($tkt['_users_id_observer']) : 0);
                $tkt['_users_id_observer'][$nb] = $tmp;
                $tkt['_users_id_observer_notif']['use_notification'][$nb] = 1;
