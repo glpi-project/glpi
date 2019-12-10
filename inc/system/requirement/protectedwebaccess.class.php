@@ -79,7 +79,7 @@ class ProtectedWebAccess extends AbstractRequirement {
          }
       }
 
-      if (!$check_access) {
+      if (isset($_REQUEST['skipCheckWriteAccessToDirs']) || !$check_access) {
          $this->out_of_context = true;
          return;
       }
