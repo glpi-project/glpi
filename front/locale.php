@@ -30,11 +30,18 @@
  * ---------------------------------------------------------------------
  */
 
+$_GET['donotcheckversion']   = true;
+$dont_check_maintenance_mode = true;
+
 include ('../inc/includes.php');
 
 header("Content-Type: application/json; charset=UTF-8");
 
 $is_cacheable = !isset($_GET['debug']);
+if (!isset($CFG_GLPI['dbversion']) || trim($CFG_GLPI['dbversion']) != GLPI_SCHEMA_VERSION) {
+   // Make sure to not cache if in the middle of a GLPI update
+   $is_cacheable = false;
+}
 if ($is_cacheable) {
    // Makes CSS cacheable by browsers and proxies
    $max_age = WEEK_TIMESTAMP;
