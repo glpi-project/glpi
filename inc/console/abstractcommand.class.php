@@ -202,15 +202,6 @@ abstract class AbstractCommand extends Command {
             '<comment>' . $message . '</comment>',
             OutputInterface::VERBOSITY_NORMAL
          );
-         if (!$input->getOption('no-interaction')) {
-            /** @var Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
-            return $question_helper->ask(
-               $input,
-               $output,
-               new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
-            );
-         }
       }
 
       return true;
