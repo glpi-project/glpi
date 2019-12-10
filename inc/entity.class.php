@@ -41,6 +41,8 @@ if (!defined('GLPI_ROOT')) {
  */
 class Entity extends CommonTreeDropdown {
 
+   use MapGeolocation;
+
    public $must_be_replace              = true;
    public $dohistory                    = true;
 
@@ -64,6 +66,7 @@ class Entity extends CommonTreeDropdown {
    private static $field_right = ['entity'
                                           => [// Address
                                                    'address', 'country', 'email', 'fax', 'notepad',
+                                                   'longitude','latitude','altitude',
                                                    'phonenumber', 'postcode', 'state', 'town',
                                                    'website',
                                                    // Advanced (could be user_authtype ?)
@@ -120,7 +123,6 @@ class Entity extends CommonTreeDropdown {
       $forbidden[] = 'CommonDropdown'.MassiveAction::CLASS_ACTION_SEPARATOR.'merge';
       return $forbidden;
    }
-
 
    /**
     * @since 0.84
@@ -188,6 +190,16 @@ class Entity extends CommonTreeDropdown {
       return (($ID < 0) || !strlen($ID));
    }
 
+   /**
+    * Can object have a location
+    *
+    * @since 9.3
+    *
+    * @return boolean
+    */
+   function maybeLocated() {
+      return true;
+   }
 
    /**
     * Check right on each field before add / update
@@ -588,6 +600,36 @@ class Entity extends CommonTreeDropdown {
          'table'              => $this->getTable(),
          'field'              => 'country',
          'name'               => __('Country'),
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '67',
+         'table'              => $this->getTable(),
+         'field'              => 'latitude',
+         'name'               => __('Latitude'),
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '68',
+         'table'              => $this->getTable(),
+         'field'              => 'longitude',
+         'name'               => __('Longitude'),
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '69',
+         'table'              => $this->getTable(),
+         'field'              => 'altitude',
+         'name'               => __('Altitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
          'autocomplete'       => true,
@@ -1401,6 +1443,36 @@ class Entity extends CommonTreeDropdown {
       echo "<td>";
       Html::autocompletionTextField($entity, "country");
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Location on map')."</td>";
+      echo "<td>";
+      $entity->displaySpecificTypeField($ID, [
+         'name'   => 'setlocation',
+         'type'   => 'setlocation',
+         'label'  => __('Location on map'),
+         'list'   => false
+      ]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>"._x('location', 'Longitude')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "longitude");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>"._x('location', 'Latitude')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "latitude");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>"._x('location', 'Altitude')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "altitude");
+      echo "</td></tr>";
+
       Plugin::doHook("post_item_form", ['item' => $entity, 'options' => []]);
       echo "</table>";
 
@@ -1411,7 +1483,6 @@ class Entity extends CommonTreeDropdown {
          echo "</div>";
          Html::closeForm();
       }
-
       echo "</div>";
 
    }
@@ -3193,4 +3264,13 @@ class Entity extends CommonTreeDropdown {
       return $values;
    }
 
+   function displaySpecificTypeField($ID, $field = []) {
+      switch ($field['type']) {
+         case 'setlocation':
+            $this->showMap();
+            break;
+         default:
+            throw new \RuntimeException("Unknown {$field['type']}");
+      }
+   }
 }
