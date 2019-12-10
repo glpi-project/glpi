@@ -272,14 +272,14 @@ class DomainRecord extends CommonDBChild {
       echo "<td>";
       Dropdown::showFromArray(
          'status',
-         $this->status, [
+         $this->statusList(), [
             'value' => $this->fields['status']
          ]
       );
       echo "</td>";
       echo "<td>" . __('TTL') . "</td>";
       echo "<td>";
-      Dropdown::showNumber("ttl", ['value' => $this->fields["ttl"]]);
+      echo "<input type='number' name='ttl' value='{$this->fields['ttl']}'/>";
       echo "</td>";
       echo "</tr>";
 

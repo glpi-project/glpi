@@ -336,12 +336,6 @@ class Domain_Item extends CommonDBRelation {
 
    }
 
-   /*function getForbiddenStandardMassiveAction() {
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      return $forbidden;
-   }*/
-
    /**
     * Show domains associated to an item
     *
