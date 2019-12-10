@@ -69,31 +69,6 @@ if (isset($_POST["add"])) {
    $record->check($_POST['id'], UPDATE);
    $record->update($_POST);
    Html::back();
-
-} else if (isset($_POST["additem"])) {
-
-   if (!empty($_POST['itemtype']) && $_POST['items_id'] > 0) {
-      $ditem->check(-1, UPDATE, $_POST);
-      $ditem->addItem($_POST);
-   }
-   Html::back();
-
-} else if (isset($_POST["deleteitem"])) {
-   foreach ($_POST["item"] as $key => $val) {
-      $input = ['id' => $key];
-      if ($val == 1) {
-         $ditem->check($key, UPDATE);
-         $ditem->delete($input);
-      }
-   }
-   Html::back();
-
-} else if (isset($_POST["deleterecords"])) {
-   $input = ['id' => $_POST["id"]];
-   $ditem->check($_POST["id"], UPDATE);
-   $ditem->delete($input);
-   Html::back();
-
 } else {
    Html::header(DomainRecord::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "domain", "domainrecord");
    $record->display([

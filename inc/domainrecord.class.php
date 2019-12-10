@@ -338,12 +338,6 @@ class DomainRecord extends CommonDBChild {
 
       $number = count($iterator);
 
-      if (Session::isMultiEntitiesMode()) {
-         $colsup = 1;
-      } else {
-         $colsup = 0;
-      }
-
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);

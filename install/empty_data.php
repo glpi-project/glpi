@@ -2999,6 +2999,11 @@ $tables['glpi_notifications_notificationtemplates'] = [
       'notifications_id'         =>  '68',
       'mode'                     =>  'mailing',
       'notificationtemplates_id' =>  26,
+   ], [
+      'id'                       => 69,
+      'notifications_id'         =>  '69',
+      'mode'                     =>  'mailing',
+      'notificationtemplates_id' =>  26,
    ],
 ];
 
