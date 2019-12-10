@@ -35,6 +35,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class DomainRecord extends CommonDBChild {
+   const STATUS_ACTIVE = 1;
+   const STATUS_DISABLED = 0;
+   const DEFAULT_TTL = 3600;
 
    static $rightname              = 'domain';
    // From CommonDBChild
@@ -78,34 +81,57 @@ class DomainRecord extends CommonDBChild {
 
       $tab = array_merge($tab, parent::rawSearchOptions());
 
-      /*$tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'itemlink_type'      => $this->getType(),
-      ];
-
       $tab[] = [
          'id'                 => '2',
-         'table'              => 'glpi_domaintypes',
+         'table'              => 'glpi_domains',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => Domain::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => 'glpi_users',
+         'table'              => DomainRecordType::getTable(),
          'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge of the hardware'),
+         'name'               => DomainRecordType::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
       $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'ttl',
+         'name'               => __('TTL'),
+         'datatype'           => 'number'
+      ];
+
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'data',
+         'name'               => __('Data'),
+      ];
+
+      $tab[] = [
          'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'status',
+         'name'               => __('Status'),
+         'searchtype'         => 'equals',
+         'datatype'           => 'specific'
+      ];
+
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'linkfield'          => 'users_id_tech',
+         'name'               => __('Technician in charge'),
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '7',
          'table'              => $this->getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
@@ -113,15 +139,7 @@ class DomainRecord extends CommonDBChild {
       ];
 
       $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'date_expiration',
-         'name'               => __('Expiration date'),
-         'datatype'           => 'date'
-      ];
-
-      $tab[] = [
-         'id'                 => '7',
+         'id'                 => '8',
          'table'              => $this->getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
@@ -129,66 +147,21 @@ class DomainRecord extends CommonDBChild {
       ];
 
       $tab[] = [
-         'id'                 => '8',
-         'table'              => 'glpi_domains_items',
-         'field'              => 'items_id',
-         'nosearch'           => true,
-         'massiveaction'      => false,
-         'name'               => _n('Associated items', 'Associated items', 2),
-         'forcegroupby'       => true,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
-      ];
-
-      $tab[] = [
          'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => 'others',
-         'name'               => __('Others')
-      ];
-
-      $tab[] = [
-         'id'                 => '10',
          'table'              => 'glpi_groups',
          'field'              => 'name',
          'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge of the hardware'),
-         'condition'          => '`is_assign`',
+         'name'               => __('Group in charge'),
          'datatype'           => 'dropdown'
       ];
 
       $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'is_helpdesk_visible',
-         'name'               => __('Associable to a ticket'),
-         'datatype'           => 'bool'
-      ];
-
-      $tab[] = [
-         'id'                 => '12',
+         'id'                 => '10',
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
          'massiveaction'      => false,
          'name'               => __('Last update'),
          'datatype'           => 'datetime'
-      ];
-
-      $tab[] = [
-         'id'                 => '18',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool'
-      ];
-
-      $tab[] = [
-         'id'                 => '30',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'datatype'           => 'number'
       ];
 
       $tab[] = [
@@ -199,68 +172,8 @@ class DomainRecord extends CommonDBChild {
          'datatype'           => 'dropdown'
       ];
 
-      $tab[] = [
-         'id'                 => '81',
-         'table'              => 'glpi_entities',
-         'field'              => 'entities_id',
-         'name'               => __('Entity-ID')
-      ];*/
-
       return $tab;
    }
-
-   /*public static function rawSearchOptionsToAdd($itemtype = null) {
-      $tab = [];
-
-      if (in_array($itemtype, Domain::getTypes(true))) {
-         if (Session::haveRight("domain", READ)) {
-            $tab[] = [
-               'id'                 => 'domain',
-               'name'               => self::getTypeName(Session::getPluralNumber())
-            ];
-
-            $tab[] = [
-               'id'                 => '205',
-               'table'              => Domain::getTable(),
-               'field'              => 'name',
-               'name'               => __('Name'),
-               'forcegroupby'       => true,
-               'datatype'           => 'itemlink',
-               'itemlink_type'      => 'Domain',
-               'massiveaction'      => false,
-               'joinparams'         => [
-                  'beforejoin' => [
-                     'table'      => Domain_Item::getTable(),
-                     'joinparams' => ['jointype' => 'itemtype_item']
-                  ]
-               ]
-            ];
-
-            $tab[] = [
-               'id'                 => '206',
-               'table'              => DomainType::getTable(),
-               'field'              => 'name',
-               'name'               => DomainType::getTypeName(1),
-               'forcegroupby'       => true,
-               'datatype'           => 'dropdown',
-               'massiveaction'      => false,
-               'joinparams'         => [
-                  'beforejoin' => [
-                     'table'      => Domain::getTable(),
-                     'joinparams'         => [
-                        'beforejoin' => [
-                           'table'      => Domain_Item::getTable(),
-                           'joinparams' => ['jointype' => 'itemtype_item']
-                        ]
-                     ]
-                  ]
-               ]
-            ];
-         }
-      }
-
-      return $tab;
-   }*/
 
    function canCreateItem() {
       return true;
@@ -279,12 +192,20 @@ class DomainRecord extends CommonDBChild {
       return $ong;
    }
 
-   /*private function prepareInput($input) {
+   private function prepareInput($input) {
       if (isset($input['date_creation']) && empty($input['date_creation'])) {
          $input['date_creation'] = 'NULL';
       }
       if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
          $input['date_expiration'] = 'NULL';
+      }
+
+      if (!isset($input['ttl']) || empty($input['ttl'])) {
+         $input['ttl'] = self::DEFAULT_TTL;
+      }
+
+      if (!isset($input['status']) || empty($input['status'])) {
+         $input['ttl'] = self::STATUS_ACTIVE;
       }
 
       return $input;
@@ -296,7 +217,7 @@ class DomainRecord extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
       return $this->prepareInput($input);
-   }*/
+   }
 
    function showForm($ID, $options = []) {
       $this->initForm($ID, $options);
@@ -336,6 +257,29 @@ class DomainRecord extends CommonDBChild {
       echo "<td>" . __('Creation date') . "</td>";
       echo "<td>";
       Html::showDateField("date_creation", ['value' => $this->fields["date_creation"]]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Data') . "</td>";
+      echo "<td colspan='3'>";
+      Html::autocompletionTextField($this, "data");
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Status') . "</td>";
+      echo "<td>";
+      Dropdown::showFromArray(
+         'status',
+         $this->status, [
+            'value' => $this->fields['status']
+         ]
+      );
+      echo "</td>";
+      echo "<td>" . __('TTL') . "</td>";
+      echo "<td>";
+      Dropdown::showNumber("ttl", ['value' => $this->fields["ttl"]]);
       echo "</td>";
       echo "</tr>";
 
@@ -456,6 +400,50 @@ class DomainRecord extends CommonDBChild {
          Html::closeForm();
       }
       echo "</div>";
+   }
 
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+         case 'status':
+            return self::getStatus($values[$field]);
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'status' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            Dropdown::showFromArray(
+               $name,
+               self::statusList(), [
+                  'name'     => 'status',
+                  'showtype' => 'normal',
+                  'display'  => true
+               ]
+            );
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+   public static function getStatus($value) {
+      return self::statusList()[$value] ?? self::STATUS_DISABLED;
+   }
+
+   public static function statusList() {
+      return [
+         self::STATUS_DISABLED   => __('Disabled'),
+         self::STATUS_ACTIVE     => __('Active')
+      ];
    }
 }

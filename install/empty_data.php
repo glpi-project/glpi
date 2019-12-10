@@ -1621,8 +1621,23 @@ $tables['glpi_displaypreferences'] = [
       'itemtype' => 'Plugin',
       'num'      => '8',
       'rank'     => '7',
-   ],
+   ]
 ];
+
+$ADDTODISPLAYPREF['Cluster'] = [31, 19];
+$ADDTODISPLAYPREF['Domain'] = [3, 4, 2, 6, 7];
+$ADDTODISPLAYPREF['DomainRecord'] = [2, 3];
+
+foreach ($ADDTODISPLAYPREF as $type => $options) {
+   $rank = 1;
+   foreach ($options as $newval) {
+      $tables['glpi_displaypreferences'][] = [
+         'itemtype'  => $type,
+         'num'       => $newval,
+         'rank'      => $rank++,
+      ];
+   }
+}
 
 $tables['glpi_documenttypes'] = [
    [
