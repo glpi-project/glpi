@@ -999,7 +999,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'FROM'   => 'glpi_softwarelicenses',
          'WHERE'  => [
             'softwares_id' => $softwares_id,
-            'is_template'  => 0
+            'is_template'  => 0,
             'number'       => -1
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
       ]);
