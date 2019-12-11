@@ -338,6 +338,46 @@ class DomainRecord extends CommonDBChild {
 
       $number = count($iterator);
 
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form method='post' name='domain_form$rand'
+         id='domain_form$rand'  action='" . Toolbox::getItemTypeFormURL("Domain") . "'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='2'>" .
+              __('Link a record') . "</th></tr>";
+
+         echo "<tr class='tab_bg_1'><td class='center'>";
+         $used_iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+               'domains_id'   => ['>', 0],
+               'NOT'          => ['domains_id' => null]
+            ]
+         ]);
+
+         $used = [];
+         while ($row = $used_iterator->next()) {
+            $used[$row['id']] = $row['id'];
+         }
+
+         Dropdown::show(
+            'DomainRecord', [
+               'name'   => "domainrecords_id",
+               'used'   => $used
+            ]
+         );
+
+         echo "</td><td class='center' class='tab_bg_1'>";
+         echo "<input type='hidden' name='domains_id' value='$instID'>";
+         echo "<input type='submit' name='additem' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
