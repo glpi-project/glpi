@@ -3073,7 +3073,7 @@ class Transfer extends CommonDBTM {
             case 0 :
                // Same item -> delete
                if ($ID == $newID) {
-                  $ri->delete(['id' => $ri->fields['id']]);
+                  $ri->delete(['id' => $ri->fields['id']], true);
                }
                // Copy : nothing to do
                break;
