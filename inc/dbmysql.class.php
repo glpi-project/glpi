@@ -293,7 +293,7 @@ class DBmysql {
          $TIMER->start();
       }
 
-      $res = @$this->dbh->query($query);
+      $res = $this->dbh->query($query);
       if (!$res) {
          // no translation for error logs
          $error = "  *** MySQL query error:\n  SQL: ".$query."\n  Error: ".
@@ -360,7 +360,7 @@ class DBmysql {
    function prepare($query) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
-      $res = @$this->dbh->prepare($query);
+      $res = $this->dbh->prepare($query);
       if (!$res) {
          // no translation for error logs
          $error = "  *** MySQL prepare error:\n  SQL: ".$query."\n  Error: ".
