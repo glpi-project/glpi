@@ -900,8 +900,8 @@ class Search extends DbTestCase {
          'special_fk' => [[
             'itemtype'  => 'Computer',
             'ID'        => 24, // users_id_tech
-            'sql'       => '`glpi_users`.`name` AS `ITEM_Computer_24`, `glpi_users`.`realname` AS `ITEM_Computer_24_realname`,
-                           `glpi_users`.`id` AS `ITEM_Computer_24_id`, `glpi_users`.`firstname` AS `ITEM_Computer_24_firstname`,'
+            'sql'       => '`glpi_users_users_id_tech`.`name` AS `ITEM_Computer_24`, `glpi_users_users_id_tech`.`realname` AS `ITEM_Computer_24_realname`,
+                           `glpi_users_users_id_tech`.`id` AS `ITEM_Computer_24_id`, `glpi_users_users_id_tech`.`firstname` AS `ITEM_Computer_24_firstname`,'
          ]],
          'regular_fk' => [[
             'itemtype'  => 'Computer',
@@ -957,7 +957,7 @@ class Search extends DbTestCase {
             'meta'               => false,
             'meta_type'          => null,
             'joinparams'         => [],
-            'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id_tech` = `glpi_users`.`id` )"
+            'sql' => "LEFT JOIN `glpi_users` AS `glpi_users_users_id_tech` ON (`glpi_computers`.`users_id_tech` = `glpi_users_users_id_tech`.`id` )"
          ]],
          'regular_fk' => [[
             'itemtype'           => 'Computer',
@@ -1268,7 +1268,7 @@ class Search extends DbTestCase {
             'searchtype' => 'equals',
             'val' => '5',
             'meta' => false,
-            'expected' => "   (`glpi_users_c49005e57f22539b078d72faca40cdf3`.`id` = '5')",
+            'expected' => "   (`glpi_users_users_id_supervisor_c49005e57f22539b078d72faca40cdf3`.`id` = '5')",
          ],
          [
             'link' => ' AND ',
@@ -1278,7 +1278,7 @@ class Search extends DbTestCase {
             'searchtype' => 'equals',
             'val' => '2',
             'meta' => false,
-            'expected' => "  AND  (`glpi_users`.`id` = '2') ",
+            'expected' => "  AND  (`glpi_users_users_id_tech`.`id` = '2') ",
          ],
       ];
    }
@@ -1344,6 +1344,55 @@ class Search extends DbTestCase {
             ->array['last_errors']->isIdenticalTo([])
             ->array['data']->isNotEmpty()
             ->integer['totalcount']->isIdenticalTo(8);
+   }
+
+   public function testSearchWithMultipleFkeysOnSameTable() {
+      $this->login();
+      $this->setEntity('_test_root_entity', true);
+
+      $user_tech_id   = getItemByTypeName('User', 'tech', true);
+      $user_normal_id = getItemByTypeName('User', 'normal', true);
+
+      $search_params = [
+         'is_deleted'   => 0,
+         'start'        => 0,
+         'sort'         => 22,
+         'order'        => 'ASC',
+         'search'       => 'Search',
+         'criteria'     => [
+            0 => [
+               'link'       => 'AND',
+               'field'      => '64', // Last updater
+               'searchtype' => 'equals',
+               'value'      => $user_tech_id,
+            ],
+            1 => [
+               'link'       => 'AND',
+               'field'      => '22', // Recipient
+               'searchtype' => 'equals',
+               'value'      => $user_normal_id,
+            ]
+         ]
+      ];
+      $data = $this->doSearch('Ticket', $search_params);
+
+      $this->array($data)->hasKey('sql');
+      $this->array($data['sql'])->hasKey('search');
+      $this->string($data['sql']['search'])
+         // Check that we have two different joins
+         ->contains("LEFT JOIN `glpi_users`  AS `glpi_users_users_id_lastupdater`")
+         ->contains("LEFT JOIN `glpi_users`  AS `glpi_users_users_id_recipient`")
+
+         // Check that SELECT criteria applies on corresponding table alias
+         ->contains("`glpi_users_users_id_lastupdater`.`realname` AS `ITEM_Ticket_64_realname`")
+         ->contains("`glpi_users_users_id_recipient`.`realname` AS `ITEM_Ticket_22_realname`")
+
+         // Check that WHERE criteria applies on corresponding table alias
+         ->contains("`glpi_users_users_id_lastupdater`.`id` = '{$user_tech_id}'")
+         ->contains("`glpi_users_users_id_recipient`.`id` = '{$user_normal_id}'")
+
+         // Check that ORDER applies on corresponding table alias
+         ->contains("glpi_users_users_id_recipient.`name` ASC");
    }
 }
 

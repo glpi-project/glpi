@@ -3162,8 +3162,10 @@ JAVASCRIPT;
 
       $addtable = '';
 
-      if (($table != getTableForItemType($itemtype))
-          && (getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) != $table)) {
+      $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
+         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
+      if (($is_fkey_composite_on_self || $table != getTableForItemType($itemtype))
+          && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
 
@@ -3364,11 +3366,13 @@ JAVASCRIPT;
          $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
       }
 
-      if (((($table != getTableForItemType($itemtype))
+      $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
+         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
+      if (((($is_fkey_composite_on_self || $table != getTableForItemType($itemtype))
             && (!isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($CFG_GLPI["union_search_type"][$itemtype] != $table)))
            || !empty($complexjoin))
-          && getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) != $table) {
+          && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
 
@@ -4011,9 +4015,11 @@ JAVASCRIPT;
 
       $inittable = $table;
       $addtable  = '';
+      $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
+         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
       if (($table != 'asset_types')
-         && ($table != getTableForItemType($itemtype))
-         && (getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) != $table)) {
+          && ($is_fkey_composite_on_self || $table != getTableForItemType($itemtype))
+          && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;
       }
@@ -4814,7 +4820,7 @@ JAVASCRIPT;
       }
 
       // Multiple link possibilies case
-      if (!empty($linkfield) && getTableNameForForeignKeyField($linkfield) != $new_table) {
+      if (!empty($linkfield) && ($linkfield != getForeignKeyFieldForTable($new_table))) {
          $nt .= "_".$linkfield;
          $AS  = " AS `$nt`";
       }
@@ -4835,7 +4841,7 @@ JAVASCRIPT;
 
       // Do not take into account standard linkfield
       $tocheck = $nt.".".$linkfield;
-      if (getTableNameForForeignKeyField($linkfield) == $new_table) {
+      if ($linkfield == getForeignKeyFieldForTable($new_table)) {
          $tocheck = $nt;
       }
 
