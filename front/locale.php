@@ -53,37 +53,53 @@ if ($is_cacheable) {
 
 global $CFG_GLPI, $TRANSLATE;
 
+// Get messages from translator component
+$messages = $TRANSLATE->getAllMessages($_GET['domain']);
+if (!($messages instanceof \Zend\I18n\Translator\TextDomain)) {
+   Toolbox::logError(sprintf('Unable to get messages from domain "%s".', $_GET['domain']));
+   exit('[]');
+}
+
 // Extract headers from main po file
-$po_file = preg_replace(
+$po_file = GLPI_ROOT . '/locales/' . preg_replace(
    '/\.mo$/',
    '.po',
    $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1]
 );
 $po_file_handle = fopen(
-   GLPI_ROOT . '/locales/' . $po_file,
-   'r'
+   $po_file,
+   'rb'
 );
+if (false === $po_file_handle) {
+   Toolbox::logError(sprintf('Unable to extract locales data from "%s".', $po_file));
+   exit('[]');
+}
 $in_headers = false;
 $headers = [];
+$header_keys = ['language', 'plural-forms'];
 while (false !== ($line = fgets($po_file_handle))) {
-   if (preg_match('/^msgid\s+""$/', $line)) {
+   if (preg_match('/^msgid\s+""\s*$/', $line)) {
       $in_headers = true;
       continue;
    }
-   if ($in_headers && preg_match('/^msgid\s+".*"$/', $line)) {
+   if ($in_headers && preg_match('/^msgid\s+".*"\s*$/', $line)) {
       break; // new msgid = end of headers parsing
    }
    $header = [];
-   if ($in_headers && preg_match('/^"(?P<name>[a-z-]+):\s*(?P<value>.*)\\\n"$/i', $line, $header)) {
+   if ($in_headers && preg_match('/^"(?P<name>[a-z-]+):\s*(?P<value>.*)\\\n"\s*$/i', $line, $header)) {
       $header_name = strtolower($header['name']);
       $header_value = $header['value'];
-      if (in_array($header_name, ['language', 'plural-forms'])) {
+      if (in_array($header_name, $header_keys)) {
          $headers[$header_name] = $header_value;
       }
    }
 }
+if (count(array_diff($header_keys, array_keys($headers))) > 0) {
+   Toolbox::logError(sprintf('Missing mandatory locale headers in "%s".', $po_file));
+   exit('[]');
+}
 
 // Output messages and headers
-$messages = $TRANSLATE->getAllMessages($_GET['domain']);
 $messages[''] = $headers;
+$messages->ksort();
 echo(json_encode($messages, JSON_PRETTY_PRINT));
