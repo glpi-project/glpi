@@ -232,10 +232,7 @@ $.fn.shiftSelectable = function() {
       }
    };
 
-   $($boxes.selector).parent().click(function(evt) {
-      if ($boxes.length <= 0) {
-         $boxes = $($boxes.selector);
-      }
+   $($boxes).parent().click(function(evt) {
       var selected_checkbox = $(this).children('input[type=checkbox]');
 
       if (!lastChecked) {

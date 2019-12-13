@@ -38,6 +38,7 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 
+- jQuery library has been upgraded from 2.2.x to 3.4.x. jQuery Migrate is used to ensure backward compatibility in most cases.
 - `DBmysqlIterator::handleOrderClause()` supports QueryExpressions
 
 #### Deprecated
@@ -73,6 +74,8 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::checkSELinux()`
 - `Toolbox::userErrorHandlerDebug()`
 - `Toolbox::userErrorHandlerNormal()`
+- `Html::jsDisable()`
+- `Html::jsEnable()`
 
 #### Removed
 
