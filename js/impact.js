@@ -579,21 +579,23 @@ var GLPIImpact = {
       }
 
       // Build the new subgraph
-      $.when(GLPIImpact.buildGraphFromNode(node)).then(
-         function (graph) {
-            // Insert the new graph data into the current graph
-            GLPIImpact.insertGraph(graph, {
-               id: nodeID,
-               x: position.x,
-               y: position.y
-            });
-            GLPIImpact.updateFlags();
-         },
-         function () {
-            // Ajax failed
-            alert(__("Unexpected error."));
-         }
-      );
+      $.when(GLPIImpact.buildGraphFromNode(node))
+         .done(
+            function (graph) {
+               // Insert the new graph data into the current graph
+               GLPIImpact.insertGraph(graph, {
+                  id: nodeID,
+                  x: position.x,
+                  y: position.y
+               });
+               GLPIImpact.updateFlags();
+            }
+         ).fail(
+            function () {
+               // Ajax failed
+               alert(__("Unexpected error."));
+            }
+         );
    },
 
    /**

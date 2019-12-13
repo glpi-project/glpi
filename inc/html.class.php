@@ -4475,6 +4475,7 @@ JAVASCRIPT;
     * @param $id string id of the dom element
     *
     * @since 0.85.
+    * @deprecated 9.5.0
     *
     * @return String
    **/
@@ -4489,6 +4490,7 @@ JAVASCRIPT;
     * @param $id string id of the dom element
     *
     * @since 0.85.
+    * @deprecated 9.5.0
     *
     * @return String
    **/
