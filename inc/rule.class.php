@@ -701,6 +701,15 @@ class Rule extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
+
+      $tab[] = [
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'ranking',
