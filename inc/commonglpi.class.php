@@ -999,7 +999,7 @@ class CommonGLPI {
          $input   = $ma->getInput();
 
          if ($this->isEntityAssign()) {
-            $input['entity_restrict'] = $this->fields['entities_id'];
+            $input['entity_restrict'] = $this->getEntityID();
          }
 
          if (count($actions)) {
