@@ -112,6 +112,7 @@ echo "Delete various scripts and directories"
 \rm -rf PULL_REQUEST_TEMPLATE.md;
 \rm -rf .tx;
 \rm -rf .github;
+\rm -rf .dependabot;
 \find pics/ -type f -name "*.eps" -exec rm -rf {} \;
 \rm -rf nodes_modules;
 \rm -rf package.json;

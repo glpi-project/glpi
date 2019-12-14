@@ -4563,12 +4563,12 @@ abstract class CommonITILObject extends CommonDBTM {
                 ><span class='sr-only'>" . __s('Add') . "</span></span>";
          $candeleteobserver = true;
 
-      } else if (($ID > 0)
-                 && !in_array($this->fields['status'], $this->getClosedStatusArray())
-                 && !$is_hidden['_users_id_observer']
-                 && !$this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
-                 && !$this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
-         echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+      }
+      if (($ID > 0)
+           && !in_array($this->fields['status'], $this->getClosedStatusArray())
+           && !$is_hidden['_users_id_observer']
+           && !$this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
+           && !$this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
          Html::showSimpleForm($this->getFormURL(), 'addme_observer',
                               __('Associate myself'),
                               [$this->getForeignKeyField() => $this->fields['id']],
