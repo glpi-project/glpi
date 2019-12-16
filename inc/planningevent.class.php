@@ -49,6 +49,10 @@ trait PlanningEvent {
          $this->field['rrule'] = json_decode($this->field['rrule'], true);
       }
 
+      if (isset($this->fields['is_recursive'])) {
+         $this->fields['is_recursive'] = 1;
+      }
+
       parent::post_getEmpty();
    }
 
@@ -731,6 +735,12 @@ trait PlanningEvent {
 
          // remove exceptions key (as libraries throw exception for unknow keys)
          unset($rrule['exceptions']);
+      }
+
+      // remove specific change from js library to match rfc
+      if (isset($rrule['byweekday']) || isset($rrule['BYWEEKDAY'])) {
+         $rrule['byday'] = $rrule['byweekday'] ?? $rrule['BYWEEKDAY'];
+         unset($rrule['byweekday'], $rrule['BYWEEKDAY']);
       }
 
       $rset->addRRule(new RRule($rrule));
