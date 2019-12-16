@@ -461,6 +461,7 @@ function update94to95() {
          `id` int(11) NOT NULL AUTO_INCREMENT,
          `planningexternaleventtemplates_id` int(11) NOT NULL DEFAULT '0',
          `entities_id` int(11) NOT NULL DEFAULT '0',
+         `is_recursive` TINYINT(1) NOT NULL DEFAULT '1',
          `date` timestamp NULL DEFAULT NULL,
          `users_id` int(11) NOT NULL DEFAULT '0',
          `groups_id` int(11) NOT NULL DEFAULT '0',
@@ -477,6 +478,7 @@ function update94to95() {
          PRIMARY KEY (`id`),
          KEY `planningexternaleventtemplates_id` (`planningexternaleventtemplates_id`),
          KEY `entities_id` (`entities_id`),
+         KEY `is_recursive` (`is_recursive`),
          KEY `date` (`date`),
          KEY `begin` (`begin`),
          KEY `end` (`end`),
@@ -495,12 +497,19 @@ function update94to95() {
       ]);
    }
 
-   // partial update (for developers)
+   // partial updates (for developers)
    if (!$DB->fieldExists('glpi_planningexternalevents', 'planningexternaleventtemplates_id')) {
       $migration->addField('glpi_planningexternalevents', 'planningexternaleventtemplates_id', 'int', [
          'after' => 'id'
       ]);
       $migration->addKey('glpi_planningexternalevents', 'planningexternaleventtemplates_id');
+   }
+   if (!$DB->fieldExists('glpi_planningexternalevents', 'is_recursive')) {
+      $migration->addField('glpi_planningexternalevents', 'is_recursive', 'bool', [
+         'after' => 'entities_id',
+         'value' => 1
+      ]);
+      $migration->addKey('glpi_planningexternalevents', 'is_recursive');
    }
 
    if (!$DB->tableExists('glpi_planningeventcategories')) {
