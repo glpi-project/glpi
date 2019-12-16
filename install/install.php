@@ -37,6 +37,7 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 
 $GLPI = new GLPI();
 $GLPI->initLogger();
+$GLPI->initErrorHandler();
 
 Config::detectRootDoc();
 

@@ -109,7 +109,6 @@ abstract class API extends CommonGLPI {
       self::$api_url = trim($CFG_GLPI['url_base_api'], "/");
 
       // Don't display error in result
-      set_error_handler(['Toolbox', 'userErrorHandlerNormal']);
       ini_set('display_errors', 'Off');
 
       // Avoid keeping messages between api calls

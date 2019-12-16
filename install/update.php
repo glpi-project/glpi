@@ -40,6 +40,7 @@ include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 $GLPI = new GLPI();
 $GLPI->initLogger();
+$GLPI->initErrorHandler();
 
 $GLPI_CACHE = Config::getCache('cache_db');
 $GLPI_CACHE->clear(); // Force cache cleaning to prevent usage of outdated cache data

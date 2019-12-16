@@ -612,8 +612,12 @@ class Toolbox {
     * @param integer $linenum   line number the error was raised at.
     *
     * @return string  Error type
+    *
+    * @deprecated 9.5.0
    **/
    static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum) {
+
+      Toolbox::deprecated();
 
       $errortype = [E_ERROR             => 'Error',
                          E_WARNING           => 'Warning',
@@ -676,8 +680,12 @@ class Toolbox {
     * @param integer $linenum   line number the error was raised at.
     *
     * @return void
+    *
+    * @deprecated 9.5.0
    **/
    static function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum) {
+
+      Toolbox::deprecated();
 
       // For file record
       $type = self::userErrorHandlerNormal($errno, $errmsg, $filename, $linenum);
@@ -729,15 +737,10 @@ class Toolbox {
 
       // If debug mode activated : display some information
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         // Recommended development settings
-         ini_set('display_errors', 'On');
+         // Force reporting of all errors
          error_reporting(E_ALL);
-         set_error_handler(['Toolbox','userErrorHandlerDebug']);
-      } else if (!defined('TU_USER')) {
-         // Recommended production settings
+         // Disable native error displaying as it will be done by custom handler
          ini_set('display_errors', 'Off');
-         error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
-         set_error_handler(['Toolbox', 'userErrorHandlerNormal']);
       }
    }
 
