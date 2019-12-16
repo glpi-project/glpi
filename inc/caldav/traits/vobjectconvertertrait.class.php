@@ -243,12 +243,11 @@ trait VobjectConverterTrait {
 
       $input['rrule'] = $this->getRRuleInputFromVComponent($vcomponent);
 
+      $state = CALDAV_IMPORT_STATE;
       if ($vcomponent instanceof VTodo) {
-         $state = $this->getStateInputFromVComponent($vcomponent);
-         if (null !== $state) {
-            $input['state'] = $state;
-         }
+         $state = $this->getStateInputFromVComponent($vcomponent) ?? $state;
       }
+      $input['state'] = $state;
 
       return $input;
    }

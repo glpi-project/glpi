@@ -199,6 +199,11 @@ define("ERROR_COMPAT", 3);
 define("ERROR_ON_ACTION", 4);
 define("ERROR_ALREADY_DEFINED", 5);
 
+// CALDAV BEHAVIORS
+if (!defined('CALDAV_IMPORT_STATE')) {
+   // external events created from a caldav client will take the following default state
+   define("CALDAV_IMPORT_STATE", 0); // Planning::INFO
+}
 
 // For plugins
 $PLUGIN_HOOKS     = [];
