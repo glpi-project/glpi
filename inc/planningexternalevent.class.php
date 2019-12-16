@@ -89,6 +89,10 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
       return parent::canUpdateItem();
    }
 
+   function post_getEmpty() {
+      $this->fields['is_recursive'] = 1;
+   }
+
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
