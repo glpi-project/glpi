@@ -17,10 +17,10 @@
 # Thofl, 2019
 # Stephan <stephan.rennert@web.de>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2019
-# Seidler Jean-Louis <jl.seidler@gmx.ch>, 2019
 # Slow Rider, 2019
 # Ettore Atalan <atalanttore@googlemail.com>, 2019
 # armin0103 <kkarmintestkk@yahoo.de>, 2019
+# Seidler Jean-Louis <jl.seidler@gmx.ch>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -29,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: armin0103 <kkarmintestkk@yahoo.de>, 2019\n"
+"Last-Translator: Seidler Jean-Louis <jl.seidler@gmx.ch>, 2019\n"
 "Language-Team: German (Germany) (https://www.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2376,11 +2376,11 @@ msgstr ""
 
 #: front/itiltemplatefield.form.php:55
 msgid "hidden"
-msgstr ""
+msgstr "Ausblenden"
 
 #: front/itiltemplatefield.form.php:58
 msgid "mandatory"
-msgstr ""
+msgstr "erforderlich"
 
 #: front/itiltemplatefield.form.php:61
 msgid "predefined"
@@ -12127,11 +12127,11 @@ msgstr "%1$d von %2$d"
 
 #: inc/html.class.php:4708
 msgid "Close (Esc)"
-msgstr ""
+msgstr "Schliessen (ESC)"
 
 #: inc/html.class.php:4712
 msgid "Share"
-msgstr ""
+msgstr "Netzwerk-Laufwerk"
 
 #: inc/html.class.php:4716
 msgid "Toggle fullscreen"
@@ -12143,11 +12143,11 @@ msgstr ""
 
 #: inc/html.class.php:4731
 msgid "Previous (arrow left)"
-msgstr ""
+msgstr "vorherigen (Pfeil nach lins)"
 
 #: inc/html.class.php:4733
 msgid "Next (arrow right)"
-msgstr ""
+msgstr "nächsten (Pfeil nach rechts)"
 
 #: inc/html.class.php:5196
 msgid "Attach file by drag & drop or copy & paste in editor or "
@@ -12637,22 +12637,22 @@ msgstr "Freier Speicher"
 
 #: inc/item_disk.class.php:233 inc/item_disk.class.php:330
 msgid "Encryption"
-msgstr ""
+msgstr "Verschlüsselung"
 
 #: inc/item_disk.class.php:236 inc/item_disk.class.php:374
 #: inc/item_disk.class.php:598
 msgid "Encryption tool"
-msgstr ""
+msgstr "Verschlüsselung Programm"
 
 #: inc/item_disk.class.php:242 inc/item_disk.class.php:376
 #: inc/item_disk.class.php:611
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "Verschlüsselung Algorithm"
 
 #: inc/item_disk.class.php:245 inc/item_disk.class.php:378
 #: inc/item_disk.class.php:624
 msgid "Encryption type"
-msgstr ""
+msgstr "Verschlüsselung Typ"
 
 #: inc/item_disk.class.php:284
 msgid "Add a volume"
@@ -12664,23 +12664,23 @@ msgstr "Anteil freier"
 
 #: inc/item_disk.class.php:371
 msgid "Partial encryption"
-msgstr ""
+msgstr "teilweise Verschlüsselung"
 
 #: inc/item_disk.class.php:583
 msgid "Encryption status"
-msgstr ""
+msgstr "Verschlüsselungsstatus"
 
 #: inc/item_disk.class.php:643
 msgid "Not encrypted"
-msgstr ""
+msgstr "nicht verschlüsselt"
 
 #: inc/item_disk.class.php:644
 msgid "Partially encrypted"
-msgstr ""
+msgstr "teilweise verschlüsselt"
 
 #: inc/item_disk.class.php:645
 msgid "Encrypted"
-msgstr ""
+msgstr "verschlüsselt"
 
 #: inc/item_enclosure.class.php:105
 msgid "Add new item to this enclosure..."
@@ -16761,7 +16761,7 @@ msgstr "Im Globalen GANTT anzeigen"
 
 #: inc/project.class.php:1034
 msgid "Planned Duration"
-msgstr ""
+msgstr "Geplante Durchführungszeit"
 
 #: inc/project.class.php:1086 inc/projecttask.class.php:668
 #: inc/projecttask.class.php:1031 inc/projecttasktemplate.class.php:70
@@ -18869,7 +18869,7 @@ msgstr ""
 
 #: inc/ticket.class.php:2461
 msgid "Merge documents"
-msgstr ""
+msgstr "Dokumenten zusammenführen"
 
 #: inc/ticket.class.php:2467
 msgid "Merge tasks"
@@ -19735,7 +19735,7 @@ msgstr "Bestätigung Passwort"
 
 #: inc/user.class.php:2120 inc/user.class.php:2601
 msgid "Time zone"
-msgstr ""
+msgstr "Zeitzone"
 
 #: inc/user.class.php:2157
 msgid "Valid since"

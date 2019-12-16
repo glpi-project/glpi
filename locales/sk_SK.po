@@ -6055,7 +6055,7 @@ msgstr "Riadiaci zoznam"
 
 #: inc/change.class.php:440
 msgid "Analysis impact"
-msgstr ""
+msgstr "Analýza dopadov"
 
 #: inc/change.class.php:458 inc/change.class.php:1205
 #: inc/notificationtargetchange.class.php:262
@@ -8637,7 +8637,7 @@ msgstr "Povoliť vysoký kontrast"
 
 #: inc/config.class.php:1238 inc/ruleright.class.php:343
 msgid "Timezone"
-msgstr ""
+msgstr "Časová zóna"
 
 #: inc/config.class.php:1249
 msgid "Use server configuration"
@@ -12572,7 +12572,7 @@ msgstr ""
 
 #: inc/html.class.php:4712
 msgid "Share"
-msgstr ""
+msgstr "Zdieľať"
 
 #: inc/html.class.php:4716
 msgid "Toggle fullscreen"
@@ -13082,22 +13082,22 @@ msgstr "Voľné miesto"
 
 #: inc/item_disk.class.php:233 inc/item_disk.class.php:330
 msgid "Encryption"
-msgstr ""
+msgstr "Šifrovanie"
 
 #: inc/item_disk.class.php:236 inc/item_disk.class.php:374
 #: inc/item_disk.class.php:598
 msgid "Encryption tool"
-msgstr ""
+msgstr "Šifrovací nástroj"
 
 #: inc/item_disk.class.php:242 inc/item_disk.class.php:376
 #: inc/item_disk.class.php:611
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "Šifrovací algoritmus"
 
 #: inc/item_disk.class.php:245 inc/item_disk.class.php:378
 #: inc/item_disk.class.php:624
 msgid "Encryption type"
-msgstr ""
+msgstr "Typ šifrovania"
 
 #: inc/item_disk.class.php:284
 msgid "Add a volume"
@@ -13109,23 +13109,23 @@ msgstr "Voľné %"
 
 #: inc/item_disk.class.php:371
 msgid "Partial encryption"
-msgstr ""
+msgstr "Čiastočné šifrovanie"
 
 #: inc/item_disk.class.php:583
 msgid "Encryption status"
-msgstr ""
+msgstr "Stav šifrovania"
 
 #: inc/item_disk.class.php:643
 msgid "Not encrypted"
-msgstr ""
+msgstr "Nešifrované"
 
 #: inc/item_disk.class.php:644
 msgid "Partially encrypted"
-msgstr ""
+msgstr "Čiastočne zašifrované"
 
 #: inc/item_disk.class.php:645
 msgid "Encrypted"
-msgstr ""
+msgstr "Šifrované"
 
 #: inc/item_enclosure.class.php:105
 msgid "Add new item to this enclosure..."
@@ -13445,10 +13445,10 @@ msgstr "Počet zmien"
 #: inc/itilcategory.class.php:279
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "ITIL kategória"
+msgstr[1] "ITIL kategórie"
+msgstr[2] "ITIL kategórie"
+msgstr[3] "ITIL kategórie"
 
 #: inc/itilcategory.class.php:337 inc/itilcategory.class.php:354
 msgid "Code representing the ticket category is already used"
@@ -13602,10 +13602,10 @@ msgstr "Položka je už vyriešená. Vložil už niekto riešenie pred vami?"
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%1$s šablóna"
+msgstr[1] "%1$s šablóny"
+msgstr[2] "%1$s šablón"
+msgstr[3] "%1$s šablóny"
 
 #: inc/itiltemplate.class.php:371
 #: inc/notificationtemplatetranslation.class.php:454
@@ -17133,10 +17133,10 @@ msgstr "Administrácia rezervácií"
 #: inc/profile.class.php:1009
 msgid "ITIL object"
 msgid_plural "ITIL objects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "ITIL objekt"
+msgstr[1] "ITIL objekty"
+msgstr[2] "ITIL objektov"
+msgstr[3] "ITIL objekty"
 
 #: inc/profile.class.php:1019 inc/ticketrecurrent.class.php:60
 msgid "Recurrent tickets"
@@ -17511,7 +17511,7 @@ msgstr[3] "Týmy úloh"
 
 #: inc/projecttaskteam.class.php:142
 msgid "An item type is mandatory"
-msgstr ""
+msgstr "Typ položky je povinný"
 
 #: inc/projecttaskteam.class.php:151
 msgid "An item ID is mandatory"
@@ -18679,7 +18679,7 @@ msgstr "Skupina položky"
 
 #: inc/ruleticket.class.php:421
 msgid "Item state"
-msgstr ""
+msgstr "Stav položky"
 
 #: inc/ruleticket.class.php:427
 msgid "Ticket location"
@@ -19451,19 +19451,19 @@ msgstr "Spojiť požiadavky"
 
 #: inc/ticket.class.php:2455
 msgid "Merge followups"
-msgstr ""
+msgstr "Zlúčiť reakcie"
 
 #: inc/ticket.class.php:2461
 msgid "Merge documents"
-msgstr ""
+msgstr "Zlúčiť dokumenty"
 
 #: inc/ticket.class.php:2467
 msgid "Merge tasks"
-msgstr ""
+msgstr "Zlúčiť úlohy"
 
 #: inc/ticket.class.php:2473
 msgid "Merge actors"
-msgstr ""
+msgstr "Zlúčiť účastníkov"
 
 #: inc/ticket.class.php:2479
 msgid "Link type"
@@ -19960,7 +19960,7 @@ msgstr "Testovanie verzie databázy"
 
 #: inc/toolbox.class.php:1073
 msgid "Testing DB timezone data"
-msgstr ""
+msgstr "Testovanie dat časových zón v databáze"
 
 #: inc/toolbox.class.php:1089
 msgid "Allocated memory test"
@@ -20169,7 +20169,7 @@ msgstr "Ponechať"
 
 #: inc/transfer.class.php:3462
 msgid "Software of items"
-msgstr ""
+msgstr "Softvér položiek"
 
 #: inc/transfer.class.php:3466
 msgid "If software are no longer used"
@@ -20313,7 +20313,7 @@ msgstr "Potvrdenie hesla"
 
 #: inc/user.class.php:2120 inc/user.class.php:2601
 msgid "Time zone"
-msgstr ""
+msgstr "Časová zóna"
 
 #: inc/user.class.php:2157
 msgid "Valid since"

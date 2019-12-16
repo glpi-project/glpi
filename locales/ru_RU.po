@@ -27,6 +27,8 @@
 # - - <wemian@mail.ru>, 2019
 # Welder <kvaluev@me.com>, 2019
 # Сергей Морев <morev.sergey.a@gmail.com>, 2019
+# Mikhail Vlasenko <biggysmoke32@gmail.com>, 2019
+# 1 2 <frolikovon@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -35,7 +37,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Сергей Морев <morev.sergey.a@gmail.com>, 2019\n"
+"Last-Translator: 1 2 <frolikovon@gmail.com>, 2019\n"
 "Language-Team: Russian (Russia) (https://www.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2427,7 +2429,7 @@ msgstr ""
 #: front/itiltemplatefield.form.php:73
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr ""
+msgstr "%1$s добавил %2$s поля"
 
 #: front/knowbaseitem_comment.form.php:41
 #: front/knowbaseitem_comment.form.php:53
@@ -6379,10 +6381,10 @@ msgstr[3] "Изменить задачи"
 #: inc/changetemplate.class.php:47
 msgid "Change template"
 msgid_plural "change templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Изменить шаблон"
+msgstr[1] "Изменить шаблоны"
+msgstr[2] "Изменить шаблоны"
+msgstr[3] "Изменить шаблоны"
 
 #: inc/change_ticket.class.php:62
 msgid "Link Ticket/Change"
@@ -12595,7 +12597,7 @@ msgstr "Развернуть на полный экран"
 
 #: inc/html.class.php:4720
 msgid "Zoom in/out"
-msgstr ""
+msgstr "Увеличить/Уменьшить"
 
 #: inc/html.class.php:4731
 msgid "Previous (arrow left)"
@@ -13430,7 +13432,7 @@ msgstr ""
 
 #: inc/itilcategory.class.php:107 inc/itilcategory.class.php:174
 msgid "Template for a problem"
-msgstr ""
+msgstr "Шаблон для проблемы"
 
 #: inc/itilcategory.class.php:222 inc/notificationtargetchange.class.php:258
 #: inc/notificationtargetproblem.class.php:195
@@ -17028,10 +17030,10 @@ msgstr[3] "Задач проблемы"
 #: inc/problemtemplate.class.php:47
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Шаблон проблемы"
+msgstr[1] "Шаблон проблем"
+msgstr[2] "Шаблон проблем"
+msgstr[3] "Шаблон проблем"
 
 #: inc/problem_ticket.class.php:59
 msgid "Link Ticket/Problem"
@@ -17155,10 +17157,10 @@ msgstr "Управление резервированием"
 #: inc/profile.class.php:1009
 msgid "ITIL object"
 msgid_plural "ITIL objects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Объект ITIL"
+msgstr[1] "Объекты ITIL"
+msgstr[2] "Объекты ITIL"
+msgstr[3] "Объекты ITIL"
 
 #: inc/profile.class.php:1019 inc/ticketrecurrent.class.php:60
 msgid "Recurrent tickets"

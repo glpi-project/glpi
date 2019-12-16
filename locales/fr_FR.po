@@ -11,8 +11,9 @@
 # Philippe P <fylip22@gmail.com>, 2019
 # Thierry Bugier <tbugier@teclib.com>, 2019
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2019
-# Johan Cwiklinski <jcwiklinski@teclib.com>, 2019
 # Tiago Graça, 2019
+# Johan Cwiklinski <jcwiklinski@teclib.com>, 2019
+# Jean-Christophe Pirmolin <jean-christophe@pirmolin.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Tiago Graça, 2019\n"
+"Last-Translator: Jean-Christophe Pirmolin <jean-christophe@pirmolin.com>, 2019\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4784,7 +4785,7 @@ msgstr "Date de création"
 
 #: inc/authldap.class.php:1174
 msgid "Domain name used by inventory tool"
-msgstr ""
+msgstr "Nom de domaine utilisé par l'outil d'inventaire"
 
 #: inc/authldap.class.php:1305 inc/authldap.class.php:1319
 #: inc/authldap.class.php:3153
@@ -6228,8 +6229,8 @@ msgstr[1] "Tâches de changement"
 #: inc/changetemplate.class.php:47
 msgid "Change template"
 msgid_plural "change templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gabarit de changement"
+msgstr[1] "Gabarits de changements"
 
 #: inc/change_ticket.class.php:62
 msgid "Link Ticket/Change"
@@ -6678,7 +6679,7 @@ msgstr "Photo arrière"
 
 #: inc/commondcmodeldropdown.class.php:302 inc/dcroom.class.php:213
 msgid "Unable to save picture file."
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier image."
 
 #: inc/commondcmodeldropdown.class.php:320
 msgid "1"
@@ -6747,7 +6748,7 @@ msgstr "Remplacer"
 
 #: inc/commondropdown.class.php:833 inc/itiltemplate.class.php:582
 msgid "Merge and assign to current entity"
-msgstr ""
+msgstr "Regrouper et assigner à l'entité actuelle"
 
 #: inc/commondropdown.class.php:850 inc/itiltemplate.class.php:599
 #: inc/ticket.class.php:2488
@@ -6929,7 +6930,7 @@ msgstr "Dates invalides. Modification annulée."
 
 #: inc/commonitilobject.class.php:1599
 msgid "You cannot use predefined description verbatim"
-msgstr ""
+msgstr "Vous ne pouvez pas utiliser la description prédéfinie telle quelle"
 
 #: inc/commonitilobject.class.php:2285
 msgctxt "priority"
@@ -7730,7 +7731,7 @@ msgstr "Enfants de %s"
 #: inc/commontreedropdown.class.php:598
 msgctxt "button"
 msgid "Move under"
-msgstr ""
+msgstr "Déplacer sous"
 
 #: inc/commontreedropdown.class.php:616 inc/group.class.php:374
 #: inc/item_softwarelicense.class.php:704
@@ -8663,7 +8664,7 @@ msgstr "L'utilisation mémoire de %1$s est trop élevée"
 
 #: inc/config.class.php:1690
 msgid "Translation cache"
-msgstr ""
+msgstr "Cache de traduction"
 
 #: inc/config.class.php:1726
 msgid "Log Level"
@@ -10635,8 +10636,8 @@ msgstr[1] "Catégories de ticket"
 #: inc/itilfollowuptemplate.class.php:49
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gabarit de suivi"
+msgstr[1] "Gabarits de suivis"
 
 #: inc/dropdown.class.php:839 inc/itilsolution.class.php:165
 #: inc/profile.class.php:1452 inc/solutiontemplate.class.php:51
@@ -12128,7 +12129,7 @@ msgstr "Fermer (Esc)"
 
 #: inc/html.class.php:4712
 msgid "Share"
-msgstr ""
+msgstr "Partager"
 
 #: inc/html.class.php:4716
 msgid "Toggle fullscreen"
@@ -16469,8 +16470,8 @@ msgstr[1] "Tâches de problèmes"
 #: inc/problemtemplate.class.php:47
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gabarit de problème"
+msgstr[1] "Gabarits de problèmes"
 
 #: inc/problem_ticket.class.php:59
 msgid "Link Ticket/Problem"
@@ -16584,8 +16585,8 @@ msgstr "Administration des réservations"
 #: inc/profile.class.php:1009
 msgid "ITIL object"
 msgid_plural "ITIL objects"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Objet ITIL"
+msgstr[1] "Objets ITIL"
 
 #: inc/profile.class.php:1019 inc/ticketrecurrent.class.php:60
 msgid "Recurrent tickets"
@@ -16950,7 +16951,7 @@ msgstr[1] "Équipes de tâche"
 
 #: inc/projecttaskteam.class.php:142
 msgid "An item type is mandatory"
-msgstr ""
+msgstr "Un type d'élément est requis"
 
 #: inc/projecttaskteam.class.php:151
 msgid "An item ID is mandatory"
@@ -18853,15 +18854,15 @@ msgstr "Lier des tickets"
 
 #: inc/ticket.class.php:2455
 msgid "Merge followups"
-msgstr ""
+msgstr "Regrouper les suivis"
 
 #: inc/ticket.class.php:2461
 msgid "Merge documents"
-msgstr ""
+msgstr "Regrouper les documents"
 
 #: inc/ticket.class.php:2467
 msgid "Merge tasks"
-msgstr ""
+msgstr "Regrouper les tâches"
 
 #: inc/ticket.class.php:2473
 msgid "Merge actors"
@@ -19168,7 +19169,7 @@ msgstr ""
 #: inc/ticket.class.php:6913 inc/ticket.class.php:7055
 #, php-format
 msgid "Not enough rights to merge tickets %d and %d"
-msgstr ""
+msgstr "Droits insuffisants pour regrouper les tickets%d et %d"
 
 #: inc/ticket.class.php:6857
 #, php-format

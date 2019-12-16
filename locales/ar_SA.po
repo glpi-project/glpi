@@ -2422,7 +2422,7 @@ msgstr ""
 #: front/itilsolution.form.php:101 front/ticket.form.php:104
 msgid ""
 "You have been redirected because you no longer have access to this ticket"
-msgstr ""
+msgstr "تم إعادة تحويلك بسبب أنه لم يعد لديك صلاحية الوصول لهذه البطاقة"
 
 #: front/itiltemplatefield.form.php:55
 msgid "hidden"
@@ -2548,12 +2548,12 @@ msgstr "إستيراد مستخدمين جدد"
 #: front/lock.form.php:56
 #, php-format
 msgid "You do not have rights to restore %s item."
-msgstr ""
+msgstr "ليس لديك الصلاحية لإسترجاع %s  مادة."
 
 #: front/lock.form.php:82
 #, php-format
 msgid "You do not have rights to delete %s item."
-msgstr ""
+msgstr "ليس لديك الصلاحية لحذف %s  مادة."
 
 #: front/login.php:92
 msgid "Log in again"
@@ -2722,13 +2722,13 @@ msgstr[5] "مشاكل"
 #: front/profile_user.form.php:47
 #, php-format
 msgid "%s adds a user to an entity"
-msgstr ""
+msgstr "%s اضاف مستخدمًا إلى مكون"
 
 #. TRANS: %s is the user login
 #: front/projecttaskteam.form.php:51 front/projectteam.form.php:51
 #, php-format
 msgid "%s adds a team member"
-msgstr ""
+msgstr "%s قام بإضافة عضو بالفريق"
 
 #: front/report.contract.list.php:45
 msgid "List of the hardware under contract"
@@ -3254,13 +3254,13 @@ msgstr "%1$s يقوم بتعديل الترخيص %2$s"
 #: front/softwareversion.form.php:54
 #, php-format
 msgid "%1$s adds the version %2$s"
-msgstr ""
+msgstr "%1$s قام بإضافة الإصدار %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:64
 #, php-format
 msgid "%1$s purges the version %2$s"
-msgstr ""
+msgstr "%1$s قام بحذف الإصدار %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:73
@@ -3782,12 +3782,12 @@ msgstr "عرض الرسوم البيانية"
 #: front/stat.location.php:175 front/stat.tracking.php:184
 #, php-format
 msgid "Opened %1$s (%2$s)"
-msgstr ""
+msgstr "مفتوحة %1$s (%2$s)"
 
 #: front/stat.location.php:200 front/stat.tracking.php:210
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr ""
+msgstr "محلولة %1$s (%2$s)"
 
 #: front/stat.location.php:225
 #, php-format
@@ -3797,7 +3797,7 @@ msgstr ""
 #: front/stat.location.php:250 front/stat.tracking.php:263
 #, php-format
 msgid "Closed %1$s (%2$s)"
-msgstr ""
+msgstr "مغلقة %1$s (%2$s)"
 
 #: front/stat.location.php:275 front/stat.tracking.php:290
 #, php-format
@@ -3951,7 +3951,7 @@ msgstr ""
 
 #: front/user.form.php:151
 msgid "Lang has been changed!"
-msgstr ""
+msgstr "اللغة تم تغييرها!"
 
 #: front/user.form.php:157
 msgid "Unable to impersonate user"
@@ -3982,7 +3982,7 @@ msgstr ""
 #: inc/massiveaction.class.php:785 inc/rule.class.php:805
 #: inc/rule.class.php:962 inc/rule.class.php:2528
 msgid "or"
-msgstr ""
+msgstr "أو"
 
 #: inc/ajax.class.php:431
 msgid "try to reload"

@@ -9,6 +9,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2019
 # Andriy Smilyanets <smile.andriy@gmail.com>, 2019
+# Микола Якименко <yakimuseg@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Andriy Smilyanets <smile.andriy@gmail.com>, 2019\n"
+"Last-Translator: Микола Якименко <yakimuseg@gmail.com>, 2019\n"
 "Language-Team: Ukrainian (Ukraine) (https://www.transifex.com/glpi/teams/1637/uk_UA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2288,7 +2289,7 @@ msgstr "%s прив’язав VLAN до мережевого порту"
 #: front/item_device.common.form.php:64
 #, php-format
 msgid "%1$s adds an item"
-msgstr ""
+msgstr "1 %1$s додає елемент"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:56
@@ -2342,7 +2343,7 @@ msgstr[3] "Елементи"
 #: front/item_softwarelicense.form.php:51
 #, php-format
 msgid "%s associates an item and a license"
-msgstr ""
+msgstr "1 %s пов'язує пристрій з ліцензією"
 
 #. TRANS: %s is the user login
 #: front/item_softwareversion.form.php:52
@@ -2394,21 +2395,21 @@ msgstr ""
 
 #: front/itiltemplatefield.form.php:55
 msgid "hidden"
-msgstr ""
+msgstr "приховано"
 
 #: front/itiltemplatefield.form.php:58
 msgid "mandatory"
-msgstr ""
+msgstr "обов'язковий"
 
 #: front/itiltemplatefield.form.php:61
 msgid "predefined"
-msgstr ""
+msgstr "попередньо встановлений"
 
 #. TRANS: %1$s is the user login, %2$s the field type
 #: front/itiltemplatefield.form.php:73
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr ""
+msgstr "1 %1$s додає 2 %2$s поле"
 
 #: front/knowbaseitem_comment.form.php:41
 #: front/knowbaseitem_comment.form.php:53
@@ -3882,11 +3883,11 @@ msgstr "Мова змінена!"
 
 #: front/user.form.php:157
 msgid "Unable to impersonate user"
-msgstr ""
+msgstr "Не можливо персоналізувати користувача"
 
 #: front/user.form.php:168
 msgid "Unable to stop impersonating user"
-msgstr ""
+msgstr "Не можливо припинити персоналізацію користувача"
 
 #: inc/ajax.class.php:156
 msgid "Close"
@@ -4860,7 +4861,7 @@ msgstr "Дата створення"
 
 #: inc/authldap.class.php:1174
 msgid "Domain name used by inventory tool"
-msgstr ""
+msgstr "Домен, в якому використовується пристрій, що інвентаризується"
 
 #: inc/authldap.class.php:1305 inc/authldap.class.php:1319
 #: inc/authldap.class.php:3153
@@ -5785,7 +5786,7 @@ msgstr "%1$s таблиць не перенесено до InnoDB engine."
 #: inc/central.class.php:188
 #, php-format
 msgid "%1$s columns are not compatible with timezones usage."
-msgstr ""
+msgstr "%1$s колонок не сумісні з використанням часового поясу"
 
 #: inc/central.class.php:197 inc/html.class.php:1620
 msgid "SQL replica: read only"
@@ -6355,10 +6356,10 @@ msgstr[3] "Завдання Зміни"
 #: inc/changetemplate.class.php:47
 msgid "Change template"
 msgid_plural "change templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Змінити шаблон"
+msgstr[1] "змінити шаблони"
+msgstr[2] "змінити шаблони"
+msgstr[3] "змінити шаблони"
 
 #: inc/change_ticket.class.php:62
 msgid "Link Ticket/Change"
@@ -6391,10 +6392,10 @@ msgstr "Створити Зміну з цієї заявки"
 #: inc/cluster.class.php:47 inc/item_cluster.class.php:249
 msgid "Cluster"
 msgid_plural "Clusters"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Кластер"
+msgstr[1] "Кластери"
+msgstr[2] "Кластери"
+msgstr[3] "Кластери"
 
 #: inc/cluster.class.php:105 inc/computerantivirus.class.php:135
 #: inc/computerantivirus.class.php:181 inc/devicefirmware.class.php:63
@@ -6422,10 +6423,10 @@ msgstr[3] "Версії"
 #: inc/clustertype.class.php:40
 msgid "Cluster type"
 msgid_plural "Cluster types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Тип кластеру"
+msgstr[1] "Типи кластерів"
+msgstr[2] "Типи кластерів"
+msgstr[3] "Типи кластерів"
 
 #: inc/commondbchild.class.php:243 inc/networkportinstantiation.class.php:538
 msgid "Item not linked to an object"
@@ -6812,7 +6813,7 @@ msgstr "Зображення ззаду"
 
 #: inc/commondcmodeldropdown.class.php:302 inc/dcroom.class.php:213
 msgid "Unable to save picture file."
-msgstr ""
+msgstr "Не можливо зберегти файл зображення"
 
 #: inc/commondcmodeldropdown.class.php:320
 msgid "1"
@@ -6878,7 +6879,7 @@ msgstr "Замінити"
 
 #: inc/commondropdown.class.php:833 inc/itiltemplate.class.php:582
 msgid "Merge and assign to current entity"
-msgstr ""
+msgstr "Об'єднати та призначити до поточного запису"
 
 #: inc/commondropdown.class.php:850 inc/itiltemplate.class.php:599
 #: inc/ticket.class.php:2488
@@ -7064,7 +7065,7 @@ msgstr "Некоректна дата. Оновлення відмінено."
 
 #: inc/commonitilobject.class.php:1599
 msgid "You cannot use predefined description verbatim"
-msgstr ""
+msgstr "Ви не можете дослівно використовувати попередньо призначений опис"
 
 #: inc/commonitilobject.class.php:2285
 msgctxt "priority"
@@ -7539,11 +7540,11 @@ msgstr "Розповсюджено до Заявки %1$s"
 
 #: inc/commonitilobject.class.php:7102
 msgid "Approve"
-msgstr ""
+msgstr "Схвалити"
 
 #: inc/commonitilobject.class.php:7105
 msgid "Refuse"
-msgstr ""
+msgstr "Відхилити"
 
 #: inc/commonitilobject.class.php:7113
 #, php-format
@@ -7884,7 +7885,7 @@ msgstr "Підлегле до %s"
 #: inc/commontreedropdown.class.php:598
 msgctxt "button"
 msgid "Move under"
-msgstr ""
+msgstr "Пересунути нижче"
 
 #: inc/commontreedropdown.class.php:616 inc/group.class.php:374
 #: inc/item_softwarelicense.class.php:704
@@ -8329,7 +8330,7 @@ msgstr "Обмежити керування принтерами"
 
 #: inc/config.class.php:543
 msgid "Devices displayed in menu"
-msgstr ""
+msgstr "Пристрої, що відображаються в меню"
 
 #: inc/config.class.php:575
 msgid "Automatic transfer of computers"
@@ -8627,11 +8628,11 @@ msgstr "Увімкнути високий контраст"
 
 #: inc/config.class.php:1238 inc/ruleright.class.php:343
 msgid "Timezone"
-msgstr ""
+msgstr "Часовий пояс"
 
 #: inc/config.class.php:1249
 msgid "Use server configuration"
-msgstr ""
+msgstr "Використовувати налаштовування серверу"
 
 #: inc/config.class.php:1263
 msgid "Private followups by default"
@@ -8835,7 +8836,7 @@ msgstr "%1$s використання пам'яті занадто високе"
 
 #: inc/config.class.php:1690
 msgid "Translation cache"
-msgstr ""
+msgstr "Кеш перекладу"
 
 #: inc/config.class.php:1726
 msgid "Log Level"
@@ -8913,7 +8914,7 @@ msgstr "Інформація про систему, інсталяцію та к
 
 #: inc/config.class.php:1915 inc/toolbox.class.php:1082
 msgid "Timezones seems not loaded in database"
-msgstr ""
+msgstr "Схоже, що часові пояси не завантажено в базу даних"
 
 #: inc/config.class.php:1944
 msgid "To copy/paste in your support request"
@@ -9119,7 +9120,7 @@ msgstr "Плугіни"
 
 #: inc/config.class.php:3312
 msgid "Installation/uninstallation of software on items"
-msgstr ""
+msgstr "Встановлення або видалення ПЗ на пристроях"
 
 #: inc/config.class.php:3316
 msgid "Installation/uninstallation versions on softwares"
@@ -9127,7 +9128,7 @@ msgstr "Встановлення або видалення версій ПЗ"
 
 #: inc/config.class.php:3323
 msgid "Add/Remove items from software versions"
-msgstr ""
+msgstr "Додати або видалити пристрої з версій ПЗ"
 
 #: inc/config.class.php:3332
 msgid "Add financial information to an item"
@@ -10101,17 +10102,20 @@ msgstr ""
 
 #: inc/dbmysql.class.php:1538
 msgid "Access to timezone database (mysql) is not allowed."
-msgstr ""
+msgstr "В доступі до бази даних часових поясів (mysql) відмовлено"
 
 #: inc/dbmysql.class.php:1549
 msgid "Access to timezone table (mysql.time_zone_name) is not allowed."
 msgstr ""
+"В доступі до бази даних часових поясів (mysql.time_zone_name) відмовлено"
 
 #: inc/dbmysql.class.php:1560
 msgid ""
 "Timezones seems not loaded, see https://glpi-"
 "install.readthedocs.io/en/latest/timezones.html."
 msgstr ""
+"Схоже, що часові пояси не завантажено. Подробиці за посиланням https://glpi-"
+"install.readthedocs.io/en/latest/timezones.html."
 
 #: inc/dbutils.class.php:1123
 msgid "Address:"
@@ -10838,7 +10842,7 @@ msgstr "Видалити документ"
 
 #: inc/document.class.php:1653
 msgid "Clean orphaned documents"
-msgstr ""
+msgstr "Очистити одинокі документи"
 
 #: inc/document_item.class.php:529 inc/document_item.class.php:620
 msgid "Add a document"
@@ -10944,10 +10948,10 @@ msgstr[3] "Категорії заявок"
 #: inc/itilfollowuptemplate.class.php:49
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Шаблон продовження"
+msgstr[1] "Шаблони продовження"
+msgstr[2] "Шаблони продовження"
+msgstr[3] "Шаблони продовження"
 
 #: inc/dropdown.class.php:839 inc/itilsolution.class.php:165
 #: inc/profile.class.php:1452 inc/solutiontemplate.class.php:51
@@ -11688,7 +11692,7 @@ msgstr "Негайно"
 
 #: inc/entity.class.php:953 inc/entity.class.php:2457
 msgid "Automatic purge of closed tickets after"
-msgstr ""
+msgstr "Автоматична очистка вирішених заявок після"
 
 #: inc/entity.class.php:972
 msgid "Alerts on tickets which are not solved"
@@ -11885,7 +11889,7 @@ msgstr ""
 
 #: inc/entity.class.php:2093
 msgid "Enable CSS customization"
-msgstr ""
+msgstr "Увімкнути кастомізацію CSS"
 
 #: inc/entity.class.php:2097
 msgid "Inherits configuration from the parent entity"
