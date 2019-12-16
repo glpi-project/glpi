@@ -372,14 +372,49 @@ class TicketRecurrent extends CommonDropdown {
       }
 
       $calendar = new Calendar();
-      if ($calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay()) {
-         // Base computation on calendar if calendar is defined
+      $is_calendar_valid = $calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay();
+
+      if (!$is_calendar_valid || $periodicity_in_seconds >= DAY_TIMESTAMP) {
+         // Compute next occurence without using the calendar if calendar is not valid
+         // or if periodicity is at least one day.
+
+         // First occurence of creation
+         $occurence_time = strtotime($begin_date);
+         $creation_time  = $occurence_time - $create_before;
+
+         // Add steps while creation time is in past
+         while ($creation_time < $now) {
+            $creation_time  = strtotime("+ $periodicity_as_interval", $creation_time);
+            $occurence_time = $creation_time + $create_before;
+
+            // Stop if end date reached
+            if ($has_end_date && $occurence_time > strtotime($end_date)) {
+               return 'NULL';
+            }
+         }
+
+         if ($is_calendar_valid) {
+            // Jump to next working day if occurence is outside working days.
+            while ($calendar->isHoliday(date('Y-m-d', $occurence_time))
+                   || !$calendar->isAWorkingDay($occurence_time)) {
+               $occurence_time = strtotime('+ 1 day', $occurence_time);
+            }
+            // Jump to next working hour if occurence is outside working hours.
+            if (!$calendar->isAWorkingHour($occurence_time)) {
+               $occurence_date = $calendar->computeEndDate(
+                  date('Y-m-d', $occurence_time),
+                  0 // 0 second delay to get the first working "second"
+               );
+               $occurence_time = strtotime($occurence_date);
+            }
+            $creation_time  = $occurence_time - $create_before;
+         }
+      } else {
+         // Base computation on calendar if calendar is valid
 
          $occurence_date = $calendar->computeEndDate(
             $begin_date,
-            0, // 0 second delay to get the first working "second"
-            0,
-            false
+            0 // 0 second delay to get the first working "second"
          );
          $occurence_time = strtotime($occurence_date);
          $creation_time  = $occurence_time - $create_before;
@@ -399,21 +434,6 @@ class TicketRecurrent extends CommonDropdown {
                return 'NULL';
             }
          };
-      } else {
-         // First occurence of creation
-         $occurence_time = strtotime($begin_date);
-         $creation_time  = $occurence_time - $create_before;
-
-         // Add steps while creation time is in past
-         while ($creation_time < $now) {
-            $creation_time  = strtotime("+ $periodicity_as_interval", $creation_time);
-            $occurence_time = $creation_time + $create_before;
-
-            // Stop if end date reached
-            if ($has_end_date && $occurence_time > strtotime($end_date)) {
-               return 'NULL';
-            }
-         }
       }
 
       return date("Y-m-d H:i:s", $creation_time);
