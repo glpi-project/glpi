@@ -571,7 +571,7 @@ trait PlanningEvent {
          'monthly' => __("Each month"),
          'yearly'  => __("Each year"),
       ], [
-         'value'     => $rrule['freq'],
+         'value'     => strtolower($rrule['freq']),
          'rand'      => $rand,
          'display'   => false,
          'on_change' => "$(\"#toggle_ar\").toggle($(\"#dropdown_rrule_freq_$rand\").val().length > 0)"
