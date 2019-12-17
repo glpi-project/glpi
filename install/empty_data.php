@@ -295,6 +295,9 @@ $default_prefs = [
    'purge_plugins'                           => '0',
    'display_login_source'                    => '1',
    'devices_in_menu'                         => '["Item_DeviceSimcard"]',
+   'password_expiration_delay'               => '-1',
+   'password_expiration_notice'              => '-1',
+   'password_expiration_lock_delay'          => '-1',
 ];
 
 $tables['glpi_configs'] = [];
@@ -634,6 +637,16 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 0,
       'mode'          => 1,
+      'lastrun'       => null,
+      'logs_lifetime' => 30,
+   ], [
+      'id'            => 36,
+      'itemtype'      => 'User',
+      'name'          => 'passwordexpiration',
+      'frequency'     => 86400,
+      'param'         => 100,
+      'state'         => 0,
+      'mode'          => 2,
       'lastrun'       => null,
       'logs_lifetime' => 30,
    ],
@@ -2656,6 +2669,13 @@ $tables['glpi_notifications'] = [
       'event'        => 'DomainsWhichExpire',
       'is_recursive' => 1,
       'is_active'    => 1,
+   ], [
+      'id'           => 70,
+      'name'         => 'Password expires alert',
+      'itemtype'     => 'User',
+      'event'        => 'passwordexpires',
+      'is_recursive' => 1,
+      'is_active'    => 1,
    ],
 ];
 
@@ -3005,6 +3025,11 @@ $tables['glpi_notifications_notificationtemplates'] = [
       'notifications_id'         =>  '69',
       'mode'                     =>  'mailing',
       'notificationtemplates_id' =>  26,
+   ], [
+      'id'                       => 70,
+      'notifications_id'         =>  '70',
+      'mode'                     =>  'mailing',
+      'notificationtemplates_id' =>  27,
    ],
 ];
 
@@ -3684,6 +3709,11 @@ $tables['glpi_notificationtargets'] = [
       'items_id'         => '23',
       'type'             => '1',
       'notifications_id' => '69',
+   ], [
+      'id'               => '138',
+      'items_id'         => '19',
+      'type'             => '1',
+      'notifications_id' => '70',
    ],
 ];
 
@@ -3792,6 +3822,10 @@ $tables['glpi_notificationtemplates'] = [
       'id'       => '26',
       'name'     => 'Alert domains',
       'itemtype' => 'Domain',
+   ], [
+      'id'       => '27',
+      'name'     => 'Password expires alert',
+      'itemtype' => 'User',
    ],
 ];
 
@@ -4606,6 +4640,40 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                         ##FOREACHdomains##&lt;br /&gt;
                         ##lang.domain.name##  : ##domain.name## - ##lang.domain.dateexpiration## :  ##domain.dateexpiration##&lt;br /&gt;
                         ##ENDFOREACHdomains##&lt;/p&gt;',
+
+   ], [
+      'id'                       => '27',
+      'notificationtemplates_id' => '27',
+      'language'                 => '',
+      'subject'                  => '##user.action##',
+      'content_text'             => '##user.realname## ##user.firstname##,
+
+##IFuser.password.has_expired=1##
+##lang.password.has_expired.information##
+##ENDIFuser.password.has_expired##
+##ELSEuser.password.has_expired##
+##lang.password.expires_soon.information##
+##ENDELSEuser.password.has_expired##
+##lang.user.password.expiration.date##: ##user.password.expiration.date##
+##IFuser.account.lock.date##
+##lang.user.account.lock.date##: ##user.account.lock.date##
+##ENDIFuser.account.lock.date##
+
+##password.update.link## ##user.password.update.url##',
+      'content_html'             => '&lt;p&gt;&lt;strong&gt;##user.realname## ##user.firstname##&lt;/strong&gt;&lt;/p&gt;
+
+##IFuser.password.has_expired=1##
+&lt;p&gt;##lang.password.has_expired.information##&lt;/p&gt;
+##ENDIFuser.password.has_expired##
+##ELSEuser.password.has_expired##
+&lt;p&gt;##lang.password.expires_soon.information##&lt;/p&gt;
+##ENDELSEuser.password.has_expired##
+&lt;p&gt;##lang.user.password.expiration.date##: ##user.password.expiration.date##&lt;/p&gt;
+##IFuser.account.lock.date##
+&lt;p&gt;##lang.user.account.lock.date##: ##user.account.lock.date##&lt;/p&gt;
+##ENDIFuser.account.lock.date##
+
+&lt;p&gt;##lang.password.update.link## &lt;a href="##user.password.update.url##"&gt;##user.password.update.url##&lt;/a&gt;&lt;/p&gt;',
 
    ],
 ];

@@ -250,4 +250,59 @@ class Session extends \DbTestCase {
       unlink(GLPI_LOCAL_I18N_DIR.'/core/en_GB.php');
       unlink(GLPI_LOCAL_I18N_DIR.'/core/en_GB.mo');
    }
+
+   protected function mustChangePasswordProvider() {
+      $tests = [];
+
+      // test with no password expiration
+      $tests[] = [
+         'password_last_update'      => date('Y-m-d H:i:s', strtotime('-10 years')),
+         'password_expiration_delay' => -1,
+         'expected_result'           => false,
+      ];
+
+      // tests with password expiration
+      $cases = [
+         '-5 days'  => false,
+         '-30 days' => true,
+      ];
+      foreach ($cases as $last_update => $expected_result) {
+         $tests[] = [
+            'password_last_update'      => date('Y-m-d H:i:s', strtotime($last_update)),
+            'password_expiration_delay' => 15,
+            'expected_result'           => $expected_result,
+         ];
+      }
+
+      return $tests;
+   }
+
+   /**
+    * @dataProvider mustChangePasswordProvider
+    */
+   public function testMustChangePassword(string $last_update, int $exp_delay, bool $expected_result) {
+      global $CFG_GLPI;
+
+      $user = new \User();
+      $username = 'test_must_change_pass_' . mt_rand();
+      $user_id = (int)$user->add([
+         'name'      => $username,
+         'password'  => 'test',
+         'password2' => 'test',
+      ]);
+      $this->integer($user_id)->isGreaterThan(0);
+      $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
+
+      $cfg_backup = $CFG_GLPI;
+      $CFG_GLPI['password_expiration_delay'] = $exp_delay;
+      $CFG_GLPI['password_expiration_lock_delay'] = -1;
+      \Session::destroy();
+      \Session::start();
+      $auth = new \Auth();
+      $is_logged = $auth->login($username, 'test', true);
+      $CFG_GLPI = $cfg_backup;
+
+      $this->boolean($is_logged)->isEqualTo(true);
+      $this->boolean(\Session::mustChangePassword())->isEqualTo($expected_result);
+   }
 }

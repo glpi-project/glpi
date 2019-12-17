@@ -71,4 +71,96 @@ class Auth extends DbTestCase {
       ];
       $this->array($methods)->isIdenticalTo($expected);
    }
+
+   /**
+    * Provides data to test account lock strategy on password expiration.
+    *
+    * @return array
+    */
+   protected function lockStrategyProvider() {
+      $tests = [];
+
+      // test with no password expiration
+      $tests[] = [
+         'password_last_update'           => date('Y-m-d H:i:s', strtotime('-10 years')),
+         'password_expiration_delay'      => -1,
+         'password_expiration_lock_delay' => -1,
+         'expected_lock'                  => false,
+      ];
+
+      // tests with no lock on password expiration
+      $cases = [
+         '-5 days'  => false,
+         '-30 days' => false,
+      ];
+      foreach ($cases as $last_update => $expected_lock) {
+         $tests[] = [
+            'password_last_update'           => date('Y-m-d H:i:s', strtotime($last_update)),
+            'password_expiration_delay'      => 15,
+            'password_expiration_lock_delay' => -1,
+            'expected_lock'                  => $expected_lock,
+         ];
+      }
+
+      // tests with immediate lock on password expiration
+      $cases = [
+         '-5 days'  => false,
+         '-30 days' => true,
+      ];
+      foreach ($cases as $last_update => $expected_lock) {
+         $tests[] = [
+            'password_last_update'           => date('Y-m-d H:i:s', strtotime($last_update)),
+            'password_expiration_delay'      => 15,
+            'password_expiration_lock_delay' => 0,
+            'expected_lock'                  => $expected_lock,
+         ];
+      }
+
+      // tests with delayed lock on password expiration
+      $cases = [
+         '-5 days'  => false,
+         '-20 days' => false,
+         '-30 days' => true,
+      ];
+      foreach ($cases as $last_update => $expected_lock) {
+         $tests[] = [
+            'password_last_update'           => date('Y-m-d H:i:s', strtotime($last_update)),
+            'password_expiration_delay'      => 15,
+            'password_expiration_lock_delay' => 10,
+            'expected_lock'                  => $expected_lock,
+         ];
+      }
+
+      return $tests;
+   }
+
+   /**
+    * Test that account is lock when authentication is done using an expired password.
+    *
+    * @dataProvider lockStrategyProvider
+    */
+   public function testAccountLockStrategy(string $last_update, int $exp_delay, int $lock_delay, bool $expected_lock) {
+      global $CFG_GLPI;
+
+      $user = new \User();
+      $username = 'test_lock_' . mt_rand();
+      $user_id = (int)$user->add([
+         'name'      => $username,
+         'password'  => 'test',
+         'password2' => 'test',
+      ]);
+      $this->integer($user_id)->isGreaterThan(0);
+      $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
+
+      $cfg_backup = $CFG_GLPI;
+      $CFG_GLPI['password_expiration_delay'] = $exp_delay;
+      $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
+      $auth = new \Auth();
+      $is_logged = $auth->login($username, 'test', true);
+      $CFG_GLPI = $cfg_backup;
+
+      $this->boolean($is_logged)->isEqualTo(!$expected_lock);
+      $this->boolean($user->getFromDB($user->fields['id']))->isTrue();
+      $this->boolean((bool)$user->fields['is_active'])->isEqualTo(!$expected_lock);
+   }
 }

@@ -381,6 +381,10 @@ class User extends CommonDBTM {
       // Ticket rules use various _users_id_*
       Rule::cleanForItemAction($this, '_users_id%');
       Rule::cleanForItemCriteria($this, '_users_id%');
+
+      // Alert does not extends CommonDBConnexity
+      $alert = new Alert();
+      $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 
@@ -589,6 +593,8 @@ class User extends CommonDBTM {
                if (Config::validatePassword($input["password"])) {
                   $input["password"]
                      = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+
+                  $input['password_last_update'] = $_SESSION['glpi_currenttime'];
                } else {
                   unset($input["password"]);
                }
@@ -751,16 +757,20 @@ class User extends CommonDBTM {
          } else {
             if ($input["password"] == $input["password2"]) {
                // Check right : my password of user with lesser rights
-               if (isset($input['id']) && Config::validatePassword($input["password"])
+               if (isset($input['id'])
+                   && !Auth::checkPassword($input['password'], $this->fields['password']) // Validate that password is not same as previous
+                   && Config::validatePassword($input["password"])
                    && (($input['id'] == Session::getLoginUserID())
                        || $this->currentUserHaveMoreRightThan($input['id'])
-                       || (($input['password_forget_token'] == $this->fields['password_forget_token']) // Permit to change password with token and email
+                       // Permit to change password with token and email
+                       || (($input['password_forget_token'] == $this->fields['password_forget_token'])
                            && (abs(strtotime($_SESSION["glpi_currenttime"])
                                -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
                            && $this->isEmail($input['email'])))) {
                   $input["password"]
                      = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 
+                  $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                } else {
                   unset($input["password"]);
                }
@@ -883,6 +893,17 @@ class User extends CommonDBTM {
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
       $this->applyRightRules();
+
+      if (in_array('password', $this->updates)) {
+         $alert = new Alert();
+         $alert->deleteByCriteria(
+            [
+               'itemtype' => $this->getType(),
+               'items_id' => $this->fields['id'],
+            ],
+            true
+         );
+      }
    }
 
 
@@ -4514,6 +4535,92 @@ JAVASCRIPT;
 
 
    /**
+    * Show password update form for current user.
+    *
+    * @param array $error_messages
+    *
+    * @return void
+    */
+   public function showPasswordUpdateForm(array $error_messages = []) {
+      global $CFG_GLPI;
+
+      echo '<form method="post" action="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">';
+      echo '<table class="tab_cadre">';
+      echo '<tr><th colspan="2">' . __('Password update') . '</th></tr>';
+
+      if (Session::mustChangePassword()) {
+         echo '<tr class="tab_bg_2 center">';
+         echo '<td colspan="2" class="red b">';
+         echo __('Your password has expired. You must change it to be able to login.');
+         echo '</td>';
+         echo '</tr>';
+      }
+
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo __('Login');
+      echo '</td>';
+      echo '<td>';
+      echo '<input type="text" name="name" value="' . $this->fields['name'] . '" readonly="readonly" />';
+      echo '</td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo '<label for="current_password">' . __('Current password') . '</label>';
+      echo '</td>';
+      echo '<td>';
+      echo '<input type="password" id="current_password" name="current_password" />';
+      echo '</td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo '<label for="password">' . __('New password') . '</label>';
+      echo '</td>';
+      echo '<td>';
+      echo '<input type="password" id="password" name="password" autocomplete="new-password" onkeyup="return passwordCheck();" />';
+      echo '</td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo '<label for="password2">' . __('New password confirmation') . '</label>';
+      echo '</td>';
+      echo '<td>';
+      echo '<input type="password" id="password2" name="password2" autocomplete="new-password" />';
+      echo '</td>';
+      echo '</tr>';
+
+      if ($CFG_GLPI['use_password_security']) {
+         echo '<tr class="tab_bg_1">';
+         echo '<td>' . __('Password security policy') . '</td>';
+         echo '<td>';
+         Config::displayPasswordSecurityChecks();
+         echo '</td>';
+         echo '</tr>';
+      }
+
+      echo '<tr class="tab_bg_2 center">';
+      echo '<td colspan="2">';
+      echo '<input type="submit" name="update" value="' . __s('Save') . '" class="submit" />';
+      echo '</td>';
+      echo '</tr>';
+
+      if (!empty($error_messages)) {
+         echo '<tr class="tab_bg_2 center">';
+         echo '<td colspan="2" class="red b">';
+         echo implode('<br/>', $error_messages);
+         echo '</td>';
+         echo '</tr>';
+      }
+
+      echo '</table>';
+      Html::closeForm();
+   }
+
+
+   /**
     * Show new password form of password recovery process.
     *
     * @param $token
@@ -5166,5 +5273,238 @@ JAVASCRIPT;
          $this->entities = Profile_User::getUserEntities($this->fields['id'], true);
       }
       return $this->entities;
+   }
+
+
+   /**
+    * Give cron information.
+    *
+    * @param string $name Task's name
+    *
+    * @return array
+    */
+   public static function cronInfo(string $name): array {
+
+      $info = [];
+      switch ($name) {
+         case 'passwordexpiration':
+            $info = [
+               'description' => __('Handle users passwords expiration policy'),
+               'parameter'   => __('Maximum expiration notifications to send at once'),
+            ];
+            break;
+      }
+      return $info;
+   }
+
+   /**
+    * Cron that notify users about when their password expire and deactivate their account
+    * depending on password expiration policy.
+    *
+    * @param CronTask $task
+    *
+    * @return integer
+    */
+   public static function cronPasswordExpiration(CronTask $task) {
+      global $CFG_GLPI, $DB;
+
+      $expiration_delay   = (int)$CFG_GLPI['password_expiration_delay'];
+      $notice_time        = (int)$CFG_GLPI['password_expiration_notice'];
+      $notification_limit = (int)$task->fields['param'];
+      $lock_delay         = (int)$CFG_GLPI['password_expiration_lock_delay'];
+
+      if (-1 === $expiration_delay || (-1 === $notice_time && -1 === $lock_delay)) {
+         // Nothing to do if passwords does not expire
+         // or if password expires without notice and with no lock delay
+         return 0;
+      }
+
+      // Notify users about expiration of their password.
+      $to_notify_count = 0;
+      if (-1 !== $notice_time) {
+         $notification_request = [
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+               Alert::getTable() => [
+                  'ON' => [
+                     Alert::getTable() => 'items_id',
+                     self::getTable()  => 'id',
+                     [
+                        'AND' => [
+                           Alert::getTableField('itemtype') => self::getType(),
+                        ]
+                     ],
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               self::getTableField('is_deleted') => 0,
+               self::getTableField('is_active')  => 1,
+               self::getTableField('authtype')   => Auth::DB_GLPI,
+               new QueryExpression(
+                  sprintf(
+                     'NOW() > ADDDATE(%s, INTERVAL %s DAY)',
+                     $DB->quoteName(self::getTableField('password_last_update')),
+                     $expiration_delay - $notice_time
+                  )
+               ),
+               // Get only users that has not yet been notified within last day
+               'OR'                              => [
+                  [Alert::getTableField('date') => null],
+                  [Alert::getTableField('date') => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL 1 day')]],
+               ],
+            ],
+         ];
+
+         $to_notify_count_request = array_merge(
+            $notification_request,
+            [
+               'COUNT'  => 'cpt',
+            ]
+         );
+         $to_notify_count = $DB->request($to_notify_count_request)->next()['cpt'];
+
+         $notification_data_request  = array_merge(
+            $notification_request,
+            [
+               'SELECT'    => [
+                  self::getTableField('id as user_id'),
+                  Alert::getTableField('id as alert_id'),
+               ],
+               'LIMIT'     => $notification_limit,
+            ]
+         );
+         $notification_data_iterator = $DB->request($notification_data_request);
+
+         foreach ($notification_data_iterator as $notification_data) {
+            $user_id  = $notification_data['user_id'];
+            $alert_id = $notification_data['alert_id'];
+
+            $user = new User();
+            $user->getFromDB($user_id);
+
+            $is_notification_send = NotificationEvent::raiseEvent(
+               'passwordexpires',
+               $user,
+               ['entities_id' => 0] // Notication on root entity (glpi_users.entities_id is only a pref)
+            );
+            if (!$is_notification_send) {
+               continue;
+            }
+
+            $task->addVolume(1);
+
+            $alert = new Alert();
+
+            // Delete existing alert if any
+            if (null !== $alert_id) {
+               $alert->delete(['id' => $alert_id]);
+            }
+
+            // Add an alert to not warn user for at least one day
+            $alert->add(
+               [
+                  'itemtype' => 'User',
+                  'items_id' => $user_id,
+                  'type'     => Alert::NOTICE,
+               ]
+            );
+         }
+      }
+
+      // Disable users if their password has expire for too long.
+      if (-1 !== $lock_delay) {
+         $DB->update(
+            self::getTable(),
+            [
+               'is_active'         => 0,
+               'cookie_token'      => null,
+               'cookie_token_date' => null,
+            ],
+            [
+               'is_deleted' => 0,
+               'is_active'  => 1,
+               'authtype'   => Auth::DB_GLPI,
+               new QueryExpression(
+                  sprintf(
+                     'NOW() > ADDDATE(ADDDATE(%s, INTERVAL %d DAY), INTERVAL %s DAY)',
+                     $DB->quoteName(self::getTableField('password_last_update')),
+                     $expiration_delay,
+                     $lock_delay
+                  )
+               ),
+            ]
+         );
+      }
+
+      return -1 !== $notice_time && $to_notify_count > $notification_limit
+         ? -1 // -1 for partial process (remaining notifications to send)
+         : 1; // 1 for fully process
+   }
+
+   /**
+    * Get password expiration time.
+    *
+    * @return null|int Password expiration time, or null if expiration mechanism is not active.
+    */
+   public function getPasswordExpirationTime() {
+      global $CFG_GLPI;
+
+      if (!array_key_exists('id', $this->fields) || $this->fields['id'] < 1) {
+         return null;
+      }
+
+      $expiration_delay = (int)$CFG_GLPI['password_expiration_delay'];
+
+      if (-1 === $expiration_delay) {
+         return null;
+      }
+
+      return strtotime(
+         '+ ' . $expiration_delay . ' days',
+         strtotime($this->fields['password_last_update'])
+      );
+   }
+
+   /**
+    * Check if password should be changed (if it expires soon).
+    *
+    * @return boolean
+    */
+   public function shouldChangePassword() {
+      global $CFG_GLPI;
+
+      if ($this->hasPasswordExpired()) {
+         return true; // too late to change password, but returning false would not be logical here
+      }
+
+      $expiration_time = $this->getPasswordExpirationTime();
+      if (null === $expiration_time) {
+         return false;
+      }
+
+      $notice_delay    = (int)$CFG_GLPI['password_expiration_notice'];
+      if (-1 === $notice_delay) {
+         return false;
+      }
+
+      $notice_time = strtotime('- ' . $notice_delay . ' days', $expiration_time);
+
+      return $notice_time < time();
+   }
+
+   /**
+    * Check if password expired.
+    *
+    * @return boolean
+    */
+   public function hasPasswordExpired() {
+
+      $expiration_time = $this->getPasswordExpirationTime();
+      if (null === $expiration_time) {
+         return false;
+      }
+
+      return $expiration_time < time();
    }
 }

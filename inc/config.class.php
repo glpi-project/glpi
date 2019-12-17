@@ -1751,46 +1751,6 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='4' class='center b'>".__('Password security policy');
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td><label for='dropdown_use_password_security$rand'>" . __('Password security policy validation') . "</label></td>";
-      echo "<td>";
-      Dropdown::showYesNo("use_password_security", $CFG_GLPI["use_password_security"], -1, ['rand' => $rand]);
-      echo "</td>";
-      echo "<td><label for='dropdown_password_min_length$rand'>" . __('Password minimum length') . "</label></td>";
-      echo "<td>";
-      Dropdown::showNumber('password_min_length', ['value' => $CFG_GLPI["password_min_length"],
-                                                   'min'   => 4,
-                                                   'max'   => 30,
-                                                   'rand'  => $rand]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td><label for='dropdown_password_need_number$rand'>" . __('Password need digit') . "</label></td>";
-      echo "<td>";
-      Dropdown::showYesNo("password_need_number", $CFG_GLPI["password_need_number"], -1, ['rand' => $rand]);
-      echo "</td>";
-      echo "<td><label for='dropdown_password_need_letter$rand'>" . __('Password need lowercase character') . "</label></td>";
-      echo "<td>";
-      Dropdown::showYesNo("password_need_letter", $CFG_GLPI["password_need_letter"], -1, ['rand' => $rand]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td><label for='dropdown_password_need_caps$rand'>" . __('Password need uppercase character') . "</label></td>";
-      echo "<td>";
-      Dropdown::showYesNo("password_need_caps", $CFG_GLPI["password_need_caps"], -1, ['rand' => $rand]);
-      echo "</td>";
-      echo "<td><label for='dropdown_password_need_symbol$rand'>" . __('Password need symbol') . "</label></td>";
-      echo "<td>";
-      Dropdown::showYesNo("password_need_symbol", $CFG_GLPI["password_need_symbol"], -1, ['rand' => $rand]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td colspan='4' class='center b'>".__('Maintenance mode');
       echo "</td></tr>";
 
@@ -2219,10 +2179,11 @@ class Config extends CommonDBTM {
                4 => __('Assistance'),
             ];
             if (Config::canUpdate()) {
-               $tabs[9] = __('Logs purge');
-               $tabs[5] = __('System');
-               $tabs[7] = __('Performance');
-               $tabs[8] = __('API');
+               $tabs[9]  = __('Logs purge');
+               $tabs[5]  = __('System');
+               $tabs[10] = __('Security');
+               $tabs[7]  = __('Performance');
+               $tabs[8]  = __('API');
             }
 
             if (DBConnection::isDBSlaveActive()
@@ -2287,6 +2248,10 @@ class Config extends CommonDBTM {
 
             case 9:
                $item->showFormLogs();
+               break;
+
+            case 10:
+               $item->showFormSecurity();
                break;
 
          }
@@ -3475,6 +3440,206 @@ class Config extends CommonDBTM {
       echo $out;
    }
 
+   /**
+    * Security policy form
+    *
+    * @since 9.5.0
+    *
+    * @return void
+    */
+   function showFormSecurity() {
+      global $CFG_GLPI;
+
+      if (!Config::canUpdate()) {
+         return false;
+      }
+
+      $rand = mt_rand();
+
+      echo '<div class="center" id="tabsbody">';
+      echo '<form name="form" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '" method="post">';
+      echo '<table class="tab_cadre_fixe">';
+      echo '<tr><th colspan="4">' . __('Security setup') . '</th></tr>';
+
+      echo '<tr class="tab_bg_1">';
+      echo '<td colspan="4" class="center b">' . __('Password security policy') . '</td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_2">';
+      echo '<td>';
+      echo '<label for="dropdown_use_password_security' . $rand . '">';
+      echo __('Password security policy validation');
+      echo '</label>';
+      echo '</td>';
+      echo '<td>';
+      Dropdown::showYesNo(
+         'use_password_security',
+         $CFG_GLPI['use_password_security'],
+         -1,
+         [
+            'rand' => $rand,
+         ]
+      );
+      echo '</td>';
+      echo '<td>';
+      echo '<label for="dropdown_password_min_length' . $rand . '">';
+      echo __('Password minimum length');
+      echo '</label>';
+      echo '</td>';
+      echo '<td>';
+      Dropdown::showNumber(
+         'password_min_length',
+         [
+            'value' => $CFG_GLPI['password_min_length'],
+            'min'   => 4,
+            'max'   => 30,
+            'rand'  => $rand
+         ]
+      );
+      echo '</td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_2">';
+      echo '<td>';
+      echo '<label for="dropdown_password_need_number' . $rand . '">';
+      echo __('Password need digit');
+      echo '</label>';
+      echo '</td>';
+      echo '<td>';
+      Dropdown::showYesNo(
+         'password_need_number',
+         $CFG_GLPI['password_need_number'],
+         -1,
+         [
+            'rand' => $rand,
+         ]
+      );
+      echo '</td>';
+      echo '<td>';
+      echo '<label for="dropdown_password_need_letter' . $rand . '">';
+      echo __('Password need lowercase character');
+      echo '</label>';
+      echo '</td>';
+      echo '<td>';
+      Dropdown::showYesNo(
+         'password_need_letter',
+         $CFG_GLPI['password_need_letter'],
+         -1,
+         [
+            'rand' => $rand,
+         ]
+      );
+      echo '</td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_2">';
+      echo '<td>';
+      echo '<label for="dropdown_password_need_caps' . $rand . '">';
+      echo __('Password need uppercase character');
+      echo '</label>';
+      echo '</td>';
+      echo '<td>';
+      Dropdown::showYesNo(
+         'password_need_caps',
+         $CFG_GLPI['password_need_caps'],
+         -1,
+         [
+            'rand' => $rand,
+         ]
+      );
+      echo '</td>';
+      echo '<td>';
+      echo '<label for="dropdown_password_need_symbol' . $rand . '">';
+      echo __('Password need symbol');
+      echo '</label>';
+      echo '</td>';
+      echo '<td>';
+      Dropdown::showYesNo(
+         'password_need_symbol',
+         $CFG_GLPI['password_need_symbol'],
+         -1,
+         [
+            'rand' => $rand,
+         ]
+      );
+      echo '</td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_1">';
+      echo '<td colspan="4" class="center b">' . __('Password expiration policy') . '</td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_2">';
+      echo '<td>';
+      echo '<label for="dropdown_password_expiration_delay' . $rand . '">';
+      echo __('Password expiration delay (in days)');
+      echo '</label>';
+      echo '</td>';
+      echo '<td>';
+      Dropdown::showNumber(
+         'password_expiration_delay',
+         [
+            'value' => $CFG_GLPI['password_expiration_delay'],
+            'min'   => 30,
+            'max'   => 365,
+            'step'  => 15,
+            'toadd' => [-1 => __('Never')],
+            'rand'  => $rand
+         ]
+      );
+      echo '</td>';
+      echo '<td>';
+      echo '<label for="dropdown_password_expiration_notice' . $rand . '">';
+      echo __('Password expiration notice time (in days)');
+      echo '</label>';
+      echo '</td>';
+      echo '<td>';
+      Dropdown::showNumber(
+         'password_expiration_notice',
+         [
+            'value' => $CFG_GLPI['password_expiration_notice'],
+            'min'   => 0,
+            'max'   => 30,
+            'step'  => 1,
+            'toadd' => [-1 => __('Notification disabled')],
+            'rand'  => $rand
+         ]
+      );
+      echo '</td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_2">';
+      echo '<td>';
+      echo '<label for="dropdown_password_expiration_lock_delay' . $rand . '">';
+      echo __('Delay before account deactivation (in days)');
+      echo '</label>';
+      echo '</td>';
+      echo '<td>';
+      Dropdown::showNumber(
+         'password_expiration_lock_delay',
+         [
+            'value' => $CFG_GLPI['password_expiration_lock_delay'],
+            'min'   => 0,
+            'max'   => 30,
+            'step'  => 1,
+            'toadd' => [-1 => __('Do not deactivate')],
+            'rand'  => $rand
+         ]
+      );
+      echo '</td>';
+      echo '<td colspan="2"></td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_2">';
+      echo '<td colspan="4" class="center">';
+      echo '<input type="submit" name="update" class="submit" value="' . _sx('button', 'Save') . '">';
+      echo '</td>';
+      echo '</tr>';
+
+      echo '</table>';
+      Html::closeForm();
+   }
+
    public function rawSearchOptions() {
       $tab = [];
 
@@ -3499,6 +3664,29 @@ class Config extends CommonDBTM {
    }
 
    public function post_updateItem($history = 1) {
+      global $DB;
+
+      // Check if password expiration mechanism has been activated
+      if ($this->fields['name'] == 'password_expiration_delay'
+          && array_key_exists('value', $this->oldvalues)
+          && (int)$this->oldvalues['value'] === -1) {
+
+         // As passwords will now expire, consider that "now" is the reference date of expiration delay
+         $DB->update(
+            User::getTable(),
+            ['password_last_update' => $_SESSION['glpi_currenttime']],
+            ['authtype' => Auth::DB_GLPI]
+         );
+
+         // Activate passwordexpiration automated task
+         $DB->update(
+            CronTask::getTable(),
+            ['state' => 1,],
+            ['name' => 'passwordexpiration']
+         );
+      }
+
+      // Keep it at the end as it alter $this->oldvalues
       if (count($this->oldvalues)) {
          foreach ($this->oldvalues as &$value) {
             $value = $this->fields['name'] . ' ' . $value;

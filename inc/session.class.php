@@ -141,6 +141,12 @@ class Session {
 
                self::loadLanguage();
 
+               if ($auth->password_expired) {
+                  $_SESSION['glpi_password_expired'] = 1;
+                  // Do not init profiles, as user has to update its password to be able to use GLPI
+                  return;
+               }
+
                // glpiprofiles -> other available profile with link to the associated entities
                Plugin::doHook("init_session");
 
@@ -1380,5 +1386,14 @@ class Session {
    static function getImpersonatorId() {
 
       return self::isImpersonateActive() ? $_SESSION['impersonator_id'] : null;
+   }
+
+   /**
+    * Check if current connected user password has expired.
+    *
+    * @return boolean
+    */
+   static function mustChangePassword() {
+      return array_key_exists('glpi_password_expired', $_SESSION);
    }
 }

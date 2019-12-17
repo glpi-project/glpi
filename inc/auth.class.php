@@ -55,6 +55,8 @@ class Auth extends CommonGLPI {
    public $auth_succeded = 0;
    /** @var int Indicates if the user is already present in database */
    public $user_present = 0;
+   /** @var int Indicates if the user password expired */
+   public $password_expired = false;
    /** @var int Indicates if the user is deleted in the directory (doesn't mean that it can login) */
    public $user_deleted_ldap = 0;
    /** @var resource|boolean LDAP connection descriptor */
@@ -341,11 +343,40 @@ class Auth extends CommonGLPI {
     * @return boolean user in GLPI DB with the right password
     */
    function connection_db($name, $password) {
-      global $DB;
+      global $CFG_GLPI, $DB;
+
+      $pass_expiration_delay = (int)$CFG_GLPI['password_expiration_delay'];
+      $lock_delay            = (int)$CFG_GLPI['password_expiration_lock_delay'];
 
       // SQL query
-      $result = $DB->request('glpi_users', ['FIELDS' => ['id', 'password'], 'name' => $name,
-         'authtype' => $this::DB_GLPI, 'auths_id' => 0]);
+      $result = $DB->request(
+         [
+            'SELECT' => [
+               'id',
+               'password',
+               new QueryExpression(
+                  sprintf(
+                     'ADDDATE(%s, INTERVAL %d DAY) AS ' . $DB->quoteName('password_expiration_date'),
+                     $DB->quoteName('password_last_update'),
+                     $pass_expiration_delay
+                  )
+               ),
+               new QueryExpression(
+                  sprintf(
+                     'ADDDATE(%s, INTERVAL %d DAY) AS ' . $DB->quoteName('lock_date'),
+                     $DB->quoteName('password_last_update'),
+                     $pass_expiration_delay + $lock_delay
+                  )
+               )
+            ],
+            'FROM'   => User::getTable(),
+            'WHERE'  =>  [
+               'name'     => $name,
+               'authtype' => self::DB_GLPI,
+               'auths_id' => 0,
+            ]
+         ]
+      );
 
       // Have we a result ?
       if ($result->numrows() == 1) {
@@ -353,6 +384,22 @@ class Auth extends CommonGLPI {
          $password_db = $row['password'];
 
          if (self::checkPassword($password, $password_db)) {
+            // Disable account if password expired
+            if (-1 !== $pass_expiration_delay && -1 !== $lock_delay
+                && $row['lock_date'] < $_SESSION['glpi_currenttime']) {
+               $user = new User();
+               $user->update(
+                  [
+                     'id'        => $row['id'],
+                     'is_active' => 0,
+                  ]
+               );
+            }
+            if (-1 !== $pass_expiration_delay
+                && $row['password_expiration_date'] < $_SESSION['glpi_currenttime']) {
+               $this->password_expired = 1;
+            }
+
             // Update password if needed
             if (self::needRehash($password_db)) {
                $input = [
@@ -1223,6 +1270,10 @@ class Auth extends CommonGLPI {
 
       if (!Session::getLoginUserID()) {
          return false;
+      }
+
+      if (Session::mustChangePassword()) {
+         Html::redirect($CFG_GLPI['root_doc'] . '/front/updatepassword.php');
       }
 
       if (!$redirect) {

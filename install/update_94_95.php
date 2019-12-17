@@ -1311,6 +1311,137 @@ HTML
    $migration->addField("glpi_mailcollectors", "add_cc_to_observer", "boolean");
    /** /add new option to mailcollector */
 
+   /** Password expiration policy */
+   $migration->addConfig(
+      [
+         'password_expiration_delay'      => '-1',
+         'password_expiration_notice'     => '-1',
+         'password_expiration_lock_delay' => '-1',
+      ]
+   );
+   if (!$DB->fieldExists('glpi_users', 'password_last_update')) {
+      $migration->addField(
+         'glpi_users',
+         'password_last_update',
+         'timestamp',
+         [
+            'null'   => true,
+            'after'  => 'password',
+         ]
+      );
+   }
+   $passwordexpires_notif_count = countElementsInTable(
+      'glpi_notifications',
+      [
+         'itemtype' => 'User',
+         'event'    => 'passwordexpires',
+      ]
+   );
+   if ($passwordexpires_notif_count === 0) {
+      $DB->insertOrDie(
+         'glpi_notifications',
+         [
+            'name'            => 'Password expires alert',
+            'entities_id'     => 0,
+            'itemtype'        => 'User',
+            'event'           => 'passwordexpires',
+            'comment'         => null,
+            'is_recursive'    => 1,
+            'is_active'       => 1,
+            'date_creation'   => new \QueryExpression('NOW()'),
+            'date_mod'        => new \QueryExpression('NOW()'),
+         ],
+         'Add password expires notification'
+      );
+      $notification_id = $DB->insertId();
+
+      $DB->insertOrDie(
+         'glpi_notificationtemplates',
+         [
+            'name'            => 'Password expires alert',
+            'itemtype'        => 'User',
+            'date_mod'        => new \QueryExpression('NOW()'),
+         ],
+         'Add password expires notification template'
+      );
+      $notificationtemplate_id = $DB->insertId();
+
+      $DB->insertOrDie(
+         'glpi_notifications_notificationtemplates',
+         [
+            'notifications_id'         => $notification_id,
+            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+            'notificationtemplates_id' => $notificationtemplate_id,
+         ],
+         'Add password expires notification template instance'
+      );
+
+      $DB->insertOrDie(
+         'glpi_notificationtargets',
+         [
+            'items_id'         => 19,
+            'type'             => 1,
+            'notifications_id' => $notification_id,
+         ],
+         'Add password expires notification targets'
+      );
+
+      $DB->insertOrDie(
+         'glpi_notificationtemplatetranslations',
+         [
+            'notificationtemplates_id' => $notificationtemplate_id,
+            'language'                 => '',
+            'subject'                  => '##user.action##',
+            'content_text'             => <<<PLAINTEXT
+##user.realname## ##user.firstname##,
+
+##IFuser.password.has_expired=1##
+##lang.password.has_expired.information##
+##ENDIFuser.password.has_expired##
+##ELSEuser.password.has_expired##
+##lang.password.expires_soon.information##
+##ENDELSEuser.password.has_expired##
+##lang.user.password.expiration.date##: ##user.password.expiration.date##
+##IFuser.account.lock.date##
+##lang.user.account.lock.date##: ##user.account.lock.date##
+##ENDIFuser.account.lock.date##
+
+##password.update.link## ##user.password.update.url##
+PLAINTEXT
+            ,
+            'content_html'             => <<<HTML
+&lt;p&gt;&lt;strong&gt;##user.realname## ##user.firstname##&lt;/strong&gt;&lt;/p&gt;
+
+##IFuser.password.has_expired=1##
+&lt;p&gt;##lang.password.has_expired.information##&lt;/p&gt;
+##ENDIFuser.password.has_expired##
+##ELSEuser.password.has_expired##
+&lt;p&gt;##lang.password.expires_soon.information##&lt;/p&gt;
+##ENDELSEuser.password.has_expired##
+&lt;p&gt;##lang.user.password.expiration.date##: ##user.password.expiration.date##&lt;/p&gt;
+##IFuser.account.lock.date##
+&lt;p&gt;##lang.user.account.lock.date##: ##user.account.lock.date##&lt;/p&gt;
+##ENDIFuser.account.lock.date##
+
+&lt;p&gt;##lang.password.update.link## &lt;a href="##user.password.update.url##"&gt;##user.password.update.url##&lt;/a&gt;&lt;/p&gt;
+HTML
+            ,
+         ],
+         'Add password expires notification template translations'
+      );
+   }
+   CronTask::Register(
+      'User',
+      'passwordexpiration',
+      DAY_TIMESTAMP,
+      [
+         'mode'  => CronTask::MODE_EXTERNAL,
+         'state' => CronTask::STATE_DISABLE,
+         'param' => 100,
+      ]
+   );
+   /** /Password expiration policy */
+
    $migration->executeMigration();
 
    return $updateresult;
