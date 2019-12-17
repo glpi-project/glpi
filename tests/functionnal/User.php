@@ -244,15 +244,16 @@ class User extends \DbTestCase {
       $input['password2'] = 'mypass';
       $input['_extauth'] = 1;
       $expected = [
-         'name'         => 'user_pass',
-         'password'     => '',
-         '_extauth'     => 1,
-         'authtype'     => 1,
-         'auths_id'     => 0,
-         'is_active'    => 1,
-         'is_deleted'   => 0,
-         'entities_id'  => 0,
-         'profiles_id'  => 0,
+         'name'                 => 'user_pass',
+         'password'             => '',
+         '_extauth'             => 1,
+         'authtype'             => 1,
+         'auths_id'             => 0,
+         'password_last_update' => $_SESSION['glpi_currenttime'],
+         'is_active'            => 1,
+         'is_deleted'           => 0,
+         'entities_id'          => 0,
+         'profiles_id'          => 0,
       ];
       $this->array($user->prepareInputForAdd($input))->isIdenticalTo($expected);
    }
@@ -309,6 +310,86 @@ class User extends \DbTestCase {
       $result = $user->prepareInputForUpdate($input);
 
       $expected = ['id' => $user_id] + $expected;
+      $this->array($result)->isIdenticalTo($expected);
+   }
+
+   protected function prepareInputForUpdatePasswordProvider() {
+      return [
+         [
+            'input'     => [
+               'password'  => 'initial_pass',
+               'password2' => 'initial_pass'
+            ],
+            'expected'  => [
+            ],
+         ],
+         [
+            'input'     => [
+               'password'  => 'new_pass',
+               'password2' => 'new_pass_not_match'
+            ],
+            false,
+            'messages'  => [ERROR => ['Error: the two passwords do not match']],
+         ],
+         [
+            'input'     => [
+               'password'  => 'new_pass',
+               'password2' => 'new_pass'
+            ],
+            'expected'  => [
+               'password_last_update' => true,
+               'password' => true,
+            ],
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider prepareInputForUpdatePasswordProvider
+    */
+   public function testPrepareInputForUpdatePassword(array $input, $expected, array $messages = null) {
+
+      $user = $this->newTestedInstance();
+      $username = 'prepare_for_update_' . mt_rand();
+      $user_id = $user->add(
+         [
+            'name'      => $username,
+            'password'  => 'initial_pass',
+            'password2' => 'initial_pass'
+         ]
+      );
+      $this->integer((int)$user_id)->isGreaterThan(0);
+
+      $this->login($username, 'initial_pass');
+
+      $input = ['id' => $user_id] + $input;
+      $result = $user->prepareInputForUpdate($input);
+
+      if (null !== $messages) {
+         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($messages);
+         $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      }
+
+      if (false === $expected) {
+         $this->boolean($result)->isIdenticalTo($expected);
+         return;
+      }
+
+      if (array_key_exists('password', $expected) && true === $expected['password']) {
+         // password_hash result is unpredictible, so we cannot test its exact value
+         $this->array($result)->hasKey('password');
+         $this->string($result['password'])->isNotEmpty();
+
+         unset($expected['password']);
+         unset($result['password']);
+      }
+
+      $expected = ['id' => $user_id] + $expected;
+      if (array_key_exists('password_last_update', $expected) && true === $expected['password_last_update']) {
+         // $_SESSION['glpi_currenttime'] was reset on login, value cannot be provided by test provider
+         $expected['password_last_update'] = $_SESSION['glpi_currenttime'];
+      }
+
       $this->array($result)->isIdenticalTo($expected);
    }
 
@@ -630,5 +711,228 @@ class User extends \DbTestCase {
             ->then
                ->boolean($this->testedInstance->getAdditionalMenuOptions())
                   ->isFalse();
+   }
+
+   protected function passwordExpirationMethodsProvider() {
+      $time = time();
+
+      return [
+         [
+            'password_last_update'            => date('Y-m-d H:i:s', strtotime('-10 years', $time)),
+            'password_expiration_delay'       => -1,
+            'password_expiration_notice'      => -1,
+            'expected_expiration_time'        => null,
+            'expected_should_change_password' => false,
+            'expected_has_password_expire'    => false,
+         ],
+         [
+            'password_last_update'            => date('Y-m-d H:i:s', strtotime('-10 days', $time)),
+            'password_expiration_delay'       => 15,
+            'password_expiration_notice'      => -1,
+            'expected_expiration_time'        => strtotime('+5 days', $time),
+            'expected_should_change_password' => false, // not yet in notice time
+            'expected_has_password_expire'    => false,
+         ],
+         [
+            'password_last_update'            => date('Y-m-d H:i:s', strtotime('-10 days', $time)),
+            'password_expiration_delay'       => 15,
+            'password_expiration_notice'      => 10,
+            'expected_expiration_time'        => strtotime('+5 days', $time),
+            'expected_should_change_password' => true,
+            'expected_has_password_expire'    => false,
+         ],
+         [
+            'password_last_update'            => date('Y-m-d H:i:s', strtotime('-20 days', $time)),
+            'password_expiration_delay'       => 15,
+            'password_expiration_notice'      => -1,
+            'expected_expiration_time'        => strtotime('-5 days', $time),
+            'expected_should_change_password' => true,
+            'expected_has_password_expire'    => true,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider passwordExpirationMethodsProvider
+    */
+   public function testPasswordExpirationMethods(
+      string $last_update,
+      int $expiration_delay,
+      int $expiration_notice,
+      $expected_expiration_time,
+      $expected_should_change_password,
+      $expected_has_password_expire
+   ) {
+      global $CFG_GLPI;
+
+      $user = $this->newTestedInstance();
+      $username = 'prepare_for_update_' . mt_rand();
+      $user_id = $user->add(
+         [
+            'name'      => $username,
+            'password'  => 'pass',
+            'password2' => 'pass'
+         ]
+      );
+      $this->integer($user_id)->isGreaterThan(0);
+      $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
+      $this->boolean($user->getFromDB($user->fields['id']))->isTrue();
+
+      $cfg_backup = $CFG_GLPI;
+      $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
+      $CFG_GLPI['password_expiration_notice'] = $expiration_notice;
+
+      $expiration_time = $user->getPasswordExpirationTime();
+      $should_change_password = $user->shouldChangePassword();
+      $has_password_expire = $user->hasPasswordExpired();
+
+      $CFG_GLPI = $cfg_backup;
+
+      $this->variable($expiration_time)->isEqualTo($expected_expiration_time);
+      $this->boolean($should_change_password)->isEqualTo($expected_should_change_password);
+      $this->boolean($has_password_expire)->isEqualTo($expected_has_password_expire);
+   }
+
+
+   protected function cronPasswordExpirationNotificationsProvider() {
+      // create 10 users with differents password_last_update dates
+      // first has its password set 1 day ago
+      // second has its password set 11 day ago
+      // and so on
+      // tenth has its password set 91 day ago
+      $user = new \User();
+      for ($i = 1; $i < 100; $i+=10) {
+         $user_id = $user->add(
+            [
+               'name'     => 'cron_user_' . mt_rand(),
+               'authtype' => \Auth::DB_GLPI,
+            ]
+         );
+         $this->integer($user_id)->isGreaterThan(0);
+         $this->boolean(
+            $user->update(
+               [
+                  'id' => $user_id,
+                  'password_last_update' => date('Y-m-d H:i:s', strtotime('-' . $i . ' days')),
+               ]
+            )
+         )->isTrue();
+      }
+
+      return [
+         // validate that cron does nothing if password expiration is not active (default config)
+         [
+            'password_expiration_delay'      => -1,
+            'password_expiration_notice'     => -1,
+            'password_expiration_lock_delay' => -1,
+            'cron_limit'                     => 100,
+            'expected_result'                => 0, // 0 = nothing to do
+            'expected_notifications_count'   => 0,
+            'expected_lock_count'            => 0,
+         ],
+         // validate that cron send no notification if password_expiration_notice == -1
+         [
+            'password_expiration_delay'      => 15,
+            'password_expiration_notice'     => -1,
+            'password_expiration_lock_delay' => -1,
+            'cron_limit'                     => 100,
+            'expected_result'                => 0, // 0 = nothing to do
+            'expected_notifications_count'   => 0,
+            'expected_lock_count'            => 0,
+         ],
+         // validate that cron send notifications instantly if password_expiration_notice == 0
+         [
+            'password_expiration_delay'      => 50,
+            'password_expiration_notice'     => 0,
+            'password_expiration_lock_delay' => -1,
+            'cron_limit'                     => 100,
+            'expected_result'                => 1, // 1 = fully processed
+            'expected_notifications_count'   => 5, // 5 users should be notified (them which has password set more than 50 days ago)
+            'expected_lock_count'            => 0,
+         ],
+         // validate that cron send notifications before expiration if password_expiration_notice > 0
+         [
+            'password_expiration_delay'      => 50,
+            'password_expiration_notice'     => 20,
+            'password_expiration_lock_delay' => -1,
+            'cron_limit'                     => 100,
+            'expected_result'                => 1, // 1 = fully processed
+            'expected_notifications_count'   => 7, // 7 users should be notified (them which has password set more than 50-20 days ago)
+            'expected_lock_count'            => 0,
+         ],
+         // validate that cron returns partial result if there is too many notifications to send
+         [
+            'password_expiration_delay'      => 50,
+            'password_expiration_notice'     => 20,
+            'password_expiration_lock_delay' => -1,
+            'cron_limit'                     => 5,
+            'expected_result'                => -1, // -1 = partially processed
+            'expected_notifications_count'   => 5, // 5 on 7 users should be notified (them which has password set more than 50-20 days ago)
+            'expected_lock_count'            => 0,
+         ],
+         // validate that cron disable users instantly if password_expiration_lock_delay == 0
+         [
+            'password_expiration_delay'      => 50,
+            'password_expiration_notice'     => -1,
+            'password_expiration_lock_delay' => 0,
+            'cron_limit'                     => 100,
+            'expected_result'                => 1, // 1 = fully processed
+            'expected_notifications_count'   => 0,
+            'expected_lock_count'            => 5, // 5 users should be locked (them which has password set more than 50 days ago)
+         ],
+         // validate that cron disable users with given delay if password_expiration_lock_delay > 0
+         [
+            'password_expiration_delay'      => 20,
+            'password_expiration_notice'     => -1,
+            'password_expiration_lock_delay' => 10,
+            'cron_limit'                     => 100,
+            'expected_result'                => 1, // 1 = fully processed
+            'expected_notifications_count'   => 0,
+            'expected_lock_count'            => 7, // 7 users should be locked (them which has password set more than 20+10 days ago)
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider cronPasswordExpirationNotificationsProvider
+    */
+   public function testCronPasswordExpirationNotifications(
+      int $expiration_delay,
+      int $notice_delay,
+      int $lock_delay,
+      int $cron_limit,
+      int $expected_result,
+      int $expected_notifications_count,
+      int $expected_lock_count
+   ) {
+      global $CFG_GLPI, $DB;
+
+      $this->login();
+
+      $crontask = new \CronTask();
+      $this->boolean($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'))->isTrue();
+      $crontask->fields['param'] = $cron_limit;
+
+      $cfg_backup = $CFG_GLPI;
+      $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
+      $CFG_GLPI['password_expiration_notice'] = $notice_delay;
+      $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
+      $CFG_GLPI['use_notifications']  = true;
+      $CFG_GLPI['notifications_ajax'] = 1;
+      $result = \User::cronPasswordExpiration($crontask);
+      $CFG_GLPI = $cfg_backup;
+
+      $this->integer($result)->isEqualTo($expected_result);
+      $this->integer(
+         countElementsInTable(\Alert::getTable(), ['itemtype' => \User::getType()])
+      )->isEqualTo($expected_notifications_count);
+      $DB->delete(\Alert::getTable(), ['itemtype' => \User::getType()]); // reset alerts
+
+      $user_crit = [
+         'authtype'  => \Auth::DB_GLPI,
+         'is_active' => 0,
+      ];
+      $this->integer(countElementsInTable(\User::getTable(), $user_crit))->isEqualTo($expected_lock_count);
+      $DB->update(\User::getTable(), ['is_active' => 1], $user_crit); // reset users
    }
 }

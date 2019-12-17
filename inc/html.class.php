@@ -1788,6 +1788,19 @@ JAVASCRIPT;
 
       // Preferences + logout link
       echo "<div id='c_preference'>";
+      if (Session::getLoginUserID()) {
+         $logout_url = $CFG_GLPI['root_doc']
+            . '/front/logout.php'
+            . (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth'] ? '?noAUTO=1' : '' );
+         echo '<ul>';
+         echo '<li id="deconnexion">';
+         echo '<a href="' . $logout_url . '" title="' . __s('Logout') . '" class="fa fa-sign-out-alt">';
+         echo '<span class="sr-only">' . __s('Logout') . '</span>';
+         echo '</a>';
+         echo '</li>';
+         echo '</ul>';
+      }
+
       echo "<div class='sep'></div>";
       echo "</div>";
 

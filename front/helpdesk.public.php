@@ -95,7 +95,34 @@ if (isset($_GET['create_ticket'])) {
 
 } else {
    Html::helpHeader(__('Home'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
-   echo "<table class='tab_cadre_postonly'><tr class='noHover'>";
+   echo "<table class='tab_cadre_postonly'>";
+
+   $user = new User();
+   $user->getFromDB(Session::getLoginUserID());
+   if ($user->shouldChangePassword()) {
+      $expiration_msg = sprintf(
+         __('Your password will expire on %s.'),
+         Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
+      );
+      echo '<tr>';
+      echo '<th colspan="2">';
+      echo '<div class="warning">';
+      echo '<i class="fa fa-exclamation-triangle fa-5x"></i>';
+      echo '<ul>';
+      echo '<li>';
+      echo $expiration_msg . ' ';
+      echo '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">';
+      echo __('Update my password');
+      echo '</a>';
+      echo '</li>';
+      echo '</ul>';
+      echo '<div class="sep"></div>';
+      echo '</div>';
+      echo '</th>';
+      echo '</tr>';
+   }
+
+   echo "<tr class='noHover'>";
    echo "<td class='top' width='50%'><br>";
    echo "<table class='central'>";
    Plugin::doHook('display_central');

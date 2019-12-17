@@ -145,7 +145,7 @@ class Central extends CommonGLPI {
     * Show the central personal view
    **/
    static function showMyView() {
-      global $DB;
+      global $CFG_GLPI, $DB;
 
       $showticket  = Session::haveRightsOr("ticket",
                                            [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN]);
@@ -157,6 +157,21 @@ class Central extends CommonGLPI {
       Plugin::doHook('display_central');
 
       $warnings = [];
+
+      $user = new User();
+      $user->getFromDB(Session::getLoginUserID());
+      if ($user->shouldChangePassword()) {
+         $expiration_msg = sprintf(
+            __('Your password will expire on %s.'),
+            Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
+         );
+         $warnings[] = $expiration_msg
+            . ' '
+            . '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">'
+            . __('Update my password')
+            . '</a>';
+      }
+
       if (Session::haveRight("config", UPDATE)) {
          $logins = User::checkDefaultPasswords();
          $user   = new User();

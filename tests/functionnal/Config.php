@@ -103,11 +103,12 @@ class Config extends DbTestCase {
       //check extra tabs from superadmin profile
       $this->login();
       unset($expected['Log$1']);
-      $expected['Config$9'] = 'Logs purge';
-      $expected['Config$5'] = 'System';
-      $expected['Config$7'] = 'Performance';
-      $expected['Config$8'] = 'API';
-      $expected['Log$1']    = 'Historical';
+      $expected['Config$9']  = 'Logs purge';
+      $expected['Config$5']  = 'System';
+      $expected['Config$10'] = 'Security';
+      $expected['Config$7']  = 'Performance';
+      $expected['Config$8']  = 'API';
+      $expected['Log$1']     = 'Historical';
       $this
          ->given($this->newTestedInstance)
             ->then
@@ -635,5 +636,121 @@ class Config extends DbTestCase {
       $this->array($res)->isIdenticalTo(
          ['value' => exportArrayToDB(['Item_DeviceSimcard', 'Item_DeviceBattery'])]
       );
+   }
+
+   /**
+    * Test password expiration delay configuration update.
+    */
+   public function testPasswordExpirationDelayUpdate() {
+      global $DB;
+
+      $conf = new \Config();
+      $crontask = new \CronTask();
+
+      // create some non local users for the test
+      foreach ([\Auth::LDAP, \Auth::EXTERNAL, \Auth::CAS] as $authtype) {
+         $user = new \User();
+         $user_id = $user->add(
+            [
+               'name'     => 'test_user_' . mt_rand(),
+               'authtype' => $authtype,
+            ]
+         );
+         $this->integer($user_id)->isGreaterThan(0);
+      }
+
+      // get count of users using local auth
+      $local_users_count = countElementsInTable(
+         \User::getTable(),
+         ['authtype' => \Auth::DB_GLPI]
+      );
+      // get count of users using external auth
+      $external_users_count = countElementsInTable(
+         \User::getTable(),
+         ['NOT' => ['authtype' => \Auth::DB_GLPI]]
+      );
+      // reset 'password_last_update' to null for the test
+      $DB->update(\User::getTable(), ['password_last_update' => null], [true]);
+
+      // initial data:
+      //  - password expiration is not active
+      //  - users from installation data have no value for password_last_update
+      //  - crontask is not active
+      $values = \Config::getConfigurationValues('core');
+      $this->array($values)->hasKey('password_expiration_delay');
+      $this->integer((int)$values['password_expiration_delay'])->isIdenticalTo(-1);
+      $this->integer(
+         countElementsInTable(
+            \User::getTable(),
+            ['authtype' => \Auth::DB_GLPI, 'password_last_update' => null]
+         )
+      )->isEqualTo($local_users_count);
+      $this->integer(
+         countElementsInTable(
+            \User::getTable(),
+            ['NOT' => ['authtype' => \Auth::DB_GLPI], 'password_last_update' => null]
+         )
+      )->isEqualTo($external_users_count);
+      $this->boolean($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'))->isTrue();
+      $this->integer((int)$crontask->fields['state'])->isIdenticalTo(0);
+
+      // check that activation of password expiration reset `password_last_update` to current date
+      // for all local users but not for external users
+      // and activate passwordexpiration crontask
+      $current_time = $_SESSION['glpi_currenttime'];
+      $update_datetime = date('Y-m-d H:i:s', strtotime('-15 days')); // arbitrary date
+      $_SESSION['glpi_currenttime'] = $update_datetime;
+      $conf->update(
+         [
+            'id'                        => 1,
+            'password_expiration_delay' => 30
+         ]
+      );
+      $_SESSION['glpi_currenttime'] = $current_time;
+      $values = \Config::getConfigurationValues('core');
+      $this->array($values)->hasKey('password_expiration_delay');
+      $this->integer((int)$values['password_expiration_delay'])->isIdenticalTo(30);
+      $this->integer(
+         countElementsInTable(
+            \User::getTable(),
+            ['authtype' => \Auth::DB_GLPI, 'password_last_update' => $update_datetime]
+         )
+      )->isEqualTo($local_users_count);
+      $this->integer(
+         countElementsInTable(
+            \User::getTable(),
+            ['NOT' => ['authtype' => \Auth::DB_GLPI], 'password_last_update' => null]
+         )
+      )->isEqualTo($external_users_count);
+      $this->boolean($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'))->isTrue();
+      $this->integer((int)$crontask->fields['state'])->isIdenticalTo(1);
+
+      // check that changing password expiration delay does not reset `password_last_update` to current date
+      // if password expiration was already active
+      $current_time = $_SESSION['glpi_currenttime'];
+      $new_update_datetime = date('Y-m-d H:i:s', strtotime('-5 days')); // arbitrary date
+      $_SESSION['glpi_currenttime'] = $new_update_datetime;
+      $conf->update(
+         [
+            'id'                        => 1,
+            'password_expiration_delay' => 45
+         ]
+      );
+      $_SESSION['glpi_currenttime'] = $current_time;
+      $values = \Config::getConfigurationValues('core');
+      $this->array($values)->hasKey('password_expiration_delay');
+      $this->integer((int)$values['password_expiration_delay'])->isIdenticalTo(45);
+      $this->integer(
+         countElementsInTable(
+            \User::getTable(),
+            ['authtype' => \Auth::DB_GLPI, 'password_last_update' => $update_datetime] // previous config update
+         )
+      )->isEqualTo($local_users_count);
+      $this->integer(
+         countElementsInTable(
+            \User::getTable(),
+            ['NOT' => ['authtype' => \Auth::DB_GLPI], 'password_last_update' => null]
+         )
+      )->isEqualTo($external_users_count);
    }
 }
