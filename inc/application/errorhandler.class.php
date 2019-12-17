@@ -39,6 +39,9 @@ if (!defined('GLPI_ROOT')) {
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
+/**
+ * @since 9.5.0
+ */
 class ErrorHandler {
 
    /**
@@ -78,6 +81,13 @@ class ErrorHandler {
    ];
 
    /**
+    * Flag to indicate if error should be forwarded to PHP internal error handler.
+    *
+    * @var boolean
+    */
+   private $forward_to_internal_handler = true;
+
+   /**
     * Logger instance.
     *
     * @var LoggerInterface
@@ -99,9 +109,9 @@ class ErrorHandler {
    private $reserved_memory;
 
    /**
-    * @param LoggerInterface $logger
+    * @param LoggerInterface|null $logger
     */
-   public function __construct(LoggerInterface $logger) {
+   public function __construct(LoggerInterface $logger = null) {
       $this->logger = $logger;
    }
 
@@ -125,9 +135,18 @@ class ErrorHandler {
     * @param string  $filename
     * @param integer $line_number
     *
-    * @return void
+    * @return boolean
     */
    public function handleError($error_code, $error_message, $filename, $line_number) {
+
+      // Have to false to forward to PHP internal error handler.
+      $return = !$this->forward_to_internal_handler;
+
+      if (0 === error_reporting()) {
+         // Do not handle error if '@' operator is used on errored expression
+         // see https://www.php.net/manual/en/language.operators.errorcontrol.php
+         return $return;
+      }
 
       $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
       array_shift($trace);  // Remove current method from trace
@@ -138,7 +157,7 @@ class ErrorHandler {
          // (as some are not recoverable and cannot be handled here).
          // Store backtrace to be able to use it there.
          $this->last_fatal_trace = $trace;
-         return false; // Forward to PHP internal error handler
+         return $return;
       }
 
       $error_type = sprintf(
@@ -162,18 +181,26 @@ class ErrorHandler {
 
       $this->outputDebugMessage($error_type, $error_description);
 
-      return false; // Forward to PHP internal error handler
+      return $return;
    }
 
    /**
     * Exception handler.
-    * Logs exception and exits with a error code.
+    *
+    * This handler is called by PHP prior to exiting, when an Exception is not catched.
     *
     * @param \Throwable $exception
     *
     * @return void
     */
    public function handleException(\Throwable $exception) {
+
+      if (0 === error_reporting()) {
+         // Do not handle exception if '@' operator is used on errored expression
+         // see https://www.php.net/manual/en/language.operators.errorcontrol.php
+         return;
+      }
+
       $error_type = sprintf(
          'Uncaught Exception %s',
          get_class($exception)
@@ -194,8 +221,6 @@ class ErrorHandler {
       );
 
       $this->outputDebugMessage($error_type, $error_description);
-
-      exit(255); // Exit with an error code
    }
 
    /**
@@ -204,16 +229,28 @@ class ErrorHandler {
     * @retun void
     */
    public function handleFatalError() {
+      if (0 === error_reporting()) {
+         // Do not handle exception if '@' operator is used on errored expression
+         // see https://www.php.net/manual/en/language.operators.errorcontrol.php
+         return;
+      }
+
       // Free reserved memory to be able to handle "out of memory" errors
       $this->reserved_memory = null;
 
       $error = error_get_last();
       if ($error && in_array($error['type'], self::FATAL_ERRORS)) {
          $error_type = sprintf(
-            'PHP Fatal Error (%s)',
+            'PHP %s (%s)',
+            $this->codeToString($error['type']),
             $error['type']
          );
-         $error_description = $error['message'];
+         $error_description = sprintf(
+            '%s in %s at line %s',
+            $error['message'],
+            $error['file'],
+            $error['line']
+         );
 
          // debug_backtrace is not available in shutdown function
          // so get stored trace if any exists
@@ -229,6 +266,17 @@ class ErrorHandler {
 
          $this->outputDebugMessage($error_type, $error_description);
       }
+   }
+
+   /**
+    * Defines if errors should be forward to PHP internal error handler.
+    *
+    * @param bool $forward_to_internal_handler
+    *
+    * @return void
+    */
+   public function setForwardToInternalHandler(bool $forward_to_internal_handler) {
+      $this->forward_to_internal_handler = $forward_to_internal_handler;
    }
 
    /**
@@ -248,7 +296,7 @@ class ErrorHandler {
 
       $this->logger->log(
          $log_level,
-         '  *** ' . $type . ': ' . $description . "\n" . $trace
+         '  *** ' . $type . ': ' . $description . (!empty($trace) ? "\n" . $trace : '')
       );
    }
 
