@@ -75,6 +75,23 @@ class GLPITestCase extends atoum {
          }
          $GLPI_CACHE = false;
       }
+
+      global $PHPLOGGER;
+      $handlers = $PHPLOGGER->getHandlers();
+      foreach ($handlers as $handler) {
+         $records  = $handler->getRecords();
+         $messages = array_column($records, 'message');
+         $this->integer(count($records))
+            ->isEqualTo(
+               0,
+               sprintf(
+                  'Unexpected logs records found in %s::%s() test: %s',
+                  static::class,
+                  $method,
+                  "\n" . implode("\n", $messages)
+               )
+            );
+      }
    }
 
    /**

@@ -423,6 +423,10 @@ class Toolbox {
          }
       }
 
+      if (defined('TU_USER') && $level >= Logger::NOTICE) {
+         throw new \RuntimeException($msg);
+      }
+
       $tps = microtime(true);
 
       if ($logger === null) {
@@ -437,9 +441,7 @@ class Toolbox {
          error_log($e);
       }
 
-      if (defined('TU_USER') && $level >= Logger::NOTICE) {
-         throw new \RuntimeException($msg);
-      } else if (isCommandLine() && $level >= Logger::WARNING) {
+      if (isCommandLine() && $level >= Logger::WARNING) {
          echo $msg;
       }
    }
