@@ -32,6 +32,8 @@
 
 namespace tests\units\Glpi\Application;
 
+use Monolog\Logger;
+use Monolog\Handler\TestHandler;
 use Psr\Log\LogLevel;
 
 class ErrorHandler extends \GLPITestCase {
@@ -114,13 +116,8 @@ class ErrorHandler extends \GLPITestCase {
       string $expected_log_level,
       string $expected_msg_pattern
    ) {
-      $logger = $this->newMockInstance('Psr\\Log\\NullLogger');
-      $logged_level = null;
-      $logged_message = null;
-      $this->calling($logger)->log = function($level, $message) use(&$logged_level, &$logged_message) {
-         $logged_level   = $level;
-         $logged_message = $message;
-      };
+      $handler = $this->newMockInstance('Monolog\Handler\TestHandler');
+      $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
       // Force session in debug mode (to get debug output)
       $previous_use_mode         = $_SESSION['glpi_use_mode'];
@@ -134,17 +131,16 @@ class ErrorHandler extends \GLPITestCase {
       $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
       @$error_call();
       $_SESSION['glpi_use_mode'] = $previous_use_mode;
-      $this->mock($logger)->call('log')->never();
+      $this->integer(count($handler->getRecords()))->isEqualTo(0);
       $this->output->isEmpty();
 
       // Assert that error handler acts as expected when not using '@' operator
       $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
       $error_call();
       $_SESSION['glpi_use_mode'] = $previous_use_mode;
-      $this->mock($logger)->call('log')->once();
 
-      $this->string($logged_level)->isEqualTo($expected_log_level);
-      $this->string($logged_message)->matches($expected_msg_pattern);
+      $this->integer(count($handler->getRecords()))->isEqualTo(1);
+      $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, $expected_log_level));
 
       $this->output->matches($expected_msg_pattern);
    }
@@ -247,13 +243,8 @@ class ErrorHandler extends \GLPITestCase {
       string $expected_msg_pattern,
       bool $is_fatal_error = false
    ) {
-      $logger = $this->newMockInstance('Psr\\Log\\NullLogger');
-      $logged_level = null;
-      $logged_message = null;
-      $this->calling($logger)->log = function($level, $message) use(&$logged_level, &$logged_message) {
-         $logged_level   = $level;
-         $logged_message = $message;
-      };
+      $handler = $this->newMockInstance('Monolog\Handler\TestHandler');
+      $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
       // Force session in debug mode (to get debug output)
       $previous_use_mode         = $_SESSION['glpi_use_mode'];
@@ -266,7 +257,7 @@ class ErrorHandler extends \GLPITestCase {
       $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
       @$this->testedInstance->handleError($error_code, 'err_msg', __FILE__, __LINE__);
       $_SESSION['glpi_use_mode'] = $previous_use_mode;
-      $this->mock($logger)->call('log')->never();
+      $this->integer(count($handler->getRecords()))->isEqualTo(0);
       $this->output->isEmpty();
 
       // Assert that error handler acts as expected when not using '@' operator
@@ -274,13 +265,11 @@ class ErrorHandler extends \GLPITestCase {
       $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
       $this->testedInstance->handleError($error_code, 'err_msg', __FILE__, __LINE__);
       $_SESSION['glpi_use_mode'] = $previous_use_mode;
-      $this->mock($logger)->call('log')->exactly($is_fatal_error ? 0 : 1);
 
       if ($is_fatal_error) {
          // If error is a Fatal error, message logging should be delegated to
          // the 'handleFatalError' method which will be used as shutdown function.
-         $this->variable($logged_level)->isNull();
-         $this->variable($logged_message)->isNull();
+         $this->integer(count($handler->getRecords()))->isEqualTo(0);
 
          $this->function->error_get_last = [
             'type'    => $error_code,
@@ -291,11 +280,10 @@ class ErrorHandler extends \GLPITestCase {
          $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
          $this->testedInstance->handleFatalError();
          $_SESSION['glpi_use_mode'] = $previous_use_mode;
-         $this->mock($logger)->call('log')->once();
       }
 
-      $this->string($logged_level)->isEqualTo($expected_log_level);
-      $this->string($logged_message)->matches($expected_msg_pattern);
+      $this->integer(count($handler->getRecords()))->isEqualTo(1);
+      $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, $expected_log_level));
 
       $this->output->matches($expected_msg_pattern);
    }
@@ -304,13 +292,8 @@ class ErrorHandler extends \GLPITestCase {
     * Test exception handler.
     */
    public function testHandleException() {
-      $logger = $this->newMockInstance('Psr\\Log\\NullLogger');
-      $logged_level = null;
-      $logged_message = null;
-      $this->calling($logger)->log = function($level, $message) use(&$logged_level, &$logged_message) {
-         $logged_level   = $level;
-         $logged_message = $message;
-      };
+      $handler = $this->newMockInstance('Monolog\Handler\TestHandler');
+      $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
       $exception = new \RuntimeException('Something went wrong');
       $expected_msg_pattern = '/'
@@ -328,7 +311,7 @@ class ErrorHandler extends \GLPITestCase {
       $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
       @$this->testedInstance->handleException($exception);
       $_SESSION['glpi_use_mode'] = $previous_use_mode;
-      $this->mock($logger)->call('log')->never();
+      $this->integer(count($handler->getRecords()))->isEqualTo(0);
       $this->output->isEmpty();
 
       // Assert that exception handler acts as expected when not using '@' operator
@@ -336,10 +319,9 @@ class ErrorHandler extends \GLPITestCase {
       $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
       $this->testedInstance->handleException($exception);
       $_SESSION['glpi_use_mode'] = $previous_use_mode;
-      $this->mock($logger)->call('log')->once();
 
-      $this->string($logged_level)->isEqualTo(LogLevel::CRITICAL);
-      $this->string($logged_message)->matches($expected_msg_pattern);
+      $this->integer(count($handler->getRecords()))->isEqualTo(1);
+      $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, LogLevel::CRITICAL));
 
       $this->output->matches($expected_msg_pattern);
    }
