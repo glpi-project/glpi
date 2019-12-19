@@ -371,7 +371,7 @@ class DomainRecord extends CommonDBChild {
 
          echo "</td><td class='center' class='tab_bg_1'>";
          echo "<input type='hidden' name='domains_id' value='$instID'>";
-         echo "<input type='submit' name='additem' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
+         echo "<input type='submit' name='addrecord' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();

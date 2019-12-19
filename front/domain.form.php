@@ -71,13 +71,13 @@ if (isset($_POST["add"])) {
    $domain->update($_POST);
    Html::back();
 
-} else if (isset($_POST["additem"])) {
-
-   if (!empty($_POST['itemtype']) && $_POST['items_id'] > 0) {
-      $ditem->check(-1, UPDATE, $_POST);
-      $ditem->addItem($_POST);
-   }
-   Html::back();
+} else if (isset($_POST["addrecord"])) {
+   $record = new \DomainRecord();
+   $_POST['id'] = $_POST['domainrecords_id'];
+   unset($_POST['domainrecords_id']);
+   $record->check(-1, UPDATE, $_POST);
+   $record->update($_POST);
+   Html::redirect($domain->getFormURLWithID($_POST['domains_id']));
 
 } else if (isset($_POST["deleteitem"])) {
    foreach ($_POST["item"] as $key => $val) {
