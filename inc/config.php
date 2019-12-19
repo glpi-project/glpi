@@ -51,6 +51,7 @@ if (!isset($_SESSION['glpi_use_mode'])) {
 
 $GLPI = new GLPI();
 $GLPI->initLogger();
+$GLPI->initErrorHandler();
 
 //init cache
 $GLPI_CACHE = Config::getCache('cache_db');

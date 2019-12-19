@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\TestHandler;
@@ -44,6 +45,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class GLPI {
 
+   private $error_handler;
    private $loggers;
    private $log_level;
 
@@ -92,5 +94,17 @@ class GLPI {
     */
    public function getLogLevel() {
       return $this->log_level;
+   }
+
+   /**
+    * Init and register error handler.
+    *
+    * @return void
+    */
+   public function initErrorHandler() {
+      global $PHPLOGGER;
+
+      $this->error_handler = new ErrorHandler($PHPLOGGER);
+      $this->error_handler->register();
    }
 }

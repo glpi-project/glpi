@@ -252,6 +252,7 @@ class Application extends BaseApplication {
       global $GLPI;
       $GLPI = new GLPI();
       $GLPI->initLogger();
+      $GLPI->initErrorHandler();
 
       Config::detectRootDoc();
    }
