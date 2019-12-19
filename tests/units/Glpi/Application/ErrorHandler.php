@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\Application;
 
-use Monolog\Logger;
-use Monolog\Handler\TestHandler;
 use Psr\Log\LogLevel;
 
 class ErrorHandler extends \GLPITestCase {
