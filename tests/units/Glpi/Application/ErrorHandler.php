@@ -305,13 +305,6 @@ class ErrorHandler extends \GLPITestCase {
 
       $this->newTestedInstance($logger);
 
-      // Assert that nothing is logged when using '@' operator
-      $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
-      @$this->testedInstance->handleException($exception);
-      $_SESSION['glpi_use_mode'] = $previous_use_mode;
-      $this->integer(count($handler->getRecords()))->isEqualTo(0);
-      $this->output->isEmpty();
-
       // Assert that exception handler acts as expected when not using '@' operator
       // Fatal error are not logged by function, but other errors should be
       $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;

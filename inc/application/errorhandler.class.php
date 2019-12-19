@@ -142,12 +142,6 @@ class ErrorHandler {
       // Have to false to forward to PHP internal error handler.
       $return = !$this->forward_to_internal_handler;
 
-      if (0 === error_reporting()) {
-         // Do not handle error if '@' operator is used on errored expression
-         // see https://www.php.net/manual/en/language.operators.errorcontrol.php
-         return $return;
-      }
-
       $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
       array_shift($trace);  // Remove current method from trace
       $error_trace = $this->getTraceAsString($trace);
@@ -157,6 +151,12 @@ class ErrorHandler {
          // (as some are not recoverable and cannot be handled here).
          // Store backtrace to be able to use it there.
          $this->last_fatal_trace = $trace;
+         return $return;
+      }
+
+      if (0 === error_reporting()) {
+         // Do not handle error if '@' operator is used on errored expression
+         // see https://www.php.net/manual/en/language.operators.errorcontrol.php
          return $return;
       }
 
@@ -194,13 +194,6 @@ class ErrorHandler {
     * @return void
     */
    public function handleException(\Throwable $exception) {
-
-      if (0 === error_reporting()) {
-         // Do not handle exception if '@' operator is used on errored expression
-         // see https://www.php.net/manual/en/language.operators.errorcontrol.php
-         return;
-      }
-
       $error_type = sprintf(
          'Uncaught Exception %s',
          get_class($exception)
@@ -220,7 +213,7 @@ class ErrorHandler {
          self::ERROR_LEVEL_MAP[E_ERROR]
       );
 
-      $this->outputDebugMessage($error_type, $error_description);
+      $this->outputDebugMessage($error_type, $error_description, isCommandLine());
    }
 
    /**
@@ -229,12 +222,6 @@ class ErrorHandler {
     * @retun void
     */
    public function handleFatalError() {
-      if (0 === error_reporting()) {
-         // Do not handle exception if '@' operator is used on errored expression
-         // see https://www.php.net/manual/en/language.operators.errorcontrol.php
-         return;
-      }
-
       // Free reserved memory to be able to handle "out of memory" errors
       $this->reserved_memory = null;
 
@@ -303,14 +290,16 @@ class ErrorHandler {
    /**
     * Output debug message related to error.
     *
-    * @param string $error_type
-    * @param string $message
+    * @param string  $error_type
+    * @param string  $message
+    * @param boolean $force
     *
     * @return void
     */
-   private function outputDebugMessage(string $error_type, string $message) {
+   private function outputDebugMessage(string $error_type, string $message, bool $force = false) {
 
-      if (!isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] != \Session::DEBUG_MODE) {
+      if (!$force
+          && (!isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] != \Session::DEBUG_MODE)) {
          return;
       }
 
