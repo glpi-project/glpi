@@ -6852,6 +6852,11 @@ JAVASCRIPT;
             self::$search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
          }
 
+         if (in_array($itemtype, $CFG_GLPI["domain_types"])
+             || ($itemtype == 'AllAssets')) {
+            self::$search[$itemtype] += Domain::getSearchOptionsToAdd($itemtype);
+         }
+
          if (in_array($itemtype, $CFG_GLPI["link_types"])) {
             self::$search[$itemtype]['link'] = _n('External link', 'External links', Session::getPluralNumber());
             self::$search[$itemtype] += Link::getSearchOptionsToAdd($itemtype);

@@ -95,6 +95,7 @@ class Computer extends CommonDBTM {
          ->addStandardTab('Lock', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Reservation', $ong, $options)
+         ->addStandardTab('Domain_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -480,15 +481,7 @@ class Computer extends CommonDBTM {
            $this->fields["comment"];
       echo "</textarea></td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_domains_id$randDropdown'>".__('Domain')."</label></td>";
-      echo "<td >";
-      Domain::dropdown(['value'  => $this->fields["domains_id"],
-                             'entity' => $this->fields["entities_id"],
-                             'rand'   => $randDropdown]);
-      echo "</td></tr>";
-
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_uuid$rand'>".__('UUID')."</label></td>";
       echo "<td >";
@@ -716,14 +709,6 @@ class Computer extends CommonDBTM {
          'table'              => 'glpi_networks',
          'field'              => 'name',
          'name'               => __('Network'),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '33',
-         'table'              => 'glpi_domains',
-         'field'              => 'name',
-         'name'               => __('Domain'),
          'datatype'           => 'dropdown'
       ];
 

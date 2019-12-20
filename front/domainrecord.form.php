@@ -32,7 +32,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("domain", READ);
+Session::checkCentralAccess();
 
 if (empty($_GET["id"])) {
    $_GET["id"] = '';
@@ -41,72 +41,39 @@ if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = '';
 }
 
-$domain = new Domain();
-$ditem  = new Domain_Item();
+$record = new DomainRecord();
 
 if (isset($_POST["add"])) {
-   $domain->check(-1, CREATE, $_POST);
-   $newID = $domain->add($_POST);
+   $record->check(-1, CREATE, $_POST);
+   $newID = $record->add($_POST);
    if ($_SESSION['glpibackcreated']) {
-      Html::redirect($domain->getFormURLWithID($newID));
+      Html::redirect($record->getFormURLWithID($newID));
    }
    Html::back();
 } else if (isset($_POST["delete"])) {
-   $domain->check($_POST['id'], DELETE);
-   $domain->delete($_POST);
-   $domain->redirectToList();
+   $record->check($_POST['id'], DELETE);
+   $record->delete($_POST);
+   $record->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $domain->check($_POST['id'], PURGE);
-   $domain->restore($_POST);
-   $domain->redirectToList();
+   $record->check($_POST['id'], PURGE);
+   $record->restore($_POST);
+   $record->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $domain->check($_POST['id'], PURGE);
-   $domain->delete($_POST, 1);
-   $domain->redirectToList();
+   $record->check($_POST['id'], PURGE);
+   $record->delete($_POST, 1);
+   $record->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $domain->check($_POST['id'], UPDATE);
-   $domain->update($_POST);
-   Html::back();
-
-} else if (isset($_POST["additem"])) {
-   if (!empty($_POST['itemtype']) && $_POST['items_id'] > 0) {
-      $ditem->check(-1, UPDATE, $_POST);
-      $ditem->addItem($_POST);
-   }
-   Html::back();
-
-} else if (isset($_POST["addrecord"])) {
-   $record = new \DomainRecord();
-   $_POST['id'] = $_POST['domainrecords_id'];
-   unset($_POST['domainrecords_id']);
-   $record->check(-1, UPDATE, $_POST);
+   $record->check($_POST['id'], UPDATE);
    $record->update($_POST);
-   Html::redirect($domain->getFormURLWithID($_POST['domains_id']));
-
-} else if (isset($_POST["deleteitem"])) {
-   foreach ($_POST["item"] as $key => $val) {
-      $input = ['id' => $key];
-      if ($val == 1) {
-         $ditem->check($key, UPDATE);
-         $ditem->delete($input);
-      }
-   }
    Html::back();
-
-} else if (isset($_POST["deletedomains"])) {
-   $input = ['id' => $_POST["id"]];
-   $ditem->check($_POST["id"], UPDATE);
-   $ditem->delete($input);
-   Html::back();
-
 } else {
-
-   Html::header(Domain::getTypeName(1), $_SERVER['PHP_SELF'], "management", "domain");
-   $domain->display([
+   Html::header(DomainRecord::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "domain", "domainrecord");
+   $record->display([
       'id'           => $_GET["id"],
+      'domains_id'   => $_GET['domains_id'] ?? null,
       'withtemplate' => $_GET["withtemplate"]
    ]);
 

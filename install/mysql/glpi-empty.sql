@@ -927,7 +927,6 @@ CREATE TABLE `glpi_computers` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `autoupdatesystems_id` int(11) NOT NULL DEFAULT '0',
   `locations_id` int(11) NOT NULL DEFAULT '0',
-  `domains_id` int(11) NOT NULL DEFAULT '0',
   `networks_id` int(11) NOT NULL DEFAULT '0',
   `computermodels_id` int(11) NOT NULL DEFAULT '0',
   `computertypes_id` int(11) NOT NULL DEFAULT '0',
@@ -948,7 +947,6 @@ CREATE TABLE `glpi_computers` (
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
-  KEY `domains_id` (`domains_id`),
   KEY `entities_id` (`entities_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `groups_id` (`groups_id`),
@@ -2374,12 +2372,26 @@ CREATE TABLE `glpi_domains` (
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `domaintypes_id` int(11) NOT NULL DEFAULT '0',
+  `date_expiration` timestamp  NULL DEFAULT NULL,
+  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+  `others` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_helpdesk_visible` tinyint(1) NOT NULL DEFAULT '1',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `domaintypes_id` (`domaintypes_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date_mod` (`date_mod`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
+  KEY `date_expiration` (`date_expiration`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -2445,6 +2457,9 @@ CREATE TABLE `glpi_entities` (
   `use_infocoms_alert` int(11) NOT NULL DEFAULT '-2',
   `send_infocoms_alert_before_delay` int(11) NOT NULL DEFAULT '-2',
   `use_reservations_alert` int(11) NOT NULL DEFAULT '-2',
+  `use_domains_alert` int(11) NOT NULL DEFAULT '-2',
+  `send_domains_alert_close_expiries_delay` int(11) NOT NULL DEFAULT '-2',
+  `send_domains_alert_expired_delay` int(11) NOT NULL DEFAULT '-2',
   `autoclose_delay` int(11) NOT NULL DEFAULT '-2',
   `autopurge_delay` int(11) NOT NULL DEFAULT '-10',
   `notclosed_delay` int(11) NOT NULL DEFAULT '-2',
@@ -4024,7 +4039,6 @@ CREATE TABLE `glpi_networkequipments` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   `locations_id` int(11) NOT NULL DEFAULT '0',
-  `domains_id` int(11) NOT NULL DEFAULT '0',
   `networks_id` int(11) NOT NULL DEFAULT '0',
   `networkequipmenttypes_id` int(11) NOT NULL DEFAULT '0',
   `networkequipmentmodels_id` int(11) NOT NULL DEFAULT '0',
@@ -4041,7 +4055,6 @@ CREATE TABLE `glpi_networkequipments` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
-  KEY `domains_id` (`domains_id`),
   KEY `entities_id` (`entities_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `groups_id` (`groups_id`),
@@ -4816,7 +4829,6 @@ CREATE TABLE `glpi_printers` (
   `comment` text COLLATE utf8_unicode_ci,
   `memory_size` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `locations_id` int(11) NOT NULL DEFAULT '0',
-  `domains_id` int(11) NOT NULL DEFAULT '0',
   `networks_id` int(11) NOT NULL DEFAULT '0',
   `printertypes_id` int(11) NOT NULL DEFAULT '0',
   `printermodels_id` int(11) NOT NULL DEFAULT '0',
@@ -4837,7 +4849,6 @@ CREATE TABLE `glpi_printers` (
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
   KEY `is_global` (`is_global`),
-  KEY `domains_id` (`domains_id`),
   KEY `entities_id` (`entities_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `groups_id` (`groups_id`),
@@ -7768,7 +7779,7 @@ CREATE TABLE `glpi_items_kanbans` (
 
 DROP TABLE IF EXISTS `glpi_vobjects`;
 CREATE TABLE `glpi_vobjects` (
-   `id` INT(11) NOT NULL AUTO_INCREMENT,
+   `id` int(11) NOT NULL AUTO_INCREMENT,
    `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
    `items_id` int(11) NOT NULL DEFAULT '0',
    `data` text COLLATE utf8_unicode_ci,
@@ -7779,4 +7790,82 @@ CREATE TABLE `glpi_vobjects` (
    KEY `item` (`itemtype`,`items_id`),
    KEY `date_mod` (`date_mod`),
    KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_domaintypes`;
+CREATE TABLE `glpi_domaintypes` (
+  `id` int(11) NOT NULL        AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL        DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_domainrelations`;
+CREATE TABLE `glpi_domainrelations` (
+  `id` int(11) NOT NULL        AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL        DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_domains_items`;
+CREATE TABLE `glpi_domains_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `domains_id` int(11) NOT NULL DEFAULT '0',
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `domainrelations_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`domains_id`, `itemtype`, `items_id`),
+  KEY `domains_id` (`domains_id`),
+  KEY `domainrelations_id` (`domainrelations_id`),
+  KEY `FK_device` (`items_id`, `itemtype`),
+  KEY `item` (`itemtype`, `items_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_domainrecordtypes`;
+CREATE TABLE `glpi_domainrecordtypes` (
+  `id` int(11) NOT NULL        AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL        DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_domainrecords`;
+CREATE TABLE `glpi_domainrecords` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `data` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `domains_id` int(11) NOT NULL DEFAULT '0',
+  `domainrecordtypes_id` int(11) NOT NULL DEFAULT '0',
+  `status` tinyint(1) NOT NULL,
+  `ttl` int(11) NOT NULL,
+  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `status` (`status`),
+  KEY `entities_id` (`entities_id`),
+  KEY `domains_id` (`domains_id`),
+  KEY `domainrecordtypes_id` (`domainrecordtypes_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `date_mod` (`date_mod`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -30,12 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
-Session::checkRight("domain", READ);
-
-Html::header(Domain::getTypeName(1), $_SERVER['PHP_SELF'], "management", "domain");
-
-Search::show('Domain');
-
-Html::footer();
+$dropdown = new DomainRelation();
+include(GLPI_ROOT . "/front/dropdown.common.form.php");

@@ -32,10 +32,10 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("domain", READ);
+Session::checkCentralAccess();
 
-Html::header(Domain::getTypeName(1), $_SERVER['PHP_SELF'], "management", "domain");
+Html::header(Domain::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "domain", "domainrecord");
 
-Search::show('Domain');
+Search::show('DomainRecord');
 
 Html::footer();

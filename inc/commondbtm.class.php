@@ -959,6 +959,12 @@ class CommonDBTM extends CommonGLPI {
             Item_Kanban::class
          ]);
       }
+
+      if (in_array($this->getType(), $CFG_GLPI['domain_types'])) {
+         $this->deleteChildrenAndRelationsFromDb([
+            Domain_Item::class
+         ]);
+      }
    }
 
 

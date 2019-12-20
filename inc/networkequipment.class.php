@@ -139,6 +139,7 @@ class NetworkEquipment extends CommonDBTM {
          ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Reservation', $ong, $options)
          ->addStandardTab('Certificate_Item', $ong, $options)
+         ->addStandardTab('Domain_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -392,13 +393,6 @@ class NetworkEquipment extends CommonDBTM {
       echo "</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Domain')."</td>";
-      echo "<td>";
-      Domain::dropdown(['value'  => $this->fields["domains_id"],
-                             'entity' => $this->fields["entities_id"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td colspan=2>".__('The MAC address and the IP of the equipment are included in an aggregated network port')."</td>";
       echo "</tr>\n";
 
@@ -606,14 +600,6 @@ class NetworkEquipment extends CommonDBTM {
          'table'              => 'glpi_networks',
          'field'              => 'name',
          'name'               => __('Network'),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '33',
-         'table'              => 'glpi_domains',
-         'field'              => 'name',
-         'name'               => __('Domain'),
          'datatype'           => 'dropdown'
       ];
 

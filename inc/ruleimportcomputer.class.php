@@ -85,7 +85,7 @@ class RuleImportComputer extends Rule {
       $criterias['states_id']['is_global']       = true;
       $criterias['states_id']['allow_condition'] = [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT];
 
-      $criterias['DOMAIN']['name']               = __('Domain');
+      $criterias['DOMAIN']['name']               = Domain::getTypename(1);
 
       $criterias['IPSUBNET']['name']             = __('Subnet');
 

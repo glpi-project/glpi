@@ -257,7 +257,7 @@ $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Comp
                                                   'Consumable', 'ConsumableItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'SoftwareLicense',
-                                                  'Line', 'Certificate'];
+                                                  'Line', 'Certificate', 'Domain'];
 
 $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software'];
@@ -287,7 +287,8 @@ $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'Consuma
 $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate',
-                                                  'Line', 'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU'];
+                                                  'Line', 'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU',
+                                                  'Domain', 'DomainRecord'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -480,6 +481,9 @@ $CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment',
 $CFG_GLPI['software_types']      = ['Computer', 'Phone'];
 
 $CFG_GLPI['kanban_types']        = ['Project'];
+
+$CFG_GLPI['domain_types']        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
+                                       'Phone', 'Printer', 'Software'];
 
 $CFG_GLPI['javascript'] = [
    'central'   => [
