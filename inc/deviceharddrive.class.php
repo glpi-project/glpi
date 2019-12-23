@@ -262,4 +262,9 @@ class DeviceHardDrive extends CommonDevice {
 
       return $tab;
    }
+
+
+   static function getIcon() {
+      return "fas fa-hdd";
+   }
 }

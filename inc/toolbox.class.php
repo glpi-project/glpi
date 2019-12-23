@@ -33,6 +33,7 @@
 use Glpi\Event;
 use Glpi\System\RequirementsManager;
 use Monolog\Logger;
+use Mexitek\PHPColors\Color;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -870,7 +871,6 @@ class Toolbox {
 
       return $value;
    }
-
 
    /** Converts an array of parameters into a query string to be appended to a URL.
     *
@@ -3139,5 +3139,83 @@ class Toolbox {
       http_response_code($code);
       Toolbox::logWarning($message);
       die($output);
+   }
+
+   /**
+    * Return a shortened number with a suffix (K, M, B, T)
+    *
+    * @param int $number to shorten
+    * @param int $precision how much number after comma we need
+    * @param bool $html do we return an html or a single string
+    *
+    * @return string shortened number
+    */
+   static function shortenNumber($number = 0, $precision = 1, bool $html = true): string {
+      $suffix = "";
+      if ($number < 900) {
+         $formatted = number_format($number);
+      } else if ($number < 900000) {
+         $formatted = number_format($number / 1000, $precision);
+         $suffix = "K";
+      } else if ($number < 900000000) {
+         $formatted = number_format($number / 1000000, $precision);
+         $suffix = "M";
+      } else if ($number < 900000000000) {
+         $formatted = number_format($number / 1000000000, $precision);
+         $suffix = "B";
+      } else {
+         $formatted = number_format($number / 1000000000000, $precision);
+         $suffix = "T";
+      }
+
+      if (strpos($formatted, '.') === false) {
+         $precision = 0;
+      }
+
+      if ($html) {
+         $formatted = <<<HTML
+            <span title="{$number}"
+                  class="formatted-number"
+                  data-precision='{$precision}'>
+               <span class="number">$formatted</span>
+               <span class="suffix">$suffix</span>
+            </span>
+HTML;
+      } else {
+         $formatted .= $suffix;
+      }
+
+      return $formatted;
+   }
+
+
+   /**
+    * Return a frontground color for a given background color
+    * if bg color is light, we'll return dark fg color
+    * else a light fg color
+    *
+    * @param string $color the background color in hexadecimal notation (ex #FFFFFF) to compute
+    * @param int $offset how much we need to darken/lighten the color
+    *
+    * @return string hexadecimal fg color (ex #FFFFFF)
+    */
+   static function getFgColor(string $color = "", int $offset = 40): string {
+      $fg_color = "FFFFFF";
+      if ($color !== "") {
+         $color_inst = new Color($color);
+
+         // adapt luminance part
+         if ($color_inst->isLight()) {
+            $hsl = Color::hexToHsl($color);
+            $hsl['L'] = max(0, $hsl['L'] - ($offset / 100));
+            $fg_color = Color::hslToHex($hsl);
+         } else {
+            $hsl = Color::hexToHsl($color);
+            $hsl['L'] = min(1, $hsl['L'] + ($offset / 100));
+            $fg_color = Color::hslToHex($hsl);
+         }
+      }
+
+      return "#".$fg_color;
    }
 }

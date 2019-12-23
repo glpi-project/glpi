@@ -235,4 +235,9 @@ class Cluster extends CommonDBTM {
          ]
       );
    }
+
+
+   static function getIcon() {
+      return "fas fa-project-diagram";
+   }
 }

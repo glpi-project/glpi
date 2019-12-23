@@ -762,4 +762,9 @@ class Consumable extends CommonDBChild {
       $ci = new ConsumableItem();
       return $ci->getRights($interface);
    }
+
+
+   static function getIcon() {
+      return "fas fa-box-open";
+   }
 }

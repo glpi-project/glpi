@@ -1931,4 +1931,9 @@ class Problem extends CommonITILObject {
 
       return $assets;
    }
+
+
+   static function getIcon() {
+      return "fas fa-exclamation-triangle";
+   }
 }

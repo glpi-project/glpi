@@ -1453,63 +1453,107 @@ class Profile extends CommonDBTM {
       unset($dropdown_rights[DELETE]);
       unset($dropdown_rights[UNLOCK]);
 
-      $rights = [['itemtype'  => 'Config',
-                            'label'     => __('General setup'),
-                            'field'     => 'config'],
-                      ['rights'  => [
-                         READ    => __('Read'),
-                         UPDATE  => __('Update')],
-                        'label'  => __('Personalization'),
-                        'field'  => 'personalization'],
-                      ['itemtype'  => 'DisplayPreference',
-                            'label'     => __('Search result display'),
-                            'field'     => 'search_config'],
-                      ['itemtype'  => 'Item_Devices',
-                            'label'     => _n('Component', 'Components', Session::getPluralNumber()),
-                            'field'     => 'device'],
-                      ['rights'    => $dropdown_rights,
-                            'label'     => _n('Global dropdown', 'Global dropdowns', Session::getPluralNumber()),
-                            'field'     => 'dropdown'],
-                      __('Entity dropdowns'),
-                      ['itemtype'  => 'Location',
-                            'label'     => _n('Location', 'Locations', Session::getPluralNumber()),
-                            'field'     => 'location'],
-                      ['itemtype'  => 'ITILCategory',
-                            'label'     => _n('Ticket category', 'Ticket categories', Session::getPluralNumber()),
-                            'field'     => 'itilcategory'],
-                      ['itemtype'  => 'KnowbaseItemCategory',
-                            'label'     => _n('Knowledge base category', 'Knowledge base categories', Session::getPluralNumber()),
-                            'field'     => 'knowbasecategory'],
-                      ['itemtype'  => 'Netpoint',
-                            'label'     => _n('Network outlet', 'Network outlets', Session::getPluralNumber()),
-                            'field'     => 'netpoint'],
-                      ['itemtype'  => 'TaskCategory',
-                            'label'     => _n('Task category', 'Task categories', Session::getPluralNumber()),
-                            'field'     => 'taskcategory'],
-                      ['itemtype'  => 'State',
-                            'label'     => _n('Status of items', 'Statuses of items', Session::getPluralNumber()),
-                            'field'     => 'state'],
-                      ['itemtype'  => 'SolutionTemplate',
-                            'label'     => _n('Solution template', 'Solution templates', Session::getPluralNumber()),
-                            'field'     => 'solutiontemplate'],
-                      ['itemtype'  => 'Calendar',
-                            'label'     => _n('Calendar', 'Calendars', Session::getPluralNumber()),
-                            'field'     => 'calendar'],
-                      ['itemtype'  => 'DocumentType',
-                            'label'     => __('Document type'),
-                            'field'     => 'typedoc'],
-                      ['itemtype'  => 'Link',
-                            'label'     => _n('External link', 'External links', Session::getPluralNumber()),
-                            'field'     => 'link'],
-                      ['itemtype'  => 'Notification',
-                            'label'     => _n('Notification', 'Notifications', Session::getPluralNumber()),
-                            'field'     => 'notification'],
-                      ['itemtype'  => 'SLM',
-                            'label'     => __('SLM'),
-                            'field'     => 'slm'],
-                      ['itemtype'  => 'LineOperator',
-                       'label'     => _n('Line operator', 'Line operators', Session::getPluralNumber()),
-                       'field'     => 'lineoperator']];
+      $rights = [
+         [
+            'itemtype'  => 'Config',
+            'label'     => __('General setup'),
+            'field'     => 'config'
+         ],
+         [
+            'rights'  => [
+               READ    => __('Read'),
+               UPDATE  => __('Update')
+            ],
+            'label'  => __('Personalization'),
+            'field'  => 'personalization'
+         ],
+         [
+            'itemtype'  => 'Glpi\Dashboard\Grid',
+            'label'     => __('All dashboards'),
+            'field'     => 'dashboard'
+         ],
+         [
+            'itemtype'  => 'DisplayPreference',
+            'label'     => __('Search result display'),
+            'field'     => 'search_config'
+         ],
+         [
+            'itemtype'  => 'Item_Devices',
+            'label'     => _n('Component', 'Components', Session::getPluralNumber()),
+            'field'     => 'device'
+         ],
+         [
+            'rights'    => $dropdown_rights,
+            'label'     => _n('Global dropdown', 'Global dropdowns', Session::getPluralNumber()),
+            'field'     => 'dropdown'
+         ],
+         __('Entity dropdowns'),
+         [
+            'itemtype'  => 'Location',
+            'label'     => _n('Location', 'Locations', Session::getPluralNumber()),
+            'field'     => 'location'
+         ],
+         [
+            'itemtype'  => 'ITILCategory',
+            'label'     => _n('Ticket category', 'Ticket categories', Session::getPluralNumber()),
+            'field'     => 'itilcategory'
+         ],
+         [
+            'itemtype'  => 'KnowbaseItemCategory',
+            'label'     => _n('Knowledge base category', 'Knowledge base categories', Session::getPluralNumber()),
+            'field'     => 'knowbasecategory'
+         ],
+         [
+            'itemtype'  => 'Netpoint',
+            'label'     => _n('Network outlet', 'Network outlets', Session::getPluralNumber()),
+            'field'     => 'netpoint'
+         ],
+         [
+            'itemtype'  => 'TaskCategory',
+            'label'     => _n('Task category', 'Task categories', Session::getPluralNumber()),
+            'field'     => 'taskcategory'
+         ],
+         [
+            'itemtype'  => 'State',
+            'label'     => _n('Status of items', 'Statuses of items', Session::getPluralNumber()),
+            'field'     => 'state'
+         ],
+         [
+            'itemtype'  => 'SolutionTemplate',
+            'label'     => _n('Solution template', 'Solution templates', Session::getPluralNumber()),
+            'field'     => 'solutiontemplate'
+         ],
+         [
+            'itemtype'  => 'Calendar',
+            'label'     => _n('Calendar', 'Calendars', Session::getPluralNumber()),
+            'field'     => 'calendar'
+         ],
+         [
+            'itemtype'  => 'DocumentType',
+            'label'     => __('Document type'),
+            'field'     => 'typedoc'
+         ],
+         [
+            'itemtype'  => 'Link',
+            'label'     => _n('External link', 'External links', Session::getPluralNumber()),
+            'field'     => 'link'
+         ],
+         [
+            'itemtype'  => 'Notification',
+            'label'     => _n('Notification', 'Notifications', Session::getPluralNumber()),
+            'field'     => 'notification'
+         ],
+         [
+            'itemtype'  => 'SLM',
+            'label'     => __('SLM'),
+            'field'     => 'slm'
+         ],
+         [
+            'itemtype'  => 'LineOperator',
+            'label'     => _n('Line operator', 'Line operators', Session::getPluralNumber()),
+            'field'     => 'lineoperator'
+         ]
+      ];
 
       $this->displayRightsChoiceMatrix($rights, ['canedit'       => $canedit,
                                                       'default_class' => 'tab_bg_2',
@@ -3123,4 +3167,8 @@ class Profile extends CommonDBTM {
       echo $out;
    }
 
+
+   static function getIcon() {
+      return "fas fa-user-check";
+   }
 }

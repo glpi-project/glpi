@@ -769,8 +769,8 @@ class Rack extends CommonDBTM {
             })
 
          $('.grid-room .grid-stack').gridstack({
-            width: $cols,
-            height: ($rows + 1),
+            column: $cols,
+            maxRow: ($rows + 1),
             cellHeight: 39,
             verticalMargin: 0,
             float: true,
@@ -1127,5 +1127,10 @@ JAVASCRIPT;
                </span>
             </div><!-- // .grid-stack-item-content -->
          </div>"; // .grid-stack-item
+   }
+
+
+   static function getIcon() {
+      return "fas fa-server";
    }
 }

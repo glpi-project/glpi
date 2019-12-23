@@ -366,6 +366,7 @@ class CommonGLPI {
             $menu['shortcut']        = static::getMenuShorcut();
             $menu['page']            = static::getSearchURL(false);
             $menu['links']['search'] = static::getSearchURL(false);
+            $menu['icon']            = static::getIcon();
 
             if (!in_array('add', $forbidden)
                 && $type::canCreate()) {
@@ -395,6 +396,9 @@ class CommonGLPI {
             $menu['shortcut']        = static::getMenuShorcut();
             $menu['page']            = static::getSearchURL(false);
             $menu['links']['search'] = static::getSearchURL(false);
+            if (method_exists($item, 'getIcon')) {
+               $menu['icon'] = static::getIcon();
+            }
          }
       }
       if ($data = static::getAdditionalMenuOptions()) {

@@ -314,8 +314,8 @@ class Item_Rack extends CommonDBRelation {
       echo '<ul class="indexes"></ul>
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid-front"
-                 data-gs-width="2"
-                 data-gs-height="'.($rack->fields['number_units'] + 1).'">';
+                 data-gs-column="2"
+                 data-gs-max-row="'.($rack->fields['number_units'] + 1).'">';
 
       if ($link->canCreate()) {
          echo '<div class="racks_add"></div>';
@@ -343,8 +343,8 @@ class Item_Rack extends CommonDBRelation {
       echo '<ul class="indexes"></ul>
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid2-rear"
-                 data-gs-width="2"
-                 data-gs-height="'.($rack->fields['number_units'] + 1).'">';
+                 data-gs-column="2"
+                 data-gs-max-row="'.($rack->fields['number_units'] + 1).'">';
 
       if ($link->canCreate()) {
          echo '<div class="racks_add"></div>';
@@ -799,8 +799,8 @@ JAVASCRIPT;
                          ? "reserved"
                          : "";
          $icon        = $reserved
-                         ? self::getIcon("Reserved")
-                         : self::getIcon(get_class($item));
+                         ? self::getItemIcon("Reserved")
+                         : self::getItemIcon(get_class($item));
          $bg_color    = $gs_item['bgcolor'];
          if ($item->maybeDeleted() && $item->isDeleted()) {
             $bg_color = '#ff0000'; //red for deleted items
@@ -891,29 +891,18 @@ JAVASCRIPT;
     * @param  string $itemtype  A rackable itemtype
     * @return string           The i html tag
     */
-   private static function getIcon($itemtype = "") {
+   private static function getItemIcon($itemtype = "") {
       $icon = "";
       switch ($itemtype) {
          case "Computer":
-            $icon = "fa fa-server";
-            break;
-         case "Monitor":
-            $icon = "fa fa-tv";
-            break;
-         case "NetworkEquipment":
-            $icon = "fa fa-sitemap";
-            break;
-         case "Peripheral":
-            $icon = "fab fa-usb";
-            break;
-         case "Enclosure":
-            $icon = "fa fa-th";
-            break;
-         case "PDU":
-            $icon = "fa fa-plug";
+            $icon = "fas fa-server";
             break;
          case "Reserved":
             $icon = "fa-lock";
+            break;
+
+         default:
+            $icon = $itemtype::getIcon();
             break;
       }
 

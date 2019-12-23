@@ -101,6 +101,7 @@ abstract class CommonDropdown extends CommonDBTM {
          $menu['title']             = static::getTypeName(Session::getPluralNumber());
          $menu['shortcut']          = 'n';
          $menu['page']              = '/front/dropdown.php';
+         $menu['icon']              = self::getIcon();
          $menu['config']['default'] = '/front/dropdown.php';
 
          $dps = Dropdown::getStandardDropdownItemTypes();
@@ -111,6 +112,7 @@ abstract class CommonDropdown extends CommonDBTM {
                if ($tmp = getItemForItemtype($key)) {
                   $menu['options'][$key]['title']           = $val;
                   $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
+                  $menu['options'][$key]['icon']            = $tmp->getIcon();
                   $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
                   if ($tmp->canCreate()) {
                      $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
@@ -1020,5 +1022,10 @@ abstract class CommonDropdown extends CommonDBTM {
       $excluded = parent::getForbiddenSingleMassiveActions();
       $excluded[] = '*:merge';
       return $excluded;
+   }
+
+
+   static function getIcon() {
+      return "fas fa-edit";
    }
 }

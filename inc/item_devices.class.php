@@ -1496,4 +1496,10 @@ class Item_Devices extends CommonDBRelation {
 
       return $link;
    }
+
+
+   static function getIcon() {
+      $device_class = static::$itemtype_2 ?? "CommonDevice";
+      return $device_class::getIcon();
+   }
 }

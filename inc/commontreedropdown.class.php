@@ -911,4 +911,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
       return $parent;
    }
+
+
+   static function getIcon() {
+      return "fas fa-sitemap";
+   }
 }

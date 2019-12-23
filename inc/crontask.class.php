@@ -1843,4 +1843,9 @@ class CronTask extends CommonDBTM{
          $_SESSION["glpicrontimer"] = time();
       }
    }
+
+
+   static function getIcon() {
+      return "fas fa-stopwatch";
+   }
 }

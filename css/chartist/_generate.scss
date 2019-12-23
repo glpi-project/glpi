@@ -1,0 +1,23 @@
+$ct-series-names: () !default;
+$ct-series-colors: () !default;
+
+@for $i from 0 to length($ct-series-names) {
+   $color: nth($ct-series-colors, $i + 1);
+
+   .ct-series-#{nth($ct-series-names, $i + 1)} {
+      .ct-point, .ct-line, .ct-bar, .ct-slice-donut {
+         stroke: $color;
+      }
+
+      .ct-slice-pie, .ct-area, .ct-slice-donut-solid {
+         fill: $color;
+         stroke: darken($color, 20%);
+      }
+   }
+
+   // legend
+   .ct-series-#{$i}:before {
+      background-color: $color;
+      border-color: $color;
+   }
+}

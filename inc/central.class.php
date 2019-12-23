@@ -68,6 +68,11 @@ class Central extends CommonGLPI {
             4 => _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
          ];
 
+         $grid = new Glpi\Dashboard\Grid('central');
+         if ($grid->canViewOneDashboard()) {
+            array_unshift($tabs, __('Dashboard'));
+         }
+
          return $tabs;
       }
       return '';
@@ -78,7 +83,11 @@ class Central extends CommonGLPI {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
-            case 1 : // all
+            case 0 :
+               $item->showGlobalDashboard();
+               break;
+
+            case 1 :
                $item->showMyView();
                break;
 
@@ -96,6 +105,18 @@ class Central extends CommonGLPI {
          }
       }
       return true;
+   }
+
+   public function showGlobalDashboard() {
+      echo "<table class='tab_cadre_central'>";
+      Plugin::doHook('display_central');
+      echo "</table>";
+
+      self::showMessages();
+
+      $default   = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('central');
+      $dashboard = new Glpi\Dashboard\Grid($default);
+      $dashboard->show();
    }
 
 
@@ -145,8 +166,6 @@ class Central extends CommonGLPI {
     * Show the central personal view
    **/
    static function showMyView() {
-      global $CFG_GLPI, $DB;
-
       $showticket  = Session::haveRightsOr("ticket",
                                            [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN]);
 
@@ -156,71 +175,9 @@ class Central extends CommonGLPI {
 
       Plugin::doHook('display_central');
 
-      $warnings = [];
-
-      $user = new User();
-      $user->getFromDB(Session::getLoginUserID());
-      if ($user->fields['authtype'] == Auth::DB_GLPI && $user->shouldChangePassword()) {
-         $expiration_msg = sprintf(
-            __('Your password will expire on %s.'),
-            Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
-         );
-         $warnings[] = $expiration_msg
-            . ' '
-            . '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">'
-            . __('Update my password')
-            . '</a>';
-      }
-
-      if (Session::haveRight("config", UPDATE)) {
-         $logins = User::checkDefaultPasswords();
-         $user   = new User();
-         if (!empty($logins)) {
-            $accounts = [];
-            foreach ($logins as $login) {
-               $user->getFromDBbyNameAndAuth($login, Auth::DB_GLPI, 0);
-               $accounts[] = $user->getLink();
-            }
-            $warnings[] = sprintf(__('For security reasons, please change the password for the default users: %s'),
-                               implode(" ", $accounts));
-         }
-         if (file_exists(GLPI_ROOT . "/install/install.php")) {
-            $warnings[] = sprintf(__('For security reasons, please remove file: %s'),
-                               "install/install.php");
-         }
-
-         $myisam_tables = $DB->getMyIsamTables();
-         if (count($myisam_tables)) {
-            $warnings[] = sprintf(
-               __('%1$s tables not migrated to InnoDB engine.'),
-               count($myisam_tables)
-            );
-         }
-         if ($DB->areTimezonesAvailable()) {
-            $not_tstamp = $DB->notTzMigrated();
-            if ($not_tstamp > 0) {
-                $warnings[] = sprintf(
-                    __('%1$s columns are not compatible with timezones usage.'),
-                    $not_tstamp
-                );
-            }
-         }
-      }
-
-      if ($DB->isSlave()
-          && !$DB->first_connection) {
-         $warnings[] = __('SQL replica: read only');
-      }
-
-      if (count($warnings)) {
-         echo "<tr><th colspan='2'>";
-         echo "<div class='warning'>";
-         echo "<i class='fa fa-exclamation-triangle fa-5x'></i>";
-         echo "<ul><li>" . implode('</li><li>', $warnings) . "</li></ul>";
-         echo "<div class='sep'></div>";
-         echo "</div>";
-         echo "</th></tr>";
-      }
+      echo "<tr><th colspan='2'>";
+      self::showMessages();
+      echo "</th></tr>";
 
       echo "<tr class='noHover'><td class='top' width='50%'><table class='central'>";
       echo "<tr class='noHover'><td>";
@@ -323,6 +280,75 @@ class Central extends CommonGLPI {
       }
       echo "</td></tr>";
       echo "</table></td></tr></table>";
+   }
+
+
+   static function showMessages() {
+      global $DB, $CFG_GLPI;
+
+      $warnings = [];
+
+      $user = new User();
+      $user->getFromDB(Session::getLoginUserID());
+      if ($user->fields['authtype'] == Auth::DB_GLPI && $user->shouldChangePassword()) {
+         $expiration_msg = sprintf(
+            __('Your password will expire on %s.'),
+            Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
+         );
+         $warnings[] = $expiration_msg
+            . ' '
+            . '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">'
+            . __('Update my password')
+            . '</a>';
+      }
+
+      if (Session::haveRight("config", UPDATE)) {
+         $logins = User::checkDefaultPasswords();
+         $user   = new User();
+         if (!empty($logins)) {
+            $accounts = [];
+            foreach ($logins as $login) {
+               $user->getFromDBbyNameAndAuth($login, Auth::DB_GLPI, 0);
+               $accounts[] = $user->getLink();
+            }
+            $warnings[] = sprintf(__('For security reasons, please change the password for the default users: %s'),
+                               implode(" ", $accounts));
+         }
+         if (file_exists(GLPI_ROOT . "/install/install.php")) {
+            $warnings[] = sprintf(__('For security reasons, please remove file: %s'),
+                               "install/install.php");
+         }
+
+         $myisam_tables = $DB->getMyIsamTables();
+         if (count($myisam_tables)) {
+            $warnings[] = sprintf(
+               __('%1$s tables not migrated to InnoDB engine.'),
+               count($myisam_tables)
+            );
+         }
+         if ($DB->areTimezonesAvailable()) {
+            $not_tstamp = $DB->notTzMigrated();
+            if ($not_tstamp > 0) {
+                $warnings[] = sprintf(
+                    __('%1$s columns are not compatible with timezones usage.'),
+                    $not_tstamp
+                );
+            }
+         }
+      }
+
+      if ($DB->isSlave()
+          && !$DB->first_connection) {
+         $warnings[] = __('SQL replica: read only');
+      }
+
+      if (count($warnings)) {
+         echo "<div class='warning'>";
+         echo "<i class='fa fa-exclamation-triangle fa-5x'></i>";
+         echo "<ul><li>" . implode('</li><li>', $warnings) . "</li></ul>";
+         echo "<div class='sep'></div>";
+         echo "</div>";
+      }
    }
 
 }

@@ -933,4 +933,9 @@ class Printer  extends CommonDBTM {
       return $this->restore(["id" => $ID]);
    }
 
+
+   static function getIcon() {
+      return "fas fa-print";
+   }
+
 }

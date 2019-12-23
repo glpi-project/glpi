@@ -858,4 +858,8 @@ class ReservationItem extends CommonDBChild {
       return false;
    }
 
+
+   static function getIcon() {
+      return Reservation::getIcon();
+   }
 }

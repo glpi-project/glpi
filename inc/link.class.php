@@ -665,4 +665,9 @@ class Link extends CommonDBTM {
 
       return $tab;
    }
+
+
+   static function getIcon() {
+      return "fas fa-link";
+   }
 }

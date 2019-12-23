@@ -637,4 +637,8 @@ class FieldUnicity extends CommonDropdown {
       NotificationEvent::debugEvent($this, $params);
    }
 
+
+   static function getIcon() {
+      return "fas fa-fingerprint";
+   }
 }

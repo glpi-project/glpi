@@ -5525,4 +5525,9 @@ JAVASCRIPT;
 
       return $expiration_time < time();
    }
+
+
+   static function getIcon() {
+      return "fas fa-user";
+   }
 }

@@ -173,4 +173,9 @@ class DeviceFirmware extends CommonDevice {
          'version'                  => 'equal'
       ];
    }
+
+
+   static function getIcon() {
+      return "fas fa-microchip";
+   }
 }

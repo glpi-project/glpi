@@ -3316,4 +3316,8 @@ class Entity extends CommonTreeDropdown {
             throw new \RuntimeException("Unknown {$field['type']}");
       }
    }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
+   }
 }

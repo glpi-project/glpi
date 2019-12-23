@@ -32,7 +32,20 @@
 
 include ('../inc/includes.php');
 
-Session::checkCentralAccess();
+if (!(isset($_GET["embed"])
+      && isset($_GET["dashboard"]))) {
+   Session::checkCentralAccess();
+}
+
+// embed (anonymous) dashboard
+if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
+   $grid      = new Glpi\Dashboard\Grid($_GET["dashboard"]);
+   $dashboard = $grid->getDashboard();
+   Html::popHeader($dashboard->getTitle(), $_SERVER['PHP_SELF'], false, 'central', 'central');
+   echo $grid->embed($_REQUEST);
+   Html::popFooter();
+   exit;
+}
 
 // Change profile system
 if (isset($_POST['newprofile'])) {

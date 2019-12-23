@@ -506,6 +506,59 @@ function loadDataset() {
             'begin_date'   => '2018-12-29',
             'end_date'     => '2019-01-06'
          ]
+      ], 'Glpi\\Dashboard\\Dashboard' => [
+         [
+            'key'     => 'test_dashboard',
+            'name'    => 'Test_Dashboard',
+            'context' => 'core',
+         ], [
+            'key'     => 'test_dashboard2',
+            'name'    => 'Test_Dashboard_2',
+            'context' => 'core'
+         ], [
+            'key'     => 'test_dashboard3',
+            'name'    => 'Test_Dashboard_3',
+            'context' => 'oustide_core',
+         ]
+      ], 'Glpi\\Dashboard\\Item' => [
+         [
+            'dashboards_dashboards_id' => 'Test_Dashboard',
+            'gridstack_id'             => 'bn_count_Computer_1',
+            'card_id'                  => 'bn_count_Computer',
+            'x'                        => 0,
+            'y'                        => 0,
+            'width'                    => 2,
+            'height'                   => 2,
+            'card_options'             => '{"color": "#FFFFFF"}'
+         ], [
+            'dashboards_dashboards_id' => 'Test_Dashboard',
+            'gridstack_id'             => 'bn_count_Computer_2',
+            'card_id'                  => 'bn_count_Computer',
+            'x'                        => 2,
+            'y'                        => 0,
+            'width'                    => 2,
+            'height'                   => 2,
+            'card_options'             => '{"color": "#FFFFFF"}'
+         ], [
+            'dashboards_dashboards_id' => 'Test_Dashboard',
+            'gridstack_id'             => 'bn_count_Computer_3',
+            'card_id'                  => 'bn_count_Computer',
+            'x'                        => 4,
+            'y'                        => 0,
+            'width'                    => 2,
+            'height'                   => 2,
+            'card_options'             => '{"color": "#FFFFFF"}'
+         ]
+      ], 'Glpi\\Dashboard\\Right' => [
+         [
+            'dashboards_dashboards_id' => 'Test_Dashboard',
+            'itemtype'                 => 'Entity',
+            'items_id'                 => 0,
+         ], [
+            'dashboards_dashboards_id' => 'Test_Dashboard',
+            'itemtype'                 => 'Profile',
+            'items_id'                 => 3,
+         ]
       ],
    ];
 

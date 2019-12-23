@@ -347,4 +347,9 @@ class PDU extends CommonDBTM {
          ]
       );
    }
+
+
+   static function getIcon() {
+      return "fas fa-plug";
+   }
 }

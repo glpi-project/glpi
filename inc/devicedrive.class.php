@@ -175,4 +175,8 @@ class DeviceDrive extends CommonDevice {
                    'interfacetypes_id' => 'equal'];
    }
 
+
+   static function getIcon() {
+      return "fas fa-hdd";
+   }
 }

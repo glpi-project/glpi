@@ -562,4 +562,9 @@ class Peripheral extends CommonDBTM {
 
       return $tab;
    }
+
+
+   static function getIcon() {
+      return "fab fa-usb";
+   }
 }

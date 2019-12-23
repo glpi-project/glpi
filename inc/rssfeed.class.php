@@ -1035,4 +1035,9 @@ class RSSFeed extends CommonDBVisible {
       }
       return $values;
    }
+
+
+   static function getIcon() {
+      return "fas fa-rss";
+   }
 }

@@ -7527,11 +7527,13 @@ abstract class CommonITILObject extends CommonDBTM {
             $tplclass => [
                'title' => $tplclass::getTypeName(Session::getPluralNumber()),
                'page'  => $tplclass::getSearchURL(false),
+               'icon'  => $tplclass::getIcon(),
                'links' => [
                   'search' => $tplclass::getSearchURL(false),
                ],
             ],
          ];
+
          if ($tplclass::canCreate()) {
             $menu[$tplclass]['links']['add'] = $tplclass::getFormURL(false);
          }

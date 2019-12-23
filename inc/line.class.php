@@ -246,4 +246,8 @@ class Line extends CommonDropdown {
       return $tab;
    }
 
+
+   static function getIcon() {
+      return "fas fa-phone";
+   }
 }

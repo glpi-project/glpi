@@ -143,4 +143,9 @@ class DeviceControl extends CommonDevice {
             InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
       }
    }
+
+
+   static function getIcon() {
+      return "fas fa-microchip";
+   }
 }

@@ -73,8 +73,8 @@ class Config extends DbTestCase {
 
       $this->login();
       $this->array(\Config::getMenuContent())
-         ->hasSize(3)
-         ->hasKeys(['title', 'page', 'options']);
+         ->hasSize(4)
+         ->hasKeys(['title', 'page', 'options', 'icon']);
    }
 
    public function testDefineTabs() {

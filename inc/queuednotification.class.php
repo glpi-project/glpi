@@ -782,4 +782,8 @@ class QueuedNotification extends CommonDBTM {
       return nl2br($newstring, false);
    }
 
+
+   static function getIcon() {
+      return "far fa-list-alt";
+   }
 }

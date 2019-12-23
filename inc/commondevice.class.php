@@ -103,6 +103,7 @@ abstract class CommonDevice extends CommonDropdown {
       if (self::canView()) {
          $menu['title'] = static::getTypeName(Session::getPluralNumber());
          $menu['page']  = '/front/devices.php';
+         $menu['icon']  = self::getIcon();
 
          $dps = Dropdown::getDeviceItemTypes();
 
@@ -569,5 +570,10 @@ abstract class CommonDevice extends CommonDropdown {
       $link = "$dir/front/device.php?itemtype=$itemtype";
 
       return $link;
+   }
+
+
+   static function getIcon() {
+      return "far fa-square";
    }
 }

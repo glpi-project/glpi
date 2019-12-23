@@ -131,6 +131,7 @@ class Ticket extends CommonITILObject {
             'create_ticket' => [
                'title' => __('Create ticket'),
                'page'  => static::getFormURL(false),
+               'icon'  => 'fas fa-plus',
             ],
          ];
          return $menu;
@@ -7333,5 +7334,10 @@ class Ticket extends CommonITILObject {
       }
 
       return $assets;
+   }
+
+
+   static function getIcon() {
+      return "fas fa-exclamation-circle";
    }
 }
