@@ -86,4 +86,8 @@ class MigrationCleaner extends CommonGLPI {
       return false;
    }
 
+   static function getIcon() {
+      return "fas fa-broom";
+   }
+
 }

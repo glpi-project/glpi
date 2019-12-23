@@ -390,4 +390,9 @@ class Enclosure extends CommonDBTM {
       unset($input['withtemplate']);
       return $input;
    }
+
+
+   static function getIcon() {
+      return "fas fa-th";
+   }
 }

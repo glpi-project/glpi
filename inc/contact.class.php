@@ -522,4 +522,8 @@ class Contact extends CommonDBTM{
       echo $output;
    }
 
+
+   static function getIcon() {
+      return "fas fa-user-tie";
+   }
 }

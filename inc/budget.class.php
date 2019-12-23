@@ -888,4 +888,8 @@ class Budget extends CommonDropdown{
       echo "</table></div>";
    }
 
+
+   static function getIcon() {
+      return "fas fa-calculator";
+   }
 }

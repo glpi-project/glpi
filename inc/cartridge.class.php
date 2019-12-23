@@ -1266,4 +1266,9 @@ class Cartridge extends CommonDBChild {
       return $ci->getRights($interface);
    }
 
+
+   static function getIcon() {
+      return "fas fa-fill-drip";
+   }
+
 }

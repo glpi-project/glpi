@@ -554,8 +554,8 @@ JAVASCRIPT;
          if ($float) {
             echo "<div class='side_pdus_graph grid-stack grid-stack-1'
                        id='side_pdus_$rand'
-                       data-gs-width='1'
-                       data-gs-height='".($rack->fields['number_units'] + 1)."'>";
+                       data-gs-column='1'
+                       data-gs-max-row='".($rack->fields['number_units'] + 1)."'>";
          }
 
          foreach ($found_pdus_side as $current) {

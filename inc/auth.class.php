@@ -94,6 +94,7 @@ class Auth extends CommonGLPI {
       if (Config::canUpdate()) {
             $menu['title']                              = __('Authentication');
             $menu['page']                               = '/front/setup.auth.php';
+            $menu['icon']                               = self::getIcon();
 
             $menu['options']['ldap']['title']           = AuthLDAP::getTypeName(Session::getPluralNumber());
             $menu['options']['ldap']['page']            = AuthLDAP::getSearchURL(false);
@@ -1696,5 +1697,10 @@ class Auth extends CommonGLPI {
             'value' => key($elements)
          ]);
       }
+   }
+
+
+   static function getIcon() {
+      return "fas fa-sign-in-alt";
    }
 }

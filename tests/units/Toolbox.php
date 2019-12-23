@@ -749,4 +749,72 @@ class Toolbox extends \GLPITestCase {
          \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
       )->isEqualTo($expected_result);
    }
+
+   protected function shortenNumbers() {
+      return [
+         [
+            'number'    => 1500,
+            'precision' => 1,
+            'expected'  => '1.5K',
+         ], [
+            'number'    => 1600,
+            'precision' => 0,
+            'expected'  => '2K',
+         ], [
+            'number'    => 1600000,
+            'precision' => 1,
+            'expected'  => '1.6M',
+         ], [
+            'number'    => 1660000,
+            'precision' => 1,
+            'expected'  => '1.7M',
+         ], [
+            'number'    => 1600000000,
+            'precision' => 1,
+            'expected'  => '1.6B',
+         ], [
+            'number'    => 1600000000000,
+            'precision' => 1,
+            'expected'  => '1.6T',
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider shortenNumbers
+    */
+   public function testShortenNumber(int $number, int $precision, string $expected) {
+      $this->string(\Toolbox::shortenNumber($number, $precision, false))
+         ->isEqualTo($expected);
+   }
+
+   protected function colors() {
+      return [
+         [
+            'bg_color' => "#FFFFFF",
+            'offset'   => 40,
+            'fg_color' => '#999999',
+         ], [
+            'bg_color' => "#FFFFFF",
+            'offset'   => 50,
+            'fg_color' => '#7f7f7f',
+         ], [
+            'bg_color' => "#000000",
+            'offset'   => 40,
+            'fg_color' => '#666666',
+         ], [
+            'bg_color' => "#000000",
+            'offset'   => 50,
+            'fg_color' => '#7f7f7f',
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider colors
+    */
+   public function testGetFgColor(string $bg_color, int $offset, string $fg_color) {
+      $this->string(\Toolbox::getFgColor($bg_color, $offset))
+         ->isEqualTo($fg_color);
+   }
 }

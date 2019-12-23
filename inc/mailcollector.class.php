@@ -2021,4 +2021,9 @@ class MailCollector  extends CommonDBTM {
 
       return $contents;
    }
+
+
+   static function getIcon() {
+      return "fas fa-inbox";
+   }
 }

@@ -2041,4 +2041,9 @@ class KnowbaseItem extends CommonDBVisible {
 
       return $ids;
    }
+
+
+   static function getIcon() {
+      return "fas fa-question";
+   }
 }

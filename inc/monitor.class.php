@@ -654,4 +654,9 @@ class Monitor extends CommonDBTM {
       return $tab;
    }
 
+
+   static function getIcon() {
+      return "fas fa-desktop";
+   }
+
 }

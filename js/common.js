@@ -1132,3 +1132,35 @@ function luminance(rgb) {
 function contrast(rgb1, rgb2) {
    return (luminance(rgb1) + 0.05) / (luminance(rgb2) + 0.05);
 }
+
+// fullscreen api
+function GoInFullscreen(element) {
+   if (element.requestFullscreen) {
+      element.requestFullscreen();
+   } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+   } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+   } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+   }
+}
+
+function GoOutFullscreen() {
+   if (document.exitFullscreen) {
+      document.exitFullscreen();
+   } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+   } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+   } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+   }
+}
+
+function getUuidV4() {
+   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+   });
+}

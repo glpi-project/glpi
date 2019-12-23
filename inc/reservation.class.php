@@ -1389,4 +1389,8 @@ class Reservation extends CommonDBChild {
    }
 
 
+   static function getIcon() {
+      return "fas fa-calendar-check";
+   }
+
 }

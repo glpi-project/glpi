@@ -1780,4 +1780,8 @@ class Contract extends CommonDBTM {
       }
    }
 
+
+   static function getIcon() {
+      return "fas fa-file-signature";
+   }
 }

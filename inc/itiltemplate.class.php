@@ -828,4 +828,9 @@ abstract class ITILTemplate extends CommonDropdown {
 
       return $forbidden;
    }
+
+
+   static function getIcon() {
+      return "fas fa-layer-group";
+   }
 }

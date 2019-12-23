@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Dashboard\Grid;
 use Glpi\Cache\SimpleCache;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\System\RequirementsManager;
@@ -73,6 +74,7 @@ class Config extends CommonDBTM {
       if (static::canView()) {
          $menu['title']   = _x('setup', 'General');
          $menu['page']    = Config::getFormURL(false);
+         $menu['icon']    = Config::getIcon();
 
          $menu['options']['apiclient']['title']           = APIClient::getTypeName(Session::getPluralNumber());
          $menu['options']['apiclient']['page']            = Config::getFormURL(false) . '?forcetab=Config$8';
@@ -1388,6 +1390,38 @@ class Config extends CommonDBTM {
          echo "</td></tr>";
       }
 
+      if (Grid::canViewOneDashboard()) {
+         echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>".__('Dashboards')."</th></tr>";
+
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . __('Default for central') . "</td><td>";
+         Grid::dropdownDashboard("default_dashboard_central", [
+            'value' => $data['default_dashboard_central'],
+            'display_emptychoice' => true
+         ]);
+         echo "</td><td>". __('Default for Assets').
+            "</td><td>";
+         Grid::dropdownDashboard("default_dashboard_assets", [
+            'value' => $data['default_dashboard_assets'],
+            'display_emptychoice' => true
+         ]);
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>". __('Default for Assistance') . "</td><td>";
+         Grid::dropdownDashboard("default_dashboard_helpdesk", [
+            'value' => $data['default_dashboard_helpdesk'],
+            'display_emptychoice' => true
+         ]);
+         echo "</td><td>". __('Default for tickets (mini dashboard)').
+            "</td><td>";
+         Grid::dropdownDashboard("default_dashboard_mini_ticket", [
+            'value' => $data['default_dashboard_mini_ticket'],
+            'display_emptychoice' => true
+         ]);
+         echo "</td></tr>";
+      }
+
       if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
@@ -2007,6 +2041,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Psr\\Log\\LoggerInterface' ],
                [ 'name'    => 'psr/simple-cache',
                  'check'   => 'Psr\\SimpleCache\\CacheInterface' ],
+               [ 'name'    => 'mexitek/phpcolors',
+                 'check'   => 'Mexitek\\PHPColors\\Color' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
@@ -3715,5 +3751,10 @@ class Config extends CommonDBTM {
       }
 
       return $safe_config;
+   }
+
+
+   static function getIcon() {
+      return "fas fa-cog";
    }
 }

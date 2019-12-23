@@ -533,4 +533,9 @@ class ConsumableItem extends CommonDBTM {
       }
       return true;
    }
+
+
+   static function getIcon() {
+      return Consumable::getIcon();
+   }
 }

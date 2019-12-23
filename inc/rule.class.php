@@ -204,6 +204,7 @@ class Rule extends CommonDBTM {
 
          $menu['rule']['title'] = static::getTypeName(Session::getPluralNumber());
          $menu['rule']['page']  = static::getSearchURL(false);
+         $menu['rule']['icon']  = static::getIcon();
 
          foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
             $rulecollection = new $rulecollectionclass();
@@ -228,6 +229,7 @@ class Rule extends CommonDBTM {
 
          $menu['rule']['title'] = static::getTypeName(Session::getPluralNumber());
          $menu['rule']['page']  = static::getSearchURL(false);
+         $menu['rule']['icon']  = static::getIcon();
 
          $menu['rule']['options']['transfer']['title']           = __('Transfer');
          $menu['rule']['options']['transfer']['page']            = "/front/transfer.php";
@@ -247,6 +249,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['title']    = _n('Dictionary', 'Dictionaries', Session::getPluralNumber());
          $menu['dictionnary']['shortcut'] = '';
          $menu['dictionnary']['page']     = '/front/dictionnary.php';
+         $menu['dictionnary']['icon']     = static::getIcon();
 
          $menu['dictionnary']['options']['manufacturers']['title']
                            = _n('Manufacturer', 'Manufacturers', Session::getPluralNumber());
@@ -3170,4 +3173,7 @@ class Rule extends CommonDBTM {
    }
 
 
+   static function getIcon() {
+      return "fas fa-book";
+   }
 }

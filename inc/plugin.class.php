@@ -89,6 +89,7 @@ class Plugin extends CommonDBTM {
       if (static::canView()) {
          $menu['title']   = self::getMenuName();
          $menu['page']    = '/front/plugin.php';
+         $menu['icon']    = self::getIcon();
       }
       if (count($menu)) {
          return $menu;
@@ -2270,5 +2271,10 @@ class Plugin extends CommonDBTM {
       $forbidden[] = 'update';
       $forbidden[] = 'purge';
       return $forbidden;
+   }
+
+
+   static function getIcon() {
+      return "fas fa-puzzle-piece";
    }
 }

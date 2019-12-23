@@ -357,6 +357,11 @@ class Search {
          $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
       }
       $p['display_type']        = self::HTML_OUTPUT;
+      $p['showmassiveactions']  = true;
+      $p['dont_flush']          = false;
+      $p['show_pager']          = true;
+      $p['show_footer']         = true;
+      $p['no_sort']             = false;
       $p['list_limit']          = $_SESSION['glpilist_limit'];
       $p['massiveactionparams'] = [];
 
@@ -1582,9 +1587,11 @@ class Search {
                $search_config_top .= $delete_ctrl;
             }
 
-            Html::printPager($data['search']['start'], $data['data']['totalcount'],
-                             $data['search']['target'], $parameters, $data['itemtype'], 0,
-                              $search_config_top);
+            if ($data['search']['show_pager']) {
+               Html::printPager($data['search']['start'], $data['data']['totalcount'],
+                              $data['search']['target'], $parameters, $data['itemtype'], 0,
+                                 $search_config_top);
+            }
 
             $search_config_top    .= "</div>";
             $search_config_bottom .= "</div>";
@@ -1602,11 +1609,11 @@ class Search {
             $isadmin = (Infocom::canUpdate() || Infocom::canCreate());
          }
          if ($data['itemtype'] != 'AllAssets') {
-            $showmassiveactions
-               = count(MassiveAction::getAllMassiveActions($data['item'],
-                                                           $data['search']['is_deleted']));
+            $showmassiveactions = ($data['search']['showmassiveactions'] ?? true)
+               && count(MassiveAction::getAllMassiveActions($data['item'],
+                                                            $data['search']['is_deleted']));
          } else {
-            $showmassiveactions = true;
+            $showmassiveactions = $data['search']['showmassiveactions'] ?? true;
          }
 
          if ($data['search']['as_map'] == 0) {
@@ -1670,7 +1677,8 @@ class Search {
             foreach ($data['data']['cols'] as $val) {
                $linkto = '';
                if (!$val['meta']
-                  && (!isset($val['searchopt']['nosort'])
+                   && !$data['search']['no_sort']
+                   && (!isset($val['searchopt']['nosort'])
                      || !$val['searchopt']['nosort'])) {
 
                   $linkto = $data['search']['target'].(strpos($data['search']['target'], '?') ? '&amp;' : '?').
@@ -1816,7 +1824,8 @@ class Search {
                // End Line
                echo self::showEndLine($data['display_type']);
                // Flush ONLY for an HTML display (issue #3348)
-               if ($data['display_type'] == self::HTML_OUTPUT) {
+               if ($data['display_type'] == self::HTML_OUTPUT
+                   && !$data['search']['dont_flush']) {
                   Html::glpi_flush();
                }
             }
@@ -1828,28 +1837,34 @@ class Search {
                $title = self::computeTitle($data);
             }
 
-            if ($data['display_type'] == self::HTML_OUTPUT) {
-               echo $headers_line_bottom;
-            }
-            // Display footer
-            echo self::showFooter($data['display_type'], $title, $data['data']['count']);
-
-            // Delete selected item
-            if ($data['display_type'] == self::HTML_OUTPUT) {
-               if ($showmassiveactions) {
-                  $massiveactionparams['ontop'] = false;
-                  Html::showMassiveActions($massiveactionparams);
-                  // End form for delete item
-                  Html::closeForm();
-               } else {
-                  echo "<br>";
+            if ($data['search']['show_footer']) {
+               if ($data['display_type'] == self::HTML_OUTPUT) {
+                  echo $headers_line_bottom;
                }
             }
-            if ($data['display_type'] == self::HTML_OUTPUT) { // In case of HTML display
-               Html::printPager($data['search']['start'], $data['data']['totalcount'],
-                              $data['search']['target'], $parameters, '', 0,
-                                 $search_config_bottom);
 
+            // Display footer (close table)
+            echo self::showFooter($data['display_type'], $title, $data['data']['count']);
+
+            if ($data['search']['show_footer']) {
+               // Delete selected item
+               if ($data['display_type'] == self::HTML_OUTPUT) {
+                  if ($showmassiveactions) {
+                     $massiveactionparams['ontop'] = false;
+                     Html::showMassiveActions($massiveactionparams);
+                     // End form for delete item
+                     Html::closeForm();
+                  } else {
+                     echo "<br>";
+                  }
+               }
+               if ($data['display_type'] == self::HTML_OUTPUT
+                  && $data['search']['show_pager']) { // In case of HTML display
+                  Html::printPager($data['search']['start'], $data['data']['totalcount'],
+                                 $data['search']['target'], $parameters, '', 0,
+                                    $search_config_bottom);
+
+               }
             }
          }
       } else {
@@ -5918,15 +5933,21 @@ JAVASCRIPT;
 
             case 'glpi_changes.status':
                $status = Change::getStatus($data[$ID][0]['name']);
-               return Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status";
+               return "<span class='no-wrap'>".
+                      Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status".
+                      "</span>";
 
             case 'glpi_problems.status':
                $status = Problem::getStatus($data[$ID][0]['name']);
-               return Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status";
+               return "<span class='no-wrap'>".
+                      Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status".
+                      "</span>";
 
             case 'glpi_tickets.status':
                $status = Ticket::getStatus($data[$ID][0]['name']);
-               return Ticket::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status";
+               return "<span class='no-wrap'>".
+                      Ticket::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status".
+                      "</span>";
 
             case 'glpi_projectstates.name':
                $out = '';
@@ -6450,7 +6471,7 @@ JAVASCRIPT;
     * @param $forcebookmark            force trying to load parameters from default bookmark:
     *                                  used for global search (false by default)
     *
-    * @return parsed params array
+    * @return array parsed params
    **/
    static function manageParams($itemtype, $params = [], $usesession = true,
                                 $forcebookmark = false) {

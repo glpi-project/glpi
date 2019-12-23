@@ -1042,4 +1042,9 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
 
       return $input;
    }
+
+
+   static function getIcon() {
+      return "far fa-sticky-note";
+   }
 }

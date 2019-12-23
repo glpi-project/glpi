@@ -126,7 +126,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   'glpi_itilcategories.id',
-                  'glpi_itilcategories. ' . ($is_tree ? 'name' : 'completename') . 'AS category'
+                  'glpi_itilcategories.' . ($is_tree ? 'name' : 'completename') . ' AS category'
                ],
                'DISTINCT'  => true,
                'FROM'      => 'glpi_itilcategories',
@@ -719,7 +719,7 @@ class Stat extends CommonGLPI {
     */
    static function constructEntryValues($itemtype, $type, $begin = "", $end = "", $param = "", $value = "",
                                         $value2 = "") {
-      global $DB;
+      $DB = \DBConnection::getReadConnection();
 
       if (!$item = getItemForItemtype($itemtype)) {
          return;
@@ -1926,6 +1926,10 @@ class Stat extends CommonGLPI {
          return $csvfilename;
       }
       return false;
+   }
+
+   static function getIcon() {
+      return "fas fa-chart-bar";
    }
 }
 

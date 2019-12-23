@@ -649,4 +649,9 @@ class CartridgeItem extends CommonDBTM {
       NotificationEvent::debugEvent($this, $options);
    }
 
+
+   static function getIcon() {
+      return Cartridge::getIcon();
+   }
+
 }

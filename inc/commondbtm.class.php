@@ -5300,4 +5300,8 @@ class CommonDBTM extends CommonGLPI {
 
       return $data;
    }
+
+   static function getIcon() {
+      return "";
+   }
 }

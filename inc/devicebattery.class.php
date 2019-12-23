@@ -166,4 +166,9 @@ class DeviceBattery extends CommonDevice {
          'voltage'               => 'delta:10'
       ];
    }
+
+
+   static function getIcon() {
+      return "fas fa-battery-half";
+   }
 }

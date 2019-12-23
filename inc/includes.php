@@ -66,18 +66,22 @@ if (isset($_SESSION['glpi_use_mode'])
 
 // Security system
 if (isset($_POST)) {
+   $_UPOST = $_POST; //keep raw, as a workaround
    if (isset($_POST['_glpi_simple_form'])) {
       $_POST = array_map('urldecode', $_POST);
    }
    $_POST = Toolbox::sanitize($_POST);
 }
 if (isset($_GET)) {
-   $_GET = Toolbox::sanitize($_GET);
+   $_UGET = $_GET; //keep raw, as a workaround
+   $_GET  = Toolbox::sanitize($_GET);
 }
 if (isset($_REQUEST)) {
-   $_REQUEST = Toolbox::sanitize($_REQUEST);
+   $_UREQUEST = $_REQUEST; //keep raw, as a workaround
+   $_REQUEST  = Toolbox::sanitize($_REQUEST);
 }
 if (isset($_FILES)) {
+   $_UFILES = $_FILES; //keep raw, as a workaround
    foreach ($_FILES as &$file) {
       $file['name'] = Toolbox::addslashes_deep($file['name']);
       $file['name'] = Toolbox::clean_cross_side_scripting_deep($file['name']);

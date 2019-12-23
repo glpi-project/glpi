@@ -90,6 +90,7 @@ class Planning extends CommonGLPI {
             'title'    => static::getMenuName(),
             'shortcut' => static::getMenuShorcut(),
             'page'     => static::getSearchURL(false),
+            'icon'     => static::getIcon(),
          ];
 
          if ($data = static::getAdditionalMenuLinks()) {
@@ -2439,5 +2440,9 @@ class Planning extends CommonGLPI {
       }
 
       return $calendar_uri;
+   }
+
+   static function getIcon() {
+      return "far fa-calendar-alt";
    }
 }

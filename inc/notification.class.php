@@ -154,6 +154,7 @@ class Notification extends CommonDBTM {
           || Config::canView()) {
          $menu['title']                                      = _n('Notification', 'Notifications', Session::getPluralNumber());
          $menu['page']                                       = '/front/setup.notification.php';
+         $menu['icon']                                       = self::getIcon();
          $menu['options']['notification']['title']           = _n('Notification', 'Notifications', Session::getPluralNumber());
          $menu['options']['notification']['page']            = Notification::getSearchURL(false);
          $menu['options']['notification']['links']['add']    = Notification::getFormURL(false);
@@ -588,5 +589,10 @@ class Notification extends CommonDBTM {
       }
 
       return $input;
+   }
+
+
+   static function getIcon() {
+      return "fas fa-bell";
    }
 }

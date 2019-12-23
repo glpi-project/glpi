@@ -408,4 +408,9 @@ class Event extends CommonDBTM {
       }
       echo "</table></div><br>";
    }
+
+
+   static function getIcon() {
+      return "fas fa-scroll";
+   }
 }

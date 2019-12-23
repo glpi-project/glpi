@@ -1240,6 +1240,10 @@ class Html {
             }
          }
 
+         if (in_array('planning', $jslibs)) {
+            Html::requireJs('planning');
+         }
+
          if (in_array('fullcalendar', $jslibs)) {
             echo Html::css('public/lib/fullcalendar.css',
                            ['media' => '']);
@@ -1263,6 +1267,15 @@ class Html {
          if (in_array('colorpicker', $jslibs)) {
             echo Html::css('public/lib/spectrum-colorpicker.css');
             Html::requireJs('colorpicker');
+         }
+
+         if (in_array('dashboard', $jslibs)) {
+            echo Html::scss('css/dashboard');
+            Html::requireJs('dashboard');
+         }
+
+         if (in_array('rack', $jslibs)) {
+            Html::requireJs('rack');
          }
 
          if (in_array('gridstack', $jslibs)) {
@@ -1430,44 +1443,66 @@ JAVASCRIPT;
    static function getMenuInfos() {
       global $CFG_GLPI;
 
-      $menu['assets']['title']       = __('Assets');
-      $menu['assets']['types']       = ['Computer', 'Monitor', 'Software',
-                                             'NetworkEquipment', 'Peripheral', 'Printer',
-                                             'CartridgeItem', 'ConsumableItem', 'Phone',
-                                             'Rack', 'Enclosure', 'PDU'];
+      $menu = [
+         'assets' => [
+            'title' => __('Assets'),
+            'types' => array_merge([
+               'Computer', 'Monitor', 'Software',
+               'NetworkEquipment', 'Peripheral', 'Printer',
+               'CartridgeItem', 'ConsumableItem', 'Phone',
+               'Rack', 'Enclosure', 'PDU'
+            ], $CFG_GLPI['devices_in_menu']),
+            'default' => '/front/dashboard_assets.php'
+         ],
+         'helpdesk' => [
+            'title' => __('Assistance'),
+            'types' => [
+               'Ticket', 'Problem', 'Change',
+               'Planning', 'Stat', 'TicketRecurrent'
+            ],
+            'default' => '/front/dashboard_helpdesk.php'
+         ],
+         'management' => [
+            'title' => __('Management'),
+            'types' => [
+               'SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
+               'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain'
+            ]
+         ],
+         'tools' => [
+            'title' => __('Tools'),
+            'types' => [
+               'Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
+               'ReservationItem', 'Report', 'MigrationCleaner',
+               'SavedSearch', 'Impact'
+            ]
+         ],
+         'plugins' => [
+            'title' => _n('Plugin', 'Plugins', Session::getPluralNumber()),
+            'types' => []
+         ],
+         'admin' => [
+            'title' => __('Administration'),
+            'types' => [
+               'User', 'Group', 'Entity', 'Rule',
+               'Profile', 'QueuedNotification', 'Backup', 'Glpi\\Event'
+            ]
+         ],
+         'config' => [
+            'title' => __('Setup'),
+            'types' => [
+               'CommonDropdown', 'CommonDevice', 'Notification',
+               'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
+               'MailCollector', 'Link', 'Plugin'
+            ]
+         ],
 
-      foreach ($CFG_GLPI['devices_in_menu'] as $dmenu) {
-         $menu['assets']['types'][] = $dmenu;
-      }
-
-      $menu['helpdesk']['title']     = __('Assistance');
-      $menu['helpdesk']['types']     = ['Ticket', 'Problem', 'Change',
-                                             'Planning', 'Stat', 'TicketRecurrent'];
-
-      $menu['management']['title']   = __('Management');
-      $menu['management']['types']   = ['SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
-                                        'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain'];
-
-      $menu['tools']['title']        = __('Tools');
-      $menu['tools']['types']        = ['Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
-                                             'ReservationItem', 'Report', 'MigrationCleaner',
-                                             'SavedSearch', 'Impact'];
-
-      $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
-      $menu['plugins']['types']      = [];
-
-      $menu['admin']['title']        = __('Administration');
-      $menu['admin']['types']        = ['User', 'Group', 'Entity', 'Rule',
-                                             'Profile', 'QueuedNotification', 'Backup', 'Glpi\\Event'];
-
-      $menu['config']['title']       = __('Setup');
-      $menu['config']['types']       = ['CommonDropdown', 'CommonDevice', 'Notification',
-                                        'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
-                                        'MailCollector', 'Link', 'Plugin'];
-
-      // Special items
-      $menu['preference']['title']   = __('My settings');
-      $menu['preference']['default'] = '/front/preference.php';
+         // special items
+         'preference' => [
+            'title' => __('My settings'),
+            'default' => '/front/preference.php'
+         ],
+      ];
 
       return $menu;
    }
@@ -1565,6 +1600,7 @@ JAVASCRIPT;
                $menu['assets']['content']['allassets']['title']            = __('Global');
                $menu['assets']['content']['allassets']['shortcut']         = '';
                $menu['assets']['content']['allassets']['page']             = '/front/allassets.php';
+               $menu['assets']['content']['allassets']['icon']             = 'fas fa-list';
                $menu['assets']['content']['allassets']['links']['search']  = '/front/allassets.php';
                break;
             }
@@ -1727,6 +1763,7 @@ JAVASCRIPT;
       }
       self::displayDebugInfos();
       self::loadJavascript();
+
       echo "</body></html>";
 
       if (!$keepDB) {
@@ -1984,8 +2021,18 @@ JAVASCRIPT;
     * @param string  $title    title of the page
     * @param string  $url      not used anymore
     * @param boolean $iframed  indicate if page loaded in iframe - css target
+    * @param string  $sector    sector in which the page displayed is (default 'none')
+    * @param string  $item      item corresponding to the page displayed (default 'none')
+    * @param string  $option    option corresponding to the page displayed (default '')
    **/
-   static function popHeader($title, $url = '', $iframed = false) {
+   static function popHeader(
+      $title,
+      $url = '',
+      $iframed = false,
+      $sector = "none",
+      $item = "none",
+      $option = ""
+   ) {
       global $HEADER_LOADED;
 
       // Print a nice HTML-head for every page
@@ -1994,7 +2041,7 @@ JAVASCRIPT;
       }
       $HEADER_LOADED = true;
 
-      self::includeHeader($title); // Body
+      self::includeHeader($title, $sector, $item, $option); // Body
       echo "<body class='".($iframed? "iframed": "")."'>";
       self::displayMessageAfterRedirect();
    }
@@ -2072,7 +2119,9 @@ JAVASCRIPT;
                   }
                   echo ">";
 
-                  echo $val['title']."</a>";
+                  echo "<i class='fa-fw ".($val['icon'] ?? "")."'></i>&nbsp;";
+                  echo $val['title'];
+                  echo "</a>";
                   echo "</dd>";
                   $i++;
                }
@@ -6277,6 +6326,9 @@ JAVASCRIPT;
          case 'tinymce':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce.js';
             break;
+         case 'planning':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
+            break;
          case 'fullcalendar':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fullcalendar.js';
             if (isset($_SESSION['glpilanguage'])) {
@@ -6289,7 +6341,6 @@ JAVASCRIPT;
                   }
                }
             }
-            $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
             break;
          case 'jstree':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jstree.js';
@@ -6322,8 +6373,13 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fuzzy.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/fuzzysearch.js';
             break;
+         case 'dashboard':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/dashboard.js';
+            break;
          case 'gridstack':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';
+            break;
+         case 'rack':
             $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.ui.touch-punch.js';
             break;
@@ -6830,17 +6886,29 @@ JAVASCRIPT;
                   }
                   if (isset($val['page'])
                      && isset($val['title'])) {
-                     echo "<li class='$menu_class'><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
+                     $shortcut_attr = "";
+                     $title = $val['title'];
 
                      if (isset($val['shortcut']) && !empty($val['shortcut'])) {
                         if (!isset($already_used_shortcut[$val['shortcut']])) {
-                           echo " accesskey='".$val['shortcut']."'";
+                           $shortcut_attr = " accesskey='".$val['shortcut']."'";
                            $already_used_shortcut[$val['shortcut']] = $val['shortcut'];
                         }
-                        echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
-                     } else {
-                        echo ">".$val['title']."</a></li>\n";
+                        $title = Toolbox::shortcut($val['title'], $val['shortcut']);
                      }
+
+                     $icon_cls = "";
+                     if (isset($val['icon'])) {
+                        $icon_cls = $val['icon'];
+                     }
+                     $icon = "<i class='fa-fw $icon_cls'></i>";
+
+                     echo "<li class='$menu_class'>
+                        <a href='".$CFG_GLPI["root_doc"].$val['page']."' $shortcut_attr>
+                           $icon
+                           $title
+                        </a>
+                     </li>";
                   }
                }
                echo "</ul>";
@@ -6942,7 +7010,9 @@ JAVASCRIPT;
                   "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
                         ($with_option?"":"class='here'")." title=\"".
                         $menu[$sector]['content'][$item]['title']."\" >".
-                        $menu[$sector]['content'][$item]['title']."</a>".
+                        "<i class='".$menu[$sector]['content'][$item]['icon']."'></i>&nbsp;".
+                        $menu[$sector]['content'][$item]['title'].
+                  "</a>".
                   "</li>";
             }
 
@@ -6952,6 +7022,8 @@ JAVASCRIPT;
                         $menu[$sector]['content'][$item]['options'][$option]['page'].
                         "' class='here' title=\"".
                         $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
+
+               echo "<i class='".($menu[$sector]['content'][$item]['options'][$option]['icon'] ?? "")."'></i>&nbsp;";
                echo self::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],
                                     17);
                echo "</a></li>";

@@ -1390,4 +1390,8 @@ class SoftwareLicense extends CommonTreeDropdown {
       }
       echo "</table></div>\n";
    }
+
+   static function getIcon() {
+      return "fas fa-key";
+   }
 }

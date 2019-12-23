@@ -1655,4 +1655,9 @@ class Change extends CommonITILObject {
 
       return $assets;
    }
+
+
+   static function getIcon() {
+      return "fas fa-clipboard-check";
+   }
 }

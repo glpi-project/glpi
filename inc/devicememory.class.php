@@ -256,4 +256,9 @@ class DeviceMemory extends CommonDevice {
 
       return $tab;
    }
+
+
+   static function getIcon() {
+      return "fas fa-memory";
+   }
 }

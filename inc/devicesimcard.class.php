@@ -114,4 +114,8 @@ class DeviceSimcard extends CommonDevice {
       ];
    }
 
+
+   static function getIcon() {
+      return "fas fa-sim-card";
+   }
 }

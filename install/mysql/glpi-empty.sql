@@ -1551,6 +1551,48 @@ CREATE TABLE `glpi_crontasks` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
 
+### Dump table glpi_dashboards_dashboards
+
+DROP TABLE IF EXISTS `glpi_dashboards_dashboards`;
+CREATE TABLE `glpi_dashboards_dashboards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `key` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `context` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'core',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key` (`key`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_dashboards_items
+
+DROP TABLE IF EXISTS `glpi_dashboards_items`;
+CREATE TABLE `glpi_dashboards_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dashboards_dashboards_id` int(11) NOT NULL,
+  `gridstack_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `card_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  `width` int(11) DEFAULT NULL,
+  `height` int(11) DEFAULT NULL,
+  `card_options` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_dashboards_rights
+
+DROP TABLE IF EXISTS `glpi_dashboards_rights`;
+CREATE TABLE `glpi_dashboards_rights` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dashboards_dashboards_id` int(11) NOT NULL,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `items_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`),
+  UNIQUE KEY `unicity` (`dashboards_dashboards_id`, `itemtype`,`items_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 ### Dump table glpi_devicecasemodels
 
 DROP TABLE IF EXISTS `glpi_devicecasemodels`;
@@ -6922,6 +6964,10 @@ CREATE TABLE `glpi_users` (
   `groups_id` int(11) NOT NULL DEFAULT '0',
   `users_id_supervisor` int(11) NOT NULL DEFAULT '0',
   `timezone` varchar(50) DEFAULT NULL,
+  `default_dashboard_central` varchar(100) DEFAULT NULL,
+  `default_dashboard_assets` varchar(100) DEFAULT NULL,
+  `default_dashboard_helpdesk` varchar(100) DEFAULT NULL,
+  `default_dashboard_mini_ticket` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`, `authtype`, `auths_id`),
   KEY `firstname` (`firstname`),

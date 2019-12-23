@@ -182,6 +182,7 @@ class SLM extends CommonDBTM {
       if (static::canView()) {
          $menu['title']           = self::getTypeName(2);
          $menu['page']            = static::getSearchURL(false);
+         $menu['icon']            = static::getIcon();
          $menu['links']['search'] = static::getSearchURL(false);
          if (static::canCreate()) {
             $menu['links']['add'] = SLM::getFormURL(false);
@@ -210,4 +211,8 @@ class SLM extends CommonDBTM {
       return false;
    }
 
+
+   static function getIcon() {
+      return "fas fa-file-contract";
+   }
 }

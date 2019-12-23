@@ -657,4 +657,9 @@ class Supplier extends CommonDBTM {
 
       return $suppliers;
    }
+
+
+   static function getIcon() {
+      return "fas fa-dolly";
+   }
 }

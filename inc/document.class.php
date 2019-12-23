@@ -1637,4 +1637,9 @@ class Document extends CommonDBTM {
 
       return ($nb > 0 ? 1 : 0);
    }
+
+
+   static function getIcon() {
+      return "far fa-file";
+   }
 }

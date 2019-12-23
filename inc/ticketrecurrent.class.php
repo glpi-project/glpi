@@ -575,4 +575,9 @@ class TicketRecurrent extends CommonDropdown {
       return $result;
    }
 
+
+   static function getIcon() {
+      return "fas fa-stopwatch";
+   }
+
 }

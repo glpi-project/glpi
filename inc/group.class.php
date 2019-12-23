@@ -967,4 +967,9 @@ class Group extends CommonTreeDropdown {
          ]
       ) > 0;
    }
+
+
+   static function getIcon() {
+      return "fas fa-users";
+   }
 }

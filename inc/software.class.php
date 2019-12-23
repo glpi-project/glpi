@@ -1144,4 +1144,8 @@ class Software extends CommonDBTM {
       ];
    }
 
+   static function getIcon() {
+      return "fas fa-cube";
+   }
+
 }

@@ -842,4 +842,9 @@ class Certificate extends CommonDBTM {
    function showDebug() {
       NotificationEvent::debugEvent($this);
    }
+
+
+   static function getIcon() {
+      return "fas fa-certificate";
+   }
 }

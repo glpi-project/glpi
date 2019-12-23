@@ -57,7 +57,12 @@ if (!defined('GLPI_CSRF_EXPIRES')) {
 if (!defined('GLPI_CSRF_MAX_TOKENS')) {
    define("GLPI_CSRF_MAX_TOKENS", "100");
 }
-
+if (!defined('GLPI_SHOW_CENTRAL_WARNINGS')) {
+   define('GLPI_SHOW_CENTRAL_WARNINGS', '1');
+}
+if (!defined('GLPI_AJAX_DASHBOARD')) {
+   define('GLPI_AJAX_DASHBOARD', '1');
+}
 //Define a global recipient address for email notifications
 //define('GLPI_FORCE_MAIL', 'me@localhost');
 
@@ -486,16 +491,26 @@ $CFG_GLPI['kanban_types']        = ['Project'];
 $CFG_GLPI['domain_types']        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
                                        'Phone', 'Printer', 'Software'];
 
+$dashboard_libs = [
+   'dashboard', 'colorpicker', 'gridstack',
+   'charts', 'clipboard'
+];
+
 $CFG_GLPI['javascript'] = [
    'central'   => [
-      'central'   => ['fullcalendar', 'tinymce']
+      'central' => array_merge([
+         'fullcalendar',
+         'tinymce',
+      ], $dashboard_libs)
    ],
    'assets'    => [
-      'rack'         => ['colorpicker', 'gridstack']
+      'dashboard' => $dashboard_libs,
+      'rack'      => ['colorpicker', 'gridstack', 'rack']
    ],
    'helpdesk'  => [
-      'planning'  => ['clipboard', 'fullcalendar', 'colorpicker', 'tinymce'],
-      'ticket'    => ['rateit', 'tinymce', 'photoswipe'],
+      'dashboard' => $dashboard_libs,
+      'planning'  => ['clipboard', 'fullcalendar', 'colorpicker', 'tinymce', 'planning'],
+      'ticket'    => array_merge(['rateit', 'tinymce', 'photoswipe'], $dashboard_libs),
       'problem'   => ['tinymce', 'photoswipe'],
       'change'    => ['tinymce', 'photoswipe'],
       'stat'      => ['charts']
@@ -507,19 +522,19 @@ $CFG_GLPI['javascript'] = [
       'impact'       => ['colorpicker']
    ],
    'management' => [
-      'datacenter'       => [
-         'dcroom' => ['colorpicker', 'gridstack']
+      'datacenter' => [
+         'dcroom' => ['colorpicker', 'gridstack', 'rack']
       ]
    ],
-   'config'    => [
-      'config'    => ['colorpicker'],
+   'config' => [
+      'config' => ['colorpicker'],
       'commondropdown'  => [
          'ITILFollowupTemplate'  => ['tinymce'],
          'PlanningEventCategory' => ['colorpicker'],
          'ProjectState'          => ['colorpicker'],
          'SolutionTemplate'      => ['tinymce'],
       ],
-      'notification'    => [
+      'notification' => [
          'notificationtemplate' => ['tinymce']
       ]
    ],

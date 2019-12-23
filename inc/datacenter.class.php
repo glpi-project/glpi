@@ -192,4 +192,8 @@ class Datacenter extends CommonDBTM {
       }
    }
 
+
+   static function getIcon() {
+      return "fas fa-warehouse";
+   }
 }

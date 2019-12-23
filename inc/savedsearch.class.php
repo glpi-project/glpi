@@ -1486,4 +1486,9 @@ class SavedSearch extends CommonDBTM {
       $criteria['WHERE'] = $restrict;
       return $criteria;
    }
+
+
+   static function getIcon() {
+      return "far fa-bookmark";
+   }
 }

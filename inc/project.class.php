@@ -2541,4 +2541,9 @@ JAVASCRIPT;
       ]);
       return true;
    }
+
+
+   static function getIcon() {
+      return "fas fa-columns";
+   }
 }

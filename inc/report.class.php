@@ -543,4 +543,9 @@ class Report extends CommonGLPI{
       return $values;
    }
 
+
+   static function getIcon() {
+      return "fas fa-file-medical-alt";
+   }
+
 }

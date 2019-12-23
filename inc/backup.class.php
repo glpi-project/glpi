@@ -67,4 +67,9 @@ class Backup extends CommonGLPI {
       return $values;
    }
 
+
+   static function getIcon() {
+      return "fas fa-wrench";
+   }
+
 }

@@ -948,6 +948,78 @@ function update94to95() {
    $migration->addField("glpi_entities", "altitude", "string");
    /** Add geolocation to entity */
 
+   /** Dashboards */
+   $migration->addRight('dashboard', READ | UPDATE | CREATE | PURGE, [
+      'config' => UPDATE
+   ]);
+   if (!$DB->tableExists('glpi_dashboards_dashboards')) {
+      $query = "CREATE TABLE `glpi_dashboards_dashboards` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `key` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+         `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+         `context` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'core',
+         PRIMARY KEY (`id`),
+         UNIQUE KEY `key` (`key`)
+      ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "add table glpi_dashboards_dashboards");
+   }
+   if (!$DB->tableExists('glpi_dashboards_items')) {
+      $query = "CREATE TABLE `glpi_dashboards_items` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `dashboards_dashboards_id` int(11) NOT NULL,
+        `gridstack_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+        `card_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+        `x` int(11) DEFAULT NULL,
+        `y` int(11) DEFAULT NULL,
+        `width` int(11) DEFAULT NULL,
+        `height` int(11) DEFAULT NULL,
+        `card_options` text COLLATE utf8_unicode_ci,
+        PRIMARY KEY (`id`),
+        KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`)
+      ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_dashboards_items");
+   }
+   if (!$DB->tableExists('glpi_dashboards_rights')) {
+      $query = "CREATE TABLE `glpi_dashboards_rights` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `dashboards_dashboards_id` int(11) NOT NULL,
+         `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+         `items_id` int(11) NOT NULL,
+         PRIMARY KEY (`id`),
+         KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`),
+         UNIQUE KEY `unicity` (`dashboards_dashboards_id`, `itemtype`,`items_id`)
+       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_dashboards_rights");
+   }
+
+   // migration from previous development versions
+   $dashboards = Config::getConfigurationValues('core', ['dashboards']);
+   if (count($dashboards)) {
+      $dashboards = $dashboards['dashboards'];
+      \Glpi\Dashboard\Dashboard::importFromJson($dashboards);
+      Config::deleteConfigurationValues('core', ['dashboards']);
+   }
+   // add default dashboards
+   $migration->addConfig([
+      'default_dashboard_central'     => 'central',
+      'default_dashboard_assets'      => 'assets',
+      'default_dashboard_helpdesk'    => 'helpdesk',
+      'default_dashboard_mini_ticket' => 'mini_ticket',
+   ]);
+   if (!$DB->fieldExists('glpi_users', 'default_dashboard_central')) {
+      $migration->addField("glpi_users", "default_dashboard_central", "varchar(100) DEFAULT NULL");
+   }
+   if (!$DB->fieldExists('glpi_users', 'default_dashboard_assets')) {
+      $migration->addField("glpi_users", "default_dashboard_assets", "varchar(100) DEFAULT NULL");
+   }
+   if (!$DB->fieldExists('glpi_users', 'default_dashboard_helpdesk')) {
+      $migration->addField("glpi_users", "default_dashboard_helpdesk", "varchar(100) DEFAULT NULL");
+   }
+   if (!$DB->fieldExists('glpi_users', 'default_dashboard_mini_ticket')) {
+      $migration->addField("glpi_users", "default_dashboard_mini_ticket", "varchar(100) DEFAULT NULL");
+   }
+   /** /Dashboards */
+
    /** Domains */
    if (!$DB->tableExists('glpi_domaintypes')) {
       $query = "CREATE TABLE `glpi_domaintypes` (
