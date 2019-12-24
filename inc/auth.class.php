@@ -1455,6 +1455,12 @@ class Auth extends CommonGLPI {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>" . __('SSO logout url') . "</td>";
+      echo "<td><input type='text' name='ssologout_url' value='".
+                 $CFG_GLPI['ssologout_url']."'></td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>" . __('Remove the domain of logins like login@domain')."</td><td>";
       Dropdown::showYesNo('existing_auth_server_field_clean_domain',
                           $CFG_GLPI['existing_auth_server_field_clean_domain']);

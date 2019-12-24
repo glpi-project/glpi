@@ -231,6 +231,7 @@ $default_prefs = [
    'entity_ssofield'                         => '',
    'registration_number_ssofield'            => '',
    'ssovariables_id'                         => '0',
+   'ssologout_url'                           => '',
    'translate_kb'                            => '0',
    'translate_dropdowns'                     => '0',
    'pdffont'                                 => 'helvetica',

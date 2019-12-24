@@ -1153,6 +1153,11 @@ function update94to95() {
    }
    /** /Domain records */
 
+
+   /** SSO logout URL */
+   $migration->addField("glpi_configs", "ssologout_url", "string");
+   /** SSO logout URL */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
