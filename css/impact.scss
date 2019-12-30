@@ -374,6 +374,20 @@ i.fa-impact-manipulation {
          background-color: #d5d5d5 !important;
          border-radius: 2px;
       }
+
+      &.impact-disabled {
+         cursor: default !important;
+         color: #aaaeb3;
+
+         &:hover {
+            color: #aaaeb3;
+            background-color: #fafafa;
+         }
+      }
+
+      &.impact-separator {
+         border-top: 2px solid #eeeeee;
+      }
    }
 
    &.impact-side-expanded {

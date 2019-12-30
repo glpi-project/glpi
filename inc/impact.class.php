@@ -1011,10 +1011,14 @@ class Impact extends CommonGLPI {
 
       echo '<ul>';
       echo '<li id="save_impact" title="' . __("Save") .'"><i class="fas fa-fw fa-save"></i></li>';
+      echo '<li id="impact_undo" class="impact-disabled" title="' . __("Undo") .'"><i class="fas fa-fw fa-undo"></i></li>';
+      echo '<li id="impact_redo" class="impact-disabled" title="' . __("Redo") .'"><i class="fas fa-fw fa-redo"></i></li>';
+      echo '<li class="impact-separator"></li>';
       echo '<li id="add_node" title="' . __("Add asset") .'"><i class="fas fa-fw fa-plus"></i></li>';
       echo '<li id="add_edge" title="' . __("Add relation") .'"><i class="fas fa-fw fa-pencil-alt"></i></li>';
       echo '<li id="add_compound" title="' . __("Add group") .'"><i class="far fa-fw fa-square"></i></li>';
       echo '<li id="delete_element" title="' . __("Delete element") .'"><i class="fas fa-fw fa-trash"></i></li>';
+      echo '<li class="impact-separator"></li>';
       echo '<li id="export_graph" title="' . __("Download") .'"><i class="fas fa-fw fa-download"></i></li>';
       echo '<li id="toggle_fullscreen" title="' . __("Fullscreen") .'"><i class="fas fa-fw fa-expand"></i></li>';
       echo '<li id="impact_settings" title="' . __("Settings") .'"><i class="fas fa-fw fa-cog"></i></li>';
