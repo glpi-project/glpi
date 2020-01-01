@@ -1015,16 +1015,16 @@
         },
         {
             "name": "sabre/vobject",
-            "version": "4.2.0",
+            "version": "4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/vobject.git",
-                "reference": "bd500019764e434ff65872d426f523e7882a0739"
+                "reference": "6d7476fbd227ae285029c19ad518cd451336038c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/bd500019764e434ff65872d426f523e7882a0739",
-                "reference": "bd500019764e434ff65872d426f523e7882a0739",
+                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/6d7476fbd227ae285029c19ad518cd451336038c",
+                "reference": "6d7476fbd227ae285029c19ad518cd451336038c",
                 "shasum": ""
             },
             "require": {
@@ -1107,7 +1107,7 @@
                 "xCal",
                 "xCard"
             ],
-            "time": "2019-02-19T13:05:37+00:00"
+            "time": "2019-12-18T19:29:43+00:00"
         },
         {
             "name": "sabre/xml",
@@ -1785,6 +1785,7 @@
                 "psr-6",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-cache",
             "time": "2019-08-29T18:30:41+00:00"
         },
         {
@@ -1839,6 +1840,7 @@
                 "events",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-eventmanager",
             "time": "2018-04-25T15:33:34+00:00"
         },
         {
@@ -1910,6 +1912,7 @@
                 "i18n",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-i18n",
             "time": "2019-12-12T14:08:22+00:00"
         },
         {
@@ -1960,6 +1963,7 @@
                 "json",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-json",
             "time": "2019-10-09T13:56:13+00:00"
         },
         {
@@ -2005,6 +2009,7 @@
                 "loader",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-loader",
             "time": "2019-09-04T19:38:14+00:00"
         },
         {
@@ -2067,6 +2072,7 @@
                 "mail",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-mail",
             "time": "2018-06-07T13:37:07+00:00"
         },
         {
@@ -2118,6 +2124,7 @@
                 "mime",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-mime",
             "time": "2018-05-14T19:02:50+00:00"
         },
         {
@@ -2175,6 +2182,7 @@
                 "serializer",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-serializer",
             "time": "2019-10-19T08:06:30+00:00"
         },
         {
@@ -2243,6 +2251,7 @@
                 "servicemanager",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-servicemanager",
             "time": "2018-12-22T06:05:09+00:00"
         },
         {
@@ -2289,6 +2298,7 @@
                 "stdlib",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-stdlib",
             "time": "2018-08-28T21:34:05+00:00"
         },
         {
@@ -2362,6 +2372,7 @@
                 "validator",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-validator",
             "time": "2019-01-30T14:26:10+00:00"
         }
     ],
