@@ -1286,16 +1286,16 @@
         },
         {
             "name": "simplepie/simplepie",
-            "version": "1.5.3",
+            "version": "1.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/simplepie/simplepie.git",
-                "reference": "173663382a9346acd53df60c7ffb20689c9cf1f6"
+                "reference": "f4c8246511a38fc9d99a59fb42f61eeeafb31663"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/173663382a9346acd53df60c7ffb20689c9cf1f6",
-                "reference": "173663382a9346acd53df60c7ffb20689c9cf1f6",
+                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/f4c8246511a38fc9d99a59fb42f61eeeafb31663",
+                "reference": "f4c8246511a38fc9d99a59fb42f61eeeafb31663",
                 "shasum": ""
             },
             "require": {
@@ -1349,7 +1349,7 @@
                 "feeds",
                 "rss"
             ],
-            "time": "2019-09-22T23:21:30+00:00"
+            "time": "2019-11-23T07:05:15+00:00"
         },
         {
             "name": "symfony/console",
