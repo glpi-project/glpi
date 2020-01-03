@@ -1834,7 +1834,7 @@ class Html {
       echo "</div>"; // fin de la div id ='page' initi??e dans la fonction header
 
       echo "<div id='footer'>";
-      echo "<table width='100%'><tr><td class='right'>" . self::getCopyrightMessage();
+      echo "<table width='100%'><tr><td class='right'>" . self::getCopyrightMessage(false);
       echo "</td></tr></table></div>";
 
       self::displayDebugInfos();
@@ -1898,7 +1898,7 @@ class Html {
       if (!isCommandLine()) {
          echo "</div></div>";
 
-         echo "<div id='footer-login'>" . self::getCopyrightMessage() . "</div>";
+         echo "<div id='footer-login'>" . self::getCopyrightMessage(false) . "</div>";
          self::loadJavascript();
          echo "</body></html>";
       }
