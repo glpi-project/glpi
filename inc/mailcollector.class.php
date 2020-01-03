@@ -1353,6 +1353,10 @@ class MailCollector  extends CommonDBTM {
             $mail_header->subject = '';
          }
 
+         if (!property_exists($mail_header, 'message_id')) {
+            $mail_header->message_id = '';
+         }
+
          $mail_details = ['from'       => Toolbox::strtolower($sender->mailbox).'@'.$sender->host,
                                'subject'    => $mail_header->subject,
                                'reply-to'   => Toolbox::strtolower($reply_to->mailbox).'@'.$reply_to->host,
