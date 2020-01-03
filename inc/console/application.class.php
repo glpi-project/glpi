@@ -314,7 +314,7 @@ class Application extends BaseApplication {
    /**
     * Initialize GLPI cache.
     *
-    * @global Zend\Cache\Storage\StorageInterface $GLPI_CACHE
+    * @global Laminas\Cache\Storage\StorageInterface $GLPI_CACHE
     *
     * @return void
     */

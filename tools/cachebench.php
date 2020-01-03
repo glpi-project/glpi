@@ -135,7 +135,7 @@ echo "+ Done\n";
 + Done
 
 + Entities: 299598
-+ Cache: Zend\Cache\Storage\Adapter\Apcu
++ Cache: Laminas\Cache\Storage\Adapter\Apcu
 + Clear sons cache
 + Run with empty cache
 > time: 2.8290
@@ -144,7 +144,7 @@ echo "+ Done\n";
 + Done
 
 + Entities: 299598
-+ Cache: Zend\Cache\Storage\Adapter\Memcache
++ Cache: Laminas\Cache\Storage\Adapter\Memcache
 + Clear sons cache
 + Run with empty cache
 > time: 3.0366
@@ -153,7 +153,7 @@ echo "+ Done\n";
 + Done
 
 + Entities: 299598
-+ Cache: Zend\Cache\Storage\Adapter\Redis
++ Cache: Laminas\Cache\Storage\Adapter\Redis
 + Clear sons cache
 + Run with empty cache
 > time: 2.9524
@@ -162,7 +162,7 @@ echo "+ Done\n";
 + Done
 
 + Entities: 299593
-+ Cache: Zend\Cache\Storage\Adapter\WinCache
++ Cache: Laminas\Cache\Storage\Adapter\WinCache
 + Clear sons cache
 + Run with empty cache
 > time: 5.1352
