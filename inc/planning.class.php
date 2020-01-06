@@ -2253,7 +2253,7 @@ class Planning extends CommonGLPI {
       }
 
       // create vcalendar
-      $vcalendar = new VObject\Component\VCalendar();
+      $vcalendar = new VCalendar();
 
       // $xprops = array( "X-LIC-LOCATION" => $tz );
       // iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
