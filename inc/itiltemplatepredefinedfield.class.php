@@ -192,7 +192,7 @@ class ITILTemplatePredefinedField extends ITILTemplateField {
             $itemstable = 'glpi_items_tickets';
             break;
          default:
-            throw new \RuntimeException('Unknown ITIL type ' . itiltype);
+            throw new \RuntimeException('Unknown ITIL type ' . $itil_class);
       }
 
       $fields = [

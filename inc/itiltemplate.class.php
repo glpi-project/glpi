@@ -90,7 +90,7 @@ abstract class ITILTemplate extends CommonDropdown {
                $itemstable = 'glpi_items_tickets';
                break;
             default:
-               throw new \RuntimeException('Unknown ITIL type ' . itiltype);
+               throw new \RuntimeException('Unknown ITIL type ' . $itiltype);
          }
          $tth_class = $itiltype . 'TemplateHiddenField';
          $tth          = new $tth_class;
