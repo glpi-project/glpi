@@ -304,76 +304,78 @@ class Impact extends \DbTestCase {
          'name'  => "_test_compound02",
          'color' => "#110000",
       ]);
+      $this->integer($compound01Id);
+      $this->integer($compound02Id);
 
       // Set impact items
-      $impactItemManager->add([
+      $this->integer($impactItemManager->add([
          'itemtype'  => "Computer",
          'items_id'  => $computer1->fields['id'],
          'parent_id' => 0,
-      ]);
-      $impactItemManager->add([
+      ]));
+      $this->integer($impactItemManager->add([
          'itemtype'  => "Computer",
          'items_id'  => $computer2->fields['id'],
          'parent_id' => $compound01Id,
-      ]);
-      $impactItemManager->add([
+      ]));
+      $this->integer($impactItemManager->add([
          'itemtype'  => "Computer",
          'items_id'  => $computer3->fields['id'],
          'parent_id' => $compound01Id,
-      ]);
-      $impactItemManager->add([
+      ]));
+      $this->integer($impactItemManager->add([
          'itemtype'  => "Computer",
          'items_id'  => $computer4->fields['id'],
          'parent_id' => $compound02Id,
-      ]);
-      $impactItemManager->add([
+      ]));
+      $this->integer($impactItemManager->add([
          'itemtype'  => "Computer",
          'items_id'  => $computer5->fields['id'],
          'parent_id' => $compound02Id,
-      ]);
-      $impactItemManager->add([
+      ]));
+      $this->integer($impactItemManager->add([
          'itemtype'  => "Computer",
          'items_id'  => $computer6->fields['id'],
          'parent_id' => $compound02Id,
-      ]);
+      ]));
 
       // Set relations
-      $impactRelationManager->add([
+      $this->integer($impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer1->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer2->fields['id'],
-      ]);
-      $impactRelationManager->add([
+      ]));
+      $this->integer($impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer2->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer3->fields['id'],
-         ]);
-      $impactRelationManager->add([
+      ]));
+      $this->integer($impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer3->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer4->fields['id'],
-      ]);
-      $impactRelationManager->add([
+      ]));
+      $this->integer($impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer4->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer5->fields['id'],
-      ]);
-      $impactRelationManager->add([
+      ]));
+      $this->integer($impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer2->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer6->fields['id'],
-      ]);
-      $impactRelationManager->add([
+      ]));
+      $this->integer($impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer6->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer2->fields['id'],
-      ]);
+      ]));
 
       $relations_to_computer2_query = [
          'FROM'   => \ImpactRelation::getTable(),
