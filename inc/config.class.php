@@ -2034,6 +2034,8 @@ class Config extends CommonDBTM {
                  'check'   => 'UploadHandler' ],
                [ 'name'    => 'ramsey/uuid',
                  'check'   => 'Ramsey\\Uuid\\Uuid' ],
+               [ 'name'    => 'psr/log',
+                 'check'   => 'Psr\\Log\\LoggerInterface' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [

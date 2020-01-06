@@ -27,6 +27,7 @@
         "michelf/php-markdown": "^1.6",
         "monolog/monolog": "^1.23",
         "phpmailer/phpmailer": "^6.0",
+        "psr/log": "^1.1",
         "ramsey/uuid": "^3.8",
         "rlanvin/php-rrule": "^2.1",
         "sabre/dav": "^4.0",

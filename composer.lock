@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "baab592e0054af24c05c8a86f6d19e9f",
+    "content-hash": "793fb81e2481f649c046b7a93721bdf5",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -3611,7 +3611,7 @@
             "time": "2019-10-30T15:31:00+00:00"
         },
         {
-            "name": "natxet/cssmin",
+            "name": "natxet/CssMin",
             "version": "v3.0.6",
             "source": {
                 "type": "git",
