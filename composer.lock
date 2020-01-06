@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "adff3f698d4e7321637e4af07ed165fe",
+    "content-hash": "baab592e0054af24c05c8a86f6d19e9f",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -132,24 +132,11 @@
             "time": "2019-07-24T19:58:51+00:00"
         },
         {
-            "name": "fossar/htmlawed",
-            "version": "1.2.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fossar/HTMLawed.git",
-                "reference": "ef6373a26595e29686bb8e3f46ddc2041b97b0fa"
-            },
+            "name": "htmlawed/htmlawed",
+            "version": "1.2.5",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fossar/HTMLawed/zipball/ef6373a26595e29686bb8e3f46ddc2041b97b0fa",
-                "reference": "ef6373a26595e29686bb8e3f46ddc2041b97b0fa",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">4.4.0"
-            },
-            "replace": {
-                "htmlawed/htmlawed": "*"
+                "url": "https://www.bioinformatics.org/phplabware/downloads/htmLawed125.zip"
             },
             "type": "library",
             "autoload": {
@@ -157,28 +144,19 @@
                     "htmLawed.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0+",
-                "LGPL-3.0"
+                "LGPL-3.0-only",
+                "GPL-2.0-or-later"
             ],
             "authors": [
                 {
                     "name": "Santosh Patnaik",
-                    "homepage": "http://www.bioinformatics.org/people/index.php?user_hash=558b661f92d0ff7b",
+                    "email": "drpatnaik@yahoo.com",
                     "role": "Developer"
                 }
             ],
-            "description": "htmLawed - Process text with HTML markup to make it more compliant with HTML standards and administrative policies",
-            "homepage": "http://www.bioinformatics.org/phplabware/internal_utilities/htmLawed/",
-            "keywords": [
-                "HTMLtidy",
-                "html",
-                "sanitize",
-                "strip",
-                "tags"
-            ],
-            "time": "2017-12-06T05:09:01+00:00"
+            "description": "Official htmLawed PHP library for HTML filtering",
+            "homepage": "https://www.bioinformatics.org/phplabware/internal_utilities/htmLawed"
         },
         {
             "name": "iamcal/lib_autolink",
@@ -3633,7 +3611,7 @@
             "time": "2019-10-30T15:31:00+00:00"
         },
         {
-            "name": "natxet/cssmin",
+            "name": "natxet/CssMin",
             "version": "v3.0.6",
             "source": {
                 "type": "git",
