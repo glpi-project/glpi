@@ -1961,7 +1961,7 @@ class Config extends CommonDBTM {
       if (is_object($libstring)) {
          return realpath(dirname((new ReflectionObject($libstring))->getFileName()));
 
-      } else if (class_exists($libstring)) {
+      } else if (class_exists($libstring) || interface_exists($libstring)) {
          return realpath(dirname((new ReflectionClass($libstring))->getFileName()));
 
       } else if (function_exists($libstring)) {

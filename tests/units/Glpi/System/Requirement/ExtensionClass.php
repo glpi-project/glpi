@@ -34,12 +34,20 @@ namespace tests\units\Glpi\System\Requirement;
 
 class ExtensionClass extends \GLPITestCase {
 
-   public function testCheckOnExistingExtension() {
+   public function testCheckOnExistingExtensionByClass() {
 
       $this->newTestedInstance('zend-cache', 'Zend\\Cache\\StorageFactory');
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
       $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['zend-cache extension is installed']);
+   }
+
+   public function testCheckOnExistingExtensionByInterface() {
+
+      $this->newTestedInstance('psr-simplecache', 'Psr\\SimpleCache\\CacheInterface');
+      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
+      $this->array($this->testedInstance->getValidationMessages())
+         ->isEqualTo(['psr-simplecache extension is installed']);
    }
 
    public function testCheckOnMissingMandatoryExtension() {
