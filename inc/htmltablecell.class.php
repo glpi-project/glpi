@@ -77,7 +77,7 @@ class HTMLTableCell extends HTMLTableEntity {
       if (!is_null($this->father)) {
 
          if ($this->father->row != $this->row) {
-            throw new HTMLTableCellSameRow();
+            throw new HTMLTableCellFatherSameRow();
          }
 
          if ($this->father->header != $this->header->getFather()) {
