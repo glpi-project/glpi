@@ -236,8 +236,7 @@ var GLPIImpact = {
          {
             selector: 'node[highlight]',
             style: {
-               'overlay-opacity': 0.18,
-               'overlay-color'  : "gold",
+               'font-weight': 'bold',
             }
          },
          {
