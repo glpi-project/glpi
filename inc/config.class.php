@@ -1988,7 +1988,7 @@ class Config extends CommonDBTM {
       $sp = new SimplePie();
 
       // use same name that in composer.json
-      $deps = [[ 'name'    => 'fossar/htmlawed',
+      $deps = [[ 'name'    => 'htmlawed/htmlawed',
                  'version' => hl_version() ,
                  'check'   => 'hl_version' ],
                [ 'name'    => 'phpmailer/phpmailer',
