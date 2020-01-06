@@ -36,10 +36,10 @@ class ExtensionClass extends \GLPITestCase {
 
    public function testCheckOnExistingExtensionByClass() {
 
-      $this->newTestedInstance('zend-cache', 'Zend\\Cache\\StorageFactory');
+      $this->newTestedInstance('psr-log', 'Psr\\Log\\NullLogger');
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['zend-cache extension is installed']);
+         ->isEqualTo(['psr-log extension is installed']);
    }
 
    public function testCheckOnExistingExtensionByInterface() {
