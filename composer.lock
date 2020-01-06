@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
-            "version": "v10.6.0",
+            "version": "v10.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vkhramtsov/jQuery-File-Upload.git",
-                "reference": "2e602fc966ba40e1dc549971d28de14d6536e4e5"
+                "reference": "4677050d31be2da817e1d23d0bacb81fb4b37cb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vkhramtsov/jQuery-File-Upload/zipball/2e602fc966ba40e1dc549971d28de14d6536e4e5",
-                "reference": "2e602fc966ba40e1dc549971d28de14d6536e4e5",
+                "url": "https://api.github.com/repos/vkhramtsov/jQuery-File-Upload/zipball/4677050d31be2da817e1d23d0bacb81fb4b37cb3",
+                "reference": "4677050d31be2da817e1d23d0bacb81fb4b37cb3",
                 "shasum": ""
             },
             "type": "library",
@@ -59,7 +59,7 @@
                 "upload",
                 "widget"
             ],
-            "time": "2019-12-23T06:00:02+00:00"
+            "time": "2020-01-04T05:46:30+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -3611,7 +3611,7 @@
             "time": "2019-10-30T15:31:00+00:00"
         },
         {
-            "name": "natxet/CssMin",
+            "name": "natxet/cssmin",
             "version": "v3.0.6",
             "source": {
                 "type": "git",
