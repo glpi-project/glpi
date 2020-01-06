@@ -35,7 +35,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use LitEmoji\LitEmoji;
-use Zend\Mime\Mime as Zend_Mime;
 
 /**
  * MailCollector class
@@ -1480,8 +1479,8 @@ class MailCollector  extends CommonDBTM {
                //not an attachment
             return false;
          } else {
-            if (strtok($part->contentDisposition, ';') != Zend_Mime::DISPOSITION_ATTACHMENT
-               && strtok($part->contentDisposition, ';') != Zend_Mime::DISPOSITION_INLINE
+            if (strtok($part->contentDisposition, ';') != 'attachment'
+               && strtok($part->contentDisposition, ';') != 'inline'
             ) {
                //not an attachment
                return false;
