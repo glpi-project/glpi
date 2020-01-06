@@ -4701,7 +4701,7 @@ abstract class CommonITILObject extends CommonDBTM {
          } else { // predefined value
             if (isset($options["_users_id_assign"]) && $options["_users_id_assign"]
                 && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-               echo staic::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
+               echo static::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_users", $options["_users_id_assign"]);
                echo "<input type='hidden' name='_users_id_assign' value=\"".
                       $options["_users_id_assign"]."\">";
