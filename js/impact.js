@@ -234,7 +234,7 @@ var GLPIImpact = {
             }
          },
          {
-            selector: 'node[highlight]',
+            selector: 'node[highlight=1]',
             style: {
                'font-weight': 'bold',
             }
@@ -987,6 +987,7 @@ var GLPIImpact = {
       // Highlight starting node
       this.cy.filter("node[start]").data({
          highlight: 1,
+         start_node: 1,
       });
 
       // Enable context menu
@@ -1576,6 +1577,8 @@ var GLPIImpact = {
             eles : GLPIImpact.cy.filter(""),
          },
       });
+
+      this.cy.getElementById(startNode.id).data("highlight", 1);
    },
 
    /**
@@ -2076,6 +2079,9 @@ var GLPIImpact = {
     */
    onChange: function() {
       GLPIImpact.showDirtyWorkspaceStatus();
+
+      // Remove hightligh for recently inserted graph
+      GLPIImpact.cy.$("[highlight][!start_node]").data("highlight", 0);
    },
 
    /**
