@@ -1153,9 +1153,8 @@ function update94to95() {
    }
    /** /Domain records */
 
-
    /** SSO logout URL */
-   $migration->addField("glpi_configs", "ssologout_url", "string");
+   $migration->addConfig(['ssologout_url' => '']);
    /** SSO logout URL */
 
    // ************ Keep it at the end **************
