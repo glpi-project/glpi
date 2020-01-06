@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 class Pdu_Plug extends CommonDBRelation {
 
-   static public $itemtype_1 = 'Pdu';
+   static public $itemtype_1 = 'PDU';
    static public $items_id_1 = 'pdus_id';
    static public $itemtype_2 = 'Plug';
    static public $items_id_2 = 'plugs_id';

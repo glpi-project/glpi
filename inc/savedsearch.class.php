@@ -1303,7 +1303,7 @@ class SavedSearch extends CommonDBTM {
       $cron_status = 0;
 
       if ($CFG_GLPI['show_count_on_tabs'] != -1) {
-         $lastdate = new \Datetime($task->getField('lastrun'));
+         $lastdate = new \DateTime($task->getField('lastrun'));
          $lastdate->sub(new \DateInterval('P7D'));
 
          $iterator = $DB->request(['FROM'   => self::getTable(),

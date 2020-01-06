@@ -419,7 +419,7 @@ class Config extends CommonDBTM {
                             'value'                 => $CFG_GLPI['lock_lockprofile_id'],
                             'rand'                  => $rand]);
       } else {
-         echo dropdown::getDropdownName(Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']);
+         echo Dropdown::getDropdownName(Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']);
       }
       echo "</td></tr>";
 
@@ -677,7 +677,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('Action when a user is deleted from the LDAP directory') . "</td><td>";
-      AuthLDap::dropdownUserDeletedActions($CFG_GLPI["user_deleted_ldap"]);
+      AuthLDAP::dropdownUserDeletedActions($CFG_GLPI["user_deleted_ldap"]);
       echo "</td><td> " . __('GLPI server time zone') . "</td><td>";
       Dropdown::showGMT("time_offset", $CFG_GLPI["time_offset"]);
       echo "</td></tr>";

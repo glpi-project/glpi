@@ -36,5 +36,5 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new ProjecttaskTemplate();
+$dropdown = new ProjectTaskTemplate();
 include (GLPI_ROOT . "/front/dropdown.common.php");

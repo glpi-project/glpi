@@ -644,7 +644,7 @@ class DBmysqlIterator implements Iterator, Countable {
                throw new \RuntimeException('BAD JOIN');
             }
 
-            if ($jointablekey instanceof \QuerySubquery) {
+            if ($jointablekey instanceof \QuerySubQuery) {
                $jointablekey = $jointablekey->getQuery();
             } else {
                $jointablekey = DBmysql::quoteName($jointablekey);

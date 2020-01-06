@@ -724,7 +724,7 @@ trait PlanningEvent {
       // we need to set a top level property for that (not directly in rrule one)
       if (isset($rrule['exceptions'])) {
          foreach ($rrule['exceptions'] as $exception) {
-            $exdate = new \Datetime($exception);
+            $exdate = new \DateTime($exception);
             $exdate->setTime(
                $dtstart_datetime->format('G'),
                $dtstart_datetime->format('i'),

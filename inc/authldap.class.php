@@ -1915,7 +1915,7 @@ class AuthLDAP extends CommonDBTM {
 
          foreach ($diff as $user) {
             //If user dn exists in DB, it means that user login field has changed
-            if (!$tmpuser->getFromDBByDn(toolbox::addslashes_deep($user_infos[$user]["user_dn"]))) {
+            if (!$tmpuser->getFromDBByDn(Toolbox::addslashes_deep($user_infos[$user]["user_dn"]))) {
                $entry  = ["user"      => $user_infos[$user][$config_ldap->fields['login_field']],
                           "timestamp" => $user_infos[$user]["timestamp"],
                           "date_sync" => Dropdown::EMPTY_VALUE];
@@ -2802,7 +2802,7 @@ class AuthLDAP extends CommonDBTM {
          $auth->auth_succeded            = true;
          // try by login+auth_id and next by dn
          if ($auth->user->getFromDBbyNameAndAuth($login, Auth::LDAP, $ldap_method['id'])
-             || $auth->user->getFromDBbyDn(toolbox::addslashes_deep($user_dn))) {
+             || $auth->user->getFromDBbyDn(Toolbox::addslashes_deep($user_dn))) {
             //There's already an existing user in DB with the same DN but its login field has changed
             $auth->user->fields['name'] = $login;
             $auth->user_present         = true;

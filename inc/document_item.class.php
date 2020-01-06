@@ -954,7 +954,7 @@ class Document_Item extends CommonDBRelation{
     * @param boolean $noent    Flag to not compute enitty informations (see Document_Item::getTypeItemsQueryParams)
     * @param array   $where    Inital WHERE clause. Defaults to []
     *
-    * @return DBMysqlIterator
+    * @return DBmysqlIterator
     */
    protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = []) {
       $commonwhere = ['OR'  => [

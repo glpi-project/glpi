@@ -64,7 +64,7 @@ class CommonITILValidation extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-      $guser = new \Group_user();
+      $guser = new \Group_User();
       $this->integer(
          (int)$guser->add([
             'groups_id' => $gid,
@@ -72,7 +72,7 @@ class CommonITILValidation extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-      $guser = new \Group_user();
+      $guser = new \Group_User();
       $this->integer(
          (int)$guser->add([
             'groups_id' => $gid,
@@ -80,7 +80,7 @@ class CommonITILValidation extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-      $guser = new \Group_user();
+      $guser = new \Group_User();
       $this->integer(
          (int)$guser->add([
             'groups_id' => $gid,

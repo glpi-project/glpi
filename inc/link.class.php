@@ -94,7 +94,7 @@ class Link extends CommonDBTM {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Link_ItemType', $ong, $options);
+      $this->addStandardTab('Link_Itemtype', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;

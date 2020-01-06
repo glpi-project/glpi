@@ -119,7 +119,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
       if ($request === true) {
          $conditions[] = $where1;
-         $it = new \DBMysqlIterator($DB);
+         $it = new \DBmysqlIterator($DB);
          $fields[]     = new \QueryExpression(
             'IF('.$it->analyseCrit($where1).', 1, 0) AS is_1'
          );
@@ -145,7 +145,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
       if ($request === true) {
          $conditions[] = $where2;
-         $it = new \DBMysqlIterator($DB);
+         $it = new \DBmysqlIterator($DB);
          $fields[]     = new \QueryExpression(
             'IF('.$it->analyseCrit($where2).', 1, 0) AS is_2'
          );
@@ -1574,7 +1574,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       $link = new $link_type;
-      $link_table = getTableForItemtype($link_type);
+      $link_table = getTableForItemType($link_type);
 
       $params = [
          'SELECT'    => [static::getTable() . '.id AS linkid', $link_table . '.*'],
@@ -1671,7 +1671,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param integer $items_id    Object id to restrict on
     * @param array   $extra_where Extra where clause
     *
-    * @return DBMysqlIterator
+    * @return DBmysqlIterator
     */
    public static function getDistinctTypes($items_id, $extra_where = []) {
       global $DB;
@@ -1764,7 +1764,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param integer $items_id Object id to restrict on
     * @param string  $itemtype Type for items to retrieve
     *
-    * @return DBMysqlIterator
+    * @return DBmysqlIterator
     */
    public static function getTypeItems($items_id, $itemtype) {
       global $DB;

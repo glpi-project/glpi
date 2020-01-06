@@ -256,7 +256,7 @@ class Stat extends CommonGLPI {
             } else {
                // Dropdown case for computers
                $field = "name";
-               $table = getTableFOrItemType($type);
+               $table = getTableForItemType($type);
                if (($item = getItemForItemtype($type))
                    && ($item instanceof CommonTreeDropdown)) {
                   $field = "completename";

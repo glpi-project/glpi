@@ -1087,7 +1087,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '51',
-         'table'              => getTableForItemtype(static::$itemtype),
+         'table'              => getTableForItemType(static::$itemtype),
          'field'              => 'validation_percent',
          'name'               => __('Minimum validation required'),
          'datatype'           => 'number',
@@ -1099,7 +1099,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '52',
-         'table'              => getTableForItemtype(static::$itemtype),
+         'table'              => getTableForItemType(static::$itemtype),
          'field'              => 'global_validation',
          'name'               => __('Approval'),
          'searchtype'         => 'equals',
@@ -1367,7 +1367,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if (count($list) > 0) {
          $restrict = ['glpi_users.id' => $list];
       }
-      $users = Group_user::getGroupUsers($params['groups_id'], $restrict);
+      $users = Group_User::getGroupUsers($params['groups_id'], $restrict);
 
       return $users;
    }
@@ -1448,7 +1448,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $list = "";
       foreach ($stats as $stat => $val) {
          $list .= $tab[$stat];
-         $list .= sprintf(__('%1$s (%2$d%%) '), " ", HTml::formatNumber($val*100/$nb));
+         $list .= sprintf(__('%1$s (%2$d%%) '), " ", Html::formatNumber($val*100/$nb));
       }
 
       return $list;
