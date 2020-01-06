@@ -36,10 +36,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Psr\SimpleCache\CacheInterface;
 use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
 use Zend\Cache\Storage\StorageInterface;
 
-class SimpleCache extends SimpleCacheDecorator {
+class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
 
    /**
     * Determines if footprints must be checked.
