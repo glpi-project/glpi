@@ -74,6 +74,16 @@ class KnowbaseItem extends CommonDBVisible {
       return 'b';
    }
 
+
+   function getName($options = []) {
+      if (KnowbaseItemTranslation::canBeTranslated($this)) {
+         return KnowbaseItemTranslation::getTranslatedValue($this);
+      }
+
+      return parent::getName();
+   }
+
+
    /**
     * @see CommonGLPI::getMenuName()
     *
