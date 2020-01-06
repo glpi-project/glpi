@@ -20,6 +20,9 @@ jobs:
         run: |
           sudo cp --no-target-directory --preserve --recursive `pwd` /glpi
           sudo chown -R 1000:1000 /glpi
+      - name: Validate composer config
+        run: |
+          docker exec ${{ job.services.app.id }} composer validate --strict
       - name: "Install dependencies"
         run: |
           docker exec ${{ job.services.app.id }} rm composer.lock

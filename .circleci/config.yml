@@ -63,6 +63,7 @@ commands:
             composer --version
             echo "node version: $(node --version)"
             echo "npm version: $(npm --version)"
+            composer validate --strict
             mv composer.lock composer.lock.bak
             composer config --unset platform
             bin/console dependencies install --composer-options="--prefer-dist --no-progress"
