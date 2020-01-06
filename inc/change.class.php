@@ -349,7 +349,7 @@ class Change extends CommonITILObject {
 
             //Copy associated elements
             $iterator = $DB->request([
-               'FROM'   => Problem_Item::getTable(),
+               'FROM'   => Item_Problem::getTable(),
                'WHERE'  => [
                   'problems_id'   => $this->input['_problems_id']
                ]
