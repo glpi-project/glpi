@@ -677,7 +677,7 @@ class KnowbaseItem extends CommonDBVisible {
                ]);
                $this->fields['answer'] = $solution->getField('content');
                if ($item->isField('itilcategories_id')) {
-                  $ic = new ItilCategory();
+                  $ic = new ITILCategory();
                   if ($ic->getFromDB($item->getField('itilcategories_id'))) {
                      $this->fields['knowbaseitemcategories_id']
                            = $ic->getField('knowbaseitemcategories_id');

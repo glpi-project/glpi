@@ -91,7 +91,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
                                            addslashes($data["comment"]));
             if ($data['id'] != $ID) {
                $tomove[$data['id']] = $ID;
-               $type                = GetItemTypeForTable($this->item_table);
+               $type                = getItemTypeForTable($this->item_table);
 
                if ($dropdown = getItemForItemtype($type)) {
                   $dropdown->delete(['id'          => $data['id'],

@@ -161,7 +161,7 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
 
    //insert netpoint
    $netpoint   = new NetPoint();
-   $netpointID = $netpoint->add(toolbox::addslashes_deep([
+   $netpointID = $netpoint->add(Toolbox::addslashes_deep([
       'entities_id'  => $entities_id,
       'locations_id' => $locations_id,
       'name'         => getNextNETPOINT(),
@@ -187,7 +187,7 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
       $newIP2      = getNextIP();
 
       // Create new port on ref item
-      $param = toolbox::addslashes_deep([
+      $param = Toolbox::addslashes_deep([
          'itemtype'                 => 'NetworkEquipment',
          'items_id'                 => $NET_LOC[$locations_id],
          'entities_id'              => $entities_id,
@@ -219,7 +219,7 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
    //                      '".$newIP['subnet']."','comment')";
    //    $DB->query($query) or die("PB REQUETE ".$query);
 
-   $param = toolbox::addslashes_deep([
+   $param = Toolbox::addslashes_deep([
       'itemtype'                 => $itemtype,
       'items_id'                 => $items_id,
       'entities_id'              => $entities_id,
@@ -268,7 +268,7 @@ function addReservation($type, $ID, $ID_entity) {
    if (mt_rand(0, 100)<$percent['reservationitems']) {
       $ri  = new Reservationitem();
       $r   = new Reservation();
-      $tID = $ri->add(toolbox::addslashes_deep([
+      $tID = $ri->add(Toolbox::addslashes_deep([
          'itemtype'     => $type,
          'entities_id'  => $ID_entity,
          'is_recursive' => 0,
@@ -285,7 +285,7 @@ function addReservation($type, $ID, $ID_entity) {
          $date1 = $date2+HOUR_TIMESTAMP*(1+mt_rand(0, 10)); // min 10 hours between each resa max
          $date2 = $date1+HOUR_TIMESTAMP*mt_rand(1, 10); // A reservation from 1 to 5 hours
          //          echo $tID.' '.date("Y-m-d H:i:s", $date1).'->'.date("Y-m-d H:i:s", $date2).'<br>';
-         $r->add(toolbox::addslashes_deep([
+         $r->add(Toolbox::addslashes_deep([
             'reservationitems_id' => $tID,
             'begin'               => date("Y-m-d H:i:s", $date1),
             'end'                 => date("Y-m-d H:i:s", $date2),
@@ -356,7 +356,7 @@ function addInfocoms($type, $ID, $ID_entity, $is_recursive = 0) {
    $inventorydate = date("Y-m-d", intval($inventorydate));
 
    $i = new Infocom();
-   $i->add(toolbox::addslashes_deep([
+   $i->add(Toolbox::addslashes_deep([
       'itemtype'           => $type,
       'items_id'          => $ID,
       'entities_id'       => $ID_entity,
@@ -514,7 +514,7 @@ function addTracking($type, $ID, $ID_entity) {
          $solvedatetoadd = date("Y-m-d H:i:s", intval($solvedate));
       }
       $t   = new Ticket();
-      $tID = $t->add(toolbox::addslashes_deep([
+      $tID = $t->add(Toolbox::addslashes_deep([
          'entities_id'                 => $ID_entity,
          'name'                        => $faker->realText(50),
          'date'                        => date("Y-m-d H:i:s", intval($opendate)),
@@ -589,7 +589,7 @@ function addTracking($type, $ID, $ID_entity) {
             ]);
          }
 
-         $tf->add(toolbox::addslashes_deep(
+         $tf->add(Toolbox::addslashes_deep(
                   ['itemtype'        => 'Ticket',
                    'items_id'        => $tID,
                    'date'            => date("Y-m-d H:i:s", $date),
@@ -618,7 +618,7 @@ function addTracking($type, $ID, $ID_entity) {
                $state = 2; // done
             }
          }
-         $params = toolbox::addslashes_deep(
+         $params = Toolbox::addslashes_deep(
                    ['tickets_id'        => $tID,
                     'taskcategories_id' => mt_rand($FIRST['taskcategory'], $LAST['taskcategory']),
                     'date'              => date("Y-m-d H:i:s", $date),
@@ -682,7 +682,7 @@ function addTracking($type, $ID, $ID_entity) {
       }
 
       $tc = new TicketCost();
-      $params = toolbox::addslashes_deep([
+      $params = Toolbox::addslashes_deep([
          'tickets_id'        => $tID,
          'entities_id'       => $ID_entity,
          'begin_date'        => date("Y-m-d H:i:s", intval($opendate)),
@@ -700,7 +700,7 @@ function addTracking($type, $ID, $ID_entity) {
             $answerdate = $closedatetoadd;
          }
          $ts = new TicketSatisfaction();
-         $ts->add(toolbox::addslashes_deep([
+         $ts->add(Toolbox::addslashes_deep([
             'tickets_id'   => $tID,
             'type'         => mt_rand(1, 2),
             'date_begin'   => $closedatetoadd,
@@ -734,7 +734,7 @@ function addDisks($itemtype, $items_id, $ID_entity, $chance = 100) {
       for ($j=1; $j<=$nb_disk; $j++) {
          $totalsize = $faker->numberBetween(10000, 1000000);
 
-         $idisk->add(toolbox::addslashes_deep([
+         $idisk->add(Toolbox::addslashes_deep([
             'itemtype'        => $itemtype,
             'entities_id'     => $ID_entity,
             'items_id'        => $items_id,
@@ -764,7 +764,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d' consommable $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -778,7 +778,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "power ' $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -792,7 +792,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "power ' $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -806,7 +806,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d' cartouche $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -821,7 +821,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d' contact $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -835,7 +835,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d' crontact $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -850,7 +850,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d'entreprise $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -865,7 +865,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "firmware  $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -879,7 +879,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d' disque dur $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -894,7 +894,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type carte reseau $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -908,7 +908,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de mise a jour '$i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -923,7 +923,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "Modele $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment' $val"
       ]));
@@ -938,7 +938,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele imprimante $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -953,7 +953,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele moniteur $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -968,7 +968,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele materiel reseau $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -983,7 +983,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele peripherique $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -998,7 +998,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele phone $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment' $val"
       ]));
@@ -1013,7 +1013,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "reseau $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -1029,7 +1029,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "os $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -1043,7 +1043,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "osversion $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -1057,7 +1057,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "ossp $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -1071,7 +1071,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de ram $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment' $val"
       ]));
@@ -1085,13 +1085,13 @@ function generateGlobalDropdowns() {
       } else {
          $val = "category $i";
       }
-      $newID = $dp->add(toolbox::addslashes_deep([
+      $newID = $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
 
       for ($j=0; $j<mt_rand(0, pow($MAX['softwarecategory'], 1/2)); $j++) {
-         $newID2 = $dp->add(toolbox::addslashes_deep([
+         $newID2 = $dp->add(Toolbox::addslashes_deep([
             'name'                  => "s-category '$j",
             'comment'               => "comment d' $val s-category $j",
             'softwarecategories_id' => $newID
@@ -1103,7 +1103,7 @@ function generateGlobalDropdowns() {
    $dp = new SoftwareLicenseType();
    for ($i=0; $i<$MAX['licensetype']; $i++) {
       $val = "type ' $i";
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -1118,7 +1118,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "VLAN $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val",
          'tag'     => $i
@@ -1133,7 +1133,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type ordinateur $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -1147,7 +1147,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type d'imprimante $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -1161,7 +1161,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type ecran $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -1175,7 +1175,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de materiel reseau '$i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -1189,7 +1189,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de peripheriques '$i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -1203,7 +1203,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de phone $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -1217,7 +1217,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "manufacturer $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment '$val"
       ]));
@@ -1226,7 +1226,7 @@ function generateGlobalDropdowns() {
    $dp = new UserCategory();
    for ($i=0; $i<$MAX['user_type']; $i++) {
       $val = $faker->jobTitle;
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -1240,7 +1240,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "user type '$i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'    => $val,
          'comment' => "comment $val"
       ]));
@@ -1255,11 +1255,11 @@ function generateGlobalDropdowns() {
       } else {
          $val = "category $i";
       }
-      $newID = $dp->add(toolbox::addslashes_deep(['name'    => $val,
+      $newID = $dp->add(Toolbox::addslashes_deep(['name'    => $val,
                                                        'comment' => "comment $val"]));
 
       for ($j=0; $j<mt_rand(0, pow($MAX['rubdocs'], 1/2)); $j++) {
-         $newID2 = $dp->add(toolbox::addslashes_deep([
+         $newID2 = $dp->add(Toolbox::addslashes_deep([
             'name'                  => "s-category '$j",
             'comment'               => "comment d' $val s-category $j",
             'documentcategories_id' => $newID
@@ -1268,10 +1268,10 @@ function generateGlobalDropdowns() {
    }
    $MAX['rubdocs'] = getMaxItem('glpi_documentcategories');
 
-   $dp = new ItilCategory();
+   $dp = new ITILCategory();
    // GLobal ticket categories : also specific ones by entity
    for ($i=0; $i<max(1, pow($MAX['tracking_category'], 1/3)); $i++) {
-      $newID = $dp->add(toolbox::addslashes_deep([
+      $newID = $dp->add(Toolbox::addslashes_deep([
          'name'                        => "category '$i",
          'comment'                     => "comment ' category $i",
          'is_recursive'                => 1,
@@ -1280,7 +1280,7 @@ function generateGlobalDropdowns() {
       ]));
 
       for ($j=0; $j<mt_rand(0, pow($MAX['tracking_category'], 1/2)); $j++) {
-         $newID2 = $dp->add(toolbox::addslashes_deep([
+         $newID2 = $dp->add(Toolbox::addslashes_deep([
             'name'                        => "s-category '$j",
             'comment'                     => "comment 'category $i s-category $j",
             'is_recursive'                => 1,
@@ -1290,7 +1290,7 @@ function generateGlobalDropdowns() {
          ]));
 
          for ($k=0; $k<mt_rand(0, pow($MAX['tracking_category'], 1/2)); $k++) {
-            $newID3 = $dp->add(toolbox::addslashes_deep([
+            $newID3 = $dp->add(Toolbox::addslashes_deep([
                'name'                        => "ss-category' $k",
                'comment'      => "comment ' category $i s-category $j ss-category $k",
                'is_recursive'                => 1,
@@ -1319,7 +1319,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "case $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment '$val",
@@ -1337,7 +1337,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "control $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment ' $val",
@@ -1355,7 +1355,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "drive $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment '$val",
@@ -1376,7 +1376,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "gfxcard $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment ' $val",
@@ -1395,7 +1395,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "hdd  $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment' $val",
@@ -1416,7 +1416,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "iface  $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment' $val",
@@ -1436,7 +1436,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "moboard $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment' $val",
@@ -1454,7 +1454,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "pci $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment '$val",
@@ -1471,7 +1471,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "power $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment '$val",
@@ -1491,7 +1491,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "processor $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'        => $val,
          'is_recursive'       => 1,
          'comment'            => "comment' $val",
@@ -1513,7 +1513,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "ram $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'          => $val,
          'is_recursive'         => 1,
          'comment'              => "comment' $val",
@@ -1534,7 +1534,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "sndcard $i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'designation'      => $val,
          'is_recursive'     => 1,
          'comment'          => "comment '$val",
@@ -1584,7 +1584,7 @@ function generate_entity($ID_entity) {
       } else {
          $val = "domain $ID_entity '$i";
       }
-      $dp->add(toolbox::addslashes_deep([
+      $dp->add(Toolbox::addslashes_deep([
          'name'         => $val,
          'entities_id'  => $ID_entity,
          'is_recursive' => 1,
@@ -1603,7 +1603,7 @@ function generate_entity($ID_entity) {
       } else {
          $val = "State $ID_entity '$i";
       }
-      $state_id = $dp->add(toolbox::addslashes_deep([
+      $state_id = $dp->add(Toolbox::addslashes_deep([
          'name'         => $val,
          'entities_id'  => $ID_entity,
          'is_recursive' => 1,
@@ -1614,7 +1614,7 @@ function generate_entity($ID_entity) {
       for ($j=0; $j<$MAX['state']; $j++) {
          $val2 = "Sub $val $j";
 
-         $dp->add(toolbox::addslashes_deep([
+         $dp->add(Toolbox::addslashes_deep([
             'name'         => $val2,
             'entities_id'  => $ID_entity,
             'is_recursive' => 1,
@@ -1630,7 +1630,7 @@ function generate_entity($ID_entity) {
    $FIRST["groups"] = getMaxItem("glpi_groups")+1;
    $group           = new Group();
    for ($i=0; $i<$MAX['groups']; $i++) {
-      $gID = $group->add(toolbox::addslashes_deep([
+      $gID = $group->add(Toolbox::addslashes_deep([
          'entities_id'  => $ID_entity,
          'name'         => "group d'$i",
          'comment'      => "comment group d'$i",
@@ -1639,7 +1639,7 @@ function generate_entity($ID_entity) {
 
       // Generate sub group
       for ($j=0; $j<$MAX['groups']; $j++) {
-         $group->add(toolbox::addslashes_deep([
+         $group->add(Toolbox::addslashes_deep([
             'entities_id'  => $ID_entity,
             'name'         => "subgroup d'$j",
             'comment'      => "comment subgroup d'$j of group $i",
@@ -1654,7 +1654,7 @@ function generate_entity($ID_entity) {
    $FIRST["techgroups"] = $LAST["groups"]+1;
 
    for ($i=0; $i<$MAX['groups']; $i++) {
-         $group->add(toolbox::addslashes_deep([
+         $group->add(Toolbox::addslashes_deep([
             'entities_id'  => $ID_entity,
             'name'         => "tech group d'$i",
             'comment'      => "comment tech group d'$i"
@@ -1669,7 +1669,7 @@ function generate_entity($ID_entity) {
    $user                  = new User();
    $gu                    = new Group_User();
    for ($i=0; $i<$MAX['users_sadmin']; $i++) {
-      $users_id = $user->add(toolbox::addslashes_deep([
+      $users_id = $user->add(Toolbox::addslashes_deep([
         'name'              => $faker->unique()->userName,
         'password'          => "sadmin'$i",
         'password2'         => "sadmin'$i",
@@ -1701,7 +1701,7 @@ function generate_entity($ID_entity) {
 
    for ($i=0; $i<$MAX['users_admin']; $i++) {
 
-      $users_id = $user->add(toolbox::addslashes_deep([
+      $users_id = $user->add(Toolbox::addslashes_deep([
          'name'               => $faker->unique()->userName,
          'password'           => "admin'$i",
          'password2'          => "admin'$i",
@@ -1737,7 +1737,7 @@ function generate_entity($ID_entity) {
    $FIRST["users_normal"] = getMaxItem("glpi_users")+1;
 
    for ($i=0; $i<$MAX['users_normal']; $i++) {
-      $users_id = $user->add(toolbox::addslashes_deep([
+      $users_id = $user->add(Toolbox::addslashes_deep([
          'name'               => $faker->unique()->userName,
          'password'           => "normal'$i",
          'password2'          => "normal'$i",
@@ -1769,7 +1769,7 @@ function generate_entity($ID_entity) {
    $FIRST["users_postonly"] = getMaxItem("glpi_users")+1;
 
    for ($i=0; $i<$MAX['users_postonly']; $i++) {
-      $users_id = $user->add(toolbox::addslashes_deep([
+      $users_id = $user->add(Toolbox::addslashes_deep([
          'name'               => $faker->unique()->userName,
          'password'           => "postonly'$i",
          'password2'          => "postonly'$i",
@@ -1798,7 +1798,7 @@ function generate_entity($ID_entity) {
    $kbc                   = new KnowbaseItemCategory();
 
    for ($i=0; $i<max(1, pow($MAX['kbcategories'], 1/3)); $i++) {
-      $newID = $kbc->add(toolbox::addslashes_deep([
+      $newID = $kbc->add(Toolbox::addslashes_deep([
          'entities_id'     => $ID_entity,
          'is_recursive'    => 1,
          'name'            => "entity ' categorie $i",
@@ -1806,7 +1806,7 @@ function generate_entity($ID_entity) {
       ]));
 
       for ($j=0; $j<mt_rand(0, pow($MAX['kbcategories'], 1/2)); $j++) {
-         $newID2 = $kbc->add(toolbox::addslashes_deep([
+         $newID2 = $kbc->add(Toolbox::addslashes_deep([
             'entities_id'                 => $ID_entity,
             'is_recursive'                => 1,
             'name'                        => "entity s-categorie '$j",
@@ -1815,7 +1815,7 @@ function generate_entity($ID_entity) {
          ]));
 
          for ($k=0; $k<mt_rand(0, pow($MAX['kbcategories'], 1/2)); $k++) {
-            $newID2 = $kbc->add(toolbox::addslashes_deep([
+            $newID2 = $kbc->add(Toolbox::addslashes_deep([
                'entities_id'               => $ID_entity,
                'is_recursive'              => 1,
                'name'                      => "entity ss-categorie' $k",
@@ -1838,7 +1838,7 @@ function generate_entity($ID_entity) {
    $loc                = new Location();
    for ($i=0; $i<pow($MAX['locations'], 1/5)&&$added<$MAX['locations']; $i++) {
       $added++;
-      $newID = $loc->add(toolbox::addslashes_deep([
+      $newID = $loc->add(Toolbox::addslashes_deep([
          'entities_id'     => $ID_entity,
          'is_recursive'    => 1,
          'name'            => "location' $i",
@@ -1848,7 +1848,7 @@ function generate_entity($ID_entity) {
 
       for ($j=0; $j<mt_rand(0, pow($MAX['locations'], 1/4))&&$added<$MAX['locations']; $j++) {
          $added++;
-         $newID2 = $loc->add(toolbox::addslashes_deep([
+         $newID2 = $loc->add(Toolbox::addslashes_deep([
             'entities_id'     => $ID_entity,
             'is_recursive'    => 1,
             'name'            => "s-location '$j",
@@ -1860,7 +1860,7 @@ function generate_entity($ID_entity) {
 
          for ($k=0; $k<mt_rand(0, pow($MAX['locations'], 1/4))&&$added<$MAX['locations']; $k++) {
             $added++;
-            $newID3 = $loc->add(toolbox::addslashes_deep([
+            $newID3 = $loc->add(Toolbox::addslashes_deep([
                'entities_id'     => $ID_entity,
                'is_recursive'    => 1,
                'name'            => "ss-location '$k",
@@ -1872,7 +1872,7 @@ function generate_entity($ID_entity) {
 
             for ($l=0; $l<mt_rand(0, pow($MAX['locations'], 1/4))&&$added<$MAX['locations']; $l++) {
                $added++;
-               $newID4 = $loc->add(toolbox::addslashes_deep([
+               $newID4 = $loc->add(Toolbox::addslashes_deep([
                   'entities_id'     => $ID_entity,
                   'is_recursive'    => 1,
                   'name'            => "sss-location' $l",
@@ -1884,7 +1884,7 @@ function generate_entity($ID_entity) {
 
                for ($m=0; $m<mt_rand(0, pow($MAX['locations'], 1/4))&&$added<$MAX['locations']; $m++) {
                   $added++;
-                  $newID5 = $loc->add(toolbox::addslashes_deep([
+                  $newID5 = $loc->add(Toolbox::addslashes_deep([
                      'entities_id'     => $ID_entity,
                      'is_recursive'    => 1,
                      'name'            => "ssss-location' $m",
@@ -1911,7 +1911,7 @@ function generate_entity($ID_entity) {
    $tc                    = new TaskCategory();
    for ($i=0; $i<pow($MAX['taskcategory'], 1/5)&&$added<$MAX['taskcategory']; $i++) {
       $added++;
-      $newID = $tc->add(toolbox::addslashes_deep([
+      $newID = $tc->add(Toolbox::addslashes_deep([
          'entities_id'     => $ID_entity,
          'is_recursive'    => 1,
          'name'            => "ent$ID_entity taskcategory' $i",
@@ -1919,7 +1919,7 @@ function generate_entity($ID_entity) {
       ]));
 
       for ($j=0; $j<mt_rand(0, pow($MAX['locations'], 1/4))&&$added<$MAX['locations']; $j++) {
-         $newID2 = $tc->add(toolbox::addslashes_deep([
+         $newID2 = $tc->add(Toolbox::addslashes_deep([
             'entities_id'        => $ID_entity,
             'is_recursive'       => 1,
             'name'               => "ent$ID_entity taskcategory' $i",
@@ -1936,9 +1936,9 @@ function generate_entity($ID_entity) {
    regenerateTreeCompleteName("glpi_taskcategories");
    $LAST["taskcategory"] = getMaxItem("glpi_taskcategories");
 
-   $ic = new ItilCategory();
+   $ic = new ITILCategory();
    // Specific ticket categories
-   $newID = $ic->add(toolbox::addslashes_deep([
+   $newID = $ic->add(Toolbox::addslashes_deep([
       'entities_id'     => $ID_entity,
       'is_recursive'    => 1,
       'name'            => "category for entity' $ID_entity",
@@ -1950,7 +1950,7 @@ function generate_entity($ID_entity) {
    ]));
 
    for ($i=0; $i<max(1, pow($MAX['tracking_category'], 1/3)); $i++) {
-      $ic->add(toolbox::addslashes_deep([
+      $ic->add(Toolbox::addslashes_deep([
          'entities_id'                 => $ID_entity,
          'is_recursive'                => 1,
          'name'                        => "scategory for entity' $ID_entity",
@@ -1975,7 +1975,7 @@ function generate_entity($ID_entity) {
       } else {
          $val = "Solution type ' $i";
       }
-      $st->add(toolbox::addslashes_deep(['name'         => $val,
+      $st->add(Toolbox::addslashes_deep(['name'         => $val,
                                               'comment'      => "comment $val",
                                               'entities_id'  => $ID_entity,
                                               'is_recursive' => 1]));
@@ -1986,7 +1986,7 @@ function generate_entity($ID_entity) {
    $nb_items                   = mt_rand(0, $MAX['solutiontemplates']);
    $st                         = new SolutionTemplate();
    for ($i=0; $i<$nb_items; $i++) {
-      $st-> add(toolbox::addslashes_deep([
+      $st-> add(Toolbox::addslashes_deep([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 1,
          'name'               => "solution' $i-$ID_entity",
@@ -2007,7 +2007,7 @@ function generate_entity($ID_entity) {
       $nb = mt_rand(0, $MAX_KBITEMS_BY_CAT);
       for ($j=0; $j<$nb; $j++) {
          $k++;
-         $newID = $ki->add(toolbox::addslashes_deep([
+         $newID = $ki->add(Toolbox::addslashes_deep([
             'knowbaseitemcategories_id'   => $i,
             'name'      => "Entity' $ID_entity Question $k",
             'answer'    => "Answer' $k".Toolbox::getRandomString(50),
@@ -2028,7 +2028,7 @@ function generate_entity($ID_entity) {
       $nb = mt_rand(0, $MAX_KBITEMS_BY_CAT);
       for ($j=0; $j<$nb; $j++) {
          $k++;
-         $newID = $ki->add(toolbox::addslashes_deep([
+         $newID = $ki->add(Toolbox::addslashes_deep([
             'knowbaseitemcategories_id'   => $i,
             'name'      => "Entity' $ID_entity Recursive Question $k",
             'answer'    => "Answer' $k".Toolbox::getRandomString(50),
@@ -2055,7 +2055,7 @@ function generate_entity($ID_entity) {
          $link = "http://linktodoc/doc$i";
       }
 
-      $docID = $doc->add(toolbox::addslashes_deep([
+      $docID = $doc->add(Toolbox::addslashes_deep([
          'entities_id'           => $ID_entity,
          'is_recursive'          => 0,
          'name'                  => "document' $i-$ID_entity",
@@ -2075,7 +2075,7 @@ function generate_entity($ID_entity) {
          $link = "http://linktodoc/doc$i";
       }
 
-      $docID = $doc->add(toolbox::addslashes_deep([
+      $docID = $doc->add(Toolbox::addslashes_deep([
          'entities_id'           => $ID_entity,
          'is_recursive'          => 1,
          'name'                  => "Recursive document' $i-$ID_entity",
@@ -2097,7 +2097,7 @@ function generate_entity($ID_entity) {
       $date1 = strtotime(mt_rand(2000, $current_year)."-".mt_rand(1, 12)."-".mt_rand(1, 28));
       $date2 = $date1+MONTH_TIMESTAMP*12*mt_rand(1, 4); // + entre 1 et 4 ans
 
-      $b->add(toolbox::addslashes_deep([
+      $b->add(Toolbox::addslashes_deep([
          'name'         => "budget' $i-$ID_entity",
          'entities_id'  => $ID_entity,
          'is_recusive'  => 0,
@@ -2113,7 +2113,7 @@ function generate_entity($ID_entity) {
       $date1 = strtotime(mt_rand(2000, $current_year)."-".mt_rand(1, 12)."-".mt_rand(1, 28));
       $date2 = $date1+MONTH_TIMESTAMP*12*mt_rand(1, 4); // + entre 1 et 4 ans
 
-      $b->add(toolbox::addslashes_deep([
+      $b->add(Toolbox::addslashes_deep([
          'name'         => "Recursive budget' $i-$ID_entity",
          'entities_id'  => $ID_entity,
          'is_recusive'  => 1,
@@ -2138,7 +2138,7 @@ function generate_entity($ID_entity) {
       } else {
          $val = "Recursive enterprise_".$i."_ID_entity";
       }
-      $entID = $ent->add(toolbox::addslashes_deep([
+      $entID = $ent->add(Toolbox::addslashes_deep([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 1,
          'name'               => "Recursive' $val-$ID_entity",
@@ -2165,7 +2165,7 @@ function generate_entity($ID_entity) {
          $val = "enterprise_".$i."_ID_entity";
       }
 
-      $entID = $ent->add(toolbox::addslashes_deep([
+      $entID = $ent->add(Toolbox::addslashes_deep([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 0,
          'name'               => "'$val-$ID_entity",
@@ -2194,7 +2194,7 @@ function generate_entity($ID_entity) {
    // Specific
    for ($i=0; $i<$MAX['contract']; $i++) {
       $date = mt_rand(2000, $current_year)."-".mt_rand(1, 12)."-".mt_rand(1, 28);
-      $contractID = $c->add(toolbox::addslashes_deep([
+      $contractID = $c->add(Toolbox::addslashes_deep([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 0,
          'name'               => "contract' $i-$ID_entity",
@@ -2218,7 +2218,7 @@ function generate_entity($ID_entity) {
          'suppliers_id' => mt_rand($FIRST["enterprises"], $LAST["enterprises"])
       ]);
       // Add a cost
-      $cc->add(toolbox::addslashes_deep([
+      $cc->add(Toolbox::addslashes_deep([
          'contracts_id' => $contractID,
          'cost'         => mt_rand(100, 10000),
          'name'         => "Initial 'cost",
@@ -2230,7 +2230,7 @@ function generate_entity($ID_entity) {
    for ($i=0; $i<$MAX['contract']/2; $i++) {
       $date = mt_rand(2000, $current_year)."-".mt_rand(1, 12)."-".mt_rand(1, 28);
 
-      $contractID = $c->add(toolbox::addslashes_deep([
+      $contractID = $c->add(Toolbox::addslashes_deep([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 1,
          'name'               => "Recursive contract' $i-$ID_entity",
@@ -2261,7 +2261,7 @@ function generate_entity($ID_entity) {
    $c                 = new Contact();
    $cs                = new Contact_Supplier();
    for ($i=0; $i<$MAX['contacts']; $i++) {
-      $contactID = $c->add(toolbox::addslashes_deep([
+      $contactID = $c->add(Toolbox::addslashes_deep([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 0,
          'name'               => $faker->lastName,
@@ -2294,7 +2294,7 @@ function generate_entity($ID_entity) {
       } else {
          $val = "Recursive contact $i";
       }
-      $contactID = $c->add(toolbox::addslashes_deep([
+      $contactID = $c->add(Toolbox::addslashes_deep([
          'entities_id'        => $ID_entity,
          'is_recursive'       => 0,
          'name'               => "$val'-$ID_entity",
@@ -2326,7 +2326,7 @@ function generate_entity($ID_entity) {
    $ci                           = new Consumableitem();
 
    for ($i=0; $i<$MAX['type_of_consumables']; $i++) {
-      $consID = $ci->add(toolbox::addslashes_deep([
+      $consID = $ci->add(Toolbox::addslashes_deep([
          'entities_id'             => $ID_entity,
          'is_recursive'            => mt_rand(0, 1),
          'name'                    => "consumable type' $i",
@@ -2384,7 +2384,7 @@ function generate_entity($ID_entity) {
    $ct                          = new CartridgeItem();
 
    for ($i=0; $i<$MAX['type_of_cartridges']; $i++) {
-      $cartID = $ct->add(toolbox::addslashes_deep([
+      $cartID = $ct->add(Toolbox::addslashes_deep([
          'entities_id'       => $ID_entity,
          'is_recursive'      => mt_rand(0, 1),
          'name'              => "cartridge ' type $i",
@@ -2447,7 +2447,7 @@ function generate_entity($ID_entity) {
 
       // insert networking
 
-      $netwID = $ne->add(toolbox::addslashes_deep([
+      $netwID = $ne->add(Toolbox::addslashes_deep([
          'entities_id'                   => $ID_entity,
          'name'                          => "networking '$i-$ID_entity",
          'ram'                           => mt_rand(32, 256),
@@ -2495,7 +2495,7 @@ function generate_entity($ID_entity) {
       $modelID = mt_rand(1, $MAX['model_printers']);
       $recur   = mt_rand(0, 1);
 
-      $printID = $p->add(toolbox::addslashes_deep([
+      $printID = $p->add(Toolbox::addslashes_deep([
          'entities_id'      => $ID_entity,
          'is_recursive'     => $recur,
          'name'             => "printer of loc '$i",
@@ -2623,7 +2623,7 @@ function generate_entity($ID_entity) {
       $domainID  = mt_rand($FIRST['domain'], $LAST['domain']);
       $networkID = mt_rand(1, $MAX['network']);
 
-      $compID = $c->add(toolbox::addslashes_deep([
+      $compID = $c->add(Toolbox::addslashes_deep([
          'entities_id'                    => $ID_entity,
          'name'                           => $faker->word,
          'serial'                         => Toolbox::getRandomString(10),
@@ -2657,7 +2657,7 @@ function generate_entity($ID_entity) {
 
       // Add os
       $item_os = new Item_OperatingSystem;
-      $item_os->add(toolbox::addslashes_deep([
+      $item_os->add(Toolbox::addslashes_deep([
          'items_id'                       => $compID,
          'itemtype'                       => 'Computer',
          'operatingsystems_id'            => mt_rand(1, $MAX['os']),
@@ -2739,7 +2739,7 @@ function generate_entity($ID_entity) {
       addNetworkEthernetPort('Computer', $compID, $ID_entity, $loc);
 
       // Ajout d'un ecran sur l'ordi
-      $monID = $mon->add(toolbox::addslashes_deep([
+      $monID = $mon->add(Toolbox::addslashes_deep([
          'entities_id'       => $ID_entity,
          'name'              => "monitor' $i-$ID_entity",
          'serial'            => Toolbox::getRandomString(10),
@@ -2785,7 +2785,7 @@ function generate_entity($ID_entity) {
       ]);
 
       // Ajout d'un telephhone avec l'ordi
-      $telID = $phone->add(toolbox::addslashes_deep([
+      $telID = $phone->add(Toolbox::addslashes_deep([
          'entities_id'           => $ID_entity,
          'name'                  => "phone' $i-$ID_entity",
          'serial'                => Toolbox::getRandomString(10),
@@ -2831,7 +2831,7 @@ function generate_entity($ID_entity) {
       // Ajout des periphs externes en connection directe
       while (mt_rand(0, 100)<$percent['peripherals']) {
 
-         $periphID = $periph->add(toolbox::addslashes_deep([
+         $periphID = $periph->add(Toolbox::addslashes_deep([
             'entities_id'       => $ID_entity,
             'name'              => "periph of comp' $i-$ID_entity",
             'serial'            => Toolbox::getRandomString(10),
@@ -2874,7 +2874,7 @@ function generate_entity($ID_entity) {
          $typeID  = mt_rand(1, $MAX['type_printers']);
          $modelID = mt_rand(1, $MAX['model_printers']);
 
-         $printID = $p->add(toolbox::addslashes_deep([
+         $printID = $p->add(Toolbox::addslashes_deep([
             'entities_id'       => $ID_entity,
             'name'              => "printer of comp' $i-$ID_entity",
             'serial'            => Toolbox::getRandomString(10),
@@ -2972,7 +2972,7 @@ function generate_entity($ID_entity) {
       $techID  = mt_rand($FIRST['users_sadmin'], $LAST['users_admin']);
       $gtechID = mt_rand($FIRST["techgroups"], $LAST["techgroups"]);
 
-      $periphID = $periph->add(toolbox::addslashes_deep([
+      $periphID = $periph->add(Toolbox::addslashes_deep([
          'entities_id'       => $ID_entity,
          'name'              => "periph '$i-$ID_entity",
          'serial'            => Toolbox::getRandomString(10),
@@ -3047,7 +3047,7 @@ function generate_entity($ID_entity) {
       $gtechID   = mt_rand($FIRST["techgroups"], $LAST["techgroups"]);
       $recursive = mt_rand(0, 1);
 
-      $softID = $soft->add(toolbox::addslashes_deep([
+      $softID = $soft->add(Toolbox::addslashes_deep([
          'entities_id'           => $ID_entity,
          'is_recursive'          => $recursive,
          'name'                  => $name,
@@ -3089,7 +3089,7 @@ function generate_entity($ID_entity) {
          }
          $os = mt_rand(1, $MAX['os']);
 
-         $versID = $softvers->add(toolbox::addslashes_deep([
+         $versID = $softvers->add(Toolbox::addslashes_deep([
             'entities_id'          => $ID_entity,
             'is_recursive'         => $recursive,
             'softwares_id'         => $softID,
@@ -3126,7 +3126,7 @@ function generate_entity($ID_entity) {
 
          $nbused = min($LAST["computers"]-$FIRST['computers'], mt_rand(1, $MAX['softwareinstall']));
 
-         $licID = $softlic->add(toolbox::addslashes_deep([
+         $licID = $softlic->add(Toolbox::addslashes_deep([
             'entities_id'               => $ID_entity,
             'is_recursive'              => $recursive,
             'softwares_id'              => $softID,

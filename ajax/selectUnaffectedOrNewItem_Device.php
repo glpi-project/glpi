@@ -82,7 +82,7 @@ if ($_POST['items_id']
          $devices[$row['id']] = $name;
 
       }
-      dropdown::showFromArray($linktype::getForeignKeyField(), $devices, ['multiple' => true]);
+      Dropdown::showFromArray($linktype::getForeignKeyField(), $devices, ['multiple' => true]);
    }
    echo "</td><td>";
    Dropdown::showNumber('new_devices', ['min'   => 0, 'max'   => 10]);

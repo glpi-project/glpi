@@ -650,7 +650,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $result = $DB->request(
          [
-            'FROM'      => getTableForItemtype($type),
+            'FROM'      => getTableForItemType($type),
             'WHERE'     => [
                static::$items_id      => $ID,
             ],

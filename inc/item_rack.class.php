@@ -292,8 +292,8 @@ class Item_Rack extends CommonDBRelation {
          echo "</tbody></table>";
       }
 
-      $nb_top_pdu = count(Pdu_Rack::getForRackSide($rack, Pdu_Rack::SIDE_TOP));
-      $nb_bot_pdu = count(Pdu_Rack::getForRackSide($rack, Pdu_Rack::SIDE_BOTTOM));
+      $nb_top_pdu = count(PDU_Rack::getForRackSide($rack, PDU_Rack::SIDE_TOP));
+      $nb_bot_pdu = count(PDU_Rack::getForRackSide($rack, PDU_Rack::SIDE_BOTTOM));
 
       echo '
       <div class="racks_row">
@@ -338,8 +338,8 @@ class Item_Rack extends CommonDBRelation {
          <div class="racks_col">
             <h2>'.__('Rear').'</h2>';
       echo '<div class="rack_side rack_rear">';
-      Pdu_Rack::showVizForRack($rack, Pdu_Rack::SIDE_TOP);
-      Pdu_Rack::showVizForRack($rack, Pdu_Rack::SIDE_LEFT);
+      PDU_Rack::showVizForRack($rack, PDU_Rack::SIDE_TOP);
+      PDU_Rack::showVizForRack($rack, PDU_Rack::SIDE_LEFT);
       echo '<ul class="indexes"></ul>
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid2-rear"
@@ -359,14 +359,14 @@ class Item_Rack extends CommonDBRelation {
                </div>
             </div>
             <ul class="indexes"></ul>';
-      Pdu_Rack::showVizForRack($rack, Pdu_Rack::SIDE_RIGHT);
-      Pdu_Rack::showVizForRack($rack, Pdu_Rack::SIDE_BOTTOM);
+      PDU_Rack::showVizForRack($rack, PDU_Rack::SIDE_RIGHT);
+      PDU_Rack::showVizForRack($rack, PDU_Rack::SIDE_BOTTOM);
       echo '</div>';
       echo '
          </div>
          <div class="racks_col">';
       self::showStats($rack);
-      Pdu_Rack::showStatsForRack($rack);
+      PDU_Rack::showStatsForRack($rack);
       echo '</div>'; // .racks_col
       echo '</div>'; // .racks_row
       echo '<div class="sep"></div>';

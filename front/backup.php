@@ -592,12 +592,12 @@ if (Session::haveRight('backup', CREATE)) {
    echo "<i class='far fa-save fa-3x'></i>";
          "</td>";
    echo "<td><a class='vsubmit'
-              href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
+              href=\"#\" ".Html::addConfirmationOnAction(__('Backup the database?'),
                                                          "window.location='".$CFG_GLPI["root_doc"].
                                                            "/front/backup.php?dump=dump'").
               ">".__('SQL Dump')."</a>&nbsp;</td>";
    echo "<td><a class='vsubmit'
-              href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
+              href=\"#\" ".Html::addConfirmationOnAction(__('Backup the database?'),
                                                          "window.location='".$CFG_GLPI["root_doc"].
                                                            "/front/backup.php?xmlnow=xmlnow'").
               ">".__('XML Dump')."</a>&nbsp;</td>";
@@ -646,7 +646,7 @@ if (count($files)) {
                                    $file)];
          $string[] = [__('Warning, your actual database will be totaly overwriten by the database you want to restore !!!')];
 
-         echo "<a class='vsubmit' href=\"#\" ".HTML::addConfirmationOnAction($string,
+         echo "<a class='vsubmit' href=\"#\" ".Html::addConfirmationOnAction($string,
                                         "window.location='".$CFG_GLPI["root_doc"].
                                         "/front/backup.php?file=$file&amp;donotcheckversion=1'").
               ">".__('Restore')."</a>&nbsp;</td>";

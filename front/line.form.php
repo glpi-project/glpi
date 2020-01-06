@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(line::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "line");
+   Html::header(Line::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "line");
    $line->display(['id'           => $_GET["id"]]);
    Html::footer();
 }

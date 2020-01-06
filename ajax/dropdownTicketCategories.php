@@ -45,7 +45,7 @@ if (Session::getCurrentInterface() == "helpdesk") {
    $condition['is_helpdeskvisible'] = 1;
 }
 
-$currentcateg = new ItilCategory();
+$currentcateg = new ITILCategory();
 $currentcateg->getFromDB($_POST['value']);
 
 if ($_POST["type"]) {
@@ -67,4 +67,4 @@ if ($_POST["type"]) {
 }
 
 $opt['condition'] = $condition;
-ItilCategory::dropdown($opt);
+ITILCategory::dropdown($opt);

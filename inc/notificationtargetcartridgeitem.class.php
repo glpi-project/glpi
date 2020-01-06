@@ -60,7 +60,7 @@ class NotificationTargetCartridgeItem extends NotificationTarget {
          $tmp                            = [];
          $tmp['##cartridge.item##']      = $cartridge['name'];
          $tmp['##cartridge.reference##'] = $cartridge['ref'];
-         $tmp['##cartridge.remaining##'] = cartridge::getUnusedNumber($id);
+         $tmp['##cartridge.remaining##'] = Cartridge::getUnusedNumber($id);
          $tmp['##cartridge.url##']       = $this->formatURL($options['additionnaloption']['usertype'],
                                                             "CartridgeItem_".$id);
          $this->data['cartridges'][] = $tmp;

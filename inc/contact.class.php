@@ -514,10 +514,10 @@ class Contact extends CommonDBTM{
       $output   = $vcard->serialize();
       $filename = $this->fields["name"]."_".$this->fields["firstname"].".vcf";
 
-      @Header("Content-Disposition: attachment; filename=\"$filename\"");
-      @Header("Content-Length: ".Toolbox::strlen($output));
-      @Header("Connection: close");
-      @Header("content-type: text/x-vcard; charset=UTF-8");
+      @header("Content-Disposition: attachment; filename=\"$filename\"");
+      @header("Content-Length: ".Toolbox::strlen($output));
+      @header("Connection: close");
+      @header("content-type: text/x-vcard; charset=UTF-8");
 
       echo $output;
    }

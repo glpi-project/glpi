@@ -1068,7 +1068,7 @@ class Search extends DbTestCase {
       ];
 
       foreach ($CFG_GLPI["asset_types"] as $itemtype) {
-         $table = getTableForItemtype($itemtype);
+         $table = getTableForItemType($itemtype);
 
          foreach ($needed_fields as $field) {
             $this->boolean($DB->fieldExists($table, $field))

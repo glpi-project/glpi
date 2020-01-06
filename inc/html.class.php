@@ -3933,7 +3933,7 @@ JAVASCRIPT;
       Html::initEditorSystem($name, $rand, true, $readonly);
 
       // Neutralize non valid HTML tags
-      $content = html::clean($content, false, 1);
+      $content = Html::clean($content, false, 1);
 
       // If content does not contain <br> or <p> html tag, use nl2br
       if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {

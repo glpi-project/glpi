@@ -235,7 +235,7 @@ class Telemetry extends CommonGLPI {
     * @return string
     */
    public static function getAverage($itemtype) {
-      $count = (int)countElementsInTable(getTableForItemtype($itemtype));
+      $count = (int)countElementsInTable(getTableForItemType($itemtype));
 
       if ($count <= 500) {
          return '0-500';

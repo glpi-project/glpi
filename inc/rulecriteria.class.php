@@ -532,7 +532,7 @@ class RuleCriteria extends CommonDBChild {
          $crit = $item->getCriteria($criterion);
 
          if (isset($crit['type']) && ($crit['type'] == 'dropdown')) {
-            $crititemtype = getItemtypeForTable($crit['table']);
+            $crititemtype = getItemTypeForTable($crit['table']);
 
             if (($item = getItemForItemtype($crititemtype))
                 && $item instanceof CommonTreeDropdown) {

@@ -43,7 +43,7 @@ class QuerySubQuery extends AbstractQuery {
    /**
     * Create a sub query
     *
-    * @param array  $crit      Array of query criteria. Any valid DBmysqliterator parameters are valid.
+    * @param array  $crit      Array of query criteria. Any valid DBmysqlIterator parameters are valid.
     * @param string $alias     Alias for the whole subquery
     */
    public function __construct(array $crit, $alias = null) {
@@ -54,7 +54,7 @@ class QuerySubQuery extends AbstractQuery {
          throw new \RuntimeException('Cannot build an empty subquery');
       }
 
-      $this->dbiterator = new DBmysqliterator($DB);
+      $this->dbiterator = new DBmysqlIterator($DB);
       $this->dbiterator->buildQuery($crit);
    }
 
