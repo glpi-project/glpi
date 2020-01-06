@@ -46,6 +46,12 @@ jobs:
       - name: "PHP Parallel Lint"
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
+      - name: "Check for missing dependencies / bad symbols"
+        # Alpine linux does not implement GLOB_BRACE.
+        # We have to define it to 0 to prevent "Warning: Use of undefined constant GLOB_BRACE - assumed 'GLOB_BRACE'" error.
+        # This is not a problem as long as we do not use braces in "scan-files" section of the config file.
+        run: |
+          docker exec ${{ job.services.app.id }} php -d memory_limit=1G -r 'define("GLOB_BRACE", 0); include "./vendor/maglnet/composer-require-checker/bin/composer-require-checker.php";' check --config-file=.composer-require-checker.config.json
       - name: "PHP CS"
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/phpcs -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore="/.git/,^/var/glpi/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" ./
