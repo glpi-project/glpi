@@ -1,16 +1,15 @@
 language: php
 sudo: required
-dist: trusty
 
-env:
-  - DB=mysql
+services:
+  - mysql
 
 before_script:
   - phpenv config-rm xdebug.ini || true
   - ./tests/LDAP/ldap_run.sh
   - composer self-update
-  - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
+  - composer config --unset platform
   - composer install --optimize-autoloader
   - mysql -u root -e 'create database glpitest;'
   - bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-user=root
@@ -20,10 +19,10 @@ script:
   - mysql -u root -e 'select version();'
   - composer testldap
 
-#note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
   include:
     - php: 5.6
+      dist: trusty
       addons:
         apt:
           packages:
@@ -32,8 +31,8 @@ matrix:
         hosts:
           - openldap
     - php: 7.0
+      dist: xenial
       addons:
-        mariadb: 10.2
         apt:
           packages:
             - ldap-utils
@@ -41,8 +40,8 @@ matrix:
         hosts:
           - openldap
     - php: 7.1
+      dist: xenial
       addons:
-        mariadb: 10.1
         apt:
           packages:
             - ldap-utils
@@ -50,6 +49,7 @@ matrix:
         hosts:
           - openldap
     - php: 7.2
+      dist: bionic
       addons:
         apt:
           packages:
@@ -58,6 +58,7 @@ matrix:
         hosts:
           - openldap
     - php: 7.3
+      dist: bionic
       addons:
         apt:
           packages:
@@ -66,6 +67,7 @@ matrix:
         hosts:
           - openldap
     - php: 7.4
+      dist: bionic
       addons:
         apt:
           packages:
@@ -74,6 +76,7 @@ matrix:
         hosts:
           - openldap
     - php: nightly
+      dist: bionic
       addons:
         apt:
           packages:
