@@ -65,7 +65,7 @@ matrix:
             - slapd
         hosts:
           - openldap
-    - php: 7.4snapshot
+    - php: 7.4
       addons:
         apt:
           packages:
@@ -83,7 +83,6 @@ matrix:
           - openldap
   allow_failures:
     - php: nightly
-    - php: 7.4snapshot
 
 cache:
   directories:
