@@ -2031,6 +2031,8 @@ class Config extends CommonDBTM {
                  'check'   => 'ScssPhp\ScssPhp\Compiler' ],
                [ 'name'    => 'zendframework/zend-mail',
                  'check'   => 'Zend\\Mail\\Protocol\\Imap' ],
+               [ 'name'    => 'zendframework/zend-mime',
+                 'check'   => 'Zend\\Mime\\Mime' ],
                [ 'name'    => 'rlanvin/php-rrule',
                  'check'   => 'RRule\\RRule' ],
                [ 'name'    => 'blueimp/jquery-file-upload',

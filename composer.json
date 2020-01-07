@@ -44,6 +44,7 @@
         "zendframework/zend-cache": "^2.8",
         "zendframework/zend-i18n": "^2.8",
         "zendframework/zend-mail": "^2.10",
+        "zendframework/zend-mime": "^2.7",
         "zendframework/zend-serializer": "^2.8"
     },
     "require-dev": {
