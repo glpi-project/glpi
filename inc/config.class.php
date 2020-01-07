@@ -37,7 +37,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\FlushableInterface;
-use Zend\Cache\Storage\StorageInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1962,7 +1961,7 @@ class Config extends CommonDBTM {
       if (is_object($libstring)) {
          return realpath(dirname((new ReflectionObject($libstring))->getFileName()));
 
-      } else if (class_exists($libstring)) {
+      } else if (class_exists($libstring) || interface_exists($libstring)) {
          return realpath(dirname((new ReflectionClass($libstring))->getFileName()));
 
       } else if (function_exists($libstring)) {
@@ -2008,6 +2007,10 @@ class Config extends CommonDBTM {
                  'check'   => 'autolink' ],
                [ 'name'    => 'sabre/dav',
                  'check'   => 'Sabre\\DAV\\Version' ],
+               [ 'name'    => 'sabre/http',
+                 'check'   => 'Sabre\\HTTP\\Version' ],
+               [ 'name'    => 'sabre/uri',
+                 'check'   => 'Sabre\\Uri\\Version' ],
                [ 'name'    => 'sabre/vobject',
                  'check'   => 'Sabre\\VObject\\Component' ],
                [ 'name'    => 'zendframework/zend-cache',
@@ -2034,6 +2037,10 @@ class Config extends CommonDBTM {
                  'check'   => 'UploadHandler' ],
                [ 'name'    => 'ramsey/uuid',
                  'check'   => 'Ramsey\\Uuid\\Uuid' ],
+               [ 'name'    => 'psr/log',
+                 'check'   => 'Psr\\Log\\LoggerInterface' ],
+               [ 'name'    => 'psr/simple-cache',
+                 'check'   => 'Psr\\SimpleCache\\CacheInterface' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
@@ -3039,7 +3046,7 @@ class Config extends CommonDBTM {
     * @param string  $context name of the configuration context (default 'core')
     * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since ZendTranslator is NOT PSR16 compliant).
     *
-    * @return Glpi\Cache\SimpleCache|Zend\Cache\Storage\StorageInterface object
+    * @return Psr\SimpleCache\CacheInterface|Zend\Cache\Storage\StorageInterface object
     */
    public static function getCache($optname, $context = 'core', $psr16 = true) {
       global $DB;
