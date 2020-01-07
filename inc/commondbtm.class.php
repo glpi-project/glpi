@@ -1647,7 +1647,7 @@ class CommonDBTM extends CommonGLPI {
                $this->addMessageOnPurgeAction();
                $this->post_purgeItem();
                Plugin::doHook("item_purge", $this);
-
+               Impact::clean($this);
             } else {
                $this->addMessageOnDeleteAction();
 
@@ -1673,6 +1673,7 @@ class CommonDBTM extends CommonGLPI {
             if ($this->notificationqueueonaction) {
                QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
             }
+
             return true;
          }
 

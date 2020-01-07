@@ -526,7 +526,7 @@ class RSSFeed extends CommonDBVisible {
          switch ($item->getType()) {
             case 'RSSFeed' :
                $showtab = [1 => __('Content')];
-               if (session::haveRight('rssfeed_public', UPDATE)) {
+               if (Session::haveRight('rssfeed_public', UPDATE)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = $item->countVisibilities();
                   }
@@ -792,7 +792,7 @@ class RSSFeed extends CommonDBVisible {
          foreach ($feed->get_items(0, $this->fields['max_items']) as $item) {
             $link = $item->get_permalink();
             echo "<tr class='tab_bg_1'><td>";
-            echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
+            echo Html::convDateTime($item->get_date('Y-m-d H:i:s'));
             echo "</td><td>";
             if (!is_null($link)) {
                echo "<a target='_blank' href='$link'>".$item->get_title().'</a>';
@@ -976,7 +976,7 @@ class RSSFeed extends CommonDBVisible {
       if (($personal && self::canCreate())
             || (!$personal && Session::haveRight('rssfeed_public', CREATE))) {
          echo "<span class='floatright'>";
-         echo "<a href='".RssFeed::getFormURL()."'>";
+         echo "<a href='".RSSFeed::getFormURL()."'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"".
                 __s('Add')."\"></a></span>";
       }
@@ -987,7 +987,7 @@ class RSSFeed extends CommonDBVisible {
          usort($items, ['SimplePie', 'sort_items']);
          foreach ($items as $item) {
             echo "<tr class='tab_bg_1'><td>";
-            echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
+            echo Html::convDateTime($item->get_date('Y-m-d H:i:s'));
             echo "</td><td>";
             $link = $item->feed->get_permalink();
             if (empty($link)) {

@@ -122,7 +122,7 @@ class Monitor extends CommonDBTM {
          Item_OperatingSystem::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Devices
-         Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+         Item_Devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Infocoms
          Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);

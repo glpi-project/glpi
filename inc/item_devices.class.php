@@ -287,7 +287,7 @@ class Item_Devices extends CommonDBRelation {
             if (isset($values['itemtype'])) {
                if (isset($options['comments']) && $options['comments']) {
                   $valueData = Dropdown::getDropdownName(
-                     getTableForItemtype($values['itemtype']),
+                     getTableForItemType($values['itemtype']),
                      $values[$field],
                      1
                   );
@@ -299,7 +299,7 @@ class Item_Devices extends CommonDBRelation {
 
                }
                return Dropdown::getDropdownName(
-                  getTableForItemtype($values['itemtype']),
+                  getTableForItemType($values['itemtype']),
                   $values[$field]
                );
             }

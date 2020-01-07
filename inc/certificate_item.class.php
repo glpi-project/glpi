@@ -323,7 +323,7 @@ class Certificate_Item extends CommonDBRelation {
       $ID = $item->getField('id');
 
       if ($item->isNewID($ID)
-         || !certificate::canView() ||
+         || !Certificate::canView() ||
             !$item->can($item->fields['id'], READ)) {
          return false;
       }

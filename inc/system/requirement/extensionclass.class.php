@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class ExtensionClass extends Extension {
 
    /**
-    * Required class name.
+    * Required class or interface name.
     *
     * @var string
     */
@@ -50,7 +50,7 @@ class ExtensionClass extends Extension {
 
    /**
     * @param string $name        Extension name.
-    * @param string $class_name  Required class name.
+    * @param string $class_name  Required class or interface name.
     * @param bool $optional      Indicated if extension is optional.
     */
    public function __construct(string $name, string $class_name, bool $optional = false) {
@@ -59,7 +59,7 @@ class ExtensionClass extends Extension {
    }
 
    protected function check() {
-      $this->validated = class_exists($this->class_name);
+      $this->validated = class_exists($this->class_name) || interface_exists($this->class_name);
       $this->buildValidationMessage();
    }
 

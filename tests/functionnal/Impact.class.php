@@ -280,4 +280,153 @@ class Impact extends \DbTestCase {
       });
       $this->array($both)->hasSize(2);
    }
+
+   public function testClean() {
+      global $DB;
+
+      $impactRelationManager = new \ImpactRelation();
+      $impactItemManager = new \ImpactItem();
+      $impactCompoundManager = new \ImpactCompound();
+
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+      $computer2 = getItemByTypeName('Computer', '_test_pc02');
+      $computer3 = getItemByTypeName('Computer', '_test_pc03');
+      $computer4 = getItemByTypeName('Computer', '_test_pc11');
+      $computer5 = getItemByTypeName('Computer', '_test_pc12');
+      $computer6 = getItemByTypeName('Computer', '_test_pc13');
+
+      // Set compounds
+      $compound01Id = $impactCompoundManager->add([
+         'name'  => "_test_compound01",
+         'color' => "#000011",
+      ]);
+      $compound02Id = $impactCompoundManager->add([
+         'name'  => "_test_compound02",
+         'color' => "#110000",
+      ]);
+      $this->integer($compound01Id);
+      $this->integer($compound02Id);
+
+      // Set impact items
+      $this->integer($impactItemManager->add([
+         'itemtype'  => "Computer",
+         'items_id'  => $computer1->fields['id'],
+         'parent_id' => 0,
+      ]));
+      $this->integer($impactItemManager->add([
+         'itemtype'  => "Computer",
+         'items_id'  => $computer2->fields['id'],
+         'parent_id' => $compound01Id,
+      ]));
+      $this->integer($impactItemManager->add([
+         'itemtype'  => "Computer",
+         'items_id'  => $computer3->fields['id'],
+         'parent_id' => $compound01Id,
+      ]));
+      $this->integer($impactItemManager->add([
+         'itemtype'  => "Computer",
+         'items_id'  => $computer4->fields['id'],
+         'parent_id' => $compound02Id,
+      ]));
+      $this->integer($impactItemManager->add([
+         'itemtype'  => "Computer",
+         'items_id'  => $computer5->fields['id'],
+         'parent_id' => $compound02Id,
+      ]));
+      $this->integer($impactItemManager->add([
+         'itemtype'  => "Computer",
+         'items_id'  => $computer6->fields['id'],
+         'parent_id' => $compound02Id,
+      ]));
+
+      // Set relations
+      $this->integer($impactRelationManager->add([
+         'itemtype_source'   => "Computer",
+         'items_id_source'   => $computer1->fields['id'],
+         'itemtype_impacted' => "Computer",
+         'items_id_impacted' => $computer2->fields['id'],
+      ]));
+      $this->integer($impactRelationManager->add([
+         'itemtype_source'   => "Computer",
+         'items_id_source'   => $computer2->fields['id'],
+         'itemtype_impacted' => "Computer",
+         'items_id_impacted' => $computer3->fields['id'],
+      ]));
+      $this->integer($impactRelationManager->add([
+         'itemtype_source'   => "Computer",
+         'items_id_source'   => $computer3->fields['id'],
+         'itemtype_impacted' => "Computer",
+         'items_id_impacted' => $computer4->fields['id'],
+      ]));
+      $this->integer($impactRelationManager->add([
+         'itemtype_source'   => "Computer",
+         'items_id_source'   => $computer4->fields['id'],
+         'itemtype_impacted' => "Computer",
+         'items_id_impacted' => $computer5->fields['id'],
+      ]));
+      $this->integer($impactRelationManager->add([
+         'itemtype_source'   => "Computer",
+         'items_id_source'   => $computer2->fields['id'],
+         'itemtype_impacted' => "Computer",
+         'items_id_impacted' => $computer6->fields['id'],
+      ]));
+      $this->integer($impactRelationManager->add([
+         'itemtype_source'   => "Computer",
+         'items_id_source'   => $computer6->fields['id'],
+         'itemtype_impacted' => "Computer",
+         'items_id_impacted' => $computer2->fields['id'],
+      ]));
+
+      $relations_to_computer2_query = [
+         'FROM'   => \ImpactRelation::getTable(),
+         'WHERE' => [
+            'OR' => [
+               [
+                  'itemtype_source' => get_class($computer2),
+                  'items_id_source' => $computer2->fields['id']
+               ],
+               [
+                  'itemtype_impacted' => get_class($computer2),
+                  'items_id_impacted' => $computer2->fields['id']
+               ],
+            ]
+         ]
+      ];
+
+      $impact_item_computer2_query = [
+         'FROM'   => \ImpactItem::getTable(),
+         'WHERE'  => [
+            'itemtype' => get_class($computer2),
+            'items_id' => $computer2->fields['id'],
+         ]
+      ];
+
+      $compound01_members_query = [
+         'FROM' => \ImpactItem::getTable(),
+         'WHERE' => ["parent_id" => $compound01Id]
+      ];
+
+      // Before deletion
+      $this->integer(count($DB->request($relations_to_computer2_query)))
+         ->isEqualTo(4);
+      $this->integer(count($DB->request($impact_item_computer2_query)))
+         ->isEqualTo(1);
+      $this->integer(count($DB->request($compound01_members_query)))
+         ->isEqualTo(2);
+      $this->boolean($impactCompoundManager->getFromDB($compound01Id))
+         ->isEqualTo(true);
+
+      // Delete pc02
+      $computer2->delete($computer2->fields, true);
+
+      // After deletion
+      $this->integer(count($DB->request($relations_to_computer2_query)))
+         ->isEqualTo(0);
+      $this->integer(count($DB->request($impact_item_computer2_query)))
+         ->isEqualTo(0);
+      $this->integer(count($DB->request($compound01_members_query)))
+         ->isEqualTo(0);
+      $this->boolean($impactCompoundManager->getFromDB($compound01Id))
+         ->isEqualTo(false);
+   }
 }

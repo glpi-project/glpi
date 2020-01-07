@@ -52,7 +52,7 @@ if (isset($_POST["update"])) {
             Session::addMessageAfterRedirect(__('Test successful'));
          } else {
             Session::addMessageAfterRedirect(__('Test failed'), false, ERROR);
-            GlpiNetwork::addErrorMessageAfterRedirect();
+            GLPINetwork::addErrorMessageAfterRedirect();
          }
          Html::redirect($CFG_GLPI["root_doc"] . "/front/authldap.php?next=extauth_ldap&id=".$newID);
       }

@@ -2066,7 +2066,7 @@ class Infocom extends CommonDBChild {
     *
     * @param array $where Where clause
     *
-    * @return DBMysqlIterator
+    * @return DBmysqlIterator
     */
    public static function getTypes($where) {
       global $DB;

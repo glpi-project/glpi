@@ -277,12 +277,12 @@ class DB extends \GLPITestCase {
          ->then
             ->given($tables = $this->testedInstance->listTables())
             ->object($tables)
-               ->isInstanceOf(\DBMysqlIterator::class)
+               ->isInstanceOf(\DBmysqlIterator::class)
             ->integer(count($tables))
                ->isGreaterThan(100)
             ->given($tables = $this->testedInstance->listTables('glpi_configs'))
             ->object($tables)
-               ->isInstanceOf(\DBMysqlIterator::class)
+               ->isInstanceOf(\DBmysqlIterator::class)
                ->hasSize(1);
 
    }

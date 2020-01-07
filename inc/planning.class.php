@@ -2337,10 +2337,10 @@ class Planning extends CommonGLPI {
       $output   = $vcalendar->serialize();
       $filename = date( 'YmdHis' ).'.ics';
 
-      @Header("Content-Disposition: attachment; filename=\"$filename\"");
-      //@Header("Content-Length: ".Toolbox::strlen($output));
-      @Header("Connection: close");
-      @Header("content-type: text/calendar; charset=utf-8");
+      @header("Content-Disposition: attachment; filename=\"$filename\"");
+      //@header("Content-Length: ".Toolbox::strlen($output));
+      @header("Connection: close");
+      @header("content-type: text/calendar; charset=utf-8");
 
       echo $output;
    }

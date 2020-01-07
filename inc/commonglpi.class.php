@@ -922,7 +922,7 @@ class CommonGLPI {
 
             }
          }
-         $cleantarget = HTML::cleanParametersURL($target);
+         $cleantarget = Html::cleanParametersURL($target);
          echo "<div class='navigationheader'>";
 
          if ($first >= 0) {
@@ -1160,7 +1160,7 @@ class CommonGLPI {
                unset($_SESSION['_redirected_from_profile_selector']);
                Html::redirect($CFG_GLPI['root_doc']."/front/central.php");
             }
-            html::displayRightError();
+            Html::displayRightError();
          }
       }
 

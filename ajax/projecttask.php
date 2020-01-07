@@ -43,7 +43,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id'] > 0)) {
-   $template = new ProjecttaskTemplate();
+   $template = new ProjectTaskTemplate();
    $template->getFromDB($_POST['projecttasktemplates_id']);
 
    $template->fields = array_map('html_entity_decode', $template->fields);

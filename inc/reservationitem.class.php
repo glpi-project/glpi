@@ -696,7 +696,7 @@ class ReservationItem extends CommonDBChild {
             'WHERE'     => [
                'glpi_reservationitems.entities_id' => $entity,
                new QueryExpression('(UNIX_TIMESTAMP('.$DB->quoteName('glpi_reservations.end').') - '.$secs.') < UNIX_TIMESTAMP()'),
-               'glpi_reservations.begin'  => ['<', NOW()],
+               'glpi_reservations.begin'  => ['<', new \QueryExpression('NOW()')],
                'glpi_alerts.date'         => null
             ]
          ];

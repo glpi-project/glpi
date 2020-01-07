@@ -37,7 +37,7 @@ class ImpactItem extends \DbTestCase {
    public function testFindForItem_inexistent() {
       $computer = getItemByTypeName('Computer', '_test_pc02');
 
-      $this->boolean(\ImpactItem::findForItem($computer))->isFalse();
+      $this->boolean(\ImpactItem::findForItem($computer, false))->isFalse();
    }
 
    public function testFindForItem_exist() {

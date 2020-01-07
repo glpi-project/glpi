@@ -705,7 +705,7 @@ class User extends CommonDBTM {
          }
          if ($newPicture) {
             $fullpath = GLPI_TMP_DIR."/".$input["_picture"];
-            if (toolbox::getMime($fullpath, 'image')) {
+            if (Toolbox::getMime($fullpath, 'image')) {
                // Unlink old picture (clean on changing format)
                self::dropPictureFiles($this->fields['picture']);
                // Move uploaded file
@@ -2208,7 +2208,7 @@ JAVASCRIPT;
             if (!empty($this->fields["date_sync"])) {
                //TRANS: %s is the date of last sync
                echo '<br>'.sprintf(__('Last synchronization on %s'),
-                                   HTML::convDateTime($this->fields["date_sync"]));
+                                   Html::convDateTime($this->fields["date_sync"]));
             }
             if (!empty($this->fields["user_dn"])) {
                //TRANS: %s is the user dn
@@ -2389,7 +2389,7 @@ JAVASCRIPT;
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>";
          if ($this->fields["last_login"]) {
-            printf(__('Last login on %s'), HTML::convDateTime($this->fields["last_login"]));
+            printf(__('Last login on %s'), Html::convDateTime($this->fields["last_login"]));
          }
          echo "</td><td colspan='2'class='center'>";
 
@@ -4124,10 +4124,10 @@ JAVASCRIPT;
       $output   = $vcard->serialize();
       $filename = implode("_", array_filter($name)).".vcf";
 
-      @Header("Content-Disposition: attachment; filename=\"$filename\"");
-      @Header("Content-Length: ".Toolbox::strlen($output));
-      @Header("Connection: close");
-      @Header("content-type: text/x-vcard; charset=UTF-8");
+      @header("Content-Disposition: attachment; filename=\"$filename\"");
+      @header("Content-Length: ".Toolbox::strlen($output));
+      @header("Connection: close");
+      @header("content-type: text/x-vcard; charset=UTF-8");
 
       echo $output;
    }

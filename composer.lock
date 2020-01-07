@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "adff3f698d4e7321637e4af07ed165fe",
+    "content-hash": "509e076e21b088e247e200413e158728",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
-            "version": "v10.4.0",
+            "version": "v10.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vkhramtsov/jQuery-File-Upload.git",
-                "reference": "be9e5d4047f95bbe713736b78201697a182da9f0"
+                "reference": "4677050d31be2da817e1d23d0bacb81fb4b37cb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vkhramtsov/jQuery-File-Upload/zipball/be9e5d4047f95bbe713736b78201697a182da9f0",
-                "reference": "be9e5d4047f95bbe713736b78201697a182da9f0",
+                "url": "https://api.github.com/repos/vkhramtsov/jQuery-File-Upload/zipball/4677050d31be2da817e1d23d0bacb81fb4b37cb3",
+                "reference": "4677050d31be2da817e1d23d0bacb81fb4b37cb3",
                 "shasum": ""
             },
             "type": "library",
@@ -59,7 +59,7 @@
                 "upload",
                 "widget"
             ],
-            "time": "2019-11-25T05:59:13+00:00"
+            "time": "2020-01-04T05:46:30+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -132,24 +132,11 @@
             "time": "2019-07-24T19:58:51+00:00"
         },
         {
-            "name": "fossar/htmlawed",
-            "version": "1.2.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fossar/HTMLawed.git",
-                "reference": "ef6373a26595e29686bb8e3f46ddc2041b97b0fa"
-            },
+            "name": "htmlawed/htmlawed",
+            "version": "1.2.5",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fossar/HTMLawed/zipball/ef6373a26595e29686bb8e3f46ddc2041b97b0fa",
-                "reference": "ef6373a26595e29686bb8e3f46ddc2041b97b0fa",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">4.4.0"
-            },
-            "replace": {
-                "htmlawed/htmlawed": "*"
+                "url": "https://www.bioinformatics.org/phplabware/downloads/htmLawed125.zip"
             },
             "type": "library",
             "autoload": {
@@ -157,28 +144,19 @@
                     "htmLawed.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0+",
-                "LGPL-3.0"
+                "LGPL-3.0-only",
+                "GPL-2.0-or-later"
             ],
             "authors": [
                 {
                     "name": "Santosh Patnaik",
-                    "homepage": "http://www.bioinformatics.org/people/index.php?user_hash=558b661f92d0ff7b",
+                    "email": "drpatnaik@yahoo.com",
                     "role": "Developer"
                 }
             ],
-            "description": "htmLawed - Process text with HTML markup to make it more compliant with HTML standards and administrative policies",
-            "homepage": "http://www.bioinformatics.org/phplabware/internal_utilities/htmLawed/",
-            "keywords": [
-                "HTMLtidy",
-                "html",
-                "sanitize",
-                "strip",
-                "tags"
-            ],
-            "time": "2017-12-06T05:09:01+00:00"
+            "description": "Official htmLawed PHP library for HTML filtering",
+            "homepage": "https://www.bioinformatics.org/phplabware/internal_utilities/htmLawed"
         },
         {
             "name": "iamcal/lib_autolink",
@@ -263,16 +241,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.25.2",
+            "version": "1.25.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "d5e2fb341cb44f7e2ab639d12a1e5901091ec287"
+                "reference": "fa82921994db851a8becaf3787a9e73c5976b6f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/d5e2fb341cb44f7e2ab639d12a1e5901091ec287",
-                "reference": "d5e2fb341cb44f7e2ab639d12a1e5901091ec287",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/fa82921994db851a8becaf3787a9e73c5976b6f1",
+                "reference": "fa82921994db851a8becaf3787a9e73c5976b6f1",
                 "shasum": ""
             },
             "require": {
@@ -337,7 +315,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2019-11-13T10:00:05+00:00"
+            "time": "2019-12-20T14:15:16+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -638,22 +616,22 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "3.9.1",
+            "version": "3.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "5ac2740e0c8c599d2bbe7f113a939f2b5b216c67"
+                "reference": "7779489a47d443f845271badbdcedfe4df8e06fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/5ac2740e0c8c599d2bbe7f113a939f2b5b216c67",
-                "reference": "5ac2740e0c8c599d2bbe7f113a939f2b5b216c67",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/7779489a47d443f845271badbdcedfe4df8e06fb",
+                "reference": "7779489a47d443f845271badbdcedfe4df8e06fb",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "paragonie/random_compat": "^1 | ^2 | 9.99.99",
-                "php": "^5.4 | ^7",
+                "php": "^5.4 | ^7 | ^8",
                 "symfony/polyfill-ctype": "^1.8"
             },
             "replace": {
@@ -663,13 +641,13 @@
                 "codeception/aspect-mock": "^1 | ^2",
                 "doctrine/annotations": "^1.2",
                 "goaop/framework": "1.0.0-alpha.2 | ^1 | ^2.1",
-                "jakub-onderka/php-parallel-lint": "^0.9.0",
-                "mockery/mockery": "^0.9.9",
+                "jakub-onderka/php-parallel-lint": "^1",
+                "mockery/mockery": "^0.9.11 | ^1",
                 "moontoast/math": "^1.1",
                 "paragonie/random-lib": "^2",
                 "php-mock/php-mock-phpunit": "^0.3 | ^1.1",
                 "phpunit/phpunit": "^4.8 | ^5.4 | ^6.5",
-                "squizlabs/php_codesniffer": "^2.3"
+                "squizlabs/php_codesniffer": "^3.5"
             },
             "suggest": {
                 "ext-ctype": "Provides support for PHP Ctype functions",
@@ -721,7 +699,7 @@
                 "identifier",
                 "uuid"
             ],
-            "time": "2019-12-01T04:55:27+00:00"
+            "time": "2019-12-17T08:18:51+00:00"
         },
         {
             "name": "rlanvin/php-rrule",
@@ -909,16 +887,16 @@
         },
         {
             "name": "sabre/http",
-            "version": "5.0.4",
+            "version": "5.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/http.git",
-                "reference": "73e2fa1ef894eddff145b698b6b0e2e2c5bf1d72"
+                "reference": "85962a2ed867e7e5beb9f9d3a15cd53cd521a09b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/http/zipball/73e2fa1ef894eddff145b698b6b0e2e2c5bf1d72",
-                "reference": "73e2fa1ef894eddff145b698b6b0e2e2c5bf1d72",
+                "url": "https://api.github.com/repos/sabre-io/http/zipball/85962a2ed867e7e5beb9f9d3a15cd53cd521a09b",
+                "reference": "85962a2ed867e7e5beb9f9d3a15cd53cd521a09b",
                 "shasum": ""
             },
             "require": {
@@ -961,7 +939,7 @@
             "keywords": [
                 "http"
             ],
-            "time": "2019-10-09T20:27:43+00:00"
+            "time": "2019-11-28T19:35:25+00:00"
         },
         {
             "name": "sabre/uri",
@@ -1015,16 +993,16 @@
         },
         {
             "name": "sabre/vobject",
-            "version": "4.2.0",
+            "version": "4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/vobject.git",
-                "reference": "bd500019764e434ff65872d426f523e7882a0739"
+                "reference": "6d7476fbd227ae285029c19ad518cd451336038c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/bd500019764e434ff65872d426f523e7882a0739",
-                "reference": "bd500019764e434ff65872d426f523e7882a0739",
+                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/6d7476fbd227ae285029c19ad518cd451336038c",
+                "reference": "6d7476fbd227ae285029c19ad518cd451336038c",
                 "shasum": ""
             },
             "require": {
@@ -1107,7 +1085,7 @@
                 "xCal",
                 "xCard"
             ],
-            "time": "2019-02-19T13:05:37+00:00"
+            "time": "2019-12-18T19:29:43+00:00"
         },
         {
             "name": "sabre/xml",
@@ -1286,16 +1264,16 @@
         },
         {
             "name": "simplepie/simplepie",
-            "version": "1.5.3",
+            "version": "1.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/simplepie/simplepie.git",
-                "reference": "173663382a9346acd53df60c7ffb20689c9cf1f6"
+                "reference": "f4c8246511a38fc9d99a59fb42f61eeeafb31663"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/173663382a9346acd53df60c7ffb20689c9cf1f6",
-                "reference": "173663382a9346acd53df60c7ffb20689c9cf1f6",
+                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/f4c8246511a38fc9d99a59fb42f61eeeafb31663",
+                "reference": "f4c8246511a38fc9d99a59fb42f61eeeafb31663",
                 "shasum": ""
             },
             "require": {
@@ -1349,7 +1327,7 @@
                 "feeds",
                 "rss"
             ],
-            "time": "2019-09-22T23:21:30+00:00"
+            "time": "2019-11-23T07:05:15+00:00"
         },
         {
             "name": "symfony/console",
@@ -1785,6 +1763,7 @@
                 "psr-6",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-cache",
             "time": "2019-08-29T18:30:41+00:00"
         },
         {
@@ -1839,6 +1818,7 @@
                 "events",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-eventmanager",
             "time": "2018-04-25T15:33:34+00:00"
         },
         {
@@ -1910,6 +1890,7 @@
                 "i18n",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-i18n",
             "time": "2019-12-12T14:08:22+00:00"
         },
         {
@@ -1960,6 +1941,7 @@
                 "json",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-json",
             "time": "2019-10-09T13:56:13+00:00"
         },
         {
@@ -2005,6 +1987,7 @@
                 "loader",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-loader",
             "time": "2019-09-04T19:38:14+00:00"
         },
         {
@@ -2067,6 +2050,7 @@
                 "mail",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-mail",
             "time": "2018-06-07T13:37:07+00:00"
         },
         {
@@ -2118,6 +2102,7 @@
                 "mime",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-mime",
             "time": "2018-05-14T19:02:50+00:00"
         },
         {
@@ -2175,6 +2160,7 @@
                 "serializer",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-serializer",
             "time": "2019-10-19T08:06:30+00:00"
         },
         {
@@ -2243,6 +2229,7 @@
                 "servicemanager",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-servicemanager",
             "time": "2018-12-22T06:05:09+00:00"
         },
         {
@@ -2289,6 +2276,7 @@
                 "stdlib",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-stdlib",
             "time": "2018-08-28T21:34:05+00:00"
         },
         {
@@ -2362,6 +2350,7 @@
                 "validator",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-validator",
             "time": "2019-01-30T14:26:10+00:00"
         }
     ],
@@ -3275,16 +3264,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.5.0",
+            "version": "6.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5"
+                "reference": "43ece0e75098b7ecd8d13918293029e555a50f82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5",
-                "reference": "dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/43ece0e75098b7ecd8d13918293029e555a50f82",
+                "reference": "43ece0e75098b7ecd8d13918293029e555a50f82",
                 "shasum": ""
             },
             "require": {
@@ -3338,7 +3327,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2019-12-07T18:20:45+00:00"
+            "time": "2019-12-23T11:57:10+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -3622,7 +3611,7 @@
             "time": "2019-10-30T15:31:00+00:00"
         },
         {
-            "name": "natxet/cssmin",
+            "name": "natxet/CssMin",
             "version": "v3.0.6",
             "source": {
                 "type": "git",

@@ -6345,9 +6345,9 @@ abstract class CommonITILObject extends CommonDBTM {
          case static::class.'Task':
          case static::class.'Validation':
             if (isset($actors[$users_id])) {
-               $r = in_array(CommonItilActor::REQUESTER, $actors[$users_id]) ? 1 : 0;
-               $o = in_array(CommonItilActor::OBSERVER, $actors[$users_id]) ? 1 : 0;
-               $a = in_array(CommonItilActor::ASSIGN, $actors[$users_id]) ? 1 : 0;
+               $r = in_array(CommonITILActor::REQUESTER, $actors[$users_id]) ? 1 : 0;
+               $o = in_array(CommonITILActor::OBSERVER, $actors[$users_id]) ? 1 : 0;
+               $a = in_array(CommonITILActor::ASSIGN, $actors[$users_id]) ? 1 : 0;
                if (isset($pos_matrix[$r][$o][$a])) {
                   $pos = $pos_matrix[$r][$o][$a];
                }

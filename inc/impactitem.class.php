@@ -9,7 +9,19 @@ if (!defined('GLPI_ROOT')) {
  */
 class ImpactItem extends CommonDBTM {
 
-   public static function findForItem(CommonDBTM $item) {
+   /**
+    * Find ImpactItem for a given CommonDBTM item
+    *
+    * @param CommonDBTM $item                The given item
+    * @param bool       $create_if_missing   Should we create a new ImpactItem
+    *                                        if none found ?
+    * @return ImpactItem|bool ImpactItem object or false if not found and
+    *                         creation is disabled
+    */
+   public static function findForItem(
+      CommonDBTM $item,
+      bool $create_if_missing = true
+   ) {
       global $DB;
 
       $it = $DB->request([
@@ -19,20 +31,26 @@ class ImpactItem extends CommonDBTM {
          'FROM' => self::getTable(),
          'WHERE'  => [
             'glpi_impactitems.itemtype' => get_class($item),
-            'glpi_impactitems.items_id' => $item->getID(),
+            'glpi_impactitems.items_id' => $item->fields['id'],
          ]
       ]);
 
       $res = $it->next();
+      $impact_item = new self();
 
-      if (!$res) {
+      if ($res) {
+         $id = $res['id'];
+      } else if (!$res && $create_if_missing) {
+         $id = $impact_item->add([
+            'itemtype' => get_class($item),
+            'items_id' => $item->fields['id']
+         ]);
+      } else {
          return false;
       }
 
-      $impactItem = new self();
-      $impactItem->getFromDB($res['id']);
-
-      return $impactItem;
+      $impact_item->getFromDB($id);
+      return $impact_item;
    }
 
    public function prepareInputForUpdate($input) {

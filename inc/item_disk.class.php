@@ -215,7 +215,7 @@ class Item_Disk extends CommonDBChild {
       Html::autocompletionTextField($this, "mountpoint");
       echo "</td><td>".__('File system')."</td>";
       echo "<td>";
-      FileSystem::dropdown(['value' => $this->fields["filesystems_id"]]);
+      Filesystem::dropdown(['value' => $this->fields["filesystems_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -289,15 +289,15 @@ class Item_Disk extends CommonDBChild {
 
       $iterator = $DB->request([
          'SELECT'    => [
-            FileSystem::getTable() . '.name AS fsname',
+            Filesystem::getTable() . '.name AS fsname',
             self::getTable() . '.*'
          ],
          'FROM'      => self::getTable(),
          'LEFT JOIN' => [
-            FileSystem::getTable() => [
+            Filesystem::getTable() => [
                'FKEY' => [
                   self::getTable()        => 'filesystems_id',
-                  FileSystem::getTable()  => 'id'
+                  Filesystem::getTable()  => 'id'
                ]
             ]
          ],

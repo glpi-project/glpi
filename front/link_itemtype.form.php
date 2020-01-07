@@ -37,7 +37,7 @@ include ('../inc/includes.php');
 Session::checkCentralAccess();
 
 $link          = new Link();
-$link_itemtype = new Link_ItemType();
+$link_itemtype = new Link_Itemtype();
 
 if (isset($_POST["add"])) {
    $link->check(-1, CREATE, $_POST);

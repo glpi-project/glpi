@@ -91,13 +91,13 @@ class Contract_Item extends CommonDBRelation{
          case 'items_id':
             if (isset($values['itemtype'])) {
                if (isset($options['comments']) && $options['comments']) {
-                  $tmp = Dropdown::getDropdownName(getTableForItemtype($values['itemtype']),
+                  $tmp = Dropdown::getDropdownName(getTableForItemType($values['itemtype']),
                                                    $values[$field], 1);
                   return sprintf(__('%1$s %2$s'), $tmp['name'],
                                  Html::showToolTip($tmp['comment'], ['display' => false]));
 
                }
-               return Dropdown::getDropdownName(getTableForItemtype($values['itemtype']),
+               return Dropdown::getDropdownName(getTableForItemType($values['itemtype']),
                                                 $values[$field]);
             }
             break;

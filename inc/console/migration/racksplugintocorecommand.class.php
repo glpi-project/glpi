@@ -50,8 +50,8 @@ use NetworkEquipmentModel;
 use Peripheral;
 use PeripheralModel;
 use Plugin;
-use Pdu;
-use PduModel;
+use PDU;
+use PDUModel;
 use Rack;
 use RackModel;
 use RackType;
@@ -568,8 +568,8 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                   $new_model_itemtype = PeripheralModel::class;
                   break;
                case self::OTHER_TYPE_CHOICE_PDU:
-                  $new_itemtype       = Pdu::class;
-                  $new_model_itemtype = PduModel::class;
+                  $new_itemtype       = PDU::class;
+                  $new_model_itemtype = PDUModel::class;
                   break;
                case self::OTHER_TYPE_CHOICE_MONITOR:
                   $new_itemtype       = Monitor::class;

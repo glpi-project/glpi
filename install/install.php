@@ -479,7 +479,7 @@ function step7() {
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='install' value='Etape_6'>";
 
-   echo GlpiNetwork::showInstallMessage();
+   echo GLPINetwork::showInstallMessage();
 
    echo "<p class='submit'>";
    echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".

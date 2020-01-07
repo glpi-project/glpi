@@ -41,21 +41,21 @@ if (isset($_POST['update'])) {
    //update existing OS
    $ios->update($_POST);
 
-   $item = getItemForItemType($_POST['itemtype']);
+   $item = getItemForItemtype($_POST['itemtype']);
    $url = $item->getFormURLWithID($_POST['items_id']);
    Html::redirect($url);
 } else if (isset($_POST['add'])) {
    $ios->check(-1, CREATE, $_POST);
    $ios->add($_POST);
 
-   $item = getItemForItemType($_POST['itemtype']);
+   $item = getItemForItemtype($_POST['itemtype']);
    $url = $item->getFormURLWithID($_POST['items_id']);
    Html::redirect($url);
 } else if (isset($_POST['purge'])) {
    $ios->check($_POST['id'], PURGE);
    $ios->delete($_POST, 1);
 
-   $item = getItemForItemType($_POST['itemtype']);
+   $item = getItemForItemtype($_POST['itemtype']);
    $url = $item->getFormURLWithID($_POST['items_id']);
    Html::redirect($url);
 }
