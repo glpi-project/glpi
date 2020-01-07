@@ -38,10 +38,8 @@ include ('../inc/includes.php');
 
 //@session_start();
 
-
-if (!empty($CFG_GLPI["ssovariables_id"])
-    && !empty($CFG_GLPI['ssologout_url'])) {
-
+if ($CFG_GLPI["ssovariables_id"] > 0
+    && strlen($CFG_GLPI['ssologout_url']) > 0) {
    Html::redirect($CFG_GLPI["ssologout_url"]);
 }
 
