@@ -51,15 +51,19 @@ $item->getFromDB($items_id);
 // Load graph and impactitem
 $graph = Impact::buildGraph($item);
 $impact_item = ImpactItem::findForItem($item);
-if (!$impact_item) {
-   throw new \InvalidArgumentException("No ImpactItem found for $itemtype $items_id");
+$impact_context = ImpactContext::findForImpactItem($impact_item);
+
+if (!$impact_context) {
+   $max_depth = \Impact::DEFAULT_DEPTH;
+} else {
+   $max_deph = $impact_context->fields["max_depth"];
 }
 
 // Load list data
 $data = [];
 $directions = [Impact::DIRECTION_FORWARD, Impact::DIRECTION_BACKWARD];
 foreach ($directions as $direction) {
-   $data[$direction] = Impact::buildListData($graph, $direction, $item, $impact_item);
+   $data[$direction] = Impact::buildListData($graph, $direction, $item, $max_deph);
 }
 
 // Output csv data

@@ -125,21 +125,41 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
       $readonly = true;
 
-      // Search for current object
-      foreach ($data['items'] as $id => $impact_item) {
-         // Current objet has unique properties like zoom, pan_x, ...
-         if (isset($impact_item['zoom'])) {
-            $stored_impact_item = new ImpactItem();
-            $stored_impact_item->getFromDB($id);
-            $itemtype = $stored_impact_item->fields['itemtype'];
-            $item = new $itemtype();
-            $readonly = !$item->can($stored_impact_item->fields['items_id'], UPDATE);
-            break;
-         }
-      }
+      // Handle context for the starting node
+      $context_em = new \ImpactContext();
+      $context_data = $data['context'];
 
+      // Get id and type from node_id (e.g. Computer::4 -> [Computer, 4])
+      $start_node_details = explode(Impact::NODE_ID_DELIMITER, $context_data['node_id']);
+
+      // Get impact_item for this node
+      $item = new $start_node_details[0];
+      $item->getFromDB($start_node_details[1]);
+      $impact_item = \ImpactItem::findForItem($item);
+      $start_node_impact_item_id = $impact_item->fields['id'];
+      $readonly = !$item->can($item->fields['id'], UPDATE);
+
+      // Stop here if readonly graph
       if ($readonly) {
          Toolbox::throwError(403, "Missing rights");
+      }
+
+      $context_id = 0;
+      if ($impact_item->fields["impactcontexts_id"] == 0
+         || $impact_item->fields["is_slave"] == 1) {
+         // There is no context OR we are slave to another context -> let's
+         // create a new one
+         $context_id = $context_em->add($context_data);
+
+         // Set the context_id to be updated
+         $data['items'][$start_node_impact_item_id]['impactcontexts_id'] = $context_id;
+         $data['items'][$start_node_impact_item_id]['is_slave'] = 0;
+      } else {
+         // Update existing context
+         $context_id = $impact_item->fields["impactcontexts_id"];
+         $context_em->getFromDB($context_id);
+         $context_data['id'] = $context_id;
+         $context_em->update($context_data);
       }
 
       // Save impact relation delta
@@ -209,6 +229,18 @@ switch ($_SERVER['REQUEST_METHOD']) {
          switch ($action) {
             case DELTA_ACTION_UPDATE:
                $impactItem['id'] = $id;
+
+               // If this is not the starting node, check for context update
+               if ($id !== $start_node_impact_item_id) {
+                  $em->getFromDB($id);
+
+                  // If this node has no context -> make it a slave
+                  if ($em->fields['impactcontexts_id'] == 0) {
+                     $impactItem['impactcontexts_id'] = $context_id;
+                     $impactItem['is_slave'] = 1;
+                  }
+               }
+
                $em->update($impactItem);
                break;
          }

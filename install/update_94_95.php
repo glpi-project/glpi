@@ -1153,6 +1153,44 @@ function update94to95() {
    }
    /** /Domain records */
 
+   /** Impact context */
+
+   // Create new impact_context table
+   if (!$DB->tableExists('glpi_impactcontexts')) {
+      $query = "CREATE TABLE `glpi_impactcontexts` (
+            `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `positions` TEXT NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            `zoom` FLOAT NOT NULL DEFAULT '0',
+            `pan_x` FLOAT NOT NULL DEFAULT '0',
+            `pan_y` FLOAT NOT NULL DEFAULT '0',
+            `impact_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            `depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            `impact_and_depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            `show_depends` TINYINT(1) NOT NULL DEFAULT '1',
+            `show_impact` TINYINT(1) NOT NULL DEFAULT '1',
+            `max_depth` INT(11) NOT NULL DEFAULT '5',
+            PRIMARY KEY (`id`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "add table glpi_impactcontexts");
+
+      // Update glpi_impactitems
+      $migration->dropField("glpi_impactitems", "zoom");
+      $migration->dropField("glpi_impactitems", "pan_x");
+      $migration->dropField("glpi_impactitems", "pan_y");
+      $migration->dropField("glpi_impactitems", "impact_color");
+      $migration->dropField("glpi_impactitems", "depends_color");
+      $migration->dropField("glpi_impactitems", "impact_and_depends_color");
+      $migration->dropField("glpi_impactitems", "position_x");
+      $migration->dropField("glpi_impactitems", "position_y");
+      $migration->dropField("glpi_impactitems", "show_depends");
+      $migration->dropField("glpi_impactitems", "show_impact");
+      $migration->dropField("glpi_impactitems", "max_depth");
+      $migration->addField("glpi_impactitems", "impactcontexts_id", "integer");
+      $migration->addField("glpi_impactitems", "is_slave", "bool", ['value' => 1]);
+      $migration->addKey("glpi_impactitems", "impactcontexts_id", "impactcontexts_id");
+   }
+   /** /Impact context */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
