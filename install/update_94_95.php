@@ -1190,7 +1190,7 @@ function update94to95() {
       $migration->addKey("glpi_impactitems", "impactcontexts_id", "impactcontexts_id");
    }
    /** /Impact context */
-  
+
    /** SSO logout URL */
    $migration->addConfig(['ssologout_url' => '']);
    /** SSO logout URL */
