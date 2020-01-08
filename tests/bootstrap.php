@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
 define('GLPI_CACHE_DIR', __DIR__ . '/files/_cache');
