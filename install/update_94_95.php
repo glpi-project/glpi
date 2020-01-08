@@ -1191,6 +1191,10 @@ function update94to95() {
    }
    /** /Impact context */
 
+   /** SSO logout URL */
+   $migration->addConfig(['ssologout_url' => '']);
+   /** SSO logout URL */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

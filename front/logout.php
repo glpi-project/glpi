@@ -38,6 +38,11 @@ include ('../inc/includes.php');
 
 //@session_start();
 
+if ($CFG_GLPI["ssovariables_id"] > 0
+    && strlen($CFG_GLPI['ssologout_url']) > 0) {
+   Html::redirect($CFG_GLPI["ssologout_url"]);
+}
+
 if (!isset($_SESSION["noAUTO"])
     && isset($_SESSION["glpiauthtype"])
     && $_SESSION["glpiauthtype"] == Auth::CAS
