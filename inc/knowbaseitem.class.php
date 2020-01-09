@@ -74,6 +74,16 @@ class KnowbaseItem extends CommonDBVisible {
       return 'b';
    }
 
+
+   function getName($options = []) {
+      if (KnowbaseItemTranslation::canBeTranslated($this)) {
+         return KnowbaseItemTranslation::getTranslatedValue($this);
+      }
+
+      return parent::getName();
+   }
+
+
    /**
     * @see CommonGLPI::getMenuName()
     *
@@ -165,6 +175,21 @@ class KnowbaseItem extends CommonDBVisible {
       return "$dir/front/helpdesk.faq.php";
    }
 
+   /**
+    * Get the form page URL for the current classe
+    *
+    * @param $full path or relative one (true by default)
+   **/
+   static function getFormURL($full = true) {
+      global $CFG_GLPI;
+
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+
+      if (Session::getCurrentInterface() == "central") {
+         return "$dir/front/knowbaseitem.form.php";
+      }
+      return "$dir/front/helpdesk.faq.php";
+   }
 
    function defineTabs($options = []) {
 

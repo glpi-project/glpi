@@ -37,10 +37,6 @@ if (isset($_GET["redirect"])) {
    Toolbox::manageRedirect($_GET["redirect"]);
 }
 
-//*******************
-// Affichage Module FAQ
-//******************
-
 Session::checkFaqAccess();
 Html::requireJs('jstree');
 
@@ -49,9 +45,9 @@ if (Session::getLoginUserID()) {
 } else {
    $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
    // Anonymous FAQ
-   Html::simpleHeader(__('FAQ'),
-                      [__('Authentication') => $CFG_GLPI['root_doc'].'/',
-                            __('FAQ')            => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php']);
+   Html::simpleHeader(__('FAQ'), [
+      __('FAQ') => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php'
+   ]);
 }
 
 if (isset($_GET["id"])) {

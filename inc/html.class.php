@@ -1890,7 +1890,7 @@ JAVASCRIPT;
       echo "</main>"; // end of "main role='main'"
 
       echo "<footer role='contentinfo' id='footer'>";
-      echo "<table role='presentation' width='100%'><tr><td class='right'>" . self::getCopyrightMessage();
+      echo "<table role='presentation' width='100%'><tr><td class='right'>" . self::getCopyrightMessage(false);
       echo "</td></tr></table></footer>";
 
       self::displayDebugInfos();
@@ -1954,7 +1954,7 @@ JAVASCRIPT;
       if (!isCommandLine()) {
          echo "</div></main>";
 
-         echo "<div id='footer-login'>" . self::getCopyrightMessage() . "</div>";
+         echo "<div id='footer-login'>" . self::getCopyrightMessage(false) . "</div>";
          self::loadJavascript();
          echo "</body></html>";
       }

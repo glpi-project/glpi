@@ -138,9 +138,12 @@ if (isset($_POST["add"])) {
    }
    Html::redirect($kb->getFormURLWithID($_GET['id']));
 } else if (isset($_GET["id"])) {
+   if (!Session::getLoginUserID()) {
+      Html::redirect("helpdesk.faq.php?id=".$_GET['id']);
+   }
+
    if (isset($_GET["_in_modal"])) {
       Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
-      $kb = new KnowbaseItem();
       if ($_GET['id']) {
          $kb->check($_GET["id"], READ);
          $kb->showFull();
@@ -149,23 +152,13 @@ if (isset($_POST["add"])) {
       }
       Html::popFooter();
    } else {
-      // modifier un item dans la base de connaissance
+      // check we can read the article
       $kb->check($_GET["id"], READ);
 
-      if (Session::getLoginUserID()) {
-         if (Session::getCurrentInterface() == "central") {
-            Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
-         } else {
-            Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF']);
-         }
-         Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+      if (Session::getCurrentInterface() == "central") {
+         Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
       } else {
-         $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
-         // Anonymous FAQ
-         Html::simpleHeader(__('FAQ'),
-                            [__('Authentication')
-                                            => $CFG_GLPI['root_doc'].'/',
-                                  __('FAQ') => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php']);
+         Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF']);
       }
 
       $available_options = ['item_itemtype', 'item_items_id', 'id'];
@@ -177,12 +170,8 @@ if (isset($_POST["add"])) {
       }
       $kb->display($options);
 
-      if (Session::getLoginUserID()) {
-         if (Session::getCurrentInterface() == "central") {
-            Html::footer();
-         } else {
-            Html::helpFooter();
-         }
+      if (Session::getCurrentInterface() == "central") {
+         Html::footer();
       } else {
          Html::helpFooter();
       }
