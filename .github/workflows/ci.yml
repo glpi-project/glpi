@@ -8,7 +8,9 @@ jobs:
     runs-on: "ubuntu-latest"
     services:
       app:
-        image: "glpi/githubactions-php:7.0"
+        # Lint on higher PHP version to be sure to get latest tools versions
+        # linting tools may also help to detected deprecated elements usage
+        image: "glpi/githubactions-php:7.4"
         options: >-
           --volume /glpi:/var/glpi
     steps:

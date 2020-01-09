@@ -1,9 +1,9 @@
 version: 2.1
 
 executors:
-  php_7_0:
+  php_7_4:
     docker:
-      - image: glpi/circleci-env-core:php_7.0_fpm-node
+      - image: glpi/circleci-env-core:php_7.4_fpm-node
   php_7_0_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.0_fpm-node
@@ -184,7 +184,9 @@ jobs:
 
   # Lint code.
   lint:
-    executor: php_7_0 # lint on lower PHP version to check compatibility with the older supported API
+    # Lint on higher PHP version to be sure to get latest tools versions
+    # linting tools may also help to detected deprecated elements usage
+    executor: php_7_4
     steps:
       - build
       - run:
