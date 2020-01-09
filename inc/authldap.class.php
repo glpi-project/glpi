@@ -1658,6 +1658,7 @@ class AuthLDAP extends CommonDBTM {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             if (version_compare(PHP_VERSION, '7.3') < 0) {
                //prior to PHP 7.3, use ldap_control_paged_result
+               // phpcs:ignore Generic.PHP.DeprecatedFunctions
                ldap_control_paged_result($ds, $config_ldap->fields['pagesize'], true, $cookie);
                $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
             } else {
@@ -1746,6 +1747,7 @@ class AuthLDAP extends CommonDBTM {
             return false;
          }
          if (self::isLdapPageSizeAvailable($config_ldap) && version_compare(PHP_VERSION, '7.3') < 0) {
+            // phpcs:ignore Generic.PHP.DeprecatedFunctions
             ldap_control_paged_result_response($ds, $sr, $cookie);
          }
 
@@ -2239,6 +2241,7 @@ class AuthLDAP extends CommonDBTM {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             if (version_compare(PHP_VERSION, '7.3') < 0) {
                //prior to PHP 7.3, use ldap_control_paged_result
+               // phpcs:ignore Generic.PHP.DeprecatedFunctions
                ldap_control_paged_result($ldap_connection, $config_ldap->fields['pagesize'], true, $cookie);
                $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs);
             } else {
@@ -2337,6 +2340,7 @@ class AuthLDAP extends CommonDBTM {
             }
          }
          if (self::isLdapPageSizeAvailable($config_ldap) && version_compare(PHP_VERSION, '7.3') < 0) {
+            // phpcs:ignore Generic.PHP.DeprecatedFunctions
             ldap_control_paged_result_response($ldap_connection, $sr, $cookie);
          }
       } while (($cookie !== null) && ($cookie != ''));
