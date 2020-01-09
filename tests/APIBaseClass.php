@@ -1140,7 +1140,7 @@ abstract class APIBaseClass extends \atoum {
          $this->string($value[$name])->isNotEmpty();
       }
 
-      $config = new config();
+      $config = new Config();
       $rows = $config->find(['context' => 'core', 'name' => $sensitiveSettings]);
       $this->array($rows)
          ->hasSize(count($sensitiveSettings));

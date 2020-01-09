@@ -124,7 +124,7 @@ class AuthLDAP extends DbTestCase {
    }
 
    public function testPreconfig() {
-      $ldap = new \Authldap();
+      $ldap = new \AuthLDAP();
       //Use Active directory preconfiguration :
       //login_field and sync_field must be filled
       $ldap->preconfig('AD');
@@ -140,7 +140,7 @@ class AuthLDAP extends DbTestCase {
    }
 
    public function testPrepareInputForUpdate() {
-      $ldap   = new \mock\Authldap();
+      $ldap   = new \mock\AuthLDAP();
       $this->calling($ldap)->isSyncFieldUsed = true;
 
       //------------ Password tests --------------------//

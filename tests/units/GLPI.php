@@ -34,9 +34,9 @@ namespace tests\units;
 
 /* Test for inc/glpi.class.php */
 
-class Glpi extends \GLPITestCase {
+class GLPI extends \GLPITestCase {
    public function testGetLogLevel() {
-      $glpi = new \Glpi;
+      $glpi = new \GLPI();
       $glpi->initLogger();
       $this->integer($glpi->getLogLevel())->isIdenticalTo(\Monolog\Logger::DEBUG);
    }

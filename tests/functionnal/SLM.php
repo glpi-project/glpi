@@ -72,7 +72,7 @@ class SLM extends DbTestCase {
          $this->checkInput($calseg, $calseg_id);
       }
 
-      $slm    = new \Slm();
+      $slm    = new \SLM();
       $slm_id = $slm->add($slm_in = [
          'name'         => $this->method,
          'comment'      => $this->getUniqueString(),
@@ -297,7 +297,7 @@ class SLM extends DbTestCase {
       $this->integer($segment_id)->isGreaterThan(0);
 
       // Create SLM with TTR OLA
-      $slm = new \Slm();
+      $slm = new \SLM();
       $slm_id = $slm->add(
          [
             'name'         => 'Test SLM',
