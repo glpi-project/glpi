@@ -75,6 +75,14 @@ commands:
           name: PHP Parallel Lint
           command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
 
+  # PHP Security Checker.
+  run_php_security_checker:
+    steps:
+      - run:
+          name: sensiolabs/security-checker
+          command: |
+            vendor/bin/security-checker security:check
+
   # Database install command.
   install_db:
     steps:
@@ -140,15 +148,25 @@ commands:
             php -S localhost:8088 tests/router.php &>/dev/null &
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
 
+  # CSS test suite command.
+  run_css_test_suite:
+    steps:
+      - run:
+          name: CSS compilation tests
+          command: |
+            bin/console build:compile_scss
+
   # Run full test suite command.
   run_full_test_suite:
     steps:
+      - run_php_security_checker
       - install_db
       - run_db_test_suite
       - run_unit_test_suite
       - run_imap_test_suite
       - run_functionnal_test_suite
       - run_web_test_suite
+      - run_css_test_suite
 
 jobs:
   # Checkout codebase and store it into workspace.
@@ -170,10 +188,6 @@ jobs:
     steps:
       - build
       - run:
-          name: sensiolabs/security-checker
-          command: |
-            vendor/bin/security-checker security:check
-      - run:
           name: PHP CS
           command: |
             vendor/bin/phpcs -d memory_limit=512M -p -n --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/node_modules/,/plugins/,/public/index.php,/src/,/tests/config/,/vendor/ ./
@@ -181,10 +195,6 @@ jobs:
           name: ESLint
           command: |
             node_modules/.bin/eslint ./js && node_modules/.bin/eslint --env=node --parser-options=ecmaVersion:6 --rule 'indent: ["error", 4]' ./webpack.config.js && echo "ESLint found no errors"
-      - run:
-          name: Check CSS compilation
-          command: |
-            bin/console build:compile_scss
 
   # PHP 7.0 test suite.
   php_7_0_test_suite:
