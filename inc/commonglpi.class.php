@@ -1014,11 +1014,11 @@ class CommonGLPI {
    function showDebugInfo() {
       global $CFG_GLPI;
 
-      $class = $this->getType();
-
-      if (method_exists($class, 'showDebug')) {
+      if (method_exists($this, 'showDebug')) {
          $this->showDebug();
       }
+
+      $class = $this->getType();
 
       if (InfoCom::canApplyOn($class)) {
          $infocom = new Infocom();
