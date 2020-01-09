@@ -785,7 +785,7 @@ class Html {
                echo "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
             echo "<li><a href='#debugserver$rand'>SERVER VARIABLE</a></li>";
-            if ($GLPI_CACHE instanceof Zend\Cache\Storage\IterableInterface) {
+            if ($GLPI_CACHE instanceof Laminas\Cache\Storage\IterableInterface) {
                echo "<li><a href='#debugcache$rand'>CACHE VARIABLE</a></li>";
             }
          }
@@ -832,7 +832,7 @@ class Html {
             self::printCleanArray($_SERVER, 0, true);
             echo "</div>";
 
-            if ($GLPI_CACHE instanceof Zend\Cache\Storage\IterableInterface) {
+            if ($GLPI_CACHE instanceof Laminas\Cache\Storage\IterableInterface) {
                echo "<div id='debugcache$rand'>";
                $cache_keys = $GLPI_CACHE->getIterator();
                $cache_contents = [];

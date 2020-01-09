@@ -33,10 +33,10 @@
 use Glpi\Cache\SimpleCache;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\System\RequirementsManager;
+use Laminas\Cache\Storage\AvailableSpaceCapableInterface;
+use Laminas\Cache\Storage\FlushableInterface;
+use Laminas\Cache\Storage\TotalSpaceCapableInterface;
 use PHPMailer\PHPMailer\PHPMailer;
-use Zend\Cache\Storage\AvailableSpaceCapableInterface;
-use Zend\Cache\Storage\TotalSpaceCapableInterface;
-use Zend\Cache\Storage\FlushableInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -2013,12 +2013,12 @@ class Config extends CommonDBTM {
                  'check'   => 'Sabre\\Uri\\Version' ],
                [ 'name'    => 'sabre/vobject',
                  'check'   => 'Sabre\\VObject\\Component' ],
-               [ 'name'    => 'zendframework/zend-cache',
-                 'check'   => 'Zend\\Cache\\Module' ],
-               [ 'name'    => 'zendframework/zend-i18n',
-                 'check'   => 'Zend\\I18n\\Module' ],
-               [ 'name'    => 'zendframework/zend-serializer',
-                 'check'   => 'Zend\\Serializer\\Module' ],
+               [ 'name'    => 'laminas/laminas-cache',
+                 'check'   => 'Laminas\\Cache\\Module' ],
+               [ 'name'    => 'laminas/laminas-i18n',
+                 'check'   => 'Laminas\\I18n\\Module' ],
+               [ 'name'    => 'laminas/laminas-serializer',
+                 'check'   => 'Laminas\\Serializer\\Module' ],
                [ 'name'    => 'monolog/monolog',
                  'check'   => 'Monolog\\Logger' ],
                [ 'name'    => 'sebastian/diff',
@@ -2029,10 +2029,10 @@ class Config extends CommonDBTM {
                  'check'   => 'Symfony\\Component\\Console\\Application' ],
                [ 'name'    => 'scssphp/scssphp',
                  'check'   => 'ScssPhp\ScssPhp\Compiler' ],
-               [ 'name'    => 'zendframework/zend-mail',
-                 'check'   => 'Zend\\Mail\\Protocol\\Imap' ],
-               [ 'name'    => 'zendframework/zend-mime',
-                 'check'   => 'Zend\\Mime\\Mime' ],
+               [ 'name'    => 'laminas/laminas-mail',
+                 'check'   => 'Laminas\\Mail\\Protocol\\Imap' ],
+               [ 'name'    => 'laminas/laminas-mime',
+                 'check'   => 'Laminas\\Mime\\Mime' ],
                [ 'name'    => 'rlanvin/php-rrule',
                  'check'   => 'RRule\\RRule' ],
                [ 'name'    => 'blueimp/jquery-file-upload',
@@ -3046,9 +3046,9 @@ class Config extends CommonDBTM {
     *
     * @param string  $optname name of the configuration field
     * @param string  $context name of the configuration context (default 'core')
-    * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since ZendTranslator is NOT PSR16 compliant).
+    * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since Laminas Translator is NOT PSR16 compliant).
     *
-    * @return Psr\SimpleCache\CacheInterface|Zend\Cache\Storage\StorageInterface object
+    * @return Psr\SimpleCache\CacheInterface|Laminas\Cache\Storage\StorageInterface object
     */
    public static function getCache($optname, $context = 'core', $psr16 = true) {
       global $DB;
@@ -3116,7 +3116,7 @@ class Config extends CommonDBTM {
          $is_computed_config = true;
       } else {
          // Adapter names can be written using case variations.
-         // see Zend\Cache\Storage\AdapterPluginManager::$aliases
+         // see Laminas\Cache\Storage\AdapterPluginManager::$aliases
          $opt['adapter'] = strtolower($opt['adapter']);
 
          switch ($opt['adapter']) {
@@ -3193,7 +3193,7 @@ class Config extends CommonDBTM {
 
       // Create adapter
       try {
-         $storage = Zend\Cache\StorageFactory::factory($opt);
+         $storage = Laminas\Cache\StorageFactory::factory($opt);
       } catch (Exception $e) {
          if (!$is_computed_config) {
             Toolbox::logError($e->getMessage());
@@ -3215,7 +3215,7 @@ class Config extends CommonDBTM {
                mkdir($opt['options']['cache_dir']);
             }
             try {
-               $storage = Zend\Cache\StorageFactory::factory($opt);
+               $storage = Laminas\Cache\StorageFactory::factory($opt);
                $fallback = true;
             } catch (Exception $e1) {
                Toolbox::logError($e1->getMessage());
@@ -3229,7 +3229,7 @@ class Config extends CommonDBTM {
 
          if ($fallback === false) {
             $opt = ['adapter' => 'memory'];
-            $storage = Zend\Cache\StorageFactory::factory($opt);
+            $storage = Laminas\Cache\StorageFactory::factory($opt);
          }
          if (isset($_SESSION['glpi_use_mode'])
              && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {

@@ -37,8 +37,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Psr\SimpleCache\CacheInterface;
-use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
-use Zend\Cache\Storage\StorageInterface;
+use Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator;
+use Laminas\Cache\Storage\StorageInterface;
 
 class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
 

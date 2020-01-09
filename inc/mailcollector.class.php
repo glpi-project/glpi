@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use LitEmoji\LitEmoji;
-use Zend\Mime\Mime as Zend_Mime;
+use Laminas\Mime\Mime as Laminas_Mime;
 
 /**
  * MailCollector class
@@ -52,7 +52,7 @@ class MailCollector  extends CommonDBTM {
    // Specific one
    /**
     * IMAP / POP connection
-    * @var Zend\Mail\Storage\AbstractStorage
+    * @var Laminas\Mail\Storage\AbstractStorage
     */
    private $storage;
    /// UID of the current message
@@ -370,7 +370,7 @@ class MailCollector  extends CommonDBTM {
    public function displayFoldersList($input_id = "") {
       try {
          $this->connect();
-      } catch (\Zend\Mail\Protocol\Exception\RuntimeException $e) {
+      } catch (\Laminas\Mail\Protocol\Exception\RuntimeException $e) {
          Toolbox::logError($e->getMessage());
          echo __('An error occured trying to connect to collector.');
          return;
@@ -667,7 +667,7 @@ class MailCollector  extends CommonDBTM {
          //Connect to the Mail Box
          try {
             $this->connect();
-         } catch (\Zend\Mail\Protocol\Exception\RuntimeException $e) {
+         } catch (\Laminas\Mail\Protocol\Exception\RuntimeException $e) {
             Toolbox::logError($e->getTraceAsString());
             Session::addMessageAfterRedirect(
                __('An error occured trying to connect to collector.') . "<br/>" . $e->getMessage(),
@@ -894,7 +894,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return array ticket fields
     */
-   function buildTicket($uid, \Zend\Mail\Storage\Message $message, $options = []) {
+   function buildTicket($uid, \Laminas\Mail\Storage\Message $message, $options = []) {
       global $CFG_GLPI;
 
       $play_rules = (isset($options['play_rules']) && $options['play_rules']);
@@ -1264,7 +1264,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       try {
-         $class = '\Zend\Mail\Storage\\';
+         $class = '\Laminas\Mail\Storage\\';
          $class .= ($config['type']== 'pop' ? 'Pop3' : 'Imap');
          $this->storage = new $class($params);
          if ($this->fields['errors'] > 0) {
@@ -1324,7 +1324,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return array
    **/
-   function getAdditionnalHeaders(\Zend\Mail\Storage\Message $message) {
+   function getAdditionnalHeaders(\Laminas\Mail\Storage\Message $message) {
       $head   = [];
       $headers = $message->getHeaders();
 
@@ -1360,7 +1360,7 @@ class MailCollector  extends CommonDBTM {
     *                from      => From address of mail
     *                fromName  => Form Name of Mail
    **/
-   function getHeaders(\Zend\Mail\Storage\Message $message) {
+   function getHeaders(\Laminas\Mail\Storage\Message $message) {
 
       $h_sender = $message->getHeader('from')->getAddressList();
       $sender = $h_sender->current();
@@ -1404,7 +1404,7 @@ class MailCollector  extends CommonDBTM {
          // secu on subject setting
          try {
             $subject = $message->getHeader('subject')->getFieldValue();
-         } catch (Zend\Mail\Storage\Exception\InvalidArgumentException $e) {
+         } catch (Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
             $subject = '';
          }
 
@@ -1463,7 +1463,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return void
    **/
-   private function getRecursiveAttached(\Zend\Mail\Storage\Part $part, $path, $maxsize, $subject, $subpart = "") {
+   private function getRecursiveAttached(\Laminas\Mail\Storage\Part $part, $path, $maxsize, $subject, $subpart = "") {
       if ($part->isMultipart()) {
          $index = 0;
          foreach (new RecursiveIteratorIterator($part) as $mypart) {
@@ -1480,8 +1480,8 @@ class MailCollector  extends CommonDBTM {
                //not an attachment
             return false;
          } else {
-            if (strtok($part->contentDisposition, ';') != Zend_Mime::DISPOSITION_ATTACHMENT
-               && strtok($part->contentDisposition, ';') != Zend_Mime::DISPOSITION_INLINE
+            if (strtok($part->contentDisposition, ';') != Laminas_Mime::DISPOSITION_ATTACHMENT
+               && strtok($part->contentDisposition, ';') != Laminas_Mime::DISPOSITION_INLINE
             ) {
                //not an attachment
                return false;
@@ -1614,14 +1614,14 @@ class MailCollector  extends CommonDBTM {
     *
     * @return array containing extracted filenames in file/_tmp
    **/
-   public function getAttached(\Zend\Mail\Storage\Message $message, $path, $maxsize) {
+   public function getAttached(\Laminas\Mail\Storage\Message $message, $path, $maxsize) {
       $this->files     = [];
       $this->altfiles  = [];
       $this->addtobody = "";
 
       try {
          $subject = $message->getHeader('subject')->getFieldValue();
-      } catch (Zend\Mail\Storage\Exception\InvalidArgumentException $e) {
+      } catch (Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
          $subject = null;
       }
 
@@ -1636,7 +1636,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @param Message $message Message
    **/
-   function getBody(\Zend\Mail\Storage\Message $message) {
+   function getBody(\Laminas\Mail\Storage\Message $message) {
       $content = null;
 
       //if message is not multipart, just return its content
@@ -1990,7 +1990,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return string
     */
-   public function getDecodedContent(\Zend\Mail\Storage\Part $part) {
+   public function getDecodedContent(\Laminas\Mail\Storage\Part $part) {
       $contents = $part->getContent();
 
       $encoding = null;
@@ -2015,7 +2015,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $contentType = $part->getHeader('contentType');
-      if ($contentType instanceof \Zend\Mail\Header\ContentType
+      if ($contentType instanceof \Laminas\Mail\Header\ContentType
           && preg_match('/^text\//', $contentType->getType())
           && mb_detect_encoding($contents) != 'UTF-8') {
          $contents = Toolbox::encodeInUtf8($contents, $contentType->getEncoding());

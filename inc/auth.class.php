@@ -181,7 +181,7 @@ class Auth extends CommonGLPI {
             $ssl = 'TLS';
          }
 
-         $imap = new \Zend\Mail\Protocol\Imap();
+         $imap = new \Laminas\Mail\Protocol\Imap();
          $imap->connect(
             $config['address'],
             $config['port'],

@@ -40,6 +40,7 @@ The present file will list all changes made to the project; according to the
 
 - jQuery library has been upgraded from 2.2.x to 3.4.x. jQuery Migrate is used to ensure backward compatibility in most cases.
 - `DBmysqlIterator::handleOrderClause()` supports QueryExpressions
+- Use Laminas instead of deprecated ZendFramework
 
 #### Deprecated
 

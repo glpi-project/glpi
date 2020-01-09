@@ -624,7 +624,7 @@ class Session {
       if (isset($CFG_GLPI["languages"][$trytoload][5])) {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
-      $TRANSLATE = new Zend\I18n\Translator\Translator;
+      $TRANSLATE = new Laminas\I18n\Translator\Translator;
       $TRANSLATE->setLocale($trytoload);
 
       \Locale::setDefault($trytoload);

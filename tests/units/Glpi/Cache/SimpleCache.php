@@ -56,7 +56,7 @@ class SimpleCache extends \GLPITestCase {
       $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
 
       $this->newTestedInstance(
-         new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
+         new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
          $cache_dir
       );
 
@@ -86,7 +86,7 @@ class SimpleCache extends \GLPITestCase {
       $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
 
       $this->newTestedInstance(
-         new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
+         new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
          $cache_dir
       );
 
@@ -118,7 +118,7 @@ class SimpleCache extends \GLPITestCase {
       $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
 
       $this->newTestedInstance(
-         new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
+         new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
          $cache_dir
       );
 
@@ -151,7 +151,7 @@ class SimpleCache extends \GLPITestCase {
       $this->when(
          function() use ($self, $cache_dir, $cache_namespace) {
             $self->newTestedInstance(
-               new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
+               new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
                $cache_dir
             );
          }
@@ -183,7 +183,7 @@ class SimpleCache extends \GLPITestCase {
 
       // Simulate existing cache with footprint.
       $this->newTestedInstance(
-         new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
+         new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
          $cache_dir
       );
 
@@ -198,7 +198,7 @@ class SimpleCache extends \GLPITestCase {
       $this->when(
          function() use ($self, $cache_dir, $cache_namespace) {
             $self->newTestedInstance(
-               new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
+               new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
                $cache_dir
             );
          }
