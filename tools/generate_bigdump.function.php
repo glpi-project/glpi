@@ -160,7 +160,7 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
    }
 
    //insert netpoint
-   $netpoint   = new NetPoint();
+   $netpoint   = new Netpoint();
    $netpointID = $netpoint->add(Toolbox::addslashes_deep([
       'entities_id'  => $entities_id,
       'locations_id' => $locations_id,
@@ -266,7 +266,7 @@ function addReservation($type, $ID, $ID_entity) {
    $current_year = date("Y");
 
    if (mt_rand(0, 100)<$percent['reservationitems']) {
-      $ri  = new Reservationitem();
+      $ri  = new ReservationItem();
       $r   = new Reservation();
       $tID = $ri->add(Toolbox::addslashes_deep([
          'itemtype'     => $type,
@@ -1036,7 +1036,7 @@ function generateGlobalDropdowns() {
    }
 
    $items = ["XP Pro", "XP Home", "10.0", "10.1", "10.2", "2006", "Sarge"];
-   $dp    = new operatingSystemVersion();
+   $dp    = new OperatingSystemVersion();
    for ($i=0; $i<$MAX['os_version']; $i++) {
       if (isset($items[$i])) {
          $val = $items[$i];
@@ -1429,7 +1429,7 @@ function generateGlobalDropdowns() {
              "P5LD2", "GA-K8NE", "GA-8I945P Pro", "D945PBLL", "SE7525GP2", "865PE Neo3-F",
              "K8N Neo4-F", "Thunder i7520 (S5360G2NR)", "Thunder K8SR - S2881UG2NR",
              "Tiger K8QS Pro - S4882UG2NR", "Tomcat i875PF (S5105G2NR)"];
-   $dp    = new DeviceMotherBoard();
+   $dp    = new DeviceMotherboard();
    for ($i=0; $i<$MAX['device']; $i++) {
       if (isset($items[$i])) {
          $val = $items[$i];
@@ -2323,7 +2323,7 @@ function generate_entity($ID_entity) {
 
    // TYPE DE CONSOMMABLES
    $FIRST["type_of_consumables"] = getMaxItem("glpi_consumableitems")+1;
-   $ci                           = new Consumableitem();
+   $ci                           = new ConsumableItem();
 
    for ($i=0; $i<$MAX['type_of_consumables']; $i++) {
       $consID = $ci->add(Toolbox::addslashes_deep([
@@ -2595,7 +2595,7 @@ function generate_entity($ID_entity) {
    $c       = new Computer();
    $mon     = new Monitor();
 
-   $cdevmb    = new Item_DeviceMotherBoard();
+   $cdevmb    = new Item_DeviceMotherboard();
    $cdevproc  = new Item_DeviceProcessor();
    $cdevmem   = new Item_DeviceMemory();
    $cdevhd    = new Item_DeviceHardDrive();
