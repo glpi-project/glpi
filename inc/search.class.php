@@ -5544,7 +5544,7 @@ JAVASCRIPT;
 
             case "glpi_profiles.name" :
                if (($itemtype == 'User')
-                   && ($ID == 20)) {
+                   && ($ID == "User_20")) {
                   $out           = "";
 
                   $count_display = 0;
