@@ -227,6 +227,11 @@ class RuleRight extends Rule {
       if (!count($criterias)) {
          $criterias['common']                   = __('Global criteria');
 
+         $criterias['TYPE']['table']            = '';
+         $criterias['TYPE']['field']            = 'type';
+         $criterias['TYPE']['name']             = __('Authentication type');
+         $criterias['TYPE']['allow_condition']  = [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT];
+
          $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
          $criterias['LDAP_SERVER']['field']     = 'name';
          $criterias['LDAP_SERVER']['name']      = __('LDAP directory');
@@ -259,7 +264,7 @@ class RuleRight extends Rule {
 
          $criterias['GROUPS']['table']          = 'glpi_groups';
          $criterias['GROUPS']['field']          = 'completename';
-         $criterias['GROUPS']['name']           = __('Imported group from an LDAP directory');
+         $criterias['GROUPS']['name']           = __('Group');
          $criterias['GROUPS']['linkfield']      = '';
          $criterias['GROUPS']['type']           = 'dropdown';
          $criterias['GROUPS']['virtual']        = true;
@@ -269,6 +274,26 @@ class RuleRight extends Rule {
          $this->addSpecificCriteriasToArray($criterias);
       }
       return $criterias;
+   }
+
+
+   function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false) {
+      if ($criteria['field'] == 'type') {
+         \Auth::dropdown([
+            'name'  => $name,
+            'value' => $value,
+         ]);
+         return true;
+      }
+      return false;
+   }
+
+
+   function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
+      $crit = $this->getCriteria($ID);
+      if (count($crit) && $crit['field'] == 'type') {
+         return Auth::getMethodName($pattern, 0);
+      }
    }
 
 

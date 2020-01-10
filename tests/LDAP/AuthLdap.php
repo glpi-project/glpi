@@ -366,6 +366,7 @@ class AuthLDAP extends DbTestCase {
          ->string['name']->isIdenticalTo($group->fields['name']);
    }
 
+
    /**
     * Test sync user
     *
@@ -636,24 +637,38 @@ class AuthLDAP extends DbTestCase {
 
       // Add a local account with same name than a LDAP user ('brazil8')
       $input = [
-         'name'        => 'brazil8',
-         'password'    => 'passwordlocal',
-         'password2'   => 'passwordlocal',
-         'profiles_id' => 1
+         'name'         => 'brazil8',
+         'password'     => 'passwordlocal',
+         'password2'    => 'passwordlocal',
+         '_profiles_id' => 1 // add manual right (is_dynamic = 0)
       ];
-
       $user = new \User();
-      $id = $user->add($input);
-      $this->integer($id)->isGreaterThan(0);
+      $user_id = $user->add($input);
+      $this->integer($user_id)->isGreaterThan(0);
 
+      // check user has at least one profile
+      $pus = \Profile_User::getForUser($user_id);
+      $this->array($pus)->size->isEqualTo(1);
+      $pu = array_shift($pus);
+      $this->integer($pu['profiles_id'])->isEqualTo(1);
+      $this->integer($pu['entities_id'])->isEqualTo(0);
+      $this->integer($pu['is_recursive'])->isEqualTo(0);
+      $this->integer($pu['is_recursive'])->isEqualTo(0);
+      $this->integer($pu['is_dynamic'])->isEqualTo(0);
+
+      // first, login with ldap mode
       $auth = new \Auth();
       $this->boolean($auth->login('brazil8', 'password', false, false, 'ldap-'.$this->ldap->getID()))->isTrue();
       $user_ldap_id = $auth->user->fields['id'];
+      $this->integer($user_ldap_id)->isNotEqualTo($user_id);
+
       $auth = new \Auth();
       $this->boolean($auth->login('brazil8', 'passwordlocal', false, false, 'ldap-'.$this->ldap->getID()))->isFalse();
 
+      // Then, login with local GLPI DB mode
       $auth = new \Auth();
       $this->boolean($auth->login('brazil8', 'password', false, false, 'local'))->isFalse();
+
       $auth = new \Auth();
       $this->boolean($auth->login('brazil8', 'passwordlocal', false, false, 'local'))->isTrue();
       $this->integer($auth->user->fields['id'])->isNotEqualTo($user_ldap_id);
@@ -1088,5 +1103,70 @@ class AuthLDAP extends DbTestCase {
             'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,DC=glpi,DC=org'
          )
       )->isTrue();
+   }
+
+   /**
+    * Test if rules targeting ldap criteria are working
+    *
+    * @return void
+    */
+   public function testRuleRight() {
+      //prepare rules
+      $rules = new \RuleRight();
+      $rules_id = $rules->add([
+         'sub_type'     => 'RuleRight',
+         'name'         => 'test ldap ruleright',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'entities_id'  => 0,
+         'is_recursive' => 1,
+      ]);
+
+      $criteria = new \RuleCriteria();
+      $criteria->add([
+         'rules_id'  => $rules_id,
+         'criteria'  => 'LDAP_SERVER',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => $this->ldap->getID(),
+      ]);
+      $criteria->add([
+         'rules_id'  => $rules_id,
+         'criteria'  => 'employeenumber',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => 8,
+      ]);
+
+      $actions = new \RuleAction();
+      $actions->add([
+         'rules_id'    => $rules_id,
+         'action_type' => 'assign',
+         'field'       => 'profiles_id',
+         'value'       => 5, // 'normal' profile
+      ]);
+      $actions->add([
+         'rules_id'    => $rules_id,
+         'action_type' => 'assign',
+         'field'       => 'entities_id',
+         'value'       => 1, // '_test_child_1' entity
+      ]);
+
+      // login the user to force a real synchronisation and get it's glpi id
+      $this->login('brazil6', 'password', false);
+      $users_id = \User::getIdByName('brazil6');
+      $this->integer($users_id);
+
+      // check the user got the entity/profiles assigned
+      $pu = \Profile_User::getForUser($users_id, true);
+
+      $found = false;
+      foreach ($pu as $right) {
+         if (isset($right['entities_id']) && $right['entities_id'] == 1
+             && isset($right['profiles_id']) && $right['profiles_id'] == 5
+             && isset($right['is_dynamic']) && $right['is_dynamic'] == 1) {
+            $found = true;
+            break;
+         }
+      }
+      $this->boolean($found)->isTrue();
    }
 }

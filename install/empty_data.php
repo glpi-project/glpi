@@ -7554,21 +7554,15 @@ $tables['glpi_rulecriterias'] = [
    ], [
       'id'        => 2,
       'rules_id'  => 2,
-      'criteria'  => 'uid',
+      'criteria'  => 'TYPE',
       'condition' => 0,
-      'pattern'   => '*',
+      'pattern'   => Auth::LDAP,
    ], [
       'id'        => 3,
       'rules_id'  => 2,
-      'criteria'  => 'samaccountname',
+      'criteria'  => 'TYPE',
       'condition' => 0,
-      'pattern'   => '*',
-   ], [
-      'id'        => 4,
-      'rules_id'  => 2,
-      'criteria'  => 'MAIL_EMAIL',
-      'condition' => 0,
-      'pattern'   => '*',
+      'pattern'   => Auth::MAIL,
    ], [
       'id'        => 5,
       'rules_id'  => 3,

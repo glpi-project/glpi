@@ -917,12 +917,8 @@ class User extends CommonDBTM {
 
       $return = false;
 
-      if ((isset($this->fields['_ruleright_process'])
-           || isset($this->input['_ruleright_process'])) // Add after a getFromLDAP
-          && isset($this->fields["authtype"])
-          && (($this->fields["authtype"] == Auth::LDAP)
-              || ($this->fields["authtype"] == Auth::MAIL)
-              || Auth::isAlternateAuth($this->fields["authtype"]))) {
+      if (isset($this->fields['_ruleright_process'])
+          || isset($this->input['_ruleright_process'])) {
 
          $dynamic_profiles = Profile_User::getForUser($this->fields["id"], true);
 
@@ -1662,13 +1658,14 @@ class User extends CommonDBTM {
                $groups = [];
             }
 
-            $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields),
-                                                   ['type'        => 'LDAP',
-                                                         'ldap_server' => $ldap_method["id"],
-                                                         'connection'  => $ldap_connection,
-                                                         'userdn'      => $userdn,
-                                                         'login'       => $this->fields['name'],
-                                                         'mail_email'  => $this->fields['_emails']]);
+            $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields), [
+               'type'        => Auth::LDAP,
+               'ldap_server' => $ldap_method["id"],
+               'connection'  => $ldap_connection,
+               'userdn'      => $userdn,
+               'login'       => $this->fields['name'],
+               'mail_email'  => $this->fields['_emails']
+            ]);
 
             $this->fields['_ruleright_process'] = true;
 
@@ -1823,11 +1820,12 @@ class User extends CommonDBTM {
          } else {
             $groups = [];
          }
-         $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields),
-                                                ['type'        => 'MAIL',
-                                                      'mail_server' => $mail_method["id"],
-                                                      'login'       => $name,
-                                                      'email'       => $email]);
+         $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields), [
+            'type'        => Auth::MAIL,
+            'mail_server' => $mail_method["id"],
+            'login'       => $name,
+            'email'       => $email]
+         );
          $this->fields['_ruleright_process'] = true;
       }
       return true;
@@ -1917,10 +1915,11 @@ class User extends CommonDBTM {
          //Instanciate the affectation's rule
          $rule = new RuleRightCollection();
 
-         $this->fields = $rule->processAllRules([], Toolbox::stripslashes_deep($this->fields),
-                                                ['type'   => 'SSO',
-                                                      'email'  => $this->fields["_emails"],
-                                                      'login'  => $this->fields["name"]]);
+         $this->fields = $rule->processAllRules([], Toolbox::stripslashes_deep($this->fields), [
+            'type'   => Auth::EXTERNAL,
+            'email'  => $this->fields["_emails"],
+            'login'  => $this->fields["name"]
+         ]);
 
          //If rule  action is ignore import
          if (isset($this->fields["_stop_import"])) {
