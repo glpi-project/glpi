@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 use Config;
 use DB;
 use GLPI;
+use Glpi\Application\ErrorHandler;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Plugin;
 use Session;
@@ -63,6 +64,11 @@ class Application extends BaseApplication {
     * @var array
     */
    private $config;
+
+   /**
+    * @var ErrorHandler
+    */
+   private $error_handler;
 
    /**
     * @var DB
@@ -178,6 +184,9 @@ class Application extends BaseApplication {
 
       global $CFG_GLPI;
 
+      $this->output = $output;
+      $this->error_handler->setOutputHandler($output);
+
       parent::configureIO($input, $output);
 
       // Trigger error on invalid lang. This is not done before as error handler would not be set.
@@ -189,11 +198,8 @@ class Application extends BaseApplication {
       }
 
       if ($output->getVerbosity() === OutputInterface::VERBOSITY_DEBUG) {
-         // TODO Find a way to route errors to console output in a clean format.
-         Toolbox::setDebugMode(Session::DEBUG_MODE, 1, 1, 1);
+         Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
       }
-
-      $this->output = $output;
    }
 
    /**
@@ -252,7 +258,7 @@ class Application extends BaseApplication {
       global $GLPI;
       $GLPI = new GLPI();
       $GLPI->initLogger();
-      $GLPI->initErrorHandler();
+      $this->error_handler = $GLPI->initErrorHandler();
 
       Config::detectRootDoc();
    }
