@@ -66,9 +66,9 @@ class FQDN extends CommonDropdown {
     * Checking suppose that each FQDN is compose of dot separated array of labels and its unique
     * \see (FQDNLabel)
     *
-    * @param $input fields of the record to check
+    * @param array $input fields of the record to check
     *
-    * @return false or fields checks and update (lowercase for the fqdn field)
+    * @return boolean|array  false or fields checked and updated (lowercase for the fqdn field)
    **/
    function prepareInput($input) {
 
@@ -117,7 +117,7 @@ class FQDN extends CommonDropdown {
 
 
    /**
-    * @return the FQDN of the element, or "" if invalid FQDN
+    * @return string the FQDN of the element, or "" if invalid FQDN
    **/
    function getFQDN() {
 
@@ -131,11 +131,12 @@ class FQDN extends CommonDropdown {
    /**
     * Search FQDN id from string FDQDN
     *
-    * @param $fqdn            string   value of the fdqn (for instance : indeptnet.net)
-    * @param $wildcard_search boolean  true if we search with wildcard (false by default)
+    * @param string  $fqdn             value of the fdqn (for instance : indeptnet.net)
+    * @param boolean $wildcard_search  true if we search with wildcard (false by default)
     *
-    * @return if $wildcard_search == false : the id of the fqdn, -1 if not found or several answers
-    *         if $wildcard_search == true : an array of the id of the fqdn
+    * @return integer|integer[]
+    *    if $wildcard_search == false : the id of the fqdn, -1 if not found or several answers
+    *    if $wildcard_search == true : an array of the id of the fqdn
    **/
    static function getFQDNIDByFQDN($fqdn, $wildcard_search = false) {
       global $DB;
@@ -179,9 +180,9 @@ class FQDN extends CommonDropdown {
 
 
    /**
-    * @param $ID id of the FQDN
+    * @param integer $ID  id of the FQDN
     *
-    * @return the FQDN of the element, or "" if invalid FQDN
+    * @return string  the FQDN of the element, or "" if invalid FQDN
    **/
    static function getFQDNFromID($ID) {
 
@@ -212,9 +213,9 @@ class FQDN extends CommonDropdown {
    /**
     * Check FQDN Validity
     *
-    * @param $fqdn the FQDN to check
+    * @param string $fqdn  the FQDN to check
     *
-    * @return true if the FQDN is valid
+    * @return boolean  true if the FQDN is valid
    **/
    static function checkFQDN($fqdn) {
 

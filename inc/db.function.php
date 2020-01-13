@@ -505,11 +505,11 @@ function closeDBConnections() {
 /**
  * Add dates for request
  *
- * @param $field        table.field to request
- * @param $begin  date  begin date
- * @param $end    date  end date
+ * @param string $field  table.field to request
+ * @param string $begin  begin date
+ * @param string $end    end date
  *
- * @return sql
+ * @return string
 **/
 function getDateCriteria($field, $begin, $end) {
    $dbu = new DbUtils();

@@ -445,7 +445,7 @@ class TicketRecurrent extends CommonDropdown {
     *
     * @param $name : task's name
     *
-    * @return arrray of information
+    * @return array of information
    **/
    static function cronInfo($name) {
 

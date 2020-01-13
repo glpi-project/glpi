@@ -137,7 +137,7 @@ class OlaLevel_Ticket extends CommonDBTM {
     *
     * @param $name : task's name
     *
-    * @return arrray of information
+    * @return array of information
    **/
    static function cronInfo($name) {
 

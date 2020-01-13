@@ -38,10 +38,6 @@ class DomainType extends CommonDropdown
 {
    static $rightname = 'dropdown';
 
-   /**
-    * @param int $nb
-    * @return translated
-    */
    static function getTypeName($nb = 0) {
       return _n('Domain type', 'Domain types', $nb);
    }

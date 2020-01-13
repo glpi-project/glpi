@@ -311,10 +311,10 @@ class Event extends CommonDBTM {
     *
     * Print a great tab to present lasts events occured on glpi
     *
-    * @param $target    where to go when complete
-    * @param $order     order by clause occurences (eg: ) (default 'DESC')
-    * @param $sort      order by clause occurences (eg: date) (defaut 'date')
-    * @param $start     (default 0)
+    * @param string  $target  where to go when complete
+    * @param string  $order   order by clause occurences (eg: ) (default 'DESC')
+    * @param string  $sort    order by clause occurences (eg: date) (defaut 'date')
+    * @param integer $start   (default 0)
    **/
    static function showList($target, $order = 'DESC', $sort = 'date', $start = 0) {
       $DBread = DBConnection::getReadConnection();

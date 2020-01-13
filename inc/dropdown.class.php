@@ -42,8 +42,8 @@ class Dropdown {
    /**
     * Print out an HTML "<select>" for a dropdown with preselected value
     *
-    * @param $itemtype        itemtype used for create dropdown
-    * @param $options   array of possible options:
+    * @param string $itemtype  itemtype used for create dropdown
+    * @param array  $options   array of possible options:
     *    - name                 : string / name of the select (default is depending itemtype)
     *    - value                : integer / preselected value (default -1)
     *    - comments             : boolean / is the comments displayed near the dropdown (default true)
@@ -286,11 +286,11 @@ class Dropdown {
     *
     * Returns the value of the dropdown from $table with ID $id.
     *
-    * @param $table        the dropdown table from witch we want values on the select
-    * @param $id           id of the element to get
-    * @param $withcomment  give array with name and comment (default 0)
-    * @param $translate    (true by default)
-    * @param $tooltip      boolean  (true by default) returns a tooltip, else returns only 'comment'
+    * @param string  $table        the dropdown table from witch we want values on the select
+    * @param integer $id           id of the element to get
+    * @param boolean $withcomment  give array with name and comment (default 0)
+    * @param boolean $translate    (true by default)
+    * @param boolean $tooltip      (true by default) returns a tooltip, else returns only 'comment'
     *
     * @return string the value of the dropdown or &nbsp; if not exists
    **/
@@ -496,8 +496,8 @@ class Dropdown {
    /**
     * Get values of a dropdown for a list of item
     *
-    * @param $table        the dropdown table from witch we want values on the select
-    * @param $ids    array containing the ids to get
+    * @param string    $table  the dropdown table from witch we want values on the select
+    * @param integer[] $ids    array containing the ids to get
     *
     * @return array containing the value of the dropdown or &nbsp; if not exists
    **/
@@ -532,9 +532,9 @@ class Dropdown {
    /**
     * Make a select box for device type
     *
-    * @param $name            name of the select box
-    * @param $types     array of types to display
-    * @param $options   Parameters which could be used in options array :
+    * @param string   $name     name of the select box
+    * @param string[] $types    array of types to display
+    * @param array    $options  Parameters which could be used in options array :
     *    - value               : integer / preselected value (default '')
     *    - used                : array / Already used items ID: not to display in dropdown (default empty)
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
@@ -581,9 +581,9 @@ class Dropdown {
    /**
     * Make a select box for device type
     *
-    * @param $name                  name of the select box
-    * @param $itemtype_ref  string   itemtype reference where to search in itemtype field
-    * @param $options       array    of possible options:
+    * @param string $name          name of the select box
+    * @param string $itemtype_ref  itemtype reference where to search in itemtype field
+    * @param array  $options       array of possible options:
     *        - may be value (default value) / field (used field to search itemtype)
     *
     * @return integer|string
@@ -619,10 +619,10 @@ class Dropdown {
    /**
     * Make a select box for icons
     *
-    * @param $myname                the name of the HTML select
-    * @param $value                 the preselected value we want
-    * @param $store_path            path where icons are stored
-    * @param $display      boolean  display of get string ? (true by default)
+    * @param string  $myname      the name of the HTML select
+    * @param mixed   $value       the preselected value we want
+    * @param string  $store_path  path where icons are stored
+    * @param boolean $display     display of get string ? (true by default)
     *
     *
     * @return void|string
@@ -672,8 +672,8 @@ class Dropdown {
    /**
     * Dropdown for GMT selection
     *
-    * @param $name   select name
-    * @param $value  default value (default '')
+    * @param string $name   select name
+    * @param mixed  $value  default value (default '')
    **/
    static function showGMT($name, $value = '') {
 
@@ -700,12 +700,14 @@ class Dropdown {
     * Make a select box for a boolean choice (Yes/No) or display a checkbox. Add a
     * 'use_checkbox' = true to the $params array to display a checkbox instead a select box
     *
-    * @param $name               select name
-    * @param $value              preselected value. (default 0)
-    * @param $restrict_to        allows to display only yes or no in the dropdown (default -1)
-    * @param $params       Array of optional options (passed to showFromArray)
+    * @param string  $name         select name
+    * @param mixed   $value        preselected value. (default 0)
+    * @param integer $restrict_to  allows to display only yes or no in the dropdown (default -1)
+    * @param array   $params       Array of optional options (passed to showFromArray)
     *
-    * @return rand value
+    * @return integer|string
+    *    integer if option display=true (random part of elements id)
+    *    string if option display=false (HTML code)
    **/
    static function showYesNo($name, $value = 0, $restrict_to = -1, $params = []) {
 
@@ -1207,8 +1209,8 @@ class Dropdown {
    /**
     * Dropdown available languages
     *
-    * @param $myname          select name
-    * @param $options   array of additionnal options:
+    * @param string $myname   select name
+    * @param array  $options  array of additionnal options:
     *    - display_emptychoice : allow selection of no language
     *    - emptylabel          : specific string to empty label if display_emptychoice is true
    **/
@@ -1360,8 +1362,8 @@ class Dropdown {
     *
     * @since 0.83
     *
-    * @param $types           Types used (default "state_types") (default '')
-    * @param $options   Array of optional options
+    * @param array|string $types    Types used (default "state_types") (default '')
+    * @param array        $options  Array of optional options
     *        name, value, rand, emptylabel, display_emptychoice, on_change, plural, checkright
     *       - toupdate            : array / Update a specific item on select change on dropdown
     *                                    (need value_fieldname, to_update,
@@ -1439,7 +1441,7 @@ class Dropdown {
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
     *    - used                : array / Already used items ID: not to display in dropdown (default empty)
     *
-    * @return randomized value used to generate HTML IDs
+    * @return integer randomized value used to generate HTML IDs
    **/
    static function showSelectItemFromItemtypes(array $options = []) {
       global $CFG_GLPI;
@@ -1510,8 +1512,8 @@ class Dropdown {
     *
     * @since 0.84
     *
-    * @param $myname          select name
-    * @param $options   array of additionnal options :
+    * @param string $myname   select name
+    * @param array  $options  array of additionnal options :
     *     - value              default value (default 0)
     *     - rand               random value
     *     - min                min value (default 0)
@@ -1647,8 +1649,8 @@ class Dropdown {
     *
     * @since 0.83
     *
-    * @param $myname        select name
-    * @param $options array of options
+    * @param string $myname   select name
+    * @param array  $options  array of options
     *    - value           : default value
     *    - min             : min value : default 0
     *    - max             : max value : default DAY_TIMESTAMP
@@ -1806,9 +1808,9 @@ class Dropdown {
    /**
     * Dropdown of values in an array
     *
-    * @param $name            select name
-    * @param $elements  array of elements to display
-    * @param $options   array of possible options:
+    * @param string $name      select name
+    * @param array  $elements  array of elements to display
+    * @param array  $options   array of possible options:
     *    - value               : integer / preselected value (default 0)
     *    - used                : array / Already used items ID: not to display in dropdown (default empty)
     *    - readonly            : boolean / used as a readonly item (default false)
@@ -2053,8 +2055,8 @@ class Dropdown {
    /**
     * Dropdown for global item management
     *
-    * @param $ID           item ID
-    * @param attrs   array which contains the extra paramters
+    * @param integer $ID           item ID
+    * @param array   attrs   array which contains the extra paramters
     *
     * Parameters can be :
     * - target target for actions
@@ -2116,10 +2118,10 @@ class Dropdown {
    /**
     * Import a dropdown - check if already exists
     *
-    * @param $itemtype  string   name of the class
-    * @param $input     array    of value to import
+    * @param string $itemtype  name of the class
+    * @param array  $input     of value to import
     *
-    * @return the ID of the new
+    * @return boolean|integer ID of the new item or false on error
    **/
    static function import($itemtype, $input) {
 
@@ -2156,9 +2158,9 @@ class Dropdown {
    /**
     * Get the label associated with a management type
     *
-    * @param value the type of management (default 0)
+    * @param integer value the type of management (default 0)
     *
-    * @return the label corresponding to it, or ""
+    * @return string the label corresponding to it, or ""
    **/
    static function getGlobalSwitch($value = 0) {
 

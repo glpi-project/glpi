@@ -7554,15 +7554,15 @@ abstract class CommonITILObject extends CommonDBTM {
     * Use force_template first, then try on template define for type and category
     * then use default template of active profile of connected user and then use default entity one
     *
-    * @param $force_template      integer itiltemplate_id to used (case of preview for example)
-    *                             (default 0)
-    * @param $type                integer type of the ticket (default 0)
-    * @param $itilcategories_id   integer ticket category (default 0)
-    * @param $entities_id         integer (default -1)
+    * @param integer      $force_template     itiltemplate_id to use (case of preview for example)
+    * @param integer|null $type               type of the ticket
+    *                                         (use Ticket::INCIDENT_TYPE or Ticket::DEMAND_TYPE constants value)
+    * @param integer      $itilcategories_id  ticket category
+    * @param integer      $entities_id
+    *
+    * @return ITILTemplate
     *
     * @since 9.5.0
-    *
-    * @return ITIL template object
    **/
    function getITILTemplateToUse(
       $force_template = 0,

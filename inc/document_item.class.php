@@ -290,10 +290,10 @@ class Document_Item extends CommonDBRelation{
     *
     * @since 0.84
     *
-    * @param $itemtype     itemtype of the item
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
-    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
+    * @param string  $itemtype     itemtype of the item
+    * @param integer $oldid        ID of the item to clone
+    * @param integer $newid        ID of the item cloned
+    * @param string  $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
    **/
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
