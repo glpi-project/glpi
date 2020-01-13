@@ -43,6 +43,17 @@ class NotificationTargetDomain extends NotificationTarget {
       ];
    }
 
+   function addAdditionalTargets($event = '') {
+      $this->addTarget(
+         Notification::ITEM_TECH_IN_CHARGE,
+         __('Technician in charge of the domain')
+      );
+      $this->addTarget(
+         Notification::ITEM_TECH_GROUP_IN_CHARGE,
+         __('Group in charge of the domain')
+      );
+   }
+
    public function addDataForTemplate($event, $options = []) {
 
       $this->data['##domain.entity##']      = Dropdown::getDropdownName('glpi_entities', $options['entities_id']);

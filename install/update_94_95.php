@@ -1153,6 +1153,104 @@ function update94to95() {
    }
    /** /Domain records */
 
+   /** Domains expiration notifications */
+   if (countElementsInTable('glpi_notifications', ['itemtype' => 'Domain']) === 0) {
+      $DB->insertOrDie(
+         'glpi_notificationtemplates',
+         [
+            'name'            => 'Alert domains',
+            'itemtype'        => 'Domain',
+            'date_mod'        => new \QueryExpression('NOW()'),
+         ],
+         'Add domains expiration notification template'
+      );
+      $notificationtemplate_id = $DB->insertId();
+
+      $DB->insertOrDie(
+         'glpi_notificationtemplatetranslations',
+         [
+            'notificationtemplates_id' => $notificationtemplate_id,
+            'language'                 => '',
+            'subject'                  => '##domain.action## : ##domain.entity##',
+            'content_text'             => <<<PLAINTEXT
+##lang.domain.entity## :##domain.entity##
+##FOREACHdomains##
+##lang.domain.name## : ##domain.name## - ##lang.domain.dateexpiration## : ##domain.dateexpiration##
+##ENDFOREACHdomains##
+PLAINTEXT
+            ,
+            'content_html'             => <<<HTML
+&lt;p&gt;##lang.domain.entity## :##domain.entity##&lt;br /&gt; &lt;br /&gt;
+##FOREACHdomains##&lt;br /&gt;
+##lang.domain.name##  : ##domain.name## - ##lang.domain.dateexpiration## :  ##domain.dateexpiration##&lt;br /&gt;
+##ENDFOREACHdomains##&lt;/p&gt;
+HTML
+            ,
+         ],
+         'Add domains expiration notification template translations'
+      );
+
+      $notifications_data = [
+         [
+            'event' => 'ExpiredDomains',
+            'name'  => 'Alert expired domains',
+         ],
+         [
+            'event' => 'DomainsWhichExpire',
+            'name'  => 'Alert domains close expiries',
+         ]
+      ];
+      foreach ($notifications_data as $notification_data) {
+         $DB->insertOrDie(
+            'glpi_notifications',
+            [
+               'name'            => $notification_data['name'],
+               'entities_id'     => 0,
+               'itemtype'        => 'Domain',
+               'event'           => $notification_data['event'],
+               'comment'         => null,
+               'is_recursive'    => 1,
+               'is_active'       => 1,
+               'date_creation'   => new \QueryExpression('NOW()'),
+               'date_mod'        => new \QueryExpression('NOW()'),
+            ],
+            'Add domains expiration notification'
+         );
+         $notification_id = $DB->insertId();
+
+         $DB->insertOrDie(
+            'glpi_notifications_notificationtemplates',
+            [
+               'notifications_id'         => $notification_id,
+               'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+               'notificationtemplates_id' => $notificationtemplate_id,
+            ],
+            'Add domains expiration notification template instance'
+         );
+
+         $DB->insertOrDie(
+            'glpi_notificationtargets',
+            [
+               'items_id'         => Notification::ITEM_TECH_IN_CHARGE,
+               'type'             => 1,
+               'notifications_id' => $notification_id,
+            ],
+            'Add domains expiration notification targets'
+         );
+
+         $DB->insertOrDie(
+            'glpi_notificationtargets',
+            [
+               'items_id'         => Notification::ITEM_TECH_GROUP_IN_CHARGE,
+               'type'             => 1,
+               'notifications_id' => $notification_id,
+            ],
+            'Add domains expiration notification targets'
+         );
+      }
+   }
+   /** /Domains expiration notifications */
+
    /** Impact context */
 
    // Create new impact_context table
