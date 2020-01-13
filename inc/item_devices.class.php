@@ -1388,7 +1388,7 @@ class Item_Devices extends CommonDBRelation {
                                                                           'size'     => $attributs['size'],
                                                                           'display'  => false]);
                   } else {
-                     $out.= '<input class="protected" type="password" autocomplete="off" name="' . $field . '" ';
+                     $out.= '<input class="protected" type="password" autocomplete="new-password" name="' . $field . '" ';
                      $out.= 'id="' . $field . $rand . '" value="' . $value . '">';
                   }
             }

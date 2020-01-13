@@ -428,7 +428,7 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'password':
-               echo "<input type='password' name='password' value='' size='20' autocomplete='off'>";
+               echo "<input type='password' name='password' value='' size='20' autocomplete='new-password'>";
                break;
 
             case 'tinymce':
