@@ -3664,6 +3664,26 @@ $tables['glpi_notificationtargets'] = [
       'items_id'         => '23',
       'type'             => '1',
       'notifications_id' => '67',
+   ], [
+      'id'               => '134',
+      'items_id'         => '5',
+      'type'             => '1',
+      'notifications_id' => '68',
+   ], [
+      'id'               => '135',
+      'items_id'         => '23',
+      'type'             => '1',
+      'notifications_id' => '68',
+   ], [
+      'id'               => '136',
+      'items_id'         => '5',
+      'type'             => '1',
+      'notifications_id' => '69',
+   ], [
+      'id'               => '137',
+      'items_id'         => '23',
+      'type'             => '1',
+      'notifications_id' => '69',
    ],
 ];
 
