@@ -266,7 +266,9 @@ var GLPIImpact = {
                'target-arrow-color': this.edgeColors[0],
                'target-arrow-shape': 'triangle',
                'arrow-scale'       : 0.7,
-               'curve-style'       : 'bezier'
+               'curve-style'       : 'bezier',
+               'source-endpoint'   : 'outside-to-node-or-label',
+               'target-endpoint'   : 'outside-to-node-or-label',
             }
          },
          {
