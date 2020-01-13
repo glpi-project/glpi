@@ -3654,6 +3654,16 @@ $tables['glpi_notificationtargets'] = [
       'items_id'         => '19',
       'type'             => '1',
       'notifications_id' => '66',
+   ], [
+      'id'               => '132',
+      'items_id'         => '5',
+      'type'             => '1',
+      'notifications_id' => '67',
+   ], [
+      'id'               => '133',
+      'items_id'         => '23',
+      'type'             => '1',
+      'notifications_id' => '67',
    ],
 ];
 
@@ -4574,7 +4584,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
    ##ENDFOREACHdomains##',
       'content_html'             => '&lt;p&gt;##lang.domain.entity## :##domain.entity##&lt;br /&gt; &lt;br /&gt;
                         ##FOREACHdomains##&lt;br /&gt;
-                        ##lang.domain.name##  : ##domain.name## - ##lang.domain.dateexpiration## :  ##domain.dateexpiration##&lt;br /&gt; 
+                        ##lang.domain.name##  : ##domain.name## - ##lang.domain.dateexpiration## :  ##domain.dateexpiration##&lt;br /&gt;
                         ##ENDFOREACHdomains##&lt;/p&gt;',
 
    ],

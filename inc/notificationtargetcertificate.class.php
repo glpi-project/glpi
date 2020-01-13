@@ -49,6 +49,16 @@ class NotificationTargetCertificate extends NotificationTarget {
       return ['alert' => __('Alarms on expired certificates')];
    }
 
+   function addAdditionalTargets($event = '') {
+      $this->addTarget(
+         Notification::ITEM_TECH_IN_CHARGE,
+         __('Technician in charge of the domain')
+      );
+      $this->addTarget(
+         Notification::ITEM_TECH_GROUP_IN_CHARGE,
+         __('Group in charge of the domain')
+      );
+   }
 
    function addDataForTemplate($event, $options = []) {
 
