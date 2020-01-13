@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @since 9.5.0
@@ -102,6 +103,14 @@ class ErrorHandler {
    private $last_fatal_trace;
 
    /**
+    * Output handler to use. If not set, output will be directly echoed on a format depending on
+    * execution context (Web VS CLI).
+    *
+    * @var OutputInterface|null
+    */
+   private $output_handler;
+
+   /**
     * Reserved memory that will be used in case of an "out of memory" error.
     *
     * @var string
@@ -113,6 +122,17 @@ class ErrorHandler {
     */
    public function __construct(LoggerInterface $logger = null) {
       $this->logger = $logger;
+   }
+
+   /**
+    * Defines output handler.
+    *
+    * @param OutputInterface $output_handler
+    *
+    * @return void
+    */
+   public function setOutputHandler(OutputInterface $output_handler) {
+      $this->output_handler = $output_handler;
    }
 
    /**
@@ -172,14 +192,10 @@ class ErrorHandler {
          $line_number
       );
 
-      $this->logErrorMessage(
-         $error_type,
-         $error_description,
-         $error_trace,
-         self::ERROR_LEVEL_MAP[$error_code]
-      );
+      $log_level = self::ERROR_LEVEL_MAP[$error_code];
 
-      $this->outputDebugMessage($error_type, $error_description);
+      $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
+      $this->outputDebugMessage($error_type, $error_description, $log_level);
 
       return $return;
    }
@@ -206,14 +222,10 @@ class ErrorHandler {
       );
       $error_trace = $this->getTraceAsString($exception->getTrace());
 
-      $this->logErrorMessage(
-         $error_type,
-         $error_description,
-         $error_trace,
-         self::ERROR_LEVEL_MAP[E_ERROR]
-      );
+      $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
 
-      $this->outputDebugMessage($error_type, $error_description, isCommandLine());
+      $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
+      $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
    }
 
    /**
@@ -244,14 +256,10 @@ class ErrorHandler {
          $trace = $this->last_fatal_trace ?? [];
          $error_trace = $this->getTraceAsString($trace);
 
-         $this->logErrorMessage(
-            $error_type,
-            $error_description,
-            $error_trace,
-            self::ERROR_LEVEL_MAP[$error['type']]
-         );
+         $log_level = self::ERROR_LEVEL_MAP[$error['type']];
 
-         $this->outputDebugMessage($error_type, $error_description);
+         $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
+         $this->outputDebugMessage($error_type, $error_description, $log_level);
       }
    }
 
@@ -292,18 +300,46 @@ class ErrorHandler {
     *
     * @param string  $error_type
     * @param string  $message
+    * @param string  $log_level
     * @param boolean $force
     *
     * @return void
     */
-   private function outputDebugMessage(string $error_type, string $message, bool $force = false) {
+   private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false) {
 
       if (!$force
           && (!isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] != \Session::DEBUG_MODE)) {
          return;
       }
 
-      if (!isCommandLine()) {
+      if ($this->output_handler instanceof OutputInterface) {
+         $format = 'comment';
+         switch ($log_level) {
+            case LogLevel::EMERGENCY:
+            case LogLevel::ALERT:
+            case LogLevel::CRITICAL:
+            case LogLevel::ERROR:
+               $format    = 'error';
+               $verbosity = OutputInterface::VERBOSITY_QUIET;
+               break;
+            case LogLevel::WARNING:
+               $verbosity = OutputInterface::VERBOSITY_NORMAL;
+               break;
+            case LogLevel::NOTICE:
+            case LogLevel::INFO:
+            default:
+               $verbosity = OutputInterface::VERBOSITY_VERBOSE;
+               break;
+            case LogLevel::DEBUG:
+               $verbosity = OutputInterface::VERBOSITY_VERY_VERBOSE;
+               break;
+         }
+         $message = $error_type . ': ' . $message;
+         if (null !== $format) {
+            $message = sprintf('<%1$s>%2$s</%1$s>', $format, $message);
+         }
+         $this->output_handler->writeln($message, $verbosity);
+      } else if (!isCommandLine()) {
          echo '<div style="position:float-left; background-color:red; z-index:10000">'
             . '<span class="b">' . $error_type . ': </span>' . $message . '</div>';
       } else {

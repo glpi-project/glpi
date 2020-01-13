@@ -99,12 +99,14 @@ class GLPI {
    /**
     * Init and register error handler.
     *
-    * @return void
+    * @return ErrorHandler
     */
    public function initErrorHandler() {
       global $PHPLOGGER;
 
       $this->error_handler = new ErrorHandler($PHPLOGGER);
       $this->error_handler->register();
+
+      return $this->error_handler;
    }
 }
