@@ -303,8 +303,8 @@ class Fieldblacklist extends CommonDropdown {
     *
     * @since 0.84
     *
-    * @param $itemtype          itemtype
-    * @param $options    array    of options
+    * @param string $itemtype
+    * @param array  $options
    **/
    static function dropdownField($itemtype, $options = []) {
       global $DB;

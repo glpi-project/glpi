@@ -55,10 +55,10 @@ abstract class FQDNLabel extends CommonDBChild {
    /**
     * Get the internet name from a label and a domain ID
     *
-    * @param $label   string   the label of the computer or its alias
-    * @param $domain  integer  id of the domain that owns the item
+    * @param string  $label   the label of the computer or its alias
+    * @param integer $domain  id of the domain that owns the item
     *
-    * @return result the full internet name
+    * @return string  result the full internet name
    **/
    static function getInternetNameFromLabelAndDomainID($label, $domain) {
 
@@ -75,7 +75,7 @@ abstract class FQDNLabel extends CommonDBChild {
     * Check a label regarding section 2.1 of RFC 1123 : 63 lengths and no other characters
     * than alphanumerics. Minus ('-') is allowed if it is not at the end or begin of the lable.
     *
-    * @param $label        the label to check
+    * @param string $label  the label to check
    **/
    static function checkFQDNLabel($label) {
 
@@ -183,11 +183,12 @@ abstract class FQDNLabel extends CommonDBChild {
    /**
     * Look for "computer name" inside all databases
     *
-    * @param $fqdn                     name to search (for instance : forge.indepnet.net)
-    * @param $wildcard_search boolean  true if we search with wildcard (false by default)
+    * @param string  $fqdn             name to search (for instance : forge.indepnet.net)
+    * @param boolean $wildcard_search  true if we search with wildcard (false by default)
     *
-    * @return (array) each value of the array (corresponding to one NetworkPort) is an array of the
-    *                 items from the master item to the NetworkPort
+    * @return array
+    *    each value of the array (corresponding to one NetworkPort) is an array of the
+    *    items from the master item to the NetworkPort
     **/
    static function getItemsByFQDN($fqdn, $wildcard_search = false) {
 
@@ -226,11 +227,11 @@ abstract class FQDNLabel extends CommonDBChild {
    /**
     * Get an Object ID by its name (only if one result is found in the entity)
     *
-    * @param $value  the name
-    * @param $entity the entity to look for
+    * @param string  $value  the name
+    * @param integer $entity the entity to look for
     *
-    * @return an array containing the object ID
-    *         or an empty array is no value of serverals ID where found
+    * @return array  an array containing the object ID
+    *    or an empty array is no value of serverals ID where found
     **/
    static function getUniqueItemByFQDN($value, $entity) {
 

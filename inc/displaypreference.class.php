@@ -112,8 +112,10 @@ class DisplayPreference extends CommonDBTM {
    /**
     * Get display preference for a user for an itemtype
     *
-    * @param $itemtype  itemtype
-    * @param $user_id   user ID
+    * @param string  $itemtype  itemtype
+    * @param integer $user_id   user ID
+    *
+    * @return array
    **/
    static function getForTypeUser($itemtype, $user_id) {
       global $DB;
@@ -201,8 +203,8 @@ class DisplayPreference extends CommonDBTM {
    /**
     * Order to move an item
     *
-    * @param $input  array parameter (id,itemtype,users_id)
-    * @param $action       up or down
+    * @param array  $input  array parameter (id,itemtype,users_id)
+    * @param string $action       up or down
    **/
    function orderItem(array $input, $action) {
       global $DB;
@@ -265,8 +267,8 @@ class DisplayPreference extends CommonDBTM {
    /**
     * Print the search config form
     *
-    * @param $target    form target
-    * @param $itemtype  item type
+    * @param string $target    form target
+    * @param string $itemtype  item type
     *
     * @return void
    **/
@@ -437,8 +439,8 @@ class DisplayPreference extends CommonDBTM {
    /**
     * Print the search config form
     *
-    * @param $target    form target
-    * @param $itemtype  item type
+    * @param string $target    form target
+    * @param string $itemtype  item type
     *
     * @return void
    **/

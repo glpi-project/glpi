@@ -189,11 +189,11 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Return criteria unicity for an itemtype, in an entity
     *
-    * @param itemtype      the itemtype for which unicity must be checked
-    * @param entities_id   the entity for which configuration must be retrivied (default 0)
-    * @param $check_active (true by default)
+    * @param string  itemtype       the itemtype for which unicity must be checked
+    * @param integer entities_id    the entity for which configuration must be retrivied
+    * @param boolean $check_active
     *
-    * @return an array of fields to check, or an empty array if no
+    * @return array an array of fields to check, or an empty array if no
    **/
    public static function getUnicityFieldsConfig($itemtype, $entities_id = 0, $check_active = true) {
       global $DB;
@@ -232,7 +232,7 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Display a list of available fields for unicity checks
     *
-    * @param $unicity an instance of CommonDBTM class
+    * @param CommonDBTM $unicity
     *
     * @return void
    **/
@@ -263,8 +263,8 @@ class FieldUnicity extends CommonDropdown {
     *
     * @since 0.84
     *
-    * @param $itemtype          itemtype
-    * @param $options   array    of options
+    * @param string $itemtype
+    * @param array  $options
    **/
    static function dropdownFields($itemtype, $options = []) {
       global $DB;
@@ -470,9 +470,9 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Perform checks to be sure that an itemtype and at least a field are selected
     *
-    * @param input the values to insert in DB
+    * @param array $input  the values to insert in DB
     *
-    * @return input the values to insert, but modified
+    * @return array the input values to insert, but modified
    **/
    static function checkBeforeInsert($input) {
 
@@ -525,7 +525,7 @@ class FieldUnicity extends CommonDropdown {
    /**
     * List doubles
     *
-    * @param $unicity an instance of FieldUnicity class
+    * @param FieldUnicity $unicity
    **/
    static function showDoubles(FieldUnicity $unicity) {
       global $DB;

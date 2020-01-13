@@ -479,8 +479,8 @@ class Document extends CommonDBTM {
    /**
     * Get download link for a document
     *
-    * @param $params    additonal parameters to be added to the link (default '')
-    * @param $len       maximum length of displayed string (default 20)
+    * @param string  $params    additonal parameters to be added to the link (default '')
+    * @param integer $len       maximum length of displayed string (default 20)
     *
    **/
    function getDownloadLink($params = '', $len = 20) {
@@ -544,8 +544,8 @@ class Document extends CommonDBTM {
    /**
     * find a document with a file attached
     *
-    * @param $entity    of the document
-    * @param $path      of the searched file
+    * @param integer $entity    entity of the document
+    * @param string  $path      path of the searched file
     *
     * @return boolean
    **/
@@ -1039,8 +1039,8 @@ class Document extends CommonDBTM {
     * Move a file to a new location
     * Work even if dest file already exists
     *
-    * @param $srce   source file path
-    * @param $dest   destination file path
+    * @param string $srce   source file path
+    * @param string $dest   destination file path
     *
     * @return boolean : success
    **/
@@ -1060,8 +1060,8 @@ class Document extends CommonDBTM {
    /**
     * Move an uploadd document (files in GLPI_DOC_DIR."/_uploads" dir)
     *
-    * @param $input     array of datas used in adding process (need current_filepath)
-    * @param $filename        filename to move
+    * @param array  $input     array of datas used in adding process (need current_filepath)
+    * @param string $filename  filename to move
     *
     * @return boolean for success / $input array is updated
    **/
@@ -1146,8 +1146,8 @@ class Document extends CommonDBTM {
    /**
     * Move a document (files in GLPI_DOC_DIR."/_tmp" dir)
     *
-    * @param $input     array of datas used in adding process (need current_filepath)
-    * @param $filename        filename to move
+    * @param array  $input     array of datas used in adding process (need current_filepath)
+    * @param string $filename  filename to move
     *
     * @return boolean for success / $input array is updated
    **/
@@ -1309,8 +1309,8 @@ class Document extends CommonDBTM {
    /**
     * Find a valid path for the new file
     *
-    * @param $dir       dir to search a free path for the file
-    * @param $sha1sum   SHA1 of the file
+    * @param string $dir      dir to search a free path for the file
+    * @param string $sha1sum  SHA1 of the file
     *
     * @return string
    **/
@@ -1387,7 +1387,7 @@ class Document extends CommonDBTM {
    /**
     * Is this file a valid file ? check based on file extension
     *
-    * @param $filename filename to clean
+    * @param string $filename filename to clean
    **/
    static function isValidDoc($filename) {
       global $DB;
@@ -1646,7 +1646,7 @@ class Document extends CommonDBTM {
     *
     * @param string $name task's name
     *
-    * @return arrray of information
+    * @return array of information
    **/
    static function cronInfo($name) {
 

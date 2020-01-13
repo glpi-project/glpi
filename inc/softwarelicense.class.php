@@ -839,7 +839,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @param $name : task's name
     *
-    * @return arrray of information
+    * @return array of information
    **/
    static function cronInfo($name) {
       return ['description' => __('Send alarms on expired licenses')];

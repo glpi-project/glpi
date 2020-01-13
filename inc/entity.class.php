@@ -425,7 +425,7 @@ class Entity extends CommonTreeDropdown {
     *
     * simply return ID
     *
-    * @return ID of the entity
+    * @return integer ID of the entity
    **/
    function getEntityID() {
 
@@ -1170,8 +1170,8 @@ class Entity extends CommonTreeDropdown {
    /**
     * Display entities of the loaded profile
     *
-    * @param $target target for entity change action
-    * @param $myname select name
+    * @param string $target target for entity change action
+    * @param string $myname select name
    **/
    static function showSelector($target, $myname) {
       global $CFG_GLPI;
@@ -2297,8 +2297,8 @@ class Entity extends CommonTreeDropdown {
    /**
     * @since 0.84 (before in entitydata.class)
     *
-    * @param $field
-    * @param $value must be addslashes
+    * @param string $field
+    * @param string $value  must be addslashes
    **/
    private static function getEntityIDByField($field, $value) {
       global $DB;
@@ -2770,10 +2770,10 @@ class Entity extends CommonTreeDropdown {
     *
     * @since 0.84 (before in entitydata.class)
     *
-    * @param $fieldref        string   name of the referent field to know if we look at parent entity
-    * @param $entities_id
-    * @param $fieldval        string   name of the field that we want value (default '')
-    * @param $default_value            value to return (default -2)
+    * @param string  $fieldref       name of the referent field to know if we look at parent entity
+    * @param integer $entities_id
+    * @param string  $fieldval       name of the field that we want value (default '')
+    * @param mixed   $default_value  value to return (default -2)
    **/
    static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2) {
 
@@ -2822,7 +2822,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $ticket ticket object
     *
-    * @return url contents
+    * @return string url contents
    **/
    static function generateLinkSatisfaction($ticket) {
       $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
@@ -2936,9 +2936,9 @@ class Entity extends CommonTreeDropdown {
     *
     * @since 0.84 (created in version 0.83 in entitydata.class)
     *
-    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
     *
-    * @return array or string
+    * @return string|array
    **/
    static function getAutoAssignMode($val = null) {
 
@@ -2961,9 +2961,9 @@ class Entity extends CommonTreeDropdown {
     *
     * @since 9.5
     *
-    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
     *
-    * @return array or string
+    * @return string|array
    **/
    static function getSuppliersAsPrivateValues() {
 
