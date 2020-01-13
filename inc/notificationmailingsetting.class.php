@@ -224,7 +224,7 @@ class NotificationMailingSetting extends NotificationSetting {
                     $CFG_GLPI["smtp_username"] . "'></td>";
 
          $out .= "<td><label for='smtp_passwd'>" . __('SMTP password (optional)') . "</label></td>";
-         $out .= "<td><input type='password' name='smtp_passwd' id='smtp_passwd' size='40' value='' autocomplete='off'>";
+         $out .= "<td><input type='password' name='smtp_passwd' id='smtp_passwd' size='40' value='' autocomplete='new-password'>";
          $out .= "<br><input type='checkbox' name='_blank_smtp_passwd'i id='_blank_smtp_passwd'>&nbsp;<label for='_blank_smtp_passwd'>".__('Clear') . "</label>";
 
          $out .= "</td></tr>";

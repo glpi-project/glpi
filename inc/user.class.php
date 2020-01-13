@@ -2117,7 +2117,7 @@ JAVASCRIPT;
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='password'>" . __('Password')."</label></td>";
          echo "<td><input id='password' type='password' name='password' value='' size='20'
-                    autocomplete='off' onkeyup=\"return passwordCheck();\"></td>";
+                    autocomplete='new-password' onkeyup=\"return passwordCheck();\"></td>";
          echo "<td rowspan='2'>";
          if ($CFG_GLPI["use_password_security"]) {
             echo __('Password security policy');
@@ -2129,7 +2129,7 @@ JAVASCRIPT;
 
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
-         echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='off'>";
+         echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password'>";
          echo "</td></tr>";
 
       } else {
@@ -2597,7 +2597,7 @@ JAVASCRIPT;
              && Session::haveRight("password_update", "1")) {
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='password'>" . __('Password') . "</label></td>";
-            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='off' onkeyup=\"return passwordCheck();\">";
+            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='new-password' onkeyup=\"return passwordCheck();\">";
             echo "</td>";
             echo "<td rowspan='2'>";
             if ($CFG_GLPI["use_password_security"]) {
@@ -2611,7 +2611,7 @@ JAVASCRIPT;
 
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
-            echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='off'>";
+            echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='new-password'>";
             echo "</td></tr>";
          } else {
             echo "<tr class='tab_bg_1'><td colspan='2'></td><td colspan='2' rowspan='2'></tr>";
@@ -4553,11 +4553,11 @@ JAVASCRIPT;
 
          echo "<tr class='tab_bg_1'><td>" . __('Password')."</td>";
          echo "<td><input id='password' type='password' name='password' value='' size='20'
-                    autocomplete='off' onkeyup=\"return passwordCheck();\">";
+                    autocomplete='new-password' onkeyup=\"return passwordCheck();\">";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('Password confirmation')."</td>";
-         echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
+         echo "<td><input type='password' name='password2' value='' size='20' autocomplete='new-password'>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>".__('Password security policy')."</td>";

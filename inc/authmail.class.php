@@ -223,7 +223,7 @@ class AuthMail extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center'>" . __('Password') . "</td>";
          echo "<td><input size='30' type='password' name='imap_password' value=''
-                    autocomplete='off'></td></tr>";
+                    autocomplete='new-password'></td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<input type='submit' name='test' class='submit' value=\""._sx('button', 'Test')."\">".

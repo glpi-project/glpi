@@ -1822,7 +1822,7 @@ class Config extends CommonDBTM {
       echo "<td><label for='proxy_user'>" . __('Login') . "</label></td>";
       echo "<td><input type='text' name='proxy_user' id='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
       echo "<td><label for='proxy_passwd'>" . __('Password') . "</label></td>";
-      echo "<td><input type='password' name='proxy_passwd' id='proxy_passwd' value='' autocomplete='off'>";
+      echo "<td><input type='password' name='proxy_passwd' id='proxy_passwd' value='' autocomplete='new-password'>";
       echo "<br><input type='checkbox' name='_blank_proxy_passwd' id='_blank_proxy_passwd'><label for='_blank_proxy_passwd'>".__('Clear')."</label>";
       echo "</td></tr>";
 

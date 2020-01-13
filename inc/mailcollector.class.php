@@ -248,7 +248,7 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Password')."</td>";
-      echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='off'>";
+      echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='new-password'>";
       if ($ID > 0) {
          echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
       }

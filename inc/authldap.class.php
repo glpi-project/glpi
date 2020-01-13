@@ -398,7 +398,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td><label for='rootdn_passwd'>" .
             __('Password (for non-anonymous binds)') . "</label></td>";
-         echo "<td><input type='password' id='rootdn_passwd' name='rootdn_passwd' value='' autocomplete='off'>";
+         echo "<td><input type='password' id='rootdn_passwd' name='rootdn_passwd' value='' autocomplete='new-password'>";
          if ($ID) {
             echo "<input type='checkbox' name='_blank_passwd' id='_blank_passwd'>&nbsp;"
                . "<label for='_blank_passwd'>" . __('Clear') . "</label>";
