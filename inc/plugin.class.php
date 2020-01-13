@@ -2051,9 +2051,8 @@ class Plugin extends CommonDBTM {
                   } else if (function_exists($function) && $do_activate) {
                      ob_start();
                      $do_activate = $function();
-                     $msg = '';
                      if (!$do_activate) {
-                        $msg = '<span class="error">' . ob_get_contents() . '</span>';
+                        $output .= '<span class="error">' . ob_get_contents() . '</span>';
                      }
                      ob_end_clean();
                   }
@@ -2065,8 +2064,6 @@ class Plugin extends CommonDBTM {
                         ['id' => $ID],
                         'fa-fw fa-toggle-off fa-2x disabled'
                      ) . '&nbsp;';
-                  } else {
-                     $output .= $msg;
                   }
 
                   // Else : reason displayed by the plugin
