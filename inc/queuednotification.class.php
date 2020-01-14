@@ -541,8 +541,6 @@ class QueuedNotification extends CommonDBTM {
     * @return integer either 0 or 1
    **/
    static function cronQueuedNotification($task = null) {
-      global $DB, $CFG_GLPI;
-
       if (!Notification_NotificationTemplate::hasActiveMode()) {
          return 0;
       }
@@ -551,7 +549,6 @@ class QueuedNotification extends CommonDBTM {
       // Send notifications at least 1 minute after adding in queue to be sure that process on it is finished
       $send_time = date("Y-m-d H:i:s", strtotime("+1 minutes"));
 
-      $mail = new self();
       $pendings = self::getPendings(
          $send_time,
          $task->fields['param']
@@ -616,8 +613,6 @@ class QueuedNotification extends CommonDBTM {
     * @return void
    **/
    static function forceSendFor($itemtype, $items_id) {
-      global $DB;
-
       if (!empty($itemtype)
          && !empty($items_id)) {
          $pendings = self::getPendings(
@@ -647,8 +642,6 @@ class QueuedNotification extends CommonDBTM {
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       if (!Session::haveRight("queuednotification", READ)) {
          return false;
       }
@@ -787,7 +780,6 @@ class QueuedNotification extends CommonDBTM {
          }
       }
       return nl2br($newstring, false);
-      return preg_replace($patterns, $replacements, $string);
    }
 
 }

@@ -975,8 +975,6 @@ class Ticket extends DbTestCase {
    }
 
    public function testFormTech() {
-      global $DB;
-
       //create a new ticket with tu user
       $auth = new \Auth();
       $this->login();
@@ -1637,8 +1635,6 @@ class Ticket extends DbTestCase {
     * @dataProvider inputProvider
     */
    public function testPrepareInputForAdd($input, $expected) {
-      global $CFG_GLPI;
-
       $this
          ->if($this->newTestedInstance)
          ->then

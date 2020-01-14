@@ -127,8 +127,12 @@ class Ticket extends CommonITILObject {
    static function getAdditionalMenuContent() {
 
       if (static::canCreate()) {
-         $menu['create_ticket']['title']    = __('Create ticket');
-         $menu['create_ticket']['page']     = static::getFormURL(false);
+         $menu = [
+            'create_ticket' => [
+               'title' => __('Create ticket'),
+               'page'  => static::getFormURL(false),
+            ],
+         ];
          return $menu;
       } else {
          return self::getAdditionalMenuOptions();
@@ -1522,8 +1526,6 @@ class Ticket extends CommonITILObject {
                                              'inquest_rate');
       $delay         = Entity::getUsedConfig('inquest_config', $this->fields['entities_id'],
                                              'inquest_delay');
-      $duration      = Entity::getUsedConfig('inquest_duration', $this->fields['entities_id'],
-                                             'inquest_duration');
       $type          = Entity::getUsedConfig('inquest_config', $this->fields['entities_id']);
       $max_closedate = $this->fields['closedate'];
 
@@ -1871,9 +1873,11 @@ class Ticket extends CommonITILObject {
 
       // From mailcollector : do not check rights
       if (isset($this->input["_linkedto"])) {
-         $input2['tickets_id_1'] = $this->fields['id'];
-         $input2['tickets_id_2'] = $this->input["_linkedto"];
-         $input2['link']         = Ticket_Ticket::LINK_TO;
+         $input2 = [
+            'tickets_id_1' => $this->fields['id'],
+            'tickets_id_2' => $this->input["_linkedto"],
+            'link'         => Ticket_Ticket::LINK_TO,
+         ];
          $ticket_ticket->add($input2);
       }
 
@@ -1903,7 +1907,6 @@ class Ticket extends CommonITILObject {
       if (isset($this->input['_promoted_fup_id']) && $this->input['_promoted_fup_id'] > 0) {
          $fup = new ITILFollowup();
          $fup->getFromDB($this->input['_promoted_fup_id']);
-         $fup_ticket_id = $fup->fields['items_id'];
          $fup->update([
             'id'                 => $this->input['_promoted_fup_id'],
             'sourceof_items_id'  => $this->getID()
@@ -2434,7 +2437,6 @@ class Ticket extends CommonITILObject {
    **/
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
       $actions = [];
 
       if (Session::getCurrentInterface() == 'central') {
@@ -2552,11 +2554,8 @@ class Ticket extends CommonITILObject {
 
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
-      global $DB;
-
       switch ($ma->getAction()) {
          case 'merge_as_followup' :
-            $merge_succeeded = false;
             $input = $ma->getInput();
             $status = [];
             $mergeparams = [
@@ -3288,10 +3287,12 @@ class Ticket extends CommonITILObject {
    **/
    static function dropdownType($name, $options = []) {
 
-      $params['value']       = 0;
-      $params['toadd']       = [];
-      $params['on_change']   = '';
-      $params['display']     = true;
+      $params = [
+         'value'     => 0,
+         'toadd'     => [],
+         'on_change' => '',
+         'display'   => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -3317,8 +3318,10 @@ class Ticket extends CommonITILObject {
    **/
    static function getTypes() {
 
-      $options[self::INCIDENT_TYPE] = __('Incident');
-      $options[self::DEMAND_TYPE]   = __('Request');
+      $options = [
+         self::INCIDENT_TYPE => __('Incident'),
+         self::DEMAND_TYPE   => __('Request'),
+      ];
 
       return $options;
    }
@@ -3955,10 +3958,14 @@ class Ticket extends CommonITILObject {
 
       //default values
       $ticket = new Ticket();
-      $params['_users_id_observer_notif']['use_notification'] = true;
-      $params['_users_id_observer']                           = 0;
-      $params['entities_id']                                  = $_SESSION["glpiactive_entity"];
-      $params['_right']                                       = "all";
+      $params = [
+         '_users_id_observer_notif' => [
+            'use_notification' => true
+         ],
+         '_users_id_observer'       => 0,
+         'entities_id'              => $_SESSION["glpiactive_entity"],
+         '_right'                   => "all",
+      ];
 
       // overide default value by function parameters
       if (is_array($options) && count($options)) {
@@ -5047,7 +5054,7 @@ class Ticket extends CommonITILObject {
     * @param $showgrouptickets   (true by default)
     */
    static function showCentralList($start, $status = "process", $showgrouptickets = true) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
           && !Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
@@ -5302,9 +5309,11 @@ class Ticket extends CommonITILObject {
          echo "<table class='tab_cadrehov'>";
          echo "<tr class='noHover'><th colspan='4'>";
 
-         $options['reset'] = 'reset';
-         $forcetab         = '';
-         $num              = 0;
+         $options  = [
+            'criteria' => [],
+            'reset'    => 'reset',
+         ];
+         $forcetab = '';
          if ($showgrouptickets) {
             switch ($status) {
                case "toapprove" :
@@ -5693,11 +5702,14 @@ class Ticket extends CommonITILObject {
          $number_deleted += $data["COUNT"];
       }
 
+      $options = [
+         'criteria' => [],
+         'reset'    => 'reset',
+      ];
       $options['criteria'][0]['field']      = 12;
       $options['criteria'][0]['searchtype'] = 'equals';
       $options['criteria'][0]['value']      = 'process';
       $options['criteria'][0]['link']       = 'AND';
-      $options['reset']         ='reset';
 
       echo "<table class='tab_cadrehov' >";
       echo "<tr class='noHover'><th colspan='2'>";
@@ -5715,8 +5727,10 @@ class Ticket extends CommonITILObject {
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
            $number_waitapproval = TicketValidation::getNumberToValidate(Session::getLoginUserID());
 
-           $opt = [];
-           $opt['reset']      = 'reset';
+           $opt = [
+              'criteria' => [],
+              'reset'    => 'reset',
+           ];
            $opt['criteria'][0]['field']      = 55; // validation status
            $opt['criteria'][0]['searchtype'] = 'equals';
            $opt['criteria'][0]['value']      = CommonITILValidation::WAITING;
@@ -5770,11 +5784,15 @@ class Ticket extends CommonITILObject {
 
       if ($number > 0) {
          Session::initNavigateListItems('Ticket');
+
+         $options = [
+            'criteria' => [],
+            'reset'    => 'reset',
+         ];
          $options['criteria'][0]['field']      = 12;
          $options['criteria'][0]['searchtype'] = 'equals';
          $options['criteria'][0]['value']   = self::INCOMING;
          $options['criteria'][0]['link']       = 'AND';
-         $options['reset']         ='reset';
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          //TRANS: %d is the number of new tickets
@@ -5822,16 +5840,17 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      $criteria         = self::getCommonCriteria();
-      $restrict         = [];
-      $options['reset'] = 'reset';
+      $criteria = self::getCommonCriteria();
+      $restrict = [];
+      $options  = [
+         'criteria' => [],
+         'reset'    => 'reset',
+      ];
 
       switch ($item->getType()) {
          case 'User' :
             $restrict['glpi_tickets_users.users_id'] = $item->getID();
             $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
-
-            $options['reset'] = 'reset';
 
             $options['criteria'][0]['field']      = 4; // status
             $options['criteria'][0]['searchtype'] = 'equals';

@@ -347,8 +347,6 @@ class Fieldblacklist extends CommonDropdown {
     * @param $field  (default '')
    **/
    function selectValues($field = '') {
-      global $DB, $CFG_GLPI;
-
       if ($field == '') {
          $field = $this->fields['field'];
       }

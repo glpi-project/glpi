@@ -631,8 +631,6 @@ class Rule extends CommonDBTM {
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
-      global $DB;
-
       switch ($ma->getAction()) {
          case 'duplicate':
             $rulecollection = new RuleCollection();
@@ -1259,8 +1257,6 @@ class Rule extends CommonDBTM {
     * @return the initial value (first)
    **/
    function dropdownCriteria($options = []) {
-      global $CFG_GLPI;
-
       $p['name']                = 'criteria';
       $p['display']             = true;
       $p['value']               = '';
@@ -1303,8 +1299,6 @@ class Rule extends CommonDBTM {
     * @return the initial value (first non used)
    **/
    function dropdownActions($options = []) {
-      global $CFG_GLPI;
-
       $p['name']                = 'field';
       $p['display']             = true;
       $p['used']                = [];
@@ -2523,8 +2517,6 @@ class Rule extends CommonDBTM {
     * @param $rules_id  ID of the rule
    **/
    function showRulePreviewCriteriasForm($target, $rules_id) {
-      global $DB;
-
       $criteria = $this->getAllCriteria();
 
       if ($this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
@@ -2620,8 +2612,6 @@ class Rule extends CommonDBTM {
     *    - sub_type : integer / sub_type of rule
    **/
    static function dropdown($options = []) {
-      global $DB, $CFG_GLPI;
-
       $p['sub_type']        = '';
       $p['name']            = 'rules_id';
       $p['entity'] = '';

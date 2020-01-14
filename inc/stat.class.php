@@ -65,7 +65,7 @@ class Stat extends CommonGLPI {
     * @param $parent    (default 0)
    **/
    static function getItems($itemtype, $date1, $date2, $type, $parent = 0) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       if (!$item = getItemForItemtype($itemtype)) {
          return;
@@ -1334,7 +1334,7 @@ class Stat extends CommonGLPI {
     * @param $start
    **/
    static function showItems($target, $date1, $date2, $start) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $view_entities = Session::isMultiEntitiesMode();
 

@@ -114,8 +114,6 @@ class Monitor extends CommonDBTM {
 
 
    function post_addItem() {
-      global $DB;
-
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD OS

@@ -152,8 +152,6 @@ class Item_Disk extends CommonDBChild {
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       $itemtype = null;
       if (isset($options['itemtype']) && !empty($options['itemtype'])) {
          $itemtype = $options['itemtype'];

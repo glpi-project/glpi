@@ -75,7 +75,7 @@ class Item_OperatingSystem extends CommonDBRelation {
     * @return void
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       //default options
       $params = ['rand' => mt_rand()];
@@ -150,7 +150,6 @@ class Item_OperatingSystem extends CommonDBRelation {
       $i      = 0;
 
       $os = [];
-      $used = [];
       while ($data = $iterator->next()) {
          $os[$data['assocID']] = $data;
       }
@@ -273,8 +272,6 @@ class Item_OperatingSystem extends CommonDBRelation {
 
 
    function showForm($ID, $options = []) {
-      global $DB;
-
       $colspan = 4;
 
       echo "<div class='center'>";

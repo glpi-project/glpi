@@ -945,8 +945,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    **/
    static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                             HTMLTableCell $father = null, array $options = []) {
-      global $DB, $CFG_GLPI;
-
       if (empty($item)) {
          if (empty($father)) {
             return;
@@ -985,7 +983,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                $content = "<span class='b'>".$content."</span>";
             }
             $content = sprintf(__('%1$s - %2$s'), $content, $network->getLink());
-            $this_cell = $row->addCell($header, $content, $father, $network);
+            $row->addCell($header, $content, $father, $network);
          }
       }
    }

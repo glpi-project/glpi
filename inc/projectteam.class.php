@@ -116,8 +116,6 @@ class ProjectTeam extends CommonDBRelation {
     * @param integer $newid        ID of the item cloned
     **/
    static function cloneProjectTeam ($oldid, $newid) {
-      global $DB;
-
       $team = self::getTeamFor($oldid);
       foreach ($team as $type) {
          foreach ($type as $data) {

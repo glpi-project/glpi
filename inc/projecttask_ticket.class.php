@@ -140,8 +140,6 @@ class ProjectTask_Ticket extends CommonDBRelation{
     * @param $projecttask ProjectTask object
    **/
    static function showForProjectTask(ProjectTask $projecttask) {
-      global $DB, $CFG_GLPI;
-
       $ID = $projecttask->getField('id');
       if (!$projecttask->can($ID, READ)) {
          return false;

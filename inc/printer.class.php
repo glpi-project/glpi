@@ -109,7 +109,7 @@ class Printer  extends CommonDBTM {
     * @return boolean
    **/
    function canUnrecurs() {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $this->fields['id'];
 
@@ -214,8 +214,6 @@ class Printer  extends CommonDBTM {
 
 
    function post_addItem() {
-      global $DB, $CFG_GLPI;
-
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD OS
@@ -894,7 +892,7 @@ class Printer  extends CommonDBTM {
     * @return the printer's ID
    **/
    function addPrinter($name, $manufacturer, $entity, $comment = '') {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $manufacturer_id = 0;
       if ($manufacturer != '') {

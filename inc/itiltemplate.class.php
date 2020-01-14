@@ -74,8 +74,6 @@ abstract class ITILTemplate extends CommonDropdown {
     * @return true if succeed else false
    **/
    function getFromDBWithData($ID, $withtypeandcategory = true) {
-      global $DB;
-
       if ($this->getFromDB($ID)) {
          $itiltype = str_replace('Template', '', static::getType());
          $itil_object  = new $itiltype;

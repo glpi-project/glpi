@@ -346,7 +346,7 @@ class Domain_Item extends CommonDBRelation {
     * @return bool
     */
    static function showForItem(CommonDBTM $item, $withtemplate = '') {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $item->getField('id');
 

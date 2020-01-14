@@ -78,8 +78,6 @@ class Plugin extends CommonDBTM {
 
 
    static function getMenuContent() {
-      global $CFG_GLPI;
-
       $menu = [];
       if (static::canView()) {
          $menu['title']   = self::getMenuName();
@@ -173,8 +171,7 @@ class Plugin extends CommonDBTM {
     * @return void
    **/
    static function loadLang($name, $forcelang = '', $coretrytoload = '') {
-      // $LANG needed : used when include lang file
-      global $CFG_GLPI, $LANG, $TRANSLATE;
+      global $CFG_GLPI, $TRANSLATE;
 
       // For compatibility for plugins using $LANG
       $trytoload = 'en_GB';
@@ -1878,8 +1875,6 @@ class Plugin extends CommonDBTM {
    }
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
-
       $tab = [];
 
       $tab[] = [

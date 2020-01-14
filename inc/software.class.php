@@ -160,8 +160,6 @@ class Software extends CommonDBTM {
 
 
    function post_addItem() {
-      global $DB, $CFG_GLPI;
-
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
@@ -795,7 +793,7 @@ class Software extends CommonDBTM {
    **/
    function addSoftware($name, $manufacturer_id, $entity, $comment = '',
                         $is_recursive = false, $is_helpdesk_visible = null) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $input["name"]                = $name;
       $input["manufacturers_id"]    = $manufacturer_id;
@@ -945,7 +943,7 @@ class Software extends CommonDBTM {
     * @return void
    **/
    function showMergeCandidates() {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID   = $this->getField('id');
       $this->check($ID, UPDATE);

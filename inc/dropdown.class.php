@@ -78,7 +78,7 @@ class Dropdown {
     * @since 9.5.0 Usage of string in condition option is removed
    **/
    static function show($itemtype, $options = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if ($itemtype && !($item = getItemForItemtype($itemtype))) {
          return false;
@@ -295,7 +295,7 @@ class Dropdown {
     * @return string the value of the dropdown or &nbsp; if not exists
    **/
    static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $dft_retval = "&nbsp;";
 
@@ -502,7 +502,7 @@ class Dropdown {
     * @return array containing the value of the dropdown or &nbsp; if not exists
    **/
    static function getDropdownArrayNames($table, $ids) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $tabs = [];
 
@@ -548,8 +548,6 @@ class Dropdown {
     *    string if option display=false (HTML code)
    **/
    static function showItemTypes($name, $types = [], $options = []) {
-      global $CFG_GLPI;
-
       $params['value']               = '';
       $params['used']                = [];
       $params['emptylabel']          = self::EMPTY_VALUE;
@@ -786,7 +784,6 @@ class Dropdown {
     * @return array (group of dropdown) of array (itemtype => localized name)
    **/
    static function getDeviceItemTypes() {
-      global $CFG_GLPI;
       static $optgroup = null;
 
       if (!Session::haveRight('device', READ)) {
@@ -811,7 +808,6 @@ class Dropdown {
     * @return array (group of dropdown) of array (itemtype => localized name)
    **/
    static function getStandardDropdownItemTypes() {
-      global $CFG_GLPI;
       static $optgroup = null;
 
       if (is_null($optgroup)) {
@@ -1213,8 +1209,6 @@ class Dropdown {
     *    - emptylabel          : specific string to empty label if display_emptychoice is true
    **/
    static function showLanguages($myname, $options = []) {
-      global $CFG_GLPI;
-
       $values = [];
       if (isset($options['display_emptychoice']) && ($options['display_emptychoice'])) {
          if (isset($options['emptylabel'])) {
@@ -2063,8 +2057,6 @@ class Dropdown {
     * - management_restrict global management restrict mode
    **/
    static function showGlobalSwitch($ID, $attrs = []) {
-      global $CFG_GLPI;
-
       $params['management_restrict'] = 0;
       $params['value']               = 0;
       $params['name']                = 'is_global';
@@ -2181,8 +2173,6 @@ class Dropdown {
     * @since 0.83
    **/
    static function showOutputFormat() {
-      global $CFG_GLPI;
-
       $values[Search::PDF_OUTPUT_LANDSCAPE]     = __('Current page in landscape PDF');
       $values[Search::PDF_OUTPUT_PORTRAIT]      = __('Current page in portrait PDF');
       $values[Search::SYLK_OUTPUT]              = __('Current page in SLK');
@@ -3483,7 +3473,7 @@ class Dropdown {
     * @return string|array
     */
    public static function getDropdownNumber($post, $json = true) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $used = [];
 

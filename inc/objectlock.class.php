@@ -111,8 +111,6 @@ class ObjectLock extends CommonDBTM {
     * @return bool: true if read-only profile lock has been set
    **/
    private function autoLockMode() {
-      global $CFG_GLPI;
-
       // if !autolock mode then we are going to view the item with read-only profile
       // if isset($_REQUEST['lockwrite']) then will behave like if automode was true but for this object only and for the lifetime of the session
       // look for lockwrite request
@@ -622,8 +620,6 @@ class ObjectLock extends CommonDBTM {
     *     0 : nothing to do
    **/
    static function cronUnlockObject($task) {
-      global $DB;
-
       // here we have to delete old locks
       $actionCode = 0; // by default
       $task->setVolume(0); // start with zero

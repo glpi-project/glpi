@@ -219,8 +219,6 @@ class OlaLevel extends LevelAgreementLevel {
    **/
    function showForm($ID, $options = []) {
 
-      $canedit = $this->can('ola', UPDATE);
-
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 

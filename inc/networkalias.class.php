@@ -74,7 +74,7 @@ class NetworkAlias extends FQDNLabel {
    static function getInternetNameFromID($ID) {
 
       $networkAlias = new self();
-      if ($networkalias->can($ID, READ)) {
+      if ($networkAlias->can($ID, READ)) {
          return FQDNLabel::getInternetNameFromLabelAndDomainID(
                  $networkAlias->fields["name"],
                  $networkAlias->fields["fqdns_id"]);
@@ -96,9 +96,7 @@ class NetworkAlias extends FQDNLabel {
    function showForm ($ID, $options = []) {
 
       // Show only simple form to add / edit
-      $showsimple = false;
       if (isset($options['parent'])) {
-         $showsimple                 = true;
          $options['networknames_id'] = $options['parent']->getID();
       }
 
@@ -186,7 +184,7 @@ class NetworkAlias extends FQDNLabel {
    **/
    static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                             HTMLTableCell $father = null, array $options = []) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (empty($item)) {
          if (empty($father)) {
@@ -209,7 +207,6 @@ class NetworkAlias extends FQDNLabel {
          return;
       }
 
-      $canedit              = (isset($options['canedit']) && $options['canedit']);
       $createRow            = (isset($options['createRow']) && $options['createRow']);
       $options['createRow'] = false;
       $alias                = new self();
@@ -309,7 +306,6 @@ class NetworkAlias extends FQDNLabel {
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 
-      $used = [];
       foreach ($aliases as $data) {
          $showviewjs = ($canedit
                         ? "style='cursor:pointer' onClick=\"viewEditAlias".$data['id']."$rand();\""
@@ -370,7 +366,6 @@ class NetworkAlias extends FQDNLabel {
       $alias   = new self();
       $address = new NetworkName();
       $item->check($item->getID(), READ);
-      $canedit = $item->canEdit($item->getID());
 
       if (isset($_GET["start"])) {
          $start = $_GET["start"];

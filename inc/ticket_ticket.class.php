@@ -169,8 +169,6 @@ class Ticket_Ticket extends CommonDBRelation {
     * @return void
    **/
    static function displayLinkedTicketsTo ($ID) {
-      global $DB, $CFG_GLPI;
-
       $tickets   = self::getLinkedTicketsTo($ID);
       $canupdate = Session::haveRight('ticket', UPDATE);
 

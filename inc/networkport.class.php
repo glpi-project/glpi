@@ -348,7 +348,7 @@ class NetworkPort extends CommonDBChild {
             if (!$empty_networkName) { // Only create a NetworkName if it is not empty
                $this->input_for_NetworkName['itemtype'] = 'NetworkPort';
                $this->input_for_NetworkName['items_id'] = $this->getID();
-               $newid = $network_name->add($this->input_for_NetworkName, [], $history);
+               $network_name->add($this->input_for_NetworkName, [], $history);
             }
          }
       }
@@ -466,6 +466,7 @@ class NetworkPort extends CommonDBChild {
    **/
    static function getAvailableDisplayOptions() {
 
+      $options = [];
       $options[__('Global displays')]
          =  ['characteristics' => ['name'    => __('Characteristics'),
                                              'default' => true],
@@ -500,7 +501,7 @@ class NetworkPort extends CommonDBChild {
     * @param $withtemplate   integer   withtemplate param (default 0)
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $rand     = mt_rand();
 
@@ -558,10 +559,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       if ($showmassiveactions) {
-         $checkbox_column = true;
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-      } else {
-         $checkbox_column = false;
       }
 
       $is_active_network_port = false;
@@ -737,10 +735,10 @@ class NetworkPort extends CommonDBChild {
                if (($withtemplate != 2)
                      && $canedit
                      && !empty($portType)) {
-                  $ce_checkbox =  $t_row->addCell($c_checkbox,
-                                                   Html::getMassiveActionCheckBox(__CLASS__, $netport->fields["id"]));
-               } else {
-                  $ce_checkbox = null;
+                  $t_row->addCell(
+                     $c_checkbox,
+                     Html::getMassiveActionCheckBox(__CLASS__, $netport->fields["id"])
+                  );
                }
                $content = "<span class='b'>";
                // Display link based on default rights
@@ -773,7 +771,6 @@ class NetworkPort extends CommonDBChild {
                                     Dropdown::getYesNo($netport->fields['is_dynamic']));
                }
 
-               $instant_cell = null;
                if ($display_options['characteristics']) {
                   $instantiation = $netport->getInstantiation();
                   if ($instantiation !== false) {
@@ -824,8 +821,6 @@ class NetworkPort extends CommonDBChild {
 
 
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       if (!isset($options['several'])) {
          $options['several'] = false;
       }

@@ -100,8 +100,6 @@ class SoftwareVersion extends CommonDBChild {
     *
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       if ($ID > 0) {
          $this->check($ID, READ);
          $softwares_id = $this->fields['softwares_id'];
@@ -221,7 +219,7 @@ class SoftwareVersion extends CommonDBChild {
     *    string if option display=false (HTML code)
    **/
    static function dropdownForOneSoftware($options = []) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       //$softwares_id,$value=0
       $p['softwares_id']          = 0;
@@ -289,7 +287,7 @@ class SoftwareVersion extends CommonDBChild {
     * @return void
    **/
    static function showForSoftware(Software $soft) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $softwares_id = $soft->getField('id');
 

@@ -57,8 +57,6 @@ class ReservationItem extends CommonDBChild {
     * @since 0.85
    **/
    static function canView() {
-      global $CFG_GLPI;
-
       return Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM]);
    }
 

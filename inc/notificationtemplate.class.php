@@ -185,8 +185,6 @@ class NotificationTemplate extends CommonDBTM {
     * @param $value     the dropdown's default value (0 by default)
    **/
    static function dropdownTemplates($name, $itemtype, $value = 0) {
-      global $DB;
-
       self::dropdown([
          'name'       => $name,
          'value'     => $value,

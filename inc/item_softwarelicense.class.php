@@ -899,8 +899,6 @@ JAVASCRIPT;
     * @deprecated 9.5.0
    **/
    static function cloneComputer($oldid, $newid) {
-      global $DB;
-
       Toolbox::deprecated('Use cloneItem');
       self::cloneItem('Computer', $oldid, $newid);
    }

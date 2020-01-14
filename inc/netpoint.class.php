@@ -248,7 +248,7 @@ class Netpoint extends CommonDropdown {
     * @return void
    **/
    static function showForLocation($item) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID       = $item->getField('id');
       $netpoint = new self();

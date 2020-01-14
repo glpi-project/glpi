@@ -309,15 +309,13 @@ class Session {
    static function changeActiveEntities($ID = "all", $is_recursive = false) {
 
       $newentities = [];
-      $newroots    = [];
       if (isset($_SESSION['glpiactiveprofile'])) {
          if ($ID === "all") {
             $ancestors = [];
-            foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+            foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
                $ancestors               = array_unique(array_merge(getAncestorsOf("glpi_entities",
                                                                                   $val['id']),
                                                                    $ancestors));
-               $newroots[$val['id']]    = $val['is_recursive'];
                $newentities[$val['id']] = $val['id'];
 
                if ($val['is_recursive']) {
@@ -334,7 +332,7 @@ class Session {
             /// Check entity validity
             $ancestors = getAncestorsOf("glpi_entities", $ID);
             $ok        = false;
-            foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+            foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
                if (($val['id'] == $ID) || in_array($val['id'], $ancestors)) {
                   // Not recursive or recursive and root entity is recursive
                   if (!$is_recursive || $val['is_recursive']) {
@@ -346,7 +344,6 @@ class Session {
                return false;
             }
 
-            $newroots[$ID]    = $is_recursive;
             $newentities[$ID] = $ID;
             if ($is_recursive) {
                $entities = getSonsOf("glpi_entities", $ID);
@@ -430,7 +427,7 @@ class Session {
             $active_entity_done = false;
 
             // Try to load default entity if it is a root entity
-            foreach ($data['entities'] as $key => $val) {
+            foreach ($data['entities'] as $val) {
                if ($val['id'] == $_SESSION["glpidefault_entity"]) {
                   if (self::changeActiveEntities($val['id'], $val['is_recursive'])) {
                      $active_entity_done = true;
@@ -585,9 +582,7 @@ class Session {
     * @return void
    **/
    static function loadLanguage($forcelang = '', $with_plugins = true) {
-      global $LANG, $CFG_GLPI, $TRANSLATE;
-
-      $file = "";
+      global $CFG_GLPI, $TRANSLATE;
 
       if (!isset($_SESSION["glpilanguage"])) {
          if (isset($CFG_GLPI["language"])) {
@@ -751,8 +746,6 @@ class Session {
     * @return void
    **/
    static function checkCentralAccess() {
-      global $CFG_GLPI;
-
       self::checkValidSessionId();
       if (Session::getCurrentInterface() != "central") {
          // Gestion timeout session
@@ -785,8 +778,6 @@ class Session {
     * @return void
    **/
    static function checkHelpdeskAccess() {
-      global $CFG_GLPI;
-
       self::checkValidSessionId();
       if (Session::getCurrentInterface() != "helpdesk") {
          // Gestion timeout session
@@ -801,8 +792,6 @@ class Session {
     * @return void
    **/
    static function checkLoginUser() {
-      global $CFG_GLPI;
-
       self::checkValidSessionId();
       if (!isset($_SESSION["glpiname"])) {
          // Gestion timeout session
@@ -821,8 +810,6 @@ class Session {
     * @return void
    **/
    static function checkRight($module, $right) {
-      global $CFG_GLPI;
-
       self::checkValidSessionId();
       if (!self::haveRight($module, $right)) {
          // Gestion timeout session
@@ -858,8 +845,6 @@ class Session {
     * @return void
    **/
    static function checkSeveralRightsOr($modules) {
-      global $CFG_GLPI;
-
       self::checkValidSessionId();
 
       $valid = false;
@@ -969,7 +954,7 @@ class Session {
    static function haveRecursiveAccessToEntity($ID) {
 
       // Right by profile
-      foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+      foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
          if ($val['id'] == $ID) {
             return $val['is_recursive'];
          }

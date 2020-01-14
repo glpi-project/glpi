@@ -67,7 +67,7 @@ class Item_Enclosure extends CommonDBRelation {
     * @return void
    **/
    static function showItems(Enclosure $enclosure) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $enclosure->getID();
       $rand = mt_rand();
@@ -84,7 +84,6 @@ class Item_Enclosure extends CommonDBRelation {
             'enclosures_id' => $enclosure->getID()
          ]
       ]);
-      $link = new self();
 
       Session::initNavigateListItems(
          self::getType(),

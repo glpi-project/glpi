@@ -148,8 +148,6 @@ class Notification extends CommonDBTM {
     *  @since 0.85
    **/
    static function getMenuContent() {
-      global $CFG_GLPI;
-
       $menu = [];
 
       if (Notification::canView()

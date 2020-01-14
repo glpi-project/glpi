@@ -69,9 +69,12 @@ class NetworkEquipment extends CommonDBTM {
    static function getAdditionalMenuOptions() {
 
       if (static::canView()) {
-         $options['networkport']['title'] = NetworkPort::getTypeName(Session::getPluralNumber());
-         $options['networkport']['page']  = NetworkPort::getFormURL(false);
-
+         $options = [
+            'networkport' => [
+               'title' => NetworkPort::getTypeName(Session::getPluralNumber()),
+               'page'  => NetworkPort::getFormURL(false),
+            ],
+         ];
          return $options;
       }
       return false;
@@ -159,8 +162,6 @@ class NetworkEquipment extends CommonDBTM {
 
 
    function post_addItem() {
-      global $DB;
-
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD OS

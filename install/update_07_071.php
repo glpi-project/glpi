@@ -32,7 +32,7 @@
 
 /// Update from 0.7 to 0.71
 function update07to071() {
-   global $DB, $CFG_GLPI;
+   global $DB;
 
    if (!$DB->fieldExists("glpi_profiles", "rule_dictionnary_software", false)) {
       $query = "ALTER TABLE `glpi_profiles`

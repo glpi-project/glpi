@@ -491,7 +491,7 @@ class Link extends CommonDBTM {
     * @param $withtemplate    integer  withtemplate param (default 0)
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!self::canView()) {
          return false;

@@ -254,8 +254,6 @@ class TicketTask extends CommonITILTask {
     * @see CommonDBTM::showFormButtons()
    **/
    function showFormButtons($options = []) {
-      global $CFG_GLPI;
-
       // for single object like config
       $ID = 1;
       if (isset($this->fields['id'])) {

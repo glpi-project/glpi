@@ -264,8 +264,6 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    **/
    function replayDictionnaryOnOnePrinter(array &$new_printers, array $res_rule,
                                           array $params, array &$printers_ids) {
-      global $DB;
-
       $p['id']           = 0;
       $p['name']         = '';
       $p['manufacturer'] = '';
@@ -340,8 +338,6 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
     * @return void
    **/
    function moveDirectConnections($ID, $new_printers_id) {
-      global $DB;
-
       $computeritem = new Computer_Item();
       //For each direct connection of this printer
       $connections = getAllDataFromTable(

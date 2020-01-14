@@ -110,8 +110,6 @@ class SavedSearch extends CommonDBTM {
 
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
-      global $DB;
-
       $input = $ma->getInput();
       switch ($ma->getAction()) {
          case 'unset_default' :
@@ -179,8 +177,6 @@ class SavedSearch extends CommonDBTM {
 
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
-
       $tab = [];
 
       $tab[] = ['id'                 => 'common',
@@ -1045,8 +1041,6 @@ class SavedSearch extends CommonDBTM {
     * @return boolean
     */
    function saveOrder(array $items) {
-      global $DB;
-
       if (count($items)) {
          $user               = new User();
          $personalorderfield = $this->getPersonalOrderField();

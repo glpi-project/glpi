@@ -5420,7 +5420,7 @@ JAVASCRIPT;
    **/
    static function giveItem($itemtype, $ID, array $data, $meta = 0,
                             array $addobjectparams = [], $orig_itemtype = null) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       $searchopt = &self::getOptions($itemtype);
       if ($itemtype == 'AllAssets' || isset($CFG_GLPI["union_search_type"][$itemtype])
@@ -7170,7 +7170,7 @@ JAVASCRIPT;
             break;
 
          case self::SYLK_OUTPUT : //sylk
-            global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
+            global $SYLK_ARRAY,$SYLK_SIZE;
             $value                  = Html::weblink_extract(Html::clean($value));
             $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
             $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);

@@ -198,8 +198,6 @@ class Enclosure extends CommonDBTM {
    }
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
-
       $tab = [];
 
       $tab[] = [

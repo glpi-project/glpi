@@ -90,8 +90,6 @@ class NetworkName extends FQDNLabel {
     *@return void
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       $this->initForm($ID, $options);
 
       $recursiveItems = $this->recursivelyGetItems();
@@ -369,8 +367,6 @@ class NetworkName extends FQDNLabel {
     * @param $itemtype
    **/
    static function affectAddress($networkNameID, $items_id, $itemtype) {
-      global $DB;
-
       $networkName = new self();
       return $networkName->update(['id'       => $networkNameID,
                                         'items_id' => $items_id,
@@ -542,7 +538,7 @@ class NetworkName extends FQDNLabel {
    **/
    static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                             HTMLTableCell $father = null, array $options = []) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $column_name = __CLASS__;
 
@@ -713,8 +709,6 @@ class NetworkName extends FQDNLabel {
     * @param $withtemplate   integer   withtemplate param (default 0)
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
-
       $ID = $item->getID();
       if (!$item->can($ID, READ)) {
          return false;

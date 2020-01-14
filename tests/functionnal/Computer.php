@@ -340,8 +340,6 @@ class Computer extends DbTestCase {
    }
 
    public function testGetFromDbByCrit() {
-      global $DB;
-
       $comp = new \Computer();
       $this->boolean($comp->getFromDBByCrit(['name' => '_test_pc01']))->isTrue();
       $this->string($comp->getField('name'))->isIdenticalTo('_test_pc01');

@@ -374,10 +374,12 @@ class Domain extends CommonDropdown {
    static function dropdownDomains($options = []) {
       global $DB;
 
-      $p['name']    = 'domains_id';
-      $p['entity']  = '';
-      $p['used']    = [];
-      $p['display'] = true;
+      $p = [
+         'name'    => 'domains_id',
+         'entity'  => '',
+         'used'    => [],
+         'display' => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -509,13 +511,16 @@ class Domain extends CommonDropdown {
                   $item->getFromDB($key);
                   $type = DomainType::transfer($item->fields["domaintypes_id"], $input['entities_id']);
                   if ($type > 0) {
-                     $values["id"]                            = $key;
-                     $values["domaintypes_id"] = $type;
+                     $values = [
+                        'id'             => $key,
+                        'domaintypes_id' => $type,
+                     ];
                      $item->update($values);
                   }
-                  unset($values);
-                  $values["id"]          = $key;
-                  $values["entities_id"] = $input['entities_id'];
+                  $values = [
+                     'id'          => $key,
+                     'entities_id' => $input['entities_id'],
+                  ];
 
                   if ($item->update($values)) {
                      $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);

@@ -256,8 +256,6 @@ class Log extends CommonDBTM {
 
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB;
-
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 

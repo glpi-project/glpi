@@ -1358,9 +1358,9 @@ class Change extends CommonITILObject {
       }
 
       $restrict = [];
-
       $options  = [
-         'reset' => 'reset',
+         'criteria' => [],
+         'reset'    => 'reset',
       ];
 
       switch ($item->getType()) {

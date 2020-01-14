@@ -76,8 +76,6 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
     * @return integer ID of opposite port. false if not found
    **/
    function getOppositeContact($ID) {
-      global $DB;
-
       if ($this->getFromDBForNetworkPort($ID)) {
          if ($this->fields['networkports_id_1'] == $ID) {
             return $this->fields['networkports_id_2'];

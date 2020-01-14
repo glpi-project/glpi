@@ -86,8 +86,6 @@ class Item_Problem extends CommonDBRelation{
     * @return void
    **/
    static function showForProblem(Problem $problem) {
-      global $DB, $CFG_GLPI;
-
       $instID = $problem->fields['id'];
 
       if (!$problem->can($instID, READ)) {

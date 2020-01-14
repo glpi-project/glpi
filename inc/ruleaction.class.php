@@ -239,8 +239,6 @@ class RuleAction extends CommonDBChild {
     * @param $options      array
    **/
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
-      global $DB;
-
       if (!is_array($values)) {
          $values = [$field => $values];
       }
@@ -327,10 +325,12 @@ class RuleAction extends CommonDBChild {
    **/
    function addActionByAttributes($action, $ruleid, $field, $value) {
 
-      $input["action_type"]      = $action;
-      $input["field"]            = $field;
-      $input["value"]            = $value;
-      $input[static::$items_id]  = $ruleid;
+      $input = [
+         'action_type'     => $action,
+         'field'           => $field,
+         'value'           => $value,
+         static::$items_id => $ruleid,
+      ];
       $this->add($input);
    }
 
@@ -348,12 +348,14 @@ class RuleAction extends CommonDBChild {
    **/
    static function dropdownActions($options = []) {
 
-      $p['subtype']     = '';
-      $p['name']        = '';
-      $p['field']       = '';
-      $p['value']       = '';
-      $p['alreadyused'] = false;
-      $p['display']     = true;
+      $p = [
+         'subtype'     => '',
+         'name'        => '',
+         'field'       => '',
+         'value'       => '',
+         'alreadyused' => false,
+         'display'     => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -478,7 +480,9 @@ class RuleAction extends CommonDBChild {
 
       $display = false;
 
-      $param['value'] = '';
+      $param = [
+         'value' => '',
+      ];
       if (isset($options['value'])) {
          $param['value'] = $options['value'];
       }

@@ -87,6 +87,7 @@ class NotificationSettingConfig extends CommonDBTM {
       $modes = Notification_NotificationTemplate::getModes();
 
       $out = '';
+      $modes_settings = [];
       if (Session::haveRight("config", UPDATE)) {
          $out .= "<div class='center notifs_setup'>";
          $out .= "<form method='POST' action='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>";
@@ -106,7 +107,7 @@ class NotificationSettingConfig extends CommonDBTM {
          foreach (array_keys($modes) as $mode) {
             $settings_class = Notification_NotificationTemplate::getModeClass($mode, 'setting');
             $settings = new $settings_class();
-            $classes[$mode] = $settings;
+            $modes_settings[$mode] = $settings;
 
             $out .= "<tr>";
             $out .= "<td>" . $settings->getEnableLabel() . "</td>";
@@ -165,7 +166,7 @@ class NotificationSettingConfig extends CommonDBTM {
          /* Per notification parameters */
          foreach (array_keys($modes) as $mode) {
             if (Session::haveRight("config", UPDATE) && $CFG_GLPI['notifications_' . $mode]) {
-               $settings = $classes[$mode];
+               $settings = $modes_settings[$mode];
                $out .= "<tr class='tab_bg_1'><td class='center'>".
                   "<a href='" . $settings->getFormURL() ."'>". $settings->getTypeName() .
                   "</a></td></tr>";

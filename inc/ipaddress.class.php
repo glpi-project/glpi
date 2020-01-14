@@ -218,7 +218,7 @@ class IPAddress extends CommonDBChild {
 
 
    static function showForItem(CommonGLPI $item, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if ($item->getType() == 'IPNetwork') {
 

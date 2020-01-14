@@ -119,7 +119,7 @@ class NetworkPortMigration extends CommonDBChild {
 
 
    function showForm($ID, $options = []) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       if (!self::canView()) {
          return false;
@@ -333,8 +333,6 @@ class NetworkPortMigration extends CommonDBChild {
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
-
       switch ($ma->getAction()) {
          case 'transform_to' :
             Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(),
@@ -354,8 +352,6 @@ class NetworkPortMigration extends CommonDBChild {
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
-      global $DB;
-
       switch ($ma->getAction()) {
          case 'transform_to':
             $input = $ma->getInput();
@@ -400,7 +396,6 @@ class NetworkPortMigration extends CommonDBChild {
 
 
    function rawSearchOptions() {
-      global $DB;
       $tab = parent::rawSearchOptions();
 
       $optionIndex = 10;

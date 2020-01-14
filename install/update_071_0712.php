@@ -34,7 +34,7 @@
 
 /// Update from 0.71 to 0.71.2
 function update071to0712() {
-   global $DB, $CFG_GLPI;
+   global $DB;
 
    $query = "UPDATE `glpi_display`
              SET `num` = 120

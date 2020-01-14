@@ -56,9 +56,11 @@ Session::loadLanguage();
 if (isset($_SESSION['glpi_use_mode'])
     && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
    $SQL_TOTAL_REQUEST    = 0;
-   $DEBUG_SQL["queries"] = [];
-   $DEBUG_SQL["errors"]  = [];
-   $DEBUG_SQL["times"]   = [];
+   $DEBUG_SQL = [
+      'queries' => [],
+      'errors'  => [],
+      'times'   => [],
+   ];
    $DEBUG_AUTOLOAD       = [];
 }
 

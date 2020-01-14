@@ -279,8 +279,6 @@ class Notification_NotificationTemplate extends CommonDBRelation {
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       if (!Session::haveRight("notification", UPDATE)) {
          return false;
       }

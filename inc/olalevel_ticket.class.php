@@ -254,8 +254,10 @@ class OlaLevel_Ticket extends CommonDBTM {
                if (!(($olaType == SLM::TTO)
                      && ($ticket->fields['takeintoaccount_delay_stat'] > 0))) {
                   // If status = solved : keep the line in case of solution not validated
-                  $input['id']           = $ticket->getID();
-                  $input['_auto_update'] = true;
+                  $input = [
+                     'id'           => $ticket->getID(),
+                     '_auto_update' => true,
+                  ];
 
                   if ($olalevel->getRuleWithCriteriasAndActions($data['olalevels_id'], 1, 1)
                       && $ola->getFromDB($ticket->fields[$olaField])) {

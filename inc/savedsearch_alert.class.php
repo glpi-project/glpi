@@ -121,7 +121,6 @@ class SavedSearch_Alert extends CommonDBChild {
          }
       } catch (\RuntimeException $e) {
          Toolbox::logError($e);
-         $pass = true;
       }
 
       $this->showFormHeader($options);
