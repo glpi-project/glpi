@@ -267,7 +267,7 @@ class Item_Problem extends CommonDBRelation{
             break;
 
          default :
-            Problem::showListForItem($item);
+            Problem::showListForItem($item, $withtemplate);
       }
       return true;
    }

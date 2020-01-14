@@ -1023,11 +1023,12 @@ class Change extends CommonITILObject {
     *
     * Will also display changes of linked items
     *
-    * @param $item CommonDBTM object
+    * @param CommonDBTM $item
+    * @param boolean    $withtemplate
     *
     * @return boolean|void
    **/
-   static function showListForItem(CommonDBTM $item) {
+   static function showListForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;
 
       if (!Session::haveRight(self::$rightname, self::READALL)) {
