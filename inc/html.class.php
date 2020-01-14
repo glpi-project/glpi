@@ -5117,8 +5117,6 @@ class Html {
                  "<div class='uploadbar' style='width: 0%;'></div></div>";
          $display .= "</div>";
 
-         $display .= "</div>"; // .fileupload
-
          $display .= Html::scriptBlock("
          $(function() {
             var fileindex{$p['rand']} = 0;
@@ -5180,6 +5178,7 @@ class Html {
             });
          });");
       }
+      $display .= "</div>"; // .fileupload
 
       if ($p['display']) {
          echo $display;
