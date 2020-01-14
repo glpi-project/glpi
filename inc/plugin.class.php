@@ -2039,8 +2039,8 @@ class Plugin extends CommonDBTM {
 
                case self::NOTACTIVATED :
                   ob_start();
-                  $process = $plugin->checkVersions($plug['directory']);
-                  if (!$process) {
+                  $do_activate = $plugin->checkVersions($plug['directory']);
+                  if (!$do_activate) {
                      $output .= "<span class='error'>" . ob_get_contents() . "</span>";
                   }
                   ob_end_clean();
@@ -2048,26 +2048,24 @@ class Plugin extends CommonDBTM {
                   if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
                       || !$PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
                      $output .= __('Not CSRF compliant');
-                  } else if (function_exists($function) && $process) {
+                  } else if (function_exists($function) && $do_activate) {
                      ob_start();
                      $do_activate = $function();
-                     $msg = '';
                      if (!$do_activate) {
-                        $msg = '<span class="error">' . ob_get_contents() . '</span>';
+                        $output .= '<span class="error">' . ob_get_contents() . '</span>';
                      }
                      ob_end_clean();
-                     if (!$do_activate) {
-                        $output .= $msg;
-                     } else {
-                        $output .= Html::getSimpleForm(
-                           static::getFormURL(),
-                           ['action' => 'activate'],
-                           _x('button', 'Enable'),
-                           ['id' => $ID],
-                           'fa-fw fa-toggle-off fa-2x disabled'
-                        ) . '&nbsp;';
-                     }
                   }
+                  if ($do_activate) {
+                     $output .= Html::getSimpleForm(
+                        static::getFormURL(),
+                        ['action' => 'activate'],
+                        _x('button', 'Enable'),
+                        ['id' => $ID],
+                        'fa-fw fa-toggle-off fa-2x disabled'
+                     ) . '&nbsp;';
+                  }
+
                   // Else : reason displayed by the plugin
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      $output .= Html::getSimpleForm(
