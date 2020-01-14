@@ -54,6 +54,9 @@ commands:
       - restore_cache:
           keys:
             - npm-cache-{{ .Environment.CIRCLE_JOB }}
+      - restore_cache:
+          keys:
+            - phpcs-cache-{{ .Environment.CIRCLE_JOB }}
       - run:
           name: Install dependencies
           command: |
@@ -71,6 +74,10 @@ commands:
           key: npm-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
             - /home/circleci/.npm/_cacache/
+      - save_cache:
+          key: phpcs-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
+          paths:
+            - /home/circleci/phpcs.cache
       - run:
           name: PHP Parallel Lint
           command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
@@ -192,7 +199,8 @@ jobs:
       - run:
           name: PHP CS
           command: |
-            vendor/bin/phpcs -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/node_modules/,/plugins/,/tests/config/,/vendor/ ./
+            touch /home/circleci/phpcs.cache
+            vendor/bin/phpcs -d memory_limit=512M --cache /home/circleci/phpcs.cache -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/node_modules/,/plugins/,/tests/config/,/vendor/ ./
       - run:
           name: ESLint
           command: |
