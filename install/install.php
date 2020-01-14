@@ -492,8 +492,6 @@ function step7() {
 
 // finish installation
 function step8() {
-   global $CFG_GLPI;
-
    include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
    include_once(GLPI_CONFIG_DIR . "/config_db.php");
    $DB = new DB();

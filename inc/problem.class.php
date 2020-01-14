@@ -157,7 +157,6 @@ class Problem extends CommonITILObject {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (static::canView()) {
-         $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
                $timeline    = $item->getTimelineItems();
@@ -223,8 +222,6 @@ class Problem extends CommonITILObject {
 
 
    function cleanDBonPurge() {
-      global $DB;
-
       // CommonITILTask does not extends CommonDBConnexity
       $pt = new ProblemTask();
       $pt->deleteByCriteria(['problems_id' => $this->fields['id']]);
@@ -715,9 +712,11 @@ class Problem extends CommonITILObject {
          echo "<table class='tab_cadrehov'>";
          echo "<tr class='noHover'><th colspan='3'>";
 
-         $options['reset'] = 'reset';
+         $options  = [
+            'criteria' => [],
+            'reset'    => 'reset',
+         ];
          $forcetab         = '';
-         $num              = 0;
          if ($showgroupproblems) {
             switch ($status) {
 
@@ -916,6 +915,7 @@ class Problem extends CommonITILObject {
          $number_deleted += $data["COUNT"];
       }
 
+      $options = [];
       $options['criteria'][0]['field']      = 12;
       $options['criteria'][0]['searchtype'] = 'equals';
       $options['criteria'][0]['value']      = 'process';
@@ -957,8 +957,6 @@ class Problem extends CommonITILObject {
     * @param $forcetab  string   name of the tab to force at the display (default '')
    **/
    static function showVeryShort($ID, $forcetab = '') {
-      global $CFG_GLPI;
-
       // Prints a job in short form
       // Should be called in a <table>-segment
       // Print links or not in case of user view
@@ -1037,7 +1035,7 @@ class Problem extends CommonITILObject {
     * @param $options   array
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       if (!static::canView()) {
          return false;
@@ -1633,7 +1631,7 @@ class Problem extends CommonITILObject {
     * @return void
    **/
    static function showListForItem(CommonDBTM $item) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!Session::haveRight(self::$rightname, self::READALL)) {
          return false;
@@ -1643,8 +1641,11 @@ class Problem extends CommonITILObject {
          return false;
       }
 
-      $restrict         = [];
-      $options['reset'] = 'reset';
+      $restrict = [];
+      $options  = [
+         'criteria' => [],
+         'reset'    => 'reset',
+      ];
 
       switch ($item->getType()) {
          case 'User' :

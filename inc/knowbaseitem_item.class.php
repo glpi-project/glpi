@@ -103,8 +103,6 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB;
-
       $item_id = $item->getID();
       $item_type = $item::getType();
 

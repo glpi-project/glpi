@@ -172,7 +172,6 @@ class SoftwareLicense extends CommonTreeDropdown {
 
 
    function post_addItem() {
-      global $CFG_GLPI;
       $itemtype = 'Software';
       $dupid    = $this->fields["softwares_id"];
 
@@ -252,8 +251,6 @@ class SoftwareLicense extends CommonTreeDropdown {
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       $softwares_id = -1;
       if (isset($options['softwares_id'])) {
          $softwares_id = $options['softwares_id'];
@@ -1032,7 +1029,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     * @return void
    **/
    static function showForSoftware(Software $software) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $softwares_id  = $software->getField('id');
       $license       = new self();

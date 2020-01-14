@@ -35,7 +35,7 @@
 /// Update from 0.72.2 to 0.72.3
 
 function update0722to0723() {
-   global $DB, $CFG_GLPI;
+   global $DB;
 
    //TRANS: %s is the number of new version
    echo "<h3>".sprintf(__('Update to %s'), '0.72.3')."</h3>";

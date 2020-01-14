@@ -341,8 +341,6 @@ class Profile extends CommonDBTM {
     * @return boolean
    **/
    function pre_deleteItem() {
-      global $DB;
-
       if (($this->fields['profile'] & DELETE)
           && (countElementsInTable("glpi_profilerights",
                                    ['name' => 'profile', 'rights' => ['&', DELETE]]))) {
@@ -531,8 +529,6 @@ class Profile extends CommonDBTM {
 
 
    function post_getEmpty() {
-      global $GLPI_CACHE;
-
       $this->fields["interface"] = "helpdesk";
       $this->fields["name"]      = __('Without name');
       ProfileRight::cleanAllPossibleRights();
@@ -613,8 +609,6 @@ class Profile extends CommonDBTM {
     * @since 0.85
    **/
    function showFormTrackingHelpdesk() {
-      global $CFG_GLPI;
-
       if (!self::canView()) {
          return false;
       }
@@ -737,8 +731,6 @@ class Profile extends CommonDBTM {
     * @since 0.85
    **/
    function showFormToolsHelpdesk() {
-      global $CFG_GLPI;
-
       if (!self::canView()) {
          return false;
       }
@@ -998,8 +990,6 @@ class Profile extends CommonDBTM {
     * @param $closeform    boolean  close the form (true by default)
    **/
    function showFormTracking($openform = true, $closeform = true) {
-      global $CFG_GLPI;
-
       if (!self::canView()) {
          return false;
       }
@@ -1348,8 +1338,6 @@ class Profile extends CommonDBTM {
     * @param $closeform    boolean  close the form (true by default)
    **/
    function showFormAdmin($openform = true, $closeform = true) {
-      global $DB;
-
       if (!self::canView()) {
          return false;
       }
@@ -2817,8 +2805,6 @@ class Profile extends CommonDBTM {
     *    - values : array of values
    **/
    static function dropdownHelpdeskItemtypes($options) {
-      global $CFG_GLPI;
-
       $p['name']    = 'helpdesk_item_type';
       $p['values']  = [];
       $p['display'] = true;

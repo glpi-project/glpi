@@ -82,9 +82,9 @@ class GLPI {
          }
          $logger->pushHandler($handler);
          $this->loggers[$type] = $logger;
-         $var = strtoupper($type . 'logger');
-         $$var = $this->loggers[$type];
       }
+      $PHPLOGGER = $this->loggers['php'];
+      $SQLLOGGER = $this->loggers['sql'];
    }
 
    /**

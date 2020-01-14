@@ -295,7 +295,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
 
    function post_addItem() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       // ADD Documents
       if (array_key_exists('projecttasktemplates_id', $this->input)) {
@@ -1122,7 +1122,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     * @return void
    **/
    static function showFor($item) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $item->getField('id');
 
@@ -1386,8 +1386,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     * @return boolean
    **/
    function showTeam(ProjectTask $task) {
-      global $DB, $CFG_GLPI;
-
       /// TODO : permit to simple add member of project team ?
 
       $ID      = $task->fields['id'];

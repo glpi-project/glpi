@@ -1342,8 +1342,6 @@ class RuleCollection extends CommonDBTM {
     * @return true if all ok
    **/
    static function processImportRules() {
-      global $DB;
-
       $ruleCriteria = new RuleCriteria();
       $ruleAction   = new RuleAction();
       $entity       = new Entity();
@@ -1527,8 +1525,6 @@ class RuleCollection extends CommonDBTM {
     * @param $condition       condition to limit rules (default 0)
     **/
    function showRulesEnginePreviewCriteriasForm($target, array $values, $condition = 0) {
-      global $DB;
-
       $input = $this->prepareInputDataForTestProcess($condition);
 
       if (count($input)) {

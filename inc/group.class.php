@@ -753,7 +753,7 @@ class Group extends CommonTreeDropdown {
     * @param $tech   boolean  false search groups_id, true, search groups_id_tech
    **/
    function showItems($tech) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $rand = mt_rand();
 

@@ -40,7 +40,7 @@
  * @return bool for success (will die for most error)
 **/
 function update930to931() {
-   global $DB, $migration, $CFG_GLPI;
+   global $migration;
 
    $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;

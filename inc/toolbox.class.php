@@ -636,8 +636,6 @@ class Toolbox {
                          E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
                          E_DEPRECATED        => 'Deprecated function',
                          E_USER_DEPRECATED   => 'User deprecated function'];
-      // Les niveaux qui seront enregistr??s
-      $user_errors = [E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING];
 
       $err = '  *** PHP '.$errortype[$errno] . "($errno): $errmsg\n";
 
@@ -1623,13 +1621,11 @@ class Toolbox {
       $content = "";
       $taburl  = parse_url($url);
 
-      $hostscheme  = '';
       $defaultport = 80;
 
       // Manage standard HTTPS port : scheme detection or port 443
       if ((isset($taburl["scheme"]) && $taburl["scheme"]=='https')
          || (isset($taburl["port"]) && $taburl["port"]=='443')) {
-         $hostscheme  = 'ssl://';
          $defaultport = 443;
       }
 

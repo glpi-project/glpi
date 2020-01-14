@@ -328,7 +328,7 @@ class Planning extends CommonGLPI {
     * @return void
    **/
    static function checkAvailability($params = []) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       if (!isset($params['itemtype'])) {
          return false;
@@ -754,8 +754,6 @@ class Planning extends CommonGLPI {
     * @return void
     */
    static function initSessionForCurrentUser() {
-      global $CFG_GLPI;
-
       // new user in planning, init session
       if (!isset($_SESSION['glpi_plannings']['filters'])) {
          $_SESSION['glpi_plannings']['filters']   = [];
@@ -887,7 +885,7 @@ class Planning extends CommonGLPI {
          if ($filter_key == 'NotPlanned') {
             $title = __('Not planned tasks');
          } else {
-            if (!($item = getItemForItemtype($filter_key))) {
+            if (!getItemForItemtype($filter_key)) {
                return false;
             } else if (!$filter_key::canView()) {
                return false;
@@ -1044,9 +1042,6 @@ class Planning extends CommonGLPI {
     * @return void
     */
    static function showAddUserForm() {
-      global $CFG_GLPI;
-
-      $rand = mt_rand();
       $used = [];
       foreach (array_keys($_SESSION['glpi_plannings']) as $actor) {
          $actor = explode("_", $actor);
@@ -2149,8 +2144,6 @@ class Planning extends CommonGLPI {
     * @return string
    **/
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
-      global $CFG_GLPI;
-
       $html = "";
 
       /*$color = "#e4e4e4";

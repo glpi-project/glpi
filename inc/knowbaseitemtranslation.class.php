@@ -141,7 +141,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * @return void
    **/
    function showFull($options = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!$this->can($this->fields['id'], READ)) {
          return false;
@@ -181,7 +181,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * @return true;
    **/
    static function showTranslations(KnowbaseItem $item) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $canedit = $item->can($item->getID(), UPDATE);
       $rand    = mt_rand();
@@ -269,8 +269,6 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * @param $options   array
     */
    function showForm($ID = -1, $options = []) {
-      global $CFG_GLPI;
-
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];
       }
@@ -327,8 +325,6 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * @return the field translated if a translation is available, or the original field if not
    **/
    static function getTranslatedValue(KnowbaseItem $item, $field = "name") {
-      global $DB;
-
       $obj   = new self;
       $found = $obj->find([
          'knowbaseitems_id'   => $item->getID(),

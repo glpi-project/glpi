@@ -89,7 +89,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function showForm($ID, $options) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!Config::canUpdate()) {
          return false;

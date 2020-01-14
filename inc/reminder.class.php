@@ -240,8 +240,6 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
     * @return array
     */
    static public function getVisibilityCriteria($forceall = false) {
-      global $CFG_GLPI;
-
       if (!Session::haveRight(self::$rightname, READ)) {
          return [
             'WHERE' => ['glpi_reminders.users_id' => Session::getLoginUserID()],

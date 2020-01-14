@@ -63,7 +63,7 @@ if ($max_time == 0) {
  * @global DB $DB
  */
 function xmlbackup() {
-   global $CFG_GLPI, $DB;
+   global $DB;
 
    //on parcoure la DB et on liste tous les noms des tables dans $table
    //on incremente $query[] de "select * from $table"  pour chaque occurence de $table

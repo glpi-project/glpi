@@ -85,8 +85,6 @@ class RuleRight extends Rule {
 
 
    function executeActions($output, $params, array $input = []) {
-      global $CFG_GLPI;
-
       $entity = [];
       $right        = '';
       $is_recursive = 0;

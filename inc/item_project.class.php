@@ -86,7 +86,7 @@ class Item_Project extends CommonDBRelation{
     * @return void
    **/
    static function showForProject(Project $project) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $instID = $project->fields['id'];
 

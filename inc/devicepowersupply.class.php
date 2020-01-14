@@ -135,7 +135,7 @@ class DevicePowerSupply extends CommonDevice {
    }
 
    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
-      $tb = [];
+      $tab = [];
 
       $tab[] = [
          'id'                 => '39',

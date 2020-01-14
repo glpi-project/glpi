@@ -78,7 +78,7 @@ class Pdu_Plug extends CommonDBRelation {
     * @return void
     */
    static function showItems(PDU $pdu) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $pdu->getID();
       $rand = mt_rand();

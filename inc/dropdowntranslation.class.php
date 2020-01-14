@@ -222,8 +222,6 @@ class DropdownTranslation extends CommonDBChild {
     * @return true if translation can be added/update, false otherwise
    **/
    function checkBeforeAddorUpdate($input, $add = true) {
-      global $DB;
-
       $number = $this->getNumberOfTranslations($input['itemtype'], $input['items_id'],
                                                $input['field'], $input['language']);
       if ($add) {

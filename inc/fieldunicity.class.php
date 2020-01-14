@@ -165,6 +165,7 @@ class FieldUnicity extends CommonDropdown {
          echo "<input type='hidden' name='itemtype' value='".$this->fields['itemtype']."'>";
 
       } else {
+         $options = [];
          //Add criteria : display dropdown
          foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
@@ -237,8 +238,6 @@ class FieldUnicity extends CommonDropdown {
     * @return void
    **/
    static function selectCriterias(CommonDBTM $unicity) {
-      global $DB;
-
       echo "<span id='span_fields'>";
 
       if (!isset($unicity->fields['itemtype']) || !$unicity->fields['itemtype']) {
@@ -269,9 +268,11 @@ class FieldUnicity extends CommonDropdown {
    static function dropdownFields($itemtype, $options = []) {
       global $DB;
 
-      $p['name']    = 'fields';
-      $p['display'] = true;
-      $p['values']  = [];
+      $p = [
+         'name'    => 'fields',
+         'display' => true,
+         'values'  => [],
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -447,8 +448,6 @@ class FieldUnicity extends CommonDropdown {
     * @param $options      array
    **/
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
-      global $DB;
-
       if (!is_array($values)) {
          $values = [$field => $values];
       }

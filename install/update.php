@@ -453,7 +453,7 @@ function changeVarcharToID($table1, $table2, $chps) {
 
 //update database
 function doUpdateDb() {
-   global $DB, $GLPI_CACHE, $migration, $update;
+   global $GLPI_CACHE, $migration, $update;
 
    $currents            = $update->getCurrents();
    $current_version     = $currents['version'];

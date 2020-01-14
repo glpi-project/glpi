@@ -317,8 +317,6 @@ class Group_User extends CommonDBRelation{
     * @param $crit            String   for criteria (for default dropdown)
    **/
    private static function showAddUserForm(Group $group, $used_ids, $entityrestrict, $crit) {
-      global $CFG_GLPI, $DB;
-
       $rand = mt_rand();
       $res  = User::getSqlSearchResult(true, "all", $entityrestrict, 0, $used_ids);
       $nb = count($res);
@@ -447,7 +445,7 @@ class Group_User extends CommonDBRelation{
     * @param $group  Group object: the group
    **/
    static function showForGroup(Group $group) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $ID = $group->getID();
       if (!User::canView()
@@ -607,8 +605,6 @@ class Group_User extends CommonDBRelation{
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
    static function getRelationMassiveActionsSpecificities() {
-      global $CFG_GLPI;
-
       $specificities                           = parent::getRelationMassiveActionsSpecificities();
 
       $specificities['select_items_options_1'] = ['right'     => 'all'];
@@ -721,8 +717,6 @@ class Group_User extends CommonDBRelation{
     * @param $only_dynamic (false by default
    **/
    static function deleteGroups($user_ID, $only_dynamic = false) {
-      global $DB;
-
       $crit['users_id'] = $user_ID;
       if ($only_dynamic) {
          $crit['is_dynamic'] = '1';

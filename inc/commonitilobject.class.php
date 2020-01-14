@@ -769,6 +769,8 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
 
+         $ret = [];
+
          foreach ($allowed_fields as $field) {
             if (isset($input[$field])) {
                $ret[$field] = $input[$field];
@@ -2820,7 +2822,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $group     = new Group();
       $linkclass = new $this->grouplinkclass();
 
-      $itemtype  = $this->getType();
       $typename  = static::getActorFieldNameType($type);
 
       $candelete = true;
@@ -2877,7 +2878,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $supplier     = new Supplier();
       $linksupplier = new $this->supplierlinkclass();
 
-      $itemtype     = $this->getType();
       $typename     = static::getActorFieldNameType($type);
 
       $candelete    = true;
@@ -3411,8 +3411,6 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 0.85
    **/
    function getSearchOptionsSolution() {
-      global $DB;
-
       $tab = [];
 
       $tab[] = [
@@ -3961,7 +3959,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $user      = new User();
       $linkuser  = new $this->userlinkclass();
 
-      $itemtype  = $this->getType();
       $typename  = static::getActorFieldNameType($type);
 
       $candelete = true;
@@ -7521,9 +7518,15 @@ abstract class CommonITILObject extends CommonDBTM {
    static function getAdditionalMenuOptions() {
       $tplclass = self::getTemplateClass();
       if ($tplclass::canView()) {
-         $menu[$tplclass]['title']           = $tplclass::getTypeName(Session::getPluralNumber());
-         $menu[$tplclass]['page']            = $tplclass::getSearchURL(false);
-         $menu[$tplclass]['links']['search'] = $tplclass::getSearchURL(false);
+         $menu = [
+            $tplclass => [
+               'title' => $tplclass::getTypeName(Session::getPluralNumber()),
+               'page'  => $tplclass::getSearchURL(false),
+               'links' => [
+                  'search' => $tplclass::getSearchURL(false),
+               ],
+            ],
+         ];
          if ($tplclass::canCreate()) {
             $menu[$tplclass]['links']['add'] = $tplclass::getFormURL(false);
          }

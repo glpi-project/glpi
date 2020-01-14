@@ -82,7 +82,7 @@ class KnowbaseItem_Comment extends CommonDBTM {
     * @param $withtemplate    integer  withtemplate param (default 0)
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $item_id = $item->getID();
       $item_type = $item::getType();

@@ -148,8 +148,6 @@ class Problem_Ticket extends CommonDBRelation{
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
-
       switch ($ma->getAction()) {
          case 'add_task' :
             $tasktype = 'TicketTask';

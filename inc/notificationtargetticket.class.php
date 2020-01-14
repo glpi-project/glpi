@@ -161,8 +161,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
    function getDataForObject(CommonDBTM $item, array $options, $simple = false) {
-      global $CFG_GLPI;
-
       // Common ITIL data
       $data = parent::getDataForObject($item, $options, $simple);
       /*$data['##ticket.description##'] = Html::clean($data['##ticket.description##']);*/

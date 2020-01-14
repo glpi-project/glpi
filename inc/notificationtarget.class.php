@@ -304,8 +304,6 @@ class NotificationTarget extends CommonDBChild {
     * @param $notification Notification object
    **/
    function showForNotification(Notification $notification) {
-      global $DB;
-
       if (!Notification::canView()) {
          return false;
       }

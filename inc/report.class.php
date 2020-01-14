@@ -68,6 +68,7 @@ class Report extends CommonGLPI{
 
       // Report generation
       // Default Report included
+      $report_list = [];
       $report_list["default"]["name"] = __('Default report');
       $report_list["default"]["file"] = "report.default.php";
 
@@ -106,7 +107,6 @@ class Report extends CommonGLPI{
       echo "<tr><th colspan='2'>".__('Select the report you want to generate')."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
 
-      $count    = count($report_list);
       $selected = -1;
       $values   = [$CFG_GLPI["root_doc"].'/front/report.php' => Dropdown::EMPTY_VALUE];
 

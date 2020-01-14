@@ -899,8 +899,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    function addDataForTemplate($event, $options = []) {
-      global $CFG_GLPI;
-
       $events    = $this->getAllEvents();
       $objettype = strtolower($this->obj->getType());
 

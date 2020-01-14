@@ -36,7 +36,7 @@
  * @return bool for success (will die for most error)
 **/
 function update0801to0803() {
-   global $DB, $migration;
+   global $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];

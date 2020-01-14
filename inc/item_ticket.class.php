@@ -333,8 +333,6 @@ class Item_Ticket extends CommonDBRelation{
 
 
    static function showItemToAdd($tickets_id, $itemtype, $items_id, $options) {
-      global $CFG_GLPI;
-
       $params = [
          'rand'      => mt_rand(),
          'delete'    => true,
@@ -373,8 +371,6 @@ class Item_Ticket extends CommonDBRelation{
     * @return void
    **/
    static function showForTicket(Ticket $ticket) {
-      global $DB, $CFG_GLPI;
-
       $instID = $ticket->fields['id'];
 
       if (!$ticket->can($instID, READ)) {
@@ -567,7 +563,7 @@ class Item_Ticket extends CommonDBRelation{
    **/
    static function dropdownAllDevices($myname, $itemtype, $items_id = 0, $admin = 0, $users_id = 0,
                                       $entity_restrict = -1, $options = []) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       $params = ['tickets_id' => 0,
                       'used'       => [],
@@ -1300,8 +1296,6 @@ class Item_Ticket extends CommonDBRelation{
     * Add a message on add action
    **/
    function addMessageOnAddAction() {
-      global $CFG_GLPI;
-
       $addMessAfterRedirect = false;
       if (isset($this->input['_add'])) {
          $addMessAfterRedirect = true;

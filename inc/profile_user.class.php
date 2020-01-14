@@ -109,8 +109,6 @@ class Profile_User extends CommonDBRelation {
     * @param $user User object
    **/
    static function showForUser(User $user) {
-      global $DB,$CFG_GLPI;
-
       $ID = $user->getField('id');
       if (!$user->can($ID, READ)) {
          return false;
@@ -437,7 +435,7 @@ class Profile_User extends CommonDBRelation {
     * @param $prof Profile object
    **/
    static function showForProfile(Profile $prof) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID      = $prof->fields['id'];
       $canedit = Session::haveRightsOr("user", [CREATE, UPDATE, DELETE, PURGE]);
@@ -840,8 +838,6 @@ class Profile_User extends CommonDBRelation {
     * @return array of entities ID
    **/
    static function getForUser($user_ID, $only_dynamic = false) {
-      global $DB;
-
       $condition = ['users_id' => $user_ID];
 
       if ($only_dynamic) {
@@ -877,7 +873,9 @@ class Profile_User extends CommonDBRelation {
    **/
    static function deleteRights($user_ID, $only_dynamic = false) {
 
-      $crit['users_id'] = $user_ID;
+      $crit = [
+         'users_id' => $user_ID,
+      ];
 
       if ($only_dynamic) {
          $crit['is_dynamic'] = '1';
@@ -1060,8 +1058,6 @@ class Profile_User extends CommonDBRelation {
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
    static function getRelationMassiveActionsSpecificities() {
-      global $CFG_GLPI;
-
       $specificities                            = parent::getRelationMassiveActionsSpecificities();
 
       $specificities['dropdown_method_2']       = 'dropdownUnder';

@@ -118,7 +118,7 @@ class Transfer extends CommonDBTM {
     *@param $options    options used to transfer
    **/
    function moveItems($items, $to, $options) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       // unset notifications
       NotificationSetting::disableAll();
@@ -1046,7 +1046,7 @@ class Transfer extends CommonDBTM {
     * @return void
    **/
    function transferItem($itemtype, $ID, $newID) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       if (!($item = getItemForItemtype($itemtype))) {
          return;
@@ -1188,8 +1188,6 @@ class Transfer extends CommonDBTM {
     * @return new location ID
    **/
    function transferDropdownLocation($locID) {
-      global $DB;
-
       if ($locID > 0) {
          if (isset($this->already_transfer['locations_id'][$locID])) {
             return $this->already_transfer['locations_id'][$locID];
@@ -2791,7 +2789,7 @@ class Transfer extends CommonDBTM {
     * @param $ID ID of the enterprise
    **/
    function transferSingleSupplier($ID) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       // TODO clean system : needed ?
       $ent = new Supplier();
@@ -3063,8 +3061,6 @@ class Transfer extends CommonDBTM {
     * @param $newID     new ID of the item
    **/
    function transferReservations($itemtype, $ID, $newID) {
-      global $DB;
-
       $ri = new ReservationItem();
 
       if ($ri->getFromDBbyItem($itemtype, $ID)) {
@@ -3103,7 +3099,7 @@ class Transfer extends CommonDBTM {
     * @param $newID           new ID of the item
    **/
    function transferDevices($itemtype, $ID, $newID) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       // Only same case because no duplication of computers
       switch ($this->options['keep_device']) {
@@ -3375,8 +3371,6 @@ class Transfer extends CommonDBTM {
     * @return boolean item found
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       $edit_form = true;
       if (strpos($_SERVER['HTTP_REFERER'], "transfer.form.php") === false) {
          $edit_form = false;

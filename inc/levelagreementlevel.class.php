@@ -230,9 +230,11 @@ abstract class LevelAgreementLevel extends RuleTicket {
 
 
    static function getExecutionTimes($options = []) {
-      $p['value']    = '';
-      $p['max_time'] = 4*DAY_TIMESTAMP;
-      $p['used']     = [];
+      $p = [
+         'value'    => '',
+         'max_time' => 4 * DAY_TIMESTAMP,
+         'used'     => [],
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -303,9 +305,11 @@ abstract class LevelAgreementLevel extends RuleTicket {
     *    string if option display=false (HTML code)
    **/
    static function dropdownExecutionTime($name, $options = []) {
-      $p['value']    = '';
-      $p['max_time'] = 4*DAY_TIMESTAMP;
-      $p['used']     = [];
+      $p = [
+         'value'    => '',
+         'max_time' => 4 * DAY_TIMESTAMP,
+         'used'     => [],
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {

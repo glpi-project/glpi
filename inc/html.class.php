@@ -760,7 +760,7 @@ class Html {
     * @return void
    **/
    static function displayDebugInfos($with_session = true, $ajax = false) {
-      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
+      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $DEBUG_AUTOLOAD;
       $GLPI_CACHE = Config::getCache('cache_db', 'core', false);
 
       // Only for debug mode so not need to be translated
@@ -1910,7 +1910,7 @@ JAVASCRIPT;
     * @param string $url    not used anymore
    **/
    static function nullHeader($title, $url = '') {
-      global $CFG_GLPI, $HEADER_LOADED;
+      global $HEADER_LOADED;
 
       if ($HEADER_LOADED) {
          return;
@@ -1946,7 +1946,7 @@ JAVASCRIPT;
     * Print footer for null page
    **/
    static function nullFooter() {
-      global $CFG_GLPI, $FOOTER_LOADED;
+      global $FOOTER_LOADED;
 
       // Print foot for null page
       if ($FOOTER_LOADED) {
@@ -1973,7 +1973,7 @@ JAVASCRIPT;
     * @param boolean $iframed  indicate if page loaded in iframe - css target
    **/
    static function popHeader($title, $url = '', $iframed = false) {
-      global $CFG_GLPI, $HEADER_LOADED;
+      global $HEADER_LOADED;
 
       // Print a nice HTML-head for every page
       if ($HEADER_LOADED) {
@@ -3581,8 +3581,6 @@ JAVASCRIPT;
     *    string if option display=false (HTML code)
    **/
    static function showToolTip($content, $options = []) {
-      global $CFG_GLPI;
-
       $param['applyto']    = '';
       $param['title']      = '';
       $param['contentid']  = '';
@@ -3969,8 +3967,6 @@ JAVASCRIPT;
     * @return void|string
    **/
    static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true, $additional_params = '') {
-      global $CFG_GLPI;
-
       $list_limit = $_SESSION['glpilist_limit'];
       // Forward is the next step forward
       $forward = $start+$list_limit;
@@ -5435,8 +5431,6 @@ JAVASCRIPT;
     * @return string The Html
     */
    static function fileForRichText($options = []) {
-      global $CFG_GLPI;
-
       $p['editor_id']     = '';
       $p['name']          = 'filename';
       $p['filecontainer'] = 'fileupload_info';
@@ -6510,8 +6504,6 @@ JAVASCRIPT;
     * @return string
     */
    static function fuzzySearch($action = '') {
-      global $CFG_GLPI;
-
       switch ($action) {
          case 'getHtml':
             return "<div id='fuzzysearch'>

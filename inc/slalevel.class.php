@@ -53,8 +53,6 @@ class SlaLevel extends LevelAgreementLevel {
 
 
    function cleanDBonPurge() {
-      global $DB;
-
       parent::cleanDBonPurge();
 
       // SlaLevel_Ticket does not extends CommonDBConnexity

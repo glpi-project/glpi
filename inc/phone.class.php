@@ -108,8 +108,6 @@ class Phone extends CommonDBTM {
 
 
    function post_addItem() {
-      global $DB, $CFG_GLPI;
-
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD OS

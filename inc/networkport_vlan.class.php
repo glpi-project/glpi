@@ -260,8 +260,6 @@ class NetworkPort_Vlan extends CommonDBRelation {
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
    static function getRelationMassiveActionsSpecificities() {
-      global $CFG_GLPI;
-
       $specificities = parent::getRelationMassiveActionsSpecificities();
 
       // Set the labels for add_item and remove_item

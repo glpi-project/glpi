@@ -294,8 +294,6 @@ class Notepad extends CommonDBChild {
     * @param $withtemplate integer  template or basic item (default 0)
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $CFG_GLPI;
-
       if (!Session::haveRight($item::$rightname, READNOTE)) {
          return false;
       }

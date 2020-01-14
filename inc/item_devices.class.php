@@ -994,8 +994,6 @@ class Item_Devices extends CommonDBRelation {
     * @param $input          array to complete (permit to define values)
    **/
    function addDevices($numberToAdd, $itemtype, $items_id, $devices_id, $input = []) {
-      global $DB;
-
       if ($numberToAdd == 0) {
          return;
       }
@@ -1436,7 +1434,7 @@ class Item_Devices extends CommonDBRelation {
     *
    **/
    function prepareInputForAdd($input) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!isset($input[static::$items_id_2]) || !$input[static::$items_id_2]) {
          Session::addMessageAfterRedirect(__('A device ID is mandatory'), false, ERROR);

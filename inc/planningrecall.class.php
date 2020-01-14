@@ -232,8 +232,6 @@ class PlanningRecall extends CommonDBChild {
     * @return void|boolean print out an HTML select box or return false if mandatory fields are not ok
    **/
    static function dropdown($options = []) {
-      global $DB, $CFG_GLPI;
-
       // Default values
       $p['itemtype'] = '';
       $p['items_id'] = 0;
@@ -308,8 +306,6 @@ class PlanningRecall extends CommonDBChild {
     * @return void|boolean print out an HTML select box or return false if mandatory fields are not ok
    **/
    static function specificForm($options = []) {
-      global $CFG_GLPI;
-
       // Default values
       $p['itemtype'] = '';
       $p['items_id'] = 0;
