@@ -1350,11 +1350,12 @@ class Problem extends CommonITILObject {
     *
     * Will also display problems of linked items
     *
-    * @param $item CommonDBTM object
+    * @param CommonDBTM $item
+    * @param boolean    $withtemplate
     *
     * @return nothing (display a table)
    **/
-   static function showListForItem(CommonDBTM $item) {
+   static function showListForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRight(self::$rightname, self::READALL)) {
