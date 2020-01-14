@@ -1385,10 +1385,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                = Html::clean(Toolbox::clean_cross_side_scripting_deep(Dropdown::getDropdownName("glpi_groups",
                                                         $task['groups_id_tech'])), true, 2, false);
             $tmp['##task.begin##']        = "";
+            $tmp['##task.beginnohour##']        = "";
             $tmp['##task.end##']          = "";
+            $tmp['##task.endnohour##']          = "";
             if (!is_null($task['begin'])) {
                $tmp['##task.begin##']     = Html::convDateTime($task['begin']);
+               $tmp['##task.beginnohour##']     = Html::convDate($task['begin']);
                $tmp['##task.end##']       = Html::convDateTime($task['end']);
+               $tmp['##task.endnohour##']       = Html::convDate($task['end']);
             }
 
             $data['tasks'][]             = $tmp;
