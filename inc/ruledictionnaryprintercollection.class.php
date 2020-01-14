@@ -134,9 +134,9 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
                ]
             ]);
 
-            if (count($iterator)) {
+            if (count($print_iterator)) {
                //Store all the printer's IDs in an array
-               while ($result = $iterator->next()) {
+               while ($result = $print_iterator->next()) {
                   $IDs[] = $result["id"];
                }
                //Replay dictionnary on all the printers
