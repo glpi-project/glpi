@@ -129,7 +129,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       /** FIXME: should not this be handled on CommonITILObject side? */
-      if (is_subclass_of($input['itemtype'], 'CommonITILObject')) {
+      if (is_subclass_of($input['itemtype'], 'CommonITILObject') && !isset($input['timeline_position'])) {
          $input['timeline_position'] = CommonITILObject::TIMELINE_LEFT;
          if (isset($input["users_id"])) {
             $input['timeline_position'] = $input['itemtype']::getTimelinePosition($input['items_id'], $this->getType(), $input["users_id"]);
