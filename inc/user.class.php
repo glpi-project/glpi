@@ -861,7 +861,7 @@ class User extends CommonDBTM {
          unset($input['language']);
       }
 
-      if (empty($input['timezone'])) {
+      if (array_key_exists('timezone', $input) && empty($input['timezone'])) {
          $input['timezone'] = 'NULL';
       }
 
