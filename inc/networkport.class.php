@@ -988,7 +988,7 @@ class NetworkPort extends CommonDBChild {
    **/
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = $checkitem->canUpdate();
+      $isadmin = $checkitem !== null && $checkitem->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $vlan_prefix                    = 'NetworkPort_Vlan'.MassiveAction::CLASS_ACTION_SEPARATOR;
