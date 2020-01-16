@@ -257,6 +257,61 @@ class User extends \DbTestCase {
       $this->array($user->prepareInputForAdd($input))->isIdenticalTo($expected);
    }
 
+   protected function prepareInputForTimezoneUpdateProvider() {
+      return [
+         [
+            'input'     => [
+               'timezone' => 'Europe/Paris',
+            ],
+            'expected'  => [
+               'timezone' => 'Europe/Paris',
+            ],
+         ],
+         [
+            'input'     => [
+               'timezone' => '0',
+            ],
+            'expected'  => [
+               'timezone' => 'NULL',
+            ],
+         ],
+         // check that timezone is not reset unexpectedly
+         [
+            'input'     => [
+               'registration_number' => 'no.1',
+            ],
+            'expected'  => [
+               'registration_number' => 'no.1',
+            ],
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider prepareInputForTimezoneUpdateProvider
+    */
+   public function testPrepareInputForUpdateTimezone(array $input, $expected) {
+
+      $user = $this->newTestedInstance();
+      $username = 'prepare_for_update_' . mt_rand();
+      $user_id = $user->add(
+         [
+            'name'      => $username,
+            'password'  => 'mypass',
+            'password2' => 'mypass'
+         ]
+      );
+      $this->integer((int)$user_id)->isGreaterThan(0);
+
+      $this->login($username, 'mypass');
+
+      $input = ['id' => $user_id] + $input;
+      $result = $user->prepareInputForUpdate($input);
+
+      $expected = ['id' => $user_id] + $expected;
+      $this->array($result)->isIdenticalTo($expected);
+   }
+
    public function testPost_addItem() {
       $this->login();
       $this->setEntity('_test_root_entity', true);
