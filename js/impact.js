@@ -168,15 +168,16 @@ var GLPIImpact = {
 
    // Data that needs to be stored/shared between events
    eventData: {
-      addEdgeStart       : null, // Store starting node of a new edge
-      tmpEles            : null, // Temporary collection used when adding an edge
-      lastClicktimestamp : null, // Store last click timestamp
-      lastClickTarget    : null, // Store last click target
+      addEdgeStart       : null,        // Store starting node of a new edge
+      tmpEles            : null,        // Temporary collection used when adding an edge
+      lastClicktimestamp : null,        // Store last click timestamp
+      lastClickTarget    : null,        // Store last click target
       boxSelected        : [],
       grabNodeStart      : null,
       boundingBox        : null,
       showPointerForBadge: false,
       previousCursor     : "default",
+      ctrlDown           : false,
    },
 
    /**
@@ -270,14 +271,16 @@ var GLPIImpact = {
          {
             selector: 'edge',
             style: {
-               'width'             : 1,
-               'line-color'        : this.edgeColors[0],
-               'target-arrow-color': this.edgeColors[0],
-               'target-arrow-shape': 'triangle',
-               'arrow-scale'       : 0.7,
-               'curve-style'       : 'bezier',
-               'source-endpoint'   : 'outside-to-node-or-label',
-               'target-endpoint'   : 'outside-to-node-or-label',
+               'width'                    : 1,
+               'line-color'               : this.edgeColors[0],
+               'target-arrow-color'       : this.edgeColors[0],
+               'target-arrow-shape'       : 'triangle',
+               'arrow-scale'              : 0.7,
+               'curve-style'              : 'bezier',
+               'source-endpoint'          : 'outside-to-node-or-label',
+               'target-endpoint'          : 'outside-to-node-or-label',
+               'source-distance-from-node': '2px',
+               'target-distance-from-node': '2px',
             }
          },
          {
@@ -1984,9 +1987,10 @@ var GLPIImpact = {
     * @param {Object}   renderedPosition  {x, y}
     * @param {Boolean}  trigger           should we trigger the link if there
     *                                     is a match ?
+    * @param {Boolean}  blank
     * @returns {Boolean}
     */
-   checkBadgeHitboxes: function (renderedPosition, trigger) {
+   checkBadgeHitboxes: function (renderedPosition, trigger, blank) {
       var hit = false;
       var margin = 5 * GLPIImpact.cy.zoom();
 
@@ -2019,7 +2023,11 @@ var GLPIImpact = {
                // Add status criteria (not solved)
                target += "&criteria[3][link]=AND&criteria[3][field]=12&criteria[3][searchtype]=equals&criteria[3][value]=notold";
 
-               window.open(target);
+               if (blank) {
+                  window.open(target);
+               } else {
+                  window.location.href = target;
+               }
             }
          }
       });
@@ -2047,7 +2055,7 @@ var GLPIImpact = {
             break;
       }
 
-      GLPIImpact.checkBadgeHitboxes(event.renderedPosition, true);
+      GLPIImpact.checkBadgeHitboxes(event.renderedPosition, true, GLPIImpact.eventData.ctrlDown);
    },
 
    /**
@@ -2212,12 +2220,14 @@ var GLPIImpact = {
          // Ctrl
          case 17:
             // Enter add compound edge mode
-            if (GLPIImpact.editionMode != GLPIImpact.EDITION_ADD_COMPOUND) {
+            if (GLPIImpact.editionMode != GLPIImpact.EDITION_ADD_COMPOUND
+               && !GLPIImpact.eventData.showPointerForBadge) {
                if (GLPIImpact.eventData.previousEditionMode === undefined) {
                   GLPIImpact.eventData.previousEditionMode = GLPIImpact.editionMode;
                }
                GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_COMPOUND);
             }
+            GLPIImpact.eventData.ctrlDown = true;
             break;
 
          // ESC
@@ -2269,6 +2279,7 @@ var GLPIImpact = {
 
                GLPIImpact.eventData.previousEditionMode = undefined;
             }
+            GLPIImpact.eventData.ctrlDown = false;
             break;
       }
    },
@@ -2383,7 +2394,7 @@ var GLPIImpact = {
       var node;
 
       // Check for badges hitboxes
-      if (GLPIImpact.checkBadgeHitboxes(event.renderedPosition, false)
+      if (GLPIImpact.checkBadgeHitboxes(event.renderedPosition, false, false)
          && !GLPIImpact.eventData.showPointerForBadge) {
          // Entering a badge hitbox
          GLPIImpact.eventData.showPointerForBadge = true;
@@ -2392,7 +2403,7 @@ var GLPIImpact = {
          GLPIImpact.eventData.previousCursor = $(GLPIImpact.impactContainer).css('cursor');
          $(GLPIImpact.impactContainer).css('cursor', "pointer");
       } else if (GLPIImpact.eventData.showPointerForBadge
-         && !GLPIImpact.checkBadgeHitboxes(event.renderedPosition, false)) {
+         && !GLPIImpact.checkBadgeHitboxes(event.renderedPosition, false, false)) {
          // Exiiting a badge hitbox
          GLPIImpact.eventData.showPointerForBadge = false;
 
@@ -2813,11 +2824,12 @@ var GLPIImpact = {
     * Taken from cytoscape source, get the real position of the click event on
     * the cytoscape canvas
     *
-    * @param   {Number} clientX
-    * @param   {Number} clientY
+    * @param   {Number}  clientX
+    * @param   {Number}  clientY
+    * @param   {Boolean} rendered
     * @returns {Object}
     */
-   projectIntoViewport: function (clientX, clientY) {
+   projectIntoViewport: function (clientX, clientY, rendered) {
       var cy = this.cy;
       var offsets = this.findContainerClientCoords();
       var offsetLeft = offsets[0];
@@ -2825,10 +2837,18 @@ var GLPIImpact = {
       var scale = offsets[4];
       var pan = cy.pan();
       var zoom = cy.zoom();
-      return {
-         x: ((clientX - offsetLeft) / scale - pan.x) / zoom,
-         y: ((clientY - offsetTop) / scale - pan.y) / zoom
-      };
+
+      if (rendered) {
+         return {
+            x: clientX - offsetLeft,
+            y: clientY - offsetTop
+         };
+      } else {
+         return {
+            x: ((clientX - offsetLeft) / scale - pan.x) / zoom,
+            y: ((clientY - offsetTop) / scale - pan.y) / zoom
+         };
+      }
    },
 
    /**
@@ -3090,6 +3110,15 @@ var GLPIImpact = {
 
       // Handle drag & drop on add node search result
       $(document).on('mouseup', function(e) {
+         // Middle click on badge, open link in new tab
+         if (event.which == 2) {
+            GLPIImpact.checkBadgeHitboxes(
+               GLPIImpact.projectIntoViewport(e.clientX, e.clientY, true),
+               true,
+               true
+            );
+         }
+
          if (GLPIImpact.eventData.addNodeStart === undefined) {
             return;
          }
@@ -3099,7 +3128,7 @@ var GLPIImpact = {
             GLPIImpact.addNode(
                GLPIImpact.eventData.addNodeStart.id,
                GLPIImpact.eventData.addNodeStart.type,
-               GLPIImpact.projectIntoViewport(e.clientX, e.clientY)
+               GLPIImpact.projectIntoViewport(e.clientX, e.clientY, false)
             );
          }
 
