@@ -99,7 +99,7 @@ class Item_OperatingSystem extends DbTestCase {
       )
          ->isInstanceOf('GlpitestSQLError')
          ->message
-            ->matches("#Duplicate entry '.+' for key 'unicity'#");
+            ->matches("#Duplicate entry '.+' for key '(".$ios->getTable()."\.)?unicity'#");
 
       $this->integer(
          (int)\Item_OperatingSystem::countForItem($computer)
