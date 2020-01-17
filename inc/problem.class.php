@@ -1626,11 +1626,12 @@ class Problem extends CommonITILObject {
     *
     * Will also display problems of linked items
     *
-    * @param $item CommonDBTM object
+    * @param CommonDBTM $item
+    * @param boolean    $withtemplate
     *
     * @return void
    **/
-   static function showListForItem(CommonDBTM $item) {
+   static function showListForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;
 
       if (!Session::haveRight(self::$rightname, self::READALL)) {

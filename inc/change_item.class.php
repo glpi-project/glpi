@@ -264,7 +264,7 @@ class Change_Item extends CommonDBRelation{
             break;
 
          default :
-            Change::showListForItem($item);
+            Change::showListForItem($item, $withtemplate);
       }
       return true;
 
