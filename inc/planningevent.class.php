@@ -236,6 +236,28 @@ trait PlanningEvent {
       }
    }
 
+   /**
+    * Delete a specific instance of a serie
+    * Add an exception into the serie
+    *
+    * @param int $id of the instance to delete
+    *
+    * @return bool
+    */
+   function deleteInstance(int $id = 0, string $day = "") {
+      $this->getFromDB($id);
+      $rrule = json_decode($this->fields['rrule'], true) ?? [];
+      $rrule = array_merge_recursive($rrule, [
+         'exceptions' => [
+            $day
+         ]
+      ]);
+      return $this->update([
+         'id'    => $id,
+         'rrule' => $rrule
+      ]);
+   }
+
 
    /**
     * Populate the planning with planned event

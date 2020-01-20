@@ -1160,7 +1160,6 @@ class Planning extends CommonGLPI {
 
 
    static function editEventForm($params = []) {
-
       if (!$params['itemtype'] instanceof CommonDBTM) {
          echo "<div class='center'>";
          echo "<a href='".$params['url']."'>".__("View this item in his context")."</a>";
@@ -1169,7 +1168,8 @@ class Planning extends CommonGLPI {
          $rand = mt_rand();
          $options = [
             'from_planning_edit_ajax' => true,
-            'formoptions'             => "id='edit_event_form$rand'"
+            'formoptions'             => "id='edit_event_form$rand'",
+            'start'                   => date("Y-m-d", strtotime($params['start']))
          ];
          if (isset($params['parentitemtype'])) {
             $options['parent'] = getItemForItemtype($params['parentitemtype']);
