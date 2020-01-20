@@ -653,7 +653,6 @@ class AuthLDAP extends DbTestCase {
       $this->integer($pu['profiles_id'])->isEqualTo(1);
       $this->integer($pu['entities_id'])->isEqualTo(0);
       $this->integer($pu['is_recursive'])->isEqualTo(0);
-      $this->integer($pu['is_recursive'])->isEqualTo(0);
       $this->integer($pu['is_dynamic'])->isEqualTo(0);
 
       // first, login with ldap mode
