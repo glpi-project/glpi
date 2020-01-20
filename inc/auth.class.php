@@ -426,7 +426,7 @@ class Auth extends CommonGLPI {
                $groups_id,
                Toolbox::stripslashes_deep($this->user->fields),
                [
-                  'type'  => 'DB_GLPI',
+                  'type'  => Auth::DB_GLPI,
                   'login' => $this->user->fields['name'],
                   'email' => UserEmail::getDefaultForUser($row['id'])
                ]
