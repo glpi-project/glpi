@@ -1296,7 +1296,7 @@ HTML
    /** A doc_item to rule them all! */
    $itemtypes = [
       'ITILFollowup' => 'content',
-      'ITILSOlution' => 'content',
+      'ITILSolution' => 'content',
       'Reminder'     => 'text',
       'KnowbaseItem' => 'answer'
    ];
