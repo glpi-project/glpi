@@ -204,13 +204,13 @@ var GLPIImpact = {
 
    /**
     * Add given action to undo stack and reset redo stack
-    * @param {Number} action const ACTION_XXXX
-    * @param {Object} data   data specific to the action
+    * @param {Number} action_code const ACTION_XXXX
+    * @param {Object} data        data specific to the action
     */
-   addToUndo : function(action, data) {
+   addToUndo : function(action_code, data) {
       // Add new item to undo list
       this.undoStack.push({
-         code: action,
+         code: action_code,
          data: data
       });
       $(this.selectors.undo).removeClass("impact-disabled");
@@ -1566,7 +1566,7 @@ var GLPIImpact = {
 
       // Register events handlers for cytoscape object
       this.cy.on('mousedown', 'node', this.nodeOnMousedown);
-      this.cy.on('mouseup', 'node', this.nodeOnMouseup);
+      this.cy.on('mouseup', this.onMouseUp);
       this.cy.on('mousemove', this.onMousemove);
       this.cy.on('mouseover', this.onMouseover);
       this.cy.on('mouseout', this.onMouseout);
@@ -2772,6 +2772,11 @@ var GLPIImpact = {
       }
    },
 
+   /**
+    * Handle "grab" event
+    *
+    * @param {Jquery.event} event
+    */
    onGrabOn: function(event) {
       // Store original position (shallow copy)
       GLPIImpact.eventData.grabNodePosition = {
@@ -2787,6 +2792,10 @@ var GLPIImpact = {
       GLPIImpact.eventData.grabNodeParent = parent;
    },
 
+   /**
+    * Handle "free" event
+    * @param {Jquery.Event} event
+    */
    onFreeOn: function(event) {
       var parent = null;
       if (event.target.parent() !== undefined) {
@@ -3002,19 +3011,17 @@ var GLPIImpact = {
    },
 
    /**
-    * Handle mouseup events on nodes
+    * Handle mouseup events
     *
     * @param {JQuery.Event} event
     */
-   nodeOnMouseup: function (event) {
+   onMouseUp: function(event) {
+      if (event.target.data('id') != undefined && event.target.isNode()) {
+         // Handler for nodes
+         GLPIImpact.nodeOnMouseup();
+      }
       switch (GLPIImpact.editionMode) {
          case GLPIImpact.EDITION_DEFAULT:
-            $(GLPIImpact.impactContainer).css('cursor', "grab");
-
-            // Reset eventData for node grabbing
-            GLPIImpact.eventData.grabNodeStart = null;
-            GLPIImpact.eventData.boundingBox = null;
-
             break;
 
          case GLPIImpact.EDITION_ADD_NODE:
@@ -3032,21 +3039,23 @@ var GLPIImpact = {
 
             // Remove current tmp collection
             event.cy.remove(GLPIImpact.eventData.tmpEles);
+            var edgeID = GLPIImpact.eventData.tmpEles.data('id');
             GLPIImpact.eventData.tmpEles = null;
 
             // Option 1: Edge between a node and the fake tmp_node -> ignore
-            if (this.data('id') == 'tmp_node') {
+            if (edgeID == 'tmp_node') {
                return;
             }
 
+            var edgeDetails = edgeID.split(GLPIImpact.EDGE_ID_SEPERATOR);
+
             // Option 2: Edge between two nodes that already exist -> ignore
-            var edgeID = GLPIImpact.makeID(GLPIImpact.EDGE, startEdge, this.data('id'));
             if (event.cy.filter('edge[id="' + edgeID + '"]').length > 0) {
                return;
             }
 
             // Option 3: Both end of the edge are actually the same node -> ignore
-            if (startEdge == this.data('id')) {
+            if (startEdge == edgeDetails[1]) {
                return;
             }
 
@@ -3054,7 +3063,7 @@ var GLPIImpact = {
             var data = {
                id: edgeID,
                source: startEdge,
-               target: this.data('id')
+               target: edgeDetails[1]
             };
             event.cy.add({
                group: 'edges',
@@ -3064,6 +3073,33 @@ var GLPIImpact = {
 
             // Update dependencies flags according to the new link
             GLPIImpact.updateFlags();
+            break;
+
+         case GLPIImpact.EDITION_DELETE:
+            break;
+      }
+   },
+
+   /**
+    * Handle mouseup events on nodes
+    *
+    * @param {JQuery.Event} event
+    */
+   nodeOnMouseup: function () {
+      switch (GLPIImpact.editionMode) {
+         case GLPIImpact.EDITION_DEFAULT:
+            $(GLPIImpact.impactContainer).css('cursor', "grab");
+
+            // Reset eventData for node grabbing
+            GLPIImpact.eventData.grabNodeStart = null;
+            GLPIImpact.eventData.boundingBox = null;
+
+            break;
+
+         case GLPIImpact.EDITION_ADD_NODE:
+            break;
+
+         case GLPIImpact.EDITION_ADD_EDGE:
             break;
 
          case GLPIImpact.EDITION_DELETE:
