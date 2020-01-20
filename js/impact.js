@@ -3914,7 +3914,7 @@ var GLPIImpact = {
          layer.clear(ctx);
          GLPIImpact.badgesHitboxes = [];
 
-         GLPIImpact.cy.filter("node:childless").forEach(function(node) {
+         GLPIImpact.cy.filter("node:childless:visible").forEach(function(node) {
             // Stop here if the node has no badge defined
             if (!node.data('badge')) {
                return;
