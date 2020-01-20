@@ -7607,6 +7607,11 @@ JAVASCRIPT;
             ($matches[1] != '^' ? '%' : '') .
             trim($matches[2]) .
             ($matches[3] != '$' ? '%' : '');
+      } else if (isset($matches[1])
+            && strlen(trim($matches[1])) == 1
+            && (!isset($matches[3]) || empty($matches[3]))) {
+         // this case is for search with only ^, so mean the field is not empty / not null
+         $search = '%';
       }
       return $search;
    }

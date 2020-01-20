@@ -1241,7 +1241,7 @@ class Search extends DbTestCase {
    protected function makeTextSearchValueProvider() {
       return [
          ['', ''],
-         ['^', ''],
+         ['^', '%'],
          ['$', ''],
          ['^$', ''],
          ['looking for', '%looking for%'],
