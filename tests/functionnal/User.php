@@ -297,9 +297,10 @@ class User extends \DbTestCase {
       $username = 'prepare_for_update_' . mt_rand();
       $user_id = $user->add(
          [
-            'name'      => $username,
-            'password'  => 'mypass',
-            'password2' => 'mypass'
+            'name'         => $username,
+            'password'     => 'mypass',
+            'password2'    => 'mypass',
+            '_profiles_id' => 1
          ]
       );
       $this->integer((int)$user_id)->isGreaterThan(0);
@@ -353,9 +354,10 @@ class User extends \DbTestCase {
       $username = 'prepare_for_update_' . mt_rand();
       $user_id = $user->add(
          [
-            'name'      => $username,
-            'password'  => 'initial_pass',
-            'password2' => 'initial_pass'
+            'name'         => $username,
+            'password'     => 'initial_pass',
+            'password2'    => 'initial_pass',
+            '_profiles_id' => 1
          ]
       );
       $this->integer((int)$user_id)->isGreaterThan(0);

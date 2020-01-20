@@ -142,12 +142,16 @@ class Auth extends DbTestCase {
    public function testAccountLockStrategy(string $last_update, int $exp_delay, int $lock_delay, bool $expected_lock) {
       global $CFG_GLPI;
 
+      // reset session to prevent session having less rights to create a user
+      $this->login();
+
       $user = new \User();
       $username = 'test_lock_' . mt_rand();
-      $user_id = (int)$user->add([
-         'name'      => $username,
-         'password'  => 'test',
-         'password2' => 'test',
+      $user_id = (int) $user->add([
+         'name'         => $username,
+         'password'     => 'test',
+         'password2'    => 'test',
+         '_profiles_id' => 1,
       ]);
       $this->integer($user_id)->isGreaterThan(0);
       $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();

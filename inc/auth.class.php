@@ -417,6 +417,25 @@ class Auth extends CommonGLPI {
             $this->user_present             = 1;
             $this->user->fields["authtype"] = self::DB_GLPI;
             $this->user->fields["password"] = $password;
+
+            // apply rule rights on local user
+            $rules  = new RuleRightCollection();
+            $groups = Group_User::getUserGroups($row['id']);
+            $groups_id = array_column($groups, 'id');
+            $result = $rules->processAllRules(
+               $groups_id,
+               Toolbox::stripslashes_deep($this->user->fields),
+               [
+                  'type'  => Auth::DB_GLPI,
+                  'login' => $this->user->fields['name'],
+                  'email' => UserEmail::getDefaultForUser($row['id'])
+               ]
+            );
+
+            $this->user->fields = $result + [
+               '_ruleright_process' => true,
+            ];
+
             return true;
          }
       }

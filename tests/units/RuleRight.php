@@ -62,4 +62,96 @@ class RuleRight extends DbTestCase {
          )
       )->isIdenticalTo(1);
    }
+
+   public function testLocalAccount() {
+      //prepare rules
+      $rules = new \RuleRight();
+      $rules_id = $rules->add([
+         'sub_type'     => 'RuleRight',
+         'name'         => 'test local account ruleright',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'entities_id'  => 0,
+         'is_recursive' => 1,
+      ]);
+
+      $criteria = new \RuleCriteria();
+      $criteria->add([
+         'rules_id'  => $rules_id,
+         'criteria'  => 'LOGIN',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => TU_USER,
+      ]);
+      $criteria->add([
+         'rules_id'  => $rules_id,
+         'criteria'  => 'MAIL_EMAIL',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => TU_USER.'@glpi.com',
+      ]);
+
+      $actions = new \RuleAction();
+      $actions->add([
+         'rules_id'    => $rules_id,
+         'action_type' => 'assign',
+         'field'       => 'profiles_id',
+         'value'       => 5, // 'normal' profile
+      ]);
+      $actions->add([
+         'rules_id'    => $rules_id,
+         'action_type' => 'assign',
+         'field'       => 'entities_id',
+         'value'       => 1, // '_test_child_1' entity
+      ]);
+
+      // login the user to force a real synchronisation and get it's glpi id
+      $this->login(TU_USER, TU_PASS, false);
+      $users_id = \User::getIdByName(TU_USER);
+      $this->integer($users_id);
+
+      // check the user got the entity/profiles assigned
+      $pu = \Profile_User::getForUser($users_id, true);
+
+      // check the assigned right exists in the collection
+      $found = false;
+      foreach ($pu as $right) {
+         if (isset($right['entities_id']) && $right['entities_id'] == 1
+             && isset($right['profiles_id']) && $right['profiles_id'] == 5
+             && isset($right['is_dynamic']) && $right['is_dynamic'] == 1) {
+            $found = true;
+            break;
+         }
+      }
+      $this->boolean($found)->isTrue();
+
+      // cleanup
+      $rules->delete([
+         'id' => $rules_id,
+      ], true);
+      $exist = $rules->getFromDB($rules_id);
+      $this->boolean($exist)->isFalse();
+
+      // clean right singleton
+      \SingletonRuleList::getInstance("RuleRight", 0)->load = 0;
+      \SingletonRuleList::getInstance("RuleRight", 0)->list = [];
+
+      // login again
+      $this->dump('new login');
+      $this->login(TU_USER, TU_PASS, false);
+
+      // check the user got the entity/profiles assigned
+      $pu = \Profile_User::getForUser($users_id, true);
+      $this->dump($pu);
+
+      // check the assigned right exists in the collection
+      $found = false;
+      foreach ($pu as $right) {
+         if (isset($right['entities_id']) && $right['entities_id'] == 1
+             && isset($right['profiles_id']) && $right['profiles_id'] == 5
+             && isset($right['is_dynamic']) && $right['is_dynamic'] == 1) {
+            $found = true;
+            break;
+         }
+      }
+      $this->boolean($found)->isFalse();
+   }
 }
