@@ -5199,7 +5199,7 @@ JAVASCRIPT;
 
       // Set default class to submit
       if (!isset($options['class'])) {
-         $options['class'] = 'submit';
+         $options['class'] = 'vsubmit';
       }
       if (isset($options['confirm'])) {
          if (!empty($options['confirm'])) {
@@ -5222,8 +5222,12 @@ JAVASCRIPT;
          return sprintf('<input type="image" src="%s" %s />',
                Html::cleanInputText($image), Html::parseAttributes($options));
       }
-      return sprintf('<input type="submit" value="%s" %s />',
-                     Html::cleanInputText($caption), Html::parseAttributes($options));
+
+      $button = "<button type='submit' %s>
+               $caption
+            </button>&nbsp;";
+
+      return sprintf($button, Html::parseAttributes($options));
    }
 
 
@@ -5941,7 +5945,7 @@ JAVASCRIPT;
       echo Html::scriptBlock("
       $(function() {
          var lastClicked = null;
-         $('input[type=submit]').click(function(e) {
+         $('input[type=submit], button[type=submit]').click(function(e) {
             e = e || event;
             lastClicked = e.target || e.srcElement;
          });
