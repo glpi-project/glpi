@@ -144,10 +144,11 @@ class Auth extends DbTestCase {
 
       $user = new \User();
       $username = 'test_lock_' . mt_rand();
-      $user_id = (int)$user->add([
-         'name'      => $username,
-         'password'  => 'test',
-         'password2' => 'test',
+      $user_id = (int) $user->add([
+         'name'         => $username,
+         'password'     => 'test',
+         'password2'    => 'test',
+         '_profiles_id' => 1,
       ]);
       $this->integer($user_id)->isGreaterThan(0);
       $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
