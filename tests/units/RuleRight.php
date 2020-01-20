@@ -63,7 +63,7 @@ class RuleRight extends DbTestCase {
       )->isIdenticalTo(1);
    }
 
-   /*public function testLocalAccount() {
+   public function testLocalAccount() {
       //prepare rules
       $rules = new \RuleRight();
       $rules_id = $rules->add([
@@ -153,5 +153,5 @@ class RuleRight extends DbTestCase {
          }
       }
       $this->boolean($found)->isFalse();
-   }*/
+   }
 }
