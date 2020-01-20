@@ -1308,7 +1308,7 @@ HTML
    foreach ($itemtypes as $itemtype => $field) {
       // Check ticket and child items (followups, tasks, solutions) contents
       $regexPattern = 'document\\\.send\\\.php\\\?docid=[0-9]+';
-      $user_field = ($itemtype instanceof CommonITILObject) ? 'users_id_recipient' : 'users_id';
+      $user_field = is_a($itemtype, CommonITILObject::class, true) ? 'users_id_recipient' : 'users_id';
       $result = $DB->request([
          'SELECT' => ['id', $field, $user_field],
          'FROM'   => $itemtype::getTable(),
@@ -1323,7 +1323,7 @@ HTML
             'itemtype'           => $itemtype,
             'items_id'           => $data['id'],
             'timeline_position'  => CommonITILObject::NO_TIMELINE,
-            'users_id'           => $user_field
+            'users_id'           => $data[$user_field],
          ];
       }
    }
