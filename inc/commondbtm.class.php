@@ -2316,10 +2316,16 @@ class CommonDBTM extends CommonGLPI {
          echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
          if (($ID <= 0) || ($params['withtemplate'] == 2)) {
-            echo Html::submit(_x('button', 'Add'), ['name' => 'add']);
+            echo Html::submit(
+               "<i class='fas fa-plus'></i>&nbsp;"._x('button', 'Add'),
+               ['name' => 'add']
+            );
          } else {
             //TRANS : means update / actualize
-            echo Html::submit(_x('button', 'Save'), ['name' => 'update']);
+            echo Html::submit(
+               "<i class='fas fa-save'></i>&nbsp;"._x('button', 'Save'),
+               ['name' => 'update']
+            );
          }
 
       } else {
@@ -2331,7 +2337,10 @@ class CommonDBTM extends CommonGLPI {
 
          if ($params['canedit'] && $this->can($ID, UPDATE)) {
             echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-            echo Html::submit(_x('button', 'Save'), ['name' => 'update']);
+            echo Html::submit(
+               "<i class='fas fa-save'></i>&nbsp;"._x('button', 'Save'),
+               ['name' => 'update']
+            );
          }
 
          if ($params['candel']) {
@@ -2341,7 +2350,10 @@ class CommonDBTM extends CommonGLPI {
             if ($this->isDeleted()) {
                if ($this->can($ID, DELETE)) {
                   echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
-                  echo Html::submit(_x('button', 'Restore'), ['name' => 'restore']);
+                  echo Html::submit(
+                     "<i class='fas fa-trash-restore'></i>&nbsp;"._x('button', 'Restore'),
+                     ['name' => 'restore']
+                  );
                }
 
                if ($this->can($ID, PURGE)) {
@@ -2355,7 +2367,10 @@ class CommonDBTM extends CommonGLPI {
                      }
                      echo ">&nbsp;";
                   }
-                  echo Html::submit(_x('button', 'Delete permanently'), ['name' => 'purge']);
+                  echo Html::submit(
+                     "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Delete permanently'),
+                     ['name' => 'purge']
+                  );
                   echo "</span>";
                }
 
@@ -2365,13 +2380,20 @@ class CommonDBTM extends CommonGLPI {
                if (!$this->maybeDeleted()
                    || $this->useDeletedToLockIfDynamic()) {
                   if ($this->can($ID, PURGE)) {
-                     echo Html::submit(_x('button', 'Delete permanently'),
-                                       ['name'    => 'purge',
-                                             'confirm' => __('Confirm the final deletion?')]);
+                     echo Html::submit(
+                        "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Delete permanently'),
+                        [
+                           'name'    => 'purge',
+                           'confirm' => __('Confirm the final deletion?')
+                        ]
+                     );
                   }
                } else if (!$this->isDeleted()
                           && $this->can($ID, DELETE)) {
-                  echo Html::submit(_x('button', 'Put in trashbin'), ['name' => 'delete']);
+                  echo Html::submit(
+                     "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Put in trashbin'),
+                     ['name' => 'delete']
+                  );
                }
             }
 
@@ -2390,14 +2412,13 @@ class CommonDBTM extends CommonGLPI {
       if ($params['canedit']
           && count($params['addbuttons'])) {
          echo "<tr class='tab_bg_2'>";
-         if ((($params['colspan']*2) - count($params['addbuttons'])) > 0) {
-            echo "<td colspan='".($params['colspan']*2 - count($params['addbuttons']))."'>&nbsp;".
-                 "</td>";
-         }
+         echo "<td class='right' colspan='".($params['colspan']*2)."'>";
          foreach ($params['addbuttons'] as $key => $val) {
-            echo "<td><input class='submit' type='submit' name='$key' value=\"".
-                        Html::entities_deep($val)."\"></td>";
+            echo "<button type='submit' class='vsubmit' name='$key'>
+                  $val
+               </button>&nbsp;";
          }
+         echo "</td>";
          echo "</tr>";
       }
 
