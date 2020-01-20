@@ -375,11 +375,19 @@ var GLPIImpact = {
          // Toggle impact visibility
          case this.ACTION_EDIT_IMPACT_VISIBILITY:
             this.toggleVisibility(this.FORWARD);
+            $(GLPIImpact.selectors.toggleImpact).prop(
+               'checked',
+               !$(GLPIImpact.selectors.toggleImpact).prop('checked')
+            );
             break;
 
          // Toggle depends visibility
          case this.ACTION_EDIT_DEPENDS_VISIBILITY:
             this.toggleVisibility(this.BACKWARD);
+            $(GLPIImpact.selectors.toggleDepends).prop(
+               'checked',
+               !$(GLPIImpact.selectors.toggleDepends).prop('checked')
+            );
             break;
 
          // Set previous value for "depends" color
@@ -388,6 +396,10 @@ var GLPIImpact = {
             this.setEdgeColors({
                backward: data.oldColor,
             });
+            $(GLPIImpact.selectors.dependsColor).spectrum(
+               "set",
+               GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
+            );
             this.updateStyle();
             this.cy.trigger("change");
             break;
@@ -398,6 +410,10 @@ var GLPIImpact = {
             this.setEdgeColors({
                forward: data.oldColor,
             });
+            $(GLPIImpact.selectors.impactColor).spectrum(
+               "set",
+               GLPIImpact.edgeColors[GLPIImpact.FORWARD]
+            );
             this.updateStyle();
             this.cy.trigger("change");
             break;
@@ -408,6 +424,10 @@ var GLPIImpact = {
             this.setEdgeColors({
                both: data.oldColor,
             });
+            $(GLPIImpact.selectors.impactAndDependsColor).spectrum(
+               "set",
+               GLPIImpact.edgeColors[GLPIImpact.BOTH]
+            );
             this.updateStyle();
             this.cy.trigger("change");
             break;
@@ -416,6 +436,7 @@ var GLPIImpact = {
          // Available data: oldDepth, newDepth
          case this.ACTION_EDIT_MAX_DEPTH:
             this.setDepth(data.oldDepth);
+            $(GLPIImpact.selectors.maxDepth).val(data.oldDepth);
             break;
       }
 
@@ -583,11 +604,19 @@ var GLPIImpact = {
          // Toggle impact visibility
          case this.ACTION_EDIT_IMPACT_VISIBILITY:
             this.toggleVisibility(this.FORWARD);
+            $(GLPIImpact.selectors.toggleImpact).prop(
+               'checked',
+               !$(GLPIImpact.selectors.toggleImpact).prop('checked')
+            );
             break;
 
          // Toggle depends visibility
          case this.ACTION_EDIT_DEPENDS_VISIBILITY:
             this.toggleVisibility(this.BACKWARD);
+            $(GLPIImpact.selectors.toggleDepends).prop(
+               'checked',
+               !$(GLPIImpact.selectors.toggleDepends).prop('checked')
+            );
             break;
 
          // Set new value for "depends" color
@@ -596,6 +625,10 @@ var GLPIImpact = {
             this.setEdgeColors({
                backward: data.newColor,
             });
+            $(GLPIImpact.selectors.dependsColor).spectrum(
+               "set",
+               GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
+            );
             this.updateStyle();
             this.cy.trigger("change");
             break;
@@ -606,6 +639,10 @@ var GLPIImpact = {
             this.setEdgeColors({
                forward: data.newColor,
             });
+            $(GLPIImpact.selectors.forwardColor).spectrum(
+               "set",
+               GLPIImpact.edgeColors[GLPIImpact.FORWARD]
+            );
             this.updateStyle();
             this.cy.trigger("change");
             break;
@@ -616,6 +653,10 @@ var GLPIImpact = {
             this.setEdgeColors({
                both: data.newColor,
             });
+            $(GLPIImpact.selectors.impactAndDependsColor).spectrum(
+               "set",
+               GLPIImpact.edgeColors[GLPIImpact.BOTH]
+            );
             this.updateStyle();
             this.cy.trigger("change");
             break;
@@ -624,6 +665,7 @@ var GLPIImpact = {
          // Available data: oldDepth, newDepth
          case this.ACTION_EDIT_MAX_DEPTH:
             this.setDepth(data.newDepth);
+            $(GLPIImpact.selectors.maxDepth).val(data.newDepth);
             break;
       }
 
@@ -1768,7 +1810,7 @@ var GLPIImpact = {
    setDepth: function(max) {
       GLPIImpact.maxDepth = max;
 
-      if (max == GLPIImpact.MAX_DEPTH) {
+      if (max >= GLPIImpact.MAX_DEPTH) {
          max = "infinity";
          GLPIImpact.maxDepth = GLPIImpact.NO_DEPTH_LIMIT;
       }
