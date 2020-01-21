@@ -240,11 +240,21 @@ trait PlanningEvent {
     * Delete a specific instance of a serie
     * Add an exception into the serie
     *
-    * @param int $id of the instance to delete
+    * @see AddInstanceException
+    */
+   function deleteInstance(int $id = 0, string $day = "") {
+      $this->AddInstanceException($id, $day);
+   }
+
+   /**
+    * Add an exception into a serie
+    *
+    * @param int $id of the serie
+    * @param string $day the exception
     *
     * @return bool
     */
-   function deleteInstance(int $id = 0, string $day = "") {
+   function AddInstanceException(int $id = 0, string $day = "") {
       $this->getFromDB($id);
       $rrule = json_decode($this->fields['rrule'], true) ?? [];
       $rrule = array_merge_recursive($rrule, [
@@ -256,6 +266,34 @@ trait PlanningEvent {
          'id'    => $id,
          'rrule' => $rrule
       ]);
+   }
+
+
+   /**
+    * Clone recurrent event into a non recurrent event
+    * (and add an exception to the orginal one)
+    *
+    * @param int $id of the serie
+    * @param string $start the new start for the event (in case of dragging)
+    *
+    * @return object the new object
+    */
+   public function createInstanceClone(int $id = 0, string $start = "") {
+      $this->getFromDB($id);
+      $fields = $this->fields;
+      unset($fields['id'], $fields['uuid'], $fields['rrule']);
+      $fields['plan'] = [
+         'begin' => $fields['begin'],
+         'end'   => $fields['end'],
+      ];
+
+      $instance = new self;
+      $new_id = $instance->add($fields);
+      $instance->getFromDB($new_id);
+
+      $this->AddInstanceException($id, date("Y-m-d", strtotime($start)));
+
+      return $instance;
    }
 
 

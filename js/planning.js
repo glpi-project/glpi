@@ -297,7 +297,36 @@ var GLPIPlanning  = {
 
          // EDIT EVENTS
          eventResize: function(info) {
-            GLPIPlanning.editEventTimes(info);
+            var event        = info.event;
+            var exprops      = event.extendedProps;
+            var is_recurrent = exprops.is_recurrent || false;
+
+            if (is_recurrent) {
+               $('<div></div>')
+                  .dialog({
+                     modal:  true,
+                     title: __("Recurring event resized"),
+                     width:  'auto',
+                     height: 'auto',
+                     buttons: [
+                        {
+                           text: __("Serie"),
+                           click: function() {
+                              $(this).remove();
+                              GLPIPlanning.editEventTimes(info);
+                           }
+                        }, {
+                           text: __("Instance"),
+                           click: function() {
+                              $(this).remove();
+                              GLPIPlanning.editEventTimes(info, true);
+                           }
+                        }
+                     ]
+                  }).text(__("The resized event is a recurring event. Do you want to change the serie or instance ?"));
+            } else {
+               GLPIPlanning.editEventTimes(info);
+            }
          },
          eventResizeStart: function() {
             disable_edit = true;
@@ -315,7 +344,37 @@ var GLPIPlanning  = {
          // event was moved (internal element)
          eventDrop: function(info) {
             disable_qtip = false;
-            GLPIPlanning.editEventTimes(info);
+
+            var event        = info.event;
+            var exprops      = event.extendedProps;
+            var is_recurrent = exprops.is_recurrent || false;
+
+            if (is_recurrent) {
+               $('<div></div>')
+                  .dialog({
+                     modal:  true,
+                     title: __("Recurring event dragged"),
+                     width:  'auto',
+                     height: 'auto',
+                     buttons: [
+                        {
+                           text: __("Serie"),
+                           click: function() {
+                              $(this).remove();
+                              GLPIPlanning.editEventTimes(info);
+                           }
+                        }, {
+                           text: __("Instance"),
+                           click: function() {
+                              $(this).remove();
+                              GLPIPlanning.editEventTimes(info, true);
+                           }
+                        }
+                     ]
+                  }).text(__("The dragged event is a recurring event. Do you want to move the serie or instance ?"));
+            } else {
+               GLPIPlanning.editEventTimes(info);
+            }
          },
          // we receive a new event (from external dropping or when cloning)
          eventReceive: function(info) {
@@ -696,7 +755,9 @@ var GLPIPlanning  = {
    },
 
    // send ajax for event storage (on event drag/resize)
-   editEventTimes: function(info) {
+   editEventTimes: function(info, move_instance) {
+      move_instance = move_instance || false;
+
       var event      = info.event;
       var revertFunc = info.revert;
       var extProps   = event.extendedProps;
@@ -731,15 +792,20 @@ var GLPIPlanning  = {
          }
       }
 
+      var old_event = info.oldEvent || {};
+      var old_start = old_event.start || start;
+
       $.ajax({
          url: CFG_GLPI.root_doc+"/ajax/planning.php",
          type: 'POST',
          data: {
-            action:       'update_event_times',
-            start:        start.toISOString(),
-            end:          end.toISOString(),
-            itemtype:     extProps.itemtype,
-            items_id:     extProps.items_id,
+            action:        'update_event_times',
+            start:         start.toISOString(),
+            end:           end.toISOString(),
+            itemtype:      extProps.itemtype,
+            items_id:      extProps.items_id,
+            move_instance: move_instance,
+            old_start:     old_start.toISOString(),
             new_actor_itemtype: new_itemtype,
             new_actor_items_id: new_items_id,
             old_actor_itemtype: old_itemtype,

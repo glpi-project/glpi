@@ -1843,8 +1843,9 @@ class Planning extends CommonGLPI {
                }
 
                $new_event = array_merge($new_event, [
-                  'rrule'    => $rrule_string,
-                  'duration' => $ms_duration
+                  'is_recurrent' => true,
+                  'rrule'        => $rrule_string,
+                  'duration'     => $ms_duration
                ]);
 
             }
@@ -2030,12 +2031,17 @@ class Planning extends CommonGLPI {
                }
             }
 
-            // if event has rrule property, we shouldn't change it's data
-            // by dragging or resizing it
+            // if event has rrule property, check if we need to create a clone instance
             if (isset($item->fields['rrule'])
                 && strlen($item->fields['rrule'])) {
-               $abort = true;
-               Session::addMessageAfterRedirect(__("You cannot directly move or resize reccurent events"), false, ERROR);
+               if (isset($params['move_instance'])
+                   && filter_var($params['move_instance'], FILTER_VALIDATE_BOOLEAN)) {
+                  $item = $item->createInstanceClone(
+                     $item->fields['id'],
+                     $params['old_start']
+                  );
+                  $params['items_id'] = $item->fields['id'];
+               }
             }
 
             if (!$abort) {
