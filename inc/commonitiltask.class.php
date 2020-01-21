@@ -2110,7 +2110,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       $vtodo = $vcalendar->getBaseComponent();
 
       if (null !== $vtodo->RRULE) {
-         throw new UnexpectedValueException('RRULE not yet implemented for ITIL tasks');
+         throw new \UnexpectedValueException('RRULE not yet implemented for ITIL tasks');
       }
 
       $input = $this->getCommonInputFromVcomponent($vtodo);

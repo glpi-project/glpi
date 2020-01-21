@@ -36,18 +36,16 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-
+use CommonGLPI;
+use Config;
+use CronTask;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
-use \wapmorgan\UnifiedArchive\UnifiedArchive;
-use \wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
-use \Plugin;
-use \Toolbox;
-use \Session;
-use \GLPINetwork;
-use \CommonGLPI;
-use \Config;
-use \NotificationEvent;
-use \CronTask;
+use GLPINetwork;
+use NotificationEvent;
+use Plugin;
+use Session;
+use Toolbox;
+use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class Controller extends CommonGLPI {
    protected $plugin_key = "";
@@ -123,7 +121,7 @@ class Controller extends CommonGLPI {
          try {
             // copy files
             $archive->extractFiles(GLPI_MARKETPLACE_DIR) !== false;
-         } catch (ArchiveExtractionException $e) {
+         } catch (\wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException $e) {
             $error = true;
          }
       }

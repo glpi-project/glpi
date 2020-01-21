@@ -1649,7 +1649,9 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
       $migration->insertInTable($IPaddress->getTable(), $input);
 
    } else { // Don't add the NetworkName if the address is not valid
+      // phpcs:ignore SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions
       addNetworkPortMigrationError($items_id, 'invalid_address');
+      // phpcs:ignore SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions
       logNetworkPortError('invalid IP address', $items_id, $main_itemtype, $main_items_id, "$IP");
    }
 
@@ -2009,7 +2011,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                                AND `entities_id` = '$entities_id'";
                $result = $DB->query($query);
                foreach ($DB->request($query) as $data) {
+                  // phpcs:ignore SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions
                   addNetworkPortMigrationError($data['id'], 'invalid_gateway');
+                  // phpcs:ignore SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions
                   logNetworkPortError('network warning', $data['id'], $data['itemtype'],
                                       $data['items_id'], $preparedInput['error']);
                }
@@ -2024,7 +2028,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                             AND `entities_id` = '$entities_id'";
             $result = $DB->query($query);
             foreach ($DB->request($query) as $data) {
+               // phpcs:ignore SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions
                addNetworkPortMigrationError($data['id'], 'invalid_network');
+               // phpcs:ignore SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions
                logNetworkPortError('network error', $data['id'], $data['itemtype'],
                                    $data['items_id'], $preparedInput['error']);
             }
@@ -2204,6 +2210,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
              WHERE `instantiation_type` = ''";
 
    foreach ($DB->request($query) as $networkPortID) {
+      // phpcs:ignore SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions
       addNetworkPortMigrationError($networkPortID['id'], 'unknown_interface_type');
    }
 

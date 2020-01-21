@@ -32,8 +32,6 @@
 
 namespace tests\units;
 
-use DbTestCase;
-
 /* Test for inc/planningcsv.class.php */
 
 class PlanningCsv extends \DbTestCase {

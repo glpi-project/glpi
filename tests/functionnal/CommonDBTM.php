@@ -32,9 +32,8 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 use SoftwareVersion;
-use TicketTask;
 
 /* Test for inc/commondbtm.class.php */
 

@@ -38,13 +38,11 @@ if (!defined('GLPI_ROOT')) {
 
 use DB;
 use GLPIKey;
-use Toolbox;
-
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Toolbox;
 
 class InstallCommand extends AbstractConfigureCommand {
 
@@ -253,7 +251,7 @@ class InstallCommand extends AbstractConfigureCommand {
              AND table_name LIKE 'glpi_%'"
       );
       if (!$tables_result) {
-         throw new RuntimeException('Unable to check GLPI tables existence.');
+         throw new \Symfony\Component\Console\Exception\RuntimeException('Unable to check GLPI tables existence.');
       }
       if ($tables_result->fetch_array()[0] > 0 && !$force) {
          $output->writeln(

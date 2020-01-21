@@ -8140,7 +8140,7 @@ abstract class CommonITILObject extends CommonDBTM {
       } else if (isset($this->fields['status'])) {
          $status = $this->fields['status'];
       } else {
-         throw new LogicException("Can't get status value: no object loaded");
+         throw new \LogicException("Can't get status value: no object loaded");
       }
 
       return $status == CommonITILObject::INCOMING;

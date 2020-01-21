@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use DB;
-
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\System\RequirementsManager;
 use Symfony\Component\Console\Command\Command;
@@ -90,7 +89,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface {
       global $DB;
 
       if ($this->requires_db && (!($DB instanceof DB) || !$DB->connected)) {
-         throw new RuntimeException(__('Unable to connect to database.'));
+         throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to connect to database.'));
       }
 
       $this->db = $DB;

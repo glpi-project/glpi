@@ -37,23 +37,19 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use CommonDBTM;
-use DB;
-use DomainType;
 use Domain;
 use Domain_Item;
-use Plugin;
-use Toolbox;
+use DomainType;
 use Glpi\Console\AbstractCommand;
-
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Plugin;
+use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Exception\LogicException;
-use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Question\ChoiceQuestion;
+use Toolbox;
 
 class DomainsPluginToCoreCommand extends AbstractCommand {
 
@@ -266,7 +262,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
          );
          if (!$is_state_ok) {
             // Should not happens as installation should put plugin in awaited state
-            throw new LogicException('Unexpected plugin state.');
+            throw new \Symfony\Component\Console\Exception\LogicException('Unexpected plugin state.');
          }
       }
 

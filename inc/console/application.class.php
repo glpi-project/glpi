@@ -45,19 +45,17 @@ use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\System\RequirementsManager;
 use Plugin;
 use Session;
-use Toolbox;
-
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Exception\CommandNotFoundException;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
+use Toolbox;
 
 class Application extends BaseApplication {
 
@@ -201,7 +199,7 @@ class Application extends BaseApplication {
       // Trigger error on invalid lang. This is not done before as error handler would not be set.
       $lang = $input->getParameterOption('--lang', null, true);
       if (null !== $lang && !array_key_exists($lang, $CFG_GLPI['languages'])) {
-         throw new RuntimeException(
+         throw new \Symfony\Component\Console\Exception\RuntimeException(
             sprintf(__('Invalid "--lang" option value "%s".'), $lang)
          );
       }
@@ -304,7 +302,7 @@ class Application extends BaseApplication {
       $checkdb = Config::displayCheckDbEngine();
       $message = ob_get_clean();
       if ($checkdb > 0) {
-         throw new RuntimeException($message);
+         throw new \Symfony\Component\Console\Exception\RuntimeException($message);
       }
    }
 
@@ -319,7 +317,7 @@ class Application extends BaseApplication {
    private function initSession() {
 
       if (!is_writable(GLPI_SESSION_DIR)) {
-         throw new RuntimeException(
+         throw new \Symfony\Component\Console\Exception\RuntimeException(
             sprintf(__('Cannot write in "%s" directory.'), GLPI_SESSION_DIR)
          );
       }
@@ -439,7 +437,7 @@ class Application extends BaseApplication {
          if ($command instanceof ForceNoPluginsOptionCommandInterface) {
             return !$command->getNoPluginsOptionValue();
          }
-      } catch (CommandNotFoundException $e) {
+      } catch (\Symfony\Component\Console\Exception\CommandNotFoundException $e) {
          // Command will not be found at this point if it is a plugin command
          $command = null; // Say hello to CS checker
       }

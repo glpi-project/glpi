@@ -376,7 +376,7 @@ class DBmysql {
 
          Toolbox::logInFile("sql-errors", $error);
          if (class_exists('GlpitestSQLError')) { // For unit test
-            throw new GlpitestSQLError($error);
+            throw new \GlpitestSQLError($error);
          }
 
          if (isset($_SESSION['glpi_use_mode'])

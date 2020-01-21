@@ -34,9 +34,8 @@ use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\System\RequirementsManager;
 use Laminas\Mail\Storage\AbstractStorage;
-use Monolog\Logger;
 use Mexitek\PHPColors\Color;
-use Psr\Log\InvalidArgumentException;
+use Monolog\Logger;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");

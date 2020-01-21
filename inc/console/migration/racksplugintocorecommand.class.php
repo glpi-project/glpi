@@ -42,32 +42,32 @@ use ComputerModel;
 use Datacenter;
 use DB;
 use DCRoom;
+use Glpi\Console\AbstractCommand;
 use Item_Rack;
 use Monitor;
 use MonitorModel;
 use NetworkEquipment;
 use NetworkEquipmentModel;
+use PassiveDCEquipment;
+use PDU;
+use PDUModel;
 use Peripheral;
 use PeripheralModel;
 use Plugin;
-use PDU;
-use PDUModel;
 use Rack;
 use RackModel;
 use RackType;
 use State;
-use Toolbox;
-use Glpi\Console\AbstractCommand;
-use PassiveDCEquipment;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Toolbox;
 
 class RacksPluginToCoreCommand extends AbstractCommand {
 
@@ -361,7 +361,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
          );
          if (!$is_state_ok) {
             // Should not happens as installation should put plugin in awaited state
-            throw new LogicException('Unexpected plugin state.');
+            throw new \Symfony\Component\Console\Exception\LogicException('Unexpected plugin state.');
          }
       }
 
@@ -421,7 +421,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
          $result = $this->db->query('TRUNCATE ' . DB::quoteName($table));
 
          if (!$result) {
-            throw new RuntimeException(
+            throw new \Symfony\Component\Console\Exception\RuntimeException(
                sprintf('Unable to truncate table "%s"', $table)
             );
          }
@@ -592,7 +592,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             }
 
             if (null === $new_model_itemtype) {
-               throw new LogicException(
+               throw new \Symfony\Component\Console\Exception\LogicException(
                   sprintf('Answer "%s" has no corresponding itemtype.', $answer)
                );
             }

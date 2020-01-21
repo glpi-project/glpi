@@ -37,24 +37,24 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use CommonDBVisible;
+use CommonITILTask;
+use DateInterval;
+use DateTime;
+use DateTimeZone;
+use Dropdown;
+use Group_User;
+use Html;
+use Planning;
+use PlanningEventCategory;
+use PlanningRecall;
+use QueryExpression;
+use Reminder;
 use RRule\RRule;
 use RRule\RSet;
 use Session;
 use Toolbox;
-use Planning;
-use PlanningRecall;
-use CommonDBVisible;
-use Group_User;
-use QueryExpression;
-use PlanningEventCategory;
-use Html;
-use DateTime;
-use DateTimeZone;
-use Reminder;
-use Dropdown;
-use CommonITILTask;
 use User;
-use DateInterval;
 
 trait PlanningEvent {
 

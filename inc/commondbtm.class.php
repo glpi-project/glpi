@@ -235,12 +235,12 @@ class CommonDBTM extends CommonGLPI {
    static function getTableField($field, $classname = null) {
 
       if (empty($field)) {
-         throw new InvalidArgumentException('Argument $field cannot be empty.');
+         throw new \InvalidArgumentException('Argument $field cannot be empty.');
       }
 
       $tablename = self::getTable($classname);
       if (empty($tablename)) {
-         throw new LogicException('Invalid table name.');
+         throw new \LogicException('Invalid table name.');
       }
 
       return sprintf('%s.%s', $tablename, $field);

@@ -1171,7 +1171,7 @@ JAVASCRIPT;
    ) {
       // An ITILFollowup parent can only by a CommonItilObject
       if (!is_a($itemtype, "CommonITILObject", true)) {
-         throw new InvalidArgumentException(
+         throw new \InvalidArgumentException(
             "'$itemtype' is not a CommonITILObject"
          );
       }

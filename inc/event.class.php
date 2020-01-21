@@ -32,13 +32,13 @@
 
 namespace Glpi;
 
-use \Ajax;
-use \CommonDBTM;
-use \Html;
-use \Session;
-use \Toolbox;
-use \Infocom;
-use \DBConnection;
+use Ajax;
+use CommonDBTM;
+use DBConnection;
+use Html;
+use Infocom;
+use Session;
+use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");

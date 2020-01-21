@@ -32,9 +32,7 @@
 
 namespace tests\units;
 
-use \atoum;
-
-use \DbTestCase;
+use DbTestCase;
 
 class MailCollector extends DbTestCase {
    private $collector;

@@ -40,7 +40,6 @@ use Config;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
-
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -292,20 +291,20 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       $db_pass = $input->getOption('db-password');
 
       if (empty($db_name)) {
-         throw new InvalidArgumentException(
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('Database name defined by --db-name option cannot be empty.')
          );
       }
 
       if (empty($db_user)) {
-         throw new InvalidArgumentException(
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('Database user defined by --db-user option cannot be empty.')
          );
       }
 
       if (null === $db_pass) {
          // Will be null if option used without value and without interaction
-         throw new InvalidArgumentException(
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('--db-password option value cannot be null.')
          );
       }
