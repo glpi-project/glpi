@@ -1797,7 +1797,7 @@ var GLPIImpact = {
 
       // Hide all nodes, expect if they have no link with the current asset
       GLPIImpact.cy.nodes().filter(function(node) {
-         return node.neighborhood().length !== 0;
+         return !(node.neighborhood().length == 0 && !node.isParent());
       }).data('hidden', 1);
 
       // Show/Hide edges according to the direction
@@ -1811,12 +1811,15 @@ var GLPIImpact = {
             GLPIImpact.cy.filter(sourceFilter + ", " + targetFilter)
                .data("hidden", 0);
 
-            // Make the parents of theses node visibles too
-            GLPIImpact.cy.filter(sourceFilter + ", " + targetFilter)
-               .parent()
-               .data("hidden", 0);
          } else {
             edge.data('hidden', 1);
+         }
+      });
+
+      // Show parent if one of their children is visible
+      GLPIImpact.cy.$("node[hidden=0]").forEach(function(node) {
+         if (!node.isOrphan()) {
+            node.parent().data("hidden", 0);
          }
       });
 
