@@ -67,9 +67,9 @@ class NetworkAlias extends FQDNLabel {
    /**
     * Get the full name (internet name) of a NetworkName
     *
-    * @param $ID ID of the NetworkName
+    * @param integer $ID  ID of the NetworkName
     *
-    * @return its internet name, or empty string if invalid NetworkName
+    * @return string  its internet name, or empty string if invalid NetworkName
    **/
    static function getInternetNameFromID($ID) {
 
@@ -357,8 +357,8 @@ class NetworkAlias extends FQDNLabel {
    /**
     * Show the aliases contained by the alias
     *
-    * @param $item                     the FQDN owning the aliases
-    * @param $withtemplate  integer    withtemplate param
+    * @param CommonGLPI $item          the FQDN owning the aliases
+    * @param integer    $withtemplate  withtemplate param
    **/
    static function showForFQDN(CommonGLPI $item, $withtemplate) {
       global $DB;

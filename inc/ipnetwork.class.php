@@ -439,15 +439,14 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * \brief Search any networks that contains the given IP
     * \ref ipAddressToNetwork
     *
-    * @param $IP        (see \ref parameterType) given IP
-    * @param $entityID  scope of the search (parents and childrens are check) (default -1)
-    * @param $recursive set to false to only search in current entity, otherwise, all visible
-    *                   entities will be search (true by default)
-    * @param $fields    list of fields to return in the result (default : only ID of the networks)
-    *                   (default '')
-    * @param $where     (default '')
+    * @param IPAddress|string|integer[] $IP         (see \ref parameterType) given IP
+    * @param integer                    $entityID   scope of the search (parents and childrens are check)
+    * @param boolean                    $recursive  set to false to only search in current entity,
+    *                                               otherwise, all visible entities will be search
+    * @param string|array               $fields     list of fields to return in the result (default : only ID of the networks)
+    * @param string                     $where      search criteria
     *
-    * @return list of networks (see searchNetworks())
+    * @return array|false  list of networks (see searchNetworks())
    **/
    static function searchNetworksContainingIP($IP, $entityID = -1, $recursive = true,
                                               $fields = "", $where = "") {
@@ -464,9 +463,9 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    /**
     * Search networks relative to a given network
     *
-    * @param $relation        type of relation ("is contained by", "equals" or "contains")
-    *                         regarding the networks given as parameter
-    * @param $condition array of elements to select the good arrays (see Parameters above)
+    * @param string $relation    type of relation ("is contained by", "equals" or "contains")
+    *                            regarding the networks given as parameter
+    * @param array  $condition   array of elements to select the good arrays (see Parameters above)
     *    - fields : the fields of the network we wish to retrieve (single field or array of
     *               fields). This parameter will impact the result of the function
     *    - address (see \ref parameterType) : the address for the query
@@ -474,15 +473,15 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *    - exclude IDs : the IDs to exclude from the query (for instance, $this->getID())
     *    - where : filters to add to the SQL request
     *
-    * @param $entityID        the entity on which the selection should occur (-1 => the current active
-    *                         entity) (default -1)
-    * @param $recursive       set to false to only search in current entity, otherwise, all visible
-    *                         entities will be search (true by default)
-    * @param $version         version of IP to look (only use when using arrays or string as input for
-    *                         address or netmask n(default 0)
+    * @param integer $entityID   the entity on which the selection should occur (-1 => the current active
+    *                            entity) (default -1)
+    * @param boolean $recursive  set to false to only search in current entity, otherwise, all visible
+    *                            entities will be search (true by default)
+    * @param integer $version    version of IP to look (only use when using arrays or string as input for
+    *                            address or netmask n(default 0)
     *
-    * @return array of networks found. If we want request several field, the return value will be
-    *                 an array of array
+    * @return array  of networks found. If we want request several field, the return value will be
+    *                an array of array
     *
     * \warning The order of the elements inside the result are ordered from the nearest one to the
     *          further. (ie. 0.0.0.0 is the further of whatever network if you lool for ones that
@@ -689,10 +688,10 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * Check to see if an IP is inside a given network
     * See : \ref ipAddressToNetwork
     *
-    * @param $address         (see \ref parameterType) the IP address to check
-    * @param $networkAddress  (see \ref parameterType) the address of the network
-    * @param $networkNetmask  (see \ref parameterType) the netmask of the network
-    * @param $version         of IP : only usefull for binary array as input (default 0)
+    * @param IPAddress|integer[] $address         (see \ref parameterType) the IP address to check
+    * @param IPAddress|integer[] $networkAddress  (see \ref parameterType) the address of the network
+    * @param IPAddress|integer[] $networkNetmask  (see \ref parameterType) the netmask of the network
+    * @param integer             $version         of IP : only usefull for binary array as input (default 0)
     *
     * @return true if the network owns the IP address
    **/
@@ -710,11 +709,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * \brief Check network relativity
     * Check how networks are relative (fully different, equals, first contains second, ...)
     *
-    * @param $firstAddress    (see \ref parameterType) address of the first network
-    * @param $firstNetmask    (see \ref parameterType) netmask of the first network
-    * @param $secondAddress   (see \ref parameterType) address of the second network
-    * @param $secondNetmask   (see \ref parameterType) netmask of the second network
-    * @param $version         of IP : only usefull for binary array as input (default 0)
+    * @param IPAddress|integer[] $firstAddress    (see \ref parameterType) address of the first network
+    * @param IPAddress|integer[] $firstNetmask    (see \ref parameterType) netmask of the first network
+    * @param IPAddress|integer[] $secondAddress   (see \ref parameterType) address of the second network
+    * @param IPAddress|integer[] $secondNetmask   (see \ref parameterType) netmask of the second network
+    * @param integer             $version         of IP : only usefull for binary array as input (default 0)
     *
     * @return string :
     *           - "different version" : there is different versions between elements

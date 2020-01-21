@@ -547,13 +547,13 @@ class Item_Ticket extends CommonDBRelation{
    /**
     * Make a select box for Tracking All Devices
     *
-    * @param $myname             select name
-    * @param $itemtype           preselected value.for item type
-    * @param $items_id           preselected value for item ID (default 0)
-    * @param $admin              is an admin access ? (default 0)
-    * @param $users_id           user ID used to display my devices (default 0
-    * @param $entity_restrict    Restrict to a defined entity (default -1)
-    * @param $options   array of possible options:
+    * @param string  $myname           select name
+    * @param string  $itemtype         preselected value.for item type
+    * @param integer $items_id         preselected value for item ID (default 0)
+    * @param boolean $admin            is an admin access ? (default 0)
+    * @param integer $users_id         user ID used to display my devices (default 0
+    * @param integer $entity_restrict  Restrict to a defined entity (default -1)
+    * @param array   $options          array of possible options:
     *    - tickets_id : ID of the ticket
     *    - used       : ID of the requester user
     *    - multiple   : allow multiple choice
@@ -646,11 +646,11 @@ class Item_Ticket extends CommonDBRelation{
    /**
     * Make a select box for Ticket my devices
     *
-    * @param $userID          User ID for my device section (default 0)
-    * @param $entity_restrict restrict to a specific entity (default -1)
-    * @param $itemtype        of selected item (default 0)
-    * @param $items_id        of selected item (default 0)
-    * @param $options   array of possible options:
+    * @param integer $userID           User ID for my device section (default 0)
+    * @param integer $entity_restrict  restrict to a specific entity (default -1)
+    * @param string  $itemtype         of selected item (default 0)
+    * @param integer $items_id         of selected item (default 0)
+    * @param array   $options          array of possible options:
     *    - used     : ID of the requester user
     *    - multiple : allow multiple choice
     *
@@ -1038,9 +1038,9 @@ class Item_Ticket extends CommonDBRelation{
    /**
     * Return used items for a ticket
     *
-    * @param type $tickets_id
+    * @param integer type $tickets_id
     *
-    * @return type
+    * @return array
     */
    static function getUsedItems($tickets_id) {
 

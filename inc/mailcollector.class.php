@@ -397,8 +397,8 @@ class MailCollector  extends CommonDBTM {
    /**
     * Display recursively a folder and its children
     *
-    * @param Folder $folder   Current folder
-    * @param string $input_id Input ID
+    * @param \Laminas\Mail\Storage\Folder $folder   Current folder
+    * @param string                       $input_id Input ID
     *
     * @return void
     */
@@ -651,8 +651,8 @@ class MailCollector  extends CommonDBTM {
    /**
     * Do collect
     *
-    * @param $mailgateID   ID of the mailgate
-    * @param $display      display messages in MessageAfterRedirect or just return error (default 0=)
+    * @param integer $mailgateID  ID of the mailgate
+    * @param boolean $display     display messages in MessageAfterRedirect or just return error (default 0=)
     *
     * @return string|void
    **/
@@ -886,9 +886,9 @@ class MailCollector  extends CommonDBTM {
    /**
     * Builds and returns the main structure of the ticket to be created
     *
-    * @param string  $uid     UID of the message
-    * @param Message $message Messge
-    * @param array   $options Possible options
+    * @param string                        $uid     UID of the message
+    * @param \Laminas\Mail\Storage\Message $message  Messge
+    * @param array                         $options  Possible options
     *
     * @return array ticket fields
     */
@@ -1318,7 +1318,7 @@ class MailCollector  extends CommonDBTM {
    /**
     * Get extra headers
     *
-    * @param Message $message Message
+    * @param \Laminas\Mail\Storage\Message $message Message
     *
     * @return array
    **/
@@ -1348,7 +1348,7 @@ class MailCollector  extends CommonDBTM {
    /**
     * Get full headers infos from particular mail
     *
-    * @param Message $message Message
+    * @param \Laminas\Mail\Storage\Message $message Message
     *
     * @return array Associative array with following keys
     *                subject   => Subject of Mail
@@ -1453,11 +1453,11 @@ class MailCollector  extends CommonDBTM {
     * Recursivly get attached documents
     * Result is stored in $this->files
     *
-    * @param Part    $part    Message part
-    * @param string  $path    Temporary path
-    * @param integer $maxsize Maximum size of document to be retrieved
-    * @param string  $subject Message ssubject
-    * @param Part    $part    Message part (for recursive ones)
+    * @param \Laminas\Mail\Storage\Part $part     Message part
+    * @param string                     $path     Temporary path
+    * @param integer                    $maxsize  Maximum size of document to be retrieved
+    * @param string                     $subject  Message ssubject
+    * @param \Laminas\Mail\Storage\Part $part     Message part (for recursive ones)
     *
     * @return void
    **/
@@ -1606,9 +1606,9 @@ class MailCollector  extends CommonDBTM {
    /**
     * Get attached documents in a mail
     *
-    * @param Message $message Message
-    * @param string  $path    Temporary path
-    * @param integer $maxsize Maximaum size of document to be retrieved
+    * @param \Laminas\Mail\Storage\Message $message  Message
+    * @param string                        $path     Temporary path
+    * @param integer                       $maxsize  Maximaum size of document to be retrieved
     *
     * @return array containing extracted filenames in file/_tmp
    **/
@@ -1632,7 +1632,7 @@ class MailCollector  extends CommonDBTM {
    /**
     * Get The actual mail content from this mail
     *
-    * @param Message $message Message
+    * @param \Laminas\Mail\Storage\Message $message Message
    **/
    function getBody(\Laminas\Mail\Storage\Message $message) {
       $content = null;
@@ -1767,7 +1767,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @since 0.85
     *
-    * @param $task for log
+    * @param CronTask $task for log
    **/
    public static function cronMailgateError($task) {
       global $DB, $CFG_GLPI;
@@ -1984,7 +1984,7 @@ class MailCollector  extends CommonDBTM {
    /**
     * Retrieve properly decoded content
     *
-    * @param Part $part Message Part
+    * @param \Laminas\Mail\Storage\Message $part Message Part
     *
     * @return string
     */

@@ -58,8 +58,8 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
    /**
     * get its name and subname : usefull for instance to create an index for arrays
     *
-    * @param $header_name [out]     string   header name
-    * @param $subheader_name [out]  string   sub header name ( = '' in case of super header)
+    * @param string $header_name [out]     header name
+    * @param string $subheader_name [out]  sub header name ( = '' in case of super header)
     *
     * @return void
    **/
@@ -75,10 +75,10 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
 
    /**
-    * @param $name      string   the name of the header
-    * @param $content            see HTMLTableEntity#__construct()
-    * @param $father             HTMLTableHeader object:
-    *                            the father of the current column (default NULL)
+    * @param string          $name     the name of the header
+    * @param string          $content  see HTMLTableEntity#__construct()
+    * @param HTMLTableHeader $father   HTMLTableHeader object:
+    *                                  the father of the current column (default NULL)
    **/
    function __construct($name, $content, HTMLTableHeader $father = null) {
 
@@ -144,8 +144,8 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
 
    /**
-    * @param $with_content do we displaye the content ?
-    * @param $main_header  main header (from table) or secondary (from group) ? (true by default)
+    * @param boolean $with_content do we displaye the content ?
+    * @param boolean $main_header  main header (from table) or secondary (from group) ? (true by default)
    **/
    function displayTableHeader($with_content, $main_header = true) {
 

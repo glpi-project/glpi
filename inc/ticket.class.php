@@ -5825,7 +5825,7 @@ class Ticket extends CommonITILObject {
     * Will also display tickets of linked items
     *
     * @param CommonDBTM $item         CommonDBTM object
-    * @param boolean    $withtemplate (default 0)
+    * @param integer    $withtemplate (default 0)
     *
     * @return void (display a table)
    **/

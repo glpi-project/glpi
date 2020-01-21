@@ -150,7 +150,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
       if (!$no_interaction) {
          // Ask for confirmation (unless --no-interaction)
-         /** @var Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+         /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
          $question_helper = $this->getHelper('question');
          $run = $question_helper->ask(
             $input,

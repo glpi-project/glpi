@@ -265,8 +265,8 @@ class KnowbaseItemTranslation extends CommonDBChild {
    /**
     * Display translation form
     *
-    * @param $ID              field (default -1)
-    * @param $options   array
+    * @param integer $ID
+    * @param array   $options
     */
    function showForm($ID = -1, $options = []) {
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -319,10 +319,10 @@ class KnowbaseItemTranslation extends CommonDBChild {
    /**
     * Get a translation for a value
     *
-    * @param $item       item to translate
-    * @param $field      field to return (default 'name')
+    * @param KnowbaseItem $item   item to translate
+    * @param string       $field  field to return (default 'name')
     *
-    * @return the field translated if a translation is available, or the original field if not
+    * @return string  the field translated if a translation is available, or the original field if not
    **/
    static function getTranslatedValue(KnowbaseItem $item, $field = "name") {
       $obj   = new self;
@@ -371,9 +371,9 @@ class KnowbaseItemTranslation extends CommonDBChild {
    /**
     * Return the number of translations for an item
     *
-    * @param item
+    * @param KnowbaseItem $item
     *
-    * @return the number of translations for this item
+    * @return integer  the number of translations for this item
    **/
    static function getNumberOfTranslationsForItem($item) {
 

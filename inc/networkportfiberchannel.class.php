@@ -217,10 +217,10 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
    /**
     * Transform a port speed from string to integerer and vice-versa
     *
-    * @param $val       port speed (integer or string)
-    * @param $to_string (boolean) true if we must transform the speed to string
+    * @param integer|string $val        port speed
+    * @param boolean        $to_string  true if we must transform the speed to string
     *
-    * @return integer or string (regarding what is requested)
+    * @return integer|string (regarding what is requested)
    **/
    static function transformPortSpeed($val, $to_string) {
 
@@ -260,11 +260,11 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
 
    /**
-    * Get the possible value for Fiberchannel port speed
+    * Get the possible value for Ethernet port speed
     *
-    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    * @param integer|null $val  if not set, ask for all values, else for 1 value (default NULL)
     *
-    * @return array or string
+    * @return array|string
    **/
    static function getPortSpeed($val = null) {
 

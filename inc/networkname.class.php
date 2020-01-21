@@ -328,8 +328,8 @@ class NetworkName extends FQDNLabel {
     *
     * The address can be unaffected, and remain "free"
     *
-    * @param $items_id  the id of the item
-    * @param $itemtype  the type of the item
+    * @param integer $items_id  the id of the item
+    * @param string  $itemtype  the type of the item
    **/
    static function unaffectAddressesOfItem($items_id, $itemtype) {
       global $DB;
@@ -354,7 +354,7 @@ class NetworkName extends FQDNLabel {
     *
     * The address can be unaffected, and remain "free"
     *
-    * @param $networkNameID the id of the NetworkName
+    * @param integer $networkNameID the id of the NetworkName
    **/
    static function unaffectAddressByID($networkNameID) {
       return self::affectAddress($networkNameID, 0, '');
@@ -377,9 +377,9 @@ class NetworkName extends FQDNLabel {
    /**
     * Get the full name (internet name) of a NetworkName
     *
-    * @param $ID ID of the NetworkName
+    * @param integer $ID  ID of the NetworkName
     *
-    * @return its internet name, or empty string if invalid NetworkName
+    * @return string  its internet name, or empty string if invalid NetworkName
    **/
    static function getInternetNameFromID($ID) {
 

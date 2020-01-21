@@ -119,7 +119,7 @@ class NetworkPort extends CommonDBChild {
     *
     * @since 0.84
     *
-    * @return the instantiation object or false if the type of instantiation is not known
+    * @return NetworkPortInstantiation|false  the instantiation object or false if the type of instantiation is not known
    **/
    function getInstantiation() {
 
@@ -146,7 +146,7 @@ class NetworkPort extends CommonDBChild {
     *
     * @since 0.84
     *
-    * @param $new_instantiation_type the name of the new instaniation type
+    * @param string $new_instantiation_type  the name of the new instaniation type
     *
     * @return boolean false on error, true if the previous instantiation is not available
     *                 (ie.: invalid instantiation type) or the object of the previous instantiation.
@@ -249,7 +249,7 @@ class NetworkPort extends CommonDBChild {
     *
     * @param $input
     *
-    * @see updateDependencies for the update
+    * @see self::updateDependencies() for the update
    **/
    function splitInputForElements($input) {
 
@@ -418,9 +418,9 @@ class NetworkPort extends CommonDBChild {
    /**
     * Get port opposite port ID if linked item
     *
-    * @param $ID networking port ID
+    * @param integer $ID  networking port ID
     *
-    * @return ID of the NetworkPort found, false if not found
+    * @return integer|false  ID of the NetworkPort found, false if not found
    **/
    function getContact($ID) {
 
@@ -449,9 +449,9 @@ class NetworkPort extends CommonDBChild {
    /**
     * Delete All connection of the given network port
     *
-    * @param $ID ID of the port
+    * @param integer $ID ID of the port
     *
-    * @return true on success
+    * @return boolean true on success
    **/
    function resetConnections($ID) {
    }
@@ -462,7 +462,7 @@ class NetworkPort extends CommonDBChild {
     *
     * @since 0.84
     *
-    * @return all the options
+    * @return array  all the options
    **/
    static function getAvailableDisplayOptions() {
 
@@ -1088,9 +1088,9 @@ class NetworkPort extends CommonDBChild {
     *
     * @since 0.84
     *
-    * @param $itemtype     the type of the item that was clone
-    * @param $old_items_id the id of the item that was clone
-    * @param $new_items_id the id of the item after beeing cloned
+    * @param string  $itemtype      the type of the item that was clone
+    * @param integer $old_items_id  the id of the item that was clone
+    * @param integer $new_items_id  the id of the item after beeing cloned
    **/
    static function cloneItem($itemtype, $old_items_id, $new_items_id) {
       global $DB;

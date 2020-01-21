@@ -184,7 +184,7 @@ class Link_Itemtype extends CommonDBChild {
     *
     * @since 0.85
     *
-    * @param $itemtype itemtype for which all link associations must be removed
+    * @param string $itemtype  itemtype for which all link associations must be removed
     */
    static function deleteForItemtype($itemtype) {
       global $DB;

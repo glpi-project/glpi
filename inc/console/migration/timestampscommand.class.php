@@ -92,7 +92,7 @@ class TimestampsCommand extends AbstractCommand {
 
       if (!$input->getOption('no-interaction')) {
          // Ask for confirmation (unless --no-interaction)
-         /** @var QuestionHelper $question_helper */
+         /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
          $question_helper = $this->getHelper('question');
          $run = $question_helper->ask(
             $input,

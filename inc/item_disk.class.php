@@ -257,8 +257,8 @@ class Item_Disk extends CommonDBChild {
    /**
     * Print the disks
     *
-    * @param $item                  Item object
-    * @param $withtemplate boolean  Template or basic item (default 0)
+    * @param CommonDBTM $item          Item object
+    * @param boolean    $withtemplate  Template or basic item (default 0)
     *
     * @return void
    **/

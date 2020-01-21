@@ -856,11 +856,10 @@ abstract class LevelAgreement extends CommonDBChild {
    /**
     * Get date for current agreement
     *
-    * @param $start_date         datetime start date
-    * @param $additional_delay   integer  additional delay to add or substract (for waiting time)
-    *                                     (default 0)
+    * @param string  $start_date        datetime start date
+    * @param integer $additional_delay  integer  additional delay to add or substract (for waiting time)
     *
-    * @return due date time (NULL if sla/ola not exists)
+    * @return string|null  due date time (NULL if sla/ola not exists)
    **/
    function computeDate($start_date, $additional_delay = 0) {
 
@@ -893,12 +892,11 @@ abstract class LevelAgreement extends CommonDBChild {
    /**
     * Get execution date of a level
     *
-    * @param $start_date         datetime    start date
-    * @param $levels_id          integer     sla/ola level id
-    * @param $additional_delay   integer     additional delay to add or substract (for waiting time)
-    *                                        (default 0)
+    * @param string  $start_date        start date
+    * @param integer $levels_id         sla/ola level id
+    * @param integer $additional_delay  additional delay to add or substract (for waiting time)
     *
-    * @return execution date time (NULL if ola/sla not exists)
+    * @return string|null  execution date time (NULL if ola/sla not exists)
    **/
    function computeExecutionDate($start_date, $levels_id, $additional_delay = 0) {
 
@@ -946,8 +944,8 @@ abstract class LevelAgreement extends CommonDBChild {
    /**
     * Get types name
     *
-    * @param type $type
-    * @return string name
+    * @param  integer $type
+    * @return string  name
     **/
    static function getOneTypeName($type) {
 

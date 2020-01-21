@@ -222,7 +222,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
          $informations->addRow([__('End date'), $end_date]);
          $informations->render();
 
-         /** @var QuestionHelper $question_helper */
+         /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
          $question_helper = $this->getHelper('question');
          $run = $question_helper->ask(
             $input,

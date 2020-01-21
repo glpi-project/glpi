@@ -473,10 +473,10 @@ class Lock {
    /**
     * Get infos to build an SQL query to get locks fields in a table
     *
-    * @param $itemtype       itemtype of the item to look for locked fields
-    * @param $baseitemtype   itemtype of the based item
+    * @param string $itemtype      itemtype of the item to look for locked fields
+    * @param string $baseitemtype  itemtype of the based item
     *
-    * @return an array which contains necessary informations to build the SQL query
+    * @return array  which contains necessary informations to build the SQL query
    **/
    static function getLocksQueryInfosByItemType($itemtype, $baseitemtype) {
       global $DB;
