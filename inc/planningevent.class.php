@@ -89,6 +89,17 @@ trait PlanningEvent {
          $input['users_id'] = Session::getLoginUserID();
       }
 
+      // manage addition for mulitple users
+      if (is_array($input['users_id'])) {
+         foreach ($input['users_id'] as $users_id) {
+            $new_item = new self;
+            $input['users_id'] = $users_id;
+            $new_item->add($input);
+         }
+
+         return false;
+      }
+
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
       if (!isset($input['uuid'])) {

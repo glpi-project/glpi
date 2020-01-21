@@ -174,11 +174,26 @@ JAVASCRIPT;
          echo "</tr>";
       }
 
+      if (!$ID) {
+         echo "<tr class='tab_bg_2'><td colspan='2'>".__('User(s)')."</td>";
+         echo "<td colspan='2'>";
+         User::dropdown([
+            'name'          => 'users_id[]',
+            'right'         => 'all',
+            'value'         => $this->fields['users_id'],
+            'specific_tags' => [
+               'multiple' => true
+            ],
+         ]);
+         echo "<div style='font-style: italic'>".
+              __("Each users will have a copy of this event").
+              "</div>";
+         echo "</td>";
+         echo "</tr>";
+      }
+
       echo "<tr class='tab_bg_2'><td colspan='2'>".__('Title')."</td>";
       echo "<td colspan='2'>";
-      if (!$ID) {
-         echo Html::hidden('users_id', ['value' => $this->fields['users_id']]);
-      }
       if (isset($options['start'])) {
          echo Html::hidden('day', ['value' => $options['start']]);
       }
