@@ -43,7 +43,7 @@
         "scssphp/scssphp": "^1.0",
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
         "simplepie/simplepie": "^1.5",
-        "symfony/console": "^3.4",
+        "symfony/console": "^4.4",
         "tecnickcom/tcpdf": "^6.2",
         "true/punycode": "^2.1"
     },
