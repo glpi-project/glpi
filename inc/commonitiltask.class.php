@@ -971,11 +971,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       // Get items to print
       if (isset($options['not_planned'])) {
          //not planned case
-         $bdate = "DATE_SUB(".$DB->quoteName($item->getTable() . '.date_creation') .
+         // as we consider that people often create tasks after their execution
+         // begin date is task date minus duration
+         // and end date is task date
+         $bdate = "DATE_SUB(".$DB->quoteName($item->getTable() . '.date') .
             ", INTERVAL ".$DB->quoteName($item->getTable() . '.actiontime')." SECOND)";
          $SELECT[] = new QueryExpression($bdate . ' AS ' . $DB->quoteName('notp_date'));
-         $edate = "DATE_ADD(".$DB->quoteName($item->getTable() . '.date_creation') .
-            ", INTERVAL ".$DB->quoteName($item->getTable() . '.actiontime')." SECOND)";
+         $edate = $DB->quoteName($item->getTable() . '.date');
          $SELECT[] = new QueryExpression($edate . ' AS ' . $DB->quoteName('notp_edate'));
          $WHERE = [
             $item->getTable() . '.end'     => null,
