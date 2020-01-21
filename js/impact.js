@@ -263,6 +263,7 @@ var GLPIImpact = {
          case this.ACTION_ADD_EDGE:
             this.cy.remove("edge" + this.makeIDSelector(data.id));
             this.updateFlags();
+            this.refreshVisiblity();
             break;
 
          // Delete compound
@@ -274,6 +275,7 @@ var GLPIImpact = {
             });
             this.cy.remove("node" + this.makeIDSelector(data.data.id));
             this.updateFlags();
+            this.refreshVisiblity();
             break;
 
          // Remove the newly added graph
@@ -301,6 +303,8 @@ var GLPIImpact = {
             });
 
             this.updateFlags();
+            this.refreshVisiblity();
+
             break;
 
          // Revert edit
@@ -370,6 +374,8 @@ var GLPIImpact = {
             });
 
             this.updateFlags();
+            this.refreshVisiblity();
+
             break;
 
          // Toggle impact visibility
@@ -492,6 +498,8 @@ var GLPIImpact = {
                data: data,
             });
             this.updateFlags();
+            this.refreshVisiblity();
+
             break;
 
          // Add compound and update its children
@@ -506,6 +514,8 @@ var GLPIImpact = {
                   .move({parent: data.data.id});
             });
             this.updateFlags();
+            this.refreshVisiblity();
+
             break;
 
          // Insert again the graph
@@ -543,6 +553,8 @@ var GLPIImpact = {
             });
 
             this.updateFlags();
+            this.refreshVisiblity();
+
             break;
 
          // Reapply edit
@@ -599,6 +611,8 @@ var GLPIImpact = {
             });
 
             this.updateFlags();
+            this.refreshVisiblity();
+
             break;
 
          // Toggle impact visibility
@@ -1327,6 +1341,8 @@ var GLPIImpact = {
                   y: position.y
                });
                GLPIImpact.updateFlags();
+               GLPIImpact.refreshVisiblity();
+
             }
          ).fail(
             function () {
@@ -1554,6 +1570,7 @@ var GLPIImpact = {
             $(GLPIImpact.selectors.toggleDepends).prop("checked", false);
          }
          this.updateFlags();
+         this.refreshVisiblity();
 
          // Set viewport
          if (params.zoom != '0') {
@@ -1756,7 +1773,13 @@ var GLPIImpact = {
    toggleVisibility: function(toToggle) {
       // Update visibility setting
       GLPIImpact.directionVisibility[toToggle] = !GLPIImpact.directionVisibility[toToggle];
+      GLPIImpact.refreshVisiblity();
+   },
 
+   /**
+    * Recalculate the visibilit of every node and edges in the graph
+    */
+   refreshVisiblity: function() {
       // Compute direction
       var direction;
       var forward = GLPIImpact.directionVisibility[GLPIImpact.FORWARD];
@@ -1772,12 +1795,14 @@ var GLPIImpact = {
          direction = 0;
       }
 
-      // Hide all nodes
-      GLPIImpact.cy.filter("node").data('hidden', 1);
+      // Hide all nodes, expect if they have no link with the current asset
+      GLPIImpact.cy.nodes().filter(function(node) {
+         return node.neighborhood().length !== 0;
+      }).data('hidden', 1);
 
       // Show/Hide edges according to the direction
       GLPIImpact.cy.filter("edge").forEach(function(edge) {
-         if (edge.data('flag') & direction) {
+         if (edge.data('flag') & direction || edge.data('flag') == 0) {
             edge.data('hidden', 0);
 
             // If the edge is visible, show the nodes they are connected to it
@@ -2588,6 +2613,7 @@ var GLPIImpact = {
 
       // Update flags
       GLPIImpact.updateFlags();
+      GLPIImpact.refreshVisiblity();
 
       // Multiple deletion, set the data in eventData buffer so it can be added
       // as a simple undo/redo entry later
@@ -3115,6 +3141,7 @@ var GLPIImpact = {
 
             // Update dependencies flags according to the new link
             GLPIImpact.updateFlags();
+            GLPIImpact.refreshVisiblity();
             break;
 
          case GLPIImpact.EDITION_DELETE:
