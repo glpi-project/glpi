@@ -76,7 +76,7 @@ class HTMLTableMain extends HTMLTableBase {
    /**
     * We can define a global name for the table : this will print as header that colspan all columns
     *
-    * @param $name the name to print inside the header
+    * @param string $name  the name to print inside the header
     *
     * @return void
    **/
@@ -160,7 +160,7 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * Beware that a row is counted only if it is not empty (ie.: at least one addCell)
     *
-    * @return the total number of rows
+    * @return integer the total number of rows
    **/
    function getNumberOfRows() {
 

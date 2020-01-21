@@ -48,10 +48,10 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
 
 
    /**
-    * @param $table              HTMLTableMain object: table owning the current header
-    * @param $name      string   the name of the header
-    * @param $content            see inc/HTMLTableEntity#__construct()
-    * @param $father             HTMLTableSuperHeader objet (default NULL)
+    * @param HTMLTableMain        $table    HTMLTableMain object: table owning the current header
+    * @param string               $name     the name of the header
+    * @param string               $content  see inc/HTMLTableEntity#__construct()
+    * @param HTMLTableSuperHeader $father   HTMLTableSuperHeader objet (default NULL)
    **/
    function __construct(HTMLTableMain $table, $name, $content, HTMLTableSuperHeader $father = null) {
 
@@ -113,7 +113,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
     * compute the total number of current super header colspan: it is the Least Common
     * Multiple of the colspan of each subHeader it owns.
     *
-    * @param $number the colspan for this header given by the group
+    * @param integer $number the colspan for this header given by the group
    **/
    function updateNumberOfSubHeader($number) {
       $this->setColSpan(self::LCM($number, $this->getColSpan()));
@@ -123,7 +123,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
    /**
     * The super headers always have to be displayed, conversely to sub headers
     *
-    * @return always true
+    * @return true
    **/
    function hasToDisplay() {
       return true;

@@ -99,12 +99,12 @@ class Netpoint extends CommonDropdown {
    /**
     * Print out an HTML "<select>" for a dropdown with preselected value
     *
-    * @param $myname             the name of the HTML select
-    * @param $value              the preselected value we want (default 0)
-    * @param $locations_id       default location ID for search (default -1)
-    * @param $display_comment    display the comment near the dropdown (default 1)
-    * @param $entity_restrict    Restrict to a defined entity(default -1)
-    * @param $devtype            (default '')
+    * @param string  $myname             the name of the HTML select
+    * @param integer $value              the preselected value we want (default 0)
+    * @param integer $locations_id       default location ID for search (default -1)
+    * @param boolean $display_comment    display the comment near the dropdown (default 1)
+    * @param integer $entity_restrict    Restrict to a defined entity(default -1)
+    * @param string  $devtype            (default '')
     *
     * @return integer random part of elements id
    **/
@@ -165,7 +165,7 @@ class Netpoint extends CommonDropdown {
     *
     * @param $input array of value to import (name, locations_id, entities_id)
     *
-    * @return the ID of the new (or -1 if not found)
+    * @return integer the ID of the new (or -1 if not found)
    **/
    function findID(array &$input) {
       global $DB;

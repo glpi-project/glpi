@@ -74,10 +74,10 @@ class NetworkPortInstantiation extends CommonDBChild {
     * Show the instanciation element for the form of the NetworkPort
     * By default, just print that there is no parameter for this type of NetworkPort
     *
-    * @param $netport               the port that owns this instantiation
-    *                               (usefull, for instance to get network port attributs
-    * @param $options         array of options given to NetworkPort::showForm
-    * @param $recursiveItems        list of the items on which this port is attached
+    * @param NetworkPort $netport         the port that owns this instantiation
+    *                                     (usefull, for instance to get network port attributs
+    * @param array       $options         array of options given to NetworkPort::showForm
+    * @param array       $recursiveItems  list of the items on which this port is attached
    **/
    function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems) {
 
@@ -137,14 +137,14 @@ class NetworkPortInstantiation extends CommonDBChild {
     * Get HTMLTable columns headers for a given item type
     * Beware : the internet informations are "sons" of each instantiation ...
     *
-    * @param $group           HTMLTableGroup object
-    * @param $super           HTMLTableSuperHeader object
-    * @param $internet_super  HTMLTableSuperHeader object for the internet sub part (default NULL)
-    * @param $father          HTMLTableHeader object (default NULL)
-    * @param $options   array of possible options:
+    * @param HTMLTableSuperHeader $group           HTMLTableGroup object
+    * @param HTMLTableSuperHeader $super           HTMLTableSuperHeader object
+    * @param HTMLTableSuperHeader $internet_super  HTMLTableSuperHeader object for the internet sub part (default NULL)
+    * @param HTMLTableHeader      $father          HTMLTableHeader object (default NULL)
+    * @param array                $options   array of possible options:
     *       - 'dont_display' : array of the columns that must not be display
     *
-    * @return the father group for the Internet Informations ...
+    * @return null
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super = null,
@@ -178,14 +178,14 @@ class NetworkPortInstantiation extends CommonDBChild {
     * Get HTMLTable row for a given network port and a given extremity when two ports are
     * existing on a link (NetworkPort_NetworkPort).
     *
-    * @param $netport         NetworkPort object (contains item)
-    * @param $row             HTMLTableRow object
-    * @param $father          HTMLTableHeader object (default NULL)
-    * @param $options   array of possible options:
+    * @param NetworkPort   $netport  NetworkPort object (contains item)
+    * @param HTMLTableRow  $row      HTMLTableRow object
+    * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
+    * @param array         $options  array of possible options:
     *       - 'dont_display' : array of the elements that must not be display
     *       - 'withtemplate' : integer withtemplate param
     *
-    * @return the father cell for the Internet Informations ...
+    * @return null
    **/
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                                     HTMLTableCell $father = null,
@@ -203,14 +203,14 @@ class NetworkPortInstantiation extends CommonDBChild {
     *
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
     *
-    * @param $netport         NetworkPort object (contains item)
-    * @param $row             HTMLTableRow object
-    * @param $father          HTMLTableHeader object (default NULL)
-    * @param $options   array of possible options:
+    * @param NetworkPort   $netport  NetworkPort object (contains item)
+    * @param HTMLTableRow  $row      HTMLTableRow object
+    * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
+    * @param array         $options  array of possible options:
     *       - 'dont_display' : array of the elements that must not be display
     *       - 'withtemplate' : integer withtemplate param
     *
-    * @return the father cell for the Internet Informations ...
+    * @return HTMLTableCell  the father cell for the Internet Informations ...
    **/
    function getInstantiationHTMLTableWithPeer(NetworkPort $netport, HTMLTableRow $row,
                                               HTMLTableCell $father = null, array $options = []) {
@@ -258,14 +258,14 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Get HTMLTable row for a given item
     *
-    * @param $netport         NetworkPort object (contains item)
-    * @param $row             HTMLTableRow object
-    * @param $father          HTMLTableHeader object (default NULL)
-    * @param $options   array of possible options:
+    * @param NetworkPort    $netport  NetworkPort object (contains item)
+    * @param HTMLTableRow   $row      HTMLTableRow object
+    * @param HTMLTableCell  $father   HTMLTableCell object (default NULL)
+    * @param array          $options  array of possible options:
     *       - 'dont_display' : array of the elements that must not be display
     *       - 'withtemplate' : integer withtemplate param
     *
-    * @return the father cell for the Internet Informations ...
+    * @return null
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father = null, array $options = []) {
@@ -348,11 +348,11 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Get all NetworkPort and NetworkEquipments that have a specific MAC address
     *
-    * @param $mac                      address to search
-    * @param $wildcard_search boolean  true if we search with wildcard (false by default)
+    * @param string  $mac              address to search
+    * @param boolean $wildcard_search  true if we search with wildcard (false by default)
     *
-    * @return (array) each value of the array (corresponding to one NetworkPort) is an array of the
-    *                 items from the master item to the NetworkPort
+    * @return array  each value of the array (corresponding to one NetworkPort) is an array of the
+    *                items from the master item to the NetworkPort
    **/
    static function getItemsByMac($mac, $wildcard_search = false) {
       global $DB;
@@ -401,10 +401,10 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Get an Object ID by its MAC address (only if one result is found in the entity)
     *
-    * @param $value  the mac address
-    * @param $entity the entity to look for
+    * @param string  $value   the mac address
+    * @param integer $entity  the entity to look for
     *
-    * @return an array containing the object ID
+    * @return array containing the object ID
     *         or an empty array is no value of serverals ID where found
    **/
    static function getUniqueItemByMac($value, $entity) {
@@ -442,7 +442,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * In case of NetworkPort attached to a network card, list the fields that must be duplicate
     * from the network card to the network port (mac address, port type, ...)
     *
-    * @return an array with SQL field (for instance : device.type) => form field (type)
+    * @return array with SQL field (for instance : device.type) => form field (type)
    **/
    function getNetworkCardInterestingFields() {
       return [];
@@ -454,10 +454,10 @@ class NetworkPortInstantiation extends CommonDBChild {
     * and wifi ports). Whenever a card is attached, its information (mac, type, ...) are
     * autmatically set to the required field.
     *
-    * @param $netport               NetworkPort object :the port that owns this instantiation
+    * @param NetworkPort $netport   NetworkPort object :the port that owns this instantiation
     *                               (usefull, for instance to get network port attributs
-    * @param $options         array of options given to NetworkPort::showForm
-    * @param $recursiveItems        list of the items on which this port is attached
+    * @param array $options         array of options given to NetworkPort::showForm
+    * @param array $recursiveItems  list of the items on which this port is attached
    **/
    function showNetworkCardField(NetworkPort $netport, $options = [], $recursiveItems = []) {
       global $DB;
@@ -577,10 +577,10 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Display the Netpoint field. Used by Ethernet, and Migration
     *
-    * @param $netport               NetworkPort object :the port that owns this instantiation
-    *                               (usefull, for instance to get network port attributs
-    * @param $options         array of options given to NetworkPort::showForm
-    * @param $recursiveItems        list of the items on which this port is attached
+    * @param NetworkPort $netport         NetworkPort object :the port that owns this instantiation
+    *                                     (usefull, for instance to get network port attributs
+    * @param array       $options         array of options given to NetworkPort::showForm
+    * @param array       $recursiveItems  list of the items on which this port is attached
    **/
    function showNetpointField(NetworkPort $netport, $options = [], $recursiveItems = []) {
 
@@ -775,8 +775,8 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Display a connection of a networking port
     *
-    * @param $netport      to be displayed
-    * @param $edit         boolean permit to edit ? (false by default)
+    * @param NetworkPort $netport  to be displayed
+    * @param boolean     $edit     permit to edit ? (false by default)
    **/
    static function showConnection($netport, $edit = false) {
 
@@ -854,8 +854,8 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Make a select box for  connected port
     *
-    * @param $ID                 ID of the current port to connect
-    * @param $options   array    of possible options:
+    * @param integer $ID        ID of the current port to connect
+    * @param array   $options   array of possible options:
     *    - name : string / name of the select (default is networkports_id)
     *    - comments : boolean / is the comments displayed near the dropdown (default true)
     *    - entity : integer or array / restrict to a defined entity or array of entities

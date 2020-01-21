@@ -162,7 +162,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @since 0.84
     *
-    * @param $full path or relative one (true by default)
+    * @param boolean $full  path or relative one
    **/
    static function getSearchURL($full = true) {
       global $CFG_GLPI;
@@ -178,7 +178,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Get the form page URL for the current classe
     *
-    * @param $full path or relative one (true by default)
+    * @param boolean $full  path or relative one
    **/
    static function getFormURL($full = true) {
       global $CFG_GLPI;
@@ -423,7 +423,7 @@ class KnowbaseItem extends CommonDBVisible {
    *
    * @since 0.83
    *
-   * @param $forceall force all joins (false by default)
+   * @param boolean $forceall  force all joins
    *
    * @return string joins to add
    **/
@@ -1662,7 +1662,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Print out list recent or popular kb/faq
     *
-    * @param $type      type : recent / popular / not published
+    * @param string $type  type : recent / popular / not published
     *
     * @return void
    **/

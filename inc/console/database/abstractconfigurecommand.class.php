@@ -157,7 +157,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
 
       foreach ($questions as $name => $question) {
          if (null === $input->getOption($name)) {
-            /** @var Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $value = $question_helper->ask($input, $output, $question);
             $input->setOption($name, $value);
@@ -331,7 +331,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          return true;
       }
 
-      /** @var Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+      /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
       $question_helper = $this->getHelper('question');
       return $question_helper->ask(
          $input,

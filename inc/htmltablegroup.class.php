@@ -173,8 +173,8 @@ class HTMLTableGroup extends HTMLTableBase {
    /**
     * Display the current group (with headers and rows)
     *
-    * @param $totalNumberOfColumn         Total number of columns : to span correctly the title
-    * @param $params                array of possible options:
+    * @param integer $totalNumberOfColumn  Total number of columns : to span correctly the title
+    * @param array   $params               array of possible options:
     *     'display_super_for_each_group'           display the super header (ie.: big header of the table)
     *                                              before the group specific headers
     *     'display_title_for_each_group'           display the title of the header before the group

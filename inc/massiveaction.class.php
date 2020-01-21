@@ -60,10 +60,10 @@ class MassiveAction {
     *
     * We trust all previous stages: we don't redo the checks
     *
-    * @param $POST  something like $_POST
-    * @param $GET   something like $_GET
-    * @param $stage the current stage
-    * @param boolean $single Get actions for a single item
+    * @param array   $POST    something like $_POST
+    * @param array   $GET     something like $_GET
+    * @param string  $stage   the current stage
+    * @param boolean $single  Get actions for a single item
    **/
    function __construct (array $POST, array $GET, $stage, $single = false) {
       global $CFG_GLPI;
@@ -431,9 +431,9 @@ class MassiveAction {
     * window), then display a dropdown to select the itemtype.
     * This is only usefull in case of itemtype specific massive actions (update, ...)
     *
-    * @param $display_selector can we display the itemtype selector ?
+    * @param boolean $display_selector  can we display the itemtype selector ?
     *
-    * @return the itemtype or false if we cannot define it (and we cannot display the selector)
+    * @return string|boolean  the itemtype or false if we cannot define it (and we cannot display the selector)
    **/
    function getItemtype($display_selector) {
 
@@ -492,7 +492,7 @@ class MassiveAction {
     * @param CommonDBTM        $checkitem   link item to check right              (default NULL)
     * @param integer|boolean   $single      Get actions for a single item
     *
-    * @return an array of massive actions or false if $item is not valid
+    * @return array of massive actions or false if $item is not valid
    **/
    static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null, $single = false) {
       global $PLUGIN_HOOKS;
@@ -987,7 +987,7 @@ class MassiveAction {
     * Process the massive actions for all passed items. This a switch between different methods:
     * new system, old one and plugins ...
     *
-    * @return an array of results (ok, ko, noright counts, redirect ...)
+    * @return array of results (ok, ko, noright counts, redirect ...)
    **/
    function process() {
 
@@ -1275,7 +1275,7 @@ class MassiveAction {
    /**
     * add a message to display when action is done.
     *
-    * @param $message the message to add
+    * @param string $message  the message to add
     *
     * @return void
    **/
@@ -1288,9 +1288,9 @@ class MassiveAction {
     * Set an item as done. If the delay is too long, then reload the page to continue the action.
     * Update the progress if necessary.
     *
-    * @param $itemtype    the type of the item that has been done
-    * @param $id          id or array of ids of the item(s) that have been done.
-    * @param $result:
+    * @param string  $itemtype    the type of the item that has been done
+    * @param integer $id          id or array of ids of the item(s) that have been done.
+    * @param integer $result
     *                self::NO_ACTION      in case of no specific action (used internally for older actions)
     *                MassiveAction::ACTION_OK      everything is OK for the action
     *                MassiveAction::ACTION_KO      something went wrong for the action

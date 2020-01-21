@@ -51,7 +51,7 @@ class KnowbaseItem_User extends CommonDBRelation {
    /**
     * Get users for a knowbaseitem
     *
-    * @param $knowbaseitems_id ID of the knowbaseitem
+    * @param integer $knowbaseitems_id  ID of the knowbaseitem
     *
     * @return array of users linked to a knowbaseitem
    **/

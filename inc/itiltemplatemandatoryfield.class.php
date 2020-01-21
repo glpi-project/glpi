@@ -99,10 +99,10 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
     *
     * @since 0.83
     *
-    * @param $ID                    integer  the template ID
-    * @param $withtypeandcategory   boolean  with type and category (true by default)
+    * @param integer $ID                   the template ID
+    * @param boolean $withtypeandcategory  with type and category (true by default)
     *
-    * @return an array of mandatory fields
+    * @return array of mandatory fields
    **/
    function getMandatoryFields($ID, $withtypeandcategory = true) {
       global $DB;

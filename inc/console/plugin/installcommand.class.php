@@ -89,7 +89,7 @@ class InstallCommand extends AbstractPluginCommand {
       parent::interact($input, $output);
 
       if (null === $input->getOption('username')) {
-         /** @var QuestionHelper $question_helper */
+         /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
          $question_helper = $this->getHelper('question');
          $value = $question_helper->ask(
             $input,

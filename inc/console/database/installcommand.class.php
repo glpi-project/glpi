@@ -104,7 +104,7 @@ class InstallCommand extends AbstractConfigureCommand {
       if ($this->isDbAlreadyConfigured()
           && $this->isInputContainingConfigValues($input, $output)
           && !$input->getOption('reconfigure')) {
-         /** @var Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+         /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
          $question_helper = $this->getHelper('question');
          $reconfigure = $question_helper->ask(
             $input,

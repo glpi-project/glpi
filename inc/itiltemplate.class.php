@@ -269,7 +269,7 @@ abstract class ITILTemplate extends CommonDropdown {
     *
     * @return array
     *
-    * @see getAllowedFields
+    * @see self::getAllowedFields()
     */
    public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {
       return [];
@@ -778,9 +778,9 @@ abstract class ITILTemplate extends CommonDropdown {
     *
     * @since 0.90
     *
-    * @param $input  array of value to import (name, ...)
+    * @param array $input  array of value to import (name, ...)
     *
-    * @return the ID of the new or existing dropdown
+    * @return integer|boolean true in case of success, -1 otherwise
    **/
    function import(array $input) {
 

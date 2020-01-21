@@ -433,7 +433,7 @@ class Item_Devices extends CommonDBRelation {
    /**
     * Get the Item_Device* a given item type can have
     *
-    * @param $itemtype the type of the item that we want to know its devices
+    * @param string $itemtype the type of the item that we want to know its devices
     *
     * @since 0.85
     *
@@ -1423,16 +1423,6 @@ class Item_Devices extends CommonDBRelation {
       return true;
    }
 
-   /**
-    * Prepare input data for adding the relation
-    *
-    * Overloaded to manage autoupdate feature
-    *
-    * @param array $input array of datas used to add the item
-    *
-    * @return the modified $input array
-    *
-   **/
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
 

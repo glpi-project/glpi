@@ -135,10 +135,10 @@ class ITILTemplatePredefinedField extends ITILTemplateField {
     *
     * @since 0.83
     *
-    * @param $ID                    integer  the template ID
-    * @param $withtypeandcategory   boolean   with type and category (false by default)
+    * @param integer $ID                   the template ID
+    * @param boolean $withtypeandcategory  with type and category (false by default)
     *
-    * @return an array of predefined fields
+    * @return array of predefined fields
    **/
    function getPredefinedFields($ID, $withtypeandcategory = false) {
       global $DB;
@@ -223,8 +223,8 @@ class ITILTemplatePredefinedField extends ITILTemplateField {
     *
     * @since 0.83
     *
-    * @param $tt                       ITIL Template
-    * @param $withtemplate    boolean  Template or basic item (default 0)
+    * @param ITILTemplate $tt            ITIL Template
+    * @param boolean      $withtemplate  Template or basic item (default 0)
     *
     * @return void
    **/
