@@ -30,7 +30,7 @@
         "laminas/laminas-mime": "^2.7",
         "laminas/laminas-serializer": "^2.8",
         "michelf/php-markdown": "^1.6",
-        "monolog/monolog": "^1.23",
+        "monolog/monolog": "^2.0",
         "phpmailer/phpmailer": "^6.0",
         "psr/log": "^1.1",
         "psr/simple-cache": "^1.0",
