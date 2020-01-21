@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba54b9858420f07dfa4d0b7a7f23fd82",
+    "content-hash": "410ca01c907aa079e58a19ab1ab8fd55",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -2592,25 +2592,25 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "2.12.0",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "512a2e54c98f3af377589de76c43b24652bcb789"
+                "reference": "be011ba6314d76cabf78afbeb275694795c88360"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/512a2e54c98f3af377589de76c43b24652bcb789",
-                "reference": "512a2e54c98f3af377589de76c43b24652bcb789",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/be011ba6314d76cabf78afbeb275694795c88360",
+                "reference": "be011ba6314d76cabf78afbeb275694795c88360",
                 "shasum": ""
             },
             "require": {
-                "consolidation/output-formatters": "^3.4",
-                "php": ">=5.4.5",
+                "consolidation/output-formatters": "^4",
+                "php": ">=7.1.3",
                 "psr/log": "^1",
-                "symfony/console": "^2.8|^3|^4",
-                "symfony/event-dispatcher": "^2.5|^3|^4",
-                "symfony/finder": "^2.5|^3|^4"
+                "symfony/console": "^4",
+                "symfony/event-dispatcher": "^4",
+                "symfony/finder": "^4"
             },
             "require-dev": {
                 "g1a/composer-test-scenarios": "^3",
@@ -2620,52 +2620,8 @@
             },
             "type": "library",
             "extra": {
-                "scenarios": {
-                    "symfony4": {
-                        "require": {
-                            "symfony/console": "^4.0"
-                        },
-                        "config": {
-                            "platform": {
-                                "php": "7.1.3"
-                            }
-                        }
-                    },
-                    "symfony2": {
-                        "require": {
-                            "symfony/console": "^2.8"
-                        },
-                        "require-dev": {
-                            "phpunit/phpunit": "^4.8.36"
-                        },
-                        "remove": [
-                            "php-coveralls/php-coveralls"
-                        ],
-                        "config": {
-                            "platform": {
-                                "php": "5.4.8"
-                            }
-                        },
-                        "scenario-options": {
-                            "create-lockfile": "false"
-                        }
-                    },
-                    "phpunit4": {
-                        "require-dev": {
-                            "phpunit/phpunit": "^4.8.36"
-                        },
-                        "remove": [
-                            "php-coveralls/php-coveralls"
-                        ],
-                        "config": {
-                            "platform": {
-                                "php": "5.4.8"
-                            }
-                        }
-                    }
-                },
                 "branch-alias": {
-                    "dev-master": "2.x-dev"
+                    "dev-master": "4.x-dev"
                 }
             },
             "autoload": {
@@ -2684,7 +2640,7 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2019-03-08T16:55:03+00:00"
+            "time": "2019-10-29T13:44:48+00:00"
         },
         {
             "name": "consolidation/config",
@@ -2859,30 +2815,30 @@
         },
         {
             "name": "consolidation/output-formatters",
-            "version": "3.5.0",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/output-formatters.git",
-                "reference": "99ec998ffb697e0eada5aacf81feebfb13023605"
+                "reference": "8e747762963ab48912fb75fc24dbe39175f47057"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/99ec998ffb697e0eada5aacf81feebfb13023605",
-                "reference": "99ec998ffb697e0eada5aacf81feebfb13023605",
+                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/8e747762963ab48912fb75fc24dbe39175f47057",
+                "reference": "8e747762963ab48912fb75fc24dbe39175f47057",
                 "shasum": ""
             },
             "require": {
                 "dflydev/dot-access-data": "^1.1.0",
                 "php": ">=5.4.0",
-                "symfony/console": "^2.8|^3|^4",
-                "symfony/finder": "^2.5|^3|^4"
+                "symfony/console": "^4",
+                "symfony/finder": "^4"
             },
             "require-dev": {
                 "g1a/composer-test-scenarios": "^3",
                 "php-coveralls/php-coveralls": "^1",
                 "phpunit/phpunit": "^5.7.27",
                 "squizlabs/php_codesniffer": "^2.7",
-                "symfony/var-dumper": "^2.8|^3|^4",
+                "symfony/var-dumper": "^4",
                 "victorjonsson/markdowndocs": "^1.3"
             },
             "suggest": {
@@ -2890,54 +2846,8 @@
             },
             "type": "library",
             "extra": {
-                "scenarios": {
-                    "symfony4": {
-                        "require": {
-                            "symfony/console": "^4.0"
-                        },
-                        "require-dev": {
-                            "phpunit/phpunit": "^6"
-                        },
-                        "config": {
-                            "platform": {
-                                "php": "7.1.3"
-                            }
-                        }
-                    },
-                    "symfony3": {
-                        "require": {
-                            "symfony/console": "^3.4",
-                            "symfony/finder": "^3.4",
-                            "symfony/var-dumper": "^3.4"
-                        },
-                        "config": {
-                            "platform": {
-                                "php": "5.6.32"
-                            }
-                        }
-                    },
-                    "symfony2": {
-                        "require": {
-                            "symfony/console": "^2.8"
-                        },
-                        "require-dev": {
-                            "phpunit/phpunit": "^4.8.36"
-                        },
-                        "remove": [
-                            "php-coveralls/php-coveralls"
-                        ],
-                        "config": {
-                            "platform": {
-                                "php": "5.4.8"
-                            }
-                        },
-                        "scenario-options": {
-                            "create-lockfile": "false"
-                        }
-                    }
-                },
                 "branch-alias": {
-                    "dev-master": "3.x-dev"
+                    "dev-master": "4.x-dev"
                 }
             },
             "autoload": {
@@ -2956,59 +2866,58 @@
                 }
             ],
             "description": "Format text by applying transformations provided by plug-in formatters.",
-            "time": "2019-05-30T23:16:01+00:00"
+            "time": "2019-10-29T13:39:04+00:00"
         },
         {
             "name": "consolidation/robo",
-            "version": "1.4.11",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/Robo.git",
-                "reference": "5fa1d901776a628167a325baa9db95d8edf13a80"
+                "reference": "f21c960ebec8c94a85ead5dc22c1a7d581a24055"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/Robo/zipball/5fa1d901776a628167a325baa9db95d8edf13a80",
-                "reference": "5fa1d901776a628167a325baa9db95d8edf13a80",
+                "url": "https://api.github.com/repos/consolidation/Robo/zipball/f21c960ebec8c94a85ead5dc22c1a7d581a24055",
+                "reference": "f21c960ebec8c94a85ead5dc22c1a7d581a24055",
                 "shasum": ""
             },
             "require": {
-                "consolidation/annotated-command": "^2.11.0",
-                "consolidation/config": "^1.2",
-                "consolidation/log": "~1",
-                "consolidation/output-formatters": "^3.1.13",
+                "consolidation/annotated-command": "^4",
+                "consolidation/config": "^1.2.1",
+                "consolidation/log": "^1.1.1",
+                "consolidation/output-formatters": "^4",
                 "consolidation/self-update": "^1",
-                "grasmash/yaml-expander": "^1.3",
+                "grasmash/yaml-expander": "^1.4",
                 "league/container": "^2.2",
-                "php": ">=5.5.0",
-                "symfony/console": "^2.8|^3|^4",
-                "symfony/event-dispatcher": "^2.5|^3|^4",
-                "symfony/filesystem": "^2.5|^3|^4",
-                "symfony/finder": "^2.5|^3|^4",
-                "symfony/process": "^2.5|^3|^4"
+                "php": ">=7.1.3",
+                "symfony/console": "^4.3.5",
+                "symfony/event-dispatcher": "^4",
+                "symfony/filesystem": "^4",
+                "symfony/finder": "^4",
+                "symfony/process": "^4"
             },
-            "replace": {
-                "codegyre/robo": "< 1.0"
+            "conflict": {
+                "codegyre/robo": "*"
             },
             "require-dev": {
-                "codeception/aspect-mock": "^1|^2.1.1",
-                "codeception/base": "^2.3.7",
-                "codeception/verify": "^0.3.2",
+                "codeception/aspect-mock": "^3.0.2",
+                "codeception/base": "^3.1.2",
+                "codeception/phpunit-wrapper": "^7.7.1",
+                "codeception/stub": "^3",
+                "doctrine/annotations": "^1.8.0",
                 "g1a/composer-test-scenarios": "^3",
-                "goaop/framework": "~2.1.2",
-                "goaop/parser-reflection": "^1.1.0",
                 "natxet/cssmin": "3.0.4",
                 "nikic/php-parser": "^3.1.5",
-                "patchwork/jsqueeze": "~2",
+                "patchwork/jsqueeze": "^2",
                 "pear/archive_tar": "^1.4.4",
                 "php-coveralls/php-coveralls": "^1",
-                "phpunit/php-code-coverage": "~2|~4",
-                "sebastian/comparator": "^1.2.4",
+                "phpdocumentor/reflection-docblock": "^4.3.2",
                 "squizlabs/php_codesniffer": "^2.8"
             },
             "suggest": {
                 "henrikbjorn/lurker": "For monitoring filesystem changes in taskWatch",
-                "natxet/CssMin": "For minifying CSS files in taskMinify",
+                "natxet/cssmin": "For minifying CSS files in taskMinify",
                 "patchwork/jsqueeze": "For minifying JS files in taskMinify",
                 "pear/archive_tar": "Allows tar archives to be created and extracted in taskPack and taskExtract, respectively."
             },
@@ -3017,34 +2926,6 @@
             ],
             "type": "library",
             "extra": {
-                "scenarios": {
-                    "symfony4": {
-                        "require": {
-                            "symfony/console": "^4"
-                        },
-                        "config": {
-                            "platform": {
-                                "php": "7.1.3"
-                            }
-                        }
-                    },
-                    "symfony2": {
-                        "require": {
-                            "symfony/console": "^2.8"
-                        },
-                        "remove": [
-                            "goaop/framework"
-                        ],
-                        "config": {
-                            "platform": {
-                                "php": "5.5.9"
-                            }
-                        },
-                        "scenario-options": {
-                            "create-lockfile": "false"
-                        }
-                    }
-                },
                 "branch-alias": {
                     "dev-master": "2.x-dev"
                 }
@@ -3065,7 +2946,7 @@
                 }
             ],
             "description": "Modern task runner",
-            "time": "2019-10-29T15:50:02+00:00"
+            "time": "2019-10-29T14:11:02+00:00"
         },
         {
             "name": "consolidation/self-update",
