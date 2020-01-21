@@ -3905,7 +3905,9 @@ var GLPIImpact = {
       // Handle drag & drop on add node search result
       $(document).on('mousedown', GLPIImpact.selectors.sideSearchResults + ' p', function(e) {
          // Only on left click and not for disabled item
-         if (e.which !== 1 || $(e.target).hasClass('impact-res-disabled')) {
+         if (e.which !== 1
+            || $(e.target).hasClass('impact-res-disabled')
+            || $(e.target).parent().hasClass('impact-res-disabled')) {
             return;
          }
 
