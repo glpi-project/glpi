@@ -767,13 +767,13 @@ var GLPIImpact = {
          {
             selector: '[hidden=1], [depth > ' + this.maxDepth + ']',
             style: {
-               'opacity': '0',
+               'display': 'none',
             }
          },
          {
             selector: '[id="tmp_node"]',
             style: {
-               'opacity': '0',
+               'display': 'none',
             }
          },
          {
