@@ -58,7 +58,7 @@
         "mikey179/vfsstream": "^1.6",
         "natxet/cssmin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
-        "sensiolabs/security-checker": "^5.0"
+        "sensiolabs/security-checker": "^6.0"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization"
