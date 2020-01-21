@@ -11,7 +11,7 @@
         "docs": "https://github.com/glpi-project/doc"
     },
     "require": {
-        "php": ">=7.0.8",
+        "php": "^7.2",
         "ext-curl": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
@@ -30,7 +30,7 @@
         "laminas/laminas-mime": "^2.7",
         "laminas/laminas-serializer": "^2.8",
         "michelf/php-markdown": "^1.6",
-        "monolog/monolog": "^1.23",
+        "monolog/monolog": "^2.0",
         "phpmailer/phpmailer": "^6.0",
         "psr/log": "^1.1",
         "psr/simple-cache": "^1.0",
@@ -41,16 +41,16 @@
         "sabre/uri": "^2.1",
         "sabre/vobject": "^4.1",
         "scssphp/scssphp": "^1.0",
-        "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
+        "sebastian/diff": "^3.0",
         "simplepie/simplepie": "^1.5",
-        "symfony/console": "^3.4",
+        "symfony/console": "^4.4",
         "tecnickcom/tcpdf": "^6.2",
         "true/punycode": "^2.1"
     },
     "require-dev": {
         "ext-xml": "*",
         "atoum/atoum": "dev-master",
-        "consolidation/robo": "^1.0",
+        "consolidation/robo": "^2.0",
         "fzaninotto/faker": "^1.7",
         "glpi-project/coding-standard": "^0.7",
         "guzzlehttp/guzzle": "^6.0",
@@ -58,7 +58,7 @@
         "mikey179/vfsstream": "^1.6",
         "natxet/cssmin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
-        "sensiolabs/security-checker": "^5.0"
+        "sensiolabs/security-checker": "^6.0"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization"
@@ -66,7 +66,7 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.0.8"
+            "php": "7.2.0"
         },
         "sort-packages": true
     },

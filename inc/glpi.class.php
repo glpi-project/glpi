@@ -77,7 +77,7 @@ class GLPI {
                GLPI_LOG_DIR . "/{$type}-errors.log",
                $this->log_level
             );
-            $formatter = new LineFormatter(null, null, true, true);
+            $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
             $handler->setFormatter($formatter);
          }
          $logger->pushHandler($handler);
