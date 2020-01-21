@@ -33,8 +33,8 @@
 namespace tests\units;
 
 use DbTestCase;
-use Monolog\Logger;
 use Monolog\Handler\TestHandler;
+use Monolog\Logger;
 
 // Generic test classe, to be extended for CommonDBTM Object
 

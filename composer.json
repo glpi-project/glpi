@@ -59,7 +59,7 @@
         "atoum/atoum": "^3.4",
         "consolidation/robo": "^2.0",
         "fzaninotto/faker": "^1.7",
-        "glpi-project/coding-standard": "^0.7",
+        "glpi-project/coding-standard": "^0.8",
         "mikey179/vfsstream": "^1.6",
         "natxet/cssmin": "^3.0",
         "php-parallel-lint/php-parallel-lint": "^1.1",

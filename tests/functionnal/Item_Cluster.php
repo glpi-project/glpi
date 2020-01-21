@@ -32,7 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/item_cluster.class.php */
 

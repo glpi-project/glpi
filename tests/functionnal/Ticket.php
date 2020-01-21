@@ -33,7 +33,7 @@
 namespace tests\units;
 
 use CommonITILObject;
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/ticket.class.php */
 

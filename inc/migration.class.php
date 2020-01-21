@@ -1,6 +1,7 @@
 <?php
-use Symfony\Component\Console\Output\OutputInterface;
+
 use Glpi\Console\Application;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * ---------------------------------------------------------------------

@@ -43,7 +43,7 @@ class Impact extends CommonGLPI {
 
       // Only enabled for CommonDBTM
       if (!is_a($item, "CommonDBTM", true)) {
-         throw new InvalidArgumentException(
+         throw new \InvalidArgumentException(
             "Argument \$item ($class) must be a CommonDBTM."
          );
       }
@@ -53,7 +53,7 @@ class Impact extends CommonGLPI {
 
       // Check if itemtype is valid
       if (!$is_enabled_asset && !$is_itil_object) {
-         throw new InvalidArgumentException(
+         throw new \InvalidArgumentException(
             "Argument \$item ($class) is not a valid target for impact analysis."
          );
       }
@@ -103,7 +103,7 @@ class Impact extends CommonGLPI {
 
       // Only enabled for CommonDBTM
       if (!is_a($item, "CommonDBTM")) {
-         throw new InvalidArgumentException(
+         throw new \InvalidArgumentException(
             "Argument \$item ($class) must be a CommonDBTM)."
          );
       }
@@ -1152,7 +1152,7 @@ class Impact extends CommonGLPI {
             $target = "source";
             break;
          default:
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                "Invalid value for argument \$direction ($direction)."
             );
       }
@@ -1353,7 +1353,7 @@ class Impact extends CommonGLPI {
             $to = self::getNodeID($itemA);
             break;
          default:
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                "Invalid value for argument \$direction ($direction)."
             );
       }
@@ -1563,7 +1563,7 @@ class Impact extends CommonGLPI {
          // Look for a matching asset in the DB
          $asset = new $itemtype();
          return $asset->getFromDB($items_id);
-      } catch (ReflectionException $e) {
+      } catch (\ReflectionException $e) {
          // Class does not exist
          return false;
       }
@@ -1604,7 +1604,7 @@ class Impact extends CommonGLPI {
             return self::getNodeID($itemB) . self::EDGE_ID_DELIMITER . self::getNodeID($itemA);
 
          default:
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                "Invalid value for argument \$direction ($direction)."
             );
       }

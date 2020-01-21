@@ -33,7 +33,7 @@
 namespace tests\units;
 
 use CommonITILActor;
-use \DbTestCase;
+use DbTestCase;
 use ITILFollowup as CoreITILFollowup;
 use Ticket;
 use Ticket_User;

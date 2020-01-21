@@ -32,8 +32,8 @@
 
 namespace tests\units;
 
+use DbTestCase;
 use PHPMailer\PHPMailer\PHPMailer;
-use \DbTestCase;
 
 /* Test for inc/config.class.php */
 

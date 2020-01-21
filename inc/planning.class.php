@@ -36,12 +36,11 @@ if (!defined('GLPI_ROOT')) {
 
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
-use Sabre\VObject\Property\FlatText;
-use Sabre\VObject\Reader;
-use Sabre\VObject\ParseException;
 use Sabre\VObject\Component\VEvent;
 use Sabre\VObject\Component\VTodo;
+use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\Recur;
+use Sabre\VObject\Reader;
 
 /**
  * Planning Class
@@ -2010,7 +2009,7 @@ class Planning extends CommonGLPI {
          }
          try {
             $vcalendar = Reader::read($calendar_data);
-         } catch (ParseException $exception) {
+         } catch (\Sabre\VObject\ParseException $exception) {
             Toolbox::logError(sprintf('Unable to parse calendar data from URL "%s"', $planning_params['url']));
             continue;
          }

@@ -34,9 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Sabre\VObject;
 use Glpi\Exception\ForgetPasswordException;
-use Glpi\Exception\PasswordTooWeakException;
+use Sabre\VObject;
 
 class User extends CommonDBTM {
 
@@ -4812,15 +4811,15 @@ JAVASCRIPT;
                return true;
 
             } else {
-               throw new ForgetPasswordException(__('Your password reset request has expired or is invalid. Please renew it.'));
+               throw new \Glpi\Exception\ForgetPasswordException(__('Your password reset request has expired or is invalid. Please renew it.'));
             }
 
          } else {
-            throw new ForgetPasswordException(__("The authentication method configuration doesn't allow you to change your password."));
+            throw new \Glpi\Exception\ForgetPasswordException(__("The authentication method configuration doesn't allow you to change your password."));
          }
 
       } else {
-         throw new ForgetPasswordException(__('Email address not found.'));
+         throw new \Glpi\Exception\ForgetPasswordException(__('Email address not found.'));
       }
 
       return false;
@@ -4844,9 +4843,9 @@ JAVASCRIPT;
          } else {
             echo __('Reset password successful.');
          }
-      } catch (ForgetPasswordException $e) {
+      } catch (\Glpi\Exception\ForgetPasswordException $e) {
          echo $e->getMessage();
-      } catch (PasswordTooWeakException $e) {
+      } catch (\Glpi\Exception\PasswordTooWeakException $e) {
          // Force display on error
          foreach ($e->getMessages() as $message) {
             Session::addMessageAfterRedirect($message);
@@ -4872,7 +4871,7 @@ JAVASCRIPT;
       echo "<div class='center'>";
       try {
          $this->forgetPassword($email);
-      } catch (ForgetPasswordException $e) {
+      } catch (\Glpi\Exception\ForgetPasswordException $e) {
          echo $e->getMessage();
          return;
       }
@@ -4922,16 +4921,16 @@ JAVASCRIPT;
                QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
                return true;
             } else {
-               throw new ForgetPasswordException(__('Invalid email address'));
+               throw new \Glpi\Exception\ForgetPasswordException(__('Invalid email address'));
             }
 
          } else {
-            throw new ForgetPasswordException(__("The authentication method configuration doesn't allow you to change your password."));
+            throw new \Glpi\Exception\ForgetPasswordException(__("The authentication method configuration doesn't allow you to change your password."));
          }
 
       }
 
-      throw new ForgetPasswordException(__('Email address not found.'));
+      throw new \Glpi\Exception\ForgetPasswordException(__('Email address not found.'));
    }
 
 

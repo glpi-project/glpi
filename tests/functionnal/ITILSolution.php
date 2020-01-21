@@ -32,7 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 use Ticket;
 
 /* Test for inc/itilsolution.class.php */

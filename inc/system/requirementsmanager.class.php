@@ -32,18 +32,17 @@
 
 namespace Glpi\System;
 
+use Glpi\System\Requirement\DbEngine;
+use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\Requirement\DirectoryWriteAccess;
 use Glpi\System\Requirement\Extension;
 use Glpi\System\Requirement\ExtensionClass;
-use Glpi\System\Requirement\ExtensionFunction;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\ProtectedWebAccess;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
-use Glpi\System\Requirement\DbEngine;
-use Glpi\System\Requirement\DbTimezones;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");

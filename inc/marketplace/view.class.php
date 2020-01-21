@@ -36,14 +36,13 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+use CommonGLPI;
+use Config;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
-use Glpi\Marketplace\Controller  as Controller;
-use \Html;
-use \Plugin;
-use \Config;
-use \CommonGLPI;
-use \GLPINetwork;
-use \Toolbox;
+use GLPINetwork;
+use Html;
+use Plugin;
+use Toolbox;
 
 class View extends CommonGLPI {
    static $rightname = 'config';

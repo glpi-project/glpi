@@ -2056,7 +2056,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       $vtodo = $vcalendar->getBaseComponent();
 
       if (null !== $vtodo->RRULE) {
-         throw new UnexpectedValueException('RRULE not yet implemented for Project tasks');
+         throw new \UnexpectedValueException('RRULE not yet implemented for Project tasks');
       }
 
       $input = $this->getCommonInputFromVcomponent($vtodo);

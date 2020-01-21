@@ -32,13 +32,11 @@
 
 namespace tests\units\Glpi\Api;
 
-use \APIBaseClass;
+use APIBaseClass;
 use Glpi\Tests\Web\Deprecated\Computer_SoftwareLicense;
 use Glpi\Tests\Web\Deprecated\Computer_SoftwareVersion;
 use Glpi\Tests\Web\Deprecated\TicketFollowup;
-use \GuzzleHttp;
-use GuzzleHttp\Exception\ClientException;
-use ITILFollowup;
+use GuzzleHttp;
 
 /* Test for inc/api/api.class.php */
 
@@ -128,7 +126,7 @@ class APIRest extends APIBaseClass {
       // launch query
       try {
          $res = $this->doHttpRequest($verb, $relative_uri, $params);
-      } catch (ClientException $e) {
+      } catch (\GuzzleHttp\Exception\ClientException $e) {
          $response = $e->getResponse();
          if (!in_array($response->getStatusCode(), $expected_codes)) {
             //throw exceptions not expected

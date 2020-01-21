@@ -46,8 +46,6 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
-use Glpi\Exception\ForgetPasswordException;
-use Glpi\Exception\PasswordTooWeakException;
 use Html;
 use Infocom;
 use Item_Devices;
@@ -2168,7 +2166,7 @@ abstract class API extends CommonGLPI {
          $email = Toolbox::addslashes_deep($params['email']);
          try {
             $user->forgetPassword($email);
-         } catch (ForgetPasswordException $e) {
+         } catch (\Glpi\Exception\ForgetPasswordException $e) {
             return $this->returnError($e->getMessage());
          }
          return $this->returnResponse([
@@ -2185,9 +2183,9 @@ abstract class API extends CommonGLPI {
          try {
             $user->updateForgottenPassword($input);
             return $this->returnResponse([__("Reset password successful.")]);
-         } catch (ForgetPasswordException $e) {
+         } catch (\Glpi\Exception\ForgetPasswordException $e) {
             return $this->returnError($e->getMessage());
-         } catch (PasswordTooWeakException $e) {
+         } catch (\Glpi\Exception\PasswordTooWeakException $e) {
             implode('\n', $e->getMessages());
             return $this->returnError(implode('\n', $e->getMessages()));
          }
