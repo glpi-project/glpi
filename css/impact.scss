@@ -558,6 +558,10 @@ i.fa-impact-manipulation {
 .impact-res-disabled {
    opacity: 0.5;
    cursor: not-allowed !important;
+
+   i {
+      cursor: not-allowed !important;
+   }
 }
 
 /*
