@@ -1293,6 +1293,48 @@ HTML
    $migration->addConfig(['ssologout_url' => '']);
    /** SSO logout URL */
 
+   /** A doc_item to rule them all! */
+   $itemtypes = [
+      'ITILFollowup' => 'content',
+      'ITILSolution' => 'content',
+      'Reminder'     => 'text',
+      'KnowbaseItem' => 'answer'
+   ];
+   foreach (['Change', 'Problem', 'Ticket'] as $itiltype) {
+      $itemtypes[$itiltype] = 'content';
+      $itemtypes[$itiltype . 'Task'] = 'content';
+   }
+   $docs_input =[];
+   foreach ($itemtypes as $itemtype => $field) {
+      // Check ticket and child items (followups, tasks, solutions) contents
+      $regexPattern = 'document\\\.send\\\.php\\\?docid=[0-9]+';
+      $user_field = is_a($itemtype, CommonITILObject::class, true) ? 'users_id_recipient' : 'users_id';
+      $result = $DB->request([
+         'SELECT' => ['id', $field, $user_field],
+         'FROM'   => $itemtype::getTable(),
+         'WHERE'  => [
+            $field => ['REGEXP', $regexPattern]
+         ]
+      ]);
+      while ($data = $result->next()) {
+         preg_match('/document\\.send\\.php\\?docid=([0-9]+)/', $data[$field], $matches);
+         $docs_input[] = [
+            'documents_id'       => $matches[1],
+            'itemtype'           => $itemtype,
+            'items_id'           => $data['id'],
+            'timeline_position'  => CommonITILObject::NO_TIMELINE,
+            'users_id'           => $data[$user_field],
+         ];
+      }
+   }
+   $ditem = new Document_Item();
+   foreach ($docs_input as $doc_input) {
+      if (!$ditem->getFromDBbyCrit($doc_input)) {
+         $ditem->add($doc_input);
+      }
+   }
+   /** /A doc_item to rule them all! */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

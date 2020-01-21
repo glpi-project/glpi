@@ -77,6 +77,7 @@ abstract class CommonITILObject extends CommonDBTM {
    const TEST          = 11; // test
    const QUALIFICATION = 12; // qualification
 
+   const NO_TIMELINE       = -1;
    const TIMELINE_NOTSET   = 0;
    const TIMELINE_LEFT     = 1;
    const TIMELINE_MIDLEFT  = 2;
@@ -6691,7 +6692,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
       //add documents to timeline
       $document_obj   = new Document();
-      $document_items = $document_item_obj->find(['itemtype' => $objType, 'items_id' => $this->getID()]);
+      $document_items = $document_item_obj->find([
+         'itemtype'           => $objType,
+         'items_id'           => $this->getID(),
+         'timeline_position'  => ['>', self::NO_TIMELINE]
+      ]);
       foreach ($document_items as $document_item) {
          $document_obj->getFromDB($document_item['documents_id']);
 

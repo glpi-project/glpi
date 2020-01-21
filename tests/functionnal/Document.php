@@ -319,6 +319,14 @@ class Document extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
+      $this->integer(
+         (int)$document_item->add([
+            'documents_id' => $inlinedDocument->getID(),
+            'items_id'     => $glpiReminder->getID(),
+            'itemtype'     => \Reminder::class,
+         ])
+      )->isGreaterThan(0);
+
       $this->boolean($basicDocument->canViewFile())->isFalse();
       $this->boolean($inlinedDocument->canViewFile())->isFalse();
 
@@ -336,6 +344,14 @@ class Document extends DbTestCase {
       $this->integer(
          (int)$document_item->add([
             'documents_id' => $basicDocument->getID(),
+            'items_id'     => $myReminder->getID(),
+            'itemtype'     => \Reminder::class,
+         ])
+      )->isGreaterThan(0);
+
+      $this->integer(
+         (int)$document_item->add([
+            'documents_id' => $inlinedDocument->getID(),
             'items_id'     => $myReminder->getID(),
             'itemtype'     => \Reminder::class,
          ])
@@ -383,6 +399,14 @@ class Document extends DbTestCase {
       $this->integer(
          (int)$document_item->add([
             'documents_id' => $basicDocument->getID(),
+            'items_id'     => $kbItem->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+         ])
+      )->isGreaterThan(0);
+
+      $this->integer(
+         (int)$document_item->add([
+            'documents_id' => $inlinedDocument->getID(),
             'items_id'     => $kbItem->getID(),
             'itemtype'     => \KnowbaseItem::class,
          ])
@@ -512,6 +536,14 @@ class Document extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
+      $this->integer(
+         (int)$document_item->add([
+            'documents_id' => $inlinedDocument->getID(),
+            'items_id'     => $item->getID(),
+            'itemtype'     => $itemtype,
+         ])
+      )->isGreaterThan(0);
+
       // post-only cannot see documents if not able to view ITIL (ITIL content)
       $this->login('post-only', 'postonly');
       $_SESSION["glpiactiveprofile"][$item::$rightname] = READ; // force READ write for tested ITIL type
@@ -616,6 +648,15 @@ class Document extends DbTestCase {
             'items_id'   => $itil->getID(),
             'itemtype'   => $itil_itemtype,
             'users_id'   => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $document_item = new \Document_Item();
+      $this->integer(
+         (int)$document_item->add([
+            'documents_id' => $inlinedDocument->getID(),
+            'items_id'     => $itil->getID(),
+            'itemtype'     => $itil_itemtype,
          ])
       )->isGreaterThan(0);
 
