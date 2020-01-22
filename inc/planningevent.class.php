@@ -251,10 +251,10 @@ trait PlanningEvent {
     * Delete a specific instance of a serie
     * Add an exception into the serie
     *
-    * @see AddInstanceException
+    * @see addInstanceException
     */
    function deleteInstance(int $id = 0, string $day = "") {
-      $this->AddInstanceException($id, $day);
+      $this->addInstanceException($id, $day);
    }
 
    /**
@@ -265,7 +265,7 @@ trait PlanningEvent {
     *
     * @return bool
     */
-   function AddInstanceException(int $id = 0, string $day = "") {
+   function addInstanceException(int $id = 0, string $day = "") {
       $this->getFromDB($id);
       $rrule = json_decode($this->fields['rrule'], true) ?? [];
       $rrule = array_merge_recursive($rrule, [
@@ -302,7 +302,7 @@ trait PlanningEvent {
       $new_id = $instance->add($fields);
       $instance->getFromDB($new_id);
 
-      $this->AddInstanceException($id, date("Y-m-d", strtotime($start)));
+      $this->addInstanceException($id, date("Y-m-d", strtotime($start)));
 
       return $instance;
    }
