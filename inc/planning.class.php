@@ -1142,8 +1142,7 @@ class Planning extends CommonGLPI {
             ]
          ]
       ]);
-      $index_color = count($_SESSION['glpi_plannings']['plannings']);
-      $group_user_index = 0;
+
       foreach ($users as $user_data) {
          // do not add an already set user
          if (!isset($_SESSION['glpi_plannings']['plannings']['user_'.$user_data['id']])) {
@@ -1193,7 +1192,7 @@ class Planning extends CommonGLPI {
     *
     * @return void
     */
-   static function showAddGroupForm($params = []) {
+   static function showAddGroupForm() {
 
       $condition = ['is_task' => 1];
       // filter groups
@@ -2176,24 +2175,6 @@ class Planning extends CommonGLPI {
 
       return $html;
    }
-
-
-   /**
-    * Display an integer using 2 digits
-    *
-    * @param $time value to display
-    *
-    * @return string return the 2 digits item
-   **/
-   static private function displayUsingTwoDigits($time) {
-
-      $time = round($time);
-      if (($time < 10) && (strlen($time) > 0)) {
-         return "0".$time;
-      }
-      return $time;
-   }
-
 
    /**
     * Show the planning for the central page of a user
