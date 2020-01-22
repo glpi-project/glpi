@@ -471,6 +471,9 @@ trait PlanningEvent {
          while ($data = $iterator->next()) {
             if ($event_obj->getFromDB($data["id"]) && $event_obj->canViewItem()) {
                $key = $data["begin"]."$$".$itemtype."$$".$data["id"];
+               if (isset($options['from_group_users'])) {
+                  $key.= "_gu";
+               }
 
                $url = (!$options['genical'])
                   ? $event_obj->getFormURLWithID($data['id'])

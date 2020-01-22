@@ -668,6 +668,7 @@ class Planning extends CommonGLPI {
                $user = new User;
                $users_id = (int) $child_exploded[1];
                $user->getFromDB($users_id);
+               $planning_id_user = "gu_".$planning_id_user;
                $resources[] = [
                   'id'         => $planning_id_user,
                   'title'      => $user->getName(),
@@ -1144,15 +1145,12 @@ class Planning extends CommonGLPI {
       ]);
 
       foreach ($users as $user_data) {
-         // do not add an already set user
-         if (!isset($_SESSION['glpi_plannings']['plannings']['user_'.$user_data['id']])) {
-            $current_group['users']['user_'.$user_data['id']] = [
-               'color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
-               'display' => true,
-               'type'    => 'user'
-            ];
-            $_SESSION['glpi_plannings_color_index']++;
-         }
+         $current_group['users']['user_'.$user_data['id']] = [
+            'color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
+            'display' => true,
+            'type'    => 'user'
+         ];
+         $_SESSION['glpi_plannings_color_index']++;
       }
       self::savePlanningsInDB();
    }
@@ -1882,6 +1880,7 @@ class Planning extends CommonGLPI {
          if ($params['type'] == "group_users") {
             $subparams = $params;
             unset($subparams['users']);
+            $subparams['from_group_users'] = true;
             foreach ($params['users'] as $user => $userdata) {
                $subparams = array_merge($subparams, $userdata);
                self::constructEventsArraySingleLine($user, $subparams, $raw_events, $not_planned);
@@ -1905,6 +1904,10 @@ class Planning extends CommonGLPI {
                $not_planned = array_merge($not_planned, $params['planning_type']::populateNotPlanned($params));
             }
          }
+      }
+
+      if (isset($params['from_group_users']) && $params['from_group_users']) {
+         $actor = "gu_".$actor;
       }
 
       // fill type of planning
