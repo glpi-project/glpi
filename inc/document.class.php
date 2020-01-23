@@ -1623,12 +1623,14 @@ class Document extends CommonDBTM {
       }
 
       $infos = pathinfo($path);
+      // output images with possible transparency to png, other to jpg
+      $extension = in_array(strtolower($infos['extension']), ['png', 'gif']) ? 'png' : 'jpg';
       $context_path = sprintf(
          '%1$s_%2$s-%3$s.%4$s',
          $infos['dirname'] . '/' . $infos['filename'],
          $mwidth,
          $mheight,
-         'jpg' //resizePicture always produces JPG files
+         $extension
       );
 
       //let's check if file already exists
