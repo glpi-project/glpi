@@ -668,6 +668,7 @@ class Planning extends CommonGLPI {
                $user = new User;
                $users_id = (int) $child_exploded[1];
                $user->getFromDB($users_id);
+               $planning_id_user = "gu_".$planning_id_user;
                $resources[] = [
                   'id'         => $planning_id_user,
                   'title'      => $user->getName(),
@@ -1142,25 +1143,20 @@ class Planning extends CommonGLPI {
             ]
          ]
       ]);
-      $index_color = count($_SESSION['glpi_plannings']['plannings']);
-      $group_user_index = 0;
+
       foreach ($users as $user_data) {
-         // do not add an already set user
-         if (!isset($_SESSION['glpi_plannings']['plannings']['user_'.$user_data['id']])) {
-            $current_group['users']['user_'.$user_data['id']] = [
-               'color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
-               'display' => true,
-               'type'    => 'user'
-            ];
-            $_SESSION['glpi_plannings_color_index']++;
-         }
+         $current_group['users']['user_'.$user_data['id']] = [
+            'color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
+            'display' => true,
+            'type'    => 'user'
+         ];
+         $_SESSION['glpi_plannings_color_index']++;
       }
       self::savePlanningsInDB();
    }
 
 
    static function editEventForm($params = []) {
-
       if (!$params['itemtype'] instanceof CommonDBTM) {
          echo "<div class='center'>";
          echo "<a href='".$params['url']."'>".__("View this item in his context")."</a>";
@@ -1169,7 +1165,8 @@ class Planning extends CommonGLPI {
          $rand = mt_rand();
          $options = [
             'from_planning_edit_ajax' => true,
-            'formoptions'             => "id='edit_event_form$rand'"
+            'formoptions'             => "id='edit_event_form$rand'",
+            'start'                   => date("Y-m-d", strtotime($params['start']))
          ];
          if (isset($params['parentitemtype'])) {
             $options['parent'] = getItemForItemtype($params['parentitemtype']);
@@ -1193,7 +1190,7 @@ class Planning extends CommonGLPI {
     *
     * @return void
     */
-   static function showAddGroupForm($params = []) {
+   static function showAddGroupForm() {
 
       $condition = ['is_task' => 1];
       // filter groups
@@ -1843,8 +1840,9 @@ class Planning extends CommonGLPI {
                }
 
                $new_event = array_merge($new_event, [
-                  'rrule'    => $rrule_string,
-                  'duration' => $ms_duration
+                  'is_recurrent' => true,
+                  'rrule'        => $rrule_string,
+                  'duration'     => $ms_duration
                ]);
 
             }
@@ -1882,6 +1880,7 @@ class Planning extends CommonGLPI {
          if ($params['type'] == "group_users") {
             $subparams = $params;
             unset($subparams['users']);
+            $subparams['from_group_users'] = true;
             foreach ($params['users'] as $user => $userdata) {
                $subparams = array_merge($subparams, $userdata);
                self::constructEventsArraySingleLine($user, $subparams, $raw_events, $not_planned);
@@ -1905,6 +1904,10 @@ class Planning extends CommonGLPI {
                $not_planned = array_merge($not_planned, $params['planning_type']::populateNotPlanned($params));
             }
          }
+      }
+
+      if (isset($params['from_group_users']) && $params['from_group_users']) {
+         $actor = "gu_".$actor;
       }
 
       // fill type of planning
@@ -2030,12 +2033,17 @@ class Planning extends CommonGLPI {
                }
             }
 
-            // if event has rrule property, we shouldn't change it's data
-            // by dragging or resizing it
+            // if event has rrule property, check if we need to create a clone instance
             if (isset($item->fields['rrule'])
                 && strlen($item->fields['rrule'])) {
-               $abort = true;
-               Session::addMessageAfterRedirect(__("You cannot directly move or resize reccurent events"), false, ERROR);
+               if (isset($params['move_instance'])
+                   && filter_var($params['move_instance'], FILTER_VALIDATE_BOOLEAN)) {
+                  $item = $item->createInstanceClone(
+                     $item->fields['id'],
+                     $params['old_start']
+                  );
+                  $params['items_id'] = $item->fields['id'];
+               }
             }
 
             if (!$abort) {
@@ -2170,24 +2178,6 @@ class Planning extends CommonGLPI {
 
       return $html;
    }
-
-
-   /**
-    * Display an integer using 2 digits
-    *
-    * @param $time value to display
-    *
-    * @return string return the 2 digits item
-   **/
-   static private function displayUsingTwoDigits($time) {
-
-      $time = round($time);
-      if (($time < 10) && (strlen($time) > 0)) {
-         return "0".$time;
-      }
-      return $time;
-   }
-
 
    /**
     * Show the planning for the central page of a user

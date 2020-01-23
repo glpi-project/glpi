@@ -1094,6 +1094,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                          "$$$".$itemtype.
                          "$$$".$data["id"].
                          "$$$".$who."$$$".$whogroup;
+
+                  if (isset($options['from_group_users'])) {
+                     $key.= "_gu";
+                  }
+
                   $interv[$key]['color']            = $options['color'];
                   $interv[$key]['event_type_color'] = $options['event_type_color'];
                   $interv[$key]['itemtype']         = $itemtype;

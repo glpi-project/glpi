@@ -67,6 +67,11 @@ if (isset($_POST["add"])) {
    $extevent->delete($_POST, 1);
    $extevent->redirectToList();
 
+} else if (isset($_POST["purge_instance"])) {
+   $extevent->check($_POST["id"], PURGE);
+   $extevent->deleteInstance((int) $_POST["id"], $_POST['day']);
+   $extevent->redirectToList();
+
 } else if (isset($_POST["update"])) {
    $extevent->check($_POST["id"], UPDATE);
    $extevent->update($_POST);

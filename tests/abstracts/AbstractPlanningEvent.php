@@ -34,21 +34,22 @@ abstract class AbstractPlanningEvent extends \DbTestCase {
    protected $myclass = "";
    protected $input   = [];
 
-   private $begin     = "";
-   private $end       = "";
-   private $duration  = "";
-   private $exdate1   = "";
-   private $exdate2   = "";
+   protected $now       = "";
+   protected $begin     = "";
+   protected $end       = "";
+   protected $duration  = "";
+   protected $exdate1   = "";
+   protected $exdate2   = "";
 
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
 
-      $now            = time();
+      $this->now      = time();
       $this->duration = 2 * \HOUR_TIMESTAMP;
-      $this->begin    = date('Y-m-d H:i:s', $now);
-      $this->end      = date('Y-m-d H:i:s', $now + $this->duration);
-      $this->exdate1  = date('Y-m-d', $now + (2 * \DAY_TIMESTAMP));
-      $this->exdate2  = date('Y-m-d', $now + (3 * \DAY_TIMESTAMP));
+      $this->begin    = date('Y-m-d H:i:s', $this->now);
+      $this->end      = date('Y-m-d H:i:s', $this->now + $this->duration);
+      $this->exdate1  = date('Y-m-d', $this->now + (2 * \DAY_TIMESTAMP));
+      $this->exdate2  = date('Y-m-d', $this->now + (3 * \DAY_TIMESTAMP));
 
       $this->input = [
          'name'       => 'test add external event',

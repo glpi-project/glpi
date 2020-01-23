@@ -101,6 +101,9 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
+      $is_ajax  = isset($options['from_planning_edit_ajax']) && $options['from_planning_edit_ajax'];
+      $is_rrule = strlen($this->fields['rrule']) > 0;
+
       // set event for another user
       if (isset($options['res_itemtype'])
           && isset($options['res_items_id'])
@@ -171,10 +174,28 @@ JAVASCRIPT;
          echo "</tr>";
       }
 
+      if (!$ID) {
+         echo "<tr class='tab_bg_2'><td colspan='2'>".__('User(s)')."</td>";
+         echo "<td colspan='2'>";
+         User::dropdown([
+            'name'          => 'users_id[]',
+            'right'         => 'all',
+            'value'         => $this->fields['users_id'],
+            'specific_tags' => [
+               'multiple' => true
+            ],
+         ]);
+         echo "<div style='font-style: italic'>".
+              __("Each users will have a copy of this event").
+              "</div>";
+         echo "</td>";
+         echo "</tr>";
+      }
+
       echo "<tr class='tab_bg_2'><td colspan='2'>".__('Title')."</td>";
       echo "<td colspan='2'>";
-      if (!$ID) {
-         echo Html::hidden('users_id', ['value' => $this->fields['users_id']]);
+      if (isset($options['start'])) {
+         echo Html::hidden('day', ['value' => $options['start']]);
       }
       if ($canedit) {
          Html::autocompletionTextField($this, "name", [
@@ -274,6 +295,14 @@ JAVASCRIPT;
       }
 
       echo "</td></tr>";
+
+      if ($is_ajax && $is_rrule) {
+         $options['candel'] = false;
+         $options['addbuttons'] = [
+            'purge'          => "<i class='fas fa-trash-alt'></i>&nbsp;".__("Delete serie"),
+            'purge_instance' => "<i class='far fa-trash-alt'></i>&nbsp;".__("Delete instance"),
+         ];
+      }
 
       $this->showFormButtons($options);
 

@@ -89,6 +89,17 @@ trait PlanningEvent {
          $input['users_id'] = Session::getLoginUserID();
       }
 
+      // manage addition for mulitple users
+      if (isset($input['users_id']) && is_array($input['users_id'])) {
+         foreach ($input['users_id'] as $users_id) {
+            $new_item = new self;
+            $input['users_id'] = $users_id;
+            $new_item->add($input);
+         }
+
+         return false;
+      }
+
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
       if (!isset($input['uuid'])) {
@@ -234,6 +245,66 @@ trait PlanningEvent {
          $this->fields['users_id'] = $uid;
          $this->updates[]          ="users_id";
       }
+   }
+
+   /**
+    * Delete a specific instance of a serie
+    * Add an exception into the serie
+    *
+    * @see addInstanceException
+    */
+   function deleteInstance(int $id = 0, string $day = "") {
+      $this->addInstanceException($id, $day);
+   }
+
+   /**
+    * Add an exception into a serie
+    *
+    * @param int $id of the serie
+    * @param string $day the exception
+    *
+    * @return bool
+    */
+   function addInstanceException(int $id = 0, string $day = "") {
+      $this->getFromDB($id);
+      $rrule = json_decode($this->fields['rrule'], true) ?? [];
+      $rrule = array_merge_recursive($rrule, [
+         'exceptions' => [
+            $day
+         ]
+      ]);
+      return $this->update([
+         'id'    => $id,
+         'rrule' => $rrule
+      ]);
+   }
+
+
+   /**
+    * Clone recurrent event into a non recurrent event
+    * (and add an exception to the orginal one)
+    *
+    * @param int $id of the serie
+    * @param string $start the new start for the event (in case of dragging)
+    *
+    * @return object the new object
+    */
+   public function createInstanceClone(int $id = 0, string $start = "") {
+      $this->getFromDB($id);
+      $fields = $this->fields;
+      unset($fields['id'], $fields['uuid'], $fields['rrule']);
+      $fields['plan'] = [
+         'begin' => $fields['begin'],
+         'end'   => $fields['end'],
+      ];
+
+      $instance = new self;
+      $new_id = $instance->add($fields);
+      $instance->getFromDB($new_id);
+
+      $this->addInstanceException($id, date("Y-m-d", strtotime($start)));
+
+      return $instance;
    }
 
 
@@ -400,6 +471,9 @@ trait PlanningEvent {
          while ($data = $iterator->next()) {
             if ($event_obj->getFromDB($data["id"]) && $event_obj->canViewItem()) {
                $key = $data["begin"]."$$".$itemtype."$$".$data["id"];
+               if (isset($options['from_group_users'])) {
+                  $key.= "_gu";
+               }
 
                $url = (!$options['genical'])
                   ? $event_obj->getFormURLWithID($data['id'])
