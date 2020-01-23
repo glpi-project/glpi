@@ -2003,8 +2003,8 @@ class Infocom extends CommonDBChild {
                         $ma->addMessage($ic->getErrorMessage(ERROR_RIGHT));
                      }
                   } else {
-                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                     $ma->addMessage($ic->getErrorMessage(ERROR_NOT_FOUND));
+                     // Infocom already exists for this item, nothing to do.
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                   }
                }
             }
