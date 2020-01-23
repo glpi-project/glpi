@@ -1351,12 +1351,31 @@ class Toolbox {
       //create new img resource for store thumbnail
       $source_dest = imagecreatetruecolor($new_width, $new_height);
 
+      // set transparent background for PNG/GIF
+      if ($img_type === IMAGETYPE_GIF || $img_type === IMAGETYPE_PNG) {
+         imagecolortransparent($source_dest, imagecolorallocatealpha($source_dest, 0, 0, 0, 127));
+         imagealphablending($source_dest, false);
+         imagesavealpha($source_dest, true);
+      }
+
       //resize image
       imagecopyresampled($source_dest, $source_res, 0, 0, $img_x, $img_y,
                          $new_width, $new_height, $img_width, $img_height);
 
       //output img
-      return imagejpeg($source_dest, $dest_path, 90);
+      $result = null;
+      switch ($img_type) {
+         case IMAGETYPE_GIF :
+         case IMAGETYPE_PNG :
+            $result = imagepng($source_dest, $dest_path);
+            break;
+
+         case IMAGETYPE_JPEG :
+         default :
+            $result = imagejpeg($source_dest, $dest_path, 90);
+            break;
+      }
+      return $result;
    }
 
 
