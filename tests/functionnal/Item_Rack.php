@@ -207,7 +207,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Item is out of rack bounds']]
+         [ERROR => [__('Item is out of rack bounds')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -235,7 +235,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Item is out of rack bounds']]
+         [ERROR => [__('Item is out of rack bounds')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -251,7 +251,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Item is out of rack bounds']]
+         [ERROR => [__('Item is out of rack bounds')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -282,7 +282,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['You must define an horizontal position for this item']]
+         [ERROR => [__('You must define an horizontal position for this item')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -299,7 +299,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enough space available to place item']]
+         [ERROR => [__('Not enough space available to place item')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -328,7 +328,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enough space available to place item']]
+         [ERROR => [__('Not enough space available to place item')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -357,7 +357,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enough space available to place item']]
+         [ERROR => [__('Not enough space available to place item')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -377,7 +377,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['You must define an orientation for this item']]
+         [ERROR => [__('You must define an orientation for this item')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -394,7 +394,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enough space available to place item']]
+         [ERROR => [__('Not enough space available to place item')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -411,7 +411,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enough space available to place item']]
+         [ERROR => [__('Not enough space available to place item')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -441,7 +441,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enough space available to place item']]
+         [ERROR => [__('Not enough space available to place item')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -477,7 +477,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enough space available to place item']]
+         [ERROR => [__('Not enough space available to place item')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -506,7 +506,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enough space available to place item']]
+         [ERROR => [__('Not enough space available to place item')]]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 

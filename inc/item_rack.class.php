@@ -942,48 +942,25 @@ JAVASCRIPT;
    private function prepareInput($input) {
       $error_detected = [];
 
-      $itemtype = $this->fields['itemtype'];
-      $items_id = $this->fields['items_id'];
-      $racks_id = $this->fields['racks_id'];
-      $position = $this->fields['position'];
-      $hpos = $this->fields['hpos'];
-      $orientation = $this->fields['orientation'];
+      $itemtype    = $input['itemtype']    ?? $this->fields['itemtype']    ?? null;
+      $items_id    = $input['items_id']    ?? $this->fields['items_id']    ?? null;
+      $racks_id    = $input['racks_id']    ?? $this->fields['racks_id']    ?? null;
+      $position    = $input['position']    ?? $this->fields['position']    ?? null;
+      $hpos        = $input['hpos']        ?? $this->fields['hpos']        ?? Rack::POS_NONE;
+      $orientation = $input['orientation'] ?? $this->fields['orientation'] ?? Rack::FRONT;
 
       //check for requirements
-      if (($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
-          || (isset($input['itemtype']) && empty($input['itemtype']))) {
+      if (empty($itemtype)) {
          $error_detected[] = __('An item type is required');
       }
-      if (($this->isNewItem() && (!isset($input['items_id']) || empty($input['items_id'])))
-          || (isset($input['items_id']) && empty($input['items_id']))) {
+      if (empty($items_id)) {
          $error_detected[] = __('An item is required');
       }
-      if (($this->isNewItem() && (!isset($input['racks_id']) || empty($input['racks_id'])))
-          || (isset($input['racks_id']) && empty($input['racks_id']))) {
+      if (empty($racks_id)) {
          $error_detected[] = __('A rack is required');
       }
-      if (($this->isNewItem() && (!isset($input['position']) || empty($input['position'])))
-          || (isset($input['position']) && empty($input['position']))) {
+      if (empty($position)) {
          $error_detected[] = __('A position is required');
-      }
-
-      if (isset($input['itemtype'])) {
-         $itemtype = $input['itemtype'];
-      }
-      if (isset($input['items_id'])) {
-         $items_id = $input['items_id'];
-      }
-      if (isset($input['racks_id'])) {
-         $racks_id = $input['racks_id'];
-      }
-      if (isset($input['position'])) {
-         $position = $input['position'];
-      }
-      if (isset($input['hpos'])) {
-         $hpos = $input['hpos'];
-      }
-      if (isset($input['orientation'])) {
-         $orientation = $input['orientation'];
       }
 
       if (!count($error_detected)) {
