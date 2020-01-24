@@ -1099,9 +1099,10 @@ class ITILFollowup  extends CommonDBChild {
          );
       }
 
+      $lc_itemtype = strtolower($itemtype);
       // Can see all items, no need to go further
-      if (Session::haveRight($itemtype, $itemtype::READALL)) {
-         return "(`itemtype` = '$itemtype') ";
+      if (Session::haveRight($lc_itemtype, $itemtype::READALL)) {
+         return "(LOWER(`itemtype`) = '$lc_itemtype') ";
       }
 
       $user   = Session::getLoginUserID();
@@ -1118,10 +1119,10 @@ class ITILFollowup  extends CommonDBChild {
       // We need to do some specific checks for tickets
       if ($itemtype == "Ticket") {
          // Default condition
-         $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
+         $condition = "(LOWER(`itemtype`) = '$lc_itemtype' AND (0 = 1 ";
          return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";
       } else {
-         if (Session::haveRight($itemtype, $itemtype::READMY)) {
+         if (Session::haveRight($lc_itemtype, $itemtype::READMY)) {
             // Subquery for affected/assigned/observer user
             $user_query = "SELECT `$target`
                FROM `$user_table`
@@ -1138,7 +1139,7 @@ class ITILFollowup  extends CommonDBChild {
                WHERE `users_id_recipient` = '$user'";
 
             return "(
-               `itemtype` = '$itemtype' AND (
+               LOWER(`itemtype`) = '$lc_itemtype' AND (
                   `items_id` IN ($user_query) OR
                   `items_id` IN ($group_query) OR
                   `items_id` IN ($recipient_query)
@@ -1146,7 +1147,7 @@ class ITILFollowup  extends CommonDBChild {
             ) ";
          } else {
             // Can't see any items
-            return "(`itemtype` = '$itemtype' AND 0 = 1) ";
+            return "(LOWER(`itemtype`) = '$lc_itemtype' AND 0 = 1) ";
          }
       }
    }
