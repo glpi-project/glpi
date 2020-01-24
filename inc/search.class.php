@@ -3926,8 +3926,14 @@ JAVASCRIPT;
             $condition .= "OR `users_id` = " . Session::getLoginUserID() . " ";
             $condition .= "OR `users_id_tech` = " . Session::getLoginUserID() . " ";
 
-            // Check for parent item visibility
-            $condition .= "AND " . TicketTask::buildParentCondition() . ")";
+            // Check for parent item visibility unless the user can see all the
+            // possible parents
+            if (!Session::haveRight('ticket', Ticket::READALL)) {
+               $condition .= "AND " . TicketTask::buildParentCondition();
+            }
+
+            $condition .= ")";
+
             break;
 
          case 'ITILFollowup':
