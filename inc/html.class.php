@@ -5223,11 +5223,11 @@ JAVASCRIPT;
                Html::cleanInputText($image), Html::parseAttributes($options));
       }
 
-      $button = "<button type='submit' %s>
+      $button = "<button type='submit' value='%s' %s>
                $caption
             </button>&nbsp;";
 
-      return sprintf($button, Html::parseAttributes($options));
+      return sprintf($button, Html::cleanInputText($caption), Html::parseAttributes($options));
    }
 
 
