@@ -1484,6 +1484,101 @@ HTML
    );
    /** /Password expiration policy */
 
+   /** Update default right assignement rule (only it exactly match previous default rule) */
+   $prev_rule = [
+      'entities_id'  => 0,
+      'sub_type'     => 'RuleRight',
+      'ranking'      => 1,
+      'name'         => 'Root',
+      'description'  => '',
+      'match'        => 'OR',
+      'is_active'    => 1,
+      'is_recursive' => 0,
+      'uuid'         => '500717c8-2bd6e957-53a12b5fd35745.02608131',
+      'condition'    => 0,
+   ];
+   $rule = new Rule();
+   if ($rule->getFromDBByCrit($prev_rule)) {
+      $rule->getRuleWithCriteriasAndActions($rule->fields['id'], true, true);
+
+      $prev_criteria = [
+         [
+            'rules_id'  => $rule->fields['id'],
+            'criteria'  => 'uid',
+            'condition' => 0,
+            'pattern'   => '*',
+         ],
+         [
+            'rules_id'  => $rule->fields['id'],
+            'criteria'  => 'samaccountname',
+            'condition' => 0,
+            'pattern'   => '*',
+         ],
+         [
+            'rules_id'  => $rule->fields['id'],
+            'criteria'  => 'MAIL_EMAIL',
+            'condition' => 0,
+            'pattern'   => '*',
+         ],
+      ];
+      $prev_actions = [
+         [
+            'rules_id'    => $rule->fields['id'],
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => '0',
+         ],
+      ];
+
+      $matching_criteria = 0;
+      foreach ($rule->criterias as $criteria) {
+         $existing_criteria = $criteria->fields;
+         unset($existing_criteria['id']);
+         if (in_array($existing_criteria, $prev_criteria)) {
+            $matching_criteria++;
+         }
+      }
+
+      $matching_actions  = 0;
+      foreach ($rule->actions as $action) {
+         $existing_action = $action->fields;
+         unset($existing_action['id']);
+         if (in_array($existing_action, $prev_actions)) {
+            $matching_actions++;
+         }
+      }
+
+      if (count($rule->criterias) == count($prev_criteria)
+          && count($rule->criterias) == $matching_criteria
+          && count($rule->actions) == count($prev_actions)
+          && count($rule->actions) == $matching_actions) {
+         // rule matches previous default rule (same criteria and actions)
+         // so we can replace criteria
+         $DB->deleteOrDie('glpi_rulecriterias', ['rules_id' => $rule->fields['id']]);
+         $DB->insertOrDie(
+            'glpi_rulecriterias',
+            [
+               'rules_id'  => $rule->fields['id'],
+               'criteria'  => 'TYPE',
+               'condition' => 0,
+               'pattern'   => Auth::LDAP,
+            ],
+            'Update default right assignement rule'
+         );
+         $DB->insertOrDie(
+            'glpi_rulecriterias',
+            [
+               'rules_id'  => $rule->fields['id'],
+               'criteria'  => 'TYPE',
+               'condition' => 0,
+               'pattern'   => Auth::MAIL,
+            ],
+            'Update default right assignement rule'
+         );
+      }
+   }
+   /** /Update default right assignement rule */
+
    $migration->executeMigration();
 
    return $updateresult;
