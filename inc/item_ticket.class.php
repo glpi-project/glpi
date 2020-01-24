@@ -1199,6 +1199,14 @@ class Item_Ticket extends CommonDBRelation{
       $tab = [];
 
       $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'tickets_id',
+         'name'               => __('Ticket'),
+         'datatype'           => 'dropdown',
+      ];
+
+      $tab[] = [
          'id'                 => '13',
          'table'              => $this->getTable(),
          'field'              => 'items_id',
