@@ -909,4 +909,106 @@ class CommonDBTM extends DbTestCase {
       // This should not evaluate as a circular relation
       $this->boolean(\Project::checkCircularRelation($project_id_4, $project_id_3))->isFalse();
    }
+
+   protected function relationConfigProvider() {
+
+      return [
+         [
+            'relation_itemtype' => \Infocom::getType(),
+            'config_name'       => 'infocom_types',
+         ],
+         [
+            'relation_itemtype' => \ReservationItem::getType(),
+            'config_name'       => 'reservation_types',
+         ],
+         [
+            'relation_itemtype' => \Contract_Item::getType(),
+            'config_name'       => 'contract_types',
+            'linked_itemtype'   => \Contract::class,
+         ],
+         [
+            'relation_itemtype' => \Document_Item::getType(),
+            'config_name'       => 'document_types',
+            'linked_itemtype'   => \Document::class,
+         ],
+         [
+            'relation_itemtype' => \KnowbaseItem_Item::getType(),
+            'config_name'       => 'kb_types',
+            'linked_itemtype'   => \KnowbaseItem::class,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider relationConfigProvider
+    */
+   public function testCleanRelationTableBasedOnConfiguredTypes(
+      $relation_itemtype,
+      $config_name,
+      $linked_itemtype = null
+   ) {
+      global $CFG_GLPI;
+
+      $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+      $computer = new \Computer();
+      $relation_item = new $relation_itemtype();
+
+      $linked_item_input = [];
+      if ($linked_itemtype !== null) {
+         $linked_item = new $linked_itemtype();
+         $linked_item_id = $linked_item->add(
+            [
+               'name'        => 'Linked item',
+               'entities_id' => $entity_id,
+            ]
+         );
+         $this->integer($linked_item_id)->isGreaterThan(0);
+         $linked_item_input = [$linked_item->getForeignKeyField() => $linked_item_id];
+      }
+
+      // Create computer for which cleaning will be done.
+      $computer_1_id = $computer->add(
+         [
+            'name'        => 'Computer 1',
+            'entities_id' => $entity_id,
+         ]
+      );
+      $this->integer($computer_1_id)->isGreaterThan(0);
+      $relation_item_1_id = $relation_item->add(
+         [
+            'itemtype' => $computer->getType(),
+            'items_id' => $computer_1_id,
+         ] + $linked_item_input
+      );
+      $this->integer($relation_item_1_id)->isGreaterThan(0);
+      $this->boolean($relation_item->getFromDB($relation_item_1_id))->isTrue();
+
+      // Create witness computer.
+      $computer_2_id = $computer->add(
+         [
+            'name'        => 'Computer 2',
+            'entities_id' => $entity_id,
+         ]
+      );
+      $this->integer($computer_2_id)->isGreaterThan(0);
+      $relation_item_2_id = $relation_item->add(
+         [
+            'itemtype' => $computer->getType(),
+            'items_id' => $computer_2_id,
+         ] + $linked_item_input
+      );
+      $this->integer($relation_item_2_id)->isGreaterThan(0);
+      $this->boolean($relation_item->getFromDB($relation_item_2_id))->isTrue();
+
+      $cfg_backup = $CFG_GLPI;
+      $CFG_GLPI[$config_name] = [$computer->getType()];
+      $computer->delete(['id' => $computer_1_id], true);
+      $CFG_GLPI = $cfg_backup;
+
+      // Relation with deleted item has been cleaned
+      $this->boolean($relation_item->getFromDB($relation_item_1_id))->isFalse();
+      // Relation with witness object is still present
+      $this->boolean($relation_item->getFromDB($relation_item_2_id))->isTrue();
+   }
 }

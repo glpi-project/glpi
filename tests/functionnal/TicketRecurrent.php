@@ -281,7 +281,7 @@ class TicketRecurrent extends DbTestCase {
          'calendars_id'   => $calendar_id,
          'expected_value' => $this->getNextWorkingDayDate(
             $working_days,
-            (int)date('w') === 1 && (int)date('G') <= 12
+            (int)date('w') === 1 && (int)date('G') < 12
                ? 'tomorrow' // postpone to tomorrow if we are on monday prior to 12:00, as today is a day off
                : 'next monday',
             'Y-m-d 12:00:00'
@@ -298,9 +298,9 @@ class TicketRecurrent extends DbTestCase {
          'expected_value' => date('Y-m-01 00:00:00', strtotime($start_of_previous_month . ' + 2 month')),
       ];
 
-      // Ticket created every 2 month with no anticipation and with calendar.
+      // Ticket created every 3 month with no anticipation and with calendar.
       // Next occurence day will be on a day off, so creation will be done on next working day.
-      $next_occurence_date = date('Y-m-d', strtotime($start_of_previous_month . ' + 2 month'));
+      $next_occurence_date = date('Y-m-d', strtotime($start_of_previous_month . ' + 3 month'));
       $week_off_begin = $next_occurence_date;
       $week_off_end   = date('Y-m-d', strtotime($week_off_begin . ' + 7 days'));
       $holiday_id = $holiday->add(
@@ -323,7 +323,7 @@ class TicketRecurrent extends DbTestCase {
       $data[] = [
          'begin_date'     => $start_of_previous_month,
          'end_date'       => $end_of_next_year,
-         'periodicity'    => '2MONTH',
+         'periodicity'    => '3MONTH',
          'create_before'  => 0,
          'calendars_id'   => $calendar_id,
          'expected_value' => $this->getNextWorkingDayDate(

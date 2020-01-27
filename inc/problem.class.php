@@ -1500,18 +1500,6 @@ class Problem extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('content', $this);
       echo "</td></tr>";
 
-      if ($ID) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='2'  width='".($colsize1+$colsize2)."%'>";
-         $docnb = Document_Item::countForItem($this);
-         echo "<a href=\"".$this->getLinkURL()."&amp;forcetab=Document_Item$1\">";
-         //TRANS: %d is the document number
-         echo sprintf(_n('%d associated document', '%d associated documents', $docnb), $docnb);
-         echo "</a></th>";
-         echo "<td colspan='2'></td>";
-         echo "</tr>";
-      }
-
       $options['colspan'] = 2;
       if (!$options['template_preview']) {
          if ($tt->isField('id') && ($tt->fields['id'] > 0)) {

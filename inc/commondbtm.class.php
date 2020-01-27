@@ -880,10 +880,7 @@ class CommonDBTM extends CommonGLPI {
       // If this type is RESERVABLE clean one associated to purged item
       if (in_array($this->getType(), $CFG_GLPI['reservation_types'])) {
          $rr = new ReservationItem();
-
-         if ($rr->getFromDBbyItem($this->getType(), $this->fields['id'])) {
-             $rr->delete(['id' => $infocom->fields['id']]);
-         }
+         $rr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
 
       // If this type have CONTRACT, clean one associated to purged item
@@ -902,6 +899,12 @@ class CommonDBTM extends CommonGLPI {
       if ($this->usenotepad) {
          $note = new Notepad();
          $note->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      }
+
+      // Delete relations with KB
+      if (in_array($this->getType(), $CFG_GLPI['kb_types'])) {
+         $kbitem_item = new KnowbaseItem_Item();
+         $kbitem_item->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
 
       if (in_array($this->getType(), $CFG_GLPI['ticket_types'])) {

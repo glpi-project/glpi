@@ -717,8 +717,13 @@ class User extends CommonDBTM {
                // Move uploaded file
                $filename     = uniqid($this->fields['id'].'_');
                $sub          = substr($filename, -2); /* 2 hex digit */
-               $tmp          = explode(".", $input["_picture"]);
-               $extension    = Toolbox::strtolower(array_pop($tmp));
+
+               // output images with possible transparency to png, other to jpg
+               $extension = strtolower(pathinfo($fullpath, PATHINFO_EXTENSION));
+               $extension = in_array($extension, ['png', 'gif'])
+                  ? 'png'
+                  : 'jpg';
+
                @mkdir(GLPI_PICTURE_DIR . "/$sub");
                $picture_path = GLPI_PICTURE_DIR  . "/$sub/${filename}.$extension";
                self::dropPictureFiles("$sub/${filename}.$extension");
