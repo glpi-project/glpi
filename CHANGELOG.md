@@ -35,12 +35,16 @@ The present file will list all changes made to the project; according to the
 
 - Add translation functions `__()`,  `_n()`,  `_x()` and  `_nx()` in javascript in browser context.
 - `Migration::renameItemtype()` method to update of database schema/values when an itemtype class is renamed
+- Menu returned by `CommonGLPI::getMenuContent()` method override may now define an icon for each menu entry.
 
 #### Changes
 
 - jQuery library has been upgraded from 2.2.x to 3.4.x. jQuery Migrate is used to ensure backward compatibility in most cases.
 - `DBmysqlIterator::handleOrderClause()` supports QueryExpressions
 - Use Laminas instead of deprecated ZendFramework
+- Database datetime fields have been replaced by timestamp fields to handle timezones support.
+- Database integer/float fields values are now returned as number instead of strings from DB read operations.
+- Field `domains_id` of Computer, NetworkEquipment and Printer has been dropped and data has been transfered into `glpi_domains_items` table.
 
 #### Deprecated
 
