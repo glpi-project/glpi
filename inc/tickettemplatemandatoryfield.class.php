@@ -42,5 +42,4 @@ class TicketTemplateMandatoryField extends ITILTemplateMandatoryField {
    static public $itemtype  = 'TicketTemplate';
    static public $items_id  = 'tickettemplates_id';
    static public $itiltype = 'Ticket';
-
 }

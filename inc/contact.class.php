@@ -260,7 +260,7 @@ class Contact extends CommonDBTM{
    }
 
 
-   function getRawName() {
+   public function computeFriendlyName() {
 
       if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
          return formatUserName('',

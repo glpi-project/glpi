@@ -130,7 +130,7 @@ class PlanningCsv extends \DbTestCase {
 
       $expected = [
          [
-            'actor'     => $user->getRawName(),
+            'actor'     => $user->getFriendlyName(),
             'title'     => 'This is a "test"',
             'itemtype'  => 'Reminder',
             'items_id'  => (string)$rid,
@@ -141,7 +141,7 @@ class PlanningCsv extends \DbTestCase {
 
       foreach ($tasks as $input) {
          $expected[] = [
-            'actor'     => $user->getRawName(),
+            'actor'     => $user->getFriendlyName(),
             'title'     => 'ticket title',
             'itemtype'  => 'Ticket task',
             'items_id'  => (string)$input['id'],
@@ -153,9 +153,9 @@ class PlanningCsv extends \DbTestCase {
       $this->array($csv->getLines())->isEqualTo($expected);
 
       $sexpected = "\"Actor\";\"Title\";\"Item type\";\"Item id\";\"Begin date\";\"End date\"".$csv->eol;
-      $sexpected .= "\"".$user->getRawName()."\";\"This is a \"\"test\"\"\";\"Reminder\";\"$rid\";\"$fbegin\";\"$fend\"{$csv->eol}";
+      $sexpected .= "\"".$user->getFriendlyName()."\";\"This is a \"\"test\"\"\";\"Reminder\";\"$rid\";\"$fbegin\";\"$fend\"{$csv->eol}";
       foreach ($tasks as $input) {
-         $sexpected .= "\"".$user->getRawName()."\";\"ticket title\";\"Ticket task\";\"{$input['id']}\";\"{$input['begin']}\";\"{$input['end']}\"{$csv->eol}";
+         $sexpected .= "\"".$user->getFriendlyName()."\";\"ticket title\";\"Ticket task\";\"{$input['id']}\";\"{$input['begin']}\";\"{$input['end']}\"{$csv->eol}";
       }
       $this->output(
          function () use ($csv) {

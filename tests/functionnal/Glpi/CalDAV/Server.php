@@ -431,11 +431,11 @@ class Server extends DbTestCase {
       $calendars = [
          [
             'path' => 'calendars/users/' . $user->fields['name'] . '/calendar/',
-            'name' => $user->getRawName(),
+            'name' => $user->getFriendlyName(),
          ],
          [
             'path' => 'calendars/groups/' . $group_id . '/calendar/',
-            'name' => $group->getRawName(),
+            'name' => $group->getFriendlyName(),
          ],
       ];
 

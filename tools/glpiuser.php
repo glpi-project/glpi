@@ -59,7 +59,7 @@ if (isset($_GET['help']) || !isset($_GET['user'])) {
 
 function displayUser(User $user) {
    printf("\nLogin:    %s\n", $user->getField('name'));
-   printf("Name:     %s\n", $user->getRawName());
+   printf("Name:     %s\n", $user->getFriendlyName());
    printf("Password: %s\n", $user->getField('password'));// ? 'set' : 'sot set');
    printf("Authent:  %s\n", Auth::getMethodName($user->getField('authtype'), $user->getField('auths_id')));
    printf("Active:   %s\n\n", $user->getField('is_active') ? 'yes' : 'no');

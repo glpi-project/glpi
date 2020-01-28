@@ -342,7 +342,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       $this->showFormButtons($options);
    }
 
-   function getRawName() {
+   public function computeFriendlyName() {
       $item = getItemForItemtype($this->fields['itemtype']);
       $item->getFromDB($this->fields['items_id']);
       $name = $item->getTypeName(1) . ' ' . $item->getName();

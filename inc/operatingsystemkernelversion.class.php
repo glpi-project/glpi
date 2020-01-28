@@ -62,16 +62,9 @@ class OperatingSystemKernelVersion extends CommonDropdown {
       }
    }
 
-   function getRawName() {
-      $kernel = new OperatingSystemKernel();
-      $kname = $kernel->getRawName();
-      $kvname = parent::getRawName();
+   public function computeFriendlyName() {
+      $kvname = parent::computeFriendlyName();
 
-      $name = str_replace(
-         ['%kernel', '%version'],
-         [$kname, $kvname],
-         '%kernel %version'
-      );
-      return trim($name);
+      return trim($kvname);
    }
 }

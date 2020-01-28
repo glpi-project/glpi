@@ -49,7 +49,7 @@ class ITILTemplatePredefinedField extends ITILTemplateField {
    }
 
 
-   function getRawName() {
+   function computeFriendlyName() {
 
       $tt_class = static::$itemtype;
       $tt     = new $tt_class;

@@ -226,15 +226,7 @@ class NotificationTarget extends CommonDBChild {
       return _n('Recipient', 'Recipients', $nb);
    }
 
-
-   /**
-    * Get a notificationtarget class by giving the object which raises the event
-    *
-    * @see CommonDBTM::getRawName
-    *
-    * @return string
-   **/
-   function getRawName() {
+   public function computeFriendlyName() {
 
       if (isset($this->notification_targets_labels[$this->getField("type")]
                                                   [$this->getField("items_id")])) {
@@ -244,7 +236,6 @@ class NotificationTarget extends CommonDBChild {
       }
       return '';
    }
-
 
    /**
     * Get a notificationtarget class by giving the object which raises the event

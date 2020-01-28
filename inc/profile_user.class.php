@@ -957,11 +957,7 @@ class Profile_User extends CommonDBRelation {
       return _n('Profile', 'Profiles', $nb);
    }
 
-
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
-   function getRawName() {
+   public function computeFriendlyName() {
 
       $name = sprintf(__('%1$s, %2$s'),
                       Dropdown::getDropdownName('glpi_profiles', $this->fields['profiles_id']),
@@ -979,7 +975,6 @@ class Profile_User extends CommonDBRelation {
       }
       return $name;
    }
-
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $DB;

@@ -86,7 +86,7 @@ class Calendar extends AbstractBackend {
             'uri'          => self::BASE_CALENDAR_URI,
             'principaluri' => $principalPath,
             'name'         => $principal_item->getName(),
-            'desc'         => sprintf(__('Calendar of %s'), $principal_item->getRawName()),
+            'desc'         => sprintf(__('Calendar of %s'), $principal_item->getFriendlyName()),
             'color'        => null,
          ]
       ];
@@ -124,7 +124,7 @@ class Calendar extends AbstractBackend {
                   : $key,
                'principaluri' => $this->getPrincipalUri($calendar_principal),
                'name'         => $calendar_principal->getName(),
-               'desc'         => sprintf(__('Calendar of %s'), $calendar_principal->getRawName()),
+               'desc'         => sprintf(__('Calendar of %s'), $calendar_principal->getFriendlyName()),
                'color'        => $calendar_params['color'],
             ];
          }

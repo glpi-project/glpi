@@ -470,7 +470,7 @@ class ITILFollowup  extends CommonDBChild {
    }
 
 
-   function getRawName() {
+   public function computeFriendlyName() {
 
       if (isset($this->fields['requesttypes_id'])) {
          if ($this->fields['requesttypes_id']) {
