@@ -646,6 +646,14 @@ class Planning extends CommonGLPI {
       $resources = [];
       foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning) {
          if ($planning['type'] == 'external') {
+            $resources[] = [
+               'id'         => $planning_id,
+               'title'      => $planning['name'],
+               'group_id'   => false,
+               'is_visible' => $planning['display'],
+               'itemtype'   => null,
+               'items_id'   => null
+            ];
             continue; // Ignore external calendars
          }
 
@@ -1934,7 +1942,7 @@ class Planning extends CommonGLPI {
    private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array {
       $raw_events = [];
 
-      foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_params) {
+      foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning_params) {
          if ('external' !== $planning_params['type'] || !$planning_params['display']) {
             continue; // Ignore non external and inactive calendars
          }
@@ -1973,10 +1981,14 @@ class Planning extends CommonGLPI {
                continue; // Ignore events not inside dates range
             }
 
+            $title = $vcomp->SUMMARY instanceof FlatText ? $vcomp->SUMMARY->getValue() : '';
+            $description = $vcomp->DESCRIPTION instanceof FlatText ? $vcomp->DESCRIPTION->getValue() : '';
+
             $raw_events[] = [
                'users_id'         => Session::getLoginUserID(),
-               'name'             => $vcomp->SUMMARY instanceof FlatText ? $vcomp->SUMMARY->getValue() : '',
-               'tooltip'          => $vcomp->DESCRIPTION instanceof FlatText ? $vcomp->DESCRIPTION->getValue() : '',
+               'name'             => $title,
+               'tooltip'          => $title."\n".$description,
+               'content'          => $description,
                'begin'            => $begin_dt->format('Y-m-d H:i:s'),
                'end'              => $end_dt->format('Y-m-d H:i:s'),
                'event_type_color' => $planning_params['color'],
@@ -1985,6 +1997,7 @@ class Planning extends CommonGLPI {
                   ? current($vcomp->RRULE->getJsonValue())
                   : null,
                'editable'         => false,
+               'resourceId'       => $planning_id,
             ];
          }
       }
