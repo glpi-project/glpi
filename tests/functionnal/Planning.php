@@ -83,7 +83,7 @@ class Planning extends \DbTestCase {
       $expected_events_data = [
          'recurring_evt_1' => [
             'title'   => 'Recur event',
-            'tooltip' => 'Monday, 11 am to 12 am starting on 1st of July',
+            'tooltip' => "Recur event\nMonday, 11 am to 12 am starting on 1st of July",
             'color'   => '#ff0000',
             'rrule'   => "DTSTART:20190701T090000\nRRULE:FREQ=WEEKLY;BYDAY=MO\n",
          ],
