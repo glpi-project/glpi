@@ -89,22 +89,22 @@ class Planning extends \DbTestCase {
          ],
          'simple_evt_1'    => [
             'title'   => 'Base event with no desc',
-            'tooltip' => '',
+            'tooltip' => 'Base event with no desc',
             'color'   => '#ff0000',
          ],
          'simple_evt_2'    => [
             'title'   => 'An event in 2020/01/05',
-            'tooltip' => 'Description of my event',
+            'tooltip' => "An event in 2020/01/05\nDescription of my event",
             'color'   => '#ff0000',
          ],
          'task_1'          => [
             'title'   => 'Test task',
-            'tooltip' => 'Description of the task.',
+            'tooltip' => "Test task\nDescription of the task.",
             'color'   => '#ff0000',
          ],
          'another_evt_1'   => [
             'title'   => 'Another event',
-            'tooltip' => 'Another event description',
+            'tooltip' => "Another event\nAnother event description",
             'color'   => '#a500b3',
          ],
       ];

@@ -1987,7 +1987,7 @@ class Planning extends CommonGLPI {
             $raw_events[] = [
                'users_id'         => Session::getLoginUserID(),
                'name'             => $title,
-               'tooltip'          => $title."\n".$description,
+               'tooltip'          => trim($title."\n".$description),
                'content'          => $description,
                'begin'            => $begin_dt->format('Y-m-d H:i:s'),
                'end'              => $end_dt->format('Y-m-d H:i:s'),
