@@ -104,7 +104,8 @@ var GLPIPlanning  = {
          },
          resourceRender: function(info) {
             var icon = "";
-            switch (info.resource._resource.extendedProps.itemtype.toLowerCase()) {
+            var itemtype = info.resource._resource.extendedProps.itemtype || "";
+            switch (itemtype.toLowerCase()) {
                case "group":
                case "group_user":
                   icon = "users";
