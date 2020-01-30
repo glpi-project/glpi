@@ -63,7 +63,8 @@ trait PlanningEvent {
          'content_field' => 'text']
       );
 
-      if (isset($this->fields["users_id"])
+      if (!isset($this->input['_no_check_plan'])
+          && isset($this->fields["users_id"])
           && isset($this->fields["begin"])
           && !empty($this->fields["begin"])) {
          Planning::checkAlreadyPlanned(
@@ -214,7 +215,8 @@ trait PlanningEvent {
 
 
    function post_updateItem($history = 1) {
-      if (isset($this->fields["users_id"])
+      if (!isset($this->input['_no_check_plan'])
+          && isset($this->fields["users_id"])
           && isset($this->fields["begin"])
           && !empty($this->fields["begin"])) {
          Planning::checkAlreadyPlanned(
@@ -274,8 +276,9 @@ trait PlanningEvent {
          ]
       ]);
       return $this->update([
-         'id'    => $id,
-         'rrule' => $rrule
+         'id'             => $id,
+         'rrule'          => $rrule,
+         '_no_check_plan' => true,
       ]);
    }
 
@@ -297,6 +300,8 @@ trait PlanningEvent {
          'begin' => $fields['begin'],
          'end'   => $fields['end'],
       ];
+      // avoid checking avaibility, will be done after when updating new dates
+      $fields['_no_check_plan'] = true;
 
       $instance = new self;
       $new_id = $instance->add($fields);
