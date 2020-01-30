@@ -1705,9 +1705,15 @@ class Planning extends CommonGLPI {
       //handle not planned events
       $raw_events = array_merge($raw_events, $not_planned);
 
+      // get external calendars events (ical)
+      // and on list view, only get future events
+      $begin_ical = $param['begin'];
+      if ($param['view_name'] == "listFull") {
+         $begin_ical = date('Y-m-d 00:00:00');
+      }
       $raw_events = array_merge(
          $raw_events,
-         self::getExternalCalendarRawEvents($param['begin'], $param['end'])
+         self::getExternalCalendarRawEvents($begin_ical, $param['end'])
       );
 
       // construct events (in fullcalendar format)
