@@ -56,6 +56,8 @@ class Acl extends Plugin {
       Principal::PREFIX_USERS,
    ];
 
+   public $allowUnauthenticatedAccess = false;
+
    public function getAcl($node) {
       if (is_string($node)) {
          $node = $this->server->tree->getNodeForPath($node);
