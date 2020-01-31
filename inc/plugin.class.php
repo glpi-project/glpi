@@ -2113,7 +2113,8 @@ class Plugin extends CommonDBTM {
                $function = 'plugin_' . $directory . '_check_prerequisites';
                if (!isset($PLUGIN_HOOKS['csrf_compliant'][$directory])
                    || !$PLUGIN_HOOKS['csrf_compliant'][$directory]) {
-                  $output .= __('Not CSRF compliant');
+                  $output .= "<span class='error'>" . __('Not CSRF compliant') . "</span>";
+                  $do_activate = false;
                } else if (function_exists($function) && $do_activate) {
                   ob_start();
                   $do_activate = $function();
