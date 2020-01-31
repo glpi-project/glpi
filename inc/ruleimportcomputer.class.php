@@ -254,7 +254,7 @@ class RuleImportComputer extends Rule {
       //Add plugin global criteria
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (!Plugin::isPluginLoaded($plugin)) {
+            if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
             if (is_array($val) && in_array($this->getType(), $val)) {
@@ -354,7 +354,7 @@ class RuleImportComputer extends Rule {
 
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (!Plugin::isPluginLoaded($plugin)) {
+            if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
             if (is_array($val) && in_array($this->getType(), $val)) {

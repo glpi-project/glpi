@@ -1335,7 +1335,7 @@ class Html {
       if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
 
          foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $files) {
-            if (!Plugin::isPluginLoaded($plugin)) {
+            if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
 
@@ -1495,7 +1495,7 @@ JAVASCRIPT;
          if (isset($PLUGIN_HOOKS["menu_toadd"]) && count($PLUGIN_HOOKS["menu_toadd"])) {
 
             foreach ($PLUGIN_HOOKS["menu_toadd"] as $plugin => $items) {
-               if (!Plugin::isPluginLoaded($plugin)) {
+               if (!Plugin::isPluginActive($plugin)) {
                   continue;
                }
                if (count($items)) {
@@ -6416,7 +6416,7 @@ JAVASCRIPT;
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
 
          foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
-            if (!Plugin::isPluginLoaded($plugin)) {
+            if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
             $version = Plugin::getInfo($plugin, 'version');
@@ -6845,7 +6845,7 @@ JAVASCRIPT;
             && count($PLUGIN_HOOKS["helpdesk_menu_entry"])) {
 
             foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
-               if (!Plugin::isPluginLoaded($plugin)) {
+               if (!Plugin::isPluginActive($plugin)) {
                   continue;
                }
                if ($active) {

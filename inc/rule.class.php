@@ -1712,7 +1712,7 @@ class Rule extends CommonDBTM {
       $input = $this->prepareInputDataForProcess($input, $params);
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (!Plugin::isPluginLoaded($plugin)) {
+            if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
             if (is_array($val) && in_array($this->getType(), $val)) {
@@ -1751,7 +1751,7 @@ class Rule extends CommonDBTM {
          $params['criterias_results'] = $this->criterias_results;
          $params['rule_itemtype']     = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (!Plugin::isPluginLoaded($plugin)) {
+            if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
             if (is_array($val) && in_array($this->getType(), $val)) {
@@ -2585,7 +2585,7 @@ class Rule extends CommonDBTM {
          $params['criterias_results'] = $this->criterias_results;
          $params['rule_itemtype']     = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (!Plugin::isPluginLoaded($plugin)) {
+            if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
             if (is_array($val) && in_array($this->getType(), $val)) {
@@ -2690,7 +2690,7 @@ class Rule extends CommonDBTM {
       $toreturn = $params;
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (!Plugin::isPluginLoaded($plugin)) {
+            if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
             if (is_array($val) && in_array($itemtype, $val)) {

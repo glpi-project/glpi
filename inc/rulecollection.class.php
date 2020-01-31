@@ -1662,7 +1662,7 @@ class RuleCollection extends CommonDBTM {
       $input = $this->prepareInputDataForProcess($input, $params);
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (!Plugin::isPluginLoaded($plugin)) {
+            if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
             if (is_array($val) && in_array($this->getRuleClassName(), $val)) {
@@ -1845,7 +1845,7 @@ class RuleCollection extends CommonDBTM {
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          $params['rule_itemtype'] = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (!Plugin::isPluginLoaded($plugin)) {
+            if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
             if (is_array($val) && in_array($this->getType(), $val)) {

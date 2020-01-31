@@ -574,6 +574,40 @@ class Plugin extends DbTestCase {
 
    /**
     * Test state checking on a valid directory corresponding to a known inactive plugin with no modifications
+    * but not validating config.
+    * Should results in changing plugin state to "TOBECONFIGURED".
+    */
+   public function testCheckPluginStateForInactiveAndNotUpdatedPluginNotValidatingConfig() {
+
+      $initial_data = [
+         'directory' => $this->test_plugin_directory,
+         'name'      => 'Test plugin',
+         'version'   => '1.0',
+         'state'     => \Plugin::NOTACTIVATED,
+      ];
+      $setup_informations = [
+         'name'    => 'Test plugin',
+         'version' => '1.0',
+      ];
+      $expected_data = array_merge(
+         $initial_data,
+         [
+            'state' => \Plugin::TOBECONFIGURED,
+         ]
+      );
+
+      $this->function->plugin_test_check_config = false;
+
+      $this->doTestCheckPluginState(
+         $initial_data,
+         $setup_informations,
+         $expected_data,
+         'Plugin "' . $this->test_plugin_directory . '" must be configured.'
+      );
+   }
+
+   /**
+    * Test state checking on a valid directory corresponding to a known active plugin with no modifications
     * but not matching versions.
     * Should results in changing plugin state to "NOTACTIVATED".
     */
@@ -610,7 +644,7 @@ class Plugin extends DbTestCase {
    }
 
    /**
-    * Test state checking on a valid directory corresponding to a known inactive plugin with no modifications
+    * Test state checking on a valid directory corresponding to a known active plugin with no modifications
     * but not matching prerequisites.
     * Should results in changing plugin state to "NOTACTIVATED".
     */
@@ -644,11 +678,11 @@ class Plugin extends DbTestCase {
    }
 
    /**
-    * Test state checking on a valid directory corresponding to a known inactive plugin with no modifications
+    * Test state checking on a valid directory corresponding to a known active plugin with no modifications
     * but not validating config.
-    * Should results in changing plugin state to "NOTACTIVATED".
+    * Should results in changing plugin state to "TOBECONFIGURED".
     */
-   public function testCheckPluginStateForActiveAndNotUpdatedPluginNotValidationConfig() {
+   public function testCheckPluginStateForActiveAndNotUpdatedPluginNotValidatingConfig() {
 
       $initial_data = [
          'directory' => $this->test_plugin_directory,
@@ -663,7 +697,7 @@ class Plugin extends DbTestCase {
       $expected_data = array_merge(
          $initial_data,
          [
-            'state' => \Plugin::NOTACTIVATED,
+            'state' => \Plugin::TOBECONFIGURED,
          ]
       );
 
@@ -673,12 +707,12 @@ class Plugin extends DbTestCase {
          $initial_data,
          $setup_informations,
          $expected_data,
-         'Plugin "' . $this->test_plugin_directory . '" prerequisites are not matched. It has been deactivated.'
+         'Plugin "' . $this->test_plugin_directory . '" must be configured.'
       );
    }
 
    /**
-    * Test state checking on a valid directory corresponding to a known inactive plugin with no modifications,
+    * Test state checking on a valid directory corresponding to a known active plugin with no modifications,
     * matching prerequisites and validating config.
     * Should results in no changes.
     */
@@ -698,6 +732,32 @@ class Plugin extends DbTestCase {
 
       $this->function->plugin_test_check_prerequisites = true;
       $this->function->plugin_test_check_config = true;
+
+      $this->doTestCheckPluginState(
+         $initial_data,
+         $setup_informations,
+         $expected_data
+      );
+   }
+
+   /**
+    * Test state checking on a valid directory corresponding to a known active plugin with no modifications
+    * having nor check_prerequisites nor check_config function.
+    * Should results in no changes.
+    */
+   public function testCheckPluginStateForActiveAndNotUpdatedPluginHavingNoCheckFunctions() {
+
+      $initial_data = [
+         'directory' => $this->test_plugin_directory,
+         'name'      => 'Test plugin',
+         'version'   => '1.0',
+         'state'     => \Plugin::ACTIVATED,
+      ];
+      $setup_informations = [
+         'name'    => 'Test plugin',
+         'version' => '1.0',
+      ];
+      $expected_data = $initial_data;
 
       $this->doTestCheckPluginState(
          $initial_data,

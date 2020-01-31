@@ -94,7 +94,7 @@ class Config extends CommonDBTM {
    function canViewItem() {
       if (isset($this->fields['context']) &&
          ($this->fields['context'] == 'core' ||
-         Plugin::isPluginLoaded($this->fields['context']))) {
+         Plugin::isPluginActive($this->fields['context']))) {
          return true;
       }
       return false;

@@ -295,20 +295,18 @@ class InstallCommand extends AbstractPluginCommand {
       Plugin::load($directory, true);
 
       // Check that required functions exists
-      foreach (['install', 'check_config'] as $fct_suffix) {
-         $function = 'plugin_' . $directory . '_' . $fct_suffix;
-         if (!function_exists($function)) {
-            $message = sprintf(
-               __('Plugin "%s" function "%s" is missing.'),
-               $directory,
-               $function
-            );
-            $this->output->writeln(
-               '<error>' . $message . '</error>',
-               OutputInterface::VERBOSITY_QUIET
-            );
-            return false;
-         }
+      $function = 'plugin_' . $directory . '_install';
+      if (!function_exists($function)) {
+         $message = sprintf(
+            __('Plugin "%s" function "%s" is missing.'),
+            $directory,
+            $function
+         );
+         $this->output->writeln(
+            '<error>' . $message . '</error>',
+            OutputInterface::VERBOSITY_QUIET
+         );
+         return false;
       }
 
       // Check prerequisites

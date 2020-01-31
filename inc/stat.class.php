@@ -1515,7 +1515,7 @@ class Stat extends CommonGLPI {
       $optgroup = [];
       if (isset($PLUGIN_HOOKS["stats"]) && is_array($PLUGIN_HOOKS["stats"])) {
          foreach ($PLUGIN_HOOKS["stats"] as $plug => $pages) {
-            if (!Plugin::isPluginLoaded($plug)) {
+            if (!Plugin::isPluginActive($plug)) {
                continue;
             }
             if (is_array($pages) && count($pages)) {

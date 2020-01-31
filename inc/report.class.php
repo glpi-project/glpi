@@ -124,7 +124,7 @@ class Report extends CommonGLPI{
       $optgroup = [];
       if (isset($PLUGIN_HOOKS["reports"]) && is_array($PLUGIN_HOOKS["reports"])) {
          foreach ($PLUGIN_HOOKS["reports"] as $plug => $pages) {
-            if (!Plugin::isPluginLoaded($plug)) {
+            if (!Plugin::isPluginActive($plug)) {
                continue;
             }
             if (is_array($pages) && count($pages)) {

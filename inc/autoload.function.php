@@ -288,9 +288,8 @@ function glpi_autoload($classname) {
       $plugname = strtolower($plug['plugin']);
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
       $item     = str_replace('\\', '/', strtolower($plug['class']));
-      // Is the plugin active?
       if (!Plugin::isPluginLoaded($plugname)) {
-         // Plugin not activated
+         // Do not load plugin class if plugin is not loaded
          return false;
       }
    } else {
