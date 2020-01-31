@@ -201,6 +201,26 @@ class ErrorHandler {
    }
 
    /**
+    * SQL error handler.
+    *
+    * This handler is manually by application when a SQL error occured.
+    *
+    * @param integer $error_code
+    * @param string  $error_message
+    * @param string  $query
+    *
+    * @return void
+    */
+   public function handleSqlError($error_code, $error_message, $query) {
+      $this->outputDebugMessage(
+         sprintf('SQL Error "%s"', $error_code),
+         sprintf('%s in query "%s"', $error_message, $query),
+         self::ERROR_LEVEL_MAP[E_USER_ERROR],
+         isCommandLine()
+      );
+   }
+
+   /**
     * Exception handler.
     *
     * This handler is called by PHP prior to exiting, when an Exception is not catched.

@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\ErrorHandler;
+
 /**
  *  Database class for Mysql
 **/
@@ -281,7 +283,7 @@ class DBmysql {
     * @throws GlpitestSQLError
     */
    function query($query) {
-      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
+      global $CFG_GLPI, $DEBUG_SQL, $GLPI, $SQL_TOTAL_REQUEST;
 
       $is_debug = isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
       if ($is_debug && $CFG_GLPI["debug_sql"]) {
@@ -301,6 +303,11 @@ class DBmysql {
          $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
 
          Toolbox::logSqlError($error);
+
+         $error_handler = $GLPI->getErrorHandler();
+         if ($error_handler instanceof ErrorHandler) {
+            $error_handler->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
+         }
 
          if (($is_debug || isAPI()) && $CFG_GLPI["debug_sql"]) {
             $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
