@@ -109,4 +109,13 @@ class GLPI {
 
       return $this->error_handler;
    }
+
+   /**
+    * Get registered error handler.
+    *
+    * @return null|ErrorHandler
+    */
+   public function getErrorHandler() {
+      return $this->error_handler;
+   }
 }
