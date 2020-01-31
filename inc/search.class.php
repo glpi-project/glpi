@@ -3959,12 +3959,12 @@ JAVASCRIPT;
             $condition .= "AND (";
 
             // Filter for "ticket" parents
-            $condition .= ITILFollowup::buildParentCondition("Ticket");
+            $condition .= ITILFollowup::buildParentCondition(\Ticket::getType());
             $condition .= "OR ";
 
             // Filter for "change" parents
             $condition .= ITILFollowup::buildParentCondition(
-               "Change",
+               \Change::getType(),
                'changes_id',
                "glpi_changes_users",
                "glpi_changes_groups"
@@ -3973,7 +3973,7 @@ JAVASCRIPT;
 
             // Fitler for "problem" parents
             $condition .= ITILFollowup::buildParentCondition(
-               "Problem",
+               \Problem::getType(),
                'problems_id',
                "glpi_problems_users",
                "glpi_groups_problems"
