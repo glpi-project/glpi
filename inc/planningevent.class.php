@@ -301,7 +301,7 @@ trait PlanningEvent {
          'begin' => $fields['begin'],
          'end'   => $fields['end'],
       ];
-      // avoid checking avaibility, will be done after when updating new dates
+      // avoid checking availability, will be done after when updating new dates
       $fields['_no_check_plan'] = true;
 
       $instance = new self;
