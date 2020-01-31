@@ -392,7 +392,7 @@ trait PlanningEvent {
          // guests accounts
          if ($DB->fieldExists($table, 'users_id_guests')) {
             $nreadpriv = ['OR' => [
-               ["$table.users_id" => $who],
+               "$table.users_id" => $who,
                "$table.users_id_guests" => ['LIKE', '%"'.$who.'"%'],
             ]];
          }
