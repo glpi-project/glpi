@@ -512,7 +512,7 @@ function update94to95() {
       ]);
       $migration->addKey('glpi_planningexternalevents', 'is_recursive');
    }
-   if (!$DB->fieldExists('glpi_planningexternalevents', 'is_recursive')) {
+   if (!$DB->fieldExists('glpi_planningexternalevents', 'users_id_guests')) {
       $migration->addField('glpi_planningexternalevents', 'users_id_guests', 'text', [
          'after' => 'users_id',
       ]);
