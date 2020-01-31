@@ -393,9 +393,8 @@ class DomainRecord extends CommonDBChild {
 
       echo "<th>" . __('Type') . "</th>";
       echo "<th>" . __('Name') . "</th>";
-      if (Session::isMultiEntitiesMode()) {
-         echo "<th>" . __('Entity') . "</th>";
-      }
+      echo "<th>" . __('TTL') . "</th>";
+      echo "<th>" . __('Target') . "</th>";
       echo "</tr>";
 
       while ($data = $iterator->next()) {
@@ -418,12 +417,11 @@ class DomainRecord extends CommonDBChild {
             Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
             echo "</td>";
          }
-         echo "<td class='center'>" . Dropdown::getDropdownName(DomainRecordType::getTable(), $data['domainrecordtypes_id']) . "</td>";
-         echo "<td class='center' " . (isset($data['is_deleted']) && $data['is_deleted'] ? "class='tab_bg_2_2'" : "") .
+         echo "<td>" . Dropdown::getDropdownName(DomainRecordType::getTable(), $data['domainrecordtypes_id']) . "</td>";
+         echo "<td " . (isset($data['is_deleted']) && $data['is_deleted'] ? "class='tab_bg_2_2'" : "") .
                ">" . $name . "</td>";
-         if (Session::isMultiEntitiesMode()) {
-            echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entities_id']) . "</td>";
-         }
+         echo "<td>" . $data['ttl'] . "</td>";
+         echo "<td>" . $data['data'] . "</td>";
          echo "</tr>";
       }
       echo "</table>";
