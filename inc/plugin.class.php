@@ -162,7 +162,8 @@ class Plugin extends CommonDBTM {
 
       if (file_exists(GLPI_ROOT . "/plugins/$directory/setup.php")) {
          include_once(GLPI_ROOT . "/plugins/$directory/setup.php");
-         if (!isset($LOADED_PLUGINS[$directory])) {
+         if (!in_array($directory, self::$loaded_plugins)) {
+            self::$loaded_plugins[] = $directory;
             self::loadLang($directory);
             $function = "plugin_init_$directory";
             if (function_exists($function)) {
@@ -175,7 +176,6 @@ class Plugin extends CommonDBTM {
           && file_exists(GLPI_ROOT . "/plugins/$directory/hook.php")) {
          include_once(GLPI_ROOT . "/plugins/$directory/hook.php");
       }
-      self::$loaded_plugins[] = $directory;
    }
 
    /**
@@ -2078,9 +2078,9 @@ class Plugin extends CommonDBTM {
 
             $output = '';
 
-            if (in_array($state, [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)
+            if (in_array($state, [self::ACTIVATED, self::TOBECONFIGURED], true)
                 && isset($PLUGIN_HOOKS['config_page'][$directory])) {
-               // Configuration button for installed and up to date plugins
+               // Configuration button for activated or configurable plugins
                $config_url = $CFG_GLPI['root_doc']
                   . '/plugins/'
                   . $directory
