@@ -77,6 +77,10 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::userErrorHandlerNormal()`
 - `Html::jsDisable()`
 - `Html::jsEnable()`
+- `Plugin::setLoaded()`
+- `Plugin::setUnloaded()`
+- `Plugin::setUnloadedByName()`
+- Usage of `$LOADED_PLUGINS` global variable
 
 #### Removed
 

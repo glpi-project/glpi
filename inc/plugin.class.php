@@ -61,11 +61,18 @@ class Plugin extends CommonDBTM {
    private static $plugins_init = false;
 
    /**
+    * Activated plugin list, indexed by their ID.
+    *
+    * @var string[]
+    */
+   private static $activated_plugins = [];
+
+   /**
     * Loaded plugin list, indexed by their ID.
     *
-    * @var null|string[]
+    * @var string[]
     */
-   private static $loaded_plugins;
+   private static $loaded_plugins = [];
 
    static function getTypeName($nb = 0) {
       return _n('Plugin', 'Plugins', $nb);
@@ -104,12 +111,15 @@ class Plugin extends CommonDBTM {
    /**
     * Init plugins list.
     *
+    * @param boolean $load_plugins  Whether to load active/configurable plugins or not.
+    *
     * @return void
    **/
-   function init() {
+   function init(bool $load_plugins = false) {
       global $DB;
 
       self::$plugins_init   = false;
+      self::$activated_plugins = [];
       self::$loaded_plugins = [];
 
       if (!isset($DB) || !$DB->connected) {
@@ -119,14 +129,21 @@ class Plugin extends CommonDBTM {
       }
 
       $this->checkStates();
-      $plugins = $this->find(['state' => self::ACTIVATED]);
+
+      $plugins = $this->find(['state' => [self::ACTIVATED, self::TOBECONFIGURED]]);
 
       self::$plugins_init = true;
 
-      if (count($plugins)) {
-         foreach ($plugins as $ID => $plug) {
-            $this->setLoaded($ID, $plug['directory']);
+      if ($load_plugins && count($plugins)) {
+         foreach ($plugins as $plugin) {
+            Plugin::load($plugin['directory']);
+
+            if ((int)$plugin['state'] === self::ACTIVATED) {
+               self::$activated_plugins[] = $plugin['directory'];
+            }
          }
+         // For plugins which require action after all plugin init
+         Plugin::doHook("post_init");
       }
    }
 
@@ -135,28 +152,52 @@ class Plugin extends CommonDBTM {
     * Init a plugin including setup.php file
     * launching plugin_init_NAME function  after checking compatibility
     *
-    * @param $name             Name of hook to use
-    * @param $withhook boolean to load hook functions (false by default)
+    * @param string  $directory  Plugin directory
+    * @param boolean $withhook   Load hook functions (false by default)
     *
     * @return void
    **/
-   static function load($name, $withhook = false) {
+   static function load($directory, $withhook = false) {
       global $LOADED_PLUGINS;
 
-      if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
-         include_once(GLPI_ROOT . "/plugins/$name/setup.php");
-         if (!isset($LOADED_PLUGINS[$name])) {
-            self::loadLang($name);
-            $function = "plugin_init_$name";
+      if (file_exists(GLPI_ROOT . "/plugins/$directory/setup.php")) {
+         include_once(GLPI_ROOT . "/plugins/$directory/setup.php");
+         if (!isset($LOADED_PLUGINS[$directory])) {
+            self::loadLang($directory);
+            $function = "plugin_init_$directory";
             if (function_exists($function)) {
                $function();
-               $LOADED_PLUGINS[$name] = $name;
+               $LOADED_PLUGINS[$directory] = $directory;
             }
          }
       }
       if ($withhook
-          && file_exists(GLPI_ROOT . "/plugins/$name/hook.php")) {
-         include_once(GLPI_ROOT . "/plugins/$name/hook.php");
+          && file_exists(GLPI_ROOT . "/plugins/$directory/hook.php")) {
+         include_once(GLPI_ROOT . "/plugins/$directory/hook.php");
+      }
+      self::$loaded_plugins[] = $directory;
+   }
+
+   /**
+    * Unload a plugin.
+    *
+    * @param string  $directory  Plugin directory
+    *
+    * @return void
+    */
+   private function unload($directory) {
+      global $LOADED_PLUGINS;
+
+      if (isset(self::$activated_plugins[$directory])) {
+         unset(self::$activated_plugins[$directory]);
+      }
+
+      if (isset(self::$loaded_plugins[$directory])) {
+         unset(self::$loaded_plugins[$directory]);
+      }
+
+      if (isset($LOADED_PLUGINS[$directory])) {
+         unset($LOADED_PLUGINS[$directory]);
       }
    }
 
@@ -362,13 +403,46 @@ class Plugin extends CommonDBTM {
 
          $this->update($input);
 
-         $this->setUnloadedByName($directory);
+         $this->unload($directory);
          // reset menu
          if (isset($_SESSION['glpimenu'])) {
             unset($_SESSION['glpimenu']);
          }
 
          return;
+      }
+
+      // Check if configuration state changed
+      if (in_array((int)$plugin->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)) {
+         $function = 'plugin_' . $directory . '_check_config';
+         $is_config_ok = !function_exists($function) || $function();
+
+         if ((int)$plugin->fields['state'] === self::TOBECONFIGURED && $is_config_ok) {
+            // Remove TOBECONFIGURED state if configuration is OK now
+            $this->update(
+               [
+                  'id'    => $plugin->fields['id'],
+                  'state' => self::NOTACTIVATED
+               ]
+            );
+            return;
+         } else if ((int)$plugin->fields['state'] !== self::TOBECONFIGURED && !$is_config_ok) {
+            // Add TOBECONFIGURED state if configuration is required
+            trigger_error(
+               sprintf(
+                  'Plugin "%s" must be configured.',
+                  $directory
+               ),
+               E_USER_WARNING
+            );
+            $this->update(
+               [
+                  'id'    => $plugin->fields['id'],
+                  'state' => self::TOBECONFIGURED
+               ]
+            );
+            return;
+         }
       }
 
       if (self::ACTIVATED !== (int)$plugin->fields['state']) {
@@ -395,14 +469,6 @@ class Plugin extends CommonDBTM {
                $usage_ok = false;
             }
             ob_end_clean();
-         }
-      }
-
-      // Check configuration
-      if ($usage_ok) {
-         $function = 'plugin_' . $directory . '_check_config';
-         if (!function_exists($function) || !$function()) {
-            $usage_ok = false;
          }
       }
 
@@ -489,16 +555,14 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          CronTask::Unregister($this->fields['directory']);
-         self::load($this->fields['directory'], true);
+         self::load($this->fields['directory'], true); // Force load in case plugin is not active
          FieldUnicity::deleteForItemtype($this->fields['directory']);
          Link_Itemtype::deleteForItemtype($this->fields['directory']);
 
          // Run the Plugin's Uninstall Function first
          $function = 'plugin_' . $this->fields['directory'] . '_uninstall';
          if (function_exists($function)) {
-            self::setLoaded('temp', $this->fields['directory']); // For autoloader
             $function();
-            self::setUnloaded('temp');
          } else {
             Session::addMessageAfterRedirect(
                sprintf(__('Plugin %1$s has no uninstall function!'), $this->fields['name']),
@@ -511,7 +575,7 @@ class Plugin extends CommonDBTM {
             'id'      => $ID,
             'state'   => self::NOTINSTALLED,
          ]);
-         $this->setUnloadedByName($this->fields['directory']);
+         $this->unload($this->fields['directory']);
 
          $type = INFO;
          $message = sprintf(__('Plugin %1$s has been uninstalled!'), $this->fields['name']);
@@ -551,33 +615,31 @@ class Plugin extends CommonDBTM {
             $translation_cache->clear();
          }
 
-         self::load($this->fields['directory'], true);
+         self::load($this->fields['directory'], true); // Load plugin hooks
+
          $install_function = 'plugin_' . $this->fields['directory'] . '_install';
          if (function_exists($install_function)) {
-            $this->setLoaded('temp', $this->fields['directory']);  // For autoloader
             $DB->disableTableCaching(); //prevents issues on table/fieldExists upgrading from old versions
             if ($install_function($params)) {
                $type = INFO;
                $check_function = 'plugin_' . $this->fields['directory'] . '_check_config';
-               if (function_exists($check_function)) {
-                  if ($check_function()) {
-                     $this->update(['id'    => $ID,
-                                         'state' => self::NOTACTIVATED]);
-                     $message = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
-                     $message .= '<br/><br/>' . str_replace(
-                        '%activate_link',
-                        Html::getSimpleForm(static::getFormURL(), ['action' => 'activate'],
-                                          mb_strtolower(_x('button', 'Enable')), ['id' => $ID], '', 'class="pointer"'),
-                        __('Do you want to %activate_link it?')
-                     );
-                  } else {
-                     $this->update(['id'    => $ID,
-                                         'state' => self::TOBECONFIGURED]);
-                     $message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
-                  }
+               $is_config_ok = !function_exists($check_function) || $check_function();
+               if ($is_config_ok) {
+                  $this->update(['id'    => $ID,
+                                      'state' => self::NOTACTIVATED]);
+                  $message = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
+                  $message .= '<br/><br/>' . str_replace(
+                     '%activate_link',
+                     Html::getSimpleForm(static::getFormURL(), ['action' => 'activate'],
+                                       mb_strtolower(_x('button', 'Enable')), ['id' => $ID], '', 'class="pointer"'),
+                     __('Do you want to %activate_link it?')
+                  );
+               } else {
+                  $this->update(['id'    => $ID,
+                                      'state' => self::TOBECONFIGURED]);
+                  $message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
                }
             }
-            $this->setUnloaded('temp');
          } else {
             $type = WARNING;
             $message = sprintf(__('Plugin %1$s has no install function!'), $this->fields['name']);
@@ -606,7 +668,9 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
 
+         // Enable autoloader and load plugin hooks
          self::load($this->fields['directory'], true);
+
          // No activation if not CSRF compliant
          if (!isset($PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']])
              || !$PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']]) {
@@ -617,8 +681,6 @@ class Plugin extends CommonDBTM {
             );
             return false;
          }
-         // Enable autoloader early, during activation process
-         $this->setLoaded($ID, $this->fields['directory']);
 
          $function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
          if (function_exists($function)) {
@@ -631,51 +693,58 @@ class Plugin extends CommonDBTM {
             ob_end_clean();
 
             if (!$do_activate) {
-               $this->setUnloaded($ID);
+               $this->unload($this->fields['directory']);
+
                Session::addMessageAfterRedirect(
-                  sprintf(__('Plugin %1$s has no check function!'), $this->fields['name']),
+                  sprintf(__('Plugin prerequisites are not matching, it cannot be activated.') . ' ' . $msg, $this->fields['name']),
                   true,
                   ERROR
                );
                return false;
             }
          }
+
          $function = 'plugin_' . $this->fields['directory'] . '_check_config';
-         if (function_exists($function)) {
-            if ($function()) {
-               $this->update(['id'    => $ID,
-                                   'state' => self::ACTIVATED]);
+         if (!function_exists($function) || $function()) {
+            $this->update(['id'    => $ID,
+                           'state' => self::ACTIVATED]);
 
-               // Initialize session for the plugin
-               if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']])
-                   && is_callable($PLUGIN_HOOKS['init_session'][$this->fields['directory']])) {
+            // Initialize session for the plugin
+            if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']])
+                && is_callable($PLUGIN_HOOKS['init_session'][$this->fields['directory']])) {
 
-                  call_user_func($PLUGIN_HOOKS['init_session'][$this->fields['directory']]);
-               }
-
-               // Initialize profile for the plugin
-               if (isset($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])
-                   && is_callable($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])) {
-
-                  call_user_func($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]);
-               }
-               // reset menu
-               if (isset($_SESSION['glpimenu'])) {
-                  unset($_SESSION['glpimenu']);
-               }
-
-               Session::addMessageAfterRedirect(
-                  sprintf(__('Plugin %1$s has been activated!'), $this->fields['name']),
-                  true,
-                  INFO
-               );
-
-               return true;
+               call_user_func($PLUGIN_HOOKS['init_session'][$this->fields['directory']]);
             }
-         }  // exists _check_config
-         // Failure so remove it
-         $this->setUnloaded($ID);
-      } // getFromDB
+
+            // Initialize profile for the plugin
+            if (isset($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])
+                && is_callable($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])) {
+
+               call_user_func($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]);
+            }
+            // reset menu
+            if (isset($_SESSION['glpimenu'])) {
+               unset($_SESSION['glpimenu']);
+            }
+
+            Session::addMessageAfterRedirect(
+               sprintf(__('Plugin %1$s has been activated!'), $this->fields['name']),
+               true,
+               INFO
+            );
+
+            return true;
+         } else {
+            $this->unload($this->fields['directory']);
+
+            Session::addMessageAfterRedirect(
+               sprintf(__('Plugin configuration must be done, it cannot be activated.') . ' ' . $msg, $this->fields['name']),
+               true,
+               ERROR
+            );
+            return false;
+         }
+      }
 
       Session::addMessageAfterRedirect(
          sprintf(__('Plugin %1$s not found!'), $ID),
@@ -700,7 +769,8 @@ class Plugin extends CommonDBTM {
             'id'    => $ID,
             'state' => self::NOTACTIVATED
          ]);
-         $this->setUnloadedByName($this->fields['directory']);
+         $this->unload($this->fields['directory']);
+
          // reset menu
          if (isset($_SESSION['glpimenu'])) {
             unset($_SESSION['glpimenu']);
@@ -726,7 +796,8 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * unactivate all activated plugins for update process
+    * Unactivate all activated plugins for update process.
+    * This will prevent any plugin class to be available through autoloader.
    **/
    function unactivateAll() {
       global $DB;
@@ -739,6 +810,7 @@ class Plugin extends CommonDBTM {
          ]
       );
 
+      self::$activated_plugins = [];
       self::$loaded_plugins = [];
 
       // reset menu
@@ -759,26 +831,30 @@ class Plugin extends CommonDBTM {
          // Clean crontask after "hard" remove
          CronTask::Unregister($this->fields['directory']);
 
+         $this->unload($this->fields['directory']);
          $this->delete(['id' => $ID]);
-         $this->setUnloadedByName($this->fields['directory']);
       }
    }
 
 
    /**
-    * is a plugin activated
+    * Is a plugin activated ?
     *
-    * @param $plugin plugin directory
-   **/
-   function isActivated($plugin) {
-
-      if ($this->isPluginLoaded($plugin)) {
-         // If plugin is loaded, it is because it is active. No need to query DB on this case.
+    * @param string $directory  Plugin directory
+    *
+    * @return boolean
+    */
+   function isActivated($directory) {
+      // Make a lowercase comparison, as sometime this function is called based on
+      // extraction of plugin name from a classname, which does not use same naming rules than directories.
+      $activated_plugins = array_map('strtolower', self::$activated_plugins);
+      if (in_array(strtolower($directory), $activated_plugins)) {
+         // If plugin is marked as activated, no need to query DB on this case.
          return true;
       }
 
-      // If plugin is not loaded, check on DB as plugins may have not been loaded yet.
-      if ($this->getFromDBbyDir($plugin)) {
+      // If plugin is not marked as activated, check on DB as it may have not been loaded yet.
+      if ($this->getFromDBbyDir($directory)) {
          return ($this->fields['state'] == self::ACTIVATED);
       }
 
@@ -787,19 +863,21 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * is a plugin installed
+    * Is a plugin installed ?
     *
-    * @param $plugin plugin directory
-   **/
-   function isInstalled($plugin) {
+    * @param string $directory  Plugin directory
+    *
+    * @return boolean
+    */
+   function isInstalled($directory) {
 
-      if ($this->isPluginLoaded($plugin)) {
+      if ($this->isPluginLoaded($directory)) {
          // If plugin is loaded, it is because it is installed and active. No need to query DB on this case.
          return true;
       }
 
       // If plugin is not loaded, check on DB as plugins may have not been loaded yet.
-      if ($this->getFromDBbyDir($plugin)) {
+      if ($this->getFromDBbyDir($directory)) {
          return (($this->fields['state']    == self::ACTIVATED)
                  || ($this->fields['state'] == self::TOBECONFIGURED)
                  || ($this->fields['state'] == self::NOTACTIVATED));
@@ -1138,7 +1216,7 @@ class Plugin extends CommonDBTM {
          $itemtype = get_class($param);
          if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
             foreach ($PLUGIN_HOOKS[$name] as $plug => $tab) {
-               if (!Plugin::isPluginLoaded($plug)) {
+               if (!Plugin::isPluginActive($plug)) {
                   continue;
                }
 
@@ -1156,7 +1234,7 @@ class Plugin extends CommonDBTM {
       } else { // Standard hook call
          if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
             foreach ($PLUGIN_HOOKS[$name] as $plug => $function) {
-               if (!Plugin::isPluginLoaded($plug)) {
+               if (!Plugin::isPluginActive($plug)) {
                   continue;
                }
 
@@ -1189,7 +1267,7 @@ class Plugin extends CommonDBTM {
       $ret = $parm;
       if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
          foreach ($PLUGIN_HOOKS[$name] as $plug => $function) {
-            if (!Plugin::isPluginLoaded($plug)) {
+            if (!Plugin::isPluginActive($plug)) {
                continue;
             }
 
@@ -1221,7 +1299,7 @@ class Plugin extends CommonDBTM {
 
       $plugname = strtolower($plugname);
 
-      if (!Plugin::isPluginLoaded($plugname)) {
+      if (!Plugin::isPluginActive($plugname)) {
          return;
       }
 
@@ -1805,7 +1883,7 @@ class Plugin extends CommonDBTM {
     * @return array
     */
    public static function getPlugins() {
-      return null !== self::$loaded_plugins ? self::$loaded_plugins : [];
+      return self::$activated_plugins;
    }
 
    /**
@@ -1813,22 +1891,36 @@ class Plugin extends CommonDBTM {
     *
     * @since 9.3.2
     *
-    * @param string $name Plugin name
+    * @param string $directory  Plugin directory
     *
     * @return boolean
     */
-   public static function isPluginLoaded($name) {
+   public static function isPluginLoaded($directory) {
       // Make a lowercase comparison, as sometime this function is called based on
       // extraction of plugin name from a classname, which does not use same naming rules than directories.
-      $loadedPlugins = self::getPlugins();
-      $loadedPlugins = array_map('strtolower', $loadedPlugins);
-      return in_array(strtolower($name), $loadedPlugins);
+      $loadedPlugins = array_map('strtolower', self::$loaded_plugins);
+      return in_array(strtolower($directory), $loadedPlugins);
+   }
+
+   /**
+    * Check if a plugin is active
+    *
+    * @since 9.5.0
+    *
+    * @param string $directory  Plugin directory
+    *
+    * @return boolean
+    */
+   public static function isPluginActive($directory) {
+      $plugin = new self();
+      return $plugin->isActivated($directory);
    }
 
    /**
     * Set plugin loaded
     *
     * @since 9.3.2
+    * @deprecated 9.5.0
     *
     * @param integer $id   Plugin id
     * @param string  $name Plugin name
@@ -1836,42 +1928,45 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    public static function setLoaded($id, $name) {
-      $plugins = self::getPlugins();
-      $plugins[$id] = $name;
-      self::$loaded_plugins = $plugins;
+      Toolbox::deprecated();
+      if (!in_array($name, self::$loaded_plugins)) {
+         self::$loaded_plugins[] = $name;
+      }
    }
 
    /**
     * Set plugin unloaded
     *
     * @since 9.3.2
+    * @deprecated 9.5.0
     *
     * @param integer $id Plugin id
     *
     * @return void
     */
    public static function setUnloaded($id) {
-      $plugins = self::getPlugins();
-      unset($plugins[$id]);
-      self::$loaded_plugins = $plugins;
+      Toolbox::deprecated();
+
+      $plugin = new self();
+      $plugin->getFromDB($id);
+      $plugin->unload($plugin->fields['directory']);
    }
 
    /**
     * Set plugin unloaded from its name
     *
     * @since 9.3.2
+    * @deprecated 9.5.0
     *
     * @param integer $name Plugin name
     *
     * @return void
     */
    public static function setUnloadedByName($name) {
-      $plugins = self::getPlugins();
-      $key = array_search($name, $plugins);
-      if ($key !== false) {
-         self::setUnloaded($key);
-      }
+      Toolbox::deprecated();
 
+      $plugin = new self();
+      $plugin->unload($name);
    }
 
    function rawSearchOptions() {
@@ -1888,7 +1983,8 @@ class Plugin extends CommonDBTM {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'specific',
-         'massiveaction'      => false // implicit key==1
+         'massiveaction'      => false, // implicit key==1
+         'additionalfields'   => ['state', 'directory'],
       ];
 
       $tab[] = [
@@ -1976,10 +2072,10 @@ class Plugin extends CommonDBTM {
             $plugin->getFromDB($ID);
             $plug = $plugin->fields;
 
-            if (function_exists("plugin_".$plug['directory']."_check_config")) {
-               // init must not be called for incompatible plugins
-               self::load($plug['directory'], true);
-            }
+            $directory = $plugin->fields['directory'];
+            $state = (int)$plugin->fields['state'];
+
+            self::load($directory, true);
 
             $output = '';
             switch ($plug['state']) {
@@ -2009,8 +2105,7 @@ class Plugin extends CommonDBTM {
                case self::ANEW :
                case self::NOTINSTALLED :
                case self::NOTUPDATED :
-                  if (function_exists("plugin_".$plug['directory']."_install")
-                      && function_exists("plugin_".$plug['directory']."_check_config")) {
+                  if (function_exists("plugin_".$plug['directory']."_install")) {
 
                      $function   = 'plugin_' . $plug['directory'] . '_check_prerequisites';
 
@@ -2051,26 +2146,18 @@ class Plugin extends CommonDBTM {
                      if (!function_exists("plugin_".$plug['directory']."_install")) {
                         $missing .= "plugin_".$plug['directory']."_install";
                      }
-                     if (!function_exists("plugin_".$plug['directory']."_check_config")) {
-                        $missing .= " plugin_".$plug['directory']."_check_config";
-                     }
                      //TRANS: %s is the list of missing functions
                      $output = sprintf(__('%1$s: %2$s'), __('Non-existent function'),
                             $missing);
                   }
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     if (function_exists("plugin_".$plug['directory']."_check_config")) {
-                        $output .= Html::getSimpleForm(
-                           static::getFormURL(),
-                           ['action' => 'uninstall'],
-                           _x('button', 'Uninstall'),
-                           ['id' => $ID],
-                           'fa-fw fa-folder-minus fa-2x'
-                        ) . '&nbsp;';
-                     } else {
-                        // This is an incompatible plugin (0.71), uninstall fonction could crash
-                        $output .= "&nbsp;";
-                     }
+                     $output .= Html::getSimpleForm(
+                        static::getFormURL(),
+                        ['action' => 'uninstall'],
+                        _x('button', 'Uninstall'),
+                        ['id' => $ID],
+                        'fa-fw fa-folder-minus fa-2x'
+                     ) . '&nbsp;';
                   } else {
                      $output .= sprintf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_uninstall");
@@ -2078,19 +2165,6 @@ class Plugin extends CommonDBTM {
                   break;
 
                case self::TOBECONFIGURED :
-                  $function = 'plugin_' . $plug['directory'] . '_check_config';
-                  if (function_exists($function)) {
-                     if ($function(true)) {
-                        $plugin->update([
-                           'id'    => $ID,
-                           'state' => self::NOTACTIVATED]
-                        );
-                        Html::redirect($plugin->getSearchURL());
-                     }
-                  } else {
-                     $output .= sprintf(__('%1$s: %2$s'), __('Non-existent function'),
-                            "plugin_".$plug['directory']."_check_config");
-                  }
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      $output .= Html::getSimpleForm(
                         static::getFormURL(),
@@ -2178,8 +2252,9 @@ class Plugin extends CommonDBTM {
             break;
          case 'name':
             $value = $values[$field];
-            $state = $options['raw_data']['Plugin_5'][0]['name'];
-            $directory = $options['raw_data']['Plugin_2'][0]['name'];
+            $state = $values['state'];
+            $directory = $values['directory'];
+            self::load($directory); // Load plugin to give it ability to define its config_page hook
             if (in_array($state, [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED])
                && isset($PLUGIN_HOOKS['config_page'][$directory])
             ) {
