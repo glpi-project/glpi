@@ -7703,6 +7703,7 @@ CREATE TABLE `glpi_planningexternalevents` (
   `is_recursive` TINYINT(1) NOT NULL DEFAULT '1',
   `date` timestamp NULL DEFAULT NULL,
   `users_id` int(11) NOT NULL DEFAULT '0',
+  `users_id_guests` text COLLATE utf8_unicode_ci,
   `groups_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `text` text COLLATE utf8_unicode_ci,
