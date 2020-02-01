@@ -581,16 +581,16 @@
         },
         {
             "name": "laminas/laminas-mime",
-            "version": "2.7.1",
+            "version": "2.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-mime.git",
-                "reference": "7fb16c0268a1cad3ea420ee0077daba3b3cf7edd"
+                "reference": "2dbace2c69542e5a251af3becb6d7209ac9fb42b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-mime/zipball/7fb16c0268a1cad3ea420ee0077daba3b3cf7edd",
-                "reference": "7fb16c0268a1cad3ea420ee0077daba3b3cf7edd",
+                "url": "https://api.github.com/repos/laminas/laminas-mime/zipball/2dbace2c69542e5a251af3becb6d7209ac9fb42b",
+                "reference": "2dbace2c69542e5a251af3becb6d7209ac9fb42b",
                 "shasum": ""
             },
             "require": {
@@ -612,8 +612,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.7-dev",
-                    "dev-develop": "2.8-dev"
+                    "dev-master": "2.7.x-dev",
+                    "dev-develop": "2.8.x-dev"
                 }
             },
             "autoload": {
@@ -631,7 +631,7 @@
                 "laminas",
                 "mime"
             ],
-            "time": "2019-12-31T17:25:26+00:00"
+            "time": "2019-12-31T17:25:27+00:00"
         },
         {
             "name": "laminas/laminas-serializer",
@@ -895,16 +895,16 @@
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-zendframework-bridge.git",
-                "reference": "32d7095e436a31b8d98e485a5c63d70df74915a8"
+                "reference": "0fb9675b84a1666ab45182b6c5b29956921e818d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/32d7095e436a31b8d98e485a5c63d70df74915a8",
-                "reference": "32d7095e436a31b8d98e485a5c63d70df74915a8",
+                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/0fb9675b84a1666ab45182b6c5b29956921e818d",
+                "reference": "0fb9675b84a1666ab45182b6c5b29956921e818d",
                 "shasum": ""
             },
             "require": {
@@ -943,7 +943,7 @@
                 "laminas",
                 "zf"
             ],
-            "time": "2019-12-31T15:24:03+00:00"
+            "time": "2020-01-07T22:58:31+00:00"
         },
         {
             "name": "michelf/php-markdown",
@@ -2516,12 +2516,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "b6c93433a7b0b92b54c2bb9b0731d71ddc03b365"
+                "reference": "19bb06715e96a76074589674830554f9a37becc8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/b6c93433a7b0b92b54c2bb9b0731d71ddc03b365",
-                "reference": "b6c93433a7b0b92b54c2bb9b0731d71ddc03b365",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/19bb06715e96a76074589674830554f9a37becc8",
+                "reference": "19bb06715e96a76074589674830554f9a37becc8",
                 "shasum": ""
             },
             "require": {
@@ -2591,7 +2591,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2019-10-04T19:45:12+00:00"
+            "time": "2020-01-22T14:20:41+00:00"
         },
         {
             "name": "consolidation/annotated-command",
