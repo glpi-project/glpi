@@ -73,7 +73,7 @@ class DeviceDrive extends CommonDevice {
          'datatype'           => 'number',
          'massiveaction'      => false
       ];
-      
+
       $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
