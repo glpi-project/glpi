@@ -136,6 +136,10 @@ class Plugin extends CommonDBTM {
 
       if ($load_plugins && count($plugins)) {
          foreach ($plugins as $plugin) {
+            if (!$this->isLoadable($plugin['directory'])) {
+               continue;
+            }
+
             Plugin::load($plugin['directory']);
 
             if ((int)$plugin['state'] === self::ACTIVATED) {
@@ -330,12 +334,6 @@ class Plugin extends CommonDBTM {
             return;
          }
 
-         // Plugin is known but we are unable to load informations, it should be cleaned
-         if ($plugin->fields['state'] == self::TOBECLEANED) {
-            // unless its state is already self::TOBECLEANED
-            return;
-         }
-
          // Try to get information from a plugin that lists current name as its old name
          // If something found, and not already registerd in DB,, base plugin informations on it
          // If nothing found, mark plugin as "To be cleaned"
@@ -347,17 +345,12 @@ class Plugin extends CommonDBTM {
          } else {
             trigger_error(
                sprintf(
-                  'Unable to load plugin "%s" informations. Its state has been changed to "To be cleaned".',
+                  'Unable to load plugin "%s" informations.',
                   $directory
                ),
                E_USER_WARNING
             );
-            $this->update(
-               [
-                  'id'    => $plugin->fields['id'],
-                  'state' => self::TOBECLEANED,
-               ]
-            );
+            // Plugin is known but we are unable to load informations, we ignore it
             return;
          }
       }
@@ -855,10 +848,22 @@ class Plugin extends CommonDBTM {
 
       // If plugin is not marked as activated, check on DB as it may have not been loaded yet.
       if ($this->getFromDBbyDir($directory)) {
-         return ($this->fields['state'] == self::ACTIVATED);
+         return ($this->fields['state'] == self::ACTIVATED) && $this->isLoadable($directory);
       }
 
       return false;
+   }
+
+
+   /**
+    * Is a plugin loadable ?
+    *
+    * @param string $directory  Plugin directory
+    *
+    * @return boolean
+    */
+   function isLoadable($directory) {
+      return !empty($this->getInformationsFromDirectory($directory));
    }
 
 
@@ -878,9 +883,8 @@ class Plugin extends CommonDBTM {
 
       // If plugin is not loaded, check on DB as plugins may have not been loaded yet.
       if ($this->getFromDBbyDir($directory)) {
-         return (($this->fields['state']    == self::ACTIVATED)
-                 || ($this->fields['state'] == self::TOBECONFIGURED)
-                 || ($this->fields['state'] == self::NOTACTIVATED));
+         return in_array($this->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED])
+            && $this->isLoadable($directory);
       }
    }
 
@@ -1084,32 +1088,9 @@ class Plugin extends CommonDBTM {
                  " Version: ".str_pad($plugin['version'], 10).
                  " State: ";
 
-         switch ($plugin['state']) {
-            case self::ANEW :
-               $msg .=  'New';
-               break;
+         $state = $plug->isLoadable($plugin['directory']) ? $plugin['state'] : self::TOBECLEANED;
+         $msg .= self::getState($state);
 
-            case self::ACTIVATED :
-               $msg .=  'Enabled';
-               break;
-
-            case self::NOTINSTALLED :
-               $msg .=  'Not installed';
-               break;
-
-            case self::TOBECONFIGURED :
-               $msg .=  'To be configured';
-               break;
-
-            case self::NOTACTIVATED :
-               $msg .=  'Not activated';
-               break;
-
-            case self::TOBECLEANED :
-            default :
-               $msg .=  'To be cleaned';
-               break;
-         }
          echo wordwrap("\t".$msg."\n", $width, "\n\t\t");
       }
       echo "\n</pre></td></tr>";
@@ -2021,7 +2002,8 @@ class Plugin extends CommonDBTM {
          'field'              => 'state',
          'name'               => __('Status'),
          'searchtype'         => 'equals',
-         'noremove'           => true
+         'noremove'           => true,
+         'additionalfields'   => ['directory'],
       ];
 
       $tab[] = [
@@ -2065,16 +2047,19 @@ class Plugin extends CommonDBTM {
       switch ($field) {
          case 'id':
             //action...
-            $plugin = new self;
-            $plugin->checkPluginState($values['directory']);
-
             $ID = $values[$field];
+
+            $plugin = new self;
             $plugin->getFromDB($ID);
 
             $directory = $plugin->fields['directory'];
             $state = (int)$plugin->fields['state'];
 
-            self::load($directory, true);
+            if ($plugin->isLoadable($directory)) {
+               self::load($directory, true);
+            } else {
+               $state = self::TOBECLEANED;
+            }
 
             $output = '';
 
@@ -2208,8 +2193,9 @@ class Plugin extends CommonDBTM {
             return "<div style='text-align:right'>$output</div>";
             break;
          case 'state':
-            $value = $values[$field];
-            return self::getState($value);
+            $plugin = new self();
+            $state = $plugin->isLoadable($values['directory']) ? $values[$field] : self::TOBECLEANED;
+            return self::getState($state);
             break;
          case 'homepage':
             $value = $values[$field];
