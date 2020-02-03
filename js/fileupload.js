@@ -371,18 +371,19 @@ if (typeof tinyMCE != 'undefined') {
                }
 
                var imgData = new Uint8Array(this.response);
-               var imgType = fileType(imgData);
+               // fileType.fromBuffer() returns a promise (async method)
+               fileType.fromBuffer(imgData).then(function(imgType) {
+                  if (!imgType || !imgType.ext || !imgType.mime) {
+                     // Unable to retrieve file ext
+                     console.error("paste error");
+                     return;
+                  }
 
-               if (!imgType || !imgType.ext || !imgType.mime) {
-                  // Unable to retrieve file ext
-                  console.error("paste error");
-                  return;
-               }
+                  var file  = new Blob([imgData.buffer], {type: imgType.mime});
+                  file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + imgType.ext;
 
-               var file  = new Blob([imgData.buffer], {type: imgType.mime});
-               file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + imgType.ext;
-
-               insertImageInTinyMCE(editor, file);
+                  insertImageInTinyMCE(editor, file);
+               });
             };
             xhr.send();
          }
