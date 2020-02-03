@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b1c01ed242aba58aa8334f6a9395373",
+    "content-hash": "368a9b79cb288eb9774bbe1577af4dd3",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -158,6 +158,7 @@
                 "scss",
                 "stylesheet"
             ],
+            "abandoned": "scssphp/scssphp",
             "time": "2018-07-22T01:22:08+00:00"
         },
         {
@@ -1656,16 +1657,16 @@
     "packages-dev": [
         {
             "name": "atoum/atoum",
-            "version": "dev-master",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "b6c93433a7b0b92b54c2bb9b0731d71ddc03b365"
+                "reference": "35714b3044ccbfea6d9d78a7a7107347ee1b5ce9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/b6c93433a7b0b92b54c2bb9b0731d71ddc03b365",
-                "reference": "b6c93433a7b0b92b54c2bb9b0731d71ddc03b365",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/35714b3044ccbfea6d9d78a7a7107347ee1b5ce9",
+                "reference": "35714b3044ccbfea6d9d78a7a7107347ee1b5ce9",
                 "shasum": ""
             },
             "require": {
@@ -1735,7 +1736,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2019-10-04T19:45:12+00:00"
+            "time": "2020-01-22T14:16:11+00:00"
         },
         {
             "name": "atoum/telemetry-extension",
@@ -3530,9 +3531,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "atoum/atoum": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

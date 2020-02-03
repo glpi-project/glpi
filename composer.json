@@ -37,7 +37,7 @@
         "zendframework/zend-serializer": "^2.8"
     },
     "require-dev": {
-        "atoum/atoum": "dev-master",
+        "atoum/atoum": "^3.4",
         "atoum/telemetry-extension": "^1.0",
         "consolidation/robo": "^1.0",
         "fzaninotto/Faker": "^1.7",
