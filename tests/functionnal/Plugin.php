@@ -315,7 +315,7 @@ class Plugin extends DbTestCase {
 
    /**
     * Test state checking on an invalid directory corresponding to a known plugin.
-    * Should results in changing plugin state to "TOBECLEANED".
+    * Should results in no change in plugin state, as "TOBECLEANED" state is realtime computed.
     */
    public function testCheckPluginStateForInvalidKnownPlugin() {
 
@@ -325,18 +325,13 @@ class Plugin extends DbTestCase {
          'version'   => '1.0',
          'state'     => \Plugin::ACTIVATED,
       ];
-      $expected_data = array_merge(
-         $initial_data,
-         [
-            'state' => \Plugin::TOBECLEANED,
-         ]
-      );
+      $expected_data = $initial_data;
 
       $this->doTestCheckPluginState(
          $initial_data,
          null,
          $expected_data,
-         'Unable to load plugin "' . $this->test_plugin_directory . '" informations. Its state has been changed to "To be cleaned".'
+         'Unable to load plugin "' . $this->test_plugin_directory . '" informations.'
       );
    }
 
