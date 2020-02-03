@@ -63,7 +63,8 @@ trait PlanningEvent {
          'content_field' => 'text']
       );
 
-      if (isset($this->fields["users_id"])
+      if (!isset($this->input['_no_check_plan'])
+          && isset($this->fields["users_id"])
           && isset($this->fields["begin"])
           && !empty($this->fields["begin"])) {
          Planning::checkAlreadyPlanned(
@@ -85,19 +86,16 @@ trait PlanningEvent {
 
    function prepareInputForAdd($input) {
       global $DB;
-      if ($DB->fieldExists(static::getTable(), 'users_id') && (!isset($input['users_id']) || empty($input['users_id']))) {
+
+      if ($DB->fieldExists(static::getTable(), 'users_id')
+          && (!isset($input['users_id'])
+              || empty($input['users_id']))) {
          $input['users_id'] = Session::getLoginUserID();
       }
 
-      // manage addition for mulitple users
-      if (isset($input['users_id']) && is_array($input['users_id'])) {
-         foreach ($input['users_id'] as $users_id) {
-            $new_item = new self;
-            $input['users_id'] = $users_id;
-            $new_item->add($input);
-         }
-
-         return false;
+      // manage guests
+      if (isset($input['users_id_guests']) && is_array($input['users_id_guests'])) {
+         $input['users_id_guests'] = exportArrayToDB($input['users_id_guests']);
       }
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
@@ -145,6 +143,10 @@ trait PlanningEvent {
 
 
    function prepareInputForUpdate($input) {
+      // manage guests
+      if (isset($input['users_id_guests']) && is_array($input['users_id_guests'])) {
+         $input['users_id_guests'] = exportArrayToDB($input['users_id_guests']);
+      }
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
@@ -214,7 +216,8 @@ trait PlanningEvent {
 
 
    function post_updateItem($history = 1) {
-      if (isset($this->fields["users_id"])
+      if (!isset($this->input['_no_check_plan'])
+          && isset($this->fields["users_id"])
           && isset($this->fields["begin"])
           && !empty($this->fields["begin"])) {
          Planning::checkAlreadyPlanned(
@@ -274,8 +277,9 @@ trait PlanningEvent {
          ]
       ]);
       return $this->update([
-         'id'    => $id,
-         'rrule' => $rrule
+         'id'             => $id,
+         'rrule'          => $rrule,
+         '_no_check_plan' => true,
       ]);
    }
 
@@ -297,6 +301,8 @@ trait PlanningEvent {
          'begin' => $fields['begin'],
          'end'   => $fields['end'],
       ];
+      // avoid checking availability, will be done after when updating new dates
+      $fields['_no_check_plan'] = true;
 
       $instance = new self;
       $new_id = $instance->add($fields);
@@ -382,6 +388,14 @@ trait PlanningEvent {
       // See my private event ?
       if ($who > 0) {
          $nreadpriv = ["$table.users_id" => $who];
+
+         // guests accounts
+         if ($DB->fieldExists($table, 'users_id_guests')) {
+            $nreadpriv = ['OR' => [
+               "$table.users_id" => $who,
+               "$table.users_id_guests" => ['LIKE', '%"'.$who.'"%'],
+            ]];
+         }
       }
 
       if ($whogroup > 0 && $itemtype == 'Reminder') {
@@ -470,7 +484,11 @@ trait PlanningEvent {
       if (count($iterator)) {
          while ($data = $iterator->next()) {
             if ($event_obj->getFromDB($data["id"]) && $event_obj->canViewItem()) {
-               $key = $data["begin"]."$$".$itemtype."$$".$data["id"];
+               $key = $data["begin"].
+                      "$$".$itemtype.
+                      "$$".$data["id"].
+                      "$$".$who.
+                      "$$".$whogroup;
                if (isset($options['from_group_users'])) {
                   $key.= "_gu";
                }

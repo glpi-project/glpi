@@ -72,10 +72,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
    }
 
    function canUpdateItem() {
-      // if we don't have the right to manage background events,
-      // we don't have the right to edit the item
-      if ($this->fields["background"]
-          && !Session::haveRight(self::$rightname, self::MANAGE_BG_EVENTS)) {
+      if (!$this->canUpdateBGEvents()) {
          return false;
       }
 
@@ -87,6 +84,41 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
       }
 
       return parent::canUpdateItem();
+   }
+
+
+   function canPurgeItem() {
+      if (!$this->canUpdateBGEvents()) {
+         return false;
+      }
+
+      // the current user can update only this own events without PURGE right
+      // but not bg one, see above
+      if ($this->fields['users_id'] != Session::getLoginUserID()
+          && !Session::haveRight(self::$rightname, PURGE)) {
+         return false;
+      }
+
+      return parent::canPurgeItem();
+   }
+
+   /**
+    * do we have the right to manage background events
+    *
+    * @return bool
+    */
+   function canUpdateBGEvents() {
+      if ($this->fields["background"]
+          && !Session::haveRight(self::$rightname, self::MANAGE_BG_EVENTS)) {
+         return false;
+      }
+
+      return true;
+   }
+
+
+   function post_getFromDB() {
+      $this->fields['users_id_guests'] = importArrayFromDB($this->fields['users_id_guests']);
    }
 
 
@@ -174,24 +206,6 @@ JAVASCRIPT;
          echo "</tr>";
       }
 
-      if (!$ID) {
-         echo "<tr class='tab_bg_2'><td colspan='2'>".__('User(s)')."</td>";
-         echo "<td colspan='2'>";
-         User::dropdown([
-            'name'          => 'users_id[]',
-            'right'         => 'all',
-            'value'         => $this->fields['users_id'],
-            'specific_tags' => [
-               'multiple' => true
-            ],
-         ]);
-         echo "<div style='font-style: italic'>".
-              __("Each users will have a copy of this event").
-              "</div>";
-         echo "</td>";
-         echo "</tr>";
-      }
-
       echo "<tr class='tab_bg_2'><td colspan='2'>".__('Title')."</td>";
       echo "<td colspan='2'>";
       if (isset($options['start'])) {
@@ -210,6 +224,32 @@ JAVASCRIPT;
       if (isset($options['from_planning_edit_ajax']) && $options['from_planning_edit_ajax']) {
          echo Html::hidden('from_planning_edit_ajax');
       }
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'><td colspan='2'>".__('User')."</td>";
+      echo "<td colspan='2'>";
+      User::dropdown([
+         'name'          => 'users_id',
+         'right'         => 'all',
+         'value'         => $this->fields['users_id']
+      ]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'><td colspan='2'>".__('Guests')."</td>";
+      echo "<td colspan='2'>";
+      User::dropdown([
+         'name'          => 'users_id_guests[]',
+         'right'         => 'all',
+         'value'         => $this->fields['users_id_guests'],
+         'specific_tags' => [
+            'multiple' => true
+         ],
+      ]);
+      echo "<div style='font-style: italic'>".
+            __("Each guest will have a read-only copy of this event").
+            "</div>";
       echo "</td>";
       echo "</tr>";
 
@@ -333,7 +373,12 @@ JAVASCRIPT;
 
    public static function getUserItemsAsVCalendars($users_id) {
 
-      return self::getItemsAsVCalendars([self::getTableField('users_id') => $users_id]);
+      return self::getItemsAsVCalendars([
+         'OR' => [
+            self::getTableField('users_id')        => $users_id,
+            self::getTableField('users_id_guests') => ['LIKE', '%"'.$users_id.'"%'],
+         ]
+      ]);
    }
 
    /**

@@ -3923,7 +3923,7 @@ JAVASCRIPT;
 
       // check default value (in case of multiple observers)
       if (is_array($p['value'])) {
-         $p['value'] = $p['value'][$p['_user_index']];
+         $p['value'] = $p['value'][$p['_user_index']] ?? 0;
       }
 
       // Check default value for dropdown : need to be a numeric

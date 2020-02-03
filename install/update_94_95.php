@@ -464,6 +464,7 @@ function update94to95() {
          `is_recursive` TINYINT(1) NOT NULL DEFAULT '1',
          `date` timestamp NULL DEFAULT NULL,
          `users_id` int(11) NOT NULL DEFAULT '0',
+         `users_id_guests` text COLLATE utf8_unicode_ci,
          `groups_id` int(11) NOT NULL DEFAULT '0',
          `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
          `text` text COLLATE utf8_unicode_ci,
@@ -510,6 +511,11 @@ function update94to95() {
          'value' => 1
       ]);
       $migration->addKey('glpi_planningexternalevents', 'is_recursive');
+   }
+   if (!$DB->fieldExists('glpi_planningexternalevents', 'users_id_guests')) {
+      $migration->addField('glpi_planningexternalevents', 'users_id_guests', 'text', [
+         'after' => 'users_id',
+      ]);
    }
 
    if (!$DB->tableExists('glpi_planningeventcategories')) {
