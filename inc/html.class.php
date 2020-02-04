@@ -4705,8 +4705,12 @@ JAVASCRIPT;
     * @param $url        string   URL to get datas
     * @param $params     array    of parameters
     *            must contains :
-    *                   - 'value'     : default value selected
-    *                   - 'valuename' : default name of selected value
+    *                if single select
+    *                   - 'value'       : default value selected
+    *                   - 'valuename'   : default name of selected value
+    *                if multiple select
+    *                   - 'values'      : default values selected
+    *                   - 'valuesnames' : default names of selected values
     *
     * @since 0.85.
     *
@@ -4751,7 +4755,17 @@ JAVASCRIPT;
          }
       }
 
-      $values = [$value => $valuename];
+      // manage multiple select (with multiple values)
+      if (isset($params['values']) && count($params['values'])) {
+         $values = array_combine($params['values'], $params['valuesnames']);
+         $options['multiple'] = 'multiple';
+         $options['selected'] = $params['values'];
+      } else {
+         // simple select (multiple = no)
+         $values = [$value => $valuename];
+      }
+
+      // display select tag
       $output = self::select($name, $values, $options);
 
       $js = "
@@ -5164,7 +5178,10 @@ JAVASCRIPT;
          $select .= sprintf(
             '<option value="%1$s"%2$s>%3$s</option>',
             self::cleanInputText($key),
-            ($selected != false && $key == $selected) ? ' selected="selected"' : '',
+            ($selected != false && (
+               $key == $selected
+               || is_array($selected) && in_array($key, $selected))
+            ) ? ' selected="selected"' : '',
             $value
          );
       }
