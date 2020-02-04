@@ -205,7 +205,7 @@ class DomainRecord extends CommonDBChild {
       }
 
       if (!isset($input['status']) || empty($input['status'])) {
-         $input['ttl'] = self::STATUS_ACTIVE;
+         $input['Status'] = self::STATUS_ACTIVE;
       }
 
       return $input;
