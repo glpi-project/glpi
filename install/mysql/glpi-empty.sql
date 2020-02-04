@@ -3836,6 +3836,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `accepted` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `refused` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `use_kerberos` tinyint(1) NOT NULL DEFAULT '0',
+  `use_imap_oauth2` tinyint(1) NOT NULL DEFAULT '0',
   `errors` int(11) NOT NULL DEFAULT '0',
   `use_mail_date` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,

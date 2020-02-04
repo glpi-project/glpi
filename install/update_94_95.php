@@ -1585,6 +1585,18 @@ HTML
    }
    /** /Update default right assignement rule */
 
+   /** Support of OAuth2 authentication form IMAP mailcollectors */
+   $migration->addField(
+      'glpi_mailcollectors',
+      'use_imap_oauth2',
+      'bool',
+      [
+         'after' => 'use_kerberos',
+         'value' => 0,
+      ]
+   );
+   /** /Support of OAuth2 authentication form IMAP mailcollectors */
+
    $migration->executeMigration();
 
    return $updateresult;

@@ -241,11 +241,15 @@ class MailCollector  extends CommonDBTM {
 
       $type = Toolbox::showMailServerConfig($this->fields["host"]);
 
+      echo "<tr class='tab_bg_1'><td>".__('Authenticate using Imap OAuth2')."</td><td>";
+      Dropdown::showYesNo("use_imap_oauth2", $this->fields["use_imap_oauth2"]);
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td>".__('Login')."</td><td>";
       Html::autocompletionTextField($this, "login");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Password')."</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Password / Token')."</td>";
       echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='new-password'>";
       if ($ID > 0) {
          echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
@@ -1242,29 +1246,43 @@ class MailCollector  extends CommonDBTM {
    function connect() {
       $config = Toolbox::parseMailServerConnectString($this->fields['host']);
 
-      $params = [
-         'host'      => $config['address'],
-         'user'      => $this->fields['login'],
-         'password'  => Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
-         'port'      => $config['port']
-      ];
+      $is_imap = $config['type'] !== 'pop';
 
+      $host = $config['address'];
+      $port = $config['port'];
+      $ssl  = false;
       if ($config['ssl']) {
-         $params['ssl'] = 'SSL';
+         $ssl = 'SSL';
       }
-
       if ($config['tls']) {
-         $params['ssl'] = 'TLS';
+         $ssl = 'TLS';
       }
 
-      if (!empty($config['mailbox'])) {
-         $params['folder'] = $config['mailbox'];
-      }
+      $user     = $this->fields['login'];
+      $password = Toolbox::decrypt($this->fields['passwd'], GLPIKEY);
 
       try {
-         $class = '\Laminas\Mail\Storage\\';
-         $class .= ($config['type']== 'pop' ? 'Pop3' : 'Imap');
-         $this->storage = new $class($params);
+         $protocol_class = '\Laminas\Mail\Protocol\\' . ($is_imap ? 'Imap' : 'Pop3');
+         $protocol = new $protocol_class($host, $port, $ssl);
+         if ($is_imap && (bool)$this->fields['use_imap_oauth2']) {
+            $protocol->sendRequest(
+               'AUTHENTICATE',
+               [
+                  'XOAUTH2',
+                  base64_encode("user={$user}\1auth=Bearer {$password}\1\1")
+               ]
+            );
+         } else {
+            $protocol->login($user, $password);
+         }
+
+         $storage_class = '\Laminas\Mail\Storage\\' . ($is_imap ? 'Imap' : 'Pop3');
+         $this->storage = new $storage_class($protocol);
+
+         if ($is_imap && !empty($config['mailbox'])) {
+            $this->storage->selectFolder($config['mailbox']);
+         }
+
          if ($this->fields['errors'] > 0) {
             $this->update([
                'id'     => $this->getID(),
