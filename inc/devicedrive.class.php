@@ -66,15 +66,6 @@ class DeviceDrive extends CommonDevice {
       $tab = parent::rawSearchOptions();
 
       $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'datatype'           => 'number',
-         'massiveaction'      => false
-      ];
-
-      $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'is_writer',
