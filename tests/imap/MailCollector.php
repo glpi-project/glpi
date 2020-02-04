@@ -61,6 +61,7 @@ class MailCollector extends DbTestCase {
                   'accepted'             => '',
                   'refused'              => '',
                   'use_kerberos'         => '',
+                  'use_imap_oauth2'      => '',
                   'errors'               => '',
                   'use_mail_date'        => '',
                   'date_creation'        => '',
