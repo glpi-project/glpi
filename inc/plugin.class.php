@@ -2177,7 +2177,7 @@ class Plugin extends CommonDBTM {
                      $missing .= "plugin_".$directory."_install";
                   }
                   //TRANS: %s is the list of missing functions
-                  $output = sprintf(__('%1$s: %2$s'), __('Non-existent function'),
+                  $output .= sprintf(__('%1$s: %2$s'), __('Non-existent function'),
                          $missing);
                }
             } else if (in_array($state, [self::ACTIVATED, self::NOTUPDATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)) {
