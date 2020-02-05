@@ -235,6 +235,15 @@ abstract class CommonDevice extends CommonDropdown {
       ];
 
       $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'datatype'           => 'number',
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
          'id'                 => '23',
          'table'              => 'glpi_manufacturers',
          'field'              => 'name',
