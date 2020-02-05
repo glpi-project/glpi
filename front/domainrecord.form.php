@@ -69,6 +69,11 @@ if (isset($_POST["add"])) {
    $record->check($_POST['id'], UPDATE);
    $record->update($_POST);
    Html::back();
+} else if (isset($_GET['_in_modal'])) {
+   Html::popHeader(DomainRecord::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF']);
+   $record->showForm($_GET["id"], ['domains_id' => $_GET['domains_id'] ?? null]);
+   Html::popFooter();
+
 } else {
    Html::header(DomainRecord::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "domain", "domainrecord");
    $record->display([

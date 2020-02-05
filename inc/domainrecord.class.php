@@ -369,6 +369,15 @@ class DomainRecord extends CommonDBChild {
             ]
          );
 
+         echo "<span class='fa fa-plus-circle pointer' title=\"".__s('Add')."\"
+                        onClick=\"".Html::jsGetElementbyID('add_dropdowndomainrecords_id').".dialog('open');\"
+                     ><span class='sr-only'>" . __s('Add') . "</span></span>";
+         echo Ajax::createIframeModalWindow(
+            'add_dropdowndomainrecords_id',
+            DomainRecord::getFormURL() . "?domains_id=$instID",
+            ['display' => false]
+         );
+
          echo "</td><td class='center' class='tab_bg_1'>";
          echo "<input type='hidden' name='domains_id' value='$instID'>";
          echo "<input type='submit' name='addrecord' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
