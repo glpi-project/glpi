@@ -54,7 +54,19 @@ if (isset($_POST["table"])
                'comment' => "",
             ];
          } else {
-            $tmpname = getUserName($_POST["value"], 2);
+            if (is_array($_POST["value"])) {
+               $comments = [];
+               foreach ($_POST["value"] as $users_id) {
+                  $username   = getUserName($users_id, 2);
+                  $comments[] = $username['comment'] ?? "";
+               }
+               $tmpname = [
+                  'comment' => implode("<br>", $comments),
+               ];
+               unset($_POST['withlink']);
+            } else {
+               $tmpname = getUserName($_POST["value"], 2);
+            }
          }
          echo $tmpname["comment"];
 

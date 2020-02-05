@@ -3859,6 +3859,7 @@ JAVASCRIPT;
     * @param $options array of possible options:
     *    - name             : string / name of the select (default is users_id)
     *    - value
+    *    - values           : in case of select[multiple], pass the array of multiple values
     *    - right            : string / limit user who have specific right :
     *                             id -> only current user (default case);
     *                             interface -> central;
@@ -3897,6 +3898,7 @@ JAVASCRIPT;
       $p = [
          'name'             => 'users_id',
          'value'            => '',
+         'values'           => [],
          'right'            => 'id',
          'all'              => 0,
          'on_change'        => '',
@@ -3954,9 +3956,21 @@ JAVASCRIPT;
             $default = Dropdown::EMPTY_VALUE;
          }
       }
+
+      // get multiple values name
+      $valuesnames = [];
+      foreach ($p['values'] as $value) {
+         if (!empty($value) && ($value > 0)) {
+            $user = getUserName($value, 2);
+            $valuesnames[] = $user["name"];
+         }
+      }
+
       $field_id = Html::cleanId("dropdown_".$p['name'].$p['rand']);
       $param    = ['value'               => $p['value'],
+                        'values'              => $p['values'],
                         'valuename'           => $default,
+                        'valuesnames'         => $valuesnames,
                         'width'               => $p['width'],
                         'all'                 => $p['all'],
                         'right'               => $p['right'],

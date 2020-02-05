@@ -242,7 +242,7 @@ JAVASCRIPT;
       User::dropdown([
          'name'          => 'users_id_guests[]',
          'right'         => 'all',
-         'value'         => $this->fields['users_id_guests'],
+         'values'        => $this->fields['users_id_guests'],
          'specific_tags' => [
             'multiple' => true
          ],

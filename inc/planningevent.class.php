@@ -146,6 +146,9 @@ trait PlanningEvent {
       // manage guests
       if (isset($input['users_id_guests']) && is_array($input['users_id_guests'])) {
          $input['users_id_guests'] = exportArrayToDB($input['users_id_guests']);
+
+         // avoid warning on update method (string comparison with old value)
+         $this->fields['users_id_guests'] = exportArrayToDB($input['users_id_guests']);
       }
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
