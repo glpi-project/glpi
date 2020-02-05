@@ -53,6 +53,10 @@ trait PlanningEvent {
          $this->fields['is_recursive'] = 1;
       }
 
+      if (isset($this->fields['users_id_guests'])) {
+         $this->fields['users_id_guests'] = [];
+      }
+
       parent::post_getEmpty();
    }
 
