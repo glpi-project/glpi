@@ -484,6 +484,116 @@ class RuleTicket extends DbTestCase {
 
    }
 
+   public function testAssignGroup() {
+      $this->login();
+
+      //create new group1
+      $group1 = new \Group();
+      $group_id1 = $group1->add($group_input1 = [
+         "name" => "group1",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group1, $group_id1, $group_input1);
+
+      //create new group2
+      $group2 = new \Group();
+      $group_id2 = $group2->add($group_input2 = [
+         "name" => "group2",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group2, $group_id2, $group_input2);
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test add group on add',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      //create criteria to check
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'content',
+         'condition' => \Rule::PATTERN_EXISTS,
+         'pattern'   => 1,
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      //create action to add group as group requester
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'add',
+         'field'       => '_groups_id_requester',
+         'value'       => $group_id1,
+      ]);
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      //create rule for assign
+      $ruletid_assign = $ruleticket->add($ruletinput_assign = [
+         'name'         => 'test assign group on add',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid_assign, $ruletinput_assign);
+
+      //create criteria to check
+      $crit_id_assign = $rulecrit->add($crit_input_assing = [
+         'rules_id'  => $ruletid_assign,
+         'criteria'  => 'content',
+         'condition' => \Rule::PATTERN_EXISTS,
+         'pattern'   => 1,
+      ]);
+      $this->checkInput($rulecrit, $crit_id_assign, $crit_input_assing);
+
+      //create action to assign group as group requester
+      $action_id_assign = $ruleaction->add($action_input_assign = [
+         'rules_id'    => $ruletid_assign,
+         'action_type' => 'assign',
+         'field'       => '_groups_id_requester',
+         'value'       => $group_id2,
+      ]);
+      $this->checkInput($ruleaction, $action_id_assign, $action_input_assign);
+
+      // Create ticket
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'             => 'when assigning delete groups to add',
+         'content'          => 'test',
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+
+      //load TicketGroup1 (expected false)
+      $ticketGroup = new \Group_Ticket();
+      $this->boolean(
+         $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id1,
+            'type'               => \CommonITILActor::REQUESTER
+         ])
+      )->isFalse();
+
+      //load TicketGroup2 (expected true)
+      $ticketGroup = new \Group_Ticket();
+      $this->boolean(
+         $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id2,
+            'type'               => \CommonITILActor::REQUESTER
+         ])
+      )->isTrue();
+   }
+
    public function testGroupRequesterAssignFromDefaultUserOnCreate() {
       $this->login();
 

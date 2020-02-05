@@ -238,6 +238,13 @@ class RuleTicket extends Rule {
                      }
                   }
 
+                  // Remove values that may have been added by any "append" rule action on same field.
+                  $actions = $this->getActions();
+                  $append_key = $actions[$action->fields["field"]]["appendto"] ?? null;
+                  if ($append_key !== null && array_key_exists($append_key, $output)) {
+                     unset($output[$append_key]);
+                  }
+
                   break;
 
                case "append" :
