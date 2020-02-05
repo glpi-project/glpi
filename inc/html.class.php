@@ -5613,7 +5613,7 @@ JAVASCRIPT;
                               displayUploadedFile(file, tag[index], editor, '{$p['name']}');
 
                               $('#progress{$p['rand']} .uploadbar')
-                                 .text('".__s('Upload successful')."')
+                                 .text('".addslashes(__('Upload successful'))."')
                                  .css('width', '100%')
                                  .delay(2000)
                                  .fadeOut('slow');

@@ -385,11 +385,11 @@ class RuleTicket extends Rule {
       $criterias['itilcategories_id']['linkfield']          = 'itilcategories_id';
       $criterias['itilcategories_id']['type']               = 'dropdown';
 
-      $criterias['itilcategories_id_cn']['table']              = 'glpi_itilcategories';
-      $criterias['itilcategories_id_cn']['field']              = 'completename';
-      $criterias['itilcategories_id_cn']['name']               = __('Category').' - '.__('Complete name');
-      $criterias['itilcategories_id_cn']['linkfield']          = 'itilcategories_id';
-      $criterias['itilcategories_id_cn']['type']               = 'dropdown';
+      $criterias['itilcategories_id_cn']['table']           = 'glpi_itilcategories';
+      $criterias['itilcategories_id_cn']['field']           = 'completename';
+      $criterias['itilcategories_id_cn']['name']            = __('Category').' - '.__('Complete name');
+      $criterias['itilcategories_id_cn']['linkfield']       = 'itilcategories_id';
+      $criterias['itilcategories_id_cn']['type']            = 'dropdown';
 
       $criterias['itilcategories_id_code']['table']              = 'glpi_itilcategories';
       $criterias['itilcategories_id_code']['field']              = 'code';

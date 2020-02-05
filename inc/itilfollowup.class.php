@@ -1148,8 +1148,9 @@ JAVASCRIPT;
          );
       }
 
+      $rightname = $itemtype::$rightname;
       // Can see all items, no need to go further
-      if (Session::haveRight($itemtype, $itemtype::READALL)) {
+      if (Session::haveRight($rightname, $itemtype::READALL)) {
          return "(`itemtype` = '$itemtype') ";
       }
 
@@ -1170,7 +1171,7 @@ JAVASCRIPT;
          $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
          return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";
       } else {
-         if (Session::haveRight($itemtype, $itemtype::READMY)) {
+         if (Session::haveRight($rightname, $itemtype::READMY)) {
             // Subquery for affected/assigned/observer user
             $user_query = "SELECT `$target`
                FROM `$user_table`
