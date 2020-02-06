@@ -466,7 +466,16 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
                OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $types_id = $this->getCorrespondingItem('PluginDomainsDomaintype', $dom['plugin_domains_domaintypes_id'])->fields['id'];
+            $mapped_type = $this->getCorrespondingItem('PluginDomainsDomaintype', $dom['plugin_domains_domaintypes_id']);
+            if ($types_id === null) {
+               $message = sprintf(
+                  __('Unable to find mapping for type %s.'),
+                  $dom['plugin_domains_domaintypes_id']
+               );
+               $this->outputImportError($message, $progress_bar);
+               return false;
+            }
+            $types_id = $mapped_type->fields['id'];
             $domain_input = [
                'name'                  => $dom['name'],
                'entities_id'           => $dom['entities_id'],
@@ -673,7 +682,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
       }
 
       $item = new $itemtype();
-      if (!$item->getFromDB($id)) {
+      if ($id !== 0 && !$item->getFromDB($id)) {
          return null;
       }
 
