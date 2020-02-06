@@ -602,6 +602,11 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
                OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
+            if ($core_item !== null) {
+               //if it already exist in DB, there is nothing to change
+               continue;
+            }
+
             $item_input = [
                'domains_id'            => $domains_id,
                'itemtype'              => $itm['itemtype'],
@@ -611,15 +616,10 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
             $item_input = Toolbox::addslashes_deep($item_input);
 
             $item = new Domain_Item();
-            if ($core_item !== null) {
-               //if it already exist in DB, there is nothing to change
-               $res = true;
-            } else {
-               $new_iid = (int)$item->add($item_input);
-               $res = $new_iid > 0;
-               if ($res) {
-                  $core_items[$domains_id.$itm['itemtype'].$itm['items_id']] = $new_iid;
-               }
+            $new_iid = (int)$item->add($item_input);
+            $res = $new_iid > 0;
+            if ($res) {
+               $core_items[$domains_id.$itm['itemtype'].$itm['items_id']] = $new_iid;
             }
 
             if (!$res) {
