@@ -466,7 +466,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
                OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $types_id = $this->getCorrespondingItem('PluginDomainsDomaintype', $dom['plugin_domains_domaintypes_id']);
+            $types_id = $this->getCorrespondingItem('PluginDomainsDomaintype', $dom['plugin_domains_domaintypes_id'])->fields['id'];
             $domain_input = [
                'name'                  => $dom['name'],
                'entities_id'           => $dom['entities_id'],
