@@ -67,7 +67,8 @@ $default_response = json_encode(
 // Get messages from translator component
 $messages = $TRANSLATE->getAllMessages($_GET['domain']);
 if (!($messages instanceof \Laminas\I18n\Translator\TextDomain)) {
-   Toolbox::logError(sprintf('Unable to get messages from domain "%s".', $_GET['domain']));
+   // No TextDomain found means that there is no translations for given domain.
+   // It is mostly related to plugins that does not provide any translations.
    exit($default_response);
 }
 
