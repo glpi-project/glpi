@@ -239,7 +239,15 @@ class Toolbox {
     *
     * @return encrypted string
    **/
-   static function encrypt($string, $key) {
+   static function encrypt($string, $key = null) {
+
+      if ($key === null) {
+         $key = self::getGlpiSecKey();
+      }
+
+      if ($key === GLPIKEY && !defined('TU_USER')) {
+         self::deprecated('Using GLPIKEY is not secure!');
+      }
 
       $result = '';
       for ($i=0; $i<strlen($string); $i++) {
@@ -260,7 +268,11 @@ class Toolbox {
     *
     * @return decrypted string
    **/
-   static function decrypt($string, $key) {
+   static function decrypt($string, $key = null) {
+
+      if ($key === null) {
+         $key = self::getGlpiSecKey();
+      }
 
       $result = '';
       $string = base64_decode($string);
@@ -273,6 +285,19 @@ class Toolbox {
       }
 
       return Toolbox::unclean_cross_side_scripting_deep($result);
+   }
+
+   /**
+    * Get GLPI security key used for decryptable passwords
+    *
+    * Will read key from config/glpi.key if present.
+    * For 9.4 branch, this will defaults to GLPIKEY.
+    *
+    * @return string
+    */
+   public static function getGlpiSecKey() {
+      $glpikey = new GLPIKey();
+      return $glpikey->get();
    }
 
 
@@ -1737,7 +1762,7 @@ class Toolbox {
          if (!empty($CFG_GLPI["proxy_user"])) {
             $opts += [
                CURLOPT_PROXYAUTH    => CURLAUTH_BASIC,
-               CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . self::decrypt($CFG_GLPI["proxy_passwd"], GLPIKEY),
+               CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . self::decrypt($CFG_GLPI["proxy_passwd"]),
             ];
          }
 

@@ -145,7 +145,7 @@ class MailCollector  extends CommonDBTM {
          if (empty($input["passwd"])) {
             unset($input["passwd"]);
          } else {
-            $input["passwd"] = Toolbox::encrypt(stripslashes($input["passwd"]), GLPIKEY);
+            $input["passwd"] = Toolbox::encrypt(stripslashes($input["passwd"]));
          }
       }
 
@@ -174,7 +174,7 @@ class MailCollector  extends CommonDBTM {
          if (empty($input["passwd"])) {
             unset($input["passwd"]);
          } else {
-            $input["passwd"] = Toolbox::encrypt(stripslashes($input["passwd"]), GLPIKEY);
+            $input["passwd"] = Toolbox::encrypt(stripslashes($input["passwd"]));
          }
       }
 
@@ -1218,14 +1218,14 @@ class MailCollector  extends CommonDBTM {
 
       if ($this->fields['use_kerberos']) {
          $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                     Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
+                                     Toolbox::decrypt($this->fields['passwd']),
                                      CL_EXPUNGE, 1);
       } else {
          $try_options = [['DISABLE_AUTHENTICATOR' => 'GSSAPI'],
                               ['DISABLE_AUTHENTICATOR' => 'PLAIN']];
          foreach ($try_options as $option) {
             $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                        Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
+                                        Toolbox::decrypt($this->fields['passwd']),
                                         CL_EXPUNGE, 1, $option);
             if (is_resource($this->marubox)) {
                break;

@@ -880,8 +880,7 @@ class RSSFeed extends CommonDBVisible {
          if (!empty($CFG_GLPI["proxy_user"])) {
             $prx_opt[CURLOPT_HTTPAUTH]     = CURLAUTH_ANYSAFE;
             $prx_opt[CURLOPT_PROXYUSERPWD] = $CFG_GLPI["proxy_user"].":".
-                                             Toolbox::decrypt($CFG_GLPI["proxy_passwd"],
-                                                              GLPIKEY);
+                                             Toolbox::decrypt($CFG_GLPI["proxy_passwd"]);
          }
          $feed->set_curl_options($prx_opt);
       }

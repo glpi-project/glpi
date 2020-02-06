@@ -1,4 +1,5 @@
 /config/config_db*
+/config/glpi.key
 /config/config_path.php
 /config/local_define.php
 /tests/config_db*
