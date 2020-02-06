@@ -690,38 +690,6 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
    }
 
    /**
-    * Returns fallback room id.
-    *
-    * @return number
-    */
-   /*private function getFallbackRoomId() {
-
-      if (null === $this->fallback_room_id) {
-         $room = new DCRoom();
-         $room_fields = [
-            'name'           => 'Temp room (from plugin racks migration script)',
-            'entities_id'    => 0,
-            'is_recursive'   => 1,
-            'datacenters_id' => $this->datacenter_id,
-            'vis_cols'       => 10,
-            'vis_rows'       => 10,
-         ];
-
-         if (!($room_id = $room->getFromDBByCrit($room_fields))
-             && !($room_id = $room->add($room_fields))) {
-
-            $this->outputImportError( __('Unable to create default room.'));
-
-            $room_id = 0;
-         }
-
-         $this->fallback_room_id = $room_id;
-      }
-
-      return $this->fallback_room_id;
-   }*/
-
-   /**
     * Output import error message.
     *
     * @param string           $message
