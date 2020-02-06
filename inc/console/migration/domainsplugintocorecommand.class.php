@@ -467,7 +467,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
             );
 
             $mapped_type = $this->getCorrespondingItem('PluginDomainsDomaintype', $dom['plugin_domains_domaintypes_id']);
-            if ($types_id === null) {
+            if ($mapped_type === null) {
                $message = sprintf(
                   __('Unable to find mapping for type %s.'),
                   $dom['plugin_domains_domaintypes_id']
@@ -475,12 +475,12 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
                $this->outputImportError($message, $progress_bar);
                return false;
             }
-            $types_id = $mapped_type->fields['id'];
+            $types_id = $mapped_type !== null ? $mapped_type->fields['id'] : 0;
             $domain_input = [
                'name'                  => $dom['name'],
                'entities_id'           => $dom['entities_id'],
                'is_recursive'          => $dom['is_recursive'],
-               'domaintypes_id'        => $types_id ?? 0,
+               'domaintypes_id'        => $types_id,
                'date_creation'         => $dom['date_creation'],
                'date_expiration'       => $dom['date_expiration'],
                'users_id_tech'         => $dom['users_id_tech'],
