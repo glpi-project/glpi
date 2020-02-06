@@ -571,7 +571,18 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
          foreach ($items_iterator as $itm) {
             $progress_bar->advance(1);
             $core_item = null;
-            $domains_id = $this->getCorrespondingItem('PluginDomainsDomains', $itm['plugin_domains_domains_id'])->fields['id'];
+            $mapped_domain = $this->getCorrespondingItem('PluginDomainsDomains', $itm['plugin_domains_domains_id']);
+            if ($mapped_domain === null) {
+               $message = sprintf(
+                  __('Unable to find corresponding domain for item %s (%s).'),
+                  $itm['itemtype'],
+                  $itm['items_id']
+               );
+               $this->outputImportError($message, $progress_bar);
+               // Do not block migration as this error is probably resulting in presence of obsolete data in DB
+               continue;
+            }
+            $domains_id = $mapped_domain->fields['id'];
 
             if (isset($core_items[$domains_id.$itm['itemtype'].$itm['items_id']])) {
                $core_item = $core_items[$domains_id.$itm['itemtype'].$itm['items_id']];
