@@ -901,6 +901,9 @@ class Profile extends CommonDBTM {
                       ['itemtype'  => 'Cluster',
                             'label'     => Cluster::getTypeName(Session::getPluralNumber()),
                             'field'     => 'cluster'],
+                      ['itemtype'  => 'Domain',
+                            'label'     => _n('Domain', 'Domains', Session::getPluralNumber()),
+                            'field'     => 'domain'],
                   ];
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
@@ -1468,9 +1471,6 @@ class Profile extends CommonDBTM {
                             'label'     => _n('Global dropdown', 'Global dropdowns', Session::getPluralNumber()),
                             'field'     => 'dropdown'],
                       __('Entity dropdowns'),
-                      ['itemtype'  => 'Domain',
-                            'label'     => _n('Domain', 'Domains', Session::getPluralNumber()),
-                            'field'     => 'domain'],
                       ['itemtype'  => 'Location',
                             'label'     => _n('Location', 'Locations', Session::getPluralNumber()),
                             'field'     => 'location'],
