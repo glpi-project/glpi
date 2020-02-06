@@ -587,7 +587,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
             if (isset($core_items[$domains_id.$itm['itemtype'].$itm['items_id']])) {
                $core_item = $core_items[$domains_id.$itm['itemtype'].$itm['items_id']];
                $message = sprintf(
-                  __('Updating existing domain item %s...'),
+                  __('Skip existing domain item %s...'),
                   $domains_id . ' ' . $itm['itemtype'] . ' ' . $itm['items_id']
                );
             } else {
@@ -612,7 +612,8 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
 
             $item = new Domain_Item();
             if ($core_item !== null) {
-               $res = (bool)$item->update($item_input + ['id' => $core_item]);
+               //if it already exist in DB, there is nothing to change
+               $res = true;
             } else {
                $new_iid = (int)$item->add($item_input);
                $res = $new_iid > 0;
