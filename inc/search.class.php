@@ -4604,6 +4604,8 @@ JAVASCRIPT;
                   return $link." ($tocompute ".$regs[1]." ".$regs[3].") ";
                }
                if (is_numeric($val)) {
+                  $numeric_val = floatval($val);
+
                   if (isset($searchopt[$ID]["width"])) {
                      $ADD = "";
                      if ($nott
@@ -4611,18 +4613,18 @@ JAVASCRIPT;
                         $ADD = " OR $tocompute IS NULL";
                      }
                      if ($nott) {
-                        return $link." ($tocompute < ".(intval($val) - $searchopt[$ID]["width"])."
-                                        OR $tocompute > ".(intval($val) + $searchopt[$ID]["width"])."
+                        return $link." ($tocompute < ".($numeric_val - $searchopt[$ID]["width"])."
+                                        OR $tocompute > ".($numeric_val + $searchopt[$ID]["width"])."
                                         $ADD) ";
                      }
-                     return $link." (($tocompute >= ".(intval($val) - $searchopt[$ID]["width"])."
-                                      AND $tocompute <= ".(intval($val) + $searchopt[$ID]["width"]).")
+                     return $link." (($tocompute >= ".($numeric_val - $searchopt[$ID]["width"])."
+                                      AND $tocompute <= ".($numeric_val + $searchopt[$ID]["width"]).")
                                      $ADD) ";
                   }
                   if (!$nott) {
-                     return " $link ($tocompute = ".(intval($val)).") ";
+                     return " $link ($tocompute = $numeric_val) ";
                   }
-                  return " $link ($tocompute <> ".(intval($val)).") ";
+                  return " $link ($tocompute <> $numeric_val) ";
                }
                break;
          }
