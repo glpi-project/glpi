@@ -58,15 +58,6 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.npm/_cacache
 
-notifications:
-  irc:
-    channels:
-      - "chat.freenode.org#glpi"
-    on_success: change
-    on_failure: always
-    use_notice: true
-    skip_join: true
-
 #exclude old branches, without tests
 branches:
   except:
