@@ -1522,7 +1522,6 @@ class Infocom extends CommonDBChild {
          'field'              => 'value',
          'name'               => _x('price', 'Value'),
          'datatype'           => 'decimal',
-         'width'              => '100',
          'forcegroupby'       => true,
          'joinparams'         => $joinparams
       ];
@@ -1533,7 +1532,6 @@ class Infocom extends CommonDBChild {
          'field'              => 'warranty_value',
          'name'               => __('Warranty extension value'),
          'datatype'           => 'decimal',
-         'width'              => '100',
          'forcegroupby'       => true,
          'joinparams'         => $joinparams
       ];
