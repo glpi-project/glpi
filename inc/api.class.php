@@ -2372,7 +2372,7 @@ abstract class API extends CommonGLPI {
                $itemtype = getItemTypeForTable($tablename);
 
                // get hateoas
-               if ($params['get_hateoas']) {
+               if ($params['get_hateoas'] && is_integer($value)) {
                   $fields['links'][] = ['rel'  => $itemtype,
                                              'href' => self::$api_url."/$itemtype/".$value];
                }
