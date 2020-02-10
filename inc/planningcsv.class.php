@@ -113,7 +113,7 @@ class PlanningCsv extends CommonGLPI {
 
             //(acteur;titre item;id item;date-heure début,date-heure fin;catégorie)
             $this->lines[] = [
-               'actor'     => $user->getRawName(),
+               'actor'     => $user->getFriendlyName(),
                'title'     => $val['name'],
                'itemtype'  => $itemtype->getTypeName(1),
                'items_id'  => $val[$itemtype->getForeignKeyField()],

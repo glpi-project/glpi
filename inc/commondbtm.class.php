@@ -1312,7 +1312,7 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean true on success
    **/
    function update(array $input, $history = 1, $options = []) {
-      global $DB;
+      global $DB, $GLPI_CACHE;
 
       if ($DB->isSlave()) {
          return false;
@@ -1450,6 +1450,13 @@ class CommonDBTM extends CommonGLPI {
             if ($this->notificationqueueonaction) {
                QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
             }
+
+            // Update raw names cache (for API)
+            $GLPI_CACHE->delete(self::getCacheKeyForFriendlyName(
+               $this->getType(),
+               $this->fields['id']
+            ));
+            $this->getFriendlyName();
 
             return true;
          }
@@ -3332,21 +3339,20 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
-   /** Get raw name of the object
+   /**
+    * Get raw name of the object
     * Maybe overloaded
     *
+    * @deprecated 9.5
     * @see CommonDBTM::getNameField
-    *
     * @since 0.85
     *
     * @return string
    **/
    function getRawName() {
+      \Toolbox::deprecated('Use CommonDBTM::getFriendlyName()');
 
-      if (isset($this->fields[static::getNameField()])) {
-         return $this->fields[static::getNameField()];
-      }
-      return '';
+      return $this->getFriendlyName();
    }
 
 
@@ -3379,7 +3385,7 @@ class CommonDBTM extends CommonGLPI {
     * @return string name of the object in the current language
     *
     * @see CommonDBTM::getRawCompleteName
-    * @see CommonDBTM::getRawName
+    * @see CommonDBTM::getFriendlyName
    **/
    function getName($options = []) {
 
@@ -3400,7 +3406,7 @@ class CommonDBTM extends CommonGLPI {
          $name = $this->getRawCompleteName();
       }
       if (empty($name)) {
-         $name = $this->getRawName();
+         $name = $this->getFriendlyName();
       }
 
       if (strlen($name) != 0) {
@@ -5303,5 +5309,83 @@ class CommonDBTM extends CommonGLPI {
 
    static function getIcon() {
       return "";
+   }
+
+   /**
+    * Get cache key containing raw name for a given itemtype and id
+    *
+    * @since 9.5
+    *
+    * @param string  $itemtype
+    * @param int     $id
+    */
+   public static function getCacheKeyForFriendlyName($itemtype, $id) {
+      return "raw_name__{$itemtype}__{$id}";
+   }
+
+   /**
+    * Get friendly name by items id
+    * The purpose of this function is to try to access the friendly name
+    * without having to read the object from the database
+    *
+    * @since 9.5
+    *
+    * @param int $id
+    *
+    * @return string Friendly name of the object
+    */
+   public static function getFriendlyNameById($id) {
+      global $GLPI_CACHE;
+
+      $cache_key = self::getCacheKeyForFriendlyName(self::getType(), $id);
+
+      if ($GLPI_CACHE->has($cache_key)) {
+         return $GLPI_CACHE->get($cache_key);
+      } else {
+         $item = new static();
+         $item->getFromDB($id);
+         return $item->getFriendlyName();
+      }
+   }
+
+   /**
+    * Return the computed friendly name and set the cache.
+    *
+    * @since 9.5
+    *
+    * @return string
+    */
+   final public function getFriendlyName() {
+      global $GLPI_CACHE;
+
+      $cache_key = self::getCacheKeyForFriendlyName(
+         self::getType(),
+         $this->getID()
+      );
+
+      if ($GLPI_CACHE->has($cache_key)) {
+         // Get from cache
+         $name = $GLPI_CACHE->get($cache_key);
+      } else {
+         // Compute the name then set the cache
+         $name = $this->computeFriendlyName();
+         $GLPI_CACHE->set($cache_key, $name);
+      }
+
+      return $name;
+   }
+
+   /**
+    * Compute the friendly name of the object
+    *
+    * @since 9.5
+    *
+    * @return string
+    */
+   protected function computeFriendlyName() {
+      if (isset($this->fields[static::getNameField()])) {
+         return $this->fields[static::getNameField()];
+      }
+      return '';
    }
 }

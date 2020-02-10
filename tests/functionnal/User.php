@@ -585,10 +585,10 @@ class User extends \DbTestCase {
    /**
     * @dataProvider rawNameProvider
     */
-   public function testGetRawName($input, $rawname) {
+   public function testGetFriendlyName($input, $rawname) {
       $user = $this->newTestedInstance;
 
-      $this->string($user->getRawName())->isIdenticalTo('');
+      $this->string($user->getFriendlyName())->isIdenticalTo('');
 
       $this
          ->given($this->newTestedInstance)
@@ -596,7 +596,7 @@ class User extends \DbTestCase {
                ->integer($uid = (int)$this->testedInstance->add($input))
                   ->isGreaterThan(0)
                ->boolean($this->testedInstance->getFromDB($uid))->isTrue()
-               ->string($this->testedInstance->getRawName())->isIdenticalTo($rawname);
+               ->string($this->testedInstance->getFriendlyName())->isIdenticalTo($rawname);
    }
 
    public function testBlankPassword() {

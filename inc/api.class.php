@@ -508,6 +508,7 @@ abstract class API extends CommonGLPI {
     *    - 'with_changes':     Retrieve associated itil changes. Optionnal.
     *    - 'with_notes':       Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
     *    - 'with_logs':        Retrieve historical. Optionnal.
+    *    - 'add_keys_names':   Get friendly names. Optionnal.
     *
     * @return array    fields of found object
     */
@@ -532,7 +533,9 @@ abstract class API extends CommonGLPI {
                        'with_problems'     => false,
                        'with_changes'      => false,
                        'with_notes'        => false,
-                       'with_logs'         => false];
+                       'with_logs'         => false,
+                       'add_keys_names'    => [],
+      ];
       $params = array_merge($default, $params);
 
       $item = new $itemtype;
@@ -1065,6 +1068,14 @@ abstract class API extends CommonGLPI {
                                              | JSON_NUMERIC_CHECK));
       }
 
+      if (count($params['add_keys_names']) > 0) {
+         $fields["_names"] = $this->getFriendlyNames(
+            $fields,
+            $params,
+            $itemtype
+         );
+      }
+
       return $fields;
    }
 
@@ -1098,6 +1109,7 @@ abstract class API extends CommonGLPI {
     * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
     * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
     * - 'is_deleted'       (default: false): show trashbin. Optionnal
+    * - 'add_keys_names'   (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
     * @param integer $totalcount output parameter who receive the total count of the query resulat.
     *                            As this function paginate results (with a mysql LIMIT),
     *                            we can have the full range. (default 0)
@@ -1117,7 +1129,9 @@ abstract class API extends CommonGLPI {
                        'sort'             => "id",
                        'order'            => "ASC",
                        'searchText'       => null,
-                       'is_deleted'       => false];
+                       'is_deleted'       => false,
+                       'add_keys_names'   => [],
+      ];
       $params = array_merge($default, $params);
 
       if (!$itemtype::canView()) {
@@ -1249,6 +1263,9 @@ abstract class API extends CommonGLPI {
          $where.= ")";
       }
 
+      // Check if we need to add raw names later on
+      $add_keys_names = count($params['add_keys_names']) > 0;
+
       // build query
       $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT ".$DB->quoteName("$table.id").",  ".$DB->quoteName("$table.*")."
                 FROM ".$DB->quoteName($table)."
@@ -1258,6 +1275,15 @@ abstract class API extends CommonGLPI {
                 LIMIT ".(int)$params['start'].", ".(int)$params['list_limit'];
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetchAssoc($result)) {
+            if ($add_keys_names) {
+               // Insert raw names into the data row
+               $data["_keys_names"] = $this->getFriendlyNames(
+                  $data,
+                  $params,
+                  $itemtype
+               );
+            }
+
             $found[] = $data;
          }
       }
@@ -1296,7 +1322,6 @@ abstract class API extends CommonGLPI {
 
       return array_values($found);
    }
-
 
    /**
     * Return a collection of items queried in input ($items)
@@ -2347,7 +2372,7 @@ abstract class API extends CommonGLPI {
                $itemtype = getItemTypeForTable($tablename);
 
                // get hateoas
-               if ($params['get_hateoas']) {
+               if ($params['get_hateoas'] && is_integer($value)) {
                   $fields['links'][] = ['rel'  => $itemtype,
                                              'href' => self::$api_url."/$itemtype/".$value];
                }
@@ -2605,5 +2630,58 @@ abstract class API extends CommonGLPI {
     */
    protected function getHttpBody() {
       return file_get_contents('php://input');
+   }
+
+   /**
+    * Get raw names
+    *
+    * @since 9.5
+    *
+    * @param array  $data           A raw from the database
+    * @param array  $params         API parameters
+    * @param string $self_itemtype  Itemtype the API was called on
+    *
+    * @return array
+    */
+   protected function getFriendlyNames(
+      array $data,
+      array $params,
+      string $self_itemtype
+   ) {
+      $_names = [];
+
+      foreach ($params['add_keys_names'] as $kn_fkey) {
+         if ($kn_fkey == "id") {
+            // Get friendlyname for current item
+            $kn_itemtype = $self_itemtype;
+            $kn_id = $data[$kn_itemtype::getIndexName()];
+         } else {
+
+            if (!isset($data[$kn_fkey])) {
+               \Toolbox::logWarning(
+                  "Invalid value: \"$kn_fkey\" doesn't exist.
+               ");
+               continue;
+            }
+
+            // Get friendlyname for given fkey
+            $kn_itemtype = getItemtypeForForeignKeyField($kn_fkey);
+            $kn_id = $data[$kn_fkey];
+         }
+
+         // Check itemtype is valid
+         $kn_item = getItemForItemtype($kn_itemtype);
+         if (!$kn_item) {
+            \Toolbox::logWarning(
+               "Invalid itemtype \"$kn_itemtype\" for fkey  \"$kn_fkey\""
+            );
+            continue;
+         }
+
+         $kn_name = $kn_item::getFriendlyNameById($kn_id);
+         $_names[$kn_fkey] = $kn_name;
+      }
+
+      return $_names;
    }
 }

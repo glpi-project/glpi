@@ -92,18 +92,13 @@ class RuleCriteria extends CommonDBChild {
       return _n('Criterion', 'Criteria', $nb);
    }
 
-
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
-   function getRawName() {
+   public function computeFriendlyName() {
 
       if ($rule = getItemForItemtype(static::$itemtype)) {
          return Html::clean($rule->getMinimalCriteriaText($this->fields));
       }
       return '';
    }
-
 
    /**
     * @since 0.84

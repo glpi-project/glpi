@@ -89,18 +89,13 @@ class RuleAction extends CommonDBChild {
       return _n('Action', 'Actions', $nb);
    }
 
-
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
-   function getRawName() {
+   public function computeFriendlyName() {
 
       if ($rule = getItemForItemtype(static::$itemtype)) {
          return Html::clean($rule->getMinimalActionText($this->fields));
       }
       return '';
    }
-
 
    /**
     * @since 0.84

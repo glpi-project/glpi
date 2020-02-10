@@ -80,7 +80,7 @@ class Item_Devices extends CommonDBRelation {
       return true;
    }
 
-   function getRawName() {
+   public function computeFriendlyName() {
       $itemtype = static::$itemtype_2;
       if (!empty($this->fields[static::$itemtype_1])) {
          $item = new $this->fields[static::$itemtype_1];

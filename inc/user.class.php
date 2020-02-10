@@ -1340,11 +1340,11 @@ class User extends CommonDBTM {
       }
    }
 
-   function getRawName() {
+   function computeFriendlyName() {
       global $CFG_GLPI;
 
       if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
-         //getRawName should not add ID
+         //computeFriendlyName should not add ID
          $bkp_conf = $CFG_GLPI['is_ids_visible'];
          $CFG_GLPI['is_ids_visible'] = 0;
          $bkp_sessconf = (isset($_SESSION['glpiis_ids_visible']) ? $_SESSION["glpiis_ids_visible"] : 0);

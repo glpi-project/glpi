@@ -81,6 +81,7 @@ The present file will list all changes made to the project; according to the
 - `Plugin::setUnloaded()`
 - `Plugin::setUnloadedByName()`
 - Usage of `$LOADED_PLUGINS` global variable
+- `CommonDBTM::getRawName()` replaced by `CommonDBTM::getFriendlyName()`
 
 #### Removed
 

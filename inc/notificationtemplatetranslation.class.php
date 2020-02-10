@@ -62,10 +62,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
-   function getRawName() {
+   public function computeFriendlyName() {
       global $CFG_GLPI;
 
       if ($this->getField('language') != '') {

@@ -48,5 +48,4 @@ class TicketTemplatePredefinedField extends ITILTemplatePredefinedField {
    static public $itemtype  = 'TicketTemplate';
    static public $items_id  = 'tickettemplates_id';
    static public $itiltype  = 'Ticket';
-
 }
