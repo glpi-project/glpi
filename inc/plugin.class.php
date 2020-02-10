@@ -2181,7 +2181,8 @@ class Plugin extends CommonDBTM {
                   $output .= sprintf(__('%1$s: %2$s'), __('Non-existent function'),
                          $missing);
                }
-            } else if (in_array($state, [self::ACTIVATED, self::NOTUPDATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)) {
+            }
+            if (in_array($state, [self::ACTIVATED, self::NOTUPDATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)) {
                // Uninstall button for installed plugins
                if (function_exists("plugin_".$directory."_uninstall")) {
                   $output .= Html::getSimpleForm(
