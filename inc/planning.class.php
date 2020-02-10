@@ -1343,9 +1343,9 @@ class Planning extends CommonGLPI {
     */
    static function showAddEventSubForm($params = []) {
 
-      $rand            = mt_rand();
-      $params['begin'] = date("Y-m-d H:i:s", strtotime($params['begin']));
-      $params['end']   = date("Y-m-d H:i:s", strtotime($params['end']));
+      $rand   = mt_rand();
+      $params = self::cleanDates($params);
+
       $params['res_itemtype'] = $params['res_itemtype'] ?? '';
       $params['res_items_id'] = $params['res_items_id'] ?? 0;
       if ($item = getItemForItemtype($params['itemtype'])) {
@@ -2030,8 +2030,7 @@ class Planning extends CommonGLPI {
     */
    static function updateEventTimes($params = []) {
       if ($item = getItemForItemtype($params['itemtype'])) {
-         $params['start'] = date("Y-m-d H:i:s", strtotime($params['start']));
-         $params['end']   = date("Y-m-d H:i:s", strtotime($params['end']));
+         $params = self::cleanDates($params);
 
          if ($item->getFromDB($params['items_id'])
           && empty($item->fields['is_deleted'])
@@ -2156,6 +2155,32 @@ class Planning extends CommonGLPI {
             }
          }
       }
+   }
+
+   /**
+    * Clean timezone informations from dates fields,
+    * as fullcalendar doesn't support easily timezones, let's consider it sends raw dates
+    * (remove timezone suffix), we will manage timezone directy on database
+    * see https://fullcalendar.io/docs/timeZone
+    *
+    * @since 9.5
+    *
+    * @param array $params parameters send by fullcalendar
+    *
+    * @return array cleaned $params
+    */
+   static function cleanDates(array $params = []): array {
+      $dates_fields = [
+         'start', 'begin', 'end'
+      ];
+
+      foreach ($params as $key => &$value) {
+         if (in_array($key, $dates_fields)) {
+            $value  = date("Y-m-d H:i:s", strtotime(trim($value, 'Z')));
+         }
+      }
+
+      return $params;
    }
 
 
