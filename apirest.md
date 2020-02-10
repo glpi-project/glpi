@@ -508,7 +508,7 @@ $ curl -X GET \
   * *with_changes*: Retrieve associated ITIL changes. Optional.
   * *with_notes*: Retrieve Notes. Optional.
   * *with_logs*: Retrieve historical. Optional.
-  * *forcename*: Retrieve friendly names. Array containing fkey(s) and/or "self". Optional.
+  * *add_keys_names*: Retrieve friendly names. Array containing fkey(s) and/or "self". Optional.
 * **Returns**:
   * 200 (OK) with item data (Last-Modified header should contain the date of last modification of the item).
   * 401 (UNAUTHORIZED).
@@ -599,7 +599,7 @@ Note: To download a document see [Download a document file](#download-a-document
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
   * *searchText* (default NULL): array of filters to pass on the query (with key = field and value the text to search)
   * *is_deleted* (default: false): Return deleted element. Optional.
-  * *forcename*: Retrieve friendly names. Array containing fkey(s) and/or "self". Optional.
+  * *add_keys_names*: Retrieve friendly names. Array containing fkey(s) and/or "self". Optional.
 * **Returns**:
   * 200 (OK) with items data.
   * 206 (PARTIAL CONTENT) with items data defined by range.
@@ -705,7 +705,7 @@ $ curl -X GET \
   * *range* (default: 0-50): a string with a couple of number for start and end of pagination separated by a '-' char. Ex: 150-200. Optional.
   * *sort* (default 1): id of the "searchoption" to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
-  * *forcename*: Retrieve friendly names. Array containing fkey(s) and/or "self". Optional.
+  * *add_keys_names*: Retrieve friendly names. Array containing fkey(s) and/or "self". Optional.
 * **Returns**:
   * 200 (OK) with the items data.
   * 401 (UNAUTHORIZED).
@@ -784,7 +784,7 @@ $ curl -X GET \
   * *with_changes*: Retrieve associated ITIL changes. Optional.
   * *with_notes*: Retrieve Notes. Optional.
   * *with_logs*: Retrieve historical. Optional.
-  * *forcename*: Retrieve friendly names. Array containing fkey(s) and/or "self". Optional.
+  * *add_keys_names*: Retrieve friendly names. Array containing fkey(s) and/or "self". Optional.
 * **Returns**:
   * 200 (OK) with item data (Last-Modified header should contain the date of last modification of the item).
   * 401 (UNAUTHORIZED).

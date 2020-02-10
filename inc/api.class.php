@@ -508,7 +508,7 @@ abstract class API extends CommonGLPI {
     *    - 'with_changes':     Retrieve associated itil changes. Optionnal.
     *    - 'with_notes':       Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
     *    - 'with_logs':        Retrieve historical. Optionnal.
-    *    - 'forcename':        Get friendly names. Optionnal.
+    *    - 'add_keys_names':   Get friendly names. Optionnal.
     *
     * @return array    fields of found object
     */
@@ -534,7 +534,7 @@ abstract class API extends CommonGLPI {
                        'with_changes'      => false,
                        'with_notes'        => false,
                        'with_logs'         => false,
-                       'forcename'         => [],
+                       'add_keys_names'    => [],
       ];
       $params = array_merge($default, $params);
 
@@ -1068,7 +1068,7 @@ abstract class API extends CommonGLPI {
                                              | JSON_NUMERIC_CHECK));
       }
 
-      if (count($params['forcename']) > 0) {
+      if (count($params['add_keys_names']) > 0) {
          $fields["_names"] = $this->getFriendlyNames(
             $fields,
             $params,
@@ -1109,7 +1109,7 @@ abstract class API extends CommonGLPI {
     * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
     * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
     * - 'is_deleted'       (default: false): show trashbin. Optionnal
-    * - 'forcename'        (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
+    * - 'add_keys_names'   (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
     * @param integer $totalcount output parameter who receive the total count of the query resulat.
     *                            As this function paginate results (with a mysql LIMIT),
     *                            we can have the full range. (default 0)
@@ -1130,7 +1130,7 @@ abstract class API extends CommonGLPI {
                        'order'            => "ASC",
                        'searchText'       => null,
                        'is_deleted'       => false,
-                       'forcename'        => [],
+                       'add_keys_names'   => [],
       ];
       $params = array_merge($default, $params);
 
@@ -1264,7 +1264,7 @@ abstract class API extends CommonGLPI {
       }
 
       // Check if we need to add raw names later on
-      $forcename = count($params['forcename']) > 0;
+      $add_keys_names = count($params['add_keys_names']) > 0;
 
       // build query
       $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT ".$DB->quoteName("$table.id").",  ".$DB->quoteName("$table.*")."
@@ -1275,9 +1275,9 @@ abstract class API extends CommonGLPI {
                 LIMIT ".(int)$params['start'].", ".(int)$params['list_limit'];
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetchAssoc($result)) {
-            if ($forcename) {
+            if ($add_keys_names) {
                // Insert raw names into the data row
-               $data["_names"] = $this->getFriendlyNames(
+               $data["_keys_names"] = $this->getFriendlyNames(
                   $data,
                   $params,
                   $itemtype
@@ -2650,36 +2650,36 @@ abstract class API extends CommonGLPI {
    ) {
       $_names = [];
 
-      foreach ($params['forcename'] as $fn_fkey) {
-         if ($fn_fkey == "self") {
+      foreach ($params['add_keys_names'] as $kn_fkey) {
+         if ($kn_fkey == "id") {
             // Get friendlyname for current item
-            $fn_itemtype = $self_itemtype;
-            $fn_id = $data[$fn_itemtype::getIndexName()];
+            $kn_itemtype = $self_itemtype;
+            $kn_id = $data[$kn_itemtype::getIndexName()];
          } else {
 
-            if (!isset($data[$fn_fkey])) {
+            if (!isset($data[$kn_fkey])) {
                \Toolbox::logWarning(
-                  "Invalid value: \"$fn_fkey\" doesn't exist.
+                  "Invalid value: \"$kn_fkey\" doesn't exist.
                ");
                continue;
             }
 
             // Get friendlyname for given fkey
-            $fn_itemtype = getItemtypeForForeignKeyField($fn_fkey);
-            $fn_id = $data[$fn_fkey];
+            $kn_itemtype = getItemtypeForForeignKeyField($kn_fkey);
+            $kn_id = $data[$kn_fkey];
          }
 
          // Check itemtype is valid
-         $fn_item = getItemForItemtype($fn_itemtype);
-         if (!$fn_item) {
+         $kn_item = getItemForItemtype($kn_itemtype);
+         if (!$kn_item) {
             \Toolbox::logWarning(
-               "Invalid itemtype \"$fn_itemtype\" for fkey  \"$fn_fkey\""
+               "Invalid itemtype \"$kn_itemtype\" for fkey  \"$kn_fkey\""
             );
             continue;
          }
 
-         $fn_name = $fn_item::getFriendlyNameById($fn_id);
-         $_names[$fn_fkey] = $fn_name;
+         $kn_name = $kn_item::getFriendlyNameById($kn_id);
+         $_names[$kn_fkey] = $kn_name;
       }
 
       return $_names;
