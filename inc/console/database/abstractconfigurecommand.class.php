@@ -215,7 +215,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       }
 
       $mysqli = new \mysqli();
-      @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
+      if (intval($db_port) > 0) {
+         // Network port
+         @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
+      } else {
+         // Unix Domain Socket
+         @$mysqli->connect($db_host, $db_user, $db_pass, null, 0, $db_port);
+      }
 
       if (0 !== $mysqli->connect_errno) {
          $message = sprintf(

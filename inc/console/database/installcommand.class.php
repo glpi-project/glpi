@@ -176,12 +176,30 @@ class InstallCommand extends AbstractConfigureCommand {
          }
       } else {
          // Ask to confirm installation based on existing configuration.
+
+         // $DB->dbhost can be array when using round robin feature
+         $db_hostport = is_array($DB->dbhost) ? $DB->dbhost[0] : $DB->dbhost;
+
+         $hostport = explode(':', $db_hostport);
+         $db_host = $hostport[0];
+         if (count($hostport) < 2) {
+            // Host only case
+            $db_port = null;
+         } else {
+            // Host:port case or :Socket case
+            $db_port = $hostport[1];
+         }
+
+         $db_name = $DB->dbdefault;
+         $db_user = $DB->dbuser;
+         $db_pass = rawurldecode($DB->dbpassword); //rawurldecode as in DBmysql::connect()
+
          $run = $this->askForDbConfigConfirmation(
             $input,
             $output,
-            $DB->dbhost,
-            $DB->dbdefault,
-            $DB->dbuser
+            $db_hostport,
+            $db_name,
+            $db_user
          );
          if (!$run) {
             $output->writeln(
@@ -190,29 +208,16 @@ class InstallCommand extends AbstractConfigureCommand {
             );
             return 0;
          }
-
-         // $DB->dbhost can be array when using round robin feature
-         $hostport = explode(':', is_array($DB->dbhost) ? $DB->dbhost[0] : $DB->dbhost);
-         $db_host = $hostport[0];
-         if (count($hostport) < 2) {
-            // Host only case
-            $db_port = null;
-         } else if (intval($hostport[1]) > 0) {
-            // Host:port case
-            $db_port = $hostport[1];
-         } else {
-            // :Socket case
-            // TODO Handle socket connection
-            throw new \UnexpectedValueException('DB connection through socket is not yet handled in installation command');
-         }
-
-         $db_name = $DB->dbdefault;
-         $db_user = $DB->dbuser;
-         $db_pass = rawurldecode($DB->dbpassword); //rawurldecode as in DBmysql::connect()
       }
 
       $mysqli = new \mysqli();
-      @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
+      if (intval($db_port) > 0) {
+         // Network port
+         @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
+      } else {
+         // Unix Domain Socket
+         @$mysqli->connect($db_host, $db_user, $db_pass, null, 0, $db_port);
+      }
 
       if (0 !== $mysqli->connect_errno) {
          $message = sprintf(
