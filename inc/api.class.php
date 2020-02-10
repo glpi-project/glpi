@@ -50,8 +50,6 @@ abstract class API extends CommonGLPI {
    protected $app_tokens    = [];
    protected $apiclients_id = 0;
 
-   const PARAM_FORCENAME = "forcename";
-
    /**
     * First function used on api call
     * Parse sended query/parameters and call the corresponding API::method
@@ -536,7 +534,7 @@ abstract class API extends CommonGLPI {
                        'with_changes'      => false,
                        'with_notes'        => false,
                        'with_logs'         => false,
-                       self::PARAM_FORCENAME => [],
+                       'forcename'         => [],
       ];
       $params = array_merge($default, $params);
 
@@ -1070,7 +1068,7 @@ abstract class API extends CommonGLPI {
                                              | JSON_NUMERIC_CHECK));
       }
 
-      if (count($params[self::PARAM_FORCENAME]) > 0) {
+      if (count($params['forcename']) > 0) {
          $fields["_names"] = $this->getFriendlyNames(
             $fields,
             $params,
@@ -1132,7 +1130,7 @@ abstract class API extends CommonGLPI {
                        'order'            => "ASC",
                        'searchText'       => null,
                        'is_deleted'       => false,
-                       self::PARAM_FORCENAME => [],
+                       'forcename'        => [],
       ];
       $params = array_merge($default, $params);
 
@@ -1266,7 +1264,7 @@ abstract class API extends CommonGLPI {
       }
 
       // Check if we need to add raw names later on
-      $forcename = count($params[SELF::PARAM_FORCENAME]) > 0;
+      $forcename = count($params['forcename']) > 0;
 
       // build query
       $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT ".$DB->quoteName("$table.id").",  ".$DB->quoteName("$table.*")."
@@ -2652,7 +2650,7 @@ abstract class API extends CommonGLPI {
    ) {
       $_names = [];
 
-      foreach ($params[self::PARAM_FORCENAME] as $fn_fkey) {
+      foreach ($params['forcename'] as $fn_fkey) {
          if ($fn_fkey == "self") {
             // Get friendlyname for current item
             $fn_itemtype = $self_itemtype;
