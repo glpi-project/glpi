@@ -2436,6 +2436,7 @@ function generate_entity($ID_entity) {
    $p                   = new Printer();
    $np                  = new Netpoint();
    $c                   = new Cartridge();
+   $domain_item         = new Domain_Item();
 
    foreach ($DB->request('glpi_locations') as $data) {
       $i          = $data["id"];
@@ -2459,7 +2460,6 @@ function generate_entity($ID_entity) {
          'groups_id_tech'                => $gtechID,
          'comment'                       => "comment '$i",
          'locations_id'                  => $i,
-         'domains_id'                    => $domainID,
          'networks_id'                   => $networkID,
          'networkequipmenttypes_id'      => mt_rand(1, $MAX['type_networking']),
          'networkequipmentmodels_id'     => mt_rand(1, $MAX['model_networking']),
@@ -2474,6 +2474,15 @@ function generate_entity($ID_entity) {
                                              ? mt_rand($FIRST['state'], $LAST['state'])
                                              : 0)
       ]));
+
+      $domain_item->add(
+         [
+            'domains_id'         => $domainID,
+            'itemtype'           => 'NetworkEquipment',
+            'items_id'           => $netwID,
+            'domainrelations_id' => DomainRelation::BELONGS,
+         ]
+      );
 
       addDisks('NetworkEquipment', $netwID, $ID_entity, 50);
 
@@ -2513,7 +2522,6 @@ function generate_entity($ID_entity) {
          'comment'          => "comment' $i",
          'memory_size'      => mt_rand(0, 128),
          'locations_id'     => $i,
-         'domains_id'       => $domainID,
          'networks_id'      => $networkID,
          'printertypes_id'  => $typeID,
          'printermodels_id' => $modelID,
@@ -2527,7 +2535,16 @@ function generate_entity($ID_entity) {
                                  : 0)
       ]));
 
-      addDisks('Printer', $netwID, $ID_entity, 10);
+      $domain_item->add(
+         [
+            'domains_id'         => $domainID,
+            'itemtype'           => 'Printer',
+            'items_id'           => $printID,
+            'domainrelations_id' => DomainRelation::BELONGS,
+         ]
+      );
+
+      addDisks('Printer', $printID, $ID_entity, 10);
 
       addDocuments('Printer', $printID);
       addContracts('Printer', $printID);
@@ -2635,7 +2652,6 @@ function generate_entity($ID_entity) {
          'comment'                        => "comment' $i",
          'autoupdatesystems_id'           => mt_rand(1, $MAX['os_sp']),
          'locations_id'                   => $loc,
-         'domains_id'                     => $domainID,
          'networks_id'                    => $networkID,
          'computertypes_id'               => mt_rand(1, $MAX['type_computers']),
          'computermodels_id'              => mt_rand(1, $MAX['model']),
@@ -2649,6 +2665,15 @@ function generate_entity($ID_entity) {
                                                 : 0),
          'uuid'                           => $faker->uuid
       ]));
+
+      $domain_item->add(
+         [
+            'domains_id'         => $domainID,
+            'itemtype'           => 'Computer',
+            'items_id'           => $compID,
+            'domainrelations_id' => DomainRelation::BELONGS,
+         ]
+      );
 
       addDocuments('Computer', $compID);
       addContracts('Computer', $compID);
@@ -2891,7 +2916,6 @@ function generate_entity($ID_entity) {
             'comment'           => "comment' $i",
             'memory_size'       => mt_rand(0, 128),
             'locations_id'      => $loc,
-            'domains_id'        => $domainID,
             'networks_id'       => $networkID,
             'printertypes_id'   => $typeID,
             'printermodels_id'  => $modelID,
@@ -2903,6 +2927,15 @@ function generate_entity($ID_entity) {
                                     ? mt_rand($FIRST['state'], $LAST['state'])
                                     : 0)
          ]));
+
+         $domain_item->add(
+            [
+               'domains_id'         => $domainID,
+               'itemtype'           => 'Printer',
+               'items_id'           => $printID,
+               'domainrelations_id' => DomainRelation::BELONGS,
+            ]
+         );
 
          addDocuments('Printer', $printID);
          addContracts('Printer', $printID);
