@@ -547,14 +547,16 @@ trait PlanningEvent {
 
                   $rset = self::getRsetFromRRuleField($event['rrule'], $event['begin']);
 
-                  // rrule object doesn't any duration property,
-                  // so we remove the duration from the begin part of the range
-                  // (minus 1second to avoid mathing precise end date)
-                  // to check if event started before begin and could be still valid
-                  $begin_datetime = new DateTime($options['begin']);
+                  // - rrule object doesn't any duration property,
+                  //   so we remove the duration from the begin part of the range
+                  //   (minus 1second to avoid mathing precise end date)
+                  //   to check if event started before begin and could be still valid
+                  // - also set begin and end dates like it was as UTC
+                  //   (Rrule lib will always compare with UTC)
+                  $begin_datetime = new DateTime($options['begin'], new DateTimeZone('UTC'));
                   $begin_datetime->sub(New DateInterval("PT".($duration - 1)."S"));
-
-                  $occurences = $rset->getOccurrencesBetween($begin_datetime, $options['end']);
+                  $end_datetime   = new DateTime($options['end'], new DateTimeZone('UTC'));
+                  $occurences = $rset->getOccurrencesBetween($begin_datetime, $end_datetime);
 
                   // add the found occurences to the final tab after replacing their dates
                   foreach ($occurences as $currentDate) {
