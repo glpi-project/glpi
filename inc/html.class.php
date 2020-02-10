@@ -7010,7 +7010,7 @@ JAVASCRIPT;
                   "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
                         ($with_option?"":"class='here'")." title=\"".
                         $menu[$sector]['content'][$item]['title']."\" >".
-                        "<i class='".$menu[$sector]['content'][$item]['icon']."'></i>&nbsp;".
+                        "<i class='".($menu[$sector]['content'][$item]['icon'] ?? "")."'></i>&nbsp;".
                         $menu[$sector]['content'][$item]['title'].
                   "</a>".
                   "</li>";
