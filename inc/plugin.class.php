@@ -2227,7 +2227,7 @@ class Plugin extends CommonDBTM {
             $state = $values['state'];
             $directory = $values['directory'];
             self::load($directory); // Load plugin to give it ability to define its config_page hook
-            if (in_array($state, [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED])
+            if (in_array($state, [self::ACTIVATED, self::TOBECONFIGURED])
                && isset($PLUGIN_HOOKS['config_page'][$directory])
             ) {
                return "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$directory."/".
