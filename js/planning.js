@@ -48,6 +48,7 @@ var GLPIPlanning  = {
       this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
          plugins:     options.plugins,
          height:      options.height,
+         timeZone:    'UTC',
          theme:       true,
          weekNumbers: options.full_view ? true : false,
          defaultView: options.default_view,
