@@ -2418,7 +2418,6 @@ var GLPIImpact = {
     * Enable the save button
     */
    showCleanWorkspaceStatus: function() {
-      window.glpiUnsavedFormChanges = false;
       $(GLPIImpact.selectors.save).removeClass('dirty');
       $(GLPIImpact.selectors.save).removeClass('clean'); // Needed for animations if the workspace is not dirty
       $(GLPIImpact.selectors.save).addClass('clean');
@@ -2430,7 +2429,6 @@ var GLPIImpact = {
     * Enable the save button
     */
    showDirtyWorkspaceStatus: function() {
-      window.glpiUnsavedFormChanges = true;
       $(GLPIImpact.selectors.save).removeClass('clean');
       $(GLPIImpact.selectors.save).addClass('dirty');
       $(GLPIImpact.selectors.save).find('i').removeClass("fas fa-check");
