@@ -515,6 +515,11 @@ class RuleAction extends CommonDBChild {
                      $display = true;
                      break;
 
+                  case "dropdown_changetype" :
+                     Change::dropdownType('value', $param);
+                     $display = true;
+                     break;
+
                   case "dropdown_assign" :
                      $param['name']  = 'value';
                      $param['right'] = 'own_ticket';

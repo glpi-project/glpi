@@ -31,5 +31,8 @@
  */
 
 include ('../inc/includes.php');
-$dropdown = new Network();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+
+$rulecollection = new RuleChangeCollection($_SESSION['glpiactive_entity']);
+
+include (GLPI_ROOT . "/front/rule.common.php");
+
