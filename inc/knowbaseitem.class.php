@@ -270,13 +270,17 @@ class KnowbaseItem extends CommonDBVisible {
    **/
    function post_addItem() {
 
-      // add documents (and replace inline pictures)
+      // add screenshots
       $this->input = $this->addFiles(
          $this->input, [
             'force_update'  => true,
-            'content_field' => 'answer'
+            'content_field' => 'answer',
+            'name'          => 'answer',
          ]
       );
+
+      // Add documents
+      $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
       if (isset($this->input["_visibility"])
           && isset($this->input["_visibility"]['_type'])
@@ -653,11 +657,21 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
    function post_updateItem($history = 1) {
+      // Update screenshots
       $this->input = $this->addFiles(
          $this->input,
          [
             'force_update'  => true,
             'content_field' => 'answer',
+            'name'          => 'answer',
+         ]
+      );
+
+      // add uploaded documents
+      $this->input = $this->addFiles(
+         $this->input,
+         [
+            'force_update'  => true,
          ]
       );
    }

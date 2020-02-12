@@ -5093,7 +5093,8 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * add files (from $this->input['_filename']) to an CommonDBTM object
+    * add files from a textarea (from $this->input['content'])
+    * or a file input (from $this->input['_filename']) to an CommonDBTM object
     * create document if needed
     * create link from document to CommonDBTM object
     *
@@ -5104,6 +5105,7 @@ class CommonDBTM extends CommonGLPI {
     *                        - force_update (default false) update the content field of the object
     *                        - content_field (default content) the field who receive the main text
     *                                                          (with images)
+    *                        - name (default filename) name of the HTML input containing files
     *
     * @return array the input param transformed
    **/
@@ -5112,19 +5114,24 @@ class CommonDBTM extends CommonGLPI {
 
       $default_options = [
          'force_update'  => false,
-         'content_field' => 'content'
+         'content_field' => 'content',
+         'name'          => 'filename',
       ];
       $options = array_merge($default_options, $options);
 
-      if (!isset($input['_filename'])
-          || (count($input['_filename']) == 0)) {
+      $uploadName = '_' . $options['name'];
+      $tagUploadName = '_tag_' . $options['name'];
+      $prefixUploadName = '_prefix_' . $options['name'];
+
+      if (!isset($input[$uploadName])
+          || (count($input[$uploadName]) == 0)) {
          return $input;
       }
       $docadded     = [];
       $donotif      = isset($input['_donotif']) ? $input['_donotif'] : 0;
       $disablenotif = isset($input['_disablenotif']) ? $input['_disablenotif'] : 0;
 
-      foreach ($input['_filename'] as $key => $file) {
+      foreach ($input[$uploadName] as $key => $file) {
          $doc      = new Document();
          $docitem  = new Document_Item();
          $docID    = 0;
@@ -5132,9 +5139,9 @@ class CommonDBTM extends CommonGLPI {
          $input2   = [];
 
          //If file tag is present
-         if (isset($input['_tag_filename'])
-             && !empty($input['_tag_filename'][$key])) {
-            $input['_tag'][$key] = $input['_tag_filename'][$key];
+         if (isset($input[$tagUploadName])
+             && !empty($input[$tagUploadName][$key])) {
+            $input['_tag'][$key] = $input[$tagUploadName][$key];
          }
 
          //retrieve entity
@@ -5182,8 +5189,8 @@ class CommonDBTM extends CommonGLPI {
             $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
             $input2["_only_if_upload_succeed"] = 1;
             $input2["_filename"]               = [$file];
-            if (isset($this->input['_prefix_filename'][$key])) {
-               $input2["_prefix_filename"]  = [$this->input['_prefix_filename'][$key]];
+            if (isset($this->input[$prefixUploadName][$key])) {
+               $input2[$prefixUploadName]  = [$this->input[$prefixUploadName][$key]];
             }
             $docID = $doc->add($input2);
 

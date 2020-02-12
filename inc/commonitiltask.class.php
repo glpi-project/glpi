@@ -301,7 +301,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
-      $this->input = $this->addFiles($this->input, ['force_update' => true]);
+      $options = [
+         'force_update' => true,
+         'name' => 'content',
+         'content_field' => 'content',
+      ];
+      $this->input = $this->addFiles($this->input, $options);
 
       if (in_array("begin", $this->updates)) {
          PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(),
@@ -449,8 +454,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
    function post_addItem() {
       global $CFG_GLPI;
 
-      // Add document if needed, without notification
+      // Add document if needed, without notification for file input
       $this->input = $this->addFiles($this->input, ['force_update' => true]);
+      // Add document if needed, without notification for textarea
+      $this->input = $this->addFiles($this->input, ['name' => 'content', 'force_update' => true]);
 
       if (isset($this->input['_planningrecall'])) {
          $this->input['_planningrecall']['items_id'] = $this->fields['id'];

@@ -3037,4 +3037,152 @@ class Ticket extends DbTestCase {
       $it->execute('glpi_tickets', $crit);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_tickets` WHERE (' . $expected_where . ')');
    }
+
+   public function testKeepScreenshotsOnFormReload() {
+      //login to get session
+      $auth = new \Auth();
+      $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
+
+      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+
+      // Test display of saved inputs from a previous submit
+      $_SESSION['saveInput'][\Ticket::class] = [
+         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.77230247"'
+         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
+      ];
+
+      $this->output(
+         function () {
+            $instance = new \Ticket();
+            $instance->showForm('-1');
+         }
+      )->contains('src="data:image/png;base64,' . $base64Image . '"');
+   }
+
+   public function testScreenshotConvertedIntoDocument() {
+      // Test uploads for item creation
+      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+      $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
+      $instance = new \Ticket();
+      $input = [
+         'name'    => 'a ticket',
+         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
+         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
+         '_content' => [
+            $filename,
+         ],
+         '_tag_content' => [
+            '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
+         ],
+         '_prefix_content' => [
+            '5e5e92ffd9bd91.11111111',
+         ]
+      ];
+      copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+      $instance->add($input);
+      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $this->string($instance->fields['content'])->contains($expected);
+
+      // Test uploads for item update
+      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/bar.png'));
+      $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
+      copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+      $instance->update([
+         'id' => $instance->getID(),
+         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
+         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
+         '_content' => [
+            $filename,
+         ],
+         '_tag_content' => [
+            '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
+         ],
+         '_prefix_content' => [
+            '5e5e92ffd9bd91.44444444',
+         ]
+      ]);
+      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $this->string($instance->fields['content'])->contains($expected);
+   }
+
+   public function testUploadDocuments() {
+      // Test uploads for item creation
+      $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
+      $instance = new \Ticket();
+      $input = [
+         'name'    => 'a ticket',
+         'content' => 'testUploadDocuments',
+         '_filename' => [
+            $filename,
+         ],
+         '_tag_filename' => [
+            '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
+         ],
+         '_prefix_filename' => [
+            '5e5e92ffd9bd91.11111111',
+         ]
+      ];
+      copy(__DIR__ . '/../fixtures/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+      $instance->add($input);
+      $this->string($instance->fields['content'])->contains('testUploadDocuments');
+      $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
+         'itemtype' => 'Ticket',
+         'items_id' => $instance->getID(),
+      ]);
+      $this->integer($count)->isEqualTo(1);
+
+      // Test uploads for item update (adds a 2nd document)
+      $filename = '5e5e92ffd9bd91.44444444bar.txt';
+      copy(__DIR__ . '/../fixtures/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
+      $instance->update([
+         'id' => $instance->getID(),
+         'content' => 'update testUploadDocuments',
+         '_filename' => [
+            $filename,
+         ],
+         '_tag_filename' => [
+            '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
+         ],
+         '_prefix_filename' => [
+            '5e5e92ffd9bd91.44444444',
+         ]
+      ]);
+      $this->string($instance->fields['content'])->contains('update testUploadDocuments');
+      $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
+         'itemtype' => 'Ticket',
+         'items_id' => $instance->getID(),
+      ]);
+      $this->integer($count)->isEqualTo(2);
+   }
+
+   public function testKeepScreenshotFromTemplate() {
+      //login to get session
+      $auth = new \Auth();
+      $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
+
+      // create a template with a predeined description
+      $ticketTemplate = new \TicketTemplate();
+      $ticketTemplate->add([
+         'name' => $this->getUniqueString(),
+      ]);
+      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+      $content = '&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e57d2c8895d55.57735524"'
+      . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;';
+      $predefinedField = new \TicketTemplatePredefinedField();
+      $predefinedField->add([
+         'tickettemplates_id' => $ticketTemplate->getID(),
+         'num' => '21',
+         'value' => $content
+      ]);
+      $session_tpl_id_back = $_SESSION['glpiactiveprofile']['tickettemplates_id'];
+      $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $ticketTemplate->getID();
+
+      $this->output(
+         function () use ($session_tpl_id_back) {
+            $instance = new \Ticket();
+            $instance->showForm('0');
+            $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $session_tpl_id_back;
+         }
+      )->contains('src="data:image/png;base64,' . $base64Image . '"');
+   }
 }

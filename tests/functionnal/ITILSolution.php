@@ -294,4 +294,64 @@ class ITILSolution extends DbTestCase {
          ])
       )->isFalse();
    }
+
+   public function testScreenshotConvertedIntoDocument() {
+      // Test uploads for item creation
+      $ticket = new \Ticket();
+      $ticket->add([
+         'name' => $this->getUniqueString(),
+         'content' => 'test',
+      ]);
+      $this->boolean($ticket->isNewItem())->isFalse();
+
+      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+      $user = getItemByTypeName('User', TU_USER, true);
+      $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
+      $instance = new \ITILSolution();
+      $input = [
+         'users_id' => $user,
+         'items_id' => $ticket->getID(),
+         'itemtype' => 'Ticket',
+         'name'    => 'a solution',
+         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
+         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
+         '_content' => [
+            $filename,
+         ],
+         '_tag_content' => [
+            '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
+         ],
+         '_prefix_content' => [
+            '5e5e92ffd9bd91.11111111',
+         ]
+      ];
+      copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+
+      $instance->add($input);
+      $this->boolean($instance->isNewItem())->isFalse();
+      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $this->string($instance->fields['content'])->contains($expected);
+
+      // Test uploads for item update
+      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/bar.png'));
+      $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
+      copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+      $success = $instance->update([
+         'id' => $instance->getID(),
+         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
+         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
+         '_content' => [
+            $filename,
+         ],
+         '_tag_content' => [
+            '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
+         ],
+         '_prefix_content' => [
+            '5e5e92ffd9bd91.44444444',
+         ]
+      ]);
+      $this->boolean($success)->isTrue();
+      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $this->string($instance->fields['content'])->contains($expected);
+   }
 }

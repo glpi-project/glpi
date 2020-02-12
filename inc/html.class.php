@@ -95,6 +95,13 @@ class Html {
          ]
       );
 
+      // Special case : remove the 'denied:' for base64 img in case the base64 have characters
+      // combinaison introduce false positive
+      foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
+         $value = str_replace('src="denied:data:image/'.$imgtype.';base64,',
+               'src="data:image/'.$imgtype.';base64,', $value);
+      }
+
       $value = str_replace(["\r\n", "\r"], "\n", $value);
       $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);
 
@@ -5514,6 +5521,7 @@ JAVASCRIPT;
       $p['values']            = [];
       $p['display']           = true;
       $p['multiple']          = false;
+      $p['uploads']           = [];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -5531,8 +5539,12 @@ JAVASCRIPT;
          $display .= "</b>";
       }
 
-      // div who will receive and display file list
-      $display .= "<div id='".$p['filecontainer']."' class='fileupload_info'></div>";
+      $display .= self::uploadedFiles([
+         'filecontainer' => $p['filecontainer'],
+         'name'          => $p['name'],
+         'display'       => false,
+         'uploads'       => $p['uploads'],
+      ]);
 
       if (!empty($p['editor_id'])
           && $p['enable_richtext']) {
@@ -5638,6 +5650,8 @@ JAVASCRIPT;
     *  - display (bool):             display or return the generated html
     *  - cols (int):                 textarea cols attribute (witdh)
     *  - rows (int):                 textarea rows attribute (height)
+    *  - required (bool):            textarea is mandatory
+    *  - uploads (array):            uploads to recover from a prevous submit
     *
     * @return mixed          the html if display paremeter is false or true
     */
@@ -5654,13 +5668,16 @@ JAVASCRIPT;
       $p['cols']              = 100;
       $p['rows']              = 15;
       $p['multiple']          = true;
+      $p['required']          = false;
+      $p['uploads']           = [];
 
       //merge default options with options parameter
       $p = array_merge($p, $options);
 
+      $required = $p['required'] ? 'required="required"' : '';
       $display = '';
       $display .= "<textarea name='".$p['name']."' id='".$p['editor_id']."'
-                             rows='".$p['rows']."' cols='".$p['cols']."'>".
+                             rows='".$p['rows']."' cols='".$p['cols']."' $required>".
                   $p['value']."</textarea>";
 
       if ($p['enable_richtext']) {
@@ -5672,6 +5689,15 @@ JAVASCRIPT;
                         });
                      ");
       }
+      if (!$p['enable_fileupload'] && $p['enable_richtext']) {
+         $display .= self::uploadedFiles([
+            'filecontainer' => $p['filecontainer'],
+            'name'          => $p['name'],
+            'display'       => false,
+            'uploads'       => $p['uploads'],
+            'editor_id'     => $p['editor_id'],
+         ]);
+      }
 
       if ($p['enable_fileupload']) {
          $p_rt = $p;
@@ -5679,6 +5705,98 @@ JAVASCRIPT;
          $p_rt['display'] = false;
          $display .= Html::file($p_rt);
       }
+
+      if ($p['display']) {
+         echo $display;
+         return true;
+      } else {
+         return $display;
+      }
+   }
+
+
+   /**
+    * Display uploaded files area
+    * @see displayUploadedFile() in fileupload.js
+    *
+    * @param $options       array of options
+    *    - name                string   field name (default filename)
+    *    - filecontainer       string   DOM ID of the container showing file uploaded:
+    *    - editor_id           string   id attribute for the textarea
+    *    - display             bool     display or return the generated html
+    *    - uploads             array    uploads to display (done in a previous form submit)
+    * @return void|string   the html if display parameter is false
+    */
+   private static function uploadedFiles($options = []) {
+      global $CFG_GLPI;
+
+      //default options
+      $p['filecontainer']     = 'fileupload_info';
+      $p['name']              = 'filename';
+      $p['editor_id']         = '';
+      $p['display']           = true;
+      $p['uploads']           = [];
+
+      //merge default options with options parameter
+      $p = array_merge($p, $options);
+
+      // div who will receive and display file list
+      $display = "<div id='".$p['filecontainer']."' class='fileupload_info'>";
+      if (isset($p['uploads']['_' . $p['name']])) {
+         foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
+            $prefix  = substr($upload, 0, 23);
+            $displayName = substr($upload, 23);
+
+            // get the extension icon
+            $extension = pathinfo(GLPI_TMP_DIR . '/' . $upload, PATHINFO_EXTENSION);
+            $extensionIcon = '/pics/icones/' . $extension . '-dist.png';
+            if (!is_readable(GLPI_ROOT . $extensionIcon)) {
+               $extensionIcon = '/pics/icones/defaut-dist.png';
+            }
+            $extensionIcon = $CFG_GLPI['root_doc'] . $extensionIcon;
+
+            // Rebuild the minimal data to show the already uploaded files
+            $upload = [
+               'name'    => $upload,
+               'id'      => 'doc' . $p['name'] . mt_rand(),
+               'display' => $displayName,
+               'size'    => filesize(GLPI_TMP_DIR . '/' . $upload),
+               'prefix'  => $prefix,
+            ];
+            $tag = $p['uploads']['_tag_' . $p['name']][$uploadId];
+            $tag = [
+               'name' => $tag,
+               'tag'  => "#$tag#",
+            ];
+
+            // Show the name and size of the upload
+            $display .= "<p id='" . $upload['id'] . "'>&nbsp;";
+            $display .= "<img src='$extensionIcon' title='$extension'>&nbsp;";
+            $display .= "<b>" . $upload['display'] . "</b>&nbsp;(" . Toolbox::getSize($upload['size']) . ")";
+
+            $name = '_' . $p['name'] . '[' . $uploadId . ']';
+            $display .= Html::hidden($name, ['value' => $upload['name']]);
+
+            $name = '_prefix_' . $p['name'] . '[' . $uploadId . ']';
+            $display .= Html::hidden($name, ['value' => $upload['prefix']]);
+
+            $name = '_tag_' . $p['name'] . '[' . $uploadId . ']';
+            $display .= Html::hidden($name, ['value' => $tag['name']]);
+
+            // show button to delete the upload
+            $getEditor = 'null';
+            if ($p['editor_id'] != '') {
+               $getEditor = "tinymce.get('" . $p['editor_id'] . "')";
+            }
+            $textTag = $tag['tag'];
+            $domItems = "{0:'" . $upload['id'] . "', 1:'" . $upload['id'] . "'+'2'}";
+            $deleteUpload = "deleteImagePasted($domItems, '$textTag', $getEditor)";
+            $display .= '<span class="fa fa-times-circle pointer" onclick="' . $deleteUpload . '"></span>';
+
+            $display .= "</p>";
+         }
+      }
+      $display .= "</div>";
 
       if ($p['display']) {
          echo $display;

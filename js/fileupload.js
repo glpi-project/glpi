@@ -326,7 +326,8 @@ var extractSrcFromImgTag = function(content) {
  */
 var insertImageInTinyMCE = function(editor, image) {
    //make ajax call for upload doc
-   var tag = uploadFile(image, editor);
+   var input_name = $(editor.targetElm).attr('name');
+   var tag = uploadFile(image, editor, input_name);
    if (tag !== false) {
       insertImgFromFile(editor, image, tag);
    }
