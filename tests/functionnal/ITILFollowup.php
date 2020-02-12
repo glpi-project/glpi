@@ -41,7 +41,6 @@ use Ticket_User;
 /* Test for inc/itilfollowup.class.php */
 
 class ITILFollowup extends DbTestCase {
-
    /**
     * Create a new ITILObject and return its id
     *
@@ -358,5 +357,129 @@ class ITILFollowup extends DbTestCase {
 
       // Reset conf
       $CFG_GLPI['use_notifications'] = $old_conf;
+   }
+
+   public function testScreenshotConvertedIntoDocument() {
+      // Test uploads for item creation
+      $ticket = new \Ticket();
+      $ticket->add([
+         'name' => $this->getUniqueString(),
+         'content' => 'test',
+      ]);
+      $this->boolean($ticket->isNewItem())->isFalse();
+
+      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+      $user = getItemByTypeName('User', TU_USER, true);
+      $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
+      $instance = new \ITILFollowup();
+      $input = [
+         'users_id' => $user,
+         'items_id' => $ticket->getID(),
+         'itemtype' => 'Ticket',
+         'name'    => 'a followup',
+         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
+         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
+         '_content' => [
+            $filename,
+         ],
+         '_tag_content' => [
+            '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
+         ],
+         '_prefix_content' => [
+            '5e5e92ffd9bd91.11111111',
+         ]
+      ];
+      copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+
+      $instance->add($input);
+      $this->boolean($instance->isNewItem())->isFalse();
+      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $this->string($instance->fields['content'])->contains($expected);
+
+      // Test uploads for item update
+      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/bar.png'));
+      $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
+      copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+      $success = $instance->update([
+         'id' => $instance->getID(),
+         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
+         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
+         '_content' => [
+            $filename,
+         ],
+         '_tag_content' => [
+            '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
+         ],
+         '_prefix_content' => [
+            '5e5e92ffd9bd91.44444444',
+         ]
+      ]);
+      $this->boolean($success)->isTrue();
+      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $this->string($instance->fields['content'])->contains($expected);
+   }
+
+   public function testUploadDocuments() {
+      // Test uploads for item creation
+      $ticket = new \Ticket();
+      $ticket->add([
+         'name' => $this->getUniqueString(),
+         'content' => 'test',
+      ]);
+      $this->boolean($ticket->isNewItem())->isFalse();
+
+      $user = getItemByTypeName('User', TU_USER, true);
+      // Test uploads for item creation
+      $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
+      $instance = new \ITILFollowup();
+      $input = [
+         'users_id' => $user,
+         'items_id' => $ticket->getID(),
+         'itemtype' => 'Ticket',
+         'name'    => 'a followup',
+         'content' => 'testUploadDocuments',
+         '_filename' => [
+            $filename,
+         ],
+         '_tag_filename' => [
+            '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
+         ],
+         '_prefix_filename' => [
+            '5e5e92ffd9bd91.11111111',
+         ]
+      ];
+      copy(__DIR__ . '/../fixtures/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+      $instance->add($input);
+      $this->boolean($instance->isNewItem())->isFalse();
+      $this->string($instance->fields['content'])->contains('testUploadDocuments');
+      $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
+         'itemtype' => 'ITILFollowup',
+         'items_id' => $instance->getID(),
+      ]);
+      $this->integer($count)->isEqualTo(1);
+
+      // Test uploads for item update (adds a 2nd document)
+      $filename = '5e5e92ffd9bd91.44444444bar.txt';
+      copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+      $success = $instance->update([
+         'id' => $instance->getID(),
+         'content' => 'update testUploadDocuments',
+         '_filename' => [
+            $filename,
+         ],
+         '_tag_filename' => [
+            '3e29dffe-0237ea21-5e5e7034b1ffff.33333333',
+         ],
+         '_prefix_filename' => [
+            '5e5e92ffd9bd91.44444444',
+         ]
+      ]);
+      $this->boolean($success)->isTrue();
+      $this->string($instance->fields['content'])->contains('update testUploadDocuments');
+      $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
+         'itemtype' => 'ITILFollowup',
+         'items_id' => $instance->getID(),
+      ]);
+      $this->integer($count)->isEqualTo(2);
    }
 }

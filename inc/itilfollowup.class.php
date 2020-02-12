@@ -203,8 +203,17 @@ class ITILFollowup  extends CommonDBChild {
 
       global $CFG_GLPI;
 
-      // Add document if needed, without notification
-      $this->input = $this->addFiles($this->input, ['force_update' => true]);
+      // Add screenshots if needed, without notification
+      $this->input = $this->addFiles($this->input, [
+         'force_update'  => true,
+         'name'          => 'content',
+         'content_field' => 'content',
+      ]);
+
+      // Add documents if needed, without notification
+      $this->input = $this->addFiles($this->input, [
+         'force_update'  => true,
+      ]);
 
       $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
@@ -416,7 +425,17 @@ class ITILFollowup  extends CommonDBChild {
          return;
       }
 
-      $this->input = $this->addFiles($this->input, ['force_update' => true]);
+      // Add screenshots if needed, without notification
+      $this->input = $this->addFiles($this->input, [
+         'force_update' => true,
+         'name'          => 'content',
+         'content_field' => 'content',
+      ]);
+
+      // Add documents if needed, without notification
+      $this->input = $this->addFiles($this->input, [
+         'force_update' => true,
+      ]);
 
       //Get user_id when not logged (from mailgate)
       $uid = Session::getLoginUserID();

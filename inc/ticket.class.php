@@ -1187,7 +1187,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (isset($input['content'])) {
-         if (isset($input['_filename'])) {
+         if (isset($input['_filename']) || isset($input['_content'])) {
             $input['_disablenotif'] = true;
          } else {
             $input['_donotadddocs'] = true;
@@ -3548,6 +3548,8 @@ class Ticket extends CommonITILObject {
                                                                              $_SESSION['glpiactive_entity'],
                                                                              '', Ticket::INCIDENT_TYPE),
                               '_right'              => "id",
+                              '_content'            => [],
+                              '_tag_content'        => [],
                               '_filename'           => [],
                               '_tag_filename'       => [],
                               '_tasktemplates_id'   => []];
@@ -3928,14 +3930,35 @@ class Ticket extends CommonITILObject {
          $content = Html::setRichTextContent($content_id, $content, $rand);
 
          echo "<div id='content$rand_text'>";
-         echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'
-               " . ($tt->isMandatoryField('content') ? " required='required'" : '') .">".
-                $content."</textarea></div>";
+         $uploads = [];
+         if (isset($options['_content'])) {
+            $uploads['_content'] = $options['_content'];
+            $uploads['_tag_content'] = $options['_tag_content'];
+         }
+         Html::textarea([
+            'name'            => 'content',
+            'filecontainer'   => 'content_info',
+            'editor_id'       => $content_id,
+            'required'        => $tt->isMandatoryField('content'),
+            'cols'            => $cols,
+            'rows'            => $rows,
+            'enable_richtext' => true,
+            'value'           => $content,
+            'uploads'         => $uploads,
+         ]);
+         echo "</div>";
 
          if (!$tt->isHiddenField('_documents_id')) {
-            Html::file(['editor_id' => $content_id,
-                             'showtitle' => false,
-                             'multiple' => true]);
+            if (isset($options['_filename'])) {
+               $uploads['_filename'] = $options['_filename'];
+               $uploads['_tag_filename'] = $options['_tag_filename'];
+            }
+            Html::file([
+               // 'editor_id' => $content_id,
+               'showtitle' => false,
+               'multiple'  => true,
+               'uploads'   => $uploads,
+            ]);
          }
 
          echo "</td></tr>";
@@ -4091,6 +4114,8 @@ class Ticket extends CommonITILObject {
                'type'                      => $type,
                '_documents_id'             => [],
                '_tasktemplates_id'         => [],
+               '_content'                  => [],
+               '_tag_content'              => [],
                '_filename'                 => [],
                '_tag_filename'             => []];
    }
@@ -4880,9 +4905,22 @@ class Ticket extends CommonITILObject {
 
       echo "<div id='content$rand_text'>";
       if ($canupdate || $can_requester) {
-         echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
-               ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
-               $content."</textarea></div>";
+         $uploads = [];
+         if (isset($this->input['_content'])) {
+            $uploads['_content'] = $this->input['_content'];
+            $uploads['_tag_content'] = $this->input['_tag_content'];
+         }
+         Html::textarea([
+            'name'            => 'content',
+            'filecontainer'   => 'content_info',
+            'editor_id'       => $content_id,
+            'required'        => $tt->isMandatoryField('content'),
+            'rows'            => $rows,
+            'enable_richtext' => true,
+            'value'           => $content,
+            'uploads'         => $uploads,
+         ]);
+         echo "</div>";
       } else {
          echo Toolbox::getHtmlToDisplay($content);
       }
@@ -4966,10 +5004,18 @@ class Ticket extends CommonITILObject {
             }
          }
          if (!$tt->isHiddenField('_documents_id')) {
-            Html::file(['filecontainer' => 'fileupload_info_ticket',
-                           'editor_id'     => $content_id,
-                           'showtitle'     => false,
-                           'multiple'     => true]);
+            $uploads = [];
+            if (isset($this->input['_filename'])) {
+               $uploads['_filename'] = $this->input['_filename'];
+               $uploads['_tag_filename'] = $this->input['_tag_filename'];
+            }
+            Html::file([
+               'filecontainer' => 'fileupload_info_ticket',
+               // 'editor_id'     => $content_id,
+               'showtitle'     => false,
+               'multiple'      => true,
+               'uploads'       => $uploads,
+            ]);
          }
          echo "</td>";
          echo "</tr>";

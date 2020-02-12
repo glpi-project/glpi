@@ -766,6 +766,9 @@ abstract class CommonITILObject extends CommonDBTM {
                 $allowed_fields[] = '_filename';
                 $allowed_fields[] = '_tag_filename';
                 $allowed_fields[] = '_prefix_filename';
+                $allowed_fields[] = '_content';
+                $allowed_fields[] = '_tag_content';
+                $allowed_fields[] = '_prefix_content';
                 $allowed_fields[] = 'takeintoaccount_delay_stat';
             }
          }
@@ -1100,9 +1103,18 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    function post_updateItem($history = 1) {
+      // Handle files pasted in the file field
+      $this->input = $this->addFiles($this->input);
+
+      // Handle files pasted in the text area
       if (!isset($this->input['_donotadddocs']) || !$this->input['_donotadddocs']) {
-         $options = ['force_update' => true];
+         $options = [
+            'force_update' => true,
+            'name' => 'content',
+            'content_field' => 'content',
+         ];
          if (isset($this->input['solution'])) {
+            $options['name'] = 'solution';
             $options['content_field'] = 'solution';
          }
          $this->input = $this->addFiles($this->input, $options);
@@ -1648,6 +1660,8 @@ abstract class CommonITILObject extends CommonDBTM {
                      if (($key == '_documents_id')
                            && !isset($input['_filename'])
                            && !isset($input['_tag_filename'])
+                           && !isset($input['_content'])
+                           && !isset($input['_tag_content'])
                            && !isset($input['_stock_image'])
                            && !isset($input['_tag_stock_image'])) {
 
@@ -1745,8 +1759,10 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      // Add document if needed, without notification
+      // Add document if needed, without notification for file input
       $this->input = $this->addFiles($this->input, ['force_update' => true]);
+      // Add document if needed, without notification for textarea
+      $this->input = $this->addFiles($this->input, ['name' => 'content', 'force_update' => true]);
 
       // Add default document if set in template
       if (isset($this->input['_documents_id'])

@@ -333,7 +333,13 @@ class ITILSolution extends CommonDBChild {
 
       // Replace inline pictures
       $this->input["_job"] = $this->item;
-      $this->input = $this->addFiles($this->input, ['force_update' => true]);
+      $this->input = $this->addFiles(
+         $this->input, [
+            'force_update' => true,
+            'name' => 'content',
+            'content_field' => 'content',
+         ]
+      );
 
       // Add solution to duplicates
       if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
@@ -378,7 +384,13 @@ class ITILSolution extends CommonDBChild {
    }
 
    function post_updateItem($history = 1) {
-      $this->input = $this->addFiles($this->input, ['force_update' => true]);
+      // Replace inline pictures
+      $options = [
+         'force_update' => true,
+         'name' => 'content',
+         'content_field' => 'content',
+      ];
+      $this->input = $this->addFiles($this->input, $options);
    }
 
 
