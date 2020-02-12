@@ -278,7 +278,7 @@ class Change extends CommonITILObject {
 
 
    function prepareInputForUpdate($input) {
-      
+
       // Process Business Rules
       $this->fillInputForBusinessRules($input);
 
@@ -288,7 +288,7 @@ class Change extends CommonITILObject {
          $entid = $this->fields['entities_id'];
          $input['entities_id'] = $entid;
       }
-      
+
       $rules = new RuleChangeCollection($entid);
       if (defined('TU_USER')) {
          // reload rule singleton

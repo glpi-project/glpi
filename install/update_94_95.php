@@ -1663,7 +1663,6 @@ HTML
    $migration->addField('glpi_changes', 'plan_end_date', 'datetime');
    $migration->addField('glpi_changes', 'service_unavailability', 'bool');
 
-
    $migration->executeMigration();
 
    return $updateresult;
