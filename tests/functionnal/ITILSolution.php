@@ -186,7 +186,7 @@ class ITILSolution extends DbTestCase {
       ]))->isGreaterThan(0);
 
       $this->boolean($change->isNewItem())->isFalse();
-      $this->variable($change->getField('status'))->isIdenticalTo($change::INCOMING);
+      $this->variable((int)$change->getField('status'))->isIdenticalTo($change::INCOMING);
 
       $solution = new \ITILSolution();
       $this->integer(
