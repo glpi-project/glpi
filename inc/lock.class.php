@@ -189,7 +189,7 @@ class Lock {
          'LEFT JOIN' => [
             'glpi_softwareversions AS sv' => [
                'FKEY' => [
-                  'csv' => 'softwareversions_id',
+                  'isv' => 'softwareversions_id',
                   'sv'  => 'id'
                ]
             ],
