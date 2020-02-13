@@ -1657,6 +1657,27 @@ HTML
    }
    /** /Update default right assignement rule */
 
+   if (!$DB->fieldExists('glpi_profiles', 'managed_domainrecordtypes')) {
+      $migration->addField(
+         'glpi_profiles',
+         'managed_domainrecordtypes',
+         'text',
+         [
+            'after'     => 'change_status'
+         ]
+      );
+   }
+
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_profiles', [
+            'managed_domainrecordtypes' => exportArrayToDB([])
+         ], [
+            'managed_domainrecordtypes' => ['', null]
+         ]
+      )
+   );
+
    $migration->executeMigration();
 
    return $updateresult;

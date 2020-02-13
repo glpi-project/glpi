@@ -190,6 +190,11 @@ class Profile extends CommonDBTM {
          if (in_array('helpdesk_item_type', $this->updates)) {
             $_SESSION['glpiactiveprofile']['helpdesk_item_type'] = importArrayFromDB($this->input['helpdesk_item_type']);
          }
+
+         if (in_array('managed_domainrecordtypes', $this->updates)) {
+            $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] = importArrayFromDB($this->input['managed_domainrecordtypes']);
+         }
+
          ///TODO other needed fields
       }
    }
@@ -241,6 +246,17 @@ class Profile extends CommonDBTM {
          }
          // Linear_HIT: $input["helpdesk_item_type"] = array_keys($input["helpdesk_item_type"]
          $input["helpdesk_item_type"] = exportArrayToDB($input["helpdesk_item_type"]);
+      }
+
+      if (isset($input["_managed_domainrecordtypes"])) {
+         if ((!isset($input["managed_domainrecordtypes"])) || (!is_array($input["managed_domainrecordtypes"]))) {
+            $input["managed_domainrecordtypes"] = [];
+         }
+         if (in_array(-1, $input['managed_domainrecordtypes'])) {
+            //when all selected, keep only all
+            $input['managed_domainrecordtypes'] = [-1];
+         }
+         $input["managed_domainrecordtypes"] = exportArrayToDB($input["managed_domainrecordtypes"]);
       }
 
       if (isset($input['helpdesk_hardware']) && is_array($input['helpdesk_hardware'])) {
@@ -297,7 +313,7 @@ class Profile extends CommonDBTM {
       }
 
       $this->profileRight = [];
-      foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
+      foreach (array_keys(ProfileRight::getAllPossibleRights()) as $right) {
          if (isset($input['_'.$right])) {
             if (!is_array($input['_'.$right])) {
                $input['_'.$right] = ['1' => $input['_'.$right]];
@@ -359,8 +375,12 @@ class Profile extends CommonDBTM {
          $input["helpdesk_item_type"] = exportArrayToDB($input["helpdesk_item_type"]);
       }
 
+      if (isset($input["managed_domainrecordtypes"])) {
+         $input["managed_domainrecordtypes"] = exportArrayToDB($input["managed_domainrecordtypes"]);
+      }
+
       $this->profileRight = [];
-      foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
+      foreach (array_keys(ProfileRight::getAllPossibleRights()) as $right) {
          if (isset($input[$right])) {
             $this->profileRight[$right] = $input[$right];
             unset($input[$right]);
@@ -397,6 +417,20 @@ class Profile extends CommonDBTM {
           || !is_array($this->fields["helpdesk_item_type"])) {
 
          $this->fields["helpdesk_item_type"] = [];
+      }
+
+      // decode array
+      if (isset($this->fields["managed_domainrecordtypes"])
+          && !is_array($this->fields["managed_domainrecordtypes"])) {
+
+         $this->fields["managed_domainrecordtypes"] = importArrayFromDB($this->fields["managed_domainrecordtypes"]);
+      }
+
+      // Empty/NULL case
+      if (!isset($this->fields["managed_domainrecordtypes"])
+          || !is_array($this->fields["managed_domainrecordtypes"])) {
+
+         $this->fields["managed_domainrecordtypes"] = [];
       }
 
       // Decode status array
@@ -907,6 +941,24 @@ class Profile extends CommonDBTM {
                   ];
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
+
+      echo "<div class='tab_cadre_fixehov'>";
+      echo "<input type='hidden' name='_managed_domainrecordtypes' value='1'>";
+      $rand = rand();
+      echo "<label for='dropdown_managed_domainrecordtypes$rand'>".__('Manageable domain records')."</label>";
+      $values = ['-1' => __('All')];
+      $values += $this->getDomainRecordTypes();
+      Dropdown::showFromArray(
+         'managed_domainrecordtypes',
+         $values, [
+            'display'   => true,
+            'multiple'  => true,
+            'size'      => 3,
+            'rand'      => $rand,
+            'values'    => $this->fields['managed_domainrecordtypes']
+         ]
+      );
+      echo "</div>\n";
 
       if ($canedit
           && $closeform) {
@@ -2417,6 +2469,15 @@ class Profile extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '88',
+         'table'              => $this->getTable(),
+         'field'              => 'managed_domainrecordtypes',
+         'name'               => __('Managed domain records types'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific'
+      ];
+
+      $tab[] = [
          'id'                 => '89',
          'table'              => 'glpi_profilerights',
          'field'              => 'rights',
@@ -2838,6 +2899,25 @@ class Profile extends CommonDBTM {
       return $values;
    }
 
+
+   /**
+    * Get domains records types
+    *
+    * @return array
+    */
+   public function getDomainRecordTypes() {
+      global $DB;
+
+      $iterator = $DB->request([
+         'FROM'   => DomainRecordType::getTable(),
+      ]);
+
+      $types = [];
+      while ($row = $iterator->next()) {
+         $types[$row['id']] = $row['name'];
+      }
+      return $types;
+   }
 
    /**
     * Dropdown profiles which have rights under the active one

@@ -175,8 +175,22 @@ class DomainRecord extends CommonDBChild {
       return $tab;
    }
 
-   function canCreateItem() {
-      return true;
+   public function canCreateItem() {
+      return count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
+   }
+
+   public function canUpdateItem() {
+      return parent::canUpdateItem()
+         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
+         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])
+         );
+   }
+
+   function canDeleteItem() {
+      return parent::canDeleteItem()
+         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
+         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])
+         );
    }
 
    function defineTabs($options = []) {
@@ -192,7 +206,15 @@ class DomainRecord extends CommonDBChild {
       return $ong;
    }
 
-   private function prepareInput($input) {
+   /**
+    * Prepare input for add and update
+    *
+    * @param array   $input Input values
+    * @param boolean $add   True when we're adding a record
+    *
+    * @return aray|false
+    */
+   private function prepareInput($input, $add = false) {
       if (isset($input['date_creation']) && empty($input['date_creation'])) {
          $input['date_creation'] = 'NULL';
       }
@@ -205,14 +227,37 @@ class DomainRecord extends CommonDBChild {
       }
 
       if (!isset($input['status']) || empty($input['status'])) {
-         $input['Status'] = self::STATUS_ACTIVE;
+         $input['status'] = self::STATUS_ACTIVE;
+      }
+
+      if (isset($input['domainrecordtypes_id']) ||isset($this->fields['domainrecordtypes_id'])) {
+         if (!($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1])) {
+            if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes']))) {
+               //no right to use selected type
+               Session::addMessageAfterRedirect(
+                  __('You are not allowed to use this type of records'),
+                  true,
+                  ERROR
+               );
+               return false;
+            }
+            if ($add === false && !(in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes']))) {
+               //no right to change existing type
+               Session::addMessageAfterRedirect(
+                  __('You are not allowed to edit this type of records'),
+                  true,
+                  ERROR
+               );
+               return false;
+            }
+         }
       }
 
       return $input;
    }
 
    function prepareInputForAdd($input) {
-      return $this->prepareInput($input);
+      return $this->prepareInput($input, true);
    }
 
    function prepareInputForUpdate($input) {
@@ -246,11 +291,20 @@ class DomainRecord extends CommonDBChild {
 
       echo "<td>" . DomainRecordType::getTypeName(1) . "</td>";
       echo "<td>";
+      $condition = null;
+      if ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] != [-1]) {
+         if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+            $condition = ['id' => $_SESSION['glpiactiveprofile']['managed_domainrecordtypes']];
+         } else {
+            $condition = ['id' => null];
+         }
+      }
       Dropdown::show(
          'DomainRecordType', [
-            'name'   => "domainrecordtypes_id",
-            'value'  => $this->fields["domainrecordtypes_id"],
-            'entity' => $this->fields["entities_id"]
+            'name'      => "domainrecordtypes_id",
+            'value'     => $this->fields["domainrecordtypes_id"],
+            'entity'    => $this->fields["entities_id"],
+            'condition' => $condition
          ]
       );
       echo "</td>";

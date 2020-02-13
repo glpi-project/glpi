@@ -7325,6 +7325,7 @@ $tables['glpi_profiles'] = [
       'create_ticket_on_login' => '0',
       'tickettemplates_id'     => '0',
       'change_status'          => null,
+      'managed_domainrecordtypes' => '[]',
    ], [
       'id'                     => '2',
       'name'                   => 'Observer',
@@ -7338,6 +7339,7 @@ $tables['glpi_profiles'] = [
       'create_ticket_on_login' => '0',
       'tickettemplates_id'     => '0',
       'change_status'          => null,
+      'managed_domainrecordtypes' => '[]',
    ], [
       'id'                     => '3',
       'name'                   => 'Admin',
@@ -7351,6 +7353,7 @@ $tables['glpi_profiles'] = [
       'create_ticket_on_login' => '0',
       'tickettemplates_id'     => '0',
       'change_status'          => null,
+      'managed_domainrecordtypes' => '[-1]',
    ], [
       'id'                     => '4',
       'name'                   => 'Super-Admin',
@@ -7364,6 +7367,7 @@ $tables['glpi_profiles'] = [
       'create_ticket_on_login' => '0',
       'tickettemplates_id'     => '0',
       'change_status'          => null,
+      'managed_domainrecordtypes' => '[-1]',
    ], [
       'id'                     => '5',
       'name'                   => 'Hotliner',
@@ -7377,6 +7381,7 @@ $tables['glpi_profiles'] = [
       'create_ticket_on_login' => '1',
       'tickettemplates_id'     => '0',
       'change_status'          => null,
+      'managed_domainrecordtypes' => '[]',
    ], [
       'id'                     => '6',
       'name'                   => 'Technician',
@@ -7390,6 +7395,7 @@ $tables['glpi_profiles'] = [
       'create_ticket_on_login' => '0',
       'tickettemplates_id'     => '0',
       'change_status'          => null,
+      'managed_domainrecordtypes' => '[]',
    ], [
       'id'                     => '7',
       'name'                   => 'Supervisor',
@@ -7403,6 +7409,7 @@ $tables['glpi_profiles'] = [
       'create_ticket_on_login' => '0',
       'tickettemplates_id'     => '0',
       'change_status'          => null,
+      'managed_domainrecordtypes' => '[]',
    ], [
       'id'                     => '8',
       'name'                   => 'Read-Only',
@@ -7416,6 +7423,7 @@ $tables['glpi_profiles'] = [
       'create_ticket_on_login' => '0',
       'tickettemplates_id'     => '0',
       'change_status'          => '{"1":{"9":0,"10":0,"7":0,"4":0,"11":0,"12":0,"5":0,"8":0,"6":0},"9":{"1":0,"10":0,"7":0,"4":0,"11":0,"12":0,"5":0,"8":0,"6":0},"10":{"1":0,"9":0,"7":0,"4":0,"11":0,"12":0,"5":0,"8":0,"6":0},"7":{"1":0,"9":0,"10":0,"4":0,"11":0,"12":0,"5":0,"8":0,"6":0},"4":{"1":0,"9":0,"10":0,"7":0,"11":0,"12":0,"5":0,"8":0,"6":0},"11":{"1":0,"9":0,"10":0,"7":0,"4":0,"12":0,"5":0,"8":0,"6":0},"12":{"1":0,"9":0,"10":0,"7":0,"4":0,"11":0,"5":0,"8":0,"6":0},"5":{"1":0,"9":0,"10":0,"7":0,"4":0,"11":0,"12":0,"8":0,"6":0},"8":{"1":0,"9":0,"10":0,"7":0,"4":0,"11":0,"12":0,"5":0,"6":0},"6":{"1":0,"9":0,"10":0,"7":0,"4":0,"11":0,"12":0,"5":0,"8":0}}',
+      'managed_domainrecordtypes' => '[]',
    ],
 ];
 
