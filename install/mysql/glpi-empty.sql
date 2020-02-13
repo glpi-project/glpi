@@ -5134,6 +5134,7 @@ CREATE TABLE `glpi_profiles` (
   `changetemplates_id` int(11) NOT NULL DEFAULT '0',
   `problemtemplates_id` int(11) NOT NULL DEFAULT '0',
   `change_status` text COLLATE utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
+  `managed_domainrecordtypes` text COLLATE utf8_unicode_ci,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `interface` (`interface`),
