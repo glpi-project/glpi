@@ -215,6 +215,14 @@ class APIRest extends API {
          }
          return $this->returnResponse($this->lostPassword($this->parameters));
 
+      } if ($resource === "getUserPictureUrl") {
+         return $this->returnResponse(
+            $this->getUserPictureUrl($this->getId())
+         );
+      } else if ($resource === "getUsersPicturesUrl") {
+         return $this->returnResponse(
+            $this->getUsersPicturesUrl($this->parameters)
+         );
       } else {
          // commonDBTM manipulation
          $itemtype          = $this->getItemtype(0);

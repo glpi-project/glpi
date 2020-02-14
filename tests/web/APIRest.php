@@ -110,7 +110,7 @@ class APIRest extends APIBaseClass {
          $this->array($body)
             ->hasKey('0')
             ->string[0]->isIdenticalTo($expected_symbol);
-         return;
+         return $body;
       }
       //retrieve data
       $body            = $res->getBody();
@@ -370,5 +370,178 @@ class APIRest extends APIBaseClass {
          unset($data['headers']);
       }
       $this->integer(count($data))->isEqualTo(1);
+   }
+
+   /**
+    * @tags   api
+    * @covers API::getUsersPicturesUrl
+    */
+   public function testGetUsersPicturesUrl() {
+      $endpoint = "getUsersPicturesUrl";
+      $pic = "test_picture.png";
+      $id_1 = getItemByTypeName('User', 'glpi', true);
+      $id_2 = getItemByTypeName('User', 'tech', true);
+      $params = [
+         'headers' => ['Session-Token' => $this->session_token],
+         'query'   => [],
+      ];
+      $user = new \User();
+
+      /**
+       * Case 1: missing parameters
+       */
+      $response = $this->query($endpoint, $params, 400, "ERROR");
+      $this->array($response)->hasSize(2);
+      $this->string($response[1])->contains("Bad request: missing 'ids' parameter");
+
+      // Insert ids parameter
+      $params['query'] = ['ids' => [$id_1, $id_2]];
+
+      /**
+       * Case 2: pic on the first user
+       */
+
+      // Copy pic to tmp folder
+      copy("tests/$pic", "files/_tmp/$pic");
+
+      // Set a pic URL for the first user
+      $success = $user->update([
+         'id'       => $id_1,
+         '_picture' => [$pic],
+      ]);
+      $this->boolean($success)->isTrue();
+
+      // Get updated pic url
+      $pic_1 = $user->fields['picture'];
+      $this->string($pic_1)->isNotEmpty();
+
+      // Request
+      $response = $this->query($endpoint, $params, 200);
+      $this->array($response)
+         ->hasSize(3) // 2 + response headers
+         ->hasKeys([$id_1, $id_2]);
+      $this->string($response[$id_1])->isEqualTo($pic_1);
+      $this->variable($response[$id_2])->isNull();
+
+      /**
+       * Case 3: pic on bothuser
+       */
+
+      // Copy pic to tmp folder
+      copy("tests/$pic", "files/_tmp/$pic");
+
+      // Set a pic URL for the second 2
+      $success = $user->update([
+         'id'       => $id_2,
+         '_picture' => [$pic],
+      ]);
+      $this->boolean($success)->isTrue();
+
+      // Get updated pic url
+      $pic_2 = $user->fields['picture'];
+      $this->string($pic_2)->isNotEmpty();
+
+      // Request
+      $response = $this->query($endpoint, $params, 200);
+      $this->array($response)
+         ->hasSize(3) // 2 + response headers
+         ->hasKeys([$id_1, $id_2]);
+      $this->string($response[$id_1])->isEqualTo($pic_1);
+      $this->variable($response[$id_2])->isEqualTo($pic_2);
+
+      /**
+       * Case 4: no pics on both
+       */
+
+      // Remove pic for first user
+      $success = $user->update([
+         'id'             => $id_1,
+         '_blank_picture' => true,
+      ]);
+      $this->boolean($success)->isTrue();
+
+      // Remove pic for second user
+      $success = $user->update([
+         'id'             => $id_2,
+         '_blank_picture' => true,
+      ]);
+      $this->boolean($success)->isTrue();
+
+      $response = $this->query($endpoint, $params, 200);
+      $this->array($response)
+         ->hasSize(3) // 2 + response headers
+         ->hasKeys([$id_1, $id_2]);
+      $this->variable($response[$id_1])->isNull();
+      $this->variable($response[$id_2])->isNull();
+   }
+
+   /**
+    * @tags   api
+    * @covers API::getUserPictureUrl
+    */
+   public function testGetUserPictureUrl() {
+      $endpoint = "getUserPictureUrl";
+      $pic = "test_picture.png";
+      $params = ['headers' => ['Session-Token' => $this->session_token]];
+      $id = getItemByTypeName('User', 'glpi', true);
+      $user = new \User();
+
+      /**
+       * Case 1: normal execution
+       */
+
+      // Copy pic to tmp folder
+      copy("tests/$pic", "files/_tmp/$pic");
+
+      // Load GLPI user
+      $this->boolean($user->getFromDB($id))->isTrue();
+
+      // Set a pic URL
+      $success = $user->update([
+         'id'      => $id,
+         '_picture' => [$pic],
+      ]);
+      $this->boolean($success)->isTrue();
+
+      // Get updated pic url
+      $pic = $user->fields['picture'];
+      $this->string($pic)->isNotEmpty();
+
+      // Request
+      $response = $this->query("$endpoint/$id", $params, 200);
+      $this->string($response)->isEqualTo($pic);
+
+      /**
+       * Case 2: missing parameter
+       */
+
+      // Request
+      $response = $this->query($endpoint, $params, 400, "ERROR");
+      $this->array($response)->hasSize(2);
+      $this->string($response[1])->contains("Bad request: missing 'id' parameter");
+
+      /**
+       * Case 3: user doens't exist
+       */
+
+      // Request
+      $response = $this->query("$endpoint/9999999999", $params, 400, "ERROR");
+      $this->array($response)->hasSize(2);
+      $this->string($response[1])->contains("Bad request: user with id '9999999999' not found");
+
+      /**
+       * Case 4: user with no pictures
+       */
+
+      // Remove pic URL
+      $success = $user->update([
+         'id'             => $id,
+         '_blank_picture' => true,
+      ]);
+      $this->boolean($success)->isTrue();
+
+      // Request
+      $response = $this->query("$endpoint/$id", $params, 200);
+      $this->variable($response)->isNull();
    }
 }

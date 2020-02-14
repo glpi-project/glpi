@@ -711,6 +711,7 @@ class User extends CommonDBTM {
          }
          if ($newPicture) {
             $fullpath = GLPI_TMP_DIR."/".$input["_picture"];
+
             if (Toolbox::getMime($fullpath, 'image')) {
                // Unlink old picture (clean on changing format)
                self::dropPictureFiles($this->fields['picture']);

@@ -443,9 +443,6 @@ abstract class API extends CommonGLPI {
       return ['myprofiles' => $myprofiles];
    }
 
-
-
-
    /**
     * Return the current active profile
     *
@@ -2684,4 +2681,62 @@ abstract class API extends CommonGLPI {
 
       return $_names;
    }
+
+   /**
+    * Get the profile picture url of an user
+    *
+    * @param int $user_id
+    *
+    * @return string|null
+    */
+   protected function getUserPictureUrl($user_id = 0) {
+      $this->initEndpoint();
+
+      // Required params
+      if (empty($user_id)) {
+         $this->returnError("Bad request: missing 'id' parameter");
+      }
+
+      // Load user from db
+      $user = new \User();
+      if (!$user->getFromDB($user_id)) {
+         $this->returnError("Bad request: user with id '$user_id' not found");
+      }
+
+      return $user->fields['picture'];
+   }
+
+   /**
+    * Get the profile pictures urls of multiple users
+    *
+    * @param int $user_id
+    *
+    * @return string|null
+    */
+   protected function getUsersPicturesUrl($params = []) {
+      global $DB;
+      $this->initEndpoint();
+
+      $user_ids = $params['ids'] ?? [];
+
+      // Required params
+      if (empty($user_ids)) {
+         $this->returnError("Bad request: missing 'ids' parameter");
+      }
+
+      // Return results as id => picture url
+      return array_map(
+         function ($elem) {
+            return $elem['picture'];
+         },
+         iterator_to_array(
+            $DB->request([
+               'SELECT' => ['id', 'picture'],
+               'FROM'   => \User::getTable(),
+               'WHERE'  => ['id' => $user_ids]
+            ])
+         )
+      );
+   }
+
 }
