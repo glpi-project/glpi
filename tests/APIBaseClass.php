@@ -88,8 +88,8 @@ abstract class APIBaseClass extends \atoum {
          (int)$apiclient->add([
             'name'             => 'test app token',
             'is_active'        => 1,
-            'ipv4_range_start' => 2130706433,
-            'ipv4_range_end'   => 2130706433,
+            'ipv4_range_start' => '127.0.0.1',
+            'ipv4_range_end'   => '127.0.0.1',
             '_reset_app_token' => true,
          ])
       )->isGreaterThan(0);
