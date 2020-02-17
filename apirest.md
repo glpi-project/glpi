@@ -1288,6 +1288,61 @@ $ curl -X GET \
 
 The body of the answer contains the raw file attached to the document.
 
+### Get the url of an user's profile picture
+
+* **URL**: apirest.php/getUserPictureUrl/:user_id
+* **Description**: Get the url of an user's profile picture.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in the 'id' parameter.
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getUserPictureUrl/2'
+
+< 200 OK
+"fc/2_5e4a6ff3282fc.png"
+```
+
+### Get the url of multiple users' profiles picture
+
+* **URL**: apirest.php/getUsersPicturesUrl
+* **Description**: Get the url of multiple users' profiles picture.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Parameters**: (query string)
+  * *ids*: array of users ids
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in the 'ids' parameter.
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getUsersPicturesUrl?ids[0]=2&ids[1]=3'
+
+< 200 OK
+{
+  "2": "fc/2_5e4a6ff3282fc.png",
+  "3": "d3/7_f528f46fa3e2c.png"
+}
+```
+
 ## Errors
 
 ### ERROR_ITEM_NOT_FOUND
