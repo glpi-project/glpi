@@ -420,7 +420,7 @@ class APIRest extends APIBaseClass {
       $this->array($response)
          ->hasSize(3) // 2 + response headers
          ->hasKeys([$id_1, $id_2]);
-      $this->string($response[$id_1])->isEqualTo($pic_1);
+      $this->string($response[$id_1])->isEqualTo(\User::buildPictureUrl($pic_1));
       $this->variable($response[$id_2])->isNull();
 
       /**
@@ -446,8 +446,8 @@ class APIRest extends APIBaseClass {
       $this->array($response)
          ->hasSize(3) // 2 + response headers
          ->hasKeys([$id_1, $id_2]);
-      $this->string($response[$id_1])->isEqualTo($pic_1);
-      $this->variable($response[$id_2])->isEqualTo($pic_2);
+      $this->string($response[$id_1])->isEqualTo(\User::buildPictureUrl($pic_1));
+      $this->variable($response[$id_2])->isEqualTo(\User::buildPictureUrl($pic_2));
 
       /**
        * Case 4: no pics on both
@@ -509,7 +509,7 @@ class APIRest extends APIBaseClass {
 
       // Request
       $response = $this->query("$endpoint/$id", $params, 200);
-      $this->string($response)->isEqualTo($pic);
+      $this->string($response)->isEqualTo(\User::buildPictureUrl($pic));
 
       /**
        * Case 2: missing parameter

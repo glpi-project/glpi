@@ -5531,4 +5531,19 @@ JAVASCRIPT;
    static function getIcon() {
       return "fas fa-user";
    }
+
+   /**
+    * Build profile picture URL
+    *
+    * @param string|null $picture
+    */
+   public static function buildPictureUrl($picture) {
+      global $CFG_GLPI;
+
+      if (!empty($picture)) {
+         $picture = "{$CFG_GLPI["url_base"]}/front/document.send.php?file=_pictures/$picture";
+      }
+
+      return $picture;
+   }
 }

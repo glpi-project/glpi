@@ -1310,7 +1310,7 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/getUserPictureUrl/2'
 
 < 200 OK
-"fc/2_5e4a6ff3282fc.png"
+"http://path/to/glpi/front/document.send.php?file=_pictures/fc/2_5e4a6ff3282fc.png"
 ```
 
 ### Get the url of multiple users' profiles picture
@@ -1338,8 +1338,8 @@ $ curl -X GET \
 
 < 200 OK
 {
-  "2": "fc/2_5e4a6ff3282fc.png",
-  "3": "d3/7_f528f46fa3e2c.png"
+  "2": "http://path/to/glpi/front/document.send.php?file=_pictures/fc/2_5e4a6ff3282fc.png",
+  "3": "http://path/to/glpi/front/document.send.php?file=_pictures/d3/7_f528f46fa3e2c.png"
 }
 ```
 

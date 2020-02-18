@@ -2703,7 +2703,7 @@ abstract class API extends CommonGLPI {
          $this->returnError("Bad request: user with id '$user_id' not found");
       }
 
-      return $user->fields['picture'];
+      return \User::buildPictureUrl($user->fields['picture']);
    }
 
    /**
@@ -2727,7 +2727,7 @@ abstract class API extends CommonGLPI {
       // Return results as id => picture url
       return array_map(
          function ($elem) {
-            return $elem['picture'];
+            return \User::buildPictureUrl($elem['picture']);
          },
          iterator_to_array(
             $DB->request([
