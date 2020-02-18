@@ -33,26 +33,29 @@
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
-define('GLPI_CACHE_DIR', __DIR__ . '/files/_cache');
-define('GLPI_PICTURE_DIR', __DIR__ . '/files/_pictures');
+define('GLPI_ROOT', __DIR__ . '/../');
 define('GLPI_CONFIG_DIR', __DIR__);
-define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
+define('GLPI_VAR_DIR', __DIR__ . '/files');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
+
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
-define('GLPI_ROOT', __DIR__ . '/../');
 
-is_dir(GLPI_LOG_DIR) or mkdir(GLPI_LOG_DIR, 0755, true);
-is_dir(GLPI_CACHE_DIR) or mkdir(GLPI_CACHE_DIR, 0755, true);
-is_dir(GLPI_PICTURE_DIR) or mkdir(GLPI_PICTURE_DIR, 0755, true);
+global $CFG_GLPI, $GLPI_CACHE;
+
+include (GLPI_ROOT . "/inc/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests ...\n\n");
 }
-global $CFG_GLPI, $GLPI_CACHE;
 
-include_once (GLPI_ROOT . "/inc/define.php");
-include __DIR__ . '/../inc/autoload.function.php';
+// Create subdirectories of GLPI_VAR_DIR based on defined constants
+foreach (get_defined_constants() as $constant_name => $constant_value) {
+   if (preg_match('/^GLPI_[\w]+_DIR$/', $constant_name)
+       && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $constant_value)) {
+      is_dir($constant_value) or mkdir($constant_value, 0755, true);
+   }
+}
 
 //init cache
 $GLPI_CACHE = Config::getCache('cache_db');
