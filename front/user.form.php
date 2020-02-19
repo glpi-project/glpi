@@ -141,13 +141,17 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST['language']) && !GLPI_DEMO_MODE) {
-   $user->update(
-      [
-         'id'        => Session::getLoginUserID(),
-         'language'  => $_POST['language']
-      ]
-   );
-
+   if (Session::getLoginUserID()) {
+      $user->update(
+         [
+            'id'        => Session::getLoginUserID(),
+            'language'  => $_POST['language']
+         ]
+      );
+   } else {
+      $_SESSION['glpifaqlanguage'] = $_POST['language'];
+      $_SESSION["glpilanguage"] = $_POST['language'];
+   }
    Session::addMessageAfterRedirect(__('Lang has been changed!'));
    Html::back();
 
