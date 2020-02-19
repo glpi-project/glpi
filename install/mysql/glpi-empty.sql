@@ -7927,3 +7927,88 @@ CREATE TABLE `glpi_domainrecords` (
   KEY `is_deleted` (`is_deleted`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_appliances`;
+CREATE TABLE `glpi_appliances` (
+  `id` int(11) NOT NULL auto_increment,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `appliancetypes_id` int(11) NOT NULL DEFAULT '0',
+  `comment` text,
+  `locations_id` int(11) NOT NULL DEFAULT '0',
+  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+  `applianceenvironments_id` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+  `relationtype` int(11) NOT NULL DEFAULT '0',
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `states_id` int(11) NOT NULL DEFAULT '0',
+  `is_helpdesk_visible` tinyint(1) NOT NULL DEFAULT '1',
+  `externalidentifier` varchar(255) DEFAULT NULL,
+  `serial` varchar(255) DEFAULT NULL,
+  `otherserial` varchar(255) DEFAULT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `unicity` (`externalidentifier`),
+  KEY `entities_id` (`entities_id`),
+  KEY `name` (`name`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `appliancetypes_id` (`appliancetypes_id`),
+  KEY `locations_id` (`locations_id`),
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `applianceenvironments_id` (`applianceenvironments_id`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id` (`groups_id`),
+  KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `states_id` (`states_id`),
+  KEY `serial` (`serial`),
+  KEY `otherserial` (`otherserial`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS `glpi_appliances_items` (
+   `id` int(11) NOT NULL auto_increment,
+   `appliances_id` int(11) NOT NULL DEFAULT '0',
+   `items_id` int(11) NOT NULL DEFAULT '0',
+   `itemtype` VARCHAR(100) NOT NULL DEFAULT '',
+   PRIMARY KEY (`id`),
+   UNIQUE `unicity` (`appliances_id`,`items_id`,`itemtype`),
+   KEY `appliances_id` (`appliances_id`),
+   KEY `item` (`itemtype`,`items_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS `glpi_appliancetypes` (
+   `id` int(11) NOT NULL auto_increment,
+   `entities_id` int(11) NOT NULL DEFAULT '0',
+   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+   `name` varchar(255) NOT NULL DEFAULT '',
+   `comment` text,
+   `externalidentifier` varchar(255) NULL,
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`),
+   KEY `entities_id` (`entities_id`),
+   UNIQUE (`externalidentifier`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS `glpi_applianceenvironments` (
+   `id` int(11) NOT NULL auto_increment,
+   `name` varchar(255) DEFAULT NULL,
+   `comment` text,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `glpi_appliancerelations` (
+   `id` int(11) NOT NULL auto_increment,
+   `appliances_items_id` int(11) NOT NULL DEFAULT '0',
+   `relations_id` int(11) NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   KEY `appliances_items_id` (`appliances_items_id`),
+   KEY `relations_id` (`relations_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

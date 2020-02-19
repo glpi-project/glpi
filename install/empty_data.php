@@ -1645,6 +1645,7 @@ $tables['glpi_displaypreferences'] = [
 $ADDTODISPLAYPREF['Cluster'] = [31, 19];
 $ADDTODISPLAYPREF['Domain'] = [3, 4, 2, 6, 7];
 $ADDTODISPLAYPREF['DomainRecord'] = [2, 3];
+$ADDTODISPLAYPREF['Appliance'] = [2, 3, 4, 5];
 
 foreach ($ADDTODISPLAYPREF as $type => $options) {
    $rank = 1;
@@ -7308,6 +7309,38 @@ $tables['glpi_profilerights'] = [
       'profiles_id' => '8',
       'name'        => 'dashboard',
       'rights'      => 0,
+   ], [
+      'profiles_id' => '1',
+      'name'        => 'appliance',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '2',
+      'name'        => 'appliance',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '3',
+      'name'        => 'appliance',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '4',
+      'name'        => 'appliance',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '5',
+      'name'        => 'appliance',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '6',
+      'name'        => 'appliance',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '7',
+      'name'        => 'appliance',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '8',
+      'name'        => 'appliance',
+      'rights'      => 1,
    ],
 ];
 
