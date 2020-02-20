@@ -360,16 +360,21 @@ class ITILSolution extends CommonDBChild {
       parent::post_addItem();
    }
 
-
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
-      // Replace inline pictures
-      $input = $this->addFiles($input);
+      if (!isset($this->fields['itemtype'])) {
+         return false;
+      }
+      $input["_job"] = new $this->fields['itemtype']();
+      if (!$input["_job"]->getFromDB($this->fields["items_id"])) {
+         return false;
+      }
 
       return $input;
+   }
+
+   function post_updateItem($history = 1) {
+      $this->input = $this->addFiles($this->input, ['force_update' => true]);
    }
 
 

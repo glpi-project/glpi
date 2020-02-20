@@ -646,22 +646,22 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
-
-      // add documents (and replace inline pictures)
-      $input = $this->addFiles(
-         $input,
-         ['content_field' => 'answer']
-      );
-
       // set title for question if empty
       if (isset($input["name"]) && empty($input["name"])) {
          $input["name"] = __('New item');
       }
       return $input;
+   }
+
+   function post_updateItem($history = 1) {
+      $this->input = $this->addFiles(
+         $this->input,
+         [
+            'force_update'  => true,
+            'content_field' => 'answer',
+         ]
+      );
    }
 
 

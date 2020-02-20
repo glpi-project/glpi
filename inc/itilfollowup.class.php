@@ -391,8 +391,6 @@ class ITILFollowup  extends CommonDBChild {
          return false;
       }
 
-      $input = $this->addFiles($input);
-
       // update last editor if content change
       if (($uid = Session::getLoginUserID())
           && isset($input['content']) && ($input['content'] != $this->fields['content'])) {
@@ -408,52 +406,56 @@ class ITILFollowup  extends CommonDBChild {
 
       $job      = new $this->fields['itemtype']();
 
-      if ($job->getFromDB($this->fields['items_id'])) {
-         //Get user_id when not logged (from mailgate)
-         $uid = Session::getLoginUserID();
-         if ($uid === false) {
-            if (isset($this->fields['users_id_editor'])) {
-               $uid = $this->fields['users_id_editor'];
-            } else {
-               $uid = $this->fields['users_id'];
-            }
-         }
-         $job->updateDateMod($this->fields['items_id'], false, $uid);
-
-         if (count($this->updates)) {
-            if (!isset($this->input['_disablenotif'])
-                && $CFG_GLPI["use_notifications"]
-                && (in_array("content", $this->updates)
-                    || isset($this->input['_need_send_mail']))) {
-               //FIXME: _need_send_mail does not seems to be used
-
-               $options = ['followup_id' => $this->fields["id"],
-                                'is_private'  => $this->fields['is_private']];
-
-               NotificationEvent::raiseEvent("update_followup", $job, $options);
-            }
-         }
-
-         // change ITIL Object status (from splitted button)
-         if (isset($this->input['_status'])
-             && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
-             $update = [
-                'status'        => $this->input['_status'],
-                'id'            => $this->input['_job']->fields['id'],
-                '_disablenotif' => true,
-             ];
-             $this->input['_job']->update($update);
-         }
-
-         // Add log entry in the ITIL Object
-         $changes = [
-            0,
-            '',
-            $this->fields['id'],
-         ];
-         Log::history($this->getField('items_id'), $this->fields['itemtype'], $changes, $this->getType(),
-                      Log::HISTORY_UPDATE_SUBITEM);
+      if (!$job->getFromDB($this->fields['items_id'])) {
+         return;
       }
+
+      $this->input = $this->addFiles($this->input, ['force_update' => true]);
+
+      //Get user_id when not logged (from mailgate)
+      $uid = Session::getLoginUserID();
+      if ($uid === false) {
+         if (isset($this->fields['users_id_editor'])) {
+            $uid = $this->fields['users_id_editor'];
+         } else {
+            $uid = $this->fields['users_id'];
+         }
+      }
+      $job->updateDateMod($this->fields['items_id'], false, $uid);
+
+      if (count($this->updates)) {
+         if (!isset($this->input['_disablenotif'])
+             && $CFG_GLPI["use_notifications"]
+             && (in_array("content", $this->updates)
+                 || isset($this->input['_need_send_mail']))) {
+            //FIXME: _need_send_mail does not seems to be used
+
+            $options = ['followup_id' => $this->fields["id"],
+                             'is_private'  => $this->fields['is_private']];
+
+            NotificationEvent::raiseEvent("update_followup", $job, $options);
+         }
+      }
+
+      // change ITIL Object status (from splitted button)
+      if (isset($this->input['_status'])
+          && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
+          $update = [
+             'status'        => $this->input['_status'],
+             'id'            => $this->input['_job']->fields['id'],
+             '_disablenotif' => true,
+          ];
+          $this->input['_job']->update($update);
+      }
+
+      // Add log entry in the ITIL Object
+      $changes = [
+         0,
+         '',
+         $this->fields['id'],
+      ];
+      Log::history($this->getField('items_id'), $this->fields['itemtype'], $changes, $this->getType(),
+                   Log::HISTORY_UPDATE_SUBITEM);
    }
 
 

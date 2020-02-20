@@ -353,6 +353,14 @@ class Reminder extends CommonDBVisible {
    **/
    function post_updateItem($history = 1) {
 
+      $this->input = $this->addFiles(
+         $this->input,
+         [
+            'force_update'  => true,
+            'content_field' => 'text',
+         ]
+      );
+
       if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
          Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
                                        $this->fields["end"],
@@ -654,8 +662,6 @@ class Reminder extends CommonDBVisible {
                                              false, ERROR);
          }
       }
-
-      $input = $this->addFiles($input, ['content_field' => 'text']);
 
       return $input;
    }
