@@ -1200,4 +1200,8 @@ JAVASCRIPT;
          }
       }
    }
+
+   public static function getNameField() {
+      return 'id';
+   }
 }
