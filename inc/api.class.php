@@ -2684,4 +2684,31 @@ abstract class API extends CommonGLPI {
 
       return $_names;
    }
+
+   /**
+    * Get the profile picture of the given user
+    *
+    * @since 9.5
+    *
+    * @param int|boolean $user_id
+    */
+   public function userPicture($user_id) {
+      $this->initEndpoint();
+
+      // Try to load target user
+      $user = new \User();
+      if (!$user->getFromDB($user_id)) {
+         $this->returnError("Bad request: user with id '$user_id' not found");
+      }
+
+      if (!empty($user->fields['picture'])) {
+         // Send file
+         $file = GLPI_PICTURE_DIR . '/' . $user->fields['picture'];
+         Toolbox::sendFile($file, $user->fields['picture']);
+      } else {
+         // No content
+         http_response_code(204);
+      }
+      die;
+   }
 }

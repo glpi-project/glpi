@@ -1288,6 +1288,33 @@ $ curl -X GET \
 
 The body of the answer contains the raw file attached to the document.
 
+### Get a user's profile picture
+
+* **URL**: apirest.php/User/:id/Picture
+* **Description**: Get a user's profile picture.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Returns**:
+  * 200 (OK) with the raw image in the request body.
+  * 204 (No content) if the request is correct but the specified user doesn't have a profile picture.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/User/2/Picture/'
+
+< 200 OK
+```
+
+The body of the answer contains the raw image.
+
 ## Errors
 
 ### ERROR_ITEM_NOT_FOUND
