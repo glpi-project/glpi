@@ -284,14 +284,14 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       }
 
-      $input = $this->addFiles($input);
-
       return $input;
    }
 
 
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
+
+      $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
       if (in_array("begin", $this->updates)) {
          PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(),

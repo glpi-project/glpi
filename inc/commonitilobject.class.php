@@ -658,13 +658,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
-      if (!isset($input['_donotadddocs']) || !$input['_donotadddocs']) {
-         $options = [];
-         if (isset($input['solution'])) {
-            $options['content_field'] = 'solution';
-         }
-         $input = $this->addFiles($input, $options);
-      }
 
       if (isset($input["document"]) && ($input["document"] > 0)) {
          $doc = new Document();
@@ -937,6 +930,16 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       return $input;
+   }
+
+   function post_updateItem($history = 1) {
+      if (!isset($this->input['_donotadddocs']) || !$this->input['_donotadddocs']) {
+         $options = ['force_update' => true];
+         if (isset($this->input['solution'])) {
+            $options['content_field'] = 'solution';
+         }
+         $this->input = $this->addFiles($this->input, $options);
+      }
    }
 
 
