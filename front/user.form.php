@@ -149,7 +149,6 @@ if (isset($_GET['getvcard'])) {
          ]
       );
    } else {
-      $_SESSION['glpifaqlanguage'] = $_POST['language'];
       $_SESSION["glpilanguage"] = $_POST['language'];
    }
    Session::addMessageAfterRedirect(__('Lang has been changed!'));
