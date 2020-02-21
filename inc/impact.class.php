@@ -90,6 +90,11 @@ class Impact extends CommonGLPI {
    ) {
       global $CFG_GLPI;
 
+      // Impact analysis should not be available outside of central
+      if (Session::getCurrentInterface() !== "central") {
+         return false;
+      }
+
       $class = get_class($item);
 
       // Only enabled for CommonDBTM
