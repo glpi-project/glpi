@@ -4871,9 +4871,13 @@ JAVASCRIPT;
 
       $complexjoin = self::computeComplexJoinID($joinparams);
 
+      $is_fkey_composite_on_self = getTableNameForForeignKeyField($linkfield) == $ref_table
+         && $linkfield != getForeignKeyFieldForTable($ref_table);
+
       // Auto link
       if (($ref_table == $new_table)
-          && empty($complexjoin)) {
+          && empty($complexjoin)
+          && !$is_fkey_composite_on_self) {
          $transitemtype = getItemTypeForTable($new_table);
          if (Session::haveTranslations($transitemtype, $field)) {
             $transAS            = $nt.'_trans';

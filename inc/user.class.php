@@ -3407,10 +3407,6 @@ JAVASCRIPT;
          'name'               => __('Responsible'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
-         'joinparams'         => [
-            // force complex join generation
-            'condition' => "AND 1=1"
-         ]
       ];
 
       // add objectlock search options

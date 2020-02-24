@@ -207,6 +207,13 @@ class RuleTicket extends Rule {
                      }
                   }
 
+                  // Special case for _users_id_requester, _users_id_observer and _users_id_assign
+                  if (in_array($action->fields["field"],
+                               ['_users_id_requester', '_users_id_observer', '_users_id_assign'])) {
+                     // must reset alternative_email field to prevent mix of user/email
+                     unset($output[$action->fields["field"].'_notif']);
+                  }
+
                   // Special case of slas_id_ttr & slas_id_tto & olas_id_ttr & olas_id_tto
                   if ($action->fields["field"] === 'slas_id_ttr'
                       || $action->fields["field"] === 'slas_id_tto'

@@ -1308,7 +1308,7 @@ class Search extends DbTestCase {
             'searchtype' => 'equals',
             'val' => '5',
             'meta' => false,
-            'expected' => "   (`glpi_users_users_id_supervisor_c49005e57f22539b078d72faca40cdf3`.`id` = '5')",
+            'expected' => "   (`glpi_users_users_id_supervisor`.`id` = '5')",
          ],
          [
             'link' => ' AND ',
