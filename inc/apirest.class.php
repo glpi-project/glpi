@@ -215,7 +215,7 @@ class APIRest extends API {
          }
          return $this->returnResponse($this->lostPassword($this->parameters));
 
-      } else if (preg_match('%[Uu]ser/(\d+)/[Pp]icture%', $path_info, $matches)) {
+      } else if (preg_match('%user/(\d+)/picture%i', $path_info, $matches)) {
          $this->userPicture($matches[1]);
       } else {
          // commonDBTM manipulation
