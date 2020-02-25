@@ -5320,7 +5320,9 @@ class CommonDBTM extends CommonGLPI {
     * @param int     $id
     */
    public static function getCacheKeyForFriendlyName($itemtype, $id) {
-      return "raw_name__{$itemtype}__{$id}";
+      // Prevent cache length to exceed the 64 chars limit
+      $hash = md5("{$itemtype}__{$id}");
+      return "raw_name__$hash";
    }
 
    /**
