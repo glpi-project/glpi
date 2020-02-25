@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator;
+use Glpi\Cache\SimpleCache;
 
 // Main GLPI test case. All tests should extends this class.
 
@@ -63,7 +63,7 @@ class GLPITestCase extends atoum {
                'namespace' => $this->nscache
             ]
          ]);
-         $GLPI_CACHE = new SimpleCacheDecorator($storage);
+         $GLPI_CACHE = new SimpleCache($storage, GLPI_CACHE_DIR, false);
       }
    }
 

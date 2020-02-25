@@ -121,10 +121,8 @@ class Entity extends DbTestCase {
       $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
       $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $ackey_prefix = $this->nscache . ':ancestors_cache_';
-      $sckey_prefix = $this->nscache . ':sons_cache_';
-      $sckey_ent1   = $sckey_prefix . md5('glpi_entities' . $ent1);
-      $sckey_ent2   = $sckey_prefix . md5('glpi_entities' . $ent2);
+      $sckey_ent1 = $this->nscache . ':' .sha1('sons_cache_glpi_entities_' . $ent1);
+      $sckey_ent2 = $this->nscache . ':' .sha1('sons_cache_glpi_entities_' . $ent2);
 
       $entity = new \Entity();
       $new_id = (int)$entity->add([
@@ -132,7 +130,7 @@ class Entity extends DbTestCase {
          'entities_id'  => $ent1
       ]);
       $this->integer($new_id)->isGreaterThan(0);
-      $ackey_new_id = $ackey_prefix . md5('glpi_entities' . $new_id);
+      $ackey_new_id = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $new_id);
 
       $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
       if ($cache === true) {

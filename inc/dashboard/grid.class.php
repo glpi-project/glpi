@@ -935,7 +935,7 @@ HTML;
       $use_cache =
          !($card_options['args']['force'] ?? $card_options['force'] ?? false)
          && $_SESSION['glpi_use_mode'] != \Session::DEBUG_MODE;
-      $cache_key    = "dashboard_card_".sha1($dashboard);
+      $cache_key    = "dashboard_card_".$dashboard;
       $cache_age    = 40;
       if ($use_cache) {
          // browser cache

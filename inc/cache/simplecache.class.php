@@ -74,7 +74,9 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
    }
 
    public function get($key, $default = null) {
-      $cached_value = parent::get($key, $default);
+      $normalized_key = $this->getNormalizedKey($key);
+
+      $cached_value = parent::get($normalized_key, $default);
 
       if (!$this->check_footprints) {
          return $cached_value;
@@ -89,19 +91,23 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
    }
 
    public function set($key, $value, $ttl = null) {
+      $normalized_key = $this->getNormalizedKey($key);
+
       if ($this->check_footprints) {
          $this->setFootprint($key, $value);
       }
 
-      return parent::set($key, $value, $ttl);
+      return parent::set($normalized_key, $value, $ttl);
    }
 
    public function delete($key) {
+      $normalized_key = $this->getNormalizedKey($key);
+
       if ($this->check_footprints) {
          $this->setFootprint($key, null);
       }
 
-      return parent::delete($key);
+      return parent::delete($normalized_key);
    }
 
    public function clear() {
@@ -113,18 +119,22 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
    }
 
    public function getMultiple($keys, $default = null) {
-      $cached_values = parent::getMultiple($keys, $default);
+      $normalized_keys = array_map([$this, 'getNormalizedKey'], $keys);
 
-      if ($this->check_footprints) {
-         foreach ($cached_values as $key => $cached_value) {
-            if ($this->getCachedFootprint($key) !== $this->computeFootprint($cached_value)) {
+      $cached_values = parent::getMultiple($normalized_keys, $default);
+
+      $result = [];
+      foreach ($keys as $key) {
+         $normalized_key = $this->getNormalizedKey($key);
+         $result[$key] = $cached_values[$normalized_key];
+         if ($this->check_footprints) {
+            if ($this->getCachedFootprint($key) !== $this->computeFootprint($cached_values[$normalized_key])) {
                // If footprint changed, value is no more valid.
-               $cached_values[$key] = $default;
+               $result[$key] = $default;
             }
          }
       }
-
-      return $cached_values;
+      return $result;
    }
 
    public function setMultiple($values, $ttl = null) {
@@ -132,20 +142,30 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
          $this->setMultipleFootprints($values);
       }
 
-      return parent::setMultiple($values, $ttl);
+      $values_with_normalized_keys = [];
+      foreach ($values as $key => $value) {
+         $normalized_key = $this->getNormalizedKey($key);
+         $values_with_normalized_keys[$normalized_key] = $value;
+      }
+
+      return parent::setMultiple($values_with_normalized_keys, $ttl);
    }
 
    public function deleteMultiple($keys) {
+      $normalized_keys = array_map([$this, 'getNormalizedKey'], $keys);
+
       if ($this->check_footprints) {
          $values = array_combine($keys, array_fill(0, count($keys), null));
          $this->setMultipleFootprints($values);
       }
 
-      return parent::deleteMultiple($keys);
+      return parent::deleteMultiple($normalized_keys);
    }
 
    public function has($key) {
-      if (!parent::has($key)) {
+      $normalized_key = $this->getNormalizedKey($key);
+
+      if (!parent::has($normalized_key)) {
          return false;
       }
 
@@ -154,7 +174,17 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
       }
 
       // Cache value is not usable if stale, consider it has not existing.
-      return $this->getCachedFootprint($key) === $this->computeFootprint(parent::get($key));
+      return $this->getCachedFootprint($key) === $this->computeFootprint(parent::get($normalized_key));
+   }
+
+   /**
+    * Returns all known cache keys.
+    *
+    * @return array
+    */
+   public function getAllKnownCacheKeys() {
+      $footprints = $this->getAllCachedFootprints();
+      return array_keys($footprints);
    }
 
    /**
@@ -339,5 +369,16 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
       }
 
       $this->footprint_fallback_storage = $footprints;
+   }
+
+   /**
+    * Returns normalized key to ensure compatibility with cache storage.
+    *
+    * @param string $key
+    *
+    * @return string
+    */
+   private function getNormalizedKey(string $key): string {
+      return sha1($key);
    }
 }
