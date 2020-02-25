@@ -7197,9 +7197,7 @@ class Ticket extends CommonITILObject {
             echo "<div class='groups_id_tech'>";
             $group->getFromDB($item_i['groups_id_tech']);
             echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
-            echo $group->getLink()."&nbsp;";
-            echo Html::showToolTip($group->getComments(),
-                                   ['link' => $group->getLinkURL()]);
+            echo $group->getLink(['comments' => true]);
             echo "</div>";
          }
          if (isset($item_i['users_id_editor']) && $item_i['users_id_editor'] > 0) {
