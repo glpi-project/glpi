@@ -208,7 +208,7 @@ class Dashboard extends \CommonDBTM {
       }
 
       // invalidate dashboard cache
-      $cache_key = "dashboard_card_".sha1($this->key);
+      $cache_key = "dashboard_card_".$this->key;
       $GLPI_CACHE->delete($cache_key);
    }
 

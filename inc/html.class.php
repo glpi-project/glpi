@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\SimpleCache;
 use ScssPhp\ScssPhp\Compiler;
 
 if (!defined('GLPI_ROOT')) {
@@ -761,7 +762,7 @@ class Html {
    **/
    static function displayDebugInfos($with_session = true, $ajax = false) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $DEBUG_AUTOLOAD;
-      $GLPI_CACHE = Config::getCache('cache_db', 'core', false);
+      $GLPI_CACHE = Config::getCache('cache_db');
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
@@ -788,7 +789,7 @@ class Html {
                echo "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
             echo "<li><a href='#debugserver$rand'>SERVER VARIABLE</a></li>";
-            if ($GLPI_CACHE instanceof Laminas\Cache\Storage\IterableInterface) {
+            if ($GLPI_CACHE instanceof SimpleCache) {
                echo "<li><a href='#debugcache$rand'>CACHE VARIABLE</a></li>";
             }
          }
@@ -835,13 +836,10 @@ class Html {
             self::printCleanArray($_SERVER, 0, true);
             echo "</div>";
 
-            if ($GLPI_CACHE instanceof Laminas\Cache\Storage\IterableInterface) {
+            if ($GLPI_CACHE instanceof SimpleCache) {
                echo "<div id='debugcache$rand'>";
-               $cache_keys = $GLPI_CACHE->getIterator();
-               $cache_contents = [];
-               foreach ($cache_keys as $cache_key) {
-                  $cache_contents[$cache_key] = $GLPI_CACHE->getItem($cache_key);
-               }
+               $cache_keys = $GLPI_CACHE->getAllKnownCacheKeys();
+               $cache_contents = $GLPI_CACHE->getMultiple($cache_keys);
                self::printCleanArray($cache_contents, 0, true);
                echo "</div>";
             }
@@ -7240,7 +7238,8 @@ JAVASCRIPT;
    public static function compileScss($args) {
       global $CFG_GLPI, $GLPI_CACHE;
 
-      $ckey = isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
+      $ckey = 'css_';
+      $ckey .= isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
 
       $scss = new Compiler();
       $scss->setFormatter('ScssPhp\ScssPhp\Formatter\Crunched');
@@ -7258,7 +7257,6 @@ JAVASCRIPT;
       $file = isset($args['file']) ? $args['file'] : 'css/styles';
 
       $ckey .= '_' . $file;
-      $ckey = 'css_' . md5($ckey);
 
       if (!Toolbox::endsWith($file, '.scss')) {
          // Prevent include of file if ext is not .scss
@@ -7289,7 +7287,7 @@ JAVASCRIPT;
       }
 
       $import = '@import "' . $file . '";';
-      $fckey = md5($file);
+      $fckey = 'css_raw_file_' . $file;
       $file_hash = self::getScssFileHash($path);
 
       //check if files has changed

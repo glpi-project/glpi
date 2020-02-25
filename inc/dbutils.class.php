@@ -679,7 +679,7 @@ final class DbUtils {
    public function getSonsOf($table, $IDf) {
       global $DB, $GLPI_CACHE;
 
-      $ckey = 'sons_cache_' . md5($table . $IDf);
+      $ckey = 'sons_cache_' . $table . '_' . $IDf;
       $sons = false;
 
       if (Toolbox::useCache()) {
@@ -788,9 +788,9 @@ final class DbUtils {
 
       $ckey = 'ancestors_cache_';
       if (is_array($items_id)) {
-         $ckey .= md5($table . implode('|', $items_id));
+         $ckey .= $table . '_' . md5(implode('|', $items_id));
       } else {
-         $ckey .= md5($table . $items_id);
+         $ckey .= $table . '_' . $items_id;
       }
       $ancestors = [];
 

@@ -631,10 +631,9 @@ class DbUtils extends DbTestCase {
       //- if $cache === 1; we expect cache to be empty before call, and populated after
       //- if $hit   === 1; we expect cache to be populated
 
-      $ckey_prefix = $this->nscache . ':ancestors_cache_';
-      $ckey_ent0   = $ckey_prefix . md5('glpi_entities' . $ent0);
-      $ckey_ent1   = $ckey_prefix . md5('glpi_entities' . $ent1);
-      $ckey_ent2   = $ckey_prefix . md5('glpi_entities' . $ent2);
+      $ckey_ent0 = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $ent0);
+      $ckey_ent1 = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $ent1);
+      $ckey_ent2 = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $ent2);
 
       //test on ent0
       $expected = [0 => 0];
@@ -693,7 +692,7 @@ class DbUtils extends DbTestCase {
          ]);
          $this->integer($new_id)->isGreaterThan(0);
       }
-      $ckey_new_id = $ckey_prefix . md5('glpi_entities' . $new_id);
+      $ckey_new_id = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $new_id);
 
       $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
       if ($cache === true) {
@@ -717,7 +716,7 @@ class DbUtils extends DbTestCase {
          ]);
          $this->integer($new_id2)->isGreaterThan(0);
       }
-      $ckey_new_id2 = $ckey_prefix . md5('glpi_entities' . $new_id2);
+      $ckey_new_id2 = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $new_id2);
 
       $expected = [0 => 0, $ent0 => $ent0, $ent2 => $ent2];
       if ($cache === true) {
@@ -733,7 +732,7 @@ class DbUtils extends DbTestCase {
 
       //test on multiple entities
       $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
-      $ckey_new_all = $ckey_prefix . md5('glpi_entities' . $new_id . '|' . $new_id2);
+      $ckey_new_all = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . md5($new_id . '|' . $new_id2));
       if ($cache === true && $hit === false) {
          $this->boolean(apcu_exists($ckey_new_all))->isFalse();
       } else if ($cache === true && $hit === true) {
@@ -795,10 +794,9 @@ class DbUtils extends DbTestCase {
       //- if $cache === 1; we expect cache to be empty before call, and populated after
       //- if $hit   === 1; we expect cache to be populated
 
-      $ckey_prefix = $this->nscache . ':sons_cache_';
-      $ckey_ent0 = $ckey_prefix . md5('glpi_entities' . $ent0);
-      $ckey_ent1 = $ckey_prefix . md5('glpi_entities' . $ent1);
-      $ckey_ent2 = $ckey_prefix . md5('glpi_entities' . $ent2);
+      $ckey_ent0 = $this->nscache . ':' .sha1('sons_cache_glpi_entities_' . $ent0);
+      $ckey_ent1 = $this->nscache . ':' .sha1('sons_cache_glpi_entities_' . $ent1);
+      $ckey_ent2 = $this->nscache . ':' .sha1('sons_cache_glpi_entities_' . $ent2);
 
       //test on ent0
       $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
