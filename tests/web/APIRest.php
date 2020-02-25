@@ -123,7 +123,7 @@ class APIRest extends APIBaseClass {
       $body = $res->getBody();
 
       if ($file) {
-         $data = md5($body);
+         $data = $body;
       } else {
          $data = json_decode($body, true);
          if (is_array($data)) {
@@ -418,12 +418,12 @@ class APIRest extends APIBaseClass {
 
       // Check pic was moved correctly into _picture folder
       $this->boolean(file_exists(GLPI_PICTURE_DIR . "/$pic"))->isTrue();
-      $md5 = md5_file(GLPI_PICTURE_DIR . "/$pic");
-      $this->string($md5)->isNotEmpty();
+      $file_content = file_get_contents(GLPI_PICTURE_DIR . "/$pic");
+      $this->string($file_content)->isNotEmpty();
 
       // Request
       $response = $this->query("User/$id/Picture", $params, 200, '', true);
-      $this->string($response)->isEqualTo($md5);
+      $this->string($response->__toString())->isEqualTo($file_content);
 
       /**
        * Case 2: user doens't exist
