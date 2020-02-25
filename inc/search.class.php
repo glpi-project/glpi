@@ -3289,6 +3289,7 @@ JAVASCRIPT;
 
       // Add entity view :
       if (Session::isMultiEntitiesMode()
+          && $item->isEntityAssign()
           && (isset($CFG_GLPI["union_search_type"][$itemtype])
               || ($item && $item->maybeRecursive())
               || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))) {
