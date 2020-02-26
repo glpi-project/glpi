@@ -7065,9 +7065,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "<div class='groups_id_tech'>";
             $group->getFromDB($item_i['groups_id_tech']);
             echo "<i class='fas fa-users' aria-hidden='true'></i>&nbsp;";
-            echo $group->getLink()."&nbsp;";
-            echo Html::showToolTip($group->getComments(),
-                                   ['link' => $group->getLinkURL()]);
+            echo $group->getLink(['comments' => true]);
             echo "</div>";
          }
          if (isset($item_i['users_id_editor']) && $item_i['users_id_editor'] > 0) {
