@@ -1052,7 +1052,8 @@ class Dropdown {
                  'LineOperator'             => _n('Line operator', 'Line operators',
                                                   Session::getPluralNumber()),
                  'DomainType'               => DomainType::getTypeName(Session::getPluralNumber()),
-                 'DomainRelation'           => DomainRelation::getTypeName(Session::getPluralNumber())
+                 'DomainRelation'           => DomainRelation::getTypeName(Session::getPluralNumber()),
+                 'DomainRecordType'         => DomainRecordType::getTypeName(Session::getPluralNumber())
              ],
 
              __('Internet') => [
