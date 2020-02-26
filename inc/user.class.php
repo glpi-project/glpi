@@ -3607,8 +3607,11 @@ JAVASCRIPT;
 
          case "all" :
             $WHERE = [
-               'glpi_users.id' => ['>', 0]
-            ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1);
+               'glpi_users.id' => ['>', 0],
+               'OR' => [
+                  'glpi_profiles_users.entities_id' => null
+               ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+            ];
             break;
 
          default :
