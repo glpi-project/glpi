@@ -1069,7 +1069,7 @@ abstract class API extends CommonGLPI {
       }
 
       if (count($params['add_keys_names']) > 0) {
-         $fields["_names"] = $this->getFriendlyNames(
+         $fields["_keys_names"] = $this->getFriendlyNames(
             $fields,
             $params,
             $itemtype
