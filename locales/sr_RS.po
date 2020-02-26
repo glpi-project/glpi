@@ -5,8 +5,8 @@
 # 
 # Translators:
 # DOMBRE Julien <moyo@indepnet.net>, 2018
-# zoran kajis <zkajis@gmail.com>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2019
+# zoran kajis <zkajis@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2019\n"
+"Last-Translator: zoran kajis <zkajis@gmail.com>, 2020\n"
 "Language-Team: Serbian (Serbia) (https://www.transifex.com/glpi/teams/1637/sr_RS/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -44,11 +44,11 @@ msgstr "Lozinka"
 
 #: index.php:154
 msgid "Default (from user profile)"
-msgstr ""
+msgstr "Podrazumevano (za korisnički profil)"
 
 #: index.php:171
 msgid "Remember me"
-msgstr ""
+msgstr "Zapamti me"
 
 #: index.php:175 ajax/dropdownMassiveActionAuthMethods.php:69
 #: ajax/dropdownMassiveActionField.php:53 inc/authldap.class.php:1328
@@ -96,7 +96,7 @@ msgstr "Pristup najčešće postavljenim pitanjima"
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:257
 msgid "No room found or selected"
-msgstr ""
+msgstr "Soba nije pronadjena ili selektovana"
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #. TRANS: %1$s is the location, %2$s is the comment
@@ -541,9 +541,9 @@ msgstr "%1$s: %2$s"
 #: install/update_0681_07.php:573 install/update_0723_078.php:3659
 msgid "Email"
 msgid_plural "Emails"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Email-ovi"
+msgstr[1] "Email-ovi"
+msgstr[2] "Email-ovi"
 
 #: ajax/dropdownMassiveActionAddActor.php:46
 #: ajax/dropdownMassiveActionAddValidator.php:54
@@ -737,28 +737,28 @@ msgstr ""
 
 #: ajax/getMapPoint.php:43 ajax/map.php:44
 msgid "Required argument missing!"
-msgstr ""
+msgstr "Nedostaju obavezni argumenti !"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "Element nije geolokalizovan ili ga nije moguće pronaći"
 
 #: ajax/getMapPoint.php:75
 msgid "Location seems not geolocalized!"
-msgstr ""
+msgstr "Lokacija nije geolokalizovana!"
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
-msgstr ""
+msgstr "Potrebno je popuniti geografsku širinu i dužinu za ovu lokaciju."
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2491
 #: inc/mailcollector.class.php:191 inc/ruleaction.class.php:88
 #: inc/ruleaction.class.php:673 inc/rule.class.php:1099
 msgid "Action"
 msgid_plural "Actions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Akcija"
+msgstr[1] "Akcije"
+msgstr[2] "Akcije"
 
 #: ajax/planningcheck.php:49 ajax/planningcheck.php:51
 #: ajax/planningcheck.php:57 front/planning.php:58
@@ -844,11 +844,11 @@ msgstr "Svakog meseca, istog dana u nedelji"
 
 #: ajax/savedsearch.php:47
 msgid "Search has been saved"
-msgstr ""
+msgstr "Pretraga je sačuvana"
 
 #: ajax/savedsearch.php:54
 msgid "Search has not been saved"
-msgstr ""
+msgstr "Pretraga nije sačuvana"
 
 #: ajax/searchoptionvalue.php:77 inc/search.class.php:2997
 msgid "My groups"
@@ -959,17 +959,17 @@ msgstr "Bez ograničenja"
 #: inc/user.class.php:4816
 msgid "Entity"
 msgid_plural "Entities"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Entiteti"
+msgstr[1] "Entiteti"
+msgstr[2] "Entiteti"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Režim otklanjanja grešaka je omogućen!"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Režim otklanjanja grešaka je ugašen!"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -977,6 +977,8 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Prikupljamo samo sledeće podatke: upotrebu dodataka, performanse  i odziv "
+"funkcija korisničkog interfejsa, memorije i hardvera."
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:68 ajax/ticketassigninformation.php:69
@@ -992,9 +994,9 @@ msgstr "Obrada"
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s tiketi u progresu ili nedavno rešen predmet"
+msgstr[1] "%s tiketi u progresu ili nedavno rešen predmet"
+msgstr[2] "%s tiketi u progresu ili nedavno rešen predmet"
 
 #: ajax/ticketsatisfaction.php:58 inc/entity.class.php:1086
 msgid "Create survey after"
@@ -1165,11 +1167,11 @@ msgstr "Proveri da li postoji nova verzija"
 
 #: front/backup.php:584
 msgid "GLPI internal backup system is a helper for very small instances."
-msgstr ""
+msgstr "GLPI interni bekap sistema je pomoćnik za veoma male primere."
 
 #: front/backup.php:585
 msgid "You should rather use a dedicated tool on your server."
-msgstr ""
+msgstr "Bolje koristite dodeljen alat na vašem serveru."
 
 #: front/backup.php:591 front/backup.php:596
 msgid "Backup the database?"
@@ -1228,9 +1230,9 @@ msgstr "Veličina"
 #: inc/ticket.class.php:6645
 msgid "Date"
 msgid_plural "Dates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Datumi"
+msgstr[1] "Datumi"
+msgstr[2] "Datumi"
 
 #. TRANS: %s is the filename
 #: front/backup.php:631 front/backup.php:683
@@ -1523,9 +1525,9 @@ msgstr "Obavezna pola nisu popunjena. Molim ispravite: %s"
 #: inc/stat.class.php:1423
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Izmene"
+msgstr[1] "Izmene"
+msgstr[2] "Izmene"
 
 #: front/change_ticket.form.php:49 front/problem_ticket.form.php:50
 #: inc/commonitilcost.class.php:543 inc/document_item.class.php:416
@@ -1565,9 +1567,9 @@ msgstr[2] ""
 #: inc/transfer.class.php:3453
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tiketi"
+msgstr[1] "Tiketa"
+msgstr[2] "Tiketi"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:66 front/contractcost.form.php:57
@@ -1689,9 +1691,9 @@ msgstr "%s dodaje potrošača"
 #: inc/profile.class.php:790 inc/profile.class.php:1727
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Iskorišćeno"
+msgstr[1] "Iskorišćeni"
+msgstr[2] "Iskorišćeni"
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:51 front/contract_supplier.form.php:51
@@ -1705,9 +1707,9 @@ msgstr "%s dodaje vezu sa dobavljačem"
 #: inc/profile.class.php:1802 inc/transfer.class.php:3589
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Ugovor"
+msgstr[1] "Ugovora"
+msgstr[2] "Ugovore"
 
 #. TRANS: %s is a directory
 #: front/cron.php:42
@@ -1821,9 +1823,9 @@ msgstr ""
 #: install/update_0723_078.php:3862
 msgid "Component"
 msgid_plural "Components"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Komponente"
+msgstr[1] "Komponenti"
+msgstr[2] "Komponente"
 
 #: front/dictionnary.php:38 inc/html.class.php:1418 inc/profile.class.php:103
 #: inc/profile.class.php:1336 inc/profile.class.php:2025

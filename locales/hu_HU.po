@@ -5,10 +5,10 @@
 # 
 # Translators:
 # ka_etit <ka@etit.hu>, 2018
-# Bubreg István <bubreg.istvan@gmail.com>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # Gábor Deme <creativeitsystem@gmail.com>, 2018
 # DOMBRE Julien <moyo@indepnet.net>, 2019
+# Bubreg István <bubreg.istvan@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>, 2019\n"
+"Last-Translator: Bubreg István <bubreg.istvan@gmail.com>, 2020\n"
 "Language-Team: Hungarian (Hungary) (https://www.transifex.com/glpi/teams/1637/hu_HU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,7 +50,7 @@ msgstr ""
 
 #: index.php:171
 msgid "Remember me"
-msgstr "Jegyezd meg"
+msgstr "Jegyezz meg"
 
 #: index.php:175 ajax/dropdownMassiveActionAuthMethods.php:69
 #: ajax/dropdownMassiveActionField.php:53 inc/authldap.class.php:1328
@@ -1701,8 +1701,8 @@ msgstr "%s hivatkozott szállítóra"
 #: inc/profile.class.php:1802 inc/transfer.class.php:3589
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Szerződés"
+msgstr[1] "Szerződések"
 
 #. TRANS: %s is a directory
 #: front/cron.php:42
@@ -2182,7 +2182,7 @@ msgstr "Nem fontos"
 
 #: front/helpdesk.php:103
 msgid "Describe your issue"
-msgstr ""
+msgstr "Írd le a problémád"
 
 #: front/helpdesk.php:105 inc/change.class.php:1075
 #: inc/commonitilcost.class.php:100 inc/commonitilobject.class.php:3189
@@ -2224,7 +2224,7 @@ msgstr "Tartalom"
 #: front/helpdesk.php:114
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "elküld"
 
 #: front/helpdesk.public.php:92 front/ticket.form.php:236
 #: inc/notificationtargetticket.class.php:143 inc/ticket.class.php:4315
@@ -2312,11 +2312,11 @@ msgstr "%s szoftvert telepített"
 
 #: front/item_softwareversion.form.php:57
 msgid "Please select a software!"
-msgstr ""
+msgstr "Válassz szoftvert!"
 
 #: front/item_softwareversion.form.php:59
 msgid "Please select a version!"
-msgstr ""
+msgstr "Válassz verziót!"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:53
@@ -2353,15 +2353,15 @@ msgstr "Át lettél irányítva mert már nincs jogosultságod"
 
 #: front/itiltemplatefield.form.php:55
 msgid "hidden"
-msgstr ""
+msgstr "rejtett"
 
 #: front/itiltemplatefield.form.php:58
 msgid "mandatory"
-msgstr ""
+msgstr "kötelező"
 
 #: front/itiltemplatefield.form.php:61
 msgid "predefined"
-msgstr ""
+msgstr "előredefiniált"
 
 #. TRANS: %1$s is the user login, %2$s the field type
 #: front/itiltemplatefield.form.php:73
@@ -3974,15 +3974,15 @@ msgstr "Nem található elem"
 
 #: inc/api.class.php:2034
 msgid "Email notifications are disabled"
-msgstr ""
+msgstr "Email értesítések letiltva"
 
 #: inc/api.class.php:2038
 msgid "email parameter missing"
-msgstr ""
+msgstr "email paraméter hiányzik"
 
 #: inc/api.class.php:2042
 msgid "A session is active"
-msgstr ""
+msgstr "Van élő munkamenet "
 
 #: inc/api.class.php:2054 inc/user.class.php:4697
 msgid ""
@@ -4204,14 +4204,14 @@ msgstr "Automatikus bejelentkezés kikapcsolva"
 #: inc/auth.class.php:723
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sikertelen kapcsolódás az LDAP kiszolgálóhoz"
+msgstr[1] "Sikertelen kapcsolódás az LDAP kiszolgálókhoz"
 
 #: inc/auth.class.php:731
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "A felhasználó nem található az LDAP könyvtárban"
+msgstr[1] "A felhasználók nem találhatók az LDAP könyvtárban"
 
 #: inc/auth.class.php:742 inc/auth.class.php:749
 msgid "Empty login or password"
@@ -6588,7 +6588,7 @@ msgstr "Termék azonosító"
 #: inc/commondcmodeldropdown.class.php:63
 #: inc/commondcmodeldropdown.class.php:160 inc/item_rack.class.php:525
 msgid "Weight"
-msgstr ""
+msgstr "Súly"
 
 #: inc/commondcmodeldropdown.class.php:73
 #: inc/commondcmodeldropdown.class.php:170
@@ -6598,7 +6598,7 @@ msgstr ""
 #: inc/commondcmodeldropdown.class.php:81
 #: inc/commondcmodeldropdown.class.php:180 inc/rack.class.php:302
 msgid "Depth"
-msgstr ""
+msgstr "Mélység"
 
 #: inc/commondcmodeldropdown.class.php:89
 #: inc/commondcmodeldropdown.class.php:189
@@ -14529,8 +14529,8 @@ msgstr ""
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Böngésző értesítés"
+msgstr[1] "Böngésző értesítések"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -14827,7 +14827,7 @@ msgstr "Böngésző"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
-msgstr ""
+msgstr "Értesítések beállításai"
 
 #: inc/notificationsettingconfig.class.php:97
 msgid "You must enable at least one notification mode."

@@ -10,10 +10,10 @@
 # Kheder Habachi <habachi89@gmail.com>, 2018
 # Lasse Wiik <faktura@lwm.no>, 2018
 # Joakim Reberg <joakim.reberg@gmail.com>, 2018
-# Kjell Edvard Medhaug <keme6206@gmail.com>, 2018
 # seppola <bjornar@seppola.net>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # DOMBRE Julien <moyo@indepnet.net>, 2019
+# Kjell Edvard Medhaug <keme6206@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>, 2019\n"
+"Last-Translator: Kjell Edvard Medhaug <keme6206@gmail.com>, 2019\n"
 "Language-Team: Norwegian Bokmål (Norway) (https://www.transifex.com/glpi/teams/1637/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -754,11 +754,11 @@ msgstr "Elementet er ikke geolokalisert eller ikke funnet"
 
 #: ajax/getMapPoint.php:75
 msgid "Location seems not geolocalized!"
-msgstr ""
+msgstr "Stedsangivelse mangler geolokalisering!"
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
-msgstr ""
+msgstr "Registrer gjerne lengde- og breddegrad for dette stedet."
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2491
 #: inc/mailcollector.class.php:191 inc/ruleaction.class.php:88
@@ -984,6 +984,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Vi innhenter bare følgende informasjon: Bruk av programtillegg (plugin), "
+"ytelses- og respons-statistikk på deler av brukergrensesnittet, minne og "
+"maskinvarekonfigurasjon."
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:68 ajax/ticketassigninformation.php:69
@@ -999,8 +1002,8 @@ msgstr "Behandles"
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s sak under behandling eller nylig løst for dette elementet."
+msgstr[1] "%s saker under behandling eller nylig løst for dette elementet."
 
 #: ajax/ticketsatisfaction.php:58 inc/entity.class.php:1086
 msgid "Create survey after"
@@ -1172,10 +1175,12 @@ msgstr "Sjekk om nyere versjon er tilgjengelig"
 #: front/backup.php:584
 msgid "GLPI internal backup system is a helper for very small instances."
 msgstr ""
+"Det integrerte backupsystemet i GLPI er et hjelpeverktøy for svært små "
+"organisasjoner."
 
 #: front/backup.php:585
 msgid "You should rather use a dedicated tool on your server."
-msgstr ""
+msgstr "Dere bør heller bruke et dedikert verktøy på deres server."
 
 #: front/backup.php:591 front/backup.php:596
 msgid "Backup the database?"
@@ -1693,8 +1698,8 @@ msgstr "%s legger til forbruksartikler"
 #: inc/profile.class.php:790 inc/profile.class.php:1727
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Forbruksmateriell"
+msgstr[1] "Forbruksmateriell"
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:51 front/contract_supplier.form.php:51
@@ -1823,8 +1828,8 @@ msgstr ""
 #: install/update_0723_078.php:3862
 msgid "Component"
 msgid_plural "Components"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Komponent"
+msgstr[1] "Komponenter"
 
 #: front/dictionnary.php:38 inc/html.class.php:1418 inc/profile.class.php:103
 #: inc/profile.class.php:1336 inc/profile.class.php:2025
@@ -2246,7 +2251,7 @@ msgstr "Hjem"
 
 #: front/ipnetwork.form.php:41
 msgid "Successfully recreated network tree"
-msgstr "Vellykket gjenopprettelse av nettverks tre"
+msgstr "Vellykket gjenoppretting av nettverkstre"
 
 #. TRANS: %s is the user login
 #: front/ipnetwork_vlan.form.php:50 front/networkport_vlan.form.php:47
@@ -2361,11 +2366,11 @@ msgstr ""
 
 #: front/itiltemplatefield.form.php:55
 msgid "hidden"
-msgstr ""
+msgstr "skjult"
 
 #: front/itiltemplatefield.form.php:58
 msgid "mandatory"
-msgstr ""
+msgstr "påkrevd"
 
 #: front/itiltemplatefield.form.php:61
 msgid "predefined"
@@ -3081,8 +3086,8 @@ msgstr "Ekstern autentisering"
 #: inc/ruleright.class.php:234 inc/user.class.php:4768
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "LDAP-katalog"
+msgstr[1] "LDAP-kataloger"
 
 #: front/setup.auth.php:49
 msgid "The LDAP extension of your PHP parser isn't installed"
@@ -3096,8 +3101,8 @@ msgstr "Umulig å bruke LDAP som ekstern kilde for tilkobling"
 #: inc/notificationmailingsetting.class.php:198
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "E-posttjener"
+msgstr[1] "E-posttjenere"
 
 #: front/setup.auth.php:57
 msgid "Others authentication methods"
@@ -3627,8 +3632,8 @@ msgstr[1] "Modeller"
 #: inc/softwareversion.class.php:315
 msgid "Operating system"
 msgid_plural "Operating systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Operativsystem"
+msgstr[1] "Operativsystemer"
 
 #: front/stat.location.php:102 front/stat.tracking.php:130
 msgid "Show graphics"
@@ -4711,7 +4716,7 @@ msgstr "Bilde"
 #: inc/authldap.class.php:828 inc/authldap.class.php:1165
 #: inc/user.class.php:2312 inc/user.class.php:3357
 msgid "Responsible"
-msgstr ""
+msgstr "Ansvarlig"
 
 #: inc/authldap.class.php:833
 msgid "You can use a field name or an expression using various %{fieldname}"
@@ -5042,8 +5047,8 @@ msgstr "Ingen elementer tilknyttet"
 #: inc/notificationtargetticket.class.php:727 inc/supplier.class.php:477
 msgid "Associated item"
 msgid_plural "Associated items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tilknyttet element"
+msgstr[1] "Tilknyttede elementer"
 
 #. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
 #. headings of a list)
@@ -5214,8 +5219,8 @@ msgstr[1] "Dager"
 #: inc/profile.class.php:787 inc/profile.class.php:1713
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kassett"
+msgstr[1] "Kassetter"
 
 #: inc/cartridge.class.php:288
 msgid "Installing a cartridge"
@@ -5331,8 +5336,8 @@ msgstr "Finans og administrativ informasjon"
 #, php-format
 msgid "%d printed page"
 msgid_plural "%d printed pages"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d side skrevet ut"
+msgstr[1] "%d sider skrevet ut"
 
 #: inc/cartridge.class.php:802
 msgid "Counter error"
@@ -5395,15 +5400,15 @@ msgstr "Tonerkassetter i bruk"
 #: inc/notificationtargetcartridgeitem.class.php:82
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kassettmodell"
+msgstr[1] "Kassettmodeller"
 
 #: inc/cartridge.class.php:1006 inc/cartridgeitemtype.class.php:42
 #: inc/dropdown.class.php:870
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kassettype"
+msgstr[1] "Kassettyper"
 
 #: inc/cartridge.class.php:1012
 msgid "Printed pages"
@@ -5429,8 +5434,8 @@ msgstr "Utskrevne sider"
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d måned"
+msgstr[1] "%d måneder"
 
 #: inc/cartridgeitem.class.php:199 inc/cartridgeitem.class.php:287
 #: inc/consumableitem.class.php:143 inc/consumableitem.class.php:247
@@ -5624,8 +5629,8 @@ msgstr "Global oversikt"
 #: inc/central.class.php:68 inc/rssfeed.class.php:80
 msgid "RSS feed"
 msgid_plural "RSS feeds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "RSS-strøm"
+msgstr[1] "RSS-strømmer"
 
 #: inc/central.class.php:169
 #, php-format
@@ -6327,7 +6332,7 @@ msgstr "Element suksessfullt lagt til"
 
 #: inc/commondbtm.class.php:1539
 msgid "Item successfully updated"
-msgstr "Element suksessfullt oppdatert"
+msgstr "Vellykket oppdatering av element"
 
 #: inc/commondbtm.class.php:1728 inc/item_ticket.class.php:1371
 msgid "Item successfully deleted"
@@ -6339,7 +6344,7 @@ msgstr "Elementet ble permanent slettet"
 
 #: inc/commondbtm.class.php:1878
 msgid "Item successfully restored"
-msgstr "Element suksessfullt gjennopprettet"
+msgstr "Elementgjenoppretting vellykket"
 
 #. TRANS: %s is the datetime of insertion
 #. TRANS: %s is the datetime of update
@@ -6450,7 +6455,7 @@ msgstr "Ugyldig oppføring for %s"
 #: inc/commondbtm.class.php:4020
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
-msgstr ""
+msgstr "Element vellykket lagt til, men registrert duplikat på %s"
 
 #: inc/commondbtm.class.php:4023
 msgid "Other item exist"
@@ -6550,7 +6555,7 @@ msgstr ""
 msgid "Recipient"
 msgid_plural "Recipients"
 msgstr[0] "Mottaker"
-msgstr[1] "Motakkere"
+msgstr[1] "Mottakere"
 
 #. TRANS: %1$s is address, %2$s is netmask
 #: inc/commondbvisible.class.php:233 inc/commondbvisible.class.php:293
@@ -6617,16 +6622,16 @@ msgstr ""
 #: inc/commondcmodeldropdown.class.php:97
 #: inc/commondcmodeldropdown.class.php:199
 msgid "Power consumption"
-msgstr ""
+msgstr "Strømforbruk"
 
 #: inc/commondcmodeldropdown.class.php:98
 #: inc/commondcmodeldropdown.class.php:108
 msgid "watts"
-msgstr ""
+msgstr "watt"
 
 #: inc/commondcmodeldropdown.class.php:107 inc/rack.class.php:307
 msgid "Max. power (in watts)"
-msgstr ""
+msgstr "Maks. effekt (watt)"
 
 #: inc/commondcmodeldropdown.class.php:117
 #: inc/commondcmodeldropdown.class.php:209
@@ -6679,6 +6684,8 @@ msgstr "Du kan ikke slette dette stedet, fordi den har sub-plasser"
 #: inc/commondropdown.class.php:633
 msgid "Caution: you're about to remove a heading used for one or more items."
 msgstr ""
+"Advarsel: du er i ferd med å fjerne en overskrift som er i bruk på ett eller"
+" flere elementer."
 
 #: inc/commondropdown.class.php:638
 msgid ""
@@ -6707,7 +6714,7 @@ msgstr "Erstatte"
 
 #: inc/commondropdown.class.php:833 inc/itiltemplate.class.php:582
 msgid "Merge and assign to current entity"
-msgstr ""
+msgstr "Slå sammen og tilordne til aktivt element."
 
 #: inc/commondropdown.class.php:850 inc/itiltemplate.class.php:599
 #: inc/ticket.class.php:2488
@@ -7346,11 +7353,11 @@ msgstr ""
 
 #: inc/commonitilobject.class.php:7102
 msgid "Approve"
-msgstr ""
+msgstr "Godkjenn"
 
 #: inc/commonitilobject.class.php:7105
 msgid "Refuse"
-msgstr ""
+msgstr "Avvis"
 
 #: inc/commonitilobject.class.php:7113
 #, php-format
@@ -7596,7 +7603,7 @@ msgstr "Anmoder om godkjenning"
 #: inc/commonitilvalidation.class.php:1014
 #: inc/commonitilvalidation.class.php:1113
 msgid "Request comments"
-msgstr ""
+msgstr "Be om kommentarer"
 
 #: inc/commonitilvalidation.class.php:804
 #: inc/commonitilvalidation.class.php:1140
@@ -7984,7 +7991,7 @@ msgstr "Oversettelse av nedtrekksmenyer"
 
 #: inc/config.class.php:352
 msgid "Knowledge base translation"
-msgstr ""
+msgstr "Oversetting av kunnskapsbase"
 
 #: inc/config.class.php:356
 msgid "Dynamic display"
@@ -8046,7 +8053,7 @@ msgstr "Automatisk innloggning"
 
 #: inc/config.class.php:438
 msgid "Time to allow \"Remember Me\""
-msgstr ""
+msgstr "Tidsbegrensing for \"Husk Meg\""
 
 #: inc/config.class.php:447
 msgid "Default state of checkbox"
@@ -8081,7 +8088,7 @@ msgstr "Begrens enhets behandlingsserver"
 
 #: inc/config.class.php:516
 msgid "End of fiscal year"
-msgstr ""
+msgstr "Avslutting av regnskapsår"
 
 #: inc/config.class.php:524
 msgid "Restrict phone management"
@@ -8234,7 +8241,7 @@ msgstr ""
 
 #: inc/config.class.php:815
 msgid "Enable login with external token"
-msgstr ""
+msgstr "Tillat innlogging ved hjelp av ekstern enhet"
 
 #: inc/config.class.php:816
 msgid ""
@@ -8936,22 +8943,22 @@ msgstr ""
 
 #: inc/config.class.php:3385
 msgid "Purge all log entries"
-msgstr ""
+msgstr "Slett alle loggoppføringer permanent"
 
 #: inc/config.class.php:3414
 msgid "Delete all"
-msgstr ""
+msgstr "Slett alt"
 
 #: inc/config.class.php:3415
 msgid "Keep all"
-msgstr ""
+msgstr "Behold alt"
 
 #: inc/config.class.php:3420
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Slett hvis eldre enn %s måned"
+msgstr[1] "Slett hvis eldre enn %s måneder"
 
 #: inc/config.php:141 inc/config.php:149
 msgid "Service is down for maintenance. It will be back shortly."
@@ -10399,7 +10406,7 @@ msgstr "Filen er for stor."
 
 #: inc/document.class.php:1294 inc/user.class.php:722
 msgid "The file is valid. Upload is successful."
-msgstr "Filen er gyldig. Opplastingen er vellykket"
+msgstr "Filen er gyldig. Opplastingen er vellykket."
 
 #: inc/document.class.php:1303 inc/user.class.php:730
 msgid ""

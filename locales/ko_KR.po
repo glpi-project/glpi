@@ -10,7 +10,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # 유봉춘 <bryu@innofactory.net>, 2019
-# SeongHyeon Cho <jaymz9634@gmail.com>, 2019
+# SeongHyeon Cho <jaymz9634@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: SeongHyeon Cho <jaymz9634@gmail.com>, 2019\n"
+"Last-Translator: SeongHyeon Cho <jaymz9634@gmail.com>, 2020\n"
 "Language-Team: Korean (Korea) (https://www.transifex.com/glpi/teams/1637/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2228,7 +2228,7 @@ msgstr "%s는 VLAN을 네트워크 포트에 연결합니다"
 #: front/item_device.common.form.php:64
 #, php-format
 msgid "%1$s adds an item"
-msgstr ""
+msgstr "%1$s이 아이템 추가 "
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:56
@@ -2279,7 +2279,7 @@ msgstr[0] "품목"
 #: front/item_softwarelicense.form.php:51
 #, php-format
 msgid "%s associates an item and a license"
-msgstr ""
+msgstr "%s이 품목과 라이선스를 연결"
 
 #. TRANS: %s is the user login
 #: front/item_softwareversion.form.php:52
@@ -2330,21 +2330,21 @@ msgstr "더 이상 이 표에 접근할수 없기에 리다이렉트 되었습�
 
 #: front/itiltemplatefield.form.php:55
 msgid "hidden"
-msgstr ""
+msgstr "숨김"
 
 #: front/itiltemplatefield.form.php:58
 msgid "mandatory"
-msgstr ""
+msgstr "필수"
 
 #: front/itiltemplatefield.form.php:61
 msgid "predefined"
-msgstr ""
+msgstr "사전 정의됨"
 
 #. TRANS: %1$s is the user login, %2$s the field type
 #: front/itiltemplatefield.form.php:73
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr ""
+msgstr "%1$s가 %2$s 항목 추가"
 
 #: front/knowbaseitem_comment.form.php:41
 #: front/knowbaseitem_comment.form.php:53
@@ -3754,11 +3754,11 @@ msgstr "언어가 변경 되었습니다!"
 
 #: front/user.form.php:157
 msgid "Unable to impersonate user"
-msgstr ""
+msgstr "사용자 대행을 할 수 없음"
 
 #: front/user.form.php:168
 msgid "Unable to stop impersonating user"
-msgstr ""
+msgstr "사용자 대행 멈춤을 할 수 없음"
 
 #: inc/ajax.class.php:156
 msgid "Close"
@@ -4647,7 +4647,7 @@ msgstr "그림"
 #: inc/authldap.class.php:828 inc/authldap.class.php:1165
 #: inc/user.class.php:2312 inc/user.class.php:3357
 msgid "Responsible"
-msgstr ""
+msgstr "응답"
 
 #: inc/authldap.class.php:833
 msgid "You can use a field name or an expression using various %{fieldname}"
@@ -4698,7 +4698,7 @@ msgstr "생성일자"
 
 #: inc/authldap.class.php:1174
 msgid "Domain name used by inventory tool"
-msgstr ""
+msgstr "물품 도구에 의해 사용된 도메인 명"
 
 #: inc/authldap.class.php:1305 inc/authldap.class.php:1319
 #: inc/authldap.class.php:3153
@@ -5556,7 +5556,7 @@ msgstr "%1$s 테이블이 InnoDB 엔진에 이식되지 않았습니다."
 #: inc/central.class.php:188
 #, php-format
 msgid "%1$s columns are not compatible with timezones usage."
-msgstr ""
+msgstr "%1$s 열들은 시간대 사용이 호환되지 않습니다."
 
 #: inc/central.class.php:197 inc/html.class.php:1620
 msgid "SQL replica: read only"
@@ -5779,7 +5779,7 @@ msgstr "모든 수행자에게 통보 설정"
 
 #: inc/change.class.php:183
 msgid "Processing change"
-msgstr ""
+msgstr "처리 변경"
 
 #: inc/change.class.php:184 inc/problem.class.php:168
 #: inc/problem.class.php:437
@@ -5814,7 +5814,7 @@ msgstr "통제 목록"
 
 #: inc/change.class.php:440
 msgid "Analysis impact"
-msgstr ""
+msgstr "분석 영향"
 
 #: inc/change.class.php:458 inc/change.class.php:1205
 #: inc/notificationtargetchange.class.php:262
@@ -6102,7 +6102,7 @@ msgstr[0] "작업 변경"
 #: inc/changetemplate.class.php:47
 msgid "Change template"
 msgid_plural "change templates"
-msgstr[0] ""
+msgstr[0] "변경 견본"
 
 #: inc/change_ticket.class.php:62
 msgid "Link Ticket/Change"
@@ -6132,7 +6132,7 @@ msgstr "이 표에서 변경 사항 생성"
 #: inc/cluster.class.php:47 inc/item_cluster.class.php:249
 msgid "Cluster"
 msgid_plural "Clusters"
-msgstr[0] ""
+msgstr[0] "클러스터"
 
 #: inc/cluster.class.php:105 inc/computerantivirus.class.php:135
 #: inc/computerantivirus.class.php:181 inc/devicefirmware.class.php:63
@@ -6157,7 +6157,7 @@ msgstr[0] "버전"
 #: inc/clustertype.class.php:40
 msgid "Cluster type"
 msgid_plural "Cluster types"
-msgstr[0] ""
+msgstr[0] "클러스터 유형"
 
 #: inc/commondbchild.class.php:243 inc/networkportinstantiation.class.php:538
 msgid "Item not linked to an object"
@@ -6536,7 +6536,7 @@ msgstr "후면 사진"
 
 #: inc/commondcmodeldropdown.class.php:302 inc/dcroom.class.php:213
 msgid "Unable to save picture file."
-msgstr ""
+msgstr "사진 파일을 저장할 수 없습니다."
 
 #: inc/commondcmodeldropdown.class.php:320
 msgid "1"
@@ -6598,7 +6598,7 @@ msgstr "교체"
 
 #: inc/commondropdown.class.php:833 inc/itiltemplate.class.php:582
 msgid "Merge and assign to current entity"
-msgstr ""
+msgstr "현재 개체에 병합과 할당"
 
 #: inc/commondropdown.class.php:850 inc/itiltemplate.class.php:599
 #: inc/ticket.class.php:2488
@@ -6778,7 +6778,7 @@ msgstr "잘못된 날짜입니다. 갱신이 취소되었습니다."
 
 #: inc/commonitilobject.class.php:1599
 msgid "You cannot use predefined description verbatim"
-msgstr ""
+msgstr "사전 정의된 상세를 그대로 사용할 수 없음"
 
 #: inc/commonitilobject.class.php:2285
 msgctxt "priority"
@@ -7185,11 +7185,11 @@ msgstr "확인 요청 응답"
 
 #: inc/commonitilobject.class.php:6955
 msgid "Followup was already promoted"
-msgstr ""
+msgstr "추적이 이미 시행됨"
 
 #: inc/commonitilobject.class.php:6960
 msgid "Promote to Ticket"
-msgstr ""
+msgstr "표로 승격"
 
 #: inc/commonitilobject.class.php:6965 inc/knowbaseitem.class.php:200
 #: inc/knowbaseitemtranslation.class.php:91 inc/user.class.php:2440
@@ -7217,20 +7217,20 @@ msgstr "%1$s에서 %2$s 가 마지막으로 수정함"
 #: inc/commonitilobject.class.php:7078
 #, php-format
 msgid "Merged from Ticket %1$s"
-msgstr ""
+msgstr "표 %1$s에서 병합"
 
 #: inc/commonitilobject.class.php:7086
 #, php-format
 msgid "Promoted to Ticket %1$s"
-msgstr ""
+msgstr "표 %1$s로 승격됨"
 
 #: inc/commonitilobject.class.php:7102
 msgid "Approve"
-msgstr ""
+msgstr "승인"
 
 #: inc/commonitilobject.class.php:7105
 msgid "Refuse"
-msgstr ""
+msgstr "거부"
 
 #: inc/commonitilobject.class.php:7113
 #, php-format
@@ -7254,12 +7254,12 @@ msgstr "보기"
 
 #: inc/commonitilobject.class.php:7254
 msgid "Followup promotion source"
-msgstr ""
+msgstr "추적 승격 원본"
 
 #: inc/commonitilobject.class.php:7259
 #, php-format
 msgid "# %s description"
-msgstr ""
+msgstr "# %s 상세"
 
 #: inc/commonitiltask.class.php:264 inc/commonitiltask.class.php:398
 #: inc/reminder.class.php:609 inc/reminder.class.php:654
@@ -7560,7 +7560,7 @@ msgstr "%s의 하위 요소들"
 #: inc/commontreedropdown.class.php:598
 msgctxt "button"
 msgid "Move under"
-msgstr ""
+msgstr "아래로 이동"
 
 #: inc/commontreedropdown.class.php:616 inc/group.class.php:374
 #: inc/item_softwarelicense.class.php:704
@@ -7965,7 +7965,7 @@ msgstr "프린터 관리 제한"
 
 #: inc/config.class.php:543
 msgid "Devices displayed in menu"
-msgstr ""
+msgstr "메뉴에 표시된 장치"
 
 #: inc/config.class.php:575
 msgid "Automatic transfer of computers"
@@ -8254,11 +8254,11 @@ msgstr "고 대비 사용"
 
 #: inc/config.class.php:1238 inc/ruleright.class.php:343
 msgid "Timezone"
-msgstr ""
+msgstr "시간대"
 
 #: inc/config.class.php:1249
 msgid "Use server configuration"
-msgstr ""
+msgstr "서버 구성 사용"
 
 #: inc/config.class.php:1263
 msgid "Private followups by default"
@@ -8447,21 +8447,21 @@ msgstr "사용자 데이터 캐시"
 #: inc/config.class.php:1653
 #, php-format
 msgid "The \"%s\" cache extension is installed"
-msgstr ""
+msgstr "\"%s\" 캐시 확장기능이 설치됨"
 
 #: inc/config.class.php:1655 inc/config.class.php:1694
 #, php-format
 msgid "\"%s\" cache system is used"
-msgstr ""
+msgstr "\"%s\" 캐시 시스템이 사용됨"
 
 #: inc/config.class.php:1675
 #, php-format
 msgid "%1$ss memory usage is too high"
-msgstr ""
+msgstr "%1$s 메모리 사용이 너무 높음"
 
 #: inc/config.class.php:1690
 msgid "Translation cache"
-msgstr ""
+msgstr "번역 캐시"
 
 #: inc/config.class.php:1726
 msgid "Log Level"
@@ -8539,7 +8539,7 @@ msgstr "시스템 설치와 구성 관련 정보"
 
 #: inc/config.class.php:1915 inc/toolbox.class.php:1082
 msgid "Timezones seems not loaded in database"
-msgstr ""
+msgstr "시간대를 데이터베이스에서 불러오지 못한 것 같음"
 
 #: inc/config.class.php:1944
 msgid "To copy/paste in your support request"
@@ -8743,7 +8743,7 @@ msgstr "플러그인"
 
 #: inc/config.class.php:3312
 msgid "Installation/uninstallation of software on items"
-msgstr ""
+msgstr "품목의 소프트웨어 설치/제거"
 
 #: inc/config.class.php:3316
 msgid "Installation/uninstallation versions on softwares"
@@ -8751,7 +8751,7 @@ msgstr "소프트웨어의 버전 설치/삭제"
 
 #: inc/config.class.php:3323
 msgid "Add/Remove items from software versions"
-msgstr ""
+msgstr "소프트웨어 버전에서의 추가/제거 품목"
 
 #: inc/config.class.php:3332
 msgid "Add financial information to an item"
@@ -9320,7 +9320,7 @@ msgstr "공란"
 
 #: inc/crontask.class.php:581 inc/crontask.class.php:788
 msgid "Maintenance mode enabled, running tasks is disabled"
-msgstr ""
+msgstr "유지보수 모드 활성화되어, 구동중인 작업은 비활성화 됨"
 
 #: inc/crontask.class.php:688 inc/crontask.class.php:1183
 msgid "Running"
@@ -9634,17 +9634,19 @@ msgstr "%1$s - 데이터베이스 질의 중 오류: %2$s - 오류는 %3$s 입�
 
 #: inc/dbmysql.class.php:1538
 msgid "Access to timezone database (mysql) is not allowed."
-msgstr ""
+msgstr "시간대 데이터베이스(mysql) 접근은 허용되지 않음."
 
 #: inc/dbmysql.class.php:1549
 msgid "Access to timezone table (mysql.time_zone_name) is not allowed."
-msgstr ""
+msgstr "시간대 테이블 (mysql.time_zone_name) 접근이 허용되지 않았습니다."
 
 #: inc/dbmysql.class.php:1560
 msgid ""
 "Timezones seems not loaded, see https://glpi-"
 "install.readthedocs.io/en/latest/timezones.html."
 msgstr ""
+"시간대가 불러와지지 않은 것으로 보이며, https://glpi-"
+"install.readthedocs.io/en/latest/timezones.html를 참고하세요."
 
 #: inc/dbutils.class.php:1123
 msgid "Address:"
@@ -9985,11 +9987,11 @@ msgstr "쓰레드 수"
 
 #: inc/deviceprocessor.class.php:235
 msgid "processor: number of cores"
-msgstr ""
+msgstr "프로세서: 코어 갯수"
 
 #: inc/deviceprocessor.class.php:248
 msgid "processor: number of threads"
-msgstr ""
+msgstr "프로세서: 스레드 갯수"
 
 #: inc/deviceprocessor.class.php:261
 msgid "Processor frequency"
@@ -10155,7 +10157,7 @@ msgstr "문서 수"
 #: inc/document.class.php:950 inc/document_item.class.php:704
 #: inc/notificationtemplatetranslation.class.php:353
 msgid "Tag"
-msgstr "꼬리표"
+msgstr "태그"
 
 #: inc/document.class.php:1078 inc/document.class.php:1382
 msgid "Upload directory doesn't exist"
@@ -10242,7 +10244,7 @@ msgstr "문서 제거"
 
 #: inc/document.class.php:1653
 msgid "Clean orphaned documents"
-msgstr ""
+msgstr "부모없는 문서 정리"
 
 #: inc/document_item.class.php:529 inc/document_item.class.php:620
 msgid "Add a document"
@@ -10336,7 +10338,7 @@ msgstr[0] "표 항목"
 #: inc/itilfollowuptemplate.class.php:49
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] ""
+msgstr[0] "추적 견본"
 
 #: inc/dropdown.class.php:839 inc/itilsolution.class.php:165
 #: inc/profile.class.php:1452 inc/solutiontemplate.class.php:51
@@ -10783,7 +10785,7 @@ msgstr "이름이 없으면 요소를 추가할 수 없습니다"
 
 #: inc/entity.class.php:344
 msgid "UI customization"
-msgstr ""
+msgstr "UI 사용자정의"
 
 #: inc/entity.class.php:635 inc/entity.class.php:1457
 msgid "LDAP directory information attribute representing the entity"
@@ -10927,7 +10929,7 @@ msgstr "즉시"
 
 #: inc/entity.class.php:953 inc/entity.class.php:2457
 msgid "Automatic purge of closed tickets after"
-msgstr ""
+msgstr "다음 이후 마감된 표의 자동 제거"
 
 #: inc/entity.class.php:972
 msgid "Alerts on tickets which are not solved"
@@ -11110,15 +11112,15 @@ msgstr "아직 처리 되지 않은 표들에 대한 알림"
 
 #: inc/entity.class.php:2090
 msgid "UI options"
-msgstr ""
+msgstr "UI 선택항목"
 
 #: inc/entity.class.php:2093
 msgid "Enable CSS customization"
-msgstr ""
+msgstr "CSS 사용자정의 활성화"
 
 #: inc/entity.class.php:2097
 msgid "Inherits configuration from the parent entity"
-msgstr ""
+msgstr "부모 개체에서 구성 상속"
 
 #: inc/entity.class.php:2325 inc/entity.class.php:2338
 #: inc/entity.class.php:2990 inc/levelagreement.class.php:496
@@ -11128,7 +11130,7 @@ msgstr "24/7"
 
 #: inc/entity.class.php:2384
 msgid "Mark followup added by a supplier though an email collector as private"
-msgstr ""
+msgstr "비공개 이메일 수집을 통한 공급자에 의한 추적 표시가 추가됨"
 
 #: inc/entity.class.php:2411
 msgid "Automatic closing configuration"
@@ -11136,11 +11138,11 @@ msgstr "자동 마감 구성"
 
 #: inc/entity.class.php:2424
 msgid "Close ticket action is disabled."
-msgstr ""
+msgstr "표 마감 동작이 비활성화 되었습니다."
 
 #: inc/entity.class.php:2467
 msgid "Purge ticket action is disabled."
-msgstr ""
+msgstr "표 제거 동작이 비활성화 되었습니다."
 
 #: inc/entity.class.php:2508 inc/entity.class.php:2511
 msgid "Configuring the satisfaction survey"
@@ -11304,6 +11306,8 @@ msgid ""
 "Having troubles setting up an advanced GLPI module?\n"
 "We can help you solve them. Sign up for support on %s."
 msgstr ""
+"GLPI 모듈 고급 설정에 문제가 발생했나요?\n"
+"해결할 수 있도록 도와드립니다. %s의 지원을 위해 로그인 하세요."
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -11377,7 +11381,7 @@ msgstr "파일 업로드가 중단되었습니다"
 
 #: inc/glpiuploadhandler.class.php:116
 msgid "Failed to resize image"
-msgstr ""
+msgstr "이미지 크기변경 실패함"
 
 #: inc/group.class.php:130 inc/group.class.php:768 inc/user.class.php:214
 msgid "Used items"
@@ -11740,27 +11744,27 @@ msgstr "%2$d의 %1$d"
 
 #: inc/html.class.php:4708
 msgid "Close (Esc)"
-msgstr ""
+msgstr "닫음 (Esc)"
 
 #: inc/html.class.php:4712
 msgid "Share"
-msgstr ""
+msgstr "공유"
 
 #: inc/html.class.php:4716
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "전체화면 전환"
 
 #: inc/html.class.php:4720
 msgid "Zoom in/out"
-msgstr ""
+msgstr "확대/축소"
 
 #: inc/html.class.php:4731
 msgid "Previous (arrow left)"
-msgstr ""
+msgstr "이전 (왼쪽 방향키)"
 
 #: inc/html.class.php:4733
 msgid "Next (arrow right)"
-msgstr ""
+msgstr "다음 (오른쪽 방향키)"
 
 #: inc/html.class.php:5196
 msgid "Attach file by drag & drop or copy & paste in editor or "
@@ -11849,11 +11853,11 @@ msgstr "티켓이 당신의 승인을 기다리고 있습니다."
 #: inc/html.class.php:6991
 #, php-format
 msgid "You are impersonating %s."
-msgstr ""
+msgstr "당신은 %s을 대행합니다."
 
 #: inc/html.class.php:6994
 msgid "Stop impersonating"
-msgstr ""
+msgstr "대행 중지"
 
 #: inc/infocom.class.php:420
 #, php-format
@@ -12071,7 +12075,7 @@ msgstr "ID TAG"
 
 #: inc/item_cluster.class.php:113
 msgid "Add new item to this cluster..."
-msgstr ""
+msgstr "이 클러스터에 새 품목 추가..."
 
 #: inc/item_cluster.class.php:279 inc/item_enclosure.class.php:302
 #: inc/item_rack.class.php:955
@@ -12085,7 +12089,7 @@ msgstr "품목은 필수입니다"
 
 #: inc/item_cluster.class.php:287
 msgid "A cluster is required"
-msgstr ""
+msgstr "클러스터는 필수임"
 
 #: inc/item_devicebattery.class.php:58
 msgid "Manufacturing date"
@@ -12102,7 +12106,7 @@ msgstr "쓰레드"
 #: inc/item_devices.class.php:88
 #, php-format
 msgid "%1$s of item \"%2$s\""
-msgstr ""
+msgstr "품목 \"%2$s\"의 %1$s"
 
 #. TRANS: %s is the type of the component
 #: inc/item_devices.class.php:114
@@ -12165,7 +12169,7 @@ msgstr "클립보드로 복사 실패함"
 
 #: inc/item_devices.class.php:1436
 msgid "A device ID is mandatory"
-msgstr ""
+msgstr "장치 ID는 필수임"
 
 #: inc/item_devices.class.php:1479
 msgid "Update of "
@@ -12233,22 +12237,22 @@ msgstr "사용 가능 크기"
 
 #: inc/item_disk.class.php:233 inc/item_disk.class.php:330
 msgid "Encryption"
-msgstr ""
+msgstr "암호화"
 
 #: inc/item_disk.class.php:236 inc/item_disk.class.php:374
 #: inc/item_disk.class.php:598
 msgid "Encryption tool"
-msgstr ""
+msgstr "암호화 도구"
 
 #: inc/item_disk.class.php:242 inc/item_disk.class.php:376
 #: inc/item_disk.class.php:611
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "암호화 알고리즘"
 
 #: inc/item_disk.class.php:245 inc/item_disk.class.php:378
 #: inc/item_disk.class.php:624
 msgid "Encryption type"
-msgstr ""
+msgstr "암호화 유형"
 
 #: inc/item_disk.class.php:284
 msgid "Add a volume"
@@ -12260,23 +12264,23 @@ msgstr "사용 가능 비율"
 
 #: inc/item_disk.class.php:371
 msgid "Partial encryption"
-msgstr ""
+msgstr "부분 암호화"
 
 #: inc/item_disk.class.php:583
 msgid "Encryption status"
-msgstr ""
+msgstr "암호화 상태"
 
 #: inc/item_disk.class.php:643
 msgid "Not encrypted"
-msgstr ""
+msgstr "암호화 안됨"
 
 #: inc/item_disk.class.php:644
 msgid "Partially encrypted"
-msgstr ""
+msgstr "부분 암호화됨"
 
 #: inc/item_disk.class.php:645
 msgid "Encrypted"
-msgstr ""
+msgstr "암호화됨"
 
 #: inc/item_enclosure.class.php:105
 msgid "Add new item to this enclosure..."
@@ -12452,12 +12456,12 @@ msgstr "버전은 필수입니다!"
 
 #: inc/item_softwarelicense.class.php:372
 msgid "Number of affected items"
-msgstr ""
+msgstr "영향을 받는 품목 갯수"
 
 #: inc/item_softwarelicense.class.php:551
 #: inc/item_softwarelicense.class.php:809 inc/softwarelicense.class.php:1022
 msgid "Affected items"
-msgstr ""
+msgstr "영향을 받는 품목"
 
 #: inc/item_softwareversion.class.php:54 inc/software.class.php:978
 #: inc/softwareversion.class.php:316
@@ -12519,7 +12523,7 @@ msgstr "영구 삭제"
 #: inc/itilcategory.class.php:71 inc/itilcategory.class.php:269
 #: inc/ruleticket.class.php:380
 msgid "Code representing the ticket category"
-msgstr ""
+msgstr "표 분류를 표현하는 코드"
 
 #: inc/itilcategory.class.php:75 inc/itilcategory.class.php:214
 msgid "Visible in the simplified interface"
@@ -12551,11 +12555,11 @@ msgstr "사고 견본"
 
 #: inc/itilcategory.class.php:103 inc/itilcategory.class.php:165
 msgid "Template for a change"
-msgstr ""
+msgstr "변경 용 견본"
 
 #: inc/itilcategory.class.php:107 inc/itilcategory.class.php:174
 msgid "Template for a problem"
-msgstr ""
+msgstr "문제용 견본"
 
 #: inc/itilcategory.class.php:222 inc/notificationtargetchange.class.php:258
 #: inc/notificationtargetproblem.class.php:195
@@ -12584,11 +12588,11 @@ msgstr "변경 사항 건수"
 #: inc/itilcategory.class.php:279
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] ""
+msgstr[0] "ITIL 분류"
 
 #: inc/itilcategory.class.php:337 inc/itilcategory.class.php:354
 msgid "Code representing the ticket category is already used"
-msgstr ""
+msgstr "표 분류를 표현한 코드는 이미 사용됨"
 
 #: inc/itilcategory.class.php:427 inc/ticket.class.php:3266
 #: inc/ticket.class.php:3282
@@ -12693,12 +12697,12 @@ msgstr "새 추적 추가"
 #: inc/itil_project.class.php:51
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] ""
+msgstr[0] "프로젝트/Itil 링크"
 
 #: inc/itil_project.class.php:88
 msgid "Itil item"
 msgid_plural "Itil items"
-msgstr[0] ""
+msgstr[0] "Itil 품목"
 
 #: inc/itil_project.class.php:324
 msgid "Add a project"
@@ -12730,7 +12734,7 @@ msgstr "이 항목은 이미 해결되었습니다, 누군가가 당신에게 �
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] ""
+msgstr[0] "%1$s 견본"
 
 #: inc/itiltemplate.class.php:371
 #: inc/notificationtemplatetranslation.class.php:454
@@ -12785,7 +12789,7 @@ msgstr "최상위 분류"
 
 #: inc/knowbase.class.php:347
 msgid "This category contains articles"
-msgstr ""
+msgstr "이 분류는 규약이 포함됨"
 
 #: inc/knowbaseitem.class.php:198 inc/knowbaseitem.class.php:810
 #: inc/reminder.class.php:541 inc/rssfeed.class.php:533
@@ -12870,7 +12874,7 @@ msgstr "모든 게시된 기사들"
 
 #: inc/knowbaseitem.class.php:1494
 msgid "This item is not published yet"
-msgstr ""
+msgstr "이 품목은 아직 공개되지 않음"
 
 #: inc/knowbaseitem.class.php:1574
 msgid "Use as a solution"
@@ -13291,7 +13295,7 @@ msgstr "잠금 해제해야 할 품목의 유형을 선택하세요"
 #: inc/log.class.php:214
 #, php-format
 msgid "%1$s impersonated by %2$s"
-msgstr ""
+msgstr "%1$s는 %2$s가 대행함"
 
 #: inc/log.class.php:281
 msgid "No historical"
@@ -13447,11 +13451,11 @@ msgstr "한개 수집 대신, 메일 날짜 사용"
 
 #: inc/mailcollector.class.php:287
 msgid "Use Reply-To as requester (when available)"
-msgstr ""
+msgstr "답장을 요청자로 사용 (가능한 경우)"
 
 #: inc/mailcollector.class.php:370 inc/mailcollector.class.php:668
 msgid "An error occured trying to connect to collector."
-msgstr ""
+msgstr "수집품에 접근 중 오류가 발생했습니다."
 
 #: inc/mailcollector.class.php:385
 #, php-format
@@ -13471,7 +13475,7 @@ msgstr "이메일 %s이 없습니다. 불러올 수 없습니다"
 #: inc/mailcollector.class.php:698
 #, php-format
 msgid "Message is invalid: %1$s"
-msgstr ""
+msgstr "메시지가 잘못됨: %1$s"
 
 #: inc/mailcollector.class.php:847
 #, php-format
@@ -13605,7 +13609,7 @@ msgstr "갱신하고 싶은 항목을 선택하세요"
 #: inc/massiveaction.class.php:933
 msgid "Are you sure you want to add this item to transfer list?"
 msgid_plural "Are you sure you want to add these items to transfer list?"
-msgstr[0] ""
+msgstr[0] "이 품목들을 전송 목록에 추가 하시겠습니까?"
 
 #: inc/massiveaction.class.php:1100
 msgid ""
@@ -13684,12 +13688,12 @@ msgstr "데이터베이스 레이아웃 변경 - %s"
 #: inc/migration.class.php:716
 #, php-format
 msgid "Adding fulltext indices - %s"
-msgstr ""
+msgstr "전문 색인 추가 - %s"
 
 #: inc/migration.class.php:725
 #, php-format
 msgid "Adding unicity indices - %s"
-msgstr ""
+msgstr "단일 색인 추가 - %s"
 
 #: inc/migration.class.php:765 inc/software.class.php:1113
 #: install/update.php:86
@@ -14135,7 +14139,7 @@ msgstr "알 수 없는 인터페이스"
 #: inc/networkport_vlan.class.php:130 inc/networkport_vlan.class.php:162
 #: inc/networkport_vlan.class.php:272 inc/vlan.class.php:154
 msgid "Tagged"
-msgstr "꼬리표 붙음"
+msgstr "태그됨"
 
 #: inc/networkportwifi.class.php:44
 msgid "Wifi port"
@@ -15293,7 +15297,7 @@ msgstr[0] "견본 번역"
 
 #: inc/notificationtemplatetranslation.class.php:123
 msgid "Show list of available tags"
-msgstr "사용 가능한 꼬리표 목록 보이기"
+msgstr "사용 가능한 태그 목록 보이기"
 
 #: inc/notificationtemplatetranslation.class.php:147
 #: inc/notificationtemplatetranslation.class.php:314
@@ -15609,7 +15613,7 @@ msgstr "스피커"
 #: inc/planning.class.php:241
 #, php-format
 msgid "The user %1$s is busy at the selected timeframe."
-msgstr ""
+msgstr "사용자 %1$s는 선택된 기간에 바쁩니다."
 
 #: inc/planning.class.php:512 inc/profile.class.php:523
 msgid "Caption"
@@ -15779,12 +15783,12 @@ msgstr "이 플러그인은 %1$s < %2$s가 필요합니다."
 #: inc/plugin.class.php:1446
 #, php-format
 msgid "This plugin requires %1$s >= %2$s."
-msgstr ""
+msgstr "이 플러그인은 %1$s >= %2$s가 필요합니다."
 
 #: inc/plugin.class.php:1453
 #, php-format
 msgid "This plugin requires %1$s >= %2$s and < %3$s."
-msgstr ""
+msgstr "이 플러그인은 %1$s >= %2$s그리고 < %3$s가 필요합니다."
 
 #: inc/plugin.class.php:1479
 #, php-format
@@ -15983,7 +15987,7 @@ msgstr[0] "문제 발생 작업"
 #: inc/problemtemplate.class.php:47
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] ""
+msgstr[0] "문제 견본"
 
 #: inc/problem_ticket.class.php:59
 msgid "Link Ticket/Problem"
@@ -16092,7 +16096,7 @@ msgstr "예약 관리"
 #: inc/profile.class.php:1009
 msgid "ITIL object"
 msgid_plural "ITIL objects"
-msgstr[0] ""
+msgstr[0] "ITIL 객체"
 
 #: inc/profile.class.php:1019 inc/ticketrecurrent.class.php:60
 msgid "Recurrent tickets"
@@ -16256,7 +16260,7 @@ msgstr "전체 GANTT로 보기"
 
 #: inc/project.class.php:1034
 msgid "Planned Duration"
-msgstr ""
+msgstr "계획된 기간"
 
 #: inc/project.class.php:1086 inc/projecttask.class.php:668
 #: inc/projecttask.class.php:1031 inc/projecttasktemplate.class.php:70
@@ -16266,7 +16270,7 @@ msgstr "마일스톤"
 
 #: inc/project.class.php:1317 inc/projecttask.class.php:382
 msgid "Circular relation found. Parent not updated."
-msgstr ""
+msgstr "순환 관계가 발견되었습니다. 부모가 갱신되지 않았습니다."
 
 #: inc/project.class.php:1336
 msgid "Invalid planned dates. Dates not updated."
@@ -16282,13 +16286,13 @@ msgstr "이 프로젝트에서 하위 프로젝트 생성"
 
 #: inc/project.class.php:1493 inc/projecttask.class.php:655
 msgid "Automatically calculate"
-msgstr ""
+msgstr "자동 계산"
 
 #: inc/project.class.php:1501
 msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
-msgstr ""
+msgstr "자동 연산이 활성화되면, 백분률은 모든 하위 프로젝트와 업무 완료 백분률의 평균에 기반하여 연산됩니다."
 
 #: inc/project.class.php:1560
 msgid "Sum of planned durations of tasks"
@@ -16414,13 +16418,13 @@ msgstr "수정 (수행자)"
 
 #: inc/projecttask.class.php:404
 msgid "A linked project is mandatory"
-msgstr ""
+msgstr "링크된 프로젝트는 필수임"
 
 #: inc/projecttask.class.php:663
 msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child task percent done."
-msgstr ""
+msgstr "자동 연산이 활성화되면, 백분률은 모든 하위 프로젝트 완료 백분률의 평균에 기반하여 연산됩니다."
 
 #: inc/projecttask.class.php:957 inc/rssfeed.class.php:420
 msgid "Creator"
@@ -16452,15 +16456,15 @@ msgstr[0] "작업 팀"
 
 #: inc/projecttaskteam.class.php:142
 msgid "An item type is mandatory"
-msgstr ""
+msgstr "품목 유형은 필수임"
 
 #: inc/projecttaskteam.class.php:151
 msgid "An item ID is mandatory"
-msgstr ""
+msgstr "품목 ID는 필수임"
 
 #: inc/projecttaskteam.class.php:160
 msgid "A project task is mandatory"
-msgstr ""
+msgstr "프로젝트 업무는 필수임"
 
 #: inc/projecttask_ticket.class.php:64
 msgid "Link Ticket/Project task"
@@ -16937,7 +16941,7 @@ msgstr "재검토"
 
 #: inc/ruleaction.class.php:401
 msgid "Do not calculate"
-msgstr ""
+msgstr "계산 안 함"
 
 #: inc/ruleaction.class.php:402 inc/ruleaction.class.php:403
 msgid "Send"
@@ -17570,7 +17574,7 @@ msgstr "품목 그룹"
 
 #: inc/ruleticket.class.php:421
 msgid "Item state"
-msgstr ""
+msgstr "품목 상태"
 
 #: inc/ruleticket.class.php:427
 msgid "Ticket location"
@@ -17578,15 +17582,15 @@ msgstr "표 위치"
 
 #: inc/ruleticket.class.php:547
 msgid "Creation date is a working hour in calendar"
-msgstr ""
+msgstr "생성 일자는 달력의 업무 시간임"
 
 #: inc/ruleticket.class.php:566
 msgid "Ticket category from code"
-msgstr ""
+msgstr "코드에서의 표 분류"
 
 #: inc/ruleticket.class.php:689
 msgid "Responsible of the requester"
-msgstr ""
+msgstr "요청자의 책임"
 
 #: inc/ruleticket.class.php:705
 msgid "Approval request to requester group manager"
@@ -17598,7 +17602,7 @@ msgstr "기술자 그룹 운영자에게 승인 요청"
 
 #: inc/ruleticket.class.php:727
 msgid "Take into account delay"
-msgstr ""
+msgstr "지연 고려"
 
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
@@ -17846,7 +17850,7 @@ msgstr "%1$s > %2$s"
 
 #: inc/search.class.php:2255
 msgid "NOT"
-msgstr ""
+msgstr "아님"
 
 #: inc/search.class.php:2260
 msgid "AND"
@@ -17878,7 +17882,7 @@ msgstr "그룹"
 
 #: inc/search.class.php:2378
 msgid "Fold search"
-msgstr ""
+msgstr "검색 중단"
 
 #: inc/search.class.php:2544 inc/search.class.php:2767
 msgid "Delete a rule"
@@ -17886,7 +17890,7 @@ msgstr "규칙 삭제"
 
 #: inc/search.class.php:2684
 msgid "Delete a global rule"
-msgstr ""
+msgstr "전체 규칙 삭제"
 
 #: inc/search.class.php:6966 inc/search.class.php:6993
 #: inc/search.class.php:6997 inc/search.class.php:7026
@@ -18016,11 +18020,11 @@ msgstr "유효"
 #: inc/softwarelicense.class.php:443
 msgctxt "adjective"
 msgid "Valid (Over Quota)"
-msgstr ""
+msgstr "검증 (할당 초과)"
 
 #: inc/softwarelicense.class.php:451 inc/softwarelicense.class.php:603
 msgid "Allow Over-Quota"
-msgstr ""
+msgstr "할당-초과 허용"
 
 #: inc/softwarelicense.class.php:462
 msgid "Never expire"
@@ -18288,7 +18292,7 @@ msgstr "잘못된 이메일 주소 %s"
 #: inc/ticket.class.php:1899
 #, php-format
 msgid "%s promotes a followup from ticket %s"
-msgstr ""
+msgstr "%s가 표 %s에서 추적을 독촉함"
 
 #: inc/ticket.class.php:2112
 #, php-format
@@ -18306,23 +18310,23 @@ msgstr "표 연결"
 
 #: inc/ticket.class.php:2455
 msgid "Merge followups"
-msgstr ""
+msgstr "추적 병합"
 
 #: inc/ticket.class.php:2461
 msgid "Merge documents"
-msgstr ""
+msgstr "문서 병합"
 
 #: inc/ticket.class.php:2467
 msgid "Merge tasks"
-msgstr ""
+msgstr "업무 병합"
 
 #: inc/ticket.class.php:2473
 msgid "Merge actors"
-msgstr ""
+msgstr "수행자 병합"
 
 #: inc/ticket.class.php:2479
 msgid "Link type"
-msgstr ""
+msgstr "링크 유형"
 
 #: inc/ticket.class.php:2482 inc/ticket_ticket.class.php:215
 #: inc/ticket_ticket.class.php:235 inc/ticket_ticket.class.php:240
@@ -18369,7 +18373,7 @@ msgstr "경과 내부 시간이 초과됨"
 
 #: inc/ticket.class.php:2673
 msgid "Next escalation level"
-msgstr ""
+msgstr "다음 확대 수준"
 
 #: inc/ticket.class.php:2925
 msgid "Response date"
@@ -18459,7 +18463,7 @@ msgstr "기본 문서:"
 
 #: inc/ticket.class.php:4948
 msgid "Confirm the promotion?"
-msgstr ""
+msgstr "승격을 확인 하시겠습니까?"
 
 #: inc/ticket.class.php:5187 inc/ticket.class.php:5377
 msgid "Your tickets to close"
@@ -18487,11 +18491,11 @@ msgstr "당신의 확인해야 할 표"
 
 #: inc/ticket.class.php:5331
 msgid "Your tickets having rejected approval status"
-msgstr ""
+msgstr "당신의 표에 거부된 승인 상태가 있음"
 
 #: inc/ticket.class.php:5348
 msgid "Your tickets having rejected solution"
-msgstr ""
+msgstr "당신의 표에 거부된 해결책이 있음"
 
 #: inc/ticket.class.php:5555
 msgid "Ticket followup"
@@ -18550,7 +18554,7 @@ msgstr "만족도 설문 생성"
 
 #: inc/ticket.class.php:6092
 msgid "Automatic closed tickets purge"
-msgstr ""
+msgstr "마감된 표 자동 제거"
 
 #: inc/ticket.class.php:6391
 msgid "See my ticket"
@@ -18616,42 +18620,42 @@ msgstr "내가 생성한 헤결책 승인 및 표에 대한 설문조사 응답�
 #: inc/ticket.class.php:6913 inc/ticket.class.php:7055
 #, php-format
 msgid "Not enough rights to merge tickets %d and %d"
-msgstr ""
+msgstr "표 %d와 %d의 병합에 대한 충분한 권한이 없음 "
 
 #: inc/ticket.class.php:6857
 #, php-format
 msgid "Failed to load ticket %d"
-msgstr ""
+msgstr "표 %d 불러오기 실패함"
 
 #: inc/ticket.class.php:6872 inc/ticket.class.php:6887
 #, php-format
 msgid "Failed to add followup to ticket %d"
-msgstr ""
+msgstr "표 %d에 추적 추가 실패함"
 
 #: inc/ticket.class.php:6907
 #, php-format
 msgid "Failed to add task to ticket %d"
-msgstr ""
+msgstr "표 %d에 업무 추가 실패함"
 
 #: inc/ticket.class.php:6935
 #, php-format
 msgid "Failed to add document to ticket %d"
-msgstr ""
+msgstr "표 %d에 문서 추가 실패함"
 
 #: inc/ticket.class.php:6961
 #, php-format
 msgid "Failed to link tickets %d and %d"
-msgstr ""
+msgstr "표 %d과 %d 링크 실패함"
 
 #: inc/ticket.class.php:7045
 #, php-format
 msgid "Failed to delete ticket %d"
-msgstr ""
+msgstr "표 %d 삭제 실패함"
 
 #: inc/ticket.class.php:7052
 #, php-format
 msgid "%s merges ticket %s into %s"
-msgstr ""
+msgstr "%s이 표 %s를 %s에 병합함"
 
 #: inc/ticketrecurrent.class.php:158 inc/ticketrecurrent.class.php:276
 msgid "Preliminary creation"
@@ -18800,7 +18804,7 @@ msgstr "테스트 DB 엔진 버전"
 
 #: inc/toolbox.class.php:1073
 msgid "Testing DB timezone data"
-msgstr ""
+msgstr "테스트용 DB 시간대 데이터"
 
 #: inc/toolbox.class.php:1089
 msgid "Allocated memory test"
@@ -18999,7 +19003,7 @@ msgstr "보관"
 
 #: inc/transfer.class.php:3462
 msgid "Software of items"
-msgstr ""
+msgstr "품목의 소프트웨어"
 
 #: inc/transfer.class.php:3466
 msgid "If software are no longer used"
@@ -19132,7 +19136,7 @@ msgstr "사용자 VCard 다운로드"
 
 #: inc/user.class.php:2013 inc/user.class.php:2014
 msgid "Impersonate"
-msgstr ""
+msgstr "대행"
 
 #: inc/user.class.php:2107 inc/user.class.php:2589 inc/user.class.php:4534
 msgid "Password confirmation"
@@ -19140,7 +19144,7 @@ msgstr "비밀번호 확인"
 
 #: inc/user.class.php:2120 inc/user.class.php:2601
 msgid "Time zone"
-msgstr ""
+msgstr "시간대"
 
 #: inc/user.class.php:2157
 msgid "Valid since"
@@ -19339,7 +19343,7 @@ msgstr "기본 이메일"
 
 #: inc/vlan.class.php:156
 msgid "Untagged"
-msgstr "꼬리표 때기"
+msgstr "태그 해제됨"
 
 #: inc/wifinetwork.class.php:66
 msgid "Ad-hoc"
@@ -19655,7 +19659,7 @@ msgstr "%s에 date_creation 추가"
 #: install/update_940_941.php:65 install/update_941_942.php:69
 #: install/update_942_943.php:52
 msgid "Fix URL of images in ITIL tasks, followups ans solutions."
-msgstr ""
+msgstr "ITIL 업무, 추적과 해결책 내에서의 이미지의 URL을 수정합니다."
 
 #: install/update.php:137
 msgid "Update successful, your database is up to date"

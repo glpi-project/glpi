@@ -11,9 +11,10 @@
 # Philippe P <fylip22@gmail.com>, 2019
 # Thierry Bugier <tbugier@teclib.com>, 2019
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2019
-# Tiago Graça, 2019
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2019
 # Jean-Christophe Pirmolin <jean-christophe@pirmolin.com>, 2019
+# Tiago Graça, 2020
+# Milan Lefort <milan.lefort@orange.fr>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Jean-Christophe Pirmolin <jean-christophe@pirmolin.com>, 2019\n"
+"Last-Translator: Milan Lefort <milan.lefort@orange.fr>, 2020\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3815,11 +3816,11 @@ msgstr "La langue a été changée !"
 
 #: front/user.form.php:157
 msgid "Unable to impersonate user"
-msgstr ""
+msgstr "Impossible de prendre l'identité de l'utilisateur"
 
 #: front/user.form.php:168
 msgid "Unable to stop impersonating user"
-msgstr ""
+msgstr "Impossible d'arrêter de prendre l'identité de l'utilisateur"
 
 #: inc/ajax.class.php:156
 msgid "Close"
@@ -11132,7 +11133,7 @@ msgstr "Vous ne pouvez pas ajouter une entité sans nom"
 
 #: inc/entity.class.php:344
 msgid "UI customization"
-msgstr ""
+msgstr "Personnalisation de l'interface"
 
 #: inc/entity.class.php:635 inc/entity.class.php:1457
 msgid "LDAP directory information attribute representing the entity"
@@ -11491,6 +11492,8 @@ msgstr "24 heures sur 24, 7 jours sur 7"
 #: inc/entity.class.php:2384
 msgid "Mark followup added by a supplier though an email collector as private"
 msgstr ""
+"Marquer comme privé le suivi ajouté par un fournisseur via un collecteur "
+"d'email"
 
 #: inc/entity.class.php:2411
 msgid "Automatic closing configuration"
@@ -11498,11 +11501,11 @@ msgstr "Configuration de la clôture automatique"
 
 #: inc/entity.class.php:2424
 msgid "Close ticket action is disabled."
-msgstr ""
+msgstr "L'action de fermeture des tickets est désactivée."
 
 #: inc/entity.class.php:2467
 msgid "Purge ticket action is disabled."
-msgstr ""
+msgstr "L'action de purge des tickets est désactivée"
 
 #: inc/entity.class.php:2508 inc/entity.class.php:2511
 msgid "Configuring the satisfaction survey"
@@ -11670,6 +11673,8 @@ msgid ""
 "Having troubles setting up an advanced GLPI module?\n"
 "We can help you solve them. Sign up for support on %s."
 msgstr ""
+"Vous avez une difficulté pour mettre en place un module avancé GLPI ?\n"
+"Nous pouvons vous aider à la résoudre. Inscrivez-vous pour obtenir du support sur %s."
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -12133,19 +12138,19 @@ msgstr "Partager"
 
 #: inc/html.class.php:4716
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Basculer le plein-écran"
 
 #: inc/html.class.php:4720
 msgid "Zoom in/out"
-msgstr ""
+msgstr "Zoom avant / arrière"
 
 #: inc/html.class.php:4731
 msgid "Previous (arrow left)"
-msgstr ""
+msgstr "Précédent (flèche gauche)"
 
 #: inc/html.class.php:4733
 msgid "Next (arrow right)"
-msgstr ""
+msgstr "Suivant (flèche droite)"
 
 #: inc/html.class.php:5196
 msgid "Attach file by drag & drop or copy & paste in editor or "
@@ -12236,11 +12241,11 @@ msgstr "Ticket attendant votre validation"
 #: inc/html.class.php:6991
 #, php-format
 msgid "You are impersonating %s."
-msgstr ""
+msgstr "Vous prenez l'identité de %s."
 
 #: inc/html.class.php:6994
 msgid "Stop impersonating"
-msgstr ""
+msgstr "Arrêter de prendre l'identité."
 
 #: inc/infocom.class.php:420
 #, php-format
@@ -12466,7 +12471,7 @@ msgstr "TAG ID"
 
 #: inc/item_cluster.class.php:113
 msgid "Add new item to this cluster..."
-msgstr ""
+msgstr "Ajouter un nouvel objet à ce groupe..."
 
 #: inc/item_cluster.class.php:279 inc/item_enclosure.class.php:302
 #: inc/item_rack.class.php:955
@@ -12480,7 +12485,7 @@ msgstr "Un élément est requis"
 
 #: inc/item_cluster.class.php:287
 msgid "A cluster is required"
-msgstr ""
+msgstr "Un groupe est requis"
 
 #: inc/item_devicebattery.class.php:58
 msgid "Manufacturing date"
@@ -12563,7 +12568,7 @@ msgstr "La copie dans le presse papier a échoué"
 
 #: inc/item_devices.class.php:1436
 msgid "A device ID is mandatory"
-msgstr ""
+msgstr "Un identifiant d'appareil est obligatoire"
 
 #: inc/item_devices.class.php:1479
 msgid "Update of "
@@ -12923,7 +12928,7 @@ msgstr "Supprimer définitivement"
 #: inc/itilcategory.class.php:71 inc/itilcategory.class.php:269
 #: inc/ruleticket.class.php:380
 msgid "Code representing the ticket category"
-msgstr ""
+msgstr "Code représentation la catégorie de tickets."
 
 #: inc/itilcategory.class.php:75 inc/itilcategory.class.php:214
 msgid "Visible in the simplified interface"
@@ -12988,12 +12993,12 @@ msgstr "Nombre de changements"
 #: inc/itilcategory.class.php:279
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Catégories"
+msgstr[1] "Categories ITIL"
 
 #: inc/itilcategory.class.php:337 inc/itilcategory.class.php:354
 msgid "Code representing the ticket category is already used"
-msgstr ""
+msgstr "Le code représentant la catégorie de tickets est déjà utilisé"
 
 #: inc/itilcategory.class.php:427 inc/ticket.class.php:3266
 #: inc/ticket.class.php:3282
@@ -13141,8 +13146,8 @@ msgstr ""
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modèle %1$s"
+msgstr[1] "Modèles %1$s"
 
 #: inc/itiltemplate.class.php:371
 #: inc/notificationtemplatetranslation.class.php:454
@@ -13720,7 +13725,7 @@ msgstr "Sélectionner le type de l'élément qui doit être déverrouillé"
 #: inc/log.class.php:214
 #, php-format
 msgid "%1$s impersonated by %2$s"
-msgstr ""
+msgstr "%2$s prend l'identité de %1$s "
 
 #: inc/log.class.php:281
 msgid "No historical"
@@ -13881,7 +13886,7 @@ msgstr "Utiliser \"Répondre à\" en tant que demandeur (si disponible)"
 
 #: inc/mailcollector.class.php:370 inc/mailcollector.class.php:668
 msgid "An error occured trying to connect to collector."
-msgstr ""
+msgstr "Une erreur est survenue en essayer de se connecter au collecteur."
 
 #: inc/mailcollector.class.php:385
 #, php-format
@@ -13901,7 +13906,7 @@ msgstr "Courriel %s introuvable. Import impossible."
 #: inc/mailcollector.class.php:698
 #, php-format
 msgid "Message is invalid: %1$s"
-msgstr ""
+msgstr "Message invalide : %1$s"
 
 #: inc/mailcollector.class.php:847
 #, php-format
@@ -14038,7 +14043,9 @@ msgstr "Choisir le champ que vous voulez mettre à jour"
 msgid "Are you sure you want to add this item to transfer list?"
 msgid_plural "Are you sure you want to add these items to transfer list?"
 msgstr[0] ""
+"Êtres vous sûr de vouloir ajouter cet objet à la liste de transfert ?"
 msgstr[1] ""
+"Êtres vous sûr de vouloir ajouter ces objets à la liste de transfert ?"
 
 #: inc/massiveaction.class.php:1100
 msgid ""

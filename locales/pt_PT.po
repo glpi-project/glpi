@@ -12,6 +12,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2019
 # Rui Melo <viper5000pt@gmail.com>, 2019
 # Pedro Rocha <jpnr79@gmail.com>, 2019
+# Manuela Silva <manuelarodsilva@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Pedro Rocha <jpnr79@gmail.com>, 2019\n"
+"Last-Translator: Manuela Silva <manuelarodsilva@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/glpi/teams/1637/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2362,7 +2363,7 @@ msgstr "Foi redireccionado porque já não tem acesso a este ticket"
 
 #: front/itiltemplatefield.form.php:55
 msgid "hidden"
-msgstr ""
+msgstr "oculto"
 
 #: front/itiltemplatefield.form.php:58
 msgid "mandatory"
@@ -6664,7 +6665,7 @@ msgstr "Imagem traseira"
 
 #: inc/commondcmodeldropdown.class.php:302 inc/dcroom.class.php:213
 msgid "Unable to save picture file."
-msgstr ""
+msgstr "Não é possível guardar o ficheiro de imagem."
 
 #: inc/commondcmodeldropdown.class.php:320
 msgid "1"
@@ -8137,7 +8138,7 @@ msgstr "Restringir gestão de impressoras"
 
 #: inc/config.class.php:543
 msgid "Devices displayed in menu"
-msgstr ""
+msgstr "Dispositivos exibidos no menu"
 
 #: inc/config.class.php:575
 msgid "Automatic transfer of computers"
@@ -8442,7 +8443,7 @@ msgstr "Fuso horário"
 
 #: inc/config.class.php:1249
 msgid "Use server configuration"
-msgstr ""
+msgstr "Configuração do servidor do utilizador"
 
 #: inc/config.class.php:1263
 msgid "Private followups by default"
@@ -8646,7 +8647,7 @@ msgstr "%1$suso de memória de s é muito alto"
 
 #: inc/config.class.php:1690
 msgid "Translation cache"
-msgstr ""
+msgstr "Cache de tradução"
 
 #: inc/config.class.php:1726
 msgid "Log Level"
@@ -10517,7 +10518,7 @@ msgstr "Remover documento"
 
 #: inc/document.class.php:1653
 msgid "Clean orphaned documents"
-msgstr ""
+msgstr "Limpar documentos órfãos"
 
 #: inc/document_item.class.php:529 inc/document_item.class.php:620
 msgid "Add a document"
@@ -11111,7 +11112,7 @@ msgstr "Você não pode adicionar uma entidade sem nome"
 
 #: inc/entity.class.php:344
 msgid "UI customization"
-msgstr ""
+msgstr "Personalização da IU"
 
 #: inc/entity.class.php:635 inc/entity.class.php:1457
 msgid "LDAP directory information attribute representing the entity"
@@ -11446,11 +11447,11 @@ msgstr "Alertas nos tickets que não tenham sido solucionados desde"
 
 #: inc/entity.class.php:2090
 msgid "UI options"
-msgstr ""
+msgstr "Opções da IU"
 
 #: inc/entity.class.php:2093
 msgid "Enable CSS customization"
-msgstr ""
+msgstr "Ativar personalização de CSS"
 
 #: inc/entity.class.php:2097
 msgid "Inherits configuration from the parent entity"
@@ -12098,7 +12099,7 @@ msgstr "%1$d em %2$d"
 
 #: inc/html.class.php:4708
 msgid "Close (Esc)"
-msgstr ""
+msgstr "Fechar (Esc)"
 
 #: inc/html.class.php:4712
 msgid "Share"
@@ -12106,19 +12107,19 @@ msgstr "Partilhar"
 
 #: inc/html.class.php:4716
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Alternar ecrã completo"
 
 #: inc/html.class.php:4720
 msgid "Zoom in/out"
-msgstr ""
+msgstr "Zoom +/-"
 
 #: inc/html.class.php:4731
 msgid "Previous (arrow left)"
-msgstr ""
+msgstr "Anterior (seta esquerda)"
 
 #: inc/html.class.php:4733
 msgid "Next (arrow right)"
-msgstr ""
+msgstr "Seguinte (seta direita)"
 
 #: inc/html.class.php:5196
 msgid "Attach file by drag & drop or copy & paste in editor or "
@@ -12435,7 +12436,7 @@ msgstr "ID TAG"
 
 #: inc/item_cluster.class.php:113
 msgid "Add new item to this cluster..."
-msgstr ""
+msgstr "Adicione o novo item a este cluster..."
 
 #: inc/item_cluster.class.php:279 inc/item_enclosure.class.php:302
 #: inc/item_rack.class.php:955
@@ -12449,7 +12450,7 @@ msgstr "É necessário um item"
 
 #: inc/item_cluster.class.php:287
 msgid "A cluster is required"
-msgstr ""
+msgstr "É necessário um cluster"
 
 #: inc/item_devicebattery.class.php:58
 msgid "Manufacturing date"
@@ -12532,7 +12533,7 @@ msgstr "A cópia na área de transferência falhou"
 
 #: inc/item_devices.class.php:1436
 msgid "A device ID is mandatory"
-msgstr ""
+msgstr "É obrigatório a Id. do dispositivo"
 
 #: inc/item_devices.class.php:1479
 msgid "Update of "
@@ -12928,7 +12929,7 @@ msgstr "Modelo para alteração"
 
 #: inc/itilcategory.class.php:107 inc/itilcategory.class.php:174
 msgid "Template for a problem"
-msgstr ""
+msgstr "Modelo para um problema"
 
 #: inc/itilcategory.class.php:222 inc/notificationtargetchange.class.php:258
 #: inc/notificationtargetproblem.class.php:195
@@ -13867,7 +13868,7 @@ msgstr "Email %s não encontrado. Não foi possivel a sua importação."
 #: inc/mailcollector.class.php:698
 #, php-format
 msgid "Message is invalid: %1$s"
-msgstr ""
+msgstr "A mensagem é inválida: %1$s"
 
 #: inc/mailcollector.class.php:847
 #, php-format
@@ -16738,7 +16739,7 @@ msgstr "Crie um sub projeto deste projeto"
 
 #: inc/project.class.php:1493 inc/projecttask.class.php:655
 msgid "Automatically calculate"
-msgstr ""
+msgstr "Calcular automaticamente"
 
 #: inc/project.class.php:1501
 msgid ""
@@ -16872,7 +16873,7 @@ msgstr "Actualização (actor)"
 
 #: inc/projecttask.class.php:404
 msgid "A linked project is mandatory"
-msgstr ""
+msgstr "É obrigatório um projeto associado"
 
 #: inc/projecttask.class.php:663
 msgid ""
@@ -16911,15 +16912,15 @@ msgstr[1] "Equipas das tarefas"
 
 #: inc/projecttaskteam.class.php:142
 msgid "An item type is mandatory"
-msgstr ""
+msgstr "É obrigatório um tipo de item"
 
 #: inc/projecttaskteam.class.php:151
 msgid "An item ID is mandatory"
-msgstr ""
+msgstr "É obrigatório uma Id. de item"
 
 #: inc/projecttaskteam.class.php:160
 msgid "A project task is mandatory"
-msgstr ""
+msgstr "É obrigatório uma tarefa do projeto"
 
 #: inc/projecttask_ticket.class.php:64
 msgid "Link Ticket/Project task"
@@ -18051,7 +18052,7 @@ msgstr "Grupo do item"
 
 #: inc/ruleticket.class.php:421
 msgid "Item state"
-msgstr ""
+msgstr "Estado do item"
 
 #: inc/ruleticket.class.php:427
 msgid "Ticket location"
@@ -18809,7 +18810,7 @@ msgstr "Liga tickets"
 
 #: inc/ticket.class.php:2455
 msgid "Merge followups"
-msgstr ""
+msgstr "Unir acompanhamentos"
 
 #: inc/ticket.class.php:2461
 msgid "Merge documents"
@@ -19518,7 +19519,7 @@ msgstr "Manter"
 
 #: inc/transfer.class.php:3462
 msgid "Software of items"
-msgstr ""
+msgstr "Software de itens"
 
 #: inc/transfer.class.php:3466
 msgid "If software are no longer used"
@@ -19663,7 +19664,7 @@ msgstr "Confirmação de palavra-passe"
 
 #: inc/user.class.php:2120 inc/user.class.php:2601
 msgid "Time zone"
-msgstr ""
+msgstr "Zona horária"
 
 #: inc/user.class.php:2157
 msgid "Valid since"

@@ -29,6 +29,8 @@
 # wcreis <wesley.c.reis@gmail.com>, 2019
 # Hélio Guardabaxo <helio.guardabaxo@gmail.com>, 2019
 # Diego Nobre <diego@koruma.com.br>, 2019
+# Rodrigo de Almeida Sottomaior Macedo <rmsolucoeseminformatic4@gmail.com>, 2020
+# Elthon Abreu <elthon.abreu@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -37,7 +39,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Diego Nobre <diego@koruma.com.br>, 2019\n"
+"Last-Translator: Elthon Abreu <elthon.abreu@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2276,7 +2278,7 @@ msgstr "%s associou uma VLAN a uma porta de rede"
 #: front/item_device.common.form.php:64
 #, php-format
 msgid "%1$s adds an item"
-msgstr ""
+msgstr "%1$s adiciona um item"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:56
@@ -2328,7 +2330,7 @@ msgstr[1] "Itens"
 #: front/item_softwarelicense.form.php:51
 #, php-format
 msgid "%s associates an item and a license"
-msgstr ""
+msgstr "%s associa um item e uma licença"
 
 #. TRANS: %s is the user login
 #: front/item_softwareversion.form.php:52
@@ -2393,7 +2395,7 @@ msgstr "predefinido"
 #: front/itiltemplatefield.form.php:73
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr ""
+msgstr "%1$s adiciona %2$s campo"
 
 #: front/knowbaseitem_comment.form.php:41
 #: front/knowbaseitem_comment.form.php:53
@@ -5676,7 +5678,7 @@ msgstr "%1$s tabelas não migradas para o mecanismo InnoDB."
 #: inc/central.class.php:188
 #, php-format
 msgid "%1$s columns are not compatible with timezones usage."
-msgstr ""
+msgstr "%1$s colunas não são compatíveis com o uso de fusos horários."
 
 #: inc/central.class.php:197 inc/html.class.php:1620
 msgid "SQL replica: read only"
@@ -6230,8 +6232,8 @@ msgstr[1] "Alterar tarefas"
 #: inc/changetemplate.class.php:47
 msgid "Change template"
 msgid_plural "change templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Mudar modelo"
+msgstr[1] "mudar modelos"
 
 #: inc/change_ticket.class.php:62
 msgid "Link Ticket/Change"
@@ -6289,8 +6291,8 @@ msgstr[1] "Versões"
 #: inc/clustertype.class.php:40
 msgid "Cluster type"
 msgid_plural "Cluster types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de Cluster"
+msgstr[1] "Tipos de Cluster"
 
 #: inc/commondbchild.class.php:243 inc/networkportinstantiation.class.php:538
 msgid "Item not linked to an object"
@@ -6677,7 +6679,7 @@ msgstr "Imagem de trás"
 
 #: inc/commondcmodeldropdown.class.php:302 inc/dcroom.class.php:213
 msgid "Unable to save picture file."
-msgstr ""
+msgstr "Não foi possível salvar o arquivo de imagem."
 
 #: inc/commondcmodeldropdown.class.php:320
 msgid "1"
@@ -6744,7 +6746,7 @@ msgstr "Alterar"
 
 #: inc/commondropdown.class.php:833 inc/itiltemplate.class.php:582
 msgid "Merge and assign to current entity"
-msgstr ""
+msgstr "Mesclar e atribuir à entidade atual"
 
 #: inc/commondropdown.class.php:850 inc/itiltemplate.class.php:599
 #: inc/ticket.class.php:2488
@@ -6926,7 +6928,7 @@ msgstr "Datas inválidas. Atualização cancelada."
 
 #: inc/commonitilobject.class.php:1599
 msgid "You cannot use predefined description verbatim"
-msgstr ""
+msgstr "Você não pode usar a descrição predefinida literalmente"
 
 #: inc/commonitilobject.class.php:2285
 msgctxt "priority"
@@ -7383,11 +7385,11 @@ msgstr "Promovido para o Chamado %1$s"
 
 #: inc/commonitilobject.class.php:7102
 msgid "Approve"
-msgstr ""
+msgstr "Aprovar"
 
 #: inc/commonitilobject.class.php:7105
 msgid "Refuse"
-msgstr ""
+msgstr "Recusar"
 
 #: inc/commonitilobject.class.php:7113
 #, php-format
@@ -7725,7 +7727,7 @@ msgstr "Filhos de %s"
 #: inc/commontreedropdown.class.php:598
 msgctxt "button"
 msgid "Move under"
-msgstr ""
+msgstr "Mover abaixo"
 
 #: inc/commontreedropdown.class.php:616 inc/group.class.php:374
 #: inc/item_softwarelicense.class.php:704
@@ -8151,7 +8153,7 @@ msgstr "Restringir gerência de impressoras"
 
 #: inc/config.class.php:543
 msgid "Devices displayed in menu"
-msgstr ""
+msgstr "Dispositivos exibidos no menu"
 
 #: inc/config.class.php:575
 msgid "Automatic transfer of computers"
@@ -8451,11 +8453,11 @@ msgstr "Habilitar alto contraste"
 
 #: inc/config.class.php:1238 inc/ruleright.class.php:343
 msgid "Timezone"
-msgstr ""
+msgstr "Fuso horário"
 
 #: inc/config.class.php:1249
 msgid "Use server configuration"
-msgstr ""
+msgstr "Usar configuração do servidor"
 
 #: inc/config.class.php:1263
 msgid "Private followups by default"
@@ -8660,7 +8662,7 @@ msgstr "%1$s uso de memória esta alto"
 
 #: inc/config.class.php:1690
 msgid "Translation cache"
-msgstr ""
+msgstr "Cache de tradução"
 
 #: inc/config.class.php:1726
 msgid "Log Level"
@@ -8738,7 +8740,7 @@ msgstr "Instruções de instalação e configuração"
 
 #: inc/config.class.php:1915 inc/toolbox.class.php:1082
 msgid "Timezones seems not loaded in database"
-msgstr ""
+msgstr "Os fusos horários parecem não estar carregados no banco de dados"
 
 #: inc/config.class.php:1944
 msgid "To copy/paste in your support request"
@@ -8945,7 +8947,7 @@ msgstr "Plug-ins"
 
 #: inc/config.class.php:3312
 msgid "Installation/uninstallation of software on items"
-msgstr ""
+msgstr "Instalação/desinstalação de software em itens"
 
 #: inc/config.class.php:3316
 msgid "Installation/uninstallation versions on softwares"
@@ -8953,7 +8955,7 @@ msgstr "Instalação/desinstalação de versões de softwares"
 
 #: inc/config.class.php:3323
 msgid "Add/Remove items from software versions"
-msgstr ""
+msgstr "Adicionar/remover itens de versões de software"
 
 #: inc/config.class.php:3332
 msgid "Add financial information to an item"
@@ -9870,17 +9872,20 @@ msgstr "%1$s - Erro na consulta ao banco de dados: %2$s - Erro é %3$s"
 
 #: inc/dbmysql.class.php:1538
 msgid "Access to timezone database (mysql) is not allowed."
-msgstr ""
+msgstr "O acesso ao banco de dados de fuso horário (mysql) não é permitido."
 
 #: inc/dbmysql.class.php:1549
 msgid "Access to timezone table (mysql.time_zone_name) is not allowed."
 msgstr ""
+"O acesso à tabela de fuso horário (mysql.time_zone_name) não é permitido."
 
 #: inc/dbmysql.class.php:1560
 msgid ""
 "Timezones seems not loaded, see https://glpi-"
 "install.readthedocs.io/en/latest/timezones.html."
 msgstr ""
+"Os fusos horários parecem não estar carregados, consulte https://glpi-"
+"install.readthedocs.io/en/latest/timezones.html."
 
 #: inc/dbutils.class.php:1123
 msgid "Address:"
@@ -10524,7 +10529,7 @@ msgstr "Remover um documento"
 
 #: inc/document.class.php:1653
 msgid "Clean orphaned documents"
-msgstr ""
+msgstr "Limpar documentos órfãos"
 
 #: inc/document_item.class.php:529 inc/document_item.class.php:620
 msgid "Add a document"
@@ -10622,8 +10627,8 @@ msgstr[1] "Categorias de chamado"
 #: inc/itilfollowuptemplate.class.php:49
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de acompanhamento"
+msgstr[1] "Modelos de acompanhamentos"
 
 #: inc/dropdown.class.php:839 inc/itilsolution.class.php:165
 #: inc/profile.class.php:1452 inc/solutiontemplate.class.php:51
@@ -11118,7 +11123,7 @@ msgstr "Não é possível adicionar uma entidade sem nome"
 
 #: inc/entity.class.php:344
 msgid "UI customization"
-msgstr ""
+msgstr "Customização de IU"
 
 #: inc/entity.class.php:635 inc/entity.class.php:1457
 msgid "LDAP directory information attribute representing the entity"
@@ -11264,7 +11269,7 @@ msgstr "Imediatamente"
 
 #: inc/entity.class.php:953 inc/entity.class.php:2457
 msgid "Automatic purge of closed tickets after"
-msgstr ""
+msgstr "Limpeza automática de chamados depois de"
 
 #: inc/entity.class.php:972
 msgid "Alerts on tickets which are not solved"
@@ -11452,15 +11457,15 @@ msgstr "Alertas sobre chamados não solucionados desde"
 
 #: inc/entity.class.php:2090
 msgid "UI options"
-msgstr ""
+msgstr "Opções UI"
 
 #: inc/entity.class.php:2093
 msgid "Enable CSS customization"
-msgstr ""
+msgstr "Habilitar personalização CSS"
 
 #: inc/entity.class.php:2097
 msgid "Inherits configuration from the parent entity"
-msgstr ""
+msgstr "Herda a configuração da entidade pai"
 
 #: inc/entity.class.php:2325 inc/entity.class.php:2338
 #: inc/entity.class.php:2990 inc/levelagreement.class.php:496
@@ -11471,6 +11476,8 @@ msgstr "24/7"
 #: inc/entity.class.php:2384
 msgid "Mark followup added by a supplier though an email collector as private"
 msgstr ""
+"Marcar o acompanhamento adicionado por um fornecedor por um coletor de email"
+" como particular"
 
 #: inc/entity.class.php:2411
 msgid "Automatic closing configuration"
@@ -11478,11 +11485,11 @@ msgstr "Configuração de encerramento automático"
 
 #: inc/entity.class.php:2424
 msgid "Close ticket action is disabled."
-msgstr ""
+msgstr "A ação de fechar chamado está desabilitada."
 
 #: inc/entity.class.php:2467
 msgid "Purge ticket action is disabled."
-msgstr ""
+msgstr "A ação de apagar chamado está desabilitada."
 
 #: inc/entity.class.php:2508 inc/entity.class.php:2511
 msgid "Configuring the satisfaction survey"
@@ -11650,6 +11657,8 @@ msgid ""
 "Having troubles setting up an advanced GLPI module?\n"
 "We can help you solve them. Sign up for support on %s."
 msgstr ""
+"Tendo problemas para configurar um módulo GLPI avançado?\n"
+"Nós podemos ajudá-lo a resolvê-los. Inscreva-se para suporte em %s."
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -12104,27 +12113,27 @@ msgstr "%1$d em %2$d"
 
 #: inc/html.class.php:4708
 msgid "Close (Esc)"
-msgstr ""
+msgstr "Fechar (Esc)"
 
 #: inc/html.class.php:4712
 msgid "Share"
-msgstr ""
+msgstr "Compartilhar"
 
 #: inc/html.class.php:4716
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Alternar para o modo tela cheia"
 
 #: inc/html.class.php:4720
 msgid "Zoom in/out"
-msgstr ""
+msgstr "Mais/Menos zoom"
 
 #: inc/html.class.php:4731
 msgid "Previous (arrow left)"
-msgstr ""
+msgstr "Anterior (seta esquerda)"
 
 #: inc/html.class.php:4733
 msgid "Next (arrow right)"
-msgstr ""
+msgstr "Próxima (seta direita)"
 
 #: inc/html.class.php:5196
 msgid "Attach file by drag & drop or copy & paste in editor or "
@@ -12213,7 +12222,7 @@ msgstr "Chamado esperando sua aprovação"
 #: inc/html.class.php:6991
 #, php-format
 msgid "You are impersonating %s."
-msgstr ""
+msgstr "Você está personificando %s."
 
 #: inc/html.class.php:6994
 msgid "Stop impersonating"
@@ -12608,22 +12617,22 @@ msgstr "Espaço livre"
 
 #: inc/item_disk.class.php:233 inc/item_disk.class.php:330
 msgid "Encryption"
-msgstr ""
+msgstr "Criptografia"
 
 #: inc/item_disk.class.php:236 inc/item_disk.class.php:374
 #: inc/item_disk.class.php:598
 msgid "Encryption tool"
-msgstr ""
+msgstr "Ferramenta de criptografia"
 
 #: inc/item_disk.class.php:242 inc/item_disk.class.php:376
 #: inc/item_disk.class.php:611
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "Algoritmo de criptografia"
 
 #: inc/item_disk.class.php:245 inc/item_disk.class.php:378
 #: inc/item_disk.class.php:624
 msgid "Encryption type"
-msgstr ""
+msgstr "Tipo de criptografia"
 
 #: inc/item_disk.class.php:284
 msgid "Add a volume"
@@ -12635,23 +12644,23 @@ msgstr "Porcentagem livre"
 
 #: inc/item_disk.class.php:371
 msgid "Partial encryption"
-msgstr ""
+msgstr "Criptografia parcial"
 
 #: inc/item_disk.class.php:583
 msgid "Encryption status"
-msgstr ""
+msgstr "Criptografia status"
 
 #: inc/item_disk.class.php:643
 msgid "Not encrypted"
-msgstr ""
+msgstr "Sem Criptografia"
 
 #: inc/item_disk.class.php:644
 msgid "Partially encrypted"
-msgstr ""
+msgstr "Criptografado parcialmente"
 
 #: inc/item_disk.class.php:645
 msgid "Encrypted"
-msgstr ""
+msgstr "Criptografado"
 
 #: inc/item_enclosure.class.php:105
 msgid "Add new item to this enclosure..."
@@ -12829,12 +12838,12 @@ msgstr "Uma versão é exibida!"
 
 #: inc/item_softwarelicense.class.php:372
 msgid "Number of affected items"
-msgstr ""
+msgstr "Número de itens afetados"
 
 #: inc/item_softwarelicense.class.php:551
 #: inc/item_softwarelicense.class.php:809 inc/softwarelicense.class.php:1022
 msgid "Affected items"
-msgstr ""
+msgstr "Itens afetados"
 
 #: inc/item_softwareversion.class.php:54 inc/software.class.php:978
 #: inc/softwareversion.class.php:316
@@ -12898,7 +12907,7 @@ msgstr "Excluir permanentemente"
 #: inc/itilcategory.class.php:71 inc/itilcategory.class.php:269
 #: inc/ruleticket.class.php:380
 msgid "Code representing the ticket category"
-msgstr ""
+msgstr "Código representando a categoria do ticket"
 
 #: inc/itilcategory.class.php:75 inc/itilcategory.class.php:214
 msgid "Visible in the simplified interface"
@@ -12930,11 +12939,11 @@ msgstr "Modelo para um incidente"
 
 #: inc/itilcategory.class.php:103 inc/itilcategory.class.php:165
 msgid "Template for a change"
-msgstr ""
+msgstr "Modelo para uma mudança"
 
 #: inc/itilcategory.class.php:107 inc/itilcategory.class.php:174
 msgid "Template for a problem"
-msgstr ""
+msgstr "Modelo para um problema"
 
 #: inc/itilcategory.class.php:222 inc/notificationtargetchange.class.php:258
 #: inc/notificationtargetproblem.class.php:195
@@ -12963,12 +12972,12 @@ msgstr "Número de mudanças"
 #: inc/itilcategory.class.php:279
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Categoria ITIL"
+msgstr[1] "Categorias ITIL"
 
 #: inc/itilcategory.class.php:337 inc/itilcategory.class.php:354
 msgid "Code representing the ticket category is already used"
-msgstr ""
+msgstr "O código que representa a categoria do chamado já está sendo usado"
 
 #: inc/itilcategory.class.php:427 inc/ticket.class.php:3266
 #: inc/ticket.class.php:3282
@@ -13114,8 +13123,8 @@ msgstr "O item já está resolvido, alguém publicou uma solução antes de voc�
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1$s modelo"
+msgstr[1] "%1$s modelos"
 
 #: inc/itiltemplate.class.php:371
 #: inc/notificationtemplatetranslation.class.php:454
@@ -13691,7 +13700,7 @@ msgstr "Selecione o tipo do item que deve ser desbloqueado"
 #: inc/log.class.php:214
 #, php-format
 msgid "%1$s impersonated by %2$s"
-msgstr ""
+msgstr "%1$s representado por %2$s"
 
 #: inc/log.class.php:281
 msgid "No historical"
@@ -13852,7 +13861,7 @@ msgstr "Utilize \"Responder-Para\" como requerente (quando possível)"
 
 #: inc/mailcollector.class.php:370 inc/mailcollector.class.php:668
 msgid "An error occured trying to connect to collector."
-msgstr ""
+msgstr "Ocorreu um erro ao tentar se conectar ao coletor."
 
 #: inc/mailcollector.class.php:385
 #, php-format
@@ -13872,7 +13881,7 @@ msgstr "E-mail %s não encontrado. Impossível importar."
 #: inc/mailcollector.class.php:698
 #, php-format
 msgid "Message is invalid: %1$s"
-msgstr ""
+msgstr "Mensagem é inválida: %1$s"
 
 #: inc/mailcollector.class.php:847
 #, php-format
@@ -14009,7 +14018,9 @@ msgstr "Selecione o campo que você deseja atualizar"
 msgid "Are you sure you want to add this item to transfer list?"
 msgid_plural "Are you sure you want to add these items to transfer list?"
 msgstr[0] ""
+"Tem certeza de que deseja adicionar esses itens à lista de transferência?"
 msgstr[1] ""
+"Tem certeza de que deseja adicionar esses itens à lista de transferência?"
 
 #: inc/massiveaction.class.php:1100
 msgid ""
@@ -16055,7 +16066,7 @@ msgstr "Viva Voz"
 #: inc/planning.class.php:241
 #, php-format
 msgid "The user %1$s is busy at the selected timeframe."
-msgstr ""
+msgstr "O usuário %1$s está ocupado no período selecionado."
 
 #: inc/planning.class.php:512 inc/profile.class.php:523
 msgid "Caption"
@@ -16435,8 +16446,8 @@ msgstr[1] "Tarefas d problema"
 #: inc/problemtemplate.class.php:47
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de problema"
+msgstr[1] "Modelos de problema"
 
 #: inc/problem_ticket.class.php:59
 msgid "Link Ticket/Problem"
@@ -16550,8 +16561,8 @@ msgstr "Administração das reservas"
 #: inc/profile.class.php:1009
 msgid "ITIL object"
 msgid_plural "ITIL objects"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Objeto ITIL"
+msgstr[1] "Objetos ITIL"
 
 #: inc/profile.class.php:1019 inc/ticketrecurrent.class.php:60
 msgid "Recurrent tickets"
@@ -16719,7 +16730,7 @@ msgstr "Mostrar em GANTT global"
 
 #: inc/project.class.php:1034
 msgid "Planned Duration"
-msgstr ""
+msgstr "Duração planejada"
 
 #: inc/project.class.php:1086 inc/projecttask.class.php:668
 #: inc/projecttask.class.php:1031 inc/projecttasktemplate.class.php:70
@@ -16729,7 +16740,7 @@ msgstr "Marco"
 
 #: inc/project.class.php:1317 inc/projecttask.class.php:382
 msgid "Circular relation found. Parent not updated."
-msgstr ""
+msgstr "Relação circular encontrada. Pai não atualizado."
 
 #: inc/project.class.php:1336
 msgid "Invalid planned dates. Dates not updated."
@@ -16745,7 +16756,7 @@ msgstr "Criar um subprojeto a partir deste projeto"
 
 #: inc/project.class.php:1493 inc/projecttask.class.php:655
 msgid "Automatically calculate"
-msgstr ""
+msgstr "Calcular automaticamente"
 
 #: inc/project.class.php:1501
 msgid ""
@@ -16879,7 +16890,7 @@ msgstr "Atualizar (ator)"
 
 #: inc/projecttask.class.php:404
 msgid "A linked project is mandatory"
-msgstr ""
+msgstr "Um projeto vinculado é mandatório"
 
 #: inc/projecttask.class.php:663
 msgid ""
@@ -16918,7 +16929,7 @@ msgstr[1] "Equipes da tarefa"
 
 #: inc/projecttaskteam.class.php:142
 msgid "An item type is mandatory"
-msgstr ""
+msgstr "Um tipo de item é mandatório"
 
 #: inc/projecttaskteam.class.php:151
 msgid "An item ID is mandatory"
@@ -18058,7 +18069,7 @@ msgstr "Item do grupo"
 
 #: inc/ruleticket.class.php:421
 msgid "Item state"
-msgstr ""
+msgstr "Estado do item"
 
 #: inc/ruleticket.class.php:427
 msgid "Ticket location"
@@ -19159,7 +19170,7 @@ msgstr ""
 #: inc/ticket.class.php:7045
 #, php-format
 msgid "Failed to delete ticket %d"
-msgstr ""
+msgstr "Falha ao apagar o chamado %d"
 
 #: inc/ticket.class.php:7052
 #, php-format
@@ -19314,7 +19325,7 @@ msgstr "Testando a versão do mecanismo do BD"
 
 #: inc/toolbox.class.php:1073
 msgid "Testing DB timezone data"
-msgstr ""
+msgstr "Testando dados de fuso horário do banco de dados"
 
 #: inc/toolbox.class.php:1089
 msgid "Allocated memory test"
@@ -19523,7 +19534,7 @@ msgstr "Manter"
 
 #: inc/transfer.class.php:3462
 msgid "Software of items"
-msgstr ""
+msgstr "Itens de software"
 
 #: inc/transfer.class.php:3466
 msgid "If software are no longer used"
@@ -19668,7 +19679,7 @@ msgstr "Confirmação da senha"
 
 #: inc/user.class.php:2120 inc/user.class.php:2601
 msgid "Time zone"
-msgstr ""
+msgstr "Fuso horário"
 
 #: inc/user.class.php:2157
 msgid "Valid since"

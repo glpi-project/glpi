@@ -10,6 +10,7 @@
 # Ginel Tudorache <ginel.tudorache@quattro.ro>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2019
 # Estalog Toust <estalogtoust@yahoo.com>, 2019
+# Drastic Solutions <yixay88559@win-777.net>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Estalog Toust <estalogtoust@yahoo.com>, 2019\n"
+"Last-Translator: Drastic Solutions <yixay88559@win-777.net>, 2020\n"
 "Language-Team: Romanian (Romania) (https://www.transifex.com/glpi/teams/1637/ro_RO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -47,7 +48,7 @@ msgstr "Parola"
 
 #: index.php:154
 msgid "Default (from user profile)"
-msgstr ""
+msgstr "Profil implicit"
 
 #: index.php:171
 msgid "Remember me"
@@ -746,15 +747,16 @@ msgstr "Argument obligatoriu lipsă!"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "Elementele nu sunt geolocalizate sau nu pot fi gasite"
 
 #: ajax/getMapPoint.php:75
 msgid "Location seems not geolocalized!"
-msgstr ""
+msgstr "Locatia nu pare a fi geolocalizata"
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
 msgstr ""
+"Ia in considerare completarea latitudinii si longitudinii acestei locatii"
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2491
 #: inc/mailcollector.class.php:191 inc/ruleaction.class.php:88
@@ -982,6 +984,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Colectam doar urmatoarele date: folosirea pluginurilor, statistici de "
+"performanta si raspuns privind trasaturile interfetei userului, memoria si "
+"configuratia hardware."
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:68 ajax/ticketassigninformation.php:69
@@ -2611,7 +2616,7 @@ msgstr "%s actualizează un nivel ola"
 #: front/olalevel.form.php:75
 #, php-format
 msgid "%s purges an ola level"
-msgstr ""
+msgstr "%s elimina un nivel sla"
 
 #: front/planning.php:137 inc/event.class.php:149 inc/event.class.php:157
 #: inc/planning.class.php:74 inc/profile.class.php:1081
@@ -3074,13 +3079,13 @@ msgstr[2] "Liste Negre"
 #: front/savedsearch_alert.form.php:53
 #, php-format
 msgid "%s adds an alert"
-msgstr ""
+msgstr "%s adauga o alerta"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:66
 #, php-format
 msgid "%s purges an alert"
-msgstr ""
+msgstr "%s sterge o alerta"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:78
@@ -3844,11 +3849,11 @@ msgstr "Limba a fost schimbata!"
 
 #: front/user.form.php:157
 msgid "Unable to impersonate user"
-msgstr ""
+msgstr "Incapabil a prelua userul"
 
 #: front/user.form.php:168
 msgid "Unable to stop impersonating user"
-msgstr ""
+msgstr "Incapabil a opri preluarea userului"
 
 #: inc/ajax.class.php:156
 msgid "Close"
@@ -3974,7 +3979,7 @@ msgstr "API dezactivat"
 msgid ""
 "There isn't an active API client matching your IP address in the "
 "configuration"
-msgstr ""
+msgstr "Nu exista un client API corespunzator adresei tale IP in configuratie"
 
 #: inc/api.class.php:212
 msgid "parameter(s) login, password or user_token are missing"
@@ -3999,7 +4004,7 @@ msgstr " itemtype  parinte negasit nu este o instanta a  CommonDBTM"
 
 #: inc/api.class.php:1542
 msgid "Malformed search criteria"
-msgstr ""
+msgstr "Criterii de cautare gresite"
 
 #: inc/api.class.php:1548
 msgid "Bad field ID in search criteria"
@@ -4007,11 +4012,11 @@ msgstr "ID camp eronat in criteriu de cautare"
 
 #: inc/api.class.php:1555
 msgid "Forbidden field ID in search criteria"
-msgstr ""
+msgstr "Camp ID interzis in criteria de cautare"
 
 #: inc/api.class.php:1581
 msgid "ID is forbidden along with 'forcedisplay' parameter."
-msgstr ""
+msgstr "IDul si parametrul 'forcedisplay' sunt interzise."
 
 #: inc/api.class.php:1867 inc/api.class.php:1969 inc/api.class.php:2482
 #: inc/html.class.php:564
@@ -4044,7 +4049,7 @@ msgstr "Parolă modificată cu succes."
 
 #: inc/api.class.php:2119
 msgid "parameter app_token seems wrong"
-msgstr ""
+msgstr "parametrul 'app_token' pare gresit"
 
 #: inc/api.class.php:2122
 msgid "missing parameter app_token"
@@ -4151,7 +4156,7 @@ msgstr "Aplicatie token"
 
 #: inc/apiclient.class.php:216
 msgid "Leave these parameters empty to disable API access restriction"
-msgstr ""
+msgstr "Nu completa pentru a dezactiva restrictia de access a API"
 
 #: inc/apiclient.class.php:244 inc/user.class.php:2341 inc/user.class.php:2342
 #: inc/user.class.php:2360 inc/user.class.php:2361 inc/user.class.php:2735
@@ -4199,7 +4204,7 @@ msgstr "Rest API"
 
 #: inc/apirest.class.php:214
 msgid "Only HTTP verb PUT is allowed"
-msgstr ""
+msgstr "Doar verbul PUT din HTTP este permis"
 
 #: inc/apirest.class.php:341
 msgid "resource not found or not an instance of CommonDBTM"
@@ -4294,15 +4299,15 @@ msgstr "Autentificare pe server de email"
 
 #: inc/auth.class.php:978
 msgid "Version 1"
-msgstr ""
+msgstr "Veriunea 1"
 
 #: inc/auth.class.php:979
 msgid "Version 2"
-msgstr ""
+msgstr "Versiunea 2"
 
 #: inc/auth.class.php:980
 msgid "Version 3+"
-msgstr ""
+msgstr "Versiunea 3+"
 
 #: inc/auth.class.php:1011 inc/authmail.class.php:87
 #: inc/ruleright.class.php:242
@@ -4369,7 +4374,7 @@ msgstr "Gazda CAS"
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1391
 msgid "CAS Version"
-msgstr ""
+msgstr "Versiunea CAS"
 
 #. TRANS: for CAS SSO system
 #. TRANS: Proxy port
@@ -5877,7 +5882,7 @@ msgstr "%1$s%2$s"
 
 #: inc/certificate.class.php:450
 msgid "Root CA"
-msgstr ""
+msgstr "Root CA"
 
 #: inc/certificate.class.php:533
 msgid "Empty for infinite"

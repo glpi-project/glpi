@@ -29,6 +29,7 @@
 # Сергей Морев <morev.sergey.a@gmail.com>, 2019
 # Mikhail Vlasenko <biggysmoke32@gmail.com>, 2019
 # 1 2 <frolikovon@gmail.com>, 2019
+# Alexander <mr_slam@rambler.ru>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -37,7 +38,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: 1 2 <frolikovon@gmail.com>, 2019\n"
+"Last-Translator: Alexander <mr_slam@rambler.ru>, 2020\n"
 "Language-Team: Russian (Russia) (https://www.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -6907,7 +6908,7 @@ msgstr "Заменить"
 
 #: inc/commondropdown.class.php:833 inc/itiltemplate.class.php:582
 msgid "Merge and assign to current entity"
-msgstr ""
+msgstr "Объединить и присвоить текущей организации"
 
 #: inc/commondropdown.class.php:850 inc/itiltemplate.class.php:599
 #: inc/ticket.class.php:2488
@@ -7915,7 +7916,7 @@ msgstr "Подчиненные %s"
 #: inc/commontreedropdown.class.php:598
 msgctxt "button"
 msgid "Move under"
-msgstr ""
+msgstr "Переместить под"
 
 #: inc/commontreedropdown.class.php:616 inc/group.class.php:374
 #: inc/item_softwarelicense.class.php:704
@@ -10332,7 +10333,7 @@ msgid_plural "Generic devices"
 msgstr[0] "Общие устройства"
 msgstr[1] "Общих устройств"
 msgstr[2] "Общих устройств"
-msgstr[3] "Общих устройств"
+msgstr[3] "Общие устройства"
 
 #: inc/devicegenericmodel.class.php:44 inc/dropdown.class.php:938
 msgid "Device generic model"
@@ -11907,7 +11908,7 @@ msgstr "Включить CSS-кастомизацию"
 
 #: inc/entity.class.php:2097
 msgid "Inherits configuration from the parent entity"
-msgstr ""
+msgstr "Наследование конфигурации из родительской организации"
 
 #: inc/entity.class.php:2325 inc/entity.class.php:2338
 #: inc/entity.class.php:2990 inc/levelagreement.class.php:496
@@ -13428,7 +13429,7 @@ msgstr "Шаблон для инцидента"
 
 #: inc/itilcategory.class.php:103 inc/itilcategory.class.php:165
 msgid "Template for a change"
-msgstr ""
+msgstr "Шаблон изменения"
 
 #: inc/itilcategory.class.php:107 inc/itilcategory.class.php:174
 msgid "Template for a problem"
@@ -13461,10 +13462,10 @@ msgstr "Количество изменений"
 #: inc/itilcategory.class.php:279
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Категория ITIL"
+msgstr[1] "Категории ITIL"
+msgstr[2] "Категории ITIL"
+msgstr[3] "Категории ITIL"
 
 #: inc/itilcategory.class.php:337 inc/itilcategory.class.php:354
 msgid "Code representing the ticket category is already used"
@@ -17178,7 +17179,7 @@ msgstr "Видимость"
 
 #: inc/profile.class.php:1152 inc/profile.class.php:1251
 msgid "From \\ To"
-msgstr "Начиная \\ Заканчивая"
+msgstr "Изменить С \\ На"
 
 #: inc/profile.class.php:1175 inc/profile.class.php:1276
 #: inc/profile.class.php:2350
@@ -19475,19 +19476,19 @@ msgstr "Связать заявки"
 
 #: inc/ticket.class.php:2455
 msgid "Merge followups"
-msgstr ""
+msgstr "Объединить комментарии"
 
 #: inc/ticket.class.php:2461
 msgid "Merge documents"
-msgstr ""
+msgstr "Объединить документы"
 
 #: inc/ticket.class.php:2467
 msgid "Merge tasks"
-msgstr ""
+msgstr "Объединить задачи"
 
 #: inc/ticket.class.php:2473
 msgid "Merge actors"
-msgstr ""
+msgstr "Объединить участников"
 
 #: inc/ticket.class.php:2479
 msgid "Link type"
@@ -19538,7 +19539,7 @@ msgstr "Внутреннее время для владения превышен
 
 #: inc/ticket.class.php:2673
 msgid "Next escalation level"
-msgstr ""
+msgstr "Следующий уровень эскалации"
 
 #: inc/ticket.class.php:2925
 msgid "Response date"
@@ -19794,37 +19795,37 @@ msgstr "Принять решение и ответить на опрос по �
 #: inc/ticket.class.php:6913 inc/ticket.class.php:7055
 #, php-format
 msgid "Not enough rights to merge tickets %d and %d"
-msgstr ""
+msgstr "Не достаточно прав для объединения заявок %d и %d"
 
 #: inc/ticket.class.php:6857
 #, php-format
 msgid "Failed to load ticket %d"
-msgstr ""
+msgstr "Не удалось загрузить заявку %d "
 
 #: inc/ticket.class.php:6872 inc/ticket.class.php:6887
 #, php-format
 msgid "Failed to add followup to ticket %d"
-msgstr ""
+msgstr "Не удалось добавить комментарий к заявке %d"
 
 #: inc/ticket.class.php:6907
 #, php-format
 msgid "Failed to add task to ticket %d"
-msgstr ""
+msgstr "Не удалось добавить комментарий к заявке %d"
 
 #: inc/ticket.class.php:6935
 #, php-format
 msgid "Failed to add document to ticket %d"
-msgstr ""
+msgstr "Не удалось добавить документ к заявке %d"
 
 #: inc/ticket.class.php:6961
 #, php-format
 msgid "Failed to link tickets %d and %d"
-msgstr ""
+msgstr "Не удалось связать заявки %d и %d"
 
 #: inc/ticket.class.php:7045
 #, php-format
 msgid "Failed to delete ticket %d"
-msgstr ""
+msgstr "Не удалось удалить заявку %d"
 
 #: inc/ticket.class.php:7052
 #, php-format

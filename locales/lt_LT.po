@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Len Len <egidijus37@gmail.com>, 2018
+# Egidijus Z., 2018
 # Povilas Mankevičius <povilas.mankevicius@gmail.com>, 2018
 # Arūnas Paulauskas <arunas.paulauskas@gmail.com>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018

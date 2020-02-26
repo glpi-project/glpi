@@ -5,7 +5,6 @@
 # 
 # Translators:
 # Sebastian Paul <spaul1905@gmail.com>, 2018
-# Megachip <www.transifex.com@megskywalker.de>, 2018
 # Thorsten H <thtools@gmail.com>, 2018
 # Erich Iseli <eiseli@gmail.com>, 2018
 # Kessl Checker <kessl@vollbio.de>, 2018
@@ -14,13 +13,14 @@
 # Administrator System, 2018
 # Stefan K <shadow_7@gmx.net>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
-# Thofl, 2019
 # Stephan <stephan.rennert@web.de>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2019
 # Slow Rider, 2019
 # Ettore Atalan <atalanttore@googlemail.com>, 2019
 # armin0103 <kkarmintestkk@yahoo.de>, 2019
 # Seidler Jean-Louis <jl.seidler@gmx.ch>, 2019
+# Thofl, 2020
+# Megachip <www.transifex.com@megskywalker.de>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -29,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Seidler Jean-Louis <jl.seidler@gmx.ch>, 2019\n"
+"Last-Translator: Megachip <www.transifex.com@megskywalker.de>, 2020\n"
 "Language-Team: German (Germany) (https://www.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2272,7 +2272,7 @@ msgstr "%s verbindet ein VLAN mit einem Netzwerkport"
 #: front/item_device.common.form.php:64
 #, php-format
 msgid "%1$s adds an item"
-msgstr ""
+msgstr "%1$s fügt ein Element hinzu"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:56
@@ -2324,7 +2324,7 @@ msgstr[1] "Elemente"
 #: front/item_softwarelicense.form.php:51
 #, php-format
 msgid "%s associates an item and a license"
-msgstr ""
+msgstr "%s assoziiert ein Element und eine Lizenz"
 
 #. TRANS: %s is the user login
 #: front/item_softwareversion.form.php:52
@@ -2384,13 +2384,13 @@ msgstr "erforderlich"
 
 #: front/itiltemplatefield.form.php:61
 msgid "predefined"
-msgstr ""
+msgstr "vordefiniert"
 
 #. TRANS: %1$s is the user login, %2$s the field type
 #: front/itiltemplatefield.form.php:73
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr ""
+msgstr "%1$s fügt %2$s Feld hinzu"
 
 #: front/knowbaseitem_comment.form.php:41
 #: front/knowbaseitem_comment.form.php:53
@@ -4794,7 +4794,7 @@ msgstr "Erstellungsdatum"
 
 #: inc/authldap.class.php:1174
 msgid "Domain name used by inventory tool"
-msgstr ""
+msgstr "Domänennname wird vom Inventarisierungstool genutzt"
 
 #: inc/authldap.class.php:1305 inc/authldap.class.php:1319
 #: inc/authldap.class.php:3153
@@ -6687,7 +6687,7 @@ msgstr "Bild hinten"
 
 #: inc/commondcmodeldropdown.class.php:302 inc/dcroom.class.php:213
 msgid "Unable to save picture file."
-msgstr ""
+msgstr "Bilddatei konnte nicht gespeichert werden"
 
 #: inc/commondcmodeldropdown.class.php:320
 msgid "1"
@@ -6751,7 +6751,7 @@ msgstr "Ersetzen"
 
 #: inc/commondropdown.class.php:833 inc/itiltemplate.class.php:582
 msgid "Merge and assign to current entity"
-msgstr ""
+msgstr "Verbinden und zur aktuellen Einheit zuordnen"
 
 #: inc/commondropdown.class.php:850 inc/itiltemplate.class.php:599
 #: inc/ticket.class.php:2488
@@ -7390,11 +7390,11 @@ msgstr "In Ticket %1$s umwandeln"
 
 #: inc/commonitilobject.class.php:7102
 msgid "Approve"
-msgstr ""
+msgstr "Genehmigen"
 
 #: inc/commonitilobject.class.php:7105
 msgid "Refuse"
-msgstr ""
+msgstr "Ablehnen"
 
 #: inc/commonitilobject.class.php:7113
 #, php-format
@@ -7727,12 +7727,12 @@ msgstr "Neue Unterrubrik"
 #: inc/commontreedropdown.class.php:517 inc/softwarelicense.class.php:1300
 #, php-format
 msgid "Sons of %s"
-msgstr "Untergeordnete Tickets von%s"
+msgstr "Kinder von %s"
 
 #: inc/commontreedropdown.class.php:598
 msgctxt "button"
 msgid "Move under"
-msgstr ""
+msgstr "Bewegen nach"
 
 #: inc/commontreedropdown.class.php:616 inc/group.class.php:374
 #: inc/item_softwarelicense.class.php:704
@@ -8158,7 +8158,7 @@ msgstr "Drucker-Verwaltung beschränken"
 
 #: inc/config.class.php:543
 msgid "Devices displayed in menu"
-msgstr ""
+msgstr "Im Menü dargestellte Geräte"
 
 #: inc/config.class.php:575
 msgid "Automatic transfer of computers"
@@ -8456,7 +8456,7 @@ msgstr "Hohen Kontrast aktivieren"
 
 #: inc/config.class.php:1238 inc/ruleright.class.php:343
 msgid "Timezone"
-msgstr ""
+msgstr "Zeitzone"
 
 #: inc/config.class.php:1249
 msgid "Use server configuration"
@@ -18964,7 +18964,7 @@ msgstr "Nachfolger Tickets"
 
 #: inc/ticket.class.php:3086
 msgid "Number of sons tickets"
-msgstr "Anzahl Nachfolger Tickets"
+msgstr "Anzahl untergeordneter Tickets"
 
 #: inc/ticket.class.php:3102
 msgid "Number of parent tickets"

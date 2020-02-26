@@ -5,7 +5,7 @@
 # 
 # Translators:
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
-# Tiago Graça, 2019
+# Tiago Graça, 2020
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27 08:26+0200\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Tiago Graça, 2019\n"
+"Last-Translator: Tiago Graça, 2020\n"
 "Language-Team: French (Canada) (https://www.transifex.com/glpi/teams/1637/fr_CA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3811,11 +3811,11 @@ msgstr "La langue a été modifiée !"
 
 #: front/user.form.php:157
 msgid "Unable to impersonate user"
-msgstr ""
+msgstr "Impossible de personnifier l'utilisateur"
 
 #: front/user.form.php:168
 msgid "Unable to stop impersonating user"
-msgstr ""
+msgstr "Impossible d'arrêter la personnification de l'utilisateur"
 
 #: inc/ajax.class.php:156
 msgid "Close"
@@ -6928,7 +6928,7 @@ msgstr "Dates invalides. Modification annulée."
 
 #: inc/commonitilobject.class.php:1599
 msgid "You cannot use predefined description verbatim"
-msgstr ""
+msgstr "Vous ne pouvez pas utiliser la description prédéfinie mot pour mot"
 
 #: inc/commonitilobject.class.php:2285
 msgctxt "priority"
@@ -8664,7 +8664,7 @@ msgstr "L'utilisation de la mémoire de %1$s est trop élevée"
 
 #: inc/config.class.php:1690
 msgid "Translation cache"
-msgstr ""
+msgstr "Cache de traduction"
 
 #: inc/config.class.php:1726
 msgid "Log Level"
@@ -12141,7 +12141,7 @@ msgstr "Partager"
 
 #: inc/html.class.php:4716
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Activer le plein-écran"
 
 #: inc/html.class.php:4720
 msgid "Zoom in/out"
@@ -12149,11 +12149,11 @@ msgstr ""
 
 #: inc/html.class.php:4731
 msgid "Previous (arrow left)"
-msgstr ""
+msgstr "Précédent (flèche gauche)"
 
 #: inc/html.class.php:4733
 msgid "Next (arrow right)"
-msgstr ""
+msgstr "Suivant (flèche droite)"
 
 #: inc/html.class.php:5196
 msgid "Attach file by drag & drop or copy & paste in editor or "
@@ -12244,11 +12244,11 @@ msgstr "Billet en attente de votre validation"
 #: inc/html.class.php:6991
 #, php-format
 msgid "You are impersonating %s."
-msgstr ""
+msgstr "Vous personnifiez %s."
 
 #: inc/html.class.php:6994
 msgid "Stop impersonating"
-msgstr ""
+msgstr "Arrêter la personnification"
 
 #: inc/infocom.class.php:420
 #, php-format
@@ -12571,7 +12571,7 @@ msgstr "La copie dans le presse papier a échoué"
 
 #: inc/item_devices.class.php:1436
 msgid "A device ID is mandatory"
-msgstr ""
+msgstr "L'ID du dispositif est obligatoire"
 
 #: inc/item_devices.class.php:1479
 msgid "Update of "
@@ -13726,7 +13726,7 @@ msgstr "Sélectionner le type de l'élément qui doit être déverrouillé"
 #: inc/log.class.php:214
 #, php-format
 msgid "%1$s impersonated by %2$s"
-msgstr ""
+msgstr "%1$s personnifié par %2$s"
 
 #: inc/log.class.php:281
 msgid "No historical"
@@ -13887,7 +13887,7 @@ msgstr "Utiliser Répondre comme demandeur (si disponible)"
 
 #: inc/mailcollector.class.php:370 inc/mailcollector.class.php:668
 msgid "An error occured trying to connect to collector."
-msgstr ""
+msgstr "Une erreur est survenue lors de la connexion au collecteur."
 
 #: inc/mailcollector.class.php:385
 #, php-format
@@ -16482,8 +16482,8 @@ msgstr[1] "Tâches de problèmes"
 #: inc/problemtemplate.class.php:47
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gabarit de problème"
+msgstr[1] "Gabarits de problème"
 
 #: inc/problem_ticket.class.php:59
 msgid "Link Ticket/Problem"
@@ -16797,6 +16797,8 @@ msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
 msgstr ""
+"Quand le calcul automatique est actif, le pourcentage est calculé selon la "
+"moyenne du pourcentage complété des projets et des tâches enfants."
 
 #: inc/project.class.php:1560
 msgid "Sum of planned durations of tasks"
@@ -16924,13 +16926,15 @@ msgstr "Mise à jour (acteur)"
 
 #: inc/projecttask.class.php:404
 msgid "A linked project is mandatory"
-msgstr ""
+msgstr "Un projet lié est obligatoire"
 
 #: inc/projecttask.class.php:663
 msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child task percent done."
 msgstr ""
+"Quand le calcul automatique est actif, le pourcentage est calculé selon la "
+"moyenne du pourcentage complété des tâches enfants."
 
 #: inc/projecttask.class.php:957 inc/rssfeed.class.php:420
 msgid "Creator"
@@ -16963,15 +16967,15 @@ msgstr[1] "Équipes de tâche"
 
 #: inc/projecttaskteam.class.php:142
 msgid "An item type is mandatory"
-msgstr ""
+msgstr "Un type d'élément est obligatoire"
 
 #: inc/projecttaskteam.class.php:151
 msgid "An item ID is mandatory"
-msgstr ""
+msgstr "Un ID d'élément est obligatoire"
 
 #: inc/projecttaskteam.class.php:160
 msgid "A project task is mandatory"
-msgstr ""
+msgstr "Une tâche de projet est obligatoire"
 
 #: inc/projecttask_ticket.class.php:64
 msgid "Link Ticket/Project task"
@@ -18107,7 +18111,7 @@ msgstr "Groupe de l'élément"
 
 #: inc/ruleticket.class.php:421
 msgid "Item state"
-msgstr ""
+msgstr "État de l'élément"
 
 #: inc/ruleticket.class.php:427
 msgid "Ticket location"
@@ -18568,11 +18572,11 @@ msgstr "Valide"
 #: inc/softwarelicense.class.php:443
 msgctxt "adjective"
 msgid "Valid (Over Quota)"
-msgstr ""
+msgstr "Valide (Dépassement du quota)"
 
 #: inc/softwarelicense.class.php:451 inc/softwarelicense.class.php:603
 msgid "Allow Over-Quota"
-msgstr ""
+msgstr "Autoriser le dépassement du quota"
 
 #: inc/softwarelicense.class.php:462
 msgid "Never expire"
@@ -18868,7 +18872,7 @@ msgstr "Lier des billets"
 
 #: inc/ticket.class.php:2455
 msgid "Merge followups"
-msgstr ""
+msgstr "Fusionner les suivis"
 
 #: inc/ticket.class.php:2461
 msgid "Merge documents"
@@ -18880,11 +18884,11 @@ msgstr "Fusionner les tâches"
 
 #: inc/ticket.class.php:2473
 msgid "Merge actors"
-msgstr ""
+msgstr "Fusionner les acteurs"
 
 #: inc/ticket.class.php:2479
 msgid "Link type"
-msgstr ""
+msgstr "Type de lien"
 
 #: inc/ticket.class.php:2482 inc/ticket_ticket.class.php:215
 #: inc/ticket_ticket.class.php:235 inc/ticket_ticket.class.php:240
@@ -18931,7 +18935,7 @@ msgstr "Temps interne de prise en charge dépassé"
 
 #: inc/ticket.class.php:2673
 msgid "Next escalation level"
-msgstr ""
+msgstr "Prochain niveau d'escalade"
 
 #: inc/ticket.class.php:2925
 msgid "Response date"
@@ -19183,7 +19187,7 @@ msgstr ""
 #: inc/ticket.class.php:6913 inc/ticket.class.php:7055
 #, php-format
 msgid "Not enough rights to merge tickets %d and %d"
-msgstr ""
+msgstr "Droits insuffisants pour fusionner les billets %d et %d"
 
 #: inc/ticket.class.php:6857
 #, php-format
@@ -19193,22 +19197,22 @@ msgstr "Échec de chargement du billet %d"
 #: inc/ticket.class.php:6872 inc/ticket.class.php:6887
 #, php-format
 msgid "Failed to add followup to ticket %d"
-msgstr ""
+msgstr "Échec de l'ajout du suivi au billet %d"
 
 #: inc/ticket.class.php:6907
 #, php-format
 msgid "Failed to add task to ticket %d"
-msgstr ""
+msgstr "Échec de l'ajout de la tâche au billet %d"
 
 #: inc/ticket.class.php:6935
 #, php-format
 msgid "Failed to add document to ticket %d"
-msgstr ""
+msgstr "Échec de l'ajout du document au billet %d"
 
 #: inc/ticket.class.php:6961
 #, php-format
 msgid "Failed to link tickets %d and %d"
-msgstr ""
+msgstr "Échec de lier les billets %d et %d"
 
 #: inc/ticket.class.php:7045
 #, php-format
@@ -19723,7 +19727,7 @@ msgstr "Télécharger la VCard de l'utilisateur"
 
 #: inc/user.class.php:2013 inc/user.class.php:2014
 msgid "Impersonate"
-msgstr ""
+msgstr "Personnifier"
 
 #: inc/user.class.php:2107 inc/user.class.php:2589 inc/user.class.php:4534
 msgid "Password confirmation"
