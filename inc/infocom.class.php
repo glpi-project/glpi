@@ -1906,7 +1906,7 @@ class Infocom extends CommonDBChild {
     * @param string  $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
    **/
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
-      
+
       Toolbox::deprecated('Use clone');
       $ic = new self();
       if ($ic->getFromDBforDevice($itemtype, $oldid)) {

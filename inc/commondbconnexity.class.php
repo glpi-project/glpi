@@ -165,7 +165,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @return array the items associated to the given one (empty if none was found)
    **/
    static function getItemsAssociatedTo($itemtype, $items_id) {
-      $res = array();
+      $res = [];
       $iterator = static::getItemsAssociationRequest($itemtype, $items_id);
 
       while ($row = $iterator->next()) {

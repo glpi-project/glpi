@@ -510,7 +510,7 @@ class Item_Devices extends CommonDBRelation {
    static function getItemsAssociatedTo($itemtype, $items_id) {
       global $DB;
 
-      $res = array();
+      $res = [];
       foreach (self::getItemAffinities($itemtype) as $link_type) {
          $table = $link_type::getTable();
          $iterator = $DB->request([

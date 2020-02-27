@@ -374,7 +374,7 @@ class Certificate extends CommonDBTM {
    }
 
    function post_clone($source, $history) {
-      parent::post_clone($source,$history);
+      parent::post_clone($source, $history);
       $relations_classes = [
          Infocom::class,
          Contract_Item::class,
@@ -393,9 +393,9 @@ class Certificate extends CommonDBTM {
             );
             continue;
          }
-         
+
          $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
-         foreach ($relation_items as $relation_item) {        
+         foreach ($relation_items as $relation_item) {
             $newId = $relation_item->clone($override_input);
          }
       }

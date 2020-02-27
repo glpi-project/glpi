@@ -398,7 +398,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
    **/
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
-      
+
       Toolbox::deprecated('Use clone');
       if (empty($newitemtype)) {
          $newitemtype = $itemtype;

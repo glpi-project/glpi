@@ -918,7 +918,7 @@ JAVASCRIPT;
     **/
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
-      
+
       Toolbox::deprecated('Use clone');
       $iterator = $DB->request([
          'FROM' => 'glpi_items_softwarelicenses',

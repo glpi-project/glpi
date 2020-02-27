@@ -231,11 +231,11 @@ class NetworkPort extends CommonDBChild {
    * @see CommonDBTM::post_clone
    */
    function post_clone($source, $history) {
-      parent::post_clone($source,$history);
+      parent::post_clone($source, $history);
       $instantiation = $source->getInstantiation();
       if ($instantiation !== false) {
          $instantiation->fields[$instantiation->getIndexName()] = $this->getID();
-         return $instantiation->clone(array(), $history);
+         return $instantiation->clone([], $history);
       }
    }
 
@@ -1105,7 +1105,7 @@ class NetworkPort extends CommonDBChild {
    **/
    static function cloneItem($itemtype, $old_items_id, $new_items_id) {
       global $DB;
-      
+
       Toolbox::deprecated('Use clone');
       $np = new self();
       // ADD Ports

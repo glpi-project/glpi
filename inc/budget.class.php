@@ -176,7 +176,7 @@ class Budget extends CommonDropdown{
 
 
    function post_clone($source, $history) {
-      parent::post_clone($source,$history);
+      parent::post_clone($source, $history);
       $relations_classes = [
          Document_Item::class
       ];
@@ -192,9 +192,9 @@ class Budget extends CommonDropdown{
             );
             continue;
          }
-         
+
          $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
-         foreach ($relation_items as $relation_item) {        
+         foreach ($relation_items as $relation_item) {
             $newId = $relation_item->clone($override_input);
          }
       }

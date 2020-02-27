@@ -99,7 +99,7 @@ class Cartridge extends CommonDBChild {
    }
 
    function post_clone($source, $history) {
-      parent::post_clone($source,$history);
+      parent::post_clone($source, $history);
       $relations_classes = [
          Infocom::class
       ];
@@ -115,9 +115,9 @@ class Cartridge extends CommonDBChild {
             );
             continue;
          }
-         
+
          $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
-         foreach ($relation_items as $relation_item) {        
+         foreach ($relation_items as $relation_item) {
             $newId = $relation_item->clone($override_input);
          }
       }

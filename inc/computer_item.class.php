@@ -782,7 +782,7 @@ class Computer_Item extends CommonDBRelation{
    **/
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
-      
+
       Toolbox::deprecated('Use clone');
       $iterator = $DB->request([
          'FROM'   => self::getTable(),

@@ -106,7 +106,7 @@ class Contract extends CommonDBTM {
     **/
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
-      
+
       Toolbox::deprecated('Use clone');
       $result = $DB->request(
          [

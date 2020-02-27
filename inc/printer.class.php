@@ -213,7 +213,7 @@ class Printer  extends CommonDBTM {
    }
 
    function post_clone($source, $history) {
-      parent::post_clone($source,$history);
+      parent::post_clone($source, $history);
       $relations_classes = [
          Item_OperatingSystem::class,
          Item_devices::class,
@@ -237,9 +237,9 @@ class Printer  extends CommonDBTM {
             );
             continue;
          }
-         
+
          $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
-         foreach ($relation_items as $relation_item) {        
+         foreach ($relation_items as $relation_item) {
             $newId = $relation_item->clone($override_input, $history);
          }
       }

@@ -1058,7 +1058,7 @@ class CommonDBTM extends CommonGLPI {
          }
          if (isset($id_to_clone) && $this->getFromDB($id_to_clone)) {
             return $this->clone($input, $history);
-         } 
+         }
       }
 
       // Store input in the object to be available in all sub-method / hook
@@ -1197,8 +1197,7 @@ class CommonDBTM extends CommonGLPI {
       }
       $new_item = new static();
       $input = $this->fields;
-      foreach($override_input as $key => $value)
-      {
+      foreach ($override_input as $key => $value) {
          $input[$key] = $value;
       }
       $input = $new_item->prepareInputForClone($input);
