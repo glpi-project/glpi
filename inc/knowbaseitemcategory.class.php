@@ -49,7 +49,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
    }
 
    public static function canView() {
-      if (isAPI()) {
+      if (Session::getCurrentInterface() == "helpdesk") {
          return true;
       }
 
