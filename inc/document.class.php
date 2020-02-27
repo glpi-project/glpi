@@ -617,12 +617,40 @@ class Document extends CommonDBTM {
          return true;
       }
 
+      // The following case should be reachable from the API
+      self::loadAPISessionIfExist();
+
       if (isset($options["tickets_id"])
           && $this->canViewFileFromItilObject('Ticket', $options["tickets_id"])) {
          return true;
       }
 
       return false;
+   }
+
+   /**
+    * Try to load the session from the API Tolen
+    *
+    * @since 9.5
+    */
+   private static function loadAPISessionIfExist() {
+      $session_token = \Toolbox::getHeader('Session-Token');
+
+      // No api token found
+      if ($session_token === null) {
+         return;
+      }
+
+      $current_session = session_id();
+
+      // Clean current session
+      if (!empty($current_session) && $current_session !== $session_token) {
+         session_destroy();
+      }
+
+      // Load API session
+      session_id($session_token);
+      Session::start();
    }
 
    /**

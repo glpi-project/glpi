@@ -71,7 +71,13 @@ class APIRest extends APIBaseClass {
       }
    }
 
-   protected function query($resource = "", $params = [], $expected_code = 200, $expected_symbol = '') {
+   protected function query(
+      $resource = "",
+      $params = [],
+      $expected_code = 200,
+      $expected_symbol = '',
+      bool $file = false
+   ) {
       $verb         = isset($params['verb'])
                         ? $params['verb']
                         : 'GET';
@@ -110,14 +116,21 @@ class APIRest extends APIBaseClass {
          $this->array($body)
             ->hasKey('0')
             ->string[0]->isIdenticalTo($expected_symbol);
-         return;
+         return $body;
       }
-      //retrieve data
-      $body            = $res->getBody();
-      $data            = json_decode($body, true);
-      if (is_array($data)) {
-         $data['headers'] = $res->getHeaders();
+
+      // retrieve data
+      $body = $res->getBody();
+
+      if ($file) {
+         $data = $body;
+      } else {
+         $data = json_decode($body, true);
+         if (is_array($data)) {
+            $data['headers'] = $res->getHeaders();
+         }
       }
+
       // common tests
       $this->variable($res)->isNotNull();
       $this->variable($res->getStatusCode())->isEqualTo($expected_code);
@@ -370,5 +383,70 @@ class APIRest extends APIBaseClass {
          unset($data['headers']);
       }
       $this->integer(count($data))->isEqualTo(1);
+   }
+
+   /**
+    * @tags   api
+    * @covers API::userPicture
+    */
+   public function testUserPicture() {
+      $pic = "test_picture.png";
+      $params = ['headers' => ['Session-Token' => $this->session_token]];
+      $id = getItemByTypeName('User', 'glpi', true);
+      $user = new \User();
+
+      /**
+       * Case 1: normal execution
+       */
+
+      // Copy pic to tmp folder so it can be set to a user
+      copy("tests/$pic", "files/_tmp/$pic");
+
+      // Load GLPI user
+      $this->boolean($user->getFromDB($id))->isTrue();
+
+      // Set a pic URL
+      $success = $user->update([
+         'id'      => $id,
+         '_picture' => [$pic],
+      ]);
+      $this->boolean($success)->isTrue();
+
+      // Get updated pic url
+      $pic = $user->fields['picture'];
+      $this->string($pic)->isNotEmpty();
+
+      // Check pic was moved correctly into _picture folder
+      $this->boolean(file_exists(GLPI_PICTURE_DIR . "/$pic"))->isTrue();
+      $file_content = file_get_contents(GLPI_PICTURE_DIR . "/$pic");
+      $this->string($file_content)->isNotEmpty();
+
+      // Request
+      $response = $this->query("User/$id/Picture", $params, 200, '', true);
+      $this->string($response->__toString())->isEqualTo($file_content);
+
+      /**
+       * Case 2: user doens't exist
+       */
+
+      // Request
+      $response = $this->query("User/99999999/Picture", $params, 400, "ERROR");
+      $this->array($response)->hasSize(2);
+      $this->string($response[1])->contains("Bad request: user with id '99999999' not found");
+
+      /**
+       * Case 3: user with no pictures
+       */
+
+      // Remove pic URL
+      $success = $user->update([
+         'id'             => $id,
+         '_blank_picture' => true,
+      ]);
+      $this->boolean($success)->isTrue();
+
+      // Request
+      $response = $this->query("User/$id/Picture", $params, 204);
+      $this->variable($response)->isNull();
    }
 }

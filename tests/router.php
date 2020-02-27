@@ -31,5 +31,6 @@
  */
 
 define('GLPI_CONFIG_DIR', __DIR__);
+define('GLPI_PICTURE_DIR', __DIR__ . '/files/_pictures');
 
 return false;

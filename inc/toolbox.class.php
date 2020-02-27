@@ -3218,4 +3218,20 @@ HTML;
 
       return "#".$fg_color;
    }
+
+   /**
+    * Get an HTTP header value
+    *
+    * @since 9.5
+    *
+    * @param string $name
+    *
+    * @return mixed The header value or null if not found
+    */
+   public static function getHeader(string $name) {
+      // Format expected header name
+      $name = "HTTP_" . str_replace("-", "_", strtoupper($name));
+
+      return $_SERVER[$name] ?? null;
+   }
 }
