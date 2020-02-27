@@ -826,7 +826,6 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-
       if (isset($input["document"]) && ($input["document"] > 0)) {
          $doc = new Document();
          if ($doc->getFromDB($input["document"])) {
