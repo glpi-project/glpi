@@ -179,6 +179,21 @@ class DomainRecord extends CommonDBChild {
       return count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
    }
 
+   static function canCreate() {
+      if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+         return true;
+      }
+      return parent::canCreate();
+   }
+
+   static function canUpdate() {
+      if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+         return true;
+      }
+      return parent::canUpdate();
+   }
+
+
    public function canUpdateItem() {
       return parent::canUpdateItem()
          && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
@@ -382,7 +397,7 @@ class DomainRecord extends CommonDBChild {
       if (!$domain->can($instID, READ)) {
          return false;
       }
-      $canedit = $domain->can($instID, UPDATE);
+      $canedit = $domain->can($instID, UPDATE) || count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
       $rand    = mt_rand();
 
       $iterator = $DB->request([
