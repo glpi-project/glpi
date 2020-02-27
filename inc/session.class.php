@@ -1396,4 +1396,25 @@ class Session {
    static function mustChangePassword() {
       return array_key_exists('glpi_password_expired', $_SESSION);
    }
+
+   /**
+    * Get friendly name of the current user
+    *
+    * @since 9.5
+    *
+    * @return string|null
+    */
+   public static function getUserFriendlyName() {
+      if (!isset($_SESSION["glpiID"])) {
+         return null;
+      };
+
+      $user = new \User();
+
+      if (!$user->getFromDB($_SESSION["glpiID"])) {
+         return null;
+      };
+
+      return $user->getFriendlyName();
+   }
 }
