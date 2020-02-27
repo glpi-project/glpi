@@ -338,6 +338,14 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
       return $criteria;
    }
 
+      $this->input = $this->addFiles(
+         $this->input,
+         [
+            'force_update'  => true,
+            'content_field' => 'text',
+         ]
+      );
+
 
    function rawSearchOptions() {
       $tab = [];

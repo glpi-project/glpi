@@ -1428,6 +1428,8 @@ class Ticket extends CommonITILObject {
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
+      parent::post_updateItem($history);
+
       //Action for send_validation rule : do validation before clean
       $this->manageValidationAdd($this->input);
 
