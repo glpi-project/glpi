@@ -400,7 +400,7 @@ class APIRest extends APIBaseClass {
        */
 
       // Copy pic to tmp folder so it can be set to a user
-      copy("tests/$pic", "files/_tmp/$pic");
+      copy("tests/$pic", GLPI_TMP_DIR . "/$pic");
 
       // Load GLPI user
       $this->boolean($user->getFromDB($id))->isTrue();
