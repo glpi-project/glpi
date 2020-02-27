@@ -64,6 +64,7 @@ class Profile extends CommonDBTM {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
+      $forbidden[] = 'clone';
       return $forbidden;
    }
 

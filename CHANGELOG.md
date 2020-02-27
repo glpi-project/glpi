@@ -35,6 +35,11 @@ The present file will list all changes made to the project; according to the
 - Add translation functions `__()`,  `_n()`,  `_x()` and  `_nx()` in javascript in browser context.
 - `Migration::renameItemtype()` method to update of database schema/values when an itemtype class is renamed
 - Menu returned by `CommonGLPI::getMenuContent()` method override may now define an icon for each menu entry.
+- `CommonDBConnexity::getItemsAssociatedTo()` method to get the items associated to the given one
+- `CommonDBConnexity::getItemsAssociationRequest()` method to get the DB request to use to get the items associated to the given one
+- `CommonDBTM::clone()` method to clone the current item
+- `CommonDBTM::prepareInputForClone()` method to modify the input data that will be used for the cloning
+- `CommonDBTM::post_clone()` method to perform other steps after an item has been cloned (like clone the elements it is associated to)
 
 #### Changes
 
@@ -85,6 +90,30 @@ The present file will list all changes made to the project; according to the
 - `Plugin::setUnloadedByName()`
 - Usage of `$LOADED_PLUGINS` global variable
 - `CommonDBTM::getRawName()` replaced by `CommonDBTM::getFriendlyName()`
+- `Calendar_Holiday::cloneCalendar()`
+- `CalendarSegment::cloneCalendar()`
+- `Computer_Item::cloneComputer()`
+- `Computer_Item::cloneItem()`
+- `ComputerAntivirus::cloneComputer()`
+- `Contract::cloneItem()`
+- `Contract_Item::cloneItem()`
+- `ContractCost::cloneContract()`
+- `Document_Item::cloneItem()`
+- `Infocom::cloneItem()`
+- `Item_Devices::cloneItem()`
+- `Item_Disk::cloneItem()`
+- `Item_OperatingSystem::cloneItem()`
+- `Item_SoftwareLicense::cloneComputer()`
+- `Item_SoftwareLicense::cloneItem()`
+- `Item_SoftwareVersion::cloneComputer()`
+- `Item_SoftwareVersion::cloneItem()`
+- `Itil_Project::cloneItilProject()`
+- `KnowbaseItem_Item::cloneItem()`
+- `NetworkPort::cloneItem()`
+- `Notepad::cloneItem()`
+- `ProjectCost::cloneProject()`
+- `ProjectTeam::cloneProjectTask()`
+- `ProjectTask::cloneProjectTeam()`
 
 #### Removed
 

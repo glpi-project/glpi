@@ -94,13 +94,30 @@ class Consumable extends CommonDBChild {
       return [];
    }
 
+   function post_clone($source, $history) {
+      parent::post_clone($source, $history);
+      $relations_classes = [
+         Infocom::class
+      ];
 
-   function post_addItem() {
+      $override_input['items_id'] = $this->getID();
+      foreach ($relations_classes as $classname) {
+         if (!is_a($classname, CommonDBConnexity::class, true)) {
+            Toolbox::logWarning(
+               sprintf(
+                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
+                  $classname
+               )
+            );
+            continue;
+         }
 
-      Infocom::cloneItem('ConsumableItem', $this->fields["consumableitems_id"], $this->fields['id'],
-                         $this->getType());
+         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
+         foreach ($relation_items as $relation_item) {
+            $newId = $relation_item->clone($override_input);
+         }
+      }
    }
-
 
    /**
     * send back to stock

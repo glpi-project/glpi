@@ -292,7 +292,7 @@ class Dashboard extends \CommonDBTM {
     *
     * @return array with [title, key]
     */
-   function clone(): array {
+   function cloneCurrent(): array {
       $this->load();
 
       $this->fields['name'] = sprintf(__('Copy of %s'), $this->fields['name']);

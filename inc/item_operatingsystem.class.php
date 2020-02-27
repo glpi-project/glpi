@@ -354,6 +354,8 @@ class Item_OperatingSystem extends CommonDBRelation {
    /**
     * Duplicate operating system from an item template to its clone
     *
+    * @deprecated 9.5
+    *
     * @param string  $itemtype    itemtype of the item
     * @param integer $oldid       ID of the item to clone
     * @param integer $newid       ID of the item cloned
@@ -364,6 +366,7 @@ class Item_OperatingSystem extends CommonDBRelation {
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
+      Toolbox::deprecated('Use clone');
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [

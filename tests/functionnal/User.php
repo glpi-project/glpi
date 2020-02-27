@@ -488,6 +488,44 @@ class User extends \DbTestCase {
 
    }
 
+   public function testClone() {
+      $this->login();
+
+      $user = getItemByTypeName('User', TU_USER);
+
+      $this->setEntity('_test_root_entity', true);
+
+      $date = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date;
+
+      // Test item cloning
+      $added = $user->clone();
+      $this->integer((int)$added)->isGreaterThan(0);
+
+      $clonedUser = new \User();
+      $this->boolean($clonedUser->getFromDB($added))->isTrue();
+
+      $fields = $user->fields;
+
+      // Check the values. Id and dates must be different, everything else must be equal
+      foreach ($fields as $k => $v) {
+         switch ($k) {
+            case 'id':
+            case 'name':
+               $this->variable($clonedUser->getField($k))->isNotEqualTo($user->getField($k));
+               break;
+            case 'date_mod':
+            case 'date_creation':
+               $dateClone = new \DateTime($clonedUser->getField($k));
+               $expectedDate = new \DateTime($date);
+               $this->dateTime($dateClone)->isEqualTo($expectedDate);
+               break;
+            default:
+               $this->variable($clonedUser->getField($k))->isEqualTo($user->getField($k));
+         }
+      }
+   }
+
    public function testGetFromDBbyDn() {
       $user = $this->newTestedInstance;
       $dn = 'user=user_with_dn,dc=test,dc=glpi-project,dc=org';

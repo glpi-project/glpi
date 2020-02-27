@@ -157,8 +157,29 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    }
 
    /**
+    * get the request results to get items associated to the given one (defined by $itemtype and $items_id)
+    *
+    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
+    * @param string  $items_id          the name of the item we want the resulting items to be associated to
+    *
+    * @return array the items associated to the given one (empty if none was found)
+    **/
+   static function getItemsAssociationRequest($itemtype, $items_id) {
+      global $DB;
+
+      return $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => static::getTable(),
+         'WHERE'  => [
+            static::$items_id  => $items_id
+         ]
+      ]);
+   }
+
+   /**
     * Duplicate all tasks from a project template to his clone
     *
+    * @deprecated 9.5
     * @since 9.2
     *
     * @param integer $oldid        ID of the item to clone
@@ -167,6 +188,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    static function cloneProjectTask ($oldid, $newid) {
       global $DB;
 
+      Toolbox::deprecated('Use clone');
       $iterator = $DB->request(['FROM' => 'glpi_projecttasks', 'WHERE' => ['projects_id' => $oldid]]);
       while ($data = $iterator->next()) {
          $cd                  = new self();
@@ -298,11 +320,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       global $CFG_GLPI;
 
       // ADD Documents
-      if (array_key_exists('projecttasktemplates_id', $this->input)) {
-         Document_Item::cloneItem('ProjectTaskTemplate',
-                                  $this->input["projecttasktemplates_id"],
-                                  $this->fields['id'],
-                                  $this->getType());
+      $document_items = Document_Item::getItemsAssociatedTo($this->getType(), $this->fields['id']);
+      $override_input['items_id'] = $this->getID();
+      foreach ($document_items as $document_item) {
+         $document_item->clone($override_input);
       }
 
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {

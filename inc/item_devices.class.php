@@ -499,10 +499,48 @@ class Item_Devices extends CommonDBRelation {
       return str_replace ('Item_', '', $devicetype);
    }
 
+    /**
+    * get items associated to the given one (defined by $itemtype and $items_id)
+    *
+    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
+    * @param string  $items_id          the name of the item we want the resulting items to be associated to
+    *
+    * @return array the items associated to the given one (empty if none was found)
+   **/
+   static function getItemsAssociatedTo($itemtype, $items_id) {
+      global $DB;
 
+      $res = [];
+      foreach (self::getItemAffinities($itemtype) as $link_type) {
+         $table = $link_type::getTable();
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $table,
+            'WHERE'  => [
+               'itemtype'  => $itemtype,
+               'items_id'  => $items_id
+            ]
+         ]);
+
+         while ($row = $iterator->next()) {
+            $input = Toolbox::addslashes_deep($row);
+            $item = new $link_type();
+            $item->getFromDB($input['id']);
+            $res[] = $item;
+         }
+      }
+      return $res;
+   }
+
+   /**
+    *
+    * @deprecated 9.5
+    *
+   **/
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
 
+      Toolbox::deprecated('Use clone');
       foreach (self::getItemAffinities($itemtype) as $link_type) {
          $table = $link_type::getTable();
          $olds = $DB->request([

@@ -43,3 +43,4 @@ if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype'
 
 $item::dropdown();
 echo "<br/><input type='submit' name='update' value=\""._sx('button', 'Update')."\" class='submit'>";
+echo "<br/><input type='submit' name='clone' value=\""._sx('button', 'Clone')."\" class='submit'>";

@@ -88,12 +88,15 @@ class ComputerAntivirus extends CommonDBChild {
    /**
     * Duplicate all antirivuses from a computer template to his clone
     *
+    * @deprecated 9.5
+    *
     * @param $oldid
     * @param $newid
    **/
    static function cloneComputer($oldid, $newid) {
       global $DB;
 
+      Toolbox::deprecated('Use clone');
       $result = $DB->request(
          [
             'FROM'  => ComputerAntivirus::getTable(),

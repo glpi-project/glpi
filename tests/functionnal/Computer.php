@@ -350,4 +350,39 @@ class Computer extends DbTestCase {
          }
       )->message->contains('getFromDBByCrit expects to get one result, 8 found!');
    }
+
+   public function testClone() {
+      $this->login();
+      $this->setEntity('_test_root_entity', true);
+
+      $date = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date;
+
+      // Test item cloning
+      $computer = $this->getNewComputer();
+      $added = $computer->clone();
+      $this->integer((int)$added)->isGreaterThan(0);
+
+      $clonedComputer = new \Computer();
+      $this->boolean($clonedComputer->getFromDB($added))->isTrue();
+
+      $fields = $computer->fields;
+
+      // Check the computers values. Id and dates must be different, everything else must be equal
+      foreach ($fields as $k => $v) {
+         switch ($k) {
+            case 'id':
+               $this->variable($clonedComputer->getField($k))->isNotEqualTo($computer->getField($k));
+               break;
+            case 'date_mod':
+            case 'date_creation':
+               $dateClone = new \DateTime($clonedComputer->getField($k));
+               $expectedDate = new \DateTime($date);
+               $this->dateTime($dateClone)->isEqualTo($expectedDate);
+               break;
+            default:
+               $this->variable($clonedComputer->getField($k))->isEqualTo($computer->getField($k));
+         }
+      }
+   }
 }

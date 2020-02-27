@@ -112,6 +112,7 @@ class Item_Disk extends CommonDBChild {
    /**
     * Duplicate all disks from an item template to his clone
     *
+    * @deprecated 9.5
     * @since 0.84
     *
     * @param string  $type  Item type
@@ -123,6 +124,7 @@ class Item_Disk extends CommonDBChild {
    static function cloneItem($type, $oldid, $newid) {
       global $DB;
 
+      Toolbox::deprecated('Use clone');
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
