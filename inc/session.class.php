@@ -103,6 +103,7 @@ class Session {
                     && (($auth->user->fields['end_date'] > $_SESSION["glpi_currenttime"])
                         || is_null($auth->user->fields['end_date'])))) {
                $_SESSION["glpiID"]              = $auth->user->fields['id'];
+               $_SESSION["glpifriendlyname"]    = $auth->user->getFriendlyName();
                $_SESSION["glpiname"]            = $auth->user->fields['name'];
                $_SESSION["glpirealname"]        = $auth->user->fields['realname'];
                $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
