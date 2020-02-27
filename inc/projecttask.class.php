@@ -320,11 +320,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       global $CFG_GLPI;
 
       // ADD Documents
-      if (array_key_exists('projecttasktemplates_id', $this->input)) {
-         Document_Item::cloneItem('ProjectTaskTemplate',
-                                  $this->input["projecttasktemplates_id"],
-                                  $this->fields['id'],
-                                  $this->getType());
+      $document_items = Document_Item::getItemsAssociatedTo($this->getType(), $this->fields['id']);
+      $override_input['items_id'] = $this->getID();
+      foreach ($document_items as $document_item) {
+         $document_item->clone($override_input);
       }
 
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {

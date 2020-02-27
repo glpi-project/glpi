@@ -181,7 +181,11 @@ class SoftwareLicense extends CommonTreeDropdown {
       }
 
       // Add infocoms if exists for the licence
-      Infocom::cloneItem('Software', $dupid, $this->fields['id'], $this->getType());
+      $infocoms = Infocom::getItemsAssociatedTo($this->getType(), $this->fields['id']);
+      if (!empty($infocoms)) {
+         $override_input['items_id'] = $this->getID();
+         $infocoms[0]->clone($override_input);
+      }
       Software::updateValidityIndicator($this->fields["softwares_id"]);
    }
 
