@@ -40,8 +40,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class PlanningExternalEventTemplate extends CommonDropdown {
    use PlanningEvent {
-      prepareInputForAdd    as prepareInputForAddTrait;
-      prepareInputForUpdate as prepareInputForUpdateTrait;
+      prepareInputForAdd    as protected prepareInputForAddTrait;
+      prepareInputForUpdate as protected prepareInputForUpdateTrait;
+      rawSearchOptions      as protected trait_rawSearchOptions;
    }
 
    // From CommonDBTM
@@ -109,44 +110,6 @@ class PlanningExternalEventTemplate extends CommonDropdown {
    }
 
 
-   function rawSearchOptions() {
-      return array_merge(parent::rawSearchOptions(), [
-         [
-            'id'                 => '4',
-            'name'               => __('Description'),
-            'field'              => 'text',
-            'table'              => self::getTable(),
-            'datatype'           => 'text',
-            'htmltext'           => true
-         ], [
-            'id'                 => '5',
-            'name'               => __('Status'),
-            'field'              => 'state',
-            'table'              => self::getTable(),
-            'datatype'           => 'specific'
-         ], [
-            'id'                 => '6',
-            'name'               => __('Category'),
-            'field'              => 'name',
-            'table'              => getTableForItemType('PlanningEventCategory'),
-            'datatype'           => 'dropdown'
-         ], [
-            'id'                 => '7',
-            'name'               => __('Background event'),
-            'field'              => 'background',
-            'table'              => self::getTable(),
-            'datatype'           => 'bool'
-         ], [
-            'id'                 => '8',
-            'name'               => __('Repeat'),
-            'field'              => 'rrule',
-            'table'              => self::getTable(),
-            'datatype'           => 'text'
-         ]
-      ]);
-   }
-
-
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -203,5 +166,10 @@ class PlanningExternalEventTemplate extends CommonDropdown {
       }
 
       return $input;
+   }
+
+
+   function rawSearchOptions() {
+      return $this->trait_rawSearchOptions();
    }
 }
