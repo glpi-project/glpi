@@ -467,7 +467,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
             );
 
             $mapped_type = $this->getCorrespondingItem('PluginDomainsDomaintype', $dom['plugin_domains_domaintypes_id']);
-            if ($mapped_type === null) {
+            if ($dom['plugin_domains_domaintypes_id'] != 0 && $mapped_type === null) {
                $message = sprintf(
                   __('Unable to find mapping for type %s.'),
                   $dom['plugin_domains_domaintypes_id']
