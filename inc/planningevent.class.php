@@ -848,4 +848,152 @@ trait PlanningEvent {
 
       return $rset;
    }
+
+
+   function rawSearchOptions() {
+      $tab = [
+         [
+            'id'            => 'common',
+            'name'          => self::GetTypeName()
+         ], [
+            'id'            => '1',
+            'table'         => self::getTable(),
+            'field'         => 'name',
+            'name'          => __('Name'),
+            'datatype'      => 'itemlink',
+            'massiveaction' => false,
+            'autocomplete'  => true,
+         ], [
+            'id'            => '2',
+            'table'         => self::getTable(),
+            'field'         => 'id',
+            'name'          => __('ID'),
+            'massiveaction' => false,
+            'datatype'      => 'number'
+         ], [
+            'id'            => '80',
+            'table'         => 'glpi_entities',
+            'field'         => 'completename',
+            'name'          => __('Entity'),
+            'datatype'      => 'dropdown'
+         ], [
+            'id'            => '3',
+            'table'         => self::getTable(),
+            'field'         => 'state',
+            'name'          => __('Status'),
+            'datatype'      => 'specific',
+            'massiveaction' => false,
+            'searchtype'    => ['equals', 'notequals']
+         ], [
+            'id'            => '4',
+            'table'         => $this->getTable(),
+            'field'         => 'text',
+            'name'          => __('Description'),
+            'massiveaction' => false,
+            'datatype'      => 'text',
+            'htmltext'      => true
+         ], [
+            'id'            => '5',
+            'table'         => PlanningEventCategory::getTable(),
+            'field'         => 'name',
+            'name'          => PlanningEventCategory::getTypeName(),
+            'forcegroupby'  => true,
+            'datatype'      => 'dropdown'
+         ], [
+            'id'            => '6',
+            'table'         => self::getTable(),
+            'field'         => 'background',
+            'name'          => __('Background event'),
+            'datatype'      => 'bool'
+         ], [
+            'id'            => '10',
+            'table'         => self::getTable(),
+            'field'         => 'rrule',
+            'name'          => __('Repeat'),
+            'datatype'      => 'text'
+         ], [
+            'id'            => '19',
+            'table'         => self::getTable(),
+            'field'         => 'date_mod',
+            'name'          => __('Last update'),
+            'datatype'      => 'datetime',
+            'massiveaction' => false
+         ], [
+            'id'            => '121',
+            'table'         => self::getTable(),
+            'field'         => 'date_creation',
+            'name'          => __('Creation date'),
+            'datatype'      => 'datetime',
+            'massiveaction' => false
+         ]
+      ];
+
+      if (!count($this->fields)) {
+         $this->getEmpty();
+      }
+
+      if (isset($this->fields['is_recursive'])) {
+         $tab[] = [
+            'id'            => 86,
+            'table'         => self::getTable(),
+            'field'         => 'is_recursive',
+            'name'          => __('Child entities'),
+            'datatype'      =>'bool'
+         ];
+      }
+
+      if (isset($this->fields['users_id'])) {
+         $tab[] = [
+            'id'            => '70',
+            'table'         => User::getTable(),
+            'field'         => 'name',
+            'name'          => __('User'),
+            'datatype'      => 'dropdown',
+            'right'         => 'all'
+         ];
+      }
+
+      if (isset($this->fields['users_id_guests'])) {
+         $tab[] = [
+            'id'            => '12',
+            'table'         => self::getTable(),
+            'field'         => 'users_id_guests',
+            'name'          => __('Guests'),
+            'datatype'      => 'text',
+         ];
+      }
+
+      if (isset($this->fields['begin'])) {
+         $tab[] = [
+            'id'            => '8',
+            'table'         => self::getTable(),
+            'field'         => 'begin',
+            'name'          => __('Planning start date'),
+            'datatype'      => 'datetime'
+         ];
+      }
+
+      if (isset($this->fields['end'])) {
+         $tab[] = [
+            'id'            => '9',
+            'table'         => self::getTable(),
+            'field'         => 'end',
+            'name'          => __('Planning end date'),
+            'datatype'      => 'datetime'
+         ];
+      }
+
+      if (isset($this->fields['comment'])) {
+         $tab[] = [
+            'id'            => '11',
+            'table'         => $this->getTable(),
+            'field'         => 'comment',
+            'name'          => __('Comment'),
+            'massiveaction' => false,
+            'datatype'      => 'text',
+         ];
+      }
+
+      return $tab;
+   }
 }
