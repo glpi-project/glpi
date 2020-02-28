@@ -456,7 +456,7 @@ class Search {
       }
 
       if (count($p['criteria']) > 0) {
-         // use a recursive clojure to push searchoption when using nested criteria
+         // use a recursive closure to push searchoption when using nested criteria
          $parse_criteria = function($criteria) use (&$parse_criteria, &$data) {
             foreach ($criteria as $criterion) {
                // recursive call
@@ -486,7 +486,7 @@ class Search {
             }
          };
 
-         // call the clojure
+         // call the closure
          $parse_criteria($p['criteria']);
       }
 
@@ -3325,8 +3325,11 @@ JAVASCRIPT;
 
       $toview = [];
       $item   = null;
+      $entity_check = true;
+
       if ($itemtype != 'AllAssets') {
          $item = getItemForItemtype($itemtype);
+         $entity_check = $item->isEntityAssign();
       }
       // Add first element (name)
       array_push($toview, 1);
@@ -3338,7 +3341,7 @@ JAVASCRIPT;
 
       // Add entity view :
       if (Session::isMultiEntitiesMode()
-          && $item->isEntityAssign()
+          && $entity_check
           && (isset($CFG_GLPI["union_search_type"][$itemtype])
               || ($item && $item->maybeRecursive())
               || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))) {

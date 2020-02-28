@@ -3414,4 +3414,31 @@ HTML;
 
       return $_SERVER[$name] ?? null;
    }
+
+   /**
+    * Check if the given class exist and extends CommonDBTM
+    *
+    * @param string $class
+    * @return bool
+    */
+   public static function isCommonDBTM(string $class): bool {
+      return class_exists($class) && is_subclass_of($class, 'CommonDBTM');
+   }
+
+   /**
+    * Check if the given class exist and implement DeprecatedInterface
+    *
+    * @param string $class
+    * @return bool
+    */
+   public static function isAPIDeprecated(string $class): bool {
+      $deprecated = "Glpi\Api\Deprecated\DeprecatedInterface";
+
+      // Insert namespace if missing
+      if (strpos($class, "Glpi\Api\Deprecated") === false) {
+         $class = "Glpi\Api\Deprecated\\$class";
+      }
+
+      return class_exists($class) && is_a($class, $deprecated, true);
+   }
 }

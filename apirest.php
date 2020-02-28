@@ -44,5 +44,5 @@ include_once (GLPI_ROOT . "/inc/based_config.php");
 //init cache
 $GLPI_CACHE = Config::getCache('cache_db');
 
-$api = new APIRest;
+$api = new Glpi\Api\APIRest;
 $api->call();

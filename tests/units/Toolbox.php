@@ -32,6 +32,10 @@
 
 namespace tests\units;
 
+use Glpi\Api\Deprecated\TicketFollowup;
+use ITILFollowup;
+use Ticket;
+
 /* Test for inc/toolbox.class.php */
 
 class Toolbox extends \GLPITestCase {
@@ -830,4 +834,61 @@ class Toolbox extends \GLPITestCase {
       $this->string(\Toolbox::getFgColor($bg_color, $offset))
          ->isEqualTo($fg_color);
    }
+
+   protected function testIsCommonDBTMProvider() {
+      return [
+         [
+            'class'         => TicketFollowup::class,
+            'is_commondbtm' => false,
+         ],
+         [
+            'class'         => Ticket::class,
+            'is_commondbtm' => true,
+         ],
+         [
+            'class'         => ITILFollowup::class,
+            'is_commondbtm' => true,
+         ],
+         [
+            'class'         => "Not a real class",
+            'is_commondbtm' => false,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testIsCommonDBTMProvider
+    */
+   public function testIsCommonDBTM(string $class, bool $is_commondbtm) {
+      $this->boolean(\Toolbox::isCommonDBTM($class))->isEqualTo($is_commondbtm);
+   }
+
+   protected function testIsAPIDeprecatedProvider() {
+      return [
+         [
+            'class'         => TicketFollowup::class,
+            'is_deprecated' => true,
+         ],
+         [
+            'class'         => Ticket::class,
+            'is_deprecated' => false,
+         ],
+         [
+            'class'         => ITILFollowup::class,
+            'is_deprecated' => false,
+         ],
+         [
+            'class'         => "Not a real class",
+            'is_deprecated' => false,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testIsAPIDeprecatedProvider
+    */
+   public function testIsAPIDeprecated(string $class, bool $is_deprecated) {
+      $this->boolean(\Toolbox::isAPIDeprecated($class))->isEqualTo($is_deprecated);
+   }
+
 }

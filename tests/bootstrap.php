@@ -584,6 +584,7 @@ function loadDataset() {
    $_SESSION['glpishowallentities'] = 1;
    $_SESSION['glpicronuserrunning'] = "cron_phpunit";
    $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
+   $_SESSION['glpiactive_entity']   = 0;
    $_SESSION['glpiactiveentities']  = [0];
    $_SESSION['glpiactiveentities_string'] = "'0'";
    $CFG_GLPI['root_doc']            = '/glpi';

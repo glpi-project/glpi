@@ -91,6 +91,14 @@ class Item_SoftwareVersion extends CommonDBRelation {
          'massiveaction'      => false
       ];
 
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Request source'),
+         'datatype'           => 'dropdown'
+      ];
+
       return $tab;
    }
 
