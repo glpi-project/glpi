@@ -994,7 +994,6 @@ trait PlanningEvent {
          ];
       }
 
-
       return $tab;
    }
 }
