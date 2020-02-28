@@ -240,6 +240,6 @@ class Item_SoftwareLicense extends DbTestCase {
 
       $cSoftwareLicense = new \Item_SoftwareLicense();
       $this->array($cSoftwareLicense->rawSearchOptions())
-         ->hasSize(4);
+         ->hasSize(5);
    }
 }

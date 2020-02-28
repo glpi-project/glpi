@@ -34,6 +34,12 @@
  * @since 9.1
  */
 
+namespace Glpi\Api;
+
+use GLPIUploadHandler;
+use stdClass;
+use Toolbox;
+
 class APIRest extends API {
 
    protected $request_uri;
@@ -326,10 +332,12 @@ class APIRest extends API {
    private function getItemtype($index = 0, $recursive = true, $all_assets = false) {
 
       if (isset($this->url_elements[$index])) {
-         if ((class_exists($this->url_elements[$index])
-              && is_subclass_of($this->url_elements[$index], 'CommonDBTM'))
-             || ($all_assets
-                 && $this->url_elements[$index] == "AllAssets")) {
+         $all_assets = $all_assets && $this->url_elements[$index] == "AllAssets";
+         $valid_class = Toolbox::isCommonDBTM($this->url_elements[$index])
+            || Toolbox::isAPIDeprecated($this->url_elements[$index]
+         );
+
+         if ($all_assets || $valid_class) {
             $itemtype = $this->url_elements[$index];
 
             if ($recursive
@@ -339,13 +347,18 @@ class APIRest extends API {
             }
 
             // AllAssets
-            if ($all_assets && $this->url_elements[$index] == "AllAssets") {
+            if ($all_assets) {
                return "AllAssets";
+            }
+
+            // Load namespace for deprecated
+            if (Toolbox::isAPIDeprecated($itemtype)) {
+               $itemtype = "Glpi\Api\Deprecated\\$itemtype";
             }
 
             // Get case sensitive itemtype name
             $rc = new \ReflectionClass($itemtype);
-            $itemtype = $rc->getName();
+            $itemtype = $rc->getShortName();
             return $itemtype;
          }
          $this->returnError(__("resource not found or not an instance of CommonDBTM"),

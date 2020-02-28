@@ -40,4 +40,13 @@ define(
    ]
 );
 
+// Avoid warnings because of missing globals
+$DEBUG_SQL = [
+    'queries' => [],
+    'errors'  => [],
+    'times'   => [],
+];
+
+ini_set("error_log", "tests/web/error.log");
+
 return false;

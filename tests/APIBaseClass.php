@@ -38,7 +38,7 @@ abstract class APIBaseClass extends \atoum {
 
    abstract protected function query($resource = "",
                                      $params = [],
-                                     $expected_code = 200);
+                                     $expected_codes = 200);
 
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);

@@ -34,3 +34,4 @@ phpunit.xml
 .package.hash
 /public/build/
 /public/lib/
+/tests/web/error.log

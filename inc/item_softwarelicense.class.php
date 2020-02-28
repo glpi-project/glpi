@@ -101,6 +101,14 @@ class Item_SoftwareLicense extends CommonDBRelation {
          'additionalfields'   => ['itemtype']
       ];
 
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Request source'),
+         'datatype'           => 'dropdown'
+      ];
+
       return $tab;
    }
 

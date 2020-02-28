@@ -30,6 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Api;
+
+use Toolbox;
+
 class APIXmlrpc extends API {
    protected $request_uri;
    protected $url_elements;
@@ -225,7 +229,7 @@ class APIXmlrpc extends API {
          } else if ($resource === "deleteItems") { // delete one or many CommonDBTM items
             if (isset($this->parameters['id'])) {
                //override input
-               $this->parameters['input'] = new stdClass();;
+               $this->parameters['input'] = new \stdClass();
                $this->parameters['input']->id = $this->parameters['id'];
             }
             return $this->returnResponse($this->deleteItems($this->parameters['itemtype'],

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,8 +35,36 @@
  * @since 9.1
  */
 
+namespace Glpi\Api;
+
+use APIClient;
+use Auth;
+use Change;
+use CommonDevice;
+use CommonGLPI;
+use Config;
+use Contract;
+use Document;
+use Dropdown;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
+use Html;
+use Infocom;
+use Item_Devices;
+use Log;
+use Michelf\MarkdownExtra;
+use NetworkEquipment;
+use NetworkPort;
+use Notepad;
+use Problem;
+use QueryExpression;
+use SavedSearch;
+use Search;
+use Session;
+use Software;
+use Ticket;
+use Toolbox;
+use User;
 
 abstract class API extends CommonGLPI {
 
@@ -49,6 +78,7 @@ abstract class API extends CommonGLPI {
    protected $ipnum         = "";
    protected $app_tokens    = [];
    protected $apiclients_id = 0;
+   protected $deprecated_item = null;
 
    /**
     * First function used on api call
@@ -490,7 +520,6 @@ abstract class API extends CommonGLPI {
    }
 
 
-
    /**
     * Return the instance fields of itemtype identified by id
     *
@@ -521,6 +550,7 @@ abstract class API extends CommonGLPI {
       global $CFG_GLPI, $DB;
 
       $this->initEndpoint();
+      $itemtype = $this->handleDepreciation($itemtype);
 
       // default params
       $default = ['expand_dropdowns'  => false,
@@ -1088,6 +1118,14 @@ abstract class API extends CommonGLPI {
          );
       }
 
+      // Convert fields to the format expected by the deprecated type
+      if ($this->isDeprecated()) {
+         $fields = $this->deprecated_item->mapCurrentToDeprecatedFields($fields);
+         $fields["links"] = $this->deprecated_item->mapCurrentToDeprecatedHateoas(
+            $fields["links"] ?? []
+         );
+      }
+
       return $fields;
    }
 
@@ -1132,6 +1170,7 @@ abstract class API extends CommonGLPI {
       global $DB;
 
       $this->initEndpoint();
+      $itemtype = $this->handleDepreciation($itemtype);
 
       // default params
       $default = ['expand_dropdowns' => false,
@@ -1194,8 +1233,9 @@ abstract class API extends CommonGLPI {
           && isset($this->parameters['parent_id'])) {
 
          // check parent itemtype
-         if (!class_exists($this->parameters['parent_itemtype'])
-             || !is_subclass_of($this->parameters['parent_itemtype'], 'CommonDBTM')) {
+         if (!Toolbox::isCommonDBTM($this->parameters['parent_itemtype'])
+            && !Toolbox::isAPIDeprecated($this->parameters['parent_itemtype'])
+         ) {
             $this->returnError(__("parent itemtype not found or not an instance of CommonDBTM"),
                                400,
                                "ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM");
@@ -1331,6 +1371,15 @@ abstract class API extends CommonGLPI {
             }
          }
       }
+      // Break reference
+      unset($fields);
+
+      // Map values for deprecated itemtypes
+      if ($this->isDeprecated()) {
+         $found = array_map(function($fields) {
+            return $this->deprecated_item->mapCurrentToDeprecatedFields($fields);
+         }, $found);
+      }
 
       return array_values($found);
    }
@@ -1389,14 +1438,25 @@ abstract class API extends CommonGLPI {
    /**
     * List the searchoptions of provided itemtype. To use with searchItems function
     *
-    * @param string $itemtype itemtype (class) of object
-    * @param array  $params   parameters
+    * @param string $itemtype             itemtype (class) of object
+    * @param array  $params               parameters
+    * @param bool   $check_depreciation   disable depreciation check, useful
+    *                                     if depreciation have already been
+    *                                     handled by a parent call (e.g. search)
     *
     * @return array all searchoptions of specified itemtype
     */
-   protected function listSearchOptions($itemtype, $params = []) {
-
+   protected function listSearchOptions(
+      $itemtype,
+      $params = [],
+      bool $check_depreciation = true
+   ) {
       $this->initEndpoint();
+
+      if ($check_depreciation) {
+         $itemtype = $this->handleDepreciation($itemtype);
+      }
+
       $soptions = Search::getOptions($itemtype);
 
       if (isset($params['raw'])) {
@@ -1428,6 +1488,10 @@ abstract class API extends CommonGLPI {
          } else {
             $cleaned_soptions[$sID] = $option;
          }
+      }
+
+      if ($check_depreciation && $this->isDeprecated()) {
+         $cleaned_soptions = $this->deprecated_item->mapCurrentToDeprecatedSearchOptions($cleaned_soptions);
       }
 
       return $cleaned_soptions;
@@ -1541,6 +1605,7 @@ abstract class API extends CommonGLPI {
       global $DEBUG_SQL;
 
       $this->initEndpoint();
+      $itemtype = $this->handleDepreciation($itemtype);
 
       // check rights
       if ($itemtype != 'AllAssets'
@@ -1549,14 +1614,23 @@ abstract class API extends CommonGLPI {
       }
 
       // retrieve searchoptions
-      $soptions = $this->listSearchOptions($itemtype);
+      $soptions = $this->listSearchOptions($itemtype, [], false);
+
+      if ($this->isDeprecated()) {
+         $criteria = $this->deprecated_item->mapDeprecatedToCurrentCriteria(
+            $params['criteria'] ?? []
+         );
+
+         if (count($criteria)) {
+            $params['criteria'] = $criteria;
+         }
+      }
 
       // Check the criterias are valid
       if (isset($params['criteria']) && is_array($params['criteria'])) {
 
          // use a recursive closure to check each nested criteria
-         $check_message = "";
-         $check_criteria = function($criteria) use (&$check_criteria, $soptions, $check_message) {
+         $check_criteria = function($criteria) use (&$check_criteria, $soptions) {
             foreach ($criteria as $criterion) {
                // recursive call
                if (isset($criterion['criteria'])) {
@@ -1565,21 +1639,18 @@ abstract class API extends CommonGLPI {
 
                if (!isset($criterion['field']) || !isset($criterion['searchtype'])
                    || !isset($criterion['value'])) {
-                  $check_message = __("Malformed search criteria");
-                  return false;
+                  return __("Malformed search criteria");
                }
 
                if (!ctype_digit((string) $criterion['field'])
                    || !array_key_exists($criterion['field'], $soptions)) {
-                  $check_message = __("Bad field ID in search criteria");
-                  return false;
+                  return __("Bad field ID in search criteria");
                }
 
                if (isset($soptions[$criterion['field']])
                    && isset($soptions[$criterion['field']]['nosearch'])
                    && $soptions[$criterion['field']]['nosearch']) {
-                  $check_message = __("Forbidden field ID in search criteria");
-                  return false;
+                  return __("Forbidden field ID in search criteria");
                }
             }
 
@@ -1587,8 +1658,9 @@ abstract class API extends CommonGLPI {
          };
 
          // call the closure
-         if (!$check_criteria($params['criteria'])) {
-            return $this->returnError($check_message);
+         $check_criteria_result = $check_criteria($params['criteria']);
+         if ($check_criteria_result !== true) {
+            return $this->returnError($check_criteria_result);
          }
       }
 
@@ -1758,6 +1830,8 @@ abstract class API extends CommonGLPI {
     */
    protected function createItems($itemtype, $params = []) {
       $this->initEndpoint();
+      $itemtype = $this->handleDepreciation($itemtype);
+
       $input    = isset($params['input']) ? $params["input"] : null;
       $item     = new $itemtype;
 
@@ -1766,6 +1840,12 @@ abstract class API extends CommonGLPI {
          $isMultiple = false;
       } else {
          $isMultiple = true;
+      }
+
+      if ($this->isDeprecated()) {
+         $input = array_map(function($item) {
+            return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
+         }, $input);
       }
 
       if (is_array($input)) {
@@ -1868,8 +1948,9 @@ abstract class API extends CommonGLPI {
     * @return   array of boolean
     */
    protected function updateItems($itemtype, $params = []) {
-
       $this->initEndpoint();
+      $itemtype = $this->handleDepreciation($itemtype);
+
       $input    = isset($params['input']) ? $params["input"] : null;
       $item     = new $itemtype;
 
@@ -1878,6 +1959,12 @@ abstract class API extends CommonGLPI {
          $isMultiple = false;
       } else {
          $isMultiple = true;
+      }
+
+      if ($this->isDeprecated()) {
+         $input = array_map(function($item) {
+            return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
+         }, $input);
       }
 
       if (is_array($input)) {
@@ -1972,6 +2059,8 @@ abstract class API extends CommonGLPI {
    protected function deleteItems($itemtype, $params = []) {
 
       $this->initEndpoint();
+      $itemtype = $this->handleDepreciation($itemtype);
+
       $default  = ['force_purge' => false,
                         'history'     => true];
       $params   = array_merge($default, $params);
@@ -1983,6 +2072,12 @@ abstract class API extends CommonGLPI {
          $isMultiple = false;
       } else {
          $isMultiple = true;
+      }
+
+      if ($this->isDeprecated()) {
+         $input = array_map(function($item) {
+            return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
+         }, $input);
       }
 
       if (is_array($input)) {
@@ -2324,7 +2419,7 @@ abstract class API extends CommonGLPI {
 
       echo "<div class='documentation'>";
       $documentation = file_get_contents(GLPI_ROOT.'/'.$file);
-      $md = new Michelf\MarkdownExtra();
+      $md = new MarkdownExtra();
       $md->code_class_prefix = "language-";
       $md->header_id_func = function($headerName) {
          $headerName = str_replace(['(', ')'], '', $headerName);
@@ -2670,7 +2765,7 @@ abstract class API extends CommonGLPI {
          } else {
 
             if (!isset($data[$kn_fkey])) {
-               \Toolbox::logWarning(
+               Toolbox::logWarning(
                   "Invalid value: \"$kn_fkey\" doesn't exist.
                ");
                continue;
@@ -2684,7 +2779,7 @@ abstract class API extends CommonGLPI {
          // Check itemtype is valid
          $kn_item = getItemForItemtype($kn_itemtype);
          if (!$kn_item) {
-            \Toolbox::logWarning(
+            Toolbox::logWarning(
                "Invalid itemtype \"$kn_itemtype\" for fkey  \"$kn_fkey\""
             );
             continue;
@@ -2708,7 +2803,7 @@ abstract class API extends CommonGLPI {
       $this->initEndpoint();
 
       // Try to load target user
-      $user = new \User();
+      $user = new User();
       if (!$user->getFromDB($user_id)) {
          $this->returnError("Bad request: user with id '$user_id' not found");
       }
@@ -2722,5 +2817,37 @@ abstract class API extends CommonGLPI {
          http_response_code(204);
       }
       die;
+   }
+
+   /**
+    * If the given itemtype is deprecated, replace it by it's current
+    * equivalent and keep a reference to the deprecation logic so we can convert
+    * the API input and/or output to the exêcted format.
+    *
+    * @param string  $itemtype
+    * @return string The corrected itemtype.
+    */
+   public function handleDepreciation(string $itemtype): string {
+      $deprecated = Toolbox::isAPIDeprecated($itemtype);
+
+      if ($deprecated) {
+         // Keep a reference to deprecated item
+         $class = "Glpi\Api\Deprecated\\$itemtype";
+         $this->deprecated_item = new $class();
+
+         // Get correct itemtype
+         $itemtype = $this->deprecated_item->getType();
+      }
+
+      return $itemtype;
+   }
+
+   /**
+    * Check if the current call is using a deprecated item
+    *
+    * @return bool
+    */
+   public function isDeprecated(): bool {
+      return $this->deprecated_item !== null;
    }
 }
