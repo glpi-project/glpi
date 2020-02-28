@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * Install the pecl/xhprof extension
  *
- * Add XHPROF_PATH and XHPROF_URL in config/config_path.php (if needed)
+ * Add XHPROF_PATH and XHPROF_URL in config/local_define.php (if needed)
  *
  * Before the code
  *    $prof = new XHProf("something useful");
@@ -55,7 +55,7 @@ if (!defined('GLPI_ROOT')) {
  */
 class XHProf {
 
-   // this can be overloaded in config/config_path.php
+   // this can be overloaded in config/local_define.php
    const XHPROF_PATH = '/usr/share/xhprof/xhprof_lib';
    const XHPROF_URL  = '/xhprof';
 

@@ -1917,6 +1917,15 @@ class Config extends CommonDBTM {
 
       echo "\n</pre></td></tr>";
 
+      echo "<tr><th>GLPI constants</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+      foreach (get_defined_constants() as $constant_name => $constant_value) {
+         if (preg_match('/^GLPI_/', $constant_name)) {
+            echo $constant_name . ': ' . $constant_value . "\n";
+         }
+      }
+      echo "\n</pre></td></tr>";
+
       self::showLibrariesInformation();
 
       foreach ($CFG_GLPI["systeminformations_types"] as $type) {
