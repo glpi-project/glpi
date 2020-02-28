@@ -617,7 +617,8 @@ class Planning extends CommonGLPI {
             'full_view'    => true,
             'default_view' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
             'license_key'  => $scheduler_key,
-            'resources'    => self::getTimelineResources()
+            'resources'    => self::getTimelineResources(),
+            'now'          => date("Y-m-d H:i:s"),
          ];
       } else {
          // short view (on Central page)
@@ -628,6 +629,7 @@ class Planning extends CommonGLPI {
             'header'       => false,
             'height'       => 'auto',
             'rand'         => $rand,
+            'now'          => date("Y-m-d H:i:s"),
          ];
       }
 

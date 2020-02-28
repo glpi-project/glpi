@@ -19,6 +19,7 @@ var GLPIPlanning  = {
          plugins: ['dayGrid', 'interaction', 'list', 'timeGrid', 'resourceTimeline', 'rrule'],
          license_key: "",
          resources: [],
+         now: null,
          rand: '',
          header: {
             left:   'prev,next,today',
@@ -61,6 +62,7 @@ var GLPIPlanning  = {
          editable: true, // we can drag / resize items
          droppable: false, // we cant drop external items by default
          nowIndicator: true,
+         now: options.now,// as we set the calendar as UTC, we need to reprecise the current datetime
          listDayAltFormat: false,
          agendaEventMinHeight: 13,
          header: options.header,
