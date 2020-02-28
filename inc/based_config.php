@@ -44,118 +44,94 @@ if (!empty($tz)) {
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 
-// If this file exists, it is load
-if (file_exists(GLPI_ROOT. '/config/local_define.php') && !defined('TU_USER')) {
-   require_once GLPI_ROOT. '/config/local_define.php';
-}
+(function() {
+   // Define GLPI_* constants that can be customized by admin.
+   //
+   // Use a self-invoking anonymous function to:
+   // - prevent any global variables/functions definition from `local_define.php` and `downstream.php` files;
+   // - prevent any global variables definition from current function logic.
 
-// If this file exists, it is load, allow to set configdir/dumpdir elsewhere
-if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
-   include_once (GLPI_ROOT . '/inc/downstream.php');
-}
+   $constants = [
+      // Constants related to system paths
+      'GLPI_CONFIG_DIR'     => GLPI_ROOT . '/config', // Path for configuration files (db, security key, ...)
+      'GLPI_VAR_DIR'        => GLPI_ROOT . '/files',  // Path for all files
+      'GLPI_DOC_DIR'        => '{GLPI_VAR_DIR}', // Path for documents storage
+      'GLPI_CACHE_DIR'      => '{GLPI_VAR_DIR}/_cache', // Path for cache
+      'GLPI_CRON_DIR'       => '{GLPI_VAR_DIR}/_cron', // Path for cron storage
+      'GLPI_DUMP_DIR'       => '{GLPI_VAR_DIR}/_dumps', // Path for backup dump
+      'GLPI_GRAPH_DIR'      => '{GLPI_VAR_DIR}/_graphs', // Path for graph storage
+      'GLPI_LOCAL_I18N_DIR' => '{GLPI_VAR_DIR}/_locales', // Path for local i18n files
+      'GLPI_LOCK_DIR'       => '{GLPI_VAR_DIR}/_lock', // Path for lock files storage (used by cron)
+      'GLPI_LOG_DIR'        => '{GLPI_VAR_DIR}/_log', // Path for log storage
+      'GLPI_PICTURE_DIR'    => '{GLPI_VAR_DIR}/_pictures', // Path for picture storage
+      'GLPI_PLUGIN_DOC_DIR' => '{GLPI_VAR_DIR}/_plugins', // Path for plugins documents storage
+      'GLPI_RSS_DIR'        => '{GLPI_VAR_DIR}/_rss', // Path for rss storage
+      'GLPI_SESSION_DIR'    => '{GLPI_VAR_DIR}/_sessions', // Path for sessions storage
+      'GLPI_TMP_DIR'        => '{GLPI_VAR_DIR}/_tmp', // Path for temp storage
+      'GLPI_UPLOAD_DIR'     => '{GLPI_VAR_DIR}/_uploads', // Path for upload storage
 
-// Default location for database configuration : config_db.php
-if (!defined("GLPI_CONFIG_DIR")) {
-   define("GLPI_CONFIG_DIR", GLPI_ROOT . "/config");
-}
+      // Security constants
+      'GLPI_USE_CSRF_CHECK'  => '1',
+      'GLPI_CSRF_EXPIRES'    => '7200',
+      'GLPI_CSRF_MAX_TOKENS' => '100',
 
-// Default location for all files
-if (!defined("GLPI_VAR_DIR")) {
-   define("GLPI_VAR_DIR", GLPI_ROOT . "/files");
-}
+      // Constants related to GLPI Project / GLPI Network external services
+      'GLPI_TELEMETRY_URI'    => 'https://telemetry.glpi-project.org', // Telemetry project URL
+      'GLPI_INSTALL_MODE'     => is_dir(GLPI_ROOT . '/.git') ? 'GIT' : 'TARBALL', // Install mode for telemetry
+      'GLPI_NETWORK_SERVICES' => 'https://services.glpi-network.com', // GLPI Network services project URL
 
+      // Other constants
+      'GLPI_AJAX_DASHBOARD'         => '1',
+      'GLPI_CALDAV_IMPORT_STATE'    => 0, // external events created from a caldav client will take this state by default (0 = Planning::INFO)
+      'GLPI_DEMO_MODE'              => '0',
+      // TODO GLPI_FORCE_EMPTY_SQL_MODE need to be set to 0 after review of all sql queries
+      'GLPI_FORCE_EMPTY_SQL_MODE'   => '1', // for compatibility with mysql 5.7
+      'GLPI_FORCE_NATIVE_SQL_TYPES' => '1', // force mysql driver to retrieve int and float types correctly (and not convert them to strings)
+   ];
 
-// Default location for backup dump
-if (!defined("GLPI_DUMP_DIR")) {
-   define("GLPI_DUMP_DIR", GLPI_VAR_DIR . "/_dumps");
-}
-
-// Path for documents storage
-if (!defined("GLPI_DOC_DIR")) {
-   define("GLPI_DOC_DIR", GLPI_VAR_DIR);
-}
-
-// Path for cron storage
-if (!defined("GLPI_CRON_DIR")) {
-   define("GLPI_CRON_DIR", GLPI_VAR_DIR . "/_cron");
-}
-
-// Path for sessions storage
-if (!defined("GLPI_SESSION_DIR")) {
-   define("GLPI_SESSION_DIR", GLPI_VAR_DIR . "/_sessions");
-}
-
-// Path for local i18n files
-define('GLPI_I18N_DIR', GLPI_ROOT . "/locales");
-if (!defined("GLPI_LOCAL_I18N_DIR")) {
-   define("GLPI_LOCAL_I18N_DIR", GLPI_VAR_DIR . "/_locales");
-}
-
-// Path for plugins documents storage
-if (!defined("GLPI_PLUGIN_DOC_DIR")) {
-   define("GLPI_PLUGIN_DOC_DIR", GLPI_VAR_DIR . "/_plugins");
-}
-// Path for cache storage
-if (!defined("GLPI_LOCK_DIR")) {
-   define("GLPI_LOCK_DIR", GLPI_VAR_DIR . "/_lock");
-}
-
-// Path for log storage
-if (!defined("GLPI_LOG_DIR")) {
-   define("GLPI_LOG_DIR", GLPI_VAR_DIR . "/_log");
-}
-
-// Path for graph storage
-if (!defined("GLPI_GRAPH_DIR")) {
-   define("GLPI_GRAPH_DIR", GLPI_VAR_DIR . "/_graphs");
-}
-
-// Path for picture storage
-if (!defined("GLPI_PICTURE_DIR")) {
-   define("GLPI_PICTURE_DIR", GLPI_VAR_DIR . "/_pictures");
-}
-
-// Path for temp storage
-if (!defined("GLPI_TMP_DIR")) {
-   define("GLPI_TMP_DIR", GLPI_VAR_DIR . "/_tmp");
-}
-
-// Path for cache
-if (!defined("GLPI_CACHE_DIR")) {
-   define("GLPI_CACHE_DIR", GLPI_VAR_DIR . "/_cache");
-}
-
-// Path for rss storage
-if (!defined("GLPI_RSS_DIR")) {
-   define("GLPI_RSS_DIR", GLPI_VAR_DIR . "/_rss");
-}
-
-// Path for upload storage
-if (!defined("GLPI_UPLOAD_DIR")) {
-   define("GLPI_UPLOAD_DIR", GLPI_VAR_DIR . "/_uploads");
-}
-
-// Default location scripts
-if (!defined("GLPI_SCRIPT_DIR")) {
-   define("GLPI_SCRIPT_DIR", GLPI_ROOT . "/scripts");
-}
-
-// Install mode for telemetry
-if (!defined('GLPI_INSTALL_MODE')) {
-   if (is_dir(GLPI_ROOT . '/.git')) {
-      define('GLPI_INSTALL_MODE', 'GIT');
-   } else {
-      define('GLPI_INSTALL_MODE', 'TARBALL');
+   // Define constants values based on server env variables (i.e. defined using apache SetEnv directive)
+   foreach (array_keys($constants) as $name) {
+      if (($value = getenv($name)) !== false) {
+         define($name, $value);
+      }
    }
-   // For packager, you can use RPM, DEB, ...  (in config_path.php)
-}
 
-// Default path to FreeSans.ttf
-if (!defined("GLPI_FONT_FREESANS")) {
-   define("GLPI_FONT_FREESANS", GLPI_ROOT . '/lib/FreeSans.ttf');
+   // Define constants values from local configuration file
+   if (file_exists(GLPI_ROOT. '/config/local_define.php') && !defined('TU_USER')) {
+      require_once GLPI_ROOT. '/config/local_define.php';
+   }
 
-   // if FreeSans.ttf available in system, use (in config_path.php)
-   // define("GLPI_FONT_FREESANS", '/usr/share/fonts/gnu-free/FreeSans.ttf');
-}
+   // Define constants values from downstream distribution file
+   if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
+      include_once (GLPI_ROOT . '/inc/downstream.php');
+   }
+
+   // Define constants values from defaults
+   // 1. First, define constants that does not inherit from another one.
+   // 2. Second, define constants that inherits from another one.
+   // This logic is quiet simple and is not made to handle chain inheritance.
+   $inherit_pattern = '/\{(?<name>GLPI_[\w]+)\}/';
+   foreach ($constants as $key => $value) {
+      if (!defined($key) && !preg_match($inherit_pattern, $value)) {
+         define($key, $value);
+      }
+   }
+   foreach ($constants as $key => $value) {
+      if (!defined($key)) {
+         // Replace {GLPI_*} by value of corresponding constant
+         $value = preg_replace_callback(
+            '/\{(?<name>GLPI_[\w]+)\}/',
+            function ($matches) {
+               return defined($matches['name']) ? constant($matches['name']) : '';
+            },
+            $value
+         );
+
+         define($key, $value);
+      }
+   }
+})();
+
+define('GLPI_I18N_DIR', GLPI_ROOT . "/locales");
 
 include_once (GLPI_ROOT . "/inc/define.php");

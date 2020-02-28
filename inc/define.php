@@ -45,37 +45,9 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
 }
 define('GLPI_MIN_PHP', '7.2.0'); // Must also be changed in top of index.php
 define('GLPI_YEAR', '2019');
-if (!defined('GLPI_DEMO_MODE')) {
-   define('GLPI_DEMO_MODE', '0');
-}
-if (!defined('GLPI_USE_CSRF_CHECK')) {
-   define('GLPI_USE_CSRF_CHECK', '1');
-}
-if (!defined('GLPI_CSRF_EXPIRES')) {
-   define("GLPI_CSRF_EXPIRES", "7200");
-}
-if (!defined('GLPI_CSRF_MAX_TOKENS')) {
-   define("GLPI_CSRF_MAX_TOKENS", "100");
-}
-if (!defined('GLPI_SHOW_CENTRAL_WARNINGS')) {
-   define('GLPI_SHOW_CENTRAL_WARNINGS', '1');
-}
-if (!defined('GLPI_AJAX_DASHBOARD')) {
-   define('GLPI_AJAX_DASHBOARD', '1');
-}
+
 //Define a global recipient address for email notifications
 //define('GLPI_FORCE_MAIL', 'me@localhost');
-
-// for compatibility with mysql 5.7
-// TODO: this var need to be set to 0 after review of all sql queries)
-if (!defined('GLPI_FORCE_EMPTY_SQL_MODE')) {
-   define("GLPI_FORCE_EMPTY_SQL_MODE", "1");
-}
-
-// force mysql driver to retrieve int and float types correctly (and not convert them to strings)
-if (!defined('GLPI_FORCE_NATIVE_SQL_TYPES')) {
-   define("GLPI_FORCE_NATIVE_SQL_TYPES", "1");
-}
 
 // rights
 define("READ", 1);
@@ -162,16 +134,6 @@ define("NOT_AVAILABLE", 'N/A');
 // If you hav to define passwords again
 define("GLPIKEY", "GLPI£i'snarss'ç");
 
-//Telemetry
-if (!defined('GLPI_TELEMETRY_URI')) {
-   define('GLPI_TELEMETRY_URI', 'https://telemetry.glpi-project.org');
-}
-
-// GLPI Network
-if (!defined('GLPI_NETWORK_SERVICES')) {
-   define('GLPI_NETWORK_SERVICES', 'https://services.glpi-network.com');
-}
-
 // TIMES
 define("MINUTE_TIMESTAMP", 60);
 define("HOUR_TIMESTAMP", 3600);
@@ -203,12 +165,6 @@ define("ERROR_RIGHT", 2);
 define("ERROR_COMPAT", 3);
 define("ERROR_ON_ACTION", 4);
 define("ERROR_ALREADY_DEFINED", 5);
-
-// CALDAV BEHAVIORS
-if (!defined('CALDAV_IMPORT_STATE')) {
-   // external events created from a caldav client will take the following default state
-   define("CALDAV_IMPORT_STATE", 0); // Planning::INFO
-}
 
 // For plugins
 $PLUGIN_HOOKS     = [];

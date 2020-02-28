@@ -141,6 +141,7 @@ The present file will list all changes made to the project; according to the
 - `getDateRequest` and `DbUtils::getDateRequest()`
 - `Html::convertTagFromRichTextToImageTag()`
 - `Transfer::createSearchConditionUsingArray()`
+- Unused constants GLPI_FONT_FREESANS and GLPI_SCRIPT_DIR
 
 ## [9.4.5] unreleased
 

@@ -243,7 +243,7 @@ trait VobjectConverterTrait {
 
       $input['rrule'] = $this->getRRuleInputFromVComponent($vcomponent);
 
-      $state = CALDAV_IMPORT_STATE;
+      $state = GLPI_CALDAV_IMPORT_STATE;
       if ($vcomponent instanceof VTodo) {
          $state = $this->getStateInputFromVComponent($vcomponent) ?? $state;
       }
