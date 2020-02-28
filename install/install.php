@@ -527,6 +527,8 @@ function step8() {
       ]
    );
 
+   Session::destroy(); // Remove session data (debug mode for instance) set by web installation
+
    echo "<h2>".__('The installation is finished')."</h2>";
    echo "<p>".__('Default logins / passwords are:')."</p>";
    echo "<p><ul><li> ".__('glpi/glpi for the administrator account')."</li>";
