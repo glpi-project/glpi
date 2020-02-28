@@ -112,6 +112,57 @@ class Domain extends DbTestCase {
          "NOT (`date_expiration` IS NULL) AND `is_deleted` = '0' ".
          "AND DATEDIFF(CURDATE(), `date_expiration`) > -7 AND DATEDIFF(CURDATE(), `date_expiration`) < 0"
       );
+   }
 
+   public function testTransfer() {
+      $this->login();
+      $domain = new \Domain();
+      $domains_id = (int)$domain->add([
+         'name'   => 'glpi-project.org'
+      ]);
+      $this->integer($domains_id)->isGreaterThan(0);
+
+      $record = new \DomainRecord();
+      foreach (['www', 'ftp', 'mail'] as $sub) {
+         $this->integer(
+            (int)$record->add([
+               'name'         => $sub,
+               'data'         => 'glpi-project.org.',
+               'domains_id'   => $domains_id
+            ])
+         )->isGreaterThan(0);
+      }
+
+      $entities_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+      //transer to another entity
+      $transfer = new \Transfer();
+
+      $controller = new \atoum\mock\controller();
+      $controller->__construct = function() {
+         // void
+      };
+
+      $ma = new \mock\MassiveAction([], [], 'process', $controller);
+
+      \MassiveAction::processMassiveActionsForOneItemtype(
+         $ma,
+         $domain,
+         [$domains_id]
+      );
+      $transfer->moveItems(['Domain' => [$domains_id]], $entities_id, [$domains_id]);
+      unset($_SESSION['glpitransfer_list']);
+
+      $this->boolean($domain->getFromDB($domains_id))->isTrue();
+      $this->integer((int)$domain->fields['entities_id'])->isidenticalTo($entities_id);
+
+      global $DB;
+      $records = $DB->request([
+         'FROM'   => \DomainRecord::getTable(),
+         'WHERE'  => ['domains_id' => $domains_id]
+      ]);
+      while ($row = $records->next()) {
+         $this->integer((int)$row['entities_id'])->isidenticalTo($entities_id);
+      }
    }
 }

@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 class Domain extends CommonDropdown {
 
    static $rightname = 'domain';
+   static protected $forward_entity_to = ['DomainRecord'];
 
    public $can_be_translated = false;
 
