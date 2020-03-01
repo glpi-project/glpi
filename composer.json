@@ -50,7 +50,7 @@
     },
     "require-dev": {
         "ext-xml": "*",
-        "atoum/atoum": "3.4",
+        "atoum/atoum": "3.4.1",
         "consolidation/robo": "^2.0",
         "fzaninotto/faker": "^1.7",
         "glpi-project/coding-standard": "^0.7",
