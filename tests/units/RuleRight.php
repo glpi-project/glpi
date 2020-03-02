@@ -135,12 +135,10 @@ class RuleRight extends DbTestCase {
       \SingletonRuleList::getInstance("RuleRight", 0)->list = [];
 
       // login again
-      $this->dump('new login');
       $this->login(TU_USER, TU_PASS, false);
 
       // check the user got the entity/profiles assigned
       $pu = \Profile_User::getForUser($users_id, true);
-      $this->dump($pu);
 
       // check the assigned right exists in the collection
       $found = false;
