@@ -403,7 +403,7 @@ class Migration {
             $this->change[$table][] = "ADD `$field` $format ".$params['comment'] ." ".
                                       $params['null'].$params['first'].$params['after'];
 
-            if (!empty($params['update'])) {
+            if ($params['update'] !== '') {
                $this->migrationOneTable($table);
                $query = "UPDATE `$table`
                         SET `$field` = ".$params['update']." ".

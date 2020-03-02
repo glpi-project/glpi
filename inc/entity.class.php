@@ -63,56 +63,61 @@ class Entity extends CommonTreeDropdown {
 
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
-   private static $field_right = ['entity'
-                                          => [// Address
-                                                   'address', 'country', 'email', 'fax', 'notepad',
-                                                   'longitude','latitude','altitude',
-                                                   'phonenumber', 'postcode', 'state', 'town',
-                                                   'website',
-                                                   // Advanced (could be user_authtype ?)
-                                                   'authldaps_id', 'entity_ldapfilter', 'ldap_dn',
-                                                   'mail_domain', 'tag',
-                                                   // Inventory
-                                                   'entities_id_software', 'level', 'name',
-                                                   'completename', 'entities_id',
-                                                   'ancestors_cache', 'sons_cache', 'comment'],
-                                          // Inventory
-                                          'infocom'
-                                          => ['autofill_buy_date', 'autofill_delivery_date',
-                                                   'autofill_order_date', 'autofill_use_date',
-                                                   'autofill_warranty_date',
-                                                   'autofill_decommission_date'],
-                                          // Notification
-                                          'notification'
-                                          => ['admin_email', 'admin_reply', 'admin_email_name',
-                                                   'admin_reply_name', 'delay_send_emails',
-                                                   'is_notif_enable_default',
-                                                   'default_cartridges_alarm_threshold',
-                                                   'default_consumables_alarm_threshold',
-                                                   'default_contract_alert', 'default_infocom_alert',
-                                                   'mailing_signature', 'cartridges_alert_repeat',
-                                                   'consumables_alert_repeat', 'notclosed_delay',
-                                                   'use_licenses_alert', 'use_certificates_alert',
-                                                   'send_licenses_alert_before_delay',
-                                                   'send_certificates_alert_before_delay',
-                                                   'use_contracts_alert',
-                                                   'send_contracts_alert_before_delay',
-                                                   'use_reservations_alert', 'use_infocoms_alert',
-                                                   'send_infocoms_alert_before_delay',
-                                                   'notification_subject_tag', 'use_domains_alert',
-                                                   'send_domains_alert_close_expiries_delay', 'send_domains_alert_expired_delay'],
-                                          // Helpdesk
-                                          'entity_helpdesk'
-                                          => ['calendars_id', 'tickettype', 'auto_assign_mode',
-                                                   'autoclose_delay', 'inquest_config',
-                                                   'inquest_rate', 'inquest_delay',
-                                                   'inquest_duration','inquest_URL',
-                                                   'max_closedate', 'tickettemplates_id',
-                                                   'changetemplates_id', 'problemtemplates_id',
-                                                   'suppliers_as_private', 'autopurge_delay'],
-                                          // Configuration
-                                          'config'
-                                          => ['enable_custom_css', 'custom_css_code']];
+   private static $field_right = [
+      'entity' => [
+         // Address
+         'address', 'country', 'email', 'fax', 'notepad',
+         'longitude','latitude','altitude',
+         'phonenumber', 'postcode', 'state', 'town',
+         'website',
+         // Advanced (could be user_authtype ?)
+         'authldaps_id', 'entity_ldapfilter', 'ldap_dn',
+         'mail_domain', 'tag',
+         // Inventory
+         'entities_id_software', 'level', 'name',
+         'completename', 'entities_id',
+         'ancestors_cache', 'sons_cache', 'comment'
+      ],
+      // Inventory
+      'infocom' => [
+         'autofill_buy_date', 'autofill_delivery_date',
+         'autofill_order_date', 'autofill_use_date',
+         'autofill_warranty_date',
+         'autofill_decommission_date'
+      ],
+      // Notification
+      'notification' => [
+         'admin_email', 'admin_reply', 'admin_email_name',
+         'admin_reply_name', 'delay_send_emails',
+         'is_notif_enable_default',
+         'default_cartridges_alarm_threshold',
+         'default_consumables_alarm_threshold',
+         'default_contract_alert', 'default_infocom_alert',
+         'mailing_signature', 'cartridges_alert_repeat',
+         'consumables_alert_repeat', 'notclosed_delay',
+         'use_licenses_alert', 'use_certificates_alert',
+         'send_licenses_alert_before_delay',
+         'send_certificates_alert_before_delay',
+         'use_contracts_alert',
+         'send_contracts_alert_before_delay',
+         'use_reservations_alert', 'use_infocoms_alert',
+         'send_infocoms_alert_before_delay',
+         'notification_subject_tag', 'use_domains_alert',
+         'send_domains_alert_close_expiries_delay', 'send_domains_alert_expired_delay'
+      ],
+      // Helpdesk
+      'entity_helpdesk' => [
+         'calendars_id', 'tickettype', 'auto_assign_mode',
+         'autoclose_delay', 'inquest_config',
+         'inquest_rate', 'inquest_delay',
+         'inquest_duration','inquest_URL',
+         'max_closedate', 'tickettemplates_id',
+         'changetemplates_id', 'problemtemplates_id',
+         'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents'
+      ],
+      // Configuration
+      'config' => ['enable_custom_css', 'custom_css_code']
+   ];
 
 
    function getForbiddenStandardMassiveAction() {
@@ -2586,6 +2591,33 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Anonymize support agents')."</td>";
+      echo "<td colspan='2'>";
+      $anonymizeValues = self::getAnonymizeSupportAgentsValues();
+      $currentAnonymizeValue = $entity->fields['anonymize_support_agents'];
+
+      if ($ID == 0) { // Remove parent option for root entity
+         unset($anonymizeValues[self::CONFIG_PARENT]);
+      }
+
+      Dropdown::showFromArray(
+         'anonymize_support_agents',
+         $anonymizeValues,
+         ['value' => $currentAnonymizeValue]
+      );
+
+      // If the entity is using it's parent value, print it
+      if ($currentAnonymizeValue == self::CONFIG_PARENT && $ID != 0) {
+         $parentHelpdeskValue = self::getUsedConfig(
+            'anonymize_support_agents',
+            $entity->fields['entities_id']
+         );
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo $anonymizeValues[$parentHelpdeskValue];
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
       echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
@@ -2776,7 +2808,12 @@ class Entity extends CommonTreeDropdown {
     * @param string  $fieldval       name of the field that we want value (default '')
     * @param mixed   $default_value  value to return (default -2)
    **/
-   static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2) {
+   static function getUsedConfig($fieldref, $entities_id = null, $fieldval = '', $default_value = -2) {
+
+      // Get for current entity
+      if ($entities_id === null) {
+         $entities_id = \Session::getActiveEntity();
+      }
 
       // for calendar
       if (empty($fieldval)) {
@@ -2972,6 +3009,22 @@ class Entity extends CommonTreeDropdown {
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
          0                   => __('No'),
          1                   => __('Yes'),
+      ];
+   }
+
+   /**
+    * Get values for anonymize_support_agents
+    *
+    * @since 9.5
+    *
+    * @return array
+   **/
+   static function getAnonymizeSupportAgentsValues() {
+
+      return [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         0 => __('No'),
+         1 => __('Yes'),
       ];
    }
 

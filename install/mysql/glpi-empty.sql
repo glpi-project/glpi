@@ -2543,6 +2543,7 @@ CREATE TABLE `glpi_entities` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `autofill_decommission_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   `suppliers_as_private` int(11) NOT NULL DEFAULT '-2',
+  `anonymize_support_agents` int(11) NOT NULL DEFAULT '-2',
   `enable_custom_css` int(11) NOT NULL DEFAULT '-2',
   `custom_css_code` text COLLATE utf8_unicode_ci,
   `latitude` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,

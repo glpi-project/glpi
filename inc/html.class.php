@@ -6806,9 +6806,14 @@ JAVASCRIPT;
          }
 
          //  Tickets
-         if (Session::haveRight("ticket", CREATE)
+         if ((Session::haveRight("ticket", CREATE)
             || Session::haveRight("ticket", Ticket::READMY)
-            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)) {
+            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC))
+            && !(
+               Plugin::isPluginActive('formcreator')
+               && \Session::getCurrentInterface() == "helpdesk"
+            )
+         ) {
             $menu['tickets'] = [
                'default'   => '/front/ticket.php',
                'title'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
