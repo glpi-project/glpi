@@ -242,6 +242,17 @@ class DomainRecord extends CommonDBChild {
          $input['status'] = self::STATUS_ACTIVE;
       }
 
+      //search entity
+      if ($add && !isset($input['entities_id'])) {
+         $input['entities_id'] = $_SESSION['glpiactive_entity'] ?? 0;
+         $input['is_recursive'] = $_SESSION['glpiactive_entity_recursive'] ?? 0;
+         $domain = new Domain();
+         if (isset($input['domains_id']) && $domain->getFromDB($input['domains_id'])) {
+            $input['entities_id'] = $domain->fields['entities_id'];
+            $input['is_recursive'] = $domain->fields['is_recursive'];
+         }
+      }
+
       if (!Session::isCron() && isset($input['domainrecordtypes_id']) ||isset($this->fields['domainrecordtypes_id'])) {
          if (!($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1])) {
             if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes']))) {
