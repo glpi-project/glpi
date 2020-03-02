@@ -459,6 +459,14 @@ class DomainRecord extends CommonDBChild {
          $massiveactionparams = [];
          Html::showMassiveActions($massiveactionparams);
       }
+      if ($number) {
+         Session::initNavigateListItems(
+            'DomainRecord',
+            //TRANS : %1$s is the itemtype name,
+            //        %2$s is the name of the item (used for headings of a list)
+            sprintf(__('%1$s = %2$s'),
+            Domain::getTypeName(1), $domain->getName()));
+      }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
 
@@ -474,6 +482,7 @@ class DomainRecord extends CommonDBChild {
 
       while ($data = $iterator->next()) {
          Session::initNavigateListItems('DomainRecord', Domain::getTypeName(2) . " = " . $domain->fields['name']);
+         Session::addToNavigateListItems('Domain', $domain->fields['id']);
 
          $ID = "";
 
