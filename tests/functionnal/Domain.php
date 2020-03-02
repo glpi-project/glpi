@@ -71,9 +71,22 @@ class Domain extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-      $this->integer((int)countElementsInTable($domain_item->getTable()))->isIdenticalTo(1);
+      $record = new \DomainRecord();
+      foreach (['www', 'ftp', 'mail'] as $sub) {
+         $this->integer(
+            (int)$record->add([
+               'name'         => $sub,
+               'data'         => 'glpi-project.org.',
+               'domains_id'   => $domains_id
+            ])
+         )->isGreaterThan(0);
+      }
+
+      $this->integer((int)countElementsInTable($domain_item->getTable(), ['domains_id' => $domains_id]))->isIdenticalTo(1);
+      $this->integer((int)countElementsInTable($record->getTable(), ['domains_id' => $domains_id]))->isIdenticalTo(3);
       $this->boolean($domain->delete(['id' => $domains_id], true))->isTrue();
-      $this->integer((int)countElementsInTable($domain_item->getTable()))->isIdenticalTo(0);
+      $this->integer((int)countElementsInTable($domain_item->getTable(), ['domains_id' => $domains_id]))->isIdenticalTo(0);
+      $this->integer((int)countElementsInTable($record->getTable(), ['domains_id' => $domains_id]))->isIdenticalTo(0);
    }
 
    public function testGetEntitiesToNotify() {

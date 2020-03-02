@@ -52,8 +52,11 @@ class Domain extends CommonDropdown {
    }
 
    function cleanDBonPurge() {
-      $temp = new Domain_Item();
-      $temp->deleteByCriteria(['domains_id' => $this->fields['id']]);
+      $ditem = new Domain_Item();
+      $ditem->deleteByCriteria(['domains_id' => $this->fields['id']]);
+
+      $record = new DomainRecord();
+      $record->deleteByCriteria(['domains_id' => $this->fields['id']]);
    }
 
    function rawSearchOptions() {

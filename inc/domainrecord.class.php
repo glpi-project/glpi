@@ -233,9 +233,6 @@ class DomainRecord extends CommonDBChild {
       if (isset($input['date_creation']) && empty($input['date_creation'])) {
          $input['date_creation'] = 'NULL';
       }
-      if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
-         $input['date_expiration'] = 'NULL';
-      }
 
       if (!isset($input['ttl']) || empty($input['ttl'])) {
          $input['ttl'] = self::DEFAULT_TTL;
