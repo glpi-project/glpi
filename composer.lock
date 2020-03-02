@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d006629000c3c1faa2de384b5bd844ab",
+    "content-hash": "a54fbb52476d575a28f513fb5dde6abb",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
