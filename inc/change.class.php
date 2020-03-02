@@ -2133,4 +2133,28 @@ class Change extends CommonITILObject {
       }
       return true;
    }
+
+   static function dropdownType($name, $options = []) {
+
+      $params['value']       = 0;
+      $params['toadd']       = [];
+      $params['on_change']   = '';
+      $params['display']     = true;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      $items = [];
+      if (count($params['toadd']) > 0) {
+         $items = $params['toadd'];
+      }
+
+      $items += self::getTypes();
+
+      return Dropdown::showFromArray($name, $items, $params);
+   }
+
 }
