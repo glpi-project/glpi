@@ -1711,11 +1711,17 @@ class CommonDBTM extends CommonGLPI {
       if (isset($this->input['purge'])) {
          $this->input['_purge'] = $this->input['purge'];
          unset($this->input['purge']);
+      } else if ($force) {
+         $this->input['_purge'] = 1;
+         $this->input['_no_message'] = $this->input['_no_message'] ?? 1;
       }
 
       if (isset($this->input['delete'])) {
          $this->input['_delete'] = $this->input['delete'];
          unset($this->input['delete']);
+      } else if (!$force) {
+         $this->input['_delete'] = 1;
+         $this->input['_no_message'] = $this->input['_no_message'] ?? 1;
       }
 
       if (!isset($this->input['_no_history'])) {
