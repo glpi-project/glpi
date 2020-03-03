@@ -6806,13 +6806,9 @@ JAVASCRIPT;
          }
 
          //  Tickets
-         if ((Session::haveRight("ticket", CREATE)
+         if (Session::haveRight("ticket", CREATE)
             || Session::haveRight("ticket", Ticket::READMY)
-            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC))
-            && !(
-               Plugin::isPluginActive('formcreator')
-               && \Session::getCurrentInterface() == "helpdesk"
-            )
+            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)
          ) {
             $menu['tickets'] = [
                'default'   => '/front/ticket.php',
@@ -6839,6 +6835,8 @@ JAVASCRIPT;
             ];
          }
       }
+
+      $menu = Plugin::doHookFunction("redefine_menus", $menu);
 
       $already_used_shortcut = ['1'];
 
