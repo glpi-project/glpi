@@ -253,7 +253,7 @@ class DomainRecord extends CommonDBChild {
          }
       }
 
-      if (!Session::isCron() && isset($input['domainrecordtypes_id']) ||isset($this->fields['domainrecordtypes_id'])) {
+      if (!Session::isCron() && isset($input['domainrecordtypes_id']) || isset($this->fields['domainrecordtypes_id'])) {
          if (!($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1])) {
             if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes']))) {
                //no right to use selected type
@@ -503,7 +503,7 @@ class DomainRecord extends CommonDBChild {
 
          $link = Toolbox::getItemTypeFormURL('DomainRecord');
          $name = "<a href=\"" . $link . "?id=" . $data["id"] . "\">"
-                  . $data["name"] . "$ID</a>";
+                  . self::getDisplayName($domain, $data['name']) . "$ID</a>";
 
          echo "<tr class='tab_bg_1'>";
 
@@ -572,5 +572,21 @@ class DomainRecord extends CommonDBChild {
          self::STATUS_DISABLED   => __('Disabled'),
          self::STATUS_ACTIVE     => __('Active')
       ];
+   }
+
+   public static function getDisplayName(Domain $domain, $name) {
+      $name_txt = rtrim(
+         str_replace(
+            $domain->getCanonicalName(),
+            '',
+            $name
+         ),
+         '.'
+      );
+      if (empty($name_txt)) {
+         //dns root
+         $name_txt = '@';
+      }
+      return $name_txt;
    }
 }

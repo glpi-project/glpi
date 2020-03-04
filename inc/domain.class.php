@@ -803,4 +803,8 @@ class Domain extends CommonDropdown {
          ];
       }
    }
+
+   public function getCanonicalName() {
+      return rtrim($this->fields['name'], '.') . '.';
+   }
 }
