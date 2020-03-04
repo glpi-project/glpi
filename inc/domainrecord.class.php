@@ -238,7 +238,7 @@ class DomainRecord extends CommonDBChild {
          $input['ttl'] = self::DEFAULT_TTL;
       }
 
-      if (!isset($input['status']) || empty($input['status'])) {
+      if (!isset($input['status']) || $input['status'] == '') {
          $input['status'] = self::STATUS_ACTIVE;
       }
 
