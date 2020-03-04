@@ -233,9 +233,6 @@ class DomainRecord extends CommonDBChild {
       if (isset($input['date_creation']) && empty($input['date_creation'])) {
          $input['date_creation'] = 'NULL';
       }
-      if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
-         $input['date_expiration'] = 'NULL';
-      }
 
       if (!isset($input['ttl']) || empty($input['ttl'])) {
          $input['ttl'] = self::DEFAULT_TTL;
@@ -245,7 +242,18 @@ class DomainRecord extends CommonDBChild {
          $input['status'] = self::STATUS_ACTIVE;
       }
 
-      if (isset($input['domainrecordtypes_id']) ||isset($this->fields['domainrecordtypes_id'])) {
+      //search entity
+      if ($add && !isset($input['entities_id'])) {
+         $input['entities_id'] = $_SESSION['glpiactive_entity'] ?? 0;
+         $input['is_recursive'] = $_SESSION['glpiactive_entity_recursive'] ?? 0;
+         $domain = new Domain();
+         if (isset($input['domains_id']) && $domain->getFromDB($input['domains_id'])) {
+            $input['entities_id'] = $domain->fields['entities_id'];
+            $input['is_recursive'] = $domain->fields['is_recursive'];
+         }
+      }
+
+      if (!Session::isCron() && isset($input['domainrecordtypes_id']) || isset($this->fields['domainrecordtypes_id'])) {
          if (!($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1])) {
             if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes']))) {
                //no right to use selected type
@@ -462,6 +470,14 @@ class DomainRecord extends CommonDBChild {
          $massiveactionparams = [];
          Html::showMassiveActions($massiveactionparams);
       }
+      if ($number) {
+         Session::initNavigateListItems(
+            'DomainRecord',
+            //TRANS : %1$s is the itemtype name,
+            //        %2$s is the name of the item (used for headings of a list)
+            sprintf(__('%1$s = %2$s'),
+            Domain::getTypeName(1), $domain->getName()));
+      }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
 
@@ -477,6 +493,7 @@ class DomainRecord extends CommonDBChild {
 
       while ($data = $iterator->next()) {
          Session::initNavigateListItems('DomainRecord', Domain::getTypeName(2) . " = " . $domain->fields['name']);
+         Session::addToNavigateListItems('Domain', $domain->fields['id']);
 
          $ID = "";
 
@@ -486,7 +503,7 @@ class DomainRecord extends CommonDBChild {
 
          $link = Toolbox::getItemTypeFormURL('DomainRecord');
          $name = "<a href=\"" . $link . "?id=" . $data["id"] . "\">"
-                  . $data["name"] . "$ID</a>";
+                  . self::getDisplayName($domain, $data['name']) . "$ID</a>";
 
          echo "<tr class='tab_bg_1'>";
 
@@ -555,5 +572,21 @@ class DomainRecord extends CommonDBChild {
          self::STATUS_DISABLED   => __('Disabled'),
          self::STATUS_ACTIVE     => __('Active')
       ];
+   }
+
+   public static function getDisplayName(Domain $domain, $name) {
+      $name_txt = rtrim(
+         str_replace(
+            $domain->getCanonicalName(),
+            '',
+            $name
+         ),
+         '.'
+      );
+      if (empty($name_txt)) {
+         //dns root
+         $name_txt = '@';
+      }
+      return $name_txt;
    }
 }

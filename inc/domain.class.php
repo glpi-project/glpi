@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 class Domain extends CommonDropdown {
 
    static $rightname = 'domain';
+   static protected $forward_entity_to = ['DomainRecord'];
 
    public $can_be_translated = false;
 
@@ -51,8 +52,11 @@ class Domain extends CommonDropdown {
    }
 
    function cleanDBonPurge() {
-      $temp = new Domain_Item();
-      $temp->deleteByCriteria(['domains_id' => $this->fields['id']]);
+      $ditem = new Domain_Item();
+      $ditem->deleteByCriteria(['domains_id' => $this->fields['id']]);
+
+      $record = new DomainRecord();
+      $record->deleteByCriteria(['domains_id' => $this->fields['id']]);
    }
 
    function rawSearchOptions() {
@@ -798,5 +802,9 @@ class Domain extends CommonDropdown {
             ]
          ];
       }
+   }
+
+   public function getCanonicalName() {
+      return rtrim($this->fields['name'], '.') . '.';
    }
 }
