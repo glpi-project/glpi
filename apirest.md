@@ -114,9 +114,10 @@ App(lication) token
      You should pass this parameter in 'Authorization' HTTP header.
      A valid Authorization header is:
         * "Authorization: user_token q56hqkniwot8wntb3z1qarka5atf365taaa2uyjrn"
-
+* **Parameters**: (query string)
+  * *get_full_session* (default: false): Get the full session, useful if you want to login and access session data in one request.
 * **Returns**:
-  * 200 (OK) with the *session_token* string and the *ID of the logged in user*.
+  * 200 (OK) with the *session_token* string.
   * 400 (Bad Request) with a message indicating an error in input parameter.
   * 401 (UNAUTHORIZED)
 
@@ -131,20 +132,24 @@ $ curl -X GET \
 
 < 200 OK
 < {
-   "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62",
-   "users_id": "42"
+   "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62"
 }
 
 $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Authorization: user_token q56hqkniwot8wntb3z1qarka5atf365taaa2uyjrn" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/initSession'
+'http://path/to/glpi/apirest.php/initSession?get_full_session=true'
 
 < 200 OK
 < {
    "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62",
-   "users_id": "42"
+   "session": {
+      'glpi_plugins': ...,
+      'glpicookietest': ...,
+      'glpicsrftokens': ...,
+      ...
+   }
 }
 ```
 

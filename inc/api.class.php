@@ -248,10 +248,15 @@ abstract class API extends CommonGLPI {
 
       // stop session and return session key
       session_write_close();
-      return [
-         'session_token' => $_SESSION['valid_id'],
-         'users_id'      => Session::getLoginUserID(),
-      ];
+      $data = ['session_token' => $_SESSION['valid_id']];
+
+      // Insert session data if requested
+      $get_full_session = $params['get_full_session'] ?? false;
+      if ($get_full_session) {
+         $data['session'] = $_SESSION;
+      }
+
+      return $data;
    }
 
 

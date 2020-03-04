@@ -216,7 +216,7 @@ class APIRest extends APIBaseClass {
          $token = $user->getAuthToken('api_token');
       }
 
-      $res = $this->doHttpRequest('GET', 'initSession/',
+      $res = $this->doHttpRequest('GET', 'initSession?get_full_session=true',
                                          ['headers' => [
                                              'Authorization' => "user_token $token"
                                          ]]);
@@ -228,8 +228,8 @@ class APIRest extends APIBaseClass {
       $data = json_decode($body, true);
       $this->variable($data)->isNotFalse();
       $this->array($data)->hasKey('session_token');
-      $this->array($data)->hasKey('users_id');
-      $this->integer((int) $data['users_id'])->isEqualTo($uid);
+      $this->array($data)->hasKey('session');
+      $this->integer((int) $data['session']['glpiID'])->isEqualTo($uid);
    }
 
    /**
