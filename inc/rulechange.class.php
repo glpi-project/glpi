@@ -302,6 +302,30 @@ class RuleChange extends Rule {
                      $output["items_id"][$result["itemtype"]][] = $result["id"];
                   }
                   break;
+
+               case "regex_result" :
+               case "append_regex_result" :
+                  //Regex result : assign value from the regex
+                  //Append regex result : append result from a regex
+                  if (isset($this->regex_results[0])) {
+                     $res = RuleAction::getRegexResultById($action->fields["value"],
+                                                            $this->regex_results[0]);
+                  } else {
+                     $res = $action->fields["value"];
+                  }
+
+                  if ($action->fields["action_type"] == "append_regex_result") {
+                     if (isset($params[$action->fields["field"]])) {
+                        $res = $params[$action->fields["field"]] . $res;
+                     } else {
+                        //keep rule value to append in a separate entry
+                        $output[$action->fields['field'] . '_append'] = $res;
+                     }
+                  }
+
+                  $output[$action->fields["field"]] = $res;
+                  break;
+
             }
          }
       }
@@ -582,6 +606,32 @@ class RuleChange extends Rule {
 
       $actions['service_unavailability']['name'] = __('Unavailability of the service');
       $actions['service_unavailability']['type'] = 'yesno';
+
+      $actions['plan_start_date']['name']          = __('Planned start date');
+      $actions['plan_start_date']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['plan_end_date']['name']          = __('Planned end date');
+      $actions['plan_end_date']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['_task_description']['name']          = __('Task - Create task with a description');
+      $actions['_task_description']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['_task_assign_user']['table'] = 'glpi_users';
+      $actions['_task_assign_user']['name']  = __('Task - Define assigned user to task');
+      $actions['_task_assign_user']['type']  = 'dropdown';
+
+      $actions['_task_assign_group']['table'] = 'glpi_groups';
+      $actions['_task_assign_group']['name']  = __('Task - Define assigned group to task');
+      $actions['_task_assign_group']['type']  = 'dropdown';
+
+      $actions['_task_date_start']['name']          = __('Task - Set start date planned');
+      $actions['_task_date_start']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['_task_date_end']['name']          = __('Task - Set end date planned');
+      $actions['_task_date_end']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['_task_duration']['name']          = __('Task - Set duration of the task (in minutes)');
+      $actions['_task_duration']['force_actions'] = ['assign', 'regex_result'];
 
       return $actions;
    }

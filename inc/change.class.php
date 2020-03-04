@@ -439,6 +439,7 @@ class Change extends CommonITILObject {
    function post_addItem() {
       global $CFG_GLPI, $DB;
 
+      $this->manageTaskAdd($this->input);
       $this->manageValidationAdd($this->input);
 
       if (!empty($this->input['items_id'])) {
@@ -2157,4 +2158,35 @@ class Change extends CommonITILObject {
       return Dropdown::showFromArray($name, $items, $params);
    }
 
+   function manageTaskAdd($input) {
+
+      // Action for add new task
+      $values = [];
+      if (isset($input["_task_description"])) {
+         $values['content'] = $input["_task_description"];
+      }
+      if (isset($input["_task_assign_user"])) {
+         $values['users_id_tech'] = $input["_task_assign_user"];
+      }
+      if (isset($input["_task_assign_group"])) {
+         $values['groups_id_tech'] = $input["_task_assign_group"];
+      }
+      if (isset($input["_task_date_start"])) {
+         $values['plan']['begin'] = $input["_task_date_start"];
+      }
+      if (isset($input["_task_date_end"])) {
+         $values['plan']['end'] = $input["_task_date_end"];
+      }
+      if (isset($input["_task_duration"]) 
+         && is_numeric($input["_task_duration"])
+         && $input["_task_duration"] > 0) {
+         // Must have it in seconds
+         $values['plan']['_duration'] = ($input["_task_duration"] * 60);
+      }
+      if (count($values) > 0) {
+         $values['changes_id']  = $this->fields['id'];
+         $changeTask = new ChangeTask();
+         $changeTask->add($values);
+      }
+   }
 }
