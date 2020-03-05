@@ -416,6 +416,16 @@ class Migration extends \GLPITestCase {
             'format'    => 'integer',
             'options'   => ['first' => true],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '0'   FIRST  "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'integer',
+            'options'   => ['value' => '-2', 'update' => '0', 'condition' => 'WHERE `id` = 0'],
+            'sql'       => [
+               "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '-2'   ",
+               "UPDATE `my_table`
+                        SET `my_field` = 0 WHERE `id` = 0",
+            ]
          ]
       ];
    }
@@ -436,7 +446,11 @@ class Migration extends \GLPITestCase {
          }
       )->isIdenticalTo("Change of the database layout - my_tableTask completed.");
 
-      $this->array($this->queries)->isIdenticalTo([$sql]);
+      if (!is_array($sql)) {
+         $sql = [$sql];
+      }
+
+      $this->array($this->queries)->isIdenticalTo($sql);
    }
 
    public function testFormatBooleanBadDefault() {
