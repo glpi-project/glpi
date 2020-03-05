@@ -1233,7 +1233,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          foreach ($followups as $followup) {
             $tmp                             = [];
             $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
-            $tmp['##followup.author##']      = Html::clean(getUserName($followup['users_id']));
+
+            // Check if the author need to be anonymized
+            if (\Entity::getUsedConfig('anonymize_support_agents')
+               && $followup['timeline_position'] = CommonITILObject::TIMELINE_RIGHT
+            ) {
+               $tmp['##followup.author##'] = __("Helpdesk");
+            } else {
+               $tmp['##followup.author##'] = Html::clean(getUserName($followup['users_id']));
+            }
+
             $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
                                                                          $followup['requesttypes_id']);
             $tmp['##followup.date##']        = Html::convDateTime($followup['date']);
