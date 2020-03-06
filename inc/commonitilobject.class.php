@@ -6923,7 +6923,8 @@ abstract class CommonITILObject extends CommonDBTM {
                $userdata = getUserName($item_i['users_id'], 2);
                if (\Entity::getUsedConfig('anonymize_support_agents')
                   && \Session::getCurrentInterface() == 'helpdesk'
-                  && $item_i['timeline_position'] == self::TIMELINE_RIGHT) {
+                  && \ITILFollowup::getById($item_i['id'])->isFromSupportAgent()
+               ) {
                   echo __("Helpdesk");
                } else {
                   echo $user->getLink()."&nbsp;";

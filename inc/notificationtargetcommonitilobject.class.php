@@ -1236,7 +1236,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
             // Check if the author need to be anonymized
             if (\Entity::getUsedConfig('anonymize_support_agents')
-               && $followup['timeline_position'] = CommonITILObject::TIMELINE_RIGHT
+               && \ITILFollowup::getById($followup['id'])->isFromSupportAgent()
             ) {
                $tmp['##followup.author##'] = __("Helpdesk");
             } else {

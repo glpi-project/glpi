@@ -265,4 +265,94 @@ class ITILFollowup extends DbTestCase {
       $_SESSION['glpiset_default_tech']      = $oldConf['glpiset_default_tech'];
       $_SESSION['glpiset_default_requester'] = $oldConf['glpiset_default_requester'];
    }
+
+   protected function testIsFromSupportAgentProvider() {
+      return [
+         [
+            // Case 1: user is not an actor of the ticket
+            "roles"    => [],
+            "expected" => true,
+         ],
+         [
+            // Case 2: user is a requester
+            "roles"    => [\CommonITILActor::REQUESTER],
+            "expected" => false,
+         ],
+         [
+            // Case 3: user is an observer
+            "roles"    => [\CommonITILActor::OBSERVER],
+            "expected" => false,
+         ],
+         [
+            // Case 4: user is assigned
+            "roles"    => [\CommonITILActor::ASSIGN],
+            "expected" => true,
+         ],
+         [
+            // Case 5: user is observer and assigned
+            "roles"    => [
+               \CommonITILActor::OBSERVER,
+               \CommonITILActor::ASSIGN,
+            ],
+            "expected" => true,
+         ],
+      ];
+   }
+
+   /**
+    * @dataprovider testIsFromSupportAgentProvider
+    */
+   public function testIsFromSupportAgent(
+      array $roles,
+      bool $expected
+   ) {
+      global $CFG_GLPI, $DB;
+
+      // Disable notifications
+      $old_conf = $CFG_GLPI['use_notifications'];
+      $CFG_GLPI['use_notifications'] = false;
+
+      $this->login();
+
+      // Insert a ticket;
+      $ticket = new \Ticket();
+      $ticket_id = $ticket->add([
+         "name"    => "testIsFromSupportAgent",
+         "content" => "testIsFromSupportAgent",
+      ]);
+      $this->integer($ticket_id);
+
+      // Insert a followup
+      $user1 = getItemByTypeName('User', TU_USER, true);
+      $fup = new \ITILFollowup;
+      $fup_id = $fup->add([
+         'content'  => "testIsFromSupportAgent",
+         'users_id' => $user1,
+         'items_id' => $ticket_id,
+         'itemtype' => "Ticket",
+      ]);
+      $this->integer($fup_id);
+      $this->boolean($fup->getFromDB($fup_id))->isTrue();
+
+      // Remove any roles that may have been set after insert
+      $DB->delete(\Ticket_User::getTable(), ['tickets_id' => $ticket_id]);
+      $this->array($ticket->getITILActors())->hasSize(0);
+
+      // Insert roles
+      $tuser = new \Ticket_User();
+      foreach ($roles as $role) {
+         $this->integer($tuser->add([
+            'tickets_id' => $ticket_id,
+            'users_id'   => $user1,
+            'type'       => $role,
+         ]));
+      }
+
+      // Execute test
+      $result = $fup->isFromSupportAgent();
+      $this->boolean($result)->isEqualTo($expected);
+
+      // Reset conf
+      $CFG_GLPI['use_notifications'] = $old_conf;
+   }
 }
