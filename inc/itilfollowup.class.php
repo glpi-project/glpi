@@ -1222,7 +1222,7 @@ JAVASCRIPT;
       $roles = $actors[$user_id] ?? [];
 
       if (in_array(CommonITILActor::ASSIGN, $roles)) {
-         // The author is a requested -> support agent
+         // The author is assigned -> support agent
          return true;
       } else if (in_array(CommonITILActor::OBSERVER, $roles)
          || in_array(CommonITILActor::REQUESTER, $roles)
