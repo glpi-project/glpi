@@ -2812,7 +2812,7 @@ class Entity extends CommonTreeDropdown {
 
       // Get for current entity
       if ($entities_id === null) {
-         $entities_id = \Session::getActiveEntity();
+         $entities_id = Session::getActiveEntity();
       }
 
       // for calendar

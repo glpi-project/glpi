@@ -32,7 +32,11 @@
 
 namespace tests\units;
 
+use CommonITILActor;
 use \DbTestCase;
+use ITILFollowup as CoreITILFollowup;
+use Ticket;
+use Ticket_User;
 
 /* Test for inc/itilfollowup.class.php */
 
@@ -275,24 +279,24 @@ class ITILFollowup extends DbTestCase {
          ],
          [
             // Case 2: user is a requester
-            "roles"    => [\CommonITILActor::REQUESTER],
+            "roles"    => [CommonITILActor::REQUESTER],
             "expected" => false,
          ],
          [
             // Case 3: user is an observer
-            "roles"    => [\CommonITILActor::OBSERVER],
+            "roles"    => [CommonITILActor::OBSERVER],
             "expected" => false,
          ],
          [
             // Case 4: user is assigned
-            "roles"    => [\CommonITILActor::ASSIGN],
+            "roles"    => [CommonITILActor::ASSIGN],
             "expected" => true,
          ],
          [
             // Case 5: user is observer and assigned
             "roles"    => [
-               \CommonITILActor::OBSERVER,
-               \CommonITILActor::ASSIGN,
+               CommonITILActor::OBSERVER,
+               CommonITILActor::ASSIGN,
             ],
             "expected" => true,
          ],
@@ -315,7 +319,7 @@ class ITILFollowup extends DbTestCase {
       $this->login();
 
       // Insert a ticket;
-      $ticket = new \Ticket();
+      $ticket = new Ticket();
       $ticket_id = $ticket->add([
          "name"    => "testIsFromSupportAgent",
          "content" => "testIsFromSupportAgent",
@@ -324,7 +328,7 @@ class ITILFollowup extends DbTestCase {
 
       // Insert a followup
       $user1 = getItemByTypeName('User', TU_USER, true);
-      $fup = new \ITILFollowup;
+      $fup = new CoreITILFollowup();
       $fup_id = $fup->add([
          'content'  => "testIsFromSupportAgent",
          'users_id' => $user1,
@@ -335,11 +339,11 @@ class ITILFollowup extends DbTestCase {
       $this->boolean($fup->getFromDB($fup_id))->isTrue();
 
       // Remove any roles that may have been set after insert
-      $DB->delete(\Ticket_User::getTable(), ['tickets_id' => $ticket_id]);
+      $DB->delete(Ticket_User::getTable(), ['tickets_id' => $ticket_id]);
       $this->array($ticket->getITILActors())->hasSize(0);
 
       // Insert roles
-      $tuser = new \Ticket_User();
+      $tuser = new Ticket_User();
       foreach ($roles as $role) {
          $this->integer($tuser->add([
             'tickets_id' => $ticket_id,

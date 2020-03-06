@@ -5498,8 +5498,8 @@ JAVASCRIPT;
          switch ($table.'.'.$field) {
             case "glpi_users.name" :
                if ($itemtype == 'Ticket'
-                  && \Entity::getUsedConfig('anonymize_support_agents')
-                  && \Session::getCurrentInterface() == 'helpdesk') {
+                  && Entity::getUsedConfig('anonymize_support_agents')
+                  && Session::getCurrentInterface() == 'helpdesk') {
                   return __("Helpdesk");
                }
 
