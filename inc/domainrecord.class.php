@@ -492,7 +492,7 @@ class DomainRecord extends CommonDBChild {
       echo "</tr>";
 
       while ($data = $iterator->next()) {
-         Session::initNavigateListItems('DomainRecord', Domain::getTypeName(2) . " = " . $domain->fields['name']);
+         Session::addToNavigateListItems('DomainRecord', $data['id']);
          Session::addToNavigateListItems('Domain', $domain->fields['id']);
 
          $ID = "";
