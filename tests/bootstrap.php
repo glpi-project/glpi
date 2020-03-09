@@ -79,7 +79,7 @@ class GlpitestSQLError extends Exception
 }
 
 function loadDataset() {
-   global $CFG_GLPI;
+   global $CFG_GLPI, $DB;
 
    // Unit test data definition
    $data = [
@@ -501,6 +501,8 @@ function loadDataset() {
    $_SESSION['glpiactiveentities_string'] = "'0'";
    $CFG_GLPI['root_doc']            = '/glpi';
 
+   $DB->beginTransaction();
+
    // need to set theses in DB, because tests for API use http call and this bootstrap file is not called
    Config::setConfigurationValues('core', ['url_base'     => GLPI_URI,
                                            'url_base_api' => GLPI_URI . '/apirest.php']);
@@ -560,6 +562,7 @@ function loadDataset() {
       echo "\nDone\n\n";
       Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
    }
+   $DB->commit();
 }
 
 /**
