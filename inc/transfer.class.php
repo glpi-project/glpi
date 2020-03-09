@@ -1118,8 +1118,11 @@ class Transfer extends CommonDBTM {
             }
 
             // Transfer Item
-            $input = ['id'          => $newID,
-                           'entities_id' => $this->to];
+            $input = [
+               'id'          => $newID,
+               'entities_id' => $this->to,
+               '_transfer'   => 1
+            ];
 
             // Manage Location dropdown
             if (isset($item->fields['locations_id'])) {
