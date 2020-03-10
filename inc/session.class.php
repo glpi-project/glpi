@@ -1397,4 +1397,15 @@ class Session {
    static function mustChangePassword() {
       return array_key_exists('glpi_password_expired', $_SESSION);
    }
+
+   /**
+    * Get active entity id.
+    *
+    * @since 9.5
+    *
+    * @return int
+    */
+   public static function getActiveEntity() {
+      return $_SESSION['glpiactive_entity'];
+   }
 }

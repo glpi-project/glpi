@@ -6808,7 +6808,8 @@ JAVASCRIPT;
          //  Tickets
          if (Session::haveRight("ticket", CREATE)
             || Session::haveRight("ticket", Ticket::READMY)
-            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)) {
+            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)
+         ) {
             $menu['tickets'] = [
                'default'   => '/front/ticket.php',
                'title'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
@@ -6834,6 +6835,8 @@ JAVASCRIPT;
             ];
          }
       }
+
+      $menu = Plugin::doHookFunction("redefine_menus", $menu);
 
       $already_used_shortcut = ['1'];
 

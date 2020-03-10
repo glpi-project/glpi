@@ -6921,9 +6921,18 @@ abstract class CommonITILObject extends CommonDBTM {
 
                echo "<span class='h_user_name'>";
                $userdata = getUserName($item_i['users_id'], 2);
-               echo $user->getLink()."&nbsp;";
-               echo Html::showToolTip($userdata["comment"],
-                                      ['link' => $userdata['link']]);
+               if (Entity::getUsedConfig('anonymize_support_agents')
+                  && Session::getCurrentInterface() == 'helpdesk'
+                  && ITILFollowup::getById($item_i['id'])->isFromSupportAgent()
+               ) {
+                  echo __("Helpdesk");
+               } else {
+                  echo $user->getLink()."&nbsp;";
+                  echo Html::showToolTip(
+                     $userdata["comment"],
+                     ['link' => $userdata['link']]
+                  );
+               }
                echo "</span>";
             } else {
                echo __("Requester");

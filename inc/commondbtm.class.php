@@ -5483,4 +5483,21 @@ class CommonDBTM extends CommonGLPI {
       }
       return '';
    }
+
+   /**
+    * Retrieve an item from the database
+    *
+    * @param integer $ID ID of the item to get
+    *
+    * @return boolean true if succeed else false
+   */
+   public static function getById(int $id) {
+      $item = new static();
+
+      if (!$item->getFromDB($id)) {
+         return false;
+      }
+
+      return $item;
+   }
 }

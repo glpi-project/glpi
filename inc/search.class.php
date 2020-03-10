@@ -5497,6 +5497,12 @@ JAVASCRIPT;
 
          switch ($table.'.'.$field) {
             case "glpi_users.name" :
+               if ($itemtype == 'Ticket'
+                  && Entity::getUsedConfig('anonymize_support_agents')
+                  && Session::getCurrentInterface() == 'helpdesk') {
+                  return __("Helpdesk");
+               }
+
                // USER search case
                if (($itemtype != 'User')
                    && isset($so["forcegroupby"]) && $so["forcegroupby"]) {
@@ -5538,6 +5544,7 @@ JAVASCRIPT;
                         // Manage alternative_email for tickets_users
                         if (($itemtype == 'Ticket')
                             && isset($data[$ID][$k][2])) {
+
                            $split = explode(self::LONGSEP, $data[$ID][$k][2]);
                            for ($l=0; $l<count($split); $l++) {
                               $split2 = explode(" ", $split[$l]);

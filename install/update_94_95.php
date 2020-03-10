@@ -1678,6 +1678,21 @@ HTML
       )
    );
 
+   // Add anonymize_support_agents to entity
+   if (!$DB->fieldExists("glpi_entities", "anonymize_support_agents")) {
+      $migration->addField(
+         "glpi_entities",
+         "anonymize_support_agents",
+         "integer",
+         [
+            'after'     => "suppliers_as_private",
+            'value'     => -2,               // Inherit as default value
+            'update'    => '0',              // Not enabled for root entity
+            'condition' => 'WHERE `id` = 0'
+         ]
+      );
+   }
+
    $migration->executeMigration();
 
    return $updateresult;
