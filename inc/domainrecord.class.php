@@ -409,8 +409,18 @@ class DomainRecord extends CommonDBChild {
       $rand    = mt_rand();
 
       $iterator = $DB->request([
-         'FROM'      => self::getTable(),
+         'SELECT'    => 'record.*',
+         'FROM'      => self::getTable() . ' AS record',
          'WHERE'     => ['domains_id' => $instID],
+         'LEFT JOIN' => [
+            DomainRecordType::getTable() . ' AS rtype'  => [
+               'ON'  => [
+                  'rtype'  => 'id',
+                  'record' => 'domainrecordtypes_id'
+               ]
+            ]
+         ],
+         'ORDER'     => ['rtype.name ASC', 'record.name ASC']
       ]);
 
       $number = count($iterator);
