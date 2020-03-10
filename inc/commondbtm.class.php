@@ -870,11 +870,6 @@ class CommonDBTM extends CommonGLPI {
          // clean properly
          $networkPortObject = new NetworkPort();
          $networkPortObject->cleanDBonItemDelete($this->getType(), $this->getID());
-         // Manage networkportmigration if exists
-         if ($DB->tableExists('glpi_networkportmigrations')) {
-            $networkPortMigObject = new NetworkPortMigration();
-            $networkPortMigObject->cleanDBonItemDelete($this->getType(), $this->getID());
-         }
       }
 
       // If this type is RESERVABLE clean one associated to purged item

@@ -1471,8 +1471,7 @@ JAVASCRIPT;
             'title' => __('Tools'),
             'types' => [
                'Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
-               'ReservationItem', 'Report', 'MigrationCleaner',
-               'SavedSearch', 'Impact'
+               'ReservationItem', 'Report', 'SavedSearch', 'Impact'
             ]
          ],
          'plugins' => [

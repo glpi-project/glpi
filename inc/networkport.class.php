@@ -584,8 +584,6 @@ class NetworkPort extends CommonDBChild {
          $porttypes = ['NetworkPortAlias', 'NetworkPortAggregate'];
       } else {
          $porttypes = self::getNetworkPortInstantiations();
-         // Manage NetworkPortMigration
-         $porttypes[] = '';
       }
       $display_options = self::getDisplayOptions($itemtype);
       $table           = new HTMLTableMain();
@@ -638,15 +636,8 @@ class NetworkPort extends CommonDBChild {
       }
 
       foreach ($porttypes as $portType) {
-
-         if (empty($portType)) {
-            $group_name  = 'Migration';
-            $group_title = __('Network ports waiting for manual migration');
-         } else {
-            $group_name  = $portType;
-            $group_title = $portType::getTypeName(Session::getPluralNumber());
-         }
-
+         $group_name  = $portType;
+         $group_title = $portType::getTypeName(Session::getPluralNumber());
          $t_group = $table->createGroup($group_name, $group_title);
 
          if (($withtemplate != 2)
@@ -669,16 +660,10 @@ class NetworkPort extends CommonDBChild {
          }
 
          if ($display_options['characteristics']) {
-            if (empty($portType)) {
-               NetworkPortMigration::getMigrationInstantiationHTMLTableHeaders($t_group, $c_instant,
-                                                                               $c_network, null,
-                                                                               $table_options);
-            } else {
-               $instantiation = new $portType();
-               $instantiation->getInstantiationHTMLTableHeaders($t_group, $c_instant, $c_network,
-                                                                null, $table_options);
-               unset ($instantiation);
-            }
+            $instantiation = new $portType();
+            $instantiation->getInstantiationHTMLTableHeaders($t_group, $c_instant, $c_network,
+                                                               null, $table_options);
+            unset ($instantiation);
          }
 
          if ($display_options['internet']
@@ -727,24 +712,17 @@ class NetworkPort extends CommonDBChild {
 
             $save_canedit = $canedit;
 
-            if (!empty($portType)) {
-               $name = sprintf(__('%1$s (%2$s)'), self::getTypeName($number_port),
-                                 call_user_func([$portType, 'getTypeName']));
-               $name = sprintf(__('%1$s: %2$s'), $name, $number_port);
-            } else {
-               $name    = __('Network ports waiting for manual migration');
-               $canedit = false;
-            }
+            $name = sprintf(__('%1$s (%2$s)'), self::getTypeName($number_port),
+                              call_user_func([$portType, 'getTypeName']));
+            $name = sprintf(__('%1$s: %2$s'), $name, $number_port);
 
             while ($devid = $iterator->next()) {
                $t_row = $t_group->createRow();
 
                $netport->getFromDB(current($devid));
 
-               // No massive action for migration ports
                if (($withtemplate != 2)
-                     && $canedit
-                     && !empty($portType)) {
+                     && $canedit) {
                   $t_row->addCell(
                      $c_checkbox,
                      Html::getMassiveActionCheckBox(__CLASS__, $netport->fields["id"])
@@ -755,11 +733,7 @@ class NetworkPort extends CommonDBChild {
                if ($save_canedit
                      && ($withtemplate != 2)) {
 
-                  if (!empty($portType)) {
-                     $content .= "<a href=\"" . NetworkPort::getFormURLWithID($netport->fields["id"]) ."\">";
-                  } else {
-                     $content .= "<a href=\"" . NetworkPortMigration::getFormURLWithID($netport->fields["id"]) ."\">";
-                  }
+                  $content .= "<a href=\"" . NetworkPort::getFormURLWithID($netport->fields["id"]) ."\">";
                }
                $content .= $netport->fields["logical_number"];
 
