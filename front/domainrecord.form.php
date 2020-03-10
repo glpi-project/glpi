@@ -46,7 +46,7 @@ $record = new DomainRecord();
 if (isset($_POST["add"])) {
    $record->check(-1, CREATE, $_POST);
    $newID = $record->add($_POST);
-   if ($_SESSION['glpibackcreated']) {
+   if ($_SESSION['glpibackcreated'] && !isset($_POST['_in_modal'])) {
       Html::redirect($record->getFormURLWithID($newID));
    }
    Html::back();

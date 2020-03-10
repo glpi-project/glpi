@@ -386,6 +386,9 @@ class DomainRecord extends CommonDBChild {
 
       echo "</tr>";
 
+      if (isset($_REQUEST['_in_modal'])) {
+         echo "<input type='hidden' name='_in_modal' value='1'>";
+      }
       $this->showFormButtons($options);
 
       return true;
@@ -452,7 +455,7 @@ class DomainRecord extends CommonDBChild {
          echo Ajax::createIframeModalWindow(
             'add_dropdowndomainrecords_id',
             DomainRecord::getFormURL() . "?domains_id=$instID",
-            ['display' => false]
+            ['display' => false, 'reloadonclose' => true]
          );
 
          echo "</td><td class='center' class='tab_bg_1'>";
