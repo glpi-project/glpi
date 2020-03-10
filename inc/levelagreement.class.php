@@ -267,7 +267,7 @@ abstract class LevelAgreement extends CommonDBChild {
             echo Dropdown::getDropdownName(static::getTable(),
                                            $ticket->fields[$laField])."&nbsp;";
             echo Html::hidden($laField, ['value' => $ticket->fields[$laField]]);
-            $obj = clone $this;
+            $obj = new static();
             $obj->getFromDB($ticket->fields[$laField]);
             $comment = isset($obj->fields['comment']) ? $obj->fields['comment'] : '';
             $level      = new static::$levelclass();
