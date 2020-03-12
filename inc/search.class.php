@@ -3626,14 +3626,18 @@ JAVASCRIPT;
          case "glpi_itilfollowups.content":
          case "glpi_tickettasks.content":
          case "glpi_changetasks.content":
+            if (is_subclass_of($itemtype, "CommonITILObject")) {
                // force ordering by date desc
-               return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
-                                               '".self::SHORTSEP."',$tocomputeid)
-                                     ORDER BY `$table$addtable`.`date` DESC
-                                     SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."`,
-
-                       $ADDITONALFIELDS";
+               return " GROUP_CONCAT(
+                  DISTINCT CONCAT(
+                     IFNULL($tocompute, '".self::NULLVALUE."'),
+                     '".self::SHORTSEP."',
+                     $tocomputeid
+                  )
+                  ORDER BY `$table$addtable`.`date` DESC
+                  SEPARATOR '".self::LONGSEP."'
+               ) AS `".$NAME."`, $ADDITONALFIELDS";
+            }
             break;
 
          default:
