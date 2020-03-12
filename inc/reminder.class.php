@@ -710,7 +710,7 @@ class Reminder extends CommonDBVisible {
 
       $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_2'><td colspan='2'>".__('Title')."</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Title')."</td>";
       echo "<td colspan='2'>";
       if (!$ID) {
          echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
@@ -732,7 +732,7 @@ class Reminder extends CommonDBVisible {
 
       if (!isset($options['from_planning_ajax'])) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td colspan='2'>".__('Visibility')."</td>";
+         echo "<td>".__('Visibility')."</td>";
          echo "<td colspan='2'>";
          echo '<table><tr><td>';
          echo __('Begin').'</td><td>';
@@ -753,7 +753,7 @@ class Reminder extends CommonDBVisible {
       }
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='2'>".__('Status')."</td>";
+      echo "<td>".__('Status')."</td>";
       echo "<td colspan='2'>";
       if ($canedit) {
          Planning::dropdownState("state", $this->fields["state"]);
@@ -763,7 +763,7 @@ class Reminder extends CommonDBVisible {
       echo "</td>\n";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'><td  colspan='2'>".__('Calendar')."</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Calendar')."</td>";
       $active_recall = ($ID && $this->fields["is_planned"] && PlanningRecall::isAvailable());
 
       echo "<td";
