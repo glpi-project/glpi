@@ -238,7 +238,7 @@ class SoftwareVersion extends CommonDBChild {
       $criteria = [
          'SELECT'    => [
             'glpi_softwareversions.*',
-            'glpi_states AS name'
+            'glpi_states.name AS sname'
          ],
          'DISTINCT'  => true,
          'FROM'      => 'glpi_softwareversions',
