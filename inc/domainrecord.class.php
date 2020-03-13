@@ -253,7 +253,7 @@ class DomainRecord extends CommonDBChild {
          }
       }
 
-      if (!Session::isCron() && isset($input['domainrecordtypes_id']) || isset($this->fields['domainrecordtypes_id'])) {
+      if (!Session::isCron() && (isset($input['domainrecordtypes_id']) || isset($this->fields['domainrecordtypes_id']))) {
          if (!($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1])) {
             if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes']))) {
                //no right to use selected type
