@@ -62,7 +62,7 @@ class OperatingSystemKernelVersion extends CommonDropdown {
       }
    }
 
-   public function computeFriendlyName() {
+   protected function computeFriendlyName() {
       $kvname = parent::computeFriendlyName();
 
       return trim($kvname);

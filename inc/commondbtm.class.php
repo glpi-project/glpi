@@ -5450,6 +5450,10 @@ class CommonDBTM extends CommonGLPI {
    final public function getFriendlyName() {
       global $GLPI_CACHE;
 
+      if (!method_exists($this, 'computeFriendlyName')) {
+         return $this->fields[static::getNameField()] ?? '';
+      }
+
       $cache_key = self::getCacheKeyForFriendlyName(
          self::getType(),
          $this->getID()
@@ -5468,20 +5472,6 @@ class CommonDBTM extends CommonGLPI {
       }
 
       return $name;
-   }
-
-   /**
-    * Compute the friendly name of the object
-    *
-    * @since 9.5
-    *
-    * @return string
-    */
-   protected function computeFriendlyName() {
-      if (isset($this->fields[static::getNameField()])) {
-         return $this->fields[static::getNameField()];
-      }
-      return '';
    }
 
    /**

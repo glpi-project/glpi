@@ -1075,7 +1075,7 @@ JAVASCRIPT;
       return $input;
    }
 
-   public function computeFriendlyName() {
+   protected function computeFriendlyName() {
       $rack = new Rack();
       $rack->getFromDB($this->fields['racks_id']);
       $name = sprintf(
