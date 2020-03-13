@@ -122,13 +122,14 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
       $normalized_keys = array_map([$this, 'getNormalizedKey'], $keys);
 
       $cached_values = parent::getMultiple($normalized_keys, $default);
+      $footprints = $this->check_footprints ? $this->getMultipleCachedFootprints($keys) : [];
 
       $result = [];
       foreach ($keys as $key) {
          $normalized_key = $this->getNormalizedKey($key);
          $result[$key] = $cached_values[$normalized_key];
          if ($this->check_footprints) {
-            if ($this->getCachedFootprint($key) !== $this->computeFootprint($cached_values[$normalized_key])) {
+            if ($footprints[$key] !== $this->computeFootprint($cached_values[$normalized_key])) {
                // If footprint changed, value is no more valid.
                $result[$key] = $default;
             }
@@ -209,6 +210,24 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
       $footprints = $this->getAllCachedFootprints();
 
       return array_key_exists($key, $footprints) ? $footprints[$key] : null;
+   }
+
+   /**
+    * Return known footprints for multiple cached items.
+    *
+    * @param array $keys
+    *
+    * @return array
+    */
+   private function getMultipleCachedFootprints(array $keys) {
+      $footprints = $this->getAllCachedFootprints();
+
+      $result = [];
+      foreach ($keys as $key) {
+         $result[$key] = $footprints[$key] ?? null;
+      }
+
+      return $result;
    }
 
    /**
