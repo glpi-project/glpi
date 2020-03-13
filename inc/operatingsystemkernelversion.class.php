@@ -61,10 +61,4 @@ class OperatingSystemKernelVersion extends CommonDropdown {
             break;
       }
    }
-
-   protected function computeFriendlyName() {
-      $kvname = parent::computeFriendlyName();
-
-      return trim($kvname);
-   }
 }
