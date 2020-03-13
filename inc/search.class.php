@@ -5499,7 +5499,9 @@ JAVASCRIPT;
             case "glpi_users.name" :
                if ($itemtype == 'Ticket'
                   && Entity::getUsedConfig('anonymize_support_agents')
-                  && Session::getCurrentInterface() == 'helpdesk') {
+                  && Session::getCurrentInterface() == 'helpdesk'
+                  && $orig_id == 5) {
+                  // Support agent
                   return __("Helpdesk");
                }
 
@@ -6138,6 +6140,14 @@ JAVASCRIPT;
       }
 
       //// Default case
+
+      if ($itemtype == 'Ticket'
+         && Entity::getUsedConfig('anonymize_support_agents')
+         && Session::getCurrentInterface() == 'helpdesk'
+         && $orig_id == 8) {
+         // Assigned groups
+         return __("Helpdesk group");
+      }
 
       // Link with plugin tables : need to know left join structure
       if (isset($table)) {

@@ -2865,7 +2865,14 @@ abstract class CommonITILObject extends CommonDBTM {
             $k = $d['groups_id'];
             echo "$mandatory$groupicon&nbsp;";
             if ($group->getFromDB($k)) {
-               echo $group->getLink(['comments' => true]);
+               if (Entity::getUsedConfig('anonymize_support_agents')
+                  && Session::getCurrentInterface() == 'helpdesk'
+                  && $type == CommonITILActor::ASSIGN
+               ) {
+                  echo __("Helpdesk group");
+               } else {
+                  echo $group->getLink(['comments' => true]);
+               }
             }
             if ($canedit && $candelete) {
                Html::showSimpleForm($linkclass->getFormURL(), 'delete',
@@ -4010,14 +4017,21 @@ abstract class CommonITILObject extends CommonDBTM {
                $userdata      = "<a href='mailto:$email'>$email</a>";
             }
 
-            if ($k) {
-               $param = ['display' => false];
-               if ($showuserlink) {
-                  $param['link'] = $userdata["link"];
-               }
-               echo $userdata['name']."&nbsp;".Html::showToolTip($userdata["comment"], $param);
+            if (Entity::getUsedConfig('anonymize_support_agents')
+               && Session::getCurrentInterface() == 'helpdesk'
+               && $type == CommonITILActor::ASSIGN
+            ) {
+               echo __("Helpdesk");
             } else {
-               echo $userdata;
+               if ($k) {
+                  $param = ['display' => false];
+                  if ($showuserlink) {
+                     $param['link'] = $userdata["link"];
+                  }
+                  echo $userdata['name']."&nbsp;".Html::showToolTip($userdata["comment"], $param);
+               } else {
+                  echo $userdata;
+               }
             }
 
             if ($CFG_GLPI['notifications_mailing']) {
@@ -6115,18 +6129,30 @@ abstract class CommonITILObject extends CommonDBTM {
          // Fifth column
          $fifth_col = "";
 
+         $anonymize_helpdesk = Entity::getUsedConfig('anonymize_support_agents')
+            && Session::getCurrentInterface() == 'helpdesk';
+
          foreach ($item->getUsers(CommonITILActor::ASSIGN) as $d) {
-            $userdata   = getUserName($d["users_id"], 2);
-            $fifth_col .= sprintf(__('%1$s %2$s'),
+            if ($anonymize_helpdesk) {
+               $fifth_col .= __("Helpdesk");
+            } else {
+               $userdata   = getUserName($d["users_id"], 2);
+               $fifth_col .= sprintf(__('%1$s %2$s'),
                                     "<span class='b'>".$userdata['name']."</span>",
                                     Html::showToolTip($userdata["comment"],
                                                       ['link'    => $userdata["link"],
                                                             'display' => false]));
+            }
+
             $fifth_col .= "<br>";
          }
 
          foreach ($item->getGroups(CommonITILActor::ASSIGN) as $d) {
-            $fifth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+            if ($anonymize_helpdesk) {
+               $fifth_col .= __("Helpdesk group");
+            } else {
+               $fifth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+            }
             $fifth_col .= "<br>";
          }
 

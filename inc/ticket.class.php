@@ -863,7 +863,12 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
+
+      if (!(Entity::getUsedConfig('anonymize_support_agents')
+         && Session::getCurrentInterface() == 'helpdesk')
+      ) {
+         $this->addStandardTab('Log', $ong, $options);
+      }
 
       return $ong;
    }
