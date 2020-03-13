@@ -590,7 +590,7 @@ class DomainRecord extends CommonDBChild {
    public static function getDisplayName(Domain $domain, $name) {
       $name_txt = rtrim(
          str_replace(
-            $domain->getCanonicalName(),
+            rtrim($domain->getCanonicalName(), '.'),
             '',
             $name
          ),
