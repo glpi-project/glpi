@@ -1907,6 +1907,9 @@ class CommonDBTM extends CommonGLPI {
       if (isset($input['restore'])) {
          $input['_restore'] = $input['restore'];
          unset($input['restore']);
+      } else {
+         $this->input['_restore'] = 1;
+         $this->input['_no_message'] = $this->input['_no_message'] ?? 1;
       }
 
       // Store input in the object to be available in all sub-method / hook
