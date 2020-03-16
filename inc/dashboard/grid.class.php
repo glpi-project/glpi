@@ -1077,7 +1077,7 @@ HTML;
       global $GLPI_CACHE, $CFG_GLPI;
 
       if ($GLPI_CACHE->has("dashboards_cards")) {
-         $GLPI_CACHE->get("dashboards_cards");
+         return $GLPI_CACHE->get("dashboards_cards");
       }
 
       $cards = [];
