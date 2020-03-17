@@ -4110,11 +4110,10 @@ JAVASCRIPT;
             case "date" :
             case "date_delay" :
                $force_day = true;
-               if ($searchopt[$ID]["datatype"] == 'datetime') {
+               if ($searchopt[$ID]["datatype"] == 'datetime'
+                  && !(strstr($val, 'BEGIN') || strstr($val, 'LAST') || strstr($val, 'DAY'))
+               ) {
                   $force_day = false;
-               }
-               if (strstr($val, 'BEGIN') || strstr($val, 'LAST')) {
-                  $force_day = true;
                }
 
                $val = Html::computeGenericDateTimeSearch($val, $force_day);
