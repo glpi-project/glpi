@@ -6064,6 +6064,7 @@ JAVASCRIPT;
             dialogClass: 'glpi_modal',
             open: function(event, ui) {
                $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
+               $(this).next('div').find('button').focus();
             },
             close: function(){
                $(this).remove();
