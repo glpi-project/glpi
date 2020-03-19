@@ -432,7 +432,7 @@ trait PlanningEvent {
       $WHERE = [
          'begin' => ['<', $end],
          'end'   => ['>', $begin]
-      ] + $NASSIGN;
+      ] + [$NASSIGN]; // "encapsulate" nassign to prevent OR overriding
 
       if ($DB->fieldExists($table, 'is_planned')) {
          $WHERE["$table.is_planned"] = 1;
@@ -443,11 +443,13 @@ trait PlanningEvent {
       }
 
       if (!$options['display_done_events']) {
-         $WHERE['OR'] = [
-            'state'  => Planning::TODO,
-            'AND'    => [
-               'state'  => Planning::INFO,
-               'end'    => ['>', new \QueryExpression('NOW()')]
+         $WHERE[] = [
+            'OR' => [
+               'state'  => Planning::TODO,
+               'AND'    => [
+                  'state'  => Planning::INFO,
+                  'end'    => ['>', new \QueryExpression('NOW()')]
+               ]
             ]
          ];
       }

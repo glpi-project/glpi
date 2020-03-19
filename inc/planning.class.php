@@ -1681,8 +1681,21 @@ class Planning extends CommonGLPI {
             $param[$key] = $val;
          }
       }
-      $param['begin'] = date("Y-m-d H:i:s", strtotime($param['start']));
-      $param['end']   = date("Y-m-d H:i:s", strtotime($param['end']));
+
+      $time_begin = strtotime($param['start']);
+      $time_end   = strtotime($param['end']);
+
+      // if the dates range is greater than a certain amount, and we're not on a list view
+      // we certainly are on this view (as our biggest view apart list is month one).
+      // we must avoid at all cost to calculate rrules events on a big range
+      if ($param['view_name'] != "listFull"
+          && ($time_end - $time_begin) > (2 * MONTH_TIMESTAMP)) {
+         $param['view_name'] = "listFull";
+         return [];
+      }
+
+      $param['begin'] = date("Y-m-d H:i:s", $time_begin);
+      $param['end']   = date("Y-m-d H:i:s", $time_end);
 
       $raw_events = [];
       $not_planned = [];
@@ -2199,28 +2212,18 @@ class Planning extends CommonGLPI {
     * @return string
    **/
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
+      global $GLPI_CACHE;
+
+      $cache_key = "planning_display_item_".sha1(json_encode(func_get_args()));
+      if ($GLPI_CACHE->has($cache_key)) {
+         return $GLPI_CACHE->get($cache_key);
+      }
+
       $html = "";
-
-      /*$color = "#e4e4e4";
-      if (isset($val["state"])) {
-         switch ($val["state"]) {
-            case 0 :
-               $color = "#efefe7"; // Information
-               break;
-
-            case 1 :
-               $color = "#fbfbfb"; // To be done
-               break;
-
-            case 2 :
-               $color = "#e7e7e2"; // Done
-               break;
-         }
-      }*/
-
       // Plugins case
       if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
          $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
+         $GLPI_CACHE->set($cache_key, $html);
       }
 
       return $html;
