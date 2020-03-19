@@ -7885,8 +7885,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array
     */
-   public function getAssociatedDocumentsCriteria(): array
-   {
+   public function getAssociatedDocumentsCriteria(): array {
       $task_class = $this->getType() . 'Task';
 
       return [
