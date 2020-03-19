@@ -7912,6 +7912,19 @@ abstract class CommonITILObject extends CommonDBTM {
                ),
             ],
             [
+               Document_Item::getTableField('itemtype') => ITILSolution::getType(),
+               Document_Item::getTableField('items_id') => new QuerySubQuery(
+                  [
+                     'SELECT' => 'id',
+                     'FROM'   => ITILSolution::getTable(),
+                     'WHERE'  => [
+                        ITILSolution::getTableField('itemtype') => $this->getType(),
+                        ITILSolution::getTableField('items_id') => $this->getID(),
+                     ],
+                  ]
+               ),
+            ],
+            [
                'glpi_documents_items.itemtype' => $task_class::getType(),
                'glpi_documents_items.items_id' => new QuerySubQuery(
                   [

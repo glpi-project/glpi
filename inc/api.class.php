@@ -937,7 +937,7 @@ abstract class API extends CommonGLPI {
                $doc_criteria = [
                   $item->getAssociatedDocumentsCriteria(),
                   'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
-               ]
+               ];
             }
             $doc_iterator = $DB->request([
                'SELECT'    => [
