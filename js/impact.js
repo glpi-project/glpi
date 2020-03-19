@@ -773,7 +773,9 @@ var GLPIImpact = {
          {
             selector: '[id="tmp_node"]',
             style: {
-               'display': 'none',
+               // Use opacity instead of display none here as this will make
+               // the edges connected to this node still visible
+               'opacity': 0,
             }
          },
          {
@@ -789,6 +791,17 @@ var GLPIImpact = {
                'target-endpoint'          : 'outside-to-node-or-label',
                'source-distance-from-node': '2px',
                'target-distance-from-node': '2px',
+            }
+         },
+         {
+            selector: 'edge[target="tmp_node"]',
+            style: {
+               // We want the arrow to go exactly where the cursor of the user
+               // is on the graph, no padding.
+               'source-endpoint'          : 'inside-to-node',
+               'target-endpoint'          : 'inside-to-node',
+               'source-distance-from-node': '0px',
+               'target-distance-from-node': '0px',
             }
          },
          {
