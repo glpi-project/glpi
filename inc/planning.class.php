@@ -1666,6 +1666,7 @@ class Planning extends CommonGLPI {
     *  - end: mandatory, planning end.
     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
     *  - display_done_events: default true, show also events tagged as done
+    *  - force_all_events: even if the range is big, don't reduce the returned set
     * @return array $events : array with events in fullcalendar.io format
     */
    static function constructEventsArray($options = []) {
@@ -1675,6 +1676,7 @@ class Planning extends CommonGLPI {
       $param['end']                 = '';
       $param['view_name']           = '';
       $param['display_done_events'] = true;
+      $param['force_all_events']    = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1688,7 +1690,8 @@ class Planning extends CommonGLPI {
       // if the dates range is greater than a certain amount, and we're not on a list view
       // we certainly are on this view (as our biggest view apart list is month one).
       // we must avoid at all cost to calculate rrules events on a big range
-      if ($param['view_name'] != "listFull"
+      if (!$param['force_all_events']
+          && $param['view_name'] != "listFull"
           && ($time_end - $time_begin) > (2 * MONTH_TIMESTAMP)) {
          $param['view_name'] = "listFull";
          return [];
