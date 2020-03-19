@@ -414,8 +414,16 @@ class Document_Item extends CommonDBRelation{
             }
 
             while ($data = $iterator->next()) {
-               if ($itemtype == 'Ticket') {
-                  $data["name"] = sprintf(__('%1$s: %2$s'), __('Ticket'), $data["id"]);
+               if ($item instanceof ITILFollowup || $item instanceof CommonITILTask) {
+                  $itemtype = $data['itemtype'];
+                  $item = new $itemtype();
+                  $item->getFromDB($data['items_id']);
+                  $data['id'] = $item->fields['id'];
+                  $data['entity'] = $item->fields['entities_id'];
+               }
+
+               if ($item instanceof CommonITILObject) {
+                  $data["name"] = sprintf(__('%1$s: %2$s'), $item->getTypeName(1), $data["id"]);
                }
 
                if ($itemtype == 'SoftwareLicense') {
