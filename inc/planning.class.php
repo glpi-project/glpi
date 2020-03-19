@@ -2215,18 +2215,10 @@ class Planning extends CommonGLPI {
     * @return string
    **/
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
-      global $GLPI_CACHE;
-
-      $cache_key = "planning_display_item_".sha1(json_encode(func_get_args()));
-      if ($GLPI_CACHE->has($cache_key)) {
-         return $GLPI_CACHE->get($cache_key);
-      }
-
       $html = "";
       // Plugins case
       if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
          $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
-         $GLPI_CACHE->set($cache_key, $html);
       }
 
       return $html;
