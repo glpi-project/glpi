@@ -6686,6 +6686,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $taskClass             = $objType."Task";
       $task_obj              = new $taskClass;
       $document_item_obj     = new Document_Item();
+      $doc_items_or_crit = [];
       if ($supportsValidation) {
          $validation_class    = $objType."Validation";
          $valitation_obj     = new $validation_class;
@@ -6723,6 +6724,10 @@ abstract class CommonITILObject extends CommonDBTM {
             $timeline[$followup['date']."_followup_".$followups_id] = ['type' => $fupClass,
                                                                             'item' => $followup,
                                                                             'itiltype' => 'Followup'];
+            $doc_items_or_crit[] = [
+               'itemtype' => $followup_obj->getType(),
+               'items_id' => $followups_id,
+            ];
          }
       }
 
@@ -6735,14 +6740,21 @@ abstract class CommonITILObject extends CommonDBTM {
             $timeline[$task['date']."_task_".$tasks_id] = ['type' => $taskClass,
                                                                 'item' => $task,
                                                                 'itiltype' => 'Task'];
+            $doc_items_or_crit[] = [
+               'itemtype' => $task_obj->getType(),
+               'items_id' => $tasks_id,
+            ];
          }
       }
 
       //add documents to timeline
       $document_obj   = new Document();
+      $doc_items_or_crit[] = [
+         'itemtype' => $objType,
+         'items_id' => $this->getID(),
+      ];
       $document_items = $document_item_obj->find([
-         'itemtype'           => $objType,
-         'items_id'           => $this->getID(),
+         'OR' => $doc_items_or_crit,
          'timeline_position'  => ['>', self::NO_TIMELINE]
       ]);
       foreach ($document_items as $document_item) {
