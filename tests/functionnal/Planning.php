@@ -136,8 +136,9 @@ class Planning extends \DbTestCase {
       // Fetch all events
       $all_events = \Planning::constructEventsArray(
          [
-            'start' => '2000-01-01 00:00:00',
-            'end'   => '2050-12-31 23:59:59',
+            'start'     => '2000-01-01 00:00:00',
+            'end'       => '2050-12-31 23:59:59',
+            'view_name' => 'listFull',
          ]
       );
       // Fetch events only for a given month
