@@ -929,6 +929,16 @@ abstract class API extends CommonGLPI {
              && !Document::canView()) {
             $fields['_documents'] = self::arrayRightError();
          } else {
+            $doc_criteria = [
+               'glpi_documents_items.items_id'  => $id,
+               'glpi_documents_items.itemtype'  => $itemtype
+            ];
+            if ($item instanceof CommonITILObject) {
+               $doc_criteria = [
+                  $item->getAssociatedDocumentsCriteria(),
+                  'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
+               ]
+            }
             $doc_iterator = $DB->request([
                'SELECT'    => [
                   'glpi_documents_items.id AS assocID',
@@ -959,10 +969,7 @@ abstract class API extends CommonGLPI {
                      ]
                   ]
                ],
-               'WHERE'     => [
-                  'glpi_documents_items.items_id'  => $id,
-                  'glpi_documents_items.itemtype'  => $itemtype
-               ]
+               'WHERE'     => $doc_criteria,
             ]);
             while ($data = $doc_iterator->next()) {
                $fields['_documents'][] = $data;

@@ -7892,19 +7892,19 @@ abstract class CommonITILObject extends CommonDBTM {
       return [
          'OR' => [
             [
-               'itemtype' => $this->getType(),
-               'items_id' => $this->getID(),
+               Document_Item::getTableField('itemtype') => $this->getType(),
+               Document_Item::getTableField('items_id') => $this->getID(),
             ],
             [
-               'itemtype' => ITILFollowup::getType(),
-               'items_id' => new QuerySubQuery(
+               Document_Item::getTableField('itemtype') => ITILFollowup::getType(),
+               Document_Item::getTableField('items_id') => new QuerySubQuery(
                   [
                      'SELECT' => 'id',
                      'FROM'   => ITILFollowup::getTable(),
                      'WHERE'  => [
-                        'itemtype' => $this->getType(),
-                        'items_id' => $this->getID(),
-                        'OR'       => !Session::haveRight('followup', ITILFollowup::SEEPRIVATE)
+                        ITILFollowup::getTableField('itemtype') => $this->getType(),
+                        ITILFollowup::getTableField('items_id') => $this->getID(),
+                        'OR' => !Session::haveRight('followup', ITILFollowup::SEEPRIVATE)
                            ? ['is_private' => 0, 'users_id' => Session::getLoginUserID()]
                            : ['1'],
                      ],
@@ -7912,8 +7912,8 @@ abstract class CommonITILObject extends CommonDBTM {
                ),
             ],
             [
-               'itemtype' => $task_class::getType(),
-               'items_id' => new QuerySubQuery(
+               'glpi_documents_items.itemtype' => $task_class::getType(),
+               'glpi_documents_items.items_id' => new QuerySubQuery(
                   [
                      'SELECT' => 'id',
                      'FROM'   => $task_class::getTable(),
