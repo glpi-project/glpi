@@ -185,13 +185,13 @@ if (isset($_POST["add"])) {
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
    Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
 } else if (isset($_REQUEST['delete_document'])) {
+   $track->getFromDB((int)$_REQUEST['tickets_id']);
    $doc = new Document();
    $doc->getFromDB(intval($_REQUEST['documents_id']));
    if ($doc->can($doc->getID(), UPDATE)) {
       $document_item = new Document_Item;
       $found_document_items = $document_item->find([
-         'itemtype'     => 'Ticket',
-         'items_id'     => (int)$_REQUEST['tickets_id'],
+         $track->getAssociatedDocumentsCriteria(),
          'documents_id' => $doc->getID()
       ]);
       foreach ($found_document_items  as $item) {

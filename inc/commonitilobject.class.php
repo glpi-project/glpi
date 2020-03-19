@@ -6686,7 +6686,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $taskClass             = $objType."Task";
       $task_obj              = new $taskClass;
       $document_item_obj     = new Document_Item();
-      $doc_items_or_crit = [];
       if ($supportsValidation) {
          $validation_class    = $objType."Validation";
          $valitation_obj     = new $validation_class;
@@ -6724,10 +6723,6 @@ abstract class CommonITILObject extends CommonDBTM {
             $timeline[$followup['date']."_followup_".$followups_id] = ['type' => $fupClass,
                                                                             'item' => $followup,
                                                                             'itiltype' => 'Followup'];
-            $doc_items_or_crit[] = [
-               'itemtype' => $followup_obj->getType(),
-               'items_id' => $followups_id,
-            ];
          }
       }
 
@@ -6740,21 +6735,13 @@ abstract class CommonITILObject extends CommonDBTM {
             $timeline[$task['date']."_task_".$tasks_id] = ['type' => $taskClass,
                                                                 'item' => $task,
                                                                 'itiltype' => 'Task'];
-            $doc_items_or_crit[] = [
-               'itemtype' => $task_obj->getType(),
-               'items_id' => $tasks_id,
-            ];
          }
       }
 
       //add documents to timeline
       $document_obj   = new Document();
-      $doc_items_or_crit[] = [
-         'itemtype' => $objType,
-         'items_id' => $this->getID(),
-      ];
       $document_items = $document_item_obj->find([
-         'OR' => $doc_items_or_crit,
+         $this->getAssociatedDocumentsCriteria(),
          'timeline_position'  => ['>', self::NO_TIMELINE]
       ]);
       foreach ($document_items as $document_item) {
@@ -7891,5 +7878,55 @@ abstract class CommonITILObject extends CommonDBTM {
          $excluded[] = 'TicketValidation:submit_validation';
       }
       return $excluded;
+   }
+
+   /**
+    * Returns criteria that can be used to get documents related to current instance.
+    *
+    * @return array
+    */
+   public function getAssociatedDocumentsCriteria(): array
+   {
+      $task_class = $this->getType() . 'Task';
+
+      return [
+         'OR' => [
+            [
+               'itemtype' => $this->getType(),
+               'items_id' => $this->getID(),
+            ],
+            [
+               'itemtype' => ITILFollowup::getType(),
+               'items_id' => new QuerySubQuery(
+                  [
+                     'SELECT' => 'id',
+                     'FROM'   => ITILFollowup::getTable(),
+                     'WHERE'  => [
+                        'itemtype' => $this->getType(),
+                        'items_id' => $this->getID(),
+                        'OR'       => !Session::haveRight('followup', ITILFollowup::SEEPRIVATE)
+                           ? ['is_private' => 0, 'users_id' => Session::getLoginUserID()]
+                           : ['1'],
+                     ],
+                  ]
+               ),
+            ],
+            [
+               'itemtype' => $task_class::getType(),
+               'items_id' => new QuerySubQuery(
+                  [
+                     'SELECT' => 'id',
+                     'FROM'   => $task_class::getTable(),
+                     'WHERE'  => [
+                        $this->getForeignKeyField() => $this->getID(),
+                        'OR' => !Session::haveRight('task', CommonITILTask::SEEPRIVATE)
+                           ? ['is_private' => 0, 'users_id' => Session::getLoginUserID()]
+                           : ['1'],
+                     ],
+                  ]
+               ),
+            ],
+         ]
+      ];
    }
 }
