@@ -1666,6 +1666,7 @@ class Planning extends CommonGLPI {
     *  - end: mandatory, planning end.
     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
     *  - display_done_events: default true, show also events tagged as done
+    *  - force_all_events: even if the range is big, don't reduce the returned set
     * @return array $events : array with events in fullcalendar.io format
     */
    static function constructEventsArray($options = []) {
@@ -1675,14 +1676,29 @@ class Planning extends CommonGLPI {
       $param['end']                 = '';
       $param['view_name']           = '';
       $param['display_done_events'] = true;
+      $param['force_all_events']    = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $param[$key] = $val;
          }
       }
-      $param['begin'] = date("Y-m-d H:i:s", strtotime($param['start']));
-      $param['end']   = date("Y-m-d H:i:s", strtotime($param['end']));
+
+      $time_begin = strtotime($param['start']);
+      $time_end   = strtotime($param['end']);
+
+      // if the dates range is greater than a certain amount, and we're not on a list view
+      // we certainly are on this view (as our biggest view apart list is month one).
+      // we must avoid at all cost to calculate rrules events on a big range
+      if (!$param['force_all_events']
+          && $param['view_name'] != "listFull"
+          && ($time_end - $time_begin) > (2 * MONTH_TIMESTAMP)) {
+         $param['view_name'] = "listFull";
+         return [];
+      }
+
+      $param['begin'] = date("Y-m-d H:i:s", $time_begin);
+      $param['end']   = date("Y-m-d H:i:s", $time_end);
 
       $raw_events = [];
       $not_planned = [];
@@ -2200,24 +2216,6 @@ class Planning extends CommonGLPI {
    **/
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       $html = "";
-
-      /*$color = "#e4e4e4";
-      if (isset($val["state"])) {
-         switch ($val["state"]) {
-            case 0 :
-               $color = "#efefe7"; // Information
-               break;
-
-            case 1 :
-               $color = "#fbfbfb"; // To be done
-               break;
-
-            case 2 :
-               $color = "#e7e7e2"; // Done
-               break;
-         }
-      }*/
-
       // Plugins case
       if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
          $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);

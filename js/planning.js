@@ -253,11 +253,6 @@ var GLPIPlanning  = {
          viewSkeletonRender: function(info) {
             var view_type = info.view.type;
 
-            // forece refetch events when view changed (avoid to do it on initial render)
-            if (GLPIPlanning.last_view !== null) {
-               GLPIPlanning.refresh();
-            }
-
             GLPIPlanning.last_view = view_type;
             // inform backend we changed view (to store it in session)
             $.ajax({
