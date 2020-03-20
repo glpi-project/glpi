@@ -1207,7 +1207,6 @@ function update94to95() {
             `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
             `domains_id` int(11) NOT NULL DEFAULT '0',
             `domainrecordtypes_id` int(11) NOT NULL DEFAULT '0',
-            `status` tinyint(1) NOT NULL,
             `ttl` int(11) NOT NULL,
             `users_id_tech` int(11) NOT NULL DEFAULT '0',
             `groups_id_tech` int(11) NOT NULL DEFAULT '0',
@@ -1217,7 +1216,6 @@ function update94to95() {
             `date_creation` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
             KEY `name` (`name`),
-            KEY `status` (`status`),
             KEY `entities_id` (`entities_id`),
             KEY `domains_id` (`domains_id`),
             KEY `domainrecordtypes_id` (`domainrecordtypes_id`),
@@ -1229,6 +1227,11 @@ function update94to95() {
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "add table glpi_domainrecords");
    }
+
+   if ($DB->fieldExists('glpi_domainrecords', 'status')) {
+      $migration->dropField('glpi_domainrecords', 'status');
+   }
+
    /** /Domain records */
 
    /** Domains expiration notifications */

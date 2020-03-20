@@ -35,8 +35,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class DomainRecord extends CommonDBChild {
-   const STATUS_ACTIVE = 1;
-   const STATUS_DISABLED = 0;
    const DEFAULT_TTL = 3600;
 
    static $rightname              = 'domain';
@@ -110,15 +108,6 @@ class DomainRecord extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'data',
          'name'               => __('Data'),
-      ];
-
-      $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'status',
-         'name'               => __('Status'),
-         'searchtype'         => 'equals',
-         'datatype'           => 'specific'
       ];
 
       $tab[] = [
@@ -238,10 +227,6 @@ class DomainRecord extends CommonDBChild {
          $input['ttl'] = self::DEFAULT_TTL;
       }
 
-      if (!isset($input['status']) || $input['status'] == '') {
-         $input['status'] = self::STATUS_ACTIVE;
-      }
-
       //search entity
       if ($add && !isset($input['entities_id'])) {
          $input['entities_id'] = $_SESSION['glpiactive_entity'] ?? 0;
@@ -345,22 +330,6 @@ class DomainRecord extends CommonDBChild {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Status') . "</td>";
-      echo "<td>";
-      Dropdown::showFromArray(
-         'status',
-         $this->statusList(), [
-            'value' => ($this->isNewItem() ? self::STATUS_ACTIVE : $this->fields['status'])
-         ]
-      );
-      echo "</td>";
-      echo "<td>" . __('TTL') . "</td>";
-      echo "<td>";
-      echo "<input type='number' name='ttl' value='{$this->fields['ttl']}'/>";
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Technician in charge') . "</td><td>";
       User::dropdown(['name'   => "users_id_tech",
                            'value'  => $this->fields["users_id_tech"],
@@ -374,6 +343,13 @@ class DomainRecord extends CommonDBChild {
                                     'value'     => $this->fields["groups_id_tech"],
                                     'entity'    => $this->fields["entities_id"],
                                     'condition' => ['is_assign' => 1]]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('TTL') . "</td>";
+      echo "<td>";
+      echo "<input type='number' name='ttl' value='{$this->fields['ttl']}'/>";
       echo "</td>";
       echo "</tr>";
 
@@ -540,51 +516,6 @@ class DomainRecord extends CommonDBChild {
          Html::closeForm();
       }
       echo "</div>";
-   }
-
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
-
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      switch ($field) {
-         case 'status':
-            return self::getStatus($values[$field]);
-      }
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
-
-   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      $options['display'] = false;
-
-      switch ($field) {
-         case 'status' :
-            $options['name']  = $name;
-            $options['value'] = $values[$field];
-            Dropdown::showFromArray(
-               $name,
-               self::statusList(), [
-                  'name'     => 'status',
-                  'showtype' => 'normal',
-                  'display'  => true
-               ]
-            );
-      }
-      return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }
-
-   public static function getStatus($value) {
-      return self::statusList()[$value] ?? self::STATUS_DISABLED;
-   }
-
-   public static function statusList() {
-      return [
-         self::STATUS_DISABLED   => __('Disabled'),
-         self::STATUS_ACTIVE     => __('Active')
-      ];
    }
 
    public static function getDisplayName(Domain $domain, $name) {
