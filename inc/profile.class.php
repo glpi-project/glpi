@@ -42,13 +42,27 @@ class Profile extends CommonDBTM {
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
-   static public $helpdesk_rights = ['create_ticket_on_login', 'followup',
-                                          'knowbase', 'helpdesk_hardware', 'helpdesk_item_type',
-                                          'password_update', 'reminder_public',
-                                          'reservation', 'rssfeed_public',
-                                          'show_group_hardware', 'task', 'ticket',
-                                          'tickettemplates_id', 'ticket_cost',
-                                          'ticketvalidation', 'ticket_status','personalization'];
+   public static $helpdesk_rights = [
+      'create_ticket_on_login',
+      'changetemplates_id',
+      'followup',
+      'helpdesk_hardware',
+      'helpdesk_item_type',
+      'knowbase',
+      'password_update',
+      'personalization',
+      'problemtemplates_id',
+      'reminder_public',
+      'reservation',
+      'rssfeed_public',
+      'show_group_hardware',
+      'task',
+      'ticket',
+      'ticket_cost',
+      'ticket_status',
+      'tickettemplates_id',
+      'ticketvalidation',
+   ];
 
 
    /// Common fields used for all profiles type
