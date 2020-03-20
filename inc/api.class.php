@@ -909,11 +909,11 @@ abstract class API extends CommonGLPI {
          }
       }
 
-      // retrieve item contracts
+      // retrieve item documents
       if (isset($params['with_documents'])
           && $params['with_documents']) {
          $fields['_documents'] = [];
-         if (!$itemtype != 'Ticket'
+         if (!($item instanceof CommonITILObject)
              && $itemtype != 'KnowbaseItem'
              && $itemtype != 'Reminder'
              && !Document::canView()) {
