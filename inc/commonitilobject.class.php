@@ -7885,7 +7885,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array
     */
-   public function getAssociatedDocumentsCriteria(): array {
+   public function getAssociatedDocumentsCriteria($force_privates = false): array {
       $task_class = $this->getType() . 'Task';
 
       return [
@@ -7903,7 +7903,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      'WHERE'  => [
                         ITILFollowup::getTableField('itemtype') => $this->getType(),
                         ITILFollowup::getTableField('items_id') => $this->getID(),
-                        'OR' => !Session::haveRight('followup', ITILFollowup::SEEPRIVATE)
+                        'OR' => !$force_privates && !Session::haveRight('followup', ITILFollowup::SEEPRIVATE)
                            ? ['is_private' => 0, 'users_id' => Session::getLoginUserID()]
                            : ['1'],
                      ],
@@ -7931,7 +7931,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      'FROM'   => $task_class::getTable(),
                      'WHERE'  => [
                         $this->getForeignKeyField() => $this->getID(),
-                        'OR' => !Session::haveRight('task', CommonITILTask::SEEPRIVATE)
+                        'OR' => !$force_privates && !Session::haveRight('task', CommonITILTask::SEEPRIVATE)
                            ? ['is_private' => 0, 'users_id' => Session::getLoginUserID()]
                            : ['1'],
                      ],
