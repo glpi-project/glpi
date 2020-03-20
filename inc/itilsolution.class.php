@@ -47,6 +47,10 @@ class ITILSolution extends CommonDBChild {
    static public $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
    static public $items_id = 'items_id'; // Field name
 
+   public static function getNameField() {
+      return 'id';
+   }
+
    static function getTypeName($nb = 0) {
       return _n('Solution', 'Solutions', $nb);
    }
