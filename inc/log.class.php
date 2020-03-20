@@ -447,7 +447,11 @@ class Log extends CommonDBTM {
                case self::HISTORY_ADD_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                     if ($item2 instanceof Item_Devices) {
+                        $tmp['field'] = $item2->getDeviceTypeName(1);
+                     } else {
+                        $tmp['field'] = $item2->getTypeName(1);
+                     }
                   }
                   //TRANS: %s is the component name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
@@ -475,7 +479,12 @@ class Log extends CommonDBTM {
                case self::HISTORY_DELETE_DEVICE :
                   $tmp['field']=NOT_AVAILABLE;
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                     if ($item2 instanceof Item_Devices) {
+                        $tmp['field'] = $item2->getDeviceTypeName(1);
+                     } else {
+                        $tmp['field'] = $item2->getTypeName(1);
+                     }
+
                   }
                   //TRANS: %s is the component name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
@@ -484,7 +493,12 @@ class Log extends CommonDBTM {
                case self::HISTORY_LOCK_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                     if ($item2 instanceof Item_Devices) {
+                        $tmp['field'] = $item2->getDeviceTypeName(1);
+                     } else {
+                        $tmp['field'] = $item2->getTypeName(1);
+                     }
+
                   }
                   //TRANS: %s is the component name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
@@ -493,7 +507,12 @@ class Log extends CommonDBTM {
                case self::HISTORY_UNLOCK_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                     if ($item2 instanceof Item_Devices) {
+                        $tmp['field'] = $item2->getDeviceTypeName(1);
+                     } else {
+                        $tmp['field'] = $item2->getTypeName(1);
+                     }
+
                   }
                   //TRANS: %s is the component name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
@@ -514,7 +533,12 @@ class Log extends CommonDBTM {
                case self::HISTORY_DISCONNECT_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                     if ($item2 instanceof Item_Devices) {
+                        $tmp['field'] = $item2->getDeviceTypeName(1);
+                     } else {
+                        $tmp['field'] = $item2->getTypeName(1);
+                     }
+
                   }
                   //TRANS: %s is the item name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
@@ -523,7 +547,12 @@ class Log extends CommonDBTM {
                case self::HISTORY_CONNECT_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                     if ($item2 instanceof Item_Devices) {
+                        $tmp['field'] = $item2->getDeviceTypeName(1);
+                     } else {
+                        $tmp['field'] = $item2->getTypeName(1);
+                     }
+
                   }
                   //TRANS: %s is the item name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
