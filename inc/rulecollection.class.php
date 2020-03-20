@@ -89,21 +89,21 @@ class RuleCollection extends CommonDBTM {
    /**
     * Get Collection Size : retrieve the number of rules
     *
-    * @param $recursive (true by default)
-    * @param $condition (0 by default)
+    * @param boolean $recursive (true by default)
+    * @param integer $condition (0 by default)
     *
     * @return : number of rules
    **/
    function getCollectionSize($recursive = true, $condition = 0) {
+      global $DB;
 
-      $restrict = [
-         'sub_type'  => $this->getRuleClassName()
-      ] + getEntitiesRestrictCriteria('glpi_rules', 'entities_id', $this->entity, $recursive);
+      $restrict = $this->getRuleListCriteria([
+         'condition' => $condition,
+         'active'    => false
+      ]);
 
-      if ($condition > 0) {
-         $restrict['condition'] = ['&', (int)$condition];
-      }
-      return countElementsInTable("glpi_rules", $restrict);
+      $iterator = $DB->request($restrict);
+      return count($iterator);
    }
 
 
@@ -1591,7 +1591,7 @@ class RuleCollection extends CommonDBTM {
    **/
    function testAllRules($input = [], $output = [], $params = [], $condition = 0) {
 
-      // Get Collection datas
+      // Get Collection data
       $this->getCollectionDatas(1, 1, $condition);
 
       $output["_no_rule_matches"] = true;
