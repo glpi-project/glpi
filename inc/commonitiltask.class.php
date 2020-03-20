@@ -59,6 +59,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       return str_replace('Task', '', $this->getType());
    }
 
+   public static function getNameField() {
+      return 'id';
+   }
+
 
    function canViewPrivates() {
       return false;
