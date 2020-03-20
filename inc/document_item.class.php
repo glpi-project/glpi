@@ -414,7 +414,7 @@ class Document_Item extends CommonDBRelation{
             }
 
             while ($data = $iterator->next()) {
-               if ($item instanceof ITILFollowup) {
+               if ($item instanceof ITILFollowup || $item instanceof ITILSolution) {
                   $itemtype = $data['itemtype'];
                   $item = new $itemtype();
                   $item->getFromDB($data['items_id']);
