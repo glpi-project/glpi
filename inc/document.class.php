@@ -772,52 +772,14 @@ class Document extends CommonDBTM {
          return false;
       }
 
+      $itil->getFromDB($items_id);
+
       $result = $DB->request([
          'FROM'  => Document_Item::getTable(),
          'COUNT' => 'cpt',
          'WHERE' => [
-            'items_id'     => $items_id,
-            'itemtype'     => $itemtype,
+            $itil->getAssociatedDocumentsCriteria(),
             'documents_id' => $this->fields['id']
-         ]
-      ])->next();
-
-      if ($result['cpt'] > 0) {
-         return true;
-      }
-
-      // Check ticket and child items (followups, tasks, solutions) contents
-      $itil_table = $itil->getTable();
-      $itil_key   = $itil->getForeignKeyField();
-      $task_table = getTableForItemType($itil->getType() . 'Task');
-
-      $result = $DB->request([
-         'FROM'      => $itil_table,
-         'COUNT'     => 'cpt',
-         'LEFT JOIN' => [
-            'glpi_itilfollowups' => [
-               'FKEY' => [
-                  $itil_table          => 'id',
-                  'glpi_itilfollowups' => 'items_id',
-                  ['AND' => ['glpi_itilfollowups.itemtype' => $itemtype]]
-               ]
-            ],
-            $task_table          => [
-               'FKEY' => [
-                  $itil_table => 'id',
-                  $task_table => $itil_key
-               ]
-            ],
-            'glpi_itilsolutions' => [
-               'FKEY' => [
-                  $itil_table          => 'id',
-                  'glpi_itilsolutions' => 'items_id',
-                  ['AND' => ['glpi_itilsolutions.itemtype' => $itemtype]]
-               ]
-            ],
-         ],
-         'WHERE'     => [
-            $itil_table . '.id' => $items_id,
          ]
       ])->next();
 
