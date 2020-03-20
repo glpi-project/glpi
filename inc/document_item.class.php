@@ -414,10 +414,16 @@ class Document_Item extends CommonDBRelation{
             }
 
             while ($data = $iterator->next()) {
-               if ($item instanceof ITILFollowup || $item instanceof CommonITILTask) {
+               if ($item instanceof ITILFollowup) {
                   $itemtype = $data['itemtype'];
                   $item = new $itemtype();
                   $item->getFromDB($data['items_id']);
+                  $data['id'] = $item->fields['id'];
+                  $data['entity'] = $item->fields['entities_id'];
+               } else if ($item instanceof CommonITILTask) {
+                  $itemtype = $item->getItilObjectItemType();
+                  $item = new $itemtype();
+                  $item->getFromDB($data[$item->getForeignKeyField()]);
                   $data['id'] = $item->fields['id'];
                   $data['entity'] = $item->fields['entities_id'];
                }
