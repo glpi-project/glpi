@@ -350,7 +350,7 @@ class DomainRecord extends CommonDBChild {
       Dropdown::showFromArray(
          'status',
          $this->statusList(), [
-            'value' => $this->fields['status']
+            'value' => ($this->isNewItem() ? self::STATUS_ACTIVE : $this->fields['status'])
          ]
       );
       echo "</td>";
