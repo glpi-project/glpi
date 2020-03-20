@@ -55,10 +55,10 @@
         "fzaninotto/faker": "^1.7",
         "glpi-project/coding-standard": "^0.7",
         "guzzlehttp/guzzle": "^6.0",
-        "jakub-onderka/php-parallel-lint": "^1.0",
         "mikey179/vfsstream": "^1.6",
         "natxet/cssmin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
+        "php-parallel-lint/php-parallel-lint": "^1.1",
         "sensiolabs/security-checker": "^6.0"
     },
     "suggest": {
