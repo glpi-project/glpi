@@ -4509,7 +4509,7 @@ class Html {
          }
       }
 
-      $values = [$value => $valuename];
+      $values = ["$value" => $valuename];
       $output = self::select($name, $values, $options);
 
       $js = "
