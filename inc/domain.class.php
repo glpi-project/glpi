@@ -436,10 +436,6 @@ class Domain extends CommonDropdown {
             $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']   = _x('button', 'Associate');
             $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'] = _x('button', 'Dissociate');
             $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'duplicate']  = _x('button', 'Duplicate');
-            if (Session::haveRight('transfer', READ) && Session::isMultiEntitiesMode()
-            ) {
-               $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'transfer'] = __('Transfer');
-            }
          }
       }
       return $actions;
@@ -473,12 +469,6 @@ class Domain extends CommonDropdown {
             echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
             return true;
             break;
-         case "transfer" :
-            Dropdown::show('Entity');
-            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
-            return true;
-            break;
-
          case "duplicate" :
             Dropdown::show('Entity');
             break;
@@ -504,33 +494,6 @@ class Domain extends CommonDropdown {
                   }
                } else {
                   $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-               }
-            }
-            return;
-
-         case "transfer" :
-            $input = $ma->getInput();
-            if ($item->getType() == 'Domain') {
-               foreach ($ids as $key) {
-                  $item->getFromDB($key);
-                  $type = DomainType::transfer($item->fields["domaintypes_id"], $input['entities_id']);
-                  if ($type > 0) {
-                     $values = [
-                        'id'             => $key,
-                        'domaintypes_id' => $type,
-                     ];
-                     $item->update($values);
-                  }
-                  $values = [
-                     'id'          => $key,
-                     'entities_id' => $input['entities_id'],
-                  ];
-
-                  if ($item->update($values)) {
-                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
-                  } else {
-                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                  }
                }
             }
             return;
@@ -568,7 +531,7 @@ class Domain extends CommonDropdown {
          case "duplicate" :
             if ($item->getType() == 'Domain') {
                $input     = $ma->getInput();
-               foreach ($ids as $key => $val) {
+               foreach (array_keys($ids) as $key) {
                   $item->getFromDB($key);
                   unset($item->fields["id"]);
                   $item->fields["name"]    = addslashes($item->fields["name"]);
