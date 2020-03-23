@@ -51,38 +51,4 @@ class ApplianceType extends CommonDropdown {
       }
       return $input;
    }
-
-
-    /**
-     * @param $ID
-     * @param $entity
-     *
-     * @return integer or boolean
-    **/
-   static function transfer($ID, $entity) {
-      global $DB;
-
-      $temp = new self();
-      if (($ID <= 0) || !$temp->getFromDB($ID)) {
-         return 0;
-      }
-
-      $iterator = $DB->request([
-        'SELECT' => 'id',
-        'FROM'   => $temp->getTable(),
-        'WHERE'  => [
-           'entities_id' => $entity,
-           'name'        => addslashes($temp->fields['name'])
-        ]
-      ]);
-      if (count($iterator)) {
-         $rel = $iterator->next();
-         return $rel['id'];
-      }
-
-      $input = $temp->fields;
-      $input['entities_id'] = $entity;
-      unset($input['id']);
-      return $temp->add($input);
-   }
 }

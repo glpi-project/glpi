@@ -497,10 +497,6 @@ class Appliance extends CommonDBTM {
          if ($isadmin) {
             $actions['Appliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'install'] = _x('button', 'Associate');
             $actions['Appliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall'] = _x('button', 'Dissociate');
-
-            if (Session::haveRight('transfer', READ) && Session::isMultiEntitiesMode()) {
-               $actions['Appliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'transfer'] = __('Transfer');
-            }
          }
       }
       return $actions;
@@ -534,12 +530,6 @@ class Appliance extends CommonDBTM {
             ]);
             echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
             return true;
-
-         case "transfer" :
-            Dropdown::show('Entity');
-            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
-            return true;
-
       }
       return parent::showMassiveActionsSubForm($ma);
    }
@@ -566,31 +556,6 @@ class Appliance extends CommonDBTM {
                   }
                } else {
                   $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-               }
-            }
-            return;
-
-         case "transfer" :
-            $input = $ma->getInput();
-            if ($item->getType() == 'Appliance') {
-               foreach ($ids as $key) {
-                  $item->getFromDB($key);
-                  $type = ApplianceType::transfer($item->fields["appliancetypes_id"], $input['entities_id']);
-                  if ($type > 0) {
-                     $values["id"] = $key;
-                     $values["appliancetypes_id"] = $type;
-                     $item->update($values);
-                  }
-
-                  unset($values);
-                  $values["id"] = $key;
-                  $values["entities_id"] = $input['entities_id'];
-
-                  if ($item->update($values)) {
-                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
-                  } else {
-                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                  }
                }
             }
             return;
