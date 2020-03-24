@@ -76,56 +76,6 @@ class Search extends DbTestCase {
       return $data;
    }
 
-
-   /**
-    * Get all classes in folder inc/
-    *
-    * @param boolean $function Whether to look for a function
-    * @param array   $excludes List of classes to exclude
-    *
-    * @return array
-    */
-   private function getClasses($function = false, array $excludes = []) {
-      $classes = [];
-      foreach (new \DirectoryIterator('inc/') as $fileInfo) {
-         if (!$fileInfo->isFile()) {
-            continue;
-         }
-
-         $php_file = file_get_contents("inc/".$fileInfo->getFilename());
-         $tokens = token_get_all($php_file);
-         $class_token = false;
-         foreach ($tokens as $token) {
-            if (is_array($token)) {
-               if ($token[0] == T_CLASS) {
-                  $class_token = true;
-               } else if ($class_token && $token[0] == T_STRING) {
-                  $classname = $token[1];
-
-                  foreach ($excludes as $exclude) {
-                     if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
-                        break 2; // Class is excluded from results, go to next file
-                     }
-                  }
-
-                  if ($function) {
-                     if (method_exists($classname, $function)) {
-                        $classes[] = $classname;
-                     }
-                  } else {
-                     $classes[] = $classname;
-                  }
-
-                  break; // Assume there is only one class by file
-               }
-            }
-         }
-      }
-      return array_unique($classes);
-   }
-
-
-
    public function testMetaComputerSoftwareLicense() {
       $search_params = ['is_deleted'   => 0,
                         'start'        => 0,

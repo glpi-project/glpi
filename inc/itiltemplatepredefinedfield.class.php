@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since 9.5.0
 **/
-class ITILTemplatePredefinedField extends ITILTemplateField {
+abstract class ITILTemplatePredefinedField extends ITILTemplateField {
 
    static function getTypeName($nb = 0) {
       return _n('Predefined field', 'Predefined fields', $nb);
