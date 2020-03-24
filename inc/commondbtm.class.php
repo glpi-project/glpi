@@ -3872,6 +3872,11 @@ class CommonDBTM extends CommonGLPI {
          MassiveAction::getAddTransferList($actions);
       }
 
+      //massive action to link appliances from possible item types
+      if (in_array(static::getType(), Appliance::getTypes(true))) {
+         return ['Appliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item' => __('Associate to appliance')];
+      }
+
       return $actions;
    }
 
