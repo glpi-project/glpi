@@ -59,12 +59,14 @@
         "natxet/cssmin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
         "php-parallel-lint/php-parallel-lint": "^1.1",
-        "sensiolabs/security-checker": "^6.0"
+        "sensiolabs/security-checker": "^6.0",
+        "symfony/finder": "^4.4"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization"
     },
     "config": {
+        "discard-changes": true,
         "optimize-autoloader": true,
         "platform": {
             "php": "7.2.0"

@@ -1,0 +1,23 @@
+# ignore all hidden files and dir except:
+# - .docker that contains some files to copy during build;
+# - .htaccess that is used in application image.
+.*
+!.docker
+!.htaccess
+
+# ignore test files files
+/tests
+
+# ignore GLPI user and plugin files
+/config/*
+/files/*/*
+/plugins/*
+
+# ignore all installed dependencies
+/node_modules
+/vendor
+
+# ignore builded assets
+/css_compiled
+/public/build
+/public/lib

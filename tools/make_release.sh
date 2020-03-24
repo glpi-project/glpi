@@ -53,80 +53,24 @@ then
 fi
 
 INIT_PWD=$PWD;
+TMP_DIR=/tmp/$RELEASE
+EXTRACT_DIR=$TMP_DIR/extract
+BUILD_DIR=$TMP_DIR/build
 
-if [ -e /tmp/glpi ]
-then
- echo "Delete existing temp directory";
-\rm -rf /tmp/glpi;
-fi
+echo "Extract source from git index";
+# Extracting from git index prevent any unwanted divergence with git index to be packaged inside release
+git checkout-index -a -f --prefix="$EXTRACT_DIR/"
 
-echo "Copy to  /tmp directory";
-git checkout-index -a -f --prefix=/tmp/glpi/
-
-echo "Move to this directory";
-cd /tmp/glpi;
-
-echo "Retrieve PHP vendor"
-composer install --no-dev --optimize-autoloader --prefer-dist --quiet
-
-echo "Clean PHP vendor"
-\rm -rf vendor/bin;
-\find vendor/ -type f -name "build.xml" -exec rm -rf {} \;
-\find vendor/ -type f -name "build.properties" -exec rm -rf {} \;
-\find vendor/ -type f -name "composer.json" -exec rm -rf {} \;
-\find vendor/ -type f -name "composer.lock" -exec rm -rf {} \;
-\find vendor/ -type f -name "changelog.md" -exec rm -rf {} \;
-\find vendor/ -type f -name "*phpunit.xml.dist" -exec rm -rf {} \;
-\find vendor/ -type f -name ".gitignore" -exec rm -rf {} \;
-\find vendor/ -type d -name "test*" -prune -exec rm -rf {} \;
-\find vendor/ -type d -name "doc*" -prune -exec rm -rf {} \;
-\find vendor/ -type d -name "example*" -prune -exec rm -rf {} \;
-\find vendor/ -type d -name "design" -prune -exec rm -rf {} \;
-
-echo "Retrieve and build JS/CSS dependencies"
-npm install
-npm run-script build
-
-echo "Minify stylesheets and javascripts"
-$INIT_PWD/vendor/bin/robo minify --load-from tools
-
-echo "Compile SCSS"
-./bin/console build:compile_scss
-
-echo "Compile locale files"
-./tools/locale/update_mo.pl
-
-echo "Delete various scripts and directories"
-\rm -rf tools;
-\rm -rf phpunit;
-\rm -rf tests;
-\rm -rf .gitignore;
-\rm -rf .travis.yml;
-\rm -rf .atoum.php;
-\rm -rf .circleci;
-\rm -rf phpunit.xml.dist;
-\rm -rf composer.json;
-\rm -rf composer.lock;
-\rm -rf .composer.hash;
-\rm -rf ISSUE_TEMPLATE.md;
-\rm -rf PULL_REQUEST_TEMPLATE.md;
-\rm -rf .tx;
-\rm -rf .github;
-\rm -rf .dependabot;
-\find pics/ -type f -name "*.eps" -exec rm -rf {} \;
-\rm -rf nodes_modules;
-\rm -rf package.json;
-\rm -rf package-lock.json;
+echo "Building application";
+php -d memory_limit=2G $INIT_DIR/vendor/bin/robo build:app $EXTRACT_DIR $BUILD_DIR/glpi --load-from $INIT_DIR/tools
 
 echo "Creating tarball";
-cd ..;
-tar czf "glpi-$RELEASE.tgz" glpi
-
+cd $BUILD_DIR
+tar czf "/tmp/glpi-$RELEASE.tgz" glpi
 
 cd $INIT_PWD;
 
-
 echo "Deleting temp directory";
-\rm -rf /tmp/glpi;
+rm -rf $TMP_DIR;
 
 echo "The Tarball is in the /tmp directory";

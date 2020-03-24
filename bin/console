@@ -50,6 +50,10 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
       $composer_command .= ' ' . $options['composer-options'];
    }
 
+   $mode = array_key_exists('mode', $options) && is_string($options['mode'])
+      ? $options['mode']
+      : 'development';
+
    chdir(dirname(__FILE__, 2));
 
    $exit_code = 0;
@@ -66,7 +70,7 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
 
    file_put_contents('.package.hash', sha1_file('package-lock.json'));
 
-   passthru('npm run-script build-dev', $exit_code);
+   passthru('npm run-script build -- --mode=' . $mode, $exit_code);
    exit($exit_code);
 }
 

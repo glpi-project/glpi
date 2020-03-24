@@ -1,0 +1,36 @@
+name: "GLPI docker image"
+
+on:
+  # build and push docker images for every tags
+  push:
+    tags:
+    - '*'
+  # build and push docker images for default branch once a day
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+      - name: "Build image"
+        run: |
+          docker build --pull --tag image --file .docker/glpi-app/Dockerfile .
+      - name: "Push image to Docker hub"
+        if: github.repository == 'glpi-project/glpi'
+        run: |
+          echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+          REF_NAME=$(echo ${{ github.ref }} | sed -E 's|refs/[a-zA-Z]+/||' | sed -E 's|/|-|')
+          IMAGE_TAG=glpi/glpi:$REF_NAME
+          docker tag image $IMAGE_TAG
+          docker push $IMAGE_TAG
+      - name: "Push image to Github registry"
+        if: github.repository == 'glpi-project/glpi'
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+          REF_NAME=$(echo ${{ github.ref }} | sed -E 's|refs/[a-zA-Z]+/||' | sed -E 's|/|-|')
+          IMAGE_TAG=docker.pkg.github.com/${{ github.repository }}/glpi:$REF_NAME
+          docker tag image $IMAGE_TAG
+          docker push $IMAGE_TAG
