@@ -1583,7 +1583,10 @@ class CommonDBTM extends CommonGLPI {
             }
             $query['WHERE'][] = ['OR' => $OR];
 
-            $input = ['entities_id' => $this->getEntityID()];
+            $input = [
+               'entities_id'  => $this->getEntityID(),
+               '_transfer'    => 1
+            ];
             if ($this->maybeRecursive()) {
                $input['is_recursive'] = $this->isRecursive();
             }
