@@ -931,7 +931,7 @@ class Impact extends CommonGLPI {
             $icon = "pics/impact/default.png";
          }
 
-         echo '<h4><img class="impact-side-icon" src="../' . $icon . '" title="' . $itemtype::getTypeName() . '" data-itemtype="' . $itemtype . '">';
+         echo '<h4><img class="impact-side-icon" src="' . $CFG_GLPI['root_doc'] . '/' . $icon . '" title="' . $itemtype::getTypeName() . '" data-itemtype="' . $itemtype . '">';
          echo "<span>" . $itemtype::getTypeName() . "</span></h4>";
          echo '</div>'; // impact-side-filter-itemtypes-item
       }
