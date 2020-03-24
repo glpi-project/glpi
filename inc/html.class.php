@@ -4810,7 +4810,7 @@ JAVASCRIPT;
          $options['selected'] = $params['values'];
       } else {
          // simple select (multiple = no)
-         $values = [$value => $valuename];
+         $values = ["$value" => $valuename];
       }
 
       // display select tag
