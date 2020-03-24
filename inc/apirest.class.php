@@ -336,6 +336,11 @@ class APIRest extends API {
                $itemtype                            = $additional_itemtype;
             }
 
+            // AllAssets
+            if ($all_assets && $this->url_elements[$index] == "AllAssets") {
+               return "AllAssets";
+            }
+
             // Get case sensitive itemtype name
             $rc = new \ReflectionClass($itemtype);
             $itemtype = $rc->getName();
