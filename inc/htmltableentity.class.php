@@ -160,12 +160,7 @@ abstract class HTMLTableEntity {
 
    function displayContent() {
 
-      if (is_string($this->content)) {
-         // Manage __RAND__ to be computed on display
-         $content = $this->content;
-         $content = str_replace('__RAND__', mt_rand(), $content);
-         echo $content;
-      } else if (is_array($this->content)) {
+      if (is_array($this->content)) {
          foreach ($this->content as $content) {
             if (is_string($content)) {
                // Manage __RAND__ to be computed on display
@@ -180,6 +175,11 @@ abstract class HTMLTableEntity {
                call_user_func_array ($content['function'], $parameters);
             }
          }
+      } else {
+          // Manage __RAND__ to be computed on display
+          $content = $this->content;
+          $content = str_replace('__RAND__', mt_rand(), $content);
+          echo $content;
       }
    }
 }
