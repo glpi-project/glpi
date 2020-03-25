@@ -403,6 +403,7 @@ class RuleAction extends CommonDBChild {
                    'send'                => __('Send'),
                    'add_validation'      => __('Send'),
                    'fromuser'            => __('Copy from user'),
+                   'defaultfromuser'     => __('Copy default from user'),
                    'fromitem'            => __('Copy from item')];
    }
 
@@ -491,6 +492,7 @@ class RuleAction extends CommonDBChild {
             break;
 
          case 'fromuser' :
+         case 'defaultfromuser' :
          case 'fromitem' :
             Dropdown::showYesNo("value", $param['value'], 0);
             $display = true;

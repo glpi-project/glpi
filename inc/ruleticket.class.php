@@ -255,6 +255,13 @@ class RuleTicket extends Rule {
                   }
                   break;
 
+               case 'defaultfromuser' :
+                  if(( $action->fields['field'] == '_groups_id_requester')
+                        &&  isset($output['users_default_groups'])) {
+                           $output['_groups_id_requester'] = $output['users_default_groups'];
+                  }
+                  break;
+
                case 'fromitem' :
                   if ($action->fields['field'] == 'locations_id' && isset($output['items_locations'])) {
                      $output['locations_id'] = $output['items_locations'];
@@ -558,7 +565,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_requester']['type']              = 'dropdown';
       $actions['_groups_id_requester']['table']             = 'glpi_groups';
       $actions['_groups_id_requester']['condition']         = '`is_requester`';
-      $actions['_groups_id_requester']['force_actions']     = ['assign', 'append', 'fromitem'];
+      $actions['_groups_id_requester']['force_actions']     = ['assign', 'append', 'fromitem', 'defaultfromuser'];
       $actions['_groups_id_requester']['permitseveral']     = ['append'];
       $actions['_groups_id_requester']['appendto']          = '_additional_groups_requesters';
 

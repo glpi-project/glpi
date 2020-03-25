@@ -1844,10 +1844,12 @@ class Ticket extends CommonITILObject {
          if (!is_array($input["_users_id_requester"])
              && $user->getFromDB($input["_users_id_requester"])) {
             $input['users_locations'] = $user->fields['locations_id'];
+            $input['users_default_groups'] = $user->fields['groups_id'];
             $tmprequester = $input["_users_id_requester"];
          } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
             if ($user->getFromDB($user_id)) {
                $input['users_locations'] = $user->fields['locations_id'];
+               $input['users_default_groups'] = $user->fields['groups_id'];
             }
          }
       }
