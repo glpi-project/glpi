@@ -10,7 +10,7 @@ jobs:
       app:
         # Lint on higher PHP version to be sure to get latest tools versions
         # linting tools may also help to detected deprecated elements usage
-        image: "glpi/gdocker.pkg.github.com/glpi-project/docker-images/githubactions-php:7.4"
+        image: "glpi/githubactions-php:7.4"
         options: >-
           --volume /glpi:/var/glpi
     steps:
@@ -62,11 +62,11 @@ jobs:
           - "7.4"
     services:
       app:
-        image: "docker.pkg.github.com/glpi-project/docker-images/githubactions-php:${{ matrix.php-version }}"
+        image: "glpi/githubactions-php:${{ matrix.php-version }}"
         options: >-
           --volume /glpi:/var/glpi
       db:
-        image: "docker.pkg.github.com/glpi-project/docker-images/githubactions-${{ matrix.db-image }}"
+        image: "glpi/githubactions-${{ matrix.db-image }}"
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         options: >-
@@ -74,7 +74,7 @@ jobs:
       dovecot:
         image: "glpi/githubactions-dovecot"
       openldap:
-        image: "docker.pkg.github.com/glpi-project/docker-images/githubactions-openldap"
+        image: "glpi/githubactions-openldap"
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
