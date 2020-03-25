@@ -32,7 +32,10 @@
 
 namespace tests\units;
 
+use CommonITILActor;
+use CommonITILValidation;
 use \DbTestCase;
+use Group_User;
 use Ticket_User;
 use Toolbox;
 
@@ -479,5 +482,86 @@ class RuleTicket extends DbTestCase {
       $ticket->getFromDB($tickets_id);
       $this->integer((int)$ticket->getField('status'))->isEqualTo(\CommonITILObject::SOLVED);
 
+   }
+
+   public function testGRoupRequesterAssignFromDefaultUser() {
+      $this->login();
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test group requester criterion',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      //create criteria to check if group requester already define
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => '_groups_id_requester',
+         'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+         'pattern'   => 1,
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      //create action to put default user group as group requester
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'defaultfromuser',
+         'field'       => '_groups_id_requester',
+         'value'       => 1,
+      ]);
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      //create new group
+      $group = new \Group();
+      $group_id = $group->add($group_input = [
+         "name" => "group1",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group, $group_id, $group_input);
+
+      //Load user tech
+      $user = new \User();
+      $user->getFromDB(getItemByTypeName('User', 'tech', true));
+
+      //add user to group
+      $group_user = new Group_User();
+      $group_user_id = $group_user->add($group_user_input = [
+         "groups_id" => $group_id,
+         "users_id"  => $user->fields['id']
+      ]);
+      $this->checkInput($group_user, $group_user_id, $group_user_input);
+
+      //add default group to user
+      $user->fields['groups_id'] = $group_id;
+      $this->boolean($user->update($user->fields))->isTrue();
+
+      // Check ticket that trigger rule on creation
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'             => 'Add group requester if requester have default group',
+         'content'          => 'test',
+         '_users_id_requester' => $user->fields['id']
+      ]);
+      unset($ticket_input['_users_id_requester']); // _users_id_requester is stored in glpi_tickets_users table, so remove it
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+
+      //load TicketGroup
+      $ticketGroup = new \Group_Ticket();
+      $this->boolean(
+         $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id,
+            'type'               => \CommonITILActor::REQUESTER
+         ])
+      )->isTrue();
    }
 }
