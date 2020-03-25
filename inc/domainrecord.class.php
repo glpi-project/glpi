@@ -219,12 +219,15 @@ class DomainRecord extends CommonDBChild {
     * @return aray|false
     */
    private function prepareInput($input, $add = false) {
-      if (isset($input['date_creation']) && empty($input['date_creation'])) {
-         $input['date_creation'] = 'NULL';
-      }
 
-      if (!isset($input['ttl']) || empty($input['ttl'])) {
-         $input['ttl'] = self::DEFAULT_TTL;
+      if ($add) {
+         if (isset($input['date_creation']) && empty($input['date_creation'])) {
+            $input['date_creation'] = 'NULL';
+         }
+
+         if (!isset($input['ttl']) || empty($input['ttl'])) {
+            $input['ttl'] = self::DEFAULT_TTL;
+         }
       }
 
       //search entity
