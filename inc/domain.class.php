@@ -52,11 +52,24 @@ class Domain extends CommonDropdown {
    }
 
    function cleanDBonPurge() {
+      global $DB;
+
       $ditem = new Domain_Item();
       $ditem->deleteByCriteria(['domains_id' => $this->fields['id']]);
 
       $record = new DomainRecord();
-      $record->deleteByCriteria(['domains_id' => $this->fields['id']]);
+
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => $record->getTable(),
+         'WHERE'  => [
+            'domains_id'   => $this->fields['id']
+         ]
+      ]);
+      while ($row = $iterator->next()) {
+         $row['_linked_purge'] = 1;//flag call when we remove a record from a domain
+         $record->delete($row, true);
+      }
    }
 
    function rawSearchOptions() {
