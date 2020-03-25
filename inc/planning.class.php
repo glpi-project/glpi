@@ -750,7 +750,7 @@ class Planning extends CommonGLPI {
 
       return array_merge(
          $CFG_GLPI['planning_types'],
-         ['NotPlanned']
+         ['NotPlanned', 'OnlyBgEvents']
       );
    }
 
@@ -779,12 +779,13 @@ class Planning extends CommonGLPI {
       $filters = &$_SESSION['glpi_plannings']['filters'];
       $index_color = 0;
       foreach (self::getPlanningTypes() as $planning_type) {
-         if ($planning_type == 'NotPlanned' || $planning_type::canView()) {
+         if (in_array($planning_type, ['NotPlanned', 'OnlyBgEvents']) || $planning_type::canView()) {
             if (!isset($filters[$planning_type])) {
-               $filters[$planning_type] = ['color'   => self::getPaletteColor('ev',
-                                                                                   $index_color),
-                                                'display' => ($planning_type != 'NotPlanned'),
-                                                'type'    => 'event_filter'];
+               $filters[$planning_type] = [
+                  'color'   => self::getPaletteColor('ev', $index_color),
+                  'display' => !in_array($planning_type, ['NotPlanned', 'OnlyBgEvents']),
+                  'type'    => 'event_filter'
+               ];
             }
             $index_color++;
          }
@@ -896,6 +897,8 @@ class Planning extends CommonGLPI {
       } else if ($filter_data['type'] == 'event_filter') {
          if ($filter_key == 'NotPlanned') {
             $title = __('Not planned tasks');
+         } else if ($filter_key == 'OnlyBgEvents') {
+            $title = __('Only BG events');
          } else {
             if (!getItemForItemtype($filter_key)) {
                return false;
@@ -983,7 +986,7 @@ class Planning extends CommonGLPI {
       }
 
       // colors not for groups
-      if ($filter_data['type'] != 'group_users') {
+      if ($filter_data['type'] != 'group_users' && $filter_key != 'OnlyBgEvents') {
          echo "<span class='color_input'>";
          Html::showColorField($filter_key."_color",
                               ['value' => $color]);
@@ -1738,6 +1741,11 @@ class Planning extends CommonGLPI {
       // construct events (in fullcalendar format)
       $events = [];
       foreach ($raw_events as $event) {
+         if ($_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
+             && (!isset($event['background']) || !$event['background'])) {
+            continue;
+         }
+
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
                         $event['users_id']);
@@ -1768,7 +1776,9 @@ class Planning extends CommonGLPI {
             'duration'    => $ms_duration,
             '_duration'   => $ms_duration, // sometimes duration is removed from event object in fullcalendar
             '_editable'   => $event['editable'], // same, avoid loss of editable key in fullcalendar
-            'rendering'   => isset($event['background']) && $event['background']
+            'rendering'   => isset($event['background'])
+                             && $event['background']
+                             && !$_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
                               ? 'background'
                               : '',
             'color'       => (empty($event['color'])?
@@ -2216,6 +2226,12 @@ class Planning extends CommonGLPI {
    **/
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       $html = "";
+
+      // bg event shouldn't have content displayed
+      if (!$complete && $_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']) {
+         return "";
+      }
+
       // Plugins case
       if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
          $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
