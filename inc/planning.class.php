@@ -898,7 +898,7 @@ class Planning extends CommonGLPI {
          if ($filter_key == 'NotPlanned') {
             $title = __('Not planned tasks');
          } else if ($filter_key == 'OnlyBgEvents') {
-            $title = __('Only BG events');
+            $title = __('Only background events');
          } else {
             if (!getItemForItemtype($filter_key)) {
                return false;
