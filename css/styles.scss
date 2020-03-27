@@ -3172,6 +3172,10 @@ ul#menu {
       min-width: 135px;
       z-index: 500;
    }
+
+   .empty-icon::before {
+      content: "";
+   }
 }
 
 #header #c_logo {

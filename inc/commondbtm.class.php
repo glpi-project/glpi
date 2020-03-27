@@ -5405,7 +5405,7 @@ class CommonDBTM extends CommonGLPI {
    }
 
    static function getIcon() {
-      return "";
+      return "fas fa-empty-icon";
    }
 
    /**
