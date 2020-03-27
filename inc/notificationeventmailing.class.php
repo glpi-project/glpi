@@ -155,7 +155,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                if ($is_html) {
                   // Remove documents having "NO_TIMELINE" position if mail is HTML, as
                   // these documents corresponds to inlined images.
-                  // If ntification is in plain text, they should be kepts as they cannot be rendered in text.
+                  // If notification is in plain text, they should be kepts as they cannot be rendered in text.
                   $doc_crit[] = [
                      'timeline_position'  => ['>', CommonITILObject::NO_TIMELINE]
                   ];
