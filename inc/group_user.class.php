@@ -387,8 +387,9 @@ class Group_User extends CommonDBRelation{
       }
 
       // All group members
+      $pu_table = Profile_User::getTable();
       $iterator = $DB->request([
-         'SELECT'       => [
+         'SELECT' => [
             'glpi_users.id',
             'glpi_groups_users.id AS linkid',
             'glpi_groups_users.groups_id',
@@ -396,26 +397,29 @@ class Group_User extends CommonDBRelation{
             'glpi_groups_users.is_manager AS is_manager',
             'glpi_groups_users.is_userdelegate AS is_userdelegate'
          ],
-         'DISTINCT'     => true,
-         'FROM'         => self::getTable(),
-         'INNER JOIN'   => [
-            User::getTable()           => [
+         'DISTINCT'  => true,
+         'FROM'      => self::getTable(),
+         'LEFT JOIN' => [
+            User::getTable() => [
                'ON' => [
-                  self::getTable()  => 'users_id',
-                  User::getTable()  => 'id'
+                  self::getTable() => 'users_id',
+                  User::getTable() => 'id'
                ]
             ],
-            Profile_User::getTable()   => [
+            $pu_table => [
                'ON' => [
-                  Profile_User::getTable()   => 'users_id',
-                  User::getTable()           => 'id'
+                  $pu_table        => 'users_id',
+                  User::getTable() => 'id'
                ]
             ]
          ],
-         'WHERE'        => [
-            self::getTable() . '.groups_id'  => $restrict
-         ] + getEntitiesRestrictCriteria(Profile_User::getTable(), '', $entityrestrict, 1),
-         'ORDERBY'      => [
+         'WHERE' => [
+            self::getTable() . '.groups_id'  => $restrict,
+            'OR' => [
+               "$pu_table.entities_id" => null
+            ] + getEntitiesRestrictCriteria($pu_table, '', $entityrestrict, 1)
+         ],
+         'ORDERBY' => [
             User::getTable() . '.realname',
             User::getTable() . '.firstname',
             User::getTable() . '.name'
