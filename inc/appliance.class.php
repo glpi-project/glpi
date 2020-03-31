@@ -597,6 +597,6 @@ class Appliance extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-project-diagram";
+      return "fas fa-cubes";
    }
 }
