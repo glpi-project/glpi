@@ -423,10 +423,15 @@ class Location extends CommonTreeDropdown {
       $criteria['LIMIT'] = $_SESSION['glpilist_limit'];
 
       $iterator = $DB->request($criteria);
-      $number = count($iterator);;
-      if ($start >= $number) {
-         $start = 0;
-      }
+
+      // Execute a second request to get the total number of rows
+      unset($criteria['SELECT']);
+      unset($criteria['START']);
+      unset($criteria['LIMIT']);
+
+      $criteria['COUNT'] = 'total';
+      $number = $DB->request($criteria)->next()['total'];
+
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='2'>".__('Type')."</th></tr>";
