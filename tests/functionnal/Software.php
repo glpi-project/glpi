@@ -389,7 +389,7 @@ class Software extends DbTestCase {
 
       $software = new \Software();
       $result = $software->getSpecificMassiveActions();
-      $this->array($result)->hasSize(4);
+      $this->array($result)->hasSize(5);
 
       $all_rights = $_SESSION['glpiactiveprofile']['software'];
 
@@ -404,11 +404,11 @@ class Software extends DbTestCase {
       $_SESSION['glpiactiveprofile']['software'] = $all_rights;
       $_SESSION['glpiactiveprofile']['knowbase'] = 0;
       $result = $software->getSpecificMassiveActions();
-      $this->array($result)->hasSize(3);
+      $this->array($result)->hasSize(4);
 
       $_SESSION['glpiactiveprofile']['rule_dictionnary_software'] = 0;
       $result = $software->getSpecificMassiveActions();
-      $this->array($result)->hasSize(3);
+      $this->array($result)->hasSize(4);
    }
 
    public function testGetSearchOptionsNew() {
