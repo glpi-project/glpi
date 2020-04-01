@@ -328,6 +328,7 @@ class Html extends \GLPITestCase {
          'Rack',
          'Enclosure',
          'PDU',
+         'PassiveDCEquipment',
          'Item_DeviceSimcard'
       ];
       $this->string($menu['assets']['title'])->isIdenticalTo('Assets');

@@ -4598,7 +4598,87 @@ CREATE TABLE `glpi_operatingsystemversions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_passivedcequipments
+
+DROP TABLE IF EXISTS `glpi_passivedcequipments`;
+CREATE TABLE `glpi_passivedcequipments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `locations_id` int(11) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `passivedcequipmentmodels_id` int(11) DEFAULT NULL,
+  `passivedcequipmenttypes_id` int(11) NOT NULL DEFAULT '0',
+  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `comment` text COLLATE utf8_unicode_ci,
+  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `locations_id` (`locations_id`),
+  KEY `passivedcequipmentmodels_id` (`passivedcequipmentmodels_id`),
+  KEY `passivedcequipmenttypes_id` (`passivedcequipmenttypes_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `group_id_tech` (`groups_id_tech`),
+  KEY `is_template` (`is_template`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `states_id` (`states_id`),
+  KEY `manufacturers_id` (`manufacturers_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_passivedcequipmentmodels
+
+DROP TABLE IF EXISTS `glpi_passivedcequipmentmodels`;
+CREATE TABLE `glpi_passivedcequipmentmodels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `product_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `weight` int(11) NOT NULL DEFAULT '0',
+  `required_units` int(11) NOT NULL DEFAULT '1',
+  `depth` float NOT NULL DEFAULT 1,
+  `power_connections` int(11) NOT NULL DEFAULT '0',
+  `power_consumption` int(11) NOT NULL DEFAULT '0',
+  `is_half_rack` tinyint(1) NOT NULL DEFAULT '0',
+  `picture_front` text COLLATE utf8_unicode_ci,
+  `picture_rear` text COLLATE utf8_unicode_ci,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  KEY `product_number` (`product_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 ### Dump table glpi_peripheralmodels
+
+
+### Dump table glpi_passivedcequipmenttypes
+
+DROP TABLE IF EXISTS `glpi_passivedcequipmenttypes`;
+CREATE TABLE `glpi_passivedcequipmenttypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 DROP TABLE IF EXISTS `glpi_peripheralmodels`;
 CREATE TABLE `glpi_peripheralmodels` (
@@ -6243,6 +6323,7 @@ CREATE TABLE `glpi_states` (
   `is_visible_line` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_certificate` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_rack` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_passivedcequipment` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_enclosure` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_pdu` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_cluster` tinyint(1) NOT NULL DEFAULT '1',
@@ -6262,6 +6343,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_line` (`is_visible_line`),
   KEY `is_visible_certificate` (`is_visible_certificate`),
   KEY `is_visible_rack` (`is_visible_rack`),
+  KEY `is_visible_passivedcequipment` (`is_visible_passivedcequipment`),
   KEY `is_visible_enclosure` (`is_visible_enclosure`),
   KEY `is_visible_pdu` (`is_visible_pdu`),
   KEY `is_visible_cluster` (`is_visible_cluster`),

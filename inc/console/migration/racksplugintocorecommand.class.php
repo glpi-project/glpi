@@ -58,7 +58,7 @@ use RackType;
 use State;
 use Toolbox;
 use Glpi\Console\AbstractCommand;
-
+use PassiveDCEquipment;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -126,6 +126,12 @@ class RacksPluginToCoreCommand extends AbstractCommand {
     * @var string
     */
    const OTHER_TYPE_CHOICE_MONITOR = 'm';
+
+   /**
+    * Choice value for other type: passive device.
+    * @var string
+    */
+   const OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT = 'd';
 
    /**
     * Datacenter on which rooms will be created.
@@ -537,12 +543,13 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                new ChoiceQuestion(
                   sprintf(__('Where do you want to import "%s" ?'), $model_label),
                   [
-                     self::OTHER_TYPE_CHOICE_COMPUTER          => __('Computer'),
-                     self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT => __('Network device'),
-                     self::OTHER_TYPE_CHOICE_PERIPHERAL        => __('Peripheral'),
-                     self::OTHER_TYPE_CHOICE_PDU               => __('Pdu'),
-                     self::OTHER_TYPE_CHOICE_MONITOR           => __('Monitor'),
-                     self::OTHER_TYPE_CHOICE_IGNORE            => __('Ignore (default)'),
+                     self::OTHER_TYPE_CHOICE_COMPUTER            => __('Computer'),
+                     self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT   => __('Network device'),
+                     self::OTHER_TYPE_CHOICE_PERIPHERAL          => __('Peripheral'),
+                     self::OTHER_TYPE_CHOICE_PDU                 => __('Pdu'),
+                     self::OTHER_TYPE_CHOICE_MONITOR             => __('Monitor'),
+                     self::OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT => __('Passive Device'),
+                     self::OTHER_TYPE_CHOICE_IGNORE              => __('Ignore (default)'),
                   ],
                   self::OTHER_TYPE_CHOICE_IGNORE
                )
@@ -574,6 +581,10 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                case self::OTHER_TYPE_CHOICE_MONITOR:
                   $new_itemtype       = Monitor::class;
                   $new_model_itemtype = MonitorModel::class;
+                  break;
+               case self::OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT:
+                  $new_itemtype       = PassiveDCEquipment::class;
+                  $new_model_itemtype = PassiveDCEquipmentModel::class;
                   break;
             }
 

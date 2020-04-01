@@ -917,6 +917,7 @@ class Dropdown {
                                              Session::getPluralNumber()),
                  'RackType'             => RackType::getTypeName(Session::getPluralNumber()),
                  'PDUType'              => PDUType::getTypeName(Session::getPluralNumber()),
+                 'PassiveDCEquipmentType' => PassiveDCEquipmentType::getTypeName(Session::getPluralNumber()),
                  'ClusterType'          => ClusterType::getTypeName(Session::getPluralNumber()),
              ],
 
@@ -971,6 +972,7 @@ class Dropdown {
                   'RackModel'                => RackModel::getTypeName(Session::getPluralNumber()),
                   'EnclosureModel'           => EnclosureModel::getTypeName(Session::getPluralNumber()),
                   'PDUModel'                 => PDUModel::getTypeName(Session::getPluralNumber()),
+                  'PassiveDCEquipmentModel'  => PassiveDCEquipmentModel::getTypeName(Session::getPluralNumber()),
              ],
 
              _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
