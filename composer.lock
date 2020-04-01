@@ -2561,16 +2561,16 @@
     "packages-dev": [
         {
             "name": "atoum/atoum",
-            "version": "3.4.1",
+            "version": "3.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "35714b3044ccbfea6d9d78a7a7107347ee1b5ce9"
+                "reference": "e90606b89e62c5c18c5d02596078edf55f35b3c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/35714b3044ccbfea6d9d78a7a7107347ee1b5ce9",
-                "reference": "35714b3044ccbfea6d9d78a7a7107347ee1b5ce9",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/e90606b89e62c5c18c5d02596078edf55f35b3c3",
+                "reference": "e90606b89e62c5c18c5d02596078edf55f35b3c3",
                 "shasum": ""
             },
             "require": {
@@ -2640,7 +2640,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2020-01-22T14:16:11+00:00"
+            "time": "2020-03-04T10:29:09+00:00"
         },
         {
             "name": "consolidation/annotated-command",
