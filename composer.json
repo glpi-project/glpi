@@ -35,7 +35,7 @@
         "phpmailer/phpmailer": "^6.0",
         "psr/log": "^1.1",
         "psr/simple-cache": "^1.0",
-        "ramsey/uuid": "^3.8",
+        "ramsey/uuid": "^4.0",
         "rlanvin/php-rrule": "^2.1",
         "sabre/dav": "^4.0",
         "sabre/http": "^5.0",
