@@ -434,7 +434,7 @@ $CFG_GLPI["certificate_types"]     = ['Computer',
                                       'Phone', 'Printer',
                                       'SoftwareLicense', 'User'];
 
-$CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure', 'PDU'];
+$CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure', 'PDU', 'PassiveDCEquipment'];
 
 $CFG_GLPI["cluster_types"]        = ['Computer', 'NetworkEquipment'];
 

@@ -399,6 +399,15 @@ class State extends CommonTreeDropdown {
          'datatype'           => 'bool'
       ];
 
+      $tab[] = [
+         'id'                 => '35',
+         'table'              => $this->getTable(),
+         'field'              => 'is_visible_passivedcequipment',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
+                                     PassiveDCEquipment::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
+
       return $tab;
    }
 

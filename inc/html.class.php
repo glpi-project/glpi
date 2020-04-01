@@ -1448,7 +1448,7 @@ JAVASCRIPT;
                'Computer', 'Monitor', 'Software',
                'NetworkEquipment', 'Peripheral', 'Printer',
                'CartridgeItem', 'ConsumableItem', 'Phone',
-               'Rack', 'Enclosure', 'PDU'
+               'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment'
             ], $CFG_GLPI['devices_in_menu']),
             'default' => '/front/dashboard_assets.php'
          ],
