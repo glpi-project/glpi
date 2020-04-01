@@ -337,16 +337,16 @@
         },
         {
             "name": "laminas/laminas-i18n",
-            "version": "2.10.1",
+            "version": "2.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-i18n.git",
-                "reference": "815be447f1c77f70a86bf24d00087fcb975b39ff"
+                "reference": "94ff957a1366f5be94f3d3a9b89b50386649e3ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/815be447f1c77f70a86bf24d00087fcb975b39ff",
-                "reference": "815be447f1c77f70a86bf24d00087fcb975b39ff",
+                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/94ff957a1366f5be94f3d3a9b89b50386649e3ae",
+                "reference": "94ff957a1366f5be94f3d3a9b89b50386649e3ae",
                 "shasum": ""
             },
             "require": {
@@ -359,7 +359,7 @@
                 "phpspec/prophecy": "<1.9.0"
             },
             "replace": {
-                "zendframework/zend-i18n": "self.version"
+                "zendframework/zend-i18n": "^2.10.1"
             },
             "require-dev": {
                 "laminas/laminas-cache": "^2.6.1",
@@ -408,7 +408,7 @@
                 "i18n",
                 "laminas"
             ],
-            "time": "2019-12-31T17:07:17+00:00"
+            "time": "2020-03-29T12:51:08+00:00"
         },
         {
             "name": "laminas/laminas-json",
@@ -895,16 +895,16 @@
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-zendframework-bridge.git",
-                "reference": "0fb9675b84a1666ab45182b6c5b29956921e818d"
+                "reference": "faf68f6109ceeff24241226033ab59640c7eb63b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/0fb9675b84a1666ab45182b6c5b29956921e818d",
-                "reference": "0fb9675b84a1666ab45182b6c5b29956921e818d",
+                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/faf68f6109ceeff24241226033ab59640c7eb63b",
+                "reference": "faf68f6109ceeff24241226033ab59640c7eb63b",
                 "shasum": ""
             },
             "require": {
@@ -943,7 +943,7 @@
                 "laminas",
                 "zf"
             ],
-            "time": "2020-01-07T22:58:31+00:00"
+            "time": "2020-03-26T16:07:12+00:00"
         },
         {
             "name": "mexitek/phpcolors",
