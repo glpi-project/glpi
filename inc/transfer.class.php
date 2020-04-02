@@ -2196,7 +2196,7 @@ class Transfer extends CommonDBTM {
                            'items_id'  => $item_ID
                         ]
                      ];
-                     if (count($this->needtobe_transfer['Compputer'])) {
+                     if (count($this->needtobe_transfer['Computer'])) {
                         $comp_criteria['WHERE']['NOT'] = ['computers_id' => $this->needtobe_transfer['Computer']];
                      }
                      $result = $DB->request($comp_criteria)->next();
