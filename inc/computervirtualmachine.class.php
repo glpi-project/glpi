@@ -646,7 +646,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          'field'              => 'ram',
          'name'               => __('Memory'),
          'datatype'           => 'string',
-         'unit'               => 'Mio',
+         'unit'               => 'auto',
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
