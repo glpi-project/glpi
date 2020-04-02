@@ -412,6 +412,9 @@ class RacksPluginToCoreCommand extends AbstractCommand {
          'glpi_racks',
          'glpi_rackmodels',
          'glpi_racktypes',
+         'glpi_passivedcequipments',
+         'glpi_passivedcequipmenttypes',
+         'glpi_passivedcequipmentmodels',
       ];
 
       foreach ($core_tables as $table) {
