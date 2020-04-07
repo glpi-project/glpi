@@ -7886,10 +7886,6 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return array
     */
    public function getAssociatedDocumentsCriteria($bypass_rights = false): array {
-      if (!Document::canView()) {
-         return ['0'];
-      }
-
       $task_class = $this->getType() . 'Task';
 
       $or_crits = [

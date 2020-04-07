@@ -2927,15 +2927,6 @@ class Ticket extends DbTestCase {
       return [
          [
             'rights'   => [
-               \Document::$rightname => 0,
-            ],
-            'ticket_id'      => $ticket_id,
-            'bypass_rights'  => false,
-            'expected_where' => '0',
-         ],
-         [
-            'rights'   => [
-               \Document::$rightname     => \READ,
                \Change::$rightname       => 0,
                \Problem::$rightname      => 0,
                \Ticket::$rightname       => 0,
@@ -2951,7 +2942,6 @@ class Ticket extends DbTestCase {
          ],
          [
             'rights'   => [
-               \Document::$rightname     => \READ,
                \Change::$rightname       => 0,
                \Problem::$rightname      => 0,
                \Ticket::$rightname       => \READ,
@@ -2970,7 +2960,6 @@ class Ticket extends DbTestCase {
          ],
          [
             'rights'   => [
-               \Document::$rightname     => \READ,
                \Change::$rightname       => 0,
                \Problem::$rightname      => 0,
                \Ticket::$rightname       => \READ,
@@ -2990,7 +2979,6 @@ class Ticket extends DbTestCase {
          ],
          [
             'rights'   => [
-               \Document::$rightname     => \READ,
                \Change::$rightname       => 0,
                \Problem::$rightname      => 0,
                \Ticket::$rightname       => \READ,
@@ -3009,7 +2997,6 @@ class Ticket extends DbTestCase {
          ],
          [
             'rights'   => [
-               \Document::$rightname     => \READ,
                \Change::$rightname       => 0,
                \Problem::$rightname      => 0,
                \Ticket::$rightname       => \READ,
