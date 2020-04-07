@@ -7886,6 +7886,10 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return array
     */
    public function getAssociatedDocumentsCriteria($bypass_rights = false): array {
+      if (!Document::canView()) {
+         return ['0'];
+      }
+
       $task_class = $this->getType() . 'Task';
 
       $or_crits = [
@@ -7897,12 +7901,12 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       // documents associated to followups
-      if ($bypass_rights || Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC)) {
+      if ($bypass_rights || ITILFollowup::canView()) {
          $fup_crits = [
             ITILFollowup::getTableField('itemtype') => $this->getType(),
             ITILFollowup::getTableField('items_id') => $this->getID(),
          ];
-         if (!$bypass_rights && !Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC)) {
+         if (!$bypass_rights && !Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
             $fup_crits[] = [
                'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
             ];
@@ -7920,22 +7924,24 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // documents associated to solutions
-      $or_crits[] = [
-         Document_Item::getTableField('itemtype') => ITILSolution::getType(),
-         Document_Item::getTableField('items_id') => new QuerySubQuery(
-            [
-               'SELECT' => 'id',
-               'FROM'   => ITILSolution::getTable(),
-               'WHERE'  => [
-                  ITILSolution::getTableField('itemtype') => $this->getType(),
-                  ITILSolution::getTableField('items_id') => $this->getID(),
-               ],
-            ]
-         ),
-      ];
+      if (ITILSolution::canView()) {
+         $or_crits[] = [
+            Document_Item::getTableField('itemtype') => ITILSolution::getType(),
+            Document_Item::getTableField('items_id') => new QuerySubQuery(
+               [
+                  'SELECT' => 'id',
+                  'FROM'   => ITILSolution::getTable(),
+                  'WHERE'  => [
+                     ITILSolution::getTableField('itemtype') => $this->getType(),
+                     ITILSolution::getTableField('items_id') => $this->getID(),
+                  ],
+               ]
+            ),
+         ];
+      }
 
       // documents associated to tasks
-      if ($bypass_rights || Session::haveRight($task_class::$rightname, CommonITILTask::SEEPUBLIC)) {
+      if ($bypass_rights || $task_class::canView()) {
          $tasks_crit = [
             $this->getForeignKeyField() => $this->getID(),
          ];
