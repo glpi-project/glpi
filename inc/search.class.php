@@ -3307,6 +3307,7 @@ JAVASCRIPT;
     * @return select string
    **/
    static function addDefaultSelect($itemtype) {
+      global $DB;
 
       $itemtable = getTableForItemType($itemtype);
       $item      = null;
@@ -3334,7 +3335,12 @@ JAVASCRIPT;
       if ($itemtable == 'glpi_entities') {
          $ret .= "`$itemtable`.`id` AS entities_id, '1' AS is_recursive, ";
       } else if ($mayberecursive) {
-         $ret .= "`$itemtable`.`entities_id`, `$itemtable`.`is_recursive`, ";
+         $ret .= $DB->quoteName("$itemtable.entities_id").", ";
+         //do not include field if not present in table
+         $item->getEmpty();
+         if (isset($item->fields['is_recursive'])) {
+            $ret .= $DB->quoteName("$itemtable.is_recursive").", ";
+         }
       }
       return $ret;
    }
