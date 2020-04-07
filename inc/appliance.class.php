@@ -548,7 +548,7 @@ class Appliance extends CommonDBTM {
                   'items_id'        => $id,
                   'itemtype'        => $item->getType()
                ];
-               if ($appliance_item->can(-1, CREATE, $input)) {
+               if ($appliance_item->can(-1, CREATE, $input) && !$appliance_item->getFromDBByCrit($input)) {
                   if ($appliance_item->add($input)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
