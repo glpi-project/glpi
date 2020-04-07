@@ -500,6 +500,7 @@ $RELATION = [
       'glpi_notifications'               => 'entities_id',
       '_glpi_olalevels'                  => 'entities_id',
       '_glpi_olas'                       => 'entities_id',
+      'glpi_passivedcequipments'         => 'entities_id',
       'glpi_pdus'                        => 'entities_id',
       'glpi_pdutypes'                    => 'entities_id',
       'glpi_peripherals'                 => 'entities_id',
@@ -589,6 +590,7 @@ $RELATION = [
          'groups_id_tech',
          'groups_id',
       ],
+      'glpi_passivedcequipments'   => 'groups_id_tech',
       'glpi_pdus'                  => 'groups_id_tech',
       'glpi_peripherals'           => [
          'groups_id_tech',
@@ -727,6 +729,7 @@ $RELATION = [
       'glpi_monitors'                  => 'locations_id',
       'glpi_netpoints'                 => 'locations_id',
       'glpi_networkequipments'         => 'locations_id',
+      'glpi_passivedcequipments'       => 'locations_id',
       'glpi_pdus'                      => 'locations_id',
       'glpi_peripherals'               => 'locations_id',
       'glpi_phones'                    => 'locations_id',
@@ -768,6 +771,7 @@ $RELATION = [
       'glpi_enclosures'          => 'manufacturers_id',
       'glpi_monitors'            => 'manufacturers_id',
       'glpi_networkequipments'   => 'manufacturers_id',
+      'glpi_passivedcequipments' => 'manufacturers_id',
       'glpi_pdus'                => 'manufacturers_id',
       'glpi_peripherals'         => 'manufacturers_id',
       'glpi_phones'              => 'manufacturers_id',
@@ -883,6 +887,14 @@ $RELATION = [
 
    'glpi_operatingsystemversions' => [
       'glpi_items_operatingsystems' => 'operatingsystemversions_id',
+   ],
+
+   'glpi_passivedcequipmentmodels' => [
+      'glpi_passivedcequipments' => 'passivedcequipmentmodels_id',
+   ],
+
+   'glpi_passivedcequipmenttypes' => [
+      'glpi_passivedcequipments' => 'passivedcequipmenttypes_id',
    ],
 
    'glpi_pdumodels' => [
@@ -1130,6 +1142,7 @@ $RELATION = [
       'glpi_lines'                     => 'states_id',
       'glpi_monitors'                  => 'states_id',
       'glpi_networkequipments'         => 'states_id',
+      'glpi_passivedcequipments'       => 'states_id',
       'glpi_pdus'                      => 'states_id',
       'glpi_peripherals'               => 'states_id',
       'glpi_phones'                    => 'states_id',
@@ -1291,6 +1304,7 @@ $RELATION = [
       ],
       'glpi_notimportedemails'        => 'users_id',
       '_glpi_objectlocks'             => 'users_id',
+      'glpi_passivedcequipments'      => 'users_id_tech',
       'glpi_pdus'                     => 'users_id_tech',
       'glpi_peripherals'              => [
          'users_id_tech',
