@@ -2937,7 +2937,7 @@ class Ticket extends DbTestCase {
             'bypass_rights'  => false,
             'expected_where' => sprintf(
                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')",
-               $ticket_id,
+               $ticket_id
             ),
          ],
          [
