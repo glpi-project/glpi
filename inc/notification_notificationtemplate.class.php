@@ -263,6 +263,27 @@ class Notification_NotificationTemplate extends CommonDBRelation {
    }
 
 
+   /**
+    * Form for Notification on Massive action
+   **/
+   static function showFormMassiveAction() {
+
+      echo __('Mode')."<br>";
+      self::dropdownMode(['name' => 'mode', 'multiple' => false]);
+      echo "<br><br>";
+
+      echo NotificationTemplate::getTypeName(1)."<br>";
+      NotificationTemplate::dropdown([
+         'name'       => 'notificationtemplates_id',
+         'value'     => 0,
+         'comment'   => 1,
+      ]);
+      echo "<br><br>";
+
+      echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction']);
+   }
+
+
    function getName($options = []) {
       return $this->getID();
    }
