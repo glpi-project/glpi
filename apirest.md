@@ -1459,6 +1459,14 @@ You need to uncomment (removing #) theses lines:
 By enabling URL rewriting, you could use API with this URL : <http://path/to/glpi/api/>.
 You need also to enable rewrite module in apache httpd and permit GLPI's .htaccess to override server configuration (see AllowOverride directive).
 
+**Note for apache+fpm users:**  
+
+You may have difficulties to pass Authorization header in this configuration.
+You have two options :
+
+- pass the `user_token` or credentials (login/password) in the http query (as GET parameters).
+- add env to your virtualhost: `SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1`.
+
 ### Nginx
 
 This example of configuration was achieved on ubuntu with php7 fpm.
