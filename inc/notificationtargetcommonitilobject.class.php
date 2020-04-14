@@ -1296,8 +1296,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                ]
             ],
             'WHERE'     => [
-               'glpi_documents_items.itemtype'  => $item->getType(),
-               'glpi_documents_items.items_id'  => $item->fields['id']
+               $item->getAssociatedDocumentsCriteria(),
+               'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
             ]
          ]);
 

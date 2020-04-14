@@ -6741,8 +6741,7 @@ abstract class CommonITILObject extends CommonDBTM {
       //add documents to timeline
       $document_obj   = new Document();
       $document_items = $document_item_obj->find([
-         'itemtype'           => $objType,
-         'items_id'           => $this->getID(),
+         $this->getAssociatedDocumentsCriteria(),
          'timeline_position'  => ['>', self::NO_TIMELINE]
       ]);
       foreach ($document_items as $document_item) {
@@ -7879,5 +7878,86 @@ abstract class CommonITILObject extends CommonDBTM {
          $excluded[] = 'TicketValidation:submit_validation';
       }
       return $excluded;
+   }
+
+   /**
+    * Returns criteria that can be used to get documents related to current instance.
+    *
+    * @return array
+    */
+   public function getAssociatedDocumentsCriteria($bypass_rights = false): array {
+      $task_class = $this->getType() . 'Task';
+
+      $or_crits = [
+         // documents associated to ITIL item directly
+         [
+            Document_Item::getTableField('itemtype') => $this->getType(),
+            Document_Item::getTableField('items_id') => $this->getID(),
+         ],
+      ];
+
+      // documents associated to followups
+      if ($bypass_rights || ITILFollowup::canView()) {
+         $fup_crits = [
+            ITILFollowup::getTableField('itemtype') => $this->getType(),
+            ITILFollowup::getTableField('items_id') => $this->getID(),
+         ];
+         if (!$bypass_rights && !Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
+            $fup_crits[] = [
+               'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
+            ];
+         }
+         $or_crits[] = [
+            Document_Item::getTableField('itemtype') => ITILFollowup::getType(),
+            Document_Item::getTableField('items_id') => new QuerySubQuery(
+               [
+                  'SELECT' => 'id',
+                  'FROM'   => ITILFollowup::getTable(),
+                  'WHERE'  => $fup_crits,
+               ]
+            ),
+         ];
+      }
+
+      // documents associated to solutions
+      if (ITILSolution::canView()) {
+         $or_crits[] = [
+            Document_Item::getTableField('itemtype') => ITILSolution::getType(),
+            Document_Item::getTableField('items_id') => new QuerySubQuery(
+               [
+                  'SELECT' => 'id',
+                  'FROM'   => ITILSolution::getTable(),
+                  'WHERE'  => [
+                     ITILSolution::getTableField('itemtype') => $this->getType(),
+                     ITILSolution::getTableField('items_id') => $this->getID(),
+                  ],
+               ]
+            ),
+         ];
+      }
+
+      // documents associated to tasks
+      if ($bypass_rights || $task_class::canView()) {
+         $tasks_crit = [
+            $this->getForeignKeyField() => $this->getID(),
+         ];
+         if (!$bypass_rights && !Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)) {
+            $tasks_crit[] = [
+               'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
+            ];
+         }
+         $or_crits[] = [
+            'glpi_documents_items.itemtype' => $task_class::getType(),
+            'glpi_documents_items.items_id' => new QuerySubQuery(
+               [
+                  'SELECT' => 'id',
+                  'FROM'   => $task_class::getTable(),
+                  'WHERE'  => $tasks_crit,
+               ]
+            ),
+         ];
+      }
+
+      return ['OR' => $or_crits];
    }
 }
