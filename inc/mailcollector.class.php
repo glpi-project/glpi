@@ -1591,11 +1591,11 @@ class MailCollector  extends CommonDBTM {
                $tag = Rule::getUuid();
                $this->tags[$filename]  = $tag;
 
-               // Link file based on id
-               if (isset($part->id)) {
+               // Link file based on Content-ID header
+               if (isset($part->contentId)) {
                   $clean = ['<' => '',
                                  '>' => ''];
-                  $this->altfiles[strtr($part->id, $clean)] = $filename;
+                  $this->altfiles[strtr($part->contentId, $clean)] = $filename;
                }
             }
          }
