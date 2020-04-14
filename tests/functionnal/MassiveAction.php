@@ -43,13 +43,13 @@ class MassiveAction extends DbTestCase {
          [
             'itemtype'     => 'Computer',
             'items_id'     => '_test_pc01',
-            'allcount'     => 15,
-            'singlecount'  => 8
+            'allcount'     => 16,
+            'singlecount'  => 9
          ], [
             'itemtype'     => 'Printer',
             'items_id'     => '_test_printer_all',
-            'allcount'     => 13,
-            'singlecount'  => 7
+            'allcount'     => 14,
+            'singlecount'  => 8
          ], [
             'itemtype'     => 'Ticket',
             'items_id'     => '_ticket01',

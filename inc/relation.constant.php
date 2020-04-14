@@ -70,6 +70,15 @@ if (!defined('GLPI_ROOT')) {
  * @var array $RELATION
  */
 $RELATION = [
+
+   'glpi_appliances'     => [
+       'glpi_appliances_items' => 'appliances_id'
+   ],
+
+   'glpi_appliancetypes' => [
+       'glpi_appliances' => 'appliancetypes_id'
+   ],
+
    'glpi_authldaps' => [
       'glpi_authldapreplicates' => 'authldaps_id',
       'glpi_entities'           => 'authldaps_id',
@@ -404,6 +413,8 @@ $RELATION = [
 
    'glpi_entities' => [
       'glpi_apiclients'                  => 'entities_id',
+      'glpi_appliances'                  => 'entities_id',
+      'glpi_appliancetypes'              => 'entities_id',
       'glpi_budgets'                     => 'entities_id',
       'glpi_businesscriticities'         => 'entities_id',
       'glpi_calendars'                   => 'entities_id',
@@ -446,7 +457,10 @@ $RELATION = [
       'glpi_devicesoundcards'            => 'entities_id',
       'glpi_documents'                   => 'entities_id',
       '_glpi_documents_items'            => 'entities_id',
+      'glpi_domainrecords'               => 'entities_id',
+      'glpi_domainrecordtypes'           => 'entities_id',
       'glpi_domains'                     => 'entities_id',
+      'glpi_domaintypes'                 => 'entities_id',
       'glpi_enclosures'                  => 'entities_id',
       '_glpi_entities'                   => 'entities_id',
       'glpi_entities'                    => 'entities_id_software',
@@ -542,9 +556,6 @@ $RELATION = [
       'glpi_users'                       => 'entities_id',
       'glpi_vlans'                       => 'entities_id',
       'glpi_wifinetworks'                => 'entities_id',
-      'glpi_domaintypes'                 => 'entities_id',
-      'glpi_domainrecords'                     => 'entities_id',
-      'glpi_domainrecordtypes'                 => 'entities_id'
    ],
 
    'glpi_filesystems' => [
@@ -746,6 +757,7 @@ $RELATION = [
    ],
 
    'glpi_manufacturers' => [
+      'glpi_appliances'          => 'manufacturers_id',
       'glpi_cartridgeitems'      => 'manufacturers_id',
       'glpi_certificates'        => 'manufacturers_id',
       'glpi_computerantiviruses' => 'manufacturers_id',
@@ -1393,19 +1405,22 @@ $RELATION = [
    ],
 
    '_virtual_device' => [
-      'glpi_contracts_items' => [
+      'glpi_appliances_items' => [
+         'items_id',
+         'itemtype'
+      ],
+      'glpi_contracts_items'  => [
          'items_id',
          'itemtype',
       ],
-      'glpi_documents_items' => [
+      'glpi_documents_items'  => [
          'items_id',
          'itemtype',
       ],
-      'glpi_infocoms'        => [
+      'glpi_infocoms'         => [
          'items_id',
          'itemtype',
       ],
    ],
 
 ];
-

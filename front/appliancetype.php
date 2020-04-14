@@ -30,16 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+include '../inc/includes.php';
 
-class DomainType extends CommonDropdown
-{
-   static $rightname = 'dropdown';
-
-   static function getTypeName($nb = 0) {
-      return _n('Domain type', 'Domain types', $nb);
-   }
-
-}
+$dropdown = new ApplianceType();
+include (GLPI_ROOT . "/front/dropdown.common.php");

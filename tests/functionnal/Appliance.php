@@ -30,16 +30,44 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+namespace tests\units;
 
-class DomainType extends CommonDropdown
-{
-   static $rightname = 'dropdown';
+use \DbTestCase;
 
-   static function getTypeName($nb = 0) {
-      return _n('Domain type', 'Domain types', $nb);
+class Appliance extends DbTestCase {
+
+   public function testDefineTabs() {
+      $expected = [
+         'Appliance$main'  => 'Appliance',
+         'Log$1'           => 'Historical'
+      ];
+      $this
+         ->given($this->newTestedInstance)
+            ->then
+               ->array($this->testedInstance->defineTabs())
+               ->isIdenticalTo($expected);
    }
 
+   public function testGetTypes() {
+      global $CFG_GLPI;
+
+      $this
+         ->given($this->newTestedInstance)
+            ->then
+               ->array($this->testedInstance->getTypes(true))
+               ->isIdenticalTo($CFG_GLPI['appliance_types']);
+
+      $this
+         ->given($this->newTestedInstance)
+            ->then
+               ->array($this->testedInstance->getTypes())
+               ->isIdenticalTo([]);
+
+      $this->login();
+      $this
+         ->given($this->newTestedInstance)
+            ->then
+               ->array($this->testedInstance->getTypes())
+               ->isIdenticalTo($CFG_GLPI['appliance_types']);
+   }
 }

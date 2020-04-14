@@ -953,6 +953,9 @@ class Profile extends CommonDBTM {
                       ['itemtype'  => 'Domain',
                             'label'     => _n('Domain', 'Domains', Session::getPluralNumber()),
                             'field'     => 'domain'],
+                      ['itemtype'  => 'Appliance',
+                            'label'     => Appliance::getTypeName(Session::getPluralNumber()),
+                            'field'     => 'appliance'],
                   ];
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);

@@ -30,16 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+include '../inc/includes.php';
+
+Html::header(Appliance::getTypeName(1), $_SERVER['PHP_SELF'], "management", "appliance");
+
+if (Session::haveRight(Appliance::$rightname, READ)) {
+   Search::show('Appliance');
+} else {
+   Html::displayRightError();
 }
-
-class DomainType extends CommonDropdown
-{
-   static $rightname = 'dropdown';
-
-   static function getTypeName($nb = 0) {
-      return _n('Domain type', 'Domain types', $nb);
-   }
-
-}
+Html::footer();

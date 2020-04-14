@@ -3872,6 +3872,11 @@ class CommonDBTM extends CommonGLPI {
          MassiveAction::getAddTransferList($actions);
       }
 
+      //massive action to link appliances from possible item types
+      if (in_array(static::getType(), Appliance::getTypes(true)) && static::canUpdate()) {
+         $actions['Appliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item'] = __('Associate to appliance');
+      }
+
       return $actions;
    }
 
@@ -4360,7 +4365,8 @@ class CommonDBTM extends CommonGLPI {
       if (is_array($crit) && (count($crit) > 0)) {
          $crit['FIELDS'] = [$this::getTable() => 'id'];
          $ok = true;
-         foreach ($DB->request($this->getTable(), $crit) as $row) {
+         $iterator = $DB->request($this->getTable(), $crit);
+         foreach ($iterator as $row) {
             if (!$this->delete($row, $force, $history)) {
                $ok = false;
             }

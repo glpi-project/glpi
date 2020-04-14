@@ -31,15 +31,24 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+   die("Sorry. You can't access directly to this file");
 }
 
-class DomainType extends CommonDropdown
-{
-   static $rightname = 'dropdown';
 
-   static function getTypeName($nb = 0) {
-      return _n('Domain type', 'Domain types', $nb);
+class ApplianceType extends CommonDropdown {
+
+   static $rightname = "appliance";
+
+   public static function getTypeName($nb = 0) {
+      return _n('Appliance type', 'Appliances types', $nb);
    }
 
+
+   public function prepareInputForAdd($input) {
+      if (array_key_exists('externalidentifier', $input) && !$input['externalid']) {
+         // INSERT NULL as this value is an UNIQUE index
+         unset($input['externalidentifier']);
+      }
+      return $input;
+   }
 }

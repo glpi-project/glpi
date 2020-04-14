@@ -31,15 +31,13 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+   die("Sorry. You can't access directly to this file");
 }
 
-class DomainType extends CommonDropdown
-{
-   static $rightname = 'dropdown';
+class ApplianceEnvironment extends CommonDropdown {
 
    static function getTypeName($nb = 0) {
-      return _n('Domain type', 'Domain types', $nb);
+      return _n('Appliance environment', 'Appliances environments', $nb);
    }
 
 }

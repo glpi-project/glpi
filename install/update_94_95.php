@@ -1416,6 +1416,10 @@ HTML
    }
    /** /A doc_item to rule them all! */
 
+   /** Appliances & webapps */
+   require __DIR__ . '/update_94_95/appliances.php';
+   /** /Appliances & webapps */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
