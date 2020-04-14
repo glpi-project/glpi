@@ -48,11 +48,10 @@ class EnableMaintenanceModeCommand extends AbstractCommand {
    protected function configure() {
       parent::configure();
 
-      $this->setName('glpi:maintenance:enable_maintenance_mode');
+      $this->setName('glpi:maintenance:enable');
       $this->setAliases(
          [
-            'glpi:maintenance:on',
-            'maintenance:on',
+            'maintenance:enable',
          ]
       );
       $this->setDescription(__('Enable maintenance mode'));
