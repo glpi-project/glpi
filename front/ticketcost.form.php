@@ -48,6 +48,8 @@ if (isset($_POST["add"])) {
       Event::log($_POST['tickets_id'], "tickets", 4, "tracking",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a cost'), $_SESSION["glpiname"]));
+      //update ticket_tco on linked items
+      TicketCost::updateLinkedItemsTCO(filter_input(INPUT_POST, 'tickets_id', FILTER_VALIDATE_INT));
    }
    Html::back();
 
@@ -57,6 +59,8 @@ if (isset($_POST["add"])) {
       Event::log($cost->fields['tickets_id'], "tickets", 4, "tracking",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges a cost'), $_SESSION["glpiname"]));
+      //update ticket_tco on linked items
+      TicketCost::updateLinkedItemsTCO(filter_input(INPUT_POST, 'tickets_id', FILTER_VALIDATE_INT));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket').'?id='.$cost->fields['tickets_id']);
 
@@ -67,6 +71,8 @@ if (isset($_POST["add"])) {
       Event::log($cost->fields['tickets_id'], "tickets", 4, "tracking",
                  //TRANS: %s is the user login
                  sprintf(__('%s updates a cost'), $_SESSION["glpiname"]));
+      //update ticket_tco on linked items
+      TicketCost::updateLinkedItemsTCO(filter_input(INPUT_POST, 'tickets_id', FILTER_VALIDATE_INT));
    }
    Html::back();
 
