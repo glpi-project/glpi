@@ -46,5 +46,58 @@ class TicketCost extends CommonITILCost {
    static public $items_id  = 'tickets_id';
 
    static $rightname        = 'ticketcost';
+   
+   /**
+   * Given a tickets_id, updates the ticket_tco field of linked items with
+   * the computed TCO (glpi_ticketcosts).
+   *
+   * @param $tickets_id integer The primary key of the ticket.
+   *
+   * @return bool True if any linked item was updated. False if no changes.
+   **/
+   static function updateLinkedItemsTCO($tickets_id) {
+      $returnValue = false;
+      if(is_numeric($tickets_id) && $tickets_id > 0) {
+         $item_ticket = new Item_Ticket();
+         $ticketLinkedItems = $item_ticket->find(['tickets_id' => $tickets_id]);
+         foreach($ticketLinkedItems as $linkedItem) {
+            if ($linkedItem && ($item = getItemForItemtype($linkedItem['itemtype']))) {
+               if ($item->getFromDB($linkedItem['items_id'])) {
+                  $newinput               = [];
+                  $newinput['id']         = $linkedItem['items_id'];
+                  $newinput['ticket_tco'] = Ticket::computeTco($item);
+                  $item->update($newinput);
+                  $returnValue = true;
+               }
+            }
+         }
+      }
+      return $returnValue;
+   }
+
+   /**
+   * Given an items_id and itemtype, updates the ticket_tco field of the item
+   * computed TCO (glpi_ticketcosts).
+   *
+   * @param $items_id integer The primary key of the item.
+   * @param $itemtype string The item type so glpi knows where to look.
+   *
+   * @return bool True if item was updated. False if no changes.
+   **/
+   static function updateItemsTCO($items_id, $itemtype) {
+      $returnValue = false;
+      if(is_numeric($items_id) && $itemtype) {
+         if($item = getItemForItemtype($itemtype)) {
+            if ($item->getFromDB($items_id)) {
+               $newinput               = [];
+               $newinput['id']         = $items_id;
+               $newinput['ticket_tco'] = Ticket::computeTco($item);
+               $item->update($newinput);
+               $returnValue = true;
+            }
+         }
+      }
+      return $returnValue;
+   }
 
 }
