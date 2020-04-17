@@ -99,6 +99,9 @@ class Item_Ticket extends CommonDBRelation{
       }
 
       $ticket->update($input);
+      
+      //update ticket_tco of item when added to ticket.
+      TicketCost::updateLinkedItemsTCO($this->fields['tickets_id']);
       parent::post_addItem();
    }
 
@@ -115,6 +118,8 @@ class Item_Ticket extends CommonDBRelation{
       }
       $ticket->update($input);
 
+      //update ticket_tco when item removed from ticket.
+      TicketCost::updateItemsTCO($this->fields['items_id'], $this->fields['itemtype']);
       parent::post_purgeItem();
    }
 
