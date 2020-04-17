@@ -99,5 +99,4 @@ class TicketCost extends CommonITILCost {
       }
       return $returnValue;
    }
-
 }
