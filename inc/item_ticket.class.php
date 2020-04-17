@@ -99,7 +99,7 @@ class Item_Ticket extends CommonDBRelation{
       }
 
       $ticket->update($input);
-      
+
       //update ticket_tco of item when added to ticket.
       TicketCost::updateLinkedItemsTCO($this->fields['tickets_id']);
       parent::post_addItem();
