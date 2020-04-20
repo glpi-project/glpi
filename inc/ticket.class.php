@@ -4409,7 +4409,6 @@ class Ticket extends CommonITILObject {
 
       if ($canupdate) {
          Html::showDateTimeField("date", ['value'      => $date,
-                                          'timestep'   => 1,
                                           'maybeempty' => false,
                                           'required'   => ($tt->isMandatoryField('date') && !$ID)]);
       } else {
@@ -4512,7 +4511,6 @@ class Ticket extends CommonITILObject {
          echo "<th width='$colsize1%'>".__('Resolution date')."</th>";
          echo "<td width='$colsize2%'>";
          Html::showDateTimeField("solvedate", ['value'      => $this->fields["solvedate"],
-                                                    'timestep'   => 1,
                                                     'maybeempty' => false,
                                                     'canedit'    => $canupdate]);
          echo "</td>";
@@ -4520,7 +4518,6 @@ class Ticket extends CommonITILObject {
             echo "<th width='$colsize3%'>".__('Close date')."</th>";
             echo "<td width='$colsize4%'>";
             Html::showDateTimeField("closedate", ['value'      => $this->fields["closedate"],
-                                                       'timestep'   => 1,
                                                        'maybeempty' => false,
                                                        'canedit'    => $canupdate]);
             echo "</td>";

@@ -619,15 +619,6 @@ $(function() {
    // prevent jquery ui dialog to keep focus
    $.ui.dialog.prototype._focusTabbable = function() {};
 
-   //Hack for Jquery Ui Date picker
-   var _gotoToday = jQuery.datepicker._gotoToday;
-   jQuery.datepicker._gotoToday = function(a) {
-      var target = jQuery(a);
-      var inst = this._getInst(target[0]);
-      _gotoToday.call(this, a);
-      jQuery.datepicker._selectDate(a, jQuery.datepicker._formatDate(inst,inst.selectedDay, inst.selectedMonth, inst.selectedYear));
-   };
-
    //quick lang switch
    $('#language_link > a').on('click', function(event) {
       event.preventDefault();

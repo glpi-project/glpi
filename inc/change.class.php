@@ -835,7 +835,6 @@ class Change extends CommonITILObject {
       Html::showDateTimeField(
          "date", [
             'value'      => $date,
-            'timestep'   => 1,
             'maybeempty' => false,
             'required'   => ($tt->isMandatoryField('date') && !$ID)
          ]
@@ -859,7 +858,6 @@ class Change extends CommonITILObject {
       Html::showDateTimeField(
          "time_to_resolve", [
             'value'    => $this->fields["time_to_resolve"],
-            'timestep' => 1,
             'required'   => ($tt->isMandatoryField('time_to_resolve') && !$ID)
          ]
       );
@@ -890,14 +888,12 @@ class Change extends CommonITILObject {
          echo "<th>".__('Date of solving')."</th>";
          echo "<td>";
          Html::showDateTimeField("solvedate", ['value'      => $this->fields["solvedate"],
-                                                    'timestep'   => 1,
                                                     'maybeempty' => false]);
          echo "</td>";
          if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
             echo "<th>".__('Closing date')."</th>";
             echo "<td>";
             Html::showDateTimeField("closedate", ['value'      => $this->fields["closedate"],
-                                                       'timestep'   => 1,
                                                        'maybeempty' => false]);
             echo "</td>";
          } else {

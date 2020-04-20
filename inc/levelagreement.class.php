@@ -325,7 +325,6 @@ abstract class LevelAgreement extends CommonDBChild {
             echo "<span class='assign_la'>";
             if ($canupdate) {
                Html::showDateTimeField($dateField, ['value'      => $ticket->fields[$dateField],
-                                                    'timestep'   => 1,
                                                     'maybeempty' => true]);
             } else {
                echo Html::convDateTime($ticket->fields[$dateField]);
@@ -362,7 +361,6 @@ abstract class LevelAgreement extends CommonDBChild {
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue($dateField);
          Html::showDateTimeField($dateField, ['value'      => $ticket->fields[$dateField],
-                                              'timestep'   => 1,
                                               'maybeempty' => false,
                                               'canedit'    => $canupdate,
                                               'required'   => $tt->isMandatoryField($dateField)]);

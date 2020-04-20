@@ -2219,7 +2219,6 @@ JAVASCRIPT;
          echo "<td><label for='showdate$sincerand'>".__('Valid since')."</label></td><td>";
          Html::showDateTimeField("begin_date", ['value'       => $this->fields["begin_date"],
                                                 'rand'        => $sincerand,
-                                                'timestep'    => 1,
                                                 'maybeempty'  => true]);
          echo "</td>";
 
@@ -2227,7 +2226,6 @@ JAVASCRIPT;
          echo "<td><label for='showdate$untilrand'>".__('Valid until')."</label></td><td>";
          Html::showDateTimeField("end_date", ['value'       => $this->fields["end_date"],
                                               'rand'        => $untilrand,
-                                              'timestep'    => 1,
                                               'maybeempty'  => true]);
          echo "</td></tr>";
       }
