@@ -393,6 +393,11 @@ class RuleTicket extends Rule {
       $criterias['content']['name']                         = __('Description');
       $criterias['content']['linkfield']                    = 'content';
 
+      $criterias['date_mod']['table']                       = 'glpi_tickets';
+      $criterias['date_mod']['field']                       = 'date_mod';
+      $criterias['date_mod']['name']                        = __('Last update');
+      $criterias['date_mod']['linkfield']                   = 'date_mod';
+
       $criterias['itilcategories_id']['table']              = 'glpi_itilcategories';
       $criterias['itilcategories_id']['field']              = 'name';
       $criterias['itilcategories_id']['name']               = __('Category')." - ".__('Name');
