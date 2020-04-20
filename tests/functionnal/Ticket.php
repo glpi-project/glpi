@@ -759,7 +759,7 @@ class Ticket extends DbTestCase {
 
       // Opening date, editable
       preg_match(
-         '/.*<input[^>]*name=\'date\'[^>]*>.*/',
+         '/.*<input[^>]*name=\'date\'[^>]*>.*/m',
          $output,
          $matches
       );
@@ -767,7 +767,7 @@ class Ticket extends DbTestCase {
 
       // Time to own, editable
       preg_match(
-         '/.*<input[^>]*name=\'_time_to_own\'[^>]*>.*/',
+         '/.*<input[^>]*name=\'_time_to_own\'[^>]*>.*/m',
          $output,
          $matches
       );
@@ -775,7 +775,7 @@ class Ticket extends DbTestCase {
 
       // Internal time to own, editable
       preg_match(
-         '/.*<input[^>]*name=\'_internal_time_to_own\'[^>]*>.*/',
+         '/.*<input[^>]*name=\'_internal_time_to_own\'[^>]*>.*/m',
          $output,
          $matches
       );
@@ -783,7 +783,7 @@ class Ticket extends DbTestCase {
 
       // Time to resolve, editable
       preg_match(
-         '/.*<input[^>]*name=\'_time_to_resolve\'[^>]*>.*/',
+         '/.*<input[^>]*name=\'_time_to_resolve\'[^>]*>.*/m',
          $output,
          $matches
       );
@@ -791,7 +791,7 @@ class Ticket extends DbTestCase {
 
       // Internal time to resolve, editable
       preg_match(
-         '/.*<input[^>]*name=\'_internal_time_to_resolve\'[^>]*>.*/',
+         '/.*<input[^>]*name=\'_internal_time_to_resolve\'[^>]*>.*/m',
          $output,
          $matches
       );
