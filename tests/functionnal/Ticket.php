@@ -759,7 +759,7 @@ class Ticket extends DbTestCase {
 
       // Opening date, editable
       preg_match(
-         '/.*<input[^>]*name=\'_date\'[^>]*>.*/',
+         '/.*<input[^>]*name=\'date\'[^>]*>.*/',
          $output,
          $matches
       );
