@@ -2799,18 +2799,7 @@ JAVASCRIPT;
       </div>
 HTML;
 
-      switch ($_SESSION['glpidate_format']) {
-         case 1 :
-            $p['showyear'] ? $format='d-m-Y' : $format='d-m';
-            break;
-
-         case 2 :
-            $p['showyear'] ? $format='m-d-Y' : $format='m-d';
-            break;
-
-         default :
-            $p['showyear'] ? $format='Y-m-d' : $format='m-d';
-      }
+      $date_format = Toolbox::getDateFormat('js');
 
       $min_attr = !empty($p['min'])
          ? "minDate: '".self::convDate($p['min'])."',"
@@ -2827,7 +2816,7 @@ HTML;
          $("#showdate{$p['rand']}").flatpickr({
             wrap: true, // permits to have controls in addition to input (like clear or open date buttons
             weekNumbers: true,
-            dateFormat: "{$format}",
+            dateFormat: "{$date_format}",
             locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
             {$min_attr}
             {$max_attr}
@@ -2983,18 +2972,7 @@ JS;
          </div>
 HTML;
 
-      switch ($_SESSION['glpidate_format']) {
-         case 1 :
-            $p['showyear'] ? $format='d-m-Y H:i:S' : $format='d-m H:i:S';
-            break;
-
-         case 2 :
-            $p['showyear'] ? $format='m-d-Y H:i:S' : $format='m-d H:i:S';
-            break;
-
-         default :
-            $p['showyear'] ? $format='Y-m-d H:i:S' : $format='m-d H:i:S';
-      }
+      $date_format = Toolbox::getDateFormat('js')." H:i:S";
 
       $min_attr = !empty($p['min'])
          ? "minDate: '".self::convDate($p['min'])."',"
@@ -3010,7 +2988,7 @@ HTML;
             enableTime: true,
             enableSeconds: true,
             weekNumbers: true,
-            dateFormat: "{$format}",
+            dateFormat: "{$date_format}",
             locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
             minuteIncrement: "{$p['timestep']}",
             {$min_attr}

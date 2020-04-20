@@ -2883,9 +2883,9 @@ class Toolbox {
       switch ($type) {
          case 'js':
             $formats = [
-               0 => 'YYYY MMM DD',
-               1 => 'DD MMM YYYY',
-               2 => 'MMM DD YYYY'
+               0 => 'Y-m-d',
+               1 => 'd-m-Y',
+               2 => 'm-d-Y'
             ];
             break;
          case 'php':
