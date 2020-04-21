@@ -153,6 +153,10 @@ var libs = {
         {
             context: 'dist',
             from: 'l10n/*.js',
+        },
+        {
+            context: 'dist',
+            from: 'themes/*.css',
         }
     ],
     'jquery-ui': [

@@ -1212,6 +1212,9 @@ class Html {
       // auto desktop / mobile viewport
       echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
 
+      //detect theme
+      $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
+
       echo Html::css('public/lib/base.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
       echo Html::css('css/jstree-glpi.css');
@@ -1224,6 +1227,11 @@ class Html {
       Html::requireJs('leaflet');
 
       echo Html::css('public/lib/flatpickr.css');
+      if ($theme != "darker") {
+         echo Html::css('public/lib/flatpickr/themes/light.css');
+      } else {
+         echo Html::css('public/lib/flatpickr/themes/dark.css');
+      }
       Html::requireJs('flatpickr');
 
       //on demand JS
@@ -1338,7 +1346,6 @@ class Html {
       if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
          echo Html::scss('css/highcontrast');
       }
-      $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
       echo Html::scss('css/palettes/' . $theme);
 
       echo Html::css('css/print.css', ['media' => 'print']);
