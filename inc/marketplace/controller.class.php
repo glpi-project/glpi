@@ -179,7 +179,7 @@ class Controller extends CommonGLPI {
 
 
    /**
-    * Check if a ginve plugin has on update online
+    * Check if a given plugin has on update online
     *
     * @param Plugin $plugin_inst
     *
