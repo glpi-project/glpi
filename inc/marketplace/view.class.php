@@ -576,8 +576,9 @@ HTML;
       $mk_controller      = new Controller($plugin_key);
       $update_version     = $mk_controller->checkUpdate($plugin_inst);
       $has_an_update      = $update_version !== false;
-      $can_be_overwritten = $mk_controller->canBeOverwritten($plugin_key);
-      $can_be_downloaded  = $mk_controller->canBeDownloaded($plugin_key);
+      $can_be_overwritten = $mk_controller->canBeOverwritten();
+      $can_be_downloaded  = $mk_controller->canBeDownloaded();
+      $required_offers    = $mk_controller->getRequiredOffers();
       $can_be_updated     = $has_an_update && $can_be_overwritten;
       $can_be_cleaned     = $exists && !$plugin_inst->isLoadable($plugin_key);
       $config_page        = $PLUGIN_HOOKS['config_page'][$plugin_key] ?? "";
@@ -643,6 +644,22 @@ HTML;
                <i class='fas fa-cloud-download-alt'></i>
             </button>";
          }
+      }
+
+      if (!$can_be_downloaded
+          && !isset($plugin_data['installation_url'])
+          && count($required_offers)) {
+
+            $warning = sprintf(
+               __("You need a superior GLPI-Network offer to access to this plugin (%s)"),
+               implode(', ', $required_offers)
+            );
+
+            $buttons .="<a href='".GLPI_NETWORK_SERVICES."' target='_blank'>
+               <button class='add_tooltip need_offers' title='$warning'>
+                  <i class='fas fa-exclamation-triangle'></i>
+               </button>
+            </a>";
       }
 
       if ($exists && !$can_be_cleaned && !$is_installed && !strlen($error)) {

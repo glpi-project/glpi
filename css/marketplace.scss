@@ -263,7 +263,8 @@ $break_s_screen: 1400px;
                         }
                      }
 
-                     &.download_manually {
+                     &.download_manually,
+                     &.need_offers {
                         background-color: rgb(253, 240, 215);
                         border-color: rgb(221, 188, 125);
                         i {

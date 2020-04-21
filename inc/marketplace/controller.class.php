@@ -144,16 +144,14 @@ class Controller extends CommonGLPI {
    /**
     * Check if plugin can be overwritten.
     *
-    * @param string $plugin_key
-    *
     * @return bool
     */
-   public function canBeOverwritten(string $plugin_key): bool {
+   public function canBeOverwritten(): bool {
       foreach (PLUGINS_DIRECTORIES as $base_dir) {
          $is_in_marketplace_dir = realpath($base_dir) !== false
             && realpath($base_dir) === realpath(GLPI_MARKETPLACE_DIR);
 
-         $plugin_dir = $base_dir . '/' . $plugin_key;
+         $plugin_dir = $base_dir . '/' . $this->plugin_key;
          $found_in_dir = file_exists($plugin_dir . '/setup.php');
 
          if ($found_in_dir && !$is_in_marketplace_dir) {
