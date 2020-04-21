@@ -2909,6 +2909,8 @@ JS;
       $p['canedit']    = true;
       $p['mindate']    = '';
       $p['maxdate']    = '';
+      $p['mintime']    = '';
+      $p['maxtime']    = '';
       $p['timestep']   = -1;
       $p['showyear']   = true;
       $p['display']    = true;
