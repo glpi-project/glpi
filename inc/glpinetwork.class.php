@@ -73,7 +73,7 @@ class GLPINetwork {
          if (!empty($informations['validation_message'])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td></td>";
-            echo "<td colspan='2'>";
+            echo "<td>";
             echo "<div class=' " . ($informations['is_valid'] ? 'ok' : 'red') . "'> ";
             echo "<i class='fa fa-info-circle'></i>";
             echo $informations['validation_message'];
