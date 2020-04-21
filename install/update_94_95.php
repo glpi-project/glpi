@@ -1420,23 +1420,6 @@ HTML
    require __DIR__ . '/update_94_95/appliances.php';
    /** /Appliances & webapps */
 
-   /** Add GLPI Network public key to GLPI configuration */
-   $migration->addConfig([
-      // Must be in PEM format, lines having 64 chars, ending with an EOL string
-      'glpinetwork_signature_key'    => <<<EOK
------BEGIN PUBLIC KEY-----
-MIIBHTANBgkqhkiG9w0BAQEFAAOCAQoAMIIBBQKB/QMrJJxisxYbxDFLw00ak1Gk
-zTZOODg8u2DvQYy5/zFC6YKRHPQB7G2ELr3bRFSirccBuoAgp/iVRz0S81ra14PF
-x7oG1dY0kxA/SmjICVw5s3bMRMp1xZCSK2kfpoGDiSY9v50hGZ3oWebit+A8Wlzi
-HPyH3Jsf3bAp9qJXjrVIN4nRRiiQ5jBJMNbDka676z/Aori3CK258SZvm0QFHXPU
-5QPZL+b+r4as7BBx0IJZQ7SKI0hpmecE2pUg4pz5XfzMGGvUiEPomJw5XrVxpCmh
-grqftdABeHgg7eAXj5pwbvgp4d9Kk+oipTpVzOJC7MaigIx4TPPpms5aHHECAwEA
-AQ==
------END PUBLIC KEY-----
-EOK
-   ]);
-   /** /Add GLPI Network public key to GLPI configuration */
-
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

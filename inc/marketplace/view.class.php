@@ -126,25 +126,21 @@ class View extends CommonGLPI {
    /**
     * Check current reigstration status and display warning messages
     *
-    * @param bool $offline don't check online services
     * @return bool
     */
-   static function checkRegister(bool $offline = false) {
+   static function checkRegister() {
       global $CFG_GLPI;
 
       $messages   = [];
-      $service_ok = true;
       $registered = false;
 
-      if (!$offline && !($service_ok = GLPINetwork::isServicesAvailable())) {
+      if (!GLPINetwork::isServicesAvailable()) {
          array_push(
             $messages,
             __('GLPI Network services website seems offline, please check later')
          );
-      }
-
-      if ($service_ok) {
-         $registered = GLPINetwork::isRegistered($offline);
+      } else {
+         $registered = GLPINetwork::isRegistered();
          if (!$registered) {
             $config_url = $CFG_GLPI['root_doc']."/front/config.form.php?forcetab=".
                         urlencode('GLPINetwork$1');
@@ -184,7 +180,7 @@ class View extends CommonGLPI {
       bool $only_lis = false,
       string $string_filter = ""
    ) {
-      if (!self::checkRegister(true)) {
+      if (!self::checkRegister()) {
          return;
       }
 
@@ -244,7 +240,7 @@ class View extends CommonGLPI {
       int $page = 1,
       string $sort = 'sort-alpha-asc'
    ) {
-      if (!self::checkRegister(false)) {
+      if (!self::checkRegister()) {
          return;
       }
 

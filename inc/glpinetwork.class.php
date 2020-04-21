@@ -144,16 +144,14 @@ class GLPINetwork {
    /**
     * Get GLPI Network registration informations.
     *
-    * @param boolean $offline  True to prevent fetching informations from registration API
-    *
     * @return array  Registration data:
     *    - is_valid (boolean):          indicates if key is valid;
     *    - validation_message (string): message related to validation state;
     *    - owner (array):               owner attributes;
     *    - subscription (array):        subscription attributes.
     */
-   public static function getRegistrationInformations(bool $offline = false) {
-      global $CFG_GLPI, $GLPI_CACHE;
+   public static function getRegistrationInformations() {
+      global $GLPI_CACHE;
 
       $registration_key = self::getRegistrationKey();
 
@@ -170,50 +168,6 @@ class GLPINetwork {
       ];
 
       if ($registration_key === '') {
-         return $informations;
-      }
-
-      // Decode data from key
-      $key_data = json_decode(base64_decode($registration_key), true);
-      if (json_last_error() !== JSON_ERROR_NONE || !is_array($key_data)
-          || !array_key_exists('signature', $key_data)) {
-         $informations['validation_message'] = __('The registration key is invalid.');
-         return $informations;
-      }
-
-      // Check signature validity
-      $signature_key = $CFG_GLPI['glpinetwork_signature_key'] ?? '';
-
-      if ($offline && empty($signature_key)) {
-         $informations['validation_message'] = __('Unable to verify registration key signature.');
-         return $informations;
-      }
-
-      $is_signature_valid = self::isRegistrationKeySignatureValid($registration_key, $signature_key);
-
-      if (!$offline && (empty($signature_key) || !$is_signature_valid)) {
-         // Try to get up to date signature public key for following cases:
-         // - signature key is not yet known,
-         // - registration key signature validation fails (signature key may have changed since last sync).
-         $new_signature_key = self::fetchRegistrationSignaturePublicKey();
-
-         if ($new_signature_key === null) {
-            $informations['validation_message'] = __('Unable to fetch signature key to verify the registration key.');
-            return $informations;
-         } else if ($new_signature_key !== $signature_key) {
-            $is_signature_valid = self::isRegistrationKeySignatureValid($registration_key, $signature_key);
-         }
-      }
-
-      if (!$is_signature_valid) {
-         $informations['validation_message'] = __('Registration key signature is not valid.');
-         return $informations;
-      }
-
-      if ($offline) {
-         // Offline mode, skip checks
-         // Assume that key is valid as we were able to read their informations
-         $informations['is_valid'] = true;
          return $informations;
       }
 
@@ -256,64 +210,8 @@ class GLPINetwork {
     *
     * @return boolean
     */
-   public static function isRegistered(bool $offline = false): bool {
-      return self::getRegistrationInformations($offline)['is_valid'];
-   }
-
-   /**
-    * Validate the signature of a registration key.
-    *
-    * @param string $registration_key      Registration key
-    * @param string $signature_public_key  Public key of key used to verify signature
-    *
-    * @return boolean
-    */
-   private static function isRegistrationKeySignatureValid($registration_key, $signature_public_key): bool {
-
-      $key_data = json_decode(base64_decode($registration_key), true);
-      if (json_last_error() !== JSON_ERROR_NONE || !is_array($key_data)
-          || !array_key_exists('signature', $key_data)) {
-         return false;
-      }
-
-      $signature = base64_decode($key_data['signature'], true);
-      if ($signature === false) {
-         return false;
-      }
-
-      $original_data = $key_data;
-      unset($original_data['signature']); // signature has not been used to generate itself
-      $valid = openssl_verify(json_encode($original_data), $signature, $signature_public_key);
-
-      return $valid === 1;
-   }
-
-   /**
-    * Fetch public key used to verify signature of registration keys.
-    *
-    * @return string|null
-    */
-   private static function fetchRegistrationSignaturePublicKey(): ?string {
-      global $CFG_GLPI;
-
-      $error_message = null;
-      $signature_response = Toolbox::callCurl(
-         rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/signature-key',
-         [
-            CURLOPT_HTTPHEADER => ['Accept:application/json']
-         ],
-         $error_message
-      );
-      $signature_data = $error_message === null ? json_decode($signature_response, true) : null;
-      if ($error_message !== null || json_last_error() !== JSON_ERROR_NONE
-          || !is_array($signature_data) || !array_key_exists('signature-key', $signature_data)) {
-         return null;
-      }
-
-      $signature_key = $signature_data['signature-key'];
-      Config::setConfigurationValues('core', ['glpinetwork_signature_key' => $signature_key]);
-
-      return $signature_key;
+   public static function isRegistered(): bool {
+      return self::getRegistrationInformations()['is_valid'];
    }
 
    public static function showInstallMessage() {
