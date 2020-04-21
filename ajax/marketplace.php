@@ -49,7 +49,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "get_dl_progress") {
 // get common marketplace action, load GLPI framework
 include ("../inc/includes.php");
 
-Session::checkRight("config", READ);
+Session::checkRight("config", UPDATE);
 
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
