@@ -646,10 +646,7 @@ HTML;
          }
       }
 
-      if (!$can_be_downloaded
-          && !isset($plugin_data['installation_url'])
-          && count($required_offers)) {
-
+      if ($mk_controller->requiresHigherOffer()) {
             $warning = sprintf(
                __("You need a superior GLPI-Network offer to access to this plugin (%s)"),
                implode(', ', $required_offers)

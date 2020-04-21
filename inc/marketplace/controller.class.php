@@ -227,6 +227,29 @@ class Controller extends CommonGLPI {
       return strlen($api_plugin['installation_url'] ?? "") > 0;
    }
 
+   /**
+    * Check if plugin is eligible inside an higher offer.
+    *
+    * @return bool
+    */
+   public function requiresHigherOffer(): bool {
+      $api_plugin = self::getAPI()->getPlugin($this->plugin_key);
+
+      if (!isset($api_plugin['required_offers'])) {
+         return false;
+      }
+
+      $registration_informations = GLPINetwork::getRegistrationInformations();
+      if ($registration_informations['subscription'] !== null
+          && $registration_informations['subscription']['is_running']) {
+         if (in_array($registration_informations['subscription']['offer_reference'], $api_plugin['required_offers'])) {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
 
    /**
     * Install current plugin
