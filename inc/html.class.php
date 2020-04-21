@@ -2814,9 +2814,11 @@ HTML;
       $js = <<<JS
       $(function() {
          $("#showdate{$p['rand']}").flatpickr({
+            altInput: true, // Show the user a readable date (as per altFormat), but return something totally different to the server.
+            altFormat: '{$date_format}',
+            dateFormat: 'Y-m-d',
             wrap: true, // permits to have controls in addition to input (like clear or open date buttons
             weekNumbers: true,
-            dateFormat: "{$date_format}",
             locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
             {$min_attr}
             {$max_attr}
@@ -2984,11 +2986,13 @@ HTML;
       $js = <<<JS
       $(function() {
          $("#showdate{$p['rand']}").flatpickr({
+            altInput: true, // Show the user a readable date (as per altFormat), but return something totally different to the server.
+            altFormat: "{$date_format}",
+            dateFormat: 'Y-m-d H:i:S',
             wrap: true, // permits to have controls in addition to input (like clear or open date buttons)
             enableTime: true,
             enableSeconds: true,
             weekNumbers: true,
-            dateFormat: "{$date_format}",
             locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
             minuteIncrement: "{$p['timestep']}",
             {$min_attr}
