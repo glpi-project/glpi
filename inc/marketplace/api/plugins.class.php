@@ -166,7 +166,7 @@ class Plugins {
    /**
     * Return the full list of avaibles plugins on services API
     *
-    * @param bool $force_refresh if false, we will return results stored in local cache
+    * @param bool   $force_refresh if false, we will return results stored in local cache
     * @param string $tag_filter filter the plugin list by given tag
     * @param string $string_filter filter the plugin list by given string
     * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
@@ -197,9 +197,18 @@ class Plugins {
             if (count($plugin['versions']) === 0) {
                continue;
             }
+
+            if (!GLPI_MARKETPLACE_PRERELEASES) {
+               $plugin['versions'] = array_filter($plugin['versions'], function($version) {
+                  return !isset($version['stability']) || $version['stability'] === "stable";
+               });
+            }
+
             $first_found_version = current($plugin['versions']);
-            $plugin['installation_url'] = $first_found_version['download_url'];
-            $plugin['version'] = $first_found_version['num'];
+            if (is_array($first_found_version)) {
+               $plugin['installation_url'] = $first_found_version['download_url'];
+               $plugin['version'] = $first_found_version['num'];
+            }
          }
 
          self::$plugins = $plugins_colct;
@@ -242,10 +251,10 @@ class Plugins {
    /**
     * Return plugins list for the given page
     *
-    * @param bool $force_refresh if false, we will return results stored in local cache
+    * @param bool   $force_refresh if false, we will return results stored in local cache
     * @param string $tag_filter filter the plugin list by given tag
     * @param string $string_filter filter the plugin list by given string
-    * @param int $page which page to query
+    * @param int    $page which page to query
     * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
     *
     * @return array full collection
