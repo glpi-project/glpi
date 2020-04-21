@@ -767,7 +767,7 @@ class Ticket extends DbTestCase {
 
       // Time to own, editable
       preg_match(
-         '/.*<input[^>]*name=\[\'"]time_to_own\[\'"][^>]*>.*/',
+         '/.*<input[^>]*name=[\'"]time_to_own[\'"][^>]*>.*/',
          $output,
          $matches
       );
