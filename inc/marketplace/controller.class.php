@@ -229,29 +229,6 @@ class Controller extends CommonGLPI {
       return strlen($api_plugin['installation_url'] ?? "") > 0;
    }
 
-   /**
-    * Check if plugin is eligible inside subscription.
-    *
-    * @return bool
-    */
-   public function checkEligibility(): bool {
-      $api_plugin = self::getAPI()->getPlugin($this->plugin_key);
-
-      if (!isset($api_plugin['required_offers'])) {
-         return true;
-      }
-
-      $registration_informations = GLPINetwork::getRegistrationInformations();
-      if ($registration_informations['subscription'] !== null
-          && $registration_informations['subscription']['is_running']) {
-         if (in_array($registration_informations['subscription']['offer_reference'], $api_plugin['required_offers'])) {
-            return true;
-         }
-      }
-
-      return false;
-   }
-
 
    /**
     * Install current plugin

@@ -609,7 +609,6 @@ HTML;
          </button>";
       } else if ((!$exists && !$mk_controller->hasWriteAccess())
          || ($has_an_update && !$can_be_overwritten)) {
-         // TODO Add an error icon to explain that plugin cannot be added/updated automatically
          $plugin_data = $mk_controller->getAPI()->getPlugin($plugin_key);
          if (array_key_exists('installation_url', $plugin_data) && $can_be_downloaded) {
             $warning = "";
