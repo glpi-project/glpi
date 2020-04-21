@@ -106,6 +106,8 @@ class RequirementsManager {
          $requirements[] = new DirectoryWriteAccess($directory);
       }
 
+      $requirements[] = new DirectoryWriteAccess(GLPI_MARKETPLACE_DIR, true);
+
       $requirements[] = new ProtectedWebAccess(array_merge($this->getDataDirectories(), [GLPI_LOG_DIR]));
 
       $requirements[] = new SeLinux();
@@ -133,7 +135,6 @@ class RequirementsManager {
          GLPI_RSS_DIR,
          GLPI_UPLOAD_DIR,
          GLPI_PICTURE_DIR,
-         GLPI_MARKETPLACE_DIR,
       ];
    }
 }
