@@ -682,7 +682,11 @@ class Planning extends CommonGLPI {
                // add tooltip to event
                if (!disable_qtip) {
                   var qtip_position = {
-                     viewport: 'auto'
+                     target: 'mouse',
+                     adjust: {
+                        mouse: false
+                     },
+                     viewport: $(window),
                   };
                   if (view.name.indexOf('list') >= 0) {
                      qtip_position.target= element.find('a');
