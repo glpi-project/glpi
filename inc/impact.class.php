@@ -925,12 +925,9 @@ class Impact extends CommonGLPI {
 
       echo '<div class="impact-side-filter-itemtypes-items">';
       foreach ($CFG_GLPI["impact_asset_types"] as $itemtype => $icon) {
-         echo '<div class="impact-side-filter-itemtypes-item">';
-         // Add default image if the real path doesn't lead to an existing file
-         if (!file_exists(__DIR__ . "/../$icon")) {
-            $icon = "pics/impact/default.png";
-         }
+         $icon = self::checkIcon($icon);
 
+         echo '<div class="impact-side-filter-itemtypes-item">';
          echo '<h4><img class="impact-side-icon" src="' . $CFG_GLPI['root_doc'] . '/' . $icon . '" title="' . $itemtype::getTypeName() . '" data-itemtype="' . $itemtype . '">';
          echo "<span>" . $itemtype::getTypeName() . "</span></h4>";
          echo '</div>'; // impact-side-filter-itemtypes-item
@@ -1151,6 +1148,27 @@ class Impact extends CommonGLPI {
    }
 
    /**
+    * Check if the icon path is valid, if not return a fallback path
+    *
+    * @param string $icon_path
+    * @return string
+    */
+   private static function checkIcon(string $icon_path): string {
+      // Special case for images returned dynamicly
+      if (strpos($icon_path, ".php") !== false) {
+         return $icon_path;
+      }
+
+      // Check if icon exist on the filesystem
+      if (file_exists(__DIR__ . "/../$icon_path")) {
+         return $icon_path;
+      }
+
+      // Fallback "default" icon
+      return "pics/impact/default.png";
+   }
+
+   /**
     * Add a node to the node list if missing
     *
     * @param array      $nodes  Nodes of the graph
@@ -1171,11 +1189,7 @@ class Impact extends CommonGLPI {
 
       // Get web path to the image matching the itemtype from config
       $image_name = $CFG_GLPI["impact_asset_types"][get_class($item)];
-
-      // Add default image if the real path doesn't lead to an existing file
-      if (!file_exists(__DIR__ . "/../$image_name")) {
-         $image_name = "pics/impact/default.png";
-      }
+      $image_name = self::checkIcon($image_name);
 
       // Define basic data of the new node
       $new_node = [
