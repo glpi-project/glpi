@@ -1279,7 +1279,7 @@ abstract class API extends CommonGLPI {
       $add_keys_names = count($params['add_keys_names']) > 0;
 
       // build query
-      $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT ".$DB->quoteName("$table.id").",  ".$DB->quoteName("$table.*")."
+      $query = "SELECT DISTINCT ".$DB->quoteName("$table.id").",  ".$DB->quoteName("$table.*")."
                 FROM ".$DB->quoteName($table)."
                 $join
                 WHERE $where
@@ -1301,8 +1301,8 @@ abstract class API extends CommonGLPI {
       }
 
       // get result full row counts
-      $data_numtotalrow = $DB->request('SELECT FOUND_ROWS()')->next();
-      $totalcount = $data_numtotalrow['FOUND_ROWS()'];
+      $count_query = "SELECT COUNT(*) FROM {$DB->quoteName($table)} $join WHERE $where";
+      $totalcount = $DB->query($count_query)->fetch_row()[0];
 
       if ($params['range'][0] > $totalcount) {
          $this->returnError("Provided range exceed total count of data: ".$totalcount,
