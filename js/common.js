@@ -665,7 +665,7 @@ var submitparentForm = function(input) {
    var form = $(input).closest('form');
 
    // find submit button(s)
-   var submit = form.find('button[type=submit]').filter('[name=add], [name=update]');
+   var submit = form.find('[type=submit]').filter('[name=add], [name=update]');
 
    // trigger if only one submit button
    if (submit.length == 1) {
