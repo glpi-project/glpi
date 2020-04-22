@@ -52,6 +52,7 @@ if (isset($_REQUEST['action'])) {
 
          // Update fields with input values
          $input = $_REQUEST;
+         $input['login'] = stripslashes($input['login']);
 
          if (isset($input["passwd"])) {
             if (empty($input["passwd"])) {

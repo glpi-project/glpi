@@ -90,8 +90,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     * @return boolean
    **/
    function canViewItem() {
-
-      if (!Session::haveAccessToEntity($this->getEntityID())) {
+      if (!Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive())) {
          return false;
       }
       $project = new Project();

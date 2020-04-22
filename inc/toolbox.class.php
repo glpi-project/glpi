@@ -357,7 +357,7 @@ class Toolbox {
          }
 
          $config                      = ['safe'=>1];
-         $config["elements"]          = "*+iframe";
+         $config["elements"]          = "*+iframe+audio+video";
          $config["direct_list_nest"]  = 1;
 
          $value                       = htmLawed($value, $config);
