@@ -323,6 +323,10 @@ $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmwar
                                                   'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
                                                   'DeviceSimcard', 'DeviceSensor'];
 
+foreach ($CFG_GLPI['device_types'] as $dtype) {
+   $CFG_GLPI['location_types'][] = 'Item_' . $dtype;
+}
+
 $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer', 'Enclosure'];
 
