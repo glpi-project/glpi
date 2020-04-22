@@ -46,7 +46,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
    //Menu & navigation
    public $first_level_menu  = "config";
-   public $second_level_menu = "CommonDropdown";
+   public $second_level_menu = "commondropdown";
    public $third_level_menu  = "";
 
    public $display_dropdowntitle  = true;

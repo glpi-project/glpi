@@ -121,7 +121,13 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_GET['_in_modal'])) {
-   Html::popHeader($dropdown->getTypeName(1), $_SERVER['PHP_SELF']);
+   Html::popHeader(
+      $dropdown->getTypeName(1),
+      $_SERVER['PHP_SELF'],
+      false,
+      $dropdown->first_level_menu,
+      $dropdown->second_level_menu, $dropdown->getType()
+   );
    $dropdown->showForm($_GET["id"]);
    Html::popFooter();
 
