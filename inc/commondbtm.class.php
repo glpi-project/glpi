@@ -1536,7 +1536,7 @@ class CommonDBTM extends CommonGLPI {
             }
 
             // Update raw names cache (for API)
-            if (Toolbox::useCache()) {
+            if (Toolbox::useCache() && isAPI()) {
                $GLPI_CACHE->delete(self::getCacheKeyForFriendlyName(
                   $this->getType(),
                   $this->fields['id']
@@ -5440,7 +5440,7 @@ class CommonDBTM extends CommonGLPI {
    public static function getFriendlyNameById($id) {
       global $GLPI_CACHE;
 
-      if (Toolbox::useCache()) {
+      if (Toolbox::useCache() && isAPI()) {
          $cache_key = self::getCacheKeyForFriendlyName(self::getType(), $id);
          if (($name = $GLPI_CACHE->get($cache_key)) !== null) {
             return $name;
