@@ -1535,14 +1535,6 @@ class CommonDBTM extends CommonGLPI {
                QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
             }
 
-            // Update raw names cache (for API)
-            if (Toolbox::useCache()) {
-               $GLPI_CACHE->delete(self::getCacheKeyForFriendlyName(
-                  $this->getType(),
-                  $this->fields['id']
-               ));
-            }
-
             return true;
          }
       }
@@ -5438,15 +5430,6 @@ class CommonDBTM extends CommonGLPI {
     * @return string Friendly name of the object
     */
    public static function getFriendlyNameById($id) {
-      global $GLPI_CACHE;
-
-      if (Toolbox::useCache()) {
-         $cache_key = self::getCacheKeyForFriendlyName(self::getType(), $id);
-         if (($name = $GLPI_CACHE->get($cache_key)) !== null) {
-            return $name;
-         }
-      }
-
       $item = new static();
       $item->getFromDB($id);
       return $item->getFriendlyName();
@@ -5460,26 +5443,7 @@ class CommonDBTM extends CommonGLPI {
     * @return string
     */
    final public function getFriendlyName() {
-      global $GLPI_CACHE;
-
-      $cache_key = self::getCacheKeyForFriendlyName(
-         self::getType(),
-         $this->getID()
-      );
-
-      if (Toolbox::useCache()) {
-         if (($name = $GLPI_CACHE->get($cache_key)) !== null) {
-            return $name;
-         }
-      }
-
-      $name = $this->computeFriendlyName();
-
-      if (Toolbox::useCache()) {
-         $GLPI_CACHE->set($cache_key, $name);
-      }
-
-      return $name;
+      return $this->computeFriendlyName();
    }
 
    /**
