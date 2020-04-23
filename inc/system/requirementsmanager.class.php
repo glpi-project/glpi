@@ -90,6 +90,9 @@ class RequirementsManager {
       $requirements[] = new Extension('xmlrpc', true); // for XMLRPC API
       $requirements[] = new ExtensionClass('CAS', 'phpCAS', true); // for CAS lib
       $requirements[] = new Extension('exif', true);
+      $requirements[] = new Extension('zlib', true);
+      $requirements[] = new Extension('zip', true);
+      $requirements[] = new Extension('bz2', true);
 
       if ($db instanceof \DBmysql) {
          $requirements[] = new DbEngine($db);
@@ -102,6 +105,8 @@ class RequirementsManager {
       foreach ($this->getDataDirectories() as $directory) {
          $requirements[] = new DirectoryWriteAccess($directory);
       }
+
+      $requirements[] = new DirectoryWriteAccess(GLPI_MARKETPLACE_DIR, true);
 
       $requirements[] = new ProtectedWebAccess(array_merge($this->getDataDirectories(), [GLPI_LOG_DIR]));
 

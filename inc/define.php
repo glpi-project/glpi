@@ -496,6 +496,9 @@ $CFG_GLPI['javascript'] = [
       ],
       'notification' => [
          'notificationtemplate' => ['tinymce']
+      ],
+      'plugin'=> [
+         'marketplace' => ['marketplace']
       ]
    ],
    'admin'        => ['colorpicker', 'clipboard'],

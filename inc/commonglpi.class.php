@@ -93,6 +93,37 @@ class CommonGLPI {
       return get_called_class();
    }
 
+   /**
+    * Check rights on CommonGLPI Object (without corresponding table)
+    * Same signature as CommonDBTM::can but in case of this class, we don't check instance rights
+    * so, id and input parameters are unused.
+    *
+    * @param integer $ID    ID of the item (-1 if new item)
+    * @param mixed   $right Right to check : r / w / recursive / READ / UPDATE / DELETE
+    * @param array   $input array of input data (used for adding item) (default NULL)
+    *
+    * @return boolean
+   **/
+   function can($ID, $right, array &$input = null) {
+      switch ($right) {
+         case READ :
+            return static::canView();
+
+         case UPDATE :
+            return static::canUpdate();
+
+         case DELETE :
+            return static::canDelete();
+
+         case PURGE :
+            return static::canPurge();
+
+         case CREATE :
+            return static::canCreate();
+      }
+      return false;
+   }
+
 
    /**
     * Have I the global right to "create" the Object

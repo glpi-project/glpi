@@ -49,10 +49,12 @@ class DirectoryWriteAccess extends AbstractRequirement {
    private $path;
 
    /**
-    * @param string $path  Directory path.
+    * @param string $path    Directory path.
+    * @param bool $optional  Indicated if write access is optional.
     */
-   public function __construct(string $path) {
+   public function __construct(string $path, bool $optional = false) {
       $this->path = $path;
+      $this->optional = $optional;
 
       switch (realpath($this->path)) {
          case realpath(GLPI_CACHE_DIR):
@@ -75,6 +77,9 @@ class DirectoryWriteAccess extends AbstractRequirement {
             break;
          case realpath(GLPI_LOCK_DIR):
             $this->title = __('Checking write permissions for lock files');
+            break;
+         case realpath(GLPI_MARKETPLACE_DIR):
+            $this->title = __('Checking write permissions for marketplace plugins directory');
             break;
          case realpath(GLPI_PLUGIN_DOC_DIR):
             $this->title = __('Checking write permissions for plugins document files');

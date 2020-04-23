@@ -784,3 +784,59 @@ div.progress {
                      linear-gradient(to bottom, #333 1px, transparent 1px);
    border: 1px solid #333;
 }
+
+/** marketplace **/
+.marketplace {
+   background-color: inherit;
+
+   .left-panel .plugins-tags .tag {
+      background: #292929;
+      border-color: #000;
+   }
+
+   .right-panel {
+      .plugins {
+         .plugin {
+            background-color: transparent;
+            border-color: #000;
+
+            .main .buttons button {
+               background-color: #000;
+               border-color: #000;
+            }
+
+            .footer .misc-left .links a i {
+               color: rgb(102, 102, 102);
+            }
+
+            .footer {
+               background-color: #151515;
+               border-top-color: #000;
+            }
+         }
+      }
+
+      .pagination {
+         li {
+            background-color: #292929;
+            border-color: #000;
+            color: rgb(170, 170, 170);
+
+            &.current {
+               color: rgb(128, 128, 128);
+               background: #000;
+               border-color: #000;
+            }
+
+            &.nav-disabled {
+               color: #666;
+            }
+
+            &:not(.current):not(.nb_plugin):not(.nav-disabled):hover {
+               background-color: #474747;
+            }
+         }
+      }
+   }
+}
+
