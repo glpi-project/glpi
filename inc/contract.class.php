@@ -1111,7 +1111,7 @@ class Contract extends CommonDBTM {
       echo "<td class='numeric'>".$contract0."</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      $options['criteria'][0]['value'] = 0;
+      $options['criteria'][0]['value'] = '>0';
       $options['criteria'][1]['value'] = '<7';
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
                  Toolbox::append_params($options, '&amp;')."\">".
