@@ -2778,11 +2778,6 @@ JAVASCRIPT;
          }
       }
 
-      $values = true === $p['multiple']
-         ? explode(', ', $p['value'])
-         : [$p['value']];
-      $values = implode(', ', array_map('Html::convDate', $values));
-
       $required = $p['required'] == true
          ? " required='required'"
          : "";
@@ -2797,7 +2792,7 @@ JAVASCRIPT;
 
       $output = <<<HTML
       <div class="no-wrap flatpickr" id="showdate{$p['rand']}">
-         <input type="text" name="{$name}" value="{$values}" size="{$p['size']}"
+         <input type="text" name="{$name}" value="{$p['value']}" size="{$p['size']}"
                 {$required} {$disabled} data-input>
          <a class="input-button" data-toggle>
             <i class="far fa-calendar-alt fa-lg pointer"></i>
@@ -2809,10 +2804,10 @@ HTML;
       $date_format = Toolbox::getDateFormat('js');
 
       $min_attr = !empty($p['min'])
-         ? "minDate: '".self::convDate($p['min'])."',"
+         ? "minDate: '{$p['min']}',"
          : "";
       $max_attr = !empty($p['max'])
-         ? "maxDate: '".self::convDate($p['max'])."',"
+         ? "maxDate: '{$p['max']}',"
          : "";
       $multiple_attr = $p['multiple']
          ? "mode: 'multiple',"
@@ -2970,7 +2965,6 @@ JS;
                <i class='fa fa-times-circle pointer'></i>
             </a>"
          : "";
-      $p['value'] = trim(self::convDateTime($p['value']));
 
       $output = <<<HTML
          <div class="no-wrap flatpickr" id="showdate{$p['rand']}">
@@ -2986,10 +2980,10 @@ HTML;
       $date_format = Toolbox::getDateFormat('js')." H:i:S";
 
       $min_attr = !empty($p['min'])
-         ? "minDate: '".self::convDate($p['min'])."',"
+         ? "minDate: '{$p['min']}',"
          : "";
       $max_attr = !empty($p['max'])
-         ? "maxDate: '".self::convDate($p['max'])."',"
+         ? "maxDate: '{$p['max']}',"
          : "";
 
       $js = <<<JS
