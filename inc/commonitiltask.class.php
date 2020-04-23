@@ -562,7 +562,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
 
    // SPECIFIC FUNCTIONS
-   public function computeFriendlyName() {
+   protected function computeFriendlyName() {
 
       if (isset($this->fields['taskcategories_id'])) {
          if ($this->fields['taskcategories_id']) {

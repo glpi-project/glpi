@@ -1353,7 +1353,7 @@ class User extends CommonDBTM {
       }
    }
 
-   function computeFriendlyName() {
+   protected function computeFriendlyName() {
       global $CFG_GLPI;
 
       if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {

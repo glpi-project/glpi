@@ -226,7 +226,7 @@ class NotificationTarget extends CommonDBChild {
       return _n('Recipient', 'Recipients', $nb);
    }
 
-   public function computeFriendlyName() {
+   protected function computeFriendlyName() {
 
       if (isset($this->notification_targets_labels[$this->getField("type")]
                                                   [$this->getField("items_id")])) {

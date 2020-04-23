@@ -62,7 +62,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   public function computeFriendlyName() {
+   protected function computeFriendlyName() {
       global $CFG_GLPI;
 
       if ($this->getField('language') != '') {
