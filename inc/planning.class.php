@@ -1427,7 +1427,6 @@ class Planning extends CommonGLPI {
          echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
          Html::showDateTimeField("plan[begin]", [
             'value'      => $begin,
-            'timestep'   => -1,
             'maybeempty' => false,
             'canedit'    => true,
             'mindate'    => '',

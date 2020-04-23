@@ -1212,6 +1212,9 @@ class Html {
       // auto desktop / mobile viewport
       echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
 
+      //detect theme
+      $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
+
       echo Html::css('public/lib/base.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
       echo Html::css('css/jstree-glpi.css');
@@ -1222,6 +1225,14 @@ class Html {
 
       echo Html::css('public/lib/leaflet.css');
       Html::requireJs('leaflet');
+
+      echo Html::css('public/lib/flatpickr.css');
+      if ($theme != "darker") {
+         echo Html::css('public/lib/flatpickr/themes/light.css');
+      } else {
+         echo Html::css('public/lib/flatpickr/themes/dark.css');
+      }
+      Html::requireJs('flatpickr');
 
       //on demand JS
       if ($sector != 'none' || $item != 'none' || $option != '') {
@@ -1340,7 +1351,6 @@ class Html {
       if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
          echo Html::scss('css/highcontrast');
       }
-      $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
       echo Html::scss('css/palettes/' . $theme);
 
       echo Html::css('css/print.css', ['media' => 'print']);
@@ -2747,23 +2757,29 @@ JAVASCRIPT;
     *      - display    : boolean display of return string (default true)
     *      - rand       : specific rand value (default generated one)
     *      - yearrange  : set a year range to show in drop-down (default '')
+    *      - required   : required field (will add required attribute)
     *
     * @return integer|string
     *    integer if option display=true (random part of elements id)
     *    string if option display=false (HTML code)
    **/
    static function showDateField($name, $options = []) {
-      $p['value']      = '';
-      $p['maybeempty'] = true;
-      $p['canedit']    = true;
-      $p['min']        = '';
-      $p['max']        = '';
-      $p['showyear']   = true;
-      $p['display']    = true;
-      $p['rand']       = mt_rand();
-      $p['yearrange']  = '';
-      $p['multiple']   = false;
-      $p['size']       = 10;
+      global $CFG_GLPI;
+
+      $p = [
+         'value'      => '',
+         'maybeempty' => true,
+         'canedit'    => true,
+         'min'        => '',
+         'max'        => '',
+         'showyear'   => false,
+         'display'    => true,
+         'rand'       => mt_rand(),
+         'yearrange'  => '',
+         'multiple'   => false,
+         'size'       => 10,
+         'required'   => false,
+      ];
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -2771,94 +2787,57 @@ JAVASCRIPT;
          }
       }
 
-      $values = true === $p['multiple'] ? explode(', ', $p['value']) : [$p['value']];
-      $displayed_value = implode(', ', array_map('Html::convDate', $values));
+      $required = $p['required'] == true
+         ? " required='required'"
+         : "";
+      $disabled = !$p['canedit']
+         ? " disabled='disabled'"
+         : "";
+      $clear    = $p['maybeempty'] && $p['canedit']
+         ? "<a data-clear  title='".__s('Clear')."'>
+               <i class='fa fa-times-circle pointer'></i>
+            </a>"
+         : "";
 
-      $output = "<div class='no-wrap'>";
-      $output .= "<input id='showdate".$p['rand']."' type='text' size='".$p['size']."' name='_$name' ".
-                  "value='".$displayed_value."'>";
-      $output .= Html::hidden($name, ['value' => $p['value'],
-                                           'id'    => "hiddendate".$p['rand']]);
-      if ($p['maybeempty'] && $p['canedit']) {
-         $output .= "<span class='fa fa-times-circle pointer' title='".__s('Clear').
-                      "' id='resetdate".$p['rand']."'>" .
-                      "<span class='sr-only'>" . __('Clear') . "</span></span>";
-      }
-      $output .= "</div>";
+      $output = <<<HTML
+      <div class="no-wrap flatpickr" id="showdate{$p['rand']}">
+         <input type="text" name="{$name}" value="{$p['value']}" size="{$p['size']}"
+                {$required} {$disabled} data-input>
+         <a class="input-button" data-toggle>
+            <i class="far fa-calendar-alt fa-lg pointer"></i>
+         </a>
+         $clear
+      </div>
+HTML;
 
-      $js = '$(function(){';
-      if ($p['maybeempty'] && $p['canedit']) {
-         $js .= "$('#resetdate".$p['rand']."').click(function(){
-                  $('#showdate".$p['rand']."').val('');
-                  $('#hiddendate".$p['rand']."').val('');
-                  });";
-      }
+      $date_format = Toolbox::getDateFormat('js');
 
-      // choose if we use the standard jquery ui datepicker or a plugin for mulitple dates
-      $plugin = "datepicker";
-      if ($p['multiple']) {
-         $plugin = "multiDatesPicker";
-      }
+      $min_attr = !empty($p['min'])
+         ? "minDate: '{$p['min']}',"
+         : "";
+      $max_attr = !empty($p['max'])
+         ? "maxDate: '{$p['max']}',"
+         : "";
+      $multiple_attr = $p['multiple']
+         ? "mode: 'multiple',"
+         : "";
 
-      $js .= "$( '#showdate".$p['rand']."' ).$plugin({
-                  altField: '#hiddendate".$p['rand']."',
-                  altFormat: 'yy-mm-dd',
-                  firstDay: 1,
-                  showOtherMonths: true,
-                  selectOtherMonths: true,
-                  showButtonPanel: true,
-                  changeMonth: true,
-                  changeYear: true,
-                  showOn: 'both',
-                  showWeek: true,
-                  buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
+      $js = <<<JS
+      $(function() {
+         $("#showdate{$p['rand']}").flatpickr({
+            altInput: true, // Show the user a readable date (as per altFormat), but return something totally different to the server.
+            altFormat: '{$date_format}',
+            dateFormat: 'Y-m-d',
+            wrap: true, // permits to have controls in addition to input (like clear or open date buttons
+            weekNumbers: true,
+            locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
+            {$min_attr}
+            {$max_attr}
+            {$multiple_attr}
+         });
+      });
+JS;
 
-      if (!$p['canedit']) {
-         $js .= ",disabled: true";
-      }
-
-      if (!empty($p['min'])) {
-         $js .= ",minDate: '".self::convDate($p['min'])."'";
-      }
-
-      if (!empty($p['max'])) {
-         $js .= ",maxDate: '".self::convDate($p['max'])."'";
-      }
-
-      if (!empty($p['yearrange'])) {
-         $js .= ",yearRange: '". $p['yearrange'] ."'";
-      }
-
-      switch ($_SESSION['glpidate_format']) {
-         case 1 :
-            $p['showyear'] ? $format='dd-mm-yy' : $format='dd-mm';
-            break;
-
-         case 2 :
-            $p['showyear'] ? $format='mm-dd-yy' : $format='mm-dd';
-            break;
-
-         default :
-            $p['showyear'] ? $format='yy-mm-dd' : $format='mm-dd';
-      }
-      $js .= ",dateFormat: '".$format."'";
-
-      if ($p['multiple']) {
-         // Fix altField date format
-         // onSelect callback will be called by multiDatePicker after update of the altField
-         $js .= ",onSelect: function(date, datepicker) {
-               normalizeMultiDateAltField($('#hiddendate{$p['rand']}'), '{$format}');
-            }";
-      }
-
-      $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
-
-      if ($p['multiple']) {
-         // Fix altField date format that has just been filled by multiDatePicker
-         $js .= "normalizeMultiDateAltField($('#hiddendate{$p['rand']}'), '{$format}');";
-      }
-
-      $js .= "});";
       $output .= Html::scriptBlock($js);
 
       if ($p['display']) {
@@ -2924,8 +2903,6 @@ JAVASCRIPT;
     *   - canedit    : could not modify element (true by default)
     *   - mindate    : minimum allowed date (default '')
     *   - maxdate    : maximum allowed date (default '')
-    *   - mintime    : minimum allowed time (default '')
-    *   - maxtime    : maximum allowed time (default '')
     *   - showyear   : should we set/diplay the year? (true by default)
     *   - display    : boolean display or get string (default true)
     *   - rand       : specific random value (default generated one)
@@ -2938,18 +2915,20 @@ JAVASCRIPT;
    static function showDateTimeField($name, $options = []) {
       global $CFG_GLPI;
 
-      $p['value']      = '';
-      $p['maybeempty'] = true;
-      $p['canedit']    = true;
-      $p['mindate']    = '';
-      $p['maxdate']    = '';
-      $p['mintime']    = '';
-      $p['maxtime']    = '';
-      $p['timestep']   = -1;
-      $p['showyear']   = true;
-      $p['display']    = true;
-      $p['rand']       = mt_rand();
-      $p['required']   = false;
+      $p = [
+         'value'      => '',
+         'maybeempty' => true,
+         'canedit'    => true,
+         'mindate'    => '',
+         'maxdate'    => '',
+         'mintime'    => '',
+         'maxtime'    => '',
+         'timestep'   => -1,
+         'showyear'   => true,
+         'display'    => true,
+         'rand'       => mt_rand(),
+         'required'   => false,
+      ];
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -2961,11 +2940,6 @@ JAVASCRIPT;
          $p['timestep'] = $CFG_GLPI['time_step'];
       }
 
-      $minHour   = 0;
-      $maxHour   = 23;
-      $minMinute = 0;
-      $maxMinute = 59;
-
       $date_value = '';
       $hour_value = '';
       if (!empty($p['value'])) {
@@ -2973,9 +2947,6 @@ JAVASCRIPT;
       }
 
       if (!empty($p['mintime'])) {
-         list($minHour, $minMinute) = explode(':', $p['mintime']);
-         $minMinute = 0;
-
          // Check time in interval
          if (!empty($hour_value) && ($hour_value < $p['mintime'])) {
             $hour_value = $p['mintime'];
@@ -2983,9 +2954,6 @@ JAVASCRIPT;
       }
 
       if (!empty($p['maxtime'])) {
-         list($maxHour, $maxMinute) = explode(':', $p['maxtime']);
-         $maxMinute = 59;
-
          // Check time in interval
          if (!empty($hour_value) && ($hour_value > $p['maxtime'])) {
             $hour_value = $p['maxtime'];
@@ -2997,78 +2965,55 @@ JAVASCRIPT;
          $p['value'] = $date_value.' '.$hour_value;
       }
 
-      $output = "<span class='no-wrap'>";
-      $output .= "<input id='showdate".$p['rand']."' type='text' name='_$name' value='".
-                   trim(self::convDateTime($p['value']))."'";
-      if ($p['required'] == true) {
-         $output .= " required='required'";
-      }
-      $output .= ">";
-      $output .= Html::hidden($name, ['value' => $p['value'], 'id' => "hiddendate".$p['rand']]);
-      if ($p['maybeempty'] && $p['canedit']) {
-         $output .= "<span class='fa fa-times-circle pointer' title='".__s('Clear').
-                      "' id='resetdate".$p['rand']."'>" .
-                      "<span class='sr-only'>" . __('Clear') . "</span></span>";
-      }
-      $output .= "</span>";
+      $required = $p['required'] == true
+         ? " required='required'"
+         : "";
+      $disabled = !$p['canedit']
+         ? " disabled='disabled'"
+         : "";
+      $clear    = $p['maybeempty'] && $p['canedit']
+         ? "<a data-clear  title='".__s('Clear')."'>
+               <i class='fa fa-times-circle pointer'></i>
+            </a>"
+         : "";
 
-      $js = "$(function(){";
-      if ($p['maybeempty'] && $p['canedit']) {
-         $js .= "$('#resetdate".$p['rand']."').click(function(){
-                  $('#showdate".$p['rand']."').val('');
-                  $('#hiddendate".$p['rand']."').val('');
-                  });";
-      }
+      $output = <<<HTML
+         <div class="no-wrap flatpickr" id="showdate{$p['rand']}">
+            <input type="text" name="{$name}" value="{$p['value']}"
+                   {$required} {$disabled} data-input>
+            <a class="input-button" data-toggle>
+               <i class="far fa-calendar-alt fa-lg pointer"></i>
+            </a>
+            $clear
+         </div>
+HTML;
 
-      $js .= "$( '#showdate".$p['rand']."' ).datetimepicker({
-                  altField: '#hiddendate".$p['rand']."',
-                  altFormat: 'yy-mm-dd',
-                  altTimeFormat: 'HH:mm:ss',
-                  pickerTimeFormat : 'HH:mm',
-                  altFieldTimeOnly: false,
-                  firstDay: 1,
-                  parse: 'loose',
-                  showAnim: '',
-                  stepMinute: ".$p['timestep'].",
-                  showSecond: false,
-                  showOtherMonths: true,
-                  selectOtherMonths: true,
-                  showButtonPanel: true,
-                  changeMonth: true,
-                  changeYear: true,
-                  showOn: 'both',
-                  showWeek: true,
-                  controlType: 'select',
-                  buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
-      if (!$p['canedit']) {
-         $js .= ",disabled: true";
-      }
+      $date_format = Toolbox::getDateFormat('js')." H:i:S";
 
-      if (!empty($p['min'])) {
-         $js .= ",minDate: '".self::convDate($p['min'])."'";
-      }
+      $min_attr = !empty($p['min'])
+         ? "minDate: '{$p['min']}',"
+         : "";
+      $max_attr = !empty($p['max'])
+         ? "maxDate: '{$p['max']}',"
+         : "";
 
-      if (!empty($p['max'])) {
-         $js .= ",maxDate: '".self::convDate($p['max'])."'";
-      }
-
-      switch ($_SESSION['glpidate_format']) {
-         case 1 :
-            $p['showyear'] ? $format='dd-mm-yy' : $format='dd-mm';
-            break;
-
-         case 2 :
-            $p['showyear'] ? $format='mm-dd-yy' : $format='mm-dd';
-            break;
-
-         default :
-            $p['showyear'] ? $format='yy-mm-dd' : $format='mm-dd';
-      }
-      $js .= ",dateFormat: '".$format."'";
-      $js .= ",timeFormat: 'HH:mm'";
-
-      $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
-      $js .= "});";
+      $js = <<<JS
+      $(function() {
+         $("#showdate{$p['rand']}").flatpickr({
+            altInput: true, // Show the user a readable date (as per altFormat), but return something totally different to the server.
+            altFormat: "{$date_format}",
+            dateFormat: 'Y-m-d H:i:S',
+            wrap: true, // permits to have controls in addition to input (like clear or open date buttons)
+            enableTime: true,
+            enableSeconds: true,
+            weekNumbers: true,
+            locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
+            minuteIncrement: "{$p['timestep']}",
+            {$min_attr}
+            {$max_attr}
+         });
+      });
+JS;
       $output .= Html::scriptBlock($js);
 
       if ($p['display']) {
@@ -3097,15 +3042,17 @@ JAVASCRIPT;
    public static function showTimeField($name, $options = []) {
       global $CFG_GLPI;
 
-      $p['value']      = '';
-      $p['maybeempty'] = true;
-      $p['canedit']    = true;
-      $p['mintime']    = '';
-      $p['maxtime']    = '';
-      $p['timestep']   = -1;
-      $p['display']    = true;
-      $p['rand']       = mt_rand();
-      $p['required']   = false;
+      $p = [
+         'value'      => '',
+         'maybeempty' => true,
+         'canedit'    => true,
+         'mintime'    => '',
+         'maxtime'    => '',
+         'timestep'   => -1,
+         'display'    => true,
+         'rand'       => mt_rand(),
+         'required'   => false,
+      ];
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3117,89 +3064,64 @@ JAVASCRIPT;
          $p['timestep'] = $CFG_GLPI['time_step'];
       }
 
-      $minHour   = 0;
-      $maxHour   = 23;
-      $minMinute = 0;
-      $maxMinute = 59;
-
       $hour_value = '';
       if (!empty($p['value'])) {
          $hour_value = $p['value'];
       }
 
       if (!empty($p['mintime'])) {
-         list($minHour, $minMinute) = explode(':', $p['mintime']);
-         $minMinute = 0;
-
          // Check time in interval
          if (!empty($hour_value) && ($hour_value < $p['mintime'])) {
             $hour_value = $p['mintime'];
          }
       }
-
       if (!empty($p['maxtime'])) {
-         list($maxHour, $maxMinute) = explode(':', $p['maxtime']);
-         $maxMinute = 59;
-
          // Check time in interval
          if (!empty($hour_value) && ($hour_value > $p['maxtime'])) {
             $hour_value = $p['maxtime'];
          }
       }
-
       // reconstruct value to be valid
       if (!empty($hour_value)) {
          $p['value'] = $hour_value;
       }
 
-      $output = "<span class='no-wrap'>";
-      $output .= "<input id='showtime".$p['rand']."' type='text' name='_$name' value='".
-                   trim($p['value'])."'";
-      if ($p['required'] == true) {
-         $output .= " required='required'";
-      }
-      $output .= ">";
-      $output .= Html::hidden($name, ['value' => $p['value'], 'id' => "hiddentime".$p['rand']]);
-      if ($p['maybeempty'] && $p['canedit']) {
-         $output .= "<span class='fa fa-times-circle pointer' title='".__s('Clear').
-                      "' id='resettime".$p['rand']."'>" .
-                      "<span class='sr-only'>" . __('Clear') . "</span></span>";
-      }
-      $output .= "</span>";
+      $required = $p['required'] == true
+         ? " required='required'"
+         : "";
+      $disabled = !$p['canedit']
+         ? " disabled='disabled'"
+         : "";
+      $clear    = $p['maybeempty'] && $p['canedit']
+         ? "<a data-clear  title='".__s('Clear')."'>
+               <i class='fa fa-times-circle pointer'></i>
+            </a>"
+         : "";
 
-      $js = "$(function(){";
-      if ($p['maybeempty'] && $p['canedit']) {
-         $js .= "$('#resettime".$p['rand']."').click(function(){
-                  $('#showtime".$p['rand']."').val('');
-                  $('#hiddentime".$p['rand']."').val('');
-                  });";
-      }
+      $output = <<<HTML
+         <div class="no-wrap flatpickr" id="showtime{$p['rand']}">
+            <input type="text" name="{$name}" value="{$p['value']}"
+                   {$required} {$disabled} data-input>
+            <a class="input-button" data-toggle>
+               <i class="far fa-clock fa-lg pointer"></i>
+            </a>
+            $clear
+         </div>
+HTML;
 
-      $js .= "$( '#showtime".$p['rand']."' ).timepicker({
-         altField: '#hiddentime".$p['rand']."',
-         altFormat: 'yy-mm-dd',
-         altTimeFormat: 'HH:mm:ss',
-         pickerTimeFormat : 'HH:mm',
-         altFieldTimeOnly: false,
-         firstDay: 1,
-         parse: 'loose',
-         showAnim: '',
-         stepMinute: ".$p['timestep'].",
-         showSecond: false,
-         showButtonPanel: true,
-         changeMonth: true,
-         changeYear: true,
-         showOn: 'both',
-         controlType: 'select',
-         buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
-
-      if (!$p['canedit']) {
-         $js .= ",disabled: true";
-      }
-
-      $js .= ",timeFormat: 'HH:mm'";
-      $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
-      $js .= "});";
+      $js = <<<JS
+      $(function() {
+         $("#showtime{$p['rand']}").flatpickr({
+            dateFormat: 'H:i:S',
+            wrap: true, // permits to have controls in addition to input (like clear or open date buttons)
+            enableTime: true,
+            noCalendar: true, // only time picker
+            enableSeconds: true,
+            locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
+            minuteIncrement: "{$p['timestep']}"
+         });
+      });
+JS;
       $output .= Html::scriptBlock($js);
 
       if ($p['display']) {
@@ -6338,6 +6260,17 @@ JAVASCRIPT;
          case 'planning':
             $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
             break;
+         case 'flatpickr':
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/flatpickr.js';
+            if (isset($_SESSION['glpilanguage'])) {
+               $filename = "public/lib/flatpickr/l10n/".
+                  strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]).".js";
+               if (file_exists(GLPI_ROOT . '/' . $filename)) {
+                  $_SESSION['glpi_js_toload'][$name][] = $filename;
+                  break;
+               }
+            }
+            break;
          case 'fullcalendar':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fullcalendar.js';
             if (isset($_SESSION['glpilanguage'])) {
@@ -6450,15 +6383,6 @@ JAVASCRIPT;
 
       //locales for js libraries
       if (isset($_SESSION['glpilanguage'])) {
-         // jquery ui
-         echo Html::script("public/lib/jquery-ui/i18n/datepicker-".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
-         $filename = "public/lib/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
-         if (file_exists(GLPI_ROOT.'/'.$filename)) {
-            echo Html::script($filename);
-         }
-
          // select2
          $filename = "public/lib/select2/js/i18n/".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";

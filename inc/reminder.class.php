@@ -610,13 +610,11 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
          echo __('Begin').'</td><td>';
          Html::showDateTimeField("begin_view_date",
                                  ['value'      => $this->fields["begin_view_date"],
-                                       'timestep'   => 1,
                                        'maybeempty' => true,
                                        'canedit'    => $canedit]);
          echo '</td><td>'.__('End').'</td><td>';
          Html::showDateTimeField("end_view_date",
                                  ['value'      => $this->fields["end_view_date"],
-                                       'timestep'   => 1,
                                        'maybeempty' => true,
                                        'canedit'    => $canedit]);
          echo '</td></tr></table>';

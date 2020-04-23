@@ -4409,7 +4409,6 @@ class Ticket extends CommonITILObject {
 
       if ($canupdate) {
          Html::showDateTimeField("date", ['value'      => $date,
-                                          'timestep'   => 1,
                                           'maybeempty' => false,
                                           'required'   => ($tt->isMandatoryField('date') && !$ID)]);
       } else {
@@ -4512,7 +4511,6 @@ class Ticket extends CommonITILObject {
          echo "<th width='$colsize1%'>".__('Resolution date')."</th>";
          echo "<td width='$colsize2%'>";
          Html::showDateTimeField("solvedate", ['value'      => $this->fields["solvedate"],
-                                                    'timestep'   => 1,
                                                     'maybeempty' => false,
                                                     'canedit'    => $canupdate]);
          echo "</td>";
@@ -4520,7 +4518,6 @@ class Ticket extends CommonITILObject {
             echo "<th width='$colsize3%'>".__('Close date')."</th>";
             echo "<td width='$colsize4%'>";
             Html::showDateTimeField("closedate", ['value'      => $this->fields["closedate"],
-                                                       'timestep'   => 1,
                                                        'maybeempty' => false,
                                                        'canedit'    => $canupdate]);
             echo "</td>";
@@ -6804,19 +6801,19 @@ class Ticket extends CommonITILObject {
 
       if ($sla->getFromDB($this->fields['slas_id_tto'])) {
          $sla_tto_link = "<a href='".$sla->getLinkURL()."'>
-                          <i class='far fa-clock slt' title='".$sla->getName()."'></i></a>";
+                          <i class='fas fa-stopwatch slt' title='".$sla->getName()."'></i></a>";
       }
       if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
          $sla_ttr_link = "<a href='".$sla->getLinkURL()."'>
-                          <i class='far fa-clock slt' title='".$sla->getName()."'></i></a>";
+                          <i class='fas fa-stopwatch slt' title='".$sla->getName()."'></i></a>";
       }
       if ($ola->getFromDB($this->fields['olas_id_tto'])) {
          $ola_tto_link = "<a href='".$ola->getLinkURL()."'>
-                          <i class='far fa-clock slt' title='".$ola->getName()."'></i></a>";
+                          <i class='fas fa-stopwatch slt' title='".$ola->getName()."'></i></a>";
       }
       if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
          $ola_ttr_link = "<a href='".$ola->getLinkURL()."'>
-                          <i class='far fa-clock slt' title='".$ola->getName()."'></i></a>";
+                          <i class='fas fa-stopwatch slt' title='".$ola->getName()."'></i></a>";
       }
 
       $dates = [

@@ -229,12 +229,19 @@ var GLPIPlanning  = {
                loaded = true;
             }
 
+            // attach button (planning and refresh) in planning header
+            $('#'+GLPIPlanning.dom_id+' .fc-toolbar .fc-center h2')
+               .after(
+                  $('<i id="refresh_planning" class="fa fa-sync pointer"></i>')
+               ).after(
+                  $('<div id="planning_datepicker"><a data-toggle><i class="far fa-calendar-alt fa-lg pointer"></i></a>')
+               );
+
             // specific process for full list
             if (view.type == 'listFull') {
                // hide datepick on full list (which have virtually no limit)
-               $('#planning_datepicker')
-                  .datepicker('destroy')
-                  .hide();
+               $('#planning_datepicker')[0]._flatpickr.destroy();
+               $('#planning_datepicker').hide();
 
                // hide control buttons
                $('#planning .fc-left .fc-button-group').hide();
@@ -522,14 +529,6 @@ var GLPIPlanning  = {
 
       //window.calendar = calendar; // Required as object is not accessible by forms callback
       GLPIPlanning.calendar.render();
-
-      // attach button (planning and refresh) in planning header
-      $('#'+GLPIPlanning.dom_id+' .fc-toolbar .fc-center h2')
-         .after(
-            $('<i id="refresh_planning" class="fa fa-sync pointer"></i>')
-         ).after(
-            $('<input type="hidden" id="planning_datepicker">')
-         );
 
       $('#refresh_planning').click(function() {
          GLPIPlanning.refresh();
@@ -824,20 +823,12 @@ var GLPIPlanning  = {
 
    // datepicker for planning
    initFCDatePicker: function(currentDate) {
-      $('#planning_datepicker').datepicker({
-         changeMonth:     true,
-         changeYear:      true,
-         numberOfMonths:  3,
-         showOn:          'button',
-         buttonText:      '<i class="far fa-calendar-alt"></i>',
-         dateFormat:      'DD, d MM, yy',
-         onSelect: function() {
-            var selected_date = $(this).datepicker('getDate');
-            GLPIPlanning.calendar.gotoDate(selected_date);
+      $('#planning_datepicker').flatpickr({
+         defaultDate: currentDate,
+         onChange: function(selected_date) {
+            GLPIPlanning.calendar.gotoDate(selected_date[0]);
          }
-      }).next('.ui-datepicker-trigger').addClass('pointer');
-
-      $('#planning_datepicker').datepicker('setDate', currentDate);
+      });
    },
 
    // set planning height

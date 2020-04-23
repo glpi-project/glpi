@@ -263,7 +263,7 @@ abstract class LevelAgreement extends CommonDBChild {
             echo "</td>";
             echo "<td>";
             echo $tt->getBeginHiddenFieldText($laField);
-            echo "<i class='far fa-clock slt'></i>";
+            echo "<i class='fas fa-stopwatch slt'></i>";
             echo Dropdown::getDropdownName(static::getTable(),
                                            $ticket->fields[$laField])."&nbsp;";
             echo Html::hidden($laField, ['value' => $ticket->fields[$laField]]);
@@ -325,7 +325,6 @@ abstract class LevelAgreement extends CommonDBChild {
             echo "<span class='assign_la'>";
             if ($canupdate) {
                Html::showDateTimeField($dateField, ['value'      => $ticket->fields[$dateField],
-                                                    'timestep'   => 1,
                                                     'maybeempty' => true]);
             } else {
                echo Html::convDateTime($ticket->fields[$dateField]);
@@ -342,10 +341,10 @@ abstract class LevelAgreement extends CommonDBChild {
                echo "<a ".Html::addConfirmationOnAction($this->getAddConfirmation(),
                         "cleanhide('la_action$type$rand');cleandisplay('la_choice$type$rand');").
                     " class='pointer' title='".static::getTypeName()."'>
-                    <i class='far fa-clock slt'></i></a>";
+                    <i class='fas fa-stopwatch slt'></i></a>";
                echo "</span>";
                echo "<span id='la_choice$type$rand' style='display:none' class='assign_la'>";
-               echo "<i class='far fa-clock slt'></i>";
+               echo "<i class='fas fa-stopwatch slt'></i>";
                echo "<span class='b'>".static::getTypeName()."</span>&nbsp;";
                static::dropdown([
                   'name'      => $laField,
@@ -362,7 +361,6 @@ abstract class LevelAgreement extends CommonDBChild {
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue($dateField);
          Html::showDateTimeField($dateField, ['value'      => $ticket->fields[$dateField],
-                                              'timestep'   => 1,
                                               'maybeempty' => false,
                                               'canedit'    => $canupdate,
                                               'required'   => $tt->isMandatoryField($dateField)]);
