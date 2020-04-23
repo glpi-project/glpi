@@ -856,20 +856,107 @@ class Impact extends CommonGLPI {
 
       // Search for items
       $filter = strtolower($filter);
+      $join = [];
+      if ($itemtype == 'KnowbaseItem') {
+         $is_public_faq_context = !Session::getLoginUserID() && $CFG_GLPI["use_public_faq"];
+         $has_session_groups = isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]);
+         $has_active_profile = isset($_SESSION["glpiactiveprofile"])
+                               && isset($_SESSION["glpiactiveprofile"]['id']);
+         $has_active_entity = isset($_SESSION["glpiactiveentities"])
+                              && count($_SESSION["glpiactiveentities"]);
+         $forceall = true;
+         $join = [
+            'glpi_knowbaseitems_users' => [
+               'ON' => [
+                  'glpi_knowbaseitems_users' => 'knowbaseitems_id',
+                  'glpi_knowbaseitems'       => 'id'
+               ]
+            ]
+         ];
+         if ($forceall || $has_session_groups) {
+            $join['glpi_groups_knowbaseitems'] = [
+               'ON' => [
+                  'glpi_groups_knowbaseitems' => 'knowbaseitems_id',
+                  'glpi_knowbaseitems'       => 'id'
+               ]
+            ];
+         }
+         if ($forceall || $has_active_profile) {
+            $join['glpi_knowbaseitems_profiles'] = [
+               'ON' => [
+                  'glpi_knowbaseitems_profiles' => 'knowbaseitems_id',
+                  'glpi_knowbaseitems'       => 'id'
+               ]
+            ];
+         }
+         if ($forceall || $has_active_entity || $is_public_faq_context) {
+            $join['glpi_entities_knowbaseitems'] = [
+               'ON' => [
+                  'glpi_entities_knowbaseitems' => 'knowbaseitems_id',
+                  'glpi_knowbaseitems'       => 'id'
+               ]
+            ];
+         }
+         //entities restrict
+         // Groups
+         if ($forceall || $has_session_groups) {
+            if (Session::getLoginUserID()) {
+               $restrict = getEntitiesRestrictCriteria('glpi_groups_knowbaseitems', '', '', true, true);
+               $entities_restrict['OR'][] = [
+                  'glpi_groups_knowbaseitems.groups_id' => count($_SESSION["glpigroups"])
+                     ? $_SESSION["glpigroups"]
+                     : [-1],
+                  'OR' => [
+                             'glpi_groups_knowbaseitems.entities_id' => ['<', '0'],
+                          ] + $restrict
+               ];
+            }
+         }
+
+         // Profiles
+         if ($forceall || $has_active_profile) {
+            if (Session::getLoginUserID()) {
+               $entities_restrict['OR'][] = [
+                  'glpi_knowbaseitems_profiles.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
+                  'OR' => [
+                     'glpi_knowbaseitems_profiles.entities_id' => ['<', '0'],
+                     getEntitiesRestrictCriteria('glpi_knowbaseitems_profiles', '', '', true, true)
+                  ]
+               ];
+            }
+         }
+
+         // Entities
+         if ($forceall || $has_active_entity) {
+            if (Session::getLoginUserID()) {
+               $restrict = getEntitiesRestrictCriteria('glpi_entities_knowbaseitems', '', '', true, true);
+               if (count($restrict)) {
+                  $entities_restrict['OR'] = $entities_restrict['OR'] + $restrict;
+               } else {
+                  $entities_restrict['glpi_entities_knowbaseitems.entities_id'] = null;
+               }
+            }
+         }
+
+         //         $entities_restrict = getEntitiesRestrictCriteria('glpi_entities_knowbaseitems', '', '', true, true);
+      } else {
+         $entities_restrict = getEntitiesRestrictCriteria($itemtype::getTable());
+      }
       $base_request = [
          'FROM'   => $itemtype::getTable(),
+         'LEFT JOIN' => $join,
          'WHERE'  => [
-            'RAW' => [
-               'LOWER(' . DBmysql::quoteName('name') . ')' => ['LIKE', "%$filter%"]
-            ],
-            'NOT' => [
-               'id' => $used
-            ],
-         ] + getEntitiesRestrictCriteria($itemtype::getTable()),
+                        'RAW' => [
+                           'LOWER(' . DBmysql::quoteName('name') . ')' => ['LIKE', "%$filter%"]
+                        ],
+                        'NOT' => [
+                           $itemtype::getTable().'.id' => $used
+                        ],
+                     ] + $entities_restrict,
       ];
 
       $select = [
-         'SELECT' => ['id', 'name'],
+         'SELECT' => [$itemtype::getTable().'.id', $itemtype::getTable().'.name'],
       ];
       $limit = [
          'START' => $page * 20,
