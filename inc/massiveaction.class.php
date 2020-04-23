@@ -1155,8 +1155,7 @@ class MassiveAction {
             $input     = $ma->POST;
             if (isset($searchopt[$index])) {
                /// Infocoms case
-               if (!isPluginItemType($item->getType())
-                   && Search::isInfocomOption($item->getType(), $index)) {
+               if (Search::isInfocomOption($item->getType(), $index)) {
 
                   $ic               = new Infocom();
                   $link_entity_type = -1;
