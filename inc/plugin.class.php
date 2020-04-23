@@ -1116,6 +1116,7 @@ class Plugin extends CommonDBTM {
       }
 
       $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
+      $all_types[] = 'networkport_instantiations';
 
       $mapping = [
          'doc_types'       => 'document_types',
@@ -1125,6 +1126,13 @@ class Plugin extends CommonDBTM {
 
       foreach ($mapping as $orig => $fixed) {
          if (isset($attrib[$orig])) {
+            \Toolbox::deprecated(
+               sprintf(
+                  '%1$s type is deprecated, use %2$s instead.',
+                  $orig,
+                  $fixed
+               )
+            );
             $attrib[$fixed] = $attrib[$orig];
             unset($attrib[$orig]);
          }
