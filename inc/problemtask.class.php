@@ -46,7 +46,7 @@ class ProblemTask extends CommonITILTask {
 
    static function canCreate() {
       return Session::haveRight('problem', UPDATE)
-          || Session::haveRight(self::$rightname, parent::ADDALLITEM);
+         || Session::haveRight(self::$rightname, parent::ADDALLITEM);
    }
 
 
@@ -57,7 +57,7 @@ class ProblemTask extends CommonITILTask {
 
    static function canUpdate() {
       return Session::haveRight('problem', UPDATE)
-          || Session::haveRight(self::$rightname, parent::UPDATEALL);
+         || Session::haveRight(self::$rightname, parent::UPDATEALL);
    }
 
 
@@ -80,7 +80,7 @@ class ProblemTask extends CommonITILTask {
     * Does current user have right to show the current task?
     *
     * @return boolean
-   **/
+    **/
    function canViewItem() {
       return parent::canReadITILItem();
    }
@@ -90,7 +90,7 @@ class ProblemTask extends CommonITILTask {
     * Does current user have right to create the current task?
     *
     * @return boolean
-   **/
+    **/
    function canCreateItem() {
       if (!parent::canReadITILItem()) {
          return false;
@@ -99,12 +99,12 @@ class ProblemTask extends CommonITILTask {
       $problem = new Problem();
       if ($problem->getFromDB($this->fields['problems_id'])) {
          return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
-                 || Session::haveRight('problem', UPDATE)
-                 || (Session::haveRight('problem', Problem::READMY)
-                     && ($problem->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                         || (isset($_SESSION["glpigroups"])
-                             && $problem->haveAGroup(CommonITILActor::ASSIGN,
-                                                     $_SESSION['glpigroups'])))));
+            || Session::haveRight('problem', UPDATE)
+            || (Session::haveRight('problem', Problem::READMY)
+               && ($problem->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+                  || (isset($_SESSION["glpigroups"])
+                     && $problem->haveAGroup(CommonITILActor::ASSIGN,
+                        $_SESSION['glpigroups'])))));
       }
       return false;
    }
@@ -114,7 +114,7 @@ class ProblemTask extends CommonITILTask {
     * Does current user have right to update the current task?
     *
     * @return boolean
-   **/
+    **/
    function canUpdateItem() {
 
       if (!parent::canReadITILItem()) {
@@ -122,8 +122,8 @@ class ProblemTask extends CommonITILTask {
       }
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('problem', UPDATE)
-          && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
+         && !Session::haveRight('problem', UPDATE)
+         && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
          return false;
       }
 
@@ -135,7 +135,7 @@ class ProblemTask extends CommonITILTask {
     * Does current user have right to purge the current task?
     *
     * @return boolean
-   **/
+    **/
    function canPurgeItem() {
       return $this->canUpdateItem();
    }
@@ -151,7 +151,7 @@ class ProblemTask extends CommonITILTask {
     *    - end Date
     *
     * @return array of planning item
-   **/
+    **/
    static function populatePlanning($options = []) :array {
       return parent::genericPopulatePlanning(__CLASS__, $options);
    }
@@ -164,11 +164,11 @@ class ProblemTask extends CommonITILTask {
     * @param integer         $who       ID of the user (0 if all)
     * @param string          $type      position of the item in the time block (in, through, begin or end)
     * @param integer|boolean $complete  complete display (more details)
-    *
+    * @param array           $options   allow to have planning typeview (more details)
     * @return string
     */
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
-      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options) {
+      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete, $options);
    }
 
    /**
@@ -181,7 +181,7 @@ class ProblemTask extends CommonITILTask {
     *    - end Date
     *
     * @return array of planning item
-   **/
+    **/
    static function populateNotPlanned($options = []) :array {
       return parent::genericPopulateNotPlanned(__CLASS__, $options);
    }

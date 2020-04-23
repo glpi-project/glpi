@@ -46,19 +46,19 @@ class TicketTask extends CommonITILTask {
 
    static function canCreate() {
       return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
-              || Session::haveRight('ticket', Ticket::OWN));
+         || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
    static function canView() {
       return (Session::haveRightsOr(self::$rightname, [parent::SEEPUBLIC, parent::SEEPRIVATE])
-              || Session::haveRight('ticket', Ticket::OWN));
+         || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
    static function canUpdate() {
       return (Session::haveRight(self::$rightname, parent::UPDATEALL)
-              || Session::haveRight('ticket', Ticket::OWN));
+         || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
@@ -76,7 +76,7 @@ class TicketTask extends CommonITILTask {
     * Does current user have right to show the current task?
     *
     * @return boolean
-   **/
+    **/
    function canViewItem() {
 
       if (!parent::canReadITILItem()) {
@@ -88,19 +88,19 @@ class TicketTask extends CommonITILTask {
       }
 
       if (!$this->fields['is_private']
-          && Session::haveRight(self::$rightname, parent::SEEPUBLIC)) {
+         && Session::haveRight(self::$rightname, parent::SEEPUBLIC)) {
          return true;
       }
 
       // see task created or affected to me
       if (($this->fields["users_id"] === Session::getLoginUserID())
-          || ($this->fields["users_id_tech"] === Session::getLoginUserID())) {
+         || ($this->fields["users_id_tech"] === Session::getLoginUserID())) {
          return true;
       }
 
       if ($this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
-          && isset($_SESSION["glpigroups"])
-          && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])) {
+         && isset($_SESSION["glpigroups"])
+         && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])) {
          return true;
       }
 
@@ -112,7 +112,7 @@ class TicketTask extends CommonITILTask {
     * Does current user have right to create the current task?
     *
     * @return boolean
-   **/
+    **/
    function canCreateItem() {
 
       if (!parent::canReadITILItem()) {
@@ -121,13 +121,13 @@ class TicketTask extends CommonITILTask {
 
       $ticket = new Ticket();
       if ($ticket->getFromDB($this->fields['tickets_id'])
-          // No validation for closed tickets
-          && !in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
+         // No validation for closed tickets
+         && !in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
          return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
-                 || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                 || (isset($_SESSION["glpigroups"])
-                     && $ticket->haveAGroup(CommonITILActor::ASSIGN,
-                                            $_SESSION['glpigroups'])));
+            || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+            || (isset($_SESSION["glpigroups"])
+               && $ticket->haveAGroup(CommonITILActor::ASSIGN,
+                  $_SESSION['glpigroups'])));
       }
       return false;
    }
@@ -137,7 +137,7 @@ class TicketTask extends CommonITILTask {
     * Does current user have right to update the current task?
     *
     * @return boolean
-   **/
+    **/
    function canUpdateItem() {
 
       if (!parent::canReadITILItem()) {
@@ -151,7 +151,7 @@ class TicketTask extends CommonITILTask {
       }
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
+         && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
          return false;
       }
 
@@ -163,7 +163,7 @@ class TicketTask extends CommonITILTask {
     * Does current user have right to purge the current task?
     *
     * @return boolean
-   **/
+    **/
    function canPurgeItem() {
       $ticket = new Ticket();
       if ($ticket->getFromDB($this->fields['tickets_id'])
@@ -185,7 +185,7 @@ class TicketTask extends CommonITILTask {
     *    - end          Date
     *
     * @return array of planning item
-   **/
+    **/
    static function populatePlanning($options = []) :array {
       return parent::genericPopulatePlanning(__CLASS__, $options);
    }
@@ -201,7 +201,7 @@ class TicketTask extends CommonITILTask {
     *    - end          Date
     *
     * @return array of planning item
-   **/
+    **/
    static function populateNotPlanned($options = []) :array {
       return parent::genericPopulateNotPlanned(__CLASS__, $options);
    }
@@ -214,11 +214,11 @@ class TicketTask extends CommonITILTask {
     * @param integer         $who       ID of the user (0 if all)
     * @param string          $type      position of the item in the time block (in, through, begin or end)
     * @param integer|boolean $complete  complete display (more details)
-    *
+    * @param array           $options   allow to have planning typeview (more details)
     * @return string
     */
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
-      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options) {
+      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete, $options);
    }
 
 
@@ -252,7 +252,7 @@ class TicketTask extends CommonITILTask {
     * @since 0.90
     *
     * @see CommonDBTM::showFormButtons()
-   **/
+    **/
    function showFormButtons($options = []) {
       // for single object like config
       $ID = 1;
@@ -283,9 +283,9 @@ class TicketTask extends CommonITILTask {
          echo Ticket::getSplittedSubmitButtonHtml($this->fields['tickets_id'], 'add');
       } else {
          if ($params['candel']
-               // no trashbin in tickettask
-          //   && !$this->can($ID, DELETE)
-             && !$this->can($ID, PURGE)) {
+            // no trashbin in tickettask
+            //   && !$this->can($ID, DELETE)
+            && !$this->can($ID, PURGE)) {
             $params['candel'] = false;
          }
 
@@ -298,8 +298,8 @@ class TicketTask extends CommonITILTask {
             echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
             if ($this->can($ID, PURGE)) {
                echo Html::submit(_x('button', 'Delete permanently'),
-                                 ['name'    => 'purge',
-                                       'confirm' => __('Confirm the final deletion?')]);
+                  ['name'    => 'purge',
+                     'confirm' => __('Confirm the final deletion?')]);
             }
          }
 
