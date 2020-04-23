@@ -1115,7 +1115,7 @@ class Plugin extends CommonDBTM {
          return false;
       }
 
-      $all_types = preg_grep('/.*_types/', array_keys($CFG_GLPI));
+      $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
 
       $mapping = [
          'doc_types'       => 'document_types',
