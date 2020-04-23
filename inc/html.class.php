@@ -2759,18 +2759,20 @@ JAVASCRIPT;
    static function showDateField($name, $options = []) {
       global $CFG_GLPI;
 
-      $p['value']      = '';
-      $p['maybeempty'] = true;
-      $p['canedit']    = true;
-      $p['min']        = '';
-      $p['max']        = '';
-      $p['showyear']   = false;
-      $p['display']    = true;
-      $p['rand']       = mt_rand();
-      $p['yearrange']  = '';
-      $p['multiple']   = false;
-      $p['size']       = 10;
-      $p['required']   = false;
+      $p = [
+         'value'      => '',
+         'maybeempty' => true,
+         'canedit'    => true,
+         'min'        => '',
+         'max'        => '',
+         'showyear'   => false,
+         'display'    => true,
+         'rand'       => mt_rand(),
+         'yearrange'  => '',
+         'multiple'   => false,
+         'size'       => 10,
+         'required'   => false,
+      ];
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -2906,18 +2908,20 @@ JS;
    static function showDateTimeField($name, $options = []) {
       global $CFG_GLPI;
 
-      $p['value']      = '';
-      $p['maybeempty'] = true;
-      $p['canedit']    = true;
-      $p['mindate']    = '';
-      $p['maxdate']    = '';
-      $p['mintime']    = '';
-      $p['maxtime']    = '';
-      $p['timestep']   = -1;
-      $p['showyear']   = true;
-      $p['display']    = true;
-      $p['rand']       = mt_rand();
-      $p['required']   = false;
+      $p = [
+         'value'      => '',
+         'maybeempty' => true,
+         'canedit'    => true,
+         'mindate'    => '',
+         'maxdate'    => '',
+         'mintime'    => '',
+         'maxtime'    => '',
+         'timestep'   => -1,
+         'showyear'   => true,
+         'display'    => true,
+         'rand'       => mt_rand(),
+         'required'   => false,
+      ];
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3031,15 +3035,17 @@ JS;
    public static function showTimeField($name, $options = []) {
       global $CFG_GLPI;
 
-      $p['value']      = '';
-      $p['maybeempty'] = true;
-      $p['canedit']    = true;
-      $p['mintime']    = '';
-      $p['maxtime']    = '';
-      $p['timestep']   = -1;
-      $p['display']    = true;
-      $p['rand']       = mt_rand();
-      $p['required']   = false;
+      $p = [
+         'value'      => '',
+         'maybeempty' => true,
+         'canedit'    => true,
+         'mintime'    => '',
+         'maxtime'    => '',
+         'timestep'   => -1,
+         'display'    => true,
+         'rand'       => mt_rand(),
+         'required'   => false,
+      ];
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
