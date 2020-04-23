@@ -3102,8 +3102,6 @@ JS;
          </div>
 HTML;
 
-      $date_format = Toolbox::getDateFormat('js')." H:i:S";
-
       $js = <<<JS
       $(function() {
          $("#showtime{$p['rand']}").flatpickr({
