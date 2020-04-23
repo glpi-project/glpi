@@ -451,7 +451,7 @@ $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', '
                                        'Printer', 'Software', 'Cluster'];
 
 $dashboard_libs = [
-   'dashboard', 'colorpicker', 'gridstack',
+   'dashboard', 'gridstack',
    'charts', 'clipboard'
 ];
 
@@ -465,33 +465,29 @@ $CFG_GLPI['javascript'] = [
    ],
    'assets'    => [
       'dashboard' => $dashboard_libs,
-      'rack'      => ['colorpicker', 'gridstack', 'rack']
+      'rack'      => ['gridstack', 'rack']
    ],
    'helpdesk'  => [
       'dashboard' => $dashboard_libs,
-      'planning'  => ['clipboard', 'fullcalendar', 'colorpicker', 'tinymce', 'planning'],
+      'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
       'ticket'    => array_merge(['rateit', 'tinymce', 'photoswipe'], $dashboard_libs),
       'problem'   => ['tinymce', 'photoswipe'],
       'change'    => ['tinymce', 'photoswipe'],
       'stat'      => ['charts']
    ],
    'tools'     => [
-      'project'      => ['gantt', 'kanban', 'colorpicker'],
+      'project'      => ['gantt', 'kanban'],
       'knowbaseitem' => ['tinymce', 'jstree'],
       'reminder'     => ['tinymce'],
-      'impact'       => ['colorpicker']
    ],
    'management' => [
       'datacenter' => [
-         'dcroom' => ['colorpicker', 'gridstack', 'rack']
+         'dcroom' => ['gridstack', 'rack']
       ]
    ],
    'config' => [
-      'config' => ['colorpicker'],
       'commondropdown'  => [
          'ITILFollowupTemplate'  => ['tinymce'],
-         'PlanningEventCategory' => ['colorpicker'],
-         'ProjectState'          => ['colorpicker'],
          'SolutionTemplate'      => ['tinymce'],
       ],
       'notification' => [
@@ -501,9 +497,9 @@ $CFG_GLPI['javascript'] = [
          'marketplace' => ['marketplace']
       ]
    ],
-   'admin'        => ['colorpicker', 'clipboard'],
-   'preference'   => ['colorpicker', 'clipboard'],
-   'self-service' => ['colorpicker', 'tinymce']
+   'admin'        => ['clipboard'],
+   'preference'   => ['clipboard'],
+   'self-service' => ['tinymce']
 ];
 
 //Maximum time, in miliseconds a saved search should not exeed
