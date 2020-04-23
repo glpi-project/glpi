@@ -1641,7 +1641,7 @@ JAVASCRIPT;
 
       // If in modal : display popHeader
       if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
-         return self::popHeader($title, $url);
+         return self::popHeader($title, $url, false, $sector, $item, $option);
       }
       // Print a nice HTML-head for every page
       if ($HEADER_LOADED) {
@@ -1723,7 +1723,7 @@ JAVASCRIPT;
    static function footer($keepDB = false) {
       global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
 
-      // If in modal : display popHeader
+      // If in modal : display popFooter
       if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
          return self::popFooter();
       }

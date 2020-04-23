@@ -289,6 +289,7 @@ $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmwar
 
 $CFG_GLPI['itemdevices'] = [];
 foreach ($CFG_GLPI['device_types'] as $dtype) {
+   $CFG_GLPI['location_types'][] = 'Item_' . $dtype;
    $CFG_GLPI["itemdevices"][] = 'Item_' . $dtype;
 }
 

@@ -548,7 +548,7 @@ class User extends CommonDBTM {
          return false;
       }
 
-      if (!Auth::isValidLogin($input['name'])) {
+      if (!Auth::isValidLogin(stripslashes($input['name']))) {
          Session::addMessageAfterRedirect(__('The login is not valid. Unable to add the user.'),
                                           false, ERROR);
          return false;
@@ -2861,7 +2861,7 @@ JAVASCRIPT;
                                              false, ERROR);
          }
 
-         if (!Auth::isValidLogin($this->input['name'])) {
+         if (!Auth::isValidLogin(stripslashes($this->input['name']))) {
             $this->fields['name'] = $this->oldvalues['name'];
             unset($this->updates[$key]);
             unset($this->oldvalues['name']);

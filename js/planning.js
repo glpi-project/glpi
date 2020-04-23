@@ -186,7 +186,11 @@ var GLPIPlanning  = {
             if (!disable_qtip) {
                // detect ideal position
                var qtip_position = {
-                  viewport: 'auto'
+                   target: 'mouse',
+                  adjust: {
+                     mouse: false
+                  },
+                  viewport: $(window)
                };
                if (view.type.indexOf('list') >= 0) {
                   // on central, we want the tooltip on the anchor
