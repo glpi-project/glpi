@@ -1114,30 +1114,33 @@ class Plugin extends CommonDBTM {
       if (!$plug) {
          return false;
       }
-      $plugin = strtolower($plug['plugin']);
 
-      if (isset($attrib['doc_types'])) {
-         $attrib['document_types'] = $attrib['doc_types'];
-         unset($attrib['doc_types']);
-      }
-      if (isset($attrib['helpdesk_types'])) {
-         $attrib['ticket_types'] = $attrib['helpdesk_types'];
-         unset($attrib['helpdesk_types']);
-      }
-      if (isset($attrib['netport_types'])) {
-         $attrib['networkport_types'] = $attrib['netport_types'];
-         unset($attrib['netport_types']);
+      $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
+      $all_types[] = 'networkport_instantiations';
+
+      $mapping = [
+         'doc_types'       => 'document_types',
+         'helpdesk_types'  => 'ticket_types',
+         'netport_types'   => 'networkport_types'
+      ];
+
+      foreach ($mapping as $orig => $fixed) {
+         if (isset($attrib[$orig])) {
+            \Toolbox::deprecated(
+               sprintf(
+                  '%1$s type is deprecated, use %2$s instead.',
+                  $orig,
+                  $fixed
+               )
+            );
+            $attrib[$fixed] = $attrib[$orig];
+            unset($attrib[$orig]);
+         }
       }
 
-      foreach (['contract_types', 'directconnect_types', 'document_types',
-                     'helpdesk_visible_types', 'infocom_types', 'linkgroup_tech_types',
-                     'linkgroup_types', 'linkuser_tech_types', 'linkuser_types', 'location_types',
-                     'networkport_instantiations', 'networkport_types',
-                     'notificationtemplates_types', 'planning_types', 'reservation_types',
-                     'rulecollections_types', 'systeminformations_types', 'ticket_types',
-                     'unicity_types', 'link_types', 'kb_types'] as $att) {
-
-         if (isset($attrib[$att]) && $attrib[$att]) {
+      $blacklist = ['device_types'];
+      foreach ($all_types as $att) {
+         if (!in_array($att, $blacklist) && isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);
             unset($attrib[$att]);
          }
@@ -1166,12 +1169,6 @@ class Plugin extends CommonDBTM {
          CommonDBTM::addForwardEntity($attrib['forwardentityfrom'], $itemtype);
       }
 
-      // Use it for plugin debug
-      // if (count($attrib)) {
-      //    foreach ($attrib as $key => $val) {
-      //       Toolbox::logInFile('debug',"Attribut $key used by $itemtype no more used for plugins\n");
-      //    }
-      // }
       return true;
    }
 
