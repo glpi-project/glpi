@@ -48,7 +48,7 @@ class Plugins {
    protected $httpClient  = null;
    protected $last_error  = "";
 
-   public    const COL_PAGE = 12;
+   public    const COL_PAGE = 200;
    protected const TIMEOUT  = 5;
 
    static $plugins = [];
@@ -255,6 +255,7 @@ class Plugins {
     * @param string $tag_filter filter the plugin list by given tag
     * @param string $string_filter filter the plugin list by given string
     * @param int    $page which page to query
+    * @param int    $nb_per_page how manyu per page we want
     * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
     *
     * @return array full collection
@@ -264,11 +265,12 @@ class Plugins {
       string $tag_filter = "",
       string $string_filter = "",
       int $page = 1,
+      int $nb_per_page = 15,
       string $sort = 'sort-alpha-asc'
    ) {
       $plugins = $this->getAllPlugins($force_refresh, $tag_filter, $string_filter, $sort);
 
-      $plugins_page = array_splice($plugins, max($page - 1, 0) * self::COL_PAGE, self::COL_PAGE);
+      $plugins_page = array_splice($plugins, max($page - 1, 0) * $nb_per_page, $nb_per_page);
       return $plugins_page;
    }
 

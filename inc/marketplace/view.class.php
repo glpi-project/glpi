@@ -52,6 +52,8 @@ class View extends CommonGLPI {
    public $get_item_to_display_tab = true;
 
 
+   public const COL_PAGE = 12;
+
    /**
     * singleton return the current api instance
     *
@@ -245,7 +247,14 @@ class View extends CommonGLPI {
       }
 
       $api     = self::getAPI();
-      $plugins = $api->getPaginatedPlugins($force, $tag_filter, $string_filter, $page, $sort);
+      $plugins = $api->getPaginatedPlugins(
+         $force,
+         $tag_filter,
+         $string_filter,
+         $page,
+         self::COL_PAGE,
+         $sort
+      );
 
       if (strlen($string_filter) > 0) {
          $nb_plugins = count($plugins);
@@ -820,11 +829,11 @@ HTML;
     * @return string the pagination html
     */
    static function getPaginationHtml(int $current_page = 1, int $total = 1, bool $only_li = false): string {
-      if ($total <= PluginsApi::COL_PAGE) {
+      if ($total <= self::COL_PAGE) {
          return "";
       }
 
-      $nb_pages = ceil($total / PluginsApi::COL_PAGE);
+      $nb_pages = ceil($total / self::COL_PAGE);
 
       $prev = max($current_page - 1, 1);
       $next = min($current_page + 1, $nb_pages);
