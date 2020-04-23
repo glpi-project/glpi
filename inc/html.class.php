@@ -3051,89 +3051,66 @@ JS;
          $p['timestep'] = $CFG_GLPI['time_step'];
       }
 
-      $minHour   = 0;
-      $maxHour   = 23;
-      $minMinute = 0;
-      $maxMinute = 59;
-
       $hour_value = '';
       if (!empty($p['value'])) {
          $hour_value = $p['value'];
       }
 
       if (!empty($p['mintime'])) {
-         list($minHour, $minMinute) = explode(':', $p['mintime']);
-         $minMinute = 0;
-
          // Check time in interval
          if (!empty($hour_value) && ($hour_value < $p['mintime'])) {
             $hour_value = $p['mintime'];
          }
       }
-
       if (!empty($p['maxtime'])) {
-         list($maxHour, $maxMinute) = explode(':', $p['maxtime']);
-         $maxMinute = 59;
-
          // Check time in interval
          if (!empty($hour_value) && ($hour_value > $p['maxtime'])) {
             $hour_value = $p['maxtime'];
          }
       }
-
       // reconstruct value to be valid
       if (!empty($hour_value)) {
          $p['value'] = $hour_value;
       }
 
-      $output = "<span class='no-wrap'>";
-      $output .= "<input id='showtime".$p['rand']."' type='text' name='_$name' value='".
-                   trim($p['value'])."'";
-      if ($p['required'] == true) {
-         $output .= " required='required'";
-      }
-      $output .= ">";
-      $output .= Html::hidden($name, ['value' => $p['value'], 'id' => "hiddentime".$p['rand']]);
-      if ($p['maybeempty'] && $p['canedit']) {
-         $output .= "<span class='fa fa-times-circle pointer' title='".__s('Clear').
-                      "' id='resettime".$p['rand']."'>" .
-                      "<span class='sr-only'>" . __('Clear') . "</span></span>";
-      }
-      $output .= "</span>";
+      $required = $p['required'] == true
+         ? " required='required'"
+         : "";
+      $disabled = !$p['canedit']
+         ? " disabled='disabled'"
+         : "";
+      $clear    = $p['maybeempty'] && $p['canedit']
+         ? "<a data-clear  title='".__s('Clear')."'>
+               <i class='fa fa-times-circle pointer'></i>
+            </a>"
+         : "";
 
-      $js = "$(function(){";
-      if ($p['maybeempty'] && $p['canedit']) {
-         $js .= "$('#resettime".$p['rand']."').click(function(){
-                  $('#showtime".$p['rand']."').val('');
-                  $('#hiddentime".$p['rand']."').val('');
-                  });";
-      }
+      $output = <<<HTML
+         <div class="no-wrap flatpickr" id="showtime{$p['rand']}">
+            <input type="text" name="{$name}" value="{$p['value']}"
+                   {$required} {$disabled} data-input>
+            <a class="input-button" data-toggle>
+               <i class="far fa-clock fa-lg pointer"></i>
+            </a>
+            $clear
+         </div>
+HTML;
 
-      $js .= "$( '#showtime".$p['rand']."' ).timepicker({
-         altField: '#hiddentime".$p['rand']."',
-         altFormat: 'yy-mm-dd',
-         altTimeFormat: 'HH:mm:ss',
-         pickerTimeFormat : 'HH:mm',
-         altFieldTimeOnly: false,
-         firstDay: 1,
-         parse: 'loose',
-         showAnim: '',
-         stepMinute: ".$p['timestep'].",
-         showSecond: false,
-         showButtonPanel: true,
-         changeMonth: true,
-         changeYear: true,
-         showOn: 'both',
-         controlType: 'select',
-         buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
+      $date_format = Toolbox::getDateFormat('js')." H:i:S";
 
-      if (!$p['canedit']) {
-         $js .= ",disabled: true";
-      }
-
-      $js .= ",timeFormat: 'HH:mm'";
-      $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
-      $js .= "});";
+      $js = <<<JS
+      $(function() {
+         $("#showtime{$p['rand']}").flatpickr({
+            dateFormat: 'H:i:S',
+            wrap: true, // permits to have controls in addition to input (like clear or open date buttons)
+            enableTime: true,
+            noCalendar: true, // only time picker
+            enableSeconds: true,
+            locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
+            minuteIncrement: "{$p['timestep']}"
+         });
+      });
+JS;
       $output .= Html::scriptBlock($js);
 
       if ($p['display']) {
