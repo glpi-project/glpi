@@ -75,7 +75,7 @@ abstract class ITILTemplateField extends CommonDBChild {
    }
 
 
-   function computeFriendlyName() {
+   protected function computeFriendlyName() {
       $tt_class = static::$itemtype;
       $tt     = new $tt_class;
       $fields = $tt->getAllowedFieldsNames(true);
