@@ -72,14 +72,6 @@ class Item_Devices extends CommonDBRelation {
 
    static public $mustBeAttached_2 = false; // Mandatory to display creation form
 
-   /**
-    * @since 0.85
-    * No READ right for devices and extends CommonDBRelation not CommonDevice
-   **/
-   static function canView() {
-      return true;
-   }
-
    public function computeFriendlyName() {
       $itemtype = static::$itemtype_2;
       if (!empty($this->fields[static::$itemtype_1])) {
