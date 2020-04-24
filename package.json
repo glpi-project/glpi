@@ -54,8 +54,7 @@
         "unorm": "^1.6.0"
     },
     "scripts": {
-        "build": "webpack --config webpack.config.js --mode=production",
-        "build-dev": "webpack --config webpack.config.js --mode=development"
+        "build": "webpack --config webpack.config.js"
     },
     "devDependencies": {
         "acorn": "^7.0.0",
