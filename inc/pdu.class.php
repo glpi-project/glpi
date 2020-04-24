@@ -352,4 +352,13 @@ class PDU extends CommonDBTM {
    static function getIcon() {
       return "fas fa-plug";
    }
+
+   function prepareInputForAdd($input) {
+      if (isset($input["id"]) && ($input["id"] > 0)) {
+         $input["_oldID"] = $input["id"];
+      }
+      unset($input['id']);
+      unset($input['withtemplate']);
+      return $input;
+   }
 }

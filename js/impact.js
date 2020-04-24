@@ -398,8 +398,7 @@ var GLPIImpact = {
             this.setEdgeColors({
                backward: data.oldColor,
             });
-            $(GLPIImpact.selectors.dependsColor).spectrum(
-               "set",
+            $(GLPIImpact.selectors.dependsColor).val(
                GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
             );
             this.updateStyle();
@@ -412,8 +411,7 @@ var GLPIImpact = {
             this.setEdgeColors({
                forward: data.oldColor,
             });
-            $(GLPIImpact.selectors.impactColor).spectrum(
-               "set",
+            $(GLPIImpact.selectors.impactColor).val(
                GLPIImpact.edgeColors[GLPIImpact.FORWARD]
             );
             this.updateStyle();
@@ -426,8 +424,7 @@ var GLPIImpact = {
             this.setEdgeColors({
                both: data.oldColor,
             });
-            $(GLPIImpact.selectors.impactAndDependsColor).spectrum(
-               "set",
+            $(GLPIImpact.selectors.impactAndDependsColor).val(
                GLPIImpact.edgeColors[GLPIImpact.BOTH]
             );
             this.updateStyle();
@@ -631,8 +628,7 @@ var GLPIImpact = {
             this.setEdgeColors({
                backward: data.newColor,
             });
-            $(GLPIImpact.selectors.dependsColor).spectrum(
-               "set",
+            $(GLPIImpact.selectors.dependsColor).val(
                GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
             );
             this.updateStyle();
@@ -645,7 +641,7 @@ var GLPIImpact = {
             this.setEdgeColors({
                forward: data.newColor,
             });
-            $(GLPIImpact.selectors.forwardColor).spectrum(
+            $(GLPIImpact.selectors.forwardColor).val(
                "set",
                GLPIImpact.edgeColors[GLPIImpact.FORWARD]
             );
@@ -659,8 +655,7 @@ var GLPIImpact = {
             this.setEdgeColors({
                both: data.newColor,
             });
-            $(GLPIImpact.selectors.impactAndDependsColor).spectrum(
-               "set",
+            $(GLPIImpact.selectors.impactAndDependsColor).val(
                GLPIImpact.edgeColors[GLPIImpact.BOTH]
             );
             this.updateStyle();
@@ -1416,7 +1411,7 @@ var GLPIImpact = {
       var previousColor = compound.data('color');
       // Reset inputs:
       $(GLPIImpact.selectors.compoundName).val(previousLabel);
-      $(GLPIImpact.selectors.compoundColor).spectrum("set", previousColor);
+      $(GLPIImpact.selectors.compoundColor).val(previousColor);
 
       // Save group details
       var buttonSave = {
@@ -1687,16 +1682,13 @@ var GLPIImpact = {
       $(GLPIImpact.selectors.maxDepth).val(GLPIImpact.maxDepth);
 
       // Set color widgets default values
-      $(GLPIImpact.selectors.dependsColor).spectrum(
-         "set",
+      $(GLPIImpact.selectors.dependsColor).val(
          GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
       );
-      $(GLPIImpact.selectors.impactColor).spectrum(
-         "set",
+      $(GLPIImpact.selectors.impactColor).val(
          GLPIImpact.edgeColors[GLPIImpact.FORWARD]
       );
-      $(GLPIImpact.selectors.impactAndDependsColor).spectrum(
-         "set",
+      $(GLPIImpact.selectors.impactAndDependsColor).val(
          GLPIImpact.edgeColors[GLPIImpact.BOTH]
       );
    },

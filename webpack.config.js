@@ -85,10 +85,8 @@ var libsConfig = {
                     path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
                     path.resolve(__dirname, 'node_modules/gridstack'),
                     path.resolve(__dirname, 'node_modules/jquery-migrate'),
-                    path.resolve(__dirname, 'node_modules/jquery-ui-multidatespicker'),
                     path.resolve(__dirname, 'node_modules/jstree'),
                     path.resolve(__dirname, 'node_modules/photoswipe'),
-                    path.resolve(__dirname, 'node_modules/spectrum-colorpicker'),
                     path.resolve(__dirname, 'vendor/blueimp/jquery-file-upload'),
                 ],
                 use: ['script-loader'],
@@ -150,17 +148,20 @@ var libs = {
             from: 'locales/*.js',
         }
     ],
+    'flatpickr': [
+        {
+            context: 'dist',
+            from: 'l10n/*.js',
+        },
+        {
+            context: 'dist',
+            from: 'themes/*.css',
+        }
+    ],
     'jquery-ui': [
         {
             context: 'ui',
             from: 'i18n/*.js',
-        }
-    ],
-    'jquery-ui-timepicker-addon': [
-        {
-            context: 'dist',
-            from: 'i18n/jquery-ui-timepicker-*.js',
-            ignore: ['i18n/jquery-ui-timepicker-addon-i18n{,.min}.js'],
         }
     ],
     'select2': [

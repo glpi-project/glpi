@@ -38,7 +38,7 @@ if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
 
 // Manage tabs
 if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
-   if ($item = getItemForItemtype($_GET['itemtype'])) {
+   if ($item = getItemForItemtype($_UGET['itemtype'])) {
       if (isset($_GET['id']) && !$item->isNewID($_GET['id'])) {
          $item->getFromDB($_GET['id']);
       }
@@ -58,7 +58,7 @@ if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
          $current++;
       }
       if (!empty($selected_tab)) {
-         Session::setActiveTab($_GET['itemtype'], $selected_tab);
+         Session::setActiveTab($_UGET['itemtype'], $selected_tab);
       }
 
    }

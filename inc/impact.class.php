@@ -749,13 +749,11 @@ class Impact extends CommonGLPI {
    }
 
    /**
-    * Load the cytoscape and spectrum-colorpicker librairies
+    * Load the cytoscape library
     *
     * @since 9.5
     */
    public static function loadLibs() {
-      echo Html::css('public/lib/spectrum-colorpicker.css');
-      echo Html::script("public/lib/spectrum-colorpicker.js");
       echo Html::css('public/lib/cytoscape.css');
       echo Html::script("public/lib/cytoscape.js");
    }

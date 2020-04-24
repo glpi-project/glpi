@@ -439,7 +439,7 @@ class Ajax {
                   var newIndex = tabs.index(ui.tab);
                   $.get(
                      '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
-                     { itemtype: '$type', id: '$ID', tab: newIndex }
+                     { itemtype: '".addslashes($type)."', id: '$ID', tab: newIndex }
                   );
                }
             },

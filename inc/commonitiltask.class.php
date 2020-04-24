@@ -1566,9 +1566,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          echo "<div class='fa-label'>
          <i class='far fa-calendar fa-fw'
             title='".__('Date')."'></i>";
-         Html::showDateTimeField("date", ['value'      => $this->fields["date"],
-            'timestep'   => 1,
-            'maybeempty' => false]);
+         Html::showDateTimeField("date", [
+            'value'      => $this->fields["date"],
+            'maybeempty' => false
+         ]);
          echo "</div>";
       }
 

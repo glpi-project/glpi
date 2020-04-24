@@ -1445,7 +1445,6 @@ class Project extends CommonDBTM {
          $date = $_SESSION['glpi_currenttime'];
       }
       Html::showDateTimeField("date", ['value'      => $date,
-                                            'timestep'   => 1,
                                             'maybeempty' => false]);
       echo "</td>";
       if ($ID) {
