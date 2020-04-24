@@ -3428,19 +3428,36 @@ class Html {
       }
       $js = "$(function(){";
       $js .= Html::jsGetElementbyID($param['applyto']).".qtip({
-         position: { viewport: $(window) },
+         position: { 
+            target: 'mouse',
+                     adjust: {
+                        mouse: false
+                     },
+            viewport: $(window)
+            },
          content: {text: ".Html::jsGetElementbyID($param['contentid']);
       if (!$param['autoclose']) {
          $js .=", title: {text: ' ',button: true}";
       }
       $js .= "}, style: { classes: 'qtip-shadow qtip-bootstrap'}";
+
+      // default show and hide options
+      $show = "{
+            solo: true, // ...and hide all other tooltips...
+            delay: 400
+         }";
+      $hide = "{
+            fixed: true,
+            delay: 100
+         }";
       if ($param['onclick']) {
-         $js .= ",show: 'click', hide: false,";
+         $show = "'click'";
+         $hide = "false";
       } else if (!$param['autoclose']) {
-         $js .= ",show: {
-                        solo: true, // ...and hide all other tooltips...
-                }, hide: false,";
+         $hide = "false";
       }
+      $js .= ", show: $show, hide: $hide";
+
       $js .= "});";
       $js .= "});";
       $out .= Html::scriptBlock($js);
