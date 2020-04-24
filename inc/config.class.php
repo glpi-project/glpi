@@ -3810,7 +3810,8 @@ class Config extends CommonDBTM {
 
          return json_encode($input);
       }
-
+   }
+   
    /**
     * Get UUID
     *
