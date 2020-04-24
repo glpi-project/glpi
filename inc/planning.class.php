@@ -688,9 +688,6 @@ class Planning extends CommonGLPI {
                      },
                      viewport: $(window),
                   };
-                  if (view.name.indexOf('list') >= 0) {
-                     qtip_position.target= element.find('a');
-                  }
                   element.qtip({
                      position: qtip_position,
                      content: tooltip,
