@@ -470,8 +470,8 @@ class Update extends CommonGLPI {
 
          case GLPI_VERSION:
          case GLPI_SCHEMA_VERSION:
-         include_once "{$updir}update_newtimeline_planningview.php";
-         updateConfigForNewTimeLineView();
+            include_once "{$updir}update_newtimeline_planningview.php";
+            updateConfigForNewTimeLineView();
             break;
 
          default :

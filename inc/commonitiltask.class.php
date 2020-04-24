@@ -1190,13 +1190,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     * @param string          $itemtype  itemtype
     * @param array           $val       the item to display
     * @param integer         $who       ID of the user (0 if all)
+    * @param $options        allow to have planning typeview
     * @param string          $type      position of the item in the time block (in, through, begin or end)
     * @param integer|boolean $complete  complete display (more details) (default 0)
-    * @param $options    allow to have planning typeview
 
     * @return string Output
     **/
-   static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0, $options) {
+   static function genericDisplayPlanningItem($itemtype, array $val, $who, $options, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
       $html = "";
@@ -1260,9 +1260,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                $item_id = '';
                if ($val['itemtype'] == TicketTask::class) {
                   $item_id = $val['tickets_id'];
-               } elseif ($val['itemtype'] == ProblemTask::class) {
+               } else if ($val['itemtype'] == ProblemTask::class) {
                   $item_id = $val['problems_id'];
-               } elseif ($val['itemtype'] == ChangeTask::class) {
+               } else if ($val['itemtype'] == ChangeTask::class) {
                   $item_id = $val['changes_id'];
                }
 
@@ -1276,7 +1276,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                $html .= $recall;
                $html .= "</div>";
             }
-
             break;
          default :
             if (isset($val["state"])) {

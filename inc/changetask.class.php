@@ -46,7 +46,7 @@ class ChangeTask extends CommonITILTask {
 
    static function canCreate() {
       return Session::haveRight('change', UPDATE)
-         || Session::haveRight(self::$rightname, parent::ADDALLITEM);
+          || Session::haveRight(self::$rightname, parent::ADDALLITEM);
    }
 
 
@@ -57,7 +57,7 @@ class ChangeTask extends CommonITILTask {
 
    static function canUpdate() {
       return Session::haveRight('change', UPDATE)
-         || Session::haveRight(self::$rightname, parent::UPDATEALL);
+          || Session::haveRight(self::$rightname, parent::UPDATEALL);
    }
 
 
@@ -75,7 +75,7 @@ class ChangeTask extends CommonITILTask {
     * Does current user have right to show the current task?
     *
     * @return boolean
-    **/
+   **/
    function canViewItem() {
       return parent::canReadITILItem();
    }
@@ -85,7 +85,7 @@ class ChangeTask extends CommonITILTask {
     * Does current user have right to create the current task?
     *
     * @return boolean
-    **/
+   **/
    function canCreateItem() {
 
       if (!parent::canReadITILItem()) {
@@ -95,12 +95,12 @@ class ChangeTask extends CommonITILTask {
       $change = new Change();
       if ($change->getFromDB($this->fields['changes_id'])) {
          return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
-            || Session::haveRight('change', UPDATE)
-            || (Session::haveRight('change', Change::READMY)
-               && ($change->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                  || (isset($_SESSION["glpigroups"])
-                     && $change->haveAGroup(CommonITILActor::ASSIGN,
-                        $_SESSION['glpigroups'])))));
+                 || Session::haveRight('change', UPDATE)
+                 || (Session::haveRight('change', Change::READMY)
+                     && ($change->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+                         || (isset($_SESSION["glpigroups"])
+                             && $change->haveAGroup(CommonITILActor::ASSIGN,
+                                                    $_SESSION['glpigroups'])))));
       }
       return false;
 
@@ -111,7 +111,7 @@ class ChangeTask extends CommonITILTask {
     * Does current user have right to update the current task?
     *
     * @return boolean
-    **/
+   **/
    function canUpdateItem() {
 
       if (!parent::canReadITILItem()) {
@@ -159,12 +159,12 @@ class ChangeTask extends CommonITILTask {
     *
     * @param array           $val       array of the item to display
     * @param integer         $who       ID of the user (0 if all)
+    * @param array           $options   allow to have planning typeview (more details)
     * @param string          $type      position of the item in the time block (in, through, begin or end)
     * @param integer|boolean $complete  complete display (more details)
-    * @param array           $options   allow to have planning typeview (more details)
     * @return string
     */
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options) {
+   static function displayPlanningItem(array $val, $who, $options, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete, $options);
    }
 

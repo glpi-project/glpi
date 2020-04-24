@@ -1750,8 +1750,8 @@ class Planning extends CommonGLPI {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
             $event['users_id_tech']:
             $event['users_id']);
-         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, 'in', false, $options);
-         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, 'in', true, $options);
+         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, $options, 'in', false);
+         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, $options,'in', true);
 
          // dates should be set with the user timezone
          $begin = $event['begin'];
@@ -2200,7 +2200,7 @@ class Planning extends CommonGLPI {
     * @param $options         allow to have planning typeview
     * @return string
     **/
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options) {
+   static function displayPlanningItem(array $val, $who, $options, $type = "", $complete = 0) {
       $html = "";
 
       // bg event shouldn't have content displayed
@@ -2210,7 +2210,7 @@ class Planning extends CommonGLPI {
 
       // Plugins case
       if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
-         $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete, $options);
+         $html.= $val['itemtype']::displayPlanningItem($val, $who, $options, $type, $complete);
       }
 
       return $html;
@@ -2503,13 +2503,13 @@ class Planning extends CommonGLPI {
          case 'resourceTimeGridDay' :
             if ($event['itemtype'] == TicketTask::class) {
                $title = __('Ticket task');
-            } elseif ($event['itemtype'] == ChangeTask::class) {
+            } else if ($event['itemtype'] == ChangeTask::class) {
                $title = __('Change task');
-            } elseif ($event['itemtype'] == ProblemTask::class) {
+            } else if ($event['itemtype'] == ProblemTask::class) {
                $title = __('Problem task');
-            } elseif ($event['itemtype'] == Reminder::class) {
+            } else if ($event['itemtype'] == Reminder::class) {
                $title = __('Reminder');
-            } elseif ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {
+            } else if ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {
                $category = new PlanningEventCategory();
                $category->getFromDB($event['event_cat']);
                if ($category->fields > 0) {
