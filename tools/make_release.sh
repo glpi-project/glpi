@@ -29,104 +29,48 @@
 #  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 #  * ---------------------------------------------------------------------
 # */
+
+# Check arguments
 if [ ! "$#" -eq 2 ]
 then
- echo "Usage $0 glpi_git_dir release";
- exit ;
+    echo "This script builds a release archive based on Git index of given directory."
+    echo ""
+    echo "Usage $0 /path/to/glpi-git-dir release-name"
+    exit
+fi
+
+SOURCE_DIR=$(readlink --canonicalize $1)
+RELEASE=$2
+WORKING_DIR=/tmp/glpi-$RELEASE
+TARBALL_PATH=/tmp/glpi-$RELEASE.tgz
+
+if [ ! -e $SOURCE_DIR ] || [ ! -e $SOURCE_DIR/.git ]
+then
+ echo "$SOURCE_DIR is not a valid Git repository"
+ exit
 fi
 
 read -p "Are translations up to date? [Y/n] " -n 1 -r
-echo    # (optional) move to a new line
+echo # (optional) move to a new line
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 # handle exits from shell or function but don't exit interactive shell
 fi
 
-INIT_DIR=$1;
-RELEASE=$2;
-
-# test glpi_cvs_dir
-if [ ! -e $INIT_DIR ]
+echo "Copying to $WORKING_DIR directory"
+if [ -e $WORKING_DIR ]
 then
- echo "$1 does not exist";
- exit ;
+    rm -rf $WORKING_DIR
 fi
+git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING_DIR/glpi/"
 
-INIT_PWD=$PWD;
-
-if [ -e /tmp/glpi ]
-then
- echo "Delete existing temp directory";
-\rm -rf /tmp/glpi;
-fi
-
-echo "Copy to  /tmp directory";
-git checkout-index -a -f --prefix=/tmp/glpi/
-
-echo "Move to this directory";
-cd /tmp/glpi;
-
-echo "Retrieve PHP vendor"
-composer install --no-dev --optimize-autoloader --prefer-dist --quiet
-
-echo "Clean PHP vendor"
-\rm -rf vendor/bin;
-\find vendor/ -type f -name "build.xml" -exec rm -rf {} \;
-\find vendor/ -type f -name "build.properties" -exec rm -rf {} \;
-\find vendor/ -type f -name "composer.json" -exec rm -rf {} \;
-\find vendor/ -type f -name "composer.lock" -exec rm -rf {} \;
-\find vendor/ -type f -name "changelog.md" -exec rm -rf {} \;
-\find vendor/ -type f -name "*phpunit.xml.dist" -exec rm -rf {} \;
-\find vendor/ -type f -name ".gitignore" -exec rm -rf {} \;
-\find vendor/ -type d -name "test*" -prune -exec rm -rf {} \;
-\find vendor/ -type d -name "doc*" -prune -exec rm -rf {} \;
-\find vendor/ -type d -name "example*" -prune -exec rm -rf {} \;
-\find vendor/ -type d -name "design" -prune -exec rm -rf {} \;
-
-echo "Retrieve and build JS/CSS dependencies"
-npm install
-npm run-script build
-
-echo "Minify stylesheets and javascripts"
-$INIT_PWD/vendor/bin/robo minify --load-from tools
-
-echo "Compile SCSS"
-./bin/console build:compile_scss
-
-echo "Compile locale files"
-./tools/locale/update_mo.pl
-
-echo "Delete various scripts and directories"
-\rm -rf tools;
-\rm -rf phpunit;
-\rm -rf tests;
-\rm -rf .gitignore;
-\rm -rf .travis.yml;
-\rm -rf .atoum.php;
-\rm -rf .circleci;
-\rm -rf phpunit.xml.dist;
-\rm -rf composer.json;
-\rm -rf composer.lock;
-\rm -rf .composer.hash;
-\rm -rf ISSUE_TEMPLATE.md;
-\rm -rf PULL_REQUEST_TEMPLATE.md;
-\rm -rf .tx;
-\rm -rf .github;
-\rm -rf .dependabot;
-\find pics/ -type f -name "*.eps" -exec rm -rf {} \;
-\rm -rf nodes_modules;
-\rm -rf package.json;
-\rm -rf package-lock.json;
+echo "Building application"
+$WORKING_DIR/glpi/tools/build_glpi.sh
 
 echo "Creating tarball";
-cd ..;
-tar czf "glpi-$RELEASE.tgz" glpi
+tar -c -z -f $TARBALL_PATH -C $WORKING_DIR glpi
 
+echo "Deleting temp directory"
+rm -rf $WORKING_DIR
 
-cd $INIT_PWD;
-
-
-echo "Deleting temp directory";
-\rm -rf /tmp/glpi;
-
-echo "The Tarball is in the /tmp directory";
+echo "The Tarball path is $TARBALL_PATH"

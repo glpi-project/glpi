@@ -204,10 +204,13 @@ for (let packageName in libs) {
     }
 }
 
-module.exports = (env, argv) => {
+module.exports = function() {
     var configs = [glpiConfig, libsConfig];
 
     for (let config of configs) {
+        config.mode = 'none'; // Force 'none' mode, as optimizations will be done on release process
+        config.devtool = 'source-map'; // Add sourcemap to files
+
         // Limit verbosity to only usefull informations
         config.stats = {
             all: false,
@@ -218,10 +221,6 @@ module.exports = (env, argv) => {
             entrypoints: true,
             timings: true,
         };
-
-        if (argv.mode === 'development') {
-            config.devtool = 'source-map';
-        }
     }
 
     return configs;
