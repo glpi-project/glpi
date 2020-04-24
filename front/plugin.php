@@ -41,6 +41,8 @@ $plugin->checkStates(true);
 
 Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
 
+\Glpi\Marketplace\View::showFeatureSwitchDialog();
+
 $catalog_btn = '<div class="center">'
    . '<a href="http://plugins.glpi-project.org" class="vsubmit" target="_blank">'
    . __('See the catalog of plugins')

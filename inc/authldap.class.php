@@ -3596,16 +3596,14 @@ class AuthLDAP extends CommonDBTM {
          echo "<td>";
          $begin_date = (isset($_SESSION['ldap_import']['begin_date'])
                            ?$_SESSION['ldap_import']['begin_date'] :'');
-         Html::showDateTimeField("begin_date", ['value'    => $begin_date,
-                                                     'timestep' => 1]);
+         Html::showDateTimeField("begin_date", ['value'    => $begin_date]);
          echo "</td>";
          echo "<td>".__('to')."</td>";
          echo "<td>";
          $end_date = (isset($_SESSION['ldap_import']['end_date'])
                         ?$_SESSION['ldap_import']['end_date']
                         :date('Y-m-d H:i:s', time()-DAY_TIMESTAMP));
-         Html::showDateTimeField("end_date", ['value'    => $end_date,
-                                                   'timestep' => 1]);
+         Html::showDateTimeField("end_date", ['value'    => $end_date]);
          echo "</td></tr>";
          echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
          echo "<a href='#' onClick='deactivateRestriction()'>".__('Disable filtering by date')."</a>";

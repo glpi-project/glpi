@@ -79,11 +79,12 @@ class Config extends DbTestCase {
 
    public function testDefineTabs() {
       $expected = [
-         'Config$1'  => 'General setup',
-         'Config$2'  => 'Default values',
-         'Config$3'  => 'Assets',
-         'Config$4'  => 'Assistance',
-         'Log$1'     => 'Historical'
+         'Config$1'      => 'General setup',
+         'Config$2'      => 'Default values',
+         'Config$3'      => 'Assets',
+         'Config$4'      => 'Assistance',
+         'GLPINetwork$1' => 'GLPI Network',
+         'Log$1'         => 'Historical',
       ];
       $this
          ->given($this->newTestedInstance)
@@ -102,13 +103,19 @@ class Config extends DbTestCase {
 
       //check extra tabs from superadmin profile
       $this->login();
-      unset($expected['Log$1']);
-      $expected['Config$9']  = 'Logs purge';
-      $expected['Config$5']  = 'System';
-      $expected['Config$10'] = 'Security';
-      $expected['Config$7']  = 'Performance';
-      $expected['Config$8']  = 'API';
-      $expected['Log$1']     = 'Historical';
+      $expected = [
+         'Config$1'      => 'General setup',
+         'Config$2'      => 'Default values',
+         'Config$3'      => 'Assets',
+         'Config$4'      => 'Assistance',
+         'Config$9'      => 'Logs purge',
+         'Config$5'      => 'System',
+         'Config$10'     => 'Security',
+         'Config$7'      => 'Performance',
+         'Config$8'      => 'API',
+         'GLPINetwork$1' => 'GLPI Network',
+         'Log$1'         => 'Historical',
+      ];
       $this
          ->given($this->newTestedInstance)
             ->then

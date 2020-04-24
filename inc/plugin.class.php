@@ -39,10 +39,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Psr\SimpleCache\CacheInterface;
+use Glpi\Marketplace\View as MarketplaceView;
+use Glpi\Marketplace\Controller as MarketplaceController;
 
 class Plugin extends CommonDBTM {
 
    // Class constant : Plugin state
+   const UNKNOWN        = -1;
    const ANEW           = 0;
    const ACTIVATED      = 1;
    const NOTINSTALLED   = 2;
@@ -85,17 +88,50 @@ class Plugin extends CommonDBTM {
 
 
    static function getMenuContent() {
-      $menu = [];
+      $menu = parent::getMenuContent();
       if (static::canView()) {
-         $menu['title']   = self::getMenuName();
-         $menu['page']    = '/front/plugin.php';
-         $menu['icon']    = self::getIcon();
+         $redirect_mp = MarketplaceController::getPluginPageConfig();
+
+         $menu['title'] = self::getMenuName();
+         $menu['page']  = $redirect_mp == MarketplaceController::MP_REPLACE_YES
+                           ? '/front/marketplace.php'
+                           : '/front/plugin.php';
+         $menu['icon']  = self::getIcon();
       }
       if (count($menu)) {
          return $menu;
       }
       return false;
    }
+
+
+   static function getAdditionalMenuLinks() {
+      $mp_icon     = MarketplaceView::getIcon();
+      $mp_title    = MarketplaceView::getTypeName();
+      $marketplace = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='sr-only'>$mp_title</span>";
+
+      $cl_icon     = Plugin::getIcon();
+      $cl_title    = Plugin::getTypeName();
+      $classic     = "<i class='$cl_icon pointer' title='$cl_title'></i><span class='sr-only'>$cl_title</span>";
+
+      return [
+         $marketplace => MarketplaceView::getSearchURL(false),
+         $classic     => Plugin::getSearchURL(false),
+      ];
+
+   }
+
+
+   static function getAdditionalMenuOptions() {
+      return [
+         'marketplace' => [
+            'icon'  => MarketplaceView::geticon(),
+            'title' => MarketplaceView::getTypeName(),
+            'page'  => MarketplaceView::getSearchURL(false),
+         ]
+      ];
+   }
+
 
    /**
     * Retrieve an item from the database using its directory
@@ -157,52 +193,64 @@ class Plugin extends CommonDBTM {
     * Init a plugin including setup.php file
     * launching plugin_init_NAME function  after checking compatibility
     *
-    * @param string  $directory  Plugin directory
+    * @param string  $plugin_key        System name (Plugin directory)
     * @param boolean $withhook   Load hook functions (false by default)
     *
     * @return void
    **/
-   static function load($directory, $withhook = false) {
+   static function load($plugin_key, $withhook = false) {
       global $LOADED_PLUGINS;
 
-      if (file_exists(GLPI_ROOT . "/plugins/$directory/setup.php")) {
-         include_once(GLPI_ROOT . "/plugins/$directory/setup.php");
-         if (!in_array($directory, self::$loaded_plugins)) {
-            self::$loaded_plugins[] = $directory;
-            self::loadLang($directory);
-            $function = "plugin_init_$directory";
-            if (function_exists($function)) {
-               $function();
-               $LOADED_PLUGINS[$directory] = $directory;
+      $loaded = false;
+      foreach (PLUGINS_DIRECTORIES as $base_dir) {
+         if (!is_dir($base_dir)) {
+            continue;
+         }
+
+         if (file_exists("$base_dir/$plugin_key/setup.php")) {
+            $loaded = true;
+            $plugin_directory = "$base_dir/$plugin_key";
+            include_once("$plugin_directory/setup.php");
+            if (!in_array($plugin_key, self::$loaded_plugins)) {
+               self::$loaded_plugins[] = $plugin_key;
+               $init_function = "plugin_init_$plugin_key";
+               if (function_exists($init_function)) {
+                  $init_function();
+                  $LOADED_PLUGINS[$plugin_key] = $plugin_directory;
+                  self::loadLang($plugin_key);
+               }
             }
          }
-      }
-      if ($withhook
-          && file_exists(GLPI_ROOT . "/plugins/$directory/hook.php")) {
-         include_once(GLPI_ROOT . "/plugins/$directory/hook.php");
+         if ($withhook) {
+            self::includeHook($plugin_key);
+         }
+
+         if ($loaded) {
+            break;
+         }
       }
    }
 
    /**
     * Unload a plugin.
     *
-    * @param string  $directory  Plugin directory
+    * @param string  $plugin_key  System name (Plugin directory)
     *
     * @return void
     */
-   private function unload($directory) {
+   private function unload($plugin_key) {
       global $LOADED_PLUGINS;
 
-      if (isset(self::$activated_plugins[$directory])) {
-         unset(self::$activated_plugins[$directory]);
+      if (isset(self::$activated_plugins[$plugin_key])) {
+         unset(self::$activated_plugins[$plugin_key]);
       }
 
-      if (isset(self::$loaded_plugins[$directory])) {
-         unset(self::$loaded_plugins[$directory]);
+      if (isset(self::$loaded_plugins[$plugin_key])) {
+         unset(self::$loaded_plugins[$plugin_key]);
       }
 
-      if (isset($LOADED_PLUGINS[$directory])) {
-         unset($LOADED_PLUGINS[$directory]);
+      if (isset($LOADED_PLUGINS[$plugin_key])) {
+         unset($LOADED_PLUGINS[$plugin_key]);
       }
    }
 
@@ -210,13 +258,13 @@ class Plugin extends CommonDBTM {
    /**
     * Load lang file for a plugin
     *
-    * @param $name            Name of hook to use
-    * @param $forcelang       force a specific lang (default '')
+    * @param $plugin_key    Name of hook to use
+    * @param $forcelang     force a specific lang (default '')
     * @param $coretrytoload lang trying to be load from core (default '')
     *
     * @return void
    **/
-   static function loadLang($name, $forcelang = '', $coretrytoload = '') {
+   static function loadLang($plugin_key, $forcelang = '', $coretrytoload = '') {
       global $CFG_GLPI, $TRANSLATE;
 
       // For compatibility for plugins using $LANG
@@ -238,39 +286,47 @@ class Plugin extends CommonDBTM {
             $coretrytoload = $trytoload;
       }
 
-      $dir = GLPI_ROOT . "/plugins/$name/locales/";
-
-      $mofile = false;
       // New localisation system
-      if (file_exists($dir.$CFG_GLPI["languages"][$trytoload][1])) {
-         $mofile = $dir.$CFG_GLPI["languages"][$trytoload][1];
-      } else if (!empty($CFG_GLPI["language"])
-                 && file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
-         $mofile = $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1];
-      } else if (file_exists($dir."en_GB.mo")) {
-         $mofile = $dir."en_GB.mo";
+      $mofile = false;
+      foreach (PLUGINS_DIRECTORIES as $base_dir) {
+         if (!is_dir($base_dir)) {
+            continue;
+         }
+         $locales_dir = "$base_dir/$plugin_key/locales/";
+         if (file_exists($locales_dir.$CFG_GLPI["languages"][$trytoload][1])) {
+            $mofile = $locales_dir.$CFG_GLPI["languages"][$trytoload][1];
+         } else if (!empty($CFG_GLPI["language"])
+                    && file_exists($locales_dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
+            $mofile = $locales_dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1];
+         } else if (file_exists($locales_dir."en_GB.mo")) {
+            $mofile = $locales_dir."en_GB.mo";
+         }
+
+         if ($mofile !== false) {
+            break;
+         }
       }
 
       if ($mofile !== false) {
          $TRANSLATE->addTranslationFile(
             'gettext',
             $mofile,
-            $name,
+            $plugin_key,
             $coretrytoload
          );
       }
 
-      $mofile = str_replace($dir, GLPI_LOCAL_I18N_DIR . '/'.$name, $mofile);
+      $mofile = str_replace($locales_dir, GLPI_LOCAL_I18N_DIR . '/'.$plugin_key, $mofile);
       $phpfile = str_replace('.mo', '.php', $mofile);
 
       // Load local PHP file if it exists
       if (file_exists($phpfile)) {
-         $TRANSLATE->addTranslationFile('phparray', $phpfile, $name, $coretrytoload);
+         $TRANSLATE->addTranslationFile('phparray', $phpfile, $plugin_key, $coretrytoload);
       }
 
       // Load local MO file if it exists -- keep last so it gets precedence
       if (file_exists($mofile)) {
-         $TRANSLATE->addTranslationFile('gettext', $mofile, $name, $coretrytoload);
+         $TRANSLATE->addTranslationFile('gettext', $mofile, $plugin_key, $coretrytoload);
       }
    }
 
@@ -295,12 +351,16 @@ class Plugin extends CommonDBTM {
 
       if ($scan_inactive_and_new_plugins) {
          // Add found directories to the check list
-         $plugins_directory = GLPI_ROOT."/plugins";
-         $directory_handle  = opendir($plugins_directory);
-         while (false !== ($filename = readdir($directory_handle))) {
-            if (!in_array($filename, ['.svn', '.', '..'])
-                && is_dir($plugins_directory . DIRECTORY_SEPARATOR . $filename)) {
-                $directories[] = $filename;
+         foreach (PLUGINS_DIRECTORIES as $plugins_directory) {
+            if (!is_dir($plugins_directory)) {
+               continue;
+            }
+            $directory_handle  = opendir($plugins_directory);
+            while (false !== ($filename = readdir($directory_handle))) {
+               if (!in_array($filename, ['.svn', '.', '..'])
+                   && is_dir($plugins_directory . DIRECTORY_SEPARATOR . $filename)) {
+                   $directories[] = $filename;
+               }
             }
          }
       }
@@ -318,16 +378,16 @@ class Plugin extends CommonDBTM {
    /**
     * Check plugin state.
     *
-    * @param string $directory
+    * @param string $plugin_key
     *
     * return void
     */
-   public function checkPluginState($directory) {
+   public function checkPluginState($plugin_key) {
 
       $plugin = new self();
-      $is_already_known = $plugin->getFromDBByCrit(['directory' => $directory]);
+      $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
 
-      $informations = $this->getInformationsFromDirectory($directory);
+      $informations = $this->getInformationsFromDirectory($plugin_key);
 
       if (empty($informations)) {
          if (!$is_already_known) {
@@ -338,16 +398,16 @@ class Plugin extends CommonDBTM {
          // Try to get information from a plugin that lists current name as its old name
          // If something found, and not already registerd in DB,, base plugin informations on it
          // If nothing found, mark plugin as "To be cleaned"
-         $new_specs = $this->getNewInfoAndDirBasedOnOldName($directory);
+         $new_specs = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
          if (null !== $new_specs
              && countElementsInTable(self::getTable(), ['directory' => $new_specs['directory']]) === 0) {
-            $directory    = $new_specs['directory'];
+            $plugin_key    = $new_specs['directory'];
             $informations = $new_specs['informations'];
          } else {
             trigger_error(
                sprintf(
                   'Unable to load plugin "%s" informations.',
-                  $directory
+                  $plugin_key
                ),
                E_USER_WARNING
             );
@@ -368,7 +428,7 @@ class Plugin extends CommonDBTM {
                $informations,
                [
                   'state'     => self::NOTINSTALLED,
-                  'directory' => $directory,
+                  'directory' => $plugin_key,
                ]
             )
          );
@@ -376,18 +436,18 @@ class Plugin extends CommonDBTM {
       }
 
       if ($informations['version'] != $plugin->fields['version']
-          || $directory != $plugin->fields['directory']) {
+          || $plugin_key != $plugin->fields['directory']) {
          // Plugin known version differs from informations or plugin has been renamed,
          // update informations in database
          $input              = $informations;
          $input['id']        = $plugin->fields['id'];
-         $input['directory'] = $directory;
+         $input['directory'] = $plugin_key;
          if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED, self::NOTUPDATED])) {
             // mark it as 'updatable' unless it was not installed
             trigger_error(
                sprintf(
                   'Plugin "%s" version changed. It has been deactivated as its update process has to be launched.',
-                  $directory
+                  $plugin_key
                ),
                E_USER_WARNING
             );
@@ -397,7 +457,7 @@ class Plugin extends CommonDBTM {
 
          $this->update($input);
 
-         $this->unload($directory);
+         $this->unload($plugin_key);
          // reset menu
          if (isset($_SESSION['glpimenu'])) {
             unset($_SESSION['glpimenu']);
@@ -408,7 +468,7 @@ class Plugin extends CommonDBTM {
 
       // Check if configuration state changed
       if (in_array((int)$plugin->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)) {
-         $function = 'plugin_' . $directory . '_check_config';
+         $function = 'plugin_' . $plugin_key . '_check_config';
          $is_config_ok = !function_exists($function) || $function();
 
          if ((int)$plugin->fields['state'] === self::TOBECONFIGURED && $is_config_ok) {
@@ -425,7 +485,7 @@ class Plugin extends CommonDBTM {
             trigger_error(
                sprintf(
                   'Plugin "%s" must be configured.',
-                  $directory
+                  $plugin_key
                ),
                E_USER_WARNING
             );
@@ -449,14 +509,14 @@ class Plugin extends CommonDBTM {
 
       // Check compatibility
       ob_start();
-      if (!$this->checkVersions($directory)) {
+      if (!$this->checkVersions($plugin_key)) {
          $usage_ok = false;
       }
       ob_end_clean();
 
       // Check prerequisites
       if ($usage_ok) {
-         $function = 'plugin_' . $directory . '_check_prerequisites';
+         $function = 'plugin_' . $plugin_key . '_check_prerequisites';
          if (function_exists($function)) {
             ob_start();
             if (!$function()) {
@@ -471,7 +531,7 @@ class Plugin extends CommonDBTM {
          trigger_error(
             sprintf(
                'Plugin "%s" prerequisites are not matched. It has been deactivated.',
-               $directory
+               $plugin_key
             ),
             E_USER_WARNING
          );
@@ -1194,15 +1254,13 @@ class Plugin extends CommonDBTM {
       if (($param != null) && is_object($param)) {
          $itemtype = get_class($param);
          if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
-            foreach ($PLUGIN_HOOKS[$name] as $plug => $tab) {
-               if (!Plugin::isPluginActive($plug)) {
+            foreach ($PLUGIN_HOOKS[$name] as $plugin_key => $tab) {
+               if (!Plugin::isPluginActive($plugin_key)) {
                   continue;
                }
 
                if (isset($tab[$itemtype])) {
-                  if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-                     include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-                  }
+                  self::includeHook($plugin_key);
                   if (is_callable($tab[$itemtype])) {
                      call_user_func($tab[$itemtype], $data);
                   }
@@ -1212,14 +1270,12 @@ class Plugin extends CommonDBTM {
 
       } else { // Standard hook call
          if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
-            foreach ($PLUGIN_HOOKS[$name] as $plug => $function) {
-               if (!Plugin::isPluginActive($plug)) {
+            foreach ($PLUGIN_HOOKS[$name] as $plugin_key => $function) {
+               if (!Plugin::isPluginActive($plugin_key)) {
                   continue;
                }
 
-               if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-                  include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-               }
+               self::includeHook($plugin_key);
                if (is_callable($function)) {
                   call_user_func($function, $data);
                }
@@ -1245,14 +1301,12 @@ class Plugin extends CommonDBTM {
 
       $ret = $parm;
       if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
-         foreach ($PLUGIN_HOOKS[$name] as $plug => $function) {
-            if (!Plugin::isPluginActive($plug)) {
+         foreach ($PLUGIN_HOOKS[$name] as $plugin_key => $function) {
+            if (!Plugin::isPluginActive($plugin_key)) {
                continue;
             }
 
-            if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-               include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-            }
+            self::includeHook($plugin_key);
             if (is_callable($function)) {
                $ret = call_user_func($function, $ret);
             }
@@ -1267,27 +1321,25 @@ class Plugin extends CommonDBTM {
    /**
     * This function executes a hook for 1 plugin.
     *
-    * @param string          $plugname Name of the plugin
+    * @param string          $plugin_key System name of the plugin
     * @param string|callable $hook     suffix used to build function to be called ("plugin_myplugin_{$hook}")
     *                                  or callable function
     * @param mixed           ...$args  [optional] One or more arguments passed to hook function
     *
     * @return mixed $data
    **/
-   static function doOneHook($plugname, $hook, ...$args) {
+   static function doOneHook($plugin_key, $hook, ...$args) {
 
-      $plugname = strtolower($plugname);
+      $plugin_key = strtolower($plugin_key);
 
-      if (!Plugin::isPluginActive($plugname)) {
+      if (!Plugin::isPluginActive($plugin_key)) {
          return;
       }
 
-      if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
-         include_once(GLPI_ROOT . "/plugins/$plugname/hook.php");
-      }
+      self::includeHook($plugin_key);
 
       if (is_string($hook) && !is_callable($hook)) {
-         $hook = "plugin_" . $plugname . "_" . $hook;
+         $hook = "plugin_" . $plugin_key . "_" . $hook;
       }
 
       if (is_callable($hook)) {
@@ -1351,21 +1403,28 @@ class Plugin extends CommonDBTM {
     */
    public function getInformationsFromDirectory($directory) {
 
-      $plugin_path = implode(DIRECTORY_SEPARATOR, [GLPI_ROOT, 'plugins', $directory]);
-      $setup_file  = $plugin_path . DIRECTORY_SEPARATOR . 'setup.php';
-
       $informations = [];
-      if (file_exists($setup_file)) {
-         // Includes are made inside a function to prevent included files to override
-         // variables used in this function.
-         // For example, if the included files contains a $plugin variable, it will
-         // replace the $plugin variable used here.
-         $include_fct = function () use ($directory, $setup_file) {
-            self::loadLang($directory);
-            include_once($setup_file);
-         };
-         $include_fct();
-         $informations = Toolbox::addslashes_deep(self::getInfo($directory));
+      foreach (PLUGINS_DIRECTORIES as $base_dir) {
+         if (!is_dir($base_dir)) {
+            continue;
+         }
+         $setup_file  = "$base_dir/$directory/setup.php";
+
+         if (file_exists($setup_file)) {
+            // Includes are made inside a function to prevent included files to override
+            // variables used in this function.
+            // For example, if the included files contains a $plugin variable, it will
+            // replace the $plugin variable used here.
+            $include_fct = function () use ($directory, $setup_file) {
+               self::loadLang($directory);
+               include_once($setup_file);
+            };
+            $include_fct();
+            $informations = Toolbox::addslashes_deep(self::getInfo($directory));
+
+            // plugin found, don't parse others directories
+            break;
+         }
       }
 
       return $informations;
@@ -1380,11 +1439,9 @@ class Plugin extends CommonDBTM {
    static function getDatabaseRelations() {
 
       $dps = [];
-      foreach (self::getPlugins() as $plug) {
-         if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-            include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-         }
-         $function2 = "plugin_".$plug."_getDatabaseRelations";
+      foreach (self::getPlugins() as $plugin_key) {
+         self::includeHook($plugin_key);
+         $function2 = "plugin_".$plugin_key."_getDatabaseRelations";
          if (function_exists($function2)) {
             $dps = array_merge_recursive($dps, $function2());
          }
@@ -1403,11 +1460,9 @@ class Plugin extends CommonDBTM {
    static function getAddSearchOptions($itemtype) {
 
       $sopt = [];
-      foreach (self::getPlugins() as $plug) {
-         if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-            include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-         }
-         $function = "plugin_".$plug."_getAddSearchOptions";
+      foreach (self::getPlugins() as $plugin_key) {
+         self::includeHook($plugin_key);
+         $function = "plugin_".$plugin_key."_getAddSearchOptions";
          if (function_exists($function)) {
             $tmp = $function($itemtype);
             if (is_array($tmp) && count($tmp)) {
@@ -1416,6 +1471,21 @@ class Plugin extends CommonDBTM {
          }
       }
       return $sopt;
+   }
+
+
+   /**
+    * Include the hook file for a plugin
+    *
+    * @param string $plugin_key
+    */
+   static function includeHook(string $plugin_key = "") {
+      foreach (PLUGINS_DIRECTORIES as $base_dir) {
+         if (file_exists("$base_dir/$plugin_key/hook.php")) {
+            include_once("$base_dir/$plugin_key/hook.php");
+            break;
+         }
+      }
    }
 
 
@@ -1433,11 +1503,9 @@ class Plugin extends CommonDBTM {
    static function getAddSearchOptionsNew($itemtype) {
       $options = [];
 
-      foreach (self::getPlugins() as $plug) {
-         if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-            include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-         }
-         $function = "plugin_".$plug."_getAddSearchOptionsNew";
+      foreach (self::getPlugins() as $plugin_key) {
+         self::includeHook($plugin_key);
+         $function = "plugin_".$plugin_key."_getAddSearchOptionsNew";
          if (function_exists($function)) {
             $tmp = $function($itemtype);
             foreach ($tmp as $opt) {
@@ -1828,30 +1896,58 @@ class Plugin extends CommonDBTM {
       switch ($state) {
          case self::ANEW :
             return _x('status', 'New');
-            break;
 
          case self::ACTIVATED :
             return _x('plugin', 'Enabled');
-            break;
 
          case self::NOTINSTALLED :
             return _x('plugin', 'Not installed');
-            break;
 
          case self::NOTUPDATED :
             return __('To update');
-            break;
 
          case self::TOBECONFIGURED :
             return _x('plugin', 'Installed / not configured');
-            break;
 
          case self::NOTACTIVATED :
             return _x('plugin', 'Installed / not activated');
-            break;
       }
 
       return __('Error / to clean');
+   }
+
+
+   /**
+    * Return key for an integer plugin state
+    * purpose is to have a corresponding css class name
+    *
+    * @since 9.5
+    *
+    * @param  integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
+    * @return string  the key
+    */
+   static function getStateKey(int $state = 0): string {
+      switch ($state) {
+         case self::ANEW :
+            return "new";
+
+         case self::ACTIVATED :
+            return "activated";
+
+         case self::NOTINSTALLED :
+            return "notinstalled";
+
+         case self::NOTUPDATED :
+            return "notupdated";
+
+         case self::TOBECONFIGURED :
+            return "tobeconfigured";
+
+         case self::NOTACTIVATED :
+            return "notactived";
+      }
+
+      return "";
    }
 
    /**
@@ -1870,15 +1966,15 @@ class Plugin extends CommonDBTM {
     *
     * @since 9.3.2
     *
-    * @param string $directory  Plugin directory
+    * @param string $plugin_key  Plugin system name
     *
     * @return boolean
     */
-   public static function isPluginLoaded($directory) {
+   public static function isPluginLoaded($plugin_key) {
       // Make a lowercase comparison, as sometime this function is called based on
       // extraction of plugin name from a classname, which does not use same naming rules than directories.
       $loadedPlugins = array_map('strtolower', self::$loaded_plugins);
-      return in_array(strtolower($directory), $loadedPlugins);
+      return in_array(strtolower($plugin_key), $loadedPlugins);
    }
 
    /**
@@ -1886,13 +1982,13 @@ class Plugin extends CommonDBTM {
     *
     * @since 9.5.0
     *
-    * @param string $directory  Plugin directory
+    * @param string $plugin_key  Plugin system name
     *
     * @return boolean
     */
-   public static function isPluginActive($directory) {
+   public static function isPluginActive($plugin_key) {
       $plugin = new self();
-      return $plugin->isActivated($directory);
+      return $plugin->isActivated($plugin_key);
    }
 
    /**
@@ -2064,11 +2160,8 @@ class Plugin extends CommonDBTM {
             if (in_array($state, [self::ACTIVATED, self::TOBECONFIGURED], true)
                 && isset($PLUGIN_HOOKS['config_page'][$directory])) {
                // Configuration button for activated or configurable plugins
-               $config_url = $CFG_GLPI['root_doc']
-                  . '/plugins/'
-                  . $directory
-                  . '/'
-                  . $PLUGIN_HOOKS['config_page'][$directory];
+               $plugin_dir = self::getWebDir($directory, true);
+               $config_url = "$plugin_dir/".$PLUGIN_HOOKS['config_page'][$directory];
                $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
                   . '<i class="fas fa-wrench fa-2x"></i>'
                   . '<span class="sr-only">' . __s('Configure') . '</span>'
@@ -2213,9 +2306,9 @@ class Plugin extends CommonDBTM {
             if (in_array($state, [self::ACTIVATED, self::TOBECONFIGURED])
                && isset($PLUGIN_HOOKS['config_page'][$directory])
             ) {
-               return "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$directory."/".
-                      $PLUGIN_HOOKS['config_page'][$directory]."'>
-                      <span class='b'>" . $value . "</span></a>";
+               $plugin_dir = self::getWebDir($directory, true);
+               $config_url = "$plugin_dir/".$PLUGIN_HOOKS['config_page'][$directory];
+               return "<a href='$config_url'><span class='b'>$value</span></a>";
             } else {
                return $value;
             }
@@ -2255,6 +2348,59 @@ class Plugin extends CommonDBTM {
       $forbidden[] = 'update';
       $forbidden[] = 'purge';
       return $forbidden;
+   }
+
+
+   /**
+    * Return the system path for a given plugin key
+    *
+    * @since 9.5
+    *
+    * @param string $plugin_key plugin system key
+    * @param bool $full true for absolute path
+    *
+    * @return false|string the path
+    */
+   static function getPhpDir(string $plugin_key = "", $full = true) {
+      $directory = false;
+      foreach (PLUGINS_DIRECTORIES as $plugins_directory) {
+         if (is_dir("$plugins_directory/$plugin_key")) {
+            $directory = "$plugins_directory/$plugin_key";
+            break;
+         }
+      }
+
+      if (!$full) {
+         $directory = str_replace(GLPI_ROOT, "", $directory);
+      }
+
+      return str_replace('\\', '/', $directory);
+   }
+
+
+   /**
+    * Return the web path for a given plugin key
+    *
+    * @since 9.5
+    *
+    * @param string $plugin_key plugin system key
+    * @param bool $full if true, append root_doc from config
+    * @param bool $use_url_base if true, url_base instead root_doc
+    *
+    * @return false|string the web path
+    */
+   static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false) {
+      global $CFG_GLPI;
+
+      $directory = self::getPhpDir($plugin_key, false);
+      $directory = ltrim($directory, '/\\');
+
+      if ($full) {
+         $root = $use_url_base ? $CFG_GLPI['url_base'] : $CFG_GLPI["root_doc"];
+         $directory = "$root/$directory";
+      }
+
+      return str_replace('\\', '/', $directory);
    }
 
 

@@ -175,7 +175,7 @@ $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'C
                                                   'Infocom', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Supplier','User', 'Certicate',
-                                                  'Rack', 'Enclosure', 'PDU', 'Cluster'];
+                                                  'Rack', 'Enclosure', 'PDU', 'Cluster', 'Item_DeviceSimcard'];
 
 $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -219,18 +219,18 @@ $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Comp
                                                   'Consumable', 'ConsumableItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'SoftwareLicense',
-                                                  'Line', 'Certificate', 'Domain', 'Appliance'];
+                                                  'Line', 'Certificate', 'Domain', 'Appliance', 'Item_DeviceSimcard'];
 
 $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software'];
+                                                  'Peripheral', 'Phone', 'Printer', 'Software', 'Item_DeviceSimcard'];
 
 $CFG_GLPI["linkuser_types"]               = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Certificate', 'Appliance'];
+                                                  'SoftwareLicense', 'Certificate', 'Appliance', 'Item_DeviceSimcard'];
 
 $CFG_GLPI["linkgroup_types"]              = ['Computer', 'Consumable', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Certificate', 'Appliance'];
+                                                  'SoftwareLicense', 'Certificate', 'Appliance', 'Item_DeviceSimcard'];
 
 $CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
@@ -244,13 +244,13 @@ $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'Consuma
                                                   'Computer', 'Monitor', 'Netpoint',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'SoftwareLicense',
-                                                  'Ticket', 'User', 'Certificate'];
+                                                  'Ticket', 'User', 'Certificate', 'Item_DeviceSimcard'];
 
 $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate',
                                                   'Line', 'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU',
-                                                  'Domain', 'DomainRecord', 'Appliance'];
+                                                  'Domain', 'DomainRecord', 'Appliance', 'Item_DeviceSimcard'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -269,7 +269,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
                                                   'OperatingSystemKernel', 'OperatingSystemKernelVersion',
                                                   'OperatingSystemEdition'];
 
-$CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance'];
+$CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'Item_DeviceSimcard'];
 
 $CFG_GLPI["networkport_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer', 'Enclosure', 'PDU', 'Cluster'];
@@ -289,6 +289,7 @@ $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmwar
 
 $CFG_GLPI['itemdevices'] = [];
 foreach ($CFG_GLPI['device_types'] as $dtype) {
+   $CFG_GLPI['location_types'][] = 'Item_' . $dtype;
    $CFG_GLPI["itemdevices"][] = 'Item_' . $dtype;
 }
 
@@ -451,7 +452,7 @@ $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', '
                                        'Printer', 'Software', 'Cluster'];
 
 $dashboard_libs = [
-   'dashboard', 'colorpicker', 'gridstack',
+   'dashboard', 'gridstack',
    'charts', 'clipboard'
 ];
 
@@ -465,42 +466,41 @@ $CFG_GLPI['javascript'] = [
    ],
    'assets'    => [
       'dashboard' => $dashboard_libs,
-      'rack'      => ['colorpicker', 'gridstack', 'rack']
+      'rack'      => ['gridstack', 'rack']
    ],
    'helpdesk'  => [
       'dashboard' => $dashboard_libs,
-      'planning'  => ['clipboard', 'fullcalendar', 'colorpicker', 'tinymce', 'planning'],
+      'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
       'ticket'    => array_merge(['rateit', 'tinymce', 'photoswipe'], $dashboard_libs),
       'problem'   => ['tinymce', 'photoswipe'],
       'change'    => ['tinymce', 'photoswipe'],
       'stat'      => ['charts']
    ],
    'tools'     => [
-      'project'      => ['gantt', 'kanban', 'colorpicker'],
+      'project'      => ['gantt', 'kanban'],
       'knowbaseitem' => ['tinymce', 'jstree'],
       'reminder'     => ['tinymce'],
-      'impact'       => ['colorpicker']
    ],
    'management' => [
       'datacenter' => [
-         'dcroom' => ['colorpicker', 'gridstack', 'rack']
+         'dcroom' => ['gridstack', 'rack']
       ]
    ],
    'config' => [
-      'config' => ['colorpicker'],
       'commondropdown'  => [
          'ITILFollowupTemplate'  => ['tinymce'],
-         'PlanningEventCategory' => ['colorpicker'],
-         'ProjectState'          => ['colorpicker'],
          'SolutionTemplate'      => ['tinymce'],
       ],
       'notification' => [
          'notificationtemplate' => ['tinymce']
+      ],
+      'plugin'=> [
+         'marketplace' => ['marketplace']
       ]
    ],
-   'admin'        => ['colorpicker', 'clipboard'],
-   'preference'   => ['colorpicker', 'clipboard'],
-   'self-service' => ['colorpicker', 'tinymce']
+   'admin'        => ['clipboard'],
+   'preference'   => ['clipboard'],
+   'self-service' => ['tinymce']
 ];
 
 //Maximum time, in miliseconds a saved search should not exeed

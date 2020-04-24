@@ -57,12 +57,7 @@ function header_html($etape) {
    echo "<title>Setup GLPI</title>";
 
    // CFG
-   echo Html::scriptBlock("
-      var CFG_GLPI  = {
-         'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
-         'root_doc': '".$CFG_GLPI["root_doc"]."',
-      };
-   ");
+   echo Html::getCoreVariablesForJavascript();
 
     // LIBS
    echo Html::script("public/lib/base.js");

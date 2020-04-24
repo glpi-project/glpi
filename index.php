@@ -96,12 +96,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo $entity->getCustomCssTag();
 
    // CFG
-   echo Html::scriptBlock("
-      var CFG_GLPI  = {
-         'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
-         'root_doc': '".$CFG_GLPI["root_doc"]."',
-      };
-   ");
+   echo Html::getCoreVariablesForJavascript();
 
    echo Html::script("public/lib/base.js");
    echo Html::script("public/lib/fuzzy.js");

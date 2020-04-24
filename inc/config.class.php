@@ -107,6 +107,7 @@ class Config extends CommonDBTM {
 
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('GLPINetwork', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -2012,63 +2013,67 @@ class Config extends CommonDBTM {
 
       // use same name that in composer.json
       $deps = [[ 'name'    => 'htmlawed/htmlawed',
-         'version' => hl_version() ,
-         'check'   => 'hl_version' ],
-         [ 'name'    => 'phpmailer/phpmailer',
-            'version' => $pm::VERSION,
-            'check'   => 'PHPMailer\\PHPMailer\\PHPMailer' ],
-         [ 'name'    => 'simplepie/simplepie',
-            'version' => SIMPLEPIE_VERSION,
-            'check'   => $sp ],
-         [ 'name'    => 'tecnickcom/tcpdf',
-            'version' => TCPDF_STATIC::getTCPDFVersion(),
-            'check'   => 'TCPDF' ],
-         [ 'name'    => 'michelf/php-markdown',
-            'check'   => 'Michelf\\Markdown' ],
-         [ 'name'    => 'true/punycode',
-            'check'   => 'TrueBV\\Punycode' ],
-         [ 'name'    => 'iamcal/lib_autolink',
-            'check'   => 'autolink' ],
-         [ 'name'    => 'sabre/dav',
-            'check'   => 'Sabre\\DAV\\Version' ],
-         [ 'name'    => 'sabre/http',
-            'check'   => 'Sabre\\HTTP\\Version' ],
-         [ 'name'    => 'sabre/uri',
-            'check'   => 'Sabre\\Uri\\Version' ],
-         [ 'name'    => 'sabre/vobject',
-            'check'   => 'Sabre\\VObject\\Component' ],
-         [ 'name'    => 'laminas/laminas-cache',
-            'check'   => 'Laminas\\Cache\\Module' ],
-         [ 'name'    => 'laminas/laminas-i18n',
-            'check'   => 'Laminas\\I18n\\Module' ],
-         [ 'name'    => 'laminas/laminas-serializer',
-            'check'   => 'Laminas\\Serializer\\Module' ],
-         [ 'name'    => 'monolog/monolog',
-            'check'   => 'Monolog\\Logger' ],
-         [ 'name'    => 'sebastian/diff',
-            'check'   => 'SebastianBergmann\\Diff\\Diff' ],
-         [ 'name'    => 'elvanto/litemoji',
-            'check'   => 'LitEmoji\\LitEmoji' ],
-         [ 'name'    => 'symfony/console',
-            'check'   => 'Symfony\\Component\\Console\\Application' ],
-         [ 'name'    => 'scssphp/scssphp',
-            'check'   => 'ScssPhp\ScssPhp\Compiler' ],
-         [ 'name'    => 'laminas/laminas-mail',
-            'check'   => 'Laminas\\Mail\\Protocol\\Imap' ],
-         [ 'name'    => 'laminas/laminas-mime',
-            'check'   => 'Laminas\\Mime\\Mime' ],
-         [ 'name'    => 'rlanvin/php-rrule',
-            'check'   => 'RRule\\RRule' ],
-         [ 'name'    => 'blueimp/jquery-file-upload',
-            'check'   => 'UploadHandler' ],
-         [ 'name'    => 'ramsey/uuid',
-            'check'   => 'Ramsey\\Uuid\\Uuid' ],
-         [ 'name'    => 'psr/log',
-            'check'   => 'Psr\\Log\\LoggerInterface' ],
-         [ 'name'    => 'psr/simple-cache',
-            'check'   => 'Psr\\SimpleCache\\CacheInterface' ],
-         [ 'name'    => 'mexitek/phpcolors',
-            'check'   => 'Mexitek\\PHPColors\\Color' ],
+                 'version' => hl_version() ,
+                 'check'   => 'hl_version' ],
+               [ 'name'    => 'phpmailer/phpmailer',
+                 'version' => $pm::VERSION,
+                 'check'   => 'PHPMailer\\PHPMailer\\PHPMailer' ],
+               [ 'name'    => 'simplepie/simplepie',
+                 'version' => SIMPLEPIE_VERSION,
+                 'check'   => $sp ],
+               [ 'name'    => 'tecnickcom/tcpdf',
+                 'version' => TCPDF_STATIC::getTCPDFVersion(),
+                 'check'   => 'TCPDF' ],
+               [ 'name'    => 'michelf/php-markdown',
+                 'check'   => 'Michelf\\Markdown' ],
+               [ 'name'    => 'true/punycode',
+                 'check'   => 'TrueBV\\Punycode' ],
+               [ 'name'    => 'iamcal/lib_autolink',
+                 'check'   => 'autolink' ],
+               [ 'name'    => 'sabre/dav',
+                 'check'   => 'Sabre\\DAV\\Version' ],
+               [ 'name'    => 'sabre/http',
+                 'check'   => 'Sabre\\HTTP\\Version' ],
+               [ 'name'    => 'sabre/uri',
+                 'check'   => 'Sabre\\Uri\\Version' ],
+               [ 'name'    => 'sabre/vobject',
+                 'check'   => 'Sabre\\VObject\\Component' ],
+               [ 'name'    => 'laminas/laminas-cache',
+                 'check'   => 'Laminas\\Cache\\Module' ],
+               [ 'name'    => 'laminas/laminas-i18n',
+                 'check'   => 'Laminas\\I18n\\Module' ],
+               [ 'name'    => 'laminas/laminas-serializer',
+                 'check'   => 'Laminas\\Serializer\\Module' ],
+               [ 'name'    => 'monolog/monolog',
+                 'check'   => 'Monolog\\Logger' ],
+               [ 'name'    => 'sebastian/diff',
+                 'check'   => 'SebastianBergmann\\Diff\\Diff' ],
+               [ 'name'    => 'elvanto/litemoji',
+                 'check'   => 'LitEmoji\\LitEmoji' ],
+               [ 'name'    => 'symfony/console',
+                 'check'   => 'Symfony\\Component\\Console\\Application' ],
+               [ 'name'    => 'scssphp/scssphp',
+                 'check'   => 'ScssPhp\ScssPhp\Compiler' ],
+               [ 'name'    => 'laminas/laminas-mail',
+                 'check'   => 'Laminas\\Mail\\Protocol\\Imap' ],
+               [ 'name'    => 'laminas/laminas-mime',
+                 'check'   => 'Laminas\\Mime\\Mime' ],
+               [ 'name'    => 'rlanvin/php-rrule',
+                 'check'   => 'RRule\\RRule' ],
+               [ 'name'    => 'blueimp/jquery-file-upload',
+                 'check'   => 'UploadHandler' ],
+               [ 'name'    => 'ramsey/uuid',
+                 'check'   => 'Ramsey\\Uuid\\Uuid' ],
+               [ 'name'    => 'psr/log',
+                 'check'   => 'Psr\\Log\\LoggerInterface' ],
+               [ 'name'    => 'psr/simple-cache',
+                 'check'   => 'Psr\\SimpleCache\\CacheInterface' ],
+               [ 'name'    => 'mexitek/phpcolors',
+                 'check'   => 'Mexitek\\PHPColors\\Color' ],
+               [ 'name'    => 'guzzlehttp/guzzle',
+                 'check'   => 'GuzzleHttp\\Client' ],
+               [ 'name'    => 'wapmorgan/unified-archive',
+                 'check'   => 'wapmorgan\\UnifiedArchive\\UnifiedArchive' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
@@ -2253,6 +2258,9 @@ class Config extends CommonDBTM {
                $tabs[6]  = _n('SQL replica', 'SQL replicas', Session::getPluralNumber());  // Slave
             }
             return $tabs;
+
+         case 'GLPINetwork':
+            return __('GLPI Network');
       }
       return '';
    }
@@ -3802,5 +3810,35 @@ class Config extends CommonDBTM {
 
          return json_encode($input);
       }
+
+   /**
+    * Get UUID
+    *
+    * @param string $type UUID type (e.g. 'instance' or 'registration')
+    *
+    * @return string
+    */
+   public static final function getUuid($type) {
+      $conf = self::getConfigurationValues('core', [$type . '_uuid']);
+      $uuid = null;
+      if (!isset($conf[$type . '_uuid']) || empty($conf[$type . '_uuid'])) {
+         $uuid = self::generateUuid($type);
+      } else {
+         $uuid = $conf[$type . '_uuid'];
+      }
+      return $uuid;
+   }
+
+   /**
+    * Generates an unique identifier and store it
+    *
+    * @param string $type UUID type (e.g. 'instance' or 'registration')
+    *
+    * @return string
+    */
+   public static final function generateUuid($type) {
+      $uuid = Toolbox::getRandomString(40);
+      self::setConfigurationValues('core', [$type . '_uuid' => $uuid]);
+      return $uuid;
    }
 }
