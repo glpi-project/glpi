@@ -72,7 +72,7 @@ class Item_Devices extends CommonDBRelation {
 
    static public $mustBeAttached_2 = false; // Mandatory to display creation form
 
-   public function computeFriendlyName() {
+   protected function computeFriendlyName() {
       $itemtype = static::$itemtype_2;
       if (!empty($this->fields[static::$itemtype_1])) {
          $item = new $this->fields[static::$itemtype_1];

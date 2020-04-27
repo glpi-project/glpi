@@ -957,7 +957,7 @@ class Profile_User extends CommonDBRelation {
       return _n('Profile', 'Profiles', $nb);
    }
 
-   public function computeFriendlyName() {
+   protected function computeFriendlyName() {
 
       $name = sprintf(__('%1$s, %2$s'),
                       Dropdown::getDropdownName('glpi_profiles', $this->fields['profiles_id']),

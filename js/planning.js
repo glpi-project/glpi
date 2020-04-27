@@ -186,7 +186,7 @@ var GLPIPlanning  = {
             if (!disable_qtip) {
                // detect ideal position
                var qtip_position = {
-                   target: 'mouse',
+                  target: 'mouse',
                   adjust: {
                      mouse: false
                   },
