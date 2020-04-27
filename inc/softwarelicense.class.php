@@ -228,6 +228,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addImpactTab($ong, $options);
       $this->addStandardTab('SoftwareLicense', $ong, $options);
       $this->addStandardTab('Item_SoftwareLicense', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);

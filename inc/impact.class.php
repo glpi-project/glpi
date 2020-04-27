@@ -28,12 +28,15 @@ class Impact extends CommonGLPI {
    const MAX_DEPTH = 10;
    const NO_DEPTH_LIMIT = 10000;
 
+   // Config values
+   const CONF_ENABLED = 'impact_enabled_itemtypes';
+
    public static function getTypeName($nb = 0) {
-      return _n('Asset impact', 'Asset impacts', $nb);
+      return __('Impact analysis');
    }
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       // Class of the current item
       $class = get_class($item);
@@ -45,44 +48,42 @@ class Impact extends CommonGLPI {
          );
       }
 
-      $isEnabledAsset = isset($CFG_GLPI['impact_asset_types'][$class]);
-      $isITILObject = is_a($item, "CommonITILObject", true);
+      $is_enabled_asset = self::isEnabled($class);
+      $is_itil_object = is_a($item, "CommonITILObject", true);
 
       // Check if itemtype is valid
-      if (!$isEnabledAsset && !$isITILObject) {
+      if (!$is_enabled_asset && !$is_itil_object) {
          throw new InvalidArgumentException(
             "Argument \$item ($class) is not a valid target for impact analysis."
          );
       }
 
-      if (!$_SESSION['glpishow_count_on_tabs']) {
-         // Count is disabled in config -> 0
+      if (!$_SESSION['glpishow_count_on_tabs']
+         || !isset($item->fields['id'])
+         || $is_itil_object
+      ) {
+         // Count is disabled in config OR no item loaded OR ITIL object -> no count
          $total = 0;
-      } else if ($isEnabledAsset) {
-         if (isset($item->fields['id'])) {
-            // If on an asset, get the number of its direct dependencies
-            $total = count($DB->request([
-                'FROM'  => ImpactRelation::getTable(),
-                'WHERE' => [
-                   'OR' => [
-                      [
-                         'itemtype_source' => get_class($item),
-                         'items_id_source' => $item->fields['id'],
-                      ],
-                      [
-                         'itemtype_impacted' => get_class($item),
-                         'items_id_impacted' => $item->fields['id'],
-                      ]
-                   ]
-                ]
-             ]));
-         } else {
-            // Tab name for an ITIL object : always 0
-            $total = 0;
-         }
-      } else if ($isITILObject) {
-         // Tab name for an ITIL object : always 0
-         $total = 0;
+      } else if ($is_enabled_asset) {
+         // If on an asset, get the number of its direct dependencies
+         $total = count($DB->request([
+            'FROM'  => ImpactRelation::getTable(),
+            'WHERE' => [
+               'OR' => [
+                  [
+                     // Source item is our item
+                     'itemtype_source' => get_class($item),
+                     'items_id_source' => $item->fields['id'],
+                  ],
+                  [
+                     // Impacted item is our item AND source item is enabled
+                     'itemtype_impacted' => get_class($item),
+                     'items_id_impacted' => $item->fields['id'],
+                     'itemtype_source'   => self::getEnabledItemtypes()
+                  ]
+               ]
+            ]
+         ]));
       }
 
       return self::createTabEntry(__("Impact analysis"), $total);
@@ -93,8 +94,6 @@ class Impact extends CommonGLPI {
       $tabnum = 1,
       $withtemplate = 0
    ) {
-      global $CFG_GLPI;
-
       // Impact analysis should not be available outside of central
       if (Session::getCurrentInterface() !== "central") {
          return false;
@@ -130,7 +129,7 @@ class Impact extends CommonGLPI {
          $found = false;
          foreach ($linked_items as $linked_item) {
             $class = $linked_item['itemtype'];
-            if (isset($CFG_GLPI['impact_asset_types'][$class])) {
+            if (self::isEnabled($class)) {
                $item = new $class;
                $found = $item->getFromDB($linked_item['items_id']);
                break;
@@ -146,12 +145,12 @@ class Impact extends CommonGLPI {
       }
 
       // Check is the impact analysis is enabled for $class
-      if (!isset($CFG_GLPI['impact_asset_types'][$class])) {
+      if (!self::isEnabled($class)) {
          return false;
       }
 
       // Build graph and params
-      $graph = Impact::buildGraph($item);
+      $graph = self::buildGraph($item);
       $params = self::prepareParams($item);
       $readonly = !$item->can($item->fields['id'], UPDATE);
 
@@ -269,7 +268,7 @@ class Impact extends CommonGLPI {
                echo '<td class="impact-left" width="15%">';
                echo '<div><a target="_blank" href="' .
                   $itemtype_item['stored']->getLinkURL() . '">' .
-                  $itemtype_item['stored']->fields['name'] . '</a></div>';
+                  $itemtype_item['stored']->fields[$itemtype_item['stored']::getNameField()] . '</a></div>';
                echo '</td>';
                echo '<td width="40%"><div>';
 
@@ -778,7 +777,7 @@ class Impact extends CommonGLPI {
 
       // Add a value in the dropdown for each items, grouped by type
       foreach ($items as $item) {
-         if (isset($CFG_GLPI['impact_asset_types'][$item['itemtype']])) {
+         if (self::isEnabled($item['itemtype'])) {
             // Add itemtype group if it doesn't exist in the dropdown yet
             $itemtype_label =  $item['itemtype']::getTypeName();
             if (!isset($values[$itemtype_label])) {
@@ -836,12 +835,12 @@ class Impact extends CommonGLPI {
       string $filter,
       int $page = 0
    ) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       // Check if this type is enabled in config
-      if (!isset($CFG_GLPI['impact_asset_types'][$itemtype])) {
+      if (!self::isEnabled($itemtype)) {
          throw new \InvalidArgumentException(
-            "itemtype ($itemtype) must be enabled in cfg/impact_asset_types"
+            "itemtype ($itemtype) must be enabled in config"
          );
       }
 
@@ -868,11 +867,12 @@ class Impact extends CommonGLPI {
       // Search for items
       $filter = strtolower($filter);
       $table = $itemtype::getTable();
+      $name = $itemtype::getNameField();
       $base_request = [
          'FROM'   => $table,
          'WHERE'  => [
             'RAW' => [
-               'LOWER(' . DBmysql::quoteName("$table.name") . ')' => ['LIKE', "%$filter%"]
+               'LOWER(' . DBmysql::quoteName("$table.$name") . ')' => ['LIKE', "%$filter%"]
             ],
             'NOT' => [
                "$table.id" => $used
@@ -888,7 +888,7 @@ class Impact extends CommonGLPI {
       }
 
       $select = [
-         'SELECT' => ["$table.id", "$table.name"],
+         'SELECT' => ["$table.id", "$table.$name"],
       ];
       $limit = [
          'START' => $page * 20,
@@ -943,9 +943,19 @@ class Impact extends CommonGLPI {
       ]);
 
       echo '<div class="impact-side-filter-itemtypes-items">';
-      foreach ($CFG_GLPI["impact_asset_types"] as $itemtype => $icon) {
+      $itemtypes = $CFG_GLPI["impact_asset_types"];
+      // Sort by translated itemtypes
+      uksort($itemtypes, function($a, $b) {
+         return strcasecmp($a::getTypeName(), $b::getTypeName());
+      });
+      foreach ($itemtypes as $itemtype => $icon) {
          // Do not display this itemtype if the user doesn't have READ rights
          if (!Session::haveRight($itemtype::$rightname, READ)) {
+            continue;
+         }
+
+         // Skip if not enabled
+         if (!self::isEnabled($itemtype)) {
             continue;
          }
 
@@ -992,7 +1002,7 @@ class Impact extends CommonGLPI {
 
       echo '<h4>' . __('Visibility') . '</h4>';
       echo '<div class="impact-side-settings-item">';
-      echo \Html::getCheckbox([
+      echo Html::getCheckbox([
          'id'      => "toggle_impact",
          'name'    => "toggle_impact",
          'checked' => "true",
@@ -1001,7 +1011,7 @@ class Impact extends CommonGLPI {
       echo '</div>';
 
       echo '<div class="impact-side-settings-item">';
-      echo \Html::getCheckbox([
+      echo Html::getCheckbox([
          'id'      => "toggle_depends",
          'name'    => "toggle_depends",
          'checked' => "true",
@@ -1146,6 +1156,11 @@ class Impact extends CommonGLPI {
       }
       // Iterate on each relations found
       foreach ($relations as $related_item) {
+         // Do not explore disabled itemtypes
+         if (!self::isEnabled($related_item['itemtype_' . $source])) {
+            continue;
+         }
+
          // Add the related node
          if (!($related_node = getItemForItemtype($related_item['itemtype_' . $source]))) {
             continue;
@@ -1185,7 +1200,8 @@ class Impact extends CommonGLPI {
       }
 
       // Check if icon exist on the filesystem
-      if (file_exists(__DIR__ . "/../$icon_path")) {
+      $file_path = GLPI_ROOT . "/$icon_path";
+      if (file_exists($file_path) && is_file($file_path)) {
          return $icon_path;
       }
 
@@ -1213,14 +1229,14 @@ class Impact extends CommonGLPI {
       }
 
       // Get web path to the image matching the itemtype from config
-      $image_name = $CFG_GLPI["impact_asset_types"][get_class($item)];
+      $image_name = $CFG_GLPI["impact_asset_types"][get_class($item)] ?? "";
       $image_name = self::checkIcon($image_name);
 
       // Define basic data of the new node
       $new_node = [
          'id'          => $key,
-         'label'       => $item->fields['name'],
-         'name'        => $item->fields['name'],
+         'label'       => $item->fields[$item::getNameField()],
+         'name'        => $item->fields[$item::getNameField()],
          'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
          'ITILObjects' => $item->getITILTickets(true),
       ];
@@ -1516,11 +1532,9 @@ class Impact extends CommonGLPI {
     * @param string $items_id id of the asset
     */
    public static function assetExist(string $itemtype, string $items_id) {
-      global $CFG_GLPI;
-
       try {
          // Check this asset type is enabled
-         if (!isset($CFG_GLPI['impact_asset_types'][$itemtype])) {
+         if (!self::isEnabled($itemtype)) {
             return false;
          }
 
@@ -1593,7 +1607,7 @@ class Impact extends CommonGLPI {
 
       // First row: header
       echo "<tr>";
-      echo "<th colspan=\"2\">" . __('Impact analysis') . "</th>";
+      echo "<th colspan=\"2\">" . self::getTypeName() . "</th>";
       echo "</tr>";
 
       // Second row: itemtype field
@@ -1602,7 +1616,7 @@ class Impact extends CommonGLPI {
       echo "<td>";
       Dropdown::showItemTypes(
          'type',
-         array_keys($CFG_GLPI['impact_asset_types']),
+         self::getEnabledItemtypes(),
          [
             'value'        => null,
             'width'        => '100%',
@@ -1652,7 +1666,7 @@ class Impact extends CommonGLPI {
       global $DB, $CFG_GLPI;
 
       // Skip if not a valid impact type
-      if (!isset($CFG_GLPI['impact_asset_types'][get_class($item)])) {
+      if (!self::isEnabled($item::getType())) {
          return;
       }
 
@@ -1671,7 +1685,7 @@ class Impact extends CommonGLPI {
       ]);
 
       // Remove associated ImpactItem
-      $impact_item = \ImpactItem::findForItem($item, false);
+      $impact_item = ImpactItem::findForItem($item, false);
       if (!$impact_item) {
          // Stop here if no impactitem, nothing more to delete
          return;
@@ -1683,36 +1697,125 @@ class Impact extends CommonGLPI {
       // contexts if they are slave to us
       if ($impact_item->fields['impactcontexts_id'] != 0
          && $impact_item->fields['is_slave'] != 0) {
-         $DB->update(\ImpactItem::getTable(), [
+         $DB->update(ImpactItem::getTable(), [
                'impactcontexts_id' => 0,
             ], [
                'impactcontexts_id' => $impact_item->fields['impactcontexts_id'],
             ]
          );
 
-         $DB->delete(\ImpactContext::getTable(), [
+         $DB->delete(ImpactContext::getTable(), [
             'id' => $impact_item->fields['impactcontexts_id']
          ]);
       }
 
       // Delete group if less than two children remaining
       if ($impact_item->fields['parent_id'] != 0) {
-         $count = countElementsInTable(\ImpactItem::getTable(), [
+         $count = countElementsInTable(ImpactItem::getTable(), [
             'parent_id' => $impact_item->fields['parent_id']
          ]);
 
          if ($count < 2) {
-            $DB->update(\ImpactItem::getTable(), [
+            $DB->update(ImpactItem::getTable(), [
                   'parent_id' => 0,
                ], [
                   'parent_id' => $impact_item->fields['parent_id']
                ]
             );
 
-            $DB->delete(\ImpactCompound::getTable(), [
+            $DB->delete(ImpactCompound::getTable(), [
                'id' => $impact_item->fields['parent_id']
             ]);
          }
       }
+   }
+
+   /**
+    * Check if the given itemtype is enabled in impact config
+    *
+    * @param string $itemtype
+    * @return bool
+    */
+   public static function isEnabled(string $itemtype): bool {
+      return in_array($itemtype, self::getEnabledItemtypes());
+   }
+
+   /**
+    * Return enabled itemtypes
+    *
+    * @return array
+    */
+   public static function getEnabledItemtypes(): array {
+      // Get configured values
+      $conf = Config::getConfigurationValues('core');
+      $enabled = importArrayFromDB($conf[self::CONF_ENABLED]);
+
+      // Remove any forbidden values
+      return array_filter($enabled, function($itemtype) {
+         global $CFG_GLPI;
+
+         return isset($CFG_GLPI['impact_asset_types'][$itemtype]);
+      });
+   }
+
+   /**
+    * Return default itemtypes
+    *
+    * @return array
+    */
+   public static function getDefaultItemtypes() {
+      global $CFG_GLPI;
+
+      $values = $CFG_GLPI["default_impact_asset_types"];
+      return array_keys($values);
+   }
+
+   /**
+    * Print the impact config tab
+    */
+   public static function showConfigForm() {
+      global $CFG_GLPI;
+
+      // Form head
+      $action = Toolbox::getItemTypeFormURL(Config::getType());
+      echo "<form name='form' action='$action' method='post'>";
+
+      // Table head
+      echo '<table class="tab_cadre_fixe">';
+      echo '<tr><th colspan="2">' . __('Impact analysis configuration') . '</th></tr>';
+
+      // First row: enabled itemtypes
+      $input_name = self::CONF_ENABLED;
+      $values = $CFG_GLPI["impact_asset_types"];
+      foreach ($values as $itemtype => $icon) {
+         $values[$itemtype]= $itemtype::getTypeName();
+      }
+      echo '<tr class="tab_bg_2">';
+
+      echo '<td width="40%">';
+      echo "<label for='$input_name'>";
+      echo __('Enabled itemtypes');
+      echo '</label>';
+      echo '</td>';
+
+      $core_config = Config::getConfigurationValues("core");
+      $db_values = importArrayFromDB($core_config[self::CONF_ENABLED]);
+      echo '<td>';
+      Dropdown::showFromArray($input_name, $values, [
+         'multiple' => true,
+         'values'   => $db_values
+      ]);
+      echo "</td>";
+
+      echo "</tr>";
+
+      echo '</table>';
+
+      // Submit button
+      echo '<div style="text-align:center">';
+      echo Html::submit(__('Save'), ['name' => 'update']);
+      echo '</div>';
+
+      Html::closeForm();
    }
 }

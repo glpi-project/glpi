@@ -850,7 +850,7 @@ class Ticket extends CommonITILObject {
       // Enable impact tab if there is a valid linked item
       foreach ($this->getLinkedItems() as $linkedItem) {
          $class = $linkedItem['itemtype'];
-         if (isset($CFG_GLPI['impact_asset_types'][$class])
+         if (Impact::isEnabled($class)
             && Session::getCurrentInterface() === "central") {
 
             $this->addStandardTab('Impact', $ong, $options);

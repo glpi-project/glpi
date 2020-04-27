@@ -92,6 +92,7 @@ class Profile extends CommonDBTM {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addImpactTab($ong, $options);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Profile_User', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);

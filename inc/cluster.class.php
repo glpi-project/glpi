@@ -50,6 +50,7 @@ class Cluster extends CommonDBTM {
    function defineTabs($options = []) {
       $ong = [];
       $this->addDefaultFormTab($ong)
+         ->addImpactTab($ong, $options)
          ->addStandardTab('Item_Cluster', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
@@ -59,7 +60,7 @@ class Cluster extends CommonDBTM {
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Appliance_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
-      ;
+
       return $ong;
    }
 

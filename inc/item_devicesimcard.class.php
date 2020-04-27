@@ -113,4 +113,8 @@ class Item_DeviceSimcard extends Item_Devices {
                                   'autocomplete' => true,],
       ];
    }
+
+   static function getNameField() {
+      return 'serial';
+   }
 }

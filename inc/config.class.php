@@ -240,6 +240,10 @@ class Config extends CommonDBTM {
                                                       ? $input['lock_item_list'] : []));
       }
 
+      if (isset($input[Impact::CONF_ENABLED])) {
+         $input[Impact::CONF_ENABLED] = exportArrayToDB($input[Impact::CONF_ENABLED]);
+      }
+
       // Beware : with new management system, we must update each value
       unset($input['id']);
       unset($input['_glpi_csrf_token']);
@@ -2238,6 +2242,7 @@ class Config extends CommonDBTM {
                $tabs[10] = __('Security');
                $tabs[7]  = __('Performance');
                $tabs[8]  = __('API');
+               $tabs[11] = Impact::getTypeName();
             }
 
             if (DBConnection::isDBSlaveActive()
@@ -2248,6 +2253,9 @@ class Config extends CommonDBTM {
 
          case 'GLPINetwork':
             return __('GLPI Network');
+
+         case Impact::getType():
+            return Impact::getTypeName();
       }
       return '';
    }
@@ -2311,6 +2319,9 @@ class Config extends CommonDBTM {
                $item->showFormSecurity();
                break;
 
+            case 11:
+               Impact::showConfigForm();
+               break;
          }
       }
       return true;

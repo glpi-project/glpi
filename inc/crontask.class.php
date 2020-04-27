@@ -87,6 +87,7 @@ class CronTask extends CommonDBTM{
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addImpactTab($ong, $options);
       $this->addStandardTab('CronTaskLog', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 

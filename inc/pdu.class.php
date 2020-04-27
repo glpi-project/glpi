@@ -51,6 +51,7 @@ class PDU extends CommonDBTM {
    function defineTabs($options = []) {
       $ong = [];
       $this->addDefaultFormTab($ong)
+         ->addImpactTab($ong, $options)
          ->addStandardTab('Pdu_Plug', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)

@@ -254,6 +254,8 @@ class CommonGLPI {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addImpactTab($ong, $options);
+
       return $ong;
    }
 
@@ -349,7 +351,7 @@ class CommonGLPI {
       global $CFG_GLPI;
 
       // Check if impact analysis is enabled for this item type
-      if (isset($CFG_GLPI['impact_asset_types'][static::class])) {
+      if (Impact::isEnabled(static::class)) {
          $this->addStandardTab('Impact', $ong, $options);
       }
 
@@ -1477,5 +1479,4 @@ class CommonGLPI {
             return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
       }
    }
-
 }
