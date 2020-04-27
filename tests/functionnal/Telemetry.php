@@ -65,14 +65,17 @@ class Telemetry extends DbTestCase {
       $this->string($result['uuid'])
          ->hasLength(40);
       $expected['uuid'] = $result['uuid'];
-      $this->array($result['plugins'])
-         ->hasSize(count(glob(GLPI_ROOT . "/plugins/*", GLOB_ONLYDIR)));
+      $plugins_count = 0;
+      foreach (PLUGINS_DIRECTORIES as $plugin_base_dir) {
+         $plugins_count += count(glob("$plugin_base_dir/*", GLOB_ONLYDIR));
+      }
+      $this->array($result['plugins'])->hasSize($plugins_count);
       $expected['plugins'] = $result['plugins'];
       $this->array($result)->isIdenticalTo($expected);
 
       $plugins = new \Plugin();
       $this->integer((int)$plugins->add(['directory' => 'testplugin',
-                                         'name'      => 'test plugin',
+                                         'name'      => 'testplugin',
                                          'version'   => '0.x.z']))
          ->isGreaterThan(0);
 

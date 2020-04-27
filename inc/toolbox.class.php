@@ -31,7 +31,9 @@
  */
 
 use Glpi\Event;
+use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\System\RequirementsManager;
+use Laminas\Mail\Storage\AbstractStorage;
 use Monolog\Logger;
 use Mexitek\PHPColors\Color;
 use Psr\Log\InvalidArgumentException;
@@ -1913,12 +1915,12 @@ class Toolbox {
       }
       $tab['mailbox'] = preg_replace("/.*}/", "", $value);
 
-      $tab['type']    = '';
-      if (strstr($value, "/imap")) {
-         $tab['type'] = 'imap';
-      } else if (strstr($value, "/pop")) {
-         $tab['type'] = 'pop';
-      }
+      // type follows first found "/" and ends on next "/" (or end of server string)
+      // server string is surrounded by "{}" and can be followed by a folder name
+      // i.e. "{mail.domain.org/imap/ssl}INBOX", or "{mail.domain.org/pop}"
+      $type = preg_replace('/^\{[^\/]+\/([^\/]+)(?:\/.+)*\}.*/', '$1', $value);
+      $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols())) ? $type : '';
+
       $tab['ssl'] = false;
       if (strstr($value, "/ssl")) {
          $tab['ssl'] = true;
@@ -1991,11 +1993,11 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
-      $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/imap' => __('IMAP'),
-                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/pop' => __('POP'),];
-
+      $values = [];
+      $protocols = Toolbox::getMailServerProtocols();
+      foreach ($protocols as $key => $params) {
+         $values['/' . $key] = $params['label'];
+      }
       $svalue = (!empty($tab['type'])?'/'.$tab['type']:'');
 
       Dropdown::showFromArray('server_type', $values,
@@ -2144,6 +2146,101 @@ class Toolbox {
       return $out;
    }
 
+   /**
+    * Retuns available mail servers protocols.
+    *
+    * For each returned element:
+    *  - key is type used in connection string;
+    *  - 'label' field is the label to display;
+    *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap | Laminas\Mail\Protocol\Pop3);
+    *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap | Laminas\Mail\Storage\Pop3).
+    *
+    * @return array
+    */
+   private static function getMailServerProtocols(): array {
+      $protocols = [
+         'imap' => [
+            //TRANS: IMAP mail server protocol
+            'label'          => __('IMAP'),
+            'protocol_class' => 'Laminas\Mail\Protocol\Imap',
+            'storage_class'  => 'Laminas\Mail\Storage\Imap',
+         ],
+         'pop'  => [
+            //TRANS: POP3 mail server protocol
+            'label'          => __('POP'),
+            'protocol_class' => 'Laminas\Mail\Protocol\Pop3',
+            'storage_class'  => 'Laminas\Mail\Storage\Pop3',
+         ]
+      ];
+
+      $additionnal_protocols = Plugin::doHookFunction('mail_server_protocols', []);
+      if (is_array($additionnal_protocols)) {
+         foreach ($additionnal_protocols as $key => $additionnal_protocol) {
+            if (array_key_exists($key, $protocols)) {
+               trigger_error(
+                  sprintf('Protocol "%s" is already defined and cannot be overwritten.', $key),
+                  E_USER_WARNING
+               );
+               continue; // already exists, do not overwrite
+            }
+
+            if (!array_key_exists('label', $additionnal_protocol)
+                || !array_key_exists('protocol_class', $additionnal_protocol)
+                || !class_exists($additionnal_protocol['protocol_class'])
+                || !is_a($additionnal_protocol['protocol_class'], ProtocolInterface::class, true)
+                || !array_key_exists('storage_class', $additionnal_protocol)
+                || !class_exists($additionnal_protocol['storage_class'])
+                || !is_a($additionnal_protocol['storage_class'], AbstractStorage::class, true)) {
+               trigger_error(
+                  sprintf('Invalid specs for protocol "%s".', $key),
+                  E_USER_WARNING
+               );
+               continue;
+            }
+            $protocols[$key] = $additionnal_protocol;
+         }
+      } else {
+         trigger_error(
+            'Invalid value returned by "mail_server_protocols" hook.',
+            E_USER_WARNING
+         );
+      }
+
+      return $protocols;
+   }
+
+   /**
+    * Returns protocol classname for given mail server type.
+    * Class should implements Glpi\Mail\Protocol\ProtocolInterface
+    * or should be \Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3 for native protocols.
+    *
+    * @param string $protocol_type
+    *
+    * @return string|null
+    */
+   public static function getMailServerProtocolClassname(string $protocol_type) {
+      $protocols = self::getMailServerProtocols();
+      if (array_key_exists($protocol_type, $protocols)) {
+         return $protocols[$protocol_type]['protocol_class'];
+      }
+      return null;
+   }
+
+   /**
+    * Returns storage classname for given mail server type.
+    * Class should extends \Laminas\Mail\Storage\AbstractStorage.
+    *
+    * @param string $protocol_type
+    *
+    * @return string|null
+    */
+   public static function getMailServerStorageClassname(string $protocol_type) {
+      $protocols = self::getMailServerProtocols();
+      if (array_key_exists($protocol_type, $protocols)) {
+         return $protocols[$protocol_type]['storage_class'];
+      }
+      return null;
+   }
 
    /**
     * @return string[]

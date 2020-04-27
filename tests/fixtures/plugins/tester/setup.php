@@ -30,14 +30,16 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_CONFIG_DIR', __DIR__);
-define('GLPI_PICTURE_DIR', __DIR__ . '/files/_pictures');
-
-define(
-   'PLUGINS_DIRECTORIES',
-   [
-      __DIR__ . '/fixtures/plugins',
-   ]
-);
-
-return false;
+function plugin_version_tester() {
+   return [
+      'name'           => 'tester',
+      'version'        => '1.0.0',
+      'author'         => 'GLPI Test suite',
+      'license'        => 'GPL v2+',
+      'requirements'   => [
+         'glpi' => [
+            'min' => '9.5.0',
+         ]
+      ]
+   ];
+}

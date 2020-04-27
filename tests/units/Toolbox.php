@@ -817,4 +817,210 @@ class Toolbox extends \GLPITestCase {
       $this->string(\Toolbox::getFgColor($bg_color, $offset))
          ->isEqualTo($fg_color);
    }
+
+   protected function mailServerProtocolsProvider() {
+      return [
+         [
+            'cnx_string'        => '',
+            'expected_type'     => '',
+            'expected_protocol' => null,
+            'expected_storage'  => null,
+         ],
+         [
+            'cnx_string'        => '{mail.domain.org/imap}',
+            'expected_type'     => 'imap',
+            'expected_protocol' => \Laminas\Mail\Protocol\Imap::class,
+            'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
+         ],
+         [
+            'cnx_string'        => '{mail.domain.org/imap/ssl/debug}INBOX',
+            'expected_type'     => 'imap',
+            'expected_protocol' => \Laminas\Mail\Protocol\Imap::class,
+            'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
+         ],
+         [
+            'cnx_string'        => '{mail.domain.org/pop}',
+            'expected_type'     => 'pop',
+            'expected_protocol' => \Laminas\Mail\Protocol\Pop3::class,
+            'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
+         ],
+         [
+            'cnx_string'        => '{mail.domain.org/pop/ssl/tls}',
+            'expected_type'     => 'pop',
+            'expected_protocol' => \Laminas\Mail\Protocol\Pop3::class,
+            'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
+         ],
+         [
+            'cnx_string'        => '{mail.domain.org/unknown-type/ssl}',
+            'expected_type'     => '',
+            'expected_protocol' => null,
+            'expected_storage'  => null,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider mailServerProtocolsProvider
+    */
+   public function testGetMailServerProtocols(
+      string $cnx_string,
+      string $expected_type,
+      ?string $expected_protocol,
+      ?string $expected_storage
+   ) {
+      $type = \Toolbox::parseMailServerConnectString($cnx_string)['type'];
+
+      $this->string($type)->isEqualTo($expected_type);
+      $this->variable(\Toolbox::getMailServerProtocolClassname($type))->isEqualTo($expected_protocol);
+      $this->variable(\Toolbox::getMailServerStorageClassname($type))->isEqualTo($expected_storage);
+   }
+
+
+   protected function mailServerProtocolsHookProvider() {
+      // Create valid classes
+      eval(<<<CLASS
+class PluginTesterFakeProtocol implements Glpi\Mail\Protocol\ProtocolInterface {
+   public function connect(\$host, \$port = null, \$ssl = false) {}
+   public function login(\$user, \$password) {}
+}
+class PluginTesterFakeStorage extends Laminas\Mail\Storage\Imap {
+}
+CLASS
+      );
+
+      return [
+         // Check that invalid hook result does not alter core protocols specs
+         [
+            'hook_result'        => 'invalid result',
+            'type'               => 'imap',
+            'expected_warning'   => 'Invalid value returned by "mail_server_protocols" hook.',
+            'expected_protocol'  => 'Laminas\Mail\Protocol\Imap',
+            'expected_storage'   => 'Laminas\Mail\Storage\Imap',
+         ],
+         // Check that hook cannot alter core protocols specs
+         [
+            'hook_result'        => [
+               'imap' => [
+                  'label'          => 'Override test',
+                  'protocol_class' => 'SomeClass',
+                  'storage_class'  => 'SomeClass',
+               ],
+            ],
+            'type'               => 'imap',
+            'expected_warning'   => 'Protocol "imap" is already defined and cannot be overwritten.',
+            'expected_protocol'  => 'Laminas\Mail\Protocol\Imap',
+            'expected_storage'   => 'Laminas\Mail\Storage\Imap',
+         ],
+         // Check that hook cannot alter core protocols specs
+         [
+            'hook_result'        => [
+               'pop' => [
+                  'label'          => 'Override test',
+                  'protocol_class' => 'SomeClass',
+                  'storage_class'  => 'SomeClass',
+               ],
+            ],
+            'type'               => 'pop',
+            'expected_warning'   => 'Protocol "pop" is already defined and cannot be overwritten.',
+            'expected_protocol'  => 'Laminas\Mail\Protocol\Pop3',
+            'expected_storage'   => 'Laminas\Mail\Storage\Pop3',
+         ],
+         // Check that class must exists
+         [
+            'hook_result'        => [
+               'custom-protocol' => [
+                  'label'          => 'Invalid class',
+                  'protocol_class' => 'SomeClass1',
+                  'storage_class'  => 'SomeClass2',
+               ],
+            ],
+            'type'               => 'custom-protocol',
+            'expected_warning'   => 'Invalid specs for protocol "custom-protocol".',
+            'expected_protocol'  => null,
+            'expected_storage'   => null,
+         ],
+         // Check that class must implements expected functions
+         [
+            'hook_result'        => [
+               'custom-protocol' => [
+                  'label'          => 'Invalid class',
+                  'protocol_class' => 'Plugin',
+                  'storage_class'  => 'Migration',
+               ],
+            ],
+            'type'               => 'custom-protocol',
+            'expected_warning'   => 'Invalid specs for protocol "custom-protocol".',
+            'expected_protocol'  => null,
+            'expected_storage'   => null,
+         ],
+         // Check that valid case
+         [
+            'hook_result'        => [
+               'custom-protocol' => [
+                  'label'          => 'Custom email protocol',
+                  'protocol_class' => 'PluginTesterFakeProtocol',
+                  'storage_class'  => 'PluginTesterFakeStorage',
+               ],
+            ],
+            'type'               => 'custom-protocol',
+            'expected_warning'   => null,
+            'expected_protocol'  => 'PluginTesterFakeProtocol',
+            'expected_storage'   => 'PluginTesterFakeStorage',
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider mailServerProtocolsHookProvider
+    */
+   public function testGetAdditionnalMailServerProtocols(
+      $hook_result,
+      string $type,
+      ?string $expected_warning,
+      ?string $expected_protocol,
+      ?string $expected_storage
+   ) {
+      global $PLUGIN_HOOKS;
+
+      $hooks_backup = $PLUGIN_HOOKS;
+
+      $PLUGIN_HOOKS['mail_server_protocols']['tester'] = function () use ($hook_result) {
+         return $hook_result;
+      };
+
+      // Get protocol
+      $protocol  = null;
+      $getProtocol = function () use ($type, &$protocol) {
+         $protocol = \Toolbox::getMailServerProtocolClassname($type);
+      };
+      if ($expected_warning !== null) {
+         $this->when($getProtocol)
+            ->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage($expected_warning)
+            ->exists();
+      } else {
+         $getProtocol();
+      }
+
+      // Get storage
+      $storage   = null;
+      $getStorage = function () use ($type, &$storage) {
+         $storage = \Toolbox::getMailServerStorageClassname($type);
+      };
+      if ($expected_warning !== null) {
+         $this->when($getStorage)
+         ->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage($expected_warning)
+         ->exists();
+      } else {
+         $getStorage();
+      }
+
+      $PLUGIN_HOOKS = $hooks_backup;
+
+      $this->variable($protocol)->isEqualTo($expected_protocol);
+      $this->variable($storage)->isEqualTo($expected_storage);
+   }
 }
