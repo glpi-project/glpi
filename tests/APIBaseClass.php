@@ -1307,6 +1307,32 @@ abstract class APIBaseClass extends \atoum {
          ->hasKey('cfg_glpi');
       $this->array($data['cfg_glpi'])
          ->hasKey('infocom_types');
+   }
+
+
+   public function testUndisclosedField() {
+      // test common cases
+      $itemtypes = [
+         'APIClient', 'AuthLDAP', 'MailCollector', 'User'
+      ];
+      foreach ($itemtypes as $itemtype) {
+         $data = $this->query($itemtype, [
+            'headers'  => ['Session-Token' => $this->session_token]
+         ]);
+
+         $this->array($itemtype::$undisclosedFields)
+            ->size->isGreaterThan(0);
+
+         foreach ($itemtype::$undisclosedFields as $key) {
+            $this->array($data)->notHasKey($key);
+         }
+      }
+
+      // test specific cases
+      // Config
+      $data = $this->query('getGlpiConfig', [
+         'headers'  => ['Session-Token' => $this->session_token]
+      ]);
 
       // Test undisclosed data are actually not disclosed
       $this->array(Config::$undisclosedFields)

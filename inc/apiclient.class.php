@@ -45,6 +45,10 @@ class APIClient extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
+   static $undisclosedFields = [
+      'app_token'
+   ];
+
    static function canCreate() {
       return Session::haveRight(static::$rightname, UPDATE);
    }

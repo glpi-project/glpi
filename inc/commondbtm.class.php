@@ -167,6 +167,13 @@ class CommonDBTM extends CommonGLPI {
     */
    protected static $foreign_key_fields_of = [];
 
+
+   /**
+    * Fields to remove when querying data with api
+    * @var array
+    */
+   static $undisclosedFields = [];
+
    /**
     * Constructor
    **/
@@ -456,6 +463,9 @@ class CommonDBTM extends CommonGLPI {
     * @return void
     */
    static public function unsetUndisclosedFields(&$fields) {
+      foreach (static::$undisclosedFields as $key) {
+         unset($fields[$key]);
+      }
    }
 
 

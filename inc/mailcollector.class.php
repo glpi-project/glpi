@@ -94,6 +94,10 @@ class MailCollector  extends CommonDBTM {
    const REQUESTER_FIELD_FROM = 0;
    const REQUESTER_FIELD_REPLY_TO = 1;
 
+   static $undisclosedFields = [
+      'passwd',
+   ];
+
    static function getTypeName($nb = 0) {
       return _n('Receiver', 'Receivers', $nb);
    }
@@ -2002,10 +2006,6 @@ class MailCollector  extends CommonDBTM {
       // mailcollector for RuleMailCollector, _mailgate for RuleTicket
       Rule::cleanForItemCriteria($this, 'mailcollector');
       Rule::cleanForItemCriteria($this, '_mailgate');
-   }
-
-   static public function unsetUndisclosedFields(&$fields) {
-      unset($fields['passwd']);
    }
 
    /**

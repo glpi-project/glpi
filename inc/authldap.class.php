@@ -94,6 +94,10 @@ class AuthLDAP extends CommonDBTM {
    //connection caching stuff
    static $conn_cache = [];
 
+   static $undisclosedFields = [
+      'rootdn_passwd',
+   ];
+
    static function getTypeName($nb = 0) {
       return _n('LDAP directory', 'LDAP directories', $nb);
    }
@@ -134,9 +138,6 @@ class AuthLDAP extends CommonDBTM {
       $this->fields['responsible_field']           = '';
    }
 
-   static public function unsetUndisclosedFields(&$fields) {
-      unset($fields['rootdn_passwd']);
-   }
 
    /**
     * Preconfig datas for standard system
