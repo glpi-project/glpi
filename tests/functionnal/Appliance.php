@@ -39,7 +39,7 @@ class Appliance extends DbTestCase {
    public function testDefineTabs() {
       $expected = [
          'Appliance$main'  => 'Appliance',
-         'Impact$1'        => 'Impact',
+         'Impact$1'        => 'Impact analysis',
          'Log$1'           => 'Historical'
       ];
       $this
