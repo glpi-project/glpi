@@ -901,7 +901,7 @@ function markMatch (text, term) {
 
    // If there is no match, move on
    if (match < 0) {
-      _result.append(text);
+      _result.append(escapeMarkupText(text));
       return _result.html();
    }
 
@@ -938,11 +938,11 @@ var templateResult = function(result) {
       var text = result.text;
       if (!result.id) {
          // If result has no id, then it is used as an optgroup and is not used for matches
-         _elt.html(text);
+         _elt.html(escapeMarkupText(text));
          return _elt;
       }
 
-      var _term = jQuery.fn.select2.defaults.defaults.escapeMarkup(query.term || '');
+      var _term = escapeMarkupText(query.term || '');
       var markup = markMatch(text, _term);
 
       if (result.level) {
@@ -1001,4 +1001,8 @@ var getTextWithoutDiacriticalMarks = function (text) {
    // The U+0300 -> U+036F range corresponds to diacritical chars.
    // They are removed to keep only chars without their diacritical mark.
    return text.replace(/[\u0300-\u036f]/g, '');
+}
+
+var escapeMarkupText = function (text) {
+   return jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
 }
