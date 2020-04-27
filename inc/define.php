@@ -507,16 +507,49 @@ $CFG_GLPI['javascript'] = [
 //so we count it on display (using automatic mode).
 $CFG_GLPI['max_time_for_count'] = 200;
 
-$CFG_GLPI["impact_asset_types"]  = [
-   'Computer'         => "pics/impact/computer.png",
-   'Monitor'          => "pics/impact/monitor.png",
-   'NetworkEquipment' => "pics/impact/networkequipment.png",
-   'Peripheral'       => "pics/impact/peripheral.png",
-   'Phone'            => "pics/impact/phone.png",
-   'Printer'          => "pics/impact/printer.png",
-   'Software'         => "pics/impact/software.png",
-   'DCRoom'           => "pics/impact/dcroom.png",
-   'Rack'             => "pics/impact/rack.png",
-   'Enclosure'        => "pics/impact/enclosure.png",
-   'Appliance'        => "pics/impact/default.png"
+/**
+ * Impact itemtypes enabled by default
+ */
+$CFG_GLPI["default_impact_asset_types"] = [
+   Appliance::getType()          => "pics/impact/appliance.png",
+   Cluster::getType()            => "pics/impact/cluster.png",
+   Computer::getType()           => "pics/impact/computer.png",
+   Datacenter::getType()         => "pics/impact/datacenter.png",
+   DCRoom::getType()             => "pics/impact/dcroom.png",
+   Domain::getType()             => "pics/impact/domain.png",
+   Enclosure::getType()          => "pics/impact/enclosure.png",
+   Monitor::getType()            => "pics/impact/monitor.png",
+   NetworkEquipment::getType()   => "pics/impact/networkequipment.png",
+   PDU::getType()                => "pics/impact/pdu.png",
+   Peripheral::getType()         => "pics/impact/peripheral.png",
+   Phone::getType()              => "pics/impact/phone.png",
+   Printer::getType()            => "pics/impact/printer.png",
+   Rack::getType()               => "pics/impact/rack.png",
+   Software::getType()           => "pics/impact/software.png",
+];
+
+/**
+ * All possible impact itemtypes: default + extra itemtypes that can be
+ * added in GLPI configuration
+ */
+$CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
+   Authldap::getType()           => "pics/impact/authldap.png",
+   CartridgeItem::getType()      => "pics/impact/cartridgeitem.png",
+   Contract::getType()           => "pics/impact/contract.png",
+   Crontask::getType()           => "pics/impact/crontask.png",
+   DeviceSimcard::getType()      => "pics/impact/devicesimcard.png",
+   Entity::getType()             => "pics/impact/entity.png",
+   Group::getType()              => "pics/impact/group.png",
+   ITILCategory::getType()       => "pics/impact/itilcategory.png",
+   Line::getType()               => "pics/impact/line.png",
+   Location::getType()           => "pics/impact/location.png",
+   Mailcollector::getType()      => "pics/impact/mailcollector.png",
+   Notification::getType()       => "pics/impact/notification.png",
+   Profile::getType()            => "pics/impact/profile.png",
+   Project::getType()            => "pics/impact/project.png",
+   Rack::getType()               => "pics/impact/rack.png",
+   SLM::getType()                => "pics/impact/slm.png",
+   Softwarelicense::getType()    => "pics/impact/softwarelicense.png",
+   Supplier::getType()           => "pics/impact/supplier.png",
+   User::getType()               => "pics/impact/user.png",
 ];

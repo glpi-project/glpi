@@ -177,6 +177,7 @@ class Group extends CommonTreeDropdown {
       $ong = [];
 
       $this->addDefaultFormTab($ong);
+      $this->addImpactTab($ong, $options);
       $this->addStandardTab('Group', $ong, $options);
       if (isset($this->fields['is_usergroup'])
           && $this->fields['is_usergroup']) {

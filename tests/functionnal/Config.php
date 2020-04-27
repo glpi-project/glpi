@@ -113,6 +113,7 @@ class Config extends DbTestCase {
          'Config$10'     => 'Security',
          'Config$7'      => 'Performance',
          'Config$8'      => 'API',
+         'Config$11'      => \Impact::getTypeName(),
          'GLPINetwork$1' => 'GLPI Network',
          'Log$1'         => 'Historical',
       ];

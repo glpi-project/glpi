@@ -1784,6 +1784,11 @@ HTML
       );
    }
 
+   /**  Add default impact itemtypes */
+   $impact_default = exportArrayToDB(Impact::getDefaultItemtypes());
+   $migration->addConfig([Impact::CONF_ENABLED => $impact_default]);
+   /**  /Add default impact itemtypes */
+
    /** Appliances & webapps */
    require __DIR__ . '/update_94_95/appliances.php';
    /** /Appliances & webapps */

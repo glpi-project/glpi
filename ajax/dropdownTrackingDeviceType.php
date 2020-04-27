@@ -49,7 +49,7 @@ if (empty($itemtype)) {
 
 // Check if itemtype is valid in the given context
 if ($context == "impact") {
-   $isValidItemtype = isset($CFG_GLPI['impact_asset_types'][$itemtype]);
+   $isValidItemtype = Impact::isEnabled($itemtype);
 } else {
    $isValidItemtype = CommonITILObject::isPossibleToAssignType($itemtype);
 }

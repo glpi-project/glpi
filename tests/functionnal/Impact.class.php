@@ -32,7 +32,51 @@
 
 namespace tests\units;
 
+use CommonDBTM;
+use Computer;
+use ImpactCompound;
+use ImpactItem;
+use ImpactRelation;
+use Item_Ticket;
+use Ticket;
+
 class Impact extends \DbTestCase {
+
+   protected function addDbCompound(string $name, string $color): int {
+      $em = new ImpactCompound();
+      $id = $em->add([
+         'name'  => $name,
+         'color' => $color,
+      ]);
+
+      $this->integer($id);
+      return $id;
+   }
+
+   protected function addDbNode(CommonDBTM $item, int $parent = 0): int {
+      $em = new ImpactItem();
+      $id = $em->add([
+         'itemtype'  => $item->getType(),
+         'items_id'  => $item->fields['id'],
+         'parent_id' => $parent,
+      ]);
+
+      $this->integer($id);
+      return $id;
+   }
+
+   protected function addDbEdge(CommonDBTM $source, CommonDBTM $impacted): int {
+      $em = new ImpactRelation();
+      $id = $em->add([
+         'itemtype_source'   => $source->getType(),
+         'items_id_source'   => $source->fields['id'],
+         'itemtype_impacted' => $impacted->getType(),
+         'items_id_impacted' => $impacted->fields['id'],
+      ]);
+
+      $this->integer($id);
+      return $id;
+   }
 
    public function testGetTabNameForItem_notCommonDBTM() {
       $impact = new \Impact();
@@ -47,29 +91,28 @@ class Impact extends \DbTestCase {
       $impact = new \Impact();
 
       $this->exception(function() use ($impact) {
-         $notEnabledOrITIL = new \ImpactCompound();
-         $impact->getTabNameForItem($notEnabledOrITIL);
+         $not_enabled_or_itil = new ImpactCompound();
+         $impact->getTabNameForItem($not_enabled_or_itil);
       })->isInstanceOf(\InvalidArgumentException::class);
    }
 
    public function testGetTabNameForItem_tabCountDisabled() {
-      $oldSession = $_SESSION['glpishow_count_on_tabs'];
+      $old_session = $_SESSION['glpishow_count_on_tabs'];
       $_SESSION['glpishow_count_on_tabs'] = false;
 
       $impact = new \Impact();
-      $computer = new \Computer();
+      $computer = new Computer();
       $tab_name = $impact->getTabNameForItem($computer);
-      $_SESSION['glpishow_count_on_tabs'] = $oldSession;
+      $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
       $this->string($tab_name)->isEqualTo("Impact analysis");
    }
 
    public function testGetTabNameForItem_enabledAsset() {
-      $oldSession = $_SESSION['glpishow_count_on_tabs'];
+      $old_session = $_SESSION['glpishow_count_on_tabs'];
       $_SESSION['glpishow_count_on_tabs'] = true;
 
       $impact = new \Impact();
-      $impactRelationManager = new \ImpactRelation();
 
       // Get computers
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
@@ -77,32 +120,21 @@ class Impact extends \DbTestCase {
       $computer3 = getItemByTypeName('Computer', '_test_pc03');
 
       // Create an impact graph
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer1->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
-      ]);
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer2->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer3->fields['id'],
-      ]);
+      $this->addDbEdge($computer1, $computer2);
+      $this->addDbEdge($computer2, $computer3);
       $tab_name = $impact->getTabNameForItem($computer2);
-      $_SESSION['glpishow_count_on_tabs'] = $oldSession;
+      $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
       $this->string($tab_name)->isEqualTo("Impact analysis <sup class='tab_nb'>2</sup>");
    }
 
    public function testGetTabNameForItem_ITILObject() {
-      $oldSession = $_SESSION['glpishow_count_on_tabs'];
+      $old_session = $_SESSION['glpishow_count_on_tabs'];
       $_SESSION['glpishow_count_on_tabs'] = true;
 
       $impact = new \Impact();
-      $impactRelationManager = new \ImpactRelation();
-      $ticketManager = new \Ticket();
-      $itemTicketManger = new \Item_Ticket();
+      $ticket_em = new Ticket();
+      $item_ticket_em = new Item_Ticket();
 
       // Get computers
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
@@ -110,33 +142,23 @@ class Impact extends \DbTestCase {
       $computer3 = getItemByTypeName('Computer', '_test_pc03');
 
       // Create an impact graph
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer1->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
-      ]);
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer2->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer3->fields['id'],
-      ]);
+      $this->addDbEdge($computer1, $computer2);
+      $this->addDbEdge($computer2, $computer3);
 
       // Create a ticket and link it to the computer
-      $ticketId = $ticketManager->add(['name' => "test", 'content' => "test"]);
-      $itemTicketManger->add([
+      $ticket_id = $ticket_em->add(['name' => "test", 'content' => "test"]);
+      $item_ticket_em->add([
          'itemtype'   => "Computer",
          'items_id'   => $computer2->fields['id'],
-         'tickets_id' => $ticketId,
+         'tickets_id' => $ticket_id,
       ]);
 
       // Get the actual ticket
-      $ticket = new \Ticket;
-      $ticket->getFromDB($ticketId);
+      $ticket = new Ticket;
+      $ticket->getFromDB($ticket_id);
 
       $tab_name = $impact->getTabNameForItem($ticket);
-      $_SESSION['glpishow_count_on_tabs'] = $oldSession;
+      $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
       $this->string($tab_name)->isEqualTo("Impact analysis");
    }
@@ -157,10 +179,6 @@ class Impact extends \DbTestCase {
    }
 
    public function testBuildGraph_complex() {
-      $impactRelationManager = new \ImpactRelation();
-      $impactItemManager = new \ImpactItem();
-      $impactCompoundManager = new \ImpactCompound();
-
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer2 = getItemByTypeName('Computer', '_test_pc02');
       $computer3 = getItemByTypeName('Computer', '_test_pc03');
@@ -169,89 +187,29 @@ class Impact extends \DbTestCase {
       $computer6 = getItemByTypeName('Computer', '_test_pc13');
 
       // Set compounds
-      $compound01Id = $impactCompoundManager->add([
-         'name'  => "_test_compound01",
-         'color' => "#000011",
-      ]);
-      $compound02Id = $impactCompoundManager->add([
-         'name'  => "_test_compound02",
-         'color' => "#110000",
-      ]);
+      $compound01_id = $this->addDbCompound("_test_compound01", "#000011");
+      $compound02_id = $this->addDbCompound("_test_compound02", "#110000");
 
       // Set impact items
-      $impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer1->fields['id'],
-         'parent_id' => 0,
-      ]);
-      $impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer2->fields['id'],
-         'parent_id' => $compound01Id,
-      ]);
-      $impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer3->fields['id'],
-         'parent_id' => $compound01Id,
-      ]);
-      $impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer4->fields['id'],
-         'parent_id' => $compound02Id,
-      ]);
-      $impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer5->fields['id'],
-         'parent_id' => $compound02Id,
-      ]);
-      $impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer6->fields['id'],
-         'parent_id' => $compound02Id,
-      ]);
+      $this->addDbNode($computer1);
+      $this->addDbNode($computer2, $compound01_id);
+      $this->addDbNode($computer3, $compound01_id);
+      $this->addDbNode($computer4, $compound02_id);
+      $this->addDbNode($computer5, $compound02_id);
+      $this->addDbNode($computer6, $compound02_id);
 
       // Set relations
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer1->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
-      ]);
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer2->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer3->fields['id'],
-         ]);
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer3->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer4->fields['id'],
-      ]);
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer4->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer5->fields['id'],
-      ]);
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer2->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer6->fields['id'],
-      ]);
-      $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer6->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
-      ]);
+      $this->addDbEdge($computer1, $computer2);
+      $this->addDbEdge($computer2, $computer3);
+      $this->addDbEdge($computer3, $computer4);
+      $this->addDbEdge($computer4, $computer5);
+      $this->addDbEdge($computer2, $computer6);
+      $this->addDbEdge($computer6, $computer2);
 
       // Build graph from pc02
       $computer = getItemByTypeName('Computer', '_test_pc02');
       $graph = \Impact::buildGraph($computer);
-      // var_dump($graph);
+      // var_dump(array_keys($graph['nodes']));
       $this->array($graph)->hasKeys(["nodes", "edges"]);
 
       // Nodes should contain 8 elements (6 nodes + 2 compounds)
@@ -284,9 +242,7 @@ class Impact extends \DbTestCase {
    public function testClean() {
       global $DB;
 
-      $impactRelationManager = new \ImpactRelation();
-      $impactItemManager = new \ImpactItem();
-      $impactCompoundManager = new \ImpactCompound();
+      $compound_em = new ImpactCompound();
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer2 = getItemByTypeName('Computer', '_test_pc02');
@@ -296,87 +252,26 @@ class Impact extends \DbTestCase {
       $computer6 = getItemByTypeName('Computer', '_test_pc13');
 
       // Set compounds
-      $compound01Id = $impactCompoundManager->add([
-         'name'  => "_test_compound01",
-         'color' => "#000011",
-      ]);
-      $compound02Id = $impactCompoundManager->add([
-         'name'  => "_test_compound02",
-         'color' => "#110000",
-      ]);
-      $this->integer($compound01Id);
-      $this->integer($compound02Id);
+      $compound01_id = $this->addDbCompound("_test_compound01", "#000011");
+      $compound02_id = $this->addDbCompound("_test_compound02", "#110000");
 
       // Set impact items
-      $this->integer($impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer1->fields['id'],
-         'parent_id' => 0,
-      ]));
-      $this->integer($impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer2->fields['id'],
-         'parent_id' => $compound01Id,
-      ]));
-      $this->integer($impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer3->fields['id'],
-         'parent_id' => $compound01Id,
-      ]));
-      $this->integer($impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer4->fields['id'],
-         'parent_id' => $compound02Id,
-      ]));
-      $this->integer($impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer5->fields['id'],
-         'parent_id' => $compound02Id,
-      ]));
-      $this->integer($impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer6->fields['id'],
-         'parent_id' => $compound02Id,
-      ]));
+      $this->addDbNode($computer1);
+      $this->addDbNode($computer2, $compound01_id);
+      $this->addDbNode($computer3, $compound01_id);
+      $this->addDbNode($computer4, $compound02_id);
+      $this->addDbNode($computer5, $compound02_id);
+      $this->addDbNode($computer6, $compound02_id);
 
       // Set relations
-      $this->integer($impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer1->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
-      ]));
-      $this->integer($impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer2->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer3->fields['id'],
-      ]));
-      $this->integer($impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer3->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer4->fields['id'],
-      ]));
-      $this->integer($impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer4->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer5->fields['id'],
-      ]));
-      $this->integer($impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer2->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer6->fields['id'],
-      ]));
-      $this->integer($impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer6->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
-      ]));
+      $this->addDbEdge($computer1, $computer2);
+      $this->addDbEdge($computer2, $computer3);
+      $this->addDbEdge($computer3, $computer4);
+      $this->addDbEdge($computer4, $computer5);
+      $this->addDbEdge($computer2, $computer6);
+      $this->addDbEdge($computer6, $computer2);
 
+      // Test queries to evaluate before and after clean
       $relations_to_computer2_query = [
          'FROM'   => \ImpactRelation::getTable(),
          'WHERE' => [
@@ -392,7 +287,6 @@ class Impact extends \DbTestCase {
             ]
          ]
       ];
-
       $impact_item_computer2_query = [
          'FROM'   => \ImpactItem::getTable(),
          'WHERE'  => [
@@ -400,10 +294,9 @@ class Impact extends \DbTestCase {
             'items_id' => $computer2->fields['id'],
          ]
       ];
-
       $compound01_members_query = [
          'FROM' => \ImpactItem::getTable(),
-         'WHERE' => ["parent_id" => $compound01Id]
+         'WHERE' => ["parent_id" => $compound01_id]
       ];
 
       // Before deletion
@@ -413,7 +306,7 @@ class Impact extends \DbTestCase {
          ->isEqualTo(1);
       $this->integer(count($DB->request($compound01_members_query)))
          ->isEqualTo(2);
-      $this->boolean($impactCompoundManager->getFromDB($compound01Id))
+      $this->boolean($compound_em->getFromDB($compound01_id))
          ->isEqualTo(true);
 
       // Delete pc02
@@ -426,7 +319,7 @@ class Impact extends \DbTestCase {
          ->isEqualTo(0);
       $this->integer(count($DB->request($compound01_members_query)))
          ->isEqualTo(0);
-      $this->boolean($impactCompoundManager->getFromDB($compound01Id))
+      $this->boolean($compound_em->getFromDB($compound01_id))
          ->isEqualTo(false);
    }
 }

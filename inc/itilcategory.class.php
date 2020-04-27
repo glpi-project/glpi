@@ -45,8 +45,6 @@ class ITILCategory extends CommonTreeDropdown {
 
    static $rightname          = 'itilcategory';
 
-
-
    function getAdditionalFields() {
 
       $tab = [['name'      => $this->getForeignKeyField(),

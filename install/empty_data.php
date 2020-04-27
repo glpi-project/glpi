@@ -304,6 +304,7 @@ $default_prefs = [
    'default_dashboard_mini_ticket'           => 'mini_ticket',
    'admin_email_noreply'                     => '',
    'admin_email_noreply_name'                => '',
+   Impact::CONF_ENABLED                      => exportArrayToDB(Impact::getDefaultItemtypes())
 ];
 
 $tables['glpi_configs'] = [];

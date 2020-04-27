@@ -57,6 +57,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addImpactTab($ong, $options);
 
       $this->addStandardTab($this->getType(), $ong, $options);
       if ($this->dohistory) {

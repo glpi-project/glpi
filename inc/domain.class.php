@@ -267,6 +267,7 @@ class Domain extends CommonDropdown {
    function defineTabs($options = []) {
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addImpactTab($ong, $options);
       $this->addStandardTab('DomainRecord', $ong, $options);
       $this->addStandardTab('Domain_Item', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
