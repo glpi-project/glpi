@@ -30,14 +30,30 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_CONFIG_DIR', __DIR__);
-define('GLPI_PICTURE_DIR', __DIR__ . '/files/_pictures');
+namespace Glpi\Mail\Protocol;
 
-define(
-   'PLUGINS_DIRECTORIES',
-   [
-      __DIR__ . '/fixtures/plugins',
-   ]
-);
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-return false;
+interface ProtocolInterface {
+
+   /**
+    * Open connection to server.
+    *
+    * @param  string      $host  hostname or IP address of POP3 server
+    * @param  int|null    $port  server port, null value with fallback to default port
+    * @param  string|bool $ssl   use 'SSL', 'TLS' or false
+    */
+   public function connect($host, $port = null, $ssl = false);
+
+   /**
+    * Login to server.
+    *
+    * @param  string $user      username
+    * @param  string $password  password
+    *
+    * @return bool
+    */
+   public function login($user, $password);
+}

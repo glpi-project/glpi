@@ -1262,8 +1262,10 @@ class MailCollector  extends CommonDBTM {
       }
 
       try {
-         $class = '\Laminas\Mail\Storage\\';
-         $class .= ($config['type']== 'pop' ? 'Pop3' : 'Imap');
+         $class = Toolbox::getMailServerStorageClassname($config['type']);
+         if ($class === null) {
+            throw new \Exception(sprintf(__('Unsupported mail server type:%s.'), $config['type']));
+         }
          $this->storage = new $class($params);
          if ($this->fields['errors'] > 0) {
             $this->update([

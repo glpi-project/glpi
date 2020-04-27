@@ -38,6 +38,14 @@ define('GLPI_CONFIG_DIR', __DIR__);
 define('GLPI_VAR_DIR', __DIR__ . '/files');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 
+define(
+   'PLUGINS_DIRECTORIES',
+   [
+      GLPI_ROOT . '/plugins',
+      GLPI_ROOT . '/tests/fixtures/plugins',
+   ]
+);
+
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
@@ -561,6 +569,13 @@ function loadDataset() {
             'dashboards_dashboards_id' => 'Test_Dashboard',
             'itemtype'                 => 'Profile',
             'items_id'                 => 3,
+         ]
+      ], 'Plugin' => [
+         [
+            'directory'    => 'tester',
+            'name'         => 'tester',
+            'version'      => '1.0.0',
+            'state'        => 1,
          ]
       ],
    ];

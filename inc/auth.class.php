@@ -184,14 +184,19 @@ class Auth extends CommonGLPI {
             $ssl = 'TLS';
          }
 
-         $imap = new \Laminas\Mail\Protocol\Imap();
-         $imap->connect(
+         $protocol_class = Toolbox::getMailServerProtocolClassname($config['type']);
+         if ($protocol_class === null) {
+            throw new \RuntimeException(sprintf(__('Unsupported mail server type:%s.'), $config['type']));
+         }
+         $mail = new $protocol_class();
+
+         $mail->connect(
             $config['address'],
             $config['port'],
             $ssl
          );
 
-         return $imap->login($login, $pass);
+         return $mail->login($login, $pass);
       } catch (\Exception $e) {
          $this->addToError($e->getMessage());
          return false;
