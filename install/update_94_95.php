@@ -1964,8 +1964,8 @@ HTML
                  `name` text COLLATE utf8_unicode_ci,
                  `text` longtext COLLATE utf8_unicode_ci,
                  `users_id` int(11) NOT NULL DEFAULT '0',
-                 `date_mod` datetime DEFAULT NULL,
-                 `date_creation` datetime DEFAULT NULL,
+                 `date_mod` timestamp NULL DEFAULT NULL,
+                 `date_creation` timestamp NULL DEFAULT NULL,
                  PRIMARY KEY (`id`),
                  KEY `item` (`reminders_id`,`language`),
                  KEY `users_id` (`users_id`)
