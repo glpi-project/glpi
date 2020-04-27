@@ -1198,10 +1198,11 @@ class KnowbaseItem extends CommonDBVisible {
           && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)) {
          $criteria['LEFT JOIN']['glpi_knowbaseitemtranslations'] = [
             'ON'  => [
-               'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id',
                'glpi_knowbaseitems'             => 'id',
-               'AND'                            => [
-                  'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage']
+               'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id', [
+                  'AND'                            => [
+                     'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage']
+                  ]
                ]
             ]
          ];
@@ -1738,9 +1739,10 @@ class KnowbaseItem extends CommonDBVisible {
          $criteria['LEFT JOIN']['glpi_knowbaseitemtranslations'] = [
             'ON'  => [
                'glpi_knowbaseitems'             => 'id',
-               'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id',
-               'AND'                            => [
-                  'glpi_knowbaseitemtranslations.language'  => $_SESSION['glpilanguage']
+               'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id', [
+                  'AND'                            => [
+                     'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage']
+                  ]
                ]
             ]
          ];
