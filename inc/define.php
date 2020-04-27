@@ -517,5 +517,6 @@ $CFG_GLPI["impact_asset_types"]  = [
    'Software'         => "pics/impact/software.png",
    'DCRoom'           => "pics/impact/dcroom.png",
    'Rack'             => "pics/impact/rack.png",
-   'Enclosure'        => "pics/impact/enclosure.png"
+   'Enclosure'        => "pics/impact/enclosure.png",
+   'Appliance'        => "pics/impact/default.png"
 ];
