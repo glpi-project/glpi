@@ -59,22 +59,27 @@ class Impact extends CommonGLPI {
          // Count is disabled in config -> 0
          $total = 0;
       } else if ($isEnabledAsset) {
-         // If on an asset, get the number of its direct dependencies
-         $total = count($DB->request([
-            'FROM'   => ImpactRelation::getTable(),
-            'WHERE'  => [
-               'OR' => [
-                  [
-                     'itemtype_source' => get_class($item),
-                     'items_id_source' => $item->fields['id'],
-                  ],
-                  [
-                     'itemtype_impacted' => get_class($item),
-                     'items_id_impacted' => $item->fields['id'],
-                  ]
-               ]
-            ]
-         ]));
+         if (isset($item->fields['id'])) {
+            // If on an asset, get the number of its direct dependencies
+            $total = count($DB->request([
+                'FROM'  => ImpactRelation::getTable(),
+                'WHERE' => [
+                   'OR' => [
+                      [
+                         'itemtype_source' => get_class($item),
+                         'items_id_source' => $item->fields['id'],
+                      ],
+                      [
+                         'itemtype_impacted' => get_class($item),
+                         'items_id_impacted' => $item->fields['id'],
+                      ]
+                   ]
+                ]
+             ]));
+         } else {
+            // Tab name for an ITIL object : always 0
+            $total = 0;
+         }
       } else if ($isITILObject) {
          // Tab name for an ITIL object : always 0
          $total = 0;
