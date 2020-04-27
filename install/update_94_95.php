@@ -2014,6 +2014,7 @@ HTML
       }
    }
 
+   Config::setConfigurationValues('core', ['translate_reminders' => 0]);
    //Create remindertranslations table
    if (!$DB->tableExists('glpi_remindertranslations')) {
       $query = "CREATE TABLE `glpi_remindertranslations` (

@@ -281,7 +281,7 @@ class ReminderTranslation extends CommonDBChild {
    static function isReminderTranslationActive() {
       global $CFG_GLPI;
 
-      return true;//$CFG_GLPI['translate_reminder'];
+      return $CFG_GLPI['translate_reminders'];
    }
 
 
