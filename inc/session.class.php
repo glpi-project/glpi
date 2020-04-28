@@ -1138,7 +1138,7 @@ class Session {
 
       if (empty($CURRENTCSRFTOKEN)) {
          do {
-            $CURRENTCSRFTOKEN = md5(uniqid(rand(), true));
+            $CURRENTCSRFTOKEN = bin2hex(random_bytes(32));
          } while ($CURRENTCSRFTOKEN == '');
       }
 
