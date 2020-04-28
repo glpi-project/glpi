@@ -135,7 +135,7 @@ class Planning extends CommonGLPI {
                         <span class='sr-only'>$caldav_title</span>
                        </i>";
 
-         $links[$caldav] = $CFG_GLPI['root_doc'] . '/caldav.php';
+         $links[$caldav] = '/caldav.php';
       }
 
       return $links;
