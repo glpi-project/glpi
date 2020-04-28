@@ -1445,6 +1445,7 @@ CREATE TABLE `glpi_contracts` (
   `renewal` int(11) NOT NULL DEFAULT '0',
   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `states_id` int(11) NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1456,6 +1457,7 @@ CREATE TABLE `glpi_contracts` (
   KEY `use_monday` (`use_monday`),
   KEY `use_saturday` (`use_saturday`),
   KEY `alert` (`alert`),
+  KEY `states_id` (`states_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -6327,6 +6329,7 @@ CREATE TABLE `glpi_states` (
   `is_visible_enclosure` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_pdu` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_cluster` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_contract` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -6347,6 +6350,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_enclosure` (`is_visible_enclosure`),
   KEY `is_visible_pdu` (`is_visible_pdu`),
   KEY `is_visible_cluster` (`is_visible_cluster`),
+  KEY `is_visible_contract` (`is_visible_contract`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

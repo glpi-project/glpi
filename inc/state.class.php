@@ -408,6 +408,15 @@ class State extends CommonTreeDropdown {
          'datatype'           => 'bool'
       ];
 
+      $tab[] = [
+         'id'                 => '36',
+         'table'              => $this->getTable(),
+         'field'              => 'is_visible_contract',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
+                                    Contract::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
+
       return $tab;
    }
 
