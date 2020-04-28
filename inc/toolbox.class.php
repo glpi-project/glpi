@@ -1407,24 +1407,10 @@ class Toolbox {
    /**
     * Check if new version is available
     *
-    * @param $auto                  boolean: check done autically ? (if not display result)
-    *                                        (true by default)
-    * @param $messageafterredirect  boolean: use message after redirect instead of display
-    *                                        (false by default)
-    *
-    * @return string explaining the result
+    * @return string
    **/
-   static function checkNewVersionAvailable($auto = true, $messageafterredirect = false) {
+   static function checkNewVersionAvailable() {
       global $CFG_GLPI;
-
-      if (!$auto
-          && !Session::haveRight('backup', Backup::CHECKUPDATE)) {
-         return false;
-      }
-
-      if (!$auto && !$messageafterredirect) {
-         echo "<br>";
-      }
 
       //parse github releases (get last version number)
       $error = "";
@@ -1440,56 +1426,13 @@ class Toolbox {
       $latest_version = array_pop($released_tags);
 
       if (strlen(trim($latest_version)) == 0) {
-         if (!$auto) {
-            if ($messageafterredirect) {
-               Session::addMessageAfterRedirect($error, true, ERROR);
-            } else {
-               echo "<div class='center'>$error</div>";
-            }
-         } else {
-            return $error;
-         }
-
+         return $error;
       } else {
          if (version_compare($CFG_GLPI["version"], $latest_version, '<')) {
             Config::setConfigurationValues('core', ['founded_new_version' => $latest_version]);
-
-            if (!$auto) {
-               if ($messageafterredirect) {
-                  Session::addMessageAfterRedirect(sprintf(__('A new version is available: %s.'),
-                                                           $latest_version));
-                  Session::addMessageAfterRedirect(__('You will find it on the GLPI-PROJECT.org site.'));
-               } else {
-                  echo "<div class='center'>".sprintf(__('A new version is available: %s.'),
-                                                      $latest_version)."</div>";
-                  echo "<div class='center'>".__('You will find it on the GLPI-PROJECT.org site.').
-                       "</div>";
-               }
-
-            } else {
-               if ($messageafterredirect) {
-                  Session::addMessageAfterRedirect(sprintf(__('A new version is available: %s.'),
-                                                           $latest_version));
-               } else {
-                  return sprintf(__('A new version is available: %s.'), $latest_version);
-               }
-            }
-
+            return sprintf(__('A new version is available: %s.'), $latest_version);
          } else {
-            if (!$auto) {
-               if ($messageafterredirect) {
-                  Session::addMessageAfterRedirect(__('You have the latest available version'));
-               } else {
-                  echo "<div class='center'>".__('You have the latest available version')."</div>";
-               }
-
-            } else {
-               if ($messageafterredirect) {
-                  Session::addMessageAfterRedirect(__('You have the latest available version'));
-               } else {
-                  return __('You have the latest available version');
-               }
-            }
+            return __('You have the latest available version');
          }
       }
       return 1;
