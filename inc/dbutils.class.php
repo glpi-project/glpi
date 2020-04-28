@@ -1542,7 +1542,7 @@ final class DbUtils {
     *
     * @return string formatted username
     */
-   public function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false) {
+   public function formatUserName($ID, $login, $realname, $firstname, $link = 1, $cut = 0, $force_config = false) {
       global $CFG_GLPI;
 
       $before = "";
@@ -1559,37 +1559,38 @@ final class DbUtils {
       }
 
       if (strlen($realname) > 0) {
-         $temp = $realname;
+         $formatted = $realname;
 
          if (strlen($firstname) > 0) {
             if ($order == User::FIRSTNAME_BEFORE) {
-               $temp = $firstname." ".$temp;
+               $formatted = $firstname." ".$formatted;
             } else {
-               $temp .= " ".$firstname;
+               $formatted .= " ".$firstname;
             }
          }
 
          if (($cut > 0)
-            && (Toolbox::strlen($temp) > $cut)) {
-            $temp = Toolbox::substr($temp, 0, $cut)." ...";
+            && (Toolbox::strlen($formatted) > $cut)) {
+            $formatted = Toolbox::substr($formatted, 0, $cut)." ...";
          }
 
       } else {
-         $temp = $login;
+         $formatted = $login;
       }
 
       if ($ID > 0
-         && ((strlen($temp) == 0) || $id_visible)) {
-         $temp = sprintf(__('%1$s (%2$s)'), $temp, $ID);
+         && ((strlen($formatted) == 0) || $id_visible)) {
+         $formatted = sprintf(__('%1$s (%2$s)'), $formatted, $ID);
       }
 
       if (($link == 1)
          && ($ID > 0)) {
-         $before = "<a title=\"".$temp."\" href='".User::getFormURLWithID($ID)."'>";
+         $before = "<a title=\"".Toolbox::addslashes_deep($formatted)."\"
+                       href='".User::getFormURLWithID($ID)."'>";
          $after  = "</a>";
       }
 
-      $username = $before.$temp.$after;
+      $username = $before.$formatted.$after;
       return $username;
    }
 
