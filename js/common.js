@@ -906,17 +906,17 @@ function markMatch (text, term) {
    }
 
    // Put in whatever text is before the match
-   _result.html(text.substring(0, match));
+   _result.html(escapeMarkupText(text.substring(0, match)));
 
    // Mark the match
    var _match = $('<span class=\'select2-rendered__match\'></span>');
-   _match.html(text.substring(match, match + term.length));
+   _match.html(escapeMarkupText(text.substring(match, match + term.length)));
 
    // Append the matching text
    _result.append(_match);
 
    // Put in whatever is after the match
-   _result.append(text.substring(match + term.length));
+   _result.append(escapeMarkupText(text.substring(match + term.length)));
 
    return _result.html();
 }
@@ -942,7 +942,7 @@ var templateResult = function(result) {
          return _elt;
       }
 
-      var _term = escapeMarkupText(query.term || '');
+      var _term = query.term || '';
       var markup = markMatch(text, _term);
 
       if (result.level) {
@@ -1003,6 +1003,17 @@ var getTextWithoutDiacriticalMarks = function (text) {
    return text.replace(/[\u0300-\u036f]/g, '');
 }
 
+/**
+ * Escape markup in text to prevent XSS.
+ *
+ * @param {string} text
+ *
+ * @return {string}
+ */
 var escapeMarkupText = function (text) {
-   return jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
+   if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
+      // escape text, if it contains chevrons (can already be escaped prior to this point :/)
+      text = jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
+   };
+   return text;
 }
