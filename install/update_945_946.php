@@ -30,50 +30,29 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
- * Backup class
+ * Update from 9.4.5 to 9.4.6
  *
- * @since 0.85
+ * @return bool for success (will die for most error)
 **/
+function update945to946() {
+   global $DB, $migration;
 
+   $updateresult     = true;
 
-class Backup extends CommonGLPI {
+   //TRANS: %s is the number of new version
+   $migration->displayTitle(sprintf(__('Update to %s'), '9.4.6'));
+   $migration->setVersion('9.4.6');
 
-   static $rightname = 'backup';
+   $DB->deleteOrDie(
+      'glpi_profilerights',
+      [
+         'name'  => 'backup'
+      ]
+   );
 
-   const CHECKUPDATE = 1024;
+   // ************ Keep it at the end **************
+   $migration->executeMigration();
 
-
-
-   /**
-    * @since 0.85.3
-    **/
-   static function canView() {
-      return Session::haveRight(self::$rightname, READ);
-   }
-
-
-   static function getTypeName($nb = 0) {
-      return __('Maintenance');
-   }
-
-
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
-   function getRights($interface = 'central') {
-
-      $values = [READ                => __('Read'),
-                      CREATE              => __('Create'),
-                      PURGE               => _x('button', 'Delete permanently'),
-                      self::CHECKUPDATE   => __('Check for upgrade')];
-      return $values;
-   }
-
+   return $updateresult;
 }
