@@ -893,7 +893,7 @@ function update084to085() {
                          "`name` = 'check_update' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Backup::CHECKUPDATE ."
+                 SET `rights` = `rights` | " . 1024 /*Backup::CHECKUPDATE*/ ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'backup'";
          $DB->queryOrDie($query, "0.85 update backup with check_update");

@@ -387,7 +387,6 @@ class Html extends \GLPITestCase {
          'Rule',
          'Profile',
          'QueuedNotification',
-         'Backup',
          'Glpi\\Event'
       ];
       $this->string($menu['admin']['title'])->isIdenticalTo('Administration');

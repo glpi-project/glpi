@@ -33,6 +33,13 @@
 include ('../inc/includes.php');
 Session::checkRight("config", READ);
 
+if (isset($_GET['check_version'])) {
+    Session::addMessageAfterRedirect(
+        Toolbox::checkNewVersionAvailable()
+    );
+    Html::back();
+}
+
 $config = new Config();
 $_POST['id'] = 1;
 if (!empty($_POST["update_auth"])) {

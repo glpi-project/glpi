@@ -1835,6 +1835,9 @@ class Config extends CommonDBTM {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>". __('Information about system installation and configuration')."</th></tr>";
+      echo "<tr class='tab_bg_1'><td>";
+      echo "<a class='vsubmit' href='?check_version'>".__('Check if a new version is available')."</a>";
+      echo "</td></tr>";
 
        $oldlang = $_SESSION['glpilanguage'];
        // Keep this, for some function call which still use translation (ex showAllReplicateDelay)

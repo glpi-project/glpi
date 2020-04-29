@@ -1441,9 +1441,6 @@ class Profile extends CommonDBTM {
                       ['itemtype'  => 'QueuedNotification',
                             'label'     => __('Notification queue'),
                             'field'     => 'queuednotification'],
-                      ['itemtype'  => 'Backup',
-                            'label'     => __('Maintenance'),
-                            'field'     => 'backup'],
                       ['itemtype'  => 'Log',
                             'label'     => _n('Log', 'Logs', Session::getPluralNumber()),
                             'field'     => 'logs']];
