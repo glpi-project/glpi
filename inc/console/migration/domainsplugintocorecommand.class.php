@@ -524,6 +524,30 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
                'Domain',
                $new_did ?? $core_dom
             );
+
+            //handle infocoms
+            $infocom = new Infocom();
+            $infocom_input = [
+               'itemtype'     => 'Domain',
+               'items_id'     => $dom['id'],
+               'suppliers_id' => $dom['suppliers_id'],
+               'entities_id'  => $dom['entities_id'],
+               'is_recursive' => $dom['is_recursive']
+            ];
+            if ($core_dom === null) {
+               $infocom->add($infocom_input);
+            } else {
+               $found = $infocom->getFromDBByCrit([
+                  'itemtype'  => 'Domain',
+                  'items_id'  => $core_dom
+               ]);
+               if ($found) {
+                  $infocom_input['id'] = $infocom->fields['id'];
+                  $infocom->update($infocom_input);
+               } else {
+                  $infocom->add($infocom_input);
+               }
+            }
          }
 
          $progress_bar->finish();
