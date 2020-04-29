@@ -2009,10 +2009,15 @@ class MailCollector  extends CommonDBTM {
             // returned verbatim
             break;
          default:
-            throw new \UnexpectedValueException("$encoding is not known");
+            break;
+            //throw new \UnexpectedValueException("$encoding is not known");
       }
 
-      $contentType = $part->getHeader('contentType');
+      try {
+         $contentType = $part->getHeader('contentType');
+      } catch (Exception $e) {
+         $contentType = 'text/html; charset="utf-8"';
+      }
       if ($contentType instanceof \Laminas\Mail\Header\ContentType
           && preg_match('/^text\//', $contentType->getType())
           && mb_detect_encoding($contents) != 'UTF-8') {
