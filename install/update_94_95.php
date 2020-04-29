@@ -1787,8 +1787,8 @@ HTML
    // Add new field states in contract
    if (!$DB->fieldExists('glpi_states', 'is_visible_contract')) {
       $migration->addField('glpi_states', 'is_visible_contract', 'bool', [
-         'value' => 0,
-         'after' => 'is_visible_pdu'
+         'value' => 1,
+         'after' => 'is_visible_cluster'
       ]);
       $migration->addKey('glpi_states', 'is_visible_contract');
    }
