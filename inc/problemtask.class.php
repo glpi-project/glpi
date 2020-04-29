@@ -168,8 +168,8 @@ class ProblemTask extends CommonITILTask {
     *
     * @return string
     */
-   static function displayPlanningItem(array $val, $who, $options, $type = "", $complete = 0) {
-      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $options, $type, $complete);
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options = []) {
+      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete, $options);
    }
 
    /**

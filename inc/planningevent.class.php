@@ -593,14 +593,14 @@ trait PlanningEvent {
     *
     * @param $val        array of the item to display
     * @param $who        ID of the user (0 if all)
-    * @param $options    allow to have planning typeview
     * @param $type       position of the item in the time block (in, through, begin or end)
     *                    default '')
     * @param $complete   complete display (more details) (default 0)
+    * @param $options         allow to have planning typeview (array)
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem(array $val, $who, array $options, $type = "", $complete = 0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options = []) {
       global $CFG_GLPI;
 
       $html = "";
@@ -637,10 +637,11 @@ trait PlanningEvent {
             if ($complete) {
                $category = new PlanningEventCategory();
                $category->getFromDB($val['event_cat']);
-               if ($category->fields > 0)
+               if ($category->fields > 0) {
                   $cat_name = isset($category->fields['name']) ? $category->fields['name'] : '';
+               }
                   $html .= "<div class='event-description rich_text_container'>";
-                  $html .= "<span>" . __('Begin date') . "</span>" . ": " . Html::convdatetime($val["begin"], 1) . "<br>";
+                  $html .= "<span>" . __('Begin date') . "</span>" . ": " . Html::convdatetime($val["begin"],1) . "<br>";
                   $html .= "<span>" . __('End date') . "</span>" . ": " . Html::convdatetime($val["end"] ,1) . "<br>";
                   $html .= "<span>" . __('Status') . "</span>" . ": " . Planning::getState($val["state"]) . "<br>";
                   $html .= "<span>" . __('Title') . "</span>" . ": " . $val['name'] . "<br>";

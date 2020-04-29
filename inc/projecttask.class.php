@@ -1852,10 +1852,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     * @param $type            position of the item in the time block (in, through, begin or end)
     *                         (default '')
     * @param $complete        complete display (more details) (default 0)
+    * @param $options         allow to have planning typeview
     *
     * @return string
     **/
-   static function displayPlanningItem(array $val, $who, array $options, $type = "", $complete = 0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options = []) {
       global $CFG_GLPI;
 
       $html = "";

@@ -41,7 +41,7 @@ if (!empty($_POST["update_auth"])) {
 }
 if (!empty($_POST["update"])) {
    if (isset($_POST['planning_days']) && is_array($_POST['planning_days'])) {
-      $_POST['planning_days'] = Config::_serialize($_POST['planning_days']);
+      $_POST['planning_days'] = json_encode($_POST['planning_days']);
    }
    $config->update($_POST);
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));

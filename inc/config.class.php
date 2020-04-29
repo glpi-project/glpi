@@ -1265,7 +1265,7 @@ class Config extends CommonDBTM {
 
       echo "<td><label for='dropdown_days_planning$rand'>" . __('Days to display (timeline Week / day)')."</label></td><td>";
 
-      Dropdown::showFromArray('planning_days',Toolbox::getDaysOfWeekArray(),
+      Dropdown::showFromArray('planning_days', Toolbox::getDaysOfWeekArray(),
                                  ['values'   => $CFG_GLPI['planning_days'],
                                   'width'    => '100%',
                                   'multiple' => true,
@@ -3829,7 +3829,7 @@ class Config extends CommonDBTM {
     * @return string
     */
    static function _serialize($input) {
-      if($input != null){
+      if ($input != null) {
          foreach ($input as &$value) {
             $value = urlencode(Html::cleanPostForTextArea($value));
          }

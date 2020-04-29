@@ -743,14 +743,14 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
     *
     * @param $val       array of the item to display
     * @param $who             ID of the user (0 if all)
-    * @param $options         allow to have planning typeview (array)
     * @param $type            position of the item in the time block (in, through, begin or end)
     *                         (default '')
     * @param $complete        complete display (more details) (default 0)
+    * @param $options         allow to have planning typeview (array)
     *
     * @return string
    **/
-   static function displayPlanningItem(array $val, $who, array $options, $type = "", $complete = 0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options = []) {
       global $CFG_GLPI;
 
       $html = "";

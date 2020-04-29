@@ -1748,8 +1748,8 @@ class Planning extends CommonGLPI {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
                         $event['users_id']);
-         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, $options, 'in', false);
-         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, $options, 'in', true);
+         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id,'in', false, $options);
+         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id,'in', true, $options);
 
          // dates should be set with the user timezone
          $begin = $event['begin'];
@@ -1767,7 +1767,6 @@ class Planning extends CommonGLPI {
 
          $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']));
          $new_event = self::returnNewEventByType($event, $content, $tooltip, $begin, $end, $index_color, $options);
-
 
          // if we can't update the event, pass the editable key
          if (!$event['editable']) {
@@ -2191,14 +2190,14 @@ class Planning extends CommonGLPI {
     *
     * @param $val       Array of the item to display
     * @param $who             ID of the user (0 if all)
-    * @param $options         allow to have planning typeview
     * @param $type            position of the item in the time block (in, through, begin or end)
     *                         (default '')
     * @param $complete        complete display (more details) (default 0)
+    * @param $options         allow to have planning typeview
     *
     * @return string
    **/
-   static function displayPlanningItem(array $val, $who, array $options, $type = "", $complete = 0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options = []) {
       $html = "";
 
       // bg event shouldn't have content displayed
@@ -2208,7 +2207,7 @@ class Planning extends CommonGLPI {
 
       // Plugins case
       if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
-         $html.= $val['itemtype']::displayPlanningItem($val, $who, $options, $type, $complete);
+         $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete, $options);
       }
 
       return $html;
@@ -2498,6 +2497,8 @@ class Planning extends CommonGLPI {
    static function returnNewEventByType ($event, $content, $tooltip, $begin, $end, $index_color, $options) {
       $rule_event = [];
       $title = '';
+
+      if (isset($options['view_name']) && isset($event['itemtype'])) {
       switch ($options['view_name']) {
          case 'resourceTimeGridDay' :
             if ($event['itemtype'] == TicketTask::class) {
@@ -2522,6 +2523,7 @@ class Planning extends CommonGLPI {
                'title'       => $event['name']];
             break;
       }
+   }
 
       return array_merge([ 'content'     => $content,
                            'tooltip'     => $tooltip,
@@ -2545,7 +2547,7 @@ class Planning extends CommonGLPI {
                            'ajaxurl'     => $event['ajaxurl'] ?? "",
                            'itemtype'    => $event['itemtype'],
                            'parentitemtype' => $event['parentitemtype'] ?? "",
-                           'items_id'    => $event['id'],
+                           'items_id'    => $event['id'] ?? "",
                            'resourceId'  => $event['resourceId'],
                            'priority'    => $event['priority'] ?? "",
                            'state'       => $event['state'] ?? "",

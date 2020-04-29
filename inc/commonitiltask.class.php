@@ -1190,13 +1190,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     * @param string          $itemtype  itemtype
     * @param array           $val       the item to display
     * @param integer         $who       ID of the user (0 if all)
-    * @param array           $options   allow to have planning typeview
     * @param string          $type      position of the item in the time block (in, through, begin or end)
     * @param integer|boolean $complete  complete display (more details) (default 0)
+    * @param array           $options   allow to have planning typeview
     *
     * @return string Output
    **/
-   static function genericDisplayPlanningItem($itemtype, array $val, $who, array $options, $type = "", $complete = 0) {
+   static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0, $options = []) {
       global $CFG_GLPI;
 
       $html = "";
