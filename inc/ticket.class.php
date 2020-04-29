@@ -5283,10 +5283,12 @@ class Ticket extends CommonITILObject {
                }
             }
          }
-         Html::file(['filecontainer' => 'fileupload_info_ticket',
-                        'editor_id'     => $content_id,
-                        'showtitle'     => false,
-                        'multiple'     => true]);
+         if (!$tt->isHiddenField('_documents_id')) {
+            Html::file(['filecontainer' => 'fileupload_info_ticket',
+                           'editor_id'     => $content_id,
+                           'showtitle'     => false,
+                           'multiple'     => true]);
+         }
          echo "</td>";
          echo "</tr>";
       }
