@@ -1789,7 +1789,6 @@ HTML
             VALUES ('core','planning_days','[1,2,3,4,5,6,7]');";
       $DB->queryOrDie($query, 'insert new line planning_days in glpi_configs');
 
-
    $migration->executeMigration();
 
    return $updateresult;

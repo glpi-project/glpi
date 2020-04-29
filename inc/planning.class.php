@@ -2498,32 +2498,32 @@ class Planning extends CommonGLPI {
       $rule_event = [];
       $title = '';
 
-      if (isset($options['view_name']) && isset($event['itemtype'])) {
-      switch ($options['view_name']) {
-         case 'resourceTimeGridDay' :
-            if ($event['itemtype'] == TicketTask::class) {
-               $title = __('Ticket task');
-            } else if ($event['itemtype'] == ChangeTask::class) {
-               $title = __('Change task');
-            } else if ($event['itemtype'] == ProblemTask::class) {
-               $title = __('Problem task');
-            } else if ($event['itemtype'] == Reminder::class) {
-               $title = __('Reminder');
-            } else if ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {
-               $category = new PlanningEventCategory();
-               $category->getFromDB($event['event_cat']);
-               if ($category->fields > 0) {
-                  $title = isset($category->fields["name"]) ? $category->fields["name"] : $event['name'];
+      if (isset($options['view_name'])) {
+         switch ($options['view_name']) {
+            case 'resourceTimeGridDay' :
+               if ($event['itemtype'] == TicketTask::class) {
+                  $title = __('Ticket task');
+               } else if ($event['itemtype'] == ChangeTask::class) {
+                  $title = __('Change task');
+               } else if ($event['itemtype'] == ProblemTask::class) {
+                  $title = __('Problem task');
+               } else if ($event['itemtype'] == Reminder::class) {
+                  $title = __('Reminder');
+               } else if ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {
+                  $category = new PlanningEventCategory();
+                  $category->getFromDB($event['event_cat']);
+                  if ($category->fields > 0) {
+                     $title = isset($category->fields["name"]) ? $category->fields["name"] : $event['name'];
+                  }
                }
-            }
-            $rule_event = ['title'       =>  $title];
+               $rule_event = ['title'       =>  $title];
             break;
          default :
-            $rule_event = [
+               $rule_event = [
                'title'       => $event['name']];
             break;
+         }
       }
-   }
 
       return array_merge([ 'content'     => $content,
                            'tooltip'     => $tooltip,
@@ -2545,7 +2545,7 @@ class Planning extends CommonGLPI {
                               $event['event_type_color']),
                            'url'         => $event['url'] ?? "",
                            'ajaxurl'     => $event['ajaxurl'] ?? "",
-                           'itemtype'    => $event['itemtype'],
+                           'itemtype'    => $event['itemtype'] ?? "",
                            'parentitemtype' => $event['parentitemtype'] ?? "",
                            'items_id'    => $event['id'] ?? "",
                            'resourceId'  => $event['resourceId'],
