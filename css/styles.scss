@@ -3681,6 +3681,12 @@ a.copyright {
 }
 
 /** TIMELINE **/
+.timeline_stats {
+   opacity: 0.2;
+   text-align: right;
+   margin-top: 0.2em;
+   float: right;
+}
 
 .timeline_history {
    border-top: 1px dashed #3C5874;

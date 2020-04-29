@@ -6512,7 +6512,7 @@ abstract class CommonITILObject extends CommonDBTM {
     */
    function showTimelineForm($rand) {
 
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $objType = static::getType();
       $foreignKey = static::getForeignKeyField();
@@ -6657,7 +6657,72 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "</ul>"; // timeline_choices
       echo "<div class='clear'>&nbsp;</div>";
+      //total_actiontime stat
+      if (Session::getCurrentInterface() != 'helpdesk') {
+         echo "<ul class='timeline_stats'>";
+         echo "<li>";
+         $total_actiontime = 0;
+         foreach ($DB->request("glpi_tickettasks",
+                               "`tickets_id` = " . $this->fields['id']) as $req) {
+            $total_actiontime += $req['actiontime'];
+         }
+         if ($total_actiontime > 0) {
+            $total   = Html::timestampToString($total_actiontime, false);
+            $message = sprintf(__('Ticket total duration: %s'),
+                               $total);
+            echo $message;
+         }
+         echo "</li>";
+         echo "<li>";
+         $total_tasks = 0;
+         foreach ($DB->request("glpi_tickettasks",
+                               "`tickets_id` = " . $this->fields['id']) as $req) {
+            $total_tasks += 1;
+         }
 
+         $total_todotasks = 0;
+         foreach ($DB->request("glpi_tickettasks",
+                               "`tickets_id` = " . $this->fields['id']." 
+                               AND `state` = " .Planning::TODO) as $req) {
+            $total_todotasks += 1;
+         }
+         if ($total_todotasks > 0) {
+            $percent_todotasks = Html::formatNumber((($total_todotasks * 100) / $total_tasks));
+            $message = sprintf(__('Todo tasks: %s %%'),
+                               $percent_todotasks);
+            echo $message;
+         }
+
+         $total_donetasks = 0;
+         foreach ($DB->request("glpi_tickettasks",
+                               "`tickets_id` = " . $this->fields['id']." 
+                               AND `state` = " .Planning::DONE) as $req) {
+            $total_donetasks += 1;
+         }
+         if ($total_donetasks > 0) {
+            $percent_donetasks = Html::formatNumber((($total_donetasks * 100) / $total_tasks));
+            $message = sprintf(__('Done tasks: %s %% '),
+                               $percent_donetasks);
+            echo "&nbsp;/&nbsp;".$message;
+         }
+
+         $total_infotasks = 0;
+         foreach ($DB->request("glpi_tickettasks",
+                               "`tickets_id` = " . $this->fields['id']." 
+                               AND `state` = " .Planning::INFO) as $req) {
+            $total_infotasks += 1;
+         }
+         if ($total_infotasks > 0) {
+            $percent_infotasks = Html::formatNumber((($total_infotasks * 100) / $total_tasks));
+            $message = sprintf(__('Information tasks: %s %%'),
+                               $percent_infotasks);
+            echo "&nbsp;/&nbsp;".$message;
+         }
+
+         echo "</li>";
+
+         echo "</ul>";
+      }
       echo "</div>"; //end timeline_form
 
       echo "<div class='ajax_box' id='viewitem" . $this->fields['id'] . "$rand'></div>\n";
