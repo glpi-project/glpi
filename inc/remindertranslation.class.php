@@ -202,14 +202,13 @@ class ReminderTranslation extends CommonDBChild {
     * @param array   $options
     */
    function showForm($ID = -1, $options = []) {
-      if (isset($options['parent']) && !empty($options['parent'])) {
-         $item = $options['parent'];
-      }
+
       if ($ID > 0) {
          $this->check($ID, READ);
       } else {
          // Create item
-         $options['itemtype']         = get_class($item);
+         $item                = $options['parent'];
+         $options['itemtype'] = get_class($item);
          $options['reminders_id'] = $item->getID();
          $this->check(-1, CREATE, $options);
 
@@ -234,14 +233,19 @@ class ReminderTranslation extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='100' rows='1' name='name'>".$this->fields["name"]."</textarea>";
+      Html::autocompletionTextField($this, "name",
+                                    ['size'   => '80',
+                                     'entity' => -1,
+                                     'user'   => $this->fields["name"]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Description')."</td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='100' rows='30' id='text' name='text'>".$this->fields["text"];
-      echo "</textarea>";
+      Html::textarea(['name'              => 'text',
+                      'value'             => $this->fields["text"],
+                      'enable_richtext'   => true,
+                      'enable_fileupload' => false]);
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
@@ -276,7 +280,7 @@ class ReminderTranslation extends CommonDBChild {
    /**
     * Is kb item translation functionnality active
     *
-    * @return true if active, false if not
+    * @return boolean
    **/
    static function isReminderTranslationActive() {
       global $CFG_GLPI;
