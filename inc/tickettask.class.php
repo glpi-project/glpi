@@ -57,8 +57,9 @@ class TicketTask extends CommonITILTask {
 
 
    static function canUpdate() {
+
       return (Session::haveRight(self::$rightname, parent::UPDATEALL)
-              || Session::haveRight('ticket', Ticket::OWN));
+              || self::canCreate());
    }
 
 
