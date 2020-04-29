@@ -1784,11 +1784,10 @@ HTML
       );
    }
 
-
    // Add new field states in contract
    if (!$DB->fieldExists('glpi_states', 'is_visible_contract')) {
       $migration->addField('glpi_states', 'is_visible_contract', 'bool', [
-         'value' => 1,
+         'value' => 0,
          'after' => 'is_visible_pdu'
       ]);
       $migration->addKey('glpi_states', 'is_visible_contract');
@@ -1796,12 +1795,11 @@ HTML
 
    if (!$DB->fieldExists('glpi_contracts', 'states_id')) {
       $migration->addField('glpi_contracts', 'states_id', 'int', [
-         'value' => 11,
+         'value' => 0,
          'after' => 'is_template'
       ]);
       $migration->addKey('glpi_contracts', 'states_id');
    }
-
 
    $migration->executeMigration();
 
