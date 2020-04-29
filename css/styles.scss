@@ -3685,7 +3685,17 @@ a.copyright {
    opacity: 0.2;
    text-align: right;
    margin-top: 0.2em;
-   float: right;
+
+   &:hover {
+      opacity: 1;
+   }
+
+   h3 {
+      font-weight: bold;
+      font-size: 1em;
+      margin: 0 .5em 0 0;
+      padding: 0;
+   }
 }
 
 .timeline_history {

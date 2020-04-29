@@ -6659,8 +6659,8 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<div class='clear'>&nbsp;</div>";
       //total_actiontime stat
       if (Session::getCurrentInterface() != 'helpdesk') {
-         echo "<ul class='timeline_stats'>";
-         echo "<li>";
+         echo "<div class='timeline_stats'>";
+         echo "<h3>";
          $total_actiontime = 0;
          foreach ($DB->request("glpi_tickettasks",
                                "`tickets_id` = " . $this->fields['id']) as $req) {
@@ -6672,8 +6672,8 @@ abstract class CommonITILObject extends CommonDBTM {
                                $total);
             echo $message;
          }
-         echo "</li>";
-         echo "<li>";
+         echo "</h3>";
+         echo "<h3>";
          $total_tasks = 0;
          foreach ($DB->request("glpi_tickettasks",
                                "`tickets_id` = " . $this->fields['id']) as $req) {
@@ -6719,9 +6719,8 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "&nbsp;/&nbsp;".$message;
          }
 
-         echo "</li>";
-
-         echo "</ul>";
+         echo "</h3>";
+         echo "</div>";
       }
       echo "</div>"; //end timeline_form
 
