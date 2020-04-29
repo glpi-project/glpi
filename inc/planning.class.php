@@ -1748,8 +1748,8 @@ class Planning extends CommonGLPI {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
                         $event['users_id']);
-         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, 'in', false);
-         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, 'in', true);
+         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, $options, 'in', false);
+         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, $options, 'in', true);
 
          // dates should be set with the user timezone
          $begin = $event['begin'];
@@ -1766,39 +1766,8 @@ class Planning extends CommonGLPI {
          $ms_duration = (strtotime($end) - strtotime($begin)) * 1000;
 
          $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']));
-         $new_event = [
-            'title'       => $event['name'],
-            'content'     => $content,
-            'tooltip'     => $tooltip,
-            'start'       => $begin,
-            'end'         => $end,
-            'duration'    => $ms_duration,
-            '_duration'   => $ms_duration, // sometimes duration is removed from event object in fullcalendar
-            '_editable'   => $event['editable'], // same, avoid loss of editable key in fullcalendar
-            'rendering'   => isset($event['background'])
-                             && $event['background']
-                             && !$_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
-                              ? 'background'
-                              : '',
-            'color'       => (empty($event['color'])?
-                              Planning::$palette_bg[$index_color]:
-                              $event['color']),
-            'borderColor' => (empty($event['event_type_color'])?
-                              self::getPaletteColor('ev', $event['itemtype']):
-                              $event['event_type_color']),
-            'textColor'   => Planning::$palette_fg[$index_color],
-            'typeColor'   => (empty($event['event_type_color'])?
-                              self::getPaletteColor('ev', $event['itemtype']):
-                              $event['event_type_color']),
-            'url'         => $event['url'] ?? "",
-            'ajaxurl'     => $event['ajaxurl'] ?? "",
-            'itemtype'    => $event['itemtype'] ?? "",
-            'parentitemtype' => $event['parentitemtype'] ?? "",
-            'items_id'    => $event['id'] ?? "",
-            'resourceId'  => $event['resourceId'] ?? "",
-            'priority'    => $event['priority'] ?? "",
-            'state'       => $event['state'] ?? "",
-         ];
+         $new_event = self::returnNewEventByType($event, $content, $tooltip, $begin, $end, $index_color, $options);
+
 
          // if we can't update the event, pass the editable key
          if (!$event['editable']) {
@@ -1809,6 +1778,11 @@ class Planning extends CommonGLPI {
          // maybe we need a better way for displaying categories color
          if ($param['view_name'] == "resourceWeek"
              && !empty($event['event_cat_color'])) {
+            $new_event['color'] = $event['event_cat_color'];
+         }
+
+         if ($param['view_name'] == "resourceTimeGridDay"
+            && !empty($event['event_cat_color'])) {
             $new_event['color'] = $event['event_cat_color'];
          }
 
@@ -2217,13 +2191,14 @@ class Planning extends CommonGLPI {
     *
     * @param $val       Array of the item to display
     * @param $who             ID of the user (0 if all)
+    * @param $options         allow to have planning typeview
     * @param $type            position of the item in the time block (in, through, begin or end)
     *                         (default '')
     * @param $complete        complete display (more details) (default 0)
     *
     * @return string
    **/
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
+   static function displayPlanningItem(array $val, $who, array $options, $type = "", $complete = 0) {
       $html = "";
 
       // bg event shouldn't have content displayed
@@ -2233,10 +2208,33 @@ class Planning extends CommonGLPI {
 
       // Plugins case
       if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
-         $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
+         $html.= $val['itemtype']::displayPlanningItem($val, $who, $options, $type, $complete);
       }
 
       return $html;
+   }
+
+   /**
+    * Reformat choosen days to display to hidden days for
+    * Timelineweekbyday view
+    *
+    * @param $display_days
+    *
+    * @return hiddendays array
+    */
+   static function getHiddenDays($display_days) {
+      $hiddenDays = [];
+      //reformat display_days
+      foreach ($display_days as $key => $display_day) {
+         $reformat_display_days[$display_day] = $display_days;
+      }
+      $days = [0,1,2,3,4,5,6];
+      foreach ($days as $day) {
+         if (!array_key_exists($day, $reformat_display_days)) {
+            $hiddenDays[] = $day;
+         }
+      }
+      return $hiddenDays;
    }
 
    /**
@@ -2484,5 +2482,73 @@ class Planning extends CommonGLPI {
 
    static function getIcon() {
       return "far fa-calendar-alt";
+   }
+
+   /**
+    * @param array         $event
+    * @param string        $content
+    * @param string        $tooltip
+    * @param string/date   $begin
+    * @param string/date   $end
+    * @param string        $index_color
+    * @param array         $options
+    *
+    * @return new array of event to display
+    */
+   static function returnNewEventByType ($event, $content, $tooltip, $begin, $end, $index_color, $options) {
+      $rule_event = [];
+      $title = '';
+      switch ($options['view_name']) {
+         case 'resourceTimeGridDay' :
+            if ($event['itemtype'] == TicketTask::class) {
+               $title = __('Ticket task');
+            } else if ($event['itemtype'] == ChangeTask::class) {
+               $title = __('Change task');
+            } else if ($event['itemtype'] == ProblemTask::class) {
+               $title = __('Problem task');
+            } else if ($event['itemtype'] == Reminder::class) {
+               $title = __('Reminder');
+            } else if ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {
+               $category = new PlanningEventCategory();
+               $category->getFromDB($event['event_cat']);
+               if ($category->fields > 0) {
+                  $title = isset($category->fields["name"]) ? $category->fields["name"] : $event['name'];
+               }
+            }
+            $rule_event = ['title'       =>  $title];
+            break;
+         default :
+            $rule_event = [
+               'title'       => $event['name']];
+            break;
+      }
+
+      return array_merge([ 'content'     => $content,
+                           'tooltip'     => $tooltip,
+                           'start'       => $begin,
+                           'end'         => $end,
+                           'editable'    => $event['editable'] ?? false,
+                           'rendering'   => isset($event['background']) && $event['background']
+                              ? 'background'
+                              : '',
+                           'color'       => (empty($event['color'])?
+                              Planning::$palette_bg[$index_color]:
+                              $event['color']),
+                           'borderColor' => (empty($event['event_type_color'])?
+                              self::getPaletteColor('ev', $event['itemtype']):
+                              $event['event_type_color']),
+                           'textColor'   => Planning::$palette_fg[$index_color],
+                           'typeColor'   => (empty($event['event_type_color'])?
+                              self::getPaletteColor('ev', $event['itemtype']):
+                              $event['event_type_color']),
+                           'url'         => $event['url'] ?? "",
+                           'ajaxurl'     => $event['ajaxurl'] ?? "",
+                           'itemtype'    => $event['itemtype'],
+                           'parentitemtype' => $event['parentitemtype'] ?? "",
+                           'items_id'    => $event['id'],
+                           'resourceId'  => $event['resourceId'],
+                           'priority'    => $event['priority'] ?? "",
+                           'state'       => $event['state'] ?? "",
+      ], $rule_event);
    }
 }

@@ -513,6 +513,7 @@ trait PlanningEvent {
                   'color'            => $options['color'],
                   'event_type_color' => $options['event_type_color'],
                   'event_cat_color'  => $data['cat_color'] ?? "",
+                  'event_cat'        => $data['planningeventcategories_id'] ?? "",
                   'itemtype'         => $itemtype,
                   $item_fk           => $data['id'],
                   'id'               => $data['id'],
@@ -592,13 +593,14 @@ trait PlanningEvent {
     *
     * @param $val        array of the item to display
     * @param $who        ID of the user (0 if all)
+    * @param $options    allow to have planning typeview
     * @param $type       position of the item in the time block (in, through, begin or end)
     *                    default '')
     * @param $complete   complete display (more details) (default 0)
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
+   static function displayPlanningItem(array $val, $who, array $options, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
       $html = "";
@@ -630,15 +632,41 @@ trait PlanningEvent {
          }
       }
 
-      if ($complete) {
-         $html.= "<span>".Planning::getState($val["state"])."</span><br>";
-         $html.= "<div class='event-description rich_text_container'>".$val["text"].$recall."</div>";
-      } else {
-         $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
+      switch ($options['view_name']) {
+         case 'resourceTimeGridDay':
+            if ($complete) {
+               $category = new PlanningEventCategory();
+               $category->getFromDB($val['event_cat']);
+               if ($category->fields > 0)
+                  $cat_name = isset($category->fields['name']) ? $category->fields['name'] : '';
+                  $html .= "<div class='event-description rich_text_container'>";
+                  $html .= "<span>" . __('Begin date') . "</span>" . ": " . Html::convdatetime($val["begin"], 1) . "<br>";
+                  $html .= "<span>" . __('End date') . "</span>" . ": " . Html::convdatetime($val["end"] ,1) . "<br>";
+                  $html .= "<span>" . __('Status') . "</span>" . ": " . Planning::getState($val["state"]) . "<br>";
+                  $html .= "<span>" . __('Title') . "</span>" . ": " . $val['name'] . "<br>";
+                  $html .= "<span>" . __('Category') . "</span>" . ": " . $cat_name . "<br>";
+                  $html .= "<span>" . __('Description') . "</span>" . ": " .  $val["text"] . $recall . "<br>";
+                  $html .= "</div>";
+            } else {
+               $html .= Html::showToolTip("<span class='b'>" . Planning::getState($val["state"]) . "</span><br>
+                                   " . $val["text"] . $recall, ['applyto' => "reminder_" . $val[$item_fk] . $rand, 'display' => false]);
+            }
+
+            return $html;
+            break;
+         default :
+            if ($complete) {
+               $html.= "<span>".Planning::getState($val["state"])."</span><br>";
+               $html.= "<div class='event-description rich_text_container'>".$val["text"].$recall."</div>";
+            } else {
+               $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
                                    ".$val["text"].$recall,
-                                   ['applyto' => "reminder_".$val[$item_fk].$rand,
-                                         'display' => false]);
+                  ['applyto' => "reminder_".$val[$item_fk].$rand,
+                     'display' => false]);
+            }
+            break;
       }
+
       return $html;
    }
 

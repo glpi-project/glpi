@@ -255,6 +255,10 @@ class Config extends CommonDBTM {
                                           false, WARNING);
       }
 
+      if (!isset($input['planning_days'])) {
+         Session::addMessageAfterRedirect(__('At least one day must be selected (Days to display)'), true, ERROR);
+      }
+
       $this->setConfigurationValues('core', $input);
 
       return false;
@@ -1258,6 +1262,15 @@ class Config extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
+
+      echo "<td><label for='dropdown_days_planning$rand'>" . __('Days to display (timeline Week / day)')."</label></td><td>";
+
+      Dropdown::showFromArray('planning_days',Toolbox::getDaysOfWeekArray(),
+                                 ['values'   => $CFG_GLPI['planning_days'],
+                                  'width'    => '100%',
+                                  'multiple' => true,
+                                  'rand'     => $rand]);
+      echo "</td>";
 
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
@@ -2954,6 +2967,10 @@ class Config extends CommonDBTM {
           $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
       }
 
+      if (isset($CFG_GLPI['planning_days'])) {
+         $CFG_GLPI['planning_days'] = importArrayFromDB($CFG_GLPI['planning_days']);
+      }
+
       if (isset($CFG_GLPI['lock_lockprofile_id'])
           && $CFG_GLPI['lock_use_lock_item']
           && $CFG_GLPI['lock_lockprofile_id'] > 0
@@ -3804,5 +3821,20 @@ class Config extends CommonDBTM {
       $uuid = Toolbox::getRandomString(40);
       self::setConfigurationValues('core', [$type . '_uuid' => $uuid]);
       return $uuid;
+   }
+
+   /**
+    * @param $input
+    *
+    * @return string
+    */
+   static function _serialize($input) {
+      if($input != null){
+         foreach ($input as &$value) {
+            $value = urlencode(Html::cleanPostForTextArea($value));
+         }
+
+         return json_encode($input);
+      }
    }
 }

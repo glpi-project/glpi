@@ -24,7 +24,7 @@ var GLPIPlanning  = {
          header: {
             left:   'prev,next,today',
             center: 'title',
-            right:  'dayGridMonth, timeGridWeek, timeGridDay, listFull, resourceWeek'
+            right:  'dayGridMonth, timeGridWeek, timeGridDay, listFull, resourceWeek, resourceTimeGridDay'
          },
       };
       options = Object.assign({}, default_options, options);
@@ -104,6 +104,14 @@ var GLPIPlanning  = {
                   }
                ]
             },
+            resourceTimeGridDay: {
+               type : 'resourceTimeline',
+               buttonText: 'Timeline Week / day',
+               duration: { weeks: 1 },
+               slotDuration: {days: 1},
+               hiddenDays :CFG_GLPI.planning_days,
+               groupByDateAndResource: true,
+            },
          },
          resourceRender: function(info) {
             var icon = "";
@@ -138,7 +146,7 @@ var GLPIPlanning  = {
 
             var content = extProps.content;
             var tooltip = extProps.tooltip;
-            if (view.type !== 'dayGridMonth'
+            if (view.type !== 'dayGridMonth' && view.type !== 'resourceTimeGridDay'
                && view.type.indexOf('list') < 0
                && event.rendering != "background"
                && !event.allDay){

@@ -159,13 +159,14 @@ class ChangeTask extends CommonITILTask {
     *
     * @param array           $val       array of the item to display
     * @param integer         $who       ID of the user (0 if all)
+    * @param array           $options   allow to have planning typeview (more details)
     * @param string          $type      position of the item in the time block (in, through, begin or end)
     * @param integer|boolean $complete  complete display (more details)
     *
     * @return string
     */
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
-      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
+   static function displayPlanningItem(array $val, $who, $options, $type = "", $complete = 0) {
+      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $options, $type, $complete);
    }
 
    /**

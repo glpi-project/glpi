@@ -1855,7 +1855,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     *
     * @return string
     **/
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
+   static function displayPlanningItem(array $val, $who, array $options, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
       $html = "";
@@ -1896,13 +1896,41 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             break;
       }
 
-      $html.= $users_id;
-      $html.= "</a>";
+      switch ($options['view_name']) {
+         case 'resourceTimeGridDay':
+            if ($complete) {
+               $category = new PlanningEventCategory();
+               $category->getFromDB($val['event_cat']);
 
-      $html.= "<div class='b'>";
-      $html.= sprintf(__('%1$s: %2$s'), __('Percent done'), $val["status"]."%");
-      $html.= "</div>";
-      $html.= "<div class='event-description rich_text_container'>".html_entity_decode($val["content"])."</div>";
+               if ($category->fields > 0) {
+                  $cat_name = isset($category->fields['name']) ? $category->fields['name'] : '';
+               }
+
+               $html .= "<div class='event-description rich_text_container'>";
+               $html .= "<span>" . __('Begin date') . "</span>" . ": " . Html::convdatetime($val["begin"]) . "<br>";
+               $html .= "<span>" . __('End date') . "</span>" . ": " . Html::convdatetime($val["end"]) . "<br>";
+               $html .= "<span>" . __('Status') . "</span>" . ": " . Planning::getState($val["state"]) . "<br>";
+               $html .= "<span>" . __('Title') . "</span>" . ": " . $val['name'] . "<br>";
+               $html .= "<span>" . __('Description') . "</span>" . ": " . $val["text"] . $recall . "<br>";
+               $html .= "</div>";
+            } else {
+               $html .= Html::showToolTip("<span class='b'>" . Planning::getState($val["state"]) . "</span><br>
+                                            " . $val["text"] . $recall,
+                  ['applyto' => "reminder_" . $val["reminders_id"] . $rand,
+                     'display' => false]);
+            }
+            return $html;
+            break;
+         default :
+               $html.= $users_id;
+               $html.= "</a>";
+
+               $html.= "<div class='b'>";
+               $html.= sprintf(__('%1$s: %2$s'), __('Percent done'), $val["status"]."%");
+               $html.= "</div>";
+               $html.= "<div class='event-description rich_text_container'>".html_entity_decode($val["content"])."</div>";
+            break;
+      }
       return $html;
    }
 

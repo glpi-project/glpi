@@ -1190,12 +1190,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     * @param string          $itemtype  itemtype
     * @param array           $val       the item to display
     * @param integer         $who       ID of the user (0 if all)
+    * @param array           $options   allow to have planning typeview
     * @param string          $type      position of the item in the time block (in, through, begin or end)
     * @param integer|boolean $complete  complete display (more details) (default 0)
     *
     * @return string Output
    **/
-   static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0) {
+   static function genericDisplayPlanningItem($itemtype, array $val, $who, array $options, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
       $html = "";
@@ -1248,16 +1249,50 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          }
       }
 
-      if (isset($val["state"])) {
-         $html.= "<span>";
-         $html.= Planning::getState($val["state"]);
-         $html.= "</span>";
+      switch ($options['view_name']) {
+         case 'resourceTimeGridDay':
+            if (isset($val["state"])) {
+               $html .= "<span>";
+               $html .= Planning::getState($val["state"]);
+               $html .= "</span>";
+            }
+            if ($complete) {
+               $item_id = '';
+               if ($val['itemtype'] == TicketTask::class) {
+                  $item_id = $val['tickets_id'];
+               } else if ($val['itemtype'] == ProblemTask::class) {
+                  $item_id = $val['problems_id'];
+               } else if ($val['itemtype'] == ChangeTask::class) {
+                  $item_id = $val['changes_id'];
+               }
+
+               $html .= "<div class='event-description rich_text_container'>";
+               $html .= "<span>" . __('Ticket') . "</span>" . ": " . $item_id . "<br>";
+               $html .= "<span>" . __('Begin date') . "</span>" . ": " . Html::convdatetime($val["begin"], 1) . "<br>";
+               $html .= "<span>" . __('End date') . "</span>" . ": " . Html::convdatetime($val["end"], 1) . "<br>";
+               $html .= "<span>" . __('Status') . "</span>" . ": " . Planning::getState($val["state"]) . "<br>";
+               $html .= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"])) . "<br>";
+               $html .= "<span>" . __('Description') . "</span>" . ": " .
+                  Toolbox::unclean_html_cross_side_scripting_deep($val["content"]) . $recall . "<br>";
+               $html .= $recall;
+               $html .= "</div>";
+            }
+
+            break;
+         default :
+            if (isset($val["state"])) {
+               $html .= "<span>";
+               $html .= Planning::getState($val["state"]);
+               $html .= "</span>";
+            }
+            $html .= "<div>";
+            $html .= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"]));
+            $html .= "</div>";
+            $html .= "<div class='event-description rich_text_container'>" . html_entity_decode($val["content"]) . "</div>";
+            $html .= $recall;
+
+            break;
       }
-      $html.= "<div>";
-      $html.= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"]));
-      $html.= "</div>";
-      $html.= "<div class='event-description rich_text_container'>".html_entity_decode($val["content"])."</div>";
-      $html.= $recall;
 
       return $html;
    }
