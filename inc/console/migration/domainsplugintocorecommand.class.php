@@ -526,10 +526,10 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
             );
 
             //handle infocoms
-            $infocom = new Infocom();
+            $infocom = new \Infocom();
             $infocom_input = [
                'itemtype'     => 'Domain',
-               'items_id'     => $dom['id'],
+               'items_id'     => $new_did ?? $core_dom,
                'suppliers_id' => $dom['suppliers_id'],
                'entities_id'  => $dom['entities_id'],
                'is_recursive' => $dom['is_recursive']
