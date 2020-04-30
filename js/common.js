@@ -901,22 +901,22 @@ function markMatch (text, term) {
 
    // If there is no match, move on
    if (match < 0) {
-      _result.append(text);
+      _result.append(escapeMarkupText(text));
       return _result.html();
    }
 
    // Put in whatever text is before the match
-   _result.html(text.substring(0, match));
+   _result.html(escapeMarkupText(text.substring(0, match)));
 
    // Mark the match
    var _match = $('<span class=\'select2-rendered__match\'></span>');
-   _match.html(text.substring(match, match + term.length));
+   _match.html(escapeMarkupText(text.substring(match, match + term.length)));
 
    // Append the matching text
    _result.append(_match);
 
    // Put in whatever is after the match
-   _result.append(text.substring(match + term.length));
+   _result.append(escapeMarkupText(text.substring(match + term.length)));
 
    return _result.html();
 }
@@ -936,18 +936,13 @@ var templateResult = function(result) {
       }
 
       var text = result.text;
-      if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
-         // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-         text = jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
-      };
-
       if (!result.id) {
          // If result has no id, then it is used as an optgroup and is not used for matches
-         _elt.html(text);
+         _elt.html(escapeMarkupText(text));
          return _elt;
       }
 
-      var _term = jQuery.fn.select2.defaults.defaults.escapeMarkup(query.term || '');
+      var _term = query.term || '';
       var markup = markMatch(text, _term);
 
       if (result.level) {
@@ -1006,4 +1001,19 @@ var getTextWithoutDiacriticalMarks = function (text) {
    // The U+0300 -> U+036F range corresponds to diacritical chars.
    // They are removed to keep only chars without their diacritical mark.
    return text.replace(/[\u0300-\u036f]/g, '');
+}
+
+/**
+ * Escape markup in text to prevent XSS.
+ *
+ * @param {string} text
+ *
+ * @return {string}
+ */
+var escapeMarkupText = function (text) {
+   if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
+      // escape text, if it contains chevrons (can already be escaped prior to this point :/)
+      text = jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
+   };
+   return text;
 }
