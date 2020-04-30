@@ -575,6 +575,17 @@ class MassiveAction {
          Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
          Contract::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
+         // Amend comment for objects with a 'comment' field
+         $item->getEmpty();
+         if ($canupdate && isset($item->fields['comment'])) {
+            $actions[$self_pref.'amend_comment'] = __("Amend comment");
+         }
+
+         // Add a note for objects with the UPDATENOTE rights
+         if (Session::haveRight($item::$rightname, UPDATENOTE)) {
+            $actions[$self_pref.'add_note'] = __("Add note");
+         }
+
          // Plugin Specific actions
          if (isset($PLUGIN_HOOKS['use_massive_action'])) {
             foreach (array_keys($PLUGIN_HOOKS['use_massive_action']) as $plugin) {
@@ -957,6 +968,32 @@ class MassiveAction {
             echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction']);
 
             return true;
+
+         case 'amend_comment':
+            echo __("Amendment to insert");
+            echo ("<br><br>");
+            Html::textarea([
+               'name' => 'amendment'
+            ]);
+            echo ("<br><br>");
+            echo Html::submit(_sx('button', 'Post'), [
+               'name' => 'massiveaction'
+            ]);
+
+            return true;
+
+         case 'add_note':
+            echo __("New Note");
+            echo ("<br><br>");
+            Html::textarea([
+               'name' => 'add_note'
+            ]);
+            echo ("<br><br>");
+            echo Html::submit(_sx('button', 'Post'), [
+               'name' => 'massiveaction'
+            ]);
+
+            return true;
       }
       return false;
    }
@@ -1305,6 +1342,87 @@ class MassiveAction {
             $ma->setRedirect($CFG_GLPI['root_doc'].'/front/transfer.action.php');
             break;
 
+         case 'amend_comment':
+            $item->getEmpty();
+
+            // Check the itemtype is a valid target
+            if (!array_key_exists('comment', $item->fields)) {
+               $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
+               break;
+            }
+
+            // Load input
+            $input = $ma->getInput();
+            $amendment = $input['amendment'];
+
+            foreach ($ids as $id) {
+               $item->getFromDB($id);
+
+               // Check rights
+               if (!$item->canUpdateItem()) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                  continue;
+               }
+
+               $comment = $item->fields['comment'];
+
+               if (is_null($comment) || $comment == "") {
+                  // If the comment was empty, use directly the amendmentt
+                  $comment = $amendment;
+               } else {
+                  // If there is already a comment, insert some padding then
+                  // the amendment
+                  $comment .= "\n\n$amendment";
+               }
+
+               // Update the comment
+               $success = $item->update([
+                  'id'      => $id,
+                  'comment' => $comment
+               ]);
+
+               if (!$success) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               }
+
+            }
+            break;
+
+         case 'add_note':
+            // Check rights
+            if (!Session::haveRight($item::$rightname, UPDATENOTE)) {
+               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               break;
+            }
+
+            // Load input
+            $input = $ma->getInput();
+            $content = $input['add_note'];
+
+            $em = new Notepad();
+
+            foreach ($ids as $id) {
+               $success = $em->add([
+                  'itemtype'             => $item::getType(),
+                  'items_id'             => $id,
+                  'content'              => $content,
+                  'users_id'             => Session::getLoginUserID(),
+                  'users_id_lastupdater' => Session::getLoginUserID(),
+               ]);
+
+               if (!$success) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               }
+            }
+
+            break;
       }
    }
 
