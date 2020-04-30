@@ -1398,7 +1398,7 @@ function update94to95() {
                $item['y'],
                $item['width'],
                $item['height'],
-               $item['card_options'],
+               $item['card_options']
             );
             $stmt->execute();
          }
