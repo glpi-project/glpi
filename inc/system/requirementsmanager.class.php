@@ -80,9 +80,6 @@ class RequirementsManager {
       $requirements[] = new Extension('curl');
       $requirements[] = new Extension('gd');
       $requirements[] = new Extension('simplexml');
-      $requirements[] = new Extension('curl');
-      // Check function as we only use utf8_encode / utf8_decode which is present directly in PHP core since 7.2
-      $requirements[] = new ExtensionFunction('xml', 'utf8_decode');
       $requirements[] = new Extension('intl');
       $requirements[] = new Extension('ldap', true); // to sync/connect from LDAP
       $requirements[] = new Extension('apcu', true); // to enhance perfs
@@ -90,7 +87,6 @@ class RequirementsManager {
       $requirements[] = new Extension('xmlrpc', true); // for XMLRPC API
       $requirements[] = new ExtensionClass('CAS', 'phpCAS', true); // for CAS lib
       $requirements[] = new Extension('exif', true);
-      $requirements[] = new Extension('zlib', true);
       $requirements[] = new Extension('zip', true);
       $requirements[] = new Extension('bz2', true);
 
