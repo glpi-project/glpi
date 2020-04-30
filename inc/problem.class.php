@@ -1076,7 +1076,7 @@ class Problem extends CommonITILObject {
 
       $this->initForm($ID, $options);
 
-      $canupdate = !$ID && $this->canUpdateItem();
+      $canupdate = !$ID || $this->canUpdateItem();
       $showuserlink = 0;
       if (User::canView()) {
          $showuserlink = 1;
