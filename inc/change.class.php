@@ -678,7 +678,7 @@ class Change extends CommonITILObject {
          $this->check(-1, CREATE, $options);
       }
 
-      $canupdate = !$ID && $this->canUpdateItem();
+      $canupdate = !$ID || $this->canUpdateItem();
       $showuserlink = 0;
       if (User::canView()) {
          $showuserlink = 1;
