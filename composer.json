@@ -12,13 +12,16 @@
     },
     "require": {
         "php": "^7.2",
+        "ext-ctype": "*",
         "ext-curl": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
+        "ext-iconv": "*",
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-mysqli": "*",
+        "ext-simplexml": "*",
         "ext-zlib": "*",
         "blueimp/jquery-file-upload": "^10.2",
         "elvanto/litemoji": "^1.4 || ^2.0",
@@ -62,8 +65,14 @@
         "php-parallel-lint/php-parallel-lint": "^1.1",
         "sensiolabs/security-checker": "^6.0"
     },
+    "replace": {
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-intl-idn": "*",
+        "symfony/polyfill-mbstring": "*",
+        "symfony/polyfill-php72": "*"
+    },
     "suggest": {
-        "ext-ldap": "Used ot provide LDAP authentication and synchronization"
+        "ext-ldap": "Used to provide LDAP authentication and synchronization"
     },
     "config": {
         "optimize-autoloader": true,
