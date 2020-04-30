@@ -6512,7 +6512,7 @@ abstract class CommonITILObject extends CommonDBTM {
     */
    function showTimelineForm($rand) {
 
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $objType = static::getType();
       $foreignKey = static::getForeignKeyField();
@@ -6657,7 +6657,59 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "</ul>"; // timeline_choices
       echo "<div class='clear'>&nbsp;</div>";
+      //total_actiontime stat
+      if (Session::getCurrentInterface() != 'helpdesk') {
+         echo "<div class='timeline_stats'>";
 
+         $taskClass  = $objType . "Task";
+         $task_table = getTableForItemType($taskClass);
+         $foreignKey = static::getForeignKeyField();
+
+         $total_actiontime = 0;
+
+         $criteria = [
+            'SELECT'   => 'actiontime',
+            'DISTINCT' => true,
+            'FROM'     => $task_table,
+            'WHERE'    => [$foreignKey => $this->fields['id']]
+         ];
+
+         $iterator = $DB->request($criteria);
+         foreach ($iterator as $req) {
+            $total_actiontime += $req['actiontime'];
+         }
+         if ($total_actiontime > 0) {
+            echo "<h3>";
+            $total   = Html::timestampToString($total_actiontime, false);
+            $message = sprintf(__('Total duration: %s'),
+                               $total);
+            echo $message;
+            echo "</h3>";
+         }
+
+         $criteria    = [$foreignKey => $this->fields['id']];
+         $total_tasks = countElementsInTable($task_table, $criteria);
+         if ($total_tasks > 0) {
+            $states = [Planning::INFO => __('Information tasks: %s %%'),
+                       Planning::TODO => __('Todo tasks: %s %%'),
+                       Planning::DONE => __('Done tasks: %s %% ')];
+            echo "<h3>";
+            foreach ($states as $state => $string) {
+               $criteria = [$foreignKey => $this->fields['id'],
+                            "state"     => $state];
+               $tasks    = countElementsInTable($task_table, $criteria);
+               if ($tasks > 0) {
+                  $percent_todotasks = Html::formatNumber((($tasks * 100) / $total_tasks));
+                  $message           = sprintf($string,
+                                               $percent_todotasks);
+                  echo "&nbsp;";
+                  echo $message;
+               }
+            }
+            echo "</h3>";
+         }
+         echo "</div>";
+      }
       echo "</div>"; //end timeline_form
 
       echo "<div class='ajax_box' id='viewitem" . $this->fields['id'] . "$rand'></div>\n";
