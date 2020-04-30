@@ -1748,8 +1748,8 @@ class Planning extends CommonGLPI {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
                         $event['users_id']);
-         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id,'in', false, $options);
-         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id,'in', true, $options);
+         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, 'in', false, $options);
+         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, 'in', true, $options);
 
          // dates should be set with the user timezone
          $begin = $event['begin'];
@@ -2518,7 +2518,7 @@ class Planning extends CommonGLPI {
                }
                $rule_event = ['title'       =>  $title];
             break;
-         default :
+            default :
                $rule_event = [
                'title'       => $event['name']];
             break;

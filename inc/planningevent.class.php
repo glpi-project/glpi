@@ -642,7 +642,7 @@ trait PlanningEvent {
                }
                   $html .= "<div class='event-description rich_text_container'>";
                   $html .= "<span>" . __('Begin date') . "</span>" . ": " . Html::convdatetime($val["begin"], 1) . "<br>";
-                  $html .= "<span>" . __('End date') . "</span>" . ": " . Html::convdatetime($val["end"] , 1) . "<br>";
+                  $html .= "<span>" . __('End date') . "</span>" . ": " . Html::convdatetime($val["end"], 1) . "<br>";
                   $html .= "<span>" . __('Status') . "</span>" . ": " . Planning::getState($val["state"]) . "<br>";
                   $html .= "<span>" . __('Title') . "</span>" . ": " . $val['name'] . "<br>";
                   $html .= "<span>" . __('Category') . "</span>" . ": " . $cat_name . "<br>";
