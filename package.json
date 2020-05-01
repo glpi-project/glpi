@@ -50,7 +50,7 @@
         "select2": "^4.0.13",
         "spin.js": "^4.1.0",
         "tinymce": "^4.9.8",
-        "tinymce-i18n": "^19.9.17",
+        "tinymce-i18n": "^20.4.4",
         "unorm": "^1.6.0"
     },
     "scripts": {
