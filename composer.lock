@@ -749,16 +749,16 @@
         },
         {
             "name": "laminas/laminas-mail",
-            "version": "2.10.0",
+            "version": "2.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-mail.git",
-                "reference": "019fb670c1dff6be7fc91d3b88942bd0a5f68792"
+                "reference": "cfe0711446c8d9c392e9fc664c9ccc180fa89005"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-mail/zipball/019fb670c1dff6be7fc91d3b88942bd0a5f68792",
-                "reference": "019fb670c1dff6be7fc91d3b88942bd0a5f68792",
+                "url": "https://api.github.com/repos/laminas/laminas-mail/zipball/cfe0711446c8d9c392e9fc664c9ccc180fa89005",
+                "reference": "cfe0711446c8d9c392e9fc664c9ccc180fa89005",
                 "shasum": ""
             },
             "require": {
@@ -772,7 +772,7 @@
                 "true/punycode": "^2.1"
             },
             "replace": {
-                "zendframework/zend-mail": "self.version"
+                "zendframework/zend-mail": "^2.10.0"
             },
             "require-dev": {
                 "laminas/laminas-coding-standard": "~1.0.0",
@@ -811,7 +811,7 @@
                 "laminas",
                 "mail"
             ],
-            "time": "2019-12-31T17:21:22+00:00"
+            "time": "2020-04-21T16:42:19+00:00"
         },
         {
             "name": "laminas/laminas-mime",
@@ -1052,26 +1052,26 @@
         },
         {
             "name": "laminas/laminas-validator",
-            "version": "2.12.0",
+            "version": "2.13.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-validator.git",
-                "reference": "51ff367387b67f6faa50bbb4d6ed6129247de2a2"
+                "reference": "93593684e70b8ed1e870cacd34ca32b0c0ace185"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/51ff367387b67f6faa50bbb4d6ed6129247de2a2",
-                "reference": "51ff367387b67f6faa50bbb4d6ed6129247de2a2",
+                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/93593684e70b8ed1e870cacd34ca32b0c0ace185",
+                "reference": "93593684e70b8ed1e870cacd34ca32b0c0ace185",
                 "shasum": ""
             },
             "require": {
                 "container-interop/container-interop": "^1.1",
                 "laminas/laminas-stdlib": "^3.2.1",
                 "laminas/laminas-zendframework-bridge": "^1.0",
-                "php": "^5.6 || ^7.0"
+                "php": "^7.1"
             },
             "replace": {
-                "zendframework/zend-validator": "self.version"
+                "zendframework/zend-validator": "^2.13.0"
             },
             "require-dev": {
                 "laminas/laminas-cache": "^2.6.1",
@@ -1085,7 +1085,9 @@
                 "laminas/laminas-servicemanager": "^2.7.5 || ^3.0.3",
                 "laminas/laminas-session": "^2.8",
                 "laminas/laminas-uri": "^2.5",
-                "phpunit/phpunit": "^6.0.8 || ^5.7.15",
+                "phpunit/phpunit": "^7.5.20 || ^8.5.2",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0",
                 "psr/http-message": "^1.0"
             },
             "suggest": {
@@ -1102,8 +1104,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.12.x-dev",
-                    "dev-develop": "2.13.x-dev"
+                    "dev-master": "2.13.x-dev",
+                    "dev-develop": "2.14.x-dev"
                 },
                 "laminas": {
                     "component": "Laminas\\Validator",
@@ -1119,26 +1121,26 @@
             "license": [
                 "BSD-3-Clause"
             ],
-            "description": "provides a set of commonly needed validators",
+            "description": "Validation classes for a wide range of domains, and the ability to chain validators to create complex validation criteria",
             "homepage": "https://laminas.dev",
             "keywords": [
                 "laminas",
                 "validator"
             ],
-            "time": "2019-12-31T17:57:33+00:00"
+            "time": "2020-03-31T18:57:01+00:00"
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
-            "version": "1.0.2",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-zendframework-bridge.git",
-                "reference": "faf68f6109ceeff24241226033ab59640c7eb63b"
+                "reference": "bfbbdb6c998d50dbf69d2187cb78a5f1fa36e1e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/faf68f6109ceeff24241226033ab59640c7eb63b",
-                "reference": "faf68f6109ceeff24241226033ab59640c7eb63b",
+                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/bfbbdb6c998d50dbf69d2187cb78a5f1fa36e1e9",
+                "reference": "bfbbdb6c998d50dbf69d2187cb78a5f1fa36e1e9",
                 "shasum": ""
             },
             "require": {
@@ -1177,7 +1179,7 @@
                 "laminas",
                 "zf"
             ],
-            "time": "2020-03-26T16:07:12+00:00"
+            "time": "2020-04-03T16:01:00+00:00"
         },
         {
             "name": "mexitek/phpcolors",
