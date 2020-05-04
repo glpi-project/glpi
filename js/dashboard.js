@@ -208,7 +208,11 @@ var Dashboard = {
 
       // browser resized (use debounce to delay generation of css)
       var debounce;
-      $(window).on('resize', function() {
+      $(window).on('resize', function(event) {
+         if (event.target.constructor.name !== "Window") {
+            return;
+         }
+
          window.clearTimeout(debounce);
          debounce = window.setTimeout(() => {
             Dashboard.generateCss();
