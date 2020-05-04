@@ -47,6 +47,9 @@ var Dashboard = {
    ajax_cards: false,
    context: "core",
    markdown_contents: [],
+   dash_width: 0,
+   cell_margin: 3,
+   cols: 26,
 
    display: function(params) {
 
@@ -76,20 +79,29 @@ var Dashboard = {
       this.all_cards    = options.all_cards;
       this.all_widgets  = options.all_widgets;
       this.context      = options.context;
+      this.dash_width   = this.element.width();
+      this.cell_margin  = options.cell_margin;
+      this.cols         = options.cols;
 
       $('#grid-stack-'+options.rand).gridstack({
          column: options.cols,
-         maxRow: (options.rows + 1), // +1 for a hiiden item at bottom (to fix height)
-         cellHeight: options.cell_length,
-         verticalMargin: options.cell_margin,
+         maxRow: (options.rows + 1), // +1 for a hidden item at bottom (to fix height)
+         verticalMargin: this.cell_margin,
          float: true, // widget can be placed anywhere on the grid, not only on top
          animate: false, // as we don't move widget automatically, we don't need animation
-         staticGrid: true, // grid is not editable by default
          draggable: { // override jquery ui draggable options
             'cancel': 'textarea' // avoid draggable on some child elements
          }
       });
       Dashboard.grid = $('#grid-stack-'+options.rand).data('gridstack');
+
+      // set grid in static to prevent edition (unless user click on edit button)
+      // previously in option, but current version of gridstack has a bug with one column mode (responsive)
+      // see https://github.com/gridstack/gridstack.js/issues/1229
+      Dashboard.grid.setStatic(true);
+
+      // generate the css based on the grid width
+      Dashboard.generateCss();
 
       // retieve cards content by ajax
       if (Dashboard.ajax_cards) {
@@ -192,6 +204,19 @@ var Dashboard = {
          } else {
             clearInterval(Dashboard.interval);
          }
+      });
+
+      // browser resized (use debounce to delay generation of css)
+      var debounce;
+      $(window).on('resize', function() {
+         window.clearTimeout(debounce);
+         debounce = window.setTimeout(() => {
+            Dashboard.generateCss();
+
+            // fit again numbers
+            Dashboard.fitNumbers();
+            Dashboard.animateNumbers();
+         }, 200);
       });
 
       // publish rights
@@ -576,9 +601,11 @@ var Dashboard = {
       parent_item = parent_item || $('body');
 
       var text_offset = 0.96;
+
       // responsive mode
-      if (Dashboard.grid.container.hasClass('grid-stack-one-column-mode')) {
-         text_offset = 1.6;
+      if (this.dash_width <= 700
+          || this.grid.container.hasClass('grid-stack-one-column-mode')) {
+         text_offset = 1.8;
       }
 
       parent_item
@@ -789,6 +816,53 @@ var Dashboard = {
          var item = items[no_item];
          $(item).css('background-color', color);
       }, 10);
+   },
+
+   generateCss: function() {
+      var dash_width    = Math.floor(this.element.width());
+      var cell_length   = dash_width / this.cols;
+      var cell_height   = cell_length;
+      var cell_fullsize = (dash_width / this.cols) + this.cell_margin;
+      var width_percent = 100 / this.cols;
+
+      var style = " \
+      "+this.elem_id+" .cell-add { \
+         width: "+cell_length+"px; \
+         height: "+cell_fullsize+"px; \
+      } \
+      "+this.elem_id+" .grid-guide { \
+         background-size: "+cell_length+"px "+cell_fullsize+"px; \
+         bottom: "+cell_fullsize+"px; \
+      }";
+
+      for (i = 0; i < this.cols; i++) {
+         var left  = i * width_percent;
+         var width = (i+1) * width_percent;
+
+         style+= this.elem_id+" .grid-stack > .grid-stack-item[data-gs-x='"+i+"'] { \
+            left: "+left+"%; \
+         } \
+         "+this.elem_id+" .grid-stack > .grid-stack-item[data-gs-width='"+(i+1)+"'] { \
+            min-width: "+width_percent+"%; \
+            width: "+width+"%; \
+         }";
+      }
+
+      // remove old inline styles
+      $("#gs_inline_css_"+this.rand).remove();
+
+      // add new style
+      if (dash_width > 700) {
+         $("<style id='gs_inline_css_"+this.rand+"'>")
+            .prop("type", "text/css")
+            .html(style)
+            .appendTo("head");
+      } else {
+         cell_height = 60;
+      }
+
+      // apply new height to gridstack
+      this.grid.cellHeight(cell_height);
    }
 
 };

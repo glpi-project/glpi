@@ -204,6 +204,7 @@ $break_phones: 700px;
       position: absolute;
       top: 0;
       right: 0;
+      z-index: 10;
 
       &.left-toolbar {
          top: 0;
@@ -295,6 +296,7 @@ $break_phones: 700px;
       display: none;
       position: absolute;
       top: calc(#{$toolbar_height} - 3px);
+      width: calc(100% + 1px);
       border: 1px solid #EEEEEE;
       border-width: 0 1px 1px 0;
       background-image:
