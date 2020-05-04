@@ -369,6 +369,21 @@ class Profile extends CommonDBTM {
          }
       }
 
+      // Set default values, only needed for helpdesk
+      $interface = $input['interface'] ?? "";
+      if (!empty($interface) && $interface == "helpdesk" && !isset($input["_cycle_ticket"])) {
+         $tab   = Ticket::getAllStatusArray();
+         $cycle = [];
+         foreach ($tab as $from => $label) {
+            foreach ($tab as $dest => $label) {
+               if ($from != $dest) {
+                  $cycle[$from][$dest] = 0;
+               }
+            }
+         }
+         $input["ticket_status"] = exportArrayToDB($cycle);
+      }
+
       return $input;
    }
 
@@ -1214,7 +1229,7 @@ class Profile extends CommonDBTM {
 
       $allowactions = [Ticket::INCOMING => [],
                             Ticket::SOLVED   => [Ticket::CLOSED],
-                            Ticket::CLOSED   => [Ticket::CLOSED, Ticket::INCOMING]];
+                            Ticket::CLOSED   => [Ticket::INCOMING]];
 
       foreach ($statuses as $index_1 => $status_1) {
          $columns[$index_1] = $status_1;
