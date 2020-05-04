@@ -976,7 +976,7 @@ class MassiveAction {
                'name' => 'amendment'
             ]);
             echo ("<br><br>");
-            echo Html::submit(_sx('button', 'Post'), [
+            echo Html::submit(__('Update'), [
                'name' => 'massiveaction'
             ]);
 
@@ -989,7 +989,7 @@ class MassiveAction {
                'name' => 'add_note'
             ]);
             echo ("<br><br>");
-            echo Html::submit(_sx('button', 'Post'), [
+            echo Html::submit(_sx('button', 'Add'), [
                'name' => 'massiveaction'
             ]);
 
