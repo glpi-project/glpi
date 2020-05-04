@@ -2497,8 +2497,8 @@ class Planning extends CommonGLPI {
    static function returnNewEventByType ($event, $content, $tooltip, $begin, $end, $index_color, $options) {
       $rule_event = [];
       $title = '';
+      $options['view_name'] ?? $options['view_name'];
 
-      if (isset($options['view_name'])) {
          switch ($options['view_name']) {
             case 'resourceTimeGridDay' :
                if ($event['itemtype'] == TicketTask::class) {
@@ -2516,16 +2516,14 @@ class Planning extends CommonGLPI {
                      $title = isset($category->fields["name"]) ? $category->fields["name"] : $event['name'];
                   }
                }
-               $rule_event = ['title'       =>  $title];
             break;
             default :
-               $rule_event = [
-               'title'       => $event['name']];
+               $title = $event['name'];
             break;
          }
-      }
 
-      return array_merge([ 'content'     => $content,
+      return             [ 'title'       => $title,
+                           'content'     => $content,
                            'tooltip'     => $tooltip,
                            'start'       => $begin,
                            'end'         => $end,
@@ -2551,6 +2549,6 @@ class Planning extends CommonGLPI {
                            'resourceId'  => $event['resourceId'],
                            'priority'    => $event['priority'] ?? "",
                            'state'       => $event['state'] ?? "",
-      ], $rule_event);
+      ];
    }
 }
