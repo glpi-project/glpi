@@ -2301,11 +2301,9 @@ class Html {
          }
       }
 
-      $label_class = "label-checkbox";
 
       if ($params['readonly']) {
          $out .= " disabled='disabled'";
-         $label_class .= " cursor-not-allowed";
       }
 
       if ($params['checked']) {
@@ -2313,7 +2311,7 @@ class Html {
       }
 
       $out .= ">";
-      $out .= "<label class='$label_class' title=\"".$params['title']."\" for='".$params['id']."'>";
+      $out .= "<label class='label-checkbox' title=\"".$params['title']."\" for='".$params['id']."'>";
       $out .= " <span class='check'></span>";
       $out .= " <span class='box'></span>";
       $out .= "&nbsp;";
