@@ -839,7 +839,7 @@ var Dashboard = {
          bottom: "+cell_fullsize+"px; \
       }";
 
-      for (i = 0; i < this.cols; i++) {
+      for (var i = 0; i < this.cols; i++) {
          var left  = i * width_percent;
          var width = (i+1) * width_percent;
 
