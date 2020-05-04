@@ -83,7 +83,7 @@ class Ajax {
       if (!empty($param['container'])) {
          $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
       } else {
-         $out .= "$('<div />')";
+         $out .= "$('<div></div>')";
       }
       $out .= ".dialog({\n
          width:".$param['width'].",\n

@@ -133,7 +133,7 @@ var displayUploadedFile = function(file, tag, editor, input_name) {
    if (filecontainer.length) {
       var ext = file.name.split('.').pop();
 
-      var p = $('<p/>')
+      var p = $('<p></p>')
          .attr('id',file.id)
          .html(
             getExtIcon(ext)
@@ -311,7 +311,7 @@ var isImageBlobFromPaste = function(content) {
 * @return {string}  Source of image or empty string.
 */
 var extractSrcFromImgTag = function(content) {
-   var foundImage = $('<div/>').append(content).find('img');
+   var foundImage = $('<div></div>').append(content).find('img');
    if (foundImage.length > 0) {
       return foundImage.attr('src');
    }

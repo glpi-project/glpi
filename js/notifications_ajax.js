@@ -9,8 +9,8 @@
    function GLPINotificationsAjax(options) {
 
       var _this = this;
-      var _queue = $('<div />');
-      var _queue_audio = $('<div />');
+      var _queue = $('<div></div>');
+      var _queue_audio = $('<div></div>');
 
       this.options = $.extend({}, GLPINotificationsAjax.default, options);
 
