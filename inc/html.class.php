@@ -2301,7 +2301,6 @@ class Html {
          }
       }
 
-
       if ($params['readonly']) {
          $out .= " disabled='disabled'";
       }
