@@ -1029,67 +1029,52 @@ function update94to95() {
             'context' => 'core',
             '_items'  => [
                [
-                  "x" => 0, "y" => 0, "width" => 3, "height" => 2,
+                  "x" => 3, "y" => 0, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_Computer_4a315743-151c-40cb-a20b-762250668dac",
                   "card_id"      => "bn_count_Computer",
                   "card_options" => "{\"color\":\"#e69393\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
                ], [
-                  "x" => 0, "y" => 4, "width" => 3, "height" => 2,
-                  "gridstack_id" => "bn_count_NetworkEquipment_099fbc13-b1a7-4178-98a0-32150ebda140",
-                  "card_id"      => "bn_count_NetworkEquipment",
-                  "card_options" => "{\"color\":\"#91d6db\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
-               ], [
-                  "x" => 0, "y" => 2, "width" => 3, "height" => 2,
+                  "x" => 0, "y" => 0, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_Software_0690f524-e826-47a9-b50a-906451196b83",
                   "card_id"      => "bn_count_Software",
                   "card_options" => "{\"color\":\"#aaddac\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
                ], [
-                  "x" => 3, "y" => 4, "width" => 3, "height" => 2,
+                  "x" => 6, "y" => 2, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_Rack_c6502e0a-5991-46b4-a771-7f355137306b",
                   "card_id"      => "bn_count_Rack",
                   "card_options" => "{\"color\":\"#0e87a0\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
                ], [
-                  "x" => 3, "y" => 2, "width" => 3, "height" => 2,
+                  "x" => 0, "y" => 2, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_SoftwareLicense_e755fd06-283e-4479-ba35-2d548f8f8a90",
                   "card_id"      => "bn_count_SoftwareLicense",
                   "card_options" => "{\"color\":\"#27ab3c\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
                ], [
-                  "x" => 3, "y" => 0, "width" => 3, "height" => 2,
+                  "x" => 3, "y" => 2, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_Monitor_7059b94c-583c-4ba7-b100-d40461165318",
                   "card_id"      => "bn_count_Monitor",
                   "card_options" => "{\"color\":\"#b52d30\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
                ], [
-                  "x" => 0, "y" => 8, "width" => 4, "height" => 2,
-                  "gridstack_id" => "bn_count_User_42be4c38-f4d4-404c-84ae-3ef78b181bd2",
-                  "card_id"      => "bn_count_User",
-                  "card_options" => "{\"color\":\"#fafafa\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
-               ], [
-                  "x" => 11, "y" => 0, "width" => 3, "height" => 2,
+                  "x" => 14, "y" => 7, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_Ticket_a74c0903-3387-4a07-9111-b0938af8f1e7",
                   "card_id"      => "bn_count_Ticket",
                   "card_options" => "{\"color\":\"#ffdc64\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
                ], [
-                  "x" => 11, "y" => 4, "width" => 3, "height" => 2,
+                  "x" => 20, "y" => 7, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_Problem_c1cf5cfb-f626-472e-82a1-49c3e200e746",
                   "card_id"      => "bn_count_Problem",
                   "card_options" => "{\"color\":\"#f08d7b\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
                ], [
-                  "x" => 6, "y" => 4, "width" => 5, "height" => 4,
-                  "gridstack_id" => "count_Computer_ComputerModel_355a0854-87c4-4bb1-a348-eeb15bf674bf",
-                  "card_id"      => "count_Computer_ComputerModel",
-                  "card_options" => "{\"color\":\"#edf0f1\",\"widgettype\":\"donut\",\"use_gradient\":\"1\",\"limit\":\"5\"}",
-               ], [
-                  "x" => 6, "y" => 0, "width" => 5, "height" => 4,
+                  "x" => 0, "y" => 4, "width" => 5, "height" => 4,
                   "gridstack_id" => "count_Computer_Manufacturer_6129c451-42b5-489d-b693-c362adf32d49",
                   "card_id"      => "count_Computer_Manufacturer",
                   "card_options" => "{\"color\":\"#f8faf9\",\"widgettype\":\"donut\",\"use_gradient\":\"1\",\"limit\":\"5\"}",
                ], [
-                  "x" => 14, "y" => 7, "width" => 6, "height" => 5,
+                  "x" => 14, "y" => 9, "width" => 6, "height" => 5,
                   "gridstack_id" => "top_ticket_user_requester_c74f52a8-046a-4077-b1a6-c9f840d34b82",
                   "card_id"      => "top_ticket_user_requester",
                   "card_options" => "{\"color\":\"#f9fafb\",\"widgettype\":\"hbar\",\"use_gradient\":\"1\",\"limit\":\"5\"}",
                ], [
-                  "x" => 11, "y" => 2, "width" => 3, "height" => 2,
+                  "x" => 17, "y" => 7, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_tickets_late_04c47208-d7e5-4aca-9566-d46e68c45c67",
                   "card_id"      => "bn_count_tickets_late",
                   "card_options" => "{\"color\":\"#f8911f\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
@@ -1099,22 +1084,22 @@ function update94to95() {
                   "card_id"      => "ticket_status",
                   "card_options" => "{\"color\":\"#fafafa\",\"widgettype\":\"stackedbars\",\"use_gradient\":\"0\",\"limit\":\"12\"}",
                ], [
-                  "x" => 20, "y" => 7, "width" => 6, "height" => 5,
+                  "x" => 20, "y" => 9, "width" => 6, "height" => 5,
                   "gridstack_id" => "top_ticket_ITILCategory_37736ba9-d429-4cb3-9058-ef4d111d9269",
                   "card_id"      => "top_ticket_ITILCategory",
                   "card_options" => "{\"color\":\"#fbf9f9\",\"widgettype\":\"hbar\",\"use_gradient\":\"1\",\"limit\":\"5\"}",
                ], [
-                  "x" => 3, "y" => 6, "width" => 3, "height" => 2,
+                  "x" => 9, "y" => 2, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_Printer_517684b0-b064-49dd-943e-fcb6f915e453",
                   "card_id"      => "bn_count_Printer",
                   "card_options" => "{\"color\":\"#365a8f\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
                ], [
-                  "x" => 0, "y" => 6, "width" => 3, "height" => 2,
+                  "x" => 9, "y" => 0, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_Phone_f70c489f-02c1-46e5-978b-94a95b5038ee",
                   "card_id"      => "bn_count_Phone",
                   "card_options" => "{\"color\":\"#d5e1ec\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
                ], [
-                  "x" => 11, "y" => 6, "width" => 3, "height" => 2,
+                  "x" => 23, "y" => 7, "width" => 3, "height" => 2,
                   "gridstack_id" => "bn_count_Change_ab950dbd-cd25-466d-8dff-7dcaca386564",
                   "card_id"      => "bn_count_Change",
                   "card_options" => "{\"color\":\"#cae3c4\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
@@ -1153,6 +1138,26 @@ function update94to95() {
                   "gridstack_id" => "bn_count_Project_4d412ee2-8b79-469b-995f-4c0a05ab849d",
                   "card_id"      => "bn_count_Project",
                   "card_options" => "{\"color\":\"#b3b3b3\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
+               ], [
+                  "x" => 6, "y" => 0, "width" => 3, "height" => 2,
+                  "gridstack_id" => "bn_count_NetworkEquipment_c537e334-d584-43bc-b6de-b4a939143e89",
+                  "card_id"      => "bn_count_NetworkEquipment",
+                  "card_options" => "{\"color\":\"#bfe7ea\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
+               ], [
+                  "x" => 0, "y" => 8, "width" => 4, "height" => 2,
+                  "gridstack_id" => "bn_count_User_ac0cbe52-3593-43c1-8ecc-0eb115de494d",
+                  "card_id"      => "bn_count_User",
+                  "card_options" => "{\"color\":\"#fafafa\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
+               ], [
+                  "x" => 5, "y" => 4, "width" => 5, "height" => 4,
+                  "gridstack_id" => "count_Monitor_MonitorModel_5a476ff9-116e-4270-858b-c003c20841a9",
+                  "card_id"      => "count_Monitor_MonitorModel",
+                  "card_options" => "{\"color\":\"#f5fafa\",\"widgettype\":\"donut\",\"use_gradient\":\"1\",\"limit\":\"5\"}",
+               ], [
+                  "x" => 10, "y" => 4, "width" => 4, "height" => 4,
+                  "gridstack_id" => "count_NetworkEquipment_State_81f2ae35-b366-4065-ac26-02ea4e3704a6",
+                  "card_id"      => "count_NetworkEquipment_State",
+                  "card_options" => "{\"color\":\"#f5f3ef\",\"widgettype\":\"donut\",\"use_gradient\":\"1\",\"limit\":\"5\"}",
                ]
             ]
          ], [
