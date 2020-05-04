@@ -350,7 +350,7 @@ class Telemetry extends CommonGLPI {
             $.ajax({
                url:  $(this).attr('href'),
                success: function(data) {
-                  var _elt = $('<div/>');
+                  var _elt = $('<div></div>');
                   _elt.append(data);
                   $('body').append(_elt);
 

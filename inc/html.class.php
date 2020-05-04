@@ -5973,7 +5973,7 @@ JAVASCRIPT;
             message = message.replace('\\n', '<br>');
          }
          caption = caption || '".__s("Information")."';
-         $('<div/>').html(message).dialog({
+         $('<div></div>').html(message).dialog({
             title: caption,
             buttons: {
                ".__s('OK').": function() {
@@ -6063,7 +6063,7 @@ JAVASCRIPT;
          message = message.replace('\\n', '<br>');
          caption = caption || '';
 
-         $('<div/>').html(message).dialog({
+         $('<div></div>').html(message).dialog({
             title: caption,
             dialogClass: 'fixed glpi_modal',
             buttons: {
@@ -6129,7 +6129,7 @@ JAVASCRIPT;
    static function jsAlertCallback($msg, $title, $okCallback = null) {
       return "
          // Dialog and its properties.
-         $('<div/>').dialog({
+         $('<div></div>').dialog({
             open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
             close: function(event, ui) { $(this).remove(); },
             resizable: false,

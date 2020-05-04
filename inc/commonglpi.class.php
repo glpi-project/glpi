@@ -1085,7 +1085,7 @@ class CommonGLPI {
 
                   var current_action = $(this).data('action');
 
-                  $('<div />').dialog({
+                  $('<div></div>').dialog({
                      title: ma.actions[current_action],
                      width: 500,
                      height: 'auto',

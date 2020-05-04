@@ -438,7 +438,7 @@ var GLPIPlanning  = {
             var editable = event.extendedProps._editable; // do not know why editable property is not available
             if (ajaxurl && editable && !disable_edit) {
                info.jsEvent.preventDefault(); // don't let the browser navigate
-               $('<div>')
+               $('<div></div>')
                   .dialog({
                      modal:  true,
                      width:  'auto',
@@ -476,7 +476,7 @@ var GLPIPlanning  = {
 
             var start = info.start;
             var end = info.end;
-            $('<div>').dialog({
+            $('<div></div>').dialog({
                modal:  true,
                width:  'auto',
                height: 'auto',
@@ -617,7 +617,7 @@ var GLPIPlanning  = {
       $('#planning_filter a.planning_add_filter' ).on( 'click', function( e ) {
          e.preventDefault(); // to prevent change of url on anchor
          var url = $(this).attr('href');
-         $('<div>').dialog({
+         $('<div></div>').dialog({
             modal: true,
             open: function () {
                $(this).load(url);
