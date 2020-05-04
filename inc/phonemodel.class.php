@@ -44,4 +44,9 @@ class PhoneModel extends CommonDropdown {
       return _n('Phone model', 'Phone models', $nb);
    }
 
+
+   static function getFieldLabel() {
+      return __('Model');
+   }
+
 }

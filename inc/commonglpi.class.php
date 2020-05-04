@@ -85,6 +85,19 @@ class CommonGLPI {
 
 
    /**
+    * Return the simplified localized label of the current Type in the context of a form.
+    * Avoid to recall the type in the label (Computer status -> Status)
+    *
+    * Should be overloaded in each new class
+    *
+    * @return string
+   **/
+   static function getFieldLabel() {
+      return static::getTypeName();
+   }
+
+
+   /**
     * Return the type of the object : class name
     *
     * @return string

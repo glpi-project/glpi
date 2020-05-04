@@ -41,4 +41,8 @@ class NetworkEquipmentType extends CommonDropdown {
    static function getTypeName($nb = 0) {
       return _n('Networking equipment type', 'Networking equipment types', $nb);
    }
+
+   static function getFieldLabel() {
+      return __('Type');
+   }
 }

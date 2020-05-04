@@ -42,4 +42,8 @@ class PhoneType extends CommonDropdown {
       return _n('Phone type', 'Phone types', $nb);
    }
 
+   static function getFieldLabel() {
+      return __('Type');
+   }
+
 }

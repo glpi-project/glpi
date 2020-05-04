@@ -42,4 +42,8 @@ class PrinterType extends CommonDropdown {
       return _n('Printer type', 'Printer types', $nb);
    }
 
+   static function getFieldLabel() {
+      return __('Type');
+   }
+
 }

@@ -33,6 +33,7 @@
 namespace Glpi\Dashboard;
 
 use Ramsey\Uuid\Uuid;
+use Session;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -226,10 +227,10 @@ HTML;
 
       $nb_dashboards = count(self::$all_dashboards);
 
-      $can_view_all  = \Session::haveRight('dashboard', READ) || self::$embed;
-      $can_create    = \Session::haveRight('dashboard', CREATE);
-      $can_edit      = \Session::haveRight('dashboard', UPDATE) && $nb_dashboards;
-      $can_purge     = \Session::haveRight('dashboard', PURGE) && $nb_dashboards;
+      $can_view_all  = Session::haveRight('dashboard', READ) || self::$embed;
+      $can_create    = Session::haveRight('dashboard', CREATE);
+      $can_edit      = Session::haveRight('dashboard', UPDATE) && $nb_dashboards;
+      $can_purge     = Session::haveRight('dashboard', PURGE) && $nb_dashboards;
       $can_clone     = $can_create && $nb_dashboards;
 
       // prepare html for add controls
@@ -934,7 +935,7 @@ HTML;
       // manage cache
       $use_cache =
          !($card_options['args']['force'] ?? $card_options['force'] ?? false)
-         && $_SESSION['glpi_use_mode'] != \Session::DEBUG_MODE;
+         && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE;
       $cache_key    = "dashboard_card_".$dashboard;
       $cache_age    = 40;
       if ($use_cache) {
@@ -1115,8 +1116,8 @@ HTML;
          foreach ($fk_itemtypes as $fk_itemtype) {
             $label = sprintf(
                __("%s by %s"),
-               $itemtype::getTypeName(),
-               $fk_itemtype::getTypeName()
+               $itemtype::getTypeName(Session::getPluralNumber()),
+               $fk_itemtype::getFieldLabel()
             );
 
             $cards["count_".$itemtype."_".$fk_itemtype] = [
