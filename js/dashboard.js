@@ -214,7 +214,7 @@ var Dashboard = {
          }
 
          window.clearTimeout(debounce);
-         debounce = window.setTimeout(() => {
+         debounce = window.setTimeout(function() {
             Dashboard.generateCss();
 
             // fit again numbers
