@@ -1316,15 +1316,23 @@ abstract class APIBaseClass extends \atoum {
          'APIClient', 'AuthLDAP', 'MailCollector', 'User'
       ];
       foreach ($itemtypes as $itemtype) {
-         $data = $this->query($itemtype, [
-            'headers'  => ['Session-Token' => $this->session_token]
-         ]);
+         $data = $this->query(
+            'getItems',
+            [
+               'itemtype' => $itemtype,
+               'headers'  => ['Session-Token' => $this->session_token]
+            ]
+         );
 
          $this->array($itemtype::$undisclosedFields)
             ->size->isGreaterThan(0);
 
          foreach ($itemtype::$undisclosedFields as $key) {
-            $this->array($data)->notHasKey($key);
+            $this->array($data);
+            unset($data['headers']);
+            foreach ($data as $item) {
+               $this->array($item)->notHasKey($key);
+            }
          }
       }
 
