@@ -1892,7 +1892,7 @@ class Config extends CommonDBTM {
       echo wordwrap($msg."\n", $width, "\n\t");
 
       if (isset($_SERVER["HTTP_USER_AGENT"])) {
-         echo "\t" . $_SERVER["HTTP_USER_AGENT"] . "\n";
+         echo "\t" . Toolbox::clean_cross_side_scripting_deep($_SERVER["HTTP_USER_AGENT"]) . "\n";
       }
 
       foreach ($DB->getInfo() as $key => $val) {

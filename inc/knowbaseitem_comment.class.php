@@ -84,14 +84,6 @@ class KnowbaseItem_Comment extends CommonDBTM {
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $CFG_GLPI;
 
-      $item_id = $item->getID();
-      $item_type = $item::getType();
-      if (isset($_GET["start"])) {
-         $start = intval($_GET["start"]);
-      } else {
-         $start = 0;
-      }
-
       // Total Number of comments
       if ($item->getType() == KnowbaseItem::getType()) {
          $where = [
@@ -309,9 +301,7 @@ class KnowbaseItem_Comment extends CommonDBTM {
          }
 
          $html .= "<div class='item_content'>";
-         $html .= "<p>";
-         $html .= Toolbox::unclean_cross_side_scripting_deep($comment['comment']);
-         $html .= "</p>";
+         $html .= "<p>{$comment['comment']}</p>";
          $html .= "</div>";
          $html .= "</div>"; // displayed_content
 

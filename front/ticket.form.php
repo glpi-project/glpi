@@ -155,7 +155,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['addme_observer'])) {
    $track->check($_POST['tickets_id'], READ);
-   $input = array_merge($track->fields, [
+   $input = array_merge(Toolbox::addslashes_deep($track->fields), [
       'id' => $_POST['tickets_id'],
       '_itil_observer' => [
          '_type' => "user",
@@ -171,7 +171,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['addme_assign'])) {
    $track->check($_POST['tickets_id'], READ);
-   $input = array_merge($track->fields, [
+   $input = array_merge(Toolbox::addslashes_deep($track->fields), [
       'id' => $_POST['tickets_id'],
       '_itil_assign' => [
          '_type' => "user",

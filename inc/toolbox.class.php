@@ -1722,9 +1722,11 @@ class Toolbox {
       if (!empty($where)) {
 
          if (Session::getCurrentInterface()) {
-            $decoded_where = rawurldecode($where);
             // redirect to URL : URL must be rawurlencoded
+            $decoded_where = rawurldecode($where);
             $matches = [];
+
+            // redirect to full url -> check if it's based on glpi url
             if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $decoded_where, $matches)) {
                if ($matches[1] !== $CFG_GLPI['url_base']) {
                   Session::addMessageAfterRedirect('Redirection failed');
@@ -1737,10 +1739,12 @@ class Toolbox {
                   Html::redirect($decoded_where);
                }
             }
-            // Redirect based on GLPI_ROOT : URL must be rawurlencoded
+
+            // Redirect to relative url -> redirect with glpi url to prevent exploits
             if ($decoded_where[0] == '/') {
-               // echo $decoded_where;exit();
-               Html::redirect($CFG_GLPI["root_doc"].$decoded_where);
+               $redirect_to = $CFG_GLPI["url_base"].$decoded_where;
+               //echo $redirect_to; exit();
+               Html::redirect($redirect_to);
             }
 
             $data = explode("_", $where);

@@ -6478,6 +6478,9 @@ with incorrect shading in some cases */
    color: green !important;
 }
 
+input:disabled + .label-checkbox {
+   cursor: not-allowed;
+}
 /** Custom CSS form */
 .custom_css_configuration td:not([colspan]) {
    width: 50%;

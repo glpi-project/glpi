@@ -55,6 +55,13 @@ class User extends CommonDBTM {
 
    static $rightname = 'user';
 
+   static $undisclosedFields = [
+      'password',
+      'personal_token',
+      'api_token',
+      'cookie_token',
+   ];
+
    private $entities = null;
 
 
@@ -273,9 +280,6 @@ class User extends CommonDBTM {
       }
    }
 
-   static public function unsetUndisclosedFields(&$fields) {
-      unset($fields['password']);
-   }
 
    function pre_deleteItem() {
       global $DB;
