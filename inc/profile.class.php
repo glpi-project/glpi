@@ -254,10 +254,10 @@ class Profile extends CommonDBTM {
       }
 
       if (isset($input["_cycle_ticket"])) {
-         $tab   = Ticket::getAllStatusArray();
+         $tab   = array_keys(Ticket::getAllStatusArray());
          $cycle = [];
-         foreach ($tab as $from => $label) {
-            foreach ($tab as $dest => $label) {
+         foreach ($tab as $from) {
+            foreach ($tab as $dest) {
                if (($from != $dest)
                    && (!isset($input["_cycle_ticket"][$from][$dest])
                       || ($input["_cycle_ticket"][$from][$dest] == 0))) {
@@ -372,10 +372,10 @@ class Profile extends CommonDBTM {
       // Set default values, only needed for helpdesk
       $interface = isset($input['interface']) ? $input['interface'] : "";
       if (!empty($interface) && $interface == "helpdesk" && !isset($input["_cycle_ticket"])) {
-         $tab   = Ticket::getAllStatusArray();
+         $tab   = array_keys(Ticket::getAllStatusArray());
          $cycle = [];
-         foreach ($tab as $from => $label) {
-            foreach ($tab as $dest => $label) {
+         foreach ($tab as $from) {
+            foreach ($tab as $dest) {
                if ($from != $dest) {
                   $cycle[$from][$dest] = 0;
                }
