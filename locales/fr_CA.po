@@ -2430,7 +2430,7 @@ msgstr "Importation de nouveaux utilisateurs"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr ""
+msgstr "%1$s ajoute l'élément %2$s-%3$s:%4$s"
 
 #: front/lock.form.php:56
 #, php-format
@@ -11573,6 +11573,8 @@ msgid ""
 "Having troubles setting up an advanced GLPI module?\n"
 "We can help you solve them. Sign up for support on %s."
 msgstr ""
+"Avez-vous de la difficulté à déployer un module avancé GLPI ?\n"
+"Nous pouvons vous aider. Inscrivez-vous sur %s pour obtenir du support."
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -19835,6 +19837,8 @@ msgstr "Ajout date_creation à %s"
 #: install/update_942_943.php:52
 msgid "Fix URL of images in ITIL tasks, followups and solutions."
 msgstr ""
+"Correction des URL des images dans les tâches ITIL, les suivis et les "
+"solutions."
 
 #: install/update.php:137
 msgid "Update successful, your database is up to date"

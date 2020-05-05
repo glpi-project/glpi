@@ -12,6 +12,7 @@
 # Hugo Castelo Branco <hugo.castelobranco@gmail.com>, 2020
 # Henrique Amaral, 2020
 # Rui Melo <viper5000pt@gmail.com>, 2020
+# Luis Pinho <lj.pinho@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-03-10 10:18+0100\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Rui Melo <viper5000pt@gmail.com>, 2020\n"
+"Last-Translator: Luis Pinho <lj.pinho@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/glpi/teams/1637/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4749,7 +4750,7 @@ msgstr "Data criação"
 
 #: inc/authldap.class.php:1174
 msgid "Domain name used by inventory tool"
-msgstr ""
+msgstr "Domain name used by inventory tool"
 
 #: inc/authldap.class.php:1305 inc/authldap.class.php:1319
 #: inc/authldap.class.php:3212

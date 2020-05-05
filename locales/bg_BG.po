@@ -8,8 +8,9 @@
 # Sarkis Ovanesian <s_ovanesian@ameta.bg>, 2018
 # DOMBRE Julien <moyo@indepnet.net>, 2018
 # Georgi Komsiyski <georgi.komsiyski@gmail.com>, 2018
-# Zornitsa Koleva <zornitsa.koleva@mr-bricolage.bg>, 2019
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Zornitsa Koleva <zornitsa.koleva@mr-bricolage.bg>, 2020
+# Nikolay Zaynelov <mravunko@yahoo.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-03-10 10:18+0100\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Nikolay Zaynelov <mravunko@yahoo.com>, 2020\n"
 "Language-Team: Bulgarian (Bulgaria) (https://www.transifex.com/glpi/teams/1637/bg_BG/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -742,7 +743,7 @@ msgstr "Липсва задължителен аргумент!"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "Елементът не е геолокализиран или не може да бъде намерен"
 
 #: ajax/getMapPoint.php:75
 msgid "Location seems not geolocalized!"
@@ -750,7 +751,7 @@ msgstr "Локацията не е геолокализирана!"
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
-msgstr ""
+msgstr "Моля, попълнете дължина и ширина за това местоположение."
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2473
 #: inc/mailcollector.class.php:215 inc/ruleaction.class.php:89
@@ -868,7 +869,7 @@ msgstr "Добави ново устройство"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:72
 msgid "No unaffected device !"
-msgstr ""
+msgstr "Няма незасегнато устройство!"
 
 #: ajax/subvisibility.php:59
 msgid "No restriction"
@@ -977,6 +978,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Ние събираме само следните данни: статистики за използване на плъгини, "
+"производителност и адаптивност за функциите на потребителския интерфейс, "
+"паметта и хардуерната конфигурация."
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:68 ajax/ticketassigninformation.php:69
@@ -993,7 +997,7 @@ msgstr "В процес на изпълнение"
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
 msgstr[0] "%sтикет e в процес или e решен наскоро за този елемент"
-msgstr[1] "%sтикети са в процес или са решени наскоро за този елемент"
+msgstr[1] "%s заявки са в процес или вече са разрешени за този елемент."
 
 #: ajax/ticketsatisfaction.php:58 inc/entity.class.php:1056
 msgid "Create survey after"
@@ -1025,7 +1029,7 @@ msgstr "Неуточнен"
 
 #: ajax/ticketsatisfaction.php:92
 msgid "For tickets closed after"
-msgstr "За билети затворени след"
+msgstr "За заявки затворени след"
 
 #: ajax/ticketsatisfaction.php:100 inc/link.class.php:141
 msgid "Valid tags"
@@ -1168,7 +1172,7 @@ msgstr "Вътрешната система за бекъп на GLPI е в по
 
 #: front/backup.php:585
 msgid "You should rather use a dedicated tool on your server."
-msgstr ""
+msgstr "Моля, използвайте специален инструмент на вашия сървър."
 
 #: front/backup.php:591 front/backup.php:596
 msgid "Backup the database?"
@@ -1465,7 +1469,7 @@ msgstr "%s добавя участник"
 #: front/change.form.php:131 front/problem.form.php:134
 #: front/ticket.form.php:228
 msgid "Save solution to the knowledge base"
-msgstr ""
+msgstr "Запазете решение в базата от знания"
 
 #. TRANS: %s is the user login
 #: front/change_group.form.php:53 front/change_supplier.form.php:61
@@ -1665,11 +1669,11 @@ msgstr "%s инсталиран софтуер"
 
 #: front/computer_softwareversion.form.php:55
 msgid "Please select a software!"
-msgstr ""
+msgstr "Моля, изберете софтуер!"
 
 #: front/computer_softwareversion.form.php:57
 msgid "Please select a version!"
-msgstr ""
+msgstr "Моля, избере версия!"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:54
@@ -1821,6 +1825,9 @@ msgid ""
 "You have more automatic actions which need to run each minute than the "
 "number allow each run. Increase this config."
 msgstr ""
+"Имате повече автоматични действия, които трябва да стартирате всяка минута, "
+"отколкото са позволение за изпълнение. Увеличете тази стойност в "
+"конфигурацията."
 
 #: front/devices.php:37 front/devices.php:41 inc/commondevice.class.php:53
 #: inc/commondevice.class.php:294 inc/config.class.php:3282
@@ -2154,15 +2161,15 @@ msgstr "Въпроси и отговори"
 
 #: front/helpdesk.php:85
 msgid "Helpdesk reporting form"
-msgstr ""
+msgstr "Форма за докладване на Хелпдеск"
 
 #: front/helpdesk.php:88
 msgid "The issue must be solved"
-msgstr ""
+msgstr "Проблемът трябва да бъде решен"
 
 #: front/helpdesk.php:91
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Изберете ниво на спешност"
 
 #: front/helpdesk.php:94 inc/commonitilobject.class.php:2117
 msgctxt "urgency"
@@ -2191,7 +2198,7 @@ msgstr "Маловажно"
 
 #: front/helpdesk.php:103
 msgid "Describe your issue"
-msgstr ""
+msgstr "Описание на проблема"
 
 #: front/helpdesk.php:105 inc/change.class.php:857
 #: inc/commonitilcost.class.php:100 inc/commonitilobject.class.php:2908
@@ -2231,7 +2238,7 @@ msgstr "Съдържание"
 #: front/helpdesk.php:114
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "изпращане"
 
 #: front/helpdesk.public.php:92 front/ticket.form.php:239
 #: inc/notificationtargetticket.class.php:143 inc/ticket.class.php:4704
@@ -2246,7 +2253,7 @@ msgstr "В началото"
 
 #: front/ipnetwork.form.php:41
 msgid "Successfully recreated network tree"
-msgstr ""
+msgstr "Успешно пресъздадено мрежово дърво"
 
 #. TRANS: %s is the user login
 #: front/ipnetwork_vlan.form.php:50 front/networkport_vlan.form.php:47
@@ -2294,22 +2301,22 @@ msgstr "%s обновява продължение"
 #: front/itilfollowup.form.php:82
 #, php-format
 msgid "%s purges a followup"
-msgstr ""
+msgstr "%s изтрива проследяване"
 
 #: front/itilsolution.form.php:50
 msgid "You cannot solve this item!"
-msgstr ""
+msgstr "Не можете да решите този елемент!"
 
 #: front/itilsolution.form.php:101 front/ticket.form.php:104
 msgid ""
 "You have been redirected because you no longer have access to this ticket"
-msgstr "Вие сте били пренасочени, защото вече нямате достъп до тази заявка"
+msgstr "Бяхте препратени, защото вече нямате достъп до тази заявка "
 
 #: front/knowbaseitem_comment.form.php:41
 #: front/knowbaseitem_comment.form.php:53
 #: front/knowbaseitem_comment.form.php:72 front/knowbaseitem_item.form.php:43
 msgid "Mandatory fields are not filled!"
-msgstr ""
+msgstr "Задължителните полета не са попълнени!"
 
 #: front/knowbaseitem_comment.form.php:60
 #, php-format
@@ -2318,7 +2325,7 @@ msgstr "%sдобави коментар в Базата знания"
 
 #: front/knowbaseitem_comment.form.php:62
 msgid "Your comment has been added"
-msgstr ""
+msgstr "Вашият коментар е добавен"
 
 #: front/knowbaseitem_comment.form.php:81
 #, php-format
@@ -2327,7 +2334,7 @@ msgstr "%sпромени коментар в Базата знания"
 
 #: front/knowbaseitem_comment.form.php:83
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "Вашият коментар е редактиран"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:115 front/reminder.form.php:107
@@ -2339,12 +2346,12 @@ msgstr "%s добавя цел"
 #: front/knowbaseitem.form.php:125
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr ""
+msgstr "Елементът от базата знания е върнат към редакция  %s"
 
 #: front/knowbaseitem.form.php:132
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr ""
+msgstr "Елементът от базата знания не е върнат към редакция %s"
 
 #: front/knowbaseitem.form.php:146 inc/commondropdown.class.php:938
 #: inc/itilcategory.class.php:67 inc/itilcategory.class.php:231
@@ -2357,17 +2364,17 @@ msgstr "База знания"
 #: front/knowbaseitem_item.form.php:52
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr ""
+msgstr "%sдобави коментар в Базата от знания"
 
 #: front/knowbaseitemtranslation.form.php:54
 #, php-format
 msgid "Knowledge base item translation has been reverted to revision %s"
-msgstr ""
+msgstr "Преводът на базата знания е върнат към редакция %s"
 
 #: front/knowbaseitemtranslation.form.php:61
 #, php-format
 msgid "Knowledge base item translation has not been reverted to revision %s"
-msgstr ""
+msgstr "Преводът на базата знания не е върнат към редакция %s"
 
 #: front/knowbaseitemtranslation.form.php:85 inc/auth.class.php:102
 #: inc/config.class.php:630 inc/config.class.php:768 inc/user.class.php:2150
@@ -2417,17 +2424,17 @@ msgstr "Внасяне на нови потребители"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr ""
+msgstr "%1$s добавя елементът %2$s-%3$s:%4$s"
 
 #: front/lock.form.php:56
 #, php-format
 msgid "You do not have rights to restore %s item."
-msgstr ""
+msgstr "Нямате право да възстановите  %s елемент."
 
 #: front/lock.form.php:82
 #, php-format
 msgid "You do not have rights to delete %s item."
-msgstr ""
+msgstr "Нямате право да изтриете %s елемент."
 
 #: front/login.php:92
 msgid "Log in again"
@@ -2451,7 +2458,7 @@ msgstr ""
 
 #: front/massiveaction.php:45
 msgid "Bulk modification error"
-msgstr ""
+msgstr "Грешка в груповата промяна"
 
 #: front/massiveaction.php:57
 msgid "Bulk modification"
@@ -2474,11 +2481,11 @@ msgstr "Успешна операция"
 #: front/massiveaction.php:77
 #, php-format
 msgid "(%1$d authorizations problems, %2$d failures)"
-msgstr ""
+msgstr "(%1$d оторизационни проблеми, %2$d неуспешни)"
 
 #: front/migrationcleaner.php:44
 msgid "You don't need the \"migration cleaner\" tool anymore..."
-msgstr ""
+msgstr "Вече не се нуждаете от инструмента за почистване при миграция..."
 
 #: front/migrationcleaner.php:48 inc/migrationcleaner.class.php:47
 msgid "Migration cleaner"
@@ -2494,7 +2501,7 @@ msgstr "Реинициализиране на мрежовата тополог�
 
 #: front/migrationcleaner.php:66
 msgid "Clean the network port migration errors"
-msgstr ""
+msgstr "Изчистване на грешките при миграция на мрежовия порт"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:102 front/peripheral.form.php:102
@@ -2507,7 +2514,7 @@ msgstr "%s определя единно управление"
 #: front/networkname.form.php:45 front/networkport.form.php:64
 #, php-format
 msgid "%s adds an item"
-msgstr ""
+msgstr "%s добавя елемент"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:96
@@ -2533,7 +2540,7 @@ msgstr "Не може да се промени мигриран мрежов п�
 
 #: front/networkportmigration.form.php:89
 msgid "Network port is not available..."
-msgstr ""
+msgstr "Мрежовият порт не е наличен..."
 
 #: front/notification.tags.php:37
 msgid "List of available tags"
@@ -2543,13 +2550,13 @@ msgstr "Лист от налични тагове"
 #: front/olalevel.form.php:51
 #, php-format
 msgid "%s updates an ola level"
-msgstr ""
+msgstr "%s актуализира OLA ниво"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:75
 #, php-format
 msgid "%s purges an ola level"
-msgstr ""
+msgstr "%s изчиства OLA ниво"
 
 #: front/planning.php:137 inc/event.class.php:149 inc/event.class.php:157
 #: inc/planning.class.php:74 inc/profile.class.php:1075
@@ -2568,11 +2575,11 @@ msgstr "%s се ползва неправилно."
 #: front/pluginimage.send.php:57
 #, php-format
 msgid "%s tries to use a non standard path."
-msgstr ""
+msgstr "%s опитва да използва нестандартен път."
 
 #: front/plugin.php:46
 msgid "See the catalog of plugins"
-msgstr ""
+msgstr "Виж каталогът с плъгини"
 
 #: front/problem_ticket.form.php:44 inc/notificationtargetchange.class.php:326
 #: inc/notificationtargetchange.class.php:340
@@ -2613,7 +2620,7 @@ msgstr "%s добавя потребител към предприятие"
 #: front/projecttaskteam.form.php:51 front/projectteam.form.php:51
 #, php-format
 msgid "%s adds a team member"
-msgstr ""
+msgstr "%s добавя член в екип"
 
 #: front/report.contract.list.php:45
 msgid "List of the hardware under contract"
@@ -2858,7 +2865,7 @@ msgstr ""
 #: front/report.infocom.conso.php:235 front/report.infocom.php:245
 #, php-format
 msgid "%1$s value"
-msgstr ""
+msgstr "%1$s стойност"
 
 #. TRANS: %1$s and %2$s are values
 #: front/report.infocom.conso.php:280 front/report.infocom.php:199
@@ -2873,7 +2880,7 @@ msgstr ""
 
 #: front/report.infocom.conso.php:300 front/report.infocom.php:309
 msgid "Total value"
-msgstr ""
+msgstr "Обща стойност"
 
 #: front/report.infocom.php:130 inc/budget.class.php:133
 #: inc/budget.class.php:261 inc/budget.class.php:354
@@ -2959,21 +2966,21 @@ msgstr "Опростен интерфейс"
 #: front/reservation.form.php:67
 #, php-format
 msgid "%1$s purges the reservation for item %2$s"
-msgstr ""
+msgstr "%1$s изтрива резервацията за елемента %2$s"
 
 #: front/reservation.form.php:120
 #, php-format
 msgid "%1$s adds the reservation %2$s for item %3$s"
-msgstr ""
+msgstr "%1$s добавя резервация на %2$s за елемента %3$s"
 
 #: front/reservationitem.form.php:49
 #, php-format
 msgid "%1$s adds the item %2$s (%3$d)"
-msgstr ""
+msgstr "%1$s добавя елементът %2$s (%3$d)"
 
 #: front/rule.common.php:76
 msgid "Replay the rules dictionary"
-msgstr ""
+msgstr "Повторно изпълняване на речниковите правила"
 
 #: front/rule.common.php:78 inc/migration.class.php:110
 #: inc/migration.class.php:114 inc/software.class.php:1023
@@ -3006,19 +3013,19 @@ msgstr[1] ""
 #: front/savedsearch_alert.form.php:53
 #, php-format
 msgid "%s adds an alert"
-msgstr ""
+msgstr "%s добавя сигнал"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:66
 #, php-format
 msgid "%s purges an alert"
-msgstr ""
+msgstr "%s изчиства сигнал"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:78
 #, php-format
 msgid "%s updates an alert"
-msgstr ""
+msgstr "%s актуализира сигнал"
 
 #: front/search.php:36 inc/entity.class.php:1124 inc/html.class.php:6311
 #: inc/html.class.php:6593 inc/html.class.php:6594 inc/location.class.php:520
@@ -3083,55 +3090,55 @@ msgstr "Управление на шаблоните..."
 #: front/slalevel.form.php:47
 #, php-format
 msgid "%s updates a sla level"
-msgstr ""
+msgstr "%s актуализира SLA ниво"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:71
 #, php-format
 msgid "%s purges a sla level"
-msgstr ""
+msgstr "%s изчисва SLA ниво"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:55
 #, php-format
 msgid "%1$s adds the license %2$s"
-msgstr ""
+msgstr "%1$s добавя лиценза %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:76
 #, php-format
 msgid "%1$s deletes the license %2$s"
-msgstr ""
+msgstr "%1$s изтрива лиценза %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:84
 #, php-format
 msgid "%1$s purges the license %2$s"
-msgstr ""
+msgstr "%1$s изчиства лиценза %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:93
 #, php-format
 msgid "%1$s updates the license %2$s"
-msgstr ""
+msgstr "%1$s актуализира лиценза %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:54
 #, php-format
 msgid "%1$s adds the version %2$s"
-msgstr ""
+msgstr "%1$s добавя версията %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:64
 #, php-format
 msgid "%1$s purges the version %2$s"
-msgstr ""
+msgstr "%1$s изчиства версията %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:73
 #, php-format
 msgid "%1$s updates the version %2$s"
-msgstr ""
+msgstr "%1$s актуализира версията %2$s"
 
 #: front/stat.global.php:35 front/stat.graph.php:35 front/stat.item.php:35
 #: front/stat.location.php:35 front/stat.php:35 front/stat.tracking.php:35
@@ -3474,7 +3481,7 @@ msgstr "Спешен"
 #: inc/problem.class.php:1199 inc/ruleticket.class.php:474
 #: inc/ruleticket.class.php:609 inc/ticket.class.php:5045
 msgid "Impact"
-msgstr ""
+msgstr "Въздействие"
 
 #: front/stat.graph.php:199 front/stat.tracking.php:81 inc/auth.class.php:1514
 #: inc/authldap.class.php:810 inc/authldap.class.php:1014
@@ -3597,27 +3604,27 @@ msgstr "Покажи графики"
 #: front/stat.location.php:175 front/stat.tracking.php:184
 #, php-format
 msgid "Opened %1$s (%2$s)"
-msgstr ""
+msgstr "Отворен %1$s (%2$s)"
 
 #: front/stat.location.php:200 front/stat.tracking.php:210
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr ""
+msgstr "Решен %1$s (%2$s)"
 
 #: front/stat.location.php:225
 #, php-format
 msgid "Late solved %1$s (%2$s)"
-msgstr ""
+msgstr "Късно решен %1$s (%2$s)"
 
 #: front/stat.location.php:250 front/stat.tracking.php:263
 #, php-format
 msgid "Closed %1$s (%2$s)"
-msgstr ""
+msgstr "Затворен %1$s (%2$s)"
 
 #: front/stat.location.php:275 front/stat.tracking.php:290
 #, php-format
 msgid "%1$s satisfaction survey (%2$s)"
-msgstr ""
+msgstr "%1$s проучване на удовлетвореността  (%2$s)"
 
 #: front/stat.tracking.php:77 front/stat.tracking.php:99
 #: inc/commonitilobject.class.php:2764 inc/commonitilobject.class.php:3234
@@ -3668,7 +3675,7 @@ msgstr "Категория дърво"
 
 #: front/stat.tracking.php:95
 msgid "Location tree"
-msgstr ""
+msgstr "Дърво на местоположенията"
 
 #: front/stat.tracking.php:100 inc/budget.class.php:193
 #: inc/cartridgeitem.class.php:261 inc/certificate.class.php:73
@@ -3730,7 +3737,7 @@ msgstr "Техник в задачи"
 #: front/stat.tracking.php:236
 #, php-format
 msgid "Solved late %1$s (%2$s)"
-msgstr ""
+msgstr "Решен късно %1$s (%2$s)"
 
 #. TRANS: %s is the user login
 #: front/tickettemplatehiddenfield.form.php:47
@@ -3754,11 +3761,11 @@ msgstr ""
 #: front/ticket_ticket.form.php:52
 #, php-format
 msgid "%s purges link between tickets"
-msgstr ""
+msgstr "%s изтрити връзки между заявки"
 
 #: front/tracking.injector.php:68 inc/ticket.class.php:2169
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "Вашата заявка е била регистрирана и обработката й е в ход."
+msgstr "Вашата заявка е регистрирана и се обработва."
 
 #: front/tracking.injector.php:73 inc/config.class.php:2515
 #: inc/config.class.php:2566 inc/html.class.php:5556 inc/html.class.php:5715
@@ -3766,7 +3773,7 @@ msgstr "Вашата заявка е била регистрирана и обр
 #: inc/telemetry.class.php:390 inc/toolbox.class.php:1132
 #: inc/toolbox.class.php:1168 inc/toolbox.class.php:1169
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: front/tracking.injector.php:74
 msgid "Thank you for using our automatic helpdesk system."
@@ -3791,15 +3798,15 @@ msgstr "Затвори"
 #: inc/ajax.class.php:196 inc/ajax.class.php:417 inc/knowbase.class.php:146
 #: inc/savedsearch.class.php:825 inc/savedsearch.class.php:1016
 msgid "Loading..."
-msgstr ""
+msgstr "Зареждане..."
 
 #: inc/ajax.class.php:429
 msgid "An error occured loading contents!"
-msgstr ""
+msgstr "Възникна грешка при зареждане на съдържанието!"
 
 #: inc/ajax.class.php:430
 msgid "Please check GLPI logs or contact your administrator."
-msgstr ""
+msgstr "Проверете GLPI логовете или се свържете с Вашия администратор."
 
 #: inc/ajax.class.php:431 inc/link.class.php:154
 #: inc/massiveaction.class.php:753 inc/rule.class.php:799
@@ -3809,7 +3816,7 @@ msgstr "или"
 
 #: inc/ajax.class.php:431
 msgid "try to reload"
-msgstr ""
+msgstr "опит за презареждане"
 
 #: inc/alert.class.php:107 inc/alert.class.php:144 inc/alert.class.php:174
 #: inc/contract.class.php:1680 inc/entity.class.php:686
@@ -3899,13 +3906,13 @@ msgstr "Изпратен сигнал на %s"
 
 #: inc/api.class.php:118
 msgid "API disabled"
-msgstr ""
+msgstr "API деактивиран"
 
 #: inc/api.class.php:149
 msgid ""
 "There isn't an active API client matching your IP address in the "
 "configuration"
-msgstr ""
+msgstr "Няма активен API клиент, отговарящ на Вашия IP адрес в конфигурацията"
 
 #: inc/api.class.php:210
 msgid "parameter(s) login, password or user_token are missing"
@@ -3917,12 +3924,12 @@ msgstr ""
 
 #: inc/api.class.php:243
 msgid "parameter user_token seems invalid"
-msgstr ""
+msgstr "параметър user_token изглежда невалиден"
 
 #: inc/api.class.php:1092 inc/api.class.php:1757 inc/api.class.php:1875
 #: inc/api.class.php:1994 inc/api.class.php:2533 inc/html.class.php:576
 msgid "You don't have permission to perform this action."
-msgstr ""
+msgstr "Нямате разрешение да извършите това действие."
 
 #: inc/api.class.php:1184
 msgid "parent itemtype not found or not an instance of CommonDBTM"
@@ -3930,7 +3937,7 @@ msgstr ""
 
 #: inc/api.class.php:1542
 msgid "Malformed search criteria"
-msgstr ""
+msgstr "Неправилни критерии за търсене"
 
 #: inc/api.class.php:1548
 msgid "Bad field ID in search criteria"
@@ -3938,7 +3945,7 @@ msgstr "Грешно ID в критерия за търсене"
 
 #: inc/api.class.php:1555
 msgid "Forbidden field ID in search criteria"
-msgstr ""
+msgstr "Забранен ID на поле в критерии за търсене"
 
 #: inc/api.class.php:1581
 msgid "ID is forbidden along with 'forcedisplay' parameter."
@@ -3951,7 +3958,7 @@ msgstr "Елементът не е намерен"
 
 #: inc/api.class.php:2034
 msgid "Email notifications are disabled"
-msgstr ""
+msgstr "Имейл уведомленията са деактивирани"
 
 #: inc/api.class.php:2038
 msgid "email parameter missing"
@@ -3966,10 +3973,12 @@ msgid ""
 "An email has been sent to your email address. The email contains information"
 " for reset your password."
 msgstr ""
+"На вашия имейл адрес е изпратен имейл. Имейлът съдържа информация за "
+"нулиране на Вашата паролата."
 
 #: inc/api.class.php:2066 inc/user.class.php:4595
 msgid "Reset password successful."
-msgstr ""
+msgstr "Нулирането на паролата е успешно."
 
 #: inc/api.class.php:2119
 msgid "parameter app_token seems wrong"
@@ -3981,7 +3990,7 @@ msgstr ""
 
 #: inc/api.class.php:2295
 msgid "API Documentation"
-msgstr ""
+msgstr "API документация"
 
 #: inc/api.class.php:2499
 msgid "input parameter must be an array of objects"
@@ -3989,20 +3998,20 @@ msgstr ""
 
 #: inc/api.class.php:2516
 msgid "Method Not Allowed"
-msgstr ""
+msgstr "Методът не е позволен"
 
 #: inc/api.class.php:2549
 msgid "session_token seems invalid"
-msgstr ""
+msgstr "session_token изглежда невалиден"
 
 #: inc/api.class.php:2566
 msgid "parameter session_token is missing or empty"
-msgstr ""
+msgstr "параметърът session_token липсва или е празен"
 
 #: inc/api.class.php:2602
 #, php-format
 msgid "view documentation in your browser at %s"
-msgstr ""
+msgstr "вижте документацията в браузъра на %s"
 
 #: inc/apiclient.class.php:57
 msgid "API client"
@@ -4046,7 +4055,7 @@ msgstr ""
 #: inc/apiclient.class.php:120 inc/apiclient.class.php:128
 #: inc/apiclient.class.php:221
 msgid "IPv4 address range"
-msgstr ""
+msgstr "Обхват на IPv4 адреси"
 
 #: inc/apiclient.class.php:120 inc/calendar_holiday.class.php:139
 #: inc/calendarsegment.class.php:365 inc/calendarsegment.class.php:393
@@ -4071,11 +4080,11 @@ msgstr "Край"
 
 #: inc/apiclient.class.php:136 inc/apiclient.class.php:232
 msgid "IPv6 address"
-msgstr ""
+msgstr "IPv6 адрес"
 
 #: inc/apiclient.class.php:145 inc/apiclient.class.php:240
 msgid "Application token"
-msgstr ""
+msgstr "Токън на приложение"
 
 #: inc/apiclient.class.php:216
 msgid "Leave these parameters empty to disable API access restriction"
@@ -4122,7 +4131,7 @@ msgstr[1] ""
 
 #: inc/apirest.class.php:55
 msgid "Rest API"
-msgstr ""
+msgstr "Rest API"
 
 #: inc/apirest.class.php:214
 msgid "Only HTTP verb PUT is allowed"
@@ -4138,7 +4147,7 @@ msgstr ""
 
 #: inc/apixmlrpc.class.php:44
 msgid "XMLRPC API"
-msgstr ""
+msgstr "XMLRPC API"
 
 #: inc/apixmlrpc.class.php:147
 msgid "missing itemtype"
@@ -4155,7 +4164,7 @@ msgstr "липсва ID"
 #: inc/auth.class.php:115 inc/log.class.php:924 inc/log.class.php:947
 #: inc/log.class.php:998 inc/log.class.php:1012
 msgid "Others"
-msgstr ""
+msgstr "Други"
 
 #: inc/auth.class.php:146 inc/auth.class.php:246 inc/auth.class.php:368
 msgid "Incorrect username or password"
@@ -4167,7 +4176,7 @@ msgstr "На потребителя е забранено да влиза в GLP
 
 #: inc/auth.class.php:497
 msgid "Login with external token disabled"
-msgstr ""
+msgstr "Влизането с външен токън е деактивирано"
 
 #: inc/auth.class.php:517
 msgid "Invalid cookie data"
@@ -4175,7 +4184,7 @@ msgstr "Невалидни бисквитки-данни"
 
 #: inc/auth.class.php:521
 msgid "Auto login disabled"
-msgstr ""
+msgstr "Автоматичният логин е деактивиран"
 
 #: inc/auth.class.php:712
 msgid "Connection to LDAP directory failed"
@@ -4197,7 +4206,7 @@ msgstr "Празно име на потребител или парола"
 #: inc/auth.class.php:849
 #, php-format
 msgid "%1$s log in from IP %2$s"
-msgstr ""
+msgstr "%1$s влиза от IP %2$s"
 
 #. TRANS: %1$s is the login of the user and %2$s its IP address
 #: inc/auth.class.php:859
@@ -4219,15 +4228,15 @@ msgstr "Удостоверяване чрез пощенски сървър"
 
 #: inc/auth.class.php:959
 msgid "Version 1"
-msgstr ""
+msgstr "Версия 1"
 
 #: inc/auth.class.php:960
 msgid "Version 2"
-msgstr ""
+msgstr "Версия 2"
 
 #: inc/auth.class.php:961
 msgid "Version 3+"
-msgstr ""
+msgstr "Версия 3+"
 
 #: inc/auth.class.php:992 inc/authmail.class.php:87
 #: inc/ruleright.class.php:237
@@ -4238,7 +4247,7 @@ msgstr "Пощенски сървър"
 #: inc/commonglpi.class.php:874 inc/tickettemplatemandatoryfield.class.php:199
 #, php-format
 msgid "%1$s + %2$s"
-msgstr ""
+msgstr "%1$s + %2$s"
 
 #: inc/auth.class.php:1000 inc/auth.class.php:1004
 msgid "CAS"
@@ -4259,7 +4268,7 @@ msgstr "GLPI вътрешна база данни"
 
 #: inc/auth.class.php:1035 inc/config.class.php:749 inc/config.class.php:2126
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: inc/auth.class.php:1038
 msgid "Not yet authenticated"
@@ -4284,7 +4293,7 @@ msgstr "CAS удостоверяване"
 #: inc/auth.class.php:1361 inc/auth.class.php:1405 inc/auth.class.php:1428
 msgctxt "authentication"
 msgid "Enabled"
-msgstr ""
+msgstr "Активиран"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1369
@@ -4338,7 +4347,7 @@ msgstr "Email атрибути за x509 удостоверяване"
 #: inc/auth.class.php:1413 inc/auth.class.php:1417 inc/auth.class.php:1421
 #, php-format
 msgid "Restrict %s field for x509 authentication (separator $)"
-msgstr ""
+msgstr "Ограничи %s поле за x509 удостоверяване (разделител $)"
 
 #: inc/auth.class.php:1426
 msgid "Other authentication sent in the HTTP request"
@@ -4437,7 +4446,7 @@ msgstr "Запис"
 
 #: inc/authldap.class.php:222 inc/authldap.class.php:417
 msgid "Synchronization field cannot be changed once in use."
-msgstr ""
+msgstr "Веднъж в употреба, синхронизационното поле не може да бъде променено."
 
 #: inc/authldap.class.php:350
 msgid "Preconfiguration"
@@ -4535,7 +4544,7 @@ msgstr "Поле за влизане"
 #: inc/authldap.class.php:3268 inc/user.class.php:2057 inc/user.class.php:2505
 #: inc/user.class.php:2967
 msgid "Synchronization field"
-msgstr ""
+msgstr "Синхронизационно поле"
 
 #: inc/authldap.class.php:476 inc/authldap.class.php:3629
 #: inc/entity.class.php:330 inc/entity.class.php:617
@@ -4564,7 +4573,7 @@ msgstr ""
 
 #: inc/authldap.class.php:503
 msgid "Maximum number of results"
-msgstr ""
+msgstr "Максимален брой резултати"
 
 #: inc/authldap.class.php:508 inc/contract.class.php:284
 #: inc/search.class.php:5829 inc/softwarelicense.class.php:438
@@ -4665,7 +4674,7 @@ msgstr "Свързване към LDAP директорията"
 #: inc/user.class.php:2038 inc/user.class.php:2468 inc/user.class.php:2471
 #: inc/user.class.php:2475 inc/user.class.php:2957 inc/user.class.php:3322
 msgid "Picture"
-msgstr ""
+msgstr "Снимка"
 
 #: inc/authldap.class.php:828 inc/authldap.class.php:1165
 #: inc/user.class.php:2280 inc/user.class.php:3296
@@ -4717,11 +4726,11 @@ msgstr "Търсещ филтър за обекти"
 #: inc/softwareversion.class.php:201 inc/supplier.class.php:327
 #: inc/ticket.class.php:3200 inc/user.class.php:3107
 msgid "Creation date"
-msgstr ""
+msgstr "Дата на създаване"
 
 #: inc/authldap.class.php:1174
 msgid "Domain name used by inventory tool"
-msgstr ""
+msgstr "Домейн име, използвано от инструмент за инвентаризация"
 
 #: inc/authldap.class.php:1305 inc/authldap.class.php:1319
 #: inc/authldap.class.php:3212
@@ -4739,7 +4748,7 @@ msgstr ""
 #: inc/authldap.class.php:1534
 msgctxt "button"
 msgid "Synchronize"
-msgstr ""
+msgstr "Синхронизиране"
 
 #: inc/authldap.class.php:1537 inc/authldap.class.php:2008
 #: inc/notimportedemail.class.php:77 inc/notimportedemail.class.php:94
@@ -4796,7 +4805,7 @@ msgstr "Не е намерен потребител или са намерени
 
 #: inc/authldap.class.php:2770
 msgid "Unable to add. The user already exist."
-msgstr ""
+msgstr "Не може да се добави. Потребителят вече съществува."
 
 #: inc/authldap.class.php:3176
 msgid "Expert mode"
@@ -4818,7 +4827,7 @@ msgstr "Изберете желания обект"
 
 #: inc/authldap.class.php:3290
 msgid "Search criteria for users"
-msgstr ""
+msgstr "Kритерии за търсене за потребители"
 
 #: inc/authldap.class.php:3330
 msgid "No directory selected"
@@ -4835,7 +4844,7 @@ msgstr "Запази"
 
 #: inc/authldap.class.php:3519
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Поставяне в кошчето"
 
 #: inc/authldap.class.php:3520 inc/authldap.class.php:3522
 msgid "Withdraw dynamic authorizations and groups"
@@ -5122,7 +5131,7 @@ msgstr "Всичко"
 
 #: inc/budget.class.php:832 inc/budget.class.php:878
 msgid "Total spent on the budget"
-msgstr ""
+msgstr "Общо изхарчени от бюджета"
 
 #: inc/budget.class.php:882
 msgid "Total remaining on the budget"
@@ -5216,7 +5225,7 @@ msgstr "Няма свободни касети"
 
 #: inc/cartridge.class.php:333
 msgid "Uninstalling a cartridge"
-msgstr ""
+msgstr "Деинсталиране на касета"
 
 #: inc/cartridge.class.php:372 inc/cartridge.class.php:618
 msgctxt "cartridge"
@@ -5352,7 +5361,7 @@ msgstr "Добавени касети"
 #. TRANS : multiplier
 #: inc/cartridge.class.php:945
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: inc/cartridge.class.php:949 inc/computer.class.php:547
 #: inc/computer_softwareversion.class.php:777
@@ -5510,15 +5519,15 @@ msgstr "Предупреждение праг"
 
 #: inc/cartridgeitem.class.php:324 inc/printer.class.php:725
 msgid "Number of used cartridges"
-msgstr ""
+msgstr "Брой използвани касети"
 
 #: inc/cartridgeitem.class.php:340 inc/printer.class.php:741
 msgid "Number of worn cartridges"
-msgstr ""
+msgstr "Брой употребени касети"
 
 #: inc/cartridgeitem.class.php:355
 msgid "Number of new cartridges"
-msgstr ""
+msgstr "Брой нови касети"
 
 #: inc/cartridgeitem.class.php:422 inc/dropdown.class.php:926
 #: inc/printermodel.class.php:44 inc/rule.class.php:300
@@ -5545,11 +5554,11 @@ msgstr ""
 #: inc/cartridgeitem.class.php:550
 #, php-format
 msgid "%s: send cartridge alert failed"
-msgstr ""
+msgstr "%s: изпращане на сигнал за касета е неуспешно"
 
 #: inc/cartridgeitem_printermodel.class.php:120
 msgid "Add a compatible printer model"
-msgstr ""
+msgstr "Добавяне на съвместим модел на принтер"
 
 #: inc/cartridgeitem_printermodel.class.php:187
 #: inc/commonitilcost.class.php:623 inc/commonitilvalidation.class.php:873
@@ -5622,12 +5631,12 @@ msgstr ""
 #: inc/central.class.php:173
 #, php-format
 msgid "For security reasons, please remove file: %s"
-msgstr ""
+msgstr "От съображения за сигурност, моля, премахнете файла: %s"
 
 #: inc/central.class.php:180
 #, php-format
 msgid "%1$s tables not migrated to InnoDB engine."
-msgstr ""
+msgstr "%1$s таблиците не са мигрирани към InnoDB двигателя."
 
 #: inc/central.class.php:188 inc/html.class.php:1609
 msgid "SQL replica: read only"
@@ -5643,7 +5652,7 @@ msgstr[1] ""
 #: inc/certificate.class.php:127 inc/certificate.class.php:526
 #: inc/certificate_item.class.php:428
 msgid "DNS suffix"
-msgstr ""
+msgstr "DNS наставка"
 
 #: inc/certificate.class.php:135 inc/certificate.class.php:510
 msgid "Self-signed"
@@ -5660,11 +5669,11 @@ msgstr "Дата на изтичане"
 
 #: inc/certificate.class.php:151 inc/certificate.class.php:542
 msgid "Command used"
-msgstr ""
+msgstr "Използвана команда"
 
 #: inc/certificate.class.php:159 inc/certificate.class.php:550
 msgid "Certificate request (CSR)"
-msgstr ""
+msgstr "Заявка за сертификат (CSR)"
 
 #. TRANS: Number of the alternate username
 #: inc/certificate.class.php:204 inc/certificate.class.php:500
@@ -5685,7 +5694,7 @@ msgstr "Алтернативно потребителско име номер"
 #: inc/certificate.class.php:213 inc/certificate.class.php:520
 #: inc/certificate_item.class.php:427
 msgid "DNS name"
-msgstr ""
+msgstr "DNS име"
 
 #: inc/certificate.class.php:248 inc/certificate.class.php:419
 #: inc/certificate_item.class.php:431 inc/change.class.php:793
@@ -5804,7 +5813,7 @@ msgstr ""
 
 #: inc/certificate.class.php:828
 msgid "Send Certificates alert failed"
-msgstr ""
+msgstr "Изпращането на сигнал за Сертификати е неуспешно"
 
 #: inc/certificate_item.class.php:208 inc/change_item.class.php:106
 #: inc/contract_item.class.php:559 inc/document_item.class.php:356
@@ -5839,7 +5848,7 @@ msgstr ""
 #: inc/change.class.php:180 inc/problem.class.php:413
 #: inc/ticket.class.php:2652
 msgid "Set notifications for all actors"
-msgstr ""
+msgstr "Задайте уведомления за всички участници"
 
 #: inc/change.class.php:195
 msgid "Processing change"
@@ -6153,18 +6162,18 @@ msgstr[1] ""
 #: inc/change_ticket.class.php:62
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Връзка Заявка/Промяна"
+msgstr[1] "Връзки Заявка/Промяна"
 
 #: inc/change_ticket.class.php:277 inc/itil_project.class.php:185
 #: inc/problem_ticket.class.php:290 inc/projecttask_ticket.class.php:169
 msgid "Add a ticket"
-msgstr ""
+msgstr "Добавяне на заявка"
 
 #: inc/change_ticket.class.php:301 inc/commonitilobject.class.php:4534
 #: inc/problem_ticket.class.php:327
 msgid "Solve tickets"
-msgstr ""
+msgstr "Реши заявка"
 
 #: inc/change_ticket.class.php:303 inc/commonitiltask.class.php:1693
 #: inc/problem.class.php:408 inc/problem_ticket.class.php:329
@@ -6174,7 +6183,7 @@ msgstr "Добави нова задача"
 
 #: inc/change_ticket.class.php:406
 msgid "Create a change from this ticket"
-msgstr "Създаване на промяна от този билет"
+msgstr "Създаване на Промяна от тази заявка"
 
 #: inc/commondbchild.class.php:279 inc/networkportinstantiation.class.php:538
 msgid "Item not linked to an object"
@@ -6245,7 +6254,7 @@ msgstr "Елементът е изтрит"
 
 #: inc/commondbtm.class.php:1801
 msgid "Item successfully purged"
-msgstr ""
+msgstr "Елементът е изчистен успешно"
 
 #: inc/commondbtm.class.php:1911
 msgid "Item successfully restored"
@@ -6263,7 +6272,7 @@ msgstr "Създаден на %s"
 #: inc/commondbtm.class.php:2359 inc/commondbtm.class.php:2648
 #, php-format
 msgid "Created from the template %s"
-msgstr ""
+msgstr "Създаден от шаблон %s"
 
 #. TRANS : means update / actualize
 #: inc/commondbtm.class.php:2428 inc/commondbtm.class.php:2440
@@ -6298,6 +6307,8 @@ msgstr "Възстановяване"
 #: inc/commondbtm.class.php:2456
 msgid "Check to keep the devices while deleting this item"
 msgstr ""
+"Поставете отметка, за да запазите устройствата, докато изтривате този "
+"елемент"
 
 #: inc/commondbtm.class.php:2476 inc/itilfollowup.class.php:904
 #: inc/notepad.class.php:368 inc/ticket.class.php:5320
@@ -6310,7 +6321,7 @@ msgstr ""
 #: inc/transfer.class.php:3411
 msgctxt "button"
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Поставяне в кошчето"
 
 #: inc/commondbtm.class.php:2664 inc/knowbaseitem.class.php:634
 #: inc/knowbaseitem.class.php:652 inc/savedsearch.class.php:372
@@ -6319,7 +6330,7 @@ msgstr "Нов обект"
 
 #: inc/commondbtm.class.php:2692
 msgid "Can't change this attribute. It's inherited from its parent."
-msgstr ""
+msgstr "Този атрибут не може да се промени. Наследен е от родителя си."
 
 #: inc/commondbtm.class.php:2697
 msgid "You are not allowed to change the visibility flag for child entities."
@@ -6340,7 +6351,7 @@ msgstr "Промяна на видимостта на подорганизаци
 #: inc/notificationtargetprojecttask.class.php:536
 #: inc/ruleticket.class.php:363
 msgid "Complete name"
-msgstr ""
+msgstr "Пълно име"
 
 #: inc/commondbtm.class.php:3810
 msgctxt "button"
@@ -6415,25 +6426,25 @@ msgstr "Изтриване"
 
 #: inc/commondbtm.class.php:5004
 msgid "Read notes"
-msgstr ""
+msgstr "Прочети бележки"
 
 #: inc/commondbtm.class.php:5005
 msgid "Read the item's notes"
-msgstr ""
+msgstr "Прочети бележки към елемент"
 
 #: inc/commondbtm.class.php:5006
 msgid "Update notes"
-msgstr ""
+msgstr "Актуализирай бележки"
 
 #: inc/commondbtm.class.php:5007
 msgid "Update the item's notes"
-msgstr ""
+msgstr "Актуализирай бележки към елемент"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: inc/commondbtm.class.php:5104
 #, php-format
 msgid "Document Ticket %d"
-msgstr ""
+msgstr "Документ към Заявка %d"
 
 #: inc/commondbtm.class.php:5205
 msgid "You can define an autofill template"
@@ -6476,7 +6487,7 @@ msgstr[1] ""
 #: inc/search.class.php:2050
 #, php-format
 msgid "%1$s / %2$s"
-msgstr ""
+msgstr "%1$s / %2$s"
 
 #. TRANS: R for Recursive
 #: inc/commondbvisible.class.php:239 inc/commondbvisible.class.php:264
@@ -6485,7 +6496,7 @@ msgstr ""
 #: inc/profile_user.class.php:971 inc/rule.class.php:1891
 #: inc/search.class.php:5504 inc/search.class.php:5543
 msgid "R"
-msgstr ""
+msgstr "R"
 
 #: inc/commondbvisible.class.php:287 inc/notificationtarget.class.php:807
 #: inc/profile.class.php:72 inc/profile.class.php:1319
@@ -6501,81 +6512,81 @@ msgstr[1] ""
 #: inc/commondcmodeldropdown.class.php:55
 #: inc/commondcmodeldropdown.class.php:150 inc/commondropdown.class.php:142
 msgid "Product Number"
-msgstr ""
+msgstr "Продуктов номер"
 
 #: inc/commondcmodeldropdown.class.php:63
 #: inc/commondcmodeldropdown.class.php:160 inc/item_rack.class.php:525
 msgid "Weight"
-msgstr ""
+msgstr "Тегло"
 
 #: inc/commondcmodeldropdown.class.php:73
 #: inc/commondcmodeldropdown.class.php:170
 msgid "Required units"
-msgstr ""
+msgstr "Необходими единици"
 
 #: inc/commondcmodeldropdown.class.php:81
 #: inc/commondcmodeldropdown.class.php:180 inc/rack.class.php:300
 msgid "Depth"
-msgstr ""
+msgstr "Дълбочина"
 
 #: inc/commondcmodeldropdown.class.php:89
 #: inc/commondcmodeldropdown.class.php:189
 msgid "Power connections"
-msgstr ""
+msgstr "Връзки за захранване"
 
 #: inc/commondcmodeldropdown.class.php:97
 #: inc/commondcmodeldropdown.class.php:199
 msgid "Power consumption"
-msgstr ""
+msgstr "Консумация на енергия"
 
 #: inc/commondcmodeldropdown.class.php:98
 #: inc/commondcmodeldropdown.class.php:108
 msgid "watts"
-msgstr ""
+msgstr "вата"
 
 #: inc/commondcmodeldropdown.class.php:107 inc/rack.class.php:305
 msgid "Max. power (in watts)"
-msgstr ""
+msgstr "Максимална мощност (във ватове)"
 
 #: inc/commondcmodeldropdown.class.php:117
 #: inc/commondcmodeldropdown.class.php:209
 msgid "Is half rack"
-msgstr ""
+msgstr "Е половин шкаф"
 
 #: inc/commondcmodeldropdown.class.php:125
 #: inc/commondcmodeldropdown.class.php:219
 msgid "Front picture"
-msgstr ""
+msgstr "Снимка отпред"
 
 #: inc/commondcmodeldropdown.class.php:133
 #: inc/commondcmodeldropdown.class.php:232
 msgid "Rear picture"
-msgstr ""
+msgstr "Снимка отзад"
 
 #: inc/commondcmodeldropdown.class.php:315
 msgid "1"
-msgstr ""
+msgstr "1"
 
 #: inc/commondcmodeldropdown.class.php:316
 msgid "1/2"
-msgstr ""
+msgstr "1/2"
 
 #: inc/commondcmodeldropdown.class.php:317
 msgid "1/3"
-msgstr ""
+msgstr "1/3"
 
 #: inc/commondcmodeldropdown.class.php:318
 msgid "1/4"
-msgstr ""
+msgstr "1/4"
 
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s елементи"
 
 #: inc/commondropdown.class.php:502
 msgid "Product number"
-msgstr ""
+msgstr "Продуктов номер"
 
 #: inc/commondropdown.class.php:626
 msgid "You can't delete that item, because it has sub-items"
@@ -6593,7 +6604,7 @@ msgstr ""
 #: inc/commondropdown.class.php:646 inc/html.class.php:5646
 msgctxt "button"
 msgid "Confirm"
-msgstr ""
+msgstr "Потвърждение"
 
 #: inc/commondropdown.class.php:649 inc/commondropdown.class.php:680
 #: inc/html.class.php:5657
@@ -6633,11 +6644,11 @@ msgstr "debug"
 #: inc/commonglpi.class.php:829 inc/commonglpi.class.php:830
 #: inc/commonglpi.class.php:833
 msgid "First"
-msgstr ""
+msgstr "Първи"
 
 #: inc/commonglpi.class.php:854 inc/session.class.php:280
 msgid "List"
-msgstr ""
+msgstr "Списък"
 
 #: inc/commonglpi.class.php:913 inc/commonglpi.class.php:914
 #: inc/commonglpi.class.php:917
@@ -6647,19 +6658,19 @@ msgstr "Последно"
 #: inc/commonglpi.class.php:1167 inc/commonitilobject.class.php:6104
 #: inc/commonitilobject.class.php:6105
 msgid "Reset display options"
-msgstr ""
+msgstr "Нулиране настройките на дисплея"
 
 #: inc/commonglpi.class.php:1255
 msgid "Unable to get item"
-msgstr ""
+msgstr "Не може да се получи елемент"
 
 #: inc/commonglpi.class.php:1258
 msgid "Authorization error"
-msgstr ""
+msgstr "Оторизационна грешка"
 
 #: inc/commonglpi.class.php:1261
 msgid "Incompatible items"
-msgstr ""
+msgstr "Несъвместими елементи"
 
 #: inc/commonglpi.class.php:1264
 msgid "Error on executing the action"
@@ -6777,8 +6788,8 @@ msgstr ""
 #: inc/profile.class.php:2300
 msgid "Ticket cost"
 msgid_plural "Ticket costs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Разход за Заявка"
+msgstr[1] "Разходи за Заявка"
 
 #: inc/commonitilcost.class.php:537
 msgid "Item duration"
@@ -6838,17 +6849,17 @@ msgstr "Маловажно"
 #: inc/commonitilobject.class.php:2026
 msgctxt "priority"
 msgid "At least medium"
-msgstr ""
+msgstr "Поне среден"
 
 #: inc/commonitilobject.class.php:2028
 msgctxt "priority"
 msgid "At least high"
-msgstr ""
+msgstr "Поне висок"
 
 #: inc/commonitilobject.class.php:2030
 msgctxt "priority"
 msgid "At least very high"
-msgstr ""
+msgstr "Поне много висок"
 
 #: inc/commonitilobject.class.php:2133
 msgctxt "urgency"
@@ -6868,17 +6879,17 @@ msgstr "Маловажно"
 #: inc/commonitilobject.class.php:2139
 msgctxt "urgency"
 msgid "At least medium"
-msgstr ""
+msgstr "Поне среден"
 
 #: inc/commonitilobject.class.php:2141
 msgctxt "urgency"
 msgid "At least high"
-msgstr ""
+msgstr "Поне висок"
 
 #: inc/commonitilobject.class.php:2143
 msgctxt "urgency"
 msgid "At least very high"
-msgstr ""
+msgstr "Поне много висок"
 
 #: inc/commonitilobject.class.php:2230
 msgctxt "impact"
@@ -6923,17 +6934,17 @@ msgstr "Маловажно"
 #: inc/commonitilobject.class.php:2252
 msgctxt "impact"
 msgid "At least medium"
-msgstr ""
+msgstr "Поне среден"
 
 #: inc/commonitilobject.class.php:2254
 msgctxt "impact"
 msgid "At least high"
-msgstr ""
+msgstr "Поне висок"
 
 #: inc/commonitilobject.class.php:2256
 msgctxt "impact"
 msgid "At least very high"
-msgstr ""
+msgstr "Поне много висок"
 
 #: inc/commonitilobject.class.php:2765 inc/commonitilobject.class.php:3307
 #: inc/commonitilobject.class.php:3316 inc/commonitilobject.class.php:4233
@@ -7020,7 +7031,7 @@ msgstr "Възложено на снабдител"
 #: inc/commonitilobject.class.php:3399 inc/ruleticket.class.php:424
 #: inc/ruleticket.class.php:574
 msgid "Technician group"
-msgstr ""
+msgstr "Техническа група"
 
 #: inc/commonitilobject.class.php:3436
 msgid "Email for followup"
@@ -7037,7 +7048,7 @@ msgstr "Наблюдател"
 #: inc/commonitilobject.class.php:3613
 #: inc/notificationtargetcommonitilobject.class.php:739
 msgid "Group in charge of the ticket"
-msgstr "Група, която отговаря на билета"
+msgstr "Отговорна Група за Заявката"
 
 #: inc/commonitilobject.class.php:4116 inc/planning.class.php:1327
 msgid "Actor"
@@ -7045,7 +7056,7 @@ msgstr "Участник"
 
 #: inc/commonitilobject.class.php:4258 inc/commonitilobject.class.php:4351
 msgid "Associate myself"
-msgstr ""
+msgstr "Свържете себе си"
 
 #: inc/commonitilobject.class.php:4767 inc/levelagreement.class.php:703
 msgid "Time"
@@ -7066,7 +7077,7 @@ msgstr "Решен на %s"
 #: inc/commonitilobject.class.php:5713
 #, php-format
 msgid "Put on hold on %s"
-msgstr ""
+msgstr "Поставен на изчакване на %s"
 
 #: inc/commonitilobject.class.php:5721 inc/project.class.php:990
 #, php-format
@@ -7204,11 +7215,11 @@ msgstr "Изисква заверка отговор"
 
 #: inc/commonitilobject.class.php:6616
 msgid "Followup was already promoted"
-msgstr ""
+msgstr "Проследяването вече е промотирано"
 
 #: inc/commonitilobject.class.php:6621
 msgid "Promote to Ticket"
-msgstr ""
+msgstr "Промотиране на Заявка"
 
 #: inc/commonitilobject.class.php:6626 inc/knowbaseitem.class.php:225
 #: inc/knowbaseitemtranslation.class.php:91 inc/user.class.php:2408
@@ -7230,22 +7241,22 @@ msgstr "Лични"
 #: inc/commonitilobject.class.php:6724
 #, php-format
 msgid "Last edited on %1$s by %2$s"
-msgstr ""
+msgstr "Последна редакция на %1$s от %2$s"
 
 #: inc/commonitilobject.class.php:6735
 #, php-format
 msgid "Merged from Ticket %1$s"
-msgstr ""
+msgstr "Обединен от Заявка %1$s"
 
 #: inc/commonitilobject.class.php:6743
 #, php-format
 msgid "Promoted to Ticket %1$s"
-msgstr ""
+msgstr "Обединен към Заявка %1$s"
 
 #: inc/commonitilobject.class.php:6752
 #, php-format
 msgid "%1$s on %2$s by %3$s"
-msgstr ""
+msgstr "%1$s на %2$s от %3$s"
 
 #: inc/commonitilobject.class.php:6753 inc/itilsolution.class.php:434
 msgid "Accepted"
@@ -7254,7 +7265,7 @@ msgstr "Прието"
 #: inc/commonitilobject.class.php:6753 inc/commonitilvalidation.class.php:449
 #: inc/itilsolution.class.php:433
 msgid "Refused"
-msgstr ""
+msgstr "Отказано"
 
 #: inc/commonitilobject.class.php:6800 inc/commonitilobject.class.php:6801
 #: inc/infocom.class.php:711
@@ -7264,12 +7275,12 @@ msgstr "Показване"
 
 #: inc/commonitilobject.class.php:6888
 msgid "Followup promotion source"
-msgstr ""
+msgstr "Източник на промотиране на проследяването"
 
 #: inc/commonitilobject.class.php:6893
 #, php-format
 msgid "# %s description"
-msgstr ""
+msgstr "# %s описание"
 
 #: inc/commonitiltask.class.php:263 inc/commonitiltask.class.php:397
 #: inc/reminder.class.php:616 inc/reminder.class.php:661
@@ -7280,11 +7291,11 @@ msgstr "Грешка във въведените дати. Началната д
 
 #: inc/commonitiltask.class.php:277 inc/commonitiltask.class.php:460
 msgid "Start of the selected timeframe is not a working hour."
-msgstr ""
+msgstr "Стартът на избрания период не е работен час."
 
 #: inc/commonitiltask.class.php:281 inc/commonitiltask.class.php:464
 msgid "End of the selected timeframe is not a working hour."
-msgstr ""
+msgstr "Краят на избрания период не е работен час."
 
 #: inc/commonitiltask.class.php:589 inc/dropdown.class.php:839
 #: inc/profile.class.php:1440 inc/taskcategory.class.php:81
@@ -7301,7 +7312,7 @@ msgstr "Публично проследяване"
 #: inc/commonitiltask.class.php:642
 #: inc/notificationtargetcommonitilobject.class.php:754
 msgid "Group in charge of the task"
-msgstr ""
+msgstr "Група, отговорна за задачата"
 
 #: inc/commonitiltask.class.php:691
 #: inc/notificationtargetcommonitilobject.class.php:1506
@@ -7313,15 +7324,15 @@ msgstr "Брой задачи"
 
 #: inc/commonitiltask.class.php:728
 msgid "Private task"
-msgstr ""
+msgstr "Лична задача"
 
 #: inc/commonitiltask.class.php:765
 msgid "Technician in charge"
-msgstr ""
+msgstr "Отговорен техник"
 
 #: inc/commonitiltask.class.php:786
 msgid "Group in charge"
-msgstr ""
+msgstr "Отговорна група"
 
 #: inc/commonitiltask.class.php:879 inc/commonitiltask.class.php:1435
 #: inc/dropdown.class.php:841 inc/tasktemplate.class.php:52
@@ -7356,12 +7367,12 @@ msgstr ""
 
 #: inc/commonitiltask.class.php:1260
 msgid "Planned"
-msgstr ""
+msgstr "Планиран"
 
 #: inc/commonitiltask.class.php:1266 inc/planning.class.php:167
 #: inc/planning.class.php:184
 msgid "Done"
-msgstr ""
+msgstr "Свършен"
 
 #: inc/commonitiltask.class.php:1310 inc/commonitiltask.class.php:1336
 msgid "By user"
@@ -7369,17 +7380,17 @@ msgstr "По потребител"
 
 #: inc/commonitiltask.class.php:1313 inc/commonitiltask.class.php:1339
 msgid "By group"
-msgstr ""
+msgstr "По група"
 
 #: inc/commonitiltask.class.php:1330 inc/reminder.class.php:738
 msgid "Begin"
-msgstr ""
+msgstr "Начало"
 
 #: inc/commonitiltask.class.php:1350 inc/commonitiltask.class.php:1676
 #: inc/planning.class.php:1712 inc/reminder.class.php:834
 msgctxt "Planning"
 msgid "Reminder"
-msgstr ""
+msgstr "Напомняне"
 
 #. TRANS: %1$s is the start time of a planned item, %2$s is the end
 #. TRANS: %1$s is the begin date, %2$s is the end date
@@ -7388,7 +7399,7 @@ msgstr ""
 #: inc/reminder.class.php:1047 inc/reminder.class.php:1226
 #, php-format
 msgid "From %1$s to %2$s"
-msgstr ""
+msgstr "От %1$s до %2$s"
 
 #: inc/commonitiltask.class.php:1662
 msgid "Plan this task"
@@ -7396,20 +7407,20 @@ msgstr "Планувай тази задача"
 
 #: inc/commonitiltask.class.php:1868
 msgid "Ticket tasks to do"
-msgstr ""
+msgstr "Задачи към Заявка"
 
 #: inc/commonitiltask.class.php:1870
 msgid "Problem tasks to do"
-msgstr ""
+msgstr "Проблеми към заявка"
 
 #: inc/commonitiltask.class.php:1941
 #, php-format
 msgid "%1$s"
-msgstr ""
+msgstr "%1$s"
 
 #: inc/commonitiltask.class.php:1954
 msgid "No tasks do to."
-msgstr ""
+msgstr "Няма налични задачи"
 
 #: inc/commonitilvalidation.class.php:295
 #: inc/commonitilvalidation.class.php:428
@@ -7423,31 +7434,33 @@ msgid ""
 "The selected user (%s) has no valid email address. The request has been "
 "created, without email confirmation."
 msgstr ""
+"Избраният потребител (%s) няма валиден имейл адред. Заявката на може да бъде"
+" създадена без  повтърждение по имейл."
 
 #: inc/commonitilvalidation.class.php:319
 msgid "If approval is denied, specify a reason."
-msgstr ""
+msgstr "Ако одобрението е отказано, посочете причина."
 
 #. TRANS: %s is the username
 #: inc/commonitilvalidation.class.php:408
 #, php-format
 msgid "Approval granted by %s"
-msgstr ""
+msgstr "Одобрение, дадено от %s"
 
 #. TRANS: %s is the username
 #: inc/commonitilvalidation.class.php:411
 #, php-format
 msgid "Update the approval request to %s"
-msgstr ""
+msgstr "Актуализиране на искането за одобрение на %s"
 
 #: inc/commonitilvalidation.class.php:431
 #, php-format
 msgid "Cancel the approval request to %s"
-msgstr ""
+msgstr "Отмяна на искането за одобрение на  %s"
 
 #: inc/commonitilvalidation.class.php:448 inc/itilsolution.class.php:432
 msgid "Waiting for approval"
-msgstr ""
+msgstr "Чакащ одобрение"
 
 #: inc/commonitilvalidation.class.php:450
 msgid "Granted"
@@ -7455,11 +7468,11 @@ msgstr ""
 
 #: inc/commonitilvalidation.class.php:452
 msgid "Not subject to approval"
-msgstr ""
+msgstr "Не е обект на одобрение"
 
 #: inc/commonitilvalidation.class.php:455
 msgid "Granted + Not subject to approval"
-msgstr ""
+msgstr "Предоставено + Не подлежи на одобрение"
 
 #: inc/commonitilvalidation.class.php:740
 #: inc/notificationtargetchange.class.php:277
@@ -7484,7 +7497,7 @@ msgstr ""
 #: inc/commonitilvalidation.class.php:1054
 #: inc/notificationtargetcommonitilobject.class.php:748
 msgid "Approval requester"
-msgstr ""
+msgstr "Заявяващ одобрение"
 
 #: inc/commonitilvalidation.class.php:804
 #: inc/commonitilvalidation.class.php:1013
@@ -7495,7 +7508,7 @@ msgstr "Заявка за коментари"
 #: inc/commonitilvalidation.class.php:804
 #: inc/commonitilvalidation.class.php:1139
 msgid "Approval status"
-msgstr ""
+msgstr "Статус на одобрение"
 
 #: inc/commonitilvalidation.class.php:805
 #: inc/commonitilvalidation.class.php:925
@@ -7505,7 +7518,7 @@ msgstr ""
 #: inc/notificationtargetcommonitilobject.class.php:749
 #: inc/notificationtargetticket.class.php:635
 msgid "Approver"
-msgstr ""
+msgstr "Одобряващ"
 
 #: inc/commonitilvalidation.class.php:805
 #: inc/commonitilvalidation.class.php:980
@@ -7513,17 +7526,17 @@ msgstr ""
 #: inc/commonitilvalidation.class.php:1021
 #: inc/commonitilvalidation.class.php:1125
 msgid "Approval comments"
-msgstr ""
+msgstr "Коментари към одобрението"
 
 #: inc/commonitilvalidation.class.php:809
 msgid "Approvals for the ticket"
-msgstr ""
+msgstr "Одобрения за Заявката"
 
 #: inc/commonitilvalidation.class.php:817 inc/ruleticket.class.php:657
 #: inc/ruleticket.class.php:663 inc/ruleticket.class.php:669
 #: inc/ruleticket.class.php:675
 msgid "Send an approval request"
-msgstr ""
+msgstr "Изпращане на искане за одобрение"
 
 #: inc/commonitilvalidation.class.php:967
 #: inc/notificationtargetchange.class.php:288
@@ -7542,7 +7555,7 @@ msgstr ""
 #: inc/commonitilvalidation.class.php:1046
 #: inc/commonitilvalidation.class.php:1165
 msgid "Approval date"
-msgstr ""
+msgstr "Дата на одобряване"
 
 #: inc/commonitilvalidation.class.php:1268
 msgid "Validate"
@@ -7551,7 +7564,7 @@ msgstr ""
 #: inc/commonitilvalidation.class.php:1452
 #, php-format
 msgid "%1$s (%2$d%%) "
-msgstr ""
+msgstr "%1$s (%2$d%%) "
 
 #: inc/commonitilvalidation.class.php:1472
 msgid ""
@@ -7727,15 +7740,15 @@ msgstr "Изключване"
 
 #: inc/computer_item.class.php:322 inc/log.class.php:1092
 msgid "Connect an item"
-msgstr ""
+msgstr "Свързване на елемент"
 
 #: inc/computer_item.class.php:473
 msgid "Connect a computer"
-msgstr ""
+msgstr "Свързване на компютър"
 
 #: inc/computer_item.class.php:555
 msgid "Not connected"
-msgstr ""
+msgstr "Не е свързан"
 
 #: inc/computer_item.class.php:705 inc/computer_item.class.php:718
 #: inc/event.class.php:160
@@ -7807,7 +7820,7 @@ msgstr ""
 
 #: inc/computer_softwareversion.class.php:851
 msgid "Valid license"
-msgstr ""
+msgstr "Валиден лиценз"
 
 #: inc/computertype.class.php:43 inc/dropdown.class.php:862
 #: inc/rule.class.php:348 inc/rulecollection.class.php:2121
@@ -7818,7 +7831,7 @@ msgstr[1] ""
 
 #: inc/computervirtualmachine.class.php:55
 msgid "Virtualization"
-msgstr ""
+msgstr "Виртуализация"
 
 #: inc/computervirtualmachine.class.php:159
 #: inc/computervirtualmachine.class.php:351
@@ -7873,22 +7886,22 @@ msgstr[1] ""
 #: inc/networkequipment.class.php:393 inc/networkequipment.class.php:590
 #: inc/toolbox.class.php:1065 inc/toolbox.class.php:1231
 msgid "Mio"
-msgstr ""
+msgstr "MiB"
 
 #: inc/computervirtualmachine.class.php:209
 #: inc/computervirtualmachine.class.php:355
 msgctxt "quantity"
 msgid "Processors number"
-msgstr ""
+msgstr "Брой процесори"
 
 #: inc/computervirtualmachine.class.php:257
 #: inc/computervirtualmachine.class.php:345
 msgid "List of virtualized environments"
-msgstr ""
+msgstr "Списък с виртуализираните среди"
 
 #: inc/computervirtualmachine.class.php:320
 msgid "Add a virtual machine"
-msgstr ""
+msgstr "Добавяне на виртуална машина"
 
 #: inc/computervirtualmachine.class.php:343
 msgid "No virtualized environment associated with the computer"
@@ -8058,7 +8071,7 @@ msgstr ""
 
 #: inc/config.class.php:496
 msgid "Software category deleted by the dictionary rules"
-msgstr ""
+msgstr "Софтуерната категория е изтрита от правилата на речника"
 
 #: inc/config.class.php:501
 msgid "Restrict device management"
@@ -8090,7 +8103,7 @@ msgstr ""
 
 #: inc/config.class.php:541
 msgid "Template for the automatic transfer of computers in another entity"
-msgstr ""
+msgstr "Шаблон за автоматичния трансфер на компютри в друга организация"
 
 #: inc/config.class.php:545
 msgid "No automatic transfer"
@@ -8216,7 +8229,7 @@ msgstr ""
 
 #: inc/config.class.php:779
 msgid "Enable login with external token"
-msgstr ""
+msgstr "Активирай влизането с външен токън"
 
 #: inc/config.class.php:780
 msgid ""
@@ -8251,23 +8264,25 @@ msgstr ""
 
 #: inc/config.class.php:861
 msgid "Default heading when adding a document to a ticket"
-msgstr "Стандартно заглавие, когато се добавя документ в билет"
+msgstr "Стандартно заглавие, когато се добавя документ в заявка"
 
 #: inc/config.class.php:866
 msgid "By default, a software may be linked to a ticket"
-msgstr "Стандартно, софтуер може да бъде свързан в билет"
+msgstr "По подразбиране, софтуер може да бъде свързан със заявка"
 
 #: inc/config.class.php:873
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr "Запази заявките при изтриване на хардуеър"
+msgstr "Запази заявките при изтриване на хардуер в инвентара"
 
 #: inc/config.class.php:875
 msgid "Show personnal information in new ticket form (simplified interface)"
 msgstr ""
+"Показване на лична информация във формата за нова заявка (опростен "
+"интерфейс)"
 
 #: inc/config.class.php:881
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
-msgstr "Разреши анонимно създаване на билети (Бюро за помощ.приемник)"
+msgstr "Разреши анонимно създаване на заявка (Бюро за помощ.приемник)"
 
 #: inc/config.class.php:883
 msgid "Allow anonymous followups (receiver)"
@@ -8313,7 +8328,7 @@ msgstr "Резултати на страница"
 
 #: inc/config.class.php:1050
 msgid "Go to created item after creation"
-msgstr ""
+msgstr "Отиди към новосъздадения елемент след създаване"
 
 #: inc/config.class.php:1059
 msgid "Display the complete name in tree dropdowns"
@@ -8321,7 +8336,7 @@ msgstr "Покажи цялото име в дървото на падащите
 
 #: inc/config.class.php:1068
 msgid "Display counters"
-msgstr ""
+msgstr "Показване на броячи"
 
 #: inc/config.class.php:1086
 msgid "Show GLPI ID"
@@ -8329,7 +8344,7 @@ msgstr "Покажи GLPI ID"
 
 #: inc/config.class.php:1093
 msgid "Keep devices when purging an item"
-msgstr ""
+msgstr "Запазване на устройствата при изчистване на елемент"
 
 #: inc/config.class.php:1102
 msgid "Notifications for my changes"
@@ -8337,11 +8352,11 @@ msgstr "Известия за моите промени"
 
 #: inc/config.class.php:1106
 msgid "Results to display on home page"
-msgstr ""
+msgstr "Резултати за показване на началната страница"
 
 #: inc/config.class.php:1119
 msgid "PDF export font"
-msgstr ""
+msgstr "Шрифт за експортиране в PDF"
 
 #: inc/config.class.php:1126
 msgid "CSV delimiter"
@@ -8349,11 +8364,11 @@ msgstr "CSV разделител"
 
 #: inc/config.class.php:1135
 msgid "Color palette"
-msgstr ""
+msgstr "Цветова палитра"
 
 #: inc/config.class.php:1162
 msgid "Layout"
-msgstr ""
+msgstr "Оформление"
 
 #: inc/config.class.php:1165
 msgid "Tabs on left"
@@ -8369,7 +8384,7 @@ msgstr ""
 
 #: inc/config.class.php:1198
 msgid "Enable high contrast"
-msgstr ""
+msgstr "Активиране на висок контраст"
 
 #: inc/config.class.php:1209
 msgid "Private followups by default"
@@ -8389,7 +8404,7 @@ msgstr "Заявка източници по подразбиране"
 
 #: inc/config.class.php:1231
 msgid "Tasks state by default"
-msgstr ""
+msgstr "Състояние на задачите по подразбиране"
 
 #: inc/config.class.php:1233
 msgid "Automatically refresh the list of tickets (minutes)"
@@ -8401,7 +8416,7 @@ msgstr "Преизбери ме за техник, когато създавам
 
 #: inc/config.class.php:1249
 msgid "Pre-select me as a requester when creating a ticket"
-msgstr ""
+msgstr "Избери ме предварително за заявител при създаване на заявка"
 
 #: inc/config.class.php:1258
 msgid "Priority colors"
@@ -8413,23 +8428,23 @@ msgstr ""
 
 #: inc/config.class.php:1288
 msgid "OK state color"
-msgstr ""
+msgstr "Цвят за OK статус"
 
 #: inc/config.class.php:1294
 msgid "Warning state color"
-msgstr ""
+msgstr "Цвят за предупредителен статус"
 
 #: inc/config.class.php:1298
 msgid "Warning state threshold"
-msgstr ""
+msgstr "Праг на състояние на предупреждение"
 
 #: inc/config.class.php:1310
 msgid "Critical state color"
-msgstr ""
+msgstr "Цвят за критичен статус"
 
 #: inc/config.class.php:1314
 msgid "Critical state threshold"
-msgstr ""
+msgstr "Праг на състояние на критичност"
 
 #: inc/config.class.php:1329
 msgid "Auto-lock Mode"
@@ -8446,43 +8461,43 @@ msgstr ""
 
 #: inc/config.class.php:1379
 msgid "Digit"
-msgstr ""
+msgstr "Цифра"
 
 #: inc/config.class.php:1390
 msgid "Lowercase"
-msgstr ""
+msgstr "Малка буква"
 
 #: inc/config.class.php:1401
 msgid "Uppercase"
-msgstr ""
+msgstr "Голяма буква"
 
 #: inc/config.class.php:1412
 msgid "Symbol"
-msgstr ""
+msgstr "Символ"
 
 #: inc/config.class.php:1427
 msgid "Password must contains"
-msgstr ""
+msgstr "Паролата трябва да съдържа"
 
 #: inc/config.class.php:1453 inc/config.class.php:1455
 msgid "Password too short!"
-msgstr ""
+msgstr "Паролата е твърде къса!"
 
 #: inc/config.class.php:1462 inc/config.class.php:1465
 msgid "Password must include at least a digit!"
-msgstr ""
+msgstr "Паролата трябва да съдържа поне една цифра!"
 
 #: inc/config.class.php:1472 inc/config.class.php:1475
 msgid "Password must include at least a lowercase letter!"
-msgstr ""
+msgstr "Паролата трябва да съдържа поне една малка буква!"
 
 #: inc/config.class.php:1482 inc/config.class.php:1485
 msgid "Password must include at least a uppercase letter!"
-msgstr ""
+msgstr "Паролата трябва да съдържа поне една голяма буква!"
 
 #: inc/config.class.php:1492 inc/config.class.php:1495
 msgid "Password must include at least a symbol!"
-msgstr ""
+msgstr "Паролата трябва да съдържа поне един символ!"
 
 #: inc/config.class.php:1524
 msgid "PHP opcode cache"
@@ -8491,12 +8506,12 @@ msgstr ""
 #: inc/config.class.php:1527 inc/config.class.php:2437
 #, php-format
 msgid "%s extension is installed"
-msgstr ""
+msgstr "%s разширение е инсталирано"
 
 #: inc/config.class.php:1528
 #, php-format
 msgid "The \"%s\" extension is installed"
-msgstr ""
+msgstr "Разширението \"%s\" е инсталирано"
 
 #: inc/config.class.php:1545
 #, php-format
@@ -8538,7 +8553,7 @@ msgstr ""
 
 #: inc/config.class.php:1586 inc/config.class.php:1634
 msgid "Reset"
-msgstr ""
+msgstr "Нулиране"
 
 #: inc/config.class.php:1590 inc/config.class.php:1640
 #: inc/config.class.php:2450
@@ -8550,6 +8565,8 @@ msgstr ""
 #, php-format
 msgid "Installing and enabling the \"%s\" extension may improve GLPI performance"
 msgstr ""
+"Инсталирането и активирането на разширението \"%s\" може да подобри "
+"производителността на GLPI"
 
 #: inc/config.class.php:1595
 msgid "User data cache"
@@ -8667,7 +8684,7 @@ msgstr "Предпочитания"
 
 #: inc/config.class.php:2123 inc/purgelogs.class.php:40
 msgid "Logs purge"
-msgstr ""
+msgstr "Изчистване на логове"
 
 #: inc/config.class.php:2124 inc/event.class.php:147
 msgid "System"
@@ -8675,7 +8692,7 @@ msgstr "система"
 
 #: inc/config.class.php:2125
 msgid "Performance"
-msgstr ""
+msgstr "Производителност"
 
 #: inc/config.class.php:2216
 #, php-format
@@ -8731,7 +8748,7 @@ msgstr ""
 
 #: inc/config.class.php:2477
 msgid "Checking write permissions for rss files"
-msgstr ""
+msgstr "Проверка на права за запис за rss файлове"
 
 #: inc/config.class.php:2478
 msgid "Checking write permissions for upload files"
@@ -8747,7 +8764,7 @@ msgstr ""
 
 #: inc/config.class.php:2519 inc/config.class.php:2520
 msgid "A file was created - Perfect!"
-msgstr ""
+msgstr "Файлът е създаден!"
 
 #: inc/config.class.php:2526 inc/config.class.php:2530
 #: inc/config.class.php:2555 inc/config.class.php:2560
@@ -8762,11 +8779,11 @@ msgstr "Файла не може да бъде създаден."
 
 #: inc/config.class.php:2546
 msgid "The directory could not be created."
-msgstr ""
+msgstr "Директорията не може да бъде създадена."
 
 #: inc/config.class.php:2547
 msgid "The directory was created but could not be removed."
-msgstr ""
+msgstr "Директорията е създадена, но не може да бъде премахната."
 
 #: inc/config.class.php:2549
 msgid "The file was created but can't be deleted."
@@ -8774,7 +8791,7 @@ msgstr "Файла е създаден, но не може да бъде изт�
 
 #: inc/config.class.php:2570 inc/config.class.php:2572
 msgid "A file and a directory have be created and deleted - Perfect!"
-msgstr ""
+msgstr "Файл и директория са създадени и изтрити!"
 
 #: inc/config.class.php:2614 inc/config.class.php:2631
 #: inc/config.class.php:2632 inc/config.class.php:2635
@@ -8814,7 +8831,7 @@ msgstr ""
 
 #: inc/config.class.php:3175
 msgid "Logs purge configuration"
-msgstr ""
+msgstr "Конфигурация на изчистването на логове"
 
 #: inc/config.class.php:3177
 msgid "Change all"
@@ -8875,7 +8892,7 @@ msgstr "Добави/Премахни групи на потребители"
 
 #: inc/config.class.php:3273
 msgid "User authentication method changes"
-msgstr ""
+msgstr "Промяна в метода на потребителско удостоверяване"
 
 #: inc/config.class.php:3276 inc/user.class.php:3162
 msgid "Deleted user in LDAP directory"
@@ -8907,7 +8924,7 @@ msgstr ""
 
 #: inc/config.class.php:3309
 msgid "Purge all log entries"
-msgstr ""
+msgstr "Изчистване на всички записи в лога"
 
 #: inc/config.class.php:3338
 msgid "Delete all"
@@ -9053,7 +9070,7 @@ msgstr ""
 #: inc/consumableitem.class.php:491
 #, php-format
 msgid "%s: send consumable alert failed"
-msgstr ""
+msgstr "%s: изпращане на сигнал за консуматив е неуспешно"
 
 #: inc/consumableitemtype.class.php:42 inc/dropdown.class.php:881
 msgid "Consumable type"
@@ -9335,7 +9352,7 @@ msgstr ""
 
 #: inc/contract.class.php:1462
 msgid "send contract alert failed"
-msgstr ""
+msgstr "изпращане на сигнал за договор е неуспешно"
 
 #: inc/contract.class.php:1606 inc/contract.class.php:1628
 #: inc/contract.class.php:1648
@@ -9446,6 +9463,7 @@ msgstr "Изчистване"
 #: inc/crontask.class.php:581 inc/crontask.class.php:788
 msgid "Maintenance mode enabled, running tasks is disabled"
 msgstr ""
+"Режимът на поддръжка е активиран, задачите за изпълнение са деактивирани"
 
 #: inc/crontask.class.php:688 inc/crontask.class.php:1183
 msgid "Running"
@@ -9465,7 +9483,7 @@ msgstr "CLI"
 
 #: inc/crontask.class.php:798
 msgid "A minimum of 64 Mio is commonly required for GLPI."
-msgstr ""
+msgstr "Минимум 64 MiB се изискват обикновено от GLPI."
 
 #: inc/crontask.class.php:803
 msgid "No task with Run mode = CLI, fix your tasks configuration"
@@ -9595,7 +9613,7 @@ msgstr "Номер"
 
 #: inc/crontask.class.php:1263
 msgid "Reset last run"
-msgstr ""
+msgstr "Нулиране на последното изпълнение"
 
 #: inc/crontask.class.php:1394
 msgid "Begin hour of run period"
@@ -10132,15 +10150,15 @@ msgstr ""
 
 #: inc/deviceprocessor.class.php:235
 msgid "processor: number of cores"
-msgstr ""
+msgstr "процесор: брой ядра"
 
 #: inc/deviceprocessor.class.php:248
 msgid "processor: number of threads"
-msgstr ""
+msgstr "процесор: брой нишки"
 
 #: inc/deviceprocessor.class.php:261
 msgid "Processor frequency"
-msgstr ""
+msgstr "Честота на процесор"
 
 #: inc/deviceprocessormodel.class.php:44 inc/dropdown.class.php:961
 msgid "Device processor model"
@@ -10196,7 +10214,7 @@ msgstr[1] ""
 
 #: inc/displaypreference.class.php:306
 msgid "No personal criteria. Create personal parameters?"
-msgstr ""
+msgstr "Няма лични критерии. Създаване на лични параметри?"
 
 #: inc/displaypreference.class.php:320 inc/displaypreference.class.php:474
 #: inc/search.class.php:1544 inc/search.class.php:1545
@@ -10298,7 +10316,7 @@ msgstr "Използване на файл, качен по FTP"
 #: inc/document.class.php:463
 #, php-format
 msgid "%s Mio max"
-msgstr ""
+msgstr "%s MiB max"
 
 #: inc/document.class.php:880
 #: inc/notificationtargetcommonitilobject.class.php:1467
@@ -10306,7 +10324,7 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:502
 msgctxt "quantity"
 msgid "Number of documents"
-msgstr ""
+msgstr "Брой документи"
 
 #: inc/document.class.php:954 inc/document_item.class.php:708
 #: inc/notificationtemplatetranslation.class.php:353
@@ -10365,7 +10383,7 @@ msgstr "Неразрешен тип на файла"
 
 #: inc/document.class.php:1334
 msgid "Manage document types"
-msgstr ""
+msgstr "Управлените на типовете документи"
 
 #: inc/document.class.php:1341
 #, php-format
@@ -10396,7 +10414,7 @@ msgstr "Добавяне на документ"
 #: inc/document.class.php:1538
 msgctxt "button"
 msgid "Remove a document"
-msgstr ""
+msgstr "Премахване на документ"
 
 #: inc/document_item.class.php:533 inc/document_item.class.php:624
 msgid "Add a document"
@@ -10410,7 +10428,7 @@ msgstr ""
 #: inc/document_item.class.php:668
 msgctxt "button"
 msgid "Associate an existing document"
-msgstr ""
+msgstr "Свързване на съществуващ документ"
 
 #: inc/documenttype.class.php:48 inc/documenttype.class.php:89
 msgid "Icon"
@@ -10713,7 +10731,7 @@ msgstr[1] ""
 
 #: inc/dropdown.class.php:1039 inc/networkport.class.php:917
 msgid "Networking"
-msgstr ""
+msgstr "Мрежови"
 
 #: inc/dropdown.class.php:1043 inc/netpoint.class.php:60
 #: inc/netpoint.class.php:271 inc/netpoint.class.php:285
@@ -10791,7 +10809,7 @@ msgstr[1] ""
 #: inc/profile.class.php:2069 inc/ruleright.class.php:56
 #: inc/rulerightcollection.class.php:57
 msgid "Authorizations assignment rules"
-msgstr ""
+msgstr "Правила за възлагане на разрешения"
 
 #: inc/dropdown.class.php:1079 inc/rulerightparameter.class.php:83
 msgid "LDAP criterion"
@@ -10886,7 +10904,7 @@ msgstr "Дублирай елемента толкова пъти, към кол
 
 #: inc/dropdown.class.php:2154
 msgid "Current page in landscape PDF"
-msgstr ""
+msgstr "Текущата страница в пейзажен PDF"
 
 #: inc/dropdown.class.php:2155
 msgid "Current page in portrait PDF"
@@ -10902,7 +10920,7 @@ msgstr ""
 
 #: inc/dropdown.class.php:2158
 msgid "All pages in landscape PDF"
-msgstr ""
+msgstr "Всички страници в пейзажен PDF"
 
 #: inc/dropdown.class.php:2159
 msgid "All pages in portrait PDF"
@@ -10938,12 +10956,12 @@ msgstr ""
 #: inc/knowbaseitemtranslation.class.php:204
 #: inc/notificationtemplatetranslation.class.php:180
 msgid "Add a new translation"
-msgstr ""
+msgstr "Добавяне на нов превод"
 
 #: inc/dropdowntranslation.class.php:364
 #: inc/knowbaseitemtranslation.class.php:221
 msgid "List of translations"
-msgstr ""
+msgstr "Списък с преводите"
 
 #: inc/dropdowntranslation.class.php:371 inc/dropdowntranslation.class.php:466
 #: inc/fieldblacklist.class.php:71 inc/fieldblacklist.class.php:101
@@ -10960,7 +10978,7 @@ msgstr[1] ""
 #: inc/dropdowntranslation.class.php:415
 #: inc/knowbaseitemtranslation.class.php:258
 msgid "No translation found"
-msgstr ""
+msgstr "Няма намерен превод"
 
 #: inc/enclosure.class.php:48 inc/item_enclosure.class.php:260
 msgid "Enclosure"
@@ -10996,11 +11014,11 @@ msgstr "LDAP директория за организация"
 
 #: inc/entity.class.php:653
 msgid "Search filter (if needed)"
-msgstr ""
+msgstr "Търсещ филтър (при нужда)"
 
 #: inc/entity.class.php:663
 msgid "Mail domain"
-msgstr ""
+msgstr "Имейл домейн"
 
 #: inc/entity.class.php:671 inc/entity.class.php:1662
 msgid "Notification options"
@@ -11008,20 +11026,20 @@ msgstr "Опции за напомняне"
 
 #: inc/entity.class.php:678 inc/entity.class.php:1687
 msgid "Delay to send email notifications"
-msgstr ""
+msgstr "Отложено изпращане на имейл известия"
 
 #: inc/entity.class.php:693 inc/entity.class.php:1708
 msgid "Enable notifications by default"
-msgstr ""
+msgstr "Активиране на известията по подразбиране"
 
 #: inc/entity.class.php:703 inc/entity.class.php:1665
 #: inc/notificationmailingsetting.class.php:74
 msgid "Administrator email"
-msgstr ""
+msgstr "Администраторски имейл"
 
 #: inc/entity.class.php:713 inc/entity.class.php:1674
 msgid "Administrator reply-to email (if needed)"
-msgstr ""
+msgstr "Администраторски имейл за отговор (ако се налага)"
 
 #: inc/entity.class.php:723 inc/entity.class.php:1683
 msgid "Prefix for notifications"
@@ -11034,7 +11052,7 @@ msgstr "Администратор име"
 
 #: inc/entity.class.php:741 inc/entity.class.php:1678
 msgid "Response address (if needed)"
-msgstr ""
+msgstr "Адрес за отговор (ако се налага)"
 
 #: inc/entity.class.php:750 inc/entity.class.php:1727
 #: inc/notificationmailingsetting.class.php:132
@@ -11102,11 +11120,11 @@ msgstr "Праг по подразбиране за броя на консума
 #: inc/entity.class.php:888 inc/entity.class.php:1946
 #: inc/notificationtargetcertificate.class.php:49
 msgid "Alarms on expired certificates"
-msgstr ""
+msgstr "Аларми за изтичащи сертификати"
 
 #: inc/entity.class.php:898
 msgid "Send Certificate alarms before"
-msgstr ""
+msgstr "Изпращане на аларми за сертификати преди"
 
 #: inc/entity.class.php:913 inc/entity.class.php:2137
 #: inc/profile.class.php:1013 inc/profile.class.php:2258
@@ -11162,7 +11180,7 @@ msgstr "Проучване на удовлетвореността-Конфиг�
 
 #: inc/entity.class.php:1047
 msgid "Satisfaction survey trigger rate"
-msgstr ""
+msgstr "Ниво за задействане на проучване на удовлетвореността"
 
 #. TRANS: software in plural
 #: inc/entity.class.php:1077 inc/entity.class.php:1591
@@ -11224,6 +11242,7 @@ msgstr "LDAP филтър, свързан с лицето (ако е необх�
 #: inc/entity.class.php:1502
 msgid "Autofill dates for financial and administrative information"
 msgstr ""
+"Автоматично попълване на дати за финансова и административна информация"
 
 #: inc/entity.class.php:1505 inc/entity.class.php:1554
 #: inc/entity.class.php:1570 inc/entity.class.php:2694
@@ -11282,7 +11301,7 @@ msgstr "Честота на напомняне за аларми на консу
 
 #: inc/entity.class.php:1958
 msgid "Send certificates alarms before"
-msgstr ""
+msgstr "Изпращане на аларми за сертификати преди"
 
 #: inc/entity.class.php:1977 inc/event.class.php:150 inc/event.class.php:163
 #: inc/html.class.php:6369 inc/profile.class.php:726
@@ -11404,22 +11423,22 @@ msgstr "Запис в базата данни отказан"
 
 #: inc/fieldunicity.class.php:88 inc/fieldunicity.class.php:364
 msgid "Send a notification"
-msgstr ""
+msgstr "Изпрати известие"
 
 #: inc/fieldunicity.class.php:113 inc/fieldunicity.class.php:546
 #: inc/ticket_ticket.class.php:216 inc/ticket_ticket.class.php:236
 msgid "Duplicates"
-msgstr ""
+msgstr "Дубликати"
 
 #: inc/fieldunicity.class.php:481
 msgid "It's mandatory to select a type and at least one field"
-msgstr ""
+msgstr "Задължително изберете тип и поне едно поле"
 
 #: inc/fieldunicity.class.php:592 inc/fieldunicity.class.php:617
 #: inc/levelagreement.class.php:516 inc/notificationevent.class.php:211
 #: inc/project.class.php:1699 inc/user.class.php:4720
 msgid "No item to display"
-msgstr ""
+msgstr "Няма елементи за показване"
 
 #: inc/fqdn.class.php:56 inc/fqdn.class.php:203
 msgid "FQDN"
@@ -11435,7 +11454,7 @@ msgstr ""
 
 #: inc/fqdn.class.php:80
 msgid "FQDN must not be empty"
-msgstr ""
+msgstr "FQDN не може да бъде празно"
 
 #: inc/fqdn.class.php:89
 msgid "FQDN is not valid"
@@ -11482,11 +11501,11 @@ msgstr ""
 
 #: inc/glpiuploadhandler.class.php:60 inc/rulecollection.class.php:1125
 msgid "No file was uploaded"
-msgstr ""
+msgstr "Не е качен файл"
 
 #: inc/glpiuploadhandler.class.php:64
 msgid "Missing a temporary folder"
-msgstr ""
+msgstr "Липсва временна папка"
 
 #: inc/glpiuploadhandler.class.php:68
 msgid "Failed to write file to disk"
@@ -11494,11 +11513,12 @@ msgstr "Неуспешно записване на фаила върху дис�
 
 #: inc/glpiuploadhandler.class.php:72
 msgid "A PHP extension stopped the file upload"
-msgstr ""
+msgstr "PHP разширение спира качването на файл"
 
 #: inc/glpiuploadhandler.class.php:76
 msgid "The uploaded file exceeds the post_max_size directive in php.ini"
 msgstr ""
+"Размерът на качения файл надвишава директивата post_max_size в php.ini"
 
 #: inc/glpiuploadhandler.class.php:80
 msgid "File is too big"
@@ -11514,19 +11534,19 @@ msgstr "Максималния брой файлове е достигнат"
 
 #: inc/glpiuploadhandler.class.php:92
 msgid "Image exceeds maximum width"
-msgstr ""
+msgstr "Изображението надвишава максималната ширина"
 
 #: inc/glpiuploadhandler.class.php:96
 msgid "Image requires a minimum width"
-msgstr ""
+msgstr "Изображението изисква минимална ширина"
 
 #: inc/glpiuploadhandler.class.php:100
 msgid "Image exceeds maximum height"
-msgstr ""
+msgstr "Изображението надвишава максималната височина"
 
 #: inc/glpiuploadhandler.class.php:104
 msgid "Image requires a minimum height"
-msgstr ""
+msgstr "Изображението изисква минимална височина"
 
 #: inc/glpiuploadhandler.class.php:108
 msgid "Filetype not allowed"
@@ -11534,11 +11554,11 @@ msgstr "Фаил типа не е разрешен"
 
 #: inc/glpiuploadhandler.class.php:112
 msgid "File upload aborted"
-msgstr ""
+msgstr "Качването на файл прекъснато"
 
 #: inc/glpiuploadhandler.class.php:116
 msgid "Failed to resize image"
-msgstr ""
+msgstr "Неуспешно преоразмеряване на изображение"
 
 #: inc/group.class.php:130 inc/group.class.php:765 inc/user.class.php:214
 msgid "Used items"
@@ -11554,19 +11574,19 @@ msgstr "Видим в заявката"
 
 #: inc/group.class.php:261 inc/group.class.php:479
 msgid "Can be notified"
-msgstr ""
+msgstr "Може да бъде уведомен"
 
 #: inc/group.class.php:267
 msgid "Visible in a project"
-msgstr ""
+msgstr "Видим в проект"
 
 #: inc/group.class.php:271 inc/group.class.php:471
 msgid "Can be manager"
-msgstr ""
+msgstr "Може да бъде мениджър"
 
 #: inc/group.class.php:277 inc/group.class.php:487 inc/group.class.php:495
 msgid "Can contain"
-msgstr ""
+msgstr "Може да съдържа"
 
 #: inc/group.class.php:333
 msgctxt "button"
@@ -11576,12 +11596,12 @@ msgstr "Добавяне на потребител"
 #: inc/group.class.php:334
 msgctxt "button"
 msgid "Add a manager"
-msgstr ""
+msgstr "Добавяне на мениджър"
 
 #: inc/group.class.php:335
 msgctxt "button"
 msgid "Add a delegatee"
-msgstr ""
+msgstr "Добавяне на делегат"
 
 #: inc/group.class.php:336
 msgctxt "button"
@@ -11604,7 +11624,7 @@ msgstr ""
 #: inc/notificationtargetproject.class.php:572 inc/project.class.php:615
 #: inc/project.class.php:898 inc/project.class.php:1254
 msgid "Manager"
-msgstr ""
+msgstr "Мениджър"
 
 #: inc/group.class.php:523 inc/group_user.class.php:214
 #: inc/group_user.class.php:251 inc/group_user.class.php:288
@@ -11612,11 +11632,11 @@ msgstr ""
 #: inc/group_user.class.php:539 inc/group_user.class.php:576
 #: inc/group_user.class.php:710
 msgid "Delegatee"
-msgstr ""
+msgstr "Делегат"
 
 #: inc/group.class.php:543
 msgid "Can be in charge of a task"
-msgstr ""
+msgstr "Може да отговаря за задача"
 
 #: inc/group.class.php:832 inc/rule.class.php:555
 msgid "Move"
@@ -11630,7 +11650,7 @@ msgstr "Добавяне в групата"
 #: inc/group_user.class.php:537 inc/group_user.class.php:566
 #: inc/group_user.class.php:674 inc/profile_user.class.php:904
 msgid "Dynamic"
-msgstr ""
+msgstr "Динамичен"
 
 #: inc/group_user.class.php:333
 msgid "Add a user"
@@ -11649,7 +11669,7 @@ msgstr[1] ""
 
 #: inc/group_user.class.php:503 inc/group_user.class.php:593
 msgid "D=Dynamic"
-msgstr ""
+msgstr "D=Динамичен"
 
 #: inc/html.class.php:162 inc/softwarelicense.class.php:444
 msgctxt "adjective"
@@ -11662,7 +11682,7 @@ msgstr "Невалиден"
 #: inc/html.class.php:383
 #, php-format
 msgid "%1$s%2$d days %3$d hours %4$d minutes %5$d seconds"
-msgstr ""
+msgstr "%1$s%2$d дни %3$d часове %4$d минути %5$d секунди"
 
 #. TRANS:  %1$s is the sign (-or empty), %2$d number of days, %3$d number of
 #. hours,
@@ -11670,7 +11690,7 @@ msgstr ""
 #: inc/html.class.php:388
 #, php-format
 msgid "%1$s%2$d days %3$d hours %4$d minutes"
-msgstr ""
+msgstr "%1$s%2$d дни %3$d часове %4$d минути"
 
 #. TRANS:  %1$s is the sign (-or empty), %2$d number of hours, %3$d number of
 #. minutes,
@@ -11678,21 +11698,21 @@ msgstr ""
 #: inc/html.class.php:401
 #, php-format
 msgid "%1$s%2$d hours %3$d minutes %4$d seconds"
-msgstr ""
+msgstr "%1$s%2$d часове %3$d минути %4$d секунди"
 
 #. TRANS: %1$s is the sign (-or empty), %2$d number of hours, %3$d number of
 #. minutes
 #: inc/html.class.php:405
 #, php-format
 msgid "%1$s%2$d hours %3$d minutes"
-msgstr ""
+msgstr "%1$s%2$d часа %3$d минути"
 
 #. TRANS:  %1$s is the sign (-or empty), %2$d number of minutes,  %3$d number
 #. of seconds
 #: inc/html.class.php:411
 #, php-format
 msgid "%1$s%2$d minutes %3$d seconds"
-msgstr ""
+msgstr "%1$s%2$d минути %3$d секунди"
 
 #. TRANS: %1$s is the sign (-or empty), %2$d number of minutes
 #: inc/html.class.php:415
@@ -11712,11 +11732,11 @@ msgstr[1] ""
 
 #: inc/html.class.php:600 inc/rssfeed.class.php:448 inc/rssfeed.class.php:655
 msgid "Error"
-msgstr ""
+msgstr "Грешка"
 
 #: inc/html.class.php:771
 msgid "Display GLPI debug informations"
-msgstr ""
+msgstr "Показване на GLPI информация за отстраняване на грешки"
 
 #: inc/html.class.php:1137
 msgid "Progress"
@@ -11724,23 +11744,23 @@ msgstr "Progress"
 
 #: inc/html.class.php:1425 inc/html.class.php:6236 inc/html.class.php:6237
 msgid "My settings"
-msgstr ""
+msgstr "Моите настройки"
 
 #: inc/html.class.php:1600
 msgid "Back to top of the page"
-msgstr ""
+msgstr "Обратно в началото на страницата"
 
 #: inc/html.class.php:1661 inc/toolbox.class.php:1436
 #: inc/toolbox.class.php:1440
 msgid "You will find it on the GLPI-PROJECT.org site."
-msgstr ""
+msgstr "Ще го намерите на сайта GLPI-PROJECT.org."
 
 #: inc/html.class.php:1664 inc/toolbox.class.php:1434
 #: inc/toolbox.class.php:1438 inc/toolbox.class.php:1446
 #: inc/toolbox.class.php:1449
 #, php-format
 msgid "A new version is available: %s."
-msgstr ""
+msgstr "Има налична нова версия: %s."
 
 #: inc/html.class.php:2099
 msgid "Check all"
@@ -11752,29 +11772,31 @@ msgstr "Изключи всичко"
 
 #: inc/html.class.php:2161 inc/html.class.php:2165
 msgid "Check all as"
-msgstr ""
+msgstr "Поставяне на отметка на всички като"
 
 #: inc/html.class.php:2530
 msgid "Selection too large, massive action disabled."
-msgstr ""
+msgstr "Селекцията е твърде голяма, масовото дейстие е деактивирано."
 
 #: inc/html.class.php:2532
 msgid ""
 "To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
 " configuration."
 msgstr ""
+"За увеличаване на лимита променете max_input_vars или suhosin.post.max_vars "
+"в PHP конфигурацията."
 
 #: inc/html.class.php:3029 inc/html.class.php:3259
 msgid "Now"
-msgstr ""
+msgstr "Сега"
 
 #: inc/html.class.php:3031 inc/html.class.php:3034
 msgid "Today"
-msgstr ""
+msgstr "Днес"
 
 #: inc/html.class.php:3038
 msgid "Specify a date"
-msgstr ""
+msgstr "Посочете дата"
 
 #: inc/html.class.php:3043 inc/levelagreementlevel.class.php:261
 #, php-format
@@ -11799,23 +11821,23 @@ msgstr[1] ""
 
 #: inc/html.class.php:3056
 msgid "last Sunday"
-msgstr ""
+msgstr "последната неделя"
 
 #: inc/html.class.php:3057
 msgid "last Monday"
-msgstr ""
+msgstr "последния понеделник"
 
 #: inc/html.class.php:3058
 msgid "last Tuesday"
-msgstr ""
+msgstr "последния вторник"
 
 #: inc/html.class.php:3059
 msgid "last Wednesday"
-msgstr ""
+msgstr "последната сряда"
 
 #: inc/html.class.php:3060
 msgid "last Thursday"
-msgstr ""
+msgstr "последния четвъртък"
 
 #: inc/html.class.php:3061
 msgid "last Friday"
@@ -11823,7 +11845,7 @@ msgstr "Последния петък"
 
 #: inc/html.class.php:3062
 msgid "last Saturday"
-msgstr ""
+msgstr "последната събота"
 
 #: inc/html.class.php:3066
 #, php-format
@@ -11834,7 +11856,7 @@ msgstr[1] ""
 
 #: inc/html.class.php:3070
 msgid "Beginning of the month"
-msgstr ""
+msgstr "Начало на месеца"
 
 #: inc/html.class.php:3074
 #, php-format
@@ -11845,7 +11867,7 @@ msgstr[1] ""
 
 #: inc/html.class.php:3078
 msgid "Beginning of the year"
-msgstr ""
+msgstr "Начало на годината"
 
 #: inc/html.class.php:3082
 #, php-format
@@ -11891,17 +11913,17 @@ msgstr[1] ""
 
 #: inc/html.class.php:3613
 msgid "The description field is mandatory"
-msgstr ""
+msgstr "Полето за описание е задължително"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: inc/html.class.php:3794 inc/html.class.php:4000
 #, php-format
 msgid "From %1$d to %2$d of %3$d"
-msgstr ""
+msgstr "От %1$d до %2$d от %3$d"
 
 #: inc/html.class.php:3878
 msgid "Empty array"
-msgstr ""
+msgstr "Празен масив"
 
 #: inc/html.class.php:4042 inc/html.class.php:4047
 msgid "Display (number of items)"
@@ -11910,7 +11932,7 @@ msgstr "Покажи (брой на елементите)"
 #: inc/html.class.php:4076
 #, php-format
 msgid "%1$d on %2$d"
-msgstr ""
+msgstr "%1$d на %2$d"
 
 #: inc/html.class.php:5027
 msgid "Attach file by drag & drop or copy & paste in editor or "
@@ -11922,11 +11944,11 @@ msgstr ""
 
 #: inc/html.class.php:5106
 msgid "File(s)"
-msgstr ""
+msgstr "Файл(ове)"
 
 #: inc/html.class.php:5123
 msgid "Drag and drop your file here, or"
-msgstr ""
+msgstr "Плъзнете и пуснете файла си тук или"
 
 #: inc/html.class.php:5177
 msgid "Upload successful"
@@ -11950,11 +11972,11 @@ msgstr "Изход"
 
 #: inc/html.class.php:6252
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Режимът за отстраняване на грешки е активиран"
 
 #: inc/html.class.php:6253
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Режимът за отстраняване на грешки е деактивиран"
 
 #: inc/html.class.php:6257
 msgid "Change mode"
@@ -11962,15 +11984,15 @@ msgstr ""
 
 #: inc/html.class.php:6267 inc/html.class.php:6276
 msgid "Saved searches"
-msgstr ""
+msgstr "Запазени търсения"
 
 #: inc/html.class.php:6271
 msgid "Manage saved searches"
-msgstr ""
+msgstr "Управление на запазените търсения"
 
 #: inc/html.class.php:6275 inc/search.class.php:2315
 msgid "Load a saved search"
-msgstr ""
+msgstr "Зареждане на запазено търсене"
 
 #: inc/html.class.php:6349 inc/profile.class.php:2230
 #: inc/ticket.class.php:5940
@@ -11979,11 +12001,11 @@ msgstr "Създаване на заявка"
 
 #: inc/html.class.php:6583 inc/html.class.php:6585
 msgid "Add is disabled"
-msgstr ""
+msgstr "Добавянето е деактивирано"
 
 #: inc/html.class.php:6596 inc/html.class.php:6598
 msgid "Search is disabled"
-msgstr ""
+msgstr "Търсенето е деактивирано"
 
 #: inc/html.class.php:6670 inc/html.class.php:6671 inc/ticket.class.php:199
 #: inc/ticket.class.php:200 inc/ticket.class.php:3736
@@ -11997,6 +12019,8 @@ msgid ""
 "Purchase date incompatible with the associated budget. %1$s not in budget "
 "period: %2$s / %3$s"
 msgstr ""
+"Дата на покупка е несъвместима със свързания бюджет. %1$s не е в бюджетния "
+"период: %2$s / %3$s"
 
 #: inc/infocom.class.php:443
 msgid "Send alarms on financial and administrative information"
@@ -12215,11 +12239,11 @@ msgstr ""
 
 #: inc/item_deviceprocessor.class.php:64
 msgid "Cores"
-msgstr ""
+msgstr "Ядра"
 
 #: inc/item_deviceprocessor.class.php:69
 msgid "Threads"
-msgstr ""
+msgstr "Нишки"
 
 #: inc/item_devices.class.php:86
 #, php-format
@@ -12292,19 +12316,19 @@ msgstr ""
 
 #: inc/item_devicesimcard.class.php:62 inc/item_devicesimcard.class.php:63
 msgid "PIN code"
-msgstr ""
+msgstr "PIN код"
 
 #: inc/item_devicesimcard.class.php:71 inc/item_devicesimcard.class.php:72
 msgid "PIN2 code"
-msgstr ""
+msgstr "PIN2 код"
 
 #: inc/item_devicesimcard.class.php:80 inc/item_devicesimcard.class.php:81
 msgid "PUK code"
-msgstr ""
+msgstr "PUK код"
 
 #: inc/item_devicesimcard.class.php:89 inc/item_devicesimcard.class.php:90
 msgid "PUK2 code"
-msgstr ""
+msgstr "PUK2 код"
 
 #: inc/item_devicesimcard.class.php:98 inc/item_devicesimcard.class.php:99
 #: inc/line.class.php:50 inc/profile.class.php:868
@@ -12401,7 +12425,7 @@ msgstr ""
 
 #: inc/item_operatingsystem.class.php:438
 msgid "Operating System"
-msgstr ""
+msgstr "Операционна система"
 
 #: inc/item_rack.class.php:124 inc/rack.class.php:575
 msgid "View as list"
@@ -12435,11 +12459,11 @@ msgstr ""
 
 #: inc/item_rack.class.php:302
 msgid "images"
-msgstr ""
+msgstr "изображения"
 
 #: inc/item_rack.class.php:304
 msgid "texts"
-msgstr ""
+msgstr "текстове"
 
 #: inc/item_rack.class.php:376
 msgid "Insert an item here"
@@ -12497,16 +12521,16 @@ msgstr "Актив - предна страна"
 #: inc/item_rack.class.php:839 inc/pdu_rack.class.php:587
 #: inc/rack.class.php:1116
 msgid "name"
-msgstr ""
+msgstr "име"
 
 #: inc/item_rack.class.php:845 inc/pdu_rack.class.php:592
 #: inc/rack.class.php:1120
 msgid "serial"
-msgstr ""
+msgstr "сериен"
 
 #: inc/item_rack.class.php:857 inc/pdu_rack.class.php:604
 msgid "model"
-msgstr ""
+msgstr "модел"
 
 #: inc/item_rack.class.php:878 inc/pdu_rack.class.php:641
 msgid "Edit rack relation"
@@ -12560,7 +12584,7 @@ msgstr "Моите устройства"
 
 #: inc/item_ticket.class.php:822
 msgid "Devices own by my groups"
-msgstr ""
+msgstr "Устройства, притежавани от моите групи"
 
 #: inc/item_ticket.class.php:886
 msgid "Connected devices"
@@ -12645,11 +12669,11 @@ msgstr "Искане"
 
 #: inc/itilfollowup.class.php:326
 msgid "You can't add a followup without description"
-msgstr ""
+msgstr "Не можете да добавите проследяване без описание"
 
 #: inc/itilfollowup.class.php:346
 msgid "Solution approved"
-msgstr ""
+msgstr "Одобрено решение"
 
 #: inc/itilfollowup.class.php:360
 msgid "If you want to reopen this item, you must specify a reason"
@@ -12657,7 +12681,7 @@ msgstr ""
 
 #: inc/itilfollowup.class.php:364
 msgid "If you reject the solution, you must specify a reason"
-msgstr ""
+msgstr "Ако отхвърлите решението, трябва да посочите причина"
 
 #: inc/itilfollowup.class.php:585
 #: inc/notificationtargetcommonitilobject.class.php:1465
@@ -12667,11 +12691,11 @@ msgstr "Брой на последващи прегледи"
 
 #: inc/itilfollowup.class.php:619
 msgid "Private followup"
-msgstr ""
+msgstr "Лично проследяване"
 
 #: inc/itilfollowup.class.php:666
 msgid "Approval of the solution"
-msgstr ""
+msgstr "Одобрение на решението"
 
 #: inc/itilfollowup.class.php:680
 msgid "Refuse the solution"
@@ -12679,7 +12703,7 @@ msgstr "Откажи решението"
 
 #: inc/itilfollowup.class.php:684
 msgid "Approve the solution"
-msgstr ""
+msgstr "Одобри решението"
 
 #: inc/itilfollowup.class.php:741
 msgid "If you want to reopen the ticket, you must specify a reason"
@@ -12687,7 +12711,7 @@ msgstr "За да отворите заявка е необходимо да п�
 
 #: inc/itilfollowup.class.php:794 inc/itilfollowup.class.php:1007
 msgid "Source of followup"
-msgstr ""
+msgstr "Източник на проследяване"
 
 #: inc/itilfollowup.class.php:982 inc/tickettask.class.php:232
 msgid "Update all"
@@ -12703,11 +12727,11 @@ msgstr ""
 
 #: inc/itilfollowup.class.php:988
 msgid "Add followup (associated groups)"
-msgstr ""
+msgstr "Добави проследяване (свързани групи)"
 
 #: inc/itilfollowup.class.php:989
 msgid "Add a followup to tickets of associated groups"
-msgstr ""
+msgstr "Добавяне на проследяване към заявка на свързани групи"
 
 #: inc/itilfollowup.class.php:990
 msgid "Update followups (author)"
@@ -12715,7 +12739,7 @@ msgstr "Актуализиране проследявания (автор)"
 
 #: inc/itilfollowup.class.php:991
 msgid "Add followup (requester)"
-msgstr ""
+msgstr "Добавяне на проследяване (заявител)"
 
 #: inc/itilfollowup.class.php:992
 msgid "Add a followup to tickets (requester)"
@@ -12723,7 +12747,7 @@ msgstr "Добави проследяване на билети (искащ)"
 
 #: inc/itilfollowup.class.php:993 inc/tickettask.class.php:237
 msgid "See public ones"
-msgstr ""
+msgstr "Виж публичните"
 
 #: inc/itilfollowup.class.php:1004 inc/ticket.class.php:2628
 msgid "Add a new followup"
@@ -12750,6 +12774,8 @@ msgid ""
 "Warning: non closed children tickets depends on current ticket. Are you sure"
 " you want to close it?"
 msgstr ""
+"Внимание: дъщерни заявки зависят от текущата заявка. Сигурни ли сте, че "
+"искате да я затворите?"
 
 #: inc/itilsolution.class.php:186 inc/itilsolution.class.php:189
 msgid "Search a solution"
@@ -12765,7 +12791,7 @@ msgstr "Запиши и добави в базата знания"
 
 #: inc/itilsolution.class.php:285
 msgid "The item is already solved, did anyone pushed a solution before you ?"
-msgstr ""
+msgstr "Елементът е вече решен, някой създал ли е решение преди Вас?"
 
 #: inc/knowbase.class.php:66
 msgctxt "button"
@@ -13002,7 +13028,7 @@ msgstr ""
 
 #: inc/knowbaseitem_item.class.php:261
 msgid "template"
-msgstr ""
+msgstr "шаблон"
 
 #: inc/knowbaseitem_revision.class.php:42
 #: inc/knowbaseitem_revision.class.php:132
@@ -13023,7 +13049,7 @@ msgstr ""
 
 #: inc/knowbaseitem_revision.class.php:134
 msgid "Author"
-msgstr ""
+msgstr "Автор"
 
 #: inc/knowbaseitem_revision.class.php:144
 msgid "cur"
@@ -13090,7 +13116,7 @@ msgstr ""
 
 #: inc/levelagreement.class.php:196 inc/levelagreement.class.php:464
 msgid "Maximum time"
-msgstr ""
+msgstr "Максимално време"
 
 #: inc/levelagreement.class.php:200
 msgid "Minute"
@@ -13134,7 +13160,7 @@ msgstr "Календар на билетите"
 #: inc/ticket.class.php:3069 inc/ticket.class.php:4772
 #: inc/ticket.class.php:4774 inc/ticket.class.php:6945
 msgid "Time to own"
-msgstr ""
+msgstr "Време на притежание"
 
 #: inc/levelagreementlevel.class.php:112 inc/olalevel.class.php:105
 #: inc/olalevel.class.php:144 inc/olalevel.class.php:243
@@ -13189,7 +13215,7 @@ msgstr ""
 
 #: inc/link.class.php:154
 msgid "Example:"
-msgstr ""
+msgstr "Пример:"
 
 #: inc/link.class.php:162 inc/link.class.php:213
 msgid "Link or filename"
@@ -13214,7 +13240,7 @@ msgstr ""
 #: inc/location.class.php:68 inc/location.class.php:154
 #: inc/location.class.php:298
 msgid "Town"
-msgstr ""
+msgstr "Град"
 
 #: inc/location.class.php:83 inc/location.class.php:181
 #: inc/location.class.php:232 inc/notificationtargetticket.class.php:604
@@ -13230,25 +13256,25 @@ msgstr "Стая номер"
 
 #: inc/location.class.php:94
 msgid "Location on map"
-msgstr ""
+msgstr "Местоположение на картата"
 
 #: inc/location.class.php:98 inc/location.class.php:208
 #: inc/location.class.php:250 inc/notificationtargetticket.class.php:607
 #: inc/notificationtargetticket.class.php:629
 msgid "Latitude"
-msgstr ""
+msgstr "Географска ширина"
 
 #: inc/location.class.php:103 inc/location.class.php:217
 #: inc/location.class.php:260 inc/notificationtargetticket.class.php:610
 #: inc/notificationtargetticket.class.php:630
 msgid "Longitude"
-msgstr ""
+msgstr "Географска дължина"
 
 #: inc/location.class.php:108 inc/location.class.php:270
 #: inc/notificationtargetticket.class.php:613
 #: inc/notificationtargetticket.class.php:631
 msgid "Altitude"
-msgstr ""
+msgstr "Надморска височина"
 
 #: inc/location.class.php:199 inc/notificationtargetticket.class.php:598
 #: inc/notificationtargetticket.class.php:626
@@ -13421,7 +13447,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:281
 msgid "Use Kerberos authentication"
-msgstr ""
+msgstr "Използвай Kerberos удостоверяване"
 
 #: inc/mailcollector.class.php:287 inc/mailcollector.class.php:509
 msgid "Accepted mail archive folder (optional)"
@@ -13530,7 +13556,7 @@ msgstr ""
 #: inc/mailcollector.class.php:1989
 #, php-format
 msgid "%s Mio"
-msgstr ""
+msgstr "%s MiB"
 
 #: inc/massiveaction.class.php:132
 msgid "No action available"
@@ -13561,12 +13587,12 @@ msgstr ""
 #: inc/massiveaction.class.php:524
 msgctxt "button"
 msgid "Delete permanently but keep devices"
-msgstr ""
+msgstr "Изтриване завинига, но запазване на устройствата"
 
 #: inc/massiveaction.class.php:525
 msgctxt "button"
 msgid "Delete permanently and remove devices"
-msgstr ""
+msgstr "Изтриване завиниги и изтриване на устройствата"
 
 #: inc/massiveaction.class.php:557
 msgctxt "button"
@@ -13590,22 +13616,26 @@ msgstr ""
 msgid ""
 "You can't delete that item by massive actions, because it has sub-items"
 msgstr ""
+"Не можете да изтриете този елемент чрез масово действие, защото има под-"
+"елементи"
 
 #: inc/massiveaction.class.php:1061 inc/massiveaction.class.php:1070
 msgid "but you can do it by the form of the item"
-msgstr ""
+msgstr "но можете да го направите от формата на елемента"
 
 #: inc/massiveaction.class.php:1069
 msgid "You can't delete that item, because it is used for one or more items"
 msgstr ""
+"Не можете да изтриете този елемент, защото се използва от още един или "
+"повече елементи"
 
 #: inc/migration.class.php:238
 msgid "default_value must be 0 or 1"
-msgstr ""
+msgstr "default_value трябва да бъде 0 или 1"
 
 #: inc/migration.class.php:273
 msgid "default_value must be numeric"
-msgstr ""
+msgstr "default_value трябва да бъде число"
 
 #: inc/migration.class.php:580
 #, php-format
@@ -13614,7 +13644,7 @@ msgstr ""
 
 #: inc/migration.class.php:582 inc/migration.class.php:584
 msgid "ok"
-msgstr ""
+msgstr "ok"
 
 #: inc/migration.class.php:582 inc/migration.class.php:584
 msgid "nok"
@@ -13673,7 +13703,7 @@ msgstr ""
 #: inc/migration.class.php:721 inc/software.class.php:1117
 #: install/update.php:86
 msgid "Task completed."
-msgstr ""
+msgstr "Задачата е изпълнена."
 
 #: inc/migration.class.php:743
 #, php-format
@@ -13762,11 +13792,11 @@ msgstr ""
 
 #: inc/monitor.class.php:327 inc/monitor.class.php:577
 msgid "HDMI"
-msgstr ""
+msgstr "HDMI"
 
 #: inc/monitor.class.php:330 inc/monitor.class.php:585
 msgid "DisplayPort"
-msgstr ""
+msgstr "DisplayPort"
 
 #: inc/netpoint.class.php:95
 #, php-format
@@ -13935,14 +13965,14 @@ msgstr "Едновидови влакна"
 #: inc/networkportfiberchannel.class.php:277
 #, php-format
 msgid "%d Gbit/s"
-msgstr ""
+msgstr "%d Gbit/s"
 
 #. TRANS: %f is the speed
 #: inc/networkportethernet.class.php:260
 #: inc/networkportfiberchannel.class.php:236
 #, php-format
 msgid "%.1f Gbit/s"
-msgstr ""
+msgstr "%.1f Gbit/s"
 
 #. TRANS: %d is the speed
 #: inc/networkportethernet.class.php:264 inc/networkportethernet.class.php:297
@@ -13952,7 +13982,7 @@ msgstr ""
 #: inc/networkportfiberchannel.class.php:274
 #, php-format
 msgid "%d Mbit/s"
-msgstr ""
+msgstr "%d Mbit/s"
 
 #: inc/networkportethernet.class.php:370
 msgid "Ethernet outlet"
@@ -13997,7 +14027,7 @@ msgstr ""
 
 #: inc/networkportinstantiation.class.php:299
 msgid "this port"
-msgstr ""
+msgstr "този порт"
 
 #: inc/networkportinstantiation.class.php:532
 msgid "No network card available"
@@ -14163,20 +14193,20 @@ msgstr ""
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Грешка при вмъкване на известията на браузъра в опашката"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "Известие в браузъра към %s е добавено в опашката"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Конфигурация на проследяване през браурзър"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Активиране на проследяване през браузър"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
@@ -14193,11 +14223,11 @@ msgstr ""
 
 #: inc/notificationajaxsetting.class.php:77
 msgid "Default notification sound"
-msgstr ""
+msgstr "Звук по подразбиране за известие"
 
 #: inc/notificationajaxsetting.class.php:87
 msgid "Time to check for new notifications (in seconds)"
-msgstr ""
+msgstr "Време за проверка за нови известия (в секунди)"
 
 #: inc/notificationajaxsetting.class.php:96
 msgid "URL of the icon"
@@ -14206,7 +14236,7 @@ msgstr ""
 #: inc/notificationajaxsetting.class.php:103
 #: inc/notificationmailingsetting.class.php:240
 msgid "Notifications are disabled."
-msgstr ""
+msgstr "Известията са деактивирани."
 
 #: inc/notificationajaxsetting.class.php:105
 #: inc/notificationmailingsetting.class.php:242
@@ -14215,7 +14245,7 @@ msgstr ""
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Изпращане на тестово известие в браузъра"
 
 #: inc/notification.class.php:165 inc/notification.class.php:376
 #: inc/notificationevent.class.php:202
@@ -14250,7 +14280,7 @@ msgstr[1] ""
 
 #: inc/notification.class.php:359 inc/notificationtarget.class.php:1399
 msgid "Notification method"
-msgstr ""
+msgstr "Метод на известяване"
 
 #: inc/notification.class.php:571 inc/notification.class.php:587
 msgid "Field itemtype is mandatory"
@@ -14259,7 +14289,7 @@ msgstr ""
 #: inc/notificationevent.class.php:169
 #, php-format
 msgid "Unable to send notification using %1$s"
-msgstr ""
+msgstr "Неуспешно изпращане на известие чрез %1$s"
 
 #: inc/notificationevent.class.php:203
 #: inc/notification_notificationtemplate.class.php:148
@@ -14330,7 +14360,7 @@ msgstr "Изпращане на проследяващи конфигураци�
 
 #: inc/notificationmailingsetting.class.php:48
 msgid "Enable followups via email"
-msgstr ""
+msgstr "Активиране на проследяване по имейл"
 
 #: inc/notificationmailingsetting.class.php:68
 msgid "Email notification"
@@ -14390,7 +14420,7 @@ msgstr ""
 
 #: inc/notificationmailingsetting.class.php:121
 msgid "Add documents into ticket notifications"
-msgstr ""
+msgstr "Добавяне на документи в известията за заявки"
 
 #: inc/notificationmailingsetting.class.php:138
 msgid "Way of sending emails"
@@ -14477,21 +14507,23 @@ msgstr ""
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
-msgstr ""
+msgstr "Конфигурация на известията"
 
 #: inc/notificationsettingconfig.class.php:97
 msgid "You must enable at least one notification mode."
-msgstr ""
+msgstr "Трябва да активирате поне един режим за известия."
 
 #: inc/notificationsettingconfig.class.php:100
 msgid "Enable followup"
-msgstr ""
+msgstr "Активиране на проследяване"
 
 #: inc/notificationsettingconfig.class.php:161
 msgid ""
 "Unable to configure notifications: please configure at least one followup "
 "type using the above configuration."
 msgstr ""
+"Невъзможно е да се конфигурират известията: моля, конфигурирайте поне един "
+"тип проследяване, като използвате горната конфигурация."
 
 #: inc/notificationtargetcartridgeitem.class.php:47
 msgid "Cartridges alarm"
@@ -14570,11 +14602,11 @@ msgstr "Администратор на организацията"
 
 #: inc/notificationtargetcommonitilobject.class.php:117
 msgid "New user in requesters"
-msgstr ""
+msgstr "Нов потребител в заявители"
 
 #: inc/notificationtargetcommonitilobject.class.php:118
 msgid "New group in requesters"
-msgstr ""
+msgstr "Нова група в заявители"
 
 #: inc/notificationtargetcommonitilobject.class.php:119
 msgid "New user in observers"
@@ -14626,11 +14658,11 @@ msgstr "Бивш техник, отговорен за заявките"
 
 #: inc/notificationtargetcommonitilobject.class.php:725
 msgid "Manager of the group in charge of the ticket"
-msgstr ""
+msgstr "Мениджър на отговорната група за заявката"
 
 #: inc/notificationtargetcommonitilobject.class.php:727
 msgid "Group in charge of the ticket except manager users"
-msgstr ""
+msgstr "Отговорна група за заявката с изключение на мениджърите"
 
 #: inc/notificationtargetcommonitilobject.class.php:728
 msgid "Requester group manager"
@@ -14651,24 +14683,24 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:742
 msgid "Watcher group manager"
-msgstr ""
+msgstr "Мениджър на Група наблюдатели"
 
 #: inc/notificationtargetcommonitilobject.class.php:744
 msgid "Watcher group except manager users"
-msgstr ""
+msgstr "Група наблюдатели, с изключение на мениджърите"
 
 #: inc/notificationtargetcommonitilobject.class.php:753
 #: inc/notificationtargetplanningrecall.class.php:56
 msgid "Technician in charge of the task"
-msgstr ""
+msgstr "Отговорен техник за задачата"
 
 #: inc/notificationtargetcommonitilobject.class.php:755
 msgid "Task author"
-msgstr ""
+msgstr "Автор на задача"
 
 #: inc/notificationtargetcommonitilobject.class.php:761
 msgid "Followup author"
-msgstr ""
+msgstr "Автор на проследяване"
 
 #: inc/notificationtargetcommonitilobject.class.php:1425
 msgid "Requester ID"
@@ -14677,7 +14709,7 @@ msgstr "Заявител ID"
 #: inc/notificationtargetcommonitilobject.class.php:1427
 #: inc/ruleticket.class.php:388
 msgid "Requester location"
-msgstr ""
+msgstr "Местоположение на заявител"
 
 #: inc/notificationtargetcommonitilobject.class.php:1435
 msgid "Supplier ID"
@@ -14685,11 +14717,11 @@ msgstr "Снабдител ID"
 
 #: inc/notificationtargetcommonitilobject.class.php:1450
 msgid "Assigned to technicians"
-msgstr ""
+msgstr "Възлага се на техници"
 
 #: inc/notificationtargetcommonitilobject.class.php:1455
 msgid "Assigned to groups"
-msgstr ""
+msgstr "Възлага се на групи"
 
 #: inc/notificationtargetcommonitilobject.class.php:1466
 msgid "Number of unresolved items"
@@ -14710,11 +14742,11 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:1501
 msgid "User assigned to task"
-msgstr ""
+msgstr "Потребител, назначен за задача"
 
 #: inc/notificationtargetcommonitilobject.class.php:1502
 msgid "Group assigned to task"
-msgstr ""
+msgstr "Група, назначена за задача"
 
 #: inc/notificationtargetcommonitilobject.class.php:1553
 msgid "No defined category"
@@ -14722,7 +14754,7 @@ msgstr "Няма дефинирана категория"
 
 #: inc/notificationtargetcommonitilobject.class.php:1566
 msgid "Web link to approval the solution"
-msgstr ""
+msgstr "Уеб линк за одобряване на решението"
 
 #: inc/notificationtargetcommonitilobject.class.php:1584
 #: inc/notificationtargetproject.class.php:651
@@ -14841,11 +14873,11 @@ msgstr ""
 
 #: inc/notificationtargetobjectlock.class.php:65
 msgid "Requester Lastname"
-msgstr ""
+msgstr "Заявител фамилия"
 
 #: inc/notificationtargetobjectlock.class.php:66
 msgid "Requester Firstname"
-msgstr ""
+msgstr "Заявител име"
 
 #: inc/notificationtargetobjectlock.class.php:67
 msgid "Item URL"
@@ -14946,7 +14978,7 @@ msgstr ""
 #: inc/notificationtargetproject.class.php:561 inc/project.class.php:528
 #: inc/project.class.php:1208
 msgid "Code"
-msgstr ""
+msgstr "Код"
 
 #: inc/notificationtargetproject.class.php:566
 #: inc/notificationtargetproject.class.php:590
@@ -15046,15 +15078,15 @@ msgstr[1] ""
 
 #: inc/notificationtargetprojecttask.class.php:52
 msgid "New project task"
-msgstr ""
+msgstr "Нова задача на проект"
 
 #: inc/notificationtargetprojecttask.class.php:53
 msgid "Update of a project task"
-msgstr ""
+msgstr "Актуализиране на задача на проект"
 
 #: inc/notificationtargetprojecttask.class.php:54
 msgid "Deletion of a project task"
-msgstr ""
+msgstr "Изтриване на задача на проект"
 
 #: inc/notificationtargetprojecttask.class.php:62
 msgid "Project team user"
@@ -15110,11 +15142,11 @@ msgstr ""
 
 #: inc/notificationtargetsavedsearch_alert.class.php:106
 msgid "Number of results"
-msgstr ""
+msgstr "Брой резултати"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:108
 msgid "Load saved search"
-msgstr ""
+msgstr "Зареждане на запазено търсене"
 
 #: inc/notificationtargetticket.class.php:80
 msgid "To answer by email, write above this line"
@@ -15134,7 +15166,7 @@ msgstr "Билет разрешен"
 
 #: inc/notificationtargetticket.class.php:146
 msgid "Solution rejected"
-msgstr ""
+msgstr "Решението е отказано"
 
 #: inc/notificationtargetticket.class.php:149
 msgid "Closing of the ticket"
@@ -15155,11 +15187,11 @@ msgstr "Автоматично напомняне на SLAs"
 
 #: inc/notificationtargetticket.class.php:153
 msgid "Automatic reminders of OLAs"
-msgstr ""
+msgstr "Автоматично напомняне на OLAs"
 
 #: inc/notificationtargetticket.class.php:155
 msgid "Satisfaction survey answer"
-msgstr ""
+msgstr "Отговор на проучване на удовлетвореността"
 
 #. TRANS: %s is the number of days before auto closing
 #: inc/notificationtargetticket.class.php:192
@@ -15188,13 +15220,13 @@ msgstr "SLA"
 #: inc/ticket.class.php:3112 inc/ticket.class.php:3120
 #: inc/ticket.class.php:3134 inc/ticket.class.php:3147
 msgid "OLA"
-msgstr ""
+msgstr "OLA"
 
 #: inc/notificationtargetticket.class.php:584 inc/ticket.class.php:2930
 #: inc/ticket.class.php:3120 inc/ticket.class.php:4799
 #: inc/ticket.class.php:4801 inc/ticket.class.php:6937
 msgid "Internal time to own"
-msgstr ""
+msgstr "Вътрешно време на притежание"
 
 #: inc/notificationtargetticket.class.php:587 inc/ticket.class.php:2894
 #: inc/ticket.class.php:3134 inc/ticket.class.php:4811
@@ -15204,7 +15236,7 @@ msgstr "Вътрешно време за решаване"
 
 #: inc/notificationtargetticket.class.php:595
 msgid "Location name"
-msgstr ""
+msgstr "Име на местоположението"
 
 #: inc/notificationtargetticket.class.php:620
 msgctxt "quantity"
@@ -15213,11 +15245,11 @@ msgstr "Брой на свързани билети"
 
 #: inc/notificationtargetticket.class.php:633
 msgid "Solution rejection comment"
-msgstr ""
+msgstr "Коментар за отказа на решение"
 
 #: inc/notificationtargetticket.class.php:634
 msgid "Solution rejection date"
-msgstr ""
+msgstr "Дата на отказа на решение"
 
 #: inc/notificationtargetticket.class.php:680
 msgid "Creation date of the satisfaction survey"
@@ -15234,11 +15266,11 @@ msgstr "Коментари към проучването на удовлетво
 
 #: inc/notificationtargetticket.class.php:692
 msgid "Survey type"
-msgstr ""
+msgstr "Вид на проучването"
 
 #: inc/notificationtargetticket.class.php:702
 msgid "Invitation to fill out the survey"
-msgstr ""
+msgstr "Покана за попълване на проучването"
 
 #: inc/notificationtargetticket.class.php:714
 #: inc/notificationtargetticket.class.php:728
@@ -15255,15 +15287,15 @@ msgstr[1] "Свързани заявки"
 
 #: inc/notificationtargetticket.class.php:761
 msgid "Link"
-msgstr ""
+msgstr "Връзка"
 
 #: inc/notificationtargetuser.class.php:110
 msgid "Token"
-msgstr ""
+msgstr "Токън"
 
 #: inc/notificationtargetuser.class.php:122
 msgid "You have been made a request to reset your account password."
-msgstr ""
+msgstr "Направили сте заявка за нулиране на паролата на Вашия акаунт."
 
 #: inc/notificationtargetuser.class.php:124
 msgid "Just follow this link (you have one day):"
@@ -15271,12 +15303,12 @@ msgstr ""
 
 #: inc/notificationtemplate.class.php:131
 msgid "CSS"
-msgstr ""
+msgstr "CSS"
 
 #: inc/notificationtemplate.class.php:256
 #: inc/notificationtemplate.class.php:320
 msgid "Automatically generated by GLPI"
-msgstr ""
+msgstr "Генериран автоматично от GLPI"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -15297,7 +15329,7 @@ msgstr "Имейл текст тяло"
 
 #: inc/notificationtemplatetranslation.class.php:148
 msgid "(leave the field empty for a generation from HTML)"
-msgstr ""
+msgstr "(оставете полето празно за генериране на HTML)"
 
 #: inc/notificationtemplatetranslation.class.php:155
 #: inc/notificationtemplatetranslation.class.php:304
@@ -15308,16 +15340,16 @@ msgstr "Имейл HTML тяло"
 
 #: inc/notificationtemplatetranslation.class.php:226
 msgid "Default translation"
-msgstr ""
+msgstr "Превод по подразбиране"
 
 #: inc/notificationtemplatetranslation.class.php:354
 #: inc/notificationtemplatetranslation.class.php:394
 msgid "Label"
-msgstr ""
+msgstr "Етикет"
 
 #: inc/notificationtemplatetranslation.class.php:357
 msgid "Possible values"
-msgstr ""
+msgstr "Възможни стойности"
 
 #: inc/notificationtemplatetranslation.class.php:380
 msgid "List of values"
@@ -15356,7 +15388,7 @@ msgstr ""
 #: inc/notimportedemail.class.php:166 inc/rulemailcollector.class.php:74
 #: inc/ruleticket.class.php:485
 msgid "Mails receiver"
-msgstr ""
+msgstr "Имейл получател"
 
 #: inc/notimportedemail.class.php:174
 msgid "Message-ID email header"
@@ -15364,7 +15396,7 @@ msgstr ""
 
 #: inc/notimportedemail.class.php:192 inc/rulecollection.class.php:1255
 msgid "Reason of rejection"
-msgstr ""
+msgstr "Причина за отказ"
 
 #: inc/notimportedemail.class.php:239
 msgid "Unable to affect the email to an entity"
@@ -15376,7 +15408,7 @@ msgstr ""
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "Недостатъчни права"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"
@@ -15386,15 +15418,15 @@ msgstr[1] ""
 
 #: inc/objectlock.class.php:152 inc/objectlock.class.php:240
 msgid "Reload page?"
-msgstr ""
+msgstr "Презареди на страницата?"
 
 #: inc/objectlock.class.php:152 inc/objectlock.class.php:240
 msgid "Item unlocked!"
-msgstr ""
+msgstr "Елементът е отключен!"
 
 #: inc/objectlock.class.php:159
 msgid "Item NOT unlocked!"
-msgstr ""
+msgstr "Елементът НЕ Е заключен!"
 
 #: inc/objectlock.class.php:163
 msgid "Unlock this item?"
@@ -15402,7 +15434,7 @@ msgstr "Отключи този елемент?"
 
 #: inc/objectlock.class.php:174
 msgid "Locked by you!"
-msgstr ""
+msgstr "Заключен от Вас!"
 
 #: inc/objectlock.class.php:176
 #, php-format
@@ -15439,11 +15471,11 @@ msgstr ""
 
 #: inc/objectlock.class.php:557
 msgid "Locked by"
-msgstr ""
+msgstr "Заключен от"
 
 #: inc/objectlock.class.php:574
 msgid "Locked date"
-msgstr ""
+msgstr "Дата на заключване"
 
 #: inc/objectlock.class.php:600
 msgid "Unlock"
@@ -15464,7 +15496,7 @@ msgstr ""
 #: inc/ola.class.php:62
 msgid ""
 "The assignment of an OLA to a ticket causes the recalculation of the date."
-msgstr ""
+msgstr "Присвояването на OLA на заявка води до преизчисляване на датата."
 
 #: inc/ola.class.php:63
 msgid "Escalations defined in the OLA will be triggered under this new date."
@@ -15476,11 +15508,11 @@ msgstr "Добавяне на ниво на ескалация"
 
 #: inc/olalevel.class.php:204
 msgid "Automatic reminders of OLA"
-msgstr ""
+msgstr "Автоматични напомняния на OLA"
 
 #: inc/olalevel_ticket.class.php:45
 msgid "OLA level for Ticket"
-msgstr ""
+msgstr "OLA ниво за Заявка"
 
 #: inc/olalevel_ticket.class.php:146
 msgid "Automatic actions of OLA"
@@ -15617,7 +15649,7 @@ msgstr ""
 
 #: inc/planning.class.php:503 inc/profile.class.php:523
 msgid "Caption"
-msgstr ""
+msgstr "Заглавие"
 
 #: inc/planning.class.php:504
 msgid "Available"
@@ -15649,7 +15681,7 @@ msgstr ""
 
 #: inc/planning.class.php:1332
 msgid "All users of a group"
-msgstr ""
+msgstr "Всички потребители на група"
 
 #: inc/planning.class.php:1485
 msgid "View this item in his context"
@@ -15675,7 +15707,7 @@ msgstr "Вашето планиране"
 #: inc/planning.class.php:2193
 #, php-format
 msgid "Ticket #%1$s %2$s"
-msgstr ""
+msgstr "Заявка #%1$s %2$s"
 
 #: inc/planning.class.php:2240
 msgid "See personnal planning"
@@ -15736,7 +15768,7 @@ msgstr ""
 #: inc/plugin.class.php:532 inc/plugin.class.php:2063
 msgctxt "button"
 msgid "Enable"
-msgstr ""
+msgstr "Активиране"
 
 #: inc/plugin.class.php:533
 msgid "Do you want to %activate_link it?"
@@ -15775,52 +15807,52 @@ msgstr ""
 #: inc/plugin.class.php:1367
 #, php-format
 msgid "This plugin requires %1$s < %2$s."
-msgstr ""
+msgstr "Този плъгин изисква %1$s < %2$s."
 
 #: inc/plugin.class.php:1373
 #, php-format
 msgid "This plugin requires %1$s >= %2$s."
-msgstr ""
+msgstr "Този плъгин изисква %1$s >= %2$s."
 
 #: inc/plugin.class.php:1380
 #, php-format
 msgid "This plugin requires %1$s >= %2$s and < %3$s."
-msgstr ""
+msgstr "Този плъгин изисква %1$s >= %2$s and < %3$s."
 
 #: inc/plugin.class.php:1406
 #, php-format
 msgid "This plugin requires PHP extension %1$s"
-msgstr ""
+msgstr "Този плъгин изисква PHP разширение %1$s"
 
 #: inc/plugin.class.php:1412
 #, php-format
 msgid "This plugin requires %1$s plugin"
-msgstr ""
+msgstr "Този плъгин изисква %1$s плъгин"
 
 #: inc/plugin.class.php:1418
 #, php-format
 msgid "This plugin requires PHP compiled along with \"%1$s\""
-msgstr ""
+msgstr "Този плъгин изисква PHP компилирано с \"%1$s\""
 
 #: inc/plugin.class.php:1424
 #, php-format
 msgid "This plugin requires PHP parameter %1$s"
-msgstr ""
+msgstr "Този плъгин изисква PHP параметър %1$s"
 
 #: inc/plugin.class.php:1430
 #, php-format
 msgid "This plugin requires GLPI parameter %1$s"
-msgstr ""
+msgstr "Този плъгин изисква GLPI параметър %1$s"
 
 #: inc/plugin.class.php:1707 inc/plugin.class.php:2141
 msgctxt "plugin"
 msgid "Enabled"
-msgstr ""
+msgstr "Активиран"
 
 #: inc/plugin.class.php:1711 inc/plugin.class.php:2142
 msgctxt "plugin"
 msgid "Not installed"
-msgstr ""
+msgstr "Не е инсталиран"
 
 #: inc/plugin.class.php:1715 inc/plugin.class.php:2143
 msgid "To update"
@@ -15829,12 +15861,12 @@ msgstr ""
 #: inc/plugin.class.php:1719 inc/plugin.class.php:2144
 msgctxt "plugin"
 msgid "Installed / not configured"
-msgstr ""
+msgstr "Инсталиран / неконфигуриран"
 
 #: inc/plugin.class.php:1723 inc/plugin.class.php:2145
 msgctxt "plugin"
 msgid "Installed / not activated"
-msgstr ""
+msgstr "Инсталиран / неактивиран"
 
 #: inc/plugin.class.php:1727 inc/plugin.class.php:2146
 msgid "Error / to clean"
@@ -15842,11 +15874,11 @@ msgstr ""
 
 #: inc/plugin.class.php:1830
 msgid "Directory"
-msgstr ""
+msgstr "Директория"
 
 #: inc/plugin.class.php:1867
 msgid "Authors"
-msgstr ""
+msgstr "Автори"
 
 #: inc/plugin.class.php:1882
 msgid "Actions"
@@ -15867,7 +15899,7 @@ msgstr "Премахване"
 #: inc/plugin.class.php:2007 inc/plugin.class.php:2023
 #: inc/plugin.class.php:2035 inc/plugin.class.php:2079
 msgid "Non-existent function"
-msgstr ""
+msgstr "Несъщестуваща функция"
 
 #: inc/plugin.class.php:2050
 msgid "Not CSRF compliant"
@@ -15876,7 +15908,7 @@ msgstr ""
 #: inc/plugin.class.php:2089
 msgctxt "button"
 msgid "Clean"
-msgstr ""
+msgstr "Изчистване"
 
 #: inc/printer.class.php:413 inc/printer.class.php:694
 msgid "Initial page counter"
@@ -15884,7 +15916,7 @@ msgstr "Начално значение на брояча на страници"
 
 #: inc/printer.class.php:419 inc/printer.class.php:704
 msgid "Current counter of pages"
-msgstr ""
+msgstr "Текущ брояч на страници"
 
 #: inc/printer.class.php:428 inc/printer.class.php:645
 msgid "Serial"
@@ -15905,7 +15937,7 @@ msgstr "Етернет"
 
 #: inc/printer.class.php:444 inc/printer.class.php:677
 msgid "Wifi"
-msgstr ""
+msgstr "Wifi"
 
 #: inc/problem.class.php:182
 msgid "Processing problem"
@@ -15944,7 +15976,7 @@ msgstr "Твоите Проблеми - В процес"
 
 #: inc/problem.class.php:919
 msgid "Problem followup"
-msgstr ""
+msgstr "Проследяване на проблем"
 
 #: inc/problem.class.php:1017
 msgid "No problem in progress."
@@ -15956,7 +15988,7 @@ msgstr "Последни проблеми"
 
 #: inc/problem.class.php:1439
 msgid "New problem for this item..."
-msgstr ""
+msgstr "Нов проблем за този елемент..."
 
 #. TRANS : %d is the number of problems
 #: inc/problem.class.php:1479
@@ -16000,7 +16032,7 @@ msgstr ""
 
 #: inc/profile.class.php:329 inc/profile.class.php:351
 msgid "Deletion refused"
-msgstr ""
+msgstr "Изтриването е отказано"
 
 #: inc/profile.class.php:525
 msgid "Global right"
@@ -16036,7 +16068,7 @@ msgstr "Асоциация"
 #: inc/profile.class.php:650 inc/profile.class.php:1039
 #: inc/profile.class.php:2332
 msgid "See hardware of my groups"
-msgstr ""
+msgstr "Виж хардуера на моите групи"
 
 #: inc/profile.class.php:656 inc/profile.class.php:1045
 #: inc/profile.class.php:2314
@@ -16071,7 +16103,7 @@ msgstr[1] ""
 
 #: inc/profile.class.php:802
 msgid "Simcard PIN/PUK"
-msgstr ""
+msgstr "Сим карта PIN/PUK"
 
 #: inc/profile.class.php:862 inc/profile.class.php:1810
 msgid "Financial and administratives information"
@@ -16096,7 +16128,7 @@ msgstr "Администриране на резервирането"
 
 #: inc/profile.class.php:1010 inc/ticketrecurrent.class.php:60
 msgid "Recurrent tickets"
-msgstr ""
+msgstr "Повтарящи се заявки"
 
 #: inc/profile.class.php:1077 inc/reminder.class.php:735
 #: inc/savedsearch.class.php:396 inc/state.class.php:74
@@ -16110,7 +16142,7 @@ msgstr "Видимост"
 
 #: inc/profile.class.php:1146 inc/profile.class.php:1245
 msgid "From \\ To"
-msgstr ""
+msgstr "От / До"
 
 #: inc/profile.class.php:1169 inc/profile.class.php:1270
 #: inc/profile.class.php:2344
@@ -16127,21 +16159,21 @@ msgstr "Жизнен цикъл на Промените"
 
 #: inc/profile.class.php:1322 inc/queuednotification.class.php:48
 msgid "Notification queue"
-msgstr ""
+msgstr "Опашка на известията"
 
 #: inc/profile.class.php:1337 inc/profile.class.php:2055
 msgid "Rules for assigning a computer to an entity"
-msgstr ""
+msgstr "Правила за присвояване на компютър към организация"
 
 #: inc/profile.class.php:1340 inc/profile.class.php:2041
 #: inc/rulemailcollector.class.php:58
 #: inc/rulemailcollectorcollection.class.php:47
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr ""
+msgstr "Правила за възлагане на заявка, създадена чрез получен имейл"
 
 #: inc/profile.class.php:1343 inc/profile.class.php:2083
 msgid "Rules for assigning a category to a software"
-msgstr ""
+msgstr "Правила за присвояване на категория към софтуер"
 
 #: inc/profile.class.php:1346
 msgid "Business rules for tickets (entity)"
@@ -16159,7 +16191,7 @@ msgstr ""
 
 #: inc/profile.class.php:1363 inc/profile.class.php:2097
 msgid "Software dictionary"
-msgstr ""
+msgstr "Софтуерен речник"
 
 #: inc/profile.class.php:1366
 msgid "Printers dictionnary"
@@ -16177,7 +16209,7 @@ msgstr[1] ""
 
 #: inc/profile.class.php:1423
 msgid "Entity dropdowns"
-msgstr ""
+msgstr "Падащи менюта за организация"
 
 #: inc/profile.class.php:2026 inc/ruleticket.class.php:51
 #: inc/ruleticketcollection.class.php:67
@@ -16202,7 +16234,7 @@ msgstr "Мои устройства и всички елемента"
 
 #: inc/profile_user.class.php:135 inc/profile_user.class.php:279
 msgid "Add an authorization to a user"
-msgstr ""
+msgstr "Добавяне на разрешение към потребител"
 
 #: inc/profile_user.class.php:142 inc/profile_user.class.php:285
 #: inc/profile_user.class.php:1077 inc/ruleright.class.php:78
@@ -16214,7 +16246,7 @@ msgstr "Рекурсивно"
 #: inc/profile_user.class.php:179 inc/profile_user.class.php:351
 #: inc/profile_user.class.php:496
 msgid "D=Dynamic, R=Recursive"
-msgstr ""
+msgstr "D=Dynamic, R=Recursive"
 
 #. TRANS: D for Dynamic
 #: inc/profile_user.class.php:219 inc/profile_user.class.php:403
@@ -16222,7 +16254,7 @@ msgstr ""
 #: inc/search.class.php:5510 inc/search.class.php:5549
 #: inc/useremail.class.php:183
 msgid "D"
-msgstr ""
+msgstr "D"
 
 #: inc/profile_user.class.php:599
 msgid "No user found"
@@ -16232,7 +16264,7 @@ msgstr "Не са намерени потребители"
 #: inc/profile_user.class.php:972
 #, php-format
 msgid "%1$s, %2$s"
-msgstr ""
+msgstr "%1$s, %2$s"
 
 #: inc/profile_user.class.php:1022 inc/user.class.php:2222
 msgid "Authorization"
@@ -16250,7 +16282,7 @@ msgstr ""
 
 #: inc/project.class.php:204 inc/project.class.php:223
 msgid "My tasks"
-msgstr ""
+msgstr "Моите задачи"
 
 #: inc/project.class.php:606 inc/project.class.php:1248
 msgid "Show on global GANTT"
@@ -16270,11 +16302,11 @@ msgstr ""
 
 #: inc/project.class.php:1298
 msgid "Sum of planned durations of tasks"
-msgstr ""
+msgstr "Сума от планирана продължителност на задачите"
 
 #: inc/project.class.php:1305
 msgid "Sum of total effective durations of tasks"
-msgstr ""
+msgstr "Сума от обща ефективна продължителност на задачите"
 
 #: inc/project.class.php:1394 inc/projecttask.class.php:1213
 msgid "Add a team member"
@@ -16376,7 +16408,7 @@ msgstr "Събота"
 
 #: inc/projectstate.class.php:58 inc/projectstate.class.php:75
 msgid "Color"
-msgstr ""
+msgstr "Цвят"
 
 #: inc/projectstate.class.php:62 inc/projectstate.class.php:83
 msgid "Finished state"
@@ -16404,11 +16436,11 @@ msgstr ""
 #: inc/projecttask.class.php:1021
 msgctxt "button"
 msgid "Add a task"
-msgstr ""
+msgstr "Добави задача"
 
 #: inc/projecttask.class.php:1033
 msgid "Create a sub task from this task of project"
-msgstr ""
+msgstr "Създай подзадача от тази задача на проекта"
 
 #: inc/projecttask.class.php:1620
 #, php-format
@@ -16434,15 +16466,15 @@ msgstr[1] ""
 
 #: inc/projecttask_ticket.class.php:191
 msgid "Create a ticket from this task"
-msgstr ""
+msgstr "Създай заявка от тази задача"
 
 #: inc/projecttask_ticket.class.php:275
 msgid "Add a project task"
-msgstr ""
+msgstr "Добави задача на проекта"
 
 #: inc/purgelogs.class.php:68
 msgid "Purge history"
-msgstr ""
+msgstr "Изчистване на историята"
 
 #: inc/queuednotification.class.php:80
 msgctxt "button"
@@ -16499,7 +16531,7 @@ msgstr "Максимален брой имейли за изпращане на�
 
 #: inc/queuednotification.class.php:460
 msgid "Clean notification queue"
-msgstr ""
+msgstr "Изчистване на опашката на известията"
 
 #: inc/queuednotification.class.php:461
 msgid "Days to keep sent emails"
@@ -16658,6 +16690,7 @@ msgid ""
 "Other financial and administrative information (licenses, cartridges, "
 "consumables)"
 msgstr ""
+"Друга финансова и административна информация (лицензи, касети, консумативи)"
 
 #: inc/report.class.php:101 install/update_051_06.php:144
 msgid "Loan"
@@ -16696,7 +16729,7 @@ msgstr "По подразбиране за заявки"
 
 #: inc/requesttype.class.php:55 inc/requesttype.class.php:89
 msgid "Default for followups"
-msgstr ""
+msgstr "По подразбиране за проследяване"
 
 #: inc/requesttype.class.php:58 inc/requesttype.class.php:98
 msgid "Default for mail recipients"
@@ -16704,15 +16737,15 @@ msgstr ""
 
 #: inc/requesttype.class.php:61 inc/requesttype.class.php:107
 msgid "Default for followup mail recipients"
-msgstr ""
+msgstr "Имейл получатели по подразбиране за проследяване"
 
 #: inc/requesttype.class.php:64 inc/requesttype.class.php:124
 msgid "Request source visible for tickets"
-msgstr ""
+msgstr "Искане за източник, видим за заявки"
 
 #: inc/requesttype.class.php:67 inc/requesttype.class.php:132
 msgid "Request source visible for followups"
-msgstr ""
+msgstr "Искане за видимост на източника за проследяване"
 
 #: inc/requesttype.class.php:183 inc/requesttype.class.php:191
 #: inc/requesttype.class.php:199 inc/requesttype.class.php:207
@@ -16737,7 +16770,7 @@ msgstr ""
 
 #: inc/reservation.class.php:449
 msgid "All reservable devices"
-msgstr ""
+msgstr "Всички резервируеми устройства"
 
 #: inc/reservation.class.php:566
 msgid "Reserve"
@@ -16814,7 +16847,7 @@ msgstr ""
 
 #: inc/reservationitem.class.php:320
 msgid "Prohibit reservations"
-msgstr ""
+msgstr "Забранени резервации"
 
 #: inc/reservationitem.class.php:322
 msgid "Are you sure you want to return this non-reservable item?"
@@ -16826,7 +16859,7 @@ msgstr "Това ще премахне всички резервации в пр
 
 #: inc/reservationitem.class.php:328
 msgid "Authorize reservations"
-msgstr ""
+msgstr "Оторизиране на резервации"
 
 #: inc/reservationitem.class.php:361 inc/search.class.php:5847
 msgid "Modify the comment"
@@ -16842,15 +16875,15 @@ msgstr "Намери свободен елемент за конкретен п�
 
 #: inc/reservationitem.class.php:668
 msgid "Device reservations expiring today"
-msgstr ""
+msgstr "Резервации на устройства, изтичащи днес"
 
 #: inc/reservationitem.class.php:709
 msgid "Send reservation alert failed"
-msgstr ""
+msgstr "Изпращане на сигнал за неуспешна резервация"
 
 #: inc/reservationitem.class.php:748
 msgid "Make a reservation"
-msgstr ""
+msgstr "Направи резервация"
 
 #: inc/rssfeed.class.php:82 inc/rssfeed.class.php:939
 msgid "Personal RSS feed"
@@ -16864,25 +16897,25 @@ msgstr "Брой показани елементи"
 
 #: inc/rssfeed.class.php:478 inc/rssfeed.class.php:709
 msgid "Refresh rate"
-msgstr ""
+msgstr "Честота на опресняване"
 
 #: inc/rssfeed.class.php:735 inc/rssfeed.class.php:790
 msgid "Error retrieving RSS feed"
-msgstr ""
+msgstr "Грешка при извличането на RSS емисия"
 
 #: inc/rssfeed.class.php:740
 msgid "RSS feeds found"
-msgstr ""
+msgstr "Намерени са RSS емисии"
 
 #: inc/rssfeed.class.php:849
 msgctxt "button"
 msgid "Use"
-msgstr ""
+msgstr "Използвай"
 
 #. TRANS: short for : Assign a ticket
 #: inc/ruleaction.class.php:394 inc/ticket.class.php:6722
 msgid "Assign"
-msgstr ""
+msgstr "Присъедини"
 
 #: inc/ruleaction.class.php:396
 msgid "Assign the value from regular expression"
@@ -17060,7 +17093,7 @@ msgstr ""
 #: inc/rulecollection.class.php:913
 #, php-format
 msgid "Copy of %s"
-msgstr ""
+msgstr "Копие на %s"
 
 #: inc/rulecollection.class.php:1073
 msgid "Import rules from a XML file"
@@ -17076,7 +17109,7 @@ msgstr "Организацията не е намерена"
 
 #: inc/rulecollection.class.php:1298
 msgid "Criteria refused"
-msgstr ""
+msgstr "Критериите са отказани"
 
 #: inc/rulecollection.class.php:1330
 msgid "Actions refused"
@@ -17258,7 +17291,7 @@ msgstr "Речник от архитектурата на операционна
 
 #: inc/ruledictionnaryoperatingsystemcollection.class.php:41
 msgid "Dictionnary of operating systems"
-msgstr ""
+msgstr "Речника на операционните системи"
 
 #: inc/ruledictionnaryoperatingsystemservicepackcollection.class.php:41
 msgid "Dictionnary of service packs"
@@ -17266,7 +17299,7 @@ msgstr ""
 
 #: inc/ruledictionnaryoperatingsystemversioncollection.class.php:41
 msgid "Dictionnary of operating system versions"
-msgstr ""
+msgstr "Речник на версиите на операционните системи"
 
 #: inc/ruledictionnaryperipheralmodelcollection.class.php:41
 msgid "Dictionnary of device models"
@@ -17333,7 +17366,7 @@ msgstr ""
 #: inc/ruledictionnarysoftware.class.php:120 inc/software.class.php:266
 #: inc/software.class.php:565
 msgid "Associable to a ticket"
-msgstr ""
+msgstr "Свързан със заявка"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:82
 msgid "Warning before running rename based on the dictionary rules"
@@ -17347,11 +17380,11 @@ msgstr ""
 
 #: inc/ruledictionnarysoftwarecollection.class.php:88
 msgid "Manufacturer choice"
-msgstr ""
+msgstr "Избор на производител"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:90
 msgid "Replay dictionary rules for manufacturers (----- = All)"
-msgstr ""
+msgstr "Изпълняване на речниковите правила за производители (----- = Всички)"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:284
 #: inc/ruledictionnarysoftwarecollection.class.php:387
@@ -17365,7 +17398,7 @@ msgstr ""
 
 #: inc/ruleimportcomputer.class.php:75
 msgid "Target entity for the computer"
-msgstr ""
+msgstr "Целева организация за компютъра"
 
 #: inc/ruleimportcomputer.class.php:81
 msgid "Find computers in GLPI having the status"
@@ -17402,7 +17435,7 @@ msgstr ""
 #: inc/ruleimportentity.class.php:46
 #: inc/ruleimportentitycollection.class.php:61
 msgid "Rules for assigning an item to an entity"
-msgstr ""
+msgstr "Правила за присвояване на елемент към организация"
 
 #: inc/rulemailcollector.class.php:88
 msgid "Email body"
@@ -17426,7 +17459,7 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:117
 msgid "X-UCE-Status email header"
-msgstr ""
+msgstr "X-UCE-Status email header"
 
 #: inc/rulemailcollector.class.php:121
 msgid "Received email header"
@@ -17458,7 +17491,7 @@ msgstr "Организация от TAG"
 
 #: inc/rulemailcollector.class.php:191
 msgid "Entity based on user's profile"
-msgstr ""
+msgstr "Организация, базирана на потребителския профил"
 
 #: inc/rulemailcollector.class.php:195 inc/rulemailcollector.class.php:200
 msgid "Reject email"
@@ -17478,7 +17511,7 @@ msgstr ""
 
 #: inc/ruleright.class.php:225
 msgid "Global criteria"
-msgstr ""
+msgstr "Глобални критерии"
 
 #: inc/ruleright.class.php:259
 msgid "Imported group from an LDAP directory"
@@ -17486,15 +17519,15 @@ msgstr ""
 
 #: inc/ruleright.class.php:283
 msgid "Entity based on LDAP information"
-msgstr ""
+msgstr "Организация, базирана на LDAP информация"
 
 #: inc/ruleright.class.php:293
 msgid "Entity from mail domain"
-msgstr ""
+msgstr "Организация от имейл домейн"
 
 #: inc/ruleright.class.php:298
 msgid "Entity from complete name"
-msgstr ""
+msgstr "Организация от пълно име"
 
 #: inc/ruleright.class.php:321 inc/user.class.php:2257 inc/user.class.php:2623
 #: inc/user.class.php:3216
@@ -17503,15 +17536,15 @@ msgstr "Оррганизация по подразбиране"
 
 #: inc/ruleright.class.php:327 inc/user.class.php:2266
 msgid "Default group"
-msgstr ""
+msgstr "Група по подразбиране"
 
 #: inc/ruleright.class.php:349
 msgid "LDAP criteria"
-msgstr ""
+msgstr "LDAP критерии"
 
 #: inc/rulerightcollection.class.php:86
 msgid "Entities assignment"
-msgstr ""
+msgstr "Присъединяване към организации"
 
 #: inc/rulerightcollection.class.php:99
 msgid "Rights assignment"
@@ -17519,7 +17552,7 @@ msgstr ""
 
 #: inc/rulerightcollection.class.php:107
 msgid "Rights and entities assignment"
-msgstr ""
+msgstr "Права и присъединяване към организации"
 
 #: inc/rulesoftwarecategory.class.php:53
 #: inc/rulesoftwarecategorycollection.class.php:47
@@ -17538,7 +17571,7 @@ msgstr ""
 
 #: inc/ruleticket.class.php:382
 msgid "Requester in group"
-msgstr ""
+msgstr "Заявител в група"
 
 #: inc/ruleticket.class.php:394
 msgid "Item location"
@@ -17562,11 +17595,11 @@ msgstr ""
 
 #: inc/ruleticket.class.php:680
 msgid "Approval request to requester group manager"
-msgstr ""
+msgstr "Искане за одобрение до мениджър на група заявители"
 
 #: inc/ruleticket.class.php:687
 msgid "Approval request to technician group manager"
-msgstr ""
+msgstr "Искане за одобрение до мениджър на група техници"
 
 #: inc/ruleticket.class.php:702
 msgid "Take into account delay"
@@ -17597,7 +17630,7 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:207
 msgid "Notification does not exists!"
-msgstr ""
+msgstr "Известието не съществува!"
 
 #: inc/savedsearch_alert.class.php:210
 msgid "create it now"
@@ -17611,7 +17644,7 @@ msgstr[1] ""
 
 #: inc/savedsearch_alert.class.php:236
 msgid "Add an alert"
-msgstr ""
+msgstr "Добави сигнал"
 
 #: inc/savedsearch_alert.class.php:301
 msgid "Saved searches alerts"
@@ -17656,7 +17689,7 @@ msgstr ""
 
 #: inc/savedsearch.class.php:81
 msgid "Change visibility"
-msgstr ""
+msgstr "Промени видимостта"
 
 #: inc/savedsearch.class.php:91 inc/savedsearch.class.php:386
 #: inc/savedsearch.class.php:1203
@@ -17677,7 +17710,7 @@ msgstr ""
 
 #: inc/savedsearch.class.php:254
 msgid "Counter"
-msgstr ""
+msgstr "Брояч"
 
 #: inc/savedsearch.class.php:262
 msgid "Last execution date"
@@ -17765,7 +17798,7 @@ msgstr ""
 
 #: inc/savedsearch.class.php:1428
 msgid "Notification has been created!"
-msgstr ""
+msgstr "Известието е създадено!"
 
 #: inc/search.class.php:157
 msgid "assets"
@@ -17841,15 +17874,15 @@ msgstr ""
 
 #: inc/search.class.php:2293
 msgid "rule"
-msgstr ""
+msgstr "правило"
 
 #: inc/search.class.php:2298
 msgid "global rule"
-msgstr ""
+msgstr "глобално правило"
 
 #: inc/search.class.php:2303
 msgid "group"
-msgstr ""
+msgstr "група"
 
 #: inc/search.class.php:2330
 msgid "Fold search"
@@ -17857,11 +17890,11 @@ msgstr ""
 
 #: inc/search.class.php:2496 inc/search.class.php:2729
 msgid "Delete a rule"
-msgstr ""
+msgstr "Изтрий правило"
 
 #: inc/search.class.php:2646
 msgid "Delete a global rule"
-msgstr ""
+msgstr "Изтрий глобално правило"
 
 #: inc/search.class.php:6871 inc/search.class.php:6898
 #: inc/search.class.php:6902 inc/search.class.php:6931
@@ -17899,7 +17932,7 @@ msgstr ""
 #: inc/sla.class.php:61
 msgid ""
 "The assignment of a SLA to a ticket causes the recalculation of the date."
-msgstr ""
+msgstr "Присвояването на SLA на заявка води до преизчисляване на датата."
 
 #: inc/sla.class.php:62
 msgid "Escalations defined in the SLA will be triggered under this new date."
@@ -17911,7 +17944,7 @@ msgstr ""
 
 #: inc/slalevel_ticket.class.php:41
 msgid "SLA level for Ticket"
-msgstr ""
+msgstr "SLA ниво за Заявка"
 
 #: inc/slalevel_ticket.class.php:142
 msgid "Automatic actions of SLA"
@@ -17933,7 +17966,7 @@ msgstr ""
 
 #: inc/software.class.php:271 inc/software.class.php:526
 msgid "Group in charge of the software"
-msgstr ""
+msgstr "Група, отговорна за софтуера"
 
 #. TRANS: a noun, (ex : this software is an upgrade of..)
 #: inc/software.class.php:305 install/update.php:537
@@ -17972,7 +18005,7 @@ msgstr ""
 
 #: inc/softwarelicense.class.php:370 inc/softwarelicense.class.php:634
 msgid "Group in charge of the license"
-msgstr ""
+msgstr "Група, отговорна за лиценза"
 
 #: inc/softwarelicense.class.php:416 inc/softwarelicense.class.php:561
 #: inc/softwarelicense.class.php:1014
@@ -18023,7 +18056,7 @@ msgstr ""
 
 #: inc/softwarelicense.class.php:914
 msgid "Send licenses alert failed"
-msgstr ""
+msgstr "Изпращане на сигнал за лицензи е неуспешно"
 
 #: inc/softwarelicense.class.php:1059
 msgctxt "button"
@@ -18122,7 +18155,7 @@ msgstr "Изберете тип на статистиката"
 #: inc/stat.class.php:1578 inc/stat.class.php:1579 inc/stat.class.php:1698
 #: inc/stat.class.php:1699
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #: inc/state.class.php:98
 msgid "Keep status"
@@ -18205,6 +18238,8 @@ msgstr ""
 msgid ""
 "Let us know your usage to improve future versions of GLPI and its plugins!"
 msgstr ""
+"Споделете данни за използването за подобряване на бъдещите версии на GLPI и "
+"неговите плъгини!"
 
 #: inc/telemetry.class.php:473
 msgid "Reference your GLPI"
@@ -18223,7 +18258,7 @@ msgstr ""
 
 #: inc/ticket.class.php:150
 msgid "Create ticket"
-msgstr ""
+msgstr "Създаване на заявка"
 
 #: inc/ticket.class.php:691 inc/ticket.class.php:732
 msgid "Created tickets"
@@ -18231,11 +18266,11 @@ msgstr "Създадени билети"
 
 #: inc/ticket.class.php:800
 msgid "Processing ticket"
-msgstr ""
+msgstr "Заявки, в процес на обработка"
 
 #: inc/ticket.class.php:846
 msgid "Satisfaction survey expired"
-msgstr ""
+msgstr "Изтекло проучване на удовлетвореността"
 
 #: inc/ticket.class.php:850
 msgid "No generated survey"
@@ -18253,7 +18288,7 @@ msgstr "Невалиден имейл адрес %s"
 #: inc/ticket.class.php:2138
 #, php-format
 msgid "%s promotes a followup from ticket %s"
-msgstr ""
+msgstr "%s насърчава проследяването от заявка %s"
 
 #: inc/ticket.class.php:2351
 #, php-format
@@ -18263,16 +18298,16 @@ msgstr ""
 #: inc/ticket.class.php:2637 inc/ticket.class.php:4991
 #: inc/tickettemplate.class.php:265
 msgid "Approval request"
-msgstr ""
+msgstr "Заявка за одобрение"
 
 #: inc/ticket.class.php:2654
 msgctxt "button"
 msgid "Link tickets"
-msgstr ""
+msgstr "Свързване на заявки"
 
 #: inc/ticket.class.php:2668
 msgid "Merge as Followup"
-msgstr ""
+msgstr "Сливане като Проследяване"
 
 #: inc/ticket.class.php:2689
 msgid "Merge Followups"
@@ -18284,12 +18319,12 @@ msgstr ""
 
 #: inc/ticket.class.php:2702
 msgid "Confirm the merge? This ticket will be deleted!"
-msgstr ""
+msgstr "Потвърждавате ли сливането? Заявката ще бъде изтрита!"
 
 #: inc/ticket.class.php:2828
 #, php-format
 msgid "%s merges ticket %s into %s"
-msgstr ""
+msgstr "%s се слива с заявка %s в %s"
 
 #: inc/ticket.class.php:2867
 msgid "Time to own + Progress"
@@ -18297,7 +18332,7 @@ msgstr "Време за взимане + Прогрес"
 
 #: inc/ticket.class.php:2877
 msgid "Time to own exceedeed"
-msgstr ""
+msgstr "Времето на притежание е превишено"
 
 #: inc/ticket.class.php:2905
 msgid "Internal time to resolve + Progress"
@@ -18309,11 +18344,11 @@ msgstr ""
 
 #: inc/ticket.class.php:2941
 msgid "Internal time to own + Progress"
-msgstr ""
+msgstr "Вътрешно време на притежание + Прогрес"
 
 #: inc/ticket.class.php:2951
 msgid "Internal time to own exceedeed"
-msgstr ""
+msgstr "Вътрешно време на притежание е превишено"
 
 #: inc/ticket.class.php:3212
 msgid "Response date"
@@ -18325,35 +18360,35 @@ msgstr ""
 
 #: inc/ticket.class.php:3271
 msgid "All linked tickets"
-msgstr ""
+msgstr "Всички свързани заявки"
 
 #: inc/ticket.class.php:3285
 msgid "Duplicated tickets"
-msgstr ""
+msgstr "Дублирани заявки"
 
 #: inc/ticket.class.php:3300
 msgid "Number of all linked tickets"
-msgstr ""
+msgstr "Брой на всички свързани заявки"
 
 #: inc/ticket.class.php:3313
 msgid "Number of duplicated tickets"
-msgstr ""
+msgstr "Брой на дубилираните заявки"
 
 #: inc/ticket.class.php:3328
 msgid "Parent tickets"
-msgstr ""
+msgstr "Заявки от по-горно ниво"
 
 #: inc/ticket.class.php:3351
 msgid "Child tickets"
-msgstr ""
+msgstr "Дъщерни заявки"
 
 #: inc/ticket.class.php:3373
 msgid "Number of sons tickets"
-msgstr ""
+msgstr "Брой дъщерни заявки"
 
 #: inc/ticket.class.php:3389
 msgid "Number of parent tickets"
-msgstr ""
+msgstr "Брой заявки от по-горно ниво"
 
 #: inc/ticket.class.php:3411
 msgid "Problems"
@@ -18361,11 +18396,11 @@ msgstr "Проблеми"
 
 #: inc/ticket.class.php:3738
 msgid "Tickets awaiting approval"
-msgstr ""
+msgstr "Заявки, очакващи потвърждение"
 
 #: inc/ticket.class.php:3832
 msgid "This ticket concerns me"
-msgstr ""
+msgstr "Заявката ме касае"
 
 #: inc/ticket.class.php:3854 inc/ticket.class.php:3884
 msgid "Check your personnal information"
@@ -18373,11 +18408,11 @@ msgstr ""
 
 #: inc/ticket.class.php:3975
 msgid "Describe the incident or request"
-msgstr ""
+msgstr "Описание на инцидента или искането"
 
 #: inc/ticket.class.php:4027
 msgid "Inform me about the actions taken"
-msgstr ""
+msgstr "Информиране относно предприетите действия"
 
 #: inc/ticket.class.php:4170
 msgid "Submit message"
@@ -18403,7 +18438,7 @@ msgstr "Файл (%s)"
 
 #: inc/ticket.class.php:5275
 msgid "Default documents:"
-msgstr ""
+msgstr "Документи по подразбиране:"
 
 #: inc/ticket.class.php:5334
 msgid "Confirm the promotion?"
@@ -18419,11 +18454,11 @@ msgstr "Заявки - В очакване"
 
 #: inc/ticket.class.php:5607 inc/ticket.class.php:5674
 msgid "Tickets to be processed"
-msgstr ""
+msgstr "Заявки за обработка"
 
 #: inc/ticket.class.php:5623 inc/ticket.class.php:5781
 msgid "Your observed tickets"
-msgstr ""
+msgstr "Вашите наблюдавани заявки"
 
 #: inc/ticket.class.php:5640 inc/ticket.class.php:5832
 msgid "Your tickets in progress"
@@ -18435,11 +18470,11 @@ msgstr "Вашите завки за валидация"
 
 #: inc/ticket.class.php:5719
 msgid "Your tickets having rejected approval status"
-msgstr ""
+msgstr "Вашите заявки, на които е отказан статус Одобрение"
 
 #: inc/ticket.class.php:5736
 msgid "Your tickets having rejected solution"
-msgstr ""
+msgstr "Вашите заявки, на които е отказано предложеното решение"
 
 #: inc/ticket.class.php:5943
 msgid "Ticket followup"
@@ -18460,7 +18495,7 @@ msgstr "Няма намерени заявки.."
 
 #: inc/ticket.class.php:6116
 msgid "Last tickets"
-msgstr ""
+msgstr "Последни заявки"
 
 #: inc/ticket.class.php:6198 inc/ticket.class.php:6210
 msgid "New ticket for this item..."
@@ -18470,22 +18505,22 @@ msgstr "Нова заявка от този елемент..."
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Последна %d заявка"
+msgstr[1] "Последни %d заявки"
 
 #: inc/ticket.class.php:6232
 msgid "You don't have right to see all tickets"
-msgstr ""
+msgstr "Нямате прави да видите всички заявки"
 
 #: inc/ticket.class.php:6277
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Заявка към свързани елементи"
+msgstr[1] "Заявки към свързани елементи"
 
 #: inc/ticket.class.php:6387
 msgid "No ticket in progress."
-msgstr ""
+msgstr "Няма заявка в ход."
 
 #: inc/ticket.class.php:6444
 msgid "Assign equipment"
@@ -18493,20 +18528,20 @@ msgstr ""
 
 #: inc/ticket.class.php:6470
 msgid "Automatic tickets closing"
-msgstr ""
+msgstr "Автоматично затваряне на заявки"
 
 #: inc/ticket.class.php:6476
 msgid "Generation of satisfaction surveys"
-msgstr ""
+msgstr "Генериране на проучвания на удовлетвореността"
 
 #: inc/ticket.class.php:6712
 msgid "See my ticket"
-msgstr ""
+msgstr "Виж моята заявка"
 
 #. TRANS: short for : See tickets created by my groups
 #: inc/ticket.class.php:6714
 msgid "See group ticket"
-msgstr ""
+msgstr "Виж заявки от моята група"
 
 #: inc/ticket.class.php:6715
 msgid "See tickets created by my groups"
@@ -18523,11 +18558,11 @@ msgstr ""
 
 #: inc/ticket.class.php:6720
 msgid "See assigned tickets"
-msgstr ""
+msgstr "Виж присвоените заявки"
 
 #: inc/ticket.class.php:6723
 msgid "Assign a ticket"
-msgstr "Присвояване на билет"
+msgstr "Присвояване на заявка"
 
 #. TRANS: short for : Steal a ticket
 #: inc/ticket.class.php:6725
@@ -18553,11 +18588,13 @@ msgstr "Смяна приоритета"
 
 #: inc/ticket.class.php:6731
 msgid "Approve solution/Reply survey (my ticket)"
-msgstr ""
+msgstr "Одобряване на решение/Отговор на анкета (моя заявка)"
 
 #: inc/ticket.class.php:6732
 msgid "Approve solution and reply to survey for ticket created by me"
 msgstr ""
+"Одобряване на решението и отговор на анкетата към създаденената от мен "
+"заявка"
 
 #: inc/ticketrecurrent.class.php:158 inc/ticketrecurrent.class.php:276
 msgid "Preliminary creation"
@@ -18577,24 +18614,24 @@ msgstr ""
 #: inc/ticketrecurrent.class.php:484
 #, php-format
 msgid "Failed to create recurrent ticket %s"
-msgstr ""
+msgstr "Неуспешно създаване на повтаряща се заявка %s"
 
 #: inc/ticketrecurrent.class.php:544
 #, php-format
 msgid "Ticket %d successfully created"
-msgstr ""
+msgstr "Заявка %d е успешно създадена."
 
 #: inc/ticketrecurrent.class.php:547
 msgid "Ticket creation failed (check mandatory fields)"
-msgstr ""
+msgstr "Неуспешно създаване на заявка (проверете задължителните полета)"
 
 #: inc/ticketrecurrent.class.php:550
 msgid "Ticket creation failed (no template)"
-msgstr ""
+msgstr "Неуспешно създаване на заявка (липсва шаблон)"
 
 #: inc/ticketsatisfaction.class.php:121
 msgid "Satisfaction with the resolution of the ticket"
-msgstr ""
+msgstr "Удовлетворение от решението на заявката"
 
 #: inc/tickettask.class.php:43
 msgid "Ticket task"
@@ -18793,15 +18830,15 @@ msgstr ""
 #. TRANS: list of unit (o for octet)
 #: inc/toolbox.class.php:1231
 msgid "o"
-msgstr ""
+msgstr "o"
 
 #: inc/toolbox.class.php:1231
 msgid "Kio"
-msgstr ""
+msgstr "КБ"
 
 #: inc/toolbox.class.php:1231
 msgid "Gio"
-msgstr ""
+msgstr "ГБ"
 
 #: inc/toolbox.class.php:1231
 msgid "Tio"
@@ -18955,15 +18992,15 @@ msgstr ""
 
 #: inc/transfer.class.php:3464
 msgid "Links between printers and cartridge types and cartridges"
-msgstr ""
+msgstr "Връзки между принтери и типове касети и касети"
 
 #: inc/transfer.class.php:3469
 msgid "If the cartridge types are no longer used"
-msgstr ""
+msgstr "Ако типовете касети вече не се използват"
 
 #: inc/transfer.class.php:3475
 msgid "Links between cartridge types and cartridges"
-msgstr ""
+msgstr "Връзки между типове касети и касети"
 
 #: inc/transfer.class.php:3485
 msgid "Links between consumable types and consumables"
@@ -18987,7 +19024,7 @@ msgstr ""
 
 #: inc/transfer.class.php:3522
 msgid "If devices are no longer used"
-msgstr ""
+msgstr "Ако устройствата вече не се използват"
 
 #: inc/transfer.class.php:3532
 msgid "If phones are no longer used"
@@ -18999,15 +19036,15 @@ msgstr ""
 
 #: inc/transfer.class.php:3551
 msgid "Links between suppliers and contacts"
-msgstr ""
+msgstr "Връзки между доставчици и контакти"
 
 #: inc/transfer.class.php:3555
 msgid "If contacts are no longer used"
-msgstr ""
+msgstr "Ако контактите вече не се използват"
 
 #: inc/transfer.class.php:3565
 msgid "If documents are no longer used"
-msgstr ""
+msgstr "Ако документите вече не са в употреба"
 
 #: inc/transfer.class.php:3575
 msgid "If contracts are no longer used"
@@ -19096,7 +19133,7 @@ msgstr ""
 #: inc/user.class.php:2154
 #, php-format
 msgid "Last synchronization on %s"
-msgstr ""
+msgstr "Последна сихронизация на %s"
 
 #: inc/user.class.php:2159 inc/user.class.php:3135 inc/user.class.php:4702
 msgid "User DN"
@@ -19108,11 +19145,11 @@ msgstr "Потребител липсващ в LDAP директорията"
 
 #: inc/user.class.php:2291 inc/user.class.php:2661
 msgid "Remote access keys"
-msgstr ""
+msgstr "Ключове за отдалечен достъп"
 
 #: inc/user.class.php:2294 inc/user.class.php:2664
 msgid "Personal token"
-msgstr ""
+msgstr "Персонален токън"
 
 #: inc/user.class.php:2304 inc/user.class.php:2323 inc/user.class.php:2674
 #: inc/user.class.php:2693
@@ -19122,7 +19159,7 @@ msgstr "генериран на %s"
 
 #: inc/user.class.php:2314 inc/user.class.php:2684
 msgid "API token"
-msgstr ""
+msgstr "API токън"
 
 #: inc/user.class.php:2336
 #, php-format
@@ -19147,7 +19184,7 @@ msgstr ""
 
 #: inc/user.class.php:2809
 msgid "Dissociate from a group"
-msgstr ""
+msgstr "Отделяне от група"
 
 #: inc/user.class.php:2811
 msgid "Associate to a profile"
@@ -19159,12 +19196,12 @@ msgstr ""
 
 #: inc/user.class.php:2815
 msgid "Move to group"
-msgstr ""
+msgstr "Преместване в група"
 
 #: inc/user.class.php:2820
 msgctxt "button"
 msgid "Change the authentication method"
-msgstr ""
+msgstr "Промени метода за удостоверяване"
 
 #: inc/user.class.php:3032
 msgid "Last login"
@@ -19172,27 +19209,27 @@ msgstr ""
 
 #: inc/user.class.php:3055
 msgid "LDAP directory for authentication"
-msgstr ""
+msgstr "LDAP директория за удостоверяване"
 
 #: inc/user.class.php:3068
 msgid "Email server for authentication"
-msgstr ""
+msgstr "Имейл сървър за удостоверяване"
 
 #: inc/user.class.php:3154
 msgid "Last synchronization"
-msgstr ""
+msgstr "Последна синхронизация"
 
 #: inc/user.class.php:3240
 msgid "Number of tickets as requester"
-msgstr ""
+msgstr "Брой задачи като заявител"
 
 #: inc/user.class.php:3260
 msgid "Number of written tickets"
-msgstr ""
+msgstr "Брой написани заявки"
 
 #: inc/user.class.php:3275
 msgid "Number of assigned tickets"
-msgstr ""
+msgstr "Брой присвоени заявки"
 
 #: inc/user.class.php:3895 inc/user.class.php:3897 inc/user.class.php:3902
 msgid "Import a user"
@@ -19216,24 +19253,30 @@ msgstr ""
 
 #: inc/user.class.php:4455
 msgid "Please confirm your email address and enter your new password."
-msgstr ""
+msgstr "Моля, потвърдете своя имейл адрес и въведете новата си парола."
 
 #: inc/user.class.php:4484 inc/user.class.php:4565
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
 msgstr ""
+"Вашата заявка за нулиране на паролата е изтекла или е невалидна. Моля, "
+"подновете я."
 
 #: inc/user.class.php:4505
 msgid ""
 "Please enter your email address. An email will be sent to you and you will "
 "be able to choose a new password."
 msgstr ""
+"Моля, въведете вашия имейл адрес. Ще ви бъде изпратен имейл и ще можете да "
+"изберете нова парола."
 
 #: inc/user.class.php:4569 inc/user.class.php:4679
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
 msgstr ""
+"Конфигурацията на метода за удостоверяване не ви позволява да промените "
+"паролата си."
 
 #: inc/user.class.php:4573 inc/user.class.php:4684
 msgid "Email address not found."
@@ -19250,7 +19293,7 @@ msgstr "връзката неуспешна"
 #. TRANS: short for : Add users from an external source
 #: inc/user.class.php:4964
 msgid "Add external"
-msgstr ""
+msgstr "Добавяне на външен"
 
 #: inc/user.class.php:4965
 msgid "Add users from an external source"
@@ -19263,7 +19306,7 @@ msgstr ""
 
 #: inc/user.class.php:4968
 msgid "Read user authentication and synchronization method"
-msgstr ""
+msgstr "Прочети метода за потребителско удостоверяване и синхронизация"
 
 #. TRANS: short for : Update method for user authentication and
 #. synchronization
@@ -19273,7 +19316,7 @@ msgstr ""
 
 #: inc/user.class.php:4971
 msgid "Update method for user authentication and synchronization"
-msgstr ""
+msgstr "Актуализирай метода за потребителско удостоверяване и синхронизация"
 
 #: inc/useremail.class.php:149 inc/useremail.class.php:172
 msgid "Default email"
@@ -19419,7 +19462,7 @@ msgstr "Невъзможно записването на файла с наст�
 
 #: install/install.php:413 install/install.php:427
 msgid "Database created"
-msgstr ""
+msgstr "Създадена база данни"
 
 #: install/install.php:442
 msgid "Error in creating database!"
@@ -19439,7 +19482,7 @@ msgstr ""
 
 #: install/install.php:488 install/update.php:615
 msgid "Donate"
-msgstr ""
+msgstr "Дари"
 
 #: install/install.php:532
 msgid "The installation is finished"

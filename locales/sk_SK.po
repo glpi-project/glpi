@@ -6,6 +6,7 @@
 # Translators:
 # feonsu <feonsu@gmail.com>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# balucha <ondrej@odb.sk>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-03-10 10:18+0100\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: balucha <ondrej@odb.sk>, 2020\n"
 "Language-Team: Slovak (Slovakia) (https://www.transifex.com/glpi/teams/1637/sk_SK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2489,7 +2490,7 @@ msgid_plural "Receivers"
 msgstr[0] "Prijímač"
 msgstr[1] "Prijímače"
 msgstr[2] "Prijímače"
-msgstr[3] "Prijímače"
+msgstr[3] "Emailové brány"
 
 #: front/mailcollector.php:44 front/setup.auth.php:57
 #: inc/authldap.class.php:451 inc/authmail.class.php:210
@@ -8753,7 +8754,7 @@ msgstr "Rozšírenie \"%s\" je nainštalované"
 #: inc/config.class.php:1545
 #, php-format
 msgid "%1$s memory usage is too low or too high"
-msgstr ""
+msgstr "Využitie pamäte %1$s je príliš nízke alebo príliš vysoké."
 
 #: inc/config.class.php:1548 inc/config.class.php:1625
 #, php-format
@@ -8762,26 +8763,26 @@ msgstr "Využitie pamäte %1$s je v poriadku"
 
 #: inc/config.class.php:1557
 msgid "Hits rate"
-msgstr "Frekvencia prístupov"
+msgstr "Miera prístupov"
 
 #: inc/config.class.php:1563
 #, php-format
 msgid "%1$s hits rate is low"
-msgstr ""
+msgstr "Miera prístupov %1$s je nízka"
 
 #: inc/config.class.php:1566
 #, php-format
 msgid "%1$s hits rate is correct"
-msgstr "Frekvencia prístupov %1$s je v poriadku"
+msgstr "Miera prístupov %1$s je v poriadku"
 
 #: inc/config.class.php:1572
 msgid "Out of memory restart"
-msgstr "Restart pri nedostatku pamäte"
+msgstr "Reštarty pri nedostatku pamäte"
 
 #: inc/config.class.php:1576
 #, php-format
 msgid "%1$s restart rate is too high"
-msgstr ""
+msgstr "Frekvencia reštartov %1$s je príliš vysoká"
 
 #: inc/config.class.php:1579
 #, php-format
@@ -8820,7 +8821,7 @@ msgstr "Používa sa vyrovnávacia pamäť \"%s\""
 #: inc/config.class.php:1622
 #, php-format
 msgid "%1$s memory usage is too high"
-msgstr ""
+msgstr "Využitie pamäte %1$s je príliš vysoké"
 
 #: inc/config.class.php:1641
 #, php-format
@@ -14106,7 +14107,7 @@ msgstr "Počet e-mailov k načítaniu"
 
 #: inc/mailcollector.class.php:1764
 msgid "Send alarms on receiver errors"
-msgstr "Poslať upozornenia v prípade poruchy príjmača"
+msgstr "Poslať upozornenia v prípade poruchy emailovej brány"
 
 #: inc/mailcollector.class.php:1920
 msgid ""
@@ -17709,7 +17710,7 @@ msgstr "Podmienka"
 #: inc/rule.class.php:1213 inc/rule.class.php:2029
 #: inc/rulecollection.class.php:1305 inc/rulecriteria.class.php:179
 msgid "Reason"
-msgstr "Dôvod"
+msgstr "Hodnota"
 
 #: inc/rule.class.php:2024 inc/rulecollection.class.php:1778
 msgid "Result details"

@@ -18,9 +18,11 @@
 # Megachip <www.transifex.com@megskywalker.de>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
-# Thofl, 2020
 # armin0103 <kkarmintestkk@yahoo.de>, 2020
 # Seidler Jean-Louis <jl.seidler@gmx.ch>, 2020
+# Thofl, 2020
+# Florian - <community@subsidoo.net>, 2020
+# Viktor S, 2020
 # 
 #, fuzzy
 msgid ""
@@ -29,7 +31,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-03-10 10:18+0100\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Seidler Jean-Louis <jl.seidler@gmx.ch>, 2020\n"
+"Last-Translator: Viktor S, 2020\n"
 "Language-Team: German (Germany) (https://www.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2446,7 +2448,7 @@ msgstr "Neue Benutzer importieren"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr ""
+msgstr "%1$s fügt das Element %2$s-%3$s:%4$s hinzu"
 
 #: front/lock.form.php:56
 #, php-format
@@ -8573,7 +8575,7 @@ msgstr "Die Erweiterung \"%s\" ist installiert"
 #: inc/config.class.php:1545
 #, php-format
 msgid "%1$s memory usage is too low or too high"
-msgstr ""
+msgstr "%1$sSpeicherverbrauch ist zu niedrig oder zu hoch "
 
 #: inc/config.class.php:1548 inc/config.class.php:1625
 #, php-format
@@ -8587,7 +8589,7 @@ msgstr "Trefferrate"
 #: inc/config.class.php:1563
 #, php-format
 msgid "%1$s hits rate is low"
-msgstr ""
+msgstr "%1$s Trefferquote ist niedrig "
 
 #: inc/config.class.php:1566
 #, php-format
@@ -8601,7 +8603,7 @@ msgstr "Neustart wegen Speichermangels"
 #: inc/config.class.php:1576
 #, php-format
 msgid "%1$s restart rate is too high"
-msgstr ""
+msgstr "%1$s Neustart-Rate ist zu hoch"
 
 #: inc/config.class.php:1579
 #, php-format
@@ -8640,7 +8642,7 @@ msgstr "\"%s\" Cache-System wird verwendet"
 #: inc/config.class.php:1622
 #, php-format
 msgid "%1$s memory usage is too high"
-msgstr ""
+msgstr "%1$s Speicherverbrauch zu hoch"
 
 #: inc/config.class.php:1641
 #, php-format
@@ -11058,7 +11060,7 @@ msgstr "Keine Übersetzung gefunden"
 msgid "Enclosure"
 msgid_plural "Enclosures"
 msgstr[0] "Gehäuse"
-msgstr[1] " Enclosures "
+msgstr[1] "Enclosures"
 
 #: inc/enclosure.class.php:106
 msgid "Power supplies"
@@ -11068,7 +11070,7 @@ msgstr "Netzteile"
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
 msgstr[0] "Gehäusetyp"
-msgstr[1] "Enclosure-Typen"
+msgstr[1] "Enclosure-Modelle"
 
 #: inc/entity.class.php:243
 msgid "You can't add an entity without name"
@@ -11566,6 +11568,8 @@ msgid ""
 "Having troubles setting up an advanced GLPI module?\n"
 "We can help you solve them. Sign up for support on %s."
 msgstr ""
+"Haben Sie Probleme beim Einrichten eines erweiterten GLPI-Moduls?\n"
+"Wir können helfen, sie zu lösen. Registrieren Sie sich für Support auf %s."
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -19844,6 +19848,8 @@ msgstr "date_creation zu %s hinzufügen"
 #: install/update_942_943.php:52
 msgid "Fix URL of images in ITIL tasks, followups and solutions."
 msgstr ""
+"Bitte URL für Bilder in ITIL-Aufgaben, Folgeaufgaben und Lösungen "
+"korrigieren."
 
 #: install/update.php:137
 msgid "Update successful, your database is up to date"

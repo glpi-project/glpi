@@ -4,12 +4,12 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# meira <meira@ariel.muni.il>, 2018
 # Daat Computers <daatcomputer@gmail.com>, 2018
 # Michael Altynikov <maltyx@hotmail.com>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # cffff fdddf <yogpt@walla.com>, 2020
+# meira <meira@ariel.muni.il>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-03-10 10:18+0100\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: cffff fdddf <yogpt@walla.com>, 2020\n"
+"Last-Translator: meira <meira@ariel.muni.il>, 2020\n"
 "Language-Team: Hebrew (Israel) (https://www.transifex.com/glpi/teams/1637/he_IL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -47,7 +47,7 @@ msgstr "סיסמה"
 
 #: index.php:149
 msgid "Default (from user profile)"
-msgstr ""
+msgstr "ברירת מחדל (מתוך פרופיל המשתמש)"
 
 #: index.php:166
 msgid "Remember me"
@@ -743,15 +743,15 @@ msgstr "חסר נתון נדרש !"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "הפריטים לא מאוכנים או לא נמצאו"
 
 #: ajax/getMapPoint.php:75
 msgid "Location seems not geolocalized!"
-msgstr ""
+msgstr "המיקום לא מאוכן!"
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
-msgstr ""
+msgstr "רצוי למלא קו אורך ורוחב במיקום הזה"
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2473
 #: inc/mailcollector.class.php:215 inc/ruleaction.class.php:89
@@ -963,18 +963,18 @@ msgstr "אין הגבלה"
 #: inc/user.class.php:4748
 msgid "Entity"
 msgid_plural "Entities"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "ישות"
+msgstr[1] "ישויות"
+msgstr[2] "ישויות"
+msgstr[3] "ישות"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "מצב ניפוי באגים הופעל"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "מצב ניפוי באגים הושבת "
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -982,6 +982,8 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"אנו אוספים את הנתונים הבאים בלבד: שימוש בתוספים, ביצועים וסטטיסטיקות לגבי "
+"מאפייני ממשק משתמש, זיכרון ותצורת חומרה."
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:68 ajax/ticketassigninformation.php:69
@@ -1171,11 +1173,11 @@ msgstr "בדוק זמינות גרסה חדשה"
 
 #: front/backup.php:584
 msgid "GLPI internal backup system is a helper for very small instances."
-msgstr ""
+msgstr "מערכת הגיבוי הפנימית של GLPI מתאימה למקרים קטנים מאוד"
 
 #: front/backup.php:585
 msgid "You should rather use a dedicated tool on your server."
-msgstr ""
+msgstr "כדאי לך להשתמש בכלי יעודי בשרת שלך"
 
 #: front/backup.php:591 front/backup.php:596
 msgid "Backup the database?"
@@ -1925,7 +1927,7 @@ msgstr[3] "תפריטים נפתחים"
 
 #: front/find_num.php:73
 msgid "Search the ID of your hardware"
-msgstr ""
+msgstr "חפש את מזהה החומרה שלך"
 
 #: front/find_num.php:82 inc/authldap.class.php:3326 inc/knowbase.class.php:65
 #: inc/knowbaseitem.class.php:1032 inc/planning.class.php:367
@@ -2453,17 +2455,17 @@ msgstr "יבוא משתמשים חדשים"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr ""
+msgstr "%1$s מוסיף את הפריט %2$s-%3$s:%4$s"
 
 #: front/lock.form.php:56
 #, php-format
 msgid "You do not have rights to restore %s item."
-msgstr ""
+msgstr "אין לך הרשאות לשחזור פריט %s"
 
 #: front/lock.form.php:82
 #, php-format
 msgid "You do not have rights to delete %s item."
-msgstr ""
+msgstr "אין לך הרשאות למחוק פריט %s"
 
 #: front/login.php:92
 msgid "Log in again"
@@ -2489,7 +2491,7 @@ msgstr "%sשלוחה חסרה"
 
 #: front/massiveaction.php:45
 msgid "Bulk modification error"
-msgstr ""
+msgstr "שגיאה בעדכון המוני"
 
 #: front/massiveaction.php:57
 msgid "Bulk modification"
@@ -2516,23 +2518,23 @@ msgstr "(%1$dבעיות הרשאה, %2$dכשלים)"
 
 #: front/migrationcleaner.php:44
 msgid "You don't need the \"migration cleaner\" tool anymore..."
-msgstr ""
+msgstr "אינך צריך יותר את כלי \"מנקה פריטים מהסבות\""
 
 #: front/migrationcleaner.php:48 inc/migrationcleaner.class.php:47
 msgid "Migration cleaner"
-msgstr ""
+msgstr "מנקה פריטים מהסבות"
 
 #: front/migrationcleaner.php:53
 msgid "\"Migration cleaner\" tool"
-msgstr ""
+msgstr "כלי \"מנקה פריטים מהסבות\""
 
 #: front/migrationcleaner.php:60 inc/ipnetwork.class.php:1034
 msgid "Reinit the network topology"
-msgstr ""
+msgstr "אתחל מחדש את טופולוגית הרשת"
 
 #: front/migrationcleaner.php:66
 msgid "Clean the network port migration errors"
-msgstr ""
+msgstr "נקה את שגיאות ההסבה  ביציאת הרשת "
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:102 front/peripheral.form.php:102
@@ -2567,7 +2569,7 @@ msgstr "%sמחק מספר נקודות רשת"
 
 #: front/networkportmigration.form.php:86
 msgid "Cannot change a migration network port to an unknown one"
-msgstr ""
+msgstr "לא ניתן לשנות יציאת רשת הסבה ליציאה לא ידועה"
 
 #: front/networkportmigration.form.php:89
 msgid "Network port is not available..."
@@ -2606,7 +2608,7 @@ msgstr ""
 #: front/pluginimage.send.php:57
 #, php-format
 msgid "%s tries to use a non standard path."
-msgstr ""
+msgstr "%s מנסה להשתמש בנתיב לא סטנדרטי"
 
 #: front/plugin.php:46
 msgid "See the catalog of plugins"
@@ -3017,7 +3019,7 @@ msgstr "%1$sהוסיף פריט %2$s (%3$d)"
 
 #: front/rule.common.php:76
 msgid "Replay the rules dictionary"
-msgstr ""
+msgstr "הפעל מחדש את מילון הכללים"
 
 #: front/rule.common.php:78 inc/migration.class.php:110
 #: inc/migration.class.php:114 inc/software.class.php:1023
@@ -3121,10 +3123,10 @@ msgstr "שיטות אימות אחרות"
 #: inc/profile.class.php:1920
 msgid "Notification"
 msgid_plural "Notifications"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "הודעה"
+msgstr[1] "הודעות"
+msgstr[2] "הודעות"
+msgstr[3] "הודעות"
 
 #: front/setup.templates.php:55 inc/html.class.php:6613
 msgid "Manage templates..."
@@ -3134,7 +3136,7 @@ msgstr "נהל תבניות..."
 #: front/slalevel.form.php:47
 #, php-format
 msgid "%s updates a sla level"
-msgstr ""
+msgstr "%s מעדכן רמת שירות"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:71
@@ -3577,10 +3579,10 @@ msgstr[3] "סוגי פתרונות"
 #: inc/ticket.class.php:3010 inc/ticket.class.php:4953
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "מקור הבקשה"
+msgstr[1] "מקורות הבקשה"
+msgstr[2] "מקורות הבקשה"
+msgstr[3] "מקור הבקשה"
 
 #: front/stat.graph.php:287 front/stat.graph.php:288
 #: inc/commonglpi.class.php:838 inc/commonglpi.class.php:839
@@ -4007,15 +4009,15 @@ msgstr ""
 
 #: inc/api.class.php:1542
 msgid "Malformed search criteria"
-msgstr ""
+msgstr "קריטריון חיפוש שגוי"
 
 #: inc/api.class.php:1548
 msgid "Bad field ID in search criteria"
-msgstr ""
+msgstr "מזהה שדה בקריטריון חיפוש שגוי"
 
 #: inc/api.class.php:1555
 msgid "Forbidden field ID in search criteria"
-msgstr ""
+msgstr "מזהה שדה אסור בקריטריון חיפוש"
 
 #: inc/api.class.php:1581
 msgid "ID is forbidden along with 'forcedisplay' parameter."
@@ -4028,7 +4030,7 @@ msgstr "פריט לא נמצא"
 
 #: inc/api.class.php:2034
 msgid "Email notifications are disabled"
-msgstr ""
+msgstr "התראות דוא\"ל מושבתות"
 
 #: inc/api.class.php:2038
 msgid "email parameter missing"

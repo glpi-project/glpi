@@ -2445,7 +2445,7 @@ msgstr "Uvezi nove korisnike"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr ""
+msgstr "%1$s dodaje element %2$s-%3$s:%4$s"
 
 #: front/lock.form.php:56
 #, php-format
@@ -2459,7 +2459,7 @@ msgstr "Nemaš prava za brisanje predmeta %s."
 
 #: front/login.php:92
 msgid "Log in again"
-msgstr "Ponovo se prijavi"
+msgstr "Prijavi se ponovo"
 
 #: front/mailcollector.php:42 inc/mailcollector.class.php:98
 #: inc/mailcollector.class.php:1948
@@ -3846,7 +3846,7 @@ msgstr "Pojavila se greška prilikom učitavanja sadržaja!"
 
 #: inc/ajax.class.php:430
 msgid "Please check GLPI logs or contact your administrator."
-msgstr "Provjeri GLPI logove ili kontaktiraj administratora."
+msgstr "Provjeri log zapise GLPI-a ili kontaktiraj administratora."
 
 #: inc/ajax.class.php:431 inc/link.class.php:154
 #: inc/massiveaction.class.php:753 inc/rule.class.php:799
@@ -4173,7 +4173,7 @@ msgid "Log"
 msgid_plural "Logs"
 msgstr[0] "Zapisnik"
 msgstr[1] "Zapisnici"
-msgstr[2] "Zapisnici"
+msgstr[2] "Log zapisi"
 
 #: inc/apirest.class.php:55
 msgid "Rest API"
@@ -4410,7 +4410,7 @@ msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
 msgstr[0] "Polje skladištenja prijave u HTTP zahtjevu"
 msgstr[1] "Polja skladištenja prijave u HTTP zahtjevu"
-msgstr[2] "Polja skladištenja prijave u HTTP zahtjevu"
+msgstr[2] "Spremište polja prijave u HTTP zahtjevu"
 
 #: inc/auth.class.php:1440
 msgid "Remove the domain of logins like login@domain"
@@ -5615,7 +5615,7 @@ msgstr[2] "Modeli pisača"
 
 #: inc/cartridgeitem.class.php:445 inc/cartridgeitem.class.php:615
 msgid "Send alarms on cartridges"
-msgstr "Pošalji upozorenja za tonere"
+msgstr "Pošalji upozorenja o tonerima"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
@@ -5882,7 +5882,7 @@ msgstr "Razdvoji certifikat"
 
 #: inc/certificate.class.php:724
 msgid "Send alarms on expired certificate"
-msgstr "Pošalji upozorenja za istekli certifikat"
+msgstr "Pošalji upozorenja o isteklim certifikatima"
 
 #. TRANS: %1$s the license name, %2$s is the expiration date
 #: inc/certificate.class.php:790
@@ -5932,7 +5932,7 @@ msgstr "Postavi obavijesti za sve učesnike"
 
 #: inc/change.class.php:195
 msgid "Processing change"
-msgstr "Promjena u obradi"
+msgstr "Obrada promjene"
 
 #: inc/change.class.php:196 inc/problem.class.php:183
 #: inc/problem.class.php:476
@@ -8343,7 +8343,7 @@ msgstr "API in-line dokumentacija"
 
 #: inc/config.class.php:772
 msgid "Enable login with credentials"
-msgstr "Aktiviraj pristup s vjerodajnicama"
+msgstr "Aktiviraj prijavu s vjerodajnicama"
 
 #: inc/config.class.php:773
 msgid "Allow to login to API and get a session token with user credentials"
@@ -8352,7 +8352,7 @@ msgstr ""
 
 #: inc/config.class.php:779
 msgid "Enable login with external token"
-msgstr "Aktiviraj pristup s vanjskim tokenom"
+msgstr "Aktiviraj prijavu s vanjskim tokenom"
 
 #: inc/config.class.php:780
 msgid ""
@@ -8719,7 +8719,7 @@ msgstr "Instalacija \"%s\" ekstenzije može poboljšati GLPI učinkovitost"
 
 #: inc/config.class.php:1666
 msgid "Log Level"
-msgstr "Razina loga"
+msgstr "Razina log zapisa"
 
 #: inc/config.class.php:1669
 msgid "1- Critical (login error only)"
@@ -8747,7 +8747,7 @@ msgstr "Maksimalan broj automatskih radnji (koje pokreće CLI)"
 
 #: inc/config.class.php:1686
 msgid "Logs in files (SQL, email, automatic action...)"
-msgstr "Logovi u datotekama (SQL, e-mail, automatske radnje …)"
+msgstr "Log zapisi u datotekama (SQL, e-mail, automatske radnje …)"
 
 #: inc/config.class.php:1694 inc/user.class.php:2093 inc/user.class.php:2548
 #: inc/user.class.php:4470
@@ -8809,7 +8809,7 @@ msgstr "Postavke"
 
 #: inc/config.class.php:2123 inc/purgelogs.class.php:40
 msgid "Logs purge"
-msgstr "Brisanje logova"
+msgstr "Brisanje log zapisa"
 
 #: inc/config.class.php:2124 inc/event.class.php:147
 msgid "System"
@@ -8885,7 +8885,7 @@ msgstr "Provjera dozvole pisanja za datoteke slika"
 
 #: inc/config.class.php:2499
 msgid "Checking write permissions for log files"
-msgstr "Provjera dozvole pisanja za log datoteke"
+msgstr "Provjera dozvole pisanja za datoteke log zapisa"
 
 #: inc/config.class.php:2519 inc/config.class.php:2520
 msgid "A file was created - Perfect!"
@@ -8942,7 +8942,7 @@ msgstr ""
 
 #: inc/config.class.php:2641
 msgid "error log file"
-msgstr "greška log datoteke"
+msgstr "datoteka log zapisa grešaka"
 
 #: inc/config.class.php:2919
 msgid "You are using a development version, be careful!"
@@ -8958,7 +8958,7 @@ msgstr "Označi potvrdni okvir za nestabilnu verziju."
 
 #: inc/config.class.php:3175
 msgid "Logs purge configuration"
-msgstr "Konfiguracija za brisanje logova"
+msgstr "Konfiguracija za brisanje log zapisa"
 
 #: inc/config.class.php:3177
 msgid "Change all"
@@ -8995,7 +8995,7 @@ msgstr "Dodaci"
 
 #: inc/config.class.php:3236
 msgid "Installation/uninstallation of software on computers"
-msgstr ""
+msgstr "Instaliranje/deinstaliranje softvera na računalima"
 
 #: inc/config.class.php:3240
 msgid "Installation/uninstallation versions on softwares"
@@ -9003,7 +9003,7 @@ msgstr "Instaliranje/deinstaliranje verzija softvera"
 
 #: inc/config.class.php:3247
 msgid "Add/Remove computers from software versions"
-msgstr ""
+msgstr "Dodaj/ukloni računala iz verzija softvera"
 
 #: inc/config.class.php:3256
 msgid "Add financial information to an item"
@@ -9051,7 +9051,7 @@ msgstr "Svi odjeljci"
 
 #: inc/config.class.php:3309
 msgid "Purge all log entries"
-msgstr "Ukloni sve log unose"
+msgstr "Ukloni sve unose log zapisa"
 
 #: inc/config.class.php:3338
 msgid "Delete all"
@@ -9189,7 +9189,7 @@ msgstr "Broj novog potrošnog materijala"
 
 #: inc/consumableitem.class.php:380 inc/consumableitem.class.php:506
 msgid "Send alarms on consumables"
-msgstr "Pošalji upozorenja za potrošne materijale"
+msgstr "Pošalji upozorenja o potrošnom materijalu"
 
 #. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
 #. number
@@ -9363,7 +9363,7 @@ msgstr "Trajanje početnog ugovora"
 #: inc/contract.class.php:727 inc/contract.class.php:1703
 #: inc/notificationtargetcontract.class.php:47
 msgid "Notice"
-msgstr "Bilješka"
+msgstr "Otkazni rok"
 
 #: inc/contract.class.php:243 inc/contract.class.php:487
 #: inc/contract.class.php:777
@@ -9391,7 +9391,7 @@ msgstr "Maksimalan broj predmet"
 #: inc/contract.class.php:289 inc/contract.class.php:845
 #: inc/infocom.class.php:1578
 msgid "Email alarms"
-msgstr "Upozorenja e-maila"
+msgstr "Upozorenja putem e-maila"
 
 #: inc/contract.class.php:303
 msgid "Support hours"
@@ -9399,7 +9399,7 @@ msgstr "Sati podrške"
 
 #: inc/contract.class.php:307
 msgid "on week"
-msgstr "preko tjedna"
+msgstr "tijekom tjedna"
 
 #: inc/contract.class.php:321
 msgid "on Saturday"
@@ -9470,7 +9470,7 @@ msgstr "Ugovori u kojima otkazni rok počinje za manje od 30 dana"
 
 #: inc/contract.class.php:1181
 msgid "Send alarms on contracts"
-msgstr "Pošalji upozorenja za ugovore"
+msgstr "Pošalji upozorenja o ugovorima"
 
 #: inc/contract.class.php:1335
 msgid "Contract entered in notice time"
@@ -9478,7 +9478,7 @@ msgstr "Ugovor sklopljen u otkaznom roku"
 
 #: inc/contract.class.php:1340
 msgid "Contract ended"
-msgstr "Ugovor prekinut"
+msgstr "Ugovor je istekao"
 
 #: inc/contract.class.php:1415
 msgid "Contract entered in notice time for period"
@@ -9486,7 +9486,7 @@ msgstr "Ugovor sklopljen u otkaznom roku za razdoblje"
 
 #: inc/contract.class.php:1419
 msgid "Contract period ended"
-msgstr "Ugovorno razdoblje isteklo"
+msgstr "Ugovorno razdoblje je isteklo"
 
 #: inc/contract.class.php:1462
 msgid "send contract alert failed"
@@ -9561,7 +9561,7 @@ msgstr "Radnja završena, potpuno obrađeno"
 
 #: inc/crontask.class.php:300
 msgid "Action completed, no processing required"
-msgstr "Radnja završena, obrada nije bila potrebna"
+msgstr "Radnja završena, obrada nije potrebna"
 
 #: inc/crontask.class.php:457 inc/crontask.class.php:1358
 msgid "Run frequency"
@@ -9585,7 +9585,7 @@ msgstr "Razdoblje pokretanja"
 
 #: inc/crontask.class.php:505 inc/crontask.class.php:1414
 msgid "Number of days this action logs are stored"
-msgstr "Broj dana koliko se čuvaju ovi logovi radnji"
+msgstr "Broj dana za čuvanje log zapisa radnje"
 
 #: inc/crontask.class.php:510
 msgid "Infinite"
@@ -9781,25 +9781,25 @@ msgstr[2] ""
 #: inc/crontask.class.php:1513
 #, php-format
 msgid "Deletion of archived log file: %s"
-msgstr "Brisanje arhivirane log datoteke: %s"
+msgstr "Brisanje arhivirane datoteke log zapisa: %s"
 
 #: inc/crontask.class.php:1516
 #, php-format
 msgid "Unable to delete archived log file: %s"
-msgstr "Nije moguće izbrisati arhiviranu log datoteku: %s"
+msgstr "Nije moguće izbrisati arhiviranu datoteku log zapisa: %s"
 
 #: inc/crontask.class.php:1534
 #, php-format
 msgid "Archiving log file: %1$s to %2$s"
-msgstr "Arhiviranje log datoteke: %1$s u %2$s"
+msgstr "Arhiviranje datoteke log zapisa: %1$s u %2$s"
 
 #: inc/crontask.class.php:1537
 #, php-format
 msgid ""
 "Unable to archive log file: %1$s. %2$s already exists. Wait till next day."
 msgstr ""
-"Nije moguće arhivirati log datoteku: %1$s. %2$s već postoji. Pričekaj idući "
-"dan."
+"Nije moguće arhivirati datoteku log zapisa: %1$s. %2$s već postoji. Pričekaj"
+" idući dan."
 
 #: inc/crontask.class.php:1575
 #, php-format
@@ -9830,11 +9830,12 @@ msgstr "Provjeri, ima li novih verzija"
 
 #: inc/crontask.class.php:1717
 msgid "Clean old logs"
-msgstr "Počisti stare logove"
+msgstr "Ukloni stare log zapise"
 
 #: inc/crontask.class.php:1719
 msgid "System logs retention period (in days, 0 for infinite)"
-msgstr "Razdoblje zadržavanja sistemskih logova (u danima, 0 za beskonačno)"
+msgstr ""
+"Razdoblje za zadržavanje sustavskih log zapisa (u danima, 0 za beskonačno)"
 
 #: inc/crontask.class.php:1722
 msgid "Clean expired sessions"
@@ -9855,11 +9856,11 @@ msgstr "Nadgledanje automatskih radnji"
 
 #: inc/crontask.class.php:1734
 msgid "Archives log files and deletes aging ones"
-msgstr "Arhivira log datoteke i briše zastarjele"
+msgstr "Arhivira datoteke log zapisa i briše zastarjele"
 
 #: inc/crontask.class.php:1735
 msgid "Number of days to keep archived logs"
-msgstr "Broj dana za zadržavanje arhiviranih logova"
+msgstr "Broj dana za zadržavanje arhiviranih log zapisa"
 
 #. TRANS: %d is a number of minutes
 #: inc/crontask.class.php:1752 inc/crontask.class.php:1756
@@ -11330,7 +11331,7 @@ msgstr "Upozorenja o isteklim licencama"
 
 #: inc/entity.class.php:788 inc/entity.class.php:1925
 msgid "Send license alarms before"
-msgstr "Pošalji upozorenja licence prije"
+msgstr "Pošalji upozorenja o licencama prije"
 
 #: inc/entity.class.php:798 inc/entity.class.php:1822
 msgid "Alarms on contracts"
@@ -11338,7 +11339,7 @@ msgstr "Upozorenja o ugovorima"
 
 #: inc/entity.class.php:808 inc/entity.class.php:1847
 msgid "Send contract alarms before"
-msgstr "Pošalji upozorenja ugovora prije"
+msgstr "Pošalji upozorenja o ugovorima prije"
 
 #: inc/entity.class.php:818 inc/entity.class.php:1867
 #: inc/infocom.class.php:1263 inc/infocom.class.php:1842
@@ -11348,7 +11349,7 @@ msgstr "Upozorenja o financijskim i administrativnim podacima"
 
 #: inc/entity.class.php:828 inc/entity.class.php:1893
 msgid "Send financial and administrative information alarms before"
-msgstr "Pošalji upozorenja financijskih i administrativnih podataka prije"
+msgstr "Pošalji o financijskim i administrativnim podacima prije"
 
 #: inc/entity.class.php:838 inc/entity.class.php:1979
 #: inc/reservationitem.class.php:617
@@ -11380,7 +11381,7 @@ msgstr "Upozorenja o isteklim certifikatima"
 
 #: inc/entity.class.php:898
 msgid "Send Certificate alarms before"
-msgstr "Pošalji upozorenja certifikata prije"
+msgstr "Pošalji upozorenja o certifikatima prije"
 
 #: inc/entity.class.php:913 inc/entity.class.php:2137
 #: inc/profile.class.php:1013 inc/profile.class.php:2258
@@ -11555,7 +11556,7 @@ msgstr "Učestalost podsjetnika za upozorenja o potrošnom materijalu"
 
 #: inc/entity.class.php:1958
 msgid "Send certificates alarms before"
-msgstr "Pošalji upozorenja certifikata prije"
+msgstr "Pošalji upozorenja o certifikatima prije"
 
 #: inc/entity.class.php:1977 inc/event.class.php:150 inc/event.class.php:163
 #: inc/html.class.php:6369 inc/profile.class.php:726
@@ -12307,7 +12308,7 @@ msgstr ""
 
 #: inc/infocom.class.php:443
 msgid "Send alarms on financial and administrative information"
-msgstr "Pošalji upozorenja za financijske i administrativne podatke"
+msgstr "Pošalji upozorenja o financijskim i administrativnim podacima"
 
 #. TRANS: %1$s is the warranty end date and %2$s the name of the item
 #: inc/infocom.class.php:492
@@ -13842,7 +13843,7 @@ msgstr "Broj e-mailova za preuzimanje"
 
 #: inc/mailcollector.class.php:1764
 msgid "Send alarms on receiver errors"
-msgstr "Pošalji upozorenja za greške primatelja"
+msgstr "Pošalji upozorenja o greškama primanja poruka"
 
 #: inc/mailcollector.class.php:1920
 msgid ""
@@ -15069,11 +15070,11 @@ msgstr "Komentar kategorije"
 
 #: inc/notificationtargetcommonitilobject.class.php:1501
 msgid "User assigned to task"
-msgstr "Korisnik dodijeljen zadatku"
+msgstr "Zadatku dodijeljen korisnik"
 
 #: inc/notificationtargetcommonitilobject.class.php:1502
 msgid "Group assigned to task"
-msgstr "Grupa dodijeljena zadatku"
+msgstr "Zadatku dodijeljena grupa"
 
 #: inc/notificationtargetcommonitilobject.class.php:1553
 msgid "No defined category"
@@ -15118,7 +15119,7 @@ msgstr "Ugovor istekao"
 #: inc/notificationtargetcontract.class.php:123
 #: inc/notificationtargetcontract.class.php:158
 msgid "Contract with notice since the"
-msgstr "Ugovor s obavijesti od"
+msgstr "Ugovor s otkaznim rokom od"
 
 #: inc/notificationtargetcontract.class.php:128
 msgid "Contract reached the end of a period since the"
@@ -15126,7 +15127,7 @@ msgstr "Ugovor je dosegnuo kraj razdoblja"
 
 #: inc/notificationtargetcontract.class.php:133
 msgid "Contract with notice for the current period since the"
-msgstr "Ugovor sa zabilješkom za tekuće razdoblje"
+msgstr "Ugovor s otkaznim rokom za tekuće razdoblje od"
 
 #: inc/notificationtargetcrontask.class.php:99
 msgid ""
@@ -16288,7 +16289,7 @@ msgstr "Wifi"
 
 #: inc/problem.class.php:182
 msgid "Processing problem"
-msgstr "Problem obrade"
+msgstr "Problem s obradom"
 
 #: inc/problem.class.php:553 inc/ticket.class.php:3592
 msgctxt "status"
@@ -18442,7 +18443,7 @@ msgstr "Broj licenci"
 
 #: inc/softwarelicense.class.php:830
 msgid "Send alarms on expired licenses"
-msgstr "Pošalji upozorenja za istekle licence"
+msgstr "Pošalji upozorenja o isteklim licencama"
 
 #. TRANS: %1$s the license name, %2$s is the expiration date
 #: inc/softwarelicense.class.php:880
@@ -19511,7 +19512,7 @@ msgstr "Potrebno je definirati standardni profil za stvaranje novog korisnika"
 
 #: inc/user.class.php:548
 msgid "The login is not valid. Unable to add the user."
-msgstr "Ime korisnika nije važeće. Dodavanje korisnika nije moguće."
+msgstr "Prijava nije ispravna. Nije moguće dodati korisnika."
 
 #: inc/user.class.php:578
 msgid "Unable to add. The user already exists."
@@ -19596,11 +19597,11 @@ msgstr "Normalno"
 
 #: inc/user.class.php:2744
 msgid "Unable to update login. A user already exists."
-msgstr "Nije moguće aktualizirati ime za prijavu. Korisnik već postoji."
+msgstr "Nije moguće aktualizirati prijavu. Korisnik već postoji."
 
 #: inc/user.class.php:2752
 msgid "The login is not valid. Unable to update login."
-msgstr "Ime korisnika nije valjano. Nije moguće aktualizirati prijavu."
+msgstr "Prijava nije ispravna. Nije moguće aktualizirati prijavu."
 
 #: inc/user.class.php:2809
 msgid "Dissociate from a group"
@@ -19625,7 +19626,7 @@ msgstr "Promijeni način autentifikacije"
 
 #: inc/user.class.php:3032
 msgid "Last login"
-msgstr "Zadnje prijavljen/a"
+msgstr "Zadnja prijava"
 
 #: inc/user.class.php:3055
 msgid "LDAP directory for authentication"

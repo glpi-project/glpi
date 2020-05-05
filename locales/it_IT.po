@@ -2431,7 +2431,7 @@ msgstr "Importa nuovi utenti"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr ""
+msgstr "%1$s aggiunge l'elemento %2$s-%3$s:%4$s"
 
 #: front/lock.form.php:56
 #, php-format
@@ -8551,7 +8551,7 @@ msgstr "L'estensione \"%s\" è installata"
 #: inc/config.class.php:1545
 #, php-format
 msgid "%1$s memory usage is too low or too high"
-msgstr ""
+msgstr "%1$s la memoria in uso è troppo bassa o troppo elevata "
 
 #: inc/config.class.php:1548 inc/config.class.php:1625
 #, php-format
@@ -8560,17 +8560,17 @@ msgstr "L'utilizzo della memoria di %1$s è corretto"
 
 #: inc/config.class.php:1557
 msgid "Hits rate"
-msgstr "Quantità occorrenze"
+msgstr "Percentuale di successo"
 
 #: inc/config.class.php:1563
 #, php-format
 msgid "%1$s hits rate is low"
-msgstr ""
+msgstr "%1$s la percentuale di successo è bassa"
 
 #: inc/config.class.php:1566
 #, php-format
 msgid "%1$s hits rate is correct"
-msgstr "Il tasso di successo di %1$s è corretto"
+msgstr "la percentuale di successo %1$s è corretta"
 
 #: inc/config.class.php:1572
 msgid "Out of memory restart"
@@ -8579,7 +8579,7 @@ msgstr "Riavvio causa memoria esaurita"
 #: inc/config.class.php:1576
 #, php-format
 msgid "%1$s restart rate is too high"
-msgstr ""
+msgstr "%1$s la frequenza di riavvii è troppo alta"
 
 #: inc/config.class.php:1579
 #, php-format
@@ -8620,7 +8620,7 @@ msgstr "La cache di sistema \"%s\" è in uso"
 #: inc/config.class.php:1622
 #, php-format
 msgid "%1$s memory usage is too high"
-msgstr ""
+msgstr "%1$s la memoria in uso è troppo elevata"
 
 #: inc/config.class.php:1641
 #, php-format
@@ -11542,6 +11542,8 @@ msgid ""
 "Having troubles setting up an advanced GLPI module?\n"
 "We can help you solve them. Sign up for support on %s."
 msgstr ""
+"Problemi per la configurazione avanzata di un modulo GLPI?\n"
+"Possiamo aiutarti a risolverli. Iscriviti per ricevere supporto su %s."
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -19767,6 +19769,8 @@ msgstr "Aggiungi date_creation a %s"
 #: install/update_942_943.php:52
 msgid "Fix URL of images in ITIL tasks, followups and solutions."
 msgstr ""
+"Verifica URL delle immagini delle attività ITIL, dei commenti e delle "
+"soluzioni."
 
 #: install/update.php:137
 msgid "Update successful, your database is up to date"

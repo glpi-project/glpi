@@ -4,8 +4,8 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Kaya Zeren <kayazeren@gmail.com>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Kaya Zeren <kayazeren@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-03-10 10:18+0100\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Kaya Zeren <kayazeren@gmail.com>, 2020\n"
 "Language-Team: Turkish (Turkey) (https://www.transifex.com/glpi/teams/1637/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2425,7 +2425,7 @@ msgstr "Yeni kullanıcıları içe aktar"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr ""
+msgstr "%1$s, %2$s-%3$s:%4$s ögesini ekledi"
 
 #: front/lock.form.php:56
 #, php-format
@@ -3062,7 +3062,7 @@ msgstr[1] "E-posta sunucusu"
 
 #: front/setup.auth.php:58 inc/authmail.class.php:211
 msgid "Impossible to use email server as external source of connection"
-msgstr "Dış kimlik doğrulama kaynağı olarak e-posta sunucusu kullanılamıyor"
+msgstr "Dış bağlantı kaynağı olarak e-posta sunucusu kullanılamaz"
 
 #: front/setup.auth.php:62
 msgid "Others authentication methods"
@@ -8532,7 +8532,7 @@ msgstr "\"%s\" eklentisi kuruldu"
 #: inc/config.class.php:1545
 #, php-format
 msgid "%1$s memory usage is too low or too high"
-msgstr "%1$s tarafından kullanılan bellek çok az ya da çok fazla"
+msgstr "%1$s bellek kullanımı çok az ya da çok fazla"
 
 #: inc/config.class.php:1548 inc/config.class.php:1625
 #, php-format
@@ -8600,7 +8600,7 @@ msgstr "\"%s\" ön bellek sistemi kullanılıyor"
 #: inc/config.class.php:1622
 #, php-format
 msgid "%1$s memory usage is too high"
-msgstr "%1$s tarafından kullanılan bellek çok fazla"
+msgstr "%1$s bellek kullanımı çok fazla"
 
 #: inc/config.class.php:1641
 #, php-format

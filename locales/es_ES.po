@@ -2445,7 +2445,7 @@ msgstr "Importar nuevos usuarios"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr ""
+msgstr "%1$s añade el elemento %2$s-%3$s:%4$s"
 
 #: front/lock.form.php:56
 #, php-format
