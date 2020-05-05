@@ -857,7 +857,7 @@ var Dashboard = {
 
       // add new style
       if (dash_width > 700) {
-         $("<style id='gs_inline_css_"+this.rand+"'>")
+         $("<style id='gs_inline_css_"+this.rand+"'></style>")
             .prop("type", "text/css")
             .html(style)
             .appendTo("head");
