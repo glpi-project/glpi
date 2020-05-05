@@ -1988,8 +1988,8 @@ class KnowbaseItem extends CommonDBVisible {
 
       $values = [
          'id'     => $this->getID(),
-         'name'   => $revision->fields['name'],
-         'answer' => $revision->fields['answer']
+         'name'   => addslashes($revision->fields['name']),
+         'answer' => addslashes($revision->fields['answer'])
       ];
 
       if ($this->update($values)) {
