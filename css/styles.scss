@@ -6221,3 +6221,7 @@ with incorrect shading in some cases */
 .enabled {
    color: green !important;
 }
+
+input:disabled + .label-checkbox {
+   cursor: not-allowed;
+}
