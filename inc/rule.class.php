@@ -3164,5 +3164,11 @@ class Rule extends CommonDBTM {
       echo "</div>";
    }
 
+   public static function canCreate() {
+      return static::canUpdate();
+   }
 
+   public static function canPurge() {
+      return static::canUpdate();
+   }
 }
