@@ -28,6 +28,21 @@ The present file will list all changes made to the project; according to the
 - Usage of `CommonDBTM::notificationqueueonaction` property
 - `RuleImportComputer` and `RuleImportComputerCollection`
 
+- `Config::checkExtensions()`
+- `Plugin::checkGlpiParameters()`
+- `Plugin::checkGlpiPlugins()`
+- `Plugin::checkGlpiVersion()`
+- `Plugin::checkPhpExtensions()`
+- `Plugin::checkPhpParameters()`
+- `Plugin::checkPhpVersion()`
+- `Plugin::checkVersions()`
+- `Plugin::getGlpiPrever()`
+- `Plugin::getGlpiVersion()`
+- `Plugin::getPhpVersion()`
+- `Plugin::isGlpiPrever()`
+- `Plugin::messageIncompatible()`
+- `Plugin::messageMissingRequirement()`
+
 #### Removed
 - `Update::declareOldItems()`
 

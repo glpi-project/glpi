@@ -1700,8 +1700,11 @@ class Plugin extends CommonDBTM {
     * @since 9.2
     *
     * @return string
+    *
+    * @deprecated x.x.x
     */
    static public function messageIncompatible($type = 'core', $min = null, $max = null) {
+      Toolbox::deprecated();
       $type = ($type === 'core' ? __('GLPI') : __('PHP'));
       if ($min === null && $max !== null) {
          return sprintf(
@@ -1739,8 +1742,11 @@ class Plugin extends CommonDBTM {
     * @since 9.2
     *
     * @return string
+    *
+    * @deprecated x.x.x
     */
    static public function messageMissingRequirement($type, $name) {
+      Toolbox::deprecated();
       switch ($type) {
          case 'ext':
             return sprintf(
@@ -1785,8 +1791,11 @@ class Plugin extends CommonDBTM {
     * @param string $name System name (Plugin directory)
     *
     * @return boolean
+    *
+    * @deprecated x.x.x
     */
    public function checkVersions($name) {
+      Toolbox::deprecated();
       $infos = self::getInfo($name);
       $ret = true;
       if (isset($infos['requirements'])) {
@@ -1830,8 +1839,11 @@ class Plugin extends CommonDBTM {
     *                     One of min or max is required.
     *
     * @return boolean
+    *
+    * @deprecated x.x.x
     */
    public function checkGlpiVersion($infos) {
+      Toolbox::deprecated();
       if (!isset($infos['min']) && !isset($infos['max'])) {
          throw new \LogicException('Either "min" or "max" is required for GLPI requirements!');
       }
@@ -1868,8 +1880,11 @@ class Plugin extends CommonDBTM {
     *                     One of min or max is required.
     *
     * @return boolean
+    *
+    * @deprecated x.x.x
     */
    public function checkPhpVersion($infos) {
+      Toolbox::deprecated();
       $compat = true;
 
       if (isset($infos['min']) && isset($infos['max'])) {
@@ -1902,8 +1917,11 @@ class Plugin extends CommonDBTM {
     * @param array $exts Extensions lists/config @see Config::checkExtensions()
     *
     * @return boolean
+    *
+    * @deprecated x.x.x
     */
    public function checkPhpExtensions($exts) {
+      Toolbox::deprecated();
       $report = Config::checkExtensions($exts);
       if (count($report['missing'])) {
          foreach (array_keys($report['missing']) as $ext) {
@@ -1923,8 +1941,11 @@ class Plugin extends CommonDBTM {
     * @param array $params Expected parameters to be setup
     *
     * @return boolean
+    *
+    * @deprecated x.x.x
     */
    public function checkGlpiParameters($params) {
+      Toolbox::deprecated();
       global $CFG_GLPI;
 
       $compat = true;
@@ -1947,8 +1968,11 @@ class Plugin extends CommonDBTM {
     * @param array $params Expected parameters to be setup
     *
     * @return boolean
+    *
+    * @deprecated x.x.x
     */
    public function checkPhpParameters($params) {
+      Toolbox::deprecated();
       $compat = true;
       foreach ($params as $param) {
          if (!ini_get($param) || trim(ini_get($param)) == '') {
@@ -1969,8 +1993,11 @@ class Plugin extends CommonDBTM {
     * @param array $plugins Expected plugins
     *
     * @return boolean
+    *
+    * @deprecated x.x.x
     */
    public function checkGlpiPlugins($plugins) {
+      Toolbox::deprecated();
       $compat = true;
       foreach ($plugins as $plugin) {
          if (!$this->isInstalled($plugin) || !$this->isActivated($plugin)) {
@@ -1990,8 +2017,11 @@ class Plugin extends CommonDBTM {
     * @since 9.2
     *
     * @return string
+    *
+    * @deprecated x.x.x
     */
    public function getGlpiVersion() {
+      Toolbox::deprecated();
       return GLPI_VERSION;
    }
 
@@ -2002,8 +2032,11 @@ class Plugin extends CommonDBTM {
     * @since 9.2
     *
     * @return string
+    *
+    * @deprecated x.x.x
     */
    public function getGlpiPrever() {
+      Toolbox::deprecated();
       return GLPI_PREVER;
    }
 
@@ -2013,8 +2046,11 @@ class Plugin extends CommonDBTM {
     * @since 9.3
     *
     * @return string
+    *
+    * @deprecated x.x.x
     */
    public function isGlpiPrever() {
+      Toolbox::deprecated();
       return defined('GLPI_PREVER');
    }
 
@@ -2025,8 +2061,11 @@ class Plugin extends CommonDBTM {
     * @since 9.2
     *
     * @return string
+    *
+    * @deprecated x.x.x
     */
    public function getPhpVersion() {
+      Toolbox::deprecated();
       return PHP_VERSION;
    }
 
