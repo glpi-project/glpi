@@ -2497,29 +2497,30 @@ class Planning extends CommonGLPI {
    static function returnNewEventByType ($event, $content, $tooltip, $begin, $end, $index_color, $options) {
       $rule_event = [];
       $title = '';
-      $view_name = isset($options['view_name']) ? $options['view_name'] : "";
-      
-      switch ($view_name) {
-         case 'resourceTimeGridDay' :
-            if ($event['itemtype'] == TicketTask::class) {
+
+      if (isset($options['view_name'])) {
+         switch ($options['view_name']) {
+            case 'resourceTimeGridDay' :
+               if ($event['itemtype'] == TicketTask::class) {
                   $title = __('Ticket task');
-            } else if ($event['itemtype'] == ChangeTask::class) {
+               } else if ($event['itemtype'] == ChangeTask::class) {
                   $title = __('Change task');
-            } else if ($event['itemtype'] == ProblemTask::class) {
+               } else if ($event['itemtype'] == ProblemTask::class) {
                   $title = __('Problem task');
-            } else if ($event['itemtype'] == Reminder::class) {
+               } else if ($event['itemtype'] == Reminder::class) {
                   $title = __('Reminder');
-            } else if ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {
+               } else if ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {
                   $category = new PlanningEventCategory();
                   $category->getFromDB($event['event_cat']);
-               if ($category->fields > 0) {
+                  if ($category->fields > 0) {
                      $title = isset($category->fields["name"]) ? $category->fields["name"] : $event['name'];
+                  }
                }
-            }
-            break;
-         default :
+               break;
+            default :
                $title = $event['name'];
-            break;
+               break;
+         }
       }
 
       return             [ 'title'       => $title,
