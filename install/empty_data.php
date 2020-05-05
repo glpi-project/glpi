@@ -660,16 +660,18 @@ $tables['glpi_crontasks'] = [
 ];
 
 $dashboards_data = include_once __DIR__."/update_94_95/dashboards.php";
-$i = $j = 0;
+$tables['glpi_dashboards_dashboards'] = [];
+$tables['glpi_dashboards_items'] = [];
+$i = $j = 1;
 foreach ($dashboards_data as $default_dashboard) {
    $items = $default_dashboard['_items'];
    unset($default_dashboard['_items']);
-   $tables['glpi_dashboards_dashboards'] = array_merge([
+   $tables['glpi_dashboards_dashboards'][] = array_merge([
       'id' => $i
    ], $default_dashboard);
 
    foreach ($items as $item) {
-      $tables['glpi_dashboards_items'] = array_merge([
+      $tables['glpi_dashboards_items'][] = array_merge([
          'id' => $j,
          'dashboards_dashboards_id' => $i,
       ], $item);
