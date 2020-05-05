@@ -30,31 +30,37 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\System\Requirement;
+namespace Glpi\System\Requirement;
 
-class ExtensionFunction extends \GLPITestCase {
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-   public function testCheckOnExistingExtension() {
+/**
+ * @since 9.5.0
+ */
+class ExtensionCallback extends Extension {
 
-      $this->newTestedInstance('xml', 'utf8_decode');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['xml extension is installed.']);
+   /**
+    * Callback function that will be used during checks.
+    *
+    * @var callable
+    */
+   private $callback;
+
+   /**
+    * @param string   $name      Extension name.
+    * @param callable $callback  Callback function that will be used during checks.
+    * @param bool     $optional  Indicated if extension is optional.
+    */
+   public function __construct(string $name, callable $callback, bool $optional = false) {
+      parent::__construct($name, $optional);
+      $this->callback = $callback;
    }
 
-   public function testCheckOnMissingMandatoryExtension() {
-
-      $this->newTestedInstance('fake_ext', 'fake_extension_function');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is missing.']);
+   protected function check() {
+      $this->validated = call_user_func($this->callback);
+      $this->buildValidationMessage();
    }
 
-   public function testCheckOnMissingOptionalExtension() {
-
-      $this->newTestedInstance('fake_ext', 'fake_extension_function', true);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is not present.']);
-   }
 }

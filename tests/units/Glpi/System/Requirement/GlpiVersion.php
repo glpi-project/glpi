@@ -32,51 +32,63 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class PhpVersion extends \GLPITestCase {
+class GlpiVersion extends \GLPITestCase {
 
    protected function versionsProvider() {
       return [
          [
-            'min_version' => GLPI_MIN_PHP,
+            'min_version' => '9.3',
             'max_version' => null,
             'validated'   => true,
-            'messages'    => ['PHP version is >= ' . GLPI_MIN_PHP . '.']
+            'messages'    => ['GLPI version is >= 9.3.']
          ],
          [
-            'min_version' => '20.7',
+            'min_version' => '9.3.0',
+            'max_version' => null,
+            'validated'   => true,
+            'messages'    => ['GLPI version is >= 9.3.0.']
+         ],
+         [
+            'min_version' => '30.4',
             'max_version' => null,
             'validated'   => false,
-            'messages'    => ['PHP version must be >= 20.7.']
+            'messages'    => ['GLPI version must be >= 30.4.']
          ],
          [
             'min_version' => null,
-            'max_version' => '20.7',
+            'max_version' => '30.4',
             'validated'   => true,
-            'messages'    => ['PHP version is < 20.7.']
+            'messages'    => ['GLPI version is < 30.4.']
          ],
          [
             'min_version' => null,
-            'max_version' => GLPI_MIN_PHP,
-            'validated'   => false,
-            'messages'    => ['PHP version must be < ' . GLPI_MIN_PHP . '.']
-         ],
-         [
-            'min_version' => GLPI_MIN_PHP,
-            'max_version' => '20.7',
+            'max_version' => '30.4.3',
             'validated'   => true,
-            'messages'    => ['PHP version is >= ' . GLPI_MIN_PHP . ' and < 20.7.']
+            'messages'    => ['GLPI version is < 30.4.3.']
          ],
          [
-            'min_version' => '1.0',
-            'max_version' => GLPI_MIN_PHP,
+            'min_version' => null,
+            'max_version' => '9.3.0',
             'validated'   => false,
-            'messages'    => ['PHP version must be >= 1.0 and < ' . GLPI_MIN_PHP . '.']
+            'messages'    => ['GLPI version must be < 9.3.0.']
          ],
          [
-            'min_version' => '20.7',
-            'max_version' => '21.5',
+            'min_version' => '9.3.0',
+            'max_version' => '30.4',
+            'validated'   => true,
+            'messages'    => ['GLPI version is >= 9.3.0 and < 30.4.']
+         ],
+         [
+            'min_version' => '9.3',
+            'max_version' => '9.4.0',
             'validated'   => false,
-            'messages'    => ['PHP version must be >= 20.7 and < 21.5.']
+            'messages'    => ['GLPI version must be >= 9.3 and < 9.4.0.']
+         ],
+         [
+            'min_version' => '30.4',
+            'max_version' => '50.6',
+            'validated'   => false,
+            'messages'    => ['GLPI version must be >= 30.4 and < 50.6.']
          ],
       ];
    }

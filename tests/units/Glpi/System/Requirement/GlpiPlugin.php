@@ -32,29 +32,30 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class ExtensionFunction extends \GLPITestCase {
+class GlpiPlugin extends \GLPITestCase {
 
-   public function testCheckOnExistingExtension() {
-
-      $this->newTestedInstance('xml', 'utf8_decode');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['xml extension is installed.']);
+   protected function pluginProvider() {
+      return [
+         [
+            'plugin'    => 'tester',
+            'validated' => true,
+            'messages'  => ['GLPI plugin tester is installed and activated.']
+         ],
+         [
+            'plugin'    => 'unknown-plugin',
+            'validated' => false,
+            'messages'  => ['GLPI plugin unknown-plugin is required.']
+         ],
+      ];
    }
 
-   public function testCheckOnMissingMandatoryExtension() {
-
-      $this->newTestedInstance('fake_ext', 'fake_extension_function');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+   /**
+    * @dataProvider pluginProvider
+    */
+   public function testCheck(string $plugin, bool $validated, array $messages) {
+      $this->newTestedInstance($plugin);
+      $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is missing.']);
-   }
-
-   public function testCheckOnMissingOptionalExtension() {
-
-      $this->newTestedInstance('fake_ext', 'fake_extension_function', true);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is not present.']);
+         ->isEqualTo($messages);
    }
 }

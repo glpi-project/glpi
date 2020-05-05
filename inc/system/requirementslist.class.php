@@ -88,4 +88,29 @@ class RequirementsList implements \IteratorAggregate {
       }
       return false;
    }
+
+   /**
+    * Get validation messages from all requirements of the list.
+    *
+    * @param bool $with_validated   Include validated requirements
+    * @param bool $with_invalidated Include invalidated requirements
+    * @param bool $with_optionnal   Include optionnal requirements
+    *
+    * @return array
+    */
+   public function getValidationMessages(bool $with_validated = true, bool $with_invalidated = true, bool $with_optionnal = true): array {
+      $messages = [];
+
+      foreach ($this->requirements as $requirement) {
+         if ($requirement->isOutOfContext()
+             || ($requirement->isValidated() && !$with_validated)
+             || (!$requirement->isValidated() && !$with_invalidated)
+             || ($requirement->isOptional() && !$with_optionnal)) {
+            continue;
+         }
+         $messages = array_merge($messages, $requirement->getValidationMessages());
+      }
+
+      return $messages;
+   }
 }

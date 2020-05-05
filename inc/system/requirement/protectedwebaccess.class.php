@@ -106,11 +106,11 @@ class ProtectedWebAccess extends AbstractRequirement {
             fclose($fic);
 
             $this->validated = false;
-            $this->validation_messages[] = __('Web access to the files directory should not be allowed');
+            $this->validation_messages[] = __('Web access to the files directory should not be allowed.');
             $this->validation_messages[] = __('Check the .htaccess file and the web server configuration.');
          } else {
             $this->validated = true;
-            $this->validation_messages[] = __('Web access to files directory is protected');
+            $this->validation_messages[] = __('Web access to files directory is protected.');
          }
       } else {
          $this->validated = false;

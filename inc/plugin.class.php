@@ -40,6 +40,17 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
+use Glpi\System\Requirement\Extension;
+use Glpi\System\Requirement\ExtensionCallback;
+use Glpi\System\Requirement\ExtensionClass;
+use Glpi\System\Requirement\ExtensionFunction;
+use Glpi\System\Requirement\GlpiParameter;
+use Glpi\System\Requirement\GlpiPlugin;
+use Glpi\System\Requirement\GlpiVersion;
+use Glpi\System\Requirement\PhpParameter;
+use Glpi\System\Requirement\PhpVersion;
+use Glpi\System\Requirement\PlugCustomPrerequisites;
+use Glpi\System\RequirementsList;
 use Psr\SimpleCache\CacheInterface;
 
 class Plugin extends CommonDBTM {
@@ -543,29 +554,9 @@ class Plugin extends CommonDBTM {
          return;
       }
 
-      // Check that active state of plugin can be kept
-      $usage_ok = true;
-
-      // Check compatibility
-      ob_start();
-      if (!$this->checkVersions($plugin_key)) {
-         $usage_ok = false;
-      }
-      ob_end_clean();
-
-      // Check prerequisites
-      if ($usage_ok) {
-         $function = 'plugin_' . $plugin_key . '_check_prerequisites';
-         if (function_exists($function)) {
-            ob_start();
-            if (!$function()) {
-               $usage_ok = false;
-            }
-            ob_end_clean();
-         }
-      }
-
-      if (!$usage_ok) {
+      // Check requirements
+      $requirements = $this->getRequirementsList($plugin_key);
+      if ($requirements->hasMissingMandatoryRequirements()) {
          // Deactivate if not usable
          trigger_error(
             sprintf(
@@ -777,26 +768,16 @@ class Plugin extends CommonDBTM {
             return false;
          }
 
-         $function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
-         if (function_exists($function)) {
-            ob_start();
-            $do_activate = $function();
-            $msg = '';
-            if (!$do_activate) {
-               $msg = '<span class="error">' . ob_get_contents() . '</span>';
-            }
-            ob_end_clean();
-
-            if (!$do_activate) {
-               $this->unload($this->fields['directory']);
-
-               Session::addMessageAfterRedirect(
-                  sprintf(__('Plugin prerequisites are not matching, it cannot be activated.') . ' ' . $msg, $this->fields['name']),
-                  true,
-                  ERROR
-               );
-               return false;
-            }
+         $requirements = $this->getRequirementsList($this->fields['directory']);
+         if ($requirements->hasMissingMandatoryRequirements()) {
+            $this->unload($this->fields['directory']);
+            $msg = implode(' ', $requirements->getValidationMessages(false, true, false));
+            Session::addMessageAfterRedirect(
+               sprintf(__('Plugin prerequisites are not matching, it cannot be activated.') . ' ' . $msg, $this->fields['name']),
+               true,
+               ERROR
+            );
+            return false;
          }
 
          $function = 'plugin_' . $this->fields['directory'] . '_check_config';
@@ -1648,7 +1629,69 @@ class Plugin extends CommonDBTM {
    }
 
    /**
-    * Get an internationalized message for incompatible plugins (either core or php version)
+    * Returns requirement list for a plugin.
+    *
+    * @param string $plugin_key
+    *
+    * @return RequirementsList
+    */
+   public function getRequirementsList(string $plugin_key): RequirementsList {
+      $plugin_info = self::getInfo($plugin_key);
+
+      $requirements = [];
+
+      $check_function = 'plugin_' . $plugin_key . '_check_prerequisites';
+      if (function_exists($check_function)) {
+         $requirements[] = new PlugCustomPrerequisites($plugin_key);
+      }
+
+      $min_glpi = $plugin_info['requirements']['glpi']['min'] ?? null;
+      $max_glpi = $plugin_info['requirements']['glpi']['max'] ?? null;
+      if ($min_glpi !== null || $max_glpi !== null) {
+         $requirements[] = new GlpiVersion($min_glpi, $max_glpi);
+      }
+
+      $glpi_params = $plugin_info['requirements']['glpi']['params'] ?? [];
+      foreach ($glpi_params as $glpi_param) {
+         $requirements[] = new GlpiParameter($glpi_param);
+      }
+
+      $glpi_plugins = $plugin_info['requirements']['glpi']['plugins'] ?? [];
+      foreach ($glpi_plugins as $glpi_plugin) {
+         $requirements[] = new GlpiPlugin($glpi_plugin);
+      }
+
+      $min_php = $plugin_info['requirements']['php']['min'] ?? null;
+      $max_php = $plugin_info['requirements']['php']['max'] ?? null;
+      if ($min_php !== null || $max_php !== null) {
+         $requirements[] = new PhpVersion($min_php, $max_php);
+      }
+
+      $php_extensions = $plugin_info['requirements']['php']['exts'] ?? [];
+      foreach ($php_extensions as $php_extension => $params) {
+         $optional = $params['required'] ? !$params['required'] : true;
+         if (array_key_exists('call', $params)) {
+            $requirements[] = new ExtensionCallback($php_extension, $params['call'], $optional);
+         } else if (array_key_exists('function', $params)) {
+            $requirements[] = new ExtensionFunction($php_extension, $params['function'], $optional);
+         } else if (array_key_exists('class', $params)) {
+            $requirements[] = new ExtensionClass($php_extension, $params['class'], $optional);
+         } else {
+            $requirements[] = new Extension($php_extension, $optional);
+         }
+      }
+
+      $php_params = $plugin_info['requirements']['php']['params'] ?? [];
+      foreach ($php_params as $php_param) {
+         $requirements[] = new PhpParameter($php_param);
+      }
+
+      return new RequirementsList($requirements);
+   }
+
+
+   /**
+    * Get an internationnalized message for incomatible plugins (either core or php version)
     *
     * @param string $type Either 'php' or 'core', defaults to 'core'
     * @param string $min  Minimal required version
@@ -2229,26 +2272,23 @@ class Plugin extends CommonDBTM {
                   'fa-fw fa-toggle-on fa-2x enabled'
                ) . '&nbsp;';
             } else if ($state === self::NOTACTIVATED) {
+               $do_activate = true;
+
                // Activate button for configured and up to date plugins
-               ob_start();
-               $do_activate = $plugin->checkVersions($directory);
-               if (!$do_activate) {
-                  $output .= "<span class='error'>" . ob_get_contents() . "</span>";
-               }
-               ob_end_clean();
-               $function = 'plugin_' . $directory . '_check_prerequisites';
                if (!isset($PLUGIN_HOOKS['csrf_compliant'][$directory])
                    || !$PLUGIN_HOOKS['csrf_compliant'][$directory]) {
                   $output .= "<span class='error'>" . __('Not CSRF compliant') . "</span>";
                   $do_activate = false;
-               } else if (function_exists($function) && $do_activate) {
-                  ob_start();
-                  $do_activate = $function();
-                  if (!$do_activate) {
-                     $output .= '<span class="error">' . ob_get_contents() . '</span>';
-                  }
-                  ob_end_clean();
                }
+
+               $requirements = $plugin->getRequirementsList($directory);
+               if ($requirements->hasMissingMandatoryRequirements()) {
+                  $do_activate = false;
+                  $output .= '<span class="error">';
+                  $output .= implode(' ', $requirements->getValidationMessages(false, true, false));
+                  $output .= '</span>';
+               }
+
                if ($do_activate) {
                   $output .= Html::getSimpleForm(
                      static::getFormURL(),
@@ -2263,26 +2303,16 @@ class Plugin extends CommonDBTM {
             if (in_array($state, [self::ANEW, self::NOTINSTALLED, self::NOTUPDATED], true)) {
                // Install button for new, not installed or not up to date plugins
                if (function_exists("plugin_".$directory."_install")) {
+                  $do_install = true;
 
-                  $function   = 'plugin_' . $directory . '_check_prerequisites';
-
-                  ob_start();
-                  $do_install = $plugin->checkVersions($directory);
-                  if (!$do_install) {
-                     $output .= "<span class='error'>" . ob_get_contents() . "</span>";
+                  $requirements = $plugin->getRequirementsList($directory);
+                  if ($requirements->hasMissingMandatoryRequirements()) {
+                     $do_install = false;
+                     $output .= '<span class="error">';
+                     $output .= implode(' ', $requirements->getValidationMessages(false, true, false));
+                     $output .= '</span>';
                   }
-                  ob_end_clean();
 
-                  if ($do_install && function_exists($function)) {
-                     ob_start();
-                     $do_install = $function();
-                     $msg = '';
-                     if (!$do_install) {
-                        $msg = '<span class="error">' . ob_get_contents() . '</span>';
-                     }
-                     ob_end_clean();
-                     $output .= $msg;
-                  }
                   if ($state == self::NOTUPDATED) {
                      $msg = _x('button', 'Upgrade');
                   } else {

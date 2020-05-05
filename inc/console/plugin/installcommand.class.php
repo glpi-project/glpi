@@ -310,22 +310,17 @@ class InstallCommand extends AbstractPluginCommand {
       }
 
       // Check prerequisites
-      ob_start();
-      $requirements_met = $plugin->checkVersions($directory);
-      $check_function   = 'plugin_' . $directory . '_check_prerequisites';
-      if ($requirements_met && function_exists($check_function)) {
-         $requirements_met = $check_function();
-      }
-      $ob_contents = ob_get_contents();
-      ob_end_clean();
-      if (!$requirements_met) {
+      $requirements = $plugin->getRequirementsList($directory);
+      if ($requirements->hasMissingMandatoryRequirements()) {
+         // TODO Display hint for glpi:plugin:check_requirements command (as for GLPI installation command)
+         // once optionnal requirements will be handled for plugins (they are, for now, not displayed anywhere).
          $this->output->writeln(
-            [
-               '<error>' . sprintf(__('Plugin "%s" requirements not met.'), $directory) . '</error>',
-               '<error>' . $ob_contents . '</error>',
-            ],
+            '<error>' . sprintf(__('Plugin "%s" requirements not met.'), $directory) . '</error>',
             OutputInterface::VERBOSITY_QUIET
          );
+         foreach ($requirements->getValidationMessages(false, true, false) as $msg) {
+            $this->output->writeln('<error>' . $msg . '</error>', OutputInterface::VERBOSITY_QUIET);
+         }
          return false;
       }
 

@@ -43,7 +43,7 @@ class DbTimezones extends \GLPITestCase {
       $this->newTestedInstance($db);
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['Timezones seems loaded in database']);
+         ->isEqualTo(['Timezones seems loaded in database.']);
    }
 
    public function testCheckWithUnavailableTimezones() {

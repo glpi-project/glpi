@@ -30,31 +30,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\System\Requirement;
+namespace Glpi\System\Requirement;
 
-class ExtensionFunction extends \GLPITestCase {
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-   public function testCheckOnExistingExtension() {
+use Plugin;
 
-      $this->newTestedInstance('xml', 'utf8_decode');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['xml extension is installed.']);
+/**
+ * @since 9.5.0
+ */
+class GlpiPlugin extends AbstractRequirement {
+
+   /**
+    * GLPI plugin key.
+    *
+    * @var string
+    */
+   private $key;
+
+   /**
+    * @param string $key  GLPI plugin key
+    */
+   public function __construct(string $key) {
+      $this->title = sprintf(__('Testing GLPI plugin %s'), $key);
+      $this->key = $key;
    }
 
-   public function testCheckOnMissingMandatoryExtension() {
+   protected function check() {
+      $plugin = new Plugin();
 
-      $this->newTestedInstance('fake_ext', 'fake_extension_function');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is missing.']);
-   }
+      $this->validated = $plugin->isInstalled($this->key) && $plugin->isActivated($this->key);
 
-   public function testCheckOnMissingOptionalExtension() {
-
-      $this->newTestedInstance('fake_ext', 'fake_extension_function', true);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is not present.']);
+      $this->validation_messages[] = $this->validated
+         ? sprintf(__('GLPI plugin %s is installed and activated.'), $this->key)
+         : sprintf(__('GLPI plugin %s is required.'), $this->key);
    }
 }

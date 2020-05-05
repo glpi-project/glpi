@@ -39,28 +39,28 @@ if (!defined('GLPI_ROOT')) {
 /**
  * @since 9.5.0
  */
-class PhpVersion extends AbstractRequirement {
+class GlpiVersion extends AbstractRequirement {
 
    /**
-    * Minimal required PHP version.
+    * Minimal required GLPI version.
     *
     * @var string
     */
    private $min_version;
 
    /**
-    * Maximal required PHP version (exclusive).
+    * Maximal required GLPI version (exclusive).
     *
     * @var string|null
     */
    private $max_version;
 
    /**
-    * @param string $min_version  Minimal required PHP version
-    * @param string $max_version  Maximal required PHP version (exclusive)
+    * @param string $min_version  Minimal required GLPI version
+    * @param string $max_version  Maximal required GLPI version (exclusive)
     */
    public function __construct(?string $min_version = null, ?string $max_version = null) {
-      $this->title = __('Testing PHP Parser');
+      $this->title = __('Testing GLPI version');
       $this->min_version = $min_version;
       $this->max_version = $max_version;
    }
@@ -70,24 +70,24 @@ class PhpVersion extends AbstractRequirement {
          throw new \LogicException('Either min or max versions must be defined');
       }
 
-      $is_min_ok = $this->min_version !== null ? version_compare(PHP_VERSION, $this->min_version, '>=') : true;
-      $is_max_ok = $this->max_version !== null ? version_compare(PHP_VERSION, $this->max_version, '<') : true;
+      $glpiVersion = defined('GLPI_PREVER') ? GLPI_PREVER : GLPI_VERSION;
+      $is_min_ok = $this->min_version !== null ? version_compare($glpiVersion, $this->min_version, '>=') : true;
+      $is_max_ok = $this->max_version !== null ? version_compare($glpiVersion, $this->max_version, '<') : true;
 
       $this->validated = $is_min_ok && $is_max_ok;
 
       if ($this->min_version !== null && $this->max_version === null) {
          $this->validation_messages[] = $this->validated
-            ? sprintf(__('PHP version is >= %s.'), $this->min_version)
-            : sprintf(__('PHP version must be >= %s.'), $this->min_version);
+            ? sprintf(__('GLPI version is >= %s.'), $this->min_version)
+            : sprintf(__('GLPI version must be >= %s.'), $this->min_version);
       } else if ($this->min_version === null && $this->max_version !== null) {
          $this->validation_messages[] = $this->validated
-            ? sprintf(__('PHP version is < %s.'), $this->max_version)
-            : sprintf(__('PHP version must be < %s.'), $this->max_version);
+            ? sprintf(__('GLPI version is < %s.'), $this->max_version)
+            : sprintf(__('GLPI version must be < %s.'), $this->max_version);
       } else {
          $this->validation_messages[] = $this->validated
-            ? sprintf(__('PHP version is >= %s and < %s.'), $this->min_version, $this->max_version)
-            : sprintf(__('PHP version must be >= %s and < %s.'), $this->min_version, $this->max_version);
+            ? sprintf(__('GLPI version is >= %s and < %s.'), $this->min_version, $this->max_version)
+            : sprintf(__('GLPI version must be >= %s and < %s.'), $this->min_version, $this->max_version);
       }
    }
-
 }

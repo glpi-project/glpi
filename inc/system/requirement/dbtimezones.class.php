@@ -63,7 +63,7 @@ class DbTimezones extends AbstractRequirement {
          $this->validation_messages[] = $tz_warning;
       } else {
          $this->validated = true;
-         $this->validation_messages[] = __('Timezones seems loaded in database');
+         $this->validation_messages[] = __('Timezones seems loaded in database.');
       }
    }
 }

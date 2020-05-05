@@ -30,31 +30,42 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\System\Requirement;
+namespace Glpi\System\Requirement;
 
-class ExtensionFunction extends \GLPITestCase {
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-   public function testCheckOnExistingExtension() {
+/**
+ * @since 9.5.0
+ */
+class PlugCustomPrerequisites extends AbstractRequirement {
 
-      $this->newTestedInstance('xml', 'utf8_decode');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['xml extension is installed.']);
+   /**
+    * GLPI plugin key.
+    *
+    * @var string
+    */
+   private $key;
+
+   /**
+    * @param string $key  GLPI plugin key
+    */
+   public function __construct(string $key) {
+      $this->title = sprintf(__('Testing GLPI plugin %s custom prerequisites'), $key);
+      $this->key = $key;
    }
 
-   public function testCheckOnMissingMandatoryExtension() {
-
-      $this->newTestedInstance('fake_ext', 'fake_extension_function');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is missing.']);
-   }
-
-   public function testCheckOnMissingOptionalExtension() {
-
-      $this->newTestedInstance('fake_ext', 'fake_extension_function', true);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is not present.']);
+   protected function check() {
+      $check_function = 'plugin_' . $this->key . '_check_prerequisites';
+      if (function_exists($check_function)) {
+         ob_start();
+         $this->validated = $check_function();
+         $this->validation_messages[] = ob_get_contents();
+         ob_end_clean();
+      } else {
+         $this->out_of_context = true; // No function defined, this check has no valid context
+         $this->validated = true;
+      }
    }
 }
