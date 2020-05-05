@@ -664,22 +664,22 @@ $tables['glpi_dashboards_dashboards'] = [
    [
       "id"      => 1,
       "key"     => "central",
-      "name"    => "Central",
+      "name"    => __("Central"),
       "context" => "core",
    ], [
       "id"      => 2,
       "key"     => "assets",
-      "name"    => "Parc",
+      "name"    => __("Assets"),
       "context" => "core",
    ], [
       "id"      => 3,
       "key"     => "assistance",
-      "name"    => "Assistance",
+      "name"    => __("Assistance"),
       "context" => "core",
    ], [
       "id"      => 4,
       "key"     => "mini-tickets",
-      "name"    => "Mini tickets",
+      "name"    => __("Mini tickets dashboard"),
       "context" => "mini_core",
    ],
 ];
