@@ -244,7 +244,9 @@ var GLPIPlanning  = {
             // specific process for full list
             if (view.type == 'listFull') {
                // hide datepick on full list (which have virtually no limit)
-               $('#planning_datepicker')[0]._flatpickr.destroy();
+               if ("_flatpickr" in $('#planning_datepicker')[0]) {
+                  $('#planning_datepicker')[0]._flatpickr.destroy();
+               }
                $('#planning_datepicker').hide();
 
                // hide control buttons
