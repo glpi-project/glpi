@@ -1185,18 +1185,7 @@ class Problem extends CommonITILObject {
          }
       }
 
-      if (!$options['template_preview']) {
-         $this->showFormHeader($options);
-         if (isset($this->fields['_tasktemplates_id'])) {
-            foreach ($this->fields['_tasktemplates_id'] as $tasktemplates_id) {
-               echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
-            }
-         }
-      }
-
-      echo "<div class='spaced' id='tabsbody'>";
-
-      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<th class='left' width='$colsize1%'>";
@@ -1505,9 +1494,10 @@ class Problem extends CommonITILObject {
          }
 
          $this->showFormButtons($options);
+      } else {
+         echo "</table>";
+         echo "</div>";
       }
-      echo "</table>";
-      echo "</div>";
 
       return true;
 

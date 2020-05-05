@@ -7419,6 +7419,65 @@ abstract class CommonITILObject extends CommonDBTM {
       }
    }
 
+
+   function showFormHeader($options = []) {
+      $ID   = $this->fields['id'];
+      $rand = mt_rand();
+
+      if (!$options['template_preview']) {
+         echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
+                Ticket::getFormURL()."'>";
+         if (isset($options['_projecttasks_id'])) {
+            echo "<input type='hidden' name='_projecttasks_id' value='".$options['_projecttasks_id']."'>";
+         }
+         if (isset($this->fields['_tasktemplates_id'])) {
+            foreach ($this->fields['_tasktemplates_id'] as $tasktemplates_id) {
+               echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
+            }
+         }
+      }
+      echo "<div class='spaced' id='tabsbody'>";
+
+      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
+
+      // Optional line
+      $ismultientities = Session::isMultiEntitiesMode();
+      echo "<tr class='headerRow responsive_hidden'>";
+      echo "<th colspan='4'>";
+
+      if ($ID) {
+         $text = sprintf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+         if ($ismultientities) {
+            $text = sprintf(__('%1$s (%2$s)'), $text,
+                            Dropdown::getDropdownName('glpi_entities',
+                                                      $this->fields['entities_id']));
+         }
+         echo $text;
+      } else {
+         if ($ismultientities) {
+            printf(
+               __('The %s will be added in the entity %s'),
+               strtolower(static::getTypeName()),
+               Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id'])
+            );
+         } else {
+            echo sprintf(
+               __('New %'),
+               strtolower(static::getTypeName())
+            );
+         }
+      }
+
+      if ($this->maybeRecursive()) {
+         echo "&nbsp;<label for='dropdown_is_recursive$rand'>".__('Child entities')."</label>&nbsp;";
+         Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"], -1, ['rand' => $rand]);
+      }
+      echo "</th>";
+      echo "</tr>";
+
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$options]);
+   }
+
    /**
     * Summary of getITILActors
     * Get the list of actors for the current Change
