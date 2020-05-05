@@ -371,7 +371,7 @@ class Profile extends CommonDBTM {
 
       // Set default values, only needed for helpdesk
       $interface = isset($input['interface']) ? $input['interface'] : "";
-      if (!empty($interface) && $interface == "helpdesk" && !isset($input["_cycle_ticket"])) {
+      if ($interface == "helpdesk" && !isset($input["_cycle_ticket"])) {
          $tab   = array_keys(Ticket::getAllStatusArray());
          $cycle = [];
          foreach ($tab as $from) {
