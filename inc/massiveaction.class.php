@@ -1368,7 +1368,7 @@ class MassiveAction {
                $comment = $item->fields['comment'];
 
                if (is_null($comment) || $comment == "") {
-                  // If the comment was empty, use directly the amendmentt
+                  // If the comment was empty, use directly the amendment
                   $comment = $amendment;
                } else {
                   // If there is already a comment, insert some padding then
