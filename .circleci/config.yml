@@ -52,6 +52,7 @@ commands:
       - run:
           name: Install dependencies
           command: |
+            sudo rm -f /usr/local/etc/php/conf.d/docker-php-ext-sodium.ini
             composer --version
             echo "node version: $(node --version)"
             echo "npm version: $(npm --version)"
