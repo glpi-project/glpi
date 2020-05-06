@@ -114,11 +114,10 @@ class MailCollector extends DbTestCase {
          'is_active' => true
       ];
 
-      $this->array($this->testedInstance->prepareInput($oinput, 'add'))
-         ->isIdenticalTo([
-            'passwd'    => \Toolbox::sodiumEncrypt($oinput["passwd"]),
-            'is_active' => true
-         ]);
+      $prepared = $this->testedInstance->prepareInput($oinput, 'add');
+      $this->array($prepared)
+         ->boolean['is_active']->isTrue()
+         ->string['passwd']->isNotEqualTo($oinput['passwd']);
 
       //empty password means no password.
       $oinput = [
