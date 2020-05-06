@@ -207,7 +207,17 @@ class Contract extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "num");
       echo "</td>";
-      echo "<td colspan='2'></td></tr>";
+
+      $randDropdown = mt_rand();
+      echo "<td><label for='dropdown_states_id$randDropdown'>".__('Status')."</label></td>";
+      echo "<td>";
+      State::dropdown([
+         'value'     => $this->fields["states_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_visible_contract' => 1],
+         'rand'      => $randDropdown
+      ]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start date')."</td>";
@@ -666,6 +676,15 @@ class Contract extends CommonDBTM {
          'name'               => _x('phone', 'Number'),
          'datatype'           => 'string',
          'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => '31',
+         'table'              => 'glpi_states',
+         'field'              => 'completename',
+         'name'               => __('Status'),
+         'datatype'           => 'dropdown',
+         'condition'          => ['is_visible_contract' => 1]
       ];
 
       $tab[] = [
