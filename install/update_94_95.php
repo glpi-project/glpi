@@ -1784,6 +1784,24 @@ HTML
       );
    }
 
+   /** Appliances & webapps */
+   require __DIR__ . '/update_94_95/appliances.php';
+   /** /Appliances & webapps */
+
+   // ************ Keep it at the end **************
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $rank = 1;
+      foreach ($tab as $newval) {
+         $DB->updateOrInsert("glpi_displaypreferences", [
+            'rank'      => $rank++
+         ], [
+            'users_id'  => "0",
+            'itemtype'  => $type,
+            'num'       => $newval,
+         ]);
+      }
+   }
+
    // Add new field states in contract
    if (!$DB->fieldExists('glpi_states', 'is_visible_contract')) {
       $migration->addField('glpi_states', 'is_visible_contract', 'bool', [

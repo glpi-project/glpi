@@ -36,6 +36,7 @@
         "mexitek/phpcolors": "^0.4.0",
         "michelf/php-markdown": "^1.6",
         "monolog/monolog": "^2.0",
+        "paragonie/sodium_compat": "^1.13",
         "phpmailer/phpmailer": "^6.0",
         "psr/log": "^1.1",
         "psr/simple-cache": "^1.0",
@@ -66,13 +67,15 @@
         "sensiolabs/security-checker": "^6.0"
     },
     "replace": {
+        "paragonie/random_compat": "*",
         "symfony/polyfill-ctype": "*",
         "symfony/polyfill-intl-idn": "*",
         "symfony/polyfill-mbstring": "*",
         "symfony/polyfill-php72": "*"
     },
     "suggest": {
-        "ext-ldap": "Used to provide LDAP authentication and synchronization"
+        "ext-ldap": "Used to provide LDAP authentication and synchronization",
+        "ext-sodium": "Used to provide strong encryption for sensitive data in database"
     },
     "config": {
         "optimize-autoloader": true,

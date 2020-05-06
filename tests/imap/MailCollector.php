@@ -116,7 +116,7 @@ class MailCollector extends DbTestCase {
 
       $this->array($this->testedInstance->prepareInput($oinput, 'add'))
          ->isIdenticalTo([
-            'passwd'    => \Toolbox::encrypt($oinput["passwd"], GLPIKEY),
+            'passwd'    => \Toolbox::sodiumEncrypt($oinput["passwd"]),
             'is_active' => true
          ]);
 

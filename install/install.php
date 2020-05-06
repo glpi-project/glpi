@@ -368,6 +368,19 @@ function step4 ($databasename, $newdatabasename) {
       Html::closeForm();
    }
 
+   //create security key
+   $glpikey = new GLPIKey();
+   $secured = $glpikey->keyExists();
+   if (!$secured) {
+      $secured = $glpikey->generate();
+   }
+
+   if (!$secured) {
+      echo "<p><strong>".__('Security key cannot be generated!')."</strong></p>";
+      prev_form($host, $user, $password);
+      return;
+   }
+
    //Check if the port is in url
    $hostport = explode(":", $host);
    if (count($hostport) < 2) {
@@ -521,6 +534,7 @@ function step8() {
    Session::destroy(); // Remove session data (debug mode for instance) set by web installation
 
    echo "<h2>".__('The installation is finished')."</h2>";
+
    echo "<p>".__('Default logins / passwords are:')."</p>";
    echo "<p><ul><li> ".__('glpi/glpi for the administrator account')."</li>";
    echo "<li>".__('tech/tech for the technician account')."</li>";

@@ -89,6 +89,7 @@ class RequirementsManager {
       $requirements[] = new Extension('exif', true);
       $requirements[] = new Extension('zip', true);
       $requirements[] = new Extension('bz2', true);
+      $requirements[] = new Extension('sodium', true);
 
       if ($db instanceof \DBmysql) {
          $requirements[] = new DbEngine($db);

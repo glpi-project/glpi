@@ -1,4 +1,6 @@
 /config/config_db*
+/config/glpi.key
+/config/glpicrypt.key
 /config/local_define.php
 /tests/config_db*
 /marketplace/

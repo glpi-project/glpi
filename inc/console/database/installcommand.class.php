@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use DB;
+use GLPIKey;
 use Toolbox;
 
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -74,6 +75,13 @@ class InstallCommand extends AbstractConfigureCommand {
     * @var integer
     */
    const ERROR_MISSING_REQUIREMENTS = 8;
+
+   /**
+    * Error code returned when failing to create encryption key file.
+    *
+    * @var integer
+    */
+   const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 9;
 
    protected function configure() {
 
@@ -208,6 +216,14 @@ class InstallCommand extends AbstractConfigureCommand {
             );
             return 0;
          }
+      }
+
+      // Create security key
+      $glpikey = new GLPIKey();
+      if (!$glpikey->keyExists() && !$glpikey->generate()) {
+         $message = __('Security key cannot be generated!');
+         $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+         return self::ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE;
       }
 
       $mysqli = new \mysqli();

@@ -154,28 +154,6 @@ class AuthLDAP extends DbTestCase {
       $result = $ldap->prepareInputForUpdate($input);
       $this->array($result)->notHasKey('rootdn_passwd');
 
-      //rootdn_passwd is set with a value (a password, not encrypted)
-      $password = 'toto';
-      $input    = ['name' => 'ldap', 'rootdn_passwd' => $password];
-      $result   = $ldap->prepareInputForUpdate($input);
-
-      //Expected value to be encrypted using GLPIKEY key
-      $expected = \Toolbox::encrypt(stripslashes($password), GLPIKEY);
-      $this->string($result['rootdn_passwd'])->isIdenticalTo($expected);
-
-      $password = 'tot\'o';
-      $input    = ['name' => 'ldap', 'rootdn_passwd' => $password];
-      $result   = $ldap->prepareInputForUpdate($input);
-
-      //Expected value to be encrypted using GLPIKEY key
-      $expected = \Toolbox::encrypt(stripslashes($password), GLPIKEY);
-      $this->string($result['rootdn_passwd'])->isIdenticalTo($expected);
-
-      $input['_blank_passwd'] = 1;
-      $result   = $ldap->prepareInputForUpdate($input);
-      //rootdn_passwd is set but empty
-      $this->string($result['rootdn_passwd'])->isEmpty();
-
       //Field name finishing with _field : set the value in lower case
       $input['_login_field'] = 'TEST';
       $result         = $ldap->prepareInputForUpdate($input);
@@ -597,5 +575,49 @@ class AuthLDAP extends DbTestCase {
 
       $infos = ['objectguid' => 'value'];
       $this->string(\AuthLDAP::getFieldValue($infos, 'objectguid'))->isIdenticalTo('value');
+   }
+
+   public function testPassword() {
+      $ldap = new \AuthLDAP();
+      $id = (int)$ldap->add([
+         'name'        => 'LDAPcrypted',
+         'is_active'   => 1,
+         'is_default'  => 0,
+         'basedn'      => 'ou=people,dc=mycompany',
+         'login_field' => 'uid',
+         'phone_field' => 'phonenumber'
+      ]);
+      $this->integer($id)->isGreaterThan(0);
+
+      //rootdn_passwd is set with a value (a password, not encrypted)
+      $password = 'toto';
+      $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => $password];
+      $this->boolean($ldap->update($input))->isTrue();
+      $this->boolean($ldap->getFromDB($id))->isTrue();
+
+      //Expected value to be encrypted using current  key
+      $this->string(\Toolbox::sodiumDecrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
+
+      $password = 'tot\'o';
+      $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => $password];
+      $this->boolean($ldap->update($input))->isTrue();
+      $this->boolean($ldap->getFromDB($id))->isTrue();
+
+      //Expected value to be encrypted using current key
+      $this->string(\Toolbox::sodiumDecrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
+
+      $password = 'tot\'o';
+      $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => \Toolbox::addslashes_deep($password)];
+      $this->boolean($ldap->update($input))->isTrue();
+      $this->boolean($ldap->getFromDB($id))->isTrue();
+
+      //Expected value to be encrypted using current key
+      $this->string(\Toolbox::sodiumDecrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
+
+      $input['_blank_passwd'] = 1;
+      $result   = $ldap->prepareInputForUpdate($input);
+      //rootdn_passwd is set but empty
+      $this->string($result['rootdn_passwd'])->isEmpty();
+
    }
 }

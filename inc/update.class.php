@@ -163,7 +163,8 @@ class Update extends CommonGLPI {
       $updir = __DIR__ . "/../install/";
 
       if (isCommandLine() && version_compare($current_version, '0.72.3', 'lt')) {
-         die('Upgrade from command line is not supported before 0.72.3!');
+         echo 'Upgrade from command line is not supported before 0.72.3!';
+         die(1);
       }
 
       // Update process desactivate all plugins
@@ -511,6 +512,12 @@ class Update extends CommonGLPI {
       $crontask_telemetry->getFromDBbyName("Telemetry", "telemetry");
       $crontask_telemetry->resetDate();
       $crontask_telemetry->resetState();
+
+      //generate security key if missing, and update db
+      $glpikey = new GLPIKey();
+      if (!$glpikey->keyExists() && !$glpikey->generate()) {
+         $this->migration->displayWarning(__('Unable to create security key file!'), true);
+      }
    }
 
    /**

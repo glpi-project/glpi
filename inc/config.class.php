@@ -156,7 +156,7 @@ class Config extends CommonDBTM {
          if (empty($input["smtp_passwd"])) {
             unset($input["smtp_passwd"]);
          } else {
-            $input["smtp_passwd"] = Toolbox::encrypt(stripslashes($input["smtp_passwd"]), GLPIKEY);
+            $input["smtp_passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["smtp_passwd"]));
          }
       }
 
@@ -168,8 +168,7 @@ class Config extends CommonDBTM {
          if (empty($input["proxy_passwd"])) {
             unset($input["proxy_passwd"]);
          } else {
-            $input["proxy_passwd"] = Toolbox::encrypt(stripslashes($input["proxy_passwd"]),
-                                                      GLPIKEY);
+            $input["proxy_passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["proxy_passwd"]));
          }
       }
 
@@ -2060,6 +2059,8 @@ class Config extends CommonDBTM {
                  'check'   => 'GuzzleHttp\\Client' ],
                [ 'name'    => 'wapmorgan/unified-archive',
                  'check'   => 'wapmorgan\\UnifiedArchive\\UnifiedArchive' ],
+               [ 'name'    => 'paragonie/sodium_compat',
+                 'check'   => 'ParagonIE_Sodium_Compat' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
@@ -2523,6 +2524,9 @@ class Config extends CommonDBTM {
             ],
             'intl' => [
                'required' => true
+            ],
+            'sodium' => [
+               'required' => false
             ]
          ];
       } else {

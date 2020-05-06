@@ -27,6 +27,7 @@ The present file will list all changes made to the project; according to the
 
 - PHP error_reporting and display_errors configuration directives are no longer overrided by GLPI, unless in debug mode (which forces reporting and display of all errors).
 - `scripts/migrations/racks_plugin.php` has been replaced by `glpi:migration:racks_plugin_to_core` command available using `bin/console`
+- Encryption alogithm improved using libsodium
 
 ### API changes
 
@@ -114,6 +115,8 @@ The present file will list all changes made to the project; according to the
 - `ProjectCost::cloneProject()`
 - `ProjectTeam::cloneProjectTask()`
 - `ProjectTask::cloneProjectTeam()`
+- Usage of `GLPIKEY` constant
+- `Toolbox::encrypt()` and `Toolbox::decrypt()` because they use the old encryption aglogithm
 
 #### Removed
 

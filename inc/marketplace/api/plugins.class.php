@@ -64,7 +64,7 @@ class Plugins {
       // add proxy string if configured in glpi
       if (!empty($CFG_GLPI["proxy_name"])) {
          $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
-            ? $CFG_GLPI["proxy_user"].":".Toolbox::decrypt($CFG_GLPI["proxy_passwd"], GLPIKEY)."@"
+            ? $CFG_GLPI["proxy_user"].":".Toolbox::sodiumDecrypt($CFG_GLPI["proxy_passwd"])."@"
             : "";
          $proxy_string     = "http://{$proxy_creds}".$CFG_GLPI['proxy_name'].":".$CFG_GLPI['proxy_port'];
          $options['proxy'] = $proxy_string;

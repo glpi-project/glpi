@@ -462,7 +462,7 @@ JAVASCRIPT;
    }
 
    static function getToken(string $dasboard = "", int $entities_id = 0, int $is_recursive = 0): string {
-      $seed         = $dasboard.$entities_id.$is_recursive.GLPIKEY;
+      $seed         = $dasboard.$entities_id.$is_recursive.Telemetry::getInstanceUuid();
       $uuid         = Uuid::uuid5(Uuid::NAMESPACE_OID, $seed);
       $token        = $uuid->toString();
 

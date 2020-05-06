@@ -347,18 +347,21 @@ class Toolbox extends \GLPITestCase {
       ];
    }
 
-   /**
-    * @dataProvider encryptProvider
-    */
-   public function testEncrypt($string, $key, $expected) {
-      $this->string(\Toolbox::encrypt($string, $key))->isIdenticalTo($expected);
+   protected function sodiumEncryptProvider() {
+      return [
+         ['My string'],
+         ['keepmysecret'],
+         ['This is a strng I want to crypt, with some unusual chars like %, \', @, and so on!']
+      ];
    }
 
    /**
-    * @dataProvider encryptProvider
+    * @dataProvider sodiumEncryptProvider
     */
-   public function testDecrypt($expected, $key, $string) {
-      $this->string(\Toolbox::decrypt($string, $key))->isIdenticalTo($expected);
+   public function testSodiumEncrypt($string) {
+      $crypted = \Toolbox::sodiumEncrypt($string);
+      $this->string($crypted)->isNotEmpty();
+      $this->string(\Toolbox::sodiumDecrypt($crypted))->isIdenticalTo($string);
    }
 
    protected function cleanProvider() {

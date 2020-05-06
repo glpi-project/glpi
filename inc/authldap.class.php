@@ -193,8 +193,7 @@ class AuthLDAP extends CommonDBTM {
          if (empty($input["rootdn_passwd"])) {
             unset($input["rootdn_passwd"]);
          } else {
-            $input["rootdn_passwd"] = Toolbox::encrypt(stripslashes($input["rootdn_passwd"]),
-                                                       GLPIKEY);
+            $input["rootdn_passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["rootdn_passwd"]));
          }
       }
 
@@ -1457,7 +1456,7 @@ class AuthLDAP extends CommonDBTM {
          $port = $config_ldap->fields['port'];
       }
       $ds = self::connectToServer($host, $port, $config_ldap->fields['rootdn'],
-                                  Toolbox::decrypt($config_ldap->fields['rootdn_passwd'], GLPIKEY),
+                                  Toolbox::sodiumDecrypt($config_ldap->fields['rootdn_passwd']),
                                   $config_ldap->fields['use_tls'],
                                   $config_ldap->fields['deref_option']);
       if ($ds) {
@@ -2613,7 +2612,7 @@ class AuthLDAP extends CommonDBTM {
 
       return $this->connectToServer($this->fields['host'], $this->fields['port'],
                                     $this->fields['rootdn'],
-                                    Toolbox::decrypt($this->fields['rootdn_passwd'], GLPIKEY),
+                                    Toolbox::sodiumDecrypt($this->fields['rootdn_passwd']),
                                     $this->fields['use_tls'],
                                     $this->fields['deref_option']);
    }
@@ -2674,7 +2673,7 @@ class AuthLDAP extends CommonDBTM {
       }
       $ds = self::connectToServer($ldap_method['host'], $ldap_method['port'],
                                   $ldap_method['rootdn'],
-                                  Toolbox::decrypt($ldap_method['rootdn_passwd'], GLPIKEY),
+                                  Toolbox::sodiumDecrypt($ldap_method['rootdn_passwd']),
                                   $ldap_method['use_tls'], $ldap_method['deref_option']);
 
       // Test with login and password of the user if exists
@@ -2691,7 +2690,7 @@ class AuthLDAP extends CommonDBTM {
          foreach (self::getAllReplicateForAMaster($ldap_method['id']) as $replicate) {
             $ds = self::connectToServer($replicate["host"], $replicate["port"],
                                         $ldap_method['rootdn'],
-                                        Toolbox::decrypt($ldap_method['rootdn_passwd'], GLPIKEY),
+                                        Toolbox::sodiumDecrypt($ldap_method['rootdn_passwd']),
                                         $ldap_method['use_tls'], $ldap_method['deref_option']);
 
             // Test with login and password of the user
@@ -3445,7 +3444,7 @@ class AuthLDAP extends CommonDBTM {
 
       if (self::connectToServer($authldap->getField('host'), $authldap->getField('port'),
                                 $authldap->getField('rootdn'),
-                                Toolbox::decrypt($authldap->getField('rootdn_passwd'), GLPIKEY),
+                                Toolbox::sodiumDecrypt($authldap->getField('rootdn_passwd')),
                                 $authldap->getField('use_tls'),
                                 $authldap->getField('deref_option'))) {
          self::showLdapUsers();
@@ -3503,7 +3502,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if (isset($input["rootdn_passwd"]) && !empty($input["rootdn_passwd"])) {
-         $input["rootdn_passwd"] = Toolbox::encrypt(stripslashes($input["rootdn_passwd"]), GLPIKEY);
+         $input["rootdn_passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["rootdn_passwd"]));
       }
 
       return $input;

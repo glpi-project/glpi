@@ -138,7 +138,7 @@ class MailCollector  extends CommonDBTM {
          if (empty($input["passwd"])) {
             unset($input["passwd"]);
          } else {
-            $input["passwd"] = Toolbox::encrypt(stripslashes($input["passwd"]), GLPIKEY);
+            $input["passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["passwd"]));
          }
       }
 
@@ -1249,7 +1249,7 @@ class MailCollector  extends CommonDBTM {
       $params = [
          'host'      => $config['address'],
          'user'      => $this->fields['login'],
-         'password'  => Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
+         'password'  => Toolbox::sodiumDecrypt($this->fields['passwd']),
          'port'      => $config['port']
       ];
 
@@ -1291,7 +1291,7 @@ class MailCollector  extends CommonDBTM {
          $this->marubox = imap_open(
             $this->fields['host'],
             $this->fields['login'],
-            Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
+            Toolbox::sodiumDecrypt($this->fields['passwd']),
             CL_EXPUNGE,
             1
          );
@@ -1304,7 +1304,7 @@ class MailCollector  extends CommonDBTM {
             $this->marubox = imap_open(
                $this->fields['host'],
                $this->fields['login'],
-               Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
+               Toolbox::sodiumDecrypt($this->fields['passwd']),
                CL_EXPUNGE,
                1,
                $option
