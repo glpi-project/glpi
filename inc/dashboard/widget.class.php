@@ -276,6 +276,9 @@ HTML;
 
       $numbers_html = "";
       foreach ($p['data'] as $entry) {
+         if (!is_array($entry)) {
+            continue;
+         }
          $entry = array_merge($default_entry, $entry);
 
          $href = strlen($entry['url'])
@@ -290,6 +293,16 @@ HTML;
                <span class="label">{$entry['label']}</span>
             </a>
 HTML;
+      }
+
+      $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
+      if ($nodata) {
+         $numbers_html = "<span class='line empty-card no-data'>
+               <span class='content'>
+                  <i class='icon fas fa-exclamation-triangle'></i>
+               </span>
+               <span class='label'>".__('No data found')."</span>
+            <span>";
       }
 
       $html = <<<HTML
@@ -636,6 +649,9 @@ JAVASCRIPT;
       $series = [];
       $total = 0;
       foreach ($params['data'] as $entry) {
+         if (!is_array($entry)) {
+            continue;
+         }
          $entry = array_merge($default_entry, $entry);
          $total+= $entry['number'];
 
@@ -793,6 +809,14 @@ JAVASCRIPT;
          $palette_style = self::getCssGradientPalette($p['color'], $nb_gradients, "#chart-{$p['rand']}");
       }
 
+      $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
+      $no_data_html = "";
+      if ($nodata) {
+         $no_data_html = "<span class='empty-card no-data'>
+               <div>".__('No data found')."</div>
+            <span>";
+      }
+
       $html = <<<HTML
       <style>
       #chart-{$p['rand']} .ct-label {
@@ -807,7 +831,7 @@ JAVASCRIPT;
       <div class="card g-chart $class"
             id="chart-{$p['rand']}"
             style="background-color: {$p['color']}; color: {$fg_color}">
-         <div class="chart ct-chart"></div>
+         <div class="chart ct-chart">$no_data_html</div>
          <span class="main-label">{$p['label']}</span>
          <i class="main-icon {$p['icon']}"></i>
       </div>
