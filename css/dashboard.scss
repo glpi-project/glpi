@@ -605,6 +605,19 @@ $break_tablet: 1400px;
          height: 30px;
       }
 
+      .ct-chart-bar:not(.ct-horizontal-bars),
+      .ct-chart-line {
+         .ct-label:not(.ct-vertical) {
+            word-break: break-word;
+         }
+      }
+
+      .ct-chart-line {
+         .ct-label.ct-horizontal.ct-end {
+            transform: translateX(-40%);
+         }
+      }
+
       .ct-chart-donut {
          fill: none;
 

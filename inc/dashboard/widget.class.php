@@ -838,13 +838,20 @@ JAVASCRIPT;
 HTML;
 
       $horizontal_options = "";
-      $is_horizontal = "false";
+      $vertical_options   = "";
+      $is_horizontal      = "false";
       if ($p['horizontal']) {
          $is_horizontal = "true";
          $horizontal_options = "
             horizontalBars: true,
             axisY: {
                offset: 100
+            },
+         ";
+      } else {
+         $vertical_options = "
+            axisX: {
+               offset: 50,
             },
          ";
       }
@@ -882,6 +889,7 @@ HTML;
             chartPadding: 0,
             $distributed_options
             $horizontal_options
+            $vertical_options
             $stack_options
             plugins: [
                $legend_options
