@@ -4377,46 +4377,7 @@ class Ticket extends CommonITILObject {
       $colsize3 = '13';
       $colsize4 = '45';
 
-      if (!$options['template_preview']) {
-         echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
-                Ticket::getFormURL()."'>";
-         if (isset($options['_projecttasks_id'])) {
-            echo "<input type='hidden' name='_projecttasks_id' value='".$options['_projecttasks_id']."'>";
-         }
-         if (isset($this->fields['_tasktemplates_id'])) {
-            foreach ($this->fields['_tasktemplates_id'] as $tasktemplates_id) {
-               echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
-            }
-         }
-      }
-      echo "<div class='spaced' id='tabsbody'>";
-
-      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
-
-      // Optional line
-      $ismultientities = Session::isMultiEntitiesMode();
-      echo "<tr class='headerRow responsive_hidden'>";
-      echo "<th colspan='4'>";
-
-      if ($ID) {
-         $text = sprintf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
-         if ($ismultientities) {
-            $text = sprintf(__('%1$s (%2$s)'), $text,
-                            Dropdown::getDropdownName('glpi_entities',
-                                                      $this->fields['entities_id']));
-         }
-         echo $text;
-      } else {
-         if ($ismultientities) {
-            printf(__('The ticket will be added in the entity %s'),
-                   Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id']));
-         } else {
-            echo __('New ticket');
-         }
-      }
-      echo "</th></tr>";
-
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$options]);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>";
