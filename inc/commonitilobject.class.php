@@ -7426,7 +7426,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (!$options['template_preview']) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
-                Ticket::getFormURL()."'>";
+                static::getFormURL()."'>";
          if (isset($options['_projecttasks_id'])) {
             echo "<input type='hidden' name='_projecttasks_id' value='".$options['_projecttasks_id']."'>";
          }
