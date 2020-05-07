@@ -1004,7 +1004,7 @@ function update94to95() {
       'default_dashboard_central'     => 'central',
       'default_dashboard_assets'      => 'assets',
       'default_dashboard_helpdesk'    => 'helpdesk',
-      'default_dashboard_mini_ticket' => 'mini-tickets',
+      'default_dashboard_mini_ticket' => 'mini_tickets',
    ]);
    if (!$DB->fieldExists('glpi_users', 'default_dashboard_central')) {
       $migration->addField("glpi_users", "default_dashboard_central", "varchar(100) DEFAULT NULL");

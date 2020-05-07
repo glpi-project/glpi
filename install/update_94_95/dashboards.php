@@ -308,7 +308,7 @@ return [
          ]
       ]
    ], [
-      'key'     => 'mini-tickets',
+      'key'     => 'mini_tickets',
       'name'    => __("Mini tickets dashboard"),
       'context' => 'mini_core',
       '_items'  => [
