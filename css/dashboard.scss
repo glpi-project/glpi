@@ -599,6 +599,7 @@ $break_tablet: 1200px;
 
       .chart {
          flex: 1;
+         min-height: 0; // force firefox to respect flex-shrink on svg
       }
 
       .main-label {
