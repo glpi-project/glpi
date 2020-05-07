@@ -3102,6 +3102,10 @@ JAVASCRIPT;
          }
       }
 
+      if (in_array($searchtype, ["notequals", "notcontains"])) {
+         $NOT = !$NOT;
+      }
+
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
@@ -3173,10 +3177,6 @@ JAVASCRIPT;
                }
                break;
          }
-      }
-
-      if ($searchtype == "notcontains") {
-         $NOT = !$NOT;
       }
 
       return self::makeTextCriteria("`$NAME`", $val, $NOT, $LINK);
@@ -4589,9 +4589,6 @@ JAVASCRIPT;
                      $val = 1;
                   }
                }
-               if ($searchtype == 'notequals') {
-                  $nott = !$nott;
-               }
                // No break here : use number comparaison case
 
             case "count" :
@@ -4603,6 +4600,9 @@ JAVASCRIPT;
                $val     = preg_replace($search, $replace, $val);
 
                if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
+                  if (in_array($searchtype, ["notequals", "notcontains"])) {
+                     $nott = !$nott;
+                  }
                   if ($nott) {
                      if ($regs[1] == '<') {
                         $regs[1] = '>';
@@ -4613,8 +4613,13 @@ JAVASCRIPT;
                   $regs[1] .= $regs[2];
                   return $link." ($tocompute ".$regs[1]." ".$regs[3].") ";
                }
+
                if (is_numeric($val)) {
                   $numeric_val = floatval($val);
+
+                  if (in_array($searchtype, ["notequals", "notcontains"])) {
+                     $nott = !$nott;
+                  }
 
                   if (isset($searchopt[$ID]["width"])) {
                      $ADD = "";
@@ -7072,6 +7077,12 @@ JAVASCRIPT;
                       && !isset($searchopt[$field_num]['max'])) {
                      unset($opt['equals']);
                      unset($opt['notequals']);
+
+                     // https://github.com/glpi-project/glpi/issues/6917
+                     // change filter wording for numeric values to be more
+                     // obvious if the number dropdown will not be used
+                     $opt['contains']    = __('is');
+                     $opt['notcontains'] = __('is not');
                   }
                   return $opt;
 
