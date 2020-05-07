@@ -666,7 +666,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             'jointype'           => 'child'
          ]
       ];
-      
+
       $tab[] = [
          'id'                 => '173',
          'table'              => self::getTable(),
@@ -679,7 +679,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             'jointype'           => 'child'
          ]
       ];
-      
+
       return $tab;
    }
 }
