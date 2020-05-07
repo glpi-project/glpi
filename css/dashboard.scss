@@ -1,7 +1,7 @@
 $item_margin: 3px;
 $toolbar_height: 40px;
 $break_phones: 700px;
-$break_tablet: 1200px;
+$break_tablet: 1400px;
 
 @mixin soft-shadow {
    box-shadow:
@@ -526,7 +526,6 @@ $break_tablet: 1200px;
       font-weight: bold;
       display: block;
       max-width: calc(100% - 2.5em);
-      vertical-align: top;
 
       @media screen and (min-width: $break_phones) and (max-width: $break_tablet) {
          font-size: 1.1em;
