@@ -6585,7 +6585,6 @@ div.objectlockmessage > .form-group-checkbox {
       }
    }
    .kanban-form {
-      position: absolute;
       text-align: left;
       padding: 10px 10px 10px 10px;
       background-color: white;
@@ -6807,7 +6806,7 @@ div.objectlockmessage > .form-group-checkbox {
                   margin-top: 5px;
                   border-radius: 5px;
                   border: #d3d3d3 1px solid;
-                  width: 250px;
+                  min-width: 250px;
                   &.filtered-out {
                      display: none;
                   }
