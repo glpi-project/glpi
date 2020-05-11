@@ -32,6 +32,7 @@
 
 namespace tests\units;
 
+use CommonITILObject;
 use \DbTestCase;
 
 /* Test for inc/ticket.class.php */
@@ -2033,6 +2034,7 @@ class Ticket extends DbTestCase {
          $input + [
             'name'    => '',
             'content' => 'A ticket to check canTakeIntoAccount() results',
+            'status'  => CommonITILObject::ASSIGNED
          ]
       );
       $this->integer((int)$ticketId)->isGreaterThan(0);
