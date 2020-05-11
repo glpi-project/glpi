@@ -7105,7 +7105,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Check if this item is new
     *
-    * @return bool|null null if we can't check the status
+    * @return bool
     */
    protected function isNew() {
       if (isset($this->input['status'])) {
@@ -7113,7 +7113,7 @@ abstract class CommonITILObject extends CommonDBTM {
       } else if (isset($this->fields['status'])) {
          $status = $this->fields['status'];
       } else {
-         return null;
+         throw new LogicException("Can't get status value: no object loaded");
       }
 
       return $status == CommonITILObject::INCOMING;
