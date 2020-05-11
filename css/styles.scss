@@ -3761,6 +3761,12 @@ a.copyright {
       clear: both;
       padding-top: 8px;
       border-top: 1px dashed #D2D2D2;
+      display: flex;
+      flex-flow: row wrap;
+
+      &.right {
+         flex-direction: row-reverse;
+      }
    }
 
    .h_hidden {
@@ -3771,6 +3777,7 @@ a.copyright {
       float: left;
       width: 25%;
       max-width: 140px;
+      margin: 0 10px;
    }
 
    .right .h_info {
@@ -3879,8 +3886,7 @@ a.copyright {
       margin-bottom: 10px;
       min-height: 70px;
       position: relative;
-      margin-right: 0;
-      margin-left: 160px;
+      margin: 0 10px;
       word-wrap: break-word;
       display: flex;
 
@@ -4107,6 +4113,18 @@ a.copyright {
 
       &:hover {
          opacity: 1;
+      }
+   }
+}
+
+@media screen and (max-width: $break_sphones) {
+   .timeline_history {
+      .h_content {
+         width: 100%;
+      }
+      .middle .h_content {
+         max-width: inherit;
+         width: 100%;
       }
    }
 }
