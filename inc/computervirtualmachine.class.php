@@ -668,7 +668,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       ];
 
       $tab[] = [
-         'id'                 => '173',
+         'id'                 => '179',
          'table'              => self::getTable(),
          'field'              => 'comment',
          'name'               => __('Virtual machine Comment'),
