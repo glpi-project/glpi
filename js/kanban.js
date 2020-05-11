@@ -627,7 +627,7 @@
                } else {
                   list_item += "<input type='checkbox'/>";
                }
-               list_item += "<span class='kanban-color-preview' style='background-color: "+column['header_color']+"'/>";
+               list_item += "<span class='kanban-color-preview' style='background-color: "+column['header_color']+"'></span>";
                list_item += column['name'] + "</li>";
                list += list_item;
             });
@@ -814,8 +814,9 @@
                      card.appendTo($(target).find('.kanban-body').first());
                      pos = card.index();
                   }
-                  self.updateColumnCount(source);
-                  self.updateColumnCount(target);
+                  // Update counters. Always pass the column element instead of the kanban body (card container)
+                  self.updateColumnCount($(source).closest('.kanban-column'));
+                  self.updateColumnCount($(target).closest('.kanban-column'));
                   card.removeData('source-col');
                   updateCardPosition(card.attr('id'), target.id, pos);
                   return true;
@@ -1176,8 +1177,8 @@
          var bg_color = getBadgeColor(teammember);
 
          return "<span class='fa-stack fa-lg' style='font-size: " + (self.team_image_size / 2) + "px'>\
-                     <i class='fas fa-circle fa-stack-2x' style='color: " + bg_color + "' title='" + teammember['name']+ "'/>\
-                     <i class='fas " + icon + " fa-stack-1x' title='" + teammember['name']+ "'/>\
+                     <i class='fas fa-circle fa-stack-2x' style='color: " + bg_color + "' title='" + teammember['name']+ "'></i>\
+                     <i class='fas " + icon + " fa-stack-1x' title='" + teammember['name']+ "'></i>\
                   </span>";
       };
 
@@ -1270,9 +1271,9 @@
          var add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
          var form_header = "<div class='kanban-item-header'>";
          form_header += "<span class='kanban-item-title'>"+self.supported_itemtypes[itemtype]['name']+"</span>";
-         form_header += "<i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'/></div>";
+         form_header += "<i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i></div>";
          add_form += form_header;
-         add_form += "</div>";
+
          add_form += "<div class='kanban-item-content'>";
          $.each(self.supported_itemtypes[itemtype]['fields'], function(name, options) {
             var input_type = options['type'] !== undefined ? options['type'] : 'text';
@@ -1286,7 +1287,7 @@
                if (value !== undefined) {
                   add_form += " value='" + value + "'";
                }
-               add_form += "/>";
+               add_form += "></textarea>";
             } else if (input_type.toLowerCase() === 'raw') {
                add_form += value;
             } else {

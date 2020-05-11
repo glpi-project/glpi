@@ -5223,11 +5223,11 @@ JAVASCRIPT;
 
 
    /**
-    * Creates an accessible, styleable progress bar control.
+    * Creates an accessible, stylable progress bar control.
     * @since 9.5.0
     * @param int $max    The maximum value of the progress bar.
     * @param int $value    The current value of the progress bar.
-    * @param array $param  Array of options:
+    * @param array $params  Array of options:
     *                         - rand: Random int for the progress id. Default is a new random int.
     *                         - tooltip: Text to show in the tooltip. Default is nothing.
     *                         - append_percent_tt: If true, the percent will be appended to the tooltip.
@@ -5246,9 +5246,9 @@ JAVASCRIPT;
       $p = array_replace($p, $params);
 
       $tooltip = trim($p['tooltip'] . ($p['append_percent'] ? " {$value}%" : ''));
-      // Hide element except when using a screen reader. This uses FontAwesomes sr-only class.
+      // Hide element except when using a screen reader. This uses FontAwesome's sr-only class.
       $html = "<progress id='progress{$p['rand']}' class='sr-only' max='$max' value='$value'
-            onchange='updateProgress({$p['rand']})' title='{$tooltip}'/>";
+            onchange='updateProgress(\"{$p['rand']}\")' title='{$tooltip}'></progress>";
       // Custom progress control. Should be hidden for screen readers.
       $html .= "<div aria-hidden='true' data-progressid='{$p['rand']}'
          data-append-percent='{$p['append_percent']}' class='progress' title='{$tooltip}'>";
