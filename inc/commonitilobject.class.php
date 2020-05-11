@@ -7101,4 +7101,21 @@ abstract class CommonITILObject extends CommonDBTM {
       return array_key_exists('_do_not_compute_status', $input)
          && $input['_do_not_compute_status'];
    }
+
+   /**
+    * Check if this item is new
+    *
+    * @return bool|null null if we can't check the status
+    */
+   protected function isNew() {
+      if (isset($this->input['status'])) {
+         $status = $this->input['status'];
+      } else if (isset($this->fields['status'])) {
+         $status = $this->fields['status'];
+      } else {
+         return null;
+      }
+
+      return $status == CommonITILObject::INCOMING;
+   }
 }
