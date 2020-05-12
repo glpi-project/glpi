@@ -28,23 +28,11 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-/* ===== LOGIN ===== */
 
-#firstboxlogin {
-   background-color: #1B2F62;
-}
-
-#logo_login {
-   background: #3A5693;
-}
-
-#display-login {
-   color: #FFF;
-}
-
-#text-login {
-   background-color: #3A5693;
-   color: #FFF;
+:root {
+   --login-background-color: #1B2F62;
+   --login-header-background-color: #3A5693;
+   --login-text-color: white;
 }
 
 /* ====== GENERAL ====== */

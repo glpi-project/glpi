@@ -30,6 +30,10 @@
 */
 /* ################--------------- GLPI CSS style   ---------------#################### */
 
+// Import the default palette (Not based on GLPI instance preference). Only used for fallback.
+// Should almost always be overridden by the default/user-preferred palette.
+@import 'palettes/auror.scss';
+
 /* ################--------------- Media queries break   ---------------#################### */
 
 $break_sphones: 490px;
@@ -2774,6 +2778,7 @@ a.icon_nav_move {
    width: 100%;
    min-height: 100%;
    min-height: 100vh;
+   background-color: var(--login-background-color);
 
    /* double min-height, some old browser don't have vh units support*/
 }
@@ -2782,6 +2787,7 @@ a.icon_nav_move {
    margin: 0;
    padding: 38px 0;
    text-align: center;
+   background: var(--login-header-background-color);
 }
 #logo_login img {
    display: block; /* Prevent whitespace below element */
@@ -2797,12 +2803,14 @@ a.icon_nav_move {
    overflow-x: hidden;
    overflow-y: auto;
    box-sizing: border-box;
+   color: var(--login-text-color);
 }
 
 #boxlogin {
    padding-top: 10px;
    bottom: 0;
    width: 100%;
+   color: var(--login-text-color);
 
    .login_input {
       position: relative;
