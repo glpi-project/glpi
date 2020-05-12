@@ -46,9 +46,10 @@ class AuthLDAP extends DbTestCase {
       //make sure bootstrapped ldap is active and is default
       $this->boolean(
          $this->ldap->update([
-            'id'           => $this->ldap->getID(),
-            'is_active'    => 1,
-            'is_default'   => 1
+            'id'                => $this->ldap->getID(),
+            'is_active'         => 1,
+            'is_default'        => 1,
+            'responsible_field' => "manager",
          ])
       )->isTrue();
    }
@@ -1091,5 +1092,133 @@ class AuthLDAP extends DbTestCase {
             'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,DC=glpi,DC=org'
          )
       )->isTrue();
+   }
+
+   protected function testSyncWithManagerProvider() {
+      $dns = [
+         "Test Test",
+         "Test - Test",
+         "Test, Test",
+         "Test'Test",
+         "Test \ Test",
+      ];
+
+      $entry = [
+         'sn'           => 'Test',
+         'cn'           => 'Test',
+         'userpassword' => 'password',
+         'objectClass'  => [
+            'top',
+            'inetOrgPerson'
+         ]
+      ];
+
+      return array_map(function($dn, $key) use ($entry) {
+         $ret = [
+            'manager_dn' => $dn,
+            'manager_entry' => $entry,
+         ];
+
+         $ret['manager_entry']['uid'] = "ttest$key";
+         return $ret;
+      }, $dns, array_keys($dns));
+   }
+
+   /**
+    * @dataProvider testSyncWithManagerProvider
+    */
+   public function testSyncWithManager($manager_dn, array $manager_entry) {
+      // Static conf
+      $base_dn = "ou=people,ou=ldap3,dc=glpi,dc=org";
+      $user_full_dn = "uid=userwithmanager,$base_dn";
+      $escaped_manager_dn = ldap_escape($manager_dn, "", LDAP_ESCAPE_DN);
+      $manager_full_dn = "cn=$escaped_manager_dn,$base_dn";
+      $user_entry = [
+         'uid'          => 'userwithmanager' . $manager_entry['uid'],
+         'sn'           => 'A SN',
+         'cn'           => 'A CN',
+         'userpassword' => 'password',
+         'manager'      => $manager_full_dn,
+         'objectClass'  => [
+            'top',
+            'inetOrgPerson'
+         ]
+      ];
+
+      // Init ldap
+      $ldap = $this->ldap;
+      $ldap_con = $ldap->connect();
+
+      // Add the manager
+      $this
+         ->boolean(ldap_add($ldap_con, $manager_full_dn, $manager_entry))
+         ->isTrue(ldap_error($ldap_con));
+
+      // Add the user
+      $this
+         ->boolean(ldap_add($ldap_con, $user_full_dn, $user_entry))
+         ->isTrue(ldap_error($ldap_con));
+
+      // Import manager
+      $import_manager = \AuthLdap::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => $manager_entry['uid']
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this
+         ->array($import_manager)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      // Import user
+      $import_user = \AuthLdap::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => $user_entry['uid']
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this
+         ->array($import_user)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      // Check created manager
+      $manager = new \User();
+      $this->boolean($manager->getFromDB($import_manager['id']))->isTrue();
+
+      $this
+         ->array($manager->fields)
+         ->string['name']->isIdenticalTo($manager_entry['uid']);
+
+      // Compare dn in a case insensitive way as ldap_escape create filter in
+      // lowercase ("," -> \2c) but some ldap software store them in uppercase
+      $this
+         ->string(strtolower($manager->fields['user_dn']))
+         ->isIdenticalTo(strtolower($manager_full_dn));
+
+      // Check created user
+      $user = new \User();
+      $this->boolean($user->getFromDB($import_user['id']))->isTrue();
+
+      $this
+         ->array($user->fields)
+         ->string['name']->isIdenticalTo($user_entry['uid'])
+         ->string['user_dn']->isIdenticalTo("$user_full_dn")
+         ->string['users_id_supervisor']->isIdenticalTo($manager->fields['id']);
+
+      // Drop both
+      $this->boolean(ldap_delete($ldap->connect(), $user_full_dn))->isTrue();
+      $this->boolean(ldap_delete($ldap->connect(), $manager_full_dn))->isTrue();
+      $this->boolean($user->delete(['id' => $user->fields['id']]))->isTrue();
+      $this->boolean($user->delete(['id' => $manager->fields['id']]))->isTrue();
    }
 }
