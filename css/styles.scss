@@ -32,6 +32,7 @@
 
 // Import the default palette (Not based on GLPI instance preference). Only used for fallback.
 // Should almost always be overridden by the default/user-preferred palette.
+// If the default palette changes for new installs, it should also be changed here.
 @import 'palettes/auror.scss';
 
 /* ################--------------- Media queries break   ---------------#################### */
