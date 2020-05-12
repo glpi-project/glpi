@@ -33,21 +33,19 @@
    --login-background-color: #8EC547;
    --login-header-background-color: #459436;
    --login-text-color: #ffffff;
+
+   --submit-background-color: #8EC547;
+   --submit-text-color: #ffffff;
+
+   --breadcrumb-background-color: #F2F2F2;
+   --breadcrumb-active-background-color: #8EC547;
+   --breadcrumb-active-color: #D9FFA8;
+
+   --header-top-background-color: #459436;
+   --header-bottom-background-color: #8EC547;
 }
 
 /* ====== GENERAL ====== */
-
-a, .btn-linkstyled {
-   color: #459436;
-
-   &:link {
-      color: #459436;
-   }
-}
-
-.ui-widget-content a {
-   color: #459436;
-}
 
 .main_form tr.headerRow th {
    color: #93CC4A;
@@ -120,11 +118,6 @@ ul {
 }
 
 /* ====== PANEL COMPONENTS ====== */
-
-input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit {
-   background-color: #8ec547;
-   color: #fff;
-}
 
 /* Primary color elements (white on blue BG) designed to be overridden from palettes */
 /* Colors are same as #c_menu */

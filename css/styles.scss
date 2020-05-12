@@ -617,8 +617,8 @@ input {
       cursor: pointer;
       height: auto;
       font: bold 12px Arial, Helvetica;
-      color: #8f5a0a;
-      background-color: #FEC95C;
+      color: var(--submit-text-color);
+      background-color: var(--submit-background-color);
       border: 0;
       white-space: nowrap;
       display: inline-block;
@@ -630,8 +630,8 @@ input {
    cursor: pointer;
    height: auto;
    font: bold 12px Arial, Helvetica;
-   color: #8f5a0a;
-   background-color: #FEC95C;
+   color: var(--submit-text-color);
+   background-color: var(--submit-background-color);
    border: 0;
    white-space: nowrap;
    display: inline-block;
@@ -2987,6 +2987,7 @@ a.icon_nav_move {
    width: 100%;
    height: 20px;
    padding: 10px 0;
+   background-color: var(--header-top-background-color);
 }
 
 #c_preference {
@@ -3094,6 +3095,7 @@ a.icon_nav_move {
    height: 30px;
    text-align: center;
    padding-left: 95px;
+   background-color: var(--header-bottom-background-color);
 
    ul#menu {
       height: 30px;
@@ -3240,7 +3242,7 @@ ul#menu {
    min-height: 34px;
    padding: 3px 0;
    box-sizing: border-box;
-   background-color: #FFF;
+   background-color: var(--breadcrumb-bar-background-color);
 
    ul {
       left: 0px;
@@ -3252,7 +3254,7 @@ ul#menu {
 
          a {
             text-decoration: none;
-            color: #000;
+            color: var(--breadcrumb-bar-color);
          }
       }
    }
@@ -3275,7 +3277,7 @@ ul#menu {
    position: relative;
 }
 
-.breadcrumb_item {
+#c_ssmenu2 ul li.breadcrumb_item {
    &:before {
       left: 100%;
       top: 50%;
@@ -3310,18 +3312,19 @@ ul#menu {
    }
 
    &:nth-of-type(1), &:nth-of-type(2) {
-      background-color: #F2F2F2;
+      background-color: var(--breadcrumb-background-color);
 
       &:after {
-         border-left-color: #F2F2F2;
+         border-left-color: var(--breadcrumb-background-color);
       }
    }
 
-   &:nth-of-type(3) {
-      background-color: #FEC95C;
+   &:nth-of-type(3), &:nth-of-type(3) a, &:nth-of-type(3) a i {
+      background-color: var(--breadcrumb-active-background-color);
+      color: var(--breadcrumb-active-color) !important;
 
       &:after {
-         border-left-color: #FEC95C;
+         border-left-color: var(--breadcrumb-active-background-color);
       }
    }
 }
@@ -4368,8 +4371,8 @@ a.copyright {
    padding: 5px;
    cursor: pointer;
    font: bold 12px Arial, Helvetica;
-   color: #8f5a0a;
-   background-color: #FEC95C;
+   color: var(--submit-text-color);
+   background-color: var(--submit-background-color);
    border: none;
    border-radius: 0;
 
@@ -4935,7 +4938,6 @@ tr.log_history_filter_row {
 
    #c_ssmenu2 {
       overflow: auto;
-      border-bottom: 1px solid #DDD;
    }
 
    #header.nav-up {
@@ -5521,6 +5523,7 @@ span.count {
 
 /* Primary color elements (white on blue BG) designed to be overridden from palettes */
 /* Colors are same as #c_menu */
+/* TODO Use CSS Variables instead of these classes */
 
 .primary-bg {
    background: #3A5693;

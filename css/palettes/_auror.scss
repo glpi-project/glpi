@@ -33,21 +33,21 @@
    --login-background-color: #1B2F62;
    --login-header-background-color: #3A5693;
    --login-text-color: #ffffff;
+
+   --submit-background-color: #FEC95C;
+   --submit-text-color: #8F5A0A;
+
+   --breadcrumb-bar-background-color: #FFFFFF;
+   --breadcrumb-bar-color: #222000;
+   --breadcrumb-background-color: #F2F2F2;
+   --breadcrumb-active-background-color: #FEC95C;
+   --breadcrumb-active-color: #222000;
+
+   --header-top-background-color: #1B2F62;
+   --header-bottom-background-color: #3A5693;
 }
 
 /* ====== GENERAL ====== */
-
-a, .btn-linkstyled {
-   color: #3A5693;
-
-   &:link {
-      color: #3A5693;
-   }
-}
-
-.ui-widget-content a {
-   color: #3A5693;
-}
 
 .main_form tr.headerRow th {
    color: #8CABDB;
@@ -107,10 +107,4 @@ ul {
 
 #c_recherche form #champRecherche button {
    background-color: white;
-}
-
-/* ====== BUTTONS ====== */
-
-a.vsubmit, .vsubmit a {
-   color: #8f5a0a;
 }
