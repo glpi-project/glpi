@@ -150,7 +150,10 @@ class View extends CommonGLPI {
             array_push(
                $messages,
                __('Your GLPI Network registration is not valid'),
-               "<a href='$config_url'>".__("Set your registration key")."</a>"
+               __('A registration, at least a free one, is required to use marketplace!'),
+               "<a href='".GLPI_NETWORK_SERVICES."'>".__('Register on GLPI Network!')."</a> ".
+               __('and'). " ".
+               "<a href='$config_url'>".__("fill your registration key in setup")."</a>"
             );
          }
       }
@@ -911,17 +914,24 @@ HTML;
           && !isset($_SESSION['skip_marketplace_invitation'])
           && GLPI_INSTALL_MODE !== 'CLOUD') {
          echo "<form id='marketplace_dialog' method='POST'>";
+         echo Html::image($CFG_GLPI['root_doc']."/pics/screenshots/marketplace.png", [
+            'style' => 'width: 600px',
+         ]);
+         echo "<br><br>";
          echo __("GLPI provides a new marketplace to download and install plugins.");
          echo "<br><br>";
-         echo __("Do you want to replace the plugins setup page by the new marketplace ?");
+         echo "<b>".__("Do you want to replace the plugins setup page by the new marketplace ?")."</b>";
          echo "<hr><br>";
-         echo Html::submit(__('Yes'), [
+         echo Html::submit("<i class='fa fa-check'></i>&nbsp;".__('Yes'), [
             'name' => 'marketplace_replace_plugins_yes'
          ]);
-         echo Html::submit(__('No'), [
-            'name' => 'marketplace_replace_plugins_never'
-         ]);
-         echo Html::submit(__('Later'), [
+         echo "&nbsp;";
+         echo Html::submit("<i class='fa fa-times'></i>&nbsp;".__('No'), [
+            'name' => 'marketplace_replace_plugins_never',
+            'class' => 'secondary'
+            ]);
+         echo "&nbsp;";
+         echo Html::submit("<i class='fa fa-clock'></i>&nbsp;".__('Later'), [
             'name'  => 'marketplace_replace_plugins_later',
             'class' => 'secondary'
          ]);
@@ -932,6 +942,7 @@ HTML;
          echo Html::scriptBlock("$(document).ready(function() {
             $('#marketplace_dialog').dialog({
                'modal': true,
+               'width': 'auto',
                'title': \"".__("Switch to marketplace")."\"
             });
          });");
