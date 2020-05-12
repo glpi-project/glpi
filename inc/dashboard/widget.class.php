@@ -904,7 +904,9 @@ HTML;
          var nb_elements   = chart.data.labels.length;
          var bar_margin    = chart.options.seriesBarDistance;
 
-         if (!chart.options.stackBars && chart.data.series[0].hasOwnProperty('data')) {
+         if (!chart.options.stackBars
+             && chart.data.series.length > 0
+             && chart.data.series[0].hasOwnProperty('data')) {
             nb_elements = nb_elements * chart.data.series.length;
             bar_margin = 2 + (chart.options.seriesBarDistance / 2);
          }
