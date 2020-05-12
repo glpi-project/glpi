@@ -244,9 +244,9 @@ class Impact extends CommonGLPI {
          echo '<tr class="noHover">';
          echo '<th>'._n('Item', 'Items', 1).'</th>';
          echo '<th>'.__('Relation').'</th>';
-         echo '<th>'.Ticket::getTypeName(2).'</th>';
-         echo '<th>'.Problem::getTypeName(2).'</th>';
-         echo '<th>'.Change::getTypeName(2).'</th>';
+         echo '<th>'.Ticket::getTypeName(Session::getPluralNumber()).'</th>';
+         echo '<th>'.Problem::getTypeName(Session::getPluralNumber()).'</th>';
+         echo '<th>'.Change::getTypeName(Session::getPluralNumber()).'</th>';
          echo '<th width="50px"></th>';
          echo '</tr>';
          echo '</thead>';
