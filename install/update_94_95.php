@@ -999,13 +999,23 @@ function update94to95() {
       \Glpi\Dashboard\Dashboard::importFromJson($dashboards);
       Config::deleteConfigurationValues('core', ['dashboards']);
    }
+
+   //delete prevous dashboards configuration (remove partial dev versions)
+   Config::deleteConfigurationValues('core', [
+      'default_dashboard_central',
+      'default_dashboard_assets',
+      'default_dashboard_helpdesk',
+      'default_dashboard_mini_ticket',
+   ]);
+
    // add default dashboards
    $migration->addConfig([
       'default_dashboard_central'     => 'central',
       'default_dashboard_assets'      => 'assets',
-      'default_dashboard_helpdesk'    => 'helpdesk',
+      'default_dashboard_helpdesk'    => 'assistance',
       'default_dashboard_mini_ticket' => 'mini_tickets',
    ]);
+
    if (!$DB->fieldExists('glpi_users', 'default_dashboard_central')) {
       $migration->addField("glpi_users", "default_dashboard_central", "varchar(100) DEFAULT NULL");
    }
