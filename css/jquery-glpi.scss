@@ -28,24 +28,30 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+@import 'palettes/auror.scss';
+
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
-   border: 1px solid #FFF;
-   background-color: #e6e6e6;
-   color: #555555;
+   border: 1px solid var(--content-background);
+   background-color: var(--formtab-background-color);
+   color: var(--formtab-color);
+
+   a:link {
+      color: var(--formtab-color) !important;
+   }
 }
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
-   border: 1px solid #FFF;
-   background-color: #ffffff;
-   color: #212121;
+   border: 1px solid transparent;
+   background-color: transparent;
+   color: var(--formtab-color);
 }
 .ui-state-active a,
 .ui-state-active a:link,
 .ui-state-active a:visited {
-   color: #212121;
+   color: var(--formtab-color);
 }
 
 .ui-dialog { z-index: 1000 !important ;}
@@ -110,6 +116,10 @@
    padding: 1em;
    margin-left: 180px;
    float: center;
+}
+
+.ui-widget-content {
+   background-color: var(--content-background);
 }
 
 /* css styles for progress bar */

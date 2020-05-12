@@ -30,12 +30,37 @@
  */
 
 :root {
+   --brand-logo: url("../pics/fd_logo.png") 0 0 repeat-x;
    --login-background-color: #1B2F62;
    --login-header-background-color: #3A5693;
-   --login-text-color: #ffffff;
+   --login-text-color: #FFFFFF;
+
+   --default-font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   --default-font-size: 12px;
+   --default-icon-color: #222;
+   --default-text-color: #000000;
+
+   --page-background: #F8F7F3;
+
+   --content-background: #FFFFFF;
+   --content-box-shadow: 0px 1px 2px 1px #D2D2D2;
 
    --submit-background-color: #FEC95C;
    --submit-text-color: #8F5A0A;
+   --secondary-btn-background-color: #E6E6E6;
+   --secondary-btn-color: #5F5F5F;
+
+   --formtab-background-color: #E6E6E6;
+   --formtab-color: #454545;
+
+   --formheader-background-color: #F1F1F1;
+
+   --formfield-background-color: var(--content-background);
+   --formfield-color: var(--default-text-color);
+   --formfield-border: 1px solid #D3D3D3;
+
+   --link-color: #3A5693;
+   --link-hover-color: #000000;
 
    --breadcrumb-bar-background-color: #FFFFFF;
    --breadcrumb-bar-color: #222000;
@@ -45,66 +70,25 @@
 
    --header-top-background-color: #1B2F62;
    --header-bottom-background-color: #3A5693;
-}
+   --header-top-color: #FFFFFF;
+   --header-bottom-color: #FFFFFF;
 
-/* ====== GENERAL ====== */
+   --footer-background-color: #e2e1de;
+   --footer-color: var(--default-text-color);
 
-.main_form tr.headerRow th {
-   color: #8CABDB;
-}
+   --nav-current-color: #222000;
+   --nav-current-background-color: #8CABDB;
+   --nav-hover-color: #8CABDB;
+   --nav-hover-background-color: #3A5693;
 
-/* ====== HEADER ====== */
-
-#header_top {
-   background-color: #1B2F62;
-}
-
-#c_preference a, #language_link > span {
-   color: #C7DBF5;
-}
-
-#c_recherche form #champRecherche input {
-   background-color: #131425;
-   color: #C7DBF5;
-}
-
-#c_menu {
-   background-color: #3A5693;
-}
-
-ul {
-   &#menu {
-      a {
-         &.itemP, &.itemP1 {
-            color: #FFF;
-         }
-      }
-
-      > li.active {
-         background-color: #8CABDB;
-      }
-   }
-
-   &.ssmenu li.active {
-      background-color: #8CABDB;
-   }
-
-   &#menu {
-      > li:hover {
-         background-color: #8BAADA;
-      }
-
-      ul li a {
-         &:hover {
-            background: #3A5693;
-            color: #C7DBF5;
-         }
-
-         color: #131425;
-      }
-   }
-}
-
-#c_recherche form #champRecherche button {
-   background-color: white;
+   --table-header-background-color: #F8F8F8;
+   --table-header-hover-background-color: #F3F3F3;
+   --table-header-color: #2E2E2E;
+   --table-row-odd-background-color: #FFFFFF;
+   --table-row-odd-color: #000000;
+   --table-row-even-background-color: #FFFFFF;
+   --table-row-even-color: #000000;
+   --table-row-error-background-color: #cf9b9b;
+   --table-row-error-color: #000000;
+   --table-row-border: 1px solid #EEE;
 }

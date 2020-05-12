@@ -32,17 +32,29 @@
 :root {
    --login-background-color: #8EC547;
    --login-header-background-color: #459436;
-   --login-text-color: #ffffff;
+   --login-text-color: #FFFFFF;
 
    --submit-background-color: #8EC547;
-   --submit-text-color: #ffffff;
+   --submit-text-color: #FFFFFF;
+
+   --link-color: #459436;
+   --link-hover-color: #459436;
 
    --breadcrumb-background-color: #F2F2F2;
    --breadcrumb-active-background-color: #8EC547;
-   --breadcrumb-active-color: #D9FFA8;
+   --breadcrumb-active-color: #FFFFFF;
 
    --header-top-background-color: #459436;
    --header-bottom-background-color: #8EC547;
+   --header-top-color: #FFFFFF;
+   --header-bottom-color: #FFFFFF;
+
+   --nav-current-color: #FFFFFF;
+   --nav-current-background-color: #459436;
+   --nav-hover-color: #FFFFFF;
+   --nav-hover-background-color: #8EC547;
+
+   --table-header-background-color: #F1F1F1;
 }
 
 /* ====== GENERAL ====== */
@@ -51,23 +63,14 @@
    color: #93CC4A;
 }
 
-/* ====== HEADER ====== */
-
-#header_top {
-   background-color: #459436;
-}
-
-#c_preference a, #language_link > span {
-   color: #D9FFA8;
-}
-
 #c_recherche form #champRecherche input {
    background-color: #365731;
-   color: #D9FFA8;
-}
+   color: var(--header-top-color);
+   border: none !important;
 
-#c_menu {
-   background-color: #8EC547;
+   &::placeholder, &::-webkit-input-placeholder {
+      color: var(--header-top-color);
+   }
 }
 
 ul {
@@ -85,31 +88,6 @@ ul {
 
    &.ssmenu li.active {
       background-color: #459436;
-   }
-
-   &#menu {
-      > li.active > a {
-         color: #D9FFA8;
-      }
-
-      ul {
-         &.ssmenu li.active > a {
-            color: #D9FFA8;
-         }
-
-         li a {
-            &:hover {
-               background: #93CC4A;
-               color: #D9FFA8;
-            }
-
-            color: #459436;
-         }
-      }
-
-      > li:hover {
-         background-color: #93CC4A;
-      }
    }
 }
 
