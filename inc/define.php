@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2018 Teclib' and contributors.
+ * Copyright (C) 2015-2020 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -44,7 +44,7 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
    define("GLPI_SCHEMA_VERSION", '9.5.0');
 }
 define('GLPI_MIN_PHP', '7.2.0'); // Must also be changed in top of index.php
-define('GLPI_YEAR', '2019');
+define('GLPI_YEAR', '2020');
 
 //Define a global recipient address for email notifications
 //define('GLPI_FORCE_MAIL', 'me@localhost');
