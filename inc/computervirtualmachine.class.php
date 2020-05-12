@@ -345,6 +345,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<tr class='noHover'><th colspan='10'>".__('List of virtualized environments')."</th></tr>";
 
          $header = "<tr><th>".__('Name')."</th>";
+         $header .= "<th>".__('Comment')."</th>";
          if (Plugin::haveImport()) {
             $header .= "<th>".__('Automatic inventory')."</th>";
          }
@@ -363,6 +364,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             $vm->getFromDB($virtualmachine['id']);
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$vm->getLink()."</td>";
+            echo "<td>".$virtualmachine['comment']."</td>";
             if (Plugin::haveImport()) {
                echo "<td>".Dropdown::getYesNo($vm->isDynamic())."</td>";
             }
@@ -659,6 +661,19 @@ class ComputerVirtualMachine extends CommonDBChild {
          'field'              => 'uuid',
          'name'               => __('UUID'),
          'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '179',
+         'table'              => self::getTable(),
+         'field'              => 'comment',
+         'name'               => __('Virtual machine Comment'),
+         'forcegroupby'       => true,
+         'datatype'           => 'string',
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child'
