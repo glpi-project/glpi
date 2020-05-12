@@ -242,11 +242,11 @@ class Impact extends CommonGLPI {
          echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems-master impact-pointer"></i></h3></th>';
          echo '</tr>';
          echo '<tr class="noHover">';
-         echo '<th>Item</th>';
-         echo '<th>Relation</th>';
-         echo '<th>Incidents</th>';
-         echo '<th>Problems</th>';
-         echo '<th>Changes</th>';
+         echo '<th>'._n('Item', 'Items', 1).'</th>';
+         echo '<th>'.__('Relation').'</th>';
+         echo '<th>'.Ticket::getTypeName(Session::getPluralNumber()).'</th>';
+         echo '<th>'.Problem::getTypeName(Session::getPluralNumber()).'</th>';
+         echo '<th>'.Change::getTypeName(Session::getPluralNumber()).'</th>';
          echo '<th width="50px"></th>';
          echo '</tr>';
          echo '</thead>';

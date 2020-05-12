@@ -2272,9 +2272,10 @@ class Ticket extends CommonITILObject {
             ]
          ],
          'WHERE'     => [
-            'glpi_items_tickets.itemtype' => $itemtype,
-            'glpi_items_tickets.items_id' => $items_id,
-            $this->getTable() . '.type'   => $type,
+            'glpi_items_tickets.itemtype'    => $itemtype,
+            'glpi_items_tickets.items_id'    => $items_id,
+            $this->getTable() . '.is_deleted' => 0,
+            $this->getTable() . '.type'      => $type,
             'NOT'                         => [
                $this->getTable() . '.status' => array_merge(
                   $this->getSolvedStatusArray(),
