@@ -1598,7 +1598,7 @@ class Change extends CommonITILObject {
          'WHERE'     => [
             'glpi_changes_items.itemtype' => $itemtype,
             'glpi_changes_items.items_id'    => $items_id,
-            $this->getTable() . 'is_deleted' => 0,
+            $this->getTable() . '.is_deleted' => 0,
             'NOT'                         => [
                $this->getTable() . '.status' => array_merge(
                   $this->getSolvedStatusArray(),
