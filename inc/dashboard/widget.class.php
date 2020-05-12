@@ -809,7 +809,8 @@ JAVASCRIPT;
          $palette_style = self::getCssGradientPalette($p['color'], $nb_gradients, "#chart-{$p['rand']}");
       }
 
-      $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
+      $nodata = isset($p['data']['nodata']) && $p['data']['nodata']
+                || count($series) == 0;
       $no_data_html = "";
       if ($nodata) {
          $no_data_html = "<span class='empty-card no-data'>
