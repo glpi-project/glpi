@@ -1872,9 +1872,9 @@ class Problem extends CommonITILObject {
             ]
          ],
          'WHERE'     => [
-            'glpi_items_problems.itemtype' => $itemtype,
-            'glpi_items_problems.items_id' => $items_id,
-            'is_deleted'                  => 0,
+            'glpi_items_problems.itemtype'   => $itemtype,
+            'glpi_items_problems.items_id'   => $items_id,
+            $this->getTable() . 'is_deleted' => 0,
             'NOT'                         => [
                $this->getTable() . '.status' => array_merge(
                   $this->getSolvedStatusArray(),
