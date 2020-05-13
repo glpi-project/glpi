@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since 0.85
 **/
-class Project extends CommonDBTM {
+class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    use Kanban;
 
    // From CommonDBTM
@@ -383,7 +383,7 @@ class Project extends CommonDBTM {
     *
     * @return array
     */
-   static public function getVisibilityCriteria($forceall = false) {
+   static public function getVisibilityCriteria(bool $forceall = false): array {
       if (Session::haveRight('project', self::READALL)) {
          return [
             'LEFT JOIN' => [],

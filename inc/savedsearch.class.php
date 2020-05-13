@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since 9.2
 **/
-class SavedSearch extends CommonDBTM {
+class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
 
    static $rightname               = 'bookmark_public';
 
@@ -1463,7 +1463,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @return array
     */
-   static public function getVisibilityCriteria($forceall = false) {
+   static public function getVisibilityCriteria(bool $forceall = false): array {
       $criteria = ['WHERE' => []];
       if (Session::haveRight('config', UPDATE)) {
          return $criteria;

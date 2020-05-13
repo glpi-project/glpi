@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * KnowbaseItem Class
 **/
-class KnowbaseItem extends CommonDBVisible {
+class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
 
    // From CommonDBTM
@@ -495,7 +495,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return array
     */
-   static public function getVisibilityCriteria($forceall = false) {
+   static public function getVisibilityCriteria(bool $forceall = false): array {
       global $CFG_GLPI;
 
       $is_public_faq_context = !Session::getLoginUserID() && $CFG_GLPI["use_public_faq"];

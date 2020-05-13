@@ -59,7 +59,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since 0.84
 **/
-class RSSFeed extends CommonDBVisible {
+class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -248,7 +248,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @return array
     */
-   static public function getVisibilityCriteria($forceall = false) {
+   static public function getVisibilityCriteria(bool $forceall = false): array {
       $where = [self::getTable() . '.users_id' => Session::getLoginUserID()];
       $join = [];
 

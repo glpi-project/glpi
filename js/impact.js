@@ -1308,7 +1308,7 @@ var GLPIImpact = {
             id             : 'goTo',
             content        : '<i class="fas fa-link"></i>' + __("Go to"),
             tooltipText    : __("Open this element in a new tab"),
-            selector       : 'node[!color]',
+            selector       : 'node[link]',
             onClickFunction: this.menuOnGoTo
          },
          {
