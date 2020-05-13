@@ -149,7 +149,7 @@ class View extends CommonGLPI {
 
             array_push(
                $messages,
-               __('Your GLPI Network registration is not valid'),
+               __('Your GLPI Network registration is not valid.'),
                __('A registration, at least a free one, is required to use marketplace!'),
                "<a href='".GLPI_NETWORK_SERVICES."'>".__('Register on GLPI Network')."</a> ".
                __('and'). " ".
