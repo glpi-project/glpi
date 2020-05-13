@@ -153,7 +153,7 @@ class View extends CommonGLPI {
                __('A registration, at least a free one, is required to use marketplace!'),
                "<a href='".GLPI_NETWORK_SERVICES."'>".__('Register on GLPI Network')."</a> ".
                __('and'). " ".
-               "<a href='$config_url'>".__("fill your registration key in setup")."</a>"
+               "<a href='$config_url'>".__("fill your registration key in setup.")."</a>"
             );
          }
       }
