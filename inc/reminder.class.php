@@ -43,7 +43,10 @@ use Sabre\VObject\Component\VTodo;
 /**
  * Reminder Class
 **/
-class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface {
+class Reminder extends CommonDBVisible implements
+   CalDAVCompatibleItemInterface,
+   ExtraVisibilityCriteria
+{
    use PlanningEvent {
       post_getEmpty as trait_post_getEmpty;
    }
@@ -239,7 +242,7 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
     *
     * @return array
     */
-   static public function getVisibilityCriteria($forceall = false) {
+   static public function getVisibilityCriteria(bool $forceall = false): array {
       if (!Session::haveRight(self::$rightname, READ)) {
          return [
             'WHERE' => ['glpi_reminders.users_id' => Session::getLoginUserID()],

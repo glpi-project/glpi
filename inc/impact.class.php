@@ -852,6 +852,14 @@ class Impact extends CommonGLPI {
          );
       }
 
+      // Return empty result if the user doesn't have READ rights
+      if (!Session::haveRight($itemtype::$rightname, READ)) {
+         return [
+            "items" => [],
+            "total" => 0
+         ];
+      }
+
       // This array can't be empty since we will use it in the NOT IN part of the reqeust
       if (!count($used)) {
          $used[] = -1;
@@ -859,20 +867,28 @@ class Impact extends CommonGLPI {
 
       // Search for items
       $filter = strtolower($filter);
+      $table = $itemtype::getTable();
       $base_request = [
-         'FROM'   => $itemtype::getTable(),
+         'FROM'   => $table,
          'WHERE'  => [
             'RAW' => [
-               'LOWER(' . DBmysql::quoteName('name') . ')' => ['LIKE', "%$filter%"]
+               'LOWER(' . DBmysql::quoteName("$table.name") . ')' => ['LIKE', "%$filter%"]
             ],
             'NOT' => [
-               'id' => $used
+               "$table.id" => $used
             ],
          ] + getEntitiesRestrictCriteria($itemtype::getTable()),
       ];
 
+      if (is_subclass_of($itemtype, "ExtraVisibilityCriteria", true)) {
+         $base_request = array_merge_recursive(
+            $base_request,
+            $itemtype::getVisibilityCriteria()
+         );
+      }
+
       $select = [
-         'SELECT' => ['id', 'name'],
+         'SELECT' => ["$table.id", "$table.name"],
       ];
       $limit = [
          'START' => $page * 20,
@@ -890,7 +906,7 @@ class Impact extends CommonGLPI {
 
       return [
          "items" => iterator_to_array($rows, false),
-         "total" =>  iterator_to_array($total, false)[0]['total'],
+         "total" => iterator_to_array($total, false)[0]['total'],
       ];
    }
 
@@ -928,6 +944,11 @@ class Impact extends CommonGLPI {
 
       echo '<div class="impact-side-filter-itemtypes-items">';
       foreach ($CFG_GLPI["impact_asset_types"] as $itemtype => $icon) {
+         // Do not display this itemtype if the user doesn't have READ rights
+         if (!Session::haveRight($itemtype::$rightname, READ)) {
+            continue;
+         }
+
          $icon = self::checkIcon($icon);
 
          echo '<div class="impact-side-filter-itemtypes-item">';
@@ -1201,8 +1222,12 @@ class Impact extends CommonGLPI {
          'name'        => $item->fields['name'],
          'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
          'ITILObjects' => $item->getITILTickets(true),
-         'link'        => $item->getLinkURL(),
       ];
+
+      // Only set GOTO link if the user have READ rights
+      if ($item::canView()) {
+         $new_node['link'] = $item->getLinkURL();
+      }
 
       // Set incident badge if needed
       if (count($new_node['ITILObjects']['incidents'])) {
