@@ -2134,7 +2134,7 @@ JAVASCRIPT;
 
                   if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])
                         && is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
-                     echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'";
+                     echo "<a href='".Plugin::getWebDir($key).$val['page']."'";
                   } else {
                      echo "<a href='".$CFG_GLPI["root_doc"].$val['page']."'";
                   }
@@ -7031,7 +7031,7 @@ JAVASCRIPT;
 
             // list menu item
             foreach ($menu['plugins']['content'] as $key => $val) {
-               echo "<li><a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'>".
+               echo "<li><a href='".Plugin::getWebDir($key).$val['page']."'>".
                         $val["title"]."</a></li>";
             }
             echo "</ul></li>";
