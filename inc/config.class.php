@@ -887,12 +887,24 @@ class Config extends CommonDBTM {
                                                      20 => 20],
                                          'rand'  => $rand]);
       echo "</td>";
+
+
+
+      echo "<tr>";
       echo "<td width='30%'><label for='dropdown_planning_begin$rand'>" .__('Limit of the schedules for planning') . "</label></td>";
       echo "<td width='20%'>";
       Dropdown::showHours('planning_begin', ['value' => $CFG_GLPI["planning_begin"], 'rand' => $rand]);
       echo "&nbsp;<label for='dropdown_planning_end$rand'>-></label>&nbsp;";
       Dropdown::showHours('planning_end', ['value' => $CFG_GLPI["planning_end"], 'rand' => $rand]);
-      echo "</td></tr>";
+      echo "</td>";
+      echo "<td width='30%'><label for='dropdown_planning_days$rand'>" . __('Limit of days for planning'). "</label></td>";
+      echo "<td>";
+      Dropdown::showFromArray('planning_days', Toolbox::getDaysOfWeekArray(), ['values'   => $CFG_GLPI['planning_days'],
+                                                                               'width'    => '100%',
+                                                                               'multiple' => true,
+                                                                               'rand'     => $rand]);
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_default_mailcollector_filesize_max$rand'>".__('Default file size limit imported by the mails receiver')."</label></td><td>";
@@ -1262,15 +1274,6 @@ class Config extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-
-      echo "<td><label for='dropdown_days_planning$rand'>" . __('Days to display (timeline Week / day)')."</label></td><td>";
-
-      Dropdown::showFromArray('planning_days', Toolbox::getDaysOfWeekArray(),
-                                 ['values'   => $CFG_GLPI['planning_days'],
-                                  'width'    => '100%',
-                                  'multiple' => true,
-                                  'rand'     => $rand]);
-      echo "</td>";
 
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";

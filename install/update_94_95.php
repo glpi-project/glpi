@@ -1414,6 +1414,10 @@ HTML
          $ditem->add($doc_input);
       }
    }
+   /** Add default days for planning */
+   $migration->addConfig(['planning_days'     => '[]']);
+   /** Add default days for planning */
+
    /** /A doc_item to rule them all! */
 
    /** Appliances & webapps */
@@ -1783,11 +1787,6 @@ HTML
          ]
       );
    }
-
-   // Add values planning_days in glpi_config to manage displayed days in new timeline view
-      $query = "INSERT INTO `glpi_configs` (`glpi_configs`.`context` ,`glpi_configs`.`name`, `glpi_configs`.`value`) 
-            VALUES ('core','planning_days','[1,2,3,4,5,6,7]');";
-      $DB->queryOrDie($query, 'insert new line planning_days in glpi_configs');
 
    $migration->executeMigration();
 

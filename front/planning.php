@@ -36,10 +36,6 @@ if (!isset($_GET['genical'])) {
    Session::checkRight("planning", READ);
 }
 
-if (isset($CFG_GLPI['planning_days'])) {
-   $CFG_GLPI['planning_days'] =  Planning::getHiddenDays($CFG_GLPI['planning_days']);
-}
-
 if (!isset($_GET["uID"])) {
    if (($uid = Session::getLoginUserID())
        && !Session::haveRight("planning", Planning::READALL)) {

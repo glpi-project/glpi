@@ -1748,8 +1748,8 @@ class Planning extends CommonGLPI {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
                         $event['users_id']);
-         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, 'in', false, $options);
-         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, 'in', true, $options);
+         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, 'in', false, $options['view_name']);
+         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, 'in', true, $options['view_name']);
 
          // dates should be set with the user timezone
          $begin = $event['begin'];
@@ -1766,7 +1766,7 @@ class Planning extends CommonGLPI {
          $ms_duration = (strtotime($end) - strtotime($begin)) * 1000;
 
          $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']));
-         $new_event = self::returnNewEventByType($event, $content, $tooltip, $begin, $end, $index_color, $options);
+         $new_event = self::returnNewEventByType($event, $content, $tooltip, $begin, $end, $index_color, $options['view_name']);
 
          // if we can't update the event, pass the editable key
          if (!$event['editable']) {
@@ -2193,11 +2193,11 @@ class Planning extends CommonGLPI {
     * @param $type            position of the item in the time block (in, through, begin or end)
     *                         (default '')
     * @param $complete        complete display (more details) (default 0)
-    * @param $options         allow to have planning typeview
+    * @param $viewname        name of the current planning view
     *
     * @return string
    **/
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options = []) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $viewname) {
       $html = "";
 
       // bg event shouldn't have content displayed
@@ -2207,34 +2207,12 @@ class Planning extends CommonGLPI {
 
       // Plugins case
       if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
-         $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete, $options);
+         $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete, $viewname);
       }
 
       return $html;
    }
 
-   /**
-    * Reformat choosen days to display to hidden days for
-    * Timelineweekbyday view
-    *
-    * @param $display_days
-    *
-    * @return hiddendays array
-    */
-   static function getHiddenDays($display_days) {
-      $hiddenDays = [];
-      //reformat display_days
-      foreach ($display_days as $key => $display_day) {
-         $reformat_display_days[$display_day] = $display_days;
-      }
-      $days = [0,1,2,3,4,5,6];
-      foreach ($days as $day) {
-         if (!array_key_exists($day, $reformat_display_days)) {
-            $hiddenDays[] = $day;
-         }
-      }
-      return $hiddenDays;
-   }
 
    /**
     * Show the planning for the central page of a user
@@ -2490,16 +2468,16 @@ class Planning extends CommonGLPI {
     * @param string/date   $begin
     * @param string/date   $end
     * @param string        $index_color
-    * @param array         $options
+    * @param string        $viewname
     *
     * @return new array of event to display
     */
-   static function returnNewEventByType ($event, $content, $tooltip, $begin, $end, $index_color, $options) {
+   static function returnNewEventByType ($event, $content, $tooltip, $begin, $end, $index_color, $viewname) {
       $rule_event = [];
       $title = '';
 
-      if (isset($options['view_name'])) {
-         switch ($options['view_name']) {
+      if (isset($viewname)) {
+         switch ($viewname) {
             case 'resourceTimeGridDay' :
                if ($event['itemtype'] == TicketTask::class) {
                   $title = __('Ticket task');

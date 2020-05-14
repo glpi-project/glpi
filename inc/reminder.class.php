@@ -746,17 +746,18 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
     * @param $type            position of the item in the time block (in, through, begin or end)
     *                         (default '')
     * @param $complete        complete display (more details) (default 0)
-    * @param $options         allow to have planning typeview (array)
+    * @param $options         allow to have planning typeview
     *
     * @return string
    **/
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $options = []) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $viewname) {
       global $CFG_GLPI;
 
       $html = "";
       $rand     = mt_rand();
       $users_id = "";  // show users_id reminder
       $img      = "rdv_private.png"; // default icon for reminder
+      $item_fk  = getForeignKeyFieldForItemType(static::getType());
 
       if ($val["users_id"] != Session::getLoginUserID()) {
          $users_id = "<br>".sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"]));
@@ -781,44 +782,8 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
          }
       }
 
-      switch ($options['view_name']) {
-         case 'resourceTimeGridDay':
-            if ($complete) {
-               $category = new PlanningEventCategory();
-               $category->getFromDB($val['event_cat']);
+      $html.= self::formatPlanningItemByView($val, $viewname, $complete, $recall, $html, $item_fk, $rand, self::getType());
 
-               if ($category->fields > 0) {
-                  $cat_name = isset($category->fields['name']) ? $category->fields['name'] : '';
-               }
-
-               $html .= "<div class='event-description rich_text_container'>";
-               $html .= "<span>" . __('Begin date') . "</span>" . ": " . Html::convdatetime($val["begin"]) . "<br>";
-               $html .= "<span>" . __('End date') . "</span>" . ": " . Html::convdatetime($val["end"]) . "<br>";
-               $html .= "<span>" . __('Status') . "</span>" . ": " . Planning::getState($val["state"]) . "<br>";
-               $html .= "<span>" . __('Title') . "</span>" . ": " . $val['name'] . "<br>";
-               $html .= "<span>" . __('Category') . "</span>" . ": " . $cat_name . "<br>";
-               $html .= "<span>" . __('Description') . "</span>" . ": " . $val["text"] . $recall . "<br>";
-               $html .= "</div>";
-            } else {
-               $html .= Html::showToolTip("<span class='b'>" . Planning::getState($val["state"]) . "</span><br>
-                                            " . $val["text"] . $recall,
-                  ['applyto' => "reminder_" . $val["reminders_id"] . $rand,
-                     'display' => false]);
-            }
-            return $html;
-            break;
-         default :
-            if ($complete) {
-               $html.= "<span>".Planning::getState($val["state"])."</span><br>";
-               $html.= "<div class='event-description rich_text_container'>".$val["text"].$recall."</div>";
-            } else {
-               $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
-                                   ".$val["text"].$recall,
-                  ['applyto' => "reminder_".$val["reminders_id"].$rand,
-                     'display' => false]);
-            }
-            break;
-      }
 
       return $html;
    }
