@@ -230,9 +230,9 @@ class Plugins {
       uasort($plugins_colct, function($plugin1, $plugin2) use ($sort) {
          switch ($sort) {
             case "sort-alpha-asc":
-               return strnatcmp($plugin1['name'], $plugin2['name']);
+               return strnatcasecmp($plugin1['name'], $plugin2['name']);
             case "sort-alpha-desc":
-               return strnatcmp($plugin2['name'], $plugin1['name']);
+               return strnatcasecmp($plugin2['name'], $plugin1['name']);
             case "sort-dl":
                return strnatcmp($plugin2['download_count'], $plugin1['download_count']);
             case "sort-update":
