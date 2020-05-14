@@ -78,6 +78,7 @@ class NotificationTarget extends CommonDBChild {
    public $options                     = [];
    public $raiseevent                  = '';
 
+   private $allow_response             = true;
    private $mode                       = null;
    private $event                      = null;
 
@@ -1022,6 +1023,21 @@ class NotificationTarget extends CommonDBChild {
          }
       }
 
+      if (!$this->allowResponse()
+         && isset($CFG_GLPI['admin_email_noreply'])
+         && !empty($CFG_GLPI['admin_email_noreply'])
+      ) {
+         // Override with no reply email if defined
+         $sender['email'] = $CFG_GLPI['admin_email_noreply'];
+
+         if (isset($CFG_GLPI['admin_email_noreply_name'])
+            && !empty($CFG_GLPI['admin_email_noreply_name'])
+         ) {
+            // Override name with no replay name if defined
+            $sender['name']  = $CFG_GLPI['admin_email_noreply_name'];
+         }
+      }
+
       return $sender;
    }
 
@@ -1458,6 +1474,25 @@ class NotificationTarget extends CommonDBChild {
     */
    public function setEvent($event) {
       $this->event = $event;
+      return $this;
+   }
+
+
+   /**
+    * Get the value of allow_response
+    */
+   public function allowResponse() {
+      return $this->allow_response;
+   }
+
+   /**
+    * Set the value of allow_response
+    *
+    * @return self
+    */
+   public function setAllowResponse($allow_response) {
+      $this->allow_response = $allow_response;
+
       return $this;
    }
 }

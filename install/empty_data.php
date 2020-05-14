@@ -302,6 +302,8 @@ $default_prefs = [
    'default_dashboard_assets'                => 'assets',
    'default_dashboard_helpdesk'              => 'helpdesk',
    'default_dashboard_mini_ticket'           => 'mini_ticket',
+   'admin_email_noreply'                     => '',
+   'admin_email_noreply_name'                => '',
 ];
 
 $tables['glpi_configs'] = [];

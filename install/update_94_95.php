@@ -1819,6 +1819,21 @@ HTML
       $migration->addKey('glpi_contracts', 'states_id');
    }
 
+   // No-reply notifications
+   if (!$DB->fieldExists(Notification::getTable(), 'allow_response')) {
+      $migration->addField(Notification::getTable(), 'allow_response', 'bool', [
+         'value' => 1
+      ]);
+   }
+
+   if (!isset(Config::getConfigurationValues('core')['admin_email_noreply'])) {
+      $migration->addConfig([
+         'admin_email_noreply'      => "",
+         'admin_email_noreply_name' => "",
+      ]);
+   }
+   // /No-reply notifications
+
    $migration->executeMigration();
 
    return $updateresult;
