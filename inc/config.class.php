@@ -256,7 +256,8 @@ class Config extends CommonDBTM {
       }
 
       if (!isset($input['planning_days'])) {
-         Session::addMessageAfterRedirect(__('At least one day must be selected (Days to display)'), true, ERROR);
+         Session::addMessageAfterRedirect(__('At least one day must be selected (Limit of days for planning)'),
+                                    true, ERROR);
       }
 
       $this->setConfigurationValues('core', $input);
