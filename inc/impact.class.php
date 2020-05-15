@@ -1126,7 +1126,7 @@ class Impact extends CommonGLPI {
       // Iterate on each relations found
       foreach ($relations as $related_item) {
          // Add the related node
-         if (!($item = $dbu->getItemForItemtype($source))) {
+         if (!($item = getItemForItemtype($source))) {
             continue;
          }
          $related_node = new $related_item['itemtype_' . $source];
