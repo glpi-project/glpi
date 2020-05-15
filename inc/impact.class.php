@@ -1123,11 +1123,11 @@ class Impact extends CommonGLPI {
       if (count($relations)) {
          self::addNode($nodes, $node);
       }
-      $dbu = new DbUtils();
+
       // Iterate on each relations found
       foreach ($relations as $related_item) {
          // Add the related node
-         if (!($item = $dbu->getItemForItemtype($source))) {
+         if (!($item = getItemForItemtype($related_item['itemtype_' . $source]))) {
             continue;
          }
          $related_node = new $related_item['itemtype_' . $source];
