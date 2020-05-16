@@ -364,6 +364,16 @@ class Toolbox extends \GLPITestCase {
       $this->string(\Toolbox::sodiumDecrypt($crypted))->isIdenticalTo($string);
    }
 
+   /**
+    * Test blank or null content. If not handled correctly, a sodium exception would be raised and fail the test.
+    * This could be a blank password that was never encrypted, so it is a blank value in the DB still.
+    * @since 9.5.0
+    */
+   public function testSodiumDecryptBlank() {
+      $this->variable(\Toolbox::sodiumDecrypt(null))->isNull();
+      $this->string(\Toolbox::sodiumDecrypt(''))->isEmpty();
+   }
+
    protected function cleanProvider() {
       return [
          ['mystring', 'mystring', null, 15, 0.56, false],
