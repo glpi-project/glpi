@@ -19,6 +19,7 @@
 phpunit.xml
 /tests/code-coverage/
 /tests/files/
+/tests/glpicrypt.key
 /config/based_config.php
 /config/config.php
 /config/define.php

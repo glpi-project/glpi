@@ -275,6 +275,10 @@ class Toolbox {
    }
 
    public static function sodiumDecrypt($content, $key = null) {
+      if (empty($content)) {
+         // Avoid sodium exception for blank content. Just return the null/empty value.
+         return $content;
+      }
       if ($key === null) {
          $key = self::getGlpiSecKey();
       }
