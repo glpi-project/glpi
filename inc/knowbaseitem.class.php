@@ -1360,14 +1360,14 @@ class KnowbaseItem extends CommonDBVisible {
                // Add visibility date
                $criteria['WHERE'][] = [
                   'OR'  => [
-                     'glpi_knowbaseitems.begin_date'  => null,
-                     'glpi_knowbaseitems.begin_date'  => ['<', new QueryExpression('NOW()')]
+                     ['glpi_knowbaseitems.begin_date' => null],
+                     ['glpi_knowbaseitems.begin_date' => ['<', new QueryExpression('NOW()')]]
                   ]
                ];
                $criteria['WHERE'][] = [
                   'OR'  => [
-                     'glpi_knowbaseitems.end_date' => null,
-                     'glpi_knowbaseitems.end_date' => ['>', new QueryExpression('NOW()')]
+                     ['glpi_knowbaseitems.end_date' => null],
+                     ['glpi_knowbaseitems.end_date' => ['>', new QueryExpression('NOW()')]]
                   ]
                ];
             }
