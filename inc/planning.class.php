@@ -2476,28 +2476,28 @@ class Planning extends CommonGLPI {
       $rule_event = [];
       $title = '';
 
-         switch ($viewname) {
-            case 'resourceTimeGridDay' :
-               if ($event['itemtype'] == TicketTask::class) {
+      switch ($viewname) {
+         case 'resourceTimeGridDay' :
+            if ($event['itemtype'] == TicketTask::class) {
                   $title = __('Ticket task');
-               } else if ($event['itemtype'] == ChangeTask::class) {
+            } else if ($event['itemtype'] == ChangeTask::class) {
                   $title = __('Change task');
-               } else if ($event['itemtype'] == ProblemTask::class) {
+            } else if ($event['itemtype'] == ProblemTask::class) {
                   $title = __('Problem task');
-               } else if ($event['itemtype'] == Reminder::class) {
+            } else if ($event['itemtype'] == Reminder::class) {
                   $title = __('Reminder');
-               } else if ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {
+            } else if ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {
                   $category = new PlanningEventCategory();
                   $category->getFromDB($event['event_cat']);
-                  if ($category->fields > 0) {
+               if ($category->fields > 0) {
                      $title = isset($category->fields["name"]) ? $category->fields["name"] : $event['name'];
-                  }
                }
+            }
                break;
             default :
                $title = $event['name'];
                break;
-         }
+      }
 
       return             [ 'title'       => $title,
                            'content'     => $content,
