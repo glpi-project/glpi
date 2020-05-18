@@ -7232,7 +7232,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'rows'   => 5
             ]);
             echo "<button type='submit' class='submit approve' name='approval_action' value='approve'>";
-            echo "<i class='far fa-thumbs-up'>&nbsp;&nbsp;".__('Approve')."</i></button>";
+            echo "<i class='far fa-thumbs-up'></i>&nbsp;&nbsp;".__('Approve')."</button>";
 
             echo "<button type='submit' class='submit refuse very_small_space' name='approval_action' value='refuse'>";
             echo "<i class='far fa-thumbs-down'>&nbsp;&nbsp;".__('Refuse')."</i></button>";
