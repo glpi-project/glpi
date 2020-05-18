@@ -53,6 +53,10 @@ if (!isset($_GET["limititemtype"])) {
    $_GET["limititemtype"] = "";
 }
 
+if (isset($CFG_GLPI['planning_days'])) {
+   $CFG_GLPI['planning_days'] =  json_encode($CFG_GLPI['planning_days']);
+}
+
 // Normal call via $_GET
 if (isset($_GET['checkavailability'])) {
    Html::popHeader(__('Availability'));

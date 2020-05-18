@@ -165,7 +165,7 @@ class ChangeTask extends CommonITILTask {
     *
     * @return string
     */
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $viewname) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, string $viewname = 'timeGridWeek') {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete, $viewname);
    }
 

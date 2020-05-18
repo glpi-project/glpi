@@ -1196,7 +1196,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     *
     * @return string Output
    **/
-   static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0, $viewname) {
+   static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0, string $viewname = 'timeGridWeek') {
       global $CFG_GLPI;
 
       $html = "";
@@ -1250,7 +1250,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       }
 
       $html.= self::formatPlanningItemByView($val, $viewname, $complete, $recall, $html, $parenttype_fk, $rand, $itemtype, '', $parent);
-
 
       return $html;
    }

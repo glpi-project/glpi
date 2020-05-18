@@ -889,8 +889,6 @@ class Config extends CommonDBTM {
                                          'rand'  => $rand]);
       echo "</td>";
 
-
-
       echo "<tr>";
       echo "<td width='30%'><label for='dropdown_planning_begin$rand'>" .__('Limit of the schedules for planning') . "</label></td>";
       echo "<td width='20%'>";
@@ -3825,20 +3823,5 @@ class Config extends CommonDBTM {
       $uuid = Toolbox::getRandomString(40);
       self::setConfigurationValues('core', [$type . '_uuid' => $uuid]);
       return $uuid;
-   }
-
-   /**
-    * @param $input
-    *
-    * @return string
-    */
-   static function _serialize($input) {
-      if ($input != null) {
-         foreach ($input as &$value) {
-            $value = urlencode(Html::cleanPostForTextArea($value));
-         }
-
-         return json_encode($input);
-      }
    }
 }

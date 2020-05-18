@@ -1415,7 +1415,7 @@ HTML
       }
    }
    /** Add default days for planning */
-   $migration->addConfig(['planning_days'     => '[]']);
+   $migration->addConfig(['planning_days' => '[]']);
    /** Add default days for planning */
 
    /** /A doc_item to rule them all! */

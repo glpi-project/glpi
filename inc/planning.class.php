@@ -1748,8 +1748,8 @@ class Planning extends CommonGLPI {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
                         $event['users_id']);
-         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, 'in', false, $options['view_name']);
-         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, 'in', true, $options['view_name']);
+         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, 'in', false, $param['view_name']);
+         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, 'in', true, $param['view_name']);
 
          // dates should be set with the user timezone
          $begin = $event['begin'];
@@ -1766,7 +1766,7 @@ class Planning extends CommonGLPI {
          $ms_duration = (strtotime($end) - strtotime($begin)) * 1000;
 
          $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']));
-         $new_event = self::returnNewEventByType($event, $content, $tooltip, $begin, $end, $index_color, $options['view_name']);
+         $new_event = self::returnNewEventByType($event, $content, $tooltip, $begin, $end, $index_color, $param['view_name']);
 
          // if we can't update the event, pass the editable key
          if (!$event['editable']) {
@@ -2197,7 +2197,7 @@ class Planning extends CommonGLPI {
     *
     * @return string
    **/
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $viewname) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, string $viewname = 'timeGridWeek') {
       $html = "";
 
       // bg event shouldn't have content displayed
@@ -2476,7 +2476,6 @@ class Planning extends CommonGLPI {
       $rule_event = [];
       $title = '';
 
-      if (isset($viewname)) {
          switch ($viewname) {
             case 'resourceTimeGridDay' :
                if ($event['itemtype'] == TicketTask::class) {
@@ -2499,7 +2498,6 @@ class Planning extends CommonGLPI {
                $title = $event['name'];
                break;
          }
-      }
 
       return             [ 'title'       => $title,
                            'content'     => $content,

@@ -750,7 +750,7 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
     *
     * @return string
    **/
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, $viewname) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0, string $viewname = 'timeGridWeek') {
       global $CFG_GLPI;
 
       $html = "";
@@ -783,7 +783,6 @@ class Reminder extends CommonDBVisible implements CalDAVCompatibleItemInterface 
       }
 
       $html.= self::formatPlanningItemByView($val, $viewname, $complete, $recall, $html, $item_fk, $rand, self::getType());
-
 
       return $html;
    }

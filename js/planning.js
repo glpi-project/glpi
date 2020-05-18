@@ -95,7 +95,7 @@ var GLPIPlanning  = {
                type: 'resourceTimeline',
                buttonText: 'Timeline Week',
                duration: { weeks: 1 },
-               hiddenDays : CFG_GLPI.planning_days.map(i=>Number(i)),
+               hiddenDays : CFG_GLPI.planning_days,
                groupByDateAndResource: true,
                slotLabelFormat: [
                   { week: 'short' },
@@ -109,7 +109,7 @@ var GLPIPlanning  = {
                type : 'resourceTimeline',
                buttonText: 'Timeline Week / day',
                duration: { weeks: 1 },
-               hiddenDays : CFG_GLPI.planning_days.map(i=>Number(i)),
+               hiddenDays : CFG_GLPI.planning_days,
                slotDuration: {days: 1},
                groupByDateAndResource: true,
             },
