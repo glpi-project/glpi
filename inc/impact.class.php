@@ -1126,10 +1126,9 @@ class Impact extends CommonGLPI {
       // Iterate on each relations found
       foreach ($relations as $related_item) {
          // Add the related node
-         if (!($item = getItemForItemtype($related_item['itemtype_' . $source]))) {
+         if (!($related_node = getItemForItemtype($related_item['itemtype_' . $source]))) {
             continue;
          }
-         $related_node = new $related_item['itemtype_' . $source];
          $related_node->getFromDB($related_item['items_id_' . $source]);
          self::addNode($nodes, $related_node);
 
