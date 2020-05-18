@@ -945,10 +945,10 @@ trait PlanningEvent {
 
             } else {
                if ($complete) {
-               $html.= "<span>".Planning::getState($val["state"])."</span><br>";
-               $html.= "<div class='event-description rich_text_container'>".$val["text"].$recall."</div>";
+                  $html.= "<span>".Planning::getState($val["state"])."</span><br>";
+                  $html.= "<div class='event-description rich_text_container'>".$val["text"].$recall."</div>";
                } else {
-               $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
+                  $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
                                    ".$val["text"].$recall,
                   ['applyto' => "reminder_".$val[$item_fk].$rand,
                      'display' => false]);

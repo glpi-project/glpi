@@ -2494,7 +2494,7 @@ class Planning extends CommonGLPI {
                }
             }
                break;
-            default :
+         default :
                $title = $event['name'];
                break;
       }
