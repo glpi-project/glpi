@@ -7232,12 +7232,11 @@ abstract class CommonITILObject extends CommonDBTM {
                'rows'   => 5
             ]);
             echo "<button type='submit' class='submit approve' name='approval_action' value='approve'>";
-            echo "<i class='far fa-thumbs-up'/>&nbsp;&nbsp;".__('Approve')."</button>";
+            echo "<i class='far fa-thumbs-up'>&nbsp;&nbsp;".__('Approve')."</i></button>";
 
             echo "<button type='submit' class='submit refuse very_small_space' name='approval_action' value='refuse'>";
-            echo "<i class='far fa-thumbs-down'/>&nbsp;&nbsp;".__('Refuse')."</button>";
+            echo "<i class='far fa-thumbs-down'>&nbsp;&nbsp;".__('Refuse')."</i></button>";
             Html::closeForm();
-            echo "</form>";
          }
          if ($item['type'] == 'Solution' && $item_i['status'] != CommonITILValidation::WAITING && $item_i['status'] != CommonITILValidation::NONE) {
             echo "<div class='users_id_approval' id='users_id_approval_".$item_i['users_id_approval']."'>";
