@@ -897,6 +897,8 @@ class Search {
                                           $replace, $tmpquery);
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
                                           $ctable, $tmpquery);
+                  $name_field = $ctype::getNameField();
+                  $tmpquery = str_replace("`$ctable`.`name`", "`$ctable`.`$name_field`", $tmpquery);
                }
                $tmpquery = str_replace("ENTITYRESTRICT",
                                        getEntitiesRestrictRequest('', $ctable, '', '',
