@@ -184,19 +184,17 @@ class Auth extends CommonGLPI {
             $ssl = 'TLS';
          }
 
-         $protocol_class = Toolbox::getMailServerProtocolClassname($config['type']);
-         if ($protocol_class === null) {
+         $protocol = Toolbox::getMailServerProtocolInstance($config['type']);
+         if ($protocol === null) {
             throw new \RuntimeException(sprintf(__('Unsupported mail server type:%s.'), $config['type']));
          }
-         $mail = new $protocol_class();
-
-         $mail->connect(
+         $protocol->connect(
             $config['address'],
             $config['port'],
             $ssl
          );
 
-         return $mail->login($login, $pass);
+         return $protocol->login($login, $pass);
       } catch (\Exception $e) {
          $this->addToError($e->getMessage());
          return false;

@@ -2227,15 +2227,15 @@ class Toolbox {
       $protocols = [
          'imap' => [
             //TRANS: IMAP mail server protocol
-            'label'          => __('IMAP'),
-            'protocol_class' => 'Laminas\Mail\Protocol\Imap',
-            'storage_class'  => 'Laminas\Mail\Storage\Imap',
+            'label'    => __('IMAP'),
+            'protocol' => 'Laminas\Mail\Protocol\Imap',
+            'storage'  => 'Laminas\Mail\Storage\Imap',
          ],
          'pop'  => [
             //TRANS: POP3 mail server protocol
-            'label'          => __('POP'),
-            'protocol_class' => 'Laminas\Mail\Protocol\Pop3',
-            'storage_class'  => 'Laminas\Mail\Storage\Pop3',
+            'label'    => __('POP'),
+            'protocol' => 'Laminas\Mail\Protocol\Pop3',
+            'storage'  => 'Laminas\Mail\Storage\Pop3',
          ]
       ];
 
@@ -2251,12 +2251,8 @@ class Toolbox {
             }
 
             if (!array_key_exists('label', $additionnal_protocol)
-                || !array_key_exists('protocol_class', $additionnal_protocol)
-                || !class_exists($additionnal_protocol['protocol_class'])
-                || !is_a($additionnal_protocol['protocol_class'], ProtocolInterface::class, true)
-                || !array_key_exists('storage_class', $additionnal_protocol)
-                || !class_exists($additionnal_protocol['storage_class'])
-                || !is_a($additionnal_protocol['storage_class'], AbstractStorage::class, true)) {
+                || !array_key_exists('protocol', $additionnal_protocol)
+                || !array_key_exists('storage', $additionnal_protocol)) {
                trigger_error(
                   sprintf('Invalid specs for protocol "%s".', $key),
                   E_USER_WARNING
@@ -2276,34 +2272,60 @@ class Toolbox {
    }
 
    /**
-    * Returns protocol classname for given mail server type.
+    * Returns protocol instance for given mail server type.
+    *
     * Class should implements Glpi\Mail\Protocol\ProtocolInterface
     * or should be \Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3 for native protocols.
     *
     * @param string $protocol_type
     *
-    * @return string|null
+    * @return null|\Glpi\Mail\Protocol\ProtocolInterface|\Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3
     */
-   public static function getMailServerProtocolClassname(string $protocol_type) {
+   public static function getMailServerProtocolInstance(string $protocol_type) {
       $protocols = self::getMailServerProtocols();
       if (array_key_exists($protocol_type, $protocols)) {
-         return $protocols[$protocol_type]['protocol_class'];
+         $protocol = $protocols[$protocol_type]['protocol'];
+         if (is_callable($protocol)) {
+            return call_user_func($protocol);
+         } else if (class_exists($protocol)
+             && (is_a($protocol, ProtocolInterface::class, true)
+                 || is_a($protocol, \Laminas\Mail\Protocol\Imap::class, true)
+                 || is_a($protocol, \Laminas\Mail\Protocol\Pop3::class, true))) {
+            return new $protocol();
+         } else {
+            trigger_error(
+               sprintf('Invalid specs for protocol "%s".', $protocol_type),
+               E_USER_WARNING
+            );
+         }
       }
       return null;
    }
 
    /**
-    * Returns storage classname for given mail server type.
+    * Returns storage instance for given mail server type.
+    *
     * Class should extends \Laminas\Mail\Storage\AbstractStorage.
     *
     * @param string $protocol_type
+    * @param array  $params         Storage constructor params, as defined in AbstractStorage
     *
-    * @return string|null
+    * @return null|AbstractStorage
     */
-   public static function getMailServerStorageClassname(string $protocol_type) {
+   public static function getMailServerStorageInstance(string $protocol_type, array $params): ?AbstractStorage {
       $protocols = self::getMailServerProtocols();
       if (array_key_exists($protocol_type, $protocols)) {
-         return $protocols[$protocol_type]['storage_class'];
+         $storage = $protocols[$protocol_type]['storage'];
+         if (is_callable($storage)) {
+            return call_user_func($storage, $params);
+         } else if (class_exists($storage) && is_a($storage, AbstractStorage::class, true)) {
+            return new $storage($params);
+         } else {
+            trigger_error(
+               sprintf('Invalid specs for protocol "%s".', $protocol_type),
+               E_USER_WARNING
+            );
+         }
       }
       return null;
    }

@@ -1266,11 +1266,11 @@ class MailCollector  extends CommonDBTM {
       }
 
       try {
-         $class = Toolbox::getMailServerStorageClassname($config['type']);
-         if ($class === null) {
+         $storage = Toolbox::getMailServerStorageInstance($config['type'], $params);
+         if ($storage === null) {
             throw new \Exception(sprintf(__('Unsupported mail server type:%s.'), $config['type']));
          }
-         $this->storage = new $class($params);
+         $this->storage = $storage;
          if ($this->fields['errors'] > 0) {
             $this->update([
                'id'     => $this->getID(),
