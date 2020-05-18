@@ -2160,20 +2160,22 @@ JAVASCRIPT;
          echo "<td><label for='password'>" . __('Password')."</label></td>";
          echo "<td><input id='password' type='password' name='password' value='' size='20'
                     autocomplete='new-password' onkeyup=\"return passwordCheck();\"></td>";
-         if ($CFG_GLPI["use_password_security"]) {
-            echo "<td>";
-            echo __('Password security policy');
-            echo "</td>";
-            echo "<td>";
-            Config::displayPasswordSecurityChecks();
-            echo "</td>";
-         }
-         echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
          echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password'>";
          echo "</td></tr>";
+
+         if ($CFG_GLPI["use_password_security"]) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td rowspan='2'>";
+            echo __('Password security policy');
+            echo "</td>";
+            echo "<td rowspan='2'>";
+            Config::displayPasswordSecurityChecks();
+            echo "</td>";
+            echo "</tr>";
+         }
 
       } else {
          echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
