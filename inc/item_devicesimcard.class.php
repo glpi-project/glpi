@@ -115,6 +115,6 @@ class Item_DeviceSimcard extends Item_Devices {
    }
 
    static function getNameField() {
-      return 'seriale';
+      return 'serial';
    }
 }
