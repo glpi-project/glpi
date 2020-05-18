@@ -362,6 +362,7 @@ class Domain extends CommonDropdown {
       echo "</td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Comments') . "</td>";
       echo "<td colspan = '3' class='center'>";

@@ -275,6 +275,7 @@ class Group extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='subheader' colspan='2'>".__('Can contain');
+      echo "</td><td colspan='2' class='center'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
