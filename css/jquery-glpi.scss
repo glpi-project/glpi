@@ -44,8 +44,8 @@
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
-   border: 1px solid transparent;
-   background-color: transparent;
+   border: 1px solid var(--content-background);
+   background-color: var(--content-background);
    color: var(--formtab-color);
 }
 .ui-state-active a,

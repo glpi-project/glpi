@@ -1342,7 +1342,7 @@ class Html {
       // load log filters everywhere
       Html::requireJs('log_filters');
 
-      echo Html::css('css/jquery-glpi.css');
+      echo Html::scss('css/jquery-glpi');
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
          echo Html::css('public/lib/scrollable-tabs.css');
