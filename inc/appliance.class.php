@@ -189,6 +189,7 @@ class Appliance extends CommonDBTM {
          ->addImpactTab($ong, $options)
          ->addStandardTab('Appliance_Item', $ong, $options)
          ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('KnowbaseItem_Item', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
@@ -198,6 +199,38 @@ class Appliance extends CommonDBTM {
          ->addStandardTab('Log', $ong, $options);
 
       return $ong;
+   }
+
+
+   /**
+    * @see CommonDBTM::post_clone
+    **/
+   function post_clone($source, $history) {
+      parent::post_clone($source, $history);
+      $relations_classes = [
+         Infocom::class,
+         Contract_Item::class,
+         Document_Item::class,
+         KnowbaseItem_Item::class
+      ];
+
+      $override_input['items_id'] = $this->getID();
+      foreach ($relations_classes as $classname) {
+         if (!is_a($classname, CommonDBConnexity::class, true)) {
+            Toolbox::logWarning(
+               sprintf(
+                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
+                  $classname
+               )
+            );
+            continue;
+         }
+
+         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
+         foreach ($relation_items as $relation_item) {
+            $newId = $relation_item->clone($override_input, $history);
+         }
+      }
    }
 
 
@@ -501,6 +534,9 @@ class Appliance extends CommonDBTM {
             $actions['Appliance'.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall'] = _x('button', 'Dissociate');
          }
       }
+
+      KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+
       return $actions;
    }
 
@@ -513,6 +549,7 @@ class Appliance extends CommonDBTM {
             echo "&nbsp;". Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
             return true;
 
+         case "uninstall":
          case "install" :
             Dropdown::showSelectItemFromItemtypes([
                'items_id_name' => 'item_item',
@@ -523,15 +560,6 @@ class Appliance extends CommonDBTM {
             echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
             return true;
 
-         case "uninstall" :
-            Dropdown::showSelectItemFromItemtypes([
-               'items_id_name' => 'item_item',
-               'itemtype_name' => 'typeitem',
-               'itemtypes'     => self::getTypes(true),
-               'checkright'    => true
-            ]);
-            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
-            return true;
       }
       return parent::showMassiveActionsSubForm($ma);
    }
