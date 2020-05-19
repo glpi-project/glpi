@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    $room->check(-1, CREATE, $_POST);
 
    if ($newID = $room->add($_POST)) {
-      Event::log($newID, "serverroms", 4, "inventory",
+      Event::log($newID, "dcrooms", 4, "inventory",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
          Html::redirect($room->getLinkURL());
@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    $room->check($_POST["id"], DELETE);
    $room->delete($_POST);
 
-   Event::log($_POST["id"], "serverroms", 4, "inventory",
+   Event::log($_POST["id"], "dcrooms", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    $room->redirectToList();
@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    $room->check($_POST["id"], DELETE);
 
    $room->restore($_POST);
-   Event::log($_POST["id"], "serverroms", 4, "inventory",
+   Event::log($_POST["id"], "dcrooms", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    $room->redirectToList();
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
    $room->check($_POST["id"], PURGE);
 
    $room->delete($_POST, 1);
-   Event::log($_POST["id"], "serverroms", 4, "inventory",
+   Event::log($_POST["id"], "dcrooms", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $room->redirectToList();
@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
    $room->check($_POST["id"], UPDATE);
 
    $room->update($_POST);
-   Event::log($_POST["id"], "serverroms", 4, "inventory",
+   Event::log($_POST["id"], "dcrooms", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
