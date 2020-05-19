@@ -130,6 +130,7 @@ class NotificationEvent extends CommonDBTM {
          foreach ($notifications as $data) {
             $notificationtarget->clearAddressesList();
             $notificationtarget->setMode($data['mode']);
+            $notificationtarget->setAllowResponse($data['allow_response']);
 
             //Get template's information
             $template = new NotificationTemplate();

@@ -209,6 +209,11 @@ class Notification extends CommonDBTM {
       Dropdown::showYesNo('is_active', $this->fields['is_active']);
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td>" . __('Allow response') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo('allow_response', $this->allowResponse());
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td>";
       echo "<td>";
       if (!Session::haveRight(static::$rightname, UPDATE)) {
@@ -685,5 +690,9 @@ class Notification extends CommonDBTM {
 
    static function getIcon() {
       return "fas fa-bell";
+   }
+
+   public function allowResponse() {
+      return $this->fields['allow_response'];
    }
 }

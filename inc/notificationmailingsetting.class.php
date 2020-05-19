@@ -116,6 +116,23 @@ class NotificationMailingSetting extends NotificationSetting {
          $out .= " </td></tr>";
 
          $out .= "<tr class='tab_bg_2'>";
+         $out .= "<td><label for='admin_email_noreply'>" . __('No-Reply address') . " <i class='pointer fa fa-info' title='" .
+            __s('Optionnal No-Reply address.') . "\n" . __s('If set, it will be used for notifications that doesn\'t expect a reply.') . "'></i></label></td>";
+         $out .= "<td><input type='text' name='admin_email_noreply' id='admin_email_noreply' size='40' value='" .
+                    $CFG_GLPI["admin_email_noreply"] . "'>";
+         if (!empty($CFG_GLPI['admin_email_noreply'])
+             && !NotificationMailing::isUserAddressValid($CFG_GLPI["admin_email_noreply"])) {
+            $out .= "<br/><span class='red'>&nbsp;".__('Invalid email address')."</span>";
+         }
+         $out .= " </td>";
+         $out .= "<td><label for='admin_email_noreply_name'>" . __('No-Reply name') . " <i class='pointer fa fa-info' title='" .
+            __s('Optionnal No-Reply name.') . "\n" . __s('If not set, main administrator name will be used.'). "'></i></label></td>";
+            $out .= "<td><input type='text' name='admin_email_noreply_name' id='admin_email_noreply_name' size='40' value='" .
+                    $CFG_GLPI["admin_email_noreply_name"] . "'>";
+         $out .= " </td></tr>";
+         $out .= "</tr>";
+
+         $out .= "<tr class='tab_bg_2'>";
 
          $attachrand = mt_rand();
          $out .= "<td><label for='dropdown_attach_ticket_documents_to_mail$attachrand'>" . __('Add documents into ticket notifications') . "</label></td><td>";
