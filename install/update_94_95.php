@@ -1826,12 +1826,10 @@ HTML
       ]);
    }
 
-   if (!isset(Config::getConfigurationValues('core')['admin_email_noreply'])) {
-      $migration->addConfig([
-         'admin_email_noreply'      => "",
-         'admin_email_noreply_name' => "",
-      ]);
-   }
+   $migration->addConfig([
+      'admin_email_noreply'      => "",
+      'admin_email_noreply_name' => "",
+   ]);
    // /No-reply notifications
 
    $migration->executeMigration();
