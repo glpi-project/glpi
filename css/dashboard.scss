@@ -42,9 +42,9 @@ $break_phones: 700px;
 // replicate ui-tabs display
 .default_dashboard {
    padding: 1em 1.4em;
-   border: 1px solid #dddddd;
-   background: #FFF;
-   box-shadow: 0px 3px 1px #dfdfdf;
+   border: 1px solid var(--content-border-color);
+   background: var(--content-background-color);
+   box-shadow: var(--content-box-shadow);
    border-radius: 3px;
    width: 90%;
    margin: auto;
@@ -103,7 +103,7 @@ $break_phones: 700px;
    }
 
    &.fullscreen, &.embed {
-      background: white;
+      background: var(--content-background-color);
       padding: 100px;
 
       &.nightmode {
@@ -228,7 +228,7 @@ $break_phones: 700px;
          border-radius: 3px;
          min-width: 100px;
          font-weight: bold;
-         color: rgb(70, 70, 70);
+         color: var(--formfield-color);
       }
 
       i.fas {
@@ -236,7 +236,7 @@ $break_phones: 700px;
          cursor: pointer;
          padding: 5px;
          margin-left: 5px;
-         color: rgba(0, 0, 0, .5);
+         color: var(--default-icon-color);
          border: 2px solid transparent;
 
          @media screen and (max-width: $break_phones) {
@@ -244,7 +244,7 @@ $break_phones: 700px;
          }
 
          &:hover {
-            color: rgb(0, 0, 0);
+            opacity: 80%;
          }
 
          &.active {
@@ -266,7 +266,7 @@ $break_phones: 700px;
             border-radius: 3px;
             min-width: 200px;
             font-weight: bold;
-            color: rgb(70, 70, 70);
+            color: var(--formfield-color);
             resize: horizontal;
          }
 

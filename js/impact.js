@@ -213,11 +213,11 @@ var GLPIImpact = {
          code: action_code,
          data: data
       });
-      $(this.selectors.undo).removeClass("impact-disabled");
+      $(this.selectors.undo).removeClass("impact-disabled disabled");
 
       // Clear redo list
       this.redoStack = [];
-      $(this.selectors.redo).addClass("impact-disabled");
+      $(this.selectors.redo).addClass("impact-disabled disabled");
    },
 
    /**
@@ -234,7 +234,7 @@ var GLPIImpact = {
 
       // Add action to redo stack
       this.redoStack.push(action);
-      $(this.selectors.redo).removeClass("impact-disabled");
+      $(this.selectors.redo).removeClass("impact-disabled disabled");
 
       switch (action.code) {
          // Set node to old position
@@ -440,7 +440,7 @@ var GLPIImpact = {
       }
 
       if (this.undoStack.length === 0) {
-         $(this.selectors.undo).addClass("impact-disabled");
+         $(this.selectors.undo).addClass("impact-disabled disabled");
       }
 
    },
@@ -459,7 +459,7 @@ var GLPIImpact = {
 
       // Add action to undo stack
       this.undoStack.push(action);
-      $(this.selectors.undo).removeClass("impact-disabled");
+      $(this.selectors.undo).removeClass("impact-disabled disabled");
 
       switch (action.code) {
          // Set node to new position
@@ -671,7 +671,7 @@ var GLPIImpact = {
       }
 
       if (this.redoStack.length === 0) {
-         $(this.selectors.redo).addClass("impact-disabled");
+         $(this.selectors.redo).addClass("impact-disabled disabled");
       }
    },
 

@@ -33,7 +33,7 @@
 // Import the default palette (Not based on GLPI instance preference). Only used for fallback.
 // Should almost always be overridden by the default/user-preferred palette.
 // If the default palette changes for new installs, it should also be changed here.
-@import 'palettes/auror.scss';
+//@import 'palettes/auror.scss';
 
 /* ################--------------- Media queries break   ---------------#################### */
 
@@ -242,7 +242,8 @@ a, .btn-linkstyled {
    }
 }
 
-a .fa, a .far, a .fas, .btn-linkstyled .fa, .btn-linkstyled .far, .btn-linkstyled .fas {
+a .fa, a .far, a .fas, .btn-linkstyled .fa, .btn-linkstyled .far, .btn-linkstyled .fas,
+button i.fa, button i.far, button i.fas {
    color: var(--default-icon-color);
 }
 
@@ -257,7 +258,7 @@ a:not(.vsubmit) {
 }
 
 hr {
-   border: 1px solid #cccccc;
+   border: 1px solid var(--formfield-border-color);
 }
 
 .pointer {
@@ -343,7 +344,7 @@ hr {
    left: 50%;
    margin-top: -100px;
    margin-left: -250px;
-   background: var(--content-background);
+   background: var(--content-background-color);
    z-index: 200;
 
    input {
@@ -395,7 +396,7 @@ hr {
       right: -30px;
       //color: #848484;
       cursor: pointer;
-      background: var(--content-background);
+      background: var(--content-background-color);
       width: 30px;
       height: 30px;
       padding: 3px 6px;
@@ -469,8 +470,8 @@ textarea, input:not(.submit):not([type=submit]):not([type=reset]):not([type=chec
 }
 
 textarea:not([disabled]), input:not(.submit):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):not([disabled]) {
-   background-color: #FCFCFC;
-   color: black;
+   background-color: var(--formfield-background-color);
+   color: var(--formfield-color);
 }
 
 textarea:focus, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):focus {
@@ -496,11 +497,18 @@ body .select2-container .select2-selection--multiple,
 .select2-dropdown {
    background-color: var(--formfield-background-color);
    color: var(--formfield-color);
-   border: var(--formfield-border) !important;
+   border-color: var(--formfield-border-color) !important;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
    color: var(--formfield-color);
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+   background-color: var(--formfield-highlight-color);
+}
+.select2-container--default .select2-results__option[aria-selected=true] {
+   background-color: var(--formfield-selected-background-color);
 }
 
 input {
@@ -513,13 +521,6 @@ input {
       padding-right: 0 !important;
       box-shadow: none;
    }
-}
-
-.mce-edit-area.required {
-   border: 1px rgba(255, 0, 0, 0.6) solid !important;
-   border-left-width: 3px !important;
-   padding-right: 0 !important;
-   box-shadow: none;
 }
 
 input:required:valid {
@@ -590,14 +591,14 @@ input[type=checkbox].new_checkbox {
 
 .label-checkbox .box {
    top: -2px;
-   background-color: var(--content-background);
+   background-color: var(--content-background-color);
    border-radius: 3px;
    height: 16px;
    width: 16px;
 }
 
 .subheader .box, th .label-checkbox .box {
-   background-color: var(--content-background);
+   background-color: var(--content-background-color);
    border: 0;
 }
 
@@ -859,13 +860,13 @@ input {
 }
 
 .layout_lefttab .ui-tabs, .layout_classic .ui-tabs, .layout_vsplit .ui-tabs {
-   border: 1px solid #e1e1e1;
+   border: 1px solid var(--content-border-color);
    border-top-width: 0;
    box-sizing: border-box;
 }
 
 .ui-tabs {
-   background: var(--content-background);
+   background: var(--content-background-color);
    box-shadow: var(--content-box-shadow);
    width: 90%;
 }
@@ -876,7 +877,7 @@ input {
 
 .ui-tabs sup.tab_nb {
    border-radius: 50%;
-   background-color: #FFF;
+   background-color: var(--content-background-color);
    min-width: 18px;
    margin-left: 5px;
    display: inline-block;
@@ -902,7 +903,7 @@ input {
    }
 
    .ui-state-active sup.tab_nb {
-      background-color: #E6E6E6;
+      background-color: var(--page-background);
    }
 }
 
@@ -1188,9 +1189,9 @@ th, td {}
    z-index: 1;
    text-align: left;
    font-size: 11px;
-   background-color: #ffffff;
+   background-color: var(--content-background-color);
    border-spacing: 0;
-   box-shadow: 0px 1px 2px 1px #999;
+   box-shadow: var(--content-box-shadow);
 }
 
 .tab_cadre_central {
@@ -1222,7 +1223,7 @@ th, td {}
 
 .tab_cadre_fixe {
    margin: 0px auto 5px auto;
-   background: var(--content-background);
+   background: var(--content-background-color);
    z-index: 1;
    text-align: left;
    font-size: 11px;
@@ -1257,7 +1258,7 @@ th, td {}
    text-align: left;
    font-size: 11px;
    width: 95%;
-   background-color: var(--content-background);
+   background-color: var(--content-background-color);
    box-shadow: var(--content-box-shadow);
    border-spacing: 0;
 }
@@ -1432,7 +1433,7 @@ td {
    }
 
    &.subheader {
-      background-color: #EEEEEE;
+      background-color: var(--formsubheader-background-color);
       text-align: center;
       font-weight: bold;
 
@@ -1487,7 +1488,7 @@ td {
    padding-top: 30px;
    font-size: 1.1em;
    padding: 3px 5px;
-   background-color: #F1F1F1;
+   background-color: var(--formheader-background-color);
 }
 
 .actor-bloc {
@@ -1501,7 +1502,7 @@ td {
 }
 
 .actor-head {
-   background-color: #F1F1F1;
+   background-color: var(--formheader-background-color);
    margin: 0 0 0 5px;
    padding: 4px 0;
    height: 16px;
@@ -1563,7 +1564,7 @@ td {
 
 #searchcriteria {
    margin-top: 10px;
-   background-color: var(--content-background);
+   background-color: var(--content-background-color);
    width: 80%;
    margin: 0 auto;
    box-shadow: var(--content-box-shadow);
@@ -1681,8 +1682,8 @@ td {
    margin: 0 auto;
    padding: 7px 10px;
    width: 90%;
-   border: 1px solid #e1e1e1;
-   background-color: #FFF;
+   border: var(--content-border-color);
+   background-color: var(--formheader-background-color);
    box-sizing: border-box;
    display: flex;
 
@@ -1737,14 +1738,15 @@ td {
       font-size: 11px;
 
       .btn {
-         background-color: rgb(231, 231, 231);
+         background-color: var(--formfield-background-color);
+         color: var(--formfield-color);
          border-radius: .2rem;
          border: 1px solid transparent;
          padding: .1rem 1rem;
          line-height: 1.5;
 
          &:hover {
-            background-color: #CCC;
+            background-color: #CCCCCC22;
             cursor: pointer;
          }
 
@@ -1755,7 +1757,8 @@ td {
       }
 
       .dropdown-menu {
-         background-color: #fff;
+         background-color: var(--formfield-background-color);
+         color: var(--formfield-color);
          background-clip: padding-box;
          border: 1px solid rgba(0,0,0,.15);
          position: absolute;
@@ -1774,7 +1777,7 @@ td {
             display: block;
 
             &:hover {
-               background-color: #CCC;
+               background-color: #CCCCCC22;
             }
          }
       }
@@ -1816,6 +1819,11 @@ td {
 
 .qtip {
    max-width: 380px !important;
+   &.qtip-bootstrap {
+      background-color: var(--formfield-background-color);
+      color: var(--formfield-color);
+      border-color: var(--formfield-border-color);
+   }
 }
 
 .tooltip {
@@ -2263,9 +2271,9 @@ a.icon_nav_move {
 
 .fileupload {
    text-align: center;
-   border: 1px dashed #cccccc;
+   border: 1px dashed var(--formfield-border-color);
    min-height: 65px;
-   background-color: #fff;
+   background-color: var(--content-background-color);
    border-radius: 5px;
    max-width: 950px;
    margin: .5em auto;
@@ -3094,6 +3102,8 @@ a.icon_nav_move {
    form #champRecherche {
       input {
          border: none !important;
+         background-color: var(--header-searchbox-background-color);
+         color: var(--header-searchbox-color);
       }
       button {
          border: none;
@@ -3104,6 +3114,10 @@ a.icon_nav_move {
          margin: 0;
          background-color: var(--header-top-color);
          color: var(--header-top-background-color);
+
+         i.fa {
+            color: var(--header-top-background-color);
+         }
 
          &:hover {
             background-color: #ccc;
@@ -3195,9 +3209,9 @@ ul#menu {
 
    ul {
       &.ssmenu {
-         background: rgba(255, 255, 255, 0.9);
+         background: var(--nav-dropdown-background-color);
          display: none;
-         box-shadow: 0px 2px 2px 1px #BCB6B3;
+         box-shadow: var(--nav-dropdown-box-shadow);
       }
 
       li {
@@ -3686,7 +3700,7 @@ a.copyright {
    text-align: left;
    padding: 4px 8px;
    margin-top: -10px;
-   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   font-family: var(--default-font-family);
 
    .break {
       clear: both;
@@ -3740,28 +3754,28 @@ a.copyright {
       }
 
       &.followup {
-         background-color: #E0E0E0;
-         color: #535353;
+         background-color: var(--followup-btn-background-color);
+         color: var(--followup-btn-color);
       }
 
       &.task {
-         background-color: #FEDA90;
-         color: #535353;
+         background-color: var(--task-btn-background-color);
+         color: var(--task-btn-color);
       }
 
       &.document {
-         background-color: #80CEAD;
-         color: #3A5D4E;
+         background-color: var(--document-btn-background-color);
+         color: var(--document-btn-color);
       }
 
       &.solution {
-         background-color: #9FD6ED;
-         color: #425B64;
+         background-color: var(--solution-btn-background-color);
+         color: var(--solution-btn-color);
       }
 
       &.validation {
-         background-color: #b6f47e;
-         color: #535353;
+         background-color: var(--validation-btn-background-color);
+         color: var(--validation-btn-color);
       }
    }
 }
@@ -3789,7 +3803,7 @@ a.copyright {
 }
 
 .timeline_history {
-   border-top: 1px dashed #3C5874;
+   border-top: 1px dashed var(--formfield-border-color);
    overflow: hidden;
    font-size: 12px;
 
@@ -3801,7 +3815,7 @@ a.copyright {
    }
 
    .filter_timeline {
-      opacity: 0.2;
+      //opacity: 0.2;
       text-align: right;
       margin-top: .2em;
 
@@ -3850,7 +3864,7 @@ a.copyright {
    .h_item {
       clear: both;
       padding-top: 8px;
-      border-top: 1px dashed #D2D2D2;
+      border-top: 1px dashed var(--formfield-border-color);
    }
 
    .h_hidden {
@@ -4047,28 +4061,28 @@ a.copyright {
    }
 
    .ITILFollowup:after, .KnowbaseItemComment:after {
-      border-color: #E0E0E0;
+      border-color: var(--followup-content-background-color);
    }
 
    .ITILTask:after {
-      border-color: #FEDA90;
+      border-color: var(--task-content-background-color);
    }
 
    .Solution:after {
-      border-color: #9FD6ED;
+      border-color: var(--solution-content-background-color);
    }
 
    .ITILValidation {
       &.status_3:after {
-         border-color: #A1D7A2;
+         border-color: var(--validation-approve-content-background-color);
       }
 
       &:after {
-         border-color: #FFFFFF;
+         border-color: var(--validation-default-content-background-color);
       }
 
       &.status_4:after {
-         border-color: #D3A4A4;
+         border-color: var(--validation-reject-content-background-color);
       }
 
       .b_right {
@@ -4078,12 +4092,16 @@ a.copyright {
             font-weight: bold;
             font-size: unset;
             &.approve {
-               background-color: #b6f47e;
-               color: #002e00;
+               background-color: var(--approve-btn-background-color);
+               &, i.far {
+                  color: var(--approve-btn-color);
+               }
             }
             &.refuse {
-               background-color: #eba696;
-               color: #380b0b;
+               background-color: var(--reject-btn-background-color);
+               &, i.far {
+                  color: var(--reject-btn-color);
+               }
             }
          }
       }
@@ -4134,23 +4152,40 @@ a.copyright {
       }
 
       &.ITILFollowup, &.KnowbaseItemComment {
-         background-color: #E0E0E0;
-         color: #535353;
-         background-image: url(../pics/timeline/followup.png);
-         background-repeat: no-repeat;
+         background-color: var(--followup-content-background-color);
+         color: var(--followup-content-color);
+
+         .displayed_content:before {
+            content: "\f075";
+            font-family: "Font Awesome\ 5 Free";
+            font-weight: 900;
+            color: var(--followup-background-icon-color);
+            font-size: 100px;
+         }
       }
 
       &.ITILTask {
-         background-color: #FEDA90;
-         color: #38301F;
-         background-image: url(../pics/timeline/task.png);
-         background-repeat: no-repeat;
+         background-color: var(--task-content-background-color);
+         color: var(--task-content-color);
+
+         .displayed_content {
+            // Hide overflow (For icon in background which is supposed to be cut off on the left)
+            overflow: hidden;
+            &:before {
+               content: "\f0ad";
+               font-family: "Font Awesome\ 5 Free";
+               font-weight: 900;
+               color: var(--task-background-icon-color);
+               font-size: 100px;
+               margin-left: -30px;
+            }
+         }
       }
 
       &.Solution {
          border-left: 1em green solid;
-         background-color: #9FD6ED;
-         color: #425B64;
+         background-color: var(--solution-content-background-color);
+         color: var(--solution-content-color);
 
          &.waiting {
             border-left-color: orange;
@@ -4175,8 +4210,8 @@ a.copyright {
       }
 
       &.ITILContent {
-         background-color: #B2E0B6;
-         color: #093806;
+         background-color: var(--itilcontent-background-color);
+         color: var(--itilcontent-color);
          background-repeat: no-repeat;
 
          .title {
@@ -4219,19 +4254,19 @@ a.copyright {
 
    .h_content {
       &.ITILValidation {
-         background-color: #FFFFFF;
+         background-color: var(--validation-default-content-background-color);
          border-color: #BECADD;
          color: #030F21;
          padding: 5px 5px 5px 8px;
 
          &.status_3 {
-            background-color: #A1D7A2;
-            border-color: #385139;
+            background-color: var(--validation-approve-content-background-color);
+            border-color: var(--validation-approve-content-border-color);
          }
 
          &.status_4 {
-            background-color: #D3A4A4;
-            border-color: #5E3232;
+            background-color: var(--validation-reject-content-background-color);
+            border-color: var(--validation-reject-content-border-color);
          }
       }
 
@@ -4373,17 +4408,36 @@ a.copyright {
       vertical-align: middle;
 
       &.state_0 {
-         background-image: url(../pics/timeline/information.png);
+         border: 2px solid var(--task-content-color);
+         border-radius: 50%;
+         opacity: 50%;
+         width: 16px;
+         height: 16px;
+
+         &:before {
+            content: "\f129";
+            font-family: "Font Awesome\ 5 Free";
+            font-weight: 900;
+            margin-left: 6px;
+            font-size: 10px;
+         }
       }
 
-      &.state_1 {
+      &.state_1, &.state_2 {
          cursor: pointer;
-         background-image: url(../pics/timeline/todo.png);
+         background-color: #FFFFFF;
+         border: 2px solid var(--task-content-color);
+         border-radius: 5px;
+         opacity: 50%;
+         width: 16px;
+         height: 16px;
       }
 
-      &.state_2 {
-         cursor: pointer;
-         background-image: url(../pics/timeline/done.png);
+      &.state_2:before {
+         content: "\f00c";
+         font-family: "Font Awesome\ 5 Free";
+         font-weight: 900;
+         margin-left: 2px;
       }
    }
 
@@ -4456,7 +4510,7 @@ a.copyright {
 
    &:hover {
       cursor: pointer;
-      background-color: #fddb6f;
+      background-color: var(--submit-btn-hover-background-color);
       box-shadow: 0px 1px 1px #999;
    }
 
@@ -4544,20 +4598,20 @@ a.copyright {
       }
 
       label {
-         background-color: #fddb6f;
+         background-color: var(--submit-btn-background-color);
          padding: 4px;
-         color: #8f5a0a;
+         color: var(--submit-btn-color);
          cursor: pointer;
          display: block;
          font-weight: bold;
       }
 
       &:hover label {
-         background-color: #ffb94b !important;
+         background-color: var(--submit-btn-hover-background-color) !important;
       }
 
       input[type="radio"]:checked + label {
-         background-color: #FEC95C;
+         background-color: var(--submit-btn-background-color);
       }
    }
 }
@@ -5419,7 +5473,7 @@ td.diff {
 }
 
 .loadingindicator {
-   background: #fff url(../pics/spinner.48.gif) no-repeat center 0.5em;
+   background: var(--content-background-color) url(../pics/spinner.48.gif) no-repeat center 0.5em;
    padding: 60px .5em .5em;
    text-align: center;
    max-width: 350px;
@@ -6636,8 +6690,8 @@ div.objectlockmessage > .form-group-checkbox {
       align-items: center;
       margin-bottom: 5px;
       font-size: 14px;
-      background-color: #fbfbfb;
-      border: 1px solid #d6d6d6;
+      background-color: var(--formheader-background-color);
+      border: 1px solid var(--formfield-border-color);
       padding: 10px;
 
       .select2-selection {
@@ -6656,7 +6710,7 @@ div.objectlockmessage > .form-group-checkbox {
       input[type=text][name=filter]:not([type=submit]):not([type=button]) {
          flex: 1 0 auto;
          border-radius: unset;
-         background-color: white !important;
+         background-color: var(--formfield-background-color) !important;
          padding: 5px 10px;
          font-size: 13px;
       }
@@ -6725,16 +6779,16 @@ div.objectlockmessage > .form-group-checkbox {
       #kanban-add-dropdown {
          position: fixed;
          width: max-content;
-         background-color: #f1f1f1;
-         border: 1px solid #7f7979;
+         background-color: var(--formfield-border-color);
+         border: 1px solid var(--formfield-border-color);
          li {
-            background-color: white;
+            background-color: var(--formfield-background-color);
             padding: 5px;
             margin-top: 2px;
             cursor: pointer;
             &:hover {
-               background-color: #3a5693;
-               color: white;
+               background-color: var(--formfield-highlight-color);
+               color: var(--default-text-color);
             }
          }
          li:first-of-type {
@@ -7012,3 +7066,12 @@ div.progress {
    color: #ffa500;
 }
 /* /Styles for update page */
+
+*:active, *:focus {
+   outline-color: var(--link-color);
+}
+
+div.ui-widget-content .ui-dialog-titlebar {
+   background-color: var(--formheader-background-color);
+   color: var(--default-text-color);
+}

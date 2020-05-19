@@ -42,24 +42,35 @@
 
    --page-background: #F8F7F3;
 
-   --content-background: #FFFFFF;
+   --content-background-color: #FFFFFF;
+   --content-border-color: #E1E1E1;
    --content-box-shadow: 0px 1px 2px 1px #D2D2D2;
 
    --submit-btn-background-color: #FEC95C;
+   --submit-btn-hover-background-color: #FEC95C;
    --submit-btn-color: #8F5A0A;
+   --submit-btn-hover-color: #8F5A0A;
    --secondary-btn-background-color: #E6E6E6;
+   --secondary-btn-hover-background-color: #E6E6E6;
    --secondary-btn-color: #5F5F5F;
+   --secondary-btn-hover-color: #5F5F5F;
 
    --formtab-background-color: #E6E6E6;
    --formtab-color: #454545;
+   --formtab-active-background-color: transparent;
+   --formtab-active-color: #454545;
 
    --formheader-background-color: #F1F1F1;
+   --formsubheader-background-color: #EEEEEE;
 
-   --formfield-background-color: var(--content-background);
+   --formfield-background-color: var(--content-background-color);
    --formfield-color: var(--default-text-color);
-   --formfield-border: 1px solid #D3D3D3;
-   --progressbar-background-color: #d3d3d3;
-   --progressbar-foreground-color: #8cabdb;
+   --formfield-border-color: #D3D3D3;
+   --formfield-highlight-color: #5897FB;
+   --formfield-selected-background-color: #D3D3D3;
+   --progressbar-background-color: #D3D3D3;
+   --progressbar-foreground-color: #8CABDB;
+   --outline-color: var(--link-color);
 
    --link-color: #3A5693;
    --link-hover-color: #000000;
@@ -74,6 +85,8 @@
    --header-bottom-background-color: #3A5693;
    --header-top-color: #FFFFFF;
    --header-bottom-color: #FFFFFF;
+   --header-searchbox-background-color: #131425;
+   --header-searchbox-color: #C7DBF5;
 
    --footer-background-color: #e2e1de;
    --footer-color: var(--default-text-color);
@@ -84,15 +97,55 @@
    --nav-top-hover-background-color: #8BAADA;
    --nav-hover-color: #8CABDB;
    --nav-hover-background-color: #3A5693;
+   --nav-dropdown-background-color: var(--content-background-color);
+   --nav-dropdown-box-shadow: 0px 2px 2px 1px #BCB6B3;
 
    --table-header-background-color: #F8F8F8;
    --table-header-hover-background-color: #F3F3F3;
    --table-header-color: var(--default-text-color);
-   --table-row-odd-background-color: var(--content-background);
+   --table-row-odd-background-color: var(--content-background-color);
    --table-row-odd-color: var(--default-text-color);
-   --table-row-even-background-color: var(--content-background);
+   --table-row-even-background-color: var(--content-background-color);
    --table-row-even-color: var(--default-text-color);
    --table-row-error-background-color: #cf9b9b;
    --table-row-error-color: var(--default-text-color);
    --table-row-border: 1px solid #EEE;
+
+   // Timeline stuff
+   --itilcontent-background-color: #B2E0B6;
+   --itilcontent-color: #093806;
+
+   --followup-btn-background-color: #E0E0E0;
+   --followup-btn-color: #535353;
+   --followup-content-background-color: #E0E0E0;
+   --followup-content-color: #535353;
+   --followup-background-icon-color: #53535322;
+
+   --task-btn-background-color: #FEDA90;
+   --task-btn-color: #535353;
+   --task-content-background-color: #FEDA90;
+   --task-content-color: #38301F;
+   --task-background-icon-color: #38301F22;
+
+   --document-btn-background-color: #80CEAD;
+   --document-btn-color: #3A5D4E;
+   --document-content-background-color: #80CEAD;
+
+   --solution-btn-background-color: #9FD6ED;
+   --solution-btn-color: #425B64;
+   --solution-content-background-color: #9FD6ED;
+   --solution-content-color: #425B64;
+
+   --validation-btn-background-color: #b6f47e;
+   --validation-btn-color: #535353;
+   --validation-default-content-background-color: var(--followup-content-background-color);
+   --validation-approve-content-background-color: #A1D7A2;
+   --validation-approve-content-border-color: #385139;
+   --validation-reject-content-background-color: #D3A4A4;
+   --validation-reject-content-border-color: #5E3232;
+
+   --approve-btn-background-color: #b6f47e;
+   --approve-btn-color: #002e00;
+   --reject-btn-background-color: #eba696;
+   --reject-btn-color: #380b0b;
 }

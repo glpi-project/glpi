@@ -3808,6 +3808,12 @@ JS;
          $darker_css = $CFG_GLPI['root_doc']."/css/tiny_mce/dark_content.css";
       }
 
+      $custom_css = implode(',', [
+         self::getPaletteUrl($_SESSION['glpipalette']),
+         $CFG_GLPI['root_doc'] . '/css/tiny_mce_custom.css',
+         $darker_css
+      ]);
+
       // init tinymce
       $js = "$(function() {
          // init editor
@@ -3821,13 +3827,12 @@ JS;
             elements: '$name',
             relative_urls: false,
             remove_script_host: false,
-            content_css: '$darker_css',
+            content_css: '$custom_css',
             entity_encoding: 'raw',
             paste_data_images: $('.fileupload').length,
             menubar: false,
             statusbar: false,
             skin_url: '".$CFG_GLPI['root_doc']."/css/tiny_mce/skins/light',
-            content_css: '".$CFG_GLPI['root_doc']."/css/tiny_mce_custom.css',
             cache_suffix: '?v=".GLPI_VERSION."',
             setup: function(editor) {
                if ($('#$name').attr('required') == 'required') {
@@ -5373,6 +5378,27 @@ JAVASCRIPT;
       $url = self::getPrefixedUrl($url);
 
       return self::csslink($url, $options);
+   }
+
+   /**
+    * @param string $name The name of the palette
+    * @return string The URL to the compiled CSS for the given palette
+    */
+   static function getPaletteUrl(string $name): string {
+      $url = 'css/palettes/_' . $name;
+      $prod_file = self::getScssCompilePath($url);
+
+      if (file_exists($prod_file) && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
+         $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
+      } else {
+         $file = $url;
+         $url = self::getPrefixedUrl('/front/css.php');
+         $url .= '?file=' . $file;
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            $url .= '&debug';
+         }
+      }
+      return $url;
    }
 
    /**
