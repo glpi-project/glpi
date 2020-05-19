@@ -724,7 +724,7 @@ var GLPIPlanning  = {
             });
          });
 
-      $('#planning_filter .color_input input').on('change', function(e, color) {
+      $('#planning_filter .color_input input').on('change', function() {
          var current_li = $(this).parents('li');
          var parent_name = null;
          if (current_li.length >= 1) {
@@ -739,7 +739,7 @@ var GLPIPlanning  = {
                name:   current_li.attr('event_name'),
                type:   current_li.attr('event_type'),
                parent: parent_name,
-               color:  color.toHexString()
+               color: $(this).val()
             },
             success: function() {
                GLPIPlanning.refresh();
