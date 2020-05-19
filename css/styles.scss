@@ -645,8 +645,8 @@ input {
       cursor: pointer;
       height: auto;
       font: bold 12px Arial, Helvetica;
-      color: var(--submit-text-color);
-      background-color: var(--submit-background-color);
+      color: var(--submit-btn-color);
+      background-color: var(--submit-btn-background-color);
       border: 0;
       white-space: nowrap;
       display: inline-block;
@@ -658,8 +658,8 @@ input {
    cursor: pointer;
    height: auto;
    font: bold 12px Arial, Helvetica;
-   color: var(--submit-text-color);
-   background-color: var(--submit-background-color);
+   color: var(--submit-btn-color);
+   background-color: var(--submit-btn-background-color);
    border: 0;
    white-space: nowrap;
    display: inline-block;
@@ -1222,7 +1222,7 @@ th, td {}
 
 .tab_cadre_fixe {
    margin: 0px auto 5px auto;
-   background: transparent;
+   background: var(--content-background);
    z-index: 1;
    text-align: left;
    font-size: 11px;
@@ -1271,7 +1271,7 @@ th, td {}
    border-radius: 0;
    margin: 0;
    font-size: 1.1em;
-   color: var(--table-header-color);
+   color: var(--table-header-color) !important;
    padding: 10px 5px;
    background-color: var(--formheader-background-color);
 }
@@ -1283,9 +1283,13 @@ th, td {}
 
 .tab_cadre_fixehov th, .tab_cadrehov th {
    background-color: var(--table-header-background-color);
-   color: var(--table-header-color);
+   //color: var(--table-header-color) !important;
    font-size: 11px;
    border-bottom: var(--table-row-border);
+
+   a {
+      //color: var(--table-header-color) !important;
+   }
 }
 
 .tab_cadre_fixehov td, .tab_cadrehov td {
@@ -3152,11 +3156,21 @@ a.icon_nav_move {
       margin: 0 auto;
       display: inline-block;
 
+      li a {
+         color: var(--default-text-color);
+      }
+      > li > a, > li.active > a {
+         color: var(--header-bottom-color) !important;
+      }
       li.active {
          background-color: var(--nav-current-background-color);
          color: var(--nav-current-color);
       }
-      li a:hover {
+      > li:hover {
+         background-color: var(--nav-top-hover-background-color);
+         color: var(--nav-top-hover-color);
+      }
+      li ul li a:hover {
          background-color: var(--nav-hover-background-color);
          color: var(--nav-hover-color);
       }
@@ -4435,8 +4449,8 @@ a.copyright {
    padding: 5px;
    cursor: pointer;
    font: bold 12px Arial, Helvetica;
-   color: var(--submit-text-color);
-   background-color: var(--submit-background-color);
+   color: var(--submit-btn-color);
+   background-color: var(--submit-btn-background-color);
    border: none;
    border-radius: 0;
 
@@ -6973,12 +6987,12 @@ div.objectlockmessage > .form-group-checkbox {
 }
 
 div.progress {
-   background-color: #d3d3d3;
+   background-color: var(--progressbar-background-color);
    width: 100%;
    height: 1em;
    border-radius: 5px;
    .progress-fg {
-      background-color: #8cabdb;
+      background-color: var(--progressbar-foreground-color);
       height: 1em;
       float: left;
       border-radius: 5px;

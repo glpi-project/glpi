@@ -30,10 +30,28 @@
  */
 
 :root {
-   --header-top-background-color: #E1D39E;
-   --header-bottom-background-color: #C0CC7B;
-   --header-top-color: #000000;
-   --header-bottom-color: #000000;
+   --header-top-background-color: #000000;
+   --header-bottom-background-color: var(--content-background);
+   --header-top-color: #FFFFFF;
+   --header-bottom-color: #FFFFFF;
 
-   --progressbar-foreground-color: #C0CC7B;
+   --default-icon-color: #FBFBFB;
+   --default-text-color: #FBFBFB;
+   --link-color: #FBFBFB;
+   --link-hover-color: #FFFFFF;
+
+   --page-background: #000000;
+
+   --content-background: #2A2A2A;
+   --content-box-shadow: none;
+
+   --progressbar-foreground-color: #585957;
+
+   --breadcrumb-bar-background-color: #000000;
+   --breadcrumb-bar-color: #222000;
+   --breadcrumb-background-color: #F2F2F2;
+   --breadcrumb-active-background-color: #FEC95C;
+   --breadcrumb-active-color: #222000;
+
+   --footer-background-color: var(--content-background);
 }

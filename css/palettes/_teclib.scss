@@ -33,6 +33,8 @@
    --login-background-color: #F3F3F4;
    --login-header-background-color: #8E21A1;
    --login-text-color: #ffffff;
+
+   --progressbar-foreground-color: #BB78CA;
 }
 
 /* ====== GENERAL ====== */
@@ -189,8 +191,4 @@ input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
          color: white;
       }
    }
-}
-
-div.progress .progress-fg {
-   background-color: #BB78CA;
 }

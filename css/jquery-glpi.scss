@@ -58,7 +58,7 @@
 .ui-widget-overlay.glpi_modal { z-index: 2000 !important ;}
 .glpi_modal { z-index: 5000 !important ;}
 
-.ui-widget-content span.vsubmit, a.vsubmit {color: var(--submit-text-color);}
+.ui-widget-content span.vsubmit, a.vsubmit {color: var(--submit-btn-color);}
 /* css for timepicker */
 .ui-datepicker {width:20em; z-index:10000 !important;}
 .ui-timepicker-div .ui-widget-header {margin-bottom: 8px; }

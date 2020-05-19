@@ -43,14 +43,17 @@
    --content-background: #242323;
    --content-box-shadow: none;
 
-   --submit-background-color: #000000;
-   --submit-text-color: #AAAAAA;
+   --submit-btn-background-color: #000000;
+   --submit-btn-color: #AAAAAA;
    --secondary-btn-background-color: #191A19;
    //--secondary-btn-color: #5F5F5F;
 
    //--formfield-background-color: var(--content-background);
    //--formfield-color: var(--default-text-color);
    --formfield-border: 1px solid #333;
+
+   --progressbar-background-color: #262626;
+   --progressbar-foreground-color: #585957;
 
    --link-color: #888;
    --link-hover-color: #888;
@@ -641,13 +644,6 @@
 //         background-color: #585957;
 //         color: white;
 //      }
-//   }
-//}
-
-//div.progress {
-//   background-color: #262626;
-//   .progress-fg {
-//      background-color: #585957;
 //   }
 //}
 

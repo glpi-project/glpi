@@ -31,13 +31,13 @@
 
 :root {
    --brand-logo: url("../pics/fd_logo.png") 0 0 repeat-x;
-   --login-background-color: #1B2F62;
-   --login-header-background-color: #3A5693;
+   --login-background-color: var(--header-top-background-color);
+   --login-header-background-color: var(--header-bottom-background-color);
    --login-text-color: #FFFFFF;
 
    --default-font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
    --default-font-size: 12px;
-   --default-icon-color: #222;
+   --default-icon-color: #222222;
    --default-text-color: #000000;
 
    --page-background: #F8F7F3;
@@ -45,8 +45,8 @@
    --content-background: #FFFFFF;
    --content-box-shadow: 0px 1px 2px 1px #D2D2D2;
 
-   --submit-background-color: #FEC95C;
-   --submit-text-color: #8F5A0A;
+   --submit-btn-background-color: #FEC95C;
+   --submit-btn-color: #8F5A0A;
    --secondary-btn-background-color: #E6E6E6;
    --secondary-btn-color: #5F5F5F;
 
@@ -58,6 +58,8 @@
    --formfield-background-color: var(--content-background);
    --formfield-color: var(--default-text-color);
    --formfield-border: 1px solid #D3D3D3;
+   --progressbar-background-color: #d3d3d3;
+   --progressbar-foreground-color: #8cabdb;
 
    --link-color: #3A5693;
    --link-hover-color: #000000;
@@ -78,17 +80,19 @@
 
    --nav-current-color: #222000;
    --nav-current-background-color: #8CABDB;
+   --nav-top-hover-color: inherit;
+   --nav-top-hover-background-color: #8BAADA;
    --nav-hover-color: #8CABDB;
    --nav-hover-background-color: #3A5693;
 
    --table-header-background-color: #F8F8F8;
    --table-header-hover-background-color: #F3F3F3;
-   --table-header-color: #2E2E2E;
-   --table-row-odd-background-color: #FFFFFF;
-   --table-row-odd-color: #000000;
-   --table-row-even-background-color: #FFFFFF;
-   --table-row-even-color: #000000;
+   --table-header-color: var(--default-text-color);
+   --table-row-odd-background-color: var(--content-background);
+   --table-row-odd-color: var(--default-text-color);
+   --table-row-even-background-color: var(--content-background);
+   --table-row-even-color: var(--default-text-color);
    --table-row-error-background-color: #cf9b9b;
-   --table-row-error-color: #000000;
+   --table-row-error-color: var(--default-text-color);
    --table-row-border: 1px solid #EEE;
 }
