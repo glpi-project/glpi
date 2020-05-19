@@ -8086,4 +8086,21 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return ['OR' => $or_crits];
    }
+
+   /**
+    * Check if this item is new
+    *
+    * @return bool
+    */
+   protected function isNew() {
+      if (isset($this->input['status'])) {
+         $status = $this->input['status'];
+      } else if (isset($this->fields['status'])) {
+         $status = $this->fields['status'];
+      } else {
+         throw new LogicException("Can't get status value: no object loaded");
+      }
+
+      return $status == CommonITILObject::INCOMING;
+   }
 }

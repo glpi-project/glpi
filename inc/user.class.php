@@ -1642,7 +1642,7 @@ class User extends CommonDBTM {
                      break;
 
                   case 'users_id_supervisor':
-                     $this->fields[$k] = self::getIdByField('user_dn', $val);
+                     $this->fields[$k] = self::getIdByField('user_dn', $val, false);
                      break;
 
                   default :
@@ -4549,13 +4549,17 @@ JAVASCRIPT;
     *
     * @return integer
     */
-   static function getIdByField($field, $value) {
+   static function getIdByField($field, $value, $escape = true) {
       global $DB;
+
+      if ($escape) {
+         $value = addslashes($value);
+      }
 
       $iterator = $DB->request([
          'SELECT' => 'id',
          'FROM'   => self::getTable(),
-         'WHERE'  => [$field => addslashes($value)]
+         'WHERE'  => [$field => $value]
       ]);
 
       if (count($iterator) == 1) {

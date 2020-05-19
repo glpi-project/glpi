@@ -1,6 +1,16 @@
 name: "GLPI CI"
 
-on: ["push"]
+on:
+  # Runs test suite when a new commit is pushed on "master" and "*/bugfixes" branches
+  # and when a new tag is created
+  push:
+    branches:
+      - master
+      - '*/bugfixes'
+    tags:
+       - '*'
+  # Runs test suite when a PR is opened or synchronyzed
+  pull_request:
 
 jobs:
   lint:

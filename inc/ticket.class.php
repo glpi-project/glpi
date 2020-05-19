@@ -1398,7 +1398,10 @@ class Ticket extends CommonITILObject {
    function pre_updateInDB() {
 
       if (!$this->isTakeIntoAccountComputationBlocked($this->input)
-          && !$this->isAlreadyTakenIntoAccount() && $this->canTakeIntoAccount()) {
+         && !$this->isAlreadyTakenIntoAccount()
+         && $this->canTakeIntoAccount()
+         && !$this->isNew()
+      ) {
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
