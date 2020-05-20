@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * @since 9.5
 **/
 class PlanningExternalEventTemplate extends CommonDropdown {
-   use PlanningEvent {
+   use Glpi\Features\PlanningEvent {
       prepareInputForAdd    as protected prepareInputForAddTrait;
       prepareInputForUpdate as protected prepareInputForUpdateTrait;
       rawSearchOptions      as protected trait_rawSearchOptions;

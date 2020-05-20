@@ -47,7 +47,7 @@ class Reminder extends CommonDBVisible implements
    CalDAVCompatibleItemInterface,
    ExtraVisibilityCriteria
 {
-   use PlanningEvent {
+   use Glpi\Features\PlanningEvent {
       post_getEmpty as trait_post_getEmpty;
    }
    use VobjectConverterTrait;
