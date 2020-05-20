@@ -638,7 +638,7 @@ HTML;
                GLPI_ROOT . '/plugins'
             );
 
-            $buttons .="<a href='{$plugin_data['installation_url']}'>
+            $buttons .="<a href='{$plugin_data['installation_url']}' target='_blank'>
                <button title=\"$warning\" class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
             </a>";
          }
