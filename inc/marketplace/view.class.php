@@ -633,7 +633,7 @@ HTML;
                $warning = __("The plugin has an available update but it's directory is not writable.")."<br>";
             }
 
-            $warning = sprintf(
+            $warning.= sprintf(
                __("Download archive manually, you must uncompress it in plugins directory (%s)"),
                GLPI_ROOT . '/plugins'
             );
