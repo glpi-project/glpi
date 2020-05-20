@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * Network equipment Class
 **/
 class NetworkEquipment extends CommonDBTM {
-   use DCBreadcrumb;
+   use Glpi\Features\DCBreadcrumb;
    use Glpi\Features\Clonable;
 
    // From CommonDBTM

@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * DCRoom Class
 **/
 class DCRoom extends CommonDBTM {
-   use DCBreadcrumb;
+   use Glpi\Features\DCBreadcrumb;
 
    // From CommonDBTM
    public $dohistory                   = true;

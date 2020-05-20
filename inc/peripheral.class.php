@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * Peripheral Class
 **/
 class Peripheral extends CommonDBTM {
-   use DCBreadcrumb;
+   use Glpi\Features\DCBreadcrumb;
    use Glpi\Features\Clonable;
 
    // From CommonDBTM

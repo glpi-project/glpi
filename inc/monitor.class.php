@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Monitor Class
 **/
 class Monitor extends CommonDBTM {
-   use DCBreadcrumb;
+   use Glpi\Features\DCBreadcrumb;
    use Glpi\Features\Clonable;
 
    // From CommonDBTM

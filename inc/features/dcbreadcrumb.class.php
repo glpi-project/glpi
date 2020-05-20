@@ -30,9 +30,17 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Features;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
+
+use Datacenter;
+use DCRoom;
+use Enclosure;
+use Item_Enclosure;
+use Item_Rack;
 
 /**
  * Datacenter breadcrumb

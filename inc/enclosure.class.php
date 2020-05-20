@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Enclosure Class
 **/
 class Enclosure extends CommonDBTM {
-   use DCBreadcrumb;
+   use Glpi\Features\DCBreadcrumb;
 
    // From CommonDBTM
    public $dohistory                   = true;
