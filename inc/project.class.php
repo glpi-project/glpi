@@ -41,6 +41,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    use Kanban;
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -53,6 +54,21 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
    protected $team                     = [];
 
+   /** RELATIONS */
+   public function getCloneRelations() :array {
+      return [
+         ProjectCost::class,
+         ProjectTask::class,
+         Document_Item::class,
+         ProjectTeam::class,
+         Itil_Project::class,
+         Contract_Item::class,
+         Notepad::class,
+         KnowbaseItem_Item::class
+      ];
+   }
+
+   /** /RELATIONS */
    /**
     * Name of the type
     *
@@ -266,37 +282,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       }
    }
 
-   function post_clone($source, $history) {
-      parent::post_clone($source, $history);
-      $relations_classes = [
-         ProjectCost::class,
-         ProjectTask::class,
-         Document_Item::class,
-         ProjectTeam::class,
-         Itil_Project::class,
-         Contract_Item::class,
-         Notepad::class,
-         KnowbaseItem_Item::class
-      ];
-
-      $override_input['items_id'] = $this->getID();
-      foreach ($relations_classes as $classname) {
-         if (!is_a($classname, CommonDBConnexity::class, true)) {
-            Toolbox::logWarning(
-               sprintf(
-                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
-                  $classname
-               )
-            );
-            continue;
-         }
-
-         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
-         foreach ($relation_items as $relation_item) {
-            $newId = $relation_item->clone($override_input, $history);
-         }
-      }
-   }
 
    function post_addItem() {
       global $CFG_GLPI;
