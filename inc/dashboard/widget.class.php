@@ -848,11 +848,17 @@ HTML;
             axisY: {
                offset: 100
             },
+            axisX: {
+               onlyInteger: true
+            },
          ";
       } else {
          $vertical_options = "
             axisX: {
                offset: 50,
+            },
+            axisY: {
+               onlyInteger: true
             },
          ";
       }
