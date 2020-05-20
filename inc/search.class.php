@@ -3276,8 +3276,11 @@ JAVASCRIPT;
 
       $toview = [];
       $item   = null;
+      $entity_check = true;
+
       if ($itemtype != 'AllAssets') {
          $item = getItemForItemtype($itemtype);
+         $entity_check = $item->isEntityAssign();
       }
       // Add first element (name)
       array_push($toview, 1);
@@ -3289,7 +3292,7 @@ JAVASCRIPT;
 
       // Add entity view :
       if (Session::isMultiEntitiesMode()
-          && $item->isEntityAssign()
+          && $entity_check
           && (isset($CFG_GLPI["union_search_type"][$itemtype])
               || ($item && $item->maybeRecursive())
               || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))) {
