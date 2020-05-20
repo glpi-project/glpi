@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * PDU Class
 **/
 class PDU extends CommonDBTM {
-   use DCBreadcrumb;
+   use Glpi\Features\DCBreadcrumb;
 
    // From CommonDBTM
    public $dohistory                   = true;

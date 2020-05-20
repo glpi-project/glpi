@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
  *  Computer class
 **/
 class Computer extends CommonDBTM {
-   use DCBreadcrumb;
+   use Glpi\Features\DCBreadcrumb;
    use Glpi\Features\Clonable;
 
    // From CommonDBTM
