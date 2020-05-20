@@ -139,7 +139,11 @@ class View extends CommonGLPI {
       if (!GLPINetwork::isServicesAvailable()) {
          array_push(
             $messages,
-            __('GLPI Network services website seems offline, please check later')
+            __("GLPI Network services website seems not available from your network or offline"),
+            "<a href='".$CFG_GLPI['root_doc']."/front/config.form.php?forcetab=Config$5'>".
+            __("Maybe you could setup a proxy").
+            "</a> ".
+            __("or please check later")
          );
       } else {
          $registered = GLPINetwork::isRegistered();
