@@ -33,6 +33,7 @@
 
 var current_page = 1;
 var ajax_url;
+var ajax_done = false;
 
 $(document).ready(function() {
    ajax_url = CFG_GLPI.root_doc+"/ajax/marketplace.php";
@@ -56,10 +57,13 @@ $(document).ready(function() {
          followDownloadProgress(button);
       }
 
-      $.post(ajax_url, {
+      ajax_done = false;
+      $.get(ajax_url, {
          'action': action,
          'key': plugin_key
       }).done(function(html) {
+         ajax_done = true;
+
          if (html.indexOf("cleaned") !== -1 && installed) {
             li.remove();
          } else {
@@ -227,7 +231,7 @@ var followDownloadProgress = function(button) {
             progress.attr('value', progress_value);
             if (progress_value < 100) {
                loop();
-            } else {
+            } else if (!ajax_done) {
                // set an animated icon when decompressing
                buttons.html('<i class="fas fa-cog fa-spin"></i>');
 

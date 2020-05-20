@@ -89,6 +89,7 @@ class Controller extends CommonGLPI {
       $dest     = GLPI_TMP_DIR . '/' . $filename;
 
       if (!$api->downloadArchive($url, $dest, $this->plugin_key)) {
+         Session::start(); // restart session (it may have been closed by download progress tracking)
          Session::addMessageAfterRedirect(
             __('Unable to download plugin archive.'),
             false,
@@ -101,6 +102,7 @@ class Controller extends CommonGLPI {
       if (!UnifiedArchive::canOpenArchive($dest)) {
          $type = UnifiedArchive::detectArchiveType($dest);
 
+         Session::start(); // restart session (it may have been closed by download progress tracking)
          Session::addMessageAfterRedirect(
             sprintf(__('Plugin archive format is not supported by your system : %s.'), $type),
             false,
@@ -123,6 +125,7 @@ class Controller extends CommonGLPI {
       }
 
       if ($error) {
+         Session::start(); // restart session (it may have been closed by download progress tracking)
          Session::addMessageAfterRedirect(
             __('Unable to extract plugin archive.'),
             false,
