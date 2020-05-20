@@ -110,6 +110,7 @@ echo "Delete various scripts and directories"
 \rm -rf .github;
 \rm -rf .dependabot;
 \find pics/ -type f -name "*.eps" -exec rm -rf {} \;
+\find files/ -type f ! -name 'remove.txt' -exec rm -rf {} \;
 
 echo "Creating tarball";
 cd ..;
