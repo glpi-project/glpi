@@ -1224,7 +1224,7 @@ class AuthLDAP extends DbTestCase {
          ->array($user->fields)
          ->string['name']->isIdenticalTo($user_entry['uid'])
          ->string['user_dn']->isIdenticalTo("$user_full_dn")
-         ->string['users_id_supervisor']->isIdenticalTo($manager->fields['id']);
+         ->integer['users_id_supervisor']->isIdenticalTo($manager->fields['id']);
 
       // Drop both
       $this->boolean(ldap_delete($ldap->connect(), $user_full_dn))->isTrue();
