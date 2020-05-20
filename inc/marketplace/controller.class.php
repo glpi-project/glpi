@@ -200,6 +200,33 @@ class Controller extends CommonGLPI {
 
 
    /**
+    * Check for plugins updates
+    * Parse all installed plugin and check against API if a news version is available
+    *
+    * @return array of [plugin_key => new_version_num]
+    */
+   static function checkAllUpdates() {
+      $plugin_inst = new Plugin;
+      $plugin_inst->init(true);
+      $installed   = $plugin_inst->getList();
+
+      $updates = [];
+
+      foreach ($installed as $plugin) {
+         $plugin_key = $plugin['directory'];
+         $plugin_inst->getFromDBbyDir($plugin_key);
+
+         $mk_controller = new self($plugin_key);
+         if (false !== ($api_version = $mk_controller->checkUpdate($plugin_inst))) {
+            $updates[$plugin_key] = $api_version;
+         }
+      }
+
+      return $updates;
+   }
+
+
+   /**
     * Do the current plugin requires some Glpi Network offers
     *
     * @return array [offer ref => offer title]
