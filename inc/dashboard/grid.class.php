@@ -33,13 +33,13 @@
 namespace Glpi\Dashboard;
 
 use Ramsey\Uuid\Uuid;
+use Session;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 class Grid extends \CommonGLPI {
-   protected $cell_length     = 60;
    protected $cell_margin     = 6;
    protected $grid_cols       = 26;
    protected $grid_rows       = 24;
@@ -213,23 +213,19 @@ HTML;
       $this->restoreLastDashboard();
 
       if ($mini) {
-         $this->cell_length = 40;
          $this->cell_margin = 3;
       }
 
-      $grid_width    = $this->cell_length * $this->grid_cols;
-      $width_percent = 100 / $this->grid_cols;
-      $cell_fullsize = $this->cell_length + $this->cell_margin;
       $embed_str     = self::$embed ? "true" : "false";
       $embed_class   = self::$embed ? "embed" : "";
       $mini_class    = $mini ? "mini" : "";
 
       $nb_dashboards = count(self::$all_dashboards);
 
-      $can_view_all  = \Session::haveRight('dashboard', READ) || self::$embed;
-      $can_create    = \Session::haveRight('dashboard', CREATE);
-      $can_edit      = \Session::haveRight('dashboard', UPDATE) && $nb_dashboards;
-      $can_purge     = \Session::haveRight('dashboard', PURGE) && $nb_dashboards;
+      $can_view_all  = Session::haveRight('dashboard', READ) || self::$embed;
+      $can_create    = Session::haveRight('dashboard', CREATE);
+      $can_edit      = Session::haveRight('dashboard', UPDATE) && $nb_dashboards;
+      $can_purge     = Session::haveRight('dashboard', PURGE) && $nb_dashboards;
       $can_clone     = $can_create && $nb_dashboards;
 
       // prepare html for add controls
@@ -260,31 +256,6 @@ HTML;
       $save_label       = _x('button', "Save");
 
       $gridstack_items = $this->getGridItemsHtml();
-
-      $style = "<style>";
-      // add aditional style for item addition
-      $style.= "
-         .cell-add {
-            width: {$this->cell_length}px;
-            height: {$cell_fullsize}px;
-         }
-      ";
-
-      // force colums width for grid stack
-      for ($i = 0; $i < $this->grid_cols; $i++) {
-         $left  = $i * $width_percent;
-         $width = ($i+1) * $width_percent;
-         $style.= "
-         .grid-stack > .grid-stack-item[data-gs-x='$i'] {
-            left: $left%;
-         }
-         .grid-stack > .grid-stack-item[data-gs-width='".($i+1)."'] {
-            min-width: $width_percent%;
-            width: $width%;
-         }
-         ";
-      }
-      $style.= "</style>";
 
       $dropdown_dashboards = "";
       if ($nb_dashboards) {
@@ -344,11 +315,7 @@ HTML;
          }
 
          $grid_guide = <<<HTML
-            <div class="grid-guide"
-               style="width: {$grid_width}px;
-                        bottom: {$cell_fullsize}px;
-                        background-size: {$this->cell_length}px
-                                       {$cell_fullsize}px;">
+            <div class="grid-guide">
                $add_controls
             </div>
 HTML;
@@ -371,13 +338,12 @@ HTML;
 
       // display the grid
       $html = <<<HTML
-      $style
       <div class="dashboard {$embed_class} {$mini_class}" id="dashboard-{$rand}">
          $embed_watermark
          $toolbars
          <div class="grid-stack grid-stack-{$this->grid_cols}"
             id="grid-stack-$rand"
-            style="width: {$grid_width}px;">
+            style="width: 100%">
             $gridstack_items
          </div>
       </div>
@@ -392,7 +358,6 @@ HTML;
             current:     '{$this->current}',
             cols:        {$this->grid_cols},
             rows:        {$this->grid_rows},
-            cell_length: {$this->cell_length},
             cell_margin: {$this->cell_margin},
             rand:        '{$rand}',
             embed:       {$embed_str},
@@ -934,7 +899,7 @@ HTML;
       // manage cache
       $use_cache =
          !($card_options['args']['force'] ?? $card_options['force'] ?? false)
-         && $_SESSION['glpi_use_mode'] != \Session::DEBUG_MODE;
+         && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE;
       $cache_key    = "dashboard_card_".$dashboard;
       $cache_age    = 40;
       if ($use_cache) {
@@ -1115,8 +1080,8 @@ HTML;
          foreach ($fk_itemtypes as $fk_itemtype) {
             $label = sprintf(
                __("%s by %s"),
-               $itemtype::getTypeName(),
-               $fk_itemtype::getTypeName()
+               $itemtype::getTypeName(Session::getPluralNumber()),
+               $fk_itemtype::getFieldLabel()
             );
 
             $cards["count_".$itemtype."_".$fk_itemtype] = [

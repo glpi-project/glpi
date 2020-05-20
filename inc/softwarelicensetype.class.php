@@ -43,4 +43,8 @@ class SoftwareLicenseType extends CommonTreeDropdown {
       return _n('License type', 'License types', $nb);
    }
 
+   static function getFieldLabel() {
+      return __('Type');
+   }
+
 }

@@ -37,9 +37,11 @@ if (!defined('GLPI_ROOT')) {
 /// Class ComputerType
 class ComputerType extends CommonDropdown {
 
-
-
    static function getTypeName($nb = 0) {
       return _n('Computer type', 'Computer types', $nb);
+   }
+
+   static function getFieldLabel() {
+      return __('Type');
    }
 }

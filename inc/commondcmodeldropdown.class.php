@@ -39,6 +39,11 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
 
    public $additional_fields_for_dictionnary = ['manufacturer'];
 
+
+   static function getFieldLabel() {
+      return __('Model');
+   }
+
    /**
     * Return Additional Fields for this type
     *

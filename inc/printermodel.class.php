@@ -45,6 +45,11 @@ class PrinterModel extends CommonDropdown {
    }
 
 
+   static function getFieldLabel() {
+      return __('Model');
+   }
+
+
    function cleanDBonPurge() {
 
       // Temporary solution to clean wrong updated items

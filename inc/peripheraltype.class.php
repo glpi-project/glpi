@@ -42,4 +42,8 @@ class PeripheralType extends CommonDropdown {
       return _n('Devices type', 'Devices types', $nb);
    }
 
+   static function getFieldLabel() {
+      return __('Type');
+   }
+
 }

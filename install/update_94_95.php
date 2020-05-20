@@ -999,13 +999,23 @@ function update94to95() {
       \Glpi\Dashboard\Dashboard::importFromJson($dashboards);
       Config::deleteConfigurationValues('core', ['dashboards']);
    }
+
+   //delete prevous dashboards configuration (remove partial dev versions)
+   Config::deleteConfigurationValues('core', [
+      'default_dashboard_central',
+      'default_dashboard_assets',
+      'default_dashboard_helpdesk',
+      'default_dashboard_mini_ticket',
+   ]);
+
    // add default dashboards
    $migration->addConfig([
       'default_dashboard_central'     => 'central',
       'default_dashboard_assets'      => 'assets',
-      'default_dashboard_helpdesk'    => 'helpdesk',
-      'default_dashboard_mini_ticket' => 'mini_ticket',
+      'default_dashboard_helpdesk'    => 'assistance',
+      'default_dashboard_mini_ticket' => 'mini_tickets',
    ]);
+
    if (!$DB->fieldExists('glpi_users', 'default_dashboard_central')) {
       $migration->addField("glpi_users", "default_dashboard_central", "varchar(100) DEFAULT NULL");
    }
@@ -1017,6 +1027,48 @@ function update94to95() {
    }
    if (!$DB->fieldExists('glpi_users', 'default_dashboard_mini_ticket')) {
       $migration->addField("glpi_users", "default_dashboard_mini_ticket", "varchar(100) DEFAULT NULL");
+   }
+
+   // default dashboards
+   if (countElementsInTable("glpi_dashboards_dashboards") === 0) {
+      $dashboard_obj   = new \Glpi\Dashboard\Dashboard();
+      $dashboards_data = include_once __DIR__."/update_94_95/dashboards.php";
+      foreach ($dashboards_data as $default_dashboard) {
+         $items = $default_dashboard['_items'];
+         unset($default_dashboard['_items']);
+
+         // add current dashboard
+         $dashboard_id = $dashboard_obj->add($default_dashboard);
+
+         // add items to this new dashboard
+         $query = $DB->buildInsert(
+            \Glpi\Dashboard\Item::getTable(),
+            [
+               'dashboards_dashboards_id' => new QueryParam(),
+               'gridstack_id'             => new QueryParam(),
+               'card_id'                  => new QueryParam(),
+               'x'                        => new QueryParam(),
+               'y'                        => new QueryParam(),
+               'width'                    => new QueryParam(),
+               'height'                   => new QueryParam(),
+               'card_options'             => new QueryParam(),
+            ]
+         );
+         $stmt = $DB->prepare($query);
+         foreach ($items as $item) {
+            $stmt->bind_param('issiiiis',
+               $dashboard_id,
+               $item['gridstack_id'],
+               $item['card_id'],
+               $item['x'],
+               $item['y'],
+               $item['width'],
+               $item['height'],
+               $item['card_options']
+            );
+            $stmt->execute();
+         }
+      }
    }
    /** /Dashboards */
 

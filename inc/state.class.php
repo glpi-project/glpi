@@ -50,6 +50,11 @@ class State extends CommonTreeDropdown {
    }
 
 
+   static function getFieldLabel() {
+      return __('Status');
+   }
+
+
    /**
     * @since 0.85
     *

@@ -147,9 +147,10 @@ class Dashboard extends DbTestCase {
 
 
    public function testGetAll() {
+      // get "core" dashboards
       $dasboards = $this->dashboard::getAll(true, false);
       $this->array($dasboards)
-         ->hasSize(2)
+         ->hasSize(5)
          ->hasKey('test_dashboard')
          ->hasKey('test_dashboard2');
 

@@ -42,4 +42,8 @@ class MonitorType extends CommonDropdown {
       return _n('Monitor type', 'Monitor types', $nb);
    }
 
+   static function getFieldLabel() {
+      return __('Type');
+   }
+
 }

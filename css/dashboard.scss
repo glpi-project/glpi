@@ -1,6 +1,7 @@
 $item_margin: 3px;
 $toolbar_height: 40px;
 $break_phones: 700px;
+$break_tablet: 1400px;
 
 @mixin soft-shadow {
    box-shadow:
@@ -204,6 +205,7 @@ $break_phones: 700px;
       position: absolute;
       top: 0;
       right: 0;
+      z-index: 10;
 
       &.left-toolbar {
          top: 0;
@@ -295,6 +297,7 @@ $break_phones: 700px;
       display: none;
       position: absolute;
       top: calc(#{$toolbar_height} - 3px);
+      width: calc(100% + 1px);
       border: 1px solid #EEEEEE;
       border-width: 0 1px 1px 0;
       background-image:
@@ -511,6 +514,10 @@ $break_phones: 700px;
       position: absolute;
       right: 5px;
       bottom: 5px;
+
+      @media screen and (min-width: $break_phones) and (max-width: $break_tablet) {
+         font-size: 2em;
+      }
    }
 
    .main-label {
@@ -519,6 +526,10 @@ $break_phones: 700px;
       font-weight: bold;
       display: block;
       max-width: calc(100% - 2.5em);
+
+      @media screen and (min-width: $break_phones) and (max-width: $break_tablet) {
+         font-size: 1.1em;
+      }
    }
 
    .multiple-number {
@@ -562,6 +573,8 @@ $break_phones: 700px;
             }
 
             .label, .icon {
+               position: inherit;
+               font-size: inherit;
                padding: 10px 0 10px 10px;
                line-height: $number_size;
             }
@@ -571,6 +584,12 @@ $break_phones: 700px;
             }
          }
       }
+
+      .main-label {
+         position: absolute;
+         left: 5px;
+         bottom: 5px;
+      }
    }
 
    .g-chart {
@@ -579,10 +598,24 @@ $break_phones: 700px;
 
       .chart {
          flex: 1;
+         min-height: 0; // force firefox to respect flex-shrink on svg
       }
 
       .main-label {
          height: 30px;
+      }
+
+      .ct-chart-bar:not(.ct-horizontal-bars),
+      .ct-chart-line {
+         .ct-label:not(.ct-vertical) {
+            word-break: break-word;
+         }
+      }
+
+      .ct-chart-line {
+         .ct-label.ct-horizontal.ct-end {
+            transform: translateX(-40%);
+         }
       }
 
       .ct-chart-donut {

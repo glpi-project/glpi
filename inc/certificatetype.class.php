@@ -44,4 +44,8 @@ class CertificateType extends CommonDropdown {
    static function getTypeName($nb = 0) {
       return _n('Certificate type', 'Certificate types', $nb);
    }
+
+   static function getFieldLabel() {
+      return __('Type');
+   }
 }
