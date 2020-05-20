@@ -40,7 +40,7 @@ use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
 class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemInterface {
-   use PlanningEvent  {
+   use Glpi\Features\PlanningEvent  {
       rawSearchOptions as protected trait_rawSearchOptions;
    }
    use VobjectConverterTrait;

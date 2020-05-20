@@ -31,12 +31,30 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Features;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 use RRule\RRule;
 use RRule\RSet;
+use Session;
+use Toolbox;
+use Planning;
+use PlanningRecall;
+use CommonDBVisible;
+use Group_User;
+use QueryExpression;
+use PlanningEventCategory;
+use Html;
+use DateTime;
+use DateTimeZone;
+use Reminder;
+use Dropdown;
+use CommonITILTask;
+use User;
+use DateInterval;
 
 trait PlanningEvent {
 
@@ -448,7 +466,7 @@ trait PlanningEvent {
                'state'  => Planning::TODO,
                'AND'    => [
                   'state'  => Planning::INFO,
-                  'end'    => ['>', new \QueryExpression('NOW()')]
+                  'end'    => ['>', new QueryExpression('NOW()')]
                ]
             ]
          ];
@@ -817,7 +835,7 @@ trait PlanningEvent {
     * @return \RRule\RSet
     */
    public static function getRsetFromRRuleField(array $rrule, $dtstart): RSet {
-      $dtstart_datetime  = new \DateTime($dtstart);
+      $dtstart_datetime  = new DateTime($dtstart);
       $rrule['dtstart']  = $dtstart_datetime->format('Y-m-d\TH:i:s\Z');
 
       // create a ruleset containing dtstart, the rrule, and the exclusions
@@ -827,7 +845,7 @@ trait PlanningEvent {
       // we need to set a top level property for that (not directly in rrule one)
       if (isset($rrule['exceptions'])) {
          foreach ($rrule['exceptions'] as $exception) {
-            $exdate = new \DateTime($exception);
+            $exdate = new DateTime($exception);
             $exdate->setTime(
                $dtstart_datetime->format('G'),
                $dtstart_datetime->format('i'),

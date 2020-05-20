@@ -46,7 +46,7 @@ use Sabre\VObject\Property\IntegerValue;
  * @since 0.85
 **/
 class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface {
-   use PlanningEvent;
+   use Glpi\Features\PlanningEvent;
    use VobjectConverterTrait;
 
    // From CommonDBTM
