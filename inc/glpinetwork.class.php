@@ -64,6 +64,14 @@ class GLPINetwork {
 
       echo "<tr><th colspan='2'>" . __('Registration') . "</th></tr>";
 
+      if ($registration_key === "") {
+         echo "<tr><td colspan='2'>".
+         __('A registration key is needed to use advanced feature (like marketplace) in GLPI')."<br><br>".
+         "<a href='".GLPI_NETWORK_SERVICES."'>".__('Register on GLPI Network!')."</a><br>".
+         __("And retrieve your key to paste it below").
+         "</td></tr>";
+      }
+
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='glpinetwork_registration_key'>" . __('Registration key') . "</label></td>";
       echo "<td>" . Html::textarea(['name' => 'glpinetwork_registration_key', 'value' => $registration_key, 'display' => false]) . "</td>";
