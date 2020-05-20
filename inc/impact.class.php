@@ -877,13 +877,21 @@ class Impact extends CommonGLPI {
             'NOT' => [
                "$table.id" => $used
             ],
-         ] + getEntitiesRestrictCriteria($itemtype::getTable()),
+         ],
       ];
 
       if (is_subclass_of($itemtype, "ExtraVisibilityCriteria", true)) {
          $base_request = array_merge_recursive(
             $base_request,
             $itemtype::getVisibilityCriteria()
+         );
+      }
+
+      $item = new $itemtype();
+      if ($item->isEntityAssign()) {
+         $base_request = array_merge_recursive(
+            $base_request,
+            getEntitiesRestrictCriteria($itemtype::getTable())
          );
       }
 
