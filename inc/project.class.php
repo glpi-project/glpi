@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
  * @since 0.85
 **/
 class Project extends CommonDBTM implements ExtraVisibilityCriteria {
-   use Kanban;
+   use Glpi\Features\Kanban;
    use Glpi\Features\Clonable;
 
    // From CommonDBTM
