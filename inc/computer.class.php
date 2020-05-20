@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Computer extends CommonDBTM {
    use DCBreadcrumb;
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -54,6 +55,24 @@ class Computer extends CommonDBTM {
    static $rightname                   = 'computer';
    protected $usenotepad               = true;
 
+   /** RELATIONS */
+   public function getCloneRelations() :array {
+      return [
+         Item_OperatingSystem::class,
+         Item_devices::class,
+         Infocom::class,
+         Item_Disk::class,
+         Item_SoftwareVersion::class,
+         Item_SoftwareLicense::class,
+         Contract_Item::class,
+         Document_Item::class,
+         NetworkPort::class,
+         Computer_Item::class,
+         Notepad::class,
+         KnowbaseItem_Item::class
+      ];
+   }
+   /** /RELATIONS */
 
    static function getTypeName($nb = 0) {
       return _n('Computer', 'Computers', $nb);
@@ -248,44 +267,6 @@ class Computer extends CommonDBTM {
       return $input;
    }
 
-   /**
-    * @see CommonDBTM::post_clone
-   **/
-   function post_clone($source, $history) {
-      parent::post_clone($source, $history);
-      $relations_classes = [
-         Item_OperatingSystem::class,
-         Item_devices::class,
-         Infocom::class,
-         Item_Disk::class,
-         Item_SoftwareVersion::class,
-         Item_SoftwareLicense::class,
-         Contract_Item::class,
-         Document_Item::class,
-         NetworkPort::class,
-         Computer_Item::class,
-         Notepad::class,
-         KnowbaseItem_Item::class
-      ];
-
-      $override_input['items_id'] = $this->getID();
-      foreach ($relations_classes as $classname) {
-         if (!is_a($classname, CommonDBConnexity::class, true)) {
-            Toolbox::logWarning(
-               sprintf(
-                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
-                  $classname
-               )
-            );
-            continue;
-         }
-
-         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
-         foreach ($relation_items as $relation_item) {
-            $newId = $relation_item->clone($override_input, $history);
-         }
-      }
-   }
 
    function cleanDBonPurge() {
 

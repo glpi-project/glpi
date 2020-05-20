@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Peripheral extends CommonDBTM {
    use DCBreadcrumb;
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -50,6 +51,20 @@ class Peripheral extends CommonDBTM {
    static $rightname                   = 'peripheral';
    protected $usenotepad               = true;
 
+   /** RELATIONS */
+   public function getCloneRelations() :array {
+      return [
+         Item_OperatingSystem::class,
+         Item_devices::class,
+         Infocom::class,
+         NetworkPort::class,
+         Contract_Item::class,
+         Document_Item::class,
+         Computer_Item::class,
+         KnowbaseItem_Item::class
+      ];
+   }
+   /** /RELATIONS */
 
    /**
     * Name of the type
@@ -109,37 +124,6 @@ class Peripheral extends CommonDBTM {
       return $input;
    }
 
-   function post_clone($source, $history) {
-      parent::post_clone($source, $history);
-      $relations_classes = [
-         Item_OperatingSystem::class,
-         Item_devices::class,
-         Infocom::class,
-         NetworkPort::class,
-         Contract_Item::class,
-         Document_Item::class,
-         Computer_Item::class,
-         KnowbaseItem_Item::class
-      ];
-
-      $override_input['items_id'] = $this->getID();
-      foreach ($relations_classes as $classname) {
-         if (!is_a($classname, CommonDBConnexity::class, true)) {
-            Toolbox::logWarning(
-               sprintf(
-                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
-                  $classname
-               )
-            );
-            continue;
-         }
-
-         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
-         foreach ($relation_items as $relation_item) {
-            $newId = $relation_item->clone($override_input, $history);
-         }
-      }
-   }
 
    function cleanDBonPurge() {
 

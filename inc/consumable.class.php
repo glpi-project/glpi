@@ -43,6 +43,7 @@ if (!defined('GLPI_ROOT')) {
   @author Julien Dombre
 **/
 class Consumable extends CommonDBChild {
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    static protected $forward_entity_to = ['Infocom'];
@@ -54,6 +55,13 @@ class Consumable extends CommonDBChild {
    static public $itemtype             = 'ConsumableItem';
    static public $items_id             = 'consumableitems_id';
 
+   /** RELATIONS */
+   public function getCloneRelations() :array {
+      return [
+         Infocom::class
+      ];
+   }
+   /** /RELATIONS */
 
    function getForbiddenStandardMassiveAction() {
 
@@ -94,30 +102,6 @@ class Consumable extends CommonDBChild {
       return [];
    }
 
-   function post_clone($source, $history) {
-      parent::post_clone($source, $history);
-      $relations_classes = [
-         Infocom::class
-      ];
-
-      $override_input['items_id'] = $this->getID();
-      foreach ($relations_classes as $classname) {
-         if (!is_a($classname, CommonDBConnexity::class, true)) {
-            Toolbox::logWarning(
-               sprintf(
-                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
-                  $classname
-               )
-            );
-            continue;
-         }
-
-         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
-         foreach ($relation_items as $relation_item) {
-            $newId = $relation_item->clone($override_input);
-         }
-      }
-   }
 
    /**
     * send back to stock

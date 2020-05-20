@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Budget class
  */
 class Budget extends CommonDropdown{
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory           = true;
@@ -47,6 +48,13 @@ class Budget extends CommonDropdown{
 
    public $can_be_translated = false;
 
+   /** RELATIONS */
+   public function getCloneRelations() :array {
+      return [
+         Document_Item::class
+      ];
+   }
+   /** /RELATIONS */
 
    static function getTypeName($nb = 0) {
       return _n('Budget', 'Budgets', $nb);
@@ -174,31 +182,6 @@ class Budget extends CommonDropdown{
       return $input;
    }
 
-
-   function post_clone($source, $history) {
-      parent::post_clone($source, $history);
-      $relations_classes = [
-         Document_Item::class
-      ];
-
-      $override_input['items_id'] = $this->getID();
-      foreach ($relations_classes as $classname) {
-         if (!is_a($classname, CommonDBConnexity::class, true)) {
-            Toolbox::logWarning(
-               sprintf(
-                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
-                  $classname
-               )
-            );
-            continue;
-         }
-
-         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
-         foreach ($relation_items as $relation_item) {
-            $newId = $relation_item->clone($override_input);
-         }
-      }
-   }
 
    function rawSearchOptions() {
       $tab = [];
