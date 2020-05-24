@@ -58,6 +58,9 @@ echo "Remove dev files and directories"
 # Remove PHP dev dependencies that are not anymore used
 composer update nothing --ignore-platform-reqs --no-dev --working-dir=$WORKING_DIR
 
+# Remove user generated files (i.e. cache and log from CLI commands ran during release)
+find $WORKING_DIR/files -depth -mindepth 2 ! -iname "remove.txt" -exec rm -rf {} \;
+
 # Remove hidden files and directory, except .htaccess files
 find $WORKING_DIR -depth \( -iname ".*" ! -iname ".htaccess" \) -exec rm -rf {} \;
 
@@ -78,7 +81,6 @@ for node in "${dev_nodes[@]}"
 do
     rm -rf $WORKING_DIR/$node
 done
-exit;
 find $WORKING_DIR/pics/ -depth -type f -iname "*.eps" -exec rm -rf {} \;
 
 # Remove useless files and directories in vendor subdirs
