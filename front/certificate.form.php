@@ -98,8 +98,10 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(Certificate::getTypeName(Session::getPluralNumber()),
                 $_SERVER['PHP_SELF'], 'management', 'certificate');
-   $certificate->display(['id'           => $_GET["id"],
-                          'withtemplate' => $_GET["withtemplate"]
-                         ]);
+   $certificate->display([
+      'id'           => $_GET["id"],
+      'withtemplate' => $_GET["withtemplate"],
+      'formoptions'  => "data-track-changes=true"
+   ]);
    Html::footer();
 }

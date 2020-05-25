@@ -1433,6 +1433,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];
       }
+      $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
 
       $fkfield = $item->getForeignKeyField();
 

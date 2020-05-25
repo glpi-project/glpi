@@ -100,14 +100,17 @@ if (isset($_POST["add"])) {
       "assets",
       "passivedcequipment"
    );
-   $options = ['id' => $_GET['id']];
+   $options = [
+      'id' => $_GET['id'],
+      'withtemplate' => $_GET['withtemplate'],
+      'formoptions'  => "data-track-changes=true"
+   ];
    if (isset($_GET['position'])) {
       $options['position'] = $_GET['position'];
    }
    if (isset($_GET['room'])) {
       $options['room'] = $_GET['room'];
    }
-   $options['withtemplate'] = $_GET['withtemplate'];
    $passive_equip->display($options);
    Html::footer();
 }

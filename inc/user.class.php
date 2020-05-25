@@ -2083,7 +2083,7 @@ JAVASCRIPT;
       }
 
       $options['formtitle']   = $formtitle;
-      $options['formoptions'] = " enctype='multipart/form-data'";
+      $options['formoptions'] = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
       $this->showFormHeader($options);
       $rand = mt_rand();
 

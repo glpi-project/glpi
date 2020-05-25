@@ -137,7 +137,9 @@ if (isset($_POST["add"])) {
    if (!isset($options)) {
       $options = [];
    }
-   $options['id'] = $_GET["id"];
+   $options['id'] = $_GET['id'];
+   $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
+
    $dropdown->display($options);
    Html::footer();
 }

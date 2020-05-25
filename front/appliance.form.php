@@ -115,6 +115,6 @@ if (isset($_POST["add"])) {
 } else {
    $appliance->checkGlobal(READ);
    Html::header(Appliance::getTypeName(1), $_SERVER['PHP_SELF'], "management", "appliance");
-   $appliance->display($_GET);
+   $appliance->display($_GET + ['formoptions' => "data-track-changes=true"]);
    Html::footer();
 }

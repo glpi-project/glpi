@@ -105,7 +105,10 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Peripheral::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "peripheral");
-   $peripheral->display(['id'           => $_GET["id"],
-                              'withtemplate' => $_GET["withtemplate"]]);
+   $peripheral->display([
+      'id'           => $_GET["id"],
+      'withtemplate' => $_GET["withtemplate"],
+      'formoptions'  => "data-track-changes=true"
+   ]);
    Html::footer();
 }

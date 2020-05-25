@@ -1135,3 +1135,42 @@ function getUuidV4() {
       return v.toString(16);
    });
 }
+
+/** Track input changes and warn the user of unsaved changes if they try to navigate away */
+window.glpiUnsavedFormChanges = false;
+$(document).ready(function() {
+   // Try to limit tracking to item forms by binding to inputs under glpi_tabs only.
+   // Forms must have the data-track-changes attribute set to true.
+   // Form fields may have their data-track-changes attribute set to false to override the tracking on that input.
+   var glpiTabs = $('#page .glpi_tabs');
+   glpiTabs.on('input', 'form[data-track-changes="true"] input:not([data-track-changes="false"]),' +
+      'form[data-track-changes="true"] textarea:not([data-track-changes="false"])', function() {
+      window.glpiUnsavedFormChanges = true;
+   });
+   glpiTabs.on('change', 'form[data-track-changes="true"] select:not([data-track-changes="false"])', function() {
+      window.glpiUnsavedFormChanges = true;
+   });
+   glpiTabs.on('select2:select', 'form[data-track-changes="true"] select:not([data-track-changes="false"])', function() {
+      window.glpiUnsavedFormChanges = true;
+   });
+   $(window).on('beforeunload', function(e) {
+      if (window.glpiUnsavedFormChanges) {
+         e.preventDefault();
+         // All supported browsers will show a localized message
+         return '';
+      }
+   });
+
+   glpiTabs.on('submit', 'form', function() {
+      window.glpiUnsavedFormChanges = false;
+   });
+});
+
+function onTinyMCEChange(e) {
+   var editor = $(e.target)[0];
+   if ($(editor.targetElm).data('trackChanges') !== false) {
+      if ($(editor.formElement).data('trackChanges') === true) {
+         window.glpiUnsavedFormChanges = true;
+      }
+   }
+}
