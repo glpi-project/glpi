@@ -1508,7 +1508,7 @@ class Planning extends CommonGLPI {
     *
     * @return mixed the id (integer) or false if it failed
     */
-   static function postClonedEvent(array $event = []) {
+   static function cloneEvent(array $event = []) {
       $item = new $event['old_itemtype'];
       $item->getFromDB((int) $event['old_items_id']);
 
@@ -1562,6 +1562,22 @@ class Planning extends CommonGLPI {
       }
 
       return $new_items_id;
+   }
+
+   /**
+    * Delete an event
+    *
+    * @since 9.5
+    *
+    * @param array $event the event to clone (with itemtype and items_id keys)
+    *
+    * @return bool
+    */
+   static function deleteEvent(array $event = []):bool {
+      $item = new $event['itemtype'];
+      return $item->delete([
+         'id' => (int) $event['items_id']
+      ]);
    }
 
 
