@@ -301,11 +301,6 @@ var GLPIPlanning  = {
                });
             });
 
-            // remove all context menus on document click
-            $(document).click(function() {
-                $('.planning-context-menu').remove();
-            })
-
          },
          datesRender: function(info) {
             var view = info.view;
@@ -585,6 +580,11 @@ var GLPIPlanning  = {
 
       // force focus on the current window
       $(window).focus();
+
+      // remove all context menus on document click
+      $(document).click(function() {
+         $('.planning-context-menu').remove();
+      })
    },
 
    refresh: function() {
