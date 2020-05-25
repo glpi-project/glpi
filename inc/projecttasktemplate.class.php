@@ -89,7 +89,7 @@ class ProjectTaskTemplate extends CommonDropdown {
                'type'  => 'actiontime'],
               ['name'  => 'description',
                'label' => __('Description'),
-               'type'  => 'textarea'],
+               'type'  => 'tinymce'],
               ['name'  => 'comments',
                'label' => __('Comments'),
                'type'  => 'textarea'],

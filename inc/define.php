@@ -477,7 +477,7 @@ $CFG_GLPI['javascript'] = [
       'stat'      => ['charts']
    ],
    'tools'     => [
-      'project'      => ['gantt', 'kanban'],
+      'project'      => ['gantt', 'kanban', 'tinymce'],
       'knowbaseitem' => ['tinymce', 'jstree'],
       'reminder'     => ['tinymce'],
    ],
@@ -498,7 +498,7 @@ $CFG_GLPI['javascript'] = [
          'marketplace' => ['marketplace']
       ]
    ],
-   'admin'        => ['clipboard'],
+   'admin'        => ['clipboard', 'tinymce'],
    'preference'   => ['clipboard'],
    'self-service' => ['tinymce']
 ];
