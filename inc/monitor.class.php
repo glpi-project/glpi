@@ -42,7 +42,7 @@ class Monitor extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory                   = true;
-   static protected $forward_entity_to = ['Infocom', 'ReservationItem', 'Item_OperatingSystem'];
+   static protected $forward_entity_to = ['Infocom', 'ReservationItem', 'Item_OperatingSystem', 'NetworkPort'];
 
    static $rightname                   = 'monitor';
    protected $usenotepad               = true;
@@ -79,6 +79,7 @@ class Monitor extends CommonDBTM {
       $this->addStandardTab('Item_OperatingSystem', $ong, $options);
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
+      $this->addStandardTab('NetworkPort', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);

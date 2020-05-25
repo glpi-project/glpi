@@ -271,7 +271,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
 
 $CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'Item_DeviceSimcard'];
 
-$CFG_GLPI["networkport_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
+$CFG_GLPI["networkport_types"]            = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer', 'Enclosure', 'PDU', 'Cluster'];
 
 // Warning : the order is used for displaying different NetworkPort types ! Keep it !
