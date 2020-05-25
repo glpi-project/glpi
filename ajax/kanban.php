@@ -52,7 +52,7 @@ if (!isset($_REQUEST['action'])) {
 }
 $action = $_REQUEST['action'];
 
-$nonkanban_actions = ['update', 'add_item', 'move_item'];
+$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item'];
 if (isset($_REQUEST['itemtype'])) {
    $traits = class_uses($_REQUEST['itemtype'], true);
    if (!in_array($_REQUEST['action'], $nonkanban_actions) && (!$traits || !in_array('Kanban', $traits))) {
@@ -84,7 +84,7 @@ if (isset($itemtype)) {
          return;
       }
    }
-   if (in_array($action, ['add_item'])) {
+   if (in_array($action, ['bulk_add_item', 'add_item'])) {
       if (!$item->canCreate()) {
          // Missing rights
          http_response_code(403);
@@ -118,6 +118,19 @@ if ($_REQUEST['action'] == 'update') {
    $inputs = [];
    parse_str($_REQUEST['inputs'], $inputs);
    $item->add($inputs);
+} else if ($_REQUEST['action'] == 'bulk_add_item') {
+   $checkParams(['inputs']);
+   $item = new $itemtype();
+   $inputs = [];
+   parse_str($_REQUEST['inputs'], $inputs);
+
+   $bulk_item_list = preg_split('/\r\n|[\r\n]/', $inputs['bulk_item_list']);
+   if (!empty($bulk_item_list)) {
+      unset($inputs['bulk_item_list']);
+      foreach ($bulk_item_list as $item_entry) {
+         $item->add($inputs + ['name' => $item_entry]);
+      }
+   }
 } else if ($_REQUEST['action'] == 'move_item') {
    $checkParams(['card', 'column', 'position', 'kanban']);
    /** @var Kanban|CommonDBTM $kanban */

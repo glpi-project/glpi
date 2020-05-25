@@ -6636,7 +6636,7 @@ div.objectlockmessage > .form-group-checkbox {
    }
    .kanban-container {
       overflow: auto;
-      #kanban-add-dropdown {
+      #kanban-add-dropdown, #kanban-bulk-add-dropdown {
          position: fixed;
          width: max-content;
          background-color: #f1f1f1;
@@ -6656,7 +6656,7 @@ div.objectlockmessage > .form-group-checkbox {
          }
       }
       .kanban-columns {
-         width: max-content; /* Fix overflow when collapsed*/
+         width: max-content; /* Fix overflow when collapsed */
          display: flex;
          .kanban-column {
             margin-right: 8px;
