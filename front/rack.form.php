@@ -100,7 +100,8 @@ if (isset($_POST["add"])) {
    }
    $options = [
       'id'           => $_GET['id'],
-      'withtemplate' => $_GET['withtemplate']
+      'withtemplate' => $_GET['withtemplate'],
+      'formoptions'  => "data-track-changes=true"
    ];
    if (isset($_GET['position'])) {
       $options['position'] = $_GET['position'];

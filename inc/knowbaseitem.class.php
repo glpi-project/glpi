@@ -728,6 +728,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $rand = mt_rand();
 
       $this->initForm($ID, $options);
+      $options['formoptions'] = "data-track-changes=true";
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Category name')."</td>";

@@ -1396,7 +1396,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
       }
 
       echo "<table class='tab_cadre_fixe'>";
@@ -1512,7 +1512,7 @@ class Entity extends CommonTreeDropdown {
       $canedit = $entity->can($ID, UPDATE);
 
       if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
       }
 
       echo "<table class='tab_cadre_fixe'>";
@@ -1599,7 +1599,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
       }
 
       echo "<table class='tab_cadre_fixe'>";
@@ -1760,7 +1760,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
       }
 
       echo "<table class='tab_cadre_fixe'>";
@@ -2200,7 +2200,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
       }
 
       echo "<table class='tab_cadre_fixe custom_css_configuration'>";
@@ -2405,7 +2405,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
       }
 
       echo "<table class='tab_cadre_fixe'>";

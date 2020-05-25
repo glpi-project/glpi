@@ -290,7 +290,7 @@ class Config extends CommonDBTM {
       $canedit = Session::haveRight(self::$rightname, UPDATE);
 
       if ($canedit) {
-         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
       }
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -489,7 +489,7 @@ class Config extends CommonDBTM {
       $rand = mt_rand();
       $canedit = Config::canUpdate();
       if ($canedit) {
-         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
       }
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -666,7 +666,7 @@ class Config extends CommonDBTM {
          return;
       }
 
-      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
@@ -710,7 +710,7 @@ class Config extends CommonDBTM {
          return;
       }
 
-      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='_dbslave_status' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -784,7 +784,7 @@ class Config extends CommonDBTM {
       $rand = mt_rand();
       $canedit = Config::canUpdate();
       if ($canedit) {
-         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
       }
       echo "<table class='tab_cadre_fixe'>";
 
@@ -865,7 +865,7 @@ class Config extends CommonDBTM {
       $rand = mt_rand();
       $canedit = Config::canUpdate();
       if ($canedit) {
-         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
       }
       echo "<div class='center spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -1035,7 +1035,7 @@ class Config extends CommonDBTM {
       }
 
       if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
-         echo "<form name='form' action='$url' method='post'>";
+         echo "<form name='form' action='$url' method='post' data-track-changes='true'>";
       }
 
       // Only set id for user prefs
@@ -1756,7 +1756,7 @@ class Config extends CommonDBTM {
       $rand = mt_rand();
 
       echo "<div class='center' id='tabsbody'>";
-      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
 
@@ -3319,7 +3319,7 @@ class Config extends CommonDBTM {
          return false;
       }
 
-      echo "<form name='form' id='purgelogs_form' method='post' action='".$this->getFormURL()."'>";
+      echo "<form name='form' id='purgelogs_form' method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='4'>".__("Logs purge configuration").
@@ -3528,7 +3528,7 @@ class Config extends CommonDBTM {
       $rand = mt_rand();
 
       echo '<div class="center" id="tabsbody">';
-      echo '<form name="form" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '" method="post">';
+      echo '<form name="form" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '" method="post" data-track-changes="true">';
       echo '<table class="tab_cadre_fixe">';
       echo '<tr><th colspan="4">' . __('Security setup') . '</th></tr>';
 

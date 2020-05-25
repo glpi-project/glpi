@@ -23,6 +23,7 @@ The present file will list all changes made to the project; according to the
 - the API gives the ID of the user who logs in with initSession
 - Kanban view for projects
 - Network ports on Monitors
+- Add warning when there are unsaved changes in forms
 - Add ability to get information from the status endpoint in JSON format using Accept header
 - Add `glpi:system:status` CLI command for getting the GLPI status
 

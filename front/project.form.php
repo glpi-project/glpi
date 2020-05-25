@@ -111,8 +111,11 @@ if (isset($_POST["add"])) {
    } else if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
       $project->showKanban(0);
    } else {
-      $project->display(['id'           => $_GET["id"],
-                         'withtemplate' => $_GET["withtemplate"]]);
+      $project->display([
+         'id'           => $_GET["id"],
+         'withtemplate' => $_GET["withtemplate"],
+         'formoptions'  => "data-track-changes=true"
+      ]);
    }
    Html::footer();
 }

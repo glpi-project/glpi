@@ -206,7 +206,10 @@ if (isset($_GET['getvcard'])) {
    } else {
       Session::checkRight("user", READ);
       Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
-      $user->display(['id' => $_GET["id"]]);
+      $user->display([
+         'id'           => $_GET["id"],
+         'formoptions'  => "data-track-changes=true"
+      ]);
       Html::footer();
 
    }

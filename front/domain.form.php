@@ -107,7 +107,8 @@ if (isset($_POST["add"])) {
    Html::header(Domain::getTypeName(1), $_SERVER['PHP_SELF'], "management", "domain");
    $domain->display([
       'id'           => $_GET["id"],
-      'withtemplate' => $_GET["withtemplate"]
+      'withtemplate' => $_GET["withtemplate"],
+      'formoptions'  => "data-track-changes=true"
    ]);
 
    Html::footer();

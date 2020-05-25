@@ -95,14 +95,17 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Enclosure::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "enclosure");
-   $options = ['id' => $_GET['id']];
+   $options = [
+      'id'           => $_GET['id'],
+      'withtemplate' => $_GET['withtemplate'],
+      'formoptions'  => "data-track-changes=true"
+   ];
    if (isset($_GET['position'])) {
       $options['position'] = $_GET['position'];
    }
    if (isset($_GET['room'])) {
       $options['room'] = $_GET['room'];
    }
-   $options['withtemplate'] = $_GET['withtemplate'];
    $enclosure->display($options);
    Html::footer();
 }

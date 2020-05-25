@@ -747,6 +747,7 @@ class ITILFollowup  extends CommonDBChild {
          //when we came from aja/viewsubitem.php
          $options['item'] = $options['parent'];
       }
+      $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
 
       $item = $options['item'];
       $this->item = $item;

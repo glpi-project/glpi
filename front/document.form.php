@@ -114,6 +114,9 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Document::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "document");
-   $doc->display(['id' =>$_GET["id"]]);
+   $doc->display([
+      'id'           => $_GET["id"],
+      'formoptions'  => "data-track-changes=true"
+   ]);
    Html::footer();
 }
