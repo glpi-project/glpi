@@ -1575,9 +1575,17 @@ class Planning extends CommonGLPI {
     */
    static function deleteEvent(array $event = []):bool {
       $item = new $event['itemtype'];
-      return $item->delete([
-         'id' => (int) $event['items_id']
-      ]);
+
+      if (isset($event['day'])
+          && isset($event['instance'])
+          && $event['instance']
+          && method_exists($item, "deleteInstance")) {
+         return $item->deleteInstance((int) $event['items_id'], $event['day']);
+      } else {
+         return $item->delete([
+            'id' => (int) $event['items_id']
+         ]);
+      }
    }
 
 

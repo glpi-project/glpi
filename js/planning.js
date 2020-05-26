@@ -264,6 +264,7 @@ var GLPIPlanning  = {
                }
 
                // context menu actions
+               // 1- clone event
                $('.planning-context-menu .clone-event').click(function() {
                   $.ajax({
                      url:  CFG_GLPI.root_doc+"/ajax/planning.php",
@@ -283,21 +284,58 @@ var GLPIPlanning  = {
                      }
                   });
                });
+               // 2- delete event (manage serie/instance specific events)
                $('.planning-context-menu .delete-event').click(function() {
-                  $.ajax({
-                     url:  CFG_GLPI.root_doc+"/ajax/planning.php",
-                     type: 'POST',
-                     data: {
-                        action: 'delete_event',
-                        event: {
-                           itemtype: extprops.itemtype,
-                           items_id: extprops.items_id,
+                  var ajaxDeleteEvent = function(instance) {
+                     instance = instance || false
+                     $.ajax({
+                        url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+                        type: 'POST',
+                        data: {
+                           action: 'delete_event',
+                           event: {
+                              itemtype: extprops.itemtype,
+                              items_id: extprops.items_id,
+                              day: event.start.toISOString().substring(0, 10),
+                              instance: instance ? 1 : 0,
+                           }
+                        },
+                        success: function() {
+                           GLPIPlanning.refresh();
                         }
-                     },
-                     success: function() {
-                        GLPIPlanning.refresh();
-                     }
-                  });
+                     });
+                  };
+
+                  if (!("is_recurrent" in extprops) || !extprops.is_recurrent) {
+                     ajaxDeleteEvent();
+                  } else {
+                     $('<div title="'+__("Make a choice")+'"></div>')
+                        .html(__("Delete the whole serie of the recurrent event") + "<br>" +
+                              __("or just add an exception by deleting this instance?"))
+                        .dialog({
+                           resizable: false,
+                           height: "auto",
+                           width: "auto",
+                           modal: true,
+                           buttons: [
+                              {
+                                 text: $("<div/>").html(__("Serie")).text(), // html/text method to remove html entities
+                                 icon: "ui-icon-trash",
+                                 click: function() {
+                                    ajaxDeleteEvent(false);
+                                    $(this).dialog("close");
+                                 }
+                              }, {
+                                 text: $("<div/>").html(__("Instance")).text(), // html/text method to remove html entities
+                                 icon: "ui-icon-trash",
+                                 click: function() {
+                                    ajaxDeleteEvent(true);
+                                    $(this).dialog("close");
+                                 }
+                              }
+                           ]
+                        });
+                  }
                });
             });
 
@@ -489,7 +527,6 @@ var GLPIPlanning  = {
                   });
             }
          },
-
 
          // ADD EVENTS
          selectable: true,
