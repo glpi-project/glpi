@@ -287,7 +287,7 @@ var GLPIPlanning  = {
                // 2- delete event (manage serie/instance specific events)
                $('.planning-context-menu .delete-event').click(function() {
                   var ajaxDeleteEvent = function(instance) {
-                     instance = instance || false
+                     instance = instance || false;
                      $.ajax({
                         url:  CFG_GLPI.root_doc+"/ajax/planning.php",
                         type: 'POST',
@@ -621,7 +621,7 @@ var GLPIPlanning  = {
       // remove all context menus on document click
       $(document).click(function() {
          $('.planning-context-menu').remove();
-      })
+      });
    },
 
    refresh: function() {
