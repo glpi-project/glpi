@@ -483,10 +483,12 @@ class Plugins {
          ]
       );
 
-      // force finish of download (to avoid keeping js loop in case of errors)
+      // restart session to permits write of vars
+      // (later, we also may have some addMessageAfterRedirect to provider errors to user)
       Session::start();
+
+      // force finish of download (to avoid keeping js loop in case of errors)
       $_SESSION['marketplace_dl_progress'][$plugin_key] = 100;
-      session_write_close();
 
       return $response !== false && $response->getStatusCode() === 200;
    }
