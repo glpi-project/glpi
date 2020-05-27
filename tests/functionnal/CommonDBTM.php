@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use \DbTestCase;
+use SoftwareVersion;
 use TicketTask;
 
 /* Test for inc/commondbtm.class.php */
@@ -971,6 +972,7 @@ class CommonDBTM extends DbTestCase {
             // Case 1: no entites field -> no change
             'data'            => ['test' => "test"],
             'parent_field'    => '',
+            'parent_itemtype' => SoftwareVersion::class,
             'active_entities' => [],
             'expected'        => ['test' => "test"],
          ],
@@ -978,6 +980,7 @@ class CommonDBTM extends DbTestCase {
             // Case 2: entity is allowed -> no change
             'data'            => $sv1->fields,
             'parent_field'    => 'softwares_id',
+            'parent_itemtype' => SoftwareVersion::class,
             'active_entities' => [$sv1->fields['entities_id']],
             'expected'        => $sv1->fields,
          ],
@@ -985,6 +988,7 @@ class CommonDBTM extends DbTestCase {
             // Case 3: entity is not allowed -> change to parent entity
             'data'            => $sv2->fields, // SV with modified entity
             'parent_field'    => 'softwares_id',
+            'parent_itemtype' => SoftwareVersion::class,
             'active_entities' => [],
             'expected'        => $sv1->fields, // SV with correct entity
          ],
@@ -992,6 +996,7 @@ class CommonDBTM extends DbTestCase {
             // Case 4: can't load parent -> no change
             'data'            => $sv3->fields,
             'parent_field'    => 'softwares_id',
+            'parent_itemtype' => SoftwareVersion::class,
             'active_entities' => [],
             'expected'        => $sv3->fields,
          ],
@@ -1004,13 +1009,14 @@ class CommonDBTM extends DbTestCase {
    public function testCheckTemplateEntity(
       array $data,
       $parent_field,
+      $parent_itemtype,
       array $active_entities,
       array $expected
    ) {
       $old_active_entities = $_SESSION['glpiactiveentities'];
       $_SESSION['glpiactiveentities'] = $active_entities;
 
-      $res = \CommonDBTM::checkTemplateEntity($data, $parent_field);
+      $res = \CommonDBTM::checkTemplateEntity($data, $parent_field, $parent_itemtype);
       $this->array($res)->isEqualTo($expected);
 
       // Reset session

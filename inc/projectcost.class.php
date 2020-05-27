@@ -210,7 +210,7 @@ class ProjectCost extends CommonDBChild {
          $cd                   = new self();
          unset($data['id']);
          $data['projects_id'] = $newid;
-         $data = self::checkTemplateEntity($data, 'projects_id');
+         $data = self::checkTemplateEntity($data, 'projects_id', Project::class);
          $data                 = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }

@@ -5282,7 +5282,11 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return array
     */
-   public static function checkTemplateEntity(array $data, $parent_field) {
+   public static function checkTemplateEntity(
+      array $data,
+      $parent_field,
+      $parent_itemtype
+   ) {
       // No entity field -> no modification needed
       if (!isset($data['entities_id'])) {
          return $data;
@@ -5291,13 +5295,6 @@ class CommonDBTM extends CommonGLPI {
       // If the entity used in the template in not allowed for our current user,
       // fallback to the parent template entity
       if (!Session::haveAccessToEntity($data['entities_id'])) {
-         if ($parent_field == "items_id") {
-            // Generic "items_id" foreign key
-            $parent_itemtype = $data['itemtype'];
-         } else {
-            $parent_itemtype = getItemtypeForForeignKeyField($parent_field);
-         }
-
          // Load parent
          $parent = new $parent_itemtype();
          $parent_id = $data[$parent_field];
