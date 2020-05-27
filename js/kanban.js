@@ -282,20 +282,35 @@
          var kanban_container = $("<div class='kanban-container'><div class='kanban-columns'></div></div>").appendTo($(self.element));
 
          // Dropdown for single additions
-         var add_itemtype_dropdown = "<ul id='kanban-add-dropdown' style='display: none'>";
+         var add_itemtype_dropdown = "<ul id='kanban-add-dropdown' class='kanban-dropdown' style='display: none'>";
          Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
             add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "'>" + self.supported_itemtypes[itemtype]['name'] + '</li>';
          });
          add_itemtype_dropdown += '</ul>';
          kanban_container.append(add_itemtype_dropdown);
 
-         // Dropdown for bulk additions
-         var add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' style='display: none'>";
+         // Dropdown for overflow
+         var overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
+         var add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' class='' style='display: none'>";
          Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
             add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "'>" + self.supported_itemtypes[itemtype]['name'] + '</li>';
          });
          add_itemtype_bulk_dropdown += '</ul>';
-         kanban_container.append(add_itemtype_bulk_dropdown);
+         var add_itemtype_bulk_link = '<a href="#">' + __('Bulk add') + '</a>';
+         overflow_dropdown += '<li class="dropdown-trigger">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
+         if (self.allow_modify_view) {
+            overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'>" + __('Delete') + "</li>";
+            //}
+         }
+         overflow_dropdown += '</ul>';
+         kanban_container.append(overflow_dropdown);
+
+         $('#kanban-overflow-dropdown li.dropdown-trigger').on("click", function(e) {
+            $(this).toggleClass('active');
+            $(this).find('ul').toggle();
+            e.stopPropagation();
+            e.preventDefault();
+         });
 
          var on_refresh = function() {
             if (Object.keys(self.user_state.state).length === 0) {
@@ -450,7 +465,7 @@
        */
       var registerEventListeners = function() {
          var add_dropdown = $('#kanban-add-dropdown');
-         var bulk_add_dropdown = $('#kanban-bulk-add-dropdown');
+         var overflow_dropdown = $('#kanban-overflow-dropdown');
 
          refreshSortables();
 
@@ -491,22 +506,34 @@
          });
 
          if (Object.keys(self.supported_itemtypes).length > 0) {
-            $(self.element + ' .kanban-container').on('click', '.kanban-bulk-add', function(e) {
+            $(self.element + ' .kanban-container').on('click', '.kanban-overflow-actions', function(e) {
                var button = $(e.target);
                //Keep menu open if clicking on another add button
-               var force_stay_visible = $(bulk_add_dropdown.data('trigger-button')).prop('id') !== button.prop('id');
-               bulk_add_dropdown.css({
+               var force_stay_visible = $(overflow_dropdown.data('trigger-button')).prop('id') !== button.prop('id');
+               overflow_dropdown.css({
                   position: 'fixed',
                   left: button.offset().left,
                   top: button.offset().top + button.outerHeight(true),
-                  display: (bulk_add_dropdown.css('display') === 'none' || force_stay_visible) ? 'inline' : 'none'
+                  display: (overflow_dropdown.css('display') === 'none' || force_stay_visible) ? 'inline' : 'none'
                });
-               bulk_add_dropdown.data('trigger-button', button);
+               // Hide sub-menus by default when opening the overflow menu
+               overflow_dropdown.find('ul').css({
+                  display: 'none'
+               });
+               overflow_dropdown.find('li').removeClass('active');
+               // If this is a protected column, hide any items with data-forbid-protected='true'. Otherwise show them.
+               var column = $(e.target.closest('.kanban-column'));
+               if (column.hasClass('kanban-protected')) {
+                  overflow_dropdown.find('li[data-forbid-protected="true"]').hide();
+               } else {
+                  overflow_dropdown.find('li[data-forbid-protected="true"]').show();
+               }
+               overflow_dropdown.data('trigger-button', button);
             });
          }
          $(window).on('click', function(e) {
-            if (!$(e.target).hasClass('kanban-bulk-add')) {
-               bulk_add_dropdown.css({
+            if (!$(e.target).hasClass('kanban-overflow-actions')) {
+               overflow_dropdown.css({
                   display: 'none'
                });
             }
@@ -526,8 +553,11 @@
             }
          });
 
-         $(self.element + ' .kanban-container').on('click', '.kanban-delete', function(e) {
-            hideColumn(getColumnIDFromElement(e.target.closest('.kanban-column')));
+         $(self.element + ' .kanban-container').on('click', '.kanban-remove', function(e) {
+            // Get root dropdown, then the button that triggered it, and finally the column that the button is in
+            var column = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-column');
+            // Hide that column
+            hideColumn(getColumnIDFromElement(column));
          });
          $(self.element + ' .kanban-container').on('click', '.kanban-collapse-column', function(e) {
             self.toggleCollapseColumn(e.target.closest('.kanban-column'));
@@ -586,8 +616,12 @@
          $('#kanban-add-dropdown li').on('click', function(e) {
             e.preventDefault();
             var selection = $(e.target);
+            // The add dropdown is a single-level dropdown, so the parent is the ul element
             var dropdown = selection.parent();
+            // Get the button that triggered the dropdown and then get the column that it is a part of
+            // This is because the dropdown exists outside all columns and is not recreated each time it is opened
             var column = $($(dropdown.data('trigger-button')).closest('.kanban-column'));
+            // kanban-add-ITEMTYPE (We want the ITEMTYPE token at position 2)
             var itemtype = selection.prop('id').split('-')[2];
             self.clearAddItemForms(column);
             self.showAddItemForm(column, itemtype);
@@ -596,9 +630,17 @@
          $('#kanban-bulk-add-dropdown li').on('click', function(e) {
             e.preventDefault();
             var selection = $(e.target);
-            var dropdown = selection.parent();
+            // Traverse all the way up to the top-level overflow dropdown
+            var dropdown = selection.closest('.kanban-dropdown');
+            // Get the button that triggered the dropdown and then get the column that it is a part of
+            // This is because the dropdown exists outside all columns and is not recreated each time it is opened
             var column = $($(dropdown.data('trigger-button')).closest('.kanban-column'));
+            // kanban-bulk-add-ITEMTYPE (We want the ITEMTYPE token at position 3)
             var itemtype = selection.prop('id').split('-')[3];
+
+            // Force-close the full dropdown
+            dropdown.css({'display': 'none'});
+
             self.clearAddItemForms(column);
             self.showBulkAddItemForm(column, itemtype);
             delayRefresh();
@@ -797,15 +839,10 @@
        */
       var getColumnToolbarElement = function(column) {
          var toolbar_el = "<span class='kanban-column-toolbar'>";
-         if (self.allow_modify_view) {
-            if (column['_protected'] === undefined || column['_protected'] === false) {
-               toolbar_el += "<i id='kanban_delete_" + column['id'] + "' class='kanban-delete pointer fas fa-trash-alt' title='" + __('Delete') + "'></i>";
-            }
-         }
          var column_id = parseInt(getColumnIDFromElement(column['id']));
          if (self.allow_add_item && (self.limit_addcard_columns.length === 0 || self.limit_addcard_columns.includes(column_id))) {
             toolbar_el += "<i id='kanban_add_" + column['id'] + "' class='kanban-add pointer fas fa-plus' title='" + __('Add') + "'></i>";
-            toolbar_el += "<i id='kanban_add_" + column['id'] + "' class='kanban-bulk-add pointer fas fa-list' title='" + __('Bulk add') + "'></i>";
+            toolbar_el += "<i id='kanban_overflow_actions' class='kanban-overflow-actions pointer fas fa-ellipsis-h' title='" + __('More') + "'></i>";
          }
          toolbar_el += "</span>";
          return toolbar_el;
@@ -1403,13 +1440,12 @@
          var add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
          var form_header = "<div class='kanban-item-header'>";
          form_header += "<span class='kanban-item-title'>"+self.supported_itemtypes[itemtype]['name']+"</span>";
-         form_header += "<i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i></div>";
+         form_header += "<i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i>";
+         form_header += '<div><span class="kanban-item-subtitle">' + __("One item per line") + '</span></div></div>';
          add_form += form_header;
 
          add_form += "<div class='kanban-item-content'>";
-         add_form += "<textarea name='bulk_item_list'";
-         add_form += " placeholder='" + __("One item per line") + "'";
-         add_form += "></textarea>";
+         add_form += "<textarea name='bulk_item_list'></textarea>";
          $.each(self.supported_itemtypes[itemtype]['fields'], function(name, options) {
             var input_type = options['type'] !== undefined ? options['type'] : 'text';
             var value = options['value'] !== undefined ? options['value'] : '';

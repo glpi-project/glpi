@@ -6621,6 +6621,10 @@ div.objectlockmessage > .form-group-checkbox {
             max-width: unset;
          }
       }
+      .kanban-item-subtitle {
+         font-style: italic;
+         font-weight: normal;
+      }
       .kanban-item-content {
          margin-bottom: 5px;
          .kanban-columns-list {
@@ -6636,23 +6640,53 @@ div.objectlockmessage > .form-group-checkbox {
    }
    .kanban-container {
       overflow: auto;
-      #kanban-add-dropdown, #kanban-bulk-add-dropdown {
+      .kanban-dropdown {
          position: fixed;
          width: max-content;
+         min-width: 100px;
          background-color: #f1f1f1;
          border: 1px solid #7f7979;
+         text-align: left;
          li {
             background-color: white;
-            padding: 5px;
+            color: #333333; // Default text color
+            padding: 10px;
             margin-top: 2px;
             cursor: pointer;
+            position: relative;
             &:hover {
                background-color: #3a5693;
                color: white;
             }
+            ul {
+               position: absolute;
+               left: 100%;
+               top: 0;
+               display: block;
+               width: max-content;
+               min-width: 100px;
+               background-color: #f1f1f1;
+               outline: 1px solid #7f7979; // Use outline instead of border on submenus to avoid them being aligned off by one pixel
+               margin-left: 1px;
+            }
          }
          li:first-of-type {
             margin-top: 0;
+         }
+         li.dropdown-trigger {
+            &:before {
+               content: "\f054";
+               font-family: "Font Awesome\ 5 Free";
+               font-weight: 900;
+               float: right;
+            }
+            &.active {
+               background-color: #3a5693;
+               color: white;
+            }
+            a {
+               color: inherit;
+            }
          }
       }
       .kanban-columns {
