@@ -46,6 +46,14 @@ function update946to947() {
 
    $DB->updateOrDie('glpi_events', ['type'   => 'dcrooms'], ['type' => 'serverroms']);
 
+   $migration->dropField(ReservationItem::getTable(), "is_deleted");
+   $migration->addKey(
+      ReservationItem::getTable(),
+      ['itemtype', 'items_id'],
+      'unicity',
+      'UNIQUE'
+   );
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
