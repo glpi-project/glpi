@@ -1756,6 +1756,11 @@ class Impact extends CommonGLPI {
    public static function getEnabledItemtypes(): array {
       // Get configured values
       $conf = Config::getConfigurationValues('core');
+
+      if (!isset($conf[self::CONF_ENABLED])) {
+         return [];
+      }
+
       $enabled = importArrayFromDB($conf[self::CONF_ENABLED]);
 
       // Remove any forbidden values
