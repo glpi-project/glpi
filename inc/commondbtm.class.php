@@ -5284,7 +5284,7 @@ class CommonDBTM extends CommonGLPI {
     */
    public static function checkTemplateEntity(
       array $data,
-      $parent_field,
+      $parent_id,
       $parent_itemtype
    ) {
       // No entity field -> no modification needed
@@ -5297,7 +5297,6 @@ class CommonDBTM extends CommonGLPI {
       if (!Session::haveAccessToEntity($data['entities_id'])) {
          // Load parent
          $parent = new $parent_itemtype();
-         $parent_id = $data[$parent_field];
 
          if (!$parent->getFromDB($parent_id)) {
             // Can't load parent -> no modification
