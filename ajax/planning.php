@@ -60,7 +60,7 @@ if ($_REQUEST["action"] == "clone_event") {
 }
 
 if ($_REQUEST["action"] == "delete_event") {
-   echo Planning::DeleteEvent($_REQUEST['event']);
+   echo Planning::deleteEvent($_REQUEST['event']);
    exit;
 }
 
@@ -135,4 +135,3 @@ if ($_REQUEST["action"] == "delete_filter") {
 }
 
 Html::ajaxFooter();
-
