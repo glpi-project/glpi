@@ -1072,7 +1072,6 @@ function update94to95() {
    }
    /** /Dashboards */
 
-
    /** Marketplace */
    // crontask
    CronTask::Register(
