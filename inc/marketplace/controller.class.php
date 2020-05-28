@@ -247,8 +247,6 @@ class Controller extends CommonGLPI {
    static function cronCheckAllUpdates(CronTask $task = null):int {
       global $CFG_GLPI;
 
-      \Toolbox::logError("cronCheckAllUpdates");
-
       $cron_status = 0;
 
       if (!GLPINetwork::isRegistered()) {
