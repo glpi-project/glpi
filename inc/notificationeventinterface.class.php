@@ -40,7 +40,7 @@ interface NotificationEventInterface {
     * Raise a notification event
     *
     * @param string               $event              Event
-    * @param CommonDBTM           $item               Item
+    * @param CommonGLPI           $item               Item
     * @param array                $options            Options
     * @param string               $label              Label
     * @param array                $data               Notification data
@@ -52,7 +52,7 @@ interface NotificationEventInterface {
     */
    static public function raise(
       $event,
-      CommonDBTM $item,
+      CommonGLPI $item,
       array $options,
       $label,
       array $data,

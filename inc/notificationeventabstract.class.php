@@ -39,7 +39,7 @@ abstract class NotificationEventAbstract {
     * Raise an ajax notification event
     *
     * @param string               $event              Event
-    * @param CommonDBTM           $item               Notification data
+    * @param CommonGLPI           $item               Notification data
     * @param array                $options            Options
     * @param string               $label              Label
     * @param array                $data               Notification data
@@ -51,7 +51,7 @@ abstract class NotificationEventAbstract {
     */
    static public function raise(
       $event,
-      CommonDBTM $item,
+      CommonGLPI $item,
       array $options,
       $label,
       array $data,
@@ -118,7 +118,9 @@ abstract class NotificationEventAbstract {
                            );
                            $send_data['_notificationtemplates_id'] = $data['notificationtemplates_id'];
                            $send_data['_itemtype']                 = $item->getType();
-                           $send_data['_items_id']                 = $item->getID();
+                           $send_data['_items_id']                 = method_exists($item, "getID")
+                              ? $item->getID()
+                              : 0;
                            $send_data['_entities_id']              = $entity;
                            $send_data['mode']                      = $data['mode'];
 
