@@ -323,7 +323,7 @@ class CronTask extends CommonDBTM{
    /**
     * Add a log message for a running task
     *
-    * @param $content
+    * @param string $content
    **/
    function log($content) {
 
@@ -904,15 +904,21 @@ class CronTask extends CommonDBTM{
       if (!isPluginItemType($itemtype) && !class_exists($itemtype)) {
          return false;
       }
+
+      // manage NS class
+      $itemtype = addslashes($itemtype);
+
       $temp = new self();
       // Avoid duplicate entry
       if ($temp->getFromDBbyName($itemtype, $name)) {
          return false;
       }
-      $input = ['itemtype'  => $itemtype,
-                     'name'      => $name,
-                     'allowmode' => self::MODE_INTERNAL | self::MODE_EXTERNAL,
-                     'frequency' => $frequency];
+      $input = [
+         'itemtype'  => $itemtype,
+         'name'      => $name,
+         'allowmode' => self::MODE_INTERNAL | self::MODE_EXTERNAL,
+         'frequency' => $frequency
+      ];
 
       foreach (['allowmode', 'comment', 'hourmax', 'hourmin', 'logs_lifetime', 'mode',
                      'param', 'state'] as $key) {

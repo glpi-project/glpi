@@ -254,14 +254,22 @@ class NotificationTarget extends CommonDBChild {
     * @param $event           the event which will be used (default '')
     * @param $options   array of options
     *
-    * @return a notificationtarget class or false
+    * @return mixed NotificationTarget|false
    **/
    static function getInstance($item, $event = '', $options = []) {
 
-      if ($plug = isPluginItemType($item->getType())) {
+      $itemtype = $item->getType();
+      if ($plug = isPluginItemType($itemtype)) {
+         // plugins case
          $name = 'Plugin'.$plug['plugin'].'NotificationTarget'.$plug['class'];
+      } elseif (strpos($itemtype, "\\" ) != false) {
+         // namespace case
+         $ns_parts = explode("\\", $itemtype);
+         $classname = array_pop($ns_parts);
+         $name = implode("\\", $ns_parts)."\\NotificationTarget$classname";
       } else {
-         $name = 'NotificationTarget'.$item->getType();
+         // simple class (without namespace)
+         $name = "NotificationTarget$itemtype";
       }
 
       $entity = 0;
@@ -270,7 +278,7 @@ class NotificationTarget extends CommonDBChild {
          if (isset($options['entities_id'])) {
             $entity = $options['entities_id'];
 
-         } else if ($item->getEntityID() >= 0) {
+         } else if (method_exists($item, 'getEntityID') && $item->getEntityID() >= 0) {
             //Item which raises the event contains an entityID
             $entity = $item->getEntityID();
 
@@ -370,7 +378,7 @@ class NotificationTarget extends CommonDBChild {
 
       $type   = "";
       $action = "";
-      $target = self::getInstanceByType($input['itemtype']);
+      $target = self::getInstanceByType(stripslashes($input['itemtype']));
 
       if (!isset($input['notifications_id'])) {
          return;

@@ -46,6 +46,8 @@ use \Session;
 use \GLPINetwork;
 use \CommonGLPI;
 use \Config;
+use \NotificationEvent;
+use \CronTask;
 
 class Controller extends CommonGLPI {
    protected $plugin_key = "";
@@ -59,6 +61,11 @@ class Controller extends CommonGLPI {
 
    function __construct(string $plugin_key = "") {
       $this->plugin_key = $plugin_key;
+   }
+
+
+   static function getTypeName($nb = 0) {
+      return __('Marketplace');
    }
 
    /**
@@ -204,7 +211,7 @@ class Controller extends CommonGLPI {
     *
     * @return array of [plugin_key => new_version_num]
     */
-   static function checkAllUpdates() {
+   static function getAllUpdates() {
       $plugin_inst = new Plugin;
       $plugin_inst->init(true);
       $installed   = $plugin_inst->getList();
@@ -222,6 +229,50 @@ class Controller extends CommonGLPI {
       }
 
       return $updates;
+   }
+
+
+   static function cronInfo($name) {
+      return ['description' => __('Check all plugin updates')];
+   }
+
+
+   /**
+    * Crontask : Check for plugins updates
+    *
+    * @param CronTask|null $task to log, if NULL display (default NULL)
+    *
+    * @return integer 0 : nothing to do 1 : done with success
+    */
+   static function cronCheckAllUpdates(CronTask $task = null):int {
+      global $CFG_GLPI;
+
+      \Toolbox::logError("cronCheckAllUpdates");
+
+      $cron_status = 0;
+
+      if (!GLPINetwork::isRegistered()) {
+         return $cron_status;
+      }
+
+      $updates = self::getAllUpdates();
+      if (count($updates)) {
+         $cron_status = 1;
+         $task->addVolume(count($updates));
+         foreach ($updates as $plugin_key => $version) {
+            $task->log(sprintf(__("New version for plugin %s: %s"), $plugin_key, $version));
+         }
+
+         if (!$CFG_GLPI["use_notifications"]) {
+            return $cron_status;
+         }
+
+         NotificationEvent::raiseEvent('checkpluginsupdate', new self(), [
+            'plugins' => $updates
+         ]);
+      }
+
+      return $cron_status;
    }
 
 
