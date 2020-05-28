@@ -253,7 +253,7 @@ class NotificationTarget extends CommonDBChild {
       if ($plug = isPluginItemType($itemtype)) {
          // plugins case
          $name = 'Plugin'.$plug['plugin'].'NotificationTarget'.$plug['class'];
-      } elseif (strpos($itemtype, "\\" ) != false) {
+      } else if (strpos($itemtype, "\\" ) != false) {
          // namespace case
          $ns_parts = explode("\\", $itemtype);
          $classname = array_pop($ns_parts);
