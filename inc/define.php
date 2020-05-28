@@ -332,7 +332,7 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
                                              'ObjectLock', 'PlanningRecall', 'Problem',
                                              'Project', 'ProjectTask', 'Reservation',
                                              'SoftwareLicense', 'Ticket', 'User',
-                                             'SavedSearch_Alert', 'Certificate'];
+                                             'SavedSearch_Alert', 'Certificate', 'Glpi\\Marketplace\\Controller'];
 
 $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',

@@ -116,7 +116,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $rand = mt_rand();
       Ajax::createIframeModalWindow("tags".$rand,
                                     $CFG_GLPI['root_doc']."/front/notification.tags.php?sub_type=".
-                                       $template->getField('itemtype'));
+                                       addslashes($template->getField('itemtype')));
       echo "<a class='vsubmit' href='#' onClick=\"".Html::jsGetElementbyID("tags".$rand).".dialog('open'); return false;\">".__('Show list of available tags')."</a>";
       echo "</td></tr>";
 
@@ -341,8 +341,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
     * @param $itemtype
    **/
    static function showAvailableTags($itemtype) {
-
-      $target = NotificationTarget::getInstanceByType($itemtype);
+      $target = NotificationTarget::getInstanceByType(stripslashes($itemtype));
       $target->getTags();
 
       echo "<div class='center'>";

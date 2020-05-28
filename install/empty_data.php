@@ -656,6 +656,16 @@ $tables['glpi_crontasks'] = [
       'mode'          => 2,
       'lastrun'       => null,
       'logs_lifetime' => 30,
+   ], [
+      'id'            => 37,
+      'itemtype'      => 'Glpi\\Marketplace\\Controller',
+      'name'          => 'checkAllUpdates',
+      'frequency'     => 86400,
+      'param'         => null,
+      'state'         => 1,
+      'mode'          => 2,
+      'lastrun'       => null,
+      'logs_lifetime' => 30,
    ],
 ];
 
@@ -2675,7 +2685,7 @@ $tables['glpi_notifications'] = [
       'is_active'    => 1,
    ], [
       'id'           => 66,
-      'name'         => 'Saved searches',
+      'name'         => 'Saved searches',      'name'         => 'Saved searches',
       'itemtype'     => 'SavedSearch_Alert',
       'event'        => 'alert',
       'is_recursive' => 1,
@@ -2706,6 +2716,13 @@ $tables['glpi_notifications'] = [
       'name'         => 'Password expires alert',
       'itemtype'     => 'User',
       'event'        => 'passwordexpires',
+      'is_recursive' => 1,
+      'is_active'    => 1,
+   ], [
+      'id'           => 71,
+      'name'         => 'Check plugin updates',
+      'itemtype'     => 'Glpi\\Marketplace\\Controller',
+      'event'        => 'checkpluginsupdate',
       'is_recursive' => 1,
       'is_active'    => 1,
    ],
@@ -3062,6 +3079,11 @@ $tables['glpi_notifications_notificationtemplates'] = [
       'notifications_id'         =>  '70',
       'mode'                     =>  'mailing',
       'notificationtemplates_id' =>  27,
+   ], [
+      'id'                       => 71,
+      'notifications_id'         =>  '71',
+      'mode'                     =>  'mailing',
+      'notificationtemplates_id' =>  28,
    ],
 ];
 
@@ -3746,6 +3768,11 @@ $tables['glpi_notificationtargets'] = [
       'items_id'         => '19',
       'type'             => '1',
       'notifications_id' => '70',
+   ], [
+      'id'               => '139',
+      'items_id'         => '1',
+      'type'             => '1',
+      'notifications_id' => '71',
    ],
 ];
 
@@ -3858,6 +3885,10 @@ $tables['glpi_notificationtemplates'] = [
       'id'       => '27',
       'name'     => 'Password expires alert',
       'itemtype' => 'User',
+   ], [
+      'id'       => '28',
+      'name'     => 'Plugin updates',
+      'itemtype' => 'Glpi\\Marketplace\\Controller',
    ],
 ];
 
@@ -4707,6 +4738,20 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
 &lt;p&gt;##lang.password.update.link## &lt;a href="##user.password.update.url##"&gt;##user.password.update.url##&lt;/a&gt;&lt;/p&gt;',
 
+   ], [
+      'id'                       => '28',
+      'notificationtemplates_id' => '28',
+      'language'                 => '',
+      'subject'                  => '##lang.update_available##',
+      'content_text'             => '##lang.update_available##
+
+##FOREACHplugins##
+##lang.plugin.name## :##lang.plugin.oldversion## -&gt; ##lang.plugin.version##
+##ENDFOREACHplugins##',
+      'content_html'             => '&lt;p&gt;##lang.update_available##&lt;/p&gt;
+&lt;ul&gt;##FOREACHplugins##
+&lt;li&gt;##lang.plugin.name## :##lang.plugin.oldversion## -&gt; ##lang.plugin.version##&lt;/li&gt;
+##ENDFOREACHplugins##&lt;/ul&gt;'
    ],
 ];
 
