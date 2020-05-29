@@ -2394,6 +2394,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                'content'   => [
                   'placeholder'  => __('Content'),
                   'type'         => 'textarea'
+               ],
+               'users_id'  => [
+                  'type'         => 'hidden',
+                  'value'        => $_SESSION['glpiID']
                ]
             ]
          ];

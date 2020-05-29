@@ -296,10 +296,10 @@
             add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "'>" + self.supported_itemtypes[itemtype]['name'] + '</li>';
          });
          add_itemtype_bulk_dropdown += '</ul>';
-         var add_itemtype_bulk_link = '<a href="#">' + __('Bulk add') + '</a>';
+         var add_itemtype_bulk_link = '<a href="#">' + '<i class="fas fa-list"></i>' + __('Bulk add') + '</a>';
          overflow_dropdown += '<li class="dropdown-trigger">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
          if (self.allow_modify_view) {
-            overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'>" + __('Delete') + "</li>";
+            overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</li>";
             //}
          }
          overflow_dropdown += '</ul>';

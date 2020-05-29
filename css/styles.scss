@@ -6669,6 +6669,9 @@ div.objectlockmessage > .form-group-checkbox {
                outline: 1px solid #7f7979; // Use outline instead of border on submenus to avoid them being aligned off by one pixel
                margin-left: 1px;
             }
+            i {
+               margin-right: 1em;
+            }
          }
          li:first-of-type {
             margin-top: 0;
