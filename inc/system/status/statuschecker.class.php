@@ -36,6 +36,7 @@ use AuthLDAP;
 use CronTask;
 use DBConnection;
 use DBmysql;
+use MailCollector;
 use Plugin;
 use Toolbox;
 
@@ -243,6 +244,8 @@ final class StatusChecker {
     * @return array
     */
    public static function getCASStatus($public_only = true): array {
+      global $CFG_GLPI;
+
       static $status = null;
 
       if ($status === null) {
