@@ -254,7 +254,7 @@ class NotificationTarget extends CommonDBChild {
     * @param $event           the event which will be used (default '')
     * @param $options   array of options
     *
-    * @return mixed NotificationTarget|false
+    * @return NotificationTarget|false
    **/
    static function getInstance($item, $event = '', $options = []) {
 
