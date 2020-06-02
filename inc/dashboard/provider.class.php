@@ -65,10 +65,14 @@ class Provider extends \CommonGLPI {
          $criteria['is_template'] = 0;
       }
 
+      if ($item->isEntityAssign()) {
+         $criteria += getEntitiesRestrictCriteria($item::getTable());
+      }
+
       $iterator = $DB->request([
          'COUNT'  => 'cpt',
          'FROM'   => $item::getTable(),
-         'WHERE'  => $criteria + getEntitiesRestrictCriteria($item::getTable())
+         'WHERE'  => $criteria
       ]);
 
       $result   = $iterator->next();
@@ -394,6 +398,10 @@ class Provider extends \CommonGLPI {
          $name = 'completename';
       }
 
+      if ($item->isEntityAssign()) {
+         $where += getEntitiesRestrictCriteria($c_table, '', '', $item->maybeRecursive());
+      }
+
       $iterator = $DB->request([
          'SELECT'    => [
             "$fk_table.$name AS fk_name",
@@ -410,7 +418,7 @@ class Provider extends \CommonGLPI {
                ]
             ]
          ],
-         'WHERE'     => $where + getEntitiesRestrictCriteria($c_table, '', '', true),
+         'WHERE'     => $where,
          'GROUPBY'   => "$fk_table.$name",
          'ORDERBY'   => "cpt DESC",
          'LIMIT'     => $params['limit'],
