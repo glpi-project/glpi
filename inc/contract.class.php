@@ -119,6 +119,7 @@ class Contract extends CommonDBTM {
          $cd = new Contract_Item();
          unset($data['id']);
          $data['items_id'] = $newid;
+         $data = self::checkTemplateEntity($data, $data['items_id'], $data['itemtype']);
          $data             = Toolbox::addslashes_deep($data);
 
          $cd->add($data);
