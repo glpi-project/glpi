@@ -181,6 +181,8 @@ for (let packageName in libs) {
     let libPackage = libs[packageName];
     let to = libOutputPath + '/' + packageName.replace(/^@/, ''); // remove leading @ in case of prefixed package
 
+    let copyPatterns = [];
+
     for (let e = 0; e < libPackage.length; e++) {
         let packageEntry = libPackage[e];
 
@@ -200,8 +202,10 @@ for (let packageName in libs) {
             copyParams.ignore = packageEntry.ignore;
         }
 
-        libsConfig.plugins.push(new CopyWebpackPlugin([copyParams]));
+        copyPatterns.push(copyParams);
     }
+
+    libsConfig.plugins.push(new CopyWebpackPlugin({patterns:copyPatterns}));
 }
 
 module.exports = function() {
