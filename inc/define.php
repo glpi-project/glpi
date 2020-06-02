@@ -490,6 +490,7 @@ $CFG_GLPI['javascript'] = [
       'commondropdown'  => [
          'ITILFollowupTemplate'  => ['tinymce'],
          'SolutionTemplate'      => ['tinymce'],
+         'TaskTemplate'          => ['tinymce'],
       ],
       'notification' => [
          'notificationtemplate' => ['tinymce']
