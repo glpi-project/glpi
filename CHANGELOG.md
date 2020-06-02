@@ -22,6 +22,7 @@ The present file will list all changes made to the project; according to the
 - Ability to copy tasks while merging tickets
 - the API gives the ID of the user who logs in with initSession
 - Kanban view for projects
+- Network ports on Monitors
 
 ### Changed
 
