@@ -4,7 +4,6 @@ var GLPIPlanning  = {
    dom_id:        "",
    all_resources: [],
    visible_res:   [],
-   ctrl_pressed:  false,
    drag_object:   null,
    last_view:     null,
 
@@ -222,6 +221,124 @@ var GLPIPlanning  = {
                   }
                });
             }
+
+            // context menu
+            element.on('contextmenu', function(e) {
+               // prevent display of browser context menu
+               e.preventDefault();
+
+               // get offset of the event
+               var offset = element.offset();
+
+               // remove old instances
+               $('.planning-context-menu').remove();
+
+               // create new one
+               var context = $('<ul class="planning-context-menu" data-event-id=""> \
+                  <li class="clone-event"><i class="far fa-clone"></i>'+__("Clone")+'</li> \
+                  <li class="delete-event"><i class="fas fa-trash"></i>'+__("Delete")+'</li> \
+               </ul>');
+
+               // add it to body and place it correctly
+               $('body').append(context);
+               context.css({
+                  left: offset.left + element.outerWidth() / 4,
+                  top: offset.top
+               });
+
+               // get properties of event for context menu actions
+               var extprops  = event.extendedProps;
+               var resource = {};
+               var actor    = {};
+
+               if (typeof event.getresources === "function") {
+                  resource = event.getresources();
+               }
+
+               // manage resource changes
+               if (resource.length === 1) {
+                  actor = {
+                     itemtype: resource[0].extendedProps.itemtype || null,
+                     items_id: resource[0].extendedProps.items_id || null,
+                  };
+               }
+
+               // context menu actions
+               // 1- clone event
+               $('.planning-context-menu .clone-event').click(function() {
+                  $.ajax({
+                     url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+                     type: 'POST',
+                     data: {
+                        action: 'clone_event',
+                        event: {
+                           old_itemtype: extprops.itemtype,
+                           old_items_id: extprops.items_id,
+                           actor:        actor,
+                           start:        event.start.toISOString(),
+                           end:          event.end.toISOString(),
+                        }
+                     },
+                     success: function() {
+                        GLPIPlanning.refresh();
+                     }
+                  });
+               });
+               // 2- delete event (manage serie/instance specific events)
+               $('.planning-context-menu .delete-event').click(function() {
+                  var ajaxDeleteEvent = function(instance) {
+                     instance = instance || false;
+                     $.ajax({
+                        url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+                        type: 'POST',
+                        data: {
+                           action: 'delete_event',
+                           event: {
+                              itemtype: extprops.itemtype,
+                              items_id: extprops.items_id,
+                              day: event.start.toISOString().substring(0, 10),
+                              instance: instance ? 1 : 0,
+                           }
+                        },
+                        success: function() {
+                           GLPIPlanning.refresh();
+                        }
+                     });
+                  };
+
+                  if (!("is_recurrent" in extprops) || !extprops.is_recurrent) {
+                     ajaxDeleteEvent();
+                  } else {
+                     $('<div title="'+__("Make a choice")+'"></div>')
+                        .html(__("Delete the whole serie of the recurrent event") + "<br>" +
+                              __("or just add an exception by deleting this instance?"))
+                        .dialog({
+                           resizable: false,
+                           height: "auto",
+                           width: "auto",
+                           modal: true,
+                           buttons: [
+                              {
+                                 text: $("<div/>").html(__("Serie")).text(), // html/text method to remove html entities
+                                 icon: "ui-icon-trash",
+                                 click: function() {
+                                    ajaxDeleteEvent(false);
+                                    $(this).dialog("close");
+                                 }
+                              }, {
+                                 text: $("<div/>").html(__("Instance")).text(), // html/text method to remove html entities
+                                 icon: "ui-icon-trash",
+                                 click: function() {
+                                    ajaxDeleteEvent(true);
+                                    $(this).dialog("close");
+                                 }
+                              }
+                           ]
+                        });
+                  }
+               });
+            });
+
          },
          datesRender: function(info) {
             var view = info.view;
@@ -389,51 +506,6 @@ var GLPIPlanning  = {
                GLPIPlanning.editEventTimes(info);
             }
          },
-         // we receive a new event (from external dropping or when cloning)
-         eventReceive: function(info) {
-            var event    = info.event;
-            var extprops = event.extendedProps;
-            var resource = {};
-            var actor    = {};
-
-            if (typeof event.getresources === "function") {
-               resource = event.getresources();
-            }
-
-            // manage resource changes
-            if (resource.length === 1) {
-               actor = {
-                  itemtype: resource[0].extendedProps.itemtype || null,
-                  items_id: resource[0].extendedProps.items_id || null,
-               };
-            }
-
-            $.ajax({
-               url:  CFG_GLPI.root_doc+"/ajax/planning.php",
-               type: 'POST',
-               data: {
-                  action: 'post_cloned_event',
-                  event: {
-                     old_itemtype: extprops.itemtype,
-                     old_items_id: extprops.items_id,
-                     actor:        actor,
-                     start:        event.start.toISOString(),
-                     end:          event.end.toISOString(),
-                  }
-               },
-               success: function() {
-                  GLPIPlanning.refresh();
-
-                  // drop the dragged event to avoid duplicate view
-                  event.remove();
-               }
-            });
-         },
-         // Determines if external draggable elements
-         // can be dropped onto the calendar.
-         dropAccept: function() {
-            return GLPIPlanning.ctrl_pressed;
-         },
          eventClick: function(info) {
             var event    = info.event;
             var start    = event.start;
@@ -455,7 +527,6 @@ var GLPIPlanning  = {
                   });
             }
          },
-
 
          // ADD EVENTS
          selectable: true,
@@ -541,27 +612,16 @@ var GLPIPlanning  = {
          GLPIPlanning.refresh();
       });
 
-      // clone events behavior
-      $(document)
-         .keydown(function(event) {
-            if (!GLPIPlanning.ctrl_pressed
-               && (event.ctrlKey
-                  || event.shiftKey)) {
-               event.preventDefault();
-               GLPIPlanning.setEventsClonable(true);
-            }
-         }).keyup(function() { // if control has been released stop events being copyable
-            if (GLPIPlanning.ctrl_pressed) {
-               GLPIPlanning.setEventsClonable(false);
-            }
-         });
-
-
       // attach the date picker to planning
       GLPIPlanning.initFCDatePicker();
 
       // force focus on the current window
       $(window).focus();
+
+      // remove all context menus on document click
+      $(document).click(function() {
+         $('.planning-context-menu').remove();
+      });
    },
 
    refresh: function() {
@@ -857,47 +917,4 @@ var GLPIPlanning  = {
 
       return _newheight;
    },
-
-   // toggle clone / move mode for events
-   setEventsClonable: function(is_clonable) {
-      GLPIPlanning.ctrl_pressed = !GLPIPlanning.ctrl_pressed;
-
-      GLPIPlanning.calendar.setOption("droppable", is_clonable);
-      GLPIPlanning.calendar.setOption("editable", !is_clonable);
-
-      if (is_clonable) {
-         // set element as draggable like external dom nodes
-         GLPIPlanning.drag_object = new FullCalendarInteraction.Draggable(document.getElementById(GLPIPlanning.dom_id), {
-            itemSelector: ".fc-event",
-            eventData: function(eventEl) {
-               var myevent  = $(eventEl).data('myevent');
-               //console.log(myevent);
-               var extprops = myevent.extendedProps;
-               return {
-                  title:           myevent.title           || "",
-                  duration:        extprops._duration      || null,
-                  textColor:       myevent.textColor       || "",
-                  backgroundColor: myevent.backgroundColor || "",
-                  borderColor:     myevent.borderColor     || "",
-                  allDay:          myevent.allDay          || false,
-                  extendedProps: {
-                     clone:     true,
-                     content:   extprops.content   || "",
-                     itemtype:  extprops.itemtype  || "",
-                     items_id:  extprops.items_id  || "",
-                     typeColor: extprops.typeColor || "",
-                     tooltip:   extprops.tooltip   || "",
-                     icon:      extprops.icon      || "",
-                     state:     extprops.state     || "",
-                  }
-               };
-            }
-         });
-      } else {
-         // remove draggable behavior when ctrl is not active
-         if (GLPIPlanning.drag_object != null) {
-            GLPIPlanning.drag_object.destroy();
-         }
-      }
-   }
 };

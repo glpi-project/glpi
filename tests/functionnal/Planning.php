@@ -36,7 +36,7 @@ namespace tests\units;
 
 class Planning extends \DbTestCase {
 
-   public function testpostClonedEvent() {
+   public function testCloneEvent() {
       $this->login();
 
       $input = [
@@ -55,7 +55,7 @@ class Planning extends \DbTestCase {
       $new_start = date('Y-m-d H:i:s', $timestamp);
       $new_end   = date('Y-m-d H:i:s', $timestamp + 2 * HOUR_TIMESTAMP);
 
-      $this->integer($clone_events_id = \Planning::postClonedEvent([
+      $this->integer($clone_events_id = \Planning::cloneEvent([
          'old_itemtype' => 'PlanningExternalEvent',
          'old_items_id' => $event_id,
          'start'        => $new_start,

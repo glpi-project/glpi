@@ -54,8 +54,13 @@ if ($_REQUEST["action"] == "view_changed") {
    exit;
 }
 
-if ($_REQUEST["action"] == "post_cloned_event") {
-   echo Planning::postClonedEvent($_REQUEST['event']);
+if ($_REQUEST["action"] == "clone_event") {
+   echo Planning::cloneEvent($_REQUEST['event']);
+   exit;
+}
+
+if ($_REQUEST["action"] == "delete_event") {
+   echo Planning::deleteEvent($_REQUEST['event']);
    exit;
 }
 
@@ -130,4 +135,3 @@ if ($_REQUEST["action"] == "delete_filter") {
 }
 
 Html::ajaxFooter();
-

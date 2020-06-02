@@ -2629,6 +2629,28 @@ a.icon_nav_move {
    background-image: linear-gradient(left, green 50%, red 0%);
 }
 
+.planning-context-menu {
+   position:fixed;
+   z-index:20000;
+   background-color: #FFF;
+   box-shadow: 0 10px 20px rgba(0,0,0,0.19),
+               0 6px 6px rgba(0,0,0,0.23);
+
+   li {
+      padding: 8px 10px;
+      cursor: pointer;
+
+      i.fas, i.far {
+         margin-right: 5px;
+         color: #555
+      }
+
+      &:hover {
+         background-color: #CCC;
+      }
+   }
+}
+
 /* ################--------------- Menu navigation  ---------------#################### */
 
 #menu_navigate {
