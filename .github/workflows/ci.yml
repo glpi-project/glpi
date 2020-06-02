@@ -58,19 +58,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        db-image:
-          #- "mariadb:10.1"
-          #- "mariadb:10.2"
-          #- "mariadb:10.3"
-          - "mariadb:10.4"
-          - "mariadb:10.5"
-          #- "mysql:5.6"
-          #- "mysql:5.7"
-          - "mysql:8.0"
-        php-version:
-          #- "7.2"
-          #- "7.3"
-          - "7.4"
+        include:
+          - {php-version: "7.2", db-image: "mariadb:10.1"}
+          - {php-version: "7.2", db-image: "mysql:5.6"}
+          - {php-version: "7.4", db-image: "mariadb:10.4"} # MariaDB 10.5 is not yet a stable release, keep 10.4 checks for now
+          - {php-version: "7.4", db-image: "mariadb:10.5"}
+          - {php-version: "7.4", db-image: "mysql:8.0"}
     services:
       app:
         image: "glpi/githubactions-php:${{ matrix.php-version }}"
