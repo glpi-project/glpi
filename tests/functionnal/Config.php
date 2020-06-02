@@ -502,6 +502,8 @@ class Config extends DbTestCase {
                ->isIdenticalTo('fr_FR')
             ->string($this->testedInstance->getLanguage('fr_FR'))
                ->isIdenticalTo('fr_FR')
+            ->string($this->testedInstance->getLanguage('fr-FR'))
+               ->isIdenticalTo('fr_FR')
             ->string($this->testedInstance->getLanguage('Français'))
                ->isIdenticalTo('fr_FR')
             ->string($this->testedInstance->getLanguage('french'))
