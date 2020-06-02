@@ -33,6 +33,8 @@
 namespace tests\units;
 
 use \DbTestCase;
+use SoftwareVersion;
+use TicketTask;
 
 /* Test for inc/commondbtm.class.php */
 
@@ -1010,5 +1012,71 @@ class CommonDBTM extends DbTestCase {
       $this->boolean($relation_item->getFromDB($relation_item_1_id))->isFalse();
       // Relation with witness object is still present
       $this->boolean($relation_item->getFromDB($relation_item_2_id))->isTrue();
+   }
+
+
+   protected function testCheckTemplateEntityProvider() {
+      $sv1 = getItemByTypeName('SoftwareVersion', '_test_softver_1');
+
+      $sv2 = getItemByTypeName('SoftwareVersion', '_test_softver_1');
+      $sv2->fields['entities_id'] = 99999;
+
+      $sv3 = getItemByTypeName('SoftwareVersion', '_test_softver_1');
+      $sv3->fields['entities_id'] = 99999;
+
+      return [
+         [
+            // Case 1: no entites field -> no change
+            'data'            => ['test' => "test"],
+            'parent_id'       => 999,
+            'parent_itemtype' => SoftwareVersion::class,
+            'active_entities' => [],
+            'expected'        => ['test' => "test"],
+         ],
+         [
+            // Case 2: entity is allowed -> no change
+            'data'            => $sv1->fields,
+            'parent_id'       => $sv1->fields['softwares_id'],
+            'parent_itemtype' => SoftwareVersion::class,
+            'active_entities' => [$sv1->fields['entities_id']],
+            'expected'        => $sv1->fields,
+         ],
+         [
+            // Case 3: entity is not allowed -> change to parent entity
+            'data'            => $sv2->fields, // SV with modified entity
+            'parent_id'       => $sv2->fields['softwares_id'],
+            'parent_itemtype' => SoftwareVersion::class,
+            'active_entities' => [],
+            'expected'        => $sv1->fields, // SV with correct entity
+         ],
+         [
+            // Case 4: can't load parent -> no change
+            'data'            => $sv3->fields,
+            'parent_id'       => 99999,
+            'parent_itemtype' => SoftwareVersion::class,
+            'active_entities' => [],
+            'expected'        => $sv3->fields,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testCheckTemplateEntityProvider
+    */
+   public function testCheckTemplateEntity(
+      array $data,
+      $parent_id,
+      $parent_itemtype,
+      array $active_entities,
+      array $expected
+   ) {
+      $old_active_entities = $_SESSION['glpiactiveentities'];
+      $_SESSION['glpiactiveentities'] = $active_entities;
+
+      $res = \CommonDBTM::checkTemplateEntity($data, $parent_id, $parent_itemtype);
+      $this->array($res)->isEqualTo($expected);
+
+      // Reset session
+      $_SESSION['glpiactiveentities'] = $old_active_entities;
    }
 }

@@ -193,6 +193,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          $cd                  = new self();
          unset($data['id']);
          $data['projects_id'] = $newid;
+         $data = self::checkTemplateEntity($data, $data['projects_id'], Project::class);
          $data                = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }

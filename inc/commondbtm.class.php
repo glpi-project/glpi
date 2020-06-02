@@ -5493,4 +5493,39 @@ class CommonDBTM extends CommonGLPI {
 
       return $item;
    }
+
+   /**
+    * Correct entity id if needed when cloning a template
+    *
+    * @param array  $data
+    * @param string $parent_field
+    *
+    * @return array
+    */
+   public static function checkTemplateEntity(
+      array $data,
+      $parent_id,
+      $parent_itemtype
+   ) {
+      // No entity field -> no modification needed
+      if (!isset($data['entities_id'])) {
+         return $data;
+      }
+
+      // If the entity used in the template in not allowed for our current user,
+      // fallback to the parent template entity
+      if (!Session::haveAccessToEntity($data['entities_id'])) {
+         // Load parent
+         $parent = new $parent_itemtype();
+
+         if (!$parent->getFromDB($parent_id)) {
+            // Can't load parent -> no modification
+            return $data;
+         }
+
+         $data['entities_id'] = $parent->getEntityID();
+      }
+
+      return $data;
+   }
 }
