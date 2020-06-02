@@ -128,7 +128,10 @@ if ($_REQUEST['action'] == 'update') {
    if (!empty($bulk_item_list)) {
       unset($inputs['bulk_item_list']);
       foreach ($bulk_item_list as $item_entry) {
-         $item->add($inputs + ['name' => $item_entry]);
+         $item_entry = trim($item_entry);
+         if (!empty($item_entry)) {
+            $item->add($inputs + ['name' => $item_entry]);
+         }
       }
    }
 } else if ($_REQUEST['action'] == 'move_item') {
