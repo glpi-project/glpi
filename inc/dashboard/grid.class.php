@@ -978,19 +978,19 @@ HTML;
 
       $execution_time = round(microtime(true) - $start, 3);
 
+      // store server cache
+      if (strlen($dashboard)) {
+         $dashboard_cards = $GLPI_CACHE->get($cache_key) ?? [];
+         $dashboard_cards[$gridstack_id] = $html;
+         $GLPI_CACHE->set($cache_key, $dashboard_cards, new \DateInterval("PT".$cache_age."S"));
+      }
+
       if ($_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE) {
          $html.= <<<HTML
          <span class='debug-card'>
             {$execution_time}s
          </span>
 HTML;
-      }
-
-      // store server cache
-      if (strlen($dashboard)) {
-         $dashboard_cards = $GLPI_CACHE->get($cache_key) ?? [];
-         $dashboard_cards[$gridstack_id] = $html;
-         $GLPI_CACHE->set($cache_key, $dashboard_cards, new \DateInterval("PT".$cache_age."S"));
       }
 
       return $html;
