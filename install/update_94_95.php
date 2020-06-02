@@ -1895,7 +1895,6 @@ HTML
       }
    }
 
-
    $migration->executeMigration();
 
    return $updateresult;
