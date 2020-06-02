@@ -46,7 +46,7 @@ jobs:
           docker exec ${{ job.services.app.id }} vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
       - name: "PHP CS"
         run: |
-          docker exec ${{ job.services.app.id }} vendor/bin/phpcs -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/node_modules/,/plugins/,/tests/config/,/vendor/ ./
+          docker exec ${{ job.services.app.id }} vendor/bin/phpcs -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/marketplace/,/node_modules/,/plugins/,/tests/config/,/vendor/ ./
       - name: "ESLint"
         run: |
           docker exec ${{ job.services.app.id }} node_modules/.bin/eslint ./js && echo "ESLint found no errors"
@@ -101,7 +101,7 @@ jobs:
           docker exec ${{ job.services.app.id }} bin/console dependencies install --composer-options="--prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
         run: |
-          docker exec ${{ job.services.app.id }} vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
+          docker exec ${{ job.services.app.id }} vendor/bin/parallel-lint  --exclude ./files/ --exclude ./marketplace/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
       - name: "PHP Security checker"
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/security-checker security:check
