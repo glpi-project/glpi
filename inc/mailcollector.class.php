@@ -257,11 +257,6 @@ class MailCollector  extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
-      echo "<td>";
-      Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
-      echo "</td></tr>\n";
-
       if ($type != "pop") {
          echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
          echo "<td>";
@@ -1286,39 +1281,6 @@ class MailCollector  extends CommonDBTM {
          // Any errors will cause an Exception.
          throw $e;
       }
-
-      /** FIXME: find the equivalent for those cases with zend-mail? */
-      /*if ($this->fields['use_kerberos']) {
-         $this->marubox = imap_open(
-            $this->fields['host'],
-            $this->fields['login'],
-            Toolbox::sodiumDecrypt($this->fields['passwd']),
-            CL_EXPUNGE,
-            1
-         );
-      } else {
-         $try_options = [
-            ['DISABLE_AUTHENTICATOR' => 'GSSAPI'],
-            ['DISABLE_AUTHENTICATOR' => 'PLAIN']
-         ];
-         foreach ($try_options as $option) {
-            $this->marubox = imap_open(
-               $this->fields['host'],
-               $this->fields['login'],
-               Toolbox::sodiumDecrypt($this->fields['passwd']),
-               CL_EXPUNGE,
-               1,
-               $option
-            );
-            if (false === $this->marubox) {
-               Toolbox::logError(imap_last_error());
-            }
-            if (is_resource($this->marubox)) {
-               break;
-            }
-         }
-
-      }*/
    }
 
 
