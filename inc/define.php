@@ -429,7 +429,7 @@ $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
                                            'Peripheral', 'Phone', 'Printer',
                                            'Problem', 'Project', 'Software',
                                            'SoftwareLicense', 'Supplier',
-                                           'Ticket', 'Certificate'];
+                                           'Ticket', 'Certificate', 'Appliance'];
 $CFG_GLPI["certificate_types"]     = ['Computer',
                                       'NetworkEquipment', 'Peripheral',
                                       'Phone', 'Printer',
