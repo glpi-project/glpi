@@ -57,7 +57,8 @@ abstract class NotificationEventAbstract {
       array $data,
       NotificationTarget $notificationtarget,
       NotificationTemplate $template,
-      $notify_me
+      $notify_me,
+      $emitter = null
    ) {
       global $CFG_GLPI;
       if ($CFG_GLPI['notifications_' . $options['mode']]) {
@@ -93,7 +94,7 @@ abstract class NotificationEventAbstract {
             foreach ($notificationtarget->getTargets() as $users_infos) {
                $key = $users_infos[static::getTargetFieldName()];
                if ($label
-                     || $notificationtarget->validateSendTo($event, $users_infos, $notify_me)) {
+                     || $notificationtarget->validateSendTo($event, $users_infos, $notify_me, $emitter)) {
                   //If the user have not yet been notified
                   if (!isset($processed[$users_infos['language']][$key])) {
                      //If ther user's language is the same as the template's one

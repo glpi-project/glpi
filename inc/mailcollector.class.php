@@ -699,6 +699,10 @@ class MailCollector  extends CommonDBTM {
                $is_supplier_anonymous = !(isset($tkt['_supplier_email'])
                                           && $tkt['_supplier_email']);
 
+               // Keep track of the mail author so we can check his
+               // notifications preferences later (glpinotification_to_myself)
+               $_SESSION['mailcollector_user'] = $tkt['users_id'];
+
                if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
                   $this->deleteMails($uid, self::REFUSED_FOLDER);
                   $blacklisted++;
@@ -779,6 +783,9 @@ class MailCollector  extends CommonDBTM {
                   $this->deleteMails($uid, self::REFUSED_FOLDER);
                }
                $this->fetch_emails++;
+
+               // Clean mail author used for notification settings
+               unset($_SESSION['mailcollector_user']);
             }
             imap_expunge($this->marubox);
             $this->close_mailbox();   //Close Mail Box
