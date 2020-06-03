@@ -42,7 +42,7 @@ use Toolbox;
 /**
  * Clonable objects
  **/
-trait clonable {
+trait Clonable {
    /**
     * Get relations class to clone along with current eleemnt
     *

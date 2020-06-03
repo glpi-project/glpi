@@ -52,13 +52,11 @@ class Cartridge extends CommonDBChild {
    static public $itemtype             = 'CartridgeItem';
    static public $items_id             = 'cartridgeitems_id';
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Infocom::class
       ];
    }
-   /** /RELATIONS */
 
    function getForbiddenStandardMassiveAction() {
 

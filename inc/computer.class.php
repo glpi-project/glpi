@@ -55,7 +55,6 @@ class Computer extends CommonDBTM {
    static $rightname                   = 'computer';
    protected $usenotepad               = true;
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Item_OperatingSystem::class,
@@ -72,7 +71,6 @@ class Computer extends CommonDBTM {
          KnowbaseItem_Item::class
       ];
    }
-   /** /RELATIONS */
 
    static function getTypeName($nb = 0) {
       return _n('Computer', 'Computers', $nb);

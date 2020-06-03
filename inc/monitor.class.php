@@ -48,7 +48,6 @@ class Monitor extends CommonDBTM {
    static $rightname                   = 'monitor';
    protected $usenotepad               = true;
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Item_OperatingSystem::class,
@@ -60,7 +59,6 @@ class Monitor extends CommonDBTM {
          KnowbaseItem_Item::class
       ];
    }
-   /** /RELATIONS */
 
    /**
     * Name of the type

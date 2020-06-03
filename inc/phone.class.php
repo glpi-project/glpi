@@ -50,7 +50,6 @@ class Phone extends CommonDBTM {
    static $rightname                   = 'phone';
    protected $usenotepad               = true;
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Item_OperatingSystem::class,
@@ -63,7 +62,6 @@ class Phone extends CommonDBTM {
          KnowbaseItem_Item::class
       ];
    }
-   /** /RELATIONS */
 
    static function getTypeName($nb = 0) {
       //TRANS: Test of comment for translation (mark : //TRANS)

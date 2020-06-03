@@ -55,13 +55,11 @@ class Consumable extends CommonDBChild {
    static public $itemtype             = 'ConsumableItem';
    static public $items_id             = 'consumableitems_id';
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Infocom::class
       ];
    }
-   /** /RELATIONS */
 
    function getForbiddenStandardMassiveAction() {
 

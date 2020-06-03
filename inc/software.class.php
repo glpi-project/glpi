@@ -47,7 +47,6 @@ class Software extends CommonDBTM {
    static $rightname                   = 'software';
    protected $usenotepad               = true;
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Infocom::class,
@@ -56,7 +55,6 @@ class Software extends CommonDBTM {
          KnowbaseItem_Item::class
       ];
    }
-   /** /RELATIONS */
 
    static function getTypeName($nb = 0) {
       return _n('Software', 'Software', $nb);

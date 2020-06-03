@@ -48,13 +48,11 @@ class Budget extends CommonDropdown{
 
    public $can_be_translated = false;
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Document_Item::class
       ];
    }
-   /** /RELATIONS */
 
    static function getTypeName($nb = 0) {
       return _n('Budget', 'Budgets', $nb);
