@@ -46,7 +46,7 @@ var GLPIPlanning  = {
          $('#'+GLPIPlanning.dom_id).closest('.ui-tabs').width('98%');
       }
 
-      console.log(CFG_GLPI);
+
       this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
          plugins:     options.plugins,
          height:      options.height,

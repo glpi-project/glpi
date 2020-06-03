@@ -2480,13 +2480,13 @@ class Planning extends CommonGLPI {
       switch ($viewname) {
          case 'resourceTimeGridDay' :
             if ($event['itemtype'] == TicketTask::class) {
-                  $title = _n('Ticket task', 'Ticket tasks', $nb);
+                  $title = TicketTask::getTypeName($nb);
             } else if ($event['itemtype'] == ChangeTask::class) {
-                  $title = _n('Change task', 'Change tasks', $nb);
+                  $title = ChangeTask::getTypeName($nb);
             } else if ($event['itemtype'] == ProblemTask::class) {
-                  $title = _n('Problem task', 'Problem tasks', $nb);
+                  $title = ProblemTask::getTypeName($nb);
             } else if ($event['itemtype'] == Reminder::class) {
-                  $title = __('Reminder');
+                  $title = Reminder::getTypeName($nb);
             } else if ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {
                   $category = new PlanningEventCategory();
                   $category->getFromDB($event['event_cat']);
