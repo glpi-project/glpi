@@ -58,7 +58,8 @@ interface NotificationEventInterface {
       array $data,
       NotificationTarget $notificationtarget,
       NotificationTemplate $template,
-      $notify_me
+      $notify_me,
+      $emitter = null
    );
 
 

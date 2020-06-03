@@ -167,15 +167,24 @@ class NotificationTarget extends CommonDBChild {
     * @param boolean $notify_me notify me on my action ?
     *                           ($infos contains users_id to check if the target is me)
     *                           (false by default)
+    * @param int|null $emitter  if this action is executed by the cron, we can
+    *                           supply the id of the user who triggered the event
+    *                           so it can be used instead of getLoginUserID
     *
     * @return boolean
    **/
-   function validateSendTo($event, array $infos, $notify_me = false) {
+   function validateSendTo($event, array $infos, $notify_me = false, $emitter = null) {
+      $users_id = Session::getLoginUserID(false);
+
+      // Override session ID with emitter ID if supplied
+      if (!is_null($emitter)) {
+         $users_id = $emitter;
+      }
 
       if (!$notify_me) {
          if (isset($infos['users_id'])
             // Check login user and not event launch by crontask
-             && ($infos['users_id'] === Session::getLoginUserID(false))) {
+             && ($infos['users_id'] === $users_id)) {
             return false;
          }
       }
