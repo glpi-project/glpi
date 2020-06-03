@@ -2685,7 +2685,7 @@ $tables['glpi_notifications'] = [
       'is_active'    => 1,
    ], [
       'id'           => 66,
-      'name'         => 'Saved searches',      'name'         => 'Saved searches',
+      'name'         => 'Saved searches',
       'itemtype'     => 'SavedSearch_Alert',
       'event'        => 'alert',
       'is_recursive' => 1,
