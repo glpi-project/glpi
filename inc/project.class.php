@@ -54,7 +54,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
    protected $team                     = [];
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          ProjectCost::class,
@@ -68,7 +67,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       ];
    }
 
-   /** /RELATIONS */
    /**
     * Name of the type
     *

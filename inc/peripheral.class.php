@@ -51,7 +51,6 @@ class Peripheral extends CommonDBTM {
    static $rightname                   = 'peripheral';
    protected $usenotepad               = true;
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Item_OperatingSystem::class,
@@ -64,7 +63,6 @@ class Peripheral extends CommonDBTM {
          KnowbaseItem_Item::class
       ];
    }
-   /** /RELATIONS */
 
    /**
     * Name of the type

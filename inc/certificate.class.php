@@ -48,7 +48,6 @@ class Certificate extends CommonDBTM {
    static $rightname           = "certificate";
    protected $usenotepad       = true;
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Infocom::class,
@@ -57,7 +56,6 @@ class Certificate extends CommonDBTM {
          KnowbaseItem_Item::class
       ];
    }
-   /** /RELATIONS */
 
    static function getTypeName($nb = 0) {
       return _n('Certificate', 'Certificates', $nb);

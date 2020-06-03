@@ -35,12 +35,12 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class Appliance extends CommonDBTM {
+   use Glpi\Features\Clonable;
 
    public $dohistory     = true;
    static $rightname     = "appliance";
    protected $usenotepad = true;
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Infocom::class,
@@ -49,7 +49,6 @@ class Appliance extends CommonDBTM {
          KnowbaseItem_Item::class
       ];
    }
-   /** /RELATIONS */
 
    static function getTypeName($nb = 0) {
       return _n('Appliance', 'Appliances', $nb);

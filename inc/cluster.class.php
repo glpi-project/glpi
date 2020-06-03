@@ -44,13 +44,11 @@ class Cluster extends CommonDBTM {
    public $dohistory                   = true;
    static $rightname                   = 'cluster';
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          NetworkPort::class
       ];
    }
-   /** /RELATIONS */
 
    static function getTypeName($nb = 0) {
       return _n('Cluster', 'Clusters', $nb);

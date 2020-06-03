@@ -50,7 +50,6 @@ class Printer  extends CommonDBTM {
    static $rightname                   = 'printer';
    protected $usenotepad               = true;
 
-   /** RELATIONS */
    public function getCloneRelations() :array {
       return [
          Item_OperatingSystem::class,
@@ -64,7 +63,6 @@ class Printer  extends CommonDBTM {
          Cartridge::class
       ];
    }
-   /** /RELATIONS */
 
    /**
     * Name of the type
