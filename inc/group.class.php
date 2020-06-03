@@ -218,8 +218,8 @@ class Group extends CommonTreeDropdown {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='10' class='middle'>".__('Comments')."</td>";
-      echo "<td class='middle' rowspan='10'>";
+      echo "<td rowspan='12' class='middle'>".__('Comments')."</td>";
+      echo "<td class='middle' rowspan='12'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
@@ -275,20 +275,17 @@ class Group extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='subheader' colspan='2'>".__('Can contain');
-      echo "</td><td colspan='2' class='center'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Item', 'Items', Session::getPluralNumber())."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
-      echo "</td><td colspan='2'></td></tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('User', 'Users', Session::getPluralNumber())."</td><td>";
       Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
-      echo "</td>";
-      echo "<td colspan='2' class='center'>";
       echo "</td></tr>";
 
       $this->showFormButtons($options);
