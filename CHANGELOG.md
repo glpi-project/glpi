@@ -23,6 +23,8 @@ The present file will list all changes made to the project; according to the
 - the API gives the ID of the user who logs in with initSession
 - Kanban view for projects
 - Network ports on Monitors
+- Add ability to get information from the status endpoint in JSON format using Accept header
+- Add `glpi:system:status` CLI command for getting the GLPI status
 
 ### Changed
 
@@ -51,6 +53,9 @@ The present file will list all changes made to the project; according to the
 - Database datetime fields have been replaced by timestamp fields to handle timezones support.
 - Database integer/float fields values are now returned as number instead of strings from DB read operations.
 - Field `domains_id` of Computer, NetworkEquipment and Printer has been dropped and data has been transfered into `glpi_domains_items` table.
+- Plugin status hook can now be used to provide an array with more information about the plugin's status the status of any child services.
+    - Returned array should contain a 'status' value at least (See status values in Glpi\System\Status\StatusChecker)
+    - Old style returns are still supported
 
 #### Deprecated
 
