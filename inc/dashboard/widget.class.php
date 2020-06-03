@@ -772,10 +772,6 @@ JAVASCRIPT;
       $nb_labels = min($p['limit'], count($labels));
       if ($p['distributed']) {
          array_splice($labels, $nb_labels);
-
-         // reverse labels order, as we set reverseData=true for data in chartist when using distributed series
-         // and it seems chartist doesn't reverse labels itself.
-         $labels = array_reverse($labels);
       } else {
          array_splice($labels, 0, -$nb_labels);
       }
@@ -876,8 +872,7 @@ HTML;
       $distributed_options = "";
       if ($p['distributed']) {
          $distributed_options = "
-            distributeSeries: true,
-            reverseData: true,";
+            distributeSeries: true,";
       }
 
       $height = "calc(100% - 5px)";
