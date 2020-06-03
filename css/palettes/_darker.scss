@@ -698,7 +698,7 @@ div.progress {
       }
    }
    .kanban-container {
-      #kanban-add-dropdown {
+      .kanban-dropdown {
          background-color: #2c2b2a;
          border: 1px solid #242323;
          li {
@@ -706,6 +706,22 @@ div.progress {
             color: white;
             &:hover {
                background-color: #262626;
+            }
+            ul {
+               position: absolute;
+               left: 100%;
+               top: 0;
+               display: block;
+               width: max-content;
+               min-width: 100px;
+               background-color: #2c2b2a;
+               outline: 1px solid #242323; // Use outline instead of border on submenus to avoid them being aligned off by one pixel
+            }
+         }
+         li.dropdown-trigger {
+            &.active {
+               background-color: #262626;
+               color: white;
             }
          }
       }
