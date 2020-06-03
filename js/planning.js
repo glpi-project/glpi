@@ -46,7 +46,7 @@ var GLPIPlanning  = {
          $('#'+GLPIPlanning.dom_id).closest('.ui-tabs').width('98%');
       }
 
-
+      console.log(CFG_GLPI);
       this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
          plugins:     options.plugins,
          height:      options.height,
@@ -95,7 +95,7 @@ var GLPIPlanning  = {
                type: 'resourceTimeline',
                buttonText: 'Timeline Week',
                duration: { weeks: 1 },
-               hiddenDays : CFG_GLPI.planning_days,
+               hiddenDays : CFG_GLPI.hidden_days,
                groupByDateAndResource: true,
                slotLabelFormat: [
                   { week: 'short' },
@@ -109,7 +109,7 @@ var GLPIPlanning  = {
                type : 'resourceTimeline',
                buttonText: 'Timeline Week / day',
                duration: { weeks: 1 },
-               hiddenDays : CFG_GLPI.planning_days,
+               hiddenDays : CFG_GLPI.hidden_days,
                slotDuration: {days: 1},
                groupByDateAndResource: true,
             },

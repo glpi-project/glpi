@@ -2475,15 +2475,16 @@ class Planning extends CommonGLPI {
    static function returnNewEventByType ($event, $content, $tooltip, $begin, $end, $index_color, $viewname) {
       $rule_event = [];
       $title = '';
+      $nb = 0;
 
       switch ($viewname) {
          case 'resourceTimeGridDay' :
             if ($event['itemtype'] == TicketTask::class) {
-                  $title = __('Ticket task');
+                  $title = _n('Ticket task', 'Ticket tasks', $nb);
             } else if ($event['itemtype'] == ChangeTask::class) {
-                  $title = __('Change task');
+                  $title = _n('Change task', 'Change tasks', $nb);
             } else if ($event['itemtype'] == ProblemTask::class) {
-                  $title = __('Problem task');
+                  $title = _n('Problem task', 'Problem tasks', $nb);
             } else if ($event['itemtype'] == Reminder::class) {
                   $title = __('Reminder');
             } else if ($event['itemtype'] == PlanningExternalEvent::class || $event['itemtype'] == PlanningEvent::class) {

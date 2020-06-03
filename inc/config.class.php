@@ -2971,6 +2971,7 @@ class Config extends CommonDBTM {
 
       if (isset($CFG_GLPI['planning_days'])) {
          $CFG_GLPI['planning_days'] = importArrayFromDB($CFG_GLPI['planning_days']);
+         $CFG_GLPI['hidden_days'] = self::getHiddenDays($CFG_GLPI['planning_days']);
       }
 
       if (isset($CFG_GLPI['lock_lockprofile_id'])
@@ -3057,6 +3058,22 @@ class Config extends CommonDBTM {
             $values[PURGE]);
 
       return $values;
+   }
+
+   private function getHiddenDays(array $display_days) {
+
+      $hiddenDays = [];
+      //reformat display_days
+      foreach ($display_days as $key => $display_day) {
+         $reformat_display_days[$display_day] = $display_days;
+      }
+      $days = [0,1,2,3,4,5,6];
+      foreach ($days as $day) {
+         if (!array_key_exists($day, $reformat_display_days)) {
+            $hiddenDays[] = $day;
+         }
+      }
+      return $hiddenDays;
    }
 
    /**
