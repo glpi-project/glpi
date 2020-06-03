@@ -100,7 +100,7 @@ class NotificationEvent extends CommonDBTM {
     * Raise a notification event
     *
     * @param string     $event   the event raised for the itemtype
-    * @param CommonDBTM $item    the object which raised the event
+    * @param CommonGLPI $item    the object which raised the event
     * @param array      $options array   of options used
     * @param string     $label   used for debugEvent() (default '')
     *

@@ -4742,15 +4742,15 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
       'id'                       => '28',
       'notificationtemplates_id' => '28',
       'language'                 => '',
-      'subject'                  => '##lang.update_available##',
-      'content_text'             => '##lang.update_available##
+      'subject'                  => '##lang.plugins_updates_available##',
+      'content_text'             => '##lang.plugins_updates_available##
 
 ##FOREACHplugins##
-##lang.plugin.name## :##lang.plugin.oldversion## -&gt; ##lang.plugin.version##
+##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##
 ##ENDFOREACHplugins##',
-      'content_html'             => '&lt;p&gt;##lang.update_available##&lt;/p&gt;
+      'content_html'             => '&lt;p&gt;##lang.plugins_updates_available##&lt;/p&gt;
 &lt;ul&gt;##FOREACHplugins##
-&lt;li&gt;##lang.plugin.name## :##lang.plugin.oldversion## -&gt; ##lang.plugin.version##&lt;/li&gt;
+&lt;li&gt;##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##&lt;/li&gt;
 ##ENDFOREACHplugins##&lt;/ul&gt;'
    ],
 ];

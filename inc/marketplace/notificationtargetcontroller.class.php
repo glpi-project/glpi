@@ -63,21 +63,24 @@ class NotificationTargetController extends NotificationTarget {
 
 
    function addDataForTemplate($event, $options = []) {
-      $template_data = [
-         'plugins' => []
-      ];
-
       $updated_plugins = $options['plugins'];
       $plugin = new Plugin;
       foreach ($updated_plugins as $plugin_key => $version) {
          $plugin_info = $plugin->getInformationsFromDirectory($plugin_key);
 
-         $template_data['plugins'][] = [
+         $this->data['plugins'][] = [
             '##plugin.name##'        => $plugin_info['name'],
             '##plugin.key##'         => $plugin_key,
             '##plugin.version##'     => $version,
             '##plugin.old_version##' => $plugin_info['version'],
          ];
+      }
+
+      $this->getTags();
+      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
+         }
       }
    }
 
@@ -85,7 +88,7 @@ class NotificationTargetController extends NotificationTarget {
    function getTags() {
       //Tags with just lang
       $tags = [
-         'update_available' => __('Some updates are available for your installed plugins!')
+         'plugins_updates_available' => __('Some updates are available for your installed plugins!')
       ];
 
       foreach ($tags as $tag => $label) {
@@ -108,7 +111,6 @@ class NotificationTargetController extends NotificationTarget {
             'label'   => $label,
             'value'   => false,
             'foreach' => true,
-            'lang'    => false
          ]);
       }
 
@@ -125,7 +127,6 @@ class NotificationTargetController extends NotificationTarget {
             'tag'    => $tag,
             'label'  => $label,
             'value'  => true,
-            'events' => parent::TAG_FOR_ALL_EVENTS
          ]);
       }
    }

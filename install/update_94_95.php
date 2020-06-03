@@ -1104,19 +1104,19 @@ function update94to95() {
          [
             'notificationtemplates_id' => $notificationtemplate_id,
             'language'                 => '',
-            'subject'                  => '##lang.update_available##',
+            'subject'                  => '##lang.plugins_updates_available##',
             'content_text'             => <<<PLAINTEXT
-##lang.update_available##
+##lang.plugins_updates_available##
 
 ##FOREACHplugins##
-##lang.plugin.name## :##lang.plugin.oldversion## -&gt; ##lang.plugin.version##
+##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##
 ##ENDFOREACHplugins##
 PLAINTEXT
             ,
             'content_html'             => <<<HTML
-&lt;p&gt;##lang.update_available##&lt;/p&gt;
+&lt;p&gt;##lang.plugins_updates_available##&lt;/p&gt;
 &lt;ul&gt;##FOREACHplugins##
-&lt;li&gt;##lang.plugin.name## :##lang.plugin.oldversion## -&gt; ##lang.plugin.version##&lt;/li&gt;
+&lt;li&gt;##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##&lt;/li&gt;
 ##ENDFOREACHplugins##&lt;/ul&gt;
 HTML
             ,
