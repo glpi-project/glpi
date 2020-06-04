@@ -1472,6 +1472,34 @@ HTML
    require __DIR__ . '/update_94_95/appliances.php';
    /** /Appliances & webapps */
 
+   /** update project and itil task templates to tinymce content **/
+   $template_types = [
+      'ProjectTaskTemplate' => 'description',
+      'TaskTemplate'        => 'content'
+   ];
+   foreach ($template_types as $template_type => $fieldname) {
+      $query = $DB->buildUpdate(
+         $template_type::getTable(), [
+            $fieldname => new QueryParam(),
+         ], [
+            'id'       => new QueryParam()
+         ]
+      );
+      $stmt = $DB->prepare($query);
+
+      $template_inst = new $template_type;
+      $templates = $template_inst->find();
+      foreach ($templates as $template) {
+         $new_description = str_replace("\n", '<br>', $template[$fieldname]);
+         $stmt->bind_param('si',
+            $new_description,
+            $template['id'],
+         );
+         $stmt->execute();
+      }
+   }
+   /** /update project and itil task templates **/
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
