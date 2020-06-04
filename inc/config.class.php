@@ -2125,21 +2125,25 @@ class Config extends CommonDBTM {
 
 
    /**
-    * Get language in GLPI associated with the value coming from LDAP
-    * Value can be, for example : English, en_EN or en
+    * Get language in GLPI associated with the value coming from LDAP/SSO
+    * Value can be, for example : English, en_EN, en-EN or en
     *
-    * @param string $lang the value coming from LDAP
+    * @param string $lang the value coming from LDAP/SSO
     *
     * @return string locale's php page in GLPI or '' is no language associated with the value
    **/
    static function getLanguage($lang) {
       global $CFG_GLPI;
 
+      // Alternative language code: en-EN --> en_EN
+      $altLang = str_replace("-", "_", $lang);
+
       // Search in order : ID or extjs dico or tinymce dico / native lang / english name
       //                   / extjs dico / tinymce dico
       // ID  or extjs dico or tinymce dico
       foreach ($CFG_GLPI["languages"] as $ID => $language) {
          if ((strcasecmp($lang, $ID) == 0)
+             || (strcasecmp($altLang, $ID) == 0)
              || (strcasecmp($lang, $language[2]) == 0)
              || (strcasecmp($lang, $language[3]) == 0)) {
             return $ID;

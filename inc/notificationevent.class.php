@@ -138,9 +138,23 @@ class NotificationEvent extends CommonDBTM {
             $template->resetComputedTemplates();
 
             $notify_me = false;
+            $emitter = null;
+
             if (Session::isCron()) {
                // Cron notify me
                $notify_me = true;
+
+               // If mailcollector_user is set, use the given user preferences
+               if (isset($_SESSION['mailcollector_user'])) {
+                  $user = new User();
+                  $res = $user->getFromDB($_SESSION['mailcollector_user']);
+
+                  if ($res) {
+                     $user->computePreferences();
+                     $notify_me = $user->fields['notification_to_myself'];
+                     $emitter = $_SESSION['mailcollector_user'];
+                  }
+               }
             } else {
                // Not cron see my pref
                $notify_me = $_SESSION['glpinotification_to_myself'];
@@ -161,7 +175,8 @@ class NotificationEvent extends CommonDBTM {
                   $data,
                   $notificationtarget->setEvent($eventclass),
                   $template,
-                  $notify_me
+                  $notify_me,
+                  $emitter
                );
             } else {
                Toolbox::logWarning('Missing event class for mode ' . $data['mode'] . ' (' . $eventclass . ')');
