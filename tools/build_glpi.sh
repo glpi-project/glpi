@@ -31,7 +31,11 @@
 #  */
 
 SCRIPT_DIR=$(dirname $0)
+<<<<<<< HEAD
 WORKING_DIR=$(readlink -f "$SCRIPT_DIR/..")
+=======
+WORKING_DIR=$(readlink --canonicalize "$SCRIPT_DIR/..")
+>>>>>>> ca4539d8d0... revert delete build_glpi.sh
 
 if [ -e "$WORKING_DIR/.git" ]
 then
