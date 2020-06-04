@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Config;
 use DBConnection;
+use DB;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use GLPIKey;
 use Toolbox;
@@ -309,13 +310,30 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
          return self::ERROR_DB_CONFIG_FILE_NOT_SAVED;
       }
 
+      global $DB;
+      if ($DB instanceof DB) {
+         // If global $DB is set at this point, it means that configuration file was already existing and loaded.
+         // As configuration is part of a class, it cannot be reloaded and class properties
+         // have to be updated manually in order to make `Toolbox::createSchema()` work correctly.
+         $DB->dbhost     = $db_hostport;
+         $DB->dbuser     = $db_user;
+         $DB->dbpassword = rawurlencode($db_pass);
+         $DB->dbdefault  = $db_name;
+         $DB->connect();
+
+         $db_instance = $DB;
+      } else {
+         include_once (GLPI_CONFIG_DIR . "/config_db.php");
+         $db_instance = new DB();
+      }
+
       $output->writeln(
          '<comment>' . __('Loading default schema...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
       // TODO Get rid of output buffering
       ob_start();
-      Toolbox::createSchema($default_language);
+      Toolbox::createSchema($default_language, $db_instance);
       $message = ob_get_clean();
       if (!empty($message)) {
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
