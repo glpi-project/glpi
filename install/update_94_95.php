@@ -2031,6 +2031,65 @@ HTML
                  KEY `users_id` (`users_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "add table glpi_remindertranslations");
+   }   
+
+   /**  Add default impact itemtypes */
+   $impact_default = exportArrayToDB(Impact::getDefaultItemtypes());
+   $migration->addConfig([Impact::CONF_ENABLED => $impact_default]);
+   /**  /Add default impact itemtypes */
+
+   /** Appliances & webapps */
+   require __DIR__ . '/update_94_95/appliances.php';
+   /** /Appliances & webapps */
+
+   // Add new field states in contract
+   if (!$DB->fieldExists('glpi_states', 'is_visible_contract')) {
+      $migration->addField('glpi_states', 'is_visible_contract', 'bool', [
+         'value' => 1,
+         'after' => 'is_visible_cluster'
+      ]);
+      $migration->addKey('glpi_states', 'is_visible_contract');
+   }
+
+   if (!$DB->fieldExists('glpi_contracts', 'states_id')) {
+      $migration->addField('glpi_contracts', 'states_id', 'int', [
+         'value' => 0,
+         'after' => 'is_template'
+      ]);
+      $migration->addKey('glpi_contracts', 'states_id');
+   }
+
+   // No-reply notifications
+   if (!$DB->fieldExists(Notification::getTable(), 'allow_response')) {
+      $migration->addField(Notification::getTable(), 'allow_response', 'bool', [
+         'value' => 1
+      ]);
+   }
+
+   $migration->addConfig([
+      'admin_email_noreply'      => "",
+      'admin_email_noreply_name' => "",
+   ]);
+   // /No-reply notifications
+
+   // use_kerberos
+   if ($DB->fieldExists(MailCollector::getTable(), 'use_kerberos')) {
+      $migration->dropField(MailCollector::getTable(), 'use_kerberos');
+   }
+   // /use_kerberos
+
+   // ************ Keep it at the end **************
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $rank = 1;
+      foreach ($tab as $newval) {
+         $DB->updateOrInsert("glpi_displaypreferences", [
+            'rank'      => $rank++
+         ], [
+            'users_id'  => "0",
+            'itemtype'  => $type,
+            'num'       => $newval,
+         ]);
+      }
    }
 
    $migration->executeMigration();
