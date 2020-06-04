@@ -500,7 +500,7 @@ $CFG_GLPI['javascript'] = [
          'marketplace' => ['marketplace']
       ]
    ],
-   'admin'        => ['clipboard', 'tinymce'],
+   'admin'        => ['clipboard'],
    'preference'   => ['clipboard'],
    'self-service' => ['tinymce']
 ];
