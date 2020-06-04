@@ -337,7 +337,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       echo "<td><label for='textfield_license_number$rand'>".__('Serial number')."</label></td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'license_number', ['rand' => $rand]);
-      echo "</td><td colspan='2'></td></tr>";
+      echo "</td></tr>";
       $options['formfooter'] = false;
       $this->showFormButtons($options);
    }
