@@ -1972,7 +1972,7 @@ HTML
                  KEY `users_id` (`users_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "add table glpi_remindertranslations");
-   }   
+   }
 
    /**  Add default impact itemtypes */
    $impact_default = exportArrayToDB(Impact::getDefaultItemtypes());
