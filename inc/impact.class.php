@@ -900,11 +900,7 @@ class Impact extends CommonGLPI {
       }
 
       if ($item->mayBeTemplate()) {
-         $criteria["$table.is_template"] = 0;
-         $base_request = array_merge(
-            $base_request,
-            $criteria
-         );
+         $base_request['WHERE']["$table.is_template"] = 0;
       }
 
       $select = [
