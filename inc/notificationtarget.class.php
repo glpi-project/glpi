@@ -167,9 +167,11 @@ class NotificationTarget extends CommonDBChild {
     * @param boolean $notify_me notify me on my action ?
     *                           ($infos contains users_id to check if the target is me)
     *                           (false by default)
-    * @param int|null $emitter  if this action is executed by the cron, we can
-    *                           supply the id of the user who triggered the event
-    *                           so it can be used instead of getLoginUserID
+    * @param mixed $emitter     if this action is executed by the cron, we can
+    *                           supply the id of the user (or the email if this
+    *                           is an anonymous user with no account) who
+    *                           triggered the event so it can be used instead of
+    *                           getLoginUserID
     *
     * @return boolean
    **/
@@ -178,7 +180,19 @@ class NotificationTarget extends CommonDBChild {
 
       // Override session ID with emitter ID if supplied
       if (!is_null($emitter)) {
-         $users_id = $emitter;
+         if (is_int($emitter)) {
+            // We have an ID, we can use it directly
+            $users_id = $emitter;
+         } else {
+            // We have an email, we need to check that the users_id is -1 which
+            // is the value used for anonymous user and compare the emails
+            if (isset($infos['users_id']) && $infos['users_id'] == -1
+               && isset($infos['email']) && $infos['email'] == $emitter
+            ) {
+               $users_id = -1;
+            }
+         }
+
       }
 
       if (!$notify_me) {
