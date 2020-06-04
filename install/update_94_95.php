@@ -1493,7 +1493,7 @@ HTML
          $new_description = str_replace("\n", '<br>', $template[$fieldname]);
          $stmt->bind_param('si',
             $new_description,
-            $template['id'],
+            $template['id']
          );
          $stmt->execute();
       }
