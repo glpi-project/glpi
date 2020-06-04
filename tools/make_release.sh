@@ -39,7 +39,7 @@ then
     exit
 fi
 
-SOURCE_DIR=$(readlink --canonicalize $1)
+SOURCE_DIR=$(readlink -f $1)
 RELEASE=$2
 WORKING_DIR=/tmp/glpi-$RELEASE
 TARBALL_PATH=/tmp/glpi-$RELEASE.tgz

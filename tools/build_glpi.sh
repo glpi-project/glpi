@@ -31,7 +31,7 @@
 #  */
 
 SCRIPT_DIR=$(dirname $0)
-WORKING_DIR=$(readlink --canonicalize "$SCRIPT_DIR/..")
+WORKING_DIR=$(readlink -f "$SCRIPT_DIR/..")
 
 if [ -e "$WORKING_DIR/.git" ]
 then
