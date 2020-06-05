@@ -37,27 +37,22 @@
 include ('../inc/includes.php');
 
 $translation = new ReminderTranslation();
+
 if (isset($_POST['add'])) {
    $translation->add($_POST);
    Html::back();
+
 } else if (isset($_POST['update'])) {
    $translation->update($_POST);
    Html::back();
+
 } else if (isset($_POST["purge"])) {
    $translation->delete($_POST, true);
    Html::redirect(Reminder::getFormURLWithID($_POST['reminders_id']));
+
 } else if (isset($_GET["id"])) {
    $translation->check($_GET["id"], READ);
    Html::header(Reminder::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "remindertranslation");
-   $translation->display([]);
-   Html::footer();
-} else if (isset($_GET["id"])) {
-
-   $translation->check($_GET["id"], READ);
-
-   Html::header(Reminder::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "remindertranslation");
-
    $translation->display(['id' => $_GET['id']]);
-
    Html::footer();
 }
