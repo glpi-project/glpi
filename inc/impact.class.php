@@ -896,19 +896,11 @@ class Impact extends CommonGLPI {
       }
 
       if ($item->mayBeDeleted()) {
-         $criteria["$table.is_deleted"] = 0;
-         $base_request = array_merge(
-            $base_request,
-            $criteria
-         );
+         $base_request['WHERE']["$table.is_deleted"] = 0;
       }
 
       if ($item->mayBeTemplate()) {
-         $criteria["$table.is_template"] = 0;
-         $base_request = array_merge(
-            $base_request,
-            $criteria
-         );
+         $base_request['WHERE']["$table.is_template"] = 0;
       }
 
       $select = [
