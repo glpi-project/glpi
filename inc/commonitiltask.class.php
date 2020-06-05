@@ -1515,10 +1515,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                   : parseInt(data.groups_id_tech);
 
                // set textarea content
-               $("#content'.$rand_text.'").html(data.content);
-               // set also tinmyce (if enabled)
                if (tasktinymce = tinymce.get("content'.$rand_text.'")) {
-                  tasktinymce.setContent(data.content.replace(/\r?\n/g, "<br />"));
+                  tasktinymce.setContent(data.content);
                }
                // set category
                $("#dropdown_taskcategories_id'.$rand_type.'").trigger("setValue", taskcategories_id);

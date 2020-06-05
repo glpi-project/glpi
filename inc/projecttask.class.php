@@ -614,7 +614,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                $("#textfield_name'.$rand_name.'").val(data.name);
 
                // set textarea description
-               $("#description'.$rand_description.'").val(data.description);
+               if (tasktinymce = tinymce.get("description'.$rand_description.'")) {
+                  tasktinymce.setContent(data.description);
+               }
                 // set textarea comment
                $("#comment'.$rand_comment.'").val(data.comments);
 
@@ -816,9 +818,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Description')."</td>";
       echo "<td colspan='3'>";
-      echo "<textarea id='description$rand_description' name='content' cols='90' rows='6'>".$this->fields["content"].
-           "</textarea>";
-      echo "</td></tr>\n";
+      Html::textarea([
+         'name'            => 'content',
+         'enable_richtext' => true,
+         'editor_id'       => "description$rand_description",
+         'value'           => $this->fields["content"],
+
+      ]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Comments')."</td>";

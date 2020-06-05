@@ -480,7 +480,7 @@ $CFG_GLPI['javascript'] = [
       'stat'      => ['charts']
    ],
    'tools'     => [
-      'project'      => ['gantt', 'kanban'],
+      'project'      => ['gantt', 'kanban', 'tinymce'],
       'knowbaseitem' => ['tinymce', 'jstree'],
       'reminder'     => ['tinymce'],
    ],
@@ -492,7 +492,9 @@ $CFG_GLPI['javascript'] = [
    'config' => [
       'commondropdown'  => [
          'ITILFollowupTemplate'  => ['tinymce'],
+         'ProjectTaskTemplate'   => ['tinymce'],
          'SolutionTemplate'      => ['tinymce'],
+         'TaskTemplate'          => ['tinymce'],
       ],
       'notification' => [
          'notificationtemplate' => ['tinymce']

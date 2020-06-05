@@ -849,8 +849,6 @@ class ITILFollowup  extends CommonDBChild {
                      : parseInt(data.requesttypes_id);
 
                   // set textarea content
-                  $("#{$content_id}").html(data.content);
-                  // set also tinmyce (if enabled)
                   if (tasktinymce = tinymce.get("{$content_id}")) {
                      tasktinymce.setContent(data.content);
                   }

@@ -57,7 +57,7 @@ class TaskTemplate extends CommonDropdown {
 
       return [['name'  => 'content',
                          'label' => __('Content'),
-                         'type'  => 'textarea',
+                         'type'  => 'tinymce',
                          'rows' => 10],
                    ['name'  => 'taskcategories_id',
                          'label' => __('Task category'),
