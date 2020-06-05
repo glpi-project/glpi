@@ -72,8 +72,10 @@ class ReminderTranslation extends DbTestCase {
       $this->integer((int)$nb)->isIdenticalTo(2);
 
       // second, test what we retrieve
+      $current_lang = $_SESSION['glpilanguage'];
       $_SESSION['glpilanguage'] = 'fr_FR';
       $text = \ReminderTranslation::getTranslatedValue($reminder1, "text");
+      $_SESSION['glpilanguage'] = $current_lang;
       $this->string($text)->isIdenticalTo($text_fr);
 
    }
