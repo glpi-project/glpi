@@ -2464,7 +2464,6 @@ class Toolbox {
       // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
       $DB = $database;
 
-
       if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-empty.sql")) {
          echo "Errors occurred inserting default database";
       } else {

@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use DB;
-use DB;
 use GLPIKey;
 use Toolbox;
 
@@ -170,19 +169,6 @@ class InstallCommand extends AbstractConfigureCommand {
          $db_name     = $input->getOption('db-name');
          $db_user     = $input->getOption('db-user');
          $db_pass     = $input->getOption('db-password');
-
-         if ($DB instanceof DB) {
-            // If global $DB is set at this point, it means that configuration file has been loaded
-            // prior to reconfiguration.
-            // As configuration is part of a class, it cannot be reloaded and class properties
-            // have to be updated manually in order to make `Toolbox::createSchema()` work correctly.
-            $DB->dbhost     = $db_hostport;
-            $DB->dbuser     = $db_user;
-            $DB->dbpassword = rawurlencode($db_pass);
-            $DB->dbdefault  = $db_name;
-            $DB->clearSchemaCache();
-            $DB->connect();
-         }
       } else {
          // Ask to confirm installation based on existing configuration.
 
@@ -280,15 +266,16 @@ class InstallCommand extends AbstractConfigureCommand {
          return self::ERROR_DB_ALREADY_CONTAINS_TABLES;
       }
 
-      global $DB;
       if ($DB instanceof DB) {
-         // If global $DB is set at this point, it means that configuration file was already existing and loaded.
+         // If global $DB is set at this point, it means that configuration file has been loaded
+         // prior to reconfiguration.
          // As configuration is part of a class, it cannot be reloaded and class properties
          // have to be updated manually in order to make `Toolbox::createSchema()` work correctly.
          $DB->dbhost     = $db_hostport;
          $DB->dbuser     = $db_user;
          $DB->dbpassword = rawurlencode($db_pass);
          $DB->dbdefault  = $db_name;
+         $DB->clearSchemaCache();
          $DB->connect();
 
          $db_instance = $DB;
