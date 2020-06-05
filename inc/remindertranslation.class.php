@@ -174,9 +174,9 @@ class ReminderTranslation extends CommonDBChild {
             } else {
                echo  $data["name"];
             }
-            if (isset($data['answer']) && !empty($data['answer'])) {
+            if (isset($data['text']) && !empty($data['text'])) {
                echo "&nbsp;";
-               Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($data['answer']));
+               Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($data['text']));
             }
             echo "</td></tr>";
          }
@@ -269,7 +269,7 @@ class ReminderTranslation extends CommonDBChild {
       ]);
 
       if ((count($found) > 0)
-          && in_array($field, ['name', 'answer'])) {
+          && in_array($field, ['name', 'text'])) {
          $first = array_shift($found);
          return $first[$field];
       }
