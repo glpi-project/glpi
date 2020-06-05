@@ -69,7 +69,7 @@ class ReminderTranslation extends DbTestCase {
       $nb = countElementsInTable(
          'glpi_remindertranslations'
       );
-      $this->integer((int)$nb)->isIdenticalTo(10);
+      $this->integer((int)$nb)->isIdenticalTo(2);
 
       // second, test what we retrieve
       $_SESSION['glpilanguage'] = 'fr_FR';
