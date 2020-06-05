@@ -359,6 +359,13 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("translate_kb", $CFG_GLPI["translate_kb"], -1, ['rand' => $rand]);
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='reminder_translate_dropdowns$rand'>" . __("Translation of reminders") . "</label></td><td>";
+      Dropdown::showYesNo("translate_reminders", $CFG_GLPI["translate_reminders"], -1, ['rand' => $rand]);
+      echo "</td>";
+      echo "<td colspan='2'>";
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Dynamic display').
            "</td></tr>";
 

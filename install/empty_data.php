@@ -234,6 +234,7 @@ $default_prefs = [
    'ssologout_url'                           => '',
    'translate_kb'                            => '0',
    'translate_dropdowns'                     => '0',
+   'translate_reminders'                     => '0',
    'pdffont'                                 => 'helvetica',
    'keep_devices_when_purging_item'          => '0',
    'maintenance_mode'                        => '0',

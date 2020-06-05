@@ -10,6 +10,7 @@ Following accounts are available:
 UPDATE glpi_configs SET value = 1 WHERE name = 'use_public_faq';
 UPDATE glpi_configs SET value = 1 WHERE name = 'translate_dropdowns';
 UPDATE glpi_configs SET value = 1 WHERE name = 'translate_kb';
+UPDATE glpi_configs SET value = 1 WHERE name = 'translate_reminders';
 -- all profile rights
 UPDATE glpi_profilerights SET rights = 0 WHERE name = 'password_update';
 -- admin profile rights

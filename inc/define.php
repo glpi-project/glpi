@@ -480,9 +480,11 @@ $CFG_GLPI['javascript'] = [
       'stat'      => ['charts']
    ],
    'tools'     => [
-      'project'      => ['gantt', 'kanban', 'tinymce'],
-      'knowbaseitem' => ['tinymce', 'jstree'],
-      'reminder'     => ['tinymce'],
+      'project'                 => ['gantt', 'kanban', 'tinymce'],
+      'knowbaseitem'            => ['tinymce', 'jstree'],
+      'knowbaseitemtranslation' => ['tinymce'],
+      'reminder'                => ['tinymce'],
+      'remindertranslation'     => ['tinymce'],
    ],
    'management' => [
       'datacenter' => [
