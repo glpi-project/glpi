@@ -837,6 +837,7 @@ class Reminder extends CommonDBVisible implements
          }
 
          $criteria = [
+            'SELECT' => ['glpi_reminders.*'],
             'FROM'   => 'glpi_reminders',
             'WHERE'  => array_merge([
                'glpi_reminders.users_id'  => $users_id,
