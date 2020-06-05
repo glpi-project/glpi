@@ -41,6 +41,7 @@ use DCRoom;
 use Enclosure;
 use Item_Enclosure;
 use Item_Rack;
+use Rack;
 
 /**
  * Datacenter breadcrumb
