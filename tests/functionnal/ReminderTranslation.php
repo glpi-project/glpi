@@ -42,7 +42,23 @@ use \DbTestCase;
 class ReminderTranslation extends DbTestCase {
 
    public function testGetTranslationForReminder() {
-      $reminder1 = getItemByTypeName(\Reminder::getType(), '_reminder01');
+
+      $this->login();
+      $this->setEntity('_test_root_entity', true);
+
+      $date = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date;
+
+      $data = [
+         'name'         => '_test_reminder01',
+         'entities_id'  => 0
+      ];
+
+      $reminder = new \Reminder();
+      $added = $reminder->add($data);
+      $this->integer((int)$added)->isGreaterThan(0);
+      
+      $reminder1 = getItemByTypeName(\Reminder::getType(), '_test_reminder01');
 
       //first, set data
       $text_orig = 'Translation 1 for Reminder1';
