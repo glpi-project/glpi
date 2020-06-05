@@ -57,7 +57,7 @@ class ReminderTranslation extends DbTestCase {
       $reminder = new \Reminder();
       $added = $reminder->add($data);
       $this->integer((int)$added)->isGreaterThan(0);
-      
+
       $reminder1 = getItemByTypeName(\Reminder::getType(), '_test_reminder01');
 
       //first, set data
