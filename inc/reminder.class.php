@@ -884,8 +884,7 @@ class Reminder extends CommonDBVisible implements
          }
       }
 
-      if (ReminderTranslation::isReminderTranslationActive()
-          && countElementsInTable('glpi_remindertranslations') > 0) {
+      if (ReminderTranslation::isReminderTranslationActive()) {
          $criteria['LEFT JOIN']['glpi_remindertranslations'] = [
             'ON'  => [
                'glpi_reminders'             => 'id',
@@ -920,8 +919,7 @@ class Reminder extends CommonDBVisible implements
          $rand = mt_rand();
 
          while ($data = $iterator->next()) {
-            $self = new self();
-            $self->getFromDB($data["id"]);
+
             echo "<tr class='tab_bg_2'><td>";
             $name = $data['name'];
 
