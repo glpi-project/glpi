@@ -2881,7 +2881,8 @@ abstract class CommonITILObject extends CommonDBTM {
             $k = $d['groups_id'];
             echo "$mandatory$groupicon&nbsp;";
             if ($group->getFromDB($k)) {
-               if (Entity::getUsedConfig('anonymize_support_agents')
+               $entity = $this->getEntityID();
+               if (Entity::getUsedConfig('anonymize_support_agents', $entity)
                   && Session::getCurrentInterface() == 'helpdesk'
                   && $type == CommonITILActor::ASSIGN
                ) {
@@ -4033,7 +4034,8 @@ abstract class CommonITILObject extends CommonDBTM {
                $userdata      = "<a href='mailto:$email'>$email</a>";
             }
 
-            if (Entity::getUsedConfig('anonymize_support_agents')
+            $entity = $this->getEntityID();
+            if (Entity::getUsedConfig('anonymize_support_agents', $entity)
                && Session::getCurrentInterface() == 'helpdesk'
                && $type == CommonITILActor::ASSIGN
             ) {
@@ -6145,7 +6147,8 @@ abstract class CommonITILObject extends CommonDBTM {
          // Fifth column
          $fifth_col = "";
 
-         $anonymize_helpdesk = Entity::getUsedConfig('anonymize_support_agents')
+         $entity = $item->getEntityID();
+         $anonymize_helpdesk = Entity::getUsedConfig('anonymize_support_agents', $entity)
             && Session::getCurrentInterface() == 'helpdesk';
 
          foreach ($item->getUsers(CommonITILActor::ASSIGN) as $d) {
@@ -7014,7 +7017,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
                echo "<span class='h_user_name'>";
                $userdata = getUserName($item_i['users_id'], 2);
-               if (Entity::getUsedConfig('anonymize_support_agents')
+               $entity = $this->getEntityID();
+               if (Entity::getUsedConfig('anonymize_support_agents', $entity)
                   && Session::getCurrentInterface() == 'helpdesk'
                   && ITILFollowup::getById($item_i['id'])->isFromSupportAgent()
                ) {

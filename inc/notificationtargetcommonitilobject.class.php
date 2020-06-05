@@ -1235,7 +1235,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
 
             // Check if the author need to be anonymized
-            if (Entity::getUsedConfig('anonymize_support_agents')
+            if (Entity::getUsedConfig('anonymize_support_agents', $item->getField('entities_id'))
                && ITILFollowup::getById($followup['id'])->isFromSupportAgent()
             ) {
                $tmp['##followup.author##'] = __("Helpdesk");
