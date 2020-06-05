@@ -889,10 +889,18 @@ class Impact extends CommonGLPI {
 
       $item = new $itemtype();
       if ($item->isEntityAssign()) {
-         $base_request = array_merge_recursive(
-            $base_request,
+         $base_request['WHERE'] = array_merge_recursive(
+            $base_request['WHERE'],
             getEntitiesRestrictCriteria($itemtype::getTable())
          );
+      }
+
+      if ($item->mayBeDeleted()) {
+         $base_request['WHERE']["$table.is_deleted"] = 0;
+      }
+
+      if ($item->mayBeTemplate()) {
+         $base_request['WHERE']["$table.is_template"] = 0;
       }
 
       $select = [
