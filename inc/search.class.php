@@ -5517,10 +5517,13 @@ JAVASCRIPT;
          switch ($table.'.'.$field) {
             case "glpi_users.name" :
                if ($itemtype == 'Ticket'
-                  && Entity::getUsedConfig('anonymize_support_agents')
                   && Session::getCurrentInterface() == 'helpdesk'
-                  && $orig_id == 5) {
-                  // Support agent
+                  && $orig_id == 5
+                  && Entity::getUsedConfig(
+                     'anonymize_support_agents',
+                     $itemtype::getById($data['id'])->getEntityId()
+                  )
+               ) {
                   return __("Helpdesk");
                }
 
@@ -6161,9 +6164,13 @@ JAVASCRIPT;
       //// Default case
 
       if ($itemtype == 'Ticket'
-         && Entity::getUsedConfig('anonymize_support_agents')
          && Session::getCurrentInterface() == 'helpdesk'
-         && $orig_id == 8) {
+         && $orig_id == 8
+         && Entity::getUsedConfig(
+            'anonymize_support_agents',
+            $itemtype::getById($data['id'])->getEntityId()
+         )
+      ) {
          // Assigned groups
          return __("Helpdesk group");
       }
