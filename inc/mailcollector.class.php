@@ -966,9 +966,15 @@ class MailCollector  extends CommonDBTM {
          foreach ($ccs as $cc) {
             if ($cc != $requester
                && !Toolbox::inArrayCaseCompare($cc, $blacklisted_emails) // not blacklisted emails
-               && ($tmp = User::getOrImportByEmail($cc)) > 0) {
+            ) {
+               // Skip if user is anonymous and anonymous users are not allowed
+               $user_id = User::getOrImportByEmail($cc);
+               if (!$user_id && !$CFG_GLPI['use_anonymous_helpdesk']) {
+                  continue;
+               }
+
                $nb = (isset($tkt['_users_id_observer']) ? count($tkt['_users_id_observer']) : 0);
-               $tkt['_users_id_observer'][$nb] = $tmp;
+               $tkt['_users_id_observer'][$nb] = $user_id;
                $tkt['_users_id_observer_notif']['use_notification'][$nb] = 1;
                $tkt['_users_id_observer_notif']['alternative_email'][$nb] = $cc;
             }
@@ -980,9 +986,15 @@ class MailCollector  extends CommonDBTM {
          foreach ($tos as $to) {
             if ($to != $requester
                && !Toolbox::inArrayCaseCompare($to, $blacklisted_emails) // not blacklisted emails
-               && ($tmp = User::getOrImportByEmail($to)) > 0) {
+            ) {
+               // Skip if user is anonymous and anonymous users are not allowed
+               $user_id = User::getOrImportByEmail($to);
+               if (!$user_id && !$CFG_GLPI['use_anonymous_helpdesk']) {
+                  continue;
+               }
+
                $nb = (isset($tkt['_users_id_observer']) ? count($tkt['_users_id_observer']) : 0);
-               $tkt['_users_id_observer'][$nb] = $tmp;
+               $tkt['_users_id_observer'][$nb] = $user_id;
                $tkt['_users_id_observer_notif']['use_notification'][$nb] = 1;
                $tkt['_users_id_observer_notif']['alternative_email'][$nb] = $to;
             }

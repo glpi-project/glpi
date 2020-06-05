@@ -2444,23 +2444,26 @@ class Toolbox {
    /**
     * Create the GLPI default schema
     *
-    * @since 9.1
-    *
-    * @param string $lang Language to install
+    * @param string  $lang Language to install
+    * @param DBmysql $db   Database instance to use, will fallback to a new instance of DB if null
     *
     * @return void
+    *
+    * @since 9.1
+    * @since 9.4.7 Added $db parameter
    **/
-   static function createSchema($lang = 'en_GB', $db_instance = null) {
-
+   static function createSchema($lang = 'en_GB', DBmysql $database = null) {
       global $DB;
 
-      if (null === $db_instance) {
+      if (null === $database) {
+         // Use configured DB if no $db is defined in parameters
          include_once (GLPI_CONFIG_DIR . "/config_db.php");
-         $DB = new DB();
-         $db_instance = $DB;
-      } else {
-         $DB = $db_instance;
+         $database = new DB();
       }
+
+      // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
+      $DB = $database;
+
 
       if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-empty.sql")) {
          echo "Errors occurred inserting default database";
