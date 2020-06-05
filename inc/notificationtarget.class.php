@@ -179,20 +179,17 @@ class NotificationTarget extends CommonDBChild {
       $users_id = Session::getLoginUserID(false);
 
       // Override session ID with emitter ID if supplied
-      if (!is_null($emitter)) {
-         if (is_int($emitter)) {
-            // We have an ID, we can use it directly
-            $users_id = $emitter;
-         } else {
-            // We have an email, we need to check that the users_id is -1 which
-            // is the value used for anonymous user and compare the emails
-            if (isset($infos['users_id']) && $infos['users_id'] == -1
-               && isset($infos['email']) && $infos['email'] == $emitter
-            ) {
-               $users_id = -1;
-            }
+      if (is_int($emitter)) {
+         // We have an ID, we can use it directly
+         $users_id = $emitter;
+      } else if (is_string($emitter)) {
+         // We have an email, we need to check that the users_id is -1 which
+         // is the value used for anonymous user and compare the emails
+         if (isset($infos['users_id']) && $infos['users_id'] == -1
+            && isset($infos['email']) && $infos['email'] == $emitter
+         ) {
+            $users_id = -1;
          }
-
       }
 
       if (!$notify_me) {
