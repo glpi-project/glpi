@@ -614,9 +614,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                $("#textfield_name'.$rand_name.'").val(data.name);
 
                // set textarea description
-               $("#description'.$rand_description.'").html(data.description);
                if (tasktinymce = tinymce.get("description'.$rand_description.'")) {
-                  tasktinymce.setContent(data.description.replace(/\r?\n/g, "<br />"));
+                  tasktinymce.setContent(data.description);
                }
                 // set textarea comment
                $("#comment'.$rand_comment.'").val(data.comments);
