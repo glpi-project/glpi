@@ -149,7 +149,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
             echo __('Link a knowledge base entry');
          }
          echo "</th><tr>";
-         echo "<tr><td>";
+         echo "<tr class='tab_bg_2'><td>";
          if ($item_type == KnowbaseItem::getType()) {
             //TODO: pass used array to restrict visible items in list
             $rand = self::dropdownAllTypes($item, 'items_id');

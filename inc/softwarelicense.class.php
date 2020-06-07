@@ -453,7 +453,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo "<td>".__('Allow Over-Quota')."</td>";
       echo "<td>";
       Dropdown::showYesNo('allow_overquota', $this->fields['allow_overquota']);
-      echo "</td></tr>\n";
+      echo "</td><td colspan='2'></td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Expiration')."</td>";
