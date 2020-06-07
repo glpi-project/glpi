@@ -114,7 +114,12 @@ class Enclosure extends CommonDBTM {
             'rand'   => $rand
          ]
       );
-      echo "</td></tr>\n";
+      echo "</td>";
+      echo "<td><label for='dropdown_manufacturers_id$rand'>".__('Manufacturer')."</label></td>";
+      echo "<td>";
+      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"], 'rand' => $rand]);
+      echo "</td>";
+      echo "</tr>\n";
 
       $this->showDcBreadcrumb();
 
@@ -181,17 +186,14 @@ class Enclosure extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_manufacturers_id$rand'>".__('Manufacturer')."</label></td>";
-      echo "<td>";
-      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"], 'rand' => $rand]);
+
       echo "<td><label for='comment'>".__('Comments')."</label></td>";
       echo "<td class='middle'>";
 
       echo "<textarea cols='45' rows='3' id='comment' name='comment' >".
            $this->fields["comment"];
-      echo "</textarea></td></tr>";
-
-      echo "</td></tr>\n";
+      echo "</textarea></td>";
+      echo "<td colspan='2'></td></tr>";
 
       $this->showFormButtons($options);
       return true;

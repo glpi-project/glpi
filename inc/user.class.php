@@ -2639,17 +2639,10 @@ JAVASCRIPT;
          //do some rights verification
          if (!$extauth
              && Session::haveRight("password_update", "1")) {
+
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='password'>" . __('Password') . "</label></td>";
             echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='new-password' onkeyup=\"return passwordCheck();\">";
-            echo "</td>";
-            echo "<td rowspan='2'>";
-            if ($CFG_GLPI["use_password_security"]) {
-               echo __('Password security policy');
-            }
-            echo "</td>";
-            echo "<td rowspan='2'>";
-            Config::displayPasswordSecurityChecks();
             echo "</td>";
             echo "</tr>";
 
@@ -2657,8 +2650,20 @@ JAVASCRIPT;
             echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
             echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='new-password'>";
             echo "</td></tr>";
+
+            if ($CFG_GLPI["use_password_security"]) {
+               echo "<tr class='tab_bg_1'>";
+               echo "<td rowspan='2'>";
+               echo __('Password security policy');
+               echo "</td>";
+               echo "<td rowspan='2'>";
+               Config::displayPasswordSecurityChecks();
+               echo "</td>";
+               echo "</tr>";
+            }
          } else {
-            echo "<tr class='tab_bg_1'><td colspan='2'></td><td colspan='2' rowspan='2'></tr>";
+            echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
+            echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
          }
 
@@ -2681,7 +2686,12 @@ JAVASCRIPT;
                echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
                echo $tz_warning;
             }
-            echo "</td></tr>";
+            echo "</td>";
+            if ($extauth
+                || !Session::haveRight("password_update", "1")) {
+               echo "<td colspan='2'></td>";
+            }
+            echo "</tr>";
          }
 
          $phonerand = mt_rand();

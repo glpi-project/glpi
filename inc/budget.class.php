@@ -162,7 +162,7 @@ class Budget extends CommonDropdown{
       echo "<td>";
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
-      echo "</td></tr>";
+      echo "</td><td colspan='2'></td></tr>";
 
       $this->showFormButtons($options);
       return true;

@@ -192,7 +192,7 @@ class ConsumableItem extends CommonDBTM {
       Alert::displayLastAlert('ConsumableItem', $ID);
       echo "</td></tr>";
 
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       $tplmark = $this->getAutofillMark('otherserial', $options);
       echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark)."</td>";
       echo "<td>";
