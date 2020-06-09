@@ -1494,7 +1494,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                            }
                         }
                         if ((status_ko == 1)
-                            && ('".$item->fields['global_validation']."' == '".self::WAITING."')) {
+                            && ('".(isset($item->fields['global_validation']) ? $item->fields['global_validation'] : '')."' == '".self::WAITING."')) {
                            alert('".$message."');
                         }
                      });
@@ -1505,7 +1505,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
          case 'solution' :
             if (!in_array($item->fields['status'], $status)
-                && $item->fields['global_validation'] == self::WAITING) {
+               && isset($item->fields['global_validation'])
+               && $item->fields['global_validation'] == self::WAITING) {
                Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
             }
             break;
