@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Kanban;
+
 $AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
@@ -55,7 +57,7 @@ $action = $_REQUEST['action'];
 $nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item'];
 if (isset($_REQUEST['itemtype'])) {
    $traits = class_uses($_REQUEST['itemtype'], true);
-   if (!in_array($_REQUEST['action'], $nonkanban_actions) && (!$traits || !in_array('Kanban', $traits))) {
+   if (!in_array($_REQUEST['action'], $nonkanban_actions) && (!$traits || !in_array(Kanban::class, $traits, true))) {
       // Bad request
       // For all actions, except those in $nonkanban_actions, we expect to be manipulating the Kanban itself.
       Toolbox::logError("Invalid itemtype parameter");
