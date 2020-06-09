@@ -1494,7 +1494,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                            }
                         }
                         if ((status_ko == 1)
-                            && ('".(isset($item->fields['global_validation']) ? $item->fields['global_validation'] : '')."' == '".self::WAITING."')) {
+                            && ('".($item->fields['global_validation'] ?? '')."' == '".self::WAITING."')) {
                            alert('".$message."');
                         }
                      });
