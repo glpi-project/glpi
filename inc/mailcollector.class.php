@@ -738,7 +738,13 @@ class MailCollector  extends CommonDBTM {
 
                // Keep track of the mail author so we can check his
                // notifications preferences later (glpinotification_to_myself)
-               $_SESSION['mailcollector_user'] = $tkt['users_id'];
+               if ($tkt['users_id']) {
+                  $_SESSION['mailcollector_user'] = $tkt['users_id'];
+               } else {
+                  // Special case when we have no users_id (anonymous helpdesk)
+                  // -> use the user email instead
+                  $_SESSION['mailcollector_user'] = $tkt["_users_id_requester_notif"]['alternative_email'][0];
+               }
 
                if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
                   $delete[$uid] =  self::REFUSED_FOLDER;

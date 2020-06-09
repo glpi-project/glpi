@@ -146,13 +146,24 @@ class NotificationEvent extends CommonDBTM {
 
                // If mailcollector_user is set, use the given user preferences
                if (isset($_SESSION['mailcollector_user'])) {
-                  $user = new User();
-                  $res = $user->getFromDB($_SESSION['mailcollector_user']);
+                  $mailcollector_user = $_SESSION['mailcollector_user'];
 
-                  if ($res) {
-                     $user->computePreferences();
-                     $notify_me = $user->fields['notification_to_myself'];
-                     $emitter = $_SESSION['mailcollector_user'];
+                  if (is_int($mailcollector_user)) {
+                     // Try to load the given user and his preferences
+                     $user = new User();
+                     $res = $user->getFromDB($_SESSION['mailcollector_user']);
+
+                     if ($res) {
+                        $user->computePreferences();
+                        $notify_me = $user->fields['notification_to_myself'];
+                        $emitter = $_SESSION['mailcollector_user'];
+                     }
+                  } else {
+                     // Special case for anonymous helpdesk, we have an email
+                     // instead of an ID
+                     // -> load the global conf and use the email as the emitter
+                     $notify_me = $CFG_GLPI['notification_to_myself'];
+                     $emitter = $mailcollector_user;
                   }
                }
             } else {
