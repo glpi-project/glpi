@@ -326,6 +326,18 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['FIELDS' => ['foo.bar', 'COUNT DISTINCT' => ['foo.baz', 'foo.qux']]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.`bar`, COUNT(DISTINCT(`foo`.`baz`)), COUNT(DISTINCT(`foo`.`qux`)) FROM `foo`');
+
+      $it = $this->it->execute('foo', ['FIELDS' => 'bar', 'COUNT' => 'cpt', 'DISTINCT' => true]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
+
+      $this->when(
+         function () {
+            $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'DISTINCT' => true]);
+         }
+      )->error()
+         ->withType(E_USER_ERROR)
+         ->withMessage("With COUNT and DISTINCT, you must specify exactly one field, or use 'COUNT DISTINCT'")
+         ->exists();
    }
 
 
