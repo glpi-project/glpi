@@ -2474,6 +2474,18 @@ class Ticket extends CommonITILObject {
 
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
          }
+
+         if (Problem::canUpdate()) {
+            $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'link_to_problem']
+               = "<i class='ma-icon fas fa-exclamation-triangle' ></i>" .
+               __("Link to a problem");
+         }
+
+         if (self::canUpdate()) {
+            $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
+               = "<i class='ma-icon fa fa-check'></i>" .
+               __("Resolve selected tickets");
+         }
       }
 
       $actions += parent::getSpecificMassiveActions($checkitem);
@@ -2483,6 +2495,8 @@ class Ticket extends CommonITILObject {
 
 
    static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $CFG_GLPI;
+
       switch ($ma->getAction()) {
          case 'merge_as_followup' :
             $rand = mt_rand();
@@ -2534,6 +2548,73 @@ class Ticket extends CommonITILObject {
             ]);
             echo "</td></tr></table>";
             return true;
+
+         case 'link_to_problem':
+            Problem::dropdown(['name' => 'problems_id']);
+            echo '<br><br>';
+            echo Html::submit(__('Link'), [
+               'name'      => 'link'
+            ]);
+            return true;
+
+         case 'resolve_tickets':
+            $rand_type = mt_rand();
+            echo '<div class="horizontal-form">';
+
+            echo '<div class="form-row">';
+            $label = SolutionTemplate::getTypeName(1);
+            echo "<label for='solution_template'>$label</label>";
+            SolutionTemplate::dropdown([
+               'name'     => "solution_template",
+               'value'    => 0,
+               // Load type and solution from bookmark
+               'toupdate' => [
+                  'value_fieldname' => 'value',
+                  'to_update'       => 'solution',
+                  'url'             => $CFG_GLPI["root_doc"]. "/ajax/solution.php",
+                  'moreparams' => [
+                     'type_id' => "dropdown_solutiontypes_id$rand_type"
+                  ]
+               ]
+            ]);
+            echo '</div>'; // .form-row
+
+            echo '<div class="form-row">';
+            $label = SolutionType::getTypeName(1);
+            echo "<label for='solutiontypes_id'>$label</label>";
+            SolutionType::dropdown([
+               'name'  => 'solutiontypes_id',
+               'rand'  => $rand_type
+            ]);
+            echo '</div>'; // .form-row
+
+            echo '<div class="form-row-vertical">';
+            $label = __('Description');
+            echo "<label for='content'>$label</label>";
+
+            Html::initEditorSystem("content");
+            echo "<div id='solution'>";
+            echo "<textarea id='content' name='content' rows='12' cols='80'></textarea>";
+            echo "</div>";
+
+            // Hide file input to handle only images pasted in text editor
+            echo '<div style="display:none;">';
+            Html::file([
+               'editor_id' => "content",
+               'filecontainer' => "filecontainer",
+               'onlyimages' => true,
+               'showtitle' => false,
+               'multiple' => true
+            ]);
+            echo '</div>';
+            echo '</div>'; // .form-row
+
+            echo '</div>'; // .horizontal-form
+
+            echo Html::submit(__('Resolve'), [
+               'name' => 'resolve'
+            ]);
+            return true;
       }
       return parent::showMassiveActionsSubForm($ma);
    }
@@ -2575,6 +2656,112 @@ class Ticket extends CommonITILObject {
                } else if ($status_code == 2) {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                   $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               }
+            }
+            return;
+
+         case 'link_to_problem':
+            // Skip if not tickets
+            if ($item::getType() !== Ticket::getType()) {
+               $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
+               return;
+            }
+
+            // Skip if missing update rights on problems
+            if (!Problem::canUpdate()) {
+               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               return;
+            }
+
+            // Check input
+            $input = $ma->getInput();
+            if (!isset($input['problems_id'])) {
+               $ma->addMessage(__("Missing input: no Problem selected"));
+               return;
+            }
+
+            $problem = new Problem();
+            if (!$problem->getFromDB($input['problems_id'])) {
+               $ma->addMessage(__("Selected Problem can't be loaded"));
+               return;
+            }
+
+            $em = new Problem_Ticket();
+            foreach ($ids as $id) {
+               // Add new link
+               $res = $em->add([
+                  'problems_id' => $input['problems_id'],
+                  'tickets_id'  => $id,
+               ]);
+
+               // Check if creation was successful
+               if ($res) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               }
+            }
+
+            return;
+
+         case 'resolve_tickets':
+            // Skip if not tickets
+            if ($item::getType() !== self::getType()) {
+               $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
+               return;
+            }
+
+            // Skip if missing update rights on problems
+            if (!self::canUpdate()) {
+               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               return;
+            }
+
+            // Check input
+            $input = $ma->getInput();
+            $mandatory_fields = [
+               'solutiontypes_id',
+               'content'
+            ];
+            $check_mandatory = array_intersect($mandatory_fields, array_keys($input));
+            if (count($check_mandatory) != count($mandatory_fields)) {
+               $ma->addMessage(__("Missing mandatory field in input"));
+               return;
+            }
+
+            $ticket = new self();
+            $em = new ITILSolution();
+            foreach ($ids as $id) {
+               // Try to load ticket
+               if (!$ticket->getFromDB($id)) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               }
+
+               // Check ticket is not already resolved or closed
+               $invalid_status = [
+                  CommonITILObject::SOLVED,
+                  CommonITILObject::CLOSED
+               ];
+               if (in_array($ticket->fields['status'], $invalid_status)) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               }
+
+               // Add reference to ticket in input
+               $input['itemtype'] = self::getType();
+               $input['items_id'] = $id;
+
+               // Insert new solution
+               $res = $em->add($input);
+
+               // Check if creation was successful
+               if ($res) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                } else {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                   $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));

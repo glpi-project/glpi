@@ -7004,6 +7004,43 @@ div.progress {
 }
 /* /Styles for update page */
 
+/* Flex horizontal forms */
+.horizontal-form {
+   margin-left: 20px;
+   text-align: left;
+
+   .fa {
+      padding: 0 0.3em;
+   }
+
+   .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 10px;
+
+      label {
+         flex: 1 0 200px;
+         max-width: 200px;
+      }
+
+      label + * {
+         flex: 1 0 250px;
+      }
+   }
+
+   .form-row-vertical {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+
+      label {
+         flex: 1 0 20px;
+      }
+   }
+}
+
 
 /** style for relations **/
 .relations_list {
@@ -7047,3 +7084,4 @@ div.progress {
       }
    }
 }
+

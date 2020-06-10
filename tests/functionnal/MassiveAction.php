@@ -35,7 +35,9 @@ namespace tests\units;
 use CommonDBTM;
 use DbTestCase;
 use Notepad;
+use Problem;
 use Session;
+use Ticket;
 
 /* Test for inc/massiveaction.class.php */
 
@@ -56,8 +58,8 @@ class MassiveAction extends DbTestCase {
          ], [
             'itemtype'     => 'Ticket',
             'items_id'     => '_ticket01',
-            'allcount'     => 16,
-            'singlecount'  => 11
+            'allcount'     => 18,
+            'singlecount'  => 13
          ], [
             'itemtype'     => 'Profile',
             'items_id'     => 'Super-Admin',
@@ -117,8 +119,10 @@ class MassiveAction extends DbTestCase {
       array $ids,
       array $input,
       int $ok,
-      int $ko
+      int $ko,
+      string $action_class = \MassiveAction::class
    ) {
+
       $ma_ok = 0;
       $ma_ko = 0;
 
@@ -143,7 +147,7 @@ class MassiveAction extends DbTestCase {
          };
 
       // Execute method
-      \MassiveAction::processMassiveActionsForOneItemtype($ma, $item, $ids);
+      $action_class::processMassiveActionsForOneItemtype($ma, $item, $ids);
 
       // Check expected number of success and failures
       $this->integer($ma_ok)->isIdenticalTo($ok);
@@ -303,5 +307,179 @@ class MassiveAction extends DbTestCase {
       }
 
       $_SESSION['glpiactiveprofile'][$item::$rightname] = $old_session;
+   }
+
+   protected function linkToProblemProvider() {
+      return [
+         [
+            // Expected failure: wrong itemtype
+            'item'      => getItemByTypeName("Computer", "_test_pc01"),
+            'input'     => [],
+            'has_right' => false,
+         ],
+         [
+            // Expected failure: missing rights
+            'item'      => getItemByTypeName("Ticket", "_ticket01"),
+            'input'     => [],
+            'has_right' => false,
+         ],
+         [
+            // Expected failure: input is empty
+            'item'      => getItemByTypeName("Ticket", "_ticket01"),
+            'input'     => [],
+            'has_right' => true,
+         ],
+         [
+            // Expected failure: input is invalid
+            'item'      => getItemByTypeName("Ticket", "_ticket01"),
+            'input'     => ['problems_id' => -1],
+            'has_right' => true,
+         ],
+         [
+            // Should work
+            'item'      => getItemByTypeName("Ticket", "_ticket01"),
+            'input'     => ['problems_id' => 1],
+            'has_right' => true,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider linkToProblemProvider
+    */
+   public function testProcessMassiveActionsForOneItemtype_linkToProblem (
+      CommonDBTM $item,
+      array $input,
+      bool $has_right
+   ) {
+      // Set up session rights
+      $old_session = $_SESSION['glpiactiveprofile'][Problem::$rightname] ?? 0;
+      if ($has_right) {
+         $_SESSION['glpiactiveprofile'][Problem::$rightname] = UPDATE;
+      }
+
+      // Default expectation: can't run
+      $expected_ok = 0;
+      $expected_ko = 0;
+
+      // Check rights set up was successful
+      $this
+         ->boolean(boolval(Session::haveRight(Problem::$rightname, UPDATE)))
+         ->isIdenticalTo($has_right);
+
+      // If input is valid, make sure we have a matching problem
+      $problems_id = $input['problems_id'] ?? -1;
+      if ($problems_id > 0) {
+         $problem = new Problem();
+         $input['problems_id'] = $problem->add([
+            'name'    => "tmp",
+            'content' => "tmp",
+         ]);
+         $this->integer($input['problems_id']);
+
+         // Update expectation: this item should be OK
+         $expected_ok = 1;
+      }
+
+      // Execute action
+      $this->processMassiveActionsForOneItemtype(
+         "link_to_problem",
+         $item,
+         [$item->fields['id']],
+         $input,
+         $expected_ok,
+         $expected_ko,
+         Ticket::class
+      );
+
+      // Reset rights
+      $_SESSION['glpiactiveprofile'][Problem::$rightname] = $old_session;
+   }
+
+   protected function resolveTicketsProvider() {
+      $ticket = new Ticket();
+      $id = $ticket->add([
+         'name'    => 'test',
+         'content' => 'test'
+      ]);
+      $ticket->getFromDB($id);
+
+      return [
+         [
+            // Expected failure: wrong itemtype
+            'item'        => getItemByTypeName("Computer", "_test_pc01"),
+            'input'       => [],
+            'has_right'   => false,
+            'should_work' => false,
+         ],
+         [
+            // Expected failure: missing rights
+            'item'        => $ticket,
+            'input'       => [],
+            'has_right'   => false,
+            'should_work' => false,
+         ],
+         [
+            // Expected failure: input is empty
+            'item'        => $ticket,
+            'input'       => [],
+            'has_right'   => true,
+            'should_work' => false,
+         ],
+         [
+            // Should work
+            'item'        => $ticket,
+            'input'       => [
+               'solutiontypes_id' => 0,
+               'content'          => "Solution"
+            ],
+            'has_right'   => true,
+            'should_work' => true,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider resolveTicketsProvider
+    */
+   public function testProcessMassiveActionsForOneItemtype_resolveTickets(
+      CommonDBTM $item,
+      array $input,
+      bool $has_right,
+      bool $should_work
+   ) {
+      // Set up session rights
+      $old_session = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
+      if ($has_right) {
+         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = UPDATE;
+      }
+
+      // Default expectation: can't run
+      $expected_ok = 0;
+      $expected_ko = 0;
+
+      // Check rights set up was successful
+      $this
+         ->boolean(boolval(Session::haveRight(Ticket::$rightname, UPDATE)))
+         ->isIdenticalTo($has_right);
+
+      // Update expectation: this item should be OK
+      if ($should_work) {
+         $expected_ok = 1;
+      }
+
+      // Execute action
+      $this->processMassiveActionsForOneItemtype(
+         "resolve_tickets",
+         $item,
+         [$item->fields['id']],
+         $input,
+         $expected_ok,
+         $expected_ko,
+         Ticket::class
+      );
+
+      // Reset rights
+      $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_session;
    }
 }
