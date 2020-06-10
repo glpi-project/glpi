@@ -222,6 +222,9 @@ class DBmysqlIterator implements Iterator, Countable {
             if (!empty($field) && !is_array($field)) {
                $this->sql .= "" . DBmysql::quoteName($field);
             } else {
+               if ($distinct) {
+                  trigger_error("With COUNT and DISTINCT, you must specify exactly one field, or use 'COUNT DISTINCT'", E_USER_ERROR);
+               }
                $this->sql .= "*";
             }
             $this->sql .= ") AS $count";
