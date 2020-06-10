@@ -163,6 +163,10 @@ $break_tablet: 1400px;
          }
       }
 
+      .grid-stack-item-content {
+         touch-action: none;
+      }
+
       .grid-stack .grid-stack-item:hover {
          .grid-stack-item-content:hover {
             cursor: grab;
@@ -460,6 +464,7 @@ $break_tablet: 1400px;
             left: $item_margin;
             right: $item_margin;
             cursor: default;
+            touch-action: initial;
 
             .debug-card {
                z-index: 10;
