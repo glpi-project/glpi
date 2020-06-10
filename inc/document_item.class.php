@@ -1053,4 +1053,38 @@ class Document_Item extends CommonDBRelation{
 
       return $params;
    }
+
+   /**
+    * Check if this item author is a support agent
+    *
+    * @return bool
+    */
+   public function isFromSupportAgent() {
+      // If not a CommonITILObject
+      if (!is_a($this->fields['itemtype'], 'CommonITILObject', true)) {
+         return true;
+      }
+
+      // Get parent item
+      $commonITILObject = new $this->fields['itemtype']();
+      $commonITILObject->getFromDB($this->fields['items_id']);
+
+      $actors = $commonITILObject->getITILActors();
+      $user_id = $this->fields['users_id'];
+      $roles = $actors[$user_id] ?? [];
+
+      if (in_array(CommonITILActor::ASSIGN, $roles)) {
+         // The author is assigned -> support agent
+         return true;
+      } else if (in_array(CommonITILActor::OBSERVER, $roles)
+         || in_array(CommonITILActor::REQUESTER, $roles)
+      ) {
+         // The author is an observer or a requester -> not a support agent
+         return false;
+      } else {
+         // The author is not an actor of the ticket -> he was most likely a
+         // support agent that is no longer assigned to the ticket
+         return true;
+      }
+   }
 }
