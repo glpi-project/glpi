@@ -365,8 +365,6 @@ class NetworkEquipment extends CommonDBTM {
       Network::dropdown(['value' => $this->fields["networks_id"]]);
       echo "</td></tr>";
 
-      $rowspan        = 4;
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
@@ -376,10 +374,15 @@ class NetworkEquipment extends CommonDBTM {
          'condition' => ['is_itemgroup' => 1]
       ]);
       echo "</td>";
-      echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
-      echo "<td rowspan='$rowspan'>
-            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
-      echo "</textarea></td></tr>";
+      $rowspan = 3;
+      echo "<td rowspan='$rowspan'>" . __('Comments') . "</td>";
+      echo "<td rowspan='$rowspan'>";
+      Html::textarea(['name'  => 'comment',
+                      'value' => $this->fields["comment"],
+                      'cols'  => '45',
+                      'rows'  => '10']);
+
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan=2>".__('The MAC address and the IP of the equipment are included in an aggregated network port')."</td>";
