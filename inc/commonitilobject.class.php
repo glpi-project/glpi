@@ -6823,6 +6823,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // #1476 - set date_mod and owner to attachment ones
          $item['date_mod'] = $document_item['date_mod'];
          $item['users_id'] = $document_item['users_id'];
+         $item['documents_item_id'] = $document_item['id'];
 
          $item['timeline_position'] = $document_item['timeline_position'];
 
@@ -7020,7 +7021,16 @@ abstract class CommonITILObject extends CommonDBTM {
                $entity = $this->getEntityID();
                if (Entity::getUsedConfig('anonymize_support_agents', $entity)
                   && Session::getCurrentInterface() == 'helpdesk'
-                  && ITILFollowup::getById($item_i['id'])->isFromSupportAgent()
+                  && (
+                     $item['type'] == "Solution"
+                     || is_subclass_of($item['type'], "CommonITILTask")
+                     || ($item['type'] == "ITILFollowup"
+                        && ITILFollowup::getById($item_i['id'])->isFromSupportAgent()
+                     )
+                     || ($item['type'] == "Document_Item"
+                        && Document_Item::getById($item_i['documents_item_id'])->isFromSupportAgent()
+                     )
+                  )
                ) {
                   echo __("Helpdesk");
                } else {
@@ -7156,6 +7166,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "</div>";
          }
 
+         $entity = $this->getEntityID();
          echo "<div class='b_right'>";
          if (isset($item_i['solutiontypes_id']) && !empty($item_i['solutiontypes_id'])) {
             echo Dropdown::getDropdownName("glpi_solutiontypes", $item_i['solutiontypes_id'])."<br>";
@@ -7182,11 +7193,20 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($item_i['users_id_tech']) && ($item_i['users_id_tech'] > 0)) {
             echo "<div class='users_id_tech' id='users_id_tech_".$item_i['users_id_tech']."'>";
             $user->getFromDB($item_i['users_id_tech']);
-            echo "<i class='fas fa-user'></i> ";
-            $userdata = getUserName($item_i['users_id_tech'], 2);
-            echo $user->getLink()."&nbsp;";
-            echo Html::showToolTip($userdata["comment"],
-                                   ['link' => $userdata['link']]);
+
+            if (Entity::getUsedConfig('anonymize_support_agents', $entity)
+               && Session::getCurrentInterface() == 'helpdesk'
+            ) {
+               echo __("Helpdesk");
+            } else {
+               echo "<i class='fas fa-user'></i> ";
+               $userdata = getUserName($item_i['users_id_tech'], 2);
+               echo $user->getLink()."&nbsp;";
+               echo Html::showToolTip(
+                  $userdata["comment"],
+                  ['link' => $userdata['link']]
+               );
+            }
             echo "</div>";
          }
          if (isset($item_i['groups_id_tech']) && ($item_i['groups_id_tech'] > 0)) {
@@ -7198,15 +7218,27 @@ abstract class CommonITILObject extends CommonDBTM {
          }
          if (isset($item_i['users_id_editor']) && $item_i['users_id_editor'] > 0) {
             echo "<div class='users_id_editor' id='users_id_editor_".$item_i['users_id_editor']."'>";
-            $user->getFromDB($item_i['users_id_editor']);
-            $userdata = getUserName($item_i['users_id_editor'], 2);
-            echo sprintf(
-               __('Last edited on %1$s by %2$s'),
-               Html::convDateTime($item_i['date_mod']),
-               $user->getLink()
-            );
-            echo Html::showToolTip($userdata["comment"],
-                                   ['link' => $userdata['link']]);
+
+            if (Entity::getUsedConfig('anonymize_support_agents', $entity)
+               && Session::getCurrentInterface() == 'helpdesk'
+            ) {
+               echo sprintf(
+                  __('Last edited on %1$s by %2$s'),
+                  Html::convDateTime($item_i['date_mod']),
+                  __("Helpdesk")
+               );
+            } else {
+               $user->getFromDB($item_i['users_id_editor']);
+               $userdata = getUserName($item_i['users_id_editor'], 2);
+               echo sprintf(
+                  __('Last edited on %1$s by %2$s'),
+                  Html::convDateTime($item_i['date_mod']),
+                  $user->getLink()
+               );
+               echo Html::showToolTip($userdata["comment"],
+                                      ['link' => $userdata['link']]);
+            }
+
             echo "</div>";
          }
          if ($objType == 'Ticket' && isset($item_i['sourceitems_id']) && $item_i['sourceitems_id'] > 0) {
