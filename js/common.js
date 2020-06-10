@@ -1141,16 +1141,13 @@ window.glpiUnsavedFormChanges = false;
 $(document).ready(function() {
    // Try to limit tracking to item forms by binding to inputs under glpi_tabs only.
    // Forms must have the data-track-changes attribute set to true.
-   // Form fields may have their data-track-changes attribute set to false to override the tracking on that input.
+   // Form fields may have their data-track-changes attribute set to empty (false) to override the tracking on that input.
    var glpiTabs = $('#page .glpi_tabs');
-   glpiTabs.on('input', 'form[data-track-changes="true"] input:not([data-track-changes="false"]),' +
+   glpiTabs.on('input', 'form[data-track-changes="true"] input:not([data-track-changes=""]),' +
       'form[data-track-changes="true"] textarea:not([data-track-changes="false"])', function() {
       window.glpiUnsavedFormChanges = true;
    });
-   glpiTabs.on('change', 'form[data-track-changes="true"] select:not([data-track-changes="false"])', function() {
-      window.glpiUnsavedFormChanges = true;
-   });
-   glpiTabs.on('select2:select', 'form[data-track-changes="true"] select:not([data-track-changes="false"])', function() {
+   glpiTabs.on('change', 'form[data-track-changes="true"] select:not([data-track-changes=""])', function() {
       window.glpiUnsavedFormChanges = true;
    });
    $(window).on('beforeunload', function(e) {
