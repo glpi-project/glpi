@@ -7481,7 +7481,7 @@ abstract class CommonITILObject extends CommonDBTM {
             );
          } else {
             echo sprintf(
-               __('New %'),
+               __('New %s'),
                strtolower(static::getTypeName())
             );
          }
