@@ -312,7 +312,7 @@ class Impact extends CommonGLPI {
       }
 
       if (!$has_impact) {
-         echo '<p>' . __("This asset doesn't have any impact dependencies.") . '</p>';
+         echo '<p>' . __("This asset doesn't have any dependencies.") . '</p>';
       }
 
       echo '</div>';
