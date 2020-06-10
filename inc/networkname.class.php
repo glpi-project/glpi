@@ -875,8 +875,7 @@ class NetworkName extends FQDNLabel {
 
          case 'NetworkEquipment' :
             $result = $DB->request([
-               'COUNT'           => 'cpt',
-               'DISTINCT'        => true,
+               'SELECT'          => ['COUNT DISTINCT' => 'glpi_networknames.id AS cpt'],
                'FROM'            => 'glpi_networknames',
                'INNER JOIN'       => [
                   'glpi_networkports'  => [
