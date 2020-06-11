@@ -1885,40 +1885,6 @@ class Problem extends CommonITILObject {
       ]);
    }
 
-   /**
-    * Get assets linked to this object
-    *
-    * @since 9.5
-    *
-    * @param bool $addNames Insert asset names
-    *
-    * @return array
-    */
-   public function getLinkedItems(bool $addNames = true) {
-      global $DB;
-
-      $assets = $DB->request([
-         'SELECT' => ["id", "itemtype", "items_id"],
-         'FROM'   => "glpi_items_problems",
-         'WHERE'  => ["problems_id" => $this->getID()]
-      ]);
-
-      $assets = iterator_to_array($assets);
-
-      if ($addNames) {
-         foreach ($assets as $key => $asset) {
-            /** @var CommonDBTM $item */
-            $item = new $asset['itemtype'];
-            $item->getFromDB($asset['id']);
-
-            // Add name
-            $assets[$key]['name'] = $item->fields['name'];
-         }
-      }
-
-      return $assets;
-   }
-
 
    static function getIcon() {
       return "fas fa-exclamation-triangle";
