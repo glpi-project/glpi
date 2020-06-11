@@ -90,8 +90,7 @@ class Transfer extends DbTestCase {
             'Consumable',
             'Infocom',
             'ComputerAntivirus',
-            'TicketRecurrent',
-            'Holiday'
+            'TicketRecurrent'
          ]
       );
 
