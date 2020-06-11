@@ -108,7 +108,7 @@ jobs:
       - name: "Install DB tests"
         run: |
           docker exec ${{ job.services.app.id }} bin/console glpi:database:install --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
-          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --no-interaction | grep -q "Aucune migration requise." || (echo "glpi:database:update command FAILED" && exit 1)
+          docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
       - name: "Update DB tests"
         run: |
           docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=db --db-user=root
