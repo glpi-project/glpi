@@ -365,8 +365,8 @@ class RuleImportComputer extends Rule {
                $sql_results = Plugin::doOneHook($plugin, "ruleImportComputer_getSqlRestriction",
                                                 $params);
 
-               $sql_from['FROM'] = $sql_results['sql_from'];
-               $sql_where['WHERE']     = $sql_results['sql_where'];
+               $sql_from['FROM']          = $sql_results['sql_from'];
+               $sql_where['WHERE']        = $sql_results['sql_where'];
                $sql_leftjoin['LEFT JOIN'] = $sql_results['sql_leftjoin'];
 
                $it_criteria = array_merge_recursive($it_criteria, $sql_from);
