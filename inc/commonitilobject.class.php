@@ -8139,4 +8139,63 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return $status == CommonITILObject::INCOMING;
    }
+
+   /**
+    * Retrieve linked items table name
+    *
+    * @since 9.5.0
+    *
+    * @return string
+    */
+   public static function getItemsTable() {
+      switch (static::getType()) {
+         case 'Change':
+            return 'glpi_changes_items';
+         case 'Problem':
+            return 'glpi_items_problems';
+         case 'Ticket':
+            return 'glpi_items_tickets';
+         default:
+            throw new \RuntimeException('Unknown ITIL type ' . static::getType());
+      }
+
+   }
+
+   /**
+    * Get assets linked to this object
+    *
+    * @since 9.5.0
+    *
+    * @param boolean $addNames Insert asset names
+    *
+    * @return array
+    */
+   public function getLinkedItems(bool $addNames = true) :array {
+      global $DB;
+
+      $assets = $DB->request([
+         'SELECT' => ["id", "itemtype", "items_id"],
+         'FROM'   => static::getItemsTable(),
+         'WHERE'  => [$this->getForeignKeyField() => $this->getID()]
+      ]);
+
+      $assets = iterator_to_array($assets);
+
+      if ($addNames) {
+         foreach ($assets as $key => $asset) {
+            if (!class_exists($asset['itemtype'])) {
+               //ignore if class does not exists (maybe a plugin)
+               continue;
+            }
+            /** @var CommonDBTM $item */
+            $item = new $asset['itemtype'];
+            $item->getFromDB($asset['items_id']);
+
+            // Add name
+            $assets[$key]['name'] = $item->fields['name'];
+         }
+      }
+
+      return $assets;
+   }
 }

@@ -77,19 +77,7 @@ abstract class ITILTemplate extends CommonDropdown {
       if ($this->getFromDB($ID)) {
          $itiltype = str_replace('Template', '', static::getType());
          $itil_object  = new $itiltype;
-         switch ($itiltype) {
-            case 'Change':
-               $itemstable = 'glpi_changes_items';
-               break;
-            case 'Problem':
-               $itemstable = 'glpi_items_problems';
-               break;
-            case 'Ticket':
-               $itemstable = 'glpi_items_tickets';
-               break;
-            default:
-               throw new \RuntimeException('Unknown ITIL type ' . $itiltype);
-         }
+         $itemstable = $itil_object->getItemsTable();
          $tth_class = $itiltype . 'TemplateHiddenField';
          $tth          = new $tth_class;
          $this->hidden = $tth->getHiddenFields($ID, $withtypeandcategory);
@@ -180,21 +168,7 @@ abstract class ITILTemplate extends CommonDropdown {
       if (!isset($allowed_fields[$withtypeandcategory][$withitemtype])) {
          $itiltype = str_replace('Template', '', static::getType());
          $itil_object = new $itiltype;
-
-         $itemstable = null;
-         switch ($itiltype) {
-            case 'Change':
-               $itemstable = 'glpi_changes_items';
-               break;
-            case 'Problem':
-               $itemstable = 'glpi_items_problems';
-               break;
-            case 'Ticket':
-               $itemstable = 'glpi_items_tickets';
-               break;
-            default:
-               throw new \RuntimeException('Unknown ITIL type ' . $itiltype);
-         }
+         $itemstable = $itil_object->getItemsTable();
 
          // SearchOption ID => name used for options
          $allowed_fields[$withtypeandcategory][$withitemtype] = [
