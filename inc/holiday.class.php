@@ -118,9 +118,9 @@ class Holiday extends CommonDropdown {
 
       $input = parent::prepareInputForUpdate($input);
 
-      if (empty($input['end_date'])
+      if (isset($input['begin_date']) && (empty($input['end_date'])
           || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date'])) {
+          || ($input['end_date'] < $input['begin_date']))) {
 
          $input['end_date'] = $input['begin_date'];
       }
