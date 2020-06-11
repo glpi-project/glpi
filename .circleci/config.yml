@@ -103,11 +103,11 @@ commands:
             mysql -h 127.0.0.1 -u root glpitest0723 < tests/glpi-0.72.3-empty.sql
             bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=127.0.0.1 --db-user=root
             bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
-            bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+            bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "Aucune migration requise." || (echo "glpi:database:update command FAILED" && exit 1)
             bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
-            bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:migration:myisam_to_innodb command FAILED" && exit 1)
+            bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction |grep -q "Aucune migration requise." || (echo "glpi:migration:myisam_to_innodb command FAILED" && exit 1)
             bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction
-            bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:migration:timestamps command FAILED" && exit 1)
+            bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction |grep -q "Aucune migration requise." || (echo "glpi:migration:timestamps command FAILED" && exit 1)
 
       - run:
           name: Database tests
