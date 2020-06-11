@@ -211,6 +211,16 @@ class Problem extends CommonITILObject {
       $this->addStandardTab('ProblemCost', $ong, $options);
       $this->addStandardTab('Itil_Project', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
+      // Enable impact tab if there is a valid linked item
+      foreach ($this->getLinkedItems() as $linkedItem) {
+         $class = $linkedItem['itemtype'];
+         if (Impact::isEnabled($class)
+             && Session::getCurrentInterface() === "central") {
+
+            $this->addStandardTab('Impact', $ong, $options);
+            break;
+         }
+      }
       $this->addStandardTab('Change_Problem', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);

@@ -235,6 +235,16 @@ class Change extends CommonITILObject {
       $this->addStandardTab('Change_Problem', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
+      // Enable impact tab if there is a valid linked item
+      foreach ($this->getLinkedItems() as $linkedItem) {
+         $class = $linkedItem['itemtype'];
+         if (Impact::isEnabled($class)
+             && Session::getCurrentInterface() === "central") {
+
+            $this->addStandardTab('Impact', $ong, $options);
+            break;
+         }
+      }
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
