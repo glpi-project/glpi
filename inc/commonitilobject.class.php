@@ -8189,7 +8189,7 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             /** @var CommonDBTM $item */
             $item = new $asset['itemtype'];
-            $item->getFromDB($asset['id']);
+            $item->getFromDB($asset['items_id']);
 
             // Add name
             $assets[$key]['name'] = $item->fields['name'];
