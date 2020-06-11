@@ -304,9 +304,7 @@ class RuleImportComputer extends Rule {
 
       $it_criteria = [
          'SELECT' => 'glpi_computers.id',
-         'FROM'   => '', //to fill
          'WHERE'  => [], //to fill
-         'ORDER'  => 'glpi_computers.is_deleted ASC'
       ];
 
       foreach ($complex_criterias as $criteria) {
@@ -362,10 +360,19 @@ class RuleImportComputer extends Rule {
                                     'input'        => $input,
                                     'criteria'     => $complex_criterias,
                                     'sql_where'    => $it_criteria['WHERE'],
-                                    'sql_from'     => $it_criteria['FROM']];
+                                    'sql_from'     => '',
+                                    'sql_leftjoin' => ''];
                $sql_results = Plugin::doOneHook($plugin, "ruleImportComputer_getSqlRestriction",
                                                 $params);
-               $it_criteria = array_merge_recursive($it_criteria, $sql_results);
+
+               $sql_from['FROM']          = $sql_results['sql_from'];
+               $sql_where['WHERE']        = $sql_results['sql_where'];
+               $sql_leftjoin['LEFT JOIN'] = $sql_results['sql_leftjoin'];
+
+               $it_criteria = array_merge_recursive($it_criteria, $sql_from);
+               $it_criteria = array_merge_recursive($it_criteria, $sql_leftjoin);
+               $it_criteria = array_merge_recursive($it_criteria, $sql_where);
+
             }
          }
       }
