@@ -32,6 +32,7 @@
 # Elthon Abreu <elthon.abreu@gmail.com>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Diego Nobre <diego@koruma.com.br>, 2020
+# George Maia <georgemaia@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -40,7 +41,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-11 09:05+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Diego Nobre <diego@koruma.com.br>, 2020\n"
+"Last-Translator: George Maia <georgemaia@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1700,7 +1701,7 @@ msgstr[1] "Componentes"
 
 #: front/dashboard_helpdesk.php:43
 msgid "Helpdesk Dashboard"
-msgstr ""
+msgstr "Painel de Controle do Helpdesk"
 
 #: front/lock.form.php:56
 #, php-format
@@ -1899,7 +1900,7 @@ msgstr "Home"
 #: front/helpdesk.public.php:104 inc/central.class.php:295
 #, php-format
 msgid "Your password will expire on %s."
-msgstr ""
+msgstr "Sua senha irá expirar em %s."
 
 #: front/helpdesk.public.php:115 inc/central.class.php:301
 msgid "Update my password"
@@ -1985,7 +1986,7 @@ msgstr "%1$s adiciona %2$s campo"
 
 #: front/dashboard_assets.php:43
 msgid "Assets Dashboard"
-msgstr ""
+msgstr "Painel de Controle de Ativos"
 
 #: front/itilsolution.form.php:50
 msgid "You cannot solve this item!"
@@ -3572,19 +3573,19 @@ msgstr "A nova senha deve ser diferente da senha atual"
 
 #: front/updatepassword.php:71
 msgid "The two passwords do not match"
-msgstr ""
+msgstr "As duas senhas não são iguais"
 
 #: front/updatepassword.php:78
 msgid "An error occured during password update"
-msgstr ""
+msgstr "Ocorreu um erro ao atualizar a senha"
 
 #: front/updatepassword.php:89 inc/user.class.php:4599
 msgid "Password update"
-msgstr ""
+msgstr "Atualizar senha"
 
 #: front/updatepassword.php:92
 msgid "Your password has been successfully updated."
-msgstr ""
+msgstr "Sua senha foi atualizada com sucesso."
 
 #: front/updatepassword.php:94
 msgid "Log in"
@@ -3934,11 +3935,11 @@ msgstr "Última atualização"
 
 #: inc/domainrecord.class.php:249
 msgid "You are not allowed to use this type of records"
-msgstr ""
+msgstr "Você não tem permissão para usar este tipo de registro"
 
 #: inc/domainrecord.class.php:258
 msgid "You are not allowed to edit this type of records"
-msgstr ""
+msgstr "Você não tem permissão para editar este tipo de registro"
 
 #: inc/domainrecord.class.php:417
 msgid "Link a record"
@@ -5059,7 +5060,7 @@ msgstr "Versão não suportada (%1$s)"
 
 #: inc/update.class.php:523
 msgid "Unable to create security key file!"
-msgstr ""
+msgstr "Não foi possível criar o arquivo da chave de segurança!"
 
 #: inc/ticket.class.php:132
 msgid "Create ticket"
@@ -5159,19 +5160,19 @@ msgstr ""
 
 #: inc/ticket.class.php:2535
 msgid "Merge documents"
-msgstr ""
+msgstr "Mesclar documentos"
 
 #: inc/ticket.class.php:2541
 msgid "Merge tasks"
-msgstr ""
+msgstr "Mesclar tarefas"
 
 #: inc/ticket.class.php:2547
 msgid "Merge actors"
-msgstr ""
+msgstr "Mesclar atores"
 
 #: inc/ticket.class.php:2553
 msgid "Link type"
-msgstr ""
+msgstr "Tipo de link"
 
 #: inc/ticket.class.php:2556 inc/ticket_ticket.class.php:213
 #: inc/ticket_ticket.class.php:233 inc/ticket_ticket.class.php:238
@@ -10235,7 +10236,7 @@ msgstr ""
 
 #: inc/marketplace/notificationtargetcontroller.class.php:119
 msgid "Plugin name"
-msgstr ""
+msgstr "Nome do Plug-in"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:120
 #: inc/console/plugin/abstractplugincommand.class.php:71
@@ -10352,11 +10353,11 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:477
 msgid "Get help"
-msgstr ""
+msgstr "Obtenha ajuda"
 
 #: inc/marketplace/view.class.php:482
 msgid "Readme"
-msgstr ""
+msgstr "Leiame"
 
 #: inc/marketplace/view.class.php:624
 msgid "Clean"
@@ -10365,6 +10366,8 @@ msgstr "Limpar"
 #: inc/marketplace/view.class.php:633
 msgid "The plugin has an available update but its directory is not writable."
 msgstr ""
+"Este plug-in possui uma atualização mas seu diretório não possui permissão "
+"de escrita."
 
 #: inc/marketplace/view.class.php:637
 #, php-format
@@ -10380,7 +10383,7 @@ msgstr "Download"
 #: inc/marketplace/view.class.php:654
 #, php-format
 msgid "A new version (%s) is available, update ?"
-msgstr ""
+msgstr "Uma nova versão(%s) está disponivel, atualizar?"
 
 #: inc/marketplace/view.class.php:667
 #, php-format
@@ -11815,7 +11818,7 @@ msgstr[1] "Fontes RSS"
 
 #: inc/central.class.php:73
 msgid "Dashboard"
-msgstr ""
+msgstr "Painel de Controle"
 
 #: inc/central.class.php:314
 #, php-format
@@ -15694,19 +15697,19 @@ msgstr ""
 
 #: inc/notificationtargetuser.class.php:185
 msgid "Password expiration date"
-msgstr ""
+msgstr "Data de expiração da senha"
 
 #: inc/notificationtargetuser.class.php:186
 msgid "Password has expired"
-msgstr ""
+msgstr "Senha expirou"
 
 #: inc/notificationtargetuser.class.php:190
 msgid "We inform you that your password will expire soon."
-msgstr ""
+msgstr "Informamos que sua senha irá expirar em breve."
 
 #: inc/notificationtargetuser.class.php:191
 msgid "We inform you that your password has expired."
-msgstr ""
+msgstr "Informamos que sua senha expirou."
 
 #: inc/notificationtargetuser.class.php:192
 msgid "To update your password, please follow this link:"
@@ -17089,7 +17092,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:255 js/dashboard.js:737
 msgid "Add a new dashboard"
-msgstr ""
+msgstr "Adicionar um novo painel de controle"
 
 #: inc/dashboard/grid.class.php:543 js/dashboard.js:498
 msgid "Refresh this card"
@@ -17105,7 +17108,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:637
 msgid "others"
-msgstr ""
+msgstr "outros"
 
 #: inc/dashboard/grid.class.php:670
 msgid "Widget"
@@ -17665,15 +17668,15 @@ msgstr ""
 
 #: inc/impact.class.php:1066
 msgid "Undo"
-msgstr ""
+msgstr "Desfazer"
 
 #: inc/impact.class.php:1067
 msgid "Redo"
-msgstr ""
+msgstr "Refazer"
 
 #: inc/impact.class.php:1069
 msgid "Add asset"
-msgstr ""
+msgstr "Adicionar ativo"
 
 #: inc/impact.class.php:1070
 msgid "Add relation"
@@ -21494,7 +21497,7 @@ msgstr ""
 
 #: inc/console/security/changekeycommand.class.php:88
 msgid "Aborted."
-msgstr ""
+msgstr "Abortado."
 
 #: inc/console/security/changekeycommand.class.php:98
 msgid "Unable to change security key!"
@@ -21677,7 +21680,7 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:323
 msgid "No users found."
-msgstr ""
+msgstr "Nenhum usuário encontrado."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:379
 #, php-format
@@ -21845,15 +21848,15 @@ msgstr ""
 
 #: inc/console/database/abstractconfigurecommand.class.php:152
 msgid "Database name:"
-msgstr ""
+msgstr "Nome do Banco de Dados:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:153
 msgid "Database user:"
-msgstr ""
+msgstr "Usuário do Banco de Dados:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:154
 msgid "Database password:"
-msgstr ""
+msgstr "Senha do Banco de Dados:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:195
 #: inc/console/database/installcommand.class.php:152
@@ -21874,12 +21877,12 @@ msgstr ""
 
 #: inc/console/database/abstractconfigurecommand.class.php:248
 msgid "Saving configuration file..."
-msgstr ""
+msgstr "Salvando o arquivo de configuração..."
 
 #: inc/console/database/abstractconfigurecommand.class.php:253
 #, php-format
 msgid "Cannot write configuration file \"%s\"."
-msgstr ""
+msgstr "Não foi possível escrever o arquivo de configuração \"%s\"."
 
 #: inc/console/database/abstractconfigurecommand.class.php:296
 msgid "Database name defined by --db-name option cannot be empty."
@@ -23169,7 +23172,7 @@ msgstr "Adicionar coluna"
 
 #: js/kanban.js:845
 msgid "More"
-msgstr ""
+msgstr "Mais"
 
 #: js/kanban.js:1305
 #, javascript-format
@@ -23218,7 +23221,7 @@ msgstr ""
 
 #: js/planning.js:329 js/planning.js:449 js/planning.js:497
 msgid "Instance"
-msgstr ""
+msgstr "Instância"
 
 #: js/planning.js:438
 msgid "Recurring event resized"

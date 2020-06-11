@@ -14,8 +14,8 @@
 # Tiago Graca, 2020
 # Milan Lefort <milan.lefort@orange.fr>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2020
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-11 09:05+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Johan Cwiklinski <jcwiklinski@teclib.com>, 2020\n"
+"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8654,7 +8654,7 @@ msgstr "Durée totale : %s"
 #: inc/commonitilobject.class.php:6712
 #, php-format
 msgid "Information tasks: %s %%"
-msgstr ""
+msgstr "Tâches d'informations : %s %%"
 
 #: inc/commonitilobject.class.php:6713
 #, php-format
@@ -8742,7 +8742,7 @@ msgstr "# 1%s description"
 #: inc/commonitilobject.class.php:7510
 #, php-format
 msgid "The %s will be added in the entity %s"
-msgstr ""
+msgstr "L'objet %s va être ajouté à l'entité %s"
 
 #: inc/commonitilobject.class.php:7516
 #, php-format
@@ -10290,6 +10290,8 @@ msgstr "Votre enregistrement GLPI Network n'est pas valide."
 #: inc/marketplace/view.class.php:157
 msgid "A registration, at least a free one, is required to use marketplace!"
 msgstr ""
+"Un enregistrement, au moins un gratuit, est requis pour utiliser le "
+"marketplace !"
 
 #: inc/marketplace/view.class.php:158
 msgid "Register on GLPI Network"
@@ -10371,7 +10373,7 @@ msgstr "Obtenir de l'aide"
 
 #: inc/marketplace/view.class.php:482
 msgid "Readme"
-msgstr ""
+msgstr "Lisez moi"
 
 #: inc/marketplace/view.class.php:624
 msgid "Clean"
@@ -15021,7 +15023,7 @@ msgstr "Décembre"
 
 #: inc/features/planningevent.class.php:786
 msgid "Exceptions"
-msgstr ""
+msgstr "Exceptions"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
 #: inc/features/planningevent.class.php:816
@@ -17044,59 +17046,59 @@ msgstr "sans"
 
 #: inc/dashboard/provider.class.php:954
 msgid "Time to close"
-msgstr ""
+msgstr "Temps de fermeture"
 
 #: inc/dashboard/widget.class.php:61
 msgid "Pie"
-msgstr ""
+msgstr "Camembert"
 
 #: inc/dashboard/widget.class.php:68
 msgid "Donut"
-msgstr ""
+msgstr "Donut"
 
 #: inc/dashboard/widget.class.php:75
 msgid "Half pie"
-msgstr ""
+msgstr "Demi camembert"
 
 #: inc/dashboard/widget.class.php:82
 msgid "Half donut"
-msgstr ""
+msgstr "Demi donut"
 
 #: inc/dashboard/widget.class.php:89
 msgid "Bars"
-msgstr ""
+msgstr "Barres"
 
 #: inc/dashboard/widget.class.php:102
 msgid "Multiple lines"
-msgstr ""
+msgstr "Lignes multiples"
 
 #: inc/dashboard/widget.class.php:109
 msgid "Area"
-msgstr ""
+msgstr "Aire"
 
 #: inc/dashboard/widget.class.php:115
 msgid "Multiple areas"
-msgstr ""
+msgstr "Aires multiples"
 
 #: inc/dashboard/widget.class.php:122
 msgid "Multiple bars"
-msgstr ""
+msgstr "Barres multiples"
 
 #: inc/dashboard/widget.class.php:129
 msgid "Stacked bars"
-msgstr ""
+msgstr "Barres empilées"
 
 #: inc/dashboard/widget.class.php:136
 msgid "Horizontal bars"
-msgstr ""
+msgstr "Barres horizontales"
 
 #: inc/dashboard/widget.class.php:143
 msgid "Big number"
-msgstr ""
+msgstr "Grand nombre"
 
 #: inc/dashboard/widget.class.php:148
 msgid "Multiple numbers"
-msgstr ""
+msgstr "Nombres multiples"
 
 #: inc/dashboard/widget.class.php:154
 msgid "Editable markdown"
@@ -17165,15 +17167,15 @@ msgstr "autres"
 
 #: inc/dashboard/grid.class.php:670
 msgid "Widget"
-msgstr ""
+msgstr "Widget"
 
 #: inc/dashboard/grid.class.php:701
 msgid "Use gradient palette"
-msgstr ""
+msgstr "Utiliser une palette avec un dégradé"
 
 #: inc/dashboard/grid.class.php:718
 msgid "Limit number of data"
-msgstr ""
+msgstr "Limiter le nombre de données"
 
 #: inc/dashboard/grid.class.php:774
 msgid "Embed in another application"
@@ -17228,7 +17230,7 @@ msgstr "Statuts des tickets par mois"
 
 #: inc/dashboard/grid.class.php:1161
 msgid "Tickets times (in hours)"
-msgstr ""
+msgstr "Temps des tickets (en heures)"
 
 #: inc/dashboard/grid.class.php:1166
 msgid "Top ticket's categories"
@@ -20909,7 +20911,7 @@ msgstr ""
 
 #: inc/console/plugin/installcommand.class.php:232
 msgid "User name defined by --username option is invalid."
-msgstr ""
+msgstr "Le nom d'utilisateur défini par l'option --username est invalide."
 
 #: inc/console/plugin/installcommand.class.php:285
 #, php-format
@@ -20981,7 +20983,7 @@ msgstr ""
 
 #: inc/console/abstractcommand.class.php:198
 msgid "Some optional system requirements are missing."
-msgstr "Certains prérequis système optionnels sot manquants."
+msgstr "Certains prérequis système optionnels sont manquants."
 
 #: inc/console/maintenance/disablemaintenancemodecommand.class.php:56
 msgid "Disable maintenance mode"
@@ -21063,12 +21065,12 @@ msgstr "%stables nécéssitant une migration ont été trouvées"
 #: inc/console/migration/timestampscommand.class.php:188
 #, php-format
 msgid "Running %s"
-msgstr ""
+msgstr "%s en cours"
 
 #: inc/console/migration/timestampscommand.class.php:196
 #, php-format
 msgid "Update of `%s` failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "Mise à jour de  `%s` échouée avec le message \"(%s) %s\"."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:91
 msgid "Migrate Domains plugin data into GLPI core tables"
@@ -21079,6 +21081,8 @@ msgstr ""
 #, php-format
 msgid "Run Domains plugin update (you need version %s files to do this)"
 msgstr ""
+"Lancer la mise à jour du plugin domaines (vous devez avoir les fichiers de "
+"la version %s pour se faire)"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:108
 #: inc/console/migration/racksplugintocorecommand.class.php:199
@@ -21087,33 +21091,41 @@ msgid ""
 "Enable migration without plugin files (we cannot validate that plugin data "
 "are compatible with supported %s version)"
 msgstr ""
+"Activer la migration sans les fichier du plugin (Nous ne pourrons valider "
+"que les données du plugin sont compatible avec la version %s)"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:124
 msgid ""
 "You are about to launch migration of Domains plugin data into GLPI core "
 "tables."
 msgstr ""
+"Vous êtes prêt à lancer la migration du plugin domaines dans les tables du "
+"cœur de GLPI."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:125
 #: inc/console/migration/racksplugintocorecommand.class.php:216
 msgid "It is better to make a backup of your existing data before continuing."
 msgstr ""
+"Il est préférable de faire une sauvegarde de vos données existantes avant de"
+" continuer."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:135
 #: inc/console/migration/racksplugintocorecommand.class.php:226
 msgid "Do you want to launch migration ?"
-msgstr ""
+msgstr "Voulez vous lancer la migration ?"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:174
 #: inc/console/migration/racksplugintocorecommand.class.php:269
 msgid "Checking plugin version..."
-msgstr ""
+msgstr "Vérification de la version du plugin ..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:182
 msgid ""
 "Domains plugin is not part of GLPI plugin list. It has never been installed "
 "or has been cleaned."
 msgstr ""
+"Le plugin domaines n'est pas dans la liste des plugins GLPI. Il n'a jamais "
+"été installé ou a été nettoyé."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:185
 #: inc/console/migration/domainsplugintocorecommand.class.php:200
@@ -21122,6 +21134,8 @@ msgid ""
 "You have to install Domains plugin files in version %s to be able to "
 "continue."
 msgstr ""
+"Vous devez réinstaller les fichiers du plugin domaines en version %s pour "
+"pouvoir continuer."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:221
 #: inc/console/migration/racksplugintocorecommand.class.php:316
@@ -21141,11 +21155,13 @@ msgid ""
 "Domains plugin data has to be updated to %s version. It can be done using "
 "the --update-plugin option."
 msgstr ""
+"Les données du plugin domaines doivent être mises à jour vers la version %s."
+" Cela peut être fait avec l'option --update-plugin."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:283
 #, php-format
 msgid "Domains plugin table \"%s\" is missing."
-msgstr ""
+msgstr "La table du plugin domaines \"%s\" est manquante."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:291
 #: inc/console/migration/racksplugintocorecommand.class.php:391
@@ -21159,22 +21175,22 @@ msgstr "Import des types de domaines..."
 #: inc/console/migration/domainsplugintocorecommand.class.php:348
 #, php-format
 msgid "Updating existing domain type %s..."
-msgstr ""
+msgstr "Mise à jour du type de domaine existant %s ..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:353
 #, php-format
 msgid "Importing domain type %s..."
-msgstr ""
+msgstr "Importation du type de domaine %s ..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:386
 #, php-format
 msgid "Unable to add domain type %s."
-msgstr ""
+msgstr "Impossible d'ajouter le type de domaine %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:387
 #, php-format
 msgid "Unable to update domain type %s."
-msgstr ""
+msgstr "Impossible de mettre à jour le type de domaine %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:406
 msgid "No domains types found."
@@ -21182,116 +21198,124 @@ msgstr "Aucun type de domaine trouvé"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:425
 msgid "Importing domains..."
-msgstr ""
+msgstr "Importation des domaines ..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:454
 #, php-format
 msgid "Updating existing domain %s..."
-msgstr ""
+msgstr "Mise à jour du domaine existant %s ..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:459
 #, php-format
 msgid "Importing domain %s..."
-msgstr ""
+msgstr "Importation du domaine %s ..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:472
 #, php-format
 msgid "Unable to find mapping for type %s."
-msgstr ""
+msgstr "Impossible de trouver une correspondance pour le type %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:513
 #, php-format
 msgid "Unable to add domain %s."
-msgstr ""
+msgstr "Impossible d'ajouter le domaine %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:514
 #, php-format
 msgid "Unable to update domain %s."
-msgstr ""
+msgstr "Impossible de mettre à jour le domaine %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:557
 msgid "No domains found."
-msgstr ""
+msgstr "Aucun domaine trouvé."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:574
 msgid "Importing domains items..."
-msgstr ""
+msgstr "Importation des éléments de domaine ..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:601
 #, php-format
 msgid "Unable to find corresponding domain for item %s (%s)."
-msgstr ""
+msgstr "Impossible de trouver le domaine correspondant à l'élément %s (%s)."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:614
 #, php-format
 msgid "Skip existing domain item %s..."
-msgstr ""
+msgstr "Passer l'élément de domaine existant %s ..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:619
 #, php-format
 msgid "Importing domain item %s..."
-msgstr ""
+msgstr "Importation de l'élément de domaine %s ..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:654
 #, php-format
 msgid "Unable to add domain item %s."
-msgstr ""
+msgstr "Impossible d'ajouter l'élément de domaine %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:655
 #, php-format
 msgid "Unable to update domain item %s."
-msgstr ""
+msgstr "Impossible de mettre à jour l'élément de domaine %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:667
 msgid "No domains items found."
-msgstr ""
+msgstr "Aucun élément de domaine trouvé."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:52
 msgid "Set missing `date_creation` and `date_mod` values using log entries."
 msgstr ""
+"Définir les valeurs manquantes de `date_creation` et `date_mod` en utilisant"
+" les entrées d'historique."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:92
 #, php-format
 msgid "Filling `%s`.`%s`..."
-msgstr ""
+msgstr "Remplissage de `%s`.`%s` ..."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:112
 #, php-format
 msgid "Update of `%s`.`%s` failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "Mise à jour de  `%s`.`%s` échouée avec le message \"(%s) %s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:161
 msgid "Migrate Racks plugin data into GLPI core tables"
-msgstr ""
+msgstr "Migrer les données du plugin baies dans les table du cœur de GLPI"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:167
 msgid "Ignore \"PluginRacksOther\" models and elements"
-msgstr ""
+msgstr "Ignorer les modèles et les éléments \"PluginRacksOther\""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:174
 msgid "Do not exit on import errors"
-msgstr ""
+msgstr "Ne pas arrêter sur les erreurs d'importation."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:181
 msgid "Remove existing core data"
-msgstr ""
+msgstr "Supprimer les données existantes du coeur"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:189
 #, php-format
 msgid "Run Racks plugin update (you need version %s files to do this)"
 msgstr ""
+"Lancer la mise à jour du plugin baies (vous devez avoir les fichiers de la "
+"version %s pour se faire)"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:215
 msgid ""
 "You are about to launch migration of Racks plugin data into GLPI core "
 "tables."
 msgstr ""
+"Vous êtes prêt à lancer la migration du plugin baies dans les tables du cœur"
+" de GLPI."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:277
 msgid ""
 "Racks plugin is not part of GLPI plugin list. It has never been installed or"
 " has been cleaned."
 msgstr ""
+"Le plugin baies n'est pas dans la liste des plugins GLPI. Il n'a jamais été "
+"installé ou a été nettoyé."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:280
 #: inc/console/migration/racksplugintocorecommand.class.php:295
@@ -21299,6 +21323,8 @@ msgstr ""
 msgid ""
 "You have to install Racks plugin files in version %s to be able to continue."
 msgstr ""
+"Vous devez réinstaller les fichiers du plugin baies en version %s pour "
+"pouvoir continuer."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:343
 #, php-format
@@ -21306,21 +21332,25 @@ msgid ""
 "Racks plugin data has to be updated to %s version. It can be done using the "
 "--update-plugin option."
 msgstr ""
+"Les données du plugin baies doivent être mises à jour vers la version %s. "
+"Cela peut être fait avec l'option --update-plugin."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:383
 #, php-format
 msgid "Racks plugin table \"%s\" is missing."
-msgstr ""
+msgstr "La table du plugin baie \"%s\" est manquante."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:447
 msgid ""
 "Other models and items cannot be migrated when --no-interaction option is "
 "used."
 msgstr ""
+"Les modèles et éléments autres ne peuvent pas être migré quand l'option "
+"--no-interaction est utilisée."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:476
 msgid "Creating datacenter..."
-msgstr ""
+msgstr "Création des centres de données ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:492
 msgid "Unable to create datacenter."
@@ -21328,11 +21358,11 @@ msgstr "Impossible de créer le centre de données"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:513
 msgid "Importing other models..."
-msgstr ""
+msgstr "Importation des modèles autres ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:526
 msgid "Other items do not exist in GLPI core."
-msgstr ""
+msgstr "Les éléments autres n'existent pas dans le cœur de GLPI."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:528
 #, php-format
@@ -21340,206 +21370,210 @@ msgid ""
 "We found %d models for other items. For each, we will ask you where you want"
 " to import it."
 msgstr ""
+"Nous avons trouvé %d modèles pour les éléments autres. Pour chacun, nous "
+"allons vous demander où vous souhaitez les importer."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:547
 #, php-format
 msgid "Where do you want to import \"%s\" ?"
-msgstr ""
+msgstr "Où voulez vous importer \"%s\" ?"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:551
 msgid "Peripheral"
-msgstr ""
+msgstr "Périphérique"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:552
 msgid "Pdu"
-msgstr ""
+msgstr "Pdu"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:554
 msgid "Passive Device"
-msgstr ""
+msgstr "Équipement passif"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:555
 msgid "Ignore (default)"
-msgstr ""
+msgstr "Ignorer (defaut)"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:610
 #, php-format
 msgid "Unable to import other model \"%s\"."
-msgstr ""
+msgstr "Impossible d'importer le modèle autre \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:627
 #, php-format
 msgid "Importing items from model \"%s\"..."
-msgstr ""
+msgstr "Importation des éléments pour le modèle \"%s\" ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:665
 #, php-format
 msgid "Unable to import other item \"%s\"."
-msgstr ""
+msgstr "Impossible d'importer l'élément autre \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:688
 msgid "No items found."
-msgstr ""
+msgstr "Aucun élément trouvé."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:708
 msgid "Importing items specifications..."
-msgstr ""
+msgstr "Importation des spécifications d'éléments ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:727
 #, php-format
 msgid "Importing specifications for model %s (%s)..."
-msgstr ""
+msgstr "Importation des spécifications pour le modèle %s (%s) ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:741
 #, php-format
 msgid "Model %s (%s) not found."
-msgstr ""
+msgstr "Modèle %s (%s) non trouvé."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:766
 #, php-format
 msgid "Unable to update model %s (%s)."
-msgstr ""
+msgstr "Impossible de mettre à jour le modèle %s (%s)."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:783
 msgid "No items specifications found."
-msgstr ""
+msgstr "Aucune spécification d'élément trouvée."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:801
 msgid "Importing rack models..."
-msgstr ""
+msgstr "Importation des modèles de baie ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:819
 #, php-format
 msgid "Importing rack model \"%s\"..."
-msgstr ""
+msgstr "Importation du modèle de baie \"%s\" ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:840
 #, php-format
 msgid "Unable to import rack model \"%s\"."
-msgstr ""
+msgstr "Impossible d'importer le modèle de baie \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:861
 #: inc/console/migration/racksplugintocorecommand.class.php:941
 msgid "No rack models found."
-msgstr ""
+msgstr "Aucun modèle de baie trouvé."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:879
 msgid "Importing rack types..."
-msgstr ""
+msgstr "Importation des types de baie ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:897
 #, php-format
 msgid "Importing rack type \"%s\"..."
-msgstr ""
+msgstr "Importation du type de baie \"%s\" ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:920
 #, php-format
 msgid "Unable to import rack type \"%s\"."
-msgstr ""
+msgstr "Impossible d'importer le type de baie \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:959
 msgid "Importing rack states..."
-msgstr ""
+msgstr "Importation des statuts de baie ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:977
 #, php-format
 msgid "Importing rack state \"%s\"..."
-msgstr ""
+msgstr "Importation du statut de baie \"%s\" ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1002
 #, php-format
 msgid "Unable to import rack state \"%s\"."
-msgstr ""
+msgstr "Impossible d'importer le statut de baie \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1024
 msgid "No rack states found."
-msgstr ""
+msgstr "Aucun statut de baie trouvé."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1042
 msgid "Importing rooms..."
-msgstr ""
+msgstr "Importation des pièces ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1060
 #, php-format
 msgid "Importing room \"%s\"..."
-msgstr ""
+msgstr "Importation de la pièce \"%s\" ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1085
 #, php-format
 msgid "Unable to import room \"%s\"."
-msgstr ""
+msgstr "Impossible d'importer la pièce \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1106
 msgid "No rooms found."
-msgstr ""
+msgstr "Aucune pièce trouvée."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1124
 msgid "Importing racks..."
-msgstr ""
+msgstr "Importation des baies ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1144
 #, php-format
 msgid "Importing rack \"%s\"..."
-msgstr ""
+msgstr "Importation de la baie \"%s\" ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1212
 #, php-format
 msgid "Unable to import rack \"%s\"."
-msgstr ""
+msgstr "Impossible d'importer la baie \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1234
 msgid "No racks found."
-msgstr ""
+msgstr "Aucune baie trouvée."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1252
 msgid "Importing rack items..."
-msgstr ""
+msgstr "Importation des éléments de baie ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1274
 #, php-format
 msgid "Importing rack item %s (%s)..."
-msgstr ""
+msgstr "Importation de l'élément de baie %s (%s) ..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1286
 #, php-format
 msgid "Item %s (%s) not found."
-msgstr ""
+msgstr "Élément %s (%s) non trouvé."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1303
 #, php-format
 msgid "Skipping item %s (%s) which is already linked to a rack."
-msgstr ""
+msgstr "Élément %s(%s) passé car déjà lié à une baie."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1344
 #, php-format
 msgid "Unable to import rack item %s (%s)."
-msgstr ""
+msgstr "Impossible d'importer l'élément de baie %s (%s)."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1361
 msgid "No rack items found."
-msgstr ""
+msgstr "Aucun élément de baie trouvé."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1442
 msgid "Unable to create default room."
-msgstr ""
+msgstr "Impossible de créer la pièce par défaut."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:53
 msgid "Replay dictionnary rules on existing items"
-msgstr ""
+msgstr "Rejouer les règles du dictionnaire sur les éléments existants"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:60
 #, php-format
 msgid "Dictionnary to use. Possible values are: %s"
-msgstr ""
+msgstr "Dictionnaire à utiliser. Les valeurs possibles sont : %s"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:69
 msgid ""
 "If option is set, only items having given manufacturer ID will be processed."
 msgstr ""
+"Si l'option est activée, seul les éléments ayant un id de fabricant seront "
+"traités."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:70
 msgid "Currently only available for Software dictionnary."
-msgstr ""
+msgstr "Actuellement seulement disponible pour le dictionnaire des logiciels."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:81
 msgid "Which dictionnary do you want to replay ?"
@@ -21551,41 +21585,47 @@ msgstr "Règle de \"dictionnaire\" invalide."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:53
 msgid "Process software category rules"
-msgstr ""
+msgstr "Traitement des règles de catégories de logiciels"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:59
 msgid ""
 "Process rule for all softwares, even those having already a defined category"
 msgstr ""
+"Traitement des règles pour tous les logiciels, même ceux ayant déjà une "
+"catégorie"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:81
 msgid "No software to process."
-msgstr ""
+msgstr "Aucun logiciel à traiter."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:93
 #, php-format
 msgid "Processing software having id \"%s\"."
-msgstr ""
+msgstr "Traitement du logiciel avec l'id \"%s\"."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:102
 #, php-format
 msgid "Unable to load software having id \"%s\"."
-msgstr ""
+msgstr "Impossible de charger le logiciel avec l'id \"%s\"."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:128
 #, php-format
 msgid "Number of softwares processed: %d."
-msgstr ""
+msgstr "Nombre de logiciels traités : %d."
 
 #: inc/console/security/changekeycommand.class.php:57
 msgid "Change password storage key and update values in database."
 msgstr ""
+"Modifiez la clé de stockage du mot de passe et mettez à jour les valeurs "
+"dans la base de données."
 
 #: inc/console/security/changekeycommand.class.php:72
 #, php-format
 msgid ""
 "Found %1$s field(s) and %2$s configuration entries requiring migration."
 msgstr ""
+"Trouvé %1$s champ(s) et %2$s entrées de configuration demandant une "
+"migration."
 
 #: inc/console/security/changekeycommand.class.php:88
 msgid "Aborted."
@@ -21616,6 +21656,8 @@ msgid ""
 "Increase the verbosity of messages: 1 for normal output, 2 for more verbose "
 "output and 3 for debug"
 msgstr ""
+"Augmenter la verbosité des messages : 1 pour une sortir normale, 2 pour une "
+"sortie plus verbeuse et 3 pour le debug"
 
 #: inc/console/application.class.php:139
 msgid "Display this application version"
