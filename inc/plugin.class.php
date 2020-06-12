@@ -106,6 +106,9 @@ class Plugin extends CommonDBTM {
 
 
    static function getAdditionalMenuLinks() {
+      if (!static::canView()) {
+         return false;
+      }
       $mp_icon     = MarketplaceView::getIcon();
       $mp_title    = MarketplaceView::getTypeName();
       $marketplace = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='sr-only'>$mp_title</span>";
