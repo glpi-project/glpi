@@ -7,6 +7,8 @@ on:
     branches:
       - master
       - '*/bugfixes'
+      - 'feature/*'
+      - 'fix/*'
     tags:
        - '*'
   # Runs test suite when a PR is opened or synchronyzed
