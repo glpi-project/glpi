@@ -123,13 +123,15 @@ class Plugin extends CommonDBTM {
 
 
    static function getAdditionalMenuOptions() {
-      return [
-         'marketplace' => [
-            'icon'  => MarketplaceView::geticon(),
-            'title' => MarketplaceView::getTypeName(),
-            'page'  => MarketplaceView::getSearchURL(false),
-         ]
-      ];
+      if (static::canView()) {
+         return [
+            'marketplace' => [
+               'icon'  => MarketplaceView::geticon(),
+               'title' => MarketplaceView::getTypeName(),
+               'page'  => MarketplaceView::getSearchURL(false),
+            ]
+         ];
+      }
    }
 
 
