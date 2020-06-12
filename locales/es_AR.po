@@ -4,7 +4,6 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Emiliano Cagliari <thelordbat@gmail.com>, 2019
 # Pablo Nazar <pablo.e.nazar@gmail.com>, 2019
 # Emanuel Wasinger <emaw_705@hotmail.com>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2020
@@ -12,6 +11,7 @@
 # Michael Manganiello, 2020
 # Dario, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Emiliano Cagliari <thelordbat@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-11 09:05+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Emiliano Cagliari <thelordbat@gmail.com>, 2020\n"
 "Language-Team: Spanish (Argentina) (https://www.transifex.com/glpi/teams/1637/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,7 +40,7 @@ msgstr "Actualizar"
 #: ajax/dropdownMassiveActionOs.php:46 inc/massiveaction.class.php:546
 msgctxt "button"
 msgid "Clone"
-msgstr ""
+msgstr "Clonar"
 
 #: ajax/dropdownItilActors.php:106 ajax/dropdownItilActors.php:194
 #: ajax/uemailUpdate.php:69 front/ticket_user.form.php:43
@@ -771,7 +771,7 @@ msgstr "Acceso denegado"
 
 #: ajax/kanban.php:184 inc/project.class.php:154
 msgid "Kanban"
-msgstr ""
+msgstr "Kanban"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:70
 msgid "Choose an existing device"
@@ -1679,7 +1679,7 @@ msgstr[1] "Componentes"
 
 #: front/dashboard_helpdesk.php:43
 msgid "Helpdesk Dashboard"
-msgstr ""
+msgstr "Panel de Mesa de Ayuda"
 
 #: front/lock.form.php:56
 #, php-format
@@ -1759,7 +1759,7 @@ msgstr[1] "Elementos"
 #: front/item_softwarelicense.form.php:51
 #, php-format
 msgid "%s associates an item and a license"
-msgstr ""
+msgstr "%s asocia un elemento y una licencia"
 
 #: front/problem_ticket.form.php:44 inc/notificationtargetticket.class.php:723
 #: inc/notificationtargetticket.class.php:737
@@ -1880,11 +1880,11 @@ msgstr "Inicio"
 #: front/helpdesk.public.php:104 inc/central.class.php:295
 #, php-format
 msgid "Your password will expire on %s."
-msgstr ""
+msgstr "Su contraseña caducará el %s."
 
 #: front/helpdesk.public.php:115 inc/central.class.php:301
 msgid "Update my password"
-msgstr ""
+msgstr "Actualizar mi contraseña"
 
 #: front/search.php:36 inc/mapgeolocation.class.php:90
 #: inc/mapgeolocation.class.php:91 inc/html.class.php:6840
@@ -1950,25 +1950,25 @@ msgstr "Se ha editado su comentario"
 
 #: front/itiltemplatefield.form.php:55
 msgid "hidden"
-msgstr ""
+msgstr "Oculto"
 
 #: front/itiltemplatefield.form.php:58
 msgid "mandatory"
-msgstr ""
+msgstr "mandatorio"
 
 #: front/itiltemplatefield.form.php:61
 msgid "predefined"
-msgstr ""
+msgstr "predefinido"
 
 #. TRANS: %1$s is the user login, %2$s the field type
 #: front/itiltemplatefield.form.php:73
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr ""
+msgstr "%1$sagrega %2$scampo"
 
 #: front/dashboard_assets.php:43
 msgid "Assets Dashboard"
-msgstr ""
+msgstr "Panel de activos"
 
 #: front/itilsolution.form.php:50
 msgid "You cannot solve this item!"
@@ -2233,8 +2233,8 @@ msgstr[1] "Lugares"
 #: tests/functionnal/Rule.php:285
 msgid "Type"
 msgid_plural "Type"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo"
+msgstr[1] "Tipos"
 
 #: front/stat.graph.php:157 front/stat.graph.php:165
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
@@ -2468,7 +2468,7 @@ msgstr[1] "Notificaciones"
 #: front/item_device.common.form.php:64
 #, php-format
 msgid "%1$s adds an item"
-msgstr ""
+msgstr "%1$sagrego un elemento"
 
 #: front/lockedfield.form.php:50
 #, php-format
@@ -23203,7 +23203,7 @@ msgstr ""
 
 #: js/planning.js:238
 msgid "Clone"
-msgstr ""
+msgstr "Clonar"
 
 #: js/planning.js:312
 msgid "Make a choice"

@@ -1938,7 +1938,7 @@ msgstr "verborgen"
 
 #: front/itiltemplatefield.form.php:58
 msgid "mandatory"
-msgstr ""
+msgstr "verplicht"
 
 #: front/itiltemplatefield.form.php:61
 msgid "predefined"
@@ -3467,7 +3467,7 @@ msgstr "Relatie"
 
 #: front/impactcsv.php:81
 msgid "Itemtype"
-msgstr ""
+msgstr "Itemtype"
 
 #: front/impactcsv.php:82
 msgid "Id"
@@ -4120,15 +4120,15 @@ msgstr "Actief"
 #: inc/profile.class.php:1596 inc/commonitiltask.class.php:605
 msgid "Task category"
 msgid_plural "Task categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Taakcategorie"
+msgstr[1] "Taakcategorieën"
 
 #: inc/savedsearch.class.php:61 inc/savedsearch.class.php:1420
 #: inc/savedsearch_alert.class.php:133
 msgid "Saved search"
 msgid_plural "Saved searches"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bewaarde zoekactie"
+msgstr[1] "Bewaarde zoekacties"
 
 #: inc/savedsearch.class.php:76
 msgid "Unset as default"
@@ -4261,8 +4261,8 @@ msgstr "Filter lijst"
 #, php-format
 msgid "Private %1$s"
 msgid_plural "Private %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Privaat %1$s"
+msgstr[1] "Privaat %1$s"
 
 #: inc/savedsearch.class.php:794 inc/savedsearch.class.php:804
 msgid "Hide/Show elements"
@@ -4272,8 +4272,8 @@ msgstr "Toon/Verberg elementen"
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Publiek %1$s"
+msgstr[1] "Publiek %1$s"
 
 #: inc/savedsearch.class.php:821 inc/savedsearch.class.php:1012
 #: inc/ajax.class.php:196 inc/ajax.class.php:417 inc/knowbase.class.php:146
@@ -4402,8 +4402,8 @@ msgstr "Voeg project taak toe"
 #: tests/functionnal/Rule.php:297
 msgid "Status"
 msgid_plural "Statuses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Status"
+msgstr[1] "Statussen"
 
 #: inc/projecttask_ticket.class.php:362 inc/projecttasktemplate.class.php:67
 #: inc/projecttasktemplate.class.php:129
@@ -4702,8 +4702,8 @@ msgstr "Startdatum"
 #: inc/profile.class.php:954 inc/profile.class.php:1998
 msgid "Budget"
 msgid_plural "Budgets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Budget"
+msgstr[1] "Budgetten"
 
 #: inc/contractcost.class.php:376 inc/projectcost.class.php:390
 #: inc/commonitilcost.class.php:530
@@ -4827,8 +4827,8 @@ msgstr "Beschrijving"
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s item"
+msgstr[1] "%s items"
 
 #: inc/notificationtargetobjectlock.class.php:52
 msgid "Unlock Item Request"
@@ -5126,15 +5126,15 @@ msgstr "Koppel tickets"
 
 #: inc/ticket.class.php:2529
 msgid "Merge followups"
-msgstr ""
+msgstr "Opvolgingen Samenvoegen"
 
 #: inc/ticket.class.php:2535
 msgid "Merge documents"
-msgstr ""
+msgstr "Documenten Samenvoegen"
 
 #: inc/ticket.class.php:2541
 msgid "Merge tasks"
-msgstr ""
+msgstr "Taken samenvoegen"
 
 #: inc/ticket.class.php:2547
 msgid "Merge actors"
@@ -5142,7 +5142,7 @@ msgstr ""
 
 #: inc/ticket.class.php:2553
 msgid "Link type"
-msgstr ""
+msgstr "Link type"
 
 #: inc/ticket.class.php:2556 inc/ticket_ticket.class.php:213
 #: inc/ticket_ticket.class.php:233 inc/ticket_ticket.class.php:238
@@ -5224,7 +5224,7 @@ msgstr "Interne tijd om te bezitten is overschreden"
 
 #: inc/ticket.class.php:2744
 msgid "Next escalation level"
-msgstr ""
+msgstr "Volgend escalatie niveau"
 
 #: inc/ticket.class.php:2801 inc/item_ticket.class.php:1226
 #: inc/link_itemtype.class.php:164 inc/change.class.php:448
@@ -5265,8 +5265,8 @@ msgstr "Tijd om op te lossen"
 #: inc/levelagreement.class.php:282 inc/levelagreementlevel.class.php:77
 msgid "Escalation level"
 msgid_plural "Escalation levels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Escalatie niveau"
+msgstr[1] "Escalatie niveaus"
 
 #: inc/ticket.class.php:2896 inc/ticket.class.php:2904
 #: inc/ticket.class.php:2918 inc/ticket.class.php:2931
@@ -23080,7 +23080,7 @@ msgstr ""
 
 #: js/impact.js:1309
 msgid "Go to"
-msgstr ""
+msgstr "Ga naar"
 
 #: js/impact.js:1310
 msgid "Open this element in a new tab"
@@ -23096,7 +23096,7 @@ msgstr ""
 
 #: js/impact.js:1323
 msgid "Group properties..."
-msgstr ""
+msgstr "Groep opties..."
 
 #: js/impact.js:1324
 msgid "Set name and/or color for this group"
@@ -23104,7 +23104,7 @@ msgstr ""
 
 #: js/impact.js:1331
 msgid "Remove from group"
-msgstr ""
+msgstr "Verwijder uit de groep"
 
 #: js/impact.js:1332
 msgid "Remove this asset from the group"
@@ -23116,15 +23116,15 @@ msgstr ""
 
 #: js/impact.js:1377
 msgid "Unexpected error."
-msgstr ""
+msgstr "Onverwachte fout."
 
 #: js/impact.js:1389
 msgid "Ongoing tickets"
-msgstr ""
+msgstr "Lopente tickets"
 
 #: js/impact.js:1450
 msgid "Edit group"
-msgstr ""
+msgstr "Wijzig groep"
 
 #: js/impact.js:2291
 msgid "Draw a line between two assets to add an impact relation"
@@ -23140,15 +23140,15 @@ msgstr ""
 
 #: js/impact.js:2438
 msgid "Requests"
-msgstr ""
+msgstr "Aanvragen"
 
 #: js/impact.js:2439
 msgid "Incidents"
-msgstr ""
+msgstr "Incidenten"
 
 #: js/impact.js:2440
 msgid "Changes"
-msgstr ""
+msgstr "Wijzigingen"
 
 #: js/impact.js:2477
 msgid "You need to select at least 2 assets to make a group"
@@ -23156,28 +23156,28 @@ msgstr ""
 
 #: js/kanban.js:299
 msgid "Bulk add"
-msgstr ""
+msgstr "Toevoegen in bulk"
 
 #: js/kanban.js:334
 msgid "Search or filter results"
-msgstr ""
+msgstr "Zoek of filter resultaten"
 
 #: js/kanban.js:336
 msgid "Add column"
-msgstr ""
+msgstr "Kolom toevoegen"
 
 #: js/kanban.js:845
 msgid "More"
-msgstr ""
+msgstr "Meer"
 
 #: js/kanban.js:1305
 #, javascript-format
 msgid "%d other team members"
-msgstr ""
+msgstr "%d andere teamleden"
 
 #: js/kanban.js:1444
 msgid "One item per line"
-msgstr ""
+msgstr "Een item per lijn"
 
 #: js/kanban.js:1502
 msgid "Add a column from existing status"
@@ -23185,11 +23185,11 @@ msgstr ""
 
 #: js/kanban.js:1506
 msgid "Or add a new status"
-msgstr ""
+msgstr "Of voeg een nieuwe status toe"
 
 #: js/kanban.js:1507 js/kanban.js:1524 js/kanban.js:1543
 msgid "Create status"
-msgstr ""
+msgstr "Maak status"
 
 #: js/kanban.js:1668
 msgid "Toggle collapse"
@@ -23201,7 +23201,7 @@ msgstr "Kloon"
 
 #: js/planning.js:312
 msgid "Make a choice"
-msgstr ""
+msgstr "Maak uw keuze"
 
 #: js/planning.js:313
 msgid "Delete the whole serie of the recurrent event"
@@ -23213,11 +23213,11 @@ msgstr ""
 
 #: js/planning.js:322 js/planning.js:443 js/planning.js:491
 msgid "Serie"
-msgstr ""
+msgstr "Serie"
 
 #: js/planning.js:329 js/planning.js:449 js/planning.js:497
 msgid "Instance"
-msgstr ""
+msgstr "Instance"
 
 #: js/planning.js:438
 msgid "Recurring event resized"

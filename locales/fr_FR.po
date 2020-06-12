@@ -14,8 +14,8 @@
 # Tiago Graca, 2020
 # Milan Lefort <milan.lefort@orange.fr>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
-# Johan Cwiklinski <jcwiklinski@teclib.com>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Johan Cwiklinski <jcwiklinski@teclib.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-11 09:05+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Johan Cwiklinski <jcwiklinski@teclib.com>, 2020\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -6287,7 +6287,7 @@ msgstr "Le plugin %1$s n'est pas conforme CSRF !"
 #: inc/plugin.class.php:753
 msgid "Plugin prerequisites are not matching, it cannot be activated."
 msgstr ""
-"Les pré-requis du greffon ne sont pas satisfaits, il ne peut être activé."
+"Les pré-requis du plugin ne sont pas satisfaits, il ne peut être activé."
 
 #: inc/plugin.class.php:785
 #, php-format
@@ -6297,7 +6297,7 @@ msgstr "Le plugin %1$s a été activé !"
 #: inc/plugin.class.php:795
 msgid "Plugin configuration must be done, it cannot be activated."
 msgstr ""
-"La configuration du greffon doit être effectuée, il ne peut être activé."
+"La configuration du plugin doit être effectuée, il ne peut être activé."
 
 #: inc/plugin.class.php:834
 #, php-format
@@ -10216,48 +10216,48 @@ msgstr "Règles métier pour les matériels"
 
 #: inc/marketplace/controller.class.php:100
 msgid "Unable to download plugin archive."
-msgstr "Impossible de télécharger l'archive du greffon."
+msgstr "Impossible de télécharger l'archive du plugin."
 
 #: inc/marketplace/controller.class.php:111
 #, php-format
 msgid "Plugin archive format is not supported by your system : %s."
-msgstr "L'archive du greffon n'est pas supportée sur votre système : %s."
+msgstr "L'archive du plugin n'est pas supportée sur votre système : %s."
 
 #: inc/marketplace/controller.class.php:133
 msgid "Unable to extract plugin archive."
-msgstr "Impossible d'extraire l'archive du greffon."
+msgstr "Impossible d'extraire l'archive du plugin."
 
 #: inc/marketplace/controller.class.php:236
 #: inc/marketplace/notificationtargetcontroller.class.php:61
 msgid "Check all plugin updates"
-msgstr "Vérifier les mises à jour de tous les greffons"
+msgstr "Vérifier les mises à jour de tous les plugins"
 
 #: inc/marketplace/controller.class.php:261
 #, php-format
 msgid "New version for plugin %s: %s"
-msgstr "Nouvelle version pour le greffon %s : %s"
+msgstr "Nouvelle version pour le plugin %s : %s"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:91
 msgid "Some updates are available for your installed plugins!"
 msgstr ""
-"Des mises à jour sont disponible pour certains de vos greffons installés !"
+"Des mises à jour sont disponible pour certains de vos plugins installés !"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:119
 msgid "Plugin name"
-msgstr "Nom du greffon"
+msgstr "Nom du plugin"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:120
 #: inc/console/plugin/abstractplugincommand.class.php:71
 msgid "Plugin directory"
-msgstr "Dossier du greffon"
+msgstr "Dossier du plugin"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:121
 msgid "Plugin new version number"
-msgstr "Nouvelle version du greffon"
+msgstr "Nouvelle version du plugin"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:122
 msgid "Plugin old version number"
-msgstr "Ancienne version du greffon"
+msgstr "Ancienne version du plugin"
 
 #: inc/marketplace/view.class.php:103
 msgid "Installed"
@@ -10316,7 +10316,7 @@ msgid ""
 "If you want to ease the plugins download, please check permissions and "
 "ownership of this directory."
 msgstr ""
-"Si vous souhaitez simplifier le téléchargement des greffons, veuillez "
+"Si vous souhaitez simplifier le téléchargement des plugins, veuillez "
 "vérifier les autorisations et droits de ce dossier."
 
 #: inc/marketplace/view.class.php:333
@@ -10341,7 +10341,7 @@ msgstr "Populaires"
 
 #: inc/marketplace/view.class.php:365
 msgid "Last updated"
-msgstr "Dernière mise à jour"
+msgstr "Mise à jour"
 
 #: inc/marketplace/view.class.php:370
 msgid "Most recent"
@@ -10353,15 +10353,15 @@ msgstr "Mieux notés"
 
 #: inc/marketplace/view.class.php:380
 msgid "Your plugin here ? Contact us."
-msgstr "Votre greffon ici ? Contactez-nous."
+msgstr "Votre plugin ici ? Contactez-nous."
 
 #: inc/marketplace/view.class.php:382
 msgid "Refresh plugin list"
-msgstr "Rafraîchir la liste des greffons"
+msgstr "Rafraîchir la liste des plugins"
 
 #: inc/marketplace/view.class.php:383
 msgid "Filter plugin list"
-msgstr "Filtrer la liste des greffons"
+msgstr "Filtrer la liste des plugins"
 
 #: inc/marketplace/view.class.php:472
 msgid "Homepage"
@@ -10382,7 +10382,7 @@ msgstr "Nettoyer"
 #: inc/marketplace/view.class.php:633
 msgid "The plugin has an available update but its directory is not writable."
 msgstr ""
-"Un e mise à jour est disponible pour le greffon, mais son dossier n'est pas "
+"Un e mise à jour est disponible pour le plugin, mais son dossier n'est pas "
 "accessible en écriture."
 
 #: inc/marketplace/view.class.php:637
@@ -10391,7 +10391,7 @@ msgid ""
 "Download archive manually, you must uncompress it in plugins directory (%s)"
 msgstr ""
 "Télécharger l'archive manuellement, vous devrez la décompresser dans le "
-"dossier du greffon (%s)"
+"dossier du plugin (%s)"
 
 #: inc/marketplace/view.class.php:649 inc/impact.class.php:1074
 #: inc/html.class.php:4974
@@ -10408,7 +10408,7 @@ msgstr "Une nouvelle version (%s) est disponible, mettre à jour ?"
 msgid "You need a superior GLPI-Network offer to access to this plugin (%s)"
 msgstr ""
 "Vous avez besoin d'une offre GLPI-Network supérieure pour accéder à ce "
-"greffon (%s)"
+"plugin (%s)"
 
 #: inc/marketplace/view.class.php:681
 msgid "Install"
@@ -10429,7 +10429,7 @@ msgstr "Désinstaller"
 
 #: inc/marketplace/view.class.php:774
 msgid "You must have a GLPI Network subscription to get this plugin"
-msgstr "Une souscription GLPI Network est nécessaire pour obtenir ce greffon"
+msgstr "Une souscription GLPI Network est nécessaire pour obtenir ce plugin"
 
 #: inc/marketplace/view.class.php:775 inc/network.class.php:42
 #: inc/networkequipment.class.php:363 inc/networkequipment.class.php:594
@@ -10446,26 +10446,26 @@ msgstr[1] "Réseaux"
 #, php-format
 msgid "You need at least the %s subscription level to get this plugin"
 msgstr ""
-"Vous devez posséder au minimum une souscription %s pour obtenir ce greffon"
+"Vous devez posséder au minimum une souscription %s pour obtenir ce plugin"
 
 #: inc/marketplace/view.class.php:880
 #, php-format
 msgid "%s plugin"
 msgid_plural "%s plugins"
-msgstr[0] "Greffon %s"
-msgstr[1] "Greffons %s"
+msgstr[0] "Plugin %s"
+msgstr[1] "Plugins %s"
 
 #: inc/marketplace/view.class.php:925
 msgid "GLPI provides a new marketplace to download and install plugins."
 msgstr ""
 "GLPI fournit un nouveau marketplace pour télécharger et installer des "
-"greffons."
+"plugins."
 
 #: inc/marketplace/view.class.php:927
 msgid "Do you want to replace the plugins setup page by the new marketplace ?"
 msgstr ""
-"Souhaitez vous remplacer la page de configurationd es greffons par le "
-"nouveau marketplace ?"
+"Souhaitez vous remplacer la page de configuration des plugins par le nouveau"
+" marketplace ?"
 
 #: inc/marketplace/view.class.php:938
 msgid "Later"
@@ -20816,57 +20816,56 @@ msgstr "Aucun consommable trouvé"
 #: inc/console/plugin/deactivatecommand.class.php:62
 #, php-format
 msgid "Processing plugin \"%s\"..."
-msgstr "Traitement du greffon « %s »..."
+msgstr "Traitement du plugin « %s »..."
 
 #: inc/console/plugin/activatecommand.class.php:74
 #: inc/console/plugin/installcommand.class.php:128
 #: inc/console/plugin/deactivatecommand.class.php:74
 #, php-format
 msgid "Unable to load plugin \"%s\" informations."
-msgstr "Impossible de charger les informations du greffon « %s »"
+msgstr "Impossible de charger les informations du plugin « %s »"
 
 #: inc/console/plugin/activatecommand.class.php:82
 #, php-format
 msgid "Plugin \"%s\" activation failed."
-msgstr "L'activation du greffon « %s » a échoué."
+msgstr "L'activation du plugin « %s » a échoué."
 
 #: inc/console/plugin/activatecommand.class.php:90
 #, php-format
 msgid "Plugin \"%1$s\" has been activated."
-msgstr "Le greffon « %1$s » a été activé."
+msgstr "Le plugin « %1$s » a été activé."
 
 #: inc/console/plugin/activatecommand.class.php:113
 #: inc/console/plugin/installcommand.class.php:273
 #: inc/console/plugin/deactivatecommand.class.php:113
 #, php-format
 msgid "Invalid plugin directory \"%s\"."
-msgstr "Dossier du greffon invalide « %s »."
+msgstr "Dossier du plugin invalide « %s »."
 
 #: inc/console/plugin/activatecommand.class.php:123
 #: inc/console/plugin/deactivatecommand.class.php:123
 #, php-format
 msgid "Plugin \"%s\" is not yet installed."
-msgstr "Le greffon « %s » n'est pas encore installé."
+msgstr "Le plugin « %s » n'est pas encore installé."
 
 #: inc/console/plugin/activatecommand.class.php:131
 #, php-format
 msgid "Plugin \"%s\" is already active."
-msgstr "Le greffon « %s » est déjà actif."
+msgstr "Le plugin « %s » est déjà actif."
 
 #: inc/console/plugin/activatecommand.class.php:139
 #, php-format
 msgid "Plugin \"%s\" have to be installed and configured prior to activation."
-msgstr ""
-"Le greffon « %s » doit être installé et configuré avant d'être activé."
+msgstr "Le plugin « %s » doit être installé et configuré avant d'être activé."
 
 #: inc/console/plugin/activatecommand.class.php:150
 msgid "Which plugin(s) do you want to activate (comma separated values) ?"
-msgstr "Quel(s) greffon(s) souhaitez vous activer (séparés par une virgule) ?"
+msgstr "Quel(s) plugin(s) souhaitez vous activer (séparés par une virgule) ?"
 
 #: inc/console/plugin/installcommand.class.php:63
 msgid "Additionnal parameters to pass to the plugin install hook function"
 msgstr ""
-"Valeurs additionnelles à passer à la fonction d'installation du greffon"
+"Valeurs additionnelles à passer à la fonction d'installation du plugin"
 
 #: inc/console/plugin/installcommand.class.php:65
 msgid "\"-p foo\" will set \"foo\" param value to true"
@@ -20882,32 +20881,32 @@ msgid ""
 "plugin admin rights)"
 msgstr ""
 "Nom de l'utilisateur utilisé durant le script d'installation (entre autre "
-"choses pour définir les droits d'administration du greffon)"
+"choses pour définir les droits d'administration du plugin)"
 
 #: inc/console/plugin/installcommand.class.php:83
 msgid "Force execution of installation, even if plugin is already installed"
 msgstr ""
-"Forcer l'exécution de l'installation même si le greffon est déjà installé"
+"Forcer l'exécution de l'installation même si le plugin est déjà installé"
 
 #: inc/console/plugin/installcommand.class.php:138
 #, php-format
 msgid "Plugin \"%s\" installation failed."
-msgstr "L'installation du greffon « %s » a échoué."
+msgstr "L'installation du plugin « %s » a échoué."
 
 #: inc/console/plugin/installcommand.class.php:146
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and must be configured."
-msgstr "Le greffon « %1$s» a été installé et doit être configuré."
+msgstr "Le plugin « %1$s» a été installé et doit être configuré."
 
 #: inc/console/plugin/installcommand.class.php:147
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and can be activated."
-msgstr "Le greffon « %1$s » a été installé et peut être activé."
+msgstr "Le plugin « %1$s » a été installé et peut être activé."
 
 #: inc/console/plugin/installcommand.class.php:160
 msgid "Which plugin(s) do you want to install (comma separated values) ?"
 msgstr ""
-"Quel(s) greffon(s) souhaitez vous installer (séparés par une virgule) ?"
+"Quel(s) plugin(s) souhaitez vous installer (séparés par une virgule) ?"
 
 #: inc/console/plugin/installcommand.class.php:232
 msgid "User name defined by --username option is invalid."
@@ -20919,8 +20918,8 @@ msgid ""
 "Plugin \"%s\" is already installed. Use --force option to force "
 "reinstallation."
 msgstr ""
-"Le greffon « %s » est déjà installé. Utilisez l'option --force pour forcer "
-"la réinstallation."
+"Le plugin « %s » est déjà installé. Utilisez l'option --force pour forcer la"
+" réinstallation."
 
 #: inc/console/plugin/installcommand.class.php:301
 #, php-format
@@ -20930,11 +20929,11 @@ msgstr "Plugin « %s » méthode « %s» manquante."
 #: inc/console/plugin/installcommand.class.php:324
 #, php-format
 msgid "Plugin \"%s\" requirements not met."
-msgstr "Le pré-requis du greffon « %s » ne sont pas satisfaits."
+msgstr "Le pré-requis du plugin « %s » ne sont pas satisfaits."
 
 #: inc/console/plugin/abstractplugincommand.class.php:65
 msgid "Run command on all plugins"
-msgstr "Lancer la commande sur tous les greffons"
+msgstr "Lancer la commande sur tous les plugins"
 
 #: inc/console/plugin/abstractplugincommand.class.php:82
 msgid "Option --all is not compatible with usage of directory argument."
@@ -20944,27 +20943,27 @@ msgstr ""
 
 #: inc/console/plugin/abstractplugincommand.class.php:93
 msgid "All plugins"
-msgstr "Tous les greffons"
+msgstr "Tous les plugins"
 
 #: inc/console/plugin/deactivatecommand.class.php:82
 #, php-format
 msgid "Plugin \"%s\" deactivation failed."
-msgstr "La désactivation du greffon « %s » a échoué."
+msgstr "La désactivation du plugin « %s » a échoué."
 
 #: inc/console/plugin/deactivatecommand.class.php:90
 #, php-format
 msgid "Plugin \"%1$s\" has been deactivated."
-msgstr "Le greffon « %1$s » a été désactivé."
+msgstr "Le plugin « %1$s » a été désactivé."
 
 #: inc/console/plugin/deactivatecommand.class.php:131
 #, php-format
 msgid "Plugin \"%s\" is already inactive."
-msgstr "Le greffon « %s » est déjà inactif."
+msgstr "Le plugin « %s » est déjà inactif."
 
 #: inc/console/plugin/deactivatecommand.class.php:142
 msgid "Which plugin(s) do you want to deactivate (comma separated values) ?"
 msgstr ""
-"Quel(s) greffon(s) souhaitez vous désinstaller (séparés par une virgule) ?"
+"Quel(s) plugin(s) souhaitez vous désinstaller (séparés par une virgule) ?"
 
 #: inc/console/abstractcommand.class.php:93
 msgid "Unable to connect to database."
@@ -21075,7 +21074,7 @@ msgstr "Mise à jour de  `%s` échouée avec le message \"(%s) %s\"."
 #: inc/console/migration/domainsplugintocorecommand.class.php:91
 msgid "Migrate Domains plugin data into GLPI core tables"
 msgstr ""
-"Migration des données du greffon Domaines dans les tables do coeur de GLPI"
+"Migration des données du plugin Domaines dans les tables du cœur de GLPI"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:98
 #, php-format
@@ -21141,13 +21140,13 @@ msgstr ""
 #: inc/console/migration/racksplugintocorecommand.class.php:316
 #, php-format
 msgid "Migrating plugin to %s version..."
-msgstr "Migration du greffon en version %s..."
+msgstr "Migration du plugin en version %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:237
 #: inc/console/migration/racksplugintocorecommand.class.php:332
 #, php-format
 msgid "Plugin migration to %s version failed."
-msgstr "La migration du greffon en version %s a échoué."
+msgstr "La migration du plugin en version %s a échoué."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:248
 #, php-format
@@ -21682,8 +21681,8 @@ msgstr "Paramétrer le dossier à utiliser"
 #: inc/console/application.class.php:169
 msgid "Disable GLPI plugins (unless commands forces plugins loading)"
 msgstr ""
-"Désactiver les greffons GLPI (à moins que la commande ne force le chargement"
-" de greffons)"
+"Désactiver les plugins GLPI (à moins que la commande n'en force le "
+"chargement)"
 
 #: inc/console/application.class.php:175
 msgid ""
