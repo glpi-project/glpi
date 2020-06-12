@@ -285,6 +285,13 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('UUID')."</td>";
+      echo "<td >";
+      Html::autocompletionTextField($this, 'uuid');
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Flags')."</td>";
       echo "<td>";
       // micro?

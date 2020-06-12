@@ -276,6 +276,13 @@ class Peripheral extends CommonDBTM {
       echo "</textarea></td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('UUID')."</td>\n";
+      echo "<td>";
+      Html::autocompletionTextField($this, 'uuid');
+      echo "</td>\n";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Brand')."</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "brand");

@@ -59,6 +59,15 @@ function update95toXX() {
        require $update_dir . $update_script . '.php';
    }
 
+   $to_add_uuid = ['Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
+
+   foreach ($to_add_uuid as $class) {
+      $migration->addField($class::getTable(), 'uuid', 'string', [
+         'after'  => 'is_dynamic',
+         'null'   => true
+      ]);
+   }
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

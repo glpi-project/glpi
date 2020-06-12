@@ -274,6 +274,13 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('UUID')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, 'uuid');
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Size')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "size");
