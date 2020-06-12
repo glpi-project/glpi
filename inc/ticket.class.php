@@ -838,8 +838,6 @@ class Ticket extends CommonITILObject {
 
 
    function defineTabs($options = []) {
-      global $CFG_GLPI;
-
       $ong = [];
 
       $this->defineDefaultObjectTabs($ong, $options);
@@ -847,15 +845,8 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
 
-      // Enable impact tab if there is a valid linked item
-      foreach ($this->getLinkedItems() as $linkedItem) {
-         $class = $linkedItem['itemtype'];
-         if (Impact::isEnabled($class)
-            && Session::getCurrentInterface() === "central") {
-
-            $this->addStandardTab('Impact', $ong, $options);
-            break;
-         }
+      if ($this->showImpactTab()) {
+         $this->addStandardTab('Impact', $ong, $options);
       }
 
       $this->addStandardTab('TicketCost', $ong, $options);

@@ -8203,4 +8203,19 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return $assets;
    }
+
+   /**
+    * Should impact tab be displayed? Check if there is a valid linked item
+    *
+    * @return boolean
+    */
+   protected function showImpactTab() {
+      foreach ($this->getLinkedItems() as $linkedItem) {
+         $class = $linkedItem['itemtype'];
+         if (Impact::isEnabled($class) && Session::getCurrentInterface() === "central") {
+            return true;
+         }
+      }
+      return false;
+   }
 }
