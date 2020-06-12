@@ -235,7 +235,7 @@ class Change extends CommonITILObject {
       $this->addStandardTab('Change_Problem', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
-      if ($this->showImpactTab()) {
+      if ($this->hasImpactTab()) {
          $this->addStandardTab('Impact', $ong, $options);
       }
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);

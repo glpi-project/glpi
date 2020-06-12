@@ -8209,7 +8209,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return boolean
     */
-   protected function showImpactTab() {
+   protected function hasImpactTab() {
       foreach ($this->getLinkedItems() as $linkedItem) {
          $class = $linkedItem['itemtype'];
          if (Impact::isEnabled($class) && Session::getCurrentInterface() === "central") {

@@ -845,7 +845,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
 
-      if ($this->showImpactTab()) {
+      if ($this->hasImpactTab()) {
          $this->addStandardTab('Impact', $ong, $options);
       }
 

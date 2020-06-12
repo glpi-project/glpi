@@ -211,7 +211,7 @@ class Problem extends CommonITILObject {
       $this->addStandardTab('ProblemCost', $ong, $options);
       $this->addStandardTab('Itil_Project', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
-      if ($this->showImpactTab()) {
+      if ($this->hasImpactTab()) {
          $this->addStandardTab('Impact', $ong, $options);
       }
       $this->addStandardTab('Change_Problem', $ong, $options);
