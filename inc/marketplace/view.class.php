@@ -100,8 +100,8 @@ class View extends CommonGLPI {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item->getType() == __CLASS__) {
          return [
-            self::createTabEntry(__("Installed", 'marketplace')),
-            self::createTabEntry(__("Discover", 'marketplace')),
+            self::createTabEntry(__("Installed")),
+            self::createTabEntry(__("Discover")),
          ];
       }
       return '';
