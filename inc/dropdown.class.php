@@ -3300,7 +3300,7 @@ class Dropdown {
       $count = 0;
       if (count($iterator)) {
          while ($data = $iterator->next()) {
-            $output = $data['name'] ?? "";
+            $output = $data[$item->getNameField()];
 
             if (isset($data['contact']) && !empty($data['contact'])) {
                $output = sprintf(__('%1$s - %2$s'), $output, $data['contact']);
