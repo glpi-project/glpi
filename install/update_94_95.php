@@ -1183,7 +1183,6 @@ HTML
       'users_id_tech'         => 'integer',
       'groups_id_tech'        => 'integer',
       'others'                => 'string',
-      'is_helpdesk_visible'   => 'boolean',
       'is_deleted'            => 'boolean',
    ];
    $dindex = $dfields;
@@ -1195,9 +1194,6 @@ HTML
    foreach ($dfields as $dfield => $dtype) {
       if (!$DB->fieldExists('glpi_domains', $dfield)) {
          $options = ['after' => $after];
-         if ($dfield == 'is_helpdesk_visible') {
-            $options['value'] = 1;
-         }
          $migration->addField("glpi_domains", $dfield, $dtype, $options);
       }
       $after = $dfield;

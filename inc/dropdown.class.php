@@ -3258,7 +3258,7 @@ class Dropdown {
          $filterHelpdesk = false;
       }
 
-      if ($filterHelpdesk && $DB->fieldExists($post['table'], 'is_helpdesk_visible')) {
+      if ($filterHelpdesk) {
          $where['is_helpdesk_visible'] = 1;
       }
 
