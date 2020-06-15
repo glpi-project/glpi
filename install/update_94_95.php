@@ -2034,6 +2034,15 @@ HTML
    }
    // /add missing fields to simcard as they can be associated to tickets
 
+   // remove superflu is_helpdesk_visible
+   if ($DB->fieldExists(Appliance::getTable(), 'is_helpdesk_visible')) {
+      $migration->dropField(Appliance::getTable(), 'is_helpdesk_visible');
+   }
+   if ($DB->fieldExists(Domain::getTable(), 'is_helpdesk_visible')) {
+      $migration->dropField(Domain::getTable(), 'is_helpdesk_visible');
+   }
+   // /remove superflu is_helpdesk_visible
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
