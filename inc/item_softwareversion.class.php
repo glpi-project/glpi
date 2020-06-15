@@ -981,7 +981,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(Session::getPluralNumber())."</th></tr>";
-      echo "<tr class='tab_bg_1'><td class='center'>";
+      echo "<tr class='tab_bg_1'><td>";
       echo __('Category')."</td><td>";
       SoftwareCategory::dropdown(['value'      => $crit,
                                        'toadd'      => ['-1' =>  __('All categories')],
@@ -1245,7 +1245,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             Html::showMassiveActionCheckBox(__CLASS__, $ID);
             echo "</td>";
          }
-         echo "<td class='center b'>";
+         echo "<td class='b'>";
          echo "<a href='".Software::getFormURLWithID($data['softwares_id'])."'>";
          echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
                                                          $data["softname"], $data['softwares_id'])
@@ -1326,13 +1326,13 @@ class Item_SoftwareVersion extends CommonDBRelation {
          echo "<td>".Html::convDate($data['dateinstall'])."</td>";
 
          if (isset($data['is_dynamic'])) {
-            echo "<td class='center'>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
+            echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
          }
 
-         echo "<td class='center'>". Dropdown::getDropdownName("glpi_softwarecategories",
+         echo "<td>". Dropdown::getDropdownName("glpi_softwarecategories",
                                                                   $data['softwarecategories_id']);
          echo "</td>";
-         echo "<td class='center'>" .Dropdown::getYesNo($data["softvalid"]) . "</td>";
+         echo "<td>" .Dropdown::getYesNo($data["softvalid"]) . "</td>";
          echo "</tr>\n";
       }
 
