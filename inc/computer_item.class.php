@@ -390,19 +390,19 @@ class Computer_Item extends CommonDBRelation{
                Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                echo "</td>";
             }
-            echo "<td class='center'>".$data['assoc_itemtype']::getTypeName(1)."</td>";
+            echo "<td>".$data['assoc_itemtype']::getTypeName(1)."</td>";
             echo "<td ".
                   ((isset($data['is_deleted']) && $data['is_deleted'])?"class='tab_bg_2_2'":"").
                  ">".$name."</td>";
             if (Plugin::haveImport()) {
                echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
             }
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+            echo "<td>".Dropdown::getDropdownName("glpi_entities",
                                                                $data['entities_id']);
             echo "</td>";
-            echo "<td class='center'>".
+            echo "<td>".
                    (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
-            echo "<td class='center'>".
+            echo "<td>".
                    (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
             echo "</tr>";
          }
