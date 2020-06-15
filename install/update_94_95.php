@@ -2023,6 +2023,7 @@ HTML
          'value' => 0,
          'after' => 'lines_id'
       ]);
+      $migration->addKey(Item_DeviceSimcard::getTable(), 'users_id');
    }
    // /use_kerberos
 
