@@ -685,6 +685,10 @@ class Item_Ticket extends CommonDBRelation{
                 && Ticket::isPossibleToAssignType($itemtype)) {
                $itemtable = getTableForItemType($itemtype);
 
+               if (!$DB->fieldExists($itemtable, 'users_id')) {
+                  continue;
+               }
+
                $criteria = [
                   'FROM'   => $itemtable,
                   'WHERE'  => [

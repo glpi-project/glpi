@@ -3258,7 +3258,7 @@ class Dropdown {
          $filterHelpdesk = false;
       }
 
-      if ($filterHelpdesk) {
+      if ($filterHelpdesk && $DB->fieldExists($post['table'], 'is_helpdesk_visible')) {
          $where['is_helpdesk_visible'] = 1;
       }
 
@@ -3285,7 +3285,7 @@ class Dropdown {
       $iterator = $DB->request([
          'FROM'   => $post['table'],
          'WHERE'  => $where,
-         'ORDER'  => 'name',
+         'ORDER'  => $DB->fieldExists($post['table'], 'name') ? 'name' : 'id',
          'LIMIT'  => $limit,
          'START'  => $start
       ]);
@@ -3300,7 +3300,7 @@ class Dropdown {
       $count = 0;
       if (count($iterator)) {
          while ($data = $iterator->next()) {
-            $output = $data['name'];
+            $output = $data['name'] ?? "";
 
             if (isset($data['contact']) && !empty($data['contact'])) {
                $output = sprintf(__('%1$s - %2$s'), $output, $data['contact']);
