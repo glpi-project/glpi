@@ -2017,6 +2017,15 @@ HTML
    }
    // /use_kerberos
 
+   // add missing fields to simcard as they can be associated to tickets
+   if (!$DB->fieldExists(Item_DeviceSimcard::getTable(), 'users_id')) {
+      $migration->addField(Item_DeviceSimcard::getTable(), 'users_id', 'int', [
+         'value' => 0,
+         'after' => 'lines_id'
+      ]);
+   }
+   // /use_kerberos
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

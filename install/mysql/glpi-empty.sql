@@ -2224,6 +2224,7 @@ CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
   `states_id` int(11) NOT NULL DEFAULT '0',
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `lines_id` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
   `pin` varchar(255) NOT NULL DEFAULT '',
   `pin2` varchar(255) NOT NULL DEFAULT '',
   `puk` varchar(255) NOT NULL DEFAULT '',
@@ -2240,7 +2241,8 @@ CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
   KEY `otherserial` (`otherserial`),
   KEY `states_id` (`states_id`),
   KEY `locations_id` (`locations_id`),
-  KEY `lines_id` (`lines_id`)
+  KEY `lines_id` (`lines_id`),
+  KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
