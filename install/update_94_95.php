@@ -2032,7 +2032,7 @@ HTML
       ]);
       $migration->addKey(Item_DeviceSimcard::getTable(), 'groups_id');
    }
-   // /use_kerberos
+   // /add missing fields to simcard as they can be associated to tickets
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
