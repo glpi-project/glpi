@@ -3285,7 +3285,7 @@ class Dropdown {
       $iterator = $DB->request([
          'FROM'   => $post['table'],
          'WHERE'  => $where,
-         'ORDER'  => $DB->fieldExists($post['table'], 'name') ? 'name' : 'id',
+         'ORDER'  => $item->getNameField(),
          'LIMIT'  => $limit,
          'START'  => $start
       ]);
