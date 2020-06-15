@@ -60,7 +60,7 @@ var libsConfig = {
         // Entry name will be name of the file (without ext).
         var entries = {};
 
-        let files = glob.sync(path.resolve(__dirname, 'lib/bundles') + '/*.js');
+        let files = glob.sync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).js');
         files.forEach(function (file) {
             entries[path.basename(file, '.js')] = file;
         });
@@ -87,6 +87,7 @@ var libsConfig = {
                     path.resolve(__dirname, 'node_modules/jquery-migrate'),
                     path.resolve(__dirname, 'node_modules/jstree'),
                     path.resolve(__dirname, 'node_modules/photoswipe'),
+                    path.resolve(__dirname, 'node_modules/rrule'),
                     path.resolve(__dirname, 'vendor/blueimp/jquery-file-upload'),
                 ],
                 use: ['script-loader'],
