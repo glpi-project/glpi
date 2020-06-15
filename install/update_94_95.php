@@ -2025,6 +2025,13 @@ HTML
       ]);
       $migration->addKey(Item_DeviceSimcard::getTable(), 'users_id');
    }
+   if (!$DB->fieldExists(Item_DeviceSimcard::getTable(), 'groups_id')) {
+      $migration->addField(Item_DeviceSimcard::getTable(), 'groups_id', 'int', [
+         'value' => 0,
+         'after' => 'users_id'
+      ]);
+      $migration->addKey(Item_DeviceSimcard::getTable(), 'groups_id');
+   }
    // /use_kerberos
 
    // ************ Keep it at the end **************
