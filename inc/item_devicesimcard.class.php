@@ -119,7 +119,7 @@ class Item_DeviceSimcard extends Item_Devices {
              'groups_id'        => ['long name'  => __('Group'),
                                   'short name' => __('Group'),
                                   'size'       => 20,
-                                  'id'         => 21,
+                                  'id'         => 22,
                                   'datatype'   => 'dropdown'],
       ];
    }
