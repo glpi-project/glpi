@@ -111,7 +111,7 @@ class Item_DeviceSimcard extends Item_Devices {
                                   'datatype'   => 'string',
                                   'tooltip'    => __('MSIN is the last 8 or 10 digits of IMSI'),
                                   'autocomplete' => true,],
-            'users_id'        => ['long name'  => __('User'),
+             'users_id'        => ['long name'  => __('User'),
                                   'short name' => __('User'),
                                   'size'       => 20,
                                   'id'         => 21,
