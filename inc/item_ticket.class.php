@@ -694,7 +694,7 @@ class Item_Ticket extends CommonDBRelation{
                   'WHERE'  => [
                      'users_id' => $userID
                   ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive()),
-                  'ORDER'  => 'name'
+                  'ORDER'  => $item->getNameField()
                ];
 
                if ($item->maybeDeleted()) {
