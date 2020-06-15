@@ -2243,6 +2243,7 @@ CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
   KEY `states_id` (`states_id`),
   KEY `locations_id` (`locations_id`),
   KEY `lines_id` (`lines_id`),
+  KEY `users_id` (`users_id`),
   KEY `groups_id` (`groups_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
