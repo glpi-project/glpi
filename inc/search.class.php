@@ -4953,7 +4953,7 @@ JAVASCRIPT;
                return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
             }
          };
-         $specific_leftjoin = Plugin::doOneHook($plug['plugin'], $hook_closure);
+         $specific_leftjoin = Plugin::doOneHook($plugin_name, $hook_closure);
       }
 
       // Link with plugin tables : need to know left join structure
@@ -4967,6 +4967,7 @@ JAVASCRIPT;
                   return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
                }
             };
+            $specific_leftjoin = Plugin::doOneHook($plugin_name, $hook_closure);
          }
       }
       if (!empty($linkfield)) {
