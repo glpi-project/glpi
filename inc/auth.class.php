@@ -247,7 +247,7 @@ class Auth extends CommonGLPI {
                'condition'         => $ldap_method['condition'],
                'user_dn'           => $this->user_dn
             ]);
-         } catch (\RuntimeException $e) {
+         } catch (\Throwable $e) {
             Toolbox::logError($e->getMessage());
             $this->addToError(__('Unable to connect to the LDAP directory'));
             return false;
