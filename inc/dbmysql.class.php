@@ -811,6 +811,13 @@ class DBmysql {
             if (!$this->query($query)) {
                return false;
             }
+            if (!isCommandLine()) {
+               // Flush will prevent proxy to timeout as it will receive data.
+               // Flush requires a content to be sent, so we sent spaces as multiple spaces
+               // will be shown as a single one on browser.
+               echo ' ';
+               Html::glpi_flush();
+            }
          }
       }
 
