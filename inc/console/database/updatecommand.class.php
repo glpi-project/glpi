@@ -57,13 +57,6 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
     */
    const ERROR_NO_UNSTABLE_UPDATE = 1;
 
-   /**
-    * Error code returned when system requirements are missing.
-    *
-    * @var integer
-    */
-   const ERROR_MISSING_REQUIREMENTS = 2;
-
    protected function configure() {
       parent::configure();
 
@@ -98,10 +91,6 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       $allow_unstable = $input->getOption('allow-unstable');
       $force          = $input->getOption('force');
       $no_interaction = $input->getOption('no-interaction'); // Base symfony/console option
-
-      if (!$this->checkCoreRequirements($input, $output)) {
-         return self::ERROR_MISSING_REQUIREMENTS;
-      }
 
       $update = new Update($this->db);
 

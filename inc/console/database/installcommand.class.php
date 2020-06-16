@@ -70,13 +70,6 @@ class InstallCommand extends AbstractConfigureCommand {
    const ERROR_SCHEMA_CREATION_FAILED = 7;
 
    /**
-    * Error code returned when system requirements are missing.
-    *
-    * @var integer
-    */
-   const ERROR_MISSING_REQUIREMENTS = 8;
-
-   /**
     * Error code returned when failing to create encryption key file.
     *
     * @var integer
@@ -138,10 +131,6 @@ class InstallCommand extends AbstractConfigureCommand {
 
       $default_language = $input->getOption('default-language');
       $force            = $input->getOption('force');
-
-      if (!$this->checkCoreRequirements($input, $output)) {
-         return self::ERROR_MISSING_REQUIREMENTS;
-      }
 
       if ($this->isDbAlreadyConfigured()
           && $this->isInputContainingConfigValues($input, $output)

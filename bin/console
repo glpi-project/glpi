@@ -95,8 +95,14 @@ include_once(GLPI_ROOT . '/inc/based_config.php');
 include_once(GLPI_ROOT . '/inc/db.function.php');
 @include_once(GLPI_CONFIG_DIR . '/config_db.php');
 
-// Run console application
-use Glpi\Console\Application;
+// Init globals needed for requirements checks
+\Glpi\Console\Application::preInit();
 
-$application = new Application();
+// Check application requirements
+(function() {
+    include(GLPI_ROOT . '/inc/console/scripts/check_requirements.script.php');
+})();
+
+// Run console application
+$application = new \Glpi\Console\Application();
 $application->run();

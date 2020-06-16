@@ -45,6 +45,7 @@ use Plugin;
 use Session;
 use Toolbox;
 
+use Laminas\I18n\Translator\Translator;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Helper;
@@ -84,13 +85,15 @@ class Application extends BaseApplication {
 
       parent::__construct('GLPI CLI', GLPI_VERSION);
 
+      self::preInit();
+
       $this->initApplication();
       $this->initDb();
       $this->initSession();
       $this->initCache();
       $this->initConfig();
 
-      $this->computeAndLoadOutputLang();
+      $this->loadOutputLang();
 
       // Load core commands only to check if called command prevent or not usage of plugins
       // Plugin commands will be loaded later
@@ -236,6 +239,36 @@ class Application extends BaseApplication {
    }
 
    /**
+    * Initialize globals that may be required before application instanciation.
+    *
+    * @global DB          $DB
+    * @global GLPI        $GLPI
+    * @global Translator  $TRANSLATE
+    *
+    * @return void
+    */
+   public static function preInit() {
+      global $DB, $GLPI, $TRANSLATE;
+
+      // Init logger and error handler.
+      if (!($GLPI instanceof GLPI)) {
+         $GLPI = new GLPI();
+         $GLPI->initLogger();
+         $GLPI->initErrorHandler();
+      }
+
+      // Init DB instance.
+      if (class_exists('DB', false) && class_exists('mysqli', false) && !($DB instanceof DB)) {
+         $DB = new DB();
+      }
+
+      // Load translations.
+      if (!($TRANSLATE instanceof Translator)) {
+         Session::loadLanguage(self::getOutputLang(), false);
+      }
+   }
+
+   /**
     * Initalize GLPI.
     *
     * @global array $CFG_GLPI
@@ -256,9 +289,7 @@ class Application extends BaseApplication {
       );
 
       global $GLPI;
-      $GLPI = new GLPI();
-      $GLPI->initLogger();
-      $this->error_handler = $GLPI->initErrorHandler();
+      $this->error_handler = $GLPI->getErrorHandler();
 
       Config::detectRootDoc();
    }
@@ -269,28 +300,12 @@ class Application extends BaseApplication {
     * @global DB $DB
     *
     * @return void
-    *
-    * @throws RuntimeException
     */
    private function initDb() {
-
-      if (!class_exists('DB', false) || !class_exists('mysqli', false)) {
-         return;
-      }
-
       global $DB;
-      $DB = new DB();
-      $this->db = $DB;
 
-      if (!$this->db->connected) {
-         return;
-      }
-
-      ob_start();
-      $checkdb = Config::displayCheckDbEngine();
-      $message = ob_get_clean();
-      if ($checkdb > 0) {
-         throw new RuntimeException($message);
+      if ($DB instanceof DB) {
+         $this->db = $DB;
       }
    }
 
@@ -350,27 +365,31 @@ class Application extends BaseApplication {
    }
 
    /**
-    * Compute and load output language.
+    * Compute output language based on CLI input.
     *
-    * @return void
-    *
-    * @throws RuntimeException
+    * @return string
     */
-   private function computeAndLoadOutputLang() {
+   public static function getOutputLang(): string {
+      global $CFG_GLPI;
+
+      $isLanguageValid = function (string $language) use ($CFG_GLPI): bool {
+         return is_array($CFG_GLPI)
+            && array_key_exists('languages', $CFG_GLPI)
+            && array_key_exists($language, $CFG_GLPI['languages']);
+      };
 
       // 1. Check in command line arguments
       $input = new ArgvInput();
       $lang = $input->getParameterOption('--lang', null, true);
 
-      if (null !== $lang && !$this->isLanguageValid($lang)) {
+      if (null !== $lang && !$isLanguageValid($lang)) {
          // Unset requested lang if invalid
          $lang = null;
       }
 
       // 2. Check in GLPI configuration
-      if (null === $lang && array_key_exists('language', $this->config)
-          && $this->isLanguageValid($this->config['language'])) {
-         $lang = $this->config['language'];
+      if (null === $lang && array_key_exists('language', $CFG_GLPI) && $isLanguageValid($CFG_GLPI['language'])) {
+         $lang = $CFG_GLPI['language'];
       }
 
       // 3. Use default value
@@ -378,22 +397,21 @@ class Application extends BaseApplication {
          $lang = 'en_GB';
       }
 
-      $_SESSION['glpilanguage'] = $lang;
-
-      Session::loadLanguage('', $this->usePlugins());
+      return $lang;
    }
 
    /**
-    * Check if a language is valid.
+    * Load output language.
     *
-    * @param string $language
-    *
-    * @return boolean
+    * @return void
     */
-   private function isLanguageValid($language) {
-      return is_array($this->config)
-         && array_key_exists('languages', $this->config)
-         && array_key_exists($language, $this->config['languages']);
+   private function loadOutputLang() {
+
+      $lang = self::getOutputLang();
+
+      $_SESSION['glpilanguage'] = $lang;
+
+      Session::loadLanguage('', $this->usePlugins());
    }
 
    /**

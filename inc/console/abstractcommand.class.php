@@ -167,43 +167,4 @@ abstract class AbstractCommand extends Command {
          }
       }
    }
-
-   /**
-    * Check if core requirements are OK.
-    *
-    * @param InputInterface $input
-    * @param OutputInterface $output
-    *
-    * @return boolean  true if requirements are OK, false otherwise
-    */
-   protected function checkCoreRequirements(InputInterface $input, OutputInterface $output) {
-      $db = property_exists($this, 'db') ? $this->db : null;
-
-      $requirements_manager = new RequirementsManager();
-      $core_requirements = $requirements_manager->getCoreRequirementList(
-         $db instanceof \DBmysql && $db ? $db : null
-      );
-
-      if ($core_requirements->hasMissingMandatoryRequirements()) {
-         $message = __('Some mandatory system requirements are missing.')
-            . ' '
-            . __('Run "php bin/console glpi:system:check_requirements" for more details.');
-         $output->writeln(
-            '<error>' . $message . '</error>',
-            OutputInterface::VERBOSITY_QUIET
-         );
-         return false;
-      }
-      if ($core_requirements->hasMissingOptionalRequirements()) {
-         $message = __('Some optional system requirements are missing.')
-            . ' '
-            . __('Run "php bin/console glpi:system:check_requirements" for more details.');
-         $output->writeln(
-            '<comment>' . $message . '</comment>',
-            OutputInterface::VERBOSITY_NORMAL
-         );
-      }
-
-      return true;
-   }
 }
