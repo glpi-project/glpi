@@ -235,15 +235,24 @@ class Auth extends CommonGLPI {
          if (!empty($ldap_method['sync_field'])) {
             $params['fields']['sync_field'] = $ldap_method['sync_field'];
          }
-         $infos = AuthLDAP::searchUserDn($this->ldap_connection,
-                                         ['basedn'            => $ldap_method['basedn'],
-                                               'login_field'       => $ldap_method['login_field'],
-                                               'search_parameters' => $params,
-                                               'user_params'
-                                                   => ['method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                            'value'  => $login],
-                                                   'condition'         => $ldap_method['condition'],
-                                                   'user_dn'           => $this->user_dn]);
+         try {
+            $infos = AuthLDAP::searchUserDn($this->ldap_connection, [
+               'basedn'            => $ldap_method['basedn'],
+               'login_field'       => $ldap_method['login_field'],
+               'search_parameters' => $params,
+               'user_params'       => [
+                  'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                   'value'  => $login
+               ],
+               'condition'         => $ldap_method['condition'],
+               'user_dn'           => $this->user_dn
+            ]);
+         } catch (\Throwable $e) {
+            Toolbox::logError($e->getMessage());
+            $this->addToError(__('Unable to connect to the LDAP directory'));
+            return false;
+         }
+
          $dn = $infos['dn'];
          if (!empty($dn) && @ldap_bind($this->ldap_connection, $dn, $password)) {
 
