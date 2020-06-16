@@ -621,7 +621,7 @@ HTML;
       if ($can_be_cleaned) {
          $buttons .="<button class='modify_plugin'
                              data-action='clean_plugin'
-                             title='".__("Clean")."'>
+                             title='".__s("Clean")."'>
             <i class='fas fa-broom'></i>
          </button>";
       } else if ((!$exists && !$mk_controller->hasWriteAccess())
@@ -634,24 +634,24 @@ HTML;
             }
 
             $warning.= sprintf(
-               __("Download archive manually, you must uncompress it in plugins directory (%s)"),
+               __s("Download archive manually, you must uncompress it in plugins directory (%s)"),
                GLPI_ROOT . '/plugins'
             );
 
             $buttons .="<a href='{$plugin_data['installation_url']}' target='_blank'>
-               <button title=\"$warning\" class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
+               <button title='$warning' class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
             </a>";
          }
       } else if ($can_be_downloaded) {
          if (!$exists) {
             $buttons .="<button class='modify_plugin'
                                 data-action='download_plugin'
-                                title='".__("Download")."'>
+                                title='".__s("Download")."'>
                <i class='fas fa-cloud-download-alt'></i>
             </button>";
          } else if ($can_be_updated) {
             $update_title = sprintf(
-               __("A new version (%s) is available, update ?", 'marketplace'),
+               __s("A new version (%s) is available, update ?", 'marketplace'),
                $update_version
             );
             $buttons .="<button class='modify_plugin'
@@ -664,7 +664,7 @@ HTML;
 
       if ($mk_controller->requiresHigherOffer()) {
             $warning = sprintf(
-               __("You need a superior GLPI-Network offer to access to this plugin (%s)"),
+               __s("You need a superior GLPI-Network offer to access to this plugin (%s)"),
                implode(', ', $required_offers)
             );
 
@@ -678,7 +678,7 @@ HTML;
       if ($exists && !$can_be_cleaned && !$is_installed && !strlen($error)) {
          $buttons .="<button class='modify_plugin'
                              data-action='install_plugin'
-                             title='".__("Install")."'>
+                             title='".__s("Install")."'>
             <i class='fas fa-folder-plus'></i>
          </button>";
       }
@@ -688,13 +688,13 @@ HTML;
             if ($is_actived) {
                $buttons .="<button class='modify_plugin'
                                    data-action='disable_plugin'
-                                   title='".__("Disable")."'>
+                                   title='".__s("Disable")."'>
                   <i class='fas fa-toggle-on'></i>
                </button>";
             } else {
                $buttons .="<button class='modify_plugin'
                                    data-action='enable_plugin'
-                                   title='".__("Enable")."'>
+                                   title='".__s("Enable")."'>
                   <i class='fas fa-toggle-off'></i>
                </button>";
             }
@@ -702,7 +702,7 @@ HTML;
 
          $buttons .="<button class='modify_plugin'
                              data-action='uninstall_plugin'
-                             title='".__("Uninstall")."'>
+                             title='".__s("Uninstall")."'>
             <i class='fas fa-folder-minus'></i>
          </button>";
 
@@ -710,7 +710,7 @@ HTML;
             $plugin_dir = Plugin::getWebDir($plugin_key, true);
                $config_url = "$plugin_dir/$config_page";
                $buttons .="<a href='$config_url'>
-                  <button class='add_tooltip' title='".__("Configure")."'>
+                  <button class='add_tooltip' title='".__s("Configure")."'>
                      <i class='fas fa-wrench'></i>
                   </button>
                </a>";
