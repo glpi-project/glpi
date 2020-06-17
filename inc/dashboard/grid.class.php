@@ -34,6 +34,7 @@ namespace Glpi\Dashboard;
 
 use Ramsey\Uuid\Uuid;
 use Session;
+use Telemetry;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");

@@ -522,7 +522,7 @@ class Toolbox {
    /**
     * PHP info log
     */
-   static function loginfo() {
+   static function logInfo() {
       self::log(null, Logger::INFO, func_get_args());
    }
 
