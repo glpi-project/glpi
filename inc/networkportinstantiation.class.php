@@ -50,7 +50,7 @@ if (!defined('GLPI_ROOT')) {
  * @since 0.84
  *
 **/
-abstract class NetworkPortInstantiation extends CommonDBChild {
+class NetworkPortInstantiation extends CommonDBChild {
 
    // From CommonDBTM
    public $auto_message_on_action   = false;
