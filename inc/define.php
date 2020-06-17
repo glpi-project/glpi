@@ -444,7 +444,7 @@ $CFG_GLPI["cluster_types"]        = ['Computer', 'NetworkEquipment'];
 
 $CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
 
-$CFG_GLPI['software_types']      = ['Computer', 'Phone'];
+$CFG_GLPI['software_types']      = $CFG_GLPI['operatingsystem_types'];
 
 $CFG_GLPI['kanban_types']        = ['Project'];
 

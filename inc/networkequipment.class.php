@@ -45,7 +45,7 @@ class NetworkEquipment extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
    static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
-                                          'Item_OperatingSystem', 'Item_Disk'];
+                                          'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion'];
 
    static $rightname                   = 'networking';
    protected $usenotepad               = true;
@@ -141,6 +141,7 @@ class NetworkEquipment extends CommonDBTM {
       $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
          ->addStandardTab('Item_OperatingSystem', $ong, $options)
+         ->addStandardTab('Item_SoftwareVersion', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
          ->addStandardTab('Item_Disk', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
