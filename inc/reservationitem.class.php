@@ -511,6 +511,7 @@ class ReservationItem extends CommonDBChild {
             continue;
          }
          $itemtable = getTableForItemType($itemtype);
+         $itemname  = $item->getNameField();
 
          $otherserial = new \QueryExpression($DB->quote('') . ' AS ' . $DB->quoteName('otherserial'));
          if ($item->isField('otherserial')) {
@@ -520,7 +521,7 @@ class ReservationItem extends CommonDBChild {
             'SELECT' => [
                'glpi_reservationitems.id',
                'glpi_reservationitems.comment',
-               "$itemtable.name AS name",
+               "$itemtable.$itemname AS name",
                "$itemtable.entities_id AS entities_id",
                $otherserial,
                'glpi_locations.id AS location',
@@ -554,7 +555,7 @@ class ReservationItem extends CommonDBChild {
             ] + getEntitiesRestrictCriteria($itemtable, '', $_SESSION['glpiactiveentities'], $item->maybeRecursive()),
             'ORDERBY'      => [
                "$itemtable.entities_id",
-               "$itemtable.name"
+               "$itemtable.$itemname"
             ]
          ];
 
