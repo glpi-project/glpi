@@ -46,7 +46,7 @@ class Peripheral extends CommonDBTM {
    public $dohistory                   = true;
 
    static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
-                                          'Item_OperatingSystem'];
+                                          'Item_OperatingSystem', 'Item_SoftwareVersion'];
 
    static $rightname                   = 'peripheral';
    protected $usenotepad               = true;
@@ -90,6 +90,7 @@ class Peripheral extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       $this->addImpactTab($ong, $options);
       $this->addStandardTab('Item_OperatingSystem', $ong, $options);
+      $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);

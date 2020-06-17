@@ -45,7 +45,7 @@ class Printer  extends CommonDBTM {
    public $dohistory                   = true;
 
    static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
-                                          'Item_OperatingSystem', 'Item_Disk'];
+                                          'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion'];
 
    static $rightname                   = 'printer';
    protected $usenotepad               = true;
@@ -90,6 +90,7 @@ class Printer  extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       $this->addImpactTab($ong, $options);
       $this->addStandardTab('Item_OperatingSystem', $ong, $options);
+      $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
       $this->addStandardTab('Cartridge', $ong, $options);
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Item_Disk', $ong, $options);
