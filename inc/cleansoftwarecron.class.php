@@ -38,6 +38,10 @@ class CleanSoftwareCron extends CommonDBTM
 {
    const task_name = 'cleansoftware';
 
+   public static function cronInfo($name) {
+      return ['description' => __("Remove software versions with no installation and software with no version")];
+   }
+
    /**
     * Clean unused software and software versions
     *
