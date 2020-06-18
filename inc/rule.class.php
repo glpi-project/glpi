@@ -1946,7 +1946,7 @@ class Rule extends CommonDBTM {
    function prepareInputForAdd($input) {
 
       // Before adding, add the ranking of the new rule
-      $input["ranking"] = $this->getNextRanking();
+      $input["ranking"] = $input['ranking'] ?? $this->getNextRanking();
       //If no uuid given, generate a new one
       if (!isset($input['uuid'])) {
          $input["uuid"] = self::getUuid();
