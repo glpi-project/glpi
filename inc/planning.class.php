@@ -993,7 +993,7 @@ class Planning extends CommonGLPI {
          echo "</span>";
       }
       if ($filter_data['type'] == 'group_users') {
-         echo "<span class='toggle pointer' />";
+         echo "<span class='toggle pointer'></span>";
       }
 
       if ($filter_data['type'] == 'group_users') {
