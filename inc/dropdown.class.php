@@ -1668,7 +1668,8 @@ class Dropdown {
       if (($params['value'] < max($params['min'], 10*MINUTE_TIMESTAMP))
           && $params['addfirstminutes']) {
          $params['value'] = floor(($params['value'])/MINUTE_TIMESTAMP)*MINUTE_TIMESTAMP;
-      } else {
+      } else if (!in_array($params['value'], $params['toadd'])) {
+         // Round to a valid step except if value is already valid (defined in values to add)
          $params['value'] = floor(($params['value'])/$params['step'])*$params['step'];
       }
 
