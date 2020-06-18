@@ -3598,6 +3598,14 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      // Load ticket template if available :
+      $tt = $this->getITILTemplateToUse($ticket_template, $options['type'],
+                                          $options['itilcategories_id'],
+                                          $_SESSION["glpiactive_entity"]);
+
+      // Put ticket template on $options for actors
+      $options['_tickettemplate'] = $tt;
+
       if (!$ticket_template) {
          echo "<form method='post' name='helpdeskform' action='".
                $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
@@ -3673,11 +3681,6 @@ class Ticket extends CommonITILObject {
       echo "<input type='hidden' name='_from_helpdesk' value='1'>";
       echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk').
            "'>";
-
-      // Load ticket template if available :
-      $tt = $this->getITILTemplateToUse($ticket_template, $options['type'],
-                                          $options['itilcategories_id'],
-                                          $_SESSION["glpiactive_entity"]);
 
       // Predefined fields from template : reset them
       if (isset($options['_predefined_fields'])) {
@@ -4008,6 +4011,11 @@ class Ticket extends CommonITILObject {
 
       // add a user selector
       $rand_observer = $ticket->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $params);
+
+      if (isset($params['_tickettemplate'])) {
+         // Replace template object by ID for ajax
+         $params['_tickettemplate'] = $params['_tickettemplate']->getID();
+      }
 
       // add an additionnal observer on user selection
       Ajax::updateItemOnSelectEvent("dropdown__users_id_observer[]$rand_observer",
