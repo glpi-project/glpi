@@ -152,6 +152,15 @@ class APIClient extends CommonDBTM {
          'autocomplete'       => true,
       ];
 
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => $this->getTable(),
+         'field'              => 'filter_sensible_fields',
+         'name'               => __('Filter sensible fields'),
+         'datatype'           => 'bool'
+      ];
+
+
       return $tab;
    }
 
@@ -191,8 +200,8 @@ class APIClient extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='3'>".__('Comments')."</td>";
-      echo "<td rowspan='3'>";
+      echo "<td rowspan='4'>".__('Comments')."</td>";
+      echo "<td rowspan='4'>";
       echo "<textarea name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
@@ -208,6 +217,12 @@ class APIClient extends CommonDBTM {
       Dropdown::showFromArray("dolog_method",
                               self::getLogMethod(),
                               ['value' => $this->fields["dolog_method"]]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td >".__('Filter sensible fields')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo("filter_sensible_fields", $this->fields["filter_sensible_fields"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

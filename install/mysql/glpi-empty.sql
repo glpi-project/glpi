@@ -151,6 +151,7 @@ CREATE TABLE `glpi_apiclients` (
   `app_token` VARCHAR(255) DEFAULT NULL,
   `app_token_date` timestamp NULL DEFAULT NULL,
   `dolog_method` TINYINT NOT NULL DEFAULT '0',
+  `filter_sensible_fields` TINYINT(1) NOT NULL DEFAULT '1',
   `comment` TEXT,
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),

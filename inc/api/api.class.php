@@ -584,7 +584,9 @@ abstract class API extends CommonGLPI {
       $fields = $item->fields;
 
       // avoid disclosure of critical fields
-      $item::unsetUndisclosedFields($fields);
+      if ($this->isSensibleFieldsFiltered()) {
+         $item::unsetUndisclosedFields($fields);
+      }
 
       // retrieve devices
       if (isset($params['with_devices'])
@@ -1357,7 +1359,9 @@ abstract class API extends CommonGLPI {
          }
 
          // avioid disclosure of critical fields
-         $item::unsetUndisclosedFields($fields);
+         if ($this->isSensibleFieldsFiltered()) {
+            $item::unsetUndisclosedFields($fields);
+         }
 
          // expand dropdown (retrieve name of dropdowns) and get hateoas
          $fields = self::parseDropdowns($fields, $params);
@@ -2282,6 +2286,23 @@ abstract class API extends CommonGLPI {
                break;
          }
       }
+   }
+
+
+   /**
+    * Check if we need filter to filter sensible fields of glpi database like passwords
+    *
+    * @since 9.5.1
+    *
+    * @return bool
+    */
+   private function isSensibleFieldsFiltered(): bool {
+      $apiclient = new APIClient;
+      if ($apiclient->getFromDB($this->apiclients_id)) {
+         return (bool) $apiclient->fields['filter_sensible_fields'];
+      }
+
+      return true;
    }
 
 
