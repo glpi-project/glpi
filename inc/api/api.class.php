@@ -584,7 +584,7 @@ abstract class API extends CommonGLPI {
       $fields = $item->fields;
 
       // avoid disclosure of critical fields
-      if ($this->isSensibleFieldsFiltered()) {
+      if ($this->areSensibleFieldsFiltered()) {
          $item::unsetUndisclosedFields($fields);
       }
 
@@ -1359,7 +1359,7 @@ abstract class API extends CommonGLPI {
          }
 
          // avioid disclosure of critical fields
-         if ($this->isSensibleFieldsFiltered()) {
+         if ($this->areSensibleFieldsFiltered()) {
             $item::unsetUndisclosedFields($fields);
          }
 
@@ -2296,7 +2296,7 @@ abstract class API extends CommonGLPI {
     *
     * @return bool
     */
-   private function isSensibleFieldsFiltered(): bool {
+   private function areSensibleFieldsFiltered(): bool {
       $apiclient = new APIClient;
       if ($apiclient->getFromDB($this->apiclients_id)) {
          return (bool) $apiclient->fields['filter_sensible_fields'];
