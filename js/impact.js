@@ -2458,7 +2458,7 @@ var GLPIImpact = {
          html += "<ul>";
 
          elements.forEach(function(element) {
-            var link = "./" + url + ".form.php?id=" + element.id;
+            var link = CFG_GLPI.root_doc + "/front/" + url + ".form.php?id=" + element.id;
             html += '<li><a target="_blank" href="' + link + '">' + element.name
                + '</a></li>';
          });
