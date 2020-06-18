@@ -137,4 +137,7 @@ class CleanSoftwareCron extends CommonDBTM
       ]);
    }
 
+   public function isEntityAssign() {
+      return false;
+   }
 }
