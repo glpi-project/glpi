@@ -160,7 +160,6 @@ class APIClient extends CommonDBTM {
          'datatype'           => 'bool'
       ];
 
-
       return $tab;
    }
 
