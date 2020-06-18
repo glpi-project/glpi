@@ -59,6 +59,7 @@ commands:
             mv composer.lock composer.lock.bak
             composer config --unset platform
             bin/console dependencies install --composer-options="--prefer-dist --no-progress"
+            wget https://scrutinizer-ci.com/ocular.phar
       - save_cache:
           key: composer-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
@@ -113,14 +114,17 @@ commands:
           name: Database tests
           command: |
             bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest --db-host=127.0.0.1 --db-user=root
-            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --max-children-number 1 -d tests/database
+            php ocular.phar code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
 
   # Unit test suite command.
   run_unit_test_suite:
     steps:
       - run:
           name: Unit tests
-          command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
+          command: |
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php -d tests/units
+            php ocular.phar code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
 
   # Unit test suite command.
   run_imap_test_suite:
@@ -130,14 +134,17 @@ commands:
           command: |
             sudo service dovecot start
             for f in `ls tests/emails-tests/*.eml`; do getmail_maildir ~/Maildir/ < $f; done
-            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --max-children-number 1 -d tests/imap
+            php ocular.phar code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
 
   # Functionnal test suite command.
   run_functionnal_test_suite:
     steps:
       - run:
           name: Functionnal tests
-          command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal
+          command: |
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --max-children-number 1 -d tests/functionnal
+            php ocular.phar code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
 
   # Web test suite command.
   run_web_test_suite:
@@ -146,7 +153,8 @@ commands:
           name: WEB tests
           command: |
             php -S localhost:8088 tests/router.php &>/dev/null &
-            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --max-children-number 1 -d tests/web
+            php ocular.phar code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
 
   # CSS test suite command.
   run_css_test_suite:
@@ -155,6 +163,7 @@ commands:
           name: CSS compilation tests
           command: |
             bin/console build:compile_scss
+
 
   # Run full test suite command.
   run_full_test_suite:
@@ -176,7 +185,6 @@ jobs:
     steps:
       - checkout:
           path: /home/circleci/codebase
-      - run: rm -rf /home/circleci/codebase/.git
       - persist_to_workspace:
           root: /home/circleci
           paths:
@@ -262,6 +270,8 @@ workflows:
           filters:
             tags:
               only: /.*/ # run also on tag creation
+            branches:
+              ignore: /.*/ # do not run on branch update
       - php_7_3_test_suite:
           requires:
             - checkout
