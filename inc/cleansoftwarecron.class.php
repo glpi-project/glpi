@@ -53,53 +53,26 @@ class CleanSoftwareCron extends CommonDBTM
     * @param CronTask $task
     */
    public static function cronCleanSoftware(CronTask $task) {
-      // Init max/batch_size settings
       $max = $task->fields['param'];
-      $batch_size = max($max, self::MAX_BATCH_SIZE);
-
-      $soft_em = new Software();
-      $sv_em = new SoftwareVersion();
-
-      // Delete software versions with no installation by batch
       $total = 0;
-      do {
-         $versions = self::getVersionsWithNoInstallation($batch_size);
-         $count = count($versions);
-         $task->addVolume($count);
 
-         foreach ($versions as $version) {
-            $sv_em->delete($version);
-            $total++;
-
-            if ($total >= $max) {
-               // Stop if we reached the max number of items to handle
-               break;
-            }
-         }
-
-         // Stop if no items found
-      } while ($count > 0);
+      // Delete software versions with no installation
+      $total += self::deleteItems(
+         self::getVersionsWithNoInstallation(),
+         new SoftwareVersion(),
+         $max
+      );
 
       // Move software with no versions in the thrashbin
-      $total = 0;
-      do {
-         $softwares = self::getSoftwareWithNoVersions($batch_size);
-         $count = count($softwares);
-         $task->addVolume($count);
-         $total += $count;
+      $total += $task->addVolume(
+         self::deleteItems(
+            self::getSoftwareWithNoVersions(),
+            new Software(),
+            $max - $total
+         )
+      );
 
-         foreach ($softwares as $software) {
-            $soft_em->delete($software);
-            $total++;
-
-            if ($total >= $max) {
-               // Stop if we reached the max number of items to handle
-               break;
-            }
-         }
-
-         // Stop if no items found
-      } while ($count > 0);
+      $task->addVolume($total);
 
       return 1;
    }
@@ -109,12 +82,8 @@ class CleanSoftwareCron extends CommonDBTM
     *
     * @return DBmysqlIterator
     */
-   public static function getVersionsWithNoInstallation(
-      int $batch_size
-   ): DBmysqlIterator {
-      global $DB;
-
-      return $DB->request([
+   protected static function getVersionsWithNoInstallation(): array {
+      return [
          'SELECT' => 'id',
          'FROM'   => SoftwareVersion::getTable(),
          'WHERE'  => [
@@ -141,21 +110,14 @@ class CleanSoftwareCron extends CommonDBTM
                ],
             ],
          ],
-         'LIMIT' => $batch_size
-      ]);
+      ];
    }
 
    /**
     * Get all software with no versions
-    *
-    * @return DBmysqlIterator
     */
-   public static function getSoftwareWithNoVersions(
-      int $batch_size
-   ): DBmysqlIterator {
-      global $DB;
-
-      return $DB->request([
+   protected static function getSoftwareWithNoVersions(): array {
+      return [
          'SELECT' => 'id',
          'FROM'   => Software::getTable(),
          'WHERE'  => [
@@ -166,9 +128,42 @@ class CleanSoftwareCron extends CommonDBTM
                   'FROM'   => SoftwareVersion::getTable(),
                ]),
             ]
-         ],
-         'LIMIT' => $batch_size
-      ]);
+         ]
+      ];
+   }
+
+   /**
+    * Delete given items
+    *
+    * @param array         $scope   Items to delete
+    * @param CommonDBTM    $em      EM for this itemtype
+    * @param int           $max     Max number of items to handle
+    *
+    * @return int Number of items deleted
+    */
+   protected static function deleteItems(
+      array $scope,
+      CommonDBTM $em,
+      int $max
+   ): int {
+      global $DB;
+
+      $total = 0;
+
+      do {
+         $scope['LIMIT'] = min($max - $total, self::MAX_BATCH_SIZE);
+         $items = $DB->request(self::getVersionsWithNoInstallation($scope));
+         $count = count($items);
+         $total += $count;
+
+         foreach ($items as $item) {
+            $em->delete($item);
+         }
+
+         // Stop if no items found
+      } while ($count > 0);
+
+      return $total;
    }
 
    public function isEntityAssign() {
