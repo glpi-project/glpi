@@ -546,7 +546,7 @@ class CronTask extends CommonDBTM{
          echo $label."&nbsp;</td><td>";
          Dropdown::showNumber('param', ['value' => $this->fields['param'],
                                              'min'   => 0,
-                                             'max'   => 400]);
+                                             'max'   => 10000]);
       }
       echo "</td><td>".__('Next run')."</td><td>";
 

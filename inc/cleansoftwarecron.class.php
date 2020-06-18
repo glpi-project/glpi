@@ -38,8 +38,13 @@ class CleanSoftwareCron extends CommonDBTM
 {
    const task_name = 'cleansoftware';
 
+   const MAX_BATCH_SIZE = 2000;
+
    public static function cronInfo($name) {
-      return ['description' => __("Remove software versions with no installation and software with no version")];
+      return [
+         'description' => __("Remove software versions with no installation and software with no version"),
+         'parameter'   => __('Max items to handle in one execution')
+      ];
    }
 
    /**
@@ -48,31 +53,52 @@ class CleanSoftwareCron extends CommonDBTM
     * @param CronTask $task
     */
    public static function cronCleanSoftware(CronTask $task) {
+      // Init max/batch_size settings
+      $max = $task->fields['param'];
+      $batch_size = max($max, self::MAX_BATCH_SIZE);
+
       $soft_em = new Software();
       $sv_em = new SoftwareVersion();
 
       // Delete software versions with no installation by batch
+      $total = 0;
       do {
-         $versions = self::getVersionsWithNoInstallation();
+         $versions = self::getVersionsWithNoInstallation($batch_size);
          $count = count($versions);
          $task->addVolume($count);
 
          foreach ($versions as $version) {
             $sv_em->delete($version);
+            $total++;
+
+            if ($total >= $max) {
+               // Stop if we reached the max number of items to handle
+               break;
+            }
          }
 
+         // Stop if no items found
       } while ($count > 0);
 
       // Move software with no versions in the thrashbin
+      $total = 0;
       do {
-         $softwares = self::getSoftwareWithNoVersions();
+         $softwares = self::getSoftwareWithNoVersions($batch_size);
          $count = count($softwares);
          $task->addVolume($count);
+         $total += $count;
 
          foreach ($softwares as $software) {
             $soft_em->delete($software);
+            $total++;
+
+            if ($total >= $max) {
+               // Stop if we reached the max number of items to handle
+               break;
+            }
          }
 
+         // Stop if no items found
       } while ($count > 0);
 
       return 1;
@@ -83,7 +109,9 @@ class CleanSoftwareCron extends CommonDBTM
     *
     * @return DBmysqlIterator
     */
-   public static function getVersionsWithNoInstallation(): DBmysqlIterator {
+   public static function getVersionsWithNoInstallation(
+      int $batch_size
+   ): DBmysqlIterator {
       global $DB;
 
       return $DB->request([
@@ -113,7 +141,7 @@ class CleanSoftwareCron extends CommonDBTM
                ],
             ],
          ],
-         'LIMIT' => 2000
+         'LIMIT' => $batch_size
       ]);
    }
 
@@ -122,7 +150,9 @@ class CleanSoftwareCron extends CommonDBTM
     *
     * @return DBmysqlIterator
     */
-   public static function getSoftwareWithNoVersions(): DBmysqlIterator {
+   public static function getSoftwareWithNoVersions(
+      int $batch_size
+   ): DBmysqlIterator {
       global $DB;
 
       return $DB->request([
@@ -137,7 +167,7 @@ class CleanSoftwareCron extends CommonDBTM
                ]),
             ]
          ],
-         'LIMIT' => 2000
+         'LIMIT' => $batch_size
       ]);
    }
 

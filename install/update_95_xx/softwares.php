@@ -35,12 +35,13 @@ $cron_em = new CronTask();
 $tasks = $cron_em->find(['name' => CleanSoftwareCron::task_name]);
 
 // Task already exist
-if (count($tasks) == 0) {
+if (count($tasks) === 0) {
    $cron_em->add([
       'itemtype'      => CleanSoftwareCron::class,
       'name'          => CleanSoftwareCron::task_name,
       'frequency'     => 60 * 60 * 24 * 30, // Once per month
       'state'         => 0,
+      'param'         => 1000,
       'mode'          => 2,
       'allowmode'     => 3,
       'logs_lifetime' => 300,
