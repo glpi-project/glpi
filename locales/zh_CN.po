@@ -8,13 +8,13 @@
 # Fung <fungmail@qq.com>, 2019
 # Smartree <smartree@gmail.com>, 2019
 # Song Li <boltomli@gmail.com>, 2019
-# 南 孔 <KongNan@gmail.com>, 2019
 # Jack Bai <jackbai1216@163.com>, 2020
 # liAnGjiA <liangjia@qq.com>, 2020
 # jozzlee, 2020
 # 李赋 <fu792659@163.com>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# 南 孔 <KongNan@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -23,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-11 09:05+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: 南 孔 <KongNan@gmail.com>, 2020\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/glpi/teams/1637/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1929,7 +1929,7 @@ msgstr "隐藏"
 
 #: front/itiltemplatefield.form.php:58
 msgid "mandatory"
-msgstr ""
+msgstr "必填"
 
 #: front/itiltemplatefield.form.php:61
 msgid "predefined"
@@ -2205,7 +2205,7 @@ msgstr[0] "地点"
 #: tests/functionnal/Rule.php:285
 msgid "Type"
 msgid_plural "Type"
-msgstr[0] ""
+msgstr[0] "类型"
 
 #: front/stat.graph.php:157 front/stat.graph.php:165
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
@@ -3427,7 +3427,7 @@ msgstr "导入新用户"
 
 #: front/impactcsv.php:80 inc/impact.class.php:245
 msgid "Relation"
-msgstr ""
+msgstr "关系"
 
 #: front/impactcsv.php:81
 msgid "Itemtype"
@@ -3439,7 +3439,7 @@ msgstr ""
 
 #: front/impactcsv.php:91 inc/impact.class.php:222
 msgid "Impacted by"
-msgstr ""
+msgstr "影响自"
 
 #: front/notification.tags.php:37
 msgid "List of available tags"
@@ -3868,7 +3868,7 @@ msgstr "您无权编辑此类记录"
 
 #: inc/domainrecord.class.php:417
 msgid "Link a record"
-msgstr ""
+msgstr "关联记录"
 
 #: inc/domainrecord.class.php:441 inc/domainrecord.class.php:443
 #: inc/ticket.class.php:4035 inc/ticket.class.php:4904
@@ -4961,7 +4961,7 @@ msgstr "不受支持的版本 (%1$s)"
 
 #: inc/update.class.php:523
 msgid "Unable to create security key file!"
-msgstr ""
+msgstr "无法创建安全密钥文件!"
 
 #: inc/ticket.class.php:132
 msgid "Create ticket"
@@ -5057,23 +5057,23 @@ msgstr "关联工单"
 
 #: inc/ticket.class.php:2529
 msgid "Merge followups"
-msgstr ""
+msgstr "合并跟进"
 
 #: inc/ticket.class.php:2535
 msgid "Merge documents"
-msgstr ""
+msgstr "合并文档"
 
 #: inc/ticket.class.php:2541
 msgid "Merge tasks"
-msgstr ""
+msgstr "合并任务"
 
 #: inc/ticket.class.php:2547
 msgid "Merge actors"
-msgstr ""
+msgstr "合并参与者"
 
 #: inc/ticket.class.php:2553
 msgid "Link type"
-msgstr ""
+msgstr "链接类型"
 
 #: inc/ticket.class.php:2556 inc/ticket_ticket.class.php:213
 #: inc/ticket_ticket.class.php:233 inc/ticket_ticket.class.php:238
@@ -5656,7 +5656,7 @@ msgstr "生成满意度调查"
 
 #: inc/ticket.class.php:6306
 msgid "Automatic closed tickets purge"
-msgstr ""
+msgstr "自动关闭工单清除"
 
 #: inc/ticket.class.php:6635
 msgid "See my ticket"
@@ -5734,12 +5734,12 @@ msgstr "截止日期"
 #: inc/ticket.class.php:7158 inc/ticket.class.php:7304
 #, php-format
 msgid "Not enough rights to merge tickets %d and %d"
-msgstr ""
+msgstr "没有足够的权限合并工单%d和%d"
 
 #: inc/ticket.class.php:7101
 #, php-format
 msgid "Failed to load ticket %d"
-msgstr ""
+msgstr "加载工单%d失败"
 
 #: inc/ticket.class.php:7116 inc/ticket.class.php:7131
 #, php-format
@@ -5764,7 +5764,7 @@ msgstr ""
 #: inc/ticket.class.php:7294
 #, php-format
 msgid "Failed to delete ticket %d"
-msgstr ""
+msgstr "无法删除工单%d"
 
 #: inc/ticket.class.php:7301
 #, php-format
@@ -6047,7 +6047,7 @@ msgstr[0] "网络设备类型"
 #: inc/rule.class.php:411 inc/dropdown.class.php:877
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] ""
+msgstr[0] "电话类型"
 
 #: inc/rulecollection.class.php:2134 inc/rule.class.php:435
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:56
@@ -6170,7 +6170,7 @@ msgstr "插件 %1$s 没有 CSRF 兼容!"
 
 #: inc/plugin.class.php:753
 msgid "Plugin prerequisites are not matching, it cannot be activated."
-msgstr ""
+msgstr "插件先决条件不匹配，它无法被激活。"
 
 #: inc/plugin.class.php:785
 #, php-format
@@ -6179,7 +6179,7 @@ msgstr "插件 %1$s 已激活!"
 
 #: inc/plugin.class.php:795
 msgid "Plugin configuration must be done, it cannot be activated."
-msgstr ""
+msgstr "插件配置必须完成，它无法被激活。"
 
 #: inc/plugin.class.php:834
 #, php-format
@@ -6298,7 +6298,7 @@ msgstr "执行"
 #: inc/plugin.class.php:2165 inc/plugin.class.php:2167
 #: inc/marketplace/view.class.php:713
 msgid "Configure"
-msgstr ""
+msgstr "配置"
 
 #: inc/plugin.class.php:2177
 msgctxt "button"
@@ -7808,7 +7808,7 @@ msgstr "删除一条全局规则"
 #: inc/commonitilobject.class.php:7200 inc/commonitilobject.class.php:7228
 #: inc/notificationtargetcommonitilobject.class.php:1241
 msgid "Helpdesk"
-msgstr ""
+msgstr "技术支持"
 
 #. TRANS: R for Recursive
 #: inc/search.class.php:5620 inc/search.class.php:5659
@@ -7842,7 +7842,7 @@ msgstr "查看计划"
 #: inc/search.class.php:6175 inc/commonitilobject.class.php:2889
 #: inc/commonitilobject.class.php:6171
 msgid "Helpdesk group"
-msgstr ""
+msgstr "技术支持组"
 
 #: inc/search.class.php:6423 inc/commondbtm.class.php:4619
 #: inc/entity.class.php:1943 inc/entity.class.php:1988
@@ -8477,7 +8477,7 @@ msgstr "历史动作"
 #: inc/commonitilobject.class.php:6703
 #, php-format
 msgid "Total duration: %s"
-msgstr ""
+msgstr "总期间: %s"
 
 #: inc/commonitilobject.class.php:6712
 #, php-format
@@ -8575,7 +8575,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:7516
 #, php-format
 msgid "New %s"
-msgstr ""
+msgstr "新建%s"
 
 #: inc/fieldblacklist.class.php:48 inc/dropdown.class.php:1091
 msgid "Ignored value for the unicity"
@@ -8707,7 +8707,7 @@ msgstr[0] "PCI设备"
 
 #: inc/devicepci.class.php:89
 msgid "Other component"
-msgstr ""
+msgstr "其他部件"
 
 #: inc/rulerightcollection.class.php:57 inc/ruleright.class.php:56
 #: inc/dropdown.class.php:1085 inc/profile.class.php:1467
@@ -8796,7 +8796,7 @@ msgstr "名片"
 
 #: inc/user.class.php:2066 inc/user.class.php:2067
 msgid "Impersonate"
-msgstr ""
+msgstr "模拟身份"
 
 #: inc/user.class.php:2117 inc/user.class.php:2583 inc/user.class.php:2584
 #: inc/notificationmailingsetting.class.php:245
@@ -8846,7 +8846,7 @@ msgstr "密码安全策略"
 
 #: inc/user.class.php:2190 inc/user.class.php:2674
 msgid "Time zone"
-msgstr ""
+msgstr "时区"
 
 #: inc/user.class.php:2227
 msgid "Valid since"
@@ -9037,19 +9037,19 @@ msgstr "更新验证方法为"
 
 #: inc/user.class.php:4604
 msgid "Your password has expired. You must change it to be able to login."
-msgstr ""
+msgstr "您的口令已过期。您必须修改它才能登录。"
 
 #: inc/user.class.php:4620
 msgid "Current password"
-msgstr ""
+msgstr "当前口令"
 
 #: inc/user.class.php:4629
 msgid "New password"
-msgstr ""
+msgstr "新口令"
 
 #: inc/user.class.php:4638
 msgid "New password confirmation"
-msgstr ""
+msgstr "确认新口令"
 
 #: inc/user.class.php:4656 inc/user.class.php:4727 inc/user.class.php:4760
 #: inc/auth.class.php:1628 inc/authldap.class.php:536
@@ -9129,7 +9129,7 @@ msgstr "更新用户身份验证和同步"
 
 #: inc/user.class.php:5342
 msgid "Handle users passwords expiration policy"
-msgstr ""
+msgstr "处理用户口令过期策略"
 
 #: inc/user.class.php:5343
 msgid "Maximum expiration notifications to send at once"
@@ -9610,12 +9610,12 @@ msgstr "项目非已锁定状态！"
 
 #: inc/objectlock.class.php:156
 msgid "Force unlock this item?"
-msgstr ""
+msgstr "强制解锁此项目吗?"
 
 #: inc/objectlock.class.php:180
 #, php-format
 msgid "Force unlock %1s #%2s"
-msgstr ""
+msgstr "强制解锁 %1s #%2s"
 
 #: inc/objectlock.class.php:194
 msgid "Locked by you!"
@@ -9632,7 +9632,7 @@ msgstr "请求发送给"
 #: inc/objectlock.class.php:269
 #, php-format
 msgid "Locked by %s"
-msgstr ""
+msgstr "锁定人%s"
 
 #: inc/objectlock.class.php:274
 msgid "Ask for unlock"
@@ -9936,7 +9936,7 @@ msgstr "添加供应商"
 #: inc/dropdown.class.php:845
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] ""
+msgstr[0] "跟进模板"
 
 #: inc/itilfollowuptemplate.class.php:61 inc/itilfollowuptemplate.class.php:87
 #: inc/itilfollowup.class.php:869 inc/itilfollowup.class.php:1082
@@ -9985,55 +9985,55 @@ msgstr "资产的商业规则"
 
 #: inc/marketplace/controller.class.php:100
 msgid "Unable to download plugin archive."
-msgstr ""
+msgstr "无法下载插件。"
 
 #: inc/marketplace/controller.class.php:111
 #, php-format
 msgid "Plugin archive format is not supported by your system : %s."
-msgstr ""
+msgstr "插件格式不被您的系统: %s 支持。"
 
 #: inc/marketplace/controller.class.php:133
 msgid "Unable to extract plugin archive."
-msgstr ""
+msgstr "无法解压插件。"
 
 #: inc/marketplace/controller.class.php:236
 #: inc/marketplace/notificationtargetcontroller.class.php:61
 msgid "Check all plugin updates"
-msgstr ""
+msgstr "检查所有插件更新"
 
 #: inc/marketplace/controller.class.php:261
 #, php-format
 msgid "New version for plugin %s: %s"
-msgstr ""
+msgstr "插件%s的新版本: %s"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:91
 msgid "Some updates are available for your installed plugins!"
-msgstr ""
+msgstr "您安装的插件有一些更新可用!"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:119
 msgid "Plugin name"
-msgstr ""
+msgstr "插件名称"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:120
 #: inc/console/plugin/abstractplugincommand.class.php:71
 msgid "Plugin directory"
-msgstr ""
+msgstr "插件目录"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:121
 msgid "Plugin new version number"
-msgstr ""
+msgstr "插件新版本号"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:122
 msgid "Plugin old version number"
-msgstr ""
+msgstr "插件旧版本号"
 
 #: inc/marketplace/view.class.php:103
 msgid "Installed"
-msgstr ""
+msgstr "已安装"
 
 #: inc/marketplace/view.class.php:104
 msgid "Discover"
-msgstr ""
+msgstr "发现"
 
 #: inc/marketplace/view.class.php:142
 msgid ""
@@ -10043,23 +10043,23 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:144
 msgid "Maybe you could setup a proxy"
-msgstr ""
+msgstr "您或许可以设置一个代理"
 
 #: inc/marketplace/view.class.php:146
 msgid "or please check later"
-msgstr ""
+msgstr "或者请稍后检查"
 
 #: inc/marketplace/view.class.php:156
 msgid "Your GLPI Network registration is not valid."
-msgstr ""
+msgstr "您的GLPI网络注册无效."
 
 #: inc/marketplace/view.class.php:157
 msgid "A registration, at least a free one, is required to use marketplace!"
-msgstr ""
+msgstr "使用市场前您需要进行注册, 至少是免费注册!"
 
 #: inc/marketplace/view.class.php:158
 msgid "Register on GLPI Network"
-msgstr ""
+msgstr "注册 GLPI 网络"
 
 #: inc/marketplace/view.class.php:159 inc/rule.class.php:812
 #: inc/rule.class.php:968 inc/rule.class.php:2531
@@ -10068,7 +10068,7 @@ msgstr "与"
 
 #: inc/marketplace/view.class.php:160
 msgid "fill your registration key in setup."
-msgstr ""
+msgstr "在设置中输入您的注册密钥"
 
 #: inc/marketplace/view.class.php:331
 #, php-format
@@ -10089,23 +10089,23 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:350
 msgid "Alpha ASC"
-msgstr ""
+msgstr "字母顺序"
 
 #: inc/marketplace/view.class.php:355
 msgid "Alpha DESC"
-msgstr ""
+msgstr "字母倒序"
 
 #: inc/marketplace/view.class.php:360
 msgid "Most popular"
-msgstr ""
+msgstr "最热门"
 
 #: inc/marketplace/view.class.php:365
 msgid "Last updated"
-msgstr ""
+msgstr "最后更新"
 
 #: inc/marketplace/view.class.php:370
 msgid "Most recent"
-msgstr ""
+msgstr "最近"
 
 #: inc/marketplace/view.class.php:375
 msgid "Best notes"

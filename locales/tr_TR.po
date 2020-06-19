@@ -2218,8 +2218,8 @@ msgstr[1] "Konum"
 #: tests/functionnal/Rule.php:285
 msgid "Type"
 msgid_plural "Type"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tür"
+msgstr[1] "Türler"
 
 #: front/stat.graph.php:157 front/stat.graph.php:165
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
@@ -6139,8 +6139,8 @@ msgstr[1] "Ağ aygıtı türleri"
 #: inc/rule.class.php:411 inc/dropdown.class.php:877
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Telefon türü"
+msgstr[1] "Telefon türleri"
 
 #: inc/rulecollection.class.php:2134 inc/rule.class.php:435
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:56
@@ -10183,7 +10183,7 @@ msgstr "Varlık iş kuralları"
 
 #: inc/marketplace/controller.class.php:100
 msgid "Unable to download plugin archive."
-msgstr ""
+msgstr "Uygulama eki arşivi indirilemedi"
 
 #: inc/marketplace/controller.class.php:111
 #, php-format

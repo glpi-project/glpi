@@ -12,6 +12,7 @@
 # Dario, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Emiliano Cagliari <thelordbat@gmail.com>, 2020
+# Ezequiel Blejman <eblejman@cstechlab.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-11 09:05+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Emiliano Cagliari <thelordbat@gmail.com>, 2020\n"
+"Last-Translator: Ezequiel Blejman <eblejman@cstechlab.com>, 2020\n"
 "Language-Team: Spanish (Argentina) (https://www.transifex.com/glpi/teams/1637/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2473,7 +2474,7 @@ msgstr "%1$sagrego un elemento"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr ""
+msgstr "%1$s agrega el elemento %2$s-%3$s:%4$s"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:54
@@ -3478,7 +3479,7 @@ msgstr "Importación de nuevos usuarios"
 
 #: front/impactcsv.php:80 inc/impact.class.php:245
 msgid "Relation"
-msgstr ""
+msgstr "Relacion"
 
 #: front/impactcsv.php:81
 msgid "Itemtype"
@@ -3486,7 +3487,7 @@ msgstr ""
 
 #: front/impactcsv.php:82
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #: front/impactcsv.php:91 inc/impact.class.php:222
 msgid "Impacted by"
@@ -3547,7 +3548,7 @@ msgstr "Actualización de contraseña"
 
 #: front/updatepassword.php:60
 msgid "Incorrect password"
-msgstr ""
+msgstr "Contraseña incorrecta"
 
 #: front/updatepassword.php:69
 msgid "The new password must be different from current password"
@@ -3555,23 +3556,23 @@ msgstr ""
 
 #: front/updatepassword.php:71
 msgid "The two passwords do not match"
-msgstr ""
+msgstr "Las contraseñas no coinciden"
 
 #: front/updatepassword.php:78
 msgid "An error occured during password update"
-msgstr ""
+msgstr "Ocurrió un error durante la actualización de la contraseña"
 
 #: front/updatepassword.php:89 inc/user.class.php:4599
 msgid "Password update"
-msgstr ""
+msgstr "Actualizar contraseña"
 
 #: front/updatepassword.php:92
 msgid "Your password has been successfully updated."
-msgstr ""
+msgstr "Su contraseña ha sido actualizada satisfactoriamente."
 
 #: front/updatepassword.php:94
 msgid "Log in"
-msgstr ""
+msgstr "Ingresar"
 
 #: front/ldap.group.php:66
 msgid "Bulk import groups from a LDAP directory"
@@ -3813,19 +3814,19 @@ msgstr "Chipset"
 #: inc/domainrecord.class.php:47
 msgid "Domain record"
 msgid_plural "Domains records"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Registro de dominio"
+msgstr[1] "Registros de dominio"
 
 #: inc/domainrecord.class.php:54 inc/domainrecord.class.php:56
 msgid "Record"
 msgid_plural "Records"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Registro"
+msgstr[1] "Registros"
 
 #: inc/domainrecord.class.php:102 inc/domainrecord.class.php:353
 #: inc/domainrecord.class.php:482
 msgid "TTL"
-msgstr ""
+msgstr "TTL"
 
 #: inc/domainrecord.class.php:110 inc/domainrecord.class.php:329
 #: inc/dashboard/grid.class.php:654
@@ -5140,19 +5141,19 @@ msgstr "Vincular servicios"
 
 #: inc/ticket.class.php:2529
 msgid "Merge followups"
-msgstr ""
+msgstr "Unir seguimientos"
 
 #: inc/ticket.class.php:2535
 msgid "Merge documents"
-msgstr ""
+msgstr "Unir documentos"
 
 #: inc/ticket.class.php:2541
 msgid "Merge tasks"
-msgstr ""
+msgstr "Unir tareas"
 
 #: inc/ticket.class.php:2547
 msgid "Merge actors"
-msgstr ""
+msgstr "Unir actores"
 
 #: inc/ticket.class.php:2553
 msgid "Link type"
@@ -5238,7 +5239,7 @@ msgstr "plazo interno de toma de posición excedido"
 
 #: inc/ticket.class.php:2744
 msgid "Next escalation level"
-msgstr ""
+msgstr "Siguiente nivel de escalamiento"
 
 #: inc/ticket.class.php:2801 inc/item_ticket.class.php:1226
 #: inc/link_itemtype.class.php:164 inc/change.class.php:448
@@ -6413,7 +6414,7 @@ msgstr "Acciones"
 #: inc/plugin.class.php:2165 inc/plugin.class.php:2167
 #: inc/marketplace/view.class.php:713
 msgid "Configure"
-msgstr ""
+msgstr "Configurar"
 
 #: inc/plugin.class.php:2177
 msgctxt "button"
@@ -7733,8 +7734,8 @@ msgstr[1] ""
 #: inc/domainrecordtype.class.php:86
 msgid "Record type"
 msgid_plural "Records types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de registro"
+msgstr[1] "Tipos de registro"
 
 #: inc/remindertranslation.class.php:57 inc/dropdowntranslation.class.php:51
 #: inc/knowbaseitemtranslation.class.php:57
@@ -7961,7 +7962,7 @@ msgstr "Eliminar una regla global"
 #: inc/commonitilobject.class.php:7200 inc/commonitilobject.class.php:7228
 #: inc/notificationtargetcommonitilobject.class.php:1241
 msgid "Helpdesk"
-msgstr ""
+msgstr "Mesa de ayuda"
 
 #. TRANS: R for Recursive
 #: inc/search.class.php:5620 inc/search.class.php:5659
@@ -7995,7 +7996,7 @@ msgstr "Ver planificación"
 #: inc/search.class.php:6175 inc/commonitilobject.class.php:2889
 #: inc/commonitilobject.class.php:6171
 msgid "Helpdesk group"
-msgstr ""
+msgstr "Grupo de Mesa de Ayuda"
 
 #: inc/search.class.php:6423 inc/commondbtm.class.php:4619
 #: inc/entity.class.php:1943 inc/entity.class.php:1988
@@ -8697,11 +8698,11 @@ msgstr "Promovido a Incidente %1$s"
 
 #: inc/commonitilobject.class.php:7271
 msgid "Approve"
-msgstr ""
+msgstr "Aprobar"
 
 #: inc/commonitilobject.class.php:7274
 msgid "Refuse"
-msgstr ""
+msgstr "Rechazar"
 
 #: inc/commonitilobject.class.php:7281
 #, php-format
@@ -8740,7 +8741,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:7516
 #, php-format
 msgid "New %s"
-msgstr ""
+msgstr "%sNuevo"
 
 #: inc/fieldblacklist.class.php:48 inc/dropdown.class.php:1091
 msgid "Ignored value for the unicity"
@@ -8872,8 +8873,8 @@ msgstr "Agregar un campo predefinido"
 #: inc/devicepci.class.php:45
 msgid "PCI device"
 msgid_plural "PCI devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dispositivo PCI"
+msgstr[1] "Dispositivos PCI"
 
 #: inc/devicepci.class.php:89
 msgid "Other component"
@@ -8969,7 +8970,7 @@ msgstr "Vcard"
 
 #: inc/user.class.php:2066 inc/user.class.php:2067
 msgid "Impersonate"
-msgstr ""
+msgstr "Impersonalizar"
 
 #: inc/user.class.php:2117 inc/user.class.php:2583 inc/user.class.php:2584
 #: inc/notificationmailingsetting.class.php:245
@@ -9019,7 +9020,7 @@ msgstr "Política de seguridad de contraseñas"
 
 #: inc/user.class.php:2190 inc/user.class.php:2674
 msgid "Time zone"
-msgstr ""
+msgstr "Zona Horaria"
 
 #: inc/user.class.php:2227
 msgid "Valid since"
@@ -9211,19 +9212,19 @@ msgstr "Actualizar método de autenticación a"
 
 #: inc/user.class.php:4604
 msgid "Your password has expired. You must change it to be able to login."
-msgstr ""
+msgstr "Su contraseña ha expirado. Debe cambiarla para poder ingresar."
 
 #: inc/user.class.php:4620
 msgid "Current password"
-msgstr ""
+msgstr "Contraseña actual"
 
 #: inc/user.class.php:4629
 msgid "New password"
-msgstr ""
+msgstr "Nueva contraseña"
 
 #: inc/user.class.php:4638
 msgid "New password confirmation"
-msgstr ""
+msgstr "Confirmación de nueva contraseña"
 
 #: inc/user.class.php:4656 inc/user.class.php:4727 inc/user.class.php:4760
 #: inc/auth.class.php:1628 inc/authldap.class.php:536
@@ -9832,7 +9833,7 @@ msgstr "Solicitud enviada a"
 #: inc/objectlock.class.php:269
 #, php-format
 msgid "Locked by %s"
-msgstr ""
+msgstr "Bloqueado por %s"
 
 #: inc/objectlock.class.php:274
 msgid "Ask for unlock"
@@ -10244,11 +10245,11 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:103
 msgid "Installed"
-msgstr ""
+msgstr "Instalado"
 
 #: inc/marketplace/view.class.php:104
 msgid "Discover"
-msgstr ""
+msgstr "Descubrir"
 
 #: inc/marketplace/view.class.php:142
 msgid ""
@@ -10312,7 +10313,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:360
 msgid "Most popular"
-msgstr ""
+msgstr "Mas popular"
 
 #: inc/marketplace/view.class.php:365
 msgid "Last updated"
@@ -10917,8 +10918,8 @@ msgstr ""
 #: inc/itilcategory.class.php:277
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Categoría ITIL"
+msgstr[1] "Categorias ITIL"
 
 #: inc/itilcategory.class.php:335 inc/itilcategory.class.php:352
 msgid "Code representing the ticket category is already used"
@@ -11386,7 +11387,7 @@ msgstr "Agregar un tipo de elemento"
 
 #: inc/domain_item.class.php:482
 msgid "Associate a domain"
-msgstr ""
+msgstr "Asociar un dominio"
 
 #: inc/domain_item.class.php:560 inc/certificate_item.class.php:478
 msgid "Does not expire"
@@ -11420,7 +11421,7 @@ msgstr "Planes"
 
 #: inc/change.class.php:471
 msgid "Analysis impact"
-msgstr ""
+msgstr "Análisis de impacto"
 
 #: inc/change.class.php:539
 msgid "Evaluation"
@@ -11512,8 +11513,8 @@ msgstr "No se encontró dirección IP"
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Plantilla de %1$s"
+msgstr[1] "Plantillas de %1$s"
 
 #: inc/itiltemplate.class.php:364 inc/central.class.php:48
 #: inc/itiltemplatemandatoryfield.class.php:166
@@ -11535,7 +11536,7 @@ msgstr ""
 #: inc/caldav/backend/calendar.class.php:127
 #, php-format
 msgid "Calendar of %s"
-msgstr ""
+msgstr "Calendario de %s"
 
 #: inc/profile_user.class.php:133 inc/profile_user.class.php:277
 msgid "Add an authorization to a user"
@@ -11811,7 +11812,7 @@ msgstr[1] "RSS feeds"
 
 #: inc/central.class.php:73
 msgid "Dashboard"
-msgstr ""
+msgstr "Tablero"
 
 #: inc/central.class.php:314
 #, php-format
@@ -14043,7 +14044,7 @@ msgstr "Habilitar contraste alto"
 
 #: inc/config.class.php:1251 inc/ruleright.class.php:366
 msgid "Timezone"
-msgstr ""
+msgstr "Zona horaria"
 
 #: inc/config.class.php:1262
 msgid "Use server configuration"
@@ -14122,7 +14123,7 @@ msgstr ""
 
 #: inc/config.class.php:1405
 msgid "Dashboards"
-msgstr ""
+msgstr "Tableros"
 
 #: inc/config.class.php:1408
 msgid "Default for central"
@@ -14202,7 +14203,7 @@ msgstr "La extensión \"%s\" esta instalada"
 #: inc/config.class.php:1644
 #, php-format
 msgid "%1$s memory usage is too low or too high"
-msgstr ""
+msgstr "El uso de memoria de %1$s es muy bajo o muy alto"
 
 #: inc/config.class.php:1647 inc/config.class.php:1723
 #, php-format
@@ -14216,7 +14217,7 @@ msgstr "Tasa de impacto"
 #: inc/config.class.php:1662
 #, php-format
 msgid "%1$s hits rate is low"
-msgstr ""
+msgstr "La taza de éxito de %1$ss es baja"
 
 #: inc/config.class.php:1665
 #, php-format
@@ -14230,7 +14231,7 @@ msgstr "Reiniciar fuera de memoria"
 #: inc/config.class.php:1675
 #, php-format
 msgid "%1$s restart rate is too high"
-msgstr ""
+msgstr "La tasa de reinicio %1$s es demasiado alta"
 
 #: inc/config.class.php:1678
 #, php-format
@@ -14272,7 +14273,7 @@ msgstr "La extensión de cache \"%s\" está en uso"
 #: inc/config.class.php:1720
 #, php-format
 msgid "%1$s memory usage is too high"
-msgstr ""
+msgstr "El uso de memoria de %1$s es muy alto"
 
 #: inc/config.class.php:1735
 msgid "Translation cache"
@@ -14724,8 +14725,8 @@ msgstr "%s: falló el envío de alerta de insumo"
 #: inc/planningexternalevent.class.php:54
 msgid "External event"
 msgid_plural "External events"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Evento externo"
+msgstr[1] "Eventos externos"
 
 #: inc/planningexternalevent.class.php:241
 #: inc/features/planningevent.class.php:981
@@ -14742,7 +14743,7 @@ msgstr ""
 
 #: inc/planningexternalevent.class.php:344
 msgid "Delete instance"
-msgstr ""
+msgstr "Eliminar instancia"
 
 #: inc/planningexternalevent.class.php:356
 msgid "manage background events"
@@ -14914,7 +14915,7 @@ msgstr ""
 
 #: inc/features/planningevent.class.php:722
 msgid "Interval"
-msgstr ""
+msgstr "Intervalo"
 
 #: inc/features/planningevent.class.php:731
 msgid "Until"
@@ -14986,7 +14987,7 @@ msgstr "Diciembre"
 
 #: inc/features/planningevent.class.php:786
 msgid "Exceptions"
-msgstr ""
+msgstr "Excepciones"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
 #: inc/features/planningevent.class.php:816
@@ -15489,7 +15490,7 @@ msgstr "Filtro de búsqueda para entidades"
 
 #: inc/authldap.class.php:1175
 msgid "Domain name used by inventory tool"
-msgstr ""
+msgstr "Nombre de dominio utilizado por la herramienta de inventario"
 
 #: inc/authldap.class.php:1306 inc/authldap.class.php:1320
 #: inc/authldap.class.php:3215
@@ -16099,7 +16100,7 @@ msgstr[1] ""
 
 #: inc/appliance.class.php:139 inc/appliance.class.php:276
 msgid "Environment"
-msgstr ""
+msgstr "Entorno"
 
 #: inc/appliance.class.php:348 inc/appliance_item.class.php:156
 #: inc/appliance_item.class.php:352
@@ -16734,7 +16735,7 @@ msgstr[1] "Tipos de batería"
 
 #: inc/glpinetwork.class.php:65
 msgid "Registration"
-msgstr ""
+msgstr "Registro"
 
 #: inc/glpinetwork.class.php:69
 msgid ""
@@ -16756,7 +16757,7 @@ msgstr ""
 
 #: inc/glpinetwork.class.php:94
 msgid "Subscription"
-msgstr ""
+msgstr "Suscripción"
 
 #: inc/glpinetwork.class.php:95 inc/glpinetwork.class.php:100
 msgid "Unknown"
@@ -16801,6 +16802,8 @@ msgid ""
 "Having troubles setting up an advanced GLPI module?\n"
 "We can help you solve them. Sign up for support on %s."
 msgstr ""
+"¿Tiene problemas configurando un modulo avanzado de GLPI? Nosotros podemos "
+"ayudarlo. Regístrese para obtener soporte en %s"
 
 #. TRANS: %s is the date
 #: inc/alert.class.php:265
@@ -22709,6 +22712,8 @@ msgstr "ID de producto del sistema operativo"
 #: install/update_940_941.php:65
 msgid "Fix URL of images in ITIL tasks, followups and solutions."
 msgstr ""
+"Corrija la URL de las imágenes en las tareas, seguimientos y soluciones de "
+"ITIL, "
 
 #: install/update_0723_078.php:3663
 msgid "Direct"

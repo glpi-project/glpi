@@ -22,7 +22,6 @@
 # Carlos Filho <ccorrea@gmail.com>, 2019
 # Guilherme Teixeira <guilmarco@gmail.com>, 2019
 # wcreis <wesley.c.reis@gmail.com>, 2019
-# Hélio Guardabaxo <helio.guardabaxo@gmail.com>, 2019
 # Rodrigo de Almeida Sottomaior Macedo <rmsolucoeseminformatic4@gmail.com>, 2020
 # Maria Laura Chaves Fernandes <mlaura42@outlook.com>, 2020
 # Márcio Moraes <marciopanto@gmail.com>, 2020
@@ -33,6 +32,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Diego Nobre <diego@koruma.com.br>, 2020
 # George Maia <georgemaia@gmail.com>, 2020
+# Hélio Guardabaxo <helio.guardabaxo@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -41,7 +41,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-11 09:05+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: George Maia <georgemaia@gmail.com>, 2020\n"
+"Last-Translator: Hélio Guardabaxo <helio.guardabaxo@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2251,8 +2251,8 @@ msgstr[1] "Localizações"
 #: tests/functionnal/Rule.php:285
 msgid "Type"
 msgid_plural "Type"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo"
+msgstr[1] "Tipos"
 
 #: front/stat.graph.php:157 front/stat.graph.php:165
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
@@ -9231,11 +9231,11 @@ msgstr ""
 
 #: inc/user.class.php:4629
 msgid "New password"
-msgstr ""
+msgstr "Nova senha"
 
 #: inc/user.class.php:4638
 msgid "New password confirmation"
-msgstr ""
+msgstr "Confirmação da nova senha"
 
 #: inc/user.class.php:4656 inc/user.class.php:4727 inc/user.class.php:4760
 #: inc/auth.class.php:1628 inc/authldap.class.php:536
@@ -10253,7 +10253,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:103
 msgid "Installed"
-msgstr ""
+msgstr "Instalado"
 
 #: inc/marketplace/view.class.php:104
 msgid "Discover"
@@ -10928,8 +10928,8 @@ msgstr "Modelo para um problema"
 #: inc/itilcategory.class.php:277
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Categoria da ITIL"
+msgstr[1] "Categorias da ITIL"
 
 #: inc/itilcategory.class.php:335 inc/itilcategory.class.php:352
 msgid "Code representing the ticket category is already used"
@@ -21593,7 +21593,7 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:103
 msgid "Filter to apply on LDAP search"
-msgstr ""
+msgstr "Filtro à aplicar à consulta LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:111
 #, php-format
@@ -21624,15 +21624,15 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:189
 msgid "No active LDAP server found."
-msgstr ""
+msgstr "Nenhum servidor LDAP ativo foi encontrado"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:219
 msgid "LDAP servers"
-msgstr ""
+msgstr "Servidores LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:220
 msgid "LDAP filter"
-msgstr ""
+msgstr "Filtro LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:234
 msgid "Synchronization aborted."
@@ -21640,7 +21640,7 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server informations."
-msgstr ""
+msgstr "Não foi possível carregar as informações do servidor LDAP."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
@@ -21656,7 +21656,7 @@ msgstr ""
 #: inc/console/ldap/synchronizeuserscommand.class.php:285
 #, php-format
 msgid "LDAP server \"%s\" size limit exceeded."
-msgstr ""
+msgstr "Servidor LDAP  \"%s\" tamanho limite excedido."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:291
 #, php-format
@@ -21689,19 +21689,19 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:393
 msgid "LDAP server"
-msgstr ""
+msgstr "Servidor LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:394
 msgid "Imported"
-msgstr ""
+msgstr "Importado"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:395
 msgid "Synchronized"
-msgstr ""
+msgstr "Sincronizado"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:396
 msgid "Deleted from LDAP"
-msgstr ""
+msgstr "Excluído do LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:429
 msgid ""

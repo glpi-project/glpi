@@ -9,10 +9,10 @@
 # Fuchiwaki Kazuyoshi <k.fuchiwaki@gmail.com>, 2019
 # peachberry <gtucr7gpw.4g2@gmail.com>, 2019
 # Open Redmine <in_dow@hotmail.com>, 2019
-# Koshikawa Yasunori <y-koshikawa@skyhobbit.co.jp>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Daisuke Inoue, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Koshikawa Yasunori <y-koshikawa@skyhobbit.co.jp>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-11 09:05+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Koshikawa Yasunori <y-koshikawa@skyhobbit.co.jp>, 2020\n"
 "Language-Team: Japanese (Japan) (https://www.transifex.com/glpi/teams/1637/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4078,7 +4078,7 @@ msgstr[0] "タスクカテゴリ"
 #: inc/savedsearch_alert.class.php:133
 msgid "Saved search"
 msgid_plural "Saved searches"
-msgstr[0] ""
+msgstr[0] "保存した検索"
 
 #: inc/savedsearch.class.php:76
 msgid "Unset as default"
@@ -4221,7 +4221,7 @@ msgstr "エレメントの表示/非表示"
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
+msgstr[0] "公開の%1$s"
 
 #: inc/savedsearch.class.php:821 inc/savedsearch.class.php:1012
 #: inc/ajax.class.php:196 inc/ajax.class.php:417 inc/knowbase.class.php:146
@@ -16457,7 +16457,7 @@ msgstr "製造日"
 #: inc/enclosure.class.php:48 inc/item_enclosure.class.php:259
 msgid "Enclosure"
 msgid_plural "Enclosures"
-msgstr[0] "ケース"
+msgstr[0] "エンクロージャー"
 
 #: inc/enclosure.class.php:106
 msgid "Power supplies"
@@ -16465,11 +16465,11 @@ msgstr "電源ユニット"
 
 #: inc/item_enclosure.class.php:104
 msgid "Add new item to this enclosure..."
-msgstr "このケースに新しい機器を追加..."
+msgstr "このエンクロージャーに新しい機器を追加..."
 
 #: inc/item_enclosure.class.php:309
 msgid "An enclosure is required"
-msgstr "ケースが必要です"
+msgstr "エンクロージャーが必要です"
 
 #: inc/apiclient.class.php:61
 msgid "API client"
@@ -18055,7 +18055,7 @@ msgstr "全ページをCSVで出力"
 #: inc/enclosuremodel.class.php:41
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] "ケース モデル"
+msgstr[0] "エンクロージャー モデル"
 
 #: inc/massiveaction.class.php:135
 msgid "No action available"
@@ -21757,7 +21757,7 @@ msgstr ""
 #: inc/profile.class.php:1040 inc/profile.class.php:2616
 msgid "Public saved search"
 msgid_plural "Public saved searches"
-msgstr[0] ""
+msgstr[0] "公開の保存された検索"
 
 #: inc/profile.class.php:1049
 msgid "Administration of reservations"

@@ -29,8 +29,8 @@
 # Gleb Mekhrenin <mehrenin@gmail.com>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Nikolai Petrov <techobsl@yandex.ru>, 2020
-# Mikhail Degterev <mikhail.degterev@gmail.com>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Mikhail Degterev <mikhail.degterev@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -39,7 +39,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-11 09:05+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Mikhail Degterev <mikhail.degterev@gmail.com>, 2020\n"
 "Language-Team: Russian (Russia) (https://www.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2271,10 +2271,10 @@ msgstr[3] "Местоположения"
 #: tests/functionnal/Rule.php:285
 msgid "Type"
 msgid_plural "Type"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Тип"
+msgstr[1] "Типы"
+msgstr[2] "Типы"
+msgstr[3] "Типы"
 
 #: front/stat.graph.php:157 front/stat.graph.php:165
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
@@ -6338,10 +6338,10 @@ msgstr[3] "Типы сетевых устройств"
 #: inc/rule.class.php:411 inc/dropdown.class.php:877
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Тип телефона"
+msgstr[1] "Типы телефонов"
+msgstr[2] "Типы телефонов"
+msgstr[3] "Типы телефонов"
 
 #: inc/rulecollection.class.php:2134 inc/rule.class.php:435
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:56
@@ -9008,12 +9008,12 @@ msgstr "%s описание"
 #: inc/commonitilobject.class.php:7510
 #, php-format
 msgid "The %s will be added in the entity %s"
-msgstr ""
+msgstr "Объект %sбудет добавлен в сущность %s"
 
 #: inc/commonitilobject.class.php:7516
 #, php-format
 msgid "New %s"
-msgstr ""
+msgstr "Новый %s"
 
 #: inc/fieldblacklist.class.php:48 inc/dropdown.class.php:1091
 msgid "Ignored value for the unicity"
@@ -10518,81 +10518,83 @@ msgstr "Бизнес-правила для активов"
 
 #: inc/marketplace/controller.class.php:100
 msgid "Unable to download plugin archive."
-msgstr ""
+msgstr "Невозможно скачать архив с плагином."
 
 #: inc/marketplace/controller.class.php:111
 #, php-format
 msgid "Plugin archive format is not supported by your system : %s."
-msgstr ""
+msgstr "Формат архива плагина не поддерживается вашей системой: %s."
 
 #: inc/marketplace/controller.class.php:133
 msgid "Unable to extract plugin archive."
-msgstr ""
+msgstr "Невозможно распаковать архив плагина."
 
 #: inc/marketplace/controller.class.php:236
 #: inc/marketplace/notificationtargetcontroller.class.php:61
 msgid "Check all plugin updates"
-msgstr ""
+msgstr "Проверить обновления всех плагинов"
 
 #: inc/marketplace/controller.class.php:261
 #, php-format
 msgid "New version for plugin %s: %s"
-msgstr ""
+msgstr "Новая версия плагина %s: %s"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:91
 msgid "Some updates are available for your installed plugins!"
-msgstr ""
+msgstr "Доступно несколько обновлений для установленных плагинов!"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:119
 msgid "Plugin name"
-msgstr ""
+msgstr "Название плагина"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:120
 #: inc/console/plugin/abstractplugincommand.class.php:71
 msgid "Plugin directory"
-msgstr ""
+msgstr "Папка плагина"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:121
 msgid "Plugin new version number"
-msgstr ""
+msgstr "Новая версия плагина"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:122
 msgid "Plugin old version number"
-msgstr ""
+msgstr "Старая версия плагина"
 
 #: inc/marketplace/view.class.php:103
 msgid "Installed"
-msgstr ""
+msgstr "Установлен"
 
 #: inc/marketplace/view.class.php:104
 msgid "Discover"
-msgstr ""
+msgstr "Обнаружение"
 
 #: inc/marketplace/view.class.php:142
 msgid ""
 "GLPI Network services website seems not available from your network or "
 "offline"
-msgstr ""
+msgstr "Сайт GLPI Network похоже недоступен из вашей сети или он выключен"
 
 #: inc/marketplace/view.class.php:144
 msgid "Maybe you could setup a proxy"
-msgstr ""
+msgstr "Может вам следует настроить прокси"
 
 #: inc/marketplace/view.class.php:146
 msgid "or please check later"
-msgstr ""
+msgstr "или, пожалуйста, проверьте чуть позже "
 
 #: inc/marketplace/view.class.php:156
 msgid "Your GLPI Network registration is not valid."
-msgstr ""
+msgstr "Ваша регистрация в GLPI Network недействительна."
 
 #: inc/marketplace/view.class.php:157
 msgid "A registration, at least a free one, is required to use marketplace!"
 msgstr ""
+"Для использования торговой площадки требуется регистрация, хотя бы "
+"бесплатная!"
 
 #: inc/marketplace/view.class.php:158
 msgid "Register on GLPI Network"
-msgstr ""
+msgstr "Зарегистрироваться в GLPI Network"
 
 #: inc/marketplace/view.class.php:159 inc/rule.class.php:812
 #: inc/rule.class.php:968 inc/rule.class.php:2531
@@ -10601,72 +10603,75 @@ msgstr "и"
 
 #: inc/marketplace/view.class.php:160
 msgid "fill your registration key in setup."
-msgstr ""
+msgstr "заполните ваш регистрационный ключ в настройках."
 
 #: inc/marketplace/view.class.php:331
 #, php-format
 msgid "We can't write on the markeplace directory (%s)."
-msgstr ""
+msgstr "Мы не можем записать в папку торговой площадки (%s)."
 
 #: inc/marketplace/view.class.php:332
 msgid ""
 "If you want to ease the plugins download, please check permissions and "
 "ownership of this directory."
 msgstr ""
+"Если вы хотите стереть загруженные плагины, пожалуйста проверьте разрешения "
+"и владельца на эту папку."
 
 #: inc/marketplace/view.class.php:333
 msgid ""
 "Otherwise, you will need to download and unzip the plugins archives "
 "manually."
 msgstr ""
+"Иначе вам потребуется вручную скачивать и распаковывать архивы с плагинами."
 
 #: inc/marketplace/view.class.php:350
 msgid "Alpha ASC"
-msgstr ""
+msgstr "По-возрастанию"
 
 #: inc/marketplace/view.class.php:355
 msgid "Alpha DESC"
-msgstr ""
+msgstr "По-убыванию"
 
 #: inc/marketplace/view.class.php:360
 msgid "Most popular"
-msgstr ""
+msgstr "Более популярные"
 
 #: inc/marketplace/view.class.php:365
 msgid "Last updated"
-msgstr ""
+msgstr "Последнее обновление"
 
 #: inc/marketplace/view.class.php:370
 msgid "Most recent"
-msgstr ""
+msgstr "Недавние"
 
 #: inc/marketplace/view.class.php:375
 msgid "Best notes"
-msgstr ""
+msgstr "Лучшие отзывы"
 
 #: inc/marketplace/view.class.php:380
 msgid "Your plugin here ? Contact us."
-msgstr ""
+msgstr "Ваш плагин здесь? Свяжитесь с нами."
 
 #: inc/marketplace/view.class.php:382
 msgid "Refresh plugin list"
-msgstr ""
+msgstr "Обновить список плагинов"
 
 #: inc/marketplace/view.class.php:383
 msgid "Filter plugin list"
-msgstr ""
+msgstr "Фильтр списка плагинов"
 
 #: inc/marketplace/view.class.php:472
 msgid "Homepage"
-msgstr ""
+msgstr "Домашняя страница"
 
 #: inc/marketplace/view.class.php:477
 msgid "Get help"
-msgstr ""
+msgstr "Получить помощь"
 
 #: inc/marketplace/view.class.php:482
 msgid "Readme"
-msgstr ""
+msgstr "Readme"
 
 #: inc/marketplace/view.class.php:624
 msgid "Clean"
@@ -10674,13 +10679,14 @@ msgstr "Очистить"
 
 #: inc/marketplace/view.class.php:633
 msgid "The plugin has an available update but its directory is not writable."
-msgstr ""
+msgstr "Для плагина доступно обновление, но его папка недоступна для записи."
 
 #: inc/marketplace/view.class.php:637
 #, php-format
 msgid ""
 "Download archive manually, you must uncompress it in plugins directory (%s)"
 msgstr ""
+"Скачайте вручную архив, вы должны распаковать его в папку с плагинами (%s)"
 
 #: inc/marketplace/view.class.php:649 inc/impact.class.php:1074
 #: inc/html.class.php:4974
@@ -10690,7 +10696,7 @@ msgstr "Загрузка"
 #: inc/marketplace/view.class.php:654
 #, php-format
 msgid "A new version (%s) is available, update ?"
-msgstr ""
+msgstr "Доступна новая версия (%s), обновить?"
 
 #: inc/marketplace/view.class.php:667
 #, php-format
@@ -10755,7 +10761,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:938
 msgid "Later"
-msgstr ""
+msgstr "Позже"
 
 #: inc/marketplace/view.class.php:950
 msgid "Switch to marketplace"
@@ -16200,7 +16206,7 @@ msgstr[3] "Шаблоны задачи"
 
 #: inc/system/requirement/selinux.class.php:45
 msgid "Check SELinux configuration"
-msgstr ""
+msgstr "Проверить конфигурацию SELinux"
 
 #. TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
@@ -16211,22 +16217,26 @@ msgstr "Режим SELinux - %s"
 
 #: inc/system/requirement/selinux.class.php:88
 msgid "For security reasons, SELinux mode should be Enforcing."
-msgstr ""
+msgstr "По соображениям безопасности, режим SELinux должен быть Enforcing."
 
 #: inc/system/requirement/selinux.class.php:125
 #, php-format
 msgid "SELinux boolean %s is %s, some features may require this to be on."
 msgstr ""
+"SELinux логически%s - %s, некоторые функции могут потребовать включения этой"
+" опции."
 
 #: inc/system/requirement/selinux.class.php:135
 msgid "SELinux configuration is OK."
-msgstr ""
+msgstr "Конфигурация SELinux - OK."
 
 #: inc/system/requirement/protectedwebaccess.class.php:69
 msgid ""
 "Checking that web access to files directory is protected cannot be done on "
 "CLI context."
 msgstr ""
+"Проверка того, что веб-доступ к папке запрещен, не может быть выполнена в "
+"контексте CLI."
 
 #: inc/system/requirement/protectedwebaccess.class.php:119
 #, php-format
@@ -16234,6 +16244,8 @@ msgid ""
 "Make sure access to %s (%s) is forbidden; otherwise review .htaccess file "
 "and web server configuration."
 msgstr ""
+"Убедитесь, что доступ к %s (%s) запрещен; или проверьте файл  .htaccess и "
+"конфигурацию веб-сервера."
 
 #: inc/system/requirement/memorylimit.class.php:55
 msgid "Allocated memory test"
@@ -16242,7 +16254,7 @@ msgstr "Проверка выделяемой памяти"
 #: inc/system/requirement/memorylimit.class.php:70
 #, php-format
 msgid "Allocated memory > %s - Perfect!"
-msgstr ""
+msgstr "Выделено памяти > %s - Отлично!"
 
 #: inc/system/requirement/memorylimit.class.php:71
 msgid "Unlimited memory - Perfect!"
@@ -16255,7 +16267,7 @@ msgstr "Выделяемая память"
 #: inc/system/requirement/memorylimit.class.php:75
 #, php-format
 msgid "A minimum of %s is commonly required for GLPI."
-msgstr ""
+msgstr "Минимально необходимо для  GLPI - %s."
 
 #: inc/system/requirement/memorylimit.class.php:76
 msgid "Try increasing the memory_limit parameter in the php.ini file."
@@ -16263,12 +16275,12 @@ msgstr "Попробуйте увеличить параметр memory_limit в
 
 #: inc/system/requirement/logswriteaccess.class.php:67
 msgid "The log file has been created successfully."
-msgstr ""
+msgstr "Лог-файл успешно создан."
 
 #: inc/system/requirement/logswriteaccess.class.php:70
 #, php-format
 msgid "The log file could not be created in %s."
-msgstr ""
+msgstr "Невозможно создать лог-файл в %s."
 
 #: inc/system/requirement/phpversion.class.php:55
 msgid "Testing PHP Parser"
@@ -16291,44 +16303,45 @@ msgstr "Проверка версии СУБД"
 #: inc/system/requirement/directorywriteaccess.class.php:82
 msgid "Checking write permissions for marketplace plugins directory"
 msgstr ""
+"Проверка разрешений на запись для папки с плагинами с торговой площадки"
 
 #: inc/system/requirement/directorywriteaccess.class.php:103
 #, php-format
 msgid "Checking write permissions for directory %s"
-msgstr ""
+msgstr "Проверка на запись папки %s"
 
 #: inc/system/requirement/directorywriteaccess.class.php:116
 #, php-format
 msgid "Write access to %s has been validated."
-msgstr ""
+msgstr "Доступ на запись в %s был подтвержден."
 
 #: inc/system/requirement/directorywriteaccess.class.php:120
 #, php-format
 msgid "The file was created in %s but can't be deleted."
-msgstr ""
+msgstr "Файл был создан в %s, но не может быть удален."
 
 #: inc/system/requirement/directorywriteaccess.class.php:123
 #, php-format
 msgid "The file could not be created in %s."
-msgstr ""
+msgstr "Файл не может быть создан в %s."
 
 #: inc/system/requirement/directorywriteaccess.class.php:126
 #, php-format
 msgid "The directory was created in %s but could not be removed."
-msgstr ""
+msgstr "Папка была создана в %s, но не может быть удалена."
 
 #: inc/system/requirement/directorywriteaccess.class.php:129
 #, php-format
 msgid "The directory could not be created in %s."
-msgstr ""
+msgstr "Папка не может быть создана в %s."
 
 #: inc/system/requirement/dbtimezones.class.php:52
 msgid "Testing DB timezone data"
-msgstr ""
+msgstr "Тест БД с временными зонами"
 
 #: inc/system/requirement/dbtimezones.class.php:66
 msgid "Timezones seems loaded in database"
-msgstr ""
+msgstr "Временные зоны загружены в базу данных"
 
 #: inc/system/requirement/sessionsconfiguration.class.php:45
 msgid "Sessions test"
@@ -16340,19 +16353,19 @@ msgstr "Ваш PHP-парсер скомпилирован без поддерж
 
 #: inc/system/requirement/sessionsconfiguration.class.php:63
 msgid "\"session.auto_start\" and \"session.use_trans_sid\" must be set to off."
-msgstr ""
+msgstr "\"session.auto_start\" и \"session.use_trans_sid\" должны быть выключены."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:65
 msgid "\"session.auto_start\" must be set to off."
-msgstr ""
+msgstr "\"session.auto_start\" должен быть выключен."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:67
 msgid "\"session.use_trans_sid\" must be set to off."
-msgstr ""
+msgstr "\"session.use_trans_sid\" должен быть выключен."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:71
 msgid "See .htaccess file in the GLPI root for more informations."
-msgstr ""
+msgstr "Смотри файл .htaccess в корне GLPI для детальной информации."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:77
 msgid "Sessions support is available - Perfect!"
@@ -17474,87 +17487,87 @@ msgstr "Громкая связь"
 
 #: inc/dashboard/provider.class.php:188 inc/dashboard/grid.class.php:1098
 msgid "Late tickets"
-msgstr ""
+msgstr "Опаздывающие заявки"
 
 #: inc/dashboard/provider.class.php:229
 msgid "Tickets waiting your validation"
-msgstr ""
+msgstr "Заявки, ожидающие вашего подтверждения"
 
 #: inc/dashboard/provider.class.php:262
 msgid "Incoming tickets"
-msgstr ""
+msgstr "Входящие заявки"
 
 #: inc/dashboard/provider.class.php:268 inc/dashboard/grid.class.php:1102
 msgid "Pending tickets"
-msgstr ""
+msgstr "Ожидающие заявки"
 
 #: inc/dashboard/provider.class.php:275 inc/dashboard/grid.class.php:1103
 msgid "Assigned tickets"
-msgstr ""
+msgstr "Назначенные заявки"
 
 #: inc/dashboard/provider.class.php:282 inc/dashboard/grid.class.php:1104
 msgid "Planned tickets"
-msgstr ""
+msgstr "Запланированные заявки"
 
 #: inc/dashboard/provider.class.php:289 inc/dashboard/grid.class.php:1105
 msgid "Solved tickets"
-msgstr ""
+msgstr "Решенные заявки"
 
 #: inc/dashboard/provider.class.php:296 inc/dashboard/grid.class.php:1106
 msgid "Closed tickets"
-msgstr ""
+msgstr "Закрытые заявки"
 
 #: inc/dashboard/provider.class.php:443
 msgid "without"
-msgstr ""
+msgstr "без"
 
 #: inc/dashboard/provider.class.php:954
 msgid "Time to close"
-msgstr ""
+msgstr "Время закрыть"
 
 #: inc/dashboard/widget.class.php:61
 msgid "Pie"
-msgstr ""
+msgstr "Круг"
 
 #: inc/dashboard/widget.class.php:68
 msgid "Donut"
-msgstr ""
+msgstr "Кольцо"
 
 #: inc/dashboard/widget.class.php:75
 msgid "Half pie"
-msgstr ""
+msgstr "Полукруг"
 
 #: inc/dashboard/widget.class.php:82
 msgid "Half donut"
-msgstr ""
+msgstr "Полукольцо"
 
 #: inc/dashboard/widget.class.php:89
 msgid "Bars"
-msgstr ""
+msgstr "Гистограмма"
 
 #: inc/dashboard/widget.class.php:102
 msgid "Multiple lines"
-msgstr ""
+msgstr "Несколько линий"
 
 #: inc/dashboard/widget.class.php:109
 msgid "Area"
-msgstr ""
+msgstr "Область"
 
 #: inc/dashboard/widget.class.php:115
 msgid "Multiple areas"
-msgstr ""
+msgstr "Несколько областей"
 
 #: inc/dashboard/widget.class.php:122
 msgid "Multiple bars"
-msgstr ""
+msgstr "Гистограмма с группировкой"
 
 #: inc/dashboard/widget.class.php:129
 msgid "Stacked bars"
-msgstr ""
+msgstr "Гистограмма с накоплением"
 
 #: inc/dashboard/widget.class.php:136
 msgid "Horizontal bars"
-msgstr ""
+msgstr "Горизонтальная гистограмма"
 
 #: inc/dashboard/widget.class.php:143
 msgid "Big number"
@@ -17566,20 +17579,20 @@ msgstr ""
 
 #: inc/dashboard/widget.class.php:154
 msgid "Editable markdown"
-msgstr ""
+msgstr "Редактируемый markdown"
 
 #: inc/dashboard/widget.class.php:159
 msgid "Search result"
-msgstr ""
+msgstr "Результат поиска"
 
 #: inc/dashboard/widget.class.php:304 inc/dashboard/widget.class.php:380
 #: inc/dashboard/widget.class.php:817
 msgid "No data found"
-msgstr ""
+msgstr "Данные не найдены"
 
 #: inc/dashboard/widget.class.php:1265
 msgid "Type markdown text here"
-msgstr ""
+msgstr "Введите markdown-текст здесь"
 
 #: inc/dashboard/grid.class.php:248 js/dashboard.js:152
 msgid "Share or embed this dashboard"
@@ -17591,11 +17604,11 @@ msgstr "Удалить эту панель"
 
 #: inc/dashboard/grid.class.php:250
 msgid "Toggle auto-refresh"
-msgstr ""
+msgstr "Переключить авто-обновление"
 
 #: inc/dashboard/grid.class.php:251
 msgid "Toggle night mode"
-msgstr ""
+msgstr "Переключить ночной режим"
 
 #: inc/dashboard/grid.class.php:252 inc/html.class.php:4940
 msgid "Toggle fullscreen"
@@ -17603,11 +17616,11 @@ msgstr "Развернуть на полный экран"
 
 #: inc/dashboard/grid.class.php:253
 msgid "Clone this dashboard"
-msgstr ""
+msgstr "Клонировать эту доску"
 
 #: inc/dashboard/grid.class.php:254
 msgid "Toggle edit mode"
-msgstr ""
+msgstr "Переключить режим редактирования"
 
 #: inc/dashboard/grid.class.php:255 js/dashboard.js:737
 msgid "Add a new dashboard"
@@ -17627,44 +17640,44 @@ msgstr "Удалить карточку"
 
 #: inc/dashboard/grid.class.php:637
 msgid "others"
-msgstr ""
+msgstr "другие"
 
 #: inc/dashboard/grid.class.php:670
 msgid "Widget"
-msgstr ""
+msgstr "Виджет"
 
 #: inc/dashboard/grid.class.php:701
 msgid "Use gradient palette"
-msgstr ""
+msgstr "Использовать градиентную палитру"
 
 #: inc/dashboard/grid.class.php:718
 msgid "Limit number of data"
-msgstr ""
+msgstr "Ограничить количество данных"
 
 #: inc/dashboard/grid.class.php:774
 msgid "Embed in another application"
-msgstr ""
+msgstr "Вставить в другое приложение"
 
 #: inc/dashboard/grid.class.php:776
 msgid "Direct link"
-msgstr ""
+msgstr "Прямая ссылка"
 
 #: inc/dashboard/grid.class.php:785
 msgid "Iframe"
-msgstr ""
+msgstr "Iframe"
 
 #: inc/dashboard/grid.class.php:865
 msgid "Or share the dashboard to these target objects:"
-msgstr ""
+msgstr "Или опубликовать доску этим целевым объектам:"
 
 #: inc/dashboard/grid.class.php:925
 msgid "empty card !"
-msgstr ""
+msgstr "пустая карточка!"
 
 #: inc/dashboard/grid.class.php:1057 inc/dashboard/grid.class.php:1113
 #, php-format
 msgid "Number of %s"
-msgstr ""
+msgstr "Количество %s"
 
 #: inc/dashboard/grid.class.php:1082
 #, php-format
@@ -17673,16 +17686,16 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:1101
 msgid "New tickets"
-msgstr ""
+msgstr "Новые заявки"
 
 #: inc/dashboard/grid.class.php:1124
 #, php-format
 msgid "List of %s"
-msgstr ""
+msgstr "Список %s"
 
 #: inc/dashboard/grid.class.php:1137
 msgid "Number of tickets by month"
-msgstr ""
+msgstr "Количество заявок по месяцам"
 
 #: inc/dashboard/grid.class.php:1145
 msgid "Evolution of ticket in the past year"
@@ -22406,27 +22419,27 @@ msgstr ""
 
 #: inc/console/system/checkrequirementscommand.class.php:54
 msgid "Check system requirements"
-msgstr ""
+msgstr "Проверка требований к системе "
 
 #: inc/console/system/checkrequirementscommand.class.php:67
 msgid "Requirement"
-msgstr ""
+msgstr "Зависимости"
 
 #: inc/console/system/checkrequirementscommand.class.php:69
 msgid "Messages"
-msgstr ""
+msgstr "Сообщения"
 
 #: inc/console/system/checkrequirementscommand.class.php:83
 msgid "WARNING"
-msgstr ""
+msgstr "ПРЕДУПРЕЖДЕНИЕ"
 
 #: inc/console/system/checkrequirementscommand.class.php:84
 msgid "ERROR"
-msgstr ""
+msgstr "ОШИБКА"
 
 #: inc/console/system/checkstatuscommand.class.php:52
 msgid "Check system status"
-msgstr ""
+msgstr "Проверить статус системы"
 
 #: inc/console/database/checkcommand.class.php:59
 msgid ""

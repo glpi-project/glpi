@@ -10382,7 +10382,7 @@ msgstr "Nettoyer"
 #: inc/marketplace/view.class.php:633
 msgid "The plugin has an available update but its directory is not writable."
 msgstr ""
-"Un e mise à jour est disponible pour le plugin, mais son dossier n'est pas "
+"Une mise à jour est disponible pour le plugin, mais son dossier n'est pas "
 "accessible en écriture."
 
 #: inc/marketplace/view.class.php:637

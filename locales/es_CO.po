@@ -9,8 +9,8 @@
 # Fabian Gonzalez <fabian.gonzalez@outlook.com>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2019
 # Oscar Stiven Gomez Toro <oscar.gomez@clinicadeoccidente.com>, 2020
-# Haider Ilich López Areiza <hlopez@itsoluciones.com.co>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Haider Ilich López Areiza <hlopez@itsoluciones.com.co>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-11 09:05+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Haider Ilich López Areiza <hlopez@itsoluciones.com.co>, 2020\n"
 "Language-Team: Spanish (Colombia) (https://www.transifex.com/glpi/teams/1637/es_CO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2228,8 +2228,8 @@ msgstr[1] "Localizaciones"
 #: tests/functionnal/Rule.php:285
 msgid "Type"
 msgid_plural "Type"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo"
+msgstr[1] "Tipos"
 
 #: front/stat.graph.php:157 front/stat.graph.php:165
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
@@ -6148,8 +6148,8 @@ msgstr[1] "Tipos de equipos para redes"
 #: inc/rule.class.php:411 inc/dropdown.class.php:877
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de teléfono"
+msgstr[1] "Tipos de teléfono"
 
 #: inc/rulecollection.class.php:2134 inc/rule.class.php:435
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:56
@@ -8729,12 +8729,12 @@ msgstr "# %s descripción"
 #: inc/commonitilobject.class.php:7510
 #, php-format
 msgid "The %s will be added in the entity %s"
-msgstr ""
+msgstr "El %s será agregado en la entidad %s"
 
 #: inc/commonitilobject.class.php:7516
 #, php-format
 msgid "New %s"
-msgstr ""
+msgstr "Nuevo %s"
 
 #: inc/fieldblacklist.class.php:48 inc/dropdown.class.php:1091
 msgid "Ignored value for the unicity"
@@ -10194,73 +10194,77 @@ msgstr "Reglas de negocio para los activos"
 
 #: inc/marketplace/controller.class.php:100
 msgid "Unable to download plugin archive."
-msgstr ""
+msgstr "No se puede descargar el archivo del complemento."
 
 #: inc/marketplace/controller.class.php:111
 #, php-format
 msgid "Plugin archive format is not supported by your system : %s."
 msgstr ""
+"El formato de archivo del complemento no es compatible con su sistema : %s."
 
 #: inc/marketplace/controller.class.php:133
 msgid "Unable to extract plugin archive."
-msgstr ""
+msgstr "No se puede extraer el archivo de complemento."
 
 #: inc/marketplace/controller.class.php:236
 #: inc/marketplace/notificationtargetcontroller.class.php:61
 msgid "Check all plugin updates"
-msgstr ""
+msgstr "Verifique todas las actualizaciones de complementos"
 
 #: inc/marketplace/controller.class.php:261
 #, php-format
 msgid "New version for plugin %s: %s"
-msgstr ""
+msgstr "Nueva versión para complemento %s: %s"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:91
 msgid "Some updates are available for your installed plugins!"
 msgstr ""
+"¡Algunas actualizaciones están disponibles para sus complementos instalados!"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:119
 msgid "Plugin name"
-msgstr ""
+msgstr "Nombre del complemento"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:120
 #: inc/console/plugin/abstractplugincommand.class.php:71
 msgid "Plugin directory"
-msgstr ""
+msgstr "Directorio del complemento"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:121
 msgid "Plugin new version number"
-msgstr ""
+msgstr "Número de versión nueva del complemento"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:122
 msgid "Plugin old version number"
-msgstr ""
+msgstr "Número de versión anterior del complemento"
 
 #: inc/marketplace/view.class.php:103
 msgid "Installed"
-msgstr ""
+msgstr "Instalado"
 
 #: inc/marketplace/view.class.php:104
 msgid "Discover"
-msgstr ""
+msgstr "Descubrir"
 
 #: inc/marketplace/view.class.php:142
 msgid ""
 "GLPI Network services website seems not available from your network or "
 "offline"
 msgstr ""
+"El sitio web de los servicios de red GLPI parece no estar disponible desde "
+"su red o esta fuera de línea"
 
 #: inc/marketplace/view.class.php:144
 msgid "Maybe you could setup a proxy"
-msgstr ""
+msgstr "Tal vez podrías configurar un proxy"
 
 #: inc/marketplace/view.class.php:146
 msgid "or please check later"
-msgstr ""
+msgstr "o por favor verifique más tarde"
 
 #: inc/marketplace/view.class.php:156
 msgid "Your GLPI Network registration is not valid."
-msgstr ""
+msgstr "Tu registro en GLPI Network no es valido."
 
 #: inc/marketplace/view.class.php:157
 msgid "A registration, at least a free one, is required to use marketplace!"
@@ -10268,7 +10272,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:158
 msgid "Register on GLPI Network"
-msgstr ""
+msgstr "Registro en GLPI Network"
 
 #: inc/marketplace/view.class.php:159 inc/rule.class.php:812
 #: inc/rule.class.php:968 inc/rule.class.php:2531
@@ -10298,51 +10302,51 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:350
 msgid "Alpha ASC"
-msgstr ""
+msgstr "Alpha ASC"
 
 #: inc/marketplace/view.class.php:355
 msgid "Alpha DESC"
-msgstr ""
+msgstr "Alpha DESC"
 
 #: inc/marketplace/view.class.php:360
 msgid "Most popular"
-msgstr ""
+msgstr "Más popular"
 
 #: inc/marketplace/view.class.php:365
 msgid "Last updated"
-msgstr ""
+msgstr "Última actualización"
 
 #: inc/marketplace/view.class.php:370
 msgid "Most recent"
-msgstr ""
+msgstr "Más reciente"
 
 #: inc/marketplace/view.class.php:375
 msgid "Best notes"
-msgstr ""
+msgstr "Mejores notas"
 
 #: inc/marketplace/view.class.php:380
 msgid "Your plugin here ? Contact us."
-msgstr ""
+msgstr "¿Tu complemento aquí? Contáctenos."
 
 #: inc/marketplace/view.class.php:382
 msgid "Refresh plugin list"
-msgstr ""
+msgstr "Refresca lista de complementos"
 
 #: inc/marketplace/view.class.php:383
 msgid "Filter plugin list"
-msgstr ""
+msgstr "Filtrar lista de complementos"
 
 #: inc/marketplace/view.class.php:472
 msgid "Homepage"
-msgstr ""
+msgstr "Página principal"
 
 #: inc/marketplace/view.class.php:477
 msgid "Get help"
-msgstr ""
+msgstr "Obtener ayuda"
 
 #: inc/marketplace/view.class.php:482
 msgid "Readme"
-msgstr ""
+msgstr "Leeme"
 
 #: inc/marketplace/view.class.php:624
 msgid "Clean"
@@ -10351,12 +10355,16 @@ msgstr "Limpiar"
 #: inc/marketplace/view.class.php:633
 msgid "The plugin has an available update but its directory is not writable."
 msgstr ""
+"El complemento tiene una actualización disponible pero su directorio no es "
+"escribible"
 
 #: inc/marketplace/view.class.php:637
 #, php-format
 msgid ""
 "Download archive manually, you must uncompress it in plugins directory (%s)"
 msgstr ""
+"Descarga el archivo manualmente, deberás descomprimirlo en el directorio de "
+"complementos (%s)"
 
 #: inc/marketplace/view.class.php:649 inc/impact.class.php:1074
 #: inc/html.class.php:4974
@@ -10366,7 +10374,7 @@ msgstr "Descarga"
 #: inc/marketplace/view.class.php:654
 #, php-format
 msgid "A new version (%s) is available, update ?"
-msgstr ""
+msgstr "Una nueva versión (%s) está disponible, ¿actualizar?"
 
 #: inc/marketplace/view.class.php:667
 #, php-format
@@ -10393,6 +10401,7 @@ msgstr "Desinstalar"
 #: inc/marketplace/view.class.php:774
 msgid "You must have a GLPI Network subscription to get this plugin"
 msgstr ""
+"Debes tener una suscripción a GLPI Network para obtener este complemento"
 
 #: inc/marketplace/view.class.php:775 inc/network.class.php:42
 #: inc/networkequipment.class.php:363 inc/networkequipment.class.php:594
@@ -10414,8 +10423,8 @@ msgstr ""
 #, php-format
 msgid "%s plugin"
 msgid_plural "%s plugins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s complemento"
+msgstr[1] "%s complementos"
 
 #: inc/marketplace/view.class.php:925
 msgid "GLPI provides a new marketplace to download and install plugins."
@@ -10427,11 +10436,11 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:938
 msgid "Later"
-msgstr ""
+msgstr "Más tarde"
 
 #: inc/marketplace/view.class.php:950
 msgid "Switch to marketplace"
-msgstr ""
+msgstr "Cambia a la tienda"
 
 #: inc/authmail.class.php:112 inc/config.class.php:1819
 #: inc/authldap.class.php:377 inc/authldap.class.php:920
@@ -11526,7 +11535,7 @@ msgstr "Fusionar y asignar a la entidad actual"
 #: inc/caldav/backend/calendar.class.php:127
 #, php-format
 msgid "Calendar of %s"
-msgstr ""
+msgstr "Calendario de %s"
 
 #: inc/profile_user.class.php:133 inc/profile_user.class.php:277
 msgid "Add an authorization to a user"
@@ -11930,7 +11939,7 @@ msgstr[1] "Plantillas de notificación"
 
 #: inc/notification.class.php:213
 msgid "Allow response"
-msgstr ""
+msgstr "Permitir respuesta"
 
 #: inc/notification.class.php:364 inc/notificationtarget.class.php:1410
 msgid "Notification method"
@@ -15735,7 +15744,7 @@ msgstr[1] "Plantillas para tareas"
 
 #: inc/system/requirement/selinux.class.php:45
 msgid "Check SELinux configuration"
-msgstr ""
+msgstr "Chequea la configuración de SELinux"
 
 #. TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
@@ -15746,7 +15755,7 @@ msgstr "SELinux esta en modo %s"
 
 #: inc/system/requirement/selinux.class.php:88
 msgid "For security reasons, SELinux mode should be Enforcing."
-msgstr ""
+msgstr "Por razones de seguridad, el modo SELinux debería cumplirse."
 
 #: inc/system/requirement/selinux.class.php:125
 #, php-format
@@ -15755,7 +15764,7 @@ msgstr ""
 
 #: inc/system/requirement/selinux.class.php:135
 msgid "SELinux configuration is OK."
-msgstr ""
+msgstr "Configuración SELinux está bien."
 
 #: inc/system/requirement/protectedwebaccess.class.php:69
 msgid ""
@@ -15798,12 +15807,12 @@ msgstr "Intente aumentando el parámetro memory_limit en el archivo php.ini."
 
 #: inc/system/requirement/logswriteaccess.class.php:67
 msgid "The log file has been created successfully."
-msgstr ""
+msgstr "El archivo de log ha sido creado exitosamente."
 
 #: inc/system/requirement/logswriteaccess.class.php:70
 #, php-format
 msgid "The log file could not be created in %s."
-msgstr ""
+msgstr "El archivo de log no podría ser creado en %s."
 
 #: inc/system/requirement/phpversion.class.php:55
 msgid "Testing PHP Parser"
@@ -15826,6 +15835,8 @@ msgstr "Probando versión del motor DB"
 #: inc/system/requirement/directorywriteaccess.class.php:82
 msgid "Checking write permissions for marketplace plugins directory"
 msgstr ""
+"Comprobando permisos de escritura para el directorio de complementos de la "
+"tienda"
 
 #: inc/system/requirement/directorywriteaccess.class.php:103
 #, php-format
@@ -16744,7 +16755,7 @@ msgstr ""
 
 #: inc/glpinetwork.class.php:70
 msgid "Register on GLPI Network!"
-msgstr ""
+msgstr "Registrate en GLPI Network!"
 
 #: inc/glpinetwork.class.php:71
 msgid "And retrieve your key to paste it below"
@@ -16993,11 +17004,11 @@ msgstr ""
 
 #: inc/dashboard/provider.class.php:443
 msgid "without"
-msgstr ""
+msgstr "sin"
 
 #: inc/dashboard/provider.class.php:954
 msgid "Time to close"
-msgstr ""
+msgstr "Tiempo para cerrar"
 
 #: inc/dashboard/widget.class.php:61
 msgid "Pie"
@@ -17017,23 +17028,23 @@ msgstr ""
 
 #: inc/dashboard/widget.class.php:89
 msgid "Bars"
-msgstr ""
+msgstr "Barras"
 
 #: inc/dashboard/widget.class.php:102
 msgid "Multiple lines"
-msgstr ""
+msgstr "Múltiples líneas"
 
 #: inc/dashboard/widget.class.php:109
 msgid "Area"
-msgstr ""
+msgstr "Zona"
 
 #: inc/dashboard/widget.class.php:115
 msgid "Multiple areas"
-msgstr ""
+msgstr "Múltiples zonas"
 
 #: inc/dashboard/widget.class.php:122
 msgid "Multiple bars"
-msgstr ""
+msgstr "Barras múltiples"
 
 #: inc/dashboard/widget.class.php:129
 msgid "Stacked bars"
@@ -17041,15 +17052,15 @@ msgstr ""
 
 #: inc/dashboard/widget.class.php:136
 msgid "Horizontal bars"
-msgstr ""
+msgstr "Barras horizontales"
 
 #: inc/dashboard/widget.class.php:143
 msgid "Big number"
-msgstr ""
+msgstr "Número grande"
 
 #: inc/dashboard/widget.class.php:148
 msgid "Multiple numbers"
-msgstr ""
+msgstr "Múltiples números"
 
 #: inc/dashboard/widget.class.php:154
 msgid "Editable markdown"
@@ -17057,12 +17068,12 @@ msgstr ""
 
 #: inc/dashboard/widget.class.php:159
 msgid "Search result"
-msgstr ""
+msgstr "Resultado de la búsqueda"
 
 #: inc/dashboard/widget.class.php:304 inc/dashboard/widget.class.php:380
 #: inc/dashboard/widget.class.php:817
 msgid "No data found"
-msgstr ""
+msgstr "Dato no encontrado"
 
 #: inc/dashboard/widget.class.php:1265
 msgid "Type markdown text here"
@@ -17114,7 +17125,7 @@ msgstr "Borrar esta tarjeta"
 
 #: inc/dashboard/grid.class.php:637
 msgid "others"
-msgstr ""
+msgstr "otros"
 
 #: inc/dashboard/grid.class.php:670
 msgid "Widget"
@@ -17146,17 +17157,17 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:925
 msgid "empty card !"
-msgstr ""
+msgstr "¡Tarjeta vacía!"
 
 #: inc/dashboard/grid.class.php:1057 inc/dashboard/grid.class.php:1113
 #, php-format
 msgid "Number of %s"
-msgstr ""
+msgstr "Número de %s"
 
 #: inc/dashboard/grid.class.php:1082
 #, php-format
 msgid "%s by %s"
-msgstr ""
+msgstr "%s por %s"
 
 #: inc/dashboard/grid.class.php:1101
 msgid "New tickets"
@@ -17165,7 +17176,7 @@ msgstr ""
 #: inc/dashboard/grid.class.php:1124
 #, php-format
 msgid "List of %s"
-msgstr ""
+msgstr "Lista de %s"
 
 #: inc/dashboard/grid.class.php:1137
 msgid "Number of tickets by month"
@@ -20779,7 +20790,7 @@ msgstr ""
 #: inc/console/plugin/deactivatecommand.class.php:113
 #, php-format
 msgid "Invalid plugin directory \"%s\"."
-msgstr ""
+msgstr "Invalido directorio de complementos \"%s\"."
 
 #: inc/console/plugin/activatecommand.class.php:123
 #: inc/console/plugin/deactivatecommand.class.php:123
@@ -20826,17 +20837,17 @@ msgstr ""
 #: inc/console/plugin/installcommand.class.php:138
 #, php-format
 msgid "Plugin \"%s\" installation failed."
-msgstr ""
+msgstr "Complemento \"%s\" falló la instalación."
 
 #: inc/console/plugin/installcommand.class.php:146
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and must be configured."
-msgstr ""
+msgstr "Complemento \"%1$s\" ha sido instalado y deberá ser configurado."
 
 #: inc/console/plugin/installcommand.class.php:147
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and can be activated."
-msgstr ""
+msgstr "Complemento \"%1$s\" ha sido instalado y deberá ser activado."
 
 #: inc/console/plugin/installcommand.class.php:160
 msgid "Which plugin(s) do you want to install (comma separated values) ?"
@@ -20865,7 +20876,7 @@ msgstr ""
 
 #: inc/console/plugin/abstractplugincommand.class.php:65
 msgid "Run command on all plugins"
-msgstr ""
+msgstr "Correr comando sobre todos los complementos"
 
 #: inc/console/plugin/abstractplugincommand.class.php:82
 msgid "Option --all is not compatible with usage of directory argument."
@@ -20873,22 +20884,22 @@ msgstr ""
 
 #: inc/console/plugin/abstractplugincommand.class.php:93
 msgid "All plugins"
-msgstr ""
+msgstr "Todos los complementos"
 
 #: inc/console/plugin/deactivatecommand.class.php:82
 #, php-format
 msgid "Plugin \"%s\" deactivation failed."
-msgstr ""
+msgstr "Complemento \"%s\" fallo al desactivar."
 
 #: inc/console/plugin/deactivatecommand.class.php:90
 #, php-format
 msgid "Plugin \"%1$s\" has been deactivated."
-msgstr ""
+msgstr "Complemento \"%1$s\" ha sido desactivado."
 
 #: inc/console/plugin/deactivatecommand.class.php:131
 #, php-format
 msgid "Plugin \"%s\" is already inactive."
-msgstr ""
+msgstr "Complemento \"%s\" esta inactivo."
 
 #: inc/console/plugin/deactivatecommand.class.php:142
 msgid "Which plugin(s) do you want to deactivate (comma separated values) ?"
@@ -20896,7 +20907,7 @@ msgstr ""
 
 #: inc/console/abstractcommand.class.php:93
 msgid "Unable to connect to database."
-msgstr ""
+msgstr "Incapaz de conectar a la base de datos."
 
 #: inc/console/abstractcommand.class.php:188
 msgid "Some mandatory system requirements are missing."
@@ -20913,23 +20924,23 @@ msgstr ""
 
 #: inc/console/maintenance/disablemaintenancemodecommand.class.php:56
 msgid "Disable maintenance mode"
-msgstr ""
+msgstr "Deshabilitar modo de mantenimiento"
 
 #: inc/console/maintenance/disablemaintenancemodecommand.class.php:64
 msgid "Maintenance mode disabled."
-msgstr ""
+msgstr "Modo de mantenimiento deshabilitado."
 
 #: inc/console/maintenance/enablemaintenancemodecommand.class.php:57
 msgid "Enable maintenance mode"
-msgstr ""
+msgstr "Habilitar modo de mantenimiento"
 
 #: inc/console/maintenance/enablemaintenancemodecommand.class.php:63
 msgid "Text to display during maintenance"
-msgstr ""
+msgstr "Texto para mostrar durante el mantenimiento"
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:60
 msgid "Migrate MyISAM tables to InnoDB"
-msgstr ""
+msgstr "Migrar tablas MyISAM a InnoDB"
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:71
 #, php-format
@@ -20940,7 +20951,7 @@ msgstr ""
 #: inc/console/migration/timestampscommand.class.php:89
 #: inc/console/database/updatecommand.class.php:147
 msgid "No migration needed."
-msgstr ""
+msgstr "No se necesita migración."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:88
 #: inc/console/migration/timestampscommand.class.php:100
@@ -20949,14 +20960,14 @@ msgstr ""
 #: inc/console/database/updatecommand.class.php:158
 #: inc/console/database/abstractconfigurecommand.class.php:345
 msgid "Do you want to continue ?"
-msgstr ""
+msgstr "¿Quieres continuar?"
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:92
 #: inc/console/migration/timestampscommand.class.php:104
 #: inc/console/migration/domainsplugintocorecommand.class.php:141
 #: inc/console/migration/racksplugintocorecommand.class.php:232
 msgid "Migration aborted."
-msgstr ""
+msgstr "Migración abortada."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:102
 #, php-format
@@ -20975,7 +20986,7 @@ msgstr ""
 #: inc/console/migration/racksplugintocorecommand.class.php:251
 #: inc/console/database/updatecommand.class.php:174
 msgid "Migration done."
-msgstr ""
+msgstr "Migración realizada."
 
 #: inc/console/migration/timestampscommand.class.php:51
 msgid "Convert \"datetime\" fields to \"timestamp\" to use timezones."
@@ -20989,7 +21000,7 @@ msgstr ""
 #: inc/console/migration/timestampscommand.class.php:188
 #, php-format
 msgid "Running %s"
-msgstr ""
+msgstr "Corriendo %s"
 
 #: inc/console/migration/timestampscommand.class.php:196
 #, php-format
@@ -21075,7 +21086,7 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:291
 #: inc/console/migration/racksplugintocorecommand.class.php:391
 msgid "Migration cannot be done."
-msgstr ""
+msgstr "Migración no puede ser realizada."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:319
 msgid "Importing domains types..."
@@ -21273,15 +21284,15 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:551
 msgid "Peripheral"
-msgstr ""
+msgstr "Periférico"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:552
 msgid "Pdu"
-msgstr ""
+msgstr "PDU"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:554
 msgid "Passive Device"
-msgstr ""
+msgstr "Dispositivo activo"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:555
 msgid "Ignore (default)"
@@ -21514,7 +21525,7 @@ msgstr ""
 
 #: inc/console/security/changekeycommand.class.php:88
 msgid "Aborted."
-msgstr ""
+msgstr "Abortado."
 
 #: inc/console/security/changekeycommand.class.php:98
 msgid "Unable to change security key!"
@@ -21645,15 +21656,15 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:219
 msgid "LDAP servers"
-msgstr ""
+msgstr "Servidores LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:220
 msgid "LDAP filter"
-msgstr ""
+msgstr "Filtro LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:234
 msgid "Synchronization aborted."
-msgstr ""
+msgstr "Sincronización abortada."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server informations."
@@ -21668,7 +21679,7 @@ msgstr ""
 #: inc/console/ldap/synchronizeuserscommand.class.php:257
 #, php-format
 msgid "Processing LDAP server \"%s\"..."
-msgstr ""
+msgstr "Procesando servidor LDAP \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:285
 #, php-format
@@ -21706,19 +21717,19 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:393
 msgid "LDAP server"
-msgstr ""
+msgstr "Servidor LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:394
 msgid "Imported"
-msgstr ""
+msgstr "Importado"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:395
 msgid "Synchronized"
-msgstr ""
+msgstr "Sincronizado"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:396
 msgid "Deleted from LDAP"
-msgstr ""
+msgstr "Borrado desde LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:429
 msgid ""
@@ -21752,23 +21763,23 @@ msgstr ""
 
 #: inc/console/system/checkrequirementscommand.class.php:67
 msgid "Requirement"
-msgstr ""
+msgstr "Requerimientos"
 
 #: inc/console/system/checkrequirementscommand.class.php:69
 msgid "Messages"
-msgstr ""
+msgstr "Mensajes"
 
 #: inc/console/system/checkrequirementscommand.class.php:83
 msgid "WARNING"
-msgstr ""
+msgstr "ADVERTENCIA"
 
 #: inc/console/system/checkrequirementscommand.class.php:84
 msgid "ERROR"
-msgstr ""
+msgstr "ERROR"
 
 #: inc/console/system/checkstatuscommand.class.php:52
 msgid "Check system status"
-msgstr ""
+msgstr "Verificar estado de sistema"
 
 #: inc/console/database/checkcommand.class.php:59
 msgid ""
@@ -21806,33 +21817,33 @@ msgstr ""
 
 #: inc/console/database/updatecommand.class.php:124
 msgid "Current"
-msgstr ""
+msgstr "Actual"
 
 #: inc/console/database/updatecommand.class.php:125
 #: inc/console/database/abstractconfigurecommand.class.php:108
 #: inc/console/database/abstractconfigurecommand.class.php:330
 msgid "Database host"
-msgstr ""
+msgstr "Host base de datos"
 
 #: inc/console/database/updatecommand.class.php:126
 #: inc/console/database/abstractconfigurecommand.class.php:116
 #: inc/console/database/abstractconfigurecommand.class.php:331
 msgid "Database name"
-msgstr ""
+msgstr "Nombre base de datos"
 
 #: inc/console/database/updatecommand.class.php:127
 #: inc/console/database/abstractconfigurecommand.class.php:138
 #: inc/console/database/abstractconfigurecommand.class.php:332
 msgid "Database user"
-msgstr ""
+msgstr "Usuario base de datos"
 
 #: inc/console/database/updatecommand.class.php:128
 msgid "GLPI version"
-msgstr ""
+msgstr "Versión GLPI"
 
 #: inc/console/database/updatecommand.class.php:129
 msgid "GLPI database version"
-msgstr ""
+msgstr "Versión base de datos GLPI"
 
 #: inc/console/database/updatecommand.class.php:137
 #, php-format
@@ -21843,7 +21854,7 @@ msgstr ""
 
 #: inc/console/database/updatecommand.class.php:162
 msgid "Update aborted."
-msgstr ""
+msgstr "Actualización abortada."
 
 #: inc/console/database/updatecommand.class.php:181
 msgid "Last migration replayed."
@@ -21857,7 +21868,7 @@ msgstr ""
 
 #: inc/console/database/abstractconfigurecommand.class.php:131
 msgid "Database port"
-msgstr ""
+msgstr "Puerto base de datos"
 
 #: inc/console/database/abstractconfigurecommand.class.php:145
 msgid "Reconfigure database, override configuration file if it already exists"
@@ -21865,15 +21876,15 @@ msgstr ""
 
 #: inc/console/database/abstractconfigurecommand.class.php:152
 msgid "Database name:"
-msgstr ""
+msgstr "Nombre base de datos:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:153
 msgid "Database user:"
-msgstr ""
+msgstr "Usuario base de datos:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:154
 msgid "Database password:"
-msgstr ""
+msgstr "Contraseña base de datos:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:195
 #: inc/console/database/installcommand.class.php:152
@@ -21884,7 +21895,7 @@ msgstr ""
 
 #: inc/console/database/abstractconfigurecommand.class.php:211
 msgid "Configuration aborted."
-msgstr ""
+msgstr "Configuración abortada."
 
 #: inc/console/database/abstractconfigurecommand.class.php:228
 #: inc/console/database/installcommand.class.php:227
@@ -21894,7 +21905,7 @@ msgstr ""
 
 #: inc/console/database/abstractconfigurecommand.class.php:248
 msgid "Saving configuration file..."
-msgstr ""
+msgstr "Guardando archivo de configuración..."
 
 #: inc/console/database/abstractconfigurecommand.class.php:253
 #, php-format
@@ -21933,7 +21944,7 @@ msgstr ""
 
 #: inc/console/database/installcommand.class.php:201
 msgid "Installation aborted."
-msgstr ""
+msgstr "Instalación abortada."
 
 #: inc/console/database/installcommand.class.php:211 install/install.php:379
 msgid "Security key cannot be generated!"
@@ -21941,7 +21952,7 @@ msgstr "¡La clave de seguridad no se puede generar!"
 
 #: inc/console/database/installcommand.class.php:237
 msgid "Creating the database..."
-msgstr ""
+msgstr "Creando la base de datos..."
 
 #: inc/console/database/installcommand.class.php:243
 #, php-format
@@ -21960,7 +21971,7 @@ msgstr ""
 
 #: inc/console/database/installcommand.class.php:300
 msgid "Installation done."
-msgstr ""
+msgstr "Instalación realizada."
 
 #: inc/console/task/unlockcommand.class.php:56
 msgid "Unlock automatic tasks"
@@ -23194,7 +23205,7 @@ msgstr "Agregar columna"
 
 #: js/kanban.js:845
 msgid "More"
-msgstr ""
+msgstr "Más"
 
 #: js/kanban.js:1305
 #, javascript-format
@@ -23227,7 +23238,7 @@ msgstr "Clon"
 
 #: js/planning.js:312
 msgid "Make a choice"
-msgstr ""
+msgstr "Realizar una elección"
 
 #: js/planning.js:313
 msgid "Delete the whole serie of the recurrent event"
