@@ -551,7 +551,7 @@ class Search {
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
          $entity_restrict = true;
       } else {
-         $entity_restrict = $data['item']->isField('entities_id');
+         $entity_restrict = $data['item']->isEntityAssign() && $data['item']->isField('entities_id');
       }
 
       // Construct the request
@@ -652,7 +652,7 @@ class Search {
             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
          } else {
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable, '', '',
-                                                       $data['item']->isField('is_recursive'));
+                                                       $data['item']->maybeRecursive() && $data['item']->isField('is_recursive'));
          }
       }
       $WHERE  = "";
