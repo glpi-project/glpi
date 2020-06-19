@@ -3932,8 +3932,10 @@ JS;
    **/
    static function setRichTextContent($name, $content, $rand, $readonly = false) {
 
-      // Init html editor
-      Html::initEditorSystem($name, $rand, true, $readonly);
+      // Init html editor (if name of textarea is provided)
+      if (!empty($name)) {
+         Html::initEditorSystem($name, $rand, true, $readonly);
+      }
 
       // Neutralize non valid HTML tags
       $content = Html::clean($content, false, 1);

@@ -1291,7 +1291,7 @@ abstract class API extends CommonGLPI {
          // make text search
          foreach ($params['searchText']  as $filter_field => $filter_value) {
             if (!empty($filter_value)) {
-               $search_value = Search::makeTextSearch($filter_value);
+               $search_value = Search::makeTextSearch($DB->escape($filter_value));
                $where.= " AND (".$DB->quoteName("$table.$filter_field")." $search_value)";
             }
          }
