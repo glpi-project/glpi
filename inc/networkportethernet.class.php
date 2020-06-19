@@ -184,15 +184,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       ];
 
       $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'mac',
-         'datatype'           => 'mac',
-         'name'               => __('MAC'),
-         'massiveaction'      => false
-      ];
-
-      $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'type',

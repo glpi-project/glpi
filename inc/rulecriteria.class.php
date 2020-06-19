@@ -206,7 +206,7 @@ class RuleCriteria extends CommonDBChild {
                 && !empty($values['rules_id'])
                 && $generic_rule->getFromDB($values['rules_id'])) {
                if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
-                  return $rule->getCriteria($values[$field]);
+                  return $rule->getCriteriaName($values[$field]);
                }
             }
             break;
@@ -219,7 +219,7 @@ class RuleCriteria extends CommonDBChild {
                if (isset($values['criteria']) && !empty($values['criteria'])) {
                   $criterion = $values['criteria'];
                }
-               return $rule->getConditionByID($values[$field], $generic_rule->fields["sub_type"], $criterion);
+               return self::getConditionByID($values[$field], $generic_rule->fields["sub_type"], $criterion);
             }
             break;
 

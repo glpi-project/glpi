@@ -506,32 +506,28 @@ class Search extends DbTestCase {
     * @return void
     */
    public function testSearchOptions() {
-      $itemtypeslist = $this->getClasses(
+      $classes = $this->getClasses(
          'searchOptions',
          [
-            '/^Rule.*/',
-            '/^Common.*/',
-            '/^DB.*/',
-            'SlaLevel',
-            'OlaLevel',
-            'Reservation',
-            'ReservationItem',
-            'Event',
-            'Glpi\\Event',
-            'KnowbaseItem',
-            'NetworkPortMigration',
-            'TicketFollowup',
+            '/^Common.*/', // Should be abstract
+            'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
+            'NetworkPortMigration', // Tables only exists in specific cases
+            'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
+            'TicketFollowup', // Deprecated
          ]
       );
-      foreach ($itemtypeslist as $itemtype) {
-         if (!file_exists('front/'.strtolower($itemtype).'.php')) {
-            // it's the case where not have search possible in this itemtype
+      sort($classes);
+      foreach ($classes as $class) {
+         $reflection = new \ReflectionClass($class);
+         if ($reflection->isAbstract() || $class::getTable() === '') {
+            // abstract class or class with "static protected $notable = true;" (which is a kind of abstract)
             continue;
          }
-         $item = getItemForItemtype($itemtype);
+
+         $item = new $class();
 
          //load all options; so rawSearchOptionsToAdd to be tested
-         $options = \Search::getCleanedOptions($itemtype);
+         $options = \Search::getCleanedOptions($item->getType());
          //but reload only items one because of mysql join limit
          $options = $item->searchOptions();
 
@@ -540,7 +536,7 @@ class Search extends DbTestCase {
             if (!is_int($key) || (array_key_exists('nosearch', $data) && $data['nosearch'])) {
                continue;
             }
-            $actions = \Search::getActionsFor($itemtype, $key);
+            $actions = \Search::getActionsFor($item->getType(), $key);
             $searchtype = array_keys($actions)[0];
 
             $criterion = [
@@ -551,7 +547,7 @@ class Search extends DbTestCase {
 
             // do a search query based on current search option
             $data = $this->doSearch(
-               $itemtype,
+               $class,
                [
                   'is_deleted'   => 0,
                   'start'        => 0,
@@ -568,7 +564,7 @@ class Search extends DbTestCase {
                            'start'        => 0,
                            'criteria'     => $all_criteria,
                            'metacriteria' => []];
-         $data = $this->doSearch($itemtype, $search_params);
+         $data = $this->doSearch($class, $search_params);
       }
    }
 

@@ -399,16 +399,6 @@ class Item_OperatingSystem extends CommonDBRelation {
       ];
 
       $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
-         'autocomplete'       => true,
-      ];
-
-      $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'license_number',
