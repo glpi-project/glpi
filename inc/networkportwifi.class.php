@@ -135,6 +135,18 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       ];
 
       $tab[] = [
+         'id'                 => '10',
+         'table'              => NetworkPort::getTable(),
+         'field'              => 'mac',
+         'datatype'           => 'mac',
+         'name'               => __('MAC'),
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'empty'
+         ]
+      ];
+
+      $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'mode',
