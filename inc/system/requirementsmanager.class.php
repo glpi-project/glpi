@@ -86,10 +86,10 @@ class RequirementsManager {
       $requirements[] = new Extension('Zend OPcache', true); // to enhance perfs
       $requirements[] = new Extension('xmlrpc', true); // for XMLRPC API
       $requirements[] = new ExtensionClass('CAS', 'phpCAS', true); // for CAS lib
-      $requirements[] = new Extension('exif', true);
-      $requirements[] = new Extension('zip', true);
-      $requirements[] = new Extension('bz2', true);
-      $requirements[] = new Extension('sodium', true);
+      $requirements[] = new Extension('exif', true); // for security reasons (images checks)
+      $requirements[] = new Extension('zip', true); // to handle zip packages on marketplace
+      $requirements[] = new Extension('bz2', true); // to handle bz2 packages on marketplace
+      $requirements[] = new Extension('sodium', true); // to enhance performances on encrypt/decrypt (fallback to polyfill)
 
       if ($db instanceof \DBmysql) {
          $requirements[] = new DbEngine($db);
