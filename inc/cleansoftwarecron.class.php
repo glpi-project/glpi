@@ -64,12 +64,10 @@ class CleanSoftwareCron extends CommonDBTM
       );
 
       // Move software with no versions in the thrashbin
-      $total += $task->addVolume(
-         self::deleteItems(
-            self::getSoftwareWithNoVersions(),
-            new Software(),
-            $max - $total
-         )
+      $total += self::deleteItems(
+         self::getSoftwareWithNoVersions(),
+         new Software(),
+         $max - $total
       );
 
       $task->addVolume($total);
