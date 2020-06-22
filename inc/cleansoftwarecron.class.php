@@ -40,6 +40,8 @@ class CleanSoftwareCron extends CommonDBTM
 
    const MAX_BATCH_SIZE = 2000;
 
+   static protected $notable = true;
+
    public static function cronInfo($name) {
       return [
          'description' => __("Remove software versions with no installation and software with no version"),
@@ -164,9 +166,5 @@ class CleanSoftwareCron extends CommonDBTM
       } while ($count > 0);
 
       return $total;
-   }
-
-   public function isEntityAssign() {
-      return false;
    }
 }
