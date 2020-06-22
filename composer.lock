@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8a4c7eb816c29cf5b540e863c14674e8",
+    "content-hash": "b0a619b67a42b0ed750e2c683e459560",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -2937,16 +2937,16 @@
         },
         {
             "name": "wapmorgan/unified-archive",
-            "version": "0.2.0",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wapmorgan/UnifiedArchive.git",
-                "reference": "4d136dcfd2ee4d9b83edf0eb1cd116a8a78181ff"
+                "reference": "74677318c376051fc695a3ab787e4471c00dce0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/4d136dcfd2ee4d9b83edf0eb1cd116a8a78181ff",
-                "reference": "4d136dcfd2ee4d9b83edf0eb1cd116a8a78181ff",
+                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/74677318c376051fc695a3ab787e4471c00dce0f",
+                "reference": "74677318c376051fc695a3ab787e4471c00dce0f",
                 "shasum": ""
             },
             "require": {
@@ -3026,7 +3026,7 @@
                 "tar",
                 "zip"
             ],
-            "time": "2020-02-02T00:42:45+00:00"
+            "time": "2020-06-13T19:42:51+00:00"
         }
     ],
     "packages-dev": [

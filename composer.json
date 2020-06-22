@@ -52,7 +52,7 @@
         "symfony/console": "^4.4",
         "tecnickcom/tcpdf": "^6.2",
         "true/punycode": "^2.1",
-        "wapmorgan/unified-archive": "^0.2.0"
+        "wapmorgan/unified-archive": "^1.0"
     },
     "require-dev": {
         "ext-xml": "*",
