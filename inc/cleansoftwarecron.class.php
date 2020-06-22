@@ -58,17 +58,17 @@ class CleanSoftwareCron extends CommonDBTM
 
       // Delete software versions with no installation
       $total += self::deleteItems(
-         self::getVersionsWithNoInstallation(),
+         self::getVersionsWithNoInstallationCriteria(),
          new SoftwareVersion(),
          $max
       );
 
       // Move software with no versions in the thrashbin
       $total += self::deleteItems(
-         self::getSoftwareWithNoVersions(),
+         self::getSoftwareWithNoVersionsCriteria(),
          new Software(),
          $max - $total
-      );
+      );Criteria
 
       $task->addVolume($total);
 
@@ -78,9 +78,9 @@ class CleanSoftwareCron extends CommonDBTM
    /**
     * Get all software versions which are not installed
     *
-    * @return DBmysqlIterator
+    * @return array
     */
-   protected static function getVersionsWithNoInstallation(): array {
+   protected static function getVersionsWithNoInstallationCriteria(): array {
       return [
          'SELECT' => 'id',
          'FROM'   => SoftwareVersion::getTable(),
@@ -113,8 +113,10 @@ class CleanSoftwareCron extends CommonDBTM
 
    /**
     * Get all software with no versions
+    *
+    * @return array
     */
-   protected static function getSoftwareWithNoVersions(): array {
+   protected static function getSoftwareWithNoVersionsCriteria(): array {
       return [
          'SELECT' => 'id',
          'FROM'   => Software::getTable(),
