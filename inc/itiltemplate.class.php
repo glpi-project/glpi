@@ -331,7 +331,7 @@ abstract class ITILTemplate extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (Session::haveRight(self::$rightname, READ)) {
+      if (Session::haveRight(static::$rightname, READ)) {
          switch ($item->getType()) {
             case 'TicketTemplate':
                return [
@@ -710,10 +710,10 @@ abstract class ITILTemplate extends CommonDropdown {
       }
 
       // Merge
-      $temtplate = new self();
+      $template = new static();
       foreach ($source as $merge => $data) {
          foreach ($data as $key => $val) {
-            $temtplate->getFromDB($target_id);
+            $template->getFromDB($target_id);
             if (!array_key_exists($key, $target[$merge])
                 && in_array($val['entities_id'], $_SESSION['glpiactiveentities'])) {
                $DB->update(
