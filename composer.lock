@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "92a5e86e8fe887c2865f5a917f4eced2",
+    "content-hash": "e337a9a2202c07105a2202199e5dd6ca",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -4522,29 +4522,29 @@
         },
         {
             "name": "scrutinizer/ocular",
-            "version": "1.7.0",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/scrutinizer-ci/ocular.git",
-                "reference": "65566d2e9c7c9e1f96502f5ffc49799b2a53ca29"
+                "reference": "3f0bb363ce09a8116d48a25f2a2f5a5fdb5db3aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scrutinizer-ci/ocular/zipball/65566d2e9c7c9e1f96502f5ffc49799b2a53ca29",
-                "reference": "65566d2e9c7c9e1f96502f5ffc49799b2a53ca29",
+                "url": "https://api.github.com/repos/scrutinizer-ci/ocular/zipball/3f0bb363ce09a8116d48a25f2a2f5a5fdb5db3aa",
+                "reference": "3f0bb363ce09a8116d48a25f2a2f5a5fdb5db3aa",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "~6.3",
                 "jms/serializer": "^1.0.0",
                 "phpoption/phpoption": "~1.0",
-                "symfony/console": "^2.1.0|~3.0|~4.0|~5.0",
-                "symfony/process": "~2.3|~3.0|~4.0|~5.0"
+                "symfony/console": "^2.1.0|~3.0|~4.0",
+                "symfony/process": "~2.3|~3.0|~4.0"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.2",
                 "phpunit/phpunit": "^4.8.0",
-                "symfony/filesystem": "~2.0|~3.0|~4.0|~5.0"
+                "symfony/filesystem": "~2.0|~3.0|~4.0"
             },
             "bin": [
                 "bin/ocular"
@@ -4559,7 +4559,7 @@
             "license": [
                 "Apache-2.0"
             ],
-            "time": "2019-11-25T10:14:15+00:00"
+            "time": "2019-06-15T16:36:51+00:00"
         },
         {
             "name": "sensiolabs/security-checker",

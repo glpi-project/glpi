@@ -64,7 +64,7 @@
         "natxet/cssmin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
         "php-parallel-lint/php-parallel-lint": "^1.1",
-        "scrutinizer/ocular": "^1.7",
+        "scrutinizer/ocular": "1.6|^1.7.1",
         "sensiolabs/security-checker": "^6.0"
     },
     "replace": {
