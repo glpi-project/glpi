@@ -670,8 +670,8 @@ $tables['glpi_crontasks'] = [
    ], [
       'id'            => 38,
       'itemtype'      => CleanSoftwareCron::getType(),
-      'name'          => CleanSoftwareCron::task_name,
-      'frequency'     => 60 * 60 * 24 * 30,
+      'name'          => CleanSoftwareCron::TASK_NAME,
+      'frequency'     => MONTH_TIMESTAMP,
       'param'         => 1000,
       'state'         => 1,
       'mode'          => 2,

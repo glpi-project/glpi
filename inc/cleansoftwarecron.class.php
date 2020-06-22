@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 class CleanSoftwareCron extends CommonDBTM
 {
-   const task_name = 'cleansoftware';
+   const TASK_NAME = 'cleansoftware';
 
    const MAX_BATCH_SIZE = 2000;
 

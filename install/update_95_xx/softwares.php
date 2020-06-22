@@ -32,14 +32,14 @@
 
 // CleanSoftwareCron cron task
 $cron_em = new CronTask();
-$tasks = $cron_em->find(['name' => CleanSoftwareCron::task_name]);
+$tasks = $cron_em->find(['name' => CleanSoftwareCron::TASK_NAME]);
 
 // Task already exist
 if (count($tasks) === 0) {
    $cron_em->add([
       'itemtype'      => CleanSoftwareCron::class,
-      'name'          => CleanSoftwareCron::task_name,
-      'frequency'     => 60 * 60 * 24 * 30, // Once per month
+      'name'          => CleanSoftwareCron::TASK_NAME,
+      'frequency'     => MONTH_TIMESTAMP,
       'state'         => 0,
       'param'         => 1000,
       'mode'          => 2,
