@@ -625,6 +625,89 @@ class Dropdown extends DbTestCase {
                ],
                'count' => 1
             ]
+         ], [
+            // search using id on CommonTreeDropdown but without "glpiis_ids_visible" set to true -> no results
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'TaskCategory',
+               'searchText'            => getItemByTypeName('TaskCategory', '_subcat_1', true),
+            ],
+            'expected'  => [
+               'results' => [
+               ],
+               'count' => 0
+            ],
+            'session_params' => [
+               'glpiis_ids_visible' => false
+            ]
+         ], [
+            // search using id on CommonTreeDropdown with "glpiis_ids_visible" set to true -> results
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'TaskCategory',
+               'searchText'            => getItemByTypeName('TaskCategory', '_subcat_1', true),
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'text'      => 'Root entity',
+                     'children'  => [
+                        0 => [
+                           'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'           => '_cat_1',
+                           'level'          => 1,
+                           'disabled'       => true
+                        ],
+                        1 => [
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1 (' . getItemByTypeName('TaskCategory', '_subcat_1', true) . ')',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
+                        ]
+                     ]
+                  ]
+               ],
+               'count' => 1
+            ],
+            'session_params' => [
+               'glpiis_ids_visible' => true
+            ]
+         ], [
+            // search using id on "not a CommonTreeDropdown" but without "glpiis_ids_visible" set to true -> no results
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'DocumentType',
+               'searchText'            => getItemByTypeName('DocumentType', 'markdown', true),
+            ],
+            'expected'  => [
+               'results' => [
+               ],
+               'count' => 0
+            ],
+            'session_params' => [
+               'glpiis_ids_visible' => false
+            ]
+         ], [
+            // search using id on "not a CommonTreeDropdown" with "glpiis_ids_visible" set to true -> results
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'DocumentType',
+               'searchText'            => getItemByTypeName('DocumentType', 'markdown', true),
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'id'             => getItemByTypeName('DocumentType', 'markdown', true),
+                     'text'           => 'markdown (' . getItemByTypeName('DocumentType', 'markdown', true) . ')',
+                     'title'          => 'markdown',
+                  ]
+               ],
+               'count' => 1
+            ],
+            'session_params' => [
+               'glpiis_ids_visible' => true
+            ]
          ]
       ];
    }
