@@ -68,7 +68,7 @@ class CleanSoftwareCron extends CommonDBTM
          self::getSoftwareWithNoVersionsCriteria(),
          new Software(),
          $max - $total
-      );Criteria
+      );
 
       $task->addVolume($total);
 
@@ -152,7 +152,7 @@ class CleanSoftwareCron extends CommonDBTM
 
       do {
          $scope['LIMIT'] = min($max - $total, self::MAX_BATCH_SIZE);
-         $items = $DB->request(self::getVersionsWithNoInstallation($scope));
+         $items = $DB->request($scope);
          $count = count($items);
          $total += $count;
 
