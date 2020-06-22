@@ -629,7 +629,13 @@ class Session {
       $TRANSLATE = new Laminas\I18n\Translator\Translator;
       $TRANSLATE->setLocale($trytoload);
 
-      \Locale::setDefault($trytoload);
+      if (class_exists('Locale')) {
+         // Locale class may be missing if intl extension is not installed.
+         // In this case, we may still want to be able to load translations (for instance for requirements checks).
+         \Locale::setDefault($trytoload);
+      } else {
+         Toolbox::logWarning('Missing required intl PHP extension');
+      }
 
       $cache = Config::getCache('cache_trans', 'core', false);
       if ($cache !== false && !defined('TU_USER')) {
