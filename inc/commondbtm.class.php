@@ -3665,17 +3665,19 @@ class CommonDBTM extends CommonGLPI {
           'name' => __('Characteristics')
       ];
 
-      $tab[] = [
-         'id'            => 1,
-         'table'         => $this->getTable(),
-         'field'         => 'name',
-         'name'          => __('Name'),
-         'datatype'      => 'itemlink',
-         'massiveaction' => false,
-         'autocomplete'  => true,
-      ];
+      if ($this->isField('name')) {
+         $tab[] = [
+            'id'            => 1,
+            'table'         => $this->getTable(),
+            'field'         => 'name',
+            'name'          => __('Name'),
+            'datatype'      => 'itemlink',
+            'massiveaction' => false,
+            'autocomplete'  => true,
+         ];
+      }
 
-      if ($this->maybeRecursive()) {
+      if ($this->isField('is_recursive')) {
          $tab[] = ['id'       => 86,
                    'table'    => $this->getTable(),
                    'field'    => 'is_recursive',

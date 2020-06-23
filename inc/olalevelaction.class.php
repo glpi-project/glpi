@@ -55,4 +55,8 @@ class OlaLevelAction extends RuleAction {
       // Override in order not to use glpi_rules table.
    }
 
+   function rawSearchOptions() {
+      // RuleAction search options requires value of rules_id field which does not exists here
+      return [];
+   }
 }

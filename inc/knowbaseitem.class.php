@@ -1827,23 +1827,6 @@ class KnowbaseItem extends CommonDBVisible {
          'right'              => 'all'
       ];
 
-      $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => __('Entity'),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '86',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool'
-      ];
-
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
