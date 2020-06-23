@@ -690,7 +690,7 @@ class Item_Ticket extends CommonDBRelation{
                   'WHERE'  => [
                      'users_id' => $userID
                   ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive()),
-                  'ORDER'  => 'name'
+                  'ORDER'  => $item->getNameField()
                ];
 
                if ($item->maybeDeleted()) {
@@ -710,7 +710,7 @@ class Item_Ticket extends CommonDBRelation{
 
                   while ($data = $iterator->next()) {
                      if (!isset($already_add[$itemtype]) || !in_array($data["id"], $already_add[$itemtype])) {
-                        $output = $data["name"];
+                        $output = $data[$item->getNameField()];
                         if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
                            $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                         }

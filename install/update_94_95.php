@@ -1183,7 +1183,6 @@ HTML
       'users_id_tech'         => 'integer',
       'groups_id_tech'        => 'integer',
       'others'                => 'string',
-      'is_helpdesk_visible'   => 'boolean',
       'is_deleted'            => 'boolean',
    ];
    $dindex = $dfields;
@@ -1195,9 +1194,6 @@ HTML
    foreach ($dfields as $dfield => $dtype) {
       if (!$DB->fieldExists('glpi_domains', $dfield)) {
          $options = ['after' => $after];
-         if ($dfield == 'is_helpdesk_visible') {
-            $options['value'] = 1;
-         }
          $migration->addField("glpi_domains", $dfield, $dtype, $options);
       }
       $after = $dfield;
@@ -2020,6 +2016,32 @@ HTML
       $migration->dropField(MailCollector::getTable(), 'use_kerberos');
    }
    // /use_kerberos
+
+   // add missing fields to simcard as they can be associated to tickets
+   if (!$DB->fieldExists(Item_DeviceSimcard::getTable(), 'users_id')) {
+      $migration->addField(Item_DeviceSimcard::getTable(), 'users_id', 'int', [
+         'value' => 0,
+         'after' => 'lines_id'
+      ]);
+      $migration->addKey(Item_DeviceSimcard::getTable(), 'users_id');
+   }
+   if (!$DB->fieldExists(Item_DeviceSimcard::getTable(), 'groups_id')) {
+      $migration->addField(Item_DeviceSimcard::getTable(), 'groups_id', 'int', [
+         'value' => 0,
+         'after' => 'users_id'
+      ]);
+      $migration->addKey(Item_DeviceSimcard::getTable(), 'groups_id');
+   }
+   // /add missing fields to simcard as they can be associated to tickets
+
+   // remove superflu is_helpdesk_visible
+   if ($DB->fieldExists(Appliance::getTable(), 'is_helpdesk_visible')) {
+      $migration->dropField(Appliance::getTable(), 'is_helpdesk_visible');
+   }
+   if ($DB->fieldExists(Domain::getTable(), 'is_helpdesk_visible')) {
+      $migration->dropField(Domain::getTable(), 'is_helpdesk_visible');
+   }
+   // /remove superflu is_helpdesk_visible
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

@@ -161,14 +161,6 @@ class Domain extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'is_helpdesk_visible',
-         'name'               => __('Associable to a ticket'),
-         'datatype'           => 'bool'
-      ];
-
-      $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
@@ -351,11 +343,8 @@ class Domain extends CommonDropdown {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Associable to a ticket') . "</td><td>";
-      Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
-      echo "</td>";
       echo "<td>" . __('Group in charge') . "</td>";
-      echo "<td>";
+      echo "<td colspan='3'>";
       Dropdown::show('Group', ['name'      => "groups_id_tech",
                                     'value'     => $this->fields["groups_id_tech"],
                                     'entity'    => $this->fields["entities_id"],

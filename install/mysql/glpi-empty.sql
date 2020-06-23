@@ -2224,6 +2224,8 @@ CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
   `states_id` int(11) NOT NULL DEFAULT '0',
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `lines_id` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
   `pin` varchar(255) NOT NULL DEFAULT '',
   `pin2` varchar(255) NOT NULL DEFAULT '',
   `puk` varchar(255) NOT NULL DEFAULT '',
@@ -2240,7 +2242,9 @@ CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
   KEY `otherserial` (`otherserial`),
   KEY `states_id` (`states_id`),
   KEY `locations_id` (`locations_id`),
-  KEY `lines_id` (`lines_id`)
+  KEY `lines_id` (`lines_id`),
+  KEY `users_id` (`users_id`),
+  KEY `groups_id` (`groups_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2431,7 +2435,6 @@ CREATE TABLE `glpi_domains` (
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
   `groups_id_tech` int(11) NOT NULL DEFAULT '0',
   `others` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_helpdesk_visible` tinyint(1) NOT NULL DEFAULT '1',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -2444,7 +2447,6 @@ CREATE TABLE `glpi_domains` (
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date_mod` (`date_mod`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
   KEY `date_expiration` (`date_expiration`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -8049,7 +8051,6 @@ CREATE TABLE `glpi_appliances` (
   `relationtype` int(11) NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `states_id` int(11) NOT NULL DEFAULT '0',
-  `is_helpdesk_visible` tinyint(1) NOT NULL DEFAULT '1',
   `externalidentifier` varchar(255) DEFAULT NULL,
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,

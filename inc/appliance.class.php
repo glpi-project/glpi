@@ -139,12 +139,6 @@ class Appliance extends CommonDBTM {
                 'name'          => __('Environment'),
                 'datatype'      => 'dropdown'];
 
-      $tab[] = ['id'            => '11',
-                'table'         => self::getTable(),
-                'field'         => 'is_helpdesk_visible',
-                'name'          => __('Associable to a ticket'),
-                'datatype'      => 'bool'];
-
       $tab[] = ['id'            => '12',
                 'table'         => self::getTable(),
                 'field'         => 'serial',
@@ -330,19 +324,11 @@ class Appliance extends CommonDBTM {
          echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id"]);
       }
       echo "</td>";
-      echo "<td rowspan='3'>".__('Comments')."</td>";
-      echo "<td rowspan='3' class='middle'>";
+      echo "<td rowspan='2'>".__('Comments')."</td>";
+      echo "<td rowspan='2' class='middle'>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Associable to a ticket')."</td><td>";
-      if ($canedit) {
-         Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
-      } else {
-         echo Dropdown::getYesNo($this->fields['is_helpdesk_visible']);
-      }
-      echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
       // dropdown relationtype added
       echo "<td>".__('Item to link')."</td><td>";
