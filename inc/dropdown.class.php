@@ -1458,6 +1458,7 @@ class Dropdown {
       $params['showItemSpecificity'] = '';
       $params['emptylabel']          = self::EMPTY_VALUE;
       $params['used']                = [];
+      $params['ajax_page']           = $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php";
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1488,7 +1489,7 @@ class Dropdown {
          $show_id  = Html::cleanId("show_".$params['items_id_name'].$rand);
 
          Ajax::updateItemOnSelectEvent($field_id, $show_id,
-                                       $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", $p);
+                                       $params['ajax_page'], $p);
 
          echo "<br><span id='$show_id'>&nbsp;</span>\n";
 
@@ -1501,7 +1502,7 @@ class Dropdown {
             echo "});</script>\n";
 
             $p["idtable"] = $params['default_itemtype'];
-            Ajax::updateItem($show_id, $CFG_GLPI["root_doc"]. "/ajax/dropdownAllItems.php", $p);
+            Ajax::updateItem($show_id, $params['ajax_page'], $p);
          }
       }
       return $rand;

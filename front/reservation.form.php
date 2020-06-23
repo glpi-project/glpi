@@ -38,7 +38,10 @@ Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 
 $rr = new Reservation();
 
-if (Session::getCurrentInterface() == "helpdesk") {
+if (isset($_REQUEST['ajax'])) {
+   Html::header_nocache();
+   header("Content-Type: text/html; charset=UTF-8");
+} else if (Session::getCurrentInterface() == "helpdesk") {
    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
@@ -54,8 +57,7 @@ if (isset($_POST["update"])) {
       $_POST['begin']   = $_POST['resa']["begin"];
       $_POST['end']     = $_POST['resa']["end"];
       if ($rr->update($_POST)) {
-         Html::redirect($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                        $_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
+         Html::back();
       }
    }
 
@@ -136,8 +138,8 @@ if (isset($_POST["update"])) {
          $toadd .= "&mois_courant=".intval($begin_month);
          $toadd .= "&annee_courante=".intval($begin_year);
       }
-      Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php$toadd");
    }
+   Html::back();
 
 } else if (isset($_GET["id"])) {
    if (!isset($_GET['begin'])) {
@@ -153,7 +155,9 @@ if (isset($_POST["update"])) {
    }
 }
 
-if (Session::getCurrentInterface() == "helpdesk") {
+if (isset($_REQUEST['ajax'])) {
+   Html::popFooter();
+} else if (Session::getCurrentInterface() == "helpdesk") {
    Html::helpFooter();
 } else {
    Html::footer();

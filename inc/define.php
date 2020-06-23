@@ -460,6 +460,8 @@ $dashboard_libs = [
    'charts', 'clipboard'
 ];
 
+$reservations_libs = ['fullcalendar', 'reservations'];
+
 $CFG_GLPI['javascript'] = [
    'central'   => [
       'central' => array_merge([
@@ -486,6 +488,7 @@ $CFG_GLPI['javascript'] = [
       'knowbaseitemtranslation' => ['tinymce'],
       'reminder'                => ['tinymce'],
       'remindertranslation'     => ['tinymce'],
+      'reservationitem'         => $reservations_libs,
    ],
    'management' => [
       'datacenter' => [
@@ -510,6 +513,11 @@ $CFG_GLPI['javascript'] = [
    'preference'   => ['clipboard'],
    'self-service' => ['tinymce']
 ];
+
+// push reservations libs to reservations itemtypes (they shoul in asset sector)
+foreach ($CFG_GLPI['reservation_types'] as $reservation_type) {
+   $CFG_GLPI['javascript']['assets'][strtolower($reservation_type)] = $reservations_libs;
+}
 
 //Maximum time, in miliseconds a saved search should not exeed
 //so we count it on display (using automatic mode).

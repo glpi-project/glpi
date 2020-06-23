@@ -1266,6 +1266,11 @@ class Html {
             Html::requireJs('fullcalendar');
          }
 
+         if (in_array('reservations', $jslibs)) {
+            echo Html::scss('css/reservations');
+            Html::requireJs('reservations');
+         }
+
          if (in_array('gantt', $jslibs)) {
             echo Html::css('public/lib/jquery-gantt.css');
             Html::requireJs('gantt');
@@ -4354,7 +4359,6 @@ JS;
             $link .= " class='pointer' ";
          }
       }
-      $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
       $action  = " submitGetLink('$action', {" .implode(', ', $javascriptArray) ."});";
 
       if (is_array($confirm) || strlen($confirm)) {
@@ -6457,6 +6461,8 @@ JAVASCRIPT;
             break;
          case 'photoswipe':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/photoswipe.js';
+         case 'reservations':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
             break;
          default:
             $found = false;
