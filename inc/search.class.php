@@ -558,16 +558,16 @@ class Search {
       $blacklist_tables = [];
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
          $itemtable          = $CFG_GLPI['union_search_type'][$data['itemtype']];
-         $blacklist_tables[] = getTableForItemType($data['itemtype']);
+         $blacklist_tables[] = $data['itemtype']::getTable();
       } else {
-         $itemtable = getTableForItemType($data['itemtype']);
+         $itemtable = $data['itemtype']::getTable();
       }
 
       // hack for AllAssets
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
          $entity_restrict = true;
       } else {
-         $entity_restrict = $data['item']->isEntityAssign();
+         $entity_restrict = $data['item']->isEntityAssign() && $data['item']->isField('entities_id');
       }
 
       // Construct the request
@@ -668,7 +668,7 @@ class Search {
             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
          } else {
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable, '', '',
-                                                       $data['item']->maybeRecursive());
+                                                       $data['item']->maybeRecursive() && $data['item']->isField('is_recursive'));
          }
       }
       $WHERE  = "";
@@ -756,7 +756,7 @@ class Search {
             $tmpquery = $query_num;
 
             foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
-               $ctable = getTableForItemType($ctype);
+               $ctable = $ctype::getTable();
                if (($citem = getItemForItemtype($ctype))
                    && $citem->canView()) {
                   // State case
@@ -777,7 +777,7 @@ class Search {
                      }
 
                   } else {// Ref table case
-                     $reftable = getTableForItemType($data['itemtype']);
+                     $reftable = $data['itemtype']::getTable();
                      if ($data['item'] && $data['item']->maybeDeleted()) {
                         $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
                                                    `is_deleted`",
@@ -831,7 +831,7 @@ class Search {
          $first = true;
          $QUERY = "";
          foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
-            $ctable = getTableForItemType($ctype);
+            $ctable = $ctype::getTable();
             if (($citem = getItemForItemtype($ctype))
                 && $citem->canView()) {
                if ($first) {
@@ -875,7 +875,7 @@ class Search {
                      $tmpquery
                   );
                } else {// Ref table case
-                  $reftable = getTableForItemType($data['itemtype']);
+                  $reftable = $data['itemtype']::getTable();
 
                   $tmpquery = $SELECT.", '$ctype' AS TYPE,
                                       `$reftable`.`id` AS refID, "."
@@ -1155,7 +1155,7 @@ class Search {
             $m_itemtype
          );
 
-         if (!in_array(getTableForItemType($m_itemtype), $already_link_tables)) {
+         if (!in_array($m_itemtype::getTable(), $already_link_tables)) {
             $FROM .= self::addMetaLeftJoin($data['itemtype'], $m_itemtype,
                                            $already_link_tables,
                                            $sopt["joinparams"]);
@@ -1164,7 +1164,7 @@ class Search {
          if (!in_array($sopt["table"]."_".$criterion['itemtype'], $already_link_tables)) {
 
             $FROM .= self::addLeftJoin($m_itemtype,
-                                       getTableForItemType($m_itemtype),
+                                       $m_itemtype::getTable(),
                                        $already_link_tables, $sopt["table"],
                                        $sopt["linkfield"], 1, $m_itemtype,
                                        $sopt["joinparams"], $sopt["field"]);
@@ -3213,7 +3213,7 @@ JAVASCRIPT;
 
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      if (($is_fkey_composite_on_self || $table != getTableForItemType($itemtype))
+      if (($is_fkey_composite_on_self || $table != $itemtype::getTable())
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
@@ -3363,7 +3363,7 @@ JAVASCRIPT;
    static function addDefaultSelect($itemtype) {
       global $DB;
 
-      $itemtable = getTableForItemType($itemtype);
+      $itemtable = $itemtype::getTable();
       $item      = null;
       $mayberecursive = false;
       if ($itemtype != 'AllAssets') {
@@ -3390,10 +3390,10 @@ JAVASCRIPT;
       if ($itemtable == 'glpi_entities') {
          $ret .= "`$itemtable`.`id` AS entities_id, '1' AS is_recursive, ";
       } else if ($mayberecursive) {
-         $ret .= $DB->quoteName("$itemtable.entities_id").", ";
-         //do not include field if not present in table
-         $item->getEmpty();
-         if (isset($item->fields['is_recursive'])) {
+         if ($item->isField('entities_id')) {
+            $ret .= $DB->quoteName("$itemtable.entities_id").", ";
+         }
+         if ($item->isField('is_recursive')) {
             $ret .= $DB->quoteName("$itemtable.is_recursive").", ";
          }
       }
@@ -3430,7 +3430,7 @@ JAVASCRIPT;
 
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      if (((($is_fkey_composite_on_self || $table != getTableForItemType($itemtype))
+      if (((($is_fkey_composite_on_self || $table != $itemtype::getTable())
             && (!isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($CFG_GLPI["union_search_type"][$itemtype] != $table)))
            || !empty($complexjoin))
@@ -3445,7 +3445,7 @@ JAVASCRIPT;
 
       if ($meta) {
          // $NAME = "META";
-         if (getTableForItemType($meta_type)!=$table) {
+         if ($meta_type::getTable() != $table) {
             $addtable  .= "_".$meta_type;
             $addtable2 .= "_".$meta_type;
          }
@@ -4093,7 +4093,7 @@ JAVASCRIPT;
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
       if (($table != 'asset_types')
-          && ($is_fkey_composite_on_self || $table != getTableForItemType($itemtype))
+          && ($is_fkey_composite_on_self || $table != $itemtype::getTable())
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;
@@ -4108,7 +4108,7 @@ JAVASCRIPT;
       }
 
       if ($meta
-          && (getTableForItemType($itemtype) != $inittable)) {
+          && ($itemtype::getTable() != $inittable)) {
          $table .= "_".$itemtype;
       }
 
@@ -4655,7 +4655,7 @@ JAVASCRIPT;
 
          if ((!isset($searchopt[$ID]['searchequalsonfield'])
               || !$searchopt[$ID]['searchequalsonfield'])
-            && ($table != getTableForItemType($itemtype)
+            && ($table != $itemtype::getTable()
                 || ($itemtype == 'AllAssets'))) {
             $out = " $link (`$table`.`id`".$SEARCH;
          } else {
@@ -4925,7 +4925,7 @@ JAVASCRIPT;
       $addmetanum = "";
       $rt         = $ref_table;
       $cleanrt    = $rt;
-      if ($meta && getTableForItemType($meta_type) != $new_table) {
+      if ($meta && $meta_type::getTable() != $new_table) {
          $addmetanum = "_".$meta_type;
          $AS         = " AS `$nt$addmetanum`";
          $nt         = $nt.$addmetanum;
@@ -5158,9 +5158,9 @@ JAVASCRIPT;
                                    $joinparams = []) {
       $LINK = " LEFT JOIN ";
 
-      $from_table = getTableForItemType($from_type);
+      $from_table = $from_type::getTable();
       $from_fk    = getForeignKeyFieldForTable($from_table);
-      $to_table   = getTableForItemType($to_type);
+      $to_table   = $to_type::getTable();
       $to_fk      = getForeignKeyFieldForTable($to_table);
 
       $complexjoin = self::computeComplexJoinID($joinparams);
@@ -5172,11 +5172,11 @@ JAVASCRIPT;
       switch ($to_type) {
          case 'User' :
          case 'Group' :
-            array_push($already_link_tables2, getTableForItemType($to_type));
+            array_push($already_link_tables2, $to_table);
             return "$LINK `$to_table`
                         ON (`$from_table`.`$to_fk` = `$to_table`.`id`) ";
          case 'Budget' :
-            array_push($already_link_tables2, getTableForItemType($to_type));
+            array_push($already_link_tables2, $to_table);
             return "$LINK `glpi_infocoms`
                         ON (`$from_table`.`id` = `glpi_infocoms`.`items_id`
                             AND `glpi_infocoms`.`itemtype` = '$from_type')
@@ -5210,7 +5210,7 @@ JAVASCRIPT;
          case 'Computer' :
             switch ($to_type) {
                case 'Printer' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
@@ -5221,7 +5221,7 @@ JAVASCRIPT;
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`) ";
 
                case 'Monitor' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
@@ -5232,7 +5232,7 @@ JAVASCRIPT;
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`) ";
 
                case 'Peripheral' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
@@ -5244,7 +5244,7 @@ JAVASCRIPT;
                                        = `glpi_peripherals`.`id`) ";
 
                case 'Phone' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
@@ -5255,7 +5255,7 @@ JAVASCRIPT;
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`) ";
 
                case 'Software' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_softwareversions_$to_type");
                   array_push($already_link_tables2, "glpi_softwarelicenses_$to_type");
                   return " $LINK `glpi_items_softwareversions`
@@ -5282,7 +5282,7 @@ JAVASCRIPT;
          case 'Monitor' :
             switch ($to_type) {
                case 'Computer' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`
@@ -5319,7 +5319,7 @@ JAVASCRIPT;
          case 'Printer' :
             switch ($to_type) {
                case 'Computer' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`
@@ -5335,7 +5335,7 @@ JAVASCRIPT;
          case 'Peripheral' :
             switch ($to_type) {
                case 'Computer' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id`
@@ -5351,7 +5351,7 @@ JAVASCRIPT;
          case 'Phone' :
             switch ($to_type) {
                case 'Computer' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`
@@ -5366,7 +5366,7 @@ JAVASCRIPT;
          case 'Software' :
             switch ($to_type) {
                case 'Computer' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_softwareversions_$to_type");
                   array_push($already_link_tables2, "glpi_softwareversions_$to_type");
                   return " $LINK `glpi_softwareversions` AS `glpi_softwareversions_$to_type`
@@ -6734,7 +6734,7 @@ JAVASCRIPT;
    **/
    static function getOptionNumber($itemtype, $field) {
 
-      $table = getTableForItemType($itemtype);
+      $table = $itemtype::getTable();
       $opts  = &self::getOptions($itemtype);
 
       foreach ($opts as $num => $opt) {

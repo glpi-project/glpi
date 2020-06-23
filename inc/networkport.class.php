@@ -1055,13 +1055,15 @@ class NetworkPort extends CommonDBChild {
          'massiveaction'      => false
       ];
 
-      $tab[] = [
-         'id'                 => '9',
-         'table'              => 'glpi_netpoints',
-         'field'              => 'name',
-         'name'               => _n('Network outlet', 'Network outlets', 1),
-         'datatype'           => 'dropdown'
-      ];
+      if ($this->isField('netpoints_id')) {
+         $tab[] = [
+            'id'                 => '9',
+            'table'              => 'glpi_netpoints',
+            'field'              => 'name',
+            'name'               => _n('Network outlet', 'Network outlets', 1),
+            'datatype'           => 'dropdown'
+         ];
+      }
 
       $tab[] = [
          'id'                 => '16',

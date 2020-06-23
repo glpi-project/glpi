@@ -72,8 +72,8 @@ class DeviceSimcard extends CommonDevice {
 
       $tab[] = [
             'id'                 => '12',
-            'table'              => 'glpi_devicesimcardvoltages',
-            'field'              => 'name',
+            'table'              => $this->getTable(),
+            'field'              => 'voltage',
             'name'               => __('Voltage'),
             'datatype'           => 'string',
             'autocomplete'       => true,

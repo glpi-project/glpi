@@ -651,15 +651,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          'datatype'           => 'specific'
       ];
 
-      $tab[] = [
-         'id'                 => '8',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'name'               => __('Group in charge of the task'),
-         'datatype'           => 'dropdown',
-         'condition'          => 'is_task'
-      ];
-
       return $tab;
    }
 

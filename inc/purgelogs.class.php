@@ -36,6 +36,8 @@ if (!defined('GLPI_ROOT')) {
 
 class PurgeLogs extends CommonDBTM {
 
+   static protected $notable = true;
+
    static function getTypeName($nb = 0) {
       return __('Logs purge');
    }

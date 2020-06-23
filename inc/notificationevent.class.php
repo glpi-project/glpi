@@ -39,6 +39,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationEvent extends CommonDBTM {
 
+   static protected $notable = true;
+
    static function getTypeName($nb = 0) {
       return _n('Event', 'Events', $nb);
    }
