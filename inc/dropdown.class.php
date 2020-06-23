@@ -2380,6 +2380,11 @@ class Dropdown {
                   $swhere["namet.value"] = ['LIKE', $search];
                }
 
+               if ($_SESSION['glpiis_ids_visible']
+                   && is_numeric($post['searchText']) && (int)$post['searchText'] == $post['searchText']) {
+                  $swhere[$table . '.' . $item->getIndexName()] = ['LIKE', "%{$post['searchText']}%"];
+               }
+
                // search also in displaywith columns
                if ($displaywith && count($post['displaywith'])) {
                   foreach ($post['displaywith'] as $with) {
@@ -2731,6 +2736,11 @@ class Dropdown {
          if (!empty($post['searchText'])) {
             $search = Search::makeTextSearchValue($post['searchText']);
             $orwhere = ["$table.$field" => ['LIKE', $search]];
+
+            if ($_SESSION['glpiis_ids_visible']
+                && is_numeric($post['searchText']) && (int)$post['searchText'] == $post['searchText']) {
+               $orwhere[$table . '.' . $item->getIndexName()] = ['LIKE', "%{$post['searchText']}%"];
+            }
 
             if (Session::haveTranslations($post['itemtype'], $field)) {
                $orwhere['namet.value'] = ['LIKE', $search];
