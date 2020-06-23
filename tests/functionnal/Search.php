@@ -498,15 +498,19 @@ class Search extends DbTestCase {
             'NetworkPortMigration', // Tables only exists in specific cases
             'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
             'TicketFollowup', // Deprecated
+            '/^TicketTemplate.*/', // Deprecated
+            '/^Computer_Software.*/', // Deprecated
          ]
       );
       sort($classes);
       foreach ($classes as $class) {
-         $item_class = new \ReflectionClass($itemtype);
-         if ($item_class->isAbstract()) {
+         $item_class = new \ReflectionClass($class);
+         if ($item_class->isAbstract() || $class::getTable() === '') {
+            // abstract class or class with "static protected $notable = true;" (which is a kind of abstract)
             continue;
          }
 
+         $item = new $class();
 
          //load all options; so rawSearchOptionsToAdd to be tested
          $options = \Search::getCleanedOptions($item->getType());
