@@ -409,6 +409,11 @@ class Calendar extends CommonDropdown {
          return false;
       }
 
+      if (!$this->hasAWorkingDay()) {
+         // Invalid calendar (no working day = unable to find any date inside calendar hours)
+         return false;
+      }
+
       $actualtime = strtotime($start);
       $timestart  = strtotime($start);
       $datestart  = date('Y-m-d', $timestart);
