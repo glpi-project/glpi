@@ -145,7 +145,12 @@ class Config extends CommonDBTM {
       // Trim automatically endig slash for url_base config as, for all existing occurences,
       // this URL will be prepended to something that starts with a slash.
       if (isset($input["url_base"]) && !empty($input["url_base"])) {
-         $input["url_base"] = rtrim($input["url_base"], '/');
+         if (Toolbox::isValidWebUrl($input["url_base"])) {
+            $input["url_base"] = rtrim($input["url_base"], '/');
+         } else {
+            Session::addMessageAfterRedirect(__('Invalid base URL!'), false, ERROR);
+            return false;
+         }
       }
 
       if (isset($input['allow_search_view']) && !$input['allow_search_view']) {

@@ -891,4 +891,23 @@ class Toolbox extends \GLPITestCase {
       $this->boolean(\Toolbox::isAPIDeprecated($class))->isEqualTo($is_deprecated);
    }
 
+   protected function urlProvider() {
+      return [
+         ['http://localhost', true],
+         ['https://localhost', true],
+         ['https;//localhost', false],
+         ['https://glpi-project.org', true],
+         ['https://glpi+project-org', true],
+         [' http://my.host.com', false],
+         ['http://my.host.com', true],
+
+      ];
+   }
+
+   /**
+    * @dataProvider urlProvider
+    */
+   public function testIsValidWebUrl($url, $result) {
+      $this->boolean(\Toolbox::isValidWebUrl($url))->isIdenticalTo((bool)$result, $url);
+   }
 }
