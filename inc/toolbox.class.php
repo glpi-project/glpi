@@ -3450,4 +3450,18 @@ HTML;
 
       return class_exists($class) && is_a($class, $deprecated, true);
    }
+
+   /**
+    * Check URL validity
+    *
+    * @param string $url The URL to check
+    *
+    * @return boolean
+    */
+   public static function isValidWebUrl($url): bool {
+      return (preg_match(
+         '#^http[s]?://[a-z0-9\-_]+(\.([a-z0-9\-]+\.)?[a-z]+)?#i',
+         $url
+      ) === 1);
+   }
 }
