@@ -6343,9 +6343,8 @@ class Ticket extends CommonITILObject {
 
             if ($delay > 0) {
                $calendars_id = Entity::getUsedConfig('calendars_id', $entity['id']);
-               if ($calendars_id > 0) {
-                  $calendar = new Calendar;
-                  $calendar->getFromDB($calendars_id);
+               $calendar = new Calendar();
+               if ($calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay()) {
                   $end_date = $calendar->computeEndDate(
                      date('Y-m-d H:i:s'),
                      - $delay * DAY_TIMESTAMP,

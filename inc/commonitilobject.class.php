@@ -1343,7 +1343,8 @@ abstract class CommonITILObject extends CommonDBTM {
          } else {
             // Using calendar
             if (($calendars_id > 0)
-                && $calendar->getFromDB($calendars_id)) {
+                && $calendar->getFromDB($calendars_id)
+                && $calendar->hasAWorkingDay()) {
                if ($this->fields['time_to_resolve'] > 0) {
                   // compute new due date using calendar
                   $this->updates[]                 = "time_to_resolve";
@@ -1383,7 +1384,8 @@ abstract class CommonITILObject extends CommonDBTM {
             // Change doesn't have internal_time_to_resolve
             // Using calendar
             if (($calendars_id > 0)
-                && $calendar->getFromDB($calendars_id)) {
+                && $calendar->getFromDB($calendars_id)
+                && $calendar->hasAWorkingDay()) {
                if ($this->fields['internal_time_to_resolve'] > 0) {
                   // compute new internal_time_to_resolve using calendar
                   $this->updates[]                          = "internal_time_to_resolve";
