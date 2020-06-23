@@ -872,7 +872,7 @@ abstract class LevelAgreement extends CommonDBChild {
             $cal          = new Calendar();
             $work_in_days = ($this->fields['definition_time'] == 'day');
 
-            if ($cal->getFromDB($this->fields['calendars_id'])) {
+            if ($cal->getFromDB($this->fields['calendars_id']) && $cal->hasAWorkingDay()) {
                return $cal->computeEndDate($start_date, $delay,
                                            $additional_delay, $work_in_days,
                                            $this->fields['end_of_working_day']);
@@ -915,7 +915,7 @@ abstract class LevelAgreement extends CommonDBChild {
                // Based on a calendar
                if ($this->fields['calendars_id'] > 0) {
                   $cal = new Calendar();
-                  if ($cal->getFromDB($this->fields['calendars_id'])) {
+                  if ($cal->getFromDB($this->fields['calendars_id']) && $cal->hasAWorkingDay()) {
                      return $cal->computeEndDate($start_date, $delay,
                                                  $level->fields['execution_time'] + $additional_delay,
                                                  $work_in_days);
