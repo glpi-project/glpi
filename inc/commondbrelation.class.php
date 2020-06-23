@@ -314,6 +314,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             'id'                 => '3',
             'table'              => getTableForItemType($itemtype1),
             'field'              => $itemtype1::getIndexName(),
+            'linkfield'          => static::$items_id_1,
             'name'               => call_user_func([$itemtype1, 'getTypeName']),
             'datatype'           => 'text',
             'massiveaction'      => false
@@ -326,6 +327,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             'id'                 => '4',
             'table'              => getTableForItemType($itemtype2),
             'field'              => $itemtype2::getIndexName(),
+            'linkfield'          => static::$items_id_2,
             'name'               => call_user_func([$itemtype2, 'getTypeName']),
             'datatype'           => 'text',
             'massiveaction'      => false
