@@ -225,7 +225,7 @@ $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Comp
                                                   'Line', 'Certificate', 'Domain', 'Appliance', 'Item_DeviceSimcard'];
 
 $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software', 'Item_DeviceSimcard'];
+                                                  'Peripheral', 'Phone', 'Printer', 'Software'];
 
 $CFG_GLPI["linkuser_types"]               = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
