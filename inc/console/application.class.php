@@ -274,7 +274,7 @@ class Application extends BaseApplication {
     */
    private function initDb() {
 
-      if (!class_exists('DB', false)) {
+      if (!class_exists('DB', false) || !class_exists('mysqli', false)) {
          return;
       }
 
