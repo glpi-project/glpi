@@ -897,10 +897,12 @@ class Toolbox extends \GLPITestCase {
          ['https://localhost', true],
          ['https;//localhost', false],
          ['https://glpi-project.org', true],
-         ['https://glpi+project-org', true],
+         ['https://glpi+project-org', false],
          [' http://my.host.com', false],
          ['http://my.host.com', true],
-
+         ['http://my.host.com/', true],
+         ['http://my.host.com/glpi/', true],
+         ['http://my.host.com /', false],
       ];
    }
 

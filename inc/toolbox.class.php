@@ -3460,7 +3460,7 @@ HTML;
     */
    public static function isValidWebUrl($url): bool {
       return (preg_match(
-         '#^http[s]?://[a-z0-9\-_]+(\.([a-z0-9\-]+\.)?[a-z]+)?#i',
+         '#^http[s]?://[a-z0-9\-_]+(\.([a-z0-9\-]+\.)?[a-z]+)?(/.*)?$#i',
          $url
       ) === 1);
    }
