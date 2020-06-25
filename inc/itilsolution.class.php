@@ -280,7 +280,9 @@ class ITILSolution extends CommonDBChild {
    function prepareInputForAdd($input) {
       $input['users_id'] = Session::getLoginUserID();
 
-      if ($this->item == null) {
+      if ($this->item == null
+         || (isset($input['itemtype']) && isset($input['items_id']))
+      ) {
          $this->item = new $input['itemtype'];
          $this->item->getFromDB($input['items_id']);
       }
