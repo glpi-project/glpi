@@ -70,18 +70,11 @@ class InstallCommand extends AbstractConfigureCommand {
    const ERROR_SCHEMA_CREATION_FAILED = 7;
 
    /**
-    * Error code returned when system requirements are missing.
-    *
-    * @var integer
-    */
-   const ERROR_MISSING_REQUIREMENTS = 8;
-
-   /**
     * Error code returned when failing to create encryption key file.
     *
     * @var integer
     */
-   const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 9;
+   const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 8;
 
    protected function configure() {
 
@@ -105,6 +98,13 @@ class InstallCommand extends AbstractConfigureCommand {
          InputOption::VALUE_NONE,
          __('Force execution of installation, overriding existing database')
       );
+   }
+
+   protected function initialize(InputInterface $input, OutputInterface $output) {
+
+      parent::initialize($input, $output);
+
+      $this->outputWarningOnMissingOptionnalRequirements();
    }
 
    protected function interact(InputInterface $input, OutputInterface $output) {
@@ -138,10 +138,6 @@ class InstallCommand extends AbstractConfigureCommand {
 
       $default_language = $input->getOption('default-language');
       $force            = $input->getOption('force');
-
-      if (!$this->checkCoreRequirements($input, $output)) {
-         return self::ERROR_MISSING_REQUIREMENTS;
-      }
 
       if ($this->isDbAlreadyConfigured()
           && $this->isInputContainingConfigValues($input, $output)

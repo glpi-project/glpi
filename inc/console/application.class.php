@@ -41,6 +41,8 @@ use DB;
 use GLPI;
 use Glpi\Application\ErrorHandler;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
+use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\System\RequirementsManager;
 use Plugin;
 use Session;
 use Toolbox;
@@ -58,6 +60,13 @@ use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends BaseApplication {
+
+   /**
+    * Error code returned when system requirements are missing.
+    *
+    * @var integer
+    */
+   const ERROR_MISSING_REQUIREMENTS = 128; // start application codes at 128 be sure to be different from commands codes
 
    /**
     * Pointer to $CFG_GLPI.
@@ -214,6 +223,11 @@ class Application extends BaseApplication {
    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output) {
 
       $begin_time = microtime(true);
+
+      if ($command instanceof GlpiCommandInterface && $command->mustCheckMandatoryRequirements()
+          && !$this->checkCoreMandatoryRequirements()) {
+         return self::ERROR_MISSING_REQUIREMENTS;
+      }
 
       $result = parent::doRunCommand($command, $input, $output);
 
@@ -431,5 +445,32 @@ class Application extends BaseApplication {
       }
 
       return !$input->hasParameterOption('--no-plugins', true);
+   }
+
+   /**
+    * Check if core mandatory requirements are OK.
+    *
+    * @return boolean  true if requirements are OK, false otherwise
+    */
+   private function checkCoreMandatoryRequirements(): bool {
+      $db = property_exists($this, 'db') ? $this->db : null;
+
+      $requirements_manager = new RequirementsManager();
+      $core_requirements = $requirements_manager->getCoreRequirementList(
+         $db instanceof \DBmysql && $db->connected ? $db : null
+      );
+
+      if ($core_requirements->hasMissingMandatoryRequirements()) {
+         $message = __('Some mandatory system requirements are missing.')
+            . ' '
+            . __('Run "php bin/console glpi:system:check_requirements" for more details.');
+         $this->output->writeln(
+            '<error>' . $message . '</error>',
+            OutputInterface::VERBOSITY_QUIET
+         );
+         return false;
+      }
+
+      return true;
    }
 }

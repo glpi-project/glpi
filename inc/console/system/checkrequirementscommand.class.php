@@ -97,4 +97,9 @@ class CheckRequirementsCommand extends AbstractCommand {
 
       return 0; // Success
    }
+
+   public function mustCheckMandatoryRequirements(): bool {
+
+      return false;
+   }
 }
