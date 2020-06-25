@@ -38,15 +38,15 @@ if (!defined('GLPI_ROOT')) {
 
 use DB;
 
+use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\System\RequirementsManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-abstract class AbstractCommand extends Command {
+abstract class AbstractCommand extends Command implements GlpiCommandInterface {
 
    /**
     * @var DB
@@ -169,40 +169,33 @@ abstract class AbstractCommand extends Command {
    }
 
    /**
-    * Check if core requirements are OK.
+    * Output a warning in an optionnal requirement is missing.
     *
-    * @param InputInterface $input
-    * @param OutputInterface $output
-    *
-    * @return boolean  true if requirements are OK, false otherwise
+    * @return void
     */
-   protected function checkCoreRequirements(InputInterface $input, OutputInterface $output) {
+   protected function outputWarningOnMissingOptionnalRequirements() {
+      if ($this->output->isQuiet()) {
+         return;
+      }
+
       $db = property_exists($this, 'db') ? $this->db : null;
 
       $requirements_manager = new RequirementsManager();
       $core_requirements = $requirements_manager->getCoreRequirementList(
-         $db instanceof \DBmysql && $db ? $db : null
+         $db instanceof \DBmysql && $db->connected ? $db : null
       );
-
-      if ($core_requirements->hasMissingMandatoryRequirements()) {
-         $message = __('Some mandatory system requirements are missing.')
-            . ' '
-            . __('Run "php bin/console glpi:system:check_requirements" for more details.');
-         $output->writeln(
-            '<error>' . $message . '</error>',
-            OutputInterface::VERBOSITY_QUIET
-         );
-         return false;
-      }
       if ($core_requirements->hasMissingOptionalRequirements()) {
          $message = __('Some optional system requirements are missing.')
             . ' '
             . __('Run "php bin/console glpi:system:check_requirements" for more details.');
-         $output->writeln(
+         $this->output->writeln(
             '<comment>' . $message . '</comment>',
             OutputInterface::VERBOSITY_NORMAL
          );
       }
+   }
+
+   public function mustCheckMandatoryRequirements(): bool {
 
       return true;
    }
