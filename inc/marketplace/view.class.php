@@ -630,7 +630,7 @@ HTML;
          if (array_key_exists('installation_url', $plugin_data) && $can_be_downloaded) {
             $warning = "";
             if ($has_an_update) {
-               $warning = __("The plugin has an available update but its directory is not writable.")."<br>";
+               $warning = __s("The plugin has an available update but its directory is not writable.")."<br>";
             }
 
             $warning.= sprintf(
