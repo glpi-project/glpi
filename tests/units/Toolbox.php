@@ -903,6 +903,12 @@ class Toolbox extends \GLPITestCase {
          ['http://my.host.com/', true],
          ['http://my.host.com/glpi/', true],
          ['http://my.host.com /', false],
+         ['http://localhost:8080', true],
+         ['http://localhost:8080/', true],
+         ['http://my.host.com:8080/glpi/', true],
+         ['http://my.host.com:8080 /', false],
+         ['http://my.host.com: 8080/', false],
+         ['http://my.host.com :8080/', false],
       ];
    }
 
