@@ -184,13 +184,13 @@ class NetworkPort_Vlan extends CommonDBRelation {
          if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
             $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
          }
-         echo "<td class='center b'>
+         echo "<td class='b'>
                <a href='".$CFG_GLPI["root_doc"]."/front/vlan.form.php?id=".$data["id"]."'>".$name.
               "</a>";
          echo "</td>";
-         echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
-         echo "</td><td class='center'>".Dropdown::getYesNo($data["tagged"])."</td>";
-         echo "<td class='numeric'>".$data["tag"]."</td>";
+         echo "<td>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+         echo "</td><td>".Dropdown::getYesNo($data["tagged"])."</td>";
+         echo "<td>".$data["tag"]."</td>";
          echo "</tr>";
       }
       if ($number) {
