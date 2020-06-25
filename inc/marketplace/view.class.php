@@ -469,17 +469,17 @@ JS;
 
       $home_url = strlen($plugin['homepage_url'] ?? "")
          ? "<a href='{$plugin['homepage_url']}' target='_blank' >
-            <i class='fas fa-home add_tooltip' title='".__("Homepage", 'marketplace')."'></i>
+            <i class='fas fa-home add_tooltip' title='".__s("Homepage")."'></i>
             </a>"
          : "";
       $issues_url = strlen($plugin['issues_url'] ?? "")
          ? "<a href='{$plugin['issues_url']}' target='_blank' >
-            <i class='fas fa-bug add_tooltip' title='".__("Get help", 'marketplace')."'></i>
+            <i class='fas fa-bug add_tooltip' title='".__s("Get help")."'></i>
             </a>"
          : "";
       $readme_url = strlen($plugin['readme_url'] ?? "")
          ? "<a href='{$plugin['readme_url']}' target='_blank' >
-            <i class='fas fa-book add_tooltip' title='".__("Readme", 'marketplace')."'></i>
+            <i class='fas fa-book add_tooltip' title='".__s("Readme")."'></i>
             </a>"
          : "";
       $icon    = self::getPluginIcon($plugin);
@@ -771,12 +771,12 @@ HTML;
          $html = "<div class='offers'>
             <a href='".GLPI_NETWORK_SERVICES."' target='_blank'
                class='badge glpi-network'
-               title='".__("You must have a GLPI Network subscription to get this plugin")."'>
+               title='".__s("You must have a GLPI Network subscription to get this plugin")."'>
                <i class='fas fa-star'></i>".__('Network')."
             </a>
             <a href='".GLPI_NETWORK_SERVICES."' target='_blank'
                class='badge $offerkey'
-               title='".sprintf(__("You need at least the %s subscription level to get this plugin"), $offerlabel)."'>
+               title='".sprintf(__s("You need at least the %s subscription level to get this plugin"), $offerlabel)."'>
                $offerlabel
             </a>
          </div>";
@@ -947,7 +947,7 @@ HTML;
             $('#marketplace_dialog').dialog({
                'modal': true,
                'width': 'auto',
-               'title': \"".__("Switch to marketplace")."\"
+               'title': \"".__s("Switch to marketplace")."\"
             });
          });");
       }
