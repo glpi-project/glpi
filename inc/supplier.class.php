@@ -126,8 +126,8 @@ class Supplier extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "phonenumber");
       echo "</td>";
-      echo "<td rowspan='8' class='middle right'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='8'>";
+      echo "<td rowspan='7' class='middle'>".__('Comments')."</td>";
+      echo "<td class='middle' rowspan='7'>";
       echo "<textarea cols='45' rows='13' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
@@ -173,9 +173,8 @@ class Supplier extends CommonDBTM {
       echo "<td>".__('Country')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "country");
-      echo "</td></tr>";
+      echo "</td>";
 
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Active')."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_active', $this->fields['is_active']);
