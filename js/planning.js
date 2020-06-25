@@ -575,8 +575,9 @@ var GLPIPlanning  = {
                },
                position: {
                   my: 'center',
-                  at: 'center',
-                  viewport: $(window)
+                  at: 'top',
+                  viewport: $(window),
+                  of: $('#page')
                }
             });
 
