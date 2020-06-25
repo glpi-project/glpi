@@ -88,7 +88,8 @@ class Plugin extends CommonDBTM {
 
 
    static function getMenuContent() {
-      $menu = parent::getMenuContent();
+      $menu = parent::getMenuContent() ?: [];
+
       if (static::canView()) {
          $redirect_mp = MarketplaceController::getPluginPageConfig();
 
