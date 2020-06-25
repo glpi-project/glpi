@@ -53,7 +53,6 @@ class GLPINetwork {
       }
 
       $registration_key = self::getRegistrationKey();
-      $informations = self::getRegistrationInformations();
 
       $canedit = Config::canUpdate();
       if ($canedit) {
@@ -72,12 +71,29 @@ class GLPINetwork {
          "</td></tr>";
       }
 
+      $curl_error = null;
+      if (!self::isServicesAvailable($curl_error)) {
+         echo '<tr>';
+         echo '<td colspan="2">';
+         echo '<div class="warning">';
+         echo '<i class="fa fa-exclamation-triangle fa-2x"></i>';
+         echo __("GLPI Network services website seems not available from your network or offline");
+         if ($curl_error !== null) {
+            echo '<br />';
+            echo sprintf(__('Error was: %s'), $curl_error);
+         }
+         echo '</div>';
+         echo '</td>';
+         echo '</tr>';
+      }
+
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='glpinetwork_registration_key'>" . __('Registration key') . "</label></td>";
       echo "<td>" . Html::textarea(['name' => 'glpinetwork_registration_key', 'value' => $registration_key, 'display' => false]) . "</td>";
       echo "</tr>";
 
       if ($registration_key !== "") {
+         $informations = self::getRegistrationInformations();
          if (!empty($informations['validation_message'])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td></td>";
@@ -241,8 +257,16 @@ class GLPINetwork {
       Session::addMessageAfterRedirect(self::getErrorMessage(), false, ERROR);
    }
 
-   public static function isServicesAvailable() {
-      $content = \Toolbox::callCurl(GLPI_NETWORK_REGISTRATION_API_URL);
+   /**
+    * Executes a curl call
+    *
+    * @param string $curl_error  will contains original curl error string if an error occurs
+    *
+    * @return boolean
+    */
+   public static function isServicesAvailable(&$curl_error = null) {
+      $error_msg = null;
+      $content = \Toolbox::callCurl(GLPI_NETWORK_REGISTRATION_API_URL, [], $error_msg, $curl_error);
       return strlen($content) > 0;
    }
 

@@ -1638,13 +1638,14 @@ class Toolbox {
    /**
     * Executes a curl call
     *
-    * @param string $url    URL to retrieve
-    * @param array  $eopts  Extra curl opts
-    * @param string $msgerr set if problem encountered (default NULL)
+    * @param string $url         URL to retrieve
+    * @param array  $eopts       Extra curl opts
+    * @param string $msgerr      will contains a human readable error string if an error occurs of url returns empty contents
+    * @param string $curl_error  will contains original curl error string if an error occurs
     *
     * @return string
     */
-   public static function callCurl($url, array $eopts = [], &$msgerr = null) {
+   public static function callCurl($url, array $eopts = [], &$msgerr = null, &$curl_error = null) {
       global $CFG_GLPI;
 
       $content = "";
@@ -1689,21 +1690,21 @@ class Toolbox {
 
       curl_setopt_array($ch, $opts);
       $content = curl_exec($ch);
-      $errstr = curl_error($ch);
+      $curl_error = curl_error($ch) ?: null;
       curl_close($ch);
 
-      if ($errstr) {
+      if ($curl_error !== null) {
          if (empty($CFG_GLPI["proxy_name"])) {
             //TRANS: %s is the error string
             $msgerr = sprintf(
                __('Connection failed. If you use a proxy, please configure it. (%s)'),
-               $errstr
+               $curl_error
             );
          } else {
             //TRANS: %s is the error string
             $msgerr = sprintf(
                __('Failed to connect to the proxy server (%s)'),
-               $errstr
+               $curl_error
             );
          }
          $content = '';
