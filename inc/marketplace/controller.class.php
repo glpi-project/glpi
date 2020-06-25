@@ -147,6 +147,36 @@ class Controller extends CommonGLPI {
       return $plugin_inst->fields['state'] ?? Plugin::UNKNOWN;
    }
 
+
+   /**
+    * Get plugin archive from its download URL and serve it to the browser.
+    *
+    * @return void
+    */
+   function proxifyPluginArchive(): void {
+      // close session to prevent blocking other requests
+      session_write_close();
+
+      $api    = self::getAPI();
+      $plugin = $api->getPlugin($this->plugin_key, true);
+
+      if (!array_key_exists('installation_url', $plugin) || empty($plugin['installation_url'])) {
+         return;
+      }
+
+      $url      = $plugin['installation_url'];
+      $filename = basename(parse_url($url, PHP_URL_PATH));
+      $dest     = GLPI_TMP_DIR . '/' . mt_rand() . '.' . $filename;
+
+      if (!$api->downloadArchive($url, $dest, $this->plugin_key, false)) {
+         http_response_code(500);
+         echo(__('Unable to download plugin archive.'));
+         return;
+      }
+
+      Toolbox::sendFile($dest, $filename);
+   }
+
    /**
     * Check if plugin can be overwritten.
     *
