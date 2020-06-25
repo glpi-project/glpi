@@ -582,7 +582,7 @@ HTML;
     * @return string the buttons html
     */
    static function getButtons(string $plugin_key = ""): string {
-      global $PLUGIN_HOOKS;
+      global $CFG_GLPI, $PLUGIN_HOOKS;
 
       $rand               = mt_rand();
       $plugin_inst        = new Plugin;
@@ -638,7 +638,13 @@ HTML;
                GLPI_ROOT . '/plugins'
             );
 
-            $buttons .="<a href='{$plugin_data['installation_url']}' target='_blank'>
+            // Use "marketplace.download.php" proxy if archive is downloadable from GLPI marketplace plugins API
+            // as this API will refuse to serve the archive if registration key is not set in headers.
+            $download_url = Toolbox::startsWith($plugin_data['installation_url'], GLPI_MARKETPLACE_PLUGINS_API_URI)
+               ? $CFG_GLPI['root_doc'] . '/front/marketplace.download.php?key=' . $plugin_key
+               : $plugin_data['installation_url'];
+
+            $buttons .="<a href='{$download_url}' target='_blank'>
                <button title='$warning' class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
             </a>";
          }

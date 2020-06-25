@@ -448,47 +448,51 @@ class Plugins {
     *
     * @return bool
     */
-   public function downloadArchive(string $url, string $dest, string $plugin_key): bool {
-      if (!isset($_SESSION['marketplace_dl_progress'])) {
-         $_SESSION['marketplace_dl_progress'] = [];
+   public function downloadArchive(string $url, string $dest, string $plugin_key, bool $track_progress = true): bool {
+      if ($track_progress) {
+         if (!isset($_SESSION['marketplace_dl_progress'])) {
+            $_SESSION['marketplace_dl_progress'] = [];
+         }
+         $_SESSION['marketplace_dl_progress'][$plugin_key] = 0;
       }
-      $_SESSION['marketplace_dl_progress'][$plugin_key] = 0;
 
       // close session to permits polling of progress by frontend
       session_write_close();
 
-      $response = $this->request(
-         $url,
-         [
-            'headers'  => [
-               'Accept' => '*/*',
-            ],
-            'sink'     => $dest,
+      $options = [
+         'headers'  => [
+            'Accept' => '*/*',
+         ],
+         'sink'     => $dest,
+      ];
+      if ($track_progress) {
+         // track download progress
+         $options['progress'] = function($downloadTotal, $downloadedBytes) use ($plugin_key) {
+            // restart session to store percentage of download for this plugin
+            Session::start();
 
-            // track download progress
-            'progress' => function($downloadTotal, $downloadedBytes) use ($plugin_key) {
-               // restart session to store percentage of download for this plugin
-               Session::start();
-
-               // calculate percent based on the size and store it in session
-               $percent = 0;
-               if ($downloadTotal > 0) {
-                  $percent = round($downloadedBytes * 100 / $downloadTotal);
-               }
-               $_SESSION['marketplace_dl_progress'][$plugin_key] = $percent;
-
-               // reclose session to avoid blocking ajax requests
-               session_write_close();
+            // calculate percent based on the size and store it in session
+            $percent = 0;
+            if ($downloadTotal > 0) {
+               $percent = round($downloadedBytes * 100 / $downloadTotal);
             }
-         ]
-      );
+            $_SESSION['marketplace_dl_progress'][$plugin_key] = $percent;
+
+            // reclose session to avoid blocking ajax requests
+            session_write_close();
+         };
+      }
+
+      $response = $this->request($url, $options);
 
       // restart session to permits write of vars
       // (later, we also may have some addMessageAfterRedirect to provider errors to user)
       Session::start();
 
-      // force finish of download (to avoid keeping js loop in case of errors)
-      $_SESSION['marketplace_dl_progress'][$plugin_key] = 100;
+      if ($track_progress) {
+         // force finish of download (to avoid keeping js loop in case of errors)
+         $_SESSION['marketplace_dl_progress'][$plugin_key] = 100;
+      }
 
       return $response !== false && $response->getStatusCode() === 200;
    }
