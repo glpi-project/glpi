@@ -132,7 +132,11 @@ var filterPluginList = function(page, force) {
    var dom_tag      = marketplace.find('.plugins-tags .tag.active');
    var tag_key      = dom_tag.length ? dom_tag.data('tag') : "";
    var filter_str   = marketplace.find('.filter-list').val();
-   var sort         = marketplace.find(".sort-control").select2('data')[0].element.value;
+   var sort         = 'sort-alpha-desc';
+
+   if (marketplace.find(".sort-control").length > 0) {
+      sort = marketplace.find(".sort-control").select2('data')[0].element.value;
+   }
 
    plugins_list
       .append("<div class='loading-plugins'><i class='fas fa-spinner fa-pulse'></i></div>");
