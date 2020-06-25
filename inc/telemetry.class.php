@@ -293,7 +293,8 @@ class Telemetry extends CommonGLPI {
          if ($errstr != '') {
             $message .= ": $errstr";
          }
-         throw new \RuntimeException($message);
+         Toolbox::logError($message);
+         return null; // null = Action aborted
       }
    }
 
