@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use \DbTestCase;
+use Ticket;
 
 /* Test for inc/itilsolution.class.php */
 
@@ -353,5 +354,38 @@ class ITILSolution extends DbTestCase {
       $this->boolean($success)->isTrue();
       $expected = 'a href=&quot;/front/document.send.php?docid=';
       $this->string($instance->fields['content'])->contains($expected);
+   }
+
+   public function testAddMultipleSolution() {
+      $em_ticket = new Ticket();
+      $em_solution = new \ITILSolution();
+
+      $tickets = [];
+
+      // Create 10 tickets
+      for ($i=0; $i<10; $i++) {
+         $id = $em_ticket->add([
+            'name'    => "test",
+            'content' => "test",
+         ]);
+         $this->integer($id);
+
+         $ticket = new Ticket();
+         $ticket->getFromDB($id);
+         $tickets[] = $ticket;
+      }
+
+      // Solve all created tickets
+      foreach ($tickets as $ticket) {
+         $id = $em_solution->add([
+            'itemtype' => $ticket::getType(),
+            'items_id' => $ticket->fields['id'],
+            'content'  => 'test'
+         ]);
+         $this->integer($id);
+
+         $ticket->getFromDB($ticket->fields['id']);
+         $this->integer($ticket->fields['status'])->isEqualTo(Ticket::SOLVED);
+      }
    }
 }
