@@ -1514,6 +1514,16 @@ HTML
    /** SSO logout URL */
 
    /** A doc_item to rule them all! */
+   $migration->dropKey('glpi_documents_items', 'unicity');
+   $migration->migrationOneTable('glpi_documents_items');
+   $migration->addKey(
+      'glpi_documents_items',
+      ['documents_id', 'itemtype', 'items_id', 'timeline_position'],
+      'unicity',
+      'UNIQUE'
+   );
+   $migration->migrationOneTable('glpi_documents_items');
+
    $itemtypes = [
       'ITILFollowup' => 'content',
       'ITILSolution' => 'content',
@@ -1549,7 +1559,7 @@ HTML
    }
    $ditem = new Document_Item();
    foreach ($docs_input as $doc_input) {
-      if (!$ditem->getFromDBbyCrit($doc_input)) {
+      if (!$ditem->alreadyExists($doc_input)) {
          $ditem->add($doc_input);
       }
    }

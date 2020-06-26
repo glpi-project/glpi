@@ -113,15 +113,6 @@ class Document_Item extends CommonDBRelation{
          return false;
       }
 
-      // Avoid duplicate entry
-      if (countElementsInTable($this->getTable(),
-                              ['documents_id' => $input['documents_id'],
-                               'itemtype'     => $input['itemtype'],
-                               'items_id'     => $input['items_id']]) > 0) {
-         Toolbox::logError('Duplicated document item relation');
-         return false;
-      }
-
       // #1476 - Inject ID of the actual user to known who attach an already existing document
       // to another item
       if (!isset($input['users_id'])) {
@@ -136,7 +127,35 @@ class Document_Item extends CommonDBRelation{
          }
       }
 
+      // Avoid duplicate entry
+      if ($this->alreadyExists($input)) {
+         Toolbox::logError('Duplicated document item relation');
+         return false;
+      }
+
       return parent::prepareInputForAdd($input);
+   }
+
+   /**
+    * Check if relation already exists.
+    *
+    * @param array $input
+    *
+    * @return boolean
+    *
+    * @since 9.5.0
+    */
+   public function alreadyExists(array $input): bool {
+      $criteria = [
+         'documents_id'      => $input['documents_id'],
+         'itemtype'          => $input['itemtype'],
+         'items_id'          => $input['items_id'],
+         'timeline_position' => $input['timeline_position'] ?? null
+      ];
+      if (array_key_exists('timeline_position', $input) && !empty($input['timeline_position'])) {
+         $criteria['timeline_position'] = $input['timeline_position'];
+      }
+      return countElementsInTable($this->getTable(), $criteria) > 0;
    }
 
 
