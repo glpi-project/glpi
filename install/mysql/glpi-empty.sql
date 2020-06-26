@@ -2393,7 +2393,7 @@ CREATE TABLE `glpi_documents_items` (
   `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`documents_id`,`itemtype`,`items_id`),
+  UNIQUE KEY `unicity` (`documents_id`,`itemtype`,`items_id`,`timeline_position`),
   KEY `item` (`itemtype`,`items_id`,`entities_id`,`is_recursive`),
   KEY `users_id` (`users_id`),
   KEY `date_creation` (`date_creation`)
