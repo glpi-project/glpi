@@ -2043,6 +2043,10 @@ HTML
    }
    // /remove superflu is_helpdesk_visible
 
+   // GLPI Network registration key config
+   $migration->addConfig(['glpinetwork_registration_key' => null]);
+   // /GLPI Network registration key config
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
