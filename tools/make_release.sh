@@ -67,7 +67,6 @@ git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING
 echo "Building application"
 $WORKING_DIR/glpi/tools/build_glpi.sh
 
-\find files/ -type f ! -name 'remove.txt' -exec rm -rf {} \;
 echo "Creating tarball";
 tar -c -z -f $TARBALL_PATH -C $WORKING_DIR glpi
 
