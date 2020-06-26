@@ -154,7 +154,7 @@ class RuleAsset extends Rule {
       $actions['groups_id']['name']           = __('Group');
       $actions['groups_id']['type']           = 'dropdown';
       $actions['groups_id']['table']          = 'glpi_groups';
-      $actions['groups_id']['condition']      = 'is_itemgroup';
+      $actions['groups_id']['condition']      = ['is_itemgroup' => 1];
 
       $actions['users_id_tech']['table']      = 'glpi_users';
       $actions['users_id_tech']['type']       = 'dropdown_users';
