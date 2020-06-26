@@ -13602,11 +13602,11 @@ msgstr "General"
 
 #: inc/config.class.php:151
 msgid "Invalid base URL!"
-msgstr ""
+msgstr "¡URL base inválida!"
 
 #: inc/config.class.php:160
 msgid "Invalid API base URL!"
-msgstr ""
+msgstr "¡URL base de API no válida!"
 
 #: inc/config.class.php:270
 #: inc/console/maintenance/enablemaintenancemodecommand.class.php:81
@@ -15778,6 +15778,8 @@ msgstr "Por razones de seguridad, el modo SELinux debería cumplirse."
 #, php-format
 msgid "SELinux boolean %s is %s, some features may require this to be on."
 msgstr ""
+"SELinux boolean %s esta %s, algunas características pueden requerir que esto"
+" esté activado."
 
 #: inc/system/requirement/selinux.class.php:135
 msgid "SELinux configuration is OK."
@@ -16789,7 +16791,7 @@ msgstr "Y recupera tu clave para pegarla a continuación"
 #: inc/glpinetwork.class.php:83
 #, php-format
 msgid "Error was: %s"
-msgstr ""
+msgstr "El error era: %s"
 
 #: inc/glpinetwork.class.php:91
 msgid "Registration key"
@@ -17179,7 +17181,7 @@ msgstr "Enlace directo"
 
 #: inc/dashboard/grid.class.php:786
 msgid "Iframe"
-msgstr ""
+msgstr "Iframe"
 
 #: inc/dashboard/grid.class.php:866
 msgid "Or share the dashboard to these target objects:"
@@ -17266,11 +17268,11 @@ msgstr "Principales grupos asignados por caso"
 
 #: inc/dashboard/grid.class.php:1203
 msgid "Editable markdown card"
-msgstr ""
+msgstr "Tarjeta de descuento editable"
 
 #: inc/dashboard/grid.class.php:1206
 msgid "Toggle edit mode to edit content"
-msgstr ""
+msgstr "Alternar el modo de edición para editar contenido"
 
 #: inc/change_problem.class.php:64
 msgid "Link Problem/Change"
@@ -17751,7 +17753,7 @@ msgstr "Configuración de análisis de impacto"
 
 #: inc/impact.class.php:1818
 msgid "Enabled itemtypes"
-msgstr ""
+msgstr "Tipos de elementos habilitados"
 
 #: inc/devicecasetype.class.php:42 inc/dropdown.class.php:903
 msgid "Case type"
@@ -20852,11 +20854,11 @@ msgstr ""
 
 #: inc/console/plugin/installcommand.class.php:65
 msgid "\"-p foo\" will set \"foo\" param value to true"
-msgstr ""
+msgstr "\"-p foo\" will set \"foo\" valor de parámetro a verdadero"
 
 #: inc/console/plugin/installcommand.class.php:67
 msgid "\"-p foo=bar\" will set \"foo\" param value to \"bar\""
-msgstr ""
+msgstr "\"-p foo=bar\" establecerá \"foo\" valor de parámetro \"bar\""
 
 #: inc/console/plugin/installcommand.class.php:76
 msgid ""
@@ -20894,7 +20896,7 @@ msgstr "¿Cuáles complementos quiere instalar (separados por coma)?"
 
 #: inc/console/plugin/installcommand.class.php:232
 msgid "User name defined by --username option is invalid."
-msgstr ""
+msgstr "Nombre de usuario definido por --username la opción no es válida."
 
 #: inc/console/plugin/installcommand.class.php:285
 #, php-format
@@ -20921,7 +20923,7 @@ msgstr "Correr comando sobre todos los complementos"
 
 #: inc/console/plugin/abstractplugincommand.class.php:82
 msgid "Option --all is not compatible with usage of directory argument."
-msgstr ""
+msgstr "Opción -all no es compatible con el uso del argumento de directorio."
 
 #: inc/console/plugin/abstractplugincommand.class.php:93
 msgid "All plugins"
@@ -21019,7 +21021,7 @@ msgstr "Migrando tabla \"%s\"..."
 #: inc/console/migration/myisamtoinnodbcommand.class.php:109
 #, php-format
 msgid "Migration of table \"%s\"  failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "Migración de tabla \"%s\" falló con el mensaje \"(%s) %s\"."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:122
 #: inc/console/migration/timestampscommand.class.php:212
@@ -21032,12 +21034,12 @@ msgstr "Migración realizada."
 
 #: inc/console/migration/timestampscommand.class.php:51
 msgid "Convert \"datetime\" fields to \"timestamp\" to use timezones."
-msgstr ""
+msgstr "Convertir campos \"datetime\" a \"timestamp\" para usar zonas horarias."
 
 #: inc/console/migration/timestampscommand.class.php:83
 #, php-format
 msgid "Found %s table(s) requiring migration."
-msgstr ""
+msgstr "Se encontraron %s tabla(s) que requiere migración."
 
 #: inc/console/migration/timestampscommand.class.php:188
 #, php-format
@@ -21047,7 +21049,7 @@ msgstr "Corriendo %s"
 #: inc/console/migration/timestampscommand.class.php:196
 #, php-format
 msgid "Update of `%s` failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "Actualización de `%s` falló con el mensaje \"(%s) %s\"."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:91
 msgid "Migrate Domains plugin data into GLPI core tables"
@@ -21084,11 +21086,13 @@ msgstr ""
 #: inc/console/migration/racksplugintocorecommand.class.php:216
 msgid "It is better to make a backup of your existing data before continuing."
 msgstr ""
+"Es mejor realizar una copia de seguridad de los datos existentes antes de "
+"continuar."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:135
 #: inc/console/migration/racksplugintocorecommand.class.php:226
 msgid "Do you want to launch migration ?"
-msgstr ""
+msgstr "¿Quieres iniciar la migración?"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:174
 #: inc/console/migration/racksplugintocorecommand.class.php:269
@@ -21189,7 +21193,7 @@ msgstr "Importando el dominio %s..."
 #: inc/console/migration/domainsplugintocorecommand.class.php:472
 #, php-format
 msgid "Unable to find mapping for type %s."
-msgstr ""
+msgstr "No se puede encontrar la asignación para el tipo %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:513
 #, php-format
@@ -21242,16 +21246,18 @@ msgstr "No se encontraron elementos de dominios."
 #: inc/console/migration/buildmissingtimestampscommand.class.php:52
 msgid "Set missing `date_creation` and `date_mod` values using log entries."
 msgstr ""
+"Establecer valores faltantes `date_creation` y `date_mod` utilizando "
+"entradas de registro."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:92
 #, php-format
 msgid "Filling `%s`.`%s`..."
-msgstr ""
+msgstr "Relleno `%s`.`%s`..."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:112
 #, php-format
 msgid "Update of `%s`.`%s` failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "Actualización de `%s`.`%s` falló con el mensaje \"(%s) %s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:161
 msgid "Migrate Racks plugin data into GLPI core tables"
@@ -21320,6 +21326,8 @@ msgid ""
 "Other models and items cannot be migrated when --no-interaction option is "
 "used."
 msgstr ""
+"Otros modelos y elementos no podrán ser migrados cuando se utilice la opción"
+" --no-interaction."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:476
 msgid "Creating datacenter..."
@@ -21343,11 +21351,13 @@ msgid ""
 "We found %d models for other items. For each, we will ask you where you want"
 " to import it."
 msgstr ""
+"Nosotros encontramos %d modelos para otros elementos. Para cada uno, le "
+"preguntaremos dónde desea importarlo."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:547
 #, php-format
 msgid "Where do you want to import \"%s\" ?"
-msgstr ""
+msgstr "¿Dónde quieres importar \"%s\"?"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:551
 msgid "Peripheral"

@@ -17,7 +17,6 @@
 # Allan Lopes Prado <allanlopesprado@hotmail.com>, 2019
 # Matheus Santos <mths.brn@gmail.com>, 2019
 # Andrei Bernardo Simoni <andrei_simoni@hotmail.com>, 2019
-# Arthur Ramos Schaefer <arthur.r.schaefer@gmail.com>, 2019
 # George Rpp <george.concei@hotmail.com>, 2019
 # Carlos Filho <ccorrea@gmail.com>, 2019
 # Guilherme Teixeira <guilmarco@gmail.com>, 2019
@@ -34,6 +33,7 @@
 # George Maia <georgemaia@gmail.com>, 2020
 # Hélio Guardabaxo <helio.guardabaxo@gmail.com>, 2020
 # Stevenes Donato <stevenesdonato@gmail.com>, 2020
+# Arthur Ramos Schaefer <arthur.r.schaefer@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -42,7 +42,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-25 12:26+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Stevenes Donato <stevenesdonato@gmail.com>, 2020\n"
+"Last-Translator: Arthur Ramos Schaefer <arthur.r.schaefer@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2624,7 +2624,7 @@ msgstr "%s atualizou um alerta"
 #: front/marketplace.php:42 inc/marketplace/controller.class.php:68
 #: inc/marketplace/view.class.php:68
 msgid "Marketplace"
-msgstr ""
+msgstr "Marketplace"
 
 #: front/rule.php:42
 msgid "Rule type"
@@ -3832,8 +3832,8 @@ msgstr "Chipset"
 #: inc/domainrecord.class.php:47
 msgid "Domain record"
 msgid_plural "Domains records"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Registro de domínio"
+msgstr[1] "Registro de domínios"
 
 #: inc/domainrecord.class.php:54 inc/domainrecord.class.php:56
 msgid "Record"
@@ -3944,7 +3944,7 @@ msgstr "Você não tem permissão para editar este tipo de registro"
 
 #: inc/domainrecord.class.php:417
 msgid "Link a record"
-msgstr ""
+msgstr "Relacionar um registro"
 
 #: inc/domainrecord.class.php:441 inc/domainrecord.class.php:443
 #: inc/ticket.class.php:4034 inc/ticket.class.php:4903
@@ -6171,8 +6171,8 @@ msgstr[1] "Tipos de equipamento de rede"
 #: inc/rule.class.php:411 inc/dropdown.class.php:877
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de telefone"
+msgstr[1] "Tipos de telefones"
 
 #: inc/rulecollection.class.php:2134 inc/rule.class.php:435
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:56
@@ -6301,7 +6301,7 @@ msgstr "O plugin %1$s não é compatível com CSRF!"
 
 #: inc/plugin.class.php:759
 msgid "Plugin prerequisites are not matching, it cannot be activated."
-msgstr ""
+msgstr "Pré-requisitos de plugin não conferem, não é possível ativar."
 
 #: inc/plugin.class.php:791
 #, php-format
@@ -6310,7 +6310,7 @@ msgstr "O plugin %1$s foi ativado!"
 
 #: inc/plugin.class.php:801
 msgid "Plugin configuration must be done, it cannot be activated."
-msgstr ""
+msgstr "Configuração de plugin deve ser realizada, não é possível ativar."
 
 #: inc/plugin.class.php:840
 #, php-format
@@ -7741,8 +7741,8 @@ msgstr "Mover"
 #: inc/applianceenvironment.class.php:40
 msgid "Appliance environment"
 msgid_plural "Appliances environments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ambiente de appliance"
+msgstr[1] "Ambientes de appliances"
 
 #: inc/domainrecordtype.class.php:86
 msgid "Record type"
@@ -7974,7 +7974,7 @@ msgstr "Apagar uma regra global"
 #: inc/commonitilobject.class.php:7202 inc/commonitilobject.class.php:7230
 #: inc/notificationtargetcommonitilobject.class.php:1241
 msgid "Helpdesk"
-msgstr ""
+msgstr "Helpdesk"
 
 #. TRANS: R for Recursive
 #: inc/search.class.php:5621 inc/search.class.php:5660
@@ -8008,7 +8008,7 @@ msgstr "Ver planejamento"
 #: inc/search.class.php:6176 inc/commonitilobject.class.php:2891
 #: inc/commonitilobject.class.php:6173
 msgid "Helpdesk group"
-msgstr ""
+msgstr "Grupo de Helpdesk"
 
 #: inc/search.class.php:6424 inc/commondbtm.class.php:4621
 #: inc/entity.class.php:1943 inc/entity.class.php:1988
@@ -8243,7 +8243,7 @@ msgstr "Um item é necessário"
 
 #: inc/item_cluster.class.php:287
 msgid "A cluster is required"
-msgstr ""
+msgstr "É necessário um cluster"
 
 #: inc/devicepowersupplymodel.class.php:44 inc/dropdown.class.php:964
 msgid "Device power supply model"
@@ -10152,8 +10152,8 @@ msgstr "Adicionar um fornecedor"
 #: inc/dropdown.class.php:845
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de acompanhamento"
+msgstr[1] "Modelos de acompanhamentos"
 
 #: inc/itilfollowuptemplate.class.php:61 inc/itilfollowuptemplate.class.php:87
 #: inc/itilfollowup.class.php:869 inc/itilfollowup.class.php:1082
@@ -10265,26 +10265,29 @@ msgid ""
 "GLPI Network services website seems not available from your network or "
 "offline"
 msgstr ""
+"Serviços da GLPI Network parecem não estarem disponíveis a partir da sua "
+"rede ou desconectado"
 
 #: inc/marketplace/view.class.php:144
 msgid "Maybe you could setup a proxy"
-msgstr ""
+msgstr "Talvez você precise configurar um proxy"
 
 #: inc/marketplace/view.class.php:146
 msgid "or please check later"
-msgstr ""
+msgstr "ou, por favor, verifique novamente"
 
 #: inc/marketplace/view.class.php:156
 msgid "Your GLPI Network registration is not valid."
-msgstr ""
+msgstr "Seu registro da GLPI Network não é válido"
 
 #: inc/marketplace/view.class.php:157
 msgid "A registration, at least a free one, is required to use marketplace!"
 msgstr ""
+"Um registro, pelo menos um gratuito, é necessário para usar o Marketplace!"
 
 #: inc/marketplace/view.class.php:158
 msgid "Register on GLPI Network"
-msgstr ""
+msgstr "Registrar na GLPI Network"
 
 #: inc/marketplace/view.class.php:159 inc/rule.class.php:812
 #: inc/rule.class.php:968 inc/rule.class.php:2531
@@ -10293,12 +10296,12 @@ msgstr "e"
 
 #: inc/marketplace/view.class.php:160
 msgid "fill your registration key in setup."
-msgstr ""
+msgstr "preencha com sua chave de registro na configuração."
 
 #: inc/marketplace/view.class.php:331
 #, php-format
 msgid "We can't write on the markeplace directory (%s)."
-msgstr ""
+msgstr "Não é possível salvar no diretório do marketplace (%s)"
 
 #: inc/marketplace/view.class.php:332
 msgid ""
