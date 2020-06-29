@@ -82,6 +82,13 @@ class ErrorHandler {
    ];
 
    /**
+    * Exit code to use on shutdown.
+    *
+    * @var int|null
+    */
+   private $exit_code = null;
+
+   /**
     * Flag to indicate if error should be forwarded to PHP internal error handler.
     *
     * @var boolean
@@ -170,7 +177,7 @@ class ErrorHandler {
          // Fatal errors are handled by shutdown function
          // (as some are not recoverable and cannot be handled here).
          // Store backtrace to be able to use it there.
-         $this->last_fatal_trace = $trace;
+         $this->last_fatal_trace = $error_trace;
          return $return;
       }
 
@@ -230,6 +237,8 @@ class ErrorHandler {
     * @return void
     */
    public function handleException(\Throwable $exception) {
+      $this->exit_code = 255;
+
       $error_type = sprintf(
          'Uncaught Exception %s',
          get_class($exception)
@@ -259,6 +268,8 @@ class ErrorHandler {
 
       $error = error_get_last();
       if ($error && in_array($error['type'], self::FATAL_ERRORS)) {
+         $this->exit_code = 255;
+
          $error_type = sprintf(
             'PHP %s (%s)',
             $this->codeToString($error['type']),
@@ -273,13 +284,22 @@ class ErrorHandler {
 
          // debug_backtrace is not available in shutdown function
          // so get stored trace if any exists
-         $trace = $this->last_fatal_trace ?? [];
-         $error_trace = $this->getTraceAsString($trace);
+         $error_trace = $this->last_fatal_trace ?? '';
 
          $log_level = self::ERROR_LEVEL_MAP[$error['type']];
 
          $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
          $this->outputDebugMessage($error_type, $error_description, $log_level);
+      }
+
+      if ($this->exit_code !== null) {
+         // If an exit code is defined, register a shutdown function that will be called after
+         // thoose that are already defined, in order to exit the script with the correct code.
+         $exit_code = $this->exit_code;
+         register_shutdown_function(
+            'register_shutdown_function',
+            function () use ($exit_code) { exit($exit_code); }
+         );
       }
    }
 
