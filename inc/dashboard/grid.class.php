@@ -1326,7 +1326,7 @@ HTML;
       foreach (self::$all_dashboards as $key => $dashboard) {
          if ($can_view_all
          || self::canViewSpecificicDashboard($key)) {
-            $options_dashboards[$key] = $dashboard['title'] ?? $key;;
+            $options_dashboards[$key] = $dashboard['name'] ?? $key;;
          }
       }
 
