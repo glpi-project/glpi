@@ -394,7 +394,7 @@ class ContractCost extends CommonDBChild {
                                              Contract::getTypeName(1), $contract->getName()));
 
          $total = 0;
-         while ($data = $iterator->next) {
+         while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_2' ".
                   ($canedit
                      ? "style='cursor:pointer' onClick=\"viewEditCost".$data['contracts_id']."_".
