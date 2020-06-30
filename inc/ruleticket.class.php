@@ -552,7 +552,7 @@ class RuleTicket extends Rule {
                                                                       __('Time to resolve'));
       $criterias['slas_id_ttr']['linkfield']                = 'slas_id_ttr';
       $criterias['slas_id_ttr']['type']                     = 'dropdown';
-      $criterias['slas_id_ttr']['condition']                = "`glpi_slas`.`type` = '".SLM::TTR."'";
+      $criterias['slas_id_ttr']['condition']                = ['glpi_slas.type' => SLM::TTR];
 
       $criterias['slas_id_tto']['table']                    = 'glpi_slas';
       $criterias['slas_id_tto']['field']                    = 'name';
@@ -560,7 +560,7 @@ class RuleTicket extends Rule {
                                                                       __('Time to own'));
       $criterias['slas_id_tto']['linkfield']                = 'slas_id_tto';
       $criterias['slas_id_tto']['type']                     = 'dropdown';
-      $criterias['slas_id_tto']['condition']                = "`glpi_slas`.`type` = '".SLM::TTO."'";
+      $criterias['slas_id_tto']['condition']                = ['glpi_slas.type' => SLM::TTO];
 
       $criterias['olas_id_ttr']['table']                    = 'glpi_olas';
       $criterias['olas_id_ttr']['field']                    = 'name';
@@ -568,7 +568,7 @@ class RuleTicket extends Rule {
                                                                       __('Time to resolve'));
       $criterias['olas_id_ttr']['linkfield']                = 'olas_id_ttr';
       $criterias['olas_id_ttr']['type']                     = 'dropdown';
-      $criterias['olas_id_ttr']['condition']                = "`glpi_olas`.`type` = '".SLM::TTR."'";
+      $criterias['olas_id_ttr']['condition']                = ['glpi_olas.type' => SLM::TTR];
 
       $criterias['olas_id_tto']['table']                    = 'glpi_olas';
       $criterias['olas_id_tto']['field']                    = 'name';
@@ -576,7 +576,7 @@ class RuleTicket extends Rule {
                                                                       __('Time to own'));
       $criterias['olas_id_tto']['linkfield']                = 'olas_id_tto';
       $criterias['olas_id_tto']['type']                     = 'dropdown';
-      $criterias['olas_id_tto']['condition']                = "`glpi_olas`.`type` = '".SLM::TTO."'";
+      $criterias['olas_id_tto']['condition']                = ['glpi_olas.type' => SLM::TTO];
 
       $criterias['_date_creation_calendars_id'] = [
          'name'            => __("Creation date is a working hour in calendar"),
@@ -687,7 +687,7 @@ class RuleTicket extends Rule {
                                                                       __('Time to resolve'));
       $actions['slas_id_ttr']['linkfield']                  = 'slas_id_ttr';
       $actions['slas_id_ttr']['type']                       = 'dropdown';
-      $actions['slas_id_ttr']['condition']                  = "`glpi_slas`.`type` = '".SLM::TTR."'";
+      $actions['slas_id_ttr']['condition']                  = ['glpi_slas.type' => SLM::TTR];
 
       $actions['slas_id_tto']['table']                      = 'glpi_slas';
       $actions['slas_id_tto']['field']                      = 'name';
@@ -695,7 +695,7 @@ class RuleTicket extends Rule {
                                                                       __('Time to own'));
       $actions['slas_id_tto']['linkfield']                  = 'slas_id_tto';
       $actions['slas_id_tto']['type']                       = 'dropdown';
-      $actions['slas_id_tto']['condition']                  = "`glpi_slas`.`type` = '".SLM::TTO."'";
+      $actions['slas_id_tto']['condition']                  = ['glpi_slas.type' => SLM::TTO];
 
       $actions['olas_id_ttr']['table']                      = 'glpi_olas';
       $actions['olas_id_ttr']['field']                      = 'name';
@@ -703,7 +703,7 @@ class RuleTicket extends Rule {
                                                                       __('Time to resolve'));
       $actions['olas_id_ttr']['linkfield']                  = 'olas_id_ttr';
       $actions['olas_id_ttr']['type']                       = 'dropdown';
-      $actions['olas_id_ttr']['condition']                  = "`glpi_olas`.`type` = '".SLM::TTR."'";
+      $actions['olas_id_ttr']['condition']                  = ['glpi_olas.type' => SLM::TTR];
 
       $actions['olas_id_tto']['table']                      = 'glpi_olas';
       $actions['olas_id_tto']['field']                      = 'name';
@@ -711,7 +711,7 @@ class RuleTicket extends Rule {
                                                                       __('Time to own'));
       $actions['olas_id_tto']['linkfield']                  = 'olas_id_tto';
       $actions['olas_id_tto']['type']                       = 'dropdown';
-      $actions['olas_id_tto']['condition']                  = "`glpi_olas`.`type` = '".SLM::TTO."'";
+      $actions['olas_id_tto']['condition']                  = ['glpi_olas.type' => SLM::TTO];
 
       $actions['users_id_validate']['name']                 = sprintf(__('%1$s - %2$s'),
                                                                       __('Send an approval request'),
