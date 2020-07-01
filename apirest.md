@@ -600,7 +600,7 @@ Note: To download a document see [Download a document file](#download-a-document
   * *get_hateoas* (default: true): Show relation of item in a links attribute. Optional.
   * *only_id* (default: false): keep only id keys in returned data. Optional.
   * *range* (default: 0-50):  a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200. Optional.
-  * *sort* (default 1): id of the searchoption to sort by. Optional.
+  * *sort* (default 1): name of the field to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
   * *searchText* (default NULL): array of filters to pass on the query (with key = field and value the text to search)
   * *is_deleted* (default: false): Return deleted element. Optional.
