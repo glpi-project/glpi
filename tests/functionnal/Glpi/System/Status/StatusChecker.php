@@ -36,7 +36,7 @@ use AuthLDAP;
 use AuthMail;
 use CronTask;
 use DbTestCase;
-use \Glpi\System\Status\StatusChecker as GlpiStatusChecker;
+use Glpi\System\Status\StatusChecker as GlpiStatusChecker;
 
 class StatusChecker extends DbTestCase {
 

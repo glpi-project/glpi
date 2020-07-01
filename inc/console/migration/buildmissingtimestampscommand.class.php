@@ -39,7 +39,6 @@ if (!defined('GLPI_ROOT')) {
 use CommonDBTM;
 use Glpi\Console\AbstractCommand;
 use Log;
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

@@ -132,7 +132,7 @@ class MassiveAction {
                      }
                   }
                   if (empty($POST['actions']) && false === $single) {
-                     throw new Exception(__('No action available'));
+                     throw new \Exception(__('No action available'));
                   }
                   // Initial items is used to define $_SESSION['glpimassiveactionselected']
                   $POST['initial_items'] = $POST['items'];
@@ -142,7 +142,7 @@ class MassiveAction {
                case 'specialize' :
                   if (!isset($POST['action'])) {
                      Toolbox::logError('Implementation error !');
-                     throw new Exception(__('Implementation error !'));
+                     throw new \Exception(__('Implementation error !'));
                   }
                   if ($POST['action'] == -1) {
                      // Case when no action is choosen
@@ -152,7 +152,7 @@ class MassiveAction {
                      // First, get the name of current action !
                      if (!isset($POST['actions'][$POST['action']])) {
                         Toolbox::logError('Implementation error !');
-                        throw new Exception(__('Implementation error !'));
+                        throw new \Exception(__('Implementation error !'));
                      }
                      $POST['action_name'] = $POST['actions'][$POST['action']];
                      $remove_from_post[]  = 'actions';
@@ -254,14 +254,14 @@ class MassiveAction {
             }
          }
          if ($this->nb_items == 0) {
-            throw new Exception(__('No selected items'));
+            throw new \Exception(__('No selected items'));
          }
 
       } else {
          if (($stage != 'process')
              || (!isset($_SESSION['current_massive_action'][$GET['identifier']]))) {
             Toolbox::logError('Implementation error !');
-            throw new Exception(__('Implementation error !'));
+            throw new \Exception(__('Implementation error !'));
          }
          $identifier = $GET['identifier'];
          foreach ($_SESSION['current_massive_action'][$identifier] as $attribute => $value) {

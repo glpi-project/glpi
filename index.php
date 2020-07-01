@@ -37,8 +37,6 @@ if (version_compare(PHP_VERSION, '7.2.0') < 0) {
 }
 
 
-use Glpi\Event;
-
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
 include (GLPI_ROOT . "/inc/based_config.php");

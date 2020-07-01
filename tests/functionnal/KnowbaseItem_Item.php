@@ -32,7 +32,7 @@
 
 namespace test\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/knowbaseitem_item.class.php */
 

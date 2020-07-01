@@ -38,9 +38,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Psr\SimpleCache\CacheInterface;
-use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Marketplace\Controller as MarketplaceController;
+use Glpi\Marketplace\View as MarketplaceView;
+use Psr\SimpleCache\CacheInterface;
 
 class Plugin extends CommonDBTM {
 
@@ -1693,7 +1693,7 @@ class Plugin extends CommonDBTM {
     */
    public function checkGlpiVersion($infos) {
       if (!isset($infos['min']) && !isset($infos['max'])) {
-         throw new LogicException('Either "min" or "max" is required for GLPI requirements!');
+         throw new \LogicException('Either "min" or "max" is required for GLPI requirements!');
       }
 
       $glpiVersion = $this->isGlpiPrever() ? $this->getGlpiPrever() : $this->getGlpiVersion();
@@ -1739,7 +1739,7 @@ class Plugin extends CommonDBTM {
       } else if (isset($infos['max'])) {
          $compat = !(version_compare($this->getPhpVersion(), $infos['max'], 'ge'));
       } else {
-         throw new LogicException('Either "min" or "max" is required for PHP requirements!');
+         throw new \LogicException('Either "min" or "max" is required for PHP requirements!');
       }
 
       if (!$compat) {

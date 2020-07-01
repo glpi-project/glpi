@@ -32,11 +32,8 @@
 
 namespace tests\units;
 
-use CommonITILActor;
-use CommonITILValidation;
-use \DbTestCase;
+use DbTestCase;
 use Group_User;
-use Ticket_User;
 use Toolbox;
 
 /* Test for inc/ruleticket.class.php */

@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 
 use DB;
 use Glpi\Console\AbstractCommand;
-
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

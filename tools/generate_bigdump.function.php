@@ -3197,7 +3197,7 @@ function getState() {
    $state = "";
    try {
       $state = $faker->state;
-   } catch (InvalidArgumentException $e) {
+   } catch (\InvalidArgumentException $e) {
       return "";
    }
    return $state;

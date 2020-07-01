@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Plugin;
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

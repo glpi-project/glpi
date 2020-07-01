@@ -34,9 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-class HTMLTableUnknownHeader       extends Exception {}
-class HTMLTableUnknownHeaders      extends Exception {}
-class HTMLTableUnknownHeadersOrder extends Exception {}
+class HTMLTableUnknownHeader       extends \Exception {}
+class HTMLTableUnknownHeaders      extends \Exception {}
+class HTMLTableUnknownHeadersOrder extends \Exception {}
 
 /**
  * @since 0.84
@@ -64,7 +64,7 @@ abstract class HTMLTableBase  {
    function appendHeader(HTMLTableHeader $header_object, $allow_super_header = false) {
 
       if (!$header_object instanceof HTMLTableHeader) {
-         throw new Exception('Implementation error: appendHeader requires HTMLTableHeader as parameter');
+         throw new \Exception('Implementation error: appendHeader requires HTMLTableHeader as parameter');
       }
       $header_name    = '';
       $subHeader_name = '';
@@ -72,12 +72,12 @@ abstract class HTMLTableBase  {
       if ($header_object->isSuperHeader()
           && (!$this->super)
           && (!$allow_super_header)) {
-         throw new Exception(sprintf('Implementation error: invalid super header name "%s"',
+         throw new \Exception(sprintf('Implementation error: invalid super header name "%s"',
                                      $header_name));
       }
       if (!$header_object->isSuperHeader()
           && $this->super) {
-         throw new Exception(sprintf('Implementation error: invalid super header name "%s"',
+         throw new \Exception(sprintf('Implementation error: invalid super header name "%s"',
                                      $header_name));
       }
 
@@ -127,13 +127,13 @@ abstract class HTMLTableBase  {
       $this->tryAddHeader();
       if (is_null($super)) {
          if (!$this->super) {
-            throw new Exception('A sub header requires a super header');
+            throw new \Exception('A sub header requires a super header');
          }
          return $this->appendHeader(new HTMLTableSuperHeader($this, $name, $content,
                                                               $father));
       }
       if ($this->super) {
-         throw new Exception('Cannot attach a super header to another header');
+         throw new \Exception('Cannot attach a super header to another header');
       }
       return $this->appendHeader(new HTMLTableSubHeader($super, $name, $content, $father));
    }

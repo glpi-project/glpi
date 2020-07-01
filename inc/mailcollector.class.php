@@ -34,8 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use LitEmoji\LitEmoji;
 use Laminas\Mime\Mime as Laminas_Mime;
+use LitEmoji\LitEmoji;
 
 /**
  * MailCollector class
@@ -1396,7 +1396,7 @@ class MailCollector  extends CommonDBTM {
          // secu on subject setting
          try {
             $subject = $message->getHeader('subject')->getFieldValue();
-         } catch (Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
+         } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
             $subject = '';
          }
 
@@ -1613,7 +1613,7 @@ class MailCollector  extends CommonDBTM {
 
       try {
          $subject = $message->getHeader('subject')->getFieldValue();
-      } catch (Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
+      } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
          $subject = null;
       }
 
@@ -1648,7 +1648,7 @@ class MailCollector  extends CommonDBTM {
                   $this->body_is_html = false;
                   $content = $this->getDecodedContent($part);
                }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                // ignore
                $catched = true;
             }

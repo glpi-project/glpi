@@ -30,8 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Dashboard\Grid;
 use Glpi\Cache\SimpleCache;
+use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\System\RequirementsManager;
 use Laminas\Cache\Storage\AvailableSpaceCapableInterface;
@@ -1558,7 +1558,7 @@ class Config extends CommonDBTM {
       global $CFG_GLPI;
 
       $ok = true;
-      $exception = new PasswordTooWeakException();
+      $exception = new \Glpi\Exception\PasswordTooWeakException();
       if ($CFG_GLPI["use_password_security"]) {
          if (Toolbox::strlen($password) < $CFG_GLPI['password_min_length']) {
             $ok = false;
@@ -3259,7 +3259,7 @@ class Config extends CommonDBTM {
       // Create adapter
       try {
          $storage = Laminas\Cache\StorageFactory::factory($opt);
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
          if (!$is_computed_config) {
             Toolbox::logError($e->getMessage());
          }
@@ -3282,7 +3282,7 @@ class Config extends CommonDBTM {
             try {
                $storage = Laminas\Cache\StorageFactory::factory($opt);
                $fallback = true;
-            } catch (Exception $e1) {
+            } catch (\Exception $e1) {
                Toolbox::logError($e1->getMessage());
                if (isset($_SESSION['glpi_use_mode'])
                    && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {

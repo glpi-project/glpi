@@ -32,9 +32,7 @@
 
 namespace tests\units;
 
-use \atoum;
-
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/telemetry.class.php requiring the Web server*/
 

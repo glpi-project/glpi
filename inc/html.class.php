@@ -7277,7 +7277,7 @@ JAVASCRIPT;
                    + $hexcolor[2] + $hexcolor[2];
       }
       if (strlen($hexcolor) != 6) {
-         throw new Exception('Invalid HEX color.');
+         throw new \Exception('Invalid HEX color.');
       }
 
       $r = hexdec(substr($hexcolor, 0, 2));
