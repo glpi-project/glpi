@@ -1069,7 +1069,9 @@ class Problem extends CommonITILObject {
                $options['priority']            = $ticket->getField('priority');
                if (isset($options['tickets_id'])) {
                   //page is reloaded on category change, we only want category on the very first load
-                  $options['itilcategories_id']   = $ticket->getField('itilcategories_id');
+                  $category = new ITILCategory();
+                  $category->getFromDB($ticket->getField('itilcategories_id'));
+                  $options['itilcategories_id']   = $category->fields['is_problem'] ? $ticket->getField('itilcategories_id') : 0;
                }
                $options['time_to_resolve']     = $ticket->getField('time_to_resolve');
                $options['entities_id']         = $ticket->getField('entities_id');
