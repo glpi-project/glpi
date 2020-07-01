@@ -185,9 +185,7 @@ final class DbUtils {
 
       if (isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
          return $CFG_GLPI['glpitablesitemtype'][$itemtype];
-      } else if (class_exists($itemtype)) {
-         $CFG_GLPI['glpitablesitemtype'][$itemtype] = $itemtype::getTable();
-         return $CFG_GLPI['glpitablesitemtype'][$itemtype];
+
       } else {
          $prefix = "glpi_";
 
