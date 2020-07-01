@@ -558,7 +558,7 @@ class Search {
       $blacklist_tables = [];
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
          $itemtable          = $CFG_GLPI['union_search_type'][$data['itemtype']];
-         $blacklist_tables[] = $data['itemtype']::getTable();
+         $blacklist_tables[] = getTableForItemType($data['itemtype']);
       } else {
          $itemtable = $data['itemtype']::getTable();
       }
@@ -3213,7 +3213,7 @@ JAVASCRIPT;
 
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      if (($is_fkey_composite_on_self || $table != $itemtype::getTable())
+      if (($is_fkey_composite_on_self || $table != getTableForItemType($itemtype))
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
@@ -3363,7 +3363,7 @@ JAVASCRIPT;
    static function addDefaultSelect($itemtype) {
       global $DB;
 
-      $itemtable = $itemtype::getTable();
+      $itemtable = getTableForItemType($itemtype);
       $item      = null;
       $mayberecursive = false;
       if ($itemtype != 'AllAssets') {
@@ -3430,7 +3430,7 @@ JAVASCRIPT;
 
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      if (((($is_fkey_composite_on_self || $table != $itemtype::getTable())
+      if (((($is_fkey_composite_on_self || $table != getTableForItemType($itemtype))
             && (!isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($CFG_GLPI["union_search_type"][$itemtype] != $table)))
            || !empty($complexjoin))
