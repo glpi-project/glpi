@@ -8219,4 +8219,23 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       return false;
    }
+
+   /**
+    * Get criteria needed to match objets with an "open" status (= not resolved
+    * or closed)
+    *
+    * @return array
+    */
+   public static function getOpenCriteria(): array {
+      $table = static::getTable();
+
+      return [
+         'NOT' => [
+            "$table.status" => array_merge(
+               static::getSolvedStatusArray(),
+               static::getClosedStatusArray()
+            )
+         ]
+      ];
+   }
 }
