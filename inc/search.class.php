@@ -92,11 +92,7 @@ class Search {
     * @return void
    **/
    static function showList($itemtype, $params) {
-
-      $data = self::prepareDatasForSearch($itemtype, $params);
-      self::constructSQL($data);
-      self::constructData($data);
-      self::displayData($data);
+      self::displayData(self::getDatas($itemtype, $params));
    }
 
    /**
@@ -133,10 +129,7 @@ class Search {
          'searchtype'   => 'contains',
          'value'        => 'NULL'
       ];
-      $data = self::prepareDatasForSearch($itemtype, $params);
-      self::constructSQL($data);
-      self::constructData($data);
-      self::displayData($data);
+      self::displayData(self::getDatas($itemtype, $params));
 
       if ($data['data']['totalcount'] > 0) {
          $target = $data['search']['target'];
@@ -1481,7 +1474,7 @@ class Search {
     *
     * @return void
    **/
-   static function displayData(array &$data) {
+   static function displayData(array $data) {
       global $CFG_GLPI;
 
       $item = null;
