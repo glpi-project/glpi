@@ -556,11 +556,12 @@ class Search {
       $searchopt        = &self::getOptions($data['itemtype']);
 
       $blacklist_tables = [];
+      $orig_table = ($data['itemtype'] == 'AllAssets' ? getTableForItemType($data['itemtype']) : $data['itemtype']::getTable());
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
          $itemtable          = $CFG_GLPI['union_search_type'][$data['itemtype']];
-         $blacklist_tables[] = getTableForItemType($data['itemtype']);
+         $blacklist_tables[] = $orig_table;
       } else {
-         $itemtable = $data['itemtype']::getTable();
+         $itemtable = $orig_table;
       }
 
       // hack for AllAssets
@@ -3213,7 +3214,8 @@ JAVASCRIPT;
 
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      if (($is_fkey_composite_on_self || $table != getTableForItemType($itemtype))
+      $orig_table = ($itemtype == 'AllAssets' ? getTableForItemType($itemtype) : $itemtype::getTable());
+      if (($is_fkey_composite_on_self || $table != $orig_table)
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
@@ -3363,7 +3365,7 @@ JAVASCRIPT;
    static function addDefaultSelect($itemtype) {
       global $DB;
 
-      $itemtable = getTableForItemType($itemtype);
+      $itemtable = ($itemtype == 'AllAssets' ? getTableForItemType($itemtype) : $itemtype::getTable());
       $item      = null;
       $mayberecursive = false;
       if ($itemtype != 'AllAssets') {
@@ -3430,7 +3432,9 @@ JAVASCRIPT;
 
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      if (((($is_fkey_composite_on_self || $table != getTableForItemType($itemtype))
+
+      $orig_table = ($itemtype == 'AllAssets' ? getTableForItemType($itemtype) : $itemtype::getTable());
+      if (((($is_fkey_composite_on_self || $table != $orig_table)
             && (!isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($CFG_GLPI["union_search_type"][$itemtype] != $table)))
            || !empty($complexjoin))
@@ -4092,8 +4096,9 @@ JAVASCRIPT;
       $addtable  = '';
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
+      $orig_table = ($itemtype == 'AllAssets' ? getTableForItemType($itemtype) : $itemtype::getTable());
       if (($table != 'asset_types')
-          && ($is_fkey_composite_on_self || $table != $itemtype::getTable())
+          && ($is_fkey_composite_on_self || $table != $orig_table)
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;

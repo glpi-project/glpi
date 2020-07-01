@@ -3721,7 +3721,7 @@ class CommonDBTM extends CommonGLPI {
          return $options;
       }
 
-      if (defined('TU_USER') && $itemtype != null) {
+      if (defined('TU_USER') && $itemtype != null && $itemtype != 'AllAssets') {
          $item = new $itemtype;
          $all_options = $item->searchOptions();
       }
