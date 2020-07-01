@@ -289,20 +289,12 @@ class Problem_Ticket extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td class='right'>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
-         $condition = [
-            'NOT' => [
-               'glpi_tickets.status' => array_merge(
-                  Ticket::getSolvedStatusArray(),
-                  Ticket::getClosedStatusArray()
-               )
-            ]
-         ];
          Ticket::dropdown([
             'used'        => $used,
             'entity'      => $problem->getEntityID(),
             'entity_sons' => $problem->isRecursive(),
-            'condition'   => $condition,
-            'displaywith' => ['id']
+            'displaywith' => ['id'],
+            'condition'   => Ticket::getOpenCriteria()
          ]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
@@ -397,19 +389,11 @@ class Problem_Ticket extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a problem')."</th></tr>";
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
-         $condition = [
-            'NOT' => [
-               'glpi_problems.status' => array_merge(
-                  Problem::getSolvedStatusArray(),
-                  Problem::getClosedStatusArray()
-               )
-            ]
-         ];
 
          Problem::dropdown([
             'used'      => $used,
             'entity'    => $ticket->getEntityID(),
-            'condition' => $condition
+            'condition' => Problem::getOpenCriteria()
          ]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
