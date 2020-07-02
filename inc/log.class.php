@@ -1277,4 +1277,109 @@ class Log extends CommonDBTM {
       return $values;
    }
 
+   function rawSearchOptions() {
+      $tab = [];
+      $log_table = self::getTable();
+
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
+
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $log_table,
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
+
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $log_table,
+         'field'              => 'itemtype',
+         'name'               => __('Item type'),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
+      ];
+
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $log_table,
+         'field'              => 'items_id',
+         'name'               => __('Item ID'),
+         'datatype'           => 'number',
+         'massiveaction'      => false,
+      ];
+
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $log_table,
+         'field'              => 'itemtype_link',
+         'name'               => __('Item type link'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+      ];
+
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $log_table,
+         'field'              => 'linked_action',
+         'name'               => __('Action'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+      ];
+
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $log_table,
+         'field'              => 'user_name',
+         'name'               => __('User'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+      ];
+
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $log_table,
+         'field'              => 'date_mod',
+         'name'               => __('Timestamp'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+      ];
+
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => $log_table,
+         'field'              => 'id_search_option',
+         'name'               => __('Search option'),
+         'datatype'           => 'number',
+         'massiveaction'      => false,
+      ];
+
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $log_table,
+         'field'              => 'old_value',
+         'name'               => __('Old value'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+      ];
+
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $log_table,
+         'field'              => 'new_value',
+         'name'               => __('New value'),
+         'datatype'           => 'string',
+         'massiveaction'      => false,
+      ];
+
+      return $tab;
+   }
+
+   public static function getIcon() {
+      return 'fas fa-clock';
+   }
 }
