@@ -233,46 +233,6 @@ class Contract_Item extends CommonDBRelation{
 
 
    /**
-    * Duplicate contracts from an item template to its clone
-    *
-    * @deprecated 9.5
-    * @since 0.84
-    *
-    * @param string  $itemtype     itemtype of the item
-    * @param integer $oldid        ID of the item to clone
-    * @param integer $newid        ID of the item cloned
-    * @param string  $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-    *
-    * @return void
-   **/
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      if (empty($newitemtype)) {
-         $newitemtype = $itemtype;
-      }
-
-      $result = $DB->request(
-         [
-            'SELECT' => 'contracts_id',
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'items_id' => $oldid,
-               'itemtype' => $itemtype,
-            ],
-         ]
-      );
-      foreach ($result as $data) {
-         $contractitem = new self();
-         $contractitem->add(['contracts_id' => $data["contracts_id"],
-                                  'itemtype'     => $newitemtype,
-                                  'items_id'     => $newid]);
-      }
-   }
-
-
-   /**
     * Print an HTML array of contract associated to an object
     *
     * @since 0.84

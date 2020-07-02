@@ -105,40 +105,6 @@ class Contract extends CommonDBTM {
       return $ong;
    }
 
-   /**
-    * Duplicate all contracts from a item template to his clone
-    *
-    * @deprecated 9.5
-    * @since 9.2
-    *
-    * @param string $itemtype      itemtype of the item
-    * @param integer $oldid        ID of the item to clone
-    * @param integer $newid        ID of the item cloned
-    **/
-   static function cloneItem($itemtype, $oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $result = $DB->request(
-         [
-            'FROM'   => Contract_Item::getTable(),
-            'WHERE'  => [
-               'items_id' => $oldid,
-               'itemtype' => $itemtype,
-            ],
-         ]
-      );
-      foreach ($result as $data) {
-         $cd = new Contract_Item();
-         unset($data['id']);
-         $data['items_id'] = $newid;
-         $data = self::checkTemplateEntity($data, $data['items_id'], $data['itemtype']);
-         $data             = Toolbox::addslashes_deep($data);
-
-         $cd->add($data);
-      }
-   }
-
 
    function pre_updateInDB() {
 

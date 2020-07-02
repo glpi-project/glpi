@@ -1291,44 +1291,6 @@ class Change extends CommonITILObject {
    }
 
    /**
-    * @deprecated 9.5.0
-    */
-   static function getCommonSelect() {
-      Toolbox::deprecated('Use getCommonCriteria with db iterator');
-      $SELECT = "";
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $SELECT .= ", `glpi_entities`.`completename` AS entityname,
-                       `glpi_changes`.`entities_id` AS entityID ";
-      }
-
-      return " DISTINCT `glpi_changes`.*,
-                        `glpi_itilcategories`.`completename` AS catname
-                        $SELECT";
-   }
-
-   /**
-    * @deprecated 9.5.0
-    */
-   static function getCommonLeftJoin() {
-      Toolbox::deprecated('Use getCommonCriteria with db iterator');
-      $FROM = "";
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $FROM .= " LEFT JOIN `glpi_entities`
-                        ON (`glpi_entities`.`id` = `glpi_changes`.`entities_id`) ";
-      }
-
-      return " LEFT JOIN `glpi_changes_groups`
-                  ON (`glpi_changes`.`id` = `glpi_changes_groups`.`changes_id`)
-               LEFT JOIN `glpi_changes_users`
-                  ON (`glpi_changes`.`id` = `glpi_changes_users`.`changes_id`)
-               LEFT JOIN `glpi_changes_suppliers`
-                  ON (`glpi_changes`.`id` = `glpi_changes_suppliers`.`changes_id`)
-               LEFT JOIN `glpi_itilcategories`
-                  ON (`glpi_changes`.`itilcategories_id` = `glpi_itilcategories`.`id`)
-               $FROM";
-   }
-
-   /**
     * Display changes for an item
     *
     * Will also display changes of linked items

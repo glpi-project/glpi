@@ -238,16 +238,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @param $computers_id
-   **/
-   function updateDatasForComputer($computers_id) {
-
-      Toolbox::deprecated('Use updateDatasForItem()');
-      return $this->updateDatasForItem('Computer', $computers_id);
-   }
-
-
    function updateDatasForItem($itemtype, $items_id) {
       global $DB;
 
@@ -853,21 +843,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
 
    /**
-    * Show software installed on a computer
-    *
-    * @param Computer $comp         Computer object
-    * @param boolean  $withtemplate template case of the view process
-    *
-    * @return void
-   **/
-   static function showForComputer(Computer $comp, $withtemplate = 0) {
-
-      Toolbox::deprecated('Use showForItem()');
-      self::showForItem($comp, $withtemplate);
-   }
-
-
-   /**
     * Get softwares related to a given item
     *
     * @param CommonDBTM $item  Item instance
@@ -1220,24 +1195,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
     * Display a installed software for a category
     *
     * @param array   $data         data used to display
-    * @param integer $computers_id ID of the computer
-    * @param boolean $withtemplate template case of the view process
-    * @param boolean $canedit      user can edit software ?
-    * @param boolean $display      display and calculte if true or juste calculate
-    *
-    * @return integer[] Found licenses ids
-   **/
-   private static function softsByCategory($data, $computers_id, $withtemplate, $canedit,
-                                           $display) {
-      Toolbox::deprecated('Use softwareByCategory()');
-      return self::softwareByCategory($data, 'Computer', $computers_id, $withtemplate, $canedit, $display);
-   }
-
-
-   /**
-    * Display a installed software for a category
-    *
-    * @param array   $data         data used to display
     * @param string  $itemtype     Type of the item
     * @param integer $items_id     ID of the item
     * @param boolean $withtemplate template case of the view process
@@ -1359,23 +1316,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
     * Display a software for a License (not installed)
     *
     * @param array   $data         data used to display
-    * @param integer $computers_id ID of the computer
-    * @param boolean $withtemplate template case of the view process
-    * @param boolean $canedit      user can edit software ?
-    *
-    * @return void
-   */
-   private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
-
-      Toolbox::deprecated('Use displaySoftwareByLicense()');
-      return self::displaySoftwareByLicense($data, $withtemplate, $canedit);
-   }
-
-
-   /**
-    * Display a software for a License (not installed)
-    *
-    * @param array   $data         data used to display
     * @param boolean $withtemplate template case of the view process
     * @param boolean $canedit      user can edit software ?
     *
@@ -1445,54 +1385,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
             'items_id'              => $items_id,
             'softwareversions_id'   => $softwareversions_id
          ]);
-      }
-   }
-
-
-   /**
-    * Duplicate all software from a computer template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param integer $oldid ID of the computer to clone
-    * @param integer $newid ID of the computer cloned
-   **/
-   static function cloneComputer($oldid, $newid) {
-
-      Toolbox::deprecated('Use clone');
-      return self::cloneItem('Computer', $oldid, $newid);
-   }
-
-
-   /**
-    * Duplicate all software from a item template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param string  $itemtype Itemtype of the item to clone
-    * @param integer $oldid ID of the item to clone
-    * @param integer $newid ID of the item cloned
-   **/
-   static function cloneItem($itemtype, $oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM'   => 'glpi_items_softwareversions',
-         'WHERE'  => [
-            'items_id' => $oldid,
-            'itemtype' => $itemtype
-         ]
-      ]);
-
-      while ($data = $iterator->next()) {
-         $csv                  = new self();
-         unset($data['id']);
-         $data['itemtype'] = $itemtype;
-         $data['items_id'] = $newid;
-         $data['_no_history']  = true;
-
-         $csv->add($data);
       }
    }
 

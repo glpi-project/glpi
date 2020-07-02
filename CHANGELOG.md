@@ -20,6 +20,73 @@ The present file will list all changes made to the project; according to the
 #### Removed
 - `Update::declareOldItems()`
 
+- Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
+- `$LOADED_PLUGINS` global variable
+- `Computer_SoftwareLicense` class
+- `Computer_SoftwareVersion` class
+- `getAllDatasFromTable()`
+- `getRealQueryForTreeItem()`
+- `DBMysql::affected_rows()`
+- `DBMysql::data_seek()`
+- `DBMysql::fetch_array()`
+- `DBMysql::fetch_assoc()`
+- `DBMysql::fetch_object()`
+- `DBMysql::fetch_row()`
+- `DBMysql::field_name()`
+- `DBMysql::free_result()`
+- `DBMysql::insert_id()`
+- `DBMysql::isMySQLStrictMode()`
+- `DBMysql::list_fields()`
+- `DBMysql::num_fields()`
+- `DbUtils::getRealQueryForTreeItem()`
+- `Calendar_Holiday::cloneCalendar()`
+- `CalendarSegment::cloneCalendar()`
+- `Change::getCommonLeftJoin()`
+- `Change::getCommonSelect()`
+- `CommonDBTM::getRawName()`
+- `Computer_Item::cloneComputer()`
+- `Computer_Item::cloneItem()`
+- `ComputerAntivirus::cloneComputer()`
+- `Config::checkWriteAccessToDirs()`
+- `Config::displayCheckExtensions()`
+- `Contract::cloneItem()`
+- `ContractCost::cloneContract()`
+- `Contract_Item::cloneItem()`
+- `Document_Item::cloneItem()`
+- `Html::jsDisable()`
+- `Html::jsEnable()`
+- `Infocom::cloneItem()`
+- `Itil_Project::cloneItilProject()`
+- `Item_Devices::cloneItem()`
+- `Item_Disk::cloneItem()`
+- `Item_OperatingSystem::cloneItem()`
+- `Item_SoftwareLicense::cloneComputer()`
+- `Item_SoftwareLicense::cloneItem()`
+- `Item_SoftwareVersion::cloneComputer()`
+- `Item_SoftwareVersion::cloneItem()`
+- `Item_SoftwareVersion::showForComputer()`
+- `Item_SoftwareVersion::updateDatasForComputer()`
+- `KnowbaseItem_Item::cloneItem()`
+- `NetworkPort::cloneItem()`
+- `Notepad::cloneItem()`
+- `Plugin::setLoaded()`
+- `Plugin::setUnloaded()`
+- `Plugin::setUnloadedByName()`
+- `Problem::getCommonLeftJoin()`
+- `Problem::getCommonSelect()`
+- `ProjectCost::cloneProject()`
+- `ProjectTeam::cloneProjectTask()`
+- `ProjectTask::cloneProjectTeam()`
+- `Ticket::getCommonLeftJoin()`
+- `Ticket::getCommonSelect()`
+- `Ticket::getTicketTemplateToUse()`
+- `TicketTemplate::getFromDBWithDatas()`
+- `Toolbox::canUseImapPop()`
+- `Toolbox::checkSELinux()`
+- `Toolbox::userErrorHandlerDebug()`
+- `Toolbox::userErrorHandlerNormal()`
+- `Transfer::transferComputerSoftwares()`
+
 ## [9.5.1] unreleased
 
 ## [9.5.0] 2020-07-07
@@ -142,7 +209,7 @@ The present file will list all changes made to the project; according to the
 - `ProjectTeam::cloneProjectTask()`
 - `ProjectTask::cloneProjectTeam()`
 - Usage of `GLPIKEY` constant
-- `Toolbox::encrypt()` and `Toolbox::decrypt()` because they use the old encryption aglogithm
+- `Toolbox::encrypt()` and `Toolbox::decrypt()` because they use the old encryption algorithm
 
 #### Removed
 

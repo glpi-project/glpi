@@ -75,38 +75,6 @@ class CalendarSegment extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
-   /**
-    * Duplicate all segments from a calendar to his clone
-    *
-    * @deprecated 9.5
-    *
-    * @param $oldid
-    * @param $newid
-   **/
-   static function cloneCalendar($oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $result = $DB->request(
-         [
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'calendars_id' => $oldid,
-            ]
-         ]
-      );
-
-      foreach ($result as $data) {
-         $c                    = new self();
-         unset($data['id']);
-         $data['calendars_id'] = $newid;
-         $data['_no_history']  = true;
-
-         $c->add($data);
-      }
-   }
-
-
    function post_addItem() {
 
       // Update calendar cache

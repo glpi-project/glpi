@@ -157,30 +157,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
 
    /**
-    * Duplicate all tasks from a project template to his clone
-    *
-    * @deprecated 9.5
-    * @since 9.2
-    *
-    * @param integer $oldid        ID of the item to clone
-    * @param integer $newid        ID of the item cloned
-    **/
-   static function cloneProjectTask ($oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request(['FROM' => 'glpi_projecttasks', 'WHERE' => ['projects_id' => $oldid]]);
-      while ($data = $iterator->next()) {
-         $cd                  = new self();
-         unset($data['id']);
-         $data['projects_id'] = $newid;
-         $data = self::checkTemplateEntity($data, $data['projects_id'], Project::class);
-         $data                = Toolbox::addslashes_deep($data);
-         $cd->add($data);
-      }
-   }
-
-   /**
     * @see commonDBTM::getRights()
     **/
    function getRights($interface = 'central') {

@@ -1557,16 +1557,6 @@ class Transfer extends CommonDBTM {
    }
 
    /**
-    * Transfer softwares of a computer
-    *
-    * @param $ID           ID of the computer
-   **/
-   function transferComputerSoftwares($ID) {
-      Toolbox::deprecated('Use transferItemSoftwares()');
-      return $this->transferItemSoftwares('Computer', $ID);
-   }
-
-   /**
     * Transfer software of an item
     *
     * @param string $itemtype  Type of the item

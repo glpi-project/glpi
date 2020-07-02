@@ -426,21 +426,6 @@ class DBmysql {
     * @param mysqli_result $result MySQL result handler
     *
     * @return string[]|null array results
-    *
-    * @deprecated 9.5.0
-    */
-   function fetch_array($result) {
-      Toolbox::deprecated('Use DBmysql::fetchArray()');
-      return $this->fetchArray($result);
-   }
-
-   /**
-    * Fetch array of the next row of a Mysql query
-    * Please prefer fetchRow or fetchAssoc
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return string[]|null array results
     */
    function fetchArray($result) {
       return $result->fetch_array();
@@ -452,37 +437,9 @@ class DBmysql {
     * @param mysqli_result $result MySQL result handler
     *
     * @return mixed|null result row
-    *
-    * @deprecated 9.5.0
-    */
-   function fetch_row($result) {
-      Toolbox::deprecated('Use DBmysql::fetchRow()');
-      return $this->fetchRow($result);
-   }
-
-   /**
-    * Fetch row of the next row of a Mysql query
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return mixed|null result row
     */
    function fetchRow($result) {
       return $result->fetch_row();
-   }
-
-   /**
-    * Fetch assoc of the next row of a Mysql query
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return string[]|null result associative array
-    *
-    * @deprecated 9.5.0
-    */
-   function fetch_assoc($result) {
-      Toolbox::deprecated('Use DBmysql::fetchAssoc()');
-      return $this->fetchAssoc($result);
    }
 
    /**
@@ -503,35 +460,8 @@ class DBmysql {
     *
     * @return object|null
     */
-   function fetch_object($result) {
-      Toolbox::deprecated('Use DBmysql::fetchObject()');
-      return $this->fetchObject();
-   }
-
-   /**
-    * Fetch object of the next row of an SQL query
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return object|null
-    */
    function fetchObject($result) {
       return $result->fetch_object();
-   }
-
-   /**
-    * Move current pointer of a Mysql result to the specific row
-    *
-    * @deprecated 9.5.0
-    *
-    * @param mysqli_result $result MySQL result handler
-    * @param integer       $num    Row to move current pointer
-    *
-    * @return boolean
-    */
-   function data_seek($result, $num) {
-      Toolbox::deprecated('Use DBmysql::dataSeek()');
-      return $this->dataSeek($result, $num);
    }
 
    /**
@@ -546,19 +476,6 @@ class DBmysql {
       return $result->data_seek($num);
    }
 
-
-   /**
-    * Give ID of the last inserted item by Mysql
-    *
-    * @return mixed
-    *
-    * @deprecated 9.5.0
-    */
-   function insert_id() {
-      Toolbox::deprecated('Use DBmysql::insertId()');
-      return $this->insertId();
-   }
-
    /**
     * Give ID of the last inserted item by Mysql
     *
@@ -566,20 +483,6 @@ class DBmysql {
     */
    function insertId() {
       return $this->dbh->insert_id;
-   }
-
-   /**
-    * Give number of fields of a Mysql result
-    *
-    * @deprecated 9.5.0
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return int number of fields
-    */
-   function num_fields($result) {
-      Toolbox::deprecated('Use DBmysql::numFields()');
-      return $this->numFields($result);
    }
 
    /**
@@ -593,7 +496,6 @@ class DBmysql {
       return $result->field_count;
    }
 
-
    /**
     * Give name of a field of a Mysql result
     *
@@ -601,23 +503,6 @@ class DBmysql {
     * @param integer       $nb     ID of the field
     *
     * @return string name of the field
-    *
-    * @deprecated 9.5.0
-    */
-   function field_name($result, $nb) {
-      Toolbox::deprecated('Use DBmysql::fieldName()');
-      return $this->fieldName($result, $nb);
-   }
-
-   /**
-    * Give name of a field of a Mysql result
-    *
-    * @param mysqli_result $result MySQL result handler
-    * @param integer       $nb     ID of the field
-    *
-    * @return string name of the field
-    *
-    * @deprecated 9.5.0
     */
    function fieldName($result, $nb) {
       $finfo = $result->fetch_fields();
@@ -663,21 +548,6 @@ class DBmysql {
     * @param boolean $usecache If use field list cache (default true)
     *
     * @return mixed list of fields
-    *
-    * @deprecated 9.5.0
-    */
-   function list_fields($table, $usecache = true) {
-       Toolbox::deprecated('Use DBmysql::listFields()');
-      return $this->listFields($table, $usecache);
-   }
-
-   /**
-    * List fields of a table
-    *
-    * @param string  $table    Table name condition
-    * @param boolean $usecache If use field list cache (default true)
-    *
-    * @return mixed list of fields
     */
    function listFields($table, $usecache = true) {
 
@@ -702,36 +572,9 @@ class DBmysql {
     * Get number of affected rows in previous MySQL operation
     *
     * @return int number of affected rows on success, and -1 if the last query failed.
-    *
-    * @deprecated 9.5.0
-    */
-   function affected_rows() {
-      Toolbox::deprecated('Use DBmysql::affectedRows()');
-      return $this->affectedRows();
-   }
-
-   /**
-    * Get number of affected rows in previous MySQL operation
-    *
-    * @return int number of affected rows on success, and -1 if the last query failed.
     */
    function affectedRows() {
       return $this->dbh->affected_rows;
-   }
-
-
-   /**
-    * Free result memory
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return boolean
-    *
-    * @deprecated 9.5.0
-    */
-   function free_result($result) {
-      Toolbox::deprecated('Use DBmysql::freeResult()');
-      return $this->freeResult($result);
    }
 
    /**
@@ -890,32 +733,6 @@ class DBmysql {
       $ret['Host info']  = $this->dbh->host_info;
 
       return $ret;
-   }
-
-   /**
-    * Is MySQL strict mode ?
-    *
-    * @var DB $DB
-    *
-    * @param string $msg Mode
-    *
-    * @return boolean
-    *
-    * @since 0.90
-    * @deprecated 9.5.0
-    */
-   static public function isMySQLStrictMode(&$msg) {
-      Toolbox::deprecated();
-      global $DB;
-
-      $msg = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ZERO_DATE,NO_ZERO_IN_DATE,ONLY_FULL_GROUP_BY,NO_AUTO_CREATE_USER';
-      $req = $DB->request("SELECT @@sql_mode as mode");
-      if (($data = $req->next())) {
-         return (preg_match("/STRICT_TRANS/", $data['mode'])
-                 && preg_match("/NO_ZERO_/", $data['mode'])
-                 && preg_match("/ONLY_FULL_GROUP_BY/", $data['mode']));
-      }
-      return false;
    }
 
    /**

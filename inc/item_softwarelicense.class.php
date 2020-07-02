@@ -897,57 +897,6 @@ JAVASCRIPT;
    }
 
 
-   /**
-    * Duplicate all software licenses from a computer template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param integer $oldid ID of the computer to clone
-    * @param integer $newid ID of the computer cloned
-    *
-    * @return void
-   **/
-   static function cloneComputer($oldid, $newid) {
-      Toolbox::deprecated('Use clone');
-      self::cloneItem('Computer', $oldid, $newid);
-   }
-
-
-   /**
-    * Duplicate all software licenses from an item template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param string  $itemtype Type of the item
-    * @param integer $oldid ID of the item to clone
-    * @param integer $newid ID of the item cloned
-    *
-    * @return void
-    **/
-   static function cloneItem($itemtype, $oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM' => 'glpi_items_softwarelicenses',
-         'WHERE' => [
-            'items_id' => $oldid,
-            'itemtype' => $itemtype
-         ]
-      ]);
-
-      while ($data = $iterator->next()) {
-         $csl = new self();
-         unset($data['id']);
-         $data['items_id'] = $newid;
-         $data['itemtype'] = $itemtype;
-         $data['_no_history'] = true;
-
-         $csl->add($data);
-      }
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       $nb = 0;

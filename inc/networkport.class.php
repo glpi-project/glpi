@@ -1095,66 +1095,6 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   /**
-    * Clone the current NetworkPort when the item is clone
-    *
-    * @deprecated 9.5
-    * @since 0.84
-    *
-    * @param string  $itemtype      the type of the item that was clone
-    * @param integer $old_items_id  the id of the item that was clone
-    * @param integer $new_items_id  the id of the item after beeing cloned
-   **/
-   static function cloneItem($itemtype, $old_items_id, $new_items_id) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $np = new self();
-      // ADD Ports
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'items_id'  => $old_items_id,
-            'itemtype'  => $itemtype
-         ]
-      ]);
-
-      while ($data = $iterator->next()) {
-         $np->getFromDB($data["id"]);
-         $instantiation = $np->getInstantiation();
-         unset($np->fields["id"]);
-         $np->fields["items_id"] = $new_items_id;
-         $portid                 = $np->addToDB();
-
-         if ($instantiation !== false) {
-            $input = [];
-            $input["networkports_id"] = $portid;
-            unset($instantiation->fields["id"]);
-            unset($instantiation->fields["networkports_id"]);
-            foreach ($instantiation->fields as $key => $val) {
-               if (!empty($val)) {
-                  $input[$key] = $val;
-               }
-            }
-            $instantiation->add($input);
-            unset($instantiation);
-         }
-
-         $npv = new NetworkPort_Vlan();
-         foreach ($DB->request($npv->getTable(),
-                               [$npv::$items_id_1 => $data["id"]]) as $vlan) {
-
-            $input = [$npv::$items_id_1 => $portid,
-                           $npv::$items_id_2 => $vlan['vlans_id']];
-            if (isset($vlan['tagged'])) {
-               $input['tagged'] = $vlan['tagged'];
-            }
-            $npv->add($input);
-         }
-      }
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $CFG_GLPI;
 

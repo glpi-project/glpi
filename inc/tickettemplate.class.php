@@ -86,23 +86,6 @@ class TicketTemplate extends ITILTemplate {
       return $tab;
    }
 
-
-   /**
-    * Retrieve an item from the database with additional datas
-    *
-    * @since 0.83
-    * @deprecated 9.5.0
-    *
-    * @param $ID                    integer  ID of the item to get
-    * @param $withtypeandcategory   boolean  with type and category (true by default)
-    *
-    * @return true if succeed else false
-   **/
-   function getFromDBWithDatas($ID, $withtypeandcategory = true) {
-      Toolbox::deprecated('Use getFromDBWithData');
-      return $this->getFromDBWithData($ID, $withtypeandcategory);
-   }
-
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if ($item instanceof ITILTemplate) {
          switch ($tabnum) {

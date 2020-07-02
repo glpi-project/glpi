@@ -181,37 +181,6 @@ class Calendar_Holiday extends CommonDBRelation {
       echo "</div>";
    }
 
-   /**
-    * Duplicate all holidays from a calendar to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param integer $oldid The ID of the calendar to copy from.
-    * @param integer $newid The ID of the calendar to copy to.
-   **/
-   static function cloneCalendar($oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $result = $DB->request(
-         [
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'calendars_id' => $oldid,
-            ]
-         ]
-      );
-
-      foreach ($result as $data) {
-         $ch                   = new self();
-         unset($data['id']);
-         $data['calendars_id'] = $newid;
-         $data['_no_history']  = true;
-
-         $ch->add($data);
-      }
-   }
-
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 

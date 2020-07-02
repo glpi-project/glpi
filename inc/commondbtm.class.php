@@ -3444,23 +3444,6 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
-   /**
-    * Get raw name of the object
-    * Maybe overloaded
-    *
-    * @deprecated 9.5
-    * @see CommonDBTM::getNameField
-    * @since 0.85
-    *
-    * @return string
-   **/
-   function getRawName() {
-      \Toolbox::deprecated('Use CommonDBTM::getFriendlyName()');
-
-      return $this->getFriendlyName();
-   }
-
-
    /** Get raw completename of the object
     * Maybe overloaded
     *

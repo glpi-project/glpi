@@ -100,8 +100,8 @@ if (isset($AJAX_INCLUDE)) {
 if (!isset($PLUGINS_INCLUDED)) {
    // PLugin already included
    $PLUGINS_INCLUDED = 1;
-   $LOADED_PLUGINS   = [];
-   $plugin           = new Plugin();
+
+   $plugin = new Plugin();
    $plugin->init(true);
 }
 

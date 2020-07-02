@@ -1310,35 +1310,6 @@ final class DbUtils {
 
 
    /**
-    * Get the equivalent search query using ID of soons that the search of the father's ID argument
-    *
-    * @param string  $table    table name
-    * @param integer $IDf      The ID of the father
-    * @param string  $reallink real field to link ($table.id if not set) (default ='')
-    *
-    * @return string the query
-    *
-    * @Deprecated 9.5.0
-    */
-   public function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
-      Toolbox::deprecated();
-
-      if (empty($IDf)) {
-         return "";
-      }
-
-      if (empty($reallink)) {
-         $reallink = "`".$table."`.`id`";
-      }
-
-      $id_found = $this->getSonsOf($table, $IDf);
-
-      // Construct the final request
-      return $reallink." IN ('".implode("','", $id_found)."')";
-   }
-
-
-   /**
     * Compute all completenames of Dropdown Tree table
     *
     * @param string $table dropdown tree table to compute

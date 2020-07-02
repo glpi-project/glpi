@@ -372,45 +372,6 @@ class Item_OperatingSystem extends CommonDBRelation {
       return $name;
    }
 
-
-   /**
-    * Duplicate operating system from an item template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param string  $itemtype    itemtype of the item
-    * @param integer $oldid       ID of the item to clone
-    * @param integer $newid       ID of the item cloned
-    * @param string  $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
-    *
-    * @return void
-    */
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype'  => $itemtype,
-            'items_id'  => $oldid
-         ]
-      ]);
-
-      while ($row = $iterator->next()) {
-         $input             = Toolbox::addslashes_deep($row);
-         $input['items_id'] = $newid;
-         if (!empty($newitemtype)) {
-            $input['itemtype'] = $newitemtype;
-         }
-         unset ($input["id"]);
-         unset ($input["date_mod"]);
-         unset ($input["date_creation"]);
-         $ios = new self();
-         $ios->add($input);
-      }
-   }
-
    function rawSearchOptions() {
 
       $tab = [];

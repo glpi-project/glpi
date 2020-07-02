@@ -797,8 +797,6 @@ class Html extends \GLPITestCase {
    public function testJsFunctions() {
       $this->string(\Html::jsHide('myid'))->isIdenticalTo("$('#myid').hide();\n");
       $this->string(\Html::jsShow('myid'))->isIdenticalTo("$('#myid').show();\n");
-      $this->string(\Html::jsEnable('myid'))->isIdenticalTo("$('#myid').removeAttr('disabled');\n");
-      $this->string(\Html::jsDisable('myid'))->isIdenticalTo("$('#myid').attr('disabled', 'disabled');\n");
       $this->string(\Html::jsGetElementbyID('myid'))->isIdenticalTo("$('#myid')");
       $this->string(\Html::jsSetDropdownValue('myid', 'myval'))->isIdenticalTo("$('#myid').trigger('setValue', 'myval');");
       $this->string(\Html::jsGetDropdownValue('myid'))->isIdenticalTo("$('#myid').val()");

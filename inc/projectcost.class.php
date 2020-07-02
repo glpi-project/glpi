@@ -192,34 +192,6 @@ class ProjectCost extends CommonDBChild {
 
 
    /**
-    * Duplicate all costs from a project template to its clone
-    *
-    * @deprecated 9.5
-    * @since 0.84
-    *
-    * @param $oldid
-    * @param $newid
-   **/
-   static function cloneProject ($oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['projects_id'=> $oldid]
-      ]);
-      while ($data = $iterator->next()) {
-         $cd                   = new self();
-         unset($data['id']);
-         $data['projects_id'] = $newid;
-         $data = self::checkTemplateEntity($data, $data['projects_id'], Project::class);
-         $data                 = Toolbox::addslashes_deep($data);
-         $cd->add($data);
-      }
-   }
-
-
-   /**
     * Init cost for creation based on previous cost
    **/
    function initBasedOnPrevious() {

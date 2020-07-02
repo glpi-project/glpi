@@ -305,44 +305,6 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * Duplicate documents from an item template to its clone
-    *
-    * @deprecated 9.5
-    * @since 0.84
-    *
-    * @param string  $itemtype     itemtype of the item
-    * @param integer $oldid        ID of the item to clone
-    * @param integer $newid        ID of the item cloned
-    * @param string  $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-   **/
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      if (empty($newitemtype)) {
-         $newitemtype = $itemtype;
-      }
-
-      $iterator = $DB->request([
-         'FIELDS' => ['documents_id'],
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'items_id'  => $oldid,
-            'itemtype'  => $itemtype
-         ]
-      ]);
-      while ($data = $iterator->next()) {
-         $docitem = new self();
-         $docitem->add([
-            'documents_id' => $data["documents_id"],
-            'itemtype'     => $newitemtype,
-            'items_id'     => $newid]
-         );
-      }
-   }
-
-
-   /**
     * Show items links to a document
     *
     * @since 0.84

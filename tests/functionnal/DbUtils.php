@@ -388,7 +388,7 @@ class DbUtils extends DbTestCase {
       $this->integer(countElementsInTableForEntity($table, $eid, $condition))->isIdenticalTo($count);
    }
 
-   public function testGetAllDatasFromTable() {
+   public function testGetAllDataFromTable() {
       $this
          ->if($this->newTestedInstance)
          ->then

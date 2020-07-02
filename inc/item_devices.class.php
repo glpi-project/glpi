@@ -524,38 +524,6 @@ class Item_Devices extends CommonDBRelation {
       return $res;
    }
 
-   /**
-    *
-    * @deprecated 9.5
-    *
-   **/
-   static function cloneItem($itemtype, $oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      foreach (self::getItemAffinities($itemtype) as $link_type) {
-         $table = $link_type::getTable();
-         $olds = $DB->request([
-            'FROM'   => $table,
-            'WHERE'  => [
-               'itemtype'  => $itemtype,
-               'items_id'  => $oldid
-            ]
-         ]);
-
-         while ($data = $olds->next()) {
-            $link = new $link_type();
-            unset($data['id']);
-            $data['items_id']     = $newid;
-            $data['_itemtype']    = $itemtype;
-            $data['_no_history']  = true;
-            $data                 = Toolbox::addslashes_deep($data);
-
-            $link->add($data);
-         }
-      }
-   }
-
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 

@@ -110,39 +110,6 @@ class Item_Disk extends CommonDBChild {
 
 
    /**
-    * Duplicate all disks from an item template to his clone
-    *
-    * @deprecated 9.5
-    * @since 0.84
-    *
-    * @param string  $type  Item type
-    * @param integer $oldid Old ID
-    * @param integer $newid New id
-    *
-    * @return void
-   **/
-   static function cloneItem($type, $oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype'  => $type,
-            'items_id'  => $oldid
-         ]
-      ]);
-      while ($data = $iterator->next()) {
-         $cd                  = new self();
-         unset($data['id']);
-         $data['items_id']    = $newid;
-         $data                = Toolbox::addslashes_deep($data);
-         $cd->add($data);
-      }
-   }
-
-
-   /**
     * Print the version form
     *
     * @param $ID        integer ID of the item
