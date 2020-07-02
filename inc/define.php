@@ -505,9 +505,9 @@ $CFG_GLPI['javascript'] = [
    'helpdesk'  => [
       'dashboard' => $dashboard_libs,
       'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
-      'ticket'    => array_merge(['rateit', 'tinymce'], $dashboard_libs),
-      'problem'   => ['tinymce'],
-      'change'    => ['tinymce'],
+      'ticket'    => array_merge(['rateit', 'tinymce', 'kanban'], $dashboard_libs),
+      'problem'   => ['tinymce', 'kanban'],
+      'change'    => ['tinymce', 'kanban'],
       'stat'      => ['charts']
    ],
    'tools'     => [
