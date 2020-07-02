@@ -39,6 +39,19 @@
       font-size: 14px;
       padding: 10px;
 
+      input[type=text][name=filter]:not([type=submit]):not([type=button]) {
+         flex: 1 0 auto;
+         border-radius: unset;
+         background-color: white !important;
+         padding: 5px 10px;
+         font-size: 13px;
+      }
+      input[type=button].kanban-add-column:not([type=submit]):not([type=text]) {
+         margin-left: 5px;
+         padding: 7px 10px;
+         font-size: 13px;
+      }
+
       .fas {
          margin: auto auto auto 10px;
          font-size: 1.2em;
@@ -165,6 +178,11 @@
             flex: 1 0 auto;
             text-align: center;
             border-top: 5px solid $header-border-color;
+
+            &[data-drop-only=true] .kanban-body {
+               background: #fffa90;
+               color: #777620;
+            }
 
             &.ui-sortable-helper {
                cursor: grab;
@@ -382,10 +400,46 @@
             min-width: 200px;
             height: 600px;
             margin: 0 8px 0 0;
-            border-radius: 5px;
+            border-radius: 5px
          }
       }
    }
+   .kanban-color-preview, .kanban-column-title {
+      &.itilstatus {
+         &.assigned, &.new {
+            background-color: #49bf4d;
+         }
+
+         &.accepted {
+            background-color: green;
+         }
+
+         &.refused {
+            background-color: rgb(167, 47, 0);
+         }
+
+         &.test, &.qualif, &.waiting {
+            background-color: orange;
+         }
+
+         &.approval {
+            background-color: #8cabdb;
+         }
+
+         &.eval {
+            background-color: lightblue;
+         }
+
+         &.closed, &.solved, &.observe, &.canceled {
+            background-color: black;
+         }
+
+         &.planned {
+            background-color: #1b2f62;
+         }
+      }
+   }
+
    .kanban-color-preview {
       width: 1em;
       height: 1em;
@@ -400,7 +454,6 @@
       color: #777620;
       height: 40px;
       margin-top: 5px;
-
       &.invalid-position {
          border: 2px dashed #d3413c;
          background: #ff7370;

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -1928,7 +1930,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
    static function getDataToDisplayOnKanban($ID, $criteria = []) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       $items      = [];
 
@@ -1951,7 +1953,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ]
             ]
          ] + $project_visibility['LEFT JOIN'],
-         'WHERE'     => $project_visibility['WHERE']
+         'WHERE'     => $project_visibility['WHERE'],
       ];
       if ($ID > 0) {
          $request['WHERE']['glpi_projects.projects_id'] = $ID;
