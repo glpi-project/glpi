@@ -48,6 +48,14 @@ class Calendar extends CommonDropdown {
    static $rightname = 'calendar';
 
 
+   public function getCloneRelations() :array {
+      return [
+         Calendar_Holiday::class,
+         CalendarSegment::class
+      ];
+   }
+
+
    /**
     * @since 0.84
    **/
@@ -192,26 +200,23 @@ class Calendar extends CommonDropdown {
     */
    function duplicate($options = []) {
 
+      $input = $this->fields;
+      unset($input['id']);
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             if (isset($this->fields[$key])) {
-               $this->fields[$key] = $val;
+               $input[$key] = $val;
             }
          }
       }
 
-      $input = $this->fields;
-      $oldID = $input['id'];
-      unset($input['id']);
-      if ($newID = $this->add($input)) {
-         Calendar_Holiday::cloneCalendar($oldID, $newID);
-         CalendarSegment::cloneCalendar($oldID, $newID);
-
+      if ($newID = $this->clone($input)) {
          $this->updateDurationCache($newID);
          return true;
       }
-      return false;
 
+      return false;
    }
 
 
