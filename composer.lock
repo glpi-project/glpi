@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b0a619b67a42b0ed750e2c683e459560",
+    "content-hash": "06631dc91003a180e6669be4dddeb274",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -58,6 +58,12 @@
                 "selection",
                 "upload",
                 "widget"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/blueimp",
+                    "type": "github"
+                }
             ],
             "time": "2020-05-22T17:10:45+00:00"
         },
@@ -1366,6 +1372,16 @@
                 "logging",
                 "psr-3"
             ],
+            "funding": [
+                {
+                    "url": "https://github.com/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-22T08:12:19+00:00"
         },
         {
@@ -1510,6 +1526,12 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
+            "funding": [
+                {
+                    "url": "https://github.com/synchro",
+                    "type": "github"
+                }
+            ],
             "time": "2020-05-27T12:24:03+00:00"
         },
         {
@@ -1931,6 +1953,12 @@
                 "guid",
                 "identifier",
                 "uuid"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/ramsey",
+                    "type": "github"
+                }
             ],
             "time": "2020-03-29T20:13:32+00:00"
         },
@@ -2647,6 +2675,20 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-30T20:06:45+00:00"
         },
         {
@@ -2704,6 +2746,20 @@
                 "polyfill",
                 "portable",
                 "shim"
+            ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-05-12T16:47:27+00:00"
         },
@@ -2766,6 +2822,20 @@
                 "polyfill",
                 "portable",
                 "shim"
+            ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-05-12T16:47:27+00:00"
         },
@@ -4474,29 +4544,29 @@
         },
         {
             "name": "scrutinizer/ocular",
-            "version": "1.6.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/scrutinizer-ci/ocular.git",
-                "reference": "3f0bb363ce09a8116d48a25f2a2f5a5fdb5db3aa"
+                "reference": "65566d2e9c7c9e1f96502f5ffc49799b2a53ca29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scrutinizer-ci/ocular/zipball/3f0bb363ce09a8116d48a25f2a2f5a5fdb5db3aa",
-                "reference": "3f0bb363ce09a8116d48a25f2a2f5a5fdb5db3aa",
+                "url": "https://api.github.com/repos/scrutinizer-ci/ocular/zipball/65566d2e9c7c9e1f96502f5ffc49799b2a53ca29",
+                "reference": "65566d2e9c7c9e1f96502f5ffc49799b2a53ca29",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "~6.3",
                 "jms/serializer": "^1.0.0",
                 "phpoption/phpoption": "~1.0",
-                "symfony/console": "^2.1.0|~3.0|~4.0",
-                "symfony/process": "~2.3|~3.0|~4.0"
+                "symfony/console": "^2.1.0|~3.0|~4.0|~5.0",
+                "symfony/process": "~2.3|~3.0|~4.0|~5.0"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.2",
                 "phpunit/phpunit": "^4.8.0",
-                "symfony/filesystem": "~2.0|~3.0|~4.0"
+                "symfony/filesystem": "~2.0|~3.0|~4.0|~5.0"
             },
             "bin": [
                 "bin/ocular"
@@ -4511,7 +4581,7 @@
             "license": [
                 "Apache-2.0"
             ],
-            "time": "2019-06-15T16:36:51+00:00"
+            "time": "2019-11-25T10:14:15+00:00"
         },
         {
             "name": "sensiolabs/security-checker",
@@ -4680,6 +4750,20 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-20T08:37:50+00:00"
         },
         {
@@ -4788,6 +4872,20 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-30T18:50:54+00:00"
         },
         {
@@ -4837,6 +4935,20 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-03-27T16:54:36+00:00"
         },
         {
@@ -5028,7 +5140,7 @@
         },
         {
             "name": "symfony/process",
-            "version": "v4.4.9",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
@@ -5073,6 +5185,20 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-30T20:06:45+00:00"
         },
         {
@@ -5132,6 +5258,20 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-20T08:37:50+00:00"
         }
     ],
