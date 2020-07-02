@@ -385,42 +385,6 @@ class KnowbaseItem_Item extends CommonDBRelation {
       return $linked_items;
    }
 
-   /**
-    * Duplicate KB links from an item template to its clone
-    *
-    * @deprecated 9.5
-    * @since 9.2
-    *
-    * @param string  $itemtype     itemtype of the item
-    * @param integer $oldid        ID of the item to clone
-    * @param integer $newid        ID of the item cloned
-    * @param string  $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-   **/
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      if (empty($newitemtype)) {
-         $newitemtype = $itemtype;
-      }
-
-      $iterator = $DB->request([
-         'FROM'   => 'glpi_knowbaseitems_items',
-         'FIELDS' => 'knowbaseitems_id',
-         'WHERE'  => [
-            'items_id'  => $oldid,
-            'itemtype'  => $itemtype
-         ]
-      ]);
-
-      while ($data = $iterator->next()) {
-         $kb_link = new self();
-         $kb_link->add(['knowbaseitems_id' => $data['knowbaseitems_id'],
-                                  'itemtype'    => $newitemtype,
-                                  'items_id'    => $newid]);
-      }
-   }
-
    function getForbiddenStandardMassiveAction() {
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';

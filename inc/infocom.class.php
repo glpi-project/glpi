@@ -1896,53 +1896,6 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * Duplicate infocoms from an item template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param string  $itemtype     itemtype of the item
-    * @param integer $oldid        ID of the item to clone
-    * @param integer $newid        ID of the item cloned
-    * @param string  $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-   **/
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
-
-      Toolbox::deprecated('Use clone');
-      $ic = new self();
-      if ($ic->getFromDBforDevice($itemtype, $oldid)) {
-         $input             = $ic->fields;
-         $input             = Toolbox::addslashes_deep($input);
-         $input['items_id'] = $newid;
-         if (!empty($newitemtype)) {
-            $input['itemtype'] = $newitemtype;
-         }
-         unset ($input["id"]);
-         if (isset($input["immo_number"])) {
-            $input["immo_number"] = autoName($input["immo_number"], "immo_number", 1, 'Infocom',
-                                             $input['entities_id']);
-         }
-         $date_fields = [
-            'buy_date',
-            'delivery_date',
-            'inventory_date',
-            'order_date',
-            'use_date',
-            'warranty_date',
-         ];
-         foreach ($date_fields as $f) {
-            if (empty($input[$f])) {
-               unset($input[$f]);
-            }
-         }
-         unset($input['date_creation']);
-         unset($input['date_mod']);
-         $ic2 = new self();
-         $ic2->add($input);
-      }
-   }
-
-
-   /**
     * Get date using a begin date and a period in month
     *
     * @param string  $from          begin date

@@ -205,8 +205,6 @@ class Plugin extends CommonDBTM {
     * @return void
    **/
    static function load($plugin_key, $withhook = false) {
-      global $LOADED_PLUGINS;
-
       $loaded = false;
       foreach (PLUGINS_DIRECTORIES as $base_dir) {
          if (!is_dir($base_dir)) {
@@ -222,7 +220,6 @@ class Plugin extends CommonDBTM {
                $init_function = "plugin_init_$plugin_key";
                if (function_exists($init_function)) {
                   $init_function();
-                  $LOADED_PLUGINS[$plugin_key] = $plugin_directory;
                   self::loadLang($plugin_key);
                }
             }
@@ -245,18 +242,12 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    private function unload($plugin_key) {
-      global $LOADED_PLUGINS;
-
       if (isset(self::$activated_plugins[$plugin_key])) {
          unset(self::$activated_plugins[$plugin_key]);
       }
 
       if (isset(self::$loaded_plugins[$plugin_key])) {
          unset(self::$loaded_plugins[$plugin_key]);
-      }
-
-      if (isset($LOADED_PLUGINS[$plugin_key])) {
-         unset($LOADED_PLUGINS[$plugin_key]);
       }
    }
 
@@ -1995,59 +1986,6 @@ class Plugin extends CommonDBTM {
    public static function isPluginActive($plugin_key) {
       $plugin = new self();
       return $plugin->isActivated($plugin_key);
-   }
-
-   /**
-    * Set plugin loaded
-    *
-    * @since 9.3.2
-    * @deprecated 9.5.0
-    *
-    * @param integer $id   Plugin id
-    * @param string  $name Plugin name
-    *
-    * @return void
-    */
-   public static function setLoaded($id, $name) {
-      Toolbox::deprecated();
-      if (!in_array($name, self::$loaded_plugins)) {
-         self::$loaded_plugins[] = $name;
-      }
-   }
-
-   /**
-    * Set plugin unloaded
-    *
-    * @since 9.3.2
-    * @deprecated 9.5.0
-    *
-    * @param integer $id Plugin id
-    *
-    * @return void
-    */
-   public static function setUnloaded($id) {
-      Toolbox::deprecated();
-
-      $plugin = new self();
-      $plugin->getFromDB($id);
-      $plugin->unload($plugin->fields['directory']);
-   }
-
-   /**
-    * Set plugin unloaded from its name
-    *
-    * @since 9.3.2
-    * @deprecated 9.5.0
-    *
-    * @param integer $name Plugin name
-    *
-    * @return void
-    */
-   public static function setUnloadedByName($name) {
-      Toolbox::deprecated();
-
-      $plugin = new self();
-      $plugin->unload($name);
    }
 
    function rawSearchOptions() {

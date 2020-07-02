@@ -221,25 +221,6 @@ function countElementsInTableForEntity($table, $entity, $condition = [], $recurs
    return $dbu->countElementsInTableForEntity($table, $entity, $condition, $recursive);
 }
 
-
-/**
- * Get data from a table in an array :
- * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
- *
- * @param string  $table     table name
- * @param array   $condition condition to use (default [])
- * @param boolean $usecache  Use cache (false by default)
- * @param string  $order     result order (default '')
- *
- * @return array containing all the datas
- *
- * @deprecated 9.5.0
-**/
-function getAllDatasFromTable($table, $condition = [], $usecache = false, $order = '') {
-   Toolbox::deprecated('Use getAllDataFromTable()');
-   return getAllDataFromTable($table, $condition, $usecache, $order);
-}
-
 /**
  * Get data from a table in an array :
  * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
@@ -394,23 +375,6 @@ function contructTreeFromList($list, $root) {
 function contructListFromTree($tree, $parent = 0) {
    $dbu = new DbUtils();
    return $dbu->constructListFromTree($tree, $parent);
-}
-
-
-/**
- * Get the equivalent search query using ID of soons that the search of the father's ID argument
- *
- * @param $table     string   table name
- * @param $IDf       integer  The ID of the father
- * @param $reallink  string   real field to link ($table.id if not set) (default ='')
- *
- * @return string the query
- *
- * @deprecated 9.5.0
-**/
-function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
-   $dbu = new DbUtils();
-   return $dbu->getRealQueryForTreeItem($table, $IDf, $reallink);
 }
 
 

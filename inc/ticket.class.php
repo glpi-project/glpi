@@ -4124,33 +4124,6 @@ class Ticket extends CommonITILObject {
                '_tag_filename'             => []];
    }
 
-   /**
-    * Get ticket template to use
-    * Use force_template first, then try on template define for type and category
-    * then use default template of active profile of connected user and then use default entity one
-    *
-    * @param $force_template      integer itiltemplate_id to used (case of preview for example)
-    *                             (default 0)
-    * @param $type                integer type of the ticket (default 0)
-    * @param $itilcategories_id   integer ticket category (default 0)
-    * @param $entities_id         integer (default -1)
-    *
-    * @since 0.84
-    * @deprecated 9.5.0
-    *
-    * @return ticket template object
-   **/
-   function getTicketTemplateToUse($force_template = 0, $type = 0, $itilcategories_id = 0,
-                                   $entities_id = -1) {
-      Toolbox::deprecated('Use getITILTemplateToUse()');
-      return $this->getITILTemplateToUse(
-         $force_template,
-         $type,
-         $itilcategories_id,
-         $entities_id
-      );
-   }
-
 
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -6206,52 +6179,6 @@ class Ticket extends CommonITILObject {
       ];
 
       return $criteria;
-   }
-
-
-   /**
-    * @deprecated 9.5.0
-    */
-   static function getCommonSelect() {
-      Toolbox::deprecated('Use getCommonCriteria with db iterator');
-      $SELECT = "";
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $SELECT .= ", `glpi_entities`.`completename` AS entityname,
-                       `glpi_tickets`.`entities_id` AS entityID ";
-      }
-
-      return " DISTINCT `glpi_tickets`.*,
-                        `glpi_itilcategories`.`completename` AS catname
-                        $SELECT";
-   }
-
-
-   /**
-    * @deprecated 9.5.0
-    */
-   static function getCommonLeftJoin() {
-      Toolbox::deprecated('Use getCommonCriteria with db iterator');
-
-      $FROM = "";
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $FROM .= " LEFT JOIN `glpi_entities`
-                        ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`) ";
-      }
-
-      return " LEFT JOIN `glpi_groups_tickets`
-                  ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`)
-               LEFT JOIN `glpi_tickets_users`
-                  ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
-               LEFT JOIN `glpi_suppliers_tickets`
-                  ON (`glpi_tickets`.`id` = `glpi_suppliers_tickets`.`tickets_id`)
-               LEFT JOIN `glpi_itilcategories`
-                  ON (`glpi_tickets`.`itilcategories_id` = `glpi_itilcategories`.`id`)
-               LEFT JOIN `glpi_tickettasks`
-                  ON (`glpi_tickets`.`id` = `glpi_tickettasks`.`tickets_id`)
-               LEFT JOIN `glpi_items_tickets`
-                  ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)
-               $FROM";
-
    }
 
 

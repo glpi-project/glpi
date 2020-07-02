@@ -1561,46 +1561,6 @@ class Problem extends CommonITILObject {
 
    }
 
-
-   /**
-    * @deprecated 9.5.0
-    */
-   static function getCommonSelect() {
-      Toolbox::deprecated('Use getCommonCriteria with db iterator');
-      $SELECT = "";
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $SELECT .= ", `glpi_entities`.`completename` AS entityname,
-                       `glpi_problems`.`entities_id` AS entityID ";
-      }
-
-      return " DISTINCT `glpi_problems`.*,
-                        `glpi_itilcategories`.`completename` AS catname
-                        $SELECT";
-   }
-
-
-   /**
-    * @deprecated 9.5.0
-    */
-   static function getCommonLeftJoin() {
-      Toolbox::deprecated('Use getCommonCriteria with db iterator');
-      $FROM = "";
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $FROM .= " LEFT JOIN `glpi_entities`
-                        ON (`glpi_entities`.`id` = `glpi_problems`.`entities_id`) ";
-      }
-
-      return " LEFT JOIN `glpi_groups_problems`
-                  ON (`glpi_problems`.`id` = `glpi_groups_problems`.`problems_id`)
-               LEFT JOIN `glpi_problems_users`
-                  ON (`glpi_problems`.`id` = `glpi_problems_users`.`problems_id`)
-               LEFT JOIN `glpi_problems_suppliers`
-                  ON (`glpi_problems`.`id` = `glpi_problems_suppliers`.`problems_id`)
-               LEFT JOIN `glpi_itilcategories`
-                  ON (`glpi_problems`.`itilcategories_id` = `glpi_itilcategories`.`id`)
-               $FROM";
-   }
-
    /**
     * Display problems for an item
     *

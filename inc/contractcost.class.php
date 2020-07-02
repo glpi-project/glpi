@@ -180,32 +180,6 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   /**
-    * Duplicate all costs from a contract template to its clone
-    *
-    * @deprecated 9.5
-    * @since 0.84
-    *
-    * @param $oldid
-    * @param $newid
-   **/
-   static function cloneContract($oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['contracts_id' => $oldid]
-      ]);
-      while ($data = $iterator->next()) {
-         $cd                   = new self();
-         unset($data['id']);
-         $data['contracts_id'] = $newid;
-         $data                 = Toolbox::addslashes_deep($data);
-         $cd->add($data);
-      }
-   }
-
 
    /**
     * Init cost for creation based on previous cost
