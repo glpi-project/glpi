@@ -1300,7 +1300,7 @@ class Log extends CommonDBTM {
          'table'              => $log_table,
          'field'              => 'itemtype',
          'name'               => __('Item type'),
-         'datatype'           => 'dropdown',
+         'datatype'           => 'specific',
          'massiveaction'      => false,
       ];
 
@@ -1327,7 +1327,7 @@ class Log extends CommonDBTM {
          'table'              => $log_table,
          'field'              => 'linked_action',
          'name'               => __('Action'),
-         'datatype'           => 'string',
+         'datatype'           => 'specific',
          'massiveaction'      => false,
       ];
 
@@ -1377,6 +1377,18 @@ class Log extends CommonDBTM {
       ];
 
       return $tab;
+   }
+
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+         case 'itemtype':
+            return $values[$field]::getTypeName(1);
+         case 'linked_action':
+            return self::getLinkedActionLabel($values[$field]);
+      }
    }
 
    public static function getIcon() {
