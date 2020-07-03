@@ -64,6 +64,15 @@ class Contract extends DbTestCase {
       ]);
       $this->integer($link_id)->isGreaterThan(0);
 
+      $citem = new \Contract_Item();
+      $citems_id = $citem->add([
+         'contracts_id' => $cid,
+         'itemtype'     => 'Computer',
+         'items_id'     => getItemByTypeName('Computer', '_test_pc01', true)
+      ]);
+      $this->integer($citems_id)->isGreaterThan(0);
+      var_dump($cid);
+
       $cloned = $contract->clone();
       $this->integer($cloned)->isGreaterThan($cid);
    }
