@@ -50,11 +50,20 @@ trait Clonable {
     */
    abstract public function getCloneRelations() :array;
 
+   /**
+    * Get override field name
+    *
+    * @return string
+    */
+   public function getOverrideFieldName(): string {
+      return 'items_id';
+   }
+
    public function post_clone($source, $history) {
       parent::post_clone($source, $history);
 
       $clone_relations = $this->getCloneRelations();
-      $override_input['items_id'] = $this->getID();
+      $override_input[$this->getOverrideFieldName()] = $this->getID();
       foreach ($clone_relations as $classname) {
          if (!is_a($classname, CommonDBConnexity::class, true)) {
             Toolbox::logWarning(

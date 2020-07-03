@@ -655,4 +655,7 @@ class Calendar extends CommonDropdown {
       return (int)date('w', $date);
    }
 
+   public function getOverrideFieldName(): string {
+      return 'calendars_id';
+   }
 }
