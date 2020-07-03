@@ -39,6 +39,9 @@ use DbTestCase;
 class Contract extends DbTestCase {
 
    public function testClone() {
+      $this->login();
+      $this->setEntity('_test_root_entity', true);
+
       $contract = new \Contract();
       $input = [
          'name' => 'A test contract',
@@ -72,6 +75,7 @@ class Contract extends DbTestCase {
       ]);
       $this->integer($citems_id)->isGreaterThan(0);
 
+      $this->boolean($citem->getFromDB($citems_id))->isTrue();
       $relation_items = $citem->getItemsAssociatedTo($contract->getType(), $cid);
       $this->array($relation_items)->hasSize(1, 'Original Contract_Item not found!');
 
