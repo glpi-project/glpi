@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Calendar Class
 **/
 class Calendar extends CommonDropdown {
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory                   = true;
