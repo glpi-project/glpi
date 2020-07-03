@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  *  Contract class
  */
 class Contract extends CommonDBTM {
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -45,6 +46,15 @@ class Contract extends CommonDBTM {
 
    static $rightname                   = 'contract';
    protected $usenotepad               = true;
+
+
+   public function getCloneRelations() :array {
+      return [
+         Contract_Item::class,
+         Contract_Supplier::class,
+         ContractCost::class,
+      ];
+   }
 
 
 
