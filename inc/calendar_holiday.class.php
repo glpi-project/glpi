@@ -55,7 +55,7 @@ class Calendar_Holiday extends CommonDBRelation {
     *
     * @return array the items associated to the given one (empty if none was found)
    **/
-   static function getItemsAssociationRequest($itemtype, $items_id) {
+   /*static function getItemsAssociationRequest($itemtype, $items_id) {
       global $DB;
 
       return $DB->request([
@@ -65,7 +65,7 @@ class Calendar_Holiday extends CommonDBRelation {
             static::$items_id_1  => $items_id
          ]
       ]);
-   }
+   }*/
 
    /**
     * @since 0.84

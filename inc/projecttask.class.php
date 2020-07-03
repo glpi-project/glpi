@@ -163,7 +163,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     *
     * @return array the items associated to the given one (empty if none was found)
     **/
-   static function getItemsAssociationRequest($itemtype, $items_id) {
+   /*static function getItemsAssociationRequest($itemtype, $items_id) {
       global $DB;
 
       return $DB->request([
@@ -173,7 +173,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             static::$items_id  => $items_id
          ]
       ]);
-   }
+   }*/
 
    /**
     * Duplicate all tasks from a project template to his clone
