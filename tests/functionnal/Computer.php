@@ -360,8 +360,45 @@ class Computer extends DbTestCase {
 
       // Test item cloning
       $computer = $this->getNewComputer();
+      $id = $computer->fields['id'];
+
+      //add note
+      $note = new \Notepad();
+      $this->integer(
+         $note->add([
+            'itemtype'  => 'Computer',
+            'items_id'  => $id
+         ])
+      )->isGreaterThan(0);
+
+      //add os
+      $os = new \OperatingSystem();
+      $osid = $os->add([
+         'name'   => 'My own OS'
+      ]);
+      $this->integer($osid)->isGreaterThan(0);
+
+      $ios = new \Item_OperatingSystem();
+      $this->integer(
+         $ios->add([
+            'itemtype'  => 'Computer',
+            'items_id'  => $id
+         ])
+      )->isGreaterThan(0);
+
+      //add infocom
+      $infocom = new \Infocom();
+      $this->integer(
+         $infocom->add([
+            'itemtype'  => 'Computer',
+            'items_id'  => $id
+         ])
+      )->isGreaterThan(0);
+
+      //clone!
       $added = $computer->clone();
       $this->integer((int)$added)->isGreaterThan(0);
+      $this->integer($added)->isNotEqualTo($computer->fields['id']);
 
       $clonedComputer = new \Computer();
       $this->boolean($clonedComputer->getFromDB($added))->isTrue();
@@ -383,6 +420,21 @@ class Computer extends DbTestCase {
             default:
                $this->variable($clonedComputer->getField($k))->isEqualTo($computer->getField($k));
          }
+      }
+
+      $relations = [
+         \Infocom::class => 1,
+         \Notepad::class  => 1,
+         \Item_OperatingSystem::class => 1
+      ];
+
+      foreach ($relations as $relation => $expected) {
+         $this->integer(
+            countElementsInTable(
+               $relation::getTable(),
+               ['items_id' => $clonedComputer->fields['id']]
+            )
+         )->isIdenticalTo($expected);
       }
    }
 }
