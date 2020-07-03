@@ -189,15 +189,44 @@ abstract class CommonDBConnexity extends CommonDBTM {
     */
    static function getItemsAssociationRequest($itemtype, $items_id) {
       global $DB;
-
-      return $DB->request([
+      return $DB->request(static::getSQLCriteriaToSearchForItem($itemtype, $items_id));
+      /*return $DB->request([
          'SELECT' => 'id',
          'FROM'   => static::getTable(),
          'WHERE'  => [
             'itemtype'  => $itemtype,
             'items_id'  => $items_id
          ]
-      ]);
+      ]);*/
+   }
+
+   public static final function getItemField($itemtype) {
+      if (isset(static::$items_id_1) && getItemtypeForForeignKeyField(static::$items_id_1) == $itemtype) {
+         return static::$items_id_1;
+      }
+      if (isset(static::$items_id_2) && getItemtypeForForeignKeyField(static::$items_id_2) == $itemtype) {
+         return static::$items_id_2;
+      }
+      if (isset(static::$items_id) && getItemtypeForForeignKeyField(static::$items_id) == $itemtype) {
+         return static::$items_id;
+      }
+
+      if (isset(static::$itemtype_1) && isset(static::$itemtype_2) && preg_match('/^itemtype/', static::$itemtype_1) && preg_match('/^itemtype/', static::$itemtype_2)) {
+         throw new \RuntimeException('Bad relation (' . $itemtype . ', ' .static::class . ', ' . static::$itemtype_1 . ', ' . static::$itemtype_2 . ')');
+      }
+
+      if (isset(static::$itemtype_1) && preg_match('/^itemtype/', static::$itemtype_1)) {
+         return static::$items_id_1;
+      }
+      if (isset(static::$itemtype_2) && preg_match('/^itemtype/', static::$itemtype_2)) {
+         return static::$items_id_2;
+      }
+
+      if (isset (static::$itemtype) && preg_match('/^itemtype/', static::$itemtype)) {
+         return static::$items_id;
+      }
+
+      throw new \RuntimeException('Cannot guess ');
    }
 
    /**

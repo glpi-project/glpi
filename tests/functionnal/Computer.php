@@ -395,6 +395,41 @@ class Computer extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
+      //add device
+      $cpu = new \DeviceProcessor();
+      $cpuid = $cpu->add(
+         [
+            'designation'  => 'Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz',
+            'frequence'    => '1700'
+         ]
+      );
+
+      $this->integer((int)$cpuid)->isGreaterThan(0);
+
+      $link = new \Item_DeviceProcessor();
+      $linkid = $link->add(
+         [
+            'items_id'              => $id,
+            'itemtype'              => 'Computer',
+            'deviceprocessors_id'   => $cpuid
+         ]
+      );
+      $this->integer((int)$linkid)->isGreaterThan(0);
+
+      //add document
+      $document = new \Document();
+      $docid = (int)$document->add(['name' => 'Test link document']);
+      $this->integer($docid)->isGreaterThan(0);
+
+      $docitem = new \Document_Item();
+      $this->integer(
+         $docitem->add([
+            'documents_id' => $docid,
+            'itemtype'     => 'Computer',
+            'items_id'     => $id
+         ])
+      )->isGreaterThan(0);
+
       //clone!
       $added = $computer->clone();
       $this->integer((int)$added)->isGreaterThan(0);
@@ -437,5 +472,9 @@ class Computer extends DbTestCase {
             )
          )->isIdenticalTo($expected);
       }
+
+      //check processor has been cloned
+      $this->boolean($link->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();
+      $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();
    }
 }
