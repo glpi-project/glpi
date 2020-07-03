@@ -71,9 +71,18 @@ class Contract extends DbTestCase {
          'items_id'     => getItemByTypeName('Computer', '_test_pc01', true)
       ]);
       $this->integer($citems_id)->isGreaterThan(0);
-      var_dump($cid);
 
       $cloned = $contract->clone();
       $this->integer($cloned)->isGreaterThan($cid);
+
+      foreach ($contract->getCloneRelations() as $rel_class) {
+         var_dump($rel_class);
+         $this->integer(
+            countElementsInTable(
+               $rel_class::getTable(),
+               ['contracts_id' => $cloned]
+            )
+         )->isIdenticalTo(1, 'Missing relation with ' . $rel_class);
+      }
    }
 }

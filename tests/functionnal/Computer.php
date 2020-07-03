@@ -422,6 +422,7 @@ class Computer extends DbTestCase {
          }
       }
 
+      //TODO: would be better to check each Computer::getCloneRelations() ones.
       $relations = [
          \Infocom::class => 1,
          \Notepad::class  => 1,
