@@ -200,7 +200,7 @@ jobs:
           name: PHP CS
           command: |
             touch /home/circleci/phpcs.cache
-            vendor/bin/phpcs -d memory_limit=512M --cache /home/circleci/phpcs.cache -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/marketplace/,/node_modules/,/plugins/,/tests/config/,/vendor/ ./
+            vendor/bin/phpcs -d memory_limit=512M --cache /home/circleci/phpcs.cache -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore="/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" ./
       - run:
           name: ESLint
           command: |

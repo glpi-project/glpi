@@ -281,10 +281,13 @@ class Change_Ticket extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='changes_id' value='$ID'>";
-         Ticket::dropdown(['used'        => $used,
-                                'entity'      => $change->getEntityID(),
-                                'entity_sons' => $change->isRecursive(),
-                                'displaywith' => ['id']]);
+         Ticket::dropdown([
+            'used'        => $used,
+            'entity'      => $change->getEntityID(),
+            'entity_sons' => $change->isRecursive(),
+            'displaywith' => ['id'],
+            'condition'   => Ticket::getOpenCriteria()
+         ]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -402,8 +405,11 @@ class Change_Ticket extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a change')."</th></tr>";
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
-         Change::dropdown(['used'        => $used,
-                                'entity'      => $ticket->getEntityID()]);
+         Change::dropdown([
+            'used'      => $used,
+            'entity'    => $ticket->getEntityID(),
+            'condition' => Change::getOpenCriteria(),
+         ]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td><td>";
