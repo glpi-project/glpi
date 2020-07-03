@@ -140,28 +140,6 @@ class Contract extends CommonDBTM {
    }
 
 
-   function prepareInputForAdd($input) {
-
-      if (isset($input["id"]) && $input["id"]>0) {
-         $input["_oldID"] = $input["id"];
-      }
-      unset($input['id']);
-      unset($input['withtemplate']);
-
-      return $input;
-   }
-
-
-   function post_addItem() {
-
-      // Manage add from template
-      if (isset($this->input["_oldID"])) {
-         // ADD Devices
-         ContractCost::cloneContract($this->input["_oldID"], $this->fields['id']);
-      }
-   }
-
-
    function pre_updateInDB() {
 
       // Clean end alert if begin_date is after old one
