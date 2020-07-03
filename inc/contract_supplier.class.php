@@ -38,11 +38,11 @@ if (!defined('GLPI_ROOT')) {
 class Contract_Supplier extends CommonDBRelation {
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Contract';
-   static public $items_id_1 = 'contracts_id';
+   static public $itemtype_2 = 'Contract';
+   static public $items_id_2 = 'contracts_id';
 
-   static public $itemtype_2 = 'Supplier';
-   static public $items_id_2 = 'suppliers_id';
+   static public $itemtype_1 = 'Supplier';
+   static public $items_id_1 = 'suppliers_id';
 
 
    function getForbiddenStandardMassiveAction() {
