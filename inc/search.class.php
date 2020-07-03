@@ -549,7 +549,7 @@ class Search {
       $searchopt        = &self::getOptions($data['itemtype']);
 
       $blacklist_tables = [];
-      $orig_table = ($data['itemtype'] == 'AllAssets' ? getTableForItemType($data['itemtype']) : $data['itemtype']::getTable());
+      $orig_table = self::getOrigTableName($data);
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
          $itemtable          = $CFG_GLPI['union_search_type'][$data['itemtype']];
          $blacklist_tables[] = $orig_table;
@@ -3207,7 +3207,7 @@ JAVASCRIPT;
 
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      $orig_table = ($itemtype == 'AllAssets' ? getTableForItemType($itemtype) : $itemtype::getTable());
+      $orig_table = self::getOrigTableName($data);
       if (($is_fkey_composite_on_self || $table != $orig_table)
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
@@ -3426,7 +3426,7 @@ JAVASCRIPT;
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
 
-      $orig_table = ($itemtype == 'AllAssets' ? getTableForItemType($itemtype) : $itemtype::getTable());
+      $orig_table = self::getOrigTableName($data);
       if (((($is_fkey_composite_on_self || $table != $orig_table)
             && (!isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($CFG_GLPI["union_search_type"][$itemtype] != $table)))
@@ -4089,7 +4089,7 @@ JAVASCRIPT;
       $addtable  = '';
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      $orig_table = ($itemtype == 'AllAssets' ? getTableForItemType($itemtype) : $itemtype::getTable());
+      $orig_table = self::getOrigTableName($data);
       if (($table != 'asset_types')
           && ($is_fkey_composite_on_self || $table != $orig_table)
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
@@ -7836,5 +7836,16 @@ JAVASCRIPT;
                         AND `$alias`.`language` = '".
                               $_SESSION['glpilanguage']."'
                         AND `$alias`.`field` = '$field')";
+   }
+
+   /**
+    * Get table name
+    *
+    * @param array $data Search data
+    *
+    * @return string
+    */
+   public static function getOrigTableName(array $data): string {
+      return (is_a($data['itemtype'], CommonDBTM::class, true)) ? $data['itemtype']::getTable() : getTableForItemType($data['itemtype']);
    }
 }
