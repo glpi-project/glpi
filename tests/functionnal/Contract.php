@@ -72,6 +72,9 @@ class Contract extends DbTestCase {
       ]);
       $this->integer($citems_id)->isGreaterThan(0);
 
+      $relation_items = $citem->getItemsAssociatedTo($contract->getType(), $cid);
+      $this->array($relation_items)->hasSize(1, 'Original Contract_Item not found!');
+
       $cloned = $contract->clone();
       $this->integer($cloned)->isGreaterThan($cid);
 
