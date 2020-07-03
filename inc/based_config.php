@@ -84,7 +84,7 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
       'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_SERVICES}/api/registration/',
       'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_SERVICES}/api/glpi-plugins/',
       // TODO set false before final release of 9.5.0 and remove this comment
-      'GLPI_MARKETPLACE_PRERELEASES'      => true, // display pre-releases of plugins in marketplace
+      'GLPI_MARKETPLACE_PRERELEASES'      => false, // display pre-releases of plugins in marketplace
       'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
 
       // Other constants
@@ -142,8 +142,8 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
    // Order in this array is important (priority to first found).
    if (!defined('PLUGINS_DIRECTORIES')) {
       define('PLUGINS_DIRECTORIES', [
-         GLPI_ROOT . '/plugins',
          GLPI_MARKETPLACE_DIR,
+         GLPI_ROOT . '/plugins',
       ]);
    } else if (!is_array(PLUGINS_DIRECTORIES)) {
       throw new \Exception('PLUGINS_DIRECTORIES constant value must be an array');
