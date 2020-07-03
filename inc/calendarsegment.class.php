@@ -83,7 +83,7 @@ class CalendarSegment extends CommonDBChild {
     *
     * @return array the items associated to the given one (empty if none was found)
    **/
-   /*static function getItemsAssociationRequest($itemtype, $items_id) {
+   static function getItemsAssociationRequest($itemtype, $items_id) {
       global $DB;
 
       return $DB->request([
@@ -93,7 +93,7 @@ class CalendarSegment extends CommonDBChild {
             static::$items_id  => $items_id
          ]
       ]);
-   }*/
+   }
 
    /**
     * Duplicate all segments from a calendar to his clone

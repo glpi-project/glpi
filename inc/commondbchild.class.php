@@ -104,7 +104,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return array the items associated to the given one (empty if none was found)
    **/
-   /*static function getItemsAssociationRequest($itemtype, $items_id) {
+   static function getItemsAssociationRequest($itemtype, $items_id) {
       global $DB;
 
       return $DB->request([
@@ -115,7 +115,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
             static::$items_id  => $items_id
          ]
       ]);
-   }*/
+   }
 
 
    /**
