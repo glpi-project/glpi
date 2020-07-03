@@ -47,19 +47,24 @@ class Contract extends DbTestCase {
       $cid = $contract->add($input);
       $this->integer($cid)->isGreaterThan(0);
 
+      $cost = new \ContractCost();
+      $cost_id = $cost->add([
+         'contracts_id' => $cid,
+         'name'         => 'Test cost'
+      ]);
+      $this->integer($cost_id)->isGreaterThan(0);
+
+      $suppliers_id = getItemByTypeName('Supplier', '_suplier01_name', true);
+      $this->integer($suppliers_id)->isGreaterThan(0);
+
+      $link_supplier = new \Contract_Supplier();
+      $link_id = $link_supplier->add([
+         'suppliers_id' => $suppliers_id,
+         'contracts_id' => $cid
+      ]);
+      $this->integer($link_id)->isGreaterThan(0);
+
       $cloned = $contract->clone();
       $this->integer($cloned)->isGreaterThan($cid);
-
-      /*$calendar = new \Calendar();
-      $default_id = getItemByTypeName('Calendar', 'Default', true);
-      // get Default calendar
-      $this->boolean($calendar->getFromDB($default_id))->isTrue();
-      $this->addXmas($calendar);
-
-      $id = $calendar->clone();
-      $this->integer($id)->isGreaterThan($default_id);
-      $this->boolean($calendar->getFromDB($id))->isTrue();
-      //should have been duplicated too.
-      $this->checkXmas($calendar);*/
    }
 }
