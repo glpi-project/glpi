@@ -91,6 +91,22 @@ if (isset($_POST["add"])) {
 
    Html::back();
 
+} else if (isset($_POST['addme_observer'])) {
+   $change->check($_POST['changes_id'], READ);
+   $input = array_merge(Toolbox::addslashes_deep($change->fields), [
+      'id' => $_POST['changes_id'],
+      '_itil_observer' => [
+         '_type' => "user",
+         'users_id' => Session::getLoginUserID(),
+         'use_notification' => 1,
+      ]
+   ]);
+   $change->update($input);
+   Event::log($_POST['changes_id'], "change", 4, "maintain",
+              //TRANS: %s is the user login
+              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
+   Html::redirect($change->getFormURLWithID($_POST['changes_id']));
+
 } else if (isset($_POST['addme_assign'])) {
    $change_user = new Change_User();
 
