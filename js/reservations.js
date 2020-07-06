@@ -45,7 +45,7 @@ var Reservations = function() {
             }
 
             if (my.is_tab) {
-               _newheight = $('glpi_tabs ').height() - 150;
+               _newheight = $('.glpi_tabs ').height() - 150;
             }
 
             //minimal size
