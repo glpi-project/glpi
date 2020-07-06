@@ -5007,7 +5007,8 @@ abstract class CommonITILObject extends CommonDBTM {
       foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
             if (!isPluginItemType($itemtype) // No plugin here
-                && in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+                && isset($_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+                  && in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
                $types[$itemtype] = $item->getTypeName(1);
             }
          }
@@ -5016,7 +5017,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Drop not available plugins
       foreach (array_keys($ptypes) as $itemtype) {
-         if (!in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+         if (isset($_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+             && !in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
             unset($ptypes[$itemtype]);
          }
       }
