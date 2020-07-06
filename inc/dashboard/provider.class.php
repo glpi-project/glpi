@@ -78,9 +78,12 @@ class Provider extends \CommonGLPI {
       $result   = $iterator->next();
       $nb_items = $result['cpt'];
 
+      $url = $item::getSearchURL();
+      $url .= (strpos($url, '?') !== false ? '&' : '?') . 'reset';
+
       return [
          'number' => $nb_items,
-         'url'    => $item::getSearchURL()."?reset",
+         'url'    => $url,
          'label'  => $item::getTypeName($nb_items),
          'icon'   => $item::getIcon(),
       ];
@@ -435,14 +438,16 @@ class Provider extends \CommonGLPI {
             'reset' => 'reset',
       ];
 
+      $url = $item::getSearchURL();
+      $url .= (strpos($url, '?') !== false ? '&' : '?') . 'reset';
+
       $data = [];
       foreach ($iterator as $result) {
          $search_criteria['criteria'][0]['value'] = $result['fk_id'] ?? 0;
          $data[] = [
             'number' => $result['cpt'],
             'label'  => $result['fk_name'] ?? __("without"),
-            'url'    => $item::getSearchURL()."?reset&".
-               \Toolbox::append_params($search_criteria),
+            'url'    => $url . '&' . \Toolbox::append_params($search_criteria),
          ];
       }
 
