@@ -4991,7 +4991,15 @@ JS;
             }
 
             var lightBox = new PhotoSwipe(pswp, PhotoSwipeUI_Default, {$items_json}, options);
+            $(pswp).closest('.glpi_tabs').css('z-index', 50); // be sure that tabs are displayed above form in vsplit
             lightBox.init();
+
+            lightBox.listen(
+               'destroy',
+               function() {
+                  $(this.container).closest('.glpi_tabs').css('z-index', ''); // restore z-index from CSS
+               }
+            );
         });
       })(jQuery);
 
