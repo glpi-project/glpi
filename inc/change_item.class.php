@@ -211,6 +211,7 @@ class Change_Item extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $DB;
 
       if (!$withtemplate) {
          $nb = 0;
@@ -225,7 +226,14 @@ class Change_Item extends CommonDBRelation{
             case 'Group' :
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = self::countForItem($item);
+                  $result = $DB->request([
+                     'COUNT'  => 'cpt',
+                     'FROM'   => 'glpi_changes_' . strtolower($item->getType() . 's'),
+                     'WHERE'  => [
+                        $item->getForeignKeyField()   => $item->fields['id']
+                     ]
+                  ])->next();
+                  $nb = $result['cpt'];
                }
                return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
 
