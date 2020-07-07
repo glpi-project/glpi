@@ -161,20 +161,19 @@ class Calendar extends DbTestCase {
       $this->boolean($calendar->isAWorkingHour(strtotime($date)))->isIdenticalTo($expected);
    }
 
-   public function testIsHoliday() {
-      $calendar = new \Calendar();
-
+   private function addXmas(\Calendar $calendar) {
       $calendar_holiday = new \Calendar_Holiday();
       $this->integer(
          (int)$calendar_holiday->add([
-            'calendars_id' => getItemByTypeName('Calendar', 'Default', true),
+            'calendars_id' => $calendar->fields['id'],
             'holidays_id'  => getItemByTypeName('Holiday', 'X-Mas', true)
          ])
       )->isGreaterThan(0);
 
-      // get Default calendar
-      $this->boolean($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)))->isTrue();
+      $this->checkXmas($calendar);
+   }
 
+   private function checkXmas(\Calendar $calendar) {
       $this->boolean(
          $calendar->isHoliday('2018-01-01')
       )->isFalse();
@@ -182,6 +181,14 @@ class Calendar extends DbTestCase {
       $this->boolean(
          $calendar->isHoliday('2019-01-01')
       )->isTrue();
+   }
+
+   public function testIsHoliday() {
+      $calendar = new \Calendar();
+      // get Default calendar
+      $this->boolean($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)))->isTrue();
+
+      $this->addXmas($calendar);
 
       $dates= [
          '2019-05-01'   => true,
@@ -233,5 +240,19 @@ class Calendar extends DbTestCase {
       foreach ($dates as $date => $expected) {
          $this->boolean($calendar->isHoliday($date))->isIdenticalTo($expected);
       }
+   }
+
+   public function testClone() {
+      $calendar = new \Calendar();
+      $default_id = getItemByTypeName('Calendar', 'Default', true);
+      // get Default calendar
+      $this->boolean($calendar->getFromDB($default_id))->isTrue();
+      $this->addXmas($calendar);
+
+      $id = $calendar->clone();
+      $this->integer($id)->isGreaterThan($default_id);
+      $this->boolean($calendar->getFromDB($id))->isTrue();
+      //should have been duplicated too.
+      $this->checkXmas($calendar);
    }
 }

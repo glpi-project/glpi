@@ -194,7 +194,7 @@ class ContractCost extends CommonDBChild {
          'SELECT' => 'id',
          'FROM'   => static::getTable(),
          'WHERE'  => [
-         static::$items_id  => $items_id
+            static::$items_id  => $items_id
          ]
       ]);
    }
