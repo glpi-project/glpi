@@ -714,7 +714,7 @@ class Contract_Item extends CommonDBRelation{
          ];
       } else {
          $where = [
-            'itemtype'  => $itemtype
+            'itemtype'  => $itemtype,
             'items_id'  => $items_id
          ];
       }
