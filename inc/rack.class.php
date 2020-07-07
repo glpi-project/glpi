@@ -497,6 +497,15 @@ class Rack extends CommonDBTM {
          'datatype'           => 'dropdown'
       ];
 
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool',
+         'searchtype'         => 'equals'
+      ];
+
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));

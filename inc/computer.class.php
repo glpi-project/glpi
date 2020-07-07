@@ -736,6 +736,15 @@ class Computer extends CommonDBTM {
          'datatype'           => 'dropdown'
       ];
 
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool',
+         'searchtype'         => 'equals'
+      ];
+
       // add operating system search options
       $tab = array_merge($tab, Item_OperatingSystem::rawSearchOptionsToAdd(get_class($this)));
 

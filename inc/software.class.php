@@ -603,6 +603,7 @@ class Software extends CommonDBTM {
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool',
+         'searchtype'         => 'equals',
          'massiveaction'      => false
       ];
 

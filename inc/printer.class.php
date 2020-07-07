@@ -809,7 +809,8 @@ class Printer  extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
-         'datatype'           => 'bool'
+         'datatype'           => 'bool',
+         'searchtype'         => 'equals'
       ];
 
       // add objectlock search options

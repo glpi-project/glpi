@@ -367,6 +367,15 @@ class ConsumableItem extends CommonDBTM {
          'datatype'           => 'dropdown'
       ];
 
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool',
+         'searchtype'         => 'equals'
+      ];
+
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
