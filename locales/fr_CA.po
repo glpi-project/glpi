@@ -13618,11 +13618,11 @@ msgstr "Générale"
 
 #: inc/config.class.php:151
 msgid "Invalid base URL!"
-msgstr ""
+msgstr "URL de base invalide!"
 
 #: inc/config.class.php:160
 msgid "Invalid API base URL!"
-msgstr ""
+msgstr "URL de base de l'API invalide!"
 
 #: inc/config.class.php:270
 #: inc/console/maintenance/enablemaintenancemodecommand.class.php:81
@@ -16807,7 +16807,7 @@ msgstr "Et récupérez votre clé pour la coller ci-dessous"
 #: inc/glpinetwork.class.php:83
 #, php-format
 msgid "Error was: %s"
-msgstr ""
+msgstr "L'erreur était : %s"
 
 #: inc/glpinetwork.class.php:91
 msgid "Registration key"

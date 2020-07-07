@@ -22,7 +22,6 @@
 # Nickolas Cage <workmail666@gmail.com>, 2019
 # - - <wemian@mail.ru>, 2019
 # Welder <kvaluev@me.com>, 2019
-# Сергей Морев <morev.sergey.a@gmail.com>, 2019
 # Mikhail Vlasenko <biggysmoke32@gmail.com>, 2019
 # 1 2 <frolikovon@gmail.com>, 2019
 # Alexander <mr_slam@rambler.ru>, 2020
@@ -31,6 +30,7 @@
 # Nikolai Petrov <techobsl@yandex.ru>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Mikhail Degterev <mikhail.degterev@gmail.com>, 2020
+# Сергей Морев <morev.sergey.a@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -39,7 +39,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-25 12:26+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Mikhail Degterev <mikhail.degterev@gmail.com>, 2020\n"
+"Last-Translator: Сергей Морев <morev.sergey.a@gmail.com>, 2020\n"
 "Language-Team: Russian (Russia) (https://www.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10722,7 +10722,7 @@ msgstr "Удалить"
 
 #: inc/marketplace/view.class.php:774
 msgid "You must have a GLPI Network subscription to get this plugin"
-msgstr ""
+msgstr "Вы должны иметь подписку GLPI Network, чтобы получить этот плагин"
 
 #: inc/marketplace/view.class.php:775 inc/network.class.php:42
 #: inc/networkequipment.class.php:364 inc/networkequipment.class.php:595
@@ -10753,11 +10753,11 @@ msgstr[3] ""
 
 #: inc/marketplace/view.class.php:925
 msgid "GLPI provides a new marketplace to download and install plugins."
-msgstr ""
+msgstr "GLPI предоставляет новую площадку для загрузки и установки плагинов."
 
 #: inc/marketplace/view.class.php:927
 msgid "Do you want to replace the plugins setup page by the new marketplace ?"
-msgstr ""
+msgstr "Хотите заменить страницу настройки плагинов на новый маркетплейс?"
 
 #: inc/marketplace/view.class.php:938
 msgid "Later"
@@ -10765,7 +10765,7 @@ msgstr "Позже"
 
 #: inc/marketplace/view.class.php:950
 msgid "Switch to marketplace"
-msgstr ""
+msgstr "Переключить на маркетплейс"
 
 #: inc/authmail.class.php:112 inc/config.class.php:1833
 #: inc/authldap.class.php:377 inc/authldap.class.php:920
@@ -11389,11 +11389,11 @@ msgstr ""
 
 #: inc/notificationmailingsetting.class.php:119
 msgid "No-Reply address"
-msgstr ""
+msgstr "Адрес без ответа"
 
 #: inc/notificationmailingsetting.class.php:120
 msgid "Optionnal No-Reply address."
-msgstr ""
+msgstr "Дополнительный адрес без ответа"
 
 #: inc/notificationmailingsetting.class.php:120
 msgid "If set, it will be used for notifications that doesn't expect a reply."
@@ -11902,7 +11902,7 @@ msgstr "Объединить и присвоить текущей организ
 #: inc/caldav/backend/calendar.class.php:127
 #, php-format
 msgid "Calendar of %s"
-msgstr ""
+msgstr "Календарь %s"
 
 #: inc/profile_user.class.php:133 inc/profile_user.class.php:277
 msgid "Add an authorization to a user"
@@ -12314,7 +12314,7 @@ msgstr[3] "Шаблоны уведомлений"
 
 #: inc/notification.class.php:213
 msgid "Allow response"
-msgstr ""
+msgstr "Отреагировать"
 
 #: inc/notification.class.php:364 inc/notificationtarget.class.php:1410
 msgid "Notification method"
@@ -14020,11 +14020,11 @@ msgstr "Общий"
 
 #: inc/config.class.php:151
 msgid "Invalid base URL!"
-msgstr ""
+msgstr "Неправильный базовый URL!"
 
 #: inc/config.class.php:160
 msgid "Invalid API base URL!"
-msgstr ""
+msgstr "Неправильный базовый URL API!"
 
 #: inc/config.class.php:270
 #: inc/console/maintenance/enablemaintenancemodecommand.class.php:81
@@ -17268,7 +17268,7 @@ msgstr ""
 
 #: inc/glpinetwork.class.php:69
 msgid "Register on GLPI Network!"
-msgstr ""
+msgstr "Зарегистрироваться на GLPI Network!"
 
 #: inc/glpinetwork.class.php:70
 msgid "And retrieve your key to paste it below"
@@ -17713,7 +17713,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:1154
 msgid "Tickets status by month"
-msgstr ""
+msgstr "Статусы заявок по месяцам"
 
 #: inc/dashboard/grid.class.php:1162
 msgid "Tickets times (in hours)"
