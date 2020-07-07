@@ -359,7 +359,7 @@ class Contract_Supplier extends CommonDBRelation {
          'SELECT' => 'id',
          'FROM'   => static::getTable(),
          'WHERE'  => [
-            static::$items_id_2  => $items_id
+            static::$items_id_1  => $items_id
          ]
       ]);
    }

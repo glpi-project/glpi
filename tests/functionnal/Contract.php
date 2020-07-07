@@ -67,6 +67,10 @@ class Contract extends DbTestCase {
       ]);
       $this->integer($link_id)->isGreaterThan(0);
 
+      $this->boolean($link_supplier->getFromDB($link_id))->isTrue();
+      $relation_items = $link_supplier->getItemsAssociatedTo($contract->getType(), $cid);
+      $this->array($relation_items)->hasSize(1, 'Original Contract_Supplier not found!');
+
       $citem = new \Contract_Item();
       $citems_id = $citem->add([
          'contracts_id' => $cid,
@@ -83,7 +87,6 @@ class Contract extends DbTestCase {
       $this->integer($cloned)->isGreaterThan($cid);
 
       foreach ($contract->getCloneRelations() as $rel_class) {
-         var_dump($rel_class);
          $this->integer(
             countElementsInTable(
                $rel_class::getTable(),
