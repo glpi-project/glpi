@@ -21378,17 +21378,17 @@ msgstr "Ignorar (predeterminado)"
 #: inc/console/migration/racksplugintocorecommand.class.php:610
 #, php-format
 msgid "Unable to import other model \"%s\"."
-msgstr ""
+msgstr "No se puede importar otro modelo \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:627
 #, php-format
 msgid "Importing items from model \"%s\"..."
-msgstr ""
+msgstr "Importando elementos desde el modelo \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:665
 #, php-format
 msgid "Unable to import other item \"%s\"."
-msgstr ""
+msgstr "No se puede importar otro elemento \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:688
 msgid "No items found."
@@ -21401,17 +21401,17 @@ msgstr "Importar especificaciones de elementos..."
 #: inc/console/migration/racksplugintocorecommand.class.php:727
 #, php-format
 msgid "Importing specifications for model %s (%s)..."
-msgstr ""
+msgstr "Especificaciones de importación para el modelo %s (%s)..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:741
 #, php-format
 msgid "Model %s (%s) not found."
-msgstr ""
+msgstr "Modelo %s (%s) no encontrado."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:766
 #, php-format
 msgid "Unable to update model %s (%s)."
-msgstr ""
+msgstr "No se puede actualizar el modelo %s (%s)."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:783
 msgid "No items specifications found."
@@ -21419,186 +21419,194 @@ msgstr "No se encontraron especificaciones de elementos."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:801
 msgid "Importing rack models..."
-msgstr ""
+msgstr "Importar modelos de rack..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:819
 #, php-format
 msgid "Importing rack model \"%s\"..."
-msgstr ""
+msgstr "Importando modelo de rack \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:840
 #, php-format
 msgid "Unable to import rack model \"%s\"."
-msgstr ""
+msgstr "No se puede importar modelo de rack \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:861
 #: inc/console/migration/racksplugintocorecommand.class.php:941
 msgid "No rack models found."
-msgstr ""
+msgstr "No se encontraron modelos de rack."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:879
 msgid "Importing rack types..."
-msgstr ""
+msgstr "Importando tipos de rack..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:897
 #, php-format
 msgid "Importing rack type \"%s\"..."
-msgstr ""
+msgstr "Importando tipo de rack \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:920
 #, php-format
 msgid "Unable to import rack type \"%s\"."
-msgstr ""
+msgstr "No se puede importar tipo de rack \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:959
 msgid "Importing rack states..."
-msgstr ""
+msgstr "Importando estados de rack..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:977
 #, php-format
 msgid "Importing rack state \"%s\"..."
-msgstr ""
+msgstr "Importando estado de rack \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1002
 #, php-format
 msgid "Unable to import rack state \"%s\"."
-msgstr ""
+msgstr "No se puede importar estado de rack \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1024
 msgid "No rack states found."
-msgstr ""
+msgstr "No se encontraron estados de rack."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1042
 msgid "Importing rooms..."
-msgstr ""
+msgstr "Importando cuartos..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1060
 #, php-format
 msgid "Importing room \"%s\"..."
-msgstr ""
+msgstr "Importando cuarto \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1085
 #, php-format
 msgid "Unable to import room \"%s\"."
-msgstr ""
+msgstr "No se puede importar cuarto \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1106
 msgid "No rooms found."
-msgstr ""
+msgstr "No se encontraron cuartos."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1124
 msgid "Importing racks..."
-msgstr ""
+msgstr "Importando racks..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1144
 #, php-format
 msgid "Importing rack \"%s\"..."
-msgstr ""
+msgstr "Importando rack \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1212
 #, php-format
 msgid "Unable to import rack \"%s\"."
-msgstr ""
+msgstr "No se puede importar rack \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1234
 msgid "No racks found."
-msgstr ""
+msgstr "No se encontraron racks."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1252
 msgid "Importing rack items..."
-msgstr ""
+msgstr "Importando elementos de rack..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1274
 #, php-format
 msgid "Importing rack item %s (%s)..."
-msgstr ""
+msgstr "Importando elemento de rack %s (%s)..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1286
 #, php-format
 msgid "Item %s (%s) not found."
-msgstr ""
+msgstr "Elemento %s (%s) no encontrado."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1303
 #, php-format
 msgid "Skipping item %s (%s) which is already linked to a rack."
-msgstr ""
+msgstr "Omitiendo elemento %s (%s) que ya está vinculado a un rack."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1344
 #, php-format
 msgid "Unable to import rack item %s (%s)."
-msgstr ""
+msgstr "No se puede importar elemento de rack %s (%s)."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1361
 msgid "No rack items found."
-msgstr ""
+msgstr "No se encontraron elementos de rack."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1442
 msgid "Unable to create default room."
-msgstr ""
+msgstr "No se puede crear cuarto predeterminado."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:53
 msgid "Replay dictionnary rules on existing items"
-msgstr ""
+msgstr "Reproduzca las reglas del diccionario en elementos existentes"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:60
 #, php-format
 msgid "Dictionnary to use. Possible values are: %s"
-msgstr ""
+msgstr "Diccionario a usar. Los valores posibles son: %s"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:69
 msgid ""
 "If option is set, only items having given manufacturer ID will be processed."
 msgstr ""
+"Si se establece la opción, solo se procesarán los elementos que tengan una "
+"ID de fabricante."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:70
 msgid "Currently only available for Software dictionnary."
-msgstr ""
+msgstr "Actualmente solo está disponible para el diccionario de software."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:81
 msgid "Which dictionnary do you want to replay ?"
-msgstr ""
+msgstr "¿Qué diccionario quieres reproducir?"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:101
 msgid "Invalid \"dictionnary\" value."
-msgstr ""
+msgstr "Valor de \"diccionario\" no válido."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:53
 msgid "Process software category rules"
-msgstr ""
+msgstr "Reglas de categoría de software de proceso"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:59
 msgid ""
 "Process rule for all softwares, even those having already a defined category"
 msgstr ""
+"Regla de proceso para todos los softwares, incluso aquellos que ya tienen "
+"una categoría definida"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:81
 msgid "No software to process."
-msgstr ""
+msgstr "No hay software para procesar."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:93
 #, php-format
 msgid "Processing software having id \"%s\"."
-msgstr ""
+msgstr "Procesando software con ID \"%s\"."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:102
 #, php-format
 msgid "Unable to load software having id \"%s\"."
-msgstr ""
+msgstr "No se puede cargar el software con ID \"%s\"."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:128
 #, php-format
 msgid "Number of softwares processed: %d."
-msgstr ""
+msgstr "Número de softwares procesados: %d."
 
 #: inc/console/security/changekeycommand.class.php:57
 msgid "Change password storage key and update values in database."
 msgstr ""
+"Cambie la contraseña de la llave de almacenamiento y actualice los valores "
+"en la base de datos."
 
 #: inc/console/security/changekeycommand.class.php:72
 #, php-format
 msgid ""
 "Found %1$s field(s) and %2$s configuration entries requiring migration."
 msgstr ""
+"Encontrado campo(s) %1$s y entradas de configuración %2$s que requieren "
+"migración."
 
 #: inc/console/security/changekeycommand.class.php:88
 msgid "Aborted."
@@ -21606,49 +21614,51 @@ msgstr "Abortado."
 
 #: inc/console/security/changekeycommand.class.php:98
 msgid "Unable to change security key!"
-msgstr ""
+msgstr "¡No se puede cambiar la llave de seguridad!"
 
 #: inc/console/security/changekeycommand.class.php:106
 msgid "New security key generated; database updated."
-msgstr ""
+msgstr "Nueva llave de seguridad generada; base de datos actualizada."
 
 #: inc/console/application.class.php:114
 msgid "The command to execute"
-msgstr ""
+msgstr "El comando a ejecutar"
 
 #: inc/console/application.class.php:121
 msgid "Display this help message"
-msgstr ""
+msgstr "Mostrar este mensaje de ayuda"
 
 #: inc/console/application.class.php:127
 msgid "Do not output any message"
-msgstr ""
+msgstr "No envía ningún mensaje"
 
 #: inc/console/application.class.php:133
 msgid ""
 "Increase the verbosity of messages: 1 for normal output, 2 for more verbose "
 "output and 3 for debug"
 msgstr ""
+"Aumente el detalle de los mensajes: 1 para salida normal, 2 para salida más "
+"detallada y 3 para depuración"
 
 #: inc/console/application.class.php:139
 msgid "Display this application version"
-msgstr ""
+msgstr "Mostrar esta versión de la aplicación"
 
 #: inc/console/application.class.php:145
 msgid "Force ANSI output"
-msgstr ""
+msgstr "Forzar salida ANSI"
 
 #: inc/console/application.class.php:151
 msgid "Disable ANSI output"
-msgstr ""
+msgstr "Deshabilitar salida ANSI"
 
 #: inc/console/application.class.php:157
 msgid "Do not ask any interactive question"
-msgstr ""
+msgstr "No hagas ninguna pregunta interactiva"
 
 #: inc/console/application.class.php:163
 msgid "Configuration directory to use"
-msgstr ""
+msgstr "Directorio de configuración a utilizar"
 
 #: inc/console/application.class.php:169
 msgid "Disable GLPI plugins (unless commands forces plugins loading)"
@@ -21661,46 +21671,48 @@ msgid ""
 "Output language (default value is existing GLPI \"language\" configuration "
 "or \"en_GB\")"
 msgstr ""
+"Idioma de salida (el valor predeterminado es la configuración de \"idioma\" "
+"GLPI existente o \"en_GB\")"
 
 #: inc/console/application.class.php:196
 #, php-format
 msgid "Invalid \"--lang\" option value \"%s\"."
-msgstr ""
+msgstr "Valor de opción \"--lang\" no válido \"%s\"."
 
 #: inc/console/application.class.php:223
 #, php-format
 msgid "Time elapsed: %s."
-msgstr ""
+msgstr "Tiempo transcurrido: %s."
 
 #: inc/console/application.class.php:229
 #, php-format
 msgid "Memory usage: %s."
-msgstr ""
+msgstr "Memoria usada: %s."
 
 #: inc/console/application.class.php:309
 #, php-format
 msgid "Cannot write in \"%s\" directory."
-msgstr ""
+msgstr "No se puede escribir en el directorio \"%s\"."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:76
 msgid "Synchronize users against LDAP server informations"
-msgstr ""
+msgstr "Sincronice a los usuarios con la información del servidor LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:82
 msgid "Only create new users"
-msgstr ""
+msgstr "Solo crea usuarios nuevos"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:89
 msgid "Only update existing users"
-msgstr ""
+msgstr "Solo actualiza usuarios existentes"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:96
 msgid "Synchronize only users attached to this LDAP server"
-msgstr ""
+msgstr "Sincronice solo los usuarios conectados a este servidor LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:103
 msgid "Filter to apply on LDAP search"
-msgstr ""
+msgstr "Filtrar para aplicar en la búsqueda LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:111
 #, php-format
@@ -21708,6 +21720,8 @@ msgid ""
 "Begin date to apply in \"modifyTimestamp\" filter (see %s for supported "
 "formats)"
 msgstr ""
+"Fecha de inicio para aplicar en el filtro \"modifyTimestamp\" (consulte %s "
+"los formatos compatibles)"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:121
 #, php-format
@@ -21715,23 +21729,27 @@ msgid ""
 "End date to apply in \"modifyTimestamp\" filter (see %s for supported "
 "formats)"
 msgstr ""
+"Fecha de finalización para aplicar en el filtro \"modifyTimestamp\" "
+"(consulte %s los formatos compatibles)"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:128
 #, php-format
 msgid "Force strategy used for deleted users (current configured action: \"%s\")"
 msgstr ""
+"Forzar estrategia utilizada para usuarios eliminados (acción configurada "
+"actual: \"%s\")"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:129
 msgid "unknown"
-msgstr ""
+msgstr "desconocido"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:131
 msgid "Possible values are:"
-msgstr ""
+msgstr "Los posibles valores son:"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:189
 msgid "No active LDAP server found."
-msgstr ""
+msgstr "No se encontró un servidor LDAP activo."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:219
 msgid "LDAP servers"
@@ -21747,13 +21765,15 @@ msgstr "Sincronización abortada."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server informations."
-msgstr ""
+msgstr "No se puede cargar la información del servidor LDAP."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
 msgid ""
 "LDAP server \"%s\" is inactive, no synchronization will be done against it."
 msgstr ""
+"El servidor LDAP \"%s\" está inactivo, no se realizará ninguna "
+"sincronización contra él."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:257
 #, php-format
@@ -21763,36 +21783,36 @@ msgstr "Procesando servidor LDAP \"%s\"..."
 #: inc/console/ldap/synchronizeuserscommand.class.php:285
 #, php-format
 msgid "LDAP server \"%s\" size limit exceeded."
-msgstr ""
+msgstr "Límite de tamaño \"%s\" del servidor LDAP excedido."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:291
 #, php-format
 msgid "Error while contacting the LDAP server \"%s\"."
-msgstr ""
+msgstr "Error al contactar con el servidor LDAP \"%s\"."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:306
 #, php-format
 msgid "Import new users from server \"%s\"..."
-msgstr ""
+msgstr "Importar nuevos usuarios desde el servidor \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:309
 #, php-format
 msgid "Update existing users with server \"%s\"..."
-msgstr ""
+msgstr "Actualizar usuarios existentes con el servidor \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:312
 #, php-format
 msgid "Synchronize users with server \"%s\"..."
-msgstr ""
+msgstr "Sincronizar usuarios con el servidor \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:323
 msgid "No users found."
-msgstr ""
+msgstr "No se encontraron usuarios."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:379
 #, php-format
 msgid "Unable to synchronize user \"%s\"."
-msgstr ""
+msgstr "No se puede sincronizar el usuario \"%s\"."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:393
 msgid "LDAP server"
@@ -21815,30 +21835,36 @@ msgid ""
 "Option --only-create-new is not compatible with option --only-update-"
 "existing."
 msgstr ""
+"La opción --only-create-new no es compatible con la opción --only-update-"
+"existente."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:438
 #, php-format
 msgid "--ldap-server-id value \"%s\" is not a valid LDAP server id."
 msgstr ""
+"--ldap-server-id valor \"%s\" no es una identificación de servidor LDAP "
+"válida."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:451
 #, php-format
 msgid "Unable to parse --%1$s value \"%2$s\"."
-msgstr ""
+msgstr "No se puede analizar --%1$s valor \"%2$s\"."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:462
 msgid ""
 "Option --begin-date value has to be lower than option --end-date value."
 msgstr ""
+"La opción: --begin-date el valor tiene que ser menor que la opción --end-"
+"date."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:472
 #, php-format
 msgid "--deleted-user-strategy value \"%s\" is not valid."
-msgstr ""
+msgstr "--deleted-user-strategy valor \"%s\" no es valido."
 
 #: inc/console/system/checkrequirementscommand.class.php:54
 msgid "Check system requirements"
-msgstr ""
+msgstr "Verifique los requisitos del sistema"
 
 #: inc/console/system/checkrequirementscommand.class.php:67
 msgid "Requirement"
@@ -21864,35 +21890,39 @@ msgstr "Verificar estado de sistema"
 msgid ""
 "Check for schema differences between current database and installation file."
 msgstr ""
+"Verifique las diferencias de esquema entre la base de datos actual y el "
+"archivo de instalación."
 
 #: inc/console/database/checkcommand.class.php:68
 #, php-format
 msgid "Unable to read installation file \"%s\"."
-msgstr ""
+msgstr "No se puede leer el archivo de instalación \"%s\"."
 
 #: inc/console/database/checkcommand.class.php:85
 #, php-format
 msgid "Processing table \"%s\"..."
-msgstr ""
+msgstr "Procesando tabla \"%s\"..."
 
 #: inc/console/database/checkcommand.class.php:93
 #, php-format
 msgid "Table schema differs for table \"%s\"."
-msgstr ""
+msgstr "El esquema de tabla difiere para la tabla \"%s\"."
 
 #: inc/console/database/updatecommand.class.php:72
 msgid "Update database schema to new version"
-msgstr ""
+msgstr "Actualiza el esquema de la base de datos a la nueva versión"
 
 #: inc/console/database/updatecommand.class.php:78
 msgid "Allow update to an unstable version"
-msgstr ""
+msgstr "Permitir actualización a una versión inestable"
 
 #: inc/console/database/updatecommand.class.php:85
 msgid ""
 "Force execution of update from v-1 version of GLPI even if schema did not "
 "changed"
 msgstr ""
+"Forzar la ejecución de la actualización de la versión v-1 de GLPI incluso si"
+" el esquema no cambió"
 
 #: inc/console/database/updatecommand.class.php:124
 msgid "Current"
@@ -21930,6 +21960,8 @@ msgid ""
 "%s is not a stable release. Please upgrade manually or add --allow-unstable "
 "option."
 msgstr ""
+"%s no es una versión estable. Actualice manualmente o agregue la opción "
+"--allow-unstable."
 
 #: inc/console/database/updatecommand.class.php:162
 msgid "Update aborted."
@@ -21937,13 +21969,15 @@ msgstr "Actualización abortada."
 
 #: inc/console/database/updatecommand.class.php:181
 msgid "Last migration replayed."
-msgstr ""
+msgstr "Última migración reproducida."
 
 #: inc/console/database/abstractconfigurecommand.class.php:123
 msgid ""
 "Database password (will be prompted for value if option passed without "
 "value)"
 msgstr ""
+"Contraseña de la base de datos (se le solicitará el valor si la opción pasa "
+"sin valor)"
 
 #: inc/console/database/abstractconfigurecommand.class.php:131
 msgid "Database port"
@@ -21952,6 +21986,7 @@ msgstr "Puerto base de datos"
 #: inc/console/database/abstractconfigurecommand.class.php:145
 msgid "Reconfigure database, override configuration file if it already exists"
 msgstr ""
+"Reconfigure la base de datos, anule el archivo de configuración si ya existe"
 
 #: inc/console/database/abstractconfigurecommand.class.php:152
 msgid "Database name:"
@@ -21971,6 +22006,8 @@ msgid ""
 "Database configuration already exists. Use --reconfigure option to override "
 "existing configuration."
 msgstr ""
+"La configuración de la base de datos ya existe. Use la opción --reconfigure "
+"para anular la configuración existente."
 
 #: inc/console/database/abstractconfigurecommand.class.php:211
 msgid "Configuration aborted."
@@ -21980,7 +22017,7 @@ msgstr "Configuración abortada."
 #: inc/console/database/installcommand.class.php:227
 #, php-format
 msgid "Database connection failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "La conexión a la base de datos falló con el mensaje \"(%s) %s\"."
 
 #: inc/console/database/abstractconfigurecommand.class.php:248
 msgid "Saving configuration file..."
@@ -21989,37 +22026,44 @@ msgstr "Guardando archivo de configuración..."
 #: inc/console/database/abstractconfigurecommand.class.php:253
 #, php-format
 msgid "Cannot write configuration file \"%s\"."
-msgstr ""
+msgstr "No se puede escribir el archivo de configuración \"%s\"."
 
 #: inc/console/database/abstractconfigurecommand.class.php:296
 msgid "Database name defined by --db-name option cannot be empty."
 msgstr ""
+"El nombre de la base de datos definido por la opción --db-name no puede "
+"estar vacío."
 
 #: inc/console/database/abstractconfigurecommand.class.php:302
 msgid "Database user defined by --db-user option cannot be empty."
 msgstr ""
+"El usuario de la base de datos definido por la opción --db-user no puede "
+"estar vacío."
 
 #: inc/console/database/abstractconfigurecommand.class.php:309
 msgid "--db-password option value cannot be null."
-msgstr ""
+msgstr "El valor de la opción --db-password no puede ser nulo."
 
 #: inc/console/database/installcommand.class.php:98
 msgid "Default language of GLPI"
-msgstr ""
+msgstr "Idioma predeterminado de GLPI"
 
 #: inc/console/database/installcommand.class.php:106
 msgid "Force execution of installation, overriding existing database"
 msgstr ""
+"Forzar la ejecución de la instalación, anulando la base de datos existente"
 
 #: inc/console/database/installcommand.class.php:121
 msgid ""
 "Command input contains configuration options that may override existing "
 "configuration."
 msgstr ""
+"La entrada de comando contiene opciones de configuración que pueden anular "
+"la configuración existente."
 
 #: inc/console/database/installcommand.class.php:123
 msgid "Do you want to reconfigure database ?"
-msgstr ""
+msgstr "¿Desea reconfigurar la base de datos?"
 
 #: inc/console/database/installcommand.class.php:201
 msgid "Installation aborted."
@@ -22036,17 +22080,19 @@ msgstr "Creando la base de datos..."
 #: inc/console/database/installcommand.class.php:243
 #, php-format
 msgid "Database creation failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "La creación de la base de datos falló con el mensaje \"(%s) %s\"."
 
 #: inc/console/database/installcommand.class.php:264
 msgid ""
 "Database already contains \"glpi_*\" tables. Use --force option to override "
 "existing database."
 msgstr ""
+"La base de datos ya contiene tablas \"glpi_ *\". Use la opción --force para "
+"anular la base de datos existente."
 
 #: inc/console/database/installcommand.class.php:288
 msgid "Loading default schema..."
-msgstr ""
+msgstr "Cargando esquema predeterminado..."
 
 #: inc/console/database/installcommand.class.php:300
 msgid "Installation done."
@@ -22054,68 +22100,76 @@ msgstr "Instalación realizada."
 
 #: inc/console/task/unlockcommand.class.php:56
 msgid "Unlock automatic tasks"
-msgstr ""
+msgstr "Desbloquear tareas automáticas"
 
 #: inc/console/task/unlockcommand.class.php:62
 msgid "Unlock all tasks"
-msgstr ""
+msgstr "Desbloquea todas las tareas"
 
 #: inc/console/task/unlockcommand.class.php:69
 msgid ""
 "Execution time (in cycles) from which the task is considered as stuck (delay"
 " = task frequency * cycle)"
 msgstr ""
+"Tiempo de ejecución (en ciclos) desde el cual la tarea se considera atascada"
+" (retraso = frecuencia de la tarea * ciclo)"
 
 #: inc/console/task/unlockcommand.class.php:77
 msgid ""
 "Execution time (in seconds) from which the task is considered as stuck "
 "(default: 1800)"
 msgstr ""
+"Tiempo de ejecución (en segundos) a partir del cual la tarea se considera "
+"bloqueada (valor predeterminado: 1800)"
 
 #: inc/console/task/unlockcommand.class.php:85
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
 msgstr ""
+"Itemtype::nombre de la tarea para desbloquear (por ejemplo: "
+"\"MailCollector::mailgate\")"
 
 #: inc/console/task/unlockcommand.class.php:131
 #, php-format
 msgid "Task \"%s\" is still running but not in the whitelist."
-msgstr ""
+msgstr "La tarea \"%s\" todavía se está ejecutando pero no en la lista blanca."
 
 #: inc/console/task/unlockcommand.class.php:143
 #, php-format
 msgid "Task \"%s\" unlocked."
-msgstr ""
+msgstr "Tarea \"%s\" desbloqueada."
 
 #: inc/console/task/unlockcommand.class.php:149
 #, php-format
 msgid "An error occurs while trying to unlock \"%s\" task."
-msgstr ""
+msgstr "Se produce un error al intentar desbloquear la tarea \"%s\"."
 
 #: inc/console/task/unlockcommand.class.php:157
 #, php-format
 msgid "Number of tasks unlocked: %d."
-msgstr ""
+msgstr "Número de tareas desbloqueadas: %d."
 
 #: inc/console/task/unlockcommand.class.php:181
 msgid "Option --cycle is not compatible with option --delay."
-msgstr ""
+msgstr "La opción --cycle no es compatible con la opción --delay."
 
 #: inc/console/task/unlockcommand.class.php:187
 msgid "Option --cycle has to be an integer."
-msgstr ""
+msgstr "La opción --cycle tiene que ser un entero."
 
 #: inc/console/task/unlockcommand.class.php:193
 msgid "Option --delay has to be an integer."
-msgstr ""
+msgstr "La opción --delay tiene que ser un entero."
 
 #: inc/console/task/unlockcommand.class.php:203
 msgid "Option --all is not compatible with option --task."
-msgstr ""
+msgstr "La opción --all no es compatible con la opción --task."
 
 #: inc/console/task/unlockcommand.class.php:209
 msgid ""
 "You have to specify which tasks to unlock using --all or --task options."
 msgstr ""
+"Debe especificar qué tareas desbloquear utilizando las opciones --all o "
+"--task."
 
 #: inc/reservationitem.class.php:65
 msgid "Reservable item"
@@ -23142,7 +23196,7 @@ msgstr "Redirección automática (si no, haga click)"
 
 #: install/update_94_95/dashboards.php:6
 msgid "Central"
-msgstr ""
+msgstr "Central"
 
 #: install/update_94_95/dashboards.php:312
 msgid "Mini tickets dashboard"
@@ -23272,7 +23326,7 @@ msgstr "Debes seleccionar al menos 2 activos para formar un grupo"
 
 #: js/kanban.js:299
 msgid "Bulk add"
-msgstr ""
+msgstr "Agregar volumen"
 
 #: js/kanban.js:334
 msgid "Search or filter results"

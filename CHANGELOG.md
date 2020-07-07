@@ -3,7 +3,9 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.5] unreleased
+## [9.5.1] unreleased
+
+## [9.5.0] 2020-07-07
 
 ### Added
 
@@ -153,7 +155,9 @@ The present file will list all changes made to the project; according to the
 - `Transfer::createSearchConditionUsingArray()`
 - Unused constants GLPI_FONT_FREESANS and GLPI_SCRIPT_DIR
 
-## [9.4.5] unreleased
+## [9.4.6] 2020-05-05
+
+## [9.4.5] 2019-12-18
 
 ## [9.4.4] 2019-09-24
 

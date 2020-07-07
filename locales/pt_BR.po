@@ -11,9 +11,7 @@
 # Rubenil de Castro Oliveira <kastro1525@gmail.com>, 2019
 # Samir Costa <samirfor@gmail.com>, 2019
 # Gustavo Plottier Pilotto <gplottier@gmail.com>, 2019
-# Daniel Berton <danielsberton@gmail.com>, 2019
 # Wanderlei Hüttel <wanderlei.huttel@gmail.com>, 2019
-# Danilo Santos <danilo.santos@servicedeskbrasil.com.br>, 2019
 # Allan Lopes Prado <allanlopesprado@hotmail.com>, 2019
 # Matheus Santos <mths.brn@gmail.com>, 2019
 # Andrei Bernardo Simoni <andrei_simoni@hotmail.com>, 2019
@@ -32,6 +30,9 @@
 # Diego Nobre <diego@koruma.com.br>, 2020
 # George Maia <georgemaia@gmail.com>, 2020
 # Hélio Guardabaxo <helio.guardabaxo@gmail.com>, 2020
+# Guilherme Arantes <guilherme.arantes@bennesby.com.br>, 2020
+# Danilo Santos <danilo.santos@servicedeskbrasil.com.br>, 2020
+# Daniel Berton <danielsberton@gmail.com>, 2020
 # Stevenes Donato <stevenesdonato@gmail.com>, 2020
 # Arthur Ramos Schaefer <arthur.r.schaefer@gmail.com>, 2020
 # 
@@ -62,7 +63,7 @@ msgstr "Atualizar"
 #: ajax/dropdownMassiveActionOs.php:46 inc/massiveaction.class.php:546
 msgctxt "button"
 msgid "Clone"
-msgstr "Clone"
+msgstr "Clonar"
 
 #: ajax/dropdownItilActors.php:106 ajax/dropdownItilActors.php:194
 #: ajax/uemailUpdate.php:69 front/ticket_user.form.php:43
@@ -4056,8 +4057,8 @@ msgstr[1] "Alvos"
 #: inc/itil_project.class.php:51
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] "Projeto/Itil link"
-msgstr[1] "Projeto/Itil links"
+msgstr[0] "Projeto/ITIL link"
+msgstr[1] "Projeto/ITIL links"
 
 #: inc/itil_project.class.php:88
 msgid "Itil item"
@@ -4068,7 +4069,7 @@ msgstr[1] "Itens Itil"
 #: inc/itil_project.class.php:182 inc/change_ticket.class.php:402
 #: inc/change_problem.class.php:162
 msgid "Add a change"
-msgstr "Adicionar uma alteração"
+msgstr "Adicionar uma mudança"
 
 #: inc/itil_project.class.php:185 inc/change_problem.class.php:275
 #: inc/problem_ticket.class.php:397
@@ -8228,8 +8229,8 @@ msgstr "Adicionar novo item a este cluster..."
 #: inc/item_cluster.class.php:249 inc/cluster.class.php:54
 msgid "Cluster"
 msgid_plural "Clusters"
-msgstr[0] "Grupo"
-msgstr[1] "Grupos"
+msgstr[0] "Cluster"
+msgstr[1] "Clusters"
 
 #: inc/item_cluster.class.php:279 inc/item_rack.class.php:944
 #: inc/item_enclosure.class.php:301
@@ -8660,7 +8661,7 @@ msgstr "Duração total: %s"
 #: inc/commonitilobject.class.php:6714
 #, php-format
 msgid "Information tasks: %s %%"
-msgstr ""
+msgstr "Informação das tarefas: %s %%"
 
 #: inc/commonitilobject.class.php:6715
 #, php-format
@@ -8982,7 +8983,7 @@ msgstr "Vcard"
 
 #: inc/user.class.php:2066 inc/user.class.php:2067
 msgid "Impersonate"
-msgstr ""
+msgstr "personificar"
 
 #: inc/user.class.php:2117 inc/user.class.php:2583 inc/user.class.php:2584
 #: inc/notificationmailingsetting.class.php:245
@@ -9322,11 +9323,11 @@ msgstr "Atualizar método para autenticação e sincronização de usuário"
 
 #: inc/user.class.php:5342
 msgid "Handle users passwords expiration policy"
-msgstr ""
+msgstr "Gerenciar política de expiração de senhas de usuários"
 
 #: inc/user.class.php:5343
 msgid "Maximum expiration notifications to send at once"
-msgstr ""
+msgstr "Expiração máxima de notificações para enviar por vez"
 
 #: inc/notificationtargetcrontask.class.php:45
 #: inc/notificationtargetcrontask.class.php:81 inc/crontask.class.php:1770
@@ -10153,7 +10154,7 @@ msgstr "Adicionar um fornecedor"
 msgid "Followup template"
 msgid_plural "Followup templates"
 msgstr[0] "Modelo de acompanhamento"
-msgstr[1] "Modelos de acompanhamentos"
+msgstr[1] "Modelos de acompanhamento"
 
 #: inc/itilfollowuptemplate.class.php:61 inc/itilfollowuptemplate.class.php:87
 #: inc/itilfollowup.class.php:869 inc/itilfollowup.class.php:1082
@@ -10314,14 +10315,16 @@ msgid ""
 "Otherwise, you will need to download and unzip the plugins archives "
 "manually."
 msgstr ""
+"Caso contrário, você precisa fazer o download em descompactar os arquivos do"
+" plugin manualmente."
 
 #: inc/marketplace/view.class.php:350
 msgid "Alpha ASC"
-msgstr ""
+msgstr "Ordem crescente"
 
 #: inc/marketplace/view.class.php:355
 msgid "Alpha DESC"
-msgstr ""
+msgstr "Ordem decrescente"
 
 #: inc/marketplace/view.class.php:360
 msgid "Most popular"
@@ -10341,7 +10344,7 @@ msgstr "Melhor avaliação"
 
 #: inc/marketplace/view.class.php:380
 msgid "Your plugin here ? Contact us."
-msgstr ""
+msgstr "Seu plugin aqui? Contate-nos."
 
 #: inc/marketplace/view.class.php:382
 msgid "Refresh plugin list"
@@ -10378,6 +10381,8 @@ msgstr ""
 msgid ""
 "Download archive manually, you must uncompress it in plugins directory (%s)"
 msgstr ""
+"Faça o download do arquivo manualmente, você deve descompactar o mesmo no "
+"diretório de plugin (%s)"
 
 #: inc/marketplace/view.class.php:649 inc/impact.class.php:1074
 #: inc/html.class.php:4976
@@ -10393,6 +10398,8 @@ msgstr "Uma nova versão(%s) está disponivel, atualizar?"
 #, php-format
 msgid "You need a superior GLPI-Network offer to access to this plugin (%s)"
 msgstr ""
+"Você precisa de uma oferta superior da GLPI-Network para acessar este plugin"
+" (%s)"
 
 #: inc/marketplace/view.class.php:681
 msgid "Install"
@@ -10413,7 +10420,7 @@ msgstr "Desinstalar"
 
 #: inc/marketplace/view.class.php:774
 msgid "You must have a GLPI Network subscription to get this plugin"
-msgstr ""
+msgstr "Você precisa de uma conta no GLPI network para conseguir esse plugin"
 
 #: inc/marketplace/view.class.php:775 inc/network.class.php:42
 #: inc/networkequipment.class.php:364 inc/networkequipment.class.php:595
@@ -10430,17 +10437,20 @@ msgstr[1] "Redes"
 #, php-format
 msgid "You need at least the %s subscription level to get this plugin"
 msgstr ""
+"Você precisa pelo menos do nível de assinatura %s para obter este plugin"
 
 #: inc/marketplace/view.class.php:880
 #, php-format
 msgid "%s plugin"
 msgid_plural "%s plugins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s plugins"
+msgstr[1] "%s plugins"
 
 #: inc/marketplace/view.class.php:925
 msgid "GLPI provides a new marketplace to download and install plugins."
 msgstr ""
+"O GLPI oferece um novo marketplace para realizar o download e instalar os "
+"plugins"
 
 #: inc/marketplace/view.class.php:927
 msgid "Do you want to replace the plugins setup page by the new marketplace ?"
@@ -10716,7 +10726,7 @@ msgstr "A data de criação é a hora de trabalho no calendário"
 
 #: inc/ruleticket.class.php:601
 msgid "Ticket category from code"
-msgstr ""
+msgstr "Categoria do chamado pelo código"
 
 #: inc/ruleticket.class.php:717 inc/ruleticket.class.php:723
 #: inc/ruleticket.class.php:729 inc/ruleticket.class.php:735
@@ -10923,7 +10933,7 @@ msgstr "Modelo para um incidente"
 
 #: inc/itilcategory.class.php:101 inc/itilcategory.class.php:163
 msgid "Template for a change"
-msgstr "Modelo para um problema"
+msgstr "Modelo para uma mudança"
 
 #: inc/itilcategory.class.php:105 inc/itilcategory.class.php:172
 msgid "Template for a problem"
@@ -11055,15 +11065,16 @@ msgstr "Se não for definido, o e-mail do administrador principal será usado."
 
 #: inc/notificationmailingsetting.class.php:119
 msgid "No-Reply address"
-msgstr ""
+msgstr "Endereço Não responder"
 
 #: inc/notificationmailingsetting.class.php:120
 msgid "Optionnal No-Reply address."
-msgstr ""
+msgstr "Endereço Não responder opcional."
 
 #: inc/notificationmailingsetting.class.php:120
 msgid "If set, it will be used for notifications that doesn't expect a reply."
 msgstr ""
+"Se configurado, será usado para notificações que não esperam uma resposta."
 
 #: inc/notificationmailingsetting.class.php:128
 msgid "No-Reply name"
@@ -11822,7 +11833,7 @@ msgstr[1] "Fontes RSS"
 
 #: inc/central.class.php:73
 msgid "Dashboard"
-msgstr "Painel de Controle"
+msgstr "Dashboard"
 
 #: inc/central.class.php:314
 #, php-format
@@ -11969,8 +11980,8 @@ msgstr "Campo itemtype é obrigatório"
 #: inc/planningexternaleventtemplate.class.php:54
 msgid "External events template"
 msgid_plural "External events templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de eventos externos"
+msgstr[1] "Modelos de eventos externos"
 
 #: inc/planningexternaleventtemplate.class.php:71
 #: inc/planningexternalevent.class.php:289
@@ -12043,7 +12054,7 @@ msgstr "Inválida"
 
 #: inc/softwarelicense.class.php:453 inc/softwarelicense.class.php:605
 msgid "Allow Over-Quota"
-msgstr ""
+msgstr "Permitir exceder cota"
 
 #: inc/softwarelicense.class.php:464
 msgid "Never expire"
@@ -13654,7 +13665,7 @@ msgstr "Tradução da base de conhecimento"
 
 #: inc/config.class.php:377
 msgid "Translation of reminders"
-msgstr ""
+msgstr "Trad"
 
 #: inc/config.class.php:383
 msgid "Dynamic display"
@@ -14081,7 +14092,7 @@ msgstr "Estado das tarefas por padrão"
 #: inc/config.class.php:1314
 msgid "Automatically refresh data (tickets list, project kanban) in minutes."
 msgstr ""
-"Atualize automaticamente os dados (lista de chamados, projeto kanban) em "
+"Atualizar automaticamente os dados (lista de chamados, projeto kanban) em "
 "minutos."
 
 #: inc/config.class.php:1323
@@ -14133,7 +14144,7 @@ msgstr ""
 
 #: inc/config.class.php:1419
 msgid "Dashboards"
-msgstr ""
+msgstr "Dashboards"
 
 #: inc/config.class.php:1422
 msgid "Default for central"
@@ -14366,7 +14377,7 @@ msgstr "Desempenho"
 
 #: inc/config.class.php:2280 inc/glpinetwork.class.php:40
 msgid "GLPI Network"
-msgstr ""
+msgstr "GLPI Network"
 
 #: inc/config.class.php:2373 inc/system/requirement/dbengine.class.php:62
 #, php-format
@@ -14733,13 +14744,13 @@ msgstr "%s: falha no envio do alerta sobre insumo"
 #: inc/planningexternalevent.class.php:54
 msgid "External event"
 msgid_plural "External events"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Eventos externos"
+msgstr[1] "Eventos externos"
 
 #: inc/planningexternalevent.class.php:241
 #: inc/features/planningevent.class.php:981
 msgid "Guests"
-msgstr ""
+msgstr "Convidados"
 
 #: inc/planningexternalevent.class.php:252
 msgid "Each guest will have a read-only copy of this event"
@@ -14747,15 +14758,15 @@ msgstr ""
 
 #: inc/planningexternalevent.class.php:343
 msgid "Delete serie"
-msgstr ""
+msgstr "Excluir série"
 
 #: inc/planningexternalevent.class.php:344
 msgid "Delete instance"
-msgstr ""
+msgstr "Excluir instância"
 
 #: inc/planningexternalevent.class.php:356
 msgid "manage background events"
-msgstr ""
+msgstr "Gerenciar eventos em segundo plano"
 
 #: inc/slalevel_ticket.class.php:41
 msgid "SLA level for Ticket"
@@ -14774,8 +14785,8 @@ msgstr[1] "Tipos de insumo"
 #: inc/passivedcequipmenttype.class.php:42
 msgid "Passive device type"
 msgid_plural "Passive device types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de dispositivo passivo"
+msgstr[1] "Tipos de dispositivo passivo"
 
 #: inc/computer.class.php:462 inc/computer.class.php:598
 #: inc/computervirtualmachine.class.php:176
@@ -15765,7 +15776,7 @@ msgstr ""
 
 #: inc/system/requirement/selinux.class.php:135
 msgid "SELinux configuration is OK."
-msgstr ""
+msgstr "Configuração do SELinux está OK."
 
 #: inc/system/requirement/protectedwebaccess.class.php:69
 msgid ""
@@ -15840,7 +15851,7 @@ msgstr ""
 #: inc/system/requirement/directorywriteaccess.class.php:103
 #, php-format
 msgid "Checking write permissions for directory %s"
-msgstr ""
+msgstr "Verificando permissão de escrita para diretório %s"
 
 #: inc/system/requirement/directorywriteaccess.class.php:116
 #, php-format
@@ -15855,7 +15866,7 @@ msgstr ""
 #: inc/system/requirement/directorywriteaccess.class.php:123
 #, php-format
 msgid "The file could not be created in %s."
-msgstr ""
+msgstr "O arquivo não pôde ser criado em %s"
 
 #: inc/system/requirement/directorywriteaccess.class.php:126
 #, php-format
@@ -15865,7 +15876,7 @@ msgstr ""
 #: inc/system/requirement/directorywriteaccess.class.php:129
 #, php-format
 msgid "The directory could not be created in %s."
-msgstr ""
+msgstr "O diretório não pôde ser criado em %s"
 
 #: inc/system/requirement/dbtimezones.class.php:52
 msgid "Testing DB timezone data"
@@ -16008,7 +16019,7 @@ msgstr "Um tipo de item é mandatório"
 
 #: inc/projecttaskteam.class.php:163
 msgid "An item ID is mandatory"
-msgstr ""
+msgstr "Um ID de item é obrigatório"
 
 #: inc/projecttaskteam.class.php:172
 msgid "A project task is mandatory"
@@ -16093,8 +16104,8 @@ msgstr "Adicionar um campo oculto"
 #: inc/appliance.class.php:54
 msgid "Appliance"
 msgid_plural "Appliances"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Appliance"
+msgstr[1] "Appliances"
 
 #: inc/appliance.class.php:95 inc/domain.class.php:139
 msgid "Associated items"
@@ -16749,7 +16760,7 @@ msgstr ""
 
 #: inc/glpinetwork.class.php:69
 msgid "Register on GLPI Network!"
-msgstr ""
+msgstr "Registre-se no GLPI Network!"
 
 #: inc/glpinetwork.class.php:70
 msgid "And retrieve your key to paste it below"
@@ -16758,7 +16769,7 @@ msgstr ""
 #: inc/glpinetwork.class.php:83
 #, php-format
 msgid "Error was: %s"
-msgstr ""
+msgstr "Erro foi: %s"
 
 #: inc/glpinetwork.class.php:91
 msgid "Registration key"
@@ -16770,11 +16781,11 @@ msgstr "Inscrição"
 
 #: inc/glpinetwork.class.php:111 inc/glpinetwork.class.php:116
 msgid "Unknown"
-msgstr ""
+msgstr "Desconhecido"
 
 #: inc/glpinetwork.class.php:115
 msgid "Registered by"
-msgstr ""
+msgstr "Registrado por"
 
 #: inc/glpinetwork.class.php:216
 msgid "Unable to fetch registration informations."
@@ -16782,11 +16793,11 @@ msgstr ""
 
 #: inc/glpinetwork.class.php:222
 msgid "The registration key is valid."
-msgstr ""
+msgstr "A chave de registro é válida."
 
 #: inc/glpinetwork.class.php:223
 msgid "The registration key is invalid."
-msgstr ""
+msgstr "A chave de registro é inválida."
 
 #: inc/glpinetwork.class.php:242
 #, php-format
@@ -17082,7 +17093,7 @@ msgstr "Compartilhar ou embutir este painel"
 
 #: inc/dashboard/grid.class.php:250 js/dashboard.js:715
 msgid "Delete this dashboard"
-msgstr "Deletar painel"
+msgstr "Excluir painel"
 
 #: inc/dashboard/grid.class.php:251
 msgid "Toggle auto-refresh"
@@ -17106,7 +17117,7 @@ msgstr "Alternar para modo de edição"
 
 #: inc/dashboard/grid.class.php:256 js/dashboard.js:737
 msgid "Add a new dashboard"
-msgstr "Adicionar um novo painel de controle"
+msgstr "Adicionar um novo painel"
 
 #: inc/dashboard/grid.class.php:544 js/dashboard.js:498
 msgid "Refresh this card"
@@ -17126,7 +17137,7 @@ msgstr "outros"
 
 #: inc/dashboard/grid.class.php:671
 msgid "Widget"
-msgstr ""
+msgstr "Widget"
 
 #: inc/dashboard/grid.class.php:702
 msgid "Use gradient palette"
@@ -17150,7 +17161,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:866
 msgid "Or share the dashboard to these target objects:"
-msgstr "Ou compartilhe o painel com esses objetos de destino:"
+msgstr "Ou compartilhe o painel com esses objetos do alvo:"
 
 #: inc/dashboard/grid.class.php:926
 msgid "empty card !"
@@ -17193,35 +17204,35 @@ msgstr "Tempo dos chamados (em horas)"
 
 #: inc/dashboard/grid.class.php:1167
 msgid "Top ticket's categories"
-msgstr "Top Chamados por categorias"
+msgstr "Top chamados por categorias"
 
 #: inc/dashboard/grid.class.php:1168
 msgid "Top ticket's entities"
-msgstr "Top Chamados por entidades"
+msgstr "Top chamados por entidades"
 
 #: inc/dashboard/grid.class.php:1169
 msgid "Top ticket's request types"
-msgstr "Top Chamados por origem da requisição"
+msgstr "Top chamados por origem da requisição"
 
 #: inc/dashboard/grid.class.php:1170
 msgid "Top ticket's locations"
-msgstr "Top Chamados por localização"
+msgstr "Top chamados por localização"
 
 #: inc/dashboard/grid.class.php:1182
 msgid "Top ticket's requesters"
-msgstr "Top Chamados por requerentes"
+msgstr "Top chamados por requerentes"
 
 #: inc/dashboard/grid.class.php:1183
 msgid "Top ticket's requester groups"
-msgstr "Top Chamados por grupos requerentes"
+msgstr "Top chamados por grupos requerente"
 
 #: inc/dashboard/grid.class.php:1184
 msgid "Top ticket's observers"
-msgstr "Top Chamados por observadores"
+msgstr "Top chamados por observadores"
 
 #: inc/dashboard/grid.class.php:1185
 msgid "Top ticket's observer groups"
-msgstr ""
+msgstr "Top chamados por grupos observadores"
 
 #: inc/dashboard/grid.class.php:1186
 msgid "Top ticket's assignees"
@@ -17666,7 +17677,7 @@ msgstr "Exibir impacto"
 
 #: inc/impact.class.php:1035
 msgid "Show depends"
-msgstr ""
+msgstr "Mostrar dependências"
 
 #: inc/impact.class.php:1038
 msgid "Colors"
@@ -18001,8 +18012,8 @@ msgstr "%1$s reverteu item para a revisão %2$s"
 #: inc/passivedcequipmentmodel.class.php:41
 msgid "Passive device model"
 msgid_plural "Passive device models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de dispositivo passivo"
+msgstr[1] "Modelos de dispositivo passivos"
 
 #: inc/toolbox.class.php:1043
 msgid "Test done"
@@ -20135,7 +20146,7 @@ msgstr "A pesquisa está desativada"
 
 #: inc/html.class.php:7192
 msgid "Global Kanban"
-msgstr ""
+msgstr "Kanban global"
 
 #: inc/html.class.php:7480
 #, php-format
@@ -20490,7 +20501,7 @@ msgstr "Alarmes em domínios expirados"
 
 #: inc/entity.class.php:2136
 msgid "Domains closes expiries"
-msgstr ""
+msgstr "Domínios perto de expirar"
 
 #: inc/entity.class.php:2148
 msgid "Domains expired"
@@ -20519,8 +20530,8 @@ msgstr "Configuração dos chamados"
 #: inc/entity.class.php:2568
 msgid "Mark followup added by a supplier though an email collector as private"
 msgstr ""
-"Marcar o acompanhamento adicionado por um fornecedor por um coletor de email"
-" como particular"
+"Marcar o acompanhamento adicionado por um fornecedor por um coletor de "
+"e-mail como particular"
 
 #: inc/entity.class.php:2595
 msgid "Anonymize support agents"
@@ -20569,14 +20580,14 @@ msgstr "Atualizar parâmetros de helpdesk"
 #: inc/appliancetype.class.php:43
 msgid "Appliance type"
 msgid_plural "Appliances types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de appliance"
+msgstr[1] "Tipos de appliances"
 
 #: inc/clustertype.class.php:40
 msgid "Cluster type"
 msgid_plural "Cluster types"
-msgstr[0] "Tipo de grupo"
-msgstr[1] "Tipos de grupos"
+msgstr[0] "Tipo de cluster"
+msgstr[1] "Tipos de clusters"
 
 #. TRANS: %1$s is the user login, %2$s the revision number
 #: inc/knowbaseitemtranslation.class.php:435
@@ -20899,7 +20910,7 @@ msgstr "Não foi possível conectar ao banco de dados"
 
 #: inc/console/abstractcommand.class.php:188
 msgid "Some mandatory system requirements are missing."
-msgstr ""
+msgstr "Alguns dos requisitos de sistemas obrigatórios estão faltando."
 
 #: inc/console/abstractcommand.class.php:190
 #: inc/console/abstractcommand.class.php:200
@@ -20908,7 +20919,7 @@ msgstr ""
 
 #: inc/console/abstractcommand.class.php:198
 msgid "Some optional system requirements are missing."
-msgstr ""
+msgstr "Alguns dos requisitos de sistemas opcionais estão faltando."
 
 #: inc/console/maintenance/disablemaintenancemodecommand.class.php:56
 msgid "Disable maintenance mode"
@@ -20928,12 +20939,12 @@ msgstr "Texto exibido durante manutenção"
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:60
 msgid "Migrate MyISAM tables to InnoDB"
-msgstr ""
+msgstr "Migrar tabelas do MysISAM para InnoDB"
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:71
 #, php-format
 msgid "Found %s table(s) using MyISAM engine."
-msgstr ""
+msgstr "Encontrado %s tabela(s) usando MyISAM engine."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:77
 #: inc/console/migration/timestampscommand.class.php:89
@@ -20960,12 +20971,12 @@ msgstr "Migração abortada."
 #: inc/console/migration/myisamtoinnodbcommand.class.php:102
 #, php-format
 msgid "Migrating table \"%s\"..."
-msgstr ""
+msgstr "Migrando tabelas \"%s\"..."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:109
 #, php-format
 msgid "Migration of table \"%s\"  failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "Migração da tabela \"%s\" falhou com a mensagem \"(%s) %s\"."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:122
 #: inc/console/migration/timestampscommand.class.php:212
@@ -20978,7 +20989,7 @@ msgstr "Migração concluída."
 
 #: inc/console/migration/timestampscommand.class.php:51
 msgid "Convert \"datetime\" fields to \"timestamp\" to use timezones."
-msgstr ""
+msgstr "converter campos \"datetime\" para \"timestamp\" para usar fuso horário"
 
 #: inc/console/migration/timestampscommand.class.php:83
 #, php-format
@@ -21106,17 +21117,17 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:425
 msgid "Importing domains..."
-msgstr ""
+msgstr "Importando domínios..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:454
 #, php-format
 msgid "Updating existing domain %s..."
-msgstr ""
+msgstr "Atualizando domínio existente %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:459
 #, php-format
 msgid "Importing domain %s..."
-msgstr ""
+msgstr "Importando domínio %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:472
 #, php-format
@@ -21135,7 +21146,7 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:557
 msgid "No domains found."
-msgstr ""
+msgstr "Nenhum domínio encontrado."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:574
 msgid "Importing domains items..."
@@ -21244,11 +21255,11 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:476
 msgid "Creating datacenter..."
-msgstr ""
+msgstr "Criando datecenter..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:492
 msgid "Unable to create datacenter."
-msgstr ""
+msgstr "Não foi possível criar datacenter."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:513
 msgid "Importing other models..."
@@ -21272,7 +21283,7 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:551
 msgid "Peripheral"
-msgstr ""
+msgstr "Periférico"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:552
 msgid "Pdu"
@@ -21280,11 +21291,11 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:554
 msgid "Passive Device"
-msgstr ""
+msgstr "Dispositivo passivo"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:555
 msgid "Ignore (default)"
-msgstr ""
+msgstr "Ignorar (padrão)"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:610
 #, php-format
@@ -21345,16 +21356,16 @@ msgstr ""
 #: inc/console/migration/racksplugintocorecommand.class.php:861
 #: inc/console/migration/racksplugintocorecommand.class.php:941
 msgid "No rack models found."
-msgstr ""
+msgstr "Nenhum modelo de rack encontrado."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:879
 msgid "Importing rack types..."
-msgstr ""
+msgstr "Importando tipos de rack..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:897
 #, php-format
 msgid "Importing rack type \"%s\"..."
-msgstr ""
+msgstr "Importando tipo de rack \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:920
 #, php-format
@@ -21632,7 +21643,7 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:129
 msgid "unknown"
-msgstr ""
+msgstr "Desconhecido"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:131
 msgid "Possible values are:"
@@ -21883,7 +21894,7 @@ msgstr ""
 
 #: inc/console/database/abstractconfigurecommand.class.php:211
 msgid "Configuration aborted."
-msgstr ""
+msgstr "Configuração abortada."
 
 #: inc/console/database/abstractconfigurecommand.class.php:228
 #: inc/console/database/installcommand.class.php:227
@@ -21914,7 +21925,7 @@ msgstr ""
 
 #: inc/console/database/installcommand.class.php:98
 msgid "Default language of GLPI"
-msgstr ""
+msgstr "Idioma padrão do GLPI"
 
 #: inc/console/database/installcommand.class.php:106
 msgid "Force execution of installation, overriding existing database"
@@ -21932,7 +21943,7 @@ msgstr ""
 
 #: inc/console/database/installcommand.class.php:201
 msgid "Installation aborted."
-msgstr ""
+msgstr "Instalação abortada."
 
 #: inc/console/database/installcommand.class.php:211 install/install.php:379
 msgid "Security key cannot be generated!"
@@ -21963,11 +21974,11 @@ msgstr "Instalação concluída."
 
 #: inc/console/task/unlockcommand.class.php:56
 msgid "Unlock automatic tasks"
-msgstr ""
+msgstr "Desbloquear tarefas automáticas"
 
 #: inc/console/task/unlockcommand.class.php:62
 msgid "Unlock all tasks"
-msgstr ""
+msgstr "Desbloquear todas as tarefas"
 
 #: inc/console/task/unlockcommand.class.php:69
 msgid ""
@@ -22405,7 +22416,7 @@ msgstr "Dicionário de impressoras"
 
 #: inc/profile.class.php:1555
 msgid "All dashboards"
-msgstr ""
+msgstr "Todos os painéis"
 
 #: inc/profile.class.php:1560
 msgid "Search result display"
@@ -22448,8 +22459,8 @@ msgstr "Meus dispositivos e todos itens"
 #: inc/planningeventcategory.class.php:41
 msgid "Event category"
 msgid_plural "Event categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Categoria de evento"
+msgstr[1] "Categorias de eventos"
 
 #: inc/commonitiltask.class.php:287 inc/commonitiltask.class.php:481
 msgid "Start of the selected timeframe is not a working hour."
@@ -22504,8 +22515,8 @@ msgstr "Nenhuma tarefa para fazer"
 #: inc/passivedcequipment.class.php:48
 msgid "Passive device"
 msgid_plural "Passive devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dispositivo passivo"
+msgstr[1] "Dispositivos passivo"
 
 #: inc/notificationtargetconsumableitem.class.php:47
 msgid "Consumables alarm"
@@ -22549,6 +22560,8 @@ msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
 msgstr ""
+"Quando o cálculo automático está ativo, a porcentagem é calculada com base "
+"na média de todo projeto filho e na porcentagem de tarefa concluída."
 
 #: inc/project.class.php:1555
 msgid "Sum of planned durations of tasks"
@@ -22565,11 +22578,11 @@ msgstr "Itens inválidos (nenhuma data de início ou fim): %s"
 
 #: inc/project.class.php:2243
 msgid "No status"
-msgstr ""
+msgstr "Sem status"
 
 #: inc/project.class.php:2285
 msgid "Subproject"
-msgstr ""
+msgstr "Subprojeto"
 
 #: inc/project.class.php:2285
 msgid "Subtask"
@@ -23051,7 +23064,7 @@ msgstr ""
 
 #: install/update_94_95/dashboards.php:312
 msgid "Mini tickets dashboard"
-msgstr ""
+msgstr "Painel de pequenos chamados"
 
 #: install/update_0781_0782.php:47
 msgid "Data migration"
@@ -23096,7 +23109,7 @@ msgstr "Salvo"
 #: js/dashboard.js:713
 #, javascript-format
 msgid "Are you sure you want to delete the dashboard %s ?"
-msgstr "Tem certeza que deseja apagar o painel %s?"
+msgstr "Tem certeza que deseja excluir o painel %s?"
 
 #: js/impact.js:1309
 msgid "Go to"
@@ -23149,6 +23162,7 @@ msgstr "Editar grupo"
 #: js/impact.js:2291
 msgid "Draw a line between two assets to add an impact relation"
 msgstr ""
+"Desenhe uma linha entre dois ativos para adicionar uma relação de impacto"
 
 #: js/impact.js:2298
 msgid "Click on an element to remove it from the network"

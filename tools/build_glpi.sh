@@ -76,6 +76,7 @@ dev_nodes=(
     "tests"
     "tools"
     "vendor/bin"
+    "webpack.config.js"
 )
 for node in "${dev_nodes[@]}"
 do
