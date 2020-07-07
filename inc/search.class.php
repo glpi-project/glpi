@@ -129,7 +129,9 @@ class Search {
          'searchtype'   => 'contains',
          'value'        => 'NULL'
       ];
-      self::displayData(self::getDatas($itemtype, $params));
+
+      $data = self::getDatas($itemtype, $params);
+      self::displayData($data);
 
       if ($data['data']['totalcount'] > 0) {
          $target = $data['search']['target'];
