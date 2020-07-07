@@ -5017,8 +5017,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Drop not available plugins
       foreach (array_keys($ptypes) as $itemtype) {
-         if (isset($_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
-             && !in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+         if (!isset($_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+             || !in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
             unset($ptypes[$itemtype]);
          }
       }
