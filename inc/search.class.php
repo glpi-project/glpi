@@ -3358,7 +3358,7 @@ JAVASCRIPT;
    static function addDefaultSelect($itemtype) {
       global $DB;
 
-      $itemtable = ($itemtype == 'AllAssets' ? getTableForItemType($itemtype) : $itemtype::getTable());
+      $itemtable = self::getOrigTableName($itemtype);
       $item      = null;
       $mayberecursive = false;
       if ($itemtype != 'AllAssets') {
