@@ -258,6 +258,11 @@ class Config extends CommonDBTM {
          $input[Impact::CONF_ENABLED] = exportArrayToDB($input[Impact::CONF_ENABLED]);
       }
 
+      // encrypt registration key
+      if (isset($input["glpinetwork_registration_key"]) && !empty($input["glpinetwork_registration_key"])) {
+         $input["glpinetwork_registration_key"] = Toolbox::sodiumEncrypt(stripslashes($input["glpinetwork_registration_key"]));
+      }
+
       // Beware : with new management system, we must update each value
       unset($input['id']);
       unset($input['_glpi_csrf_token']);
