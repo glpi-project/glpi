@@ -213,6 +213,7 @@ class Item_Problem extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $DB;
 
       if (!$withtemplate) {
          $nb = 0;
