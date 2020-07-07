@@ -194,7 +194,6 @@ abstract class CommonITILActor extends CommonDBRelation {
       if ((count($emails) ==  1)
           && !empty($default_email)
           && NotificationMailing::isUserAddressValid($default_email)) {
-         echo "<input type='hidden' name='alternative_email' value='".$default_email."'>";
          echo $default_email;
 
       } else if (count($emails) > 1) {
@@ -343,7 +342,7 @@ abstract class CommonITILActor extends CommonDBRelation {
    }
 
    function prepareInputForUpdate($input) {
-      if ($input['alternative_email'] == '') {
+      if (isset($input['alternative_email']) && $input['alternative_email'] == '') {
          if (isset($input['users_id'])) {
             $actor = new User();
             if ($actor->getFromDB($input["users_id"])) {
@@ -357,7 +356,8 @@ abstract class CommonITILActor extends CommonDBRelation {
             }
          }
       }
-      if (isset($input['alternative_email']) && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
+      if (isset($input['alternative_email']) && $input['alternative_email'] != ''
+          && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
          Session::addMessageAfterRedirect(
             __('Invalid email address'),
             false,
