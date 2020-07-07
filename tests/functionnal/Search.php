@@ -42,7 +42,9 @@ class Search extends DbTestCase {
       global $DEBUG_SQL;
 
       // check param itemtype exists (to avoid search errors)
-      $this->class($itemtype)->isSubClassof('CommonDBTM');
+      if ($itemtype !== 'AllAssets') {
+         $this->class($itemtype)->isSubClassof('CommonDBTM');
+      }
 
       // login to glpi if needed
       if (!isset($_SESSION['glpiname'])) {
@@ -1376,6 +1378,58 @@ class Search extends DbTestCase {
          // Check that ORDER applies on corresponding table alias
          ->contains("glpi_users_users_id_recipient.`name` ASC");
    }
+
+   function testSearchAllAssets() {
+      $data = $this->doSearch('AllAssets', [
+         'reset'      => 'reset',
+         'is_deleted' => 0,
+         'start'      => 0,
+         'search'     => 'Search',
+         'criteria'   => [
+            [
+               'link'       => 'AND',
+               'field'      => 'view',
+               'searchtype' => 'contains',
+               'value'      => 'test',
+            ],
+         ]
+      ]);
+
+      // check for sql error (data key missing or empty)
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty();
+
+      // Check sql generation
+      $this->array($data)
+         ->hasKey('sql')
+            ->array['sql']
+               ->hasKey('search');
+
+      $this->string($data['sql']['search'])
+         ->matches("/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/")
+         ->matches("/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/");
+
+      $types = [
+         \Computer::getTable(),
+         \Monitor::getTable(),
+         \NetworkEquipment::getTable(),
+         \Peripheral::getTable(),
+         \Phone::getTable(),
+         \Printer::getTable(),
+      ];
+
+      foreach ($types as $type) {
+         $this->string($data['sql']['search'])
+            ->contains("`$type`.`is_deleted` = 0")
+            ->contains("AND `$type`.`is_template` = 0")
+            ->contains("`$type`.`entities_id` IN ('1', '2', '3')")
+            ->contains("OR (`$type`.`is_recursive`='1'".
+                        " AND `$type`.`entities_id` IN (0))")
+            ->matches("/`$type`\.`name`  LIKE '%test%'/");
+      }
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
@@ -1394,5 +1448,4 @@ class DupSearchOpt extends \CommonDBTM {
 
       return $tab;
    }
-
 }
