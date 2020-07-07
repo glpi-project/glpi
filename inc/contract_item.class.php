@@ -707,13 +707,22 @@ class Contract_Item extends CommonDBRelation{
    **/
    static function getItemsAssociationRequest($itemtype, $items_id) {
       global $DB;
+      $where = [];
+      if ($itemtype == 'Contract') {
+         $where = [
+            'contracts_id'  => $items_id
+         ];
+      } else {
+         $where = [
+            'itemtype'  => $itemtype
+            'items_id'  => $items_id
+         ];
+      }
 
       return $DB->request([
          'SELECT' => 'id',
          'FROM'   => static::getTable(),
-         'WHERE'  => [
-            static::$items_id_1  => $items_id
-         ]
+         'WHERE'  => $where
       ]);
    }
 }
