@@ -549,7 +549,7 @@ class Search {
       $searchopt        = &self::getOptions($data['itemtype']);
 
       $blacklist_tables = [];
-      $orig_table = self::getOrigTableName($data);
+      $orig_table = self::getOrigTableName($data['itemtype']);
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
          $itemtable          = $CFG_GLPI['union_search_type'][$data['itemtype']];
          $blacklist_tables[] = $orig_table;
@@ -3207,7 +3207,7 @@ JAVASCRIPT;
 
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      $orig_table = self::getOrigTableName($data);
+      $orig_table = self::getOrigTableName($itemtype);
       if (($is_fkey_composite_on_self || $table != $orig_table)
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
@@ -3426,7 +3426,7 @@ JAVASCRIPT;
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
 
-      $orig_table = self::getOrigTableName($data);
+      $orig_table = self::getOrigTableName($itemtype);
       if (((($is_fkey_composite_on_self || $table != $orig_table)
             && (!isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($CFG_GLPI["union_search_type"][$itemtype] != $table)))
@@ -4089,7 +4089,7 @@ JAVASCRIPT;
       $addtable  = '';
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      $orig_table = self::getOrigTableName($data);
+      $orig_table = self::getOrigTableName($itemtype);
       if (($table != 'asset_types')
           && ($is_fkey_composite_on_self || $table != $orig_table)
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
@@ -7839,13 +7839,13 @@ JAVASCRIPT;
    }
 
    /**
-    * Get table name
+    * Get table name for item type
     *
-    * @param array $data Search data
+    * @param string $itemtype
     *
     * @return string
     */
-   public static function getOrigTableName(array $data): string {
-      return (is_a($data['itemtype'], CommonDBTM::class, true)) ? $data['itemtype']::getTable() : getTableForItemType($data['itemtype']);
+   public static function getOrigTableName(string $itemtype): string {
+      return (is_a($itemtype, CommonDBTM::class, true)) ? $itemtype::getTable() : getTableForItemType($itemtype);
    }
 }
