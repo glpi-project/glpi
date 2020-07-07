@@ -36,7 +36,7 @@
  * @return bool for success (will die for most error)
 **/
 function update94to95() {
-   global $DB, $migration;
+   global $CFG_GLPI, $DB, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
@@ -2055,6 +2055,21 @@ HTML
 
    // GLPI Network registration key config
    $migration->addConfig(['glpinetwork_registration_key' => null]);
+
+   if (isset($CFG_GLPI['glpinetwork_registration_key']) && !empty($CFG_GLPI['glpinetwork_registration_key'])) {
+      // encrypt existing keys if not yet encrypted
+      // if it can be base64 decoded then json decoded, we can consider that it was not encrypted
+      if (($b64_decoded = base64_decode($CFG_GLPI['glpinetwork_registration_key'], true)) !== false
+          && json_decode($b64_decoded, true) !== null) {
+         Config::setConfigurationValues(
+            'core',
+            [
+               'glpinetwork_registration_key' => Toolbox::sodiumEncrypt($CFG_GLPI['glpinetwork_registration_key'])
+            ]
+         );
+      }
+   }
+
    // /GLPI Network registration key config
 
    // ************ Keep it at the end **************
