@@ -229,7 +229,7 @@ class Change_Item extends CommonDBRelation{
                   $from = 'glpi_problems_' . strtolower($item->getType() . 's');
                   $result = $DB->request([
                      'COUNT'  => 'cpt',
-                     'FROM'   => 'glpi_changes_' . strtolower($item->getType() . 's'),
+                     'FROM'   => $from,
                      'WHERE'  => [
                         $item->getForeignKeyField()   => $item->fields['id']
                      ]
