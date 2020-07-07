@@ -342,7 +342,8 @@ abstract class CommonITILActor extends CommonDBRelation {
    }
 
    function prepareInputForUpdate($input) {
-      if (isset($input['alternative_email']) && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
+      if (isset($input['alternative_email']) && $input['alternative_email'] != ''
+          && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
          Session::addMessageAfterRedirect(
             __('Invalid email address'),
             false,
