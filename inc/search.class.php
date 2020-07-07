@@ -92,11 +92,7 @@ class Search {
     * @return void
    **/
    static function showList($itemtype, $params) {
-
-      $data = self::prepareDatasForSearch($itemtype, $params);
-      self::constructSQL($data);
-      self::constructData($data);
-      self::displayData($data);
+      self::displayData(self::getDatas($itemtype, $params));
    }
 
    /**
@@ -133,10 +129,7 @@ class Search {
          'searchtype'   => 'contains',
          'value'        => 'NULL'
       ];
-      $data = self::prepareDatasForSearch($itemtype, $params);
-      self::constructSQL($data);
-      self::constructData($data);
-      self::displayData($data);
+      self::displayData(self::getDatas($itemtype, $params));
 
       if ($data['data']['totalcount'] > 0) {
          $target = $data['search']['target'];
@@ -556,11 +549,12 @@ class Search {
       $searchopt        = &self::getOptions($data['itemtype']);
 
       $blacklist_tables = [];
+      $orig_table = self::getOrigTableName($data['itemtype']);
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
          $itemtable          = $CFG_GLPI['union_search_type'][$data['itemtype']];
-         $blacklist_tables[] = $data['itemtype']::getTable();
+         $blacklist_tables[] = $orig_table;
       } else {
-         $itemtable = $data['itemtype']::getTable();
+         $itemtable = $orig_table;
       }
 
       // hack for AllAssets
@@ -1480,7 +1474,7 @@ class Search {
     *
     * @return void
    **/
-   static function displayData(array &$data) {
+   static function displayData(array $data) {
       global $CFG_GLPI;
 
       $item = null;
@@ -3213,7 +3207,8 @@ JAVASCRIPT;
 
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      if (($is_fkey_composite_on_self || $table != $itemtype::getTable())
+      $orig_table = self::getOrigTableName($itemtype);
+      if (($is_fkey_composite_on_self || $table != $orig_table)
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
@@ -3363,7 +3358,7 @@ JAVASCRIPT;
    static function addDefaultSelect($itemtype) {
       global $DB;
 
-      $itemtable = $itemtype::getTable();
+      $itemtable = self::getOrigTableName($itemtype);
       $item      = null;
       $mayberecursive = false;
       if ($itemtype != 'AllAssets') {
@@ -3430,7 +3425,9 @@ JAVASCRIPT;
 
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      if (((($is_fkey_composite_on_self || $table != $itemtype::getTable())
+
+      $orig_table = self::getOrigTableName($itemtype);
+      if (((($is_fkey_composite_on_self || $table != $orig_table)
             && (!isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($CFG_GLPI["union_search_type"][$itemtype] != $table)))
            || !empty($complexjoin))
@@ -4092,8 +4089,9 @@ JAVASCRIPT;
       $addtable  = '';
       $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
+      $orig_table = self::getOrigTableName($itemtype);
       if (($table != 'asset_types')
-          && ($is_fkey_composite_on_self || $table != $itemtype::getTable())
+          && ($is_fkey_composite_on_self || $table != $orig_table)
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;
@@ -7838,5 +7836,16 @@ JAVASCRIPT;
                         AND `$alias`.`language` = '".
                               $_SESSION['glpilanguage']."'
                         AND `$alias`.`field` = '$field')";
+   }
+
+   /**
+    * Get table name for item type
+    *
+    * @param string $itemtype
+    *
+    * @return string
+    */
+   public static function getOrigTableName(string $itemtype): string {
+      return (is_a($itemtype, CommonDBTM::class, true)) ? $itemtype::getTable() : getTableForItemType($itemtype);
    }
 }

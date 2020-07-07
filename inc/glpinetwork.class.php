@@ -162,7 +162,7 @@ class GLPINetwork {
     */
    public static function getRegistrationKey(): string {
       global $CFG_GLPI;
-      return $CFG_GLPI['glpinetwork_registration_key'] ?? '';
+      return Toolbox::sodiumDecrypt($CFG_GLPI['glpinetwork_registration_key'] ?? '');
    }
 
    /**

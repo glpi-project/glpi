@@ -696,4 +696,33 @@ class Contract_Item extends CommonDBRelation{
 
       return $specificities;
    }
+
+   /**
+    * get the request results to get items associated to the given one (defined by $itemtype and $items_id)
+    *
+    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
+    * @param string  $items_id          the name of the item we want the resulting items to be associated to
+    *
+    * @return array the items associated to the given one (empty if none was found)
+   **/
+   static function getItemsAssociationRequest($itemtype, $items_id) {
+      global $DB;
+      $where = [];
+      if ($itemtype == 'Contract') {
+         $where = [
+            'contracts_id'  => $items_id
+         ];
+      } else {
+         $where = [
+            'itemtype'  => $itemtype,
+            'items_id'  => $items_id
+         ];
+      }
+
+      return $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => static::getTable(),
+         'WHERE'  => $where
+      ]);
+   }
 }

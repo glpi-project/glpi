@@ -827,7 +827,7 @@ class Group extends CommonTreeDropdown {
                                          'check_itemtype'   => 'Group',
                                          'check_items_id'   => $ID,
                                          'container'        => 'mass'.__CLASS__.$rand,
-                                         'extraparams'      => ['is_tech' => $tech,
+                                         'extraparams'      => ['is_tech' => $tech ? 1 : 0,
                                                                   'massive_action_fields' => ['field']],
                                          'specific_actions' => [__CLASS__.
                                                                     MassiveAction::CLASS_ACTION_SEPARATOR.

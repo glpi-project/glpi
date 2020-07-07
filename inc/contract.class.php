@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  *  Contract class
  */
 class Contract extends CommonDBTM {
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -45,6 +46,15 @@ class Contract extends CommonDBTM {
 
    static $rightname                   = 'contract';
    protected $usenotepad               = true;
+
+
+   public function getCloneRelations() :array {
+      return [
+         Contract_Item::class,
+         Contract_Supplier::class,
+         ContractCost::class,
+      ];
+   }
 
 
 
@@ -126,28 +136,6 @@ class Contract extends CommonDBTM {
          $data             = Toolbox::addslashes_deep($data);
 
          $cd->add($data);
-      }
-   }
-
-
-   function prepareInputForAdd($input) {
-
-      if (isset($input["id"]) && $input["id"]>0) {
-         $input["_oldID"] = $input["id"];
-      }
-      unset($input['id']);
-      unset($input['withtemplate']);
-
-      return $input;
-   }
-
-
-   function post_addItem() {
-
-      // Manage add from template
-      if (isset($this->input["_oldID"])) {
-         // ADD Devices
-         ContractCost::cloneContract($this->input["_oldID"], $this->fields['id']);
       }
    }
 
@@ -1806,5 +1794,9 @@ class Contract extends CommonDBTM {
 
    static function getIcon() {
       return "fas fa-file-signature";
+   }
+
+   public function getOverrideFieldName(): string {
+      return 'contracts_id';
    }
 }

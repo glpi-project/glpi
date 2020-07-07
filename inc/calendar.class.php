@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Calendar Class
 **/
 class Calendar extends CommonDropdown {
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -46,6 +47,14 @@ class Calendar extends CommonDropdown {
    static protected $forward_entity_to = ['CalendarSegment'];
 
    static $rightname = 'calendar';
+
+
+   public function getCloneRelations() :array {
+      return [
+         Calendar_Holiday::class,
+         CalendarSegment::class
+      ];
+   }
 
 
    /**
@@ -192,26 +201,23 @@ class Calendar extends CommonDropdown {
     */
    function duplicate($options = []) {
 
+      $input = $this->fields;
+      unset($input['id']);
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             if (isset($this->fields[$key])) {
-               $this->fields[$key] = $val;
+               $input[$key] = $val;
             }
          }
       }
 
-      $input = $this->fields;
-      $oldID = $input['id'];
-      unset($input['id']);
-      if ($newID = $this->add($input)) {
-         Calendar_Holiday::cloneCalendar($oldID, $newID);
-         CalendarSegment::cloneCalendar($oldID, $newID);
-
+      if ($newID = $this->clone($input)) {
          $this->updateDurationCache($newID);
          return true;
       }
-      return false;
 
+      return false;
    }
 
 
@@ -649,4 +655,7 @@ class Calendar extends CommonDropdown {
       return (int)date('w', $date);
    }
 
+   public function getOverrideFieldName(): string {
+      return 'calendars_id';
+   }
 }

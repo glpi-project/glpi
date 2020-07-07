@@ -1268,7 +1268,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                if (!empty($addscore)) {
                   foreach ($addscore as $addscore_field) {
                      $expr .= " + MATCH(" . $DB->quoteName($addscore_field) . ")
-                                        AGAINST('" . $DB->quoteName($search_wilcard) . " IN BOOLEAN MODE)";
+                                        AGAINST(" . $DB->quote($search_wilcard) . " IN BOOLEAN MODE)";
                   }
                }
                $expr .=" ) AS SCORE ";
@@ -1288,7 +1288,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                         'NOT' => [$addscore_field => null],
                         new QueryExpression(
                            "MATCH(" . $DB->quoteName($addscore_field) . ")
-                              AGAINST('" . $DB->quote($search_wilcard) . "' IN BOOLEAN MODE)"
+                              AGAINST(" . $DB->quote($search_wilcard) . " IN BOOLEAN MODE)"
                         )
                      ];
                   }
