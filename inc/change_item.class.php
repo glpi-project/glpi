@@ -226,6 +226,7 @@ class Change_Item extends CommonDBRelation{
             case 'Group' :
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
+                  $from = 'glpi_problems_' . strtolower($item->getType() . 's');
                   $result = $DB->request([
                      'COUNT'  => 'cpt',
                      'FROM'   => 'glpi_changes_' . strtolower($item->getType() . 's'),
