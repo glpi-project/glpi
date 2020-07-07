@@ -194,7 +194,6 @@ abstract class CommonITILActor extends CommonDBRelation {
       if ((count($emails) ==  1)
           && !empty($default_email)
           && NotificationMailing::isUserAddressValid($default_email)) {
-         echo "<input type='hidden' name='alternative_email' value='".$default_email."'>";
          echo $default_email;
 
       } else if (count($emails) > 1) {
