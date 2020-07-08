@@ -368,22 +368,7 @@ class Monitor extends CommonDBTM {
 
 
    function rawSearchOptions() {
-      $tab = [];
-
-      $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
-      ];
-
-      $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
-         'autocomplete'       => true,
-      ];
+      $tab = parent::rawSearchOptions();
 
       $tab[] = [
          'id'                 => '2',
@@ -630,15 +615,6 @@ class Monitor extends CommonDBTM {
          'name'               => __('Global management'),
          'datatype'           => 'bool',
          'massiveaction'      => false
-      ];
-
-      $tab[] = [
-         'id'                 => '86',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool',
-         'searchtype'         => 'equals'
       ];
 
       // add objectlock search options
