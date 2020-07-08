@@ -1547,7 +1547,7 @@ class Planning extends CommonGLPI {
          $input[$key] = $event['actor']['items_id'];
       }
 
-      $new_items_id = $item->add($input);
+      $new_items_id = $item->add(Toolbox::addslashes_deep($input));
 
       // manage all assigments for ProjectTask
       if ($item instanceof ProjectTask
