@@ -1824,7 +1824,6 @@ class Planning extends CommonGLPI {
             'state'       => $event['state'] ?? "",
          ];
 
-
          // if we can't update the event, pass the editable key
          if (!$event['editable']) {
             $new_event['editable'] = false;
