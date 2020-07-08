@@ -101,6 +101,8 @@ class Itil_Project extends DbTestCase {
       )->isGreaterThan(0);
       $cloneProjectId = $project->fields['id'];
 
+      $this->integer($cloneProjectId)->isNotEqualTo($baseProjectId);
+
       $this->integer(
          countElementsInTable($ptask::getTable(), ['projects_id' => $baseProjectId])
       )->isEqualTo(1);
