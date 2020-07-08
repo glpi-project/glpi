@@ -1772,8 +1772,8 @@ class Planning extends CommonGLPI {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
                         $event['users_id']);
-         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, 'in', false);
-         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, 'in', true);
+         $content = Planning::displayPlanningItem($event, $users_id, 'in', false) ?: ($event['content'] ?? "");
+         $tooltip = Planning::displayPlanningItem($event, $users_id, 'in', true) ?: ($event['tooltip'] ?? "");
 
          // dates should be set with the user timezone
          $begin = $event['begin'];
@@ -1823,6 +1823,7 @@ class Planning extends CommonGLPI {
             'priority'    => $event['priority'] ?? "",
             'state'       => $event['state'] ?? "",
          ];
+
 
          // if we can't update the event, pass the editable key
          if (!$event['editable']) {
@@ -2256,7 +2257,10 @@ class Planning extends CommonGLPI {
       }
 
       // Plugins case
-      if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
+      if (isset($val['itemtype'])
+          && !empty($val['itemtype'])
+          && $val['itemtype'] != 'NotPlanned'
+          && method_exists($val['itemtype'], "displayPlanningItem")) {
          $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
       }
 
