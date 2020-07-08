@@ -894,7 +894,7 @@ var GLPIPlanning  = {
       $('#planning_datepicker').flatpickr({
          defaultDate: currentDate,
          onChange: function(selected_date) {
-            new_date = selected_date[0];
+            var new_date = selected_date[0];
             // shift to 12:00 to avoid timezone issues
             new_date.setHours(12, 0, 0);
             GLPIPlanning.calendar.gotoDate(new_date);
