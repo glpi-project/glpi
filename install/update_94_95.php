@@ -1554,6 +1554,8 @@ HTML
             'items_id'           => $data['id'],
             'timeline_position'  => CommonITILObject::NO_TIMELINE,
             'users_id'           => $data[$user_field],
+
+            '_disablenotif'      => true, // prevent parent object "update" notification
          ];
       }
    }
