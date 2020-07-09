@@ -11,11 +11,11 @@ executors:
   php_7_3_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
-      - image: circleci/mariadb:10.5-ram
+      - image: circleci/mariadb:10.4-ram
   php_7_4_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.4_fpm-node
-      - image: circleci/mariadb:10.5-ram
+      - image: circleci/mariadb:10.4-ram
   php_7_4_mysql_5_6:
     docker:
       - image: glpi/circleci-env-core:php_7.4_fpm-node
