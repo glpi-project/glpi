@@ -1517,7 +1517,7 @@ class Problem extends CommonITILObject {
 
       $options            = [];
       $options['canedit'] = false;
-      $this->showFormHeader($options);
+      CommonDBTM::showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Impacts')."</td><td colspan='3'>";
