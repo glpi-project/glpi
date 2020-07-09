@@ -7478,7 +7478,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $ID   = $this->fields['id'];
       $rand = mt_rand();
 
-      if (isset($options['template_preview']) && !$options['template_preview']) {
+      if (!isset($options['template_preview']) || !$options['template_preview']) {
          $output = "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".static::getFormURL()."''";
          if ($ID) {
             $output .= " data-track-changes='true'";
