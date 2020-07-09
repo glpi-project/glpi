@@ -61,7 +61,7 @@ class Config extends CommonDBTM {
 
    static $rightname              = 'config';
 
-   static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd'];
+   static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd', 'glpinetwork_registration_key'];
    static $saferUndisclosedFields = ['admin_email', 'admin_reply'];
 
    static function getTypeName($nb = 0) {
