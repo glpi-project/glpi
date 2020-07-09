@@ -112,7 +112,7 @@ if (class_exists($_POST["itemtype"])
       ],
       'ORDERBY'   => 'glpi_networkports.id'
    ];
-   $iterator = $Db->request($criteria);
+   $iterator = $DB->request($criteria);
 
    echo "<br>";
 
