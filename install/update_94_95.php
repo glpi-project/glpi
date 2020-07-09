@@ -1554,6 +1554,8 @@ HTML
             'items_id'           => $data['id'],
             'timeline_position'  => CommonITILObject::NO_TIMELINE,
             'users_id'           => $data[$user_field],
+
+            '_disablenotif'      => true, // prevent parent object "update" notification
          ];
       }
    }
@@ -1596,20 +1598,6 @@ HTML
       }
    }
    /** /update project and itil task templates **/
-
-   // ************ Keep it at the end **************
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-         ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-         ]);
-      }
-   }
 
    /** Add new option to mailcollector */
    $migration->addField("glpi_mailcollectors", "add_cc_to_observer", "boolean");
@@ -1986,10 +1974,6 @@ HTML
    $impact_default = exportArrayToDB(Impact::getDefaultItemtypes());
    $migration->addConfig([Impact::CONF_ENABLED => $impact_default]);
    /**  /Add default impact itemtypes */
-
-   /** Appliances & webapps */
-   require __DIR__ . '/update_94_95/appliances.php';
-   /** /Appliances & webapps */
 
    // Add new field states in contract
    if (!$DB->fieldExists('glpi_states', 'is_visible_contract')) {

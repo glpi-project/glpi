@@ -894,7 +894,15 @@ var GLPIPlanning  = {
       $('#planning_datepicker').flatpickr({
          defaultDate: currentDate,
          onChange: function(selected_date) {
-            GLPIPlanning.calendar.gotoDate(selected_date[0]);
+            // convert to UTC to avoid timezone issues
+            var date = new Date(
+               Date.UTC(
+                  selected_date[0].getFullYear(),
+                  selected_date[0].getMonth(),
+                  selected_date[0].getDate()
+               )
+            );
+            GLPIPlanning.calendar.gotoDate(date);
          }
       });
    },

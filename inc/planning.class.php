@@ -1546,7 +1546,7 @@ class Planning extends CommonGLPI {
          $input[$key] = $event['actor']['items_id'];
       }
 
-      $new_items_id = $item->add($input);
+      $new_items_id = $item->add(Toolbox::addslashes_deep($input));
 
       // manage all assigments for ProjectTask
       if ($item instanceof ProjectTask
@@ -1771,8 +1771,8 @@ class Planning extends CommonGLPI {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
                         $event['users_id']);
-         $content = $event['content'] ?? Planning::displayPlanningItem($event, $users_id, 'in', false);
-         $tooltip = $event['tooltip'] ?? Planning::displayPlanningItem($event, $users_id, 'in', true);
+         $content = Planning::displayPlanningItem($event, $users_id, 'in', false) ?: ($event['content'] ?? "");
+         $tooltip = Planning::displayPlanningItem($event, $users_id, 'in', true) ?: ($event['tooltip'] ?? "");
 
          // dates should be set with the user timezone
          $begin = $event['begin'];
@@ -2255,7 +2255,10 @@ class Planning extends CommonGLPI {
       }
 
       // Plugins case
-      if (isset($val['itemtype']) && !empty($val['itemtype']) && $val['itemtype'] != 'NotPlanned') {
+      if (isset($val['itemtype'])
+          && !empty($val['itemtype'])
+          && $val['itemtype'] != 'NotPlanned'
+          && method_exists($val['itemtype'], "displayPlanningItem")) {
          $html.= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
       }
 

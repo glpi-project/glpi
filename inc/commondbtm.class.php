@@ -3691,11 +3691,14 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($this->isField('is_recursive')) {
-         $tab[] = ['id'       => 86,
-                   'table'    => $this->getTable(),
-                   'field'    => 'is_recursive',
-                   'name'     => __('Child entities'),
-                   'datatype' =>'bool'];
+         $tab[] = [
+            'id'       => 86,
+            'table'      => $this->getTable(),
+            'field'      => 'is_recursive',
+            'name'       => __('Child entities'),
+            'datatype'   => 'bool',
+            'searchtype' => 'equals',
+         ];
       }
 
       // add objectlock search options

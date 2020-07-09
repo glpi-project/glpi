@@ -53,6 +53,8 @@ Config::detectRootDoc();
 $DB = new DB();
 $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
 
+Config::loadLegacyConfiguration();
+
 $update = new Update($DB);
 $update->initSession();
 

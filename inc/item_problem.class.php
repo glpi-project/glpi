@@ -213,6 +213,7 @@ class Item_Problem extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $DB;
 
       if (!$withtemplate) {
          $nb = 0;
@@ -227,7 +228,15 @@ class Item_Problem extends CommonDBRelation{
             case 'Group' :
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = self::countForItem($item);
+                  $from = $item->getType() == 'Group' ? 'glpi_groups_problems' : 'glpi_problems_' . strtolower($item->getType() . 's');
+                  $result = $DB->request([
+                     'COUNT'  => 'cpt',
+                     'FROM'   => $from,
+                     'WHERE'  => [
+                        $item->getForeignKeyField()   => $item->fields['id']
+                     ]
+                  ])->next();
+                  $nb = $result['cpt'];
                }
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
