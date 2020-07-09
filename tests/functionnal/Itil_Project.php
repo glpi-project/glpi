@@ -93,15 +93,13 @@ class Itil_Project extends DbTestCase {
       $this->integer($ptid)->isGreaterThan(0);
 
       // Clone project should clone its links to ITIL items and task
-      $this->integer(
-         (int)$project->add([
-            'name'   => 'Some project clone',
-            '_oldID' => $baseProjectId,
-         ])
-      )->isGreaterThan(0);
-      $cloneProjectId = $project->fields['id'];
+      $cloneProjectId = (int)$project->add([
+         'name'   => 'Some project clone',
+         '_oldID' => $baseProjectId,
+      ]);
+      $this->integer($cloneProjectId)->isGreaterThan(0);
 
-      $this->integer($cloneProjectId)->isNotEqualTo($baseProjectId);
+      $this->integer($cloneProjectId)->isNotEqualTo($baseProjectId, 'Project has not been cloned (same id)!');
 
       $this->integer(
          countElementsInTable($ptask::getTable(), ['projects_id' => $baseProjectId])
