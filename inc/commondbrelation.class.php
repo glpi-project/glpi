@@ -1830,4 +1830,26 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
       return $nb;
    }
+
+   public static final function getItemField($itemtype): string {
+      if (isset(static::$items_id_1) && getItemtypeForForeignKeyField(static::$items_id_1) == $itemtype) {
+         return static::$items_id_1;
+      }
+      if (isset(static::$items_id_2) && getItemtypeForForeignKeyField(static::$items_id_2) == $itemtype) {
+         return static::$items_id_2;
+      }
+
+      if (isset(static::$itemtype_1) && isset(static::$itemtype_2) && preg_match('/^itemtype/', static::$itemtype_1) && preg_match('/^itemtype/', static::$itemtype_2)) {
+         throw new \RuntimeException('Bad relation (' . $itemtype . ', ' .static::class . ', ' . static::$itemtype_1 . ', ' . static::$itemtype_2 . ')');
+      }
+
+      if (isset(static::$itemtype_1) && preg_match('/^itemtype/', static::$itemtype_1)) {
+         return static::$items_id_1;
+      }
+      if (isset(static::$itemtype_2) && preg_match('/^itemtype/', static::$itemtype_2)) {
+         return static::$items_id_2;
+      }
+
+      throw new \RuntimeException('Cannot guess ');
+   }
 }

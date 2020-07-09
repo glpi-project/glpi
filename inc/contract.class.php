@@ -1795,8 +1795,4 @@ class Contract extends CommonDBTM {
    static function getIcon() {
       return "fas fa-file-signature";
    }
-
-   public function getOverrideFieldName(): string {
-      return 'contracts_id';
-   }
 }

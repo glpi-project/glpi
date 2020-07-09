@@ -654,8 +654,4 @@ class Calendar extends CommonDropdown {
    static function getDayNumberInWeek($date) {
       return (int)date('w', $date);
    }
-
-   public function getOverrideFieldName(): string {
-      return 'calendars_id';
-   }
 }
