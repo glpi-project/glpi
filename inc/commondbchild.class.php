@@ -859,4 +859,16 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       return $this->update($input);
    }
+
+   public static final function getItemField($itemtype): string {
+      if (isset(static::$items_id) && getItemtypeForForeignKeyField(static::$items_id) == $itemtype) {
+         return static::$items_id;
+      }
+
+      if (isset (static::$itemtype) && preg_match('/^itemtype/', static::$itemtype)) {
+         return static::$items_id;
+      }
+
+      throw new \RuntimeException('Cannot guess ');
+   }
 }
