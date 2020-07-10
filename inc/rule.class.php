@@ -42,6 +42,7 @@ if (!defined('GLPI_ROOT')) {
  *   - actions
 **/
 class Rule extends CommonDBTM {
+   use Glpi\Features\Clonable;
 
    public $dohistory             = true;
 
@@ -91,6 +92,13 @@ class Rule extends CommonDBTM {
    const AND_MATCHING            = "AND";
    const OR_MATCHING             = "OR";
 
+
+   public function getCloneRelations() :array {
+      return [
+         RuleAction::class,
+         RuleCriteria::class
+      ];
+   }
 
 
    static function getTable($classname = null) {
@@ -559,9 +567,6 @@ class Rule extends CommonDBTM {
                = "<i class='ma-icon fas fa-arrows-alt-v'></i>".
                  __('Move');
          }
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'duplicate']
-            = "<i class='ma-icon far fa-clone'></i>".
-              _x('button', 'Duplicate');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'export']
             = "<i class='ma-icon fas fa-file-download'></i>".
               _x('button', 'Export');
@@ -578,23 +583,6 @@ class Rule extends CommonDBTM {
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
-         case 'duplicate' :
-            $entity_assign = false;
-            foreach ($ma->getitems() as $itemtype => $ids) {
-               if ($item = getItemForItemtype($itemtype)) {
-                  if ($item->isEntityAssign()) {
-                     $entity_assign = true;
-                     break;
-                  }
-               }
-            }
-            if ($entity_assign) {
-               Entity::dropdown();
-            }
-            echo "<br><br>".Html::submit(_x('button', 'Duplicate'),
-                                         ['name' => 'massiveaction']);
-            return true;
-
          case 'move_rule' :
             $input = $ma->getInput();
             $values = ['after'  => __('After'),
@@ -635,23 +623,6 @@ class Rule extends CommonDBTM {
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       switch ($ma->getAction()) {
-         case 'duplicate':
-            $rulecollection = new RuleCollection();
-            foreach ($ids as $id) {
-               if ($item->getFromDB($id)) {
-                  if ($rulecollection->duplicateRule($id)) {
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                  } else {
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                  }
-               } else {
-                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
-               }
-            }
-            break;
-
          case 'export':
             if (count($ids)) {
                $_SESSION['exportitems'] = $ids;
@@ -3182,5 +3153,20 @@ class Rule extends CommonDBTM {
 
    static function getIcon() {
       return "fas fa-book";
+   }
+
+   public function prepareInputForClone($input) {
+      //get ranking
+      $nextRanking = $this->getNextRanking();
+
+      //Update fields of the new collection
+      $input['name']        = sprintf(__('Copy of %s'), $input['name']);
+      $input['is_active']   = 0;
+      $input['ranking']     = $nextRanking;
+      $input['uuid']        = static::getUuid();
+
+      $input = Toolbox::addslashes_deep($input);
+
+      return parent::prepareInputForClone($input);
    }
 }

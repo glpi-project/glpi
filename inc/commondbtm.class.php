@@ -1370,6 +1370,9 @@ class CommonDBTM extends CommonGLPI {
     * @return array the modified $input array
    **/
    function prepareInputForClone($input) {
+      unset($input['id']);
+      unset($input['date_mod']);
+      unset($input['date_creation']);
       return $input;
    }
 
