@@ -292,8 +292,9 @@ class Toolbox {
          $nonce,
          $key
       );
-      if (!is_string($plaintext)) {
-         throw new \RuntimeException('Unable to decrypt content');
+      if ($plaintext === false) {
+         Toolbox::logError('Unable to decrypt content. It may have been crypted with another key.');
+         return '';
       }
       return $plaintext;
    }
