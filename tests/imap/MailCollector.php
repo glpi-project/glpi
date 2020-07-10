@@ -206,8 +206,9 @@ class MailCollector extends DbTestCase {
          'server_type'        => '/imap',
          'server_port'        => 143,
          'server_ssl'         => '',
+         'server_cert'        => '/novalidate-cert',
          'add_cc_to_observer' => 1, //add ccuser as observer in ticket
-         'server_cert'        => '/novalidate-cert'
+         'requester_field'    => \MailCollector::REQUESTER_FIELD_REPLY_TO,
       ]);
 
       $this->integer($this->mailgate_id)->isGreaterThan(0);
@@ -255,8 +256,9 @@ class MailCollector extends DbTestCase {
       //$this->collector = $collector;
 
       $this->doConnect();
+      $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
       $msg = $this->collector->collect($this->mailgate_id);
-      $this->variable($msg)->isIdenticalTo('Number of messages: available=9, retrieved=9, refused=2, errors=1, blacklisted=0');
+      $this->variable($msg)->isIdenticalTo('Number of messages: available=11, retrieved=11, refused=2, errors=1, blacklisted=0');
       $rejecteds = iterator_to_array($DB->request(['FROM' => \NotImportedEmail::getTable()]));
 
       $this->array($rejecteds)->hasSize(2);
@@ -266,6 +268,7 @@ class MailCollector extends DbTestCase {
             ->variable['reason']->isEqualTo(\NotImportedEmail::USER_UNKNOWN);
       }
 
+      // Check mails having "tech" user as requester
       $iterator = $DB->request([
          'SELECT' => ['t.id', 't.name', 'tu.users_id'],
          'FROM'   => \Ticket::getTable() . " AS t",
@@ -283,7 +286,7 @@ class MailCollector extends DbTestCase {
          ]
       ]);
 
-      $this->integer(count($iterator))->isIdenticalTo(3);
+      $this->integer(count($iterator))->isIdenticalTo(4);
       $names = [];
       while ($data = $iterator->next()) {
          $names[] = $data['name'];
@@ -292,10 +295,12 @@ class MailCollector extends DbTestCase {
       $expected_names = [
          'PHP fatal error',
          'Re: [GLPI #0001155] New ticket database issue',
-         'Ticket with observer'
+         'Ticket with observer',
+         'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
       ];
       $this->array($names)->isIdenticalTo($expected_names);
 
+      // Check mails having "normal" user as requester
       $iterator = $DB->request([
          'SELECT' => ['t.id', 't.name', 'tu.users_id'],
          'FROM'   => \Ticket::getTable() . " AS t",
@@ -313,7 +318,7 @@ class MailCollector extends DbTestCase {
          ]
       ]);
 
-      $this->integer(count($iterator))->isIdenticalTo(3);
+      $this->integer(count($iterator))->isIdenticalTo(4);
       $names = [];
       while ($data = $iterator->next()) {
          $names[] = $data['name'];
@@ -322,7 +327,8 @@ class MailCollector extends DbTestCase {
       $expected_names = [
          'Test import mail avec emoticons unicode',
          'Test images',
-         'Test\'ed issue'
+         'Test\'ed issue',
+         'Test Email from Outlook',
       ];
       $this->array($names)->isIdenticalTo($expected_names);
 
