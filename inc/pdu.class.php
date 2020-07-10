@@ -39,10 +39,19 @@ if (!defined('GLPI_ROOT')) {
 **/
 class PDU extends CommonDBTM {
    use Glpi\Features\DCBreadcrumb;
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory                   = true;
    static $rightname                   = 'datacenter';
+
+   public function getCloneRelations() :array {
+      return [
+         Pdu_Plug::class,
+         Item_Devices::class,
+         NetworkPort::class
+      ];
+   }
 
    static function getTypeName($nb = 0) {
       return _n('PDU', 'PDUs', $nb);
