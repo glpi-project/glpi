@@ -189,16 +189,17 @@ abstract class CommonDBConnexity extends CommonDBTM {
     */
    static function getItemsAssociationRequest($itemtype, $items_id) {
       global $DB;
-
-      return $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => static::getTable(),
-         'WHERE'  => [
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id
-         ]
-      ]);
+      return $DB->request(static::getSQLCriteriaToSearchForItem($itemtype, $items_id));
    }
+
+   /**
+    * Get item field name for cloning
+    *
+    * @param string $itemtype Item type
+    *
+    * @return string
+    */
+   abstract public static function getItemField($itemtype): string;
 
    /**
     * get associated item (defined by $itemtype and $items_id)

@@ -343,24 +343,4 @@ class Contract_Supplier extends CommonDBRelation {
       }
       echo "</div>";
    }
-
-   /**
-    * get the request results to get items associated to the given one (defined by $itemtype and $items_id)
-    *
-    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
-    * @param string  $items_id          the name of the item we want the resulting items to be associated to
-    *
-    * @return array the items associated to the given one (empty if none was found)
-   **/
-   static function getItemsAssociationRequest($itemtype, $items_id) {
-      global $DB;
-
-      return $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => static::getTable(),
-         'WHERE'  => [
-            static::$items_id_1  => $items_id
-         ]
-      ]);
-   }
 }

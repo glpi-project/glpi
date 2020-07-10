@@ -94,29 +94,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
       return null;
    }
 
-   /**
-    * get the request results to get items associated to the given one (defined by $itemtype and $items_id)
-    *
-    * @since 9.5
-    *
-    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
-    * @param string  $items_id          the name of the item we want the resulting items to be associated to
-    *
-    * @return array the items associated to the given one (empty if none was found)
-   **/
-   static function getItemsAssociationRequest($itemtype, $items_id) {
-      global $DB;
-
-      return $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => static::getTable(),
-         'WHERE'  => [
-            static::$itemtype  => $itemtype,
-            static::$items_id  => $items_id
-         ]
-      ]);
-   }
-
 
    /**
     * @since 0.84
@@ -881,5 +858,17 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       return $this->update($input);
+   }
+
+   public static final function getItemField($itemtype): string {
+      if (isset(static::$items_id) && getItemtypeForForeignKeyField(static::$items_id) == $itemtype) {
+         return static::$items_id;
+      }
+
+      if (isset (static::$itemtype) && preg_match('/^itemtype/', static::$itemtype)) {
+         return static::$items_id;
+      }
+
+      throw new \RuntimeException('Cannot guess ');
    }
 }
