@@ -1,0 +1,34 @@
+Delivered-To: REDACTED-EMAIL
+Received: by 2002:a50:cfc3:0:0:0:0:0 with SMTP id i3csp1241712edk;
+        Thu, 9 Jul 2020 00:07:53 -0700 (PDT)
+Return-Path: <REDACTED-EMAIL>
+Received: from REDACTED-SERVER (REDACTED-SERVER [REDACTED-IP])
+        by mx.google.com with ESMTPS id ck17si1268608edb.508.2020.07.09.00.07.53
+        for <REDACTED-EMAIL>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Jul 2020 00:07:53 -0700 (PDT)
+Received: from mail-lf1-f69.google.com ([REDACTED-IP])
+  by REDACTED-SERVER with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 08:07:53 +0100
+Received: by mail-lf1-f69.google.com with SMTP id f8so1572484lfh.22
+        for <REDACTED-EMAIL>; Thu, 09 Jul 2020 00:07:52 -0700 (PDT)
+MIME-Version: 1.0
+From: Tech (alt address) <alternative.email@glpi-project.org>
+Reply-To: Tech Ni Cian <tech@glpi-project.org>
+Date: Thu, 9 Jul 2020 08:07:40 +0100
+Message-ID: <CAJjtjRxMt1T5Zv1SR6sr+XKK9-U8C4M3cpPGP5fVwvWintxwdQ@mail.gmail.com>
+Subject: Re: [GLPI #0038927] Update - Issues with new Windows 10 machine
+To: GLPI debug <unittests@glpi-project.org>
+Content-Type: multipart/alternative; boundary="000000000000f50df905a9fce128"
+
+--000000000000f50df905a9fce128
+Content-Type: text/plain; charset="UTF-8"
+
+This message have reply to header, requester should be get from this header.
+
+--000000000000f50df905a9fce128
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+This message have reply to header, requester should be get from this header.
+
+--000000000000f50df905a9fce128--
