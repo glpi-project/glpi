@@ -272,6 +272,15 @@ class Entity extends CommonTreeDropdown {
 
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
 
+      if (empty($input['latitude']) && empty($input['longitude']) && empty($input['altitude']) &&
+         !empty($input[static::getForeignKeyField()])) {
+         $parent = new static();
+         $parent->getFromDB($input[static::getForeignKeyField()]);
+         $input['latitude'] = $parent->fields['latitude'];
+         $input['longitude'] = $parent->fields['longitude'];
+         $input['altitude'] = $parent->fields['altitude'];
+      }
+
       if (!Session::isCron()) { // Filter input for connected
          $input = $this->checkRightDatas($input);
       }
