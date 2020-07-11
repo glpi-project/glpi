@@ -1354,7 +1354,7 @@ class Log extends CommonDBTM {
          'table'              => $log_table,
          'field'              => 'id_search_option',
          'name'               => __('Search option'),
-         'datatype'           => 'number',
+         'datatype'           => 'specific',
          'massiveaction'      => false,
       ];
 
@@ -1388,6 +1388,11 @@ class Log extends CommonDBTM {
             return $values[$field]::getTypeName(1);
          case 'linked_action':
             return self::getLinkedActionLabel($values[$field]);
+         case 'id_search_option':
+            if ($options['raw_data']['raw']['ITEM_Log_3']) {
+               $search_options = (new $options['raw_data']['raw']['ITEM_Log_3']())->searchOptions();
+            }
+            return $search_options[$values[$field]]['name'] ?? $values[$field];
       }
    }
 
