@@ -245,4 +245,39 @@ class Entity extends DbTestCase {
       $this->runChangeEntityParent(true);
    }
 
+   public function testInheritGeolocation() {
+      $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+      $ent1 = new \Entity();
+      $ent1_id = $ent1->add([
+         'entities_id'  => $ent0,
+         'name'         => 'inherit_geo_test_parent',
+         'latitude'     => '48.8566',
+         'longitude'    => '2.3522',
+         'altitude'     => '115'
+      ]);
+      $this->integer((int) $ent1_id)->isGreaterThan(0);
+      $ent2 = new \Entity();
+      $ent2_id = $ent2->add([
+         'entities_id'  => $ent1_id,
+         'name'         => 'inherit_geo_test_child',
+      ]);
+      $this->integer((int) $ent2_id)->isGreaterThan(0);
+      $this->string($ent2->fields['latitude'])->isEqualTo($ent1->fields['latitude']);
+      $this->string($ent2->fields['longitude'])->isEqualTo($ent1->fields['longitude']);
+      $this->string($ent2->fields['altitude'])->isEqualTo($ent1->fields['altitude']);
+
+      // Make sure we don't overwrite data a user sets
+      $ent3 = new \Entity();
+      $ent3_id = $ent3->add([
+         'entities_id'  => $ent1_id,
+         'name'         => 'inherit_geo_test_child2',
+         'latitude'     => '41.3851',
+         'longitude'    => '2.1734',
+         'altitude'     => '39'
+      ]);
+      $this->integer((int) $ent3_id)->isGreaterThan(0);
+      $this->string($ent3->fields['latitude'])->isEqualTo('41.3851');
+      $this->string($ent3->fields['longitude'])->isEqualTo('2.1734');
+      $this->string($ent3->fields['altitude'])->isEqualTo('39');
+   }
 }

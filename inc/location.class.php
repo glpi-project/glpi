@@ -517,4 +517,17 @@ class Location extends CommonTreeDropdown {
    static function getIcon() {
       return "fas fa-map-marker-alt";
    }
+
+   public function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      if (empty($input['latitude']) && empty($input['longitude']) && empty($input['altitude']) &&
+         !empty($input[static::getForeignKeyField()])) {
+         $parent = new static();
+         $parent->getFromDB($input[static::getForeignKeyField()]);
+         $input['latitude'] = $parent->fields['latitude'];
+         $input['longitude'] = $parent->fields['longitude'];
+         $input['altitude'] = $parent->fields['altitude'];
+      }
+      return $input;
+   }
 }
