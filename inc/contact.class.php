@@ -492,6 +492,11 @@ class Contact extends CommonDBTM{
          return;
       }
 
+      $title = null;
+      if ($this->fields['usertitles_id'] !== 0) {
+         $title = new UserTitle();
+         $title->getFromDB($this->fields['usertitles_id']);
+      }
       // build the Vcard
       $vcard = new VObject\Component\VCard([
          'N'     => [$this->fields["name"], $this->fields["firstname"]],
@@ -499,6 +504,9 @@ class Contact extends CommonDBTM{
          'NOTE'  => $this->fields["comment"],
       ]);
 
+      if ($title) {
+         $vcard->add('TITLE', $title->fields['name']);
+      }
       $vcard->add('TEL', $this->fields["phone"], ['type' => 'PREF;WORK;VOICE']);
       $vcard->add('TEL', $this->fields["phone2"], ['type' => 'HOME;VOICE']);
       $vcard->add('TEL', $this->fields["mobile"], ['type' => 'WORK;CELL']);
@@ -508,6 +516,12 @@ class Contact extends CommonDBTM{
       if (is_array($addr)) {
          $addr_string = implode(";", array_filter($addr));
          $vcard->add('ADR', $addr_string, ['type' => 'WORK;POSTAL']);
+      }
+
+      // Get more data from plugins such as an IM contact
+      $data = Plugin::doHook('vcard_data', ['item' => $this, 'data' => []])['data'];
+      foreach ($data as $field => $additional_field) {
+         $vcard->add($additional_field['name'], $additional_field['value'] ?? '', $additional_field['params'] ?? []);
       }
 
       // send the  VCard
