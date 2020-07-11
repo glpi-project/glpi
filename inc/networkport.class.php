@@ -1237,4 +1237,19 @@ class NetworkPort extends CommonDBChild {
       return $specificities;
    }
 
+   public function computeFriendlyName() {
+      global $DB;
+
+      $iterator = $DB->request([
+         'SELECT' => ['name'],
+         'FROM'   => $this->fields['itemtype']::getTable(),
+         'WHERE'  => ['id' => $this->fields['items_id']]
+      ]);
+
+      if ($iterator->count()) {
+         return sprintf('%s on %s', parent::computeFriendlyName(), $iterator->next()['name']);
+      }
+
+      return parent::computeFriendlyName();
+   }
 }
