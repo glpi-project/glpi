@@ -4177,15 +4177,32 @@ JAVASCRIPT;
          $name = [$this->fields["name"], "", "", "", ""];
       }
 
+      $title = null;
+      if ($this->fields['usertitles_id'] !== 0) {
+         $title = new UserTitle();
+         $title->getFromDB($this->fields['usertitles_id']);
+      }
       // create vcard
       $vcard = new VObject\Component\VCard([
          'N'     => $name,
          'EMAIL' => $this->getDefaultEmail(),
          'NOTE'  => $this->fields["comment"],
       ]);
+      if ($title) {
+         $vcard->add('TITLE', $title->fields['name']);
+      }
+      if ($this->fields['timezone']) {
+         $vcard->add('TZ', $this->fields['timezone']);
+      }
       $vcard->add('TEL', $this->fields["phone"], ['type' => 'PREF;WORK;VOICE']);
       $vcard->add('TEL', $this->fields["phone2"], ['type' => 'HOME;VOICE']);
       $vcard->add('TEL', $this->fields["mobile"], ['type' => 'WORK;CELL']);
+
+      // Get more data from plugins such as an IM contact
+      $data = Plugin::doHook('vcard_data', ['item' => $this, 'data' => []])['data'];
+      foreach ($data as $field => $additional_field) {
+         $vcard->add($additional_field['name'], $additional_field['value'] ?? '', $additional_field['params'] ?? []);
+      }
 
       // send the  VCard
       $output   = $vcard->serialize();
