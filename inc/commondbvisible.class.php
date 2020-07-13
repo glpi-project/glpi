@@ -140,12 +140,13 @@ abstract class CommonDBVisible extends CommonDBTM {
       $rand    = mt_rand();
       $nb      = $this->countVisibilities();
       $str_type = strtolower($this::getType());
+      $fk = static::getForeignKeyField();
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='{$str_type}visibility_form$rand' id='{$str_type}visibility_form$rand' ";
          echo " method='post' action='".static::getFormURL()."'>";
-         echo "<input type='hidden' name='{$str_type}s_id' value='$ID'>";
+         echo "<input type='hidden' name='{$fk}' value='$ID'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
          echo "<tr class='tab_bg_1'><td class='tab_bg_2' width='100px'>";
