@@ -209,7 +209,8 @@ class DBmysql {
          }
 
          // force mysqlnd to return int and float types correctly (not as strings)
-         if (GLPI_FORCE_NATIVE_SQL_TYPES) {
+         // we still check if constant is defined to prevent warnings during requirements checks
+         if (defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE')) {
             $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
          }
 
