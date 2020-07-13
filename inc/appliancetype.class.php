@@ -45,7 +45,7 @@ class ApplianceType extends CommonDropdown {
 
 
    public function prepareInputForAdd($input) {
-      if (array_key_exists('externalidentifier', $input) && !$input['externalid']) {
+      if (array_key_exists('externalidentifier', $input) && empty($input['externalidentifier'])) {
          // INSERT NULL as this value is an UNIQUE index
          unset($input['externalidentifier']);
       }
