@@ -5616,9 +5616,9 @@ class Ticket extends CommonITILObject {
 
          echo "</th></tr>";
          if ($number) {
-            echo "<tr><th></th>";
-            echo "<th>".__('Requester')."</th>";
-            echo "<th>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
+            echo "<tr><th style='width: 75px;'>".__('ID')."</th>";
+            echo "<th style='width: 20%;'>".__('Requester')."</th>";
+            echo "<th style='width: 20%;'>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
             echo "<th>".__('Description')."</th></tr>";
             while ($data = $iterator->next()) {
                self::showVeryShort($data['id'], $forcetab);
@@ -5745,7 +5745,8 @@ class Ticket extends CommonITILObject {
                 Toolbox::append_params($options, '&amp;')."\">".__('Ticket followup')."</a>";
       }
       echo "</th></tr>";
-      echo "<tr><th>"._n('Ticket', 'Tickets', Session::getPluralNumber())."</th><th>"._x('quantity', 'Number')."</th></tr>";
+      echo "<tr><th>"._n('Ticket', 'Tickets', Session::getPluralNumber())."</th>
+            <th class='numeric'>"._x('quantity', 'Number')."</th></tr>";
 
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
            $number_waitapproval = TicketValidation::getNumberToValidate(Session::getLoginUserID());
@@ -5817,7 +5818,7 @@ class Ticket extends CommonITILObject {
          $options['criteria'][0]['value']   = self::INCOMING;
          $options['criteria'][0]['link']       = 'AND';
 
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<div class='center'><table class='tab_cadre_fixe' style='min-width: 85%'>";
          //TRANS: %d is the number of new tickets
          echo "<tr><th colspan='12'>".sprintf(_n('%d new ticket', '%d new tickets', $number), $number);
          echo "<a href='".Ticket::getSearchURL()."?".
@@ -5834,7 +5835,7 @@ class Ticket extends CommonITILObject {
 
       } else {
          echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixe' style='min-width: 85%'>";
          echo "<tr><th>".__('No ticket found.')."</th></tr>";
          echo "</table>";
          echo "</div><br>";
@@ -6121,7 +6122,7 @@ class Ticket extends CommonITILObject {
                <span style='background: $bgcolor'></span>&nbsp;$name
             </div>
          </td>";
-         echo "<td class='center'>";
+         echo "<td>";
 
          if (isset($job->users[CommonITILActor::REQUESTER])
              && count($job->users[CommonITILActor::REQUESTER])) {
@@ -6151,7 +6152,7 @@ class Ticket extends CommonITILObject {
 
          echo "</td>";
 
-         echo "<td class='center'>";
+         echo "<td>";
          if (!empty($job->hardwaredatas)) {
             foreach ($job->hardwaredatas as $hardwaredatas) {
                if ($hardwaredatas->canView()) {
