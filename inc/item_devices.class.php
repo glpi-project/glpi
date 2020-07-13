@@ -892,13 +892,13 @@ class Item_Devices extends CommonDBRelation {
 
          Session::addToNavigateListItems(static::getType(), $link["id"]);
          $this->getFromDB($link['id']);
+         $current_row  = $table_group->createRow();
          if ((is_null($peer)) || ($link[$fk] != $peer->getID())) {
 
             if ($peer instanceof CommonDBTM) {
                $peer->getFromDB($link[$fk]);
             }
 
-            $current_row  = $table_group->createRow();
             $peer_group   = $peer_type.'_'.$link[$fk].'_'.mt_rand();
             $current_row->setHTMLID($peer_group);
 
