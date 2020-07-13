@@ -839,7 +839,7 @@ class MailCollector  extends CommonDBTM {
                   }
 
                } else {
-                  if (!$tkt['_users_id_requester']) {
+                  if ($is_user_anonymous && !$CFG_GLPI["use_anonymous_helpdesk"]) {
                      $rejinput['reason'] = NotImportedEmail::USER_UNKNOWN;
 
                   } else {
