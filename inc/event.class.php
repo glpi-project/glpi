@@ -269,10 +269,11 @@ class Event extends CommonDBTM {
              sprintf(__('Last %d events'), $_SESSION['glpilist_limit'])."</a>";
       echo "</th></tr>";
 
-      echo "<tr><th colspan='2'>".__('Source')."</th>";
+      echo "<tr><th>".__('Source')."</th>";
+      echo "<th>".__('Id')."</th>";
       echo "<th>".__('Date')."</th>";
-      echo "<th width='8%'>".__('Service')."</th>";
-      echo "<th width='60%'>".__('Message')."</th></tr>";
+      echo "<th width='10%'>".__('Service')."</th>";
+      echo "<th width='50%'>".__('Message')."</th></tr>";
 
       while ($data = $iterator->next()) {
          $ID       = $data['id'];
@@ -293,10 +294,10 @@ class Event extends CommonDBTM {
          }
 
          echo "<tr class='tab_bg_2'><td>".$itemtype."</td>";
-         echo "<td class='center'>";
+         echo "<td>";
          self::displayItemLogID($type, $items_id);
-         echo "</td><td class='center'>".Html::convDateTime($date)."</td>";
-         echo "<td class='center'>".(isset($logService[$service])?$logService[$service]:'');
+         echo "</td><td>".Html::convDateTime($date)."</td>";
+         echo "<td>".(isset($logService[$service])?$logService[$service]:'');
          echo "</td><td>".$message."</td></tr>";
 
          $i++;
