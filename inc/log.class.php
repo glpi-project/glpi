@@ -1385,14 +1385,21 @@ class Log extends CommonDBTM {
       }
       switch ($field) {
          case 'itemtype':
-            return $values[$field]::getTypeName(1);
+            if (class_exists($values[$field])) {
+               return $values[$field]::getTypeName(1);
+            }
+            return $values[$field];
          case 'linked_action':
             return self::getLinkedActionLabel($values[$field]);
          case 'id_search_option':
             if ($options['raw_data']['raw']['ITEM_Log_3']) {
-               $search_options = (new $options['raw_data']['raw']['ITEM_Log_3']())->searchOptions();
+               $itemtype = $options['raw_data']['raw']['ITEM_Log_3'];
+               if (class_exists($itemtype)) {
+                  $search_options = (new $options['raw_data']['raw']['ITEM_Log_3']())->searchOptions();
+                  return $search_options[$values[$field]]['name'] ?? $values[$field];
+               }
             }
-            return $search_options[$values[$field]]['name'] ?? $values[$field];
+            return __('Data not available');
       }
    }
 
