@@ -7700,7 +7700,7 @@ JAVASCRIPT;
       $value = preg_replace('/\x0D/', null, $value);
       $value = str_replace("\"", "''", $value);
       $value = Html::clean($value);
-      $value = str_replace("\n", "<br>", $value);
+      $value = str_replace("\n", " | ", $value);
       $value = str_replace("&gt;", ">", $value);
       $value = str_replace("&lt;", "<", $value);
 
