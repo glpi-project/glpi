@@ -691,6 +691,24 @@
                }
             );
          }
+
+         $(self.element + ' .kanban-container').on('submit', '.kanban-add-form', function(e) {
+            e.preventDefault();
+            var form = $(e.target);
+            var data = {};
+            data['inputs'] = form.serialize();
+            data['itemtype'] = form.prop('id').split('_')[2];
+            data['action'] = 'add_item';
+
+            $.ajax({
+               method: 'POST',
+               //async: false,
+               url: (self.ajax_root + "kanban.php"),
+               data: data
+            }).done(function() {
+               self.refresh();
+            });
+         });
       };
 
       /**
@@ -1405,23 +1423,6 @@
          add_form += "</form>";
          $(column_el.find('.kanban-body')[0]).append(add_form);
          $('#' + formID).get(0).scrollIntoView(false);
-         $("#" + formID).on('submit', function(e) {
-            e.preventDefault();
-            var form = $(e.target);
-            var data = {};
-            data['inputs'] = form.serialize();
-            data['itemtype'] = form.prop('id').split('_')[2];
-            data['action'] = 'add_item';
-
-            $.ajax({
-               method: 'POST',
-               //async: false,
-               url: (self.ajax_root + "kanban.php"),
-               data: data
-            }).done(function() {
-               self.refresh();
-            });
-         });
       };
 
       /**

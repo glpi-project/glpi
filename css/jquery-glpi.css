@@ -95,7 +95,7 @@
 }
 .ui-tabs-vertical .ui-tabs-nav li a {
    display: block;
-   width: 145px;
+   width: 152px;
    text-align: left;
    text-overflow: ellipsis;     /** IE6+, Firefox 7+, Opera 11+, Chrome, Safari **/
    -o-text-overflow: ellipsis;
@@ -104,6 +104,7 @@
 
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
    padding-bottom: 0;
+   margin-bottom: 1px;
    border-right-width: 1px;
 }
 .ui-tabs-vertical .ui-tabs-panel {

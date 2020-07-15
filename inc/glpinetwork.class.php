@@ -214,6 +214,11 @@ class GLPINetwork {
       if ($error_message !== null || json_last_error() !== JSON_ERROR_NONE
           || !is_array($registration_data) || !array_key_exists('is_valid', $registration_data)) {
          $informations['validation_message'] = __('Unable to fetch registration informations.');
+         Toolbox::logError(
+            'Unable to fetch registration informations.',
+            $error_message,
+            $registration_response
+         );
          return $informations;
       }
 
@@ -280,17 +285,30 @@ class GLPINetwork {
          return $GLPI_CACHE->get($cache_key);
       }
 
+      $error_message = null;
       $response = \Toolbox::callCurl(
          rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/offers',
          [
-            CURLOPT_HTTPHEADER => ['Accept-Language: ' . $lang]
-         ]
+            CURLOPT_HTTPHEADER => [
+               'Accept:application/json',
+               'Accept-Language: ' . $lang,
+            ]
+         ],
+         $error_message
       );
-      $offers   = json_decode($response, true);
 
-      if (is_array($offers)) {
-         $GLPI_CACHE->set($cache_key, $offers, HOUR_TIMESTAMP);
+      $offers = $error_message === null ? json_decode($response) : null;
+
+      if ($error_message !== null || json_last_error() !== JSON_ERROR_NONE || !is_array($offers)) {
+         Toolbox::logError(
+            'Unable to fetch offers informations.',
+            $error_message,
+            $response
+         );
+         return [];
       }
+
+      $GLPI_CACHE->set($cache_key, $offers, HOUR_TIMESTAMP);
 
       return $offers;
    }

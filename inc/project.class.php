@@ -1514,7 +1514,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       echo "<td>".__('User')."</td>";
       echo "<td>";
       User::dropdown(['name'   => 'users_id',
-                           'value'  => $this->fields["users_id"],
+                           'value'  => $ID ? $this->fields["users_id"] : Session::getLoginUserID(),
                            'right'  => 'see_project',
                            'entity' => $this->fields["entities_id"]]);
       echo "</td>";

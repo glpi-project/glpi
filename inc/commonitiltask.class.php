@@ -1922,14 +1922,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          echo "</th></tr>";
          if ($number) {
             echo "<tr>";
-            echo "<th>".__('ID')." </th>";
+            echo "<th style='width: 75px;'>".__('ID')." </th>";
             $type = "";
             if ($itemtype == "TicketTask") {
                $type = Ticket::getTypeName();
             } else if ($itemtype == "ProblemTask") {
                $type = Problem::getTypeName();
             }
-            echo "<th>".__('Title')." (".strtolower($type).")</th>";
+            echo "<th style='width: 20%;'>".__('Title')." (".strtolower($type).")</th>";
             echo "<th>".__('Description')."</th>";
             echo "</tr>";
             foreach ($req as $row) {
@@ -1977,7 +1977,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             </div>
          </td>";
 
-         echo "<td class='center'>";
+         echo "<td>";
          echo $item_link->fields['name'];
          echo "</td>";
 

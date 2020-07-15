@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Laminas\Mail\Address;
+use Laminas\Mail\Header\AbstractAddressList;
+use Laminas\Mail\Storage\Message;
 use Laminas\Mime\Mime as Laminas_Mime;
 use LitEmoji\LitEmoji;
 
@@ -717,9 +720,7 @@ class MailCollector  extends CommonDBTM {
                $rejinput                      = [];
                $rejinput['mailcollectors_id'] = $mailgateID;
 
-               $req_field = $this->getRequesterField();
-               $h_requester = $message->getHeader($req_field)->getAddressList();
-               $requester = $h_requester->current()->getEmail();
+               $requester = $this->getRequesterEmail($message);
 
                if (!$tkt['_blacklisted']) {
                   global $DB;
@@ -838,7 +839,7 @@ class MailCollector  extends CommonDBTM {
                   }
 
                } else {
-                  if (!$tkt['_users_id_requester']) {
+                  if ($is_user_anonymous && !$CFG_GLPI["use_anonymous_helpdesk"]) {
                      $rejinput['reason'] = NotImportedEmail::USER_UNKNOWN;
 
                   } else {
@@ -951,9 +952,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       //  Who is the user ?
-      $req_field = $this->getRequesterField();
-      $h_requester = $message->getHeader($req_field)->getAddressList();
-      $requester = $h_requester->current()->getEmail();
+      $requester = $this->getRequesterEmail($message);
 
       $tkt['_users_id_requester']                              = User::getOrImportByEmail($requester);
       $tkt["_users_id_requester_notif"]['use_notification'][0] = 1;
@@ -1320,8 +1319,10 @@ class MailCollector  extends CommonDBTM {
       $head   = [];
       $headers = $message->getHeaders();
 
-      foreach ($headers as $key => $value) {
+      foreach ($headers as $header) {
          // is line with additional header?
+         $key = $header->getFieldName();
+         $value = $header->getFieldValue();
          if (preg_match("/^X-/i", $key)
                || preg_match("/^Auto-Submitted/i", $key)
                || preg_match("/^Received/i", $key)) {
@@ -1354,79 +1355,71 @@ class MailCollector  extends CommonDBTM {
    **/
    function getHeaders(\Laminas\Mail\Storage\Message $message) {
 
-      $h_sender = $message->getHeader('from')->getAddressList();
-      $sender = $h_sender->current();
+      $sender_email = $this->getEmailFromHeader($message, 'from');
 
-      $h_to = $message->getHeader('to')->getAddressList();
-      $h_to->rewind();
-      $to = $h_to->current();
-
-      $reply_to_addr = null;
-      if (isset($message->reply_to)) {
-         $h_reply_to = $message->getHeader('reply_to')->getAddressList();
-         $reply_to   = $h_reply_to->current();
-         $reply_to_addr = Toolbox::strtolower($reply_to->getEmail());
+      if (preg_match('/^(mailer-daemon|postmaster)@/i', $sender_email) === 1) {
+         return [];
       }
+
+      $to = $this->getEmailFromHeader($message, 'to');
+
+      $reply_to_addr = Toolbox::strtolower($this->getEmailFromHeader($message, 'reply-to'));
 
       $date         = date("Y-m-d H:i:s", strtotime($message->date));
       $mail_details = [];
 
-      if ((Toolbox::strtolower($sender->getEmail()) != 'mailer-daemon')
-          && (Toolbox::strtolower($sender->getEmail()) != 'postmaster')) {
-
-         // Construct to and cc arrays
-         $h_tos   = $message->getHeader('to');
-         $tos     = [];
-         foreach ($h_tos->getAddressList() as $address) {
-            $mailto = Toolbox::strtolower($address->getEmail());
-            if ($mailto === $this->fields['name']) {
-               $to = $address;
-            }
-            $tos[] = $mailto;
+      // Construct to and cc arrays
+      $h_tos   = $message->getHeader('to');
+      $tos     = [];
+      foreach ($h_tos->getAddressList() as $address) {
+         $mailto = Toolbox::strtolower($address->getEmail());
+         if ($mailto === $this->fields['name']) {
+            $to = $mailto;
          }
+         $tos[] = $mailto;
+      }
 
-         $ccs     = [];
-         if (isset($message->cc)) {
-            $h_ccs   = $message->getHeader('cc');
-            foreach ($h_ccs->getAddressList() as $address) {
-               $ccs[] = Toolbox::strtolower($address->getEmail());
-            }
+      $ccs     = [];
+      if (isset($message->cc)) {
+         $h_ccs   = $message->getHeader('cc');
+         foreach ($h_ccs->getAddressList() as $address) {
+            $ccs[] = Toolbox::strtolower($address->getEmail());
          }
+      }
 
-         // secu on subject setting
-         try {
-            $subject = $message->getHeader('subject')->getFieldValue();
-         } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
-            $subject = '';
+      // secu on subject setting
+      try {
+         $subject = $message->getHeader('subject')->getFieldValue();
+      } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
+         $subject = '';
+      }
+
+      $mail_details = [
+         'from'       => Toolbox::strtolower($sender_email),
+         'subject'    => $subject,
+         'reply-to'   => $reply_to_addr,
+         'to'         => Toolbox::strtolower($to),
+         'message_id' => $message->getHeader('message_id')->getFieldValue(),
+         'tos'        => $tos,
+         'ccs'        => $ccs,
+         'date'       => $date
+      ];
+
+      if (isset($message->references)) {
+         if ($reference = $message->getHeader('references')) {
+            $mail_details['references'] = $reference->getFieldValue();
          }
+      }
 
-         $mail_details = [
-            'from'       => Toolbox::strtolower($sender->getEmail()),
-            'subject'    => $subject,
-            'reply-to'   => $reply_to_addr,
-            'to'         => Toolbox::strtolower($to->getEmail()),
-            'message_id' => $message->getHeader('message_id')->getFieldValue(),
-            'tos'        => $tos,
-            'ccs'        => $ccs,
-            'date'       => $date
-         ];
-
-         if (isset($message->references)) {
-            if ($reference = $message->getHeader('references')) {
-               $mail_details['references'] = $reference->getFieldValue();
-            }
+      if (isset($message->in_reply_to)) {
+         if ($inreplyto = $message->getHeader('in_reply_to')) {
+            $mail_details['in_reply_to'] = $inreplyto->getFieldValue();
          }
+      }
 
-         if (isset($message->in_reply_to)) {
-            if ($inreplyto = $message->getHeader('in_reply_to')) {
-               $mail_details['in_reply_to'] = $inreplyto->getFieldValue();
-            }
-         }
-
-         //Add additional headers in X-
-         foreach ($this->getAdditionnalHeaders($message) as $header => $value) {
-            $mail_details[$header] = $value;
-         }
+      //Add additional headers in X-
+      foreach ($this->getAdditionnalHeaders($message) as $header => $value) {
+         $mail_details[$header] = $value;
       }
 
       return $mail_details;
@@ -1953,21 +1946,46 @@ class MailCollector  extends CommonDBTM {
       Rule::cleanForItemCriteria($this, '_mailgate');
    }
 
+   /**
+    * Get the requester email address.
+    *
+    * @param Message $message
+    *
+    * @return string|null
+    */
+   private function getRequesterEmail(Message $message): ?string {
+      $email = null;
 
+      if ($this->fields['requester_field'] === self::REQUESTER_FIELD_REPLY_TO) {
+         // Try to find requester in "reply-to"
+         $email = $this->getEmailFromHeader($message, 'reply-to');
+      }
+
+      if ($email === null) {
+         // Fallback on default "from"
+         $email = $this->getEmailFromHeader($message, 'from');
+      }
+
+      return $email;
+   }
 
    /**
-    * Get the requester field
+    * Get the email address from given header.
     *
-    * @return string
-   **/
-   private function getRequesterField() {
-      switch ($this->fields['requester_field']) {
-         case self::REQUESTER_FIELD_REPLY_TO:
-            return "reply-to";
-
-         default:
-            return "from";
+    * @param Message $message
+    * @param string  $header_name
+    *
+    * @return string|null
+    */
+   private function getEmailFromHeader(Message $message, string $header_name): ?string {
+      if (!$message->getHeaders()->has($header_name)) {
+         return null;
       }
+
+      $header = $message->getHeader($header_name);
+      $address = $header instanceof AbstractAddressList ? $header->getAddressList()->rewind() : null;
+
+      return $address instanceof Address ? $address->getEmail() : null;
    }
 
 
@@ -1996,10 +2014,9 @@ class MailCollector  extends CommonDBTM {
          case '7bit':
          case '8bit':
          case 'binary':
+         default:
             // returned verbatim
             break;
-         default:
-            throw new \UnexpectedValueException("$encoding is not known");
       }
 
       $contentType = $part->getHeader('contentType');

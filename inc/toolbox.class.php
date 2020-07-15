@@ -291,8 +291,9 @@ class Toolbox {
          $nonce,
          $key
       );
-      if (!is_string($plaintext)) {
-         throw new \RuntimeException('Unable to decrypt content');
+      if ($plaintext === false) {
+         Toolbox::logError('Unable to decrypt content. It may have been crypted with another key.');
+         return '';
       }
       return $plaintext;
    }
@@ -3460,7 +3461,7 @@ HTML;
     */
    public static function isValidWebUrl($url): bool {
       return (preg_match(
-         '#^http[s]?://[a-z0-9\-_]+(\.([a-z0-9\-]+\.)?[a-z]+)?(:\d+)?(/.*)?$#i',
+         '#^http[s]?://[a-z0-9\-_]+(\.([a-z0-9\-]+\.)*[a-z]+)?(:\d+)?(/.*)?$#i',
          $url
       ) === 1);
    }

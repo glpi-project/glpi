@@ -73,7 +73,6 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
     - zip and bz2 (installation of zip and bz2 packages from marketplace)
 
  * Supported browsers:
-    - IE 11+
     - Edge
     - Firefox (including 2 latests ESR version)
     - Chrome

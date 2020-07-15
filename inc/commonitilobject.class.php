@@ -6048,7 +6048,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $candelete   = static::canDelete();
       $canupdate   = Session::haveRight(static::$rightname, UPDATE);
       $showprivate = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
-      $align       = "class='center";
+      $align       = "class='left'";
       $align_desc  = "class='left";
 
       if ($p['followups']) {
@@ -6077,7 +6077,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // First column
          $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $item->fields["id"]);
          if ($p['output_type'] == Search::HTML_OUTPUT) {
-            $first_col .= static::getStatusIcon($item->fields["status"]);
+            $first_col .= "&nbsp;".static::getStatusIcon($item->fields["status"]);
          } else {
             $first_col = sprintf(__('%1$s - %2$s'), $first_col,
                                  static::getStatus($item->fields["status"]));
@@ -7478,7 +7478,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $ID   = $this->fields['id'];
       $rand = mt_rand();
 
-      if (isset($options['template_preview']) && !$options['template_preview']) {
+      if (!isset($options['template_preview']) || !$options['template_preview']) {
          $output = "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".static::getFormURL()."''";
          if ($ID) {
             $output .= " data-track-changes='true'";

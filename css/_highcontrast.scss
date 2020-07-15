@@ -215,7 +215,13 @@ table[class^="tab_cadre"] table:not([class^="tab_cadre"]) {
       border-collapse: collapse;
       border-right-width: 1px !important;
       margin: 0;
-      width: 100%;
+      width: 99%;
+
+      &.ui-state-active {
+         a {
+            border: 1px solid black;
+         }
+      }
    }
 }
 
