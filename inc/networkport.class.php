@@ -1247,7 +1247,7 @@ class NetworkPort extends CommonDBChild {
       ]);
 
       if ($iterator->count()) {
-         return sprintf(__('%s on %s'), parent::computeFriendlyName(), $iterator->next()['name']);
+         return sprintf(__('%1$s on %2$s'), parent::computeFriendlyName(), $iterator->next()['name']);
       }
 
       return parent::computeFriendlyName();
