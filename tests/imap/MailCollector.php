@@ -258,7 +258,7 @@ class MailCollector extends DbTestCase {
       $this->doConnect();
       $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
       $msg = $this->collector->collect($this->mailgate_id);
-      $this->variable($msg)->isIdenticalTo('Number of messages: available=11, retrieved=11, refused=2, errors=1, blacklisted=0');
+      $this->variable($msg)->isIdenticalTo('Number of messages: available=12, retrieved=12, refused=2, errors=1, blacklisted=0');
       $rejecteds = iterator_to_array($DB->request(['FROM' => \NotImportedEmail::getTable()]));
 
       $this->array($rejecteds)->hasSize(2);
@@ -318,7 +318,7 @@ class MailCollector extends DbTestCase {
          ]
       ]);
 
-      $this->integer(count($iterator))->isIdenticalTo(4);
+      $this->integer(count($iterator))->isIdenticalTo(5);
       $names = [];
       while ($data = $iterator->next()) {
          $names[] = $data['name'];
@@ -329,6 +329,7 @@ class MailCollector extends DbTestCase {
          'Test images',
          'Test\'ed issue',
          'Test Email from Outlook',
+         'No contenttype'
       ];
       $this->array($names)->isIdenticalTo($expected_names);
 
