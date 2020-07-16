@@ -1404,10 +1404,16 @@ class Item_Devices extends CommonDBRelation {
             switch ($attributs['datatype']) {
                case 'dropdown':
                   $dropdownType = getItemtypeForForeignKeyField($field);
-                  $out.= $dropdownType::dropdown(['value'    => $value,
-                                                  'rand'     => $rand,
-                                                  'entity'   => $this->fields["entities_id"],
-                                                  'display'  => false]);
+                  $dropdown_options = [
+                     'value'    => $value,
+                     'rand'     => $rand,
+                     'entity'   => $this->fields["entities_id"],
+                     'display'  => false
+                  ];
+                  if (array_key_exists('dropdown_options', $attributs) && is_array($attributs['dropdown_options'])) {
+                     $dropdown_options = array_merge($dropdown_options, $attributs['dropdown_options']);
+                  }
+                  $out.= $dropdownType::dropdown($dropdown_options);
                   break;
                default:
                   if (!$protected) {
