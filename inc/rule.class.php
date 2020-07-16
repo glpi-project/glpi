@@ -1435,7 +1435,6 @@ class Rule extends CommonDBTM {
     *         If rule matched add field _rule_process to return value
    **/
    function process(&$input, &$output, &$params, &$options = []) {
-
       if ($this->validateCriterias($options)) {
          $this->regex_results     = [];
          $this->criterias_results = [];
@@ -1609,7 +1608,6 @@ class Rule extends CommonDBTM {
     * @param &$input     the input data used to check criteria
    **/
    function checkCriteria(&$criteria, &$input) {
-
       $partial_regex_result = [];
       // Undefine criteria field : set to blank
       if (!isset($input[$criteria->fields["criteria"]])) {
@@ -1674,7 +1672,6 @@ class Rule extends CommonDBTM {
             $this->regex_results = $temp_result;
          }
       }
-
       return $res;
    }
 

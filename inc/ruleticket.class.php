@@ -140,7 +140,6 @@ class RuleTicket extends Rule {
 
 
    function executeActions($output, $params, array $input = []) {
-
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             switch ($action->fields["action_type"]) {
@@ -235,6 +234,40 @@ class RuleTicket extends Rule {
                            "content" => Toolbox::addslashes_deep($template->getField('content')),
                            "status" => CommonITILValidation::WAITING,
                            "items_id" => $output['id']]);
+                     }
+                  }
+
+                  if ($action->fields["field"] == 'task_template') {
+                     // Init special input '_tickettasks' if empty
+                     if (!isset($output["_tickettasks"])) {
+                        $output["_tickettasks"] = [];
+                     }
+
+                     $template = new TaskTemplate();
+                     if ($template->getFromDB($action->fields["value"])) {
+                        $values = [
+                           "tasktemplates_id"  => $template->getId(),
+                           "content"           => Toolbox::addslashes_deep($template->getField('content')),
+                           "taskcategories_id" => $template->getField('taskcategories_id'),
+                           "users_id_tech"     => $template->getField('users_id_tech'),
+                           "groups_id_tech"    => $template->getField('groups_id_tech'),
+                           "is_private"        => $template->getField('is_private'),
+                           "actiontime"        => $template->getField('actiontime'),
+                           "name"              => $template->getField('name'),
+                        ];
+
+                        if (!$output['id']) {
+                           // Target ticket is not yet created, data need to be
+                           // moved to special input '_tickettasks' so it can
+                           // be handled after the ticket creation
+                           $output["_tickettasks"][] = $values;
+                        } else {
+                           // Target ticket already exist, add the task
+                           $values['tickets_id'] = $output['id'];
+                           $task = new TicketTask();
+                           $task->add($values);
+                        }
+
                      }
                   }
 
@@ -767,6 +800,11 @@ class RuleTicket extends Rule {
       $actions['solution_template']['type']                  = 'dropdown';
       $actions['solution_template']['table']                 = 'glpi_solutiontemplates';
       $actions['solution_template']['force_actions']         = ['assign'];
+
+      $actions['task_template']['name'] = _n('Task template', 'Task templates', 1);
+      $actions['task_template']['type'] = 'dropdown';
+      $actions['task_template']['table'] = TaskTemplate::getTable();
+      $actions['task_template']['force_actions'] = ['assign'];
 
       return $actions;
    }
