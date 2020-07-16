@@ -49,7 +49,7 @@ class MysqliMysqlnd extends Extension {
 
    protected function check() {
       $extension_loaded = extension_loaded('mysqli');
-      $driver_is_mysqlnd = function_exists('mysqli_fetch_all');
+      $driver_is_mysqlnd = defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
 
       // We check for "mysqli_fetch_all" function to be sure that the used driver is "mysqlnd".
       // Indeed, it is mandatory to be able to use MYSQLI_OPT_INT_AND_FLOAT_NATIVE option.

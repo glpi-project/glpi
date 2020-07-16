@@ -351,18 +351,27 @@ class DBConnection extends CommonDBTM {
     *  Display a common mysql connection error
    **/
    static function displayMySQLError() {
+      global $DB;
+
+      $error = $DB instanceof DBmysql ? $DB->error : 1;
+      switch ($error) {
+         case 2:
+            $en_msg = "Use of mysqlnd driver is required for exchanges with the MySQL server.";
+            $fr_msg = "L'utilisation du driver mysqlnd est requise pour les échanges avec le serveur MySQL.";
+            break;
+         case 1:
+         default:
+            $fr_msg = "Le serveur Mysql est inaccessible. Vérifiez votre configuration.";
+            $en_msg = "A link to the SQL server could not be established. Please check your configuration.";
+            break;
+      }
 
       if (!isCommandLine()) {
          Html::nullHeader("Mysql Error", '');
-         echo "<div class='center'><p class ='b'>
-                A link to the SQL server could not be established. Please check your configuration.
-                </p><p class='b'>
-                Le serveur Mysql est inaccessible. Vérifiez votre configuration</p>
-               </div>";
+         echo "<div class='center'><p class ='b'>$en_msg</p><p class='b'>$fr_msg</p></div>";
          Html::nullFooter();
       } else {
-         echo "A link to the SQL server could not be established. Please check your configuration.\n";
-         echo "Le serveur Mysql est inaccessible. Vérifiez votre configuration\n";
+         echo "$en_msg\n$fr_msg\n";
       }
 
       die(1);

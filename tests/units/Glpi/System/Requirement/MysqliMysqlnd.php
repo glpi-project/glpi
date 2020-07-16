@@ -38,7 +38,7 @@ class MysqliMysqlnd extends \GLPITestCase {
 
       $this->newTestedInstance();
       $this->function->extension_loaded = true;
-      $this->function->function_exists = true;
+      $this->function->defined = true;
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
       $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['mysqli extension is installed']);
@@ -48,7 +48,7 @@ class MysqliMysqlnd extends \GLPITestCase {
 
       $this->newTestedInstance();
       $this->function->extension_loaded = true;
-      $this->function->function_exists = false;
+      $this->function->defined = false;
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
       $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['mysqli extension is installed but is not using mysqlnd driver']);

@@ -194,6 +194,9 @@ class DBmysql {
       if ($this->dbh->connect_error) {
          $this->connected = false;
          $this->error     = 1;
+      } else if (!defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE')) {
+         $this->connected = false;
+         $this->error     = 2;
       } else {
          $dbenc = isset($this->dbenc) ? $this->dbenc : "utf8";
          $this->dbh->set_charset($dbenc);
@@ -209,10 +212,7 @@ class DBmysql {
          }
 
          // force mysqlnd to return int and float types correctly (not as strings)
-         // we still check if constant is defined to prevent warnings during requirements checks
-         if (defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE')) {
-            $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
-         }
+         $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
 
          if (GLPI_FORCE_EMPTY_SQL_MODE) {
             $this->dbh->query("SET SESSION sql_mode = ''");
