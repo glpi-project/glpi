@@ -135,10 +135,12 @@ class ITILFollowup  extends CommonDBChild {
       }
 
       $itilobject = new $this->fields['itemtype'];
+
       if (!$itilobject->can($this->getField('items_id'), READ)
-        // No validation for closed tickets
-          || in_array($itilobject->fields['status'], $itilobject->getClosedStatusArray())
-             && !$itilobject->isAllowedStatus($itilobject->fields['status'], CommonITILObject::INCOMING)) {
+         // No validation for closed tickets
+         || in_array($itilobject->fields['status'], $itilobject->getClosedStatusArray())
+         && !$itilobject->canReopen()
+      ) {
          return false;
       }
       return $itilobject->canAddFollowups();

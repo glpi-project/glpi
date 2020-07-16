@@ -201,7 +201,7 @@ class Calendar extends CommonDropdown {
     */
    function duplicate($options = []) {
 
-      $input = $this->fields;
+      $input = Toolbox::addslashes_deep($this->fields);
       unset($input['id']);
 
       if (is_array($options) && count($options)) {

@@ -254,5 +254,19 @@ class Calendar extends DbTestCase {
       $this->boolean($calendar->getFromDB($id))->isTrue();
       //should have been duplicated too.
       $this->checkXmas($calendar);
+
+      //change name, and clone again
+      $this->boolean($calendar->update(['id' => $id, 'name' => "Je s\'apelle Groot"]))->isTrue();
+
+      $calendar = new \Calendar();
+      $this->boolean($calendar->getFromDB($id))->isTrue();
+
+      $this->boolean($calendar->duplicate())->isTrue();
+      $other_id = $calendar->fields['id'];
+      $this->integer($other_id)->isGreaterThan($id);
+      $this->boolean($calendar->getFromDB($other_id))->isTrue();
+      //should have been duplicated too.
+      $this->checkXmas($calendar);
+
    }
 }

@@ -37,42 +37,28 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * @since 9.5.0
+ * @since 9.5.1
  */
-class Extension extends AbstractRequirement {
+class MysqliMysqlnd extends Extension {
 
    /**
-    * Required extension name.
-    *
-    * @var string
     */
-   protected $name;
-
-   /**
-    * @param string $name    Required extension name.
-    * @param bool $optional  Indicated if extension is optional.
-    */
-   public function __construct(string $name, bool $optional = false) {
-      $this->title = sprintf(__('%s extension test'), $name);
-      $this->name = $name;
-      $this->optional = $optional;
+   public function __construct() {
+      parent::__construct('mysqli');
    }
 
    protected function check() {
-      $this->validated = extension_loaded($this->name);
-      $this->buildValidationMessage();
-   }
+      $extension_loaded = extension_loaded('mysqli');
+      $driver_is_mysqlnd = defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
 
-   /**
-    * Defines the validation message based on self properties.
-    *
-    * @return void
-    */
-   protected function buildValidationMessage() {
-      if ($this->validated) {
+      // We check for "mysqli_fetch_all" function to be sure that the used driver is "mysqlnd".
+      // Indeed, it is mandatory to be able to use MYSQLI_OPT_INT_AND_FLOAT_NATIVE option.
+      $this->validated = $extension_loaded && $driver_is_mysqlnd;
+
+      if ($extension_loaded && $driver_is_mysqlnd) {
          $this->validation_messages[] = sprintf(__('%s extension is installed'), $this->name);
-      } else if ($this->optional) {
-         $this->validation_messages[] = sprintf(__('%s extension is not present'), $this->name);
+      } else if ($extension_loaded && !$driver_is_mysqlnd) {
+         $this->validation_messages[] = sprintf(__('%s extension is installed but is not using mysqlnd driver'), $this->name);
       } else {
          $this->validation_messages[] = sprintf(__('%s extension is missing'), $this->name);
       }

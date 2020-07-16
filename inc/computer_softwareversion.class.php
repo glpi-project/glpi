@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * @deprecated 9.5.0 Use Item_SoftwareLicense
+ * @deprecated 9.5.0 Use Item_SoftwareVersion
  */
 class Computer_SoftwareVersion extends Item_SoftwareVersion {
 
