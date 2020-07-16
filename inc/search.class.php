@@ -7639,7 +7639,11 @@ JAVASCRIPT;
       $complexjoin = '';
 
       if (isset($joinparams['condition'])) {
-         $complexjoin .= $joinparams['condition'];
+         if (is_array($joinparams['condition'])) {
+            $complexjoin .= print_r($joinparams['condition'], true);
+         } else {
+            $complexjoin .= $joinparams['condition'];
+         }
       }
 
       // For jointype == child
@@ -7657,7 +7661,11 @@ JAVASCRIPT;
                $complexjoin .= $tab['table'];
             }
             if (isset($tab['joinparams']) && isset($tab['joinparams']['condition'])) {
-               $complexjoin .= $tab['joinparams']['condition'];
+               if (is_array($tab['joinparams']['condition'])) {
+                  $complexjoin .= print_r($tab['joinparams']['condition'], true);
+               } else {
+                  $complexjoin .= $tab['joinparams']['condition'];
+               }
             }
          }
       }
