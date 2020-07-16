@@ -140,6 +140,7 @@ class RuleTicket extends Rule {
 
 
    function executeActions($output, $params, array $input = []) {
+
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             switch ($action->fields["action_type"]) {
