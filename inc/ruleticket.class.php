@@ -256,14 +256,15 @@ class RuleTicket extends Rule {
                            "name"              => $template->getField('name'),
                         ];
 
-                        if (!$output['id']) {
+                        $ticket_id = $output['id'] ?? 0;
+                        if (!$ticket_id) {
                            // Target ticket is not yet created, data need to be
                            // moved to special input '_tickettasks' so it can
                            // be handled after the ticket creation
                            $output["_tickettasks"][] = $values;
                         } else {
                            // Target ticket already exist, add the task
-                           $values['tickets_id'] = $output['id'];
+                           $values['tickets_id'] = $ticket_id;
                            $task = new TicketTask();
                            $task->add($values);
                         }
