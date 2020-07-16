@@ -158,7 +158,6 @@ class Rule extends DbTestCase {
       $rule    = new \Rule();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:duplicate'  => '<i class=\'ma-icon far fa-clone\'></i>Duplicate',
          'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
       ]);
 
@@ -167,7 +166,6 @@ class Rule extends DbTestCase {
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
          'Rule:move_rule' => '<i class=\'ma-icon fas fa-arrows-alt-v\'></i>Move',
-         'Rule:duplicate'  => '<i class=\'ma-icon far fa-clone\'></i>Duplicate',
          'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
       ]);
 
@@ -175,7 +173,6 @@ class Rule extends DbTestCase {
       $rule    = new \RuleDictionnarySoftware();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:duplicate'  => '<i class=\'ma-icon far fa-clone\'></i>Duplicate',
          'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
       ]);
    }
@@ -525,5 +522,43 @@ class Rule extends DbTestCase {
       //FIXME: missing tests?
       /*$result = $rule->getCriteriaDisplayPattern(9, \Rule::PATTERN_IS, 1);
       var_dump($result);*/
+   }
+
+   public function testClone() {
+      $rule = getItemByTypeName('Rule', 'One user assignation');
+      $rules_id = $rule->fields['id'];
+
+      $this->integer($rule->fields['is_active'])->isIdenticalTo(1);
+      $this->string($rule->fields['name'])->isIdenticalTo('One user assignation');
+
+      $relations = [
+         \RuleAction::class => 1,
+         \RuleCriteria::class  => 3
+      ];
+
+      foreach ($relations as $relation => $expected) {
+         $this->integer(
+            countElementsInTable(
+               $relation::getTable(),
+               ['rules_id' => $rules_id]
+            )
+         )->isIdenticalTo($expected);
+      }
+
+      $cloned = $rule->clone();
+      $this->integer($cloned)->isGreaterThan($rules_id);
+      $this->boolean($rule->getFromDB($cloned))->isTrue();
+
+      $this->integer($rule->fields['is_active'])->isIdenticalTo(0);
+      $this->string($rule->fields['name'])->isIdenticalTo('Copy of One user assignation');
+
+      foreach ($relations as $relation => $expected) {
+         $this->integer(
+            countElementsInTable(
+               $relation::getTable(),
+               ['rules_id' => $cloned]
+            )
+         )->isIdenticalTo($expected);
+      }
    }
 }

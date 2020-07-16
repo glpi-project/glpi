@@ -39,10 +39,19 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Enclosure extends CommonDBTM {
    use Glpi\Features\DCBreadcrumb;
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory                   = true;
    static $rightname                   = 'datacenter';
+
+   public function getCloneRelations() :array {
+      return [
+         Item_Enclosure::class,
+         Item_Devices::class,
+         NetworkPort::class
+      ];
+   }
 
    static function getTypeName($nb = 0) {
       return _n('Enclosure', 'Enclosures', $nb);

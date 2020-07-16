@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * SoftwareLicense Class
 **/
 class SoftwareLicense extends CommonTreeDropdown {
+   use Glpi\Features\Clonable;
 
    /// TODO move to CommonDBChild ?
    // From CommonDBTM
@@ -49,6 +50,9 @@ class SoftwareLicense extends CommonTreeDropdown {
    protected $usenotepad               = true;
 
 
+   public function getCloneRelations() :array {
+      return [];
+   }
 
    static function getTypeName($nb = 0) {
       return _n('License', 'Licenses', $nb);

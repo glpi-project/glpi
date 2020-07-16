@@ -853,69 +853,6 @@ class RuleCollection extends CommonDBTM {
 
 
    /**
-    * Duplicate a rule
-    *
-    * @param $ID        of the rule to duplicate
-    *
-    * @since 0.85
-    *
-    * @return true if all ok
-   **/
-   function duplicateRule($ID) {
-
-      //duplicate rule
-      $rulecollection = new self();
-      $rulecollection->getFromDB($ID);
-
-      //get ranking
-      $ruletype    = $rulecollection->fields['sub_type'];
-      $rule        = new $ruletype;
-      $nextRanking = $rule->getNextRanking();
-
-      //Update fields of the new duplicate
-      $rulecollection->fields['name']        = sprintf(__('Copy of %s'),
-                                                       $rulecollection->fields['name']);
-      $rulecollection->fields['is_active']   = 0;
-      $rulecollection->fields['ranking']     = $nextRanking;
-      $rulecollection->fields['uuid']        = Rule::getUuid();
-      unset($rulecollection->fields['id']);
-
-      //add new duplicate
-      $input = Toolbox::addslashes_deep($rulecollection->fields);
-      $newID = $rulecollection->add($input);
-      $rule  = $rulecollection->getRuleClass();
-      if (!$newID) {
-         return false;
-      }
-      //find and duplicate actions
-      $ruleaction = new RuleAction(get_class($rule));
-      $actions    = $ruleaction->find(['rules_id' => $ID]);
-      $actions    = Toolbox::addslashes_deep($actions);
-      foreach ($actions as $action) {
-         $action['rules_id'] = $newID;
-         unset($action['id']);
-         if (!$ruleaction->add($action)) {
-            return false;
-         }
-      }
-
-      //find and duplicate criterias
-      $rulecritera = new RuleCriteria(get_class($rule));
-      $criteria   = $rulecritera->find(['rules_id' => $ID]);
-      $criteria = Toolbox::addslashes_deep($criteria);
-      foreach ($criteria as $criterion) {
-         $criterion['rules_id'] = $newID;
-         unset($criterion['id']);
-         if (!$rulecritera->add($criterion)) {
-            return false;
-         }
-      }
-
-      return true;
-   }
-
-
-   /**
     * Export rules in a xml format
     *
     * @param items array the input data to transform to xml
