@@ -1206,7 +1206,7 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
       $new_item = new static();
-      $input = $this->fields;
+      $input = Toolbox::addslashes_deep($this->fields);
       foreach ($override_input as $key => $value) {
          $input[$key] = $value;
       }
