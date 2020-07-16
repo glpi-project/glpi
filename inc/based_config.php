@@ -93,7 +93,6 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
       'GLPI_DEMO_MODE'              => '0',
       // TODO GLPI_FORCE_EMPTY_SQL_MODE need to be set to 0 after review of all sql queries
       'GLPI_FORCE_EMPTY_SQL_MODE'   => '1', // for compatibility with mysql 5.7
-      'GLPI_FORCE_NATIVE_SQL_TYPES' => '1', // force mysql driver to retrieve int and float types correctly (and not convert them to strings)
    ];
 
    // Define constants values based on server env variables (i.e. defined using apache SetEnv directive)
