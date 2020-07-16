@@ -371,7 +371,7 @@ class MailCollector  extends CommonDBTM {
    public function displayFoldersList($input_id = "") {
       try {
          $this->connect();
-      } catch (Throwable $e) {
+      } catch (\Throwable $e) {
          Toolbox::logError(
             'An error occured trying to connect to collector.',
             $e->getMessage(),
@@ -585,7 +585,7 @@ class MailCollector  extends CommonDBTM {
             //Connect to the Mail Box
             try {
                $collector->connect();
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                Toolbox::logError(
                   'An error occured trying to connect to collector.',
                   $e->getMessage(),
@@ -683,7 +683,7 @@ class MailCollector  extends CommonDBTM {
          //Connect to the Mail Box
          try {
             $this->connect();
-         } catch (Throwable $e) {
+         } catch (\Throwable $e) {
             Toolbox::logError(
                'An error occured trying to connect to collector.',
                $e->getMessage(),
