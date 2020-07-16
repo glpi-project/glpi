@@ -466,7 +466,7 @@ class Infocom extends CommonDBChild {
          $iterator = $DB->request([
             'SELECT'    => "$table.*",
             'FROM'      => $table,
-            'LEF JOIN'  => [
+            'LEFT JOIN'  => [
                'glpi_alerts'  => [
                   'ON' => [
                      'glpi_alerts'  => 'items_id',
