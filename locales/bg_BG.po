@@ -9,8 +9,8 @@
 # Sarkis Ovanesian <s_ovanesian@ameta.bg>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
-# Z K <zornitsa.koleva@mr-bricolage.bg>, 2020
 # Nikolay Zaynelov <mravunko@yahoo.com>, 2020
+# Z K <zornitsa.koleva@mr-bricolage.bg>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-25 12:26+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Nikolay Zaynelov <mravunko@yahoo.com>, 2020\n"
+"Last-Translator: Z K <zornitsa.koleva@mr-bricolage.bg>, 2020\n"
 "Language-Team: Bulgarian (Bulgaria) (https://www.transifex.com/glpi/teams/1637/bg_BG/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2222,8 +2222,8 @@ msgstr[1] "Местоположения"
 #: tests/functionnal/Rule.php:285
 msgid "Type"
 msgid_plural "Type"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Тип"
+msgstr[1] "Тип"
 
 #: front/stat.graph.php:157 front/stat.graph.php:165
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
@@ -2596,7 +2596,7 @@ msgstr "%s актуализира сигнал"
 #: front/marketplace.php:42 inc/marketplace/controller.class.php:68
 #: inc/marketplace/view.class.php:68
 msgid "Marketplace"
-msgstr ""
+msgstr "Магазин"
 
 #: front/rule.php:42
 msgid "Rule type"
@@ -3810,18 +3810,18 @@ msgstr[1] ""
 #: inc/domainrecord.class.php:54 inc/domainrecord.class.php:56
 msgid "Record"
 msgid_plural "Records"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Запис"
+msgstr[1] "Записи"
 
 #: inc/domainrecord.class.php:102 inc/domainrecord.class.php:353
 #: inc/domainrecord.class.php:482
 msgid "TTL"
-msgstr ""
+msgstr "TTL"
 
 #: inc/domainrecord.class.php:110 inc/domainrecord.class.php:329
 #: inc/dashboard/grid.class.php:655
 msgid "Data"
-msgstr ""
+msgstr "Данни"
 
 #: inc/domainrecord.class.php:118 inc/domainrecord.class.php:336
 #: inc/domain_item.class.php:509 inc/appliance.class.php:117
@@ -4022,8 +4022,8 @@ msgstr "%1$s = %2$s"
 #: inc/console/database/updatecommand.class.php:124
 msgid "Target"
 msgid_plural "Targets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Цел"
+msgstr[1] "Цели"
 
 #: inc/itil_project.class.php:51
 msgid "Link Project/Itil"
@@ -4045,7 +4045,7 @@ msgstr "Добави Промяна"
 #: inc/itil_project.class.php:185 inc/change_problem.class.php:275
 #: inc/problem_ticket.class.php:397
 msgid "Add a problem"
-msgstr ""
+msgstr "Добавяне на проблем"
 
 #: inc/itil_project.class.php:188 inc/projecttask_ticket.class.php:167
 #: inc/change_ticket.class.php:280 inc/problem_ticket.class.php:288
@@ -4054,7 +4054,7 @@ msgstr "Добавяне на заявка"
 
 #: inc/itil_project.class.php:326
 msgid "Add a project"
-msgstr ""
+msgstr "Добавяне на проект"
 
 #: inc/devicegenericmodel.class.php:44 inc/dropdown.class.php:950
 msgid "Device generic model"
@@ -4132,8 +4132,8 @@ msgstr[1] "Категории Задачи"
 #: inc/savedsearch_alert.class.php:133
 msgid "Saved search"
 msgid_plural "Saved searches"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Запазено търсене"
+msgstr[1] "Запазени търсения"
 
 #: inc/savedsearch.class.php:76
 msgid "Unset as default"
@@ -4150,7 +4150,7 @@ msgstr "Промени видимостта"
 #: inc/savedsearch.class.php:91 inc/savedsearch.class.php:382
 #: inc/savedsearch.class.php:1198
 msgid "Auto"
-msgstr ""
+msgstr "Автоматично"
 
 #: inc/savedsearch.class.php:92 inc/savedsearch.class.php:383
 #: inc/savedsearch.class.php:1148 inc/savedsearch.class.php:1199
@@ -4191,11 +4191,11 @@ msgstr ""
 
 #: inc/savedsearch.class.php:230
 msgid "Count"
-msgstr ""
+msgstr "Брой"
 
 #: inc/savedsearch.class.php:239
 msgid "Default"
-msgstr ""
+msgstr "По подразбиране"
 
 #: inc/savedsearch.class.php:250
 msgid "Counter"
@@ -4303,14 +4303,14 @@ msgstr ""
 
 #: inc/savedsearch.class.php:970 inc/savedsearch.class.php:971
 msgid "Default search"
-msgstr ""
+msgstr "Търсене по подразбиране"
 
 #. TRANS: %1$s and %2$s are links
 #: inc/savedsearch.class.php:975 inc/networkportinstantiation.class.php:807
 #: inc/networkportinstantiation.class.php:828
 #, php-format
 msgid "%1$s on %2$s"
-msgstr ""
+msgstr "%1$s на %2$s"
 
 #: inc/savedsearch.class.php:977
 msgid "Click to load or drag and drop to reorder"
@@ -4332,7 +4332,7 @@ msgstr ""
 #: inc/savedsearch.class.php:1068 inc/savedsearch.class.php:1069
 #: inc/savedsearch.class.php:1076
 msgid "Save current search"
-msgstr ""
+msgstr "Запази текущото търсене"
 
 #: inc/savedsearch.class.php:1281
 msgid "Update all bookmarks execution time"
@@ -4593,8 +4593,8 @@ msgstr ""
 #: inc/notificationtargetconsumableitem.class.php:81
 msgid "Event"
 msgid_plural "Events"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Събитие"
+msgstr[1] "Събития"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:105
 #: inc/event.class.php:275 inc/event.class.php:331

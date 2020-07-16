@@ -16,6 +16,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2020
+# Cyril Damas, 2020
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2020
 # 
 #, fuzzy
@@ -10701,7 +10702,7 @@ msgstr ""
 #: inc/ruleticket.class.php:415 inc/itilcategory.class.php:69
 #: inc/itilcategory.class.php:267
 msgid "Code representing the ticket category"
-msgstr "Code représentation la catégorie de tickets."
+msgstr "Code représentant la catégorie de tickets."
 
 #: inc/ruleticket.class.php:432
 msgid "Requester in group"
@@ -17202,7 +17203,7 @@ msgstr "Iframe"
 
 #: inc/dashboard/grid.class.php:866
 msgid "Or share the dashboard to these target objects:"
-msgstr "Oou partager ce tableau de bord avec ces éléments cibles :"
+msgstr "Ou partager ce tableau de bord avec ces éléments cibles :"
 
 #: inc/dashboard/grid.class.php:926
 msgid "empty card !"

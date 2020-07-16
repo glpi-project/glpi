@@ -6,8 +6,8 @@
 # Translators:
 # Oscar Beiro <makeijan@gmail.com>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2020
-# Óscar Beiro - TICgal, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Óscar Beiro - TICgal, 2020
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-25 12:26+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Óscar Beiro - TICgal, 2020\n"
 "Language-Team: Galician (Spain) (https://www.transifex.com/glpi/teams/1637/gl_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2216,8 +2216,8 @@ msgstr[1] "Localización"
 #: tests/functionnal/Rule.php:285
 msgid "Type"
 msgid_plural "Type"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo"
+msgstr[1] "Tipo"
 
 #: front/stat.graph.php:157 front/stat.graph.php:165
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
@@ -3465,7 +3465,7 @@ msgstr ""
 
 #: front/impactcsv.php:81
 msgid "Itemtype"
-msgstr ""
+msgstr "Tipo de elemento"
 
 #: front/impactcsv.php:82
 msgid "Id"
@@ -5137,7 +5137,7 @@ msgstr ""
 
 #: inc/ticket.class.php:2544
 msgid "Link type"
-msgstr ""
+msgstr "Tipo de ligazón"
 
 #: inc/ticket.class.php:2547 inc/ticket_ticket.class.php:213
 #: inc/ticket_ticket.class.php:233 inc/ticket_ticket.class.php:238

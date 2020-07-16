@@ -1276,7 +1276,7 @@ msgstr "SSS"
 #: inc/user.class.php:3181 inc/auth.class.php:95 inc/config.class.php:693
 #: inc/config.class.php:831
 msgid "Authentication"
-msgstr "Kimlik Doğrulama"
+msgstr "Kimlik doğrulama"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:47
@@ -1703,8 +1703,8 @@ msgstr "%1$s, %3$s ögesi için %2$s ayırtmasını ekledi"
 #: inc/profile.class.php:879 inc/profile.class.php:1895
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] "Sarf Malzemesi"
-msgstr[1] "Sarf Malzemesi"
+msgstr[0] "Sarf malzemesi"
+msgstr[1] "Sarf malzemeleri"
 
 #: front/setup.templates.php:55 inc/html.class.php:7166
 msgid "Manage templates..."
@@ -1816,8 +1816,8 @@ msgstr[1] "Sorun"
 #: inc/ticket_ticket.class.php:66
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] "Destek Kayıtları"
-msgstr[1] "Destek Kayıtları"
+msgstr[0] "Destek kaydı"
+msgstr[1] "Destek kayıtları"
 
 #: front/knowbaseitem_item.form.php:43 front/knowbaseitem_comment.form.php:41
 #: front/knowbaseitem_comment.form.php:53
@@ -6250,7 +6250,7 @@ msgstr "Etkinleştir"
 
 #: inc/plugin.class.php:695
 msgid "Do you want to %activate_link it?"
-msgstr "%activate_link yapmak istiyor musunuz?"
+msgstr "%activate_link olarak ayarlamak istiyor musunuz?"
 
 #: inc/plugin.class.php:700
 #, php-format
@@ -10315,7 +10315,9 @@ msgstr "En iyi değerlendirilmiş"
 
 #: inc/marketplace/view.class.php:380
 msgid "Your plugin here ? Contact us."
-msgstr "Uygulama ekinizin yer almasını ister misiniz? Bizimle görüşün."
+msgstr ""
+"Uygulama ekinizin burada yer almasını ister misiniz? Bizimle "
+"görüşebilirsiniz."
 
 #: inc/marketplace/view.class.php:382
 msgid "Refresh plugin list"
@@ -10368,6 +10370,8 @@ msgstr "Yeni bir sürüm (%s) yayınlanmış. Güncellensin mi?"
 #, php-format
 msgid "You need a superior GLPI-Network offer to access to this plugin (%s)"
 msgstr ""
+"Bu uygulama ekini (%s) alabilmek için daha üst bir GLPI Network  "
+"aboneliğiniz olmalı"
 
 #: inc/marketplace/view.class.php:681
 msgid "Install"
@@ -10411,24 +10415,25 @@ msgstr "Bu uygulama ekini alabilmek için en az %s aboneliğiniz olmalı"
 #, php-format
 msgid "%s plugin"
 msgid_plural "%s plugins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s uygulama eki"
+msgstr[1] "%s uygulama eki"
 
 #: inc/marketplace/view.class.php:925
 msgid "GLPI provides a new marketplace to download and install plugins."
-msgstr ""
+msgstr "GLPI uygulama eklerini indirip kurmak için yeni mağazasını açtı."
 
 #: inc/marketplace/view.class.php:927
 msgid "Do you want to replace the plugins setup page by the new marketplace ?"
 msgstr ""
+"Uygulama eki kurulum sayfasını yeni mağaza ile değiştirmek ister misiniz?"
 
 #: inc/marketplace/view.class.php:938
 msgid "Later"
-msgstr ""
+msgstr "Daha sonra"
 
 #: inc/marketplace/view.class.php:950
 msgid "Switch to marketplace"
-msgstr ""
+msgstr "Mağazaya geç"
 
 #: inc/authmail.class.php:112 inc/config.class.php:1833
 #: inc/authldap.class.php:377 inc/authldap.class.php:920
@@ -11523,7 +11528,7 @@ msgstr "Birleştir ve geçerli birime ata"
 #: inc/caldav/backend/calendar.class.php:127
 #, php-format
 msgid "Calendar of %s"
-msgstr ""
+msgstr "%s takvimi"
 
 #: inc/profile_user.class.php:133 inc/profile_user.class.php:277
 msgid "Add an authorization to a user"
@@ -11638,7 +11643,7 @@ msgstr "Görsel olarak görüntüle"
 
 #: inc/item_rack.class.php:131
 msgid "Racked items"
-msgstr "Kabindeki ögeler"
+msgstr "Kabine takılmış ögeler"
 
 #: inc/item_rack.class.php:153 inc/item_rack.class.php:658
 #: inc/pdu_rack.class.php:263 inc/pdu_rack.class.php:331
@@ -11896,8 +11901,8 @@ msgstr "Kara listeye alınan e-posta içeriği"
 #: inc/pdu.class.php:48 inc/pdu_rack.class.php:236
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] "Güç Dağıtıcı"
-msgstr[1] "Güç Dağıtıcılar"
+msgstr[0] "Güç dağıtıcı"
+msgstr[1] "Güç dağıtıcılar"
 
 #: inc/virtualmachinestate.class.php:42
 #: inc/computervirtualmachine.class.php:170 inc/dropdown.class.php:985
@@ -12751,8 +12756,8 @@ msgstr "Hız"
 #: inc/phonepowersupply.class.php:44 inc/dropdown.class.php:905
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Telefon güç kaynağı türü"
+msgstr[1] "Telefon güç kaynağı türleri"
 
 #: inc/notificationtemplate.class.php:131
 msgid "CSS"
@@ -13571,11 +13576,11 @@ msgstr "Genel"
 
 #: inc/config.class.php:151
 msgid "Invalid base URL!"
-msgstr ""
+msgstr "Temel adres geçersiz!"
 
 #: inc/config.class.php:160
 msgid "Invalid API base URL!"
-msgstr ""
+msgstr "Temel API adresi geçersiz!"
 
 #: inc/config.class.php:270
 #: inc/console/maintenance/enablemaintenancemodecommand.class.php:81
@@ -14674,7 +14679,7 @@ msgstr "Devre dışı bırakılmasın"
 msgid "Consumable model"
 msgid_plural "Consumable models"
 msgstr[0] "Sarf malzemesi modeli"
-msgstr[1] "Sarf malzemesi modeli"
+msgstr[1] "Sarf malzemesi modelleri"
 
 #: inc/consumableitem.class.php:294
 msgid "Number of used consumables"
@@ -15710,7 +15715,7 @@ msgstr[1] "Görev kalıbı"
 
 #: inc/system/requirement/selinux.class.php:45
 msgid "Check SELinux configuration"
-msgstr ""
+msgstr "SELinux yapılandırmasını denetle"
 
 #. TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
@@ -15721,16 +15726,18 @@ msgstr "SELinux kipi %s"
 
 #: inc/system/requirement/selinux.class.php:88
 msgid "For security reasons, SELinux mode should be Enforcing."
-msgstr ""
+msgstr "Güvenlik nedeniyle SELinux kipi dayatılmalı."
 
 #: inc/system/requirement/selinux.class.php:125
 #, php-format
 msgid "SELinux boolean %s is %s, some features may require this to be on."
 msgstr ""
+"SELinux %s ikili değeri  %s. Bazı özelliklerin çalışabilmesi için bu "
+"seçeneğin etkinleştirilmesi gerekebilir."
 
 #: inc/system/requirement/selinux.class.php:135
 msgid "SELinux configuration is OK."
-msgstr ""
+msgstr "SELinux yapılandırması tamam."
 
 #: inc/system/requirement/protectedwebaccess.class.php:69
 msgid ""
@@ -16005,7 +16012,7 @@ msgstr "Güç birimleri"
 
 #: inc/pdu_rack.class.php:422
 msgid "Racked"
-msgstr "Kabinde"
+msgstr "Yatay"
 
 #: inc/pdu_rack.class.php:427 inc/pdu_rack.class.php:435
 #: inc/pdu_rack.class.php:439
@@ -16018,15 +16025,15 @@ msgstr "Sağda"
 
 #: inc/pdu_rack.class.php:497
 msgid "The pdu will be"
-msgstr "Güç dağıtıcısı şu olacak"
+msgstr "Güç dağıtıcının konumu"
 
 #: inc/pdu_rack.class.php:499
 msgid "racked"
-msgstr "kabinde"
+msgstr "yatay"
 
 #: inc/pdu_rack.class.php:500
 msgid "placed at rack side"
-msgstr "kabin tarafına yerleştirilmiş"
+msgstr "yanda dikey"
 
 #: inc/pdu_rack.class.php:708
 msgid "Top"
@@ -16646,8 +16653,8 @@ msgstr "Bitiş %s"
 #: inc/domain.class.php:51 inc/profile.class.php:970
 msgid "Domain"
 msgid_plural "Domains"
-msgstr[0] "Etki Alanı"
-msgstr[1] "Etki Alanları"
+msgstr[0] "Etki alanı"
+msgstr[1] "Etki alanları"
 
 #: inc/domain.class.php:200
 msgid "Entity-ID"
@@ -16767,14 +16774,14 @@ msgid ""
 "\n"
 "Or, support the GLPI development effort by <b>donating</b>."
 msgstr ""
-"GLPI uygulamasını BT uygulamalarınız ile birleştirmek, hata düzeltmesi ya da hazır yapılandırılmış kural ve sözlükleri kullanmak gibi istekleriniz mi var?\n"
+"GLPI uygulamasını BT uygulamalarınız ile birleştirmek, hata düzeltmesi ya da hazır yapılandırılmış kural ve sözlükleri kullanmak gibi istekleriniz var mı?\n"
 "\n"
-"Sizin için %s alanı sunuyoruz.\n"
-"GLPI-Network, tier 3 destek aboneliği bulunan ticari bir üründür. Hataların belirli bir sürede düzeltileceğinden emin olmanızı sağlar.\n"
+"Sizin için %s adresinden bu hizmetleri sağlıyoruz.\n"
+"GLPI-Network, tier 3 destek aboneliği bulunan ticari bir üründür. Böylece hataların belirli bir sürede düzeltileceğinden emin olabilirsiniz.\n"
 "\n"
-"Aynı alanda GLPI bütünleştirmesi için size yardımcı olacak <b>resmi bir iş ortağı ile iletişim kurabilirsiniz</b>.\n"
+"Aynı siteden GLPI bütünleştirmesi için size yardımcı olacak <b>resmi bir iş ortağı ile de iletişim kurabilirsiniz</b>.\n"
 "\n"
-"Ya da <b>bağış yaparak</b> GLPI geliştirme çalışmalarına destek olabilirsiniz."
+"Ayrıca <b>bağış yaparak</b> GLPI geliştirme çalışmalarına da destek olabilirsiniz."
 
 #: inc/glpinetwork.class.php:251
 #, php-format
@@ -19151,7 +19158,7 @@ msgstr ""
 
 #: inc/telemetry.class.php:450
 msgid "the following form"
-msgstr "izleyen form"
+msgstr "buradaki formu"
 
 #: inc/devicemotherboardmodel.class.php:44
 msgid "System board model"
@@ -22675,7 +22682,7 @@ msgstr "Bu destek kaydından bir sorun oluştur"
 #: install/update_922_923.php:50
 #, php-format
 msgid "Update to %s"
-msgstr "%s sürümüne güncelle"
+msgstr "%s sürümüne güncelleniyor"
 
 #: install/update_0831_084.php:270 install/update_0831_084.php:271
 #: install/empty_data.php:2065 install/empty_data.php:2067
@@ -22886,7 +22893,7 @@ msgstr "Bu hesapları ve başlangıçtaki verileri silip değiştirebilirsiniz."
 #: install/install.php:544 install/update.php:624
 #: install/update_content.php:367
 msgid "Use GLPI"
-msgstr "GLPI kullanın"
+msgstr "GLPI Kullanmaya Geç"
 
 #: install/install.php:560
 msgid ""
