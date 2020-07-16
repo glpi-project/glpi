@@ -372,7 +372,12 @@ class MailCollector  extends CommonDBTM {
       try {
          $this->connect();
       } catch (Throwable $e) {
-         Toolbox::logError($e->getMessage());
+         Toolbox::logError(
+            'An error occured trying to connect to collector.',
+            $e->getMessage(),
+            "\n",
+            $e->getTraceAsString()
+         );
          echo __('An error occured trying to connect to collector.');
          return;
       }
@@ -581,7 +586,12 @@ class MailCollector  extends CommonDBTM {
             try {
                $collector->connect();
             } catch (Throwable $e) {
-               Toolbox::logError('An error occured trying to connect to collector.', $e->getMessage());
+               Toolbox::logError(
+                  'An error occured trying to connect to collector.',
+                  $e->getMessage(),
+                  "\n",
+                  $e->getTraceAsString()
+               );
                continue;
             }
 
@@ -674,7 +684,12 @@ class MailCollector  extends CommonDBTM {
          try {
             $this->connect();
          } catch (Throwable $e) {
-            Toolbox::logError($e->getTraceAsString());
+            Toolbox::logError(
+               'An error occured trying to connect to collector.',
+               $e->getMessage(),
+               "\n",
+               $e->getTraceAsString()
+            );
             Session::addMessageAfterRedirect(
                __('An error occured trying to connect to collector.') . "<br/>" . $e->getMessage(),
                false,
