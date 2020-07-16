@@ -1,0 +1,37 @@
+Delivered-To: unittests@glpi-project.org
+Received: by 2002:a50:cfc3:0:0:0:0:0 with SMTP id i3csp3500637edk;
+        Tue, 14 Jul 2020 05:17:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNg81xPyGu0K/t2h9jrfIGP7f8arkPuRpR2dTImwUbptUDs7PwZMnVw+TGDnGflCsyHywJ
+X-Received: by 2002:a17:906:84ef:: with SMTP id zp15mr4233633ejb.3.1594729061639;
+        Tue, 14 Jul 2020 05:17:41 -0700 (PDT)
+Return-Path: <ces+bncBDY5VFVI7MJBBZGEW34AKGQE65R3V3I@glpi-project.org>
+Received: from mail.glpi-project.org (mail.glpi-project.org. [127.0.0.1])
+        by mx.google.com with ESMTPS id yh22si12729797ejb.62.2020.07.14.05.17.41
+        for <unittests@glpi-project.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 Jul 2020 05:17:41 -0700 (PDT)
+Received-SPF: pass (google.com: domain of ces+bncbdy5vfvi7mjbbzgew34akgqe65r3v3i@glpi-project.org designates 127.0.0.1 as permitted sender) client-ip=127.0.0.1;
+Received: from mail-ej1-f71.google.com ([127.0.0.1])
+  by mail.glpi-project.org with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 13:17:41 +0100
+Received: by mail-ej1-f71.google.com with SMTP id op28sf22019349ejb.15
+        for <unittests@glpi-project.org>; Tue, 14 Jul 2020 05:17:41 -0700 (PDT)
+X-Received: by 2002:a50:e385:: with SMTP id b5mr4124200edm.130.1594729061079;
+        Tue, 14 Jul 2020 05:17:41 -0700 (PDT)
+X-Received: by 2002:a50:e385:: with SMTP id b5mr4124184edm.130.1594729060866;
+        Tue, 14 Jul 2020 05:17:40 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a17:906:1fd7:: with SMTP id e23ls8936851ejt.7.gmail; Tue, 14
+ Jul 2020 05:17:40 -0700 (PDT)
+X-Received: by 2002:a17:906:774d:: with SMTP id o13mr4133448ejn.373.1594729060159;
+        Tue, 14 Jul 2020 05:17:40 -0700 (PDT)
+Received: from mail.glpi-project.org (mail.glpi-project.org. [127.0.0.1])
+        by mx.google.com with SMTP id h24si5438068edj.24.2020.07.14.05.17.39
+        for <unittests@glpi-project.org>;
+        Tue, 14 Jul 2020 05:17:40 -0700 (PDT)
+Date: 14 Jul 2020 13:17:37 +0100
+Message-Id: <5021fe$691cb2b=d78b1276125ef06c@mail.glpi-project.org>
+From: Normal User <normal@glpi-project.org>
+To: unittests@glpi-project.org
+Subject: No contenttype
+
+An email without contenttype...

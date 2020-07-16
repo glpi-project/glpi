@@ -2019,11 +2019,19 @@ class MailCollector  extends CommonDBTM {
             break;
       }
 
-      $contentType = $part->getHeader('contentType');
-      if ($contentType instanceof \Laminas\Mail\Header\ContentType
-          && preg_match('/^text\//', $contentType->getType())
-          && mb_detect_encoding($contents) != 'UTF-8') {
-         $contents = Toolbox::encodeInUtf8($contents, $contentType->getEncoding());
+      try {
+         $contentTypePart = $part->getHeader('contentType');
+         $contentType = $contentTypePart->getType();
+      } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
+         //no ContentType header, switch to acceptable default
+         $contentType = "text/plain";
+      } finally {
+         if (preg_match('/^text\//', $contentType) && ($encoding = mb_detect_encoding($contents)) != 'UTF-8') {
+            $contents = Toolbox::encodeInUtf8(
+               $contents,
+               (isset($contentTypePart) ? $contentTypePart->getEncoding() : $encoding)
+            );
+         }
       }
 
       return $contents;
