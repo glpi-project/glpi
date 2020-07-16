@@ -2026,8 +2026,7 @@ class MailCollector  extends CommonDBTM {
          //no ContentType header, switch to acceptable default
          $contentType = "text/plain";
       } finally {
-         $encoding = mb_detect_encoding($contents);
-         if (preg_match('/^text\//', $contentType) && $encoding != 'UTF-8') {
+         if (preg_match('/^text\//', $contentType) && ($encoding = mb_detect_encoding($contents)) != 'UTF-8') {
             $contents = Toolbox::encodeInUtf8(
                $contents,
                (isset($contentTypePart) ? $contentTypePart->getEncoding() : $encoding)
