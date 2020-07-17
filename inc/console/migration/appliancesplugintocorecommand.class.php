@@ -179,8 +179,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                     OutputInterface::VERBOSITY_QUIET
                 );
                 $missing_tables = true;
-          } 
-          else {
+          } else {
              foreach ($fields as $field) {
                 if (!$this->db->fieldExists($table, $field)) {
                         $this->output->writeln(
