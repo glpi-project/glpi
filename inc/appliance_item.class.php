@@ -200,9 +200,6 @@ class Appliance_Item extends CommonDBRelation {
          if ($number_app > 0) {
             // add or delete a relation to an appliance
             echo "<td class='center'>";
-            if (isset($data["relationtype"]) && $data["relationtype"]) {
-               $data["relationtype"] = $data["relationtype"];
-            }
             ApplianceRelation::showList(
                $data["relationtype"],
                $data["entID"],

@@ -656,7 +656,7 @@ class Item_Disk extends CommonDBChild {
       if (!isset($all[$status])) {
          Toolbox::logWarning(
             sprintf(
-               'Encryption status %1$s does not exixts!'
+               'Encryption status %1$s does not exixts!', $status
             )
          );
          return NOT_AVAILABLE;

@@ -7919,7 +7919,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
             case true:
                //for changes and problem, or from profiles
-               $field = $field;
                break;
 
             default:
