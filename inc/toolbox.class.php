@@ -250,7 +250,8 @@ class Toolbox {
       }
 
       $result = '';
-      for ($i=0; $i<strlen($string); $i++) {
+      $strlen = strlen($string);
+      for ($i=0; $i < $strlen; $i++) {
          $char    = substr($string, $i, 1);
          $keychar = substr($key, ($i % strlen($key))-1, 1);
          $char    = chr(ord($char)+ord($keychar));

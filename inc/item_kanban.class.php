@@ -177,12 +177,12 @@ class Item_Kanban extends CommonDBRelation {
       }
 
       if (!$found) {
-         array_push($state, [
-            'column'    => $column,
-            'visible'   => true,
-            'folded'    => false,
-            'cards'     => []
-         ]);
+         $state[] = [
+            'column' => $column,
+            'visible' => true,
+            'folded' => false,
+            'cards' => []
+         ];
       }
       self::saveStateForItem($itemtype, $items_id, $state);
    }
