@@ -189,15 +189,16 @@ class View extends CommonGLPI {
       bool $only_lis = false,
       string $string_filter = ""
    ) {
-      if (!self::checkRegister()) {
-         return;
-      }
 
-      $api         = self::getAPI();
       $plugin_inst = new Plugin;
       $plugin_inst->init(true); // reload plugins
       $installed   = $plugin_inst->getList();
-      $apiplugins  = $api->getAllPlugins($force_refresh);
+
+      $apiplugins  = [];
+      if (self::checkRegister()) {
+         $api         = self::getAPI();
+         $apiplugins  = $api->getAllPlugins($force_refresh);
+      }
 
       $plugins = [];
       foreach ($installed as $plugin) {
@@ -269,6 +270,7 @@ class View extends CommonGLPI {
          $nb_plugins = $api->getNbPlugins($tag_filter);
       }
 
+      header("X-GLPI-Marketplace-Total: $nb_plugins");
       self::displayList($plugins, "discover", $only_lis, $nb_plugins, $sort);
    }
 
@@ -314,8 +316,6 @@ class View extends CommonGLPI {
       if (!self::canView()) {
          return false;
       }
-
-      header("X-GLPI-Marketplace-Total: $nb_plugins");
 
       $plugins_li = "";
       foreach ($plugins as $plugin) {
