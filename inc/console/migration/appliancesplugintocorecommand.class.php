@@ -179,7 +179,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                     OutputInterface::VERBOSITY_QUIET
                 );
                 $missing_tables = true;
-              }
+          } 
           else {
              foreach ($fields as $field) {
                 if (!$this->db->fieldExists($table, $field)) {
@@ -511,12 +511,12 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 '<info>**********' . $plugin_appliances_appliance['name']. '</info>',
                 OutputInterface::VERBOSITY_NORMAL
             );
-        if (false === $app_id) {
+          if (false === $app_id) {
                     $this->outputImportError(
                         '<error>' . __('Unable to create Appliance .') . '</error>'
                     );
                      return null;
-        }
+          }
        }
         return 1;
     }
