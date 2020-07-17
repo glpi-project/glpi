@@ -66,7 +66,7 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father = null, array $options = []) {
 
-      return parent::getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
+      return $this->getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
    }
 
 
