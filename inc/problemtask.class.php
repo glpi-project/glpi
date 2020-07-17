@@ -82,7 +82,7 @@ class ProblemTask extends CommonITILTask {
     * @return boolean
    **/
    function canViewItem() {
-      return parent::canReadITILItem();
+      return $this->canReadITILItem();
    }
 
 
@@ -92,7 +92,7 @@ class ProblemTask extends CommonITILTask {
     * @return boolean
    **/
    function canCreateItem() {
-      if (!parent::canReadITILItem()) {
+      if (!$this->canReadITILItem()) {
          return false;
       }
 
@@ -117,7 +117,7 @@ class ProblemTask extends CommonITILTask {
    **/
    function canUpdateItem() {
 
-      if (!parent::canReadITILItem()) {
+      if (!$this->canReadITILItem()) {
          return false;
       }
 
