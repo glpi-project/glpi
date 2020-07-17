@@ -97,13 +97,17 @@ class LineOperator extends CommonDropdown {
       }
 
       //check for mcc/mnc unicity
+      $where = [
+         'mcc' => $input['mcc'],
+         'mnc' => $input['mnc']
+      ];
+      if (isset($input['id'])) {
+         $where['NOT']['id'] = $input['id'];
+      }
       $result = $DB->request([
          'COUNT'  => 'cpt',
          'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'mcc' => $input['mcc'],
-            'mnc' => $input['mnc']
-         ]
+         'WHERE'  => $where
       ])->next();
 
       if ($result['cpt'] > 0) {
