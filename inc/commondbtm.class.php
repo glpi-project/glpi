@@ -857,7 +857,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Clean the date in the relation tables for the deleted item
+    * Clean the data in the relation tables for the deleted item
     * Clear N/N Relation
     *
     * @return void
@@ -3199,9 +3199,9 @@ class CommonDBTM extends CommonGLPI {
    function isDynamic() {
 
       if ($this->maybeDynamic()) {
-         return $this->fields['is_dynamic'];
+         return (bool)$this->fields['is_dynamic'];
       }
-      return 0;
+      return false;
    }
 
 
@@ -3228,7 +3228,7 @@ class CommonDBTM extends CommonGLPI {
    function isPrivate() {
 
       if ($this->maybePrivate()) {
-         return $this->fields["is_private"];
+         return (bool)$this->fields["is_private"];
       }
       return false;
    }
