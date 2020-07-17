@@ -154,9 +154,7 @@ class Config extends CommonDBTM {
       }
 
       if (isset($input["url_base_api"]) && !empty($input["url_base_api"])) {
-         if (Toolbox::isValidWebUrl($input["url_base_api"])) {
-            $input["url_base_api"] = $input["url_base_api"];
-         } else {
+         if (!Toolbox::isValidWebUrl($input["url_base_api"])) {
             Session::addMessageAfterRedirect(__('Invalid API base URL!'), false, ERROR);
             return false;
          }

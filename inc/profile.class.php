@@ -304,8 +304,8 @@ class Profile extends CommonDBTM {
          $tab   = Problem::getAllStatusArray();
          $cycle = [];
          foreach ($tab as $from => $label) {
-            foreach ($tab as $dest => $label) {
-               if (($from != $dest)
+            foreach ($tab as $dest => $label2) {
+               if (($from !== $dest)
                    && ($input["_cycle_problem"][$from][$dest] == 0)) {
                   $cycle[$from][$dest] = 0;
                }
@@ -318,8 +318,8 @@ class Profile extends CommonDBTM {
          $tab   = Change::getAllStatusArray();
          $cycle = [];
          foreach ($tab as $from => $label) {
-            foreach ($tab as $dest => $label) {
-               if (($from != $dest)
+            foreach ($tab as $dest => $label2) {
+               if (($from !== $dest)
                    && ($input["_cycle_change"][$from][$dest] == 0)) {
                   $cycle[$from][$dest] = 0;
                }

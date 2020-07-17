@@ -544,9 +544,8 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    private function analyseCriterion($value) {
       $criterion = null;
-      $crit_value;
 
-      if (is_null($value) || is_string($value) && strtolower($value) === 'null') {
+      if (is_null($value) || (is_string($value) && strtolower($value) === 'null')) {
          // NULL condition
          $criterion = 'IS NULL';
       } else {
