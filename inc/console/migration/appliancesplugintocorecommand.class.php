@@ -141,13 +141,13 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                     false
                 )
             );
-        if (!$run) {
+          if (!$run) {
                 $output->writeln(
                     '<comment>' . __('Migration aborted.') . '</comment>',
                     OutputInterface::VERBOSITY_VERBOSE
                 );
                  return 0;
-        }
+          }
        }
 
        if (!$this->checkPlugin()) {
@@ -179,8 +179,8 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                     OutputInterface::VERBOSITY_QUIET
                 );
                 $missing_tables = true;
-            } 
-            else {
+              }
+          else {
              foreach ($fields as $field) {
                 if (!$this->db->fieldExists($table, $field)) {
                         $this->output->writeln(
@@ -192,7 +192,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 };
              }
           }
-        }
+       }
        if ($missing_tables) {
             $this->output->writeln(
                 '<error>' . __('Migration cannot be done.') . '</error>',
@@ -402,16 +402,16 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                   ]
             );
 
-        if (!($app_id = $app->getFromDBByCrit($app_fields))) {
+          if (!($app_id = $app->getFromDBByCrit($app_fields))) {
                 $app_id = $app->add($app_fields);
-        }
+          }
 
-        if (false === $app_id) {
+          if (false === $app_id) {
                 $this->outputImportError(
                     '<error>' . __('Unable to create Appliance item .') . '</error>'
                 );
                 return null;
-            }
+          }
 
        }
        return 1;
@@ -442,19 +442,19 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                     ]
                 );
 
-        if (!($app_id = $app->getFromDBByCrit($app_fields))) {
+          if (!($app_id = $app->getFromDBByCrit($app_fields))) {
                 $app_id = $app->add($app_fields);
-        }
+          }
                     $this->output->writeln(
                         '<info>' . $plugin_appliances_environment['name']. '</info>',
                         OutputInterface::VERBOSITY_NORMAL
                     );
-        if (false === $app_id) {
+          if (false === $app_id) {
                 $this->outputImportError(
                     '<error>' . __('Unable to create Appliance environment .') . '</error>'
                 );
                 return null;
-        }
+          }
 
        }
        return 1;
@@ -504,9 +504,9 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                   ]
             );
 
-        if (!($app_id = $app->getFromDBByCrit($app_fields))) {
+          if (!($app_id = $app->getFromDBByCrit($app_fields))) {
                 $app_id = $app->add($app_fields);
-        }
+          }
             $this->output->writeln(
                 '<info>**********' . $plugin_appliances_appliance['name']. '</info>',
                 OutputInterface::VERBOSITY_NORMAL
@@ -553,16 +553,16 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                   ]
             );
 
-         if (!($appt_id = $appt->getFromDBByCrit($appt_fields))) {
+          if (!($appt_id = $appt->getFromDBByCrit($appt_fields))) {
                 $appt_id = $appt->add($appt_fields);
-         }
+          }
 
-         if (false === $appt_id) {
+          if (false === $appt_id) {
                 $this->outputImportError(
                     '<error>' . __('Unable to create Appliance type.') . '</error>'
                 );
                 return null;
-         }
+          }
 
        }
         return 1;
@@ -596,16 +596,16 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 'relations_id'=>$plugin_appliances_relation['relations_id']
                   ]
             );
-         if (!($appr_id = $appr->getFromDBByCrit($appr_fields))) {
+          if (!($appr_id = $appr->getFromDBByCrit($appr_fields))) {
                 $appr_id = $appr->add($appr_fields);
-         }
+          }
 
-        if (false === $appr_id) {
+          if (false === $appr_id) {
                 $this->outputImportError(
                     '<error>' . __('Unable to create Appliance Relation.') . '</error>'
                 );
                 return null;
-        }
+          }
 
        }
 
