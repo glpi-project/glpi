@@ -77,16 +77,15 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
     *@var array
     *
     **/
-   const PLUGIN_APPLIANCE_TABLES=array( 
- 			"glpi_plugin_appliances_appliances"=>array("id","entities_id","is_recursive","name","is_deleted",
+     const PLUGIN_APPLIANCE_TABLES=[ 
+ 			"glpi_plugin_appliances_appliances"=>["id","entities_id","is_recursive","name","is_deleted",
 								"plugin_appliances_appliancetypes_id","comment","locations_id","plugin_appliances_environments_id","users_id","users_id_tech",
-								"groups_id","groups_id_tech","relationtype","date_mod","states_id","externalid","serial","otherserial"),
- 			"glpi_plugin_appliances_appliancetypes"=>array("id","entities_id","is_recursive","name","comment"),
- 			"glpi_plugin_appliances_appliances_items"=>array("id", "plugin_appliances_appliances_id","items_id","itemtype"),
- 			"glpi_plugin_appliances_environments"=>array("id","name","comment" ),
- 			"glpi_plugin_appliances_relations"=>array("id","plugin_appliances_appliances_items_id","relations_id")
-		);
-	
+								"groups_id","groups_id_tech","relationtype","date_mod","states_id","externalid","serial","otherserial"],
+ 			"glpi_plugin_appliances_appliancetypes"=>["id","entities_id","is_recursive","name","comment"],
+ 			"glpi_plugin_appliances_appliances_items"=>["id", "plugin_appliances_appliances_id","items_id","itemtype"],
+ 			"glpi_plugin_appliances_environments"=>["id","name","comment" ],
+ 			"glpi_plugin_appliances_relations"=>["id","plugin_appliances_appliances_items_id","relations_id"]
+		];
 	/**
 	 * itemtype corresponding to appliance in plugin
 	 *
