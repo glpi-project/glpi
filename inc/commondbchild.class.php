@@ -206,7 +206,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    function canChildItem($methodItem, $methodNotItem) {
 
       try {
-         return static::canConnexityItem($methodItem, $methodNotItem, static::$checkParentRights,
+         return $this->canConnexityItem($methodItem, $methodNotItem, static::$checkParentRights,
                                          static::$itemtype, static::$items_id);
       } catch (CommonDBConnexityItemNotFound $e) {
          return !static::$mustBeAttached;

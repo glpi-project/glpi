@@ -436,7 +436,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                              static::$items_id_1, $item1);
          }
       } catch (CommonDBConnexityItemNotFound $e) {
-         if (static::$mustBeAttached_1 && !static::isAttach1Valid($this->fields)) {
+         if (static::$mustBeAttached_1 && !$this->isAttach1Valid($this->fields)) {
             return false;
          }
          $can1         = true;
@@ -454,7 +454,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                              static::$items_id_2, $item2);
          }
       } catch (CommonDBConnexityItemNotFound $e) {
-         if (static::$mustBeAttached_2 && !static::isAttach2Valid($this->fields)) {
+         if (static::$mustBeAttached_2 && !$this->isAttach2Valid($this->fields)) {
             return false;
          }
          $can2         = true;

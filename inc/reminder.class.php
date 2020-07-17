@@ -558,7 +558,7 @@ class Reminder extends CommonDBVisible implements
    function post_getEmpty() {
       $this->fields["name"]        = __('New note');
 
-      self::trait_post_getEmpty();
+      $this->trait_post_getEmpty();
    }
 
 

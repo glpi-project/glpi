@@ -1532,7 +1532,7 @@ class Profile extends CommonDBTM {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
 
-      $dropdown_rights = CommonDBTM::getRights();
+      $dropdown_rights = $this->getRights();
       unset($dropdown_rights[DELETE]);
       unset($dropdown_rights[UNLOCK]);
 

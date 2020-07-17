@@ -191,7 +191,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                                                     HTMLTableCell $father = null,
                                                     array $options = []) {
 
-      self::getInstantiationHTMLTable($netport, $row, $father, $options);
+      $this->getInstantiationHTMLTable($netport, $row, $father, $options);
       return null;
 
    }

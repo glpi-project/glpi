@@ -139,7 +139,7 @@ class DeviceHardDrive extends CommonDevice {
     * @see CommonDropdown::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
-      return self::prepareInputForAddOrUpdate($input);
+      return $this->prepareInputForAddOrUpdate($input);
    }
 
 
@@ -148,7 +148,7 @@ class DeviceHardDrive extends CommonDevice {
     * @see CommonDropdown::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
-      return self::prepareInputForAddOrUpdate($input);
+      return $this->prepareInputForAddOrUpdate($input);
    }
 
 
