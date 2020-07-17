@@ -230,7 +230,7 @@ abstract class CommonDropdown extends CommonDBTM {
    function prepareInputForUpdate($input) {
       //add a "metadata to find if we're on an update or a add
       $input['_is_update'] = true;
-      return $this->prepareInputForAdd($input);
+      return self::prepareInputForAdd($input);
    }
 
 
