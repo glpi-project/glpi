@@ -79,7 +79,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      *@var array
      **/
 
-    const PLUGIN_APPLIANCE_TABLES=[ 
+    const PLUGIN_APPLIANCE_TABLES=[
         "glpi_plugin_appliances_appliances"=>["id","entities_id","is_recursive","name","is_deleted",
       "plugin_appliances_appliancetypes_id","comment","locations_id","plugin_appliances_environments_id","users_id","users_id_tech",
       "groups_id","groups_id_tech","relationtype","date_mod","states_id","externalid","serial","otherserial"],
@@ -103,8 +103,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      **/
     const CORE_APPLIANCE_ITEMTYPE="Appliance";
 
-    protected function configure()
-    {
+    protected function configure() {
         parent::configure();
 
         $this->setName('glpi:migration:appliances_plugin_to_core');
@@ -118,8 +117,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
+    protected function execute(InputInterface $input, OutputInterface $output) {
         $no_interaction = $input->getOption('no-interaction');
         if (!$no_interaction) {
             // Ask for confirmation (unless --no-interaction)
@@ -156,13 +154,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             return self::ERROR_PLUGIN_VERSION_OR_DATA_INVALID;
         }
 
-
         if (!$this->migratePlugin()) {
             return self::ERROR_PLUGIN_IMPORT_FAILED;
         }
 
         $output->writeln('<info>' . __('Migration done.') . '</info>');
-
         return 0; // Success
     }
 
@@ -173,8 +169,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      *
      * @return boolean
      */
-    private function checkPlugin()
-    {
+    private function checkPlugin() {
 
         $missing_tables = false;
         foreach (self::PLUGIN_APPLIANCE_TABLES as $table=>$fields) {
@@ -194,7 +189,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                         );
                         $missing_tables = true;
 
-                    } ;
+                    };
                 }
             }
         }
@@ -214,12 +209,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      *
      * @throws RuntimeException
      */
-    private function cleanCoreTables()
-    {
+    private function cleanCoreTables() {
 
         $core_tables = [
-         'glpi_appliances',    
-        'glpi_appliancerelations',             
+         'glpi_appliances',
+        'glpi_appliancerelations',
         'glpi_appliancetypes',
         'glpi_applianceenvironments',
         'glpi_appliances_items'
@@ -243,9 +237,8 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      * @return boolean
      */
 
-    private  function backupPluginTables()
-    {
-     
+    private  function backupPluginTables() {
+
         foreach (self::PLUGIN_APPLIANCE_TABLES as $table=>$fields) {
             $result = $this->db->query(sprintf('ALTER TABLE %s RENAME %s ', DB::quotename($table), DB::quotename('backup_'.$table)));
             if (false === $result) {
@@ -259,10 +252,10 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                     '<error>' . $message . '</error>',
                     OutputInterface::VERBOSITY_QUIET
                 );
-                return self::ERROR_TABLE_MIGRATION_FAILED; 
+                return self::ERROR_TABLE_MIGRATION_FAILED;
             }
         }
-              
+
                 $this->output->writeln(
                     '<info>' . __('plugin tables renamed as backup_*** can be deleted...') . '</info>',
                     OutputInterface::VERBOSITY_NORMAL
@@ -277,8 +270,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      * @return boolean
      */
 
-    private  function migratePlugin()
-    {
+    private  function migratePlugin() {
 
         $no_interaction = $this->input->getOption('no-interaction');
 
@@ -298,17 +290,15 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
 
         return !$failure;
 
-
     }
-    private function updateInfocoms()
-    {
+    private function updateInfocoms() {
 
         $table='glpi_infocoms';
         $where = [
          'itemtype'  => self::CORE_APPLIANCE_ITEMTYPE,
         ];
         $result = $this->db->delete($table, $where);
-   
+
         if (false === $result) {
             $message = sprintf(
                 __('Migration of table "%s"  failed with message "(%s) %s".'),
@@ -325,9 +315,8 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
 
         return 1;
     }
- 
-    private function updateProfilesApplianceRights()
-    {
+
+    private function updateProfilesApplianceRights() {
         $table='glpi_profiles';
         $result = $this->db->query(sprintf('update %s set helpdesk_item_type=replace(helpdesk_item_type,\''.self::PLUGIN_APPLIANCE_ITEMTYPE.'\',\''.self::CORE_APPLIANCE_ITEMTYPE.'\')', DB::quotename($table)));
         if (false === $result) {
@@ -343,11 +332,10 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             );
             return self::ERROR_TABLE_MIGRATION_FAILED;
         }
-      
+
         return 1;
-    }    
-    private function updateItemType()
-    {
+    }
+    private function updateItemType() {
         $itemtype_tables=[
         'glpi_items_tickets',
         'glpi_items_problems',
@@ -368,7 +356,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             ];
 
             $result = $this->db->update($itemtype_table, $params, $where);
-             
+
             if (false === $result) {
                 $message = sprintf(
                     __('Migration of table "%s"  failed with message "(%s) %s".'),
@@ -384,9 +372,8 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             }
         }
         return 1;
-    }   
-    private function createApplianceItem()
-    {
+    }
+    private function createApplianceItem() {
         /*   insert into glpi_appliances_items (id,appliances_id,items_id,itemtype) 
         SELECT id, plugin_appliances_appliances_id,items_id,itemtype 
         FROM glpi_plugin_appliances_appliances_items WHERE 1=1;*/
@@ -403,13 +390,13 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             [
              'FROM'  => 'glpi_plugin_appliances_appliances_items'
             ]
-        ); 
+        );
         foreach ($plugin_appliances_appliances_items AS $plugin_appliances_appliances_item) {
             $app = new applianceitem();
             $app_fields = toolbox::sanitize(
                 [
-                     'id'=>$plugin_appliances_appliances_item['id'],                     
-                     'appliances_id'=>$plugin_appliances_appliances_item['plugin_appliances_appliances_id'],                     
+                     'id'=>$plugin_appliances_appliances_item['id'],
+                     'appliances_id'=>$plugin_appliances_appliances_item['plugin_appliances_appliances_id'],
                      'items_id'=>$plugin_appliances_appliances_item['items_id'],
                      'itemtype'=>$plugin_appliances_appliances_item['itemtype']
                   ]
@@ -429,8 +416,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         } 
         return 1;
     }
-    private function createApplianceEnvironment()
-    {
+    private function createApplianceEnvironment() {
         /*INSERT INTO glpi_applianceenvironments (id,name,comment) SELECT id,name,comment 
         FROM glpi_plugin_appliances_environments WHERE 1=1;*/
         $this->output->writeln(
@@ -445,13 +431,13 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             [
                   'FROM'  => 'glpi_plugin_appliances_environments'
                ]
-        ); 
+        );
         foreach ($plugin_appliances_environments AS $plugin_appliances_environment) {
                  $app = new applianceenvironment();
                 $app_fields = toolbox::sanitize(
                     [
-                     'id'=>$plugin_appliances_environment['id'],                     
-                     'name'=>$plugin_appliances_environment['name'],                     
+                     'id'=>$plugin_appliances_environment['id'],
+                     'name'=>$plugin_appliances_environment['name'],
                      'comment'=>$plugin_appliances_environment['comment']
                     ]
                 );
@@ -470,11 +456,10 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 return null;
             }
 
-        } 
+        }
         return 1;
     }
-    private function createAppliance()
-    {
+    private function createAppliance() {
         /*INSERT INTO glpi_appliances(id,entities_id,is_recursive,name,is_deleted,appliancetypes_id,comment,locations_id,manufacturers_id,applianceenvironments_id,
         users_id,users_id_tech,groups_id,groups_id_tech,relationtype,date_mod,states_id,externalidentifier,serial,otherserial) 
         select id,entities_id,is_recursive,name,is_deleted,
@@ -492,7 +477,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 [
                   'FROM'  => 'glpi_plugin_appliances_appliances'
                 ]
-            ); 
+            );
         foreach ($plugin_appliances_appliances AS $plugin_appliances_appliance) {
             $app = new appliance();
             $app_fields = toolbox::sanitize(
@@ -522,7 +507,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             if (!($app_id = $app->getFromDBByCrit($app_fields))) {
                 $app_id = $app->add($app_fields);
             }
-            $this->output->writeln( 
+            $this->output->writeln(
                 '<info>**********' . $plugin_appliances_appliance['name']. '</info>',
                 OutputInterface::VERBOSITY_NORMAL
             );
@@ -532,11 +517,10 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                     );
                      return null;
             }
-        } 
+        }
         return 1;
     }
-    private function createApplianceType()
-    {
+    private function createApplianceType() {
         /*INSERT INTO glpi_appliancetypes(id,entities_id,is_recursive,name,comment,externalidentifier) 
         SELECT id,entities_id,is_recursive,name,comment,externalid FROM glpi_plugin_appliances_appliancetype*/
 
@@ -547,13 +531,13 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         $this->output->writeln(
             '<info>' . __('Creating Appliance types...') . '</info>',
             OutputInterface::VERBOSITY_NORMAL
-        ); 
-        
+        );
+
             $plugin_appliances_types = $this->db->request(
                 [
                   'FROM'  => 'glpi_plugin_appliances_appliancetypes'
                 ]
-            ); 
+            );
         foreach ($plugin_appliances_types AS $plugin_appliances_type) {
 
             $name=$plugin_appliances_type['name'];
@@ -568,7 +552,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                      'externalidentifier'=>$plugin_appliances_type['externalid']
                   ]
             );
-                     
+
             if (!($appt_id = $appt->getFromDBByCrit($appt_fields))) {
                 $appt_id = $appt->add($appt_fields);
             }
@@ -580,12 +564,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 return null;
             }
 
-        }     
+        }
         return 1;
 
     }
-    private function createApplianceRelation()
-    {
+    private function createApplianceRelation() {
         /*INSERT INTO glpi_appliancerelations(id,appliances_items_id,relations_id) select  id,plugin_appliances_appliances_items_id,relations_id 
         from glpi_plugin_appliances_relations wHERE 1=1;*/
         $this->output->writeln(
@@ -597,13 +580,13 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 [
                   'FROM'  => 'glpi_plugin_appliances_relations'
                 ]
-            ); 
+            );
 
         foreach ($plugin_appliances_relations AS $plugin_appliances_relation) {
                     $this->output->writeln(
                         '<info> createApplianceRelation 2</info>',
                         OutputInterface::VERBOSITY_NORMAL
-                    ); 
+                    );
 
             $appr = new appliancerelation();
             $appr_fields = toolbox::sanitize(
@@ -624,7 +607,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 return null;
             }
 
-        }    
+        }
 
         return 1;
 
@@ -636,8 +619,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      *
      * @return number
      */
-    private function getImportErrorsVerbosity()
-    {
+    private function getImportErrorsVerbosity() {
 
         return $this->input->getOption('skip-errors')
          ? OutputInterface::VERBOSITY_NORMAL
@@ -652,8 +634,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      *
      * @return void
      */
-    private function outputImportError($message, ProgressBar $progress_bar = null)
-    {
+    private function outputImportError($message, ProgressBar $progress_bar = null) {
 
         $skip_errors = $this->input->getOption('skip-errors');
 
