@@ -138,7 +138,8 @@ class Computer extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $changes = [];
-      for ($i=0; $i<count($this->updates); $i++) {
+      $update_count = count($this->updates ?? []);
+      for ($i=0; $i < $update_count; $i++) {
          // Update contact of attached items
          if ($this->updates[$i] == 'contact_num' && $CFG_GLPI['is_contact_autoupdate']) {
             $changes['contact_num'] = $this->fields['contact_num'];

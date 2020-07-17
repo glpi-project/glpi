@@ -1786,7 +1786,8 @@ class User extends CommonDBTM {
       //Get the result of the search as an array
       $info = AuthLDAP::get_entries_clean($ds, $sr);
       //Browse all the groups
-      for ($i = 0; $i < count($info); $i++) {
+      $info_count = count($info);
+      for ($i = 0; $i < $info_count; $i++) {
          //Get the cn of the group and add it to the list of groups
          if (isset($info[$i]["dn"]) && ($info[$i]["dn"] != '')) {
             $listgroups[$i] = $info[$i]["dn"];

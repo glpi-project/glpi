@@ -1094,7 +1094,7 @@ class Session {
             if (!$check_once
                 || !isset($array[$message_type])
                 || in_array($msg, $array[$message_type]) === false) {
-               array_push($array[$message_type], $msg);
+               $array[$message_type][] = $msg;
             }
          }
       }

@@ -114,8 +114,7 @@ class HTMLTableCell extends HTMLTableEntity {
       $this->copyAttributsFrom($this->header);
       if (is_string($content)) {
          $string = trim($content);
-         $string = str_replace('&nbsp;', '', $string);
-         $string = str_replace('<br>', '', $string);
+         $string = str_replace(['&nbsp;', '<br>'], '', $string);
          if (!empty($string)) {
             $this->header->addCell();
          }
