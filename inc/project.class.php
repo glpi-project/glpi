@@ -2381,6 +2381,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                'users_id'  => [
                   'type'         => 'hidden',
                   'value'        => $_SESSION['glpiID']
+               ],
+               'entities_id' => [
+                  'type'   => 'hidden',
+                  'value'  => $_SESSION['glpiactive_entity']
+               ],
+               'is_recursive' => [
+                  'type'   => 'hidden',
+                  'value'  => 0
                ]
             ]
          ];
@@ -2406,6 +2414,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                   'value'  => 0
                ],
                'projecttasks_id' => [
+                  'type'   => 'hidden',
+                  'value'  => 0
+               ],
+               'entities_id' => [
+                  'type'   => 'hidden',
+                  'value'  => $_SESSION['glpiactive_entity']
+               ],
+               'is_recursive' => [
                   'type'   => 'hidden',
                   'value'  => 0
                ]
