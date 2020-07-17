@@ -1,4 +1,17 @@
 {
+    "root": true,
+    "ignorePatterns": [
+        "/config/*",
+        "/files/*",
+        "/lib/*",
+        "/marketplace/*",
+        "/node_modules/*",
+        "/plugins/*",
+        "/public/lib/*",
+        "/public/build/*",
+        "/tests/config/*",
+        "/vendor/*"
+    ],
     "env": {
         "browser": true,
         "jquery": true
@@ -13,7 +26,7 @@
         "_nx": true
     },
     "parserOptions": {
-        "ecmaVersion": 5
+        "ecmaVersion": 6
     },
     "rules": {
         "indent": [
@@ -50,5 +63,13 @@
             "error",
             "always"
         ]
-    }
+    },
+    "overrides": [
+        {
+            "files": ["webpack.config.js"],
+            "env": {
+                "node": true
+            }
+        }
+    ]
 }

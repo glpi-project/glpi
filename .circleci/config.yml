@@ -200,7 +200,7 @@ jobs:
       - run:
           name: ESLint
           command: |
-            node_modules/.bin/eslint ./js && node_modules/.bin/eslint --env=node --parser-options=ecmaVersion:6 --rule 'indent: ["error", 4]' ./webpack.config.js && echo "ESLint found no errors"
+            node_modules/.bin/eslint . && echo "ESLint found no errors"
 
   # PHP 7.2 test suite.
   php_7_2_test_suite:
