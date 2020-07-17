@@ -298,9 +298,19 @@ final class DbUtils {
          //to avoid issues when pecl-event is installed...
          $itemtype = 'Glpi\\Event';
       }
+
       if (class_exists($itemtype)) {
          return new $itemtype();
       }
+
+      //handle namespaces
+      if (substr($itemtype, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+         $itemtype = stripslashes($itemtype);
+         if (class_exists($itemtype)) {
+            return new $itemtype();
+         }
+      }
+
       return false;
    }
 
