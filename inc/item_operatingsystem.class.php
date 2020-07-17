@@ -66,42 +66,22 @@ class Item_OperatingSystem extends CommonDBRelation {
    }
 
    /**
-    * Print the item's operating system form
+    * Get operating systems related to a given item
     *
-    * @param CommonDBTM $item Item instance
+    * @param CommonDBTM $item  Item instance
+    * @param string     $sort  Field to sort on
+    * @param string     $order Sort order
     *
-    * @since 9.2
-    *
-    * @return void
-   **/
-   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
+    * @return DBmysqlIterator
+    */
+   public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator {
       global $DB;
 
-      //default options
-      $params = ['rand' => mt_rand()];
-
-      $columns = [
-         __('Name'),
-         __('Version'),
-         __('Architecture'),
-         __('Service pack')
-      ];
-
-      if (isset($_GET["order"]) && ($_GET["order"] == "ASC")) {
-         $order = "ASC";
-      } else {
-         $order = "DESC";
-      }
-
-      if ((isset($_GET["sort"]) && !empty($_GET["sort"]))
-         && isset($columns[$_GET["sort"]])) {
-         $sort = $_GET["sort"];
-      } else {
+      if ($sort === null) {
          $sort = "glpi_items_operatingsystems.id";
       }
-
-      if (empty($withtemplate)) {
-         $withtemplate = 0;
+      if ($order === null) {
+         $order = 'ASC';
       }
 
       $iterator = $DB->request([
@@ -145,7 +125,49 @@ class Item_OperatingSystem extends CommonDBRelation {
          ],
          'ORDERBY'   => "$sort $order"
       ]);
+      return $iterator;
+   }
 
+   /**
+    * Print the item's operating system form
+    *
+    * @param CommonDBTM $item Item instance
+    *
+    * @since 9.2
+    *
+    * @return void
+   **/
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
+      global $DB;
+
+      //default options
+      $params = ['rand' => mt_rand()];
+
+      $columns = [
+         __('Name'),
+         __('Version'),
+         __('Architecture'),
+         __('Service pack')
+      ];
+
+      if (isset($_GET["order"]) && ($_GET["order"] == "ASC")) {
+         $order = "ASC";
+      } else {
+         $order = "DESC";
+      }
+
+      if ((isset($_GET["sort"]) && !empty($_GET["sort"]))
+         && isset($columns[$_GET["sort"]])) {
+         $sort = $_GET["sort"];
+      } else {
+         $sort = "glpi_items_operatingsystems.id";
+      }
+
+      if (empty($withtemplate)) {
+         $withtemplate = 0;
+      }
+
+      $iterator = self::getFromItem($item, $sort, $order);
       $number = count($iterator);
       $i      = 0;
 
