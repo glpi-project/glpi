@@ -1498,7 +1498,7 @@
          var formID = "form_add_column_" + uniqueID;
          self.add_column_form = '#' + formID;
          var add_form = "<div id='" + formID + "' class='kanban-form kanban-add-column-form' style='display: none'>";
-         add_form += "<form class='no-track'>";
+         add_form += "<div>";
          var form_header = "<div class='kanban-item-header'>";
          form_header += "<span class='kanban-item-title'>" + __('Add a column from existing status') + "</span></div>";
          add_form += form_header;
@@ -1507,7 +1507,7 @@
             add_form += "<hr>" + __('Or add a new status');
             add_form += "<input type='button' class='submit kanban-create-column' value='" +__('Create status') + "'/>";
          }
-         add_form += "</form></div>";
+         add_form += "</div></div>";
          $(self.element).prepend(add_form);
       };
 
@@ -1520,7 +1520,7 @@
          var formID = "form_create_column_" + uniqueID;
          self.create_column_form = '#' + formID;
          var create_form = "<div id='" + formID + "' class='kanban-form kanban-create-column-form' style='display: none'>";
-         create_form += "<form class='no-track'>";
+         create_form += "<div>";
          var form_header = "<div class='kanban-item-header'>";
          form_header += "<span class='kanban-item-title'>" + __('Create status') + "</span></div>";
          create_form += form_header;
@@ -1542,7 +1542,7 @@
          });
          create_form += "</div>";
          create_form += "<input type='button' class='submit kanban-create-column' value='" + __('Create status') + "'/>";
-         create_form += "</form></div>";
+         create_form += "</div></div>";
          $(self.element).prepend(create_form);
       };
 
