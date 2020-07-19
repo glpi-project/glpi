@@ -1390,6 +1390,9 @@ class Log extends CommonDBTM {
             }
             return $values[$field];
          case 'linked_action':
+            if ($values[$field] === 0) {
+               return __('Update the item');
+            }
             return self::getLinkedActionLabel($values[$field]);
          case 'id_search_option':
             if ($options['raw_data']['raw']['ITEM_Log_3']) {
