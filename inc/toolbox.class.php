@@ -3461,6 +3461,9 @@ HTML;
     * @return boolean
     */
    public static function isValidWebUrl($url): bool {
+      // Verify absence of known disallowed characters.
+      // It is still possible to have false positives, but a fireproof check would be too complex
+      // (or would require usage of a dedicated lib).
       return (preg_match(
          "/^(?:http[s]?:\/\/(?:[^\s`!()\[\]{};'\",<>?«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
          $url
