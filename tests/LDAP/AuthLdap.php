@@ -33,6 +33,8 @@
 namespace tests\units;
 
 use \DbTestCase;
+use Group;
+use Group_User;
 
 /* Test for inc/authldap.class.php */
 
@@ -1275,6 +1277,19 @@ class AuthLDAP extends DbTestCase {
          'field'       => 'entities_id',
          'value'       => 1, // '_test_child_1' entity
       ]);
+
+      // Test specific_groups_id rule
+      $group = new Group();
+      $group_id = $group->add(["name" => "testgroup"]);
+      $this->integer($group_id);
+
+      $actions->add([
+         'rules_id'    => $rules_id,
+         'action_type' => 'assign',
+         'field'       => 'specific_groups_id',
+         'value'       => $group_id, // '_test_child_1' entity
+      ]);
+
       // login the user to force a real synchronisation and get it's glpi id
       $this->login('brazil6', 'password', false);
       $users_id = \User::getIdByName('brazil6');
@@ -1291,5 +1306,13 @@ class AuthLDAP extends DbTestCase {
          }
       }
       $this->boolean($found)->isTrue();
+
+      // Check group
+      $gu = new Group_User();
+      $gus = $gu->find([
+         'groups_id' => $group_id,
+         'users_id' => $users_id,
+      ]);
+      $this->array($gus)->hasSize(1);
    }
 }
