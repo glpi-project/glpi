@@ -42,6 +42,7 @@ use Auth;
 use Change;
 use CommonDevice;
 use CommonGLPI;
+use CommonITILObject;
 use Config;
 use Contract;
 use Document;
