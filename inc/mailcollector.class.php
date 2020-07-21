@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 use LitEmoji\LitEmoji;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
+use Laminas\Mail\Header\ContentType;
 use Laminas\Mail\Storage\Message;
 use Laminas\Mime\Mime as Laminas_Mime;
 
@@ -1652,20 +1653,19 @@ class MailCollector  extends CommonDBTM {
       } else {
          //if message is multipart, check for html contents then text contents
          foreach (new RecursiveIteratorIterator($message) as $part) {
-            try {
-               if (strtok($part->contentType, ';') == 'text/html') {
-                  $this->body_is_html = true;
-                  $content = $this->getDecodedContent($part);
-                  //do not check for text part if we found html one.
-                  break;
-               }
-               if (strtok($part->contentType, ';') == 'text/plain' && $content === null) {
-                  $this->body_is_html = false;
-                  $content = $this->getDecodedContent($part);
-               }
-            } catch (Exception $e) {
-               // ignore
-               $catched = true;
+            if (!$part->getHeaders()->has('content-type')
+               || !(($content_type = $part->getHeader('content-type')) instanceof ContentType)) {
+               continue;
+            }
+            if ($content_type->getType() == 'text/html') {
+               $this->body_is_html = true;
+               $content = $this->getDecodedContent($part);
+               //do not check for text part if we found html one.
+               break;
+            }
+            if ($content_type->getType() == 'text/plain' && $content === null) {
+               $this->body_is_html = false;
+               $content = $this->getDecodedContent($part);
             }
          }
       }
@@ -2041,18 +2041,25 @@ class MailCollector  extends CommonDBTM {
             break;
       }
 
-      try {
-         $contentTypePart = $part->getHeader('contentType');
-         $contentType = $contentTypePart->getType();
-      } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
-         //no ContentType header, switch to acceptable default
-         $contentType = "text/plain";
-      } finally {
-         if (preg_match('/^text\//', $contentType) && ($encoding = mb_detect_encoding($contents)) != 'UTF-8') {
-            $contents = Toolbox::encodeInUtf8(
-               $contents,
-               (isset($contentTypePart) ? $contentTypePart->getEncoding() : $encoding)
-            );
+      if (!$part->getHeaders()->has('content-type')
+         || !(($content_type = $part->getHeader('content-type')) instanceof ContentType)
+          | preg_match('/^text\//', $content_type->getType()) !== 1) {
+         return $contents; // No charset conversion content type header is not set or content is not text/*
+      }
+
+      $charset = $content_type->getParameter('charset');
+      if (strtoupper($charset) != 'UTF-8') {
+         if (in_array($charset, array_map('strtoupper', mb_list_encodings()))) {
+            $contents = mb_convert_encoding($contents, 'UTF-8', $charset);
+         } else {
+            // Convert Windows charsets names
+            if (preg_match('/^WINDOWS-\d{4}$/', $charset)) {
+               $charset = preg_replace('/^WINDOWS-(\d{4})$/', 'CP$1', $charset);
+            }
+
+            if ($converted = iconv($charset, 'UTF-8//TRANSLIT', $contents)) {
+               $contents = $converted;
+            }
          }
       }
 

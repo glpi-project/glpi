@@ -258,7 +258,7 @@ class MailCollector extends DbTestCase {
       $this->doConnect();
       $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
       $msg = $this->collector->collect($this->mailgate_id);
-      $this->variable($msg)->isIdenticalTo('Number of messages: available=13, retrieved=13, refused=2, errors=1, blacklisted=0');
+      $this->variable($msg)->isIdenticalTo('Number of messages: available=15, retrieved=15, refused=2, errors=1, blacklisted=0');
       $rejecteds = iterator_to_array($DB->request(['FROM' => \NotImportedEmail::getTable()]));
 
       $this->array($rejecteds)->hasSize(2);
@@ -270,7 +270,7 @@ class MailCollector extends DbTestCase {
 
       // Check mails having "tech" user as requester
       $iterator = $DB->request([
-         'SELECT' => ['t.id', 't.name', 'tu.users_id'],
+         'SELECT' => ['t.id', 't.name', 't.content', 'tu.users_id'],
          'FROM'   => \Ticket::getTable() . " AS t",
          'INNER JOIN'   => [
             \Ticket_User::getTable() . " AS tu"  => [
@@ -290,6 +290,7 @@ class MailCollector extends DbTestCase {
       $names = [];
       while ($data = $iterator->next()) {
          $names[] = $data['name'];
+         $this->dump($data['content']);
       }
 
       $expected_names = [
@@ -303,7 +304,7 @@ class MailCollector extends DbTestCase {
 
       // Check mails having "normal" user as requester
       $iterator = $DB->request([
-         'SELECT' => ['t.id', 't.name', 'tu.users_id'],
+         'SELECT' => ['t.id', 't.name', 't.content', 'tu.users_id'],
          'FROM'   => \Ticket::getTable() . " AS t",
          'INNER JOIN'   => [
             \Ticket_User::getTable() . " AS tu"  => [
@@ -319,10 +320,11 @@ class MailCollector extends DbTestCase {
          ]
       ]);
 
-      $this->integer(count($iterator))->isIdenticalTo(5);
+      $this->integer(count($iterator))->isIdenticalTo(7);
       $names = [];
       while ($data = $iterator->next()) {
          $names[] = $data['name'];
+         $this->dump($data['content']);
       }
 
       $expected_names = [
@@ -330,7 +332,9 @@ class MailCollector extends DbTestCase {
          'Test images',
          'Test\'ed issue',
          'Test Email from Outlook',
-         'No contenttype'
+         'No contenttype',
+         'проверка',
+         'тест2',
       ];
       $this->array($names)->isIdenticalTo($expected_names);
 
@@ -338,7 +342,7 @@ class MailCollector extends DbTestCase {
       //see function doConnect
       //wich allow to add cc as observer (add_cc_to_observer = true)
       $iterator = $DB->request([
-         'SELECT' => ['t.id', 't.name', 'tu.users_id'],
+         'SELECT' => ['t.id', 't.name', 't.content', 'tu.users_id'],
          'FROM'   => \Ticket::getTable() . " AS t",
          'INNER JOIN'   => [
             \Ticket_User::getTable() . " AS tu"  => [
@@ -358,6 +362,7 @@ class MailCollector extends DbTestCase {
       $names = [];
       while ($data = $iterator->next()) {
          $names[] = $data['name'];
+         $this->dump($data['content']);
       }
 
       $expected_names = [

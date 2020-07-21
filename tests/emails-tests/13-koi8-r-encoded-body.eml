@@ -1,0 +1,71 @@
+Return-Path: <normal@glpi-project.org>
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com ([40.107.8.139])
+	by glpi-project.org (Kerio Connect 9.2.1) with ESMTPS
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits))
+	for unittests@glpi-project.org;
+	Thu, 16 Jul 2020 13:05:13 +0300
+Received: from HE1PR04MB3116.eurprd04.prod.outlook.com (2603:10a6:7:21::11) by
+ HE1PR04MB3114.eurprd04.prod.outlook.com (2603:10a6:7:20::32) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3174.23; Thu, 16 Jul 2020 10:05:11 +0000
+Received: from HE1PR04MB3116.eurprd04.prod.outlook.com
+ ([fe80::90c8:bdd6:ea02:c40a]) by HE1PR04MB3116.eurprd04.prod.outlook.com
+ ([fe80::90c8:bdd6:ea02:c40a%6]) with mapi id 15.20.3174.025; Thu, 16 Jul 2020
+ 10:05:11 +0000
+From: =?koi8-r?B?7cnIwcnMIPPB2sHOz9c=?= <normal@glpi-project.org>
+To: <unittests@glpi-project.org>
+Subject: =?windows-1251?B?7/Du4uXw6uA=?=
+Thread-Topic: =?windows-1251?B?7/Du4uXw6uA=?=
+Thread-Index: AQHWW1fCqpuqsQi/pk+Y/7pyDCKNEakJ+n+F
+Date: Thu, 16 Jul 2020 10:05:11 +0000
+Message-ID: <d00e2009-63b3-47be-bb40-5752204023d2@email.android.com>
+References: <9d349a1b-40b9-47bd-a4d9-f55073f5488a@email.android.com>
+Accept-Language: ru-RU, en-US
+Content-Language: ru-RU
+Content-Type: multipart/alternative;
+	boundary="_000_d00e200963b347bebb405752204023d2emailandroidcom_"
+MIME-Version: 1.0
+
+--_000_d00e200963b347bebb405752204023d2emailandroidcom_
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
+
+=F4=C5=D3=D4 =D4=C5=D3=D4 =D4=C5=D3=D4
+---------- =F0=C5=D2=C5=C1=C4=D2=C5=D3=CF=D7=C1=CE=CE=CF=C5 =D3=CF=CF=C2=DD=
+=C5=CE=C9=C5 ----------
+=EF=D4: =ED=C9=C8=C1=C9=CC =F3=C1=DA=C1=CE=CF=D7 <normal@glpi-project.org>
+=E4=C1=D4=C1: 16 =C9=C0=CC. 2020 =C7. 12:59
+=F4=C5=CD=C1: Test from eml
+=EB=CF=CD=D5: unittests@glpi-project.org
+=EB=CF=D0=C9=D1:
+
+Eml test ticket
+
+--_000_d00e200963b347bebb405752204023d2emailandroidcom_
+Content-Type: text/html; charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dkoi8-r">
+<meta content=3D"text/html; charset=3Dutf-8">
+</head>
+<body>
+<div dir=3D"auto">=F4=C5=D3=D4 =D4=C5=D3=D4 =D4=C5=D3=D4</div>
+<div class=3D"gmail_quote">---------- =F0=C5=D2=C5=C1=C4=D2=C5=D3=CF=D7=C1=
+=CE=CE=CF=C5 =D3=CF=CF=C2=DD=C5=CE=C9=C5 ----------<br>
+=EF=D4: =ED=C9=C8=C1=C9=CC =F3=C1=DA=C1=CE=CF=D7 &lt;normal@glpi-project.org&=
+gt;<br>
+=E4=C1=D4=C1: 16 =C9=C0=CC. 2020 =C7. 12:59<br>
+=F4=C5=CD=C1: Test from eml<br>
+=EB=CF=CD=D5: unittests@glpi-project.org<br>
+=EB=CF=D0=C9=D1: <br>
+<br type=3D"attribution">
+</div>
+<div>
+<div dir=3D"auto">Eml test ticket</div>
+</div>
+</body>
+</html>
+
+--_000_d00e200963b347bebb405752204023d2emailandroidcom_--
