@@ -239,35 +239,28 @@ class RuleTicket extends Rule {
                   }
 
                   if ($action->fields["field"] == 'task_template') {
-                     // Init special input '_tickettasks' if empty
-                     if (!isset($output["_tickettasks"])) {
-                        $output["_tickettasks"] = [];
-                     }
-
                      $template = new TaskTemplate();
                      if ($template->getFromDB($action->fields["value"])) {
-                        $values = [
-                           "tasktemplates_id"  => $template->getId(),
-                           "content"           => Toolbox::addslashes_deep($template->getField('content')),
-                           "taskcategories_id" => $template->getField('taskcategories_id'),
-                           "users_id_tech"     => $template->getField('users_id_tech'),
-                           "groups_id_tech"    => $template->getField('groups_id_tech'),
-                           "is_private"        => $template->getField('is_private'),
-                           "actiontime"        => $template->getField('actiontime'),
-                           "name"              => $template->getField('name'),
-                        ];
-
                         $ticket_id = $output['id'] ?? 0;
                         if (!$ticket_id) {
                            // Target ticket is not yet created, data need to be
-                           // moved to special input '_tickettasks' so it can
-                           // be handled after the ticket creation
-                           $output["_tickettasks"][] = $values;
+                           // moved to special input '_tasktemplates_id' so it
+                           // can be handled after the ticket creation
+                           $output["_tasktemplates_id"][] = $template->getId();
                         } else {
                            // Target ticket already exist, add the task
-                           $values['tickets_id'] = $ticket_id;
                            $task = new TicketTask();
-                           $task->add($values);
+                           $task->add([
+                              "tickets_id"        => $ticket_id,
+                              "tasktemplates_id"  => $template->getId(),
+                              "content"           => Toolbox::addslashes_deep($template->getField('content')),
+                              "taskcategories_id" => $template->getField('taskcategories_id'),
+                              "users_id_tech"     => $template->getField('users_id_tech'),
+                              "groups_id_tech"    => $template->getField('groups_id_tech'),
+                              "is_private"        => $template->getField('is_private'),
+                              "actiontime"        => $template->getField('actiontime'),
+                              "name"              => $template->getField('name'),
+                           ]);
                         }
 
                      }

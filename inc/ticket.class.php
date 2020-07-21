@@ -1934,13 +1934,6 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Handle special input "_tickettasks" used for ticket rules
-      foreach ($this->input['_tickettasks'] ?? [] as $task_values) {
-         $task = new TicketTask();
-         $task_values['tickets_id'] = $this->getId();
-         $task->add($task_values);
-      }
-
       parent::post_addItem();
 
       // Processing Email
