@@ -656,4 +656,5 @@ class RuleTicket extends DbTestCase {
       $this->array($task_data)->hasKey('content');
       $this->string($task_data['content'])->isEqualTo('test content');
    }
+
 }
