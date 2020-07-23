@@ -4655,8 +4655,8 @@ JAVASCRIPT;
 
          if ((!isset($searchopt[$ID]['searchequalsonfield'])
               || !$searchopt[$ID]['searchequalsonfield'])
-            && ($table != $itemtype::getTable()
-                || ($itemtype == 'AllAssets'))) {
+            && ($itemtype == 'AllAssets'
+                || $table != $itemtype::getTable())) {
             $out = " $link (`$table`.`id`".$SEARCH;
          } else {
             $out = " $link (`$table`.`$field`".$SEARCH;
