@@ -45,6 +45,16 @@ function update95toXX() {
    $migration->displayTitle(sprintf(__('Update to %s'), 'x.x.x'));
    $migration->setVersion('x.x.x');
 
+   /** Add templates to domains  */
+   $migration->addField('glpi_domains', 'is_template', 'bool', [
+      'after' => 'comment'
+   ]);
+   $migration->addField("glpi_domains", "template_name", 'string', [
+      'after' => 'is_template'
+   ]);
+   $migration->addKey("glpi_domains", "is_template");
+   /** /Add templates to domains  */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

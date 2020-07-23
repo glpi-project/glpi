@@ -48,13 +48,11 @@ class DomainRecord extends CommonDBChild {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if (!$withtemplate) {
-         if ($item->getType() == 'Domain') {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item));
-            }
-            return _n('Record', 'Records', Session::getPluralNumber());
+      if ($item->getType() == 'Domain') {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item));
          }
+         return _n('Record', 'Records', Session::getPluralNumber());
       }
       return '';
    }
