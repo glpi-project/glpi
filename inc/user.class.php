@@ -2076,7 +2076,7 @@ class User extends CommonDBTM {
                      }
                   );
                })(jQuery);
-   JAVASCRIPT;
+JAVASCRIPT;
             $formtitle .= Html::scriptBlock($impersonate_js);
          }
       }
