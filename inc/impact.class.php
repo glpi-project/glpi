@@ -275,9 +275,9 @@ class Impact extends CommonGLPI {
                $path = [];
                foreach ($itemtype_item['node']['path'] as $node) {
                   if ($node['id'] == $start_node_id) {
-                     $path[] = '<b>' . $node['name'] . '</b>';
+                     $path[] = '<b>' . $node['label'] . '</b>';
                   } else {
-                     $path[] = $node['name'];
+                     $path[] = $node['label'];
                   }
                }
                $separator = '<i class="fas fa-angle-right"></i>';
@@ -1253,7 +1253,6 @@ class Impact extends CommonGLPI {
       $new_node = [
          'id'          => $key,
          'label'       => $item->getFriendlyName(),
-         'name'        => $item->getFriendlyName(),
          'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
          'ITILObjects' => $item->getITILTickets(true),
       ];
