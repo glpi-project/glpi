@@ -5570,8 +5570,8 @@ JAVASCRIPT;
       return [
          'OR' => [
             ['RAW' => ["LOWER($login)" => ['LIKE', "%$filter%"]]],
-            ['RAW' => ["LOWER(CONCAT($firstname, $lastname))" => ['LIKE', "%$filter_no_spaces%"]]],
-            ['RAW' => ["LOWER(CONCAT($lastname, $firstname))" => ['LIKE', "%$filter_no_spaces%"]]],
+            ['RAW' => ["LOWER(REPLACE(CONCAT($firstname, $lastname), ' ', ''))" => ['LIKE', "%$filter_no_spaces%"]]],
+            ['RAW' => ["LOWER(REPLACE(CONCAT($lastname, $firstname), ' ', ''))" => ['LIKE', "%$filter_no_spaces%"]]],
          ]
       ];
    }
