@@ -29,6 +29,10 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
 /** Domains improvements */
 
@@ -56,3 +60,53 @@ $migration->addPostQuery(
 
 //remove "useless "other" field
 $migration->dropField('glpi_domains', 'others');
+
+// Add fields descriptor field
+if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
+   $migration->addField(
+      'glpi_domainrecordtypes',
+      'fields',
+      'text',
+      [
+         'after'  => 'name'
+      ]
+   );
+   foreach (DomainRecordType::getDefaults() as $type) {
+      if (countElementsInTable('glpi_domainrecordtypes', ['name' => $type['name']]) === 0) {
+         continue;
+      }
+      $migration->addPostQuery(
+         $DB->buildUpdate(
+            'glpi_domainrecordtypes',
+            ['fields' => $type['fields']],
+            ['name' => $type['name']]
+         )
+      );
+   }
+}
+
+// Create new CAA default
+if (countElementsInTable('glpi_domainrecordtypes', ['name' => 'CAA']) === 0) {
+   foreach (DomainRecordType::getDefaults() as $type) {
+      if ($type['name'] === 'CAA') {
+         unset($type['id']);
+         $migration->addPostQuery(
+            $DB->buildInsert(
+               DomainRecordType::getTable(),
+               $type
+            )
+         );
+         break;
+      }
+   }
+}
+
+// Add a field to store record data as an object if user inputs data using helper form
+$migration->addField(
+   'glpi_domainrecords',
+   'data_obj',
+   'text',
+   [
+      'after'  => 'data'
+   ]
+);

@@ -273,7 +273,22 @@ class DomainRecord extends CommonDBChild {
       return $this->prepareInput($input);
    }
 
+   function pre_updateInDB() {
+
+      if ((in_array('data', $this->updates) || in_array('domainrecordtypes_id', $this->updates))
+          && !array_key_exists('data_obj', $this->input)) {
+         // Remove data stored as obj if "data" or "record type" changed" and "data_obj" is not part of input.
+         // It ensure that updates that "data_obj" will not contains obsolete values.
+         $this->fields['data_obj'] = 'NULL';
+         $this->updates[]          = 'data_obj';
+      }
+   }
+
    function showForm($ID, $options = []) {
+      global $CFG_GLPI;
+
+      $rand = mt_rand();
+
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
@@ -281,7 +296,6 @@ class DomainRecord extends CommonDBChild {
 
       echo "<td>" . Domain::getTypeName(1) . "</td>";
       echo "<td>";
-
       $domain = new Domain();
       $domain->getFromDB($this->fields['domains_id']);
       if ($domain->isTemplate()) {
@@ -296,7 +310,8 @@ class DomainRecord extends CommonDBChild {
             'Domain', [
                'name'   => "domains_id",
                'value'  => $this->fields["domains_id"],
-               'entity' => $this->fields["entities_id"]
+               'entity' => $this->fields["entities_id"],
+               'rand'   => $rand,
             ]
          );
       }
@@ -325,7 +340,8 @@ class DomainRecord extends CommonDBChild {
             'name'      => "domainrecordtypes_id",
             'value'     => $this->fields["domainrecordtypes_id"],
             'entity'    => $this->fields["entities_id"],
-            'condition' => $condition
+            'condition' => $condition,
+            'rand'      => $rand,
          ]
       );
       echo "</td>";
@@ -338,7 +354,65 @@ class DomainRecord extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Data') . "</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "data");
+      echo "<input type='hidden' id='data_obj{$rand}' name='data_obj' value=\"".Html::cleanInputText($this->fields["data_obj"])."\">";
+      echo "<input type='text' id='data{$rand}' name='data' value=\"".Html::cleanInputText($this->fields["data"])."\">";
+      echo " <a href='#' title='".__s('Open helper form')."'>";
+      echo "<i class='far fa-edit'></i>";
+      echo "<span class='sr-only'>".__('Open helper form')."</span>";
+      echo "</a>";
+
+      $js = <<<JAVASCRIPT
+         $(
+            function () {
+               $('#data{$rand}, #dropdown_domainrecordtypes_id{$rand}').change(
+                  function (event) {
+                     $('#data_obj{$rand}').val(''); // empty "data_obj" value if "data" or "record type" changed
+                  }
+               );
+               $('#data{$rand} + a').click(
+                  function (event) {
+                     event.preventDefault();
+
+                     var select = $(this).closest('form').find('[name="domainrecordtypes_id"]');
+                     var domainrecordtypes_id = select.val();
+                     var title = domainrecordtypes_id > 0 ? select.find('option:selected').html() : '';
+
+                     var container = $('<div></div>');
+                     container.dialog(
+                        {
+                           modal:    true,
+                           title:    title,
+                           height:   'auto',
+                           width:    400,
+                           open: function () {
+                              $(this).dialog('option', 'position', ['center', 'center']);
+                           },
+                           close: function() {
+                              $(this).remove();
+                           }
+                        }
+                     ).load(
+                        '{$CFG_GLPI["root_doc"]}/ajax/domainrecord_data_form.php',
+                        {
+                           domainrecordtypes_id: domainrecordtypes_id,
+                           str_input_id: 'data{$rand}',
+                           obj_input_id: 'data_obj{$rand}'
+                        },
+                        function() {
+                           $(this).find('form').on(
+                              'submit',
+                              function(event) {
+                                 container.dialog('close');
+                              }
+                           );
+                        }
+                     );
+                  }
+               );
+            }
+         );
+JAVASCRIPT;
+      echo Html::scriptBlock($js);
       echo "</td>";
       echo "</tr>";
 
