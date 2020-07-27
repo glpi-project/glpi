@@ -742,7 +742,7 @@ class Dropdown {
          }
 
          $output = Html::getCheckbox($options);
-         if (!isset($options['display']) || $options['display'] == 'true') {
+         if (!isset($params['display']) || $params['display'] == 'true') {
             echo $output;
             return $rand;
          } else {
