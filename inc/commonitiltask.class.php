@@ -805,7 +805,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge'),
          'datatype'           => 'itemlink',
-         'condition'          => 'is_task',
+         'condition'          => ['is_task' => 1],
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [

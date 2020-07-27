@@ -2847,7 +2847,7 @@ class Ticket extends CommonITILObject {
          'joinparams'         => [
             'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
          ],
-         'condition'          => "`glpi_slas`.`type` = '".SLM::TTO."'"
+         'condition'          => ['glpi_slas.type' => SLM::TTO],
       ];
 
       $tab[] = [
@@ -2861,7 +2861,7 @@ class Ticket extends CommonITILObject {
          'joinparams'         => [
             'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
          ],
-         'condition'          => "`glpi_slas`.`type` = '".SLM::TTR."'"
+         'condition'          => ['glpi_slas.type' => SLM::TTR],
       ];
 
       $tab[] = [
@@ -2898,7 +2898,7 @@ class Ticket extends CommonITILObject {
          'joinparams'         => [
             'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
          ],
-         'condition'          => "`glpi_olas`.`type` = '".SLM::TTO."'"
+         'condition'          => ['glpi_olas.type' => SLM::TTO],
       ];
 
       $tab[] = [
@@ -2912,7 +2912,7 @@ class Ticket extends CommonITILObject {
          'joinparams'         => [
             'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
          ],
-         'condition'          => "`glpi_olas`.`type` = '".SLM::TTR."'"
+         'condition'          => ['glpi_olas.type' => SLM::TTR],
       ];
 
       $tab[] = [
