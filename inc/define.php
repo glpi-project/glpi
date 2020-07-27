@@ -369,7 +369,7 @@ $CFG_GLPI['planning_add_types']           = ['PlanningExternalEvent'];
 // - VJOURNAL: Glpi Reminders/Tasks with "Information" status and not planned, you can retrieve them in the notes tab
 // - VEVENT: all planned events without todo/done status, displayed in the calendar of your client
 // The two first entry fallback on VEVENT if they are disabled
-$CFG_GLPI['caldav_supported_components']  = ['VEVENT'];
+$CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL'];
 
 $CFG_GLPI["globalsearch_types"]           = ['Computer', 'Contact', 'Contract',
                                              'Document',  'Monitor',
