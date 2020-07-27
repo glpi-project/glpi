@@ -1171,6 +1171,8 @@ JAVASCRIPT;
       $user_table = "",
       $group_table = ""
    ) {
+      $itilfup_table = static::getTable();
+
       // An ITILFollowup parent can only by a CommonItilObject
       if (!is_a($itemtype, "CommonITILObject", true)) {
          throw new InvalidArgumentException(
@@ -1181,7 +1183,7 @@ JAVASCRIPT;
       $rightname = $itemtype::$rightname;
       // Can see all items, no need to go further
       if (Session::haveRight($rightname, $itemtype::READALL)) {
-         return "(`itemtype` = '$itemtype') ";
+         return "(`$itilfup_table`.`itemtype` = '$itemtype') ";
       }
 
       $user   = Session::getLoginUserID();
@@ -1218,15 +1220,15 @@ JAVASCRIPT;
                WHERE `users_id_recipient` = '$user'";
 
             return "(
-               `itemtype` = '$itemtype' AND (
-                  `items_id` IN ($user_query) OR
-                  `items_id` IN ($group_query) OR
-                  `items_id` IN ($recipient_query)
+               `$itilfup_table`.`itemtype` = '$itemtype' AND (
+                  `$itilfup_table`.`items_id` IN ($user_query) OR
+                  `$itilfup_table`.`items_id` IN ($group_query) OR
+                  `$itilfup_table`.`items_id` IN ($recipient_query)
                )
             ) ";
          } else {
             // Can't see any items
-            return "(`itemtype` = '$itemtype' AND 0 = 1) ";
+            return "(`$itilfup_table`.`itemtype` = '$itemtype' AND 0 = 1) ";
          }
       }
    }
