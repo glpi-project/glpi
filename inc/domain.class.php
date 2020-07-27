@@ -156,7 +156,7 @@ class Domain extends CommonDropdown {
          'field'              => 'name',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
