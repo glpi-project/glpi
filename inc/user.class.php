@@ -2059,27 +2059,26 @@ class User extends CommonDBTM {
          $formtitle .= "<a class='pointer far fa-address-card fa-lg' target='_blank' href='".
                        User::getFormURLWithID($ID)."&amp;getvcard=1' title='".__s('Download user VCard').
                        "'><span class='sr-only'>". __('Vcard')."</span></a>";
-      }
+         if (Session::canImpersonate($ID)) {
+            $formtitle .= '<button type="button" class="pointer btn-linkstyled btn-impersonate" name="impersonate" value="1">'
+               . '<i class="fas fa-user-secret fa-lg" title="' . __s('Impersonate') . '"></i> '
+               . '<span class="sr-only">' . __s('Impersonate') . '</span>'
+               . '</button>';
 
-      if (Session::canImpersonate($ID)) {
-         $formtitle .= '<button type="button" class="pointer btn-linkstyled btn-impersonate" name="impersonate" value="1">'
-            . '<i class="fas fa-user-secret fa-lg" title="' . __s('Impersonate') . '"></i> '
-            . '<span class="sr-only">' . __s('Impersonate') . '</span>'
-            . '</button>';
-
-         // "impersonate" button type is set to "button" on form display to prevent it to be used
-         // by default (as it is the first found in current form) when pressing "enter" key.
-         // When clicking it, switch to "submit" type to make it submit current user form.
-         $impersonate_js = <<<JAVASCRIPT
-            (function($) {
-               $('button[type="button"][name="impersonate"]').click(
-                  function () {
-                     $(this).attr('type', 'submit');
-                  }
-               );
-            })(jQuery);
+            // "impersonate" button type is set to "button" on form display to prevent it to be used
+            // by default (as it is the first found in current form) when pressing "enter" key.
+            // When clicking it, switch to "submit" type to make it submit current user form.
+            $impersonate_js = <<<JAVASCRIPT
+               (function($) {
+                  $('button[type="button"][name="impersonate"]').click(
+                     function () {
+                        $(this).attr('type', 'submit');
+                     }
+                  );
+               })(jQuery);
 JAVASCRIPT;
-         $formtitle .= Html::scriptBlock($impersonate_js);
+            $formtitle .= Html::scriptBlock($impersonate_js);
+         }
       }
 
       $options['formtitle']   = $formtitle;
