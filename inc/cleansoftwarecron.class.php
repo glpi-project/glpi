@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+/**
+ * @since x.x.x
+ */
 class CleanSoftwareCron extends CommonDBTM
 {
    const TASK_NAME = 'cleansoftware';
