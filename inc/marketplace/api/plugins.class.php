@@ -468,6 +468,13 @@ class Plugins {
       if ($track_progress) {
          // track download progress
          $options['progress'] = function($downloadTotal, $downloadedBytes) use ($plugin_key) {
+            // Prevent "net::ERR_RESPONSE_HEADERS_TOO_BIG" error
+            // Each time Session::start() is called, PHP add a 'Set-Cookie' header,
+            // so if a plugin takes more than a few seconds to be downloaded, PHP will set too many
+            // 'Set-Cookie' headers and response will not be accepted by browser.
+            // We can remove the 'Set-Cookie' here as it will be put back on next instruction (Session::start()).
+            header_remove('Set-Cookie');
+
             // restart session to store percentage of download for this plugin
             Session::start();
 
