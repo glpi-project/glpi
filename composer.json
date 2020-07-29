@@ -30,7 +30,7 @@
         "iamcal/lib_autolink": "^1.7",
         "laminas/laminas-cache": "^2.8",
         "laminas/laminas-i18n": "^2.10",
-        "laminas/laminas-mail": "^2.10",
+        "laminas/laminas-mail": "^2.12",
         "laminas/laminas-mime": "^2.7",
         "laminas/laminas-serializer": "^2.8",
         "mexitek/phpcolors": "^0.4.0",

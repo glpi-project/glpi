@@ -113,6 +113,7 @@ class Toolbox extends \GLPITestCase {
       // Create valid classes
       eval(<<<CLASS
 class PluginTesterFakeProtocol implements Glpi\Mail\Protocol\ProtocolInterface {
+   public function setNoValidateCert(bool \$novalidatecert) {}
    public function connect(\$host, \$port = null, \$ssl = false) {}
    public function login(\$user, \$password) {}
 }
