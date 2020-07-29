@@ -51,7 +51,8 @@ if ($_REQUEST["action"] == "get_resources") {
 }
 
 if ($_REQUEST["action"] == "update_event") {
-   echo Reservation::updateEvent($_REQUEST);
+   $result = Reservation::updateEvent($_REQUEST);
+   echo json_encode(['result' => $result]);
    exit;
 }
 
