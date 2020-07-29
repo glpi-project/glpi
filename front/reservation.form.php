@@ -74,7 +74,6 @@ if (isset($_POST["update"])) {
                   "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 
 } else if (isset($_POST["add"])) {
-   $all_ok              = true;
    $reservationitems_id = 0;
    if (empty($_POST['users_id'])) {
       $_POST['users_id'] = Session::getLoginUserID();
@@ -120,24 +119,12 @@ if (isset($_POST["update"])) {
                   Event::log($newID, "reservation", 4, "inventory",
                            sprintf(__('%1$s adds the reservation %2$s for item %3$s'),
                                    $_SESSION["glpiname"], $newID, $reservationitems_id));
-               } else {
-                  $all_ok = false;
                }
             }
          }
       }
-   } else {
-      $all_ok = false;
    }
-   if ($all_ok) {
-      $toadd = "";
-      // Only one reservation : move to correct month
-      if (count($_POST['items']) == 1) {
-         $toadd  = "?reservationitems_id=$reservationitems_id";
-         $toadd .= "&mois_courant=".intval($begin_month);
-         $toadd .= "&annee_courante=".intval($begin_year);
-      }
-   }
+
    Html::back();
 
 } else if (isset($_GET["id"])) {
