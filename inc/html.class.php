@@ -914,6 +914,7 @@ class Html {
          if (isset($url['query'])) {
             parse_str($url['query'], $parameters);
             unset($parameters['forcetab']);
+            unset($parameters['tab_params']);
             $new_query = http_build_query($parameters);
             return str_replace($url['query'], $new_query, $url_in);
          }

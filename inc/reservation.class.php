@@ -1170,7 +1170,7 @@ JAVASCRIPT;
             echo "<td>";
             list($annee, $mois, $jour) = explode("-", $data["begin"]);
             echo "<a href='".$item::getFormURLWithID($ri->fields['items_id']).
-                 "&forcetab=Reservation$1&defaultDate={$data["begin"]}' ".
+                 "&forcetab=Reservation$1&tab_params[defaultDate]={$data["begin"]}' ".
                   "title=\"".__s('See planning')."\">";
             echo "<i class='far fa-calendar-alt'></i>";
             echo "<span class='sr-only'>".__('See planning')."</span>";

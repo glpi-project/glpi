@@ -1217,9 +1217,9 @@ class CommonGLPI {
       // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
       ObjectLock::manageObjectLock(get_class($this), $options);
 
-      // manage reservation options
-      if (isset($_REQUEST['defaultDate'])) {
-         $options['defaultDate'] = $_REQUEST['defaultDate'];
+      // manage custom options passed to tabs
+      if (isset($_REQUEST['tab_params']) && is_array($_REQUEST['tab_params'])) {
+         $options += $_REQUEST['tab_params'];
       }
 
       $this->showNavigationHeader($options);
