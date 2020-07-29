@@ -40,7 +40,7 @@ $rr = new Reservation();
 
 if (isset($_REQUEST['ajax'])) {
    Html::header_nocache();
-   header("Content-Type: text/html; charset=UTF-8");
+   Html::popHeader(__('Simplified interface'));
 } else if (Session::getCurrentInterface() == "helpdesk") {
    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
