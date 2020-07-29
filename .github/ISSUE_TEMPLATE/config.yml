@@ -1,0 +1,9 @@
+
+blank_issues_enabled: false
+contact_links:
+  - name: GLPI Community forum
+    url: https://forum.glpi-project.org
+    about: Ask questions and get help from the community.
+  - name: Feature request
+    url: https://suggest.glpi-project.org
+    about: Suggest a new feature to the GLPI team
