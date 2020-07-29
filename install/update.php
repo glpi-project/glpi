@@ -510,6 +510,32 @@ function updateTreeDropdown() {
    }
 }
 
+/**
+ * Display security key check form.
+ *
+ * @return void
+ */
+function showSecurityKeyCheckForm() {
+   global $CFG_GLPI, $update;
+
+   echo '<form action="update.php" method="post">';
+   echo '<input type="hidden" name="continuer" value="1" />';
+   echo '<input type="hidden" name="missing_key_warning_shown" value="1" />';
+   echo '<div class="center">';
+   echo '<h3>' . __('Missing security key file') . '</h3>';
+   echo '<p>';
+   echo '<img src="' . $CFG_GLPI['root_doc'] . '/pics/ko_min.png" />';
+   echo sprintf(
+      __('The key file "%s" used to encrypt/decrypt sensitive data is missing. You should retrieve it from your previous installation or encrypted data will be unreadable.'),
+      $update->getExpectedSecurityKeyFilePath()
+   );
+   echo '</p>';
+   echo '<input type="submit" name="ignore" class="submit" value="' . __('Ignore warning') . '" />';
+   echo '&nbsp;&nbsp;';
+   echo '<input type="submit" name="retry" class="submit" value="' . __('Try again') . '" />';
+   echo '</form>';
+}
+
 //Debut du script
 $HEADER_LOADED = true;
 
@@ -574,7 +600,12 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       if ($result > 0) {
          die(1);
       }
-      if (!isset($_POST["update_location"])) {
+      if ($update->isExpectedSecurityKeyFileMissing()
+          && (!isset($_POST['missing_key_warning_shown']) || !isset($_POST['ignore']))) {
+         // Display missing security key file form if key file is missing
+         // unless it has already been displayed and user clicks on "ignore" button.
+         showSecurityKeyCheckForm();
+      } else if (!isset($_POST["update_location"])) {
          $current_version = "0.31";
          $config_table    = "glpi_config";
 

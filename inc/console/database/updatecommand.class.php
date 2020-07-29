@@ -57,6 +57,13 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
     */
    const ERROR_NO_UNSTABLE_UPDATE = 1;
 
+   /**
+    * Error code returned when security key file is missing.
+    *
+    * @var integer
+    */
+   const ERROR_MISSING_SECURITY_KEY_FILE = 2;
+
    protected function configure() {
       parent::configure();
 
@@ -137,6 +144,20 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'eq') && !$force) {
          $output->writeln('<info>' . __('No migration needed.') . '</info>');
          return 0;
+      }
+
+      if ($update->isExpectedSecurityKeyFileMissing()) {
+         $output->writeln(
+            sprintf(
+               '<error>' . __('The key file "%s" used to encrypt/decrypt sensitive data is missing. You should retrieve it from your previous installation or encrypted data will be unreadable.') . '</error>',
+               $update->getExpectedSecurityKeyFilePath()
+            ),
+            OutputInterface::VERBOSITY_QUIET
+         );
+
+         if ($no_interaction) {
+            return self::ERROR_MISSING_SECURITY_KEY_FILE;
+         }
       }
 
       if (!$no_interaction) {

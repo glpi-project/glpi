@@ -520,7 +520,7 @@ class Update extends CommonGLPI {
       //generate security key if missing, and update db
       $glpikey = new GLPIKey();
       if (!$glpikey->keyExists() && !$glpikey->generate()) {
-         $this->migration->displayWarning(__('Unable to create security key file!'), true);
+         $this->migration->displayWarning(__('Unable to create security key file! You have to run "php bin/console glpi:security:change_key" command to manually create this file.'), true);
       }
    }
 
@@ -602,5 +602,31 @@ class Update extends CommonGLPI {
    public function setMigration(Migration $migration) {
       $this->migration = $migration;
       return $this;
+   }
+
+   /**
+    * Check if expected security key file is missing.
+    *
+    * @return bool
+    */
+   public function isExpectedSecurityKeyFileMissing(): bool {
+      $expected_key_path = $this->getExpectedSecurityKeyFilePath();
+
+      if ($expected_key_path === null) {
+         return false;
+      }
+
+      return !file_exists($expected_key_path);
+   }
+
+   /**
+    * Returns expected security key file path.
+    * Will return null for GLPI versions that was not yet handling a custom security key.
+    *
+    * @return string|null
+    */
+   public function getExpectedSecurityKeyFilePath(): ?string {
+      $glpikey = new GLPIKey();
+      return $glpikey->getExpectedKeyPath($this->getCurrents()['version']);
    }
 }

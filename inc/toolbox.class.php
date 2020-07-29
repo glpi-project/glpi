@@ -310,22 +310,13 @@ class Toolbox {
    static function decrypt($string, $key = null) {
       self::deprecated('Use sodiumDecrypt');
 
+      $glpikey = new GLPIKey();
+
       if ($key === null) {
-         $glpikey = new GLPIKey();
          $key = $glpikey->getLegacyKey();
       }
 
-      $result = '';
-      $string = base64_decode($string);
-
-      for ($i=0; $i<strlen($string); $i++) {
-         $char    = substr($string, $i, 1);
-         $keychar = substr($key, ($i % strlen($key))-1, 1);
-         $char    = chr(ord($char)-ord($keychar));
-         $result .= $char;
-      }
-
-      return Toolbox::unclean_cross_side_scripting_deep($result);
+      return $glpikey->decryptUsingLegacyKey($string, $key);
    }
 
    /**
