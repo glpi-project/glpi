@@ -35,8 +35,8 @@ var Reservations = function() {
          minTime:     CFG_GLPI.planning_begin,
          maxTime:     CFG_GLPI.planning_end,
          weekNumbers: true,
-         defaultView:  localStorage.getItem("fcDefaultView") !== null
-            ? localStorage.getItem("fcDefaultView")
+         defaultView:  localStorage.getItem("fcDefaultViewReservation") !== null
+            ? localStorage.getItem("fcDefaultViewReservation")
             : my.currentv,
          height: function() {
             var _newheight = $(window).height() - 272;
@@ -162,7 +162,7 @@ var Reservations = function() {
             var view = info.view;
 
             // when the view changes, we update our localStorage value with the new view name
-            localStorage.setItem("fcDefaultView", view.type);
+            localStorage.setItem("fcDefaultViewReservation", view.type);
          },
 
          eventResize: function(info) {
