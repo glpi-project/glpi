@@ -48,7 +48,6 @@ if (isset($_REQUEST['ajax'])) {
 }
 
 if (isset($_POST["update"])) {
-   list($begin_year,$begin_month) = explode("-", $_POST['resa']["begin"]);
    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
    if (Session::haveRight("reservation", UPDATE)
        || (Session::getLoginUserID() == $_POST["users_id"])) {
