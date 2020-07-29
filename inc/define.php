@@ -363,7 +363,13 @@ $CFG_GLPI['planning_types']               = ['ChangeTask', 'ProblemTask', 'Remin
                                              'TicketTask', 'ProjectTask', 'PlanningExternalEvent'];
 $CFG_GLPI['planning_add_types']           = ['PlanningExternalEvent'];
 
-$CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
+// supported components send by caldav server
+// - VTODO: All possible planning events of GLPI with a status of TODO/DONE,
+//    You can generaly retrieve them in the todo tab of your caldav client
+// - VJOURNAL: Glpi Reminders/Tasks with "Information" status and **not planned**, you can retrieve them in the notes tab
+// - VEVENT: all **planned** events without todo/done status, displayed in the calendar of your client
+// The two first entry fallback on VEVENT if they are disabled (and they are planned, other are not displayed)
+$CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL'];
 
 $CFG_GLPI["globalsearch_types"]           = ['Computer', 'Contact', 'Contract',
                                              'Document',  'Monitor',
