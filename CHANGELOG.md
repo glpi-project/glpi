@@ -18,6 +18,7 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 
 #### Removed
+- `Update::declareOldItems()`
 
 ## [9.5.1] unreleased
 
