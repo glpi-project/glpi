@@ -82,6 +82,24 @@ class GLPIKey {
    }
 
    /**
+    * Returns expected key path for given GLPI version.
+    * Will return null for GLPI versions that was not yet handling a custom security key.
+    *
+    * @param string $glpi_version
+    *
+    * @return string|null
+    */
+   public function getExpectedKeyPath(string $glpi_version): ?string {
+      if (version_compare($glpi_version, '9.4.6', '<')) {
+         return null;
+      } else if (version_compare($glpi_version, '9.5.x', '<')) {
+         return $this->legacykeyfile;
+      } else {
+         return $this->keyfile;
+      }
+   }
+
+   /**
     * Check if GLPI security key used for decryptable passwords exists
     *
     * @return string
@@ -107,15 +125,12 @@ class GLPIKey {
    }
 
    /**
-    * Get GLPI security legacy key that was used for decryptable passwords
+    * Get GLPI security legacy key that was used for decryptable passwords.
+    * Usage of this key should only be used during migration from GLPI < 9.5 to GLPI >= 9.5.0.
     *
     * @return string
-    *
-    * @deprecated 9.5.0
     */
    public function getLegacyKey() {
-      Toolbox::deprecated();
-
       if (!file_exists($this->legacykeyfile)) {
          return GLPIKEY;
       }
@@ -146,7 +161,7 @@ class GLPIKey {
             $sodium_key = $this->get();
          } catch (\RuntimeException $e) {
             $sodium_key = null;
-            $old_key = @$this->getLegacyKey();
+            $old_key = $this->getLegacyKey();
          }
 
          return $this->migrateFieldsInDb($sodium_key, $old_key)
@@ -218,7 +233,7 @@ class GLPIKey {
             if ($old_key === false) {
                $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($row[$column], $sodium_key));
             } else {
-               $pass = Toolbox::sodiumEncrypt(Toolbox::decrypt($row[$column], $old_key));
+               $pass = Toolbox::sodiumEncrypt($this->decryptUsingLegacyKey($row[$column], $old_key));
             }
             $success = $DB->update(
                $table,
@@ -257,7 +272,7 @@ class GLPIKey {
             if ($old_key === false) {
                $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($row['value'], $sodium_key));
             } else {
-               $pass = Toolbox::sodiumEncrypt(Toolbox::decrypt($row['value'], $old_key));
+               $pass = Toolbox::sodiumEncrypt($this->decryptUsingLegacyKey($row['value'], $old_key));
             }
             $success = $DB->update(
                Config::getTable(),
@@ -268,5 +283,30 @@ class GLPIKey {
       }
 
       return $success;
+   }
+
+   /**
+    * Decrypt a string using a legacy key.
+    * This method does the same as deprecated Toolbox::decrypt() and is only here
+    * to handle migration from GLPI < 9.5 to GLPI >= 9.5.0.
+    *
+    * @param string $string
+    * @param string $key
+    *
+    * @return string
+    */
+   public function decryptUsingLegacyKey(string $string, string $key): string {
+
+      $result = '';
+      $string = base64_decode($string);
+
+      for ($i=0; $i<strlen($string); $i++) {
+         $char    = substr($string, $i, 1);
+         $keychar = substr($key, ($i % strlen($key))-1, 1);
+         $char    = chr(ord($char)-ord($keychar));
+         $result .= $char;
+      }
+
+      return Toolbox::unclean_cross_side_scripting_deep($result);
    }
 }
