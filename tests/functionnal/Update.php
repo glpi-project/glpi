@@ -36,29 +36,6 @@ namespace tests\units;
 
 class Update extends \GLPITestCase {
 
-   public function testConstructor() {
-      global $DB;
-
-      $oldtypes = [
-         'GENERAL_TYPE',
-         'COMPUTER_TYPE',
-         'BUDGET_TYPE',
-         'MOBOARD_DEVICE',
-         'POWER_DEVICE'
-      ];
-
-      foreach ($oldtypes as $oldtype) {
-         $this->boolean(defined($oldtype))->isFalse();
-      }
-
-      $update = new \Update($DB);
-
-      //old types are now defined
-      foreach ($oldtypes as $oldtype) {
-         $this->boolean(defined($oldtype))->isTrue();
-      }
-   }
-
    public function testCurrents() {
       global $DB;
       $update = new \Update($DB);

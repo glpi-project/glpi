@@ -54,7 +54,6 @@ class Update extends CommonGLPI {
    public function __construct($DB, $args = []) {
       $this->DB = $DB;
       $this->args = $args;
-      $this->declareOldItems();
    }
 
    /**
@@ -421,74 +420,6 @@ class Update extends CommonGLPI {
       if (!$glpikey->keyExists() && !$glpikey->generate()) {
          $this->migration->displayWarning(__('Unable to create security key file!'), true);
       }
-   }
-
-   /**
-    * Declare old items for compatibility
-    *
-    * @return void
-    */
-   public function declareOldItems() {
-      // Old itemtypes
-      define("GENERAL_TYPE", 0);
-      define("COMPUTER_TYPE", 1);
-      define("NETWORKING_TYPE", 2);
-      define("PRINTER_TYPE", 3);
-      define("MONITOR_TYPE", 4);
-      define("PERIPHERAL_TYPE", 5);
-      define("SOFTWARE_TYPE", 6);
-      define("CONTACT_TYPE", 7);
-      define("ENTERPRISE_TYPE", 8);
-      define("INFOCOM_TYPE", 9);
-      define("CONTRACT_TYPE", 10);
-      define("CARTRIDGEITEM_TYPE", 11);
-      define("TYPEDOC_TYPE", 12);
-      define("DOCUMENT_TYPE", 13);
-      define("KNOWBASE_TYPE", 14);
-      define("USER_TYPE", 15);
-      define("TRACKING_TYPE", 16);
-      define("CONSUMABLEITEM_TYPE", 17);
-      define("CONSUMABLE_TYPE", 18);
-      define("CARTRIDGE_TYPE", 19);
-      define("SOFTWARELICENSE_TYPE", 20);
-      define("LINK_TYPE", 21);
-      define("STATE_TYPE", 22);
-      define("PHONE_TYPE", 23);
-      define("DEVICE_TYPE", 24);
-      define("REMINDER_TYPE", 25);
-      define("STAT_TYPE", 26);
-      define("GROUP_TYPE", 27);
-      define("ENTITY_TYPE", 28);
-      define("RESERVATION_TYPE", 29);
-      define("AUTHMAIL_TYPE", 30);
-      define("AUTHLDAP_TYPE", 31);
-      define("OCSNG_TYPE", 32);
-      define("REGISTRY_TYPE", 33);
-      define("PROFILE_TYPE", 34);
-      define("MAILGATE_TYPE", 35);
-      define("RULE_TYPE", 36);
-      define("TRANSFER_TYPE", 37);
-      define("BOOKMARK_TYPE", 38);
-      define("SOFTWAREVERSION_TYPE", 39);
-      define("PLUGIN_TYPE", 40);
-      define("COMPUTERDISK_TYPE", 41);
-      define("NETWORKING_PORT_TYPE", 42);
-      define("FOLLOWUP_TYPE", 43);
-      define("BUDGET_TYPE", 44);
-
-      // Old devicetypes
-      define("MOBOARD_DEVICE", 1);
-      define("PROCESSOR_DEVICE", 2);
-      define("RAM_DEVICE", 3);
-      define("HDD_DEVICE", 4);
-      define("NETWORK_DEVICE", 5);
-      define("DRIVE_DEVICE", 6);
-      define("CONTROL_DEVICE", 7);
-      define("GFX_DEVICE", 8);
-      define("SND_DEVICE", 9);
-      define("PCI_DEVICE", 10);
-      define("CASE_DEVICE", 11);
-      define("POWER_DEVICE", 12);
    }
 
    /**
