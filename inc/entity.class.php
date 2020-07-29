@@ -2546,7 +2546,8 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Automatic assignment of tickets')."</td>";
+      // Auto assign mode
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Automatic assignment of tickets and changes')."</td>";
       echo "<td colspan='2'>";
       $autoassign = self::getAutoAssignMode();
 
@@ -2982,10 +2983,12 @@ class Entity extends CommonTreeDropdown {
    **/
    static function getAutoAssignMode($val = null) {
 
-      $tab = [self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
-                   self::CONFIG_NEVER                   => __('No'),
-                   self::AUTO_ASSIGN_HARDWARE_CATEGORY  => __('Based on the item then the category'),
-                   self::AUTO_ASSIGN_CATEGORY_HARDWARE  => __('Based on the category then the item')];
+      $tab = [
+         self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
+         self::CONFIG_NEVER                   => __('No'),
+         self::AUTO_ASSIGN_HARDWARE_CATEGORY  => __('Based on the item then the category'),
+         self::AUTO_ASSIGN_CATEGORY_HARDWARE  => __('Based on the category then the item'),
+      ];
 
       if (is_null($val)) {
          return $tab;
