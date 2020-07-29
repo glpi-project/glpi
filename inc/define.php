@@ -516,7 +516,10 @@ $CFG_GLPI['javascript'] = [
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)
 foreach ($CFG_GLPI['reservation_types'] as $reservation_type) {
-   $CFG_GLPI['javascript']['assets'][strtolower($reservation_type)] = $reservations_libs;
+   $CFG_GLPI['javascript']['assets'][strtolower($reservation_type)] = array_merge(
+      $CFG_GLPI['javascript']['assets'][strtolower($reservation_type)] ?? [],
+      $reservations_libs
+   );
 }
 
 //Maximum time, in miliseconds a saved search should not exeed
