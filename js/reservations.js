@@ -84,7 +84,7 @@ var Reservations = function() {
             },
             resourceWeek: {
                type: 'resourceTimeline',
-               buttonText: 'Timeline Week',
+               buttonText: __('Timeline Week'),
                duration: { weeks: 1 },
                groupByDateAndResource: true,
                slotLabelFormat: [
