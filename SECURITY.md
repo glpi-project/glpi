@@ -4,7 +4,8 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 9.4.x   | :heavy_check_mark: |
+| 9.5.x   | :heavy_check_mark: |
+| 9.4.x   | :x:                |
 | 9.3.x   | :x:                |
 | 9.2.x   | :x:                |
 | < 9.2   | :x:                |
