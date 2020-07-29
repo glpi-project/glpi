@@ -79,13 +79,17 @@ class Log extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      $nb = 0;
-      if ($_SESSION['glpishow_count_on_tabs']) {
-         $nb = countElementsInTable('glpi_logs',
-                                    ['itemtype' => $item->getType(),
-                                       'items_id' => $item->getID()]);
+
+      if (!$withtemplate) {
+         $nb = 0;
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            $nb = countElementsInTable('glpi_logs',
+                                       ['itemtype' => $item->getType(),
+                                        'items_id' => $item->getID()]);
+         }
+         return self::createTabEntry(self::getTypeName(1), $nb);
       }
-      return self::createTabEntry(self::getTypeName(1), $nb);
+      return '';
    }
 
 

@@ -1067,9 +1067,7 @@ class CommonDBTM extends CommonGLPI {
             $id_to_clone = $input['id'];
          }
          if (isset($id_to_clone) && $this->getFromDB($id_to_clone)) {
-            $new_id = $this->clone($input, $history);
-            $this->getFromDB($new_id);
-            return $new_id;
+            return $this->clone($input, $history);
          }
       }
 
