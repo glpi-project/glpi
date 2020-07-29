@@ -188,6 +188,9 @@ class Auth extends CommonGLPI {
          if ($protocol === null) {
             throw new \RuntimeException(sprintf(__('Unsupported mail server type:%s.'), $config['type']));
          }
+         if ($config['validate-cert'] === false) {
+            $protocol->setNoValidateCert(true);
+         }
          $protocol->connect(
             $config['address'],
             $config['port'],

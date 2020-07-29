@@ -1310,6 +1310,10 @@ class MailCollector  extends CommonDBTM {
          $params['folder'] = $config['mailbox'];
       }
 
+      if ($config['validate-cert'] === false) {
+         $params['novalidatecert'] = true;
+      }
+
       try {
          $storage = Toolbox::getMailServerStorageInstance($config['type'], $params);
          if ($storage === null) {

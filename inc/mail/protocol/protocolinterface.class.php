@@ -39,6 +39,15 @@ if (!defined('GLPI_ROOT')) {
 interface ProtocolInterface {
 
    /**
+    * Do not validate SSL certificate
+    *
+    * @param  bool $novalidatecert Set to true to disable certificate validation
+    *
+    * @return self
+    */
+   public function setNoValidateCert(bool $novalidatecert);
+
+   /**
     * Open connection to server.
     *
     * @param  string      $host  hostname or IP address of POP3 server
