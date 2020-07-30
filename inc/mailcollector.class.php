@@ -37,9 +37,9 @@ if (!defined('GLPI_ROOT')) {
 use LitEmoji\LitEmoji;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
+use Laminas\Mail\Header\ContentDisposition;
 use Laminas\Mail\Header\ContentType;
 use Laminas\Mail\Storage\Message;
-use Laminas\Mime\Mime as Laminas_Mime;
 
 /**
  * MailCollector class
@@ -1484,16 +1484,17 @@ class MailCollector  extends CommonDBTM {
             );
          }
       } else {
-         if (!isset($part->contentDisposition)) {
-               //not an attachment
+         if (!$part->getHeaders()->has('content-type')
+             || !(($content_type_header = $part->getHeader('content-type')) instanceof ContentType)) {
+            return false; // Ignore attachements with no content-type
+         }
+         $content_type = $content_type_header->getType();
+
+         if (!$part->getHeaders()->has('content-disposition') && preg_match('/^text\/.+/', $content_type)) {
+            // Ignore attachements with no content-disposition only if they corresponds to a text part.
+            // Indeed, some mail clients (like some Outlook versions) does not set any content-disposition
+            // header on inlined images.
             return false;
-         } else {
-            if (strtok($part->contentDisposition, ';') != Laminas_Mime::DISPOSITION_ATTACHMENT
-               && strtok($part->contentDisposition, ';') != Laminas_Mime::DISPOSITION_INLINE
-            ) {
-               //not an attachment
-               return false;
-            }
          }
 
          // fix monoparted mail
@@ -1502,45 +1503,20 @@ class MailCollector  extends CommonDBTM {
          }
 
          $filename = '';
-         if (!isset($part->contentType)) {
-            Toolbox::logWarning('Current part does not have a content type.');
-            //content type missing
-            return false;
-         }
 
-         $header_type = $part->getHeader('contentType');
-         $content_type = $header_type->getType();
-
-         // get filename of attachment if present
-         // if there are any dparameters present in this part
-         if (isset($part->dparameters)) {
-            foreach ($part->getHeader('dparameters') as $dparam) {
-               if ((Toolbox::strtoupper($dparam->attribute) == 'NAME')
-                     || (Toolbox::strtoupper($dparam->attribute) == 'FILENAME')) {
-                  $filename = $dparam->value;
-               }
-            }
-         }
-
-         // if there are any parameters present in this part
+         // Try to get filename from Content-Disposition header
          if (empty($filename)
-             && isset($part->parameters)) {
-            foreach ($part->getHeader('parameters') as $param) {
-               if ((Toolbox::strtoupper($param->attribute) == 'NAME')
-                     || (Toolbox::strtoupper($param->attribute) == 'FILENAME')) {
-                  $filename = $param->value;
-               }
-            }
+             && $part->getHeaders()->has('content-disposition')
+             && ($content_disp_header = $part->getHeader('content-disposition')) instanceof ContentDisposition) {
+            $filename = $content_disp_header->getParameter('filename') ?? '';
          }
 
+         // Try to get filename from Content-Type header
          if (empty($filename)) {
-            $params = $header_type->getParameters();
-            if (isset($params['name'])) {
-               $filename = $params['name'];
-            }
+            $filename = $content_type_header->getParameter('name') ?? '';
          }
 
-         // part come without correct filename in [d]parameters - generate trivial one
+         // part come without correct filename in headers - generate trivial one
          // (inline images case for example)
          if ((empty($filename) || !Document::isValidDoc($filename))) {
             $tmp_filename = "doc_$subpart.".str_replace('image/', '', $content_type);
