@@ -241,146 +241,103 @@ class MailCollector extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-      /* FUPs
-      $ticket = new \Ticket();
-      $tid = $ticket->add([
-         'name'                  => 'database issue',
-         'content'               => 'It seems one field from the last migration has not been added in my database.',
-         '_users_id_requester'   => $tuid
-      ]);
-      $this->integer($tid)->isGreaterThan(0);
-      $DB->update(\Ticket::getTable(), ['id' => 1155], ['id' => $tid]);*/
-
-      //$collector = new \mock\MailCollector;
-      //$this->calling($collector)->getReplyMatch = "/GLPI-Ticket-(1155)/";
-      //$this->collector = $collector;
-
+      // Collect all mails
       $this->doConnect();
       $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
       $msg = $this->collector->collect($this->mailgate_id);
-      $this->variable($msg)->isIdenticalTo('Number of messages: available=16, retrieved=16, refused=2, errors=1, blacklisted=0');
-      $rejecteds = iterator_to_array($DB->request(['FROM' => \NotImportedEmail::getTable()]));
 
-      $this->array($rejecteds)->hasSize(2);
+      $total_count              = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
+      $expected_refused_count   = 2;
+      $expected_error_count     = 1;
+      $expected_blacklist_count = 0;
+
+      $this->variable($msg)->isIdenticalTo(
+         sprintf(
+            'Number of messages: available=%1$s, retrieved=%2$s, refused=%3$s, errors=%4$s, blacklisted=%5$s',
+            $total_count,
+            $total_count,
+            $expected_refused_count,
+            $expected_error_count,
+            $expected_blacklist_count
+         )
+      );
+
+      // Check refused emails
+      $rejecteds = iterator_to_array($DB->request(['FROM' => \NotImportedEmail::getTable()]));
+      $this->array($rejecteds)->hasSize($expected_refused_count);
       foreach ($rejecteds as $rejected) {
          $this->array($rejected)
             ->variable['from']->isIdenticalTo('unknown@glpi-project.org')
             ->variable['reason']->isEqualTo(\NotImportedEmail::USER_UNKNOWN);
       }
 
-      // Check mails having "tech" user as requester
-      $iterator = $DB->request([
-         'SELECT' => ['t.id', 't.name', 't.content', 'tu.users_id'],
-         'FROM'   => \Ticket::getTable() . " AS t",
-         'INNER JOIN'   => [
-            \Ticket_User::getTable() . " AS tu"  => [
-               'ON'  => [
-                  't'   => 'id',
-                  'tu'  => 'tickets_id'
-               ]
+      // Check created tickets and their actors
+      $actors_specs = [
+         // Mails having "tech" user as requester
+         [
+            'users_id'      => $tuid,
+            'actor_type'    => \CommonITILActor::REQUESTER,
+            'tickets_names' => [
+               'PHP fatal error',
+               'Re: [GLPI #0001155] New ticket database issue',
+               'Ticket with observer',
+               'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
+               'A message without to header',
             ]
          ],
-         'WHERE'  => [
-            'tu.users_id'  => $tuid,
-            'tu.type'      => \CommonITILActor::REQUESTER
-         ]
-      ]);
-
-      $this->integer(count($iterator))->isIdenticalTo(5);
-      $names = [];
-      while ($data = $iterator->next()) {
-         $names[] = $data['name'];
-         $this->dump($data['content']);
-      }
-
-      $expected_names = [
-         'PHP fatal error',
-         'Re: [GLPI #0001155] New ticket database issue',
-         'Ticket with observer',
-         'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
-         'A message without to header',
-      ];
-      $this->array($names)->isIdenticalTo($expected_names);
-
-      // Check mails having "normal" user as requester
-      $iterator = $DB->request([
-         'SELECT' => ['t.id', 't.name', 't.content', 'tu.users_id'],
-         'FROM'   => \Ticket::getTable() . " AS t",
-         'INNER JOIN'   => [
-            \Ticket_User::getTable() . " AS tu"  => [
-               'ON'  => [
-                  't'   => 'id',
-                  'tu'  => 'tickets_id'
-               ]
+         // Mails having "normal" user as requester
+         [
+            'users_id'      => $nuid,
+            'actor_type'    => \CommonITILActor::REQUESTER,
+            'tickets_names' => [
+               'Test import mail avec emoticons unicode',
+               'Test images',
+               'Test\'ed issue',
+               'Test Email from Outlook',
+               'No contenttype',
+               'проверка',
+               'тест2',
+               'Inlined image with no Content-Disposition',
+               'This is a mail without subject.', // No subject = name is set using ticket contents
             ]
          ],
-         'WHERE'  => [
-            'tu.users_id'  => $nuid,
-            'tu.type'      => \CommonITILActor::REQUESTER
-         ]
-      ]);
-
-      $this->integer(count($iterator))->isIdenticalTo(9);
-      $names = [];
-      while ($data = $iterator->next()) {
-         $names[] = $data['name'];
-         $this->dump($data['content']);
-      }
-
-      $expected_names = [
-         'Test import mail avec emoticons unicode',
-         'Test images',
-         'Test\'ed issue',
-         'Test Email from Outlook',
-         'No contenttype',
-         'проверка',
-         'тест2',
-         'Inlined image with no Content-Disposition',
-         'This is a mail without subject.', // No subject = name is set using ticket contents
-      ];
-      $this->array($names)->isIdenticalTo($expected_names);
-
-      //load ticket with observer for user normal
-      //see function doConnect
-      //wich allow to add cc as observer (add_cc_to_observer = true)
-      $iterator = $DB->request([
-         'SELECT' => ['t.id', 't.name', 't.content', 'tu.users_id'],
-         'FROM'   => \Ticket::getTable() . " AS t",
-         'INNER JOIN'   => [
-            \Ticket_User::getTable() . " AS tu"  => [
-               'ON'  => [
-                  't'   => 'id',
-                  'tu'  => 'tickets_id'
-               ]
+         // Mails having "normal" user as observer (add_cc_to_observer = true)
+         [
+            'users_id'      => $nuid,
+            'actor_type'    => \CommonITILActor::OBSERVER,
+            'tickets_names' => [
+               'Ticket with observer',
             ]
          ],
-         'WHERE'  => [
-            'tu.users_id'  => $nuid,
-            'tu.type'      => \CommonITILActor::OBSERVER
-         ]
-      ]);
-
-      $this->integer(count($iterator))->isIdenticalTo(1);
-      $names = [];
-      while ($data = $iterator->next()) {
-         $names[] = $data['name'];
-         $this->dump($data['content']);
-      }
-
-      $expected_names = [
-         'Ticket with observer',
       ];
-      $this->array($names)->isIdenticalTo($expected_names);
 
-      /* FUPs
-       * A followup should have een created from mail 04
-       * but I've not been able to setup tests correctly on this point.
-      $iterator = $DB->request(['FROM' => \ITILFollowup::getTable()]);
-      var_dump('Checking fups');
-      while ($data = $iterator->next()) {
-         print_r($data);
+      foreach ($actors_specs as $actor_specs) {
+         $iterator = $DB->request([
+            'SELECT' => ['t.id', 't.name', 'tu.users_id'],
+            'FROM'   => \Ticket::getTable() . " AS t",
+            'INNER JOIN'   => [
+               \Ticket_User::getTable() . " AS tu"  => [
+                  'ON'  => [
+                     't'   => 'id',
+                     'tu'  => 'tickets_id'
+                  ]
+               ]
+            ],
+            'WHERE'  => [
+               'tu.users_id'  => $actor_specs['users_id'],
+               'tu.type'      => $actor_specs['actor_type'],
+            ]
+         ]);
+
+         $this->integer(count($iterator))->isIdenticalTo(count($actor_specs['tickets_names']));
+
+         $names = [];
+         while ($data = $iterator->next()) {
+            $names[] = $data['name'];
+         }
+
+         $this->array($names)->isIdenticalTo($actor_specs['tickets_names']);
       }
-       */
 
       // Check creation of expected documents
       $expected_docs = [
