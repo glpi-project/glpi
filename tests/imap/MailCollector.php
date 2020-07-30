@@ -258,7 +258,7 @@ class MailCollector extends DbTestCase {
       $this->doConnect();
       $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
       $msg = $this->collector->collect($this->mailgate_id);
-      $this->variable($msg)->isIdenticalTo('Number of messages: available=15, retrieved=15, refused=2, errors=1, blacklisted=0');
+      $this->variable($msg)->isIdenticalTo('Number of messages: available=16, retrieved=16, refused=2, errors=1, blacklisted=0');
       $rejecteds = iterator_to_array($DB->request(['FROM' => \NotImportedEmail::getTable()]));
 
       $this->array($rejecteds)->hasSize(2);
@@ -320,7 +320,7 @@ class MailCollector extends DbTestCase {
          ]
       ]);
 
-      $this->integer(count($iterator))->isIdenticalTo(7);
+      $this->integer(count($iterator))->isIdenticalTo(8);
       $names = [];
       while ($data = $iterator->next()) {
          $names[] = $data['name'];
@@ -335,6 +335,7 @@ class MailCollector extends DbTestCase {
          'No contenttype',
          'проверка',
          'тест2',
+         'Inlined image with no Content-Disposition',
       ];
       $this->array($names)->isIdenticalTo($expected_names);
 
@@ -379,5 +380,42 @@ class MailCollector extends DbTestCase {
          print_r($data);
       }
        */
+
+      // Check creation of expected documents
+      $expected_docs = [
+         '00-logoteclib.png',
+         '01-Screenshot-2018-4-12 Observatoire - France très haut débit.png',
+         '01-test.JPG',
+         '15-image001.png',
+      ];
+
+      $iterator = $DB->request(
+         [
+            'SELECT' => ['d.filename'],
+            'FROM'   => \Document::getTable() . " AS d",
+            'INNER JOIN'   => [
+               \Document_Item::getTable() . " AS d_item"  => [
+                  'ON'  => [
+                     'd'      => 'id',
+                     'd_item' => 'documents_id',
+                     [
+                        'AND' => [
+                           'd_item.itemtype'      => 'Ticket',
+                           'd_item.date_creation' => $_SESSION["glpi_currenttime"],
+                        ]
+                     ]
+                  ]
+               ]
+            ]
+         ]
+      );
+
+      $this->integer(count($iterator))->isIdenticalTo(count($expected_docs));
+
+      $filenames = [];
+      while ($data = $iterator->next()) {
+         $filenames[] = $data['filename'];
+      }
+      $this->array($filenames)->isIdenticalTo($expected_docs);
    }
 }
