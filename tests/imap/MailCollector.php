@@ -320,7 +320,7 @@ class MailCollector extends DbTestCase {
          ]
       ]);
 
-      $this->integer(count($iterator))->isIdenticalTo(8);
+      $this->integer(count($iterator))->isIdenticalTo(9);
       $names = [];
       while ($data = $iterator->next()) {
          $names[] = $data['name'];
@@ -336,6 +336,7 @@ class MailCollector extends DbTestCase {
          'проверка',
          'тест2',
          'Inlined image with no Content-Disposition',
+         'This is a mail without subject.', // No subject = name is set using ticket contents
       ];
       $this->array($names)->isIdenticalTo($expected_names);
 
