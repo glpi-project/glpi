@@ -583,7 +583,7 @@ HTML;
       echo "</div>"; // .field
 
       echo \Html::submit(_x('button', "Add"), [
-         'class' => 'submit submit-new-dashboard'
+         'class' => 'submit vsubmit submit-new-dashboard'
       ]);
 
       echo "</form>"; // .card.display-widget-form
@@ -738,7 +738,7 @@ HTML;
       }
 
       echo \Html::submit($label_submit, [
-         'class' => 'submit '.$class_submit
+         'class' => 'submit vsubmit '.$class_submit
       ]);
 
       echo \Html::hidden('gridstack_id', ['value' => $gridstack_id]);
@@ -1086,7 +1086,7 @@ HTML;
             );
 
             $cards["count_".$itemtype."_".$fk_itemtype] = [
-               'widgettype' => ['multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
+               'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
                'itemtype'   => "\\Computer",
                'group'      => __('Assets'),
                'label'      => $label,
@@ -1163,6 +1163,14 @@ HTML;
          'provider'   => "Glpi\\Dashboard\\Provider::averageTicketTimes"
       ];
 
+      $cards["tickets_summary"] = [
+         'widgettype' => ['summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+         'itemtype'   => "\\Ticket",
+         'group'      => __('Assistance'),
+         'label'      => __("Tickets summary"),
+         'provider'   => "Glpi\\Dashboard\\Provider::getTicketSummary"
+      ];
+
       foreach ([
          'ITILCategory' => __("Top ticket's categories"),
          'Entity'       => __("Top ticket's entities"),
@@ -1170,7 +1178,7 @@ HTML;
          'Location'     => __("Top ticket's locations"),
       ] as $itemtype => $label) {
          $cards["top_ticket_$itemtype"] = [
-            'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
+            'widgettype' => ['summaryNumbers', 'pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
             'itemtype'   => "\\Ticket",
             'group'      => __('Assistance'),
             'label'      => $label,
@@ -1187,7 +1195,7 @@ HTML;
          'group_assign'    => __("Top ticket's assignee groups"),
       ] as $type => $label) {
          $cards["top_ticket_$type"] = [
-            'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
+            'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
             'itemtype'   => "\\Ticket",
             'group'      => __('Assistance'),
             'label'      => $label,

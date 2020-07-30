@@ -980,6 +980,55 @@ class Provider extends \CommonGLPI {
    }
 
 
+   public static function getTicketSummary(array $params = []) {
+      $default_params = [
+         'label'           => "",
+         'icon'            => "",
+      ];
+      $params = array_merge($default_params, $params);
+
+
+      $incoming   = self::nbTicketsGeneric('incoming', $params);
+      $assigned   = self::nbTicketsGeneric('assigned', $params);
+      $waiting    = self::nbTicketsGeneric('waiting', $params);
+      $tovalidate = self::nbTicketsGeneric('waiting_validation', $params);
+      $closed     = self::nbTicketsGeneric('closed', $params);
+
+      return [
+         'data'  => [
+            [
+               'number' => $incoming['number'],
+               'label'  => __("New"),
+               'url'    => $incoming['url'],
+               'color'  => '#3bc519',
+            ], [
+               'number' => $assigned['number'],
+               'label'  => __("Assigned"),
+               'url'    => $assigned['url'],
+               'color'  => '#f1cd29',
+            ], [
+               'number' => $waiting['number'],
+               'label'  => __("Pending"),
+               'url'    => $waiting['url'],
+               'color'  => '#f1a129',
+            ], [
+               'number' => $tovalidate['number'],
+               'label'  => __("To validate"),
+               'url'    => $tovalidate['url'],
+               'color'  => '#266ae9',
+            ], [
+               'number' => $closed['number'],
+               'label'  => __("Closed"),
+               'url'    => $closed['url'],
+               'color'  => '#555555',
+            ]
+         ],
+         'label' => $params['label'],
+         'icon'  => $params['icon'],
+      ];
+   }
+
+
    public static function formatMonthyearDates(string $monthyear): array {
       $rawdate = explode('-', $monthyear);
       $year    = $rawdate[0];

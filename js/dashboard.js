@@ -617,6 +617,13 @@ var Dashboard = {
          .find('.formatted-number').fitText(text_offset);
 
       parent_item
+         .find('.summary-numbers')
+         .find('.formatted-number').fitText(text_offset-0.65);
+      parent_item
+         .find('.summary-numbers')
+         .find('.line .label').fitText(text_offset-0.2);
+
+      parent_item
          .find('.big-number')
          .find('.label').fitText(text_offset - 0.2);
    },
@@ -625,7 +632,7 @@ var Dashboard = {
       parent_item = parent_item || $('body');
 
       parent_item
-         .find('.multiple-number, .big-number')
+         .find('.multiple-numbers, .summary-numbers, .big-number')
          .find('.formatted-number')
          .each(function () {
             var count     = $(this);

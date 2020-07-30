@@ -161,6 +161,12 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/table.png',
             'limit'    => true,
          ],
+         'summaryNumbers' => [
+            'label'    => __("Summary numbers"),
+            'function' => 'Glpi\\Dashboard\\Widget::summaryNumber',
+            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/summarynumber.png',
+            'limit'    => true,
+         ],
       ];
 
       $more_types = \Plugin::doHookFunction("dashboard_types");
@@ -233,6 +239,13 @@ HTML;
    }
 
 
+   public static function summaryNumber(array $params = []): string {
+      $params['class'] = 'summary-numbers';
+      //$params['label'] = '';
+      return self::multipleNumber($params);
+   }
+
+
    /**
     * Display a multiple big number widget.
     *
@@ -260,6 +273,7 @@ HTML;
          'color'  => '',
          'icon'   => '',
          'limit'  => 99999,
+         'class'  => "multiple-numbers",
       ];
       $p = array_merge($default, $params);
       $default_entry = [
@@ -285,12 +299,21 @@ HTML;
             ? "href='{$entry['url']}'"
             : "";
 
+         $color = isset($entry['color'])
+            ? "style=\"color: {$entry['color']};\""
+            : "";
+
+         $color2 = isset($entry['color'])
+            ? "style=\"color: ".\Toolbox::getFgColor($entry['color'], 20).";\""
+            : "";
+
          $formatted_number = \Toolbox::shortenNumber($entry['number']);
+
          $numbers_html.= <<<HTML
             <a {$href} class="line">
-               <span class="content">$formatted_number</span>
-               <i class="icon {$entry['icon']}"></i>
-               <span class="label">{$entry['label']}</span>
+               <span class="content" {$color}>$formatted_number</span>
+               <i class="icon {$entry['icon']}" {$color2}></i>
+               <span class="label" {$color2}>{$entry['label']}</span>
             </a>
 HTML;
       }
@@ -306,7 +329,7 @@ HTML;
       }
 
       $html = <<<HTML
-      <div class="card multiple-number"
+      <div class="card {$p['class']}"
            title="{$p['alt']}"
            style="background-color: {$p['color']}; color: {$fg_color}">
          <div class='scrollable'>
