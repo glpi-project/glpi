@@ -717,7 +717,7 @@ class Impact extends CommonGLPI {
       echo "<h2>" . __("Impact analysis") . "</h2>";
       echo "<div id='switchview'>";
       echo "<a id='sviewlist' href='#list'><i class='pointer fa fa-list-alt' title='".__('View as list')."'></i></a>";
-      echo "<a id='sviewgraph' href='#graph'><i class='pointer fa fa-project-diagram' title='".__('View graphical representation')."'></i></a>";
+      echo "<a id='sviewgraph' href='#graph'><i class='pointer fa fa-bezier-curve' title='".__('View graphical representation')."'></i></a>";
       echo "</div>";
       echo "</div>";
 
@@ -1067,8 +1067,8 @@ class Impact extends CommonGLPI {
       echo '<li id="impact_redo" class="impact-disabled" title="' . __("Redo") .'"><i class="fas fa-fw fa-redo"></i></li>';
       echo '<li class="impact-separator"></li>';
       echo '<li id="add_node" title="' . __("Add asset") .'"><i class="fas fa-fw fa-plus"></i></li>';
-      echo '<li id="add_edge" title="' . __("Add relation") .'"><i class="fas fa-fw fa-pencil-alt"></i></li>';
-      echo '<li id="add_compound" title="' . __("Add group") .'"><i class="far fa-fw fa-square"></i></li>';
+      echo '<li id="add_edge" title="' . __("Add relation") .'"><i class="fas fa-fw fa-slash"></i></li>';
+      echo '<li id="add_compound" title="' . __("Add group") .'"><i class="far fa-fw fa-object-group"></i></li>';
       echo '<li id="delete_element" title="' . __("Delete element") .'"><i class="fas fa-fw fa-trash"></i></li>';
       echo '<li class="impact-separator"></li>';
       echo '<li id="export_graph" title="' . __("Download") .'"><i class="fas fa-fw fa-download"></i></li>';
