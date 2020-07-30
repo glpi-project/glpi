@@ -1033,7 +1033,11 @@ class MailCollector  extends CommonDBTM {
       $tkt['_do_not_check_users_id'] = 1;
       $body                          = $this->getBody($message);
 
-      $subject       = $message->subject;
+      try {
+         $subject = $message->getHeader('subject')->getFieldValue();
+      } catch (Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
+         $subject = null;
+      }
       $tkt['_message']  = $message;
 
       if (!Toolbox::seems_utf8($body)) {
