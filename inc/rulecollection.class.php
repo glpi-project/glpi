@@ -720,7 +720,7 @@ class RuleCollection extends CommonDBTM {
    function deleteRuleOrder($ranking) {
       global $DB;
 
-      $DB->update(
+      $result = $DB->update(
          'glpi_rules', [
             'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' - 1')
          ], [
@@ -728,7 +728,7 @@ class RuleCollection extends CommonDBTM {
             'ranking'   => ['>', $ranking]
          ]
       );
-      return $DB->query($sql);
+      return $result;
    }
 
 
