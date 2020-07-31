@@ -2547,7 +2547,7 @@ class Entity extends CommonTreeDropdown {
       echo "</td></tr>";
 
       // Auto assign mode
-      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Automatic assignment of tickets and changes')."</td>";
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Automatic assignment of tickets, changes and problems')."</td>";
       echo "<td colspan='2'>";
       $autoassign = self::getAutoAssignMode();
 
