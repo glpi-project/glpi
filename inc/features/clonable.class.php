@@ -43,16 +43,22 @@ use Toolbox;
  * Clonable objects
  **/
 trait Clonable {
+
    /**
-    * Get relations class to clone along with current eleemnt
+    * Get relations class to clone along with current element
     *
     * @return CommonDBTM::class[]
     */
    abstract public function getCloneRelations() :array;
 
-   public function post_clone($source, $history) {
-      parent::post_clone($source, $history);
-
+   /**
+    * Clone the item's relations
+    *
+    * @param $source
+    * @param $history
+    * @since x.x.x
+    */
+   public function cloneRelations($source, $history) {
       $clone_relations = $this->getCloneRelations();
       foreach ($clone_relations as $classname) {
          if (!is_a($classname, CommonDBConnexity::class, true)) {
@@ -71,5 +77,74 @@ trait Clonable {
             $relation_item->clone($override_input, $history);
          }
       }
+   }
+
+   /**
+    * Prepare input datas for cloning the item
+    *
+    * @since x.x.x
+    *
+    * @param array $input datas used to add the item
+    *
+    * @return array the modified $input array
+    **/
+   function prepareInputForClone($input) {
+      unset($input['id']);
+      unset($input['date_mod']);
+      unset($input['date_creation']);
+      return $input;
+   }
+
+   /**
+    * Clones the current item
+    *
+    * @since x.x.x
+    *
+    * @param array $override_input custom input to override
+    * @param boolean $history do history log ? (true by default)
+    *
+    * @return integer The new ID of the clone (or false if fail)
+    */
+   public function clone(array $override_input = [], bool $history = true) {
+      global $DB, $CFG_GLPI;
+
+      if ($DB->isSlave()) {
+         return false;
+      }
+      $new_item = new static();
+      $input = Toolbox::addslashes_deep($this->fields);
+      foreach ($override_input as $key => $value) {
+         $input[$key] = $value;
+      }
+      $input = $new_item->prepareInputForClone($input);
+      if (isset($input['id'])) {
+         $input['_oldID'] =  $input['id'];
+         unset($input['id']);
+      }
+      unset($input['date_creation']);
+      unset($input['date_mod']);
+
+      if (isset($input['template_name'])) {
+         unset($input['template_name']);
+      }
+      if (isset($input['is_template'])) {
+         unset($input['is_template']);
+      }
+
+      $input['clone'] = true;
+      $newID = $new_item->add($input, [], $history);
+      // If the item needs post clone (recursive cloning for example)
+      $new_item->post_clone($this, $history);
+      return $newID;
+   }
+
+   /**
+    * @param $source
+    * @param $history
+    */
+   public function post_clone($source, $history) {
+      // For 9.5.x BC
+      parent::post_clone($source, $history);
+      $this->cloneRelations($source, $history);
    }
 }

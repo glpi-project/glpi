@@ -33,6 +33,10 @@
 namespace tests\units;
 
 use Glpi\Api\Deprecated\TicketFollowup;
+use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\Kanban;
+use Glpi\Features\PlanningEvent;
 use ITILFollowup;
 use Ticket;
 
@@ -987,5 +991,28 @@ class Toolbox extends \GLPITestCase {
          ->withType(E_USER_DEPRECATED)
          ->withMessage('Calling this function is deprecated')
          ->exists();
+   }
+
+   public function hasTraitProvider() {
+      return [
+         [\Computer::class, Clonable::class, true],
+         [\Monitor::class, Clonable::class, true],
+         [\CommonITILObject::class, Clonable::class, true],
+         [\Ticket::class, Clonable::class, true],
+         [\Plugin::class, Clonable::class, false],
+         [\Project::class, Kanban::class, true],
+         [\Computer::class, Kanban::class, false],
+         [\Computer::class, DCBreadcrumb::class, true],
+         [\Ticket::class, DCBreadcrumb::class, false],
+         [\CommonITILTask::class, PlanningEvent::class, true],
+         [\Computer::class, PlanningEvent::class, false],
+      ];
+   }
+
+   /**
+    * @dataProvider hasTraitProvider
+    */
+   public function testHasTrait($class, $trait, $result) {
+      $this->boolean(\Toolbox::hasTrait($class, $trait))->isIdenticalTo((bool)$result);
    }
 }
