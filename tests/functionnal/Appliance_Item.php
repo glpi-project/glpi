@@ -40,7 +40,7 @@ class Appliance_Item extends DbTestCase {
       $this->newTestedInstance();
       $this->array(
          $this->testedInstance->getForbiddenStandardMassiveAction()
-      )->isIdenticalTo(['update']);
+      )->isIdenticalTo(['clone', 'update']);
    }
 
    public function testCountForAppliance() {
