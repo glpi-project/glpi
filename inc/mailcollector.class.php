@@ -1035,7 +1035,7 @@ class MailCollector  extends CommonDBTM {
 
       try {
          $subject = $message->getHeader('subject')->getFieldValue();
-      } catch (Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
+      } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
          $subject = null;
       }
       $tkt['_message']  = $message;
