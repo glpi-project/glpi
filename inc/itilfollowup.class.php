@@ -579,8 +579,12 @@ class ITILFollowup  extends CommonDBChild {
 
       $followup_condition = '';
       if (!Session::haveRight('followup', self::SEEPRIVATE)) {
-         $followup_condition = "AND (`NEWTABLE`.`is_private` = 0
-                                     OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
+         $followup_condition = [
+            'OR' => [
+               'NEWTABLE.is_private'   => 0,
+               'NEWTABLE.users_id'     => Session::getLoginUserID()
+            ]
+         ];
       }
 
       $tab[] = [

@@ -1219,6 +1219,7 @@ abstract class API extends CommonGLPI {
       $already_linked_table = [];
       $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
       $where = Search::addDefaultWhere($itemtype);
+
       if ($where == '') {
          $where = "1=1 ";
       }

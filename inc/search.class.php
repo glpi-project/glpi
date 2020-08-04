@@ -539,7 +539,7 @@ class Search {
     * @return void
    **/
    static function constructSQL(array &$data) {
-      global $CFG_GLPI, $DB;
+      global $DB, $CFG_GLPI;
 
       if (!isset($data['itemtype'])) {
          return false;
@@ -5013,7 +5013,7 @@ JAVASCRIPT;
             $condition = $joinparams['condition'];
             if (is_array($condition)) {
                $it = new DBmysqlIterator(null);
-               $condition = $it->analyseCrit($condition);
+               $condition = ' AND ' . $it->analyseCrit($condition);
             }
             $from         = ["`REFTABLE`", "REFTABLE", "`NEWTABLE`", "NEWTABLE"];
             $to           = ["`$rt`", "`$rt`", "`$nt`", "`$nt`"];
@@ -7639,10 +7639,13 @@ JAVASCRIPT;
       $complexjoin = '';
 
       if (isset($joinparams['condition'])) {
-         if (is_array($joinparams['condition'])) {
-            $complexjoin .= print_r($joinparams['condition'], true);
-         } else {
+         if (!is_array($joinparams['condition'])) {
             $complexjoin .= $joinparams['condition'];
+         } else {
+            global $DB;
+            $dbi = new DBMysqlIterator($DB);
+            $sql_clause = $dbi->analyseCrit($joinparams['condition']);
+            $complexjoin .= ' AND ' . $sql_clause; //TODO: and should came from conf
          }
       }
 
@@ -7661,10 +7664,13 @@ JAVASCRIPT;
                $complexjoin .= $tab['table'];
             }
             if (isset($tab['joinparams']) && isset($tab['joinparams']['condition'])) {
-               if (is_array($tab['joinparams']['condition'])) {
-                  $complexjoin .= print_r($tab['joinparams']['condition'], true);
-               } else {
+               if (!is_array($tab['joinparams']['condition'])) {
                   $complexjoin .= $tab['joinparams']['condition'];
+               } else {
+                  global $DB;
+                  $dbi = new DBMysqlIterator($DB);
+                  $sql_clause = $dbi->analyseCrit($tab['joinparams']['condition']);
+                  $complexjoin .= ' AND ' . $sql_clause; //TODO: and should came from conf
                }
             }
          }

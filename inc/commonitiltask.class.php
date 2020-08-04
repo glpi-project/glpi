@@ -666,8 +666,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
       $task_condition = '';
       if ($task->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
-         $task_condition = "AND (`NEWTABLE`.`is_private` = 0
-                                 OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
+         $task_condition = [
+            'OR' => [
+               'NEWTABLE.is_private'   => 0,
+               'NEWTABLE.users_id'     => Session::getLoginUserID()
+            ]
+         ];
       }
 
       $tab[] = [
@@ -792,7 +796,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge'),
          'datatype'           => 'itemlink',
-         'condition'          => 'is_task',
+         'condition'          => ['is_task' => 1],
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
