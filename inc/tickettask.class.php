@@ -287,7 +287,7 @@ class TicketTask extends CommonITILTask {
             $params['candel'] = false;
          }
 
-         if ($params['canedit'] && $this->can($ID, UPDATE)) {
+         if ($params['canedit'] && $this->canUpdateItem()) {
             echo Ticket::getSplittedSubmitButtonHtml($this->fields['tickets_id'], 'update');
             echo "</td></tr><tr class='tab_bg_2'>\n";
          }
