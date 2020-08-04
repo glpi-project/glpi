@@ -868,7 +868,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
 
    /**
-    * Get operating systems related to a given item
+    * Get softwares related to a given item
     *
     * @param CommonDBTM $item  Item instance
     * @param string     $sort  Field to sort on
