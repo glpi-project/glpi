@@ -1391,7 +1391,6 @@ class Ticket extends DbTestCase {
    public function testClone() {
       $this->login();
       $this->setEntity('Root entity', true);
-      $ticket = new \Ticket();
       $ticket = getItemByTypeName('Ticket', '_ticket01');
 
       $date = date('Y-m-d H:i:s');

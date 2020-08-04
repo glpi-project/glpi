@@ -220,8 +220,7 @@ class Calendar extends CommonDropdown {
       return false;
    }
 
-   public function post_clone($source, $history)
-   {
+   public function post_clone($source, $history) {
       $this->updateDurationCache($this->getID());
       $this->cloneRelations($source, $history);
    }
