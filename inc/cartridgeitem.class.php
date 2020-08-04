@@ -311,7 +311,7 @@ class CartridgeItem extends CommonDBTM {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'child',
-            'condition'          => ['NOT' => ['NEWTABLE.date_use' >= null],
+            'condition'          => ['NOT' => ['NEWTABLE.date_use' => null],
                                      'NEWTABLE.date_out' => null]
          ]
       ];

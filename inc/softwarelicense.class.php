@@ -733,6 +733,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'jointype'  => 'child',
          'condition' => array_merge(
             getEntitiesRestrictCriteria("NEWTABLE", '', '', true), [
+               'NEWTABLE.is_template' => 0,
                'OR'  => [
                   ['NEWTABLE.expire' => null],
                   ['NEWTABLE.expire' => ['>', new QueryExpression('NOW()')]]
