@@ -733,6 +733,54 @@ class Item_Devices extends CommonDBRelation {
       return getForeignKeyFieldForTable(getTableForItemType(static::getDeviceType()));
    }
 
+   public function getTableGroupCriteria($item, $peer_type = null) {
+      $is_device = ($item instanceof CommonDevice);
+      $ctable = $this->getTable();
+      $criteria = [
+         'SELECT' => "$ctable.*",
+         'FROM'   => $ctable
+      ];
+      if ($is_device) {
+         $fk = 'items_id';
+
+         // Entity restrict
+         $criteria['WHERE'] = [
+            $this->getDeviceForeignKey()  => $item->getID(),
+            "$ctable.itemtype"            => $peer_type,
+            "$ctable.is_deleted"          => 0
+         ];
+         $criteria['ORDERBY'] = [
+            "$ctable.itemtype",
+            "$ctable.$fk"
+         ];
+         if (!empty($peer_type)) {
+            $criteria['LEFT JOIN'] = [
+               getTableForItemType($peer_type) => [
+                  'ON' => [
+                     $ctable                          => 'items_id',
+                     getTableForItemType($peer_type)  => 'id', [
+                        'AND' => [
+                           "$ctable.itemtype"   => $peer_type
+                        ]
+                     ]
+                  ]
+               ]
+            ];
+            $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(getTableForItemType($peer_type));
+         }
+      } else {
+         $fk = $this->getDeviceForeignKey();
+
+         $criteria['WHERE'] = [
+            'itemtype'     => $item->getType(),
+            'items_id'     => $item->getID(),
+            'is_deleted'   => 0
+         ];
+         $criteria['ORDERBY'] = $fk;
+      }
+
+      return $criteria;
+   }
 
    /**
     * Get the group of elements regarding given item.
@@ -834,51 +882,8 @@ class Item_Devices extends CommonDBRelation {
                                                        $previous_column);
       }
 
-      $ctable = $this->getTable();
-      $criteria = [
-         'SELECT' => "$ctable.*",
-         'FROM'   => $ctable
-      ];
-      if ($is_device) {
-         $fk = 'items_id';
-
-         // Entity restrict
-         $leftjoin = '';
-         $where = "";
-         $criteria['WHERE'] = [
-            $this->getDeviceForeignKey()  => $item->getID(),
-            "$ctable.itemtype"            => $peer_type,
-            "$ctable.is_deleted"          => 0
-         ];
-         $criteria['ORDERBY'] = [
-            "$ctable.itemtype",
-            "$ctable.$fk"
-         ];
-         if (!empty($peer_type)) {
-            $criteria['LEFT JOIN'] = [
-               getTableForItemType($peer_type) => [
-                  'ON' => [
-                     $ctable                          => 'items_id',
-                     getTableForItemType($peer_type)  => 'id', [
-                        'AND' => [
-                           "$ctable.itemtype"   => $peer_type
-                        ]
-                     ]
-                  ]
-               ]
-            ];
-            $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(getTableForItemType($peer_type));
-         }
-      } else {
-         $fk = $this->getDeviceForeignKey();
-
-         $criteria['WHERE'] = [
-            'itemtype'     => $item->getType(),
-            'items_id'     => $item->getID(),
-            'is_deleted'   => 0
-         ];
-         $criteria['ORDERBY'] = $fk;
-      }
+      $criteria = $this->getTableGroupCriteria($item, $peer_type);
+      $fk = $item instanceof CommonDevice ? 'items_id' : $this->getDeviceForeignKey();
 
       if (!empty($peer_type)) {
          $peer = new $peer_type();

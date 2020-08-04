@@ -36,8 +36,9 @@ if (!defined('GLPI_ROOT')) {
 
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
+use Laminas\Mail\Header\ContentDisposition;
+use Laminas\Mail\Header\ContentType;
 use Laminas\Mail\Storage\Message;
-use Laminas\Mime\Mime as Laminas_Mime;
 use LitEmoji\LitEmoji;
 
 /**
@@ -1032,7 +1033,11 @@ class MailCollector  extends CommonDBTM {
       $tkt['_do_not_check_users_id'] = 1;
       $body                          = $this->getBody($message);
 
-      $subject       = $message->subject;
+      try {
+         $subject = $message->getHeader('subject')->getFieldValue();
+      } catch (Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
+         $subject = null;
+      }
       $tkt['_message']  = $message;
 
       if (!Toolbox::seems_utf8($body)) {
@@ -1305,6 +1310,10 @@ class MailCollector  extends CommonDBTM {
          $params['folder'] = $config['mailbox'];
       }
 
+      if ($config['validate-cert'] === false) {
+         $params['novalidatecert'] = true;
+      }
+
       try {
          $storage = Toolbox::getMailServerStorageInstance($config['type'], $params);
          if ($storage === null) {
@@ -1483,16 +1492,17 @@ class MailCollector  extends CommonDBTM {
             );
          }
       } else {
-         if (!isset($part->contentDisposition)) {
-               //not an attachment
+         if (!$part->getHeaders()->has('content-type')
+             || !(($content_type_header = $part->getHeader('content-type')) instanceof ContentType)) {
+            return false; // Ignore attachements with no content-type
+         }
+         $content_type = $content_type_header->getType();
+
+         if (!$part->getHeaders()->has('content-disposition') && preg_match('/^text\/.+/', $content_type)) {
+            // Ignore attachements with no content-disposition only if they corresponds to a text part.
+            // Indeed, some mail clients (like some Outlook versions) does not set any content-disposition
+            // header on inlined images.
             return false;
-         } else {
-            if (strtok($part->contentDisposition, ';') != Laminas_Mime::DISPOSITION_ATTACHMENT
-               && strtok($part->contentDisposition, ';') != Laminas_Mime::DISPOSITION_INLINE
-            ) {
-               //not an attachment
-               return false;
-            }
          }
 
          // fix monoparted mail
@@ -1501,45 +1511,20 @@ class MailCollector  extends CommonDBTM {
          }
 
          $filename = '';
-         if (!isset($part->contentType)) {
-            Toolbox::logWarning('Current part does not have a content type.');
-            //content type missing
-            return false;
-         }
 
-         $header_type = $part->getHeader('contentType');
-         $content_type = $header_type->getType();
-
-         // get filename of attachment if present
-         // if there are any dparameters present in this part
-         if (isset($part->dparameters)) {
-            foreach ($part->getHeader('dparameters') as $dparam) {
-               if ((Toolbox::strtoupper($dparam->attribute) == 'NAME')
-                     || (Toolbox::strtoupper($dparam->attribute) == 'FILENAME')) {
-                  $filename = $dparam->value;
-               }
-            }
-         }
-
-         // if there are any parameters present in this part
+         // Try to get filename from Content-Disposition header
          if (empty($filename)
-             && isset($part->parameters)) {
-            foreach ($part->getHeader('parameters') as $param) {
-               if ((Toolbox::strtoupper($param->attribute) == 'NAME')
-                     || (Toolbox::strtoupper($param->attribute) == 'FILENAME')) {
-                  $filename = $param->value;
-               }
-            }
+             && $part->getHeaders()->has('content-disposition')
+             && ($content_disp_header = $part->getHeader('content-disposition')) instanceof ContentDisposition) {
+            $filename = $content_disp_header->getParameter('filename') ?? '';
          }
 
+         // Try to get filename from Content-Type header
          if (empty($filename)) {
-            $params = $header_type->getParameters();
-            if (isset($params['name'])) {
-               $filename = $params['name'];
-            }
+            $filename = $content_type_header->getParameter('name') ?? '';
          }
 
-         // part come without correct filename in [d]parameters - generate trivial one
+         // part come without correct filename in headers - generate trivial one
          // (inline images case for example)
          if ((empty($filename) || !Document::isValidDoc($filename))) {
             $tmp_filename = "doc_$subpart.".str_replace('image/', '', $content_type);
@@ -1652,20 +1637,19 @@ class MailCollector  extends CommonDBTM {
       } else {
          //if message is multipart, check for html contents then text contents
          foreach (new RecursiveIteratorIterator($message) as $part) {
-            try {
-               if (strtok($part->contentType, ';') == 'text/html') {
-                  $this->body_is_html = true;
-                  $content = $this->getDecodedContent($part);
-                  //do not check for text part if we found html one.
-                  break;
-               }
-               if (strtok($part->contentType, ';') == 'text/plain' && $content === null) {
-                  $this->body_is_html = false;
-                  $content = $this->getDecodedContent($part);
-               }
-            } catch (\Exception $e) {
-               // ignore
-               $catched = true;
+            if (!$part->getHeaders()->has('content-type')
+               || !(($content_type = $part->getHeader('content-type')) instanceof ContentType)) {
+               continue;
+            }
+            if ($content_type->getType() == 'text/html') {
+               $this->body_is_html = true;
+               $content = $this->getDecodedContent($part);
+               //do not check for text part if we found html one.
+               break;
+            }
+            if ($content_type->getType() == 'text/plain' && $content === null) {
+               $this->body_is_html = false;
+               $content = $this->getDecodedContent($part);
             }
          }
       }
@@ -2041,18 +2025,25 @@ class MailCollector  extends CommonDBTM {
             break;
       }
 
-      try {
-         $contentTypePart = $part->getHeader('contentType');
-         $contentType = $contentTypePart->getType();
-      } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
-         //no ContentType header, switch to acceptable default
-         $contentType = "text/plain";
-      } finally {
-         if (preg_match('/^text\//', $contentType) && ($encoding = mb_detect_encoding($contents)) != 'UTF-8') {
-            $contents = Toolbox::encodeInUtf8(
-               $contents,
-               (isset($contentTypePart) ? $contentTypePart->getEncoding() : $encoding)
-            );
+      if (!$part->getHeaders()->has('content-type')
+         || !(($content_type = $part->getHeader('content-type')) instanceof ContentType)
+          | preg_match('/^text\//', $content_type->getType()) !== 1) {
+         return $contents; // No charset conversion content type header is not set or content is not text/*
+      }
+
+      $charset = $content_type->getParameter('charset');
+      if (strtoupper($charset) != 'UTF-8') {
+         if (in_array($charset, array_map('strtoupper', mb_list_encodings()))) {
+            $contents = mb_convert_encoding($contents, 'UTF-8', $charset);
+         } else {
+            // Convert Windows charsets names
+            if (preg_match('/^WINDOWS-\d{4}$/', $charset)) {
+               $charset = preg_replace('/^WINDOWS-(\d{4})$/', 'CP$1', $charset);
+            }
+
+            if ($converted = iconv($charset, 'UTF-8//TRANSLIT', $contents)) {
+               $contents = $converted;
+            }
          }
       }
 

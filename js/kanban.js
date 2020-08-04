@@ -582,6 +582,9 @@
                }
             }
          });
+         $(self.add_column_form).on('submit', 'form', function(e) {
+            e.preventDefault();
+         });
          $(self.add_column_form).on('click', '.kanban-create-column', function() {
             var toolbar = $(self.element + ' .kanban-toolbar');
             $(self.add_column_form).css({
@@ -594,7 +597,9 @@
                top: toolbar.offset().top + toolbar.outerHeight(true)
             });
          });
-         $(self.create_column_form).on('click', '.kanban-create-column', function() {
+         $(self.create_column_form).on('submit', 'form', function(e) {
+            e.preventDefault();
+
             var toolbar = $(self.element + ' .kanban-toolbar');
             $(self.create_column_form).css({
                display: 'none'
@@ -1722,7 +1727,7 @@
          card_el += "<div class='kanban-item-header'>" + card['title'] + "</div>";
          card_el += "<div class='kanban-item-content'>" + (card['content'] || '') + "</div>";
          card_el += "<div class='kanban-item-team'>";
-         if (card["_team"] !== undefined && card['_team'].length > 0) {
+         if (card["_team"] !== undefined && Object.values(card["_team"]).length > 0) {
             $.each(Object.values(card["_team"]).slice(0, self.max_team_images), function(teammember_id, teammember) {
                card_el += getTeamBadge(teammember);
             });

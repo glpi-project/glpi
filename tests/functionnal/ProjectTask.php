@@ -172,6 +172,7 @@ class ProjectTask extends DbTestCase {
       $ttask = new \TicketTask();
       $ttask_id = (int)$ttask->add([
          'name'               => 'A ticket task in bounds',
+         'content'            => 'A ticket task in bounds',
          'tickets_id'         => $tid,
          'plan'               => [
             'begin'  => '2019-08-11',

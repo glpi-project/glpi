@@ -200,6 +200,7 @@ class TicketTask extends DbTestCase {
       foreach ($tasksstates as $taskstate) {
          $this->integer(
             $task->add([
+               'content'      => sprintf('Task with "%s" state', $taskstate),
                'state'        => $taskstate,
                'tickets_id'   => $ticketId,
                'users_id_tech'=> $uid
@@ -237,6 +238,7 @@ class TicketTask extends DbTestCase {
       foreach ($tasksstates as $taskstate) {
          $this->integer(
             $task->add([
+               'content'      => sprintf('Task with "%s" state', $taskstate),
                'state'        => $taskstate,
                'tickets_id'   => $ticketId,
                'users_id_tech'=> $uid
@@ -278,6 +280,7 @@ class TicketTask extends DbTestCase {
       $this->integer(
          (int)$ttask->add([
             'name'               => 'first test, whole period',
+            'content'            => 'first test, whole period',
             'tickets_id'         => $tid,
             'plan'               => [
                'begin'  => '2019-08-10',
@@ -292,6 +295,7 @@ class TicketTask extends DbTestCase {
       $this->integer(
          (int)$ttask->add([
             'name'               => 'test, subperiod',
+            'content'            => 'test, subperiod',
             'tickets_id'         => $tid,
             'plan'               => [
                'begin'   => '2019-08-13',
@@ -316,6 +320,7 @@ class TicketTask extends DbTestCase {
       $this->integer(
          (int)$ttask->add([
             'name'               => 'first test, whole period',
+            'content'            => 'first test, whole period',
             'tickets_id'         => $tid,
             'plan'               => [
                'begin'  => '2018-08-10',

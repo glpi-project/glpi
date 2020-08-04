@@ -1265,8 +1265,7 @@ class Migration {
             throw new \RuntimeException(
                sprintf(
                   'Table "%s" does not exists.',
-                  $old_table,
-                  $new_table
+                  $old_table
                )
             );
          }

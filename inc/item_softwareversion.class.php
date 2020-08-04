@@ -868,35 +868,18 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
 
    /**
-    * Show software installed on a computer
+    * Get softwares related to a given item
     *
-    * @param Computer $comp         Computer object
-    * @param boolean  $withtemplate template case of the view process
+    * @param CommonDBTM $item  Item instance
+    * @param string     $sort  Field to sort on
+    * @param string     $order Sort order
     *
-    * @return void
-   **/
-   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
+    * @return DBmysqlIterator
+    */
+   public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator {
       global $DB;
 
-      if (!Software::canView()) {
-         return;
-      }
-
-      $items_id      = $item->getField('id');
-      $item_fk       = $item->getForeignKeyField();
-      $itemtable     = $item->getTable();
-      $itemtype      = $item->getType();
       $selftable     = self::getTable(__CLASS__);
-      $rand          = mt_rand();
-      $canedit       = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
-      $entities_id   = $item->fields["entities_id"];
-
-      $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
-
-      $where        = [];
-      if ($crit > -1) {
-         $where['glpi_softwares.softwarecategories_id'] = (int) $crit;
-      }
 
       $select = [
          'glpi_softwares.softwarecategories_id',
@@ -938,15 +921,49 @@ class Item_SoftwareVersion extends CommonDBRelation {
             ]
          ],
          'WHERE'     => [
-            "{$selftable}.items_id"  => $items_id,
-            "{$selftable}.itemtype"    => $itemtype
-         ] + $where + getEntitiesRestrictCriteria('glpi_softwares', '', '', true),
+            "{$selftable}.items_id"  => $item->getField('id'),
+            "{$selftable}.itemtype"    => $item->getType()
+         ] + getEntitiesRestrictCriteria('glpi_softwares', '', '', true),
          'ORDER'     => ['softname', 'version']
       ];
+
       if ($item->maybeDeleted()) {
          $request['WHERE']["{$selftable}.is_deleted"] = 0;
       }
+
+      $crit = Session::getSavedOption(__CLASS__, 'criterion', -1);
+      if ($crit > -1) {
+         $request['WHERE']['glpi_softwares.softwarecategories_id'] = (int)$crit;
+      }
+
       $iterator = $DB->request($request);
+      return $iterator;
+   }
+
+   /**
+    * Show software installed on a computer
+    *
+    * @param Computer $comp         Computer object
+    * @param boolean  $withtemplate template case of the view process
+    *
+    * @return void
+   **/
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
+      global $DB;
+
+      if (!Software::canView()) {
+         return;
+      }
+
+      $items_id      = $item->getField('id');
+      $itemtype      = $item->getType();
+      $rand          = mt_rand();
+      $canedit       = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
+      $entities_id   = $item->fields["entities_id"];
+
+      $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
+
+      $iterator = self::getFromItem($item);
 
       if ((empty($withtemplate) || ($withtemplate != 2))
           && $canedit) {
@@ -1235,8 +1252,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
       $ID    = $data["id"];
       $verid = $data["verid"];
-
-      $item_fk = $itemtype::getForeignKeyField();
 
       if ($display) {
          echo "<tr class='tab_bg_1'>";

@@ -954,7 +954,7 @@ class CronTask extends CommonDBTM{
 
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
-         'WHERE'  => ['itemtype' => ['LIKE', "Plugin$plugin"]]
+         'WHERE'  => ['itemtype' => ['LIKE', "Plugin$plugin%"]]
       ]);
 
       while ($data = $iterator->next()) {

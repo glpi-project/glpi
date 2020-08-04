@@ -1300,9 +1300,9 @@ class Session {
     */
    static function canImpersonate($user_id) {
 
-      if (self::getLoginUserID() == $user_id
+      if ($user_id <= 0 || self::getLoginUserID() == $user_id
           || (self::isImpersonateActive() && self::getImpersonatorId() == $user_id)) {
-         return false; // Cannot impersonate self or already impersonated user
+         return false; // Cannot impersonate invalid user, self, or already impersonated user
       }
 
       // For now we do not check more than config update right, but we may

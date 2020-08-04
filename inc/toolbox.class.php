@@ -1375,8 +1375,6 @@ class Toolbox {
     * @return string
    **/
    static function checkNewVersionAvailable() {
-      global $CFG_GLPI;
-
       //parse github releases (get last version number)
       $error = "";
       $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error);
@@ -1393,7 +1391,8 @@ class Toolbox {
       if (strlen(trim($latest_version)) == 0) {
          return $error;
       } else {
-         if (version_compare($CFG_GLPI["version"], $latest_version, '<')) {
+         $currentVersion = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
+         if (version_compare($currentVersion, $latest_version, '<')) {
             Config::setConfigurationValues('core', ['founded_new_version' => $latest_version]);
             return sprintf(__('A new version is available: %s.'), $latest_version);
          } else {
@@ -3460,8 +3459,11 @@ HTML;
     * @return boolean
     */
    public static function isValidWebUrl($url): bool {
+      // Verify absence of known disallowed characters.
+      // It is still possible to have false positives, but a fireproof check would be too complex
+      // (or would require usage of a dedicated lib).
       return (preg_match(
-         '#^http[s]?://[a-z0-9\-_]+(\.([a-z0-9\-]+\.)*[a-z]+)?(:\d+)?(/.*)?$#i',
+         "/^(?:http[s]?:\/\/(?:[^\s`!()\[\]{};'\",<>?«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
          $url
       ) === 1);
    }

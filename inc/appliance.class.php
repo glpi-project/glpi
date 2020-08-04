@@ -391,7 +391,7 @@ class Appliance extends CommonDBTM {
          'DISTINCT'  => true,
          'FROM'      => self::getTable(),
          'WHERE'     => [self::getTable() . '.is_deleted' => 0] +
-                        getEntitiesRestrictCriteria('appliances', '', $p['entity'], true)]);
+                        getEntitiesRestrictCriteria('glpi_appliances', '', $p['entity'], true)]);
 
       $p['used'] = array_filter($p['used']);
       if (count($p['used'])) {

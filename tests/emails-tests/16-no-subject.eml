@@ -1,0 +1,27 @@
+Return-Path: normal@glpi-project.org
+Received: from 192.168.1.3 (LHLO mail.glpi-project.org) (192.168.1.3)
+ by mail.glpi-project.org with LMTP; Thu, 11 Jul 2019 14:36:19 +0200
+ (CEST)
+Received: from mail.glpi-project.org (localhost [127.0.0.1])
+    by mail.glpi-project.org (Postfix) with ESMTP id E93F77E80CDC
+    for <unittests@glpi-project.org>; Thu, 11 Jul 2019 14:36:19 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+    by mail.glpi-project.org (Postfix) with ESMTP id DDBE07E80832
+    for <unittests@glpi-project.org>; Thu, 11 Jul 2019 14:36:19 +0200 (CEST)
+Received: from mail.glpi-project.org ([127.0.0.1])
+    by localhost (mail.glpi-project.org [127.0.0.1]) (amavisd-new, port 10026)
+    with ESMTP id 5TmiDey5TKGa for <unittest@glpi-project.org>;
+    Thu, 11 Jul 2019 14:36:19 +0200 (CEST)
+Received: from mail.glpi-project.org (localhost [127.0.0.1])
+    by mail.glpi-project.org (Postfix) with ESMTP id CAB177E806B4
+    for <unittests@glpi-project.org>; Thu, 11 Jul 2019 14:36:19 +0200 (CEST)
+Date: Thu, 11 Jul 2019 14:36:19 +0200 (CEST)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <799153164.8345898.1562848579774.JavaMail.zimbra@glpi-project.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 8.0.9_GA_6191 (ZimbraWebClient - FF67 (Linux)/8.0.9_GA_6191)
+
+This is a mail without subject.

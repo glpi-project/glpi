@@ -255,6 +255,39 @@ class Item_Disk extends CommonDBChild {
 
    }
 
+   /**
+    * Get disks related to a given item
+    *
+    * @param CommonDBTM $item  Item instance
+    * @param string     $sort  Field to sort on
+    * @param string     $order Sort order
+    *
+    * @return DBmysqlIterator
+    */
+   public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator {
+      global $DB;
+
+      $iterator = $DB->request([
+         'SELECT'    => [
+            Filesystem::getTable() . '.name AS fsname',
+            self::getTable() . '.*'
+         ],
+         'FROM'      => self::getTable(),
+         'LEFT JOIN' => [
+            Filesystem::getTable() => [
+               'FKEY' => [
+                  self::getTable()        => 'filesystems_id',
+                  Filesystem::getTable()  => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'itemtype'     => $item->getType(),
+            'items_id'     => $item->fields['id']
+         ]
+      ]);
+      return $iterator;
+   }
 
    /**
     * Print the disks
@@ -287,26 +320,7 @@ class Item_Disk extends CommonDBChild {
 
       echo "<div class='center'>";
 
-      $iterator = $DB->request([
-         'SELECT'    => [
-            Filesystem::getTable() . '.name AS fsname',
-            self::getTable() . '.*'
-         ],
-         'FROM'      => self::getTable(),
-         'LEFT JOIN' => [
-            Filesystem::getTable() => [
-               'FKEY' => [
-                  self::getTable()        => 'filesystems_id',
-                  Filesystem::getTable()  => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'itemtype'     => $itemtype,
-            'items_id'     => $ID
-         ]
-      ]);
-
+      $iterator = self::getFromItem($item);
       echo "<table class='tab_cadre_fixehov'>";
       $colspan = 8;
       if (Plugin::haveImport()) {
@@ -656,7 +670,7 @@ class Item_Disk extends CommonDBChild {
       if (!isset($all[$status])) {
          Toolbox::logWarning(
             sprintf(
-               'Encryption status %1$s does not exixts!'
+               'Encryption status %1$s does not exixts!', $status
             )
          );
          return NOT_AVAILABLE;

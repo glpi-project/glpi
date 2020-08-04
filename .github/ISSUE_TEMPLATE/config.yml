@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GLPI Community Forum
+    url: https://forum.glpi-project.org
+    about: Ask questions and get help from the community.
+  - name: GLPI Professionnal Support
+    url: https://services.glpi-network.com
+    about: Get professionnal support from the editor and a network of local partners.
+  - name: Find an official Partner
+    url: https://glpi-project.org/partners/
+    about: Get support to deploy GLPI in a professional manner.
+  - name: Feature request
+    url: https://suggest.glpi-project.org
+    about: Suggest a new feature to the GLPI team

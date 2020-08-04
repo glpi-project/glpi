@@ -268,16 +268,16 @@ class Impact extends CommonGLPI {
                echo '<td class="impact-left" width="15%">';
                echo '<div><a target="_blank" href="' .
                   $itemtype_item['stored']->getLinkURL() . '">' .
-                  $itemtype_item['stored']->fields[$itemtype_item['stored']::getNameField()] . '</a></div>';
+                  $itemtype_item['stored']->getFriendlyName() . '</a></div>';
                echo '</td>';
                echo '<td width="40%"><div>';
 
                $path = [];
                foreach ($itemtype_item['node']['path'] as $node) {
                   if ($node['id'] == $start_node_id) {
-                     $path[] = '<b>' . $node['name'] . '</b>';
+                     $path[] = '<b>' . $node['label'] . '</b>';
                   } else {
-                     $path[] = $node['name'];
+                     $path[] = $node['label'];
                   }
                }
                $separator = '<i class="fas fa-angle-right"></i>';
@@ -717,7 +717,7 @@ class Impact extends CommonGLPI {
       echo "<h2>" . __("Impact analysis") . "</h2>";
       echo "<div id='switchview'>";
       echo "<a id='sviewlist' href='#list'><i class='pointer fa fa-list-alt' title='".__('View as list')."'></i></a>";
-      echo "<a id='sviewgraph' href='#graph'><i class='pointer fa fa-project-diagram' title='".__('View graphical representation')."'></i></a>";
+      echo "<a id='sviewgraph' href='#graph'><i class='pointer fa fa-bezier-curve' title='".__('View graphical representation')."'></i></a>";
       echo "</div>";
       echo "</div>";
 
@@ -865,20 +865,21 @@ class Impact extends CommonGLPI {
       }
 
       // Search for items
-      $filter = strtolower($filter);
       $table = $itemtype::getTable();
-      $name = $itemtype::getNameField();
       $base_request = [
          'FROM'   => $table,
          'WHERE'  => [
-            'RAW' => [
-               'LOWER(' . DBmysql::quoteName("$table.$name") . ')' => ['LIKE', "%$filter%"]
-            ],
             'NOT' => [
                "$table.id" => $used
             ],
          ],
       ];
+
+      // Add friendly name search criteria
+      $base_request['WHERE'] = array_merge(
+         $base_request['WHERE'],
+         $itemtype::getFriendlyNameSearchCriteria($filter)
+      );
 
       if (is_subclass_of($itemtype, "ExtraVisibilityCriteria", true)) {
          $base_request = array_merge_recursive(
@@ -904,7 +905,7 @@ class Impact extends CommonGLPI {
       }
 
       $select = [
-         'SELECT' => ["$table.id", "$table.$name"],
+         'SELECT' => ["$table.id", $itemtype::getFriendlyNameFields()],
       ];
       $limit = [
          'START' => $page * 20,
@@ -1067,8 +1068,8 @@ class Impact extends CommonGLPI {
       echo '<li id="impact_redo" class="impact-disabled" title="' . __("Redo") .'"><i class="fas fa-fw fa-redo"></i></li>';
       echo '<li class="impact-separator"></li>';
       echo '<li id="add_node" title="' . __("Add asset") .'"><i class="fas fa-fw fa-plus"></i></li>';
-      echo '<li id="add_edge" title="' . __("Add relation") .'"><i class="fas fa-fw fa-pencil-alt"></i></li>';
-      echo '<li id="add_compound" title="' . __("Add group") .'"><i class="far fa-fw fa-square"></i></li>';
+      echo '<li id="add_edge" title="' . __("Add relation") .'"><i class="fas fa-fw fa-slash"></i></li>';
+      echo '<li id="add_compound" title="' . __("Add group") .'"><i class="far fa-fw fa-object-group"></i></li>';
       echo '<li id="delete_element" title="' . __("Delete element") .'"><i class="fas fa-fw fa-trash"></i></li>';
       echo '<li class="impact-separator"></li>';
       echo '<li id="export_graph" title="' . __("Download") .'"><i class="fas fa-fw fa-download"></i></li>';
@@ -1251,8 +1252,7 @@ class Impact extends CommonGLPI {
       // Define basic data of the new node
       $new_node = [
          'id'          => $key,
-         'label'       => $item->fields[$item::getNameField()],
-         'name'        => $item->fields[$item::getNameField()],
+         'label'       => $item->getFriendlyName(),
          'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
          'ITILObjects' => $item->getITILTickets(true),
       ];

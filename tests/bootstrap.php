@@ -597,6 +597,9 @@ function loadDataset() {
    $CFG_GLPI['url_base']      = GLPI_URI;
    $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
 
+   // make all caldav component available for tests (for default usage we don't VTODO)
+   $CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
+
    $conf = Config::getConfigurationValues('phpunit');
    if (isset($conf['dataset']) && $conf['dataset']==$data['_version']) {
       printf("\nGLPI dataset version %s already loaded\n\n", $data['_version']);

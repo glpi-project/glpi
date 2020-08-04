@@ -2058,27 +2058,26 @@ class User extends CommonDBTM {
          $formtitle .= "<a class='pointer far fa-address-card fa-lg' target='_blank' href='".
                        User::getFormURLWithID($ID)."&amp;getvcard=1' title='".__s('Download user VCard').
                        "'><span class='sr-only'>". __('Vcard')."</span></a>";
-      }
+         if (Session::canImpersonate($ID)) {
+            $formtitle .= '<button type="button" class="pointer btn-linkstyled btn-impersonate" name="impersonate" value="1">'
+               . '<i class="fas fa-user-secret fa-lg" title="' . __s('Impersonate') . '"></i> '
+               . '<span class="sr-only">' . __s('Impersonate') . '</span>'
+               . '</button>';
 
-      if (Session::canImpersonate($ID)) {
-         $formtitle .= '<button type="button" class="pointer btn-linkstyled btn-impersonate" name="impersonate" value="1">'
-            . '<i class="fas fa-user-secret fa-lg" title="' . __s('Impersonate') . '"></i> '
-            . '<span class="sr-only">' . __s('Impersonate') . '</span>'
-            . '</button>';
-
-         // "impersonate" button type is set to "button" on form display to prevent it to be used
-         // by default (as it is the first found in current form) when pressing "enter" key.
-         // When clicking it, switch to "submit" type to make it submit current user form.
-         $impersonate_js = <<<JAVASCRIPT
-            (function($) {
-               $('button[type="button"][name="impersonate"]').click(
-                  function () {
-                     $(this).attr('type', 'submit');
-                  }
-               );
-            })(jQuery);
+            // "impersonate" button type is set to "button" on form display to prevent it to be used
+            // by default (as it is the first found in current form) when pressing "enter" key.
+            // When clicking it, switch to "submit" type to make it submit current user form.
+            $impersonate_js = <<<JAVASCRIPT
+               (function($) {
+                  $('button[type="button"][name="impersonate"]').click(
+                     function () {
+                        $(this).attr('type', 'submit');
+                     }
+                  );
+               })(jQuery);
 JAVASCRIPT;
-         $formtitle .= Html::scriptBlock($impersonate_js);
+            $formtitle .= Html::scriptBlock($impersonate_js);
+         }
       }
 
       $options['formtitle']   = $formtitle;
@@ -5557,6 +5556,47 @@ JAVASCRIPT;
       return $expiration_time < time();
    }
 
+   public static function getFriendlyNameSearchCriteria(string $filter): array {
+      $table     = self::getTable();
+      $login     = DBmysql::quoteName("$table.name");
+      $firstname = DBmysql::quoteName("$table.firstname");
+      $lastname  = DBmysql::quoteName("$table.realname");
+
+      $filter = strtolower($filter);
+      $filter_no_spaces = str_replace(" ", "", $filter);
+
+      return [
+         'OR' => [
+            ['RAW' => ["LOWER($login)" => ['LIKE', "%$filter%"]]],
+            ['RAW' => ["LOWER(REPLACE(CONCAT($firstname, $lastname), ' ', ''))" => ['LIKE', "%$filter_no_spaces%"]]],
+            ['RAW' => ["LOWER(REPLACE(CONCAT($lastname, $firstname), ' ', ''))" => ['LIKE', "%$filter_no_spaces%"]]],
+         ]
+      ];
+   }
+
+   public static function getFriendlyNameFields(string $alias = "name") {
+      $config = Config::getConfigurationValues('core');
+      if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
+         $first = "firstname";
+         $second = "realname";
+      } else {
+         $first = "realname";
+         $second = "firstname";
+      }
+
+      $table  = self::getTable();
+      $first  = DB::quoteName("$table.$first");
+      $second = DB::quoteName("$table.$second");
+      $alias  = DB::quoteName($alias);
+      $name   = DB::quoteName(self::getNameField());
+
+      return new QueryExpression("IF(
+            $first <> '' && $second <> '',
+            CONCAT($first, ' ', $second),
+            $name
+         ) AS $alias"
+      );
+   }
 
    static function getIcon() {
       return "fas fa-user";

@@ -6957,7 +6957,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // show title for timeline
-      static::showTimelineHeader();
+      $this->showTimelineHeader();
 
       $timeline_index = 0;
       foreach ($timeline as $item) {
@@ -7924,7 +7924,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
             case true:
                //for changes and problem, or from profiles
-               $field = $field;
                break;
 
             default:

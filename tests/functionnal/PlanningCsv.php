@@ -103,6 +103,7 @@ class PlanningCsv extends \DbTestCase {
          $edate = clone $date;
          $edate->add(new \DateInterval('P2D'));
          $input = [
+            'content'         => sprintf('Task with "%s" state', $taskstate),
             'state'           => $taskstate,
             'tickets_id'      => $tid,
             'users_id_tech'   => \Session::getLoginUserID(),
