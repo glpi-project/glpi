@@ -5557,6 +5557,47 @@ JAVASCRIPT;
       return $expiration_time < time();
    }
 
+   public static function getFriendlyNameSearchCriteria(string $filter): array {
+      $table     = self::getTable();
+      $login     = DBmysql::quoteName("$table.name");
+      $firstname = DBmysql::quoteName("$table.firstname");
+      $lastname  = DBmysql::quoteName("$table.realname");
+
+      $filter = strtolower($filter);
+      $filter_no_spaces = str_replace(" ", "", $filter);
+
+      return [
+         'OR' => [
+            ['RAW' => ["LOWER($login)" => ['LIKE', "%$filter%"]]],
+            ['RAW' => ["LOWER(REPLACE(CONCAT($firstname, $lastname), ' ', ''))" => ['LIKE', "%$filter_no_spaces%"]]],
+            ['RAW' => ["LOWER(REPLACE(CONCAT($lastname, $firstname), ' ', ''))" => ['LIKE', "%$filter_no_spaces%"]]],
+         ]
+      ];
+   }
+
+   public static function getFriendlyNameFields(string $alias = "name") {
+      $config = Config::getConfigurationValues('core');
+      if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
+         $first = "firstname";
+         $second = "realname";
+      } else {
+         $first = "realname";
+         $second = "firstname";
+      }
+
+      $table  = self::getTable();
+      $first  = DB::quoteName("$table.$first");
+      $second = DB::quoteName("$table.$second");
+      $alias  = DB::quoteName($alias);
+      $name   = DB::quoteName(self::getNameField());
+
+      return new QueryExpression("IF(
+            $first <> '' && $second <> '',
+            CONCAT($first, ' ', $second),
+            $name
+         ) AS $alias"
+      );
+   }
 
    static function getIcon() {
       return "fas fa-user";

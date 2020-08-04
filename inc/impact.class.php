@@ -268,16 +268,16 @@ class Impact extends CommonGLPI {
                echo '<td class="impact-left" width="15%">';
                echo '<div><a target="_blank" href="' .
                   $itemtype_item['stored']->getLinkURL() . '">' .
-                  $itemtype_item['stored']->fields[$itemtype_item['stored']::getNameField()] . '</a></div>';
+                  $itemtype_item['stored']->getFriendlyName() . '</a></div>';
                echo '</td>';
                echo '<td width="40%"><div>';
 
                $path = [];
                foreach ($itemtype_item['node']['path'] as $node) {
                   if ($node['id'] == $start_node_id) {
-                     $path[] = '<b>' . $node['name'] . '</b>';
+                     $path[] = '<b>' . $node['label'] . '</b>';
                   } else {
-                     $path[] = $node['name'];
+                     $path[] = $node['label'];
                   }
                }
                $separator = '<i class="fas fa-angle-right"></i>';
@@ -865,20 +865,21 @@ class Impact extends CommonGLPI {
       }
 
       // Search for items
-      $filter = strtolower($filter);
       $table = $itemtype::getTable();
-      $name = $itemtype::getNameField();
       $base_request = [
          'FROM'   => $table,
          'WHERE'  => [
-            'RAW' => [
-               'LOWER(' . DBmysql::quoteName("$table.$name") . ')' => ['LIKE', "%$filter%"]
-            ],
             'NOT' => [
                "$table.id" => $used
             ],
          ],
       ];
+
+      // Add friendly name search criteria
+      $base_request['WHERE'] = array_merge(
+         $base_request['WHERE'],
+         $itemtype::getFriendlyNameSearchCriteria($filter)
+      );
 
       if (is_subclass_of($itemtype, "ExtraVisibilityCriteria", true)) {
          $base_request = array_merge_recursive(
@@ -904,7 +905,7 @@ class Impact extends CommonGLPI {
       }
 
       $select = [
-         'SELECT' => ["$table.id", "$table.$name"],
+         'SELECT' => ["$table.id", $itemtype::getFriendlyNameFields()],
       ];
       $limit = [
          'START' => $page * 20,
@@ -1251,8 +1252,7 @@ class Impact extends CommonGLPI {
       // Define basic data of the new node
       $new_node = [
          'id'          => $key,
-         'label'       => $item->fields[$item::getNameField()],
-         'name'        => $item->fields[$item::getNameField()],
+         'label'       => $item->getFriendlyName(),
          'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
          'ITILObjects' => $item->getITILTickets(true),
       ];

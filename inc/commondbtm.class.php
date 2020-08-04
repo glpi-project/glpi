@@ -5536,4 +5536,38 @@ class CommonDBTM extends CommonGLPI {
 
       return $data;
    }
+
+   /**
+    * Friendly names may uses multiple fields (e.g user: first name + last name)
+    * Return the computed criteria to use in a WHERE clause.
+    *
+    * @param string $filter
+    * @return array
+    */
+   public static function getFriendlyNameSearchCriteria(string $filter): array {
+      $table      = static::getTable();
+      $name_field = static::getNameField();
+      $name       = DBmysql::quoteName("$table.$name_field");
+      $filter     = strtolower($filter);
+
+      return [
+         'RAW' => [
+            "LOWER($name)" => ['LIKE', "%$filter%"],
+         ]
+      ];
+   }
+
+   /**
+    * Friendly names may uses multiple fields (e.g user: first name + last name)
+    * Return the computed field name to use in a SELECT clause.
+    *
+    * @param string $alias
+    * @return mixed
+    */
+   public static function getFriendlyNameFields(string $alias = "name") {
+      $table = static::getTable();
+      $name_field = static::getNameField();
+
+      return "$table.$name_field AS $alias";
+   }
 }
