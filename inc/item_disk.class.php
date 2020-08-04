@@ -256,7 +256,7 @@ class Item_Disk extends CommonDBChild {
    }
 
    /**
-    * Get operating systems related to a given item
+    * Get disks related to a given item
     *
     * @param CommonDBTM $item  Item instance
     * @param string     $sort  Field to sort on

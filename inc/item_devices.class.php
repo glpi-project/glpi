@@ -744,8 +744,6 @@ class Item_Devices extends CommonDBRelation {
          $fk = 'items_id';
 
          // Entity restrict
-         $leftjoin = '';
-         $where = "";
          $criteria['WHERE'] = [
             $this->getDeviceForeignKey()  => $item->getID(),
             "$ctable.itemtype"            => $peer_type,
@@ -885,6 +883,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       $criteria = $this->getTableGroupCriteria($item, $peer_type);
+      $fk = $item instanceof CommonDevice ? 'items_id' : $this->getDeviceForeignKey();
 
       if (!empty($peer_type)) {
          $peer = new $peer_type();
