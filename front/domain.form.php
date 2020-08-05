@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
    $domain->check(-1, CREATE, $_POST);
    $newID = $domain->add($_POST);
    if ($_SESSION['glpibackcreated']) {
-      Html::redirect($domain->getFormURLWithID($newID));
+      Html::redirect($domain->getLinkURL());
    }
    Html::back();
 } else if (isset($_POST["delete"])) {
