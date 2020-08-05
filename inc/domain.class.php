@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 /// Class Domain
 class Domain extends CommonDropdown {
+   use Glpi\Features\Clonable;
 
    static $rightname = 'domain';
    static protected $forward_entity_to = ['DomainRecord'];
@@ -46,6 +47,20 @@ class Domain extends CommonDropdown {
    protected $usenotepadrights = true;
    protected $usenotepad       = true;
    static    $tags             = '[DOMAIN_NAME]';
+
+   public function getCloneRelations() :array {
+      return [
+         DomainRecord::class,
+         Domain_Item::class,
+         Infocom::class,
+         Item_Ticket::class,
+         Item_Problem::class,
+         Change_Item::class,
+         Contract_Item::class,
+         Document_Item::class,
+         Notepad::class,
+      ];
+   }
 
    static function getTypeName($nb = 0) {
       return _n('Domain', 'Domains', $nb);

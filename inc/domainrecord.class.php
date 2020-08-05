@@ -48,13 +48,11 @@ class DomainRecord extends CommonDBChild {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if (!$withtemplate) {
-         if ($item->getType() == 'Domain') {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item));
-            }
-            return _n('Record', 'Records', Session::getPluralNumber());
+      if ($item->getType() == 'Domain') {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item));
          }
+         return _n('Record', 'Records', Session::getPluralNumber());
       }
       return '';
    }
@@ -283,13 +281,25 @@ class DomainRecord extends CommonDBChild {
 
       echo "<td>" . Domain::getTypeName(1) . "</td>";
       echo "<td>";
-      Dropdown::show(
-         'Domain', [
-            'name'   => "domains_id",
-            'value'  => $this->fields["domains_id"],
-            'entity' => $this->fields["entities_id"]
-         ]
-      );
+
+      $domain = new Domain();
+      $domain->getFromDB($this->fields['domains_id']);
+      if ($domain->isTemplate()) {
+         echo Html::input('domains_id', [
+            'type'   => 'hidden',
+            'value'  => $this->fields['domains_id']
+         ]);
+         // TRANS: first parameter is the template name
+         echo sprintf(__('%1$s template'), $domain->fields['template_name']);
+      } else {
+         Dropdown::show(
+            'Domain', [
+               'name'   => "domains_id",
+               'value'  => $this->fields["domains_id"],
+               'entity' => $this->fields["entities_id"]
+            ]
+         );
+      }
       echo "</td>";
 
       echo "<td>" . __('Name') . "</td>";
