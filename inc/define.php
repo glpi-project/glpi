@@ -443,7 +443,7 @@ $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
 $CFG_GLPI["certificate_types"]     = ['Computer',
                                       'NetworkEquipment', 'Peripheral',
                                       'Phone', 'Printer',
-                                      'SoftwareLicense', 'User'];
+                                      'SoftwareLicense', 'User', 'Domain'];
 
 $CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure', 'PDU', 'PassiveDCEquipment'];
 
@@ -456,7 +456,7 @@ $CFG_GLPI['software_types']      = $CFG_GLPI['operatingsystem_types'];
 $CFG_GLPI['kanban_types']        = ['Project'];
 
 $CFG_GLPI['domain_types']        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                                       'Phone', 'Printer', 'Software', 'Appliance'];
+                                       'Phone', 'Printer', 'Software', 'Appliance', 'Certificate'];
 
 $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                                        'Printer', 'Software', 'Cluster'];
