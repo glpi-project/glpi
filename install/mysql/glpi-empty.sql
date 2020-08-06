@@ -2434,11 +2434,11 @@ CREATE TABLE `glpi_domains` (
   `date_expiration` timestamp  NULL DEFAULT NULL,
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
   `groups_id_tech` int(11) NOT NULL DEFAULT '0',
-  `others` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `is_template` tinyint(1) NOT NULL DEFAULT '0',
   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2450,6 +2450,7 @@ CREATE TABLE `glpi_domains` (
   KEY `date_mod` (`date_mod`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_template` (`is_template`),
+  KEY `is_active` (`is_active`),
   KEY `date_expiration` (`date_expiration`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

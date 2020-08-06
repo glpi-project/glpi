@@ -159,13 +159,6 @@ class Domain extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => 'others',
-         'name'               => __('Others')
-      ];
-
-      $tab[] = [
          'id'                 => '10',
          'table'              => 'glpi_groups',
          'field'              => 'name',
@@ -321,9 +314,14 @@ class Domain extends CommonDropdown {
       Html::autocompletionTextField($this, "name");
       echo "</td>";
 
-      echo "<td>" . __('Others') . "</td>";
+      echo "<td>" . __('Is active') . "</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "others");
+      if (!empty($options['withtemplate']) && ($options['withtemplate'] == 1)) {
+         echo __('No');
+         echo Html::input('is_active', ['type' => 'hidden', 'value' => 0]);
+      } else {
+         Dropdown::showYesNo('is_active', $this->fields['is_active']);
+      }
       echo "</td>";
 
       echo "</tr>";
@@ -789,5 +787,9 @@ class Domain extends CommonDropdown {
 
    public function getCanonicalName() {
       return rtrim($this->fields['name'], '.') . '.';
+   }
+
+   function post_getEmpty() {
+      $this->fields['is_active'] = $this->fields['is_template'] ? 0 : 1;
    }
 }
