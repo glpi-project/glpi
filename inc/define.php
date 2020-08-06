@@ -514,7 +514,7 @@ $CFG_GLPI['javascript'] = [
    ],
    'admin'        => ['clipboard'],
    'preference'   => ['clipboard'],
-   'self-service' => ['tinymce']
+   'self-service' => ['tinymce', 'photoswipe']
 ];
 
 //Maximum time, in miliseconds a saved search should not exeed
