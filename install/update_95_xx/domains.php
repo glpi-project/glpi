@@ -30,38 +30,29 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Update from 9.5.x to x.x.x
- *
- * @return bool for success (will die for most error)
-**/
-function update95toXX() {
-   global $DB, $migration;
+/** Domains improvements */
 
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+/** Add templates to domains  */
+$migration->addField('glpi_domains', 'is_template', 'bool', [
+   'after' => 'comment'
+]);
+$migration->addField('glpi_domains', 'template_name', 'string', [
+   'after' => 'is_template'
+]);
+$migration->addKey('glpi_domains', 'is_template');
+/** /Add templates to domains  */
 
-   //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), 'x.x.x'));
-   $migration->setVersion('x.x.x');
+/** Active domains */
+$migration->addField('glpi_domains', 'is_active', 'bool', ['after' => 'template_name']);
+$migration->addKey('glpi_domains', 'is_active');
+$migration->addPostQuery(
+   $DB->buildUpdate(
+      'glpi_domains',
+      ['is_active' => 1],
+      [true]
+   )
+);
+/** /Active domains */
 
-   include __DIR__ . '/update_95_xx/domains.php';
-
-   // ************ Keep it at the end **************
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-         ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-         ]);
-      }
-   }
-
-   $migration->executeMigration();
-
-   return $updateresult;
-}
+//remove "useless "other" field
+$migration->dropField('glpi_domains', 'others');
