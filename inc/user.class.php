@@ -656,9 +656,9 @@ class User extends CommonDBTM {
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
 
+      $this->applyGroupsRules();
       $rulesplayed = $this->applyRightRules();
       $picture     = $this->syncLdapPhoto();
-      $this->applyGroupsRules();
 
       //add picture in user fields
       if (!empty($picture)) {
@@ -916,8 +916,8 @@ class User extends CommonDBTM {
       $this->updateUserEmails();
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
-      $this->applyRightRules();
       $this->applyGroupsRules();
+      $this->applyRightRules();
 
       if (in_array('password', $this->updates)) {
          $alert = new Alert();
