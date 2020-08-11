@@ -2824,7 +2824,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($this->isPrivate()
-             && ($this->fields['users_id'] === Session::getLoginUserID())) {
+             && ($this->fields['users_id'] == Session::getLoginUserID())) {
             return true;
          }
          return (static::canCreate() && $this->canCreateItem());
