@@ -4972,6 +4972,12 @@ JS;
       }
       $out .= "</div>";
 
+      // Decode images urls
+      $imgs = array_map(function($img) {
+         $img['src'] = html_entity_decode($img['src']);
+         return $img;
+      }, $imgs);
+
       $items_json = json_encode($imgs);
       $dltext = __('Download');
       $js = <<<JAVASCRIPT
