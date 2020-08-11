@@ -574,7 +574,7 @@ class RuleTicket extends DbTestCase {
       $task_template_id = $task_template->add([
          'content' => "test content"
       ]);
-      $this->integer($task_template_id);
+      $this->integer($task_template_id)->isGreaterThan(0);
 
       // Create rule
       $rule_ticket_em = new \RuleTicket();
@@ -586,7 +586,7 @@ class RuleTicket extends DbTestCase {
          'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
          'is_recursive' => 1,
       ]);
-      $this->integer($rule_ticket_id);
+      $this->integer($rule_ticket_id)->isGreaterThan(0);
 
       // Add condition (priority = 5) to rule
       $rule_criteria_em = new RuleCriteria();
@@ -596,7 +596,7 @@ class RuleTicket extends DbTestCase {
          'condition' => \Rule::PATTERN_IS,
          'pattern'   => 5,
       ]);
-      $this->integer($rule_criteria_id);
+      $this->integer($rule_criteria_id)->isGreaterThan(0);
 
       // Add action to rule
       $rule_action_em = new RuleAction();
@@ -606,7 +606,7 @@ class RuleTicket extends DbTestCase {
          'field'       => 'task_template',
          'value'       => $task_template_id,
       ]);
-      $this->integer($rule_action_id);
+      $this->integer($rule_action_id)->isGreaterThan(0);
 
       // Test on creation
       $ticket_em = new \Ticket();
@@ -615,7 +615,7 @@ class RuleTicket extends DbTestCase {
          'content'  => 'test',
          'priority' => 5,
       ]);
-      $this->integer($ticket_id);
+      $this->integer($ticket_id)->isGreaterThan(0);
 
       $ticket_task_em = new TicketTask();
       $ticket_tasks = $ticket_task_em->find([
@@ -634,7 +634,7 @@ class RuleTicket extends DbTestCase {
          'content'  => 'test',
          'priority' => 4,
       ]);
-      $this->integer($ticket_id);
+      $this->integer($ticket_id)->isGreaterThan(0);
 
       $ticket_task_em = new TicketTask();
       $ticket_tasks = $ticket_task_em->find([
@@ -656,5 +656,4 @@ class RuleTicket extends DbTestCase {
       $this->array($task_data)->hasKey('content');
       $this->string($task_data['content'])->isEqualTo('test content');
    }
-
 }
