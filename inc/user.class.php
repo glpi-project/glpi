@@ -656,6 +656,7 @@ class User extends CommonDBTM {
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
 
+      $this->applyGroupsRules();
       $rulesplayed = $this->applyRightRules();
       $picture     = $this->syncLdapPhoto();
 
@@ -915,6 +916,7 @@ class User extends CommonDBTM {
       $this->updateUserEmails();
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
+      $this->applyGroupsRules();
       $this->applyRightRules();
 
       if (in_array('password', $this->updates)) {
@@ -5601,5 +5603,23 @@ JAVASCRIPT;
 
    static function getIcon() {
       return "fas fa-user";
+   }
+
+   /**
+    * Add groups stored in "_ldap_rules/groups_id" special input
+    */
+   public function applyGroupsRules() {
+      if (!isset($this->input["_ldap_rules"]['groups_id'])) {
+         return;
+      }
+
+      $group_ids = array_unique($this->input["_ldap_rules"]['groups_id']);
+      foreach ($group_ids as $group_id) {
+         $group_user = new Group_User();
+         $group_user->add([
+            'groups_id' => $group_id,
+            'users_id'  => $this->getId()
+         ]);
+      }
    }
 }

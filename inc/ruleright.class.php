@@ -121,6 +121,10 @@ class RuleRight extends Rule {
                         $output['groups_id'] = $action->fields["value"];
                         break;
 
+                     case 'specific_groups_id':
+                        $output["_ldap_rules"]['groups_id'][] = $action->fields["value"];
+                        break;
+
                      case "is_active" :
                         $output["is_active"] = $action->fields["value"];
                         break;
@@ -349,6 +353,10 @@ class RuleRight extends Rule {
       $actions['_entities_id_default']['name']              = __('Default entity');
       $actions['_entities_id_default']['linkfield']         = 'entities_id';
       $actions['_entities_id_default']['type']              = 'dropdown';
+
+      $actions['specific_groups_id']['name'] = _n('Group', 'Groups', Session::getPluralNumber());
+      $actions['specific_groups_id']['type'] = 'dropdown';
+      $actions['specific_groups_id']['table'] = 'glpi_groups';
 
       $actions['groups_id']['table']                        = 'glpi_groups';
       $actions['groups_id']['field']                        = 'name';
