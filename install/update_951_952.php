@@ -31,7 +31,7 @@
  */
 
 /**
- * Update from 9.4.6 to 9.4.7
+ * Update from 9.5.1 to 9.5.2
  *
  * @return bool for success (will die for most error)
  **/
