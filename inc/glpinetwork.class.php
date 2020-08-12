@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 class GLPINetwork {
 
    public function getTabNameForItem() {
-      return __('GLPI Network');
+      return 'GLPI Network';
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
@@ -66,7 +66,7 @@ class GLPINetwork {
       if ($registration_key === "") {
          echo "<tr><td colspan='2'>".
          __('A registration key is needed to use advanced feature (like marketplace) in GLPI')."<br><br>".
-         "<a href='".GLPI_NETWORK_SERVICES."'>".__('Register on GLPI Network!')."</a><br>".
+         "<a href='".GLPI_NETWORK_SERVICES."'>".sprintf(__('Register on %1$s!'), 'GLPI Network')."</a><br>".
          __("And retrieve your key to paste it below").
          "</td></tr>";
       }
@@ -77,7 +77,7 @@ class GLPINetwork {
          echo '<td colspan="2">';
          echo '<div class="warning">';
          echo '<i class="fa fa-exclamation-triangle fa-2x"></i>';
-         echo __("GLPI Network services website seems not available from your network or offline");
+         echo sprintf(__("%1$s services website seems not available from your network or offline"), 'GLPI Network');
          if ($curl_error !== null) {
             echo '<br />';
             echo sprintf(__('Error was: %s'), $curl_error);

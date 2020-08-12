@@ -2280,7 +2280,7 @@ class Config extends CommonDBTM {
             return $tabs;
 
          case 'GLPINetwork':
-            return __('GLPI Network');
+            return 'GLPI Network';
 
          case Impact::getType():
             return Impact::getTypeName();
