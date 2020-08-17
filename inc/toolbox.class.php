@@ -861,6 +861,11 @@ class Toolbox {
       $etag = md5_file($file);
       $lastModified = filemtime($file);
 
+      // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
+      // If there is any extra data, the sent file will be corrupted.
+      while (ob_get_level() > 0) {
+         ob_end_clean();
+      }
       // Now send the file with header() magic
       header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
       header("Etag: $etag");
