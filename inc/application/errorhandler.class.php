@@ -347,8 +347,8 @@ class ErrorHandler {
     */
    private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false) {
 
-      if (!$force
-          && (!isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] != \Session::DEBUG_MODE)) {
+      if ((!$force
+          && (!isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] != \Session::DEBUG_MODE)) || isAPI()) {
          return;
       }
 
