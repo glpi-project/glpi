@@ -853,7 +853,7 @@ class Provider extends \CommonGLPI {
             break;
          case "user_assign":
             $type     = \CommonITILActor::ASSIGN;
-            $soption  = 4;
+            $soption  = 5;
             break;
          case "group_assign":
             $type     = \CommonITILActor::OBSERVER;

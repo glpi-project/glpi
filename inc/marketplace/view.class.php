@@ -138,7 +138,7 @@ class View extends CommonGLPI {
       if (!GLPINetwork::isServicesAvailable()) {
          array_push(
             $messages,
-            __("GLPI Network services website seems not available from your network or offline"),
+            sprintf(__("%1$s services website seems not available from your network or offline"), 'GLPI Network'),
             "<a href='".$CFG_GLPI['root_doc']."/front/config.form.php?forcetab=Config$5'>".
             __("Maybe you could setup a proxy").
             "</a> ".
@@ -152,9 +152,9 @@ class View extends CommonGLPI {
 
             array_push(
                $messages,
-               __('Your GLPI Network registration is not valid.'),
+               sprintf(__('Your %1$s registration is not valid.'), 'GLPI Network'),
                __('A registration, at least a free one, is required to use marketplace!'),
-               "<a href='".GLPI_NETWORK_SERVICES."'>".__('Register on GLPI Network')."</a> ".
+               "<a href='".GLPI_NETWORK_SERVICES."'>".sprintf(__('Register on %1$s'), 'GLPI Network')."</a> ".
                __('and'). " ".
                "<a href='$config_url'>".__("fill your registration key in setup.")."</a>"
             );
@@ -776,8 +776,8 @@ HTML;
          $html = "<div class='offers'>
             <a href='".GLPI_NETWORK_SERVICES."' target='_blank'
                class='badge glpi-network'
-               title='".__s("You must have a GLPI Network subscription to get this plugin")."'>
-               <i class='fas fa-star'></i>".__('Network')."
+               title='".sprintf(__s("You must have a %1$s subscription to get this plugin", 'GLPI Network'))."'>
+               <i class='fas fa-star'></i>GLPI Network
             </a>
             <a href='".GLPI_NETWORK_SERVICES."' target='_blank'
                class='badge $offerkey'

@@ -309,22 +309,13 @@ class Toolbox {
    static function decrypt($string, $key = null) {
       self::deprecated('Use sodiumDecrypt');
 
+      $glpikey = new GLPIKey();
+
       if ($key === null) {
-         $glpikey = new GLPIKey();
          $key = $glpikey->getLegacyKey();
       }
 
-      $result = '';
-      $string = base64_decode($string);
-
-      for ($i=0; $i<strlen($string); $i++) {
-         $char    = substr($string, $i, 1);
-         $keychar = substr($key, ($i % strlen($key))-1, 1);
-         $char    = chr(ord($char)-ord($keychar));
-         $result .= $char;
-      }
-
-      return Toolbox::unclean_cross_side_scripting_deep($result);
+      return $glpikey->decryptUsingLegacyKey($string, $key);
    }
 
    /**
@@ -758,6 +749,11 @@ class Toolbox {
       $etag = md5_file($file);
       $lastModified = filemtime($file);
 
+      // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
+      // If there is any extra data, the sent file will be corrupted.
+      while (ob_get_level() > 0) {
+         ob_end_clean();
+      }
       // Now send the file with header() magic
       header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
       header("Etag: $etag");
