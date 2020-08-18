@@ -2126,7 +2126,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          throw new UnexpectedValueException('RRULE not yet implemented for ITIL tasks');
       }
 
-      $input = $this->getCommonInputFromVcomponent($vtodo);
+      $input = $this->getCommonInputFromVcomponent($vtodo, $this->isNewItem());
 
       if (!$this->isNewItem()) {
          // self::prepareInputForUpdate() expect these fields to be set in input.

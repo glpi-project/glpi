@@ -208,10 +208,11 @@ trait VobjectConverterTrait {
     * Get common item input for given component.
     *
     * @param Component $vcomponent
+    * @param bool      $is_new_item
     *
     * @return array
     */
-   protected function getCommonInputFromVcomponent(Component $vcomponent) {
+   protected function getCommonInputFromVcomponent(Component $vcomponent, bool $is_new_item = true) {
       if (!($vcomponent instanceof VEvent)
           && !($vcomponent instanceof VTodo)
           && !($vcomponent instanceof VJournal)) {
@@ -243,11 +244,12 @@ trait VobjectConverterTrait {
 
       $input['rrule'] = $this->getRRuleInputFromVComponent($vcomponent);
 
-      $state = GLPI_CALDAV_IMPORT_STATE;
-      if ($vcomponent instanceof VTodo) {
-         $state = $this->getStateInputFromVComponent($vcomponent) ?? $state;
+      $state = $this->getStateInputFromVComponent($vcomponent);
+      if ($state !== null) {
+         $input['state'] = $state;
+      } else if ($is_new_item) {
+         $input['state'] = GLPI_CALDAV_IMPORT_STATE;
       }
-      $input['state'] = $state;
 
       return $input;
    }
