@@ -1061,7 +1061,7 @@ class Reminder extends CommonDBVisible implements
 
       $vcomp = $vcalendar->getBaseComponent();
 
-      $input = $this->getCommonInputFromVcomponent($vcomp);
+      $input = $this->getCommonInputFromVcomponent($vcomp, $this->isNewItem());
 
       $input['text'] = $input['content'];
       unset($input['content']);
