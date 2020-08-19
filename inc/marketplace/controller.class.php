@@ -141,7 +141,7 @@ class Controller extends CommonGLPI {
       $plugin_inst->checkPluginState($this->plugin_key);
       $plugin_inst->getFromDBbyDir($this->plugin_key);
 
-      // inform api plugin has been downloaded
+      // inform api the plugin has been downloaded
       $api->incrementPluginDownload($this->plugin_key);
 
       return $plugin_inst->fields['state'] ?? Plugin::UNKNOWN;
