@@ -987,7 +987,6 @@ class Provider extends \CommonGLPI {
       ];
       $params = array_merge($default_params, $params);
 
-
       $incoming   = self::nbTicketsGeneric('incoming', $params);
       $assigned   = self::nbTicketsGeneric('assigned', $params);
       $waiting    = self::nbTicketsGeneric('waiting', $params);
