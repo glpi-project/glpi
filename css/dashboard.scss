@@ -511,7 +511,7 @@ $break_tablet: 1400px;
 
          .number, .suffix {
             font-size: 3em;
-            font-weight: bold;
+            font-weight: normal;
          }
       }
 
@@ -561,6 +561,9 @@ $break_tablet: 1400px;
                flex-direction: column-reverse;
                justify-content: space-evenly;
                flex-basis: 100%;
+               color: #555555;
+               position: relative;
+               font-weight: normal;
 
                .content {
                   //flex-grow: 1;
@@ -577,7 +580,6 @@ $break_tablet: 1400px;
 
                &:not(:first-child) {
                   border-left: 1px solid rgba(125, 125, 125, .2);
-                  color: #555555
                }
 
                &:hover {

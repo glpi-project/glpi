@@ -34,6 +34,7 @@ namespace Glpi\Dashboard;
 
 use Mexitek\PHPColors\Color;
 use ScssPhp\ScssPhp\Compiler;
+use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -149,6 +150,7 @@ class Widget extends \CommonGLPI {
             'function' => 'Glpi\\Dashboard\\Widget::multipleNumber',
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/multiplenumbers.png',
             'limit'    => true,
+            'gradient' => true,
          ],
          'markdown' => [
             'label'    => __("Editable markdown"),
@@ -166,6 +168,7 @@ class Widget extends \CommonGLPI {
             'function' => 'Glpi\\Dashboard\\Widget::summaryNumber',
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/summarynumber.png',
             'limit'    => true,
+            'gradient' => true,
          ],
       ];
 
@@ -204,10 +207,10 @@ class Widget extends \CommonGLPI {
       ];
       $p = array_merge($default, $params);
 
-      $formatted_number = \Toolbox::shortenNumber($p['number']);
-      $fg_color         = \Toolbox::getFgColor($p['color']);
-      $fg_hover_color   = \Toolbox::getFgColor($p['color'], 15);
-      $fg_hover_border  = \Toolbox::getFgColor($p['color'], 30);
+      $formatted_number = Toolbox::shortenNumber($p['number']);
+      $fg_color         = Toolbox::getFgColor($p['color']);
+      $fg_hover_color   = Toolbox::getFgColor($p['color'], 15);
+      $fg_hover_border  = Toolbox::getFgColor($p['color'], 30);
 
       $href = strlen($p['url'])
          ? "href='{$p['url']}'"
@@ -267,13 +270,15 @@ HTML;
     */
    public static function multipleNumber(array $params = []): string {
       $default = [
-         'data'   => [],
-         'label'  => '',
-         'alt'    => '',
-         'color'  => '',
-         'icon'   => '',
-         'limit'  => 99999,
-         'class'  => "multiple-numbers",
+         'data'         => [],
+         'label'        => '',
+         'alt'          => '',
+         'color'        => '',
+         'icon'         => '',
+         'limit'        => 99999,
+         'use_gradient' => false,
+         'class'        => "multiple-numbers",
+         'rand'         => mt_rand(),
       ];
       $p = array_merge($default, $params);
       $default_entry = [
@@ -288,7 +293,9 @@ HTML;
 
       $fg_color = \Toolbox::getFgColor($p['color']);
 
+      $alphabet = range('a', 'z');
       $numbers_html = "";
+      $i = 0;
       foreach ($p['data'] as $entry) {
          if (!is_array($entry)) {
             continue;
@@ -310,12 +317,13 @@ HTML;
          $formatted_number = \Toolbox::shortenNumber($entry['number']);
 
          $numbers_html.= <<<HTML
-            <a {$href} class="line">
+            <a {$href} class="line line-{$alphabet[$i]}">
                <span class="content" {$color}>$formatted_number</span>
                <i class="icon {$entry['icon']}" {$color2}></i>
                <span class="label" {$color2}>{$entry['label']}</span>
             </a>
 HTML;
+         $i++;
       }
 
       $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
@@ -328,8 +336,36 @@ HTML;
             <span>";
       }
 
+      $palette_style = "";
+      if ($p['use_gradient']) {
+         $palette = self::getGradientPalette($p['color'], $i, false);
+         foreach ($palette['names'] as $index => $letter) {
+            $bgcolor   = $palette['colors'][$index];
+            $bgcolor_h = Toolbox::getFgColor($bgcolor, 10);
+            $color     = Toolbox::getFgColor($bgcolor);
+            $color_h   = Toolbox::getFgColor($color, 60);
+
+            $palette_style .= "
+               #chart-{$p['rand']} .line-$letter {
+                  background-color: $bgcolor;
+                  color: $color;
+               }
+
+               #chart-{$p['rand']} .line-$letter:hover {
+                  background-color: $bgcolor_h;
+                  font-weight: bold;
+               }
+            ";
+         }
+      }
+
       $html = <<<HTML
+      <style>
+         {$palette_style}
+      </style>
+
       <div class="card {$p['class']}"
+           id="chart-{$p['rand']}"
            title="{$p['alt']}"
            style="background-color: {$p['color']}; color: {$fg_color}">
          <div class='scrollable'>
@@ -374,7 +410,7 @@ HTML;
          'color'        => '',
          'icon'         => '',
          'donut'        => false,
-         'half'        => false,
+         'half'         => false,
          'use_gradient' => false,
          'limit'        => 99999,
          'rand'         => mt_rand(),
