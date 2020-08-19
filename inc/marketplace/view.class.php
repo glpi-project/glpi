@@ -776,7 +776,7 @@ HTML;
          $html = "<div class='offers'>
             <a href='".GLPI_NETWORK_SERVICES."' target='_blank'
                class='badge glpi-network'
-               title='".sprintf(__s("You must have a %1$s subscription to get this plugin", 'GLPI Network'))."'>
+               title='".sprintf(__s("You must have a %s subscription to get this plugin"), 'GLPI Network')."'>
                <i class='fas fa-star'></i>GLPI Network
             </a>
             <a href='".GLPI_NETWORK_SERVICES."' target='_blank'
