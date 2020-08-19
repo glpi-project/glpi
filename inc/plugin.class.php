@@ -923,6 +923,31 @@ class Plugin extends CommonDBTM {
 
 
    /**
+    * Is a plugin updatable ?
+    *
+    * @param string $directory  Plugin directory
+    *
+    * @return boolean
+    */
+   function isUpdatable($directory) {
+      // Make a lowercase comparison, as sometime this function is called based on
+      // extraction of plugin name from a classname, which does not use same naming rules than directories.
+      $activated_plugins = array_map('strtolower', self::$activated_plugins);
+      if (in_array(strtolower($directory), $activated_plugins)) {
+         // If plugin is marked as activated, no need to query DB on this case.
+         return false;
+      }
+
+      // If plugin is not marked as activated, check on DB as it may have not been loaded yet.
+      if ($this->getFromDBbyDir($directory)) {
+         return ($this->fields['state'] == self::NOTUPDATED) && $this->isLoadable($directory);
+      }
+
+      return false;
+   }
+
+
+   /**
     * Is a plugin loadable ?
     *
     * @param string $directory  Plugin directory
