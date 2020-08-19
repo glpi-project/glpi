@@ -144,7 +144,8 @@ class Controller extends CommonGLPI {
       // inform api the plugin has been downloaded
       $api->incrementPluginDownload($this->plugin_key);
 
-      return $plugin_inst->fields['state'] ?? Plugin::UNKNOWN;
+      // try to install (or update) directly the plugin
+      return $this->installPlugin();
    }
 
 
@@ -370,7 +371,7 @@ class Controller extends CommonGLPI {
          $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
       }
 
-      return $state== Plugin::NOTACTIVATED;
+      return $state == Plugin::NOTACTIVATED;
    }
 
 
