@@ -358,6 +358,28 @@ class RuleTicket extends Rule {
                      }
                   }
                   break;
+
+               case 'append_regex_result_from_user_group':
+                  if (isset($this->regex_results[0])) {
+                     $regexvalue = RuleAction::getRegexResultById($action->fields["value"],
+                                                                  $this->regex_results[0]);
+                  } else {
+                     $regexvalue = $action->fields["value"];
+                  }
+
+                  // Add groups of requester
+                  if (!isset($output['_groups_id_requester'])) {
+                     $output['_groups_id_requester'] = [];
+                  }
+
+                  foreach (Group_User::getUserGroups($input['_users_id_requester']) as $g) {
+                     preg_match($regexvalue, $g['name'], $matches, PREG_OFFSET_CAPTURE, 0);
+                     if (!empty($matches)) {
+                        $output['_groups_id_requester'][$g['id']] = $g['id'];
+                     }
+                  }
+
+               break;
             }
          }
       }
@@ -618,7 +640,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_requester']['type']              = 'dropdown';
       $actions['_groups_id_requester']['table']             = 'glpi_groups';
       $actions['_groups_id_requester']['condition']         = ['is_requester' => 1];
-      $actions['_groups_id_requester']['force_actions']     = ['assign', 'append', 'fromitem', 'defaultfromuser'];
+      $actions['_groups_id_requester']['force_actions']     = ['assign', 'append', 'fromitem', 'defaultfromuser', 'append_regex_result_from_user_group'];
       $actions['_groups_id_requester']['permitseveral']     = ['append'];
       $actions['_groups_id_requester']['appendto']          = '_additional_groups_requesters';
 

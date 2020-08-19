@@ -561,4 +561,105 @@ class RuleTicket extends DbTestCase {
          ])
       )->isTrue();
    }
+
+   public function testGroupRequesterAssignFromUserGroupsAndRegex() {
+      $this->login();
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test regex group requester criterion',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      //create criteria to check if group requester already define
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => '_users_id_requester',
+         'condition' => \Rule::PATTERN_EXISTS,
+         'pattern'   => 1,
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      //create action to put default user group as group requester
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'append_regex_result_from_user_group',
+         'field'       => '_groups_id_requester',
+         'value'       => Toolbox::addslashes_deep('(.+\([^()]*\))'),  //retrieve groupe with '(' and ')'
+      ]);
+      //change value because of addslashes
+      $action_input['value'] = '(.+\([^()]*\))';
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      //create 2 new group
+      $group = new \Group();
+      $group_id1 = $group->add($group_input = [
+         "name" => "group1 (5215)",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group, $group_id1, $group_input);
+
+      //create new group
+      $group_id2 = $group->add($group_input = [
+         "name" => "group2",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group, $group_id2, $group_input);
+
+      //Load user post_only
+      $user = new \User();
+      $user->getFromDB(getItemByTypeName('User', 'post-only', true));
+
+      //add user to groups
+      $group_user = new Group_User();
+      $group_user_id1 = $group_user->add($group_user_input = [
+         "groups_id" => $group_id1,
+         "users_id"  => $user->fields['id']
+      ]);
+      $this->checkInput($group_user, $group_user_id1, $group_user_input);
+
+      $group_user_id2 = $group_user->add($group_user_input = [
+         "groups_id" => $group_id2,
+         "users_id"  => $user->fields['id']
+      ]);
+      $this->checkInput($group_user, $group_user_id2, $group_user_input);
+
+      // create ticket that trigger rule on creation
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'             => 'Add group requester',
+         'content'          => 'test',
+         '_users_id_requester' => $user->fields['id']
+      ]);
+      unset($ticket_input['_users_id_requester']); // _users_id_requester is stored in glpi_tickets_users table, so remove it
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+
+      //link between groupe1 and ticket will exist
+      $ticketGroup = new \Group_Ticket();
+      $this->boolean(
+         $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id1,
+            'type'               => \CommonITILActor::REQUESTER
+         ])
+      )->isTrue();
+
+      //link between groupe2 and ticket will not exist
+      $this->boolean(
+         $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id2,
+            'type'               => \CommonITILActor::REQUESTER
+         ])
+      )->isFalse();
+   }
 }
