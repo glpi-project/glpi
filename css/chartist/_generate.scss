@@ -9,6 +9,14 @@ $ct-series-colors: () !default;
          stroke: $color;
       }
 
+      .ct-circle {
+         fill: $color;
+
+         & + .ct-label {
+            fill: $color;
+         }
+      }
+
       .ct-slice-pie, .ct-area, .ct-slice-donut-solid {
          fill: $color;
          stroke: darken($color, 20%);

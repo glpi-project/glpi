@@ -1178,7 +1178,7 @@ JAVASCRIPT;
       $line_color = \Toolbox::getFgColor($p['color'], 10);
       $class = "line";
       $class.= $p['area'] ? " area": "";
-      $class.= $p['area'] ? " multiple": "";
+      $class.= $p['multiple'] ? " multiple": "";
 
       $animation_duration = self::$animation_duration;
 
@@ -1195,6 +1195,14 @@ JAVASCRIPT;
 
       #chart-{$p['rand']} .ct-grid {
          stroke: {$line_color};
+      }
+
+      #chart-{$p['rand']} .ct-circle {
+         stroke: {$p['color']};
+         stroke-width: 3;
+      }
+      #chart-{$p['rand']} .ct-circle + .ct-label {
+         stroke: {$p['color']};
       }
       {$palette_style}
       </style>
@@ -1239,7 +1247,17 @@ HTML;
                {$legend_options}
                Chartist.plugins.tooltip({
                   appendToBody: true,
-                  class: 'dashboard-tooltip'
+                  class: 'dashboard-tooltip',
+                  pointClass: 'ct-circle'
+               }),
+               Chartist.plugins.ctPointLabels({
+                  textAnchor: 'middle',
+                  labelInterpolationFnc: function(value) {
+                     if (value == undefined) {
+                        return ''
+                     }
+                     return value;
+                  }
                })
             ]
          });
@@ -1259,6 +1277,14 @@ HTML;
             }
 
             if (data.type === 'point') {
+               var circle = new Chartist.Svg('circle', {
+                  cx: [data.x],
+                  cy:[data.y],
+                  r:data.value.y > 0 ? [5] : [0],
+                  "ct:value":data.value.y,
+               }, 'ct-circle');
+               data.element.replace(circle);
+
                // set url redirecting on line
                var url = _.get(data, 'series['+data.index+'].url')
                   || _.get(data, 'series.data['+data.index+'].url')
@@ -1280,16 +1306,22 @@ HTML;
 
          // hide other lines when hovering a point
          chart.on('created', function(bar) {
-            $('#chart-{$p['rand']} .ct-series .ct-point')
+            $('#chart-{$p['rand']} .ct-series .ct-circle, #chart-{$p['rand']} .ct-series .ct-circle + .ct-label')
                .mouseover(function() {
-                  $(this).parent(".ct-series")
+                  $(this)
+                     .attr('r', "9")
+                     .parent(".ct-series")
                      .siblings().children()
-                     .css('stroke-opacity', "0.05");
+                     .css('stroke-opacity', "0.05")
+                     .filter(".ct-circle, .ct-label").css('fill-opacity', "0.1");
                })
                .mouseout(function() {
-                  $(this).parent(".ct-series")
+                  $(this)
+                     .attr('r', "5")
+                     .parent(".ct-series")
                      .siblings().children()
-                     .css('stroke-opacity', "1");
+                     .css('stroke-opacity', "1")
+                     .filter(".ct-circle, .ct-label").css('fill-opacity', "1");
                });
          });
       });

@@ -672,8 +672,16 @@ $break_tablet: 1400px;
 
       .ct-chart-bar:not(.ct-horizontal-bars),
       .ct-chart-line {
-         .ct-label:not(.ct-vertical) {
-            word-break: break-word;
+         .ct-circle + .ct-label {
+            font-size: 0.75rem;
+            line-height: 1;
+            paint-order: stroke;
+            stroke-width: 5px;
+         }
+         .ct-labels {
+            .ct-label:not(.ct-vertical) {
+               word-break: break-word;
+            }
          }
       }
 
