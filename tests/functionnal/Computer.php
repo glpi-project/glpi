@@ -494,7 +494,7 @@ class Computer extends DbTestCase {
       $soft = new \Software();
       $softwares_id = $soft->add([
          'name'         => 'GLPI',
-         'entities_id'  => 0
+         'entities_id'  => $computer->fields['entities_id']
       ]);
       $this->integer($softwares_id)->isGreaterThan(0);
 
@@ -514,6 +514,8 @@ class Computer extends DbTestCase {
       $this->integer($link_id)->isGreaterThan(0);
 
       $entities_id = getItemByTypeName('Entity', '_test_child_2', true);
+      $oentities_id = (int)$computer->fields['entities_id'];
+      $this->integer($entities_id)->isNotEqualTo($oentities_id);
 
       //transer to another entity
       $transfer = new \Transfer();
@@ -535,6 +537,9 @@ class Computer extends DbTestCase {
 
       $this->boolean($computer->getFromDB($cid))->isTrue();
       $this->integer((int)$computer->fields['entities_id'])->isidenticalTo($entities_id);
+
+      $this->boolean($soft->getFromDB($softwares_id))->isTrue();
+      $this->integer($soft->fields['entities_id'])->isidenticalTo($oentities_id);
 
       global $DB;
       $softwares = $DB->request([
