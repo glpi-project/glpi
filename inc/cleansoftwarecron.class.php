@@ -45,20 +45,38 @@ class CleanSoftwareCron extends CommonDBTM
 
    static protected $notable = true;
 
+   /**
+    * Get task description
+    *
+    * @return string
+    */
+   public static function getTaskDescription(): string {
+      return __("Remove software versions with no installation and software with no version");
+   }
+
+   /**
+    * Get task's parameter description
+    *
+    * @return string
+    */
+   public static function getParameterDescription(): string {
+      return __('Max items to handle in one execution');
+   }
+
    public static function cronInfo($name) {
       return [
-         'description' => __("Remove software versions with no installation and software with no version"),
-         'parameter'   => __('Max items to handle in one execution')
+         'description' => self::getTaskDescription(),
+         'parameter' => self::getParameterDescription(),
       ];
    }
 
    /**
     * Clean unused software and software versions
     *
-    * @param CronTask $task
+    * @param int $max Max items to handle
+    * @return int Number of deleted items
     */
-   public static function cronCleanSoftware(CronTask $task) {
-      $max = $task->fields['param'];
+   public static function run(?int $max): int {
       $total = 0;
 
       // Delete software versions with no installation
@@ -75,6 +93,17 @@ class CleanSoftwareCron extends CommonDBTM
          $max - $total
       );
 
+      return $total;
+   }
+
+   /**
+    * Run from cronTask
+    *
+    * @param CronTask $task
+    */
+   public static function cronCleanSoftware(CronTask $task) {
+      $max = $task->fields['param'];
+      $total = self::run($max);
       $task->addVolume($total);
 
       return 1;
