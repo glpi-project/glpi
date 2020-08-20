@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use CleanSoftwareCron;
-use CronTask;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
