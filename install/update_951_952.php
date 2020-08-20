@@ -44,16 +44,6 @@ function update951to952() {
    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.2'));
    $migration->setVersion('9.5.2');
 
-   $migration->dropKey('glpi_documents_items', 'unicity');
-   $migration->migrationOneTable('glpi_documents_items');
-   $migration->addKey(
-      'glpi_documents_items',
-      ['documents_id', 'itemtype', 'items_id', 'timeline_position'],
-      'unicity',
-      'UNIQUE'
-   );
-   $migration->migrationOneTable('glpi_documents_items');
-
    /* Fix document_item migration */
    $migration->displayTitle("Building inline images data in " . Document_Item::getTable());
 

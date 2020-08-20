@@ -1513,6 +1513,18 @@ HTML
    $migration->addConfig(['ssologout_url' => '']);
    /** SSO logout URL */
 
+   /** Document_Item unicity */
+   $migration->dropKey('glpi_documents_items', 'unicity');
+   $migration->migrationOneTable('glpi_documents_items');
+   $migration->addKey(
+      'glpi_documents_items',
+      ['documents_id', 'itemtype', 'items_id', 'timeline_position'],
+      'unicity',
+      'UNIQUE'
+   );
+   $migration->migrationOneTable('glpi_documents_items');
+   /** /Document_Item unicity */
+
    /** Appliances & webapps */
    require __DIR__ . '/update_94_95/appliances.php';
    /** /Appliances & webapps */
