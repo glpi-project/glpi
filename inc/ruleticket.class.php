@@ -366,6 +366,16 @@ class RuleTicket extends Rule {
                            $output["itilcategories_id"] = $target_itilcategory;
                         }
                      }
+                  } else if ($action->fields["field"] == "_groups_id_requester") {
+                     foreach ($this->regex_results as $regex_result) {
+                        $regexvalue          = RuleAction::getRegexResultById($action->fields["value"],
+                                                                     $regex_result);
+                        $group = new Group();
+                        if ($group->getFromDBByCrit(["name" => $regexvalue,
+                                                      "is_requester" => true])) {
+                           $output['_additional_groups_requesters'][$group->getID()] = $group->getID();
+                        }
+                     }
                   }
                   break;
             }
@@ -628,7 +638,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_requester']['type']              = 'dropdown';
       $actions['_groups_id_requester']['table']             = 'glpi_groups';
       $actions['_groups_id_requester']['condition']         = ['is_requester' => 1];
-      $actions['_groups_id_requester']['force_actions']     = ['assign', 'append', 'fromitem', 'defaultfromuser'];
+      $actions['_groups_id_requester']['force_actions']     = ['assign', 'append', 'fromitem', 'defaultfromuser','regex_result'];
       $actions['_groups_id_requester']['permitseveral']     = ['append'];
       $actions['_groups_id_requester']['appendto']          = '_additional_groups_requesters';
 

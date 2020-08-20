@@ -2389,6 +2389,12 @@ class Rule extends CommonDBTM {
                if ($type=='defaultfromuser' || $type=='fromuser' || $type=='fromitem') {
                   return Dropdown::getYesNo($value);
                }
+
+               // $type == regex_result display text
+               if ($type=='regex_result') {
+                  return $this->displayAdditionRuleActionValue($value);
+               }
+
                // $type == assign
                $tmp = Dropdown::getDropdownName($action["table"], $value);
                return (($tmp == '&nbsp;') ? NOT_AVAILABLE : $tmp);
