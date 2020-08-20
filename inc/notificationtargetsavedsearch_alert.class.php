@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-class NotificationTargetSavedsearch_Alert extends NotificationTarget {
+class NotificationTargetSavedSearch_Alert extends NotificationTarget {
 
 
    function getEvents() {
