@@ -778,10 +778,10 @@ class RuleTicket extends Rule {
       $actions['solution_template']['table']                 = 'glpi_solutiontemplates';
       $actions['solution_template']['force_actions']         = ['assign'];
 
-      $actions['task_template']['name']          = _n('Task template', 'Task templates', 1);
-      $actions['task_template']['type']          = 'dropdown';
-      $actions['task_template']['table']         = TaskTemplate::getTable();
-      $actions['task_template']['force_actions'] = ['assign'];
+      $actions['task_template']['name']                      = _n('Task template', 'Task templates', 1);
+      $actions['task_template']['type']                      = 'dropdown';
+      $actions['task_template']['table']                     = TaskTemplate::getTable();
+      $actions['task_template']['force_actions']             = ['assign'];
 
       return $actions;
    }
