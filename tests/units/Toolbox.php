@@ -378,6 +378,44 @@ class Toolbox extends \GLPITestCase {
       $this->string(\Toolbox::sodiumDecrypt(''))->isEmpty();
    }
 
+   /**
+    * Test invalid content. If not handled correctly, following sodium exception would be raised and fail the test.
+    * "SodiumException: public nonce size should be SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES bytes"
+    */
+   public function testSodiumDecryptInvalid() {
+      $result = null;
+
+      $this->when(
+         function () use (&$result) {
+            $result = \Toolbox::sodiumDecrypt('not a valid value');
+         }
+      )->error
+         ->withType(E_USER_ERROR)
+         ->withMessage('Unable to extract nonce from content. It may not have been crypted with sodium functions.')
+         ->exists();
+
+      $this->string($result)->isEmpty();
+   }
+
+   /**
+    * Test content crypted with another key.
+    */
+   public function testSodiumDecryptBadKey() {
+      $result = null;
+
+      $this->when(
+         function () use (&$result) {
+            // 'test' string crypted with a valid key used just for that
+            $result = \Toolbox::sodiumDecrypt('CUdPSEgzKroDOwM1F8lbC8WDcQUkGCxIZpdTEpp5W/PLSb70WmkaKP0Q7QY=');
+         }
+      )->error
+         ->withType(E_USER_ERROR)
+         ->withMessage('Unable to decrypt content. It may have been crypted with another key.')
+         ->exists();
+
+      $this->string($result)->isEmpty();
+   }
+
    protected function cleanProvider() {
       return [
          ['mystring', 'mystring', null, 15, 0.56, false],
