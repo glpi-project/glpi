@@ -55,7 +55,7 @@ class CleanSoftwareCommand extends AbstractCommand
       $this->addOption(
          'max',
          'm',
-         InputOption::VALUE_OPTIONAL,
+         InputOption::VALUE_REQUIRED,
          CleanSoftwareCron::getParameterDescription(),
          500
       );
