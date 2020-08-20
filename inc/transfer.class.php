@@ -1582,7 +1582,9 @@ class Transfer extends CommonDBTM {
             'WHERE'  => [
                'items_id'     => $ID,
                'itemtype'     => $itemtype,
-               'softwareversions_id'   => $this->noneedtobe_transfer['SoftwareVersion']
+               'NOT'          => [
+                  'softwareversions_id' => $this->noneedtobe_transfer['SoftwareVersion'],
+               ]
             ]
          ];
 
