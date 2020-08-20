@@ -622,6 +622,7 @@ HTML;
       $widgettype   = $cardopt['widgettype'] ?? "";
       $widget_def   = $widgettypes[$widgettype] ?? [];
       $use_gradient = $cardopt['use_gradient'] ?? 0;
+      $point_labels = $cardopt['point_labels'] ?? 0;
       $limit        = $cardopt['limit'] ?? 7;
       $color        = $cardopt['color'];
       $edit         = $params['action'] === "display_edit_widget";
@@ -699,13 +700,30 @@ HTML;
          $gradient_displayed = "style='display: none'";
       }
       echo "<div class='field gradient_field' $gradient_displayed>";
-      echo "<label for='check_$rand'>".__("Use gradient palette")."</label>";
+      echo "<label for='check_gradient_$rand'>".__("Use gradient palette")."</label>";
       echo "<div>";
       \Html::showCheckbox([
          'label'   => "&nbsp;",
          'name'    => "use_gradient",
-         'id'      => "check_$rand",
+         'id'      => "check_gradient_$rand",
          'checked' => $use_gradient,
+      ]);
+      echo "</div>";
+      echo "</div>"; // .field
+
+      // display checkbox to use point label or not
+      $point_labels_displayed = "";
+      if (!$edit || !isset($widget_def['pointlbl']) || !$widget_def['pointlbl']) {
+         $point_labels_displayed = "style='display: none'";
+      }
+      echo "<div class='field pointlbl_field' $point_labels_displayed>";
+      echo "<label for='check_point_labels_$rand'>".__("Display labels on data points")."</label>";
+      echo "<div>";
+      \Html::showCheckbox([
+         'label'   => "&nbsp;",
+         'name'    => "point_labels",
+         'id'      => "check_point_labels_$rand",
+         'checked' => $point_labels,
       ]);
       echo "</div>";
       echo "</div>"; // .field

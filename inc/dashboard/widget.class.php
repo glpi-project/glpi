@@ -98,6 +98,7 @@ class Widget extends \CommonGLPI {
             'function' => 'Glpi\\Dashboard\\Widget::simpleLine',
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/line.png',
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'lines' => [
             'label'    => __("Multiple lines"),
@@ -105,12 +106,14 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/line.png',
             'gradient' => true,
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'area' => [
             'label'    => __("Area"),
             'function' => 'Glpi\\Dashboard\\Widget::simpleArea',
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/area.png',
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'areas' => [
             'label'    => __("Multiple areas"),
@@ -118,6 +121,7 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/area.png',
             'gradient' => true,
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'bars' => [
             'label'    => __("Multiple bars"),
@@ -125,6 +129,7 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/bar.png',
             'gradient' => true,
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'stackedbars' => [
             'label'    => __("Stacked bars"),
@@ -132,6 +137,7 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/stacked.png',
             'gradient' => true,
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'hbar' => [
             'label'    => __("Horizontal bars"),
@@ -139,6 +145,7 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/hbar.png',
             'gradient' => true,
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'bigNumber' => [
             'label'    => __("Big number"),
@@ -1153,6 +1160,7 @@ JAVASCRIPT;
          'legend'       => false,
          'multiple'     => false,
          'use_gradient' => false,
+         'point_labels' => false,
          'limit'        => 99999,
          'rand'         => mt_rand(),
       ];
@@ -1185,6 +1193,20 @@ JAVASCRIPT;
       $palette_style = "";
       if (!$p['multiple'] || $p['use_gradient']) {
          $palette_style = self::getCssGradientPalette($p['color'], $nb_series, "#chart-{$p['rand']}");
+      }
+
+      $pointlabels_plugins = "";
+      if ($p['point_labels']) {
+         $pointlabels_plugins = ",
+            Chartist.plugins.ctPointLabels({
+               textAnchor: 'middle',
+               labelInterpolationFnc: function(value) {
+                  if (value == undefined) {
+                     return ''
+                  }
+                  return value;
+               }
+            })";
       }
 
       $html = <<<HTML
@@ -1249,16 +1271,8 @@ HTML;
                   appendToBody: true,
                   class: 'dashboard-tooltip',
                   pointClass: 'ct-circle'
-               }),
-               Chartist.plugins.ctPointLabels({
-                  textAnchor: 'middle',
-                  labelInterpolationFnc: function(value) {
-                     if (value == undefined) {
-                        return ''
-                     }
-                     return value;
-                  }
                })
+               {$pointlabels_plugins}
             ]
          });
 
