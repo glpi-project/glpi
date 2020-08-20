@@ -1291,25 +1291,24 @@ HTML;
             }
 
             if (data.type === 'point') {
-               var circle = new Chartist.Svg('circle', {
-                  cx: [data.x],
-                  cy:[data.y],
-                  r:data.value.y > 0 ? [5] : [0],
-                  "ct:value":data.value.y,
-               }, 'ct-circle');
-               data.element.replace(circle);
-
                // set url redirecting on line
                var url = _.get(data, 'series['+data.index+'].url')
-                  || _.get(data, 'series.data['+data.index+'].url')
-                  || _.get(data, 'series.url')
-                  || '';
+                      || _.get(data, 'series.data['+data.index+'].url')
+                      || _.get(data, 'series.url')
+                      || '';
+               var clickable = url.length > 0;
 
-               if (url.length > 0) {
-                  data.element.attr({
-                     'data-clickable': true
-                  });
-                  data.element._node.onclick = function() {
+               var circle = new Chartist.Svg('circle', {
+                  cx: [data.x],
+                  cy: [data.y],
+                  r: data.value.y > 0 ? [5] : [0],
+                  "ct:value": data.value.y,
+                  "data-clickable": clickable
+               }, 'ct-circle');
+               var circle = data.element.replace(circle);
+
+               if (clickable) {
+                  circle.getNode().onclick = function() {
                      if (!Dashboard.edit_mode) {
                         window.location = url;
                      }
