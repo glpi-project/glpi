@@ -129,7 +129,6 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/bar.png',
             'gradient' => true,
             'limit'    => true,
-            'pointlbl' => true,
          ],
          'stackedbars' => [
             'label'    => __("Stacked bars"),
@@ -137,7 +136,6 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/stacked.png',
             'gradient' => true,
             'limit'    => true,
-            'pointlbl' => true,
          ],
          'hbar' => [
             'label'    => __("Horizontal bars"),
@@ -145,7 +143,6 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/hbar.png',
             'gradient' => true,
             'limit'    => true,
-            'pointlbl' => true,
          ],
          'bigNumber' => [
             'label'    => __("Big number"),
