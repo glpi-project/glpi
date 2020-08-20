@@ -485,4 +485,65 @@ class Computer extends DbTestCase {
       $this->boolean($link->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();
       $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();
    }
+
+   public function testTransfer() {
+      $this->login();
+      $computer = $this->getNewComputer();
+      $cid = $computer->fields['id'];
+
+      $soft = new \Software();
+      $softwares_id = $soft->add([
+         'name'         => 'GLPI',
+         'entities_id'  => 0
+      ]);
+      $this->integer($softwares_id)->isGreaterThan(0);
+
+      $version = new \SoftwareVersion();
+      $versions_id = $version->add([
+         'softwares_id' => $softwares_id,
+         'name'         => '9.5'
+      ]);
+      $this->integer($versions_id)->isGreaterThan(0);
+
+      $link = new \Item_SoftwareVersion();
+      $link_id  = $link->add([
+         'itemtype'              => 'Computer',
+         'items_id'              => $cid,
+         'softwareversions_id'   => $versions_id
+      ]);
+      $this->integer($link_id)->isGreaterThan(0);
+
+      $entities_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+      //transer to another entity
+      $transfer = new \Transfer();
+
+      $controller = new \atoum\mock\controller();
+      $controller->__construct = function() {
+         // void
+      };
+
+      $ma = new \mock\MassiveAction([], [], 'process', $controller);
+
+      \MassiveAction::processMassiveActionsForOneItemtype(
+         $ma,
+         $computer,
+         [$cid]
+      );
+      $transfer->moveItems(['Computer' => [$cid]], $entities_id, [$cid]);
+      unset($_SESSION['glpitransfer_list']);
+
+      $this->boolean($computer->getFromDB($cid))->isTrue();
+      $this->integer((int)$computer->fields['entities_id'])->isidenticalTo($entities_id);
+
+      global $DB;
+      $softwares = $DB->request([
+         'FROM'   => \Item_SoftwareVersion::getTable(),
+         'WHERE'  => [
+            'itemtype'  => 'Computer',
+            'items_id'  => $cid
+         ]
+      ]);
+      $this->integer(count($softwares))->isidenticalTo(1);
+   }
 }
