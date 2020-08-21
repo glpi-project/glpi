@@ -384,6 +384,7 @@ var Dashboard = {
          var widgettype  = widgetdom.val();
          var widget      = Dashboard.all_widgets[widgettype];
          var usegradient = widget.gradient || false;
+         var pointlabels = widget.pointlbl || false;
          var uselimit    = widget.limit || false;
 
          widgetdom
@@ -391,6 +392,9 @@ var Dashboard = {
             .siblings('.gradient_field')
             .hide()
             .toggle(usegradient).end()
+            .siblings('.pointlbl_field')
+            .hide()
+            .toggle(pointlabels).end()
             .siblings('.limit_field')
             .hide()
             .toggle(uselimit).end();

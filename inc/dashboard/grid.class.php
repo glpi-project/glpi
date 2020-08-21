@@ -717,7 +717,7 @@ HTML;
          $point_labels_displayed = "style='display: none'";
       }
       echo "<div class='field pointlbl_field' $point_labels_displayed>";
-      echo "<label for='check_point_labels_$rand'>".__("Display labels on data points")."</label>";
+      echo "<label for='check_point_labels_$rand'>".__("Display value labels on points/bars")."</label>";
       echo "<div>";
       \Html::showCheckbox([
          'label'   => "&nbsp;",

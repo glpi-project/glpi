@@ -92,6 +92,7 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/bar.png',
             'gradient' => true,
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'line' => [
             'label'    => \Line::getTypeName(1),
@@ -129,6 +130,7 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/bar.png',
             'gradient' => true,
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'stackedbars' => [
             'label'    => __("Stacked bars"),
@@ -136,6 +138,7 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/stacked.png',
             'gradient' => true,
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'hbar' => [
             'label'    => __("Horizontal bars"),
@@ -143,6 +146,7 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/hbar.png',
             'gradient' => true,
             'limit'    => true,
+            'pointlbl' => true,
          ],
          'bigNumber' => [
             'label'    => __("Big number"),
@@ -804,6 +808,7 @@ JAVASCRIPT;
     * - bool   'legend': do we display a legend for the graph
     * - bool   'stacked': do we display multiple bart stacked or grouped
     * - bool   'use_gradient': gradient or generic palette
+    * - bool   'point_labels': display labels (for values) directly on graph
     * - int    'limit': the number of bars
     * @param array $labels title of the bars (if a single array is given, we have a single bar graph)
     * @param array $series values of the bar (if a single array is given, we have a single bar graph)
@@ -826,6 +831,7 @@ JAVASCRIPT;
          'horizontal'   => false,
          'distributed'  => false,
          'use_gradient' => false,
+         'point_labels' => false,
          'limit'        => 99999,
          'rand'         => mt_rand(),
       ];
@@ -946,6 +952,8 @@ HTML;
             Chartist.plugins.legend(),";
       }
 
+      $point_labels = $p['point_labels']; // just to avoid issues with syntax coloring
+
       $js = <<<JAVASCRIPT
       $(function () {
          var chart = new Chartist.Bar('#chart-{$p['rand']} .chart', {
@@ -970,8 +978,12 @@ HTML;
          });
 
          var is_horizontal = chart.options.horizontalBars;
+         var is_vertical   = !is_horizontal;
+         var is_stacked    = chart.options.stackBars;
          var nb_elements   = chart.data.labels.length;
+         var nb_series     = chart.data.series.length;
          var bar_margin    = chart.options.seriesBarDistance;
+         var point_labels  = {$point_labels}
 
          if (!chart.options.stackBars
              && chart.data.series.length > 0
@@ -1022,6 +1034,55 @@ HTML;
                   to: data[axis_anim+'2']
                };
                data.element.animate(animate_properties);
+
+               // append labels
+               var display_labels = true;
+               var labelX = 0;
+               var labelY = 0;
+               var value = data.element.attr('ct:value').toString();
+               var text_anchor = 'middle';
+
+               if (is_vertical) {
+                  labelX = data.x2;
+                  labelY = data.y2 - 5;
+               }
+
+               if (is_horizontal) {
+                  var word_width = value.length * 5 + 5;
+                  labelX = data.x2 - word_width;
+                  labelY = data.y2;
+
+                  // don't display label if width too short
+                  if (data.x2 - data.x1 < word_width) {
+                     display_labels = false;
+                  }
+               }
+
+               if (is_stacked) {
+                  labelY = data.y2 + 15;
+
+                  // don't display label if height too short
+                  if (data.y1 - data.y2 < 15) {
+                     display_labels = false;
+                  }
+               }
+
+               // don't display label if value is not relevant
+               if (value == 0 || !point_labels) {
+                  display_labels = false;
+               }
+
+               if (display_labels) {
+                  label = new Chartist.Svg('text');
+                  label.text(value);
+                  label.addClass("ct-barlabel");
+                  label.attr({
+                     x: labelX,
+                     y: labelY,
+                     'text-anchor': text_anchor
+                  });
+                  return data.group.append(label);
+               }
             }
          });
 
@@ -1136,6 +1197,7 @@ JAVASCRIPT;
     * - bool   'area': do we want an area chart
     * - bool   'legend': do we display a legend for the graph
     * - bool   'use_gradient': gradient or generic palette
+    * - bool   'point_labels': display labels (for values) directly on graph
     * - int    'limit': the number of lines
     * @param array $labels title of the lines (if a single array is given, we have a single line graph)
     * @param array $series values of the line (if a single array is given, we have a single line graph)

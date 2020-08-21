@@ -720,6 +720,12 @@ $break_tablet: 1400px;
          }
       }
 
+      .ct-chart-bar {
+         .ct-barlabel {
+            font-weight: bold;
+         }
+      }
+
       &.gauge {
          .ct-chart {
             max-height: calc(100% - 45px); // prevent gauge to overflow
