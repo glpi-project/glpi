@@ -32,13 +32,12 @@
 
 include ('../inc/includes.php');
 
-if (!$CFG_GLPI["use_public_faq"]) {
-   Session::checkLoginUser();
-}
+if (isset($_GET['docid'])) {
+   // docid for document
+   $doc = new Document();
 
-$doc = new Document();
-
-if (isset($_GET['docid'])) { // docid for document
+   // do not check here user session as some documents may be visible by anonymous users
+   // i.e. public FAQ or ITIL documents linked in notifications
    if (!$doc->getFromDB($_GET['docid'])) {
       Html::displayErrorAndDie(__('Unknown file'), true);
    }
@@ -60,6 +59,8 @@ if (isset($_GET['docid'])) { // docid for document
    }
 
 } else if (isset($_GET["file"])) { // for other file
+   Session::checkLoginUser();
+
    $splitter = explode("/", $_GET["file"], 2);
    if (count($splitter) == 2) {
       $expires_headers = false;
