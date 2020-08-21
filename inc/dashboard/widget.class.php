@@ -64,6 +64,8 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/pie.png',
             'gradient' => true,
             'limit'    => true,
+            'width'    => 3,
+            'height'   => 3,
          ],
          'donut' => [
             'label'    => __("Donut"),
@@ -71,6 +73,8 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/donut.png',
             'gradient' => true,
             'limit'    => true,
+            'width'    => 3,
+            'height'   => 3,
          ],
          'halfpie' => [
             'label'    => __("Half pie"),
@@ -78,6 +82,8 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/halfpie.png',
             'gradient' => true,
             'limit'    => true,
+            'width'    => 3,
+            'height'   => 2,
          ],
          'halfdonut' => [
             'label'    => __("Half donut"),
@@ -85,6 +91,8 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/halfdonut.png',
             'gradient' => true,
             'limit'    => true,
+            'width'    => 3,
+            'height'   => 2,
          ],
          'bar' => [
             'label'    => __("Bars"),
@@ -93,6 +101,8 @@ class Widget extends \CommonGLPI {
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
+            'width'    => 4,
+            'height'   => 3,
          ],
          'line' => [
             'label'    => \Line::getTypeName(1),
@@ -100,6 +110,8 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/line.png',
             'limit'    => true,
             'pointlbl' => true,
+            'width'    => 4,
+            'height'   => 3,
          ],
          'lines' => [
             'label'    => __("Multiple lines"),
@@ -108,6 +120,8 @@ class Widget extends \CommonGLPI {
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
+            'width'    => 4,
+            'height'   => 3,
          ],
          'area' => [
             'label'    => __("Area"),
@@ -115,6 +129,8 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/area.png',
             'limit'    => true,
             'pointlbl' => true,
+            'width'    => 4,
+            'height'   => 3,
          ],
          'areas' => [
             'label'    => __("Multiple areas"),
@@ -123,6 +139,8 @@ class Widget extends \CommonGLPI {
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
+            'width'    => 5,
+            'height'   => 3,
          ],
          'bars' => [
             'label'    => __("Multiple bars"),
@@ -131,6 +149,8 @@ class Widget extends \CommonGLPI {
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
+            'width'    => 5,
+            'height'   => 3,
          ],
          'stackedbars' => [
             'label'    => __("Stacked bars"),
@@ -139,6 +159,8 @@ class Widget extends \CommonGLPI {
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
+            'width'    => 4,
+            'height'   => 3,
          ],
          'hbar' => [
             'label'    => __("Horizontal bars"),
@@ -147,6 +169,8 @@ class Widget extends \CommonGLPI {
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
+            'width'    => 3,
+            'height'   => 4,
          ],
          'bigNumber' => [
             'label'    => __("Big number"),
@@ -159,17 +183,23 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/multiplenumbers.png',
             'limit'    => true,
             'gradient' => true,
+            'width'    => 3,
+            'height'   => 3,
          ],
          'markdown' => [
             'label'    => __("Editable markdown"),
             'function' => 'Glpi\\Dashboard\\Widget::markdown',
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/markdown.png',
+            'width'    => 4,
+            'height'   => 4,
          ],
          'searchShowList' => [
             'label'    => __("Search result"),
             'function' => 'Glpi\\Dashboard\\Widget::searchShowList',
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/table.png',
             'limit'    => true,
+            'width'    => 5,
+            'height'   => 4,
          ],
          'summaryNumbers' => [
             'label'    => __("Summary numbers"),
@@ -177,6 +207,8 @@ class Widget extends \CommonGLPI {
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/summarynumber.png',
             'limit'    => true,
             'gradient' => true,
+            'width'    => 4,
+            'height'   => 2,
          ],
       ];
 

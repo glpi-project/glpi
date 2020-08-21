@@ -375,6 +375,7 @@ var Dashboard = {
             .next('label').css('display', 'none').end()
             .filter("[value='"+available_widgets.join("'],[value='")+"']")
             .prop("checked", force_checked)
+            .trigger('change')
             .next('label').css('display', 'inline-block');
       });
 
@@ -386,6 +387,8 @@ var Dashboard = {
          var usegradient = widget.gradient || false;
          var pointlabels = widget.pointlbl || false;
          var uselimit    = widget.limit || false;
+         var width       = widget.width  || 2;
+         var height      = widget.height || 2;
 
          widgetdom
             .closest('.field')
@@ -398,6 +401,20 @@ var Dashboard = {
             .siblings('.limit_field')
             .hide()
             .toggle(uselimit).end();
+
+         var width_field =  widgetdom
+            .closest('.field')
+            .siblings('[name="width"]');
+         var height_field =  widgetdom
+            .closest('.field')
+            .siblings('[name="height"]');
+
+         if (width_field.val() == 0) {
+            width_field.val(width);
+         }
+         if (height_field.val() == 0) {
+            height_field.val(height);
+         }
       });
 
       // markdown textarea edited
