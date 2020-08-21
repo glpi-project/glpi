@@ -952,7 +952,9 @@ HTML;
             Chartist.plugins.legend(),";
       }
 
-      $point_labels = $p['point_labels']; // just to avoid issues with syntax coloring
+      // just to avoid issues with syntax coloring
+      $point_labels = $p['point_labels'] ? "true" : "false;";
+      $is_multiple  = $p['multiple'] ? "true" : "false;";
 
       $js = <<<JAVASCRIPT
       $(function () {
@@ -984,6 +986,7 @@ HTML;
          var nb_series     = chart.data.series.length;
          var bar_margin    = chart.options.seriesBarDistance;
          var point_labels  = {$point_labels}
+         var is_multiple   = {$is_multiple}
 
          if (!chart.options.stackBars
              && chart.data.series.length > 0
@@ -1044,7 +1047,13 @@ HTML;
 
                if (is_vertical) {
                   labelX = data.x2;
-                  labelY = data.y2 - 5;
+                  labelY = data.y2 + 15;
+
+                  if (is_multiple) {
+                     labelY = data.y2 - 5;
+                  } else if (data.y1 - data.y2 < 18) {
+                     display_labels = false;
+                  }
                }
 
                if (is_horizontal) {
