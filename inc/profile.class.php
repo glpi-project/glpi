@@ -2419,9 +2419,9 @@ class Profile extends CommonDBTM {
          'datatype'           => 'dropdown',
       ];
       if (Session::isMultiEntitiesMode()) {
-         $newtab['condition']     = '`entities_id` = 0 AND `is_recursive`';
+         $newtab['condition']     = ['entities_id' => 0, 'is_recursive' => 1];
       } else {
-         $newtab['condition']     = '`entities_id` = 0';
+         $newtab['condition']     = ['entities_id' => 0];
       }
       $tab[] = $newtab;
 
