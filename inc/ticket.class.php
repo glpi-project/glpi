@@ -4009,6 +4009,16 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      if (isset($params['_tickettemplate']) && !($params['_tickettemplate'] instanceof TicketTemplate)) {
+         // Replace template ID by object for actor form
+         $tt = new TicketTemplate();
+         if ($tt->getFromDB($params['_tickettemplate'])) {
+            $params['_tickettemplate'] = $tt;
+         } else {
+            unset($params['_tickettemplate']);
+         }
+      }
+
       // add a user selector
       $rand_observer = $ticket->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $params);
 
