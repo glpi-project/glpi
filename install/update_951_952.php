@@ -101,6 +101,18 @@ function update951to952() {
    }
    /* /Fix document_item migration */
 
+   /* Register missing DomainAlert crontask */
+   CronTask::Register(
+      'Domain',
+      'DomainsAlert',
+      DAY_TIMESTAMP,
+      [
+         'mode'  => CronTask::MODE_EXTERNAL,
+         'state' => CronTask::STATE_DISABLE,
+      ]
+   );
+   /* /Register missing DomainAlert crontask */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
