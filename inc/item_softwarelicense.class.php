@@ -490,13 +490,9 @@ class Item_SoftwareLicense extends CommonDBRelation {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'>";
          echo "<td>";
-         $itemtypes = [];
-         foreach ($CFG_GLPI['software_types'] as $itemtype) {
-            $itemtypes[$itemtype] = $itemtype::getTypeName(1);
-         }
 
          $rand = mt_rand();
-         Dropdown::showItemTypes('itemtype', $itemtypes, [
+         Dropdown::showItemTypes('itemtype', $CFG_GLPI['software_types'], [
             'value'                 => 'Computer',
             'rand'                  => $rand,
             'width'                 => 'unset',
