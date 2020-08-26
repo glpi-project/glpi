@@ -736,7 +736,7 @@ class MailCollector  extends CommonDBTM {
                   'mailcollectors_id' => $mailgateID,
                ];
 
-               //prevent loop when message is read but when it's impossible to move / delete 
+               //prevent loop when message is read but when it's impossible to move / delete
                //due to mailbox problem (ie: full)
                if ($message->hasFlag(Storage::FLAG_SEEN)) {
                   ++$alreadyseen;

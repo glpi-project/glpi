@@ -246,16 +246,18 @@ class MailCollector extends DbTestCase {
       $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
       $msg = $this->collector->collect($this->mailgate_id);
 
-      $total_count              = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-      $expected_refused_count   = 2;
-      $expected_error_count     = 2;
-      $expected_blacklist_count = 0;
+      $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
+      $expected_refused_count          = 2;
+      $expected_error_count            = 1;
+      $expected_blacklist_count        = 0;
+      $expected_expected_already_seen  = 0;
 
       $this->variable($msg)->isIdenticalTo(
          sprintf(
-            'Number of messages: available=%1$s, retrieved=%2$s, refused=%3$s, errors=%4$s, blacklisted=%5$s',
+            'Number of messages: available=%1$s, already imported=%2$d, retrieved=%3$s, refused=%4$s, errors=%5$s, blacklisted=%6$s',
             $total_count,
-            $total_count,
+            $expected_expected_already_seen,
+            $total_count - $expected_expected_already_seen,
             $expected_refused_count,
             $expected_error_count,
             $expected_blacklist_count
