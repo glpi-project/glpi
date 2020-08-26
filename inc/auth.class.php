@@ -275,7 +275,7 @@ class Auth extends CommonGLPI {
             //Use is not present anymore in the directory!
             if ($dn == '') {
                $this->user_deleted_ldap = true;
-            }else{
+            } else {
                $this->user_found = true;
             }
             return false;
