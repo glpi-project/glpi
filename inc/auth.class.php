@@ -63,6 +63,8 @@ class Auth extends CommonGLPI {
    public $ldap_connection;
    /** @var bool Store user LDAP dn */
    public $user_dn = false;
+   /** @var bool User found in LDAP*/
+   public $user_found = false;
 
    const DB_GLPI  = 1;
    const MAIL     = 2;
@@ -273,6 +275,8 @@ class Auth extends CommonGLPI {
             //Use is not present anymore in the directory!
             if ($dn == '') {
                $this->user_deleted_ldap = true;
+            }else{
+               $this->user_found = true;
             }
             return false;
          }
