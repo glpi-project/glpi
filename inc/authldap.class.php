@@ -2852,7 +2852,7 @@ class AuthLDAP extends CommonDBTM {
                $auth = self::ldapAuth($auth, $login, $password, $ldap_method, $user_dn);
 
                if (($auth->auth_succeded
-                   && $break) || $this->user_found) {
+                   && $break) || $auth->user_found) {
                   break;
                }
             }
