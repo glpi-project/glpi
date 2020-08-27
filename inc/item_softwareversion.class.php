@@ -585,7 +585,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             $query['LEFT JOIN']['glpi_entities'] = [
                'FKEY'   => [
                   $itemtable     => 'entities_id',
-                  'glpi_users'   => 'id'
+                  'glpi_entities'   => 'id'
                ]
             ];
             $query['WHERE'] += getEntitiesRestrictCriteria($itemtable, '', '', true);
@@ -598,7 +598,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             $query['LEFT JOIN']['glpi_locations'] = [
                'FKEY'   => [
                   $itemtable     => 'locations_id',
-                  'glpi_users'   => 'id'
+                  'glpi_locations'   => 'id'
                ]
             ];
          } else {
@@ -610,7 +610,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             $query['LEFT JOIN']['glpi_states'] = [
                'FKEY'   => [
                   $itemtable     => 'states_id',
-                  'glpi_users'   => 'id'
+                  'glpi_states'   => 'id'
                ]
             ];
          } else {
@@ -622,7 +622,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             $query['LEFT JOIN']['glpi_groups'] = [
                'FKEY'   => [
                   $itemtable     => 'groups_id',
-                  'glpi_users'   => 'id'
+                  'glpi_groups'   => 'id'
                ]
             ];
          } else {
