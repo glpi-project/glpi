@@ -54,9 +54,12 @@ function isCommandLine() {
 function isAPI() {
    global $CFG_GLPI;
 
-   $called_url = ($_SERVER['HTTPS'] ?? "") !== 'off' ? 'https' : 'http'.
+   $called_url = (!empty($_SERVER['HTTPS'] ?? "") && ($_SERVER['HTTPS'] ?? "") !== 'off'
+                     ? 'https'
+                     : 'http').
                  '://' . ($_SERVER['HTTP_HOST'] ?? "").
                  ($_SERVER['REQUEST_URI'] ?? "");
+
    if (strpos($called_url, $CFG_GLPI['url_base_api'] ?? "") !== false) {
       return true;
    }
