@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    if: github.repository == 'glpi-project/glpi'
     name: "Build ${{ matrix.branch }}"
     runs-on: "ubuntu-latest"
     strategy:
