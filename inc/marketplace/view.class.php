@@ -590,12 +590,13 @@ HTML;
       $is_installed       = $plugin_inst->isInstalled($plugin_key);
       $is_actived         = $plugin_inst->isActivated($plugin_key);
       $mk_controller      = new Controller($plugin_key);
-      $update_version     = $mk_controller->checkUpdate($plugin_inst);
-      $has_an_update      = $update_version !== false;
+      $web_update_version = $mk_controller->checkUpdate($plugin_inst);
+      $has_web_update     = $web_update_version !== false;
+      $has_loc_update     = $plugin_inst->isUpdatable($plugin_key);
       $can_be_overwritten = $mk_controller->canBeOverwritten();
       $can_be_downloaded  = $mk_controller->canBeDownloaded();
       $required_offers    = $mk_controller->getRequiredOffers();
-      $can_be_updated     = $has_an_update && $can_be_overwritten;
+      $can_be_updated     = $has_web_update && $can_be_overwritten;
       $can_be_cleaned     = $exists && !$plugin_inst->isLoadable($plugin_key);
       $config_page        = $PLUGIN_HOOKS['config_page'][$plugin_key] ?? "";
 
@@ -625,11 +626,11 @@ HTML;
             <i class='fas fa-broom'></i>
          </button>";
       } else if ((!$exists && !$mk_controller->hasWriteAccess())
-         || ($has_an_update && !$can_be_overwritten)) {
+         || ($has_web_update && !$can_be_overwritten)) {
          $plugin_data = $mk_controller->getAPI()->getPlugin($plugin_key);
          if (array_key_exists('installation_url', $plugin_data) && $can_be_downloaded) {
             $warning = "";
-            if ($has_an_update) {
+            if ($has_web_update) {
                $warning = __s("The plugin has an available update but its directory is not writable.")."<br>";
             }
 
@@ -658,7 +659,7 @@ HTML;
          } else if ($can_be_updated) {
             $update_title = sprintf(
                __s("A new version (%s) is available, update ?", 'marketplace'),
-               $update_version
+               $web_update_version
             );
             $buttons .="<button class='modify_plugin'
                                 data-action='update_plugin'
@@ -682,10 +683,16 @@ HTML;
       }
 
       if ($exists && !$can_be_cleaned && !$is_installed && !strlen($error)) {
+         $title = __s("Install");
+         $icon  = "fas fa-folder-plus";
+         if ($has_loc_update) {
+            $title = __s("Update");
+            $icon  =  "far fa-caret-square-up";
+         }
          $buttons .="<button class='modify_plugin'
                              data-action='install_plugin'
-                             title='".__s("Install")."'>
-            <i class='fas fa-folder-plus'></i>
+                             title='$title'>
+            <i class='$icon'></i>
          </button>";
       }
 
