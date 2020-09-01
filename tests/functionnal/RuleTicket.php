@@ -34,6 +34,10 @@ namespace tests\units;
 
 use DbTestCase;
 use Group_User;
+use RuleAction;
+use RuleCriteria;
+use TaskTemplate;
+use TicketTask;
 use Toolbox;
 
 /* Test for inc/ruleticket.class.php */
@@ -560,5 +564,96 @@ class RuleTicket extends DbTestCase {
             'type'               => \CommonITILActor::REQUESTER
          ])
       )->isTrue();
+   }
+
+   public function testTaskTemplateAssignFromRule() {
+      $this->login();
+
+      // Create solution template
+      $task_template = new TaskTemplate();
+      $task_template_id = $task_template->add([
+         'content' => "test content"
+      ]);
+      $this->integer($task_template_id)->isGreaterThan(0);
+
+      // Create rule
+      $rule_ticket_em = new \RuleTicket();
+      $rule_ticket_id = $rule_ticket_em->add($ruletinput = [
+         'name'         => "test to assign ITILSolution",
+         'match'        => 'OR',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
+         'is_recursive' => 1,
+      ]);
+      $this->integer($rule_ticket_id)->isGreaterThan(0);
+
+      // Add condition (priority = 5) to rule
+      $rule_criteria_em = new RuleCriteria();
+      $rule_criteria_id = $rule_criteria_em->add($crit_input = [
+         'rules_id'  => $rule_ticket_id,
+         'criteria'  => 'priority',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => 5,
+      ]);
+      $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+      // Add action to rule
+      $rule_action_em = new RuleAction();
+      $rule_action_id = $rule_action_em->add($act_input = [
+         'rules_id'    => $rule_ticket_id,
+         'action_type' => 'assign',
+         'field'       => 'task_template',
+         'value'       => $task_template_id,
+      ]);
+      $this->integer($rule_action_id)->isGreaterThan(0);
+
+      // Test on creation
+      $ticket_em = new \Ticket();
+      $ticket_id = $ticket_em->add([
+         'name'     => 'test',
+         'content'  => 'test',
+         'priority' => 5,
+      ]);
+      $this->integer($ticket_id)->isGreaterThan(0);
+
+      $ticket_task_em = new TicketTask();
+      $ticket_tasks = $ticket_task_em->find([
+         'tickets_id' => $ticket_id
+      ]);
+
+      $this->array($ticket_tasks)->hasSize(1);
+      $task_data = array_pop($ticket_tasks);
+      $this->array($task_data)->hasKey('content');
+      $this->string($task_data['content'])->isEqualTo('test content');
+
+      // Test on update
+      $ticket_em = new \Ticket();
+      $ticket_id = $ticket_em->add([
+         'name'     => 'test',
+         'content'  => 'test',
+         'priority' => 4,
+      ]);
+      $this->integer($ticket_id)->isGreaterThan(0);
+
+      $ticket_task_em = new TicketTask();
+      $ticket_tasks = $ticket_task_em->find([
+         'tickets_id' => $ticket_id
+      ]);
+
+      $this->array($ticket_tasks)->hasSize(0);
+
+      $ticket_em->update([
+         'id' => $ticket_id,
+         'priority' => 5,
+      ]);
+      $ticket_tasks = $ticket_task_em->find([
+         'tickets_id' => $ticket_id
+      ]);
+
+      $this->array($ticket_tasks)->hasSize(1);
+      $task_data = array_pop($ticket_tasks);
+      $this->array($task_data)->hasKey('content');
+      $this->string($task_data['content'])->isEqualTo('test content');
    }
 }

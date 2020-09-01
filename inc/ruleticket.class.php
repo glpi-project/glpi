@@ -238,6 +238,16 @@ class RuleTicket extends Rule {
                      }
                   }
 
+                  if ($action->fields["field"] == 'task_template') {
+                     $template = new TaskTemplate();
+                     if ($template->getFromDB($action->fields["value"])) {
+                        // Store template id in '_tasktemplates_id' special
+                        // input so it can be handled in
+                        // CommonItilObject::handleTaskTemplateInput
+                        $output["_tasktemplates_id"][] = $template->getId();
+                     }
+                  }
+
                   break;
 
                case "append" :
@@ -767,6 +777,11 @@ class RuleTicket extends Rule {
       $actions['solution_template']['type']                  = 'dropdown';
       $actions['solution_template']['table']                 = 'glpi_solutiontemplates';
       $actions['solution_template']['force_actions']         = ['assign'];
+
+      $actions['task_template']['name']                      = _n('Task template', 'Task templates', 1);
+      $actions['task_template']['type']                      = 'dropdown';
+      $actions['task_template']['table']                     = TaskTemplate::getTable();
+      $actions['task_template']['force_actions']             = ['assign'];
 
       return $actions;
    }

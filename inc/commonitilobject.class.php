@@ -1103,6 +1103,9 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    function post_updateItem($history = 1) {
+      // Handle "_tasktemplates_id" special input
+      $this->handleTaskTemplateInput();
+
       // Handle files pasted in the file field
       $this->input = $this->addFiles($this->input);
 
@@ -1736,30 +1739,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function post_addItem() {
 
-      // Add tasks in tasktemplates if defined in itiltemplate
-      if (isset($this->input['_tasktemplates_id'])
-          && is_array($this->input['_tasktemplates_id'])
-          && count($this->input['_tasktemplates_id'])) {
-         $tasktemplate = new TaskTemplate;
-         $itiltask_class = $this->getType().'Task';
-         $itiltask   = new $itiltask_class;
-         foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
-            $tasktemplate->getFromDB($tasktemplates_id);
-            $tasktemplate_content = Toolbox::addslashes_deep($tasktemplate->fields["content"]);
-            $itiltask->add([
-               'tasktemplates_id'            => $tasktemplates_id,
-               'content'                     => $tasktemplate_content,
-               'taskcategories_id'           => $tasktemplate->fields['taskcategories_id'],
-               'actiontime'                  => $tasktemplate->fields['actiontime'],
-               'state'                       => $tasktemplate->fields['state'],
-               $this->getForeignKeyField()   => $this->fields['id'],
-               'is_private'                  => $tasktemplate->fields['is_private'],
-               'users_id_tech'               => $tasktemplate->fields['users_id_tech'],
-               'groups_id_tech'              => $tasktemplate->fields['groups_id_tech'],
-               '_disablenotif'               => true
-            ]);
-         }
-      }
+      // Handle "_tasktemplates_id" special input
+      $this->handleTaskTemplateInput();
 
       // Add document if needed, without notification for file input
       $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -8244,4 +8225,39 @@ abstract class CommonITILObject extends CommonDBTM {
          ]
       ];
    }
+
+   /**
+    * Handle "_tasktemplates_id" special input
+    */
+   public function handleTaskTemplateInput() {
+      // Check input is valid
+      if (!isset($this->input['_tasktemplates_id'])
+         || !is_array($this->input['_tasktemplates_id'])
+         || !count($this->input['_tasktemplates_id'])
+      ) {
+         return;
+      }
+
+      // Add tasks in tasktemplates if defined in itiltemplate
+      $tasktemplate = new TaskTemplate;
+      $itiltask_class = $this->getType().'Task';
+      $itiltask   = new $itiltask_class;
+      foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
+         $tasktemplate->getFromDB($tasktemplates_id);
+         $tasktemplate_content = Toolbox::addslashes_deep($tasktemplate->fields["content"]);
+         $itiltask->add([
+            'tasktemplates_id'            => $tasktemplates_id,
+            'content'                     => $tasktemplate_content,
+            'taskcategories_id'           => $tasktemplate->fields['taskcategories_id'],
+            'actiontime'                  => $tasktemplate->fields['actiontime'],
+            'state'                       => $tasktemplate->fields['state'],
+            $this->getForeignKeyField()   => $this->fields['id'],
+            'is_private'                  => $tasktemplate->fields['is_private'],
+            'users_id_tech'               => $tasktemplate->fields['users_id_tech'],
+            'groups_id_tech'              => $tasktemplate->fields['groups_id_tech'],
+            '_disablenotif'               => true
+         ]);
+      }
+   }
+
 }
