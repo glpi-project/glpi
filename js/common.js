@@ -482,7 +482,7 @@ var filter_timeline = function() {
 
 
 var read_more = function() {
-   $(document).on("click", ".long_text .read_more a", function() {
+   $(document).on("click", ".long_text .read_more a, .long_text .read_more .read_more_button", function() {
       $(this).parents('.long_text').removeClass('long_text');
       $(this).parent('.read_more').remove();
       return false;
@@ -1168,4 +1168,24 @@ function onTinyMCEChange(e) {
          window.glpiUnsavedFormChanges = true;
       }
    }
+}
+
+function relativeDate(str) {
+   var s = ( +new Date() - Date.parse(str) ) / 1e3,
+      m = s / 60,
+      h = m / 60,
+      d = h / 24,
+      y = d / 365.242199,
+      tmp;
+
+   return (tmp = Math.round(s)) === 1 ? __('just now')
+      : m < 1.01 ? '%s seconds ago'.replace('%s', tmp)
+         : (tmp = Math.round(m)) === 1 ? __('a minute ago')
+            : h < 1.01 ? '%s minutes ago'.replace('%s', tmp)
+               : (tmp = Math.round(h)) === 1 ? __('an hour ago')
+                  : d < 1.01 ? '%s hours ago'.replace('%s', tmp)
+                     : (tmp = Math.round(d)) === 1 ? __('yesterday')
+                        : y < 1.01 ? '%s days ago'.replace('%s', tmp)
+                           : (tmp = Math.round(y)) === 1 ? __('a year ago')
+                              : '%s years ago'.replace('%s', tmp);
 }

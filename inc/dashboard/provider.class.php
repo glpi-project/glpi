@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Central class
+ * Provider class
 **/
 class Provider extends \CommonGLPI {
 
@@ -118,6 +118,15 @@ class Provider extends \CommonGLPI {
                new $fk_itemtype,
                $arguments[0] ?? []
             );
+         }
+      }
+
+      if (strpos($name, 'getArticleList') !== false) {
+         $itemtype = str_replace('getArticleList', '', $name);
+         if (is_subclass_of($itemtype, 'CommonDBTM')) {
+            $item = new $itemtype;
+            $item->getEmpty();
+            return self::articleListItem($item);
          }
       }
    }
@@ -461,6 +470,33 @@ class Provider extends \CommonGLPI {
          'data'  => $data,
          'label' => $params['label'],
          'icon'  => $params['icon'],
+      ];
+   }
+
+
+   public static function articleListItem(\CommonDBTM $item = null): array {
+      $DB = \DBConnection::getReadConnection();
+      $date_field_exists = $DB->fieldExists($item::getTable(), 'date');
+
+      $raw_data = $item->find([], $date_field_exists ? 'date DESC': '');
+      $data = [];
+      foreach ($raw_data as $line) {
+         $data[] = [
+            'date'    => $line['date'] ?? '',
+            'label'   => $line['name'] ?? '',
+            'content' => $line['text'] ?? '',
+            'author'  => \User::getFriendlyNameById($line['users_id'] ?? 0),
+            'url'     => $item::getFormURLWithID($line['id']),
+         ];
+      }
+
+      $nb_items = count($data);
+      return [
+         'data'   => $data,
+         'number' => $nb_items,
+         'url'    => $item::getSearchURL(),
+         'label'  => $item::getTypeName($nb_items),
+         'icon'   => $item::getIcon(),
       ];
    }
 

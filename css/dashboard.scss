@@ -56,6 +56,11 @@ $break_tablet: 1400px;
    position: relative;
    padding-top: $toolbar_height;
 
+   // reset font weight from other gridstack usage
+   .grid-stack-item-content a {
+      font-weight: normal;
+   }
+
    &.mini {
       padding-top: 0;
       width: calc(80% + 28px);
@@ -540,6 +545,10 @@ $break_tablet: 1400px;
       @media screen and (min-width: $break_phones) and (max-width: $break_tablet) {
          font-size: 1.1em;
       }
+
+      i {
+         color: currentColor;
+      }
    }
 
    .summary-numbers {
@@ -647,6 +656,59 @@ $break_tablet: 1400px;
             .icon {
                color: rgba(0, 0, 0, .5);
             }
+         }
+      }
+
+      .main-label {
+         position: absolute;
+         left: 5px;
+         bottom: 5px;
+      }
+   }
+
+   .articles-list {
+      .scrollable {
+         overflow: auto;
+         max-height: calc(100% - 35px);
+         @include custom-scroll-bar();
+      }
+
+      .line {
+         color: currentColor;
+         margin: 5px;
+         padding: 5px;
+         font-weight: normal;
+         position: relative;
+
+         .label {
+            display: block;
+            font-weight: bold;
+            font-size: 1.4em;
+            margin: 5px 0 10px;
+         }
+
+         .content {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 1.2em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &.long_text {
+               max-height: 80px;
+            }
+         }
+
+         .date {
+            float: right
+         }
+
+         a, i.fa-user {
+            color: currentColor;
+         }
+
+         i.fa-user {
+            font-size: 0.8em;
          }
       }
 

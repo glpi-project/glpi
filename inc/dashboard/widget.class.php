@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Central class
+ * Widget class
 **/
 class Widget extends \CommonGLPI {
    static $animation_duration = 1000; // in millseconds
@@ -209,6 +209,14 @@ class Widget extends \CommonGLPI {
             'gradient' => true,
             'width'    => 4,
             'height'   => 2,
+         ],
+         'articleList' => [
+            'label'    => __("List of articles"),
+            'function' => 'Glpi\\Dashboard\\Widget::articleList',
+            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/articles.png',
+            'limit'    => true,
+            'width'    => 3,
+            'height'   => 4,
          ],
       ];
 
@@ -1575,6 +1583,122 @@ HTML;
 HTML;
 
       return $html;
+   }
+
+
+   public static function articleList(array $params): string {
+      $default = [
+         'data'         => [],
+         'label'        => '',
+         'alt'          => '',
+         'url'          => '',
+         'color'        => '',
+         'icon'         => '',
+         'limit'        => 99999,
+         'class'        => "articles-list",
+         'rand'         => mt_rand(),
+      ];
+      $p = array_merge($default, $params);
+      $default_entry = [
+         'url'    => '',
+         'icon'   => '',
+         'label'  => '',
+         'number' => '',
+      ];
+
+      $nb_lines = min($p['limit'], count($p['data']));
+      array_splice($p['data'], $nb_lines);
+      $fg_color = \Toolbox::getFgColor($p['color']);
+      $bg_color_2 = \Toolbox::getFgColor($p['color'], 5);
+
+      $i = 0;
+      $list_html = "";
+      foreach ($p['data'] as $entry) {
+         if (!is_array($entry)) {
+            continue;
+         }
+
+         $entry = array_merge($default_entry, $entry);
+
+         $href = strlen($entry['url'])
+            ? "href='{$entry['url']}'"
+            : "";
+
+         $author = strlen($entry['author'])
+            ? "<i class='fas fa-user'></i>&nbsp;{$entry['author']}"
+            : "";
+
+         $content_size = strlen($entry['content']);
+         $content = strlen($entry['content'])
+            ? Toolbox::getHtmlToDisplay($entry['content']).
+              ($content_size > 300
+               ? "<p class='read_more'><span class='read_more_button'>...</span></p>"
+               : ""
+              )
+            : "";
+
+         $list_html.= <<<HTML
+            <li class="line"><a {$href}>
+               <span class="label">{$entry['label']}</span>
+               <div class="content long_text">{$content}</div>
+               <span class="author">$author</span>
+               <span class="date">{$entry['date']}</span>
+            </a></li>
+HTML;
+         $i++;
+      }
+
+      \Toolbox::logError($list_html);
+
+      $view_all = strlen($p['url'])
+         ? "<a href='{$p['url']}'><i class='fas fa-eye' title='".__("See all")."'></i></a>"
+         : "";
+
+      $html = <<<HTML
+      <style>
+         #chart-{$p['rand']} .line {
+            background-color: $bg_color_2;
+         }
+
+         #chart-{$p['rand']} .fa-eye {
+            color: {$fg_color};
+         }
+      </style>
+
+      <div class="card {$p['class']}"
+           id="chart-{$p['rand']}"
+           title="{$p['alt']}"
+           style="background-color: {$p['color']}; color: {$fg_color}">
+         <div class='scrollable'>
+            <ul class='list'>
+            {$list_html}
+   </ul>
+         </div>
+         <span class="main-label">
+            {$p['label']}
+            $view_all
+         </span>
+         <i class="main-icon {$p['icon']}" style="color: {$fg_color}"></i>
+      </div>
+HTML;
+
+      $js = <<<JAVASCRIPT
+      $(function () {
+         // init readmore controls
+         read_more();
+
+         // set dates in relative format
+         $('#chart-{$p['rand']} .date').each(function() {
+            var line_date = $(this).html();
+            var rel_date = relativeDate(line_date);
+
+            $(this).html(rel_date).attr('title', line_date);
+         });
+      });
+JAVASCRIPT;
+      $js = \Html::scriptBlock($js);
+
+      return $html.$js;
    }
 
    /**

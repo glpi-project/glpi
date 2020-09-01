@@ -1224,6 +1224,13 @@ HTML;
          ];
       }
 
+      $cards["RemindersList"] = [
+         'widgettype'   => ["articleList"],
+         'label'        => __("List of reminders"),
+         'group'        => __('Tools'),
+         'provider'     => "Glpi\\Dashboard\\Provider::getArticleListReminder",
+      ];
+
       $cards["markdown_editable"] = [
          'widgettype'   => ["markdown"],
          'label'        => __("Editable markdown card"),

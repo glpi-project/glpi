@@ -3782,6 +3782,22 @@ a.copyright {
    color: green !important;
 }
 
+.read_more {
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   width: 100%;
+   text-align: center;
+   margin: 0;
+   padding: 30px 0;
+
+   a, .read_more_button {
+      bottom: 5px;
+      position: absolute;
+      cursor: pointer;
+   }
+}
+
 .timeline_history {
    .h_item {
       clear: both;
@@ -4220,21 +4236,6 @@ a.copyright {
          max-height: 350px;
          position: relative;
          overflow: hidden;
-      }
-
-      .read_more {
-         position: absolute;
-         bottom: 0;
-         left: 0;
-         width: 100%;
-         text-align: center;
-         margin: 0;
-         padding: 30px 0;
-
-         a {
-            bottom: 5px;
-            position: absolute;
-         }
       }
 
       &.ITILFollowup .read_more, &.KnowbaseItemComment .read_more {
