@@ -116,6 +116,76 @@ function update951to952() {
    //add option to collect only unread mail
    $migration->addField('glpi_mailcollectors', 'collect_only_unread', 'bool', ['value' => 0]);
 
+   /* Appliances rewrite */
+   $migration->addField('glpi_appliances', 'is_helpdesk_visible', 'bool', ['after' => 'otherserial', 'value' => 1]);
+   $migration->addKey('glpi_appliances', 'is_helpdesk_visible');
+   $migration->addField('glpi_states', 'is_visible_appliance', 'bool', [
+      'value' => 1,
+      'after' => 'is_visible_contract'
+   ]);
+   $migration->addKey('glpi_states', 'is_visible_appliance');
+
+   if ($DB->tableExists('glpi_appliancerelations')) {
+      $migration->dropKey('glpi_appliancerelations', 'relations_id');
+      $migration->changeField('glpi_appliancerelations', 'relations_id', 'items_id', 'integer');
+      $migration->addField(
+         'glpi_appliancerelations',
+         'itemtype',
+         'VARCHAR(100) COLLATE utf8_unicode_ci NOT NULL',
+         ['after' => 'appliances_items_id']
+      );
+      $migration->addKey('glpi_appliancerelations', 'itemtype');
+      $migration->addKey('glpi_appliancerelations', 'items_id');
+      $migration->addKey('glpi_appliancerelations', [
+         'itemtype',
+         'items_id',
+      ], 'item');
+      $migration->migrationOneTable('glpi_appliancerelations');
+      $migration->renameTable('glpi_appliancerelations', 'glpi_appliances_items_relations');
+   }
+
+   if ($DB->fieldExists('glpi_appliances', 'relationtype')) {
+      $iterator = $DB->request([
+         'SELECT' => ['items.id', 'app.relationtype'],
+         'FROM'   => 'glpi_appliances_items AS items',
+         'LEFT JOIN' => [
+            'glpi_appliances AS app' => [
+               'ON'  => [
+                  'app'    => 'id',
+                  'items'  => 'appliances_id'
+               ]
+            ]
+         ]
+      ]);
+      while ($row = $iterator->next()) {
+
+         $itemtype = null;
+         switch ($row['relationtype']) {
+            case 1:
+               $itemtype = 'Location';
+               break;
+            case 2:
+               $itemtype = 'Network';
+               break;
+            case 3:
+               $itemtype = 'Domain';
+               break;
+         }
+
+         $migration->addPostQuery(
+            $DB->buildUpdate(
+               'glpi_appliances_items_relations', [
+                  'itemtype'  => $itemtype
+               ], [
+                  'appliances_items_id'   => $row['id']
+               ]
+            )
+         );
+      }
+      $migration->dropField('glpi_appliances', 'relationtype');
+   }
+   /* /Appliances rewrite */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

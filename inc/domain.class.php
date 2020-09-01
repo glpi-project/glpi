@@ -775,4 +775,8 @@ class Domain extends CommonDropdown {
    public function getCanonicalName() {
       return rtrim($this->fields['name'], '.') . '.';
    }
+
+   static function getIcon() {
+      return "fas fa-globe-americas";
+   }
 }

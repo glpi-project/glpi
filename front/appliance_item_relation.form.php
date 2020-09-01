@@ -30,19 +30,21 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+include ('../inc/includes.php');
+
+Session::checkCentralAccess();
+
+$app_item_rel = new Appliance_Item_Relation();
+
+if (isset($_REQUEST['add'])) {
+   $app_item_rel->check(-1, CREATE, $_REQUEST);
+   $app_item_rel->add($_REQUEST);
+   Html::back();
+
+} else if (isset($_REQUEST['purge'])) {
+   $app_item_rel->check($_REQUEST['id'], PURGE);
+   $app_item_rel->delete($_REQUEST, 1);
+   Html::back();
 }
 
-/// Class Network
-class Network extends CommonDropdown {
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Network', 'Networks', $nb);
-   }
-
-   static function getiCon() {
-      return "fas fa-network-wired";
-   }
-}
+Html::displayErrorAndDie("lost");

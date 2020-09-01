@@ -38,15 +38,15 @@ class Appliance extends DbTestCase {
 
    public function testDefineTabs() {
       $expected = [
-         'Appliance$main'  => 'Appliance',
-         'Impact$1'        => 'Impact analysis',
-         'Log$1'           => 'Historical'
+         'Appliance$main'     => 'Appliance',
+         'Impact$1'           => 'Impact analysis',
+         'Log$1'              => 'Historical'
       ];
       $this
          ->given($this->newTestedInstance)
             ->then
                ->array($this->testedInstance->defineTabs())
-               ->isIdenticalTo($expected);
+               ->isIdenticalTo($expected, print_r($this->testedInstance->defineTabs(), true));
    }
 
    public function testGetTypes() {
@@ -70,5 +70,110 @@ class Appliance extends DbTestCase {
             ->then
                ->array($this->testedInstance->getTypes())
                ->isIdenticalTo($CFG_GLPI['appliance_types']);
+   }
+
+   public function testClone() {
+      $this->login();
+      $app = new \Appliance();
+
+      // Add
+      $id = $app->add([
+         'name'        => $this->getUniqueString(),
+         'entities_id' => 0
+      ]);
+      $this->integer($id)->isGreaterThan(0);
+
+      // Update
+      $id = $app->getID();
+      $this->boolean($app->getFromDB($id))->isTrue();
+
+      $date = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date;
+
+      $iapp = new \Appliance_Item();
+      $this->integer(
+         $iapp->add([
+            'appliances_id'   => $id,
+            'itemtype'        => 'Computer',
+            'items_id'        => getItemByTypeName('Computer', '_test_pc01', true)
+         ])
+      )->isGreaterThan(0);
+
+      $rapp = new \Appliance_Item_Relation();
+      $this->integer(
+         $rapp->add([
+            'appliances_items_id'   => $iapp->fields['id'],
+            'itemtype'              => 'Location',
+            'items_id'              => getItemByTypeName('Location', '_location01', true)
+         ])
+      )->isGreaterThan(0);
+
+      //add infocom
+      $infocom = new \Infocom();
+      $this->integer(
+         $infocom->add([
+            'itemtype'  => 'Appliance',
+            'items_id'  => $id
+         ])
+      )->isGreaterThan(0);
+
+      //add document
+      $document = new \Document();
+      $docid = (int)$document->add(['name' => 'Test link document']);
+      $this->integer($docid)->isGreaterThan(0);
+
+      $docitem = new \Document_Item();
+      $this->integer(
+         $docitem->add([
+            'documents_id' => $docid,
+            'itemtype'     => 'Appliance',
+            'items_id'     => $id
+         ])
+      )->isGreaterThan(0);
+
+      // Test item cloning
+      $added = (int)$app->clone();
+      $this->integer($added)
+         ->isGreaterThan(0)
+         ->isNotEqualTo($app->fields['id']);
+
+      $clonedApp = new \Appliance();
+      $this->boolean($clonedApp->getFromDB($added))->isTrue();
+
+      $fields = $app->fields;
+
+      // Check the values. Id and dates must be different, everything else must be equal
+      foreach ($fields as $k => $v) {
+         switch ($k) {
+            case 'id':
+               $this->variable($clonedApp->getField($k))->isNotEqualTo($app->getField($k));
+               break;
+            case 'date_mod':
+            case 'date_creation':
+               $dateClone = new \DateTime($clonedApp->getField($k));
+               $expectedDate = new \DateTime($date);
+               $this->dateTime($dateClone)->isEqualTo($expectedDate);
+               break;
+            default:
+               $this->variable($clonedApp->getField($k))->isEqualTo($app->getField($k));
+         }
+      }
+
+      //Infocom has been cloned
+      $this->integer(
+         countElementsInTable(
+            \Infocom::getTable(),
+            ['items_id' => $clonedApp->fields['id']]
+         )
+      )->isIdenticalTo(1);
+
+      //documents has been cloned
+      $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Appliance', 'items_id' => $added]))->isTrue();
+
+      //items has been cloned
+      $this->boolean($iapp->getFromDBByCrit(['appliances_id' => $added]))->isTrue();
+
+      //relations has been cloned
+      $this->boolean($rapp->getFromDBByCrit(['appliances_items_id' => $iapp->fields['id']]))->isTrue();
    }
 }

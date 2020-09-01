@@ -1487,7 +1487,8 @@ JAVASCRIPT;
             'title' => __('Management'),
             'types' => [
                'SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
-               'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain'
+               'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain',
+               'Appliance'
             ]
          ],
          'tools' => [
