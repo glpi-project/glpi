@@ -66,7 +66,7 @@
         "glob": "^7.1.6",
         "mini-css-extract-plugin": "^0.11.0",
         "script-loader": "^0.7.2",
-        "terser": "^4.7.0",
+        "terser": "^5.2.1",
         "webpack": "^4.41.2",
         "webpack-cli": "^3.3.10"
     }
