@@ -41,7 +41,7 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
    );
 } else {
    //for stable version
-   define("GLPI_SCHEMA_VERSION", '9.5.0');
+   define("GLPI_SCHEMA_VERSION", '9.5.2');
 }
 define('GLPI_MIN_PHP', '7.2.0'); // Must also be changed in top of index.php
 define('GLPI_YEAR', '2020');
@@ -335,7 +335,8 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
                                              'ObjectLock', 'PlanningRecall', 'Problem',
                                              'Project', 'ProjectTask', 'Reservation',
                                              'SoftwareLicense', 'Ticket', 'User',
-                                             'SavedSearch_Alert', 'Certificate', 'Glpi\\Marketplace\\Controller'];
+                                             'SavedSearch_Alert', 'Certificate', 'Glpi\\Marketplace\\Controller',
+                                             'Domain'];
 
 $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',

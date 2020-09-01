@@ -151,7 +151,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             ];
             if ($item instanceof CommonITILObject) {
                $item->getFromDB($current->fields['items_id']);
-               $doc_crit = $item->getAssociatedDocumentsCriteria();
+               $doc_crit = $item->getAssociatedDocumentsCriteria(true);
                if ($is_html) {
                   // Remove documents having "NO_TIMELINE" position if mail is HTML, as
                   // these documents corresponds to inlined images.

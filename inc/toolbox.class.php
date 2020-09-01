@@ -283,8 +283,18 @@ class Toolbox {
       }
 
       $content = base64_decode($content);
+
       $nonce = mb_substr($content, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, '8bit');
+      if (mb_strlen($nonce, '8bit') !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
+         trigger_error(
+            'Unable to extract nonce from content. It may not have been crypted with sodium functions.',
+            E_USER_ERROR
+         );
+         return '';
+      }
+
       $ciphertext = mb_substr($content, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, null, '8bit');
+
       $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
          $ciphertext,
          $nonce,
@@ -292,7 +302,10 @@ class Toolbox {
          $key
       );
       if ($plaintext === false) {
-         Toolbox::logError('Unable to decrypt content. It may have been crypted with another key.');
+         trigger_error(
+            'Unable to decrypt content. It may have been crypted with another key.',
+            E_USER_ERROR
+         );
          return '';
       }
       return $plaintext;

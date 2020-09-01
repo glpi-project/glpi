@@ -226,14 +226,16 @@ class GLPIKey {
 
          $iterator = $DB->request([
             'SELECT' => ['id', $column],
-            'FROM'   => $table
+            'FROM'   => $table,
+            ['NOT' => [$column => null]],
          ]);
 
          while ($success && $row = $iterator->next()) {
+            $value = (string)$row[$column];
             if ($old_key === false) {
-               $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($row[$column], $sodium_key));
+               $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($value, $sodium_key));
             } else {
-               $pass = Toolbox::sodiumEncrypt($this->decryptUsingLegacyKey($row[$column], $old_key));
+               $pass = Toolbox::sodiumEncrypt($this->decryptUsingLegacyKey($value, $old_key));
             }
             $success = $DB->update(
                $table,
@@ -264,15 +266,17 @@ class GLPIKey {
             'FROM'   => Config::getTable(),
             'WHERE'  => [
                'context'   => $context,
-               'name'      => $names
+               'name'      => $names,
+               ['NOT' => ['value' => null]],
             ]
          ]);
 
          while ($success && $row = $iterator->next()) {
+            $value = (string)$row['value'];
             if ($old_key === false) {
-               $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($row['value'], $sodium_key));
+               $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($value, $sodium_key));
             } else {
-               $pass = Toolbox::sodiumEncrypt($this->decryptUsingLegacyKey($row['value'], $old_key));
+               $pass = Toolbox::sodiumEncrypt($this->decryptUsingLegacyKey($value, $old_key));
             }
             $success = $DB->update(
                Config::getTable(),

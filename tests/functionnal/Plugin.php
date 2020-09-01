@@ -333,6 +333,10 @@ class Plugin extends DbTestCase {
          $expected_data,
          'Unable to load plugin "' . $this->test_plugin_directory . '" informations.'
       );
+
+      // check also Plugin::isActivated method
+      $plugin_inst = new \Plugin();
+      $this->boolean($plugin_inst->isActivated($this->test_plugin_directory));
    }
 
    /**
@@ -391,6 +395,10 @@ class Plugin extends DbTestCase {
          $expected_data,
          'Plugin "' . $this->test_plugin_directory . '" version changed. It has been deactivated as its update process has to be launched.'
       );
+
+      // check also Plugin::isUpdatable method
+      $plugin_inst = new \Plugin();
+      $this->boolean($plugin_inst->isUpdatable($this->test_plugin_directory));
    }
 
    /**
@@ -540,6 +548,10 @@ class Plugin extends DbTestCase {
          $expected_data,
          'Plugin "' . $this->test_plugin_directory . '" version changed. It has been deactivated as its update process has to be launched.'
       );
+
+      // check also Plugin::isUpdatable method
+      $plugin_inst = new \Plugin();
+      $this->boolean($plugin_inst->isUpdatable($this->test_plugin_directory));
    }
 
    /**
@@ -636,6 +648,10 @@ class Plugin extends DbTestCase {
          $expected_data,
          'Plugin "' . $this->test_plugin_directory . '" prerequisites are not matched. It has been deactivated.'
       );
+
+      // check also Plugin::isUpdatable method
+      $plugin_inst = new \Plugin();
+      $this->boolean($plugin_inst->isUpdatable($this->test_plugin_directory));
    }
 
    /**
@@ -759,6 +775,10 @@ class Plugin extends DbTestCase {
          $setup_informations,
          $expected_data
       );
+
+      // check also Plugin::isActivated method
+      $plugin_inst = new \Plugin();
+      $this->boolean($plugin_inst->isActivated($this->test_plugin_directory));
    }
 
    /**
