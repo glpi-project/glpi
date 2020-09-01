@@ -30,19 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+include ('../inc/includes.php');
 
-/// Class Network
-class Network extends CommonDropdown {
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Network', 'Networks', $nb);
-   }
-
-   static function getiCon() {
-      return "fas fa-network-wired";
-   }
-}
+$dropdown = new ApplianceType();
+include (GLPI_ROOT . "/front/dropdown.common.php");

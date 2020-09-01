@@ -30,19 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+include ('../inc/includes.php');
 
-/// Class Network
-class Network extends CommonDropdown {
+Session::checkRight('appliance', READ);
 
+Html::header(Appliance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "appliance");
 
-   static function getTypeName($nb = 0) {
-      return _n('Network', 'Networks', $nb);
-   }
+Search::show('Appliance');
 
-   static function getiCon() {
-      return "fas fa-network-wired";
-   }
-}
+Html::footer();

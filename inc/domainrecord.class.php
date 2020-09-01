@@ -413,7 +413,8 @@ class DomainRecord extends CommonDBChild {
       if (!$domain->can($instID, READ)) {
          return false;
       }
-      $canedit = $domain->can($instID, UPDATE) || count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
+      $canedit = $domain->can($instID, UPDATE)
+                 || count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
       $rand    = mt_rand();
 
       $iterator = $DB->request([
