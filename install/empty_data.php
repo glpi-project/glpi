@@ -667,6 +667,16 @@ $tables['glpi_crontasks'] = [
       'mode'          => 2,
       'lastrun'       => null,
       'logs_lifetime' => 30,
+   ], [
+      'id'            => 38,
+      'itemtype'      => CleanSoftwareCron::getType(),
+      'name'          => CleanSoftwareCron::TASK_NAME,
+      'frequency'     => MONTH_TIMESTAMP,
+      'param'         => 1000,
+      'state'         => 0,
+      'mode'          => 2,
+      'lastrun'       => null,
+      'logs_lifetime' => 300,
    ],
 ];
 

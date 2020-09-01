@@ -30,39 +30,17 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Update from 9.5.x to x.x.x
- *
- * @return bool for success (will die for most error)
-**/
-function update95toXX() {
-   global $DB, $migration;
-
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
-
-   //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), 'x.x.x'));
-   $migration->setVersion('x.x.x');
-
-   require __DIR__ . '/update_95_xx/softwares.php';
-   include __DIR__ . '/update_95_xx/domains.php';
-
-   // ************ Keep it at the end **************
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-         ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-         ]);
-      }
-   }
-
-   $migration->executeMigration();
-
-   return $updateresult;
-}
+// CleanSoftwareCron cron task
+CronTask::register(
+   CleanSoftwareCron::class,
+   CleanSoftwareCron::TASK_NAME,
+   MONTH_TIMESTAMP,
+   [
+      'state'         => 0,
+      'param'         => 1000,
+      'mode'          => 2,
+      'allowmode'     => 3,
+      'logs_lifetime' => 300,
+   ]
+);
+// /CleanSoftwareCron cron task
