@@ -1852,4 +1852,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       throw new \RuntimeException('Cannot guess ');
    }
+
+   function getForbiddenStandardMassiveAction() {
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'clone';
+      return $forbidden;
+   }
 }
