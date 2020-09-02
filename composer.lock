@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f30632729ff99dd6031fc6b1d34627f8",
+    "content-hash": "9887e541e216e7de1c48bfb43056647a",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -1204,20 +1204,24 @@
         },
         {
             "name": "mexitek/phpcolors",
-            "version": "v0.4",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mexitek/phpColors.git",
-                "reference": "89bf30473a68dc8845e46e9db3e536b969e18c11"
+                "reference": "37a374e21649c25e348c838d70c7d3c76584d47e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mexitek/phpColors/zipball/89bf30473a68dc8845e46e9db3e536b969e18c11",
-                "reference": "89bf30473a68dc8845e46e9db3e536b969e18c11",
+                "url": "https://api.github.com/repos/mexitek/phpColors/zipball/37a374e21649c25e348c838d70c7d3c76584d47e",
+                "reference": "37a374e21649c25e348c838d70c7d3c76584d47e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "nette/tester": "^2.3",
+                "squizlabs/php_codesniffer": "^3.5"
             },
             "type": "library",
             "autoload": {
@@ -1245,7 +1249,7 @@
                 "frontend",
                 "ui"
             ],
-            "time": "2015-09-09T15:43:06+00:00"
+            "time": "2020-08-06T05:32:50+00:00"
         },
         {
             "name": "michelf/php-markdown",
