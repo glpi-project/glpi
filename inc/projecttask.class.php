@@ -2016,7 +2016,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          throw new \UnexpectedValueException('RRULE not yet implemented for Project tasks');
       }
 
-      $input = $this->getCommonInputFromVcomponent($vtodo);
+      $input = $this->getCommonInputFromVcomponent($vtodo, $this->isNewItem());
 
       if ($vtodo->DESCRIPTION instanceof FlatText) {
          // Description is not in HTML format

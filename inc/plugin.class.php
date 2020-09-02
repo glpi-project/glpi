@@ -2315,6 +2315,7 @@ class Plugin extends CommonDBTM {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
+      $forbidden[] = 'clone';
       $forbidden[] = 'purge';
       return $forbidden;
    }

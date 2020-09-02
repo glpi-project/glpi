@@ -56,6 +56,7 @@ abstract class ITILTemplateField extends CommonDBChild {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'clone';
       $forbidden[] = 'update';
       return $forbidden;
    }
