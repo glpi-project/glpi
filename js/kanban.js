@@ -1746,7 +1746,7 @@
          const readonly = card['_readonly'] !== undefined && (card['_readonly'] === true || card['_readonly'] === 1);
          let card_el = `
             <li id="${card['id']}" class="kanban-item ${readonly ? 'readonly' : ''}">
-                <div class="kanban-item-header">${card['title']}</div>
+                <div class="kanban-item-header" title="${card['title_tooltip']}">${card['title']}</div>
                 <div class="kanban-item-content">${(card['content'] || '')}</div>
                 <div class="kanban-item-team">
          `;

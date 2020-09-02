@@ -2266,8 +2266,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          }
          $itemtype = $item['_itemtype'];
          $card = [
-            'id'        => "{$itemtype}-{$item['id']}",
-            'title'     => Html::link($item['name'], $itemtype::getFormURLWithID($item['id']))
+            'id'              => "{$itemtype}-{$item['id']}",
+            'title'           => Html::link($item['name'], $itemtype::getFormURLWithID($item['id'])),
+            'title_tooltip'   => Html::clean(Html::resume_text($item['content'], 100))
          ];
 
          $content = "<div class='kanban-plugin-content'>";
