@@ -33,7 +33,7 @@
         "laminas/laminas-mail": "^2.12",
         "laminas/laminas-mime": "^2.7",
         "laminas/laminas-serializer": "^2.8",
-        "mexitek/phpcolors": "^0.4.0",
+        "mexitek/phpcolors": "^1.0.1",
         "michelf/php-markdown": "^1.6",
         "monolog/monolog": "^2.0",
         "paragonie/sodium_compat": "^1.13",
