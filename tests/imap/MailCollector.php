@@ -64,7 +64,8 @@ class MailCollector extends DbTestCase {
                   'use_mail_date'        => '',
                   'date_creation'        => '',
                   'requester_field'      => '',
-                  'add_cc_to_observer'   => ''
+                  'add_cc_to_observer'   => '',
+                  'collect_only_unread'  => ''
                ]);
    }
 
@@ -198,17 +199,18 @@ class MailCollector extends DbTestCase {
       }
 
       $this->mailgate_id = (int)$collector->add([
-         'name'               => 'testuser',
-         'login'              => 'testuser',
-         'is_active'          => true,
-         'passwd'             => 'applesauce',
-         'mail_server'        => '127.0.0.1',
-         'server_type'        => '/imap',
-         'server_port'        => 143,
-         'server_ssl'         => '',
-         'server_cert'        => '/novalidate-cert',
-         'add_cc_to_observer' => 1, //add ccuser as observer in ticket
-         'requester_field'    => \MailCollector::REQUESTER_FIELD_REPLY_TO,
+         'name'                  => 'testuser',
+         'login'                 => 'testuser',
+         'is_active'             => true,
+         'passwd'                => 'applesauce',
+         'mail_server'           => '127.0.0.1',
+         'server_type'           => '/imap',
+         'server_port'           => 143,
+         'server_ssl'            => '',
+         'server_cert'           => '/novalidate-cert',
+         'add_cc_to_observer'    => 1,
+         'collect_only_unread'   => 1,
+         'requester_field'       => \MailCollector::REQUESTER_FIELD_REPLY_TO,
       ]);
 
       $this->integer($this->mailgate_id)->isGreaterThan(0);
@@ -248,7 +250,7 @@ class MailCollector extends DbTestCase {
 
       $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
       $expected_refused_count          = 2;
-      $expected_error_count            = 1;
+      $expected_error_count            = 2;
       $expected_blacklist_count        = 0;
       $expected_expected_already_seen  = 0;
 

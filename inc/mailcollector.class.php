@@ -301,6 +301,11 @@ class MailCollector  extends CommonDBTM {
       Dropdown::showYesNo("add_cc_to_observer", $this->fields["add_cc_to_observer"]);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_1'><td>" . __('Collect only unread mail') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("collect_only_unread", $this->fields["collect_only_unread"]);
+      echo "</td></tr>\n";
+
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
       echo "<td><textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
 
@@ -738,7 +743,7 @@ class MailCollector  extends CommonDBTM {
 
                //prevent loop when message is read but when it's impossible to move / delete
                //due to mailbox problem (ie: full)
-               if ($message->hasFlag(Storage::FLAG_SEEN)) {
+               if ($this->fields['collect_only_unread'] && $message->hasFlag(Storage::FLAG_SEEN)) {
                   ++$alreadyseen;
                   continue;
                }
