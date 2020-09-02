@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
-            "version": "v10.30.1",
+            "version": "v10.31.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vkhramtsov/jQuery-File-Upload.git",
-                "reference": "fa90144200874f51eefcaeae1e1a05f0611ddf9e"
+                "reference": "0740f81829698b84efe17e72501e0f420ea0d611"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vkhramtsov/jQuery-File-Upload/zipball/fa90144200874f51eefcaeae1e1a05f0611ddf9e",
-                "reference": "fa90144200874f51eefcaeae1e1a05f0611ddf9e",
+                "url": "https://api.github.com/repos/vkhramtsov/jQuery-File-Upload/zipball/0740f81829698b84efe17e72501e0f420ea0d611",
+                "reference": "0740f81829698b84efe17e72501e0f420ea0d611",
                 "shasum": ""
             },
             "type": "library",
@@ -65,7 +65,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-06-10T06:45:27+00:00"
+            "time": "2020-07-13T05:42:06+00:00"
         },
         {
             "name": "brick/math",
