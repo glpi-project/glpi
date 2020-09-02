@@ -2376,4 +2376,135 @@ class Plugin extends CommonDBTM {
    static function getIcon() {
       return "fas fa-puzzle-piece";
    }
+
+   function getSpecificMassiveActions($checkitem = null) {
+
+      $actions = [];
+
+      if (Session::getCurrentInterface() === 'central' && Config::canUpdate()) {
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'install']
+            = "<i class='ma-icon fas fa-code-branch'></i>".
+            __('Install');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall']
+            = "<i class='ma-icon fas fa-code-branch'></i>".
+            __('Uninstall');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'enable']
+            = "<i class='ma-icon fas fa-code-branch'></i>".
+            __('Enable');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'disable']
+            = "<i class='ma-icon fas fa-code-branch'></i>".
+            __('Disable');
+      }
+
+      $actions += parent::getSpecificMassiveActions($checkitem);
+
+      return $actions;
+   }
+
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      switch ($ma->getAction()) {
+         case 'install' :
+            echo "<table class='center-h'><tr>";
+            echo "<td colspan='4'>";
+            echo Html::submit(_x('button', 'Install'), [
+               'name'      => 'install',
+            ]);
+            echo "</td></tr></table>";
+            return true;
+         case 'uninstall' :
+            echo "<table class='center-h'><tr>";
+            echo "<td>".__('This will only affect plugins already installed')."</td><td colspan='3'>";
+            echo Html::submit(_x('button', 'Uninstall'), [
+               'name'      => 'uninstall',
+            ]);
+            echo "</td></tr></table>";
+            return true;
+         case 'enable' :
+            echo "<table class='center-h'><tr>";
+            echo "<td>".__('This will only affect plugins already installed')."</td><td colspan='3'>";
+            echo Html::submit(_x('button', 'Enable'), [
+               'name'      => 'enable',
+            ]);
+            echo "</td></tr></table>";
+            return true;
+         case 'disable' :
+            echo "<table class='center-h'><tr>";
+            echo "<td>".__('This will only affect plugins already enabled')."</td><td colspan='3'>";
+            echo Html::submit(_x('button', 'Disable'), [
+               'name'      => 'disable',
+            ]);
+            echo "</td></tr></table>";
+            return true;
+      }
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      $plugin = new self();
+      switch ($ma->getAction()) {
+         case 'install' :
+            foreach ($ids as $id) {
+               $plugin->getFromDB($id);
+               if (!$plugin->isInstalled($plugin->fields['directory'])) {
+                  $plugin->install($id);
+                  if ($plugin->isInstalled($plugin->fields['directory'])) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+               }
+            }
+            return;
+         case 'uninstall' :
+            foreach ($ids as $id) {
+               $plugin->getFromDB($id);
+               if ($plugin->isInstalled($plugin->fields['directory'])) {
+                  $plugin->uninstall($id);
+                  if (!$plugin->isInstalled($plugin->fields['directory'])) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+               }
+            }
+            return;
+         case 'enable' :
+            foreach ($ids as $id) {
+               $plugin->getFromDB($id);
+               if ($plugin->isInstalled($plugin->fields['directory'])) {
+                  $plugin->activate($id);
+                  if ($plugin->isActivated($plugin->fields['directory'])) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+               }
+            }
+            return;
+         case 'disable' :
+            foreach ($ids as $id) {
+               $plugin->getFromDB($id);
+               if ($plugin->isInstalled($plugin->fields['directory'])) {
+                  $plugin->unactivate($id);
+                  if (!$plugin->isActivated($plugin->fields['directory'])) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+               }
+            }
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
 }
