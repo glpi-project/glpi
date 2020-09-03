@@ -715,6 +715,25 @@
                self.refresh();
             });
          });
+
+         $(self.element + ' .kanban-container').on('click', '.kanban-item .kanban-item-header', function(e) {
+            e.preventDefault();
+            const card = $(e.target).closest('.kanban-item');
+            const [itemtype, items_id] = card.prop('id').split('-');
+            if ($('#kanban-dialog').length === 0) {
+               $(self.element).append('<div id="kanban-dialog"></div>');
+               // After initializing the dialog, it gets moved automatically outside the Kanban container. That's why it has an ID instead of a class.
+               $(self.element + ' #kanban-dialog').dialog({
+                  autoOpen: false,
+                  modal: true,
+                  resizable: true,
+                  draggable: true,
+                  height: 700,
+                  width: 800
+               });
+            }
+            $('#kanban-dialog').load((self.ajax_root + "kanban.php/?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id)).dialog("open");
+         });
       };
 
       /**
