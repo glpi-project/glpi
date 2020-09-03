@@ -728,30 +728,40 @@ class MailCollector  extends CommonDBTM {
             } while ($this->fetch_emails < $this->maxfetch_emails);
 
             foreach ($messages as $uid => $message) {
-               $tkt = $this->buildTicket(
-                  $uid,
-                  $message,
-                  [
-                     'mailgates_id' => $mailgateID,
-                     'play_rules'   => true
-                  ]
-               );
+               $rejinput = [
+                  'mailcollectors_id' => $mailgateID,
+               ];
 
-               $headers = $this->getHeaders($message);
-               $rejinput                      = [];
-               $rejinput['mailcollectors_id'] = $mailgateID;
+               try {
+                  $tkt = $this->buildTicket(
+                     $uid,
+                     $message,
+                     [
+                        'mailgates_id' => $mailgateID,
+                        'play_rules'   => true
+                     ]
+                  );
 
-               $requester = $this->getRequesterEmail($message);
+                  $headers = $this->getHeaders($message);
 
-               if (!$tkt['_blacklisted']) {
-                  global $DB;
-                  $rejinput['from']              = $requester;
-                  $rejinput['to']                = $headers['to'];
-                  $rejinput['users_id']          = $tkt['_users_id_requester'];
-                  $rejinput['subject']           = $DB->escape($this->cleanSubject($headers['subject']));
-                  $rejinput['messageid']         = $headers['message_id'];
+                  $requester = $this->getRequesterEmail($message);
+
+                  if (!$tkt['_blacklisted']) {
+                     global $DB;
+                     $rejinput['from']              = $requester;
+                     $rejinput['to']                = $headers['to'];
+                     $rejinput['users_id']          = $tkt['_users_id_requester'];
+                     $rejinput['subject']           = $DB->escape($this->cleanSubject($headers['subject']));
+                     $rejinput['messageid']         = $headers['message_id'];
+                  }
+                  $rejinput['date']              = $_SESSION["glpi_currenttime"];
+               } catch (Throwable $e) {
+                  $error++;
+                  Toolbox::logInFile('mailgate', sprintf(__('Error during message parsing: %1$s').'<br/>', $e->getMessage()));
+                  $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+                  $rejected->add($rejinput);
+                  continue;
                }
-               $rejinput['date']              = $_SESSION["glpi_currenttime"];
 
                $is_user_anonymous = !(isset($tkt['_users_id_requester'])
                                       && ($tkt['_users_id_requester'] > 0));

@@ -248,7 +248,7 @@ class MailCollector extends DbTestCase {
 
       $total_count              = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
       $expected_refused_count   = 2;
-      $expected_error_count     = 1;
+      $expected_error_count     = 2;
       $expected_blacklist_count = 0;
 
       $this->variable($msg)->isIdenticalTo(
@@ -262,14 +262,41 @@ class MailCollector extends DbTestCase {
          )
       );
 
-      // Check refused emails
-      $rejecteds = iterator_to_array($DB->request(['FROM' => \NotImportedEmail::getTable()]));
-      $this->array($rejecteds)->hasSize($expected_refused_count);
-      foreach ($rejecteds as $rejected) {
-         $this->array($rejected)
-            ->variable['from']->isIdenticalTo('unknown@glpi-project.org')
-            ->variable['reason']->isEqualTo(\NotImportedEmail::USER_UNKNOWN);
+      // Check not imported emails
+      $not_imported_specs = [
+         [
+            'subject' => 'Have a problem, can you help me?',
+            'from'    => 'unknown@glpi-project.org',
+            'to'      => 'unittests@glpi-project.org',
+            'reason'  => \NotImportedEmail::USER_UNKNOWN,
+         ],
+         [
+            'subject' => 'Test\'ed issue',
+            'from'    => 'unknown@glpi-project.org',
+            'to'      => 'unittests@glpi-project.org',
+            'reason'  => \NotImportedEmail::USER_UNKNOWN,
+         ],
+         [
+            'subject' => null, // Subject is empty has mail was not processed
+            'from'    => '', // '' as value is not nullable in DB
+            'to'      => '', // '' as value is not nullable in DB
+            'reason'  => \NotImportedEmail::FAILED_OPERATION,
+         ]
+      ];
+      $iterator = $DB->request(['FROM' => \NotImportedEmail::getTable()]);
+      $this->integer(count($iterator))->isIdenticalTo(count($not_imported_specs));
+
+      $not_imported_values = [];
+      while ($data = $iterator->next()) {
+         $not_imported_values[] = [
+            'subject' => $data['subject'],
+            'from'    => $data['from'],
+            'to'      => $data['to'],
+            'reason'  => $data['reason'],
+         ];
+         $this->integer($data['mailcollectors_id'])->isIdenticalTo($this->mailgate_id);
       }
+      $this->array($not_imported_values)->isIdenticalTo($not_imported_specs);
 
       // Check created tickets and their actors
       $actors_specs = [
