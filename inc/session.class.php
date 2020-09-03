@@ -1414,4 +1414,8 @@ class Session {
    public static function getActiveEntity() {
       return $_SESSION['glpiactive_entity'];
    }
+
+   public static function getActiveEntityRecursive() {
+      return $_SESSION['glpiactive_entity_recursive'];
+   }
 }

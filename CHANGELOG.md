@@ -87,6 +87,9 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::userErrorHandlerNormal()`
 - `Transfer::transferComputerSoftwares()`
 
+- `Reservation::displayReservationDay()`
+- `Reservation::displayReservationsForAnItem()`
+
 ## [9.5.1] unreleased
 
 ## [9.5.0] 2020-07-07

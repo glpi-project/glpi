@@ -585,7 +585,6 @@ class CommonGLPI {
     * @return boolean true
    **/
    static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = []) {
-
       switch ($tab) {
          // All tab
          case -1 :
@@ -1217,6 +1216,11 @@ class CommonGLPI {
       // try to lock object
       // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
       ObjectLock::manageObjectLock(get_class($this), $options);
+
+      // manage custom options passed to tabs
+      if (isset($_REQUEST['tab_params']) && is_array($_REQUEST['tab_params'])) {
+         $options += $_REQUEST['tab_params'];
+      }
 
       $this->showNavigationHeader($options);
       if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {

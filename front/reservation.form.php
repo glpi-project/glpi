@@ -38,14 +38,16 @@ Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 
 $rr = new Reservation();
 
-if (Session::getCurrentInterface() == "helpdesk") {
+if (isset($_REQUEST['ajax'])) {
+   Html::header_nocache();
+   Html::popHeader(__('Simplified interface'));
+} else if (Session::getCurrentInterface() == "helpdesk") {
    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
 }
 
 if (isset($_POST["update"])) {
-   list($begin_year,$begin_month) = explode("-", $_POST['resa']["begin"]);
    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
    if (Session::haveRight("reservation", UPDATE)
        || (Session::getLoginUserID() == $_POST["users_id"])) {
@@ -54,8 +56,7 @@ if (isset($_POST["update"])) {
       $_POST['begin']   = $_POST['resa']["begin"];
       $_POST['end']     = $_POST['resa']["end"];
       if ($rr->update($_POST)) {
-         Html::redirect($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                        $_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
+         Html::back();
       }
    }
 
@@ -73,7 +74,6 @@ if (isset($_POST["update"])) {
                   "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 
 } else if (isset($_POST["add"])) {
-   $all_ok              = true;
    $reservationitems_id = 0;
    if (empty($_POST['users_id'])) {
       $_POST['users_id'] = Session::getLoginUserID();
@@ -119,25 +119,13 @@ if (isset($_POST["update"])) {
                   Event::log($newID, "reservation", 4, "inventory",
                            sprintf(__('%1$s adds the reservation %2$s for item %3$s'),
                                    $_SESSION["glpiname"], $newID, $reservationitems_id));
-               } else {
-                  $all_ok = false;
                }
             }
          }
       }
-   } else {
-      $all_ok = false;
    }
-   if ($all_ok) {
-      $toadd = "";
-      // Only one reservation : move to correct month
-      if (count($_POST['items']) == 1) {
-         $toadd  = "?reservationitems_id=$reservationitems_id";
-         $toadd .= "&mois_courant=".intval($begin_month);
-         $toadd .= "&annee_courante=".intval($begin_year);
-      }
-      Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php$toadd");
-   }
+
+   Html::back();
 
 } else if (isset($_GET["id"])) {
    if (!isset($_GET['begin'])) {
@@ -153,7 +141,9 @@ if (isset($_POST["update"])) {
    }
 }
 
-if (Session::getCurrentInterface() == "helpdesk") {
+if (isset($_REQUEST['ajax'])) {
+   Html::popFooter();
+} else if (Session::getCurrentInterface() == "helpdesk") {
    Html::helpFooter();
 } else {
    Html::footer();

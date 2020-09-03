@@ -3154,7 +3154,7 @@ HTML;
       }
 
       //get Hsl
-      $base_L = $base_S = [0.35, 0.5, 0.65];
+      $base_L = $base_S = [0.6, 0.65, 0.7];
       $H = $hash % 359;
       $hash = intval($hash / 360);
       $S = $base_S[$hash % count($base_S)];

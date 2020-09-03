@@ -373,63 +373,32 @@ class Reservation extends CommonDBChild {
    /**
     * Show reservation calendar
     *
-    * @param $ID   ID of the reservation item (if empty display all) (default '')
+    * @param $ID   ID of the reservation item (if 0 display all) (default '')
    **/
-   static function showCalendar($ID = "") {
+   static function showCalendar(int $ID = 0) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
          return false;
       }
 
-      if (!isset($_GET["mois_courant"])) {
-         $mois_courant = intval(strftime("%m"));
-      } else {
-         $mois_courant = $_GET["mois_courant"];
-      }
+      $rand = mt_rand();
 
-      if (!isset($_GET["annee_courante"])) {
-         $annee_courante = strftime("%Y");
-      } else {
-         $annee_courante = $_GET["annee_courante"];
-      }
+      // scheduler feature key
+      // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
+      // but this licence is incompatible with GLPI (GPLv2)
+      // see https://fullcalendar.io/license
+      $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
 
-      $mois_courant     = intval($mois_courant);
-      $mois_suivant     = $mois_courant+1;
-      $mois_precedent   = $mois_courant-1;
-      $annee_suivante   = $annee_courante;
-      $annee_precedente = $annee_courante;
-
-      if ($mois_precedent == 0) {
-         $mois_precedent   = 12;
-         $annee_precedente --;
-      }
-
-      if ($mois_suivant == 13) {
-         $mois_suivant   = 1;
-         $annee_suivante ++;
-      }
-
-      $monthsarray   = Toolbox::getMonthsOfYearArray();
-
-      $str_suivant   = "?reservationitems_id=$ID&amp;mois_courant=$mois_suivant&amp;".
-                        "annee_courante=$annee_suivante";
-      $str_precedent = "?reservationitems_id=$ID&amp;mois_courant=$mois_precedent&amp;".
-                        "annee_courante=$annee_precedente";
-
-      if (!empty($ID)) {
+      $is_all = $ID === 0 ? "true" : "false";
+      if ($ID > 0) {
          $m = new ReservationItem();
          $m->getFromDB($ID);
 
          if ((!isset($m->fields['is_active'])) || !$m->fields['is_active']) {
             echo "<div class='center'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'>";
-            echo "<td class='center b'>".__('Device temporarily unavailable')."</td></tr>";
-            echo "<tr class='tab_bg_1'><td class='center b'>";
+            echo __('Device temporarily unavailable');
             Html::displayBackLink();
-            echo "</td></tr>";
-            echo "</table>";
             echo "</div>";
             return false;
          }
@@ -444,154 +413,201 @@ class Reservation extends CommonDBChild {
             $name = sprintf(__('%1$s - %2$s'), $type, $name);
          }
 
-         $all = "<a class='vsubmit' href='reservation.php?reservationitems_id=&amp;mois_courant=".
-                  "$mois_courant&amp;annee_courante=$annee_courante'>".__('Show all')."</a>";
+         $all = "<a class='vsubmit view-all' href='reservation.php?reservationitems_id=0'>".
+               __('View all items').
+               "&nbsp;<i class='fas fa-eye'></i>".
+            "</a>";
 
       } else {
          $type = "";
          $name = __('All reservable devices');
-         $all  = "&nbsp;";
+         $all  = "";
+      }
+      echo "<div class='reservation-panel'>";
+      echo "<div class='center reservation-header'>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation.png' alt='' class='reservation-icon'>";
+      echo "<h2 class='item-name'>".$name."</h2>";
+      echo "$all";
+      echo "</div>"; // .center
+      echo "<div id='reservations_planning_$rand' class='reservations-planning'></div>";
+      echo "</div>"; // .reservation_panel
+
+      $js = <<<JAVASCRIPT
+      $(function() {
+         var reservation = new Reservations();
+         reservation.init({
+            id: $ID,
+            is_all: $is_all,
+            rand: $rand,
+            license_key: '$scheduler_key',
+         });
+         reservation.displayPlanning();
+      });
+JAVASCRIPT;
+      echo Html::scriptBlock($js);
+   }
+
+
+   static function getEvents(array $params): array {
+      global $DB;
+
+      $defaults = [
+         'start'               => '',
+         'end'                 => '',
+         'reservationitems_id' => 0,
+      ];
+      $params = array_merge($defaults, $params);
+
+      $start = date("Y-m-d H:i:s", strtotime($params['start']));
+      $end   = date("Y-m-d H:i:s", strtotime($params['end']));
+
+      $res_table   = static::getTable();
+      $res_i_table = ReservationItem::getTable();
+
+      $canedit_admin = Session::getCurrentInterface() == "central"
+                       && Session::haveRight("reservation", READ);
+      $can_reserve   = Session::haveRight("reservation", ReservationItem::RESERVEANITEM);
+
+      $user = new User;
+
+      $where = [];
+      if ($params['reservationitems_id'] > 0) {
+         $where= [
+            "$res_table.reservationitems_id" => $params['reservationitems_id'],
+         ];
       }
 
-      echo "<div class='center'><table class='tab_glpi'><tr><td>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation.png' alt=''></td>";
-      echo "<td class ='b'>".$name."</td></tr>";
-      echo "<tr><td colspan='2' class ='center'>$all</td></tr></table></div><br>\n";
+      $iterator = $DB->request([
+         'SELECT'     => [
+            "$res_table.id",
+            "$res_table.begin",
+            "$res_table.end",
+            "$res_table.comment",
+            "$res_table.users_id",
+            "$res_i_table.items_id",
+            "$res_i_table.itemtype",
+         ],
+         'FROM'       => $res_table,
+         'INNER JOIN' => [
+            $res_i_table => [
+               'ON' => [
+                  $res_i_table => 'id',
+                  $res_table   => 'reservationitems_id'
+               ]
+            ]
+               ],
+         'WHERE' => [
+            'end'   => ['>', $start],
+            'begin' => ['<', $end],
+         ] + $where
+      ]);
 
-      // Check bisextile years
-      if (($annee_courante%4) == 0) {
-         $fev = 29;
-      } else {
-         $fev = 28;
+      $events = [];
+      if (!count($iterator)) {
+         return [];
       }
-      $nb_jour = [31, $fev, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-      // Datas used to put right information in columns
-      $jour_debut_mois = strftime("%w", mktime(0, 0, 0, $mois_courant, 1, $annee_courante));
-      if ($jour_debut_mois == 0) {
-         $jour_debut_mois = 7;
-      }
-      $jour_fin_mois = strftime("%w", mktime(0, 0, 0, $mois_courant, $nb_jour[$mois_courant-1],
-                                             $annee_courante));
-
-      echo "<div class='center'>";
-      echo "<table class='tab_glpi'><tr><td><a href='reservation.php".$str_precedent."'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-             "\" title=\"".__s('Previous')."\"></a></td>";
-      echo "<td class='b'>".sprintf(__('%1$s %2$s'), $monthsarray[$mois_courant], $annee_courante).
-           "</td>";
-      echo "<td><a href='reservation.php".$str_suivant."'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-             "\" title=\"".__s('Next')."\"></a></td></tr></table>\n";
-
-      // test
-      echo "<table width='90%' class='tab_glpi'><tr><td class='top' width='100px'>";
-
-      echo "<table><tr><td width='100px' class='top'>";
-
-      // today date
-      $today = getdate(time());
-      $mois  = $today["mon"];
-      $annee = $today["year"];
-
-      $annee_avant = $annee_courante - 1;
-      $annee_apres = $annee_courante + 1;
-
-      echo "<div class='calendrier_mois'>";
-      echo "<div class='center b'>$annee_avant</div>";
-
-      for ($i=$mois_courant; $i<13; $i++) {
-         echo "<div class='calendrier_case2'>";
-         echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
-               "annee_courante=$annee_avant'>".$monthsarray[$i]."</a></div>";
-      }
-
-      echo "<div class='center b'>$annee_courante</div>";
-
-      for ($i=1; $i<13; $i++) {
-         if ($i == $mois_courant) {
-            echo "<div class='calendrier_case1 b'>".$monthsarray[$i]."</div>\n";
-         } else {
-            echo "<div class='calendrier_case2'>";
-            echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
-                  "annee_courante=$annee_courante'>".$monthsarray[$i]."</a></div>\n";
-         }
-      }
-      echo "<div class='center b'>$annee_apres</div>\n";
-
-      for ($i=1; $i<$mois_courant+1; $i++) {
-         echo "<div class='calendrier_case2'>";
-         echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
-               "annee_courante=$annee_apres'>".$monthsarray[$i]."</a></div>\n";
-      }
-      echo "</div>";
-      echo "</td></tr></table>";
-      echo "</td><td class='top' width='100%'>";
-
-      // test
-      echo "<table width='100%' class='tab_cadre'><tr>";
-      echo "<th width='14%'>".__('Monday')."</th>";
-      echo "<th width='14%'>".__('Tuesday')."</th>";
-      echo "<th width='14%'>".__('Wednesday')."</th>";
-      echo "<th width='14%'>".__('Thursday')."</th>";
-      echo "<th width='14%'>".__('Friday')."</th>";
-      echo "<th width='14%'>".__('Saturday')."</th>";
-      echo "<th width='14%'>".__('Sunday')."</th>";
-      echo "</tr>\n";
-      echo "<tr class='tab_bg_3' >";
-
-      // Insert blank cell before the first day of the month
-      for ($i=1; $i<$jour_debut_mois; $i++) {
-         echo "<td class='calendrier_case_white'>&nbsp;</td>";
-      }
-
-      // voici le remplissage proprement dit
-      if (($mois_courant < 10) && (strlen($mois_courant) == 1)) {
-         $mois_courant = "0".$mois_courant;
-      }
-
-      for ($i=1; $i<$nb_jour[$mois_courant-1]+1; $i++) {
-         if ($i < 10) {
-            $ii = "0".$i;
-         } else {
-            $ii = $i;
+      while ($data = $iterator->next()) {
+         $item = new $data['itemtype'];
+         if (!$item->getFromDB($data['items_id'])) {
+            continue;
          }
 
-         echo "<td class='top' height='100px'>";
-         echo "<table class='center' width='100%'><tr><td class='center'>";
-         echo "<span class='calendrier_jour'>".$i."</span></td></tr>\n";
+         $my_item = $data['users_id'] === Session::getLoginUserID();
 
-         if (!empty($ID)) {
-            echo "<tr><td class='center'>";
-            echo "<a href='".Reservation::getFormURL()."?id=&amp;item[$ID]=$ID&amp;".
-                  "begin=".$annee_courante."-".$mois_courant."-".$ii." 12:00:00'>";
-            echo "<img  src='".$CFG_GLPI["root_doc"]."/pics/addresa.png' alt=\"".
-                  __s('Reserve')."\" title=\"".__s('Reserve')."\"></a></td></tr>\n";
+         if ($canedit_admin || $my_item) {
+            $user->getFromDB($data['users_id']);
+            $username = $user->getFriendlyName();
          }
 
-         echo "<tr><td>";
-         self::displayReservationDay($ID, $annee_courante."-".$mois_courant."-".$ii);
-         echo "</td></tr></table>\n";
-         echo "</td>";
+         $name = $item->getName([
+            'complete' => true,
+         ]);
 
-         // il ne faut pas oublie d'aller a la ligne suivante en fin de semaine
-         if ((($i+$jour_debut_mois)%7) == 1) {
-            echo "</tr>\n";
-            if ($i != $nb_jour[$mois_courant-1]) {
-               echo "<tr class='tab_bg_3'>";
-            }
-         }
+         $events[] = [
+            'id'          => $data['id'],
+            'resourceId'  => $data['itemtype']."-".$data['items_id'],
+            'start'       => $data['begin'],
+            'end'         => $data['end'],
+            'comment'     => $data['comment'].
+                             $canedit_admin || $my_item
+                              ? "\n".sprintf(__("Reserved by %s"), $username)
+                              : "",
+            'title'       => $params['reservationitems_id'] ? "" : $name,
+            'icon'        => $item->getIcon(),
+            'description' => $item->getTypeName(),
+            'itemtype'    => $data['itemtype'],
+            'items_id'    => $data['items_id'],
+            'color'       => Toolbox::getColorForString($name),
+            'ajaxurl'     => Reservation::getFormURLWithID($data['id']),
+            'editable'    => $canedit_admin || ($can_reserve && $my_item),
+         ];
       }
 
-      // on recommence pour finir le tableau proprement pour les m???es raisons
-      if ($jour_fin_mois != 0) {
-         for ($i=0; $i<7-$jour_fin_mois; $i++) {
-            echo "<td class='calendrier_case_white'>&nbsp;</td>";
+      return $events;
+   }
+
+
+   static function getResources() {
+      global $DB;
+
+      $res_i_table = ReservationItem::getTable();
+
+      $iterator = $DB->request([
+         'SELECT' => [
+            "$res_i_table.items_id",
+            "$res_i_table.itemtype",
+         ],
+         'FROM'   => $res_i_table,
+         'WHERE'  => [
+            'is_active'  => 1,
+            'is_deleted' => 0
+         ]
+      ]);
+
+      $resources = [];
+      if (!count($iterator)) {
+         return [];
+      }
+      while ($data = $iterator->next()) {
+         $item = new $data['itemtype'];
+         if (!$item->getFromDB($data['items_id'])) {
+            continue;
          }
+
+         $resources[] = [
+            'id' => $data['itemtype']."-".$data['items_id'],
+            'title' => sprintf(__("%s - %s"), $data['itemtype']::getTypeName(), $item->getName()),
+         ];
       }
 
-      echo "</tr></table>\n";
-      echo "</td></tr></table></div>\n";
+      return $resources;
+   }
+
+
+   /**
+    * Change dates of a selected reservation.
+    * Called from a drag&drop in planning
+    *
+    * @param array $options: must contains this keys :
+    *  - id : integer to identify reservation
+    *  - begin : planning start .
+    *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+    *  - end : planning end .
+    *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+    * @return bool
+    */
+   static function updateEvent(array $event = []):bool {
+
+      $reservation = new static;
+      if (!$reservation->getFromDB((int) $event['id'])) {
+         return false;
+      }
+
+      return $reservation->update([
+         'id'    => (int) $event['id'],
+         'begin' => $event['start'],
+         'end'   => $event['end']
+      ]);
    }
 
 
@@ -612,7 +628,7 @@ class Reservation extends CommonDBChild {
 
       $resa = new self();
 
-      if (!empty($ID)) {
+      if (!empty($ID) && $ID > 0) {
          if (!$resa->getFromDB($ID)) {
             return false;
          }
@@ -628,18 +644,12 @@ class Reservation extends CommonDBChild {
 
       } else {
          $resa->getEmpty();
-         $resa->fields["begin"] = $options['begin'];
+         $resa->fields["begin"] = date("Y-m-d H:i:s", strtotime($options['begin']));
          if (!isset($options['end'])) {
-            $resa->fields["end"] = date("Y-m-d H:00:00",
-                                        strtotime($resa->fields["begin"])+HOUR_TIMESTAMP);
+            $resa->fields["end"] = date("Y-m-d H:00:00", strtotime($resa->fields["begin"])+HOUR_TIMESTAMP);
          } else {
-            $resa->fields["end"] = $options['end'];
+            $resa->fields["end"] = date("Y-m-d H:i:s", strtotime($options['end']));
          }
-      }
-
-      // No item : problem
-      if (!isset($options['item']) || (count($options['item']) == 0)) {
-         return false;
       }
 
       echo "<div class='center'><form method='post' name=form action='".Reservation::getFormURL()."'>";
@@ -656,34 +666,56 @@ class Reservation extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Item')."</td>";
       echo "<td>";
-      foreach ($options['item'] as $itemID) {
-         $r->getFromDB($itemID);
-         $type = $r->fields["itemtype"];
-         $name = NOT_AVAILABLE;
-         $item = null;
 
-         if ($item = getItemForItemtype($r->fields["itemtype"])) {
-            $type = $item->getTypeName();
+      $temp_item  = $options['item'];
+      $first_item = array_pop($temp_item);
+      if (count($options['item']) == 1 && $first_item == 0) {
+         // only one id = 0, display an item dropdown
+         Dropdown::showSelectItemFromItemtypes([
+            'items_id_name'   => 'items[]',
+            'itemtypes'       => $CFG_GLPI['reservation_types'],
+            'entity_restrict' => Session::getActiveEntity(),
+            'checkright'      => true,
+            'ajax_page'       => $CFG_GLPI['root_doc'].'/ajax/reservable_items.php'
+         ]);
+         echo "<span id='item_dropdown'>";
+      } else {
+         // existing item(s)
+         foreach ($options['item'] as $itemID) {
+            $r->getFromDB($itemID);
+            $type = $r->fields["itemtype"];
+            $name = NOT_AVAILABLE;
+            $item = null;
 
-            if ($item->getFromDB($r->fields["items_id"])) {
-               $name = $item->getName();
-            } else {
-               $item = null;
+            if ($item = getItemForItemtype($r->fields["itemtype"])) {
+               $type = $item->getTypeName();
+
+               if ($item->getFromDB($r->fields["items_id"])) {
+                  $name = $item->getName();
+               } else {
+                  $item = null;
+               }
             }
-         }
 
-         echo "<span class='b'>".sprintf(__('%1$s - %2$s'), $type, $name)."</span><br>";
-         echo "<input type='hidden' name='items[$itemID]' value='$itemID'>";
+            echo "<span class='b'>".sprintf(__('%1$s - %2$s'), $type, $name)."</span><br>";
+            echo "<input type='hidden' name='items[$itemID]' value='$itemID'>";
+         }
       }
 
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
       $uid = (empty($ID) ? Session::getLoginUserID() : $resa->fields['users_id']);
       echo "<tr class='tab_bg_2'><td>".__('By')."</td>";
       echo "<td>";
+
+      $entities_id   = Session::getActiveEntity();
+      $is_recursive  = Session::getActiveEntityRecursive();
+      if (isset($item)) {
+         $entities_id  = $item->getEntityID();
+         $is_recursive = $item->isRecursive();
+      }
       if (!Session::haveRight("reservation", UPDATE)
-          || is_null($item)
-          || !Session::haveAccessToEntity($item->fields["entities_id"])) {
+          || !Session::haveAccessToEntity($entities_id)) {
 
          echo "<input type='hidden' name='users_id' value='".$uid."'>";
          echo Dropdown::getDropdownName(
@@ -693,31 +725,34 @@ class Reservation extends CommonDBChild {
       } else {
          User::dropdown([
             'value'        => $uid,
-            'entity'       => $item->getEntityID(),
-            'entity_sons'  => $item->isRecursive(),
+            'entity'       => $entities_id,
+            'entity_sons'  => $is_recursive,
             'right'        => 'all'
          ]);
       }
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
-      $rand_begin = Html::showDateTimeField("resa[begin]",
-                                            ['value'      => $resa->fields["begin"],
-                                                  'maybeempty' => false]);
-      echo "</td></tr>\n";
+      Html::showDateTimeField("resa[begin]", [
+         'value'      => $resa->fields["begin"],
+         'maybeempty' => false
+      ]);
+      echo "</td></tr>";
       $default_delay = floor((strtotime($resa->fields["end"])-strtotime($resa->fields["begin"]))
                              /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)
                        *$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
       echo "<tr class='tab_bg_2'><td>".__('Duration')."</td><td>";
-      $rand = Dropdown::showTimeStamp("resa[_duration]",
-                                      ['min'        => 0,
-                                            'max'        => 24*HOUR_TIMESTAMP,
-                                            'value'      => $default_delay,
-                                            'emptylabel' => __('Specify an end date')]);
+      $rand = Dropdown::showTimeStamp("resa[_duration]", [
+         'min'        => 0,
+         'max'        => 24*HOUR_TIMESTAMP,
+         'value'      => $default_delay,
+         'emptylabel' => __('Specify an end date')
+      ]);
       echo "<br><div id='date_end$rand'></div>";
-      $params = ['duration'     => '__VALUE__',
-                      'end'          => $resa->fields["end"],
-                      'name'         => "resa[end]"];
-
+      $params = [
+         'duration'     => '__VALUE__',
+         'end'          => $resa->fields["end"],
+         'name'         => "resa[end]"
+      ];
       Ajax::updateItemOnSelectEvent("dropdown_resa[_duration]$rand", "date_end$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
 
@@ -726,37 +761,38 @@ class Reservation extends CommonDBChild {
          Ajax::updateItem("date_end$rand", $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
       }
       Alert::displayLastAlert('Reservation', $ID);
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'><td>".__('Repetition')."</td>";
          echo "<td>";
-         $values   = [''      => _x('periodicity', 'None'),
-                           'day'   => _x('periodicity', 'Daily'),
-                           'week'  => _x('periodicity', 'Weekly'),
-                           'month' => _x('periodicity', 'Monthly')];
-         $rand     = Dropdown::showFromArray('periodicity[type]', $values);
+         $rand = Dropdown::showFromArray('periodicity[type]', [
+            ''      => _x('periodicity', 'None'),
+            'day'   => _x('periodicity', 'Daily'),
+            'week'  => _x('periodicity', 'Weekly'),
+            'month' => _x('periodicity', 'Monthly')
+         ]);
          $field_id = Html::cleanId("dropdown_periodicity[type]$rand");
 
-         $params   = ['type'     => '__VALUE__',
-                           'end'      => $resa->fields["end"]];
-
          Ajax::updateItemOnSelectEvent($field_id, "resaperiodcontent$rand",
-                                       $CFG_GLPI["root_doc"]."/ajax/resaperiod.php", $params);
+                                       $CFG_GLPI["root_doc"]."/ajax/resaperiod.php", [
+                                          'type'     => '__VALUE__',
+                                          'end'      => $resa->fields["end"]
+                                       ]);
          echo "<br><div id='resaperiodcontent$rand'></div>";
 
-         echo "</td></tr>\n";
+         echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_2'><td>".__('Comments')."</td>";
       echo "<td><textarea name='comment' rows='8' cols='60'>".$resa->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='2' class='top center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
-         echo "</td></tr>\n";
+         echo "</td></tr>";
 
       } else {
          if (($resa->fields["users_id"] == Session::getLoginUserID())
@@ -780,12 +816,12 @@ class Reservation extends CommonDBChild {
                      class='submit'>";
                echo "</td>";
             }
-            echo "</tr>\n";
+            echo "</tr>";
          }
       }
       echo "</table>";
       Html::closeForm();
-      echo "</div>\n";
+      echo "</div>";
    }
 
 
@@ -902,302 +938,59 @@ class Reservation extends CommonDBChild {
 
 
    /**
-    * Display for reservation
-    *
-    * @param $ID     ID a the reservation item (empty to show all)
-    * @param $date   date to display
-   **/
-   static function displayReservationDay($ID, $date) {
-      global $DB;
-
-      if (!empty($ID)) {
-         self::displayReservationsForAnItem($ID, $date);
-
-      } else {
-         $debut = $date." 00:00:00";
-         $fin   = $date." 23:59:59";
-
-         $iterator = $DB->request([
-            'SELECT'          => 'glpi_reservationitems.id',
-            'DISTINCT'        => true,
-            'FROM'            => 'glpi_reservationitems',
-            'INNER JOIN'      => [
-               'glpi_reservations'  => [
-                  'ON' => [
-                     'glpi_reservationitems' => 'id',
-                     'glpi_reservations'     => 'reservationitems_id'
-                  ]
-               ]
-            ],
-            'WHERE'           => [
-               'is_active' => 1,
-               'end'       => ['>', $debut],
-               'begin'     => ['<', $fin]
-            ],
-            'ORDERBY'         => 'begin'
-         ]);
-
-         if (count($iterator)) {
-            $m = new ReservationItem();
-            while ($data = $iterator->next()) {
-               $m->getFromDB($data['id']);
-
-               if (!($item = getItemForItemtype($m->fields["itemtype"]))) {
-                  continue;
-               }
-
-               if ($item->getFromDB($m->fields["items_id"])
-                   && Session::haveAccessToEntity($item->fields["entities_id"])) {
-
-                  $typename = $item->getTypeName();
-
-                  if ($m->fields["itemtype"] == 'Peripheral') {
-                     if (isset($item->fields["peripheraltypes_id"])
-                         && ($item->fields["peripheraltypes_id"] != 0)) {
-
-                        $typename = Dropdown::getDropdownName("glpi_peripheraltypes",
-                                                              $item->fields["peripheraltypes_id"]);
-                     }
-                  }
-
-                  list($annee,$mois,$jour) = explode("-", $date);
-                  echo "<tr class='tab_bg_1'><td>";
-                  echo "<a href='reservation.php?reservationitems_id=".$data['id'].
-                        "&amp;mois_courant=$mois&amp;annee_courante=$annee'>".
-                        sprintf(__('%1$s - %2$s'), $typename, $item->getName())."</a></td></tr>\n";
-                  echo "<tr><td>";
-                  self::displayReservationsForAnItem($data['id'], $date);
-                  echo "</td></tr>\n";
-               }
-            }
-         }
-      }
-   }
-
-
-   /**
-    * Display a reservation
-    *
-    * @param $ID     ID a the reservation item
-    * @param $date   date to display
-   **/
-   static function displayReservationsForAnItem($ID, $date) {
-      global $DB;
-
-      $users_id = Session::getLoginUserID();
-      $resa     = new self();
-      $user     = new User;
-      list($year, $month, $day) = explode("-", $date);
-      $debut    = $date." 00:00:00";
-      $fin      = $date." 23:59:59";
-
-      $iterator = $DB->request([
-         'FROM'   => 'glpi_reservations',
-         'WHERE'  => [
-            'end'                   => ['>', $debut],
-            'begin'                 => ['<', $fin],
-            'reservationitems_id'   => $ID
-         ],
-         'ORDER'  => 'begin'
-      ]);
-
-      if (count($iterator)) {
-         echo "<table width='100%'>";
-         while ($row = $iterator->next()) {
-            echo "<tr>";
-            $user->getFromDB($row["users_id"]);
-            $display = "";
-
-            if ($debut > $row['begin']) {
-               $heure_debut = "00:00";
-            } else {
-               $heure_debut = get_hour_from_sql($row['begin']);
-            }
-
-            if ($fin < $row['end']) {
-               $heure_fin = "24:00";
-            } else {
-               $heure_fin = get_hour_from_sql($row['end']);
-            }
-
-            if ((strcmp($heure_debut, "00:00") == 0)
-                  && (strcmp($heure_fin, "24:00") == 0)) {
-               $display = __('Day');
-
-            } else if (strcmp($heure_debut, "00:00") == 0) {
-               $display = sprintf(__('To %s'), $heure_fin);
-
-            } else if (strcmp($heure_fin, "24:00") == 0) {
-               $display = sprintf(__('From %s'), $heure_debut);
-
-            } else {
-               $display = $heure_debut."-".$heure_fin;
-            }
-
-            $rand  = mt_rand();
-            $modif = $modif_end = "";
-            if ($resa->canEdit($row['id'])) {
-               $modif      = "<a id='content_".$ID.$rand."'
-                                 href='".Reservation::getFormURLWithID($row['id'])."'>";
-               $modif_end  = "</a>";
-               $modif_end .= Html::showToolTip($row["comment"],
-                                                ['applyto' => "content_".$ID.$rand,
-                                                      'display' => false]);
-            }
-
-            echo "<td class='tab_resa center'>". $modif."<span>".$display."<br><span class='b'>".
-            formatUserName($user->fields["id"], $user->fields["name"], $user->fields["realname"],
-                           $user->fields["firstname"]);
-            echo "</span></span>";
-            echo $modif_end;
-            echo "</td></tr>\n";
-         }
-         echo "</table>\n";
-      }
-   }
-
-
-   /**
     * Display reservations for an item
     *
     * @param $item            CommonDBTM object for which the reservation tab need to be displayed
     * @param $withtemplate    withtemplate param (default 0)
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
-
-      $resaID = 0;
       if (!Session::haveRight("reservation", READ)) {
          return false;
       }
+
+      // scheduler feature key
+      // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
+      // but this licence is incompatible with GLPI (GPLv2)
+      // see https://fullcalendar.io/license
+      $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
 
       echo "<div class='firstbloc'>";
       ReservationItem::showActivationFormForItem($item);
 
       $ri = new ReservationItem();
-      if ($ri->getFromDBbyItem($item->getType(), $item->getID())) {
-         $now = $_SESSION["glpi_currenttime"];
-
-         // Print reservation in progress
-         $iterator = $DB->request([
-            'FROM'   => 'glpi_reservations',
-            'WHERE'  => [
-               'end'                   => ['>', $now],
-               'reservationitems_id'   => $ri->fields['id']
-            ],
-            'ORDER'  => 'begin'
-         ]);
-
-         echo "<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
-
-         if (count($iterator) && $ri->fields["is_active"]
-             && Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                   $ri->fields['id']."'>".__('Current and future reservations')."</a>";
-         } else {
-            echo __('Current and future reservations');
-         }
-         echo "</th></tr>\n";
-
-         if (!count($iterator)) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='5'>".__('No reservation')."</td></tr>\n";
-
-         } else {
-            echo "<tr><th>".__('Start date')."</th>";
-            echo "<th>".__('End date')."</th>";
-            echo "<th>".__('By')."</th>";
-            echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
-
-            while ($data = $iterator->next()) {
-               echo "<tr class='tab_bg_2'>";
-               echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
-               echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
-               echo "<td class='center'>";
-               if (Session::haveRight('user', READ)) {
-                  echo "<a href='".User::getFormURLWithID($data["users_id"])."'>".getUserName($data["users_id"])."</a>";
-               } else {
-                  echo getUserName($data["users_id"]);
-               }
-               echo "</td>";
-               echo "<td class='center'>".nl2br($data["comment"])."</td>";
-               echo "<td class='center'>";
-               if (Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
-                  list($annee, $mois, $jour) = explode("-", $data["begin"]);
-                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                        $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
-                        __s('See planning')."\">";
-                  echo "<i class='far fa-calendar-alt'></i>";
-                  echo "<span class='sr-only'>".__('See planning')."</span></a>";
-               } else {
-                  echo "&nbsp;";
-               }
-               echo "</td></tr>\n";
-            }
-         }
-         echo "</table></div>\n";
-
-         // Print old reservations
-         $iterator = $DB->request([
-            'FROM'   => 'glpi_reservations',
-            'WHERE'  => [
-               'end'                   => ['<=', $now],
-               'reservationitems_id'   => $ri->fields['id']
-            ],
-            'ORDER'  => 'begin DESC'
-         ]);
-
-         echo "<div class='spaced'><table class='tab_cadre_fixehov'><tr><th colspan='5'>";
-
-         if (count($iterator) && $ri->fields["is_active"]
-             && Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                   $ri->fields['id']."' >".__('Past reservations')."</a>";
-         } else {
-            echo __('Past reservations');
-         }
-         echo "</th></tr>\n";
-
-         if (!count($iterator)) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='5'>".__('No reservation')."</td></tr>\n";
-
-         } else {
-            echo "<tr><th>".__('Start date')."</th>";
-            echo "<th>".__('End date')."</th>";
-            echo "<th>".__('By')."</th>";
-            echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
-
-            while ($data = $iterator->next()) {
-               echo "<tr class='tab_bg_2'>";
-               echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
-               echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
-               echo "<td class='center'>";
-               if (Session::haveRight('user', READ)) {
-                  echo "<a href='".User::getFormURLWithID($data["users_id"])."'>".getUserName($data["users_id"])."</a>";
-               } else {
-                  echo getUserName($data["users_id"]);
-               }
-               echo "</td>";
-               echo "<td class='center'>".nl2br($data["comment"])."</td>";
-               echo "<td class='center'>";
-               if (Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
-                  list($annee, $mois ,$jour) = explode("-", $data["begin"]);
-                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                        $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
-                        __s('See planning')."\">";
-                  echo "<i class='far fa-calendar-alt'></i>";
-                  echo "<span class='sr-only'>".__('See planning')."</span>";
-                  echo "</a>";
-               } else {
-                  echo "&nbsp;";
-               }
-               echo "</td></tr>\n";
-            }
-         }
-         echo "</table>\n";
+      if (!$ri->getFromDBbyItem($item->getType(), $item->getID())) {
+         return;
       }
-      echo "</div>\n";
+
+      // js vars
+      $rand   = mt_rand();
+      $ID     = $ri->fields['id'];
+
+      echo "<br>";
+      echo "<h1>".__('Reservations for this item')."</h1>";
+      echo "<div id='reservations_planning_$rand' class='reservations-planning tabbed'></div>";
+
+      $defaultDate = date('Y-m-d');
+      if (isset($_REQUEST['defaultDate'])) {
+         $defaultDate = $_REQUEST['defaultDate'];
+      }
+      $js = <<<JAVASCRIPT
+      $(function() {
+         var reservation = new Reservations();
+         reservation.init({
+            id: $ID,
+            is_all: false,
+            is_tab: true,
+            rand: $rand,
+            currentv: 'listFull',
+            defaultDate: '$defaultDate',
+            license_key: '$scheduler_key',
+         });
+         reservation.displayPlanning();
+      });
+JAVASCRIPT;
+      echo Html::scriptBlock($js);
+      echo "</div>"; // .firstbloc
    }
 
 
@@ -1354,8 +1147,8 @@ class Reservation extends CommonDBChild {
 
          while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
-            echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
+            echo "<td>".Html::convDateTime($data["begin"])."</td>";
+            echo "<td>".Html::convDateTime($data["end"])."</td>";
 
             if ($ri->getFromDB($data["reservationitems_id"])) {
                $link = "&nbsp;";
@@ -1365,19 +1158,19 @@ class Reservation extends CommonDBChild {
                      $link = $item->getLink();
                   }
                }
-               echo "<td class='center'>$link</td>";
-               echo "<td class='center'>".$data['completename']."</td>";
+               echo "<td>$link</td>";
+               echo "<td>".$data['completename']."</td>";
 
             } else {
-               echo "<td class='center'>&nbsp;</td>";
+               echo "<td>&nbsp;</td>";
             }
 
-            echo "<td class='center'>".getUserName($data["users_id"])."</td>";
-            echo "<td class='center'>".nl2br($data["comment"])."</td>";
-            echo "<td class='center'>";
+            echo "<td>".getUserName($data["users_id"])."</td>";
+            echo "<td>".nl2br($data["comment"])."</td>";
+            echo "<td>";
             list($annee, $mois, $jour) = explode("-", $data["begin"]);
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                  $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' ".
+            echo "<a href='".$item::getFormURLWithID($ri->fields['items_id']).
+                 "&forcetab=Reservation$1&tab_params[defaultDate]={$data["begin"]}' ".
                   "title=\"".__s('See planning')."\">";
             echo "<i class='far fa-calendar-alt'></i>";
             echo "<span class='sr-only'>".__('See planning')."</span>";

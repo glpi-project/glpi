@@ -914,6 +914,7 @@ class Html {
          if (isset($url['query'])) {
             parse_str($url['query'], $parameters);
             unset($parameters['forcetab']);
+            unset($parameters['tab_params']);
             $new_query = http_build_query($parameters);
             return str_replace($url['query'], $new_query, $url_in);
          }
@@ -1264,6 +1265,11 @@ class Html {
             echo Html::css('public/lib/fullcalendar.css',
                            ['media' => '']);
             Html::requireJs('fullcalendar');
+         }
+
+         if (in_array('reservations', $jslibs)) {
+            echo Html::scss('css/reservations');
+            Html::requireJs('reservations');
          }
 
          if (in_array('gantt', $jslibs)) {
@@ -4354,7 +4360,6 @@ JS;
             $link .= " class='pointer' ";
          }
       }
-      $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
       $action  = " submitGetLink('$action', {" .implode(', ', $javascriptArray) ."});";
 
       if (is_array($confirm) || strlen($confirm)) {
@@ -6433,6 +6438,8 @@ JAVASCRIPT;
             break;
          case 'photoswipe':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/photoswipe.js';
+         case 'reservations':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
             break;
          default:
             $found = false;

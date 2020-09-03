@@ -32,22 +32,40 @@
 
 include ('../inc/includes.php');
 
-Session::checkLoginUser();
+Session::checkCentralAccess();
 
-if (!isset($_GET["reservationitems_id"])) {
-   $_GET["reservationitems_id"] = 0;
+if (!isset($_REQUEST["action"])) {
+   exit;
 }
 
-if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
-} else {
-   Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
+if ($_REQUEST["action"] == "get_events") {
+   header("Content-Type: application/json; charset=UTF-8");
+   echo json_encode(Reservation::getEvents($_REQUEST));
+   exit;
 }
 
-Reservation::showCalendar((int) $_GET["reservationitems_id"], $_REQUEST);
-
-if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpFooter();
-} else {
-   Html::footer();
+if ($_REQUEST["action"] == "get_resources") {
+   header("Content-Type: application/json; charset=UTF-8");
+   echo json_encode(Reservation::getResources());
+   exit;
 }
+
+if ($_REQUEST["action"] == "update_event") {
+   $result = Reservation::updateEvent($_REQUEST);
+   echo json_encode(['result' => $result]);
+   exit;
+}
+
+Html::header_nocache();
+header("Content-Type: text/html; charset=UTF-8");
+
+if ($_REQUEST["action"] == "add_reservation_fromselect") {
+   $reservation = new Reservation;
+   $reservation->showForm(0, [
+      'item'  => [(int) $_REQUEST['id']],
+      'begin' => $_REQUEST['start'],
+      'end'   => $_REQUEST['end'],
+   ]);
+}
+
+Html::ajaxFooter();

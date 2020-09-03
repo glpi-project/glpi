@@ -30,24 +30,16 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @since 0.85
+ */
+
 include ('../inc/includes.php');
 
-Session::checkLoginUser();
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
-if (!isset($_GET["reservationitems_id"])) {
-   $_GET["reservationitems_id"] = 0;
-}
+Session::checkCentralAccess();
 
-if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
-} else {
-   Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
-}
-
-Reservation::showCalendar((int) $_GET["reservationitems_id"], $_REQUEST);
-
-if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpFooter();
-} else {
-   Html::footer();
-}
+// Make a select box
+ReservationItem::ajaxDropdown($_POST);
