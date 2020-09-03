@@ -1296,8 +1296,7 @@ HTML;
       }
 
       $config_key = 'default_dashboard_'.$menu;
-      $config     = \Config::getConfigurationValues('core', [$config_key]);
-      $default    = $config[$config_key] ?? "";
+      $default    = $_SESSION["glpi$config_key"] ?? "";
       if (strlen($default)) {
          $dasboard = new Dashboard($default);
          if ($dasboard->load()) {
