@@ -61,6 +61,11 @@ $break_tablet: 1400px;
       width: calc(80% + 28px);
       margin: 0 auto;
       margin-bottom: -35px;
+      z-index: 1;
+
+      & + .search_page {
+         z-index: 2;
+      }
 
       .card {
          padding: 0 3px;
