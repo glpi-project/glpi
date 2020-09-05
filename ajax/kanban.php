@@ -54,7 +54,7 @@ if (!isset($_REQUEST['action'])) {
 }
 $action = $_REQUEST['action'];
 
-$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form'];
+$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form', 'delete_item'];
 if (isset($_REQUEST['itemtype'])) {
    $traits = class_uses($_REQUEST['itemtype'], true);
    if (!in_array($_REQUEST['action'], $nonkanban_actions) && (!$traits || !in_array(Kanban::class, $traits, true))) {
@@ -88,6 +88,14 @@ if (isset($itemtype)) {
    }
    if (in_array($action, ['bulk_add_item', 'add_item'])) {
       if (!$item->canCreate()) {
+         // Missing rights
+         http_response_code(403);
+         return;
+      }
+   }
+   if (in_array($action, ['delete_item'])) {
+      $maybe_deleted = $item->maybeDeleted();
+      if (($maybe_deleted && !$item::canDelete()) && (!$maybe_deleted && $item::canPurge())) {
          // Missing rights
          http_response_code(403);
          return;
@@ -230,6 +238,17 @@ if ($_REQUEST['action'] === 'update') {
    $item->getFromDB($_REQUEST['card']);
    if ($item->canViewItem() && $item->canUpdateItem()) {
       $item->showForm($_REQUEST['card']);
+   } else {
+      http_response_code(403);
+      return;
+   }
+} else if ($_REQUEST['action'] === 'delete_item') {
+   $checkParams(['items_id']);
+   $item->getFromDB($_REQUEST['items_id']);
+   // Check if the item can be trashed and if the request isn't forcing deletion (purge)
+   $maybe_deleted = $item->maybeDeleted() && !($_REQUEST['force'] ?? false);
+   if (($maybe_deleted && $item->canDeleteItem()) || (!$maybe_deleted && $item->canPurgeItem())) {
+      $item->delete(['id' => $_REQUEST['items_id']], !$maybe_deleted);
    } else {
       http_response_code(403);
       return;

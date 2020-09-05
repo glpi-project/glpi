@@ -107,6 +107,15 @@
       this.allow_add_item = false;
 
       /**
+       * If true, then a button will be added to each card to allow deleting them and the underlying item directly from the kanban.
+       * When a card is deleted, a request is made via AJAX to create the item in the DB.
+       * Permissions are re-checked server-side during this request.
+       * @since x.x.x
+       * @type {boolean}
+       */
+      this.allow_delete_item = false;
+
+      /**
        * If true, then a button will be added to the add column form that lets the user create a new column.
        * For Projects as an example, it would create a new project state.
        * Permissions are re-checked server-side during this request.
@@ -255,7 +264,8 @@
          const overridableParams = [
             'element', 'max_team_images', 'team_image_size', 'item',
             'supported_itemtypes', 'allow_add_item', 'allow_add_column', 'dark_theme', 'background_refresh_interval',
-            'column_field', 'allow_modify_view', 'limit_addcard_columns', 'allow_order_card', 'allow_create_column'
+            'column_field', 'allow_modify_view', 'limit_addcard_columns', 'allow_order_card', 'allow_create_column',
+            'allow_delete_item'
          ];
          if (args.length === 1) {
             for (let i = 0; i < overridableParams.length; i++) {
@@ -289,23 +299,41 @@
          add_itemtype_dropdown += '</ul>';
          kanban_container.append(add_itemtype_dropdown);
 
-         // Dropdown for overflow
-         let overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
+         // Dropdown for overflow (Column)
+         let column_overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
          let add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' class='' style='display: none'>";
          Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
             add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "'>" + self.supported_itemtypes[itemtype]['name'] + '</li>';
          });
          add_itemtype_bulk_dropdown += '</ul>';
          const add_itemtype_bulk_link = '<a href="#">' + '<i class="fas fa-list"></i>' + __('Bulk add') + '</a>';
-         overflow_dropdown += '<li class="dropdown-trigger">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
+         column_overflow_dropdown += '<li class="dropdown-trigger">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
          if (self.allow_modify_view) {
-            overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</li>";
+            column_overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</li>";
             //}
          }
-         overflow_dropdown += '</ul>';
-         kanban_container.append(overflow_dropdown);
+         column_overflow_dropdown += '</ul>';
+         kanban_container.append(column_overflow_dropdown);
+
+         // Dropdown for overflow (Card)
+         let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
+         if (self.allow_delete_item) {
+            card_overflow_dropdown += `
+                <li class='kanban-item-remove'>
+                    <i class="fas fa-trash-alt"></i>${__('Delete')}
+                 </li>`;
+         }
+         card_overflow_dropdown += '</ul>';
+         kanban_container.append(card_overflow_dropdown);
 
          $('#kanban-overflow-dropdown li.dropdown-trigger').on("click", function(e) {
+            $(this).toggleClass('active');
+            $(this).find('ul').toggle();
+            e.stopPropagation();
+            e.preventDefault();
+         });
+
+         $('#kanban-item-overflow-dropdown li.dropdown-trigger').on("click", function(e) {
             $(this).toggleClass('active');
             $(this).find('ul').toggle();
             e.stopPropagation();
@@ -465,7 +493,8 @@
        */
       const registerEventListeners = function() {
          const add_dropdown = $('#kanban-add-dropdown');
-         const overflow_dropdown = $('#kanban-overflow-dropdown');
+         const column_overflow_dropdown = $('#kanban-overflow-dropdown');
+         const card_overflow_dropdown = $('#kanban-item-overflow-dropdown');
 
          refreshSortables();
 
@@ -506,34 +535,64 @@
          });
 
          if (Object.keys(self.supported_itemtypes).length > 0) {
-            $(self.element + ' .kanban-container').on('click', '.kanban-overflow-actions', function(e) {
+            $(self.element + ' .kanban-container').on('click', '.kanban-column-overflow-actions', function(e) {
                const button = $(e.target);
                //Keep menu open if clicking on another add button
-               const force_stay_visible = $(overflow_dropdown.data('trigger-button')).prop('id') !== button.prop('id');
-               overflow_dropdown.css({
+               const force_stay_visible = $(column_overflow_dropdown.data('trigger-button')).prop('id') !== button.prop('id');
+               column_overflow_dropdown.css({
                   position: 'fixed',
                   left: button.offset().left,
                   top: button.offset().top + button.outerHeight(true),
-                  display: (overflow_dropdown.css('display') === 'none' || force_stay_visible) ? 'inline' : 'none'
+                  display: (column_overflow_dropdown.css('display') === 'none' || force_stay_visible) ? 'inline' : 'none'
                });
                // Hide sub-menus by default when opening the overflow menu
-               overflow_dropdown.find('ul').css({
+               column_overflow_dropdown.find('ul').css({
                   display: 'none'
                });
-               overflow_dropdown.find('li').removeClass('active');
+               column_overflow_dropdown.find('li').removeClass('active');
                // If this is a protected column, hide any items with data-forbid-protected='true'. Otherwise show them.
                const column = $(e.target.closest('.kanban-column'));
                if (column.hasClass('kanban-protected')) {
-                  overflow_dropdown.find('li[data-forbid-protected="true"]').hide();
+                  column_overflow_dropdown.find('li[data-forbid-protected="true"]').hide();
                } else {
-                  overflow_dropdown.find('li[data-forbid-protected="true"]').show();
+                  column_overflow_dropdown.find('li[data-forbid-protected="true"]').show();
                }
-               overflow_dropdown.data('trigger-button', button);
+               column_overflow_dropdown.data('trigger-button', button);
             });
          }
+         $(self.element + ' .kanban-container').on('click', '.kanban-item-overflow-actions', function(e) {
+            const button = $(e.target);
+            //Keep menu open if clicking on another add button
+            const force_stay_visible = $(card_overflow_dropdown.data('trigger-button')).prop('id') !== button.prop('id');
+            card_overflow_dropdown.css({
+               position: 'fixed',
+               left: button.offset().left,
+               top: button.offset().top + button.outerHeight(true),
+               display: (card_overflow_dropdown.css('display') === 'none' || force_stay_visible) ? 'inline' : 'none'
+            });
+            // Hide sub-menus by default when opening the overflow menu
+            card_overflow_dropdown.find('ul').css({
+               display: 'none'
+            });
+            card_overflow_dropdown.find('li').removeClass('active');
+            card_overflow_dropdown.data('trigger-button', button);
+            const card = $(button.closest('.kanban-item'));
+            let delete_action = $(card_overflow_dropdown.find('.kanban-item-remove'));
+            if (card.hasClass('deleted')) {
+               delete_action.html('<i class="fas fa-trash-alt"></i>'+__('Purge'));
+            } else {
+               delete_action.html('<i class="fas fa-trash-alt"></i>'+__('Delete'));
+            }
+         });
+
          $(window).on('click', function(e) {
-            if (!$(e.target).hasClass('kanban-overflow-actions')) {
-               overflow_dropdown.css({
+            if (!$(e.target).hasClass('kanban-column-overflow-actions')) {
+               column_overflow_dropdown.css({
+                  display: 'none'
+               });
+            }
+            if (!$(e.target).hasClass('kanban-item-overflow-actions')) {
+               card_overflow_dropdown.css({
                   display: 'none'
                });
             }
@@ -558,6 +617,12 @@
             const column = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-column');
             // Hide that column
             hideColumn(getColumnIDFromElement(column));
+         });
+         $(self.element + ' .kanban-container').on('click', '.kanban-item-remove', function(e) {
+            // Get root dropdown, then the button that triggered it, and finally the card that the button is in
+            const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item').prop('id');
+            // Try to delete that card item
+            deleteCard(card, undefined, undefined);
          });
          $(self.element + ' .kanban-container').on('click', '.kanban-collapse-column', function(e) {
             self.toggleCollapseColumn(e.target.closest('.kanban-column'));
@@ -716,7 +781,7 @@
             });
          });
 
-         $(self.element + ' .kanban-container').on('click', '.kanban-item .kanban-item-header', function(e) {
+         $(self.element + ' .kanban-container').on('click', '.kanban-item .kanban-item-title', function(e) {
             e.preventDefault();
             const card = $(e.target).closest('.kanban-item');
             const [itemtype, items_id] = card.prop('id').split('-');
@@ -885,7 +950,7 @@
          const column_id = parseInt(getColumnIDFromElement(column['id']));
          if (self.allow_add_item && (self.limit_addcard_columns.length === 0 || self.limit_addcard_columns.includes(column_id))) {
             toolbar_el += "<i id='kanban_add_" + column['id'] + "' class='kanban-add pointer fas fa-plus' title='" + __('Add') + "'></i>";
-            toolbar_el += "<i id='kanban_overflow_actions' class='kanban-overflow-actions pointer fas fa-ellipsis-h' title='" + __('More') + "'></i>";
+            toolbar_el += "<i id='kanban_column_overflow_actions_" + column['id'] +"' class='kanban-column-overflow-actions pointer fas fa-ellipsis-h' title='" + __('More') + "'></i>";
          }
          toolbar_el += "</span>";
          return toolbar_el;
@@ -996,6 +1061,43 @@
                }
             },
             success: function() {
+               if (success) {
+                  success();
+               }
+            }
+         });
+      };
+
+      /**
+       * Delete a card
+       * @since x.x.x
+       * @param {string} card The ID of the card being deleted.
+       * @param {function} error Callback function called when the server reports an error.
+       * @param {function} success Callback function called when the server processes the request successfully.
+       */
+      const deleteCard = function(card, error, success) {
+         const [itemtype, items_id] = card.split('-', 2);
+         const card_obj = $('#'+card);
+         const force = card_obj.hasClass('deleted');
+         $.ajax({
+            type: "POST",
+            url: (self.ajax_root + "kanban.php"),
+            data: {
+               action: "delete_item",
+               itemtype: itemtype,
+               items_id: items_id,
+               force: force
+            },
+            contentType: 'application/json',
+            error: function() {
+               if (error) {
+                  error();
+               }
+            },
+            success: function() {
+               const column = card_obj.closest('.kanban-column');
+               card_obj.remove();
+               self.updateColumnCount(column);
                if (success) {
                   success();
                }
@@ -1764,8 +1866,11 @@
          const col_body = $(column_el).find('.kanban-body').first();
          const readonly = card['_readonly'] !== undefined && (card['_readonly'] === true || card['_readonly'] === 1);
          let card_el = `
-            <li id="${card['id']}" class="kanban-item ${readonly ? 'readonly' : ''}">
-                <div class="kanban-item-header" title="${card['title_tooltip']}">${card['title']}</div>
+            <li id="${card['id']}" class="kanban-item ${readonly ? 'readonly' : ''} ${card['is_deleted'] ? 'deleted' : ''}">
+                <div class="kanban-item-header">
+                    <span class="kanban-item-title" title="${card['title_tooltip']}">${card['title']}</span>
+                    <i class="kanban-item-overflow-actions fas fa-ellipsis-h pointer"></i>
+                </div>
                 <div class="kanban-item-content">${(card['content'] || '')}</div>
                 <div class="kanban-item-team">
          `;
