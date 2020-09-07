@@ -240,18 +240,20 @@ class Widget extends \CommonGLPI {
     * - string 'color': hex color of the widget
     * - string 'icon': font awesome class to display an icon side of the label
     * - string 'id': unique dom identifier
+    * - array  'filters': array of filter's id to apply classes on widget html
     *
     * @return string html of the widget
     */
    public static function bigNumber(array $params = []): string {
       $default = [
-         'number' => 0,
-         'url'    => '',
-         'label'  => '',
-         'alt'    => '',
-         'color'  => '',
-         'icon'   => '',
-         'id'     => 'bn_'.mt_rand(),
+         'number'  => 0,
+         'url'     => '',
+         'label'   => '',
+         'alt'     => '',
+         'color'   => '',
+         'icon'    => '',
+         'id'      => 'bn_'.mt_rand(),
+         'filters' => [],
       ];
       $p = array_merge($default, $params);
 
@@ -259,6 +261,8 @@ class Widget extends \CommonGLPI {
       $fg_color         = Toolbox::getFgColor($p['color']);
       $fg_hover_color   = Toolbox::getFgColor($p['color'], 15);
       $fg_hover_border  = Toolbox::getFgColor($p['color'], 30);
+
+      $class = count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
 
       $href = strlen($p['url'])
          ? "href='{$p['url']}'"
@@ -278,7 +282,7 @@ class Widget extends \CommonGLPI {
       </style>
       <a {$href}
          id="{$p['id']}"
-         class="card big-number"
+         class="card big-number $class"
          title="{$p['alt']}">
          <span class="content">$formatted_number</span>
          <div class="label">{$p['label']}</div>
@@ -313,6 +317,7 @@ HTML;
     * - string 'color': hex color of the widget
     * - string 'icon': font awesome class to display an icon side of the label
     * - string 'id': unique dom identifier
+    * - array  'filters': array of filter's id to apply classes on widget html
     *
     * @return string html of the widget
     */
@@ -326,6 +331,7 @@ HTML;
          'limit'        => 99999,
          'use_gradient' => false,
          'class'        => "multiple-numbers",
+         'filters'      => [],
          'rand'         => mt_rand(),
       ];
       $p = array_merge($default, $params);
@@ -340,6 +346,9 @@ HTML;
       array_splice($p['data'], $nb_lines);
 
       $fg_color = \Toolbox::getFgColor($p['color']);
+
+      $class = $p['class'];
+      $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
 
       $alphabet = range('a', 'z');
       $numbers_html = "";
@@ -412,7 +421,7 @@ HTML;
          {$palette_style}
       </style>
 
-      <div class="card {$p['class']}"
+      <div class="card $class"
            id="chart-{$p['rand']}"
            title="{$p['alt']}"
            style="background-color: {$p['color']}; color: {$fg_color}">
@@ -447,6 +456,7 @@ HTML;
     * - int    'limit': the number of slices
     * - bool 'donut': do we want a "holed" pie
     * - bool 'gauge': do we want an half pie
+    * - array  'filters': array of filter's id to apply classes on widget html
     *
     * @return string html of the widget
     */
@@ -461,6 +471,7 @@ HTML;
          'half'         => false,
          'use_gradient' => false,
          'limit'        => 99999,
+         'filters'      => [],
          'rand'         => mt_rand(),
       ];
       $p = array_merge($default, $params);
@@ -480,6 +491,7 @@ HTML;
       $class = "pie";
       $class.= $p['half'] ? " half": "";
       $class.= $p['donut'] ? " donut": "";
+      $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
 
       $no_data_html = "";
       if ($nodata) {
@@ -850,6 +862,7 @@ JAVASCRIPT;
     * - bool   'use_gradient': gradient or generic palette
     * - bool   'point_labels': display labels (for values) directly on graph
     * - int    'limit': the number of bars
+    * - array  'filters': array of filter's id to apply classes on widget html
     * @param array $labels title of the bars (if a single array is given, we have a single bar graph)
     * @param array $series values of the bar (if a single array is given, we have a single bar graph)
     *
@@ -873,6 +886,7 @@ JAVASCRIPT;
          'use_gradient' => false,
          'point_labels' => false,
          'limit'        => 99999,
+         'filters'      => [],
          'rand'         => mt_rand(),
       ];
       $p = array_merge($defaults, $params);
@@ -911,6 +925,7 @@ JAVASCRIPT;
       $class.= $p['distributed'] ? " distributed": "";
       $class.= $nb_series <= 10 ? " tab10": "";
       $class.= $nb_series > 10 ? " tab20": "";
+      $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
 
       $palette_style = "";
       if ($p['use_gradient']) {
@@ -1248,6 +1263,7 @@ JAVASCRIPT;
     * - bool   'use_gradient': gradient or generic palette
     * - bool   'point_labels': display labels (for values) directly on graph
     * - int    'limit': the number of lines
+    * - array  'filters': array of filter's id to apply classes on widget html
     * @param array $labels title of the lines (if a single array is given, we have a single line graph)
     * @param array $series values of the line (if a single array is given, we have a single line graph)
     *
@@ -1270,6 +1286,7 @@ JAVASCRIPT;
          'use_gradient' => false,
          'point_labels' => false,
          'limit'        => 99999,
+         'filters'      => [],
          'rand'         => mt_rand(),
       ];
       $p = array_merge($defaults, $params);
@@ -1295,6 +1312,7 @@ JAVASCRIPT;
       $class = "line";
       $class.= $p['area'] ? " area": "";
       $class.= $p['multiple'] ? " multiple": "";
+      $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
 
       $animation_duration = self::$animation_duration;
 
@@ -1512,6 +1530,7 @@ HTML;
     * - string 'icon': font awesome class to display an icon side of the label
     * - string 'id': unique dom identifier
     * - int    'limit': the number of displayed lines
+    * - array  'filters': array of filter's id to apply classes on widget html
     *
     * @return string html of the widget
     */
@@ -1526,6 +1545,7 @@ HTML;
          'itemtype'   => '',
          'limit'      => $_SESSION['glpilist_limit'],
          'rand'       => mt_rand(),
+         'filters'      => [],
       ];
       $p = array_merge($default, $params);
 
@@ -1540,6 +1560,8 @@ HTML;
       $href = strlen($p['url'])
          ? "href='{$p['url']}'"
          : "";
+
+      $class = count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
 
       // prepare search data
       $_GET['_in_modal'] = true;
@@ -1569,7 +1591,7 @@ HTML;
          }
       </style>
       <div
-         class="card search-table"
+         class="card search-table {$class}"
          id="{$id}"
          style="background-color: {$p['color']}; color: {$fg_color}">
          <div class='table-container'>
@@ -1597,6 +1619,7 @@ HTML;
          'limit'        => 99999,
          'class'        => "articles-list",
          'rand'         => mt_rand(),
+         'filters'      => [],
       ];
       $p = array_merge($default, $params);
       $default_entry = [
@@ -1610,6 +1633,9 @@ HTML;
       array_splice($p['data'], $nb_lines);
       $fg_color = \Toolbox::getFgColor($p['color']);
       $bg_color_2 = \Toolbox::getFgColor($p['color'], 5);
+
+      $class = $p['class'];
+      $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
 
       $i = 0;
       $list_html = "";
@@ -1648,7 +1674,15 @@ HTML;
          $i++;
       }
 
-      \Toolbox::logError($list_html);
+      $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
+      if ($nodata) {
+         $list_html = "<span class='line empty-card no-data'>
+            <span class='content'>
+               <i class='icon fas fa-exclamation-triangle'></i>
+            </span>
+            <span class='label'>".__('No data found')."</span>
+         <span>";
+      }
 
       $view_all = strlen($p['url'])
          ? "<a href='{$p['url']}'><i class='fas fa-eye' title='".__("See all")."'></i></a>"
@@ -1665,7 +1699,7 @@ HTML;
          }
       </style>
 
-      <div class="card {$p['class']}"
+      <div class="card {$class}"
            id="chart-{$p['rand']}"
            title="{$p['alt']}"
            style="background-color: {$p['color']}; color: {$fg_color}">

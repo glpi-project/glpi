@@ -1299,6 +1299,10 @@ class Html {
             Html::requireJs('gridstack');
          }
 
+         if (in_array('sortable', $jslibs)) {
+            Html::requireJs('sortable');
+         }
+
          if (in_array('tinymce', $jslibs)) {
             Html::requireJs('tinymce');
          }
@@ -2750,16 +2754,21 @@ JAVASCRIPT;
     *
     * @param string $name     name of the element
     * @param array  $options  array of possible options:
-    *      - value      : default value to display (default '')
-    *      - maybeempty : may be empty ? (true by default)
-    *      - canedit    :  could not modify element (true by default)
-    *      - min        :  minimum allowed date (default '')
-    *      - max        : maximum allowed date (default '')
-    *      - showyear   : should we set/diplay the year? (true by default)
-    *      - display    : boolean display of return string (default true)
-    *      - rand       : specific rand value (default generated one)
-    *      - yearrange  : set a year range to show in drop-down (default '')
-    *      - required   : required field (will add required attribute)
+    *      - value        : default value to display (default '')
+    *      - maybeempty   : may be empty ? (true by default)
+    *      - canedit      :  could not modify element (true by default)
+    *      - min          :  minimum allowed date (default '')
+    *      - max          : maximum allowed date (default '')
+    *      - showyear     : should we set/diplay the year? (true by default)
+    *      - display      : boolean display of return string (default true)
+    *      - calendar_btn : boolean display calendar icon (default true)
+    *      - clear_btn    : boolean display clear icon (default true)
+    *      - range        : boolean set the datepicket in range mode
+    *      - rand         : specific rand value (default generated one)
+    *      - yearrange    : set a year range to show in drop-down (default '')
+    *      - required     : required field (will add required attribute)
+    *      - placeholder  : text to display when input is empty
+    *      - on_change    : function to execute when date selection changed
     *
     * @return integer|string
     *    integer if option display=true (random part of elements id)
@@ -2769,18 +2778,24 @@ JAVASCRIPT;
       global $CFG_GLPI;
 
       $p = [
-         'value'      => '',
-         'maybeempty' => true,
-         'canedit'    => true,
-         'min'        => '',
-         'max'        => '',
-         'showyear'   => false,
-         'display'    => true,
-         'rand'       => mt_rand(),
-         'yearrange'  => '',
-         'multiple'   => false,
-         'size'       => 10,
-         'required'   => false,
+         'value'        => '',
+         'defaultDate'  => '',
+         'maybeempty'   => true,
+         'canedit'      => true,
+         'min'          => '',
+         'max'          => '',
+         'showyear'     => false,
+         'display'      => true,
+         'range'        => false,
+         'rand'         => mt_rand(),
+         'calendar_btn' => true,
+         'clear_btn'    => true,
+         'yearrange'    => '',
+         'multiple'     => false,
+         'size'         => 10,
+         'required'     => false,
+         'placeholder'  => '',
+         'on_change'    => '',
       ];
 
       foreach ($options as $key => $val) {
@@ -2795,20 +2810,28 @@ JAVASCRIPT;
       $disabled = !$p['canedit']
          ? " disabled='disabled'"
          : "";
-      $clear    = $p['maybeempty'] && $p['canedit']
+
+      $calendar_btn = $p['calendar_btn']
+         ? "<a class='input-button' data-toggle>
+               <i class='far fa-calendar-alt fa-lg pointer'></i>
+            </a>"
+         : "";
+      $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
          ? "<a data-clear  title='".__s('Clear')."'>
                <i class='fa fa-times-circle pointer'></i>
             </a>"
          : "";
 
+      $mode = $p['range']
+         ? "mode: 'range',"
+         : "";
+
       $output = <<<HTML
       <div class="no-wrap flatpickr" id="showdate{$p['rand']}">
-         <input type="text" name="{$name}" value="{$p['value']}" size="{$p['size']}"
-                {$required} {$disabled} data-input>
-         <a class="input-button" data-toggle>
-            <i class="far fa-calendar-alt fa-lg pointer"></i>
-         </a>
-         $clear
+         <input type="text" name="{$name}" size="{$p['size']}"
+                {$required} {$disabled} data-input placeholder="{$p['placeholder']}">
+         $calendar_btn
+         $clear_btn
       </div>
 HTML;
 
@@ -2824,9 +2847,14 @@ HTML;
          ? "mode: 'multiple',"
          : "";
 
+      $value = is_array($p['value'])
+         ? json_encode($p['value'])
+         : "'{$p['value']}'";
+
       $js = <<<JS
       $(function() {
          $("#showdate{$p['rand']}").flatpickr({
+            defaultDate: {$value},
             altInput: true, // Show the user a readable date (as per altFormat), but return something totally different to the server.
             altFormat: '{$date_format}',
             dateFormat: 'Y-m-d',
@@ -2836,6 +2864,10 @@ HTML;
             {$min_attr}
             {$max_attr}
             {$multiple_attr}
+            {$mode}
+            onChange: function(selectedDates, dateStr, instance) {
+               {$p['on_change']}
+            }
          });
       });
 JS;
@@ -2902,6 +2934,7 @@ JS;
     *   - display    : boolean display or get string (default true)
     *   - rand       : specific random value (default generated one)
     *   - required   : required field (will add required attribute)
+    *   - on_change    : function to execute when date selection changed
     *
     * @return integer|string
     *    integer if option display=true (random part of elements id)
@@ -2923,6 +2956,7 @@ JS;
          'display'    => true,
          'rand'       => mt_rand(),
          'required'   => false,
+         'on_change'  => '',
       ];
 
       foreach ($options as $key => $val) {
@@ -3006,6 +3040,9 @@ HTML;
             minuteIncrement: "{$p['timestep']}",
             {$min_attr}
             {$max_attr}
+            onChange: function(selectedDates, dateStr, instance) {
+               {$p['on_change']}
+            }
          });
       });
 JS;
@@ -3032,6 +3069,7 @@ JS;
     *   - display    : boolean display or get string (default true)
     *   - rand       : specific random value (default generated one)
     *   - required   : required field (will add required attribute)
+    *   - on_change  : function to execute when date selection changed
     * @return void
     */
    public static function showTimeField($name, $options = []) {
@@ -3047,6 +3085,7 @@ JS;
          'display'    => true,
          'rand'       => mt_rand(),
          'required'   => false,
+         'on_change'  => '',
       ];
 
       foreach ($options as $key => $val) {
@@ -3113,7 +3152,10 @@ HTML;
             noCalendar: true, // only time picker
             enableSeconds: true,
             locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
-            minuteIncrement: "{$p['timestep']}"
+            minuteIncrement: "{$p['timestep']}",
+            onChange: function(selectedDates, dateStr, instance) {
+               {$p['on_change']}
+            }
          });
       });
 JS;
@@ -4720,6 +4762,14 @@ JS;
          $width = $params["width"];
          unset($params["width"]);
       }
+
+      $placeholder = $params['placeholder'] ?? '';
+      $allowclear =  "false";
+      if (strlen($placeholder) > 0 && !$params['display_emptychoice']) {
+         $allowclear = "true";
+      }
+
+      unset($params['placeholder']);
       unset($params['value']);
       unset($params['valuename']);
 
@@ -4742,8 +4792,13 @@ JS;
          $options['multiple'] = 'multiple';
          $options['selected'] = $params['values'];
       } else {
+         $values = [];
+
          // simple select (multiple = no)
-         $values = ["$value" => $valuename];
+         if ((isset($params['display_emptychoice']) && $params['display_emptychoice'])
+             || $value > 0) {
+            $values = ["$value" => $valuename];
+         }
       }
 
       // display select tag
@@ -4763,6 +4818,8 @@ JS;
 
          $('#$field_id').select2({
             width: '$width',
+            placeholder: '$placeholder',
+            allowClear: $allowclear,
             minimumInputLength: 0,
             quietMillis: 100,
             dropdownAutoWidth: true,
@@ -5158,7 +5215,7 @@ JAVASCRIPT;
     *
     * @return string
     */
-   static function select($name, array $values, $options = []) {
+   static function select($name, array $values = [], $options = []) {
       $selected = false;
       if (isset($options['selected'])) {
          $selected = $options['selected'];
@@ -6447,6 +6504,9 @@ JAVASCRIPT;
             break;
          case 'gridstack':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';
+            break;
+         case 'sortable':
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/sortable.js';
             break;
          case 'rack':
             $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';

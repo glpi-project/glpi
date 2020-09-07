@@ -108,6 +108,16 @@ switch ($_REQUEST['action']) {
       echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
       break;
 
+   case 'display_add_filter':
+      $grid->displayFilterForm($_REQUEST);
+      break;
+   case 'get_dashboard_filters':
+      echo $grid->getFiltersSetHtml($_REQUEST['filters'] ?? []);
+      break;
+   case 'get_filter':
+      echo $grid->getFilterHtml($_REQUEST['filter_id']);
+      break;
+
    case 'get_dashboard_items':
       echo $grid->getGridItemsHtml(true, $_REQUEST['embed'] ?? false);
       break;

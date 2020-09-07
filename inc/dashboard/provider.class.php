@@ -47,14 +47,24 @@ class Provider extends \CommonGLPI {
     *
     * @param CommonDBTM|null object to count
     *
+    * @param array $params default values for
+    * - 'apply_filters' values from dashboard filters
+    *
     * @return array :
     * - 'number'
     * - 'url'
     * - 'label'
     * - 'icon'
     */
-   static function bigNumberItem(\CommonDBTM $item = null): array {
+   static function bigNumberItem(\CommonDBTM $item = null, array $params = []): array {
       $DB = \DBConnection::getReadConnection();
+
+      $default_params = [
+         'apply_filters'  => [],
+      ];
+      $params = array_merge($default_params, $params);
+
+      $i_table = $item::getTable();
 
       $criteria = [];
       if (isset($item->fields['is_deleted'])) {
@@ -69,9 +79,11 @@ class Provider extends \CommonGLPI {
          $criteria += getEntitiesRestrictCriteria($item::getTable());
       }
 
+      $criteria += self::getFiltersCriteria($i_table, $params['apply_filters']);
+
       $iterator = $DB->request([
          'COUNT'  => 'cpt',
-         'FROM'   => $item::getTable(),
+         'FROM'   => $i_table,
          'WHERE'  => $criteria
       ]);
 
@@ -100,7 +112,7 @@ class Provider extends \CommonGLPI {
          if (is_subclass_of($itemtype, 'CommonDBTM')) {
             $item = new $itemtype;
             $item->getEmpty();
-            return self::bigNumberItem($item);
+            return self::bigNumberItem($item, $arguments[0] ?? []);
          }
       }
 
@@ -126,7 +138,7 @@ class Provider extends \CommonGLPI {
          if (is_subclass_of($itemtype, 'CommonDBTM')) {
             $item = new $itemtype;
             $item->getEmpty();
-            return self::articleListItem($item);
+            return self::articleListItem($item, $arguments[0] ?? []);
          }
       }
    }
@@ -148,6 +160,7 @@ class Provider extends \CommonGLPI {
     * @param array $params default values for
     * - 'title' of the card
     * - 'icon' of the card
+    * - 'apply_filters' values from dashboard filters
     *
     * @return array :
     * - 'number'
@@ -162,8 +175,9 @@ class Provider extends \CommonGLPI {
       $DBread = \DBConnection::getReadConnection();
 
       $default_params = [
-         'label' => "",
-         'icon'  => \Ticket::getIcon(),
+         'label'         => "",
+         'icon'          => \Ticket::getIcon(),
+         'apply_filters' => [],
       ];
       $params = array_merge($default_params, $params);
 
@@ -181,9 +195,10 @@ class Provider extends \CommonGLPI {
       $table = \Ticket::getTable();
       $query_criteria = [
          'FROM'    => $table,
-         'WHERE'   => getEntitiesRestrictCriteria($table) + [
+         'WHERE'   => [
             "$table.is_deleted" => 0,
-         ],
+         ] + getEntitiesRestrictCriteria($table)
+           + self::getFiltersCriteria($table, $params['apply_filters']),
          'GROUPBY' => "$table.id"
       ];
 
@@ -359,6 +374,7 @@ class Provider extends \CommonGLPI {
     * - 'searchoption_id' id corresponding to FK search option
     * - 'limit' max data to return
     * - 'join_key' LEFT, INNER, etc JOIN
+    * - 'apply_filters' values from dashboard filters
     *
     * @return array :
     * - 'data': [
@@ -394,6 +410,7 @@ class Provider extends \CommonGLPI {
          'icon'            => $fk_item::getIcon() ?? $item::getIcon(),
          'limit'           => 50,
          'join_key'        => 'LEFT JOIN',
+         'apply_filters'   => [],
       ];
       $params = array_merge($default_params, $params);
 
@@ -413,6 +430,8 @@ class Provider extends \CommonGLPI {
       if ($item->isEntityAssign()) {
          $where += getEntitiesRestrictCriteria($c_table, '', '', $item->maybeRecursive());
       }
+
+      $where += self::getFiltersCriteria($c_table, $params['apply_filters']);
 
       $iterator = $DB->request([
          'SELECT'    => [
@@ -474,11 +493,32 @@ class Provider extends \CommonGLPI {
    }
 
 
-   public static function articleListItem(\CommonDBTM $item = null): array {
+   /**
+    * Get a list of article for an compatible item (with date,name,text fields)
+    *
+    * @param \CommonDBTM $item the itemtype to list
+    * @param array   $params default values for
+    * - 'icon' of the card
+    * - 'apply_filters' values from dashboard filters
+    *
+    * @return array
+    */
+   public static function articleListItem(\CommonDBTM $item = null, array $params = []): array {
       $DB = \DBConnection::getReadConnection();
-      $date_field_exists = $DB->fieldExists($item::getTable(), 'date');
 
-      $raw_data = $item->find([], $date_field_exists ? 'date DESC': '');
+      $default_params = [
+         'icon'          => $item::getIcon(),
+         'apply_filters' => [],
+      ];
+      $params = array_merge($default_params, $params);
+
+      $i_table           = $item::getTable();
+      $date_field_exists = $DB->fieldExists($i_table, 'date');
+
+      $criteria = [];
+      $criteria += self::getFiltersCriteria($i_table, $params['apply_filters']);
+
+      $raw_data = $item->find($criteria, $date_field_exists ? 'date DESC': '');
       $data = [];
       foreach ($raw_data as $line) {
          $data[] = [
@@ -491,6 +531,12 @@ class Provider extends \CommonGLPI {
       }
 
       $nb_items = count($data);
+      if ($nb_items === 0) {
+         $data = [
+            'nodata' => true
+         ];
+      }
+
       return [
          'data'   => $data,
          'number' => $nb_items,
@@ -507,24 +553,31 @@ class Provider extends \CommonGLPI {
     * @param array $params default values for
     * - 'title' of the card
     * - 'icon' of the card
+    * - 'apply_filters' values from dashboard filters
     *
     * @return array
     */
    public static function ticketsOpened(array $params = []): array {
       $DB = \DBConnection::getReadConnection();
       $default_params = [
-         'label' => "",
-         'icon'  => \Ticket::getIcon(),
+         'label'         => "",
+         'icon'          => \Ticket::getIcon(),
+         'apply_filters' => [],
       ];
       $params = array_merge($default_params, $params);
 
       $t_table = \Ticket::getTable();
+
+      $criteria = [];
+      $criteria += self::getFiltersCriteria($t_table, $params['apply_filters']);
+
       $iterator = $DB->request([
          'SELECT' => [
             'COUNT' => 'id as nb_tickets',
             new \QueryExpression("DATE_FORMAT(".$DB->quoteName("date").", '%Y-%m') AS ticket_month")
          ],
-         'FROM' => $t_table,
+         'FROM'    => $t_table,
+         'WHERE'   => $criteria,
          'GROUPBY' => 'ticket_month',
          'ORDER'   => 'ticket_month ASC'
       ]);
@@ -575,13 +628,15 @@ class Provider extends \CommonGLPI {
     * @param array $params default values for
     * - 'title' of the card
     * - 'icon' of the card
+    * - 'apply_filters' values from dashboard filters
     *
     * @return array
     */
    public static function getTicketsEvolution(array $params = []): array {
       $default_params = [
-         'label' => "",
-         'icon'  => \Ticket::getIcon(),
+         'label'         => "",
+         'icon'          => \Ticket::getIcon(),
+         'apply_filters' => [],
       ];
       $params = array_merge($default_params, $params);
 
@@ -589,12 +644,20 @@ class Provider extends \CommonGLPI {
       $begin  = date("Y-m-d", mktime(1, 0, 0, (int)date("m"), (int)date("d"), $year));
       $end    = date("Y-m-d");
 
-      $total = \Stat::constructEntryValues('Ticket', "inter_total", $begin, $end);
-      $monthsyears = array_keys($total);
+      if (isset($params['apply_filters']['dates'])
+      && count($params['apply_filters']['dates']) == 2) {
+         $begin = date("Y-m-d", strtotime($params['apply_filters']['dates'][0]));
+         $end   = date("Y-m-d", strtotime($params['apply_filters']['dates'][1]));
+         unset($params['apply_filters']['dates']);
+      }
+
+      $t_table   = \Ticket::getTable();
+      $add_where = self::getFiltersCriteria($t_table, $params['apply_filters']);
+
       $series = [
-         [
-            'name' => _nx('ticket', 'Opened', 'Opened', \Session::getPluralNumber()),
-            'data' => array_values($total),
+
+         'inter_total' => [
+            'name'   => _nx('ticket', 'Opened', 'Opened', \Session::getPluralNumber()),
             'search' => [
                'criteria' => [
                   [
@@ -611,9 +674,9 @@ class Provider extends \CommonGLPI {
                ],
                'reset' => 'reset'
             ]
-         ], [
-            'name' => _nx('ticket', 'Solved', 'Solved', \Session::getPluralNumber()),
-            'data' => array_values(\Stat::constructEntryValues('Ticket', "inter_solved", $begin, $end)),
+         ],
+         'inter_solved' => [
+            'name'   => _nx('ticket', 'Solved', 'Solved', \Session::getPluralNumber()),
             'search' => [
                'criteria' => [
                   [
@@ -630,9 +693,9 @@ class Provider extends \CommonGLPI {
                ],
                'reset' => 'reset'
             ]
-         ], [
-            'name' => __('Late'),
-            'data' => array_values(\Stat::constructEntryValues('Ticket', "inter_solved_late", $begin, $end)),
+         ],
+         'inter_solved_late' => [
+            'name'   => __('Late'),
             'search' => [
                'criteria' => [
                   [
@@ -654,9 +717,9 @@ class Provider extends \CommonGLPI {
                ],
                'reset' => 'reset'
             ]
-         ], [
-            'name' => __('Closed'),
-            'data' => array_values(\Stat::constructEntryValues('Ticket', "inter_closed", $begin, $end)),
+         ],
+         'inter_closed' => [
+            'name'   => __('Closed'),
             'search' => [
                'criteria' => [
                   [
@@ -676,11 +739,26 @@ class Provider extends \CommonGLPI {
          ],
       ];
 
-      foreach ($series as &$serie) {
-         $numbers = $serie['data'];
-         $serie['data'] = [];
+      $i = 0;
+      $monthsyears = [];
+      foreach ($series as $stat_type => &$serie) {
+         $values = \Stat::constructEntryValues(
+            'Ticket',
+            $stat_type,
+            $begin,
+            $end,
+            "",
+            "",
+            "",
+            $add_where
+         );
 
-         foreach ($numbers as $index => $number) {
+         if ($i === 0) {
+            $monthsyears = array_keys($values);
+         }
+         $values = array_values($values);
+
+         foreach ($values as $index => $number) {
             $current_monthyear = $monthsyears[$index];
             list($start_day, $end_day) = self::formatMonthyearDates($current_monthyear);
             $serie['search']['criteria'][0]['value'] = $start_day;
@@ -692,13 +770,13 @@ class Provider extends \CommonGLPI {
             ];
          }
 
-         unset($serie['search']);
+         $i++;
       }
 
       return [
          'data'  => [
             'labels' => $monthsyears,
-            'series' => $series,
+            'series' => array_values($series),
          ],
          'label' => $params['label'],
          'icon'  => $params['icon'],
@@ -712,6 +790,7 @@ class Provider extends \CommonGLPI {
     * @param array $params default values for
     * - 'title' of the card
     * - 'icon' of the card
+    * - 'apply_filters' values from dashboard filters
     *
     * @return array
     */
@@ -719,15 +798,16 @@ class Provider extends \CommonGLPI {
       $DB = \DBConnection::getReadConnection();
 
       $default_params = [
-         'label' => "",
-         'icon'  => \Ticket::getIcon(),
+         'label'          => "",
+         'icon'           => \Ticket::getIcon(),
+         'apply_filters'  => [],
       ];
       $params = array_merge($default_params, $params);
 
       $statuses = \Ticket::getAllStatusArray();
+      $t_table  = \Ticket::getTable();
 
-      $t_table = \Ticket::getTable();
-      $iterator = $DB->request([
+      $criteria = [
          'DISTINCT' => true,
          'SELECT'   => [
             new \QueryExpression(
@@ -755,10 +835,12 @@ class Provider extends \CommonGLPI {
          'FROM'     => $t_table,
          'WHERE'    => [
             "$t_table.is_deleted" => 0,
-         ] + getEntitiesRestrictCriteria($t_table),
+         ] + getEntitiesRestrictCriteria($t_table)
+           + self::getFiltersCriteria($t_table, $params['apply_filters']),
          'ORDER'   => 'period ASC',
          'GROUP'    => ['period']
-      ]);
+      ];
+      $iterator = $DB->request($criteria);
 
       $s_criteria = [
          'criteria' => [
@@ -830,6 +912,7 @@ class Provider extends \CommonGLPI {
     * @param array $params default values for
     * - 'title' of the card
     * - 'icon' of the card
+    * - 'apply_filters' values from dashboard filters
     *
     * @return array
     */
@@ -839,8 +922,9 @@ class Provider extends \CommonGLPI {
    ):array {
       $DBread = \DBConnection::getReadConnection();
       $default_params = [
-         'label' => "",
-         'icon'  => null,
+         'label'         => "",
+         'icon'          => null,
+         'apply_filters' => [],
       ];
       $params = array_merge($default_params, $params);
 
@@ -854,7 +938,7 @@ class Provider extends \CommonGLPI {
 
       $where = [
          "$t_table.is_deleted" => 0,
-      ];
+      ] + self::getFiltersCriteria($t_table, $params['apply_filters']);
 
       $case_array = explode('_', $case);
       if ($case_array[0] == 'user') {
@@ -954,15 +1038,26 @@ class Provider extends \CommonGLPI {
    }
 
 
+   /**
+    * get average stats (takeintoaccoutn, solve/close delay, waiting) of ticket by month
+    *
+    * @param array $params default values for
+    * - 'title' of the card
+    * - 'icon' of the card
+    * - 'apply_filters' values from dashboard filters
+    *
+    * @return array
+    */
    public static function averageTicketTimes(array $params = []) {
       $DBread = \DBConnection::getReadConnection();
       $default_params = [
-         'label' => "",
-         'icon'  => "fas fa-stopwatch",
+         'label'         => "",
+         'icon'          => "fas fa-stopwatch",
+         'apply_filters' => [],
       ];
       $params = array_merge($default_params, $params);
 
-      $t_table = \Ticket::getTable();
+      $t_table  = \Ticket::getTable();
       $iterator = $DBread->request([
          'SELECT' => [
             new \QueryExpression("DATE_FORMAT(".$DBread->quoteName("date").", '%Y-%m') AS period"),
@@ -974,7 +1069,8 @@ class Provider extends \CommonGLPI {
          'FROM' => $t_table,
          'WHERE' => [
             'is_deleted' => 0,
-         ] + getEntitiesRestrictCriteria($t_table),
+         ] + getEntitiesRestrictCriteria($t_table)
+           + self::getFiltersCriteria($t_table, $params['apply_filters']),
          'ORDER' => 'period ASC',
          'GROUP' => ['period']
       ]);
@@ -1016,10 +1112,21 @@ class Provider extends \CommonGLPI {
    }
 
 
+   /**
+    * get multiple count of ticket by status and month
+    *
+    * @param array $params default values for
+    * - 'title' of the card
+    * - 'icon' of the card
+    * - 'apply_filters' values from dashboard filters
+    *
+    * @return array
+    */
    public static function getTicketSummary(array $params = []) {
       $default_params = [
-         'label'           => "",
-         'icon'            => "",
+         'label'         => "",
+         'icon'          => "",
+         'apply_filters' => [],
       ];
       $params = array_merge($default_params, $params);
 
@@ -1074,6 +1181,68 @@ class Provider extends \CommonGLPI {
       $end_day   = date("Y-m-d H:i:s", strtotime("first day of next month", $monthtime));
 
       return [$start_day, $end_day];
+   }
+
+
+   private static function getFiltersCriteria(string $table = "", array $apply_filters = []) {
+      $DB = \DBConnection::getReadConnection();
+      $criteria = [];
+
+      if ($DB->fieldExists($table, 'date')
+          && isset($apply_filters['dates'])
+          && count($apply_filters['dates']) == 2) {
+         $criteria += self::getDatesCriteria("$table.date", $apply_filters['dates']);
+      }
+      if ($DB->fieldExists($table, 'date_mod')
+          && isset($apply_filters['dates_mod'])
+          && count($apply_filters['dates_mod']) == 2) {
+         $criteria += self::getDatesCriteria("$table.date_mod", $apply_filters['dates_mod']);
+      }
+
+      if ($DB->fieldExists($table, 'itilcategories_id')
+          && isset($apply_filters['itilcategory'])
+          && (int) $apply_filters['itilcategory'] > 0) {
+         $criteria += [
+            "$table.itilcategories_id" => (int) $apply_filters['itilcategory']
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'requesttypes_id')
+          && isset($apply_filters['requesttype'])
+          && (int) $apply_filters['requesttype'] > 0) {
+         $criteria += [
+            "$table.requesttypes_id" => (int) $apply_filters['requesttype']
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'locations_id')
+          && isset($apply_filters['location'])
+          && (int) $apply_filters['location'] > 0) {
+         $criteria += [
+            "$table.locations_id" => (int) $apply_filters['location']
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'manufacturers_id')
+          && isset($apply_filters['manufacturer'])
+          && (int) $apply_filters['manufacturer'] > 0) {
+         $criteria += [
+            "$table.manufacturers_id" => (int) $apply_filters['manufacturer']
+         ];
+      }
+
+      return $criteria;
+   }
+
+
+   private static function getDatesCriteria(string $field = "", array $dates = []): array {
+      $begin = strtotime($dates[0]);
+      $end   = strtotime($dates[1]);
+
+      return [
+         [$field => ['>=', date('Y-m-d', $begin)]],
+         [$field => ['<=', date('Y-m-d', $end)]],
+      ];
    }
 
 }
