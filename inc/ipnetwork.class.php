@@ -975,9 +975,22 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             if ($createRow) {
                $row = $row->createRow();
             }
+
+            $address = $network->getAddress();
+            $netmask = $network->getNetmask();
+
+            // Stop if we failed to retrieve address or netmask
+            if (!$address || !$netmask) {
+               continue;
+            }
+
             //TRANS: %1$s is address, %2$s is netmask
-            $content = sprintf(__('%1$s / %2$s'), $network->getAddress()->getTextual(),
-                               $network->getNetmask()->getTextual());
+            $content = sprintf(
+               __('%1$s / %2$s'),
+               $address->getTextual(),
+               $netmask->getTextual()
+            );
+
             if ($network->fields['addressable'] == 1) {
                $content = "<span class='b'>".$content."</span>";
             }
