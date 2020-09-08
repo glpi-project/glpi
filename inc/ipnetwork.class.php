@@ -971,17 +971,16 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       foreach (self::searchNetworksContainingIP($item) as $networks_id) {
          if ($network->getFromDB($networks_id)) {
-
-            if ($createRow) {
-               $row = $row->createRow();
-            }
-
             $address = $network->getAddress();
             $netmask = $network->getNetmask();
 
             // Stop if we failed to retrieve address or netmask
             if (!$address || !$netmask) {
                continue;
+            }
+
+            if ($createRow) {
+               $row = $row->createRow();
             }
 
             //TRANS: %1$s is address, %2$s is netmask
