@@ -219,7 +219,7 @@ class DeviceGraphicCard extends CommonDevice {
          'id'                 => '13',
          'table'              => 'glpi_devicegraphiccards',
          'field'              => 'designation',
-         'name'               => __('Graphics card'),
+         'name'               => static::getTypeName(1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',

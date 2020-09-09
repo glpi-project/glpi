@@ -640,7 +640,7 @@ class Item_OperatingSystem extends CommonDBRelation {
             'OperatingSystemVersion'      => _n('Version', 'Versions', 1),
             'OperatingSystemArchitecture' => _n('Architecture', 'Architectures', 1),
             'OperatingSystemKernel'       => OperatingSystemKernel::getTypeName(1),
-            'OperatingSystemKernelVersion'=> __('Kernel version'),
+            'OperatingSystemKernelVersion'=> OperatingSystemKernelVersion::getTypeName(1),
             'OperatingSystemEdition'      => _n('Edition', 'Editions', 1)
          ], [
             'display_emptychoice'   => true,

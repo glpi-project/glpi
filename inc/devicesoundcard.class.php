@@ -144,7 +144,7 @@ class DeviceSoundCard extends CommonDevice {
          'id'                 => '12',
          'table'              => 'glpi_devicesoundcards',
          'field'              => 'designation',
-         'name'               => __('Soundcard'),
+         'name'               => static::getTypeName(1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',

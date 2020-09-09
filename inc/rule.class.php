@@ -452,7 +452,7 @@ class Rule extends CommonDBTM {
          }
 
          $menu['dictionnary']['options']['os_version']['title']
-                           = __('Version of the operating system');
+                           = OperatingSystemVersion::getTypeName(1);
          $menu['dictionnary']['options']['os_version']['page']
                            = '/front/ruledictionnaryoperatingsystemversion.php';
          $menu['dictionnary']['options']['os_version']['links']['search']
@@ -464,7 +464,7 @@ class Rule extends CommonDBTM {
          }
 
          $menu['dictionnary']['options']['os_arch']['title']
-                           = __('Operating system architecture');
+                           = OperatingSystemArchitecture::getTypeName(1);
          $menu['dictionnary']['options']['os_arch']['page']
                            = '/front/ruledictionnaryoperatingsystemarchitecture.php';
          $menu['dictionnary']['options']['os_arch']['links']['search']
