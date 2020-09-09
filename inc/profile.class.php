@@ -1939,7 +1939,7 @@ class Profile extends CommonDBTM {
          'id'                 => '30',
          'table'              => 'glpi_profilerights',
          'field'              => 'rights',
-         'name'               => __('Contact')." / ".__('Supplier'),
+         'name'               => __('Contact')." / ".Supplier::getTypeName(1),
          'datatype'           => 'right',
          'rightclass'         => 'Contact',
          'rightname'          => 'contact_entreprise',

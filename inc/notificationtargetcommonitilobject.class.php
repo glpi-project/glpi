@@ -738,7 +738,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::RECIPIENT, __('Writer'));
       } else if ($event!='alertnotclosed') {
          $this->addTarget(Notification::RECIPIENT, __('Writer'));
-         $this->addTarget(Notification::SUPPLIER, __('Supplier'));
+         $this->addTarget(Notification::SUPPLIER, Supplier::getTypeName(1));
          $this->addTarget(Notification::SUPERVISOR_ASSIGN_GROUP,
                           __('Manager of the group in charge of the ticket'));
          $this->addTarget(Notification::ASSIGN_GROUP_WITHOUT_SUPERVISOR,
@@ -1462,7 +1462,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.category'                   => __('Category'),
                     $objettype.'.suppliers'             => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
                     'supplier.id'                       => __('Supplier ID'),
-                    'supplier.name'                     => __('Supplier'),
+                    'supplier.name'                     => Supplier::getTypeName(1),
                     'supplier.phone'                    => Phone::getTypeName(1),
                     'supplier.fax'                      => __('Fax'),
                     'supplier.website'                  => __('Website'),

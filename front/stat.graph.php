@@ -93,7 +93,7 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Supplier'),
+      $title   = sprintf(__('%1$s: %2$s'), Supplier::getTypeName(1),
                          $item->getAssignName($_GET["id"], 'Supplier', $showuserlink));
       break;
 

@@ -256,7 +256,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          $default_email = $supplier->fields['email'];
       }
 
-      echo "<tr class='tab_bg_2'><td>".__('Supplier')."</td>";
+      echo "<tr class='tab_bg_2'><td>".Supplier::getTypeName(1)."</td>";
       echo "<td>".$supplier->getName()."</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Email Followup')."</td>";

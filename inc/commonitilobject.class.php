@@ -3978,7 +3978,7 @@ abstract class CommonITILObject extends CommonDBTM {
                 "<span class='sr-only'>$icontitle</span>";
 
          case 'supplier' :
-            $icontitle = __('Supplier');
+            $icontitle = Supplier::getTypeName(1);
             return "<i class='fas fa-dolly' alt=\"$icontitle\" title=\"$icontitle\"></i>";
 
       }
@@ -4115,7 +4115,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($withsupplier
           && ($type == CommonITILActor::ASSIGN)) {
-         $types['supplier'] = __('Supplier');
+         $types['supplier'] = Supplier::getTypeName(1);
       }
 
       $typename = static::getActorFieldNameType($type);
@@ -6490,7 +6490,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<li><a href='#' class='far fa-comment pointer' data-type='ITILFollowup' title='".__s("Followup").
          "'><span class='sr-only'>" . __('Followup') . "</span></a></li>";
       echo "<li><a href='#' class='far fa-check-square pointer' data-type='ITILTask' title='".__s("Task").
-         "'><span class='sr-only'>" . __('Task') . "</span></a></li>";
+         "'><span class='sr-only'>" . _n('Task', 'Tasks', 1) . "</span></a></li>";
       echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__sn('Document', 'Documents', 1).
          "'><span class='sr-only'>" . Document::getTypeName(1) . "</span></a></li>";
       if (($objType === "Ticket") or ($objType === "Change")) {
@@ -6658,7 +6658,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($canadd_task) {
          echo "<li class='task' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"$taskClass\");'>"
-              ."<i class='far fa-check-square'></i>".__("Task")."</li>";
+              ."<i class='far fa-check-square'></i>"._n('Task', 'Tasks', 1)."</li>";
       }
       if ($canadd_document) {
          echo "<li class='document' onclick='".

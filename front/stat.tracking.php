@@ -107,7 +107,7 @@ $items = [_n('Requester', 'Requesters', 1)       => $requester,
                                               'groups_tree_assign'
                                                    => ['title' => __('Group tree')],
                                               'suppliers_id_assign'
-                                                   => ['title' => __('Supplier')]]];
+                                                   => ['title' => Supplier::getTypeName(1)]]];
 
 $values = [];
 foreach ($items as $label => $tab) {

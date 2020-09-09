@@ -1836,7 +1836,7 @@ class Config extends CommonDBTM {
       echo "<td><label for='proxy_name'>" . __('Server') . "</label></td>";
       echo "<td><input type='text' name='proxy_name' id='proxy_name' value='".$CFG_GLPI["proxy_name"]."'></td>";
       //TRANS: Proxy port
-      echo "<td><label for='proxy_port'>" . __('Port') . "</label></td>";
+      echo "<td><label for='proxy_port'>" . _n('Port', 'Ports', 1) . "</label></td>";
       echo "<td><input type='text' name='proxy_port' id='proxy_port' value='".$CFG_GLPI["proxy_port"]."'></td>";
       echo "</tr>";
 

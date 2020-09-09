@@ -160,7 +160,7 @@ class Contact_Supplier extends CommonDBRelation{
          $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_bottom .= "</th>";
       }
-      $header_end .= "<th>".__('Supplier')."</th>";
+      $header_end .= "<th>".Supplier::getTypeName(1)."</th>";
       $header_end .= "<th>".Entity::getTypeName(1)."</th>";
       $header_end .= "<th>".__('Third party type')."</th>";
       $header_end .= "<th>". Phone::getTypeName(1)."</th>";

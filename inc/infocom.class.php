@@ -1110,7 +1110,7 @@ class Infocom extends CommonDBChild {
             echo "<tr><th colspan='4'>".__('Financial and administrative information')."</th></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Supplier')."</td>";
+            echo "<td>".Supplier::getTypeName(1)."</td>";
             echo "<td>";
             if ($withtemplate == 2) {
                echo Dropdown::getDropdownName("glpi_suppliers", $ic->fields["suppliers_id"]);
@@ -1526,7 +1526,7 @@ class Infocom extends CommonDBChild {
          'table'              => 'glpi_suppliers',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Supplier'),
+         'name'               => Supplier::getTypeName(1),
          'forcegroupby'       => true,
          'joinparams'         => $complexjoinparams
       ];
@@ -1741,7 +1741,7 @@ class Infocom extends CommonDBChild {
          'id'                 => '9',
          'table'              => 'glpi_suppliers',
          'field'              => 'name',
-         'name'               => __('Supplier'),
+         'name'               => Supplier::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

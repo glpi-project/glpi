@@ -1478,7 +1478,7 @@ class Auth extends CommonGLPI {
          echo "</td>";
          echo "</tr>\n";
          //TRANS: for CAS SSO system
-         echo "<tr class='tab_bg_2'><td class='center'>" . __('Port') . "</td>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . _n('Port', 'Ports', 1) . "</td>";
          echo "<td><input type='text' name='cas_port' value=\"".$CFG_GLPI["cas_port"]."\"></td></tr>\n";
          //TRANS: for CAS SSO system
          echo "<tr class='tab_bg_2'><td class='center'>" . __('Root directory (optional)')."</td>";

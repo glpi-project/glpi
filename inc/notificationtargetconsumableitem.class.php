@@ -80,7 +80,7 @@ class NotificationTargetConsumableItem extends NotificationTarget {
 
       $tags = ['consumable.action'    => _n('Event', 'Events', 1),
                     'consumable.reference' => __('Reference'),
-                    'consumable.item'      => __('Consumable model'),
+                    'consumable.item'      => ConsumableItem::getTypeName(1),
                     'consumable.remaining' => __('Remaining'),
                     'consumable.entity'    => Entity::getTypeName(1)];
 
