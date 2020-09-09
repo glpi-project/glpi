@@ -40,7 +40,7 @@ echo "<div class='center'>";
 
 $optgroup = Dropdown::getStandardDropdownItemTypes();
 if (count($optgroup) > 0) {
-   Dropdown::showItemTypeMenu(_n('Dropdown', 'Dropdowns', 2), $optgroup);
+   Dropdown::showItemTypeMenu(_n('Dropdown', 'Dropdowns', Session::getPluralNumber()), $optgroup);
    Dropdown::showItemTypeList($optgroup);
 } else {
    Html::displayRightError();

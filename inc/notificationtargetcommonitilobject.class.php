@@ -1472,7 +1472,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'supplier.town'                     => __('City'),
                     'supplier.state'                    => _x('location', 'State'),
                     'supplier.country'                  => __('Country'),
-                    'supplier.comments'                 => _n('Comment', 'Comments', 2),
+                    'supplier.comments'                 => _n('Comment', 'Comments', Session::getPluralNumber()),
                     'supplier.type'                     => SupplierType::getTypeName(1),
                     $objettype.'.openbyuser'            => __('Writer'),
                     $objettype.'.lastupdater'           => __('Last updater'),

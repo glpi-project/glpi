@@ -44,7 +44,7 @@ if (Session::haveRight("config", UPDATE)) {
 }
 echo "<tr class='tab_bg_1'><td class='center b'>";
 if (Toolbox::canUseLdap()) {
-   echo "<a href='authldap.php'>". _n('LDAP directory', 'LDAP directories', 2)."</a>";
+   echo "<a href='authldap.php'>". _n('LDAP directory', 'LDAP directories', Session::getPluralNumber())."</a>";
 } else {
    echo "<p class='red'>".__("The LDAP extension of your PHP parser isn't installed") ."</p>";
    echo "<p>".__('Impossible to use LDAP as external source of connection').'</p>';

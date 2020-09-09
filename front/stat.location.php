@@ -80,7 +80,7 @@ echo "<form method='get' name='form' action='stat.location.php'>";
 echo "<input type='hidden' name='itemtype' value='". $_GET['itemtype'] ."'>";
 
 echo "<table class='tab_cadre_fixe' ><tr class='tab_bg_2'><td rowspan='2' width='30%'>";
-$values = [_n('Dropdown', 'Dropdowns', 2) => ['ComputerType'    => _n('Type', 'Types', 1),
+$values = [_n('Dropdown', 'Dropdowns', Session::getPluralNumber()) => ['ComputerType'    => _n('Type', 'Types', 1),
                                                        'ComputerModel'   => _n('Model', 'Models', 1),
                                                        'OperatingSystem' => OperatingSystem::getTypeName(1),
                                                        'Location'        => Location::getTypeName(1)],

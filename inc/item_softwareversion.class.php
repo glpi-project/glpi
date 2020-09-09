@@ -75,7 +75,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'items_id',
-         'name'               => _n('Associated element', 'Associated elements', 2),
+         'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
          'massiveaction'      => false,
          'nosort'             => true,
          'datatype'           => 'specific',

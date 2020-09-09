@@ -3409,7 +3409,7 @@ class Config extends CommonDBTM {
       echo "<td class='center'></td><td>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Software', 'Software', 2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Software', 'Software', Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>".
            __("Installation/uninstallation of software on items")."</td><td>";
       self::showLogsInterval('purge_item_software_install',
@@ -3457,7 +3457,7 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Component', 'Components', 2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Component', 'Components', Session::getPluralNumber())."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td class='center'>".__("Add component")."</td><td>";
       self::showLogsInterval('purge_adddevice', $CFG_GLPI["purge_adddevice"]);

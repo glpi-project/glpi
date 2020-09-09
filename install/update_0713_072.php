@@ -151,7 +151,7 @@ function update0713to072() {
    }
 
    // Software Updates
-   displayMigrationMessage("072", _n('Software', 'Software', 2));
+   displayMigrationMessage("072", _n('Software', 'Software', Session::getPluralNumber()));
 
    // Make software recursive
    if (!$DB->fieldExists("glpi_software", "recursive", false)) {
@@ -501,7 +501,7 @@ function update0713to072() {
       }
    }
 
-   displayMigrationMessage("072", _n('Software', 'Software', 2));
+   displayMigrationMessage("072", _n('Software', 'Software', Session::getPluralNumber()));
 
    // If migration run more than once
    if (!$DB->fieldExists("glpi_softwareversions", "state", false)) {
@@ -546,7 +546,7 @@ function update0713to072() {
       }
    }
 
-   displayMigrationMessage("072", _n('User', 'Users', 2));
+   displayMigrationMessage("072", _n('User', 'Users', Session::getPluralNumber()));
 
    if (!$DB->fieldExists("glpi_groups", "recursive", false)) {
       $query = "ALTER TABLE `glpi_groups`
@@ -638,7 +638,7 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 add cache_max_size in glpi_config");
    }
 
-   displayMigrationMessage("072", _n('Volume', 'Volumes', 2));
+   displayMigrationMessage("072", _n('Volume', 'Volumes', Session::getPluralNumber()));
 
    if (!$DB->tableExists("glpi_dropdown_filesystems")) {
       $query = "CREATE TABLE `glpi_dropdown_filesystems` (

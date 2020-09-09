@@ -827,7 +827,7 @@ class ITILFollowup  extends CommonDBChild {
          echo "<td colspan='4'>";
          echo "<div class='fa-label'>
             <i class='fas fa-reply fa-fw'
-               title='"._n('Followup template', 'Followup templates', 2)."'></i>";
+               title='"._n('Followup template', 'Followup templates', Session::getPluralNumber())."'></i>";
          $this->fields['itilfollowuptemplates_id'] = 0;
          ITILFollowupTemplate::dropdown([
             'value'     => $this->fields['itilfollowuptemplates_id'],

@@ -335,10 +335,10 @@ $stat->displayLineGraph(
    _x('Quantity', 'Number') . " - " . $item->getTypeName(Session::getPluralNumber()),
    array_keys($values['total']), [
       [
-         'name' => _nx('ticket', 'Opened', 'Opened', 2),
+         'name' => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
          'data' => $values['total']
       ], [
-         'name' => _nx('ticket', 'Solved', 'Solved', 2),
+         'name' => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
          'data' => $values['solved']
       ], [
          'name' => __('Late'),
@@ -357,7 +357,7 @@ $values['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgs
                                                    $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values['avgsolved'] as $key => &$val) {
-   $val = round($val / HOUR_TIMESTAMP, 2);
+   $val = round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
 }
 //Temps moyen de cloture d'intervention
 $values['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgclosedtime",
@@ -365,7 +365,7 @@ $values['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgc
                                                    $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values['avgclosed'] as $key => &$val) {
-   $val = round($val / HOUR_TIMESTAMP, 2);
+   $val = round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
 }
 //Temps moyen d'intervention reel
 $values['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgactiontime",
@@ -373,7 +373,7 @@ $values['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_
                                                        $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values['avgactiontime'] as $key => &$val) {
-   $val = round($val / HOUR_TIMESTAMP, 2);
+   $val = round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
 }
 
 $series = [
@@ -396,7 +396,7 @@ if ($_GET['itemtype'] == 'Ticket') {
                                                         $_GET["type"], $val1, $val2);
    // Pass to hour values
    foreach ($values['avgtaketime'] as $key => &$val) {
-      $val = round($val / HOUR_TIMESTAMP, 2);
+      $val = round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
    }
 
    $series[] = [
@@ -406,7 +406,7 @@ if ($_GET['itemtype'] == 'Ticket') {
 }
 
 $stat->displayLineGraph(
-   __('Average time') . " - " .  _n('Hour', 'Hours', 2),
+   __('Average time') . " - " .  _n('Hour', 'Hours', Session::getPluralNumber()),
    array_keys($values['avgsolved']),
    $series
 );
@@ -428,10 +428,10 @@ if ($_GET['itemtype'] == 'Ticket') {
       __('Satisfaction survey') . " - " .  __('Tickets'),
       array_keys($values['opensatisfaction']), [
          [
-            'name' => _nx('survey', 'Opened', 'Opened', 2),
+            'name' => _nx('survey', 'Opened', 'Opened', Session::getPluralNumber()),
             'data' => $values['opensatisfaction']
          ], [
-            'name' => _nx('survey', 'Answered', 'Answered', 2),
+            'name' => _nx('survey', 'Answered', 'Answered', Session::getPluralNumber()),
             'data' => $values['answersatisfaction']
          ]
       ]

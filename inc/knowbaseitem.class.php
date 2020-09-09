@@ -1511,7 +1511,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo Search::showHeaderItem($output_type, __('Category'), $header_num);
 
          if ($output_type == Search::HTML_OUTPUT) {
-            echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', 2), $header_num);
+            echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
          }
 
          if (isset($options['item_itemtype'])

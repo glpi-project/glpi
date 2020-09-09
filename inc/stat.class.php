@@ -1402,7 +1402,7 @@ class Stat extends CommonGLPI {
          echo Search::showHeader($output_type, $end_display-$start+1, 2, 1);
          $header_num = 1;
          echo Search::showNewLine($output_type);
-         echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', 2), $header_num);
+         echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
          if ($view_entities) {
             echo Search::showHeaderItem($output_type, Entity::getTypeName(1), $header_num);
          }
