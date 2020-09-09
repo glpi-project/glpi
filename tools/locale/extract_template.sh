@@ -34,11 +34,11 @@
 rm -f locales/glpi.pot && touch locales/glpi.pot
 
 # Append locales from PHP
-xgettext `find ./ajax ./config ./front ./inc ./install ./tests ./*.php -type f -name "*.php"` -o locales/glpi.pot -L PHP --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing \
+xgettext -v `find ./ajax ./config ./front ./inc ./install ./tests ./*.php -type f -name "*.php"` -o locales/glpi.pot -L PHP --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing \
     --keyword=_n:1,2 --keyword=__s --keyword=__ --keyword=_x:1c,2 --keyword=_sx:1c,2 --keyword=_nx:1c,2,3 --keyword=_sn:1,2
 
 # Append locales from JavaScript
-xgettext *.js js/*.js -o locales/glpi.pot -L JavaScript --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing \
+xgettext -v *.js js/*.js -o locales/glpi.pot -L JavaScript --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing \
     --keyword=_n:1,2 --keyword=__ --keyword=_x:1c,2 --keyword=_nx:1c,2,3 \
     --keyword=i18n._n:1,2 --keyword=i18n.__ --keyword=i18n._p:1c,2 \
     --keyword=i18n.ngettext:1,2 --keyword=i18n.gettext --keyword=i18n.pgettext:1c,2
