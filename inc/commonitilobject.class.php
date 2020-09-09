@@ -6497,7 +6497,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='".__s("Validation").
             "'><span class='sr-only'>" . __('Validation') . "</span></a></li>";
       }
-      echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='"._ns('Solution', 'Solutions', 1).
+      echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='"._sn('Solution', 'Solutions', 1).
          "'><span class='sr-only'>" . ITILSolution::getTypeName(1)  . "</span></a></li>";
       echo "<li><a href='#' class='fa fa-ban pointer' data-type='reset' title=\"".__s("Reset display options").
          "\"><span class='sr-only'>" . __('Reset display options')  . "</span></a></li>";
