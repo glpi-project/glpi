@@ -449,13 +449,13 @@ class Item_SoftwareVersion extends CommonDBRelation {
       $refcolumns = ['vername'           => _n('Version', 'Versions', Session::getPluralNumber()),
                           'item_type'          => __('Item type'),
                           'itemname'          => __('Name'),
-                          'entity'            => __('Entity'),
+                          'entity'            => Entity::getTypeName(1),
                           'serial'            => __('Serial number'),
                           'otherserial'       => __('Inventory number'),
-                          'location,itemname' => __('Location'),
+                          'location,itemname' => Location::getTypeName(1),
                           'state,itemname'    => __('Status'),
-                          'groupe,itemname'   => __('Group'),
-                          'username,itemname' => __('User'),
+                          'groupe,itemname'   => Group::getTypeName(1),
+                          'username,itemname' => User::getTypeName(1),
                           'lname'             => _n('License', 'Licenses', Session::getPluralNumber()),
                           'date_install'      => __('Installation date')];
       if ($crit != "softwares_id") {
@@ -820,7 +820,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre'><tr>";
-      echo "<th>".__('Entity')."</th>";
+      echo "<th>".Entity::getTypeName(1)."</th>";
       echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
       echo "</tr>\n";
 

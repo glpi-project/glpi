@@ -41,13 +41,13 @@ $item = new Problem_Ticket();
 if (isset($_POST["add"])) {
    if (!empty($_POST['tickets_id']) && empty($_POST['problems_id'])) {
       $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
-            __('Problem'));
+            Problem::getTypeName(1));
       Session::addMessageAfterRedirect($message, false, ERROR);
       Html::back();
    }
    if (empty($_POST['tickets_id']) && !empty($_POST['problems_id'])) {
       $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
-            __('Ticket'));
+            Ticket::getTypeName(1));
       Session::addMessageAfterRedirect($message, false, ERROR);
       Html::back();
    }

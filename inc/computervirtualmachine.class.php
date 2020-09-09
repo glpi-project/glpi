@@ -130,7 +130,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Computer')."</td>";
+      echo "<td>".Computer::getTypeName(1)."</td>";
       echo "<td>".$comp->getLink()."</td>";
       if (Plugin::haveImport()) {
          echo "<td>".__('Automatic inventory')."</td>";
@@ -257,7 +257,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             echo  "<tr class='noHover'><th colspan='2' >".__('List of virtualized environments')."</th></tr>";
 
             $header = "<tr><th>".__('Name')."</th>";
-            $header .= "<th>".__('Entity')."</th>";
+            $header .= "<th>".Entity::getTypeName(1)."</th>";
             $header .= "</tr>";
             echo $header;
 
@@ -336,7 +336,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<table class='tab_cadre_fixehov'>";
 
       Session::initNavigateListItems('ComputerVirtualMachine',
-                                     sprintf(__('%1$s = %2$s'), __('Computer'),
+                                     sprintf(__('%1$s = %2$s'), Computer::getTypeName(1),
                                              (empty($comp->fields['name'])
                                                 ? "($ID)" : $comp->fields['name'])));
 

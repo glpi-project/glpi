@@ -621,9 +621,9 @@ class Config extends CommonDBTM {
 
       echo "<tr><th>&nbsp;</th>";
       echo "<th>" . __('Alternate username') . "</th>";
-      echo "<th>" . __('User') . "</th>";
-      echo "<th>" . __('Group') . "</th>";
-      echo "<th>" . __('Location') . "</th>";
+      echo "<th>" . User::getTypeName(1) . "</th>";
+      echo "<th>" . Group::getTypeName(1) . "</th>";
+      echo "<th>" . Location::getTypeName(1) . "</th>";
       echo "<th>" . __('Status') . "</th>";
       echo "</tr>";
 
@@ -3436,7 +3436,7 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "<td colspan='2'></td></tr>";
 
-      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('User', 'Users', 2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".User::getTypeName(Session::getPluralNumber())."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td class='center'>".
            __("Add/remove profiles to users")."</td><td>";

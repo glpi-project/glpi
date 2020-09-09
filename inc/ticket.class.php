@@ -1951,7 +1951,7 @@ class Ticket extends CommonITILObject {
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
          Session::addMessageAfterRedirect(sprintf(__('%1$s (%2$s)'),
                               __('Your ticket has been registered, its treatment is in progress.'),
-                                                  sprintf(__('%1$s: %2$s'), __('Ticket'),
+                                                  sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1),
                                                           "<a href='".Ticket::getFormURLWithID($this->fields['id'])."'>".
                                                             $this->fields['id']."</a>")));
       }
@@ -2515,7 +2515,7 @@ class Ticket extends CommonITILObject {
                'rand'         => $rand
             ];
             echo "<table class='center-h'><tr>";
-            echo "<td><label for='dropdown__mergeticket$rand'>".__('Ticket')."</label></td><td colspan='3'>";
+            echo "<td><label for='dropdown__mergeticket$rand'>".Ticket::getTypeName(1)."</label></td><td colspan='3'>";
             Ticket::dropdown($mergeparam);
             echo "</td></tr><tr><td><label for='with_followups'>".__('Merge followups')."</label></td><td>";
             Html::showCheckbox([
@@ -3836,7 +3836,7 @@ class Ticket extends CommonITILObject {
 
       if (!$tt->isHiddenField('locations_id')) {
          echo "<tr class='tab_bg_1'><td>";
-         printf(__('%1$s%2$s'), __('Location'), $tt->getMandatoryMark('locations_id'));
+         printf(__('%1$s%2$s'), Location::getTypeName(1), $tt->getMandatoryMark('locations_id'));
          echo "</td><td>";
          Location::dropdown(['value'  => $options["locations_id"]]);
          echo "</td></tr>";
@@ -3845,7 +3845,7 @@ class Ticket extends CommonITILObject {
       if (!$tt->isHiddenField('_users_id_observer')
           || $tt->isPredefinedField('_users_id_observer')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".sprintf(__('%1$s%2$s'), _n('Watcher', 'Watchers', 2),
+         echo "<td>".sprintf(__('%1$s%2$s'), _n('Watcher', 'Watchers', Session::getPluralNumber()),
                              $tt->getMandatoryMark('_users_id_observer'))."</td>";
          echo "<td>";
          $options['_right'] = "all";
@@ -4740,7 +4740,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
 
       echo "<th>".$tt->getBeginHiddenFieldText('locations_id');
-      printf(__('%1$s%2$s'), __('Location'), $tt->getMandatoryMark('locations_id'));
+      printf(__('%1$s%2$s'), Location::getTypeName(1), $tt->getMandatoryMark('locations_id'));
       echo $tt->getEndHiddenFieldText('locations_id')."</th>";
       echo "<td>";
       echo $tt->getBeginHiddenFieldValue('locations_id');
@@ -5627,7 +5627,7 @@ class Ticket extends CommonITILObject {
          echo "</th></tr>";
          if ($number) {
             echo "<tr><th style='width: 75px;'>".__('ID')."</th>";
-            echo "<th style='width: 20%;'>".__('Requester')."</th>";
+            echo "<th style='width: 20%;'>"._n('Requester', 'Requesters', 1)."</th>";
             echo "<th style='width: 20%;'>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
             echo "<th>".__('Description')."</th></tr>";
             while ($data = $iterator->next()) {

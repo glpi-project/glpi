@@ -220,7 +220,7 @@ class Item_Devices extends CommonDBRelation {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -355,8 +355,8 @@ class Item_Devices extends CommonDBRelation {
                          'autocomplete' => true,];
 
          case 'locations_id':
-            return ['long name'  => __('Location'),
-                         'short name' => __('Location'),
+            return ['long name'  => Location::getTypeName(1),
+                         'short name' => Location::getTypeName(1),
                          'size'       => 20,
                          'id'         => 13,
                          'datatype'   => 'dropdown'];

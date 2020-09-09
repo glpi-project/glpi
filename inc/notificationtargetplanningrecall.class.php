@@ -52,7 +52,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
     * @see NotificationTarget::addNotificationTargets()
    **/
    function addNotificationTargets($entity) {
-      $this->addTarget(Notification::AUTHOR, __('Requester'));
+      $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
       $this->addTarget(Notification::TASK_ASSIGN_TECH, __('Technician in charge of the task'));
    }
 

@@ -1027,7 +1027,7 @@ class Planning extends CommonGLPI {
 
       if (Session::haveRightsOr('planning', [self::READGROUP, self::READALL])) {
          $planning_types['group_users'] = __('All users of a group');
-         $planning_types['group']       = __('Group');
+         $planning_types['group']       = Group::getTypeName(1);
       }
 
       $planning_types['external'] = __('External calendar');

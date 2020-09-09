@@ -1602,7 +1602,7 @@ class Auth extends CommonGLPI {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . __('Phone') . "</td>";
+      echo "<td class='center'>" . Phone::getTypeName(1) . "</td>";
       echo "<td><input type='text' name='phone_ssofield' value='".$CFG_GLPI['phone_ssofield']."'>";
       echo "</td>";
       echo "</tr>\n";

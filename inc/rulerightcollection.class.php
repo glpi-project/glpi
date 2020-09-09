@@ -153,7 +153,7 @@ class RuleRightCollection extends RuleCollection {
       echo "<tr class='tab_bg_2'>";
       switch ($name) {
          case "entity" :
-            echo "<td class='center'>".__('Entity')." </td>\n";
+            echo "<td class='center'>".Entity::getTypeName(1)." </td>\n";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $value)."</td>";
             break;
 

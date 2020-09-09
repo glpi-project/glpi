@@ -933,7 +933,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'id'                 => '2',
          'table'              => 'glpi_projects',
          'field'              => 'name',
-         'name'               => __('Project'),
+         'name'               => Project::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -1105,7 +1105,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

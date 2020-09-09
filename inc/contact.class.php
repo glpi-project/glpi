@@ -178,7 +178,7 @@ class Contact extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>". __('Phone')."</td>";
+      echo "<td>". Phone::getTypeName(1)."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "phone");
       echo "</td></tr>";
@@ -312,7 +312,7 @@ class Contact extends CommonDBTM{
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'phone',
-         'name'               => __('Phone'),
+         'name'               => Phone::getTypeName(1),
          'datatype'           => 'string',
          'autocomplete'       => true,
       ];
@@ -441,7 +441,7 @@ class Contact extends CommonDBTM{
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];

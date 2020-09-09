@@ -181,7 +181,7 @@ abstract class CommonITILCost extends CommonDBChild {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -197,7 +197,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => 'cost',
-         'name'               => __('Cost')
+         'name'               => Cost::getTypeName(1)
       ];
 
       $tab[] = [
@@ -244,7 +244,7 @@ abstract class CommonITILCost extends CommonDBChild {
          'id'                 => '49',
          'table'              => static::getTable(),
          'field'              => 'actiontime',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Cost'), __('Duration')),
+         'name'               => sprintf(__('%1$s - %2$s'), Cost::getTypeName(1), __('Duration')),
          'datatype'           => 'timestamp',
          'forcegroupby'       => true,
          'usehaving'          => true,
@@ -551,7 +551,7 @@ abstract class CommonITILCost extends CommonDBChild {
       if (count($iterator)) {
          echo "<tr>";
          if ($forproject) {
-            echo "<th>".__('Ticket')."</th>";
+            echo "<th>".Ticket::getTypeName(1)."</th>";
             $ticket = new Ticket();
          }
          echo "<th>".__('Name')."</th>";

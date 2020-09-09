@@ -676,7 +676,7 @@ class Group_User extends CommonDBRelation{
          'id'                 => '4',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
-         'name'               => __('Group'),
+         'name'               => Group::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -685,7 +685,7 @@ class Group_User extends CommonDBRelation{
          'id'                 => '5',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'right'              => 'all'

@@ -279,7 +279,7 @@ class ComputerAntivirus extends CommonDBChild {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Computer')."</td>";
+      echo "<td>".Computer::getTypeName(1)."</td>";
       echo "<td>".$comp->getLink()."</td>";
       if (Plugin::haveImport()) {
          echo "<td>".__('Automatic inventory')."</td>";

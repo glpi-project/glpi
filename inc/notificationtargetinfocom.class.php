@@ -85,7 +85,7 @@ class NotificationTargetInfocom extends NotificationTarget {
                     'infocom.itemtype'       => __('Item type'),
                     'infocom.item'           => __('Associated item'),
                     'infocom.expirationdate' => __('Expiration date'),
-                    'infocom.entity'         => __('Entity')];
+                    'infocom.entity'         => Entity::getTypeName(1)];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'   => $tag,

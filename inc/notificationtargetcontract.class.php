@@ -159,7 +159,7 @@ class NotificationTargetContract extends NotificationTarget {
                     'contract.items.number' => _x('quantity', 'Number of items'),
                     'contract.items'        => __('Device list'),
                     'contract.type'         => __('Type'),
-                    'contract.entity'       => __('Entity'),
+                    'contract.entity'       => Entity::getTypeName(1),
                     'contract.states'       => __('Status'),
                     'contract.time'         => sprintf(__('%1$s / %2$s'),
                                                   __('Contract expired since the'),

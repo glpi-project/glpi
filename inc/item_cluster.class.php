@@ -246,7 +246,7 @@ class Item_Cluster extends CommonDBRelation {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_clusters_id$rand'>".__('Cluster')."</label></td>";
+      echo "<td><label for='dropdown_clusters_id$rand'>".Cluster::getTypeName(1)."</label></td>";
       echo "<td>";
       Cluster::dropdown(['value' => $this->fields["clusters_id"], 'rand' => $rand]);
       echo "</td>";

@@ -627,7 +627,7 @@ class NotificationTargetProject extends NotificationTarget {
                         'project.log.date'            => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                                  __('Date')),
                         'project.log.user'            => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                                 __('User')),
+                                                                 User::getTypeName(1)),
                         'project.log.field'           => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                                  __('Field')),
                         'project.log.content'         => sprintf(__('%1$s: %2$s'), __('Historical'),
@@ -639,12 +639,12 @@ class NotificationTargetProject extends NotificationTarget {
                         'item.name'                   => __('Associated item'),
                         'item.serial'                 => __('Serial number'),
                         'item.otherserial'            => __('Inventory number'),
-                        'item.location'               => __('Location'),
+                        'item.location'               => Location::getTypeName(1),
                         'item.model'                  => __('Model'),
                         'item.contact'                => __('Alternate username'),
                         'item.contactnumber'          => __('Alternate username number'),
-                        'item.user'                   => __('User'),
-                        'item.group'                  => __('Group')
+                        'item.user'                   => User::getTypeName(1),
+                        'item.group'                  => Group::getTypeName(1)
                      ];
 
       foreach ($tags_all as $tag => $label) {
@@ -655,40 +655,40 @@ class NotificationTargetProject extends NotificationTarget {
 
       //Tags without lang
       $tags = [
-         'change.id'            => sprintf(__('%1$s: %2$s'), __('Change'), __('ID')),
-         'change.date'          => sprintf(__('%1$s: %2$s'), __('Change'), __('Date')),
-         'change.url'           => sprintf(__('%1$s: %2$s'), __('Change'), ('URL')),
-         'change.title'         => sprintf(__('%1$s: %2$s'), __('Change'), __('Title')),
-         'change.content'       => sprintf(__('%1$s: %2$s'), __('Change'), __('Description')),
-         'problem.id'           => sprintf(__('%1$s: %2$s'), __('Problem'), __('ID')),
-         'problem.date'         => sprintf(__('%1$s: %2$s'), __('Problem'), __('Date')),
-         'problem.url'          => sprintf(__('%1$s: %2$s'), __('Problem'), ('URL')),
-         'problem.title'        => sprintf(__('%1$s: %2$s'), __('Problem'), __('Title')),
-         'problem.content'      => sprintf(__('%1$s: %2$s'), __('Problem'), __('Description')),
-         'ticket.id'            => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
-         'ticket.date'          => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Date')),
-         'ticket.url'           => sprintf(__('%1$s: %2$s'), __('Ticket'), ('URL')),
-         'ticket.title'         => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Title')),
-         'ticket.content'       => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Description')),
-         'cost.name'            => sprintf(__('%1$s: %2$s'), __('Cost'), __('Name')),
-         'cost.comment'         => sprintf(__('%1$s: %2$s'), __('Cost'), __('Comments')),
-         'cost.datebegin'       => sprintf(__('%1$s: %2$s'), __('Cost'), __('Begin date')),
-         'cost.dateend'         => sprintf(__('%1$s: %2$s'), __('Cost'), __('End date')),
-         'cost.cost'            => __('Cost'),
-         'cost.budget'          => sprintf(__('%1$s: %2$s'), __('Cost'), __('Budget')),
-         'document.url'         => sprintf(__('%1$s: %2$s'), __('Document'), __('URL')),
-         'document.downloadurl' => sprintf(__('%1$s: %2$s'), __('Document'), __('Download URL')),
-         'document.heading'     => sprintf(__('%1$s: %2$s'), __('Document'), __('Heading')),
-         'document.id'          => sprintf(__('%1$s: %2$s'), __('Document'), __('ID')),
-         'document.filename'    => sprintf(__('%1$s: %2$s'), __('Document'), __('File')),
-         'document.weblink'     => sprintf(__('%1$s: %2$s'), __('Document'), __('Web link')),
-         'document.name'        => sprintf(__('%1$s: %2$s'), __('Document'), __('Name')),
+         'change.id'            => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('ID')),
+         'change.date'          => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Date')),
+         'change.url'           => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), ('URL')),
+         'change.title'         => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Title')),
+         'change.content'       => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Description')),
+         'problem.id'           => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('ID')),
+         'problem.date'         => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('Date')),
+         'problem.url'          => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), ('URL')),
+         'problem.title'        => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('Title')),
+         'problem.content'      => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('Description')),
+         'ticket.id'            => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID')),
+         'ticket.date'          => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Date')),
+         'ticket.url'           => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), ('URL')),
+         'ticket.title'         => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Title')),
+         'ticket.content'       => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Description')),
+         'cost.name'            => sprintf(__('%1$s: %2$s'), Cost::getTypeName(1), __('Name')),
+         'cost.comment'         => sprintf(__('%1$s: %2$s'), Cost::getTypeName(1), __('Comments')),
+         'cost.datebegin'       => sprintf(__('%1$s: %2$s'), Cost::getTypeName(1), __('Begin date')),
+         'cost.dateend'         => sprintf(__('%1$s: %2$s'), Cost::getTypeName(1), __('End date')),
+         'cost.cost'            => Cost::getTypeName(1),
+         'cost.budget'          => sprintf(__('%1$s: %2$s'), Cost::getTypeName(1), __('Budget')),
+         'document.url'         => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('URL')),
+         'document.downloadurl' => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('Download URL')),
+         'document.heading'     => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('Heading')),
+         'document.id'          => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('ID')),
+         'document.filename'    => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('File')),
+         'document.weblink'     => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('Web link')),
+         'document.name'        => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('Name')),
          'project.urldocument'  => sprintf(
             __('%1$s: %2$s'),
-            _n('Document', 'Documents', Session::getPluralNumber()), __('URL')
+            Document::getTypeName(Session::getPluralNumber()), __('URL')
          ),
-         'project.entity'      => sprintf(__('%1$s (%2$s)'), __('Entity'), __('Complete name')),
-         'project.shortentity' => sprintf(__('%1$s (%2$s)'), __('Entity'), __('Name')),
+         'project.entity'      => sprintf(__('%1$s (%2$s)'), Entity::getTypeName(1), __('Complete name')),
+         'project.shortentity' => sprintf(__('%1$s (%2$s)'), Entity::getTypeName(1), __('Name')),
          'teammember.name'     => sprintf(
             __('%1$s: %2$s'),
             _n('Team member', 'Team members', 1), __('Name')
@@ -707,13 +707,13 @@ class NotificationTargetProject extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = ['project.entity'   => __('Entity'),
+      $tags = ['project.entity'   => Entity::getTypeName(1),
                     'project.log'      => __('Historical'),
                     'project.tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
                     'project.team'     => __('Project team'),
                     'project.costs'    => _n('Cost', 'Costs', Session::getPluralNumber()),
                     'project.changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
-                    'project.problems' => _n('Problem', 'Problems', Session::getPluralNumber()),
+                    'project.problems' => Problem::getTypeName(Session::getPluralNumber()),
                     'project.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                     'project.items'    => _n('Item', 'Items', Session::getPluralNumber())];
 
@@ -729,7 +729,7 @@ class NotificationTargetProject extends NotificationTarget {
                     'tasks'       => _n('Task', 'Tasks', Session::getPluralNumber()),
                     'costs'       => _n('Cost', 'Costs', Session::getPluralNumber()),
                     'changes'     => _n('Change', 'Changes', Session::getPluralNumber()),
-                    'problems'    => _n('Problem', 'Problems', Session::getPluralNumber()),
+                    'problems'    => Problem::getTypeName(Session::getPluralNumber()),
                     'tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                     'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber()),
                     'items'       => _n('Item', 'Items', Session::getPluralNumber())];

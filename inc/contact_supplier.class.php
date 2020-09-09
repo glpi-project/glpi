@@ -161,9 +161,9 @@ class Contact_Supplier extends CommonDBRelation{
          $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Supplier')."</th>";
-      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>".Entity::getTypeName(1)."</th>";
       $header_end .= "<th>".__('Third party type')."</th>";
-      $header_end .= "<th>". __('Phone')."</th>";
+      $header_end .= "<th>". Phone::getTypeName(1)."</th>";
       $header_end .= "<th>".__('Fax')."</th>";
       $header_end .= "<th>".__('Website')."</th>";
       $header_end .= "</tr>";
@@ -287,8 +287,8 @@ class Contact_Supplier extends CommonDBRelation{
          $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Name')."</th>";
-      $header_end .= "<th>".__('Entity')."</th>";
-      $header_end .= "<th>". __('Phone')."</th>";
+      $header_end .= "<th>".Entity::getTypeName(1)."</th>";
+      $header_end .= "<th>". Phone::getTypeName(1)."</th>";
       $header_end .= "<th>". __('Phone 2')."</th>";
       $header_end .= "<th>".__('Mobile phone')."</th>";
       $header_end .= "<th>".__('Fax')."</th>";

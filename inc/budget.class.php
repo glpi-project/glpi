@@ -158,7 +158,7 @@ class Budget extends CommonDropdown{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Location')."</td>";
+      echo "<td>".Location::getTypeName(1)."</td>";
       echo "<td>";
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
@@ -282,7 +282,7 @@ class Budget extends CommonDropdown{
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -344,7 +344,7 @@ class Budget extends CommonDropdown{
       echo "</th></tr>";
 
       echo "<tr><th>".__('Type')."</th>";
-      echo "<th>".__('Entity')."</th>";
+      echo "<th>".Entity::getTypeName(1)."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
@@ -827,7 +827,7 @@ class Budget extends CommonDropdown{
       $colspan = count($found_types)+2;
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
       echo "<tr class='noHover'><th colspan='$colspan'>".__('Total spent on the budget')."</th></tr>";
-      echo "<tr><th>".__('Entity')."</th>";
+      echo "<tr><th>".Entity::getTypeName(1)."</th>";
       if (count($found_types)) {
          foreach ($found_types as $type => $typename) {
             echo "<th>$typename</th>";

@@ -498,7 +498,7 @@ class RuleCollection extends CommonDBTM {
       echo "<th>".__('Active')."</th>";
 
       if ($display_entities) {
-         echo "<th>".__('Entity')."</th>\n";
+         echo "<th>".Entity::getTypeName(1)."</th>\n";
       }
       if (!$display_entities) {
          echo "<th colspan='2'>&nbsp;</th>";
@@ -529,7 +529,7 @@ class RuleCollection extends CommonDBTM {
          echo "<th>".__('Active')."</th>";
 
          if ($display_entities) {
-            echo "<th>".__('Entity')."</th>\n";
+            echo "<th>".Entity::getTypeName(1)."</th>\n";
          }
          if (!$display_entities) {
             echo "<th colspan='2'>&nbsp;</th>";

@@ -96,7 +96,7 @@ class RuleAsset extends Rule {
 
       $criterias['states_id']['table']            = 'glpi_states';
       $criterias['states_id']['field']            = 'states_id';
-      $criterias['states_id']['name']             = _n('Status', 'Statuses', 1);
+      $criterias['states_id']['name']             = __('Status');
       $criterias['states_id']['type']             = 'dropdown';
 
       $criterias['comment']['name']               = __('Comments');
@@ -112,17 +112,17 @@ class RuleAsset extends Rule {
 
       $criterias['locations_id']['table']         = 'glpi_locations';
       $criterias['locations_id']['field']         = 'completename';
-      $criterias['locations_id']['name']          = _n('Location', 'Locations', 2);
+      $criterias['locations_id']['name']          = Location::getTypeName(Session::getPluralNumber());
       $criterias['locations_id']['linkfield']     = 'locations_id';
       $criterias['locations_id']['type']          = 'dropdown';
 
       $criterias['entities_id']['table']          = 'glpi_entities';
       $criterias['entities_id']['field']          = 'name';
-      $criterias['entities_id']['name']           = __('Entity');
+      $criterias['entities_id']['name']           = Entity::getTypeName(1);
       $criterias['entities_id']['linkfield']      = 'entities_id';
       $criterias['entities_id']['type']           = 'dropdown';
 
-      $criterias['users_id']['name']            = __('User');
+      $criterias['users_id']['name']            = User::getTypeName(1);
       $criterias['users_id']['type']            = 'dropdown_users';
       $criterias['users_id']['table']           = 'glpi_users';
 
@@ -134,15 +134,15 @@ class RuleAsset extends Rule {
 
       $actions                                = [];
 
-      $actions['states_id']['name']           = _n('Status', 'Statuses', 1);
+      $actions['states_id']['name']           = __('Status');
       $actions['states_id']['type']           = 'dropdown';
       $actions['states_id']['table']          = 'glpi_states';
 
-      $actions['locations_id']['name']        = _n('Location', 'Locations', 1);
+      $actions['locations_id']['name']        = Location::getTypeName(1);
       $actions['locations_id']['type']        = 'dropdown';
       $actions['locations_id']['table']       = 'glpi_locations';
 
-      $actions['users_id']['name']            = __('User');
+      $actions['users_id']['name']            = User::getTypeName(1);
       $actions['users_id']['type']            = 'dropdown_users';
       $actions['users_id']['table']           = 'glpi_users';
 
@@ -151,7 +151,7 @@ class RuleAsset extends Rule {
       $actions['_affect_user_by_regex']['force_actions']     = ['regex_result'];
       $actions['_affect_user_by_regex']['duplicatewith']     = 'users_id';
 
-      $actions['groups_id']['name']           = __('Group');
+      $actions['groups_id']['name']           = Group::getTypeName(1);
       $actions['groups_id']['type']           = 'dropdown';
       $actions['groups_id']['table']          = 'glpi_groups';
       $actions['groups_id']['condition']      = ['is_itemgroup' => 1];

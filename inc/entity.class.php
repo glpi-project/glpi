@@ -547,7 +547,7 @@ class Entity extends CommonTreeDropdown {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'phonenumber',
-         'name'               => __('Phone'),
+         'name'               => Phone::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'string',
          'autocomplete'       => true,
@@ -1406,7 +1406,7 @@ class Entity extends CommonTreeDropdown {
       echo "<tr><th colspan='4'>".__('Address')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>". __('Phone')."</td>";
+      echo "<td>". Phone::getTypeName(1)."</td>";
       echo "<td>";
       Html::autocompletionTextField($entity, "phonenumber");
       echo "</td>";

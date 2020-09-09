@@ -99,7 +99,7 @@ class Report extends CommonGLPI{
           || Peripheral::canView()
           || Printer::canView()
           || Phone::canView()) {
-         $report_list["state"]["name"] = _n('Status', 'Statuses', Session::getPluralNumber());
+         $report_list["state"]["name"] = __('Status');
          $report_list["state"]["file"] = "report.state.php";
       }
       //Affichage du tableau de presentation des stats

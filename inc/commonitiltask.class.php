@@ -1609,7 +1609,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       echo "</div>";
 
       echo "<div class='fa-label'>";
-      echo "<i class='fas fa-user fa-fw' title='"._n('User', 'Users', 1)."'></i>";
+      echo "<i class='fas fa-user fa-fw' title='".User::getTypeName(1)."'></i>";
       $params             = ['name'   => "users_id_tech",
                                   'value'  => (($ID > -1)
                                                 ?$this->fields["users_id_tech"]
@@ -1637,7 +1637,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       echo "</div>";
 
       echo "<div class='fa-label'>";
-      echo "<i class='fas fa-users fa-fw' title='"._n('Group', 'Groups', 1)."'></i>";
+      echo "<i class='fas fa-users fa-fw' title='".Group::getTypeName(1)."'></i>";
       $params     = [
          'name'      => "groups_id_tech",
          'value'     => (($ID > -1)

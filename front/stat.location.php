@@ -83,7 +83,7 @@ echo "<table class='tab_cadre_fixe' ><tr class='tab_bg_2'><td rowspan='2' width=
 $values = [_n('Dropdown', 'Dropdowns', 2) => ['ComputerType'    => __('Type'),
                                                        'ComputerModel'   => __('Model'),
                                                        'OperatingSystem' => __('Operating system'),
-                                                       'Location'        => __('Location')],
+                                                       'Location'        => Location::getTypeName(1)],
                ];
 $devices = Dropdown::getDeviceItemTypes();
 foreach ($devices as $label => $dp) {

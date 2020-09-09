@@ -203,7 +203,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       $tab[] = ['id'                 => 3,
                 'table'              => User::getTable(),
                 'field'              => 'name',
-                'name'               => __('User'),
+                'name'               => User::getTypeName(1),
                 'datatype'           => 'dropdown'
                ];
 
@@ -402,7 +402,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
             ]
          );
          echo "</td></tr>";
-         echo "<tr class='tab_bg_2'><td>".__('Entity')."</td>";
+         echo "<tr class='tab_bg_2'><td>".Entity::getTypeName(1)."</td>";
          echo "</td><td>";
          Entity::dropdown(['value' => $this->fields["entities_id"]]);
          echo "</td><td>". __('Child entities')."</td><td>";

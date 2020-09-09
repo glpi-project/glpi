@@ -825,7 +825,7 @@ class Problem extends CommonITILObject {
          echo "</th></tr>";
          if ($number) {
             echo "<tr><th></th>";
-            echo "<th>".__('Requester')."</th>";
+            echo "<th>"._n('Requester', 'Requesters', 1)."</th>";
             echo "<th>".__('Description')."</th></tr>";
             while ($result = $iterator->next()) {
                self::showVeryShort($result['id'], $forcetab);
@@ -932,7 +932,7 @@ class Problem extends CommonITILObject {
                Toolbox::append_params($options, '&amp;')."\">".__('Problem followup')."</a>";
 
       echo "</th></tr>";
-      echo "<tr><th>"._n('Problem', 'Problems', Session::getPluralNumber())."</th>
+      echo "<tr><th>".Problem::getTypeName(Session::getPluralNumber())."</th>
             <th class='numeric'>"._x('quantity', 'Number')."</th></tr>";
 
       foreach ($status as $key => $val) {

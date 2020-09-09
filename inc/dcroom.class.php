@@ -80,7 +80,7 @@ class DCRoom extends CommonDBTM {
       Html::autocompletionTextField($this, "name", ['rand' => $rand]);
       echo "</td>";
 
-      echo "<td><label for='dropdown_locations_id$rand'>".__('Location')."</label></td>";
+      echo "<td><label for='dropdown_locations_id$rand'>".Location::getTypeName(1)."</label></td>";
       echo "<td>";
       Location::dropdown([
          'value'  => $this->fields["locations_id"],
@@ -296,7 +296,7 @@ class DCRoom extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

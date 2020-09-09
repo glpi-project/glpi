@@ -337,7 +337,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_locations_id$randDropdown'>".__('Location')."</label></td>";
+      echo "<td><label for='dropdown_locations_id$randDropdown'>".Location::getTypeName(1)."</label></td>";
       echo "<td>";
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"],
@@ -421,7 +421,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_users_id$randDropdown'>".__('User')."</label></td>";
+      echo "<td><label for='dropdown_users_id$randDropdown'>".User::getTypeName(1)."</label></td>";
       echo "<td>";
       User::dropdown(['value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
@@ -436,7 +436,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_groups_id$randDropdown'>".__('Group')."</label></td>";
+      echo "<td><label for='dropdown_groups_id$randDropdown'>".Group::getTypeName(1)."</label></td>";
       echo "<td>";
       Group::dropdown([
          'value'     => $this->fields["groups_id"],
@@ -633,7 +633,7 @@ class Computer extends CommonDBTM {
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'datatype'           => 'dropdown',
          'right'              => 'all'
       ];
@@ -642,7 +642,7 @@ class Computer extends CommonDBTM {
          'id'                 => '71',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
-         'name'               => __('Group'),
+         'name'               => Group::getTypeName(1),
          'condition'          => ['is_itemgroup' => 1],
          'datatype'           => 'dropdown'
       ];
@@ -717,7 +717,7 @@ class Computer extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

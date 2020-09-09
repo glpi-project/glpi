@@ -1264,7 +1264,7 @@ class Reservation extends CommonDBChild {
          echo "<tr><th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "<th>".__('Item')."</th>";
-         echo "<th>".__('Entity')."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('By')."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
@@ -1348,7 +1348,7 @@ class Reservation extends CommonDBChild {
          echo "<tr><th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "<th>".__('Item')."</th>";
-         echo "<th>".__('Entity')."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('By')."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 

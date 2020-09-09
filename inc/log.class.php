@@ -290,7 +290,7 @@ class Log extends CommonDBTM {
       $header = "<tr>";
       $header .= "<th>".__('ID')."</th>";
       $header .= "<th>".__('Date')."</th>";
-      $header .= "<th>".__('User')."</th>";
+      $header .= "<th>".User::getTypeName(1)."</th>";
       $header .= "<th>".__('Field')."</th>";
       //TRANS: a noun, modification, change
       $header .= "<th>"._x('name', 'Update')."</th>";
@@ -596,11 +596,11 @@ class Log extends CommonDBTM {
                         }
                         // Simple Heuristic, of course not enough
                         if ($isr && !$isa && !$iso) {
-                           $as = __('Requester');
+                           $as = _n('Requester', 'Requesters', 1);
                         } else if (!$isr && $isa && !$iso) {
                            $as = __('Assigned to');
                         } else if (!$isr && !$isa && $iso) {
-                           $as = __('Watcher');
+                           $as = _n('Watcher', 'Watchers', 1);
                         } else {
                            // Deleted or Ambiguous
                            $as = false;

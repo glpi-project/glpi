@@ -180,7 +180,7 @@ class NotImportedEmail extends CommonDBTM {
          'id'                 => '6',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('Requester'),
+         'name'               => _n('Requester', 'Requesters', 1),
          'datatype'           => 'dropdown',
          'right'              => 'all'
       ];

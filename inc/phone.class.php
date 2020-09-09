@@ -172,7 +172,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Location')."</td>";
+      echo "<td>".Location::getTypeName(1)."</td>";
       echo "<td>";
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
@@ -236,7 +236,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('User')."</td>";
+      echo "<td>".User::getTypeName(1)."</td>";
       echo "<td>";
       User::dropdown(['value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
@@ -254,7 +254,7 @@ class Phone extends CommonDBTM {
 
       $rowspan        = 5;
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group')."</td>";
+      echo "<td>".Group::getTypeName(1)."</td>";
       echo "<td>";
       Group::dropdown([
          'value'     => $this->fields["groups_id"],
@@ -442,7 +442,7 @@ class Phone extends CommonDBTM {
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'datatype'           => 'dropdown',
          'right'              => 'all'
       ];
@@ -451,7 +451,7 @@ class Phone extends CommonDBTM {
          'id'                 => '71',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
-         'name'               => __('Group'),
+         'name'               => Group::getTypeName(1),
          'condition'          => ['is_itemgroup' => 1],
          'datatype'           => 'dropdown'
       ];
@@ -579,7 +579,7 @@ class Phone extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];

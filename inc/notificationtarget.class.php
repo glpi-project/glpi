@@ -841,7 +841,7 @@ class NotificationTarget extends CommonDBChild {
 
       while ($data = $iterator->next()) {
          //Add group
-         $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __('Group'), $data["name"]),
+         $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), Group::getTypeName(1), $data["name"]),
                           Notification::GROUP_TYPE);
          //Add group supervisor
          $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __('Manager of group'),

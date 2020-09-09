@@ -1888,7 +1888,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'right'              => 'all'

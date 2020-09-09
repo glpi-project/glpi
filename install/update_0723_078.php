@@ -3658,7 +3658,7 @@ function update0723to078() {
       $DB->query("INSERT INTO `glpi_requesttypes`
                   VALUES(2, '".addslashes(__('Email'))."', 0, 1, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
-                  VALUES(3, '".addslashes(__('Phone'))."', 0, 0, NULL)");
+                  VALUES(3, '".addslashes(Phone::getTypeName(1))."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
                   VALUES(4, '".addslashes(__('Direct'))."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`

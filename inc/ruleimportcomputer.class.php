@@ -429,7 +429,7 @@ class RuleImportComputer extends Rule {
       }
       if (!$entity_as_criteria) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan ='2'>".__('Entity')."</td>";
+         echo "<td colspan ='2'>".Entity::getTypeName(1)."</td>";
          echo "<td>";
          Dropdown::show('Entity');
          echo "</td></tr>";

@@ -95,10 +95,10 @@ if (isset($_POST["send"])) {
    echo " <td class='center b' width='10%'>".__('Inventory number')."</td>";
    echo " </tr>";
 
-   $types = ['Computer'         => __('Computer'),
+   $types = ['Computer'         => Computer::getTypeName(1),
                   'NetworkEquipment' => __('Network device'),
-                  'Printer'          => __('Printer'),
-                  'Monitor'          => __('Monitor'),
+                  'Printer'          => Printer::getTypeName(1),
+                  'Monitor'          => Monitor::getTypeName(1),
                   'Peripheral'       => __('Device')];
    foreach ($types as $type => $label) {
       $iterator = $DB->request([

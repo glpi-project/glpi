@@ -622,15 +622,15 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.item.model'            => __('Model'),
                     'ticket.item.contact'          => __('Alternate username'),
                     'ticket.item.contactnumber'    => __('Alternate username number'),
-                    'ticket.item.user'             => __('User'),
-                    'ticket.item.group'            => __('Group'),
+                    'ticket.item.user'             => User::getTypeName(1),
+                    'ticket.item.group'            => Group::getTypeName(1),
                     'ticket.isdeleted'             => __('Deleted'),
                     'ticket.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
                     'ticket.numberofproblems'      => _x('quantity', 'Number of problems'),
                     'ticket.numberofchanges'       => _x('quantity', 'Number of changes'),
                     'ticket.numberofitems'         => _x('quantity', 'Number of items'),
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
-                    'ticket.location'              => __('Location'),
+                    'ticket.location'              => Location::getTypeName(1),
                     'ticket.location.comment'      => __('Location comments'),
                     'ticket.location.room'         => __('Room number'),
                     'ticket.location.building'     => __('Building number'),
@@ -650,7 +650,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
 
       //Events specific for validation
-      $tags = ['validation.author'            => __('Requester'),
+      $tags = ['validation.author'            => _n('Requester', 'Requesters', 1),
                     'validation.status'            => __('Status of the approval request'),
                     'validation.submissiondate'    => sprintf(__('%1$s: %2$s'), __('Request'),
                                                               __('Date')),
@@ -720,10 +720,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       //Foreach global tags
       $tags = ['validations'   => _n('Validation', 'Validations', Session::getPluralNumber()),
                     'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
-                    'problems'      => _n('Problem', 'Problems', Session::getPluralNumber()),
+                    'problems'      => Problem::getTypeName(Session::getPluralNumber()),
                     'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
                     'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
-                    'documents'     => _n('Document', 'Documents', Session::getPluralNumber())];
+                    'documents'     => Document::getTypeName(Session::getPluralNumber())];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'     => $tag,
@@ -734,7 +734,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       //Tags with just lang
       $tags = ['ticket.linkedtickets'    => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
-                    'ticket.problems'         => _n('Problem', 'Problems', Session::getPluralNumber()),
+                    'ticket.problems'         => Problem::getTypeName(Session::getPluralNumber()),
                     'ticket.changes'          => _n('Change', 'Changes', Session::getPluralNumber()),
                     'ticket.autoclosewarning'
                      => sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',
@@ -776,19 +776,19 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'linkedticket.content'    => sprintf(__('%1$s: %2$s'),
                                                          _n('Linked ticket', 'Linked tickets', 1),
                                                          __('Description')),
-                    'problem.id'              => sprintf(__('%1$s: %2$s'), __('Problem'), __('ID')),
-                    'problem.date'            => sprintf(__('%1$s: %2$s'), __('Problem'), __('Date')),
-                    'problem.url'             => sprintf(__('%1$s: %2$s'), __('Problem'), ('URL')),
-                    'problem.title'           => sprintf(__('%1$s: %2$s'), __('Problem'),
+                    'problem.id'              => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('ID')),
+                    'problem.date'            => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('Date')),
+                    'problem.url'             => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), ('URL')),
+                    'problem.title'           => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1),
                                                          __('Title')),
-                    'problem.content'         => sprintf(__('%1$s: %2$s'), __('Problem'),
+                    'problem.content'         => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1),
                                                          __('Description')),
-                    'change.id'               => sprintf(__('%1$s: %2$s'), __('Change'), __('ID')),
-                    'change.date'             => sprintf(__('%1$s: %2$s'), __('Change'), __('Date')),
-                    'change.url'              => sprintf(__('%1$s: %2$s'), __('Change'), ('URL')),
-                    'change.title'            => sprintf(__('%1$s: %2$s'), __('Change'),
+                    'change.id'               => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('ID')),
+                    'change.date'             => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Date')),
+                    'change.url'              => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), ('URL')),
+                    'change.title'            => sprintf(__('%1$s: %2$s'), Change::getTypeName(1),
                                                          __('Title')),
-                    'change.content'          => sprintf(__('%1$s: %2$s'), __('Change'),
+                    'change.content'          => sprintf(__('%1$s: %2$s'), Change::getTypeName(1),
                                                          __('Description'))
                    ];
 

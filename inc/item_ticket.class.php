@@ -439,7 +439,7 @@ class Item_Ticket extends CommonDBRelation{
          $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Type')."</th>";
-      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>".Entity::getTypeName(1)."</th>";
       $header_end .= "<th>".__('Name')."</th>";
       $header_end .= "<th>".__('Serial number')."</th>";
       $header_end .= "<th>".__('Inventory number')."</th>";
@@ -1204,7 +1204,7 @@ class Item_Ticket extends CommonDBRelation{
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'tickets_id',
-         'name'               => __('Ticket'),
+         'name'               => Ticket::getTypeName(1),
          'datatype'           => 'dropdown',
       ];
 

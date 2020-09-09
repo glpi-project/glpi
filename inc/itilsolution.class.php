@@ -197,7 +197,7 @@ class ITILSolution extends CommonDBChild {
       }
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Solution type')."</td><td>";
+      echo "<td>".SolutionType::getTypeName(1)."</td><td>";
 
       echo Html::hidden('itemtype', ['value' => $item->getType()]);
       echo Html::hidden('items_id', ['value' => $item->getID()]);

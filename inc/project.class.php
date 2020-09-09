@@ -709,7 +709,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -1118,7 +1118,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       $items[__('Last update')]        = "date_mod";
 
       if (count($_SESSION["glpiactiveentities"]) > 1) {
-         $items[_n('Entity', 'Entities', Session::getPluralNumber())] = "glpi_entities.completename";
+         $items[Entity::getTypeName(Session::getPluralNumber())] = "glpi_entities.completename";
       }
 
       $items[__('Priority')]         = "priority";
@@ -1511,14 +1511,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       echo "<tr><td colspan='4' class='subheader'>".__('Manager')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('User')."</td>";
+      echo "<td>".User::getTypeName(1)."</td>";
       echo "<td>";
       User::dropdown(['name'   => 'users_id',
                            'value'  => $ID ? $this->fields["users_id"] : Session::getLoginUserID(),
                            'right'  => 'see_project',
                            'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td>".__('Group')."</td>";
+      echo "<td>".Group::getTypeName(1)."</td>";
       echo "<td>";
       Group::dropdown([
          'name'      => 'groups_id',

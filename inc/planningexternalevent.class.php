@@ -228,7 +228,7 @@ JAVASCRIPT;
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td colspan='2'>".__('User')."</td>";
+      echo "<tr class='tab_bg_2'><td colspan='2'>".User::getTypeName(1)."</td>";
       echo "<td colspan='2'>";
       User::dropdown([
          'name'          => 'users_id',

@@ -101,14 +101,14 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], $showuserlink));
+      $title   = sprintf(__('%1$s: %2$s'), User::getTypeName(1), getUserName($_GET["id"], $showuserlink));
       break;
 
    case "users_id_recipient" :
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], $showuserlink));
+      $title   = sprintf(__('%1$s: %2$s'), User::getTypeName(1), getUserName($_GET["id"], $showuserlink));
       break;
 
    case "itilcategories_tree" :
@@ -133,7 +133,7 @@ switch ($_GET["type"]) {
       $val2    = '';
       $values  = Stat::getItems($_GET['itemtype'], $_POST['date1'], $_POST['date2'], $_GET['type'],
                                 $parent);
-      $title   = sprintf(__('%1$s: %2$s'), __('Location'),
+      $title   = sprintf(__('%1$s: %2$s'), Location::getTypeName(1),
                          Dropdown::getDropdownName('glpi_locations', $_GET['id']));
       break;
 
@@ -154,7 +154,7 @@ switch ($_GET["type"]) {
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"],
                                 $parent);
-      $title   = sprintf(__('%1$s: %2$s'), __('Group'),
+      $title   = sprintf(__('%1$s: %2$s'), Group::getTypeName(1),
                          Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
 
@@ -162,7 +162,7 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Group'),
+      $title   = sprintf(__('%1$s: %2$s'), Group::getTypeName(1),
                          Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
 
@@ -199,7 +199,7 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Solution type'),
+      $title   = sprintf(__('%1$s: %2$s'), SolutionType::getTypeName(1),
                          Dropdown::getDropdownName("glpi_solutiontypes", $_GET["id"]));
       break;
 

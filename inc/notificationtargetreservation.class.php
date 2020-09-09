@@ -56,7 +56,7 @@ class NotificationTargetReservation extends NotificationTarget {
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE,
                           __('Group in charge of the hardware'));
          $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
-         $this->addTarget(Notification::AUTHOR, __('Requester'));
+         $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
       }
       // else if ($event == 'alert') {
       //   $this->addTarget(Notification::ITEM_USER, __('User reserving equipment'));
@@ -157,7 +157,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                  'reservation.begin'       => __('Start date'),
                                  'reservation.end'         => __('End date'),
                                  'reservation.comment'     => __('Comments'),
-                                 'reservation.item.entity' => __('Entity'),
+                                 'reservation.item.entity' => Entity::getTypeName(1),
                                  'reservation.item.name'   => __('Associated item'),
                                  'reservation.item.tech'   => __('Technician in charge of the hardware')];
 
@@ -175,7 +175,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                 'events'  => ['alert']]);
 
       $tag_alert = ['reservation.expirationdate' => __('End date'),
-                         'reservation.entity'         => __('Entity')];
+                         'reservation.entity'         => Entity::getTypeName(1)];
 
       foreach ($tag_alert as $tag => $label) {
          $this->addTagToList(['tag'    => $tag,

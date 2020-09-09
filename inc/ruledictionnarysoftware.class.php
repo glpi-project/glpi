@@ -85,7 +85,7 @@ class RuleDictionnarySoftware extends Rule {
       $criterias['manufacturer']['table'] = 'glpi_manufacturers';
 
       $criterias['entities_id']['field']  = 'completename';
-      $criterias['entities_id']['name']   = __('Entity');
+      $criterias['entities_id']['name']   = Entity::getTypeName(1);
       $criterias['entities_id']['table']  = 'glpi_entities';
       $criterias['entities_id']['type']   = 'dropdown';
 
@@ -121,7 +121,7 @@ class RuleDictionnarySoftware extends Rule {
       $actions['is_helpdesk_visible']['table']  = 'glpi_softwares';
       $actions['is_helpdesk_visible']['type']   = 'yesno';
 
-      $actions['new_entities_id']['name']       = __('Entity');
+      $actions['new_entities_id']['name']       = Entity::getTypeName(1);
       $actions['new_entities_id']['table']      = 'glpi_entities';
       $actions['new_entities_id']['type']       = 'dropdown';
 

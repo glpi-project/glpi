@@ -368,7 +368,7 @@ class Computer_Item extends CommonDBRelation{
          if (Plugin::haveImport()) {
             $header_end .= "<th>".__('Automatic inventory')."</th>";
          }
-         $header_end .= "<th>".__('Entity')."</th>";
+         $header_end .= "<th>".Entity::getTypeName(1)."</th>";
          $header_end .= "<th>".__('Serial number')."</th>";
          $header_end .= "<th>".__('Inventory number')."</th>";
          $header_end .= "</tr>";
@@ -522,7 +522,7 @@ class Computer_Item extends CommonDBRelation{
          if (Plugin::haveImport()) {
             $header_end .= "<th>".__('Automatic inventory')."</th>";
          }
-         $header_end .= "<th>".__('Entity')."</th>";
+         $header_end .= "<th>".Entity::getTypeName(1)."</th>";
          $header_end .= "<th>".__('Serial number')."</th>";
          $header_end .= "<th>".__('Inventory number')."</th>";
          $header_end .= "</tr>";

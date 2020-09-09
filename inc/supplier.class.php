@@ -122,7 +122,7 @@ class Supplier extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>". __('Phone')."</td>";
+      echo "<td>". Phone::getTypeName(1)."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "phonenumber");
       echo "</td>";
@@ -301,7 +301,7 @@ class Supplier extends CommonDBTM {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'phonenumber',
-         'name'               => __('Phone'),
+         'name'               => Phone::getTypeName(1),
          'datatype'           => 'string',
          'autocomplete'       => true,
       ];
@@ -381,7 +381,7 @@ class Supplier extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -479,7 +479,7 @@ class Supplier extends CommonDBTM {
       }
       echo "</th></tr>";
       echo "<tr><th>".__('Type')."</th>";
-      echo "<th>".__('Entity')."</th>";
+      echo "<th>".Entity::getTypeName(1)."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";

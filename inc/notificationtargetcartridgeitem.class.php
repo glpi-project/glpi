@@ -82,7 +82,7 @@ class NotificationTargetCartridgeItem extends NotificationTarget {
                     'cartridge.item'      => __('Cartridge model'),
                     'cartridge.remaining' => __('Remaining'),
                     'cartridge.url'       => __('URL'),
-                    'cartridge.entity'    => __('Entity')];
+                    'cartridge.entity'    => Entity::getTypeName(1)];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'   => $tag,

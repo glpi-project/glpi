@@ -879,7 +879,7 @@ class Profile extends CommonDBTM {
                             'label'     => _n('Consumable', 'Consumables', Session::getPluralNumber()),
                             'field'     => 'consumable'],
                       ['itemtype'  => 'Phone',
-                            'label'     => _n('Phone', 'Phones', Session::getPluralNumber()),
+                            'label'     => Phone::getTypeName(Session::getPluralNumber()),
                             'field'     => 'phone'],
                       ['itemtype'  => 'Peripheral',
                             'label'     => _n('Device', 'Devices', Session::getPluralNumber()),
@@ -942,7 +942,7 @@ class Profile extends CommonDBTM {
                                            _n('Supplier', 'Suppliers', Session::getPluralNumber()),
                             'field'     => 'contact_enterprise'],
                       ['itemtype'  => 'Document',
-                            'label'     => _n('Document', 'Documents', Session::getPluralNumber()),
+                            'label'     => Document::getTypeName(Session::getPluralNumber()),
                             'field'     => 'document'],
                       ['itemtype'  => 'Contract',
                             'label'     => _n('Contract', 'Contracts', Session::getPluralNumber()),
@@ -1216,9 +1216,9 @@ class Profile extends CommonDBTM {
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       $rights = [['itemtype'   => 'Problem',
-                            'label'      => _n('Problem', 'Problems', Session::getPluralNumber()),
+                            'label'      => Problem::getTypeName(Session::getPluralNumber()),
                             'field'      => 'problem']];
-      $matrix_options['title'] = _n('Problem', 'Problems', Session::getPluralNumber());
+      $matrix_options['title'] = Problem::getTypeName(Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       $rights = [['itemtype'   => 'Change',
@@ -1442,23 +1442,23 @@ class Profile extends CommonDBTM {
                               'default_class' => 'tab_bg_4'];
 
       $rights = [['itemtype'  => 'User',
-                            'label'     => _n('User', 'Users', Session::getPluralNumber()),
+                            'label'     => User::getTypeName(Session::getPluralNumber()),
                             'field'     => 'user',
                             'row_class' => 'tab_bg_2'],
                       ['itemtype'  => 'Entity',
-                            'label'     => _n('Entity', 'Entities', Session::getPluralNumber()),
+                            'label'     => Entity::getTypeName(Session::getPluralNumber()),
                             'field'     => 'entity'],
                       ['itemtype'  => 'Group',
-                            'label'     => _n('Group', 'Groups', Session::getPluralNumber()),
+                            'label'     => Group::getTypeName(Session::getPluralNumber()),
                             'field'     => 'group'],
                       ['itemtype'  => 'Profile',
-                            'label'     => _n('Profile', 'Profiles', Session::getPluralNumber()),
+                            'label'     => Profile::getTypeName(Session::getPluralNumber()),
                             'field'     => 'profile'],
                       ['itemtype'  => 'QueuedNotification',
                             'label'     => __('Notification queue'),
                             'field'     => 'queuednotification'],
                       ['itemtype'  => 'Log',
-                            'label'     => _n('Log', 'Logs', Session::getPluralNumber()),
+                            'label'     => Log::getTypeName(Session::getPluralNumber()),
                             'field'     => 'logs']];
       $matrix_options['title'] = __('Administration');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
@@ -1573,7 +1573,7 @@ class Profile extends CommonDBTM {
          __('Entity dropdowns'),
          [
             'itemtype'  => 'Location',
-            'label'     => _n('Location', 'Locations', Session::getPluralNumber()),
+            'label'     => Location::getTypeName(Session::getPluralNumber()),
             'field'     => 'location'
          ],
          [
@@ -1906,7 +1906,7 @@ class Profile extends CommonDBTM {
          'id'                 => '28',
          'table'              => 'glpi_profilerights',
          'field'              => 'rights',
-         'name'               => _n('Phone', 'Phones', Session::getPluralNumber()),
+         'name'               => Phone::getTypeName(Session::getPluralNumber()),
          'datatype'           => 'right',
          'rightclass'         => 'Phone',
          'rightname'          => 'phone',
@@ -1953,7 +1953,7 @@ class Profile extends CommonDBTM {
          'id'                 => '31',
          'table'              => 'glpi_profilerights',
          'field'              => 'rights',
-         'name'               => _n('Document', 'Documents', Session::getPluralNumber()),
+         'name'               => Document::getTypeName(Session::getPluralNumber()),
          'datatype'           => 'right',
          'rightclass'         => 'Document',
          'rightname'          => 'document',
@@ -2310,7 +2310,7 @@ class Profile extends CommonDBTM {
          'id'                 => '56',
          'table'              => 'glpi_profilerights',
          'field'              => 'rights',
-         'name'               => _n('User', 'Users', Session::getPluralNumber()),
+         'name'               => User::getTypeName(Session::getPluralNumber()),
          'datatype'           => 'right',
          'rightclass'         => 'User',
          'rightname'          => 'user',
@@ -2324,7 +2324,7 @@ class Profile extends CommonDBTM {
          'id'                 => '58',
          'table'              => 'glpi_profilerights',
          'field'              => 'rights',
-         'name'               => _n('Group', 'Groups', Session::getPluralNumber()),
+         'name'               => Group::getTypeName(Session::getPluralNumber()),
          'datatype'           => 'right',
          'rightclass'         => 'Group',
          'rightname'          => 'group',
@@ -2338,7 +2338,7 @@ class Profile extends CommonDBTM {
          'id'                 => '59',
          'table'              => 'glpi_profilerights',
          'field'              => 'rights',
-         'name'               => _n('Entity', 'Entities', Session::getPluralNumber()),
+         'name'               => Entity::getTypeName(Session::getPluralNumber()),
          'datatype'           => 'right',
          'rightclass'         => 'Entity',
          'rightname'          => 'entity',
@@ -2544,7 +2544,7 @@ class Profile extends CommonDBTM {
          'id'                 => '112',
          'table'              => 'glpi_profilerights',
          'field'              => 'rights',
-         'name'               => _n('Problem', 'Problems', Session::getPluralNumber()),
+         'name'               => Problem::getTypeName(Session::getPluralNumber()),
          'datatype'           => 'right',
          'rightclass'         => 'Problem',
          'rightname'          => 'problem',

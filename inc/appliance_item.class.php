@@ -148,9 +148,9 @@ class Appliance_Item extends CommonDBRelation {
       echo "<tr><th colspan='".(5+$colsup)."'>".__('Associate')."</th></tr>";
       echo "<tr><th>".__('Name')."</th>";
       if (Session::isMultiEntitiesMode()) {
-         echo "<th>".__('Entity')."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
       }
-      echo "<th>".__('Group')."</th>";
+      echo "<th>".Group::getTypeName(1)."</th>";
       echo "<th>".__('Type')."</th>";
       if ($number_app > 0) {
          echo "<th>".__('Item to link')."</th>";
@@ -343,7 +343,7 @@ class Appliance_Item extends CommonDBRelation {
       echo "<th>".__('Type')."</th>";
       echo "<th>".__('Name')."</th>";
       if (Session::isMultiEntitiesMode()) {
-         echo "<th>".__('Entity')."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
       }
       if (isset($appli->fields["relationtype"])) {
          echo "<th>".__('Item to link')."</th>";

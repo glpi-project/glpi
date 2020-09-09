@@ -3094,8 +3094,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
          case 'add_actor' :
             $types            = [0                          => Dropdown::EMPTY_VALUE,
-                                      CommonITILActor::REQUESTER => __('Requester'),
-                                      CommonITILActor::OBSERVER  => __('Watcher'),
+                                      CommonITILActor::REQUESTER => _n('Requester', 'Requesters', 1),
+                                      CommonITILActor::OBSERVER  => _n('Watcher', 'Watchers', 1),
                                       CommonITILActor::ASSIGN    => __('Assigned to')];
             $rand             = Dropdown::showFromArray('actortype', $types);
 
@@ -3392,7 +3392,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -3434,7 +3434,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'id'                 => '142',
          'table'              => 'glpi_documents',
          'field'              => 'name',
-         'name'               => _n('Document', 'Documents', Session::getPluralNumber()),
+         'name'               => Document::getTypeName(Session::getPluralNumber()),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'nosearch'           => true,
@@ -3471,7 +3471,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'id'                 => '23',
          'table'              => 'glpi_solutiontypes',
          'field'              => 'name',
-         'name'               => __('Solution type'),
+         'name'               => SolutionType::getTypeName(1),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'joinparams'         => [
@@ -3588,7 +3588,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => 'requester',
-         'name'               => __('Requester')
+         'name'               => _n('Requester', 'Requesters', 1)
       ];
 
       $newtab = [
@@ -3597,7 +3597,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'field'              => 'name',
          'datatype'           => 'dropdown',
          'right'              => 'all',
-         'name'               => __('Requester'),
+         'name'               => _n('Requester', 'Requesters', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -3622,7 +3622,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'datatype'           => 'dropdown',
-         'name'               => __('Requester group'),
+         'name'               => _n('Requester group', 'Requester groups', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'condition'          => ['is_requester' => 1],
@@ -3664,7 +3664,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => 'observer',
-         'name'               => __('Watcher')
+         'name'               => _n('Watcher', 'Watchers', 1)
       ];
 
       $tab[] = [
@@ -3673,7 +3673,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'field'              => 'name',
          'datatype'           => 'dropdown',
          'right'              => 'all',
-         'name'               => __('Watcher'),
+         'name'               => _n('Watcher', 'Watchers', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -3692,7 +3692,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'datatype'           => 'dropdown',
-         'name'               => __('Watcher group'),
+         'name'               => _n('Watcher group', 'Watcher groups', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'condition'          => ['is_watcher' => 1],
@@ -3942,7 +3942,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       switch ($user_group) {
          case 'user' :
-            $icontitle = __s('User').' - '.$type; // should never be used
+            $icontitle = addslashes(User::getTypeName(1)).' - '.$type; // should never be used
             switch ($type) {
                case CommonITILActor::REQUESTER :
                   $icontitle = __s('Requester user');
@@ -3959,7 +3959,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return "<i class='fas fa-user' title='$icontitle'></i><span class='sr-only'>$icontitle</span>";
 
          case 'group' :
-            $icontitle = __('Group');
+            $icontitle = Group::getTypeName(1);
             switch ($type) {
                case CommonITILActor::REQUESTER :
                   $icontitle = __s('Requester group');
@@ -4107,10 +4107,10 @@ abstract class CommonITILObject extends CommonDBTM {
                              $withgroup = true, $withsupplier = false, $inobject = true) {
       global $CFG_GLPI;
 
-      $types = ['user'  => __('User')];
+      $types = ['user'  => User::getTypeName(1)];
 
       if ($withgroup) {
-         $types['group'] = __('Group');
+         $types['group'] = Group::getTypeName(1);
       }
 
       if ($withsupplier
@@ -4488,7 +4488,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<span class='actor-bloc'>";
       echo "<div class='actor-head'>";
       if (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester']) {
-         echo __('Requester');
+         echo _n('Requester', 'Requesters', 1);
       }
       $rand_requester      = -1;
       $candeleterequester  = false;
@@ -4598,7 +4598,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<span class='actor-bloc'>";
       echo "<div class='actor-head'>";
       if (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer']) {
-         echo __('Watcher');
+         echo _n('Watcher', 'Watchers', 1);
       }
       $rand_observer       = -1;
       $candeleteobserver   = false;
@@ -6339,11 +6339,11 @@ abstract class CommonITILObject extends CommonDBTM {
       $items[__('Last update')]        = "date_mod";
 
       if (count($_SESSION["glpiactiveentities"]) > 1) {
-         $items[_n('Entity', 'Entities', Session::getPluralNumber())] = "glpi_entities.completename";
+         $items[Entity::getTypeName(Session::getPluralNumber())] = "glpi_entities.completename";
       }
 
       $items[__('Priority')]           = "priority";
-      $items[__('Requester')]          = "users_id";
+      $items[_n('Requester', 'Requesters', 1)]          = "users_id";
       $items[__('Assigned')]           = "users_id_assign";
       if (static::getType() == 'Ticket') {
          $items[_n('Associated element', 'Associated elements', Session::getPluralNumber())] = "";
@@ -6492,7 +6492,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<li><a href='#' class='far fa-check-square pointer' data-type='ITILTask' title='".__s("Task").
          "'><span class='sr-only'>" . __('Task') . "</span></a></li>";
       echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__s("Document").
-         "'><span class='sr-only'>" . __('Document') . "</span></a></li>";
+         "'><span class='sr-only'>" . Document::getTypeName(1) . "</span></a></li>";
       if (($objType === "Ticket") or ($objType === "Change")) {
          echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='".__s("Validation").
             "'><span class='sr-only'>" . __('Validation') . "</span></a></li>";

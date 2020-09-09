@@ -127,7 +127,7 @@ class Location extends CommonTreeDropdown {
          'id'                 => '3',
          'table'              => 'glpi_locations',
          'field'              => 'completename',
-         'name'               => __('Location'),
+         'name'               => Location::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -485,7 +485,7 @@ class Location extends CommonTreeDropdown {
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".__('Type')."</th>";
-         echo "<th>".__('Entity')."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('Name')."</th>";
          echo "<th>".__('Serial number')."</th>";
          echo "<th>".__('Inventory number')."</th>";

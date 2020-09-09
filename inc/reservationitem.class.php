@@ -218,7 +218,7 @@ class ReservationItem extends CommonDBChild {
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'datatype'           => 'dropdown',
          'right'              => 'all',
          'massiveaction'      => false
@@ -228,7 +228,7 @@ class ReservationItem extends CommonDBChild {
          'id'                 => '71',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
-         'name'               => __('Group'),
+         'name'               => Group::getTypeName(1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false
       ];
@@ -266,7 +266,7 @@ class ReservationItem extends CommonDBChild {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];

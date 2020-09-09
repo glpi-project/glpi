@@ -103,7 +103,7 @@ class NotificationTargetCertificate extends NotificationTarget {
                'certificate.name'           => __('Name'),
                'certificate.serial'         => __('Serial number'),
                'certificate.url'            => __('URL'),
-               'certificate.entity'         => __('Entity'),
+               'certificate.entity'         => Entity::getTypeName(1),
                ];
 
       foreach ($tags as $tag => $label) {

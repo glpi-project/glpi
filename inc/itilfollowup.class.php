@@ -551,7 +551,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '5',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'datatype'           => 'dropdown',
          'right'              => 'all'
       ];
@@ -1024,7 +1024,7 @@ JAVASCRIPT;
       $out = "";
       if (count($iterator)) {
          $out .= "<div class='center'><table class='tab_cadre' width='100%'>\n
-                  <tr><th>".__('Date')."</th><th>".__('Requester')."</th>
+                  <tr><th>".__('Date')."</th><th>"._n('Requester', 'Requesters', 1)."</th>
                   <th>".__('Description')."</th></tr>\n";
 
          $showuserlink = 0;

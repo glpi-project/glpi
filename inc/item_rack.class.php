@@ -651,7 +651,7 @@ JAVASCRIPT;
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_racks_id$rand'>".__('Rack')."</label></td>";
+      echo "<td><label for='dropdown_racks_id$rand'>".Rack::getTypeName(1)."</label></td>";
       echo "<td>";
       Rack::dropdown(['value' => $this->fields["racks_id"], 'rand' => $rand]);
       echo "</td>";

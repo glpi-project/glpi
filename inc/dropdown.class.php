@@ -399,7 +399,7 @@ class Dropdown {
                   $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
                   if ($tooltip) {
                      if (!empty($data["phone"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".Phone::getTypeName(1),
                                                    "</span>".$data['phone']);
                      }
                      if (!empty($data["phone2"])) {
@@ -426,7 +426,7 @@ class Dropdown {
                case "glpi_suppliers" :
                   if ($tooltip) {
                      if (!empty($data["phonenumber"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".Phone::getTypeName(1),
                                                    "</span>".$data['phonenumber']);
                      }
                      if (!empty($data["fax"])) {
@@ -450,7 +450,7 @@ class Dropdown {
                   if ($tooltip) {
                      if (!empty($data['locations_id'])) {
                         $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                   "<span class='b'>".__('Location')."</span>",
+                                                   "<span class='b'>".Location::getTypeName(1)."</span>",
                                                    self::getDropdownName("glpi_locations",
                                                                            $data["locations_id"],
                                                                            false, $translate));
@@ -815,8 +815,7 @@ class Dropdown {
       if (is_null($optgroup)) {
          $optgroup = [
              __('Common') => [
-                 'Location'               => _n('Location', 'Locations',
-                                                Session::getPluralNumber()),
+                 'Location'               => Location::getTypeName(Session::getPluralNumber()),
                  'State'                  => _n('Status of items',
                                                 'Statuses of items',
                                                 Session::getPluralNumber()),
@@ -835,13 +834,11 @@ class Dropdown {
                                              Session::getPluralNumber()),
                  'TaskTemplate'        => _n('Task template', 'Task templates',
                                              Session::getPluralNumber()),
-                 'SolutionType'        => _n('Solution type', 'Solution types',
-                                             Session::getPluralNumber()),
+                 'SolutionType'        => SolutionType::getTypeName(Session::getPluralNumber()),
                  'SolutionTemplate'    => _n('Solution template',
                                              'Solution templates',
                                              Session::getPluralNumber()),
-                 'RequestType'         => _n('Request source', 'Request sources',
-                                             Session::getPluralNumber()),
+                 'RequestType'         => RequestType::getTypeName(Session::getPluralNumber()),
                  'ITILFollowupTemplate' => _n('Followup template', 'Followup templates',
                                              Session::getPluralNumber()),
                  'ProjectState'        => _n('Project state', 'Project states',
@@ -1075,7 +1072,7 @@ class Dropdown {
                                           Session::getPluralNumber())
              ],
 
-             __('User') => [
+             User::getTypeName(1) => [
                  'UserTitle'     => _n('User title', 'Users titles',
                                        Session::getPluralNumber()),
                  'UserCategory'  => _n('User category', 'User categories',

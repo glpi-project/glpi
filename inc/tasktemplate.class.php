@@ -76,7 +76,7 @@ class TaskTemplate extends CommonDropdown {
                          'label' => __('By'),
                          'type'  => 'users_id_tech'],
                    ['name'  => 'groups_id_tech',
-                         'label' => __('Group'),
+                         'label' => Group::getTypeName(1),
                          'type'  => 'groups_id_tech'],
                   ];
    }

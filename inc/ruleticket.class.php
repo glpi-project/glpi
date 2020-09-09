@@ -422,7 +422,7 @@ class RuleTicket extends Rule {
 
       $criterias['_users_id_requester']['table']            = 'glpi_users';
       $criterias['_users_id_requester']['field']            = 'name';
-      $criterias['_users_id_requester']['name']             = __('Requester');
+      $criterias['_users_id_requester']['name']             = _n('Requester', 'Requesters', 1);
       $criterias['_users_id_requester']['linkfield']        = '_users_id_requester';
       $criterias['_users_id_requester']['type']             = 'dropdown_users';
       $criterias['_users_id_requester']['linked_criteria']  = '_groups_id_of_requester';
@@ -465,7 +465,7 @@ class RuleTicket extends Rule {
 
       $criterias['_groups_id_requester']['table']           = 'glpi_groups';
       $criterias['_groups_id_requester']['field']           = 'completename';
-      $criterias['_groups_id_requester']['name']            = __('Requester group');
+      $criterias['_groups_id_requester']['name']            = _n('Requester group', 'Requester groups', 1);
       $criterias['_groups_id_requester']['linkfield']       = '_groups_id_requester';
       $criterias['_groups_id_requester']['type']            = 'dropdown';
 
@@ -490,13 +490,13 @@ class RuleTicket extends Rule {
 
       $criterias['_users_id_observer']['table']             = 'glpi_users';
       $criterias['_users_id_observer']['field']             = 'name';
-      $criterias['_users_id_observer']['name']              = __('Watcher');
+      $criterias['_users_id_observer']['name']              = _n('Watcher', 'Watchers', 1);
       $criterias['_users_id_observer']['linkfield']         = '_users_id_observer';
       $criterias['_users_id_observer']['type']              = 'dropdown_users';
 
       $criterias['_groups_id_observer']['table']            = 'glpi_groups';
       $criterias['_groups_id_observer']['field']            = 'completename';
-      $criterias['_groups_id_observer']['name']             = __('Watcher group');
+      $criterias['_groups_id_observer']['name']             = _n('Watcher group', 'Watcher groups', 1);
       $criterias['_groups_id_observer']['linkfield']        = '_groups_id_observer';
       $criterias['_groups_id_observer']['type']             = 'dropdown';
 
@@ -514,7 +514,7 @@ class RuleTicket extends Rule {
 
       $criterias['entities_id']['table']                    = 'glpi_entities';
       $criterias['entities_id']['field']                    = 'name';
-      $criterias['entities_id']['name']                     = __('Entity');
+      $criterias['entities_id']['name']                     = Entity::getTypeName(1);
       $criterias['entities_id']['linkfield']                = 'entities_id';
       $criterias['entities_id']['type']                     = 'dropdown';
 
@@ -606,7 +606,7 @@ class RuleTicket extends Rule {
       $actions['type']['table']                             = 'glpi_tickets';
       $actions['type']['type']                              = 'dropdown_tickettype';
 
-      $actions['_users_id_requester']['name']               = __('Requester');
+      $actions['_users_id_requester']['name']               = _n('Requester', 'Requesters', 1);
       $actions['_users_id_requester']['type']               = 'dropdown_users';
       $actions['_users_id_requester']['force_actions']      = ['assign', 'append'];
       $actions['_users_id_requester']['permitseveral']      = ['append'];
@@ -614,7 +614,7 @@ class RuleTicket extends Rule {
       $actions['_users_id_requester']['appendtoarray']      = ['use_notification' => 1];
       $actions['_users_id_requester']['appendtoarrayfield'] = 'users_id';
 
-      $actions['_groups_id_requester']['name']              = __('Requester group');
+      $actions['_groups_id_requester']['name']              = _n('Requester group', 'Requester groups', 1);
       $actions['_groups_id_requester']['type']              = 'dropdown';
       $actions['_groups_id_requester']['table']             = 'glpi_groups';
       $actions['_groups_id_requester']['condition']         = ['is_requester' => 1];
@@ -647,7 +647,7 @@ class RuleTicket extends Rule {
       $actions['_suppliers_id_assign']['appendtoarray']     = ['use_notification' => 1];
       $actions['_suppliers_id_assign']['appendtoarrayfield']  = 'suppliers_id';
 
-      $actions['_users_id_observer']['name']                = __('Watcher');
+      $actions['_users_id_observer']['name']                = _n('Watcher', 'Watchers', 1);
       $actions['_users_id_observer']['type']                = 'dropdown_users';
       $actions['_users_id_observer']['force_actions']       = ['assign', 'append'];
       $actions['_users_id_observer']['permitseveral']       = ['append'];
@@ -656,7 +656,7 @@ class RuleTicket extends Rule {
       $actions['_users_id_observer']['appendtoarrayfield']  = 'users_id';
 
       $actions['_groups_id_observer']['table']              = 'glpi_groups';
-      $actions['_groups_id_observer']['name']               = __('Watcher group');
+      $actions['_groups_id_observer']['name']               = _n('Watcher group', 'Watcher groups', 1);
       $actions['_groups_id_observer']['type']               = 'dropdown';
       $actions['_groups_id_observer']['condition']          = ['is_watcher' => 1];
       $actions['_groups_id_observer']['force_actions']      = ['assign', 'append'];
@@ -715,7 +715,7 @@ class RuleTicket extends Rule {
 
       $actions['users_id_validate']['name']                 = sprintf(__('%1$s - %2$s'),
                                                                       __('Send an approval request'),
-                                                                      __('User'));
+                                                                      User::getTypeName(1));
       $actions['users_id_validate']['type']                 = 'dropdown_users_validate';
       $actions['users_id_validate']['force_actions']        = ['add_validation'];
 
@@ -727,7 +727,7 @@ class RuleTicket extends Rule {
 
       $actions['groups_id_validate']['name']                = sprintf(__('%1$s - %2$s'),
                                                                          __('Send an approval request'),
-                                                                         __('Group'));
+                                                                         Group::getTypeName(1));
       $actions['groups_id_validate']['type']                = 'dropdown_groups_validate';
       $actions['groups_id_validate']['force_actions']       = ['add_validation'];
 
@@ -750,7 +750,7 @@ class RuleTicket extends Rule {
       $actions['users_id_validate_assign_supervisor']['force_actions']
                                              = ['add_validation'];
 
-      $actions['locations_id']['name']                      = __('Location');
+      $actions['locations_id']['name']                      = Location::getTypeName(1);
       $actions['locations_id']['type']                      = 'dropdown';
       $actions['locations_id']['table']                     = 'glpi_locations';
       $actions['locations_id']['force_actions']             = ['assign', 'fromuser', 'fromitem'];
