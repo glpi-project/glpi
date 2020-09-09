@@ -52,6 +52,18 @@ function isCommandLine() {
  * @return boolean
  */
 function isAPI() {
+   global $CFG_GLPI;
+
+   $called_url = (!empty($_SERVER['HTTPS'] ?? "") && ($_SERVER['HTTPS'] ?? "") !== 'off'
+                     ? 'https'
+                     : 'http').
+                 '://' . ($_SERVER['HTTP_HOST'] ?? "").
+                 ($_SERVER['REQUEST_URI'] ?? "");
+
+   if (strpos($called_url, $CFG_GLPI['url_base_api'] ?? "") !== false) {
+      return true;
+   }
+
    $script = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
    if (strpos($script, 'apirest.php') !== false) {
       return true;
@@ -59,6 +71,7 @@ function isAPI() {
    if (strpos($script, 'apixmlrpc.php') !== false) {
       return true;
    }
+
    return false;
 }
 
