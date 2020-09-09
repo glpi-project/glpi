@@ -141,7 +141,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
    function getTags() {
 
-      $tags_all = ['reservation.item'     => __('Associated item'),
+      $tags_all = ['reservation.item'     => _n('Associated item', 'Associated items', 1),
                         'reservation.itemtype' => __('Item type'),
                         'reservation.url'      => __('URL'),
                         'reservation.itemurl'  => __('URL of item reserved'),
@@ -158,7 +158,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                  'reservation.end'         => __('End date'),
                                  'reservation.comment'     => __('Comments'),
                                  'reservation.item.entity' => Entity::getTypeName(1),
-                                 'reservation.item.name'   => __('Associated item'),
+                                 'reservation.item.name'   => _n('Associated item', 'Associated items', 1),
                                  'reservation.item.tech'   => __('Technician in charge of the hardware')];
 
       foreach ($tags_except_alert as $tag => $label) {

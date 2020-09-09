@@ -453,11 +453,11 @@ class Appliance_Item extends CommonDBRelation {
          if (($item->getType() == 'Appliance') && count(Appliance::getTypes(false))) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(
-                  _n('Associated item', 'Associated items', 2),
+                  _n('Associated item', 'Associated items', Session::getPluralNumber()),
                   self::countForAppliance($item)
                );
             }
-            return _n('Associated item', 'Associated items', 2);
+            return _n('Associated item', 'Associated items', Session::getPluralNumber());
 
          } else if (in_array($item->getType(), Appliance::getTypes(true)) && Session::haveRight('appliance', READ)) {
             if ($_SESSION['glpishow_count_on_tabs']) {

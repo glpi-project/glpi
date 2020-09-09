@@ -595,7 +595,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                                               __('Internal time to resolve')),
                     'ticket.requesttype'           => __('Request source'),
                     'ticket.itemtype'              => __('Item type'),
-                    'ticket.item.name'             => __('Associated item'),
+                    'ticket.item.name'             => _n('Associated item', 'Associated items', 1),
                     'ticket.item.serial'           => __('Serial number'),
                     'ticket.item.otherserial'      => __('Inventory number'),
                     'ticket.item.location'         => sprintf(__('%1$s: %2$s'),

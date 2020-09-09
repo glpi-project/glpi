@@ -83,7 +83,7 @@ class NotificationTargetInfocom extends NotificationTarget {
 
       $tags = ['infocom.action'         => _n('Event', 'Events', 1),
                     'infocom.itemtype'       => __('Item type'),
-                    'infocom.item'           => __('Associated item'),
+                    'infocom.item'           => _n('Associated item', 'Associated items', 1),
                     'infocom.expirationdate' => __('Expiration date'),
                     'infocom.entity'         => Entity::getTypeName(1)];
 

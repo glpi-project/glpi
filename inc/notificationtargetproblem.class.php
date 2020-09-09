@@ -195,7 +195,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'problem.impacts'           => __('Impacts'),
                     'problem.causes'            => __('Causes'),
                     'problem.symptoms'          => __('Symptoms'),
-                    'item.name'                 => __('Associated item'),
+                    'item.name'                 => _n('Associated item', 'Associated items', 1),
                     'item.serial'               => __('Serial number'),
                     'item.otherserial'          => __('Inventory number'),
                     'item.location'             => Location::getTypeName(1),

@@ -136,7 +136,7 @@ class Domain extends CommonDropdown {
          'field'              => 'items_id',
          'nosearch'           => true,
          'massiveaction'      => false,
-         'name'               => _n('Associated items', 'Associated items', 2),
+         'name'               => _n('Associated item', 'Associated items', Session::getPluralNumber()),
          'forcegroupby'       => true,
          'joinparams'         => [
             'jointype'           => 'child'

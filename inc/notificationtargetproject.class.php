@@ -636,7 +636,7 @@ class NotificationTargetProject extends NotificationTarget {
                         'project.numberofproblems'    => _x('quantity', 'Number of problems'),
                         'project.numberoftickets'     => _x('quantity', 'Number of tickets'),
                         'project.numberofdocuments'   => _x('quantity', 'Number of documents'),
-                        'item.name'                   => __('Associated item'),
+                        'item.name'                   => _n('Associated item', 'Associated items', 1),
                         'item.serial'                 => __('Serial number'),
                         'item.otherserial'            => __('Inventory number'),
                         'item.location'               => Location::getTypeName(1),

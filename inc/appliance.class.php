@@ -92,7 +92,7 @@ class Appliance extends CommonDBTM {
       $tab[] = ['id'            => '5',
                 'table'         =>  Appliance_Item::getTable(),
                 'field'         => 'items_id',
-                'name'          => __('Associated items'),
+                'name'          => _n('Associated item', 'Associated items', Session::getPluralNumber()),
                 'massiveaction' => false,
                 'forcegroupby'  =>  true,
                 'joinparams'    => ['jointype' => 'child']];

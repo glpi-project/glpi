@@ -181,7 +181,7 @@ class Certificate extends CommonDBTM {
          'id'                 => '14',
          'table'              => 'glpi_certificates_items',
          'field'              => 'items_id',
-         'name'               => _n('Associated item', 'Associated items', 2),
+         'name'               => _n('Associated item', 'Associated items', Session::getPluralNumber()),
          'nosearch'           => true,
          'massiveaction'      => false,
          'forcegroupby'       => true,
