@@ -1079,7 +1079,7 @@ class Auth extends CommonGLPI {
                //TRANS: %1$s is the auth method type, %2$s the auth method name or link
                return sprintf(__('%1$s: %2$s'), AuthLDAP::getTypeName(1), $auth->getLink());
             }
-            return sprintf(__('%1$s: %2$s'), __('LDAP directory'), $name);
+            return sprintf(__('%1$s: %2$s'), AuthLDAP::getTypeName(1), $name);
 
          case self::MAIL :
             $auth = new AuthMail();

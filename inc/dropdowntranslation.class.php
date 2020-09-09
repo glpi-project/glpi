@@ -366,7 +366,7 @@ class DropdownTranslation extends CommonDBChild {
             echo "</th>";
          }
          echo "<th>".__("Language")."</th>";
-         echo "<th>".__("Field")."</th>";
+         echo "<th>"._n('Field', 'Fields', 1)."</th>";
          echo "<th>".__("Value")."</th></tr>";
          while ($data = $iterator->next()) {
             $onhover = '';

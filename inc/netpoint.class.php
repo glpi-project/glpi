@@ -399,7 +399,7 @@ class Netpoint extends CommonDropdown {
          return;
       }
 
-      $base->addHeader($column_name, __('Network outlet'), $super, $father);
+      $base->addHeader($column_name, _n('Network outlet', 'Network outlets', 1), $super, $father);
 
    }
 

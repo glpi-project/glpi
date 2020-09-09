@@ -710,7 +710,7 @@ class NotificationTargetProject extends NotificationTarget {
       $tags = ['project.entity'   => Entity::getTypeName(1),
                     'project.log'      => __('Historical'),
                     'project.tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
-                    'project.team'     => __('Project team'),
+                    'project.team'     => ProjectTeam::getTypeName(1),
                     'project.costs'    => _n('Cost', 'Costs', Session::getPluralNumber()),
                     'project.changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
                     'project.problems' => Problem::getTypeName(Session::getPluralNumber()),

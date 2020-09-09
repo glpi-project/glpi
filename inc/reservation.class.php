@@ -1022,7 +1022,7 @@ class Reservation extends CommonDBChild {
 
             if ((strcmp($heure_debut, "00:00") == 0)
                   && (strcmp($heure_fin, "24:00") == 0)) {
-               $display = __('Day');
+               $display = _n('Day', 'Days', 1);
 
             } else if (strcmp($heure_debut, "00:00") == 0) {
                $display = sprintf(__('To %s'), $heure_fin);

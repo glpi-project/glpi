@@ -4948,7 +4948,7 @@ JAVASCRIPT;
       }
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".__('LDAP directory')."</th></tr>";
+      echo "<tr><th colspan='4'>".AuthLDAP::getTypeName(1)."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('User DN')."</td>";
       echo "<td>".$this->fields['user_dn']."</td></tr>\n";

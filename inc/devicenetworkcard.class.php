@@ -235,7 +235,7 @@ class DeviceNetworkCard extends CommonDevice {
          'id'                 => '112',
          'table'              => 'glpi_devicenetworkcards',
          'field'              => 'designation',
-         'name'               => __('Network interface'),
+         'name'               => NetworkInterface::getTypeName(1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',

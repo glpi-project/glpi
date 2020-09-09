@@ -238,7 +238,7 @@ class RuleRight extends Rule {
 
          $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
          $criterias['LDAP_SERVER']['field']     = 'name';
-         $criterias['LDAP_SERVER']['name']      = __('LDAP directory');
+         $criterias['LDAP_SERVER']['name']      = AuthLDAP::getTypeName(1);
          $criterias['LDAP_SERVER']['linkfield'] = '';
          $criterias['LDAP_SERVER']['type']      = 'dropdown';
          $criterias['LDAP_SERVER']['virtual']   = true;

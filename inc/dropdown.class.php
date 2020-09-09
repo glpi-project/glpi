@@ -1038,9 +1038,7 @@ class Dropdown {
              ],
 
              __('Networking') => [
-                 'NetworkInterface'         => _n('Network interface',
-                                                  'Network interfaces',
-                                                  Session::getPluralNumber()),
+                 'NetworkInterface'         => NetworkInterface::getTypeName(Session::getPluralNumber()),
                  'Netpoint'                 => _n('Network outlet', 'Network outlets',
                                                   Session::getPluralNumber()),
                  'Network'                  => _n('Network', 'Networks',
