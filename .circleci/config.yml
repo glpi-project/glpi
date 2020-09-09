@@ -120,6 +120,7 @@ commands:
           command: |
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php -d tests/units
             php vendor/bin/ocular --repository=g/glpi-project/glpi code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
+            sudo apt-get update
             sudo apt-get install -qq -y gettext
             tools/locale/extract_template.sh
 
