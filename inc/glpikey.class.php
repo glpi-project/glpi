@@ -147,6 +147,18 @@ class GLPIKey {
    public function generate() {
       global $DB;
 
+      // Fetch old key before generating the new one (but only if DB exists and there is something to migrate)
+      $sodium_key = null;
+      $old_key = false;
+      if ($DB instanceof DBmysql) {
+         try {
+            $sodium_key = $this->get();
+         } catch (\RuntimeException $e) {
+            $sodium_key = null;
+            $old_key = $this->getLegacyKey();
+         }
+      }
+
       $key = sodium_crypto_aead_chacha20poly1305_ietf_keygen();
       $success = (bool)file_put_contents($this->keyfile, $key);
       if (!$success) {
@@ -154,16 +166,6 @@ class GLPIKey {
       }
 
       if ($DB instanceof DBmysql) {
-         $sodium_key = null;
-         $old_key = false;
-
-         try {
-            $sodium_key = $this->get();
-         } catch (\RuntimeException $e) {
-            $sodium_key = null;
-            $old_key = $this->getLegacyKey();
-         }
-
          return $this->migrateFieldsInDb($sodium_key, $old_key)
             && $this->migrateConfigsInDb($sodium_key, $old_key);
       }

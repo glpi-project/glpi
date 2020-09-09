@@ -390,7 +390,7 @@ class Toolbox extends \GLPITestCase {
             $result = \Toolbox::sodiumDecrypt('not a valid value');
          }
       )->error
-         ->withType(E_USER_ERROR)
+         ->withType(E_USER_WARNING)
          ->withMessage('Unable to extract nonce from content. It may not have been crypted with sodium functions.')
          ->exists();
 
@@ -409,7 +409,7 @@ class Toolbox extends \GLPITestCase {
             $result = \Toolbox::sodiumDecrypt('CUdPSEgzKroDOwM1F8lbC8WDcQUkGCxIZpdTEpp5W/PLSb70WmkaKP0Q7QY=');
          }
       )->error
-         ->withType(E_USER_ERROR)
+         ->withType(E_USER_WARNING)
          ->withMessage('Unable to decrypt content. It may have been crypted with another key.')
          ->exists();
 
