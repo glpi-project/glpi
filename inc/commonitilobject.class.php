@@ -3962,11 +3962,11 @@ abstract class CommonITILObject extends CommonDBTM {
             $icontitle = Group::getTypeName(1);
             switch ($type) {
                case CommonITILActor::REQUESTER :
-                  $icontitle = __s('Requester group');
+                  $icontitle = _sn('Requester group', 'Requester groups', 1);
                   break;
 
                case CommonITILActor::OBSERVER :
-                  $icontitle = __s('Watcher group');
+                  $icontitle = _sn('Watcher group', 'Watcher groups', 1);
                   break;
 
                case CommonITILActor::ASSIGN :
@@ -6487,15 +6487,15 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $objType = static::getType();
 
-      echo "<li><a href='#' class='far fa-comment pointer' data-type='ITILFollowup' title='".__s("Followup").
-         "'><span class='sr-only'>" . __('Followup') . "</span></a></li>";
-      echo "<li><a href='#' class='far fa-check-square pointer' data-type='ITILTask' title='".__s("Task").
+      echo "<li><a href='#' class='far fa-comment pointer' data-type='ITILFollowup' title='"._sn('Followup', 'Followups, 1').
+         "'><span class='sr-only'>" . _n('Followup', 'Followups', 1) . "</span></a></li>";
+      echo "<li><a href='#' class='far fa-check-square pointer' data-type='ITILTask' title='"._sn('Task', 'Tasks', 1).
          "'><span class='sr-only'>" . _n('Task', 'Tasks', 1) . "</span></a></li>";
       echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__sn('Document', 'Documents', 1).
          "'><span class='sr-only'>" . Document::getTypeName(1) . "</span></a></li>";
       if (($objType === "Ticket") or ($objType === "Change")) {
-         echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='".__s("Validation").
-            "'><span class='sr-only'>" . __('Validation') . "</span></a></li>";
+         echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='"._sn('Validation', 'Validations, 1').
+            "'><span class='sr-only'>" . _n('Validation', 'Validations', 1) . "</span></a></li>";
       }
       echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='"._sn('Solution', 'Solutions', 1).
          "'><span class='sr-only'>" . ITILSolution::getTypeName(1)  . "</span></a></li>";
@@ -6652,7 +6652,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($canadd_fup) {
          echo "<li class='followup' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"ITILFollowup\");'>"
-              . "<i class='far fa-comment'></i>".__("Followup")."</li>";
+              . "<i class='far fa-comment'></i>"._n('Followup', 'Followups', 1)."</li>";
       }
 
       if ($canadd_task) {
@@ -6668,12 +6668,12 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($canadd_validation) {
          echo "<li class='validation' onclick='".
             "javascript:viewAddSubitem".$this->fields['id']."$rand(\"$validation_class\");'>"
-            ."<i class='far fa-thumbs-up'></i>".__("Approval")."</li>";
+            ."<i class='far fa-thumbs-up'></i>"._n('Approval', 'Approvals', 1)."</li>";
       }
       if ($canadd_solution) {
          echo "<li class='solution' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Solution\");'>"
-              ."<i class='fa fa-check'></i>".__("Solution")."</li>";
+              ."<i class='fa fa-check'></i>"._n('Solution', 'Solutions', 1)."</li>";
       }
       Plugin::doHook('timeline_actions', ['item' => $this, 'rand' => $rand]);
 

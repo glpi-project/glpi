@@ -429,7 +429,7 @@ class Computer extends CommonDBTM {
                            'rand'   => $randDropdown]);
       echo "</td>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_networks_id$randDropdown'>".__('Network')."</label></td>";
+      echo "<td><label for='dropdown_networks_id$randDropdown'>"._n('Network', 'Networks', 1)."</label></td>";
       echo "<td>";
       Network::dropdown(['value' => $this->fields["networks_id"], 'rand' => $randDropdown]);
       echo "</td></tr>\n";
@@ -669,7 +669,7 @@ class Computer extends CommonDBTM {
          'id'                 => '32',
          'table'              => 'glpi_networks',
          'field'              => 'name',
-         'name'               => __('Network'),
+         'name'               => _n('Network', 'Networks', 1),
          'datatype'           => 'dropdown'
       ];
 

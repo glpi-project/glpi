@@ -79,7 +79,7 @@ class NotificationTargetCartridgeItem extends NotificationTarget {
 
       $tags = ['cartridge.action'    => _n('Event', 'Events', 1),
                     'cartridge.reference' => __('Reference'),
-                    'cartridge.item'      => __('Cartridge model'),
+                    'cartridge.item'      => CartridgeItem::getTypeName(1),
                     'cartridge.remaining' => __('Remaining'),
                     'cartridge.url'       => __('URL'),
                     'cartridge.entity'    => Entity::getTypeName(1)];

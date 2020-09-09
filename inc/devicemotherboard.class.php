@@ -146,7 +146,7 @@ class DeviceMotherboard extends CommonDevice {
          'id'                 => '14',
          'table'              => 'glpi_devicemotherboards',
          'field'              => 'designation',
-         'name'               => __('System board'),
+         'name'               => static::getTypeName(1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',

@@ -294,7 +294,7 @@ class Contract_Supplier extends CommonDBRelation {
       }
       $header_end .= "<th>".Supplier::getTypeName(1)."</th>";
       $header_end .= "<th>".Entity::getTypeName(1)."</th>";
-      $header_end .= "<th>".__('Third party type')."</th>";
+      $header_end .= "<th>".SupplierType::getTypeName(1)."</th>";
       $header_end .= "<th>".Phone::getTypeName(1)."</th>";
       $header_end .= "<th>".__('Website')."</th>";
       $header_end .= "</tr>";

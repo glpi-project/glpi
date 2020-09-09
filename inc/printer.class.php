@@ -383,7 +383,7 @@ class Printer  extends CommonDBTM {
          'condition' => ['is_itemgroup' => 1]
       ]);
       echo "</td>\n";
-      echo "<td>".__('Network')."</td>\n";
+      echo "<td>"._n('Network', 'Networks', 1)."</td>\n";
       echo "<td>";
       Network::dropdown(['value' => $this->fields["networks_id"]]);
       echo "</td></tr>\n";
@@ -727,7 +727,7 @@ class Printer  extends CommonDBTM {
          'id'                 => '32',
          'table'              => 'glpi_networks',
          'field'              => 'name',
-         'name'               => __('Network'),
+         'name'               => _n('Network', 'Networks', 1),
          'datatype'           => 'dropdown'
       ];
 

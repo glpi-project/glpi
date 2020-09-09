@@ -288,10 +288,10 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                                                               _n('Date', 'Dates', 1)),
                     'validation.commentsubmission' => sprintf(__('%1$s: %2$s'), __('Request'),
                                                               __('Comments')),
-                    'validation.validationdate'    => sprintf(__('%1$s: %2$s'), __('Validation'),
+                    'validation.validationdate'    => sprintf(__('%1$s: %2$s'), _n('Validation', 'Validations', 1),
                                                              _n('Date', 'Dates', 1)),
                     'validation.validator'         => __('Decision-maker'),
-                    'validation.commentvalidation' => sprintf(__('%1$s: %2$s'), __('Validation'),
+                    'validation.commentvalidation' => sprintf(__('%1$s: %2$s'), _n('Validation', 'Validations', 1),
                                                              __('Comments'))
       ];
 

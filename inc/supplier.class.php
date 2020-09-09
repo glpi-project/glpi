@@ -116,7 +116,7 @@ class Supplier extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".__('Third party type')."</td>";
+      echo "<td>".SupplierType::getTypeName(1)."</td>";
       echo "<td>";
       SupplierType::dropdown(['value' => $this->fields["suppliertypes_id"]]);
       echo "</td></tr>";
@@ -319,7 +319,7 @@ class Supplier extends CommonDBTM {
          'id'                 => '9',
          'table'              => 'glpi_suppliertypes',
          'field'              => 'name',
-         'name'               => __('Third party type'),
+         'name'               => SupplierType::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

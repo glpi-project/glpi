@@ -361,7 +361,7 @@ class NetworkEquipment extends CommonDBTM {
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all']);
       echo "</td>";
-      echo "<td>".__('Network')."</td>";
+      echo "<td>"._n('Network', 'Networks', 1)."</td>";
       echo "<td>";
       Network::dropdown(['value' => $this->fields["networks_id"]]);
       echo "</td></tr>";
@@ -577,7 +577,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '32',
          'table'              => 'glpi_networks',
          'field'              => 'name',
-         'name'               => __('Network'),
+         'name'               => _n('Network', 'Networks', 1),
          'datatype'           => 'dropdown'
       ];
 

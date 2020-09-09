@@ -1755,7 +1755,7 @@ class RuleCollection extends CommonDBTM {
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>" . __('Rule results') . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>".__('Validation')."</td>";
+      echo "<td class='center'>"._n('Validation', 'Validations', 1)."</td>";
       echo "<td><span class='b'>".Dropdown::getYesNo($global_result)."</span></td>";
 
       $output = $this->preProcessPreviewResults($output);

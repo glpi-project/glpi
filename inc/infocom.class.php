@@ -1228,7 +1228,7 @@ class Infocom extends CommonDBChild {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Business criticity')."</td><td>";
+            echo "<td>"._n('Business criticity', 'Business criticities', 1)."</td><td>";
             Dropdown::show('BusinessCriticity', ['value' => $ic->fields['businesscriticities_id']]);
             echo "</td>";
             echo "<td colspan='2'>";
@@ -1610,7 +1610,7 @@ class Infocom extends CommonDBChild {
          'id'                 => '173',
          'table'              => 'glpi_businesscriticities',
          'field'              => 'completename',
-         'name'               => __('Business criticity'),
+         'name'               => _n('Business criticity', 'Business criticities', 1),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'joinparams'         => $complexjoinparams

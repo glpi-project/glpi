@@ -699,7 +699,7 @@ abstract class LevelAgreement extends CommonDBChild {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'number_time',
-         'name'               => __('Time'),
+         'name'               => _x('hour', 'Time'),
          'datatype'           => 'specific',
          'massiveaction'      => false,
          'nosearch'           => true,

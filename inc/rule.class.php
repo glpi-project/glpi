@@ -2010,7 +2010,7 @@ class Rule extends CommonDBTM {
       echo "<td class='center b'>"._n('Criterion', 'Criteria', 1)."</td>";
       echo "<td class='center b'>".__('Condition')."</td>";
       echo "<td class='center b'>".__('Reason')."</td>";
-      echo "<td class='center b'>".__('Validation')."</td>";
+      echo "<td class='center b'>"._n('Validation', 'Validations', 1)."</td>";
       echo "</tr>\n";
 
       foreach ($check_results as $ID => $criteria_result) {
@@ -2031,7 +2031,7 @@ class Rule extends CommonDBTM {
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>" . __('Rule results') . "</th></tr>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center b'>".__('Validation')."</td><td>";
+      echo "<td class='center b'>"._n('Validation', 'Validations', 1)."</td><td>";
       echo Dropdown::getYesNo($global_result)."</td></tr>";
 
       $output = $this->preProcessPreviewResults($output);
