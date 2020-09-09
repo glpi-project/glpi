@@ -147,7 +147,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          __('Name'),
          _n('Version', 'Versions', 1),
          __('Architecture'),
-         __('Service pack')
+         OperatingSystemServicePack::getTypeName(1)
       ];
 
       if (isset($_GET["order"]) && ($_GET["order"] == "ASC")) {
@@ -326,7 +326,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       OperatingSystemArchitecture::dropdown(['value'
                                                  => $this->fields["operatingsystemarchitectures_id"], 'rand' => $rand]);
       echo "</td>";
-      echo "<td><label for='dropdown_operatingsystemservicepacks_id$rand'>".__('Service pack')."</label></td>";
+      echo "<td><label for='dropdown_operatingsystemservicepacks_id$rand'>".OperatingSystemServicePack::getTypeName(1)."</label></td>";
       echo "<td >";
       OperatingSystemServicePack::dropdown(['value'
                                                  => $this->fields["operatingsystemservicepacks_id"], 'rand' => $rand]);
@@ -490,7 +490,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '41',
          'table'              => 'glpi_operatingsystemservicepacks',
          'field'              => 'name',
-         'name'               => __('Service pack'),
+         'name'               => OperatingSystemServicePack::getTypeName(1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [

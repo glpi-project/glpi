@@ -440,7 +440,7 @@ class Rule extends CommonDBTM {
          }
 
          $menu['dictionnary']['options']['os_sp']['title']
-                           = __('Service pack');
+                           = OperatingSystemServicePack::getTypeName(1);
          $menu['dictionnary']['options']['os_sp']['page']
                            = '/front/ruledictionnaryoperatingsystemservicepack.php';
          $menu['dictionnary']['options']['os_sp']['links']['search']

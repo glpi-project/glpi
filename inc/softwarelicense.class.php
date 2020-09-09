@@ -723,7 +723,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    static public function rawSearchOptionsToAdd() {
       $tab = [];
-      $name = _n('License', 'Licenses', Session::getPluralNumber());
+      $name = static::getTypeName(Session::getPluralNumber());
 
       if (!self::canView()) {
          return $tab;

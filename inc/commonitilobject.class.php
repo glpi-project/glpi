@@ -6491,7 +6491,7 @@ abstract class CommonITILObject extends CommonDBTM {
          "'><span class='sr-only'>" . __('Followup') . "</span></a></li>";
       echo "<li><a href='#' class='far fa-check-square pointer' data-type='ITILTask' title='".__s("Task").
          "'><span class='sr-only'>" . __('Task') . "</span></a></li>";
-      echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__s("Document").
+      echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__sn('Document', 'Documents', 1).
          "'><span class='sr-only'>" . Document::getTypeName(1) . "</span></a></li>";
       if (($objType === "Ticket") or ($objType === "Change")) {
          echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='".__s("Validation").
@@ -6663,7 +6663,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($canadd_document) {
          echo "<li class='document' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Document_Item\");'>"
-              ."<i class='fa fa-paperclip'></i>".__("Document")."</li>";
+              ."<i class='fa fa-paperclip'></i>".Document::getTypeName(1)."</li>";
       }
       if ($canadd_validation) {
          echo "<li class='validation' onclick='".

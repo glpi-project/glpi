@@ -965,7 +965,7 @@ class Software extends CommonDBTM {
          echo "<th>".__('Name')."</th>";
          echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>"._n('Installation', 'Installations', Session::getPluralNumber())."</th>";
-         echo "<th>"._n('License', 'Licenses', Session::getPluralNumber())."</th></tr>";
+         echo "<th>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th></tr>";
 
          while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_2'>";

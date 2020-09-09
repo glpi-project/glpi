@@ -1532,7 +1532,7 @@ class Auth extends CommonGLPI {
       }
       echo "</th></tr>\n";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>". __('Field storage of the login in the HTTP request')."</td>";
+      echo "<td class='center'>". _n('Field storage of the login in the HTTP request', 'Fields storage of the login in the HTTP request', 1)."</td>";
       echo "<td>";
       SsoVariable::dropdown(['name'  => 'ssovariables_id',
                                   'value' => $CFG_GLPI["ssovariables_id"]]);

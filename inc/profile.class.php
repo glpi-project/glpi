@@ -935,7 +935,7 @@ class Profile extends CommonDBTM {
                               'default_class' => 'tab_bg_2'];
 
       $rights = [['itemtype'  => 'SoftwareLicense',
-                            'label'     => _n('License', 'Licenses', Session::getPluralNumber()),
+                            'label'     => SoftwareLicense::getTypeName(Session::getPluralNumber()),
                             'field'     => 'license'],
                       ['itemtype'  => 'Contact',
                             'label'     => _n('Contact', 'Contacts', Session::getPluralNumber())." / ".

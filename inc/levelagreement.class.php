@@ -460,7 +460,7 @@ abstract class LevelAgreement extends CommonDBChild {
          $header_end .= "<th>".__('Name')."</th>";
          $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
          $header_end .= "<th>".__('Maximum time')."</th>";
-         $header_end .= "<th>".__('Calendar')."</th>";
+         $header_end .= "<th>"._n('Calendar', 'Calendars', 1)."</th>";
 
          echo $header_begin.$header_top.$header_end;
          foreach ($laList as $val) {

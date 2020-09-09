@@ -1039,7 +1039,7 @@ class Entity extends CommonTreeDropdown {
          'id'                 => '36',
          'table'              => $this->getTable(),
          'field'              => 'calendars_id',// not a dropdown because of special valu
-         'name'               => __('Calendar'),
+         'name'               => _n('Calendar', 'Calendars', 1),
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
@@ -2016,7 +2016,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='2'>";
-      echo _n('License', 'Licenses', Session::getPluralNumber());
+      echo SoftwareLicense::getTypeName(Session::getPluralNumber());
       echo "</th>";
       echo "<td>" . __('Alarms on expired licenses') . "</td><td>";
       $default_value = $entity->fields['use_licenses_alert'];
@@ -2503,7 +2503,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr><th colspan='4'>".__('Tickets configuration')."</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".__('Calendar')."</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Calendar', 'Calendars', 1)."</td>";
       echo "<td colspan='2'>";
       $options = ['value'      => $entity->fields["calendars_id"],
                        'emptylabel' => __('24/7')];

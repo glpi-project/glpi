@@ -298,7 +298,7 @@ JAVASCRIPT;
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td  colspan='2'>".__('Calendar')."</td>";
+      echo "<tr class='tab_bg_2'><td  colspan='2'>"._n('Calendar', 'Calendars', 1)."</td>";
       echo "<td>";
       Planning::showAddEventClassicForm([
          'items_id'  => $this->fields['id'],

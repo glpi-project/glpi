@@ -1001,7 +1001,7 @@ class Dropdown {
                                               Session::getPluralNumber())
              ],
 
-             __('Calendar') => [
+             _n('Calendar', 'Calendars', 1) => [
                  'Calendar' => _n('Calendar', 'Calendars',
                                   Session::getPluralNumber()),
                  'Holiday'  => _n('Close time', 'Close times',
