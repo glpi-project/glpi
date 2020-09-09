@@ -4674,7 +4674,7 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldText('_add_validation');
       } else {
          echo $tt->getBeginHiddenFieldText('global_validation');
-         echo __('Approval');
+         echo CommonITILValidation::getTypeName(1);
          echo $tt->getEndHiddenFieldText('global_validation');
       }
       echo "</th>";

@@ -613,7 +613,7 @@ class Html {
                   $class = 'warn_msg';
                   break;
                case INFO:
-                  $title = __s('Information');
+                  $title = _ns('Information', 'Information', 1);
                   $class = 'info_msg';
                   break;
             }

@@ -274,7 +274,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Power supply')."</td>";
+      echo "<td>".DevicePowerSupply::getTypeName(1)."</td>";
       echo "<td>";
       PhonePowerSupply::dropdown(['value' => $this->fields["phonepowersupplies_id"]]);
       echo "</td></tr>\n";
@@ -543,7 +543,7 @@ class Phone extends CommonDBTM {
          'id'                 => '42',
          'table'              => 'glpi_phonepowersupplies',
          'field'              => 'name',
-         'name'               => __('Power supply'),
+         'name'               => DevicePowerSupply::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

@@ -2062,10 +2062,10 @@ class RuleCollection extends CommonDBTM {
 
       if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
          $dictionnaries[] = [
-            'type'      => _n('Operating system', 'Operating systems', Session::getPluralNumber()),
+            'type'      => OperatingSystem::getTypeName(Session::getPluralNumber()),
             'entries'   => [
                [
-                  'label'  => _n('Operating system', 'Operating systems', Session::getPluralNumber()),
+                  'label'  => OperatingSystem::getTypeName(Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryoperatingsystem.php'
                ], [
                   'label'  => _n('Service pack', 'Service packs', Session::getPluralNumber()),

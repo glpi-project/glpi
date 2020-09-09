@@ -428,7 +428,7 @@ class Rule extends CommonDBTM {
          }
 
          $menu['dictionnary']['options']['os']['title']
-                           = __('Operating system');
+                           = OperatingSystem::getTypeName(1);
          $menu['dictionnary']['options']['os']['page']
                            = '/front/ruledictionnaryoperatingsystem.php';
          $menu['dictionnary']['options']['os']['links']['search']

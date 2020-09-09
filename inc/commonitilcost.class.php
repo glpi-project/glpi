@@ -173,7 +173,7 @@ abstract class CommonITILCost extends CommonDBChild {
          'id'                 => '18',
          'table'              => 'glpi_budgets',
          'field'              => 'name',
-         'name'               => _n('Budget', 'Budgets', 1),
+         'name'               => Budget::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -453,7 +453,7 @@ abstract class CommonITILCost extends CommonDBChild {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Budget')."</td>";
+      echo "<tr class='tab_bg_1'><td>".Budget::getTypeName(1)."</td>";
       echo "<td>";
       Budget::dropdown(['value'  => $this->fields["budgets_id"],
                              'entity' => $this->fields["entities_id"]]);
@@ -557,7 +557,7 @@ abstract class CommonITILCost extends CommonDBChild {
          echo "<th>".__('Name')."</th>";
          echo "<th>".__('Begin date')."</th>";
          echo "<th>".__('End date')."</th>";
-         echo "<th>".__('Budget')."</th>";
+         echo "<th>".Budget::getTypeName(1)."</th>";
          echo "<th>".__('Duration')."</th>";
          echo "<th>".__('Time cost')."</th>";
          echo "<th>".__('Fixed cost')."</th>";

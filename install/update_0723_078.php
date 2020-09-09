@@ -3182,7 +3182,7 @@ function update0723to078() {
    $ADDTODISPLAYPREF['Budget']=[2,3,4,19];
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
-                                      __('Automatic action')));
+                                      CronTask::getTypeName(1)));
    if (!$DB->tableExists('glpi_crontasks')) {
       $query = "CREATE TABLE `glpi_crontasks` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,

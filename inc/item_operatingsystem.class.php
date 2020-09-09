@@ -55,7 +55,7 @@ class Item_OperatingSystem extends CommonDBRelation {
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb = self::countForItem($item);
             }
-            return self::createTabEntry(_n('Operating system', 'Operating systems', Session::getPluralNumber()), $nb);
+            return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }
@@ -304,7 +304,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       $rand = mt_rand();
 
       echo "<tr class='headerRow'><th colspan='".$colspan."'>";
-      echo __('Operating system');
+      echo OperatingSystem::getTypeName(1);
       echo Html::hidden('itemtype', ['value' => $this->fields['itemtype']]);
       echo Html::hidden('items_id', ['value' => $this->fields['items_id']]);
       echo "</th></tr>";

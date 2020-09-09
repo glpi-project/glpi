@@ -112,7 +112,7 @@ class Enclosure extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_power_supplies$rand'>".__('Power supplies')."</label></td>";
+      echo "<td><label for='dropdown_power_supplies$rand'>".DevicePowerSupply::getTypeName(Session::getPluralNumber())."</label></td>";
       echo "<td>";
       Dropdown::showNumber(
          "power_supplies", [

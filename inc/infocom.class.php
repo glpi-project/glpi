@@ -1121,7 +1121,7 @@ class Infocom extends CommonDBChild {
             }
             echo "</td>";
             if (Budget::canView()) {
-               echo "<td>".__('Budget')."</td><td >";
+               echo "<td>".Budget::getTypeName(1)."</td><td >";
                Budget::dropdown(['value'    => $ic->fields["budgets_id"],
                                       'entity'   => $item->getEntityID(),
                                       'comments' => 1]);
@@ -1473,7 +1473,7 @@ class Infocom extends CommonDBChild {
          'table'              => 'glpi_budgets',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Budget'),
+         'name'               => Budget::getTypeName(1),
          'forcegroupby'       => true,
          'joinparams'         => $complexjoinparams
       ];
@@ -1828,7 +1828,7 @@ class Infocom extends CommonDBChild {
          'id'                 => '19',
          'table'              => 'glpi_budgets',
          'field'              => 'name',
-         'name'               => __('Budget'),
+         'name'               => Budget::getTypeName(1),
          'datatype'           => 'itemlink'
       ];
 

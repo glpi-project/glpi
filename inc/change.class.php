@@ -540,7 +540,7 @@ class Change extends CommonITILObject {
 
       $tab = [self::INCOMING      => _x('status', 'New'),
                    self::EVALUATION    => __('Evaluation'),
-                   self::APPROVAL      => __('Approval'),
+                   self::APPROVAL      => CommonITILValidation::getTypeName(1),
                    self::ACCEPTED      => _x('status', 'Accepted'),
                    self::WAITING       => __('Pending'),
                    self::TEST          => _x('change', 'Testing'),
@@ -1052,7 +1052,7 @@ class Change extends CommonITILObject {
          echo $tt->getEndHiddenFieldText('_add_validation');
       } else {
          echo $tt->getBeginHiddenFieldText('global_validation');
-         echo __('Approval');
+         echo CommonITILValidation::getTypeName(1);
          echo $tt->getEndHiddenFieldText('global_validation');
       }
       echo "</th>";

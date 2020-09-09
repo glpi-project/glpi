@@ -3464,7 +3464,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => 'solution',
-         'name'               => _n('Solution', 'Solutions', 1)
+         'name'               => ITILSolution::getTypeName(1)
       ];
 
       $tab[] = [
@@ -3488,7 +3488,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'id'                 => '24',
          'table'              => ITILSolution::getTable(),
          'field'              => 'content',
-         'name'               => _n('Solution', 'Solutions', 1),
+         'name'               => ITILSolution::getTypeName(1),
          'datatype'           => 'text',
          'htmltext'           => true,
          'massiveaction'      => false,
@@ -6497,8 +6497,8 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='".__s("Validation").
             "'><span class='sr-only'>" . __('Validation') . "</span></a></li>";
       }
-      echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='".__s("Solution").
-         "'><span class='sr-only'>" . __('Solution')  . "</span></a></li>";
+      echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='"._ns('Solution', 'Solutions', 1).
+         "'><span class='sr-only'>" . ITILSolution::getTypeName(1)  . "</span></a></li>";
       echo "<li><a href='#' class='fa fa-ban pointer' data-type='reset' title=\"".__s("Reset display options").
          "\"><span class='sr-only'>" . __('Reset display options')  . "</span></a></li>";
       echo "</ul>";
@@ -7045,7 +7045,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
                echo "</span>";
             } else {
-               echo __("Requester");
+               echo _n('Requester', 'Requesters', 1);
             }
             echo "</div>"; // h_user
          }

@@ -675,7 +675,7 @@ class NotificationTargetProject extends NotificationTarget {
          'cost.datebegin'       => sprintf(__('%1$s: %2$s'), _n('Cost', 'Costs', 1), __('Begin date')),
          'cost.dateend'         => sprintf(__('%1$s: %2$s'), _n('Cost', 'Costs', 1), __('End date')),
          'cost.cost'            => _n('Cost', 'Costs', 1),
-         'cost.budget'          => sprintf(__('%1$s: %2$s'), _n('Cost', 'Costs', 1), __('Budget')),
+         'cost.budget'          => sprintf(__('%1$s: %2$s'), _n('Cost', 'Costs', 1), Budget::getTypeName(1)),
          'document.url'         => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('URL')),
          'document.downloadurl' => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('Download URL')),
          'document.heading'     => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('Heading')),

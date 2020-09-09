@@ -141,7 +141,7 @@ class DevicePowerSupply extends CommonDevice {
          'id'                 => '39',
          'table'              => 'glpi_devicepowersupplies',
          'field'              => 'designation',
-         'name'               => __('Power supply'),
+         'name'               => static::getTypeName(1),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'massiveaction'      => false,

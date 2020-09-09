@@ -82,7 +82,7 @@ echo "<input type='hidden' name='itemtype' value='". $_GET['itemtype'] ."'>";
 echo "<table class='tab_cadre_fixe' ><tr class='tab_bg_2'><td rowspan='2' width='30%'>";
 $values = [_n('Dropdown', 'Dropdowns', 2) => ['ComputerType'    => _n('Type', 'Types', 1),
                                                        'ComputerModel'   => _n('Model', 'Models', 1),
-                                                       'OperatingSystem' => __('Operating system'),
+                                                       'OperatingSystem' => OperatingSystem::getTypeName(1),
                                                        'Location'        => Location::getTypeName(1)],
                ];
 $devices = Dropdown::getDeviceItemTypes();

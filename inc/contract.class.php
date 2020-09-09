@@ -1002,7 +1002,7 @@ class Contract extends CommonDBTM {
          'id'                 => '45',
          'table'              => 'glpi_budgets',
          'field'              => 'name',
-         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Budget')),
+         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), Budget::getTypeName(1)),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,

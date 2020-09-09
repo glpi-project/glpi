@@ -1004,7 +1004,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => 'common',
-         'name'               => __('Approval')
+         'name'               => CommonITILValidation::getTypeName(1)
       ];
 
       $tab[] = [
@@ -1082,7 +1082,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => 'validation',
-         'name'               => __('Approval')
+         'name'               => CommonITILValidation::getTypeName(1)
       ];
 
       $tab[] = [
@@ -1101,7 +1101,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'id'                 => '52',
          'table'              => getTableForItemType(static::$itemtype),
          'field'              => 'global_validation',
-         'name'               => __('Approval'),
+         'name'               => CommonITILValidation::getTypeName(1),
          'searchtype'         => 'equals',
          'datatype'           => 'specific'
       ];

@@ -128,7 +128,7 @@ class SoftwareVersion extends CommonDBChild {
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Operating system') . "</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . OperatingSystem::getTypeName(1) . "</td><td>";
       OperatingSystem::dropdown(['value' => $this->fields["operatingsystems_id"]]);
       echo "</td></tr>\n";
 
@@ -171,7 +171,7 @@ class SoftwareVersion extends CommonDBChild {
          'id'                 => '4',
          'table'              => 'glpi_operatingsystems',
          'field'              => 'name',
-         'name'               => __('Operating system'),
+         'name'               => OperatingSystem::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -335,7 +335,7 @@ class SoftwareVersion extends CommonDBChild {
          echo "<table class='tab_cadre_fixehov'><tr>";
          echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
          echo "<th>".__('Status')."</th>";
-         echo "<th>".__('Operating system')."</th>";
+         echo "<th>".OperatingSystem::getTypeName(1)."</th>";
          echo "<th>"._n('Installation', 'Installations', Session::getPluralNumber())."</th>";
          echo "<th>".__('Comments')."</th>";
          echo "</tr>\n";

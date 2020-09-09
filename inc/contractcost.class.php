@@ -163,7 +163,7 @@ class ContractCost extends CommonDBChild {
          'id'                 => '18',
          'table'              => 'glpi_budgets',
          'field'              => 'name',
-         'name'               => _n('Budget', 'Budgets', 1),
+         'name'               => Budget::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -300,7 +300,7 @@ class ContractCost extends CommonDBChild {
       Html::showDateField("end_date", ['value' => $this->fields['end_date']]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Budget')."</td>";
+      echo "<tr class='tab_bg_1'><td>".Budget::getTypeName(1)."</td>";
       echo "<td>";
       Budget::dropdown(['value' => $this->fields["budgets_id"]]);
       echo "</td></tr>";
@@ -364,7 +364,7 @@ class ContractCost extends CommonDBChild {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".__('Begin date')."</th>";
          echo "<th>".__('End date')."</th>";
-         echo "<th>".__('Budget')."</th>";
+         echo "<th>".Budget::getTypeName(1)."</th>";
          echo "<th>"._n('Cost', 'Costs', 1)."</th>";
          echo "</tr>";
 

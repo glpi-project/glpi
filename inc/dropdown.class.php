@@ -1008,10 +1008,8 @@ class Dropdown {
                                   Session::getPluralNumber())
              ],
 
-             _n('Operating system', 'Operating systems', Session::getPluralNumber()) => [
-                 'OperatingSystem'    => _n('Operating system',
-                                            'Operating systems',
-                                            Session::getPluralNumber()),
+             OperatingSystem::getTypeName(Session::getPluralNumber()) => [
+                 'OperatingSystem'    => OperatingSystem::getTypeName(Session::getPluralNumber()),
                  'OperatingSystemVersion'
                                       => _n('Version',
                                             'Versions',

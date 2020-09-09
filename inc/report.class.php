@@ -212,7 +212,7 @@ class Report extends CommonGLPI{
          echo "<td class='numeric'>$number</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".__('Operating system')."</td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".OperatingSystem::getTypeName(1)."</td></tr>";
 
       // 2. Get some more number data (operating systems per computer)
       $iterator = $DB->request([

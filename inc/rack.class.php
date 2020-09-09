@@ -199,7 +199,7 @@ class Rack extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_dcrooms_id$rand'>".__('Server room')."</label></td>";
+      echo "<td><label for='dropdown_dcrooms_id$rand'>".DCRoom::getTypeName(1)."</label></td>";
       echo "<td>";
       $rooms = $DB->request([
          'SELECT' => ['id', 'name'],
@@ -396,7 +396,7 @@ class Rack extends CommonDBTM {
          'id'                 => '7',
          'table'              => DCRoom::getTable(),
          'field'              => 'name',
-         'name'               => __('Server room'),
+         'name'               => DCRoom::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

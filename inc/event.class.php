@@ -161,7 +161,7 @@ class Event extends CommonDBTM {
                           'setup'        => __('Setup'),
                           'security'     => __('Security'),
                           'reservation'  => _n('Reservation', 'Reservations', Session::getPluralNumber()),
-                          'cron'         => _n('Automatic action', 'Automatic actions', Session::getPluralNumber()),
+                          'cron'         => CronTask::getTypeName(Session::getPluralNumber()),
                           'document'     => Document::getTypeName(Session::getPluralNumber()),
                           'notification' => _n('Notification', 'Notifications', Session::getPluralNumber()),
                           'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber())];

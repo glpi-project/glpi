@@ -930,7 +930,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
           && isset($options['validation_status'])) {
          $this->data["##$objettype.action##"]
                      //TRANS: %s id of the approval's state
-                     = sprintf(__('%1$s - %2$s'), __('Approval'),
+                     = sprintf(__('%1$s - %2$s'), CommonITILValidation::getTypeName(1),
                                TicketValidation::getStatus($options['validation_status']));
       } else {
          $this->data["##$objettype.action##"] = $events[$event];
@@ -1483,7 +1483,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.observergroups'        => _n('Watcher group', 'Watcher groups', Session::getPluralNumber()),
                     $objettype.'.assigntogroups'        => __('Assigned to groups'),
                     $objettype.'.solution.type'         => SolutionType::getTypeName(1),
-                    $objettype.'.solution.description'  => _n('Solution', 'Solutions', 1),
+                    $objettype.'.solution.description'  => ITILSolution::getTypeName(1),
                     $objettype.'.observerusers'         => _n('Watcher', 'Watchers', Session::getPluralNumber()),
                     $objettype.'.action'                => _n('Event', 'Events', 1),
                     'followup.date'                     => __('Opening date'),
@@ -1518,7 +1518,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'cost.totalcost'                    => sprintf(__('%1$s: %2$s'), _n('Cost', 'Costs', 1),
                                                                    __('Total cost')),
                     'cost.budget'                       => sprintf(__('%1$s: %2$s'), _n('Cost', 'Costs', 1),
-                                                                   __('Budget')),
+                                                                   Budget::getTypeName(1)),
                     'task.author'                       => __('Writer'),
                     'task.isprivate'                    => __('Private'),
                     'task.date'                         => __('Opening date'),

@@ -640,7 +640,7 @@ class Software extends CommonDBTM {
          'table'              => 'glpi_operatingsystems',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Operating system'),
+         'name'               => OperatingSystem::getTypeName(1),
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
