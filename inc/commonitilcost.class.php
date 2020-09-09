@@ -197,7 +197,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => 'cost',
-         'name'               => Cost::getTypeName(1)
+         'name'               => _n('Cost', 'Costs', 1)
       ];
 
       $tab[] = [
@@ -244,7 +244,7 @@ abstract class CommonITILCost extends CommonDBChild {
          'id'                 => '49',
          'table'              => static::getTable(),
          'field'              => 'actiontime',
-         'name'               => sprintf(__('%1$s - %2$s'), Cost::getTypeName(1), __('Duration')),
+         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Duration')),
          'datatype'           => 'timestamp',
          'forcegroupby'       => true,
          'usehaving'          => true,

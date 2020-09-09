@@ -155,7 +155,7 @@ class ContractCost extends CommonDBChild {
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'cost',
-         'name'               => Cost::getTypeName(1),
+         'name'               => _n('Cost', 'Costs', 1),
          'datatype'           => 'decimal'
       ];
 
@@ -278,7 +278,7 @@ class ContractCost extends CommonDBChild {
       echo "<input type='hidden' name='contracts_id' value='".$this->fields['contracts_id']."'>";
       Html::autocompletionTextField($this, 'name');
       echo "</td>";
-      echo "<td>".Cost::getTypeName(1)."</td>";
+      echo "<td>"._n('Cost', 'Costs', 1)."</td>";
       echo "<td>";
       echo "<input type='text' name='cost' value='".Html::formatNumber($this->fields["cost"], true)."'
              size='14'>";
@@ -365,7 +365,7 @@ class ContractCost extends CommonDBChild {
          echo "<th>".__('Begin date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "<th>".__('Budget')."</th>";
-         echo "<th>".Cost::getTypeName(1)."</th>";
+         echo "<th>"._n('Cost', 'Costs', 1)."</th>";
          echo "</tr>";
 
          Session::initNavigateListItems(__CLASS__,

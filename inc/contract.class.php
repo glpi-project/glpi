@@ -530,7 +530,7 @@ class Contract extends CommonDBTM {
          'id'                 => '136',
          'table'              => 'glpi_contractcosts',
          'field'              => 'totalcost',
-         'name'               => Cost::getTypeName(1),
+         'name'               => _n('Cost', 'Costs', 1),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'decimal',
@@ -925,7 +925,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => 'cost',
-         'name'               => Cost::getTypeName(1)
+         'name'               => _n('Cost', 'Costs', 1)
       ];
 
       $tab[] = [
@@ -963,7 +963,7 @@ class Contract extends CommonDBTM {
          'id'                 => '42',
          'table'              => 'glpi_contractcosts',
          'field'              => 'begin_date',
-         'name'               => sprintf(__('%1$s - %2$s'), Cost::getTypeName(1), __('Begin date')),
+         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Begin date')),
          'datatype'           => 'date',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -976,7 +976,7 @@ class Contract extends CommonDBTM {
          'id'                 => '43',
          'table'              => 'glpi_contractcosts',
          'field'              => 'end_date',
-         'name'               => sprintf(__('%1$s - %2$s'), Cost::getTypeName(1), __('End date')),
+         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('End date')),
          'datatype'           => 'date',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -989,7 +989,7 @@ class Contract extends CommonDBTM {
          'id'                 => '44',
          'table'              => 'glpi_contractcosts',
          'field'              => 'name',
-         'name'               => sprintf(__('%1$s - %2$s'), Cost::getTypeName(1), __('Name')),
+         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Name')),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -1002,7 +1002,7 @@ class Contract extends CommonDBTM {
          'id'                 => '45',
          'table'              => 'glpi_budgets',
          'field'              => 'name',
-         'name'               => sprintf(__('%1$s - %2$s'), Cost::getTypeName(1), __('Budget')),
+         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Budget')),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
