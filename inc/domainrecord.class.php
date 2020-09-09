@@ -480,7 +480,7 @@ class DomainRecord extends CommonDBChild {
       echo "<th>" . _n('Type', 'Types', 1) . "</th>";
       echo "<th>" . __('Name') . "</th>";
       echo "<th>" . __('TTL') . "</th>";
-      echo "<th>" . __('Target') . "</th>";
+      echo "<th>" . _n('Target', 'Targets', 1) . "</th>";
       echo "</tr>";
 
       while ($data = $iterator->next()) {

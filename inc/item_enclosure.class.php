@@ -256,7 +256,7 @@ class Item_Enclosure extends CommonDBRelation {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_enclosures_id$rand'>".__('Enclosure')."</label></td>";
+      echo "<td><label for='dropdown_enclosures_id$rand'>".Enclosure::getTypeName(1)."</label></td>";
       echo "<td>";
       Enclosure::dropdown(['value' => $this->fields["enclosures_id"], 'rand' => $rand]);
       echo "</td>";

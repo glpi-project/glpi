@@ -212,7 +212,7 @@ class NotificationMailingSetting extends NotificationSetting {
             $out .= " starthidden";
          }
          $out .= "' id='smtp_config'>";
-         $out .= "<tr class='tab_bg_1'><th colspan='4'>".__('Mail server')."</th></tr>";
+         $out .= "<tr class='tab_bg_1'><th colspan='4'>".AuthMail::getTypeName(1)."</th></tr>";
          $out .= "<tr class='tab_bg_2'>";
          $certrand = mt_rand();
          $out .= "<td><label for='dropdown_smtp_check_certificate$certrand'>" . __("Check certificate") . "</label></td>";

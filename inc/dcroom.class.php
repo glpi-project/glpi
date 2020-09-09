@@ -91,7 +91,7 @@ class DCRoom extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_datacenters_id$rand'>".__('Data center')."</label></td>";
+      echo "<td><label for='dropdown_datacenters_id$rand'>".Datacenter::getTypeName(1)."</label></td>";
 
       echo "<td>";
       $datacenters = $DB->request([
@@ -254,7 +254,7 @@ class DCRoom extends CommonDBTM {
          'id'                 => '4',
          'table'              => Datacenter::getTable(),
          'field'              => 'name',
-         'name'               => __('Data center'),
+         'name'               => Datacenter::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

@@ -233,7 +233,7 @@ class PDU_Rack extends CommonDBRelation {
       $rand = mt_rand();
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_pdus_id$rand'>".__('PDU')."</label></td>";
+      echo "<td><label for='dropdown_pdus_id$rand'>".PDU::getTypeName(1)."</label></td>";
       echo "<td>";
       PDU::dropdown([
          'value'       => $this->fields["pdus_id"],

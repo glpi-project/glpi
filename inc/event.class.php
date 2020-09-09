@@ -157,7 +157,7 @@ class Event extends CommonDBTM {
                           'planning'     => __('Planning'),
                           'tools'        => __('Tools'),
                           'financial'    => __('Management'),
-                          'login'        => __('Connection'),
+                          'login'        => _n('Connection', 'Connections', 1),
                           'setup'        => __('Setup'),
                           'security'     => __('Security'),
                           'reservation'  => _n('Reservation', 'Reservations', Session::getPluralNumber()),

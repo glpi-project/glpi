@@ -832,8 +832,7 @@ class Dropdown {
                                              Session::getPluralNumber()),
                  'TaskCategory'        => _n('Task category', 'Task categories',
                                              Session::getPluralNumber()),
-                 'TaskTemplate'        => _n('Task template', 'Task templates',
-                                             Session::getPluralNumber()),
+                 'TaskTemplate'        => TaskTemplate::getTypeName(Session::getPluralNumber()),
                  'SolutionType'        => SolutionType::getTypeName(Session::getPluralNumber()),
                  'SolutionTemplate'    => _n('Solution template',
                                              'Solution templates',
@@ -881,16 +880,14 @@ class Dropdown {
                  'ConsumableItemType'   => _n('Consumable type',
                                               'Consumable types',
                                               Session::getPluralNumber()),
-                 'ContractType'         => _n('Contract type', 'Contract types',
-                                              Session::getPluralNumber()),
+                 'ContractType'         => ContractType::getTypeName(Session::getPluralNumber()),
                  'ContactType'          => _n('Contact type', 'Contact types',
                                               Session::getPluralNumber()),
                  'DeviceGenericType'    => _n('Generic device type', 'Generic device types',
                                               Session::getPluralNumber()),
                  'DeviceSensorType'     => _n('Sensor type', 'Sensors types',
                                               Session::getPluralNumber()),
-                 'DeviceMemoryType'     => _n('Memory type', 'Memory types',
-                                              Session::getPluralNumber()),
+                 'DeviceMemoryType'     => DeviceMemoryType::getTypeName(Session::getPluralNumber()),
                  'SupplierType'         => _n('Third party type',
                                               'Third party types',
                                               Session::getPluralNumber()),
@@ -902,8 +899,7 @@ class Dropdown {
                  'PhonePowerSupply'     => _n('Phone power supply type',
                                               'Phones power supply types',
                                               Session::getPluralNumber()),
-                 'Filesystem'           => _n('File system', 'File systems',
-                                              Session::getPluralNumber()),
+                 'Filesystem'           => Filesystem::getTypeName(Session::getPluralNumber()),
                  'CertificateType'      => _n('Certificate type', 'Certificate types',
                                                Session::getPluralNumber()),
                  'BudgetType'           => _n('Budget type', 'Budget types',
@@ -973,15 +969,11 @@ class Dropdown {
              ],
 
              _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
-                 'VirtualMachineType'   => _n('Virtualization system',
-                                              'Virtualization systems',
-                                              Session::getPluralNumber()),
+                 'VirtualMachineType'   => VirtualMachineType::getTypeName(Session::getPluralNumber()),
                  'VirtualMachineSystem' => _n('Virtualization model',
                                               'Virtualization models',
                                              Session::getPluralNumber()),
-                 'VirtualMachineState'  => _n('State of the virtual machine',
-                                              'States of the virtual machine',
-                                              Session::getPluralNumber())
+                 'VirtualMachineState'  => VirtualMachineState::getTypeName(Session::getPluralNumber())
              ],
 
              __('Management') => [
@@ -1025,14 +1017,8 @@ class Dropdown {
                                       => _n('Edition',
                                             'Editions',
                                              Session::getPluralNumber()),
-                 'OperatingSystemKernel'
-                                      => _n('Kernel',
-                                            'Kernels',
-                                            Session::getPluralNumber()),
-                 'OperatingSystemKernelVersion'
-                                      => _n('Kernel version',
-                                            'Kernel versions',
-                                            Session::getPluralNumber()),
+                 'OperatingSystemKernel' => OperatingSystemKernel::getTypeName(Session::getPluralNumber()),
+                 'OperatingSystemKernelVersion' => OperatingSystemKernelVersion::getTypeName(Session::getPluralNumber()),
                  'AutoUpdateSystem'   => _n('Update source', 'Update sources',
                                             Session::getPluralNumber())
              ],

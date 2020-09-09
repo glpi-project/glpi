@@ -217,7 +217,7 @@ class DeviceProcessor extends CommonDevice {
          'id'                 => '17',
          'table'              => 'glpi_deviceprocessors',
          'field'              => 'designation',
-         'name'               => __('Processor'),
+         'name'               => self::getTypeName(1),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'massiveaction'      => false,

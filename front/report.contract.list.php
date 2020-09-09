@@ -205,7 +205,7 @@ if (count($all_criteria)) {
          echo "<th>".Location::getTypeName(1)."</th>";
          echo "<th>".__('Date of purchase')."</th>";
          echo "<th>".__('Warranty expiration date')."</th>";
-         echo "<th>".__('Contract type')."</th>";
+         echo "<th>".ContractType::getTypeName(1)."</th>";
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "</tr>";

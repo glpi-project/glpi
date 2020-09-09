@@ -352,7 +352,7 @@ class Contract_Item extends CommonDBRelation{
       $header_end .= "<th>".__('Name')."</th>";
       $header_end .= "<th>".Entity::getTypeName(1)."</th>";
       $header_end .= "<th>"._x('phone', 'Number')."</th>";
-      $header_end .= "<th>".__('Contract type')."</th>";
+      $header_end .= "<th>".ContractType::getTypeName(1)."</th>";
       $header_end .= "<th>".Supplier::getTypeName(1)."</th>";
       $header_end .= "<th>".__('Start date')."</th>";
       $header_end .= "<th>".__('Initial contract period')."</th>";

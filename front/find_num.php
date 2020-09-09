@@ -96,10 +96,10 @@ if (isset($_POST["send"])) {
    echo " </tr>";
 
    $types = ['Computer'         => Computer::getTypeName(1),
-                  'NetworkEquipment' => __('Network device'),
+                  'NetworkEquipment' => NetworkEquipment::getTypeName(1),
                   'Printer'          => Printer::getTypeName(1),
                   'Monitor'          => Monitor::getTypeName(1),
-                  'Peripheral'       => __('Device')];
+                  'Peripheral'       => Peripheral::getTypeName(1)];
    foreach ($types as $type => $label) {
       $iterator = $DB->request([
          'SELECT' => ['name', 'id', 'contact', 'serial', 'otherserial'],

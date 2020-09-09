@@ -126,7 +126,7 @@ class Cluster extends CommonDBTM {
          'rand'   => $rand
       ]);
       echo "</td>";
-      echo "<td><label for='dropdown_autoupdatesystems_id$rand'>".__('Update Source')."</label></td>";
+      echo "<td><label for='dropdown_autoupdatesystems_id$rand'>".AutoupdateSystem::getTypeName(1)."</label></td>";
       echo "<td >";
       AutoUpdateSystem::dropdown(['value' => $this->fields["autoupdatesystems_id"], 'rand' => $rand]);
       echo "</td></tr>";

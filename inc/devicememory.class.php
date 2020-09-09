@@ -223,7 +223,7 @@ class DeviceMemory extends CommonDevice {
          'id'                 => '110',
          'table'              => 'glpi_devicememories',
          'field'              => 'designation',
-         'name'               => __('Memory type'),
+         'name'               => DeviceMemoryType::getTypeName(1),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'massiveaction'      => false,

@@ -91,7 +91,7 @@ class RuleImportComputer extends Rule {
 
       $criterias['MACADDRESS']['name']           = __('MAC address');
 
-      $criterias['IPADDRESS']['name']            = __('IP address');
+      $criterias['IPADDRESS']['name']            = _s('IP address', 'IP addresses', 1);
 
       $criterias['name']['name']                 = __("Computer's name");
       $criterias['name']['allow_condition']      = [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,

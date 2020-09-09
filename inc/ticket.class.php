@@ -2868,7 +2868,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '32',
          'table'              => 'glpi_slalevels',
          'field'              => 'name',
-         'name'               => __('SLA')."&nbsp;".__('Escalation level'),
+         'name'               => __('SLA')."&nbsp;"._n('Escalation level', 'Escalation levels', 1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
@@ -2919,7 +2919,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '192',
          'table'              => 'glpi_olalevels',
          'field'              => 'name',
-         'name'               => __('OLA')."&nbsp;".__('Escalation level'),
+         'name'               => __('OLA')."&nbsp;"._n('Escalation level', 'Escalation levels', 1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [

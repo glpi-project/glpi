@@ -279,7 +279,7 @@ abstract class LevelAgreement extends CommonDBChild {
                            '</span><br>';
                if ($level->getFromDB($nextaction->fields[$pre.'levels_id'])) {
                   $comment .= '<span class="b spaced">'.
-                                sprintf(__('%1$s: %2$s'), __('Escalation level'),
+                                sprintf(__('%1$s: %2$s'), _n('Escalation level', 'Escalation levels', 1),
                                         $level->getName()).
                               '</span>';
                }

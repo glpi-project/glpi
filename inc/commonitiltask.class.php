@@ -896,7 +896,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          'table'              => TaskTemplate::getTable(),
          'field'              => 'name',
          'linkfield'          => 'tasktemplates_id',
-         'name'               => __('Task template'),
+         'name'               => TaskTemplate::getTypeName(1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -1490,7 +1490,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       echo "<td style='vertical-align: middle'>";
       echo "<div class='fa-label'>
             <i class='fas fa-reply fa-fw'
-               title='"._n('Task template', 'Task templates', 2)."'></i>";
+               title='".TaskTemplate::getTypeName(Session::getPluralNumber())."'></i>";
       TaskTemplate::dropdown(['value'     => $this->fields['tasktemplates_id'],
                                    'entity'    => $this->getEntityID(),
                                    'rand'      => $rand_template,

@@ -118,7 +118,7 @@ class Line extends CommonDropdown {
             'entity' => $this->fields["entities_id"]]);
       echo "</td>";
 
-      echo "<td>".__('Line type')."</td>";
+      echo "<td>".LineType::getTypeName(1)."</td>";
       echo "<td>";
       LineType::dropdown(['value'  => $this->fields["linetypes_id"],
             'entity' => $this->fields["entities_id"]]);
@@ -164,7 +164,7 @@ class Line extends CommonDropdown {
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_users_id$randDropdown'>".__('Line operator')."</label></td>";
+      echo "<td><label for='dropdown_users_id$randDropdown'>".LineOperator::getTypeName(1)."</label></td>";
       echo "<td>";
       LineOperator::dropdown(['value'  => $this->fields["lineoperators_id"],
             'entity' => $this->fields["entities_id"],
@@ -186,7 +186,7 @@ class Line extends CommonDropdown {
             'id'                 => '4',
             'table'              => 'glpi_linetypes',
             'field'              => 'name',
-            'name'               => __('Line type'),
+            'name'               => LineType::getTypeName(1),
             'datatype'           => 'dropdown',
       ];
 
@@ -221,7 +221,7 @@ class Line extends CommonDropdown {
             'id'                 => '184',
             'table'              => 'glpi_lineoperators',
             'field'              => 'name',
-            'name'               => __('Line operator'),
+            'name'               => LineOperator::getTypeName(1),
             'massiveaction'      => true,
             'datatype'           => 'dropdown'
       ];

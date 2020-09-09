@@ -93,7 +93,7 @@ class Widget extends \CommonGLPI {
             'limit'    => true,
          ],
          'line' => [
-            'label'    => __("Line"),
+            'label'    => Line::getTypeName(1),
             'function' => 'Glpi\\Dashboard\\Widget::simpleLine',
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/line.png',
             'limit'    => true,

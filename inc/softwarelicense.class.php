@@ -598,7 +598,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '10',
          'table'              => 'glpi_softwares',
          'field'              => 'name',
-         'name'               => __('Software'),
+         'name'               => Software::getTypeName(1),
          'datatype'           => 'itemlink'
       ];
 

@@ -467,7 +467,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_autoupdatesystems_id$randDropdown'>".__('Update Source')."</label></td>";
+      echo "<td><label for='dropdown_autoupdatesystems_id$randDropdown'>".AutoupdateSystem::getTypeName(1)."</label></td>";
       echo "<td >";
       AutoUpdateSystem::dropdown(['value' => $this->fields["autoupdatesystems_id"], 'rand' => $randDropdown]);
       echo "</td></tr>";
@@ -572,7 +572,7 @@ class Computer extends CommonDBTM {
          'id'                 => '42',
          'table'              => 'glpi_autoupdatesystems',
          'field'              => 'name',
-         'name'               => __('Update Source'),
+         'name'               => AutoupdateSystem::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

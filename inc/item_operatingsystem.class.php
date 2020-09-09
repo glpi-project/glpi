@@ -342,7 +342,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       ]);
       echo "</td>";
 
-      echo "<td><label for='dropdown_operatingsystemeditions_id$rand'>" . __('Edition') . "</label></td>";
+      echo "<td><label for='dropdown_operatingsystemeditions_id$rand'>" . _n('Edition', 'Editions', 1) . "</label></td>";
       echo "<td >";
       OperatingSystemEdition::dropdown([
          'value'  => $this->fields['operatingsystemeditions_id'],
@@ -593,7 +593,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '63',
          'table'              => 'glpi_operatingsystemeditions',
          'field'              => 'name',
-         'name'               => __('Edition'),
+         'name'               => _n('Edition', 'Editions', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -639,9 +639,9 @@ class Item_OperatingSystem extends CommonDBRelation {
             'OperatingSystem'             => __('Name'),
             'OperatingSystemVersion'      => _n('Version', 'Versions', 1),
             'OperatingSystemArchitecture' => _n('Architecture', 'Architectures', 1),
-            'OperatingSystemKernel'       => __('Kernel'),
+            'OperatingSystemKernel'       => OperatingSystemKernel::getTypeName(1),
             'OperatingSystemKernelVersion'=> __('Kernel version'),
-            'OperatingSystemEdition'      => __('Edition')
+            'OperatingSystemEdition'      => _n('Edition', 'Editions', 1)
          ], [
             'display_emptychoice'   => true,
             'rand'                  => $rand

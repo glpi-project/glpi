@@ -188,7 +188,7 @@ class Contract extends CommonDBTM {
       echo "<td>".__('Name')."</td><td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".__('Contract type')."</td><td >";
+      echo "<td>".ContractType::getTypeName(1)."</td><td >";
       ContractType::dropdown(['value' => $this->fields["contracttypes_id"]]);
       echo "</td></tr>";
 

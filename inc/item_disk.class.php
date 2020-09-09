@@ -213,7 +213,7 @@ class Item_Disk extends CommonDBChild {
       echo "<td>".__('Mount point')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "mountpoint");
-      echo "</td><td>".__('File system')."</td>";
+      echo "</td><td>".FileSystem::getTypeName(1)."</td>";
       echo "<td>";
       Filesystem::dropdown(['value' => $this->fields["filesystems_id"]]);
       echo "</td></tr>";
@@ -337,7 +337,7 @@ class Item_Disk extends CommonDBChild {
          }
          $header .= "<th>".__('Partition')."</th>";
          $header .= "<th>".__('Mount point')."</th>";
-         $header .= "<th>".__('File system')."</th>";
+         $header .= "<th>".FileSystem::getTypeName(1)."</th>";
          $header .= "<th>".__('Global size')."</th>";
          $header .= "<th>".__('Free size')."</th>";
          $header .= "<th>".__('Free percentage')."</th>";
@@ -576,7 +576,7 @@ class Item_Disk extends CommonDBChild {
          'id'                 => '155',
          'table'              => 'glpi_filesystems',
          'field'              => 'name',
-         'name'               => __('File system'),
+         'name'               => FileSystem::getTypeName(1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',

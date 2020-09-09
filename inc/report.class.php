@@ -455,7 +455,7 @@ class Report extends CommonGLPI{
          if (!empty($extra)) {
             echo "<th>$extra</th>";
          }
-         echo "<th>".__('Device type')."</th>";
+         echo "<th>"._n('Device type', 'Device types', 1)."</th>";
          echo "<th>".__('Device name')."</th>";
          echo "<th>".__('Port Number')."</th>";
          echo "<th>".NetworkPort::getTypeName(1)."</th>";
@@ -464,7 +464,7 @@ class Report extends CommonGLPI{
          echo "<th>".NetworkPort::getTypeName(1)."</th>";
          echo "<th>".__('MAC address')."</th>";
          echo "<th>".IPAddress::getTypeName(0)."</th>";
-         echo "<th>".__('Device type')."</th>";
+         echo "<th>"._n('Device type', 'Device types', 1)."</th>";
          echo "<th>".__('Device name')."</th>";
          echo "</tr>\n";
 

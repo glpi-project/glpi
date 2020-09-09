@@ -877,7 +877,7 @@ class NetworkPort extends CommonDBChild {
       echo "</td></tr>\n";
 
       if (!$options['several']) {
-         echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Ports number', 1) ."</td>\n";
+         echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Port number', 1) ."</td>\n";
          echo "<td>";
          Html::autocompletionTextField($this, "logical_number", ['size' => 5]);
          echo "</td></tr>\n";
@@ -1031,7 +1031,7 @@ class NetworkPort extends CommonDBChild {
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'logical_number',
-         'name'               => __('Port number'),
+         'name'               => _n('Port number', 'Port numbers', 1),
          'datatype'           => 'integer',
          'autocomplete'       => true,
       ];

@@ -51,7 +51,7 @@ if (Toolbox::canUseLdap()) {
 }
 echo "</td></tr>";
 echo "<tr class='tab_bg_1'><td class='center b'>";
-echo "<a href='authmail.php'>". _n('Mail server', 'Mail servers', 2)."</a>";
+echo "<a href='authmail.php'>". AuthMail::getTypeName(Session::getPluralNumber())."</a>";
 echo "</td> </tr>";
 echo "<tr class='tab_bg_1'><td class='center'>".
      "<a href='auth.others.php'>" . __('Others authentication methods') ."</a></td></tr>";

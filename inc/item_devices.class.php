@@ -927,7 +927,7 @@ class Item_Devices extends CommonDBRelation {
          if (Session::haveRight('device', UPDATE)) {
             $mode = __s('Update');
          } else {
-            $mode = __s('View');
+            $mode = _sn('View', 'Views', 1);
          }
          $spec_cell = $current_row->addCell($link_column,
                                             "<a href='" . $this->getLinkURL() . "'>$mode</a>");
