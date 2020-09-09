@@ -246,7 +246,7 @@ class ReservationItem extends CommonDBChild {
          'id'                 => '23',
          'table'              => 'glpi_manufacturers',
          'field'              => 'name',
-         'name'               => __('Manufacturer'),
+         'name'               => Manufacturer::getTypeName(1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false
       ];

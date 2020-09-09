@@ -6844,7 +6844,7 @@ JAVASCRIPT;
 
                self::$search[$itemtype][23]['table']         = 'glpi_manufacturers';
                self::$search[$itemtype][23]['field']         = 'name';
-               self::$search[$itemtype][23]['name']          = __('Manufacturer');
+               self::$search[$itemtype][23]['name']          = Manufacturer::getTypeName(1);
 
                self::$search[$itemtype][24]['table']         = 'glpi_users';
                self::$search[$itemtype][24]['field']         = 'name';

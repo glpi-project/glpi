@@ -105,7 +105,7 @@ class RuleAsset extends Rule {
 
       $criterias['contact_num']['name']           = __('Alternate username number');
 
-      $criterias['manufacturer']['name']          = __('Manufacturer');
+      $criterias['manufacturer']['name']          = Manufacturer::getTypeName(1);
       $criterias['manufacturer']['table']         = 'glpi_manufacturers';
       $criterias['manufacturer']['field']         = 'manufacturers_id';
       $criterias['manufacturer']['type']          = 'dropdown';

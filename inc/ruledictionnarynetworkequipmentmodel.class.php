@@ -57,7 +57,7 @@ class RuleDictionnaryNetworkEquipmentModel extends RuleDictionnaryDropdown {
       $criterias['name']['table']         = 'glpi_networkequipmentmodels';
 
       $criterias['manufacturer']['field'] = 'name';
-      $criterias['manufacturer']['name']  = __('Manufacturer');
+      $criterias['manufacturer']['name']  = Manufacturer::getTypeName(1);
       $criterias['manufacturer']['table'] = 'glpi_manufacturers';
       return $criterias;
    }

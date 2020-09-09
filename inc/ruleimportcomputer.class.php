@@ -106,7 +106,7 @@ class RuleImportComputer extends Rule {
       $criterias['model']['name']                = __('Model');
 
       // Manufacturer as Text to allow text criteria (contains, regex, ...)
-      $criterias['manufacturer']['name']         = __('Manufacturer');
+      $criterias['manufacturer']['name']         = Manufacturer::getTypeName(1);
 
       return $criterias;
    }
