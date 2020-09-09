@@ -372,7 +372,7 @@ class Profile_User extends CommonDBRelation {
                   $reduce_header++;
                }
                echo "<th colspan='".($headerspan-$reduce_header)."'>";
-               printf(__('%1$s: %2$s'), __('Profile'), $data["pname"]);
+               printf(__('%1$s: %2$s'), Profile::getTypeName(1), $data["pname"]);
                echo "</th></tr></tbody>";
                echo "<tbody id='profile".$data['pid']."_$rand'>";
                $i = 0;
@@ -489,7 +489,7 @@ class Profile_User extends CommonDBRelation {
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'><tr>";
-      echo "<th>".sprintf(__('%1$s: %2$s'), __('Profile'), $prof->fields["name"])."</th></tr>\n";
+      echo "<th>".sprintf(__('%1$s: %2$s'), Profile::getTypeName(1), $prof->fields["name"])."</th></tr>\n";
 
       echo "<tr><th colspan='2'>".sprintf(__('%1$s (%2$s)'), User::getTypeName(Session::getPluralNumber()),
                                           __('D=Dynamic, R=Recursive'))."</th></tr>";

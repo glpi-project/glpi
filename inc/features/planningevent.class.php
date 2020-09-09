@@ -1009,7 +1009,7 @@ trait PlanningEvent {
             'id'            => '11',
             'table'         => $this->getTable(),
             'field'         => 'comment',
-            'name'          => __('Comment'),
+            'name'          => _n('Comment', 'Comments', 1),
             'massiveaction' => false,
             'datatype'      => 'text',
          ];

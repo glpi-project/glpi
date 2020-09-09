@@ -241,7 +241,7 @@ class DeviceMemory extends CommonDevice {
          'table'              => 'glpi_items_devicememories',
          'field'              => 'size',
          'unit'               => 'auto',
-         'name'               => __('Memory'),
+         'name'               => _n('Memory', 'Memories', 1),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'number',

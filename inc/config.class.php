@@ -1652,7 +1652,7 @@ class Config extends CommonDBTM {
          $rate = round(100.0 * $used / ($used + $free));
          $max  = Toolbox::getSize($used + $free);
          $used = Toolbox::getSize($used);
-         echo "<tr><td>" . __('Memory') . "</td>
+         echo "<tr><td>" . _n('Memory', 'Memories', 1) . "</td>
                <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
          Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                       'forcepadding' => false]);
@@ -1729,7 +1729,7 @@ class Config extends CommonDBTM {
          $max  = Toolbox::getSize($max);
          $used = Toolbox::getSize($used);
 
-         echo "<tr><td>" . __('Memory') . "</td>
+         echo "<tr><td>" . _n('Memory', 'Memories', 1) . "</td>
          <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
          Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                  'forcepadding' => false]);

@@ -398,7 +398,7 @@ class Printer  extends CommonDBTM {
       echo "</textarea></td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Memory')."</td>\n";
+      echo "<td>"._n('Memory', 'Memories', 1)."</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "memory_size");
       echo "</td></tr>\n";
@@ -656,7 +656,7 @@ class Printer  extends CommonDBTM {
          'id'                 => '13',
          'table'              => $this->getTable(),
          'field'              => 'memory_size',
-         'name'               => __('Memory'),
+         'name'               => _n('Memory', 'Memories', 1),
          'datatype'           => 'string',
          'autocomplete'       => true,
       ];

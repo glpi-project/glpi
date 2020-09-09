@@ -49,9 +49,9 @@ class Item_DeviceGraphicCard extends Item_Devices {
    **/
    static function getSpecificities($specif = '') {
 
-      return ['memory' => ['long name'  => sprintf(__('%1$s (%2$s)'), __('Memory'),
+      return ['memory' => ['long name'  => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1),
                                                             __('Mio')),
-                                     'short name' => __('Memory'),
+                                     'short name' => _n('Memory', 'Memories', 1),
                                      'size'       => 10,
                                      'id'         => 20,
                                      'autocomplete' => true,],

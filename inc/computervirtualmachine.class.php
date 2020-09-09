@@ -192,7 +192,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio'))."</td>";
+      echo "<td>".sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio'))."</td>";
       echo "<td>";
       Html::autocompletionTextField(
          $this,
@@ -346,7 +346,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<tr class='noHover'><th colspan='10'>".__('List of virtualized environments')."</th></tr>";
 
          $header = "<tr><th>".__('Name')."</th>";
-         $header .= "<th>".__('Comment')."</th>";
+         $header .= "<th>"._n('Comment', 'Comments', 1)."</th>";
          if (Plugin::haveImport()) {
             $header .= "<th>".__('Automatic inventory')."</th>";
          }
@@ -355,7 +355,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          $header .= "<th>".__('State')."</th>";
          $header .= "<th>".__('UUID')."</th>";
          $header .= "<th>"._x('quantity', 'Processors number')."</th>";
-         $header .= "<th>".sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio'))."</th>";
+         $header .= "<th>".sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio'))."</th>";
          $header .= "<th>".__('Machine')."</th>";
          $header .= "</tr>";
          echo $header;
@@ -534,7 +534,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'ram',
-         'name'               => __('Memory'),
+         'name'               => _n('Memory', 'Memories', 1),
          'datatype'           => 'string',
          'massiveaction'      => false,
          'autocomplete'       => true,
@@ -646,7 +646,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          'id'                 => '165',
          'table'              => self::getTable(),
          'field'              => 'ram',
-         'name'               => __('Memory'),
+         'name'               => _n('Memory', 'Memories', 1),
          'datatype'           => 'string',
          'unit'               => 'auto',
          'forcegroupby'       => true,

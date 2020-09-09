@@ -2327,7 +2327,7 @@ JAVASCRIPT;
          echo "</td></tr>";
          $profilerand = mt_rand();
          echo "<tr class='tab_bg_1'>";
-         echo "<td><label for='dropdown__profiles_id$profilerand'>" .  __('Profile') . "</label></td><td>";
+         echo "<td><label for='dropdown__profiles_id$profilerand'>" .  Profile::getTypeName(1) . "</label></td><td>";
          Profile::dropdownUnder(['name'  => '_profiles_id',
                                  'rand'  => $profilerand,
                                  'value' => Profile::getDefault()]);
