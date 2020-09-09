@@ -295,7 +295,7 @@ class Printer  extends CommonDBTM {
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
       echo "</td>\n";
-      echo "<td>".__('Type')."</td>\n";
+      echo "<td>"._n('Type', 'Types', 1)."</td>\n";
       echo "<td>";
       PrinterType::dropdown(['value' => $this->fields["printertypes_id"]]);
       echo "</td></tr>\n";
@@ -323,7 +323,7 @@ class Printer  extends CommonDBTM {
          'condition' => ['is_assign' => 1]
       ]);
       echo "</td>";
-      echo "<td>".__('Model')."</td>\n";
+      echo "<td>"._n('Model', 'Models', 1)."</td>\n";
       echo "<td>";
       PrinterModel::dropdown(['value' => $this->fields["printermodels_id"]]);
       echo "</td></tr>\n";
@@ -511,7 +511,7 @@ class Printer  extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_printertypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -519,7 +519,7 @@ class Printer  extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_printermodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

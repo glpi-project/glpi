@@ -141,7 +141,7 @@ class Enclosure extends CommonDBTM {
          'rand'   => $rand
       ]);
       echo "</td>";
-      echo "<td><label for='dropdown_enclosuremodels_id$rand'>".__('Model')."</label></td>";
+      echo "<td><label for='dropdown_enclosuremodels_id$rand'>"._n('Model', 'Models', 1)."</label></td>";
       echo "<td>";
       EnclosureModel::dropdown([
          'value'  => $this->fields["enclosuremodels_id"],
@@ -226,7 +226,7 @@ class Enclosure extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_enclosuremodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

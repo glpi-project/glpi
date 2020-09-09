@@ -271,7 +271,7 @@ class Event extends CommonDBTM {
 
       echo "<tr><th>".__('Source')."</th>";
       echo "<th>".__('Id')."</th>";
-      echo "<th>".__('Date')."</th>";
+      echo "<th>"._n('Date', 'Dates', 1)."</th>";
       echo "<th width='10%'>".__('Service')."</th>";
       echo "<th width='50%'>".__('Message')."</th></tr>";
 
@@ -326,7 +326,7 @@ class Event extends CommonDBTM {
       // Columns of the Table
       $items = ["type"     => [__('Source'), ""],
                      "items_id" => [__('ID'), ""],
-                     "date"     => [__('Date'), ""],
+                     "date"     => [_n('Date', 'Dates', 1), ""],
                      "service"  => [__('Service'), "width='8%'"],
                      "level"    => [__('Level'), "width='8%'"],
                      "message"  => [__('Message'), "width='50%'"]];

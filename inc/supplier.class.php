@@ -478,7 +478,7 @@ class Supplier extends CommonDBTM {
          echo _n('Associated item', 'Associated items', $number);
       }
       echo "</th></tr>";
-      echo "<tr><th>".__('Type')."</th>";
+      echo "<tr><th>"._n('Type', 'Types', 1)."</th>";
       echo "<th>".Entity::getTypeName(1)."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";

@@ -76,7 +76,7 @@ class FieldUnicity extends CommonDropdown {
                          'label' => __('Active'),
                          'type'  => 'bool'],
                    ['name'  => 'itemtype',
-                         'label' => __('Type'),
+                         'label' => _n('Type', 'Types', 1),
                          'type'  => 'unicity_itemtype'],
                    ['name'  => 'fields',
                          'label' => __('Unique fields'),
@@ -344,7 +344,7 @@ class FieldUnicity extends CommonDropdown {
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'massiveaction'      => false,
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'unicity_types'

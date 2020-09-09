@@ -417,7 +417,7 @@ class Dropdown {
                                                    "</span>".$data['fax']);
                      }
                      if (!empty($data["email"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>"._n('Email', 'Emails', 1),
                                                    "</span>".$data['email']);
                      }
                   }
@@ -434,7 +434,7 @@ class Dropdown {
                                                    "</span>".$data['fax']);
                      }
                      if (!empty($data["email"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>"._n('Email', 'Emails', 1),
                                                    "</span>".$data['email']);
                      }
                   }
@@ -457,7 +457,7 @@ class Dropdown {
 
                      }
                      if (!empty($data['budgettypes_id'])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Type')."</span>",
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>"._n('Type', 'Types', 1)."</span>",
                                        self::getDropdownName("glpi_budgettypes",
                                                             $data["budgettypes_id"], false, $translate));
 
@@ -918,7 +918,7 @@ class Dropdown {
                  'ClusterType'          => ClusterType::getTypeName(Session::getPluralNumber()),
              ],
 
-             __('Model') => [
+             _n('Model', 'Models', 1) => [
                  'ComputerModel'         => _n('Computer model',
                                                'Computer models',
                                                Session::getPluralNumber()),

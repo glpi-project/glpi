@@ -193,7 +193,7 @@ abstract class CommonDBVisible extends CommonDBTM {
          $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_end    .= "</th>";
       }
-      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
       $header_end .= "<th>"._n('Recipient', 'Recipients', Session::getPluralNumber())."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;

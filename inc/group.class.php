@@ -778,7 +778,7 @@ class Group extends CommonTreeDropdown {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='3'>$title</tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
-      echo __('Type')."&nbsp;";
+      echo _n('Type', 'Types', 1)."&nbsp;";
       Dropdown::showItemType($types,
                              ['value'      => $type,
                                    'name'       => 'onlytype',
@@ -846,7 +846,7 @@ class Group extends CommonTreeDropdown {
          }
          $header_end    = '</th>';
 
-         $header_end .= "<th>".__('Type')."</th><th>".__('Name')."</th><th>".Entity::getTypeName(1)."</th>";
+         $header_end .= "<th>"._n('Type', 'Types', 1)."</th><th>".__('Name')."</th><th>".Entity::getTypeName(1)."</th>";
          if ($tree || $user) {
             $header_end .= "<th>".
                              sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)).

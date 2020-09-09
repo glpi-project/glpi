@@ -184,7 +184,7 @@ class Peripheral extends CommonDBTM {
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
       echo "</td>\n";
-      echo "<td>".__('Type')."</td>\n";
+      echo "<td>"._n('Type', 'Types', 1)."</td>\n";
       echo "<td>";
       PeripheralType::dropdown(['value' => $this->fields["peripheraltypes_id"]]);
       echo "</td></tr>\n";
@@ -212,7 +212,7 @@ class Peripheral extends CommonDBTM {
          'condition' => ['is_assign' => 1]
       ]);
       echo "</td>";
-      echo "<td>".__('Model')."</td>\n";
+      echo "<td>"._n('Model', 'Models', 1)."</td>\n";
       echo "<td>";
       PeripheralModel::dropdown(['value' => $this->fields["peripheralmodels_id"]]);
       echo "</td></tr>\n";
@@ -355,7 +355,7 @@ class Peripheral extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_peripheraltypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -363,7 +363,7 @@ class Peripheral extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_peripheralmodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

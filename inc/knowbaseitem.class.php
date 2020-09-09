@@ -1820,7 +1820,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime',
          'massiveaction'      => false
       ];

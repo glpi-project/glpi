@@ -50,7 +50,7 @@ class DeviceSoundCard extends CommonDevice {
 
       return array_merge(parent::getAdditionalFields(),
                          [['name'  => 'type',
-                                     'label' => __('Type'),
+                                     'label' => _n('Type', 'Types', 1),
                                      'type'  => 'text'],
                                ['name'  => 'none',
                                      'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
@@ -59,7 +59,7 @@ class DeviceSoundCard extends CommonDevice {
                                                                                     null, false),
                                      'type'  => 'registeredIDChooser'],
                                ['name'  => 'devicesoundcardmodels_id',
-                                     'label' => __('Model'),
+                                     'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue']]);
    }
 
@@ -71,7 +71,7 @@ class DeviceSoundCard extends CommonDevice {
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'type',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'string',
          'autocomplete'       => true,
       ];
@@ -80,7 +80,7 @@ class DeviceSoundCard extends CommonDevice {
          'id'                 => '13',
          'table'              => 'glpi_devicesoundcardmodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -106,7 +106,7 @@ class DeviceSoundCard extends CommonDevice {
       switch ($itemtype) {
          case 'Computer' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('devicesoundcard_type', __('Type'), $super, $father);
+            $base->addHeader('devicesoundcard_type', _n('Type', 'Types', 1), $super, $father);
             break;
       }
 

@@ -1043,7 +1043,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             $header_end    .= "</th>";
          }
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-         $header_end .= "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         $header_end .= "<th>" ._n('Version', 'Versions', 1)."</th><th>" . __('License') . "</th>";
          $header_end .="<th>" . __('Installation date') . "</th>";
          if (Plugin::haveImport()) {
             $header_end .= "<th>".__('Automatic inventory')."</th>";
@@ -1189,7 +1189,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             $header_end    .= "</th>";
          }
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-         $header_end .= "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         $header_end .= "<th>" ._n('Version', 'Versions', 1)."</th><th>" . __('License') . "</th>";
          $header_end .= "<th>" .__('Installation date')."</th>";
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;

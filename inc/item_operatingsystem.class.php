@@ -145,7 +145,7 @@ class Item_OperatingSystem extends CommonDBRelation {
 
       $columns = [
          __('Name'),
-         __('Version'),
+         _n('Version', 'Versions', 1),
          __('Architecture'),
          __('Service pack')
       ];
@@ -314,7 +314,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       echo "<td>";
       OperatingSystem::dropdown(['value' => $this->fields["operatingsystems_id"], 'rand' => $rand]);
       echo "</td>";
-      echo "<td><label for='dropdown_operatingsystemversions_id$rand'>".__('Version')."</label></td>";
+      echo "<td><label for='dropdown_operatingsystemversions_id$rand'>"._n('Version', 'Versions', 1)."</label></td>";
       echo "<td >";
       OperatingSystemVersion::dropdown(['value' => $this->fields["operatingsystemversions_id"], 'rand' => $rand]);
       echo "</td>";
@@ -472,7 +472,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '46',
          'table'              => 'glpi_operatingsystemversions',
          'field'              => 'name',
-         'name'               => __('Version'),
+         'name'               => _n('Version', 'Versions', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -637,7 +637,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       Dropdown::showFromArray(
          'os_field', [
             'OperatingSystem'             => __('Name'),
-            'OperatingSystemVersion'      => __('Version'),
+            'OperatingSystemVersion'      => _n('Version', 'Versions', 1),
             'OperatingSystemArchitecture' => __('Architecture'),
             'OperatingSystemKernel'       => __('Kernel'),
             'OperatingSystemKernelVersion'=> __('Kernel version'),

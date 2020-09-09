@@ -1486,7 +1486,7 @@ final class DbUtils {
 
                $email           = UserEmail::getDefaultForUser($ID);
                if (!empty($email)) {
-                  $comments[] = ['name'  => __('Email'),
+                  $comments[] = ['name'  => _n('Email', 'Emails', 1),
                                  'value' => $email];
                }
 

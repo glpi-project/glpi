@@ -535,7 +535,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime'
       ];
 
@@ -603,7 +603,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '36',
          'table'              => static::getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -807,7 +807,7 @@ class ITILFollowup  extends CommonDBChild {
                          'rows'              => $rows]);
 
          if ($this->fields["date"]) {
-            echo "</td><td>".__('Date')."</td>";
+            echo "</td><td>"._n('Date', 'Dates', 1)."</td>";
             echo "<td>".Html::convDateTime($this->fields["date"]);
          } else {
 
@@ -1024,7 +1024,7 @@ JAVASCRIPT;
       $out = "";
       if (count($iterator)) {
          $out .= "<div class='center'><table class='tab_cadre' width='100%'>\n
-                  <tr><th>".__('Date')."</th><th>"._n('Requester', 'Requesters', 1)."</th>
+                  <tr><th>"._n('Date', 'Dates', 1)."</th><th>"._n('Requester', 'Requesters', 1)."</th>
                   <th>".__('Description')."</th></tr>\n";
 
          $showuserlink = 0;

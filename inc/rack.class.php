@@ -128,7 +128,7 @@ class Rack extends CommonDBTM {
          'rand'   => $rand
       ]);
       echo "</td>";
-      echo "<td><label for='dropdown_racktypes_id$rand'>".__('Type')."</label></td>";
+      echo "<td><label for='dropdown_racktypes_id$rand'>"._n('Type', 'Types', 1)."</label></td>";
       echo "<td>";
       RackType::dropdown([
          'value'  => $this->fields["racktypes_id"],
@@ -167,7 +167,7 @@ class Rack extends CommonDBTM {
       ]);
 
       echo "</td>";
-      echo "<td><label for='dropdown_rackmodels_id$rand'>".__('Model')."</label></td>";
+      echo "<td><label for='dropdown_rackmodels_id$rand'>"._n('Model', 'Models', 1)."</label></td>";
       echo "<td>";
       RackModel::dropdown([
          'value'  => $this->fields["rackmodels_id"],
@@ -353,7 +353,7 @@ class Rack extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_racktypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -361,7 +361,7 @@ class Rack extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_rackmodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

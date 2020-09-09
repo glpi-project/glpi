@@ -461,7 +461,7 @@ class DropdownTranslation extends CommonDBChild {
       }
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Field')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Field', 'Fields', 1)."</td>";
       echo "<td>";
       if ($ID > 0) {
          echo "<input type='hidden' name='field' value='".$this->fields['field']."'>";

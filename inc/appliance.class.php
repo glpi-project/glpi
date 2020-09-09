@@ -72,7 +72,7 @@ class Appliance extends CommonDBTM {
       $tab[] = ['id'            => '2',
                 'table'         => ApplianceType::getTable(),
                 'field'         => 'name',
-                'name'          => __('Type'),
+                'name'          => _n('Type', 'Types', 1),
                 'datatype'      => 'dropdown'];
 
       $tab[] = ['id'            => '32',
@@ -242,7 +242,7 @@ class Appliance extends CommonDBTM {
       } else {
          echo Dropdown::getDropdownName("glpi_locations", $this->fields["locations_id"]);
       }
-      echo "</td><td>".__('Type')."</td><td>";
+      echo "</td><td>"._n('Type', 'Types', 1)."</td><td>";
       if ($canedit) {
          Dropdown::show(
             'ApplianceType', [

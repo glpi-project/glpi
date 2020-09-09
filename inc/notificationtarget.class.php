@@ -1406,7 +1406,7 @@ class NotificationTarget extends CommonDBChild {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('Active')."</th>";
-         echo "<th>".__('Type')."</th>";
+         echo "<th>"._n('Type', 'Types', 1)."</th>";
          echo "<th>".__('Notification method')."</th>";
          echo "<th>".NotificationEvent::getTypeName(1)."</th>";
          echo "<th>".NotificationTemplate::getTypeName(1)."</th></tr>";

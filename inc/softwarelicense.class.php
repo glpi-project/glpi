@@ -353,7 +353,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       SoftwareLicenseType::dropdown(['value' => $this->fields["softwarelicensetypes_id"]]);
       echo "</td></tr>\n";
@@ -550,7 +550,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '5',
          'table'              => 'glpi_softwarelicensetypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -791,7 +791,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'table'              => 'glpi_softwarelicensetypes',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -1052,7 +1052,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                        'serial'    => __('Serial number'),
                        'number'    => _x('quantity', 'Number'),
                        '_affected' => __('Affected items'),
-                       'typename'  => __('Type'),
+                       'typename'  => _n('Type', 'Types', 1),
                        'buyname'   => __('Purchase version'),
                        'usename'   => __('Version in use'),
                        'expire'    => __('Expiration')];

@@ -198,7 +198,7 @@ class NotImportedEmail extends CommonDBTM {
          'id'                 => '19',
          'table'              => $this->getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime',
          'massiveaction'      => false
       ];

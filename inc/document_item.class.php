@@ -411,7 +411,7 @@ class Document_Item extends CommonDBRelation{
          $header_bottom .= "</th>";
       }
 
-      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
       $header_end .= "<th>".__('Name')."</th>";
       $header_end .= "<th>".Entity::getTypeName(1)."</th>";
       $header_end .= "<th>".__('Serial number')."</th>";
@@ -737,7 +737,7 @@ class Document_Item extends CommonDBRelation{
          'headings'  => __('Heading'),
          'mime'      => __('MIME type'),
          'tag'       => __('Tag'),
-         'assocdate' => __('Date')
+         'assocdate' => _n('Date', 'Dates', 1)
       ];
 
       if (isset($_GET["order"]) && ($_GET["order"] == "ASC")) {

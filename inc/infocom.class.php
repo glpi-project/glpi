@@ -1836,7 +1836,7 @@ class Infocom extends CommonDBChild {
          'id'                 => '20',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'itemtype',
          'massiveaction'      => false
       ];

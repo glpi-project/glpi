@@ -624,7 +624,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime'
       ];
 
@@ -837,7 +837,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          'id'                 => '97',
          'table'              => static::getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -1544,7 +1544,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       if ($ID > 0) {
          echo "<div class='fa-label'>
          <i class='far fa-calendar fa-fw'
-            title='".__('Date')."'></i>";
+            title='"._n('Date', 'Dates', 1)."'></i>";
          Html::showDateTimeField("date", [
             'value'      => $this->fields["date"],
             'maybeempty' => false

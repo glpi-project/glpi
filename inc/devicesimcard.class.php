@@ -49,7 +49,7 @@ class DeviceSimcard extends CommonDevice {
          [
             [
                'name'  => 'devicesimcardtypes_id',
-               'label' => __('Type'),
+               'label' => _n('Type', 'Types', 1),
                'type'  => 'dropdownValue'
             ],
             [
@@ -83,7 +83,7 @@ class DeviceSimcard extends CommonDevice {
             'id'                 => '13',
             'table'              => 'glpi_devicesimcardtypes',
             'field'              => 'name',
-            'name'               => __('Type'),
+            'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown'
       ];
 

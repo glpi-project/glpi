@@ -117,7 +117,7 @@ class NotificationTemplate extends CommonDBTM {
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td><td colspan='3'>";
+      echo "<tr class='tab_bg_1'><td>" . _n('Type', 'Types', 1) . "</td><td colspan='3'>";
       Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
                               ['value' => ($this->fields['itemtype']
                                                 ?$this->fields['itemtype'] :'Ticket')]);
@@ -159,7 +159,7 @@ class NotificationTemplate extends CommonDBTM {
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'notificationtemplates_types',
          'massiveaction'      => false

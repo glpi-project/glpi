@@ -151,7 +151,7 @@ class Appliance_Item extends CommonDBRelation {
          echo "<th>".Entity::getTypeName(1)."</th>";
       }
       echo "<th>".Group::getTypeName(1)."</th>";
-      echo "<th>".__('Type')."</th>";
+      echo "<th>"._n('Type', 'Types', 1)."</th>";
       if ($number_app > 0) {
          echo "<th>".__('Item to link')."</th>";
       }
@@ -340,7 +340,7 @@ class Appliance_Item extends CommonDBRelation {
           Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
           echo "</th>";
       }
-      echo "<th>".__('Type')."</th>";
+      echo "<th>"._n('Type', 'Types', 1)."</th>";
       echo "<th>".__('Name')."</th>";
       if (Session::isMultiEntitiesMode()) {
          echo "<th>".Entity::getTypeName(1)."</th>";

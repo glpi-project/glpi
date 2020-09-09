@@ -240,7 +240,7 @@ class Certificate_Item extends CommonDBRelation {
             Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
       }
 
-      echo "<th>" . __('Type') . "</th>";
+      echo "<th>" . _n('Type', 'Types', 1) . "</th>";
       echo "<th>" . __('Name') . "</th>";
       if (Session::isMultiEntitiesMode()) {
          echo "<th>" . Entity::getTypeName(1) . "</th>";
@@ -423,7 +423,7 @@ class Certificate_Item extends CommonDBRelation {
       if (Session::isMultiEntitiesMode()) {
          echo "<th>" . Entity::getTypeName(1) . "</th>";
       }
-      echo "<th>" . __('Type') . "</th>";
+      echo "<th>" . _n('Type', 'Types', 1) . "</th>";
       echo "<th>" . __('DNS name') . "</th>";
       echo "<th>" . __('DNS suffix') . "</th>";
       echo "<th>" . __('Creation date') . "</th>";

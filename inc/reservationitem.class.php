@@ -359,7 +359,7 @@ class ReservationItem extends CommonDBChild {
          echo "<tr><th colspan='2'>".__s('Modify the comment')."</th></tr>";
 
          // Ajouter le nom du materiel
-         echo "<tr class='tab_bg_1'><td>".__('Item')."</td>";
+         echo "<tr class='tab_bg_1'><td>"._n('Item', 'Items', 1)."</td>";
          echo "<td class='b'>".sprintf(__('%1$s - %2$s'), $type, $name)."</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";

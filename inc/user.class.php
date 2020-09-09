@@ -2492,7 +2492,7 @@ JAVASCRIPT;
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='b'>";
-      echo __('Email');
+      echo _n('Email', 'Emails', 1);
       echo "</td><td>";
       echo $user->getDefaultEmail();
       echo "</td></tr>";
@@ -4253,7 +4253,7 @@ JAVASCRIPT;
       }
 
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-      $header = "<tr><th>".__('Type')."</th>";
+      $header = "<tr><th>"._n('Type', 'Types', 1)."</th>";
       $header .= "<th>".Entity::getTypeName(1)."</th>";
       $header .= "<th>".__('Name')."</th>";
       $header .= "<th>".__('Serial number')."</th>";
@@ -4333,7 +4333,7 @@ JAVASCRIPT;
       if (count($group_where)) {
          echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
          $header = "<tr>".
-               "<th>".__('Type')."</th>".
+               "<th>"._n('Type', 'Types', 1)."</th>".
                "<th>".Entity::getTypeName(1)."</th>".
                "<th>".__('Name')."</th>".
                "<th>".__('Serial number')."</th>".

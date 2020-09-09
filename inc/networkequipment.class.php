@@ -295,7 +295,7 @@ class NetworkEquipment extends CommonDBTM {
       Location::dropdown(['value'  => $this->fields["locations_id"],
                               'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       NetworkEquipmentType::dropdown(['value' => $this->fields["networkequipmenttypes_id"]]);
       echo "</td></tr>";
@@ -323,7 +323,7 @@ class NetworkEquipment extends CommonDBTM {
          'condition' => ['is_assign' => 1]
       ]);
       echo "</td>";
-      echo "<td>".__('Model')."</td>";
+      echo "<td>"._n('Model', 'Models', 1)."</td>";
       echo "<td>";
       NetworkEquipmentModel::dropdown(['value' => $this->fields["networkequipmentmodels_id"]]);
       echo "</td></tr>";
@@ -443,7 +443,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_networkequipmenttypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -451,7 +451,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_networkequipmentmodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

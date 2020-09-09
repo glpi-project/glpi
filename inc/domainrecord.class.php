@@ -477,7 +477,7 @@ class DomainRecord extends CommonDBChild {
          echo "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
       }
 
-      echo "<th>" . __('Type') . "</th>";
+      echo "<th>" . _n('Type', 'Types', 1) . "</th>";
       echo "<th>" . __('Name') . "</th>";
       echo "<th>" . __('TTL') . "</th>";
       echo "<th>" . __('Target') . "</th>";

@@ -130,7 +130,7 @@ class Budget extends CommonDropdown{
       Html::autocompletionTextField($this, "name");
       echo "</td>";
 
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       Dropdown::show('BudgetType', ['value' => $this->fields['budgettypes_id']]);
       echo "</td></tr>";
@@ -230,7 +230,7 @@ class Budget extends CommonDropdown{
          'id'                 => '4',
          'table'              => 'glpi_budgettypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -343,7 +343,7 @@ class Budget extends CommonDropdown{
       }
       echo "</th></tr>";
 
-      echo "<tr><th>".__('Type')."</th>";
+      echo "<tr><th>"._n('Type', 'Types', 1)."</th>";
       echo "<th>".Entity::getTypeName(1)."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";

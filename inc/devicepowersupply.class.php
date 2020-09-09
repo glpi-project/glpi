@@ -54,7 +54,7 @@ class DevicePowerSupply extends CommonDevice {
                                      'label' => __('Power'),
                                      'type'  => 'text'],
                                ['name'  => 'devicepowersupplymodels_id',
-                                     'label' => __('Model'),
+                                     'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue']]);
    }
 
@@ -83,7 +83,7 @@ class DevicePowerSupply extends CommonDevice {
          'id'                 => '13',
          'table'              => 'glpi_devicepowersupplymodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

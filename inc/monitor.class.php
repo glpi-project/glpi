@@ -189,7 +189,7 @@ class Monitor extends CommonDBTM {
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       MonitorType::dropdown(['value' => $this->fields["monitortypes_id"]]);
       echo "</td></tr>";
@@ -217,7 +217,7 @@ class Monitor extends CommonDBTM {
          'condition' => ['is_assign' => 1]
       ]);
       echo "</td>";
-      echo "<td>".__('Model')."</td>";
+      echo "<td>"._n('Model', 'Models', 1)."</td>";
       echo "<td>";
       MonitorModel::dropdown(['value' => $this->fields["monitormodels_id"]]);
       echo "</td></tr>";
@@ -385,7 +385,7 @@ class Monitor extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_monitortypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -393,7 +393,7 @@ class Monitor extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_monitormodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

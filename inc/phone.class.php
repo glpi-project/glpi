@@ -177,7 +177,7 @@ class Phone extends CommonDBTM {
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       PhoneType::dropdown(['value' => $this->fields["phonetypes_id"]]);
       echo "</td></tr>\n";
@@ -205,7 +205,7 @@ class Phone extends CommonDBTM {
          'condition' => ['is_assign' => 1]
       ]);
       echo "</td>";
-      echo "<td>".__('Model')."</td>";
+      echo "<td>"._n('Model', 'Models', 1)."</td>";
       echo "<td>";
       PhoneModel::dropdown(['value' => $this->fields["phonemodels_id"]]);
       echo "</td></tr>\n";
@@ -372,7 +372,7 @@ class Phone extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_phonetypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -380,7 +380,7 @@ class Phone extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_phonemodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

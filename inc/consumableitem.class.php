@@ -134,7 +134,7 @@ class ConsumableItem extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       ConsumableItemType::dropdown(['value' => $this->fields["consumableitemtypes_id"]]);
       echo "</td></tr>";
@@ -247,7 +247,7 @@ class ConsumableItem extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_consumableitemtypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 

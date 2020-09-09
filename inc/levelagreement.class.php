@@ -187,7 +187,7 @@ abstract class LevelAgreement extends CommonDBChild {
          echo "</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td>".__('Type')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       self::getTypeDropdown(['value' => $this->fields["type"]]);
       echo "</td>";
@@ -458,7 +458,7 @@ abstract class LevelAgreement extends CommonDBChild {
             $header_bottom .= "</th>";
          }
          $header_end .= "<th>".__('Name')."</th>";
-         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
          $header_end .= "<th>".__('Maximum time')."</th>";
          $header_end .= "<th>".__('Calendar')."</th>";
 
@@ -719,7 +719,7 @@ abstract class LevelAgreement extends CommonDBChild {
          'id'                 => '7',
          'table'              => $this->getTable(),
          'field'              => 'type',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'specific'
       ];
 

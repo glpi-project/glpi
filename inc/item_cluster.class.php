@@ -141,7 +141,7 @@ class Item_Cluster extends CommonDBRelation {
             $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header .= "</th>";
          }
-         $header .= "<th>".__('Item')."</th>";
+         $header .= "<th>"._n('Item', 'Items', 1)."</th>";
          $header .= "</tr>";
 
          echo $header;
@@ -222,7 +222,7 @@ class Item_Cluster extends CommonDBRelation {
       );
 
       echo "</td>";
-      echo "<td><label for='dropdown_items_id$rand'>".__('Item')."</label></td>";
+      echo "<td><label for='dropdown_items_id$rand'>"._n('Item', 'Items', 1)."</label></td>";
       echo "<td id='items_id'>";
       if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
          $itemtype = $this->fields['itemtype'];

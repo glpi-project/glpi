@@ -2763,7 +2763,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'type',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'searchtype'         => 'equals',
          'datatype'           => 'specific'
       ];
@@ -2958,7 +2958,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '31',
          'table'              => 'glpi_ticketsatisfactions',
          'field'              => 'type',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'massiveaction'      => false,
          'searchtype'         => ['equals', 'notequals'],
          'searchequalsonfield' => true,
@@ -3764,7 +3764,7 @@ class Ticket extends CommonITILObject {
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Type'), $tt->getMandatoryMark('type'))."</td>";
+      echo "<td>".sprintf(__('%1$s%2$s'), _n('Type', 'Types', 1), $tt->getMandatoryMark('type'))."</td>";
       echo "<td>";
       self::dropdownType('type', ['value'     => $options['type'],
                                   'on_change' => 'this.form.submit()']);
@@ -4533,7 +4533,7 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".sprintf(__('%1$s%2$s'), __('Type'),
+      echo "<th width='$colsize1%'>".sprintf(__('%1$s%2$s'), _n('Type', 'Types', 1),
                                              $tt->getMandatoryMark('type'))."</th>";
       echo "<td width='$colsize2%'>";
       // Permit to set type when creating ticket without update right

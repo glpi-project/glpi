@@ -189,7 +189,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       Dropdown::showYesNo('use_notification', $this->fields['use_notification']);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Email')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Email', 'Emails', 1)."</td>";
       echo "<td>";
       if ((count($emails) ==  1)
           && !empty($default_email)
@@ -264,7 +264,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       Dropdown::showYesNo('use_notification', $this->fields['use_notification']);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Email')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Email', 'Emails', 1)."</td>";
       echo "<td>";
       if (empty($this->fields['alternative_email'])) {
          $this->fields['alternative_email'] = $default_email;

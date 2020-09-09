@@ -184,7 +184,7 @@ class Item_Disk extends CommonDBChild {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Item')."</td>";
+      echo "<td>"._n('Item', 'Items', 1)."</td>";
       echo "<td>".$item->getLink()."</td>";
       if (Plugin::haveImport()) {
          echo "<td>".__('Automatic inventory')."</td>";

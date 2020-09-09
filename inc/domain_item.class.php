@@ -230,7 +230,7 @@ class Domain_Item extends CommonDBRelation {
          echo "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
       }
 
-      echo "<th>" . __('Type') . "</th>";
+      echo "<th>" . _n('Type', 'Types', 1) . "</th>";
       echo "<th>" . __('Name') . "</th>";
       if (Session::isMultiEntitiesMode()) {
          echo "<th>" . Entity::getTypeName(1) . "</th>";
@@ -507,7 +507,7 @@ class Domain_Item extends CommonDBRelation {
       }
       echo "<th>" . __('Group in charge') . "</th>";
       echo "<th>" . __('Technician in charge') . "</th>";
-      echo "<th>" . __('Type') . "</th>";
+      echo "<th>" . _n('Type', 'Types', 1) . "</th>";
       if (!$item instanceof DomainRelation) {
          echo "<th>" . DomainRelation::getTypeName(1) . "</th>";
       }

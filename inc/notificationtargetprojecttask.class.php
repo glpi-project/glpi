@@ -488,7 +488,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
                         'projecttask.realenddate'         => __('Real end date'),
                         'projecttask.father'              => __('Father'),
                         'projecttask.createbyuser'        => __('Writer'),
-                        'projecttask.type'                => __('Type'),
+                        'projecttask.type'                => _n('Type', 'Types', 1),
                         'projecttask.state'               => _x('item', 'State'),
                         'projecttask.percent'             => __('Percent done'),
                         'projecttask.plannedduration'     => __('Planned duration'),
@@ -503,7 +503,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
                         'task.comments'                   => __('Comments'),
                         'task.creationdate'               => __('Creation date'),
                         'task.lastupdatedate'             => __('Last update'),
-                        'task.type'                       => __('Type'),
+                        'task.type'                       => _n('Type', 'Types', 1),
                         'task.state'                      => _x('item', 'State'),
                         'task.percent'                    => __('Percent done'),
                         'task.planstartdate'              => __('Planned start date'),
@@ -515,11 +515,11 @@ class NotificationTargetProjectTask extends NotificationTarget {
                                                                      _x('quantity',
                                                                         'Number of items')),
                         'projecttask.log.date'            => sprintf(__('%1$s: %2$s'),
-                                                                     __('Historical'), __('Date')),
+                                                                     __('Historical'), _n('Date', 'Dates', 1)),
                         'projecttask.log.user'            => sprintf(__('%1$s: %2$s'),
                                                                      __('Historical'), User::getTypeName(1)),
                         'projecttask.log.field'           => sprintf(__('%1$s: %2$s'),
-                                                                     __('Historical'), __('Field')),
+                                                                     __('Historical'), _n('Field', 'Fields', 1)),
                         'projecttask.log.content'         => sprintf(__('%1$s: %2$s'),
                                                                      __('Historical'),
                                                                      _x('name', 'Update')),
@@ -535,7 +535,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
 
       //Tags without lang
       $tags = ['ticket.id'               => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID')),
-                    'ticket.date'             => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Date')),
+                    'ticket.date'             => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), _n('Date', 'Dates', 1)),
                     'ticket.url'              => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), ('URL')),
                     'ticket.title'            => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1),
                                                          __('Title')),
@@ -566,7 +566,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
                                                         __('Name')),
                     'teammember.itemtype'    => sprintf(__('%1$s: %2$s'),
                                                         _n('Team member', 'Team members', 1),
-                                                        __('Type'))
+                                                        _n('Type', 'Types', 1))
                      ];
 
       foreach ($tags as $tag => $label) {

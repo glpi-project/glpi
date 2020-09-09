@@ -782,7 +782,7 @@ class AuthLDAP extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Email') . "</td>";
+      echo "<td>" . _n('Email', 'Emails', 1) . "</td>";
       echo "<td><input type='text' name='email1_field' value='".$this->fields["email1_field"]."'>";
       echo "</td>";
       echo "<td>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '2') . "</td>";
@@ -1038,7 +1038,7 @@ class AuthLDAP extends CommonDBTM {
          'id'                 => '17',
          'table'              => $this->getTable(),
          'field'              => 'email1_field',
-         'name'               => __('Email'),
+         'name'               => _n('Email', 'Emails', 1),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
@@ -3269,7 +3269,7 @@ class AuthLDAP extends CommonDBTM {
                $field_counter = 0;
                $fields        = ['login_field'     => __('Login'),
                                  'sync_field'      => __('Synchronization field') . ' (' . $authldap->fields['sync_field'] . ')',
-                                 'email1_field'    => __('Email'),
+                                 'email1_field'    => _n('Email', 'Emails', 1),
                                  'email2_field'    => sprintf(__('%1$s %2$s'),
                                                               _n('Email', 'Emails', 1), '2'),
                                  'email3_field'    => sprintf(__('%1$s %2$s'),

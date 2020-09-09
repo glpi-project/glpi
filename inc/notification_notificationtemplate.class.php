@@ -392,7 +392,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
 
       $core_modes = [
          self::MODE_MAIL      => [
-            'label'  => __('Email'),
+            'label'  => _n('Email', 'Emails', 1),
             'from'   => 'core'
          ],
          self::MODE_AJAX      => [

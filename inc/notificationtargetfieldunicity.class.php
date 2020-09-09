@@ -79,8 +79,8 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
       $tags = ['unicity.message'     => __('Message'),
                     'unicity.action_user' => __('Doer'),
                     'unicity.action_type' => __('Intended action'),
-                    'unicity.date'        => __('Date'),
-                    'unicity.itemtype'    => __('Type'),
+                    'unicity.date'        => _n('Date', 'Dates', 1),
+                    'unicity.itemtype'    => _n('Type', 'Types', 1),
                     'unicity.entity'      => Entity::getTypeName(1),
                     'unicity.action'      => __('Alert on duplicate record')];
 

@@ -69,7 +69,7 @@ class DeviceNetworkCard extends CommonDevice {
                                      'label' => __('Flow'),
                                      'type'  => 'text'],
                                ['name'  => 'devicenetworkcardmodels_id',
-                                     'label' => __('Model'),
+                                     'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue'],
                                ['name'  => 'none',
                                      'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
@@ -105,7 +105,7 @@ class DeviceNetworkCard extends CommonDevice {
          'id'                 => '13',
          'table'              => 'glpi_devicenetworkcardmodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

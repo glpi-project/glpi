@@ -363,7 +363,7 @@ class Computer_Item extends CommonDBRelation{
             $header_bottom .=  "</th>";
          }
 
-         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
          $header_end .= "<th>".__('Name')."</th>";
          if (Plugin::haveImport()) {
             $header_end .= "<th>".__('Automatic inventory')."</th>";

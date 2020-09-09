@@ -330,7 +330,7 @@ class QueuedNotification extends CommonDBTM {
          'id'                 => '20',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'itemtype',
          'massiveaction'      => false
       ];
@@ -651,7 +651,7 @@ class QueuedNotification extends CommonDBTM {
 
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
 
       echo "<td>";
       if (!($item = getItemForItemtype($this->fields['itemtype']))) {
@@ -698,7 +698,7 @@ class QueuedNotification extends CommonDBTM {
       echo "<td>".$this->fields['sent_try']."</td>";
       echo "</tr>";
 
-      echo "<tr><th colspan='4'>".__('Email')."</th></tr>";
+      echo "<tr><th colspan='4'>"._n('Email', 'Emails', 1)."</th></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Sender email')."</td>";
       echo "<td>".$this->fields['sender']."</td>";

@@ -293,7 +293,7 @@ class Contact_Supplier extends CommonDBRelation{
       $header_end .= "<th>".__('Mobile phone')."</th>";
       $header_end .= "<th>".__('Fax')."</th>";
       $header_end .= "<th>"._n('Email', 'Emails', 1)."</th>";
-      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 

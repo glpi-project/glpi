@@ -1316,7 +1316,7 @@ class Item_Devices extends CommonDBRelation {
       $item   = $this->getOnePeer(0);
       $device = $this->getOnePeer(1);
 
-      echo "<tr class='tab_bg_1'><td>".__('Item')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Item', 'Items', 1)."</td>";
       echo "<td>";
       if ($item === false) {
          echo __('No associated item');

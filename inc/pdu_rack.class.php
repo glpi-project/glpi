@@ -326,7 +326,7 @@ class PDU_Rack extends CommonDBRelation {
             $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header .= "</th>";
          }
-         $header .= "<th>".__('Item')."</th>";
+         $header .= "<th>"._n('Item', 'Items', 1)."</th>";
          $header .= "<th>".__('Side')."</th>";
          $header .= "<th>".__('Position')."</th>";
          $header .= "</tr>";
@@ -580,7 +580,7 @@ JAVASCRIPT;
 
                $tip = "<span class='tipcontent'>";
                $tip.= "<span>
-                        <label>".__('Type').":</label>".
+                        <label>"._n('Type', 'Types', 1).":</label>".
                         $pdu->getTypeName()."
                      </span>
                      <span>

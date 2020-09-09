@@ -103,7 +103,7 @@ class RuleImportComputer extends Rule {
       $criterias['serial']['name']               = __('Serial number');
 
       // Model as Text to allow text criteria (contains, regex, ...)
-      $criterias['model']['name']                = __('Model');
+      $criterias['model']['name']                = _n('Model', 'Models', 1);
 
       // Manufacturer as Text to allow text criteria (contains, regex, ...)
       $criterias['manufacturer']['name']         = Manufacturer::getTypeName(1);

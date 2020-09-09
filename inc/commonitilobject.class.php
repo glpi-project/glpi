@@ -2971,7 +2971,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   . '<br />';
 
                if ($d['use_notification']) {
-                  $text .= sprintf(__('%1$s: %2$s'), __('Email'), $email);
+                  $text .= sprintf(__('%1$s: %2$s'), _n('Email', 'Emails', 1), $email);
                }
                if ($canedit) {
                   $opt = ['awesome-class' => 'fa-envelope',
@@ -4062,7 +4062,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   if (empty($uemail) && $user->getFromDB($d['users_id'])) {
                      $uemail = $user->getDefaultEmail();
                   }
-                  $text .= sprintf(__('%1$s: %2$s'), __('Email'), $uemail);
+                  $text .= sprintf(__('%1$s: %2$s'), _n('Email', 'Emails', 1), $uemail);
                   if (!NotificationMailing::isUserAddressValid($uemail)) {
                      $text .= "&nbsp;<span class='red'>".__('Invalid email address')."</span>";
                   }
@@ -6335,7 +6335,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $items                           = [];
       $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
       $items[__('Status')]             = "status";
-      $items[__('Date')]               = "date";
+      $items[_n('Date', 'Dates', 1)]               = "date";
       $items[__('Last update')]        = "date_mod";
 
       if (count($_SESSION["glpiactiveentities"]) > 1) {

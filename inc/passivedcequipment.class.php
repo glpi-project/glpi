@@ -110,7 +110,7 @@ class PassiveDCEquipment extends CommonDBTM {
          'rand'   => $rand
       ]);
       echo "</td>";
-      echo "<td><label for='dropdown_passivedcequipmenttypes_id$rand'>".__('Type')."</label></td>";
+      echo "<td><label for='dropdown_passivedcequipmenttypes_id$rand'>"._n('Type', 'Types', 1)."</label></td>";
       echo "<td>";
       PassiveDCEquipmentType::dropdown([
          'value'  => $this->fields["passivedcequipmenttypes_id"],
@@ -149,7 +149,7 @@ class PassiveDCEquipment extends CommonDBTM {
       ]);
 
       echo "</td>";
-      echo "<td><label for='dropdown_passivedcequipmentmodels_id$rand'>".__('Model')."</label></td>";
+      echo "<td><label for='dropdown_passivedcequipmentmodels_id$rand'>"._n('Model', 'Models', 1)."</label></td>";
       echo "<td>";
       PassiveDCEquipmentModel::dropdown([
          'value'  => $this->fields["passivedcequipmentmodels_id"],
@@ -223,7 +223,7 @@ class PassiveDCEquipment extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_passivedcequipmenttypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -287,7 +287,7 @@ class PassiveDCEquipment extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_passivedcequipmentmodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

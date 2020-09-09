@@ -112,13 +112,13 @@ class Cluster extends CommonDBTM {
       echo "<td><label for='uuid$rand'>".__('UUID')."</label></td>";
       echo "<td>";
       Html::autocompletionTextField($this, 'uuid', ['rand' => $rand]);
-      echo "</td><td><label for='version$rand'>".__('Version')."</label></td>";
+      echo "</td><td><label for='version$rand'>"._n('Version', 'Versions', 1)."</label></td>";
       echo "<td>";
       Html::autocompletionTextField($this, 'version', ['rand' => $rand]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_types_id$rand'>".__('Type')."</label></td>";
+      echo "<td><label for='dropdown_types_id$rand'>"._n('Type', 'Types', 1)."</label></td>";
       echo "<td>";
       ClusterType::dropdown([
          'value'  => $this->fields["clustertypes_id"],

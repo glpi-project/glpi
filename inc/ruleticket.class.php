@@ -416,7 +416,7 @@ class RuleTicket extends Rule {
 
       $criterias['type']['table']                           = 'glpi_tickets';
       $criterias['type']['field']                           = 'type';
-      $criterias['type']['name']                            = __('Type');
+      $criterias['type']['name']                            = _n('Type', 'Types', 1);
       $criterias['type']['linkfield']                       = 'type';
       $criterias['type']['type']                            = 'dropdown_tickettype';
 
@@ -602,7 +602,7 @@ class RuleTicket extends Rule {
       $actions['_affect_itilcategory_by_code']['type']           = 'text';
       $actions['_affect_itilcategory_by_code']['force_actions']  = ['regex_result'];
 
-      $actions['type']['name']                              = __('Type');
+      $actions['type']['name']                              = _n('Type', 'Types', 1);
       $actions['type']['table']                             = 'glpi_tickets';
       $actions['type']['type']                              = 'dropdown_tickettype';
 

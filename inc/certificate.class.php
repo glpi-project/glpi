@@ -125,7 +125,7 @@ class Certificate extends CommonDBTM {
          'id'                 => '7',
          'table'              => 'glpi_certificatetypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -422,7 +422,7 @@ class Certificate extends CommonDBTM {
       Location::dropdown(['value'  => $this->fields["locations_id"],
                           'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       Dropdown::show('CertificateType',
                      ['name'   => "certificatetypes_id",

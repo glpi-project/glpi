@@ -53,7 +53,7 @@ class RuleDictionnaryComputerModel extends RuleDictionnaryDropdown {
       }
 
       $criterias['name']['field']         = 'name';
-      $criterias['name']['name']          =  __('Model');
+      $criterias['name']['name']          =  _n('Model', 'Models', 1);
       $criterias['name']['table']         ='glpi_computermodels';
 
       $criterias['manufacturer']['field'] = 'name';
@@ -70,7 +70,7 @@ class RuleDictionnaryComputerModel extends RuleDictionnaryDropdown {
    function getActions() {
 
       $actions                          = [];
-      $actions['name']['name']          = __('Model');
+      $actions['name']['name']          = _n('Model', 'Models', 1);
       $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
 
       return $actions;

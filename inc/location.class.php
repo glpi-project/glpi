@@ -467,9 +467,9 @@ class Location extends CommonTreeDropdown {
 
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>".__('Type')."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>"._n('Type', 'Types', 1)."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
-      echo __('Type')."&nbsp;";
+      echo _n('Type', 'Types', 1)."&nbsp;";
       $all_types = array_merge(['0' => '---'], $CFG_GLPI['location_types']);
       Dropdown::showItemType(
          $all_types, [
@@ -484,7 +484,7 @@ class Location extends CommonTreeDropdown {
          Html::printAjaxPager('', $start, $number);
 
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".__('Type')."</th>";
+         echo "<tr><th>"._n('Type', 'Types', 1)."</th>";
          echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('Name')."</th>";
          echo "<th>".__('Serial number')."</th>";

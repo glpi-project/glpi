@@ -199,7 +199,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'item.serial'               => __('Serial number'),
                     'item.otherserial'          => __('Inventory number'),
                     'item.location'             => Location::getTypeName(1),
-                    'item.model'                => __('Model'),
+                    'item.model'                => _n('Model', 'Models', 1),
                     'item.contact'              => __('Alternate username'),
                     'item.contactnumber'        => __('Alternate username number'),
                     'item.user'                 => User::getTypeName(1),
@@ -238,12 +238,12 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
       //Tags without lang
       $tags = ['ticket.id'        => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID')),
-                    'ticket.date'      => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Date')),
+                    'ticket.date'      => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), _n('Date', 'Dates', 1)),
                     'ticket.url'       => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('URL')),
                     'ticket.title'     => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Title')),
                     'ticket.content'   => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Description')),
                     'change.id'        => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('ID')),
-                    'change.date'      => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Date')),
+                    'change.date'      => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), _n('Date', 'Dates', 1)),
                     'change.url'       => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('URL')),
                     'change.title'     => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Title')),
                     'change.content'   => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Description')),

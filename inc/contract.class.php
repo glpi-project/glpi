@@ -426,7 +426,7 @@ class Contract extends CommonDBTM {
          'id'                 => '129',
          'table'              => 'glpi_contracttypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -681,7 +681,7 @@ class Contract extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_contracttypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 

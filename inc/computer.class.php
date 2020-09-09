@@ -344,7 +344,7 @@ class Computer extends CommonDBTM {
                                'rand' => $randDropdown]);
       echo "</td>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_computertypes_id$randDropdown'>".__('Type')."</label></td>";
+      echo "<td><label for='dropdown_computertypes_id$randDropdown'>"._n('Type', 'Types', 1)."</label></td>";
       echo "<td>";
       ComputerType::dropdown(['value' => $this->fields["computertypes_id"], 'rand' => $randDropdown]);
       echo "</td></tr>\n";
@@ -379,7 +379,7 @@ class Computer extends CommonDBTM {
 
       echo "</td>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_computermodels_id$randDropdown'>".__('Model')."</label></td>";
+      echo "<td><label for='dropdown_computermodels_id$randDropdown'>"._n('Model', 'Models', 1)."</label></td>";
       echo "<td>";
       ComputerModel::dropdown(['value' => $this->fields["computermodels_id"], 'rand' => $randDropdown]);
       echo "</td></tr>\n";
@@ -547,7 +547,7 @@ class Computer extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_computertypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -555,7 +555,7 @@ class Computer extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_computermodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 
