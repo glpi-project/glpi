@@ -43,6 +43,7 @@ jobs:
           docker exec ${{ job.services.app.id }} echo "npm version: $(npm --version)"
           docker exec ${{ job.services.app.id }} composer config --unset platform
           docker exec ${{ job.services.app.id }} bin/console dependencies install --composer-options="--prefer-dist --no-progress"
+          docker exec ${{ job.services.app.id }} tools/locale/extract_template.sh
       - name: "PHP Parallel Lint"
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
