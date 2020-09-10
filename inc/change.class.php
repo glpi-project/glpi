@@ -1052,7 +1052,7 @@ class Change extends CommonITILObject {
          echo $tt->getEndHiddenFieldText('_add_validation');
       } else {
          echo $tt->getBeginHiddenFieldText('global_validation');
-         echo CommonITILValidation::getTypeName(1);
+         echo _n('Approval', 'Approvals', 1);
          echo $tt->getEndHiddenFieldText('global_validation');
       }
       echo "</th>";
