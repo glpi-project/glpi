@@ -64,7 +64,8 @@ class MailCollector extends DbTestCase {
                   'use_mail_date'        => '',
                   'date_creation'        => '',
                   'requester_field'      => '',
-                  'add_cc_to_observer'   => ''
+                  'add_cc_to_observer'   => '',
+                  'collect_only_unread'  => ''
                ]);
    }
 
@@ -198,17 +199,18 @@ class MailCollector extends DbTestCase {
       }
 
       $this->mailgate_id = (int)$collector->add([
-         'name'               => 'testuser',
-         'login'              => 'testuser',
-         'is_active'          => true,
-         'passwd'             => 'applesauce',
-         'mail_server'        => '127.0.0.1',
-         'server_type'        => '/imap',
-         'server_port'        => 143,
-         'server_ssl'         => '',
-         'server_cert'        => '/novalidate-cert',
-         'add_cc_to_observer' => 1, //add ccuser as observer in ticket
-         'requester_field'    => \MailCollector::REQUESTER_FIELD_REPLY_TO,
+         'name'                  => 'testuser',
+         'login'                 => 'testuser',
+         'is_active'             => true,
+         'passwd'                => 'applesauce',
+         'mail_server'           => '127.0.0.1',
+         'server_type'           => '/imap',
+         'server_port'           => 143,
+         'server_ssl'            => '',
+         'server_cert'           => '/novalidate-cert',
+         'add_cc_to_observer'    => 1,
+         'collect_only_unread'   => 1,
+         'requester_field'       => \MailCollector::REQUESTER_FIELD_REPLY_TO,
       ]);
 
       $this->integer($this->mailgate_id)->isGreaterThan(0);
@@ -246,16 +248,18 @@ class MailCollector extends DbTestCase {
       $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
       $msg = $this->collector->collect($this->mailgate_id);
 
-      $total_count              = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-      $expected_refused_count   = 2;
-      $expected_error_count     = 2;
-      $expected_blacklist_count = 0;
+      $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
+      $expected_refused_count          = 2;
+      $expected_error_count            = 2;
+      $expected_blacklist_count        = 0;
+      $expected_expected_already_seen  = 0;
 
       $this->variable($msg)->isIdenticalTo(
          sprintf(
-            'Number of messages: available=%1$s, retrieved=%2$s, refused=%3$s, errors=%4$s, blacklisted=%5$s',
+            'Number of messages: available=%1$s, already imported=%2$d, retrieved=%3$s, refused=%4$s, errors=%5$s, blacklisted=%6$s',
             $total_count,
-            $total_count,
+            $expected_expected_already_seen,
+            $total_count - $expected_expected_already_seen,
             $expected_refused_count,
             $expected_error_count,
             $expected_blacklist_count

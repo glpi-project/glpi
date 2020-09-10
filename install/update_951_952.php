@@ -113,6 +113,9 @@ function update951to952() {
    );
    /* /Register missing DomainAlert crontask */
 
+   //add option to collect only unread mail
+   $migration->addField('glpi_mailcollectors', 'collect_only_unread', 'bool', ['value' => 0]);
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
