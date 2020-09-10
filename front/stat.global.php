@@ -105,7 +105,7 @@ $values['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgs
                                                    $_GET["date1"], $_GET["date2"]);
 // Pass to hour values
 foreach ($values['avgsolved'] as &$val) {
-   $val = round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
+   $val = round($val / HOUR_TIMESTAMP, 2);
 }
 
 //Temps moyen de cloture d'intervention
@@ -113,7 +113,7 @@ $values['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgc
                                                    $_GET["date1"], $_GET["date2"]);
 // Pass to hour values
 foreach ($values['avgclosed'] as &$val) {
-   $val = round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
+   $val = round($val / HOUR_TIMESTAMP, 2);
 }
 //Temps moyen d'intervention reel
 $values['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgactiontime",
@@ -121,7 +121,7 @@ $values['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_
 
 // Pass to hour values
 foreach ($values['avgactiontime'] as &$val) {
-   $val =  round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
+   $val =  round($val / HOUR_TIMESTAMP, 2);
 }
 
 $stat->displayLineGraph(

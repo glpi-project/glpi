@@ -357,7 +357,7 @@ $values['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgs
                                                    $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values['avgsolved'] as $key => &$val) {
-   $val = round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
+   $val = round($val / HOUR_TIMESTAMP, 2);
 }
 //Temps moyen de cloture d'intervention
 $values['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgclosedtime",
@@ -365,7 +365,7 @@ $values['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgc
                                                    $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values['avgclosed'] as $key => &$val) {
-   $val = round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
+   $val = round($val / HOUR_TIMESTAMP, 2);
 }
 //Temps moyen d'intervention reel
 $values['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgactiontime",
@@ -373,7 +373,7 @@ $values['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_
                                                        $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values['avgactiontime'] as $key => &$val) {
-   $val = round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
+   $val = round($val / HOUR_TIMESTAMP, 2);
 }
 
 $series = [
@@ -396,7 +396,7 @@ if ($_GET['itemtype'] == 'Ticket') {
                                                         $_GET["type"], $val1, $val2);
    // Pass to hour values
    foreach ($values['avgtaketime'] as $key => &$val) {
-      $val = round($val / HOUR_TIMESTAMP, Session::getPluralNumber());
+      $val = round($val / HOUR_TIMESTAMP, 2);
    }
 
    $series[] = [
