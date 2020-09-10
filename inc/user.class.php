@@ -4569,6 +4569,60 @@ JAVASCRIPT;
    }
 
    /**
+    * Handle user restored in LDAP using configured policy.
+    *
+    * @since x.x.x
+    * @param integer $users_id
+    *
+    * @return void
+    */
+   static function manageRestoredUserInLdap($users_id) {
+      global $CFG_GLPI;
+
+      //The only case where users_id can be null if when a user has been imported into GLPI
+      //it's dn still exists, but doesn't match the connection filter anymore
+      //In this case, do not try to process the user
+      if (!$users_id) {
+         return;
+      }
+
+      //User is present in DB and in the directory but 'is_ldap_deleted' was true : it's been restored in LDAP
+      $tmp = [
+         'id'              => $users_id,
+         'is_deleted_ldap' => 0,
+      ];
+      $myuser = new self();
+      $myuser->getFromDB($users_id);
+
+      // User is already considered as restored from ldap
+      if ($myuser->fields['is_deleted_ldap'] == 0) {
+         return;
+      }
+
+      // Calling the update function for the user will reapply dynamic rights {@see User::post_updateItem()}
+      switch ($CFG_GLPI['user_restored_ldap']) {
+         // Do nothing except update the 'is_ldap_deleted' field to prevent re-processing the restore for each sync
+         default :
+         case AuthLDAP::RESTORED_USER_PRESERVE:
+            $myuser->update($tmp);
+            break;
+
+         // Restore the user from the trash
+         case AuthLDAP::RESTORED_USER_RESTORE:
+            $myuser->restore($tmp);
+            $myuser->update($tmp);
+            break;
+
+         // Enable the user
+         case AuthLDAP::RESTORED_USER_ENABLE:
+            $tmp['is_active'] = 1;
+            $myuser->update($tmp);
+            break;
+
+      }
+   }
+
+   /**
     * Get user ID from its name.
     *
     * @param string $name User name
