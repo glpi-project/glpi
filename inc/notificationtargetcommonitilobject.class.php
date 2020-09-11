@@ -1490,7 +1490,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'followup.isprivate'                => __('Private'),
                     'followup.author'                   => __('Writer'),
                     'followup.description'              => __('Description'),
-                    'followup.requesttype'              => __('Request source'),
+                    'followup.requesttype'              => RequestType::getTypeName(1),
                     $objettype.'.numberoffollowups'     => _x('quantity', 'Number of followups'),
                     $objettype.'.numberofunresolved'    => __('Number of unresolved items'),
                     $objettype.'.numberofdocuments'     => _x('quantity', 'Number of documents'),

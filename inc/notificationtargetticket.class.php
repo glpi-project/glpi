@@ -593,7 +593,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.ola_ttr'               => sprintf(__('%1$s / %2$s'),
                                                               __('OLA'),
                                                               __('Internal time to resolve')),
-                    'ticket.requesttype'           => __('Request source'),
+                    'ticket.requesttype'           => RequestType::getTypeName(1),
                     'ticket.itemtype'              => __('Item type'),
                     'ticket.item.name'             => _n('Associated item', 'Associated items', 1),
                     'ticket.item.serial'           => __('Serial number'),

@@ -526,7 +526,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '2',
          'table'              => 'glpi_requesttypes',
          'field'              => 'name',
-         'name'               => __('Request source'),
+         'name'               => RequestType::getTypeName(1),
          'forcegroupby'       => true,
          'datatype'           => 'dropdown'
       ];
@@ -560,7 +560,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Request source'),
+         'name'               => RequestType::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -632,7 +632,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '29',
          'table'              => 'glpi_requesttypes',
          'field'              => 'name',
-         'name'               => __('Request source'),
+         'name'               => RequestType::getTypeName(1),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,

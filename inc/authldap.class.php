@@ -797,7 +797,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='email4_field' value='".$this->fields["email4_field"]."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . Phone::getTypeName(1) . "</td>";
+      echo "<tr class='tab_bg_2'><td>" . _x('ldap', 'Phone') . "</td>";
       echo "<td><input type='text' name='phone_field'value='".$this->fields["phone_field"]."'>";
       echo "</td>";
       echo "<td>" .  __('Phone 2') . "</td>";

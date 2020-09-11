@@ -2805,7 +2805,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '9',
          'table'              => 'glpi_requesttypes',
          'field'              => 'name',
-         'name'               => __('Request source'),
+         'name'               => RequestType::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -4632,7 +4632,7 @@ class Ticket extends CommonITILObject {
 
       echo "</td>";
       echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('requesttypes_id');
-      printf(__('%1$s%2$s'), __('Request source'), $tt->getMandatoryMark('requesttypes_id'));
+      printf(__('%1$s%2$s'), RequestType::getTypeName(1), $tt->getMandatoryMark('requesttypes_id'));
       echo $tt->getEndHiddenFieldText('requesttypes_id')."</th>";
       echo "<td width='$colsize4%'>";
       echo $tt->getBeginHiddenFieldValue('requesttypes_id');

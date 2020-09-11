@@ -502,7 +502,7 @@ class RuleTicket extends Rule {
 
       $criterias['requesttypes_id']['table']                = 'glpi_requesttypes';
       $criterias['requesttypes_id']['field']                = 'name';
-      $criterias['requesttypes_id']['name']                 = __('Request source');
+      $criterias['requesttypes_id']['name']                 = RequestType::getTypeName(1);
       $criterias['requesttypes_id']['linkfield']            = 'requesttypes_id';
       $criterias['requesttypes_id']['type']                 = 'dropdown';
 
@@ -755,7 +755,7 @@ class RuleTicket extends Rule {
       $actions['locations_id']['table']                     = 'glpi_locations';
       $actions['locations_id']['force_actions']             = ['assign', 'fromuser', 'fromitem'];
 
-      $actions['requesttypes_id']['name']                   = __('Request source');
+      $actions['requesttypes_id']['name']                   = RequestType::getTypeName(1);
       $actions['requesttypes_id']['type']                   = 'dropdown';
       $actions['requesttypes_id']['table']                  = 'glpi_requesttypes';
 

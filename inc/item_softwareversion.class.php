@@ -95,7 +95,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Request source'),
+         'name'               => _x('software', 'Request source'),
          'datatype'           => 'dropdown'
       ];
 

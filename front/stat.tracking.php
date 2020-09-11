@@ -90,7 +90,7 @@ $caract    = ['itilcategories_id'   => ['title' => __('Category')],
 
 if ($_GET['itemtype'] == 'Ticket') {
    $caract['type']            = ['title' => _n('Type', 'Types', 1)];
-   $caract['requesttypes_id'] = ['title' => __('Request source')];
+   $caract['requesttypes_id'] = ['title' => RequestType::getTypeName(1)];
    $caract['locations_id']    = ['title' => Location::getTypeName(1)];
    $caract['locations_tree']  = ['title' => __('Location tree')];
 }
