@@ -204,7 +204,7 @@ jobs:
       - run:
           name: gettext
           command: |
-            tools/locale/extract_template.sh 2>&1 |grep -q "warning" & (echo "Translations extraction successfull!" && exit 1)
+            tools/locale/extract_template.sh 2>&1 |grep "warning" & (echo "Translations extraction has failed!" && exit 1)
 
   # PHP 7.2 test suite.
   php_7_2_test_suite:
