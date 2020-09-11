@@ -205,7 +205,7 @@ jobs:
           name: gettext
           command: |
             tools/locale/extract_template.sh > gettext.log 2>&1
-            grep -q warning gettext.log && (cat gettext.log && exit 1)
+            grep -q warning gettext.log & (cat gettext.log && exit 1)
 
   # PHP 7.2 test suite.
   php_7_2_test_suite:
