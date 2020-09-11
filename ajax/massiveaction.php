@@ -69,7 +69,7 @@ if (count($actions)) {
          echo Html::hidden($key, ['value' => $val]);
       }
    }
-   echo _n('Action', 'Actions', 1);
+   echo __('Action');
    echo "&nbsp;";
 
    $actions = ['-1' => Dropdown::EMPTY_VALUE] + $actions;
