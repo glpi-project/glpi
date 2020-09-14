@@ -57,8 +57,13 @@ class Auth extends CommonGLPI {
    public $user_present = 0;
    /** @var int Indicates if the user password expired */
    public $password_expired = false;
-   /** @var int Indicates if the user is deleted in the directory (doesn't mean that it can login) */
-   public $user_deleted_ldap = 0;
+
+   /**
+    * Indicated if user was found in the directory.
+    * @var boolean
+    */
+   public $user_found = false;
+
    /** @var resource|boolean LDAP connection descriptor */
    public $ldap_connection;
    /** @var bool Store user LDAP dn */
@@ -226,7 +231,7 @@ class Auth extends CommonGLPI {
       }
 
       $this->ldap_connection   = AuthLDAP::tryToConnectToServer($ldap_method, $login, $password);
-      $this->user_deleted_ldap = false;
+      $this->user_found = false;
 
       if ($this->ldap_connection) {
          $params = [
@@ -257,7 +262,8 @@ class Auth extends CommonGLPI {
          }
 
          $dn = $infos['dn'];
-         if (!empty($dn) && @ldap_bind($this->ldap_connection, $dn, $password)) {
+         $this->user_found = $dn != '';
+         if ($this->user_found && @ldap_bind($this->ldap_connection, $dn, $password)) {
 
             //Hook to implement to restrict access by checking the ldap directory
             if (Plugin::doHookFunction("restrict_ldap_auth", $infos)) {
@@ -271,9 +277,6 @@ class Auth extends CommonGLPI {
             // Incorrect login
             $this->addToError(__('Incorrect username or password'));
             //Use is not present anymore in the directory!
-            if ($dn == '') {
-               $this->user_deleted_ldap = true;
-            }
             return false;
          }
 
@@ -782,6 +785,7 @@ class Auth extends CommonGLPI {
                         $user_dn = false;
                      }
                      if ($user_dn) {
+                        $this->user_found = true;
                         $this->user->fields['auths_id'] = $ldap_method['id'];
                         $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name,
                                                  !$this->user_present);
@@ -804,8 +808,7 @@ class Auth extends CommonGLPI {
                   } else if (!$user_dn && $this->user_present) {
                      //If user is set as present in GLPI but no LDAP DN found : it means that the user
                      //is not present in an ldap directory anymore
-                     $user_deleted_ldap       = true;
-                     $this->user_deleted_ldap = true;
+                     $user_deleted_ldap = true;
                      $this->addToError(_n('User not found in LDAP directory',
                                           'User not found in LDAP directories',
                                            count($ldapservers)));
@@ -844,7 +847,7 @@ class Auth extends CommonGLPI {
                   if (Toolbox::canUseLdap()) {
                      AuthLDAP::tryLdapAuth($this, $login_name, $login_password,
                                              $this->user->fields["auths_id"]);
-                     if (!$this->auth_succeded && $this->user_deleted_ldap) {
+                     if (!$this->auth_succeded && !$this->user_found) {
                         $search_params = [
                            'name'     => addslashes($login_name),
                            'authtype' => $this::LDAP];
