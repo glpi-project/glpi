@@ -628,17 +628,7 @@ class Toolbox {
     * @return void
     */
    static function deprecated($message = "Called method is deprecated") {
-      try {
-         self::log(null, Logger::NOTICE, [$message]);
-      } finally {
-         if (defined('TU_USER')) {
-            if (isCommandLine()) {
-               echo self::backtrace(null);
-            } else {
-               self::backtrace();
-            }
-         }
-      }
+      trigger_error($message, E_USER_DEPRECATED);
    }
 
 
