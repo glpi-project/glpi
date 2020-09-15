@@ -38,10 +38,9 @@ use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
 use Laminas\Mail\Header\ContentType;
-use Laminas\Mail\Storage\Message;
 use Laminas\Mail\Storage;
+use Laminas\Mail\Storage\Message;
 use LitEmoji\LitEmoji;
-
 
 /**
  * MailCollector class
@@ -771,7 +770,7 @@ class MailCollector  extends CommonDBTM {
                      $rejinput['messageid']         = $headers['message_id'];
                   }
                   $rejinput['date']              = $_SESSION["glpi_currenttime"];
-               } catch (Throwable $e) {
+               } catch (\Throwable $e) {
                   $error++;
                   Toolbox::logInFile('mailgate', sprintf(__('Error during message parsing: %1$s').'<br/>', $e->getMessage()));
                   $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;

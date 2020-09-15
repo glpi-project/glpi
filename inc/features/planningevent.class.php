@@ -43,6 +43,7 @@ use DateInterval;
 use DateTime;
 use DateTimeZone;
 use Dropdown;
+use Entity;
 use Group_User;
 use Html;
 use Planning;
@@ -55,7 +56,6 @@ use RRule\RSet;
 use Session;
 use Toolbox;
 use User;
-use Entity;
 
 trait PlanningEvent {
 
