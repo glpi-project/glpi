@@ -38,7 +38,13 @@ $(function() {
 
    var showFilters = function (event) {
       event.preventDefault();
-      reloadTab('filters[active]=1');
+
+      // Toggle filters
+      if ($('.show_log_filters').hasClass('active')) {
+         reloadTab('');
+      } else {
+         reloadTab('filters[active]=1');
+      }
    };
 
    var bindFilterChange = function () {
