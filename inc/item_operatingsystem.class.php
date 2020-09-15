@@ -333,7 +333,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_operatingsystemkernelversions_id$rand'>"._n('Kernel', 'kernel', 1)."</label></td>";
+      echo "<td><label for='dropdown_operatingsystemkernelversions_id$rand'>"._n('Kernel', 'Kernels', 1)."</label></td>";
       echo "<td >";
       OperatingSystemKernelVersion::dropdown([
          'value'  => $this->fields['operatingsystemkernelversions_id'],
