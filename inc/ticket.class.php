@@ -1951,7 +1951,7 @@ class Ticket extends CommonITILObject {
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
          Session::addMessageAfterRedirect(sprintf(__('%1$s (%2$s)'),
                               __('Your ticket has been registered, its treatment is in progress.'),
-                                                  sprintf(__('%1$s: %2$s'), __('Ticket'),
+                                                  sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1),
                                                           "<a href='".Ticket::getFormURLWithID($this->fields['id'])."'>".
                                                             $this->fields['id']."</a>")));
       }
@@ -2515,7 +2515,7 @@ class Ticket extends CommonITILObject {
                'rand'         => $rand
             ];
             echo "<table class='center-h'><tr>";
-            echo "<td><label for='dropdown__mergeticket$rand'>".__('Ticket')."</label></td><td colspan='3'>";
+            echo "<td><label for='dropdown__mergeticket$rand'>".Ticket::getTypeName(1)."</label></td><td colspan='3'>";
             Ticket::dropdown($mergeparam);
             echo "</td></tr><tr><td><label for='with_followups'>".__('Merge followups')."</label></td><td>";
             Html::showCheckbox([
@@ -2763,7 +2763,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'type',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'searchtype'         => 'equals',
          'datatype'           => 'specific'
       ];
@@ -2805,7 +2805,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '9',
          'table'              => 'glpi_requesttypes',
          'field'              => 'name',
-         'name'               => __('Request source'),
+         'name'               => RequestType::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -2868,7 +2868,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '32',
          'table'              => 'glpi_slalevels',
          'field'              => 'name',
-         'name'               => __('SLA')."&nbsp;".__('Escalation level'),
+         'name'               => __('SLA')."&nbsp;"._n('Escalation level', 'Escalation levels', 1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
@@ -2919,7 +2919,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '192',
          'table'              => 'glpi_olalevels',
          'field'              => 'name',
-         'name'               => __('OLA')."&nbsp;".__('Escalation level'),
+         'name'               => __('OLA')."&nbsp;"._n('Escalation level', 'Escalation levels', 1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
@@ -2958,7 +2958,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '31',
          'table'              => 'glpi_ticketsatisfactions',
          'field'              => 'type',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'massiveaction'      => false,
          'searchtype'         => ['equals', 'notequals'],
          'searchequalsonfield' => true,
@@ -3764,7 +3764,7 @@ class Ticket extends CommonITILObject {
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Type'), $tt->getMandatoryMark('type'))."</td>";
+      echo "<td>".sprintf(__('%1$s%2$s'), _n('Type', 'Types', 1), $tt->getMandatoryMark('type'))."</td>";
       echo "<td>";
       self::dropdownType('type', ['value'     => $options['type'],
                                   'on_change' => 'this.form.submit()']);
@@ -3836,7 +3836,7 @@ class Ticket extends CommonITILObject {
 
       if (!$tt->isHiddenField('locations_id')) {
          echo "<tr class='tab_bg_1'><td>";
-         printf(__('%1$s%2$s'), __('Location'), $tt->getMandatoryMark('locations_id'));
+         printf(__('%1$s%2$s'), Location::getTypeName(1), $tt->getMandatoryMark('locations_id'));
          echo "</td><td>";
          Location::dropdown(['value'  => $options["locations_id"]]);
          echo "</td></tr>";
@@ -3845,7 +3845,7 @@ class Ticket extends CommonITILObject {
       if (!$tt->isHiddenField('_users_id_observer')
           || $tt->isPredefinedField('_users_id_observer')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".sprintf(__('%1$s%2$s'), _n('Watcher', 'Watchers', 2),
+         echo "<td>".sprintf(__('%1$s%2$s'), _n('Watcher', 'Watchers', Session::getPluralNumber()),
                              $tt->getMandatoryMark('_users_id_observer'))."</td>";
          echo "<td>";
          $options['_right'] = "all";
@@ -4533,7 +4533,7 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".sprintf(__('%1$s%2$s'), __('Type'),
+      echo "<th width='$colsize1%'>".sprintf(__('%1$s%2$s'), _n('Type', 'Types', 1),
                                              $tt->getMandatoryMark('type'))."</th>";
       echo "<td width='$colsize2%'>";
       // Permit to set type when creating ticket without update right
@@ -4632,7 +4632,7 @@ class Ticket extends CommonITILObject {
 
       echo "</td>";
       echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('requesttypes_id');
-      printf(__('%1$s%2$s'), __('Request source'), $tt->getMandatoryMark('requesttypes_id'));
+      printf(__('%1$s%2$s'), RequestType::getTypeName(1), $tt->getMandatoryMark('requesttypes_id'));
       echo $tt->getEndHiddenFieldText('requesttypes_id')."</th>";
       echo "<td width='$colsize4%'>";
       echo $tt->getBeginHiddenFieldValue('requesttypes_id');
@@ -4674,7 +4674,7 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldText('_add_validation');
       } else {
          echo $tt->getBeginHiddenFieldText('global_validation');
-         echo __('Approval');
+         echo CommonITILValidation::getTypeName(1);
          echo $tt->getEndHiddenFieldText('global_validation');
       }
       echo "</th>";
@@ -4740,7 +4740,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
 
       echo "<th>".$tt->getBeginHiddenFieldText('locations_id');
-      printf(__('%1$s%2$s'), __('Location'), $tt->getMandatoryMark('locations_id'));
+      printf(__('%1$s%2$s'), Location::getTypeName(1), $tt->getMandatoryMark('locations_id'));
       echo $tt->getEndHiddenFieldText('locations_id')."</th>";
       echo "<td>";
       echo $tt->getBeginHiddenFieldValue('locations_id');
@@ -5627,7 +5627,7 @@ class Ticket extends CommonITILObject {
          echo "</th></tr>";
          if ($number) {
             echo "<tr><th style='width: 75px;'>".__('ID')."</th>";
-            echo "<th style='width: 20%;'>".__('Requester')."</th>";
+            echo "<th style='width: 20%;'>"._n('Requester', 'Requesters', 1)."</th>";
             echo "<th style='width: 20%;'>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
             echo "<th>".__('Description')."</th></tr>";
             while ($data = $iterator->next()) {

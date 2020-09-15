@@ -162,7 +162,7 @@ class IPNetwork_Vlan extends CommonDBRelation {
          $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Name')."</th>";
-      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>".Entity::getTypeName(1)."</th>";
       $header_end .= "<th>".__('ID TAG')."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;

@@ -99,7 +99,7 @@ class Report extends CommonGLPI{
           || Peripheral::canView()
           || Printer::canView()
           || Phone::canView()) {
-         $report_list["state"]["name"] = _n('Status', 'Statuses', Session::getPluralNumber());
+         $report_list["state"]["name"] = __('Status');
          $report_list["state"]["file"] = "report.state.php";
       }
       //Affichage du tableau de presentation des stats
@@ -212,7 +212,7 @@ class Report extends CommonGLPI{
          echo "<td class='numeric'>$number</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".__('Operating system')."</td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".OperatingSystem::getTypeName(1)."</td></tr>";
 
       // 2. Get some more number data (operating systems per computer)
       $iterator = $DB->request([
@@ -455,7 +455,7 @@ class Report extends CommonGLPI{
          if (!empty($extra)) {
             echo "<th>$extra</th>";
          }
-         echo "<th>".__('Device type')."</th>";
+         echo "<th>"._n('Device type', 'Device types', 1)."</th>";
          echo "<th>".__('Device name')."</th>";
          echo "<th>".__('Port Number')."</th>";
          echo "<th>".NetworkPort::getTypeName(1)."</th>";
@@ -464,7 +464,7 @@ class Report extends CommonGLPI{
          echo "<th>".NetworkPort::getTypeName(1)."</th>";
          echo "<th>".__('MAC address')."</th>";
          echo "<th>".IPAddress::getTypeName(0)."</th>";
-         echo "<th>".__('Device type')."</th>";
+         echo "<th>"._n('Device type', 'Device types', 1)."</th>";
          echo "<th>".__('Device name')."</th>";
          echo "</tr>\n";
 

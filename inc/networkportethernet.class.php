@@ -137,7 +137,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       Netpoint::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header, $options);
 
-      $group->addHeader('Outlet', __('Network outlet'), $super, $header);
+      $group->addHeader('Outlet', _n('Network outlet', 'Network outlets', 1), $super, $header);
 
       parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
       return $header;

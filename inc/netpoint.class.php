@@ -50,7 +50,7 @@ class Netpoint extends CommonDropdown {
    function getAdditionalFields() {
 
       return [['name'  => 'locations_id',
-                         'label' => __('Location'),
+                         'label' => Location::getTypeName(1),
                          'type'  => 'dropdownValue',
                          'list'  => true]];
    }
@@ -399,7 +399,7 @@ class Netpoint extends CommonDropdown {
          return;
       }
 
-      $base->addHeader($column_name, __('Network outlet'), $super, $father);
+      $base->addHeader($column_name, _n('Network outlet', 'Network outlets', 1), $super, $father);
 
    }
 

@@ -399,7 +399,7 @@ class Dropdown {
                   $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
                   if ($tooltip) {
                      if (!empty($data["phone"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".Phone::getTypeName(1),
                                                    "</span>".$data['phone']);
                      }
                      if (!empty($data["phone2"])) {
@@ -417,7 +417,7 @@ class Dropdown {
                                                    "</span>".$data['fax']);
                      }
                      if (!empty($data["email"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>"._n('Email', 'Emails', 1),
                                                    "</span>".$data['email']);
                      }
                   }
@@ -426,7 +426,7 @@ class Dropdown {
                case "glpi_suppliers" :
                   if ($tooltip) {
                      if (!empty($data["phonenumber"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".Phone::getTypeName(1),
                                                    "</span>".$data['phonenumber']);
                      }
                      if (!empty($data["fax"])) {
@@ -434,7 +434,7 @@ class Dropdown {
                                                    "</span>".$data['fax']);
                      }
                      if (!empty($data["email"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>"._n('Email', 'Emails', 1),
                                                    "</span>".$data['email']);
                      }
                   }
@@ -450,14 +450,14 @@ class Dropdown {
                   if ($tooltip) {
                      if (!empty($data['locations_id'])) {
                         $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                   "<span class='b'>".__('Location')."</span>",
+                                                   "<span class='b'>".Location::getTypeName(1)."</span>",
                                                    self::getDropdownName("glpi_locations",
                                                                            $data["locations_id"],
                                                                            false, $translate));
 
                      }
                      if (!empty($data['budgettypes_id'])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Type')."</span>",
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>"._n('Type', 'Types', 1)."</span>",
                                        self::getDropdownName("glpi_budgettypes",
                                                             $data["budgettypes_id"], false, $translate));
 
@@ -815,8 +815,7 @@ class Dropdown {
       if (is_null($optgroup)) {
          $optgroup = [
              __('Common') => [
-                 'Location'               => _n('Location', 'Locations',
-                                                Session::getPluralNumber()),
+                 'Location'               => Location::getTypeName(Session::getPluralNumber()),
                  'State'                  => _n('Status of items',
                                                 'Statuses of items',
                                                 Session::getPluralNumber()),
@@ -833,15 +832,12 @@ class Dropdown {
                                              Session::getPluralNumber()),
                  'TaskCategory'        => _n('Task category', 'Task categories',
                                              Session::getPluralNumber()),
-                 'TaskTemplate'        => _n('Task template', 'Task templates',
-                                             Session::getPluralNumber()),
-                 'SolutionType'        => _n('Solution type', 'Solution types',
-                                             Session::getPluralNumber()),
+                 'TaskTemplate'        => TaskTemplate::getTypeName(Session::getPluralNumber()),
+                 'SolutionType'        => SolutionType::getTypeName(Session::getPluralNumber()),
                  'SolutionTemplate'    => _n('Solution template',
                                              'Solution templates',
                                              Session::getPluralNumber()),
-                 'RequestType'         => _n('Request source', 'Request sources',
-                                             Session::getPluralNumber()),
+                 'RequestType'         => RequestType::getTypeName(Session::getPluralNumber()),
                  'ITILFollowupTemplate' => _n('Followup template', 'Followup templates',
                                              Session::getPluralNumber()),
                  'ProjectState'        => _n('Project state', 'Project states',
@@ -884,16 +880,14 @@ class Dropdown {
                  'ConsumableItemType'   => _n('Consumable type',
                                               'Consumable types',
                                               Session::getPluralNumber()),
-                 'ContractType'         => _n('Contract type', 'Contract types',
-                                              Session::getPluralNumber()),
+                 'ContractType'         => ContractType::getTypeName(Session::getPluralNumber()),
                  'ContactType'          => _n('Contact type', 'Contact types',
                                               Session::getPluralNumber()),
                  'DeviceGenericType'    => _n('Generic device type', 'Generic device types',
                                               Session::getPluralNumber()),
                  'DeviceSensorType'     => _n('Sensor type', 'Sensors types',
                                               Session::getPluralNumber()),
-                 'DeviceMemoryType'     => _n('Memory type', 'Memory types',
-                                              Session::getPluralNumber()),
+                 'DeviceMemoryType'     => DeviceMemoryType::getTypeName(Session::getPluralNumber()),
                  'SupplierType'         => _n('Third party type',
                                               'Third party types',
                                               Session::getPluralNumber()),
@@ -905,8 +899,7 @@ class Dropdown {
                  'PhonePowerSupply'     => _n('Phone power supply type',
                                               'Phones power supply types',
                                               Session::getPluralNumber()),
-                 'Filesystem'           => _n('File system', 'File systems',
-                                              Session::getPluralNumber()),
+                 'Filesystem'           => Filesystem::getTypeName(Session::getPluralNumber()),
                  'CertificateType'      => _n('Certificate type', 'Certificate types',
                                                Session::getPluralNumber()),
                  'BudgetType'           => _n('Budget type', 'Budget types',
@@ -921,7 +914,7 @@ class Dropdown {
                  'ClusterType'          => ClusterType::getTypeName(Session::getPluralNumber()),
              ],
 
-             __('Model') => [
+             _n('Model', 'Models', 1) => [
                  'ComputerModel'         => _n('Computer model',
                                                'Computer models',
                                                Session::getPluralNumber()),
@@ -976,15 +969,11 @@ class Dropdown {
              ],
 
              _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
-                 'VirtualMachineType'   => _n('Virtualization system',
-                                              'Virtualization systems',
-                                              Session::getPluralNumber()),
+                 'VirtualMachineType'   => VirtualMachineType::getTypeName(Session::getPluralNumber()),
                  'VirtualMachineSystem' => _n('Virtualization model',
                                               'Virtualization models',
                                              Session::getPluralNumber()),
-                 'VirtualMachineState'  => _n('State of the virtual machine',
-                                              'States of the virtual machine',
-                                              Session::getPluralNumber())
+                 'VirtualMachineState'  => VirtualMachineState::getTypeName(Session::getPluralNumber())
              ],
 
              __('Management') => [
@@ -1004,17 +993,15 @@ class Dropdown {
                                               Session::getPluralNumber())
              ],
 
-             __('Calendar') => [
+             _n('Calendar', 'Calendars', 1) => [
                  'Calendar' => _n('Calendar', 'Calendars',
                                   Session::getPluralNumber()),
                  'Holiday'  => _n('Close time', 'Close times',
                                   Session::getPluralNumber())
              ],
 
-             _n('Operating system', 'Operating systems', Session::getPluralNumber()) => [
-                 'OperatingSystem'    => _n('Operating system',
-                                            'Operating systems',
-                                            Session::getPluralNumber()),
+             OperatingSystem::getTypeName(Session::getPluralNumber()) => [
+                 'OperatingSystem'    => OperatingSystem::getTypeName(Session::getPluralNumber()),
                  'OperatingSystemVersion'
                                       => _n('Version',
                                             'Versions',
@@ -1030,22 +1017,14 @@ class Dropdown {
                                       => _n('Edition',
                                             'Editions',
                                              Session::getPluralNumber()),
-                 'OperatingSystemKernel'
-                                      => _n('Kernel',
-                                            'Kernels',
-                                            Session::getPluralNumber()),
-                 'OperatingSystemKernelVersion'
-                                      => _n('Kernel version',
-                                            'Kernel versions',
-                                            Session::getPluralNumber()),
+                 'OperatingSystemKernel' => OperatingSystemKernel::getTypeName(Session::getPluralNumber()),
+                 'OperatingSystemKernelVersion' => OperatingSystemKernelVersion::getTypeName(Session::getPluralNumber()),
                  'AutoUpdateSystem'   => _n('Update source', 'Update sources',
                                             Session::getPluralNumber())
              ],
 
              __('Networking') => [
-                 'NetworkInterface'         => _n('Network interface',
-                                                  'Network interfaces',
-                                                  Session::getPluralNumber()),
+                 'NetworkInterface'         => NetworkInterface::getTypeName(Session::getPluralNumber()),
                  'Netpoint'                 => _n('Network outlet', 'Network outlets',
                                                   Session::getPluralNumber()),
                  'Network'                  => _n('Network', 'Networks',
@@ -1075,7 +1054,7 @@ class Dropdown {
                                           Session::getPluralNumber())
              ],
 
-             __('User') => [
+             User::getTypeName(1) => [
                  'UserTitle'     => _n('User title', 'Users titles',
                                        Session::getPluralNumber()),
                  'UserCategory'  => _n('User category', 'User categories',

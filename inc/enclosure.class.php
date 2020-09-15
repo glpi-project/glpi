@@ -112,7 +112,7 @@ class Enclosure extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_power_supplies$rand'>".__('Power supplies')."</label></td>";
+      echo "<td><label for='dropdown_power_supplies$rand'>".DevicePowerSupply::getTypeName(Session::getPluralNumber())."</label></td>";
       echo "<td>";
       Dropdown::showNumber(
          "power_supplies", [
@@ -124,7 +124,7 @@ class Enclosure extends CommonDBTM {
          ]
       );
       echo "</td>";
-      echo "<td><label for='dropdown_manufacturers_id$rand'>".__('Manufacturer')."</label></td>";
+      echo "<td><label for='dropdown_manufacturers_id$rand'>".Manufacturer::getTypeName(1)."</label></td>";
       echo "<td>";
       Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"], 'rand' => $rand]);
       echo "</td>";
@@ -133,7 +133,7 @@ class Enclosure extends CommonDBTM {
       $this->showDcBreadcrumb();
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_locations_id$rand'>".__('Location')."</label></td>";
+      echo "<td><label for='dropdown_locations_id$rand'>".Location::getTypeName(1)."</label></td>";
       echo "<td>";
       Location::dropdown([
          'value'  => $this->fields["locations_id"],
@@ -141,7 +141,7 @@ class Enclosure extends CommonDBTM {
          'rand'   => $rand
       ]);
       echo "</td>";
-      echo "<td><label for='dropdown_enclosuremodels_id$rand'>".__('Model')."</label></td>";
+      echo "<td><label for='dropdown_enclosuremodels_id$rand'>"._n('Model', 'Models', 1)."</label></td>";
       echo "<td>";
       EnclosureModel::dropdown([
          'value'  => $this->fields["enclosuremodels_id"],
@@ -226,7 +226,7 @@ class Enclosure extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_enclosuremodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -287,7 +287,7 @@ class Enclosure extends CommonDBTM {
          'id'                 => '23',
          'table'              => 'glpi_manufacturers',
          'field'              => 'name',
-         'name'               => __('Manufacturer'),
+         'name'               => Manufacturer::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -327,7 +327,7 @@ class Enclosure extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

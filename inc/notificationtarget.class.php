@@ -816,7 +816,7 @@ class NotificationTarget extends CommonDBChild {
       global $DB;
 
       foreach ($DB->request('glpi_profiles') as $data) {
-         $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __('Profile'), $data["name"]),
+         $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), Profile::getTypeName(1), $data["name"]),
                           Notification::PROFILE_TYPE);
       }
    }
@@ -841,7 +841,7 @@ class NotificationTarget extends CommonDBChild {
 
       while ($data = $iterator->next()) {
          //Add group
-         $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __('Group'), $data["name"]),
+         $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), Group::getTypeName(1), $data["name"]),
                           Notification::GROUP_TYPE);
          //Add group supervisor
          $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __('Manager of group'),
@@ -1406,7 +1406,7 @@ class NotificationTarget extends CommonDBChild {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('Active')."</th>";
-         echo "<th>".__('Type')."</th>";
+         echo "<th>"._n('Type', 'Types', 1)."</th>";
          echo "<th>".__('Notification method')."</th>";
          echo "<th>".NotificationEvent::getTypeName(1)."</th>";
          echo "<th>".NotificationTemplate::getTypeName(1)."</th></tr>";

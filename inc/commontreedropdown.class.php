@@ -521,7 +521,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $header = "<tr><th>".__('Name')."</th>";
       if ($entity_assign) {
-         $header .= "<th>".__('Entity')."</th>";
+         $header .= "<th>".Entity::getTypeName(1)."</th>";
       }
       foreach ($fields as $field) {
          $header .= "<th>".$field['label']."</th>";
@@ -727,7 +727,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             'id'             => '80',
             'table'          => 'glpi_entities',
             'field'          => 'completename',
-            'name'           => __('Entity'),
+            'name'           => Entity::getTypeName(1),
             'massiveaction'  => false,
             'datatype'       => 'dropdown'
          ];

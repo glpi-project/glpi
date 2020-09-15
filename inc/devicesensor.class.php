@@ -50,7 +50,7 @@ class DeviceSensor extends CommonDevice {
 
       return array_merge(parent::getAdditionalFields(),
                          [['name'  => 'devicesensortypes_id',
-                           'label' => __('Type'),
+                           'label' => _n('Type', 'Types', 1),
                            'type'  => 'dropdownValue']]);
    }
 
@@ -61,7 +61,7 @@ class DeviceSensor extends CommonDevice {
       $tab[] = ['id'       => '12',
                 'table'    => 'glpi_devicesensortypes',
                 'field'    => 'name',
-                'name'     => __('Type'),
+                'name'     => _n('Type', 'Types', 1),
                 'datatype' => 'dropdown'];
 
       return $tab;
@@ -82,7 +82,7 @@ class DeviceSensor extends CommonDevice {
          case 'Computer' :
          case 'Peripheral' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('devicesensor_type', __('Type'), $super, $father);
+            $base->addHeader('devicesensor_type', _n('Type', 'Types', 1), $super, $father);
             break;
       }
    }

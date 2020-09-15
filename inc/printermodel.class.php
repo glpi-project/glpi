@@ -46,7 +46,7 @@ class PrinterModel extends CommonDropdown {
 
 
    static function getFieldLabel() {
-      return __('Model');
+      return _n('Model', 'Models', 1);
    }
 
 

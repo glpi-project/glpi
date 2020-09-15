@@ -637,7 +637,7 @@ class DisplayPreference extends CommonDBTM {
          echo "<th width='10'>";
          echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
-         echo "<th colspan='2'>".__('Type')."</th></tr>";
+         echo "<th colspan='2'>"._n('Type', 'Types', 1)."</th></tr>";
          while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_1'><td width='10'>";
             Html::showMassiveActionCheckBox(__CLASS__, $data["itemtype"]);

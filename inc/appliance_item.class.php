@@ -148,10 +148,10 @@ class Appliance_Item extends CommonDBRelation {
       echo "<tr><th colspan='".(5+$colsup)."'>".__('Associate')."</th></tr>";
       echo "<tr><th>".__('Name')."</th>";
       if (Session::isMultiEntitiesMode()) {
-         echo "<th>".__('Entity')."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
       }
-      echo "<th>".__('Group')."</th>";
-      echo "<th>".__('Type')."</th>";
+      echo "<th>".Group::getTypeName(1)."</th>";
+      echo "<th>"._n('Type', 'Types', 1)."</th>";
       if ($number_app > 0) {
          echo "<th>".__('Item to link')."</th>";
       }
@@ -340,10 +340,10 @@ class Appliance_Item extends CommonDBRelation {
           Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
           echo "</th>";
       }
-      echo "<th>".__('Type')."</th>";
+      echo "<th>"._n('Type', 'Types', 1)."</th>";
       echo "<th>".__('Name')."</th>";
       if (Session::isMultiEntitiesMode()) {
-         echo "<th>".__('Entity')."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
       }
       if (isset($appli->fields["relationtype"])) {
          echo "<th>".__('Item to link')."</th>";
@@ -453,11 +453,11 @@ class Appliance_Item extends CommonDBRelation {
          if (($item->getType() == 'Appliance') && count(Appliance::getTypes(false))) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(
-                  _n('Associated item', 'Associated items', 2),
+                  _n('Associated item', 'Associated items', Session::getPluralNumber()),
                   self::countForAppliance($item)
                );
             }
-            return _n('Associated item', 'Associated items', 2);
+            return _n('Associated item', 'Associated items', Session::getPluralNumber());
 
          } else if (in_array($item->getType(), Appliance::getTypes(true)) && Session::haveRight('appliance', READ)) {
             if ($_SESSION['glpishow_count_on_tabs']) {

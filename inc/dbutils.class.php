@@ -1486,12 +1486,12 @@ final class DbUtils {
 
                $email           = UserEmail::getDefaultForUser($ID);
                if (!empty($email)) {
-                  $comments[] = ['name'  => __('Email'),
+                  $comments[] = ['name'  => _n('Email', 'Emails', 1),
                                  'value' => $email];
                }
 
                if (!empty($data["phone"])) {
-                  $comments[] = ['name'  => __('Phone'),
+                  $comments[] = ['name'  => Phone::getTypeName(1),
                                  'value' => $data["phone"]];
                }
 
@@ -1501,7 +1501,7 @@ final class DbUtils {
                }
 
                if ($data["locations_id"] > 0) {
-                  $comments[] = ['name'  => __('Location'),
+                  $comments[] = ['name'  => Location::getTypeName(1),
                                  'value' => Dropdown::getDropdownName("glpi_locations",
                                                                            $data["locations_id"])];
                }

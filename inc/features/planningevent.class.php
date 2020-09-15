@@ -55,6 +55,7 @@ use Dropdown;
 use CommonITILTask;
 use User;
 use DateInterval;
+use Entity;
 
 trait PlanningEvent {
 
@@ -894,7 +895,7 @@ trait PlanningEvent {
             'id'            => '80',
             'table'         => 'glpi_entities',
             'field'         => 'completename',
-            'name'          => __('Entity'),
+            'name'          => Entity::getTypeName(1),
             'datatype'      => 'dropdown'
          ], [
             'id'            => '3',
@@ -967,7 +968,7 @@ trait PlanningEvent {
             'id'            => '70',
             'table'         => User::getTable(),
             'field'         => 'name',
-            'name'          => __('User'),
+            'name'          => User::getTypeName(1),
             'datatype'      => 'dropdown',
             'right'         => 'all'
          ];
@@ -1008,7 +1009,7 @@ trait PlanningEvent {
             'id'            => '11',
             'table'         => $this->getTable(),
             'field'         => 'comment',
-            'name'          => __('Comment'),
+            'name'          => _n('Comment', 'Comments', 1),
             'massiveaction' => false,
             'datatype'      => 'text',
          ];

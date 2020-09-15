@@ -638,7 +638,7 @@ class Reminder extends CommonDBVisible implements
       echo "</td>\n";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'><td>".__('Calendar')."</td>";
+      echo "<tr class='tab_bg_2'><td>"._n('Calendar', 'Calendars', 1)."</td>";
       $active_recall = ($ID && $this->fields["is_planned"] && PlanningRecall::isAvailable());
 
       echo "<td";

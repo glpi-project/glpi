@@ -53,7 +53,7 @@ class RuleDictionnaryPhoneType extends RuleDictionnaryDropdown {
       }
 
       $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = __('Type');
+      $criterias['name']['name']  = _n('Type', 'Types', 1);
       $criterias['name']['table'] = 'glpi_phonetypes';
 
       return $criterias;
@@ -66,7 +66,7 @@ class RuleDictionnaryPhoneType extends RuleDictionnaryDropdown {
    function getActions() {
 
       $actions                          = [];
-      $actions['name']['name']          = __('Type');
+      $actions['name']['name']          = _n('Type', 'Types', 1);
       $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
 
       return $actions;

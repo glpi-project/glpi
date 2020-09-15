@@ -188,7 +188,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       CartridgeItemType::dropdown(['value' => $this->fields["cartridgeitemtypes_id"]]);
       echo "</td></tr>";
@@ -198,7 +198,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "ref");
       echo "</td>";
-      echo "<td>".__('Manufacturer')."</td>";
+      echo "<td>".Manufacturer::getTypeName(1)."</td>";
       echo "<td>";
       Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
       echo "</td></tr>";
@@ -276,7 +276,7 @@ class CartridgeItem extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_cartridgeitemtypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -284,7 +284,7 @@ class CartridgeItem extends CommonDBTM {
          'id'                 => '23',
          'table'              => 'glpi_manufacturers',
          'field'              => 'name',
-         'name'               => __('Manufacturer'),
+         'name'               => Manufacturer::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -392,7 +392,7 @@ class CartridgeItem extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];

@@ -58,7 +58,7 @@ class ProjectTaskTemplate extends CommonDropdown {
                'type'  => 'dropdownValue',
                'list'  => true],
               ['name'  => 'projecttasktypes_id',
-               'label' => __('Type'),
+               'label' => _n('Type', 'Types', 1),
                'type'  => 'dropdownValue'],
               ['name'  => 'projecttasks_id',
                'label' => __('As child of'),
@@ -110,7 +110,7 @@ class ProjectTaskTemplate extends CommonDropdown {
 
       $tab[] = [
          'id'       => '5',
-         'name'     => __('Type'),
+         'name'     => _n('Type', 'Types', 1),
          'field'    => 'name',
          'table'    => 'glpi_projecttasktypes',
          'datatype' => 'dropdown',

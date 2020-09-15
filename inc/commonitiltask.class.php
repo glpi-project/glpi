@@ -624,7 +624,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime'
       ];
 
@@ -837,7 +837,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          'id'                 => '97',
          'table'              => static::getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -896,7 +896,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          'table'              => TaskTemplate::getTable(),
          'field'              => 'name',
          'linkfield'          => 'tasktemplates_id',
-         'name'               => __('Task template'),
+         'name'               => TaskTemplate::getTypeName(1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -1490,7 +1490,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       echo "<td style='vertical-align: middle'>";
       echo "<div class='fa-label'>
             <i class='fas fa-reply fa-fw'
-               title='"._n('Task template', 'Task templates', 2)."'></i>";
+               title='".TaskTemplate::getTypeName(Session::getPluralNumber())."'></i>";
       TaskTemplate::dropdown(['value'     => $this->fields['tasktemplates_id'],
                                    'entity'    => $this->getEntityID(),
                                    'rand'      => $rand_template,
@@ -1544,7 +1544,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       if ($ID > 0) {
          echo "<div class='fa-label'>
          <i class='far fa-calendar fa-fw'
-            title='".__('Date')."'></i>";
+            title='"._n('Date', 'Dates', 1)."'></i>";
          Html::showDateTimeField("date", [
             'value'      => $this->fields["date"],
             'maybeempty' => false
@@ -1609,7 +1609,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       echo "</div>";
 
       echo "<div class='fa-label'>";
-      echo "<i class='fas fa-user fa-fw' title='"._n('User', 'Users', 1)."'></i>";
+      echo "<i class='fas fa-user fa-fw' title='".User::getTypeName(1)."'></i>";
       $params             = ['name'   => "users_id_tech",
                                   'value'  => (($ID > -1)
                                                 ?$this->fields["users_id_tech"]
@@ -1637,7 +1637,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       echo "</div>";
 
       echo "<div class='fa-label'>";
-      echo "<i class='fas fa-users fa-fw' title='"._n('Group', 'Groups', 1)."'></i>";
+      echo "<i class='fas fa-users fa-fw' title='".Group::getTypeName(1)."'></i>";
       $params     = [
          'name'      => "groups_id_tech",
          'value'     => (($ID > -1)

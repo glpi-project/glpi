@@ -292,7 +292,7 @@ class NetworkPortMigration extends CommonDBChild {
       echo "<td>". __('Gateway') ."</td>\n";
       echo "<$gateway_cell>" . $this->fields['gateway'] . "</$gateway_cell></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>". __('Network interface') ."</td><$interface_cell>\n";
+      echo "<tr class='tab_bg_1'><td>". NetworkInterface::getTypeName(1) ."</td><$interface_cell>\n";
       $iterator = $DB->request([
          'SELECT' => 'name',
          'FROM'   => 'glpi_networkinterfaces',
@@ -449,7 +449,7 @@ class NetworkPortMigration extends CommonDBChild {
          'table'              => 'glpi_networkinterfaces',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Network interface')
+         'name'               => NetworkInterface::getTypeName(1)
       ];
 
       return $tab;

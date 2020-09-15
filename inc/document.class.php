@@ -218,7 +218,7 @@ class Document extends CommonDBTM {
          }
          //TRANS: %1$s is Document, %2$s is item type, %3$s is item name
          $input["name"] = addslashes(Html::resume_text(sprintf(__('%1$s: %2$s'),
-                                                               __('Document'),
+                                                               Document::getTypeName(1),
                                                        sprintf(__('%1$s - %2$s'), $typename, $name)),
                                                        200));
          $create_from_item = true;
@@ -887,7 +887,7 @@ class Document extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];

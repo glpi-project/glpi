@@ -237,13 +237,13 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Requester')."</td>";
+      echo "<td>"._n('Requester', 'Requesters', 1)."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_requester', $this->fields['is_requester']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Watcher')."</td>";
+      echo "<td>"._n('Watcher', 'Watchers', 1)."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_watcher', $this->fields['is_watcher']);
       echo "</td></tr>";
@@ -254,7 +254,7 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Task')."</td><td>";
+      echo "<td>"._n('Task', 'Tasks', 1)."</td><td>";
       Dropdown::showYesNo('is_task', $this->fields['is_task']);
       echo "</td></tr>";
 
@@ -285,7 +285,7 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('User', 'Users', Session::getPluralNumber())."</td><td>";
+      echo "<td>".User::getTypeName(Session::getPluralNumber())."</td><td>";
       Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
       echo "</td></tr>";
 
@@ -454,7 +454,7 @@ class Group extends CommonTreeDropdown {
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'is_requester',
-         'name'               => __('Requester'),
+         'name'               => _n('Requester', 'Requesters', 1),
          'datatype'           => 'bool'
       ];
 
@@ -778,7 +778,7 @@ class Group extends CommonTreeDropdown {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='3'>$title</tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
-      echo __('Type')."&nbsp;";
+      echo _n('Type', 'Types', 1)."&nbsp;";
       Dropdown::showItemType($types,
                              ['value'      => $type,
                                    'name'       => 'onlytype',
@@ -846,7 +846,7 @@ class Group extends CommonTreeDropdown {
          }
          $header_end    = '</th>';
 
-         $header_end .= "<th>".__('Type')."</th><th>".__('Name')."</th><th>".__('Entity')."</th>";
+         $header_end .= "<th>"._n('Type', 'Types', 1)."</th><th>".__('Name')."</th><th>".Entity::getTypeName(1)."</th>";
          if ($tree || $user) {
             $header_end .= "<th>".
                              sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)).

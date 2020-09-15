@@ -50,7 +50,7 @@ class DeviceFirmware extends CommonDevice {
          [
             [
                'name'  => 'devicefirmwaretypes_id',
-               'label' => __('Type'),
+               'label' => _n('Type', 'Types', 1),
                'type'  => 'dropdownValue'
             ],
             [
@@ -60,12 +60,12 @@ class DeviceFirmware extends CommonDevice {
             ],
             [
                'name'   => 'version',
-               'label'  => __('Version'),
+               'label'  => _n('Version', 'Versions', 1),
                'type'   => 'text'
             ],
             [
                'name'   => 'devicefirmwaremodels_id',
-               'label'  => __('Model'),
+               'label'  => _n('Model', 'Models', 1),
                'type'   => 'dropdownValue'
             ]
          ]
@@ -88,7 +88,7 @@ class DeviceFirmware extends CommonDevice {
          'id'                 => '12',
          'table'              => 'glpi_devicefirmwaremodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -96,7 +96,7 @@ class DeviceFirmware extends CommonDevice {
          'id'                 => '13',
          'table'              => 'glpi_devicefirmwaretypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -104,7 +104,7 @@ class DeviceFirmware extends CommonDevice {
          'id'                 => '14',
          'table'              => 'glpi_devicefirmwares',
          'field'              => 'version',
-         'name'               => __('Version'),
+         'name'               => _n('Version', 'Versions', 1),
          'autocomplete'       => true,
       ];
 
@@ -123,8 +123,8 @@ class DeviceFirmware extends CommonDevice {
 
       if (in_array($itemtype, $CFG_GLPI['itemdevicefirmware_types'])) {
          Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-         $base->addHeader('devicefirmware_type', __('Type'), $super, $father);
-         $base->addHeader('version', __('Version'), $super, $father);
+         $base->addHeader('devicefirmware_type', _n('Type', 'Types', 1), $super, $father);
+         $base->addHeader('version', _n('Version', 'Versions', 1), $super, $father);
          $base->addHeader('date', __('Installation date'), $super, $father);
       }
    }

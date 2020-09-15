@@ -2107,7 +2107,7 @@ class Plugin extends CommonDBTM {
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'version',
-         'name'               => __('Version'),
+         'name'               => _n('Version', 'Versions', 1),
          'datatype'           => 'text',
          'massiveaction'      => false
       ];
@@ -2116,7 +2116,7 @@ class Plugin extends CommonDBTM {
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'license',
-         'name'               => __('License'),
+         'name'               => SoftwareLicense::getTypeName(1),
          'datatype'           => 'text',
          'massiveaction'      => false
       ];

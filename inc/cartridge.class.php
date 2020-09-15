@@ -591,12 +591,12 @@ class Cartridge extends CommonDBChild {
    static function getStatus($date_use, $date_out) {
 
       if (is_null($date_use) || empty($date_use)) {
-         return _x('cartridge', 'New');
+         return _nx('cartridge', 'New', 'New', 1);
       }
       if (is_null($date_out) || empty($date_out)) {
-         return _x('cartridge', 'Used');
+         return _nx('cartridge', 'Used', 'Used', 1);
       }
-      return _x('cartridge', 'Worn');
+      return _nx('cartridge', 'Worn', 'Worn', 1);
    }
 
 
@@ -791,10 +791,10 @@ class Cartridge extends CommonDBChild {
             }
             echo "<tr class='tab_bg_2'><td colspan='".($canedit?'4':'3')."'>&nbsp;</td>";
             echo "<td class='center b'>".__('Average time in stock')."<br>";
-            echo round($stock_time/$number/60/60/24/30.5, 1)." ".__('month')."</td>";
+            echo round($stock_time/$number/60/60/24/30.5, 1)." "._n('month', 'months', 1)."</td>";
             echo "<td>&nbsp;</td>";
             echo "<td class='center b'>".__('Average time in use')."<br>";
-            echo round($use_time/$number/60/60/24/30.5, 1)." ".__('month')."</td>";
+            echo round($use_time/$number/60/60/24/30.5, 1)." "._n('month', 'months', 1)."</td>";
             echo "<td class='center b'>".__('Average number of printed pages')."<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
             echo "<td colspan='".($canedit?'3':'1')."'>&nbsp;</td></tr>";

@@ -43,6 +43,6 @@ class NetworkEquipmentType extends CommonDropdown {
    }
 
    static function getFieldLabel() {
-      return __('Type');
+      return _n('Type', 'Types', 1);
    }
 }

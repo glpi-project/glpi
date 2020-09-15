@@ -72,7 +72,7 @@ class PlanningExternalEventTemplate extends CommonDropdown {
             'type'  => 'bool'
          ], [
             'name'  => 'plan',
-            'label' => __('Calendar'),
+            'label' => _n('Calendar', 'Calendars', 1),
             'type'  => 'plan',
          ], [
             'name'  => 'rrule',

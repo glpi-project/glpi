@@ -48,10 +48,10 @@ class DeviceCase extends CommonDevice {
 
       return array_merge(parent::getAdditionalFields(),
                          [['name'  => 'devicecasetypes_id',
-                                     'label' => __('Type'),
+                                     'label' => _n('Type', 'Types', 1),
                                      'type'  => 'dropdownValue'],
                               ['name'  => 'devicecasemodels_id',
-                                     'label' => __('Model'),
+                                     'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue']]);
    }
 
@@ -63,7 +63,7 @@ class DeviceCase extends CommonDevice {
          'id'                 => '12',
          'table'              => 'glpi_devicecasetypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -71,7 +71,7 @@ class DeviceCase extends CommonDevice {
          'id'                 => '13',
          'table'              => 'glpi_devicecasemodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

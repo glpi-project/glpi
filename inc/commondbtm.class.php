@@ -3348,7 +3348,7 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isField('locations_id') && $this->getType()!='Location') {
          $tmp = Dropdown::getDropdownName("glpi_locations", $this->getField('locations_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $toadd[] = ['name'  => __('Location'),
+            $toadd[] = ['name'  => Location::getTypeName(1),
                              'value' => $tmp];
          }
       }
@@ -3356,7 +3356,7 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isField('users_id')) {
          $tmp = getUserName($this->getField('users_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $toadd[] = ['name'  => __('User'),
+            $toadd[] = ['name'  => User::getTypeName(1),
                              'value' => $tmp];
          }
       }
@@ -3365,7 +3365,7 @@ class CommonDBTM extends CommonGLPI {
           && ($this->getType() != 'Group')) {
          $tmp = Dropdown::getDropdownName("glpi_groups", $this->getField('groups_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $toadd[] = ['name'  => __('Group'),
+            $toadd[] = ['name'  => Group::getTypeName(1),
                              'value' => $tmp];
          }
       }
@@ -4134,7 +4134,7 @@ class CommonDBTM extends CommonGLPI {
 
       return ['id'          => __('ID'),
                    'serial'      => __('Serial number'),
-                   'entities_id' => __('Entity')];
+                   'entities_id' => Entity::getTypeName(1)];
    }
 
 
@@ -4957,7 +4957,7 @@ class CommonDBTM extends CommonGLPI {
       } else {
          echo "<tr><th>".$item->getTypeName(1)."</th>";
          if (Session::isMultiEntitiesMode()) {
-            echo "<th>".__('Entity')."</th>";
+            echo "<th>".Entity::getTypeName(1)."</th>";
          }
          echo "<th>".__('Templates')."</th></tr>";
       }

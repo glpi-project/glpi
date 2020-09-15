@@ -122,7 +122,7 @@ class Link_Itemtype extends CommonDBChild {
          $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_bottom .= "</th>";
       }
-      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 

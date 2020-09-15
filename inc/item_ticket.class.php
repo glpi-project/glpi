@@ -438,8 +438,8 @@ class Item_Ticket extends CommonDBRelation{
          $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_bottom .= "</th>";
       }
-      $header_end .= "<th>".__('Type')."</th>";
-      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
+      $header_end .= "<th>".Entity::getTypeName(1)."</th>";
       $header_end .= "<th>".__('Name')."</th>";
       $header_end .= "<th>".__('Serial number')."</th>";
       $header_end .= "<th>".__('Inventory number')."</th>";
@@ -1204,7 +1204,7 @@ class Item_Ticket extends CommonDBRelation{
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'tickets_id',
-         'name'               => __('Ticket'),
+         'name'               => Ticket::getTypeName(1),
          'datatype'           => 'dropdown',
       ];
 
@@ -1212,7 +1212,7 @@ class Item_Ticket extends CommonDBRelation{
          'id'                 => '13',
          'table'              => $this->getTable(),
          'field'              => 'items_id',
-         'name'               => _n('Associated element', 'Associated elements', 2),
+         'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
          'datatype'           => 'specific',
          'comments'           => true,
          'nosort'             => true,
@@ -1223,7 +1223,7 @@ class Item_Ticket extends CommonDBRelation{
          'id'                 => '131',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => _n('Associated item type', 'Associated item types', 2),
+         'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'ticket_types',
          'nosort'             => true

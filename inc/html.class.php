@@ -613,7 +613,7 @@ class Html {
                   $class = 'warn_msg';
                   break;
                case INFO:
-                  $title = __s('Information');
+                  $title = _sn('Information', 'Information', 1);
                   $class = 'info_msg';
                   break;
             }
@@ -6111,7 +6111,7 @@ JAVASCRIPT;
          if(typeof message == 'string') {
             message = message.replace('\\n', '<br>');
          }
-         caption = caption || '".__s("Information")."';
+         caption = caption || '"._sn('Information', 'Information', 1)."';
          $('<div></div>').html(message).dialog({
             title: caption,
             buttons: {

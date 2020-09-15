@@ -201,6 +201,10 @@ jobs:
           name: ESLint
           command: |
             node_modules/.bin/eslint . && echo "ESLint found no errors"
+      - run:
+          name: gettext
+          command: |
+            ! tools/locale/extract_template.sh 2>&1 | grep 'warning'
 
   # PHP 7.2 test suite.
   php_7_2_test_suite:

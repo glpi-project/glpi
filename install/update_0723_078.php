@@ -3182,7 +3182,7 @@ function update0723to078() {
    $ADDTODISPLAYPREF['Budget']=[2,3,4,19];
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
-                                      __('Automatic action')));
+                                      CronTask::getTypeName(1)));
    if (!$DB->tableExists('glpi_crontasks')) {
       $query = "CREATE TABLE `glpi_crontasks` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -3656,9 +3656,9 @@ function update0723to078() {
       $DB->query("INSERT INTO `glpi_requesttypes`
                   VALUES(1, '".addslashes(__('Simplified interface'))."', 1, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
-                  VALUES(2, '".addslashes(__('Email'))."', 0, 1, NULL)");
+                  VALUES(2, '".addslashes(_n('Email', 'Emails', 1))."', 0, 1, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
-                  VALUES(3, '".addslashes(__('Phone'))."', 0, 0, NULL)");
+                  VALUES(3, '".addslashes(Phone::getTypeName(1))."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
                   VALUES(4, '".addslashes(__('Direct'))."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
@@ -3859,7 +3859,7 @@ function update0723to078() {
    // Migrate devices
    if ($DB->tableExists('glpi_computer_device')) {
       $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
-                                         _n('Component', 'Components', 2)));
+                                         _n('Component', 'Components', Session::getPluralNumber())));
 
       foreach ($devtypetoname as $key => $itemtype) {
          $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
@@ -4791,8 +4791,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    }
 
    $tables = ['glpi_infocoms'           => __('Financial and administrative information'),
-                   'glpi_reservationitems'   => _n('Reservation', 'Reservations', 2),
-                   'glpi_networkports'       => _n('Network port', 'Network ports', 2)];
+                   'glpi_reservationitems'   => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+                   'glpi_networkports'       => _n('Network port', 'Network ports', Session::getPluralNumber())];
    foreach ($tables as $table => $label) {
       // Migrate infocoms entity information
       if (!$DB->fieldExists($table, 'entities_id', false)) {

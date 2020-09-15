@@ -82,7 +82,7 @@ class AuthLdapReplicate extends CommonDBTM {
       echo "<tr><th colspan='4'>".__('Add a LDAP directory replica'). "</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>".__('Name')."</td>";
       echo "<td class='center'>".__('Server')."</td>";
-      echo "<td class='center'>".__('Port')."</td><td></td></tr>";
+      echo "<td class='center'>"._n('Port', 'Ports', 1)."</td><td></td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'><input type='text' name='name'></td>";
       echo "<td class='center'><input type='text' name='host'></td>";

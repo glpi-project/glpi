@@ -290,12 +290,12 @@ class NetworkEquipment extends CommonDBTM {
       $this->showDcBreadcrumb();
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Location')."</td>";
+      echo "<td>".Location::getTypeName(1)."</td>";
       echo "<td>";
       Location::dropdown(['value'  => $this->fields["locations_id"],
                               'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       NetworkEquipmentType::dropdown(['value' => $this->fields["networkequipmenttypes_id"]]);
       echo "</td></tr>";
@@ -308,7 +308,7 @@ class NetworkEquipment extends CommonDBTM {
                            'right'  => 'own_ticket',
                            'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td>".__('Manufacturer')."</td>";
+      echo "<td>".Manufacturer::getTypeName(1)."</td>";
       echo "<td>";
       Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
       echo "</td></tr>";
@@ -323,7 +323,7 @@ class NetworkEquipment extends CommonDBTM {
          'condition' => ['is_assign' => 1]
       ]);
       echo "</td>";
-      echo "<td>".__('Model')."</td>";
+      echo "<td>"._n('Model', 'Models', 1)."</td>";
       echo "<td>";
       NetworkEquipmentModel::dropdown(['value' => $this->fields["networkequipmentmodels_id"]]);
       echo "</td></tr>";
@@ -355,19 +355,19 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('User')."</td>";
+      echo "<td>".User::getTypeName(1)."</td>";
       echo "<td>";
       User::dropdown(['value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all']);
       echo "</td>";
-      echo "<td>".__('Network')."</td>";
+      echo "<td>"._n('Network', 'Networks', 1)."</td>";
       echo "<td>";
       Network::dropdown(['value' => $this->fields["networks_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group')."</td>";
+      echo "<td>".Group::getTypeName(1)."</td>";
       echo "<td>";
       Group::dropdown([
          'value'     => $this->fields["groups_id"],
@@ -390,7 +390,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio'))."</td>";
+      echo "<td>".sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio'))."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "ram");
       echo "</td></tr>";
@@ -443,7 +443,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_networkequipmenttypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -451,7 +451,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '40',
          'table'              => 'glpi_networkequipmentmodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -504,7 +504,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'datatype'           => 'dropdown',
          'right'              => 'all'
       ];
@@ -513,7 +513,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '71',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
-         'name'               => __('Group'),
+         'name'               => Group::getTypeName(1),
          'datatype'           => 'dropdown',
          'condition'          => ['is_itemgroup' => 1]
       ];
@@ -568,7 +568,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'ram',
-         'name'               => sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio')),
+         'name'               => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
          'datatype'           => 'number',
          'autocomplete'       => true,
       ];
@@ -577,7 +577,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '32',
          'table'              => 'glpi_networks',
          'field'              => 'name',
-         'name'               => __('Network'),
+         'name'               => _n('Network', 'Networks', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -585,7 +585,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '23',
          'table'              => 'glpi_manufacturers',
          'field'              => 'name',
-         'name'               => __('Manufacturer'),
+         'name'               => Manufacturer::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -625,7 +625,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];

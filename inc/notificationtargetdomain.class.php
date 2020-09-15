@@ -57,7 +57,7 @@ class NotificationTargetDomain extends NotificationTarget {
    public function addDataForTemplate($event, $options = []) {
 
       $this->data['##domain.entity##']      = Dropdown::getDropdownName('glpi_entities', $options['entities_id']);
-      $this->data['##lang.domain.entity##'] = __('Entity');
+      $this->data['##lang.domain.entity##'] = Entity::getTypeName(1);
       $this->data['##domain.action##']      = ($event == "ExpiredDomains" ? __('Expired domains') : __('Expiring domains'));
       $this->data['##lang.domain.name##']           = __('Name');
       $this->data['##lang.domain.dateexpiration##'] = __('Expiration date');

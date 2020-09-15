@@ -215,7 +215,7 @@ class Notification extends CommonDBTM {
       Dropdown::showYesNo('allow_response', $this->allowResponse());
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td>";
+      echo "<tr class='tab_bg_1'><td>" . _n('Type', 'Types', 1) . "</td>";
       echo "<td>";
       if (!Session::haveRight(static::$rightname, UPDATE)) {
          $itemtype = $this->fields['itemtype'];
@@ -396,7 +396,7 @@ class Notification extends CommonDBTM {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'notificationtemplates_types',
          'massiveaction'      => false
@@ -422,7 +422,7 @@ class Notification extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];

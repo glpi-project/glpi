@@ -91,7 +91,7 @@ class RuleImportComputer extends Rule {
 
       $criterias['MACADDRESS']['name']           = __('MAC address');
 
-      $criterias['IPADDRESS']['name']            = __('IP address');
+      $criterias['IPADDRESS']['name']            = _s('IP address', 'IP addresses', 1);
 
       $criterias['name']['name']                 = __("Computer's name");
       $criterias['name']['allow_condition']      = [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,
@@ -103,10 +103,10 @@ class RuleImportComputer extends Rule {
       $criterias['serial']['name']               = __('Serial number');
 
       // Model as Text to allow text criteria (contains, regex, ...)
-      $criterias['model']['name']                = __('Model');
+      $criterias['model']['name']                = _n('Model', 'Models', 1);
 
       // Manufacturer as Text to allow text criteria (contains, regex, ...)
-      $criterias['manufacturer']['name']         = __('Manufacturer');
+      $criterias['manufacturer']['name']         = Manufacturer::getTypeName(1);
 
       return $criterias;
    }
@@ -429,7 +429,7 @@ class RuleImportComputer extends Rule {
       }
       if (!$entity_as_criteria) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan ='2'>".__('Entity')."</td>";
+         echo "<td colspan ='2'>".Entity::getTypeName(1)."</td>";
          echo "<td>";
          Dropdown::show('Entity');
          echo "</td></tr>";

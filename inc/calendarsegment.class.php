@@ -363,7 +363,7 @@ class CalendarSegment extends CommonDBChild {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add a schedule')."</tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'>".__('Day')."</td><td>";
+         echo "<tr class='tab_bg_2'><td class='center'>"._n('Day', 'Days', 1)."</td><td>";
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
          Dropdown::showFromArray('day', Toolbox::getDaysOfWeekArray());
          echo "</td><td class='center'>".__('Start').'</td><td>';
@@ -393,7 +393,7 @@ class CalendarSegment extends CommonDBChild {
          echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
       }
-      echo "<th>".__('Day')."</th>";
+      echo "<th>"._n('Day', 'Days', 1)."</th>";
       echo "<th>".__('Start')."</th>";
       echo "<th>".__('End')."</th>";
       echo "</tr>";

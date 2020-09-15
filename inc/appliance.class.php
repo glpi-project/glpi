@@ -72,7 +72,7 @@ class Appliance extends CommonDBTM {
       $tab[] = ['id'            => '2',
                 'table'         => ApplianceType::getTable(),
                 'field'         => 'name',
-                'name'          => __('Type'),
+                'name'          => _n('Type', 'Types', 1),
                 'datatype'      => 'dropdown'];
 
       $tab[] = ['id'            => '32',
@@ -92,7 +92,7 @@ class Appliance extends CommonDBTM {
       $tab[] = ['id'            => '5',
                 'table'         =>  Appliance_Item::getTable(),
                 'field'         => 'items_id',
-                'name'          => __('Associated items'),
+                'name'          => _n('Associated item', 'Associated items', Session::getPluralNumber()),
                 'massiveaction' => false,
                 'forcegroupby'  =>  true,
                 'joinparams'    => ['jointype' => 'child']];
@@ -100,13 +100,13 @@ class Appliance extends CommonDBTM {
       $tab[] = ['id'            => '6',
                 'table'         => User::getTable(),
                 'field'         => 'name',
-                'name'          => __('User'),
+                'name'          => User::getTypeName(1),
                 'datatype'      => 'dropdown'];
 
       $tab[] = ['id'            => '8',
                 'table'         => Group::getTable(),
                 'field'         => 'completename',
-                'name'          => __('Group'),
+                'name'          => Group::getTypeName(1),
                 'condition'     => ['is_itemgroup' => 1],
                 'datatype'      => 'dropdown'];
 
@@ -161,7 +161,7 @@ class Appliance extends CommonDBTM {
       $tab[] = ['id'            => '80',
                 'table'         => 'glpi_entities',
                 'field'         => 'completename',
-                'name'          => __('Entity'),
+                'name'          => Entity::getTypeName(1),
                 'datatype'      => 'dropdown'];
 
       $tab[] = ['id'            => '7',
@@ -174,7 +174,7 @@ class Appliance extends CommonDBTM {
       $tab[] = ['id'            => '81',
                 'table'         => Entity::getTable(),
                 'field'         => 'entities_id',
-                'name'          => __('Entity') . "-" . __('ID')];
+                'name'          => Entity::getTypeName(1) . "-" . __('ID')];
 
       return $tab;
    }
@@ -224,7 +224,7 @@ class Appliance extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td><td>";
       Html::autocompletionTextField($this, "name", ['size' => 34]);
-      echo "</td><td>"._n('Status', 'Statuses', 1)."</td><td>";
+      echo "</td><td>".__('Status')."</td><td>";
       if ($canedit) {
          State::dropdown(['value' => $this->fields["states_id"]]);
       } else {
@@ -233,7 +233,7 @@ class Appliance extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Location')."</td><td>";
+      echo "<td>".Location::getTypeName(1)."</td><td>";
       if ($canedit) {
          Location::dropdown([
             'value'  => $this->fields["locations_id"],
@@ -242,7 +242,7 @@ class Appliance extends CommonDBTM {
       } else {
          echo Dropdown::getDropdownName("glpi_locations", $this->fields["locations_id"]);
       }
-      echo "</td><td>".__('Type')."</td><td>";
+      echo "</td><td>"._n('Type', 'Types', 1)."</td><td>";
       if ($canedit) {
          Dropdown::show(
             'ApplianceType', [
@@ -296,7 +296,7 @@ class Appliance extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('User')."</td>";
+      echo "<td>".User::getTypeName(1)."</td>";
       echo "<td>";
       if ($canedit) {
          User::dropdown([
@@ -312,7 +312,7 @@ class Appliance extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group')."</td>";
+      echo "<td>".Group::getTypeName(1)."</td>";
       echo "<td>";
       if ($canedit) {
          Group::dropdown([

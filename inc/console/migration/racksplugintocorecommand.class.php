@@ -546,12 +546,12 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                new ChoiceQuestion(
                   sprintf(__('Where do you want to import "%s" ?'), $model_label),
                   [
-                     self::OTHER_TYPE_CHOICE_COMPUTER            => __('Computer'),
-                     self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT   => __('Network device'),
-                     self::OTHER_TYPE_CHOICE_PERIPHERAL          => __('Peripheral'),
-                     self::OTHER_TYPE_CHOICE_PDU                 => __('Pdu'),
-                     self::OTHER_TYPE_CHOICE_MONITOR             => __('Monitor'),
-                     self::OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT => __('Passive Device'),
+                     self::OTHER_TYPE_CHOICE_COMPUTER            => Computer::getTypeName(1),
+                     self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT   => NetworkEquipment::getTypeName(1),
+                     self::OTHER_TYPE_CHOICE_PERIPHERAL          => Peripheral::getTypeName(1),
+                     self::OTHER_TYPE_CHOICE_PDU                 => PDU::getTypeName(1),
+                     self::OTHER_TYPE_CHOICE_MONITOR             => Monitor::getTypeName(1),
+                     self::OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT => PassiveDCEquipment::getTypeName(1),
                      self::OTHER_TYPE_CHOICE_IGNORE              => __('Ignore (default)'),
                   ],
                   self::OTHER_TYPE_CHOICE_IGNORE

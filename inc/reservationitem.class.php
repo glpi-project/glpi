@@ -218,7 +218,7 @@ class ReservationItem extends CommonDBChild {
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'datatype'           => 'dropdown',
          'right'              => 'all',
          'massiveaction'      => false
@@ -228,7 +228,7 @@ class ReservationItem extends CommonDBChild {
          'id'                 => '71',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
-         'name'               => __('Group'),
+         'name'               => Group::getTypeName(1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false
       ];
@@ -246,7 +246,7 @@ class ReservationItem extends CommonDBChild {
          'id'                 => '23',
          'table'              => 'glpi_manufacturers',
          'field'              => 'name',
-         'name'               => __('Manufacturer'),
+         'name'               => Manufacturer::getTypeName(1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false
       ];
@@ -266,7 +266,7 @@ class ReservationItem extends CommonDBChild {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -359,7 +359,7 @@ class ReservationItem extends CommonDBChild {
          echo "<tr><th colspan='2'>".__s('Modify the comment')."</th></tr>";
 
          // Ajouter le nom du materiel
-         echo "<tr class='tab_bg_1'><td>".__('Item')."</td>";
+         echo "<tr class='tab_bg_1'><td>"._n('Item', 'Items', 1)."</td>";
          echo "<td class='b'>".sprintf(__('%1$s - %2$s'), $type, $name)."</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
@@ -818,7 +818,7 @@ class ReservationItem extends CommonDBChild {
 
       if ($item->getType() == __CLASS__) {
          if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
-            $tabs[1] = __('Reservation');
+            $tabs[1] =Reservation::getTypeName(1);
          }
          if ((Session::getCurrentInterface() == "central")
              && Session::haveRight("reservation", READ)) {

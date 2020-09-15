@@ -181,7 +181,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          $emails        = $user->getAllEmails();
       }
 
-      echo "<tr class='tab_bg_2'><td>".__('User')."</td>";
+      echo "<tr class='tab_bg_2'><td>".User::getTypeName(1)."</td>";
       echo "<td>".$user->getName()."</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Email Followup')."</td>";
@@ -189,7 +189,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       Dropdown::showYesNo('use_notification', $this->fields['use_notification']);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Email')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Email', 'Emails', 1)."</td>";
       echo "<td>";
       if ((count($emails) ==  1)
           && !empty($default_email)
@@ -256,7 +256,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          $default_email = $supplier->fields['email'];
       }
 
-      echo "<tr class='tab_bg_2'><td>".__('Supplier')."</td>";
+      echo "<tr class='tab_bg_2'><td>".Supplier::getTypeName(1)."</td>";
       echo "<td>".$supplier->getName()."</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Email Followup')."</td>";
@@ -264,7 +264,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       Dropdown::showYesNo('use_notification', $this->fields['use_notification']);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Email')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Email', 'Emails', 1)."</td>";
       echo "<td>";
       if (empty($this->fields['alternative_email'])) {
          $this->fields['alternative_email'] = $default_email;

@@ -158,11 +158,11 @@ class RuleImportEntity extends Rule {
 
       $actions                             = [];
 
-      $actions['entities_id']['name']      = __('Entity');
+      $actions['entities_id']['name']      = Entity::getTypeName(1);
       $actions['entities_id']['type']      = 'dropdown';
       $actions['entities_id']['table']     = 'glpi_entities';
 
-      $actions['locations_id']['name']     = __('Location');
+      $actions['locations_id']['name']     = Location::getTypeName(1);
       $actions['locations_id']['type']     = 'dropdown';
       $actions['locations_id']['table']    = 'glpi_locations';
 

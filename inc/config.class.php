@@ -621,9 +621,9 @@ class Config extends CommonDBTM {
 
       echo "<tr><th>&nbsp;</th>";
       echo "<th>" . __('Alternate username') . "</th>";
-      echo "<th>" . __('User') . "</th>";
-      echo "<th>" . __('Group') . "</th>";
-      echo "<th>" . __('Location') . "</th>";
+      echo "<th>" . User::getTypeName(1) . "</th>";
+      echo "<th>" . Group::getTypeName(1) . "</th>";
+      echo "<th>" . Location::getTypeName(1) . "</th>";
       echo "<th>" . __('Status') . "</th>";
       echo "</tr>";
 
@@ -1652,7 +1652,7 @@ class Config extends CommonDBTM {
          $rate = round(100.0 * $used / ($used + $free));
          $max  = Toolbox::getSize($used + $free);
          $used = Toolbox::getSize($used);
-         echo "<tr><td>" . __('Memory') . "</td>
+         echo "<tr><td>" . _n('Memory', 'Memories', 1) . "</td>
                <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
          Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                       'forcepadding' => false]);
@@ -1729,7 +1729,7 @@ class Config extends CommonDBTM {
          $max  = Toolbox::getSize($max);
          $used = Toolbox::getSize($used);
 
-         echo "<tr><td>" . __('Memory') . "</td>
+         echo "<tr><td>" . _n('Memory', 'Memories', 1) . "</td>
          <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
          Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                  'forcepadding' => false]);
@@ -1836,7 +1836,7 @@ class Config extends CommonDBTM {
       echo "<td><label for='proxy_name'>" . __('Server') . "</label></td>";
       echo "<td><input type='text' name='proxy_name' id='proxy_name' value='".$CFG_GLPI["proxy_name"]."'></td>";
       //TRANS: Proxy port
-      echo "<td><label for='proxy_port'>" . __('Port') . "</label></td>";
+      echo "<td><label for='proxy_port'>" . _n('Port', 'Ports', 1) . "</label></td>";
       echo "<td><input type='text' name='proxy_port' id='proxy_port' value='".$CFG_GLPI["proxy_port"]."'></td>";
       echo "</tr>";
 
@@ -3409,7 +3409,7 @@ class Config extends CommonDBTM {
       echo "<td class='center'></td><td>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Software', 'Software', 2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Software', 'Software', Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>".
            __("Installation/uninstallation of software on items")."</td><td>";
       self::showLogsInterval('purge_item_software_install',
@@ -3436,7 +3436,7 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "<td colspan='2'></td></tr>";
 
-      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('User', 'Users', 2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".User::getTypeName(Session::getPluralNumber())."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td class='center'>".
            __("Add/remove profiles to users")."</td><td>";
@@ -3457,7 +3457,7 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Component', 'Components', 2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Component', 'Components', Session::getPluralNumber())."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td class='center'>".__("Add component")."</td><td>";
       self::showLogsInterval('purge_adddevice', $CFG_GLPI["purge_adddevice"]);

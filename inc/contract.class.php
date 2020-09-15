@@ -188,7 +188,7 @@ class Contract extends CommonDBTM {
       echo "<td>".__('Name')."</td><td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".__('Contract type')."</td><td >";
+      echo "<td>".ContractType::getTypeName(1)."</td><td >";
       ContractType::dropdown(['value' => $this->fields["contracttypes_id"]]);
       echo "</td></tr>";
 
@@ -426,7 +426,7 @@ class Contract extends CommonDBTM {
          'id'                 => '129',
          'table'              => 'glpi_contracttypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -530,7 +530,7 @@ class Contract extends CommonDBTM {
          'id'                 => '136',
          'table'              => 'glpi_contractcosts',
          'field'              => 'totalcost',
-         'name'               => __('Cost'),
+         'name'               => _n('Cost', 'Costs', 1),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'decimal',
@@ -681,7 +681,7 @@ class Contract extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_contracttypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -851,7 +851,7 @@ class Contract extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -925,7 +925,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => 'cost',
-         'name'               => __('Cost')
+         'name'               => _n('Cost', 'Costs', 1)
       ];
 
       $tab[] = [
@@ -963,7 +963,7 @@ class Contract extends CommonDBTM {
          'id'                 => '42',
          'table'              => 'glpi_contractcosts',
          'field'              => 'begin_date',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Cost'), __('Begin date')),
+         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Begin date')),
          'datatype'           => 'date',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -976,7 +976,7 @@ class Contract extends CommonDBTM {
          'id'                 => '43',
          'table'              => 'glpi_contractcosts',
          'field'              => 'end_date',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Cost'), __('End date')),
+         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('End date')),
          'datatype'           => 'date',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -989,7 +989,7 @@ class Contract extends CommonDBTM {
          'id'                 => '44',
          'table'              => 'glpi_contractcosts',
          'field'              => 'name',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Cost'), __('Name')),
+         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Name')),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -1002,7 +1002,7 @@ class Contract extends CommonDBTM {
          'id'                 => '45',
          'table'              => 'glpi_budgets',
          'field'              => 'name',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Cost'), __('Budget')),
+         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), Budget::getTypeName(1)),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,

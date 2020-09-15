@@ -93,7 +93,7 @@ class Domain extends CommonDropdown {
          'id'                 => '2',
          'table'              => 'glpi_domaintypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -136,7 +136,7 @@ class Domain extends CommonDropdown {
          'field'              => 'items_id',
          'nosearch'           => true,
          'massiveaction'      => false,
-         'name'               => _n('Associated items', 'Associated items', 2),
+         'name'               => _n('Associated item', 'Associated items', Session::getPluralNumber()),
          'forcegroupby'       => true,
          'joinparams'         => [
             'jointype'           => 'child'
@@ -189,7 +189,7 @@ class Domain extends CommonDropdown {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -319,7 +319,7 @@ class Domain extends CommonDropdown {
       Html::showDateField("date_creation", ['value' => $this->fields["date_creation"]]);
       echo "</td>";
 
-      echo "<td>" . __('Type') . "</td><td>";
+      echo "<td>" . _n('Type', 'Types', 1) . "</td><td>";
       Dropdown::show('DomainType', ['name'   => "domaintypes_id",
                                                       'value'  => $this->fields["domaintypes_id"],
                                                       'entity' => $this->fields["entities_id"]]);

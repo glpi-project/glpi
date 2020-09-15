@@ -56,7 +56,7 @@ class Item_DeviceBattery extends Item_Devices {
          'states_id'          => parent::getSpecificities('states_id'),
          'manufacturing_date' => [
             'long name' => __('Manufacturing date'),
-            'short name' => __('Date'),
+            'short name' => _n('Date', 'Dates', 1),
             'size'       => 10,
             'id'         => 20,
             'autocomplete' => true,

@@ -556,7 +556,7 @@ function update0681to07() {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= sprintf(__('%1$s: %2$s'), __('Phone'), $data['phonenumber']);
+                  $comments .= sprintf(__('%1$s: %2$s'), Phone::getTypeName(1), $data['phonenumber']);
                }
 
                if (!empty($data['fax'])) {
@@ -570,7 +570,7 @@ function update0681to07() {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= sprintf(__('%1$s: %2$s'), __('Email'), $data['email']);
+                  $comments .= sprintf(__('%1$s: %2$s'), _n('Email', 'Emails', 1), $data['email']);
                }
 
                if (!empty($data['comments'])) {

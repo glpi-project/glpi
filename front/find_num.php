@@ -89,17 +89,17 @@ if (isset($_POST["send"])) {
    echo " <tr class='tab_bg3'>";
    echo " <td class='center b' width='30%'>".__('Alternate username')."</td>";
    echo " <td class='center b' width='20%'>".__('Hardware type')."</td>";
-   echo " <td class='center b' width='30%'>"._n('Associated element', 'Associated elements', 2)."</td>";
+   echo " <td class='center b' width='30%'>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</td>";
    echo " <td class='center b' width='5%'>".__('ID')."</td>";
    echo " <td class='center b' width='10%'>".__('Serial number')."</td>";
    echo " <td class='center b' width='10%'>".__('Inventory number')."</td>";
    echo " </tr>";
 
-   $types = ['Computer'         => __('Computer'),
-                  'NetworkEquipment' => __('Network device'),
-                  'Printer'          => __('Printer'),
-                  'Monitor'          => __('Monitor'),
-                  'Peripheral'       => __('Device')];
+   $types = ['Computer'         => Computer::getTypeName(1),
+                  'NetworkEquipment' => NetworkEquipment::getTypeName(1),
+                  'Printer'          => Printer::getTypeName(1),
+                  'Monitor'          => Monitor::getTypeName(1),
+                  'Peripheral'       => Peripheral::getTypeName(1)];
    foreach ($types as $type => $label) {
       $iterator = $DB->request([
          'SELECT' => ['name', 'id', 'contact', 'serial', 'otherserial'],

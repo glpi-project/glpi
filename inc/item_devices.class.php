@@ -164,7 +164,7 @@ class Item_Devices extends CommonDBRelation {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'items_id',
-         'name'               => _n('Associated element', 'Associated elements', 2),
+         'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
          'datatype'           => 'specific',
          'comments'           => true,
          'nosort'             => true,
@@ -175,7 +175,7 @@ class Item_Devices extends CommonDBRelation {
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => _n('Associated item type', 'Associated item types', 2),
+         'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'itemdevices_types',
          'nosort'             => true
@@ -220,7 +220,7 @@ class Item_Devices extends CommonDBRelation {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -355,8 +355,8 @@ class Item_Devices extends CommonDBRelation {
                          'autocomplete' => true,];
 
          case 'locations_id':
-            return ['long name'  => __('Location'),
-                         'short name' => __('Location'),
+            return ['long name'  => Location::getTypeName(1),
+                         'short name' => Location::getTypeName(1),
                          'size'       => 20,
                          'id'         => 13,
                          'datatype'   => 'dropdown'];
@@ -927,7 +927,7 @@ class Item_Devices extends CommonDBRelation {
          if (Session::haveRight('device', UPDATE)) {
             $mode = __s('Update');
          } else {
-            $mode = __s('View');
+            $mode = _sn('View', 'Views', 1);
          }
          $spec_cell = $current_row->addCell($link_column,
                                             "<a href='" . $this->getLinkURL() . "'>$mode</a>");
@@ -1316,7 +1316,7 @@ class Item_Devices extends CommonDBRelation {
       $item   = $this->getOnePeer(0);
       $device = $this->getOnePeer(1);
 
-      echo "<tr class='tab_bg_1'><td>".__('Item')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Item', 'Items', 1)."</td>";
       echo "<td>";
       if ($item === false) {
          echo __('No associated item');

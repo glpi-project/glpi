@@ -218,8 +218,8 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $header    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand) . "</th>";
       }
 
-      $header .= "<th>" . __('Type') . "</th>";
-      $header .= "<th>".__('Item')."</th>";
+      $header .= "<th>" . _n('Type', 'Types', 1) . "</th>";
+      $header .= "<th>"._n('Item', 'Items', 1)."</th>";
       $header .= "<th>".__('Creation date')."</th>";
       $header .= "<th>".__('Update date')."</th>";
       $header .= "</tr>";

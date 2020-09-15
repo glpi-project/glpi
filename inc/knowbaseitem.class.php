@@ -1511,7 +1511,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo Search::showHeaderItem($output_type, __('Category'), $header_num);
 
          if ($output_type == Search::HTML_OUTPUT) {
-            echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', 2), $header_num);
+            echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
          }
 
          if (isset($options['item_itemtype'])
@@ -1820,7 +1820,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime',
          'massiveaction'      => false
       ];
@@ -1888,7 +1888,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'right'              => 'all'

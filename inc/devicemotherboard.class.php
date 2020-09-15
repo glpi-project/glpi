@@ -51,7 +51,7 @@ class DeviceMotherboard extends CommonDevice {
                                      'label' => __('Chipset'),
                                      'type'  => 'text'],
                               ['name'  => 'devicemotherboardmodels_id',
-                                     'label' => __('Model'),
+                                     'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue']]);
    }
 
@@ -72,7 +72,7 @@ class DeviceMotherboard extends CommonDevice {
          'id'                 => '12',
          'table'              => 'glpi_devicemotherboardmodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -146,7 +146,7 @@ class DeviceMotherboard extends CommonDevice {
          'id'                 => '14',
          'table'              => 'glpi_devicemotherboards',
          'field'              => 'designation',
-         'name'               => __('System board'),
+         'name'               => static::getTypeName(1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',

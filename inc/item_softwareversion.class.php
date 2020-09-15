@@ -75,7 +75,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'items_id',
-         'name'               => _n('Associated element', 'Associated elements', 2),
+         'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
          'massiveaction'      => false,
          'nosort'             => true,
          'datatype'           => 'specific',
@@ -95,7 +95,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Request source'),
+         'name'               => _x('software', 'Request source'),
          'datatype'           => 'dropdown'
       ];
 
@@ -449,14 +449,14 @@ class Item_SoftwareVersion extends CommonDBRelation {
       $refcolumns = ['vername'           => _n('Version', 'Versions', Session::getPluralNumber()),
                           'item_type'          => __('Item type'),
                           'itemname'          => __('Name'),
-                          'entity'            => __('Entity'),
+                          'entity'            => Entity::getTypeName(1),
                           'serial'            => __('Serial number'),
                           'otherserial'       => __('Inventory number'),
-                          'location,itemname' => __('Location'),
+                          'location,itemname' => Location::getTypeName(1),
                           'state,itemname'    => __('Status'),
-                          'groupe,itemname'   => __('Group'),
-                          'username,itemname' => __('User'),
-                          'lname'             => _n('License', 'Licenses', Session::getPluralNumber()),
+                          'groupe,itemname'   => Group::getTypeName(1),
+                          'username,itemname' => User::getTypeName(1),
+                          'lname'             => SoftwareLicense::getTypeName(Session::getPluralNumber()),
                           'date_install'      => __('Installation date')];
       if ($crit != "softwares_id") {
          unset($refcolumns['vername']);
@@ -820,7 +820,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre'><tr>";
-      echo "<th>".__('Entity')."</th>";
+      echo "<th>".Entity::getTypeName(1)."</th>";
       echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
       echo "</tr>\n";
 
@@ -1043,7 +1043,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             $header_end    .= "</th>";
          }
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-         $header_end .= "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         $header_end .= "<th>" ._n('Version', 'Versions', 1)."</th><th>" . SoftwareLicense::getTypeName(1) . "</th>";
          $header_end .="<th>" . __('Installation date') . "</th>";
          if (Plugin::haveImport()) {
             $header_end .= "<th>".__('Automatic inventory')."</th>";
@@ -1088,7 +1088,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          echo "<tr class='tab_bg_1'><th colspan='2'>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th></tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>";
-         echo _n('License', 'Licenses', Session::getPluralNumber())."&nbsp;&nbsp;";
+         echo SoftwareLicense::getTypeName(Session::getPluralNumber())."&nbsp;&nbsp;";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='items_id' value='$items_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
@@ -1189,7 +1189,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             $header_end    .= "</th>";
          }
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-         $header_end .= "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         $header_end .= "<th>" ._n('Version', 'Versions', 1)."</th><th>" . SoftwareLicense::getTypeName(1) . "</th>";
          $header_end .= "<th>" .__('Installation date')."</th>";
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;

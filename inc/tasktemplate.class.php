@@ -60,7 +60,7 @@ class TaskTemplate extends CommonDropdown {
                          'type'  => 'tinymce',
                          'rows' => 10],
                    ['name'  => 'taskcategories_id',
-                         'label' => __('Task category'),
+                         'label' => TaskCategory::getTypeName(1),
                          'type'  => 'dropdownValue',
                          'list'  => true],
                    ['name'  => 'state',
@@ -76,7 +76,7 @@ class TaskTemplate extends CommonDropdown {
                          'label' => __('By'),
                          'type'  => 'users_id_tech'],
                    ['name'  => 'groups_id_tech',
-                         'label' => __('Group'),
+                         'label' => Group::getTypeName(1),
                          'type'  => 'groups_id_tech'],
                   ];
    }
@@ -96,7 +96,7 @@ class TaskTemplate extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '3',
-         'name'               => __('Task category'),
+         'name'               => TaskCategory::getTypeName(1),
          'field'              => 'name',
          'table'              => getTableForItemType('TaskCategory'),
          'datatype'           => 'dropdown'

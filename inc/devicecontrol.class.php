@@ -56,7 +56,7 @@ class DeviceControl extends CommonDevice {
                                      'label' => __('Interface'),
                                      'type'  => 'dropdownValue'],
                                ['name'  => 'devicecontrolmodels_id',
-                                     'label' => __('Model'),
+                                     'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue'],
                                ['name'  => 'none',
                                      'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
@@ -90,7 +90,7 @@ class DeviceControl extends CommonDevice {
          'id'                 => '15',
          'table'              => 'glpi_devicecontrolmodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

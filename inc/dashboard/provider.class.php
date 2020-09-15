@@ -557,7 +557,7 @@ class Provider extends \CommonGLPI {
       $monthsyears = array_keys($total);
       $series = [
          [
-            'name' => _nx('ticket', 'Opened', 'Opened', 2),
+            'name' => _nx('ticket', 'Opened', 'Opened', \Session::getPluralNumber()),
             'data' => array_values($total),
             'search' => [
                'criteria' => [
@@ -576,7 +576,7 @@ class Provider extends \CommonGLPI {
                'reset' => 'reset'
             ]
          ], [
-            'name' => _nx('ticket', 'Solved', 'Solved', 2),
+            'name' => _nx('ticket', 'Solved', 'Solved', \Session::getPluralNumber()),
             'data' => array_values(\Stat::constructEntryValues('Ticket', "inter_solved", $begin, $end)),
             'search' => [
                'criteria' => [
