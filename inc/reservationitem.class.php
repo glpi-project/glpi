@@ -528,10 +528,10 @@ class ReservationItem extends CommonDBChild {
       echo "<tr>";
       echo "<th style='width: 30px;'>".Html::getCheckAllAsCheckbox('nosearch')."</th>";
       echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
-      echo "<th>".__("Location")."</th>";
-      echo "<th>".__("Comment")."</th>";
+      echo "<th>".Location::getTypeName(1)."</th>";
+      echo "<th>"._n('Comment', 'Comments', 1)."</th>";
       if ($showentity) {
-         echo "<th>".__("Entity")."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
       }
       echo "<th style='width: 50px;'>".__("Booking calendar")."</th>";
       echo "</tr>";

@@ -304,7 +304,7 @@ class DomainRecord extends CommonDBChild {
             'value'  => $this->fields['domains_id']
          ]);
          // TRANS: first parameter is the template name
-         echo sprintf(__('%1$s template'), $domain->fields['template_name']);
+         echo sprintf(_n('%1$s template', '%1$s templates', 1), $domain->fields['template_name']);
       } else {
          Dropdown::show(
             'Domain', [
